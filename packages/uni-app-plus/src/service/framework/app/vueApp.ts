@@ -35,6 +35,7 @@ export function initVueApp(appVm: ComponentPublicInstance) {
       // store app context on the root VNode.
       // this will be set on the root instance on initial mount.
       vnode.appContext = appContext
+      ;(vnode as any).__page_container__ = pageContainer
       render(vnode, pageContainer as unknown as Element)
       const publicThis = vnode.component!.proxy!
       ;(publicThis as any).__page_container__ = pageContainer

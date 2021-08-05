@@ -12,6 +12,7 @@ import {
   ACTION_TYPE_SET_TEXT,
   PageCreateAction,
   formatLog,
+  ACTION_TYPE_PAGE_SCROLL,
 } from '@dcloudio/uni-shared'
 import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
 import { ACTION_TYPE_DICT, DictAction, Dictionary } from '../../../constants'
@@ -19,6 +20,7 @@ import { createGetDict, decodeNodeJson } from './decodeActions'
 import {
   $,
   createElement,
+  initPageScroll,
   onPageCreate,
   onPageCreated,
   onPageReady,
@@ -78,6 +80,8 @@ function onPageUpdateSync(actions: (PageAction | DictAction)[]) {
         return $(action[1]).removeEvent(getDict(action[2] as number))
       case ACTION_TYPE_SET_TEXT:
         return $(action[1]).setText(getDict(action[2] as number))
+      case ACTION_TYPE_PAGE_SCROLL:
+        return initPageScroll(action[1])
     }
   })
   flushPostActionJobs()

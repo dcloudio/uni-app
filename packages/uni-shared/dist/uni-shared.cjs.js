@@ -731,6 +731,7 @@ const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
 const ACTION_TYPE_ADD_EVENT = 8;
 const ACTION_TYPE_REMOVE_EVENT = 9;
 const ACTION_TYPE_SET_TEXT = 10;
+const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
 function cache(fn) {
@@ -935,6 +936,17 @@ class EventChannel {
     }
 }
 
+const PAGE_HOOKS = [
+    ON_BACK_PRESS,
+    ON_PAGE_SCROLL,
+    ON_TAB_ITEM_TAP,
+    ON_REACH_BOTTOM,
+    ON_PULL_DOWN_REFRESH,
+];
+function isRootHook(name) {
+    return PAGE_HOOKS.indexOf(name) > -1;
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -947,6 +959,7 @@ exports.ACTION_TYPE_EVENT = ACTION_TYPE_EVENT;
 exports.ACTION_TYPE_INSERT = ACTION_TYPE_INSERT;
 exports.ACTION_TYPE_PAGE_CREATE = ACTION_TYPE_PAGE_CREATE;
 exports.ACTION_TYPE_PAGE_CREATED = ACTION_TYPE_PAGE_CREATED;
+exports.ACTION_TYPE_PAGE_SCROLL = ACTION_TYPE_PAGE_SCROLL;
 exports.ACTION_TYPE_REMOVE = ACTION_TYPE_REMOVE;
 exports.ACTION_TYPE_REMOVE_ATTRIBUTE = ACTION_TYPE_REMOVE_ATTRIBUTE;
 exports.ACTION_TYPE_REMOVE_EVENT = ACTION_TYPE_REMOVE_EVENT;
@@ -1041,6 +1054,7 @@ exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
 exports.isNativeTag = isNativeTag;
+exports.isRootHook = isRootHook;
 exports.isServiceCustomElement = isServiceCustomElement;
 exports.isServiceNativeTag = isServiceNativeTag;
 exports.normalizeDataset = normalizeDataset;

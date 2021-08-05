@@ -10,7 +10,7 @@ export function initSubscribe() {
 }
 
 function createPageEvent(name: string) {
-  return (args: unknown, pageId: number) => {
-    invokeHook(pageId, name, args)
+  return (args: unknown, pageId: string) => {
+    invokeHook(parseInt(pageId), name, args)
   }
 }

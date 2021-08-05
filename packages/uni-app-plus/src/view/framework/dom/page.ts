@@ -91,9 +91,10 @@ export function onPageCreate({
   pixelRatio,
   windowWidth,
   disableScroll,
-  onPageScroll,
-  onPageReachBottom,
-  onReachBottomDistance,
+  // 因为组合式API的提供，不再在create时初始化，而是在监听后，主动通知
+  // onPageScroll,
+  // onPageReachBottom,
+  // onReachBottomDistance,
   statusbarHeight,
   windowTop,
   windowBottom,
@@ -111,8 +112,6 @@ export function onPageCreate({
 
   if (disableScroll) {
     document.addEventListener('touchmove', disableScrollListener)
-  } else if (onPageScroll || onPageReachBottom) {
-    initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance)
   }
 
   if (css) {
@@ -175,20 +174,22 @@ function initCssVar(
   updateCssVar(cssVars)
 }
 
-function initPageScroll(
-  onPageScroll: boolean,
-  onPageReachBottom: boolean,
-  onReachBottomDistance: number
-) {
-  const opts: CreateScrollListenerOptions = {}
-  if (onPageScroll) {
-    opts.onPageScroll = (scrollTop) => {
-      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop })
-    }
+let isPageScrollInited = false
+
+export function initPageScroll(onReachBottomDistance: number) {
+  if (isPageScrollInited) {
+    return
   }
-  if (onPageReachBottom) {
-    opts.onReachBottomDistance = onReachBottomDistance
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM)
+  isPageScrollInited = true
+  // 简单起见，只要监听了onPageScroll，也同时绑定onReachBottom，本身onReachBottom触发不频繁
+  const opts: CreateScrollListenerOptions = {
+    onReachBottomDistance,
+    onPageScroll(scrollTop) {
+      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop })
+    },
+    onReachBottom() {
+      UniViewJSBridge.publishHandler(ON_REACH_BOTTOM)
+    },
   }
   // 避免监听太早，直接触发了 scroll
   requestAnimationFrame(() =>

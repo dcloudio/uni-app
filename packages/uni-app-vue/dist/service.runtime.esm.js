@@ -565,6 +565,16 @@ export default function vueFactory(exports) {
   }
 
   var JSON_PROTOCOL = 'json://';
+  var ON_BACK_PRESS = 'onBackPress';
+  var ON_PAGE_SCROLL = 'onPageScroll';
+  var ON_TAB_ITEM_TAP = 'onTabItemTap';
+  var ON_REACH_BOTTOM = 'onReachBottom';
+  var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+  var PAGE_HOOKS = [ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH];
+
+  function isRootHook(name) {
+    return PAGE_HOOKS.indexOf(name) > -1;
+  }
   /**
    * Make a map and return a function for checking if a key
    * is in that map.
@@ -572,6 +582,7 @@ export default function vueFactory(exports) {
    * \/\*#\_\_PURE\_\_\*\/
    * So that rollup can tree-shake them if necessary.
    */
+
 
   function makeMap(str, expectsLowerCase) {
     var map = Object.create(null);
@@ -5161,6 +5172,18 @@ export default function vueFactory(exports) {
 
   function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+      if (isRootHook(type)) {
+        target = target.root;
+      }
+
+      var {
+        __page_container__
+      } = target.root.vnode; // 仅限 App 端
+
+      if (__page_container__) {
+        __page_container__.onInjectHook(type);
+      }
+
       var hooks = target[type] || (target[type] = []); // cache the error handling wrapper for injected hooks so the same hook
       // can be properly deduped by the scheduler. "__weh" stands for "with error
       // handling".

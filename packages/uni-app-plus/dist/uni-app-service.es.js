@@ -1055,6 +1055,7 @@ var serviceContext = (function (vue) {
   const ACTION_TYPE_ADD_EVENT = 8;
   const ACTION_TYPE_REMOVE_EVENT = 9;
   const ACTION_TYPE_SET_TEXT = 10;
+  const ACTION_TYPE_PAGE_SCROLL = 15;
   const ACTION_TYPE_EVENT = 20;
 
   function cache(fn) {
@@ -2012,7 +2013,7 @@ var serviceContext = (function (vue) {
   }
   function createPageEvent(name) {
       return (args, pageId) => {
-          invokeHook(pageId, name, args);
+          invokeHook(parseInt(pageId), name, args);
       };
   }
 
@@ -6622,9 +6623,9 @@ var serviceContext = (function (vue) {
           titleSize: '17px',
       };
       const pageId = `page${Date.now()}`;
-      style = Object.assign({}, style);
+      style = extend({}, style);
       if (style.titleNView !== false && style.titleNView !== 'none') {
-          style.titleNView = Object.assign(titleNView, style.titleNView);
+          style.titleNView = extend(titleNView, style.titleNView);
       }
       const defaultStyle = {
           top: 0,
@@ -6643,7 +6644,7 @@ var serviceContext = (function (vue) {
               viewport: plus_.screen.resolutionWidth,
           },
       };
-      style = Object.assign(defaultStyle, style);
+      style = extend(defaultStyle, style);
       const page = plus_.webview.create('', pageId, style, {
           extras: {
               from: getPageId(),
@@ -8487,9 +8488,10 @@ var serviceContext = (function (vue) {
           url: '__uniappchooselocation',
           data: options,
           style: {
-              // @ts-ignore
+              // @ts-expect-error
               animationType: options.animationType || 'slide-in-bottom',
-              titleNView: undefined,
+              // @ts-expect-error
+              titleNView: false,
               popGesture: 'close',
               scrollIndicator: 'none',
           },
@@ -8704,19 +8706,9 @@ var serviceContext = (function (vue) {
       resolve();
   });
 
-  const VD_SYNC = 'vdSync';
-  const APP_SERVICE_ID = '__uniapp__service';
-  const ON_WEBVIEW_READY = 'onWebviewReady';
-  const PAGE_SCROLL_TO = 'pageScrollTo';
-  const LOAD_FONT_FACE = 'loadFontFace';
-  const ACTION_TYPE_DICT = 0;
-  const WEBVIEW_INSERTED = 'webviewInserted';
-  const WEBVIEW_REMOVED = 'webviewRemoved';
-  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
-
   const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
       const pageId = getPageIdByVm(getCurrentPageVm());
-      UniServiceJSBridge.invokeViewMethod(LOAD_FONT_FACE, options, pageId, (err) => {
+      UniServiceJSBridge.invokeViewMethod(API_LOAD_FONT_FACE, options, pageId, (err) => {
           if (err) {
               reject(err);
           }
@@ -8728,7 +8720,7 @@ var serviceContext = (function (vue) {
 
   const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
       const pageId = getPageIdByVm(getCurrentPageVm());
-      UniServiceJSBridge.invokeViewMethod(PAGE_SCROLL_TO, options, pageId, resolve);
+      UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
   }, PageScrollToProtocol, PageScrollToOptions);
 
   const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __page__, title }, { resolve, reject }) => {
@@ -8864,6 +8856,14 @@ var serviceContext = (function (vue) {
       setTabBarBadgeNone(index);
       resolve();
   }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+
+  const VD_SYNC = 'vdSync';
+  const APP_SERVICE_ID = '__uniapp__service';
+  const ON_WEBVIEW_READY = 'onWebviewReady';
+  const ACTION_TYPE_DICT = 0;
+  const WEBVIEW_INSERTED = 'webviewInserted';
+  const WEBVIEW_REMOVED = 'webviewRemoved';
+  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 
   const EVENT_TYPE_NAME = 'UniAppSubNVue';
   class SubNvue {
@@ -9285,10 +9285,7 @@ var serviceContext = (function (vue) {
 
   function applyOptions(options, instance, publicThis) {
       const mpType = options.mpType || publicThis.$mpType;
-      if (!mpType) {
-          // 仅 App,Page 类型支持 on 生命周期
-          return;
-      }
+      // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
       Object.keys(options).forEach((name) => {
           if (name.indexOf('on') === 0) {
               const hook = options[name];
@@ -9919,6 +9916,7 @@ var serviceContext = (function (vue) {
               // store app context on the root VNode.
               // this will be set on the root instance on initial mount.
               vnode.appContext = appContext;
+              vnode.__page_container__ = pageContainer;
               vue.render(vnode, pageContainer);
               const publicThis = vnode.component.proxy;
               publicThis.__page_container__ = pageContainer;
@@ -10237,6 +10235,7 @@ var serviceContext = (function (vue) {
           this.nodeId = 0;
           this.pageId = pageId;
           this.pageNode = this;
+          this.options = options;
           this.isUnmounted = false;
           this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
           this.createdAction = [ACTION_TYPE_PAGE_CREATED];
@@ -10269,6 +10268,16 @@ var serviceContext = (function (vue) {
               return index;
           }
           return dicts.push(value) - 1;
+      }
+      onInjectHook(hook) {
+          if ((hook === ON_PAGE_SCROLL || hook === ON_REACH_BOTTOM) &&
+              !this.scrollAction) {
+              this.scrollAction = [
+                  ACTION_TYPE_PAGE_SCROLL,
+                  this.options.onReachBottomDistance,
+              ];
+              this.push(this.scrollAction);
+          }
       }
       onCreate(thisNode, nodeName) {
           pushCreateAction(this, thisNode.nodeId, nodeName);
@@ -10350,6 +10359,9 @@ var serviceContext = (function (vue) {
       }
       restore() {
           this.push(this.createAction);
+          if (this.scrollAction) {
+              this.push(this.scrollAction);
+          }
           // TODO restore children
           this.push(this.createdAction);
       }
@@ -11352,16 +11364,16 @@ var serviceContext = (function (vue) {
           if (_webview.__page__) {
               // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
               if (getCurrentPages().find((page) => page === _webview.__page__)) {
-                  if (process.env.NODE_ENV !== 'production') {
-                      console.log(`[uni-app] preloadWebview(${path},${_webview.id}) already in use`);
+                  if ((process.env.NODE_ENV !== 'production')) {
+                      console.log(formatLog('uni-app', `preloadWebview(${path},${_webview.id}) already in use`));
                   }
                   webview = undefined;
               }
               else {
                   // TODO eventChannel
                   addCurrentPage(_webview.__page__);
-                  if (process.env.NODE_ENV !== 'production') {
-                      console.log(`[uni-app] reuse preloadWebview(${path},${_webview.id})`);
+                  if ((process.env.NODE_ENV !== 'production')) {
+                      console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
                   }
                   return _webview;
               }

@@ -3,6 +3,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
+var uniShared = require('@dcloudio/uni-shared');
 
 const targetMap = new WeakMap();
 const effectStack = [];
@@ -3875,6 +3876,10 @@ function resetHookState(hooks) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        // fixed by xxxxxx
+        if (uniShared.isRootHook(type)) {
+            target = target.root;
+        }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook
         // can be properly deduped by the scheduler. "__weh" stands for "with error

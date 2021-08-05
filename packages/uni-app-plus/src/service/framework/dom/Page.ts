@@ -22,7 +22,11 @@ import {
   PageAction,
   PageCreateAction,
   PageCreatedAction,
+  PageScrollAction,
   PageNodeOptions,
+  ON_PAGE_SCROLL,
+  ON_REACH_BOTTOM,
+  ACTION_TYPE_PAGE_SCROLL,
 } from '@dcloudio/uni-shared'
 
 import { getPageById } from '@dcloudio/uni-core'
@@ -40,8 +44,10 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
   private _id: number = 1
   private _created: boolean = false
+  private options: PageNodeOptions
   private createAction: PageCreateAction
   private createdAction: PageCreatedAction
+  private scrollAction?: PageScrollAction
   private _createActionMap = new Map<number, CreateAction>()
   public updateActions: (PageAction | DictAction)[] = []
 
@@ -65,6 +71,7 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     this.nodeId = 0
     this.pageId = pageId
     this.pageNode = this
+    this.options = options
 
     this.isUnmounted = false
 
@@ -107,6 +114,18 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
       return index
     }
     return dicts.push(value) - 1
+  }
+  onInjectHook(hook: string) {
+    if (
+      (hook === ON_PAGE_SCROLL || hook === ON_REACH_BOTTOM) &&
+      !this.scrollAction
+    ) {
+      this.scrollAction = [
+        ACTION_TYPE_PAGE_SCROLL,
+        this.options.onReachBottomDistance,
+      ]
+      this.push(this.scrollAction)
+    }
   }
   onCreate(thisNode: UniNode, nodeName: string | number) {
     pushCreateAction(this, thisNode.nodeId!, nodeName)
@@ -196,6 +215,9 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   }
   restore() {
     this.push(this.createAction)
+    if (this.scrollAction) {
+      this.push(this.scrollAction)
+    }
     // TODO restore children
     this.push(this.createdAction)
   }

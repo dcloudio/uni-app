@@ -288,6 +288,7 @@
   const ACTION_TYPE_ADD_EVENT = 8;
   const ACTION_TYPE_REMOVE_EVENT = 9;
   const ACTION_TYPE_SET_TEXT = 10;
+  const ACTION_TYPE_PAGE_SCROLL = 15;
   const ACTION_TYPE_EVENT = 20;
   function cache(fn) {
     const cache2 = Object.create(null);
@@ -5501,8 +5502,6 @@
   const VD_SYNC = "vdSync";
   const APP_SERVICE_ID = "__uniapp__service";
   const ON_WEBVIEW_READY = "onWebviewReady";
-  const PAGE_SCROLL_TO = "pageScrollTo";
-  const LOAD_FONT_FACE = "loadFontFace";
   const ACTION_TYPE_DICT = 0;
   const WEBVIEW_INSERTED = "webviewInserted";
   const WEBVIEW_REMOVED = "webviewRemoved";
@@ -5798,6 +5797,8 @@
     }
     return number < 0 ? -result : result;
   }, Upx2pxProtocol);
+  const API_LOAD_FONT_FACE = "loadFontFace";
+  const API_PAGE_SCROLL_TO = "pageScrollTo";
   ({
     beforeInvoke() {
       initI18nShowModalMsgsOnce();
@@ -15734,9 +15735,9 @@
       titleSize: "17px"
     };
     const pageId = `page${Date.now()}`;
-    style = Object.assign({}, style);
+    style = extend({}, style);
     if (style.titleNView !== false && style.titleNView !== "none") {
-      style.titleNView = Object.assign(titleNView, style.titleNView);
+      style.titleNView = extend(titleNView, style.titleNView);
     }
     const defaultStyle = {
       top: 0,
@@ -15752,7 +15753,7 @@
         viewport: plus_.screen.resolutionWidth
       }
     };
-    style = Object.assign(defaultStyle, style);
+    style = extend(defaultStyle, style);
     const page = plus_.webview.create("", pageId, style, {
       extras: {
         from: getPageId(),
@@ -15938,7 +15939,7 @@
           url: "__uniapppicker",
           data,
           style: {
-            titleNView: void 0,
+            titleNView: false,
             animationType: "none",
             animationDuration: 0,
             background: "rgba(0,0,0,0)",
@@ -16551,9 +16552,6 @@
     pixelRatio: pixelRatio2,
     windowWidth,
     disableScroll,
-    onPageScroll,
-    onPageReachBottom,
-    onReachBottomDistance,
     statusbarHeight,
     windowTop,
     windowBottom
@@ -16567,8 +16565,6 @@
     initCssVar(statusbarHeight, windowTop, windowBottom);
     if (disableScroll) {
       document.addEventListener("touchmove", disableScrollListener);
-    } else if (onPageScroll || onPageReachBottom) {
-      initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance);
     }
     if (css) {
       initPageCss(route);
@@ -16616,17 +16612,21 @@
     }
     updateCssVar(cssVars);
   }
-  function initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance) {
-    const opts = {};
-    if (onPageScroll) {
-      opts.onPageScroll = (scrollTop) => {
+  let isPageScrollInited = false;
+  function initPageScroll(onReachBottomDistance) {
+    if (isPageScrollInited) {
+      return;
+    }
+    isPageScrollInited = true;
+    const opts = {
+      onReachBottomDistance,
+      onPageScroll(scrollTop) {
         UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop });
-      };
-    }
-    if (onPageReachBottom) {
-      opts.onReachBottomDistance = onReachBottomDistance;
-      opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM);
-    }
+      },
+      onReachBottom() {
+        UniViewJSBridge.publishHandler(ON_REACH_BOTTOM);
+      }
+    };
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
   }
   function pageScrollTo({
@@ -16674,6 +16674,8 @@
           return $(action[1]).removeEvent(getDict(action[2]));
         case ACTION_TYPE_SET_TEXT:
           return $(action[1]).setText(getDict(action[2]));
+        case ACTION_TYPE_PAGE_SCROLL:
+          return initPageScroll(action[1]);
       }
     });
     flushPostActionJobs();
@@ -16833,14 +16835,21 @@
     });
   }
   const pageVm = { $el: document.body };
+  function wrapperViewMethod(fn) {
+    return (...args) => {
+      onPageReady(() => {
+        fn.apply(null, args);
+      });
+    };
+  }
   function initViewMethods() {
     const pageId = getCurrentPageId();
     subscribeViewMethod(pageId);
-    registerViewMethod(pageId, "requestComponentInfo", (args, publish) => {
+    registerViewMethod(pageId, "requestComponentInfo", wrapperViewMethod((args, publish) => {
       requestComponentInfo(pageVm, args.reqs, publish);
-    });
-    registerViewMethod(pageId, PAGE_SCROLL_TO, pageScrollTo);
-    registerViewMethod(pageId, LOAD_FONT_FACE, loadFontFace);
+    }));
+    registerViewMethod(pageId, API_PAGE_SCROLL_TO, wrapperViewMethod(pageScrollTo));
+    registerViewMethod(pageId, API_LOAD_FONT_FACE, wrapperViewMethod(loadFontFace));
   }
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;

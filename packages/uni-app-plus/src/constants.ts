@@ -4,10 +4,6 @@ export const APP_SERVICE_ID = '__uniapp__service'
 
 export const ON_WEBVIEW_READY = 'onWebviewReady'
 
-export const PAGE_SCROLL_TO = 'pageScrollTo'
-
-export const LOAD_FONT_FACE = 'loadFontFace'
-
 export let ACTION_MINIFY = true
 // __tests__
 export function setActionMinify(minify: boolean) {
@@ -23,3 +19,5 @@ export const WEBVIEW_INSERTED = 'webviewInserted'
 export const WEBVIEW_REMOVED = 'webviewRemoved'
 export const WEBVIEW_ID_PREFIX = 'webviewId'
 export const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'
+
+export const INIT_PAGE_SCROLL = 'initPageScroll'

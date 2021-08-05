@@ -1,4 +1,4 @@
-import { UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL } from '@dcloudio/uni-shared';
+import { isRootHook, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL } from '@dcloudio/uni-shared';
 
 /**
  * Make a map and return a function for checking if a key
@@ -4036,6 +4036,14 @@ function getInnerChild(vnode) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        if (isRootHook(type)) {
+            target = target.root;
+        }
+        const { __page_container__ } = target.root.vnode;
+        // 仅限 App 端
+        if (__page_container__) {
+            __page_container__.onInjectHook(type);
+        }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook
         // can be properly deduped by the scheduler. "__weh" stands for "with error

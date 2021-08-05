@@ -1,4 +1,8 @@
-import { SelectorQueryRequest } from '@dcloudio/uni-api'
+import {
+  API_LOAD_FONT_FACE,
+  API_PAGE_SCROLL_TO,
+  SelectorQueryRequest,
+} from '@dcloudio/uni-api'
 import {
   subscribeViewMethod,
   registerViewMethod,
@@ -6,11 +10,19 @@ import {
 } from '@dcloudio/uni-core'
 import { ComponentPublicInstance } from 'vue'
 import { requestComponentInfo } from '../../../../uni-h5/src/platform'
-import { PAGE_SCROLL_TO, LOAD_FONT_FACE } from '../../constants'
+
 import { loadFontFace } from './dom/font'
-import { pageScrollTo } from './dom/page'
+import { onPageReady, pageScrollTo } from './dom/page'
 
 const pageVm = { $el: document.body } as ComponentPublicInstance
+
+function wrapperViewMethod(fn: (...args: any[]) => void) {
+  return (...args: any[]) => {
+    onPageReady(() => {
+      fn.apply(null, args)
+    })
+  }
+}
 
 export function initViewMethods() {
   const pageId = getCurrentPageId()
@@ -18,10 +30,18 @@ export function initViewMethods() {
   registerViewMethod<{ reqs: Array<SelectorQueryRequest> }>(
     pageId,
     'requestComponentInfo',
-    (args, publish) => {
+    wrapperViewMethod((args, publish) => {
       requestComponentInfo(pageVm, args.reqs, publish)
-    }
+    })
   )
-  registerViewMethod(pageId, PAGE_SCROLL_TO, pageScrollTo)
-  registerViewMethod(pageId, LOAD_FONT_FACE, loadFontFace)
+  registerViewMethod(
+    pageId,
+    API_PAGE_SCROLL_TO,
+    wrapperViewMethod(pageScrollTo)
+  )
+  registerViewMethod(
+    pageId,
+    API_LOAD_FONT_FACE,
+    wrapperViewMethod(loadFontFace)
+  )
 }

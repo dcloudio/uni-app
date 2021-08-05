@@ -1,5 +1,6 @@
 import { EMPTY_OBJ, isArray, isMap, isIntegerKey, isSymbol, extend, hasOwn, isObject as isObject$1, hasChanged, makeMap, capitalize, toRawType, def, isFunction as isFunction$1, NOOP, isString, isPromise as isPromise$1, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, getGlobalThis, normalizeClass, normalizeStyle, isGloballyWhitelisted, isSpecialBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
 export { camelize, capitalize, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isRootHook } from '@dcloudio/uni-shared';
 
 const targetMap = new WeakMap();
 const effectStack = [];
@@ -3867,6 +3868,10 @@ function resetHookState(hooks) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        // fixed by xxxxxx
+        if (isRootHook(type)) {
+            target = target.root;
+        }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook
         // can be properly deduped by the scheduler. "__weh" stands for "with error

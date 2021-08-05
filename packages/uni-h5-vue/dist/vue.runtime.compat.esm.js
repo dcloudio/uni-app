@@ -1,3 +1,5 @@
+import { isRootHook } from '@dcloudio/uni-shared';
+
 /**
  * Make a map and return a function for checking if a key
  * is in that map.
@@ -4395,6 +4397,10 @@ function resetHookState(hooks) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        // fixed by xxxxxx
+        if (isRootHook(type)) {
+            target = target.root;
+        }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook
         // can be properly deduped by the scheduler. "__weh" stands for "with error

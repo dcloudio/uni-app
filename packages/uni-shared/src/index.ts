@@ -9,5 +9,6 @@ export * from './query'
 export * from './debounce'
 export * from './constants'
 export * from './EventChannel'
+export * from './lifecycle'
 
 export * from './node/locale'

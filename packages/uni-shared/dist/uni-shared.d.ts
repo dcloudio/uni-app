@@ -12,6 +12,8 @@ export declare const ACTION_TYPE_PAGE_CREATE = 1;
 
 export declare const ACTION_TYPE_PAGE_CREATED = 2;
 
+export declare const ACTION_TYPE_PAGE_SCROLL = 15;
+
 export declare const ACTION_TYPE_REMOVE = 5;
 
 export declare const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
@@ -171,6 +173,8 @@ export declare function isCustomElement(tag: string): boolean;
 
 export declare function isNativeTag(tag: string): boolean;
 
+export declare function isRootHook(name: string): boolean;
+
 export declare function isServiceCustomElement(_tag: string): boolean;
 
 export declare function isServiceNativeTag(tag: string): boolean;
@@ -283,7 +287,7 @@ declare interface Options {
     complete?: (res: any) => void;
 }
 
-export declare type PageAction = PageCreateAction | PageCreatedAction | PageUpdateAction;
+export declare type PageAction = PageCreateAction | PageCreatedAction | PageUpdateAction | PageScrollAction;
 
 export declare type PageCreateAction = [typeof ACTION_TYPE_PAGE_CREATE, PageCreateData];
 
@@ -308,6 +312,11 @@ export declare interface PageNodeOptions {
     windowTop: number;
     windowBottom: number;
 }
+
+/**
+ * onReachBottomDistance
+ */
+export declare type PageScrollAction = [typeof ACTION_TYPE_PAGE_SCROLL, number];
 
 export declare type PageUpdateAction = CreateAction | InsertAction | RemoveAction | AddEventAction | RemoveEventAction | SetAttributeAction | RemoveAttributeAction | SetTextAction;
 

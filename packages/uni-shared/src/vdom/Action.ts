@@ -11,6 +11,8 @@ export const ACTION_TYPE_ADD_EVENT = 8
 export const ACTION_TYPE_REMOVE_EVENT = 9
 export const ACTION_TYPE_SET_TEXT = 10
 
+export const ACTION_TYPE_PAGE_SCROLL = 15
+
 export const ACTION_TYPE_EVENT = 20
 
 export interface PageNodeOptions {
@@ -117,6 +119,11 @@ export type SetTextAction = [
   string | number
 ]
 
+/**
+ * onReachBottomDistance
+ */
+export type PageScrollAction = [typeof ACTION_TYPE_PAGE_SCROLL, number]
+
 export type PageUpdateAction =
   | CreateAction
   | InsertAction
@@ -127,4 +134,8 @@ export type PageUpdateAction =
   | RemoveAttributeAction
   | SetTextAction
 
-export type PageAction = PageCreateAction | PageCreatedAction | PageUpdateAction
+export type PageAction =
+  | PageCreateAction
+  | PageCreatedAction
+  | PageUpdateAction
+  | PageScrollAction

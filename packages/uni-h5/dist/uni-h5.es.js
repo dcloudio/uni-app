@@ -1407,7 +1407,7 @@ function initSubscribe() {
 }
 function createPageEvent(name) {
   return (args, pageId) => {
-    invokeHook(pageId, name, args);
+    invokeHook(parseInt(pageId), name, args);
   };
 }
 function initService() {
@@ -13219,10 +13219,7 @@ function getContextInfo(el) {
   return el.__uniContextInfo;
 }
 function applyOptions(options, instance2, publicThis) {
-  const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType) {
-    return;
-  }
+  options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hook = options[name];
