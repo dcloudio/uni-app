@@ -505,7 +505,7 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   }
   return pullToRefresh;
 }
-function initPageInternalInstance(openType, url, pageQuery, meta) {
+function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
   const { id, route } = meta;
   return {
     id,
@@ -515,6 +515,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta) {
     options: pageQuery,
     meta,
     openType,
+    eventChannel,
     statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
   };
 }

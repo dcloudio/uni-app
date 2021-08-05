@@ -736,8 +736,8 @@
   function normalizeViewMethodName(pageId, name) {
     return pageId + "." + name;
   }
-  function subscribeViewMethod(pageId) {
-    UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), onInvokeViewMethod);
+  function subscribeViewMethod(pageId, wrapper2) {
+    UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod);
   }
   function registerViewMethod(pageId, name, fn) {
     name = normalizeViewMethodName(pageId, name);
@@ -16835,21 +16835,20 @@
     });
   }
   const pageVm = { $el: document.body };
-  function wrapperViewMethod(fn) {
-    return (...args) => {
-      onPageReady(() => {
-        fn.apply(null, args);
-      });
-    };
-  }
   function initViewMethods() {
     const pageId = getCurrentPageId();
-    subscribeViewMethod(pageId);
-    registerViewMethod(pageId, "requestComponentInfo", wrapperViewMethod((args, publish) => {
+    subscribeViewMethod(pageId, (fn) => {
+      return (...args) => {
+        onPageReady(() => {
+          fn.apply(null, args);
+        });
+      };
+    });
+    registerViewMethod(pageId, "requestComponentInfo", (args, publish) => {
       requestComponentInfo(pageVm, args.reqs, publish);
-    }));
-    registerViewMethod(pageId, API_PAGE_SCROLL_TO, wrapperViewMethod(pageScrollTo));
-    registerViewMethod(pageId, API_LOAD_FONT_FACE, wrapperViewMethod(loadFontFace));
+    });
+    registerViewMethod(pageId, API_PAGE_SCROLL_TO, pageScrollTo);
+    registerViewMethod(pageId, API_LOAD_FONT_FACE, loadFontFace);
   }
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;

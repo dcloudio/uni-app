@@ -1,5 +1,10 @@
 import { initPageVm, invokeHook } from '@dcloudio/uni-core'
-import { formatLog, ON_READY, ON_UNLOAD } from '@dcloudio/uni-shared'
+import {
+  EventChannel,
+  formatLog,
+  ON_READY,
+  ON_UNLOAD,
+} from '@dcloudio/uni-shared'
 import {
   ComponentPublicInstance,
   getCurrentInstance,
@@ -22,7 +27,13 @@ export function setupPage(component: VuePageComponent) {
     const instance = getCurrentInstance()!
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
-    addCurrentPage(initScope(__pageId as number, pageVm))
+    addCurrentPage(
+      initScope(
+        __pageId as number,
+        pageVm,
+        __pageInstance as Page.PageInstance['$page']
+      )
+    )
     onMounted(() => {
       invokeHook(pageVm, ON_READY)
       // TODO preloadSubPackages
@@ -37,13 +48,23 @@ export function setupPage(component: VuePageComponent) {
   return component
 }
 
-function initScope(pageId: number, vm: ComponentPublicInstance) {
+function initScope(
+  pageId: number,
+  vm: ComponentPublicInstance,
+  pageInstance: Page.PageInstance['$page']
+) {
   const $getAppWebview = () => {
     return plus.webview.getWebviewById(pageId + '')
   }
   vm.$getAppWebview = $getAppWebview
   vm.$scope = {
     $getAppWebview,
+  }
+  vm.getOpenerEventChannel = () => {
+    if (!pageInstance.eventChannel) {
+      pageInstance.eventChannel = new EventChannel(pageId)
+    }
+    return pageInstance.eventChannel as EventChannel
   }
   return vm
 }

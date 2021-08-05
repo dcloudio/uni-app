@@ -1,3 +1,4 @@
+import { EventChannel } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 import { ComponentPublicInstance, getCurrentInstance } from 'vue'
 import { rpx2px } from './util'
@@ -108,7 +109,8 @@ export function initPageInternalInstance(
   openType: UniApp.OpenType,
   url: string,
   pageQuery: Record<string, any>,
-  meta: UniApp.PageRouteMeta
+  meta: UniApp.PageRouteMeta,
+  eventChannel?: EventChannel
 ): Page.PageInstance['$page'] {
   const { id, route } = meta
   return {
@@ -119,6 +121,7 @@ export function initPageInternalInstance(
     options: pageQuery,
     meta,
     openType,
+    eventChannel,
     statusBarStyle:
       meta.navigationBar.titleColor === '#000000' ? 'dark' : 'light',
   }

@@ -1162,6 +1162,69 @@ var serviceContext = (function (vue) {
   const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
   const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 
+  class EventChannel {
+      constructor(id, events) {
+          this.id = id;
+          this.listener = {};
+          this.emitCache = {};
+          if (events) {
+              Object.keys(events).forEach((name) => {
+                  this.on(name, events[name]);
+              });
+          }
+      }
+      emit(eventName, ...args) {
+          const fns = this.listener[eventName];
+          if (!fns) {
+              return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
+          }
+          fns.forEach((opt) => {
+              opt.fn.apply(opt.fn, args);
+          });
+          this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
+      }
+      on(eventName, fn) {
+          this._addListener(eventName, 'on', fn);
+          this._clearCache(eventName);
+      }
+      once(eventName, fn) {
+          this._addListener(eventName, 'once', fn);
+          this._clearCache(eventName);
+      }
+      off(eventName, fn) {
+          const fns = this.listener[eventName];
+          if (!fns) {
+              return;
+          }
+          if (fn) {
+              for (let i = 0; i < fns.length;) {
+                  if (fns[i].fn === fn) {
+                      fns.splice(i, 1);
+                      i--;
+                  }
+                  i++;
+              }
+          }
+          else {
+              delete this.listener[eventName];
+          }
+      }
+      _clearCache(eventName) {
+          const cacheArgs = this.emitCache[eventName];
+          if (cacheArgs) {
+              for (; cacheArgs.length > 0;) {
+                  this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
+              }
+          }
+      }
+      _addListener(eventName, type, fn) {
+          (this.listener[eventName] || (this.listener[eventName] = [])).push({
+              fn,
+              type,
+          });
+      }
+  }
+
   const isObject = (val) => val !== null && typeof val === 'object';
   class BaseFormatter {
       constructor() {
@@ -1842,7 +1905,7 @@ var serviceContext = (function (vue) {
       }
       return pullToRefresh;
   }
-  function initPageInternalInstance(openType, url, pageQuery, meta) {
+  function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
       const { id, route } = meta;
       return {
           id: id,
@@ -1852,6 +1915,7 @@ var serviceContext = (function (vue) {
           options: pageQuery,
           meta,
           openType,
+          eventChannel,
           statusBarStyle: meta.navigationBar.titleColor === '#000000' ? 'dark' : 'light',
       };
   }
@@ -10571,7 +10635,7 @@ var serviceContext = (function (vue) {
           const instance = vue.getCurrentInstance();
           const pageVm = instance.proxy;
           initPageVm(pageVm, __pageInstance);
-          addCurrentPage(initScope(__pageId, pageVm));
+          addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
           vue.onMounted(() => {
               invokeHook(pageVm, ON_READY);
               // TODO preloadSubPackages
@@ -10585,13 +10649,19 @@ var serviceContext = (function (vue) {
       };
       return component;
   }
-  function initScope(pageId, vm) {
+  function initScope(pageId, vm, pageInstance) {
       const $getAppWebview = () => {
           return plus.webview.getWebviewById(pageId + '');
       };
       vm.$getAppWebview = $getAppWebview;
       vm.$scope = {
           $getAppWebview,
+      };
+      vm.getOpenerEventChannel = () => {
+          if (!pageInstance.eventChannel) {
+              pageInstance.eventChannel = new EventChannel(pageId);
+          }
+          return pageInstance.eventChannel;
       };
       return vm;
   }
@@ -10693,7 +10763,7 @@ var serviceContext = (function (vue) {
       return preloadWebviews[url];
   }
 
-  function registerPage({ url, path, query, openType, webview, }) {
+  function registerPage({ url, path, query, openType, webview, eventChannel, }) {
       // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
       if (webview) {
           initEntry();
@@ -10710,7 +10780,9 @@ var serviceContext = (function (vue) {
                   webview = undefined;
               }
               else {
-                  // TODO eventChannel
+                  if (eventChannel) {
+                      _webview.__page__.$page.eventChannel = eventChannel;
+                  }
                   addCurrentPage(_webview.__page__);
                   if ((process.env.NODE_ENV !== 'production')) {
                       console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
@@ -10738,11 +10810,11 @@ var serviceContext = (function (vue) {
       initWebview(webview, path, query, routeOptions.meta);
       const route = path.substr(1);
       webview.__uniapp_route = route;
-      const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta);
+      const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
       initNVueEntryPage(webview);
       if (webview.nvue) {
           // nvue 时，先启用一个占位 vm
-          const fakeNVueVm = createNVueVm(webview, pageInstance);
+          const fakeNVueVm = createNVueVm(parseInt(webview.id), webview, pageInstance);
           initPageVm(fakeNVueVm, pageInstance);
           addCurrentPage(fakeNVueVm);
       }
@@ -10787,12 +10859,13 @@ var serviceContext = (function (vue) {
           });
       }
   }
-  function createNVueVm(webview, pageInstance) {
+  function createNVueVm(pageId, webview, pageInstance) {
       return {
           $: {},
           onNVuePageCreated(vm, curNVuePage) {
               vm.$ = {}; // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
               vm.$getAppWebview = () => webview;
+              vm.getOpenerEventChannel = curNVuePage.getOpenerEventChannel;
               // 替换真实的 nvue 的 vm
               initPageVm(vm, pageInstance);
               const pages = getAllPages();
@@ -10807,11 +10880,17 @@ var serviceContext = (function (vue) {
           $getAppWebview() {
               return webview;
           },
+          getOpenerEventChannel() {
+              if (!pageInstance.eventChannel) {
+                  pageInstance.eventChannel = new EventChannel(pageId);
+              }
+              return pageInstance.eventChannel;
+          },
       };
   }
 
   const $navigateTo = (args, { resolve, reject }) => {
-      const { url, animationType, animationDuration } = args;
+      const { url, events, animationType, animationDuration } = args;
       const { path, query } = parseUrl(url);
       const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
       navigate(path, () => {
@@ -10819,6 +10898,7 @@ var serviceContext = (function (vue) {
               url,
               path,
               query,
+              events,
               aniType,
               aniDuration,
           })
@@ -10827,13 +10907,13 @@ var serviceContext = (function (vue) {
       }, args.openType === 'appLaunch');
   };
   const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
-  function _navigateTo({ url, path, query, aniType, aniDuration, }) {
-      // TODO eventChannel
+  function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
       // 当前页面触发 onHide
       invokeHook(ON_HIDE);
+      const eventChannel = new EventChannel(getWebviewId() + 1, events);
       return new Promise((resolve) => {
-          showWebview(registerPage({ url, path, query, openType: 'navigateTo' }), aniType, aniDuration, () => {
-              resolve(undefined);
+          showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
+              resolve({ eventChannel });
           });
       });
   }

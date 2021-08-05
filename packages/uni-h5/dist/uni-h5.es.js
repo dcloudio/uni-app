@@ -479,8 +479,8 @@ const viewMethods = Object.create(null);
 function normalizeViewMethodName(pageId, name) {
   return pageId + "." + name;
 }
-function subscribeViewMethod(pageId) {
-  UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), onInvokeViewMethod);
+function subscribeViewMethod(pageId, wrapper2) {
+  UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod);
 }
 function unsubscribeViewMethod(pageId) {
   UniViewJSBridge.unsubscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API));
@@ -956,7 +956,7 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   }
   return pullToRefresh;
 }
-function initPageInternalInstance(openType, url, pageQuery, meta) {
+function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
   const { id: id2, route } = meta;
   return {
     id: id2,
@@ -966,6 +966,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta) {
     options: pageQuery,
     meta,
     openType,
+    eventChannel,
     statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
   };
 }

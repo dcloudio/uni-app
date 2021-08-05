@@ -1,6 +1,7 @@
 import { ComponentPublicInstance } from 'vue'
 import { hasOwn } from '@vue/shared'
 import {
+  EventChannel,
   formatLog,
   NAVBAR_HEIGHT,
   ON_REACH_BOTTOM_DISTANCE,
@@ -25,7 +26,7 @@ interface RegisterPageOptions {
   query: Record<string, string>
   openType: UniApp.OpenType
   webview?: PlusWebviewWebviewObject
-  // eventChannel: unknown
+  eventChannel?: EventChannel
 }
 
 export function registerPage({
@@ -34,6 +35,7 @@ export function registerPage({
   query,
   openType,
   webview,
+  eventChannel,
 }: RegisterPageOptions) {
   // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
   if (webview) {
@@ -56,7 +58,9 @@ export function registerPage({
         }
         webview = undefined
       } else {
-        // TODO eventChannel
+        if (eventChannel) {
+          _webview.__page__.$page.eventChannel = eventChannel
+        }
         addCurrentPage(_webview.__page__)
         if (__DEV__) {
           console.log(
@@ -97,14 +101,19 @@ export function registerPage({
     openType,
     url,
     query,
-    routeOptions.meta
+    routeOptions.meta,
+    eventChannel
   )
 
   initNVueEntryPage(webview)
 
   if ((webview as any).nvue) {
     // nvue 时，先启用一个占位 vm
-    const fakeNVueVm = createNVueVm(webview, pageInstance)
+    const fakeNVueVm = createNVueVm(
+      parseInt(webview.id!),
+      webview,
+      pageInstance
+    )
     initPageVm(fakeNVueVm, pageInstance)
     addCurrentPage(fakeNVueVm)
   } else {
@@ -162,6 +171,7 @@ function initNVueEntryPage(webview: PlusWebviewWebviewObject) {
 }
 
 function createNVueVm(
+  pageId: number,
   webview: PlusWebviewWebviewObject,
   pageInstance: Page.PageInstance['$page']
 ) {
@@ -170,6 +180,7 @@ function createNVueVm(
     onNVuePageCreated(vm: ComponentPublicInstance, curNVuePage: unknown) {
       ;(vm as any).$ = {} // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
       vm.$getAppWebview = () => webview
+      vm.getOpenerEventChannel = (curNVuePage as any).getOpenerEventChannel
       // 替换真实的 nvue 的 vm
       initPageVm(vm, pageInstance)
       const pages = getAllPages()
@@ -183,6 +194,12 @@ function createNVueVm(
     },
     $getAppWebview() {
       return webview
+    },
+    getOpenerEventChannel() {
+      if (!pageInstance.eventChannel) {
+        pageInstance.eventChannel = new EventChannel(pageId)
+      }
+      return pageInstance.eventChannel as EventChannel
     },
   } as unknown as ComponentPublicInstance
 }
