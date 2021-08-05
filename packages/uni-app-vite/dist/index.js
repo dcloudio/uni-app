@@ -7,8 +7,11 @@ const mainJs_1 = require("./plugins/mainJs");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
 const resolveId_1 = require("./plugins/resolveId");
-function createUniCssScopedPluginOptions() {
+function initUniCssScopedPluginOptions() {
     const styleIsolation = uni_cli_shared_1.getAppStyleIsolation(uni_cli_shared_1.parseManifestJsonOnce(process.env.UNI_INPUT_DIR));
+    if (styleIsolation === 'shared') {
+        return;
+    }
     if (styleIsolation === 'isolated') {
         // isolated: 对所有非 App.vue 增加 scoped
         return {};
@@ -17,7 +20,6 @@ function createUniCssScopedPluginOptions() {
     return { exclude: /mpType=page/ };
 }
 const plugins = [
-    uni_cli_shared_1.uniCssScopedPlugin(createUniCssScopedPluginOptions()),
     resolveId_1.uniResolveIdPlugin(),
     copy_1.uniCopyPlugin(),
     mainJs_1.uniMainJsPlugin(),
@@ -26,4 +28,8 @@ const plugins = [
     uni_cli_shared_1.uniViteInjectPlugin(uni_cli_shared_1.initProvide()),
     plugin_1.UniAppPlugin,
 ];
+const uniCssScopedPluginOptions = initUniCssScopedPluginOptions();
+if (uniCssScopedPluginOptions) {
+    plugins.unshift(uni_cli_shared_1.uniCssScopedPlugin(uniCssScopedPluginOptions));
+}
 exports.default = plugins;

@@ -12,10 +12,13 @@ import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniResolveIdPlugin } from './plugins/resolveId'
 
-function createUniCssScopedPluginOptions() {
+function initUniCssScopedPluginOptions() {
   const styleIsolation = getAppStyleIsolation(
     parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   )
+  if (styleIsolation === 'shared') {
+    return
+  }
   if (styleIsolation === 'isolated') {
     // isolated: 对所有非 App.vue 增加 scoped
     return {}
@@ -25,7 +28,6 @@ function createUniCssScopedPluginOptions() {
 }
 
 const plugins = [
-  uniCssScopedPlugin(createUniCssScopedPluginOptions()),
   uniResolveIdPlugin(),
   uniCopyPlugin(),
   uniMainJsPlugin(),
@@ -34,4 +36,10 @@ const plugins = [
   uniViteInjectPlugin(initProvide()),
   UniAppPlugin,
 ]
+
+const uniCssScopedPluginOptions = initUniCssScopedPluginOptions()
+if (uniCssScopedPluginOptions) {
+  plugins.unshift(uniCssScopedPlugin(uniCssScopedPluginOptions))
+}
+
 export default plugins
