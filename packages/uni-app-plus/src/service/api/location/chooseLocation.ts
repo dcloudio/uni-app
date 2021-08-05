@@ -18,9 +18,10 @@ export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(
       url: '__uniappchooselocation',
       data: options,
       style: {
-        // @ts-ignore
+        // @ts-expect-error
         animationType: options.animationType || 'slide-in-bottom',
-        titleNView: undefined,
+        // @ts-expect-error
+        titleNView: false,
         popGesture: 'close',
         scrollIndicator: 'none',
       },

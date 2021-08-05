@@ -177,8 +177,8 @@ function createNVueVm(
       if (index > -1) {
         pages.splice(index, 1, vm)
       }
-      if ((webview as any).__preload__) {
-        ;(webview as any).__page__ = vm
+      if ((webview as PreloadWebviewObject).__preload__) {
+        ;(webview as PreloadWebviewObject).__page__ = vm
       }
     },
     $getAppWebview() {

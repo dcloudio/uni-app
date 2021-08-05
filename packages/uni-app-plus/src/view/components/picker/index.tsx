@@ -194,7 +194,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         url: '__uniapppicker',
         data,
         style: {
-          titleNView: undefined,
+          // @ts-expect-error
+          titleNView: false,
           animationType: 'none',
           animationDuration: 0,
           background: 'rgba(0,0,0,0)',

@@ -1,3 +1,5 @@
+import { extend } from '@vue/shared'
+
 declare interface BroadcastChannel {
   new (id: string): BroadcastChannel
   name: string
@@ -126,9 +128,9 @@ export function showPage({
     titleSize: '17px',
   }
   const pageId = `page${Date.now()}`
-  style = Object.assign({}, style)
+  style = extend({}, style)
   if (style.titleNView !== false && style.titleNView !== 'none') {
-    style.titleNView = Object.assign(titleNView, style.titleNView)
+    style.titleNView = extend(titleNView, style.titleNView)
   }
   const defaultStyle = {
     top: 0,
@@ -149,7 +151,7 @@ export function showPage({
       viewport: plus_.screen.resolutionWidth,
     },
   }
-  style = Object.assign(defaultStyle, style)
+  style = extend(defaultStyle, style)
   const page = plus_.webview.create('', pageId, style, {
     extras: {
       from: getPageId(),
