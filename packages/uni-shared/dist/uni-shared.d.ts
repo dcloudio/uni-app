@@ -38,7 +38,11 @@ export declare function addFont(family: string, source: string, desc?: FontFaceD
 
 export declare const ATTR_CLASS = "class";
 
+export declare const ATTR_INNER_HTML = "innerHTML";
+
 export declare const ATTR_STYLE = "style";
+
+export declare const ATTR_TEXT_CONTENT = "textContent";
 
 export declare const ATTR_V_SHOW = ".vShow";
 

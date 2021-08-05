@@ -8588,6 +8588,7 @@ var serviceContext = (function (vue) {
   let timeout;
   const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, callbacks) => _showToast(extend({}, args, {
       type: 'loading',
+      icon: 'loading',
   }), callbacks), ShowLoadingProtocol, ShowLoadingOptions);
   const _showToast = ({ title = '', icon = 'success', image = '', duration = 1500, mask = false, position, 
   // @ts-ignore ToastType

@@ -276,6 +276,8 @@
   };
   const ATTR_CLASS = "class";
   const ATTR_STYLE = "style";
+  const ATTR_INNER_HTML = "innerHTML";
+  const ATTR_TEXT_CONTENT = "textContent";
   const ATTR_V_SHOW = ".vShow";
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
@@ -6117,6 +6119,10 @@
         patchStyle(this.$, value);
       } else if (name === ATTR_V_SHOW) {
         patchVShow(this.$, value);
+      } else if (name === ATTR_INNER_HTML) {
+        this.$.innerHTML = value;
+      } else if (name === ATTR_TEXT_CONTENT) {
+        this.setText(value);
       } else {
         this.setAttribute(name, value);
       }

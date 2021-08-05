@@ -2,6 +2,8 @@ import { hasOwn } from '@vue/shared'
 import {
   ATTR_CLASS,
   ATTR_STYLE,
+  ATTR_INNER_HTML,
+  ATTR_TEXT_CONTENT,
   ATTR_V_SHOW,
   UniNodeJSON,
 } from '@dcloudio/uni-shared'
@@ -79,6 +81,10 @@ export class UniElement<T extends object> extends UniNode {
       patchStyle(this.$, value as string | Record<string, any>)
     } else if (name === ATTR_V_SHOW) {
       patchVShow(this.$ as VShowElement, value)
+    } else if (name === ATTR_INNER_HTML) {
+      this.$.innerHTML = value as string
+    } else if (name === ATTR_TEXT_CONTENT) {
+      this.setText(value as string)
     } else {
       this.setAttribute(name, value as string)
     }
