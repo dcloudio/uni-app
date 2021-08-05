@@ -16,32 +16,22 @@ import { onPageReady, pageScrollTo } from './dom/page'
 
 const pageVm = { $el: document.body } as ComponentPublicInstance
 
-function wrapperViewMethod(fn: (...args: any[]) => void) {
-  return (...args: any[]) => {
-    onPageReady(() => {
-      fn.apply(null, args)
-    })
-  }
-}
-
 export function initViewMethods() {
   const pageId = getCurrentPageId()
-  subscribeViewMethod(pageId)
+  subscribeViewMethod(pageId, (fn: Function) => {
+    return (...args: any[]) => {
+      onPageReady(() => {
+        fn.apply(null, args)
+      })
+    }
+  })
   registerViewMethod<{ reqs: Array<SelectorQueryRequest> }>(
     pageId,
     'requestComponentInfo',
-    wrapperViewMethod((args, publish) => {
+    (args, publish) => {
       requestComponentInfo(pageVm, args.reqs, publish)
-    })
+    }
   )
-  registerViewMethod(
-    pageId,
-    API_PAGE_SCROLL_TO,
-    wrapperViewMethod(pageScrollTo)
-  )
-  registerViewMethod(
-    pageId,
-    API_LOAD_FONT_FACE,
-    wrapperViewMethod(loadFontFace)
-  )
+  registerViewMethod(pageId, API_PAGE_SCROLL_TO, pageScrollTo)
+  registerViewMethod(pageId, API_LOAD_FONT_FACE, loadFontFace)
 }

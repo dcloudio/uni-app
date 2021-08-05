@@ -10,10 +10,10 @@ function normalizeViewMethodName(pageId: number, name: string) {
   return pageId + '.' + name
 }
 
-export function subscribeViewMethod(pageId: number) {
+export function subscribeViewMethod(pageId: number, wrapper?: Function) {
   UniViewJSBridge.subscribe(
     normalizeViewMethodName(pageId, INVOKE_VIEW_API),
-    onInvokeViewMethod
+    wrapper ? wrapper(onInvokeViewMethod) : onInvokeViewMethod
   )
 }
 /**
