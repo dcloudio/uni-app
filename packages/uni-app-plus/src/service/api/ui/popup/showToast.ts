@@ -31,6 +31,7 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
     _showToast(
       extend({}, args, {
         type: 'loading',
+        icon: 'loading' as UniApp.ShowToastOptions['icon'],
       }),
       callbacks
     ),
