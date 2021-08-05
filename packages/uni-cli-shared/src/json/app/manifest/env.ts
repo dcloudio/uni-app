@@ -12,3 +12,11 @@ export function getAppCodeSpliting(manifestJson: Record<string, any>) {
   }
   return false
 }
+
+export function getAppStyleIsolation(
+  manifestJson: Record<string, any>
+): 'apply-shared' | 'isolated' {
+  return (
+    manifestJson['app-plus']?.optimization?.styleIsolation ?? 'apply-shared'
+  )
+}

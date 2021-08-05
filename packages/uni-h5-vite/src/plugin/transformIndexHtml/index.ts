@@ -1,6 +1,6 @@
 import { Plugin } from 'vite'
 
-import { parseManifestJsonOnce } from '../../../uni-cli-shared/dist'
+import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 
 export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
   return async function (html) {

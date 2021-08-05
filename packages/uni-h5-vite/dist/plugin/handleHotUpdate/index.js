@@ -8,7 +8,7 @@ const path_1 = __importDefault(require("path"));
 const debug_1 = __importDefault(require("debug"));
 const shared_1 = require("@vue/shared");
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
-const utils_1 = require("../utils");
+const utils_1 = require("../../utils");
 const debugHmr = debug_1.default('vite:uni:hmr');
 async function invalidate(file, moduleGraph) {
     const mods = await moduleGraph.getModulesByFile(uni_cli_shared_1.normalizePath(file));

@@ -35,7 +35,7 @@ export function normalizeAppManifestJson(
   return manifestJson
 }
 
-export { getAppRenderer, getAppCodeSpliting } from './env'
+export * from './env'
 
 export {
   getNVueCompiler,

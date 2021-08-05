@@ -9,7 +9,7 @@ import {
   parsePagesJson,
 } from '@dcloudio/uni-cli-shared'
 
-import { initFeatures } from '../utils'
+import { initFeatures } from '../../utils'
 
 const debugHmr = debug('vite:uni:hmr')
 

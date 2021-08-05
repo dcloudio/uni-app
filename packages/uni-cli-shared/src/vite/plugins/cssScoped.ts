@@ -1,8 +1,9 @@
 import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
-
-import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
+import { parseVueRequest } from '../utils'
+import { EXTNAME_VUE } from '../../constants'
+import { createFilter, FilterPattern } from '@rollup/pluginutils'
 
 const debugScoped = debug('vite:uni:scoped')
 
@@ -15,14 +16,24 @@ function addScoped(code: string) {
   return code.replace(/(<style\b[^><]*)>/gi, '$1 scoped>')
 }
 
-export function uniCssScopedPlugin(): Plugin {
+interface UniCssScopedPluginOptions {
+  include?: FilterPattern
+  exclude?: FilterPattern
+}
+
+export function uniCssScopedPlugin(
+  options: UniCssScopedPluginOptions = {}
+): Plugin {
+  const filter = createFilter(options.include, options.exclude)
   return {
-    name: 'vite:uni-h5-scoped',
+    name: 'vite:uni-css-scoped',
     enforce: 'pre',
     transform(code, id) {
       if (id.endsWith('App.vue')) {
         return code
       }
+      if (!filter(id)) return null
+
       const { filename, query } = parseVueRequest(id)
       if (query.vue) {
         return code
@@ -35,6 +46,7 @@ export function uniCssScopedPlugin(): Plugin {
         }
       }
     },
+    // 仅 h5
     handleHotUpdate(ctx) {
       if (!EXTNAME_VUE.includes(path.extname(ctx.file))) {
         return

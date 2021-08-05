@@ -1,4 +1,5 @@
 export * from './css'
+export * from './cssScoped'
 export * from './copy'
 export * from './inject'
 export * from './mainJs'
