@@ -2222,8 +2222,28 @@ var serviceContext = (function (vue) {
       }, pageId, operateMapCallback);
   }
 
-  function addIntersectionObserver(args, pageId) { }
-  function removeIntersectionObserver(args, pageId) { }
+  function getEventName(reqId) {
+      const EVENT_NAME = 'IntersectionObserver';
+      return `${EVENT_NAME}.${reqId}`;
+  }
+  function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
+      const eventName = getEventName(reqId);
+      UniServiceJSBridge.invokeViewMethod('addIntersectionObserver', {
+          reqId,
+          component: component.$el.nodeId,
+          options,
+          eventName,
+      }, _pageId);
+      UniServiceJSBridge.subscribe(eventName, callback);
+  }
+  function removeIntersectionObserver({ reqId, component }, _pageId) {
+      UniServiceJSBridge.invokeViewMethod('removeIntersectionObserver', {
+          reqId,
+          component: component.$el.nodeId,
+      }, _pageId);
+      UniServiceJSBridge.unsubscribe(getEventName(reqId));
+  }
+
   function addMediaQueryObserver(args, pageId) { }
   function removeMediaQueryObserver(args, pageId) { }
   const TEMP_PATH$1 = '';
@@ -6135,10 +6155,10 @@ var serviceContext = (function (vue) {
       resolve();
   }));
 
-  const onBluetoothDeviceFound = defineOnApi(API_ON_BLUETOOTH_DEVICE_FOUND, warpPlusEvent(() => plus.bluetooth.onBluetoothDeviceFound, API_ON_BLUETOOTH_DEVICE_FOUND));
-  const onBluetoothAdapterStateChange = defineOnApi(API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBluetoothAdapterStateChange, API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE));
-  const onBLEConnectionStateChange = defineOnApi(API_ON_BLE_CONNECTION_STATE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBLEConnectionStateChange, API_ON_BLE_CONNECTION_STATE_CHANGE));
-  const onBLECharacteristicValueChange = defineOnApi(API_ON_BLE_CHARACTERISTIC_VALUE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBLECharacteristicValueChange, API_ON_BLE_CHARACTERISTIC_VALUE_CHANGE));
+  const onBluetoothDeviceFound = defineOnApi(API_ON_BLUETOOTH_DEVICE_FOUND, warpPlusEvent(() => plus.bluetooth.onBluetoothDeviceFound.bind(plus.bluetooth), API_ON_BLUETOOTH_DEVICE_FOUND));
+  const onBluetoothAdapterStateChange = defineOnApi(API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBluetoothAdapterStateChange.bind(plus.bluetooth), API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE));
+  const onBLEConnectionStateChange = defineOnApi(API_ON_BLE_CONNECTION_STATE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBLEConnectionStateChange.bind(plus.bluetooth), API_ON_BLE_CONNECTION_STATE_CHANGE));
+  const onBLECharacteristicValueChange = defineOnApi(API_ON_BLE_CHARACTERISTIC_VALUE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBLECharacteristicValueChange.bind(plus.bluetooth), API_ON_BLE_CHARACTERISTIC_VALUE_CHANGE));
   const openBluetoothAdapter = defineAsyncApi('openBluetoothAdapter', warpPlusMethod(() => plus.bluetooth.openBluetoothAdapter.bind(plus.bluetooth)));
   const closeBluetoothAdapter = defineAsyncApi('closeBluetoothAdapter', warpPlusMethod(() => plus.bluetooth.closeBluetoothAdapter.bind(plus.bluetooth)));
   const getBluetoothAdapterState = defineAsyncApi('getBluetoothAdapterState', warpPlusMethod(() => plus.bluetooth.getBluetoothAdapterState));

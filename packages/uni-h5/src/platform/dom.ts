@@ -10,6 +10,10 @@ declare global {
 }
 
 export function findElem(vm: ComponentPublicInstance) {
+  if (__APP_VIEW__) {
+    // App 端，传入的是 nodeId
+    return (window as any).__$__(vm).$
+  }
   return vm.$el
 }
 

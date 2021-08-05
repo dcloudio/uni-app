@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import {
   API_LOAD_FONT_FACE,
   API_PAGE_SCROLL_TO,
@@ -10,6 +11,10 @@ import {
 } from '@dcloudio/uni-core'
 import { ComponentPublicInstance } from 'vue'
 import { requestComponentInfo } from '../../../../uni-h5/src/platform'
+import {
+  addIntersectionObserver,
+  removeIntersectionObserver,
+} from '../../../../uni-h5/src/platform'
 
 import { loadFontFace } from './dom/font'
 import { onPageReady, pageScrollTo } from './dom/page'
@@ -32,6 +37,18 @@ export function initViewMethods() {
       requestComponentInfo(pageVm, args.reqs, publish)
     }
   )
+  registerViewMethod(pageId, 'addIntersectionObserver', (args) => {
+    addIntersectionObserver(
+      extend({}, args, {
+        callback(res: any) {
+          UniViewJSBridge.publishHandler(args.eventName, res)
+        },
+      })
+    )
+  })
+  registerViewMethod(pageId, 'removeIntersectionObserver', (args) => {
+    removeIntersectionObserver(args)
+  })
   registerViewMethod(pageId, API_PAGE_SCROLL_TO, pageScrollTo)
   registerViewMethod(pageId, API_LOAD_FONT_FACE, loadFontFace)
 }

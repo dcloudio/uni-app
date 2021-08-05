@@ -7,7 +7,7 @@ import { findElem } from '../../../platform/dom'
 
 export function addIntersectionObserver(
   { reqId, component, options, callback }: AddIntersectionObserverArgs,
-  _pageId: number
+  _pageId?: number
 ) {
   const $el = findElem(component)
   ;($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver(
@@ -19,7 +19,7 @@ export function addIntersectionObserver(
 
 export function removeIntersectionObserver(
   { reqId, component }: RemoveIntersectionObserverArgs,
-  _pageId: number
+  _pageId?: number
 ) {
   const $el = findElem(component)
   const intersectionObserver = $el.__io && $el.__io[reqId]

@@ -1,7 +1,5 @@
 import {
-  AddIntersectionObserverArgs,
   AddMediaQueryObserverArgs,
-  RemoveIntersectionObserverArgs,
   RemoveMediaQueryObserverArgs,
 } from '@dcloudio/uni-api'
 
@@ -11,14 +9,11 @@ export { getRealPath } from './getRealPath'
 export { operateVideoPlayer } from '../service/api/context/operateVideoPlayer'
 export { operateMap } from '../service/api/context/operateMap'
 
-export function addIntersectionObserver(
-  args: AddIntersectionObserverArgs,
-  pageId: number
-) {}
-export function removeIntersectionObserver(
-  args: RemoveIntersectionObserverArgs,
-  pageId: number
-) {}
+export {
+  addIntersectionObserver,
+  removeIntersectionObserver,
+} from '../service/api/ui/intersectionObserver'
+
 export function addMediaQueryObserver(
   args: AddMediaQueryObserverArgs,
   pageId: number
