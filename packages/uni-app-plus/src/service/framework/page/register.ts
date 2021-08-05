@@ -46,17 +46,22 @@ export function registerPage({
     if (_webview.__page__) {
       // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
       if (getCurrentPages().find((page) => page === _webview.__page__)) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (__DEV__) {
           console.log(
-            `[uni-app] preloadWebview(${path},${_webview.id}) already in use`
+            formatLog(
+              'uni-app',
+              `preloadWebview(${path},${_webview.id}) already in use`
+            )
           )
         }
         webview = undefined
       } else {
         // TODO eventChannel
         addCurrentPage(_webview.__page__)
-        if (process.env.NODE_ENV !== 'production') {
-          console.log(`[uni-app] reuse preloadWebview(${path},${_webview.id})`)
+        if (__DEV__) {
+          console.log(
+            formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`)
+          )
         }
         return _webview
       }
