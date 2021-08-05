@@ -87,7 +87,14 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
   window.addEventListener('updateview', requestPositionUpdate)
 
   let onDrawCallbacks: OnDrawCallback[] | null = []
-  let attachedCallback: () => void
+  let onSelfReadyCallbacks: Array<() => void> | null = []
+  function onSelfReady(callback: () => void) {
+    if (onSelfReadyCallbacks) {
+      onSelfReadyCallbacks.push(callback)
+    } else {
+      callback()
+    }
+  }
   /**
    * 父组件绘制完毕，开始绘制当前组件原生部分
    * @param callback
@@ -99,10 +106,10 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
       onDrawCallbacks!.forEach((callback) => callback(position))
       onDrawCallbacks = null
     }
-    if (onDraw) {
-      onDraw(newCallback)
-    } else {
-      attachedCallback = () =>
+    onSelfReady(() => {
+      if (onDraw) {
+        onDraw(newCallback)
+      } else {
         newCallback({
           top: '0px',
           left: '0px',
@@ -110,7 +117,8 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
           height: Number.MAX_SAFE_INTEGER + 'px',
           position: 'static',
         })
-    }
+      }
+    })
   }
 
   const onDraw: OnDraw = function (callback: OnDrawCallback) {
@@ -125,9 +133,8 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
 
   onMounted(() => {
     updatePosition()
-    if (attachedCallback) {
-      attachedCallback()
-    }
+    onSelfReadyCallbacks!.forEach((callback) => callback())
+    onSelfReadyCallbacks = null
   })
 
   return {

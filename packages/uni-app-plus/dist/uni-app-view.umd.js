@@ -14545,7 +14545,14 @@
     }
     window.addEventListener("updateview", requestPositionUpdate);
     let onDrawCallbacks = [];
-    let attachedCallback;
+    let onSelfReadyCallbacks = [];
+    function onSelfReady(callback) {
+      if (onSelfReadyCallbacks) {
+        onSelfReadyCallbacks.push(callback);
+      } else {
+        callback();
+      }
+    }
     function onParentReady(callback) {
       const onDraw2 = inject(onDrawKey);
       const newCallback = (parentPosition) => {
@@ -14553,17 +14560,19 @@
         onDrawCallbacks.forEach((callback2) => callback2(position));
         onDrawCallbacks = null;
       };
-      if (onDraw2) {
-        onDraw2(newCallback);
-      } else {
-        attachedCallback = () => newCallback({
-          top: "0px",
-          left: "0px",
-          width: Number.MAX_SAFE_INTEGER + "px",
-          height: Number.MAX_SAFE_INTEGER + "px",
-          position: "static"
-        });
-      }
+      onSelfReady(() => {
+        if (onDraw2) {
+          onDraw2(newCallback);
+        } else {
+          newCallback({
+            top: "0px",
+            left: "0px",
+            width: Number.MAX_SAFE_INTEGER + "px",
+            height: Number.MAX_SAFE_INTEGER + "px",
+            position: "static"
+          });
+        }
+      });
     }
     const onDraw = function(callback) {
       if (onDrawCallbacks) {
@@ -14575,9 +14584,8 @@
     provide(onDrawKey, onDraw);
     onMounted(() => {
       updatePosition();
-      if (attachedCallback) {
-        attachedCallback();
-      }
+      onSelfReadyCallbacks.forEach((callback) => callback());
+      onSelfReadyCallbacks = null;
     });
     return {
       position,
