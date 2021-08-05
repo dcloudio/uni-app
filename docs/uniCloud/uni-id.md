@@ -2925,6 +2925,12 @@ const res = await uniID.forbidAppLogin({
 }
 ```
 
+### 用户表索引@uni-id-users-indexes
+
+目前opendb内提供的uni-id-users表包含完整的索引，数据库在索引量多且频繁更新的情况下可能会出现写入缓慢的情况，因此推荐开发者在使用uni-id-users表时可以适当删除部分没有用到的索引。
+
+例：项目内只使用了微信登录，不使用其他登录方式，可以只保留`wx_unionid、wx_openid.mp-weixin、wx_openid.app-plus`这些账号相关的索引，删除其他账号的索引
+
 ## 验证码表
 
 表名：`opendb-verify-codes` 
