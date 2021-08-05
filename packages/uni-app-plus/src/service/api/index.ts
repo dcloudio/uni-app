@@ -68,10 +68,10 @@ export * from './ad/interstitialAd'
 export * from './ad/interactiveAd'
 
 export * from './route/navigateBack'
-export * from './route/navigateTo'
+export { navigateTo } from './route/navigateTo'
 export * from './route/redirectTo'
 export * from './route/reLaunch'
-export * from './route/switchTab'
+export { switchTab } from './route/switchTab'
 export * from './route/preloadPage'
 
 export {

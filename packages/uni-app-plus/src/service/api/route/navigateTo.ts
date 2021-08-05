@@ -4,6 +4,7 @@ import {
   API_NAVIGATE_TO,
   API_TYPE_NAVIGATE_TO,
   defineAsyncApi,
+  DefineAsyncApiFn,
   NavigateToOptions,
   NavigateToProtocol,
 } from '@dcloudio/uni-api'
@@ -13,32 +14,37 @@ import { navigate, RouteOptions } from './utils'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 
+export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
+  args,
+  { resolve, reject }
+) => {
+  const { url, animationType, animationDuration } = args
+  const { path, query } = parseUrl(url)
+  const [aniType, aniDuration] = initAnimation(
+    path,
+    animationType,
+    animationDuration
+  )
+  navigate(
+    path,
+    () => {
+      _navigateTo({
+        url,
+        path,
+        query,
+        aniType,
+        aniDuration,
+      })
+        .then(resolve)
+        .catch(reject)
+    },
+    (args as any).openType === 'appLaunch'
+  )
+}
+
 export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   API_NAVIGATE_TO,
-  (args, { resolve, reject }) => {
-    const { url, animationType, animationDuration } = args
-    const { path, query } = parseUrl(url)
-    const [aniType, aniDuration] = initAnimation(
-      path,
-      animationType,
-      animationDuration
-    )
-    navigate(
-      path,
-      () => {
-        _navigateTo({
-          url,
-          path,
-          query,
-          aniType,
-          aniDuration,
-        })
-          .then(resolve)
-          .catch(reject)
-      },
-      (args as any).openType === 'appLaunch'
-    )
-  },
+  $navigateTo,
   NavigateToProtocol,
   NavigateToOptions
 )

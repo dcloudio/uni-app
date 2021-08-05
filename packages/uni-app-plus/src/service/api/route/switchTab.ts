@@ -2,6 +2,7 @@ import {
   API_SWITCH_TAB,
   API_TYPE_SWITCH_TAB,
   defineAsyncApi,
+  DefineAsyncApiFn,
   SwitchTabOptions,
   SwitchTabProtocol,
 } from '@dcloudio/uni-api'
@@ -16,25 +17,30 @@ import { setStatusBarStyle } from '../../statusBar'
 import { closePage, navigate, RouteOptions } from './utils'
 import { closeWebview, showWebview } from './webview'
 
+export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
+  args,
+  { resolve, reject }
+) => {
+  const { url } = args
+  const { path, query } = parseUrl(url)
+  navigate(
+    path,
+    () => {
+      _switchTab({
+        url,
+        path,
+        query,
+      })
+        .then(resolve)
+        .catch(reject)
+    },
+    (args as any).openType === 'appLaunch'
+  )
+}
+
 export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
-  (args, { resolve, reject }) => {
-    const { url } = args
-    const { path, query } = parseUrl(url)
-    navigate(
-      path,
-      () => {
-        _switchTab({
-          url,
-          path,
-          query,
-        })
-          .then(resolve)
-          .catch(reject)
-      },
-      (args as any).openType === 'appLaunch'
-    )
-  },
+  $switchTab,
   SwitchTabProtocol,
   SwitchTabOptions
 )

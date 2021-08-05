@@ -1,5 +1,7 @@
 import { getRouteOptions } from '@dcloudio/uni-core'
 import { ON_WEBVIEW_READY } from '../../../../constants'
+import { $navigateTo } from '../../../api/route/navigateTo'
+import { $switchTab } from '../../../api/route/switchTab'
 import { preloadWebview, setPreloadWebview } from '../../webview'
 
 let isLaunchWebviewReady = false // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
@@ -42,9 +44,10 @@ function onLaunchWebviewReady() {
       url: entryPagePath + (__uniConfig.entryPageQuery || ''),
       openType: 'appLaunch',
     }
+    const handler = { resolve() {}, reject() {} }
     if (routeOptions.meta.isTabBar) {
-      return uni.switchTab(args)
+      return $switchTab(args, handler)
     }
-    return uni.navigateTo(args)
+    return $navigateTo(args, handler)
   }
 }
