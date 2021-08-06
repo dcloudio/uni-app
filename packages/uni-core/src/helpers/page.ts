@@ -87,6 +87,10 @@ export function initRouteMeta(
   PAGE_META_KEYS.forEach((name) => {
     ;(res as any)[name] = extend({}, globalStyle[name], pageMeta[name])
   })
+  const { navigationBar } = res
+  navigationBar.titleText &&
+    navigationBar.titleImage &&
+    (navigationBar.titleText = '')
   return res
 }
 
