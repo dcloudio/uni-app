@@ -6,7 +6,7 @@ import { configResolved } from './configResolved'
 
 export const UniAppPlugin: UniVitePlugin = {
   name: 'vite:uni-app',
-  uni: uniOptions,
+  uni: uniOptions(),
   config() {
     return {
       build: buildOptions(),

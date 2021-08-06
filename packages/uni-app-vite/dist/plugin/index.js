@@ -7,7 +7,7 @@ const build_1 = require("./build");
 const configResolved_1 = require("./configResolved");
 exports.UniAppPlugin = {
     name: 'vite:uni-app',
-    uni: uni_1.uniOptions,
+    uni: uni_1.uniOptions(),
     config() {
         return {
             build: build_1.buildOptions(),

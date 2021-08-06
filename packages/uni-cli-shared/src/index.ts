@@ -10,4 +10,6 @@ export * from './utils'
 export * from './easycom'
 export * from './constants'
 export * from './preprocess'
+export * from './postcss'
+
 export { checkUpdate } from './checkUpdate'

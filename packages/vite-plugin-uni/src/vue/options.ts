@@ -3,8 +3,8 @@ import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { isCustomElement } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
-  // parseCompatConfigOnce,
   UniVitePlugin,
+  uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
@@ -48,6 +48,13 @@ export function initPluginVueOptions(
     vueOptions.include = [vueOptions.include]
   }
   vueOptions.include.push(EXTNAME_VUE_RE)
+
+  const styleOptions = vueOptions.style || (vueOptions.style = {})
+  if (!styleOptions.postcssPlugins) {
+    styleOptions.postcssPlugins = []
+  }
+  // 解析 scoped 中 deep 等特殊语法
+  styleOptions.postcssPlugins.push(uniPostcssScopedPlugin())
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
