@@ -7,16 +7,18 @@ import { normalizePath, UniVitePlugin } from '@dcloudio/uni-cli-shared'
 
 export function uniOptions(): UniVitePlugin['uni'] {
   return {
-    copyOptions: {
-      assets: ['hybrid/html'],
-      targets: [
-        {
-          src: normalizePath(
-            path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
-          ),
-          dest: process.env.UNI_OUTPUT_DIR,
-        },
-      ],
+    copyOptions() {
+      return {
+        assets: ['hybrid/html'],
+        targets: [
+          {
+            src: normalizePath(
+              path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
+            ),
+            dest: process.env.UNI_OUTPUT_DIR,
+          },
+        ],
+      }
     },
     compilerOptions: {
       isNativeTag: isServiceNativeTag,

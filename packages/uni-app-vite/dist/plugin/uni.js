@@ -9,14 +9,16 @@ const uni_shared_1 = require("@dcloudio/uni-shared");
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 function uniOptions() {
     return {
-        copyOptions: {
-            assets: ['hybrid/html'],
-            targets: [
-                {
-                    src: uni_cli_shared_1.normalizePath(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')),
-                    dest: process.env.UNI_OUTPUT_DIR,
-                },
-            ],
+        copyOptions() {
+            return {
+                assets: ['hybrid/html'],
+                targets: [
+                    {
+                        src: uni_cli_shared_1.normalizePath(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')),
+                        dest: process.env.UNI_OUTPUT_DIR,
+                    },
+                ],
+            };
         },
         compilerOptions: {
             isNativeTag: uni_shared_1.isServiceNativeTag,

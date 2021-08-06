@@ -9,16 +9,18 @@ export interface CopyOptions {
   assets?: string[]
   targets?: readonly Target[]
 }
-export interface UniVitePlugin extends Plugin {
-  uni?: {
-    compilerOptions?: {
-      isNativeTag: ParserOptions['isNativeTag']
-      isCustomElement: ParserOptions['isCustomElement']
-      directiveTransforms?: CompilerOptions['directiveTransforms']
-    }
-    transformEvent?: Record<string, string>
-    copyOptions?: CopyOptions | (() => CopyOptions)
+
+interface UniVitePluginUniOptions {
+  compilerOptions?: {
+    isNativeTag: ParserOptions['isNativeTag']
+    isCustomElement: ParserOptions['isCustomElement']
+    directiveTransforms?: CompilerOptions['directiveTransforms']
   }
+  transformEvent?: Record<string, string>
+  copyOptions?: CopyOptions | (() => CopyOptions)
+}
+export interface UniVitePlugin extends Plugin {
+  uni?: UniVitePluginUniOptions
 }
 
 export * from './utils'
