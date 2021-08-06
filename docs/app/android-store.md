@@ -111,9 +111,9 @@ Map & Geolocation模块集成的三方SDK说明
 |百度|com.baidu|地图&定位|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、访问粗略位置、访问精准定位、读取手机状态和身份|[https://map.baidu.com/zt/client/privacy/index.html](https://map.baidu.com/zt/client/privacy/index.html)|
 
 
-#### ad广告
+#### uni-AD
 
-ad广告模块集成的三方SDK说明
+uni-AD广告模块集成的三方SDK说明
 
 |SDK名称|SDK包名|SDK用途|可能获取的个人信息类型|调用的设备权限|SDK隐私政策链接|
 |:----|:----|:----|:----|:----|:----
