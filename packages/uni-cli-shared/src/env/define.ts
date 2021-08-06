@@ -19,5 +19,7 @@ export function initDefine(stringifyBoolean: boolean = false) {
       process.env.UNI_CLOUD_PROVIDER
     ),
     'process.env.UNICLOUD_DEBUG': JSON.stringify(process.env.UNICLOUD_DEBUG),
+    // 兼容旧版本
+    'process.env.VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
   }
 }
