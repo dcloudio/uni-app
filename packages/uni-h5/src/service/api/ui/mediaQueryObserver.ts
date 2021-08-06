@@ -3,8 +3,8 @@ import {
   RemoveMediaQueryObserverArgs,
 } from '@dcloudio/uni-api'
 
-let mediaQueryObserver: MediaQueryList
-let listener: (e: MediaQueryList) => void
+let mediaQueryObservers: any = {}
+let listeners: any = {}
 
 // 拼接媒体查询条件
 function handleMediaQueryStr($props: UniApp.DescriptorOptions) {
@@ -48,11 +48,12 @@ export function addMediaQueryObserver(
   _pageId: number
 ) {
   // 创建一个媒体查询对象
-  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options))
-
+  const mediaQueryObserver = (mediaQueryObservers[reqId] = window.matchMedia(
+    handleMediaQueryStr(options)
+  ))
   // 创建一个监听器
-  listener = (observer) => callback(observer.matches as any)
-
+  const listener = (listeners[reqId] = (observer: any) =>
+    callback(observer.matches as any))
   listener(mediaQueryObserver) // 监听前执行一次媒体查询
   mediaQueryObserver.addListener(listener as any)
 }
@@ -62,7 +63,11 @@ export function removeMediaQueryObserver(
   { reqId, component }: RemoveMediaQueryObserverArgs,
   _pageId: number
 ) {
+  const listener = listeners[reqId]
+  const mediaQueryObserver = mediaQueryObservers[reqId]
   if (mediaQueryObserver) {
     mediaQueryObserver.removeListener(listener as any) // 移除监听
+    delete listeners[reqId]
+    delete mediaQueryObservers[reqId]
   }
 }

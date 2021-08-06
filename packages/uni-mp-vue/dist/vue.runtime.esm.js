@@ -4044,7 +4044,7 @@ function createVueApp(rootComponent, rootProps = null) {
 function withModifiers() { }
 function createVNode$1() { }
 
-function initHooks(options, instance, publicThis) {
+function applyOptions(options, instance, publicThis) {
     options.mpType || publicThis.$mpType;
     // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
     Object.keys(options).forEach((name) => {
@@ -4055,10 +4055,6 @@ function initHooks(options, instance, publicThis) {
             }
         }
     });
-}
-
-function applyOptions(options, instance, publicThis) {
-    initHooks(options, instance, publicThis);
 }
 
 function set(target, key, val) {

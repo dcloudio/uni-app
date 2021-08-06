@@ -1653,56 +1653,56 @@ function useProvideLabel() {
   });
   return handlers;
 }
-function useListeners$1(props2, listeners) {
-  _addListeners(props2.id, listeners);
+function useListeners$1(props2, listeners2) {
+  _addListeners(props2.id, listeners2);
   watch(() => props2.id, (newId, oldId) => {
-    _removeListeners(oldId, listeners, true);
-    _addListeners(newId, listeners, true);
+    _removeListeners(oldId, listeners2, true);
+    _addListeners(newId, listeners2, true);
   });
   onUnmounted(() => {
-    _removeListeners(props2.id, listeners);
+    _removeListeners(props2.id, listeners2);
   });
 }
-function _addListeners(id2, listeners, watch2) {
+function _addListeners(id2, listeners2, watch2) {
   const pageId = useCurrentPageId();
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners)) {
+  if (!isPlainObject(listeners2)) {
     return;
   }
-  Object.keys(listeners).forEach((name) => {
+  Object.keys(listeners2).forEach((name) => {
     if (watch2) {
       if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     } else {
       if (name.indexOf("uni-") === 0) {
-        UniViewJSBridge.on(name, listeners[name]);
+        UniViewJSBridge.on(name, listeners2[name]);
       } else if (id2) {
-        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     }
   });
 }
-function _removeListeners(id2, listeners, watch2) {
+function _removeListeners(id2, listeners2, watch2) {
   const pageId = useCurrentPageId();
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners)) {
+  if (!isPlainObject(listeners2)) {
     return;
   }
-  Object.keys(listeners).forEach((name) => {
+  Object.keys(listeners2).forEach((name) => {
     if (watch2) {
       if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     } else {
       if (name.indexOf("uni-") === 0) {
-        UniViewJSBridge.off(name, listeners[name]);
+        UniViewJSBridge.off(name, listeners2[name]);
       } else if (id2) {
-        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     }
   });
@@ -5696,8 +5696,8 @@ function removeIntersectionObserver({ reqId, component }, _pageId) {
     delete $el.__io[reqId];
   }
 }
-let mediaQueryObserver;
-let listener$2;
+let mediaQueryObservers = {};
+let listeners = {};
 function handleMediaQueryStr($props) {
   const mediaQueryArr = [];
   const propsMenu = [
@@ -5724,14 +5724,18 @@ function humpToLine(name) {
   return name.replace(/([A-Z])/g, "-$1").toLowerCase();
 }
 function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
-  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
-  listener$2 = (observer) => callback(observer.matches);
-  listener$2(mediaQueryObserver);
-  mediaQueryObserver.addListener(listener$2);
+  const mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(handleMediaQueryStr(options));
+  const listener2 = listeners[reqId] = (observer) => callback(observer.matches);
+  listener2(mediaQueryObserver);
+  mediaQueryObserver.addListener(listener2);
 }
 function removeMediaQueryObserver({ reqId, component }, _pageId) {
+  const listener2 = listeners[reqId];
+  const mediaQueryObserver = mediaQueryObservers[reqId];
   if (mediaQueryObserver) {
-    mediaQueryObserver.removeListener(listener$2);
+    mediaQueryObserver.removeListener(listener2);
+    delete listeners[reqId];
+    delete mediaQueryObservers[reqId];
   }
 }
 function saveImage(base64, dirname, callback) {
@@ -8346,7 +8350,7 @@ const useAttrs = (params = {}) => {
   const { excludeListeners = false, excludeKeys = [] } = params;
   const instance2 = getCurrentInstance();
   const attrs2 = shallowRef({});
-  const listeners = shallowRef({});
+  const listeners2 = shallowRef({});
   const excludeAttrs = shallowRef({});
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
   instance2.attrs = reactive(instance2.attrs);
@@ -8369,10 +8373,10 @@ const useAttrs = (params = {}) => {
       listeners: {}
     });
     attrs2.value = res.attrs;
-    listeners.value = res.listeners;
+    listeners2.value = res.listeners;
     excludeAttrs.value = res.exclude;
   });
-  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
+  return { $attrs: attrs2, $listeners: listeners2, $excludeAttrs: excludeAttrs };
 };
 function flatVNode(nodes) {
   const array = [];
