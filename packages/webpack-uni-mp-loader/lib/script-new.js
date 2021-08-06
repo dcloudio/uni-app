@@ -36,6 +36,8 @@ const {
   addDynamicImport
 } = require('./babel/util')
 
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
@@ -124,7 +126,7 @@ module.exports = function (content, map) {
 
     const babelLoader = findBabelLoader(this.loaders)
     if (!babelLoader) {
-      callback(new Error('babel-loader 查找失败'), content)
+      callback(new Error(uniI18n.__('mpLoader.findFail', { "0": "babel-loader" })), content)
     } else {
       addDynamicImport(babelLoader, resourcePath, dynamicImports)
 

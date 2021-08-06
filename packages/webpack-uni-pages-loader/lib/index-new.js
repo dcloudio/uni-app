@@ -26,6 +26,8 @@ const {
   initAutoImportComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 const parseStyle = require('./util').parseStyle
 
 // 将开发者手动设置的 usingComponents 调整名称，方便与自动解析到的 usingComponents 做最后合并
@@ -63,7 +65,7 @@ module.exports = function (content, map) {
   })
 
   if (!pagesJson.pages || pagesJson.pages.length === 0) {
-    console.error('pages.json中的pages不能为空')
+    console.error(uniI18n.__('pagesLoader.pagesNodeCannotNull'))
     process.exit(0)
   }
 
@@ -110,7 +112,7 @@ module.exports = function (content, map) {
           if (!isAppView && jsonFile.name === 'manifest.json') {
             const content = JSON.parse(jsonFile.content)
             if (!content.launch_path && content.plus['uni-app'].nvueLaunchMode === 'fast') {
-              console.log('Nvue 首页启动模式: fast 详见: https://ask.dcloud.net.cn/article/36749')
+              console.log(uniI18n.__('pagesLoader.nvueFirstPageStartModeIsFast', { "0": "https://ask.dcloud.net.cn/article/36749" }))
             }
           }
           if (jsonFile.name === 'define-pages.js') {

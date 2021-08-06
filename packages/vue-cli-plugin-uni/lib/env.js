@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 require('./error-reporting')
 
@@ -44,7 +45,7 @@ if (process.env.UNI_CLOUD_SPACES) {
       const hasUniCloudSpace = spaces.length > 0
       if (spaces.length === 1) {
         const space = spaces[0]
-        console.log(`本项目的uniCloud使用的默认服务空间spaceId为：${space.id}`)
+        console.log(uniI18n.__('pluginUni.currentProjectDefaultSpaceId', { "0": space.id }))
       }
 
       if (
@@ -52,16 +53,13 @@ if (process.env.UNI_CLOUD_SPACES) {
         isH5 &&
         isProduction
       ) {
-        console.warn(
-          '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5')
+        console.warn(uniI18n.__('pluginUni.unicloudReleaseH5', { "0": 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
       } else if (
         hasUniCloudSpace &&
         isH5 &&
         !isProduction
       ) {
-        console.warn(
-          '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
-        )
+        console.warn(uniI18n.__('pluginUni.unicloudShowedRunByHBuilderX', { "0": 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
       }
 
       process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
@@ -283,7 +281,7 @@ if (
     process.env.UNI_USING_STAT = true
     if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
-      console.warn('当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303')
+      console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', { "0": 'https://ask.dcloud.net.cn/article/36303' }))
       console.log()
     }
   }
@@ -309,18 +307,18 @@ const warningMsg =
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
 // 输出编译器版本等信息
+const compile_mode_url = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
-  console.log('当前nvue编译模式' + (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app'
-    : 'weex') +
-    ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
+  let compile_mode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')
+  console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { "0": compile_mode, "1": compile_mode_url }))
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
   try {
     let info = ''
     if (process.env.UNI_PLATFORM === 'app-plus') {
       const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
       if (pagesPkg) {
-        const v3Tips = '（v3）详见：https://ask.dcloud.net.cn/article/36599。'
-        info = '编译器版本：' + pagesPkg['uni-app'].compilerVersion + (process.env.UNI_USING_V3 ? v3Tips : '')
+        const v3Tips = `（v3）${uniI18n.__('see')}：https://ask.dcloud.net.cn/article/36599。`
+        info = uniI18n.__('compilerVersion') + '：' + pagesPkg['uni-app'].compilerVersion + (process.env.UNI_USING_V3 ? v3Tips : '')
       }
       if (process.env.UNI_USING_V3) {
         console.log(info)
@@ -334,8 +332,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
           if (needWarning) {
             console.log(warningMsg)
           }
-          console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
-            ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
+          console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { "0": (isNVueCompiler ? 'uni-app' : 'weex'), "1": compile_mode_url }))
         } else {
           console.log(info)
           if (needWarning) {
@@ -351,11 +348,11 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   } catch (e) {}
 }
 if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
-  let perfMsg = '请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不及发行模式。'
+  let perfMsg = uniI18n.__('pluginUni.runDebugMode')
   if (hasNVue) { // app-nvue
-    perfMsg = perfMsg + '尤其是app-nvue的sourcemap影响较大'
+    perfMsg = perfMsg + uniI18n.__('pluginUni.runDebugModeNvue')
   } else if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) { // 小程序
-    perfMsg = perfMsg + '若要正式发布，请点击发行菜单或使用cli发布命令进行发布'
+    perfMsg = perfMsg + uniI18n.__('pluginUni.runDebugModeMP')
   }
   console.log(perfMsg)
 }
@@ -394,7 +391,7 @@ if (runByHBuilderX) {
       '[BABEL] Note: The code generator has deoptimised the styling of')) {
       const filePath = msg.replace('[BABEL] Note: The code generator has deoptimised the styling of ', '').split(
         ' as ')[0]
-      console.log('[警告] `' + path.relative(process.env.UNI_INPUT_DIR, filePath) +
+      console.log('[' + uniI18n.__('warning') + '] `' + path.relative(process.env.UNI_INPUT_DIR, filePath) +
         '` 文件体积超过 500KB，已跳过压缩以及 ES6 转 ES5 的处理，手机端使用过大的js库影响性能。')
     } else {
       oldError.apply(console, arguments)
@@ -458,10 +455,10 @@ if (
 }
 
 if (process.env.UNI_PLATFORM.startsWith('mp-')) {
-  console.log('小程序各家浏览器内核及自定义组件实现机制存在差异，可能存在样式布局兼容问题，参考：https://uniapp.dcloud.io/matter?id=mp')
+  console.log(uniI18n.__('pluginUni.mpBrowserKernelDifference', { "0": "https://uniapp.dcloud.io/matter?id=mp" }))
 }
 
-runByHBuilderX && console.log('正在编译中...')
+runByHBuilderX && console.log(uniI18n.__('compiling'))
 
 module.exports = {
   manifestPlatformOptions: platformOptions

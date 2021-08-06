@@ -37,6 +37,8 @@ const traverse = require('./babel/global-component-traverse')
 
 const babelPluginCreateApp = require.resolve('./babel/plugin-create-app')
 
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 function addCreateApp (babelLoader) {
   babelLoader.options = babelLoader.options || {}
   if (!babelLoader.options.plugins) {
@@ -89,7 +91,7 @@ createPage(Page)
 
     const babelLoader = findBabelLoader(this.loaders)
     if (!babelLoader) {
-      throw new Error('babel-loader 查找失败')
+      throw new Error(uniI18n.__('mpLoader.findFail', { "0": "babel-loader" }))
     } else {
       addCreateApp(babelLoader)
     }

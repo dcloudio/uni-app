@@ -4,6 +4,7 @@ const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 
 const generate = require('./generate')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   genCode,
@@ -297,7 +298,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
 
 function traverseRenderSlot (callExprNode, state) {
   if (!t.isStringLiteral(callExprNode.arguments[0])) {
-    state.errors.add('v-slot 不支持动态插槽名')
+    state.errors.add(uniI18n.__('templateCompiler.notSupportDynamicSlotName', { "0": 'v-slot' }))
     return
   }
 

@@ -1,6 +1,7 @@
 const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 const babelGenerate = require('@babel/generator').default
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   METHOD_RENDER_LIST
@@ -115,7 +116,7 @@ function getForKey (forKey, forIndex, state) {
     } else if (t.isMemberExpression(forKey)) {
       return forKey.property.name || forKey.property.value
     } else {
-      state.tips.add(`非 h5 平台 :key 不支持表达式 ${getCode(forKey)},详情参考:https://uniapp.dcloud.io/use?id=key`)
+      state.tips.add(uniI18n.__('templateCompiler.noH5KeyNoSupportExpression', { "0": getCode(forKey), "1": 'https://uniapp.dcloud.io/use?id=key' }))
     }
   }
   return ''

@@ -5,6 +5,8 @@ const {
   parseComponents
 } = require('./util')
 
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 module.exports = function (ast, state = {}) {
   const imports = []
   let bindings = false
@@ -22,10 +24,10 @@ module.exports = function (ast, state = {}) {
         const nameNode = args[0]
         const valueNode = args[1]
         if (!t.isStringLiteral(nameNode)) {
-          throw new Error('Vue.component()的第一个参数必须为静态字符串')
+          throw new Error(uniI18n.__('mpLoader.firstParameterNeedStaticString', { "0": "Vue.component()" }))
         }
         if (!t.isIdentifier(valueNode)) {
-          throw new Error('Vue.component()需要两个参数')
+          throw new Error(uniI18n.__('mpLoader.requireTwoParameter', { "0": "Vue.component()" }))
         }
         imports.push({
           name: nameNode.value,

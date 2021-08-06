@@ -1,7 +1,7 @@
 const { I18n } = require('i18n')
 const { format } = require('./lang')
 
-const defaultLocale = format(process.env.UNI_HBUILDERX_LANGID || process.env.LANG)
+const defaultLocale = format(process.env.UNI_HBUILDERX_LANGID || process.env.LANG || 'en')
 
 const i18n = new I18n()
 

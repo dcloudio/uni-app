@@ -5,6 +5,8 @@ const {
   isInHBuilderX
 } = require('@dcloudio/uni-cli-shared')
 
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 const defaults = {
   clean: true,
   target: 'app',
@@ -48,7 +50,7 @@ module.exports = (api, options) => {
         process.env.UNI_MP_PLUGIN = args.plugin
         analysisPluginDir()
       } else {
-        console.error('编译到小程序插件只支持微信小程序')
+        console.error(uniI18n.__('pluginUni.compileToMpPluginOnlySupportWeChat'))
         process.exit(0)
       }
     }
@@ -129,7 +131,7 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM} 平台...`)
+    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', { "0": (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM) }))
   }
 
   const targetDir = api.resolve(options.outputDir)
@@ -214,7 +216,7 @@ function analysisPluginDir () {
   const pluginJsonPath = path.resolve(process.env.UNI_INPUT_DIR, pluginJsonName)
 
   if (!fs.pathExistsSync(pluginJsonPath)) {
-    console.error(`${pluginJsonName}文件不存在，请检查后重试`)
+    console.error(uniI18n.__('pluginUni.fileNoExistsCheckAfterRetry', { "0": pluginJsonName }))
     process.exit(0)
   }
 
@@ -226,7 +228,7 @@ function analysisPluginDir () {
   const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
 
   if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
-    console.error(`${UNI_MP_PLUGIN_MAIN}入口文件不存在，请检查后重试`)
+    console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', { "0": UNI_MP_PLUGIN_MAIN }))
     process.exit(0)
   }
 
