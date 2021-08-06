@@ -1,0 +1,20 @@
+{
+  "name": "@dcloudio/uni-mp-kuaishou",
+  "version": "3.0.0-alpha-3000020210730001",
+  "description": "uni-app mp-kuaishou",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-kuaishou"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-kuaishou",
+    "title": "快手小程序"
+  },
+  "gitHead": "4dd0e035b52584ff028ee3028c46adc555be0529"
+}
