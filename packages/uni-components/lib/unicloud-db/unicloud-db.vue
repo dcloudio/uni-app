@@ -49,6 +49,7 @@ const attrs = [
 
 export default {
   name: 'UniClouddb',
+  // #ifdef VUE3
   setup(props) {
     // 单条记录时，使用shallowRef（仅支持赋值修改），列表时，采用ref（支持push等修改）
     const dataListRef = props.getone ? shallowSsrRef(undefined) : ssrRef([])
@@ -67,6 +68,7 @@ export default {
       return this.loadData()
     }
   },
+  // #endif
   props: {
     options: {
       type: [Object, Array],
@@ -163,6 +165,9 @@ export default {
     return {
       loading: false,
       hasMore: false,
+      // #ifndef VUE3
+      dataList: [],
+      // #endif
       paginationInternal: {},
       errorMessage: ''
     }
@@ -174,6 +179,11 @@ export default {
       size: this.pageSize,
       count: 0
     }
+    // #ifndef VUE3
+    if (this.getone) {
+      this.dataList = undefined
+    }
+    // #endif
 
     this.$watch(() => {
       var al = []
@@ -233,11 +243,13 @@ export default {
     // #endif
 
   },
+  // #ifndef VUE3
   mounted() {
-    // if (!this.manual && this.loadtime === loadMode.auto) {
-    //   this.loadData()
-    // }
+    if (!this.manual && this.loadtime === loadMode.auto) {
+      this.loadData()
+    }
   },
+  // #endif
   methods: {
     loadData(args1, args2) {
       let callback = null
