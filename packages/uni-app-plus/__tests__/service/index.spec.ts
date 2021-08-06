@@ -14,6 +14,8 @@ import {
 
 import { createPageNode } from '../../src/service/framework/dom/Page'
 
+process.env.UNI_INPUT_DIR = __dirname
+
 const defaultPageNodeOptions = {
   css: true,
   route: 'pages/index/index',
