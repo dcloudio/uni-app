@@ -9,6 +9,8 @@
 
 内容联盟广告是一个原生全屏组件，大小不可控制
 
+如果需要嵌入到页面控制大小请使用 [短视频内容联盟组件<ad-content-page>](https://uniapp.dcloud.net.cn/component/ad-content-page)
+
 **平台差异说明**
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
@@ -89,7 +91,3 @@ HBuilder 基座的测试广告位 `adpid` 为 `1111111112`
 	}
 </script>
 ```
-
-### 短视频内容联盟组件@ad-content-page
-
-`plus.ad.showContentPage()` 不支持调整大小，如果需要嵌入到页面控制大小请使用 [短视频内容联盟组件<ad-content-page>](https://uniapp.dcloud.net.cn/component/ad-content-page)
