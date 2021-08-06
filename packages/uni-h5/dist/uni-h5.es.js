@@ -20565,7 +20565,7 @@ function usePageHeadTransparent(headRef, {
   const offset = parseInt(coverage);
   let titleElem;
   let transparentElemStyle;
-  const iconElemsStyles = [];
+  const iconElemsPaths = [];
   const borderRadiusElemsStyles = [];
   const oldColors = [];
   onMounted(() => {
@@ -20573,9 +20573,9 @@ function usePageHeadTransparent(headRef, {
     transparentElemStyle = $el.style;
     titleElem = $el.querySelector(".uni-page-head__title");
     const borderRadiusElems = $el.querySelectorAll(".uni-page-head-btn");
-    const iconElems = $el.querySelectorAll(".uni-btn-icon");
-    for (let i = 0; i < iconElems.length; i++) {
-      iconElemsStyles.push(iconElems[i].style);
+    const iconSvgElems = $el.querySelectorAll("svg path");
+    for (let i = 0; i < iconSvgElems.length; i++) {
+      iconElemsPaths.push(iconSvgElems[i]);
     }
     for (let i = 0; i < borderRadiusElems.length; i++) {
       const borderRadiusElem = borderRadiusElems[i];
@@ -20589,12 +20589,12 @@ function usePageHeadTransparent(headRef, {
       return;
     }
     if (alpha > 0.5 && A <= 0.5) {
-      iconElemsStyles.forEach(function(iconElemStyle) {
-        iconElemStyle.color = titleColor;
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", titleColor);
       });
     } else if (alpha <= 0.5 && A > 0.5) {
-      iconElemsStyles.forEach(function(iconElemStyle) {
-        iconElemStyle.color = "#fff";
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", "#fff");
       });
     }
     A = alpha;

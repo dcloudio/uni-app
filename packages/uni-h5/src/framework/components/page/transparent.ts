@@ -19,7 +19,7 @@ export function usePageHeadTransparent(
   const offset = parseInt(coverage!)
   let titleElem: HTMLDivElement
   let transparentElemStyle: CSSStyleDeclaration
-  const iconElemsStyles: CSSStyleDeclaration[] = []
+  const iconElemsPaths: SVGPathElement[] = []
   const borderRadiusElemsStyles: CSSStyleDeclaration[] = []
   const oldColors: string[] = []
   onMounted(() => {
@@ -29,11 +29,11 @@ export function usePageHeadTransparent(
     const borderRadiusElems = $el.querySelectorAll(
       '.uni-page-head-btn'
     ) as NodeListOf<HTMLElement>
-    const iconElems = $el.querySelectorAll(
-      '.uni-btn-icon'
-    ) as NodeListOf<HTMLElement>
-    for (let i = 0; i < iconElems.length; i++) {
-      iconElemsStyles.push(iconElems[i].style)
+    const iconSvgElems = $el.querySelectorAll(
+      'svg path'
+    ) as NodeListOf<SVGPathElement>
+    for (let i = 0; i < iconSvgElems.length; i++) {
+      iconElemsPaths.push(iconSvgElems[i])
     }
     for (let i = 0; i < borderRadiusElems.length; i++) {
       const borderRadiusElem = borderRadiusElems[i]
@@ -47,12 +47,12 @@ export function usePageHeadTransparent(
       return
     }
     if (alpha > 0.5 && A <= 0.5) {
-      iconElemsStyles.forEach(function (iconElemStyle) {
-        iconElemStyle.color = titleColor!
+      iconElemsPaths.forEach(function (iconElemPath) {
+        iconElemPath.setAttribute('fill', titleColor!)
       })
     } else if (alpha <= 0.5 && A > 0.5) {
-      iconElemsStyles.forEach(function (iconElemStyle) {
-        iconElemStyle.color = '#fff'
+      iconElemsPaths.forEach(function (iconElemPath) {
+        iconElemPath.setAttribute('fill', '#fff')
       })
     }
     A = alpha
