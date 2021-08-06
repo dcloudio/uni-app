@@ -72,6 +72,7 @@
     "@vitejs/plugin-vue-jsx": "^1.1.7",
     "@vue/compiler-sfc": "^3.1.1",
     "acorn-loose": "^8.1.0",
+    "core-js": "2",
     "eslint": "^7.17.0",
     "fs-extra": "^9.0.1",
     "jest": "^27.0.6",

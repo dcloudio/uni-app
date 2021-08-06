@@ -4,7 +4,7 @@ import { UniTextElement } from '../elements/UniTextElement'
 import { UniTextNode } from '../elements/UniTextNode'
 import { UniViewElement } from '../elements/UniViewElement'
 import { UniAd } from './UniAd'
-import { UniAudio } from './UniAudio'
+// import { UniAudio } from './UniAudio'
 import { UniButton } from './UniButton'
 import { UniCamera } from './UniCamera'
 import { UniCanvas } from './UniCanvas'
@@ -64,7 +64,7 @@ export const BuiltInComponents = {
   CHECKBOX: UniCheckbox,
   'CHECKBOX-GROUP': UniCheckboxGroup,
   AD: UniAd,
-  AUDIO: UniAudio,
+  // AUDIO: UniAudio,
   CAMERA: UniCamera,
   CANVAS: UniCanvas,
   'COVER-IMAGE': UniCoverImage,

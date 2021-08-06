@@ -6,6 +6,7 @@ import jscc from 'rollup-plugin-jscc'
 import replace from '@rollup/plugin-replace'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import babel from '@rollup/plugin-babel'
 
 import { isCustomElement } from '@dcloudio/uni-shared'
 
@@ -26,7 +27,6 @@ const rollupPlugins = [
     },
     preventAssignment: true,
   }),
-
   jscc({
     values: {
       // 该插件限制了不能以__开头
@@ -34,6 +34,20 @@ const rollupPlugins = [
     },
     // 忽略 pako 内部条件编译
     exclude: [resolve('../../node_modules/pako/**')],
+  }),
+  babel({
+    babelHelpers: 'bundled',
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+    presets: [
+      [
+        '@babel/preset-env',
+        {
+          corejs: 2,
+          useBuiltIns: 'usage',
+          targets: ['ios >= 10'],
+        },
+      ],
+    ],
   }),
 ]
 
