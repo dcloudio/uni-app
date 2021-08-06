@@ -13,7 +13,8 @@ var serviceContext = (function () {
     'base64ToArrayBuffer',
     'arrayBufferToBase64',
     'addInterceptor',
-    'removeInterceptor'
+    'removeInterceptor',
+    'interceptors'
   ];
 
   const network = [
@@ -693,7 +694,7 @@ var serviceContext = (function () {
         }
         if (res === false) {
           return {
-            then () {}
+            then () { }
           }
         }
       }
@@ -773,10 +774,14 @@ var serviceContext = (function () {
       if (!isPromise(res)) {
         return res
       }
-      return res.then(res => {
-        return res[1]
-      }).catch(res => {
-        return res[0]
+      return new Promise((resolve, reject) => {
+        res.then(res => {
+          if (res[0]) {
+            reject(res[0]);
+          } else {
+            resolve(res[1]);
+          }
+        });
       })
     }
   };
@@ -1313,14 +1318,6 @@ var serviceContext = (function () {
               this.watchers.splice(index, 1);
           };
       }
-      mergeLocaleMessage(locale, message) {
-          if (this.messages[locale]) {
-              Object.assign(this.messages[locale], message);
-          }
-          else {
-              this.messages[locale] = message;
-          }
-      }
       t(key, locale, values) {
           let message = this.message;
           if (typeof locale === 'string') {
@@ -1402,9 +1399,6 @@ var serviceContext = (function () {
       return {
           t(key, values) {
               return t(key, values);
-          },
-          getLocale() {
-              return i18n.getLocale();
           },
           setLocale(newLocale) {
               return i18n.setLocale(newLocale);
@@ -6806,11 +6800,11 @@ var serviceContext = (function () {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
       const compressVideo = compressed ? new Promise((resolve) => {
         plus.zip.compressVideo({
           src: tempFilePath,
-          dst
+          filename
         }, ({ tempFilePath }) => {
           resolve(tempFilePath);
         }, () => {
@@ -6908,11 +6902,11 @@ var serviceContext = (function () {
   }
 
   function compressVideo$1 (options, callbackId) {
-    const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+    const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     const successCallback = warpPlusSuccessCallback(callbackId, 'compressVideo');
     const errorCallback = warpPlusErrorCallback(callbackId, 'compressVideo');
     plus.zip.compressVideo(Object.assign({}, options, {
-      dst
+      filename
     }), successCallback, errorCallback);
   }
 
@@ -7536,7 +7530,7 @@ var serviceContext = (function () {
     }
     if (files && files.length) {
       files.forEach(file => {
-        uploader.addFile(getRealPath$1(file.uri), {
+        uploader.addFile(getRealPath$1(file.uri || file.filePath), {
           key: file.name || 'file'
         });
       });
@@ -20967,6 +20961,9 @@ var serviceContext = (function () {
     }
     const evalJSCode =
       `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${eventType}",${args},__PAGE_ID__)`;
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, 'length', evalJSCode.length);
+    }
     pageIds.forEach(id => {
       const webview = plus.webview.getWebviewById(String(id));
       webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id));

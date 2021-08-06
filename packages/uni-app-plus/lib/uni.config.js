@@ -27,7 +27,7 @@ module.exports = {
     subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = []
+    const copyOptions = ['androidPrivacy.json']
     const componentsCopyOption = getComponentsCopyOption()
     if (componentsCopyOption) {
       copyOptions.push(componentsCopyOption)

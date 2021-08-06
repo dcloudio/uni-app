@@ -209,6 +209,15 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
     to: 'static'
   }]
+
+  const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
+  if (fs.existsSync(androidPrivacyPath)) {
+    array.push({
+      from: androidPrivacyPath,
+      to: 'androidPrivacy.json'
+    })
+  }
+
   const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, 'hybrid/html')
   if (fs.existsSync(hybridHtmlPath)) {
     array.push({
@@ -216,6 +225,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       to: 'hybrid/html'
     })
   }
+
   if (process.env.UNI_USING_NVUE_COMPILER) {
     array.push({
       from: path.resolve(getTemplatePath(), 'common'),
