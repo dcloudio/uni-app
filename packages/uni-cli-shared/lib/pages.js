@@ -368,7 +368,9 @@ function getAutoComponentsByDir (componentsPath, absolute = false) {
 
 function initAutoComponents () {
   const allComponents = {}
-  const componentsDirs = [path.resolve(process.env.UNI_INPUT_DIR, 'components')]
+  const dir = path.resolve(process.env.VUE_CLI_CONTEXT || process.cwd(), 'src')
+  const commonDir = fs.existsSync(dir) ? dir : ''
+  const componentsDirs = [path.resolve(process.env.UNI_INPUT_DIR, 'components'), commonDir]
   global.uniModules.forEach(module => {
     componentsDirs.push(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'components'))
   })
