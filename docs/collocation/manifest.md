@@ -486,6 +486,15 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 
 mp-qq只支持自定义组件模式，不存在usingComponents配置
 
+
+### mp-kuaishou
+
+|属性|类型|说明|
+|:-|:-|:-|
+|appid|String|快手小程序的 AppID，登录 [https://mp.kuaishou.com](https://mp.kuaishou.com) 申请|
+|uniStatistics|Object|[快手小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：augmented|
+
 ### 关于分包优化的说明
 
 - 在对应平台的配置下添加`"optimization":{"subPackages":true}`开启分包优化
