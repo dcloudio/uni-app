@@ -1400,9 +1400,6 @@ var serviceContext = (function () {
           t(key, values) {
               return t(key, values);
           },
-          getLocale() {
-              return i18n.getLocale();
-          },
           setLocale(newLocale) {
               return i18n.setLocale(newLocale);
           },
@@ -20964,6 +20961,9 @@ var serviceContext = (function () {
     }
     const evalJSCode =
       `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${eventType}",${args},__PAGE_ID__)`;
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, 'length', evalJSCode.length);
+    }
     pageIds.forEach(id => {
       const webview = plus.webview.getWebviewById(String(id));
       webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id));

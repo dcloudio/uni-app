@@ -172,7 +172,7 @@ module.exports = {
     if (process.env.UNI_MP_PLUGIN) {
       // 小程序插件入口使用
       // packages\webpack-uni-mp-loader\lib\plugin\index-new.js -> addMPPluginRequire
-      beforeCode += `wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace('-', '_')}__ = __webpack_require__;`
+      beforeCode += `wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__ = __webpack_require__;`
 
       const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
       if (UNI_MP_PLUGIN_MAIN) {

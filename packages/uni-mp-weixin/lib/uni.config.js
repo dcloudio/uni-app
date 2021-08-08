@@ -28,7 +28,8 @@ module.exports = {
       'sitemap.json',
       'ext.json',
       'custom-tab-bar',
-      'plugin.json'
+      'plugin.json',
+      'functional-pages'
     ]
     const workers = platformOptions.workers
     workers && copyOptions.push(workers)

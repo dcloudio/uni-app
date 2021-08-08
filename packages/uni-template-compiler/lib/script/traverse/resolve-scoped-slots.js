@@ -2,17 +2,27 @@ const t = require('@babel/types')
 
 const {
   METHOD_BUILT_IN,
-  METHOD_CREATE_EMPTY_VNODE
+  METHOD_CREATE_EMPTY_VNODE,
+  METHOD_CREATE_ELEMENT
 } = require('../../constants')
 
 function needSlotMode (path, ids) {
   let need
   path.traverse({
     noScope: false,
+    Property (path) {
+      // 跳过事件
+      if (path.node.key.name === 'on') {
+        const parentPath = path.parentPath.parentPath
+        if (t.isCallExpression(parentPath) && parentPath.node.callee.name === METHOD_CREATE_ELEMENT) {
+          path.skip()
+        }
+      }
+    },
     Identifier (path) {
       const name = path.node.name
       if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
-        // 使用方法或作用域外数据
+        // 使用作用域内方法或作用域外数据
         if (name in ids) {
           need = path.key === 'callee' ? true : need
         } else if (!path.scope.hasBinding(name) && !METHOD_BUILT_IN.includes(name)) {
