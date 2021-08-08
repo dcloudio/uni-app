@@ -18,8 +18,8 @@ export const serveEasycom = (
     if (!['add', 'unlink'].includes(eventName)) {
       return
     }
-    debugEasycom('watch', eventName, path)
     if (filter(path)) {
+      debugEasycom('watch', eventName, path)
       refreshEasycom()
     }
   })

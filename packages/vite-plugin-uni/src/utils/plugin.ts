@@ -2,8 +2,11 @@ import path from 'path'
 import type { Plugin } from 'vite'
 import { extend, isArray, isString, isFunction } from '@vue/shared'
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
-import type { CopyOptions, UniVitePlugin } from '@dcloudio/uni-cli-shared'
-import type { Target } from 'rollup-plugin-copy'
+import type {
+  CopyOptions,
+  UniViteCopyPluginTarget,
+  UniVitePlugin,
+} from '@dcloudio/uni-cli-shared'
 
 interface PluginConfig {
   id: string
@@ -17,7 +20,7 @@ interface PluginConfig {
 
 export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
   const assets: string[] = []
-  const targets: Target[] = []
+  const targets: UniViteCopyPluginTarget[] = []
   const transformEvent: Record<string, string> = Object.create(null)
   const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {
     isNativeTag,

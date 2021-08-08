@@ -11,7 +11,6 @@ import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
 
-import { uniCopyPlugin } from './copy'
 import { uniStaticPlugin } from './static'
 import { uniRenderjsPlugin } from './renderjs'
 import { uniPreVuePlugin } from './preVue'
@@ -44,7 +43,6 @@ export function initPlugins(
   config: ResolvedConfig,
   options: VitePluginUniResolvedOptions
 ) {
-  const command = config.command
   const plugins = config.plugins as Plugin[]
 
   addPlugin(plugins, uniResolveIdPlugin(options), 'vite:resolve', 'pre')
@@ -77,10 +75,6 @@ export function initPlugins(
   )
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
-
-  if (command === 'build' && !config.build.ssr) {
-    addPlugin(plugins, uniCopyPlugin(options), plugins.length)
-  }
 
   if (process.env.DEBUG) {
     debugPlugin(plugins.length)

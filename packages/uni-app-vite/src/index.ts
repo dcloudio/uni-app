@@ -6,7 +6,7 @@ import {
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 import { UniAppPlugin } from './plugin'
-import { uniCopyPlugin } from './plugins/copy'
+import { uniTemplatePlugin } from './plugins/template'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
@@ -29,7 +29,7 @@ function initUniCssScopedPluginOptions() {
 
 const plugins = [
   uniResolveIdPlugin(),
-  uniCopyPlugin(),
+  uniTemplatePlugin(),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),

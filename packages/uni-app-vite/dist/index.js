@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const plugin_1 = require("./plugin");
-const copy_1 = require("./plugins/copy");
+const template_1 = require("./plugins/template");
 const mainJs_1 = require("./plugins/mainJs");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
@@ -21,7 +21,7 @@ function initUniCssScopedPluginOptions() {
 }
 const plugins = [
     resolveId_1.uniResolveIdPlugin(),
-    copy_1.uniCopyPlugin(),
+    template_1.uniTemplatePlugin(),
     mainJs_1.uniMainJsPlugin(),
     manifestJson_1.uniManifestJsonPlugin(),
     pagesJson_1.uniPagesJsonPlugin(),

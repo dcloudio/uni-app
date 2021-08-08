@@ -16,6 +16,7 @@ import {
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
+import { uniCopyPlugin } from './plugins/copy'
 import { initExtraPlugins, initPluginUniOptions } from './utils'
 import {
   initPluginViteLegacyOptions,
@@ -115,6 +116,13 @@ export default function uniPlugin(
 
   plugins.unshift(
     vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))
+  )
+
+  plugins.push(
+    uniCopyPlugin({
+      outputDir: process.env.UNI_OUTPUT_DIR,
+      copyOptions: options.copyOptions,
+    })
   )
 
   return plugins

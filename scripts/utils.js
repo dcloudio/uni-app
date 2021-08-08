@@ -9,6 +9,7 @@ const priority = {
   'uni-mp-vue': 80,
   'uni-mp-alipay': 70,
   'uni-mp-baidu': 70,
+  'uni-mp-kuaishou': 70,
   'uni-mp-qq': 70,
   'uni-mp-toutiao': 70,
   'uni-mp-weixin': 70,
