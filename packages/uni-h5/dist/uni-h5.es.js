@@ -942,6 +942,8 @@ function initRouteMeta(pageMeta, id2) {
   PAGE_META_KEYS.forEach((name) => {
     res[name] = extend({}, globalStyle[name], pageMeta[name]);
   });
+  const { navigationBar } = res;
+  navigationBar.titleText && navigationBar.titleImage && (navigationBar.titleText = "");
   return res;
 }
 function normalizePullToRefreshRpx(pullToRefresh) {

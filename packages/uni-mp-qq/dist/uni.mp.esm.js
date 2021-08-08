@@ -501,7 +501,7 @@ function initScopedSlotsParams(instance) {
         const vueIds = instance.attrs.vueId;
         if (vueIds) {
             const vueId = vueIds.split(',')[0];
-            const object = center[vueId] = center[vueId] || {};
+            const object = (center[vueId] = center[vueId] || {});
             object[name] = value;
             if (parents[vueId]) {
                 parents[vueId].$forceUpdate();

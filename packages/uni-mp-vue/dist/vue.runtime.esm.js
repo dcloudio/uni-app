@@ -4045,11 +4045,8 @@ function withModifiers() { }
 function createVNode$1() { }
 
 function applyOptions(options, instance, publicThis) {
-    const mpType = options.mpType || publicThis.$mpType;
-    if (!mpType) {
-        // 仅 App,Page 类型支持 on 生命周期
-        return;
-    }
+    options.mpType || publicThis.$mpType;
+    // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
     Object.keys(options).forEach((name) => {
         if (name.indexOf('on') === 0) {
             const hook = options[name];
