@@ -196,31 +196,32 @@ univerifyStyle 数据结构：
         "borderRadius": "0px" // 其他登录按钮圆角 默认值："24px" （按钮高度的一半）
     },  
     "privacyTerms": {  
-        "defaultCheckBoxState":"true", // 条款勾选框初始状态 默认值： true   
+        "defaultCheckBoxState":"true", // 条款勾选框初始状态 默认值： true
+        "uncheckedImage":"", // 可选 条款勾选框未选中状态图片（仅支持本地图片 建议尺寸 24x24px）(3.2.0+ 版本支持)   
+        "checkedImage":"", // 可选 条款勾选框选中状态图片（仅支持本地图片 建议尺寸24x24px）(3.2.0+ 版本支持)   
         "textColor": "#BBBBBB", // 文字颜色 默认值：#BBBBBB  
         "termsColor": "#5496E3", //  协议文字颜色 默认值： #5496E3  
         "prefix": "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”  
         "suffix": "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”  
-        "privacyItems": [  
-            // 自定义协议条款，最大支持2个，需要同时设置url和title. 否则不生效  
+        "privacyItems": [  // 自定义协议条款，最大支持2个，需要同时设置url和title. 否则不生效  
             {  
                 "url": "https://", // 点击跳转的协议详情页面  
                 "title": "用户服务协议" // 协议名称  
             }  
         ]  
     },
-    "buttons": {  // 自定义登陆按钮
-      "iconWidth": "45px", // 图标宽度（高度等比例缩放） 默认值：45px
-      "list": [
-        {
-          "provider": "apple",
-          "iconPath": "/static/apple.png" // 图标路径仅支持本地图片
-        }, 
-        {
-          "provider": "weixin",
-          "iconPath": "/static/wechat.png" // 图标路径仅支持本地图片
-        }
-      ]
+    "buttons": {  // 自定义页面下方按钮仅全屏模式生效（3.1.14+ 版本支持）
+        "iconWidth": "45px", // 图标宽度（高度等比例缩放） 默认值：45px
+        "list": [
+            {
+                "provider": "apple",
+                "iconPath": "/static/apple.png" // 图标路径仅支持本地图片
+            }, 
+            {
+                "provider": "weixin",
+                "iconPath": "/static/wechat.png" // 图标路径仅支持本地图片
+            }
+        ]
     }
 }
 ```

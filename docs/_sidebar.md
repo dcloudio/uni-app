@@ -35,6 +35,7 @@
   * [统一发行页面](m3w.md)
 * [案例](case.md)
 * [选型评估指南](select.md)
+* [应用市场上架](store.md)
 * [常见问题](faq.md)
 * 更新日志
   * [正式版](release.md)
@@ -81,7 +82,7 @@
 	  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/759713d0-4f2d-11eb-a16f-5b3e54966275.png" width="20" height="20"/>
 	  <div class="contact-smg">
 	     <div>官方QQ交流群</div>
-	  <div>群16：719211033 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=2JJ4I0h0fi2-sPKTM2ZANX-eak6RyD41&jump_from=webapi">点此加入</a></div>
+	  <div>群12：884860657 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=JsogY994PmSrFzeSEZ6vC5dgsy3kQ-Fz&jump_from=webapi">点此加入</a></div>
 		<div>群35：713420817（2000人已满）</div>
 		<div>群34：530305531（2000人已满）</div>
 		<div>群33：498071674（2000人已满）</div>
@@ -101,11 +102,11 @@
 		<div>群19：165657124（2000人已满）</div>
 		<div>群18：698592271（2000人已满）</div>
 		<div>群17：951348804（2000人已满）</div>
-		<!-- <div>群16：719211033（2000人已满）</div> -->
+		<div>群16：719211033（2000人已满）</div>
 		<div>群15：516984120（2000人已满）</div>
 		<div>群14：465953250（2000人已满）</div>
 		<div>群13：699478442（2000人已满）</div>
-		<div>群12：884860657（2000人已满）</div>
+		<!-- <div>群12：884860657（2000人已满）</div> -->
 		<div>群11：296811328（2000人已满）</div>
 		<div>群10：959059626（2000人已满）</div>
 		<div>群9：775128777（2000人已满）</div>

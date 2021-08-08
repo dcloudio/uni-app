@@ -1,8 +1,5 @@
 # uniCloud admin 框架
 
-### **重要公告**: 
-> admin 1.5.0 以上版本在 HBuilderX  alpha 3.1.19 以下版本中，使用「腾讯云服务空间」时 leftWindow 存在  `uni is not undefined` 的问题，该 bug 在 HBuilderX  alpha 3.1.20 已修复，[下载HBuilderX  alpha 3.1.20](https://dcloud.io/hbuilderx.html)
-
 ### 什么是 uniCloud admin
 
 uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的开源框架。
@@ -25,15 +22,20 @@ uniCloud admin有预置功能、插件生态和数据表管理的代码生成工
 有这套组合，管理端系统的开发变的前所未有的简单、高效、低成本。
 
 1. 预置功能
+
 - 管理员账户初始化、登录、修改密码
 - 基于uni-id的用户管理（注册、修改信息、停用启用、删除）、角色管理、权限管理
 - 顶部 topWindow 的设置：比如 logo 更换、右上角部分链接更换。详见项目根目录的`admin.config.js`文件
 - 左侧 leftWindow 的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能；另一类是静态菜单，不会根据登录用户角色变化
 - 动态菜单的数据存储在数据库表opendb-admin-menus中，基于uni-id角色权限，在菜单管理中可以对菜单进行增删改查
 - 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
+
 2. 扩展插件
+
 - uniCloud admin支持插件生态，包括cms插件、banner管理插件、日志管理插件、图表示例等，详见[插件市场](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
+
 3. 数据表管理的代码生成工具
+
 - 对于数据表的管理，如列表浏览、分页搜索、详情修改、新增删除，这些代码都无需自己开发。建好数据表的schema表结构，利用schema2code工具，即可自动生成该表的管理页面的代码。详见[schema2code](https://uniapp.dcloud.net.cn/uniCloud/schema?id=autocode)
 
 uniCloud admin是完整开源的一个uni-app项目，任何熟悉uni-app的工程师都可以自行开发扩展功能。

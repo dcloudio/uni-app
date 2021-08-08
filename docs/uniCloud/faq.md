@@ -351,3 +351,13 @@ uniCloud客户端callFunction及数据库相关接口会返回Promise类型结�
 <style>
 </style>
 ```
+
+### 常见数据库错误
+
+**`operation exceeded time limit`、`云数据库执行时间超限`错误**
+
+此错误一般由数据库操作超时引发，具体如何优化请参考：[性能优化](db-performance.md)
+
+**使用事务时出现`WriteConflict`错误**
+
+事务的执行会锁行，同时执行的不同事务在操作同一行数据是会存在冲突导致写入失败。尽量优化流程，避免事务互相冲突

@@ -117,11 +117,9 @@ options 为 object 类型，属性如下：
 ```
 
 
-### 完整调用示例
+### 推荐接入示例@ad-js
 
-支持多页面重复调用，可以传入不同广告位，默认处理了Loading状态、快速点击、数据过期、失败重试1次逻辑
-
-推荐使用此方案
+`ad.js` 是对 `uni.createRewardedVideoAd` 的封装，一个页面缓存多页面生效，避免每个页面都预载而不展示的问题，可以传入不同广告位，内部处理了Loading状态、快速点击、数据过期、失败重试1次逻辑
 
 ```html
 <template>
@@ -319,7 +317,7 @@ class AdBase {
       this._isLoad = false
       this.onClose(e)
     })
-    ad.onVerify((e) => {
+    ad.onVerify && ad.onVerify((e) => {
       // e.isValid
     })
     ad.onError(({
