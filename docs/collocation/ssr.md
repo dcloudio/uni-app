@@ -175,7 +175,7 @@ export default defineConfig({
 })
 ```
   * 编译：
-  > cli工程：`npm run build:h5:ssr`或通过`HBuilderX`的`发行菜单->网站 PC-Web或手机H5`、勾选`ssr`
+  > cli工程：`npm run build:h5:ssr`或通过`HBuilderX 3.1.16及以上版本`的`发行菜单->网站 PC-Web或手机H5`、勾选`ssr`
   
   ![以ssr模式发行](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/d7574ced-e253-4b73-8187-86d6a8811364.jpg)
   

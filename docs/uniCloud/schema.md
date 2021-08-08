@@ -270,6 +270,7 @@ DB Schema定义好字段类型为file后，可以通过schema2code工具，直�
         "title": "图片",
         "description": "多张图片",
         "arrayType": "file",
+				"multiple": true, // 允许选择多张图片
         "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
         "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
         "maxLength": 3 // 限制最大数量

@@ -178,4 +178,4 @@
 
 实际运行效果如下（点击图片可放大）：
 
-![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/4869eb60-60aa-11eb-b680-7980c8a877b8.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/ec6e95dd-77ad-4d14-aafa-ca503f5b9e53.jpg)

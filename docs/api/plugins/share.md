@@ -279,6 +279,9 @@ uni.share({
 |summary	|String	|-		|分享的文字内容													|
 |href			|String	|-		|分享链接，ios端分享到微信时必填此字段	|
 |imageUrl	|String	|-		|分享图片，仅支持本地路径								|
+|success|Function|否|接口调用成功的回调|
+|fail|Function|否|接口调用失败的回调函数|
+|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
 **注意事项**
 

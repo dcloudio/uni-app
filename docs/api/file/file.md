@@ -169,7 +169,7 @@ uni.getSavedFileList({
 |参数名|类型|默认值|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |filePath|String||是|本地文件路径||
-|digestAlgorithm|String|md5|否|计算文件摘要的算法，可取值 md5、sha1。|微信小程序|
+|digestAlgorithm|String|md5|否|计算文件摘要的算法，可取值 md5、sha1。|微信小程序、App 2.9.0+|
 |success|Function||否|接口调用成功的回调函数||
 |fail|Function||否|接口调用失败的回调函数||
 |complete|Function||否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
@@ -180,7 +180,7 @@ uni.getSavedFileList({
 |:-|:-|:-|:-|
 |errMsg|String|接口调用结果||
 |size|Number|文件大小，以字节为单位。||
-|digest|String|按照传入的 digestAlgorithm 计算得出的的文件摘要|微信小程序|
+|digest|String|按照传入的 digestAlgorithm 计算得出的的文件摘要|微信小程序、App 2.9.0+|
 
 #### uni.openDocument(OBJECT)
 新开页面打开文档，支持格式：doc, xls, ppt, pdf, docx, xlsx, pptx。
