@@ -12,7 +12,6 @@ import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
 
 import { uniStaticPlugin } from './static'
-import { uniRenderjsPlugin } from './renderjs'
 import { uniPreVuePlugin } from './preVue'
 import { uniSSRPlugin } from './ssr'
 import { uniResolveIdPlugin } from './resolveId'
@@ -60,7 +59,6 @@ export function initPlugins(
     'vite:css'
   )
   addPlugin(plugins, uniPreVuePlugin(), 'vite:vue', 'pre')
-  addPlugin(plugins, uniRenderjsPlugin(), 'vite:vue')
 
   addPlugin(
     plugins,

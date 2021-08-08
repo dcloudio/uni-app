@@ -7,6 +7,7 @@ const inject_1 = require("./plugins/inject");
 const mainJs_1 = require("./plugins/mainJs");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
+const renderjs_1 = require("./plugins/renderjs");
 const resolveId_1 = require("./plugins/resolveId");
 const setup_1 = require("./plugins/setup");
 const ssr_1 = require("./plugins/ssr");
@@ -20,5 +21,6 @@ exports.default = [
     css_1.uniCssPlugin(),
     ssr_1.uniSSRPlugin(),
     setup_1.uniSetupPlugin(),
+    renderjs_1.uniRenderjsPlugin(),
     plugin_1.UniH5Plugin,
 ];

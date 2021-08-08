@@ -11,5 +11,6 @@ export * from './easycom'
 export * from './constants'
 export * from './preprocess'
 export * from './postcss'
+export * from './renderjs'
 
 export { checkUpdate } from './checkUpdate'
