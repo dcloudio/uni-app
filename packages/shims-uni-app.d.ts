@@ -157,6 +157,7 @@ declare namespace UniApp {
     'mp-qq'?: PagesJsonPageStyle
     'mp-toutiao'?: PagesJsonPageStyle
     'mp-weixin'?: PagesJsonPageStyle
+    'mp-kuaishou'?: PagesJsonPageStyle
     'quickapp-webview'?: PagesJsonPageStyle
     'quickapp-webview-huawei'?: PagesJsonPageStyle
     'quickapp-webview-union'?: PagesJsonPageStyle

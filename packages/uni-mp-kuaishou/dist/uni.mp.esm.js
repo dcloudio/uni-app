@@ -1,4 +1,5 @@
 import { isPlainObject, hasOwn, isArray, extend, hyphenate, isObject, toNumber, isFunction, NOOP, camelize } from '@vue/shared';
+import { onUnmounted } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -419,6 +420,9 @@ function initBaseInstance(instance, options) {
 }
 function initComponentInstance(instance, options) {
     initBaseInstance(instance, options);
+    {
+        initScopedSlotsParams(instance);
+    }
     const ctx = instance.ctx;
     MP_METHODS.forEach((method) => {
         ctx[method] = function (...args) {
@@ -465,6 +469,53 @@ function callHook(name, args) {
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
+}
+const center = {};
+const parents = {};
+function initScopedSlotsParams(instance) {
+    const ctx = instance.ctx;
+    ctx.$hasScopedSlotsParams = function (vueId) {
+        const has = center[vueId];
+        if (!has) {
+            parents[vueId] = this;
+            onUnmounted(() => {
+                delete parents[vueId];
+            }, instance);
+        }
+        return has;
+    };
+    ctx.$getScopedSlotsParams = function (vueId, name, key) {
+        const data = center[vueId];
+        if (data) {
+            const object = data[name] || {};
+            return key ? object[key] : object;
+        }
+        else {
+            parents[vueId] = this;
+            onUnmounted(() => {
+                delete parents[vueId];
+            }, instance);
+        }
+    };
+    ctx.$setScopedSlotsParams = function (name, value) {
+        const vueIds = instance.attrs.vueId;
+        if (vueIds) {
+            const vueId = vueIds.split(',')[0];
+            const object = center[vueId] = center[vueId] || {};
+            object[name] = value;
+            if (parents[vueId]) {
+                parents[vueId].$forceUpdate();
+            }
+        }
+    };
+    onUnmounted(function () {
+        const propsData = instance.attrs;
+        const vueId = propsData && propsData.vueId;
+        if (vueId) {
+            delete center[vueId];
+            delete parents[vueId];
+        }
+    }, instance);
 }
 
 const PAGE_HOOKS = [
@@ -1179,7 +1230,7 @@ function fixSetDataStart(mpInstance) {
     mpInstance.__fixInitData = function () {
         this.setData = setData;
         const fn = () => {
-            setDataArgs.forEach(args => {
+            setDataArgs.forEach((args) => {
                 setData.apply(this, args);
             });
         };
@@ -1219,7 +1270,7 @@ function parse(componentOptions) {
     };
 }
 var parseComponentOptions = extend({}, baseParseOptions, {
-    parse
+    parse,
 });
 
 const createComponent = initCreateComponent(parseComponentOptions);
