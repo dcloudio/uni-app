@@ -19,7 +19,7 @@ import {
  * @param {string} filePath 文件路径
  * @returns {Promise} 文件信息Promise
  */
-function getFileInfo(filePath) {
+function getFileInfo (filePath) {
   return new Promise((resolve, reject) => {
     plus.io.resolveLocalFileSystemURL(filePath, function (entry) {
       entry.getMetadata(resolve, reject, false)
@@ -27,7 +27,7 @@ function getFileInfo(filePath) {
   })
 }
 
-export function chooseImage({
+export function chooseImage ({
   count,
   sizeType,
   sourceType,
@@ -35,7 +35,7 @@ export function chooseImage({
 } = {}, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'chooseImage', 'cancel')
 
-  function successCallback(paths) {
+  function successCallback (paths) {
     const tempFiles = []
     const tempFilePaths = []
     // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
@@ -56,17 +56,17 @@ export function chooseImage({
       .catch(errorCallback)
   }
 
-  function openCamera() {
+  function openCamera () {
     const camera = plus.camera.getCamera()
     camera.captureImage(path => successCallback([path]),
       errorCallback, {
-      filename: TEMP_PATH + '/camera/',
-      resolution: 'high',
-      crop
-    })
+        filename: TEMP_PATH + '/camera/',
+        resolution: 'high',
+        crop
+      })
   }
 
-  function openAlbum() {
+  function openAlbum () {
     plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
       maximum: count,
       multiple: true,
