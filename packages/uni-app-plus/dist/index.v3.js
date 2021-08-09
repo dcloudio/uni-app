@@ -6681,24 +6681,6 @@ var serviceContext = (function () {
     })
   }
 
-  function compressImage$1 (tempFilePath) {
-    const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-    return new Promise((resolve) => {
-      plus.nativeUI.showWaiting();
-      plus.zip.compressImage({
-        src: tempFilePath,
-        dst: dstPath,
-        overwrite: true
-      }, () => {
-        plus.nativeUI.closeWaiting();
-        resolve(dstPath);
-      }, () => {
-        plus.nativeUI.closeWaiting();
-        resolve(tempFilePath);
-      });
-    })
-  }
-
   function chooseImage$1 ({
     count,
     sizeType,
@@ -6711,35 +6693,21 @@ var serviceContext = (function () {
       const tempFiles = [];
       const tempFilePaths = [];
       // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
-      paths.reduce((promise, path) => {
-        return promise.then(() => {
-          return getFileInfo$2(path)
-        }).then(fileInfo => {
-          const size = fileInfo.size;
-          // 压缩阈值 0.5 兆
-          const THRESHOLD = 1024 * 1024 * 0.5;
-          // 判断是否需要压缩
-          if (!crop && sizeType.includes('compressed') && size > THRESHOLD) {
-            return compressImage$1(path).then(dstPath => {
-              path = dstPath;
-              return getFileInfo$2(path)
-            })
-          }
-          return fileInfo
-        }).then(({ size }) => {
-          tempFilePaths.push(path);
-          tempFiles.push({
-            path,
-            size
+      Promise.all(paths.map((path) => getFileInfo$2(path)))
+        .then((filesInfo) => {
+          filesInfo.forEach((file, index) => {
+            const path = paths[index];
+            tempFilePaths.push(path);
+            tempFiles.push({ path, size: file.size });
+          });
+
+          invoke$1(callbackId, {
+            errMsg: 'chooseImage:ok',
+            tempFilePaths,
+            tempFiles
           });
         })
-      }, Promise.resolve()).then(() => {
-        invoke$1(callbackId, {
-          errMsg: 'chooseImage:ok',
-          tempFilePaths,
-          tempFiles
-        });
-      }).catch(errorCallback);
+        .catch(errorCallback);
     }
 
     function openCamera () {
@@ -6759,7 +6727,8 @@ var serviceContext = (function () {
         system: false,
         filename: TEMP_PATH + '/gallery/',
         permissionAlert: true,
-        crop
+        crop,
+        sizeType
       });
     }
 
@@ -6891,7 +6860,7 @@ var serviceContext = (function () {
     });
   }
 
-  function compressImage$2 (options, callbackId) {
+  function compressImage$1 (options, callbackId) {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     const errorCallback = warpPlusErrorCallback(callbackId, 'compressImage');
     plus.zip.compressImage(Object.assign({}, options, {
@@ -8929,7 +8898,7 @@ var serviceContext = (function () {
 
   function createPreloadWebview () {
     if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
-      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++));
+      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++), { contentAdjust: false });
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
       }
@@ -11343,7 +11312,7 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    compressImage: compressImage$2,
+    compressImage: compressImage$1,
     compressVideo: compressVideo$1,
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
