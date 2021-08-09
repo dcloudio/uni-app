@@ -7,6 +7,7 @@ const mainJs_1 = require("./plugins/mainJs");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
 const resolveId_1 = require("./plugins/resolveId");
+const renderjs_1 = require("./plugins/renderjs");
 function initUniCssScopedPluginOptions() {
     const styleIsolation = uni_cli_shared_1.getAppStyleIsolation(uni_cli_shared_1.parseManifestJsonOnce(process.env.UNI_INPUT_DIR));
     if (styleIsolation === 'shared') {
@@ -26,6 +27,7 @@ const plugins = [
     manifestJson_1.uniManifestJsonPlugin(),
     pagesJson_1.uniPagesJsonPlugin(),
     uni_cli_shared_1.uniViteInjectPlugin(uni_cli_shared_1.initProvide()),
+    renderjs_1.uniRenderjsPlugin(),
     plugin_1.UniAppPlugin,
 ];
 const uniCssScopedPluginOptions = initUniCssScopedPluginOptions();

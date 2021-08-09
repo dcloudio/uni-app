@@ -1055,6 +1055,7 @@ var serviceContext = (function (vue) {
   const ACTION_TYPE_ADD_EVENT = 8;
   const ACTION_TYPE_REMOVE_EVENT = 9;
   const ACTION_TYPE_SET_TEXT = 10;
+  const ACTION_TYPE_ADD_WXS_EVENT = 12;
   const ACTION_TYPE_PAGE_SCROLL = 15;
   const ACTION_TYPE_EVENT = 20;
 
@@ -1133,6 +1134,7 @@ var serviceContext = (function (vue) {
   const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
   const DATA_RE = /^data:.*,.*/;
+  const WXS_PROTOCOL = 'wxs://';
   // lifecycle
   // App and Page
   const ON_SHOW = 'onShow';
@@ -9371,7 +9373,7 @@ var serviceContext = (function (vue) {
       }, errorCallback);
   }, RequestPaymentProtocol);
 
-  function applyOptions(options, instance, publicThis) {
+  function initHooks(options, instance, publicThis) {
       const mpType = options.mpType || publicThis.$mpType;
       // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
       Object.keys(options).forEach((name) => {
@@ -9391,6 +9393,57 @@ var serviceContext = (function (vue) {
               console.error(e.message + '\n' + e.stack);
           }
       }
+  }
+
+  function initRenderjs({ $renderjs }, instance) {
+      initModules(instance, $renderjs);
+  }
+  function initModules(instance, modules) {
+      if (!isArray(modules)) {
+          return;
+      }
+      const ctx = instance.ctx;
+      const $wxsModules = (instance.$wxsModules ||
+          (instance.$wxsModules = []));
+      modules.forEach((module) => {
+          ctx[module] = proxyModule(module);
+          $wxsModules.push(module);
+      });
+  }
+  const renderjsModule = {};
+  function proxyModule(module) {
+      return new Proxy(renderjsModule, {
+          get(_, p) {
+              return createModuleFunction(module, p);
+          },
+      });
+  }
+  function renderjsFn() { }
+  function createModuleFunction(module, name) {
+      const toJSON = () => WXS_PROTOCOL + JSON.stringify([module + '.' + name]);
+      return new Proxy(renderjsFn, {
+          get(_, p) {
+              if (p === 'toJSON') {
+                  return toJSON;
+              }
+              return createModuleFunction(module + '.' + name, p);
+          },
+          apply(_target, _thisArg, args) {
+              return WXS_PROTOCOL + JSON.stringify([module + '.' + name, ...args]);
+          },
+      });
+  }
+
+  function initWxs({ $wxs }, instance) {
+      initModules(instance, $wxs);
+  }
+
+  function applyOptions(options, instance, publicThis) {
+      {
+          initWxs(options, instance);
+          initRenderjs(options, instance);
+      }
+      initHooks(options, instance, publicThis);
   }
 
   function set(target, key, val) {
@@ -10467,6 +10520,11 @@ var serviceContext = (function (vue) {
               pushAddEventAction(this, thisNode.nodeId, name, flag);
           }
       }
+      onAddWxsEvent(thisNode, name, wxsEvent, flag) {
+          if (thisNode.parentNode) {
+              pushAddWxsEventAction(this, thisNode.nodeId, name, wxsEvent, flag);
+          }
+      }
       onRemoveEvent(thisNode, name) {
           if (thisNode.parentNode) {
               pushRemoveEventAction(this, thisNode.nodeId, name);
@@ -10621,6 +10679,15 @@ var serviceContext = (function (vue) {
   }
   function pushAddEventAction(pageNode, nodeId, name, value) {
       pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
+  }
+  function pushAddWxsEventAction(pageNode, nodeId, name, wxsEvent, value) {
+      pageNode.push([
+          ACTION_TYPE_ADD_WXS_EVENT,
+          nodeId,
+          pageNode.addDict(name),
+          pageNode.addDict(wxsEvent),
+          value,
+      ]);
   }
   function pushRemoveEventAction(pageNode, nodeId, name) {
       pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);

@@ -27,6 +27,7 @@ import {
   ON_PAGE_SCROLL,
   ON_REACH_BOTTOM,
   ACTION_TYPE_PAGE_SCROLL,
+  ACTION_TYPE_ADD_WXS_EVENT,
 } from '@dcloudio/uni-shared'
 
 import { getPageById } from '@dcloudio/uni-core'
@@ -151,6 +152,16 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   onAddEvent(thisNode: UniNode, name: string, flag: number) {
     if (thisNode.parentNode) {
       pushAddEventAction(this, thisNode.nodeId!, name, flag)
+    }
+  }
+  onAddWxsEvent(
+    thisNode: UniNode,
+    name: string,
+    wxsEvent: string,
+    flag: number
+  ) {
+    if (thisNode.parentNode) {
+      pushAddWxsEventAction(this, thisNode.nodeId!, name, wxsEvent, flag)
     }
   }
   onRemoveEvent(thisNode: UniNode, name: string) {
@@ -342,6 +353,22 @@ function pushAddEventAction(
   value: number
 ) {
   pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value])
+}
+
+function pushAddWxsEventAction(
+  pageNode: UniPageNode,
+  nodeId: number,
+  name: string,
+  wxsEvent: string,
+  value: number
+) {
+  pageNode.push([
+    ACTION_TYPE_ADD_WXS_EVENT,
+    nodeId,
+    pageNode.addDict(name),
+    pageNode.addDict(wxsEvent),
+    value,
+  ])
 }
 
 function pushRemoveEventAction(

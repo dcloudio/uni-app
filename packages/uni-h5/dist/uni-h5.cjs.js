@@ -6642,7 +6642,7 @@ function useContextInfo(_id) {
   const id = _id || vm.id || `context${index$a++}`;
   return `${type}.${id}`;
 }
-function applyOptions(options, instance, publicThis) {
+function initHooks(options, instance, publicThis) {
   options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -6652,6 +6652,9 @@ function applyOptions(options, instance, publicThis) {
       }
     }
   });
+}
+function applyOptions(options, instance, publicThis) {
+  initHooks(options, instance, publicThis);
 }
 function set(target, key, val) {
   return target[key] = val;

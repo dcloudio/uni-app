@@ -874,6 +874,7 @@
   var ACTION_TYPE_ADD_EVENT = 8;
   var ACTION_TYPE_REMOVE_EVENT = 9;
   var ACTION_TYPE_SET_TEXT = 10;
+  var ACTION_TYPE_ADD_WXS_EVENT = 12;
   var ACTION_TYPE_PAGE_SCROLL = 15;
   var ACTION_TYPE_EVENT = 20;
   function cache(fn) {
@@ -7394,6 +7395,9 @@
     if (nodeJson.e) {
       nodeJson.e = getDict(nodeJson.e, false);
     }
+    if (nodeJson.w) {
+      nodeJson.w = getWxsEventDict(nodeJson.w, getDict);
+    }
     if (nodeJson.s) {
       nodeJson.s = getDict(nodeJson.s);
     }
@@ -7401,6 +7405,13 @@
       nodeJson.t = getDict(nodeJson.t);
     }
     return nodeJson;
+  }
+  function getWxsEventDict(w, getDict) {
+    var res = {};
+    w.forEach(([name, [wxsEvent, flag]]) => {
+      res[getDict(name)] = [getDict(wxsEvent), flag];
+    });
+    return res;
   }
   class UniNode {
     constructor(id2, tag, parentNodeId, element) {
@@ -7545,6 +7556,35 @@
     }
     return modifiers;
   }
+  function patchWxsEvent(el, name, wxsEvent, flag) {
+    var [type, options] = parseEventName(name);
+    if (flag === -1) {
+      var listener = el.__listeners[type];
+      if (listener) {
+        el.removeEventListener(type, listener);
+      } else {
+        console.error(formatLog("tag", el.tagName, el.__id, "event[" + type + "] not found"));
+      }
+    } else {
+      if (el.__listeners[type]) {
+        {
+          console.error(formatLog("tag", el.tagName, el.__id, "event[" + type + "] already registered"));
+        }
+        return;
+      }
+      el.__listeners[type] = createWxsEventInvoker(el.__id, wxsEvent, flag, options);
+      el.addEventListener(type, el.__listeners[type], options);
+    }
+  }
+  function createWxsEventInvoker(id2, wxsEvent, flag, options) {
+    var invoker = (evt) => {
+      console.log("call wxsEvent", id2, wxsEvent, flag, options);
+    };
+    if (!flag) {
+      return invoker;
+    }
+    return withModifiers(invoker, resolveModifier(flag));
+  }
   var postActionJobs = new Set();
   function queuePostActionJob(job) {
     postActionJobs.add(job);
@@ -7591,6 +7631,9 @@
       if (hasOwn$1(nodeJson, "e")) {
         this.addEvents(nodeJson.e);
       }
+      if (hasOwn$1(nodeJson, "w")) {
+        this.addWxsEvents(nodeJson.w);
+      }
       super.init(nodeJson);
       watch(this.$props, () => {
         queuePostActionJob(this._update);
@@ -7604,10 +7647,19 @@
         this.setAttr(name, attrs2[name]);
       });
     }
+    addWxsEvents(events) {
+      Object.keys(events).forEach((name) => {
+        var [wxsEvent, flag] = events[name];
+        this.addWxsEvent(name, wxsEvent, flag);
+      });
+    }
     addEvents(events) {
       Object.keys(events).forEach((name) => {
         this.addEvent(name, events[name]);
       });
+    }
+    addWxsEvent(name, wxsEvent, flag) {
+      patchWxsEvent(this.$, name, wxsEvent, flag);
     }
     addEvent(name, value) {
       patchEvent(this.$, name, value);
@@ -17956,6 +18008,8 @@
           return $(action[1]).removeAttr(getDict(action[2]));
         case ACTION_TYPE_ADD_EVENT:
           return $(action[1]).addEvent(getDict(action[2]), action[3]);
+        case ACTION_TYPE_ADD_WXS_EVENT:
+          return $(action[1]).addWxsEvent(getDict(action[2]), getDict(action[3]), action[4]);
         case ACTION_TYPE_REMOVE_EVENT:
           return $(action[1]).removeEvent(getDict(action[2]));
         case ACTION_TYPE_SET_TEXT:

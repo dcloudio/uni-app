@@ -10,7 +10,7 @@ import {
 // @ts-ignore
 import { injectHook } from 'vue'
 
-export function applyOptions(
+export function initHooks(
   options: ComponentOptions,
   instance: ComponentInternalInstance,
   publicThis: ComponentPublicInstance

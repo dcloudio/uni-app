@@ -14,6 +14,7 @@
     const ACTION_TYPE_ADD_EVENT = 8;
     const ACTION_TYPE_REMOVE_EVENT = 9;
     const ACTION_TYPE_SET_TEXT = 10;
+    const ACTION_TYPE_ADD_WXS_EVENT = 12;
 
     const ACTION_TYPE_DICT = 0;
 
@@ -64,6 +65,8 @@
                     return decodeRemoveAttributeAction(action, getDict);
                 case ACTION_TYPE_ADD_EVENT:
                     return decodeAddEventAction(action, getDict);
+                case ACTION_TYPE_ADD_WXS_EVENT:
+                    return decodeAddWxsEventAction(action, getDict);
                 case ACTION_TYPE_REMOVE_EVENT:
                     return decodeRemoveEventAction(action, getDict);
                 case ACTION_TYPE_SET_TEXT:
@@ -87,6 +90,9 @@
         if (nodeJson.e) {
             nodeJson.e = getDict(nodeJson.e, false);
         }
+        if (nodeJson.w) {
+            nodeJson.w = getWxsEventDict(nodeJson.w, getDict);
+        }
         if (nodeJson.s) {
             nodeJson.s = getDict(nodeJson.s);
         }
@@ -94,6 +100,13 @@
             nodeJson.t = getDict(nodeJson.t);
         }
         return nodeJson;
+    }
+    function getWxsEventDict(w, getDict) {
+        const res = {};
+        w.forEach(([name, [wxsEvent, flag]]) => {
+            res[getDict(name)] = [getDict(wxsEvent), flag];
+        });
+        return res;
     }
     function decodeCreateAction([, nodeId, nodeName, parentNodeId, refNodeId, nodeJson], getDict) {
         return [
@@ -113,6 +126,15 @@
     }
     function decodeAddEventAction([, ...action], getDict) {
         return ['addEvent', action[0], getDict(action[1]), action[2]];
+    }
+    function decodeAddWxsEventAction([, ...action], getDict) {
+        return [
+            'addWxsEvent',
+            action[0],
+            getDict(action[1]),
+            getDict(action[2]),
+            action[3],
+        ];
     }
     function decodeRemoveEventAction([, ...action], getDict) {
         return ['removeEvent', action[0], getDict(action[1])];

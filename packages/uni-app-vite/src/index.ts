@@ -11,6 +11,7 @@ import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniResolveIdPlugin } from './plugins/resolveId'
+import { uniRenderjsPlugin } from './plugins/renderjs'
 
 function initUniCssScopedPluginOptions() {
   const styleIsolation = getAppStyleIsolation(
@@ -34,6 +35,7 @@ const plugins = [
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
   uniViteInjectPlugin(initProvide()),
+  uniRenderjsPlugin(),
   UniAppPlugin,
 ]
 

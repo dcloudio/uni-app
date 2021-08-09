@@ -1,4 +1,4 @@
-import { provide, ref, SetupContext } from 'vue'
+import { provide, ref } from 'vue'
 import {
   CustomEventTrigger,
   EmitEvent,

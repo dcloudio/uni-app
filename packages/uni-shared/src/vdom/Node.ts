@@ -53,6 +53,12 @@ export interface IUniPageNode {
   ) => UniNode
   onRemoveChild: (oldChild: UniNode) => UniNode
   onAddEvent: (thisNode: UniNode, name: string, flag: number) => void
+  onAddWxsEvent: (
+    thisNode: UniNode,
+    name: string,
+    wxsEvent: string,
+    flag: number
+  ) => void
   onRemoveEvent: (thisNode: UniNode, name: string) => void
   onSetAttribute: (
     thisNode: UniNode,
@@ -217,6 +223,10 @@ export interface UniNodeJSONMinify {
    */
   e: DictArray
   /**
+   * wxs listeners
+   */
+  w: [number, [number, number]][]
+  /**
    * style
    */
   s?: DictArray
@@ -242,6 +252,10 @@ export interface UniNodeJSON {
    * listeners
    */
   e: Record<string, number>
+  /**
+   * wxs listeners
+   */
+  w: Record<string, [string, number]>
   /**
    * style
    */
@@ -295,11 +309,20 @@ export class UniBaseNode extends UniNode {
   ) {
     super.addEventListener(type, listener, options)
     if (this.pageNode && !this.pageNode.isUnmounted) {
-      this.pageNode.onAddEvent(
-        this,
-        normalizeEventType(type, options),
-        encodeModifier(listener.modifiers || [])
-      )
+      if (listener.wxsEvent) {
+        this.pageNode.onAddWxsEvent(
+          this,
+          normalizeEventType(type, options),
+          listener.wxsEvent,
+          encodeModifier(listener.modifiers || [])
+        )
+      } else {
+        this.pageNode.onAddEvent(
+          this,
+          normalizeEventType(type, options),
+          encodeModifier(listener.modifiers || [])
+        )
+      }
     }
   }
 
@@ -358,15 +381,28 @@ export class UniBaseNode extends UniNode {
     }
     const events = Object.keys(listeners)
     if (events.length) {
+      let w: Record<string, [string | number, number]> | undefined = undefined
       const e: Record<string, number> = {}
       events.forEach((name) => {
         const handlers = listeners[name]
         if (handlers.length) {
           // 可能存在多个 handler 且不同 modifiers 吗？
-          e[name] = encodeModifier(handlers[0].modifiers || [])
+          const { wxsEvent, modifiers } = handlers[0]
+          const modifier = encodeModifier(modifiers || [])
+          if (!wxsEvent) {
+            e[name] = modifier
+          } else {
+            if (!w) {
+              w = {}
+            }
+            w[name] = [normalize ? normalize(wxsEvent!) : wxsEvent, modifier]
+          }
         }
       })
       res.e = normalize ? normalize(e, false) : e
+      if (w) {
+        res.w = normalize ? normalize(w, false) : w
+      }
     }
     if (style !== null) {
       res.s = normalize ? normalize(style) : style

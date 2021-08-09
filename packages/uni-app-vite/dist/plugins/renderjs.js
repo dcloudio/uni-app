@@ -24,7 +24,9 @@ function uniRenderjsPlugin() {
                 type: 'asset',
                 source: code,
             });
-            return '';
+            return `export default Comp => {
+        ;(Comp.$${type} || (Comp.$${type} = [])).push('${name}')
+      }`;
         },
     };
 }

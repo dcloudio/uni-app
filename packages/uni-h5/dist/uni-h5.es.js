@@ -13221,7 +13221,7 @@ function useContextInfo(_id) {
 function getContextInfo(el) {
   return el.__uniContextInfo;
 }
-function applyOptions(options, instance2, publicThis) {
+function initHooks(options, instance2, publicThis) {
   options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -13231,6 +13231,9 @@ function applyOptions(options, instance2, publicThis) {
       }
     }
   });
+}
+function applyOptions(options, instance2, publicThis) {
+  initHooks(options, instance2, publicThis);
 }
 function set(target, key, val) {
   return target[key] = val;

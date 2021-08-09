@@ -11,6 +11,7 @@ export const ACTION_TYPE_ADD_EVENT = 8
 export const ACTION_TYPE_REMOVE_EVENT = 9
 export const ACTION_TYPE_SET_TEXT = 10
 
+export const ACTION_TYPE_ADD_WXS_EVENT = 12
 export const ACTION_TYPE_PAGE_SCROLL = 15
 
 export const ACTION_TYPE_EVENT = 20
@@ -80,6 +81,20 @@ export type AddEventAction = [
 /**
  * nodeId
  * event
+ * wxsEvent
+ * flag
+ */
+export type AddWxsEventAction = [
+  typeof ACTION_TYPE_ADD_WXS_EVENT,
+  number,
+  string | number,
+  string | number,
+  number
+]
+
+/**
+ * nodeId
+ * event
  */
 export type RemoveEventAction = [
   typeof ACTION_TYPE_REMOVE_EVENT,
@@ -129,6 +144,7 @@ export type PageUpdateAction =
   | InsertAction
   | RemoveAction
   | AddEventAction
+  | AddWxsEventAction
   | RemoveEventAction
   | SetAttributeAction
   | RemoveAttributeAction

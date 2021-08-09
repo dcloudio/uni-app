@@ -13,6 +13,7 @@ import {
   PageCreateAction,
   formatLog,
   ACTION_TYPE_PAGE_SCROLL,
+  ACTION_TYPE_ADD_WXS_EVENT,
 } from '@dcloudio/uni-shared'
 import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
 import { ACTION_TYPE_DICT, DictAction, Dictionary } from '../../../constants'
@@ -76,6 +77,12 @@ function onPageUpdateSync(actions: (PageAction | DictAction)[]) {
         return $(action[1]).removeAttr(getDict(action[2] as number))
       case ACTION_TYPE_ADD_EVENT:
         return $(action[1]).addEvent(getDict(action[2] as number), action[3])
+      case ACTION_TYPE_ADD_WXS_EVENT:
+        return $(action[1]).addWxsEvent(
+          getDict(action[2] as number),
+          getDict(action[3] as number),
+          action[4]
+        )
       case ACTION_TYPE_REMOVE_EVENT:
         return $(action[1]).removeEvent(getDict(action[2] as number))
       case ACTION_TYPE_SET_TEXT:

@@ -410,7 +410,11 @@ export default function vueFactory(exports) {
       super.addEventListener(type, listener, options);
 
       if (this.pageNode && !this.pageNode.isUnmounted) {
-        this.pageNode.onAddEvent(this, normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
+        if (listener.wxsEvent) {
+          this.pageNode.onAddWxsEvent(this, normalizeEventType(type, options), listener.wxsEvent, encodeModifier(listener.modifiers || []));
+        } else {
+          this.pageNode.onAddEvent(this, normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
+        }
       }
     }
 
@@ -473,16 +477,35 @@ export default function vueFactory(exports) {
       var events = Object.keys(listeners);
 
       if (events.length) {
+        var w = undefined;
         var e = {};
         events.forEach(name => {
           var handlers = listeners[name];
 
           if (handlers.length) {
             // 可能存在多个 handler 且不同 modifiers 吗？
-            e[name] = encodeModifier(handlers[0].modifiers || []);
+            var {
+              wxsEvent,
+              modifiers
+            } = handlers[0];
+            var modifier = encodeModifier(modifiers || []);
+
+            if (!wxsEvent) {
+              e[name] = modifier;
+            } else {
+              if (!w) {
+                w = {};
+              }
+
+              w[name] = [normalize ? normalize(wxsEvent) : wxsEvent, modifier];
+            }
           }
         });
         res.e = normalize ? normalize(e, false) : e;
+
+        if (w) {
+          res.w = normalize ? normalize(w, false) : w;
+        }
       }
 
       if (style !== null) {
@@ -2299,7 +2322,8 @@ export default function vueFactory(exports) {
 
 
       if (throwInDev) {
-        throw err;
+        // throw err fixed by xxxxxx 避免 error 导致 App 端不可用（比如跳转时报错）
+        console.error(err);
       } else {
         console.error(err);
       }
@@ -5172,6 +5196,7 @@ export default function vueFactory(exports) {
 
   function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+      // fixed by xxxxxx
       if (isRootHook(type)) {
         target = target.root;
       }
@@ -11139,14 +11164,40 @@ export default function vueFactory(exports) {
           });
         }
       });
-    } else if (invoker.value.modifiers) {
-      invoker.value.modifiers.forEach(m => {
-        modifiers.add(m);
-      });
+    } else {
+      if (invoker.value.modifiers) {
+        invoker.value.modifiers.forEach(m => {
+          modifiers.add(m);
+        });
+      }
+
+      initWxsEvent(invoker, instance);
     }
 
     invoker.modifiers = [...modifiers];
     return invoker;
+  }
+
+  function initWxsEvent(invoker, instance) {
+    if (!instance) {
+      return;
+    }
+
+    var {
+      $wxsModules
+    } = instance;
+
+    if (!$wxsModules) {
+      return;
+    }
+
+    var invokerSourceCode = invoker.value.toString();
+
+    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
+      return;
+    }
+
+    invoker.wxsEvent = invoker.value();
   }
 
   var forcePatchProps = {
@@ -11176,7 +11227,7 @@ export default function vueFactory(exports) {
     return false;
   };
 
-  var patchProp = (el, key, prevValue, nextValue, parentComponent) => {
+  var patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     switch (key) {
       // special
       case 'class':
@@ -11191,7 +11242,7 @@ export default function vueFactory(exports) {
         if (isOn(key)) {
           // ignore v-model listeners
           if (!isModelListener(key)) {
-            patchEvent(el, key, prevValue, nextValue);
+            patchEvent(el, key, prevValue, nextValue, parentComponent);
           }
         } else {
           // 非基本类型

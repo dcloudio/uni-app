@@ -1,5 +1,6 @@
 import {
   ACTION_TYPE_ADD_EVENT,
+  ACTION_TYPE_ADD_WXS_EVENT,
   ACTION_TYPE_CREATE,
   ACTION_TYPE_INSERT,
   ACTION_TYPE_PAGE_CREATE,
@@ -10,6 +11,7 @@ import {
   ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
   AddEventAction,
+  AddWxsEventAction,
   CreateAction,
   InsertAction,
   PageAction,
@@ -84,6 +86,8 @@ export function decodeActions(actions: (PageAction | DictAction)[]) {
         return decodeRemoveAttributeAction(action, getDict)
       case ACTION_TYPE_ADD_EVENT:
         return decodeAddEventAction(action, getDict)
+      case ACTION_TYPE_ADD_WXS_EVENT:
+        return decodeAddWxsEventAction(action, getDict)
       case ACTION_TYPE_REMOVE_EVENT:
         return decodeRemoveEventAction(action, getDict)
       case ACTION_TYPE_SET_TEXT:
@@ -119,6 +123,12 @@ export function decodeNodeJson(
       false
     ) as Record<string, number>
   }
+  if (nodeJson.w) {
+    ;(nodeJson as unknown as UniNodeJSON).w = getWxsEventDict(
+      nodeJson.w,
+      getDict
+    )
+  }
   if (nodeJson.s) {
     ;(nodeJson as unknown as UniNodeJSON).s = getDict(
       nodeJson.s as [number, number][]
@@ -128,6 +138,14 @@ export function decodeNodeJson(
     ;(nodeJson as unknown as UniNodeJSON).t = getDict(nodeJson.t) as string
   }
   return nodeJson as unknown as UniNodeJSON
+}
+
+function getWxsEventDict(w: UniNodeJSONMinify['w'], getDict: GetDict) {
+  const res: UniNodeJSON['w'] = {}
+  w.forEach(([name, [wxsEvent, flag]]) => {
+    res[getDict(name)] = [getDict(wxsEvent), flag]
+  })
+  return res
 }
 
 function decodeCreateAction(
@@ -154,6 +172,19 @@ function decodeRemoveAction([, ...action]: RemoveAction) {
 
 function decodeAddEventAction([, ...action]: AddEventAction, getDict: GetDict) {
   return ['addEvent', action[0], getDict(action[1] as number), action[2]]
+}
+
+function decodeAddWxsEventAction(
+  [, ...action]: AddWxsEventAction,
+  getDict: GetDict
+) {
+  return [
+    'addWxsEvent',
+    action[0],
+    getDict(action[1] as number),
+    getDict(action[2] as number),
+    action[3],
+  ]
 }
 
 function decodeRemoveEventAction(

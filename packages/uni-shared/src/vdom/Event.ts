@@ -23,6 +23,7 @@ export function normalizeEventType(
 export interface UniEventListener {
   (evt: UniEvent): void
   modifiers?: string[]
+  wxsEvent?: string // 'wxs://['animate.start']'
 }
 
 interface UniEventOptions {

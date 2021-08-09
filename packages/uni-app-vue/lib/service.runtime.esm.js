@@ -1352,7 +1352,8 @@ function logError(err, type, contextVNode, throwInDev = true) {
         }
         // crash in dev by default so it's more noticeable
         if (throwInDev) {
-            throw err;
+            // throw err fixed by xxxxxx 避免 error 导致 App 端不可用（比如跳转时报错）
+            console.error(err);
         }
         else {
             console.error(err);
@@ -4036,6 +4037,7 @@ function getInnerChild(vnode) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        // fixed by xxxxxx
         if (isRootHook(type)) {
             target = target.root;
         }
@@ -9122,13 +9124,30 @@ function createInvoker(initialValue, instance) {
             }
         });
     }
-    else if (invoker.value.modifiers) {
-        invoker.value.modifiers.forEach((m) => {
-            modifiers.add(m);
-        });
+    else {
+        if (invoker.value.modifiers) {
+            invoker.value.modifiers.forEach((m) => {
+                modifiers.add(m);
+            });
+        }
+        initWxsEvent(invoker, instance);
     }
     invoker.modifiers = [...modifiers];
     return invoker;
+}
+function initWxsEvent(invoker, instance) {
+    if (!instance) {
+        return;
+    }
+    const { $wxsModules } = instance;
+    if (!$wxsModules) {
+        return;
+    }
+    const invokerSourceCode = invoker.value.toString();
+    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
+        return;
+    }
+    invoker.wxsEvent = invoker.value();
 }
 
 const forcePatchProps = {
@@ -9160,7 +9179,7 @@ const forcePatchProp = (_, key) => {
     }
     return false;
 };
-const patchProp = (el, key, prevValue, nextValue, parentComponent) => {
+const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     switch (key) {
         // special
         case 'class':
@@ -9173,7 +9192,7 @@ const patchProp = (el, key, prevValue, nextValue, parentComponent) => {
             if (isOn(key)) {
                 // ignore v-model listeners
                 if (!isModelListener(key)) {
-                    patchEvent(el, key, prevValue, nextValue);
+                    patchEvent(el, key, prevValue, nextValue, parentComponent);
                 }
             }
             else {

@@ -598,7 +598,12 @@ class UniBaseNode extends UniNode {
     addEventListener(type, listener, options) {
         super.addEventListener(type, listener, options);
         if (this.pageNode && !this.pageNode.isUnmounted) {
-            this.pageNode.onAddEvent(this, normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
+            if (listener.wxsEvent) {
+                this.pageNode.onAddWxsEvent(this, normalizeEventType(type, options), listener.wxsEvent, encodeModifier(listener.modifiers || []));
+            }
+            else {
+                this.pageNode.onAddEvent(this, normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
+            }
         }
     }
     removeEventListener(type, callback, options) {
@@ -643,15 +648,29 @@ class UniBaseNode extends UniNode {
         }
         const events = Object.keys(listeners);
         if (events.length) {
+            let w = undefined;
             const e = {};
             events.forEach((name) => {
                 const handlers = listeners[name];
                 if (handlers.length) {
                     // 可能存在多个 handler 且不同 modifiers 吗？
-                    e[name] = encodeModifier(handlers[0].modifiers || []);
+                    const { wxsEvent, modifiers } = handlers[0];
+                    const modifier = encodeModifier(modifiers || []);
+                    if (!wxsEvent) {
+                        e[name] = modifier;
+                    }
+                    else {
+                        if (!w) {
+                            w = {};
+                        }
+                        w[name] = [normalize ? normalize(wxsEvent) : wxsEvent, modifier];
+                    }
                 }
             });
             res.e = normalize ? normalize(e, false) : e;
+            if (w) {
+                res.w = normalize ? normalize(w, false) : w;
+            }
         }
         if (style !== null) {
             res.s = normalize ? normalize(style) : style;
@@ -731,6 +750,7 @@ const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
 const ACTION_TYPE_ADD_EVENT = 8;
 const ACTION_TYPE_REMOVE_EVENT = 9;
 const ACTION_TYPE_SET_TEXT = 10;
+const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
@@ -837,7 +857,9 @@ const UNI_SSR_GLOBAL_DATA = 'globalData';
 const SCHEME_RE = /^([a-z-]+:)?\/\//i;
 const DATA_RE = /^data:.*,.*/;
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+const WXS_PROTOCOL = 'wxs://';
 const JSON_PROTOCOL = 'json://';
+const WXS_METHOD_SYMBOL = Symbol('wxs.method');
 // lifecycle
 // App and Page
 const ON_SHOW = 'onShow';
@@ -954,6 +976,7 @@ function getEnvLocale() {
 }
 
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
+exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
 exports.ACTION_TYPE_EVENT = ACTION_TYPE_EVENT;
 exports.ACTION_TYPE_INSERT = ACTION_TYPE_INSERT;
@@ -1034,6 +1057,8 @@ exports.UniNode = UniNode;
 exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
 exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
+exports.WXS_METHOD_SYMBOL = WXS_METHOD_SYMBOL;
+exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;

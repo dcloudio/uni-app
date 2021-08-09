@@ -15,6 +15,7 @@ interface UniVitePluginUniOptions {
     isNativeTag: ParserOptions['isNativeTag']
     isCustomElement: ParserOptions['isCustomElement']
     directiveTransforms?: CompilerOptions['directiveTransforms']
+    nodeTransforms?: CompilerOptions['nodeTransforms']
   }
   transformEvent?: Record<string, string>
   copyOptions?: CopyOptions | (() => CopyOptions)

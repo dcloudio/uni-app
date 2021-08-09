@@ -11,7 +11,7 @@ import { reactive, watch } from 'vue'
 import { UniNode } from './UniNode'
 import { patchClass } from '../modules/class'
 import { patchStyle } from '../modules/style'
-import { patchEvent } from '../modules/events'
+import { patchEvent, patchWxsEvent } from '../modules/events'
 import { UniCustomElement } from '../components'
 import { queuePostActionJob } from '../scheduler'
 import { decodeAttr } from '../utils'
@@ -48,6 +48,9 @@ export class UniElement<T extends object> extends UniNode {
     if (hasOwn(nodeJson, 'e')) {
       this.addEvents(nodeJson.e!)
     }
+    if (hasOwn(nodeJson, 'w')) {
+      this.addWxsEvents(nodeJson.w!)
+    }
     super.init(nodeJson)
     watch(
       this.$props,
@@ -63,10 +66,19 @@ export class UniElement<T extends object> extends UniNode {
       this.setAttr(name, attrs[name])
     })
   }
+  addWxsEvents(events: Record<string, [string, number]>) {
+    Object.keys(events).forEach((name) => {
+      const [wxsEvent, flag] = events[name]
+      this.addWxsEvent(name, wxsEvent, flag)
+    })
+  }
   addEvents(events: Record<string, number>) {
     Object.keys(events).forEach((name) => {
       this.addEvent(name, events[name])
     })
+  }
+  addWxsEvent(name: string, wxsEvent: string, flag: number) {
+    patchWxsEvent(this.$, name, wxsEvent, flag)
   }
   addEvent(name: string, value: number) {
     patchEvent(this.$, name, value)

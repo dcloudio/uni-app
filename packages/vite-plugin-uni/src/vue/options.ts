@@ -66,7 +66,12 @@ export function initPluginVueOptions(
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
   const {
-    compilerOptions: { isNativeTag, isCustomElement, directiveTransforms },
+    compilerOptions: {
+      isNativeTag,
+      isCustomElement,
+      nodeTransforms,
+      directiveTransforms,
+    },
   } = uniPluginOptions
   compilerOptions.isNativeTag = isNativeTag
   compilerOptions.isCustomElement = isCustomElement
@@ -79,6 +84,9 @@ export function initPluginVueOptions(
 
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
+  }
+  if (nodeTransforms) {
+    compilerOptions.nodeTransforms.push(...nodeTransforms)
   }
 
   // const compatConfig = parseCompatConfigOnce(options.inputDir)

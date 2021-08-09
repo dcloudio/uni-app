@@ -2,6 +2,8 @@ import { FontFaceDescriptors } from 'css-font-loading-module';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
+export declare const ACTION_TYPE_ADD_WXS_EVENT = 12;
+
 export declare const ACTION_TYPE_CREATE = 3;
 
 export declare const ACTION_TYPE_EVENT = 20;
@@ -37,6 +39,20 @@ number
 ];
 
 export declare function addFont(family: string, source: string, desc?: FontFaceDescriptors): Promise<void>;
+
+/**
+ * nodeId
+ * event
+ * wxsEvent
+ * flag
+ */
+export declare type AddWxsEventAction = [
+typeof ACTION_TYPE_ADD_WXS_EVENT,
+number,
+string | number,
+string | number,
+number
+];
 
 export declare const ATTR_CLASS = "class";
 
@@ -189,6 +205,7 @@ export declare interface IUniPageNode {
     onInsertBefore: (thisNode: UniNode, newChild: UniNode, refChild: UniNode | null) => UniNode;
     onRemoveChild: (oldChild: UniNode) => UniNode;
     onAddEvent: (thisNode: UniNode, name: string, flag: number) => void;
+    onAddWxsEvent: (thisNode: UniNode, name: string, wxsEvent: string, flag: number) => void;
     onRemoveEvent: (thisNode: UniNode, name: string) => void;
     onSetAttribute: (thisNode: UniNode, qualifiedName: string, value: unknown) => void;
     onRemoveAttribute: (thisNode: UniNode, qualifiedName: string) => void;
@@ -318,7 +335,7 @@ export declare interface PageNodeOptions {
  */
 export declare type PageScrollAction = [typeof ACTION_TYPE_PAGE_SCROLL, number];
 
-export declare type PageUpdateAction = CreateAction | InsertAction | RemoveAction | AddEventAction | RemoveEventAction | SetAttributeAction | RemoveAttributeAction | SetTextAction;
+export declare type PageUpdateAction = CreateAction | InsertAction | RemoveAction | AddEventAction | AddWxsEventAction | RemoveEventAction | SetAttributeAction | RemoveAttributeAction | SetTextAction;
 
 export declare function parseEventName(name: string): [string, EventListenerOptions | undefined];
 
@@ -482,6 +499,7 @@ export declare class UniEvent {
 export declare interface UniEventListener {
     (evt: UniEvent): void;
     modifiers?: string[];
+    wxsEvent?: string;
 }
 
 declare interface UniEventOptions {
@@ -543,6 +561,10 @@ export declare interface UniNodeJSON {
      */
     e: Record<string, number>;
     /**
+     * wxs listeners
+     */
+    w: Record<string, [string, number]>;
+    /**
      * style
      */
     s?: UniCSSStyleDeclarationJSON;
@@ -570,6 +592,10 @@ declare interface UniNodeJSONMinify {
      */
     e: DictArray;
     /**
+     * wxs listeners
+     */
+    w: [number, [number, number]][];
+    /**
      * style
      */
     s?: DictArray;
@@ -593,5 +619,9 @@ export declare class UniTextNode extends UniBaseNode {
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
+
+export declare const WXS_METHOD_SYMBOL: unique symbol;
+
+export declare const WXS_PROTOCOL = "wxs://";
 
 export { }
