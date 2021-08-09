@@ -9,6 +9,16 @@ export function createBuild(
   initEasycomsOnce(options.inputDir, options.platform)
   return {
     rollupOptions: {
+      onwarn(warning, warn) {
+        if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
+          const { message } = warning
+          // ignore
+          if (message.includes('"resolveComponent"')) {
+            return
+          }
+        }
+        warn(warning)
+      },
       output: {
         chunkFileNames(chunkInfo) {
           if (chunkInfo.facadeModuleId) {

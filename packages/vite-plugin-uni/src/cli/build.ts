@@ -31,18 +31,6 @@ export async function buildSSR(options: CliOptions) {
     'entry-server.js'
   )
   ssrBuildServerOptions.outDir = process.env.UNI_OUTPUT_DIR
-  ssrBuildServerOptions.rollupOptions = {
-    onwarn(warning, warn) {
-      if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
-        const { message } = warning
-        // ignore
-        if (message.includes('"resolveComponent"')) {
-          return
-        }
-      }
-      warn(warning)
-    },
-  }
   process.env.UNI_SSR_CLIENT = ''
   process.env.UNI_SSR_SERVER = 'true'
   await buildByVite(

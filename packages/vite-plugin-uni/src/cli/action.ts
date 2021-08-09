@@ -26,7 +26,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
       })
     }
   } catch (e) {
-    console.error(`error when starting dev server:\n${e.stack || e}`)
+    if (options.platform === 'h5') {
+      console.error(`error when starting dev server:\n${e.stack || e}`)
+    } else {
+      console.error(`error during build:\n${e.stack || e}`)
+    }
     process.exit(1)
   }
 }

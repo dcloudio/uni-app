@@ -32,25 +32,20 @@ export function uniTemplatePlugin(): Plugin {
     name: 'vite:uni-app-template',
     configResolved() {
       const outputDir = process.env.UNI_OUTPUT_DIR
-      return Promise.all([
-        fs.copy(
-          require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js'),
-          path.resolve(outputDir, 'uni-app-view.umd.js'),
-          {
-            overwrite: true,
-          }
-        ),
-        fs
-          .copy(path.resolve(__dirname, '../../lib/template/'), outputDir, {
-            overwrite: true,
-          })
-          .then(() =>
-            fs.writeFile(
-              path.resolve(outputDir, '__uniappview.html'),
-              genViewHtml()
-            )
-          ),
-      ]).then(() => {})
+      fs.copySync(
+        require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js'),
+        path.resolve(outputDir, 'uni-app-view.umd.js'),
+        {
+          overwrite: true,
+        }
+      )
+      fs.copySync(path.resolve(__dirname, '../../lib/template/'), outputDir, {
+        overwrite: true,
+      })
+      fs.writeFileSync(
+        path.resolve(outputDir, '__uniappview.html'),
+        genViewHtml()
+      )
     },
   }
 }

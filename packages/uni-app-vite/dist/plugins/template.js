@@ -25,16 +25,13 @@ function uniTemplatePlugin() {
         name: 'vite:uni-app-template',
         configResolved() {
             const outputDir = process.env.UNI_OUTPUT_DIR;
-            return Promise.all([
-                fs_extra_1.default.copy(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js'), path_1.default.resolve(outputDir, 'uni-app-view.umd.js'), {
-                    overwrite: true,
-                }),
-                fs_extra_1.default
-                    .copy(path_1.default.resolve(__dirname, '../../lib/template/'), outputDir, {
-                    overwrite: true,
-                })
-                    .then(() => fs_extra_1.default.writeFile(path_1.default.resolve(outputDir, '__uniappview.html'), genViewHtml())),
-            ]).then(() => { });
+            fs_extra_1.default.copySync(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js'), path_1.default.resolve(outputDir, 'uni-app-view.umd.js'), {
+                overwrite: true,
+            });
+            fs_extra_1.default.copySync(path_1.default.resolve(__dirname, '../../lib/template/'), outputDir, {
+                overwrite: true,
+            });
+            fs_extra_1.default.writeFileSync(path_1.default.resolve(outputDir, '__uniappview.html'), genViewHtml());
         },
     };
 }

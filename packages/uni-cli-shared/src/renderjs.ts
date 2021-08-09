@@ -12,20 +12,25 @@ export function isRenderjs(id: string) {
 
 export function parseRenderjs(id: string) {
   if (isWxs(id)) {
+    const { query, filename } = parseVueRequest(id)
     return {
       type: 'wxs',
-      name: (parseVueRequest(id).query as any).name as string,
+      name: (query as any).name as string,
+      filename,
     } as const
   }
   if (isRenderjs(id)) {
+    const { query, filename } = parseVueRequest(id)
     return {
       type: 'renderjs',
-      name: (parseVueRequest(id).query as any).name as string,
+      name: (query as any).name as string,
+      filename,
     } as const
   }
   return {
     type: '',
     name: '',
+    filename: '',
   } as const
 }
 
