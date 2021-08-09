@@ -20,7 +20,9 @@ export function createPreloadWebview() {
     // 不存在，或已被使用
     preloadWebview = plus.webview.create(
       VIEW_WEBVIEW_PATH,
-      String(genWebviewId())
+      String(genWebviewId()),
+      // @ts-expect-error
+      { contentAdjust: false }
     )
     if (__DEV__) {
       console.log(formatLog('createPreloadWebview', preloadWebview.id))
