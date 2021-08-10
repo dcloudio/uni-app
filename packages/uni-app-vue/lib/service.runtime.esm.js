@@ -9686,7 +9686,8 @@ const getModelAssigner = (vnode) => {
 // We are exporting the v-model runtime directly as vnode hooks so that it can
 // be tree-shaken in case v-model is never used.
 const vModelText = {
-    created(el, { modifiers: { trim, number } }, vnode) {
+    created(el, { value, modifiers: { trim, number } }, vnode) {
+        el.value = value == null ? '' : value;
         el._assign = getModelAssigner(vnode);
         addEventListener(el, 'input', e => {
             let domValue = e.detail.value;
