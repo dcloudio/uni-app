@@ -28,31 +28,43 @@ export function initModules(
   })
 }
 
-const renderjsModule = {}
-
 function proxyModule(component: string, module: string) {
-  return new Proxy(renderjsModule, {
+  const target: Record<string, any> = {}
+  return new Proxy(target, {
     get(_, p) {
-      return createModuleFunction(component, module, p as string)
+      return (
+        target[p as string] ||
+        (target[p as string] = createModuleFunction(
+          component,
+          module,
+          p as string
+        ))
+      )
     },
   })
 }
-
-function renderjsFn() {}
 
 function createModuleFunction(
   component: string,
   module: string,
   name: string
 ): Function {
+  const target: any = () => {}
   const toJSON = () =>
     WXS_PROTOCOL + JSON.stringify([component, module + '.' + name])
-  return new Proxy(renderjsFn, {
+  return new Proxy(target, {
     get(_, p) {
       if (p === 'toJSON') {
         return toJSON
       }
-      return createModuleFunction(component, module + '.' + name, p as string)
+      return (
+        target[p as string] ||
+        (target[p as string] = createModuleFunction(
+          component,
+          module + '.' + name,
+          p as string
+        ))
+      )
     },
     apply(_target, _thisArg, args) {
       return (

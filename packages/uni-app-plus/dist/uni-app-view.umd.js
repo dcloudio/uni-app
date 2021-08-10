@@ -865,6 +865,7 @@
   var ATTR_INNER_HTML = "innerHTML";
   var ATTR_TEXT_CONTENT = "textContent";
   var ATTR_V_SHOW = ".vShow";
+  var ATTR_CHANGE_PREFIX = "change:";
   var ACTION_TYPE_PAGE_CREATE = 1;
   var ACTION_TYPE_PAGE_CREATED = 2;
   var ACTION_TYPE_CREATE = 3;
@@ -7541,12 +7542,9 @@
   var WXS_PROTOCOL_LEN = WXS_PROTOCOL.length;
   function invokeWxs(value, invokerArgs) {
     var [component, invoker, args] = JSON.parse(value.substr(WXS_PROTOCOL_LEN));
-    if (isArray(args)) {
+    if (isArray(invokerArgs) || isArray(args)) {
       var [moduleName, mehtodName] = invoker.split(".");
-      if (invokerArgs) {
-        args.push(...invokerArgs);
-      }
-      return invokeWxsMethod(component, moduleName, mehtodName, args);
+      return invokeWxsMethod(component, moduleName, mehtodName, invokerArgs || args);
     }
     return getWxsProp(component, invoker);
   }
@@ -7567,6 +7565,19 @@
       return;
     }
     return getValueByDataPath(modules, dataPath);
+  }
+  function createWxsPropsInvoker(wxsInvoker, value) {
+    var oldValue = value;
+    return (newValue) => {
+      var ownerInstance = null;
+      var instance = null;
+      try {
+        invokeWxs(wxsInvoker, [newValue, oldValue, ownerInstance, instance]);
+      } catch (e2) {
+        console.error(e2);
+      }
+      oldValue = newValue;
+    };
   }
   function removeEventListener(el, type) {
     var listener = el.__listeners[type];
@@ -7672,9 +7683,11 @@
     constructor(id2, element, parentNodeId, refNodeId, nodeJson, propNames = []) {
       super(id2, element.tagName, parentNodeId, element);
       this.$props = reactive({});
+      this.$hasWxsProps = false;
       this.$.__id = id2;
       this.$.__listeners = Object.create(null);
       this.$propNames = propNames;
+      this.$wxsProps = new Map();
       this._update = this.update.bind(this);
       this.init(nodeJson);
       this.insert(parentNodeId, refNodeId);
@@ -7701,8 +7714,21 @@
       this.update(true);
     }
     setAttrs(attrs2) {
+      this.setWxsProps(attrs2);
       Object.keys(attrs2).forEach((name) => {
         this.setAttr(name, attrs2[name]);
+      });
+    }
+    setWxsProps(attrs2) {
+      Object.keys(attrs2).forEach((name) => {
+        if (name.indexOf(ATTR_CHANGE_PREFIX) === 0) {
+          var value = attrs2[name.replace(ATTR_CHANGE_PREFIX, "")];
+          var invoker = createWxsPropsInvoker(attrs2[name], value);
+          queuePostActionJob(() => invoker(value));
+          this.$wxsProps.set(name, invoker);
+          delete attrs2[name];
+          this.$hasWxsProps = true;
+        }
       });
     }
     addWxsEvents(events) {
@@ -7754,7 +7780,12 @@
       if (this.$propNames.indexOf(name) !== -1) {
         this.$props[name] = value;
       } else {
-        this.$.setAttribute(name, value);
+        var wxsPropsInvoker = this.$hasWxsProps && this.$wxsProps.get(ATTR_CHANGE_PREFIX + name);
+        if (wxsPropsInvoker) {
+          wxsPropsInvoker(value);
+        } else {
+          this.$.setAttribute(name, value);
+        }
       }
     }
     removeAttribute(name) {

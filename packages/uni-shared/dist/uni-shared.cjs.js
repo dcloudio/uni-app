@@ -575,6 +575,7 @@ const ATTR_STYLE = 'style';
 const ATTR_INNER_HTML = 'innerHTML';
 const ATTR_TEXT_CONTENT = 'textContent';
 const ATTR_V_SHOW = '.vShow';
+const ATTR_CHANGE_PREFIX = 'change:';
 class UniBaseNode extends UniNode {
     constructor(nodeType, nodeName, container) {
         super(nodeType, nodeName, container);
@@ -998,6 +999,7 @@ exports.ACTION_TYPE_REMOVE_ATTRIBUTE = ACTION_TYPE_REMOVE_ATTRIBUTE;
 exports.ACTION_TYPE_REMOVE_EVENT = ACTION_TYPE_REMOVE_EVENT;
 exports.ACTION_TYPE_SET_ATTRIBUTE = ACTION_TYPE_SET_ATTRIBUTE;
 exports.ACTION_TYPE_SET_TEXT = ACTION_TYPE_SET_TEXT;
+exports.ATTR_CHANGE_PREFIX = ATTR_CHANGE_PREFIX;
 exports.ATTR_CLASS = ATTR_CLASS;
 exports.ATTR_INNER_HTML = ATTR_INNER_HTML;
 exports.ATTR_STYLE = ATTR_STYLE;

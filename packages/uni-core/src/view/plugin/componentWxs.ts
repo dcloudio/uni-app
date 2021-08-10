@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
 // import { normalizeEvent, findUniTarget } from './componentEvents'
@@ -8,7 +8,8 @@ interface WxsElement extends HTMLElement {
   __wxsAddClass: string
   __wxsRemoveClass: string[]
   __wxsState: Record<string, any>
-  __vue__: ComponentPublicInstance // TODO vue3 暂不支持
+  __vueParentComponent: ComponentInternalInstance // vue3 引擎内部，需要开放该属性
+  __wxsComponentDescriptor: ComponentDescriptor
 }
 
 const CLASS_RE = /^\s+|\s+$/g
@@ -54,10 +55,17 @@ function parseStyleText(cssText: string) {
   return res
 }
 
-class ComponentDescriptor {
-  private $vm: ComponentPublicInstance
+interface ComponentDescriptorVm {
+  _$id?: string
+  $el: WxsElement
+  $emit: (event: string, ...args: any[]) => void
+  $forceUpdate: () => void
+}
+
+export class ComponentDescriptor {
+  private $vm: ComponentDescriptorVm
   private $el: WxsElement
-  constructor(vm: ComponentPublicInstance) {
+  constructor(vm: ComponentDescriptorVm) {
     this.$vm = vm
     this.$el = vm.$el
   }
@@ -67,7 +75,11 @@ class ComponentDescriptor {
       return
     }
     const el = this.$el.querySelector(selector) as WxsElement
-    return el && el.__vue__ && createComponentDescriptor(el.__vue__, false)
+    return (
+      el &&
+      el.__vueParentComponent &&
+      createComponentDescriptor(el.__vueParentComponent.proxy!, false)
+    )
   }
 
   selectAllComponents(selector: string) {
@@ -78,8 +90,10 @@ class ComponentDescriptor {
     const els = this.$el.querySelectorAll(selector)
     for (let i = 0; i < els.length; i++) {
       const el = els[i] as WxsElement
-      el.__vue__ &&
-        descriptors.push(createComponentDescriptor(el.__vue__, false))
+      el.__vueParentComponent &&
+        descriptors.push(
+          createComponentDescriptor(el.__vueParentComponent.proxy!, false)
+        )
     }
     return descriptors
   }
@@ -147,13 +161,6 @@ class ComponentDescriptor {
     return this.$el && this.$el.classList.contains(cls)
   }
 
-  getComputedStyle() {
-    if (this.$el) {
-      return window.getComputedStyle(this.$el)
-    }
-    return {}
-  }
-
   getDataset() {
     return this.$el && this.$el.dataset
   }
@@ -172,7 +179,7 @@ class ComponentDescriptor {
   }
 
   requestAnimationFrame(callback: FrameRequestCallback) {
-    return window.requestAnimationFrame(callback), this
+    return window.requestAnimationFrame(callback)
   }
 
   getState() {
@@ -183,19 +190,53 @@ class ComponentDescriptor {
     // TODO options
     return this.$vm.$emit(eventName, detail), this
   }
+
+  getComputedStyle(names?: string[]) {
+    if (this.$el) {
+      const styles = window.getComputedStyle(this.$el)
+      if (names && names.length) {
+        return names.reduce<Record<string, any>>((res, n) => {
+          res[n] = styles[n as keyof CSSStyleDeclaration]
+          return res
+        }, {})
+      }
+      return styles
+    }
+    return {}
+  }
+
+  setTimeout(handler: TimerHandler, timeout?: number) {
+    return window.setTimeout(handler, timeout)
+  }
+
+  clearTimeout(handle?: number) {
+    return window.clearTimeout(handle)
+  }
+
+  getBoundingClientRect() {
+    return this.$el.getBoundingClientRect()
+  }
+}
+
+function resolveOwnerVm(vm: ComponentPublicInstance) {
+  let componentName = vm.$options && vm.$options.name
+  while (componentName && isBuiltInComponent(hyphenate(componentName))) {
+    // ownerInstance 内置组件需要使用父 vm
+    vm = vm.$parent!
+    componentName = vm.$options && vm.$options.name
+  }
+  return vm
 }
 
 function createComponentDescriptor(
-  vm: ComponentPublicInstance,
+  vm: ComponentDescriptorVm,
   isOwnerInstance = true
 ) {
   if (isOwnerInstance && vm) {
-    let componentName = vm.$options && vm.$options.name
-    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
-      // ownerInstance 内置组件需要使用父 vm
-      vm = vm.$parent!
-      componentName = vm.$options && vm.$options.name
+    if (__PLATFORM__ === 'h5') {
+      vm = resolveOwnerVm(vm as ComponentPublicInstance)
     }
+    // TODO App
   }
   if (vm && vm.$el) {
     if (!vm.$el.__wxsComponentDescriptor) {
@@ -211,29 +252,3 @@ export function getComponentDescriptor(
 ) {
   return createComponentDescriptor(instance, isOwnerInstance)
 }
-
-// export function handleWxsEvent(this: ComponentPublicInstance, $event: Event) {
-//   if (!($event instanceof Event)) {
-//     return $event
-//   }
-//   const currentTarget = $event.currentTarget as WxsElement
-//   const instance =
-//     currentTarget &&
-//     currentTarget.__vue__ &&
-//     getComponentDescriptor.call(this, currentTarget.__vue__, false)
-//   const $origEvent = $event
-//   $event = normalizeEvent(
-//     $origEvent.type,
-//     $origEvent,
-//     {},
-//     findUniTarget($origEvent, this.$el) || $origEvent.target,
-//     $origEvent.currentTarget as HTMLElement
-//   ) as Event
-//   ;($event as any).instance = instance
-//   $event.preventDefault = function () {
-//     return $origEvent.preventDefault()
-//   }
-//   $event.stopPropagation = function () {
-//     return $origEvent.stopPropagation()
-//   }
-// }

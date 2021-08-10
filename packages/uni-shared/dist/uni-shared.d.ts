@@ -54,6 +54,8 @@ string | number,
 number
 ];
 
+export declare const ATTR_CHANGE_PREFIX = "change:";
+
 export declare const ATTR_CLASS = "class";
 
 export declare const ATTR_INNER_HTML = "innerHTML";

@@ -275,6 +275,8 @@ declare namespace UniApp {
     shown: boolean
   }
 
+  interface ComponentDescriptor {}
+
   type OnApiLike = (callback: (result: unknown) => void) => void
   type CallbackFunction = (...args: any[]) => void
   interface UniServiceJSBridge {

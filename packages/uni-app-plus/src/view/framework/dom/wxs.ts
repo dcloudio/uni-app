@@ -3,7 +3,9 @@ import {
   formatLog,
   getValueByDataPath,
   WXS_PROTOCOL,
+  ATTR_CHANGE_PREFIX,
 } from '@dcloudio/uni-shared'
+import { ComponentDescriptor } from '@dcloudio/uni-core'
 
 declare global {
   interface Window {
@@ -32,13 +34,15 @@ const WXS_PROTOCOL_LEN = WXS_PROTOCOL.length
 
 export function invokeWxs(value: string, invokerArgs?: unknown[]) {
   const [component, invoker, args] = JSON.parse(value.substr(WXS_PROTOCOL_LEN))
-  if (isArray(args)) {
+  if (isArray(invokerArgs) || isArray(args)) {
     // methods
     const [moduleName, mehtodName] = invoker.split('.')
-    if (invokerArgs) {
-      args.push(...invokerArgs)
-    }
-    return invokeWxsMethod(component, moduleName, mehtodName, args)
+    return invokeWxsMethod(
+      component,
+      moduleName,
+      mehtodName,
+      invokerArgs || args
+    )
   }
   return getWxsProp(component, invoker)
 }
@@ -68,4 +72,24 @@ function getWxsProp(component: string, dataPath: string) {
     return
   }
   return getValueByDataPath(modules, dataPath)
+}
+
+export type WxsPropsInvoker = (newValue: unknown) => void
+
+export function createWxsPropsInvoker(
+  wxsInvoker: string,
+  value: unknown
+): WxsPropsInvoker {
+  let oldValue = value
+  return (newValue: unknown) => {
+    // TODO
+    const ownerInstance: ComponentDescriptor | null = null
+    const instance: ComponentDescriptor | null = null
+    try {
+      invokeWxs(wxsInvoker, [newValue, oldValue, ownerInstance, instance])
+    } catch (e) {
+      console.error(e)
+    }
+    oldValue = newValue
+  }
 }

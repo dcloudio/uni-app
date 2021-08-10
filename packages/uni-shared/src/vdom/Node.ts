@@ -271,6 +271,8 @@ export const ATTR_STYLE = 'style'
 export const ATTR_INNER_HTML = 'innerHTML'
 export const ATTR_TEXT_CONTENT = 'textContent'
 export const ATTR_V_SHOW = '.vShow'
+
+export const ATTR_CHANGE_PREFIX = 'change:'
 export class UniBaseNode extends UniNode {
   attributes: Record<string, unknown> = Object.create(null)
   style: null | string | Record<string, string | string[]> = null

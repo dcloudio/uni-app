@@ -9370,23 +9370,25 @@ var serviceContext = (function (vue) {
           $wxsModules.push(module);
       });
   }
-  const renderjsModule = {};
   function proxyModule(component, module) {
-      return new Proxy(renderjsModule, {
+      const target = {};
+      return new Proxy(target, {
           get(_, p) {
-              return createModuleFunction(component, module, p);
+              return (target[p] ||
+                  (target[p] = createModuleFunction(component, module, p)));
           },
       });
   }
-  function renderjsFn() { }
   function createModuleFunction(component, module, name) {
+      const target = () => { };
       const toJSON = () => WXS_PROTOCOL + JSON.stringify([component, module + '.' + name]);
-      return new Proxy(renderjsFn, {
+      return new Proxy(target, {
           get(_, p) {
               if (p === 'toJSON') {
                   return toJSON;
               }
-              return createModuleFunction(component, module + '.' + name, p);
+              return (target[p] ||
+                  (target[p] = createModuleFunction(component, module + '.' + name, p)));
           },
           apply(_target, _thisArg, args) {
               return (WXS_PROTOCOL +

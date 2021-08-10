@@ -6,6 +6,7 @@ import {
   ATTR_TEXT_CONTENT,
   ATTR_V_SHOW,
   UniNodeJSON,
+  ATTR_CHANGE_PREFIX,
 } from '@dcloudio/uni-shared'
 import { reactive, watch } from 'vue'
 import { UniNode } from './UniNode'
@@ -16,11 +17,14 @@ import { UniCustomElement } from '../components'
 import { queuePostActionJob } from '../scheduler'
 import { decodeAttr } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
+import { createWxsPropsInvoker, WxsPropsInvoker } from '../wxs'
 
 export class UniElement<T extends object> extends UniNode {
   declare $: UniCustomElement
   $props: T = reactive({} as any)
   $propNames: string[]
+  $wxsProps: Map<string, WxsPropsInvoker>
+  $hasWxsProps: boolean = false
   protected _update?: Function
   constructor(
     id: number,
@@ -34,6 +38,7 @@ export class UniElement<T extends object> extends UniNode {
     this.$.__id = id
     this.$.__listeners = Object.create(null)
     this.$propNames = propNames
+    this.$wxsProps = new Map<string, WxsPropsInvoker>()
     this._update = this.update.bind(this)
     this.init(nodeJson)
     this.insert(parentNodeId, refNodeId)
@@ -62,8 +67,24 @@ export class UniElement<T extends object> extends UniNode {
     this.update(true)
   }
   setAttrs(attrs: Record<string, any>) {
+    // 初始化时，先提取 wxsProps，再 setAttr
+    this.setWxsProps(attrs)
     Object.keys(attrs).forEach((name) => {
       this.setAttr(name, attrs[name])
+    })
+  }
+  setWxsProps(attrs: Record<string, any>) {
+    Object.keys(attrs).forEach((name) => {
+      if (name.indexOf(ATTR_CHANGE_PREFIX) === 0) {
+        const value = attrs[name.replace(ATTR_CHANGE_PREFIX, '')]
+        const invoker = createWxsPropsInvoker(attrs[name], value)
+        // 队列后再执行
+        queuePostActionJob(() => invoker(value))
+
+        this.$wxsProps.set(name, invoker)
+        delete attrs[name]
+        this.$hasWxsProps = true
+      }
     })
   }
   addWxsEvents(events: Record<string, [string, number]>) {
@@ -97,7 +118,12 @@ export class UniElement<T extends object> extends UniNode {
       this.$.innerHTML = value as string
     } else if (name === ATTR_TEXT_CONTENT) {
       this.setText(value as string)
-    } else {
+    }
+    // 不提供动态修改wxsProps
+    // else if (this.$hasWxsProps && name.indexOf(ATTR_CHANGE_PREFIX) === 0) {
+    //   this.$wxsProps.set(name, value as string)
+    // }
+    else {
       this.setAttribute(name, value as string)
     }
   }
@@ -115,7 +141,13 @@ export class UniElement<T extends object> extends UniNode {
     if (this.$propNames.indexOf(name) !== -1) {
       ;(this.$props as any)[name] = value
     } else {
-      this.$.setAttribute(name, value as string)
+      const wxsPropsInvoker =
+        this.$hasWxsProps && this.$wxsProps.get(ATTR_CHANGE_PREFIX + name)
+      if (wxsPropsInvoker) {
+        wxsPropsInvoker(value)
+      } else {
+        this.$.setAttribute(name, value as string)
+      }
     }
   }
   removeAttribute(name: string) {
