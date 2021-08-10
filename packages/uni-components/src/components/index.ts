@@ -1,4 +1,3 @@
-import Audio from './audio/index.vue'
 import Button from './button/index'
 import Canvas from './canvas/index'
 import Checkbox from './checkbox/index'
@@ -28,7 +27,6 @@ import Text from './text/index'
 import Textarea from './textarea/index'
 import View from './view/index'
 export {
-  Audio,
   Button,
   Canvas,
   Checkbox,

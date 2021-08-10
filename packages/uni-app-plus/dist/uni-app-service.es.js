@@ -7057,7 +7057,7 @@ var serviceContext = (function (vue) {
       plus.gallery.save(options.filePath, warpPlusSuccessCallback(resolve), warpPlusErrorCallback(reject));
   }, SaveImageToPhotosAlbumProtocol, SaveImageToPhotosAlbumOptions);
 
-  const compressImage$1 = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
+  const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
       const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
       plus.zip.compressImage(extend({}, options, {
           dst,
@@ -7091,23 +7091,6 @@ var serviceContext = (function (vue) {
           }, reject);
       });
   }
-  function compressImage(tempFilePath) {
-      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-      return new Promise((resolve) => {
-          plus.nativeUI.showWaiting();
-          plus.zip.compressImage({
-              src: tempFilePath,
-              dst,
-              overwrite: true,
-          }, () => {
-              plus.nativeUI.closeWaiting();
-              resolve(dst);
-          }, () => {
-              plus.nativeUI.closeWaiting();
-              resolve(tempFilePath);
-          });
-      });
-  }
   const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, 
   // @ts-ignore crop 属性App特有
   ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
@@ -7117,37 +7100,13 @@ var serviceContext = (function (vue) {
       function successCallback(paths) {
           const tempFiles = [];
           const tempFilePaths = [];
-          // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
-          paths
-              .reduce((promise, path) => {
-              return promise
-                  .then(() => {
-                  return getFileInfo(path);
-              })
-                  .then((fileInfo) => {
-                  const size = fileInfo.size;
-                  // 压缩阈值 0.5 兆
-                  const THRESHOLD = 1024 * 1024 * 0.5;
-                  // 判断是否需要压缩
-                  if (!crop &&
-                      sizeType.includes('compressed') &&
-                      size > THRESHOLD) {
-                      return compressImage(path).then((dstPath) => {
-                          path = dstPath;
-                          return getFileInfo(path);
-                      });
-                  }
-                  return fileInfo;
-              })
-                  .then(({ size }) => {
+          Promise.all(paths.map((path) => getFileInfo(path)))
+              .then((filesInfo) => {
+              filesInfo.forEach((file, index) => {
+                  const path = paths[index];
                   tempFilePaths.push(path);
-                  tempFiles.push({
-                      path,
-                      size: size,
-                  });
+                  tempFiles.push({ path, size: file.size });
               });
-          }, Promise.resolve())
-              .then(() => {
               resolve({
                   tempFilePaths,
                   tempFiles,
@@ -7173,6 +7132,8 @@ var serviceContext = (function (vue) {
               filename: TEMP_PATH + '/gallery/',
               permissionAlert: true,
               crop,
+              // @ts-expect-error
+              sizeType,
           });
       }
       if (sourceType.length === 1) {
@@ -10061,7 +10022,9 @@ var serviceContext = (function (vue) {
   function createPreloadWebview() {
       if (!preloadWebview$1 || preloadWebview$1.__uniapp_route) {
           // 不存在，或已被使用
-          preloadWebview$1 = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()));
+          preloadWebview$1 = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), 
+          // @ts-expect-error
+          { contentAdjust: false });
           if ((process.env.NODE_ENV !== 'production')) {
               console.log(formatLog('createPreloadWebview', preloadWebview$1.id));
           }
@@ -11999,7 +11962,7 @@ var serviceContext = (function (vue) {
     getRecorderManager: getRecorderManager,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
-    compressImage: compressImage$1,
+    compressImage: compressImage,
     compressVideo: compressVideo,
     chooseImage: chooseImage,
     chooseVideo: chooseVideo,

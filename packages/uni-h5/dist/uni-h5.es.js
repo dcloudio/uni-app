@@ -1,230 +1,8 @@
-import { isFunction, extend, isString, hyphenate, isPlainObject, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { once, passive, initCustomDataset, invokeArrayFns, normalizeTarget, isBuiltInComponent, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
-import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
+import { extend, isString, hyphenate, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
-var subscriber = {
-  mounted() {
-    this._toggleListeners("subscribe", this.id);
-    this.$watch("id", (newId, oldId) => {
-      this._toggleListeners("unsubscribe", oldId, true);
-      this._toggleListeners("subscribe", newId, true);
-    });
-  },
-  beforeDestroy() {
-    this._toggleListeners("unsubscribe", this.id);
-    if (this._contextId) {
-      this._toggleListeners("unsubscribe", this._contextId);
-    }
-  },
-  methods: {
-    _toggleListeners(type, id2, watch2) {
-      if (watch2 && !id2) {
-        return;
-      }
-      if (!isFunction(this._handleSubscribe)) {
-        return;
-      }
-      UniViewJSBridge[type](this.$page.id + "-" + this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase() + "-" + id2, this._handleSubscribe);
-    },
-    _getContextInfo() {
-      const id2 = `context-${this._uid}`;
-      if (!this._contextId) {
-        this._toggleListeners("subscribe", id2);
-        this._contextId = id2;
-      }
-      return {
-        name: this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase(),
-        id: id2,
-        page: this.$page.id
-      };
-    }
-  }
-};
-function throttle(fn, wait) {
-  let last = 0;
-  let timeout;
-  let waitCallback;
-  const newFn = function(...arg) {
-    const now = Date.now();
-    clearTimeout(timeout);
-    waitCallback = () => {
-      waitCallback = null;
-      last = now;
-      fn.apply(this, arg);
-    };
-    if (now - last < wait) {
-      timeout = setTimeout(waitCallback, wait - (now - last));
-      return;
-    }
-    waitCallback();
-  };
-  newFn.cancel = function() {
-    clearTimeout(timeout);
-    waitCallback = null;
-  };
-  newFn.flush = function() {
-    clearTimeout(timeout);
-    waitCallback && waitCallback();
-  };
-  return newFn;
-}
-const _sfc_main$1 = {
-  name: "Audio",
-  mixins: [subscriber],
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    src: {
-      type: String,
-      default: ""
-    },
-    loop: {
-      type: [Boolean, String],
-      default: false
-    },
-    controls: {
-      type: [Boolean, String],
-      default: false
-    },
-    poster: {
-      type: String,
-      default: ""
-    },
-    name: {
-      type: String,
-      default: ""
-    },
-    author: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      playing: false,
-      currentTime: this.getTime(0)
-    };
-  },
-  watch: {
-    src(val) {
-      if (this.$refs.audio) {
-        this.$refs.audio.src = this.$getRealPath(val);
-      }
-    }
-  },
-  mounted() {
-    const audio = this.$refs.audio;
-    audio.addEventListener("error", ($event) => {
-      this.playing = false;
-      this.$trigger("error", $event, {});
-    });
-    audio.addEventListener("play", ($event) => {
-      this.playing = true;
-      this.$trigger("play", $event, {});
-    });
-    audio.addEventListener("pause", ($event) => {
-      this.playing = false;
-      this.$trigger("pause", $event, {});
-    });
-    audio.addEventListener("ended", ($event) => {
-      this.playing = false;
-      this.$trigger("ended", $event, {});
-    });
-    audio.addEventListener("timeupdate", ($event) => {
-      var currentTime = audio.currentTime;
-      this.currentTime = this.getTime(currentTime);
-      var duration = audio.duration;
-      this.$trigger("timeupdate", $event, {
-        currentTime,
-        duration
-      });
-    });
-    audio.src = this.$getRealPath(this.src);
-  },
-  methods: {
-    _handleSubscribe({
-      type,
-      data = {}
-    }) {
-      var audio = this.$refs.audio;
-      switch (type) {
-        case "setSrc":
-          audio.src = this.$getRealPath(data.src);
-          this.$emit("update:src", data.src);
-          break;
-        case "play":
-          audio.play();
-          break;
-        case "pause":
-          audio.pause();
-          break;
-        case "seek":
-          audio.currentTime = data.position;
-          break;
-      }
-    },
-    trigger() {
-      if (this.playing) {
-        this.$refs.audio.pause();
-      } else {
-        this.$refs.audio.play();
-      }
-    },
-    getTime(time) {
-      var h = Math.floor(time / 3600);
-      var m = Math.floor(time % 3600 / 60);
-      var s = Math.floor(time % 3600 % 60);
-      h = (h < 10 ? "0" : "") + h;
-      m = (m < 10 ? "0" : "") + m;
-      s = (s < 10 ? "0" : "") + s;
-      var str = m + ":" + s;
-      if (h !== "00") {
-        str = h + ":" + str;
-      }
-      return str;
-    }
-  }
-};
-const _hoisted_1$1 = { class: "uni-audio-default" };
-const _hoisted_2$1 = { class: "uni-audio-right" };
-const _hoisted_3$1 = { class: "uni-audio-time" };
-const _hoisted_4$1 = { class: "uni-audio-info" };
-const _hoisted_5 = { class: "uni-audio-name" };
-const _hoisted_6 = { class: "uni-audio-author" };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-audio", mergeProps({
-    id: $props.id,
-    controls: !!$props.controls
-  }, _ctx.$attrs), [
-    createVNode("audio", {
-      ref: "audio",
-      loop: $props.loop,
-      style: { "display": "none" }
-    }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$1, [
-      createVNode("div", {
-        style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
-        class: "uni-audio-left"
-      }, [
-        createVNode("div", {
-          class: [{ play: !$data.playing, pause: $data.playing }, "uni-audio-button"],
-          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
-        }, null, 2)
-      ], 4),
-      createVNode("div", _hoisted_2$1, [
-        createVNode("div", _hoisted_3$1, toDisplayString($data.currentTime), 1),
-        createVNode("div", _hoisted_4$1, [
-          createVNode("div", _hoisted_5, toDisplayString($props.name), 1),
-          createVNode("div", _hoisted_6, toDisplayString($props.author), 1)
-        ])
-      ])
-    ])
-  ], 16, ["id", "controls"]);
-}
-_sfc_main$1.render = _sfc_render$1;
 let i18n;
 function useI18n() {
   if (!i18n) {
@@ -786,7 +564,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -798,10 +576,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -7945,6 +7723,34 @@ function useImageSize(rootRef, props2, state2) {
     resetSize
   };
 }
+function throttle(fn, wait) {
+  let last = 0;
+  let timeout;
+  let waitCallback;
+  const newFn = function(...arg) {
+    const now = Date.now();
+    clearTimeout(timeout);
+    waitCallback = () => {
+      waitCallback = null;
+      last = now;
+      fn.apply(this, arg);
+    };
+    if (now - last < wait) {
+      timeout = setTimeout(waitCallback, wait - (now - last));
+      return;
+    }
+    waitCallback();
+  };
+  newFn.cancel = function() {
+    clearTimeout(timeout);
+    waitCallback = null;
+  };
+  newFn.flush = function() {
+    clearTimeout(timeout);
+    waitCallback && waitCallback();
+  };
+  return newFn;
+}
 const passiveOptions$1 = passive(true);
 const states = [];
 let userInteract = 0;
@@ -13350,7 +13156,7 @@ function normalizePageMeta(pageMeta) {
       }, pageMeta.pullToRefresh));
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
+        pullToRefresh.offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
     }
@@ -15548,7 +15354,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -15661,12 +15467,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const { top: windowTop, bottom: windowBottom } = getWindowOffset();
   windowHeight -= windowTop;
@@ -15686,10 +15492,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -21286,4 +21092,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useTabBar, vibrateLong, vibrateShort };
