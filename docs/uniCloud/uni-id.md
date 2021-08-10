@@ -1579,12 +1579,13 @@ exports.main = async function(event,context) {
 
 **LoginByWexinParams参数说明**
 
-| 字段				| 类型	| 必填| 说明																																																														|
-| ---					| ---		| ---	| ---																																																															|
-| code				| String| 是	|微信登录返回的code																																																								|
-| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
-| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
+| 字段					| 类型		| 必填| 说明																																												|
+| ---						| ---			| ---	| ---																																													|
+| code					| String	| 是	|微信登录返回的code																																						|
+| type					| String	| 否	| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册，新增于uni-id 3.3.4	|
+| myInviteCode	|String		| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																					|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用								|
+| role					| Array		| 否	|设定用户角色，当前用户为新注册时生效																													|
 
 **响应参数**
 
@@ -1856,13 +1857,14 @@ exports.main = async function(event,context) {
 
 **参数说明**
 
-| 字段					| 类型		| 必填					| 说明																																					|
-| ---						| ---			| ---						| ---																																						|
-| code					| String	| 小程序登录必填|QQ小程序登录返回的code																													|
-| accessToken		| String	| APP登录必填		|QQ APP登录返回的access_token																										|
-| myInviteCode	| String	| 否						|设置当前注册用户自己的邀请码，type为`register`时生效														|
-| needPermission| Boolean	| 否						|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| role					| Array		| 否						|设定用户角色，当前用户为新注册时生效																						|
+| 字段					| 类型		| 必填					| 说明																																												|
+| ---						| ---			| ---						| ---																																													|
+| code					| String	| 小程序登录必填|QQ小程序登录返回的code																																				|
+| accessToken		| String	| APP登录必填		|QQ APP登录返回的access_token																																	|
+| type					| String	| 否						| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册，新增于uni-id 3.3.4	|
+| myInviteCode	| String	| 否						|设置当前注册用户自己的邀请码，type为`register`时生效																					|
+| needPermission| Boolean	| 否						|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用								|
+| role					| Array		| 否						|设定用户角色，当前用户为新注册时生效																													|
 
 **响应参数**
 
@@ -2022,12 +2024,13 @@ export default {
 
 **LoginByAlipayParams参数说明**
 
-| 字段					| 类型		| 必填| 说明																																					|
-| ---						| ---			| ---	| ---																																						|
-| code					| String	| 是	|支付宝登录返回的code																														|
-| myInviteCode	| String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
-| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| role					| Array		| 否	|设定用户角色，当前用户为新注册时生效																						|
+| 字段					| 类型		| 必填| 说明																																												|
+| ---						| ---			| ---	| ---																																													|
+| code					| String	| 是	|支付宝登录返回的code																																					|
+| type					| String	| 否	| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册，新增于uni-id 3.3.4	|
+| myInviteCode	| String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																					|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用								|
+| role					| Array		| 否	|设定用户角色，当前用户为新注册时生效																													|
 
 **响应参数**
 
