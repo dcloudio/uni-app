@@ -19,6 +19,21 @@ function normalizeRect(rect: DOMRect) {
   }
 }
 
+// 在相交比很小的情况下，Chrome会返回相交为0
+function rectifyIntersectionRatio(entrie: IntersectionObserverEntry) {
+  const {
+    intersectionRatio,
+    boundingClientRect: { height: overAllHeight, width: overAllWidth },
+    intersectionRect: { height: intersectionHeight, width: intersectionWidth },
+  } = entrie
+
+  if (intersectionRatio !== 0) return intersectionRatio
+
+  return intersectionHeight === overAllHeight
+    ? intersectionWidth / overAllWidth
+    : intersectionHeight / overAllHeight
+}
+
 export function requestComponentObserver(
   $el: HTMLElement,
   options: UniApp.CreateIntersectionObserverOptions &
@@ -34,7 +49,7 @@ export function requestComponentObserver(
     (entries) => {
       entries.forEach((entrie) => {
         callback({
-          intersectionRatio: entrie.intersectionRatio,
+          intersectionRatio: rectifyIntersectionRatio(entrie),
           intersectionRect: normalizeRect(entrie.intersectionRect),
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds!),
