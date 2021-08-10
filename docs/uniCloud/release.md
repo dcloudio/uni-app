@@ -1,3 +1,5 @@
+注：本更新日志仅限uniCloud，包括uniCloud web控制台、uniCloud 云端运行环境。这些更新不跟随HBuilderX发版更新。
+
 #### 2021-08-01
   + 云数据库 新增 updateAndReturn 方法，可以更新并返回更新后的值（仅可在云函数中使用） [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=update-and-return)
   + uniCloud本地调试插件 修复 部分情况下项目启动时报 npm 安装失败的Bug
