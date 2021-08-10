@@ -1031,7 +1031,6 @@ export const canvasGetImageData =
   defineAsyncApi<API_TYPE_CANVAS_GET_IMAGE_DATA>(
     API_CANVAS_GET_IMAGE_DATA,
     ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-      // onCanvasMethodCallback()
       const pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
@@ -1080,7 +1079,6 @@ export const canvasPutImageData =
   defineAsyncApi<API_TYPE_CANVAS_PUT_IMAGE_DATA>(
     API_CANVAS_PUT_IMAGE_DATA,
     ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
@@ -1101,7 +1099,7 @@ export const canvasPutImageData =
             compressed,
           },
           (data: UniApp.CanvasGetImageDataRes) => {
-            if (data.errMsg && data.errMsg.indexOf('fail')) {
+            if (data.errMsg && data.errMsg.indexOf('fail') !== -1) {
               reject()
               return
             }
@@ -1120,7 +1118,7 @@ export const canvasPutImageData =
           operate()
         })
       }
-      // fix ...
+      // fix ... fix what?
       data = Array.prototype.slice.call(data)
       operate()
     },
@@ -1145,7 +1143,6 @@ export const canvasToTempFilePath =
       },
       { resolve, reject }
     ) => {
-      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
@@ -1168,7 +1165,7 @@ export const canvasToTempFilePath =
           dirname,
         },
         (res: UniApp.CanvasToTempFilePathRes & { errMsg?: string }) => {
-          if (res.errMsg && res.errMsg.indexOf('fail')) {
+          if (res.errMsg && res.errMsg.indexOf('fail') !== -1) {
             reject('', res)
             return
           }
