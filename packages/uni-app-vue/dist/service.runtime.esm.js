@@ -11835,11 +11835,13 @@ export default function vueFactory(exports) {
 
   var vModelText = {
     created(el, {
+      value,
       modifiers: {
         trim,
         number
       }
     }, vnode) {
+      el.value = value == null ? '' : value;
       el._assign = getModelAssigner(vnode);
       addEventListener(el, 'input', e => {
         var domValue = e.detail.value; // 从 view 层接收到新值后，赋值给 service 层元素，注意，需要临时解除 pageNode，否则赋值 value 会触发向 view 层的再次同步数据

@@ -827,6 +827,17 @@ function callOptions(options, data) {
         options.complete(data);
     }
 }
+function getValueByDataPath(obj, path) {
+    const parts = path.split('.');
+    let key = parts[0];
+    if (!obj) {
+        obj = {};
+    }
+    if (parts.length === 1) {
+        return obj[key];
+    }
+    return getValueByDataPath(obj[key], parts.slice(1).join('.'));
+}
 
 function debounce(fn, delay) {
     let timeout;
@@ -859,7 +870,6 @@ const DATA_RE = /^data:.*,.*/;
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 const WXS_PROTOCOL = 'wxs://';
 const JSON_PROTOCOL = 'json://';
-const WXS_METHOD_SYMBOL = Symbol('wxs.method');
 // lifecycle
 // App and Page
 const ON_SHOW = 'onShow';
@@ -1057,7 +1067,6 @@ exports.UniNode = UniNode;
 exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
 exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
-exports.WXS_METHOD_SYMBOL = WXS_METHOD_SYMBOL;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.cache = cache;
@@ -1074,6 +1083,7 @@ exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
+exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;

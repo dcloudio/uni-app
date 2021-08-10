@@ -9,36 +9,49 @@ import {
 } from '@dcloudio/uni-shared'
 import { VD_SYNC } from '../../../../constants'
 import { UniCustomElement } from '../components'
+import { invokeWxs } from '../wxs'
+
+function removeEventListener(el: UniCustomElement, type: string) {
+  const listener = el.__listeners[type]
+  if (listener) {
+    el.removeEventListener(type, listener)
+  } else if (__DEV__) {
+    console.error(
+      formatLog(`tag`, el.tagName, el.__id, 'event[' + type + '] not found')
+    )
+  }
+}
+
+function isEventListenerExists(el: UniCustomElement, type: string) {
+  if (el.__listeners[type]) {
+    if (__DEV__) {
+      console.error(
+        formatLog(
+          `tag`,
+          el.tagName,
+          el.__id,
+          'event[' + type + '] already registered'
+        )
+      )
+    }
+    return true
+  }
+}
 
 export function patchEvent(el: UniCustomElement, name: string, flag: number) {
   const [type, options] = parseEventName(name)
   if (flag === -1) {
     // remove
-    const listener = el.__listeners[type]
-    if (listener) {
-      el.removeEventListener(type, listener)
-    } else if (__DEV__) {
-      console.error(
-        formatLog(`tag`, el.tagName, el.__id, 'event[' + type + '] not found')
-      )
-    }
+    removeEventListener(el, type)
   } else {
     // add
-    if (el.__listeners[type]) {
-      if (__DEV__) {
-        console.error(
-          formatLog(
-            `tag`,
-            el.tagName,
-            el.__id,
-            'event[' + type + '] already registered'
-          )
-        )
-      }
-      return
+    if (!isEventListenerExists(el, type)) {
+      el.addEventListener(
+        type,
+        (el.__listeners[type] = createInvoker(el.__id, flag, options)),
+        options
+      )
     }
-    el.__listeners[type] = createInvoker(el.__id, flag, options)
-    el.addEventListener(type, el.__listeners[type], options)
   }
 }
 
@@ -81,36 +94,21 @@ export function patchWxsEvent(
   const [type, options] = parseEventName(name)
   if (flag === -1) {
     // remove
-    const listener = el.__listeners[type]
-    if (listener) {
-      el.removeEventListener(type, listener)
-    } else if (__DEV__) {
-      console.error(
-        formatLog(`tag`, el.tagName, el.__id, 'event[' + type + '] not found')
-      )
-    }
+    removeEventListener(el, type)
   } else {
     // add
-    if (el.__listeners[type]) {
-      if (__DEV__) {
-        console.error(
-          formatLog(
-            `tag`,
-            el.tagName,
-            el.__id,
-            'event[' + type + '] already registered'
-          )
-        )
-      }
-      return
+    if (!isEventListenerExists(el, type)) {
+      el.addEventListener(
+        type,
+        (el.__listeners[type] = createWxsEventInvoker(
+          el.__id,
+          wxsEvent,
+          flag,
+          options
+        )),
+        options
+      )
     }
-    el.__listeners[type] = createWxsEventInvoker(
-      el.__id,
-      wxsEvent,
-      flag,
-      options
-    )
-    el.addEventListener(type, el.__listeners[type], options)
   }
 }
 
@@ -122,7 +120,8 @@ function createWxsEventInvoker(
 ) {
   const invoker = (evt: Event) => {
     console.log('call wxsEvent', id, wxsEvent, flag, options)
-    // const event = normalizeNativeEvent(evt)
+    invokeWxs(wxsEvent, [normalizeNativeEvent(evt)])
+
     // ;(event as any).type = normalizeEventType(evt.type, options)
     // UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id, event]])
   }

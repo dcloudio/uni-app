@@ -3503,7 +3503,6 @@ var serviceContext = (function (vue) {
       }
   }, CreateCanvasContextProtocol);
   const canvasGetImageData = defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-      // onCanvasMethodCallback()
       const pageId = getPageIdByVm(getCurrentPageVm());
       if (!pageId) {
           reject();
@@ -3536,7 +3535,6 @@ var serviceContext = (function (vue) {
       }, callback);
   }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
   const canvasPutImageData = defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm());
       if (!pageId) {
           reject();
@@ -3552,7 +3550,7 @@ var serviceContext = (function (vue) {
               height,
               compressed,
           }, (data) => {
-              if (data.errMsg && data.errMsg.indexOf('fail')) {
+              if (data.errMsg && data.errMsg.indexOf('fail') !== -1) {
                   reject();
                   return;
               }
@@ -3567,12 +3565,11 @@ var serviceContext = (function (vue) {
               operate();
           });
       }
-      // fix ...
+      // fix ... fix what?
       data = Array.prototype.slice.call(data);
       operate();
   }, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
   const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality, }, { resolve, reject }) => {
-      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm());
       if (!pageId) {
           reject();
@@ -3590,7 +3587,7 @@ var serviceContext = (function (vue) {
           quality,
           dirname,
       }, (res) => {
-          if (res.errMsg && res.errMsg.indexOf('fail')) {
+          if (res.errMsg && res.errMsg.indexOf('fail') !== -1) {
               reject('', res);
               return;
           }
@@ -9363,34 +9360,37 @@ var serviceContext = (function (vue) {
       if (!isArray(modules)) {
           return;
       }
+      // 使用了内部属性__scopeId
+      const component = instance.type.__scopeId || instance.proxy.route;
       const ctx = instance.ctx;
       const $wxsModules = (instance.$wxsModules ||
           (instance.$wxsModules = []));
       modules.forEach((module) => {
-          ctx[module] = proxyModule(module);
+          ctx[module] = proxyModule(component, module);
           $wxsModules.push(module);
       });
   }
   const renderjsModule = {};
-  function proxyModule(module) {
+  function proxyModule(component, module) {
       return new Proxy(renderjsModule, {
           get(_, p) {
-              return createModuleFunction(module, p);
+              return createModuleFunction(component, module, p);
           },
       });
   }
   function renderjsFn() { }
-  function createModuleFunction(module, name) {
-      const toJSON = () => WXS_PROTOCOL + JSON.stringify([module + '.' + name]);
+  function createModuleFunction(component, module, name) {
+      const toJSON = () => WXS_PROTOCOL + JSON.stringify([component, module + '.' + name]);
       return new Proxy(renderjsFn, {
           get(_, p) {
               if (p === 'toJSON') {
                   return toJSON;
               }
-              return createModuleFunction(module + '.' + name, p);
+              return createModuleFunction(component, module + '.' + name, p);
           },
           apply(_target, _thisArg, args) {
-              return WXS_PROTOCOL + JSON.stringify([module + '.' + name, ...args]);
+              return (WXS_PROTOCOL +
+                  JSON.stringify([component, module + '.' + name, [...args]]));
           },
       });
   }

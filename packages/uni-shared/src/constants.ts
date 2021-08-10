@@ -23,8 +23,6 @@ export const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'
 export const WXS_PROTOCOL = 'wxs://'
 export const JSON_PROTOCOL = 'json://'
 
-export const WXS_METHOD_SYMBOL = Symbol('wxs.method')
-
 // lifecycle
 
 // App and Page

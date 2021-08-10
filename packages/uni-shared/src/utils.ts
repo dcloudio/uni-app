@@ -103,3 +103,15 @@ export function callOptions(
     options.complete(data)
   }
 }
+
+export function getValueByDataPath(obj: any, path: string): unknown {
+  const parts = path.split('.')
+  let key: number | string = parts[0]
+  if (!obj) {
+    obj = {}
+  }
+  if (parts.length === 1) {
+    return obj[key]
+  }
+  return getValueByDataPath(obj[key], parts.slice(1).join('.'))
+}

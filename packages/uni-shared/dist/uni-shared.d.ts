@@ -168,6 +168,8 @@ export declare function getEnvLocale(): string;
 
 export declare function getLen(str?: string): number;
 
+export declare function getValueByDataPath(obj: any, path: string): unknown;
+
 declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
 }
@@ -619,8 +621,6 @@ export declare class UniTextNode extends UniBaseNode {
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
-
-export declare const WXS_METHOD_SYMBOL: unique symbol;
 
 export declare const WXS_PROTOCOL = "wxs://";
 
