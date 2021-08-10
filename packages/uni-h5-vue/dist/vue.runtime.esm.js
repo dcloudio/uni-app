@@ -5809,11 +5809,12 @@ function baseCreateRenderer(options, createHydrationFns) {
                 value: vnode,
                 enumerable: false
             });
-            Object.defineProperty(el, '__vueParentComponent', {
-                value: parentComponent,
-                enumerable: false
-            });
         }
+        // fixed by xxxxxx
+        Object.defineProperty(el, '__vueParentComponent', {
+            value: parentComponent,
+            enumerable: false
+        });
         if (dirs) {
             invokeDirectiveHook(vnode, null, parentComponent, 'beforeMount');
         }
@@ -8883,6 +8884,18 @@ function patchClass(el, value, isSVG) {
     if (value == null) {
         value = '';
     }
+    // fixed by xxxxxx wxs
+    const { __wxsAddClass, __wxsRemoveClass } = el;
+    if (__wxsRemoveClass && __wxsRemoveClass.length) {
+        value = value
+            .split(/\s+/)
+            .filter(v => __wxsRemoveClass.indexOf(v) === -1)
+            .join(' ');
+        __wxsRemoveClass.length = 0;
+    }
+    if (__wxsAddClass && __wxsAddClass.length) {
+        value = value + ' ' + __wxsAddClass.join(' ');
+    }
     if (isSVG) {
         el.setAttribute('class', value);
     }
@@ -8927,6 +8940,13 @@ function patchStyle(el, prev, next) {
                     setStyle(style, key, '');
                 }
             }
+        }
+    }
+    // fixed by xxxxxx
+    const { __wxsStyle } = el;
+    if (__wxsStyle) {
+        for (const key in __wxsStyle) {
+            setStyle(style, key, __wxsStyle[key]);
         }
     }
 }
@@ -9158,16 +9178,15 @@ function createInvoker(initialValue, instance) {
                 const fns = patchStopImmediatePropagation(e, value);
                 for (let i = 0; i < fns.length; i++) {
                     const fn = fns[i];
-                    callWithAsyncErrorHandling(fn, instance, 5 /* NATIVE_EVENT_HANDLER */, [!fn.__wwe ? normalizeNativeEvent(e) : e]);
+                    callWithAsyncErrorHandling(fn, instance, 5 /* NATIVE_EVENT_HANDLER */, !fn.__wwe ? normalizeNativeEvent(e) : [e]);
                 }
                 return;
             }
-            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, value), instance, 5 /* NATIVE_EVENT_HANDLER */, [
-                // fixed by xxxxxx
-                normalizeNativeEvent && !value.__wwe
-                    ? normalizeNativeEvent(e)
-                    : e
-            ]);
+            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, value), instance, 5 /* NATIVE_EVENT_HANDLER */, 
+            // fixed by xxxxxx
+            normalizeNativeEvent && !value.__wwe
+                ? normalizeNativeEvent(e, value, instance)
+                : [e]);
         }
     };
     invoker.value = initialValue;
@@ -9193,27 +9212,37 @@ function patchStopImmediatePropagation(e, value) {
 }
 
 function patchWxs(el, rawName, nextValue, instance = null) {
-    if (!el.__wxsWatches) {
-        el.__wxsWatches = {};
+    if (!nextValue || !instance) {
+        return;
     }
-    if (!nextValue) {
-        return el.__wxsWatches[rawName] && el.__wxsWatches[rawName]();
+    const propName = rawName.replace('change:', '');
+    const { attrs } = instance;
+    const nextPropValue = attrs[propName];
+    const prevPropValue = (el.__wxsProps || (el.__wxsProps = {}))[propName];
+    if (prevPropValue === nextPropValue) {
+        return;
     }
-    if (!el.__wxsWatches[rawName] && instance && instance.proxy) {
-        const proxy = instance.proxy;
-        const name = rawName.split(':')[1];
-        el.__wxsWatches[rawName] = proxy.$watch(() => instance.attrs[name], (value, oldValue) => {
-            nextTick(() => {
-                nextValue(value, oldValue, proxy.$gcd(proxy, true), proxy.$gcd(proxy, false));
-            });
-        }, {
-            deep: true
-        });
-    }
+    el.__wxsProps[propName] = nextPropValue;
+    const proxy = instance.proxy;
+    nextTick(() => {
+        nextValue(nextPropValue, prevPropValue, proxy.$gcd(proxy, true), proxy.$gcd(proxy, false));
+    });
 }
 
 const nativeOnRE = /^on[a-z]/;
-const forcePatchProp = (_, key) => key === 'value';
+// fixed by xxxxxx
+const forcePatchProp = (el, key) => {
+    if (key === 'value' || key.indexOf('change:') === 0) {
+        return true;
+    }
+    if (key === 'class' && el.__wxsClassChanged) {
+        return true;
+    }
+    if (key === 'style' && el.__wxsStyleChanged) {
+        return true;
+    }
+    return false;
+};
 const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     // @ts-expect-error fixed by xxxxxx
     if (__UNI_FEATURE_WXS__ && key.indexOf('change:') === 0) {

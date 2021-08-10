@@ -1,4 +1,98 @@
-import { camelize, extend, isString, isPlainObject, isArray, isHTMLTag, isSVGTag, capitalize, hyphenate } from '@vue/shared';
+import { isHTMLTag, isSVGTag, hyphenate, camelize, extend, isString, isPlainObject, isArray, capitalize } from '@vue/shared';
+
+const BUILT_IN_TAGS = [
+    'ad',
+    'audio',
+    'button',
+    'camera',
+    'canvas',
+    'checkbox',
+    'checkbox-group',
+    'cover-image',
+    'cover-view',
+    'editor',
+    'form',
+    'functional-page-navigator',
+    'icon',
+    'image',
+    'input',
+    'label',
+    'live-player',
+    'live-pusher',
+    'map',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'official-account',
+    'open-data',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'text',
+    'textarea',
+    'video',
+    'view',
+    'web-view',
+].map((tag) => 'uni-' + tag);
+const TAGS = [
+    'app',
+    'layout',
+    'content',
+    'main',
+    'top-window',
+    'left-window',
+    'right-window',
+    'tabbar',
+    'page',
+    'page-head',
+    'page-wrapper',
+    'page-body',
+    'page-refresh',
+    'actionsheet',
+    'modal',
+    'toast',
+    'resize-sensor',
+    'shadow-root',
+].map((tag) => 'uni-' + tag);
+function isBuiltInComponent(tag) {
+    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
+}
+function isCustomElement(tag) {
+    return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
+}
+function isNativeTag(tag) {
+    return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag);
+}
+function isServiceNativeTag(tag) {
+    return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag);
+}
+function isServiceCustomElement(_tag) {
+    return false;
+}
+const COMPONENT_SELECTOR_PREFIX = 'uni-';
+const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
+
+function resolveOwnerVm(vm) {
+    if (!vm) {
+        return;
+    }
+    let componentName = vm.type.name;
+    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
+        // ownerInstance 内置组件需要使用父 vm
+        vm = vm.parent;
+        componentName = vm.type.name;
+    }
+    return vm.proxy;
+}
 
 let lastLogTime = 0;
 function formatLog(module, ...args) {
@@ -236,87 +330,6 @@ function plusReady(callback) {
     }
     document.addEventListener('plusready', callback);
 }
-
-const BUILT_IN_TAGS = [
-    'ad',
-    'audio',
-    'button',
-    'camera',
-    'canvas',
-    'checkbox',
-    'checkbox-group',
-    'cover-image',
-    'cover-view',
-    'editor',
-    'form',
-    'functional-page-navigator',
-    'icon',
-    'image',
-    'input',
-    'label',
-    'live-player',
-    'live-pusher',
-    'map',
-    'movable-area',
-    'movable-view',
-    'navigator',
-    'official-account',
-    'open-data',
-    'picker',
-    'picker-view',
-    'picker-view-column',
-    'progress',
-    'radio',
-    'radio-group',
-    'rich-text',
-    'scroll-view',
-    'slider',
-    'swiper',
-    'swiper-item',
-    'switch',
-    'text',
-    'textarea',
-    'video',
-    'view',
-    'web-view',
-].map((tag) => 'uni-' + tag);
-const TAGS = [
-    'app',
-    'layout',
-    'content',
-    'main',
-    'top-window',
-    'left-window',
-    'right-window',
-    'tabbar',
-    'page',
-    'page-head',
-    'page-wrapper',
-    'page-body',
-    'page-refresh',
-    'actionsheet',
-    'modal',
-    'toast',
-    'resize-sensor',
-    'shadow-root',
-].map((tag) => 'uni-' + tag);
-function isBuiltInComponent(tag) {
-    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
-}
-function isCustomElement(tag) {
-    return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
-}
-function isNativeTag(tag) {
-    return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag);
-}
-function isServiceNativeTag(tag) {
-    return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag);
-}
-function isServiceCustomElement(_tag) {
-    return false;
-}
-const COMPONENT_SELECTOR_PREFIX = 'uni-';
-const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
 class DOMException extends Error {
     constructor(message) {
@@ -982,4 +995,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventChannel, EventModifierFlags, JSON_PROTOCOL, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_HIDE, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_PROTOCOL, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, createUniEvent, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isRootHook, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventChannel, EventModifierFlags, JSON_PROTOCOL, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_HIDE, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_PROTOCOL, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, createUniEvent, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isRootHook, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveOwnerVm, sanitise, scrollTo, stringifyQuery, updateElementStyle };

@@ -358,16 +358,6 @@ function createNativeEvent(evt) {
     event.touches = evt.touches;
     event.changedTouches = evt.changedTouches;
   }
-  {
-    shared.extend(event, {
-      preventDefault() {
-        return evt.preventDefault();
-      },
-      stopPropagation() {
-        return evt.stopPropagation();
-      }
-    });
-  }
   return event;
 }
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);

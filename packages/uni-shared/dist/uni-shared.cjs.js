@@ -4,6 +4,100 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
 
+const BUILT_IN_TAGS = [
+    'ad',
+    'audio',
+    'button',
+    'camera',
+    'canvas',
+    'checkbox',
+    'checkbox-group',
+    'cover-image',
+    'cover-view',
+    'editor',
+    'form',
+    'functional-page-navigator',
+    'icon',
+    'image',
+    'input',
+    'label',
+    'live-player',
+    'live-pusher',
+    'map',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'official-account',
+    'open-data',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'text',
+    'textarea',
+    'video',
+    'view',
+    'web-view',
+].map((tag) => 'uni-' + tag);
+const TAGS = [
+    'app',
+    'layout',
+    'content',
+    'main',
+    'top-window',
+    'left-window',
+    'right-window',
+    'tabbar',
+    'page',
+    'page-head',
+    'page-wrapper',
+    'page-body',
+    'page-refresh',
+    'actionsheet',
+    'modal',
+    'toast',
+    'resize-sensor',
+    'shadow-root',
+].map((tag) => 'uni-' + tag);
+function isBuiltInComponent(tag) {
+    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
+}
+function isCustomElement(tag) {
+    return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
+}
+function isNativeTag(tag) {
+    return (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) && !isBuiltInComponent(tag);
+}
+function isServiceNativeTag(tag) {
+    return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
+}
+function isServiceCustomElement(_tag) {
+    return false;
+}
+const COMPONENT_SELECTOR_PREFIX = 'uni-';
+const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
+
+function resolveOwnerVm(vm) {
+    if (!vm) {
+        return;
+    }
+    let componentName = vm.type.name;
+    while (componentName && isBuiltInComponent(shared.hyphenate(componentName))) {
+        // ownerInstance 内置组件需要使用父 vm
+        vm = vm.parent;
+        componentName = vm.type.name;
+    }
+    return vm.proxy;
+}
+
 let lastLogTime = 0;
 function formatLog(module, ...args) {
     const now = Date.now();
@@ -240,87 +334,6 @@ function plusReady(callback) {
     }
     document.addEventListener('plusready', callback);
 }
-
-const BUILT_IN_TAGS = [
-    'ad',
-    'audio',
-    'button',
-    'camera',
-    'canvas',
-    'checkbox',
-    'checkbox-group',
-    'cover-image',
-    'cover-view',
-    'editor',
-    'form',
-    'functional-page-navigator',
-    'icon',
-    'image',
-    'input',
-    'label',
-    'live-player',
-    'live-pusher',
-    'map',
-    'movable-area',
-    'movable-view',
-    'navigator',
-    'official-account',
-    'open-data',
-    'picker',
-    'picker-view',
-    'picker-view-column',
-    'progress',
-    'radio',
-    'radio-group',
-    'rich-text',
-    'scroll-view',
-    'slider',
-    'swiper',
-    'swiper-item',
-    'switch',
-    'text',
-    'textarea',
-    'video',
-    'view',
-    'web-view',
-].map((tag) => 'uni-' + tag);
-const TAGS = [
-    'app',
-    'layout',
-    'content',
-    'main',
-    'top-window',
-    'left-window',
-    'right-window',
-    'tabbar',
-    'page',
-    'page-head',
-    'page-wrapper',
-    'page-body',
-    'page-refresh',
-    'actionsheet',
-    'modal',
-    'toast',
-    'resize-sensor',
-    'shadow-root',
-].map((tag) => 'uni-' + tag);
-function isBuiltInComponent(tag) {
-    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
-}
-function isCustomElement(tag) {
-    return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
-}
-function isNativeTag(tag) {
-    return (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) && !isBuiltInComponent(tag);
-}
-function isServiceNativeTag(tag) {
-    return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
-}
-function isServiceCustomElement(_tag) {
-    return false;
-}
-const COMPONENT_SELECTOR_PREFIX = 'uni-';
-const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
 class DOMException extends Error {
     constructor(message) {
@@ -1104,6 +1117,7 @@ exports.parseUrl = parseUrl;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;
+exports.resolveOwnerVm = resolveOwnerVm;
 exports.sanitise = sanitise;
 exports.scrollTo = scrollTo;
 exports.stringifyQuery = stringifyQuery;

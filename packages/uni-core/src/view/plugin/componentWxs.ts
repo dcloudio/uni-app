@@ -1,58 +1,22 @@
 import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
-import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
-import { isBuiltInComponent } from '@dcloudio/uni-shared'
+import {
+  isFunction,
+  isPlainObject,
+  parseStringStyle,
+  stringifyStyle,
+} from '@vue/shared'
+import { resolveOwnerVm } from '@dcloudio/uni-shared'
 // import { normalizeEvent, findUniTarget } from './componentEvents'
 
 interface WxsElement extends HTMLElement {
-  __wxsStyle: Record<string, string>
-  __wxsAddClass: string
+  __wxsStyle: Record<string, string | number>
+  __wxsAddClass: string[]
   __wxsRemoveClass: string[]
   __wxsState: Record<string, any>
+  __wxsClassChanged: boolean
+  __wxsStyleChanged: boolean
   __vueParentComponent: ComponentInternalInstance // vue3 引擎内部，需要开放该属性
   __wxsComponentDescriptor: ComponentDescriptor
-}
-
-const CLASS_RE = /^\s+|\s+$/g
-const WXS_CLASS_RE = /\s+/
-
-function getWxsClsArr(
-  clsArr: string[],
-  classList: DOMTokenList,
-  isAdd: boolean
-) {
-  const wxsClsArr: string[] = []
-
-  let checkClassList: (cls: string) => boolean = function (cls: string) {
-    if (isAdd) {
-      checkClassList = function (cls) {
-        return !classList.contains(cls)
-      }
-    } else {
-      checkClassList = function (cls) {
-        return classList.contains(cls)
-      }
-    }
-    return checkClassList(cls)
-  }
-
-  clsArr.forEach((cls) => {
-    cls = cls.replace(CLASS_RE, '')
-    checkClassList(cls) && wxsClsArr.push(cls)
-  })
-  return wxsClsArr
-}
-
-function parseStyleText(cssText: string) {
-  const res: Record<string, string> = {}
-  const listDelimiter = /;(?![^(]*\))/g
-  const propertyDelimiter = /:(.+)/
-  cssText.split(listDelimiter).forEach(function (item) {
-    if (item) {
-      const tmp = item.split(propertyDelimiter)
-      tmp.length > 1 && (res[tmp[0].trim()] = tmp[1].trim())
-    }
-  })
-  return res
 }
 
 interface ComponentDescriptorVm {
@@ -65,9 +29,15 @@ interface ComponentDescriptorVm {
 export class ComponentDescriptor {
   private $vm: ComponentDescriptorVm
   private $el: WxsElement
+  private $bindClass: boolean = false
+  private $bindStyle: boolean = false
   constructor(vm: ComponentDescriptorVm) {
     this.$vm = vm
     this.$el = vm.$el
+    if (this.$el.getAttribute) {
+      this.$bindClass = !!this.$el.getAttribute('class')
+      this.$bindStyle = !!this.$el.getAttribute('style')
+    }
   }
 
   selectComponent(selector: string) {
@@ -98,62 +68,81 @@ export class ComponentDescriptor {
     return descriptors
   }
 
-  setStyle(style: string | Record<string, string>) {
+  forceUpdate(type: 'class' | 'style') {
+    if (type === 'class') {
+      if (this.$bindClass) {
+        // 组件已绑定class，通过vue内核更新
+        this.$el.__wxsClassChanged = true
+        this.$vm.$forceUpdate()
+      } else {
+        this.updateWxsClass()
+      }
+    } else if (type === 'style') {
+      if (this.$bindStyle) {
+        // 组件已绑定style，通过vue内核更新
+        this.$el.__wxsStyleChanged = true
+        this.$vm.$forceUpdate()
+      } else {
+        this.updateWxsStyle()
+      }
+    }
+  }
+  updateWxsClass() {
+    const { __wxsAddClass } = this.$el
+    if (__wxsAddClass.length) {
+      this.$el.className = __wxsAddClass.join(' ')
+    }
+  }
+  updateWxsStyle() {
+    const { __wxsStyle } = this.$el
+    if (__wxsStyle) {
+      this.$el.setAttribute('style', stringifyStyle(__wxsStyle))
+    }
+  }
+  setStyle(style: string | Record<string, string | number>) {
     if (!this.$el || !style) {
       return this
     }
     if (typeof style === 'string') {
-      style = parseStyleText(style)
+      style = parseStringStyle(style)
     }
     if (isPlainObject(style)) {
       this.$el.__wxsStyle = style
-      this.$vm.$forceUpdate()
+      this.forceUpdate('style')
     }
     return this
   }
 
-  addClass(...clsArr: string[]) {
-    if (!this.$el || !clsArr.length) {
+  addClass(clazz: string) {
+    if (!this.$el || !clazz) {
       return this
     }
-
-    const wxsClsArr = getWxsClsArr(clsArr, this.$el.classList, true)
-    if (wxsClsArr.length) {
-      const wxsClass = this.$el.__wxsAddClass || ''
-      this.$el.__wxsAddClass =
-        wxsClass + (wxsClass ? ' ' : '') + wxsClsArr.join(' ')
-      this.$vm.$forceUpdate()
+    const __wxsAddClass =
+      this.$el.__wxsAddClass || (this.$el.__wxsAddClass = [])
+    if (__wxsAddClass.indexOf(clazz) === -1) {
+      __wxsAddClass.push(clazz)
+      this.forceUpdate('class')
     }
-
     return this
   }
 
-  removeClass(...clsArr: string[]) {
-    if (!this.$el || !clsArr.length) {
+  removeClass(clazz: string) {
+    if (!this.$el || !clazz) {
       return this
     }
-    const classList = this.$el.classList
-    const addWxsClsArr = this.$el.__wxsAddClass
-      ? this.$el.__wxsAddClass.split(WXS_CLASS_RE)
-      : []
-    const wxsClsArr = getWxsClsArr(clsArr, classList, false)
-    if (wxsClsArr.length) {
-      const removeWxsClsArr: string[] = []
-      wxsClsArr.forEach((cls) => {
-        const clsIndex = addWxsClsArr.findIndex(
-          (oldCls: string) => oldCls === cls
-        )
-        if (clsIndex !== -1) {
-          // 在 addWxsClass 中
-          addWxsClsArr.splice(clsIndex, 1)
-        }
-        removeWxsClsArr.push(cls)
-      })
-      this.$el.__wxsRemoveClass = removeWxsClsArr
-      this.$el.__wxsAddClass = addWxsClsArr.join(' ')
-      this.$vm.$forceUpdate()
+    const { __wxsAddClass } = this.$el
+    if (__wxsAddClass) {
+      const index = __wxsAddClass.indexOf(clazz)
+      if (index > -1) {
+        __wxsAddClass.splice(index, 1)
+      }
     }
-
+    const __wxsRemoveClass =
+      this.$el.__wxsRemoveClass || (this.$el.__wxsRemoveClass = [])
+    if (__wxsRemoveClass.indexOf(clazz) === -1) {
+      __wxsRemoveClass.push(clazz)
+      this.forceUpdate('class')
+    }
     return this
   }
 
@@ -218,23 +207,13 @@ export class ComponentDescriptor {
   }
 }
 
-function resolveOwnerVm(vm: ComponentPublicInstance) {
-  let componentName = vm.$options && vm.$options.name
-  while (componentName && isBuiltInComponent(hyphenate(componentName))) {
-    // ownerInstance 内置组件需要使用父 vm
-    vm = vm.$parent!
-    componentName = vm.$options && vm.$options.name
-  }
-  return vm
-}
-
 function createComponentDescriptor(
   vm: ComponentDescriptorVm,
   isOwnerInstance = true
 ) {
   if (isOwnerInstance && vm) {
     if (__PLATFORM__ === 'h5') {
-      vm = resolveOwnerVm(vm as ComponentPublicInstance)
+      vm = resolveOwnerVm((vm as ComponentPublicInstance).$)!
     }
     // TODO App
   }

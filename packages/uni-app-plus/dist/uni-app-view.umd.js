@@ -6306,7 +6306,7 @@
     return "/" + fromRouteArray.concat(toRouteArray).join("/");
   }
   var isClickEvent = (val) => val.type === "click";
-  function $nne(evt) {
+  function $nne(evt, eventValue, instance) {
     var {
       currentTarget
     } = evt;
@@ -6326,7 +6326,7 @@
       res.touches = normalizeTouchEvent(evt.touches, top);
       res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
     }
-    return res;
+    return [res];
   }
   function findUniTarget(target) {
     while (target && target.tagName.indexOf("UNI-") !== 0) {
@@ -7298,13 +7298,29 @@
       width
     };
   }
+  function rectifyIntersectionRatio(entrie) {
+    var {
+      intersectionRatio,
+      boundingClientRect: {
+        height: overAllHeight,
+        width: overAllWidth
+      },
+      intersectionRect: {
+        height: intersectionHeight,
+        width: intersectionWidth
+      }
+    } = entrie;
+    if (intersectionRatio !== 0)
+      return intersectionRatio;
+    return intersectionHeight === overAllHeight ? intersectionWidth / overAllWidth : intersectionHeight / overAllHeight;
+  }
   function requestComponentObserver($el, options, callback) {
     initIntersectionObserverPolyfill();
     var root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
     var intersectionObserver = new IntersectionObserver((entries2) => {
       entries2.forEach((entrie) => {
         callback({
-          intersectionRatio: entrie.intersectionRatio,
+          intersectionRatio: rectifyIntersectionRatio(entrie),
           intersectionRect: normalizeRect(entrie.intersectionRect),
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds),

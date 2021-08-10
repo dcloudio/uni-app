@@ -1,7 +1,7 @@
 import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
-import { once, passive, initCustomDataset, invokeArrayFns, normalizeTarget, isBuiltInComponent, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
-import { extend, isString, isPlainObject, isFunction, hyphenate, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { extend, isString, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 let i18n;
 function useI18n() {
@@ -862,144 +862,16 @@ function getRouteOptions(path, alias = false) {
   }
   return __uniRoutes.find((route) => route.path === path);
 }
-const isClickEvent = (val) => val.type === "click";
-const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
-function $nne(evt) {
-  const { currentTarget } = evt;
-  if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
-    return evt;
-  }
-  if (currentTarget.tagName.indexOf("UNI-") !== 0) {
-    return evt;
-  }
-  const res = createNativeEvent(evt);
-  if (isClickEvent(evt)) {
-    normalizeClickEvent(res, evt);
-  } else if (isMouseEvent(evt)) {
-    normalizeMouseEvent(res, evt);
-  } else if (evt instanceof TouchEvent) {
-    const { top } = getWindowOffset();
-    res.touches = normalizeTouchEvent(evt.touches, top);
-    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
-  }
-  return res;
-}
-function findUniTarget(target) {
-  while (target && target.tagName.indexOf("UNI-") !== 0) {
-    target = target.parentElement;
-  }
-  return target;
-}
-function createNativeEvent(evt) {
-  const { type, timeStamp, target, currentTarget } = evt;
-  const event = {
-    type,
-    timeStamp,
-    target: normalizeTarget(findUniTarget(target)),
-    detail: {},
-    currentTarget: normalizeTarget(currentTarget)
-  };
-  if (evt._stopped) {
-    event._stopped = true;
-  }
-  if (evt.type.startsWith("touch")) {
-    event.touches = evt.touches;
-    event.changedTouches = evt.changedTouches;
-  }
-  {
-    extend(event, {
-      preventDefault() {
-        return evt.preventDefault();
-      },
-      stopPropagation() {
-        return evt.stopPropagation();
-      }
-    });
-  }
-  return event;
-}
-function normalizeClickEvent(evt, mouseEvt) {
-  const { x, y } = mouseEvt;
-  const { top } = getWindowOffset();
-  evt.detail = { x, y: y - top };
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
-}
-function normalizeMouseEvent(evt, mouseEvt) {
-  const { top } = getWindowOffset();
-  evt.pageX = mouseEvt.pageX;
-  evt.pageY = mouseEvt.pageY - top;
-  evt.clientX = mouseEvt.clientX;
-  evt.clientY = mouseEvt.clientY - top;
-}
-function createTouchEvent(evt) {
-  return {
-    force: 1,
-    identifier: 0,
-    clientX: evt.clientX,
-    clientY: evt.clientY,
-    pageX: evt.pageX,
-    pageY: evt.pageY
-  };
-}
-function normalizeTouchEvent(touches, top) {
-  const res = [];
-  for (let i = 0; i < touches.length; i++) {
-    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i];
-    res.push({
-      identifier,
-      pageX,
-      pageY: pageY - top,
-      clientX,
-      clientY: clientY - top,
-      force: force || 0
-    });
-  }
-  return res;
-}
-var instance = {
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  $nne,
-  createNativeEvent
-};
-const CLASS_RE = /^\s+|\s+$/g;
-const WXS_CLASS_RE = /\s+/;
-function getWxsClsArr(clsArr, classList, isAdd) {
-  const wxsClsArr = [];
-  let checkClassList = function(cls) {
-    if (isAdd) {
-      checkClassList = function(cls2) {
-        return !classList.contains(cls2);
-      };
-    } else {
-      checkClassList = function(cls2) {
-        return classList.contains(cls2);
-      };
-    }
-    return checkClassList(cls);
-  };
-  clsArr.forEach((cls) => {
-    cls = cls.replace(CLASS_RE, "");
-    checkClassList(cls) && wxsClsArr.push(cls);
-  });
-  return wxsClsArr;
-}
-function parseStyleText(cssText) {
-  const res = {};
-  const listDelimiter = /;(?![^(]*\))/g;
-  const propertyDelimiter = /:(.+)/;
-  cssText.split(listDelimiter).forEach(function(item) {
-    if (item) {
-      const tmp = item.split(propertyDelimiter);
-      tmp.length > 1 && (res[tmp[0].trim()] = tmp[1].trim());
-    }
-  });
-  return res;
-}
 class ComponentDescriptor {
   constructor(vm) {
+    this.$bindClass = false;
+    this.$bindStyle = false;
     this.$vm = vm;
     this.$el = vm.$el;
+    if (this.$el.getAttribute) {
+      this.$bindClass = !!this.$el.getAttribute("class");
+      this.$bindStyle = !!this.$el.getAttribute("style");
+    }
   }
   selectComponent(selector) {
     if (!this.$el || !selector) {
@@ -1020,50 +892,74 @@ class ComponentDescriptor {
     }
     return descriptors;
   }
+  forceUpdate(type) {
+    if (type === "class") {
+      if (this.$bindClass) {
+        this.$el.__wxsClassChanged = true;
+        this.$vm.$forceUpdate();
+      } else {
+        this.updateWxsClass();
+      }
+    } else if (type === "style") {
+      if (this.$bindStyle) {
+        this.$el.__wxsStyleChanged = true;
+        this.$vm.$forceUpdate();
+      } else {
+        this.updateWxsStyle();
+      }
+    }
+  }
+  updateWxsClass() {
+    const { __wxsAddClass } = this.$el;
+    if (__wxsAddClass.length) {
+      this.$el.className = __wxsAddClass.join(" ");
+    }
+  }
+  updateWxsStyle() {
+    const { __wxsStyle } = this.$el;
+    if (__wxsStyle) {
+      this.$el.setAttribute("style", stringifyStyle(__wxsStyle));
+    }
+  }
   setStyle(style) {
     if (!this.$el || !style) {
       return this;
     }
     if (typeof style === "string") {
-      style = parseStyleText(style);
+      style = parseStringStyle(style);
     }
     if (isPlainObject(style)) {
       this.$el.__wxsStyle = style;
-      this.$vm.$forceUpdate();
+      this.forceUpdate("style");
     }
     return this;
   }
-  addClass(...clsArr) {
-    if (!this.$el || !clsArr.length) {
+  addClass(clazz2) {
+    if (!this.$el || !clazz2) {
       return this;
     }
-    const wxsClsArr = getWxsClsArr(clsArr, this.$el.classList, true);
-    if (wxsClsArr.length) {
-      const wxsClass = this.$el.__wxsAddClass || "";
-      this.$el.__wxsAddClass = wxsClass + (wxsClass ? " " : "") + wxsClsArr.join(" ");
-      this.$vm.$forceUpdate();
+    const __wxsAddClass = this.$el.__wxsAddClass || (this.$el.__wxsAddClass = []);
+    if (__wxsAddClass.indexOf(clazz2) === -1) {
+      __wxsAddClass.push(clazz2);
+      this.forceUpdate("class");
     }
     return this;
   }
-  removeClass(...clsArr) {
-    if (!this.$el || !clsArr.length) {
+  removeClass(clazz2) {
+    if (!this.$el || !clazz2) {
       return this;
     }
-    const classList = this.$el.classList;
-    const addWxsClsArr = this.$el.__wxsAddClass ? this.$el.__wxsAddClass.split(WXS_CLASS_RE) : [];
-    const wxsClsArr = getWxsClsArr(clsArr, classList, false);
-    if (wxsClsArr.length) {
-      const removeWxsClsArr = [];
-      wxsClsArr.forEach((cls) => {
-        const clsIndex = addWxsClsArr.findIndex((oldCls) => oldCls === cls);
-        if (clsIndex !== -1) {
-          addWxsClsArr.splice(clsIndex, 1);
-        }
-        removeWxsClsArr.push(cls);
-      });
-      this.$el.__wxsRemoveClass = removeWxsClsArr;
-      this.$el.__wxsAddClass = addWxsClsArr.join(" ");
-      this.$vm.$forceUpdate();
+    const { __wxsAddClass } = this.$el;
+    if (__wxsAddClass) {
+      const index2 = __wxsAddClass.indexOf(clazz2);
+      if (index2 > -1) {
+        __wxsAddClass.splice(index2, 1);
+      }
+    }
+    const __wxsRemoveClass = this.$el.__wxsRemoveClass || (this.$el.__wxsRemoveClass = []);
+    if (__wxsRemoveClass.indexOf(clazz2) === -1) {
+      __wxsRemoveClass.push(clazz2);
+      this.forceUpdate("class");
     }
     return this;
   }
@@ -1117,18 +1013,10 @@ class ComponentDescriptor {
     return this.$el.getBoundingClientRect();
   }
 }
-function resolveOwnerVm(vm) {
-  let componentName = vm.$options && vm.$options.name;
-  while (componentName && isBuiltInComponent(hyphenate(componentName))) {
-    vm = vm.$parent;
-    componentName = vm.$options && vm.$options.name;
-  }
-  return vm;
-}
 function createComponentDescriptor(vm, isOwnerInstance = true) {
   if (isOwnerInstance && vm) {
     {
-      vm = resolveOwnerVm(vm);
+      vm = resolveOwnerVm(vm.$);
     }
   }
   if (vm && vm.$el) {
@@ -1141,6 +1029,132 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
 function getComponentDescriptor(instance2, isOwnerInstance) {
   return createComponentDescriptor(instance2, isOwnerInstance);
 }
+const isClickEvent = (val) => val.type === "click";
+const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
+function $nne(evt, eventValue, instance2) {
+  const { currentTarget } = evt;
+  if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
+    return evt;
+  }
+  if (currentTarget.tagName.indexOf("UNI-") !== 0) {
+    return evt;
+  }
+  const res = createNativeEvent(evt);
+  if (isClickEvent(evt)) {
+    normalizeClickEvent(res, evt);
+  } else if (isMouseEvent(evt)) {
+    normalizeMouseEvent(res, evt);
+  } else if (evt instanceof TouchEvent) {
+    const { top } = getWindowOffset();
+    res.touches = normalizeTouchEvent(evt.touches, top);
+    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
+  }
+  {
+    return wrapperEvent(res, evt, eventValue, instance2);
+  }
+}
+function findUniTarget(target) {
+  while (target && target.tagName.indexOf("UNI-") !== 0) {
+    target = target.parentElement;
+  }
+  return target;
+}
+function createNativeEvent(evt) {
+  const { type, timeStamp, target, currentTarget } = evt;
+  const event = {
+    type,
+    timeStamp,
+    target: normalizeTarget(findUniTarget(target)),
+    detail: {},
+    currentTarget: normalizeTarget(currentTarget)
+  };
+  if (evt._stopped) {
+    event._stopped = true;
+  }
+  if (evt.type.startsWith("touch")) {
+    event.touches = evt.touches;
+    event.changedTouches = evt.changedTouches;
+  }
+  return event;
+}
+function resolveOwnerComponentPublicInstance(eventValue, instance2) {
+  if (!instance2 || eventValue.length < 2) {
+    return false;
+  }
+  const ownerVm = resolveOwnerVm(instance2);
+  if (!ownerVm) {
+    return false;
+  }
+  const type = ownerVm.$.type;
+  if (!type.$wxs && !type.$renderjs) {
+    return false;
+  }
+  return ownerVm;
+}
+function wrapperEvent(event, evt, eventValue, instance2) {
+  extend(event, {
+    preventDefault() {
+      return evt.preventDefault();
+    },
+    stopPropagation() {
+      return evt.stopPropagation();
+    }
+  });
+  Object.defineProperty(event, "instance", {
+    get() {
+      return getComponentDescriptor(instance2.proxy, false);
+    }
+  });
+  const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2);
+  if (ownerVm) {
+    return [event, getComponentDescriptor(ownerVm, false)];
+  }
+  return [event];
+}
+function normalizeClickEvent(evt, mouseEvt) {
+  const { x, y } = mouseEvt;
+  const { top } = getWindowOffset();
+  evt.detail = { x, y: y - top };
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
+}
+function normalizeMouseEvent(evt, mouseEvt) {
+  const { top } = getWindowOffset();
+  evt.pageX = mouseEvt.pageX;
+  evt.pageY = mouseEvt.pageY - top;
+  evt.clientX = mouseEvt.clientX;
+  evt.clientY = mouseEvt.clientY - top;
+}
+function createTouchEvent(evt) {
+  return {
+    force: 1,
+    identifier: 0,
+    clientX: evt.clientX,
+    clientY: evt.clientY,
+    pageX: evt.pageX,
+    pageY: evt.pageY
+  };
+}
+function normalizeTouchEvent(touches, top) {
+  const res = [];
+  for (let i = 0; i < touches.length; i++) {
+    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i];
+    res.push({
+      identifier,
+      pageX,
+      pageY: pageY - top,
+      clientX,
+      clientY: clientY - top,
+      force: force || 0
+    });
+  }
+  return res;
+}
+var instance = {
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  $nne,
+  createNativeEvent
+};
 function initAppConfig$1(appConfig) {
   const globalProperties = appConfig.globalProperties;
   extend(globalProperties, instance);
@@ -5597,13 +5611,23 @@ function normalizeRect(rect) {
     width
   };
 }
+function rectifyIntersectionRatio(entrie) {
+  const {
+    intersectionRatio,
+    boundingClientRect: { height: overAllHeight, width: overAllWidth },
+    intersectionRect: { height: intersectionHeight, width: intersectionWidth }
+  } = entrie;
+  if (intersectionRatio !== 0)
+    return intersectionRatio;
+  return intersectionHeight === overAllHeight ? intersectionWidth / overAllWidth : intersectionHeight / overAllHeight;
+}
 function requestComponentObserver($el, options, callback) {
   initIntersectionObserverPolyfill();
   const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
   const intersectionObserver = new IntersectionObserver((entries2) => {
     entries2.forEach((entrie) => {
       callback({
-        intersectionRatio: entrie.intersectionRatio,
+        intersectionRatio: rectifyIntersectionRatio(entrie),
         intersectionRect: normalizeRect(entrie.intersectionRect),
         boundingClientRect: normalizeRect(entrie.boundingClientRect),
         relativeRect: normalizeRect(entrie.rootBounds),

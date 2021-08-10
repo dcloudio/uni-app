@@ -1,3 +1,6 @@
+import { ComponentInternalInstance } from 'vue';
+import { ComponentOptionsBase } from 'vue';
+import { ComponentPublicInstance } from 'vue';
 import { FontFaceDescriptors } from 'css-font-loading-module';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
@@ -393,6 +396,8 @@ string | number
 ];
 
 export declare function removeLeadingSlash(str: string): string;
+
+export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
 

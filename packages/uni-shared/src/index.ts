@@ -1,3 +1,4 @@
+export * from './vue'
 export * from './log'
 export * from './dom'
 export * from './url'

@@ -28,6 +28,8 @@ ${type === 'renderjs' ? genRenderjsCode(name) : genWxsCode(name)}`;
 exports.uniRenderjsPlugin = uniRenderjsPlugin;
 function genRenderjsCode(name) {
     return `export default Comp => {
+  if(!Comp.$renderjs){Comp.$renderjs = []}
+  Comp.$renderjs.push('${name}')
   if(!Comp.mixins){Comp.mixins = []}
   Comp.mixins.push({beforeCreate(){ this['${name}'] = this }})
   Comp.mixins.push(_sfc_renderjs)
@@ -35,6 +37,8 @@ function genRenderjsCode(name) {
 }
 function genWxsCode(name) {
     return `export default Comp => {
+  if(!Comp.$wxs){Comp.$wxs = []} 
+  Comp.$wxs.push('${name}')
   if(!Comp.mixins){Comp.mixins = []}
   Comp.mixins.push({beforeCreate(){ this['${name}'] = _sfc_wxs }})
 }`;

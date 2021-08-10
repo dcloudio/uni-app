@@ -1,12 +1,18 @@
+import { ComponentInternalInstance } from 'vue'
 import { extend } from '@vue/shared'
-import { normalizeTarget } from '@dcloudio/uni-shared'
+import { normalizeTarget, resolveOwnerVm } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '../../helpers'
+import { getComponentDescriptor } from './componentWxs'
 
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0
 // normalizeNativeEvent
-export function $nne(evt: Event) {
+export function $nne(
+  evt: Event,
+  eventValue: Function,
+  instance: ComponentInternalInstance | null
+) {
   // 目前内置组件底层实现，当需要访问原始event时，请使用withWebEvent包裹
   // 用法参考：uni-h5/src/framework/components/page/page-refresh/index.ts
   const { currentTarget } = evt
@@ -28,8 +34,11 @@ export function $nne(evt: Event) {
     ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
     ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
   }
+  if (__PLATFORM__ === 'h5') {
+    return wrapperEvent(res, evt, eventValue, instance)
+  }
 
-  return res
+  return [res]
 }
 
 function findUniTarget(target: HTMLElement): HTMLElement {
@@ -56,17 +65,51 @@ export function createNativeEvent(evt: Event | TouchEvent) {
     ;(event as any).touches = (evt as TouchEvent).touches
     ;(event as any).changedTouches = (evt as TouchEvent).changedTouches
   }
-  if (__PLATFORM__ === 'h5') {
-    extend(event, {
-      preventDefault() {
-        return evt.preventDefault()
-      },
-      stopPropagation() {
-        return evt.stopPropagation()
-      },
-    })
-  }
   return event
+}
+
+function resolveOwnerComponentPublicInstance(
+  eventValue: Function,
+  instance: ComponentInternalInstance | null
+) {
+  if (!instance || eventValue.length < 2) {
+    return false
+  }
+  const ownerVm = resolveOwnerVm(instance)
+  if (!ownerVm) {
+    return false
+  }
+  const type = ownerVm.$.type
+  if (!(type as any).$wxs && !(type as any).$renderjs) {
+    return false
+  }
+  return ownerVm
+}
+
+function wrapperEvent(
+  event: Record<string, any>,
+  evt: Event | TouchEvent,
+  eventValue: Function,
+  instance: ComponentInternalInstance | null
+) {
+  extend(event, {
+    preventDefault() {
+      return evt.preventDefault()
+    },
+    stopPropagation() {
+      return evt.stopPropagation()
+    },
+  })
+  Object.defineProperty(event, 'instance', {
+    get() {
+      return getComponentDescriptor(instance!.proxy!, false)
+    },
+  })
+  const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance)
+  if (ownerVm) {
+    return [event, getComponentDescriptor(ownerVm, false)]
+  }
+  return [event]
 }
 
 function normalizeClickEvent(
