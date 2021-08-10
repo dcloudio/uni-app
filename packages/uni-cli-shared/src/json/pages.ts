@@ -163,6 +163,7 @@ const navigationBarMaps = {
   navigationStyle: 'style',
   titleImage: 'titleImage',
   titlePenetrate: 'titlePenetrate',
+  transparentTitle: 'transparentTitle',
 }
 
 function normalizeNavigationBar(
