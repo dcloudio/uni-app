@@ -205,6 +205,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 		}
 	}]
 	```
+
 #### matchMedia
 
 |属性|类型|默认值|描述|
