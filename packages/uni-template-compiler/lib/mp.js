@@ -1,54 +1,71 @@
 const EVENTS = {
   click: 'tap'
 }
-const tags = [
-  'slot',
-  'block',
-  'component',
-  'template',
+const tags = {
+  // 小程序平台通用组件
+  base: [
+    'slot',
+    'block',
+    'component',
+    'template',
 
-  'ad',
-  'audio',
-  'button',
-  'camera',
-  'canvas',
-  'checkbox',
-  'checkbox-group',
-  'cover-image',
-  'cover-view',
-  'form',
-  'functional-page-navigator',
-  'icon',
-  'image',
-  'input',
-  'label',
-  'live-player',
-  'live-pusher',
-  'map',
-  'movable-area',
-  'movable-view',
-  'navigator',
-  'official-account',
-  'open-data',
-  'picker',
-  'picker-view',
-  'picker-view-column',
-  'progress',
-  'radio',
-  'radio-group',
-  'rich-text',
-  'scroll-view',
-  'slider',
-  'swiper',
-  'swiper-item',
-  'switch',
-  'text',
-  'textarea',
-  'video',
-  'view',
-  'web-view',
-  'editor'
-]
+    'ad',
+    'audio',
+    'button',
+    'camera',
+    'canvas',
+    'checkbox',
+    'checkbox-group',
+    'cover-image',
+    'cover-view',
+    'form',
+    'functional-page-navigator',
+    'icon',
+    'image',
+    'input',
+    'label',
+    'live-player',
+    'live-pusher',
+    'map',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'official-account',
+    'open-data',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'text',
+    'textarea',
+    'video',
+    'view',
+    'web-view',
+    'editor'
+  ],
+  // 支付宝小程序平台独有组件
+  'mp-alipay': [
+    'lifestyle',
+    'life-follow',
+    'contact-button',
+    'spread',
+    'error-view',
+    'poster',
+    'cashier',
+    'ix-grid',
+    'ix-native-grid',
+    'ix-native-list',
+    'mkt'
+  ]
+}
 
 const baseCompiler = {
   ref: 'data-ref',
@@ -60,7 +77,7 @@ const baseCompiler = {
    * 目前 template 在前，script 在后，要做的话，就需要把 wxml 的生成机制放到 plugin 中才可以拿到真实的组件列表
    */
   isComponent (tagName) {
-    return !tags.includes(tagName)
+    return !tags.base.concat(tags[this.name] || []).includes(tagName)
   },
   createFilterTag (filterTag, {
     content,

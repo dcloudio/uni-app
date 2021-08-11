@@ -410,7 +410,7 @@ export default {
         complete && complete()
       })
     },
-    getTemp(isTemp = true) {
+    getTemp (isTemp = true) {
       /* eslint-disable no-undef */
       let db = uniCloud.database()
 
@@ -471,7 +471,7 @@ export default {
 
       return db
     },
-    setResult(result) {
+    setResult (result) {
       if (result.code === 0) {
         this._execLoadDataSuccess(result)
       } else {
@@ -505,12 +505,12 @@ export default {
         this._execLoadDataFail(err, callback)
       })
     },
-    _execLoadDataSuccess(result, callback, clear) {
+    _execLoadDataSuccess (result, callback, clear) {
       const {
         data,
         count
       } = result
-      this._isEnded = data.length < this.pageSize
+      this._isEnded = count !== undefined ? (this.paginationInternal.current * this.paginationInternal.size >= count) : (data.length < this.pageSize)
       this.hasMore = !this._isEnded
 
       const data2 = this.getone ? (data.length ? data[0] : undefined) : data
@@ -532,7 +532,7 @@ export default {
         }
       }
     },
-    _execLoadDataFail(err, callback) {
+    _execLoadDataFail (err, callback) {
       this.errorMessage = err
       callback && callback()
       this.$emit(events.error, err)

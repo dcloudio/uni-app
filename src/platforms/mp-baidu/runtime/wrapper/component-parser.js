@@ -16,6 +16,11 @@ import {
   initMocks
 } from 'uni-wrapper/util'
 
+import {
+  fixSetDataStart,
+  fixSetDataEnd
+} from '../../../mp-weixin/runtime/wrapper/fix-set-data'
+
 import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-base-parser'
 
 const newLifecycle = swan.canIUse('lifecycle-2-0')
@@ -39,22 +44,7 @@ export default function parseComponent (vueOptions) {
     }
 
     // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
-    const setData = this.setData
-    const setDataArgs = []
-    this.setData = function () {
-      setDataArgs.push(arguments)
-    }
-    this.__fixInitData = function () {
-      delete this.__fixInitData
-      this.setData = setData
-      if (setDataArgs.length) {
-        this.groupSetData(() => {
-          setDataArgs.forEach(args => {
-            setData.apply(this, args)
-          })
-        })
-      }
-    }
+    fixSetDataStart(this)
     oldAttached.call(this)
     this.pageinstance.$vm = this.$vm
     this.$vm.__call_hook('onInit', query)
@@ -64,7 +54,7 @@ export default function parseComponent (vueOptions) {
       oldAttached.call(this)
     } else {
       initMocks(this.$vm, mocks)
-      this.__fixInitData && this.__fixInitData()
+      fixSetDataEnd(this)
     }
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance

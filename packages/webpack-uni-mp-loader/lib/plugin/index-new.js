@@ -73,14 +73,14 @@ function addMPPluginRequire (compilation) {
       if (name === process.env.UNI_MP_PLUGIN_MAIN) {
         const modules = compilation.modules
 
-        const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, process.env.UNI_MP_PLUGIN_MAIN).replace(/\\/g, '/')
+        const mainFilePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, process.env.UNI_MP_PLUGIN_MAIN))
 
         const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === mainFilePath).id
 
         const newlineIndex = compilation.assets[name].source().lastIndexOf('\n')
 
         const source = compilation.assets[name].source().substring(0, newlineIndex) +
-        `\nmodule.exports = wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace('-', '_')}__(${uniModuleId});\n` +
+        `\nmodule.exports = wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__('${uniModuleId}');\n` +
         compilation.assets[name].source().substring(newlineIndex + 1)
 
         compilation.assets[name] = {

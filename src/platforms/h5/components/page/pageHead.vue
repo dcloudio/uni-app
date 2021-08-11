@@ -63,9 +63,9 @@
       >
         <div
           :style="{color:searchInput.placeholderColor}"
-          :class="[`uni-page-head-search-placeholder-${focus || text ? 'left' : searchInput.align}`]"
+          :class="[`uni-page-head-search-placeholder-${focus || showPlaceholder ? 'left' : searchInput.align}`]"
           class="uni-page-head-search-placeholder"
-          v-text="text || composing ? '' : searchInput.placeholder"
+          v-text="showPlaceholder || composing ? '' : searchInput.placeholder"
         />
         <v-uni-input
           ref="input"
@@ -80,6 +80,11 @@
           @blur="_blur"
           @update:value="_input"
         />
+        <i
+          v-if="text"
+          class="uni-icon-clear"
+          @click="_clearInput"
+        >&#xea0f;</i>
       </div>
       <div class="uni-page-head-ft">
         <template v-for="(btn,index) in btns">
@@ -346,6 +351,11 @@
   uni-page-head .uni-page-head-shadow-yellow::after {
     background-image: url("https://cdn.dcloud.net.cn/img/shadow-yellow.png");
   }
+
+  uni-page-head .uni-icon-clear {
+    align-self: center;
+    padding-right: 5px;
+  }
 </style>
 <script>
 import appendCss from 'uni-platform/helpers/append-css'
@@ -441,7 +451,8 @@ export default {
     return {
       focus: false,
       text: '',
-      composing: false
+      composing: false,
+      showPlaceholder: false
     }
   },
   computed: {
@@ -495,6 +506,9 @@ export default {
       const input = this.$refs.input
       input.$watch('composing', val => {
         this.composing = val
+      })
+      input.$watch('valueSync', val => {
+        this.showPlaceholder = !!val
       })
       if (this.searchInput.disabled) {
         input.$el.addEventListener('click', () => {
@@ -567,6 +581,10 @@ export default {
       UniServiceJSBridge.emit('onNavigationBarSearchInputChanged', {
         text
       })
+    },
+    _clearInput () {
+      this.text = ''
+      this._input(this.text)
     }
   }
 }

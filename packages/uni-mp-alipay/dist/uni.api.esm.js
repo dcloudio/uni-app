@@ -1,75 +1,184 @@
-import { isArray, isPromise, isFunction, isPlainObject, hasOwn, isString } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
 
-const API_TYPE_SYNC = 1;
-function validateProtocol(_name, _args, _protocol) {
-    return true;
+const eventChannels = {};
+const eventChannelStack = [];
+let id = 0;
+function initEventChannel(events, cache = true) {
+    id++;
+    const eventChannel = new my.EventChannel(id, events);
+    if (cache) {
+        eventChannels[id] = eventChannel;
+        eventChannelStack.push(eventChannel);
+    }
+    return eventChannel;
 }
-function formatApiArgs(args, options) {
-    if (!options) {
-        return args;
+function getEventChannel(id) {
+    if (id) {
+        const eventChannel = eventChannels[id];
+        delete eventChannels[id];
+        return eventChannel;
+    }
+    return eventChannelStack.shift();
+}
+const navigateTo = {
+    args(fromArgs) {
+        const id = initEventChannel(fromArgs.events).id;
+        if (fromArgs.url) {
+            fromArgs.url =
+                fromArgs.url +
+                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
+                    '__id__=' +
+                    id;
+        }
+    },
+    returnValue(fromRes) {
+        fromRes.eventChannel = getEventChannel();
+    },
+};
+
+function getBaseSystemInfo() {
+  return my.getSystemInfoSync()
+}
+
+function validateProtocolFail(name, msg) {
+    console.warn(`${name}: ${msg}`);
+}
+function validateProtocol(name, data, protocol, onFail) {
+    if (!onFail) {
+        onFail = validateProtocolFail;
+    }
+    for (const key in protocol) {
+        const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
+        if (isString(errMsg)) {
+            onFail(name, errMsg);
+        }
     }
 }
-function createApi({ type, name, options }, fn, protocol) {
-    return function (...args) {
-        if (type === API_TYPE_SYNC) {
-            if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol())) {
-                return fn.apply(null, formatApiArgs(args, options));
-            }
+function validateProtocols(name, args, protocol, onFail) {
+    if (!protocol) {
+        return;
+    }
+    if (!isArray(protocol)) {
+        return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+    }
+    const len = protocol.length;
+    const argsLen = args.length;
+    for (let i = 0; i < len; i++) {
+        const opts = protocol[i];
+        const data = Object.create(null);
+        if (argsLen > i) {
+            data[opts.name] = args[i];
         }
+        validateProtocol(name, data, { [opts.name]: opts }, onFail);
+    }
+}
+function validateProp(name, value, prop, isAbsent) {
+    if (!isPlainObject(prop)) {
+        prop = { type: prop };
+    }
+    const { type, required, validator } = prop;
+    // required!
+    if (required && isAbsent) {
+        return 'Missing required args: "' + name + '"';
+    }
+    // missing but optional
+    if (value == null && !required) {
+        return;
+    }
+    // type check
+    if (type != null) {
+        let isValid = false;
+        const types = isArray(type) ? type : [type];
+        const expectedTypes = [];
+        // value is valid as long as one of the specified types match
+        for (let i = 0; i < types.length && !isValid; i++) {
+            const { valid, expectedType } = assertType(value, types[i]);
+            expectedTypes.push(expectedType || '');
+            isValid = valid;
+        }
+        if (!isValid) {
+            return getInvalidTypeMessage(name, value, expectedTypes);
+        }
+    }
+    // custom validator
+    if (validator) {
+        return validator(value);
+    }
+}
+const isSimpleType = /*#__PURE__*/ makeMap('String,Number,Boolean,Function,Symbol');
+function assertType(value, type) {
+    let valid;
+    const expectedType = getType(type);
+    if (isSimpleType(expectedType)) {
+        const t = typeof value;
+        valid = t === expectedType.toLowerCase();
+        // for primitive wrapper objects
+        if (!valid && t === 'object') {
+            valid = value instanceof type;
+        }
+    }
+    else if (expectedType === 'Object') {
+        valid = isObject(value);
+    }
+    else if (expectedType === 'Array') {
+        valid = isArray(value);
+    }
+    else {
+        {
+            valid = value instanceof type;
+        }
+    }
+    return {
+        valid,
+        expectedType,
     };
 }
-
-const Upx2pxProtocol = [
-    {
-        name: 'upx',
-        type: [Number, String],
-        required: true
+function getInvalidTypeMessage(name, value, expectedTypes) {
+    let message = `Invalid args: type check failed for args "${name}".` +
+        ` Expected ${expectedTypes.map(capitalize).join(', ')}`;
+    const expectedType = expectedTypes[0];
+    const receivedType = toRawType(value);
+    const expectedValue = styleValue(value, expectedType);
+    const receivedValue = styleValue(value, receivedType);
+    // check if we need to specify expected value
+    if (expectedTypes.length === 1 &&
+        isExplicable(expectedType) &&
+        !isBoolean(expectedType, receivedType)) {
+        message += ` with value ${expectedValue}`;
     }
-];
-
-const EPS = 1e-4;
-const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
-let deviceWidth = 0;
-let deviceDPR = 0;
-function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = my.getSystemInfoSync();
-    deviceWidth = windowWidth;
-    deviceDPR = pixelRatio;
-    isIOS = platform === 'ios';
+    message += `, got ${receivedType} `;
+    // check if we need to specify received value
+    if (isExplicable(receivedType)) {
+        message += `with value ${receivedValue}.`;
+    }
+    return message;
 }
-const upx2px = createApi({ type: API_TYPE_SYNC, name: 'upx2px' }, (number, newDeviceWidth) => {
-    if (deviceWidth === 0) {
-        checkDeviceWidth();
+function getType(ctor) {
+    const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+    return match ? match[1] : '';
+}
+function styleValue(value, type) {
+    if (type === 'String') {
+        return `"${value}"`;
     }
-    number = Number(number);
-    if (number === 0) {
-        return 0;
+    else if (type === 'Number') {
+        return `${Number(value)}`;
     }
-    let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
-    if (result < 0) {
-        result = -result;
+    else {
+        return `${value}`;
     }
-    result = Math.floor(result + EPS);
-    if (result === 0) {
-        if (deviceDPR === 1 || !isIOS) {
-            result = 1;
-        }
-        else {
-            result = 0.5;
-        }
-    }
-    return number < 0 ? -result : result;
-}, Upx2pxProtocol);
+}
+function isExplicable(type) {
+    const explicitTypes = ['string', 'number', 'boolean'];
+    return explicitTypes.some((elem) => type.toLowerCase() === elem);
+}
+function isBoolean(...args) {
+    return args.some((elem) => elem.toLowerCase() === 'boolean');
+}
 
-var HOOKS;
-(function (HOOKS) {
-    HOOKS["INVOKE"] = "invoke";
-    HOOKS["SUCCESS"] = "success";
-    HOOKS["FAIL"] = "fail";
-    HOOKS["COMPLETE"] = "complete";
-    HOOKS["RETURN_VALUE"] = "returnValue";
-})(HOOKS || (HOOKS = {}));
+const HOOK_SUCCESS = 'success';
+const HOOK_FAIL = 'fail';
+const HOOK_COMPLETE = 'complete';
 const globalInterceptors = {};
 const scopedInterceptors = {};
 function wrapperHook(hook) {
@@ -92,7 +201,7 @@ function queue(hooks, data) {
             if (res === false) {
                 return {
                     then() { },
-                    catch() { }
+                    catch() { },
                 };
             }
         }
@@ -101,11 +210,11 @@ function queue(hooks, data) {
         then(callback) {
             return callback(data);
         },
-        catch() { }
+        catch() { },
     });
 }
 function wrapperOptions(interceptors, options = {}) {
-    [HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach(name => {
+    [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
         const hooks = interceptors[name];
         if (!isArray(hooks)) {
             return;
@@ -128,21 +237,21 @@ function wrapperReturnValue(method, returnValue) {
     if (interceptor && isArray(interceptor.returnValue)) {
         returnValueHooks.push(...interceptor.returnValue);
     }
-    returnValueHooks.forEach(hook => {
+    returnValueHooks.forEach((hook) => {
         returnValue = hook(returnValue) || returnValue;
     });
     return returnValue;
 }
 function getApiInterceptorHooks(method) {
     const interceptor = Object.create(null);
-    Object.keys(globalInterceptors).forEach(hook => {
+    Object.keys(globalInterceptors).forEach((hook) => {
         if (hook !== 'returnValue') {
             interceptor[hook] = globalInterceptors[hook].slice();
         }
     });
     const scopedInterceptor = scopedInterceptors[method];
     if (scopedInterceptor) {
-        Object.keys(scopedInterceptor).forEach(hook => {
+        Object.keys(scopedInterceptor).forEach((hook) => {
             if (hook !== 'returnValue') {
                 interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
             }
@@ -155,7 +264,7 @@ function invokeApi(method, api, options, ...params) {
     if (interceptor && Object.keys(interceptor).length) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
-            return res.then(options => {
+            return res.then((options) => {
                 return api(wrapperOptions(interceptor, options), ...params);
             });
         }
@@ -166,17 +275,128 @@ function invokeApi(method, api, options, ...params) {
     return api(options, ...params);
 }
 
+function handlePromise(promise) {
+    if (__UNI_FEATURE_PROMISE__) {
+        return promise
+            .then((data) => {
+            return [null, data];
+        })
+            .catch((err) => [err]);
+    }
+    return promise;
+}
+
+function formatApiArgs(args, options) {
+    const params = args[0];
+    if (!options ||
+        (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
+        return;
+    }
+    const formatArgs = options.formatArgs;
+    const keys = Object.keys(formatArgs);
+    for (let i = 0; i < keys.length; i++) {
+        const name = keys[i];
+        const formatterOrDefaultValue = formatArgs[name];
+        if (isFunction(formatterOrDefaultValue)) {
+            const errMsg = formatterOrDefaultValue(args[0][name], params);
+            if (isString(errMsg)) {
+                return errMsg;
+            }
+        }
+        else {
+            // defaultValue
+            if (!hasOwn(params, name)) {
+                params[name] = formatterOrDefaultValue;
+            }
+        }
+    }
+}
+function beforeInvokeApi(name, args, protocol, options) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        validateProtocols(name, args, protocol);
+    }
+    if (options && options.beforeInvoke) {
+        const errMsg = options.beforeInvoke(args);
+        if (isString(errMsg)) {
+            return errMsg;
+        }
+    }
+    const errMsg = formatApiArgs(args, options);
+    if (errMsg) {
+        return errMsg;
+    }
+}
+function wrapperSyncApi(name, fn, protocol, options) {
+    return (...args) => {
+        const errMsg = beforeInvokeApi(name, args, protocol, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        return fn.apply(null, args);
+    };
+}
+function defineSyncApi(name, fn, protocol, options) {
+    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+}
+
+const API_UPX2PX = 'upx2px';
+const Upx2pxProtocol = [
+    {
+        name: 'upx',
+        type: [Number, String],
+        required: true,
+    },
+];
+
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+function checkDeviceWidth() {
+    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    deviceWidth = windowWidth;
+    deviceDPR = pixelRatio;
+    isIOS = platform === 'ios';
+}
+const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+    if (deviceWidth === 0) {
+        checkDeviceWidth();
+    }
+    number = Number(number);
+    if (number === 0) {
+        return 0;
+    }
+    let width = newDeviceWidth || deviceWidth;
+    let result = (number / BASE_DEVICE_WIDTH) * width;
+    if (result < 0) {
+        result = -result;
+    }
+    result = Math.floor(result + EPS);
+    if (result === 0) {
+        if (deviceDPR === 1 || !isIOS) {
+            result = 1;
+        }
+        else {
+            result = 0.5;
+        }
+    }
+    return number < 0 ? -result : result;
+}, Upx2pxProtocol);
+
+const API_ADD_INTERCEPTOR = 'addInterceptor';
+const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
 const AddInterceptorProtocol = [
     {
         name: 'method',
         type: [String, Object],
-        required: true
-    }
+        required: true,
+    },
 ];
 const RemoveInterceptorProtocol = AddInterceptorProtocol;
 
 function mergeInterceptorHook(interceptors, interceptor) {
-    Object.keys(interceptor).forEach(hook => {
+    Object.keys(interceptor).forEach((hook) => {
         if (isFunction(interceptor[hook])) {
             interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
         }
@@ -186,7 +406,7 @@ function removeInterceptorHook(interceptors, interceptor) {
     if (!interceptors || !interceptor) {
         return;
     }
-    Object.keys(interceptor).forEach(hook => {
+    Object.keys(interceptor).forEach((hook) => {
         if (isFunction(interceptor[hook])) {
             removeHook(interceptors[hook], interceptor[hook]);
         }
@@ -220,7 +440,7 @@ function removeHook(hooks, hook) {
         hooks.splice(index, 1);
     }
 }
-const addInterceptor = createApi({ type: API_TYPE_SYNC, name: 'addInterceptor' }, (method, interceptor) => {
+const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
@@ -228,7 +448,7 @@ const addInterceptor = createApi({ type: API_TYPE_SYNC, name: 'addInterceptor' }
         mergeInterceptorHook(globalInterceptors, method);
     }
 }, AddInterceptorProtocol);
-const removeInterceptor = createApi({ type: API_TYPE_SYNC, name: 'removeInterceptor' }, (method, interceptor) => {
+const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
     if (typeof method === 'string') {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);
@@ -241,6 +461,114 @@ const removeInterceptor = createApi({ type: API_TYPE_SYNC, name: 'removeIntercep
         removeInterceptorHook(globalInterceptors, method);
     }
 }, RemoveInterceptorProtocol);
+
+const API_ON = '$on';
+const OnProtocol = [
+    {
+        name: 'event',
+        type: String,
+        required: true,
+    },
+    {
+        name: 'callback',
+        type: Function,
+        required: true,
+    },
+];
+const API_ONCE = '$once';
+const OnceProtocol = OnProtocol;
+const API_OFF = '$off';
+const OffProtocol = [
+    {
+        name: 'event',
+        type: [String, Array],
+    },
+    {
+        name: 'callback',
+        type: Function,
+    },
+];
+const API_EMIT = '$emit';
+const EmitProtocol = [
+    {
+        name: 'event',
+        type: String,
+        required: true,
+    },
+];
+
+const E = function () {
+    // Keep this empty so it's easier to inherit from
+    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+};
+E.prototype = {
+    on: function (name, callback, ctx) {
+        var e = this.e || (this.e = {});
+        (e[name] || (e[name] = [])).push({
+            fn: callback,
+            ctx: ctx,
+        });
+        return this;
+    },
+    once: function (name, callback, ctx) {
+        var self = this;
+        function listener() {
+            self.off(name, listener);
+            callback.apply(ctx, arguments);
+        }
+        listener._ = callback;
+        return this.on(name, listener, ctx);
+    },
+    emit: function (name) {
+        var data = [].slice.call(arguments, 1);
+        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+        var i = 0;
+        var len = evtArr.length;
+        for (i; i < len; i++) {
+            evtArr[i].fn.apply(evtArr[i].ctx, data);
+        }
+        return this;
+    },
+    off: function (name, callback) {
+        var e = this.e || (this.e = {});
+        var evts = e[name];
+        var liveEvents = [];
+        if (evts && callback) {
+            for (var i = 0, len = evts.length; i < len; i++) {
+                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+                    liveEvents.push(evts[i]);
+            }
+        }
+        // Remove event from queue to prevent memory leak
+        // Suggested by https://github.com/lazd
+        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+        return this;
+    },
+};
+var Emitter = E;
+
+const emitter = new Emitter();
+const $on = defineSyncApi(API_ON, (name, callback) => {
+    emitter.on(name, callback);
+    return () => emitter.off(name, callback);
+}, OnProtocol);
+const $once = defineSyncApi(API_ONCE, (name, callback) => {
+    emitter.once(name, callback);
+    return () => emitter.off(name, callback);
+}, OnceProtocol);
+const $off = defineSyncApi(API_OFF, (name, callback) => {
+    if (!name) {
+        emitter.e = {};
+        return;
+    }
+    if (!Array.isArray(name))
+        name = [name];
+    name.forEach((n) => emitter.off(n, callback));
+}, OffProtocol);
+const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
+    emitter.emit(name, ...args);
+}, EmitProtocol);
 
 const SYNC_API_RE = /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 const CONTEXT_API_RE = /^create|Manager$/;
@@ -258,16 +586,6 @@ function isSyncApi(name) {
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
 }
-function handlePromise(promise) {
-    if (!__UNI_PROMISE_API__) {
-        return promise;
-    }
-    return promise
-        .then(data => {
-        return [null, data];
-    })
-        .catch(err => [err]);
-}
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
         return false;
@@ -278,7 +596,7 @@ function shouldPromise(name) {
 if (!Promise.prototype.finally) {
     Promise.prototype.finally = function (onfinally) {
         const promise = this.constructor;
-        return this.then(value => promise.resolve(onfinally && onfinally()).then(() => value), reason => promise.resolve(onfinally && onfinally()).then(() => {
+        return this.then((value) => promise.resolve(onfinally && onfinally()).then(() => value), (reason) => promise.resolve(onfinally && onfinally()).then(() => {
             throw reason;
         }));
     };
@@ -290,17 +608,17 @@ function promisify(name, api) {
     if (!isFunction(api)) {
         return api;
     }
-    return function promiseApi(options = {}, ...params) {
+    return function promiseApi(options = {}) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options, ...params));
+            return wrapperReturnValue(name, invokeApi(name, api, options));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, api, Object.assign({}, options, {
+            invokeApi(name, api, extend({}, options, {
                 success: resolve,
-                fail: reject
-            }), ...params);
+                fail: reject,
+            }));
         })));
     };
 }
@@ -396,7 +714,15 @@ function initWrapper(protocols) {
     };
 }
 
-const baseApis = { upx2px, addInterceptor, removeInterceptor };
+const baseApis = {
+    $on,
+    $off,
+    $once,
+    $emit,
+    upx2px,
+    addInterceptor,
+    removeInterceptor,
+};
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
@@ -413,25 +739,25 @@ function initUni(api, protocols) {
             // event-api
             // provider-api?
             return promisify(key, wrapper(key, my[key]));
-        }
+        },
     };
     return new Proxy({}, UniProxyHandlers);
 }
 
 function initGetProvider(providers) {
-    return function getProvider({ service, success, fail, complete }) {
+    return function getProvider({ service, success, fail, complete, }) {
         let res;
         if (providers[service]) {
             res = {
                 errMsg: 'getProvider:ok',
                 service,
-                provider: providers[service]
+                provider: providers[service],
             };
             isFunction(success) && success(res);
         }
         else {
             res = {
-                errMsg: 'getProvider:fail:服务[' + service + ']不存在'
+                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
             };
             isFunction(fail) && fail(res);
         }
@@ -446,46 +772,35 @@ function addSafeAreaInsets(fromRes, toRes) {
             top: safeArea.top,
             left: safeArea.left,
             right: fromRes.windowWidth - safeArea.right,
-            bottom: fromRes.windowHeight - safeArea.bottom
+            bottom: fromRes.windowHeight - safeArea.bottom,
         };
     }
 }
+
 const redirectTo = {};
-const createCanvasContext = {
-    returnValue(fromRes, toRes) {
-        const measureText = fromRes.measureText;
-        toRes.measureText = function (text, callback) {
-            const textMetrics = measureText.call(this, text);
-            if (typeof callback === 'function') {
-                setTimeout(() => callback(textMetrics), 0);
-            }
-            return textMetrics;
-        };
-    }
-};
 
 const getProvider = initGetProvider({
     oauth: ['alipay'],
     share: ['alipay'],
     payment: ['alipay'],
-    push: ['alipay']
+    push: ['alipay'],
 });
 function setStorageSync(key, data) {
     return my.setStorageSync({
         key,
-        data
+        data,
     });
 }
 function getStorageSync(key) {
     const result = my.getStorageSync({
-        key
+        key,
     });
     // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
     return result.data !== null ? result.data : '';
 }
 function removeStorageSync(key) {
     return my.removeStorageSync({
-        key
+        key,
     });
 }
 function startGyroscope(args) {
@@ -494,11 +809,11 @@ function startGyroscope(args) {
     }
     args.success &&
         args.success({
-            errMsg: 'startGyroscope:ok'
+            errMsg: 'startGyroscope:ok',
         });
     args.complete &&
         args.complete({
-            errMsg: 'startGyroscope:ok'
+            errMsg: 'startGyroscope:ok',
         });
 }
 function createExecCallback(execCallback) {
@@ -621,16 +936,16 @@ const request = {
             fromArgs.header = {};
         }
         const headers = {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
         };
-        Object.keys(fromArgs.header).forEach(key => {
+        Object.keys(fromArgs.header).forEach((key) => {
             headers[key.toLocaleLowerCase()] = fromArgs.header[key];
         });
         return {
             header() {
                 return {
                     name: 'headers',
-                    value: headers
+                    value: headers,
                 };
             },
             data(data) {
@@ -641,32 +956,32 @@ const request = {
                     isPlainObject(data)) {
                     return {
                         name: 'data',
-                        value: JSON.stringify(data)
+                        value: JSON.stringify(data),
                     };
                 }
                 return {
                     name: 'data',
-                    value: data
+                    value: data,
                 };
             },
             method: 'method',
-            responseType: false
+            responseType: false,
         };
     },
     returnValue: {
         status: 'statusCode',
-        headers: 'header'
-    }
+        headers: 'header',
+    },
 };
 const setNavigationBarColor = {
     name: 'setNavigationBar',
     args: {
         frontColor: false,
-        animation: false
-    }
+        animation: false,
+    },
 };
 const setNavigationBarTitle = {
-    name: 'setNavigationBar'
+    name: 'setNavigationBar',
 };
 function showModal({ showCancel = true } = {}) {
     if (showCancel) {
@@ -676,24 +991,24 @@ function showModal({ showCancel = true } = {}) {
                 cancelColor: false,
                 confirmColor: false,
                 cancelText: 'cancelButtonText',
-                confirmText: 'confirmButtonText'
+                confirmText: 'confirmButtonText',
             },
             returnValue(fromRes, toRes) {
                 toRes.confirm = fromRes.confirm;
                 toRes.cancel = !fromRes.confirm;
-            }
+            },
         };
     }
     return {
         name: 'alert',
         args: {
             confirmColor: false,
-            confirmText: 'buttonText'
+            confirmText: 'buttonText',
         },
         returnValue(fromRes, toRes) {
             toRes.confirm = true;
             toRes.cancel = false;
-        }
+        },
     };
 }
 function showToast({ icon = 'success' } = {}) {
@@ -702,50 +1017,50 @@ function showToast({ icon = 'success' } = {}) {
         icon: 'type',
         duration: false,
         image: false,
-        mask: false
+        mask: false,
     };
     if (icon === 'loading') {
         return {
             name: 'showLoading',
-            args
+            args,
         };
     }
     return {
         name: 'showToast',
-        args
+        args,
     };
 }
 const showActionSheet = {
     name: 'showActionSheet',
     args: {
         itemList: 'items',
-        itemColor: false
+        itemColor: false,
     },
     returnValue: {
-        index: 'tapIndex'
-    }
+        index: 'tapIndex',
+    },
 };
 const showLoading = {
     args: {
         title: 'content',
-        mask: false
-    }
+        mask: false,
+    },
 };
 const uploadFile = {
     args: {
-        name: 'fileName'
-    }
+        name: 'fileName',
+    },
     // 从测试结果看，是有返回对象的，文档上没有说明。
 };
 const downloadFile = {
     returnValue: {
-        apFilePath: 'tempFilePath'
-    }
+        apFilePath: 'tempFilePath',
+    },
 };
 const getFileInfo = {
     args: {
-        filePath: 'apFilePath'
-    }
+        filePath: 'apFilePath',
+    },
 };
 const compressImage = {
     args(fromArgs, toArgs) {
@@ -762,25 +1077,25 @@ const compressImage = {
         if (apFilePaths && apFilePaths.length) {
             toRes.tempFilePath = apFilePaths[0];
         }
-    }
+    },
 };
 const chooseVideo = {
     // 支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
     returnValue: {
-        apFilePath: 'tempFilePath'
-    }
+        apFilePath: 'tempFilePath',
+    },
 };
 const connectSocket = {
     args: {
         method: false,
-        protocols: false
-    }
+        protocols: false,
+    },
     // TODO 有没有返回值还需要测试下
 };
 const chooseImage = {
     returnValue: {
-        apFilePaths: 'tempFilePaths'
-    }
+        apFilePaths: 'tempFilePaths',
+    },
 };
 const previewImage = {
     args(fromArgs, toArgs) {
@@ -797,93 +1112,93 @@ const previewImage = {
         }
         return {
             indicator: false,
-            loop: false
+            loop: false,
         };
-    }
+    },
 };
 const saveFile = {
     args: {
-        tempFilePath: 'apFilePath'
+        tempFilePath: 'apFilePath',
     },
     returnValue: {
-        apFilePath: 'savedFilePath'
-    }
+        apFilePath: 'savedFilePath',
+    },
 };
 const getSavedFileInfo = {
     args: {
-        filePath: 'apFilePath'
-    }
+        filePath: 'apFilePath',
+    },
 };
 const getSavedFileList = {
     returnValue(fromRes, toRes) {
-        toRes.fileList = fromRes.fileList.map(file => {
+        toRes.fileList = fromRes.fileList.map((file) => {
             return {
                 filePath: file.apFilePath,
                 createTime: file.createTime,
-                size: file.size
+                size: file.size,
             };
         });
-    }
+    },
 };
 const removeSavedFile = {
     args: {
-        filePath: 'apFilePath'
-    }
+        filePath: 'apFilePath',
+    },
 };
 const getLocation = {
     args: {
         type: false,
-        altitude: false
-    }
+        altitude: false,
+    },
 };
 const openLocation = {
     args: {
     // TODO address 参数在阿里上是必传的
-    }
+    },
 };
 const getNetworkType = {
-    returnValue: handleNetworkInfo
+    returnValue: handleNetworkInfo,
 };
 const onNetworkStatusChange = {
-    returnValue: handleNetworkInfo
+    returnValue: handleNetworkInfo,
 };
 const stopAccelerometer = {
-    name: 'offAccelerometerChange'
+    name: 'offAccelerometerChange',
 };
 const stopCompass = {
-    name: 'offCompassChange'
+    name: 'offCompassChange',
 };
 const scanCode = {
     name: 'scan',
     args: {
-        onlyFromCamera: 'hideAlbum'
+        onlyFromCamera: 'hideAlbum',
     },
     returnValue: {
-        code: 'result'
-    }
+        code: 'result',
+    },
 };
 const setClipboardData = {
     name: 'setClipboard',
     args: {
-        data: 'text'
-    }
+        data: 'text',
+    },
 };
 const getClipboardData = {
     name: 'getClipboard',
     returnValue: {
-        text: 'data'
-    }
+        text: 'data',
+    },
 };
 const pageScrollTo = {
     args: {
-        duration: false
-    }
+        duration: false,
+    },
 };
 const login = {
     name: 'getAuthCode',
     returnValue: {
-        authCode: 'code'
-    }
+        authCode: 'code',
+    },
 };
 const getUserInfo = {
     name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
@@ -904,86 +1219,86 @@ const getUserInfo = {
             toRes.userInfo = {
                 openId: '',
                 nickName: fromRes.nickName,
-                avatarUrl: fromRes.avatar
+                avatarUrl: fromRes.avatar,
             };
         }
-    }
+    },
 };
 const requestPayment = {
     name: 'tradePay',
     args: {
-        orderInfo: 'tradeNO'
-    }
+        orderInfo: 'tradeNO',
+    },
 };
 const getBLEDeviceServices = {
     returnValue(fromRes, toRes) {
-        toRes.services = fromRes.services.map(item => {
+        toRes.services = fromRes.services.map((item) => {
             return {
                 uuid: item.serviceId,
-                isPrimary: item.isPrimary
+                isPrimary: item.isPrimary,
             };
         });
-    }
+    },
 };
 const createBLEConnection = {
     name: 'connectBLEDevice',
     args: {
-        timeout: false
-    }
+        timeout: false,
+    },
 };
 const closeBLEConnection = {
-    name: 'disconnectBLEDevice'
+    name: 'disconnectBLEDevice',
 };
 const onBLEConnectionStateChange = {
-    name: 'onBLEConnectionStateChanged'
+    name: 'onBLEConnectionStateChanged',
 };
 const makePhoneCall = {
     args: {
-        phoneNumber: 'number'
-    }
+        phoneNumber: 'number',
+    },
 };
 const stopGyroscope = {
-    name: 'offGyroscopeChange'
+    name: 'offGyroscopeChange',
 };
 const getSystemInfo = {
-    returnValue: handleSystemInfo
+    returnValue: handleSystemInfo,
 };
 const getSystemInfoSync = {
-    returnValue: handleSystemInfo
+    returnValue: handleSystemInfo,
 };
 // 文档没提到，但是实测可用。
 const canvasToTempFilePath = {
     returnValue(fromRes, toRes) {
         // 真机的情况下会有 tempFilePath 这个值，因此需要主动修改。
         toRes.tempFilePath = fromRes.apFilePath;
-    }
+    },
 };
 const setScreenBrightness = {
     args: {
-        value: 'brightness'
-    }
+        value: 'brightness',
+    },
 };
 const getScreenBrightness = {
     returnValue: {
-        brightness: 'value'
-    }
+        brightness: 'value',
+    },
 };
 const showShareMenu = {
-    name: 'showSharePanel'
+    name: 'showSharePanel',
 };
 const hideHomeButton = {
-    name: 'hideBackHome'
+    name: 'hideBackHome',
 };
 const saveImageToPhotosAlbum = {
     name: 'saveImage',
     args: {
-        filePath: 'url'
-    }
+        filePath: 'url',
+    },
 };
 const saveVideoToPhotosAlbum = {
     args: {
-        filePath: 'src'
-    }
+        filePath: 'src',
+    },
 };
 const chooseAddress = {
     name: 'getAddress',
@@ -996,7 +1311,7 @@ const chooseAddress = {
         toRes.detailInfo = info.address;
         toRes.telNumber = info.mobilePhone;
         toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus;
-    }
+    },
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
@@ -1051,9 +1366,9 @@ var protocols = /*#__PURE__*/Object.freeze({
   saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
   chooseAddress: chooseAddress,
   redirectTo: redirectTo,
-  createCanvasContext: createCanvasContext
+  navigateTo: navigateTo
 });
 
 var index = initUni(shims, protocols);
 
-export default index;
+export { index as default };

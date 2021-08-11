@@ -25,7 +25,7 @@
         :enterkeyhint="confirmType"
         :pattern="type === 'number' ? '[0-9]*' : null"
         class="uni-input-input"
-        autocomplete="off"
+        :autocomplete="autocomplete"
         @change.stop
         @focus="_onFocus"
         @blur="_onBlur"
@@ -54,8 +54,10 @@
 import {
   field
 } from 'uni-mixins'
-const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
+import { kebabCase } from 'uni-shared'
+const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
 const NUMBER_TYPES = ['number', 'digit']
+const AUTOCOMPLETES = ['off', 'one-time-code']
 export default {
   name: 'Input',
   mixins: [field],
@@ -95,6 +97,10 @@ export default {
     confirmType: {
       type: String,
       default: 'done'
+    },
+    textContentType: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -126,6 +132,16 @@ export default {
     step () {
       // 处理部分设备中无法输入小数点的问题
       return ~NUMBER_TYPES.indexOf(this.type) ? '0.000000000000000001' : ''
+    },
+    autocomplete () {
+      const camelizeIndex = AUTOCOMPLETES.indexOf(this.textContentType)
+      const kebabCaseIndex = AUTOCOMPLETES.indexOf(kebabCase(this.textContentType))
+      const index = camelizeIndex !== -1
+        ? camelizeIndex
+        : kebabCaseIndex !== -1
+          ? kebabCaseIndex
+          : 0
+      return AUTOCOMPLETES[index]
     }
   },
   watch: {

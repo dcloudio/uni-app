@@ -93,7 +93,12 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     const deferredCreated = process.env.UNI_PLATFORM === 'mp-toutiao' ||
       process.env.UNI_PLATFORM === 'quickapp-webview'
     const defines = {
+      // UNI_ENV好像没用
+      __UNI_FEATURE_PROMISE__: JSON.stringify(false),
       'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
+      'process.env.UNI_APP_ID': JSON.stringify(process.env.UNI_APP_ID),
+      'process.env.UNI_APP_NAME': JSON.stringify(process.env.UNI_APP_NAME),
+      'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
       'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
       'process.env.RUN_BY_HBUILDERX': process.env.RUN_BY_HBUILDERX,
@@ -105,7 +110,8 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
         __UNI_WXS_API__: JSON.stringify(process.env.UNI_USING_WXS_API === 'true'),
         __UNI_PROMISE_API__: JSON.stringify(process.env.UNI_USING_PROMISE_API === 'true'),
         __VUE_OPTIONS_API__: JSON.stringify(process.env.UNI_USING_VUE3_OPTIONS_API === 'true'),
-        __VUE_CREATED_DEFERRED__: JSON.stringify(deferredCreated)
+        __VUE_CREATED_DEFERRED__: JSON.stringify(deferredCreated),
+        __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
       })
     }
     if (process.env.UNI_PLATFORM === 'h5') {

@@ -6,7 +6,10 @@
     >
       <div
         ref="main"
-        :style="{'overflow-x': scrollX?'auto':'hidden','overflow-y': scrollY?'auto':'hidden'}"
+        :style="{
+          'overflow-x': scrollX ? 'auto' : 'hidden',
+          'overflow-y': scrollY ? 'auto' : 'hidden',
+        }"
         class="uni-scroll-view"
       >
         <div
@@ -16,7 +19,10 @@
           <div
             v-if="refresherEnabled"
             ref="refresherinner"
-            :style="{'background-color': refresherBackground, 'height': refresherHeight + 'px'}"
+            :style="{
+              'background-color': refresherBackground,
+              height: refresherHeight + 'px',
+            }"
             class="uni-scroll-view-refresher"
           >
             <div
@@ -25,23 +31,25 @@
             >
               <div class="uni-scroll-view-refresh-inner">
                 <svg
-                  v-if="refreshState=='pulling'"
+                  v-if="refreshState == 'pulling'"
                   key="refresh__icon"
-                  :style="{'transform': 'rotate('+ refreshRotate +'deg)'}"
+                  :style="{ transform: 'rotate(' + refreshRotate + 'deg)' }"
                   fill="#2BD009"
                   class="uni-scroll-view-refresh__icon"
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
                 >
-                  <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+                  <path
+                    d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+                  />
                   <path
                     d="M0 0h24v24H0z"
                     fill="none"
                   />
                 </svg>
                 <svg
-                  v-if="refreshState=='refreshing'"
+                  v-if="refreshState == 'refreshing'"
                   key="refresh__spinner"
                   class="uni-scroll-view-refresh__spinner"
                   width="24"
@@ -53,14 +61,14 @@
                     cy="50"
                     r="20"
                     fill="none"
-                    style="color: #2BD009;"
+                    style="color: #2bd009"
                     stroke-width="3"
                   />
                 </svg>
               </div>
             </div>
             <slot
-              v-if="refresherDefaultStyle=='none'"
+              v-if="refresherDefaultStyle == 'none'"
               name="refresher"
             />
           </div>
@@ -72,17 +80,17 @@
 </template>
 <script>
 import scroller from 'uni-mixins/scroller/index'
-import {
-  supportsPassive
-} from 'uni-shared'
+import { supportsPassive } from 'uni-shared'
 import {
   initScrollBounce,
   disableScrollBounce
 } from 'uni-platform/helpers/scroll'
 
-const passiveOptions = supportsPassive ? {
-  passive: true
-} : false
+const passiveOptions = supportsPassive
+  ? {
+    passive: true
+  }
+  : false
 
 // const PULLING = 'pulling'
 // const REFRESHING = 'refreshing'
@@ -196,7 +204,14 @@ export default {
   },
   mounted () {
     var self = this
+    var touchStart = null
+    var needStop = null
+
     this._attached = true
+    this.toUpperNumber = 0 // 容器触顶时，此时鼠标Y轴位置
+    this.triggerAbort = false
+    this.beforeRefreshing = false
+
     this._scrollTopChanged(this.scrollTopNumber)
     this._scrollLeftChanged(this.scrollLeftNumber)
     this._scrollIntoViewChanged(this.scrollIntoView)
@@ -205,11 +220,6 @@ export default {
       event.stopPropagation()
       self._handleScroll.bind(self, event)()
     }
-    var touchStart = null
-    var needStop = null
-    let toUpperNumber = 0 // 容器触顶时，此时鼠标Y轴位置
-    let triggerAbort = false
-    let beforeRefreshing = false
 
     this.__handleTouchMove = function (event) {
       var x = event.touches[0].pageX
@@ -222,7 +232,10 @@ export default {
           if (main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false
             return
-          } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
+          } else if (
+            main.scrollWidth === main.offsetWidth + main.scrollLeft &&
+            x < touchStart.x
+          ) {
             needStop = false
             return
           }
@@ -233,15 +246,21 @@ export default {
       } else {
         // 纵向滑动
         if (self.scrollY) {
-          if (self.refresherEnabled && main.scrollTop === 0 && y > touchStart.y) {
-            needStop = true
+          if (main.scrollTop === 0 && y > touchStart.y) {
+            needStop = false
             // 刷新时，阻止页面滚动
-            if (event.cancelable !== false) event.preventDefault()
-          } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
+            if (self.refresherEnabled && event.cancelable !== false) {
+              event.preventDefault()
+            }
+          } else if (
+            main.scrollHeight === main.offsetHeight + main.scrollTop &&
+            y < touchStart.y
+          ) {
             needStop = false
             return
+          } else {
+            needStop = true
           }
-          needStop = true
         } else {
           needStop = false
         }
@@ -258,14 +277,14 @@ export default {
 
       if (self.refresherEnabled && self.refreshState === 'pulling') {
         const dy = y - touchStart.y
-        if (toUpperNumber === 0) {
-          toUpperNumber = y
+        if (self.toUpperNumber === 0) {
+          self.toUpperNumber = y
         }
-        if (!beforeRefreshing) {
-          self.refresherHeight = y - toUpperNumber
+        if (!self.beforeRefreshing) {
+          self.refresherHeight = y - self.toUpperNumber
           // 之前为刷新状态则不再触发pulling
           if (self.refresherHeight > 0) {
-            triggerAbort = true
+            self.triggerAbort = true
             self.$trigger('refresherpulling', event, {
               deltaY: dy
             })
@@ -273,7 +292,7 @@ export default {
         } else {
           self.refresherHeight = dy + self.refresherThreshold
           // 如果之前在刷新状态，则不触发刷新中断
-          triggerAbort = false
+          self.triggerAbort = false
         }
 
         const route = self.refresherHeight / self.refresherThreshold
@@ -298,28 +317,31 @@ export default {
         disable: false
       })
       if (self.refresherHeight >= self.refresherThreshold) {
-        self.refresherHeight = self.refresherThreshold
-        self.refreshState = 'refreshing'
-        // 之前是刷新状态则不再触发刷新
-        if (beforeRefreshing) return
-        beforeRefreshing = true
         self._setRefreshState('refreshing')
       } else {
-        beforeRefreshing = false
-        self.refreshState = 'refresherabort'
-        self.refresherHeight = toUpperNumber = 0
-        if (triggerAbort) {
-          triggerAbort = false
-          self.$trigger('refresherabort', event, {})
-        }
+        self._setRefreshState('refresherabort')
       }
     }
-    this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions)
+    this.$refs.main.addEventListener(
+      'touchstart',
+      this.__handleTouchStart,
+      passiveOptions
+    )
     this.$refs.main.addEventListener('touchmove', this.__handleTouchMove)
-    this.$refs.main.addEventListener('scroll', this.__handleScroll, supportsPassive ? {
-      passive: false
-    } : false)
-    this.$refs.main.addEventListener('touchend', this.__handleTouchEnd, passiveOptions)
+    this.$refs.main.addEventListener(
+      'scroll',
+      this.__handleScroll,
+      supportsPassive
+        ? {
+          passive: false
+        }
+        : false
+    )
+    this.$refs.main.addEventListener(
+      'touchend',
+      this.__handleTouchEnd,
+      passiveOptions
+    )
     initScrollBounce()
   },
   activated () {
@@ -328,34 +350,70 @@ export default {
     this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft)
   },
   beforeDestroy () {
-    this.$refs.main.removeEventListener('touchstart', this.__handleTouchStart, passiveOptions)
-    this.$refs.main.removeEventListener('touchmove', this.__handleTouchMove, passiveOptions)
-    this.$refs.main.removeEventListener('scroll', this.__handleScroll, supportsPassive ? {
-      passive: false
-    } : false)
-    this.$refs.main.removeEventListener('touchend', this.__handleTouchEnd, passiveOptions)
+    this.$refs.main.removeEventListener(
+      'touchstart',
+      this.__handleTouchStart,
+      passiveOptions
+    )
+    this.$refs.main.removeEventListener(
+      'touchmove',
+      this.__handleTouchMove,
+      passiveOptions
+    )
+    this.$refs.main.removeEventListener(
+      'scroll',
+      this.__handleScroll,
+      supportsPassive
+        ? {
+          passive: false
+        }
+        : false
+    )
+    this.$refs.main.removeEventListener(
+      'touchend',
+      this.__handleTouchEnd,
+      passiveOptions
+    )
   },
   methods: {
     scrollTo: function (t, n) {
       var i = this.$refs.main
-      t < 0 ? t = 0 : n === 'x' && t > i.scrollWidth - i.offsetWidth ? t = i.scrollWidth - i.offsetWidth
-        : n === 'y' && t > i.scrollHeight - i.offsetHeight && (t = i.scrollHeight - i.offsetHeight)
+      t < 0
+        ? (t = 0)
+        : n === 'x' && t > i.scrollWidth - i.offsetWidth
+          ? (t = i.scrollWidth - i.offsetWidth)
+          : n === 'y' &&
+          t > i.scrollHeight - i.offsetHeight &&
+          (t = i.scrollHeight - i.offsetHeight)
       var r = 0
       var o = ''
-      n === 'x' ? r = i.scrollLeft - t : n === 'y' && (r = i.scrollTop - t)
+      n === 'x' ? (r = i.scrollLeft - t) : n === 'y' && (r = i.scrollTop - t)
       if (r !== 0) {
         this.$refs.content.style.transition = 'transform .3s ease-out'
-        this.$refs.content.style.webkitTransition = '-webkit-transform .3s ease-out'
+        this.$refs.content.style.webkitTransition =
+          '-webkit-transform .3s ease-out'
         if (n === 'x') {
           o = 'translateX(' + r + 'px) translateZ(0)'
         } else {
           n === 'y' && (o = 'translateY(' + r + 'px) translateZ(0)')
         }
-        this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
-        this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
+        this.$refs.content.removeEventListener(
+          'transitionend',
+          this.__transitionEnd
+        )
+        this.$refs.content.removeEventListener(
+          'webkitTransitionEnd',
+          this.__transitionEnd
+        )
         this.__transitionEnd = this._transitionEnd.bind(this, t, n)
-        this.$refs.content.addEventListener('transitionend', this.__transitionEnd)
-        this.$refs.content.addEventListener('webkitTransitionEnd', this.__transitionEnd)
+        this.$refs.content.addEventListener(
+          'transitionend',
+          this.__transitionEnd
+        )
+        this.$refs.content.addEventListener(
+          'webkitTransitionEnd',
+          this.__transitionEnd
+        )
         if (n === 'x') {
           // if (e !== 'ios') {
           i.style.overflowX = 'hidden'
@@ -379,14 +437,22 @@ export default {
         this._noBubble = false
       }
       if (this._noBubble === null && this.scrollY) {
-        if (Math.abs(this._y - $event.detail.y) / Math.abs(this._x - $event.detail.x) > 1) {
+        if (
+          Math.abs(this._y - $event.detail.y) /
+            Math.abs(this._x - $event.detail.x) >
+          1
+        ) {
           this._noBubble = true
         } else {
           this._noBubble = false
         }
       }
       if (this._noBubble === null && this.scrollX) {
-        if (Math.abs(this._x - $event.detail.x) / Math.abs(this._y - $event.detail.y) > 1) {
+        if (
+          Math.abs(this._x - $event.detail.x) /
+            Math.abs(this._y - $event.detail.y) >
+          1
+        ) {
           this._noBubble = true
         } else {
           this._noBubble = false
@@ -411,13 +477,24 @@ export default {
           deltaY: this.lastScrollTop - target.scrollTop
         })
         if (this.scrollY) {
-          if (target.scrollTop <= this.upperThresholdNumber && this.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
+          if (
+            target.scrollTop <= this.upperThresholdNumber &&
+            this.lastScrollTop - target.scrollTop > 0 &&
+            $event.timeStamp - this.lastScrollToUpperTime > 200
+          ) {
             this.$trigger('scrolltoupper', $event, {
               direction: 'top'
             })
             this.lastScrollToUpperTime = $event.timeStamp
           }
-          if (target.scrollTop + target.offsetHeight + this.lowerThresholdNumber >= target.scrollHeight && this.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
+          if (
+            target.scrollTop +
+              target.offsetHeight +
+              this.lowerThresholdNumber >=
+              target.scrollHeight &&
+            this.lastScrollTop - target.scrollTop < 0 &&
+            $event.timeStamp - this.lastScrollToLowerTime > 200
+          ) {
             this.$trigger('scrolltolower', $event, {
               direction: 'bottom'
             })
@@ -425,13 +502,24 @@ export default {
           }
         }
         if (this.scrollX) {
-          if (target.scrollLeft <= this.upperThresholdNumber && this.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
+          if (
+            target.scrollLeft <= this.upperThresholdNumber &&
+            this.lastScrollLeft - target.scrollLeft > 0 &&
+            $event.timeStamp - this.lastScrollToUpperTime > 200
+          ) {
             this.$trigger('scrolltoupper', $event, {
               direction: 'left'
             })
             this.lastScrollToUpperTime = $event.timeStamp
           }
-          if (target.scrollLeft + target.offsetWidth + this.lowerThresholdNumber >= target.scrollWidth && this.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
+          if (
+            target.scrollLeft +
+              target.offsetWidth +
+              this.lowerThresholdNumber >=
+              target.scrollWidth &&
+            this.lastScrollLeft - target.scrollLeft < 0 &&
+            $event.timeStamp - this.lastScrollToLowerTime > 200
+          ) {
             this.$trigger('scrolltolower', $event, {
               direction: 'right'
             })
@@ -514,18 +602,38 @@ export default {
         main.style.overflowY = this.scrollY ? 'auto' : 'hidden'
         main.scrollTop = val
       }
-      this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
-      this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
+      this.$refs.content.removeEventListener(
+        'transitionend',
+        this.__transitionEnd
+      )
+      this.$refs.content.removeEventListener(
+        'webkitTransitionEnd',
+        this.__transitionEnd
+      )
     },
     _setRefreshState (state) {
       switch (state) {
         case 'refreshing':
           this.refresherHeight = this.refresherThreshold
-          this.$trigger('refresherrefresh', event, {})
+          // 之前是刷新状态则不再触发刷新
+          if (!this.beforeRefreshing) {
+            this.beforeRefreshing = true
+            this.$trigger('refresherrefresh', {}, {})
+            // this.$emit('update:refresherTriggered', true)
+          }
           break
         case 'restore':
-          this.refresherHeight = 0
-          this.$trigger('refresherrestore', {}, {})
+        case 'refresherabort':
+          this.beforeRefreshing = false
+          this.refresherHeight = this.toUpperNumber = 0
+          if (state === 'restore') {
+            this.triggerAbort = false
+            this.$trigger('refresherrestore', {}, {})
+          }
+          if (state === 'refresherabort' && this.triggerAbort) {
+            this.triggerAbort = false
+            this.$trigger('refresherabort', {}, {})
+          }
           break
       }
       this.refreshState = state

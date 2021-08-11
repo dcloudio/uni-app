@@ -4,9 +4,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√(仅nvue)|x|√|x|x|x|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√(仅nvue)|x|√|x|x|x|x|x|x|x|x|
 
 如app平台的vue页面需要支持直播推流，需编写条件编译代码，使用 `plus.video.LivePusher`，[业务指南](https://ask.dcloud.net.cn/article/13416)、[规范文档](http://www.html5plus.org/doc/zh_cn/video.html#plus.video.LivePusher)。还是推荐直接使用nvue里的`live-pusher`组件。
 

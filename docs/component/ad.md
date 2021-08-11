@@ -17,9 +17,9 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（2.5.2+）|√（3.1.22+）|√|x|√|√|√|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√（2.5.2+）|√（3.1.22+）|√|x|√|√|√|x|x|√|
 
 
 **开通配置广告**
@@ -42,7 +42,7 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 |adpid|String||uni-AD App广告位id，在[uni-AD官网](https://uniad.dcloud.net.cn/)申请广告位|App|
 |adpid-widescreen|String||同`adpid`, 一般用于大屏幕生效，当组件的宽度大于 750px 时生效，可以自定义生效的范围，参见 `widescreen-width`|H5|
 |widescreen-width|number|750|`widescreen` 自定义组件生效宽度|H5|
-|unit-id|String||广告单元id，可在小程序管理后台的流量主模块新建|微信小程序、字节跳动小程序(最低版本1.19.0+)、QQ小程序|
+|unit-id|String||广告单元id，可在小程序管理后台的流量主模块新建|微信小程序、字节跳动小程序(最低版本1.19.0+)、QQ小程序、快手小程序|
 |ad-intervals|number||广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新）|微信小程序(基础库2.3.1+)|
 |appid|String||小程序应用 ID|百度小程序|
 |apid|String||小程序广告位 ID|百度小程序|
@@ -50,7 +50,7 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 |ad-top|Number||type为feeds时广告上边距（px），必须大于0|QQ小程序|
 |ad-width|Number||type为feeds时广告宽度（px），默认100%，最大值为屏幕宽度，最小值为265|QQ小程序|
 |ad-height|Number||type为feeds时广告高度（px），最小85，最大160|QQ小程序|
-|type|String|feed||QQ小程序、百度小程序、字节跳动小程序|
+|type|String|feed||QQ小程序、百度小程序、字节跳动小程序、快手小程序|
 |@load|EventHandle||广告加载成功的回调||
 |@error|EventHandle||广告加载失败的回调，event.detail = {errCode: }||
 |@close|EventHandle||广告关闭的回调||
