@@ -1,3 +1,18 @@
+#### 3.2.1.20210811-alpha
+* 【uni-app】
+  + App-Andriod平台 优化 uni.chooseImage 图片选择界面增加`原图`按钮
+  + App-Android平台 修复 3.2.0 版本引出的 uni.scanCode 可能无法正常使用的Bug [详情](https://ask.dcloud.net.cn/question/128311)
+  + App-Android平台 修复 uni.saveFile 保存通过 uni.chooseImage 选择的图片在 Android11 设备上可能失败的Bug [详情](https://ask.dcloud.net.cn/question/128442)
+  + App-iOS平台 修复 uni.chooseImage 图片选择界面`原图`按钮操作逻辑不正确的Bug
+  + 小程序平台 修复 作用域插槽内使用事件后默认使用新版作用域插槽编译模式的Bug [详情](https://ask.dcloud.net.cn/question/127297)
+* 【App插件(含5+App和uni-app的App端)】
+  + 【重要】Android平台 新增 androidPrivacy.json 文件配置隐私政策提示框 [详情](https://ask.dcloud.net.cn/article/36937)
+  + Android平台 修复 3.1.19 版本引出的 直播推流 LivePusher 无法全屏预览的Bug [详情](https://ask.dcloud.net.cn/question/127987)
+  + Android平台 修复 5+App项目打包后提交华为应用市场审核会误报包含三方广告SDK的Bug [详情](https://ask.dcloud.net.cn/question/126498)
+  + Android平台 修复 申请权限被用户拒绝后，引导用户跳转设置界面开启权限后返回应用依然无法获取权限的Bug [详情](https://ask.dcloud.net.cn/question/128369)
+  + iOS平台 修复 3.2.0 版本引出的 图片选择界面中部分按钮文字在系统语言为中文时依然显示英文的Bug [详情](https://ask.dcloud.net.cn/question/128285)
+  + iOS平台 修复 Downloader 下载文件名称出现乱码或包含特殊字符，导致保存文件无法读取的Bug
+
 #### 3.2.0.20210801-alpha
 * 【uni-app】
   + App平台、H5平台 新增 input 组件 type 支持 tel 类型
