@@ -189,6 +189,8 @@ module.exports = {
     if (process.env.UNI_USING_VUE3) {
       alias.vuex = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex')
       alias['@vue/devtools-api'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/devtools-api')
+    } else {
+      alias.vuex = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3')
     }
 
     return {
