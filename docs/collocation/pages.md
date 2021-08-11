@@ -180,7 +180,31 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 
 **注意**
 - 目前 style 节点仅支持配置 width，height 等 css 样式相关属性
+- 当存在 topwindow 时，可能需求隐藏页面的 navigationBar，根据需求不同在`pages.json`中做如下配置：
+  - 只需要隐藏某个的页面 navigationBar
+	```json
+	"pages": [{
+		"path": "pages/component/view/view",
+		"style": {
+			"navigationBarTitleText": "view",
+			"navigationStyle": "custom" // 隐藏单个页面的 navigationBar 
+		}
+	}]
+	```
+  - 需要隐藏大部分页面的 navigationBar，显示某个页面的 navigationBar 
+	```json
+	"globalStyle": {
+		"navigationStyle": "custom" // 隐藏所有页面的 navigationBar 
+	},
 
+	"pages": [{
+		"path": "pages/component/view/view",
+		"style": {
+			"navigationBarTitleText": "view",
+			"navigationStyle": "default" // 显示某个页面的 navigationBar 
+		}
+	}]
+	```
 #### matchMedia
 
 |属性|类型|默认值|描述|
