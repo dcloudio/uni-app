@@ -67,7 +67,7 @@ HBuilderX (3.2.0 版本起) 新增QQ互联和新浪微博开放平台的通用�
 打开QQ[开放平台](https://connect.qq.com/index.html)，在“管理中心”页面的“移动应用”下找到已经申请的应用（没有申请应用请点击“创建移动应用”新建应用），点击“查看”打开应用详情页面。
 在“开发信息”栏后点击修改，在“iOS应用”下的“Universal Links”项中配置应用的通用链接，如下图所示：
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/ulink/QQ.jpeg)
-* 注意：QQ开放平台在填写时 只需要填写到host,后边的path QQ会自动生成,比如 HBuilder中一键生成 ```[https://static-fa42aa5f-xxxxxxx-xxxxxxxx.bspapp.com/qq\_conn/11111233333/](https://static-fa42aa5f-xxxxxxx-xxxxxxxx.bspapp.com/qq_conn/11111233333/)``` 只需要填写 ```[https://static-fa42aa5f-xxxxxxx-xxxxxxxx.bspapp.com/](https://static-fa42aa5f-xxxxxxx-xxxxxxxx.bspapp.com/)```,具体请查看 [QQ 填写及校验universallinks](https://wiki.connect.qq.com/%E5%A1%AB%E5%86%99%E5%8F%8A%E6%A0%A1%E9%AA%8Cuniversallinks)
+* 注意：QQ开放平台在填写时 只需要填写到host,后边的path QQ会自动生成,比如 HBuilder中一键生成 ```https://static-fa42aa5f-xxxxxxx-xxxxxxxx.bspapp.com/qq_conn/11111233333/``` 只需要填写 ```https://static-fa42aa5f-xxxxxxx-xxxxxxxx.bspapp.com/```,具体请查看 [QQ 填写及校验universallinks](https://wiki.connect.qq.com/%E5%A1%AB%E5%86%99%E5%8F%8A%E6%A0%A1%E9%AA%8Cuniversallinks)
 
 ##### 微博
 
