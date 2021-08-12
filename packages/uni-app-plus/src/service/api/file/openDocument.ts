@@ -5,20 +5,18 @@ import {
   OpenDocumentProtocol,
   OpenDocumentOptions,
 } from '@dcloudio/uni-api'
-
+import { warpPlusErrorCallback } from '../../../helpers/plus'
 import { getRealPath } from '../../../platform/getRealPath'
+
 export const openDocument = defineAsyncApi<API_TYPE_OPEN_DOCUMENT>(
   API_OPEN_DOCUMENT,
   ({ filePath, fileType }, { resolve, reject }) => {
-    plus.io.resolveLocalFileSystemURL(
+    const errorCallback = warpPlusErrorCallback(reject)
+    plus.runtime.openFile(
       getRealPath(filePath),
-      (entry) => {
-        plus.runtime.openFile(getRealPath(filePath))
-        resolve()
-      },
-      (err) => {
-        reject('openDocument:fail ' + err.message)
-      }
+      undefined,
+      errorCallback,
+      resolve
     )
   },
   OpenDocumentProtocol,
