@@ -1088,13 +1088,13 @@ function initTriggerEvent (mpInstance) {
 }
 
 function initHook (name, options) {
-  const oldHook = options[name];
+  const oldHook = options.lifetimes[name];
   if (!oldHook) {
-    options[name] = function () {
+    options.lifetimes[name] = function () {
       initTriggerEvent(this);
     };
   } else {
-    options[name] = function (...args) {
+    options.lifetimes[name] = function (...args) {
       initTriggerEvent(this);
       return oldHook.apply(this, args)
     };
