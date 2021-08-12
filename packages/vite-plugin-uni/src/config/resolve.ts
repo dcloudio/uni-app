@@ -1,11 +1,11 @@
 import path from 'path'
 import { UserConfig } from 'vite'
-import { isWindows, EXTNAME_VUE } from '@dcloudio/uni-cli-shared'
+import { isWindows, EXTNAME_VUE, normalizePath } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 export function customResolver(updatedId: string) {
   if (isWindows) {
-    return path.resolve(process.env.UNI_INPUT_DIR, updatedId)
+    return normalizePath(path.resolve(process.env.UNI_INPUT_DIR, updatedId))
   }
   return updatedId
 }
@@ -22,7 +22,7 @@ export function createResolve(
       {
         find: /^(~@|@)\/(.*)/,
         replacement(_str: string, _$1: string, $2: string) {
-          return path.resolve(options.inputDir, $2)
+          return normalizePath(path.resolve(options.inputDir, $2))
         },
         customResolver,
       },
