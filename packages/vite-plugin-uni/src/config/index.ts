@@ -37,7 +37,7 @@ export function createConfig(
       publicDir: config.publicDir || false,
       define: createDefine(options),
       resolve: createResolve(options, config),
-      logLevel: 'warn',
+      logLevel: config.logLevel || 'warn',
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),
       build: createBuild(options),

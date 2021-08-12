@@ -23,6 +23,9 @@ export const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'
 export const WXS_PROTOCOL = 'wxs://'
 export const JSON_PROTOCOL = 'json://'
 
+export const WXS_MODULES = 'wxsModules'
+export const RENDERJS_MODULES = 'renderjsModules'
+
 // lifecycle
 
 // App and Page
@@ -66,3 +69,4 @@ export const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED =
 export const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground'
 export const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground'
 export const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService'
+export const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod'

@@ -3,6 +3,8 @@ import os from 'os'
 import path from 'path'
 import { camelize, capitalize } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
+export { default as hash } from 'hash-sum'
+
 import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
 export const isWindows = os.platform() === 'win32'
 export function normalizePath(id: string): string {

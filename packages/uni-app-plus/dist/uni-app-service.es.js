@@ -1134,7 +1134,10 @@ var serviceContext = (function (vue) {
   const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
   const DATA_RE = /^data:.*,.*/;
+  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
   const WXS_PROTOCOL = 'wxs://';
+  const WXS_MODULES = 'wxsModules';
+  const RENDERJS_MODULES = 'renderjsModules';
   // lifecycle
   // App and Page
   const ON_SHOW = 'onShow';
@@ -1163,6 +1166,7 @@ var serviceContext = (function (vue) {
   // framework
   const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
   const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
+  const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
   class EventChannel {
       constructor(id, events) {
@@ -8907,7 +8911,6 @@ var serviceContext = (function (vue) {
   const ACTION_TYPE_DICT = 0;
   const WEBVIEW_INSERTED = 'webviewInserted';
   const WEBVIEW_REMOVED = 'webviewRemoved';
-  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 
   const EVENT_TYPE_NAME = 'UniAppSubNVue';
   class SubNvue {
@@ -9349,52 +9352,60 @@ var serviceContext = (function (vue) {
       }
   }
 
-  function initRenderjs({ $renderjs }, instance) {
-      initModules(instance, $renderjs);
+  function initRenderjs(options, instance) {
+      initModules(instance, options.$renderjs, options['$' + RENDERJS_MODULES]);
   }
-  function initModules(instance, modules) {
+  function initModules(instance, modules, moduleIds = {}) {
       if (!isArray(modules)) {
           return;
       }
-      // 使用了内部属性__scopeId
-      const component = instance.type.__scopeId || instance.proxy.route;
-      const ctx = instance.ctx;
+      const ownerId = instance.uid;
+      // 在vue的定制内核中，通过$wxsModules来判断事件函数源码中是否包含该模块调用
+      // !$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)
       const $wxsModules = (instance.$wxsModules ||
           (instance.$wxsModules = []));
+      const ctx = instance.ctx;
       modules.forEach((module) => {
-          ctx[module] = proxyModule(component, module);
-          $wxsModules.push(module);
+          if (moduleIds[module]) {
+              ctx[module] = proxyModule(ownerId, moduleIds[module], module);
+              $wxsModules.push(module);
+          }
+          else {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.error(formatLog('initModules', modules, moduleIds));
+              }
+          }
       });
   }
-  function proxyModule(component, module) {
+  function proxyModule(ownerId, moduleId, module) {
       const target = {};
       return new Proxy(target, {
           get(_, p) {
               return (target[p] ||
-                  (target[p] = createModuleFunction(component, module, p)));
+                  (target[p] = createModuleFunction(ownerId, moduleId, module, p)));
           },
       });
   }
-  function createModuleFunction(component, module, name) {
+  function createModuleFunction(ownerId, moduleId, module, name) {
       const target = () => { };
-      const toJSON = () => WXS_PROTOCOL + JSON.stringify([component, module + '.' + name]);
+      const toJSON = () => WXS_PROTOCOL + JSON.stringify([ownerId, moduleId, module + '.' + name]);
       return new Proxy(target, {
           get(_, p) {
               if (p === 'toJSON') {
                   return toJSON;
               }
               return (target[p] ||
-                  (target[p] = createModuleFunction(component, module + '.' + name, p)));
+                  (target[p] = createModuleFunction(ownerId, moduleId, module + '.' + name, p)));
           },
           apply(_target, _thisArg, args) {
               return (WXS_PROTOCOL +
-                  JSON.stringify([component, module + '.' + name, [...args]]));
+                  JSON.stringify([ownerId, moduleId, module + '.' + name, [...args]]));
           },
       });
   }
 
-  function initWxs({ $wxs }, instance) {
-      initModules(instance, $wxs);
+  function initWxs(options, instance) {
+      initModules(instance, options.$wxs, options['$' + WXS_MODULES]);
   }
 
   function applyOptions(options, instance, publicThis) {
@@ -9724,7 +9735,11 @@ var serviceContext = (function (vue) {
   function subscribeNavigator() {
       API_ROUTE.forEach((name) => {
           registerServiceMethod(name, (args) => {
-              uni[name](args);
+              uni[name](extend(args, {
+                  fail(res) {
+                      console.error(res.errMsg);
+                  },
+              }));
           });
       });
   }
@@ -11143,7 +11158,11 @@ var serviceContext = (function (vue) {
           onMessage(pageIds[0], arg);
       }
       else {
-          uni[name](arg);
+          uni[name](extend(arg, {
+              fail(res) {
+                  console.error(res.errMsg);
+              },
+          }));
       }
   };
   function onMessage(pageId, arg) {
@@ -11157,6 +11176,46 @@ var serviceContext = (function (vue) {
                   data: [arg],
               },
           }));
+  }
+
+  function onWxsInvokeCallMethod({ nodeId, ownerId, method, args, }, pageId) {
+      const node = findNodeById(nodeId, parseInt(pageId));
+      if (!node) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('Wxs', 'CallMethod', nodeId, 'not found'));
+          }
+          return;
+      }
+      const vm = resolveOwnerVm(ownerId, node.__vueParentComponent);
+      if (!vm) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('Wxs', 'CallMethod', 'vm not found'));
+          }
+          return;
+      }
+      if (!vm[method]) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('Wxs', 'CallMethod', method, ' not found'));
+          }
+          return;
+      }
+      vm[method](args);
+  }
+  function resolveOwnerVm(ownerId, vm) {
+      if (!vm) {
+          return null;
+      }
+      if (vm.uid === ownerId) {
+          return vm.proxy;
+      }
+      let parent = vm.parent;
+      while (parent) {
+          if (parent.uid === ownerId) {
+              return parent.proxy;
+          }
+          parent = parent.parent;
+      }
+      return vm.proxy;
   }
 
   function initSubscribeHandlers() {
@@ -11176,6 +11235,7 @@ var serviceContext = (function (vue) {
           subscribeNavigator();
           subscribe(WEBVIEW_INSERTED, onWebviewInserted);
           subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+          subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod);
       }
   }
 

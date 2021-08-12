@@ -1,10 +1,13 @@
 import { subscribeServiceMethod } from '@dcloudio/uni-core'
 import {
+  ON_WXS_INVOKE_CALL_METHOD,
+  WEB_INVOKE_APPSERVICE,
+} from '@dcloudio/uni-shared'
+import {
   ON_WEBVIEW_READY,
   VD_SYNC,
   WEBVIEW_INSERTED,
   WEBVIEW_REMOVED,
-  WEB_INVOKE_APPSERVICE,
 } from '../../../../constants'
 import { onVdSync } from '../../dom'
 import { onPlusMessage } from '../initGlobalEvent'
@@ -15,7 +18,8 @@ import { onWebviewInserted, onWebviewRemoved } from './webviewLifecycle'
 import {
   onWebInvokeAppService,
   WebInvokeAppService,
-} from '../../../onWebInvokeAppService'
+} from './webInvokeAppService'
+import { onWxsInvokeCallMethod } from './wxs'
 
 export function initSubscribeHandlers() {
   const { subscribe, subscribeHandler } = UniServiceJSBridge
@@ -43,5 +47,6 @@ export function initSubscribeHandlers() {
     subscribeNavigator()
     subscribe(WEBVIEW_INSERTED, onWebviewInserted)
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved)
+    subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
   }
 }

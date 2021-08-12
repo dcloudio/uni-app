@@ -30,12 +30,12 @@ function initUniCssScopedPluginOptions() {
 
 const plugins = [
   uniResolveIdPlugin(),
-  uniTemplatePlugin(),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
   uniViteInjectPlugin(initProvide()),
   uniRenderjsPlugin(),
+  uniTemplatePlugin(),
   UniAppPlugin,
 ]
 

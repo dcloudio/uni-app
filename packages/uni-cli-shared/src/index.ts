@@ -12,5 +12,6 @@ export * from './constants'
 export * from './preprocess'
 export * from './postcss'
 export * from './renderjs'
+export * from './esbuild'
 
 export { checkUpdate } from './checkUpdate'

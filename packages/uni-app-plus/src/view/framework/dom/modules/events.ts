@@ -9,7 +9,7 @@ import {
 } from '@dcloudio/uni-shared'
 import { VD_SYNC } from '../../../../constants'
 import { UniCustomElement } from '../components'
-import { invokeWxs } from '../wxs'
+import { invokeWxsEvent } from '../wxs'
 
 function removeEventListener(el: UniCustomElement, type: string) {
   const listener = el.__listeners[type]
@@ -61,7 +61,7 @@ export function createInvoker(
   options?: AddEventListenerOptions
 ) {
   const invoker = (evt: Event) => {
-    const event = normalizeNativeEvent(evt)
+    const [event] = normalizeNativeEvent(evt)
     ;(event as any).type = normalizeEventType(evt.type, options)
     UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id, event]])
   }
@@ -100,30 +100,24 @@ export function patchWxsEvent(
     if (!isEventListenerExists(el, type)) {
       el.addEventListener(
         type,
-        (el.__listeners[type] = createWxsEventInvoker(
-          el.__id,
-          wxsEvent,
-          flag,
-          options
-        )),
+        (el.__listeners[type] = createWxsEventInvoker(el, wxsEvent, flag)),
         options
       )
     }
   }
 }
 
-function createWxsEventInvoker(
-  id: number,
+export function createWxsEventInvoker(
+  el: UniCustomElement,
   wxsEvent: string,
-  flag: number,
-  options?: AddEventListenerOptions
+  flag: number
 ) {
   const invoker = (evt: Event) => {
-    console.log('call wxsEvent', id, wxsEvent, flag, options)
-    invokeWxs(wxsEvent, [normalizeNativeEvent(evt)])
-
-    // ;(event as any).type = normalizeEventType(evt.type, options)
-    // UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id, event]])
+    invokeWxsEvent(
+      wxsEvent,
+      el,
+      normalizeNativeEvent(evt)[0] as Record<string, any>
+    )
   }
   if (!flag) {
     return invoker

@@ -67,6 +67,8 @@ export declare const ATTR_STYLE = "style";
 
 export declare const ATTR_TEXT_CONTENT = "textContent";
 
+export declare const ATTR_V_OWNER_ID = ".vOwnerId";
+
 export declare const ATTR_V_SHOW = ".vShow";
 
 export declare const BACKGROUND_COLOR = "#f7f7f7";
@@ -303,6 +305,8 @@ export declare const ON_UNLOAD = "onUnload";
 
 export declare const ON_WEB_INVOKE_APP_SERVICE = "onWebInvokeAppService";
 
+export declare const ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
+
 export declare function once<T extends (...args: any[]) => any>(fn: T, ctx?: unknown): T;
 
 declare interface Options {
@@ -396,6 +400,8 @@ string | number
 ];
 
 export declare function removeLeadingSlash(str: string): string;
+
+export declare const RENDERJS_MODULES = "renderjsModules";
 
 export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
 
@@ -535,6 +541,7 @@ export declare class UniNode extends UniEventTarget {
     childNodes: UniNode[];
     pageNode: IUniPageNode | null;
     parentNode: UniNode | null;
+    __vueParentComponent?: ComponentInternalInstance;
     protected _text: string | null;
     constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get firstChild(): UniNode | null;
@@ -628,6 +635,8 @@ export declare class UniTextNode extends UniBaseNode {
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
+
+export declare const WXS_MODULES = "wxsModules";
 
 export declare const WXS_PROTOCOL = "wxs://";
 

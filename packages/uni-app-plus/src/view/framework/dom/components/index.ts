@@ -1,3 +1,4 @@
+import { ComponentDescriptorVm } from '@dcloudio/uni-core'
 import { ComponentPublicInstance, defineComponent, h } from 'vue'
 import { UniComment } from '../elements/UniComment'
 import { UniTextElement } from '../elements/UniTextElement'
@@ -43,10 +44,18 @@ import { UniTextarea } from './UniTextarea'
 import { UniVideo } from './UniVideo'
 import { UniWebView } from './UniWebView'
 
-export interface UniCustomElement extends Element {
+export interface UniCustomElement extends HTMLElement {
   __id: number
+  __ownerId?: number
   __vueParentComponent: ComponentPublicInstance
   __listeners: Record<string, (evt: Event) => void>
+  // wxs
+  __wxsVm: ComponentDescriptorVm
+  __wxsStyle: Record<string, string | number>
+  __wxsAddClass: string[]
+  __wxsRemoveClass: string[]
+  __wxsClassChanged: boolean
+  __wxsStyleChanged: boolean
 }
 
 export const BuiltInComponents = {

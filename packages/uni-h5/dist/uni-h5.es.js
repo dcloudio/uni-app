@@ -1,5 +1,5 @@
 import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
-import { once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { extend, isString, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -569,14 +569,19 @@ const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
 }, ["stop"]);
-function getWindowOffset() {
+function getWindowTop() {
   const style = document.documentElement.style;
   const top = parseInt(style.getPropertyValue("--window-top"));
+  return top ? top + out.top : 0;
+}
+function getWindowOffset() {
+  const style = document.documentElement.style;
+  const top = getWindowTop();
   const bottom = parseInt(style.getPropertyValue("--window-bottom"));
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
+    top,
     bottom: bottom ? bottom + out.bottom : 0,
     left: left ? left + out.left : 0,
     right: right ? right + out.right : 0
@@ -862,12 +867,24 @@ function getRouteOptions(path, alias = false) {
   }
   return __uniRoutes.find((route) => route.path === path);
 }
+function ensureEl(vm) {
+  const vnode = vm.$.subTree;
+  if (vnode.shapeFlag & 1 << 4) {
+    const elemVNode = vnode.children.find((vnode2) => vnode2.shapeFlag & 1);
+    if (elemVNode) {
+      return elemVNode.el;
+    }
+  }
+  return vm.$el;
+}
 class ComponentDescriptor {
   constructor(vm) {
     this.$bindClass = false;
     this.$bindStyle = false;
     this.$vm = vm;
-    this.$el = vm.$el;
+    {
+      this.$el = ensureEl(vm);
+    }
     if (this.$el.getAttribute) {
       this.$bindClass = !!this.$el.getAttribute("class");
       this.$bindStyle = !!this.$el.getAttribute("style");
@@ -973,9 +990,10 @@ class ComponentDescriptor {
     const func = this.$vm[funcName];
     if (isFunction(func)) {
       func(JSON.parse(JSON.stringify(args)));
-    } else if (this.$vm._$id) {
-      UniViewJSBridge.publishHandler("onWxsInvokeCallMethod", {
-        cid: this.$vm._$id,
+    } else if (this.$vm.ownerId) {
+      UniViewJSBridge.publishHandler(ON_WXS_INVOKE_CALL_METHOD, {
+        nodeId: this.$el.__id,
+        ownerId: this.$vm.ownerId,
         method: funcName,
         args
       });
@@ -1029,15 +1047,42 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
 function getComponentDescriptor(instance2, isOwnerInstance) {
   return createComponentDescriptor(instance2, isOwnerInstance);
 }
+function resolveOwnerComponentPublicInstance(eventValue, instance2) {
+  if (!instance2 || eventValue.length < 2) {
+    return false;
+  }
+  const ownerVm = resolveOwnerVm(instance2);
+  if (!ownerVm) {
+    return false;
+  }
+  const type = ownerVm.$.type;
+  if (!type.$wxs && !type.$renderjs) {
+    return false;
+  }
+  return ownerVm;
+}
+function wrapperH5WxsEvent(event, eventValue, instance2) {
+  if (eventValue) {
+    Object.defineProperty(event, "instance", {
+      get() {
+        return getComponentDescriptor(instance2.proxy, false);
+      }
+    });
+    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2);
+    if (ownerVm) {
+      return [event, getComponentDescriptor(ownerVm, false)];
+    }
+  }
+}
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
-    return evt;
+    return [evt];
   }
   if (currentTarget.tagName.indexOf("UNI-") !== 0) {
-    return evt;
+    return [evt];
   }
   const res = createNativeEvent(evt);
   if (isClickEvent(evt)) {
@@ -1045,12 +1090,13 @@ function $nne(evt, eventValue, instance2) {
   } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res, evt);
   } else if (evt instanceof TouchEvent) {
-    const { top } = getWindowOffset();
+    const top = getWindowTop();
     res.touches = normalizeTouchEvent(evt.touches, top);
     res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
   }
   {
-    return wrapperEvent(res, evt, eventValue, instance2);
+    wrapperEvent(res, evt);
+    return wrapperH5WxsEvent(res, eventValue, instance2) || [res];
   }
 }
 function findUniTarget(target) {
@@ -1077,21 +1123,7 @@ function createNativeEvent(evt) {
   }
   return event;
 }
-function resolveOwnerComponentPublicInstance(eventValue, instance2) {
-  if (!instance2 || eventValue.length < 2) {
-    return false;
-  }
-  const ownerVm = resolveOwnerVm(instance2);
-  if (!ownerVm) {
-    return false;
-  }
-  const type = ownerVm.$.type;
-  if (!type.$wxs && !type.$renderjs) {
-    return false;
-  }
-  return ownerVm;
-}
-function wrapperEvent(event, evt, eventValue, instance2) {
+function wrapperEvent(event, evt) {
   extend(event, {
     preventDefault() {
       return evt.preventDefault();
@@ -1100,25 +1132,15 @@ function wrapperEvent(event, evt, eventValue, instance2) {
       return evt.stopPropagation();
     }
   });
-  Object.defineProperty(event, "instance", {
-    get() {
-      return getComponentDescriptor(instance2.proxy, false);
-    }
-  });
-  const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2);
-  if (ownerVm) {
-    return [event, getComponentDescriptor(ownerVm, false)];
-  }
-  return [event];
 }
 function normalizeClickEvent(evt, mouseEvt) {
   const { x, y } = mouseEvt;
-  const { top } = getWindowOffset();
+  const top = getWindowTop();
   evt.detail = { x, y: y - top };
   evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
 }
 function normalizeMouseEvent(evt, mouseEvt) {
-  const { top } = getWindowOffset();
+  const top = getWindowTop();
   evt.pageX = mouseEvt.pageX;
   evt.pageY = mouseEvt.pageY - top;
   evt.clientX = mouseEvt.clientX;
@@ -21105,7 +21127,7 @@ var index$2 = defineSystemComponent({
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     useDocumentTitle(pageMeta);
-    return () => createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
+    return () => createVNode("uni-page", { "data-page": pageMeta.route }, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }
 });
 function createPageBodyVNode(ctx) {

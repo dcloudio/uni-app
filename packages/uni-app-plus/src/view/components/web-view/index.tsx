@@ -81,7 +81,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(props) {
     const pageId = getCurrentPageId()
     const containerRef: Ref<HTMLElement | null> = ref(null)
-    const { position, hidden, onParentReady } = useNative(containerRef)
+    const { hidden, onParentReady } = useNative(containerRef)
 
     const webviewStyles = computed(() => props.webviewStyles)
 

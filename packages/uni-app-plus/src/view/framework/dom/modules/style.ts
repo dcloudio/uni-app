@@ -1,7 +1,11 @@
 import { rpx2px } from '@dcloudio/uni-core'
 import { camelize, capitalize, hyphenate, isArray, isString } from '@vue/shared'
+import { UniCustomElement } from '../components'
 
-export function patchStyle(el: Element, value: string | Record<string, any>) {
+export function patchStyle(
+  el: UniCustomElement,
+  value: string | Record<string, any>
+) {
   const style = (el as HTMLElement).style
   if (isString(value)) {
     if (value === '') {
@@ -13,6 +17,13 @@ export function patchStyle(el: Element, value: string | Record<string, any>) {
   } else {
     for (const key in value) {
       setStyle(style, key, value[key])
+    }
+  }
+
+  const { __wxsStyle } = el
+  if (__wxsStyle) {
+    for (const key in __wxsStyle) {
+      setStyle(style, key, __wxsStyle[key] as string)
     }
   }
 }

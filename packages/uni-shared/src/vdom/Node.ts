@@ -5,6 +5,7 @@ import { DOMException } from './DOMException'
 import { normalizeEventType, UniEventListener, UniEventTarget } from './Event'
 import { UniCSSStyleDeclarationJSON } from './Style'
 import { encodeModifier } from './encode'
+import { ComponentInternalInstance } from 'vue'
 
 export const NODE_TYPE_PAGE = 0
 export const NODE_TYPE_ELEMENT = 1
@@ -78,6 +79,8 @@ export class UniNode extends UniEventTarget {
 
   pageNode: IUniPageNode | null = null
   parentNode: UniNode | null = null
+
+  __vueParentComponent?: ComponentInternalInstance
 
   protected _text: string | null = null
 
@@ -271,6 +274,7 @@ export const ATTR_STYLE = 'style'
 export const ATTR_INNER_HTML = 'innerHTML'
 export const ATTR_TEXT_CONTENT = 'textContent'
 export const ATTR_V_SHOW = '.vShow'
+export const ATTR_V_OWNER_ID = '.vOwnerId'
 
 export const ATTR_CHANGE_PREFIX = 'change:'
 export class UniBaseNode extends UniNode {

@@ -6299,6 +6299,14 @@ function baseCreateRenderer(options, createHydrationFns) {
             return;
         }
         setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized);
+        // fixed by xxxxxx 对根节点设置ownerid
+        if (instance.$wxsModules) {
+            const vnode = instance.subTree;
+            if (vnode.shapeFlag & 16 /* ARRAY_CHILDREN */) {
+                const elemVNode = vnode.children.find(vnode => vnode.shapeFlag & 1 /* ELEMENT */);
+                elemVNode && elemVNode.el.setAttribute('.vOwnerId', instance.uid);
+            }
+        }
         if ((process.env.NODE_ENV !== 'production')) {
             popWarningContext();
             endMeasure(instance, `mount`);

@@ -22,12 +22,12 @@ function initUniCssScopedPluginOptions() {
 }
 const plugins = [
     resolveId_1.uniResolveIdPlugin(),
-    template_1.uniTemplatePlugin(),
     mainJs_1.uniMainJsPlugin(),
     manifestJson_1.uniManifestJsonPlugin(),
     pagesJson_1.uniPagesJsonPlugin(),
     uni_cli_shared_1.uniViteInjectPlugin(uni_cli_shared_1.initProvide()),
     renderjs_1.uniRenderjsPlugin(),
+    template_1.uniTemplatePlugin(),
     plugin_1.UniAppPlugin,
 ];
 const uniCssScopedPluginOptions = initUniCssScopedPluginOptions();

@@ -588,6 +588,7 @@ const ATTR_STYLE = 'style';
 const ATTR_INNER_HTML = 'innerHTML';
 const ATTR_TEXT_CONTENT = 'textContent';
 const ATTR_V_SHOW = '.vShow';
+const ATTR_V_OWNER_ID = '.vOwnerId';
 const ATTR_CHANGE_PREFIX = 'change:';
 class UniBaseNode extends UniNode {
     constructor(nodeType, nodeName, container) {
@@ -703,7 +704,7 @@ class UniBaseNode extends UniNode {
 class UniCommentNode extends UniNode {
     constructor(text, container) {
         super(NODE_TYPE_COMMENT, '#comment', container);
-        this._text = text;
+        this._text = (process.env.NODE_ENV !== 'production') ? text : '';
     }
     toJSON(opts = {}) {
         // 暂时不传递 text 到 view 层，没啥意义，节省点数据量
@@ -884,6 +885,8 @@ const DATA_RE = /^data:.*,.*/;
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 const WXS_PROTOCOL = 'wxs://';
 const JSON_PROTOCOL = 'json://';
+const WXS_MODULES = 'wxsModules';
+const RENDERJS_MODULES = 'renderjsModules';
 // lifecycle
 // App and Page
 const ON_SHOW = 'onShow';
@@ -918,6 +921,7 @@ const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInput
 const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
+const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
 class EventChannel {
     constructor(id, events) {
@@ -1017,6 +1021,7 @@ exports.ATTR_CLASS = ATTR_CLASS;
 exports.ATTR_INNER_HTML = ATTR_INNER_HTML;
 exports.ATTR_STYLE = ATTR_STYLE;
 exports.ATTR_TEXT_CONTENT = ATTR_TEXT_CONTENT;
+exports.ATTR_V_OWNER_ID = ATTR_V_OWNER_ID;
 exports.ATTR_V_SHOW = ATTR_V_SHOW;
 exports.BACKGROUND_COLOR = BACKGROUND_COLOR;
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
@@ -1061,8 +1066,10 @@ exports.ON_THEME_CHANGE = ON_THEME_CHANGE;
 exports.ON_UNHANDLE_REJECTION = ON_UNHANDLE_REJECTION;
 exports.ON_UNLOAD = ON_UNLOAD;
 exports.ON_WEB_INVOKE_APP_SERVICE = ON_WEB_INVOKE_APP_SERVICE;
+exports.ON_WXS_INVOKE_CALL_METHOD = ON_WXS_INVOKE_CALL_METHOD;
 exports.PLUS_RE = PLUS_RE;
 exports.PRIMARY_COLOR = PRIMARY_COLOR;
+exports.RENDERJS_MODULES = RENDERJS_MODULES;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.SCHEME_RE = SCHEME_RE;
 exports.SELECTED_COLOR = SELECTED_COLOR;
@@ -1082,6 +1089,7 @@ exports.UniNode = UniNode;
 exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
 exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
+exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.cache = cache;

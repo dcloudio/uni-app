@@ -18,6 +18,5 @@ export type DictAction = [typeof ACTION_TYPE_DICT, Dictionary]
 export const WEBVIEW_INSERTED = 'webviewInserted'
 export const WEBVIEW_REMOVED = 'webviewRemoved'
 export const WEBVIEW_ID_PREFIX = 'webviewId'
-export const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'
 
 export const INIT_PAGE_SCROLL = 'initPageScroll'

@@ -10637,7 +10637,7 @@ var index$2 = defineSystemComponent({
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     useDocumentTitle(pageMeta);
-    return () => vue.createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
+    return () => vue.createVNode("uni-page", { "data-page": pageMeta.route }, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }
 });
 function createPageBodyVNode(ctx) {

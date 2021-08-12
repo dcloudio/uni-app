@@ -1,14 +1,14 @@
-import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import { ComponentInternalInstance, ComponentPublicInstance, VNode } from 'vue'
 import {
   isFunction,
   isPlainObject,
   parseStringStyle,
   stringifyStyle,
 } from '@vue/shared'
-import { resolveOwnerVm } from '@dcloudio/uni-shared'
-// import { normalizeEvent, findUniTarget } from './componentEvents'
+import { ON_WXS_INVOKE_CALL_METHOD, resolveOwnerVm } from '@dcloudio/uni-shared'
 
-interface WxsElement extends HTMLElement {
+export interface WxsElement extends HTMLElement {
+  __id?: number
   __wxsStyle: Record<string, string | number>
   __wxsAddClass: string[]
   __wxsRemoveClass: string[]
@@ -19,11 +19,27 @@ interface WxsElement extends HTMLElement {
   __wxsComponentDescriptor: ComponentDescriptor
 }
 
-interface ComponentDescriptorVm {
-  _$id?: string
+export interface ComponentDescriptorVm {
+  ownerId?: number
   $el: WxsElement
   $emit: (event: string, ...args: any[]) => void
-  $forceUpdate: () => void
+  $forceUpdate: any
+}
+
+function ensureEl(vm: ComponentPublicInstance) {
+  // 确保el是有效节点（不然的话，可能是text或comment）
+  const vnode = vm.$.subTree
+  // ShapeFlags.ARRAY_CHILDREN = 1 << 4
+  // ShapeFlags.ELEMENT = 1
+  if (vnode.shapeFlag & (1 << 4)) {
+    const elemVNode = (vnode.children as VNode[]).find(
+      (vnode) => vnode.shapeFlag & 1
+    )
+    if (elemVNode) {
+      return elemVNode.el
+    }
+  }
+  return vm.$el
 }
 
 export class ComponentDescriptor {
@@ -33,7 +49,12 @@ export class ComponentDescriptor {
   private $bindStyle: boolean = false
   constructor(vm: ComponentDescriptorVm) {
     this.$vm = vm
-    this.$el = vm.$el
+    if (__PLATFORM__ === 'h5') {
+      this.$el = ensureEl(vm as ComponentPublicInstance)
+    } else {
+      this.$el = vm.$el
+    }
+
     if (this.$el.getAttribute) {
       this.$bindClass = !!this.$el.getAttribute('class')
       this.$bindStyle = !!this.$el.getAttribute('style')
@@ -158,9 +179,10 @@ export class ComponentDescriptor {
     const func = (this.$vm as any)[funcName]
     if (isFunction(func)) {
       func(JSON.parse(JSON.stringify(args)))
-    } else if ((this.$vm as any)._$id) {
-      UniViewJSBridge.publishHandler('onWxsInvokeCallMethod', {
-        cid: (this.$vm as any)._$id,
+    } else if (this.$vm.ownerId) {
+      UniViewJSBridge.publishHandler(ON_WXS_INVOKE_CALL_METHOD, {
+        nodeId: this.$el.__id,
+        ownerId: this.$vm.ownerId,
         method: funcName,
         args,
       })
@@ -226,8 +248,44 @@ function createComponentDescriptor(
 }
 
 export function getComponentDescriptor(
-  instance: ComponentPublicInstance,
+  instance: ComponentDescriptorVm | ComponentPublicInstance,
   isOwnerInstance: boolean
 ) {
   return createComponentDescriptor(instance, isOwnerInstance)
+}
+
+function resolveOwnerComponentPublicInstance(
+  eventValue: Function,
+  instance: ComponentInternalInstance | null
+) {
+  if (!instance || eventValue.length < 2) {
+    return false
+  }
+  const ownerVm = resolveOwnerVm(instance)
+  if (!ownerVm) {
+    return false
+  }
+  const type = ownerVm.$.type
+  if (!(type as any).$wxs && !(type as any).$renderjs) {
+    return false
+  }
+  return ownerVm
+}
+
+export function wrapperH5WxsEvent(
+  event: Record<string, any>,
+  eventValue?: Function,
+  instance?: ComponentInternalInstance | null
+) {
+  if (eventValue) {
+    Object.defineProperty(event, 'instance', {
+      get() {
+        return getComponentDescriptor(instance!.proxy!, false)
+      },
+    })
+    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance!)
+    if (ownerVm) {
+      return [event, getComponentDescriptor(ownerVm, false)]
+    }
+  }
 }

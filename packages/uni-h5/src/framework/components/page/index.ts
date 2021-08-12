@@ -23,7 +23,7 @@ export default defineSystemComponent({
     return () =>
       createVNode(
         'uni-page',
-        null,
+        { 'data-page': pageMeta.route },
         __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== 'custom'
           ? [createVNode(PageHead), createPageBodyVNode(ctx)]
           : [createPageBodyVNode(ctx)]

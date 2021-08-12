@@ -4,14 +4,20 @@ import safeAreaInsets from 'safe-area-insets'
 export const onEventPrevent = /*#__PURE__*/ withModifiers(() => {}, ['prevent'])
 export const onEventStop = /*#__PURE__*/ withModifiers(() => {}, ['stop'])
 
-export function getWindowOffset() {
+export function getWindowTop() {
   const style = document.documentElement.style
   const top = parseInt(style.getPropertyValue('--window-top'))
+  return top ? top + safeAreaInsets.top : 0
+}
+
+export function getWindowOffset() {
+  const style = document.documentElement.style
+  const top = getWindowTop()
   const bottom = parseInt(style.getPropertyValue('--window-bottom'))
   const left = parseInt(style.getPropertyValue('--window-left'))
   const right = parseInt(style.getPropertyValue('--window-right'))
   return {
-    top: top ? top + safeAreaInsets.top : 0,
+    top,
     bottom: bottom ? bottom + safeAreaInsets.bottom : 0,
     left: left ? left + safeAreaInsets.left : 0,
     right: right ? right + safeAreaInsets.right : 0,

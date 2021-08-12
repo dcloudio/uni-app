@@ -607,6 +607,7 @@
   var isGloballyWhitelisted = /* @__PURE__ */ makeMap$1(GLOBALS_WHITE_LISTED);
   var specialBooleanAttrs = "itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly";
   var isSpecialBooleanAttr = /* @__PURE__ */ makeMap$1(specialBooleanAttrs);
+  var isNoUnitNumericStyleProp = /* @__PURE__ */ makeMap$1("animation-iteration-count,border-image-outset,border-image-slice,border-image-width,box-flex,box-flex-group,box-ordinal-group,column-count,columns,flex,flex-grow,flex-positive,flex-shrink,flex-negative,flex-order,grid-row,grid-row-end,grid-row-span,grid-row-start,grid-column,grid-column-end,grid-column-span,grid-column-start,font-weight,line-clamp,line-height,opacity,order,orphans,tab-size,widows,z-index,zoom,fill-opacity,flood-opacity,stop-opacity,stroke-dasharray,stroke-dashoffset,stroke-miterlimit,stroke-opacity,stroke-width");
   function normalizeStyle(value) {
     if (isArray(value)) {
       var res = {};
@@ -634,6 +635,20 @@
         tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
       }
     });
+    return ret;
+  }
+  function stringifyStyle(styles) {
+    var ret = "";
+    if (!styles) {
+      return ret;
+    }
+    for (var key2 in styles) {
+      var value = styles[key2];
+      var normalizedKey = key2.startsWith("--") ? key2 : hyphenate(key2);
+      if (isString(value) || typeof value === "number" && isNoUnitNumericStyleProp(normalizedKey)) {
+        ret += "".concat(normalizedKey, ":").concat(value, ";");
+      }
+    }
     return ret;
   }
   function normalizeClass(value) {
@@ -865,6 +880,7 @@
   var ATTR_INNER_HTML = "innerHTML";
   var ATTR_TEXT_CONTENT = "textContent";
   var ATTR_V_SHOW = ".vShow";
+  var ATTR_V_OWNER_ID = ".vOwnerId";
   var ATTR_CHANGE_PREFIX = "change:";
   var ACTION_TYPE_PAGE_CREATE = 1;
   var ACTION_TYPE_PAGE_CREATED = 2;
@@ -927,8 +943,11 @@
   var DATA_RE = /^data:.*,.*/;
   var WXS_PROTOCOL = "wxs://";
   var JSON_PROTOCOL = "json://";
+  var WXS_MODULES = "wxsModules";
+  var RENDERJS_MODULES = "renderjsModules";
   var ON_PAGE_SCROLL = "onPageScroll";
   var ON_REACH_BOTTOM = "onReachBottom";
+  var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
   var isObject = (val) => val !== null && typeof val === "object";
   class BaseFormatter {
     constructor() {
@@ -6143,14 +6162,19 @@
   var out = safeAreaInsets;
   var onEventPrevent = /* @__PURE__ */ withModifiers(() => {
   }, ["prevent"]);
-  function getWindowOffset() {
+  function getWindowTop() {
     var style = document.documentElement.style;
     var top = parseInt(style.getPropertyValue("--window-top"));
+    return top ? top + out.top : 0;
+  }
+  function getWindowOffset() {
+    var style = document.documentElement.style;
+    var top = getWindowTop();
     var bottom = parseInt(style.getPropertyValue("--window-bottom"));
     var left = parseInt(style.getPropertyValue("--window-left"));
     var right = parseInt(style.getPropertyValue("--window-right"));
     return {
-      top: top ? top + out.top : 0,
+      top,
       bottom: bottom ? bottom + out.bottom : 0,
       left: left ? left + out.left : 0,
       right: right ? right + out.right : 0
@@ -6305,24 +6329,193 @@
     fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
     return "/" + fromRouteArray.concat(toRouteArray).join("/");
   }
+  class ComponentDescriptor {
+    constructor(vm) {
+      this.$bindClass = false;
+      this.$bindStyle = false;
+      this.$vm = vm;
+      {
+        this.$el = vm.$el;
+      }
+      if (this.$el.getAttribute) {
+        this.$bindClass = !!this.$el.getAttribute("class");
+        this.$bindStyle = !!this.$el.getAttribute("style");
+      }
+    }
+    selectComponent(selector) {
+      if (!this.$el || !selector) {
+        return;
+      }
+      var el = this.$el.querySelector(selector);
+      return el && el.__vueParentComponent && createComponentDescriptor(el.__vueParentComponent.proxy, false);
+    }
+    selectAllComponents(selector) {
+      if (!this.$el || !selector) {
+        return [];
+      }
+      var descriptors = [];
+      var els = this.$el.querySelectorAll(selector);
+      for (var i2 = 0; i2 < els.length; i2++) {
+        var el = els[i2];
+        el.__vueParentComponent && descriptors.push(createComponentDescriptor(el.__vueParentComponent.proxy, false));
+      }
+      return descriptors;
+    }
+    forceUpdate(type) {
+      if (type === "class") {
+        if (this.$bindClass) {
+          this.$el.__wxsClassChanged = true;
+          this.$vm.$forceUpdate();
+        } else {
+          this.updateWxsClass();
+        }
+      } else if (type === "style") {
+        if (this.$bindStyle) {
+          this.$el.__wxsStyleChanged = true;
+          this.$vm.$forceUpdate();
+        } else {
+          this.updateWxsStyle();
+        }
+      }
+    }
+    updateWxsClass() {
+      var {
+        __wxsAddClass
+      } = this.$el;
+      if (__wxsAddClass.length) {
+        this.$el.className = __wxsAddClass.join(" ");
+      }
+    }
+    updateWxsStyle() {
+      var {
+        __wxsStyle
+      } = this.$el;
+      if (__wxsStyle) {
+        this.$el.setAttribute("style", stringifyStyle(__wxsStyle));
+      }
+    }
+    setStyle(style) {
+      if (!this.$el || !style) {
+        return this;
+      }
+      if (typeof style === "string") {
+        style = parseStringStyle(style);
+      }
+      if (isPlainObject(style)) {
+        this.$el.__wxsStyle = style;
+        this.forceUpdate("style");
+      }
+      return this;
+    }
+    addClass(clazz) {
+      if (!this.$el || !clazz) {
+        return this;
+      }
+      var __wxsAddClass = this.$el.__wxsAddClass || (this.$el.__wxsAddClass = []);
+      if (__wxsAddClass.indexOf(clazz) === -1) {
+        __wxsAddClass.push(clazz);
+        this.forceUpdate("class");
+      }
+      return this;
+    }
+    removeClass(clazz) {
+      if (!this.$el || !clazz) {
+        return this;
+      }
+      var {
+        __wxsAddClass
+      } = this.$el;
+      if (__wxsAddClass) {
+        var index2 = __wxsAddClass.indexOf(clazz);
+        if (index2 > -1) {
+          __wxsAddClass.splice(index2, 1);
+        }
+      }
+      var __wxsRemoveClass = this.$el.__wxsRemoveClass || (this.$el.__wxsRemoveClass = []);
+      if (__wxsRemoveClass.indexOf(clazz) === -1) {
+        __wxsRemoveClass.push(clazz);
+        this.forceUpdate("class");
+      }
+      return this;
+    }
+    hasClass(cls) {
+      return this.$el && this.$el.classList.contains(cls);
+    }
+    getDataset() {
+      return this.$el && this.$el.dataset;
+    }
+    callMethod(funcName, args = {}) {
+      var func = this.$vm[funcName];
+      if (isFunction(func)) {
+        func(JSON.parse(JSON.stringify(args)));
+      } else if (this.$vm.ownerId) {
+        UniViewJSBridge.publishHandler(ON_WXS_INVOKE_CALL_METHOD, {
+          nodeId: this.$el.__id,
+          ownerId: this.$vm.ownerId,
+          method: funcName,
+          args
+        });
+      }
+    }
+    requestAnimationFrame(callback) {
+      return window.requestAnimationFrame(callback);
+    }
+    getState() {
+      return this.$el && (this.$el.__wxsState || (this.$el.__wxsState = {}));
+    }
+    triggerEvent(eventName, detail = {}) {
+      return this.$vm.$emit(eventName, detail), this;
+    }
+    getComputedStyle(names) {
+      if (this.$el) {
+        var styles = window.getComputedStyle(this.$el);
+        if (names && names.length) {
+          return names.reduce((res, n) => {
+            res[n] = styles[n];
+            return res;
+          }, {});
+        }
+        return styles;
+      }
+      return {};
+    }
+    setTimeout(handler, timeout) {
+      return window.setTimeout(handler, timeout);
+    }
+    clearTimeout(handle) {
+      return window.clearTimeout(handle);
+    }
+    getBoundingClientRect() {
+      return this.$el.getBoundingClientRect();
+    }
+  }
+  function createComponentDescriptor(vm, isOwnerInstance = true) {
+    if (vm && vm.$el) {
+      if (!vm.$el.__wxsComponentDescriptor) {
+        vm.$el.__wxsComponentDescriptor = new ComponentDescriptor(vm);
+      }
+      return vm.$el.__wxsComponentDescriptor;
+    }
+  }
+  function getComponentDescriptor(instance, isOwnerInstance) {
+    return createComponentDescriptor(instance, isOwnerInstance);
+  }
   var isClickEvent = (val) => val.type === "click";
   function $nne(evt, eventValue, instance) {
     var {
       currentTarget
     } = evt;
     if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
-      return evt;
+      return [evt];
     }
     if (currentTarget.tagName.indexOf("UNI-") !== 0) {
-      return evt;
+      return [evt];
     }
     var res = createNativeEvent(evt);
     if (isClickEvent(evt)) {
       normalizeClickEvent(res, evt);
     } else if (evt instanceof TouchEvent) {
-      var {
-        top
-      } = getWindowOffset();
+      var top = getWindowTop();
       res.touches = normalizeTouchEvent(evt.touches, top);
       res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
     }
@@ -6362,9 +6555,7 @@
       x,
       y
     } = mouseEvt;
-    var {
-      top
-    } = getWindowOffset();
+    var top = getWindowTop();
     evt.detail = {
       x,
       y: y - top
@@ -7442,16 +7633,156 @@
     });
     return res;
   }
+  var postActionJobs = new Set();
+  function queuePostActionJob(job) {
+    postActionJobs.add(job);
+  }
+  function flushPostActionJobs() {
+    {
+      console.log(formatLog("flushPostActionJobs", postActionJobs.size));
+    }
+    try {
+      postActionJobs.forEach((fn) => fn());
+    } finally {
+      postActionJobs.clear();
+    }
+  }
+  function getWxsModule(moduleId) {
+    var __wxsModules = window["__" + WXS_MODULES];
+    var __renderjsModules = window["__" + RENDERJS_MODULES];
+    var module = __wxsModules && __wxsModules[moduleId];
+    if (!module) {
+      module = __renderjsModules && __renderjsModules[moduleId];
+    }
+    if (!module) {
+      return console.error(formatLog("wxs or renderjs", moduleId + " not found"));
+    }
+    return module;
+  }
+  var WXS_PROTOCOL_LEN = WXS_PROTOCOL.length;
+  function invokeWxs(wxsStr, invokerArgs) {
+    var [, moduleId, invoker, args] = JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN));
+    if (isArray(invokerArgs) || isArray(args)) {
+      var [moduleName, mehtodName] = invoker.split(".");
+      return invokeWxsMethod(moduleId, moduleName, mehtodName, invokerArgs || args);
+    }
+    return getWxsProp(moduleId, invoker);
+  }
+  function invokeWxsEvent(wxsStr, el, event) {
+    var [ownerId, moduleId, invoker] = JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN));
+    var [moduleName, mehtodName] = invoker.split(".");
+    return invokeWxsMethod(moduleId, moduleName, mehtodName, [wrapperWxsEvent(event, el), getComponentDescriptor(createComponentDescriptorVm(resolveOwnerEl(el, ownerId)), false)]);
+  }
+  function resolveOwnerEl(el, ownerId) {
+    if (el.__ownerId === ownerId) {
+      return el;
+    }
+    var parentElement = el.parentElement;
+    while (parentElement) {
+      if (parentElement.__ownerId === ownerId) {
+        return parentElement;
+      }
+      parentElement = parentElement.parentElement;
+    }
+    return el;
+  }
+  function invokeWxsProps(wxsStr, el, newValue, oldValue) {
+    var [ownerId, moduleId, invoker] = JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN));
+    var [moduleName, mehtodName] = invoker.split(".");
+    return invokeWxsMethod(moduleId, moduleName, mehtodName, [newValue, oldValue, getComponentDescriptor(createComponentDescriptorVm(resolveOwnerEl(el, ownerId)), false), getComponentDescriptor(createComponentDescriptorVm(el), false)]);
+  }
+  function invokeWxsMethod(moduleId, moduleName, methodName, args) {
+    var module = getWxsModule(moduleId);
+    if (!module) {
+      return console.error(formatLog("wxs", "module " + moduleName + " not found"));
+    }
+    var method = module[methodName];
+    if (!isFunction(method)) {
+      return console.error(moduleName + "." + methodName + " is not a function");
+    }
+    return method.apply(module, args);
+  }
+  function getWxsProp(moduleId, dataPath) {
+    var module = getWxsModule(moduleId);
+    if (!module) {
+      return console.error(formatLog("wxs", "module " + dataPath + " not found"));
+    }
+    return getValueByDataPath(module, dataPath.substr(dataPath.indexOf(".") + 1));
+  }
+  function createWxsPropsInvoker(node, wxsInvoker, value) {
+    var oldValue = value;
+    return (newValue) => {
+      try {
+        invokeWxsProps(wxsInvoker, node.$, newValue, oldValue);
+      } catch (e2) {
+        console.error(e2);
+      }
+      oldValue = newValue;
+    };
+  }
+  function wrapperWxsEvent(event, el) {
+    var vm = createComponentDescriptorVm(el);
+    Object.defineProperty(event, "instance", {
+      get() {
+        return getComponentDescriptor(vm, false);
+      }
+    });
+    return event;
+  }
+  function createComponentDescriptorVm(el) {
+    return el.__wxsVm || (el.__wxsVm = {
+      ownerId: el.__ownerId,
+      $el: el,
+      $emit() {
+      },
+      $forceUpdate() {
+        var {
+          __wxsStyle,
+          __wxsAddClass,
+          __wxsRemoveClass,
+          __wxsStyleChanged,
+          __wxsClassChanged
+        } = el;
+        var updateClass;
+        var updateStyle;
+        if (__wxsStyleChanged) {
+          el.__wxsStyleChanged = false;
+          __wxsStyle && (updateStyle = () => {
+            Object.keys(__wxsStyle).forEach((n) => {
+              el.style[n] = __wxsStyle[n];
+            });
+          });
+        }
+        if (__wxsClassChanged) {
+          el.__wxsClassChanged = false;
+          updateClass = () => {
+            __wxsRemoveClass && __wxsRemoveClass.forEach((clazz) => {
+              el.classList.remove(clazz);
+            });
+            __wxsAddClass && __wxsAddClass.forEach((clazz) => {
+              el.classList.add(clazz);
+            });
+          };
+        }
+        requestAnimationFrame(() => {
+          updateClass && updateClass();
+          updateStyle && updateStyle();
+        });
+      }
+    });
+  }
   class UniNode {
     constructor(id2, tag, parentNodeId, element) {
       this.isMounted = false;
       this.isUnmounted = false;
+      this.$hasWxsProps = false;
       this.id = id2;
       this.tag = tag;
       this.pid = parentNodeId;
       if (element) {
         this.$ = element;
       }
+      this.$wxsProps = new Map();
     }
     init(nodeJson) {
       if (hasOwn$1(nodeJson, "t")) {
@@ -7485,8 +7816,47 @@
     insertBefore(newChild, refChild) {
       return this.$.insertBefore(newChild, refChild);
     }
+    setWxsProps(attrs2) {
+      Object.keys(attrs2).forEach((name) => {
+        if (name.indexOf(ATTR_CHANGE_PREFIX) === 0) {
+          var propName = name.replace(ATTR_CHANGE_PREFIX, "");
+          var value = attrs2[propName];
+          var invoker = createWxsPropsInvoker(this, attrs2[name], value);
+          queuePostActionJob(() => invoker(value));
+          this.$wxsProps.set(name, invoker);
+          delete attrs2[name];
+          delete attrs2[propName];
+          this.$hasWxsProps = true;
+        }
+      });
+    }
+    addWxsEvents(events) {
+      Object.keys(events).forEach((name) => {
+        var [wxsEvent, flag] = events[name];
+        this.addWxsEvent(name, wxsEvent, flag);
+      });
+    }
+    addWxsEvent(name, wxsEvent, flag) {
+    }
+    wxsPropsInvoke(name, value) {
+      var wxsPropsInvoker = this.$hasWxsProps && this.$wxsProps.get(ATTR_CHANGE_PREFIX + name);
+      if (wxsPropsInvoker) {
+        return wxsPropsInvoker(value), true;
+      }
+    }
   }
   function patchClass(el, clazz) {
+    var {
+      __wxsAddClass,
+      __wxsRemoveClass
+    } = el;
+    if (__wxsRemoveClass && __wxsRemoveClass.length) {
+      clazz = clazz.split(/\s+/).filter((v2) => __wxsRemoveClass.indexOf(v2) === -1).join(" ");
+      __wxsRemoveClass.length = 0;
+    }
+    if (__wxsAddClass && __wxsAddClass.length) {
+      clazz = clazz + " " + __wxsAddClass.join(" ");
+    }
     el.className = clazz;
   }
   function patchStyle(el, value) {
@@ -7500,6 +7870,14 @@
     } else {
       for (var key2 in value) {
         setStyle(style, key2, value[key2]);
+      }
+    }
+    var {
+      __wxsStyle
+    } = el;
+    if (__wxsStyle) {
+      for (var _key in __wxsStyle) {
+        setStyle(style, _key, __wxsStyle[_key]);
       }
     }
   }
@@ -7541,60 +7919,6 @@
     }
     return rawName;
   }
-  function getWxsModule(component) {
-    var {
-      WxsModules,
-      RenderjsModules
-    } = window;
-    var module = WxsModules && WxsModules[component];
-    if (!module) {
-      module = RenderjsModules && RenderjsModules[component];
-    }
-    if (!module) {
-      return console.error(formatLog("wxs or renderjs", component + " not found"));
-    }
-    return module;
-  }
-  var WXS_PROTOCOL_LEN = WXS_PROTOCOL.length;
-  function invokeWxs(value, invokerArgs) {
-    var [component, invoker, args] = JSON.parse(value.substr(WXS_PROTOCOL_LEN));
-    if (isArray(invokerArgs) || isArray(args)) {
-      var [moduleName, mehtodName] = invoker.split(".");
-      return invokeWxsMethod(component, moduleName, mehtodName, invokerArgs || args);
-    }
-    return getWxsProp(component, invoker);
-  }
-  function invokeWxsMethod(component, moduleName, methodName, args) {
-    var modules = getWxsModule(component);
-    if (!modules) {
-      return;
-    }
-    var module = modules[moduleName];
-    if (!module) {
-      return console.error(formatLog("wxs", "module " + moduleName + " not found"));
-    }
-    return module[methodName].apply(module, args);
-  }
-  function getWxsProp(component, dataPath) {
-    var modules = getWxsModule(component);
-    if (!modules) {
-      return;
-    }
-    return getValueByDataPath(modules, dataPath);
-  }
-  function createWxsPropsInvoker(wxsInvoker, value) {
-    var oldValue = value;
-    return (newValue) => {
-      var ownerInstance = null;
-      var instance = null;
-      try {
-        invokeWxs(wxsInvoker, [newValue, oldValue, ownerInstance, instance]);
-      } catch (e2) {
-        console.error(e2);
-      }
-      oldValue = newValue;
-    };
-  }
   function removeEventListener(el, type) {
     var listener = el.__listeners[type];
     if (listener) {
@@ -7623,7 +7947,7 @@
   }
   function createInvoker(id2, flag, options) {
     var invoker = (evt) => {
-      var event = $nne(evt);
+      var [event] = $nne(evt);
       event.type = normalizeEventType(evt.type, options);
       UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id2, event]]);
     };
@@ -7651,33 +7975,18 @@
       removeEventListener(el, type);
     } else {
       if (!isEventListenerExists(el, type)) {
-        el.addEventListener(type, el.__listeners[type] = createWxsEventInvoker(el.__id, wxsEvent, flag, options), options);
+        el.addEventListener(type, el.__listeners[type] = createWxsEventInvoker(el, wxsEvent, flag), options);
       }
     }
   }
-  function createWxsEventInvoker(id2, wxsEvent, flag, options) {
+  function createWxsEventInvoker(el, wxsEvent, flag) {
     var invoker = (evt) => {
-      console.log("call wxsEvent", id2, wxsEvent, flag, options);
-      invokeWxs(wxsEvent, [$nne(evt)]);
+      invokeWxsEvent(wxsEvent, el, $nne(evt)[0]);
     };
     if (!flag) {
       return invoker;
     }
     return withModifiers(invoker, resolveModifier(flag));
-  }
-  var postActionJobs = new Set();
-  function queuePostActionJob(job) {
-    postActionJobs.add(job);
-  }
-  function flushPostActionJobs() {
-    {
-      console.log(formatLog("flushPostActionJobs", postActionJobs.size));
-    }
-    try {
-      postActionJobs.forEach((fn) => fn());
-    } finally {
-      postActionJobs.clear();
-    }
   }
   var JSON_PROTOCOL_LEN = JSON_PROTOCOL.length;
   function decodeAttr(value) {
@@ -7699,11 +8008,9 @@
     constructor(id2, element, parentNodeId, refNodeId, nodeJson, propNames = []) {
       super(id2, element.tagName, parentNodeId, element);
       this.$props = reactive({});
-      this.$hasWxsProps = false;
       this.$.__id = id2;
       this.$.__listeners = Object.create(null);
       this.$propNames = propNames;
-      this.$wxsProps = new Map();
       this._update = this.update.bind(this);
       this.init(nodeJson);
       this.insert(parentNodeId, refNodeId);
@@ -7735,24 +8042,6 @@
         this.setAttr(name, attrs2[name]);
       });
     }
-    setWxsProps(attrs2) {
-      Object.keys(attrs2).forEach((name) => {
-        if (name.indexOf(ATTR_CHANGE_PREFIX) === 0) {
-          var value = attrs2[name.replace(ATTR_CHANGE_PREFIX, "")];
-          var invoker = createWxsPropsInvoker(attrs2[name], value);
-          queuePostActionJob(() => invoker(value));
-          this.$wxsProps.set(name, invoker);
-          delete attrs2[name];
-          this.$hasWxsProps = true;
-        }
-      });
-    }
-    addWxsEvents(events) {
-      Object.keys(events).forEach((name) => {
-        var [wxsEvent, flag] = events[name];
-        this.addWxsEvent(name, wxsEvent, flag);
-      });
-    }
     addEvents(events) {
       Object.keys(events).forEach((name) => {
         this.addEvent(name, events[name]);
@@ -7774,6 +8063,8 @@
         patchStyle(this.$, value);
       } else if (name === ATTR_V_SHOW) {
         patchVShow(this.$, value);
+      } else if (name === ATTR_V_OWNER_ID) {
+        this.$.__ownerId = value;
       } else if (name === ATTR_INNER_HTML) {
         this.$.innerHTML = value;
       } else if (name === ATTR_TEXT_CONTENT) {
@@ -7796,10 +8087,7 @@
       if (this.$propNames.indexOf(name) !== -1) {
         this.$props[name] = value;
       } else {
-        var wxsPropsInvoker = this.$hasWxsProps && this.$wxsProps.get(ATTR_CHANGE_PREFIX + name);
-        if (wxsPropsInvoker) {
-          wxsPropsInvoker(value);
-        } else {
+        if (!this.wxsPropsInvoke(name, value)) {
           this.$.setAttribute(name, value);
         }
       }
@@ -16175,9 +16463,11 @@
     init(nodeJson) {
       var {
         a: a2,
-        e: e2
+        e: e2,
+        w
       } = nodeJson;
       if (a2) {
+        this.setWxsProps(a2);
         Object.keys(a2).forEach((n) => {
           this.setAttr(n, a2[n]);
         });
@@ -16190,13 +16480,18 @@
           this.addEvent(n, e2[n]);
         });
       }
+      if (w) {
+        this.addWxsEvents(nodeJson.w);
+      }
     }
     setText(text2) {
       (this.$holder || this.$).textContent = text2;
     }
+    addWxsEvent(name, wxsEvent, flag) {
+      this.$props[name] = createWxsEventInvoker(this.$, wxsEvent, flag);
+    }
     addEvent(name, value) {
-      var decoded = name;
-      this.$props[decoded] = createInvoker(this.id, value, parseEventName(decoded)[1]);
+      this.$props[name] = createInvoker(this.id, value, parseEventName(name)[1]);
     }
     removeEvent(name) {
       this.$props[name] = null;
@@ -16206,6 +16501,8 @@
         if (this.$) {
           patchVShow(this.$, value);
         }
+      } else if (name === ATTR_V_OWNER_ID) {
+        this.$.__ownerId = value;
       } else if (name === ATTR_STYLE) {
         var newStyle = decodeAttr(value);
         var oldStyle = this.$props.style;
@@ -16217,7 +16514,10 @@
           this.$props.style = newStyle;
         }
       } else {
-        this.$props[name] = decodeAttr(value);
+        value = decodeAttr(value);
+        if (!this.wxsPropsInvoke(name, value)) {
+          this.$props[name] = value;
+        }
       }
     }
     removeAttr(name) {
@@ -17842,7 +18142,6 @@
       var pageId = getCurrentPageId();
       var containerRef = ref(null);
       var {
-        position,
         hidden,
         onParentReady
       } = useNative(containerRef);

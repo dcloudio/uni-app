@@ -10722,6 +10722,13 @@ function patchStyle(el, prev, next) {
             }
         }
     }
+    // fixed by xxxxxx
+    const { __wxsStyle } = el;
+    if (__wxsStyle) {
+        for (const key in __wxsStyle) {
+            setStyle(style, key, __wxsStyle[key]);
+        }
+    }
 }
 const importantRE = /\s*!important$/;
 function setStyle(style, name, val) {
@@ -11028,12 +11035,33 @@ function patchWxs(el, rawName, nextValue, instance = null) {
     const propName = rawName.replace('change:', '');
     const { attrs } = instance;
     const nextPropValue = attrs[propName];
+    const prevPropValue = (el.__wxsProps || (el.__wxsProps = {}))[propName];
+    if (prevPropValue === nextPropValue) {
+        return;
+    }
+    el.__wxsProps[propName] = nextPropValue;
     const proxy = instance.proxy;
-    nextValue(nextPropValue, '', proxy.$gcd(proxy, true), proxy.$gcd(proxy, false));
+    nextTick(() => {
+        nextValue(nextPropValue, prevPropValue, proxy.$gcd(proxy, true), proxy.$gcd(proxy, false));
+    });
 }
 
 const nativeOnRE = /^on[a-z]/;
-const forcePatchProp = (_, key) => key === 'value';
+// fixed by xxxxxx
+const forcePatchProp = (el, key) => {
+    if (key === 'value' || key.indexOf('change:') === 0) {
+        return true;
+    }
+    if (key === 'class' && el.__wxsClassChanged) {
+        el.__wxsClassChanged = false;
+        return true;
+    }
+    if (key === 'style' && el.__wxsStyleChanged) {
+        el.__wxsStyleChanged = false;
+        return true;
+    }
+    return false;
+};
 const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     // @ts-expect-error fixed by xxxxxx
     if (__UNI_FEATURE_WXS__ && key.indexOf('change:') === 0) {

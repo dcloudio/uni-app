@@ -10,13 +10,14 @@ import {
 } from 'vue'
 import {
   ATTR_STYLE,
+  ATTR_V_OWNER_ID,
   ATTR_V_SHOW,
   formatLog,
   parseEventName,
   UniNodeJSON,
 } from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
-import { createInvoker } from '../modules/events'
+import { createInvoker, createWxsEventInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
 import { $, removeElement } from '../page'
 import { queuePostActionJob } from '../scheduler'
@@ -65,8 +66,10 @@ export class UniComponent extends UniNode {
     flushPostFlushCbs()
   }
   init(nodeJson: Partial<UniNodeJSON>) {
-    const { a, e } = nodeJson
+    const { a, e, w } = nodeJson
     if (a) {
+      // 初始化时，先提取 wxsProps，再 setAttr
+      this.setWxsProps(a)
       Object.keys(a).forEach((n) => {
         this.setAttr(n, a[n])
       })
@@ -79,26 +82,30 @@ export class UniComponent extends UniNode {
         this.addEvent(n, e[n])
       })
     }
+    if (w) {
+      this.addWxsEvents(nodeJson.w!)
+    }
   }
   setText(text: string) {
     ;(this.$holder || this.$).textContent = text
   }
+  addWxsEvent(name: string, wxsEvent: string, flag: number) {
+    this.$props[name] = createWxsEventInvoker(this.$, wxsEvent, flag)
+  }
   addEvent(name: string, value: number) {
-    const decoded = name
-    this.$props[decoded] = createInvoker(
-      this.id,
-      value,
-      parseEventName(decoded)[1]
-    )
+    this.$props[name] = createInvoker(this.id, value, parseEventName(name)[1])
   }
   removeEvent(name: string) {
     this.$props[name] = null
   }
   setAttr(name: string, value: unknown) {
+    // TODO 缺少对wxs的addClass，removeClass处理
     if (name === ATTR_V_SHOW) {
       if (this.$) {
         patchVShow(this.$ as VShowElement, value)
       }
+    } else if (name === ATTR_V_OWNER_ID) {
+      this.$.__ownerId = value as number
     } else if (name === ATTR_STYLE) {
       const newStyle = decodeAttr(value)
       const oldStyle = this.$props.style
@@ -110,7 +117,10 @@ export class UniComponent extends UniNode {
         this.$props.style = newStyle
       }
     } else {
-      this.$props[name] = decodeAttr(value)
+      value = decodeAttr(value)
+      if (!this.wxsPropsInvoke(name, value)) {
+        this.$props[name] = value
+      }
     }
   }
   removeAttr(name: string) {

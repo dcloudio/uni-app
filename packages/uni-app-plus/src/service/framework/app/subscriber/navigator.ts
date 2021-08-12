@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { registerServiceMethod } from '@dcloudio/uni-core'
 
 const API_ROUTE = [
@@ -10,7 +11,13 @@ const API_ROUTE = [
 export function subscribeNavigator() {
   API_ROUTE.forEach((name) => {
     registerServiceMethod(name, (args) => {
-      uni[name](args)
+      uni[name](
+        extend(args, {
+          fail(res: { errMsg: string }) {
+            console.error(res.errMsg)
+          },
+        })
+      )
     })
   })
 }

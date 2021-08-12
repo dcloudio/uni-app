@@ -5,8 +5,8 @@ import {
   ATTR_INNER_HTML,
   ATTR_TEXT_CONTENT,
   ATTR_V_SHOW,
+  ATTR_V_OWNER_ID,
   UniNodeJSON,
-  ATTR_CHANGE_PREFIX,
 } from '@dcloudio/uni-shared'
 import { reactive, watch } from 'vue'
 import { UniNode } from './UniNode'
@@ -17,14 +17,11 @@ import { UniCustomElement } from '../components'
 import { queuePostActionJob } from '../scheduler'
 import { decodeAttr } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
-import { createWxsPropsInvoker, WxsPropsInvoker } from '../wxs'
 
 export class UniElement<T extends object> extends UniNode {
   declare $: UniCustomElement
   $props: T = reactive({} as any)
   $propNames: string[]
-  $wxsProps: Map<string, WxsPropsInvoker>
-  $hasWxsProps: boolean = false
   protected _update?: Function
   constructor(
     id: number,
@@ -38,7 +35,6 @@ export class UniElement<T extends object> extends UniNode {
     this.$.__id = id
     this.$.__listeners = Object.create(null)
     this.$propNames = propNames
-    this.$wxsProps = new Map<string, WxsPropsInvoker>()
     this._update = this.update.bind(this)
     this.init(nodeJson)
     this.insert(parentNodeId, refNodeId)
@@ -73,26 +69,7 @@ export class UniElement<T extends object> extends UniNode {
       this.setAttr(name, attrs[name])
     })
   }
-  setWxsProps(attrs: Record<string, any>) {
-    Object.keys(attrs).forEach((name) => {
-      if (name.indexOf(ATTR_CHANGE_PREFIX) === 0) {
-        const value = attrs[name.replace(ATTR_CHANGE_PREFIX, '')]
-        const invoker = createWxsPropsInvoker(attrs[name], value)
-        // 队列后再执行
-        queuePostActionJob(() => invoker(value))
 
-        this.$wxsProps.set(name, invoker)
-        delete attrs[name]
-        this.$hasWxsProps = true
-      }
-    })
-  }
-  addWxsEvents(events: Record<string, [string, number]>) {
-    Object.keys(events).forEach((name) => {
-      const [wxsEvent, flag] = events[name]
-      this.addWxsEvent(name, wxsEvent, flag)
-    })
-  }
   addEvents(events: Record<string, number>) {
     Object.keys(events).forEach((name) => {
       this.addEvent(name, events[name])
@@ -114,6 +91,8 @@ export class UniElement<T extends object> extends UniNode {
       patchStyle(this.$, value as string | Record<string, any>)
     } else if (name === ATTR_V_SHOW) {
       patchVShow(this.$ as VShowElement, value)
+    } else if (name === ATTR_V_OWNER_ID) {
+      this.$.__ownerId = value as number
     } else if (name === ATTR_INNER_HTML) {
       this.$.innerHTML = value as string
     } else if (name === ATTR_TEXT_CONTENT) {
@@ -141,11 +120,7 @@ export class UniElement<T extends object> extends UniNode {
     if (this.$propNames.indexOf(name) !== -1) {
       ;(this.$props as any)[name] = value
     } else {
-      const wxsPropsInvoker =
-        this.$hasWxsProps && this.$wxsProps.get(ATTR_CHANGE_PREFIX + name)
-      if (wxsPropsInvoker) {
-        wxsPropsInvoker(value)
-      } else {
+      if (!this.wxsPropsInvoke(name, value)) {
         this.$.setAttribute(name, value as string)
       }
     }

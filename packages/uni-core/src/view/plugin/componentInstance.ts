@@ -1,8 +1,8 @@
 import { ComponentInternalInstance } from 'vue'
 import { extend } from '@vue/shared'
-import { normalizeTarget, resolveOwnerVm } from '@dcloudio/uni-shared'
-import { getWindowOffset } from '../../helpers'
-import { getComponentDescriptor } from './componentWxs'
+import { normalizeTarget } from '@dcloudio/uni-shared'
+import { getWindowTop } from '../../helpers'
+import { wrapperH5WxsEvent } from './componentWxs'
 
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
@@ -10,17 +10,17 @@ const isMouseEvent = (val: Event): val is MouseEvent =>
 // normalizeNativeEvent
 export function $nne(
   evt: Event,
-  eventValue: Function,
-  instance: ComponentInternalInstance | null
+  eventValue?: Function,
+  instance?: ComponentInternalInstance | HTMLElement | null
 ) {
   // 目前内置组件底层实现，当需要访问原始event时，请使用withWebEvent包裹
   // 用法参考：uni-h5/src/framework/components/page/page-refresh/index.ts
   const { currentTarget } = evt
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
-    return evt
+    return [evt]
   }
   if (currentTarget.tagName.indexOf('UNI-') !== 0) {
-    return evt
+    return [evt]
   }
 
   const res = createNativeEvent(evt)
@@ -30,14 +30,20 @@ export function $nne(
   } else if (__PLATFORM__ === 'h5' && isMouseEvent(evt)) {
     normalizeMouseEvent(res as unknown as WechatMiniprogram.Touch, evt)
   } else if (evt instanceof TouchEvent) {
-    const { top } = getWindowOffset()
+    const top = getWindowTop()
     ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
     ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
   }
   if (__PLATFORM__ === 'h5') {
-    return wrapperEvent(res, evt, eventValue, instance)
+    wrapperEvent(res, evt)
+    return (
+      wrapperH5WxsEvent(
+        res,
+        eventValue,
+        instance as ComponentInternalInstance
+      ) || [res]
+    )
   }
-
   return [res]
 }
 
@@ -68,30 +74,7 @@ export function createNativeEvent(evt: Event | TouchEvent) {
   return event
 }
 
-function resolveOwnerComponentPublicInstance(
-  eventValue: Function,
-  instance: ComponentInternalInstance | null
-) {
-  if (!instance || eventValue.length < 2) {
-    return false
-  }
-  const ownerVm = resolveOwnerVm(instance)
-  if (!ownerVm) {
-    return false
-  }
-  const type = ownerVm.$.type
-  if (!(type as any).$wxs && !(type as any).$renderjs) {
-    return false
-  }
-  return ownerVm
-}
-
-function wrapperEvent(
-  event: Record<string, any>,
-  evt: Event | TouchEvent,
-  eventValue: Function,
-  instance: ComponentInternalInstance | null
-) {
+function wrapperEvent(event: Record<string, any>, evt: Event | TouchEvent) {
   extend(event, {
     preventDefault() {
       return evt.preventDefault()
@@ -100,16 +83,6 @@ function wrapperEvent(
       return evt.stopPropagation()
     },
   })
-  Object.defineProperty(event, 'instance', {
-    get() {
-      return getComponentDescriptor(instance!.proxy!, false)
-    },
-  })
-  const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance)
-  if (ownerVm) {
-    return [event, getComponentDescriptor(ownerVm, false)]
-  }
-  return [event]
 }
 
 function normalizeClickEvent(
@@ -117,13 +90,13 @@ function normalizeClickEvent(
   mouseEvt: MouseEvent
 ) {
   const { x, y } = mouseEvt
-  const { top } = getWindowOffset()
+  const top = getWindowTop()
   evt.detail = { x, y: y - top }
   evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)]
 }
 
 function normalizeMouseEvent(evt: Record<string, any>, mouseEvt: MouseEvent) {
-  const { top } = getWindowOffset()
+  const top = getWindowTop()
   evt.pageX = mouseEvt.pageX
   evt.pageY = mouseEvt.pageY - top
   evt.clientX = mouseEvt.clientX

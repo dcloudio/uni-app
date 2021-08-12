@@ -1,5 +1,6 @@
-import { findNodeByTagName } from './framework/dom/Page'
+import { extend } from '@vue/shared'
 import { createUniEvent } from '@dcloudio/uni-shared'
+import { findNodeByTagName } from '../../dom/Page'
 
 type Name =
   | 'navigateTo'
@@ -24,7 +25,13 @@ export const onWebInvokeAppService: WebInvokeAppService = (
   if (name === 'postMessage') {
     onMessage(pageIds[0], arg)
   } else {
-    uni[name](arg)
+    uni[name](
+      extend(arg, {
+        fail(res: { errMsg: string }) {
+          console.error(res.errMsg)
+        },
+      })
+    )
   }
 }
 

@@ -529,7 +529,7 @@ export default function vueFactory(exports) {
   class UniCommentNode extends UniNode {
     constructor(text, container) {
       super(NODE_TYPE_COMMENT, '#comment', container);
-      this._text = text;
+      this._text = process.env.NODE_ENV !== 'production' ? text : '';
     }
 
     toJSON(opts = {}) {
@@ -7848,7 +7848,20 @@ export default function vueFactory(exports) {
         return;
       }
 
-      setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized);
+      setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized); // fixed by xxxxxx 对根节点设置ownerid
+
+      if (instance.$wxsModules) {
+        var vnode = instance.subTree;
+
+        if (vnode.shapeFlag & 16
+        /* ARRAY_CHILDREN */
+        ) {
+          var elemVNode = vnode.children.find(vnode => vnode.shapeFlag & 1
+          /* ELEMENT */
+          );
+          elemVNode && elemVNode.el.setAttribute('.vOwnerId', instance.uid);
+        }
+      }
 
       if (process.env.NODE_ENV !== 'production') {
         popWarningContext();

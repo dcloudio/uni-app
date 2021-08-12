@@ -9184,9 +9184,11 @@ const forcePatchProp = (el, key) => {
         return true;
     }
     if (key === 'class' && el.__wxsClassChanged) {
+        el.__wxsClassChanged = false;
         return true;
     }
     if (key === 'style' && el.__wxsStyleChanged) {
+        el.__wxsStyleChanged = false;
         return true;
     }
     return false;
