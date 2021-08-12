@@ -31,9 +31,11 @@ function ensureEl(vm: ComponentPublicInstance) {
   const vnode = vm.$.subTree
   // ShapeFlags.ARRAY_CHILDREN = 1 << 4
   // ShapeFlags.ELEMENT = 1
+
   if (vnode.shapeFlag & (1 << 4)) {
     const elemVNode = (vnode.children as VNode[]).find(
-      (vnode) => vnode.shapeFlag & 1
+      // element || component
+      (vnode) => vnode.shapeFlag & 1 || vnode.shapeFlag & 6
     )
     if (elemVNode) {
       return elemVNode.el
