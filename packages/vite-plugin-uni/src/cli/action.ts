@@ -1,10 +1,7 @@
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
 import { BuildOptions, ServerOptions } from 'vite'
-import {
-  TIPS_BUILD_COMPLETE,
-  TIPS_WATCH_FOR_CHANGES,
-} from '@dcloudio/uni-cli-shared'
+import { M } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
@@ -19,9 +16,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
     } else {
       const watcher = (await build(options)) as RollupWatcher
       watcher.on('event', (event) => {
-        if (event.code === 'BUNDLE_END') {
+        if (event.code === 'BUNDLE_START') {
+          console.log(M['dev.watching.start'])
+        } else if (event.code === 'BUNDLE_END') {
           event.result.close()
-          console.log(TIPS_WATCH_FOR_CHANGES)
+          console.log(M['dev.watching.end'])
         }
       })
     }
@@ -41,7 +40,7 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)
       : build(options))
-    console.log(TIPS_BUILD_COMPLETE)
+    console.log(M['build.done'])
   } catch (e) {
     console.error(`error during build:\n${e.stack || e}`)
     process.exit(1)

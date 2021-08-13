@@ -25,7 +25,3 @@ export const COMMON_EXCLUDE = [
   /\/@dcloudio\/uni-h5\/style/,
   /\/@dcloudio\/uni-components\/style/,
 ]
-
-export const TIPS_BUILD_COMPLETE = 'DONE  Build complete.'
-export const TIPS_WATCH_FOR_CHANGES =
-  TIPS_BUILD_COMPLETE + ' Watching for changes...'

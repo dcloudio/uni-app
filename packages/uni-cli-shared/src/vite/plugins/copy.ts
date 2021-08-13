@@ -1,6 +1,6 @@
 import { Plugin, ResolvedConfig } from 'vite'
 import { FileWatcher } from '../../watcher'
-import { TIPS_WATCH_FOR_CHANGES } from '../../constants'
+import { M } from '../../messages'
 export interface UniViteCopyPluginTarget {
   src: string | string[]
   dest: string
@@ -48,7 +48,7 @@ export function uniViteCopyPlugin({
                   }
                 },
                 () => {
-                  console.log(TIPS_WATCH_FOR_CHANGES)
+                  console.log(M['dev.watching.end'])
                 }
               )
             })

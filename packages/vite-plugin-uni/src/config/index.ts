@@ -30,7 +30,6 @@ export function createConfig(
       base = '/'
     }
     options.base = base!
-
     return {
       base,
       root: process.env.VITE_ROOT_DIR,
