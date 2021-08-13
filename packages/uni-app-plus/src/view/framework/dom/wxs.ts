@@ -4,7 +4,6 @@ import {
   getValueByDataPath,
   WXS_PROTOCOL,
   WXS_MODULES,
-  RENDERJS_MODULES,
 } from '@dcloudio/uni-shared'
 import {
   ComponentDescriptorVm,
@@ -24,54 +23,51 @@ declare global {
   }
 }
 
-function getWxsModule(moduleId: string) {
+function getViewModule(moduleId: string, ownerEl: UniCustomElement) {
   const __wxsModules = window[('__' + WXS_MODULES) as '__wxsModules']
-  const __renderjsModules =
-    window[('__' + RENDERJS_MODULES) as '__renderjsModules']
-  let module = __wxsModules && __wxsModules[moduleId]
-  if (!module) {
-    module = __renderjsModules && __renderjsModules[moduleId]
+  const module = __wxsModules && __wxsModules[moduleId]
+  if (module) {
+    return module
   }
-  if (!module) {
-    return console.error(formatLog('wxs or renderjs', moduleId + ' not found'))
+  if (ownerEl && ownerEl.__renderjsInstances) {
+    return ownerEl.__renderjsInstances[moduleId]
   }
-  return module
 }
 
 const WXS_PROTOCOL_LEN = WXS_PROTOCOL.length
 
-export function invokeWxs(wxsStr: string, invokerArgs?: unknown[]) {
-  const [, moduleId, invoker, args] = JSON.parse(
-    wxsStr.substr(WXS_PROTOCOL_LEN)
-  )
+export function invokeWxs(
+  el: UniCustomElement | undefined,
+  wxsStr: string,
+  invokerArgs?: unknown[]
+) {
+  const [ownerId, moduleId, invoker, args] = parseWxs(wxsStr)
+  const ownerEl = resolveOwnerEl(el!, ownerId)
   if (isArray(invokerArgs) || isArray(args)) {
     // methods
     const [moduleName, mehtodName] = invoker.split('.')
     return invokeWxsMethod(
+      ownerEl,
       moduleId,
       moduleName,
       mehtodName,
       invokerArgs || args
     )
   }
-  return getWxsProp(moduleId, invoker)
+  return getWxsProp(ownerEl, moduleId, invoker)
 }
 
 export function invokeWxsEvent(
-  wxsStr: string,
   el: UniCustomElement,
+  wxsStr: string,
   event: Record<string, any>
 ) {
-  const [ownerId, moduleId, invoker] = JSON.parse(
-    wxsStr.substr(WXS_PROTOCOL_LEN)
-  )
+  const [ownerId, moduleId, invoker] = parseWxs(wxsStr)
   const [moduleName, mehtodName] = invoker.split('.')
-  return invokeWxsMethod(moduleId, moduleName, mehtodName, [
+  const ownerEl = resolveOwnerEl(el, ownerId)
+  return invokeWxsMethod(ownerEl, moduleId, moduleName, mehtodName, [
     wrapperWxsEvent(event, el),
-    getComponentDescriptor(
-      createComponentDescriptorVm(resolveOwnerEl(el, ownerId)),
-      false
-    ),
+    getComponentDescriptor(createComponentDescriptorVm(ownerEl), false),
   ])
 }
 
@@ -89,34 +85,40 @@ function resolveOwnerEl(el: UniCustomElement, ownerId: number) {
   return el
 }
 
+function parseWxs(wxsStr: string) {
+  return JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN)) as [
+    number,
+    string,
+    string,
+    any
+  ]
+}
+
 export function invokeWxsProps(
   wxsStr: string,
   el: UniCustomElement,
   newValue: unknown,
   oldValue: unknown
 ) {
-  const [ownerId, moduleId, invoker] = JSON.parse(
-    wxsStr.substr(WXS_PROTOCOL_LEN)
-  )
+  const [ownerId, moduleId, invoker] = parseWxs(wxsStr)
+  const ownerEl = resolveOwnerEl(el, ownerId)
   const [moduleName, mehtodName] = invoker.split('.')
-  return invokeWxsMethod(moduleId, moduleName, mehtodName, [
+  return invokeWxsMethod(ownerEl, moduleId, moduleName, mehtodName, [
     newValue,
     oldValue,
-    getComponentDescriptor(
-      createComponentDescriptorVm(resolveOwnerEl(el, ownerId)),
-      false
-    ),
+    getComponentDescriptor(createComponentDescriptorVm(ownerEl), false),
     getComponentDescriptor(createComponentDescriptorVm(el), false),
   ])
 }
 
 function invokeWxsMethod(
+  ownerEl: UniCustomElement,
   moduleId: string,
   moduleName: string,
   methodName: string,
   args: unknown[]
 ) {
-  const module = getWxsModule(moduleId)
+  const module = getViewModule(moduleId, ownerEl)
   if (!module) {
     return console.error(
       formatLog('wxs', 'module ' + moduleName + ' not found')
@@ -129,8 +131,12 @@ function invokeWxsMethod(
   return method.apply(module, args)
 }
 
-function getWxsProp(moduleId: string, dataPath: string) {
-  const module = getWxsModule(moduleId)
+function getWxsProp(
+  ownerEl: UniCustomElement,
+  moduleId: string,
+  dataPath: string
+) {
+  const module = getViewModule(moduleId, ownerEl)
   if (!module) {
     return console.error(formatLog('wxs', 'module ' + dataPath + ' not found'))
   }

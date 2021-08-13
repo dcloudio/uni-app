@@ -37,6 +37,36 @@ export default function vueFactory(exports) {
    */
 
   var capitalize$1 = cacheStringFunction$1(str => str.charAt(0).toUpperCase() + str.slice(1));
+
+  function isElement(el) {
+    // Element
+    return el.nodeType === 1;
+  }
+
+  function resolveOwnerEl(instance) {
+    var {
+      vnode
+    } = instance;
+
+    if (isElement(vnode.el)) {
+      return vnode.el;
+    }
+
+    var {
+      subTree
+    } = instance; // ShapeFlags.ARRAY_CHILDREN = 1<<4
+
+    if (subTree.shapeFlag & 16) {
+      var elemVNode = subTree.children.find(vnode => isElement(vnode.el));
+
+      if (elemVNode) {
+        return elemVNode.el;
+      }
+    }
+
+    return vnode.el;
+  }
+
   var lastLogTime = 0;
 
   function formatLog(module, ...args) {
@@ -380,6 +410,8 @@ export default function vueFactory(exports) {
 
   var ATTR_CLASS = 'class';
   var ATTR_STYLE = 'style';
+  var ATTR_V_OWNER_ID = '.vOwnerId';
+  var ATTR_V_RENDERJS = '.vRenderjs';
 
   class UniBaseNode extends UniNode {
     constructor(nodeType, nodeName, container) {
@@ -7851,15 +7883,14 @@ export default function vueFactory(exports) {
       setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized); // fixed by xxxxxx 对根节点设置ownerid
 
       if (instance.$wxsModules) {
-        var vnode = instance.subTree;
+        var el = resolveOwnerEl(instance);
 
-        if (vnode.shapeFlag & 16
-        /* ARRAY_CHILDREN */
-        ) {
-          var elemVNode = vnode.children.find(vnode => vnode.shapeFlag & 1
-          /* ELEMENT */
-          );
-          elemVNode && elemVNode.el.setAttribute('.vOwnerId', instance.uid);
+        if (el) {
+          el.setAttribute(ATTR_V_OWNER_ID, instance.uid);
+          var {
+            $renderjsModules
+          } = instance.type;
+          $renderjsModules && el.setAttribute(ATTR_V_RENDERJS, $renderjsModules);
         }
       }
 

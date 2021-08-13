@@ -114,8 +114,8 @@ export function createWxsEventInvoker(
 ) {
   const invoker = (evt: Event) => {
     invokeWxsEvent(
-      wxsEvent,
       el,
+      wxsEvent,
       normalizeNativeEvent(evt)[0] as Record<string, any>
     )
   }

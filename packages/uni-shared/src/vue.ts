@@ -1,4 +1,4 @@
-import { ComponentInternalInstance } from 'vue'
+import { ComponentInternalInstance, VNode } from 'vue'
 import { hyphenate } from '@vue/shared'
 
 import { isBuiltInComponent } from './tags'
@@ -14,4 +14,27 @@ export function resolveOwnerVm(vm: ComponentInternalInstance) {
     componentName = vm.type.name
   }
   return vm.proxy!
+}
+
+function isElement(el: Element) {
+  // Element
+  return el.nodeType === 1
+}
+
+export function resolveOwnerEl(instance: ComponentInternalInstance) {
+  const { vnode } = instance
+  if (isElement(vnode.el as Element)) {
+    return vnode.el
+  }
+  const { subTree } = instance
+  // ShapeFlags.ARRAY_CHILDREN = 1<<4
+  if (subTree.shapeFlag & 16) {
+    const elemVNode = (subTree.children as VNode[]).find((vnode) =>
+      isElement(vnode.el as Element)
+    )
+    if (elemVNode) {
+      return elemVNode.el
+    }
+  }
+  return vnode.el
 }

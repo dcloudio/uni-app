@@ -881,6 +881,7 @@
   var ATTR_TEXT_CONTENT = "textContent";
   var ATTR_V_SHOW = ".vShow";
   var ATTR_V_OWNER_ID = ".vOwnerId";
+  var ATTR_V_RENDERJS = ".vRenderjs";
   var ATTR_CHANGE_PREFIX = "change:";
   var ACTION_TYPE_PAGE_CREATE = 1;
   var ACTION_TYPE_PAGE_CREATED = 2;
@@ -7633,45 +7634,53 @@
     });
     return res;
   }
+  function createActionJob(fn, priority) {
+    return fn.priority = priority, fn;
+  }
   var postActionJobs = new Set();
-  function queuePostActionJob(job) {
-    postActionJobs.add(job);
+  var JOB_PRIORITY_UPDATE = 1;
+  var JOB_PRIORITY_REBUILD = 2;
+  var JOB_PRIORITY_RENDERJS = 3;
+  var JOB_PRIORITY_WXS_PROPS = 4;
+  function queuePostActionJob(job, priority) {
+    postActionJobs.add(createActionJob(job, priority));
   }
   function flushPostActionJobs() {
     {
       console.log(formatLog("flushPostActionJobs", postActionJobs.size));
     }
     try {
-      postActionJobs.forEach((fn) => fn());
+      ;
+      [...postActionJobs].sort((a2, b) => a2.priority - b.priority).forEach((fn) => fn());
     } finally {
       postActionJobs.clear();
     }
   }
-  function getWxsModule(moduleId) {
+  function getViewModule(moduleId, ownerEl) {
     var __wxsModules = window["__" + WXS_MODULES];
-    var __renderjsModules = window["__" + RENDERJS_MODULES];
     var module = __wxsModules && __wxsModules[moduleId];
-    if (!module) {
-      module = __renderjsModules && __renderjsModules[moduleId];
+    if (module) {
+      return module;
     }
-    if (!module) {
-      return console.error(formatLog("wxs or renderjs", moduleId + " not found"));
+    if (ownerEl && ownerEl.__renderjsInstances) {
+      return ownerEl.__renderjsInstances[moduleId];
     }
-    return module;
   }
   var WXS_PROTOCOL_LEN = WXS_PROTOCOL.length;
-  function invokeWxs(wxsStr, invokerArgs) {
-    var [, moduleId, invoker, args] = JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN));
+  function invokeWxs(el, wxsStr, invokerArgs) {
+    var [ownerId, moduleId, invoker, args] = parseWxs(wxsStr);
+    var ownerEl = resolveOwnerEl(el, ownerId);
     if (isArray(invokerArgs) || isArray(args)) {
       var [moduleName, mehtodName] = invoker.split(".");
-      return invokeWxsMethod(moduleId, moduleName, mehtodName, invokerArgs || args);
+      return invokeWxsMethod(ownerEl, moduleId, moduleName, mehtodName, invokerArgs || args);
     }
-    return getWxsProp(moduleId, invoker);
+    return getWxsProp(ownerEl, moduleId, invoker);
   }
-  function invokeWxsEvent(wxsStr, el, event) {
-    var [ownerId, moduleId, invoker] = JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN));
+  function invokeWxsEvent(el, wxsStr, event) {
+    var [ownerId, moduleId, invoker] = parseWxs(wxsStr);
     var [moduleName, mehtodName] = invoker.split(".");
-    return invokeWxsMethod(moduleId, moduleName, mehtodName, [wrapperWxsEvent(event, el), getComponentDescriptor(createComponentDescriptorVm(resolveOwnerEl(el, ownerId)), false)]);
+    var ownerEl = resolveOwnerEl(el, ownerId);
+    return invokeWxsMethod(ownerEl, moduleId, moduleName, mehtodName, [wrapperWxsEvent(event, el), getComponentDescriptor(createComponentDescriptorVm(ownerEl), false)]);
   }
   function resolveOwnerEl(el, ownerId) {
     if (el.__ownerId === ownerId) {
@@ -7686,13 +7695,17 @@
     }
     return el;
   }
-  function invokeWxsProps(wxsStr, el, newValue, oldValue) {
-    var [ownerId, moduleId, invoker] = JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN));
-    var [moduleName, mehtodName] = invoker.split(".");
-    return invokeWxsMethod(moduleId, moduleName, mehtodName, [newValue, oldValue, getComponentDescriptor(createComponentDescriptorVm(resolveOwnerEl(el, ownerId)), false), getComponentDescriptor(createComponentDescriptorVm(el), false)]);
+  function parseWxs(wxsStr) {
+    return JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN));
   }
-  function invokeWxsMethod(moduleId, moduleName, methodName, args) {
-    var module = getWxsModule(moduleId);
+  function invokeWxsProps(wxsStr, el, newValue, oldValue) {
+    var [ownerId, moduleId, invoker] = parseWxs(wxsStr);
+    var ownerEl = resolveOwnerEl(el, ownerId);
+    var [moduleName, mehtodName] = invoker.split(".");
+    return invokeWxsMethod(ownerEl, moduleId, moduleName, mehtodName, [newValue, oldValue, getComponentDescriptor(createComponentDescriptorVm(ownerEl), false), getComponentDescriptor(createComponentDescriptorVm(el), false)]);
+  }
+  function invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, args) {
+    var module = getViewModule(moduleId, ownerEl);
     if (!module) {
       return console.error(formatLog("wxs", "module " + moduleName + " not found"));
     }
@@ -7702,8 +7715,8 @@
     }
     return method.apply(module, args);
   }
-  function getWxsProp(moduleId, dataPath) {
-    var module = getWxsModule(moduleId);
+  function getWxsProp(ownerEl, moduleId, dataPath) {
+    var module = getViewModule(moduleId, ownerEl);
     if (!module) {
       return console.error(formatLog("wxs", "module " + dataPath + " not found"));
     }
@@ -7771,6 +7784,44 @@
       }
     });
   }
+  function initRenderjs(node, moduleIds) {
+    Object.keys(moduleIds).forEach((name) => {
+      initRenderjsModule(node, moduleIds[name]);
+    });
+  }
+  function destroyRenderjs(node) {
+    var {
+      __renderjsInstances
+    } = node.$;
+    if (!__renderjsInstances) {
+      return;
+    }
+    Object.keys(__renderjsInstances).forEach((id2) => {
+      __renderjsInstances[id2].$.appContext.app.unmount();
+    });
+  }
+  function initRenderjsModule(node, moduleId) {
+    var options = getRenderjsModule(moduleId);
+    if (!options) {
+      return;
+    }
+    var el = node.$;
+    (el.__renderjsInstances || (el.__renderjsInstances = {}))[moduleId] = createRenderjsInstance(options);
+  }
+  function getRenderjsModule(moduleId) {
+    var __renderjsModules = window["__" + RENDERJS_MODULES];
+    var module = __renderjsModules && __renderjsModules[moduleId];
+    if (!module) {
+      return console.error(formatLog("renderjs", moduleId + " not found"));
+    }
+    return module;
+  }
+  function createRenderjsInstance(options) {
+    options = options.default || options;
+    options.render = () => {
+    };
+    return createApp(options).mount(document.createElement("div"));
+  }
   class UniNode {
     constructor(id2, tag, parentNodeId, element) {
       this.isMounted = false;
@@ -7809,6 +7860,7 @@
       $2.parentNode.removeChild($2);
       this.isUnmounted = true;
       removeElement(this.id);
+      destroyRenderjs(this);
     }
     appendChild(node) {
       return this.$.appendChild(node);
@@ -7822,7 +7874,7 @@
           var propName = name.replace(ATTR_CHANGE_PREFIX, "");
           var value = attrs2[propName];
           var invoker = createWxsPropsInvoker(this, attrs2[name], value);
-          queuePostActionJob(() => invoker(value));
+          queuePostActionJob(() => invoker(value), JOB_PRIORITY_WXS_PROPS);
           this.$wxsProps.set(name, invoker);
           delete attrs2[name];
           delete attrs2[propName];
@@ -7838,10 +7890,10 @@
     }
     addWxsEvent(name, wxsEvent, flag) {
     }
-    wxsPropsInvoke(name, value) {
+    wxsPropsInvoke(name, value, isNextTick = false) {
       var wxsPropsInvoker = this.$hasWxsProps && this.$wxsProps.get(ATTR_CHANGE_PREFIX + name);
       if (wxsPropsInvoker) {
-        return wxsPropsInvoker(value), true;
+        return queuePostActionJob(() => isNextTick ? nextTick(() => wxsPropsInvoker(value)) : wxsPropsInvoker(value), JOB_PRIORITY_WXS_PROPS), true;
       }
     }
   }
@@ -7981,7 +8033,7 @@
   }
   function createWxsEventInvoker(el, wxsEvent, flag) {
     var invoker = (evt) => {
-      invokeWxsEvent(wxsEvent, el, $nne(evt)[0]);
+      invokeWxsEvent(el, wxsEvent, $nne(evt)[0]);
     };
     if (!flag) {
       return invoker;
@@ -7989,14 +8041,14 @@
     return withModifiers(invoker, resolveModifier(flag));
   }
   var JSON_PROTOCOL_LEN = JSON_PROTOCOL.length;
-  function decodeAttr(value) {
+  function decodeAttr(el, value) {
     if (!isString(value)) {
       return value;
     }
     if (value.indexOf(JSON_PROTOCOL) === 0) {
       value = JSON.parse(value.substr(JSON_PROTOCOL_LEN));
     } else if (value.indexOf(WXS_PROTOCOL) === 0) {
-      value = invokeWxs(value);
+      value = invokeWxs(el, value);
     }
     return value;
   }
@@ -8030,7 +8082,7 @@
       }
       super.init(nodeJson);
       watch(this.$props, () => {
-        queuePostActionJob(this._update);
+        queuePostActionJob(this._update, JOB_PRIORITY_UPDATE);
       }, {
         flush: "sync"
       });
@@ -8065,6 +8117,8 @@
         patchVShow(this.$, value);
       } else if (name === ATTR_V_OWNER_ID) {
         this.$.__ownerId = value;
+      } else if (name === ATTR_V_RENDERJS) {
+        queuePostActionJob(() => initRenderjs(this, value), JOB_PRIORITY_RENDERJS);
       } else if (name === ATTR_INNER_HTML) {
         this.$.innerHTML = value;
       } else if (name === ATTR_TEXT_CONTENT) {
@@ -8083,7 +8137,7 @@
       }
     }
     setAttribute(name, value) {
-      value = decodeAttr(value);
+      value = decodeAttr(this.$, value);
       if (this.$propNames.indexOf(name) !== -1) {
         this.$props[name] = value;
       } else {
@@ -16503,8 +16557,10 @@
         }
       } else if (name === ATTR_V_OWNER_ID) {
         this.$.__ownerId = value;
+      } else if (name === ATTR_V_RENDERJS) {
+        queuePostActionJob(() => initRenderjs(this, value), JOB_PRIORITY_RENDERJS);
       } else if (name === ATTR_STYLE) {
-        var newStyle = decodeAttr(value);
+        var newStyle = decodeAttr(this.$ || $(this.pid).$, value);
         var oldStyle = this.$props.style;
         if (isPlainObject(newStyle) && isPlainObject(oldStyle)) {
           Object.keys(newStyle).forEach((n) => {
@@ -16514,8 +16570,8 @@
           this.$props.style = newStyle;
         }
       } else {
-        value = decodeAttr(value);
-        if (!this.wxsPropsInvoke(name, value)) {
+        value = decodeAttr(this.$ || $(this.pid).$, value);
+        if (!this.wxsPropsInvoke(name, value, true)) {
           this.$props[name] = value;
         }
       }
@@ -16546,15 +16602,15 @@
       return this._rebuild;
     }
     setText(text2) {
-      queuePostActionJob(this.getRebuildFn());
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
       return super.setText(text2);
     }
     appendChild(node) {
-      queuePostActionJob(this.getRebuildFn());
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
       return super.appendChild(node);
     }
     insertBefore(newChild, refChild) {
-      queuePostActionJob(this.getRebuildFn());
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
       return super.insertBefore(newChild, refChild);
     }
     rebuild() {

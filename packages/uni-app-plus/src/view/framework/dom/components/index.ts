@@ -56,6 +56,8 @@ export interface UniCustomElement extends HTMLElement {
   __wxsRemoveClass: string[]
   __wxsClassChanged: boolean
   __wxsStyleChanged: boolean
+  // renderjs
+  __renderjsInstances?: Record<string, ComponentPublicInstance>
 }
 
 export const BuiltInComponents = {

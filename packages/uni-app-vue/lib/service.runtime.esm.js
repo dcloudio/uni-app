@@ -1,4 +1,4 @@
-import { isRootHook, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL } from '@dcloudio/uni-shared';
+import { isRootHook, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL } from '@dcloudio/uni-shared';
 
 /**
  * Make a map and return a function for checking if a key
@@ -6301,10 +6301,11 @@ function baseCreateRenderer(options, createHydrationFns) {
         setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized);
         // fixed by xxxxxx 对根节点设置ownerid
         if (instance.$wxsModules) {
-            const vnode = instance.subTree;
-            if (vnode.shapeFlag & 16 /* ARRAY_CHILDREN */) {
-                const elemVNode = vnode.children.find(vnode => vnode.shapeFlag & 1 /* ELEMENT */);
-                elemVNode && elemVNode.el.setAttribute('.vOwnerId', instance.uid);
+            const el = resolveOwnerEl(instance);
+            if (el) {
+                el.setAttribute(ATTR_V_OWNER_ID, instance.uid);
+                const { $renderjsModules } = instance.type;
+                $renderjsModules && el.setAttribute(ATTR_V_RENDERJS, $renderjsModules);
             }
         }
         if ((process.env.NODE_ENV !== 'production')) {

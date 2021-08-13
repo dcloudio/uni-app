@@ -6,6 +6,7 @@ import {
   ATTR_TEXT_CONTENT,
   ATTR_V_SHOW,
   ATTR_V_OWNER_ID,
+  ATTR_V_RENDERJS,
   UniNodeJSON,
 } from '@dcloudio/uni-shared'
 import { reactive, watch } from 'vue'
@@ -14,9 +15,14 @@ import { patchClass } from '../modules/class'
 import { patchStyle } from '../modules/style'
 import { patchEvent, patchWxsEvent } from '../modules/events'
 import { UniCustomElement } from '../components'
-import { queuePostActionJob } from '../scheduler'
+import {
+  JOB_PRIORITY_RENDERJS,
+  JOB_PRIORITY_UPDATE,
+  queuePostActionJob,
+} from '../scheduler'
 import { decodeAttr } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
+import { initRenderjs } from '../renderjs'
 
 export class UniElement<T extends object> extends UniNode {
   declare $: UniCustomElement
@@ -56,7 +62,7 @@ export class UniElement<T extends object> extends UniNode {
     watch(
       this.$props,
       () => {
-        queuePostActionJob(this._update!)
+        queuePostActionJob(this._update!, JOB_PRIORITY_UPDATE)
       },
       { flush: 'sync' }
     )
@@ -93,6 +99,12 @@ export class UniElement<T extends object> extends UniNode {
       patchVShow(this.$ as VShowElement, value)
     } else if (name === ATTR_V_OWNER_ID) {
       this.$.__ownerId = value as number
+    } else if (name === ATTR_V_RENDERJS) {
+      // 本轮渲染结束后初始化
+      queuePostActionJob(
+        () => initRenderjs(this, value as Record<string, string>),
+        JOB_PRIORITY_RENDERJS
+      )
     } else if (name === ATTR_INNER_HTML) {
       this.$.innerHTML = value as string
     } else if (name === ATTR_TEXT_CONTENT) {
@@ -116,7 +128,7 @@ export class UniElement<T extends object> extends UniNode {
     }
   }
   setAttribute(name: string, value: unknown) {
-    value = decodeAttr(value)
+    value = decodeAttr(this.$, value)
     if (this.$propNames.indexOf(name) !== -1) {
       ;(this.$props as any)[name] = value
     } else {

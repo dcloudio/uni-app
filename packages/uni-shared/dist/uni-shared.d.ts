@@ -2,6 +2,7 @@ import { ComponentInternalInstance } from 'vue';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
 import { FontFaceDescriptors } from 'css-font-loading-module';
+import { RendererNode } from 'vue';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
@@ -68,6 +69,8 @@ export declare const ATTR_STYLE = "style";
 export declare const ATTR_TEXT_CONTENT = "textContent";
 
 export declare const ATTR_V_OWNER_ID = ".vOwnerId";
+
+export declare const ATTR_V_RENDERJS = ".vRenderjs";
 
 export declare const ATTR_V_SHOW = ".vShow";
 
@@ -402,6 +405,8 @@ string | number
 export declare function removeLeadingSlash(str: string): string;
 
 export declare const RENDERJS_MODULES = "renderjsModules";
+
+export declare function resolveOwnerEl(instance: ComponentInternalInstance): RendererNode | null;
 
 export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
 

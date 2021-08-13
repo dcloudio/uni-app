@@ -1,11 +1,15 @@
-import { ComponentInternalInstance, ComponentPublicInstance, VNode } from 'vue'
+import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import {
   isFunction,
   isPlainObject,
   parseStringStyle,
   stringifyStyle,
 } from '@vue/shared'
-import { ON_WXS_INVOKE_CALL_METHOD, resolveOwnerVm } from '@dcloudio/uni-shared'
+import {
+  ON_WXS_INVOKE_CALL_METHOD,
+  resolveOwnerEl,
+  resolveOwnerVm,
+} from '@dcloudio/uni-shared'
 
 export interface WxsElement extends HTMLElement {
   __id?: number
@@ -26,24 +30,6 @@ export interface ComponentDescriptorVm {
   $forceUpdate: any
 }
 
-function ensureEl(vm: ComponentPublicInstance) {
-  // 确保el是有效节点（不然的话，可能是text或comment）
-  const vnode = vm.$.subTree
-  // ShapeFlags.ARRAY_CHILDREN = 1 << 4
-  // ShapeFlags.ELEMENT = 1
-
-  if (vnode.shapeFlag & (1 << 4)) {
-    const elemVNode = (vnode.children as VNode[]).find(
-      // element || component
-      (vnode) => vnode.shapeFlag & 1 || vnode.shapeFlag & 6
-    )
-    if (elemVNode) {
-      return elemVNode.el
-    }
-  }
-  return vm.$el
-}
-
 export class ComponentDescriptor {
   private $vm: ComponentDescriptorVm
   private $el: WxsElement
@@ -52,7 +38,7 @@ export class ComponentDescriptor {
   constructor(vm: ComponentDescriptorVm) {
     this.$vm = vm
     if (__PLATFORM__ === 'h5') {
-      this.$el = ensureEl(vm as ComponentPublicInstance)
+      this.$el = resolveOwnerEl((vm as ComponentPublicInstance).$) as WxsElement
     } else {
       this.$el = vm.$el
     }

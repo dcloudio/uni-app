@@ -11,6 +11,7 @@ import {
 import {
   ATTR_STYLE,
   ATTR_V_OWNER_ID,
+  ATTR_V_RENDERJS,
   ATTR_V_SHOW,
   formatLog,
   parseEventName,
@@ -20,9 +21,14 @@ import { UniNode } from '../elements/UniNode'
 import { createInvoker, createWxsEventInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
 import { $, removeElement } from '../page'
-import { queuePostActionJob } from '../scheduler'
+import {
+  JOB_PRIORITY_REBUILD,
+  JOB_PRIORITY_RENDERJS,
+  queuePostActionJob,
+} from '../scheduler'
 import { decodeAttr } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
+import { initRenderjs } from '../renderjs'
 
 export class UniComponent extends UniNode {
   declare $: UniCustomElement
@@ -106,8 +112,14 @@ export class UniComponent extends UniNode {
       }
     } else if (name === ATTR_V_OWNER_ID) {
       this.$.__ownerId = value as number
+    } else if (name === ATTR_V_RENDERJS) {
+      // 本轮渲染结束后初始化
+      queuePostActionJob(
+        () => initRenderjs(this, value as Record<string, string>),
+        JOB_PRIORITY_RENDERJS
+      )
     } else if (name === ATTR_STYLE) {
-      const newStyle = decodeAttr(value)
+      const newStyle = decodeAttr(this.$ || $(this.pid).$, value)
       const oldStyle = this.$props.style
       if (isPlainObject(newStyle) && isPlainObject(oldStyle)) {
         Object.keys(newStyle).forEach((n) => {
@@ -117,8 +129,8 @@ export class UniComponent extends UniNode {
         this.$props.style = newStyle
       }
     } else {
-      value = decodeAttr(value)
-      if (!this.wxsPropsInvoke(name, value)) {
+      value = decodeAttr(this.$ || $(this.pid).$, value)
+      if (!this.wxsPropsInvoke(name, value, true)) {
         this.$props[name] = value
       }
     }
@@ -160,15 +172,15 @@ export class UniContainerComponent extends UniComponent {
     return this._rebuild
   }
   setText(text: string) {
-    queuePostActionJob(this.getRebuildFn())
+    queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD)
     return super.setText(text)
   }
   appendChild(node: Element) {
-    queuePostActionJob(this.getRebuildFn())
+    queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD)
     return super.appendChild(node)
   }
   insertBefore(newChild: Node, refChild: Node) {
-    queuePostActionJob(this.getRebuildFn())
+    queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD)
     return super.insertBefore(newChild, refChild)
   }
   rebuild() {

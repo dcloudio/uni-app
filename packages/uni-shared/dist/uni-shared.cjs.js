@@ -97,6 +97,25 @@ function resolveOwnerVm(vm) {
     }
     return vm.proxy;
 }
+function isElement(el) {
+    // Element
+    return el.nodeType === 1;
+}
+function resolveOwnerEl(instance) {
+    const { vnode } = instance;
+    if (isElement(vnode.el)) {
+        return vnode.el;
+    }
+    const { subTree } = instance;
+    // ShapeFlags.ARRAY_CHILDREN = 1<<4
+    if (subTree.shapeFlag & 16) {
+        const elemVNode = subTree.children.find((vnode) => isElement(vnode.el));
+        if (elemVNode) {
+            return elemVNode.el;
+        }
+    }
+    return vnode.el;
+}
 
 let lastLogTime = 0;
 function formatLog(module, ...args) {
@@ -589,6 +608,7 @@ const ATTR_INNER_HTML = 'innerHTML';
 const ATTR_TEXT_CONTENT = 'textContent';
 const ATTR_V_SHOW = '.vShow';
 const ATTR_V_OWNER_ID = '.vOwnerId';
+const ATTR_V_RENDERJS = '.vRenderjs';
 const ATTR_CHANGE_PREFIX = 'change:';
 class UniBaseNode extends UniNode {
     constructor(nodeType, nodeName, container) {
@@ -1022,6 +1042,7 @@ exports.ATTR_INNER_HTML = ATTR_INNER_HTML;
 exports.ATTR_STYLE = ATTR_STYLE;
 exports.ATTR_TEXT_CONTENT = ATTR_TEXT_CONTENT;
 exports.ATTR_V_OWNER_ID = ATTR_V_OWNER_ID;
+exports.ATTR_V_RENDERJS = ATTR_V_RENDERJS;
 exports.ATTR_V_SHOW = ATTR_V_SHOW;
 exports.BACKGROUND_COLOR = BACKGROUND_COLOR;
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
@@ -1125,6 +1146,7 @@ exports.parseUrl = parseUrl;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;
+exports.resolveOwnerEl = resolveOwnerEl;
 exports.resolveOwnerVm = resolveOwnerVm;
 exports.sanitise = sanitise;
 exports.scrollTo = scrollTo;
