@@ -1087,14 +1087,16 @@ function initTriggerEvent (mpInstance) {
   };
 }
 
-function initHook (name, options) {
-  const oldHook = options.lifetimes[name];
+function initHook (name, options, isComponent) {
+  // fix by Lxh 字节自定义组件Component构造器文档上写有created，但是实测只触发了lifetimes上的created
+  isComponent && (options = options.lifetimes)
+  const oldHook = options[name];
   if (!oldHook) {
-    options.lifetimes[name] = function () {
+    options[name] = function () {
       initTriggerEvent(this);
     };
   } else {
-    options.lifetimes[name] = function (...args) {
+    options[name] = function (...args) {
       initTriggerEvent(this);
       return oldHook.apply(this, args)
     };
@@ -1109,7 +1111,7 @@ if (!MPPage.__$wrappered) {
   Page.after = MPPage.after;
 
   Component = function (options = {}) {
-    initHook('created', options);
+    initHook('created', options, true);
     return MPComponent(options)
   };
 }
