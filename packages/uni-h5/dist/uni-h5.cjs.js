@@ -10039,8 +10039,8 @@ function useTopWindow(layoutState) {
   } = __uniConfig.topWindow;
   const windowRef = vue.ref(null);
   function updateWindow() {
-    const instalce = windowRef.value;
-    const el = instalce.$el;
+    const instance = windowRef.value;
+    const el = uniShared.resolveOwnerEl(instance.$);
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
@@ -10058,8 +10058,8 @@ function useLeftWindow(layoutState) {
   } = __uniConfig.leftWindow;
   const windowRef = vue.ref(null);
   function updateWindow() {
-    const instalce = windowRef.value;
-    const el = instalce.$el;
+    const instance = windowRef.value;
+    const el = uniShared.resolveOwnerEl(instance.$);
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
@@ -10077,8 +10077,8 @@ function useRightWindow(layoutState) {
   } = __uniConfig.rightWindow;
   const windowRef = vue.ref(null);
   function updateWindow() {
-    const instalce = windowRef.value;
-    const el = instalce.$el;
+    const instance = windowRef.value;
+    const el = uniShared.resolveOwnerEl(instance.$);
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
