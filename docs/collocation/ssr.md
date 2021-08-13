@@ -183,5 +183,5 @@ export default defineConfig({
   * 部署静态资源到[前端网页托管](https://uniapp.dcloud.net.cn/uniCloud/hosting)
   > 将编译后的`dist/build/h5/client`中的资源上传至前端网页托管，推荐使用免费的阿里云服务空间
   * 部署`uni-ssr`云函数
-  > 从插件市场导入[uni-ssr](https://ext.dcloud.net.cn/plugin?id=5338)，将编译后的`dist/build/h5/server`目录拷贝至`uni-ssr`云函数根目录，并上传
+  > 从插件市场导入[uni-ssr](https://ext.dcloud.net.cn/plugin?id=5338)，将编译后的`dist/build/h5/server`目录拷贝至`uni-ssr`云函数根目录，并上传。备注：阿里云的云函数绑定自定义域名功能正在调试中，现阶段推荐使用腾讯云版本的云函数。
   * 配置`uni-ssr`的云函数URL化路径，请参考文档：[云函数URL化](https://uniapp.dcloud.net.cn/uniCloud/http)
