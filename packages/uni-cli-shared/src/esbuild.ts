@@ -1,7 +1,16 @@
-import { TransformOptions } from 'esbuild'
+import { BuildOptions } from 'esbuild'
+import path from 'path'
 
-export function transformWithEsbuild(code: string, options: TransformOptions) {
+export function transformWithEsbuild(
+  code: string,
+  filename: string,
+  options: BuildOptions
+) {
+  options.stdin = {
+    contents: code,
+    resolveDir: path.dirname(filename),
+  }
   return import('esbuild').then((esbuild) => {
-    return esbuild.transform(code, options)
+    return esbuild.build(options)
   })
 }

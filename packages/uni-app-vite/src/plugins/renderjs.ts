@@ -30,7 +30,7 @@ export function uniRenderjsPlugin(): Plugin {
       renderjsModulesCache.set(resolvedConfig, new Map<string, string>())
     },
     async transform(code, id) {
-      const { type, name } = parseRenderjs(id)
+      const { type, name, filename } = parseRenderjs(id)
       if (!type) {
         return
       }
@@ -44,19 +44,23 @@ export function uniRenderjsPlugin(): Plugin {
       const moduleHashId = hash(modulePath)
       const globalName = type === 'wxs' ? WXS_MODULES : RENDERJS_MODULES
       const { isProduction } = resolvedConfig
-      const res =
+      const resultCode = normalizeCode(
         type === 'wxs'
           ? await transformWxs(
               code,
+              filename,
               `__${globalName}['${moduleHashId}']`,
               isProduction
             )
           : await transformRenderjs(
               code,
+              filename,
               `__${globalName}['${moduleHashId}']`,
               isProduction
-            )
-      const resultCode = normalizeCode(res.code, globalName, isProduction)
+            ),
+        globalName,
+        isProduction
+      )
       if (type === 'wxs') {
         wxsModulesCache.get(resolvedConfig)!.set(moduleHashId, resultCode)
       } else {
@@ -110,22 +114,42 @@ function normalizeCode(
   )
 }
 
-function transformWxs(code: string, globalName: string, isProduction: boolean) {
-  return transformWithEsbuild(code, {
+function transformWxs(
+  code: string,
+  filename: string,
+  globalName: string,
+  isProduction: boolean
+) {
+  return transformWithEsbuild(code, filename, {
     format: 'iife',
     globalName,
     minify: isProduction ? true : false,
+    bundle: true,
+    write: false,
+  }).then((res) => {
+    if (res.outputFiles) {
+      return res.outputFiles[0].text
+    }
+    return ''
   })
 }
 
 function transformRenderjs(
   code: string,
+  filename: string,
   globalName: string,
   isProduction: boolean
 ) {
-  return transformWithEsbuild(code, {
+  return transformWithEsbuild(code, filename, {
     format: 'iife',
     globalName,
     minify: isProduction ? true : false,
+    bundle: true,
+    write: false,
+  }).then((res) => {
+    if (res.outputFiles) {
+      return res.outputFiles[0].text
+    }
+    return ''
   })
 }
