@@ -1,4 +1,4 @@
-import { M, UniVitePlugin, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { M, UniVitePlugin } from '@dcloudio/uni-cli-shared'
 
 import { uniOptions } from './uni'
 import { buildOptions } from './build'
