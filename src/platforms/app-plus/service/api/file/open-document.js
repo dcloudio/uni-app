@@ -11,5 +11,5 @@ export function openDocument ({
   const successCallback = warpPlusSuccessCallback(callbackId, 'saveFile')
   const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile')
 
-  plus.runtime.openFile(getRealPath(filePath), undefined, errorCallback, successCallback)
+  plus.runtime.openDocument(getRealPath(filePath), undefined, successCallback, errorCallback)
 }
