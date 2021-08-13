@@ -24,7 +24,7 @@ import { defineSystemComponent } from '@dcloudio/uni-components'
 import { updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
 import { useKeepAliveRoute } from '../../setup/page'
-import { RESPONSIVE_MIN_WIDTH } from '@dcloudio/uni-shared'
+import { resolveOwnerEl, RESPONSIVE_MIN_WIDTH } from '@dcloudio/uni-shared'
 import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
 
@@ -388,8 +388,8 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
   const { component, style } = __uniConfig.topWindow!
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
-    const instalce = windowRef.value as ComponentPublicInstance
-    const el: HTMLElement = instalce.$el
+    const instance = windowRef.value as ComponentPublicInstance
+    const el = resolveOwnerEl(instance.$) as HTMLElement
     const height = el.getBoundingClientRect().height
     layoutState.topWindowHeight = height
   }
@@ -408,8 +408,8 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
   const { component, style } = __uniConfig.leftWindow!
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
-    const instalce = windowRef.value as ComponentPublicInstance
-    const el: HTMLElement = instalce.$el
+    const instance = windowRef.value as ComponentPublicInstance
+    const el = resolveOwnerEl(instance.$) as HTMLElement
     const width = el.getBoundingClientRect().width
     layoutState.leftWindowWidth = width
   }
@@ -428,8 +428,8 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
   const { component, style } = __uniConfig.rightWindow!
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
-    const instalce = windowRef.value as ComponentPublicInstance
-    const el: HTMLElement = instalce.$el
+    const instance = windowRef.value as ComponentPublicInstance
+    const el = resolveOwnerEl(instance.$) as HTMLElement
     const width = el.getBoundingClientRect().width
     layoutState.rightWindowWidth = width
   }

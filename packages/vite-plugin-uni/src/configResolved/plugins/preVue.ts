@@ -113,7 +113,7 @@ function normalizeBlockNode(code: string, blocks: ElementNode[]) {
 }
 
 export function normalizeWxsCode(ast: RootNode, code: string) {
-  const wxsNode = ast.children.find(
+  const wxsNodes = ast.children.filter(
     (node) =>
       node.type === NodeTypes.ELEMENT &&
       node.tag === 'script' &&
@@ -125,8 +125,8 @@ export function normalizeWxsCode(ast: RootNode, code: string) {
           WXS_ATTRS.includes(prop.value.content)
       )
   )
-  if (wxsNode) {
-    code = normalizeWxsNode(code, wxsNode as ElementNode)
+  if (wxsNodes.length) {
+    code = normalizeWxsNode(code, wxsNodes as ElementNode[])
   }
   return code
 }
@@ -134,35 +134,41 @@ export function normalizeWxsCode(ast: RootNode, code: string) {
 const SCRIPT_END_LEN = '</script>'.length
 const SCRIPT_START_LEN = '<script'.length
 
-function normalizeWxsNode(code: string, { loc, props }: ElementNode) {
+function normalizeWxsNode(code: string, nodes: ElementNode[]) {
   const magicString = new MagicString(code)
-  const langAttr = props.find((prop) => prop.name === 'lang') as AttributeNode
-  const moduleAttr = props.find(
-    (prop) => prop.name === 'module'
-  ) as AttributeNode
-  const startOffset = loc.start.offset
-  const endOffset = loc.end.offset
-  const lang = langAttr.value!.content
-  const langStartOffset = langAttr.loc.start.offset
-  magicString.overwrite(startOffset, startOffset + SCRIPT_START_LEN, '<' + lang) // <renderjs or <wxs
-  magicString.overwrite(
-    langStartOffset,
-    langStartOffset + ('lang="' + lang + '"').length,
-    ''
-  ) // remove lang="renderjs" or lang="wxs"
-  magicString.overwrite(
-    endOffset - SCRIPT_END_LEN,
-    endOffset,
-    '</' + lang + '>'
-  ) //</renderjs> or </wxs>
-
-  if (moduleAttr) {
-    const moduleStartOffset = moduleAttr.loc.start.offset
+  nodes.forEach(({ loc, props }) => {
+    const langAttr = props.find((prop) => prop.name === 'lang') as AttributeNode
+    const moduleAttr = props.find(
+      (prop) => prop.name === 'module'
+    ) as AttributeNode
+    const startOffset = loc.start.offset
+    const endOffset = loc.end.offset
+    const lang = langAttr.value!.content
+    const langStartOffset = langAttr.loc.start.offset
     magicString.overwrite(
-      moduleStartOffset,
-      moduleStartOffset + 'module'.length,
-      'name'
-    ) // module="echarts" => name="echarts"
-  }
+      startOffset,
+      startOffset + SCRIPT_START_LEN,
+      '<' + lang
+    ) // <renderjs or <wxs
+    magicString.overwrite(
+      langStartOffset,
+      langStartOffset + ('lang="' + lang + '"').length,
+      ''
+    ) // remove lang="renderjs" or lang="wxs"
+    magicString.overwrite(
+      endOffset - SCRIPT_END_LEN,
+      endOffset,
+      '</' + lang + '>'
+    ) //</renderjs> or </wxs>
+
+    if (moduleAttr) {
+      const moduleStartOffset = moduleAttr.loc.start.offset
+      magicString.overwrite(
+        moduleStartOffset,
+        moduleStartOffset + 'module'.length,
+        'name'
+      ) // module="echarts" => name="echarts"
+    }
+  })
   return magicString.toString()
 }
