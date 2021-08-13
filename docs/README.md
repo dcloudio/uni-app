@@ -68,7 +68,7 @@
         <b>360小程序</b>
       </a>
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-        <div class="barcode-img-box"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/3c756de5-cd3b-4134-974b-6b41d8ea86d7.jpg" width="160" /></div>
+        <div class="barcode-img-box"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/04cb978b-070f-4122-b374-cb3cd9f9528f.png" width="160" /></div>
         <b>快手小程序版</b>
       </a>
     </div>
