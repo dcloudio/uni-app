@@ -5677,7 +5677,7 @@ var serviceContext = (function (vue) {
 
   const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath, fileType }, { resolve, reject }) => {
       const errorCallback = warpPlusErrorCallback(reject);
-      plus.runtime.openFile(getRealPath(filePath), undefined, errorCallback, resolve);
+      plus.runtime.openDocument(getRealPath(filePath), undefined, resolve, errorCallback);
   }, OpenDocumentProtocol, OpenDocumentOptions);
 
   function getFileName(path) {

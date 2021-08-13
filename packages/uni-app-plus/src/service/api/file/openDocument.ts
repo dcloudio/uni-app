@@ -12,11 +12,11 @@ export const openDocument = defineAsyncApi<API_TYPE_OPEN_DOCUMENT>(
   API_OPEN_DOCUMENT,
   ({ filePath, fileType }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject)
-    plus.runtime.openFile(
+    plus.runtime.openDocument(
       getRealPath(filePath),
       undefined,
-      errorCallback,
-      resolve
+      resolve,
+      errorCallback
     )
   },
   OpenDocumentProtocol,
