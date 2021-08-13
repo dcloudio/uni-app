@@ -16,7 +16,9 @@ export default class WatchPlugin {
     compiler.hooks.invalid.tap('WatchPlugin', () => {
       if (!isCompiling) {
         isCompiling = true
-        console.log(M['dev.watching.start'])
+        if (!isFirst) {
+          console.log(M['dev.watching.start'])
+        }
       }
     })
     compiler.hooks.done.tap('WatchPlugin', (stats) => {

@@ -6,8 +6,6 @@ export default function vueFactory(exports) {
    * \/\*#\_\_PURE\_\_\*\/
    * So that rollup can tree-shake them if necessary.
    */
-  process.env.NODE_ENV !== 'production' ? Object.freeze({}) : {};
-  process.env.NODE_ENV !== 'production' ? Object.freeze([]) : [];
   var extend$1 = Object.assign;
 
   var cacheStringFunction$1 = fn => {
@@ -65,15 +63,6 @@ export default function vueFactory(exports) {
     }
 
     return vnode.el;
-  }
-
-  var lastLogTime = 0;
-
-  function formatLog(module, ...args) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]\uFF1A").concat(args.map(arg => JSON.stringify(arg)).join(' '));
   }
 
   class DOMException extends Error {
@@ -150,10 +139,6 @@ export default function vueFactory(exports) {
       var listeners = this.listeners[evt.type];
 
       if (!listeners) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
-        }
-
         return false;
       } // 格式化事件类型
 
@@ -561,7 +546,7 @@ export default function vueFactory(exports) {
   class UniCommentNode extends UniNode {
     constructor(text, container) {
       super(NODE_TYPE_COMMENT, '#comment', container);
-      this._text = process.env.NODE_ENV !== 'production' ? text : '';
+      this._text = '';
     }
 
     toJSON(opts = {}) {
@@ -710,19 +695,12 @@ export default function vueFactory(exports) {
     }
 
     return res.trim();
-  } // These tag configs are shared between compiler-dom and runtime-dom, so they
-  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-
-
-  var HTML_TAGS = 'html,body,base,head,link,meta,style,title,address,article,aside,footer,' + 'header,h1,h2,h3,h4,h5,h6,hgroup,nav,section,div,dd,dl,dt,figcaption,' + 'figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,' + 'data,dfn,em,i,kbd,mark,q,rp,rt,rtc,ruby,s,samp,small,span,strong,sub,sup,' + 'time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,' + 'canvas,script,noscript,del,ins,caption,col,colgroup,table,thead,tbody,td,' + 'th,tr,button,datalist,fieldset,form,input,label,legend,meter,optgroup,' + 'option,output,progress,select,textarea,details,dialog,menu,' + 'summary,template,blockquote,iframe,tfoot'; // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
-
-  var SVG_TAGS = 'svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,' + 'defs,desc,discard,ellipse,feBlend,feColorMatrix,feComponentTransfer,' + 'feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,' + 'feDistanceLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,' + 'feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,' + 'fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,' + 'foreignObject,g,hatch,hatchpath,image,line,linearGradient,marker,mask,' + 'mesh,meshgradient,meshpatch,meshrow,metadata,mpath,path,pattern,' + 'polygon,polyline,radialGradient,rect,set,solidcolor,stop,switch,symbol,' + 'text,textPath,title,tspan,unknown,use,view';
-  var isHTMLTag = /*#__PURE__*/makeMap(HTML_TAGS);
-  var isSVGTag = /*#__PURE__*/makeMap(SVG_TAGS);
+  }
   /**
    * For converting {{ interpolation }} values to displayed strings.
    * @private
    */
+
 
   var toDisplayString = val => {
     return val == null ? '' : isObject(val) ? JSON.stringify(val, replacer, 2) : String(val);
@@ -747,8 +725,8 @@ export default function vueFactory(exports) {
     return val;
   };
 
-  var EMPTY_OBJ = process.env.NODE_ENV !== 'production' ? Object.freeze({}) : {};
-  var EMPTY_ARR = process.env.NODE_ENV !== 'production' ? Object.freeze([]) : [];
+  var EMPTY_OBJ = {};
+  var EMPTY_ARR = [];
 
   var NOOP = () => {};
   /**
@@ -866,17 +844,11 @@ export default function vueFactory(exports) {
     return isNaN(n) ? val : n;
   };
 
-  var _globalThis;
-
-  var getGlobalThis = () => {
-    return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof window !== 'undefined' ? window : {});
-  };
-
   var targetMap = new WeakMap();
   var effectStack = [];
   var activeEffect;
-  var ITERATE_KEY = Symbol(process.env.NODE_ENV !== 'production' ? 'iterate' : '');
-  var MAP_KEY_ITERATE_KEY = Symbol(process.env.NODE_ENV !== 'production' ? 'Map key iterate' : '');
+  var ITERATE_KEY = Symbol('');
+  var MAP_KEY_ITERATE_KEY = Symbol('');
 
   function isEffect(fn) {
     return fn && fn._isEffect === true;
@@ -994,15 +966,6 @@ export default function vueFactory(exports) {
     if (!dep.has(activeEffect)) {
       dep.add(activeEffect);
       activeEffect.deps.push(dep);
-
-      if (process.env.NODE_ENV !== 'production' && activeEffect.options.onTrack) {
-        activeEffect.options.onTrack({
-          effect: activeEffect,
-          target,
-          type,
-          key
-        });
-      }
     }
   }
 
@@ -1087,18 +1050,6 @@ export default function vueFactory(exports) {
     }
 
     var run = effect => {
-      if (process.env.NODE_ENV !== 'production' && effect.options.onTrigger) {
-        effect.options.onTrigger({
-          effect,
-          target,
-          key,
-          type,
-          newValue,
-          oldValue,
-          oldTarget
-        });
-      }
-
       if (effect.options.scheduler) {
         effect.options.scheduler(effect);
       } else {
@@ -1238,7 +1189,7 @@ export default function vueFactory(exports) {
         } else if (hasChanged(value, oldValue)) {
           trigger(target, "set"
           /* SET */
-          , key, value, oldValue);
+          , key, value);
         }
       }
 
@@ -1248,13 +1199,13 @@ export default function vueFactory(exports) {
 
   function deleteProperty(target, key) {
     var hadKey = hasOwn(target, key);
-    var oldValue = target[key];
+    target[key];
     var result = Reflect.deleteProperty(target, key);
 
     if (result && hadKey) {
       trigger(target, "delete"
       /* DELETE */
-      , key, undefined, oldValue);
+      , key, undefined);
     }
 
     return result;
@@ -1290,18 +1241,10 @@ export default function vueFactory(exports) {
     get: readonlyGet,
 
     set(target, key) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn("Set operation on key \"".concat(String(key), "\" failed: target is readonly."), target);
-      }
-
       return true;
     },
 
     deleteProperty(target, key) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn("Delete operation on key \"".concat(String(key), "\" failed: target is readonly."), target);
-      }
-
       return true;
     }
 
@@ -1416,8 +1359,6 @@ export default function vueFactory(exports) {
     if (!hadKey) {
       key = toRaw(key);
       hadKey = has.call(target, key);
-    } else if (process.env.NODE_ENV !== 'production') {
-      checkIdentityKeys(target, has, key);
     }
 
     var oldValue = get.call(target, key);
@@ -1430,7 +1371,7 @@ export default function vueFactory(exports) {
     } else if (hasChanged(value, oldValue)) {
       trigger(target, "set"
       /* SET */
-      , key, value, oldValue);
+      , key, value);
     }
 
     return this;
@@ -1447,18 +1388,16 @@ export default function vueFactory(exports) {
     if (!hadKey) {
       key = toRaw(key);
       hadKey = has.call(target, key);
-    } else if (process.env.NODE_ENV !== 'production') {
-      checkIdentityKeys(target, has, key);
     }
 
-    var oldValue = get ? get.call(target, key) : undefined; // forward the operation before queueing reactions
+    get ? get.call(target, key) : undefined; // forward the operation before queueing reactions
 
     var result = target.delete(key);
 
     if (hadKey) {
       trigger(target, "delete"
       /* DELETE */
-      , key, undefined, oldValue);
+      , key, undefined);
     }
 
     return result;
@@ -1466,15 +1405,14 @@ export default function vueFactory(exports) {
 
   function clear() {
     var target = toRaw(this);
-    var hadItems = target.size !== 0;
-    var oldTarget = process.env.NODE_ENV !== 'production' ? isMap(target) ? new Map(target) : new Set(target) : undefined; // forward the operation before queueing reactions
+    var hadItems = target.size !== 0; // forward the operation before queueing reactions
 
     var result = target.clear();
 
     if (hadItems) {
       trigger(target, "clear"
       /* CLEAR */
-      , undefined, undefined, oldTarget);
+      , undefined, undefined);
     }
 
     return result;
@@ -1543,11 +1481,6 @@ export default function vueFactory(exports) {
 
   function createReadonlyMethod(type) {
     return function (...args) {
-      if (process.env.NODE_ENV !== 'production') {
-        var key = args[0] ? "on key \"".concat(args[0], "\" ") : "";
-        console.warn("".concat(capitalize(type), " operation ").concat(key, "failed: target is readonly."), toRaw(this));
-      }
-
       return type === "delete"
       /* DELETE */
       ? false : this;
@@ -1686,16 +1619,6 @@ export default function vueFactory(exports) {
   var shallowReadonlyCollectionHandlers = {
     get: /*#__PURE__*/createInstrumentationGetter(true, true)
   };
-
-  function checkIdentityKeys(target, has, key) {
-    var rawKey = toRaw(key);
-
-    if (rawKey !== key && has.call(target, rawKey)) {
-      var type = toRawType(target);
-      console.warn("Reactive ".concat(type, " contains both the raw and reactive ") + "versions of the same object".concat(type === "Map" ? " as keys" : "", ", ") + "which can lead to inconsistencies. " + "Avoid differentiating between the raw and reactive versions " + "of an object and only use the reactive version if possible.");
-    }
-  }
-
   var reactiveMap = new WeakMap();
   var shallowReactiveMap = new WeakMap();
   var readonlyMap = new WeakMap();
@@ -1775,10 +1698,6 @@ export default function vueFactory(exports) {
 
   function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers, proxyMap) {
     if (!isObject(target)) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn("value cannot be made reactive: ".concat(String(target)));
-      }
-
       return target;
     } // target is already a Proxy, return it.
     // exception: calling readonly() on a reactive object
@@ -1902,7 +1821,7 @@ export default function vueFactory(exports) {
   function triggerRef(ref) {
     trigger(toRaw(ref), "set"
     /* SET */
-    , 'value', process.env.NODE_ENV !== 'production' ? ref.value : void 0);
+    , 'value', void 0);
   }
 
   function unref(ref) {
@@ -1957,10 +1876,6 @@ export default function vueFactory(exports) {
   }
 
   function toRefs(object) {
-    if (process.env.NODE_ENV !== 'production' && !isProxy(object)) {
-      console.warn("toRefs() expects a reactive object but received a plain one.");
-    }
-
     var ret = isArray(object) ? new Array(object.length) : {};
 
     for (var key in object) {
@@ -2039,9 +1954,7 @@ export default function vueFactory(exports) {
 
     if (isFunction(getterOrOptions)) {
       getter = getterOrOptions;
-      setter = process.env.NODE_ENV !== 'production' ? () => {
-        console.warn('Write operation failed: computed value is readonly');
-      } : NOOP;
+      setter = NOOP;
     } else {
       getter = getterOrOptions.get;
       setter = getterOrOptions.set;
@@ -2051,14 +1964,6 @@ export default function vueFactory(exports) {
   }
 
   var stack = [];
-
-  function pushWarningContext(vnode) {
-    stack.push(vnode);
-  }
-
-  function popWarningContext() {
-    stack.pop();
-  }
 
   function warn(msg, ...args) {
     // avoid props formatting or warn handler tracking deps that might be mutated
@@ -2176,96 +2081,6 @@ export default function vueFactory(exports) {
     }
   }
 
-  var ErrorTypeStrings = {
-    ["sp"
-    /* SERVER_PREFETCH */
-    ]: 'serverPrefetch hook',
-    ["bc"
-    /* BEFORE_CREATE */
-    ]: 'beforeCreate hook',
-    ["c"
-    /* CREATED */
-    ]: 'created hook',
-    ["bm"
-    /* BEFORE_MOUNT */
-    ]: 'beforeMount hook',
-    ["m"
-    /* MOUNTED */
-    ]: 'mounted hook',
-    ["bu"
-    /* BEFORE_UPDATE */
-    ]: 'beforeUpdate hook',
-    ["u"
-    /* UPDATED */
-    ]: 'updated',
-    ["bum"
-    /* BEFORE_UNMOUNT */
-    ]: 'beforeUnmount hook',
-    ["um"
-    /* UNMOUNTED */
-    ]: 'unmounted hook',
-    ["a"
-    /* ACTIVATED */
-    ]: 'activated hook',
-    ["da"
-    /* DEACTIVATED */
-    ]: 'deactivated hook',
-    ["ec"
-    /* ERROR_CAPTURED */
-    ]: 'errorCaptured hook',
-    ["rtc"
-    /* RENDER_TRACKED */
-    ]: 'renderTracked hook',
-    ["rtg"
-    /* RENDER_TRIGGERED */
-    ]: 'renderTriggered hook',
-    [0
-    /* SETUP_FUNCTION */
-    ]: 'setup function',
-    [1
-    /* RENDER_FUNCTION */
-    ]: 'render function',
-    [2
-    /* WATCH_GETTER */
-    ]: 'watcher getter',
-    [3
-    /* WATCH_CALLBACK */
-    ]: 'watcher callback',
-    [4
-    /* WATCH_CLEANUP */
-    ]: 'watcher cleanup function',
-    [5
-    /* NATIVE_EVENT_HANDLER */
-    ]: 'native event handler',
-    [6
-    /* COMPONENT_EVENT_HANDLER */
-    ]: 'component event handler',
-    [7
-    /* VNODE_HOOK */
-    ]: 'vnode hook',
-    [8
-    /* DIRECTIVE_HOOK */
-    ]: 'directive hook',
-    [9
-    /* TRANSITION_HOOK */
-    ]: 'transition hook',
-    [10
-    /* APP_ERROR_HANDLER */
-    ]: 'app errorHandler',
-    [11
-    /* APP_WARN_HANDLER */
-    ]: 'app warnHandler',
-    [12
-    /* FUNCTION_REF */
-    ]: 'ref function',
-    [13
-    /* ASYNC_COMPONENT_LOADER */
-    ]: 'async component loader',
-    [14
-    /* SCHEDULER */
-    ]: 'scheduler flush. This is likely a Vue internals bug. ' + 'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/vue-next'
-  };
-
   function callWithErrorHandling(fn, instance, type, args) {
     var res;
 
@@ -2308,7 +2123,7 @@ export default function vueFactory(exports) {
 
       var exposedInstance = instance.proxy; // in production the hook receives only the error code
 
-      var errorInfo = process.env.NODE_ENV !== 'production' ? ErrorTypeStrings[type] : type;
+      var errorInfo = type;
 
       while (cur) {
         var errorCapturedHooks = cur.ec;
@@ -2339,27 +2154,7 @@ export default function vueFactory(exports) {
   }
 
   function logError(err, type, contextVNode, throwInDev = true) {
-    if (process.env.NODE_ENV !== 'production') {
-      var info = ErrorTypeStrings[type];
-
-      if (contextVNode) {
-        pushWarningContext(contextVNode);
-      }
-
-      warn("Unhandled error".concat(info ? " during execution of ".concat(info) : ""));
-
-      if (contextVNode) {
-        popWarningContext();
-      } // crash in dev by default so it's more noticeable
-
-
-      if (throwInDev) {
-        // throw err fixed by xxxxxx 避免 error 导致 App 端不可用（比如跳转时报错）
-        console.error(err);
-      } else {
-        console.error(err);
-      }
-    } else {
+    {
       // recover in prod to reduce the impact on end-user
       console.error(err);
     }
@@ -2476,15 +2271,7 @@ export default function vueFactory(exports) {
       activePreFlushCbs = [...new Set(pendingPreFlushCbs)];
       pendingPreFlushCbs.length = 0;
 
-      if (process.env.NODE_ENV !== 'production') {
-        seen = seen || new Map();
-      }
-
       for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
-        if (process.env.NODE_ENV !== 'production' && checkRecursiveUpdates(seen, activePreFlushCbs[preFlushIndex])) {
-          continue;
-        }
-
         activePreFlushCbs[preFlushIndex]();
       }
 
@@ -2507,18 +2294,9 @@ export default function vueFactory(exports) {
       }
 
       activePostFlushCbs = deduped;
-
-      if (process.env.NODE_ENV !== 'production') {
-        seen = seen || new Map();
-      }
-
       activePostFlushCbs.sort((a, b) => getId(a) - getId(b));
 
       for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-        if (process.env.NODE_ENV !== 'production' && checkRecursiveUpdates(seen, activePostFlushCbs[postFlushIndex])) {
-          continue;
-        }
-
         activePostFlushCbs[postFlushIndex]();
       }
 
@@ -2532,11 +2310,6 @@ export default function vueFactory(exports) {
   function flushJobs(seen) {
     isFlushPending = false;
     isFlushing = true;
-
-    if (process.env.NODE_ENV !== 'production') {
-      seen = seen || new Map();
-    }
-
     flushPreFlushCbs(seen); // Sort queue before flush.
     // This ensures that:
     // 1. Components are updated from parent to child. (because parent is always
@@ -2552,10 +2325,7 @@ export default function vueFactory(exports) {
         var job = queue[flushIndex];
 
         if (job && job.active !== false) {
-          if (process.env.NODE_ENV !== 'production' && checkRecursiveUpdates(seen, job)) {
-            continue;
-          }
-
+          if ("production" !== 'production' && checkRecursiveUpdates(seen, job)) ;
           callWithErrorHandling(job, null, 14
           /* SCHEDULER */
           );
@@ -2564,7 +2334,7 @@ export default function vueFactory(exports) {
     } finally {
       flushIndex = 0;
       queue.length = 0;
-      flushPostFlushCbs(seen);
+      flushPostFlushCbs();
       isFlushing = false;
       currentFlushPromise = null; // some postFlushCb queued jobs!
       // keep flushing until it drains.
@@ -2591,200 +2361,11 @@ export default function vueFactory(exports) {
       }
     }
   }
-  /* eslint-disable no-restricted-globals */
-
-
-  var isHmrUpdating = false;
-  var hmrDirtyComponents = new Set(); // Expose the HMR runtime on the window object
-  // This makes it entirely tree-shakable without polluting the exports and makes
-  // it easier to be used in toolings like vue-loader
-  // Note: for a component to be eligible for HMR it also needs the __hmrId option
-  // to be set so that its instances can be registered / removed.
-
-  if (process.env.NODE_ENV !== 'production') {
-    var globalObject = typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
-    globalObject.__VUE_HMR_RUNTIME__ = {
-      createRecord: tryWrap(createRecord),
-      rerender: tryWrap(rerender),
-      reload: tryWrap(reload)
-    };
-  }
-
-  var map = new Map();
-
-  function registerHMR(instance) {
-    var id = instance.type.__hmrId;
-    var record = map.get(id);
-
-    if (!record) {
-      createRecord(id, instance.type);
-      record = map.get(id);
-    }
-
-    record.instances.add(instance);
-  }
-
-  function unregisterHMR(instance) {
-    map.get(instance.type.__hmrId).instances.delete(instance);
-  }
-
-  function createRecord(id, component) {
-    if (!component) {
-      warn("HMR API usage is out of date.\n" + "Please upgrade vue-loader/vite/rollup-plugin-vue or other relevant " + "dependency that handles Vue SFC compilation.");
-      component = {};
-    }
-
-    if (map.has(id)) {
-      return false;
-    }
-
-    map.set(id, {
-      component: isClassComponent(component) ? component.__vccOpts : component,
-      instances: new Set()
-    });
-    return true;
-  }
-
-  function rerender(id, newRender) {
-    var record = map.get(id);
-    if (!record) return;
-    if (newRender) record.component.render = newRender; // Array.from creates a snapshot which avoids the set being mutated during
-    // updates
-
-    Array.from(record.instances).forEach(instance => {
-      if (newRender) {
-        instance.render = newRender;
-      }
-
-      instance.renderCache = []; // this flag forces child components with slot content to update
-
-      isHmrUpdating = true;
-      instance.update();
-      isHmrUpdating = false;
-    });
-  }
-
-  function reload(id, newComp) {
-    var record = map.get(id);
-    if (!record) return; // Array.from creates a snapshot which avoids the set being mutated during
-    // updates
-
-    var {
-      component,
-      instances
-    } = record;
-
-    if (!hmrDirtyComponents.has(component)) {
-      // 1. Update existing comp definition to match new one
-      newComp = isClassComponent(newComp) ? newComp.__vccOpts : newComp;
-      extend(component, newComp);
-
-      for (var key in component) {
-        if (key !== '__file' && !(key in newComp)) {
-          delete component[key];
-        }
-      } // 2. Mark component dirty. This forces the renderer to replace the component
-      // on patch.
-
-
-      hmrDirtyComponents.add(component); // 3. Make sure to unmark the component after the reload.
-
-      queuePostFlushCb(() => {
-        hmrDirtyComponents.delete(component);
-      });
-    }
-
-    Array.from(instances).forEach(instance => {
-      if (instance.parent) {
-        // 4. Force the parent instance to re-render. This will cause all updated
-        // components to be unmounted and re-mounted. Queue the update so that we
-        // don't end up forcing the same parent to re-render multiple times.
-        queueJob(instance.parent.update);
-      } else if (instance.appContext.reload) {
-        // root instance mounted via createApp() has a reload method
-        instance.appContext.reload();
-      } else if (typeof window !== 'undefined') {
-        // root instance inside tree created via raw render(). Force reload.
-        window.location.reload();
-      } else {
-        console.warn('[HMR] Root or manually mounted instance modified. Full reload required.');
-      }
-    });
-  }
-
-  function tryWrap(fn) {
-    return (id, arg) => {
-      try {
-        return fn(id, arg);
-      } catch (e) {
-        console.error(e);
-        console.warn("[HMR] Something went wrong during Vue component hot-reload. " + "Full reload required.");
-      }
-    };
-  }
 
   var devtools;
 
   function setDevtoolsHook(hook) {
     devtools = hook;
-  }
-
-  function devtoolsInitApp(app, version) {
-    // TODO queue if devtools is undefined
-    if (!devtools) return;
-    devtools.emit("app:init"
-    /* APP_INIT */
-    , app, version, {
-      Fragment,
-      Text,
-      Comment: Comment$1,
-      Static
-    });
-  }
-
-  function devtoolsUnmountApp(app) {
-    if (!devtools) return;
-    devtools.emit("app:unmount"
-    /* APP_UNMOUNT */
-    , app);
-  }
-
-  var devtoolsComponentAdded = /*#__PURE__*/createDevtoolsComponentHook("component:added"
-  /* COMPONENT_ADDED */
-  );
-  var devtoolsComponentUpdated = /*#__PURE__*/createDevtoolsComponentHook("component:updated"
-  /* COMPONENT_UPDATED */
-  );
-  var devtoolsComponentRemoved = /*#__PURE__*/createDevtoolsComponentHook("component:removed"
-  /* COMPONENT_REMOVED */
-  );
-
-  function createDevtoolsComponentHook(hook) {
-    return component => {
-      if (!devtools) return;
-      devtools.emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
-    };
-  }
-
-  var devtoolsPerfStart = /*#__PURE__*/createDevtoolsPerformanceHook("perf:start"
-  /* PERFORMANCE_START */
-  );
-  var devtoolsPerfEnd = /*#__PURE__*/createDevtoolsPerformanceHook("perf:end"
-  /* PERFORMANCE_END */
-  );
-
-  function createDevtoolsPerformanceHook(hook) {
-    return (component, type, time) => {
-      if (!devtools) return;
-      devtools.emit(hook, component.appContext.app, component.uid, component, type, time);
-    };
-  }
-
-  function devtoolsComponentEmit(component, event, params) {
-    if (!devtools) return;
-    devtools.emit("component:emit"
-    /* COMPONENT_EMIT */
-    , component.appContext.app, component, event, params);
   }
 
   var globalCompatConfig = {
@@ -2820,32 +2401,6 @@ export default function vueFactory(exports) {
 
   function emit(instance, event, ...rawArgs) {
     var props = instance.vnode.props || EMPTY_OBJ;
-
-    if (process.env.NODE_ENV !== 'production') {
-      var {
-        emitsOptions,
-        propsOptions: [propsOptions]
-      } = instance;
-
-      if (emitsOptions) {
-        if (!(event in emitsOptions) && !false) {
-          if (!propsOptions || !(toHandlerKey(event) in propsOptions)) {
-            warn("Component emitted event \"".concat(event, "\" but it is neither declared in ") + "the emits option nor as an \"".concat(toHandlerKey(event), "\" prop."));
-          }
-        } else {
-          var validator = emitsOptions[event];
-
-          if (isFunction(validator)) {
-            var isValid = validator(...rawArgs);
-
-            if (!isValid) {
-              warn("Invalid event arguments: event validation failed for event \"".concat(event, "\"."));
-            }
-          }
-        }
-      }
-    }
-
     var args = rawArgs;
     var isModelListener = event.startsWith('update:'); // for v-model update:xxx events, apply modifiers on args
 
@@ -2862,18 +2417,6 @@ export default function vueFactory(exports) {
         args = rawArgs.map(a => a.trim());
       } else if (number) {
         args = rawArgs.map(toNumber);
-      }
-    }
-
-    if (process.env.NODE_ENV !== 'production' || false) {
-      devtoolsComponentEmit(instance, event, args);
-    }
-
-    if (process.env.NODE_ENV !== 'production') {
-      var lowerCaseEvent = event.toLowerCase();
-
-      if (lowerCaseEvent !== event && props[toHandlerKey(lowerCaseEvent)]) {
-        warn("Event \"".concat(lowerCaseEvent, "\" is emitted in component ") + "".concat(formatComponentName(instance, instance.type), " but the handler is registered for \"").concat(event, "\". ") + "Note that HTML attributes are case-insensitive and you cannot use " + "v-on to listen to camelCase events when using in-DOM templates. " + "You should probably use \"".concat(hyphenate(event), "\" instead of \"").concat(event, "\"."));
       }
     }
 
@@ -3053,10 +2596,6 @@ export default function vueFactory(exports) {
         setBlockTracking(1);
       }
 
-      if (process.env.NODE_ENV !== 'production' || false) {
-        devtoolsComponentUpdated(ctx);
-      }
-
       return res;
     }; // mark normalized to avoid duplicated wrapping
 
@@ -3104,10 +2643,6 @@ export default function vueFactory(exports) {
     var result;
     var prev = setCurrentRenderingInstance(instance);
 
-    if (process.env.NODE_ENV !== 'production') {
-      accessedAttrs = false;
-    }
-
     try {
       var fallthroughAttrs;
 
@@ -3123,11 +2658,8 @@ export default function vueFactory(exports) {
         // functional
         var _render = Component; // in dev, mark attrs accessed if optional props (attrs === props)
 
-        if (process.env.NODE_ENV !== 'production' && attrs === props) {
-          markAttrsAccessed();
-        }
-
-        result = normalizeVNode(_render.length > 1 ? _render(props, process.env.NODE_ENV !== 'production' ? {
+        if ("production" !== 'production' && attrs === props) ;
+        result = normalizeVNode(_render.length > 1 ? _render(props, "production" !== 'production' ? {
           get attrs() {
             markAttrsAccessed();
             return attrs;
@@ -3150,13 +2682,9 @@ export default function vueFactory(exports) {
 
       var root = result;
       var setRoot = undefined;
-
-      if (process.env.NODE_ENV !== 'production' && result.patchFlag > 0 && result.patchFlag & 2048
+      if ("production" !== 'production' && result.patchFlag > 0 && result.patchFlag & 2048
       /* DEV_ROOT_FRAGMENT */
-      ) {
-        ;
-        [root, setRoot] = getChildRoot(result);
-      }
+      ) ;
 
       if (fallthroughAttrs && inheritAttrs !== false) {
         var keys = Object.keys(fallthroughAttrs);
@@ -3179,34 +2707,7 @@ export default function vueFactory(exports) {
             }
 
             root = cloneVNode(root, fallthroughAttrs);
-          } else if (process.env.NODE_ENV !== 'production' && !accessedAttrs && root.type !== Comment$1) {
-            var allAttrs = Object.keys(attrs);
-            var eventAttrs = [];
-            var extraAttrs = [];
-
-            for (var i = 0, l = allAttrs.length; i < l; i++) {
-              var key = allAttrs[i];
-
-              if (isOn(key)) {
-                // ignore v-model handlers when they fail to fallthrough
-                if (!isModelListener(key)) {
-                  // remove `on`, lowercase first letter to reflect event casing
-                  // accurately
-                  eventAttrs.push(key[2].toLowerCase() + key.slice(3));
-                }
-              } else {
-                extraAttrs.push(key);
-              }
-            }
-
-            if (extraAttrs.length) {
-              warn("Extraneous non-props attributes (" + "".concat(extraAttrs.join(', '), ") ") + "were passed to component but could not be automatically inherited " + "because component renders fragment or text root nodes.");
-            }
-
-            if (eventAttrs.length) {
-              warn("Extraneous non-emits event listeners (" + "".concat(eventAttrs.join(', '), ") ") + "were passed to component but could not be automatically inherited " + "because component renders fragment or text root nodes. " + "If the listener is intended to be a component custom event listener only, " + "declare it using the \"emits\" option.");
-            }
-          }
+          } else if ("production" !== 'production' && !accessedAttrs && root.type !== Comment$1) ;
         }
       }
 
@@ -3221,25 +2722,17 @@ export default function vueFactory(exports) {
       )) ; // inherit directives
 
       if (vnode.dirs) {
-        if (process.env.NODE_ENV !== 'production' && !isElementRoot(root)) {
-          warn("Runtime directive used on component with non-element root node. " + "The directives will not function as intended.");
-        }
-
+        if ("production" !== 'production' && !isElementRoot(root)) ;
         root.dirs = root.dirs ? root.dirs.concat(vnode.dirs) : vnode.dirs;
       } // inherit transition data
 
 
       if (vnode.transition) {
-        if (process.env.NODE_ENV !== 'production' && !isElementRoot(root)) {
-          warn("Component inside <Transition> renders non-element root node " + "that cannot be animated.");
-        }
-
+        if ("production" !== 'production' && !isElementRoot(root)) ;
         root.transition = vnode.transition;
       }
 
-      if (process.env.NODE_ENV !== 'production' && setRoot) {
-        setRoot(root);
-      } else {
+      if ("production" !== 'production' && setRoot) ;else {
         result = root;
       }
     } catch (err) {
@@ -3356,14 +2849,7 @@ export default function vueFactory(exports) {
       children: nextChildren,
       patchFlag
     } = nextVNode;
-    var emits = component.emitsOptions; // Parent component's render function was hot-updated. Since this may have
-    // caused the child component's slots content to have changed, we need to
-    // force the child to update as well.
-
-    if (process.env.NODE_ENV !== 'production' && (prevChildren || nextChildren) && isHmrUpdating) {
-      return true;
-    } // force child update for runtime directive or transition on component vnode.
-
+    var emits = component.emitsOptions; // force child update for runtime directive or transition on component vnode.
 
     if (nextVNode.dirs || nextVNode.transition) {
       return true;
@@ -3638,16 +3124,7 @@ export default function vueFactory(exports) {
     }
   }
 
-  var hasWarned = false;
-
   function createSuspenseBoundary(vnode, parent, parentComponent, container, hiddenContainer, anchor, isSVG, slotScopeIds, optimized, rendererInternals, isHydrating = false) {
-    /* istanbul ignore if */
-    if (process.env.NODE_ENV !== 'production' && !false && !hasWarned) {
-      hasWarned = true; // @ts-ignore `console.info` cannot be null error
-
-      console[console.info ? 'info' : 'log']("<Suspense> is an experimental feature and its API will likely change.");
-    }
-
     var {
       p: patch,
       m: move,
@@ -3678,16 +3155,6 @@ export default function vueFactory(exports) {
       effects: [],
 
       resolve(resume = false) {
-        if (process.env.NODE_ENV !== 'production') {
-          if (!resume && !suspense.pendingBranch) {
-            throw new Error("suspense.resolve() is called without a pending branch.");
-          }
-
-          if (suspense.isUnmounted) {
-            throw new Error("suspense.resolve() is called on an already unmounted suspense boundary.");
-          }
-        }
-
         var {
           vnode,
           activeBranch,
@@ -3840,12 +3307,7 @@ export default function vueFactory(exports) {
           var {
             vnode
           } = instance;
-
-          if (process.env.NODE_ENV !== 'production') {
-            pushWarningContext(vnode);
-          }
-
-          handleSetupResult(instance, asyncSetupResult, false);
+          handleSetupResult(instance, asyncSetupResult);
 
           if (hydratedEl) {
             // vnode may have been replaced if an update happened before the
@@ -3865,12 +3327,7 @@ export default function vueFactory(exports) {
             remove(placeholder);
           }
 
-          updateHOCHostEl(instance, vnode.el);
-
-          if (process.env.NODE_ENV !== 'production') {
-            popWarningContext();
-          } // only decrease deps count if suspense is not already resolved
-
+          updateHOCHostEl(instance, vnode.el); // only decrease deps count if suspense is not already resolved
 
           if (isInPendingSuspense && --suspense.deps === 0) {
             suspense.resolve();
@@ -3952,11 +3409,6 @@ export default function vueFactory(exports) {
 
     if (isArray(s)) {
       var singleChild = filterSingleRoot(s);
-
-      if (process.env.NODE_ENV !== 'production' && !singleChild) {
-        warn("<Suspense> slots expect a single root node.");
-      }
-
       s = singleChild;
     }
 
@@ -3997,11 +3449,7 @@ export default function vueFactory(exports) {
   }
 
   function provide(key, value) {
-    if (!currentInstance) {
-      if (process.env.NODE_ENV !== 'production') {
-        warn("provide() can only be used inside setup().");
-      }
-    } else {
+    if (!currentInstance) ;else {
       var provides = currentInstance.provides; // by default an instance inherits its parent's provides object
       // but when it needs to provide values of its own, it creates its
       // own provides object using parent provides object as prototype.
@@ -4035,11 +3483,7 @@ export default function vueFactory(exports) {
         return provides[key];
       } else if (arguments.length > 1) {
         return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue.call(instance.proxy) : defaultValue;
-      } else if (process.env.NODE_ENV !== 'production') {
-        warn("injection \"".concat(String(key), "\" not found."));
-      }
-    } else if (process.env.NODE_ENV !== 'production') {
-      warn("inject() can only be used inside setup() or functional components.");
+      } else ;
     }
   } // Simple effect.
 
@@ -4052,10 +3496,6 @@ export default function vueFactory(exports) {
   var INITIAL_WATCHER_VALUE = {}; // implementation
 
   function watch(source, cb, options) {
-    if (process.env.NODE_ENV !== 'production' && !isFunction(cb)) {
-      warn("`watch(fn, options?)` signature has been moved to a separate API. " + "Use `watchEffect(fn, options?)` instead. `watch` now only " + "supports `watch(source, cb, options?) signature.");
-    }
-
     return doWatch(source, cb, options);
   }
 
@@ -4066,20 +3506,6 @@ export default function vueFactory(exports) {
     onTrack,
     onTrigger
   } = EMPTY_OBJ, instance = currentInstance) {
-    if (process.env.NODE_ENV !== 'production' && !cb) {
-      if (immediate !== undefined) {
-        warn("watch() \"immediate\" option is only respected when using the " + "watch(source, callback, options?) signature.");
-      }
-
-      if (deep !== undefined) {
-        warn("watch() \"deep\" option is only respected when using the " + "watch(source, callback, options?) signature.");
-      }
-    }
-
-    var warnInvalidSource = s => {
-      warn("Invalid watch source: ", s, "A watch source can only be a getter/effect function, a ref, " + "a reactive object, or an array of these types.");
-    };
-
     var getter;
     var forceTrigger = false;
     var isMultiSource = false;
@@ -4105,9 +3531,7 @@ export default function vueFactory(exports) {
           return callWithErrorHandling(s, instance, 2
           /* WATCH_GETTER */
           );
-        } else {
-          process.env.NODE_ENV !== 'production' && warnInvalidSource(s);
-        }
+        } else ;
       });
     } else if (isFunction(source)) {
       if (cb) {
@@ -4133,7 +3557,6 @@ export default function vueFactory(exports) {
       }
     } else {
       getter = NOOP;
-      process.env.NODE_ENV !== 'production' && warnInvalidSource(source);
     }
 
     if (cb && deep) {
@@ -4340,11 +3763,6 @@ export default function vueFactory(exports) {
 
         if (!children || !children.length) {
           return;
-        } // warn multiple elements
-
-
-        if (process.env.NODE_ENV !== 'production' && children.length > 1) {
-          warn('<transition> can only be used on a single element or component. Use ' + '<transition-group> for lists.');
         } // there's no need to track reactivity for these props so use the raw
         // props for a bit better perf
 
@@ -4352,12 +3770,7 @@ export default function vueFactory(exports) {
         var rawProps = toRaw(props);
         var {
           mode
-        } = rawProps; // check mode
-
-        if (process.env.NODE_ENV !== 'production' && mode && !['in-out', 'out-in', 'default'].includes(mode)) {
-          warn("invalid <transition> mode: ".concat(mode));
-        } // at this point children has a guaranteed length of 1.
-
+        } = rawProps; // at this point children has a guaranteed length of 1.
 
         var child = children[0];
 
@@ -4729,19 +4142,11 @@ export default function vueFactory(exports) {
       }).then(comp => {
         if (thisRequest !== pendingRequest && pendingRequest) {
           return pendingRequest;
-        }
-
-        if (process.env.NODE_ENV !== 'production' && !comp) {
-          warn("Async component loader resolved to undefined. " + "If you are using retry(), make sure to return its return value.");
         } // interop module default
 
 
         if (comp && (comp.__esModule || comp[Symbol.toStringTag] === 'Module')) {
           comp = comp.default;
-        }
-
-        if (process.env.NODE_ENV !== 'production' && comp && !isObject(comp) && !isFunction(comp)) {
-          throw new Error("Invalid async component load result: ".concat(comp));
         }
 
         resolvedComp = comp;
@@ -4879,11 +4284,6 @@ export default function vueFactory(exports) {
       var cache = new Map();
       var keys = new Set();
       var current = null;
-
-      if (process.env.NODE_ENV !== 'production' || false) {
-        instance.__v_cache = cache;
-      }
-
       var parentSuspense = instance.suspense;
       var {
         renderer: {
@@ -4917,11 +4317,6 @@ export default function vueFactory(exports) {
             invokeVNodeHook(vnodeHook, instance.parent, vnode);
           }
         }, parentSuspense);
-
-        if (process.env.NODE_ENV !== 'production' || false) {
-          // Update components tree
-          devtoolsComponentAdded(instance);
-        }
       };
 
       sharedContext.deactivate = vnode => {
@@ -4942,11 +4337,6 @@ export default function vueFactory(exports) {
 
           instance.isDeactivated = true;
         }, parentSuspense);
-
-        if (process.env.NODE_ENV !== 'production' || false) {
-          // Update components tree
-          devtoolsComponentAdded(instance);
-        }
       };
 
       function unmount(vnode) {
@@ -5033,10 +4423,6 @@ export default function vueFactory(exports) {
         var rawVNode = children[0];
 
         if (children.length > 1) {
-          if (process.env.NODE_ENV !== 'production') {
-            warn("KeepAlive should contain exactly one component child.");
-          }
-
           current = null;
           return children;
         } else if (!isVNode(rawVNode) || !(rawVNode.shapeFlag & 4
@@ -5270,9 +4656,6 @@ export default function vueFactory(exports) {
       }
 
       return wrappedHook;
-    } else if (process.env.NODE_ENV !== 'production') {
-      var apiName = toHandlerKey(ErrorTypeStrings[type].replace(/ hook$/, ''));
-      warn("".concat(apiName, " is called when there is no active component instance to be ") + "associated with. " + "Lifecycle injection APIs can only be used during execution of setup()." + (" If you are using async setup(), make sure to register lifecycle " + "hooks before the first await statement."));
     }
   }
 
@@ -5313,17 +4696,6 @@ export default function vueFactory(exports) {
     injectHook("ec"
     /* ERROR_CAPTURED */
     , hook, target);
-  }
-
-  function createDuplicateChecker() {
-    var cache = Object.create(null);
-    return (type, key) => {
-      if (cache[key]) {
-        warn("".concat(type, " property \"").concat(key, "\" is already defined in ").concat(cache[key], "."));
-      } else {
-        cache[key] = type;
-      }
-    };
   }
 
   var shouldCacheAccess = true;
@@ -5375,19 +4747,7 @@ export default function vueFactory(exports) {
       directives,
       filters
     } = options;
-    var checkDuplicateProperties = process.env.NODE_ENV !== 'production' ? createDuplicateChecker() : null;
-
-    if (process.env.NODE_ENV !== 'production') {
-      var [propsOptions] = instance.propsOptions;
-
-      if (propsOptions) {
-        for (var key in propsOptions) {
-          checkDuplicateProperties("Props"
-          /* PROPS */
-          , key);
-        }
-      }
-    } // options initialization order (to be consistent with Vue 2):
+    var checkDuplicateProperties = null; // options initialization order (to be consistent with Vue 2):
     // - props (already done outside of this function)
     // - inject
     // - methods
@@ -5395,122 +4755,59 @@ export default function vueFactory(exports) {
     // - computed
     // - watch (deferred since it relies on `this` access)
 
-
     if (injectOptions) {
       resolveInjections(injectOptions, ctx, checkDuplicateProperties);
     }
 
     if (methods) {
-      for (var _key2 in methods) {
-        var methodHandler = methods[_key2];
+      for (var key in methods) {
+        var methodHandler = methods[key];
 
         if (isFunction(methodHandler)) {
           // In dev mode, we use the `createRenderContext` function to define methods to the proxy target,
           // and those are read-only but reconfigurable, so it needs to be redefined here
-          if (process.env.NODE_ENV !== 'production') {
-            Object.defineProperty(ctx, _key2, {
-              value: methodHandler.bind(publicThis),
-              configurable: true,
-              enumerable: true,
-              writable: true
-            });
-          } else {
-            ctx[_key2] = methodHandler.bind(publicThis);
+          {
+            ctx[key] = methodHandler.bind(publicThis);
           }
-
-          if (process.env.NODE_ENV !== 'production') {
-            checkDuplicateProperties("Methods"
-            /* METHODS */
-            , _key2);
-          }
-        } else if (process.env.NODE_ENV !== 'production') {
-          warn("Method \"".concat(_key2, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. ") + "Did you reference the function correctly?");
         }
       }
     }
 
     if (dataOptions) {
-      (function () {
-        if (process.env.NODE_ENV !== 'production' && !isFunction(dataOptions)) {
-          warn("The data option must be a function. " + "Plain object usage is no longer supported.");
-        }
-
-        var data = dataOptions.call(publicThis, publicThis);
-
-        if (process.env.NODE_ENV !== 'production' && isPromise(data)) {
-          warn("data() returned a Promise - note data() cannot be async; If you " + "intend to perform data fetching before component renders, use " + "async setup() + <Suspense>.");
-        }
-
-        if (!isObject(data)) {
-          process.env.NODE_ENV !== 'production' && warn("data() should return an object.");
-        } else {
-          instance.data = reactive(data);
-
-          if (process.env.NODE_ENV !== 'production') {
-            var _loop = function (_key3) {
-              checkDuplicateProperties("Data"
-              /* DATA */
-              , _key3); // expose data on ctx during dev
-
-              if (_key3[0] !== '$' && _key3[0] !== '_') {
-                Object.defineProperty(ctx, _key3, {
-                  configurable: true,
-                  enumerable: true,
-                  get: () => data[_key3],
-                  set: NOOP
-                });
-              }
-            };
-
-            for (var _key3 in data) {
-              _loop(_key3);
-            }
-          }
-        }
-      })();
+      var data = dataOptions.call(publicThis, publicThis);
+      if (!isObject(data)) ;else {
+        instance.data = reactive(data);
+      }
     } // state initialization complete at this point - start caching access
 
 
     shouldCacheAccess = true;
 
     if (computedOptions) {
-      var _loop2 = function (_key4) {
-        var opt = computedOptions[_key4];
+      var _loop = function (_key2) {
+        var opt = computedOptions[_key2];
         var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
-
-        if (process.env.NODE_ENV !== 'production' && get === NOOP) {
-          warn("Computed property \"".concat(_key4, "\" has no getter."));
-        }
-
-        var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : process.env.NODE_ENV !== 'production' ? () => {
-          warn("Write operation failed: computed property \"".concat(_key4, "\" is readonly."));
-        } : NOOP;
+        var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
         var c = computed$1({
           get,
           set
         });
-        Object.defineProperty(ctx, _key4, {
+        Object.defineProperty(ctx, _key2, {
           enumerable: true,
           configurable: true,
           get: () => c.value,
           set: v => c.value = v
         });
-
-        if (process.env.NODE_ENV !== 'production') {
-          checkDuplicateProperties("Computed"
-          /* COMPUTED */
-          , _key4);
-        }
       };
 
-      for (var _key4 in computedOptions) {
-        _loop2(_key4);
+      for (var _key2 in computedOptions) {
+        _loop(_key2);
       }
     }
 
     if (watchOptions) {
-      for (var _key5 in watchOptions) {
-        createWatcher(watchOptions[_key5], ctx, publicThis, _key5);
+      for (var _key3 in watchOptions) {
+        createWatcher(watchOptions[_key3], ctx, publicThis, _key3);
       }
     }
 
@@ -5602,12 +4899,6 @@ export default function vueFactory(exports) {
       } else {
         ctx[key] = inject(opt);
       }
-
-      if (process.env.NODE_ENV !== 'production') {
-        checkDuplicateProperties("Inject"
-        /* INJECT */
-        , key);
-      }
     }
   }
 
@@ -5623,8 +4914,6 @@ export default function vueFactory(exports) {
 
       if (isFunction(handler)) {
         watch(getter, handler);
-      } else if (process.env.NODE_ENV !== 'production') {
-        warn("Invalid watch handler specified by key \"".concat(raw, "\""), handler);
       }
     } else if (isFunction(raw)) {
       watch(getter, raw.bind(publicThis));
@@ -5636,13 +4925,9 @@ export default function vueFactory(exports) {
 
         if (isFunction(_handler)) {
           watch(getter, _handler, raw);
-        } else if (process.env.NODE_ENV !== 'production') {
-          warn("Invalid watch handler specified by key \"".concat(raw.handler, "\""), _handler);
         }
       }
-    } else if (process.env.NODE_ENV !== 'production') {
-      warn("Invalid watch option: \"".concat(key, "\""), raw);
-    }
+    } else ;
   }
   /**
    * Resolve merged options and cache it on the component.
@@ -5702,9 +4987,7 @@ export default function vueFactory(exports) {
     }
 
     for (var key in from) {
-      if (asMixin && key === 'expose') {
-        process.env.NODE_ENV !== 'production' && warn("\"expose\" option is ignored when declared in mixins or extends. " + "It should only be declared in the base component itself.");
-      } else {
+      if (asMixin && key === 'expose') ;else {
         var strat = internalOptionMergeStrats[key] || strats && strats[key];
         to[key] = strat ? strat(to[key], from[key]) : from[key];
       }
@@ -5807,11 +5090,6 @@ export default function vueFactory(exports) {
       if (!(key in props)) {
         props[key] = undefined;
       }
-    } // validation
-
-
-    if (process.env.NODE_ENV !== 'production') {
-      validateProps(rawProps || {}, props, instance);
     }
 
     if (isStateful) {
@@ -5845,7 +5123,7 @@ export default function vueFactory(exports) {
     if ( // always force full diff in dev
     // - #1942 if hmr is enabled with sfc component
     // - vite#872 non-sfc component used by sfc component
-    !(process.env.NODE_ENV !== 'production' && (instance.type.__hmrId || instance.parent && instance.parent.type.__hmrId)) && (optimized || patchFlag > 0) && !(patchFlag & 16
+    (optimized || patchFlag > 0) && !(patchFlag & 16
     /* FULL_PROPS */
     )) {
       if (patchFlag & 8
@@ -5892,17 +5170,17 @@ export default function vueFactory(exports) {
 
       var kebabKey;
 
-      for (var _key6 in rawCurrentProps) {
-        if (!rawProps || !hasOwn(rawProps, _key6) && ((kebabKey = hyphenate(_key6)) === _key6 || !hasOwn(rawProps, kebabKey))) {
+      for (var _key4 in rawCurrentProps) {
+        if (!rawProps || !hasOwn(rawProps, _key4) && ((kebabKey = hyphenate(_key4)) === _key4 || !hasOwn(rawProps, kebabKey))) {
           if (options) {
-            if (rawPrevProps && (rawPrevProps[_key6] !== undefined || // for kebab-case
+            if (rawPrevProps && (rawPrevProps[_key4] !== undefined || // for kebab-case
             rawPrevProps[kebabKey] !== undefined)) {
-              props[_key6] = resolvePropValue(options, rawCurrentProps, _key6, undefined, instance, true
+              props[_key4] = resolvePropValue(options, rawCurrentProps, _key4, undefined, instance, true
               /* isAbsent */
               );
             }
           } else {
-            delete props[_key6];
+            delete props[_key4];
           }
         }
       } // in the case of functional component w/o props declaration, props and
@@ -5910,9 +5188,9 @@ export default function vueFactory(exports) {
 
 
       if (attrs !== rawCurrentProps) {
-        for (var _key7 in attrs) {
-          if (!rawProps || !hasOwn(rawProps, _key7)) {
-            delete attrs[_key7];
+        for (var _key5 in attrs) {
+          if (!rawProps || !hasOwn(rawProps, _key5)) {
+            delete attrs[_key5];
             hasAttrsChanged = true;
           }
         }
@@ -5924,10 +5202,6 @@ export default function vueFactory(exports) {
       trigger(instance, "set"
       /* SET */
       , '$attrs');
-    }
-
-    if (process.env.NODE_ENV !== 'production') {
-      validateProps(rawProps || {}, props, instance);
     }
   }
 
@@ -5968,8 +5242,8 @@ export default function vueFactory(exports) {
       var castValues = rawCastValues || EMPTY_OBJ;
 
       for (var i = 0; i < needCastKeys.length; i++) {
-        var _key8 = needCastKeys[i];
-        props[_key8] = resolvePropValue(options, rawCurrentProps, _key8, castValues[_key8], instance, !hasOwn(castValues, _key8));
+        var _key6 = needCastKeys[i];
+        props[_key6] = resolvePropValue(options, rawCurrentProps, _key6, castValues[_key6], instance, !hasOwn(castValues, _key6));
       }
     }
 
@@ -6061,10 +5335,6 @@ export default function vueFactory(exports) {
 
     if (isArray(raw)) {
       for (var i = 0; i < raw.length; i++) {
-        if (process.env.NODE_ENV !== 'production' && !isString(raw[i])) {
-          warn("props must be strings when using array syntax.", raw[i]);
-        }
-
         var normalizedKey = camelize(raw[i]);
 
         if (validatePropName(normalizedKey)) {
@@ -6072,10 +5342,6 @@ export default function vueFactory(exports) {
         }
       }
     } else if (raw) {
-      if (process.env.NODE_ENV !== 'production' && !isObject(raw)) {
-        warn("invalid props options", raw);
-      }
-
       for (var key in raw) {
         var _normalizedKey = camelize(key);
 
@@ -6111,8 +5377,6 @@ export default function vueFactory(exports) {
   function validatePropName(key) {
     if (key[0] !== '$') {
       return true;
-    } else if (process.env.NODE_ENV !== 'production') {
-      warn("Invalid prop name: \"".concat(key, "\" is a reserved property."));
     }
 
     return false;
@@ -6138,154 +5402,6 @@ export default function vueFactory(exports) {
 
     return -1;
   }
-  /**
-   * dev only
-   */
-
-
-  function validateProps(rawProps, props, instance) {
-    var resolvedValues = toRaw(props);
-    var options = instance.propsOptions[0];
-
-    for (var key in options) {
-      var opt = options[key];
-      if (opt == null) continue;
-      validateProp(key, resolvedValues[key], opt, !hasOwn(rawProps, key) && !hasOwn(rawProps, hyphenate(key)));
-    }
-  }
-  /**
-   * dev only
-   */
-
-
-  function validateProp(name, value, prop, isAbsent) {
-    var {
-      type,
-      required,
-      validator
-    } = prop; // required!
-
-    if (required && isAbsent) {
-      warn('Missing required prop: "' + name + '"');
-      return;
-    } // missing but optional
-
-
-    if (value == null && !prop.required) {
-      return;
-    } // type check
-
-
-    if (type != null && type !== true) {
-      var isValid = false;
-      var types = isArray(type) ? type : [type];
-      var expectedTypes = []; // value is valid as long as one of the specified types match
-
-      for (var i = 0; i < types.length && !isValid; i++) {
-        var {
-          valid,
-          expectedType
-        } = assertType(value, types[i]);
-        expectedTypes.push(expectedType || '');
-        isValid = valid;
-      }
-
-      if (!isValid) {
-        warn(getInvalidTypeMessage(name, value, expectedTypes));
-        return;
-      }
-    } // custom validator
-
-
-    if (validator && !validator(value)) {
-      warn('Invalid prop: custom validator check failed for prop "' + name + '".');
-    }
-  }
-
-  var isSimpleType = /*#__PURE__*/makeMap('String,Number,Boolean,Function,Symbol,BigInt');
-  /**
-   * dev only
-   */
-
-  function assertType(value, type) {
-    var valid;
-    var expectedType = getType(type);
-
-    if (isSimpleType(expectedType)) {
-      var t = typeof value;
-      valid = t === expectedType.toLowerCase(); // for primitive wrapper objects
-
-      if (!valid && t === 'object') {
-        valid = value instanceof type;
-      }
-    } else if (expectedType === 'Object') {
-      valid = isObject(value);
-    } else if (expectedType === 'Array') {
-      valid = isArray(value);
-    } else {
-      valid = value instanceof type;
-    }
-
-    return {
-      valid,
-      expectedType
-    };
-  }
-  /**
-   * dev only
-   */
-
-
-  function getInvalidTypeMessage(name, value, expectedTypes) {
-    var message = "Invalid prop: type check failed for prop \"".concat(name, "\".") + " Expected ".concat(expectedTypes.map(capitalize).join(', '));
-    var expectedType = expectedTypes[0];
-    var receivedType = toRawType(value);
-    var expectedValue = styleValue(value, expectedType);
-    var receivedValue = styleValue(value, receivedType); // check if we need to specify expected value
-
-    if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-      message += " with value ".concat(expectedValue);
-    }
-
-    message += ", got ".concat(receivedType, " "); // check if we need to specify received value
-
-    if (isExplicable(receivedType)) {
-      message += "with value ".concat(receivedValue, ".");
-    }
-
-    return message;
-  }
-  /**
-   * dev only
-   */
-
-
-  function styleValue(value, type) {
-    if (type === 'String') {
-      return "\"".concat(value, "\"");
-    } else if (type === 'Number') {
-      return "".concat(Number(value));
-    } else {
-      return "".concat(value);
-    }
-  }
-  /**
-   * dev only
-   */
-
-
-  function isExplicable(type) {
-    var explicitTypes = ['string', 'number', 'boolean'];
-    return explicitTypes.some(elem => type.toLowerCase() === elem);
-  }
-  /**
-   * dev only
-   */
-
-
-  function isBoolean(...args) {
-    return args.some(elem => elem.toLowerCase() === 'boolean');
-  }
 
   var isInternalKey = key => key[0] === '_' || key === '$stable';
 
@@ -6293,10 +5409,6 @@ export default function vueFactory(exports) {
 
   var normalizeSlot = (key, rawSlot, ctx) => {
     var normalized = withCtx(props => {
-      if (process.env.NODE_ENV !== 'production' && currentInstance) {
-        warn("Slot \"".concat(key, "\" invoked outside of the render function: ") + "this will not track dependencies used in the slot. " + "Invoke the slot function inside the render function instead.");
-      }
-
       return normalizeSlotValue(rawSlot(props));
     }, ctx);
     normalized._c = false;
@@ -6314,10 +5426,6 @@ export default function vueFactory(exports) {
         slots[key] = normalizeSlot(key, value, ctx);
       } else if (value != null) {
         (function () {
-          if (process.env.NODE_ENV !== 'production' && !false) {
-            warn("Non-function value encountered for slot \"".concat(key, "\". ") + "Prefer function slots for better performance.");
-          }
-
           var normalized = normalizeSlotValue(value);
 
           slots[key] = () => normalized;
@@ -6327,10 +5435,6 @@ export default function vueFactory(exports) {
   };
 
   var normalizeVNodeSlots = (instance, children) => {
-    if (process.env.NODE_ENV !== 'production' && !isKeepAlive(instance.vnode) && !false) {
-      warn("Non-function value encountered for default slot. " + "Prefer function slots for better performance.");
-    }
-
     var normalized = normalizeSlotValue(children);
 
     instance.slots.default = () => normalized;
@@ -6377,11 +5481,7 @@ export default function vueFactory(exports) {
 
       if (type) {
         // compiled slots.
-        if (process.env.NODE_ENV !== 'production' && isHmrUpdating) {
-          // Parent was HMR updated so slot content may have changed.
-          // force update slots and mark instance for hmr as well
-          extend(slots, children);
-        } else if (optimized && type === 1
+        if (optimized && type === 1
         /* STABLE */
         ) {
           // compiled AND stable.
@@ -6425,27 +5525,6 @@ export default function vueFactory(exports) {
     }
   };
   /**
-  Runtime helper for applying directives to a vnode. Example usage:
-  
-  const comp = resolveComponent('comp')
-  const foo = resolveDirective('foo')
-  const bar = resolveDirective('bar')
-  
-  return withDirectives(h(comp), [
-    [foo, this.x],
-    [bar, this.y]
-  ])
-  */
-
-
-  var isBuiltInDirective = /*#__PURE__*/makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text');
-
-  function validateDirectiveName(name) {
-    if (isBuiltInDirective(name)) {
-      warn('Do not use built-in directive ids as custom directive id: ' + name);
-    }
-  }
-  /**
    * Adds directives to a VNode.
    */
 
@@ -6454,7 +5533,6 @@ export default function vueFactory(exports) {
     var internalInstance = currentRenderingInstance;
 
     if (internalInstance === null) {
-      process.env.NODE_ENV !== 'production' && warn("withDirectives can only be used inside render functions.");
       return vnode;
     }
 
@@ -6536,7 +5614,6 @@ export default function vueFactory(exports) {
   function createAppAPI(render, hydrate) {
     return function createApp(rootComponent, rootProps = null) {
       if (rootProps != null && !isObject(rootProps)) {
-        process.env.NODE_ENV !== 'production' && warn("root props passed to app.mount() must be an object.");
         rootProps = null;
       }
 
@@ -6556,25 +5633,16 @@ export default function vueFactory(exports) {
           return context.config;
         },
 
-        set config(v) {
-          if (process.env.NODE_ENV !== 'production') {
-            warn("app.config cannot be replaced. Modify individual options instead.");
-          }
-        },
+        set config(v) {},
 
         use(plugin, ...options) {
-          if (installedPlugins.has(plugin)) {
-            process.env.NODE_ENV !== 'production' && warn("Plugin has already been applied to target app.");
-          } else if (plugin && isFunction(plugin.install)) {
+          if (installedPlugins.has(plugin)) ;else if (plugin && isFunction(plugin.install)) {
             installedPlugins.add(plugin);
             plugin.install(app, ...options);
           } else if (isFunction(plugin)) {
             installedPlugins.add(plugin);
             plugin(app, ...options);
-          } else if (process.env.NODE_ENV !== 'production') {
-            warn("A plugin must either be a function or an object with an \"install\" " + "function.");
-          }
-
+          } else ;
           return app;
         },
 
@@ -6582,24 +5650,14 @@ export default function vueFactory(exports) {
           {
             if (!context.mixins.includes(mixin)) {
               context.mixins.push(mixin);
-            } else if (process.env.NODE_ENV !== 'production') {
-              warn('Mixin has already been applied to target app' + (mixin.name ? ": ".concat(mixin.name) : ''));
             }
           }
           return app;
         },
 
         component(name, component) {
-          if (process.env.NODE_ENV !== 'production') {
-            validateComponentName(name, context.config);
-          }
-
           if (!component) {
             return context.components[name];
-          }
-
-          if (process.env.NODE_ENV !== 'production' && context.components[name]) {
-            warn("Component \"".concat(name, "\" has already been registered in target app."));
           }
 
           context.components[name] = component;
@@ -6607,16 +5665,8 @@ export default function vueFactory(exports) {
         },
 
         directive(name, directive) {
-          if (process.env.NODE_ENV !== 'production') {
-            validateDirectiveName(name);
-          }
-
           if (!directive) {
             return context.directives[name];
-          }
-
-          if (process.env.NODE_ENV !== 'production' && context.directives[name]) {
-            warn("Directive \"".concat(name, "\" has already been registered in target app."));
           }
 
           context.directives[name] = directive;
@@ -6628,13 +5678,7 @@ export default function vueFactory(exports) {
             var vnode = createVNode(rootComponent, rootProps); // store app context on the root VNode.
             // this will be set on the root instance on initial mount.
 
-            vnode.appContext = context; // HMR root reload
-
-            if (process.env.NODE_ENV !== 'production') {
-              context.reload = () => {
-                render(cloneVNode(vnode), rootContainer, isSVG);
-              };
-            }
+            vnode.appContext = context;
 
             if (isHydrate && hydrate) {
               hydrate(vnode, rootContainer);
@@ -6645,40 +5689,20 @@ export default function vueFactory(exports) {
             isMounted = true;
             app._container = rootContainer;
             rootContainer.__vue_app__ = app;
-
-            if (process.env.NODE_ENV !== 'production' || false) {
-              app._instance = vnode.component;
-              devtoolsInitApp(app, version);
-            }
-
             return vnode.component.proxy;
-          } else if (process.env.NODE_ENV !== 'production') {
-            warn("App has already been mounted.\n" + "If you want to remount the same app, move your app creation logic " + "into a factory function and create fresh app instances for each " + "mount - e.g. `const createMyApp = () => createApp(App)`");
           }
         },
 
         unmount() {
           if (isMounted) {
             render(null, app._container);
-
-            if (process.env.NODE_ENV !== 'production' || false) {
-              app._instance = null;
-              devtoolsUnmountApp(app);
-            }
-
             delete app._container.__vue_app__;
-          } else if (process.env.NODE_ENV !== 'production') {
-            warn("Cannot unmount an app that is not mounted.");
           }
         },
 
         provide(key, value) {
-          if (process.env.NODE_ENV !== 'production' && key in context.provides) {
-            warn("App already provides property with key \"".concat(String(key), "\". ") + "It will be overwritten with the new value.");
-          } // TypeScript doesn't allow symbols as index type
+          // TypeScript doesn't allow symbols as index type
           // https://github.com/Microsoft/TypeScript/issues/24587
-
-
           context.provides[key] = value;
           return app;
         }
@@ -6717,7 +5741,6 @@ export default function vueFactory(exports) {
 
     var hydrate = (vnode, container) => {
       if (!container.hasChildNodes()) {
-        process.env.NODE_ENV !== 'production' && warn("Attempting to hydrate existing markup but container is empty. " + "Performing full mount instead.");
         patch(null, vnode, container);
         flushPostFlushCbs();
         return;
@@ -6756,7 +5779,6 @@ export default function vueFactory(exports) {
           } else {
             if (node.data !== vnode.children) {
               hasMismatch = true;
-              process.env.NODE_ENV !== 'production' && warn("Hydration text mismatch:" + "\n- Client: ".concat(JSON.stringify(node.data)) + "\n- Server: ".concat(JSON.stringify(vnode.children)));
               node.data = vnode.children;
             }
 
@@ -6867,9 +5889,7 @@ export default function vueFactory(exports) {
           /* SUSPENSE */
           ) {
             nextNode = vnode.type.hydrate(node, vnode, parentComponent, parentSuspense, isSVGContainer(parentNode(node)), slotScopeIds, optimized, rendererInternals, hydrateNode);
-          } else if (process.env.NODE_ENV !== 'production') {
-            warn('Invalid HostVNode type:', type, "(".concat(typeof type, ")"));
-          }
+          } else ;
 
       }
 
@@ -6943,16 +5963,9 @@ export default function vueFactory(exports) {
         && // skip if element has innerHTML / textContent
         !(props && (props.innerHTML || props.textContent))) {
           var next = hydrateChildren(el.firstChild, vnode, el, parentComponent, parentSuspense, slotScopeIds, optimized);
-          var _hasWarned = false;
 
           while (next) {
-            hasMismatch = true;
-
-            if (process.env.NODE_ENV !== 'production' && !_hasWarned) {
-              warn("Hydration children mismatch in <".concat(vnode.type, ">: ") + "server rendered element contains more child nodes than client vdom.");
-              _hasWarned = true;
-            } // The SSRed DOM contains more nodes than it should. Remove them.
-
+            hasMismatch = true; // The SSRed DOM contains more nodes than it should. Remove them.
 
             var cur = next;
             next = next.nextSibling;
@@ -6963,7 +5976,6 @@ export default function vueFactory(exports) {
         ) {
           if (el.textContent !== vnode.children) {
             hasMismatch = true;
-            process.env.NODE_ENV !== 'production' && warn("Hydration text content mismatch in <".concat(vnode.type, ">:\n") + "- Client: ".concat(el.textContent, "\n") + "- Server: ".concat(vnode.children));
             el.textContent = vnode.children;
           }
         }
@@ -6976,7 +5988,6 @@ export default function vueFactory(exports) {
       optimized = optimized || !!parentVNode.dynamicChildren;
       var children = parentVNode.children;
       var l = children.length;
-      var hasWarned = false;
 
       for (var i = 0; i < l; i++) {
         var vnode = optimized ? children[i] : children[i] = normalizeVNode(children[i]);
@@ -6986,13 +5997,7 @@ export default function vueFactory(exports) {
         } else if (vnode.type === Text && !vnode.children) {
           continue;
         } else {
-          hasMismatch = true;
-
-          if (process.env.NODE_ENV !== 'production' && !hasWarned) {
-            warn("Hydration children mismatch in <".concat(container.tagName.toLowerCase(), ">: ") + "server rendered element contains fewer child nodes than client vdom.");
-            hasWarned = true;
-          } // the SSRed DOM didn't contain enough nodes. Mount the missing ones.
-
+          hasMismatch = true; // the SSRed DOM didn't contain enough nodes. Mount the missing ones.
 
           patch(null, vnode, container, null, parentComponent, parentSuspense, isSVGContainer(container), slotScopeIds);
         }
@@ -7028,9 +6033,6 @@ export default function vueFactory(exports) {
 
     var handleMismatch = (node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragment) => {
       hasMismatch = true;
-      process.env.NODE_ENV !== 'production' && warn("Hydration node mismatch:\n- Client vnode:", vnode.type, "\n- Server rendered DOM:", node, node.nodeType === 3
-      /* TEXT */
-      ? "(text)" : isComment(node) && node.data === '[' ? "(start of fragment)" : "");
       vnode.el = null;
 
       if (isFragment) {
@@ -7080,84 +6082,11 @@ export default function vueFactory(exports) {
     return [hydrate, hydrateNode];
   }
 
-  var supported;
-  var perf;
-
-  function startMeasure(instance, type) {
-    if (instance.appContext.config.performance && isSupported()) {
-      perf.mark("vue-".concat(type, "-").concat(instance.uid));
-    }
-
-    if (process.env.NODE_ENV !== 'production' || false) {
-      devtoolsPerfStart(instance, type, supported ? perf.now() : Date.now());
-    }
-  }
-
-  function endMeasure(instance, type) {
-    if (instance.appContext.config.performance && isSupported()) {
-      var startTag = "vue-".concat(type, "-").concat(instance.uid);
-      var endTag = startTag + ":end";
-      perf.mark(endTag);
-      perf.measure("<".concat(formatComponentName(instance, instance.type), "> ").concat(type), startTag, endTag);
-      perf.clearMarks(startTag);
-      perf.clearMarks(endTag);
-    }
-
-    if (process.env.NODE_ENV !== 'production' || false) {
-      devtoolsPerfEnd(instance, type, supported ? perf.now() : Date.now());
-    }
-  }
-
-  function isSupported() {
-    if (supported !== undefined) {
-      return supported;
-    }
-    /* eslint-disable no-restricted-globals */
-
-
-    if (typeof window !== 'undefined' && window.performance) {
-      supported = true;
-      perf = window.performance;
-    } else {
-      supported = false;
-    }
-    /* eslint-enable no-restricted-globals */
-
-
-    return supported;
-  }
-  /**
-   * This is only called in esm-bundler builds.
-   * It is called when a renderer is created, in `baseCreateRenderer` so that
-   * importing runtime-core is side-effects free.
-   *
-   * istanbul-ignore-next
-   */
-
-
-  function initFeatureFlags() {
-    var needWarn = false;
-
-    if (process.env.NODE_ENV !== 'production' && needWarn) {
-      console.warn("You are running the esm-bundler build of Vue. It is recommended to " + "configure your bundler to explicitly replace feature flag globals " + "with boolean literals to get proper tree-shaking in the final bundle. " + "See http://link.vuejs.org/feature-flags for more details.");
-    }
-  }
-
   var prodEffectOptions = {
     scheduler: queueJob,
     // #1801, #2043 component render effects should allow recursive updates
     allowRecurse: true
   };
-
-  function createDevEffectOptions(instance) {
-    return {
-      scheduler: queueJob,
-      allowRecurse: true,
-      onTrack: instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0,
-      onTrigger: instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0
-    };
-  }
-
   var queuePostRenderEffect = queueEffectWithSuspense;
 
   var setRef = (rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) => {
@@ -7180,12 +6109,6 @@ export default function vueFactory(exports) {
       i: owner,
       r: ref
     } = rawRef;
-
-    if (process.env.NODE_ENV !== 'production' && !owner) {
-      warn("Missing ref owner context. ref cannot be used on hoisted vnodes. " + "A vnode with ref must be created inside the render function.");
-      return;
-    }
-
     var oldRef = oldRawRef && oldRawRef.r;
     var refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
     var setupState = owner.setupState; // dynamic ref changed. unset old ref
@@ -7237,9 +6160,7 @@ export default function vueFactory(exports) {
       callWithErrorHandling(ref, owner, 12
       /* FUNCTION_REF */
       , [value, refs]);
-    } else if (process.env.NODE_ENV !== 'production') {
-      warn('Invalid template ref type:', value, "(".concat(typeof value, ")"));
-    }
+    } else ;
   };
   /**
    * The createRenderer function accepts two generic arguments:
@@ -7271,17 +6192,6 @@ export default function vueFactory(exports) {
 
 
   function baseCreateRenderer(options, createHydrationFns) {
-    // compile-time feature flags check
-    {
-      initFeatureFlags();
-    }
-
-    if (process.env.NODE_ENV !== 'production' || false) {
-      var target = getGlobalThis();
-      target.__VUE__ = true;
-      setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__);
-    }
-
     var {
       insert: hostInsert,
       remove: hostRemove,
@@ -7333,8 +6243,6 @@ export default function vueFactory(exports) {
         case Static:
           if (n1 == null) {
             mountStaticNode(n2, container, anchor, isSVG);
-          } else if (process.env.NODE_ENV !== 'production') {
-            patchStaticNode(n1, n2, container, isSVG);
           }
 
           break;
@@ -7360,9 +6268,7 @@ export default function vueFactory(exports) {
           /* SUSPENSE */
           ) {
             type.process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals);
-          } else if (process.env.NODE_ENV !== 'production') {
-            warn('Invalid VNode type:', type, "(".concat(typeof type, ")"));
-          }
+          } else ;
 
       } // set ref
 
@@ -7409,23 +6315,6 @@ export default function vueFactory(exports) {
 
       n2.el = nodes[0];
       n2.anchor = nodes[nodes.length - 1];
-    };
-    /**
-     * Dev / HMR only
-     */
-
-
-    var patchStaticNode = (n1, n2, container, isSVG) => {
-      // static nodes are only patched during dev for HMR
-      if (n2.children !== n1.children) {
-        var anchor = hostNextSibling(n1.anchor); // remove existing
-
-        removeStaticNode(n1);
-        [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG);
-      } else {
-        n2.el = n1.el;
-        n2.anchor = n1.anchor;
-      }
     };
 
     var moveStaticNode = ({
@@ -7480,7 +6369,7 @@ export default function vueFactory(exports) {
         dirs
       } = vnode;
 
-      if (!(process.env.NODE_ENV !== 'production') && vnode.el && hostCloneNode !== undefined && patchFlag === -1
+      if (vnode.el && hostCloneNode !== undefined && patchFlag === -1
       /* HOISTED */
       ) {
         // If a vnode has non-null el, it means it's being reused.
@@ -7524,17 +6413,6 @@ export default function vueFactory(exports) {
         setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
       }
 
-      if (process.env.NODE_ENV !== 'production' || false) {
-        Object.defineProperty(el, '__vnode', {
-          value: vnode,
-          enumerable: false
-        });
-        Object.defineProperty(el, '__vueParentComponent', {
-          value: parentComponent,
-          enumerable: false
-        });
-      }
-
       if (dirs) {
         invokeDirectiveHook(vnode, null, parentComponent, 'beforeMount');
       } // #1583 For inside suspense + suspense not resolved case, enter hook should call when suspense resolved
@@ -7572,12 +6450,6 @@ export default function vueFactory(exports) {
       if (parentComponent) {
         var subTree = parentComponent.subTree;
 
-        if (process.env.NODE_ENV !== 'production' && subTree.patchFlag > 0 && subTree.patchFlag & 2048
-        /* DEV_ROOT_FRAGMENT */
-        ) {
-          subTree = filterSingleRoot(subTree.children) || subTree;
-        }
-
         if (vnode === subTree) {
           var parentVNode = parentComponent.vnode;
           setScopeId(el, parentVNode, parentVNode.scopeId, parentVNode.slotScopeIds, parentComponent.parent);
@@ -7614,13 +6486,6 @@ export default function vueFactory(exports) {
 
       if (dirs) {
         invokeDirectiveHook(n2, n1, parentComponent, 'beforeUpdate');
-      }
-
-      if (process.env.NODE_ENV !== 'production' && isHmrUpdating) {
-        // HMR updated, force full diff
-        patchFlag = 0;
-        optimized = false;
-        dynamicChildren = null;
       }
 
       if (patchFlag > 0) {
@@ -7694,10 +6559,6 @@ export default function vueFactory(exports) {
 
       if (dynamicChildren) {
         patchBlockChildren(n1.dynamicChildren, dynamicChildren, el, parentComponent, parentSuspense, areChildrenSVG, slotScopeIds);
-
-        if (process.env.NODE_ENV !== 'production' && parentComponent && parentComponent.type.__hmrId) {
-          traverseStaticChildren(n1, n2);
-        }
       } else if (!optimized) {
         // full diff
         patchChildren(n1, n2, el, null, parentComponent, parentSuspense, areChildrenSVG, slotScopeIds, false);
@@ -7747,9 +6608,9 @@ export default function vueFactory(exports) {
         }
 
         if (oldProps !== EMPTY_OBJ) {
-          for (var _key9 in oldProps) {
-            if (!isReservedProp(_key9) && !(_key9 in newProps)) {
-              hostPatchProp(el, _key9, oldProps[_key9], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+          for (var _key7 in oldProps) {
+            if (!isReservedProp(_key7) && !(_key7 in newProps)) {
+              hostPatchProp(el, _key7, oldProps[_key7], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
             }
           }
         }
@@ -7776,13 +6637,6 @@ export default function vueFactory(exports) {
         slotScopeIds = slotScopeIds ? slotScopeIds.concat(fragmentSlotScopeIds) : fragmentSlotScopeIds;
       }
 
-      if (process.env.NODE_ENV !== 'production' && isHmrUpdating) {
-        // HMR updated, force full diff
-        patchFlag = 0;
-        optimized = false;
-        dynamicChildren = null;
-      }
-
       if (n1 == null) {
         hostInsert(fragmentStartAnchor, container, anchor);
         hostInsert(fragmentEndAnchor, container, anchor); // a fragment can only have array children
@@ -7800,9 +6654,7 @@ export default function vueFactory(exports) {
           // patch children order, but it may contain dynamicChildren.
           patchBlockChildren(n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, isSVG, slotScopeIds);
 
-          if (process.env.NODE_ENV !== 'production' && parentComponent && parentComponent.type.__hmrId) {
-            traverseStaticChildren(n1, n2);
-          } else if ( // #2080 if the stable fragment has a key, it's a <template v-for> that may
+          if ( // #2080 if the stable fragment has a key, it's a <template v-for> that may
           //  get moved around. Make sure all root level vnodes inherit el.
           // #2134 or if it's a component root, it may also get moved around
           // as the component is being moved.
@@ -7838,17 +6690,7 @@ export default function vueFactory(exports) {
     };
 
     var mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
-      var instance = initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense);
-
-      if (process.env.NODE_ENV !== 'production' && instance.type.__hmrId) {
-        registerHMR(instance);
-      }
-
-      if (process.env.NODE_ENV !== 'production') {
-        pushWarningContext(initialVNode);
-        startMeasure(instance, "mount");
-      } // inject renderer internals for keepAlive
-
+      var instance = initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense); // inject renderer internals for keepAlive
 
       if (isKeepAlive(initialVNode)) {
         instance.ctx.renderer = internals;
@@ -7856,15 +6698,7 @@ export default function vueFactory(exports) {
 
 
       {
-        if (process.env.NODE_ENV !== 'production') {
-          startMeasure(instance, "init");
-        }
-
         setupComponent(instance);
-
-        if (process.env.NODE_ENV !== 'production') {
-          endMeasure(instance, "init");
-        }
       } // setup() is async. This component relies on async logic to be resolved
       // before proceeding
 
@@ -7893,11 +6727,6 @@ export default function vueFactory(exports) {
           $renderjsModules && el.setAttribute(ATTR_V_RENDERJS, $renderjsModules);
         }
       }
-
-      if (process.env.NODE_ENV !== 'production') {
-        popWarningContext();
-        endMeasure(instance, "mount");
-      }
     };
 
     var updateComponent = (n1, n2, optimized) => {
@@ -7905,18 +6734,7 @@ export default function vueFactory(exports) {
 
       if (shouldUpdateComponent(n1, n2, optimized)) {
         if (instance.asyncDep && !instance.asyncResolved) {
-          // async & still pending - just update props and slots
-          // since the component's reactive effect for render isn't set-up yet
-          if (process.env.NODE_ENV !== 'production') {
-            pushWarningContext(n2);
-          }
-
           updateComponentPreRender(instance, n2, optimized);
-
-          if (process.env.NODE_ENV !== 'production') {
-            popWarningContext();
-          }
-
           return;
         } else {
           // normal update
@@ -7962,25 +6780,8 @@ export default function vueFactory(exports) {
           if (el && hydrateNode) {
             // vnode has adopted host node - perform hydration instead of mount.
             var hydrateSubTree = () => {
-              if (process.env.NODE_ENV !== 'production') {
-                startMeasure(instance, "render");
-              }
-
               instance.subTree = renderComponentRoot(instance);
-
-              if (process.env.NODE_ENV !== 'production') {
-                endMeasure(instance, "render");
-              }
-
-              if (process.env.NODE_ENV !== 'production') {
-                startMeasure(instance, "hydrate");
-              }
-
               hydrateNode(el, instance.subTree, instance, parentSuspense, null);
-
-              if (process.env.NODE_ENV !== 'production') {
-                endMeasure(instance, "hydrate");
-              }
             };
 
             if (isAsyncWrapper(initialVNode)) {
@@ -7993,26 +6794,8 @@ export default function vueFactory(exports) {
               hydrateSubTree();
             }
           } else {
-            if (process.env.NODE_ENV !== 'production') {
-              startMeasure(instance, "render");
-            }
-
             var subTree = instance.subTree = renderComponentRoot(instance);
-
-            if (process.env.NODE_ENV !== 'production') {
-              endMeasure(instance, "render");
-            }
-
-            if (process.env.NODE_ENV !== 'production') {
-              startMeasure(instance, "patch");
-            }
-
             patch(null, subTree, container, anchor, instance, parentSuspense, isSVG);
-
-            if (process.env.NODE_ENV !== 'production') {
-              endMeasure(instance, "patch");
-            }
-
             initialVNode.el = subTree.el;
           } // mounted hook
 
@@ -8036,12 +6819,7 @@ export default function vueFactory(exports) {
             instance.a && queuePostRenderEffect(instance.a, parentSuspense);
           }
 
-          instance.isMounted = true;
-
-          if (process.env.NODE_ENV !== 'production' || false) {
-            devtoolsComponentAdded(instance);
-          } // #2458: deference mount-only object parameters to prevent memleaks
-
+          instance.isMounted = true; // #2458: deference mount-only object parameters to prevent memleaks
 
           initialVNode = container = anchor = null;
         } else {
@@ -8059,10 +6837,6 @@ export default function vueFactory(exports) {
 
           var _vnodeHook;
 
-          if (process.env.NODE_ENV !== 'production') {
-            pushWarningContext(next || instance.vnode);
-          }
-
           if (next) {
             next.el = vnode.el;
             updateComponentPreRender(instance, next, optimized);
@@ -8078,34 +6852,14 @@ export default function vueFactory(exports) {
 
           if (_vnodeHook = next.props && next.props.onVnodeBeforeUpdate) {
             invokeVNodeHook(_vnodeHook, _parent, next, vnode);
-          } // render
-
-
-          if (process.env.NODE_ENV !== 'production') {
-            startMeasure(instance, "render");
           }
 
           var nextTree = renderComponentRoot(instance);
-
-          if (process.env.NODE_ENV !== 'production') {
-            endMeasure(instance, "render");
-          }
-
           var prevTree = instance.subTree;
           instance.subTree = nextTree;
-
-          if (process.env.NODE_ENV !== 'production') {
-            startMeasure(instance, "patch");
-          }
-
           patch(prevTree, nextTree, // parent may have changed if it's in a teleport
           hostParentNode(prevTree.el), // anchor may have changed if it's in a fragment
           getNextHostNode(prevTree), instance, parentSuspense, isSVG);
-
-          if (process.env.NODE_ENV !== 'production') {
-            endMeasure(instance, "patch");
-          }
-
           next.el = nextTree.el;
 
           if (originNext === null) {
@@ -8124,21 +6878,8 @@ export default function vueFactory(exports) {
           if (_vnodeHook = next.props && next.props.onVnodeUpdated) {
             queuePostRenderEffect(() => invokeVNodeHook(_vnodeHook, _parent, next, vnode), parentSuspense);
           }
-
-          if (process.env.NODE_ENV !== 'production' || false) {
-            devtoolsComponentUpdated(instance);
-          }
-
-          if (process.env.NODE_ENV !== 'production') {
-            popWarningContext();
-          }
         }
-      }, process.env.NODE_ENV !== 'production' ? createDevEffectOptions(instance) : prodEffectOptions);
-
-      if (process.env.NODE_ENV !== 'production') {
-        // @ts-ignore
-        instance.update.ownerInstance = instance;
-      }
+      }, prodEffectOptions);
     };
 
     var updateComponentPreRender = (instance, nextVNode, optimized) => {
@@ -8337,10 +7078,6 @@ export default function vueFactory(exports) {
           var nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
 
           if (nextChild.key != null) {
-            if (process.env.NODE_ENV !== 'production' && keyToNewIndexMap.has(nextChild.key)) {
-              warn("Duplicate keys found during update:", JSON.stringify(nextChild.key), "Make sure keys are unique.");
-            }
-
             keyToNewIndexMap.set(nextChild.key, i);
           }
         } // 5.2 loop through old children left to be patched and try to patch
@@ -8662,10 +7399,6 @@ export default function vueFactory(exports) {
     };
 
     var unmountComponent = (instance, parentSuspense, doRemove) => {
-      if (process.env.NODE_ENV !== 'production' && instance.type.__hmrId) {
-        unregisterHMR(instance);
-      }
-
       var {
         bum,
         effects,
@@ -8708,10 +7441,6 @@ export default function vueFactory(exports) {
         if (parentSuspense.deps === 0) {
           parentSuspense.resolve();
         }
-      }
-
-      if (process.env.NODE_ENV !== 'production' || false) {
-        devtoolsComponentRemoved(instance);
       }
     };
 
@@ -8816,12 +7545,6 @@ export default function vueFactory(exports) {
           }
 
           if (!shallow) traverseStaticChildren(c1, c2);
-        } // also inherit for comment nodes, but not placeholders (e.g. v-if which
-        // would have received .el during block patch)
-
-
-        if (process.env.NODE_ENV !== 'production' && c2.type === Comment$1 && !c2.el) {
-          c2.el = c1.el;
         }
       }
     }
@@ -8891,22 +7614,12 @@ export default function vueFactory(exports) {
 
     if (isString(targetSelector)) {
       if (!select) {
-        process.env.NODE_ENV !== 'production' && warn("Current renderer does not support string target for Teleports. " + "(missing querySelector renderer option)");
         return null;
       } else {
         var target = select(targetSelector);
-
-        if (!target) {
-          process.env.NODE_ENV !== 'production' && warn("Failed to locate Teleport target with selector \"".concat(targetSelector, "\". ") + "Note the target element must exist before the component is mounted - " + "i.e. the target cannot be rendered by the component itself, and " + "ideally should be outside of the entire Vue component tree.");
-        }
-
         return target;
       }
     } else {
-      if (process.env.NODE_ENV !== 'production' && !targetSelector && !isTeleportDisabled(props)) {
-        warn("Invalid Teleport target: ".concat(targetSelector));
-      }
-
       return targetSelector;
     }
   };
@@ -8931,21 +7644,13 @@ export default function vueFactory(exports) {
         shapeFlag,
         children,
         dynamicChildren
-      } = n2; // #3302
-      // HMR updated, force full diff
-
-      if (process.env.NODE_ENV !== 'production' && isHmrUpdating) {
-        optimized = false;
-        dynamicChildren = null;
-      }
+      } = n2;
 
       if (n1 == null) {
         // insert anchors in the main view
-        var placeholder = n2.el = process.env.NODE_ENV !== 'production' ? createComment('teleport start', container) // fixed by xxxxxx
-        : createText('', container); // fixed by xxxxxx
+        var placeholder = n2.el = createText('', container); // fixed by xxxxxx
 
-        var mainAnchor = n2.anchor = process.env.NODE_ENV !== 'production' ? createComment('teleport end', container) // fixed by xxxxxx
-        : createText('', container); // fixed by xxxxxx
+        var mainAnchor = n2.anchor = createText('', container); // fixed by xxxxxx
 
         insert(placeholder, container, anchor);
         insert(mainAnchor, container, anchor);
@@ -8956,8 +7661,6 @@ export default function vueFactory(exports) {
           insert(targetAnchor, target); // #2652 we could be teleporting from a non-SVG tree into an SVG tree
 
           isSVG = isSVG || isTargetSVG(target);
-        } else if (process.env.NODE_ENV !== 'production' && !disabled) {
-          warn('Invalid Teleport target on mount:', target, "(".concat(typeof target, ")"));
         }
 
         var mount = (container, anchor) => {
@@ -9018,8 +7721,6 @@ export default function vueFactory(exports) {
               moveTeleport(n2, nextTarget, null, internals, 0
               /* TARGET_CHANGE */
               );
-            } else if (process.env.NODE_ENV !== 'production') {
-              warn('Invalid Teleport target on update:', _target, "(".concat(typeof _target, ")"));
             }
           } else if (wasDisabled) {
             // disabled -> enabled
@@ -9213,13 +7914,7 @@ export default function vueFactory(exports) {
         return Component;
       }
 
-      if (process.env.NODE_ENV !== 'production' && warnMissing && !res) {
-        warn("Failed to resolve ".concat(type.slice(0, -1), ": ").concat(name));
-      }
-
       return res;
-    } else if (process.env.NODE_ENV !== 'production') {
-      warn("resolve".concat(capitalize(type.slice(0, -1)), " ") + "can only be used in render() or setup().");
     }
   }
 
@@ -9227,10 +7922,10 @@ export default function vueFactory(exports) {
     return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
   }
 
-  var Fragment = Symbol(process.env.NODE_ENV !== 'production' ? 'Fragment' : undefined);
-  var Text = Symbol(process.env.NODE_ENV !== 'production' ? 'Text' : undefined);
-  var Comment$1 = Symbol(process.env.NODE_ENV !== 'production' ? 'Comment' : undefined);
-  var Static = Symbol(process.env.NODE_ENV !== 'production' ? 'Static' : undefined); // Since v-if and v-for are the two possible ways node structure can dynamically
+  var Fragment = Symbol(undefined);
+  var Text = Symbol(undefined);
+  var Comment$1 = Symbol(undefined);
+  var Static = Symbol(undefined); // Since v-if and v-for are the two possible ways node structure can dynamically
   // change, once we consider v-if branches and each v-for fragment a block, we
   // can divide a template into nested blocks, and within each block the node
   // structure would be stable. This allows us to skip most children diffing
@@ -9320,17 +8015,8 @@ export default function vueFactory(exports) {
   }
 
   function isSameVNodeType(n1, n2) {
-    if (process.env.NODE_ENV !== 'production' && n2.shapeFlag & 6
-    /* COMPONENT */
-    && hmrDirtyComponents.has(n2.type)) {
-      // HMR only: if the component has been hot-updated, force a reload.
-      return false;
-    }
-
     return n1.type === n2.type && n1.key === n2.key;
   }
-
-  var vnodeArgsTransformer;
   /**
    * Internal API for registering an arguments transform for createVNode
    * used for creating stubs in the test-utils
@@ -9338,13 +8024,8 @@ export default function vueFactory(exports) {
    * typings
    */
 
-  function transformVNodeArgs(transformer) {
-    vnodeArgsTransformer = transformer;
-  }
 
-  var createVNodeWithArgsTransform = (...args) => {
-    return _createVNode(...(vnodeArgsTransformer ? vnodeArgsTransformer(args, currentRenderingInstance) : args));
-  };
+  function transformVNodeArgs(transformer) {}
 
   var InternalObjectKey = "__vInternal";
 
@@ -9361,14 +8042,10 @@ export default function vueFactory(exports) {
     } : ref : null;
   };
 
-  var createVNode = process.env.NODE_ENV !== 'production' ? createVNodeWithArgsTransform : _createVNode;
+  var createVNode = _createVNode;
 
   function _createVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, isBlockNode = false) {
     if (!type || type === NULL_DYNAMIC_COMPONENT) {
-      if (process.env.NODE_ENV !== 'production' && !type) {
-        warn("Invalid vnode type when creating vnode: ".concat(type, "."));
-      }
-
       type = Comment$1;
     }
 
@@ -9431,14 +8108,6 @@ export default function vueFactory(exports) {
     : isFunction(type) ? 2
     /* FUNCTIONAL_COMPONENT */
     : 0;
-
-    if (process.env.NODE_ENV !== 'production' && shapeFlag & 4
-    /* STATEFUL_COMPONENT */
-    && isProxy(type)) {
-      type = toRaw(type);
-      warn("Vue received a Component which was made a reactive object. This can " + "lead to unnecessary performance overhead, and should be avoided by " + "marking the component with `markRaw` or using `shallowRef` " + "instead of `ref`.", "\nComponent that was made reactive: ", type);
-    }
-
     var vnode = {
       __v_isVNode: true,
       __v_skip: true,
@@ -9464,12 +8133,7 @@ export default function vueFactory(exports) {
       dynamicProps,
       dynamicChildren: null,
       appContext: null
-    }; // validate key
-
-    if (process.env.NODE_ENV !== 'production' && vnode.key !== vnode.key) {
-      warn("VNode created with invalid key (NaN). VNode type:", vnode.type);
-    }
-
+    };
     normalizeChildren(vnode, children); // normalize suspense children
 
     if (shapeFlag & 128
@@ -9515,9 +8179,7 @@ export default function vueFactory(exports) {
       mergeRef && ref ? isArray(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref,
       scopeId: vnode.scopeId,
       slotScopeIds: vnode.slotScopeIds,
-      children: process.env.NODE_ENV !== 'production' && patchFlag === -1
-      /* HOISTED */
-      && isArray(children) ? children.map(deepCloneVNode) : children,
+      children: children,
       target: vnode.target,
       targetAnchor: vnode.targetAnchor,
       staticCount: vnode.staticCount,
@@ -9549,21 +8211,6 @@ export default function vueFactory(exports) {
       el: vnode.el,
       anchor: vnode.anchor
     };
-    return cloned;
-  }
-  /**
-   * Dev only, for HMR of hoisted vnodes reused in v-for
-   * https://github.com/vitejs/vite/issues/2022
-   */
-
-
-  function deepCloneVNode(vnode) {
-    var cloned = cloneVNode(vnode);
-
-    if (isArray(vnode.children)) {
-      cloned.children = vnode.children.map(deepCloneVNode);
-    }
-
     return cloned;
   }
   /**
@@ -9750,11 +8397,6 @@ export default function vueFactory(exports) {
         ret[i] = renderItem(source[i], i);
       }
     } else if (typeof source === 'number') {
-      if (process.env.NODE_ENV !== 'production' && !Number.isInteger(source)) {
-        warn("The v-for range expect an integer value but got ".concat(source, "."));
-        return [];
-      }
-
       ret = new Array(source);
 
       for (var _i2 = 0; _i2 < source; _i2++) {
@@ -9809,17 +8451,10 @@ export default function vueFactory(exports) {
   function renderSlot(slots, name, props = {}, // this is not a user-facing function, so the fallback is always generated by
   // the compiler and guaranteed to be a function returning an array
   fallback, noSlotted) {
-    var slot = slots[name];
-
-    if (process.env.NODE_ENV !== 'production' && slot && slot.length > 1) {
-      warn("SSR-optimized slot function detected in a non-SSR-optimized render " + "function. You need to mark this component with $dynamic-slots in the " + "parent template.");
-
-      slot = () => [];
-    } // a compiled slot disables block tracking by default to avoid manual
+    var slot = slots[name]; // a compiled slot disables block tracking by default to avoid manual
     // invocation interfering with template-based block tracking, but in
     // `renderSlot` we can be sure that it's template-based so we can force
     // enable it.
-
 
     if (slot && slot._c) {
       slot._d = false;
@@ -9865,11 +8500,6 @@ export default function vueFactory(exports) {
   function toHandlers(obj) {
     var ret = {};
 
-    if (process.env.NODE_ENV !== 'production' && !isObject(obj)) {
-      warn("v-on with no argument expects an object value.");
-      return ret;
-    }
-
     for (var key in obj) {
       ret[toHandlerKey(key)] = obj[key];
     }
@@ -9893,10 +8523,10 @@ export default function vueFactory(exports) {
     $: i => i,
     $el: i => i.vnode.el,
     $data: i => i.data,
-    $props: i => process.env.NODE_ENV !== 'production' ? shallowReadonly(i.props) : i.props,
-    $attrs: i => process.env.NODE_ENV !== 'production' ? shallowReadonly(i.attrs) : i.attrs,
-    $slots: i => process.env.NODE_ENV !== 'production' ? shallowReadonly(i.slots) : i.slots,
-    $refs: i => process.env.NODE_ENV !== 'production' ? shallowReadonly(i.refs) : i.refs,
+    $props: i => i.props,
+    $attrs: i => i.attrs,
+    $slots: i => i.slots,
+    $refs: i => i.refs,
     $parent: i => getPublicInstance(i.parent),
     $root: i => getPublicInstance(i.root),
     $emit: i => i.emit,
@@ -9917,25 +8547,12 @@ export default function vueFactory(exports) {
         accessCache,
         type,
         appContext
-      } = instance; // for internal formatters to know that this is a Vue instance
-
-      if (process.env.NODE_ENV !== 'production' && key === '__isVue') {
-        return true;
-      } // prioritize <script setup> bindings during dev.
-      // this allows even properties that start with _ or $ to be used - so that
-      // it aligns with the production behavior where the render fn is inlined and
-      // indeed has access to all declared variables.
-
-
-      if (process.env.NODE_ENV !== 'production' && setupState !== EMPTY_OBJ && setupState.__isScriptSetup && hasOwn(setupState, key)) {
-        return setupState[key];
-      } // data / props / ctx
+      } = instance; // data / props / ctx
       // This getter gets called for every property access on the render context
       // during render and is a major hotspot. The most expensive part of this
       // is the multiple hasOwn() calls. It's much faster to do a simple property
       // access on a plain object, so we use an accessCache object (with null
       // prototype) to memoize what access type a key corresponds to.
-
 
       var normalizedProps;
 
@@ -10002,7 +8619,6 @@ export default function vueFactory(exports) {
           track(instance, "get"
           /* GET */
           , key);
-          process.env.NODE_ENV !== 'production' && markAttrsAccessed();
         }
 
         return publicGetter(instance);
@@ -10019,15 +8635,7 @@ export default function vueFactory(exports) {
         {
           return globalProperties[key];
         }
-      } else if (process.env.NODE_ENV !== 'production' && currentRenderingInstance && (!isString(key) || // #1091 avoid internal isRef/isVNode checks on component instance leading
-      // to infinite warning loop
-      key.indexOf('__v') !== 0)) {
-        if (data !== EMPTY_OBJ && (key[0] === '$' || key[0] === '_') && hasOwn(data, key)) {
-          warn("Property ".concat(JSON.stringify(key), " must be accessed via $data because it starts with a reserved ") + "character (\"$\" or \"_\") and is not proxied on the render context.");
-        } else if (instance === currentRenderingInstance) {
-          warn("Property ".concat(JSON.stringify(key), " was accessed during render ") + "but is not defined on instance.");
-        }
-      }
+      } else ;
     },
 
     set({
@@ -10044,21 +8652,13 @@ export default function vueFactory(exports) {
       } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
         data[key] = value;
       } else if (hasOwn(instance.props, key)) {
-        process.env.NODE_ENV !== 'production' && warn("Attempting to mutate prop \"".concat(key, "\". Props are readonly."), instance);
         return false;
       }
 
       if (key[0] === '$' && key.slice(1) in instance) {
-        process.env.NODE_ENV !== 'production' && warn("Attempting to mutate public property \"".concat(key, "\". ") + "Properties starting with $ are reserved and readonly.", instance);
         return false;
       } else {
-        if (process.env.NODE_ENV !== 'production' && key in instance.appContext.config.globalProperties) {
-          Object.defineProperty(ctx, key, {
-            enumerable: true,
-            configurable: true,
-            value
-          });
-        } else {
+        {
           ctx[key] = value;
         }
       }
@@ -10081,14 +8681,6 @@ export default function vueFactory(exports) {
     }
 
   };
-
-  if (process.env.NODE_ENV !== 'production' && !false) {
-    PublicInstanceProxyHandlers.ownKeys = target => {
-      warn("Avoid app logic that relies on enumerating keys on a component instance. " + "The keys will be empty in production mode to avoid performance overhead.");
-      return Reflect.ownKeys(target);
-    };
-  }
-
   var RuntimeCompiledPublicInstanceProxyHandlers = extend({}, PublicInstanceProxyHandlers, {
     get(target, key) {
       // fast path for unscopables when using `with` block
@@ -10101,80 +8693,10 @@ export default function vueFactory(exports) {
 
     has(_, key) {
       var has = key[0] !== '_' && !isGloballyWhitelisted(key);
-
-      if (process.env.NODE_ENV !== 'production' && !has && PublicInstanceProxyHandlers.has(_, key)) {
-        warn("Property ".concat(JSON.stringify(key), " should not start with _ which is a reserved prefix for Vue internals."));
-      }
-
       return has;
     }
 
-  }); // In dev mode, the proxy target exposes the same properties as seen on `this`
-  // for easier console inspection. In prod mode it will be an empty object so
-  // these properties definitions can be skipped.
-
-  function createRenderContext(instance) {
-    var target = {}; // expose internal instance for proxy handlers
-
-    Object.defineProperty(target, "_", {
-      configurable: true,
-      enumerable: false,
-      get: () => instance
-    }); // expose public properties
-
-    Object.keys(publicPropertiesMap).forEach(key => {
-      Object.defineProperty(target, key, {
-        configurable: true,
-        enumerable: false,
-        get: () => publicPropertiesMap[key](instance),
-        // intercepted by the proxy so no need for implementation,
-        // but needed to prevent set errors
-        set: NOOP
-      });
-    });
-    return target;
-  } // dev only
-
-
-  function exposePropsOnRenderContext(instance) {
-    var {
-      ctx,
-      propsOptions: [propsOptions]
-    } = instance;
-
-    if (propsOptions) {
-      Object.keys(propsOptions).forEach(key => {
-        Object.defineProperty(ctx, key, {
-          enumerable: true,
-          configurable: true,
-          get: () => instance.props[key],
-          set: NOOP
-        });
-      });
-    }
-  } // dev only
-
-
-  function exposeSetupStateOnRenderContext(instance) {
-    var {
-      ctx,
-      setupState
-    } = instance;
-    Object.keys(toRaw(setupState)).forEach(key => {
-      if (!setupState.__isScriptSetup && (key[0] === '$' || key[0] === '_')) {
-        warn("setup() return property ".concat(JSON.stringify(key), " should not start with \"$\" or \"_\" ") + "which are reserved prefixes for Vue internals.");
-        return;
-      }
-
-      Object.defineProperty(ctx, key, {
-        enumerable: true,
-        configurable: true,
-        get: () => setupState[key],
-        set: NOOP
-      });
-    });
-  }
-
+  });
   var emptyAppContext = createAppContext();
   var uid$2 = 0;
 
@@ -10248,15 +8770,11 @@ export default function vueFactory(exports) {
       ec: null,
       sp: null
     };
-
-    if (process.env.NODE_ENV !== 'production') {
-      instance.ctx = createRenderContext(instance);
-    } else {
+    {
       instance.ctx = {
         _: instance
       };
     }
-
     instance.root = parent ? parent.root : instance;
     instance.emit = emit.bind(null, instance);
     return instance;
@@ -10269,16 +8787,6 @@ export default function vueFactory(exports) {
   var setCurrentInstance = instance => {
     currentInstance = instance;
   };
-
-  var isBuiltInTag = /*#__PURE__*/makeMap('slot,component');
-
-  function validateComponentName(name, config) {
-    var appIsNativeTag = config.isNativeTag || NO;
-
-    if (isBuiltInTag(name) || appIsNativeTag(name)) {
-      warn('Do not use built-in or reserved HTML elements as component id: ' + name);
-    }
-  }
 
   function isStatefulComponent(instance) {
     return instance.vnode.shapeFlag & 4
@@ -10303,44 +8811,12 @@ export default function vueFactory(exports) {
   }
 
   function setupStatefulComponent(instance, isSSR) {
-    var Component = instance.type;
-
-    if (process.env.NODE_ENV !== 'production') {
-      if (Component.name) {
-        validateComponentName(Component.name, instance.appContext.config);
-      }
-
-      if (Component.components) {
-        var names = Object.keys(Component.components);
-
-        for (var i = 0; i < names.length; i++) {
-          validateComponentName(names[i], instance.appContext.config);
-        }
-      }
-
-      if (Component.directives) {
-        var _names = Object.keys(Component.directives);
-
-        for (var _i4 = 0; _i4 < _names.length; _i4++) {
-          validateDirectiveName(_names[_i4]);
-        }
-      }
-
-      if (Component.compilerOptions && isRuntimeOnly()) {
-        warn("\"compilerOptions\" is only supported when using a build of Vue that " + "includes the runtime compiler. Since you are using a runtime-only " + "build, the options should be passed via your build tool config instead.");
-      }
-    } // 0. create render proxy property access cache
-
+    var Component = instance.type; // 0. create render proxy property access cache
 
     instance.accessCache = Object.create(null); // 1. create public instance / render proxy
     // also mark it raw so it's never observed
 
-    instance.proxy = markRaw(new Proxy(instance.ctx, PublicInstanceProxyHandlers));
-
-    if (process.env.NODE_ENV !== 'production') {
-      exposePropsOnRenderContext(instance);
-    } // 2. call setup()
-
+    instance.proxy = markRaw(new Proxy(instance.ctx, PublicInstanceProxyHandlers)); // 2. call setup()
 
     var {
       setup
@@ -10352,7 +8828,7 @@ export default function vueFactory(exports) {
       pauseTracking();
       var setupResult = callWithErrorHandling(setup, instance, 0
       /* SETUP_FUNCTION */
-      , [process.env.NODE_ENV !== 'production' ? shallowReadonly(instance.props) : instance.props, setupContext]);
+      , [instance.props, setupContext]);
       resetTracking();
       currentInstance = null;
 
@@ -10366,7 +8842,7 @@ export default function vueFactory(exports) {
         if (isSSR) {
           // return the promise so server-renderer can wait on it
           return setupResult.then(resolvedResult => {
-            handleSetupResult(instance, resolvedResult, isSSR);
+            handleSetupResult(instance, resolvedResult);
           }).catch(e => {
             handleError(e, instance, 0
             /* SETUP_FUNCTION */
@@ -10378,10 +8854,10 @@ export default function vueFactory(exports) {
           instance.asyncDep = setupResult;
         }
       } else {
-        handleSetupResult(instance, setupResult, isSSR);
+        handleSetupResult(instance, setupResult);
       }
     } else {
-      finishComponentSetup(instance, isSSR);
+      finishComponentSetup(instance);
     }
   }
 
@@ -10392,26 +8868,10 @@ export default function vueFactory(exports) {
         instance.render = setupResult;
       }
     } else if (isObject(setupResult)) {
-      if (process.env.NODE_ENV !== 'production' && isVNode(setupResult)) {
-        warn("setup() should not return VNodes directly - " + "return a render function instead.");
-      } // setup returned bindings.
-      // assuming a render function compiled from template is present.
-
-
-      if (process.env.NODE_ENV !== 'production' || false) {
-        instance.devtoolsRawSetupState = setupResult;
-      }
-
       instance.setupState = proxyRefs(setupResult);
+    } else ;
 
-      if (process.env.NODE_ENV !== 'production') {
-        exposeSetupStateOnRenderContext(instance);
-      }
-    } else if (process.env.NODE_ENV !== 'production' && setupResult !== undefined) {
-      warn("setup() should return an object. Received: ".concat(setupResult === null ? 'null' : typeof setupResult));
-    }
-
-    finishComponentSetup(instance, isSSR);
+    finishComponentSetup(instance);
   }
 
   var compile; // dev only
@@ -10436,10 +8896,6 @@ export default function vueFactory(exports) {
         var template = Component.template;
 
         if (template) {
-          if (process.env.NODE_ENV !== 'production') {
-            startMeasure(instance, "compile");
-          }
-
           var {
             isCustomElement,
             compilerOptions
@@ -10453,10 +8909,6 @@ export default function vueFactory(exports) {
             delimiters
           }, compilerOptions), componentCompilerOptions);
           Component.render = compile(template, finalCompilerOptions);
-
-          if (process.env.NODE_ENV !== 'production') {
-            endMeasure(instance, "compile");
-          }
         }
       }
 
@@ -10476,65 +8928,15 @@ export default function vueFactory(exports) {
       applyOptions(instance);
       resetTracking();
       currentInstance = null;
-    } // warn missing template/render
-    // the runtime compilation of template in SSR is done by server-render
-
-    if (process.env.NODE_ENV !== 'production' && !Component.render && instance.render === NOOP && !isSSR) {
-      /* istanbul ignore if */
-      if (!compile && Component.template) {
-        warn("Component provided template option but " + "runtime compilation is not supported in this build of Vue." + " Configure your bundler to alias \"vue\" to \"vue/dist/vue.esm-bundler.js\"."
-        /* should not happen */
-        );
-      } else {
-        warn("Component is missing template or render function.");
-      }
     }
   }
 
-  var attrDevProxyHandlers = {
-    get: (target, key) => {
-      markAttrsAccessed();
-      return target[key];
-    },
-    set: () => {
-      warn("setupContext.attrs is readonly.");
-      return false;
-    },
-    deleteProperty: () => {
-      warn("setupContext.attrs is readonly.");
-      return false;
-    }
-  };
-
   function createSetupContext(instance) {
     var expose = exposed => {
-      if (process.env.NODE_ENV !== 'production' && instance.exposed) {
-        warn("expose() should be called only once per setup().");
-      }
-
       instance.exposed = exposed || {};
     };
 
-    if (process.env.NODE_ENV !== 'production') {
-      var attrs; // We use getters in dev in case libs like test-utils overwrite instance
-      // properties (overwrites should not be done in prod)
-
-      return Object.freeze({
-        get attrs() {
-          return attrs || (attrs = new Proxy(instance.attrs, attrDevProxyHandlers));
-        },
-
-        get slots() {
-          return shallowReadonly(instance.slots);
-        },
-
-        get emit() {
-          return (event, ...args) => instance.emit(event, ...args);
-        },
-
-        expose
-      });
-    } else {
+    {
       return {
         attrs: instance.attrs,
         slots: instance.slots,
@@ -10612,26 +9014,15 @@ export default function vueFactory(exports) {
     var c = computed(getterOrOptions);
     recordInstanceBoundEffect(c.effect);
     return c;
-  } // dev only
-
-
-  var warnRuntimeUsage = method => warn("".concat(method, "() is a compiler-hint helper that is only usable inside ") + "<script setup> of a single file component. Its arguments should be " + "compiled away and passing it at runtime has no effect."); // implementation
+  } // implementation
 
 
   function defineProps() {
-    if (process.env.NODE_ENV !== 'production') {
-      warnRuntimeUsage("defineProps");
-    }
-
     return null;
   } // implementation
 
 
   function defineEmits() {
-    if (process.env.NODE_ENV !== 'production') {
-      warnRuntimeUsage("defineEmits");
-    }
-
     return null;
   }
   /**
@@ -10653,11 +9044,7 @@ export default function vueFactory(exports) {
    * output and should **not** be actually called at runtime.
    */
 
-  function defineExpose(exposed) {
-    if (process.env.NODE_ENV !== 'production') {
-      warnRuntimeUsage("defineExpose");
-    }
-  }
+  function defineExpose(exposed) {}
   /**
    * Vue `<script setup>` compiler macro for providing props default values when
    * using type-based `defineProps` decalration.
@@ -10679,10 +9066,6 @@ export default function vueFactory(exports) {
 
 
   function withDefaults(props, defaults) {
-    if (process.env.NODE_ENV !== 'production') {
-      warnRuntimeUsage("withDefaults");
-    }
-
     return null;
   }
   /**
@@ -10691,10 +9074,6 @@ export default function vueFactory(exports) {
 
 
   function useContext() {
-    if (process.env.NODE_ENV !== 'production') {
-      warn("`useContext()` has been deprecated and will be removed in the " + "next minor release. Use `useSlots()` and `useAttrs()` instead.");
-    }
-
     return getContext();
   }
 
@@ -10708,11 +9087,6 @@ export default function vueFactory(exports) {
 
   function getContext() {
     var i = getCurrentInstance();
-
-    if (process.env.NODE_ENV !== 'production' && !i) {
-      warn("useContext() called without active instance.");
-    }
-
     return i.setupContext || (i.setupContext = createSetupContext(i));
   }
   /**
@@ -10733,9 +9107,7 @@ export default function vueFactory(exports) {
         props[key] = {
           default: defaults[key]
         };
-      } else if (process.env.NODE_ENV !== 'production') {
-        warn("props default key \"".concat(key, "\" has no corresponding declaration."));
-      }
+      } else ;
     }
 
     return props;
@@ -10749,10 +9121,6 @@ export default function vueFactory(exports) {
   function withAsyncContext(awaitable) {
     var ctx = getCurrentInstance();
     setCurrentInstance(null); // unset after storing instance
-
-    if (process.env.NODE_ENV !== 'production' && !ctx) {
-      warn("withAsyncContext() called when there is no active context instance.");
-    }
 
     return isPromise(awaitable) ? awaitable.then(res => {
       setCurrentInstance(ctx);
@@ -10791,7 +9159,7 @@ export default function vueFactory(exports) {
     }
   }
 
-  var ssrContextKey = Symbol(process.env.NODE_ENV !== 'production' ? "ssrContext" : "");
+  var ssrContextKey = Symbol("");
 
   var useSSRContext = () => {
     {
@@ -10807,175 +9175,8 @@ export default function vueFactory(exports) {
 
   function initCustomFormatter() {
     /* eslint-disable no-restricted-globals */
-    if (!(process.env.NODE_ENV !== 'production') || typeof window === 'undefined') {
+    {
       return;
-    }
-
-    var vueStyle = {
-      style: 'color:#3ba776'
-    };
-    var numberStyle = {
-      style: 'color:#0b1bc9'
-    };
-    var stringStyle = {
-      style: 'color:#b62e24'
-    };
-    var keywordStyle = {
-      style: 'color:#9d288c'
-    }; // custom formatter for Chrome
-    // https://www.mattzeunert.com/2016/02/19/custom-chrome-devtools-object-formatters.html
-
-    var formatter = {
-      header(obj) {
-        // TODO also format ComponentPublicInstance & ctx.slots/attrs in setup
-        if (!isObject(obj)) {
-          return null;
-        }
-
-        if (obj.__isVue) {
-          return ['div', vueStyle, "VueInstance"];
-        } else if (isRef(obj)) {
-          return ['div', {}, ['span', vueStyle, genRefFlag(obj)], '<', formatValue(obj.value), ">"];
-        } else if (isReactive(obj)) {
-          return ['div', {}, ['span', vueStyle, 'Reactive'], '<', formatValue(obj), ">".concat(isReadonly(obj) ? " (readonly)" : "")];
-        } else if (isReadonly(obj)) {
-          return ['div', {}, ['span', vueStyle, 'Readonly'], '<', formatValue(obj), '>'];
-        }
-
-        return null;
-      },
-
-      hasBody(obj) {
-        return obj && obj.__isVue;
-      },
-
-      body(obj) {
-        if (obj && obj.__isVue) {
-          return ['div', {}, ...formatInstance(obj.$)];
-        }
-      }
-
-    };
-
-    function formatInstance(instance) {
-      var blocks = [];
-
-      if (instance.type.props && instance.props) {
-        blocks.push(createInstanceBlock('props', toRaw(instance.props)));
-      }
-
-      if (instance.setupState !== EMPTY_OBJ) {
-        blocks.push(createInstanceBlock('setup', instance.setupState));
-      }
-
-      if (instance.data !== EMPTY_OBJ) {
-        blocks.push(createInstanceBlock('data', toRaw(instance.data)));
-      }
-
-      var computed = extractKeys(instance, 'computed');
-
-      if (computed) {
-        blocks.push(createInstanceBlock('computed', computed));
-      }
-
-      var injected = extractKeys(instance, 'inject');
-
-      if (injected) {
-        blocks.push(createInstanceBlock('injected', injected));
-      }
-
-      blocks.push(['div', {}, ['span', {
-        style: keywordStyle.style + ';opacity:0.66'
-      }, '$ (internal): '], ['object', {
-        object: instance
-      }]]);
-      return blocks;
-    }
-
-    function createInstanceBlock(type, target) {
-      target = extend({}, target);
-
-      if (!Object.keys(target).length) {
-        return ['span', {}];
-      }
-
-      return ['div', {
-        style: 'line-height:1.25em;margin-bottom:0.6em'
-      }, ['div', {
-        style: 'color:#476582'
-      }, type], ['div', {
-        style: 'padding-left:1.25em'
-      }, ...Object.keys(target).map(key => {
-        return ['div', {}, ['span', keywordStyle, key + ': '], formatValue(target[key], false)];
-      })]];
-    }
-
-    function formatValue(v, asRaw = true) {
-      if (typeof v === 'number') {
-        return ['span', numberStyle, v];
-      } else if (typeof v === 'string') {
-        return ['span', stringStyle, JSON.stringify(v)];
-      } else if (typeof v === 'boolean') {
-        return ['span', keywordStyle, v];
-      } else if (isObject(v)) {
-        return ['object', {
-          object: asRaw ? toRaw(v) : v
-        }];
-      } else {
-        return ['span', stringStyle, String(v)];
-      }
-    }
-
-    function extractKeys(instance, type) {
-      var Comp = instance.type;
-
-      if (isFunction(Comp)) {
-        return;
-      }
-
-      var extracted = {};
-
-      for (var key in instance.ctx) {
-        if (isKeyOfType(Comp, key, type)) {
-          extracted[key] = instance.ctx[key];
-        }
-      }
-
-      return extracted;
-    }
-
-    function isKeyOfType(Comp, key, type) {
-      var opts = Comp[type];
-
-      if (isArray(opts) && opts.includes(key) || isObject(opts) && key in opts) {
-        return true;
-      }
-
-      if (Comp.extends && isKeyOfType(Comp.extends, key, type)) {
-        return true;
-      }
-
-      if (Comp.mixins && Comp.mixins.some(m => isKeyOfType(m, key, type))) {
-        return true;
-      }
-    }
-
-    function genRefFlag(v) {
-      if (v._shallow) {
-        return "ShallowRef";
-      }
-
-      if (v.effect) {
-        return "ComputedRef";
-      }
-
-      return "Ref";
-    }
-
-    if (window.devtoolsFormatters) {
-      window.devtoolsFormatters.push(formatter);
-    } else {
-      window.devtoolsFormatters = [formatter];
     }
   } // Core API ------------------------------------------------------------------
 
@@ -11114,16 +9315,16 @@ export default function vueFactory(exports) {
           }
         }
 
-        for (var _key10 in next) {
-          var value = next[_key10];
+        for (var _key8 in next) {
+          var value = next[_key8];
 
-          if (value !== prev[_key10]) {
-            batchedStyles[_key10] = value;
+          if (value !== prev[_key8]) {
+            batchedStyles[_key8] = value;
           }
         }
       } else {
-        for (var _key11 in next) {
-          batchedStyles[_key11] = next[_key11];
+        for (var _key9 in next) {
+          batchedStyles[_key9] = next[_key9];
         }
       }
 
@@ -11316,21 +9517,18 @@ export default function vueFactory(exports) {
       var instance = getCurrentInstance();
 
       if (!instance) {
-        process.env.NODE_ENV !== 'production' && warn("useCssModule must be called inside setup()");
         return EMPTY_OBJ;
       }
 
       var modules = instance.type.__cssModules;
 
       if (!modules) {
-        process.env.NODE_ENV !== 'production' && warn("Current instance does not have CSS modules injected.");
         return EMPTY_OBJ;
       }
 
       var mod = modules[name];
 
       if (!mod) {
-        process.env.NODE_ENV !== 'production' && warn("Current instance does not have CSS module named \"".concat(name, "\"."));
         return EMPTY_OBJ;
       }
 
@@ -11348,7 +9546,6 @@ export default function vueFactory(exports) {
     /* istanbul ignore next */
 
     if (!instance) {
-      process.env.NODE_ENV !== 'production' && warn("useCssVars is called without current active component instance.");
       return;
     }
 
@@ -11578,16 +9775,7 @@ export default function vueFactory(exports) {
 
   function NumberOf(val) {
     var res = toNumber(val);
-    if (process.env.NODE_ENV !== 'production') validateDuration(res);
     return res;
-  }
-
-  function validateDuration(val) {
-    if (typeof val !== 'number') {
-      warn("<transition> explicit duration is not a valid number - " + "got ".concat(JSON.stringify(val), "."));
-    } else if (isNaN(val)) {
-      warn("<transition> explicit duration is NaN - " + 'the duration expression might be incorrect.');
-    }
   }
 
   function addTransitionClass(el, cls) {
@@ -11795,14 +9983,12 @@ export default function vueFactory(exports) {
 
           if (child.key != null) {
             setTransitionHooks(child, resolveTransitionHooks(child, cssTransitionProps, state, instance));
-          } else if (process.env.NODE_ENV !== 'production') {
-            warn("<TransitionGroup> children must be keyed.");
           }
         }
 
         if (prevChildren) {
-          for (var _i5 = 0; _i5 < prevChildren.length; _i5++) {
-            var _child = prevChildren[_i5];
+          for (var _i4 = 0; _i4 < prevChildren.length; _i4++) {
+            var _child = prevChildren[_i4];
             setTransitionHooks(_child, resolveTransitionHooks(_child, cssTransitionProps, state, instance));
             positionMap.set(_child, _child.el.getBoundingClientRect());
           }
@@ -12025,11 +10211,6 @@ export default function vueFactory(exports) {
 
   var createApp = (...args) => {
     var app = ensureRenderer().createApp(...args);
-
-    if (process.env.NODE_ENV !== 'production') {
-      injectNativeTagCheck(app);
-    }
-
     var {
       mount
     } = app;
@@ -12045,17 +10226,7 @@ export default function vueFactory(exports) {
     return app;
   };
 
-  var createSSRApp = createApp;
-
-  function injectNativeTagCheck(app) {
-    // Inject `isNativeTag`
-    // this is used for component name validation (dev only)
-    Object.defineProperty(app.config, 'isNativeTag', {
-      value: tag => isHTMLTag(tag) || isSVGTag(tag),
-      writable: false
-    });
-  } // 在h5平台测试时，需要的mock
-
+  var createSSRApp = createApp; // 在h5平台测试时，需要的mock
 
   function onBeforeActivate() {}
 

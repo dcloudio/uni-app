@@ -20,9 +20,9 @@ export const UniAppPlugin: UniVitePlugin = {
     }
   },
   configResolved,
-  resolveId(id) {
-    if (id === 'vue') {
-      return resolveBuiltIn('@dcloudio/uni-app-vue')
-    }
-  },
+  // resolveId(id) {
+  //   if (id === 'vue') {
+  //     return resolveBuiltIn('@dcloudio/uni-app-vue')
+  //   }
+  // },
 }

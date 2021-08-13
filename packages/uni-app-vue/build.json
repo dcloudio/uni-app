@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "src/service/index.ts": ["dist/service.runtime.esm.js"]
+      "src/service/index.ts": ["dist/service.runtime.esm.dev.js"]
     },
     "output": {
       "banner": "export default function vueFactory (exports) {\n",
@@ -9,7 +9,24 @@
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
-      "__VUE_PROD_DEVTOOLS__": "false"
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "process.env.NODE_ENV": "\"development\""
+    },
+    "external": false,
+    "babel": true
+  },
+  {
+    "input": {
+      "src/service/index.ts": ["dist/service.runtime.esm.prod.js"]
+    },
+    "output": {
+      "banner": "export default function vueFactory (exports) {\n",
+      "footer": "}"
+    },
+    "replacements": {
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "process.env.NODE_ENV": "\"production\""
     },
     "external": false,
     "babel": true

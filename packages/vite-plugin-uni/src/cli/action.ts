@@ -15,8 +15,12 @@ export async function runDev(options: CliOptions & ServerOptions) {
       await (options.ssr ? createSSRServer(options) : createServer(options))
     } else {
       const watcher = (await build(options)) as RollupWatcher
+      let isFirst = true
       watcher.on('event', (event) => {
         if (event.code === 'BUNDLE_START') {
+          if (isFirst) {
+            return (isFirst = false)
+          }
           console.log(M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {
           event.result.close()
