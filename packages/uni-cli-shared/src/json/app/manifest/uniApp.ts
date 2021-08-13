@@ -14,6 +14,7 @@ interface UniAppOptions {
 export function initUniApp(manifestJson: Record<string, any>) {
   manifestJson.plus['uni-app'] = {
     control: 'uni-v3',
+    vueVersion: '3',
     compilerVersion: process.env.UNI_COMPILER_VERSION,
     nvueCompiler: getNVueCompiler(manifestJson),
     renderer: 'auto',
