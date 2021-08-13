@@ -55,7 +55,7 @@ export default defineConfig({
   root: __dirname,
   define: {
     global: 'window',
-    __DEV__: true,
+    __DEV__: false,
     __TEST__: false,
     __PLATFORM__: JSON.stringify('app'),
     __NODE_JS__: false,
@@ -119,7 +119,7 @@ export default defineConfig({
     vueJsx({ optimize: true, isCustomElement }),
   ],
   build: {
-    minify: false,
+    minify: true,
     lib: {
       name: 'uni-app-view',
       fileName: 'uni-app-view',

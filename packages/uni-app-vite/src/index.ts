@@ -10,7 +10,7 @@ import { uniTemplatePlugin } from './plugins/template'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
-import { uniResolveIdPlugin } from './plugins/resolveId'
+// import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniRenderjsPlugin } from './plugins/renderjs'
 
 function initUniCssScopedPluginOptions() {
@@ -29,7 +29,7 @@ function initUniCssScopedPluginOptions() {
 }
 
 const plugins = [
-  uniResolveIdPlugin(),
+  // uniResolveIdPlugin(),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
