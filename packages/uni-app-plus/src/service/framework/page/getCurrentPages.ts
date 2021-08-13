@@ -9,6 +9,10 @@ export function addCurrentPage(page: ComponentPublicInstance) {
   pages.push(page)
 }
 
+export function getPageById(id: number) {
+  return pages.find((page) => page.$page.id === id)
+}
+
 export function getAllPages() {
   return pages
 }

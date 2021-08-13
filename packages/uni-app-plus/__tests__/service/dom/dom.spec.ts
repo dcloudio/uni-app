@@ -1,3 +1,4 @@
+import { nextTick } from 'vue'
 import {
   ACTION_TYPE_ADD_EVENT,
   ACTION_TYPE_CREATE,
@@ -25,6 +26,7 @@ import {
   setActionMinify,
 } from '../../../src/constants'
 import { decodeActions } from '../../../src/view/framework/dom/decodeActions'
+
 describe('dom', () => {
   const pageId = 1
   const root = createPageNode(pageId, {
@@ -197,6 +199,26 @@ describe('dom', () => {
     expect(flag & EventModifierFlags.stop).toBeTruthy()
     expect(flag & EventModifierFlags.prevent).toBeTruthy()
     expect(flag & EventModifierFlags.self).toBeFalsy()
+  })
+  test('restore', (done) => {
+    root.childNodes = []
+    root.clear()
+    const viewElem = createElement('view', { pageNode: root })
+    viewElem.setAttribute('id', 'view')
+    root.appendChild(viewElem)
+    viewElem.setAttribute('hidden', true)
+
+    const textNode = createTextNode('hello', { pageNode: root })
+    root.appendChild(textNode)
+    const clickFn1 = withModifiers(() => {}, [
+      'stop',
+      'prevent',
+    ]) as unknown as UniEventListener
+    textNode.addEventListener('click', clickFn1, { capture: true })
+    nextTick(() => {
+      root.restore()
+      nextTick(done)
+    })
   })
 })
 

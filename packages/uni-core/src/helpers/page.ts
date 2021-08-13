@@ -21,7 +21,7 @@ export function getPageIdByVm(vm: ComponentPublicInstance) {
   }
 }
 
-export function getPageById(id: number) {
+function getPageById(id: number) {
   return getCurrentPages().find((page) => page.$page.id === id)
 }
 

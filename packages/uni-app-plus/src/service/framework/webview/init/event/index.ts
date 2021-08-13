@@ -9,6 +9,7 @@ import {
 import { setPullDownRefreshWebview } from '../../../../utils'
 import { onWebviewClose } from './close'
 import { onWebviewPopGesture } from './popGesture'
+import { onWebviewRecovery } from './recovery'
 import { onWebviewResize } from './resize'
 
 const WEBVIEW_LISTENERS = {
@@ -35,9 +36,8 @@ export function initWebviewEvent(webview: PlusWebviewWebviewObject) {
   onWebviewClose(webview)
   onWebviewResize(webview)
 
-  // TODO
   if (plus.os.name === 'iOS') {
-    // !(webview as any).nvue && onWebviewRecovery(webview, routeOptions)
+    onWebviewRecovery(webview)
     onWebviewPopGesture(webview)
   }
 }

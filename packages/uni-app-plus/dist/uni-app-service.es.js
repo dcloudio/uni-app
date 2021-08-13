@@ -1858,9 +1858,6 @@ var serviceContext = (function (vue) {
           return rootProxy.$page.id;
       }
   }
-  function getPageById(id) {
-      return getCurrentPages().find((page) => page.$page.id === id);
-  }
   function getCurrentPage() {
       const pages = getCurrentPages();
       const len = pages.length;
@@ -9667,11 +9664,85 @@ var serviceContext = (function (vue) {
       });
   }
 
+  let vueApp;
+  function getVueApp() {
+      return vueApp;
+  }
+  function initVueApp(appVm) {
+      const appContext = appVm.$.appContext;
+      vueApp = extend(appContext.app, {
+          mountPage(pageComponent, pageProps, pageContainer) {
+              const vnode = vue.createVNode(pageComponent, pageProps);
+              // store app context on the root VNode.
+              // this will be set on the root instance on initial mount.
+              vnode.appContext = appContext;
+              vnode.__page_container__ = pageContainer;
+              vue.render(vnode, pageContainer);
+              const publicThis = vnode.component.proxy;
+              publicThis.__page_container__ = pageContainer;
+              return publicThis;
+          },
+          unmountPage: (pageInstance) => {
+              const { __page_container__ } = pageInstance;
+              if (__page_container__) {
+                  __page_container__.isUnmounted = true;
+                  vue.render(null, __page_container__);
+              }
+          },
+      });
+  }
+
+  const pages = [];
+  function addCurrentPage(page) {
+      pages.push(page);
+  }
+  function getPageById(id) {
+      return pages.find((page) => page.$page.id === id);
+  }
+  function getAllPages() {
+      return pages;
+  }
+  function getCurrentPages$1() {
+      const curPages = [];
+      pages.forEach((page) => {
+          if (page.__isTabBar) {
+              if (page.$.__isActive) {
+                  curPages.push(page);
+              }
+          }
+          else {
+              curPages.push(page);
+          }
+      });
+      return curPages;
+  }
+  function removeCurrentPage() {
+      const page = getCurrentPage();
+      if (!page) {
+          return;
+      }
+      removePage(page);
+  }
+  function removePage(curPage) {
+      const index = pages.findIndex((page) => page === curPage);
+      if (index === -1) {
+          return;
+      }
+      if (!curPage.$page.meta.isNVue) {
+          getVueApp().unmountPage(curPage);
+      }
+      pages.splice(index, 1);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('removePage', curPage.$page));
+      }
+  }
+
   function onNodeEvent(nodeId, evt, pageNode) {
       pageNode.fireEvent(nodeId, evt);
   }
 
   function onVdSync(actions, pageId) {
+      // 从所有pages中获取
       const page = getPageById(parseInt(pageId));
       if (!page) {
           if ((process.env.NODE_ENV !== 'production')) {
@@ -9750,76 +9821,6 @@ var serviceContext = (function (vue) {
   const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
   const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
   const WEBVIEW_ID_PREFIX = 'webviewId';
-
-  let vueApp;
-  function getVueApp() {
-      return vueApp;
-  }
-  function initVueApp(appVm) {
-      const appContext = appVm.$.appContext;
-      vueApp = extend(appContext.app, {
-          mountPage(pageComponent, pageProps, pageContainer) {
-              const vnode = vue.createVNode(pageComponent, pageProps);
-              // store app context on the root VNode.
-              // this will be set on the root instance on initial mount.
-              vnode.appContext = appContext;
-              vnode.__page_container__ = pageContainer;
-              vue.render(vnode, pageContainer);
-              const publicThis = vnode.component.proxy;
-              publicThis.__page_container__ = pageContainer;
-              return publicThis;
-          },
-          unmountPage: (pageInstance) => {
-              const { __page_container__ } = pageInstance;
-              if (__page_container__) {
-                  __page_container__.isUnmounted = true;
-                  vue.render(null, __page_container__);
-              }
-          },
-      });
-  }
-
-  const pages = [];
-  function addCurrentPage(page) {
-      pages.push(page);
-  }
-  function getAllPages() {
-      return pages;
-  }
-  function getCurrentPages$1() {
-      const curPages = [];
-      pages.forEach((page) => {
-          if (page.__isTabBar) {
-              if (page.$.__isActive) {
-                  curPages.push(page);
-              }
-          }
-          else {
-              curPages.push(page);
-          }
-      });
-      return curPages;
-  }
-  function removeCurrentPage() {
-      const page = getCurrentPage();
-      if (!page) {
-          return;
-      }
-      removePage(page);
-  }
-  function removePage(curPage) {
-      const index = pages.findIndex((page) => page === curPage);
-      if (index === -1) {
-          return;
-      }
-      if (!curPage.$page.meta.isNVue) {
-          getVueApp().unmountPage(curPage);
-      }
-      pages.splice(index, 1);
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('removePage', curPage.$page));
-      }
-  }
 
   function initNVue(webviewStyle, routeMeta, path) {
       if (path && routeMeta.isNVue) {
@@ -10115,6 +10116,35 @@ var serviceContext = (function (vue) {
       });
   }
 
+  function onWebviewRecovery(webview) {
+      if (webview.nvue) {
+          return;
+      }
+      const webviewId = webview.id;
+      const { subscribe, unsubscribe } = UniServiceJSBridge;
+      const onWebviewRecoveryReady = (_, pageId) => {
+          if (webviewId !== pageId) {
+              return;
+          }
+          unsubscribe(ON_WEBVIEW_READY, onWebviewRecoveryReady);
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog(`Recovery`, webviewId, 'ready'));
+          }
+          const page = getPageById(parseInt(pageId));
+          if (page) {
+              const pageNode = page.__page_container__;
+              pageNode.restore();
+          }
+      };
+      // @ts-expect-error
+      webview.addEventListener('recovery', () => {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('Recovery', webview.id));
+          }
+          subscribe(ON_WEBVIEW_READY, onWebviewRecoveryReady);
+      });
+  }
+
   function onWebviewResize(webview) {
       const { emit } = UniServiceJSBridge;
       const onResize = function ({ width, height, }) {
@@ -10152,9 +10182,8 @@ var serviceContext = (function (vue) {
       });
       onWebviewClose(webview);
       onWebviewResize(webview);
-      // TODO
       if (plus.os.name === 'iOS') {
-          // !(webview as any).nvue && onWebviewRecovery(webview, routeOptions)
+          onWebviewRecovery(webview);
           onWebviewPopGesture(webview);
       }
   }
@@ -10563,11 +10592,19 @@ var serviceContext = (function (vue) {
           vue.queuePostFlushCb(this._update);
       }
       restore() {
+          this.clear();
           this.push(this.createAction);
           if (this.scrollAction) {
               this.push(this.scrollAction);
           }
-          // TODO restore children
+          const restoreNode = (node) => {
+              this.onCreate(node, node.nodeName);
+              this.onInsertBefore(node.parentNode, node, null);
+              node.childNodes.forEach((childNode) => {
+                  restoreNode(childNode);
+              });
+          };
+          this.childNodes.forEach((childNode) => restoreNode(childNode));
           this.push(this.createdAction);
       }
       setup() {
@@ -10578,7 +10615,6 @@ var serviceContext = (function (vue) {
           if ((process.env.NODE_ENV !== 'production')) {
               console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
           }
-          _createActionMap.clear();
           // 首次
           if (!this._created) {
               this._created = true;
@@ -10589,9 +10625,13 @@ var serviceContext = (function (vue) {
                   updateActions.unshift([ACTION_TYPE_DICT, dicts]);
               }
               this.send(updateActions);
-              dicts.length = 0;
-              updateActions.length = 0;
           }
+          this.clear();
+      }
+      clear() {
+          this.dicts.length = 0;
+          this.updateActions.length = 0;
+          this._createActionMap.clear();
       }
       send(action) {
           UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);

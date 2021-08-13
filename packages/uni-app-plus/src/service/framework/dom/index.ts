@@ -1,9 +1,10 @@
-import { getPageById } from '@dcloudio/uni-core'
 import { ACTION_TYPE_EVENT, formatLog } from '@dcloudio/uni-shared'
+import { getPageById } from '../page/getCurrentPages'
 import { EventAction, onNodeEvent } from './onNodeEvent'
 import UniPageNode from './Page'
 
 export function onVdSync(actions: EventAction[], pageId: string) {
+  // 从所有pages中获取
   const page = getPageById(parseInt(pageId))
   if (!page) {
     if (__DEV__) {

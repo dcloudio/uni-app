@@ -30,8 +30,6 @@ import {
   ACTION_TYPE_ADD_WXS_EVENT,
 } from '@dcloudio/uni-shared'
 
-import { getPageById } from '@dcloudio/uni-core'
-
 import {
   ACTION_MINIFY,
   ACTION_TYPE_DICT,
@@ -40,6 +38,7 @@ import {
   Value,
   VD_SYNC,
 } from '../../../constants'
+import { getPageById } from '../page/getCurrentPages'
 
 export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
@@ -225,11 +224,19 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     queuePostFlushCb(this._update)
   }
   restore() {
+    this.clear()
     this.push(this.createAction)
     if (this.scrollAction) {
       this.push(this.scrollAction)
     }
-    // TODO restore children
+    const restoreNode = (node: UniNode) => {
+      this.onCreate(node, node.nodeName)
+      this.onInsertBefore(node.parentNode!, node, null)
+      node.childNodes.forEach((childNode) => {
+        restoreNode(childNode)
+      })
+    }
+    this.childNodes.forEach((childNode) => restoreNode(childNode))
     this.push(this.createdAction)
   }
   setup() {
@@ -247,7 +254,6 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
         )
       )
     }
-    _createActionMap.clear()
     // 首次
     if (!this._created) {
       this._created = true
@@ -258,9 +264,13 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
         updateActions.unshift([ACTION_TYPE_DICT, dicts])
       }
       this.send(updateActions)
-      dicts.length = 0
-      updateActions.length = 0
     }
+    this.clear()
+  }
+  clear() {
+    this.dicts.length = 0
+    this.updateActions.length = 0
+    this._createActionMap.clear()
   }
   send(action: (PageAction | DictAction)[]) {
     UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId)

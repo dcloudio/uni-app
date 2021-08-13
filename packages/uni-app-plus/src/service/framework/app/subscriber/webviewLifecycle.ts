@@ -1,4 +1,4 @@
-import { getPageById } from '@dcloudio/uni-core'
+import { getPageById } from '../../page/getCurrentPages'
 
 export function onWebviewInserted(_: unknown, pageId: string) {
   const page = getPageById(parseInt(pageId))
