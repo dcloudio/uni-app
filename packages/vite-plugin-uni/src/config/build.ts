@@ -13,7 +13,10 @@ export function createBuild(
         if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
           const { message } = warning
           // ignore
-          if (message.includes('"resolveComponent"')) {
+          if (
+            message.includes('"vue"') ||
+            message.includes('"resolveComponent"')
+          ) {
             return
           }
         }

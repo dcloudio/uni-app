@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { BuildOptions, InlineConfig } from 'vite'
 
-import { isInHBuilderX } from '@dcloudio/uni-cli-shared'
+import { M, isInHBuilderX } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
@@ -89,8 +89,25 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     }
   }
   if (process.env.UNI_PLATFORM === 'app') {
+    const pkg = require('../../package.json')
+    console.log(
+      M['app.compiler.version'].replace(
+        '{version}',
+        pkg['uni-app']['compilerVersion'] + '（vue3）'
+      )
+    )
     initNVueEnv()
   }
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log(
+      M['dev.performance'] +
+        (process.env.UNI_PLATFORM.startsWith('mp-')
+          ? M['dev.performance.mp']
+          : '')
+    )
+  }
+  console.log(M['compiling'])
 }
 
 export function cleanOptions(options: CliOptions) {

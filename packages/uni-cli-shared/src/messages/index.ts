@@ -1,5 +1,6 @@
 export const M = {
   'app.compiler.version': '编译器版本：{version}',
+  compiling: '正在编译中...',
   'dev.performance':
     '请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不及发行模式。',
   'dev.performance.nvue': '尤其是app-nvue的sourcemap影响较大',
