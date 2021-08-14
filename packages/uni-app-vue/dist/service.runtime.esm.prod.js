@@ -644,7 +644,7 @@ export default function vueFactory(exports) {
 
       for (var i = 0; i < value.length; i++) {
         var item = value[i];
-        var normalized = normalizeStyle(isString(item) ? parseStringStyle(item) : item);
+        var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
 
         if (normalized) {
           for (var key in normalized) {
@@ -654,6 +654,8 @@ export default function vueFactory(exports) {
       }
 
       return res;
+    } else if (isString(value)) {
+      return value;
     } else if (isObject(value)) {
       return value;
     }
@@ -696,6 +698,24 @@ export default function vueFactory(exports) {
 
     return res.trim();
   }
+
+  function normalizeProps(props) {
+    if (!props) return null;
+    var {
+      class: klass,
+      style
+    } = props;
+
+    if (klass && !isString(klass)) {
+      props.class = normalizeClass(klass);
+    }
+
+    if (style) {
+      props.style = normalizeStyle(style);
+    }
+
+    return props;
+  }
   /**
    * For converting {{ interpolation }} values to displayed strings.
    * @private
@@ -703,11 +723,14 @@ export default function vueFactory(exports) {
 
 
   var toDisplayString = val => {
-    return val == null ? '' : isObject(val) ? JSON.stringify(val, replacer, 2) : String(val);
+    return val == null ? '' : isArray(val) || isObject(val) && val.toString === objectToString ? JSON.stringify(val, replacer, 2) : String(val);
   };
 
   var replacer = (_key, val) => {
-    if (isMap(val)) {
+    // can't use isRef here since @vue/shared has no deps
+    if (val && val.__v_isRef) {
+      return replacer(_key, val.value);
+    } else if (isMap(val)) {
       return {
         ["Map(".concat(val.size, ")")]: [...val.entries()].reduce((entries, [key, val]) => {
           entries["".concat(key, " =>")] = val;
@@ -823,7 +846,7 @@ export default function vueFactory(exports) {
 
   var toHandlerKey = cacheStringFunction(str => str ? "on".concat(capitalize(str)) : ""); // compare whether a value has changed, accounting for NaN.
 
-  var hasChanged = (value, oldValue) => value !== oldValue && (value === value || oldValue === oldValue);
+  var hasChanged = (value, oldValue) => !Object.is(value, oldValue);
 
   var invokeArrayFns = (fns, arg) => {
     for (var i = 0; i < fns.length; i++) {
@@ -844,77 +867,213 @@ export default function vueFactory(exports) {
     return isNaN(n) ? val : n;
   };
 
-  var targetMap = new WeakMap();
+  var activeEffectScope;
+  var effectScopeStack = [];
+
+  class EffectScope {
+    constructor(detached = false) {
+      this.active = true;
+      this.effects = [];
+      this.cleanups = [];
+
+      if (!detached && activeEffectScope) {
+        this.parent = activeEffectScope;
+        this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(this) - 1;
+      }
+    }
+
+    run(fn) {
+      if (this.active) {
+        try {
+          this.on();
+          return fn();
+        } finally {
+          this.off();
+        }
+      }
+    }
+
+    on() {
+      if (this.active) {
+        effectScopeStack.push(this);
+        activeEffectScope = this;
+      }
+    }
+
+    off() {
+      if (this.active) {
+        effectScopeStack.pop();
+        activeEffectScope = effectScopeStack[effectScopeStack.length - 1];
+      }
+    }
+
+    stop(fromParent) {
+      if (this.active) {
+        this.effects.forEach(e => e.stop());
+        this.cleanups.forEach(cleanup => cleanup());
+
+        if (this.scopes) {
+          this.scopes.forEach(e => e.stop(true));
+        } // nested scope, dereference from parent to avoid memory leaks
+
+
+        if (this.parent && !fromParent) {
+          // optimized O(1) removal
+          var last = this.parent.scopes.pop();
+
+          if (last && last !== this) {
+            this.parent.scopes[this.index] = last;
+            last.index = this.index;
+          }
+        }
+
+        this.active = false;
+      }
+    }
+
+  }
+
+  function effectScope(detached) {
+    return new EffectScope(detached);
+  }
+
+  function recordEffectScope(effect, scope) {
+    scope = scope || activeEffectScope;
+
+    if (scope && scope.active) {
+      scope.effects.push(effect);
+    }
+  }
+
+  function getCurrentScope() {
+    return activeEffectScope;
+  }
+
+  function onScopeDispose(fn) {
+    if (activeEffectScope) {
+      activeEffectScope.cleanups.push(fn);
+    }
+  }
+
+  var createDep = effects => {
+    var dep = new Set(effects);
+    dep.w = 0;
+    dep.n = 0;
+    return dep;
+  };
+
+  var wasTracked = dep => (dep.w & trackOpBit) > 0;
+
+  var newTracked = dep => (dep.n & trackOpBit) > 0;
+
+  var initDepMarkers = ({
+    deps
+  }) => {
+    if (deps.length) {
+      for (var i = 0; i < deps.length; i++) {
+        deps[i].w |= trackOpBit; // set was tracked
+      }
+    }
+  };
+
+  var finalizeDepMarkers = effect => {
+    var {
+      deps
+    } = effect;
+
+    if (deps.length) {
+      var ptr = 0;
+
+      for (var i = 0; i < deps.length; i++) {
+        var dep = deps[i];
+
+        if (wasTracked(dep) && !newTracked(dep)) {
+          dep.delete(effect);
+        } else {
+          deps[ptr++] = dep;
+        } // clear bits
+
+
+        dep.w &= ~trackOpBit;
+        dep.n &= ~trackOpBit;
+      }
+
+      deps.length = ptr;
+    }
+  };
+
+  var targetMap = new WeakMap(); // The number of effects currently being tracked recursively.
+
+  var effectTrackDepth = 0;
+  var trackOpBit = 1;
+  /**
+   * The bitwise track markers support at most 30 levels op recursion.
+   * This value is chosen to enable modern JS engines to use a SMI on all platforms.
+   * When recursion depth is greater, fall back to using a full cleanup.
+   */
+
+  var maxMarkerBits = 30;
   var effectStack = [];
   var activeEffect;
   var ITERATE_KEY = Symbol('');
   var MAP_KEY_ITERATE_KEY = Symbol('');
 
-  function isEffect(fn) {
-    return fn && fn._isEffect === true;
-  }
-
-  function effect(fn, options = EMPTY_OBJ) {
-    if (isEffect(fn)) {
-      fn = fn.raw;
+  class ReactiveEffect {
+    constructor(fn, scheduler = null, scope) {
+      this.fn = fn;
+      this.scheduler = scheduler;
+      this.active = true;
+      this.deps = [];
+      recordEffectScope(this, scope);
     }
 
-    var effect = createReactiveEffect(fn, options);
-
-    if (!options.lazy) {
-      effect();
-    }
-
-    return effect;
-  }
-
-  function stop(effect) {
-    if (effect.active) {
-      cleanup(effect);
-
-      if (effect.options.onStop) {
-        effect.options.onStop();
+    run() {
+      if (!this.active) {
+        return this.fn();
       }
 
-      effect.active = false;
-    }
-  }
-
-  var uid = 0;
-
-  function createReactiveEffect(fn, options) {
-    var effect = function reactiveEffect() {
-      if (!effect.active) {
-        return fn();
-      }
-
-      if (!effectStack.includes(effect)) {
-        cleanup(effect);
-
+      if (!effectStack.includes(this)) {
         try {
+          effectStack.push(activeEffect = this);
           enableTracking();
-          effectStack.push(effect);
-          activeEffect = effect;
-          return fn();
+          trackOpBit = 1 << ++effectTrackDepth;
+
+          if (effectTrackDepth <= maxMarkerBits) {
+            initDepMarkers(this);
+          } else {
+            cleanupEffect(this);
+          }
+
+          return this.fn();
         } finally {
-          effectStack.pop();
+          if (effectTrackDepth <= maxMarkerBits) {
+            finalizeDepMarkers(this);
+          }
+
+          trackOpBit = 1 << --effectTrackDepth;
           resetTracking();
-          activeEffect = effectStack[effectStack.length - 1];
+          effectStack.pop();
+          var n = effectStack.length;
+          activeEffect = n > 0 ? effectStack[n - 1] : undefined;
         }
       }
-    };
+    }
 
-    effect.id = uid++;
-    effect.allowRecurse = !!options.allowRecurse;
-    effect._isEffect = true;
-    effect.active = true;
-    effect.raw = fn;
-    effect.deps = [];
-    effect.options = options;
-    return effect;
+    stop() {
+      if (this.active) {
+        cleanupEffect(this);
+
+        if (this.onStop) {
+          this.onStop();
+        }
+
+        this.active = false;
+      }
+    }
+
   }
 
-  function cleanup(effect) {
+  function cleanupEffect(effect) {
     var {
       deps
     } = effect;
@@ -926,6 +1085,32 @@ export default function vueFactory(exports) {
 
       deps.length = 0;
     }
+  }
+
+  function effect(fn, options) {
+    if (fn.effect) {
+      fn = fn.effect.fn;
+    }
+
+    var _effect = new ReactiveEffect(fn);
+
+    if (options) {
+      extend(_effect, options);
+      if (options.scope) recordEffectScope(_effect, options.scope);
+    }
+
+    if (!options || !options.lazy) {
+      _effect.run();
+    }
+
+    var runner = _effect.run.bind(_effect);
+
+    runner.effect = _effect;
+    return runner;
+  }
+
+  function stop(runner) {
+    runner.effect.stop();
   }
 
   var shouldTrack = true;
@@ -947,7 +1132,7 @@ export default function vueFactory(exports) {
   }
 
   function track(target, type, key) {
-    if (!shouldTrack || activeEffect === undefined) {
+    if (!isTracking()) {
       return;
     }
 
@@ -960,10 +1145,31 @@ export default function vueFactory(exports) {
     var dep = depsMap.get(key);
 
     if (!dep) {
-      depsMap.set(key, dep = new Set());
+      depsMap.set(key, dep = createDep());
     }
 
-    if (!dep.has(activeEffect)) {
+    trackEffects(dep);
+  }
+
+  function isTracking() {
+    return shouldTrack && activeEffect !== undefined;
+  }
+
+  function trackEffects(dep, debuggerEventExtraInfo) {
+    var shouldTrack = false;
+
+    if (effectTrackDepth <= maxMarkerBits) {
+      if (!newTracked(dep)) {
+        dep.n |= trackOpBit; // set newly tracked
+
+        shouldTrack = !wasTracked(dep);
+      }
+    } else {
+      // Full cleanup mode.
+      shouldTrack = !dep.has(activeEffect);
+    }
+
+    if (shouldTrack) {
       dep.add(activeEffect);
       activeEffect.deps.push(dep);
     }
@@ -977,34 +1183,24 @@ export default function vueFactory(exports) {
       return;
     }
 
-    var effects = new Set();
-
-    var add = effectsToAdd => {
-      if (effectsToAdd) {
-        effectsToAdd.forEach(effect => {
-          if (effect !== activeEffect || effect.allowRecurse) {
-            effects.add(effect);
-          }
-        });
-      }
-    };
+    var deps = [];
 
     if (type === "clear"
     /* CLEAR */
     ) {
       // collection being cleared
       // trigger all effects for target
-      depsMap.forEach(add);
+      deps = [...depsMap.values()];
     } else if (key === 'length' && isArray(target)) {
       depsMap.forEach((dep, key) => {
         if (key === 'length' || key >= newValue) {
-          add(dep);
+          deps.push(dep);
         }
       });
     } else {
       // schedule runs for SET | ADD | DELETE
       if (key !== void 0) {
-        add(depsMap.get(key));
+        deps.push(depsMap.get(key));
       } // also run for iteration key on ADD | DELETE | Map.SET
 
 
@@ -1013,14 +1209,14 @@ export default function vueFactory(exports) {
         /* ADD */
         :
           if (!isArray(target)) {
-            add(depsMap.get(ITERATE_KEY));
+            deps.push(depsMap.get(ITERATE_KEY));
 
             if (isMap(target)) {
-              add(depsMap.get(MAP_KEY_ITERATE_KEY));
+              deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
             }
           } else if (isIntegerKey(key)) {
             // new index added to array -> length changes
-            add(depsMap.get('length'));
+            deps.push(depsMap.get('length'));
           }
 
           break;
@@ -1029,10 +1225,10 @@ export default function vueFactory(exports) {
         /* DELETE */
         :
           if (!isArray(target)) {
-            add(depsMap.get(ITERATE_KEY));
+            deps.push(depsMap.get(ITERATE_KEY));
 
             if (isMap(target)) {
-              add(depsMap.get(MAP_KEY_ITERATE_KEY));
+              deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
             }
           }
 
@@ -1042,22 +1238,45 @@ export default function vueFactory(exports) {
         /* SET */
         :
           if (isMap(target)) {
-            add(depsMap.get(ITERATE_KEY));
+            deps.push(depsMap.get(ITERATE_KEY));
           }
 
           break;
       }
     }
 
-    var run = effect => {
-      if (effect.options.scheduler) {
-        effect.options.scheduler(effect);
-      } else {
-        effect();
+    if (deps.length === 1) {
+      if (deps[0]) {
+        {
+          triggerEffects(deps[0]);
+        }
       }
-    };
+    } else {
+      var effects = [];
 
-    effects.forEach(run);
+      for (var dep of deps) {
+        if (dep) {
+          effects.push(...dep);
+        }
+      }
+
+      {
+        triggerEffects(createDep(effects));
+      }
+    }
+  }
+
+  function triggerEffects(dep, debuggerEventExtraInfo) {
+    // spread into array for stabilization
+    for (var _effect2 of isArray(dep) ? dep : [...dep]) {
+      if (_effect2 !== activeEffect || _effect2.allowRecurse) {
+        if (_effect2.scheduler) {
+          _effect2.scheduler();
+        } else {
+          _effect2.run();
+        }
+      }
+    }
   }
 
   var isNonTrackableKeys = /*#__PURE__*/makeMap("__proto__,__v_isRef,__isVue");
@@ -1071,8 +1290,6 @@ export default function vueFactory(exports) {
   function createArrayInstrumentations() {
     var instrumentations = {};
     ['includes', 'indexOf', 'lastIndexOf'].forEach(key => {
-      var method = Array.prototype[key];
-
       instrumentations[key] = function (...args) {
         var arr = toRaw(this);
 
@@ -1083,22 +1300,20 @@ export default function vueFactory(exports) {
         } // we run the method using the original args first (which may be reactive)
 
 
-        var res = method.apply(arr, args);
+        var res = arr[key](...args);
 
         if (res === -1 || res === false) {
           // if that didn't work, run it again using raw values.
-          return method.apply(arr, args.map(toRaw));
+          return arr[key](...args.map(toRaw));
         } else {
           return res;
         }
       };
     });
     ['push', 'pop', 'shift', 'unshift', 'splice'].forEach(key => {
-      var method = Array.prototype[key];
-
       instrumentations[key] = function (...args) {
         pauseTracking();
-        var res = method.apply(this, args);
+        var res = toRaw(this)[key].apply(this, args);
         resetTracking();
         return res;
       };
@@ -1757,9 +1972,10 @@ export default function vueFactory(exports) {
   }
 
   function toRaw(observed) {
-    return observed && toRaw(observed["__v_raw"
+    var raw = observed && observed["__v_raw"
     /* RAW */
-    ]) || observed;
+    ];
+    return raw ? toRaw(raw) : observed;
   }
 
   function markRaw(value) {
@@ -1767,6 +1983,30 @@ export default function vueFactory(exports) {
     /* SKIP */
     , true);
     return value;
+  }
+
+  function trackRefValue(ref) {
+    if (isTracking()) {
+      ref = toRaw(ref);
+
+      if (!ref.dep) {
+        ref.dep = createDep();
+      }
+
+      {
+        trackEffects(ref.dep);
+      }
+    }
+  }
+
+  function triggerRefValue(ref, newVal) {
+    ref = toRaw(ref);
+
+    if (ref.dep) {
+      {
+        triggerEffects(ref.dep);
+      }
+    }
   }
 
   var convert = val => isObject(val) ? reactive(val) : val;
@@ -1784,27 +2024,26 @@ export default function vueFactory(exports) {
   }
 
   class RefImpl {
-    constructor(_rawValue, _shallow) {
-      this._rawValue = _rawValue;
+    constructor(value, _shallow = false) {
       this._shallow = _shallow;
+      this.dep = undefined;
       this.__v_isRef = true;
-      this._value = _shallow ? _rawValue : convert(_rawValue);
+      this._rawValue = _shallow ? value : toRaw(value);
+      this._value = _shallow ? value : convert(value);
     }
 
     get value() {
-      track(toRaw(this), "get"
-      /* GET */
-      , 'value');
+      trackRefValue(this);
       return this._value;
     }
 
     set value(newVal) {
-      if (hasChanged(toRaw(newVal), this._rawValue)) {
+      newVal = this._shallow ? newVal : toRaw(newVal);
+
+      if (hasChanged(newVal, this._rawValue)) {
         this._rawValue = newVal;
         this._value = this._shallow ? newVal : convert(newVal);
-        trigger(toRaw(this), "set"
-        /* SET */
-        , 'value', newVal);
+        triggerRefValue(this);
       }
     }
 
@@ -1819,9 +2058,7 @@ export default function vueFactory(exports) {
   }
 
   function triggerRef(ref) {
-    trigger(toRaw(ref), "set"
-    /* SET */
-    , 'value', void 0);
+    triggerRefValue(ref);
   }
 
   function unref(ref) {
@@ -1848,15 +2085,12 @@ export default function vueFactory(exports) {
 
   class CustomRefImpl {
     constructor(factory) {
+      this.dep = undefined;
       this.__v_isRef = true;
       var {
         get,
         set
-      } = factory(() => track(this, "get"
-      /* GET */
-      , 'value'), () => trigger(this, "set"
-      /* SET */
-      , 'value'));
+      } = factory(() => trackRefValue(this), () => triggerRefValue(this));
       this._get = get;
       this._set = set;
     }
@@ -1909,17 +2143,13 @@ export default function vueFactory(exports) {
   class ComputedRefImpl {
     constructor(getter, _setter, isReadonly) {
       this._setter = _setter;
+      this.dep = undefined;
       this._dirty = true;
       this.__v_isRef = true;
-      this.effect = effect(getter, {
-        lazy: true,
-        scheduler: () => {
-          if (!this._dirty) {
-            this._dirty = true;
-            trigger(toRaw(this), "set"
-            /* SET */
-            , 'value');
-          }
+      this.effect = new ReactiveEffect(getter, () => {
+        if (!this._dirty) {
+          this._dirty = true;
+          triggerRefValue(this);
         }
       });
       this["__v_isReadonly"
@@ -1930,15 +2160,13 @@ export default function vueFactory(exports) {
     get value() {
       // the computed ref may get wrapped by other proxies e.g. readonly() #3376
       var self = toRaw(this);
+      trackRefValue(self);
 
       if (self._dirty) {
-        self._value = this.effect();
         self._dirty = false;
+        self._value = self.effect.run();
       }
 
-      track(self, "get"
-      /* GET */
-      , 'value');
       return self._value;
     }
 
@@ -1948,7 +2176,7 @@ export default function vueFactory(exports) {
 
   }
 
-  function computed(getterOrOptions) {
+  function computed(getterOrOptions, debugOptions) {
     var getter;
     var setter;
 
@@ -1960,406 +2188,8 @@ export default function vueFactory(exports) {
       setter = getterOrOptions.set;
     }
 
-    return new ComputedRefImpl(getter, setter, isFunction(getterOrOptions) || !getterOrOptions.set);
-  }
-
-  var stack = [];
-
-  function warn(msg, ...args) {
-    // avoid props formatting or warn handler tracking deps that might be mutated
-    // during patch, leading to infinite recursion.
-    pauseTracking();
-    var instance = stack.length ? stack[stack.length - 1].component : null;
-    var appWarnHandler = instance && instance.appContext.config.warnHandler;
-    var trace = getComponentTrace();
-
-    if (appWarnHandler) {
-      callWithErrorHandling(appWarnHandler, instance, 11
-      /* APP_WARN_HANDLER */
-      , [msg + args.join(''), instance && instance.proxy, trace.map(({
-        vnode
-      }) => "at <".concat(formatComponentName(instance, vnode.type), ">")).join('\n'), trace]);
-    } else {
-      var warnArgs = ["[Vue warn]: ".concat(msg), ...args];
-      /* istanbul ignore if */
-
-      if (trace.length && // avoid spamming console during tests
-      !false) {
-        warnArgs.push("\n", ...formatTrace(trace));
-      }
-
-      console.warn(...warnArgs);
-    }
-
-    resetTracking();
-  }
-
-  function getComponentTrace() {
-    var currentVNode = stack[stack.length - 1];
-
-    if (!currentVNode) {
-      return [];
-    } // we can't just use the stack because it will be incomplete during updates
-    // that did not start from the root. Re-construct the parent chain using
-    // instance parent pointers.
-
-
-    var normalizedStack = [];
-
-    while (currentVNode) {
-      var last = normalizedStack[0];
-
-      if (last && last.vnode === currentVNode) {
-        last.recurseCount++;
-      } else {
-        normalizedStack.push({
-          vnode: currentVNode,
-          recurseCount: 0
-        });
-      }
-
-      var parentInstance = currentVNode.component && currentVNode.component.parent;
-      currentVNode = parentInstance && parentInstance.vnode;
-    }
-
-    return normalizedStack;
-  }
-  /* istanbul ignore next */
-
-
-  function formatTrace(trace) {
-    var logs = [];
-    trace.forEach((entry, i) => {
-      logs.push(...(i === 0 ? [] : ["\n"]), ...formatTraceEntry(entry));
-    });
-    return logs;
-  }
-
-  function formatTraceEntry({
-    vnode,
-    recurseCount
-  }) {
-    var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
-    var isRoot = vnode.component ? vnode.component.parent == null : false;
-    var open = " at <".concat(formatComponentName(vnode.component, vnode.type, isRoot));
-    var close = ">" + postfix;
-    return vnode.props ? [open, ...formatProps(vnode.props), close] : [open + close];
-  }
-  /* istanbul ignore next */
-
-
-  function formatProps(props) {
-    var res = [];
-    var keys = Object.keys(props);
-    keys.slice(0, 3).forEach(key => {
-      res.push(...formatProp(key, props[key]));
-    });
-
-    if (keys.length > 3) {
-      res.push(" ...");
-    }
-
-    return res;
-  }
-  /* istanbul ignore next */
-
-
-  function formatProp(key, value, raw) {
-    if (isString(value)) {
-      value = JSON.stringify(value);
-      return raw ? value : ["".concat(key, "=").concat(value)];
-    } else if (typeof value === 'number' || typeof value === 'boolean' || value == null) {
-      return raw ? value : ["".concat(key, "=").concat(value)];
-    } else if (isRef(value)) {
-      value = formatProp(key, toRaw(value.value), true);
-      return raw ? value : ["".concat(key, "=Ref<"), value, ">"];
-    } else if (isFunction(value)) {
-      return ["".concat(key, "=fn").concat(value.name ? "<".concat(value.name, ">") : "")];
-    } else {
-      value = toRaw(value);
-      return raw ? value : ["".concat(key, "="), value];
-    }
-  }
-
-  function callWithErrorHandling(fn, instance, type, args) {
-    var res;
-
-    try {
-      res = args ? fn(...args) : fn();
-    } catch (err) {
-      handleError(err, instance, type);
-    }
-
-    return res;
-  }
-
-  function callWithAsyncErrorHandling(fn, instance, type, args) {
-    if (isFunction(fn)) {
-      var res = callWithErrorHandling(fn, instance, type, args);
-
-      if (res && isPromise(res)) {
-        res.catch(err => {
-          handleError(err, instance, type);
-        });
-      }
-
-      return res;
-    }
-
-    var values = [];
-
-    for (var i = 0; i < fn.length; i++) {
-      values.push(callWithAsyncErrorHandling(fn[i], instance, type, args));
-    }
-
-    return values;
-  }
-
-  function handleError(err, instance, type, throwInDev = true) {
-    var contextVNode = instance ? instance.vnode : null;
-
-    if (instance) {
-      var cur = instance.parent; // the exposed instance is the render proxy to keep it consistent with 2.x
-
-      var exposedInstance = instance.proxy; // in production the hook receives only the error code
-
-      var errorInfo = type;
-
-      while (cur) {
-        var errorCapturedHooks = cur.ec;
-
-        if (errorCapturedHooks) {
-          for (var i = 0; i < errorCapturedHooks.length; i++) {
-            if (errorCapturedHooks[i](err, exposedInstance, errorInfo) === false) {
-              return;
-            }
-          }
-        }
-
-        cur = cur.parent;
-      } // app-level handling
-
-
-      var appErrorHandler = instance.appContext.config.errorHandler;
-
-      if (appErrorHandler) {
-        callWithErrorHandling(appErrorHandler, null, 10
-        /* APP_ERROR_HANDLER */
-        , [err, exposedInstance, errorInfo]);
-        return;
-      }
-    }
-
-    logError(err, type, contextVNode, throwInDev);
-  }
-
-  function logError(err, type, contextVNode, throwInDev = true) {
-    {
-      // recover in prod to reduce the impact on end-user
-      console.error(err);
-    }
-  }
-
-  var isFlushing = false;
-  var isFlushPending = false;
-  var queue = [];
-  var flushIndex = 0;
-  var pendingPreFlushCbs = [];
-  var activePreFlushCbs = null;
-  var preFlushIndex = 0;
-  var pendingPostFlushCbs = [];
-  var activePostFlushCbs = null;
-  var postFlushIndex = 0; // fixed by xxxxxx iOS
-
-  var iOSPromise = {
-    then(callback) {
-      setTimeout(() => callback(), 0);
-    }
-
-  };
-  var isIOS = exports.platform === 'iOS';
-  var resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
-  var currentFlushPromise = null;
-  var currentPreFlushParentJob = null;
-  var RECURSION_LIMIT = 100;
-
-  function nextTick(fn) {
-    var p = currentFlushPromise || resolvedPromise;
-    return fn ? p.then(this ? fn.bind(this) : fn) : p;
-  } // #2768
-  // Use binary-search to find a suitable position in the queue,
-  // so that the queue maintains the increasing order of job's id,
-  // which can prevent the job from being skipped and also can avoid repeated patching.
-
-
-  function findInsertionIndex(job) {
-    // the start index should be `flushIndex + 1`
-    var start = flushIndex + 1;
-    var end = queue.length;
-    var jobId = getId(job);
-
-    while (start < end) {
-      var middle = start + end >>> 1;
-      var middleJobId = getId(queue[middle]);
-      middleJobId < jobId ? start = middle + 1 : end = middle;
-    }
-
-    return start;
-  }
-
-  function queueJob(job) {
-    // the dedupe search uses the startIndex argument of Array.includes()
-    // by default the search index includes the current job that is being run
-    // so it cannot recursively trigger itself again.
-    // if the job is a watch() callback, the search will start with a +1 index to
-    // allow it recursively trigger itself - it is the user's responsibility to
-    // ensure it doesn't end up in an infinite loop.
-    if ((!queue.length || !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) && job !== currentPreFlushParentJob) {
-      var pos = findInsertionIndex(job);
-
-      if (pos > -1) {
-        queue.splice(pos, 0, job);
-      } else {
-        queue.push(job);
-      }
-
-      queueFlush();
-    }
-  }
-
-  function queueFlush() {
-    if (!isFlushing && !isFlushPending) {
-      isFlushPending = true;
-      currentFlushPromise = resolvedPromise.then(flushJobs);
-    }
-  }
-
-  function invalidateJob(job) {
-    var i = queue.indexOf(job);
-
-    if (i > flushIndex) {
-      queue.splice(i, 1);
-    }
-  }
-
-  function queueCb(cb, activeQueue, pendingQueue, index) {
-    if (!isArray(cb)) {
-      if (!activeQueue || !activeQueue.includes(cb, cb.allowRecurse ? index + 1 : index)) {
-        pendingQueue.push(cb);
-      }
-    } else {
-      // if cb is an array, it is a component lifecycle hook which can only be
-      // triggered by a job, which is already deduped in the main queue, so
-      // we can skip duplicate check here to improve perf
-      pendingQueue.push(...cb);
-    }
-
-    queueFlush();
-  }
-
-  function queuePreFlushCb(cb) {
-    queueCb(cb, activePreFlushCbs, pendingPreFlushCbs, preFlushIndex);
-  }
-
-  function queuePostFlushCb(cb) {
-    queueCb(cb, activePostFlushCbs, pendingPostFlushCbs, postFlushIndex);
-  }
-
-  function flushPreFlushCbs(seen, parentJob = null) {
-    if (pendingPreFlushCbs.length) {
-      currentPreFlushParentJob = parentJob;
-      activePreFlushCbs = [...new Set(pendingPreFlushCbs)];
-      pendingPreFlushCbs.length = 0;
-
-      for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
-        activePreFlushCbs[preFlushIndex]();
-      }
-
-      activePreFlushCbs = null;
-      preFlushIndex = 0;
-      currentPreFlushParentJob = null; // recursively flush until it drains
-
-      flushPreFlushCbs(seen, parentJob);
-    }
-  }
-
-  function flushPostFlushCbs(seen) {
-    if (pendingPostFlushCbs.length) {
-      var deduped = [...new Set(pendingPostFlushCbs)];
-      pendingPostFlushCbs.length = 0; // #1947 already has active queue, nested flushPostFlushCbs call
-
-      if (activePostFlushCbs) {
-        activePostFlushCbs.push(...deduped);
-        return;
-      }
-
-      activePostFlushCbs = deduped;
-      activePostFlushCbs.sort((a, b) => getId(a) - getId(b));
-
-      for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-        activePostFlushCbs[postFlushIndex]();
-      }
-
-      activePostFlushCbs = null;
-      postFlushIndex = 0;
-    }
-  }
-
-  var getId = job => job.id == null ? Infinity : job.id;
-
-  function flushJobs(seen) {
-    isFlushPending = false;
-    isFlushing = true;
-    flushPreFlushCbs(seen); // Sort queue before flush.
-    // This ensures that:
-    // 1. Components are updated from parent to child. (because parent is always
-    //    created before the child so its render effect will have smaller
-    //    priority number)
-    // 2. If a component is unmounted during a parent component's update,
-    //    its update can be skipped.
-
-    queue.sort((a, b) => getId(a) - getId(b));
-
-    try {
-      for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
-        var job = queue[flushIndex];
-
-        if (job && job.active !== false) {
-          if ("production" !== 'production' && checkRecursiveUpdates(seen, job)) ;
-          callWithErrorHandling(job, null, 14
-          /* SCHEDULER */
-          );
-        }
-      }
-    } finally {
-      flushIndex = 0;
-      queue.length = 0;
-      flushPostFlushCbs();
-      isFlushing = false;
-      currentFlushPromise = null; // some postFlushCb queued jobs!
-      // keep flushing until it drains.
-
-      if (queue.length || pendingPreFlushCbs.length || pendingPostFlushCbs.length) {
-        flushJobs(seen);
-      }
-    }
-  }
-
-  function checkRecursiveUpdates(seen, fn) {
-    if (!seen.has(fn)) {
-      seen.set(fn, 1);
-    } else {
-      var count = seen.get(fn);
-
-      if (count > RECURSION_LIMIT) {
-        var instance = fn.ownerInstance;
-        var componentName = instance && getComponentName(instance.type);
-        warn("Maximum recursive updates exceeded".concat(componentName ? " in component <".concat(componentName, ">") : "", ". ") + "This means you have a reactive effect that is mutating its own " + "dependencies and thus recursively triggering itself. Possible sources " + "include component template, render function, updated hook or " + "watcher source function.");
-        return true;
-      } else {
-        seen.set(fn, count + 1);
-      }
-    }
+    var cRef = new ComputedRefImpl(getter, setter, isFunction(getterOrOptions) || !getterOrOptions.set);
+    return cRef;
   }
 
   var devtools;
@@ -3414,7 +3244,7 @@ export default function vueFactory(exports) {
 
     s = normalizeVNode(s);
 
-    if (block) {
+    if (block && !s.dynamicChildren) {
       s.dynamicChildren = block.filter(c => c !== s);
     }
 
@@ -3485,231 +3315,6 @@ export default function vueFactory(exports) {
         return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue.call(instance.proxy) : defaultValue;
       } else ;
     }
-  } // Simple effect.
-
-
-  function watchEffect(effect, options) {
-    return doWatch(effect, null, options);
-  } // initial value for watchers to trigger on undefined initial values
-
-
-  var INITIAL_WATCHER_VALUE = {}; // implementation
-
-  function watch(source, cb, options) {
-    return doWatch(source, cb, options);
-  }
-
-  function doWatch(source, cb, {
-    immediate,
-    deep,
-    flush,
-    onTrack,
-    onTrigger
-  } = EMPTY_OBJ, instance = currentInstance) {
-    var getter;
-    var forceTrigger = false;
-    var isMultiSource = false;
-
-    if (isRef(source)) {
-      getter = () => source.value;
-
-      forceTrigger = !!source._shallow;
-    } else if (isReactive(source)) {
-      getter = () => source;
-
-      deep = true;
-    } else if (isArray(source)) {
-      isMultiSource = true;
-      forceTrigger = source.some(isReactive);
-
-      getter = () => source.map(s => {
-        if (isRef(s)) {
-          return s.value;
-        } else if (isReactive(s)) {
-          return traverse(s);
-        } else if (isFunction(s)) {
-          return callWithErrorHandling(s, instance, 2
-          /* WATCH_GETTER */
-          );
-        } else ;
-      });
-    } else if (isFunction(source)) {
-      if (cb) {
-        // getter with cb
-        getter = () => callWithErrorHandling(source, instance, 2
-        /* WATCH_GETTER */
-        );
-      } else {
-        // no cb -> simple effect
-        getter = () => {
-          if (instance && instance.isUnmounted) {
-            return;
-          }
-
-          if (cleanup) {
-            cleanup();
-          }
-
-          return callWithAsyncErrorHandling(source, instance, 3
-          /* WATCH_CALLBACK */
-          , [onInvalidate]);
-        };
-      }
-    } else {
-      getter = NOOP;
-    }
-
-    if (cb && deep) {
-      var baseGetter = getter;
-
-      getter = () => traverse(baseGetter());
-    }
-
-    var cleanup;
-
-    var onInvalidate = fn => {
-      cleanup = runner.options.onStop = () => {
-        callWithErrorHandling(fn, instance, 4
-        /* WATCH_CLEANUP */
-        );
-      };
-    };
-
-    var oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE;
-
-    var job = () => {
-      if (!runner.active) {
-        return;
-      }
-
-      if (cb) {
-        // watch(source, cb)
-        var newValue = runner();
-
-        if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue)) || false) {
-          // cleanup before running cb again
-          if (cleanup) {
-            cleanup();
-          }
-
-          callWithAsyncErrorHandling(cb, instance, 3
-          /* WATCH_CALLBACK */
-          , [newValue, // pass undefined as the old value when it's changed for the first time
-          oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue, onInvalidate]);
-          oldValue = newValue;
-        }
-      } else {
-        // watchEffect
-        runner();
-      }
-    }; // important: mark the job as a watcher callback so that scheduler knows
-    // it is allowed to self-trigger (#1727)
-
-
-    job.allowRecurse = !!cb;
-    var scheduler;
-
-    if (flush === 'sync') {
-      scheduler = job; // the scheduler function gets called directly
-    } else if (flush === 'post') {
-      scheduler = () => queuePostRenderEffect(job, instance && instance.suspense);
-    } else {
-      // default: 'pre'
-      scheduler = () => {
-        if (!instance || instance.isMounted) {
-          queuePreFlushCb(job);
-        } else {
-          // with 'pre' option, the first call must happen before
-          // the component is mounted so it is called synchronously.
-          job();
-        }
-      };
-    }
-
-    var runner = effect(getter, {
-      lazy: true,
-      onTrack,
-      onTrigger,
-      scheduler
-    });
-    recordInstanceBoundEffect(runner, instance); // initial run
-
-    if (cb) {
-      if (immediate) {
-        job();
-      } else {
-        oldValue = runner();
-      }
-    } else if (flush === 'post') {
-      queuePostRenderEffect(runner, instance && instance.suspense);
-    } else {
-      runner();
-    }
-
-    return () => {
-      stop(runner);
-
-      if (instance) {
-        remove(instance.effects, runner);
-      }
-    };
-  } // this.$watch
-
-
-  function instanceWatch(source, value, options) {
-    var publicThis = this.proxy;
-    var getter = isString(source) ? source.includes('.') ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
-    var cb;
-
-    if (isFunction(value)) {
-      cb = value;
-    } else {
-      cb = value.handler;
-      options = value;
-    }
-
-    return doWatch(getter, cb.bind(publicThis), options, this);
-  }
-
-  function createPathGetter(ctx, path) {
-    var segments = path.split('.');
-    return () => {
-      var cur = ctx;
-
-      for (var i = 0; i < segments.length && cur; i++) {
-        cur = cur[segments[i]];
-      }
-
-      return cur;
-    };
-  }
-
-  function traverse(value, seen = new Set()) {
-    if (!isObject(value) || seen.has(value) || value["__v_skip"
-    /* SKIP */
-    ]) {
-      return value;
-    }
-
-    seen.add(value);
-
-    if (isRef(value)) {
-      traverse(value.value, seen);
-    } else if (isArray(value)) {
-      for (var i = 0; i < value.length; i++) {
-        traverse(value[i], seen);
-      }
-    } else if (isSet(value) || isMap(value)) {
-      value.forEach(v => {
-        traverse(v, seen);
-      });
-    } else if (isPlainObject(value)) {
-      for (var key in value) {
-        traverse(value[key], seen);
-      }
-    }
-
-    return value;
   }
 
   function useTransitionState() {
@@ -4642,9 +4247,10 @@ export default function vueFactory(exports) {
         // This assumes the hook does not synchronously trigger other hooks, which
         // can only be false when the user does something really funky.
 
-        setCurrentInstance(target);
+        setCurrentInstance(target); // fixed by xxxxxx
+
         var res = callWithAsyncErrorHandling(hook, target, type, args);
-        setCurrentInstance(null);
+        unsetCurrentInstance();
         resetTracking();
         return res;
       });
@@ -4756,7 +4362,7 @@ export default function vueFactory(exports) {
     // - watch (deferred since it relies on `this` access)
 
     if (injectOptions) {
-      resolveInjections(injectOptions, ctx, checkDuplicateProperties);
+      resolveInjections(injectOptions, ctx, checkDuplicateProperties, instance.appContext.config.unwrapInjectedRef);
     }
 
     if (methods) {
@@ -4764,8 +4370,9 @@ export default function vueFactory(exports) {
         var methodHandler = methods[key];
 
         if (isFunction(methodHandler)) {
-          // In dev mode, we use the `createRenderContext` function to define methods to the proxy target,
-          // and those are read-only but reconfigurable, so it needs to be redefined here
+          // In dev mode, we use the `createRenderContext` function to define
+          // methods to the proxy target, and those are read-only but
+          // reconfigurable, so it needs to be redefined here
           {
             ctx[key] = methodHandler.bind(publicThis);
           }
@@ -4788,7 +4395,7 @@ export default function vueFactory(exports) {
         var opt = computedOptions[_key2];
         var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
         var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
-        var c = computed$1({
+        var c = computed({
           get,
           set
         });
@@ -4880,25 +4487,46 @@ export default function vueFactory(exports) {
     }
   }
 
-  function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) {
+  function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP, unwrapRef = false) {
     if (isArray(injectOptions)) {
       injectOptions = normalizeInject(injectOptions);
     }
 
-    for (var key in injectOptions) {
+    var _loop2 = function (key) {
       var opt = injectOptions[key];
+      var injected = void 0;
 
       if (isObject(opt)) {
         if ('default' in opt) {
-          ctx[key] = inject(opt.from || key, opt.default, true
+          injected = inject(opt.from || key, opt.default, true
           /* treat default function as factory */
           );
         } else {
-          ctx[key] = inject(opt.from || key);
+          injected = inject(opt.from || key);
         }
       } else {
-        ctx[key] = inject(opt);
+        injected = inject(opt);
       }
+
+      if (isRef(injected)) {
+        // TODO remove the check in 3.3
+        if (unwrapRef) {
+          Object.defineProperty(ctx, key, {
+            enumerable: true,
+            configurable: true,
+            get: () => injected.value,
+            set: v => injected.value = v
+          });
+        } else {
+          ctx[key] = injected;
+        }
+      } else {
+        ctx[key] = injected;
+      }
+    };
+
+    for (var key in injectOptions) {
+      _loop2(key);
     }
   }
 
@@ -5269,7 +4897,7 @@ export default function vueFactory(exports) {
           } else {
             setCurrentInstance(instance);
             value = propsDefaults[key] = defaultValue.call(null, props);
-            setCurrentInstance(null);
+            unsetCurrentInstance();
           }
         } else {
           value = defaultValue;
@@ -5386,7 +5014,7 @@ export default function vueFactory(exports) {
 
   function getType(ctor) {
     var match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-    return match ? match[1] : '';
+    return match ? match[1] : ctor === null ? 'null' : '';
   }
 
   function isSameType(a, b) {
@@ -5549,6 +5177,10 @@ export default function vueFactory(exports) {
         };
       }
 
+      if (dir.deep) {
+        traverse(value);
+      }
+
       bindings.push({
         dir,
         instance,
@@ -5609,7 +5241,7 @@ export default function vueFactory(exports) {
     };
   }
 
-  var uid$1 = 0;
+  var uid = 0;
 
   function createAppAPI(render, hydrate) {
     return function createApp(rootComponent, rootProps = null) {
@@ -5621,7 +5253,7 @@ export default function vueFactory(exports) {
       var installedPlugins = new Set();
       var isMounted = false;
       var app = context.app = {
-        _uid: uid$1++,
+        _uid: uid++,
         _component: rootComponent,
         _props: rootProps,
         _container: null,
@@ -6082,86 +5714,7 @@ export default function vueFactory(exports) {
     return [hydrate, hydrateNode];
   }
 
-  var prodEffectOptions = {
-    scheduler: queueJob,
-    // #1801, #2043 component render effects should allow recursive updates
-    allowRecurse: true
-  };
   var queuePostRenderEffect = queueEffectWithSuspense;
-
-  var setRef = (rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) => {
-    if (isArray(rawRef)) {
-      rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef), parentSuspense, vnode, isUnmount));
-      return;
-    }
-
-    if (isAsyncWrapper(vnode) && !isUnmount) {
-      // when mounting async components, nothing needs to be done,
-      // because the template ref is forwarded to inner component
-      return;
-    }
-
-    var refValue = vnode.shapeFlag & 4
-    /* STATEFUL_COMPONENT */
-    ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
-    var value = isUnmount ? null : refValue;
-    var {
-      i: owner,
-      r: ref
-    } = rawRef;
-    var oldRef = oldRawRef && oldRawRef.r;
-    var refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
-    var setupState = owner.setupState; // dynamic ref changed. unset old ref
-
-    if (oldRef != null && oldRef !== ref) {
-      if (isString(oldRef)) {
-        refs[oldRef] = null;
-
-        if (hasOwn(setupState, oldRef)) {
-          setupState[oldRef] = null;
-        }
-      } else if (isRef(oldRef)) {
-        oldRef.value = null;
-      }
-    }
-
-    if (isString(ref)) {
-      var doSet = () => {
-        {
-          refs[ref] = value;
-        }
-
-        if (hasOwn(setupState, ref)) {
-          setupState[ref] = value;
-        }
-      }; // #1789: for non-null values, set them after render
-      // null values means this is unmount and it should not overwrite another
-      // ref with the same key
-
-
-      if (value) {
-        doSet.id = -1;
-        queuePostRenderEffect(doSet, parentSuspense);
-      } else {
-        doSet();
-      }
-    } else if (isRef(ref)) {
-      var _doSet = () => {
-        ref.value = value;
-      };
-
-      if (value) {
-        _doSet.id = -1;
-        queuePostRenderEffect(_doSet, parentSuspense);
-      } else {
-        _doSet();
-      }
-    } else if (isFunction(ref)) {
-      callWithErrorHandling(ref, owner, 12
-      /* FUNCTION_REF */
-      , [value, refs]);
-    } else ;
-  };
   /**
    * The createRenderer function accepts two generic arguments:
    * HostNode and HostElement, corresponding to Node and Element types in the
@@ -6177,7 +5730,6 @@ export default function vueFactory(exports) {
    * })
    * ```
    */
-
 
   function createRenderer(options) {
     return baseCreateRenderer(options);
@@ -6197,6 +5749,7 @@ export default function vueFactory(exports) {
       remove: hostRemove,
       patchProp: hostPatchProp,
       forcePatchProp: hostForcePatchProp,
+      // fixed by xxxxxx
       createElement: hostCreateElement,
       createText: hostCreateText,
       createComment: hostCreateComment,
@@ -6210,8 +5763,12 @@ export default function vueFactory(exports) {
     } = options; // Note: functions inside this closure should use `const xxx = () => {}`
     // style in order to prevent being inlined by minifiers.
 
-    var patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, isSVG = false, slotScopeIds = null, optimized = false) => {
-      // patching & not same type, unmount old tree
+    var patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, isSVG = false, slotScopeIds = null, optimized = !!n2.dynamicChildren) => {
+      if (n1 === n2) {
+        return;
+      } // patching & not same type, unmount old tree
+
+
       if (n1 && !isSameVNodeType(n1, n2)) {
         anchor = getNextHostNode(n1);
         unmount(n1, parentComponent, parentSuspense, true);
@@ -6302,19 +5859,7 @@ export default function vueFactory(exports) {
     };
 
     var mountStaticNode = (n2, container, anchor, isSVG) => {
-      // static nodes are only present when used with compiler-dom/runtime-dom
-      // which guarantees presence of hostInsertStaticContent.
-      var nodes = hostInsertStaticContent(n2.children, container, anchor, isSVG, // pass cached nodes if the static node is being mounted multiple times
-      // so that runtime-dom can simply cloneNode() instead of inserting new
-      // HTML
-      n2.staticCache); // first mount - this is the orignal hoisted vnode. cache nodes.
-
-      if (!n2.el) {
-        n2.staticCache = nodes;
-      }
-
-      n2.el = nodes[0];
-      n2.anchor = nodes[nodes.length - 1];
+      [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG);
     };
 
     var moveStaticNode = ({
@@ -6389,7 +5934,7 @@ export default function vueFactory(exports) {
         } else if (shapeFlag & 16
         /* ARRAY_CHILDREN */
         ) {
-          mountChildren(vnode.children, el, null, parentComponent, parentSuspense, isSVG && type !== 'foreignObject', slotScopeIds, optimized || !!vnode.dynamicChildren);
+          mountChildren(vnode.children, el, null, parentComponent, parentSuspense, isSVG && type !== 'foreignObject', slotScopeIds, optimized);
         }
 
         if (dirs) {
@@ -6399,9 +5944,23 @@ export default function vueFactory(exports) {
 
         if (props) {
           for (var key in props) {
-            if (!isReservedProp(key)) {
+            if (key !== 'value' && !isReservedProp(key)) {
               hostPatchProp(el, key, null, props[key], isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
             }
+          }
+          /**
+           * Special case for setting value on DOM elements:
+           * - it can be order-sensitive (e.g. should be set *after* min/max, #2325, #4024)
+           * - it needs to be forced (#1471)
+           * #2353 proposes adding another renderer option to configure this, but
+           * the properties affects are so finite it is worth special casing it
+           * here to reduce the complexity. (Special casing it also should not
+           * affect non-DOM renderers)
+           */
+
+
+          if ('value' in props) {
+            hostPatchProp(el, 'value', null, props.value);
           }
 
           if (vnodeHook = props.onVnodeBeforeMount) {
@@ -6532,9 +6091,10 @@ export default function vueFactory(exports) {
             for (var i = 0; i < propsToUpdate.length; i++) {
               var key = propsToUpdate[i];
               var prev = oldProps[key];
-              var next = newProps[key];
+              var next = newProps[key]; // #1471 force patch value
 
-              if (next !== prev || hostForcePatchProp && hostForcePatchProp(el, key)) {
+              if (next !== prev || key === 'value' || hostForcePatchProp && hostForcePatchProp(el, key) // fixed by xxxxxx
+              ) {
                 hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
               }
             }
@@ -6600,9 +6160,10 @@ export default function vueFactory(exports) {
           // empty string is not valid prop
           if (isReservedProp(key)) continue;
           var next = newProps[key];
-          var prev = oldProps[key];
+          var prev = oldProps[key]; // defer patching value
 
-          if (next !== prev || hostForcePatchProp && hostForcePatchProp(el, key)) {
+          if (next !== prev && key !== 'value' || hostForcePatchProp && hostForcePatchProp(el, key) // fixed by xxxxxx
+          ) {
             hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
           }
         }
@@ -6613,6 +6174,10 @@ export default function vueFactory(exports) {
               hostPatchProp(el, _key7, oldProps[_key7], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
             }
           }
+        }
+
+        if ('value' in newProps) {
+          hostPatchProp(el, 'value', oldProps.value, newProps.value);
         }
       }
     };
@@ -6626,12 +6191,7 @@ export default function vueFactory(exports) {
         patchFlag,
         dynamicChildren,
         slotScopeIds: fragmentSlotScopeIds
-      } = n2;
-
-      if (dynamicChildren) {
-        optimized = true;
-      } // check if this is a slot fragment with :slotted scope ids
-
+      } = n2; // check if this is a slot fragment with :slotted scope ids
 
       if (fragmentSlotScopeIds) {
         slotScopeIds = slotScopeIds ? slotScopeIds.concat(fragmentSlotScopeIds) : fragmentSlotScopeIds;
@@ -6741,7 +6301,7 @@ export default function vueFactory(exports) {
           instance.next = n2; // in case the child component is also queued, remove it to avoid
           // double updating the same child component in the same flush.
 
-          invalidateJob(instance.update); // instance.update is the reactive effect runner.
+          invalidateJob(instance.update); // instance.update is the reactive effect.
 
           instance.update();
         }
@@ -6754,8 +6314,7 @@ export default function vueFactory(exports) {
     };
 
     var setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized) => {
-      // create reactive effect for rendering
-      instance.update = effect(function componentEffect() {
+      var componentUpdateFn = () => {
         if (!instance.isMounted) {
           var vnodeHook;
           var {
@@ -6766,7 +6325,8 @@ export default function vueFactory(exports) {
             bm,
             m,
             parent
-          } = instance; // beforeMount hook
+          } = instance;
+          effect.allowRecurse = false; // beforeMount hook
 
           if (bm) {
             invokeArrayFns(bm);
@@ -6776,6 +6336,8 @@ export default function vueFactory(exports) {
           if (vnodeHook = props && props.onVnodeBeforeMount) {
             invokeVNodeHook(vnodeHook, parent, initialVNode);
           }
+
+          effect.allowRecurse = true;
 
           if (el && hydrateNode) {
             // vnode has adopted host node - perform hydration instead of mount.
@@ -6842,8 +6404,10 @@ export default function vueFactory(exports) {
             updateComponentPreRender(instance, next, optimized);
           } else {
             next = vnode;
-          } // beforeUpdate hook
+          } // Disallow component effect recursion during pre-lifecycle hooks.
 
+
+          effect.allowRecurse = false; // beforeUpdate hook
 
           if (bu) {
             invokeArrayFns(bu);
@@ -6854,6 +6418,7 @@ export default function vueFactory(exports) {
             invokeVNodeHook(_vnodeHook, _parent, next, vnode);
           }
 
+          effect.allowRecurse = true;
           var nextTree = renderComponentRoot(instance);
           var prevTree = instance.subTree;
           instance.subTree = nextTree;
@@ -6879,7 +6444,17 @@ export default function vueFactory(exports) {
             queuePostRenderEffect(() => invokeVNodeHook(_vnodeHook, _parent, next, vnode), parentSuspense);
           }
         }
-      }, prodEffectOptions);
+      }; // create reactive effect for rendering
+
+
+      var effect = new ReactiveEffect(componentUpdateFn, () => queueJob(instance.update), instance.scope // track it in component's effect scope
+      );
+      var update = instance.update = effect.run.bind(effect);
+      update.id = instance.uid; // allowRecurse
+      // #1801, #2043 component render effects should allow recursive updates
+
+      effect.allowRecurse = update.allowRecurse = true;
+      update();
     };
 
     var updateComponentPreRender = (instance, nextVNode, optimized) => {
@@ -7401,7 +6976,7 @@ export default function vueFactory(exports) {
     var unmountComponent = (instance, parentSuspense, doRemove) => {
       var {
         bum,
-        effects,
+        scope,
         update,
         subTree,
         um
@@ -7409,18 +6984,15 @@ export default function vueFactory(exports) {
 
       if (bum) {
         invokeArrayFns(bum);
-      }
+      } // stop effects in component scope
 
-      if (effects) {
-        for (var i = 0; i < effects.length; i++) {
-          stop(effects[i]);
-        }
-      } // update may be null if a component is unmounted before its async
+
+      scope.stop(); // update may be null if a component is unmounted before its async
       // setup has resolved.
 
-
       if (update) {
-        stop(update);
+        // so that scheduler will no longer invoke it
+        update.active = false;
         unmount(subTree, instance, parentSuspense, doRemove);
       } // unmounted hook
 
@@ -7505,6 +7077,80 @@ export default function vueFactory(exports) {
     };
   }
 
+  function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
+    if (isArray(rawRef)) {
+      rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef), parentSuspense, vnode, isUnmount));
+      return;
+    }
+
+    if (isAsyncWrapper(vnode) && !isUnmount) {
+      // when mounting async components, nothing needs to be done,
+      // because the template ref is forwarded to inner component
+      return;
+    }
+
+    var refValue = vnode.shapeFlag & 4
+    /* STATEFUL_COMPONENT */
+    ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
+    var value = isUnmount ? null : refValue;
+    var {
+      i: owner,
+      r: ref
+    } = rawRef;
+    var oldRef = oldRawRef && oldRawRef.r;
+    var refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
+    var setupState = owner.setupState; // dynamic ref changed. unset old ref
+
+    if (oldRef != null && oldRef !== ref) {
+      if (isString(oldRef)) {
+        refs[oldRef] = null;
+
+        if (hasOwn(setupState, oldRef)) {
+          setupState[oldRef] = null;
+        }
+      } else if (isRef(oldRef)) {
+        oldRef.value = null;
+      }
+    }
+
+    if (isString(ref)) {
+      var doSet = () => {
+        {
+          refs[ref] = value;
+        }
+
+        if (hasOwn(setupState, ref)) {
+          setupState[ref] = value;
+        }
+      }; // #1789: for non-null values, set them after render
+      // null values means this is unmount and it should not overwrite another
+      // ref with the same key
+
+
+      if (value) {
+        doSet.id = -1;
+        queuePostRenderEffect(doSet, parentSuspense);
+      } else {
+        doSet();
+      }
+    } else if (isRef(ref)) {
+      var _doSet = () => {
+        ref.value = value;
+      };
+
+      if (value) {
+        _doSet.id = -1;
+        queuePostRenderEffect(_doSet, parentSuspense);
+      } else {
+        _doSet();
+      }
+    } else if (isFunction(ref)) {
+      callWithErrorHandling(ref, owner, 12
+      /* FUNCTION_REF */
+      , [value, refs]);
+    } else ;
+  }
+
   function invokeVNodeHook(hook, instance, vnode, prevVNode = null) {
     callWithAsyncErrorHandling(hook, instance, 7
     /* VNODE_HOOK */
@@ -7573,7 +7219,7 @@ export default function vueFactory(exports) {
         v = result.length - 1;
 
         while (u < v) {
-          c = (u + v) / 2 | 0;
+          c = u + v >> 1;
 
           if (arr[result[c]] < arrI) {
             u = c + 1;
@@ -7984,20 +7630,9 @@ export default function vueFactory(exports) {
   function setBlockTracking(value) {
     isBlockTreeEnabled += value;
   }
-  /**
-   * Create a block root vnode. Takes the same exact arguments as `createVNode`.
-   * A block root keeps track of dynamic nodes within the block in the
-   * `dynamicChildren` array.
-   *
-   * @private
-   */
 
-
-  function createBlock(type, props, children, patchFlag, dynamicProps) {
-    var vnode = createVNode(type, props, children, patchFlag, dynamicProps, true
-    /* isBlock: prevent a block from tracking itself */
-    ); // save current block children on the block vnode
-
+  function setupBlock(vnode) {
+    // save current block children on the block vnode
     vnode.dynamicChildren = isBlockTreeEnabled > 0 ? currentBlock || EMPTY_ARR : null; // close block
 
     closeBlock(); // a block is always going to be patched, so track it as a child of its
@@ -8008,6 +7643,30 @@ export default function vueFactory(exports) {
     }
 
     return vnode;
+  }
+  /**
+   * @private
+   */
+
+
+  function createElementBlock(type, props, children, patchFlag, dynamicProps, shapeFlag) {
+    return setupBlock(createBaseVNode(type, props, children, patchFlag, dynamicProps, shapeFlag, true
+    /* isBlock */
+    ));
+  }
+  /**
+   * Create a block root vnode. Takes the same exact arguments as `createVNode`.
+   * A block root keeps track of dynamic nodes within the block in the
+   * `dynamicChildren` array.
+   *
+   * @private
+   */
+
+
+  function createBlock(type, props, children, patchFlag, dynamicProps) {
+    return setupBlock(createVNode(type, props, children, patchFlag, dynamicProps, true
+    /* isBlock: prevent a block from tracking itself */
+    ));
   }
 
   function isVNode(value) {
@@ -8042,6 +7701,71 @@ export default function vueFactory(exports) {
     } : ref : null;
   };
 
+  function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1
+  /* ELEMENT */
+  , isBlockNode = false, needFullChildrenNormalization = false) {
+    var vnode = {
+      __v_isVNode: true,
+      __v_skip: true,
+      type,
+      props,
+      key: props && normalizeKey(props),
+      ref: props && normalizeRef(props),
+      scopeId: currentScopeId,
+      slotScopeIds: null,
+      children,
+      component: null,
+      suspense: null,
+      ssContent: null,
+      ssFallback: null,
+      dirs: null,
+      transition: null,
+      el: null,
+      anchor: null,
+      target: null,
+      targetAnchor: null,
+      staticCount: 0,
+      shapeFlag,
+      patchFlag,
+      dynamicProps,
+      dynamicChildren: null,
+      appContext: null
+    };
+
+    if (needFullChildrenNormalization) {
+      normalizeChildren(vnode, children); // normalize suspense children
+
+      if (shapeFlag & 128
+      /* SUSPENSE */
+      ) {
+        type.normalize(vnode);
+      }
+    } else if (children) {
+      // compiled element vnode - if children is passed, only possible types are
+      // string or Array.
+      vnode.shapeFlag |= isString(children) ? 8
+      /* TEXT_CHILDREN */
+      : 16
+      /* ARRAY_CHILDREN */
+      ;
+    } // track vnode for block tree
+
+
+    if (isBlockTreeEnabled > 0 && // avoid a block node from tracking itself
+    !isBlockNode && // has current parent block
+    currentBlock && (vnode.patchFlag > 0 || shapeFlag & 6
+    /* COMPONENT */
+    ) && // the EVENTS flag is only for hydration and if it is the only flag, the
+    // vnode should not be considered dynamic due to handler caching.
+    vnode.patchFlag !== 32
+    /* HYDRATE_EVENTS */
+    ) {
+      currentBlock.push(vnode);
+    }
+
+    return vnode;
+  }
+
   var createVNode = _createVNode;
 
   function _createVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, isBlockNode = false) {
@@ -8072,10 +7796,7 @@ export default function vueFactory(exports) {
 
     if (props) {
       // for reactive or proxy objects, we need to clone it to enable mutation.
-      if (isProxy(props) || InternalObjectKey in props) {
-        props = extend({}, props);
-      }
-
+      props = guardReactiveProps(props);
       var {
         class: klass,
         style
@@ -8108,53 +7829,12 @@ export default function vueFactory(exports) {
     : isFunction(type) ? 2
     /* FUNCTIONAL_COMPONENT */
     : 0;
-    var vnode = {
-      __v_isVNode: true,
-      __v_skip: true,
-      type,
-      props,
-      key: props && normalizeKey(props),
-      ref: props && normalizeRef(props),
-      scopeId: currentScopeId,
-      slotScopeIds: null,
-      children: null,
-      component: null,
-      suspense: null,
-      ssContent: null,
-      ssFallback: null,
-      dirs: null,
-      transition: null,
-      el: null,
-      anchor: null,
-      target: null,
-      targetAnchor: null,
-      shapeFlag,
-      patchFlag,
-      dynamicProps,
-      dynamicChildren: null,
-      appContext: null
-    };
-    normalizeChildren(vnode, children); // normalize suspense children
+    return createBaseVNode(type, props, children, patchFlag, dynamicProps, shapeFlag, isBlockNode, true);
+  }
 
-    if (shapeFlag & 128
-    /* SUSPENSE */
-    ) {
-      type.normalize(vnode);
-    }
-
-    if (isBlockTreeEnabled > 0 && // avoid a block node from tracking itself
-    !isBlockNode && // has current parent block
-    currentBlock && (patchFlag > 0 || shapeFlag & 6
-    /* COMPONENT */
-    ) && // the EVENTS flag is only for hydration and if it is the only flag, the
-    // vnode should not be considered dynamic due to handler caching.
-    patchFlag !== 32
-    /* HYDRATE_EVENTS */
-    ) {
-      currentBlock.push(vnode);
-    }
-
-    return vnode;
+  function guardReactiveProps(props) {
+    if (!props) return null;
+    return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
   }
 
   function cloneVNode(vnode, extraProps, mergeRef = false) {
@@ -8183,7 +7863,6 @@ export default function vueFactory(exports) {
       target: vnode.target,
       targetAnchor: vnode.targetAnchor,
       staticCount: vnode.staticCount,
-      staticCache: vnode.staticCache,
       shapeFlag: vnode.shapeFlag,
       // if the vnode is cloned with extra props, we can no longer assume its
       // existing patch flag to be reliable and need to add the FULL_PROPS flag.
@@ -8264,7 +7943,7 @@ export default function vueFactory(exports) {
 
 
   function cloneIfMounted(child) {
-    return child.el === null ? child : cloneVNode(child);
+    return child.el === null || child.memo ? child : cloneVNode(child);
   }
 
   function normalizeChildren(vnode, children) {
@@ -8355,9 +8034,9 @@ export default function vueFactory(exports) {
   }
 
   function mergeProps(...args) {
-    var ret = extend({}, args[0]);
+    var ret = {};
 
-    for (var i = 1; i < args.length; i++) {
+    for (var i = 0; i < args.length; i++) {
       var toMerge = args[i];
 
       for (var key in toMerge) {
@@ -8387,35 +8066,40 @@ export default function vueFactory(exports) {
    */
 
 
-  function renderList(source, renderItem) {
+  function renderList(source, renderItem, cache, index) {
     var ret;
+    var cached = cache && cache[index];
 
     if (isArray(source) || isString(source)) {
       ret = new Array(source.length);
 
       for (var i = 0, l = source.length; i < l; i++) {
-        ret[i] = renderItem(source[i], i);
+        ret[i] = renderItem(source[i], i, undefined, cached && cached[i]);
       }
     } else if (typeof source === 'number') {
       ret = new Array(source);
 
       for (var _i2 = 0; _i2 < source; _i2++) {
-        ret[_i2] = renderItem(_i2 + 1, _i2);
+        ret[_i2] = renderItem(_i2 + 1, _i2, undefined, cached && cached[_i2]);
       }
     } else if (isObject(source)) {
       if (source[Symbol.iterator]) {
-        ret = Array.from(source, renderItem);
+        ret = Array.from(source, (item, i) => renderItem(item, i, undefined, cached && cached[i]));
       } else {
         var keys = Object.keys(source);
         ret = new Array(keys.length);
 
         for (var _i3 = 0, _l = keys.length; _i3 < _l; _i3++) {
           var key = keys[_i3];
-          ret[_i3] = renderItem(source[key], key, _i3);
+          ret[_i3] = renderItem(source[key], key, _i3, cached && cached[_i3]);
         }
       }
     } else {
       ret = [];
+    }
+
+    if (cache) {
+      cache[index] = ret;
     }
 
     return ret;
@@ -8451,6 +8135,12 @@ export default function vueFactory(exports) {
   function renderSlot(slots, name, props = {}, // this is not a user-facing function, so the fallback is always generated by
   // the compiler and guaranteed to be a function returning an array
   fallback, noSlotted) {
+    if (currentRenderingInstance.isCE) {
+      return createVNode('slot', name === 'default' ? null : {
+        name
+      }, fallback && fallback());
+    }
+
     var slot = slots[name]; // a compiled slot disables block tracking by default to avoid manual
     // invocation interfering with template-based block tracking, but in
     // `renderSlot` we can be sure that it's template-based so we can force
@@ -8681,7 +8371,7 @@ export default function vueFactory(exports) {
     }
 
   };
-  var RuntimeCompiledPublicInstanceProxyHandlers = extend({}, PublicInstanceProxyHandlers, {
+  var RuntimeCompiledPublicInstanceProxyHandlers = /*#__PURE__*/extend({}, PublicInstanceProxyHandlers, {
     get(target, key) {
       // fast path for unscopables when using `with` block
       if (key === Symbol.unscopables) {
@@ -8698,14 +8388,14 @@ export default function vueFactory(exports) {
 
   });
   var emptyAppContext = createAppContext();
-  var uid$2 = 0;
+  var uid$1 = 0;
 
   function createComponentInstance(vnode, parent, suspense) {
     var type = vnode.type; // inherit parent app context - or - if root, adopt from root vnode
 
     var appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
     var instance = {
-      uid: uid$2++,
+      uid: uid$1++,
       vnode,
       type,
       parent,
@@ -8714,12 +8404,14 @@ export default function vueFactory(exports) {
       next: null,
       subTree: null,
       update: null,
+      scope: new EffectScope(true
+      /* detached */
+      ),
       render: null,
       proxy: null,
       exposed: null,
       exposeProxy: null,
       withProxy: null,
-      effects: null,
       provides: parent ? parent.provides : Object.create(appContext.provides),
       accessCache: null,
       renderCache: [],
@@ -8776,7 +8468,12 @@ export default function vueFactory(exports) {
       };
     }
     instance.root = parent ? parent.root : instance;
-    instance.emit = emit.bind(null, instance);
+    instance.emit = emit.bind(null, instance); // apply custom element special handling
+
+    if (vnode.ce) {
+      vnode.ce(instance);
+    }
+
     return instance;
   }
 
@@ -8786,6 +8483,12 @@ export default function vueFactory(exports) {
 
   var setCurrentInstance = instance => {
     currentInstance = instance;
+    instance.scope.on();
+  };
+
+  var unsetCurrentInstance = () => {
+    currentInstance && currentInstance.scope.off();
+    currentInstance = null;
   };
 
   function isStatefulComponent(instance) {
@@ -8824,20 +8527,16 @@ export default function vueFactory(exports) {
 
     if (setup) {
       var setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
-      currentInstance = instance;
+      setCurrentInstance(instance);
       pauseTracking();
       var setupResult = callWithErrorHandling(setup, instance, 0
       /* SETUP_FUNCTION */
       , [instance.props, setupContext]);
       resetTracking();
-      currentInstance = null;
+      unsetCurrentInstance();
 
       if (isPromise(setupResult)) {
-        var unsetInstance = () => {
-          currentInstance = null;
-        };
-
-        setupResult.then(unsetInstance, unsetInstance);
+        setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
 
         if (isSSR) {
           // return the promise so server-renderer can wait on it
@@ -8874,18 +8573,25 @@ export default function vueFactory(exports) {
     finishComponentSetup(instance);
   }
 
-  var compile; // dev only
-
-  var isRuntimeOnly = () => !compile;
+  var compile;
+  var installWithProxy;
   /**
    * For runtime-dom to register the compiler.
    * Note the exported method uses any to avoid d.ts relying on the compiler types.
    */
 
-
   function registerRuntimeCompiler(_compile) {
     compile = _compile;
-  }
+
+    installWithProxy = i => {
+      if (i.render._rc) {
+        i.withProxy = new Proxy(i.ctx, RuntimeCompiledPublicInstanceProxyHandlers);
+      }
+    };
+  } // dev only
+
+
+  var isRuntimeOnly = () => !compile;
 
   function finishComponentSetup(instance, isSSR, skipOptions) {
     var Component = instance.type; // template / render function normalization
@@ -8916,19 +8622,31 @@ export default function vueFactory(exports) {
       // proxy used needs a different `has` handler which is more performant and
       // also only allows a whitelist of globals to fallthrough.
 
-      if (instance.render._rc) {
-        instance.withProxy = new Proxy(instance.ctx, RuntimeCompiledPublicInstanceProxyHandlers);
+      if (installWithProxy) {
+        installWithProxy(instance);
       }
     } // support for 2.x options
 
 
     {
-      currentInstance = instance;
+      setCurrentInstance(instance);
       pauseTracking();
       applyOptions(instance);
       resetTracking();
-      currentInstance = null;
+      unsetCurrentInstance();
     }
+  }
+
+  function createAttrsProxy(instance) {
+    return new Proxy(instance.attrs, {
+      get(target, key) {
+        track(instance, "get"
+        /* GET */
+        , '$attrs');
+        return target[key];
+      }
+
+    });
   }
 
   function createSetupContext(instance) {
@@ -8936,9 +8654,13 @@ export default function vueFactory(exports) {
       instance.exposed = exposed || {};
     };
 
+    var attrs;
     {
       return {
-        attrs: instance.attrs,
+        get attrs() {
+          return attrs || (attrs = createAttrsProxy(instance));
+        },
+
         slots: instance.slots,
         emit: instance.emit,
         expose
@@ -8958,14 +8680,6 @@ export default function vueFactory(exports) {
         }
 
       }));
-    }
-  } // record effects created during a component's setup() so that they can be
-  // stopped when the component unmounts
-
-
-  function recordInstanceBoundEffect(effect, instance = currentInstance) {
-    if (instance) {
-      (instance.effects || (instance.effects = [])).push(effect);
     }
   }
 
@@ -9010,10 +8724,649 @@ export default function vueFactory(exports) {
     return isFunction(value) && '__vccOpts' in value;
   }
 
-  function computed$1(getterOrOptions) {
-    var c = computed(getterOrOptions);
-    recordInstanceBoundEffect(c.effect);
-    return c;
+  var stack = [];
+
+  function warn$1(msg, ...args) {
+    // avoid props formatting or warn handler tracking deps that might be mutated
+    // during patch, leading to infinite recursion.
+    pauseTracking();
+    var instance = stack.length ? stack[stack.length - 1].component : null;
+    var appWarnHandler = instance && instance.appContext.config.warnHandler;
+    var trace = getComponentTrace();
+
+    if (appWarnHandler) {
+      callWithErrorHandling(appWarnHandler, instance, 11
+      /* APP_WARN_HANDLER */
+      , [msg + args.join(''), instance && instance.proxy, trace.map(({
+        vnode
+      }) => "at <".concat(formatComponentName(instance, vnode.type), ">")).join('\n'), trace]);
+    } else {
+      var warnArgs = ["[Vue warn]: ".concat(msg), ...args];
+      /* istanbul ignore if */
+
+      if (trace.length && // avoid spamming console during tests
+      !false) {
+        warnArgs.push("\n", ...formatTrace(trace));
+      }
+
+      console.warn(...warnArgs);
+    }
+
+    resetTracking();
+  }
+
+  function getComponentTrace() {
+    var currentVNode = stack[stack.length - 1];
+
+    if (!currentVNode) {
+      return [];
+    } // we can't just use the stack because it will be incomplete during updates
+    // that did not start from the root. Re-construct the parent chain using
+    // instance parent pointers.
+
+
+    var normalizedStack = [];
+
+    while (currentVNode) {
+      var last = normalizedStack[0];
+
+      if (last && last.vnode === currentVNode) {
+        last.recurseCount++;
+      } else {
+        normalizedStack.push({
+          vnode: currentVNode,
+          recurseCount: 0
+        });
+      }
+
+      var parentInstance = currentVNode.component && currentVNode.component.parent;
+      currentVNode = parentInstance && parentInstance.vnode;
+    }
+
+    return normalizedStack;
+  }
+  /* istanbul ignore next */
+
+
+  function formatTrace(trace) {
+    var logs = [];
+    trace.forEach((entry, i) => {
+      logs.push(...(i === 0 ? [] : ["\n"]), ...formatTraceEntry(entry));
+    });
+    return logs;
+  }
+
+  function formatTraceEntry({
+    vnode,
+    recurseCount
+  }) {
+    var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
+    var isRoot = vnode.component ? vnode.component.parent == null : false;
+    var open = " at <".concat(formatComponentName(vnode.component, vnode.type, isRoot));
+    var close = ">" + postfix;
+    return vnode.props ? [open, ...formatProps(vnode.props), close] : [open + close];
+  }
+  /* istanbul ignore next */
+
+
+  function formatProps(props) {
+    var res = [];
+    var keys = Object.keys(props);
+    keys.slice(0, 3).forEach(key => {
+      res.push(...formatProp(key, props[key]));
+    });
+
+    if (keys.length > 3) {
+      res.push(" ...");
+    }
+
+    return res;
+  }
+  /* istanbul ignore next */
+
+
+  function formatProp(key, value, raw) {
+    if (isString(value)) {
+      value = JSON.stringify(value);
+      return raw ? value : ["".concat(key, "=").concat(value)];
+    } else if (typeof value === 'number' || typeof value === 'boolean' || value == null) {
+      return raw ? value : ["".concat(key, "=").concat(value)];
+    } else if (isRef(value)) {
+      value = formatProp(key, toRaw(value.value), true);
+      return raw ? value : ["".concat(key, "=Ref<"), value, ">"];
+    } else if (isFunction(value)) {
+      return ["".concat(key, "=fn").concat(value.name ? "<".concat(value.name, ">") : "")];
+    } else {
+      value = toRaw(value);
+      return raw ? value : ["".concat(key, "="), value];
+    }
+  }
+
+  function callWithErrorHandling(fn, instance, type, args) {
+    var res;
+
+    try {
+      res = args ? fn(...args) : fn();
+    } catch (err) {
+      handleError(err, instance, type);
+    }
+
+    return res;
+  }
+
+  function callWithAsyncErrorHandling(fn, instance, type, args) {
+    if (isFunction(fn)) {
+      var res = callWithErrorHandling(fn, instance, type, args);
+
+      if (res && isPromise(res)) {
+        res.catch(err => {
+          handleError(err, instance, type);
+        });
+      }
+
+      return res;
+    }
+
+    var values = [];
+
+    for (var i = 0; i < fn.length; i++) {
+      values.push(callWithAsyncErrorHandling(fn[i], instance, type, args));
+    }
+
+    return values;
+  }
+
+  function handleError(err, instance, type, throwInDev = true) {
+    var contextVNode = instance ? instance.vnode : null;
+
+    if (instance) {
+      var cur = instance.parent; // the exposed instance is the render proxy to keep it consistent with 2.x
+
+      var exposedInstance = instance.proxy; // in production the hook receives only the error code
+
+      var errorInfo = type;
+
+      while (cur) {
+        var errorCapturedHooks = cur.ec;
+
+        if (errorCapturedHooks) {
+          for (var i = 0; i < errorCapturedHooks.length; i++) {
+            if (errorCapturedHooks[i](err, exposedInstance, errorInfo) === false) {
+              return;
+            }
+          }
+        }
+
+        cur = cur.parent;
+      } // app-level handling
+
+
+      var appErrorHandler = instance.appContext.config.errorHandler;
+
+      if (appErrorHandler) {
+        callWithErrorHandling(appErrorHandler, null, 10
+        /* APP_ERROR_HANDLER */
+        , [err, exposedInstance, errorInfo]);
+        return;
+      }
+    }
+
+    logError(err, type, contextVNode, throwInDev);
+  }
+
+  function logError(err, type, contextVNode, throwInDev = true) {
+    {
+      // recover in prod to reduce the impact on end-user
+      console.error(err);
+    }
+  }
+
+  var isFlushing = false;
+  var isFlushPending = false;
+  var queue = [];
+  var flushIndex = 0;
+  var pendingPreFlushCbs = [];
+  var activePreFlushCbs = null;
+  var preFlushIndex = 0;
+  var pendingPostFlushCbs = [];
+  var activePostFlushCbs = null;
+  var postFlushIndex = 0; // fixed by xxxxxx iOS
+
+  var iOSPromise = {
+    then(callback) {
+      setTimeout(() => callback(), 0);
+    }
+
+  };
+  var isIOS = exports.platform === 'iOS';
+  var resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
+  var currentFlushPromise = null;
+  var currentPreFlushParentJob = null;
+  var RECURSION_LIMIT = 100;
+
+  function nextTick(fn) {
+    var p = currentFlushPromise || resolvedPromise;
+    return fn ? p.then(this ? fn.bind(this) : fn) : p;
+  } // #2768
+  // Use binary-search to find a suitable position in the queue,
+  // so that the queue maintains the increasing order of job's id,
+  // which can prevent the job from being skipped and also can avoid repeated patching.
+
+
+  function findInsertionIndex(id) {
+    // the start index should be `flushIndex + 1`
+    var start = flushIndex + 1;
+    var end = queue.length;
+
+    while (start < end) {
+      var middle = start + end >>> 1;
+      var middleJobId = getId(queue[middle]);
+      middleJobId < id ? start = middle + 1 : end = middle;
+    }
+
+    return start;
+  }
+
+  function queueJob(job) {
+    // the dedupe search uses the startIndex argument of Array.includes()
+    // by default the search index includes the current job that is being run
+    // so it cannot recursively trigger itself again.
+    // if the job is a watch() callback, the search will start with a +1 index to
+    // allow it recursively trigger itself - it is the user's responsibility to
+    // ensure it doesn't end up in an infinite loop.
+    if ((!queue.length || !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) && job !== currentPreFlushParentJob) {
+      if (job.id == null) {
+        queue.push(job);
+      } else {
+        queue.splice(findInsertionIndex(job.id), 0, job);
+      }
+
+      queueFlush();
+    }
+  }
+
+  function queueFlush() {
+    if (!isFlushing && !isFlushPending) {
+      isFlushPending = true;
+      currentFlushPromise = resolvedPromise.then(flushJobs);
+    }
+  }
+
+  function invalidateJob(job) {
+    var i = queue.indexOf(job);
+
+    if (i > flushIndex) {
+      queue.splice(i, 1);
+    }
+  }
+
+  function queueCb(cb, activeQueue, pendingQueue, index) {
+    if (!isArray(cb)) {
+      if (!activeQueue || !activeQueue.includes(cb, cb.allowRecurse ? index + 1 : index)) {
+        pendingQueue.push(cb);
+      }
+    } else {
+      // if cb is an array, it is a component lifecycle hook which can only be
+      // triggered by a job, which is already deduped in the main queue, so
+      // we can skip duplicate check here to improve perf
+      pendingQueue.push(...cb);
+    }
+
+    queueFlush();
+  }
+
+  function queuePreFlushCb(cb) {
+    queueCb(cb, activePreFlushCbs, pendingPreFlushCbs, preFlushIndex);
+  }
+
+  function queuePostFlushCb(cb) {
+    queueCb(cb, activePostFlushCbs, pendingPostFlushCbs, postFlushIndex);
+  }
+
+  function flushPreFlushCbs(seen, parentJob = null) {
+    if (pendingPreFlushCbs.length) {
+      currentPreFlushParentJob = parentJob;
+      activePreFlushCbs = [...new Set(pendingPreFlushCbs)];
+      pendingPreFlushCbs.length = 0;
+
+      for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
+        activePreFlushCbs[preFlushIndex]();
+      }
+
+      activePreFlushCbs = null;
+      preFlushIndex = 0;
+      currentPreFlushParentJob = null; // recursively flush until it drains
+
+      flushPreFlushCbs(seen, parentJob);
+    }
+  }
+
+  function flushPostFlushCbs(seen) {
+    if (pendingPostFlushCbs.length) {
+      var deduped = [...new Set(pendingPostFlushCbs)];
+      pendingPostFlushCbs.length = 0; // #1947 already has active queue, nested flushPostFlushCbs call
+
+      if (activePostFlushCbs) {
+        activePostFlushCbs.push(...deduped);
+        return;
+      }
+
+      activePostFlushCbs = deduped;
+      activePostFlushCbs.sort((a, b) => getId(a) - getId(b));
+
+      for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
+        activePostFlushCbs[postFlushIndex]();
+      }
+
+      activePostFlushCbs = null;
+      postFlushIndex = 0;
+    }
+  }
+
+  var getId = job => job.id == null ? Infinity : job.id;
+
+  function flushJobs(seen) {
+    isFlushPending = false;
+    isFlushing = true;
+    flushPreFlushCbs(seen); // Sort queue before flush.
+    // This ensures that:
+    // 1. Components are updated from parent to child. (because parent is always
+    //    created before the child so its render effect will have smaller
+    //    priority number)
+    // 2. If a component is unmounted during a parent component's update,
+    //    its update can be skipped.
+
+    queue.sort((a, b) => getId(a) - getId(b));
+
+    try {
+      for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
+        var job = queue[flushIndex];
+
+        if (job && job.active !== false) {
+          if ("production" !== 'production' && checkRecursiveUpdates(seen, job)) ; // console.log(`running:`, job.id)
+
+          callWithErrorHandling(job, null, 14
+          /* SCHEDULER */
+          );
+        }
+      }
+    } finally {
+      flushIndex = 0;
+      queue.length = 0;
+      flushPostFlushCbs();
+      isFlushing = false;
+      currentFlushPromise = null; // some postFlushCb queued jobs!
+      // keep flushing until it drains.
+
+      if (queue.length || pendingPreFlushCbs.length || pendingPostFlushCbs.length) {
+        flushJobs(seen);
+      }
+    }
+  }
+
+  function checkRecursiveUpdates(seen, fn) {
+    if (!seen.has(fn)) {
+      seen.set(fn, 1);
+    } else {
+      var count = seen.get(fn);
+
+      if (count > RECURSION_LIMIT) {
+        var instance = fn.ownerInstance;
+        var componentName = instance && getComponentName(instance.type);
+        warn$1("Maximum recursive updates exceeded".concat(componentName ? " in component <".concat(componentName, ">") : "", ". ") + "This means you have a reactive effect that is mutating its own " + "dependencies and thus recursively triggering itself. Possible sources " + "include component template, render function, updated hook or " + "watcher source function.");
+        return true;
+      } else {
+        seen.set(fn, count + 1);
+      }
+    }
+  } // Simple effect.
+
+
+  function watchEffect(effect, options) {
+    return doWatch(effect, null, options);
+  }
+
+  function watchPostEffect(effect, options) {
+    return doWatch(effect, null, {
+      flush: 'post'
+    });
+  }
+
+  function watchSyncEffect(effect, options) {
+    return doWatch(effect, null, {
+      flush: 'sync'
+    });
+  } // initial value for watchers to trigger on undefined initial values
+
+
+  var INITIAL_WATCHER_VALUE = {}; // implementation
+
+  function watch(source, cb, options) {
+    return doWatch(source, cb, options);
+  }
+
+  function doWatch(source, cb, {
+    immediate,
+    deep,
+    flush,
+    onTrack,
+    onTrigger
+  } = EMPTY_OBJ) {
+    var instance = currentInstance;
+    var getter;
+    var forceTrigger = false;
+    var isMultiSource = false;
+
+    if (isRef(source)) {
+      getter = () => source.value;
+
+      forceTrigger = !!source._shallow;
+    } else if (isReactive(source)) {
+      getter = () => source;
+
+      deep = true;
+    } else if (isArray(source)) {
+      isMultiSource = true;
+      forceTrigger = source.some(isReactive);
+
+      getter = () => source.map(s => {
+        if (isRef(s)) {
+          return s.value;
+        } else if (isReactive(s)) {
+          return traverse(s);
+        } else if (isFunction(s)) {
+          return callWithErrorHandling(s, instance, 2
+          /* WATCH_GETTER */
+          );
+        } else ;
+      });
+    } else if (isFunction(source)) {
+      if (cb) {
+        // getter with cb
+        getter = () => callWithErrorHandling(source, instance, 2
+        /* WATCH_GETTER */
+        );
+      } else {
+        // no cb -> simple effect
+        getter = () => {
+          if (instance && instance.isUnmounted) {
+            return;
+          }
+
+          if (cleanup) {
+            cleanup();
+          }
+
+          return callWithAsyncErrorHandling(source, instance, 3
+          /* WATCH_CALLBACK */
+          , [onInvalidate]);
+        };
+      }
+    } else {
+      getter = NOOP;
+    }
+
+    if (cb && deep) {
+      var baseGetter = getter;
+
+      getter = () => traverse(baseGetter());
+    }
+
+    var cleanup;
+
+    var onInvalidate = fn => {
+      cleanup = effect.onStop = () => {
+        callWithErrorHandling(fn, instance, 4
+        /* WATCH_CLEANUP */
+        );
+      };
+    };
+
+    var oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE;
+
+    var job = () => {
+      if (!effect.active) {
+        return;
+      }
+
+      if (cb) {
+        // watch(source, cb)
+        var newValue = effect.run();
+
+        if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue)) || false) {
+          // cleanup before running cb again
+          if (cleanup) {
+            cleanup();
+          }
+
+          callWithAsyncErrorHandling(cb, instance, 3
+          /* WATCH_CALLBACK */
+          , [newValue, // pass undefined as the old value when it's changed for the first time
+          oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue, onInvalidate]);
+          oldValue = newValue;
+        }
+      } else {
+        // watchEffect
+        effect.run();
+      }
+    }; // important: mark the job as a watcher callback so that scheduler knows
+    // it is allowed to self-trigger (#1727)
+
+
+    job.allowRecurse = !!cb;
+    var scheduler;
+
+    if (flush === 'sync') {
+      scheduler = job; // the scheduler function gets called directly
+    } else if (flush === 'post') {
+      scheduler = () => queuePostRenderEffect(job, instance && instance.suspense);
+    } else {
+      // default: 'pre'
+      scheduler = () => {
+        if (!instance || instance.isMounted) {
+          queuePreFlushCb(job);
+        } else {
+          // with 'pre' option, the first call must happen before
+          // the component is mounted so it is called synchronously.
+          job();
+        }
+      };
+    }
+
+    var effect = new ReactiveEffect(getter, scheduler); // initial run
+
+    if (cb) {
+      if (immediate) {
+        job();
+      } else {
+        oldValue = effect.run();
+      }
+    } else if (flush === 'post') {
+      queuePostRenderEffect(effect.run.bind(effect), instance && instance.suspense);
+    } else {
+      effect.run();
+    }
+
+    return () => {
+      effect.stop();
+
+      if (instance && instance.scope) {
+        remove(instance.scope.effects, effect);
+      }
+    };
+  } // this.$watch
+
+
+  function instanceWatch(source, value, options) {
+    var publicThis = this.proxy;
+    var getter = isString(source) ? source.includes('.') ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
+    var cb;
+
+    if (isFunction(value)) {
+      cb = value;
+    } else {
+      cb = value.handler;
+      options = value;
+    }
+
+    var cur = currentInstance;
+    setCurrentInstance(this);
+    var res = doWatch(getter, cb.bind(publicThis), options);
+
+    if (cur) {
+      setCurrentInstance(cur);
+    } else {
+      unsetCurrentInstance();
+    }
+
+    return res;
+  }
+
+  function createPathGetter(ctx, path) {
+    var segments = path.split('.');
+    return () => {
+      var cur = ctx;
+
+      for (var i = 0; i < segments.length && cur; i++) {
+        cur = cur[segments[i]];
+      }
+
+      return cur;
+    };
+  }
+
+  function traverse(value, seen = new Set()) {
+    if (!isObject(value) || value["__v_skip"
+    /* SKIP */
+    ]) {
+      return value;
+    }
+
+    seen = seen || new Set();
+
+    if (seen.has(value)) {
+      return value;
+    }
+
+    seen.add(value);
+
+    if (isRef(value)) {
+      traverse(value.value, seen);
+    } else if (isArray(value)) {
+      for (var i = 0; i < value.length; i++) {
+        traverse(value[i], seen);
+      }
+    } else if (isSet(value) || isMap(value)) {
+      value.forEach(v => {
+        traverse(v, seen);
+      });
+    } else if (isPlainObject(value)) {
+      for (var key in value) {
+        traverse(value[key], seen);
+      }
+    }
+
+    return value;
   } // implementation
 
 
@@ -9026,12 +9379,6 @@ export default function vueFactory(exports) {
     return null;
   }
   /**
-   * @deprecated use `defineEmits` instead.
-   */
-
-
-  var defineEmit = defineEmits;
-  /**
    * Vue `<script setup>` compiler macro for declaring a component's exposed
    * instance properties when it is accessed by a parent component via template
    * refs.
@@ -9043,6 +9390,7 @@ export default function vueFactory(exports) {
    * This is only usable inside `<script setup>`, is compiled away in the
    * output and should **not** be actually called at runtime.
    */
+
 
   function defineExpose(exposed) {}
   /**
@@ -9067,14 +9415,6 @@ export default function vueFactory(exports) {
 
   function withDefaults(props, defaults) {
     return null;
-  }
-  /**
-   * @deprecated use `useSlots` and `useAttrs` instead.
-   */
-
-
-  function useContext() {
-    return getContext();
   }
 
   function useSlots() {
@@ -9113,22 +9453,38 @@ export default function vueFactory(exports) {
     return props;
   }
   /**
-   * Runtime helper for storing and resuming current instance context in
-   * async setup().
+   * `<script setup>` helper for persisting the current instance context over
+   * async/await flows.
+   *
+   * `@vue/compiler-sfc` converts the following:
+   *
+   * ```ts
+   * const x = await foo()
+   * ```
+   *
+   * into:
+   *
+   * ```ts
+   * let __temp, __restore
+   * const x = (([__temp, __restore] = withAsyncContext(() => foo())),__temp=await __temp,__restore(),__temp)
+   * ```
+   * @internal
    */
 
 
-  function withAsyncContext(awaitable) {
+  function withAsyncContext(getAwaitable) {
     var ctx = getCurrentInstance();
-    setCurrentInstance(null); // unset after storing instance
+    var awaitable = getAwaitable();
+    unsetCurrentInstance();
 
-    return isPromise(awaitable) ? awaitable.then(res => {
-      setCurrentInstance(ctx);
-      return res;
-    }, err => {
-      setCurrentInstance(ctx);
-      throw err;
-    }) : awaitable;
+    if (isPromise(awaitable)) {
+      awaitable = awaitable.catch(e => {
+        setCurrentInstance(ctx);
+        throw e;
+      });
+    }
+
+    return [awaitable, () => setCurrentInstance(ctx)];
   } // Actual implementation
 
 
@@ -9166,7 +9522,7 @@ export default function vueFactory(exports) {
       var ctx = inject(ssrContextKey);
 
       if (!ctx) {
-        warn("Server rendering context not provided. Make sure to only call " + "useSSRContext() conditionally in the server build.");
+        warn$1("Server rendering context not provided. Make sure to only call " + "useSSRContext() conditionally in the server build.");
       }
 
       return ctx;
@@ -9178,16 +9534,74 @@ export default function vueFactory(exports) {
     {
       return;
     }
+  }
+
+  function withMemo(memo, render, cache, index) {
+    var cached = cache[index];
+
+    if (cached && isMemoSame(cached, memo)) {
+      return cached;
+    }
+
+    var ret = render(); // shallow clone
+
+    ret.memo = memo.slice();
+    return cache[index] = ret;
+  }
+
+  function isMemoSame(cached, memo) {
+    var prev = cached.memo;
+
+    if (prev.length != memo.length) {
+      return false;
+    }
+
+    for (var i = 0; i < prev.length; i++) {
+      if (prev[i] !== memo[i]) {
+        return false;
+      }
+    } // make sure to let parent block track it when returning cached
+
+
+    if (isBlockTreeEnabled > 0 && currentBlock) {
+      currentBlock.push(cached);
+    }
+
+    return true;
+  }
+
+  function $ref() {}
+
+  function $shallowRef(arg) {
+    return arg;
+  }
+
+  function $computed() {}
+
+  function $fromRefs() {
+    return null;
+  }
+
+  function $raw() {
+    return null;
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.1.4";
+  var version = "3.2.2";
+  var _ssrUtils = {
+    createComponentInstance,
+    setupComponent,
+    renderComponentRoot,
+    setCurrentRenderingInstance,
+    isVNode,
+    normalizeVNode
+  };
   /**
    * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
    * @internal
    */
 
-  var ssrUtils = null;
+  var ssrUtils = _ssrUtils;
   /**
    * @internal only exposed in compat builds
    */
@@ -10234,10 +10648,17 @@ export default function vueFactory(exports) {
 
   var Vue = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    $computed: $computed,
+    $fromRefs: $fromRefs,
+    $raw: $raw,
+    $ref: $ref,
+    $shallowRef: $shallowRef,
     BaseTransition: BaseTransition,
     Comment: Comment$1,
+    EffectScope: EffectScope,
     Fragment: Fragment,
     KeepAlive: KeepAlive,
+    ReactiveEffect: ReactiveEffect,
     Static: Static,
     Suspense: Suspense,
     Teleport: Teleport,
@@ -10250,12 +10671,14 @@ export default function vueFactory(exports) {
     capitalize: capitalize,
     cloneVNode: cloneVNode,
     compatUtils: compatUtils,
-    computed: computed$1,
+    computed: computed,
     createApp: createApp,
     createBlock: createBlock,
     createComment: createComment,
     createCommentVNode: createCommentVNode,
     createElement: createElement,
+    createElementBlock: createElementBlock,
+    createElementVNode: createBaseVNode,
     createHydrationRenderer: createHydrationRenderer,
     createRenderer: createRenderer,
     createSSRApp: createSSRApp,
@@ -10268,7 +10691,6 @@ export default function vueFactory(exports) {
     customRef: customRef,
     defineAsyncComponent: defineAsyncComponent,
     defineComponent: defineComponent,
-    defineEmit: defineEmit,
     defineEmits: defineEmits,
     defineExpose: defineExpose,
     defineProps: defineProps,
@@ -10277,8 +10699,12 @@ export default function vueFactory(exports) {
       return devtools;
     },
 
+    effect: effect,
+    effectScope: effectScope,
     getCurrentInstance: getCurrentInstance,
+    getCurrentScope: getCurrentScope,
     getTransitionRawChildren: getTransitionRawChildren,
+    guardReactiveProps: guardReactiveProps,
     h: h,
     handleError: handleError,
     initCustomFormatter: initCustomFormatter,
@@ -10289,6 +10715,7 @@ export default function vueFactory(exports) {
       return isInSSRComponentSetup;
     },
 
+    isMemoSame: isMemoSame,
     isProxy: isProxy,
     isReactive: isReactive,
     isReadonly: isReadonly,
@@ -10299,6 +10726,9 @@ export default function vueFactory(exports) {
     mergeDefaults: mergeDefaults,
     mergeProps: mergeProps,
     nextTick: nextTick,
+    normalizeClass: normalizeClass,
+    normalizeProps: normalizeProps,
+    normalizeStyle: normalizeStyle,
     onActivated: onActivated,
     onBeforeActivate: onBeforeActivate,
     onBeforeDeactivate: onBeforeDeactivate,
@@ -10310,6 +10740,7 @@ export default function vueFactory(exports) {
     onMounted: onMounted,
     onRenderTracked: onRenderTracked,
     onRenderTriggered: onRenderTriggered,
+    onScopeDispose: onScopeDispose,
     onServerPrefetch: onServerPrefetch,
     onUnmounted: onUnmounted,
     onUpdated: onUpdated,
@@ -10339,6 +10770,7 @@ export default function vueFactory(exports) {
     shallowRef: shallowRef,
     ssrContextKey: ssrContextKey,
     ssrUtils: ssrUtils,
+    stop: stop,
     toDisplayString: toDisplayString,
     toHandlerKey: toHandlerKey,
     toHandlers: toHandlers,
@@ -10349,7 +10781,6 @@ export default function vueFactory(exports) {
     triggerRef: triggerRef,
     unref: unref,
     useAttrs: useAttrs,
-    useContext: useContext,
     useCssModule: useCssModule,
     useCssVars: useCssVars,
     useSSRContext: useSSRContext,
@@ -10358,14 +10789,17 @@ export default function vueFactory(exports) {
     vModelText: vModelText,
     vShow: vShow,
     version: version,
-    warn: warn,
+    warn: warn$1,
     watch: watch,
     watchEffect: watchEffect,
+    watchPostEffect: watchPostEffect,
+    watchSyncEffect: watchSyncEffect,
     withAsyncContext: withAsyncContext,
     withCtx: withCtx,
     withDefaults: withDefaults,
     withDirectives: withDirectives,
     withKeys: withKeys,
+    withMemo: withMemo,
     withModifiers: withModifiers,
     withScopeId: withScopeId
   });

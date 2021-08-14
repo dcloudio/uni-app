@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementBlock, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { extend, isString, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
@@ -20839,36 +20839,39 @@ var _sfc_main = {
   }
 };
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = /* @__PURE__ */ createVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_3 = /* @__PURE__ */ createVNode("path", {
+const _hoisted_2 = ["fill"];
+const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
+const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
   d: "M0 0h24v24H0z",
   fill: "none"
 }, null, -1);
-const _hoisted_4 = {
+const _hoisted_5 = [
+  _hoisted_3,
+  _hoisted_4
+];
+const _hoisted_6 = {
   class: "uni-page-refresh__spinner",
   width: "24",
   height: "24",
   viewBox: "25 25 50 50"
 };
+const _hoisted_7 = ["stroke"];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-page-refresh", null, [
-    createVNode("div", {
-      style: { "margin-top": $setup.offset + "px" },
+  return openBlock(), createElementBlock("uni-page-refresh", null, [
+    createElementVNode("div", {
+      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
       class: "uni-page-refresh"
     }, [
-      createVNode("div", _hoisted_1, [
-        (openBlock(), createBlock("svg", {
+      createElementVNode("div", _hoisted_1, [
+        (openBlock(), createElementBlock("svg", {
           fill: $setup.color,
           class: "uni-page-refresh__icon",
           width: "24",
           height: "24",
           viewBox: "0 0 24 24"
-        }, [
-          _hoisted_2,
-          _hoisted_3
-        ], 8, ["fill"])),
-        (openBlock(), createBlock("svg", _hoisted_4, [
-          createVNode("circle", {
+        }, _hoisted_5, 8, _hoisted_2)),
+        (openBlock(), createElementBlock("svg", _hoisted_6, [
+          createElementVNode("circle", {
             stroke: $setup.color,
             class: "uni-page-refresh__path",
             cx: "50",
@@ -20877,7 +20880,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             fill: "none",
             "stroke-width": "4",
             "stroke-miterlimit": "10"
-          }, null, 8, ["stroke"])
+          }, null, 8, _hoisted_7)
         ]))
       ])
     ], 4)

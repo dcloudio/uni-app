@@ -57,7 +57,7 @@ function initScope(
     return plus.webview.getWebviewById(pageId + '')
   }
   vm.$getAppWebview = $getAppWebview
-  vm.$scope = {
+  ;(vm.$ as any).ctx!.$scope = {
     $getAppWebview,
   }
   vm.getOpenerEventChannel = () => {

@@ -10761,7 +10761,7 @@ var serviceContext = (function (vue) {
           return plus.webview.getWebviewById(pageId + '');
       };
       vm.$getAppWebview = $getAppWebview;
-      vm.$scope = {
+      vm.$.ctx.$scope = {
           $getAppWebview,
       };
       vm.getOpenerEventChannel = () => {
