@@ -16,7 +16,7 @@ import { walk } from 'estree-walker'
 import { extend } from '@vue/shared'
 import { MagicString } from '@vue/compiler-sfc'
 
-import { EXTNAME_JS, EXTNAME_VUE } from '../../constants'
+import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
 
 import {
   isProperty,
@@ -73,16 +73,20 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
     `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`,
     'g'
   )
-  const EXTNAMES = EXTNAME_JS.concat(EXTNAME_VUE)
   const sourceMap = options.sourceMap !== false
   const callback = options.callback
   return {
     name: 'vite:uni-inject',
     transform(code, id) {
       if (!filter(id)) return null
-      const { filename, query } = parseVueRequest(id)
-      if (query.vue || !EXTNAMES.includes(path.extname(filename))) {
-        return null
+      const isJs = EXTNAME_JS_RE.test(id)
+      if (!isJs) {
+        const { filename, query } = parseVueRequest(id)
+        const isVueJs =
+          EXTNAME_VUE.includes(path.extname(filename)) && !query.vue
+        if (!isVueJs) {
+          return null
+        }
       }
       debugInjectTry(id)
       if (code.search(firstpass) === -1) return null

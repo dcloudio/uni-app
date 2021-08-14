@@ -1,7 +1,8 @@
 export const PUBLIC_DIR = 'static'
-export const EXTNAME_JS = ['.js', '.ts']
+export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx']
 export const EXTNAME_VUE = ['.vue', '.nvue']
 export const EXTNAME_VUE_RE = /\.(vue|nvue)$/
+export const EXTNAME_JS_RE = /\.[jt]sx?$/
 
 // APP 平台解析页面后缀的优先级
 export const PAGE_EXTNAME_APP = ['.nvue', '.vue']
