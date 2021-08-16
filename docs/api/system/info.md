@@ -40,6 +40,7 @@
 |SDKVersion|客户端基础库版本|支付宝小程序和H5不支持|
 |swanNativeVersion|宿主平台版本号|百度小程序|
 |benchmarkLevel|设备性能等级。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50）|微信小程序Android版|
+|batteryLevel	|	剩余电量百分比（仅 iOS 有效）	|微信小程序|
 |albumAuthorized	|	允许微信使用相册的开关（仅 iOS 有效）	|微信小程序|
 |cameraAuthorized	|	允许微信使用摄像头的开关	|微信小程序|
 |locationAuthorized	|	允许微信使用定位的开关	|微信小程序|
