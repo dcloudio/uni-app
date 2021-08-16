@@ -16,4 +16,5 @@ export {
   ComponentDescriptor,
   ComponentDescriptorVm,
   getComponentDescriptor,
+  createComponentDescriptorVm,
 } from './plugin/componentWxs'

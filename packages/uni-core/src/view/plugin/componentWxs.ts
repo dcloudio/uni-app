@@ -13,14 +13,16 @@ import {
 
 export interface WxsElement extends HTMLElement {
   __id?: number
+  __ownerId?: number
+  __wxsVm?: ComponentDescriptorVm
   __wxsStyle: Record<string, string | number>
   __wxsAddClass: string[]
   __wxsRemoveClass: string[]
   __wxsState: Record<string, any>
   __wxsClassChanged: boolean
   __wxsStyleChanged: boolean
-  __vueParentComponent: ComponentInternalInstance // vue3 引擎内部，需要开放该属性
-  __wxsComponentDescriptor: ComponentDescriptor
+  __vueParentComponent?: ComponentInternalInstance // vue3 引擎内部，需要开放该属性
+  __wxsComponentDescriptor?: ComponentDescriptor
 }
 
 export interface ComponentDescriptorVm {
@@ -53,12 +55,11 @@ export class ComponentDescriptor {
     if (!this.$el || !selector) {
       return
     }
-    const el = this.$el.querySelector(selector) as WxsElement
-    return (
-      el &&
-      el.__vueParentComponent &&
-      createComponentDescriptor(el.__vueParentComponent.proxy!, false)
-    )
+    const wxsVm = getWxsVm(this.$el.querySelector(selector) as WxsElement)
+    if (!wxsVm) {
+      return
+    }
+    return createComponentDescriptor(wxsVm, false)
   }
 
   selectAllComponents(selector: string) {
@@ -68,11 +69,10 @@ export class ComponentDescriptor {
     const descriptors = []
     const els = this.$el.querySelectorAll(selector)
     for (let i = 0; i < els.length; i++) {
-      const el = els[i] as WxsElement
-      el.__vueParentComponent &&
-        descriptors.push(
-          createComponentDescriptor(el.__vueParentComponent.proxy!, false)
-        )
+      const wxsVm = getWxsVm(els[i] as WxsElement)
+      if (wxsVm) {
+        descriptors.push(createComponentDescriptor(wxsVm, false))
+      }
     }
     return descriptors
   }
@@ -276,4 +276,65 @@ export function wrapperH5WxsEvent(
       return [event, getComponentDescriptor(ownerVm, false)]
     }
   }
+}
+
+function getWxsVm(el: WxsElement) {
+  if (!el) {
+    return
+  }
+  if (__PLATFORM__ === 'app') {
+    return createComponentDescriptorVm(el)
+  } else if (__PLATFORM__ === 'h5') {
+    return el.__vueParentComponent && el.__vueParentComponent.proxy!
+  }
+}
+
+export function createComponentDescriptorVm(
+  el: WxsElement
+): ComponentDescriptorVm {
+  return (
+    el.__wxsVm ||
+    (el.__wxsVm = {
+      ownerId: el.__ownerId,
+      $el: el,
+      $emit() {},
+      $forceUpdate() {
+        const {
+          __wxsStyle,
+          __wxsAddClass,
+          __wxsRemoveClass,
+          __wxsStyleChanged,
+          __wxsClassChanged,
+        } = el
+        let updateClass: () => void
+        let updateStyle: () => void
+        if (__wxsStyleChanged) {
+          el.__wxsStyleChanged = false
+          __wxsStyle &&
+            (updateStyle = () => {
+              Object.keys(__wxsStyle).forEach((n) => {
+                el.style[n as any] = __wxsStyle[n] as string
+              })
+            })
+        }
+        if (__wxsClassChanged) {
+          el.__wxsClassChanged = false
+          updateClass = () => {
+            __wxsRemoveClass &&
+              __wxsRemoveClass.forEach((clazz) => {
+                el.classList.remove(clazz)
+              })
+            __wxsAddClass &&
+              __wxsAddClass.forEach((clazz) => {
+                el.classList.add(clazz)
+              })
+          }
+        }
+        requestAnimationFrame(() => {
+          updateClass && updateClass()
+          updateStyle && updateStyle()
+        })
+      },
+    } as unknown as ComponentDescriptorVm)
+  )
 }

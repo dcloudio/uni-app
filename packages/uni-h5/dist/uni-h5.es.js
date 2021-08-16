@@ -884,8 +884,11 @@ class ComponentDescriptor {
     if (!this.$el || !selector) {
       return;
     }
-    const el = this.$el.querySelector(selector);
-    return el && el.__vueParentComponent && createComponentDescriptor(el.__vueParentComponent.proxy, false);
+    const wxsVm = getWxsVm(this.$el.querySelector(selector));
+    if (!wxsVm) {
+      return;
+    }
+    return createComponentDescriptor(wxsVm, false);
   }
   selectAllComponents(selector) {
     if (!this.$el || !selector) {
@@ -894,8 +897,10 @@ class ComponentDescriptor {
     const descriptors = [];
     const els = this.$el.querySelectorAll(selector);
     for (let i = 0; i < els.length; i++) {
-      const el = els[i];
-      el.__vueParentComponent && descriptors.push(createComponentDescriptor(el.__vueParentComponent.proxy, false));
+      const wxsVm = getWxsVm(els[i]);
+      if (wxsVm) {
+        descriptors.push(createComponentDescriptor(wxsVm, false));
+      }
     }
     return descriptors;
   }
@@ -1062,6 +1067,14 @@ function wrapperH5WxsEvent(event, eventValue, instance2) {
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)];
     }
+  }
+}
+function getWxsVm(el) {
+  if (!el) {
+    return;
+  }
+  {
+    return el.__vueParentComponent && el.__vueParentComponent.proxy;
   }
 }
 const isClickEvent = (val) => val.type === "click";
@@ -11488,7 +11501,6 @@ function useScrollViewState(props2) {
   };
 }
 function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
-  let _lastScrollTime = 0;
   let beforeRefreshing = false;
   let toUpperNumber = 0;
   let triggerAbort = false;
@@ -11532,48 +11544,45 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _content.style.webkitTransform = transform;
   }
   function _handleScroll($event) {
-    if ($event.timeStamp - _lastScrollTime > 20) {
-      _lastScrollTime = $event.timeStamp;
-      const target = $event.target;
-      trigger("scroll", $event, {
-        scrollLeft: target.scrollLeft,
-        scrollTop: target.scrollTop,
-        scrollHeight: target.scrollHeight,
-        scrollWidth: target.scrollWidth,
-        deltaX: state2.lastScrollLeft - target.scrollLeft,
-        deltaY: state2.lastScrollTop - target.scrollTop
-      });
-      if (props2.scrollY) {
-        if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
-          trigger("scrolltoupper", $event, {
-            direction: "top"
-          });
-          state2.lastScrollToUpperTime = $event.timeStamp;
-        }
-        if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state2.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
-          trigger("scrolltolower", $event, {
-            direction: "bottom"
-          });
-          state2.lastScrollToLowerTime = $event.timeStamp;
-        }
+    const target = $event.target;
+    trigger("scroll", $event, {
+      scrollLeft: target.scrollLeft,
+      scrollTop: target.scrollTop,
+      scrollHeight: target.scrollHeight,
+      scrollWidth: target.scrollWidth,
+      deltaX: state2.lastScrollLeft - target.scrollLeft,
+      deltaY: state2.lastScrollTop - target.scrollTop
+    });
+    if (props2.scrollY) {
+      if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+        trigger("scrolltoupper", $event, {
+          direction: "top"
+        });
+        state2.lastScrollToUpperTime = $event.timeStamp;
       }
-      if (props2.scrollX) {
-        if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
-          trigger("scrolltoupper", $event, {
-            direction: "left"
-          });
-          state2.lastScrollToUpperTime = $event.timeStamp;
-        }
-        if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state2.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
-          trigger("scrolltolower", $event, {
-            direction: "right"
-          });
-          state2.lastScrollToLowerTime = $event.timeStamp;
-        }
+      if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state2.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+        trigger("scrolltolower", $event, {
+          direction: "bottom"
+        });
+        state2.lastScrollToLowerTime = $event.timeStamp;
       }
-      state2.lastScrollTop = target.scrollTop;
-      state2.lastScrollLeft = target.scrollLeft;
     }
+    if (props2.scrollX) {
+      if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+        trigger("scrolltoupper", $event, {
+          direction: "left"
+        });
+        state2.lastScrollToUpperTime = $event.timeStamp;
+      }
+      if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state2.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+        trigger("scrolltolower", $event, {
+          direction: "right"
+        });
+        state2.lastScrollToLowerTime = $event.timeStamp;
+      }
+    }
+    state2.lastScrollTop = target.scrollTop;
+    state2.lastScrollLeft = target.scrollLeft;
   }
   function _scrollTopChanged(val) {
     if (props2.scrollY) {

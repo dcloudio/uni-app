@@ -6,7 +6,7 @@ import {
   WXS_MODULES,
 } from '@dcloudio/uni-shared'
 import {
-  ComponentDescriptorVm,
+  createComponentDescriptorVm,
   getComponentDescriptor,
 } from '@dcloudio/uni-core'
 import { UniCustomElement } from './components'
@@ -170,52 +170,4 @@ function wrapperWxsEvent(event: Record<string, any>, el: UniCustomElement) {
     },
   })
   return event
-}
-
-function createComponentDescriptorVm(el: UniCustomElement) {
-  return (
-    el.__wxsVm ||
-    (el.__wxsVm = {
-      ownerId: el.__ownerId,
-      $el: el,
-      $emit() {},
-      $forceUpdate() {
-        const {
-          __wxsStyle,
-          __wxsAddClass,
-          __wxsRemoveClass,
-          __wxsStyleChanged,
-          __wxsClassChanged,
-        } = el
-        let updateClass: () => void
-        let updateStyle: () => void
-        if (__wxsStyleChanged) {
-          el.__wxsStyleChanged = false
-          __wxsStyle &&
-            (updateStyle = () => {
-              Object.keys(__wxsStyle).forEach((n) => {
-                el.style[n as any] = __wxsStyle[n] as string
-              })
-            })
-        }
-        if (__wxsClassChanged) {
-          el.__wxsClassChanged = false
-          updateClass = () => {
-            __wxsRemoveClass &&
-              __wxsRemoveClass.forEach((clazz) => {
-                el.classList.remove(clazz)
-              })
-            __wxsAddClass &&
-              __wxsAddClass.forEach((clazz) => {
-                el.classList.add(clazz)
-              })
-          }
-        }
-        requestAnimationFrame(() => {
-          updateClass && updateClass()
-          updateStyle && updateStyle()
-        })
-      },
-    } as unknown as ComponentDescriptorVm)
-  )
 }
