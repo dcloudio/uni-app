@@ -313,12 +313,14 @@ class CanvasGradient {
   }
 }
 class Pattern {
-  image: string
-  repetition: string
+  type: string
+  data: string
+  colorStop: string
 
   constructor(image: string, repetition: string) {
-    this.image = image
-    this.repetition = repetition
+    this.type = 'pattern'
+    this.data = image
+    this.colorStop = repetition
   }
 }
 class TextMetrics {

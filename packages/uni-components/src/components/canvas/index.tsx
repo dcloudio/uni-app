@@ -213,10 +213,10 @@ function useMethods(
   } = {}
 
   function _resize() {
-    var canvas = canvasRef.value!
+    let canvas = canvasRef.value!
     if (canvas.width > 0 && canvas.height > 0) {
-      var context = canvas.getContext('2d')!
-      var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+      let context = canvas.getContext('2d')!
+      let imageData = context.getImageData(0, 0, canvas.width, canvas.height)
       wrapper(canvas)
       context.putImageData(imageData, 0, 0)
     } else {
@@ -240,8 +240,8 @@ function useMethods(
       _actionsDefer.push([actions, reserve])
       return
     }
-    var canvas = canvasRef.value!
-    var c2d = canvas.getContext('2d')!
+    let canvas = canvasRef.value!
+    let c2d = canvas.getContext('2d')!
     if (!reserve) {
       c2d.fillStyle = '#000000'
       c2d.strokeStyle = '#000000'
@@ -260,36 +260,39 @@ function useMethods(
       >
       const action = actions[index]
       let method = action.method
-      const data = action.data as Array<string | LinearGradient | MultipleArray>
+      const data = action.data
+      const actionType = data[0]
       if (/^set/.test(method) && method !== 'setTransform') {
         const method1 = method[3].toLowerCase() + method.slice(4)
         let color: CanvasGradient | string
         if (method1 === 'fillStyle' || method1 === 'strokeStyle') {
-          if (data[0] === 'normal') {
+          if (actionType === 'normal') {
             color = resolveColor(data[1] as number[])
-          } else if (data[0] === 'linear') {
+          } else if (actionType === 'linear') {
             const LinearGradient = c2d.createLinearGradient(
               ...(data[1] as LinearGradient)
             )
-            ;(data[2] as MultipleArray).forEach(function (data2) {
+            ;(data[2] as unknown as MultipleArray).forEach(function (data2) {
               const offset = data2[0] as number
               const color = resolveColor(data2[1] as number[])
               LinearGradient.addColorStop(offset, color)
             })
             color = LinearGradient
-          } else if (data[0] === 'radial') {
-            const x = data[1][0] as number
-            const y = data[1][1] as number
-            const r = data[1][2] as number
+          } else if (actionType === 'radial') {
+            let _data = data[1] as number[]
+            const x = _data[0]
+            const y = _data[1]
+            const r = _data[2]
             const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r)
-            // @ts-ignore
-            data[2].forEach(function (data2) {
+            ;(data[2] as unknown as [number, number[]][]).forEach(function (
+              data2
+            ) {
               const offset = data2[0]
               const color = resolveColor(data2[1])
               LinearGradient.addColorStop(offset, color)
             })
             color = LinearGradient
-          } else if (data[0] === 'pattern') {
+          } else if (actionType === 'pattern') {
             const loaded = checkImageLoaded(
               data[1] as string,
               actions.slice(index + 1),
@@ -307,60 +310,54 @@ function useMethods(
           }
           c2d[method1] = color!
         } else if (method1 === 'globalAlpha') {
-          c2d[method1] = Number(data[0]) / 255
+          c2d[method1] = Number(actionType) / 255
         } else if (method1 === 'shadow') {
-          var _ = [
+          let shadowArray = [
             'shadowOffsetX',
             'shadowOffsetY',
             'shadowBlur',
             'shadowColor',
           ]
           data.forEach(function (color_, method_) {
-            // @ts-ignore
-            c2d[_[method_]] =
-              // @ts-ignore
-              _[method_] === 'shadowColor' ? resolveColor(color_) : color_
+            ;(c2d as any)[shadowArray[method_]] =
+              shadowArray[method_] === 'shadowColor'
+                ? resolveColor(color_ as number[])
+                : color_
           })
         } else if (method1 === 'fontSize') {
-          // @ts-ignore
-          const font = c2d.__font__ || c2d.font
-          // @ts-ignore
-          c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, data[0] + 'px')
+          const font = (c2d as any).__font__ || c2d.font
+          ;(c2d as any).__font__ = c2d.font = font.replace(
+            /\d+\.?\d*px/,
+            actionType + 'px'
+          )
         } else if (method1 === 'lineDash') {
-          // @ts-ignore
-          c2d.setLineDash(data[0])
-          // @ts-ignore
-          c2d.lineDashOffset = data[1] || 0
+          c2d.setLineDash(actionType as number[])
+          c2d.lineDashOffset = (data[1] as number) || 0
         } else if (method1 === 'textBaseline') {
-          if (data[0] === 'normal') {
+          if (actionType === 'normal') {
             data[0] = 'alphabetic'
           }
-          // @ts-ignore
-          c2d[method1] = data[0]
+          ;(c2d as any)[method1] = actionType
         } else if (method1 === 'font') {
-          // @ts-ignore
-          c2d.__font__ = c2d.font = data[0]
+          ;(c2d as any).__font__ = c2d.font = actionType as string
         } else {
-          // @ts-ignore
-          c2d[method1] = data[0]
+          ;(c2d as any)[method1] = actionType
         }
       } else if (method === 'fillPath' || method === 'strokePath') {
         method = method.replace(/Path/, '')
         c2d.beginPath()
-        data.forEach(function (data_) {
-          // @ts-ignore
-          c2d[data_.method].apply(c2d, data_.data)
+        ;(data as Actions).forEach(function (data_) {
+          ;(c2d as any)[data_.method].apply(c2d, data_.data)
         })
-        // @ts-ignore
-        c2d[method]()
+        ;(c2d as any)[method]()
       } else if (method === 'fillText') {
         // @ts-ignore
         c2d.fillText.apply(c2d, data)
       } else if (method === 'drawImage') {
-        var A = (function () {
-          var dataArray = [...data]
-          var url = dataArray[0] as string
-          var otherData = dataArray.slice(1)
+        let drawImage = (function () {
+          let dataArray = [...data]
+          let url = dataArray[0] as string
+          let otherData = dataArray.slice(1)
           _images = _images || {}
           if (
             checkImageLoaded(
@@ -384,7 +381,7 @@ function useMethods(
           )
             return 'break'
         })()
-        if (A === 'break') {
+        if (drawImage === 'break') {
           break
         }
       } else {
@@ -408,9 +405,9 @@ function useMethods(
   }
   function preloadImage(actions: Actions) {
     actions.forEach(function (action) {
-      var method = action.method
-      var data = action.data
-      var src = ''
+      let method = action.method
+      let data = action.data
+      let src = ''
       if (method === 'drawImage') {
         src = data[0] as string
         src = $getRealPath(src)
@@ -458,7 +455,7 @@ function useMethods(
     resolve: (res: any) => void,
     fn: (a: CanvasImageSource) => void
   ) {
-    var image = _images[src]
+    let image = _images[src]
     if (image.ready) {
       fn(image)
       return true
@@ -469,9 +466,9 @@ function useMethods(
         image.ready = true
         fn(image)
         actionsWaiting.value = false
-        var actions = _actionsDefer.slice(0)
+        let actions = _actionsDefer.slice(0)
         _actionsDefer = []
-        for (var action = actions.shift(); action; ) {
+        for (let action = actions.shift(); action; ) {
           actionsChanged(
             {
               actions: action[0],
