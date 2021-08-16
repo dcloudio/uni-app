@@ -8,7 +8,6 @@ import {
   createApp,
   openBlock,
   createBlock,
-  mergeProps,
 } from 'vue'
 
 import { useKeyboard } from '../../../../helpers/useKeyboard'
@@ -25,7 +24,7 @@ export function createRootApp(
   rootState: Record<string, any>,
   callback: (...args: any[]) => void
 ) {
-  const onClose = (...args: any[]) => (
+  rootState.onClose = (...args: any[]) => (
     (rootState.visible = false), callback.apply(null, args)
   )
   return createApp(
@@ -33,15 +32,7 @@ export function createRootApp(
       setup() {
         return () => (
           openBlock(),
-          createBlock(
-            component,
-            mergeProps(
-              {
-                onClose,
-              },
-              rootState
-            )
-          )
+          createBlock(component, rootState, null, 16 /* FULL_PROPS */)
         )
       },
     })
