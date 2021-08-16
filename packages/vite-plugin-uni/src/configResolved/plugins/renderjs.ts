@@ -26,11 +26,14 @@ ${code}
 </script>`
         )
       }
-      return `${rewriteDefault(
-        code.replace(/module\.exports\s*=/, 'export default '),
-        '_sfc_' + type
-      )}
-${type === 'renderjs' ? genRenderjsCode(name) : genWxsCode(name)}`
+      return {
+        code: `${rewriteDefault(
+          code.replace(/module\.exports\s*=/, 'export default '),
+          '_sfc_' + type
+        )}
+  ${type === 'renderjs' ? genRenderjsCode(name) : genWxsCode(name)}`,
+        map: null,
+      }
     },
   }
 }

@@ -68,10 +68,13 @@ export function uniRenderjsPlugin(): Plugin {
       }
       changed = true
       debugRenderjs(type, modulePath, moduleHashId)
-      return `export default Comp => {
-        ;(Comp.$${type} || (Comp.$${type} = [])).push('${name}')
-        ;(Comp.$${globalName} || (Comp.$${globalName} = {}))['${name}'] = '${moduleHashId}'
-      }`
+      return {
+        code: `export default Comp => {
+          ;(Comp.$${type} || (Comp.$${type} = [])).push('${name}')
+          ;(Comp.$${globalName} || (Comp.$${globalName} = {}))['${name}'] = '${moduleHashId}'
+        }`,
+        map: null,
+      }
     },
     generateBundle() {
       if (!changed) {

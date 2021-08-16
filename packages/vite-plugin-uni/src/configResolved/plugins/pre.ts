@@ -23,11 +23,11 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
     name: 'vite:uni-pre',
     transform(code, id) {
       if (!filter(id)) {
-        return code
+        return
       }
       const { filename, query } = parseVueRequest(id)
       if (query.vue && query.type !== 'template') {
-        return code
+        return
       }
       const extname = path.extname(filename)
       const isHtml =

@@ -22,14 +22,17 @@ export function uniPreCssPlugin(options: UniPluginFilterOptions): Plugin {
         return
       }
       if (!filter(id)) {
-        return code
+        return
       }
       debugPreTry(id)
       if (!code.includes('#endif')) {
         return
       }
       debugPre(id)
-      return preJs(code)
+      return {
+        code: preJs(code),
+        map: this.getCombinedSourcemap(),
+      }
     },
   }
 }

@@ -14,6 +14,7 @@ export function buildOptions(): UserConfig['build'] {
     emptyDir(process.env.UNI_OUTPUT_DIR)
   }
   return {
+    // sourcemap: 'inline',
     emptyOutDir: false, // 不清空输出目录，否则会影响 webpack 的输出
     assetsInlineLimit: 0,
     rollupOptions: {

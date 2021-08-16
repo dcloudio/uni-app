@@ -3258,8 +3258,9 @@ class CanvasGradient {
 }
 class Pattern {
   constructor(image2, repetition) {
-    this.image = image2;
-    this.repetition = repetition;
+    this.type = "pattern";
+    this.data = image2;
+    this.colorStop = repetition;
   }
 }
 class TextMetrics {
@@ -6179,10 +6180,10 @@ function useMethods(canvasRef, actionsWaiting) {
   let _actionsDefer = [];
   let _images = {};
   function _resize() {
-    var canvas = canvasRef.value;
+    let canvas = canvasRef.value;
     if (canvas.width > 0 && canvas.height > 0) {
-      var context = canvas.getContext("2d");
-      var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      let context = canvas.getContext("2d");
+      let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
       wrapper(canvas);
       context.putImageData(imageData, 0, 0);
     } else {
@@ -6200,8 +6201,8 @@ function useMethods(canvasRef, actionsWaiting) {
       _actionsDefer.push([actions, reserve]);
       return;
     }
-    var canvas = canvasRef.value;
-    var c2d = canvas.getContext("2d");
+    let canvas = canvasRef.value;
+    let c2d = canvas.getContext("2d");
     if (!reserve) {
       c2d.fillStyle = "#000000";
       c2d.strokeStyle = "#000000";
@@ -6217,13 +6218,14 @@ function useMethods(canvasRef, actionsWaiting) {
       const action = actions[index2];
       let method = action.method;
       const data = action.data;
+      const actionType = data[0];
       if (/^set/.test(method) && method !== "setTransform") {
         const method1 = method[3].toLowerCase() + method.slice(4);
         let color;
         if (method1 === "fillStyle" || method1 === "strokeStyle") {
-          if (data[0] === "normal") {
+          if (actionType === "normal") {
             color = resolveColor(data[1]);
-          } else if (data[0] === "linear") {
+          } else if (actionType === "linear") {
             const LinearGradient = c2d.createLinearGradient(...data[1]);
             data[2].forEach(function(data2) {
               const offset = data2[0];
@@ -6231,10 +6233,11 @@ function useMethods(canvasRef, actionsWaiting) {
               LinearGradient.addColorStop(offset, color2);
             });
             color = LinearGradient;
-          } else if (data[0] === "radial") {
-            const x = data[1][0];
-            const y = data[1][1];
-            const r = data[1][2];
+          } else if (actionType === "radial") {
+            let _data = data[1];
+            const x = _data[0];
+            const y = _data[1];
+            const r = _data[2];
             const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r);
             data[2].forEach(function(data2) {
               const offset = data2[0];
@@ -6242,7 +6245,7 @@ function useMethods(canvasRef, actionsWaiting) {
               LinearGradient.addColorStop(offset, color2);
             });
             color = LinearGradient;
-          } else if (data[0] === "pattern") {
+          } else if (actionType === "pattern") {
             const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve, function(image2) {
               if (image2) {
                 c2d[method1] = c2d.createPattern(image2, data[2]);
@@ -6255,27 +6258,27 @@ function useMethods(canvasRef, actionsWaiting) {
           }
           c2d[method1] = color;
         } else if (method1 === "globalAlpha") {
-          c2d[method1] = Number(data[0]) / 255;
+          c2d[method1] = Number(actionType) / 255;
         } else if (method1 === "shadow") {
-          var _ = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
+          let shadowArray = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
           data.forEach(function(color_, method_) {
-            c2d[_[method_]] = _[method_] === "shadowColor" ? resolveColor(color_) : color_;
+            c2d[shadowArray[method_]] = shadowArray[method_] === "shadowColor" ? resolveColor(color_) : color_;
           });
         } else if (method1 === "fontSize") {
           const font2 = c2d.__font__ || c2d.font;
-          c2d.__font__ = c2d.font = font2.replace(/\d+\.?\d*px/, data[0] + "px");
+          c2d.__font__ = c2d.font = font2.replace(/\d+\.?\d*px/, actionType + "px");
         } else if (method1 === "lineDash") {
-          c2d.setLineDash(data[0]);
+          c2d.setLineDash(actionType);
           c2d.lineDashOffset = data[1] || 0;
         } else if (method1 === "textBaseline") {
-          if (data[0] === "normal") {
+          if (actionType === "normal") {
             data[0] = "alphabetic";
           }
-          c2d[method1] = data[0];
+          c2d[method1] = actionType;
         } else if (method1 === "font") {
-          c2d.__font__ = c2d.font = data[0];
+          c2d.__font__ = c2d.font = actionType;
         } else {
-          c2d[method1] = data[0];
+          c2d[method1] = actionType;
         }
       } else if (method === "fillPath" || method === "strokePath") {
         method = method.replace(/Path/, "");
@@ -6287,10 +6290,10 @@ function useMethods(canvasRef, actionsWaiting) {
       } else if (method === "fillText") {
         c2d.fillText.apply(c2d, data);
       } else if (method === "drawImage") {
-        var A = function() {
-          var dataArray = [...data];
-          var url = dataArray[0];
-          var otherData = dataArray.slice(1);
+        let drawImage = function() {
+          let dataArray = [...data];
+          let url = dataArray[0];
+          let otherData = dataArray.slice(1);
           _images = _images || {};
           if (checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image2) {
             if (image2) {
@@ -6299,7 +6302,7 @@ function useMethods(canvasRef, actionsWaiting) {
           }))
             return "break";
         }();
-        if (A === "break") {
+        if (drawImage === "break") {
           break;
         }
       } else {
@@ -6321,9 +6324,9 @@ function useMethods(canvasRef, actionsWaiting) {
   }
   function preloadImage(actions) {
     actions.forEach(function(action) {
-      var method = action.method;
-      var data = action.data;
-      var src = "";
+      let method = action.method;
+      let data = action.data;
+      let src = "";
       if (method === "drawImage") {
         src = data[0];
         src = $getRealPath(src);
@@ -6350,7 +6353,7 @@ function useMethods(canvasRef, actionsWaiting) {
     });
   }
   function checkImageLoaded(src, actions, resolve, fn) {
-    var image2 = _images[src];
+    let image2 = _images[src];
     if (image2.ready) {
       fn(image2);
       return true;
@@ -6361,9 +6364,9 @@ function useMethods(canvasRef, actionsWaiting) {
         image2.ready = true;
         fn(image2);
         actionsWaiting.value = false;
-        var actions2 = _actionsDefer.slice(0);
+        let actions2 = _actionsDefer.slice(0);
         _actionsDefer = [];
-        for (var action = actions2.shift(); action; ) {
+        for (let action = actions2.shift(); action; ) {
           actionsChanged({
             actions: action[0],
             reserve: action[1]
@@ -16132,12 +16135,10 @@ function useKeyboard() {
 }
 const VNODE_MASK = /* @__PURE__ */ createVNode("div", { class: "uni-mask" }, null, -1);
 function createRootApp(component, rootState, callback) {
-  const onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
   return createApp(defineComponent({
     setup() {
-      return () => (openBlock(), createBlock(component, mergeProps({
-        onClose
-      }, rootState)));
+      return () => (openBlock(), createBlock(component, rootState, null, 16));
     }
   }));
 }

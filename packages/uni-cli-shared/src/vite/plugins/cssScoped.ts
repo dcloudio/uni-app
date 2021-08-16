@@ -31,13 +31,13 @@ export function uniCssScopedPlugin(
     enforce: 'pre',
     transform(code, id) {
       if (id.endsWith('App.vue')) {
-        return code
+        return
       }
       if (!filter(id)) return null
 
       const { filename, query } = parseVueRequest(id)
       if (query.vue) {
-        return code
+        return
       }
       if (EXTNAME_VUE.includes(path.extname(filename))) {
         debugScoped(id)

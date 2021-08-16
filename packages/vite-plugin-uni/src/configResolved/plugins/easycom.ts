@@ -118,7 +118,10 @@ export function uniEasycomPlugin(
       if (importDeclarations.length) {
         code = importDeclarations.join('') + code
       }
-      return code
+      return {
+        code,
+        map: this.getCombinedSourcemap(),
+      }
     },
   }
 }

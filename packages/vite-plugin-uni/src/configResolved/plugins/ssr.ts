@@ -25,7 +25,7 @@ export function uniSSRPlugin(
     transform(code, id) {
       if (!filter(id)) return null
       if (!KEYED_FUNC_RE.test(code)) {
-        return code
+        return
       }
       debugSSR('try', id)
       const ast = this.parse(code)

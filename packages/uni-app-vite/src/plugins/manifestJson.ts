@@ -28,7 +28,10 @@ export function uniManifestJsonPlugin(): Plugin {
             process.env.UNI_PLATFORM
           )
         )
-        return ''
+        return {
+          code: '',
+          map: this.getCombinedSourcemap(),
+        }
       },
       generateBundle() {
         // 生成一个空的app-config.js，兼容基座已有规范

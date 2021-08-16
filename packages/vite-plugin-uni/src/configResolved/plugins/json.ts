@@ -20,7 +20,10 @@ export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
       ) {
         code = JSON.stringify(parse(code))
       }
-      return code
+      return {
+        code,
+        map: this.getCombinedSourcemap(),
+      }
     },
   }
 }

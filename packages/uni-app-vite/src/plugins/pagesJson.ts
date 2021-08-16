@@ -27,9 +27,11 @@ export function uniPagesJsonPlugin(): Plugin {
             path.resolve(process.env.UNI_INPUT_DIR, page.path + '.vue')
           )
         })
-        return (
-          `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson)
-        )
+        return {
+          code:
+            `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson),
+          map: this.getCombinedSourcemap(),
+        }
       },
       generateBundle() {
         this.emitFile({

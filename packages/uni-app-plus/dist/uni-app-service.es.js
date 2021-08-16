@@ -2965,8 +2965,9 @@ var serviceContext = (function (vue) {
   }
   class Pattern {
       constructor(image, repetition) {
-          this.image = image;
-          this.repetition = repetition;
+          this.type = 'pattern';
+          this.data = image;
+          this.colorStop = repetition;
       }
   }
   class TextMetrics {

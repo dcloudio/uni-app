@@ -39,7 +39,10 @@ export function uniPreVuePlugin(): Plugin {
       const cache = sourceToSFC.get(sourceKey)
       if (cache) {
         debugPreVue('cache', id)
-        return cache
+        return {
+          code: cache,
+          map: null,
+        }
       }
       const hasBlock = BLOCK_RE.test(code)
       const hasWxs = WXS_LANG_RE.test(code)
@@ -59,7 +62,10 @@ export function uniPreVuePlugin(): Plugin {
       //   this.error(errors.join('\n'))
       // }
       sourceToSFC.set(sourceKey, code)
-      return code // 暂不提供sourcemap,意义不大
+      return {
+        code, // 暂不提供sourcemap,意义不大
+        map: null,
+      }
     },
   }
 }
