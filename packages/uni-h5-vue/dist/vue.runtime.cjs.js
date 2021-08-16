@@ -5090,7 +5090,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         target.__VUE__ = true;
         setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__);
     }
-    const { insert: hostInsert, remove: hostRemove, patchProp: hostPatchProp, forcePatchProp: hostForcePatchProp, // fixed by xxxxx
+    const { insert: hostInsert, remove: hostRemove, patchProp: hostPatchProp, forcePatchProp: hostForcePatchProp, // fixed by xxxxxx
     createElement: hostCreateElement, createText: hostCreateText, createComment: hostCreateComment, setText: hostSetText, setElementText: hostSetElementText, parentNode: hostParentNode, nextSibling: hostNextSibling, setScopeId: hostSetScopeId = shared.NOOP, cloneNode: hostCloneNode, insertStaticContent: hostInsertStaticContent } = options;
     // Note: functions inside this closure should use `const xxx = () => {}`
     // style in order to prevent being inlined by minifiers.
@@ -5380,7 +5380,8 @@ function baseCreateRenderer(options, createHydrationFns) {
                         // #1471 force patch value
                         if (next !== prev ||
                             key === 'value' ||
-                            (hostForcePatchProp && hostForcePatchProp(el, key))) {
+                            (hostForcePatchProp && hostForcePatchProp(el, key)) // fixed by xxxxxx
+                        ) {
                             hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
                         }
                     }
@@ -5452,7 +5453,7 @@ function baseCreateRenderer(options, createHydrationFns) {
                 const prev = oldProps[key];
                 // defer patching value
                 if ((next !== prev && key !== 'value') ||
-                    (hostForcePatchProp && hostForcePatchProp(el, key)) // fixed by xxxxx
+                    (hostForcePatchProp && hostForcePatchProp(el, key)) // fixed by xxxxxx
                 ) {
                     hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
                 }
@@ -9177,9 +9178,7 @@ function patchClass(el, value, isSVG) {
     }
     const transitionClasses = el._vtc;
     if (transitionClasses) {
-        value = (value
-            ? [value, ...transitionClasses]
-            : [...transitionClasses]).join(' ');
+        value = (value ? [value, ...transitionClasses] : [...transitionClasses]).join(' ');
     }
     if (value == null) {
         el.removeAttribute('class');
@@ -9513,6 +9512,21 @@ function patchWxs(el, rawName, nextValue, instance = null) {
 }
 
 const nativeOnRE = /^on[a-z]/;
+// fixed by xxxxxx
+const forcePatchProp = (el, key) => {
+    if (key.indexOf('change:') === 0) {
+        return true;
+    }
+    if (key === 'class' && el.__wxsClassChanged) {
+        el.__wxsClassChanged = false;
+        return true;
+    }
+    if (key === 'style' && el.__wxsStyleChanged) {
+        el.__wxsStyleChanged = false;
+        return true;
+    }
+    return false;
+};
 const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     // @ts-expect-error fixed by xxxxxx
     if (__UNI_FEATURE_WXS__ && key.indexOf('change:') === 0) {
@@ -10596,7 +10610,8 @@ function setDisplay(el, value) {
     el.style.display = value ? el._vod : 'none';
 }
 
-const rendererOptions = shared.extend({ patchProp }, nodeOps);
+// fixed by xxxxxx
+const rendererOptions = shared.extend({ patchProp, forcePatchProp }, nodeOps);
 // lazy create the renderer - this makes core renderer logic tree-shakable
 // in case the user only imports reactivity utilities from Vue.
 let renderer;
