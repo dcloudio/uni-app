@@ -109,7 +109,7 @@ setTimeout(function () {
 |cancelText|String|否|取消按钮的文字，默认为"取消"，最多 4 个字符||
 |cancelColor|HexColor|否|取消按钮的文字颜色，默认为"#000000"|H5、微信小程序、百度小程序|
 |confirmText|String|否|确定按钮的文字，默认为"确定"，最多 4 个字符||
-|confirmColor|HexColor|否|确定按钮的文字颜色，H5平台默认为"#007aff"，微信小程序平台默认为"#3CC51F"，百度小程序平台默认为"#3c76ff"|H5、微信小程序、百度小程序|
+|confirmColor|HexColor|否|确定按钮的文字颜色，H5平台默认为"#007aff"，微信小程序平台默认为"#576B95"，百度小程序平台默认为"#3c76ff"|H5、微信小程序、百度小程序|
 |success|Function|否|接口调用成功的回调函数||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
