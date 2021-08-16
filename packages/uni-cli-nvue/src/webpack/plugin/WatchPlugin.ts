@@ -23,9 +23,6 @@ export default class WatchPlugin {
     })
     compiler.hooks.done.tap('WatchPlugin', (stats) => {
       isCompiling = false
-      if (isFirst) {
-        return (isFirst = false)
-      }
       const changedFiles: Set<string> = new Set<string>()
       stats.compilation.chunks.forEach(({ name, hash, files }) => {
         if (!hash) {
@@ -38,7 +35,7 @@ export default class WatchPlugin {
         }
         files.forEach((file) => changedFiles.add(file))
       })
-      if (changedFiles.size) {
+      if (!isFirst && changedFiles.size) {
         console.log(
           M['dev.watching.end.pages'].replace(
             '{pages}',
@@ -46,6 +43,9 @@ export default class WatchPlugin {
           )
         )
       } else {
+        if (isFirst) {
+          return (isFirst = false)
+        }
         console.log(M['dev.watching.end'])
       }
     })

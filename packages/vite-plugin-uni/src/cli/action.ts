@@ -15,16 +15,33 @@ export async function runDev(options: CliOptions & ServerOptions) {
       await (options.ssr ? createSSRServer(options) : createServer(options))
     } else {
       const watcher = (await build(options)) as RollupWatcher
-      let isFirst = true
+      let isFirstStart = true
+      let isFirstEnd = true
       watcher.on('event', (event) => {
         if (event.code === 'BUNDLE_START') {
-          if (isFirst) {
-            return (isFirst = false)
+          if (isFirstStart) {
+            return (isFirstStart = false)
           }
           console.log(M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {
           event.result.close()
-          console.log(M['dev.watching.end'])
+          if (options.platform !== 'app') {
+            // 非App平台无需处理增量同步
+            return console.log(M['dev.watching.end'])
+          }
+          if (isFirstEnd) {
+            // 首次全量同步
+            return (isFirstEnd = false), console.log(M['dev.watching.end'])
+          }
+          if (process.env.UNI_APP_CHANGED_FILES) {
+            return console.log(
+              M['dev.watching.end.files'].replace(
+                '{files}',
+                process.env.UNI_APP_CHANGED_FILES
+              )
+            )
+          }
+          return console.log(M['dev.watching.end'])
         }
       })
     }
