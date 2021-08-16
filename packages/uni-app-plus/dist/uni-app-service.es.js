@@ -10458,6 +10458,7 @@ var serviceContext = (function (vue) {
           super(NODE_TYPE_PAGE, '#page', null);
           this._id = 1;
           this._created = false;
+          this._updating = false;
           this._createActionMap = new Map();
           this.updateActions = [];
           this.dicts = [];
@@ -10589,7 +10590,10 @@ var serviceContext = (function (vue) {
           if (action[0] !== ACTION_TYPE_INSERT) {
               this.updateActions.push(action);
           }
-          vue.queuePostFlushCb(this._update);
+          if (!this._updating) {
+              this._updating = true;
+              vue.queuePostFlushCb(this._update);
+          }
       }
       restore() {
           this.clear();
@@ -10631,6 +10635,7 @@ var serviceContext = (function (vue) {
       clear() {
           this.dicts.length = 0;
           this.updateActions.length = 0;
+          this._updating = false;
           this._createActionMap.clear();
       }
       send(action) {

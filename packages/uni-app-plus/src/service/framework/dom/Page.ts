@@ -44,6 +44,7 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
   private _id: number = 1
   private _created: boolean = false
+  private _updating: boolean = false
   private options: PageNodeOptions
   private createAction: PageCreateAction
   private createdAction: PageCreatedAction
@@ -221,7 +222,10 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     if (action[0] !== ACTION_TYPE_INSERT) {
       this.updateActions.push(action)
     }
-    queuePostFlushCb(this._update)
+    if (!this._updating) {
+      this._updating = true
+      queuePostFlushCb(this._update)
+    }
   }
   restore() {
     this.clear()
@@ -270,6 +274,7 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   clear() {
     this.dicts.length = 0
     this.updateActions.length = 0
+    this._updating = false
     this._createActionMap.clear()
   }
   send(action: (PageAction | DictAction)[]) {
