@@ -254,7 +254,6 @@ function useScrollViewLoader(
   content: HTMLRef,
   emit: SetupContext['emit']
 ) {
-  let _lastScrollTime: number = 0
   let _innerSetScrollTop: boolean = false
   let _innerSetScrollLeft: boolean = false
   let beforeRefreshing: boolean = false
@@ -320,66 +319,63 @@ function useScrollViewLoader(
     _content.style.webkitTransform = transform
   }
   function _handleScroll($event: MouseEvent) {
-    if ($event.timeStamp - _lastScrollTime > 20) {
-      _lastScrollTime = $event.timeStamp
-      const target = $event.target as HTMLElement
-      trigger('scroll', $event, {
-        scrollLeft: target.scrollLeft,
-        scrollTop: target.scrollTop,
-        scrollHeight: target.scrollHeight,
-        scrollWidth: target.scrollWidth,
-        deltaX: state.lastScrollLeft - target.scrollLeft,
-        deltaY: state.lastScrollTop - target.scrollTop,
-      })
-      if (props.scrollY) {
-        if (
-          target.scrollTop <= upperThresholdNumber.value &&
-          state.lastScrollTop - target.scrollTop > 0 &&
-          $event.timeStamp - state.lastScrollToUpperTime > 200
-        ) {
-          trigger('scrolltoupper', $event, {
-            direction: 'top',
-          })
-          state.lastScrollToUpperTime = $event.timeStamp
-        }
-        if (
-          target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >=
-            target.scrollHeight &&
-          state.lastScrollTop - target.scrollTop < 0 &&
-          $event.timeStamp - state.lastScrollToLowerTime > 200
-        ) {
-          trigger('scrolltolower', $event, {
-            direction: 'bottom',
-          })
-          state.lastScrollToLowerTime = $event.timeStamp
-        }
+    const target = $event.target as HTMLElement
+    trigger('scroll', $event, {
+      scrollLeft: target.scrollLeft,
+      scrollTop: target.scrollTop,
+      scrollHeight: target.scrollHeight,
+      scrollWidth: target.scrollWidth,
+      deltaX: state.lastScrollLeft - target.scrollLeft,
+      deltaY: state.lastScrollTop - target.scrollTop,
+    })
+    if (props.scrollY) {
+      if (
+        target.scrollTop <= upperThresholdNumber.value &&
+        state.lastScrollTop - target.scrollTop > 0 &&
+        $event.timeStamp - state.lastScrollToUpperTime > 200
+      ) {
+        trigger('scrolltoupper', $event, {
+          direction: 'top',
+        })
+        state.lastScrollToUpperTime = $event.timeStamp
       }
-      if (props.scrollX) {
-        if (
-          target.scrollLeft <= upperThresholdNumber.value &&
-          state.lastScrollLeft - target.scrollLeft > 0 &&
-          $event.timeStamp - state.lastScrollToUpperTime > 200
-        ) {
-          trigger('scrolltoupper', $event, {
-            direction: 'left',
-          })
-          state.lastScrollToUpperTime = $event.timeStamp
-        }
-        if (
-          target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >=
-            target.scrollWidth &&
-          state.lastScrollLeft - target.scrollLeft < 0 &&
-          $event.timeStamp - state.lastScrollToLowerTime > 200
-        ) {
-          trigger('scrolltolower', $event, {
-            direction: 'right',
-          })
-          state.lastScrollToLowerTime = $event.timeStamp
-        }
+      if (
+        target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >=
+          target.scrollHeight &&
+        state.lastScrollTop - target.scrollTop < 0 &&
+        $event.timeStamp - state.lastScrollToLowerTime > 200
+      ) {
+        trigger('scrolltolower', $event, {
+          direction: 'bottom',
+        })
+        state.lastScrollToLowerTime = $event.timeStamp
       }
-      state.lastScrollTop = target.scrollTop
-      state.lastScrollLeft = target.scrollLeft
     }
+    if (props.scrollX) {
+      if (
+        target.scrollLeft <= upperThresholdNumber.value &&
+        state.lastScrollLeft - target.scrollLeft > 0 &&
+        $event.timeStamp - state.lastScrollToUpperTime > 200
+      ) {
+        trigger('scrolltoupper', $event, {
+          direction: 'left',
+        })
+        state.lastScrollToUpperTime = $event.timeStamp
+      }
+      if (
+        target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >=
+          target.scrollWidth &&
+        state.lastScrollLeft - target.scrollLeft < 0 &&
+        $event.timeStamp - state.lastScrollToLowerTime > 200
+      ) {
+        trigger('scrolltolower', $event, {
+          direction: 'right',
+        })
+        state.lastScrollToLowerTime = $event.timeStamp
+      }
+    }
+    state.lastScrollTop = target.scrollTop
+    state.lastScrollLeft = target.scrollLeft
   }
   function _scrollTopChanged(val: number) {
     if (props.scrollY) {
