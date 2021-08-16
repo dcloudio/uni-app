@@ -274,6 +274,7 @@ uni.chooseImage({
 | quality | Number | 80 | 否 | 压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效） ||
 | width | String | auto | 否 | 缩放图片的宽度，支持像素值（如"100px"）、百分比（如"50%"）、自动计算（如"auto"，即根据height与源图高的缩放比例计算，若未设置height则使用源图高度）|App 3.0.0+|
 | height | String | auto | 否 | 缩放图片的高度，支持像素值（如"100px"）、百分比（如"50%"）、自动计算（如"auto"，即根据height与源图高的缩放比例计算，若未设置height则使用源图高度）|App 3.0.0+|
+| rotate | Number | 0 | 否 | 旋转度数，范围0～360 |App 3.0.0+||
 | success | Function |  | 否 | 接口调用成功的回调函数 ||
 | fail | Function |  | 否 | 接口调用失败的回调函数 ||
 | complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） ||
