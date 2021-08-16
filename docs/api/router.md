@@ -66,7 +66,12 @@ uni.navigateTo({
 // uni.navigateTo 目标页面 pages/test.vue
 onLoad: function(option) {
   console.log(option.query)
-  const eventChannel = this.getOpenerEventChannel()
+  // #ifdef APP-NVUE
+  const eventChannel = this.$scope.eventChannel; // 兼容APP-NVUE
+  // #endif
+  // #ifndef APP-NVUE
+  const eventChannel = this.getOpenerEventChannel();
+  // #endif
   eventChannel.emit('acceptDataFromOpenedPage', {data: 'test'});
   eventChannel.emit('someEvent', {data: 'test'});
   // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
@@ -92,6 +97,7 @@ onLoad: function (option) {
 * 页面跳转路径有层级限制，不能无限制跳转新页面
 * 跳转到 tabBar 页面只能使用 switchTab 跳转
 * 路由API的目标页面必须是在pages.json里注册的vue页面。如果想打开web url，在App平台可以使用 [plus.runtime.openURL](http://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.openURL)或web-view组件；H5平台使用 window.open；小程序平台使用web-view组件（url需在小程序的联网白名单中）。在hello uni-app中有个组件ulink.vue已对多端进行封装，可参考。
+* APP-NVUE平台暂不支持以`this.getOpenerEventChannel()`方式获取`eventChannel`，请换用`this.$scope.eventChannel`来获取，具体方式请参考上述示例。
 
 #### uni.redirectTo(OBJECT)
 
