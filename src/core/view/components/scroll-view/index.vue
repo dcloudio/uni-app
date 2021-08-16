@@ -465,70 +465,67 @@ export default {
       }
     },
     _handleScroll: function ($event) {
-      if (!($event.timeStamp - this._lastScrollTime < 20)) {
-        this._lastScrollTime = $event.timeStamp
-        const target = $event.target
-        this.$trigger('scroll', $event, {
-          scrollLeft: target.scrollLeft,
-          scrollTop: target.scrollTop,
-          scrollHeight: target.scrollHeight,
-          scrollWidth: target.scrollWidth,
-          deltaX: this.lastScrollLeft - target.scrollLeft,
-          deltaY: this.lastScrollTop - target.scrollTop
-        })
-        if (this.scrollY) {
-          if (
-            target.scrollTop <= this.upperThresholdNumber &&
-            this.lastScrollTop - target.scrollTop > 0 &&
-            $event.timeStamp - this.lastScrollToUpperTime > 200
-          ) {
-            this.$trigger('scrolltoupper', $event, {
-              direction: 'top'
-            })
-            this.lastScrollToUpperTime = $event.timeStamp
-          }
-          if (
-            target.scrollTop +
-              target.offsetHeight +
-              this.lowerThresholdNumber >=
-              target.scrollHeight &&
-            this.lastScrollTop - target.scrollTop < 0 &&
-            $event.timeStamp - this.lastScrollToLowerTime > 200
-          ) {
-            this.$trigger('scrolltolower', $event, {
-              direction: 'bottom'
-            })
-            this.lastScrollToLowerTime = $event.timeStamp
-          }
+      const target = $event.target
+      this.$trigger('scroll', $event, {
+        scrollLeft: target.scrollLeft,
+        scrollTop: target.scrollTop,
+        scrollHeight: target.scrollHeight,
+        scrollWidth: target.scrollWidth,
+        deltaX: this.lastScrollLeft - target.scrollLeft,
+        deltaY: this.lastScrollTop - target.scrollTop
+      })
+      if (this.scrollY) {
+        if (
+          target.scrollTop <= this.upperThresholdNumber &&
+          this.lastScrollTop - target.scrollTop > 0 &&
+          $event.timeStamp - this.lastScrollToUpperTime > 200
+        ) {
+          this.$trigger('scrolltoupper', $event, {
+            direction: 'top'
+          })
+          this.lastScrollToUpperTime = $event.timeStamp
         }
-        if (this.scrollX) {
-          if (
-            target.scrollLeft <= this.upperThresholdNumber &&
-            this.lastScrollLeft - target.scrollLeft > 0 &&
-            $event.timeStamp - this.lastScrollToUpperTime > 200
-          ) {
-            this.$trigger('scrolltoupper', $event, {
-              direction: 'left'
-            })
-            this.lastScrollToUpperTime = $event.timeStamp
-          }
-          if (
-            target.scrollLeft +
-              target.offsetWidth +
-              this.lowerThresholdNumber >=
-              target.scrollWidth &&
-            this.lastScrollLeft - target.scrollLeft < 0 &&
-            $event.timeStamp - this.lastScrollToLowerTime > 200
-          ) {
-            this.$trigger('scrolltolower', $event, {
-              direction: 'right'
-            })
-            this.lastScrollToLowerTime = $event.timeStamp
-          }
+        if (
+          target.scrollTop +
+            target.offsetHeight +
+            this.lowerThresholdNumber >=
+            target.scrollHeight &&
+          this.lastScrollTop - target.scrollTop < 0 &&
+          $event.timeStamp - this.lastScrollToLowerTime > 200
+        ) {
+          this.$trigger('scrolltolower', $event, {
+            direction: 'bottom'
+          })
+          this.lastScrollToLowerTime = $event.timeStamp
         }
-        this.lastScrollTop = target.scrollTop
-        this.lastScrollLeft = target.scrollLeft
       }
+      if (this.scrollX) {
+        if (
+          target.scrollLeft <= this.upperThresholdNumber &&
+          this.lastScrollLeft - target.scrollLeft > 0 &&
+          $event.timeStamp - this.lastScrollToUpperTime > 200
+        ) {
+          this.$trigger('scrolltoupper', $event, {
+            direction: 'left'
+          })
+          this.lastScrollToUpperTime = $event.timeStamp
+        }
+        if (
+          target.scrollLeft +
+            target.offsetWidth +
+            this.lowerThresholdNumber >=
+            target.scrollWidth &&
+          this.lastScrollLeft - target.scrollLeft < 0 &&
+          $event.timeStamp - this.lastScrollToLowerTime > 200
+        ) {
+          this.$trigger('scrolltolower', $event, {
+            direction: 'right'
+          })
+          this.lastScrollToLowerTime = $event.timeStamp
+        }
+      }
+      this.lastScrollTop = target.scrollTop
+      this.lastScrollLeft = target.scrollLeft
     },
     _scrollTopChanged: function (val) {
       if (this.scrollY) {
