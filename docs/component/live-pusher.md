@@ -32,8 +32,6 @@ auto-focus|Boolean|true|否|自动聚集。|
 beauty|Number|0|否|美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。|
 whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。|
 orientation|String|"vertical"|否|画面方向|
-beauty|number|0|否|美颜，取值范围 0-9 ，0 表示关闭|
-whiteness|number|0|否|美白，取值范围 0-9 ，0 表示关闭|
 min-bitrate|Number|200|否|最小码率。|
 max-bitrate|Number|1000|否|最大码率。|
 audio-quality|string|high|否|高音质(48KHz)或低音质(16KHz)，值为high, low|微信小程序1.7.0
