@@ -19,6 +19,8 @@ import {
   getScreenHeight,
 } from '../base/getBaseSystemInfo'
 
+import deviceId from '../../../helpers/uuid'
+
 /**
  * 获取系统信息-同步
  */
@@ -44,7 +46,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     const statusBarHeight = safeAreaInsets.top
     let osname
     let osversion
-    let model
+    let model = ''
 
     if (isIOS) {
       osname = 'iOS'
@@ -200,6 +202,9 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
         bottom: safeAreaInsets.bottom,
         left: safeAreaInsets.left,
       },
-    } as UniApp.GetSystemInfoResult
+      version: '',
+      SDKVersion: '',
+      deviceId: deviceId(),
+    }
   }
 )

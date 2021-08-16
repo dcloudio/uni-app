@@ -15412,6 +15412,20 @@ const makePhoneCall = /* @__PURE__ */ defineAsyncApi(API_MAKE_PHONE_CALL, ({ pho
   window.location.href = `tel:${phoneNumber}`;
   return resolve();
 }, MakePhoneCallProtocol);
+const UUID_KEY = "__DC_STAT_UUID";
+const storage = window.localStorage || window.sessionStorage || {};
+let deviceId;
+function deviceId$1() {
+  deviceId = deviceId || storage[UUID_KEY];
+  if (!deviceId) {
+    deviceId = Date.now() + "" + Math.floor(Math.random() * 1e7);
+    try {
+      storage[UUID_KEY] = deviceId;
+    } catch (error) {
+    }
+  }
+  return deviceId;
+}
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
   const pixelRatio2 = window.devicePixelRatio;
   const screenFix = getScreenFix();
@@ -15424,7 +15438,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const statusBarHeight = out.top;
   let osname;
   let osversion;
-  let model;
+  let model = "";
   if (isIOS$1) {
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
@@ -15563,7 +15577,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
       right: out.right,
       bottom: out.bottom,
       left: out.left
-    }
+    },
+    version: "",
+    SDKVersion: "",
+    deviceId: deviceId$1()
   };
 });
 const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
