@@ -5,7 +5,7 @@ import {
   API_TYPE_SET_CLIPBOARD_DATA,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { requireNativePlugin } from '../base'
+import { requireNativePlugin } from '../plugin/requireNativePlugin'
 
 export const getClipboardData = defineAsyncApi<API_TYPE_GET_CLIPBOARD_DATA>(
   API_GET_CLIPBOARD_DATA,

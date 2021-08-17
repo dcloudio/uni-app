@@ -6,7 +6,7 @@ import {
   CreateInteractiveAdProtocol,
 } from '@dcloudio/uni-api'
 
-import { requireNativePlugin } from '../base'
+import { requireNativePlugin } from '../plugin/requireNativePlugin'
 
 import { AdEventHandler, EventType } from './adBase'
 

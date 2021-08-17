@@ -6,8 +6,8 @@ import {
   RequestOptions,
   RequestProtocol,
 } from '@dcloudio/uni-api'
-import { requireNativePlugin } from '../base'
 import { base64ToArrayBuffer } from '@dcloudio/uni-api'
+import { requireNativePlugin } from '../plugin/requireNativePlugin'
 
 type Type = 'base64' | 'text'
 type Headers = Record<string, string>

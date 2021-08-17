@@ -12122,6 +12122,7 @@ var serviceContext = (function (vue) {
     share: share,
     shareWithSystem: shareWithSystem,
     requestPayment: requestPayment,
+    requireNativePlugin: requireNativePlugin,
     __vuePlugin: index$1,
     restoreGlobal: restoreGlobal,
     createRewardedVideoAd: createRewardedVideoAd,

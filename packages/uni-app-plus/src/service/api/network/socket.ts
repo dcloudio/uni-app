@@ -13,7 +13,7 @@ import {
   API_TYPE_CLOSE_SOCKET,
   CloseSocketProtocol,
 } from '@dcloudio/uni-api'
-import { requireNativePlugin } from '../base'
+import { requireNativePlugin } from '../plugin/requireNativePlugin'
 import { base64ToArrayBuffer, arrayBufferToBase64 } from '@dcloudio/uni-api'
 import { extend, capitalize } from '@vue/shared'
 import { callOptions } from '@dcloudio/uni-shared'

@@ -43,7 +43,7 @@ export function uniCssScopedPlugin(
         debugScoped(id)
         return {
           code: addScoped(code),
-          map: this.getCombinedSourcemap(),
+          map: null,
         }
       }
     },

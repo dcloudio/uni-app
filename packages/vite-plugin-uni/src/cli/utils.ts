@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { BuildOptions, InlineConfig } from 'vite'
 
-import { M, isInHBuilderX } from '@dcloudio/uni-cli-shared'
+import { M, isInHBuilderX, initModulePaths } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
@@ -107,6 +107,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
           : '')
     )
   }
+
+  initModulePaths()
+
   console.log(M['compiling'])
 }
 

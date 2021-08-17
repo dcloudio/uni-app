@@ -120,7 +120,7 @@ export function uniEasycomPlugin(
       }
       return {
         code,
-        map: this.getCombinedSourcemap(),
+        map: null,
       }
     },
   }

@@ -9,9 +9,11 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 export function buildOptions(): UserConfig['build'] {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
-  if (fs.existsSync(process.env.UNI_OUTPUT_DIR)) {
-    emptyDir(process.env.UNI_OUTPUT_DIR)
+  if (fs.existsSync(outputDir)) {
+    emptyDir(outputDir)
   }
   return {
     // sourcemap: 'inline',
@@ -24,6 +26,18 @@ export function buildOptions(): UserConfig['build'] {
         name: 'AppService',
         format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',
         entryFileNames: 'app-service.js',
+        sourcemapPathTransform(relativeSourcePath, sourcemapPath) {
+          const sourcePath = normalizePath(
+            path.relative(
+              inputDir,
+              path.resolve(path.dirname(sourcemapPath), relativeSourcePath)
+            )
+          )
+          if (sourcePath.startsWith('..')) {
+            return ''
+          }
+          return 'uni-app:///' + sourcePath
+        },
         manualChunks: {},
         chunkFileNames(chunk) {
           if (chunk.isDynamicEntry && chunk.facadeModuleId) {

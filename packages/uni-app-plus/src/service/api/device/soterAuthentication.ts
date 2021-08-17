@@ -1,5 +1,4 @@
 import { extend } from '@vue/shared'
-import { requireNativePlugin } from '../../api/base/requireNativePlugin'
 import {
   useI18n,
   initI18nStartSoterAuthenticationMsgsOnce,
@@ -18,6 +17,8 @@ import {
   StartSoterAuthenticationOptions,
   StartSoterAuthenticationProtocols,
 } from '@dcloudio/uni-api'
+
+import { requireNativePlugin } from '../plugin/requireNativePlugin'
 
 function checkIsSupportFaceID() {
   const platform = plus.os.name!.toLowerCase()
