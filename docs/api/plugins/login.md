@@ -23,17 +23,20 @@ H5平台登录注意事项：
 |scopes|String/Array|见平台差异说明|授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）|支付宝小程序|
 |timeout|Number|否|超时时间，单位ms|微信小程序、百度小程序|
 |univerifyStyle|Object|否|[一键登录](/univerify)页面样式|App 3.0.0+|
+|onlyAuthorize|Boolean|否|`微信登录`仅请求授权认证|App 3.2.3+|
 |success|Function|否|接口调用成功的回调||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
 
+**注意：** 微信登录在未配置`onlyAuthorize`的情况下调用此接口，`code`值为使用过的，用以换取`authResult`，这样会导致使用`code`去和微信换取信息时会报错。配置`onlyAuthorize`会把未使用过的`code`值返回。
+
 **success 返回参数说明**
 
-|参数名|说明|
-|:-|:-|
-|authResult|登录服务商提供的登录信息，服务商不同返回的结果不完全相同|
-|code|小程序专有，用户登录凭证。开发者需要在开发者服务器后台，使用 code 换取 openid 和 session_key 等信息|
-|errMsg|描述信息|
+|参数名|说明|平台差异说明|
+|:-|:-|:-|
+|authResult|登录服务商提供的登录信息，服务商不同返回的结果不完全相同|微信登录配置`onlyAuthorize`则此项为空，App 3.2.3+ |
+|code|用户登录凭证。开发者需要在开发者服务器后台，使用 code 换取 openid 和 session_key 等信息|微信登录配置`onlyAuthorize`code值有效，App 3.2.3+ |
+|errMsg|描述信息||
 
 各个平台的登录流程存在差异，详细请参考相关平台的文档说明：
 
@@ -272,3 +275,28 @@ uni.login({
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |3.0.0+|x|x|x|x|x|x|x|
+
+
+### uni.getCheckBoxState(OBJECT)
+获取[一键登录](/univerify)条款勾选框状态。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|3.2.3+|x|x|x|x|x|x|x|
+
+**OBJECT 参数说明**
+
+|参数名|类型|必填|说明|
+|:-|:-|:-|:-|
+|success|Function|否|接口调用成功的回调|
+|fail|Function|否|接口调用失败的回调函数|
+|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
+**success 返回参数说明**
+
+|参数|类型|说明|
+|:-|:-|:-|
+|state|Boolean|一键登录条款勾选框状态|
+|errMsg|String|描述信息|

@@ -22,9 +22,24 @@ function getService (provider) {
 export function login (params, callbackId) {
   const provider = params.provider || 'weixin'
   const errorCallback = warpPlusErrorCallback(callbackId, 'login')
+  const authOptions = provider === 'apple'
+    ? { scope: 'email' }
+    : params.univerifyStyle 
+      ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) } 
+      : {}
 
   getService(provider).then(service => {
-    function login () {
+    function login() {
+      if (params.onlyAuthorize && provider === 'weixin') {
+        service.authorize(({ code }) => {
+          invoke(callbackId, {
+            code,
+            authResult: '',
+            errMsg: 'login:ok'
+          })
+        }, errorCallback)
+        return
+      }
       service.login(res => {
         const authResult = res.target.authResult
         invoke(callbackId, {
@@ -32,7 +47,7 @@ export function login (params, callbackId) {
           authResult: authResult,
           errMsg: 'login:ok'
         })
-      }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) } || {})
+      }, errorCallback, authOptions)
     }
     // 先注销再登录
     // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -130,6 +145,19 @@ export function preLogin (params, callbackId) {
 
 export function closeAuthView () {
   return getService('univerify').then(service => service.closeAuthView())
+}
+
+export function getCheckBoxState(params, callbackId) {
+  const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState')
+  const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState')
+  try {
+    getService('univerify').then(service => {
+      const state = service.getCheckBoxState()
+      successCallback({ state })
+    })
+  } catch (error) {
+    errorCallback(error)
+  }
 }
 
 /**
