@@ -59,6 +59,7 @@ export * from './plugin/oauth'
 export * from './plugin/registerRuntime'
 export * from './plugin/share'
 export * from './plugin/requestPayment'
+export * from './plugin/requireNativePlugin'
 export * from './plugin/vuePlugin'
 export * from './plugin/restoreGlobal'
 
