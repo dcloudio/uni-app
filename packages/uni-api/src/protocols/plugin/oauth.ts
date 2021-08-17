@@ -5,6 +5,7 @@ export const LoginProtocol: ApiProtocol<API_TYPE_LOGIN> = {
   scopes: [String, Array] as any,
   timeout: Number,
   univerifyStyle: Object as any,
+  onlyAuthorize: Boolean,
 }
 
 export const API_GET_USER_INFO = 'getUserInfo'
@@ -48,3 +49,6 @@ export const PreLoginProtocol: ApiProtocol<API_TYPE_PRE_LOGIN> = {
 
 export const API_CLOSE_AUTH_VIEW = 'closeAuthView'
 export type API_TYPE_CLOSE_AUTH_VIEW = typeof uni.closeAuthView
+
+export const API_GET_CHECK_BOX_STATE = 'getCheckBoxState'
+export type API_TYPE_GET_CHECK_BOX_STATE = typeof uni.getCheckBoxState
