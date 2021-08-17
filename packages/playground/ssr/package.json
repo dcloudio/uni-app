@@ -16,8 +16,8 @@
     "@dcloudio/uni-h5-vue": "../../uni-h5-vue",
     "@dcloudio/uni-i18n": "../../uni-i18n",
     "@dcloudio/uni-shared": "../../uni-shared",
-    "@vue/shared": "^3.2.2",
-    "vue": "^3.2.2",
+    "@vue/shared": "^3.2.3",
+    "vue": "^3.2.3",
     "vue-router": "^4.0.11",
     "vuex": "^4.0.2"
   },
@@ -26,11 +26,11 @@
     "@dcloudio/uni-h5-vite": "../../uni-h5-vite",
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
     "@vitejs/plugin-vue": "^1.4.0",
-    "@vue/compiler-sfc": "^3.2.2",
-    "@vue/server-renderer": "^3.2.2",
+    "@vue/compiler-sfc": "^3.2.3",
+    "@vue/server-renderer": "^3.2.3",
     "compression": "^1.7.4",
     "cypress": "^7.3.0",
     "serve-static": "^1.14.1",
-    "vite": "^2.4.4"
+    "vite": "^2.5.0"
   }
 }
