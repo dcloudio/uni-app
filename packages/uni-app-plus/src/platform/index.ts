@@ -1,8 +1,3 @@
-import {
-  AddMediaQueryObserverArgs,
-  RemoveMediaQueryObserverArgs,
-} from '@dcloudio/uni-api'
-
 export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { requestComponentInfo } from '../service/api/ui/requestComponentInfo'
 export { getRealPath } from './getRealPath'
@@ -14,14 +9,11 @@ export {
   removeIntersectionObserver,
 } from '../service/api/ui/intersectionObserver'
 
-export function addMediaQueryObserver(
-  args: AddMediaQueryObserverArgs,
-  pageId: number
-) {}
-export function removeMediaQueryObserver(
-  args: RemoveMediaQueryObserverArgs,
-  pageId: number
-) {}
+export {
+  addMediaQueryObserver,
+  removeMediaQueryObserver,
+} from '../service/api/ui/mediaQueryObserver'
+
 export function saveImage(
   base64: string,
   dirname: string,

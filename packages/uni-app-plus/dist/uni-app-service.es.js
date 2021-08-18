@@ -2229,12 +2229,12 @@ var serviceContext = (function (vue) {
       }, pageId, operateMapCallback);
   }
 
-  function getEventName(reqId) {
+  function getEventName$1(reqId) {
       const EVENT_NAME = 'IntersectionObserver';
       return `${EVENT_NAME}.${reqId}`;
   }
   function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
-      const eventName = getEventName(reqId);
+      const eventName = getEventName$1(reqId);
       UniServiceJSBridge.invokeViewMethod('addIntersectionObserver', {
           reqId,
           component: component.$el.nodeId,
@@ -2248,11 +2248,32 @@ var serviceContext = (function (vue) {
           reqId,
           component: component.$el.nodeId,
       }, _pageId);
+      UniServiceJSBridge.unsubscribe(getEventName$1(reqId));
+  }
+
+  function getEventName(reqId) {
+      const EVENT_NAME = 'MediaQueryObserver';
+      return `${EVENT_NAME}.${reqId}`;
+  }
+  function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
+      const eventName = getEventName(reqId);
+      UniServiceJSBridge.invokeViewMethod('addMediaQueryObserver', {
+          reqId,
+          component: component.$el.nodeId,
+          options,
+          eventName,
+      }, _pageId);
+      UniServiceJSBridge.subscribe(eventName, callback);
+  }
+  function removeMediaQueryObserver({ reqId, component }, _pageId) {
+      UniServiceJSBridge.invokeViewMethod('removeMediaQueryObserver', {
+          reqId,
+          component: component.$el.nodeId,
+          // reqEnd: true
+      }, _pageId);
       UniServiceJSBridge.unsubscribe(getEventName(reqId));
   }
 
-  function addMediaQueryObserver(args, pageId) { }
-  function removeMediaQueryObserver(args, pageId) { }
   const TEMP_PATH$1 = '';
 
   const API_UPX2PX = 'upx2px';

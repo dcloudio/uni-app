@@ -14,6 +14,8 @@ import { requestComponentInfo } from '../../../../uni-h5/src/platform'
 import {
   addIntersectionObserver,
   removeIntersectionObserver,
+  addMediaQueryObserver,
+  removeMediaQueryObserver,
 } from '../../../../uni-h5/src/platform'
 
 import { loadFontFace } from './dom/font'
@@ -48,6 +50,18 @@ export function initViewMethods() {
   })
   registerViewMethod(pageId, 'removeIntersectionObserver', (args) => {
     removeIntersectionObserver(args)
+  })
+  registerViewMethod(pageId, 'addMediaQueryObserver', (args) => {
+    addMediaQueryObserver(
+      extend({}, args, {
+        callback(res: any) {
+          UniViewJSBridge.publishHandler(args.eventName, res)
+        },
+      })
+    )
+  })
+  registerViewMethod(pageId, 'removeMediaQueryObserver', (args) => {
+    removeMediaQueryObserver(args)
   })
   registerViewMethod(pageId, API_PAGE_SCROLL_TO, pageScrollTo)
   registerViewMethod(pageId, API_LOAD_FONT_FACE, loadFontFace)
