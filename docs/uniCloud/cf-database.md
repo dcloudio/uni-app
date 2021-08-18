@@ -4754,7 +4754,7 @@ let res = await db.collection('restaurants').where({
 ```js
 const dbCmd = db.command
 const $ = dbCmd.aggregate
-let res = await db.collection('items').where(dbCmd.expr($.gt('$ordered', '$inStock'))).get()
+let res = await db.collection('items').where(dbCmd.expr($.gt(['$ordered', '$inStock']))).get()
 ```
 
 ##### 示例代码 2：与条件语句组合使用
@@ -4774,15 +4774,15 @@ let res = await db.collection('items').where(dbCmd.expr($.gt('$ordered', '$inSto
 const dbCmd = db.command
 const $ = dbCmd.aggregate
 let res = await db.collection('items').where(dbCmd.expr(
-  $.lt(
+  $.lt([
     $.cond({
-      if: $.gte('$price', 10),
+      if: $.gte(['$price', 10]),
       then: $.multiply(['$price', '0.5']),
       else: $.multiply(['$price', '0.8']),
     })
     ,
     8
-  )
+  ])
 ).get()
 ```
 
@@ -6372,7 +6372,7 @@ db.command.aggregate.objectToArray(<object>)
 { "_id": 3, "attributes": { "color": "yellow", "price": 10 } }
 ```
 
-```
+```js
 const $ = db.command.aggregate
 let res = await db.collection('items').aggregate()
   .project({
