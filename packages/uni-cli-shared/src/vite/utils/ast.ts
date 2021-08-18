@@ -63,6 +63,21 @@ export function createLiteral(value: string) {
   } as Literal
 }
 
+export function createIdentifier(name: string) {
+  return {
+    type: 'Identifier',
+    name,
+  } as Identifier
+}
+
+export function createCallExpression(callee: unknown, args: unknown[]) {
+  return {
+    type: 'CallExpression',
+    callee,
+    arguments: args,
+  } as CallExpression
+}
+
 export function parseVue(code: string, errors: SyntaxError[]) {
   return parse(code, {
     isNativeTag: () => true,

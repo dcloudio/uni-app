@@ -1,4 +1,6 @@
+import path from 'path'
 import qs from 'querystring'
+import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
 
 export interface VueQuery {
   vue?: boolean
@@ -39,3 +41,16 @@ export const hashRE = /#.*$/
 
 export const cleanUrl = (url: string) =>
   url.replace(hashRE, '').replace(queryRE, '')
+
+export function isJsFile(id: string) {
+  const isJs = EXTNAME_JS_RE.test(id)
+  if (isJs) {
+    return true
+  }
+  const { filename, query } = parseVueRequest(id)
+  const isVueJs = EXTNAME_VUE.includes(path.extname(filename)) && !query.vue
+  if (isVueJs) {
+    return true
+  }
+  return false
+}

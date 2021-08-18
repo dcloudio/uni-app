@@ -1,4 +1,4 @@
-import path, { sep } from 'path'
+import { sep } from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
 
@@ -16,14 +16,7 @@ import { walk } from 'estree-walker'
 import { extend } from '@vue/shared'
 import { MagicString } from '@vue/compiler-sfc'
 
-import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
-
-import {
-  isProperty,
-  isReference,
-  isMemberExpression,
-  parseVueRequest,
-} from '../utils'
+import { isProperty, isReference, isMemberExpression, isJsFile } from '../utils'
 
 interface Scope {
   parent: Scope
@@ -79,15 +72,7 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
     name: 'vite:uni-inject',
     transform(code, id) {
       if (!filter(id)) return null
-      const isJs = EXTNAME_JS_RE.test(id)
-      if (!isJs) {
-        const { filename, query } = parseVueRequest(id)
-        const isVueJs =
-          EXTNAME_VUE.includes(path.extname(filename)) && !query.vue
-        if (!isVueJs) {
-          return null
-        }
-      }
+      if (!isJsFile(id)) return null
       debugInjectTry(id)
       if (code.search(firstpass) === -1) return null
       if (sep !== '/') id = id.split(sep).join('/')

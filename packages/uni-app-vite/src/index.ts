@@ -1,9 +1,11 @@
+import path from 'path'
 import {
   initProvide,
   uniViteInjectPlugin,
   uniCssScopedPlugin,
   getAppStyleIsolation,
   parseManifestJsonOnce,
+  uniConsolePlugin,
 } from '@dcloudio/uni-cli-shared'
 import { UniAppPlugin } from './plugin'
 import { uniTemplatePlugin } from './plugins/template'
@@ -31,6 +33,15 @@ function initUniCssScopedPluginOptions() {
 
 const plugins = [
   // uniResolveIdPlugin(),
+  uniConsolePlugin({
+    filename(filename) {
+      filename = path.relative(process.env.UNI_INPUT_DIR, filename)
+      if (filename.startsWith('.')) {
+        return ''
+      }
+      return filename
+    },
+  }),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
