@@ -2269,7 +2269,6 @@ var serviceContext = (function (vue) {
       UniServiceJSBridge.invokeViewMethod('removeMediaQueryObserver', {
           reqId,
           component: component.$el.nodeId,
-          // reqEnd: true
       }, _pageId);
       UniServiceJSBridge.unsubscribe(getEventName(reqId));
   }
@@ -5259,6 +5258,7 @@ var serviceContext = (function (vue) {
       scopes: [String, Array],
       timeout: Number,
       univerifyStyle: Object,
+      onlyAuthorize: Boolean,
   };
   const API_GET_USER_INFO = 'getUserInfo';
   const GetUserInfoProtocol = {
@@ -5294,6 +5294,7 @@ var serviceContext = (function (vue) {
       },
   };
   const API_CLOSE_AUTH_VIEW = 'closeAuthView';
+  const API_GET_CHECK_BOX_STATE = 'getCheckBoxState';
 
   const API_SHREA = 'share';
   const SCENE = [
@@ -9092,26 +9093,35 @@ var serviceContext = (function (vue) {
           }, reject);
       });
   }
-  /**
-   * 微信登录
-   */
-  const baseLogin = (params, { resolve, reject, }) => {
+  const login = defineAsyncApi(API_LOGIN, (params, { resolve, reject }) => {
       const provider = params.provider || 'weixin';
       const errorCallback = warpPlusErrorCallback(reject);
+      const authOptions = provider === 'apple'
+          ? { scope: 'email' }
+          : params.univerifyStyle
+              ? {
+                  univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback),
+              }
+              : {};
       getService(provider)
           .then((service) => {
           function login() {
+              if (params.onlyAuthorize && provider === 'weixin') {
+                  service.authorize(({ code }) => {
+                      resolve({
+                          code,
+                          authResult: '',
+                      });
+                  }, errorCallback);
+                  return;
+              }
               service.login((res) => {
                   const authResult = res.target.authResult;
                   resolve({
                       code: authResult.code,
                       authResult: authResult,
                   });
-              }, errorCallback, provider === 'apple'
-                  ? { scope: 'email' }
-                  : {
-                      univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback),
-                  } || {});
+              }, errorCallback, authOptions);
           }
           // 先注销再登录
           // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -9123,9 +9133,8 @@ var serviceContext = (function (vue) {
           }
       })
           .catch(errorCallback);
-  };
-  const login = defineAsyncApi(API_LOGIN, baseLogin, LoginProtocol);
-  const getUserInfo = defineAsyncApi(API_GET_USER_INFO, (params, { resolve, reject }) => {
+  }, LoginProtocol);
+  const baseGetUserInfo = (params, { resolve, reject }) => {
       const provider = params.provider || 'weixin';
       const errorCallback = warpPlusErrorCallback(reject);
       getService(provider)
@@ -9189,22 +9198,35 @@ var serviceContext = (function (vue) {
           .catch(() => {
           reject('请先调用 uni.login');
       });
-  }, GetUserInfoProtocol);
+  };
+  const getUserInfo = defineAsyncApi(API_GET_USER_INFO, baseGetUserInfo, GetUserInfoProtocol);
   /**
    * 获取用户信息-兼容
    */
-  const getUserProfile = defineAsyncApi(API_GET_USER_PROFILE, (params, { resolve, reject }) => {
-      return baseLogin(params, { resolve, reject });
-  }, GgetUserProfileProtocol);
-  const preLogin = defineAsyncApi(API_PRE_LOGIN, (params, { resolve, reject }) => {
+  const getUserProfile = defineAsyncApi(API_GET_USER_PROFILE, baseGetUserInfo, GgetUserProfileProtocol);
+  const preLogin = defineAsyncApi(API_PRE_LOGIN, ({ provider }, { resolve, reject }) => {
       const successCallback = warpPlusSuccessCallback(resolve);
       const errorCallback = warpPlusErrorCallback(reject);
-      getService(params.provider)
+      getService(provider)
           .then((service) => service.preLogin(successCallback, errorCallback))
           .catch(errorCallback);
   }, PreLoginProtocol, PreLoginOptions);
   const _closeAuthView = () => getService('univerify').then((service) => service.closeAuthView());
-  const closeAuthView = defineAsyncApi(API_CLOSE_AUTH_VIEW, _closeAuthView);
+  const closeAuthView = defineSyncApi(API_CLOSE_AUTH_VIEW, _closeAuthView);
+  const getCheckBoxState = defineAsyncApi(API_GET_CHECK_BOX_STATE, (_, { resolve, reject }) => {
+      const successCallback = warpPlusSuccessCallback(resolve);
+      const errorCallback = warpPlusErrorCallback(reject);
+      try {
+          getService('univerify').then((service) => {
+              // @ts-expect-error
+              const state = service.getCheckBoxState();
+              successCallback({ state });
+          });
+      }
+      catch (error) {
+          errorCallback(error);
+      }
+  });
   /**
    * 一键登录自定义登陆按钮点击处理
    */
@@ -12139,6 +12161,7 @@ var serviceContext = (function (vue) {
     getUserProfile: getUserProfile,
     preLogin: preLogin,
     closeAuthView: closeAuthView,
+    getCheckBoxState: getCheckBoxState,
     registerRuntime: registerRuntime,
     share: share,
     shareWithSystem: shareWithSystem,

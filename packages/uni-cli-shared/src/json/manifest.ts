@@ -42,3 +42,12 @@ export function normalizeNetworkTimeout(
     ...networkTimeout,
   }
 }
+
+export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
+  const manifest = parseManifestJsonOnce(inputDir)
+  return extend(
+    {},
+    manifest.uniStatistics,
+    manifest[platform] && manifest[platform].uniStatistics
+  )
+}

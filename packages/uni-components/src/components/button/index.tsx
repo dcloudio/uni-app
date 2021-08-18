@@ -1,4 +1,4 @@
-import { inject, onBeforeUnmount, ref, getCurrentInstance } from 'vue'
+import { inject, onBeforeUnmount, ref } from 'vue'
 import { useI18n, initI18nButtonMsgsOnce } from '@dcloudio/uni-core'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useHover } from '../../helpers/useHover'

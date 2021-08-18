@@ -1,28 +1,25 @@
-import path from 'path'
 import { Plugin } from 'vite'
 import { parse } from 'jsonc-parser'
-import { normalizePath } from '@dcloudio/uni-cli-shared'
+import { preJs } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
+const jsonExtRE = /\.json($|\?)(?!commonjs-proxy)/
+const SPECIAL_QUERY_RE = /[\?&](?:worker|sharedworker|raw|url)\b/
+
 export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
-  const pagesJsonPath = normalizePath(
-    path.resolve(options.inputDir, 'pages.json')
-  )
-  const manifestJsonPath = normalizePath(
-    path.resolve(options.inputDir, 'manifest.json')
-  )
   return {
     name: 'vite:uni-json',
     transform(code, id) {
-      if (
-        (id.startsWith(pagesJsonPath) || id.startsWith(manifestJsonPath)) &&
-        !id.endsWith('.json.js')
-      ) {
-        code = JSON.stringify(parse(code))
+      if (!jsonExtRE.test(id)) return null
+      if (SPECIAL_QUERY_RE.test(id)) return null
+      if (id.endsWith('.json.js')) return null
+      // preprocess
+      if (code.includes('#endif')) {
+        code = preJs(code)
       }
       return {
-        code,
-        map: this.getCombinedSourcemap(),
+        code: JSON.stringify(parse(code)),
+        map: null,
       }
     },
   }

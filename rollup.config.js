@@ -117,7 +117,7 @@ function createConfig(entryFile, output, buildOption) {
     nodeResolve(),
     commonjs(),
     json({
-      namedExports: false,
+      // namedExports: false,
     }),
     tsPlugin,
     createReplacePlugin(buildOption, output.format),

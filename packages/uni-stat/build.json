@@ -1,0 +1,5 @@
+{
+  "input": {
+    "src/index.js": ["dist/uni-stat.es.js", "dist/uni-stat.cjs.js"]
+  }
+}

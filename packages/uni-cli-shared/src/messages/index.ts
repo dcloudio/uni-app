@@ -10,4 +10,6 @@ export const M = {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'stat.warn.appid':
+    '当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303',
 }

@@ -13,6 +13,7 @@ const BUILT_IN_MODULES = {
   'vue-router': 'dist/vue-router.esm-bundler.js',
   vuex: 'dist/vuex.esm-bundler.js',
   '@dcloudio/uni-app': 'dist/uni-app.es.js',
+  '@dcloudio/uni-stat': 'dist/uni-stat.es.js',
   '@dcloudio/uni-cloud': 'dist/uni-cloud.es.js',
   '@dcloudio/uni-i18n': 'dist/uni-i18n.es.js',
   '@dcloudio/uni-shared': 'dist/uni-shared.es.js',
