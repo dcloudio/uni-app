@@ -70,6 +70,12 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 id|list父容器滚动组件id|String|是|应为最外层滚动容器，必须是list组件
 headerHeight|吸顶距离|Number|是|子list吸顶距离最外层滚动容器顶部的距离
 
+#### 方法
+
+`scrollToElement(ref, options)`
+
+滚动到指定位置，详情 [https://uniapp.dcloud.net.cn/nvue-api?id=scrolltoelement](https://uniapp.dcloud.net.cn/nvue-api?id=scrolltoelement)
+
 #### 事件
 
 
