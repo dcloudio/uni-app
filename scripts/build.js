@@ -12,7 +12,7 @@ const targets = args._
 // const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
 const isRelease = args.release
-const buildTypes = args.t || args.types || isRelease
+// const buildTypes = args.t || args.types || isRelease
 const buildAllMatching = args.all || args.a
 
 run()
@@ -54,7 +54,7 @@ async function build(target) {
   }
   const hasRollupBundler = fs.existsSync(path.resolve(pkgDir, 'build.json'))
 
-  const types = target.endsWith('-shared') || (buildTypes && pkg.types)
+  const types = target.endsWith('-shared') || pkg.types
   // if building a specific format, do not remove dist.
   // if (!formats && bundler !== 'vite') {
   if (target !== 'uni-cloud') {
