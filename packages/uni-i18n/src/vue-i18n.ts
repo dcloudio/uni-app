@@ -1,14 +1,17 @@
 import { I18n, BuiltInLocale, LocaleMessages, LOCALE_EN } from './I18n'
 
+const ignoreVueI18n = true
+
 type Interpolate = (
   key: string,
   values?: Record<string, unknown> | Array<unknown>
 ) => string
 
 function initLocaleWatcher(appVm: any, i18n: I18n) {
-  appVm.$i18n &&
-    appVm.$i18n.vm.$watch(
-      'locale',
+  if (appVm.$i18n) {
+    const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm
+    vm.$watch(
+      appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale,
       (newLocale: BuiltInLocale) => {
         i18n.setLocale(newLocale)
       },
@@ -16,6 +19,7 @@ function initLocaleWatcher(appVm: any, i18n: I18n) {
         immediate: true,
       }
     )
+  }
 }
 
 // function getDefaultLocale() {
@@ -32,7 +36,8 @@ function initLocaleWatcher(appVm: any, i18n: I18n) {
 export function initVueI18n(
   locale: BuiltInLocale = LOCALE_EN,
   messages: LocaleMessages = {},
-  fallbackLocale: BuiltInLocale = LOCALE_EN
+  fallbackLocale: BuiltInLocale = LOCALE_EN,
+  watcher?: (locale: BuiltInLocale) => void
 ) {
   // 兼容旧版本入参
   if (typeof locale !== 'string') {
@@ -45,6 +50,7 @@ export function initVueI18n(
     locale: locale || fallbackLocale,
     fallbackLocale,
     messages,
+    watcher,
   })
   let t: Interpolate = (key, values) => {
     if (typeof getApp !== 'function') {
@@ -55,7 +61,7 @@ export function initVueI18n(
       }
     } else {
       const appVm = getApp().$vm
-      if (!appVm.$t || !appVm.$i18n) {
+      if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
         // if (!locale) {
         //   i18n.setLocale(getDefaultLocale())
         // }

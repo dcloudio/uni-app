@@ -15,7 +15,9 @@ function useI18n() {
         language = uniShared.getEnvLocale();
       }
     }
-    i18n = uniI18n.initVueI18n(language);
+    {
+      i18n = uniI18n.initVueI18n(language);
+    }
   }
   return i18n;
 }

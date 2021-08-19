@@ -12,6 +12,7 @@ export function parseWebviewStyle(
   uniPageUrl?: InitUniPageUrl
   debugRefresh?: DebugRefresh
   isTab?: boolean
+  language?: string
 } {
   const webviewStyle: PlusWebviewWebviewStyles = {
     bounce: 'vertical',

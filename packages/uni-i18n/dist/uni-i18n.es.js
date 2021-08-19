@@ -199,13 +199,16 @@ class I18n {
     }
 }
 
+const ignoreVueI18n = true;
 function initLocaleWatcher(appVm, i18n) {
-    appVm.$i18n &&
-        appVm.$i18n.vm.$watch('locale', (newLocale) => {
+    if (appVm.$i18n) {
+        const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
+        vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
             i18n.setLocale(newLocale);
         }, {
             immediate: true,
         });
+    }
 }
 // function getDefaultLocale() {
 //   if (typeof navigator !== 'undefined') {
@@ -217,7 +220,7 @@ function initLocaleWatcher(appVm, i18n) {
 //   }
 //   return uni.getSystemInfoSync().language
 // }
-function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN) {
+function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
         [locale, messages] = [messages, locale];
@@ -229,6 +232,7 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
         locale: locale || fallbackLocale,
         fallbackLocale,
         messages,
+        watcher,
     });
     let t = (key, values) => {
         if (typeof getApp !== 'function') {
@@ -240,7 +244,7 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
         }
         else {
             const appVm = getApp().$vm;
-            if (!appVm.$t || !appVm.$i18n) {
+            if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
                 // if (!locale) {
                 //   i18n.setLocale(getDefaultLocale())
                 // }

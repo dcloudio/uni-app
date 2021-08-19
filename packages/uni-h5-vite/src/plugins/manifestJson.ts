@@ -49,6 +49,9 @@ export function uniManifestJsonPlugin(): Plugin {
             sdkConfigs.maps.qqmap.key) ||
           defaultQQMapKey
 
+        let language: string | null | undefined = manifest.language
+        language = language && language.toUpperCase() !== 'AUTO' ? language : ''
+
         const flexDirection =
           (manifest['app'] &&
             manifest['app'].nvue &&
@@ -67,6 +70,7 @@ export function uniManifestJsonPlugin(): Plugin {
   export const async = ${JSON.stringify(async)}
   export const qqMapKey = '${qqMapKey}'
   export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
+  export const language = '${language}'
   `,
           map: { mappings: '' },
         }

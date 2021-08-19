@@ -2,7 +2,7 @@ var version = "3.0.0-alpha-3000020210813002";
 
 const STAT_VERSION = version;
 const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
-const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif'; 
+const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif';
 const PAGE_PVER_TIME = 1800;
 const APP_PVER_TIME = 300;
 const OPERATING_TIME = 10;
@@ -937,7 +937,7 @@ const lifecycle = {
     // 重写分享，获取分享上报事件
     if (this.$scope && this.$scope.onShareAppMessage) {
       let oldShareAppMessage = this.$scope.onShareAppMessage;
-      this.$scope.onShareAppMessage = function(options) {
+      this.$scope.onShareAppMessage = function (options) {
         stat.interceptShare(false);
         return oldShareAppMessage.call(this, options)
       };
@@ -960,16 +960,16 @@ const lifecycle = {
   },
   onError(e) {
     stat.error(e);
-  }
+  },
 };
 
 function main() {
   if (process.env.NODE_ENV === 'development') {
-    uni.report = function(type, options) {};
+    uni.report = function (type, options) {};
   } else {
-    const Vue = require('vue');
-    (Vue.default || Vue).mixin(lifecycle);
-    uni.report = function(type, options) {
+    const Vue = require('vue')
+    ;(Vue.default || Vue).mixin(lifecycle);
+    uni.report = function (type, options) {
       stat.sendEvent(type, options);
     };
   }

@@ -1432,13 +1432,16 @@ var serviceContext = (function (vue) {
       }
   }
 
+  const ignoreVueI18n = true;
   function initLocaleWatcher(appVm, i18n) {
-      appVm.$i18n &&
-          appVm.$i18n.vm.$watch('locale', (newLocale) => {
+      if (appVm.$i18n) {
+          const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
+          vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
               i18n.setLocale(newLocale);
           }, {
               immediate: true,
           });
+      }
   }
   // function getDefaultLocale() {
   //   if (typeof navigator !== 'undefined') {
@@ -1450,7 +1453,7 @@ var serviceContext = (function (vue) {
   //   }
   //   return uni.getSystemInfoSync().language
   // }
-  function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN) {
+  function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
       // 兼容旧版本入参
       if (typeof locale !== 'string') {
           [locale, messages] = [messages, locale];
@@ -1462,6 +1465,7 @@ var serviceContext = (function (vue) {
           locale: locale || fallbackLocale,
           fallbackLocale,
           messages,
+          watcher,
       });
       let t = (key, values) => {
           if (typeof getApp !== 'function') {
@@ -1473,7 +1477,7 @@ var serviceContext = (function (vue) {
           }
           else {
               const appVm = getApp().$vm;
-              if (!appVm.$t || !appVm.$i18n) {
+              if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
                   // if (!locale) {
                   //   i18n.setLocale(getDefaultLocale())
                   // }
@@ -1522,10 +1526,28 @@ var serviceContext = (function (vue) {
       if (!i18n) {
           let language;
           {
-              // TODO 需替换为新API
-              language = plus.os.language;
+              if (typeof getApp === 'function') {
+                  language = weex.requireModule('plus').getLanguage();
+              }
+              else {
+                  language = plus.webview.currentWebview().getStyle().language;
+              }
           }
-          i18n = initVueI18n(language);
+          const SET_LOCALE_API = 'i18n.setLocale';
+          {
+              i18n = initVueI18n(language, undefined, undefined, typeof getApp === 'function'
+                  ? (locale) => {
+                      const pages = getCurrentPages();
+                      pages.forEach((page) => {
+                          UniServiceJSBridge.publishHandler(SET_LOCALE_API, locale, page.$page.id);
+                      });
+                      weex.requireModule('plus').setLanguage(locale);
+                  }
+                  : undefined);
+          }
+          if (typeof getApp !== 'function') {
+              UniViewJSBridge.subscribe(SET_LOCALE_API, i18n.setLocale);
+          }
       }
       return i18n;
   }
@@ -4074,6 +4096,15 @@ var serviceContext = (function (vue) {
    */
   const offWindowResize = defineOffApi(API_OFF_WINDOW_RESIZE, () => {
       // window.removeEventListener('resize', onResize)
+  });
+
+  const getLanguage = defineSyncApi('getLanguage', () => {
+      const i18n = useI18n();
+      return i18n.getLocale();
+  });
+  const setLanguage = defineSyncApi('setLanguage', (locale) => {
+      const i18n = useI18n();
+      return i18n.setLocale(locale);
   });
 
   const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
@@ -10243,6 +10274,7 @@ var serviceContext = (function (vue) {
           // android 需要使用
           webviewStyle.isTab = isTabBar;
       }
+      webviewStyle.language = weex.requireModule('plus').getLanguage();
       if ((process.env.NODE_ENV !== 'production')) {
           console.log(formatLog('updateWebview', webviewStyle));
       }
@@ -12034,6 +12066,8 @@ var serviceContext = (function (vue) {
     canvasPutImageData: canvasPutImageData,
     canvasToTempFilePath: canvasToTempFilePath,
     getSelectedTextRange: getSelectedTextRange,
+    getLanguage: getLanguage,
+    setLanguage: setLanguage,
     $on: $on,
     $off: $off,
     $once: $once,

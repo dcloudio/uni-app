@@ -85,6 +85,8 @@ export {
   canvasPutImageData,
   canvasToTempFilePath,
   getSelectedTextRange,
+  getLanguage,
+  setLanguage,
   $on,
   $off,
   $once,
