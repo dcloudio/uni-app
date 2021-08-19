@@ -24,12 +24,12 @@ export function login (params, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'login')
   const authOptions = provider === 'apple'
     ? { scope: 'email' }
-    : params.univerifyStyle 
-      ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) } 
+    : params.univerifyStyle
+      ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
       : {}
 
   getService(provider).then(service => {
-    function login() {
+    function login () {
       if (params.onlyAuthorize && provider === 'weixin') {
         service.authorize(({ code }) => {
           invoke(callbackId, {
@@ -147,7 +147,7 @@ export function closeAuthView () {
   return getService('univerify').then(service => service.closeAuthView())
 }
 
-export function getCheckBoxState(params, callbackId) {
+export function getCheckBoxState (params, callbackId) {
   const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState')
   const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState')
   try {

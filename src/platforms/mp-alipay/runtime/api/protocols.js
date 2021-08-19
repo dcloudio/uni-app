@@ -253,14 +253,14 @@ const protocols = { // 需要做转换的 API 列表
   },
   chooseImage: {
     returnValue (result) {
-      const hasTempFilePaths = hasOwn(result,'tempFilePaths') && result.tempFilePaths
-      if (hasOwn(result,'apFilePaths') && !hasTempFilePaths) {
+      const hasTempFilePaths = hasOwn(result, 'tempFilePaths') && result.tempFilePaths
+      if (hasOwn(result, 'apFilePaths') && !hasTempFilePaths) {
         result.tempFilePaths = result.apFilePaths
         delete result.apFilePaths
       }
-      if (!hasOwn(result,'tempFiles') && hasTempFilePaths) {
+      if (!hasOwn(result, 'tempFiles') && hasTempFilePaths) {
         result.tempFiles = []
-        result.tempFilePaths.forEach(tempFilePath => result.tempFiles.push({path: tempFilePath}))
+        result.tempFilePaths.forEach(tempFilePath => result.tempFiles.push({ path: tempFilePath }))
       }
       return {}
     }

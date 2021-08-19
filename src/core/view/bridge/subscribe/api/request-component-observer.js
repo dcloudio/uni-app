@@ -20,11 +20,11 @@ function getRect (rect) {
 }
 
 // 在相交比很小的情况下，Chrome会返回相交为0
-function rectifyIntersectionRatio(entrie) {
+function rectifyIntersectionRatio (entrie) {
   const {
     intersectionRatio,
     boundingClientRect: { height: overAllHeight, width: overAllWidth },
-    intersectionRect: { height: intersectionHeight, width: intersectionWidth },
+    intersectionRect: { height: intersectionHeight, width: intersectionWidth }
   } = entrie
 
   if (intersectionRatio !== 0) return intersectionRatio
@@ -33,7 +33,6 @@ function rectifyIntersectionRatio(entrie) {
     ? intersectionWidth / overAllWidth
     : intersectionHeight / overAllHeight
 }
-
 
 const intersectionObservers = {}
 
