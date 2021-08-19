@@ -166,7 +166,7 @@ univerifyStyle 数据结构：
 
 ```json
 {  
-    "fullScreen": "false", // 是否全屏显示，默认值： "false"
+    "fullScreen": false, // 是否全屏显示，默认值： false
     "backgroundColor": "#ffffff",  // 授权页面背景颜色，默认值：#ffffff
     "backgroundImage": "", // 全屏显示的背景图片，默认值："" （仅支持本地图片，只有全屏显示时支持）  
     "icon": {  
@@ -187,7 +187,7 @@ univerifyStyle 数据结构：
         "borderRadius": "24px"	// 授权按钮圆角 默认值："24px" （按钮高度的一半）
     },  
     "otherLoginButton": {  
-        "visible": "true", // 是否显示其他登录按钮，默认值：true  
+        "visible": true, // 是否显示其他登录按钮，默认值：true  
         "normalColor": "", // 其他登录按钮正常状态背景颜色 默认值：透明 
         "highlightColor": "", // 其他登录按钮按下状态背景颜色 默认值：透明 
         "textColor": "#656565", // 其他登录按钮文字颜色 默认值：#656565  
@@ -196,7 +196,7 @@ univerifyStyle 数据结构：
         "borderRadius": "0px" // 其他登录按钮圆角 默认值："24px" （按钮高度的一半）
     },  
     "privacyTerms": {  
-        "defaultCheckBoxState":"true", // 条款勾选框初始状态 默认值： true
+        "defaultCheckBoxState":true, // 条款勾选框初始状态 默认值： true
         "uncheckedImage":"", // 可选 条款勾选框未选中状态图片（仅支持本地图片 建议尺寸 24x24px）(3.2.0+ 版本支持)   
         "checkedImage":"", // 可选 条款勾选框选中状态图片（仅支持本地图片 建议尺寸24x24px）(3.2.0+ 版本支持)   
         "textColor": "#BBBBBB", // 文字颜色 默认值：#BBBBBB  
