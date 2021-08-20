@@ -842,7 +842,7 @@ sigmob打包需要将HBuilderX升级到3.1.23版。
 
 ```json
 {
-	"plus": {
+	"app-plus": {
 		"distribute": {
 			"sdkConfigs": {
 				"ad" : {
@@ -858,7 +858,7 @@ sigmob打包需要将HBuilderX升级到3.1.23版。
 
 ```json
 {
-	"plus": {
+	"app-plus": {
 		"distribute": {
 			"sdkConfigs": {
 				"ad" : {
