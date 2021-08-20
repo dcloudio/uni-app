@@ -75,6 +75,7 @@
     "jsdom-global": "^3.0.2",
     "jsonfile": "^6.0.1",
     "mustache": "^4.1.0",
+    "os-locale-s": "^1.0.8",
     "recast": "^0.20.4",
     "rollup": "^2.6.1",
     "rollup-plugin-babel": "^4.4.0",

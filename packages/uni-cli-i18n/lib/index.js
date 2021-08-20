@@ -1,7 +1,8 @@
 const { I18n } = require('i18n')
+const { osLocale } = require('os-locale-s/cjs')
 const { format } = require('./lang')
 
-const defaultLocale = format(process.env.UNI_HBUILDERX_LANGID || process.env.LANG || 'en')
+const defaultLocale = format(process.env.UNI_HBUILDERX_LANGID || osLocale.sync({ spawn: false, cache: false }) || 'en')
 
 const i18n = new I18n()
 
