@@ -2137,7 +2137,8 @@ export default function vueFactory(exports) {
   }
 
   function toRef(object, key) {
-    return isRef(object[key]) ? object[key] : new ObjectRefImpl(object, key);
+    var val = object[key];
+    return isRef(val) ? val : new ObjectRefImpl(object, key);
   }
 
   class ComputedRefImpl {
@@ -5036,8 +5037,8 @@ export default function vueFactory(exports) {
   var normalizeSlotValue = value => isArray(value) ? value.map(normalizeVNode) : [normalizeVNode(value)];
 
   var normalizeSlot = (key, rawSlot, ctx) => {
-    var normalized = withCtx(props => {
-      return normalizeSlotValue(rawSlot(props));
+    var normalized = withCtx((...args) => {
+      return normalizeSlotValue(rawSlot(...args));
     }, ctx);
     normalized._c = false;
     return normalized;
@@ -6398,17 +6399,18 @@ export default function vueFactory(exports) {
           } = instance;
           var originNext = next;
 
-          var _vnodeHook;
+          var _vnodeHook; // Disallow component effect recursion during pre-lifecycle hooks.
+
+
+          effect.allowRecurse = false;
 
           if (next) {
             next.el = vnode.el;
             updateComponentPreRender(instance, next, optimized);
           } else {
             next = vnode;
-          } // Disallow component effect recursion during pre-lifecycle hooks.
+          } // beforeUpdate hook
 
-
-          effect.allowRecurse = false; // beforeUpdate hook
 
           if (bu) {
             invokeArrayFns(bu);
@@ -9589,7 +9591,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.3";
+  var version = "3.2.4";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

@@ -1393,9 +1393,8 @@ class ObjectRefImpl {
     }
 }
 function toRef(object, key) {
-    return isRef(object[key])
-        ? object[key]
-        : new ObjectRefImpl(object, key);
+    const val = object[key];
+    return isRef(val) ? val : new ObjectRefImpl(object, key);
 }
 
 class ComputedRefImpl {
@@ -5029,13 +5028,13 @@ const normalizeSlotValue = (value) => isArray(value)
     ? value.map(normalizeVNode)
     : [normalizeVNode(value)];
 const normalizeSlot = (key, rawSlot, ctx) => {
-    const normalized = withCtx((props) => {
+    const normalized = withCtx((...args) => {
         if ((process.env.NODE_ENV !== 'production') && currentInstance) {
             warn$1(`Slot "${key}" invoked outside of the render function: ` +
                 `this will not track dependencies used in the slot. ` +
                 `Invoke the slot function inside the render function instead.`);
         }
-        return normalizeSlotValue(rawSlot(props));
+        return normalizeSlotValue(rawSlot(...args));
     }, ctx);
     normalized._c = false;
     return normalized;
@@ -5320,7 +5319,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.2.3";
+    Vue.version = "3.2.4";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -7010,6 +7009,8 @@ function baseCreateRenderer(options, createHydrationFns) {
                 if ((process.env.NODE_ENV !== 'production')) {
                     pushWarningContext(next || instance.vnode);
                 }
+                // Disallow component effect recursion during pre-lifecycle hooks.
+                effect.allowRecurse = false;
                 if (next) {
                     next.el = vnode.el;
                     updateComponentPreRender(instance, next, optimized);
@@ -7017,8 +7018,6 @@ function baseCreateRenderer(options, createHydrationFns) {
                 else {
                     next = vnode;
                 }
-                // Disallow component effect recursion during pre-lifecycle hooks.
-                effect.allowRecurse = false;
                 // beforeUpdate hook
                 if (bu) {
                     invokeArrayFns(bu);
@@ -10986,7 +10985,7 @@ function $raw() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.3";
+const version = "3.2.4";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
