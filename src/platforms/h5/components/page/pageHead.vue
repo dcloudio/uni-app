@@ -84,7 +84,7 @@
           v-if="text"
           class="uni-icon-clear"
           @click="_clearInput"
-        >&#xea0f;</i>
+        />
       </div>
       <div class="uni-page-head-ft">
         <template v-for="(btn,index) in btns">
