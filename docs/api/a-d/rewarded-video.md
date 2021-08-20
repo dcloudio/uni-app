@@ -836,7 +836,7 @@ code|message|
 
 ### manifest 配置@manifest
 
-sigmob打包需要将HBuilderX升级到3.1.23版。
+Sigmob打包需要将HBuilderX升级到3.2.0版。
 
 打开 `manifest.json` 文件，点击 “源码视图”，`uni-app` 在 `app-plus->distribute->sdkConfigs` 下添加如下内容，`5+ app` 在 `plus->distribute->plugins` 下添加如下内容：
 
