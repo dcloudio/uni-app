@@ -1,8 +1,9 @@
 const { I18n } = require('i18n')
-const { osLocale } = require('os-locale-s/cjs')
-const { format } = require('./lang')
+const { getLocale } = require('./locale')
 
-const defaultLocale = format(process.env.UNI_HBUILDERX_LANGID || osLocale.sync({ spawn: false, cache: false }) || 'en')
+const defaultLocale = 'en'
+
+const locale = getLocale()
 
 const i18n = new I18n()
 
@@ -24,7 +25,15 @@ locales.forEach(item => {
 
 i18n.configure({
   staticCatalog,
-  defaultLocale
+  defaultLocale,
+  retryInDefaultLocale: true,
+  fallbacks: {
+    'en_*': 'en',
+    'zh': 'zh_CN',
+    'zh_*': 'zh_CN',
+  }
 })
+
+i18n.setLocale(locale)
 
 module.exports = i18n

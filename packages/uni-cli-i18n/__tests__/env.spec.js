@@ -1,12 +1,12 @@
 describe('env', () => {
   it('CLI', () => {
-    process.env.LANG = 'fr'
-    const i18n = require('../lib/index')
-    expect(i18n.getLocale()).toBe('fr')
+    process.env.LANG = 'es'
+    const { getLocale } = require('../lib/locale')
+    expect(getLocale()).toBe('es')
   })
   it('HBuilderX', () => {
     process.env.UNI_HBUILDERX_LANGID = 'fr'
-    const i18n = require('../lib/index')
-    expect(i18n.getLocale()).toBe('fr')
+    const { getLocale } = require('../lib/locale')
+    expect(getLocale()).toBe('fr')
   })
 })
