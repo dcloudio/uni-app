@@ -834,6 +834,46 @@ code|message|
 - App端聚合的广点通(Android)：[错误码](https://developers.adnet.qq.com/doc/android/union/union_debug#sdk%20%E9%94%99%E8%AF%AF%E7%A0%81)
 
 
+### manifest 配置@manifest
+
+sigmob打包需要将HBuilderX升级到3.1.23版。
+
+打开 `manifest.json` 文件，点击 “源码视图”，`uni-app` 在 `app-plus->distribute->sdkConfigs` 下添加如下内容，`5+ app` 在 `plus->distribute->plugins` 下添加如下内容：
+
+```json
+{
+	"plus": {
+		"distribute": {
+			"sdkConfigs": {
+				"ad" : {
+				  "sigmob" : {}
+				}
+			}
+		}
+	}
+}
+```
+
+**注意：如果已经存在ad节点，只需要在后面追加即可，如下**
+
+```json
+{
+	"plus": {
+		"distribute": {
+			"sdkConfigs": {
+				"ad" : {
+				  "gdt" : {},
+				  "csj" : {},
+				  "ks" : {},
+				  "ks-content" : {},
+				  "sigmob" : {}
+				}
+			}
+		}
+	}
+}
+```
+
 ### 注意事项
 - iOS平台配置应用使用广告标识（IDFA）详见：[https://ask.dcloud.net.cn/article/36107](https://ask.dcloud.net.cn/article/36107)
 - 测试期间请使用测试 `adpid`，参考测试代码，如果无法显示换个时间再试
