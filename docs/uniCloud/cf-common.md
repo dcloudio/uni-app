@@ -25,7 +25,9 @@ cloudfunctions
 4. 在要引入公用模块的云函数目录（本例中为`use-common`）执行`npm init -y`生成`package.json`文件
 5. 在`use-common`目录执行`npm install ../common/hello-common`引入`hello-common`模块
 
-在`HBuilderX 3.0.0`以上版本上述步骤4、5可以在云函数上右键选择`管理公共模块依赖`来实现
+**在`HBuilderX 3.0.0`以上版本上述步骤4、5可以在云函数上右键选择`管理公共模块依赖`来实现，如下图**
+
+![管理公共模块依赖](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/fc2da708-304e-4c92-9a0a-dc48fa5e73ed.png)
 
 公共模块依赖其他公共模块同理
 

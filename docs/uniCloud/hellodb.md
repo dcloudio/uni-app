@@ -81,7 +81,7 @@ uniCloud同时支持阿里云和腾讯云，它们的数据库大体相同，有
 
 - 云函数操作数据库是较为传统的开发方式，使用nodejs写云函数、使用传统的MongoDB的API操作云数据库。
 
-- 客户端访问云数据库，称为[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)。这种开发方式可大幅提升开发效率，避免开发者开发服务器代码，并且支持更易用的`jql`语法操作数据库，是更为推荐的开发方式。[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)有单独一套权限和字段值控制系统，无需单独数据库安全。（使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)推荐HBuilderX 2.9.5以上版本。2.9.5以下的版本需单独下载插件，并且不支持`jql`，不再推荐使用。）
+- 客户端访问云数据库，称为[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)。这种开发方式可大幅提升开发效率，避免开发者开发服务器代码，并且支持更易用的`jql`语法操作数据库，是更为推荐的开发方式。[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)有单独一套权限和字段值控制系统，无需担心数据库安全。（使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)推荐HBuilderX 2.9.5以上版本。2.9.5以下的版本需单独下载插件，并且不支持`jql`，不再推荐使用。）
 
 不管使用哪种方法，都有很多公共的概念或功能。本文档将讲述这些公共的内容。
 

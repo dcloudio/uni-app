@@ -254,7 +254,7 @@
 ```
 
 
-- 传入一个对象的所有 `property`
+- 传入一个对象的所有 `property`  (微信小程序暂不支持该用法，即: <blog-post v-bind="post"(错误)></blog-post>)
 
 如果你想要将一个对象的所有 `property` 都作为 `prop` 传入，你可以使用不带参数的 `v-bind` (取代 v-bind:prop-name)。例如，对于一个给定的对象 `post` ：
 

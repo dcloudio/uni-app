@@ -15,8 +15,8 @@
 |value|Number|0|value 的值表示选择了 range 中的第几个（下标从 0 开始）||
 |selector-type|String|auto|大屏时UI类型，支持 picker、select、auto，默认在 iPad 以 picker 样式展示而在 PC 以 select 样式展示|H5 2.9.9+|
 |@change|EventHandle||value 改变时触发 change 事件，event.detail = {value: value}||
-|disabled|Boolean|false|是否禁用||
-|@cancel|EventHandle||取消选择或点遮罩层收起 picker 时触发||
+|disabled|Boolean|false|是否禁用|快手小程序不支持|
+|@cancel|EventHandle||取消选择或点遮罩层收起 picker 时触发|快手小程序不支持|
 
 - picker在各平台的实现是有UI差异的，有的平台如百度、支付宝小程序的Android端是从中间弹出的；有的平台支持循环滚动如百度小程序；有的平台没有取消按钮如App-iOS端。但均不影响功能使用。
 
@@ -26,9 +26,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|vue支持，nvue自2.4起支持|√|√|x|√|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|vue支持，nvue自2.4起支持|√|√|x|√|√|√|√|
 
 支付宝小程序 picker 组件不支持多列选择，可以使用 picker-view 组件替代。
 
@@ -41,8 +41,8 @@
 |value|Array|[]|value 每一项的值表示选择了 range 对应项中的第几个（下标从 0 开始）|
 |@change|EventHandle||value 改变时触发 change 事件，event.detail = {value: value}|
 |@columnchange|EventHandle||某一列的值改变时触发 columnchange 事件，event.detail = {column: column, value: value}，column 的值表示改变了第几列（下标从0开始），value 的值表示变更值的下标|
-|@cancel|EventHandle||取消选择时触发|
-|disabled|Boolean|false|是否禁用|
+|@cancel|EventHandle||取消选择时触发（快手小程序不支持）|
+|disabled|Boolean|false|是否禁用（快手小程序不支持）|
 
 **bug & tips**
 - 由于 JavaScript 的限制 vue 不能观测如下方式设置 value：``this.value[0] = 0`` （[vue 注意事项](https://cn.vuejs.org/v2/guide/list.html#注意事项)），解决方式参考：[hello-uniapp 示例](https://github.com/dcloudio/hello-uniapp/commit/59264474172a591c865431d02a2a1e3583978827)
@@ -54,9 +54,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|√|√|x|
 
 - 时间选择在App端调用的是os的原生时间选择控件，在不同平台有不同的ui表现
 
@@ -77,9 +77,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|√|√|x|
 
 日期选择默认在App端和H5端（PC版Chrome以及PC版FireFox）调用的是os的原生日期选择控件，在不同平台有不同的ui表现，当配置fields参数后使用统一的展示方式。
 
@@ -109,9 +109,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|x|√|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|√|√|√|x|
 
 - 小程序平台在引擎层面内置了省市区数据。但省市区包含大量数据，占用体积，并非所有应用都需要，且很多城市数据有自维护需求，所以在App和H5平台没有在前端内置这些数据。可以基于多列picker或picker-view，自行填充城市数据。插件市场有较多类似插件，[详见](https://ext.dcloud.net.cn/search?q=%E5%9F%8E%E5%B8%82%E9%80%89%E6%8B%A9)。注意基于多列picker方式的地区选择不能运行在支付宝小程序上，只有基于picker-view的可以全端运行。尤其推荐插件[uni-data-picker](https://ext.dcloud.net.cn/plugin?id=3796)，自带省市区的联网数据，自带懒加载。
 
@@ -120,8 +120,8 @@
 |value|Array|[]|表示选中的省市区，默认选中每一列的第一个值|
 |custom-item|String||可为每一列的顶部添加一个自定义的项|
 |@change|EventHandle||value 改变时触发 change 事件，event.detail = {value: value}|
-|@cancel|EventHandle||取消选择时触发|
-|disabled|Boolean|false|是否禁用|
+|@cancel|EventHandle||取消选择时触发（快手小程序不支持）|
+|disabled|Boolean|false|是否禁用（快手小程序不支持）|
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/picker/picker)
  
@@ -218,7 +218,7 @@ export default {
             } else if (type === 'end') {
                 year = year + 2;
             }
-            month = month > 9 ? month : '0' + month;;
+            month = month > 9 ? month : '0' + month;
             day = day > 9 ? day : '0' + day;
             return `${year}-${month}-${day}`;
         }

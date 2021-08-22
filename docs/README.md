@@ -1,5 +1,5 @@
 
-```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、Web（响应式）、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉/淘宝）、快应用等多个平台。
+```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、Web（响应式）、以及各种小程序（微信/支付宝/百度/头条/QQ/快手/钉钉/淘宝）、快应用等多个平台。
 
 `DCloud`公司拥有800万开发者、数百万应用、12亿手机端月活用户、数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
 
@@ -7,7 +7,7 @@
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
-    <p>一套代码编到10个平台，这不是梦想。眼见为实，扫描10个二维码，亲自体验最全面的跨平台效果！</p>
+    <p>一套代码编到11个平台，这不是梦想。眼见为实，扫描11个二维码，亲自体验最全面的跨平台效果！</p>
     <div class="flex-img-group-view">
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
@@ -31,12 +31,12 @@
         <div class="barcode-img-box"><img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/gh_33446d7f7a26_430.jpg" width="160" /></div>
         <b>微信小程序版</b>
       </a>
+    </div>
+    <div class="flex-img-group-view" style="margin-top: 20px;">
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box"><img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/30112940-bcf2-11ea-a30b-e311646dfaf2.png" width="160" /></div>
         <b>支付宝小程序版</b>
       </a>
-    </div>
-    <div class="flex-img-group-view" style="margin-top: 20px;">
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box"><img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e7fc6700-bcf1-11ea-b680-7980c8a877b8.png" width="160" /></div>
         <b>百度小程序版</b>
@@ -49,21 +49,27 @@
       </a>
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
-          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160" />
-        </div>
-        <b>QQ小程序版</b>
-      </a>
-      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-        <div class="barcode-img-box">
           <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qa-union.png" width="160" />
         </div>
         <b>快应用</b>
+      </a>
+    </div>
+    <div class="flex-img-group-view" style="margin-top: 20px;">
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160" />
+        </div>
+        <b>QQ小程序版</b>
       </a>
       <a href="https://so.mp.360.cn/mp.html?appid=qh4j181qqtru354st6" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
           <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-mp-360-qr.png" width="160" />
         </div>
         <b>360小程序</b>
+      </a>
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/04cb978b-070f-4122-b374-cb3cd9f9528f.png" width="160" /></div>
+        <b>快手小程序版</b>
       </a>
     </div>
     <p>注：<br/>
@@ -178,4 +184,4 @@
 
 实际运行效果如下（点击图片可放大）：
 
-![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/4869eb60-60aa-11eb-b680-7980c8a877b8.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/ec6e95dd-77ad-4d14-aafa-ca503f5b9e53.jpg)

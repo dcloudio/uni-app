@@ -25,9 +25,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（2.5.11+）|x|√|x|x|√（1.57.0+）|√（0.1.26+）|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√（2.5.11+）|x|√|x|x|√（1.57.0+）|√（0.1.26+）|√|
 
 - app端的广告源由腾讯优量汇、头条穿山甲、快手等广告联盟提供，DCloud负责聚合
 - 小程序端的广告由小程序平台提供
@@ -117,11 +117,9 @@ options 为 object 类型，属性如下：
 ```
 
 
-### 完整调用示例
+### 推荐接入示例@ad-js
 
-支持多页面重复调用，可以传入不同广告位，默认处理了Loading状态、快速点击、数据过期、失败重试1次逻辑
-
-推荐使用此方案
+`ad.js` 是对 `uni.createRewardedVideoAd` 的封装，一个页面缓存多页面生效，避免每个页面都预载而不展示的问题，可以传入不同广告位，内部处理了Loading状态、快速点击、数据过期、失败重试1次逻辑
 
 ```html
 <template>
@@ -319,7 +317,7 @@ class AdBase {
       this._isLoad = false
       this.onClose(e)
     })
-    ad.onVerify((e) => {
+    ad.onVerify && ad.onVerify((e) => {
       // e.isValid
     })
     ad.onError(({
@@ -835,6 +833,46 @@ code|message|
 - App端聚合的广点通(iOS)：[错误码](https://developers.adnet.qq.com/doc/ios/union/union_debug#%E9%94%99%E8%AF%AF%E7%A0%81)
 - App端聚合的广点通(Android)：[错误码](https://developers.adnet.qq.com/doc/android/union/union_debug#sdk%20%E9%94%99%E8%AF%AF%E7%A0%81)
 
+
+### manifest 配置@manifest
+
+`Sigmob`打包需要将`HBuilderX`升级到`3.2.0`以上版本。
+
+打开 `manifest.json` 文件，点击 “源码视图”，`uni-app` 在 `app-plus->distribute->sdkConfigs` 下添加如下内容，`5+ app` 在 `plus->distribute->plugins` 下添加如下内容：
+
+```json
+{
+	"app-plus": {
+		"distribute": {
+			"sdkConfigs": {
+				"ad" : {
+				  "sigmob" : {}
+				}
+			}
+		}
+	}
+}
+```
+
+**注意：如果已经存在ad节点，只需要在后面追加即可，如下**
+
+```json
+{
+	"app-plus": {
+		"distribute": {
+			"sdkConfigs": {
+				"ad" : {
+				  "gdt" : {},
+				  "csj" : {},
+				  "ks" : {},
+				  "ks-content" : {},
+				  "sigmob" : {}
+				}
+			}
+		}
+	}
+}
+```
 
 ### 注意事项
 - iOS平台配置应用使用广告标识（IDFA）详见：[https://ask.dcloud.net.cn/article/36107](https://ask.dcloud.net.cn/article/36107)

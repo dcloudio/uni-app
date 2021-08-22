@@ -24,11 +24,11 @@ export function chooseVideo ({
   const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel')
 
   function successCallback (tempFilePath = '') {
-    const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
+    const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
     const compressVideo = compressed ? new Promise((resolve) => {
       plus.zip.compressVideo({
         src: tempFilePath,
-        dst
+        filename
       }, ({ tempFilePath }) => {
         resolve(tempFilePath)
       }, () => {

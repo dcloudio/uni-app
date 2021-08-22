@@ -26,9 +26,9 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 
 **平台差异及版本说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|√|x|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|√|√|x|√|√|
 
 需 HBuilderX 3.0+
 
@@ -46,7 +46,7 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |collection|string|表名。支持输入多个表名，用 `,` 分割|
 |field|string|指定要查询的字段，多个字段用 `,` 分割。不写本属性，即表示查询所有字段。支持用 oldname as newname方式对返回字段重命名|
 |where|string|查询条件，对记录进行过滤。[见下](/uniCloud/unicloud-db?id=where)|
-|orderby|string|排序字段及正序倒叙设置|
+|orderby|string|排序字段及正序倒序设置|
 |foreign-key|String|手动指定使用的关联关系，HBuilderX 3.1.10+ [详情](/uniCloud/clientdb?id=lookup-foreign-key)|
 |page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮，默认值为`add`|
 |page-current|Number|当前页|
@@ -54,7 +54,7 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |getcount|Boolean|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组，一般用于非列表页，比如详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
-|manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值。一般onLoad因时机太早取不到this.$refs.udb，在onReady里可以取到|
+|manual|Boolean|**已过时，使用 `loadtime` 替代** 是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值。一般onLoad因时机太早取不到this.$refs.udb，在onReady里可以取到|
 |gettree|Boolean|是否查询树状结构数据，HBuilderX 3.0.5+ [详情](/uniCloud/clientdb?id=gettree)|
 |startwith|String|gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询，HBuilderX 3.0.5+|
 |limitlevel|Number|gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1，HBuilderX 3.0.5+|
@@ -149,15 +149,11 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 </script>
 ```
 
-**注意**
-
-- 此方式目前在微信小程序会报错，近期会进行修复
-
 方式2. 不在属性中写，而在js中拼接字符串
 ```html
 <template>
 	<view>
-		<unicloud-db collection="uni-id-users" :where="sWhere"></unicloud-db>
+		<unicloud-db ref="udb" collection="uni-id-users" :where="sWhere" loadtime="manual"></unicloud-db>
 	</view>
 </template>
 <script>
@@ -170,6 +166,10 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 		}
 		onLoad() {
 			this.sWhere = "id=='" + this.tempstr + "'"
+			// 组件上配置了 loadtime = "manual", 这里需要手动加载数据
+			this.$nextTick(() => {
+			  this.$refs.udb.loadData()
+			})
 
 			// 多条件示例
 

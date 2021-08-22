@@ -35,6 +35,10 @@
             ]
         ]
     ],
+    "interceptors": [
+        "/core/service/api/base/interceptor.js",
+        []
+    ],
     "request": [
         "/platforms/h5/service/api/network/request.js",
         [

@@ -4,9 +4,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√(仅nvue)|x|√|x|x|x|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√(仅nvue)|x|√|x|x|x|x|x|x|x|x|
 
 如app平台的vue页面需要支持直播推流，需编写条件编译代码，使用 `plus.video.LivePusher`，[业务指南](https://ask.dcloud.net.cn/article/13416)、[规范文档](http://www.html5plus.org/doc/zh_cn/video.html#plus.video.LivePusher)。还是推荐直接使用nvue里的`live-pusher`组件。
 
@@ -32,8 +32,6 @@ auto-focus|Boolean|true|否|自动聚集。|
 beauty|Number|0|否|美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。|
 whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。|
 orientation|String|"vertical"|否|画面方向|
-beauty|number|0|否|美颜，取值范围 0-9 ，0 表示关闭|
-whiteness|number|0|否|美白，取值范围 0-9 ，0 表示关闭|
 min-bitrate|Number|200|否|最小码率。|
 max-bitrate|Number|1000|否|最大码率。|
 audio-quality|string|high|否|高音质(48KHz)或低音质(16KHz)，值为high, low|微信小程序1.7.0

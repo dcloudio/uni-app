@@ -156,6 +156,7 @@ uni.chooseImage({
 |success|Function|否|下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'}| |
 |fail|Function|否|接口调用失败的回调函数| |
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）| |
+|filePath|string|否|指定文件下载后存储的路径 (本地路径)|微信小程序（IOS小程序保存到相册需要添加此字段才可以正常保存）|
 
 **注：文件的临时路径，在应用本次启动期间可以正常使用，如需持久保存，需在主动调用 [uni.saveFile](/api/file/file?id=savefile)，才能在应用下次启动时访问得到。**
 

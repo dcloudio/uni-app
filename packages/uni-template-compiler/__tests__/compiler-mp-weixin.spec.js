@@ -98,6 +98,14 @@ describe('mp:compiler-mp-weixin', () => {
       }
     )
     assertCodegen(
+      '<my-component><template v-slot="{item}"><view @click="getValue(item)">{{item}}</view><template></my-component>',
+      '<my-component generic:scoped-slots-default="test-my-component-default" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"></my-component>',
+      'with(this){}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
       '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
       '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
       'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
@@ -224,6 +232,14 @@ describe('mp:compiler-mp-weixin', () => {
       '<view><slot v-bind="object"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
       'with(this){{$setScopedSlotsParams("default",object)}}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}<my-component><template v-slot="{item}">{{item}}<template></my-component><template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}<my-component vue-id="{{(\'551070e6-2\')+\',\'+(\'551070e6-1\')}}" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m2}}">{{$root.m3}}</block></block></my-component></block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?$getScopedSlotsParams("551070e6-1","default","item"):null;var m2=$hasScopedSlotsParams("551070e6-2");var m3=m2?$getScopedSlotsParams("551070e6-2","default","item"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1,m2:m2,m3:m3}})}',
       {
         scopedSlotsCompiler: 'augmented'
       }

@@ -72,7 +72,6 @@ $ curl https://${云函数Url化域名}/${path}
     httpMethod: 'HTTP请求方法，如 GET',
     headers: {HTTP请求头},
     queryStringParameters: {HTTP请求的Query，键值对形式},
-    requestContext: {云开发相关信息},
     body: 'HTTP请求体',
     isBase64Encoded: 'true or false，表示body是否为Base64编码'
 }
@@ -91,12 +90,6 @@ $ curl https://${云函数Url化域名}/${path}
         'accept-encoding': 'gzip, deflate, br',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8'
     },
-    requestContext: {
-        requestId: 'cdbb96328072184d19d3fcd243e8cc4d',
-        envId: 'env-id', //服务空间Id
-        appId: 123456789,
-        uin: 123456789
-    },
     isBase64Encoded: false,
     body: ''
 }
@@ -113,7 +106,6 @@ $ curl https://${云函数Url化域名}/${path}
     httpMethod: 'GET',
     headers: {HTTP请求头},
     queryStringParameters: {a: "1", b: "2"},
-    requestContext: {云开发相关信息},
     isBase64Encoded: false
 }
 ```
@@ -143,7 +135,6 @@ uni.request({
     	...
     	"content-type": 'application/json'
     },
-    requestContext: {云开发相关信息},
     isBase64Encoded: false,
     body: '{"a":1,"b":2}', // 注意此处可能是base64，需要根据isBase64Encoded判断
 }

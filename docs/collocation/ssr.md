@@ -1,4 +1,5 @@
-注意：本指南仅支持 vue3 版本的 uni-app 项目（h5平台），目前仅可通过创建uni-app cli项目的方式来使用，参考文档：[uni-app 项目小程序端、H5 端支持 vue3 介绍](https://ask.dcloud.net.cn/article/37834)
+注意：本指南仅支持 vue3 版本的 uni-app 项目（h5平台）， vue3项目的升级迁移指南参考：[uni-app 项目小程序端、H5 端支持 vue3 介绍](https://ask.dcloud.net.cn/article/37834)
+
 #### 什么是服务器端渲染 (SSR)？
 uni-app 默认情况下，是在客户端中输出 Vue 组件，进行生成 DOM 和操作 DOM。然而，也可以将同一个组件渲染为服务器端的 HTML 字符串，将它们直接发送到浏览器，最后将这些静态标记"激活"为客户端上完全可交互的应用程序。
 
@@ -175,12 +176,12 @@ export default defineConfig({
 })
 ```
   * 编译：
-  > cli工程：`npm run build:h5:ssr`或通过`HBuilderX`的`发行菜单->网站 PC-Web或手机H5`、勾选`ssr`
+  > cli工程：`npm run build:h5:ssr`或通过`HBuilderX 3.1.16及以上版本`的`发行菜单->网站 PC-Web或手机H5`、勾选`ssr`
   
   ![以ssr模式发行](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/d7574ced-e253-4b73-8187-86d6a8811364.jpg)
   
   * 部署静态资源到[前端网页托管](https://uniapp.dcloud.net.cn/uniCloud/hosting)
   > 将编译后的`dist/build/h5/client`中的资源上传至前端网页托管，推荐使用免费的阿里云服务空间
   * 部署`uni-ssr`云函数
-  > 从插件市场导入[uni-ssr](https://ext.dcloud.net.cn/plugin?id=5338)，将编译后的`dist/build/h5/server`目录拷贝至`uni-ssr`云函数根目录，并上传
+  > 从插件市场导入[uni-ssr](https://ext.dcloud.net.cn/plugin?id=5338)，将编译后的`dist/build/h5/server`目录拷贝至`uni-ssr`云函数根目录，并上传。备注：阿里云的云函数绑定自定义域名功能正在调试中，现阶段推荐使用腾讯云版本的云函数。
   * 配置`uni-ssr`的云函数URL化路径，请参考文档：[云函数URL化](https://uniapp.dcloud.net.cn/uniCloud/http)

@@ -4,9 +4,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|x（[CanvasContext.toTempFilePath](https://opendocs.alipay.com/mini/api/rod3ti)）|√|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|x（[CanvasContext.toTempFilePath](https://opendocs.alipay.com/mini/api/rod3ti)）|√|√|√|√|
 
 **object参数说明：**
 

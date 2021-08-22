@@ -10,7 +10,7 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 在 C 语言中，通过 #ifdef、#ifndef 的方式，为 windows、mac 等不同 os 编译不同的代码。
 ``uni-app`` 参考这个思路，为 ``uni-app`` 提供了条件编译手段，在一个工程里优雅的完成了平台个性化实现。
 
-## 条件编译
+## 条件编译@preprocessor
 
 条件编译是用特殊的注释作为标记，在编译时根据这些特殊的注释，将注释里面的代码编译到不同平台。
 
@@ -24,8 +24,9 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 
 <b style="color:#268BD2"> %PLATFORM%</b> **可取值如下：**
 
-|值|平台|
+|值|生效条件|
 |:-|:-|
+|VUE3|HBuilderX 3.2.0+ [详情](https://ask.dcloud.net.cn/article/37834)|
 |APP-PLUS|App|
 |APP-PLUS-NVUE或APP-NVUE|App nvue|
 |H5|H5|
@@ -34,6 +35,7 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 |MP-BAIDU|百度小程序|
 |MP-TOUTIAO|字节跳动小程序|
 |MP-QQ|QQ小程序|
+|MP-KUAISHOU|快手小程序|
 |MP-360|360小程序|
 |MP|微信小程序/支付宝小程序/百度小程序/字节跳动小程序/QQ小程序/360小程序|
 |QUICKAPP-WEBVIEW|快应用通用(包含联盟、华为)|
@@ -53,6 +55,7 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 * 条件编译是利用注释实现的，在不同语法里注释写法不一样，js使用 ``// 注释``、css 使用 ``/* 注释 */``、vue/nvue 模板里使用 ``<!-- 注释 -->``；
 * 条件编译APP-PLUS包含APP-NVUE和APP-VUE，APP-PLUS-NVUE和APP-NVUE没什么区别，为了简写后面出了APP-NVUE ；
 * 使用条件编译请保证`编译前`和`编译后`文件的正确性，比如json文件中不能有多余的逗号；
+* `VUE3` 需要在项目的 `manifest.json` 文件根节点配置 `"vueVersion" : "3"`
 
 ### API 的条件编译
 

@@ -152,7 +152,7 @@ export function initWebview (webview, routeOptions, path, query) {
 
 export function createPreloadWebview () {
   if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
-    preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id++))
+    preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id++), { contentAdjust: false })
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`)
     }

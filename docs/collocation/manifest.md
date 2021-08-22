@@ -6,7 +6,6 @@
 |:-|:-|:-|:-|:-|
 |name|String||应用名称||
 |appid|String|新建 uni-app 项目时，DCloud 云端分配。用途[详见](https://ask.dcloud.net.cn/article/35907)|应用标识|| 
-|screenOrientation|Array||重力感应、横竖屏配置，可取值："portrait-primary"：竖屏正方向；"portrait-secondary"：竖屏反方向；"landscape-primary"：横屏正方向；"landscape-secondary"：横屏反方向。||
 |description|String||应用描述||
 |versionName|String||版本名称，例如：1.0.0。详见下方Tips说明||
 |versionCode|String||版本号，例如：36||
@@ -55,6 +54,7 @@ uni 统计配置项
 |属性|类型|说明|最低版本|
 |:-|:-|:-|:-|
 |splashscreen|Object|App 启动界面信息，[详见](/collocation/manifest?id=splashscreen)||
+|screenOrientation|Array|重力感应、横竖屏配置，可取值："portrait-primary"：竖屏正方向；"portrait-secondary"：竖屏反方向；"landscape-primary"：横屏正方向；"landscape-secondary"：横屏反方向。||
 |modules|Object|权限模块，[详见](/collocation/manifest?id=modules)||
 |distribute|Object|App 发布信息，[详见](/collocation/manifest?id=distribute)||
 |usingComponents|Boolean|是否启用自定义组件模式，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|1.9.0+|
@@ -127,7 +127,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 |android|Object|Android 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |ios|Object|iOS 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |sdkConfigs|Object|SDK配置，仅打包生效 [详见](/collocation/manifest?id=sdkConfigs)|
-|orientation|Array|同 screenOrientation 配置，仅打包生效，推荐使用 screenOrientation|
+|orientation|Array|同 screenOrientation 配置，仅打包生效，已废弃，推荐使用 screenOrientation|
 
 ##### App SdkConfigs@sdkConfigs
 
@@ -239,7 +239,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 
 H5平台是SPA单页应用，普通的SEO信息即加meta字段只能在，自定义的模板html里配置首页。
 
-但SEO的时代在变，现在更有效的方式，是用uni-app同时发布一版百度小程序，这个搜索权重更高。DCloud的ask社区的H5版也是uni-app做的，同时发布了百度小程序，权重更高，每天来自百度的搜索量非常多。是一个可现身说法的好案例。
+但SEO的时代在变，现在更有效的方式，使用uni-app同时发布一版百度小程序，这个搜索权重更高。DCloud的ask社区的H5版也是uni-app做的，同时发布了百度小程序，权重更高，每天来自百度的搜索量非常多。是一个可现身说法的好案例。
 
 #### router@h5-router
 |属性|类型|默认值|说明|
@@ -486,6 +486,15 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 
 mp-qq只支持自定义组件模式，不存在usingComponents配置
 
+
+### mp-kuaishou
+
+|属性|类型|说明|
+|:-|:-|:-|
+|appid|String|快手小程序的 AppID，登录 [https://mp.kuaishou.com](https://mp.kuaishou.com) 申请|
+|uniStatistics|Object|[快手小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：augmented|
+
 ### 关于分包优化的说明
 
 - 在对应平台的配置下添加`"optimization":{"subPackages":true}`开启分包优化
@@ -547,13 +556,13 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
     "uniStatistics": {
         "enable": false
     },
-    "screenOrientation": [
-        "portrait-primary",
-        "landscape-primary",
-        "portrait-secondary",
-        "landscape-secondary"
-    ],
     "app-plus": {
+        "screenOrientation": [
+            "portrait-primary",
+            "landscape-primary",
+            "portrait-secondary",
+            "landscape-secondary"
+        ],
         "optimization": {
             "subPackages": true
         },

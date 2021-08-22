@@ -50,6 +50,9 @@
 |mp-weixin|微信小程序|
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
+|mp-qq|QQ小程序|
+|mp-toutiao|字节小程序|
+|mp-kuaishou|快手小程序|
 
 ## 资源路径说明
 
@@ -778,6 +781,7 @@ const package = require('packageName')
 |百度小程序|支持百度小程序组件|swancomponents|
 |字节跳动小程序|支持字节跳动小程序组件|ttcomponents|
 |QQ小程序|支持QQ小程序组件|wxcomponents|
+|快手小程序|支持快手小程序组件|kscomponents|
 
 此文档要求开发者对各端小程序的**自定义组件**有一定了解，没接触过小程序**自定义组件**的可以参考：
 
@@ -786,6 +790,7 @@ const package = require('packageName')
 - [支付宝小程序自定义组件](https://docs.alipay.com/mini/framework/custom-component-overview)
 - [字节跳动小程序自定义组件](https://developer.toutiao.com/docs/framework/custom_component_intro.html)
 - [QQ小程序自定义组件](https://q.qq.com/wiki/develop/miniprogram/frame/diy_components/)
+- [快手小程序自定义组件](https://mp.kuaishou.com/docs/develop/frame/custom_comp/component_temp_style.html)
 
 **目录结构**
 

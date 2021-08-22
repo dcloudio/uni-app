@@ -8,9 +8,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|1.9.0+|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|1.9.0+|x|
 
 mapContext
 
@@ -26,6 +26,20 @@ mapContext
 |includePoints|OBJECT|缩放视野展示所有经纬度|app-nvue 2.1.5+||
 |getRegion|OBJECT|获取当前地图的视野范围|||
 |getScale|OBJECT|获取当前地图的缩放级别|||
+|addCustomLayer|OBJECT|添加个性化图层||App暂不支持 (**SDK不支持**)，微信小程序|
+|addGroundOverlay|OBJECT|创建自定义图片图层，图片会随着地图缩放而缩放||App-nvue 3.1.0+，微信小程序|
+|addMarkers |OBJECT|添加 marker||App-nvue 3.1.0+，微信小程序|
+|fromScreenLocation|OBJECT|获取屏幕上的点对应的经纬度，坐标原点为地图左上角||App暂不支持，微信小程序|
+|initMarkerCluster|OBJECT|初始化点聚合的配置，未调用时采用默认配置||App-nvue 3.1.0+，微信小程序|
+|moveAlong|OBJECT|沿指定路径移动 marker，用于轨迹回放等场景。动画完成时触发回调事件，若动画进行中，对同一 marker 再次调用 moveAlong 方法，前一次的动画将被打断。|支持 android 不支持autoRotate属性设置 默认ture|App-nvue 3.1.0+，微信小程序|
+|openMapApp|OBJECT|拉起地图APP选择导航。||App-nvue 3.1.0+，微信小程序|
+|removeCustomLayer|OBJECT|移除个性化图层 ||App暂时不支持  (**SDK不支持**)，微信小程序|
+|removeGroundOverlay|OBJECT|移除自定义图片图层||App-nvue 3.1.0+，微信小程序|
+|removeMarkers|OBJECT|移除 marker。||App-nvue 3.1.0+，微信小程序|
+|setCenterOffset|OBJECT|设置地图中心点偏移，向后向下为增长，屏幕比例范围(0.25~0.75)，默认偏移为[0.5, 0.5]||App暂时不支持，微信小程序|
+|toScreenLocation|OBJECT|获取经纬度对应的屏幕坐标，坐标原点为地图左上角。||App暂时不支持，微信小程序|
+|updateGroundOverlay|OBJECT|更新自定义图片图层。||App-nvue 3.1.0+，微信小程序|
+|on|EventHandle|监听地图事件。||App-nvue 3.1.0+，微信小程序|
 |$getAppMap||获取原生地图对象 [plus.maps.Map](https://www.html5plus.org/doc/zh_cn/maps.html#plus.maps.Map)|app-vue自定义组件模式|1.9.3|
 
 `$getAppMap()` 注意事项：
@@ -90,7 +104,103 @@ mapContext
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
-## mapSearch 模块(module)
+
+**addCustomLayer 的 OBJECT 参数列表**
+
+|属性		|类型		|默认值	|必填	|说明												|
+|:-|:-|:-|:-|:-|
+|layerId	|string		|		|是		|个性化图层id										|
+|success	|function	|		|否		|接口调用成功的回调函数								|
+|fail		|function	|		|否		|接口调用失败的回调函数								|
+|complete	|function	|		|否		|接口调用结束的回调函数（调用成功、失败都会执行）	|
+
+
+**addGroundOverlay 的 OBJECT 参数列表**
+
+|属性		|类型		|默认值	|必填	|说明												|
+|:-|:-|:-|:-|:-|
+|id			|String		|		|是		|图片图层 id										|
+|src		|String		|		|是		|图片路径，支持网络图片、临时路径、代码包路径		|
+|bounds		|Object		|		|是		|图片覆盖的经纬度范围								|
+|visible	|Boolean	|true	|否		|是否可见											|
+|zIndex		|Number		|1		|否		|图层绘制顺序										|
+|opacity	|Number		|1		|否		|图层透明度											|
+|success	|function	|		|否		|接口调用成功的回调函数								|
+|fail		|function	|		|否		|接口调用失败的回调函数								|
+|complete	|function	|		|否		|接口调用结束的回调函数（调用成功、失败都会执行）	|
+
+`object.bounds` 的结构
+
+|属性		|类型	|默认值	|必填	|说明			|
+|:-|:-|:-|:-|:-|
+|southwest	|Object	|		|是		|西南角经纬度	|
+|northeast	|Object	|		|是		|东北角经纬度	|
+
+`southwest` 的结构
+
+|属性		|类型	|默认值	|必填	|说明	|
+|:-|:-|:-|:-|:-|
+|longitude	|number	|		|是		|经度	|
+|latitude	|number	|		|是		|纬度	|
+
+`northeast` 的结构
+
+|属性		|类型	|默认值	|必填	|说明	|
+|:-|:-|:-|:-|:-|
+|longitude	|number	|		|是		|经度	|
+|latitude	|number	|		|是		|纬度	|
+
+
+**addMarkers 的 OBJECT 参数列表**
+
+|属性		|类型		|默认值	|必填	|说明												|
+|:-|:-|:-|:-|:-|
+|markers	|Array		|		|是		|同传入 map 组件的 marker 属性						|
+|clear		|boolean	|false	|否		|是否先清空地图上所有 marker						|
+|success	|function	|		|否		|接口调用成功的回调函数								|
+|fail		|function	|		|否		|接口调用失败的回调函数								|
+|complete	|function	|		|否		|接口调用结束的回调函数（调用成功、失败都会执行）	|
+
+
+**MapContext.on()** (app-nvue、微信小程序支持)
+
+`markerClusterCreate`
+缩放或拖动导致新的聚合簇产生时触发，仅返回新创建的聚合簇信息。
+
+返回参数
+
+|参数		|类型								|说明		|
+|:-|:-|:-|
+|clusters	|Array&amp;lt;ClusterInfo&amp;gt;	|聚合簇数据	|
+
+
+`markerClusterClick`
+聚合簇的点击事件。
+
+返回参数
+
+|参数	|类型		|说明	|
+|:-|:-|:-|
+|cluster|ClusterInfo|聚合簇	|
+
+`ClusterInfo` 结构
+
+|参数		|类型						|说明						|
+|:-|:-|:-|
+|clusterId	|Number						|聚合簇的 id				|
+|center		|LatLng						|聚合簇的坐标				|
+|markerIds	|Array&amp;lt;Number&amp;gt;|该聚合簇内的点标记数据数组	|
+
+
+示例代码
+
+```
+  MapContext.on('markerClusterCreate', (res) => {})
+  MapContext.on('markerClusterClick', (res) => {})
+```
+
+
+## mapSearch 模块(仅app-nvue支持)
 
 #### reverseGeocode(Object,callback)
 > 反向地理编码
@@ -107,7 +217,6 @@ type|String|"success" 表示成功， "fail" 表示失败
 code|Number| 成功返回 0,失败返回相应 code 码
 message|String|失败描述
 address|String|查询后地址 （成功时返回）
-
 
 #### poiSearchNearBy（Object,callback);
 > 周边检索
