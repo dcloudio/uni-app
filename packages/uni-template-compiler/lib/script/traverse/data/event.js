@@ -222,21 +222,11 @@ const isSafeScoped = (state) => {
   return true
 }
 
-function commonEventInAlipay (state, tagName) {
-  if (state.options.platform.name === 'mp-alipay') {
-    // 后续可以继续添加相关 tag
-    if (tagName === 'life-follow') {
-      return false
-    }
-  }
-  return true
-}
-
 function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false, tagName, ret) {
   const key = keyPath.node
   let type = key.value || key.name || ''
 
-  const isCustom = isComponent && !isNativeOn && commonEventInAlipay(state, tagName)
+  const isCustom = isComponent && !isNativeOn
 
   let isCatch = false
   let isCapture = false
