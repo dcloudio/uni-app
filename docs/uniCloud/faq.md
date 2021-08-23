@@ -45,8 +45,6 @@ uni-app可以开发web界面，详见：[uni-app宽屏适配指南](https://unia
 
 如果是需要pc版admin的话，uniCloud提供了[uniCloud admin](https://uniapp.dcloud.io/uniCloud/admin)
 
-插件市场有很多uniCloud Admin系统可搜索：[https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate](https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate)
-
 ### 可否通过http url方式访问云函数或云数据库？
 
 - 场景1：比如App端微信支付，需要配服务器回调地址，此时需要一个HTTP URL。
@@ -55,6 +53,7 @@ uni-app可以开发web界面，详见：[uni-app宽屏适配指南](https://unia
 uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://uniapp.dcloud.io/uniCloud/http)
 
 ### 微信云开发支持客户端直接操作数据库，uniCloud支持吗？
+
 uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见：[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)
 
 ### 云开发是nodejs+改良版MongoDB组合，对比php+mysql的传统组合怎么样？
@@ -138,7 +137,10 @@ clientDB就是这种情况，因为clientDB内部有权限校验系统，某些�
 从uni-id 3.0起，用户的角色权限缓存在token里，不再查库。clientDB的速度比之前提升了100毫秒左右。如果还未升级，请尽快[升级](https://ext.dcloud.net.cn/plugin?id=2116)。同时注意如果用了uniCloud admin，也要配套升级。如果自己在云函数里编写过相关业务逻辑，请务必阅读升级注意事项。
 
 - 原因4. 数据库索引
+
 查询表的索引要正确配置，需要在where里查询的字段都建议配上索引。
+
+但注意索引不能太多，否则增删改数据时又会变慢，详见：
 
 ### 发布H5时还得自己找个服务器部署前端网页，可以不用自己再找服务器吗？
 
@@ -151,9 +153,11 @@ uniCloud支持[前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)，
 
 ### uniCloud云数据库如何实现全文检索
 
-uniCloud的云数据库本身就是文档型数据库，可以全文检索，无需额外配置ElastciSearch等三方数据库。
+uniCloud的云数据库本身就是文档型数据库，可以全文检索。
 
 查询数据时可以传入正则表达式。相比sql的like只有前后的%，正则表达式要强大的多。详情请参考[正则表达式查询](https://uniapp.dcloud.io/uniCloud/cf-database?id=regexp)
+
+当然如果你需要额外配置ElastciSearch等三方数据库，也可以自己找服务器安装这些服务，同步数据，把需要搜索的数据同步过去。
 
 ### uniCloud内如何使用formdata
 
@@ -351,6 +355,28 @@ uniCloud客户端callFunction及数据库相关接口会返回Promise类型结�
 <style>
 </style>
 ```
+
+### 发生故障时如何判断故障点
+
+当你的系统出问题时，如何判断是DCloud还是阿里云或腾讯云的问题？
+
+首先再次声明，DCloud的服务仅限于开发阶段。发行部署后，应用的访问不经过DCloud的服务器。
+
+1. 通过域名判断故障点
+- unicloud.dcloud.net.cn，属于DCloud，这个网站是开发期间使用的，你的应用上线运行时，不经过DCloud服务器。
+	如果该域名可以访问，但是在该域名下操作连接阿里云或腾讯云的数据出现问题，那么也是阿里云或腾讯云出了问题。
+- bspapp.com，属于阿里云。如果该域名访问报错，说明阿里云serverless出故障了。
+- tencentcloudapi.com，属于阿里云。如果该域名访问报错，说明腾讯云serverless出故障了。
+
+当然还有一种情况报错，其实是客户端的问题，包括浏览器的跨域问题，或者小程序的域名白名单问题，导致客户端无法连接uniCloud。这需要通过配置来解决，参考文档：[小程序和浏览器的域名访问配置](https://uniapp.dcloud.io/uniCloud/quickstart?id=%e5%b0%8f%e7%a8%8b%e5%ba%8f%e4%b8%ad%e4%bd%bf%e7%94%a8unicloud%e7%9a%84%e7%99%bd%e5%90%8d%e5%8d%95%e9%85%8d%e7%bd%ae)
+
+2. 通过测试系统判断故障点
+- [hello uniCloud 阿里云版](https://hellounicloud.dcloud.net.cn/#/)
+- [hello uniCloud 腾讯云版](https://hellounicloud.dcloud.net.cn/tcb/#/)
+
+如果测试系统不正常，那就说明这家云厂商的服务出故障了。
+
+这2个系统是完全独立的，如果两个系统都故障了，那就是2家云厂商都故障了，而不是DCloud服务故障了。再次声明，发布后的服务，不连接DCloud的服务器。
 
 ### 常见数据库错误
 
