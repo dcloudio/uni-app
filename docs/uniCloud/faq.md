@@ -378,6 +378,8 @@ uniCloud客户端callFunction及数据库相关接口会返回Promise类型结�
 
 这2个系统是完全独立的，如果两个系统都故障了，那就是2家云厂商都故障了，而不是DCloud服务故障了。再次声明，发布后的服务，不连接DCloud的服务器。
 
+当遇到uniCloud故障时，在uniCloud的QQ群或论坛里反馈即可。因为阿里云、腾讯云其实都有拨测系统，他们也会及时知道故障并解决的。
+
 ### 常见数据库错误
 
 **`operation exceeded time limit`、`云数据库执行时间超限`错误**
