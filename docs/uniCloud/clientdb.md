@@ -2768,96 +2768,11 @@ let res = await collection.where("name=='hey'").update({
 
 #### 更新数组内指定下标的元素
 
-```js
-const db = uniCloud.database();
-const res = await db.collection('table1').where({_id:'1'})
-  .update({
-    // 更新students[1]
-    ['students.' + 1]: {
-      name: 'wang'
-    }
-  })
-```
-
-```json
-// 更新前
-{
-  "_id": "1",
-  "students": [
-    {
-      "name": "zhang"
-    },
-    {
-      "name": "li"
-    }
-  ]
-}
-
-// 更新后
-{
-  "_id": "1",
-  "students": [
-    {
-      "name": "zhang"
-    },
-    {
-      "name": "wang"
-    }
-  ]
-}
-```
+clientDB暂不支持此用法
 
 #### 更新数组内匹配条件的元素
 
-**注意：只可确定数组内只会被匹配到一个的时候使用**
-
-```js
-const db = uniCloud.database();
-const res = await db.collection('table1').where({
-	'students.id': '001'
-}).update({
-  // 将students内id为001的name改为li
-	'students.$.name': 'li'
-})
-```
-
-
-```js
-// 更新前
-{
-  "_id": "1",
-  "students": [
-    {
-      "id": "001",
-      "name": "zhang"
-    },
-    {
-      "id": "002",
-      "name": "wang"
-    }
-  ]
-}
-
-// 更新后
-{
-  "_id": "1",
-  "students": [
-    {
-      "id": "001",
-      "name": "li"
-    },
-    {
-      "id": "002",
-      "name": "wang"
-    }
-  ]
-}
-```
-
-注意：
-- 为方便控制权限，禁止前端使用set方法，一般情况下也不需要前端使用set
-- 更新数据库时不可使用更新操作符`db.command.inc`等
-- 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
+clientDB暂不支持此用法
 
 ### MongoDB聚合操作@aggregate
 
