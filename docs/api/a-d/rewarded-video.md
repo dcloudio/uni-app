@@ -874,6 +874,8 @@ code|message|
 }
 ```
 
+注： Sigmob属于小型广告联盟，收益偏低。如有条件，还需开通优量汇，快手等广告渠道以便提高收益。
+
 ### 注意事项
 - iOS平台配置应用使用广告标识（IDFA）详见：[https://ask.dcloud.net.cn/article/36107](https://ask.dcloud.net.cn/article/36107)
 - 测试期间请使用测试 `adpid`，参考测试代码，如果无法显示换个时间再试
