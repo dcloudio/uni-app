@@ -19,6 +19,11 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
     '@dcloudio/uni-h5',
     ((method: string) => apiJson.includes(method)) as any, // API白名单
   ],
+  // 兼容 wx 对象
+  'wx.': [
+    '@dcloudio/uni-h5',
+    ((method: string) => apiJson.includes(method)) as any, // API白名单
+  ],
   getApp: ['@dcloudio/uni-h5', 'getApp'],
   getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
   UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],

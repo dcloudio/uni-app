@@ -77,12 +77,12 @@ const hmrCode = `if(import.meta.hot){
 function getGlobal(ssr?: boolean) {
   return ssr ? 'global' : 'window'
 }
-
+// 兼容 wx 对象
 function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
   const name = getGlobal(ssr)
   if (config.command === 'build' && !ssr) {
     // 非SSR的发行模式，补充全局 uni 对象
-    return `${name}.uni = {}`
+    return `${name}.uni = {};${name}.wx = {}`
   }
 
   const rpx2pxCode =
@@ -95,6 +95,7 @@ function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
 import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
 ${name}.getApp = getApp
 ${name}.getCurrentPages = getCurrentPages
+${name}.wx = uni
 ${name}.uni = uni
 ${name}.UniViewJSBridge = UniViewJSBridge
 ${name}.UniServiceJSBridge = UniServiceJSBridge
