@@ -49,7 +49,7 @@ HBuilderX (3.2.0 版本起) 新增QQ互联和新浪微博开放平台的通用�
 
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/53e0141e-d2d4-496a-b0f2-2359005c0c4e.jpg)
 
-* 注意：通用链接默认域名仅供测试使用，访问频次限制60次/分钟，请勿在正式发行的项目中使用。
+* 注意：通用链接默认域名仅供测试使用，访问频次限制60次/分钟，请勿在正式发行的项目中使用。正式项目，务必绑定自己的域名（顶级域名，二级域名均可）
 * 如何绑定自己的域名详情：[https://uniapp.dcloud.io/uniCloud/hosting?id=domain](https://uniapp.dcloud.io/uniCloud/hosting?id=domain)
 
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/1e081fdd-27b2-4c0b-8985-7d59756ed313.jpg)
