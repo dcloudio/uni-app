@@ -54,6 +54,12 @@
 - `uni-app` 只支持 `gcj02` 坐标
 - App平台 `layer-style` 属性需要在地图服务商后台创建，值设置为高德后台申请的字符串，[详情](https://developer.amap.com/api/android-sdk/guide/create-map/custom)
 
+### 近期新增功能
+1. 支持点聚合，适用于marker过多场景。
+2. 支持彩虹蚯蚓线，常用于路线规划场景。
+3. 覆盖物支持调整与其它地图元素的压盖关系。
+4. 支持marker（小车）平移动画，适用于轨迹回放场景。
+
 **markers**
 
 标记点用于在地图上显示标记的位置
@@ -104,9 +110,21 @@
 |bgColor|背景色|String|App-nvue 2.1.5+、微信小程序、百度小程序|
 |padding|文本边缘留白|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
 |textAlign|文本对齐方式。有效值: left, right, center|String|App-nvue 2.1.5+、微信小程序、百度小程序|
-|clusterId|自定义点聚合簇效果时使用|Number|App-nvue 3.1.0+、微信小程序|
 |customCallout|自定义气泡窗口|Object|App暂时不支持、微信小程序|
 |aria-label|无障碍访问，（属性）元素的额外描述|String|App-nvue 3.1.0+、微信小程序|
+|joinCluster|是否参与点聚合|Boolean|App-nvue 3.1.0+、微信小程序|
+
+### 点聚合
+
+当地图上需要展示的标记点 marker 过多时，可能会导致界面上 marker 出现压盖，展示不全，并导致整体性能变差。针对此类问题，推出点聚合能力。
+
+使用流程如下：
+
+[MapContext.initMarkerCluster](api/location/map?id=createmapcontext) 对聚合点进行初始化配置（可选）；
+[MapContext.addMarkers](api/location/map?id=createmapcontext) 指定参与聚合的 marker；
+MapContext.on('markerClusterCreate', callback) 触发时，通过 [MapContext.addMarkers](api/location/map?id=createmapcontext) 更新聚合簇的样式 （可选）；
+[MapContext.removeMarkers](api/location/map?id=createmapcontext) 移除参与聚合的 marker；
+
 
 **polyline**
 
