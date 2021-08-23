@@ -836,6 +836,10 @@ code|message|
 
 ### manifest 配置@manifest
 
+注： `Sigmob`属于小型广告联盟，收益偏低。如有条件，还需开通优量汇，快手等广告渠道以便提高收益。
+
+`Sigmob`暂不支持打包界面的勾选，如集成需进行如下的配置变动：
+
 `Sigmob`打包需要将`HBuilderX`升级到`3.2.0`以上版本。
 
 打开 `manifest.json` 文件，点击 “源码视图”，`uni-app` 在 `app-plus->distribute->sdkConfigs` 下添加如下内容，`5+ app` 在 `plus->distribute->plugins` 下添加如下内容：
@@ -873,8 +877,6 @@ code|message|
 	}
 }
 ```
-
-注： Sigmob属于小型广告联盟，收益偏低。如有条件，还需开通优量汇，快手等广告渠道以便提高收益。
 
 ### 注意事项
 - iOS平台配置应用使用广告标识（IDFA）详见：[https://ask.dcloud.net.cn/article/36107](https://ask.dcloud.net.cn/article/36107)
