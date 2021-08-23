@@ -36,7 +36,7 @@ const plugins = [
   uniConsolePlugin({
     filename(filename) {
       filename = path.relative(process.env.UNI_INPUT_DIR, filename)
-      if (filename.startsWith('.')) {
+      if (filename.startsWith('.') || path.isAbsolute(filename)) {
         return ''
       }
       return filename

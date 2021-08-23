@@ -1,7 +1,9 @@
 import { MagicString } from '@vue/compiler-sfc'
+import { normalizePath } from '../utils'
 
 const F = '__f__'
 export function rewriteConsoleExpr(filename: string, code: string) {
+  filename = normalizePath(filename)
   const re = /(console\.(log|info|debug|warn|error))\(([^)]+)\)/g
   const locate = getLocator(code)
   const s = new MagicString(code)
