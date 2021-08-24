@@ -54,7 +54,7 @@ export function normalizeLog(
   return msgs.join('---COMMA---') + ' ' + filename
 }
 
-export function formatLog(
+export function formatAppLog(
   type: 'log' | 'info' | 'debug' | 'warn' | 'error',
   filename: string,
   ...args: unknown[]

@@ -2,6 +2,7 @@ import '../../style/framework/base.css'
 import '@dcloudio/uni-h5/style/framework/nvue.css'
 import '@dcloudio/uni-components/style/resize-sensor.css'
 import { initView } from '@dcloudio/uni-core'
+import { formatAppLog } from '@dcloudio/uni-shared'
 import { ON_WEBVIEW_READY } from '../constants'
 import { UniViewJSBridge } from './bridge'
 import * as uni from './api'
@@ -13,6 +14,7 @@ import { initViewMethods } from './framework/viewMethods'
 ;(window as any).UniViewJSBridge = UniViewJSBridge
 ;(window as any).rpx2px = uni.upx2px
 ;(window as any).__$__ = $
+;(window as any).__f__ = formatAppLog
 
 function onWebviewReady() {
   initView()

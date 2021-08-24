@@ -21,6 +21,8 @@ export interface CliOptions {
   logLevel?: LogLevel
   l?: LogLevel
   clearScreen?: boolean
+  autoHost?: string
+  autoPort?: number
 }
 
 cli
@@ -34,6 +36,8 @@ cli
   .option('--clearScreen', `[boolean] allow/disable clear screen when logging`)
   .option('-d, --debug [feat]', `[string | boolean] show debug logs`)
   .option('-f, --filter <filter>', `[string] filter debug logs`)
+  .option('--autoHost', `[string] specify automator hostname`)
+  .option('--autoPort', `[number] specify automator port`)
 
 cli
   .command('')

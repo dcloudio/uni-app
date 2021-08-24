@@ -4,9 +4,12 @@
   "description": "@dcloudio/uni-app-plus",
   "files": [
     "dist",
+    "lib",
     "style"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "lib/automator.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",

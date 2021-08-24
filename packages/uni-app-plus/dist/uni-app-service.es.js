@@ -2157,14 +2157,14 @@ var serviceContext = (function (vue) {
       return querySelectorAll(this, selector);
   }
 
-  var wxInstance = /*#__PURE__*/Object.freeze({
+  var wxInstance = {
     __proto__: null,
     createSelectorQuery: createSelectorQuery$1,
     createMediaQueryObserver: createMediaQueryObserver$1,
     createIntersectionObserver: createIntersectionObserver$1,
     selectComponent: selectComponent,
     selectAllComponents: selectAllComponents
-  });
+  };
 
   function getOpenerEventChannel() {
       // TODO App
@@ -12042,7 +12042,7 @@ var serviceContext = (function (vue) {
       });
   }, PreloadPageProtocol);
 
-  var uni$1 = /*#__PURE__*/Object.freeze({
+  var uni$1 = {
     __proto__: null,
     navigateTo: navigateTo,
     switchTab: switchTab,
@@ -12212,7 +12212,7 @@ var serviceContext = (function (vue) {
     reLaunch: reLaunch,
     unPreloadPage: unPreloadPage,
     preloadPage: preloadPage
-  });
+  };
 
   const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
       publishHandler,
@@ -18952,7 +18952,7 @@ var serviceContext = (function (vue) {
   	constants: constants_1
   };
 
-  var pako_esm = /*#__PURE__*/Object.freeze({
+  var pako_esm = {
     __proto__: null,
     Deflate: Deflate_1,
     Inflate: Inflate_1,
@@ -18964,7 +18964,7 @@ var serviceContext = (function (vue) {
     inflate: inflate_1,
     inflateRaw: inflateRaw_1,
     ungzip: ungzip_1
-  });
+  };
 
   return index;
 

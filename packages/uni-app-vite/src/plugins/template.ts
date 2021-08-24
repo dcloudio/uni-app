@@ -27,10 +27,15 @@ function genViewHtml(bundle: OutputBundle) {
     ? `<script src="${APP_RENDERJS_JS}"></script>`
     : ''
 
+  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
+    ? `<script src="__uniappautomator.js"></script>`
+    : ''
+
   return viewHtmlStr
     .toString()
     .replace('<!--wxsCode-->', wxsCode)
     .replace('<!--renderjsCode-->', renderjsCode)
+    .replace('<!--automatorCode-->', automatorCode)
     .replace(
       '/*__uniConfig*/',
       `var __uniConfig = ${JSON.stringify(__uniConfig)}`

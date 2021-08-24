@@ -238,41 +238,29 @@ const getRoute = () => {
   var pages = getCurrentPages();
   var page = pages[pages.length - 1];
   if (!page) return ''
+  // TODO 需要确认如果不用 $vm ,其他平台会不会出错
   let _self = page.$vm;
 
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is
   } else {
-    return (
-      (_self.$scope && _self.$scope.route) ||
-      (_self.$mp && _self.$mp.page.route)
-    )
+    return _self.route || (_self.$mp && _self.$mp.page.route)
   }
 };
 
 const getPageRoute = (self) => {
-  var pages = getCurrentPages();
-  var page = pages[pages.length - 1];
-  if (!page) return ''
-  let _self = page.$vm;
+  let route = getRoute();
   let query = self._query;
   let str =
     query && JSON.stringify(query) !== '{}' ? '?' + JSON.stringify(query) : '';
   // clear
   self._query = '';
-  if (getPlatformName() === 'bd') {
-    return _self.$mp && _self.$mp.page.is + str
-  } else {
-    return (
-      (_self.$scope && _self.$scope.route + str) ||
-      (_self.$mp && _self.$mp.page.route + str)
-    )
-  }
+  return route + str
 };
 
 const getPageTypes = (self) => {
   if (
-    self.mpType === 'page' ||
+    self.$mpType === 'page' ||
     (self.$mp && self.$mp.mpType === 'page') ||
     self.$options.mpType === 'page'
   ) {
@@ -399,7 +387,7 @@ const requestData = (done) => {
   });
 };
 
-const titleJsons = process.env.UNI_STAT_PAGES_TITLE;
+const titleJsons = process.env.UNI_STAT_TITLE_JSON;
 const statConfig = {
   appid: process.env.UNI_APP_ID,
 };
@@ -503,11 +491,11 @@ class Util {
     }
 
     getLastTime();
-    this._lastPageRoute = route;
     const time = getResidenceTime('page');
+    // 停留时间
     if (time.overtime) {
       let options = {
-        path: this._lastPageRoute,
+        path: route,
         scene: this.statData.sc,
       };
       this._sendReportRequest(options);
@@ -519,11 +507,13 @@ class Util {
     if (!this.__licationHide) {
       getLastTime();
       const time = getResidenceTime('page');
+      const route = getPageRoute(this);
       this._sendPageRequest({
-        url: this._lastPageRoute,
+        url: route,
         urlref: this._lastPageRoute,
         urlref_ts: time.residenceTime,
       });
+      this._lastPageRoute = route;
       this._navigationBarTitle = {
         config: '',
         page: '',
@@ -663,7 +653,6 @@ class Util {
     data.ttn = title.page;
     data.ttpj = title.config;
     data.ttc = title.report;
-
     let requestData = this._reportingRequestData;
     if (getPlatformName() === 'n') {
       requestData = uni.getStorageSync('__UNI__STAT__DATA') || {};
@@ -733,9 +722,6 @@ class Util {
       uni.request({
         url: STAT_URL,
         method: 'POST',
-        // header: {
-        //   'content-type': 'application/json' // 默认值
-        // },
         data: optionsData,
         success: () => {
           // if (process.env.NODE_ENV === 'development') {
@@ -851,19 +837,17 @@ class Stat extends Util {
 
   report(options, self) {
     this.self = self;
-    // if (process.env.NODE_ENV === 'development') {
-    //   console.log('report init');
-    // }
     setPageResidenceTime();
     this.__licationShow = true;
     this._sendReportRequest(options, true);
   }
 
   load(options, self) {
-    if (!self.$scope && !self.$mp) {
-      const page = getCurrentPages();
-      self.$scope = page[page.length - 1];
-    }
+    //  if (!self.$scope && !self.$mp) {
+    //    const page = getCurrentPages()
+    // console.log();
+    //    self.$scope = page[page.length - 1]
+    //  }
     this.self = self;
     this._query = options;
   }
@@ -927,12 +911,15 @@ const stat = Stat$1.getInstance();
 let isHide = false;
 const lifecycle = {
   onLaunch(options) {
+    console.log('report onLaunch init');
     stat.report(options, this);
   },
   onReady() {
+    console.log('report onReady init');
     stat.ready(this);
   },
   onLoad(options) {
+    console.log('report onLoad init');
     stat.load(options, this);
     // 重写分享，获取分享上报事件
     if (this.$scope && this.$scope.onShareAppMessage) {
@@ -944,14 +931,17 @@ const lifecycle = {
     }
   },
   onShow() {
+    console.log('report onShow init');
     isHide = false;
     stat.show(this);
   },
   onHide() {
+    console.log('report onHide init');
     isHide = true;
     stat.hide(this);
   },
   onUnload() {
+    console.log('report onUnload init');
     if (isHide) {
       isHide = false;
       return
@@ -959,20 +949,28 @@ const lifecycle = {
     stat.hide(this);
   },
   onError(e) {
+    console.log('report onError init');
     stat.error(e);
   },
 };
 
 function main() {
-  if (process.env.NODE_ENV === 'development') {
-    uni.report = function (type, options) {};
-  } else {
-    const Vue = require('vue')
-    ;(Vue.default || Vue).mixin(lifecycle);
+  console.log('stat onload ----');
+  setTimeout(() => {
+    getApp().$.appContext.app.mixin(lifecycle);
     uni.report = function (type, options) {
       stat.sendEvent(type, options);
     };
-  }
+  }, 1);
+  // if (process.env.NODE_ENV === 'development') {
+  //   uni.report = function (type, options) {}
+  // } else {
+  //   const Vue = require('vue')
+  //   ;(Vue.default || Vue).mixin(lifecycle)
+  //   uni.report = function (type, options) {
+  //     stat.sendEvent(type, options)
+  //   }
+  // }
 }
 
 main();

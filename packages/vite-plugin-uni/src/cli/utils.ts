@@ -1,4 +1,5 @@
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 import { BuildOptions, InlineConfig } from 'vite'
 
@@ -74,15 +75,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
-  // tips
-  // if (isInHBuilderX() && options.platform === 'app') {
-  //   return (
-  //     console.error(
-  //       `当前项目 Vue 版本为3，暂不支持编译至 App 端，近期将升级支持。`
-  //     ),
-  //     process.exit(1)
-  //   )
-  // }
+
+  initAutomator(options)
+
   if (process.env.NODE_ENV === 'production') {
     if (!(options as BuildOptions).minify) {
       ;(options as BuildOptions).minify = 'terser'
@@ -113,6 +108,31 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
   console.log(M['compiling'])
 }
 
+function initAutomator({ autoHost, autoPort }: CliOptions) {
+  if (!autoPort) {
+    return
+  }
+  process.env.UNI_AUTOMATOR_WS_ENDPOINT =
+    'ws://' + (autoHost || resolveHostname()) + ':' + autoPort
+}
+
+function resolveHostname() {
+  const interfaces = os.networkInterfaces()
+  const keys = Object.keys(interfaces)
+  for (const key of keys) {
+    const interfaceInfos = interfaces[key]
+    if (!interfaceInfos) {
+      continue
+    }
+    for (const info of interfaceInfos) {
+      if (info.family === 'IPv4' && !info.address.includes('127.0.0.1')) {
+        return info.address
+      }
+    }
+  }
+  return 'localhost'
+}
+
 export function cleanOptions(options: CliOptions) {
   const ret = { ...options }
   delete ret['--']
@@ -128,5 +148,9 @@ export function cleanOptions(options: CliOptions) {
   delete ret.logLevel
   delete ret.l
   delete ret.clearScreen
+
+  delete ret.autoHost
+  delete ret.autoPort
+
   return ret
 }

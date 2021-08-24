@@ -4,6 +4,7 @@
       "src/service/index.ts": "dist/uni-app-service.es.js"
     },
     "output": {
+      "freeze": false,
       "name": "serviceContext",
       "format": "iife",
       "banner": "export function createServiceContext(weex, plus, instanceContext){\nconst Vue = instanceContext.Vue;\nlet setTimeout = instanceContext.setTimeout;\nlet clearTimeout = instanceContext.clearTimeout;\nlet setInterval = instanceContext.setInterval;\nlet clearInterval = instanceContext.clearInterval;\nconst __uniConfig = instanceContext.__uniConfig;\nconst __uniRoutes = instanceContext.__uniRoutes;\n",

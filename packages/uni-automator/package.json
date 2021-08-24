@@ -1,0 +1,41 @@
+{
+  "name": "@dcloudio/uni-automator",
+  "version": "3.0.0-alpha-3000020210813002",
+  "description": "@dcloudio/uni-automator",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-automator"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "uni-app": {
+    "name": "uniAutomator",
+    "apply": [
+      "app",
+      "h5",
+      "mp-weixin"
+    ]
+  },
+  "gitHead": "d5896d19315a106039411c16bbf8b804a865450d",
+  "dependencies": {
+    "address": "^1.1.2",
+    "cross-env": "^7.0.3",
+    "debug": "^4.3.2",
+    "default-gateway": "^6.0.3",
+    "fs-extra": "^10.0.0",
+    "licia": "^1.29.0",
+    "postcss-selector-parser": "^6.0.6",
+    "qrcode-reader": "^1.0.4",
+    "qrcode-terminal": "^0.12.0",
+    "ws": "^8.2.0"
+  }
+}

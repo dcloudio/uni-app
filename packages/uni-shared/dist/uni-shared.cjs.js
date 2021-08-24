@@ -344,6 +344,61 @@ function parseUrl(url) {
     };
 }
 
+function isDebugMode() {
+    // @ts-expect-error
+    return typeof __channelId__ === 'string' && __channelId__;
+}
+function jsonStringifyReplacer(k, p) {
+    switch (shared.toRawType(p)) {
+        case 'Function':
+            return 'function() { [native code] }';
+        default:
+            return p;
+    }
+}
+function normalizeLog(type, filename, args) {
+    if (isDebugMode()) {
+        args.push(filename.replace('at ', 'uni-app:///'));
+        return console[type].apply(console, args);
+    }
+    const msgs = args.map(function (v) {
+        const type = shared.toTypeString(v).toLowerCase();
+        if (type === '[object object]' || type === '[object array]') {
+            try {
+                v =
+                    '---BEGIN:JSON---' +
+                        JSON.stringify(v, jsonStringifyReplacer) +
+                        '---END:JSON---';
+            }
+            catch (e) {
+                v = type;
+            }
+        }
+        else {
+            if (v === null) {
+                v = '---NULL---';
+            }
+            else if (v === undefined) {
+                v = '---UNDEFINED---';
+            }
+            else {
+                const vType = shared.toRawType(v).toUpperCase();
+                if (vType === 'NUMBER' || vType === 'BOOLEAN') {
+                    v = '---BEGIN:' + vType + '---' + v + '---END:' + vType + '---';
+                }
+                else {
+                    v = String(v);
+                }
+            }
+        }
+        return v;
+    });
+    return msgs.join('---COMMA---') + ' ' + filename;
+}
+function formatAppLog(type, filename, ...args) {
+    console[type](normalizeLog(type, filename, args));
+}
+
 function plusReady(callback) {
     if (typeof callback !== 'function') {
         return;
@@ -1122,6 +1177,7 @@ exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
 exports.defaultRpx2Unit = defaultRpx2Unit;
+exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;

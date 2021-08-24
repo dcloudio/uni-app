@@ -165,6 +165,8 @@ export declare const EventModifierFlags: {
     self: number;
 };
 
+export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
+
 export declare function formatDateTime({ date, mode }: {
     date?: Date | undefined;
     mode?: string | undefined;

@@ -3,6 +3,10 @@
   "version": "3.0.0-alpha-3000020210813002",
   "description": "uni-app mp-weixin",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",

@@ -8,6 +8,7 @@ export function createOptimizeDeps(
     exclude: [
       'vue',
       'vuex',
+      'vue-i18n',
       'vue-router',
       '@dcloudio/uni-app',
       '@dcloudio/uni-components',

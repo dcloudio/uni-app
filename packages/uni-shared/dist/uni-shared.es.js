@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, extend, isString, isPlainObject, isArray, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, hyphenate, camelize, extend, isString, isPlainObject, isArray, toTypeString, toRawType, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAGS = [
     'ad',
@@ -338,6 +338,61 @@ function parseUrl(url) {
         path,
         query: parseQuery(querystring || ''),
     };
+}
+
+function isDebugMode() {
+    // @ts-expect-error
+    return typeof __channelId__ === 'string' && __channelId__;
+}
+function jsonStringifyReplacer(k, p) {
+    switch (toRawType(p)) {
+        case 'Function':
+            return 'function() { [native code] }';
+        default:
+            return p;
+    }
+}
+function normalizeLog(type, filename, args) {
+    if (isDebugMode()) {
+        args.push(filename.replace('at ', 'uni-app:///'));
+        return console[type].apply(console, args);
+    }
+    const msgs = args.map(function (v) {
+        const type = toTypeString(v).toLowerCase();
+        if (type === '[object object]' || type === '[object array]') {
+            try {
+                v =
+                    '---BEGIN:JSON---' +
+                        JSON.stringify(v, jsonStringifyReplacer) +
+                        '---END:JSON---';
+            }
+            catch (e) {
+                v = type;
+            }
+        }
+        else {
+            if (v === null) {
+                v = '---NULL---';
+            }
+            else if (v === undefined) {
+                v = '---UNDEFINED---';
+            }
+            else {
+                const vType = toRawType(v).toUpperCase();
+                if (vType === 'NUMBER' || vType === 'BOOLEAN') {
+                    v = '---BEGIN:' + vType + '---' + v + '---END:' + vType + '---';
+                }
+                else {
+                    v = String(v);
+                }
+            }
+        }
+        return v;
+    });
+    return msgs.join('---COMMA---') + ' ' + filename;
+}
+function formatAppLog(type, filename, ...args) {
+    console[type](normalizeLog(type, filename, args));
 }
 
 function plusReady(callback) {
@@ -1019,4 +1074,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventChannel, EventModifierFlags, JSON_PROTOCOL, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_HIDE, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, createUniEvent, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isRootHook, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventChannel, EventModifierFlags, JSON_PROTOCOL, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_HIDE, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, createUniEvent, debounce, decode, decodedQuery, defaultRpx2Unit, formatAppLog, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isRootHook, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, stringifyQuery, updateElementStyle };
