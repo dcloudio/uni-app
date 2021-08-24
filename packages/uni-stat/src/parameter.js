@@ -238,41 +238,29 @@ export const getRoute = () => {
   var pages = getCurrentPages()
   var page = pages[pages.length - 1]
   if (!page) return ''
+  // TODO 需要确认如果不用 $vm ,其他平台会不会出错
   let _self = page.$vm
 
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is
   } else {
-    return (
-      (_self.$scope && _self.$scope.route) ||
-      (_self.$mp && _self.$mp.page.route)
-    )
+    return _self.route || (_self.$mp && _self.$mp.page.route)
   }
 }
 
 export const getPageRoute = (self) => {
-  var pages = getCurrentPages()
-  var page = pages[pages.length - 1]
-  if (!page) return ''
-  let _self = page.$vm
+  let route = getRoute()
   let query = self._query
   let str =
     query && JSON.stringify(query) !== '{}' ? '?' + JSON.stringify(query) : ''
   // clear
   self._query = ''
-  if (getPlatformName() === 'bd') {
-    return _self.$mp && _self.$mp.page.is + str
-  } else {
-    return (
-      (_self.$scope && _self.$scope.route + str) ||
-      (_self.$mp && _self.$mp.page.route + str)
-    )
-  }
+  return route + str
 }
 
 export const getPageTypes = (self) => {
   if (
-    self.mpType === 'page' ||
+    self.$mpType === 'page' ||
     (self.$mp && self.$mp.mpType === 'page') ||
     self.$options.mpType === 'page'
   ) {

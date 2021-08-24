@@ -26,7 +26,7 @@ import {
 
 import { STAT_URL, STAT_VERSION, STAT_H5_URL, OPERATING_TIME } from './config'
 
-const titleJsons = process.env.UNI_STAT_PAGES_TITLE
+const titleJsons = process.env.UNI_STAT_TITLE_JSON
 const statConfig = {
   appid: process.env.UNI_APP_ID,
 }
@@ -130,11 +130,11 @@ class Util {
     }
 
     getLastTime()
-    this._lastPageRoute = route
     const time = getResidenceTime('page')
+    // 停留时间
     if (time.overtime) {
       let options = {
-        path: this._lastPageRoute,
+        path: route,
         scene: this.statData.sc,
       }
       this._sendReportRequest(options)
@@ -146,11 +146,13 @@ class Util {
     if (!this.__licationHide) {
       getLastTime()
       const time = getResidenceTime('page')
+      const route = getPageRoute(this)
       this._sendPageRequest({
-        url: this._lastPageRoute,
+        url: route,
         urlref: this._lastPageRoute,
         urlref_ts: time.residenceTime,
       })
+      this._lastPageRoute = route
       this._navigationBarTitle = {
         config: '',
         page: '',
@@ -306,7 +308,6 @@ class Util {
     data.ttn = title.page
     data.ttpj = title.config
     data.ttc = title.report
-
     let requestData = this._reportingRequestData
     if (getPlatformName() === 'n') {
       requestData = uni.getStorageSync('__UNI__STAT__DATA') || {}
@@ -376,9 +377,6 @@ class Util {
       uni.request({
         url: STAT_URL,
         method: 'POST',
-        // header: {
-        //   'content-type': 'application/json' // 默认值
-        // },
         data: optionsData,
         success: () => {
           // if (process.env.NODE_ENV === 'development') {
@@ -494,19 +492,17 @@ class Stat extends Util {
 
   report(options, self) {
     this.self = self
-    // if (process.env.NODE_ENV === 'development') {
-    //   console.log('report init');
-    // }
     setPageResidenceTime()
     this.__licationShow = true
     this._sendReportRequest(options, true)
   }
 
   load(options, self) {
-    if (!self.$scope && !self.$mp) {
-      const page = getCurrentPages()
-      self.$scope = page[page.length - 1]
-    }
+    //  if (!self.$scope && !self.$mp) {
+    //    const page = getCurrentPages()
+    // console.log();
+    //    self.$scope = page[page.length - 1]
+    //  }
     this.self = self
     this._query = options
   }
