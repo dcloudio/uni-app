@@ -105,6 +105,9 @@ ${name}.UniServiceJSBridge = UniServiceJSBridge
 function generateCssCode(config: ResolvedConfig) {
   const define = config.define! as FEATURE_DEFINES
   const cssFiles = [H5_FRAMEWORK_STYLE_PATH + 'base.css']
+  if (config.isProduction) {
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')
+  }
   // if (define.__UNI_FEATURE_PAGES__) {
   cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'async.css')
   // }
