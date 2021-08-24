@@ -162,6 +162,16 @@ mapContext
 |complete	|function	|		|否		|接口调用结束的回调函数（调用成功、失败都会执行）	|
 
 
+**removeMarkers 的 OBJECT 参数列表**
+
+|属性		|类型		|默认值	|必填	|说明												|
+|:-|:-|:-|:-|:-|
+|markerIds	|Array		|		|是		|要被删除的marker的id属性组成的数组						|
+|success	|function	|		|否		|接口调用成功的回调函数								|
+|fail		|function	|		|否		|接口调用失败的回调函数								|
+|complete	|function	|		|否		|接口调用结束的回调函数（调用成功、失败都会执行）	|
+
+
 **MapContext.on()** (app-nvue、微信小程序支持)
 
 `markerClusterCreate`
