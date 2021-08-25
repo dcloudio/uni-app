@@ -32,11 +32,22 @@ function removeNonTabBarPages() {
   }
 }
 
+function isSamePage(url: string, $page: Page.PageInstance['$page']) {
+  if (url === $page.path) {
+    return true
+  }
+  // 首页
+  if (url === '/' && $page.meta.isEntry) {
+    return true
+  }
+  return false
+}
+
 function getTabBarPageId(url: string) {
   const pages = getCurrentPagesMap().values()
   for (const page of pages) {
     const $page = page.$page
-    if ($page.path === url) {
+    if (isSamePage(url, $page)) {
       ;(page as ComponentPublicInstance).$.__isActive = true
       return $page.id
     }

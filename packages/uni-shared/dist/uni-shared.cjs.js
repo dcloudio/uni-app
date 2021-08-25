@@ -1071,6 +1071,32 @@ const PAGE_HOOKS = [
 function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
 }
+const UniLifecycleHooks = [
+    ON_SHOW,
+    ON_HIDE,
+    ON_LAUNCH,
+    ON_ERROR,
+    ON_THEME_CHANGE,
+    ON_PAGE_NOT_FOUND,
+    ON_UNHANDLE_REJECTION,
+    ON_LOAD,
+    ON_READY,
+    ON_UNLOAD,
+    ON_RESIZE,
+    ON_BACK_PRESS,
+    ON_PAGE_SCROLL,
+    ON_TAB_ITEM_TAP,
+    ON_REACH_BOTTOM,
+    ON_PULL_DOWN_REFRESH,
+    ON_SHARE_TIMELINE,
+    ON_ADD_TO_FAVORITES,
+    ON_SHARE_APP_MESSAGE,
+    ON_NAVIGATION_BAR_BUTTON_TAP,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+];
 
 function getEnvLocale() {
     const { env } = process;
@@ -1161,6 +1187,7 @@ exports.UniCommentNode = UniCommentNode;
 exports.UniElement = UniElement;
 exports.UniEvent = UniEvent;
 exports.UniInputElement = UniInputElement;
+exports.UniLifecycleHooks = UniLifecycleHooks;
 exports.UniNode = UniNode;
 exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;

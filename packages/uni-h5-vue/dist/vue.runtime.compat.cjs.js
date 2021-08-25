@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var uniShared = require('@dcloudio/uni-shared');
 
 /**
@@ -1281,13 +1283,13 @@ function isRef(r) {
     return Boolean(r && r.__v_isRef === true);
 }
 function ref(value) {
-    return createRef(value);
+    return createRef(value, false);
 }
 function shallowRef(value) {
     return createRef(value, true);
 }
 class RefImpl {
-    constructor(value, _shallow = false) {
+    constructor(value, _shallow) {
         this._shallow = _shallow;
         this.dep = undefined;
         this.__v_isRef = true;
@@ -1307,7 +1309,7 @@ class RefImpl {
         }
     }
 }
-function createRef(rawValue, shallow = false) {
+function createRef(rawValue, shallow) {
     if (isRef(rawValue)) {
         return rawValue;
     }
@@ -5292,7 +5294,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.2.4";
+    Vue.version = "3.2.6";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -10891,20 +10893,8 @@ function isMemoSame(cached, memo) {
     return true;
 }
 
-function $ref() { }
-function $shallowRef(arg) {
-    return arg;
-}
-function $computed() { }
-function $fromRefs() {
-    return null;
-}
-function $raw() {
-    return null;
-}
-
 // Core API ------------------------------------------------------------------
-const version = "3.2.4";
+const version = "3.2.6";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -12860,11 +12850,6 @@ var runtimeDom = /*#__PURE__*/Object.freeze({
   transformVNodeArgs: transformVNodeArgs,
   injectHook: injectHook,
   get isInSSRComponentSetup () { return isInSSRComponentSetup; },
-  $ref: $ref,
-  $shallowRef: $shallowRef,
-  $computed: $computed,
-  $raw: $raw,
-  $fromRefs: $fromRefs,
   version: version,
   ssrUtils: ssrUtils,
   resolveFilter: resolveFilter$1,
@@ -12905,4 +12890,4 @@ Vue.compile = (() => {
 });
 Vue.createVueApp = Vue.createApp;
 
-module.exports = Vue;
+exports.default = Vue;

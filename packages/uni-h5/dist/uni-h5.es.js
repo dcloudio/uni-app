@@ -1,5 +1,5 @@
 import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementBlock, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { extend, isString, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -13124,13 +13124,20 @@ function useContextInfo(_id) {
 function getContextInfo(el) {
   return el.__uniContextInfo;
 }
+function injectLifecycleHook(name, hook, publicThis, instance2) {
+  if (isFunction(hook)) {
+    injectHook(name, hook.bind(publicThis), instance2);
+  }
+}
 function initHooks(options, instance2, publicThis) {
   options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
-      const hook = options[name];
-      if (isFunction(hook)) {
-        injectHook(name, hook.bind(publicThis), instance2);
+      const hooks = options[name];
+      if (isArray(hooks)) {
+        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance2));
+      } else {
+        injectLifecycleHook(name, hooks, publicThis, instance2);
       }
     }
   });
@@ -13152,6 +13159,14 @@ function errorHandler(err, instance2, info) {
   {
     invokeHook(app.$vm, ON_ERROR, err);
   }
+}
+function mergeAsArray(to, from) {
+  return to ? [...new Set([].concat(to, from))] : from;
+}
+function initOptionMergeStrategies(optionMergeStrategies) {
+  UniLifecycleHooks.forEach((name) => {
+    optionMergeStrategies[name] = mergeAsArray;
+  });
 }
 function b64DecodeUnicode(str) {
   return decodeURIComponent(atob(str).split("").map(function(c) {
@@ -13199,6 +13214,7 @@ function initApp$1(app) {
   if (isFunction(app._component.onError)) {
     appConfig.errorHandler = errorHandler;
   }
+  initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
   uniIdMixin(globalProperties);
   {
@@ -17504,11 +17520,20 @@ function removeNonTabBarPages() {
     invokeHook(curTabBarPageVm, ON_HIDE);
   }
 }
+function isSamePage(url, $page) {
+  if (url === $page.path) {
+    return true;
+  }
+  if (url === "/" && $page.meta.isEntry) {
+    return true;
+  }
+  return false;
+}
 function getTabBarPageId(url) {
   const pages = getCurrentPagesMap().values();
   for (const page of pages) {
     const $page = page.$page;
-    if ($page.path === url) {
+    if (isSamePage(url, $page)) {
       page.$.__isActive = true;
       return $page.id;
     }

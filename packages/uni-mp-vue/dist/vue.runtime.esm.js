@@ -1,7 +1,61 @@
 import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, invokeArrayFns, makeMap, isSet, NO, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
 
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
+const ON_PAGE_SCROLL = 'onPageScroll';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_SHARE_TIMELINE = 'onShareTimeline';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
+// navigationBar
+const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+const UniLifecycleHooks = [
+    ON_SHOW,
+    ON_HIDE,
+    ON_LAUNCH,
+    ON_ERROR,
+    ON_THEME_CHANGE,
+    ON_PAGE_NOT_FOUND,
+    ON_UNHANDLE_REJECTION,
+    ON_LOAD,
+    ON_READY,
+    ON_UNLOAD,
+    ON_RESIZE,
+    ON_BACK_PRESS,
+    ON_PAGE_SCROLL,
+    ON_TAB_ITEM_TAP,
+    ON_REACH_BOTTOM,
+    ON_PULL_DOWN_REFRESH,
+    ON_SHARE_TIMELINE,
+    ON_ADD_TO_FAVORITES,
+    ON_SHARE_APP_MESSAGE,
+    ON_NAVIGATION_BAR_BUTTON_TAP,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+];
 
 const targetMap = new WeakMap();
 const effectStack = [];
@@ -4044,14 +4098,22 @@ function createVueApp(rootComponent, rootProps = null) {
 function withModifiers() { }
 function createVNode$1() { }
 
+function injectLifecycleHook(name, hook, publicThis, instance) {
+    if (isFunction(hook)) {
+        injectHook(name, hook.bind(publicThis), instance);
+    }
+}
 function initHooks(options, instance, publicThis) {
     options.mpType || publicThis.$mpType;
     // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
     Object.keys(options).forEach((name) => {
         if (name.indexOf('on') === 0) {
-            const hook = options[name];
-            if (isFunction(hook)) {
-                injectHook(name, hook.bind(publicThis), instance);
+            const hooks = options[name];
+            if (isArray(hooks)) {
+                hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
+            }
+            else {
+                injectLifecycleHook(name, hooks, publicThis, instance);
             }
         }
     });
@@ -4076,6 +4138,14 @@ function errorHandler(err, instance, info) {
     {
         app.$vm.$callHook(ON_ERROR, err, info);
     }
+}
+function mergeAsArray(to, from) {
+    return to ? [...new Set([].concat(to, from))] : from;
+}
+function initOptionMergeStrategies(optionMergeStrategies) {
+    UniLifecycleHooks.forEach((name) => {
+        optionMergeStrategies[name] = mergeAsArray;
+    });
 }
 
 function b64DecodeUnicode(str) {
@@ -4129,6 +4199,7 @@ function initApp(app) {
     if (isFunction(app._component.onError)) {
         appConfig.errorHandler = errorHandler;
     }
+    initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;
     uniIdMixin(globalProperties);
     if (__VUE_OPTIONS_API__) {

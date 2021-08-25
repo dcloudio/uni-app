@@ -61,8 +61,7 @@ function parseApp(
       injectAppLaunchHooks(internalInstance)
 
       ctx.globalData = this.globalData
-      ;(options as any).app = this
-      instance.$callHook(ON_LAUNCH, options)
+      instance.$callHook(ON_LAUNCH, extend({ app: this }, options))
     },
   }
 

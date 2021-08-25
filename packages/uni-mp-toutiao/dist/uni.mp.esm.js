@@ -603,8 +603,7 @@ function parseApp(instance, parseAppOptions) {
             });
             injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
-            options.app = this;
-            instance.$callHook(ON_LAUNCH, options);
+            instance.$callHook(ON_LAUNCH, extend({ app: this }, options));
         },
     };
     const vueOptions = instance.$.type;

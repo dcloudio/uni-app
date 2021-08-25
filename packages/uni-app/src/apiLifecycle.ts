@@ -8,7 +8,6 @@ import {
   ON_ERROR,
   ON_HIDE,
   ON_LAUNCH,
-  ON_LOAD,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -27,36 +26,13 @@ import {
   ON_THEME_CHANGE,
   ON_UNHANDLE_REJECTION,
   ON_UNLOAD,
+  UniLifecycleHooks,
 } from '@dcloudio/uni-shared'
 
-type UniLifecycleHooks =
-  | typeof ON_SHOW
-  | typeof ON_HIDE
-  | typeof ON_LAUNCH
-  | typeof ON_ERROR
-  | typeof ON_THEME_CHANGE
-  | typeof ON_PAGE_NOT_FOUND
-  | typeof ON_UNHANDLE_REJECTION
-  | typeof ON_LOAD
-  | typeof ON_READY
-  | typeof ON_UNLOAD
-  | typeof ON_RESIZE
-  | typeof ON_BACK_PRESS
-  | typeof ON_PAGE_SCROLL
-  | typeof ON_TAB_ITEM_TAP
-  | typeof ON_REACH_BOTTOM
-  | typeof ON_PULL_DOWN_REFRESH
-  | typeof ON_SHARE_TIMELINE
-  | typeof ON_ADD_TO_FAVORITES
-  | typeof ON_SHARE_APP_MESSAGE
-  | typeof ON_NAVIGATION_BAR_BUTTON_TAP
-  | typeof ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED
-  | typeof ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED
-  | typeof ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED
-  | typeof ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED
-
 const createHook =
-  <T extends Function = () => any>(lifecycle: UniLifecycleHooks) =>
+  <T extends Function = () => any>(
+    lifecycle: typeof UniLifecycleHooks[number]
+  ) =>
   (hook: T, target: ComponentInternalInstance | null = getCurrentInstance()) =>
     // post-create lifecycle registrations are noops during SSR
     !isInSSRComponentSetup && injectHook(lifecycle as any, hook, target)

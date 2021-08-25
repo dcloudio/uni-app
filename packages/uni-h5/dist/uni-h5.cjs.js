@@ -6442,13 +6442,20 @@ function useContextInfo(_id) {
   const id = _id || vm.id || `context${index$a++}`;
   return `${type}.${id}`;
 }
+function injectLifecycleHook(name, hook, publicThis, instance) {
+  if (shared.isFunction(hook)) {
+    vue.injectHook(name, hook.bind(publicThis), instance);
+  }
+}
 function initHooks(options, instance, publicThis) {
   options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
-      const hook = options[name];
-      if (shared.isFunction(hook)) {
-        vue.injectHook(name, hook.bind(publicThis), instance);
+      const hooks = options[name];
+      if (shared.isArray(hooks)) {
+        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
+      } else {
+        injectLifecycleHook(name, hooks, publicThis, instance);
       }
     }
   });
@@ -6470,6 +6477,14 @@ function errorHandler(err, instance, info) {
   {
     invokeHook(app.$vm, uniShared.ON_ERROR, err);
   }
+}
+function mergeAsArray(to, from) {
+  return to ? [...new Set([].concat(to, from))] : from;
+}
+function initOptionMergeStrategies(optionMergeStrategies) {
+  uniShared.UniLifecycleHooks.forEach((name) => {
+    optionMergeStrategies[name] = mergeAsArray;
+  });
 }
 function b64DecodeUnicode(str) {
   return decodeURIComponent(atob(str).split("").map(function(c) {
@@ -6517,6 +6532,7 @@ function initApp$1(app) {
   if (shared.isFunction(app._component.onError)) {
     appConfig.errorHandler = errorHandler;
   }
+  initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
   uniIdMixin(globalProperties);
   {

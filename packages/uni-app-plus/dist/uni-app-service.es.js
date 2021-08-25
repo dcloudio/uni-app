@@ -1147,6 +1147,8 @@ var serviceContext = (function (vue) {
   const ON_ERROR = 'onError';
   const ON_THEME_CHANGE = 'onThemeChange';
   const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
+  const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+  const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
   //Page
   const ON_LOAD = 'onLoad';
   const ON_READY = 'onReady';
@@ -1157,6 +1159,9 @@ var serviceContext = (function (vue) {
   const ON_TAB_ITEM_TAP = 'onTabItemTap';
   const ON_REACH_BOTTOM = 'onReachBottom';
   const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+  const ON_SHARE_TIMELINE = 'onShareTimeline';
+  const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+  const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
   // navigationBar
   const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
   const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
@@ -1230,6 +1235,32 @@ var serviceContext = (function (vue) {
           });
       }
   }
+  const UniLifecycleHooks = [
+      ON_SHOW,
+      ON_HIDE,
+      ON_LAUNCH,
+      ON_ERROR,
+      ON_THEME_CHANGE,
+      ON_PAGE_NOT_FOUND,
+      ON_UNHANDLE_REJECTION,
+      ON_LOAD,
+      ON_READY,
+      ON_UNLOAD,
+      ON_RESIZE,
+      ON_BACK_PRESS,
+      ON_PAGE_SCROLL,
+      ON_TAB_ITEM_TAP,
+      ON_REACH_BOTTOM,
+      ON_PULL_DOWN_REFRESH,
+      ON_SHARE_TIMELINE,
+      ON_ADD_TO_FAVORITES,
+      ON_SHARE_APP_MESSAGE,
+      ON_NAVIGATION_BAR_BUTTON_TAP,
+      ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+      ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+      ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+      ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+  ];
 
   const isObject = (val) => val !== null && typeof val === 'object';
   class BaseFormatter {
@@ -9416,14 +9447,22 @@ var serviceContext = (function (vue) {
       }, errorCallback);
   }, RequestPaymentProtocol);
 
+  function injectLifecycleHook(name, hook, publicThis, instance) {
+      if (isFunction(hook)) {
+          vue.injectHook(name, hook.bind(publicThis), instance);
+      }
+  }
   function initHooks(options, instance, publicThis) {
       const mpType = options.mpType || publicThis.$mpType;
       // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
       Object.keys(options).forEach((name) => {
           if (name.indexOf('on') === 0) {
-              const hook = options[name];
-              if (isFunction(hook)) {
-                  vue.injectHook(name, hook.bind(publicThis), instance);
+              const hooks = options[name];
+              if (isArray(hooks)) {
+                  hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
+              }
+              else {
+                  injectLifecycleHook(name, hooks, publicThis, instance);
               }
           }
       });
@@ -9518,6 +9557,14 @@ var serviceContext = (function (vue) {
           invokeHook(app.$vm, ON_ERROR, err);
       }
   }
+  function mergeAsArray(to, from) {
+      return to ? [...new Set([].concat(to, from))] : from;
+  }
+  function initOptionMergeStrategies(optionMergeStrategies) {
+      UniLifecycleHooks.forEach((name) => {
+          optionMergeStrategies[name] = mergeAsArray;
+      });
+  }
 
   function b64DecodeUnicode(str) {
       return decodeURIComponent(atob(str)
@@ -9570,6 +9617,7 @@ var serviceContext = (function (vue) {
       if (isFunction(app._component.onError)) {
           appConfig.errorHandler = errorHandler;
       }
+      initOptionMergeStrategies(appConfig.optionMergeStrategies);
       const globalProperties = appConfig.globalProperties;
       uniIdMixin(globalProperties);
       {

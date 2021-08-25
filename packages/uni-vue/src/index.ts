@@ -4,7 +4,7 @@ import { isFunction } from '@vue/shared'
 
 import { applyOptions } from './componentOptions'
 import { set } from './componentInstance'
-import { errorHandler } from './appConfig'
+import { errorHandler, initOptionMergeStrategies } from './appConfig'
 import { uniIdMixin } from './uni-id-mixin'
 
 export function initApp(app: App) {
@@ -12,6 +12,9 @@ export function initApp(app: App) {
   if (isFunction((app._component as any).onError)) {
     appConfig.errorHandler = errorHandler
   }
+
+  initOptionMergeStrategies(appConfig.optionMergeStrategies)
+
   const globalProperties = appConfig.globalProperties
   uniIdMixin(globalProperties)
   if (__VUE_OPTIONS_API__) {

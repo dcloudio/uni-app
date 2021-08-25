@@ -1,6 +1,6 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
-import { isFunction } from '@vue/shared'
+import { isArray, isFunction } from '@vue/shared'
 
 import {
   ComponentOptions,
@@ -9,6 +9,17 @@ import {
 } from 'vue'
 // @ts-ignore
 import { injectHook } from 'vue'
+
+function injectLifecycleHook(
+  name: string,
+  hook: Function,
+  publicThis: ComponentPublicInstance,
+  instance: ComponentInternalInstance
+) {
+  if (isFunction(hook)) {
+    injectHook(name, hook.bind(publicThis), instance)
+  }
+}
 
 export function initHooks(
   options: ComponentOptions,
@@ -19,9 +30,13 @@ export function initHooks(
   // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
   Object.keys(options).forEach((name) => {
     if (name.indexOf('on') === 0) {
-      const hook = options[name]
-      if (isFunction(hook)) {
-        injectHook(name as any, hook.bind(publicThis), instance)
+      const hooks = options[name]
+      if (isArray(hooks)) {
+        hooks.forEach((hook) =>
+          injectLifecycleHook(name, hook, publicThis, instance)
+        )
+      } else {
+        injectLifecycleHook(name, hooks, publicThis, instance)
       }
     }
   })
