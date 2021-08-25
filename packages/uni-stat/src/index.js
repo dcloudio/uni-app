@@ -48,12 +48,13 @@ const lifecycle = {
 
 function main() {
   console.log('stat onload ----')
-  setTimeout(() => {
-    getApp().$.appContext.app.mixin(lifecycle)
+  uni.onAppLaunch((options) => {
+    // 小程序平台此时也无法获取getApp，统一在options中传递一个app对象
+    options.app.$vm.$.appContext.app.mixin(lifecycle)
     uni.report = function (type, options) {
       stat.sendEvent(type, options)
     }
-  }, 1)
+  })
   // if (process.env.NODE_ENV === 'development') {
   //   uni.report = function (type, options) {}
   // } else {

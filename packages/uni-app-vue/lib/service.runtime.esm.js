@@ -3663,7 +3663,7 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
         return wrappedHook;
     }
     else if ((process.env.NODE_ENV !== 'production')) {
-        const apiName = toHandlerKey(ErrorTypeStrings[type].replace(/ hook$/, ''));
+        const apiName = toHandlerKey((ErrorTypeStrings[type] || type.replace(/^on/, '')).replace(/ hook$/, '')); // fixed by xxxxxx
         warn$1(`${apiName} is called when there is no active component instance to be ` +
             `associated with. ` +
             `Lifecycle injection APIs can only be used during execution of setup().` +

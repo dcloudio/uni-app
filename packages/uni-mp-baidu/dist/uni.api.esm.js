@@ -1,4 +1,8 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
+import { injectHook } from 'vue';
+
+//App
+const ON_LAUNCH = 'onLaunch';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -35,6 +39,15 @@ const navigateTo = {
         fromRes.eventChannel = getEventChannel();
     },
 };
+
+swan.appLaunchHooks = [];
+function onAppLaunch(hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return injectHook(ON_LAUNCH, hook, app.$vm.$);
+    }
+    swan.appLaunchHooks.push(hook);
+}
 
 function getBaseSystemInfo() {
   return swan.getSystemInfoSync()
@@ -722,6 +735,7 @@ const baseApis = {
     upx2px,
     addInterceptor,
     removeInterceptor,
+    onAppLaunch,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
@@ -847,9 +861,9 @@ function requestPayment(params) {
 }
 
 var shims = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getProvider: getProvider,
-  requestPayment: requestPayment
+    __proto__: null,
+    getProvider: getProvider,
+    requestPayment: requestPayment
 });
 
 function createTodoMethod(contextName, methodName) {
@@ -922,21 +936,21 @@ const getAccountInfoSync = {
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  request: request,
-  connectSocket: connectSocket,
-  getRecorderManager: getRecorderManager,
-  getBackgroundAudioManager: getBackgroundAudioManager,
-  scanCode: scanCode,
-  navigateToMiniProgram: navigateToMiniProgram,
-  navigateBackMiniProgram: navigateBackMiniProgram,
-  showShareMenu: showShareMenu,
-  getAccountInfoSync: getAccountInfoSync,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo,
-  previewImage: previewImage,
-  getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+    __proto__: null,
+    request: request,
+    connectSocket: connectSocket,
+    getRecorderManager: getRecorderManager,
+    getBackgroundAudioManager: getBackgroundAudioManager,
+    scanCode: scanCode,
+    navigateToMiniProgram: navigateToMiniProgram,
+    navigateBackMiniProgram: navigateBackMiniProgram,
+    showShareMenu: showShareMenu,
+    getAccountInfoSync: getAccountInfoSync,
+    redirectTo: redirectTo,
+    navigateTo: navigateTo,
+    previewImage: previewImage,
+    getSystemInfo: getSystemInfo,
+    getSystemInfoSync: getSystemInfoSync
 });
 
 var index = initUni(shims, protocols);

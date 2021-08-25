@@ -35,4 +35,11 @@ declare module '@vue/runtime-core' {
   ) => void
   export const onBeforeActivate: (fn: () => void) => void
   export const onBeforeDeactivate: (fn: () => void) => void
+  export const injectHook: (
+    type: string,
+    hook: Function,
+    target: ComponentInternalInstance | null,
+    prepend: boolean = false
+  ) => Function | undefined
+  export const isInSSRComponentSetup: boolean
 }

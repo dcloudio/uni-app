@@ -4121,6 +4121,20 @@ var serviceContext = (function (vue) {
       });
   });
 
+  const appLaunchHooks = [];
+  function onAppLaunch(hook) {
+      const app = getApp({ allowDefault: true });
+      if (app && app.$vm) {
+          return vue.injectHook(ON_LAUNCH, hook, app.$vm.$);
+      }
+      appLaunchHooks.push(hook);
+  }
+  function injectAppLaunchHooks(appInstance) {
+      appLaunchHooks.forEach((hook) => {
+          vue.injectHook(ON_LAUNCH, hook, appInstance);
+      });
+  }
+
   const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
 
   const API_MAKE_PHONE_CALL = 'makePhoneCall';
@@ -9702,7 +9716,9 @@ var serviceContext = (function (vue) {
           path: __uniConfig.entryPagePath,
           query: {},
           scene: 1001,
+          app: appVm,
       };
+      injectAppLaunchHooks(appVm.$);
       invokeHook(appVm, ON_LAUNCH, args);
       invokeHook(appVm, ON_SHOW, args);
   }
@@ -12072,6 +12088,7 @@ var serviceContext = (function (vue) {
     $off: $off,
     $once: $once,
     $emit: $emit,
+    onAppLaunch: onAppLaunch,
     setStorageSync: setStorageSync,
     setStorage: setStorage,
     getStorageSync: getStorageSync,

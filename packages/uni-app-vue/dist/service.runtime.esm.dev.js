@@ -4739,7 +4739,8 @@ export default function vueFactory(exports) {
 
       return wrappedHook;
     } else {
-      var apiName = toHandlerKey(ErrorTypeStrings[type].replace(/ hook$/, ''));
+      var apiName = toHandlerKey((ErrorTypeStrings[type] || type.replace(/^on/, '')).replace(/ hook$/, '')); // fixed by xxxxxx
+
       warn$1("".concat(apiName, " is called when there is no active component instance to be ") + "associated with. " + "Lifecycle injection APIs can only be used during execution of setup()." + (" If you are using async setup(), make sure to register lifecycle " + "hooks before the first await statement."));
     }
   }

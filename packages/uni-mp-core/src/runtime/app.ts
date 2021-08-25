@@ -14,6 +14,8 @@ import {
   ON_THEME_CHANGE,
   ON_UNHANDLE_REJECTION,
 } from '@dcloudio/uni-shared'
+
+import { injectAppLaunchHooks } from '../api/hook'
 export interface CustomAppInstanceProperty extends Record<string, any> {
   globalData: Record<string, any>
   $vm?: ComponentPublicInstance
@@ -56,7 +58,10 @@ function parseApp(
         slots: [],
       })
 
+      injectAppLaunchHooks(internalInstance)
+
       ctx.globalData = this.globalData
+      ;(options as any).app = this
       instance.$callHook(ON_LAUNCH, options)
     },
   }

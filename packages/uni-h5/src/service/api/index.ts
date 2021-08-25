@@ -91,5 +91,6 @@ export {
   $off,
   $once,
   $emit,
+  onAppLaunch,
 } from '@dcloudio/uni-api'
 //#endif

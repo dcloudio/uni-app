@@ -22,6 +22,7 @@ import {
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
 } from '@dcloudio/uni-shared'
+import { injectAppLaunchHooks } from '@dcloudio/uni-api'
 import { subscribeViewMethod, unsubscribeViewMethod } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
@@ -139,10 +140,12 @@ export function setupApp(comp: any) {
           path: path || __uniRoutes[0].meta.route,
           query: decodedQuery(route.query),
           scene: 1001,
+          app: instance.proxy,
         }
         onLaunch && invokeArrayFns(onLaunch, launchOptions)
         onShow && invokeArrayFns(onShow, launchOptions)
       }
+      injectAppLaunchHooks(instance)
       if (__UNI_FEATURE_PAGES__) {
         // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
         useRouter().isReady().then(onLaunch)

@@ -15,6 +15,7 @@ import { promisify } from './promise'
 import { initWrapper } from './wrapper'
 
 import { MPProtocols } from './protocols'
+import { onAppLaunch } from './hook'
 
 const baseApis = {
   $on,
@@ -24,6 +25,7 @@ const baseApis = {
   upx2px,
   addInterceptor,
   removeInterceptor,
+  onAppLaunch,
 }
 
 export function initUni(api: Record<string, any>, protocols: MPProtocols) {

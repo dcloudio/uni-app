@@ -71,6 +71,7 @@
   "offNetworkStatusChange",
   "offWindowResize",
   "onAccelerometerChange",
+  "onAppLaunch",
   "onCompassChange",
   "onGyroscopeChange",
   "onMemoryWarning",

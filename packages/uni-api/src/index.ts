@@ -18,6 +18,8 @@ export * from './service/ui/language'
 
 export * from './service/keyboard/getSelectedTextRange'
 
+export * from './service/hook/app'
+
 // protocols
 export * from './protocols/base/canIUse'
 

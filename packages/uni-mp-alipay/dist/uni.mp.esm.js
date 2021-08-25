@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, extend, hyphenate, isObject, hasOwn, toNumber, capitalize, isFunction, NOOP, EMPTY_OBJ, camelize } from '@vue/shared';
-import { onUnmounted } from 'vue';
+import { onUnmounted, injectHook } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -542,6 +542,13 @@ function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
     findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
 }
 
+my.appLaunchHooks = [];
+function injectAppLaunchHooks(appInstance) {
+    my.appLaunchHooks.forEach((hook) => {
+        injectHook(ON_LAUNCH, hook, appInstance);
+    });
+}
+
 const HOOKS = [
     ON_SHOW,
     ON_HIDE,
@@ -566,7 +573,9 @@ function parseApp(instance, parseAppOptions) {
                 mpInstance: this,
                 slots: [],
             });
+            injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
+            options.app = this;
             instance.$callHook(ON_LAUNCH, options);
         },
     };
