@@ -1091,7 +1091,9 @@ function initTriggerEvent (mpInstance) {
   };
 }
 
-function initHook (name, options) {
+function initHook (name, options, isComponent) {
+  // fix by Lxh 字节自定义组件Component构造器文档上写有created，但是实测只触发了lifetimes上的created
+  isComponent && (options = options.lifetimes)
   const oldHook = options[name];
   if (!oldHook) {
     options[name] = function () {
@@ -1113,7 +1115,7 @@ if (!MPPage.__$wrappered) {
   Page.after = MPPage.after;
 
   Component = function (options = {}) {
-    initHook('created', options);
+    initHook('created', options, true);
     return MPComponent(options)
   };
 }

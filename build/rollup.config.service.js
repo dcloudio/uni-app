@@ -12,6 +12,10 @@ module.exports = {
   plugins: [
     alias({
       entries: [{
+        find: '@dcloudio',
+        replacement: path.resolve(__dirname, '../packages')
+      },
+      {
         find: 'uni-core',
         replacement: path.resolve(__dirname, '../src/core')
       },

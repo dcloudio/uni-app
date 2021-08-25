@@ -57,6 +57,9 @@ module.exports = {
   plugins: [
     alias({
       entries: [{
+        find: '@dcloudio',
+        replacement: path.resolve(__dirname, '../packages')
+      }, {
         find: 'uni-shared/query',
         replacement: path.resolve(__dirname, '../src/shared/query.js')
       }, {

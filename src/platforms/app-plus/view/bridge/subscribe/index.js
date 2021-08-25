@@ -16,7 +16,8 @@ import {
 } from '../../constants'
 
 import {
-  WEBVIEW_READY
+  WEBVIEW_READY,
+  SET_LOCALE
 } from '../../../constants'
 
 const passiveOptions = supportsPassive ? {
@@ -85,4 +86,5 @@ function onWebviewReady () { // service 主动发起检测
 export default function initSubscribe (subscribe) {
   subscribe(WEBVIEW_READY, onWebviewReady)
   subscribe(ON_PAGE_CREATE, onPageCreate)
+  subscribe(SET_LOCALE, setLocale)
 }
