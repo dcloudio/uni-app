@@ -841,6 +841,14 @@
         "/platforms/h5/service/api/ui/windows.js",
         []
     ],
+    "getLanguage": [
+        "/core/service/api/ui/language.js",
+        []
+    ],
+    "setLanguage": [
+        "/core/service/api/ui/language.js",
+        []
+    ],
     "$emit": [
         "/platforms/h5/service/api/base/event-bus.js",
         [
