@@ -29,6 +29,11 @@ export const UniH5Plugin: UniVitePlugin = {
         exclude: ['@dcloudio/uni-h5', '@dcloudio/uni-h5-vue'],
       },
       define: createDefine(env.command, config),
+      server: {
+        fs: {
+          strict: false,
+        },
+      },
     }
   },
   configResolved(config) {
