@@ -1,4 +1,8 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
+import { injectHook } from 'vue';
+
+//App
+const ON_LAUNCH = 'onLaunch';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -35,6 +39,15 @@ const navigateTo = {
         fromRes.eventChannel = getEventChannel();
     },
 };
+
+qq.appLaunchHooks = [];
+function onAppLaunch(hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return injectHook(ON_LAUNCH, hook, app.$vm.$);
+    }
+    qq.appLaunchHooks.push(hook);
+}
 
 function getBaseSystemInfo() {
   return qq.getSystemInfoSync()
@@ -722,6 +735,7 @@ const baseApis = {
     upx2px,
     addInterceptor,
     removeInterceptor,
+    onAppLaunch,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
@@ -827,17 +841,17 @@ const getProvider = initGetProvider({
 });
 
 var shims = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getProvider: getProvider
+    __proto__: null,
+    getProvider: getProvider
 });
 
 var protocols = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo,
-  previewImage: previewImage,
-  getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+    __proto__: null,
+    redirectTo: redirectTo,
+    navigateTo: navigateTo,
+    previewImage: previewImage,
+    getSystemInfo: getSystemInfo,
+    getSystemInfoSync: getSystemInfoSync
 });
 
 var index = initUni(shims, protocols);

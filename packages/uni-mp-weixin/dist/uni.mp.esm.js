@@ -1,5 +1,5 @@
 import { isPlainObject, hasOwn, isArray, extend, hyphenate, isObject, toNumber, isFunction, NOOP, camelize } from '@vue/shared';
-import { onUnmounted } from 'vue';
+import { onUnmounted, injectHook } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -447,7 +447,7 @@ function initScopedSlotsParams(instance) {
         const vueIds = instance.attrs.vueId;
         if (vueIds) {
             const vueId = vueIds.split(',')[0];
-            const object = center[vueId] = center[vueId] || {};
+            const object = (center[vueId] = center[vueId] || {});
             object[name] = value;
             if (parents[vueId]) {
                 parents[vueId].$forceUpdate();
@@ -513,6 +513,13 @@ function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
     findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 
+wx.appLaunchHooks = [];
+function injectAppLaunchHooks(appInstance) {
+    wx.appLaunchHooks.forEach((hook) => {
+        injectHook(ON_LAUNCH, hook, appInstance);
+    });
+}
+
 const HOOKS = [
     ON_SHOW,
     ON_HIDE,
@@ -537,7 +544,9 @@ function parseApp(instance, parseAppOptions) {
                 mpInstance: this,
                 slots: [],
             });
+            injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
+            options.app = this;
             instance.$callHook(ON_LAUNCH, options);
         },
     };
