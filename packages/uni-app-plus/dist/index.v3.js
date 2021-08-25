@@ -193,7 +193,9 @@ var serviceContext = (function () {
     'getRightWindowStyle',
     'setTopWindowStyle',
     'setLeftWindowStyle',
-    'setRightWindowStyle'
+    'setRightWindowStyle',
+    'getLanguage',
+    'setLanguage'
   ];
 
   const event = [
@@ -229,6 +231,7 @@ var serviceContext = (function () {
     'getUserProfile',
     'preLogin',
     'closeAuthView',
+    'getCheckBoxState',
     'share',
     'shareWithSystem',
     'showShareMenu',
@@ -787,7 +790,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLanguage|setLanguage/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1249,6 +1252,11 @@ var serviceContext = (function () {
       return compiled;
   }
 
+  const LOCALE_ZH_HANS = 'zh-Hans';
+  const LOCALE_ZH_HANT = 'zh-Hant';
+  const LOCALE_EN = 'en';
+  const LOCALE_FR = 'fr';
+  const LOCALE_ES = 'es';
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
   const defaultFormatter = new BaseFormatter();
@@ -1269,25 +1277,25 @@ var serviceContext = (function () {
       locale = locale.toLowerCase();
       if (locale.indexOf('zh') === 0) {
           if (locale.indexOf('-hans') !== -1) {
-              return 'zh-Hans';
+              return LOCALE_ZH_HANS;
           }
           if (locale.indexOf('-hant') !== -1) {
-              return 'zh-Hant';
+              return LOCALE_ZH_HANT;
           }
           if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-              return 'zh-Hant';
+              return LOCALE_ZH_HANT;
           }
-          return 'zh-Hans';
+          return LOCALE_ZH_HANS;
       }
-      const lang = startsWith(locale, ['en', 'fr', 'es']);
+      const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
       if (lang) {
           return lang;
       }
   }
   class I18n {
       constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
-          this.locale = 'en';
-          this.fallbackLocale = 'en';
+          this.locale = LOCALE_EN;
+          this.fallbackLocale = LOCALE_EN;
           this.message = {};
           this.messages = {};
           this.watchers = [];
@@ -1295,7 +1303,7 @@ var serviceContext = (function () {
               this.fallbackLocale = fallbackLocale;
           }
           this.formater = formater || defaultFormatter;
-          this.messages = messages;
+          this.messages = messages || {};
           this.setLocale(locale);
           if (watcher) {
               this.watchLocale(watcher);
@@ -1304,6 +1312,10 @@ var serviceContext = (function () {
       setLocale(locale) {
           const oldLocale = this.locale;
           this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+          if (!this.messages[this.locale]) {
+              // 可能初始化时不存在
+              this.messages[this.locale] = {};
+          }
           this.message = this.messages[this.locale];
           this.watchers.forEach((watcher) => {
               watcher(this.locale, oldLocale);
@@ -1317,6 +1329,14 @@ var serviceContext = (function () {
           return () => {
               this.watchers.splice(index, 1);
           };
+      }
+      add(locale, message) {
+          if (this.messages[locale]) {
+              Object.assign(this.messages[locale], message);
+          }
+          else {
+              this.messages[locale] = message;
+          }
       }
       t(key, locale, values) {
           let message = this.message;
@@ -1335,33 +1355,44 @@ var serviceContext = (function () {
       }
   }
 
+  const ignoreVueI18n = true;
   function initLocaleWatcher(appVm, i18n) {
-      appVm.$i18n &&
-          appVm.$i18n.vm.$watch('locale', (newLocale) => {
+      if (appVm.$i18n) {
+          const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
+          vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
               i18n.setLocale(newLocale);
           }, {
               immediate: true,
           });
-  }
-  function getDefaultLocale() {
-      if (typeof navigator !== 'undefined') {
-          return navigator.userLanguage || navigator.language;
       }
-      if (typeof plus !== 'undefined') {
-          // TODO 待调整为最新的获取语言代码
-          return plus.os.language;
-      }
-      return uni.getSystemInfoSync().language;
   }
-  function initVueI18n(messages, fallbackLocale = 'en', locale) {
+  // function getDefaultLocale() {
+  //   if (typeof navigator !== 'undefined') {
+  //     return (navigator as any).userLanguage || navigator.language
+  //   }
+  //   if (typeof plus !== 'undefined') {
+  //     // TODO 待调整为最新的获取语言代码
+  //     return plus.os.language
+  //   }
+  //   return uni.getSystemInfoSync().language
+  // }
+  function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+      // 兼容旧版本入参
+      if (typeof locale !== 'string') {
+          [locale, messages] = [messages, locale];
+      }
+      if (typeof locale !== 'string') {
+          locale = fallbackLocale;
+      }
       const i18n = new I18n({
           locale: locale || fallbackLocale,
           fallbackLocale,
           messages,
+          watcher,
       });
       let t = (key, values) => {
           if (typeof getApp !== 'function') {
-              // app-plus view
+              // app view
               /* eslint-disable no-func-assign */
               t = function (key, values) {
                   return i18n.t(key, values);
@@ -1369,10 +1400,10 @@ var serviceContext = (function () {
           }
           else {
               const appVm = getApp().$vm;
-              if (!appVm.$t || !appVm.$i18n) {
-                  if (!locale) {
-                      i18n.setLocale(getDefaultLocale());
-                  }
+              if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
+                  // if (!locale) {
+                  //   i18n.setLocale(getDefaultLocale())
+                  // }
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
                       return i18n.t(key, values);
@@ -1397,29 +1428,18 @@ var serviceContext = (function () {
           return t(key, values);
       };
       return {
+          i18n,
           t(key, values) {
               return t(key, values);
+          },
+          add(locale, message) {
+              return i18n.add(locale, message);
           },
           getLocale() {
               return i18n.getLocale();
           },
           setLocale(newLocale) {
               return i18n.setLocale(newLocale);
-          },
-          mixin: {
-              beforeCreate() {
-                  const unwatch = i18n.watchLocale(() => {
-                      this.$forceUpdate();
-                  });
-                  this.$once('hook:beforeDestroy', function () {
-                      unwatch();
-                  });
-              },
-              methods: {
-                  $$t(key, values) {
-                      return t(key, values);
-                  },
-              },
           },
       };
   }
@@ -1597,10 +1617,32 @@ var serviceContext = (function () {
     'zh-Hant': zhHant
   };
 
-  const fallbackLocale = 'en';
+  let language;
 
-  const i18n = initVueI18n( messages , fallbackLocale);
+  {
+    if (typeof weex === 'object') {
+      language = weex.requireModule('plus').getLanguage();
+    }
+  }
+
+  const i18n = initVueI18n(language,  messages );
   const t = i18n.t;
+  const i18nMixin = i18n.mixin = {
+    beforeCreate () {
+      const unwatch = i18n.i18n.watchLocale(() => {
+        this.$forceUpdate();
+      });
+      this.$once('hook:beforeDestroy', function () {
+        unwatch();
+      });
+    },
+    methods: {
+      $$t (key, values) {
+        return t(key, values)
+      }
+    }
+  };
+  const setLocale = i18n.setLocale;
   const getLocale = i18n.getLocale;
 
   const setClipboardData = {
@@ -6254,16 +6296,10 @@ var serviceContext = (function () {
     filePath,
     fileType
   } = {}, callbackId) {
-    plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
-      plus.runtime.openFile(getRealPath$1(filePath));
-      invoke$1(callbackId, {
-        errMsg: 'openDocument:ok'
-      });
-    }, err => {
-      invoke$1(callbackId, {
-        errMsg: 'openDocument:fail ' + err.message
-      });
-    });
+    const successCallback = warpPlusSuccessCallback(callbackId, 'saveFile');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile');
+
+    plus.runtime.openDocument(getRealPath$1(filePath), undefined, successCallback, errorCallback);
   }
 
   const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html';
@@ -7644,9 +7680,24 @@ var serviceContext = (function () {
   function login (params, callbackId) {
     const provider = params.provider || 'weixin';
     const errorCallback = warpPlusErrorCallback(callbackId, 'login');
+    const authOptions = provider === 'apple'
+      ? { scope: 'email' }
+      : params.univerifyStyle
+        ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
+        : {};
 
     getService(provider).then(service => {
       function login () {
+        if (params.onlyAuthorize && provider === 'weixin') {
+          service.authorize(({ code }) => {
+            invoke$1(callbackId, {
+              code,
+              authResult: '',
+              errMsg: 'login:ok'
+            });
+          }, errorCallback);
+          return
+        }
         service.login(res => {
           const authResult = res.target.authResult;
           invoke$1(callbackId, {
@@ -7654,7 +7705,7 @@ var serviceContext = (function () {
             authResult: authResult,
             errMsg: 'login:ok'
           });
-        }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) } || {});
+        }, errorCallback, authOptions);
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -7752,6 +7803,19 @@ var serviceContext = (function () {
 
   function closeAuthView () {
     return getService('univerify').then(service => service.closeAuthView())
+  }
+
+  function getCheckBoxState (params, callbackId) {
+    const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState');
+    try {
+      getService('univerify').then(service => {
+        const state = service.getCheckBoxState();
+        successCallback({ state });
+      });
+    } catch (error) {
+      errorCallback(error);
+    }
   }
 
   /**
@@ -8322,6 +8386,7 @@ var serviceContext = (function () {
   const WEBVIEW_INSERTED = 'webviewInserted';
   const WEBVIEW_REMOVED = 'webviewRemoved';
   const WEBVIEW_ID_PREFIX = 'webviewId';
+  const SET_LOCALE = 'i18n.setLocale';
 
   function createButtonOnClick (index) {
     return function onClick (btn) {
@@ -11336,6 +11401,7 @@ var serviceContext = (function () {
     operateWXData: operateWXData,
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
+    getCheckBoxState: getCheckBoxState,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
     unsubscribePush: unsubscribePush,
@@ -18599,8 +18665,9 @@ var serviceContext = (function () {
   }
 
   function Pattern (image, repetition) {
-    this.image = image;
-    this.repetition = repetition;
+    this.type = 'pattern';
+    this.data = image;
+    this.colorStop = repetition;
   }
 
   class CanvasGradient {
@@ -20746,6 +20813,20 @@ var serviceContext = (function () {
     createSelectorQuery: createSelectorQuery
   });
 
+  function getLanguage () {
+    return getLocale()
+  }
+
+  function setLanguage (locale) {
+    return setLocale(locale)
+  }
+
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getLanguage: getLanguage,
+    setLanguage: setLanguage
+  });
+
   UniServiceJSBridge.subscribe('onLoadFontFaceCallback', ({
     callbackId,
     data
@@ -20766,7 +20847,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -20779,7 +20860,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -20792,7 +20873,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta$1
   });
@@ -20829,7 +20910,7 @@ var serviceContext = (function () {
     callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -20853,7 +20934,7 @@ var serviceContext = (function () {
     callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -20890,11 +20971,12 @@ var serviceContext = (function () {
   './ui/create-intersection-observer.js': require_context_module_1_23,
   './ui/create-media-query-observer.js': require_context_module_1_24,
   './ui/create-selector-query.js': require_context_module_1_25,
-  './ui/load-font-face.js': require_context_module_1_26,
-  './ui/page-scroll-to.js': require_context_module_1_27,
-  './ui/set-page-meta.js': require_context_module_1_28,
-  './ui/tab-bar.js': require_context_module_1_29,
-  './ui/window.js': require_context_module_1_30,
+  './ui/language.js': require_context_module_1_26,
+  './ui/load-font-face.js': require_context_module_1_27,
+  './ui/page-scroll-to.js': require_context_module_1_28,
+  './ui/set-page-meta.js': require_context_module_1_29,
+  './ui/tab-bar.js': require_context_module_1_30,
+  './ui/window.js': require_context_module_1_31,
 
       };
       var req = function req(key) {
@@ -21336,6 +21418,14 @@ var serviceContext = (function () {
 
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+
+    i18n.i18n.watchLocale(locale => {
+      const pages = getCurrentPages();
+      pages.forEach(page => {
+        publishHandler(SET_LOCALE, locale, page.$page.id);
+      });
+      weex.requireModule('plus').setLanguage(locale);
+    });
   }
 
   let appCtx;
@@ -22336,7 +22426,7 @@ var serviceContext = (function () {
 
     return {
       version: VD_SYNC_VERSION,
-      locale: plus.os.language, // TODO
+      locale: weex.requireModule('plus').getLanguage(),
       disableScroll,
       onPageScroll,
       onPageReachBottom,
