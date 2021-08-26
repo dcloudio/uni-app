@@ -1903,6 +1903,9 @@ var serviceContext = (function (vue) {
   }
 
   function getPageIdByVm(vm) {
+      if (vm.$page) {
+          return vm.$page.id;
+      }
       if (!vm.$) {
           return;
       }
