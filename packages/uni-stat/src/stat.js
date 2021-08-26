@@ -25,8 +25,18 @@ import {
 } from './parameter'
 
 import { STAT_URL, STAT_VERSION, STAT_H5_URL, OPERATING_TIME } from './config'
+let titleJsons = {}
+// #ifdef MP
+let pagesTitle = require('uni-pages?{"type":"style"}').default
+pagesTitle = pagesTitle.pages
+for (let i in pagesTitle) {
+  titleJsons[i] = pagesTitle[i].navigationBarTitleText || ''
+}
+// #endif
+// #ifndef MP
+titleJsons = process.env.UNI_STAT_TITLE_JSON
+// #endif
 
-const titleJsons = process.env.UNI_STAT_TITLE_JSON
 const statConfig = {
   appid: process.env.UNI_APP_ID,
 }
@@ -80,6 +90,62 @@ class Util {
       sw: resultOptions.screenWidth,
       sh: resultOptions.screenHeight,
     }
+    // 注册拦截器
+    let registerInterceptor =
+      typeof uni.addInterceptor === 'function' &&
+      process.env.NODE_ENV !== 'development'
+    if (registerInterceptor) {
+      this.addInterceptorInit()
+      this.interceptLogin()
+      this.interceptShare(true)
+      this.interceptRequestPayment()
+    }
+  }
+
+  addInterceptorInit() {
+    let self = this
+    uni.addInterceptor('setNavigationBarTitle', {
+      invoke(args) {
+        self._navigationBarTitle.page = args.title
+      },
+    })
+  }
+
+  interceptLogin() {
+    let self = this
+    uni.addInterceptor('login', {
+      complete() {
+        self._login()
+      },
+    })
+  }
+
+  interceptShare(type) {
+    let self = this
+    if (!type) {
+      self._share()
+      return
+    }
+    uni.addInterceptor('share', {
+      success() {
+        self._share()
+      },
+      fail() {
+        self._share()
+      },
+    })
+  }
+
+  interceptRequestPayment() {
+    let self = this
+    uni.addInterceptor('requestPayment', {
+      success() {
+        self._payment('pay_success')
+      },
+      fail() {
+        self._payment('pay_fail')
+      },
+    })
   }
 
   getIsReportData() {
@@ -119,12 +185,11 @@ class Util {
   _pageShow() {
     const route = getPageRoute(this)
     const routepath = getRoute(this)
-    this._navigationBarTitle.config = titleJsons[routepath] || ''
-
+    this._navigationBarTitle.config =
+      (titleJsons && titleJsons[routepath]) || ''
     if (this.__licationShow) {
       getFirstTime()
       this.__licationShow = false
-      // console.log('这是 onLauch 之后执行的第一次 pageShow ，为下次记录时间做准备');
       this._lastPageRoute = route
       return
     }
@@ -146,7 +211,10 @@ class Util {
     if (!this.__licationHide) {
       getLastTime()
       const time = getResidenceTime('page')
-      const route = getPageRoute(this)
+      let route = getPageRoute(this)
+      if (!this._lastPageRoute) {
+        this._lastPageRoute = route
+      }
       this._sendPageRequest({
         url: route,
         urlref: this._lastPageRoute,
@@ -190,6 +258,8 @@ class Util {
   }
   _sendReportRequest(options) {
     this._navigationBarTitle.lt = '1'
+    this._navigationBarTitle.config =
+      (titleJsons && titleJsons[options.path]) || ''
     let query =
       options.query && JSON.stringify(options.query) !== '{}'
         ? '?' + JSON.stringify(options.query)
@@ -316,7 +386,6 @@ class Util {
       requestData[data.lt] = []
     }
     requestData[data.lt].push(data)
-
     if (getPlatformName() === 'n') {
       uni.setStorageSync('__UNI__STAT__DATA', requestData)
     }
@@ -378,11 +447,7 @@ class Util {
         url: STAT_URL,
         method: 'POST',
         data: optionsData,
-        success: () => {
-          // if (process.env.NODE_ENV === 'development') {
-          //   console.log('stat request success');
-          // }
-        },
+        success: () => {},
         fail: (e) => {
           if (++this._retry < 3) {
             setTimeout(() => {
@@ -432,77 +497,16 @@ class Stat extends Util {
   constructor() {
     super()
     this.instance = null
-    // 注册拦截器
-    if (
-      typeof uni.addInterceptor === 'function' &&
-      process.env.NODE_ENV !== 'development'
-    ) {
-      this.addInterceptorInit()
-      this.interceptLogin()
-      this.interceptShare(true)
-      this.interceptRequestPayment()
-    }
-  }
-
-  addInterceptorInit() {
-    let self = this
-    uni.addInterceptor('setNavigationBarTitle', {
-      invoke(args) {
-        self._navigationBarTitle.page = args.title
-      },
-    })
-  }
-
-  interceptLogin() {
-    let self = this
-    uni.addInterceptor('login', {
-      complete() {
-        self._login()
-      },
-    })
-  }
-
-  interceptShare(type) {
-    let self = this
-    if (!type) {
-      self._share()
-      return
-    }
-    uni.addInterceptor('share', {
-      success() {
-        self._share()
-      },
-      fail() {
-        self._share()
-      },
-    })
-  }
-
-  interceptRequestPayment() {
-    let self = this
-    uni.addInterceptor('requestPayment', {
-      success() {
-        self._payment('pay_success')
-      },
-      fail() {
-        self._payment('pay_fail')
-      },
-    })
   }
 
   report(options, self) {
-    this.self = self
+    // TODO 需要确认如果不用 $vm ,其他平台会不会出错
     setPageResidenceTime()
     this.__licationShow = true
     this._sendReportRequest(options, true)
   }
 
   load(options, self) {
-    //  if (!self.$scope && !self.$mp) {
-    //    const page = getCurrentPages()
-    // console.log();
-    //    self.$scope = page[page.length - 1]
-    //  }
     this.self = self
     this._query = options
   }
@@ -515,13 +519,7 @@ class Stat extends Util {
       this._applicationShow(self)
     }
   }
-
-  ready(self) {
-    // this.self = self;
-    // if (getPageTypes(self)) {
-    //   this._pageShow(self);
-    // }
-  }
+  ready(self) {}
   hide(self) {
     this.self = self
     if (getPageTypes(self)) {
@@ -535,7 +533,6 @@ class Stat extends Util {
       if (process.env.NODE_ENV === 'development') {
         console.info('当前运行环境为开发者工具，不上报数据。')
       }
-      // return;
     }
     let emVal = ''
     if (!em.message) {

@@ -244,18 +244,14 @@ export const getRoute = () => {
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is
   } else {
-    return _self.route || (_self.$mp && _self.$mp.page.route)
+    return _self.route || (_self.$scope && _self.$scope.route)
   }
 }
 
-export const getPageRoute = (self) => {
-  let route = getRoute()
-  let query = self._query
-  let str =
-    query && JSON.stringify(query) !== '{}' ? '?' + JSON.stringify(query) : ''
-  // clear
-  self._query = ''
-  return route + str
+export const getPageRoute = (_this) => {
+  let pageVm = _this.self
+  let page = pageVm.$page || pageVm.$scope.$page
+  return page.fullPath === '/' ? page.route : page.fullPath
 }
 
 export const getPageTypes = (self) => {
