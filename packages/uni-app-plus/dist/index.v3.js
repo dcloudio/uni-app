@@ -194,8 +194,8 @@ var serviceContext = (function () {
     'setTopWindowStyle',
     'setLeftWindowStyle',
     'setRightWindowStyle',
-    'getLanguage',
-    'setLanguage'
+    'getLocale',
+    'setLocale'
   ];
 
   const event = [
@@ -790,7 +790,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLanguage|setLanguage/;
+    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1617,15 +1617,15 @@ var serviceContext = (function () {
     'zh-Hant': zhHant
   };
 
-  let language;
+  let locale;
 
   {
     if (typeof weex === 'object') {
-      language = weex.requireModule('plus').getLanguage();
+      locale = weex.requireModule('plus').getLanguage();
     }
   }
 
-  const i18n = initVueI18n(language,  messages );
+  const i18n = initVueI18n(locale,  messages );
   const t = i18n.t;
   const i18nMixin = i18n.mixin = {
     beforeCreate () {
@@ -20813,20 +20813,6 @@ var serviceContext = (function () {
     createSelectorQuery: createSelectorQuery
   });
 
-  function getLanguage () {
-    return getLocale()
-  }
-
-  function setLanguage (locale) {
-    return setLocale(locale)
-  }
-
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getLanguage: getLanguage,
-    setLanguage: setLanguage
-  });
-
   UniServiceJSBridge.subscribe('onLoadFontFaceCallback', ({
     callbackId,
     data
@@ -20847,9 +20833,15 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
+  });
+
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getLocale: getLocale,
+    setLocale: setLocale
   });
 
   function pageScrollTo$1 (args) {
@@ -20971,8 +20963,8 @@ var serviceContext = (function () {
   './ui/create-intersection-observer.js': require_context_module_1_23,
   './ui/create-media-query-observer.js': require_context_module_1_24,
   './ui/create-selector-query.js': require_context_module_1_25,
-  './ui/language.js': require_context_module_1_26,
-  './ui/load-font-face.js': require_context_module_1_27,
+  './ui/load-font-face.js': require_context_module_1_26,
+  './ui/locale.js': require_context_module_1_27,
   './ui/page-scroll-to.js': require_context_module_1_28,
   './ui/set-page-meta.js': require_context_module_1_29,
   './ui/tab-bar.js': require_context_module_1_30,
