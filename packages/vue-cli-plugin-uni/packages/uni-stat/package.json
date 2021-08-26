@@ -2,7 +2,7 @@
   "name": "@dcloudio/uni-stat",
   "version": "3.0.0-alpha-3000020210813002",
   "description": "@dcloudio/uni-stat",
-  "main": "dist/uni-stat.cjs.js",
+  "main": "dist/uni-stat.es.js",
   "module": "dist/uni-stat.es.js",
   "files": [
     "dist",
