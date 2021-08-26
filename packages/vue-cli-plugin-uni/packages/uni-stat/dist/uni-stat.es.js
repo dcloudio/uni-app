@@ -244,18 +244,14 @@ const getRoute = () => {
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is
   } else {
-    return _self.route || (_self.$mp && _self.$mp.page.route)
+    return _self.route || (_self.$scope && _self.$scope.route)
   }
 };
 
-const getPageRoute = (self) => {
-  let route = getRoute();
-  let query = self._query;
-  let str =
-    query && JSON.stringify(query) !== '{}' ? '?' + JSON.stringify(query) : '';
-  // clear
-  self._query = '';
-  return route + str
+const getPageRoute = (_this) => {
+  let pageVm = _this.self;
+  let page = pageVm.$page || pageVm.$scope.$page;
+  return page.fullPath === '/' ? page.route : page.fullPath
 };
 
 const getPageTypes = (self) => {
@@ -387,7 +383,18 @@ const requestData = (done) => {
   });
 };
 
-const titleJsons = process.env.UNI_STAT_TITLE_JSON;
+let titleJsons = {};
+// #ifdef MP
+let pagesTitle = require('uni-pages?{"type":"style"}').default;
+pagesTitle = pagesTitle.pages;
+for (let i in pagesTitle) {
+  titleJsons[i] = pagesTitle[i].navigationBarTitleText || '';
+}
+// #endif
+// #ifndef MP
+titleJsons = process.env.UNI_STAT_TITLE_JSON;
+// #endif
+
 const statConfig = {
   appid: process.env.UNI_APP_ID,
 };
@@ -441,6 +448,62 @@ class Util {
       sw: resultOptions.screenWidth,
       sh: resultOptions.screenHeight,
     };
+    // 注册拦截器
+    let registerInterceptor =
+      typeof uni.addInterceptor === 'function' &&
+      process.env.NODE_ENV !== 'development';
+    if (registerInterceptor) {
+      this.addInterceptorInit();
+      this.interceptLogin();
+      this.interceptShare(true);
+      this.interceptRequestPayment();
+    }
+  }
+
+  addInterceptorInit() {
+    let self = this;
+    uni.addInterceptor('setNavigationBarTitle', {
+      invoke(args) {
+        self._navigationBarTitle.page = args.title;
+      },
+    });
+  }
+
+  interceptLogin() {
+    let self = this;
+    uni.addInterceptor('login', {
+      complete() {
+        self._login();
+      },
+    });
+  }
+
+  interceptShare(type) {
+    let self = this;
+    if (!type) {
+      self._share();
+      return
+    }
+    uni.addInterceptor('share', {
+      success() {
+        self._share();
+      },
+      fail() {
+        self._share();
+      },
+    });
+  }
+
+  interceptRequestPayment() {
+    let self = this;
+    uni.addInterceptor('requestPayment', {
+      success() {
+        self._payment('pay_success');
+      },
+      fail() {
+        self._payment('pay_fail');
+      },
+    });
   }
 
   getIsReportData() {
@@ -480,12 +543,11 @@ class Util {
   _pageShow() {
     const route = getPageRoute(this);
     const routepath = getRoute();
-    this._navigationBarTitle.config = titleJsons[routepath] || '';
-
+    this._navigationBarTitle.config =
+      (titleJsons && titleJsons[routepath]) || '';
     if (this.__licationShow) {
       getFirstTime();
       this.__licationShow = false;
-      // console.log('这是 onLauch 之后执行的第一次 pageShow ，为下次记录时间做准备');
       this._lastPageRoute = route;
       return
     }
@@ -507,7 +569,10 @@ class Util {
     if (!this.__licationHide) {
       getLastTime();
       const time = getResidenceTime('page');
-      const route = getPageRoute(this);
+      let route = getPageRoute(this);
+      if (!this._lastPageRoute) {
+        this._lastPageRoute = route;
+      }
       this._sendPageRequest({
         url: route,
         urlref: this._lastPageRoute,
@@ -551,6 +616,8 @@ class Util {
   }
   _sendReportRequest(options) {
     this._navigationBarTitle.lt = '1';
+    this._navigationBarTitle.config =
+      (titleJsons && titleJsons[options.path]) || '';
     let query =
       options.query && JSON.stringify(options.query) !== '{}'
         ? '?' + JSON.stringify(options.query)
@@ -661,7 +728,6 @@ class Util {
       requestData[data.lt] = [];
     }
     requestData[data.lt].push(data);
-
     if (getPlatformName() === 'n') {
       uni.setStorageSync('__UNI__STAT__DATA', requestData);
     }
@@ -723,11 +789,7 @@ class Util {
         url: STAT_URL,
         method: 'POST',
         data: optionsData,
-        success: () => {
-          // if (process.env.NODE_ENV === 'development') {
-          //   console.log('stat request success');
-          // }
-        },
+        success: () => {},
         fail: (e) => {
           if (++this._retry < 3) {
             setTimeout(() => {
@@ -777,77 +839,16 @@ class Stat extends Util {
   constructor() {
     super();
     this.instance = null;
-    // 注册拦截器
-    if (
-      typeof uni.addInterceptor === 'function' &&
-      process.env.NODE_ENV !== 'development'
-    ) {
-      this.addInterceptorInit();
-      this.interceptLogin();
-      this.interceptShare(true);
-      this.interceptRequestPayment();
-    }
-  }
-
-  addInterceptorInit() {
-    let self = this;
-    uni.addInterceptor('setNavigationBarTitle', {
-      invoke(args) {
-        self._navigationBarTitle.page = args.title;
-      },
-    });
-  }
-
-  interceptLogin() {
-    let self = this;
-    uni.addInterceptor('login', {
-      complete() {
-        self._login();
-      },
-    });
-  }
-
-  interceptShare(type) {
-    let self = this;
-    if (!type) {
-      self._share();
-      return
-    }
-    uni.addInterceptor('share', {
-      success() {
-        self._share();
-      },
-      fail() {
-        self._share();
-      },
-    });
-  }
-
-  interceptRequestPayment() {
-    let self = this;
-    uni.addInterceptor('requestPayment', {
-      success() {
-        self._payment('pay_success');
-      },
-      fail() {
-        self._payment('pay_fail');
-      },
-    });
   }
 
   report(options, self) {
-    this.self = self;
+    // TODO 需要确认如果不用 $vm ,其他平台会不会出错
     setPageResidenceTime();
     this.__licationShow = true;
     this._sendReportRequest(options, true);
   }
 
   load(options, self) {
-    //  if (!self.$scope && !self.$mp) {
-    //    const page = getCurrentPages()
-    // console.log();
-    //    self.$scope = page[page.length - 1]
-    //  }
     this.self = self;
     this._query = options;
   }
@@ -860,13 +861,7 @@ class Stat extends Util {
       this._applicationShow(self);
     }
   }
-
-  ready(self) {
-    // this.self = self;
-    // if (getPageTypes(self)) {
-    //   this._pageShow(self);
-    // }
-  }
+  ready(self) {}
   hide(self) {
     this.self = self;
     if (getPageTypes(self)) {
@@ -880,7 +875,6 @@ class Stat extends Util {
       if (process.env.NODE_ENV === 'development') {
         console.info('当前运行环境为开发者工具，不上报数据。');
       }
-      // return;
     }
     let emVal = '';
     if (!em.message) {
@@ -911,15 +905,12 @@ const stat = Stat$1.getInstance();
 let isHide = false;
 const lifecycle = {
   onLaunch(options) {
-    console.log('report onLaunch init');
     stat.report(options, this);
   },
   onReady() {
-    console.log('report onReady init');
     stat.ready(this);
   },
   onLoad(options) {
-    console.log('report onLoad init');
     stat.load(options, this);
     // 重写分享，获取分享上报事件
     if (this.$scope && this.$scope.onShareAppMessage) {
@@ -931,17 +922,14 @@ const lifecycle = {
     }
   },
   onShow() {
-    console.log('report onShow init');
     isHide = false;
     stat.show(this);
   },
   onHide() {
-    console.log('report onHide init');
     isHide = true;
     stat.hide(this);
   },
   onUnload() {
-    console.log('report onUnload init');
     if (isHide) {
       isHide = false;
       return
@@ -949,29 +937,23 @@ const lifecycle = {
     stat.hide(this);
   },
   onError(e) {
-    console.log('report onError init');
     stat.error(e);
   },
 };
 
 function main() {
-  console.log('stat onload ----');
-  uni.onAppLaunch((options) => {
-    // 小程序平台此时也无法获取getApp，统一在options中传递一个app对象
-    options.app.$vm.$.appContext.app.mixin(lifecycle);
-    uni.report = function (type, options) {
-      stat.sendEvent(type, options);
-    };
-  });
-  // if (process.env.NODE_ENV === 'development') {
-  //   uni.report = function (type, options) {}
-  // } else {
-  //   const Vue = require('vue')
-  //   ;(Vue.default || Vue).mixin(lifecycle)
-  //   uni.report = function (type, options) {
-  //     stat.sendEvent(type, options)
-  //   }
-  // }
+  if (process.env.NODE_ENV === 'development') {
+    uni.report = function (type, options) {};
+  } else {
+    uni.onAppLaunch((options) => {
+      stat.report(options);
+      // 小程序平台此时也无法获取getApp，统一在options中传递一个app对象
+      options.app.$vm.$.appContext.app.mixin(lifecycle);
+      uni.report = function (type, options) {
+        stat.sendEvent(type, options);
+      };
+    });
+  }
 }
 
 main();
