@@ -1,4 +1,8 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
+import { injectHook } from 'vue';
+
+//App
+const ON_LAUNCH = 'onLaunch';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -35,6 +39,15 @@ const navigateTo = {
         fromRes.eventChannel = getEventChannel();
     },
 };
+
+tt.appLaunchHooks = [];
+function onAppLaunch(hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return injectHook(ON_LAUNCH, hook, app.$vm.$);
+    }
+    tt.appLaunchHooks.push(hook);
+}
 
 function getBaseSystemInfo() {
   return tt.getSystemInfoSync()
@@ -722,6 +735,7 @@ const baseApis = {
     upx2px,
     addInterceptor,
     removeInterceptor,
+    onAppLaunch,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
@@ -809,8 +823,8 @@ const getProvider = initGetProvider({
 });
 
 var shims = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getProvider: getProvider
+    __proto__: null,
+    getProvider: getProvider
 });
 
 const chooseImage = {
@@ -886,23 +900,23 @@ const getFileInfo = {
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  chooseImage: chooseImage,
-  connectSocket: connectSocket,
-  chooseVideo: chooseVideo,
-  scanCode: scanCode,
-  startAccelerometer: startAccelerometer,
-  showToast: showToast,
-  showLoading: showLoading,
-  showModal: showModal,
-  showActionSheet: showActionSheet,
-  login: login,
-  getUserInfo: getUserInfo,
-  requestPayment: requestPayment,
-  getFileInfo: getFileInfo,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo,
-  previewImage: previewImage
+    __proto__: null,
+    chooseImage: chooseImage,
+    connectSocket: connectSocket,
+    chooseVideo: chooseVideo,
+    scanCode: scanCode,
+    startAccelerometer: startAccelerometer,
+    showToast: showToast,
+    showLoading: showLoading,
+    showModal: showModal,
+    showActionSheet: showActionSheet,
+    login: login,
+    getUserInfo: getUserInfo,
+    requestPayment: requestPayment,
+    getFileInfo: getFileInfo,
+    redirectTo: redirectTo,
+    navigateTo: navigateTo,
+    previewImage: previewImage
 });
 
 var index = initUni(shims, protocols);
