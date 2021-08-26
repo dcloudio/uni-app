@@ -16,19 +16,19 @@ const messages = {
   'zh-Hant': zhHant
 }
 
-let language
+let locale
 
 if (__PLATFORM__ === 'h5') {
-  language = (__uniConfig.language || navigator.language)
+  locale = (__uniConfig.locale || navigator.language)
 } else if (__PLATFORM__ === 'app-plus') {
   if (typeof weex === 'object') {
-    language = weex.requireModule('plus').getLanguage()
+    locale = weex.requireModule('plus').getLanguage()
   }
 } else {
-  language = uni.getSystemInfoSync().language
+  locale = uni.getSystemInfoSync().language
 }
 
-export const i18n = initVueI18n(language, __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {})
+export const i18n = initVueI18n(locale, __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {})
 export const t = i18n.t
 export const i18nMixin = i18n.mixin = {
   beforeCreate () {
