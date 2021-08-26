@@ -2016,7 +2016,7 @@ export default function vueFactory(exports) {
   }
 
   function ref(value) {
-    return createRef(value);
+    return createRef(value, false);
   }
 
   function shallowRef(value) {
@@ -2024,7 +2024,7 @@ export default function vueFactory(exports) {
   }
 
   class RefImpl {
-    constructor(value, _shallow = false) {
+    constructor(value, _shallow) {
       this._shallow = _shallow;
       this.dep = undefined;
       this.__v_isRef = true;
@@ -2049,7 +2049,7 @@ export default function vueFactory(exports) {
 
   }
 
-  function createRef(rawValue, shallow = false) {
+  function createRef(rawValue, shallow) {
     if (isRef(rawValue)) {
       return rawValue;
     }
@@ -9572,26 +9572,10 @@ export default function vueFactory(exports) {
     }
 
     return true;
-  }
-
-  function $ref() {}
-
-  function $shallowRef(arg) {
-    return arg;
-  }
-
-  function $computed() {}
-
-  function $fromRefs() {
-    return null;
-  }
-
-  function $raw() {
-    return null;
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.4";
+  var version = "3.2.6";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10652,11 +10636,6 @@ export default function vueFactory(exports) {
 
   var Vue = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    $computed: $computed,
-    $fromRefs: $fromRefs,
-    $raw: $raw,
-    $ref: $ref,
-    $shallowRef: $shallowRef,
     BaseTransition: BaseTransition,
     Comment: Comment$1,
     EffectScope: EffectScope,
