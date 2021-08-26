@@ -148,7 +148,7 @@ class I18n {
         }
         this.formater = formater || defaultFormatter;
         this.messages = messages || {};
-        this.setLocale(locale);
+        this.setLocale(locale || LOCALE_EN);
         if (watcher) {
             this.watchLocale(watcher);
         }
@@ -288,4 +288,4 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     };
 }
 
-export { I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, initVueI18n };
+export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, initVueI18n };

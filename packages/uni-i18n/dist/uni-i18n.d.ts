@@ -1,6 +1,14 @@
 export declare type BuiltInLocale = typeof LOCALE_ZH_HANS | typeof LOCALE_ZH_HANT | typeof LOCALE_EN | typeof LOCALE_FR | typeof LOCALE_ES;
 
-export declare interface Formatter {
+export declare class Formatter {
+    _caches: {
+        [key: string]: Array<Token>;
+    };
+    constructor();
+    interpolate(message: string, values?: Record<string, unknown> | Array<unknown>): Array<unknown>;
+}
+
+declare interface Formatter_2 {
     interpolate: (message: string, values?: Record<string, unknown> | Array<unknown>) => Array<unknown>;
 }
 
@@ -24,7 +32,7 @@ export declare interface I18nOptions {
     locale: BuiltInLocale;
     fallbackLocale?: BuiltInLocale;
     messages?: LocaleMessages;
-    formater?: Formatter;
+    formater?: Formatter_2;
     watcher?: LocaleWatcher;
 }
 
@@ -51,5 +59,10 @@ export declare type LocaleMessages = {
 };
 
 export declare type LocaleWatcher = (newLocale: BuiltInLocale, oldLocale: BuiltInLocale) => void;
+
+declare type Token = {
+    type: 'text' | 'named' | 'list' | 'unknown';
+    value: string;
+};
 
 export { }

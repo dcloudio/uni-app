@@ -100,7 +100,7 @@ export class I18n {
     }
     this.formater = formater || defaultFormatter
     this.messages = messages || {}
-    this.setLocale(locale)
+    this.setLocale(locale || LOCALE_EN)
     if (watcher) {
       this.watchLocale(watcher)
     }
