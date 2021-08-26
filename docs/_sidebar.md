@@ -10,6 +10,7 @@
   * [组件](vue-components.md)
   * [API](vue-api.md)
   * [vuex](vue-vuex.md)
+* [从 vue2 迁移到 vue3](migration-to-vue3.md)
 * nvue教程
   * [综述](nvue-outline.md)
   * [样式](nvue-css.md)
