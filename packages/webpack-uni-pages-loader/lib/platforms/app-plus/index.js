@@ -128,7 +128,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         name: userManifestJson.versionName,
         code: userManifestJson.versionCode
       },
-      language: userManifestJson.language
+      language: userManifestJson.locale
     }, {
       plus: userManifestJson['app-plus']
     }
