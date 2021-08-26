@@ -841,12 +841,12 @@
         "/platforms/h5/service/api/ui/windows.js",
         []
     ],
-    "getLanguage": [
-        "/core/service/api/ui/language.js",
+    "getLocale": [
+        "/core/service/api/ui/locale.js",
         []
     ],
-    "setLanguage": [
-        "/core/service/api/ui/language.js",
+    "setLocale": [
+        "/core/service/api/ui/locale.js",
         []
     ],
     "$emit": [
