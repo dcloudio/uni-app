@@ -1,5 +1,10 @@
 # uniCloud admin 框架
 
+#### 看视频，15分钟掌握uniCloud admin
+<a target="_blank" href="https://www.bilibili.com/video/BV17p4y1a71x?p=13">
+    <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/4332911b-6624-4587-8c77-78b68f1f8c78.jpg" alt="uniCloud admin视频教程" style="width: 60%;">
+</a>
+
 ### 什么是 uniCloud admin
 
 uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的开源框架。
