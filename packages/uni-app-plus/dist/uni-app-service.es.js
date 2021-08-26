@@ -1412,7 +1412,7 @@ var serviceContext = (function (vue) {
           }
           this.formater = formater || defaultFormatter;
           this.messages = messages || {};
-          this.setLocale(locale);
+          this.setLocale(locale || LOCALE_EN);
           if (watcher) {
               this.watchLocale(watcher);
           }
