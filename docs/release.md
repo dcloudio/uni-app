@@ -1,3 +1,94 @@
+#### 3.2.3.20210825
+* 【uni-app】
+  + App平台 修复 3.2.2 版本引出的资源重复编译的Bug [详情](https://ask.dcloud.net.cn/question/129157)
+* 【App插件(含5+App和uni-app的App端)】
+  + 更新 uni-AD 腾讯优量汇SDK Android为4.400.1270版，iOS为4.13.02版；快手广告SDK iOS为3.3.14版；快手内容联盟SDK iOS为3.3.22版
+  + Android平台 修复 图片选择不设置 sizeType 时默认不显示`原图`按钮，选择图片会进行压缩的Bug [详情](https://ask.dcloud.net.cn/question/129156)
+  + iOS平台 修复 3.2.2 版本引出的 微信登录、分享、支付，QQ登录、分享在部分设备可能引起崩溃的Bug [详情](https://ask.dcloud.net.cn/question/129378)
+  + iOS平台 修复 新浪分享模块在某些安全平台检测可能误报使用 UIWebview APIs 的Bug
+
+#### 3.2.2.20210818
+* 【uni-app】
+  + App平台、H5平台 新增 input 组件 type 支持 tel 类型
+  + App平台、H5平台 新增 input 组件支持 text-content-type 属性
+  + App平台、H5平台 修复 3.1.22 版本引出的 scroll-view 组件下拉刷新失效的Bug
+  + App-Andriod平台 优化 uni.chooseImage 图片选择界面增加`原图`按钮
+  + App-Android平台 修复 uni.saveFile 保存通过 uni.chooseImage 选择的图片在 Android11 设备上可能失败的Bug [详情](https://ask.dcloud.net.cn/question/128442)
+  + App-iOS平台 修复 压缩后的视频无法通过 plus.io 接口操作的Bug
+  + App-iOS平台 修复 nvue map 组件 marker 设置 label 的 bgColor 为透明值无效的Bug [详情](https://ask.dcloud.net.cn/question/126459)
+  + App-iOS平台 修复 uni.chooseImage 图片选择界面`原图`按钮操作逻辑不正确的Bug
+  + H5平台 优化 导航栏搜索框增加清除按钮
+  + 小程序平台 修复 作用域插槽内使用事件后默认使用新版作用域插槽编译模式的Bug [详情](https://ask.dcloud.net.cn/question/127297)
+  + 支付宝小程序平台 修复 部分内置组件事件当做自定义事件处理的Bug
+  + 【重要】 uniad广告的ad组件 支持h5平台  [详情](https://uniapp.dcloud.net.cn/component/ad)
+  + 【重要】 uni ui 支持 vue3 [详情](https://ext.dcloud.net.cn/plugin?id=55)
+  + HBuilder官方预置项目全面支持 vue3，包括hello uni-app、hello uniCloud、uniCloud admin、uni-starter等
+  + 新增 VUE3 条件编译，方便一套代码同时兼容vue2和vue3 [详情](https://uniapp.dcloud.net.cn/platform?id=preprocessor)
+  + uni-ui uni-collapse 修复 由1.2.0版本引起的 change 事件返回 undefined 的Bug
+  + uni-ui uni-collapse 优化 组件示例
+  + uni-ui uni-collapse 新增 组件折叠动画
+  + uni-ui uni-collapse 新增 value\v-model 属性 ，动态修改面板折叠状态
+  + uni-ui uni-collapse 新增 title 插槽 ，可定义面板标题
+  + uni-ui uni-collapse 新增 border 属性 ，显示隐藏面板内容分隔线
+  + uni-ui uni-collapse 新增 title-border 属性 ，显示隐藏面板标题分隔线
+  + uni-ui uni-collapse 修复 resize 方法失效的Bug
+  + uni-ui uni-collapse 修复 change 事件返回参数不正确的Bug
+  + uni-ui uni-collapse 优化 H5、App 平台自动更具内容更新高度，无需调用 reszie() 方法
+  + uni-ui uni-data-checkbox 优化 在uni-forms组件，与label不对齐的问题
+  + uni-ui uni-data-checkbox 修复 单选默认值为0不能选中的Bug
+  + uni-ui uni-easyinput 优化 errorMessage 属性支持 Boolean 类型
+  + uni-ui uni-file-picker 修复 return-type为object下，返回值不正确的Bug
+  + uni-ui uni-file-picker 修复（重要） H5 平台下如果和uni-forms组件一同使用导致页面卡死的问题
+  + uni-ui uni-file-picker 优化 h5平台下上传文件导致页面卡死的问题
+  + uni-ui uni-forms 修复 vue2 下条件编译导致destroyed生命周期失效的Bug
+  + uni-ui uni-forms 修复 1.2.1 引起的示例在小程序平台报错的Bug
+  + uni-ui uni-forms 修复 动态校验表单，默认值为空的情况下校验失效的Bug
+  + uni-ui uni-forms 修复 不指定name属性时，运行报错的Bug
+  + uni-ui uni-forms 优化 label默认宽度从65调整至70，使required为true且四字时不换行
+  + uni-ui uni-forms 优化 组件示例，新增动态校验示例代码
+  + uni-ui uni-forms 优化 组件文档，使用方式更清晰
+  + uni-ui uni-list 修复 与其他组件嵌套使用时，点击失效的Bug
+  + uni-ui uni-swipe-action 修复 跨页面修改组件数据 ，导致不能滑动的问题
+  + hello-uniapp 新增 同时适配 vue2 和 vue3（HBuilder X 3.2.0+ 支持 vue3）
+  + uniCloud admin 新增 同时适配 vue2 和 vue3（HBuilder X 3.2.0+ 支持 vue3）
+  + uniCloud admin 新增 应用管理功能，管理用户可登录的应用，如某账户只能登录管理端、不能登录用户端（uni-id@3.3.1+ 支持）
+  + uniCloud admin 新增 升级系统管理 list 页的表格功能，支持数据排序、筛选、搜索等功能
+  + uniCloud admin 修复 刷新页面时，左侧菜单丢失高亮状态的 bug
+  + uniCloud admin 修复 修改密码失败的 bug
+  + 新增 插件市场 支持前端文件加密 限付费的云端一体项目类型的前端文件 [详情](https://ask.dcloud.net.cn/article/35408)
+* 【App插件(含5+App和uni-app的App端)】
+  + 新增 一键登录 服务协议项样式支持设置复选框图标 [详情](https://uniapp.dcloud.io/univerify)
+  + 优化 新浪微博 登录、分享 模块配置，去掉appsecret参数
+  + 修复 一键登录 应用横屏显示时打开一键登录页面UI显示异常的Bug [详情](https://ask.dcloud.net.cn/question/126597)
+  + 【重要】Android平台 新增 androidPrivacy.json 文件配置隐私政策提示框 [详情](https://ask.dcloud.net.cn/article/36937)
+  + Android平台 更新 uni-AD 今日头条穿山甲广告SDK为3.8.0.6版；腾讯优量汇广告SDK为4.380.1250版；快手广告联盟SDK为3.3.12版，快手内容联盟SDK为3.3.20版
+  + Android平台 更新 腾讯X5内核版本为 4.3.0.176_44076，解决在部分设备无法加载使用X5内核的问题
+  + Android平台 更新 UniPush 使用的个推SDK版本为3.2.2.0，个推核心组件SDK版本为3.1.2.0
+  + Android平台 修复 3.1.22 版本引出的 template 原生隐私政策提示框内容过多时显示不正常的Bug [详情](https://ask.dcloud.net.cn/question/127582)
+  + Android平台 修复 3.1.19 版本引出的 UniPush 云端打包设置 GooglePlay(AAB) 渠道，getClientInfo 无法获取推送标识信息的Bug [详情](https://ask.dcloud.net.cn/question/127434)
+  + Android平台 修复 3.1.19 版本引出的 直播推流 LivePusher 无法全屏预览的Bug [详情](https://ask.dcloud.net.cn/question/127987)
+  + Android平台 修复 5+App项目打包后提交华为应用市场审核会误报包含三方广告SDK的Bug [详情](https://ask.dcloud.net.cn/question/126498)
+  + Android平台 修复 申请权限被用户拒绝后，引导用户跳转设置界面开启权限后返回应用依然无法获取权限的Bug [详情](https://ask.dcloud.net.cn/question/128369)
+  + Android平台 修复 页面中 input 标签 type 为 file 时，应用没有读写手机存储权限不会主动申请导致无法正常使用的Bug
+  + Android平台 修复 VideoPlayer 播放带方向信息的视频源，暂停时显示方向不正确的Bug [详情](https://ask.dcloud.net.cn/question/125783)
+  + Android平台 修复 VideoPlayer 播放部分视频源，暂停时可能显示黑边的Bug [详情](https://github.com/dcloudio/uni-app/issues/2779)
+  + Android平台 修复 LivePusher 推流设置的本地缓冲池过大导致延迟时间过长的Bug
+  + iOS平台 更新 QQ 登录、分享SDK版本为V3.5.3；新浪微博 登录、分享SDK版本为3.3.1；微信 登录、分享、支付SDK版本为1.9.1
+  + iOS平台 更新 UniPush 使用的个推SDK为2.5.10.0无IDFA版
+  + iOS平台 修复 一键登录 设置服务协议复选框默认不勾选时授权按钮背景颜色显示不正确的Bug
+  + iOS平台 修复 Downloader 下载文件返回的请求头 Content-Range 数据为空时引起应用崩溃的Bug
+  + iOS平台 修复 Downloader 下载文件名称出现乱码或包含特殊字符，导致保存文件无法读取的Bug
+  + iOS平台 修复 百度语音识别在用户拒绝录音权限时没有返回错误回调的Bug
+  + iOS平台 修复 在 iOS14 设备使用 5G 网络可能引起崩溃的Bug
+* 【uniCloud】
+  + 云数据库 新增 updateAndReturn 方法，可以更新并返回更新后的值（仅可在云函数中使用） [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=update-and-return)
+  + uniCloud本地调试插件 修复 部分情况下项目启动时报 npm 安装失败的Bug
+  + uni-id 新增 多系统（如管理端、用户端）的配置隔离 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=isolate-config)
+  + uni-id 新增 多系统用户管理，如某账户只能登录管理端，不能登录用户端 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=isolate-user)
+    * 此版本升级需要开发者处理历史用户数据，请参考 [补齐用户dcloud_appid字段](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid)
+  + uni-id 新增 QQ登录、注册相关功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=qq)
+  + uni-id 调整 不再支持绑定手机、邮箱时不填验证码直接绑定
+
 #### 3.1.22.20210709
 * 【uni-app】
   + 【重要】调整 App平台、H5平台 input 组件 number 类型在 iOS 平台改用仅数字键盘（九宫格），如需输入负数和小数请改用 digit 类型
