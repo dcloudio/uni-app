@@ -12,6 +12,9 @@ export function useCurrentPageId() {
 }
 
 export function getPageIdByVm(vm: ComponentPublicInstance) {
+  if (vm.$page) {
+    return vm.$page.id
+  }
   if (!vm.$) {
     return
   }
