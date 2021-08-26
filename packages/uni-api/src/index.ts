@@ -14,7 +14,7 @@ export * from './service/ui/createSelectorQuery'
 export * from './service/ui/createAnimation'
 export * from './service/ui/tabBar'
 export * from './service/ui/window'
-export * from './service/ui/language'
+export * from './service/ui/locale'
 
 export * from './service/keyboard/getSelectedTextRange'
 

@@ -1555,18 +1555,18 @@ var serviceContext = (function (vue) {
   let i18n;
   function useI18n() {
       if (!i18n) {
-          let language;
+          let locale;
           {
               if (typeof getApp === 'function') {
-                  language = weex.requireModule('plus').getLanguage();
+                  locale = weex.requireModule('plus').getLanguage();
               }
               else {
-                  language = plus.webview.currentWebview().getStyle().language;
+                  locale = plus.webview.currentWebview().getStyle().locale;
               }
           }
           const SET_LOCALE_API = 'i18n.setLocale';
           {
-              i18n = initVueI18n(language, undefined, undefined, typeof getApp === 'function'
+              i18n = initVueI18n(locale, undefined, undefined, typeof getApp === 'function'
                   ? (locale) => {
                       const pages = getCurrentPages();
                       pages.forEach((page) => {
@@ -4129,11 +4129,11 @@ var serviceContext = (function (vue) {
       // window.removeEventListener('resize', onResize)
   });
 
-  const getLanguage = defineSyncApi('getLanguage', () => {
+  const getLocale = defineSyncApi('getLocale', () => {
       const i18n = useI18n();
       return i18n.getLocale();
   });
-  const setLanguage = defineSyncApi('setLanguage', (locale) => {
+  const setLocale = defineSyncApi('setLocale', (locale) => {
       const i18n = useI18n();
       return i18n.setLocale(locale);
   });
@@ -10338,7 +10338,7 @@ var serviceContext = (function (vue) {
           // android 需要使用
           webviewStyle.isTab = isTabBar;
       }
-      webviewStyle.language = weex.requireModule('plus').getLanguage();
+      webviewStyle.locale = weex.requireModule('plus').getLanguage();
       if ((process.env.NODE_ENV !== 'production')) {
           console.log(formatLog('updateWebview', webviewStyle));
       }
@@ -12130,8 +12130,8 @@ var serviceContext = (function (vue) {
     canvasPutImageData: canvasPutImageData,
     canvasToTempFilePath: canvasToTempFilePath,
     getSelectedTextRange: getSelectedTextRange,
-    getLanguage: getLanguage,
-    setLanguage: setLanguage,
+    getLocale: getLocale,
+    setLocale: setLocale,
     $on: $on,
     $off: $off,
     $once: $once,

@@ -9,14 +9,14 @@ var vueRouter = require("vue-router");
 let i18n;
 function useI18n() {
   if (!i18n) {
-    let language;
+    let locale;
     {
       {
-        language = uniShared.getEnvLocale();
+        locale = uniShared.getEnvLocale();
       }
     }
     {
-      i18n = uniI18n.initVueI18n(language);
+      i18n = uniI18n.initVueI18n(locale);
     }
   }
   return i18n;

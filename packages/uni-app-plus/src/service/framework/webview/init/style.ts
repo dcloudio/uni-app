@@ -17,7 +17,7 @@ export function initWebviewStyle(
     // android 需要使用
     webviewStyle.isTab = isTabBar
   }
-  webviewStyle.language = weex.requireModule('plus').getLanguage()
+  webviewStyle.locale = weex.requireModule('plus').getLanguage()
   if (__DEV__) {
     console.log(formatLog('updateWebview', webviewStyle))
   }

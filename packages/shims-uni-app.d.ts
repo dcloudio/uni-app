@@ -70,7 +70,7 @@ declare namespace UniApp {
     }
     onReady: (fn: Function) => void
     serviceReady: boolean
-    language: string
+    locale: string
   }
 
   interface UniRoute {
