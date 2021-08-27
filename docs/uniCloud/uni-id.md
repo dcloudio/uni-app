@@ -752,6 +752,8 @@ exports.main = async function(event,context) {
 | ---						| ---			| ---	| ---																			|
 | uid						| String	| 是	|用户Id																		|
 | needPermission| Boolean	| 否	|标识是否需要在checkToken时返回permission	|
+| role					| Array		| 否	|指定缓存在token内的角色									|
+| permission		| Array		| 否	|指定缓存在角色内的权限										|
 
 **响应参数**
 
@@ -759,6 +761,11 @@ exports.main = async function(event,context) {
 | ---					| ---		| ---	| ---											|
 | token				| String| 是	|生成的token							|
 | tokenExpired| Number| 是	|token过期时间对应的时间戳|
+
+**说明**
+
+- uni-id 3.0.0起默认缓存角色权限到token内，此功能生效时`needPermission`参数不在需要。如需调用createToken接口请自行传入role、permission
+
 
 ### 修改密码 @update-password
 
