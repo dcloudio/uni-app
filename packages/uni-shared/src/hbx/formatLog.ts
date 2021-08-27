@@ -59,5 +59,6 @@ export function formatAppLog(
   filename: string,
   ...args: unknown[]
 ) {
-  console[type](normalizeLog(type, filename, args))
+  const res = normalizeLog(type, filename, args)
+  res && console[type](res)
 }

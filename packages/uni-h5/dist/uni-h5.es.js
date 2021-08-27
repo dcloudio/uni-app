@@ -683,6 +683,9 @@ function useCurrentPageId() {
   return getCurrentInstance().root.proxy.$page.id;
 }
 function getPageIdByVm(vm) {
+  if (vm.$page) {
+    return vm.$page.id;
+  }
   if (!vm.$) {
     return;
   }

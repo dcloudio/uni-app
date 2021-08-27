@@ -2,8 +2,13 @@ import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
-
-import { parseVueRequest, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { unescape } from 'querystring'
+import {
+  isInHBuilderX,
+  normalizePath,
+  parseVueRequest,
+  resolveBuiltIn,
+} from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 
@@ -22,6 +27,15 @@ const BUILT_IN_MODULES = {
 
 export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES
 
+const FS_PREFIX = `/@fs/`
+const VOLUME_RE = /^[A-Z]:/i
+function fsPathFromId(id: string) {
+  const fsPath = normalizePath(id.slice(FS_PREFIX.length))
+  return fsPath.startsWith('/') || fsPath.match(VOLUME_RE)
+    ? fsPath
+    : `/${fsPath}`
+}
+
 export function uniResolveIdPlugin(
   options: VitePluginUniResolvedOptions
 ): Plugin {
@@ -38,6 +52,13 @@ export function uniResolveIdPlugin(
         return (resolveCache[id] = resolveBuiltIn(
           path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
         ))
+      }
+      if (isInHBuilderX()) {
+        // 解决文件路径包含转义字符（空格）等
+        // /@fs/Applications/HBuilderX%20Alpha.app/Contents/HBuilderX/plugins/uniapp-cli-vite/node_modules/vite/dist/client/env.mjs
+        if (id.startsWith(FS_PREFIX) && id.includes('uniapp-cli-vite')) {
+          return fsPathFromId(unescape(id))
+        }
       }
     },
     load(id) {

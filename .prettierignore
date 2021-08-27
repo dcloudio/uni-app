@@ -1,6 +1,7 @@
 dist
 packages/uni-app-vite/lib
 packages/uni-app-vue/lib
+packages/uni-automator/lib
 packages/uni-cli-nvue/lib
 packages/uni-cli-shared/lib
 packages/uni-components/lib

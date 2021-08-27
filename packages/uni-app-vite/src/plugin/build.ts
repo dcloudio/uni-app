@@ -25,6 +25,9 @@ export function buildOptions(): UserConfig['build'] {
       output: {
         name: 'AppService',
         format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',
+        amd: {
+          autoId: true,
+        },
         entryFileNames: 'app-service.js',
         sourcemapPathTransform(relativeSourcePath, sourcemapPath) {
           const sourcePath = normalizePath(

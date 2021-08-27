@@ -396,7 +396,8 @@ function normalizeLog(type, filename, args) {
     return msgs.join('---COMMA---') + ' ' + filename;
 }
 function formatAppLog(type, filename, ...args) {
-    console[type](normalizeLog(type, filename, args));
+    const res = normalizeLog(type, filename, args);
+    res && console[type](res);
 }
 
 function plusReady(callback) {
