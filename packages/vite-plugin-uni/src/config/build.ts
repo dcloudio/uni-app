@@ -15,7 +15,8 @@ export function createBuild(
           // ignore
           if (
             message.includes('"vue"') ||
-            message.includes('"resolveComponent"')
+            message.includes('"resolveComponent"') ||
+            message.includes('"@dcloudio/uni-h5"')
           ) {
             return
           }
