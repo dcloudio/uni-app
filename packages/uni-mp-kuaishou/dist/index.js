@@ -838,7 +838,7 @@ function initTriggerEvent (mpInstance) {
   };
 }
 
-function initHook (name, options) {
+function initHook (name, options, isComponent) {
   const oldHook = options[name];
   if (!oldHook) {
     options[name] = function () {
