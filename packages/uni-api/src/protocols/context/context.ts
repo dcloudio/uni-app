@@ -34,3 +34,13 @@ export const CreateCanvasContextProtocol: ProtocolOptions<String | Object>[] = [
 export const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext'
 export type API_TYPE_CREATEE_INNER_AUDIO_CONTEXT =
   typeof uni.createInnerAudioContext
+
+export const API_CREATE_LIVE_PUSHER_CONTEXT = 'createLivePusherContext'
+export type API_TYPE_CREATE_LIVE_PUSHER_CONTEXT = (
+  id: string,
+  componentInstance: any
+) => ReturnType<typeof uni.createLivePusherContext> | void
+export const CreateLivePusherContextProtocol = validator.concat({
+  name: 'componentInstance',
+  type: Object,
+})

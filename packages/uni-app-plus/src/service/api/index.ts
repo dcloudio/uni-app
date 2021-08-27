@@ -38,6 +38,7 @@ export * from './network/uploadFile'
 
 export * from './context/createInnerAudioContext'
 export * from './context/getBackgroundAudioManager'
+export * from './context/createLivePusherContext'
 
 export * from './location/getLocation'
 export * from './location/chooseLocation'

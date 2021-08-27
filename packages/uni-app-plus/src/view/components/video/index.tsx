@@ -233,6 +233,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             case 'playbackRate':
               options = data.rate
               break
+            case 'requestFullScreen':
+              options = data.direction
+              break
           }
           if (video) {
             video[type as Method](options)
