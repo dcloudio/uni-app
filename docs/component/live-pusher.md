@@ -55,7 +55,7 @@ audio-volume-type|string|voicecall|否|音量类型|微信小程序2.10.0
 @bgmcomplete|EventHandle|||背景音播放完成时触发|微信小程序2.4.0
 
 
-orientation 的合法值
+#### orientation 的合法值
 
 |值|说明|
 |:-|:-|
@@ -63,7 +63,7 @@ orientation 的合法值
 |horizontal|水平|
 
 
-local-mirror 的合法值
+#### local-mirror 的合法值
 
 |值|说明|
 |:-|:-|
@@ -72,7 +72,7 @@ local-mirror 的合法值
 |disable|前后置摄像头均不镜像|
 
 
-audio-reverb-type 的合法值
+#### audio-reverb-type 的合法值
 
 |值|说明|
 |:-|:-|
@@ -86,14 +86,14 @@ audio-reverb-type 的合法值
 |7|磁性|
 
 
-audio-volume-type 的合法值
+#### audio-volume-type 的合法值
 
 |值|说明|
 |:-|:-|
 |media|媒体音量|
 |voicecall|通话音量|
 
-网络状态数据（info）安卓
+#### 网络状态数据（info）安卓
 
 键名|说明
 :--|:--|
@@ -106,12 +106,56 @@ netJitter | 网络抖动情况，抖动越大，网络越不稳定
 videoWidth | 视频画面的宽度
 videoHeight | 视频画面的高度
 
-网络状态数据（info）iOS
+#### 网络状态数据（info）iOS
 
 参数|类型 |说明
 :--|:--|:--|
 code|Number|  code码
 message|string| 具体的网络状态信息
+
+#### 事件
+
+#### statechange
+> 状态变化事件
+
+#####  返回参数（detail）的详细说明
+参数|类型|说明
+:--|:--|:--|
+code|Number|
+message|string|
+
+
+#### netstatus
+> 网络状态通知事件
+
+#####  安卓 返回参数（detail）的详细说明
+键名|说明
+:--|:--|
+videoBitrate | 当前视频编/码器输出的比特率，单位 kbps
+audioBitrate | 当前音频编/码器输出的比特率，单位 kbps
+videoFPS | 当前视频帧率
+videoGOP | 当前视频 GOP,也就是每两个关键帧(I帧)间隔时长，单位 s
+netSpeed | 当前的发送/接收速度
+netJitter | 网络抖动情况，抖动越大，网络越不稳定
+videoWidth | 视频画面的宽度
+videoHeight | 视频画面的高度
+
+##### iOS 返回参数（detail）的详细说明
+参数|类型 |说明
+:--|:--|:--|
+code|Number| code码
+message|string| 具体的网络状态信息
+
+
+#### error
+> 渲染错误事件
+
+#####  返回参数（detail）的详细说明
+参数|类型 |说明
+:--|:--|:--|
+errCode|Number|
+errMsg|string|
+
 
 
 ```html
