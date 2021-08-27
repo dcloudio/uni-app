@@ -69,8 +69,12 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
 
       const [appHtml, preloadLinks, appContext, title] = await render(url)
 
+      const icon = template.includes('rel="icon"')
+        ? ''
+        : '<link rel="icon" href="data:," />\n'
+
       const html = template
-        .replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`)
+        .replace(/<title>(.*?)<\/title>/, `${icon}<title>${title}</title>`)
         .replace(`<!--preload-links-->`, preloadLinks)
         .replace(`<!--app-html-->`, appHtml)
         .replace(`<!--app-context-->`, appContext)
