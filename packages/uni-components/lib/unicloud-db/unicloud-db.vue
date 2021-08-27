@@ -319,7 +319,7 @@ export default {
         db = db.action(action)
       }
 
-      db.collection(this.collection).add(value).then((res) => {
+      db.collection(this._getCollection()).add(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
