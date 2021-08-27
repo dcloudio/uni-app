@@ -1,10 +1,11 @@
 import { Formatter } from '../logs/format'
 
+const SIGNAL_H5_LOCAL = ' > Local:'
 const SIGNAL_H5_NETWORK = ' > Network:'
 const networkLogs: string[] = []
 export const h5ServeFormatter: Formatter = {
   test(msg) {
-    return msg.includes(SIGNAL_H5_NETWORK)
+    return msg.includes(SIGNAL_H5_LOCAL) || msg.includes(SIGNAL_H5_NETWORK)
   },
   format(msg) {
     if (msg.includes(SIGNAL_H5_NETWORK)) {
