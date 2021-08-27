@@ -14,6 +14,7 @@ import { navigate, RouteOptions } from './utils'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../framework/webview/utils'
+import { setStatusBarStyle } from '../../statusBar'
 
 export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
@@ -77,6 +78,7 @@ function _navigateTo({
         resolve({ eventChannel })
       }
     )
+    setStatusBarStyle()
   })
 }
 
