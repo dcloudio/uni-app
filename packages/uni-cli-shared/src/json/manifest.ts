@@ -21,8 +21,9 @@ export const parseRpx2UnitOnce = once((inputDir: string) => {
 interface CompilerCompatConfig {
   MODE?: 2 | 3
 }
-function parseCompatConfig(inputDir: string): CompilerCompatConfig {
-  return parseManifestJsonOnce(inputDir).compatConfig || {}
+function parseCompatConfig(_inputDir: string): CompilerCompatConfig {
+  // 不支持 mode:2
+  return { MODE: 3 } //parseManifestJsonOnce(inputDir).compatConfig || {}
 }
 
 export const parseCompatConfigOnce = once(parseCompatConfig)
