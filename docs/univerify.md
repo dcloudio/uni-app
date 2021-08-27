@@ -270,6 +270,24 @@ uni.closeAuthView()
 }
 ```
 
+### 获取用户是否选中了勾选框（HBuilderX 3.2.5+ 版本支持）
+
+`uni.getCheckBoxState(options)`
+
+```js
+uni.getCheckBoxState({
+	success(res){
+		console.log(res.state) // Boolean 用户是否勾选了选框
+		console.log(res.errMsg)
+	},
+	fail(res){
+		console.log(res.errCode)
+		console.log(res.errMsg)
+	}
+})
+
+```
+
 ### 用access_token换手机号
 
 客户端获取到 `access_token` 后，传递给uniCloud云函数，云函数中通过`uniCloud.getPhoneNumber`方法获取真正的手机号。
@@ -496,7 +514,7 @@ exports.main = async(event) => {
 ### 错误码
 
 |  错误码  |  错误描述  |
-|  -:-  |  -:-  |
+|  :-:  |  :-:  |
 |  -7   |  uniAppid 缺失，检查是否配置/已通过审核  |
 |  1000 |  当前 uniAppid 尚未开通一键登录  |
 |  1001 |  应用所有者账号信息异常，请检查账号一键登录服务是否正常  |
