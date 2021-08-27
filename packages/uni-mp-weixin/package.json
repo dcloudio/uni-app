@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-weixin",
-  "version": "3.0.0-alpha-3000020210827001",
+  "version": "3.0.0-alpha-3000020210827002",
   "description": "uni-app mp-weixin",
   "main": "dist/index.js",
   "files": [
@@ -20,5 +20,5 @@
     "name": "mp-weixin",
     "title": "微信小程序"
   },
-  "gitHead": "d5896d19315a106039411c16bbf8b804a865450d"
+  "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7"
 }

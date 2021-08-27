@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-nvue",
-  "version": "3.0.0-alpha-3000020210827001",
+  "version": "3.0.0-alpha-3000020210827002",
   "description": "uni-cli-nvue",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
     "main": "dist/plugin.js"
   },
   "license": "Apache-2.0",
-  "gitHead": "d5896d19315a106039411c16bbf8b804a865450d",
+  "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7",
   "dependencies": {
     "@babel/core": "^7.14.8",
     "@babel/preset-env": "^7.14.8",
