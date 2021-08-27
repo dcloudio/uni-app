@@ -2808,6 +2808,10 @@ const CreateCanvasContextProtocol = [
   }
 ];
 const API_CREATE_INNER_AUDIO_CONTEXT = "createInnerAudioContext";
+validator.concat({
+  name: "componentInstance",
+  type: Object
+});
 const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
 class VideoContext {
   constructor(id2, pageId) {

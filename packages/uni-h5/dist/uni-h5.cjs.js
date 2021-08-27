@@ -894,7 +894,7 @@ function validateProp(name, value, prop, isAbsent) {
   if (!shared.isPlainObject(prop)) {
     prop = { type: prop };
   }
-  const { type, required, validator } = prop;
+  const { type, required, validator: validator2 } = prop;
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"';
   }
@@ -914,8 +914,8 @@ function validateProp(name, value, prop, isAbsent) {
       return getInvalidTypeMessage(name, value, expectedTypes);
     }
   }
-  if (validator) {
-    return validator(value);
+  if (validator2) {
+    return validator2(value);
   }
 }
 const isSimpleType = /* @__PURE__ */ shared.makeMap("String,Number,Boolean,Function,Symbol");
@@ -1261,6 +1261,17 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(name, wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
+const validator = [
+  {
+    name: "id",
+    type: String,
+    required: true
+  }
+];
+validator.concat({
+  name: "componentInstance",
+  type: Object
+});
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {

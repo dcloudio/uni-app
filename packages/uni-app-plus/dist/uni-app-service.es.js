@@ -2270,7 +2270,144 @@ var serviceContext = (function (vue) {
       return false;
   }
 
+  const SUCCESS = 'success';
+  const FAIL = 'fail';
+  const COMPLETE = 'complete';
+  const CALLBACKS = [SUCCESS, FAIL, COMPLETE];
+  /**
+   * 调用无参数，或仅一个参数且为 callback 的 API
+   * @param {Object} vm
+   * @param {Object} method
+   * @param {Object} args
+   * @param {Object} extras
+   */
+  function invokeVmMethodWithoutArgs(vm, method, args, extras) {
+      if (!vm) {
+          return;
+      }
+      if (typeof args === 'undefined') {
+          return vm[method]();
+      }
+      const [, callbacks] = normalizeArgs(args, extras);
+      if (!Object.keys(callbacks).length) {
+          return vm[method]();
+      }
+      return vm[method](normalizeCallback(method, callbacks));
+  }
+  /**
+   * 调用两个参数（第一个入参为普通参数，第二个入参为 callback） API
+   * @param {Object} vm
+   * @param {Object} method
+   * @param {Object} args
+   * @param {Object} extras
+   */
+  function invokeVmMethod(vm, method, args, extras) {
+      if (!vm) {
+          return;
+      }
+      const [pureArgs, callbacks] = normalizeArgs(args, extras);
+      if (!Object.keys(callbacks).length) {
+          return vm[method](pureArgs);
+      }
+      return vm[method](pureArgs, normalizeCallback(method, callbacks));
+  }
+  function findElmById(id, vm) {
+      const elm = findRefByElm(id, vm.$el);
+      if (!elm) {
+          return console.error('Can not find `' + id + '`');
+      }
+      return elm;
+  }
+  function findRefByElm(id, elm) {
+      if (!id || !elm) {
+          return;
+      }
+      if (elm.attr && elm.attr.id === id) {
+          return elm;
+      }
+      const children = elm.children;
+      if (!children) {
+          return;
+      }
+      for (let i = 0, len = children.length; i < len; i++) {
+          const elm = findRefByElm(id, children[i]);
+          if (elm) {
+              return elm;
+          }
+      }
+  }
+  function normalizeArgs(args = {}, extras) {
+      const callbacks = Object.create(null);
+      const iterator = function iterator(name) {
+          const callback = args[name];
+          if (isFunction(callback)) {
+              callbacks[name] = callback;
+              delete args[name];
+          }
+      };
+      CALLBACKS.forEach(iterator);
+      extras && extras.forEach(iterator);
+      return [args, callbacks];
+  }
+  function normalizeCallback(method, callbacks) {
+      return function weexCallback(ret) {
+          const type = ret.type;
+          delete ret.type;
+          const callback = callbacks[type];
+          if (type === SUCCESS) {
+              ret.errMsg = `${method}:ok`;
+          }
+          else if (type === FAIL) {
+              ret.errMsg = method + ':fail ' + (ret.msg ? ' ' + ret.msg : '');
+          }
+          delete ret.code;
+          delete ret.msg;
+          isFunction(callback) && callback(ret);
+          if (type === SUCCESS || type === FAIL) {
+              const complete = callbacks.complete;
+              isFunction(complete) && complete(ret);
+          }
+      };
+  }
+
+  const METHODS$1 = {
+      play(ctx) {
+          return invokeVmMethodWithoutArgs(ctx, 'play');
+      },
+      pause(ctx) {
+          return invokeVmMethodWithoutArgs(ctx, 'pause');
+      },
+      seek(ctx, args) {
+          return invokeVmMethod(ctx, 'seek', args.position);
+      },
+      stop(ctx) {
+          return invokeVmMethodWithoutArgs(ctx, 'stop');
+      },
+      sendDanmu(ctx, args) {
+          return invokeVmMethod(ctx, 'sendDanmu', args);
+      },
+      playbackRate(ctx, args) {
+          return invokeVmMethod(ctx, 'playbackRate', args.rate);
+      },
+      requestFullScreen(ctx, args = {}) {
+          return invokeVmMethod(ctx, 'requestFullScreen', args);
+      },
+      exitFullScreen(ctx) {
+          return invokeVmMethodWithoutArgs(ctx, 'exitFullScreen');
+      },
+      showStatusBar(ctx) {
+          return invokeVmMethodWithoutArgs(ctx, 'showStatusBar');
+      },
+      hideStatusBar(ctx) {
+          return invokeVmMethodWithoutArgs(ctx, 'hideStatusBar');
+      },
+  };
   function operateVideoPlayer(videoId, pageId, type, data) {
+      const page = getCurrentPages().find((page) => page.$page.id === pageId);
+      if (page === null || page === void 0 ? void 0 : page.$page.meta.isNVue) {
+          const pageVm = page.$vm;
+          return METHODS$1[type](findElmById(videoId, pageVm), data);
+      }
       UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
           videoId,
           type,
@@ -2278,7 +2415,62 @@ var serviceContext = (function (vue) {
       }, pageId);
   }
 
+  const METHODS = {
+      getCenterLocation(ctx, cbs) {
+          return invokeVmMethodWithoutArgs(ctx, 'getCenterLocation', cbs);
+      },
+      moveToLocation(ctx, args) {
+          return invokeVmMethod(ctx, 'moveToLocation', args);
+      },
+      translateMarker(ctx, args) {
+          return invokeVmMethod(ctx, 'translateMarker', args, ['animationEnd']);
+      },
+      includePoints(ctx, args) {
+          return invokeVmMethod(ctx, 'includePoints', args);
+      },
+      getRegion(ctx, cbs) {
+          return invokeVmMethodWithoutArgs(ctx, 'getRegion', cbs);
+      },
+      getScale(ctx, cbs) {
+          return invokeVmMethodWithoutArgs(ctx, 'getScale', cbs);
+      },
+      addCustomLayer(ctx, args) {
+          return invokeVmMethod(ctx, 'addCustomLayer', args);
+      },
+      removeCustomLayer(ctx, args) {
+          return invokeVmMethod(ctx, 'removeCustomLayer', args);
+      },
+      addGroundOverlay(ctx, args) {
+          return invokeVmMethod(ctx, 'addGroundOverlay', args);
+      },
+      removeGroundOverlay(ctx, args) {
+          return invokeVmMethod(ctx, 'removeGroundOverlay', args);
+      },
+      updateGroundOverlay(ctx, args) {
+          return invokeVmMethod(ctx, 'updateGroundOverlay', args);
+      },
+      initMarkerCluster(ctx, args) {
+          return invokeVmMethod(ctx, 'initMarkerCluster', args);
+      },
+      addMarkers(ctx, args) {
+          return invokeVmMethod(ctx, 'addMarkers', args);
+      },
+      removeMarkers(ctx, args) {
+          return invokeVmMethod(ctx, 'removeMarkers', args);
+      },
+      moveAlong(ctx, args) {
+          return invokeVmMethod(ctx, 'moveAlong', args);
+      },
+      openMapApp(ctx, args) {
+          return invokeVmMethod(ctx, 'openMapApp', args);
+      },
+  };
   function operateMap(id, pageId, type, data, operateMapCallback) {
+      const page = getCurrentPages().find((page) => page.$page.id === pageId);
+      if (page === null || page === void 0 ? void 0 : page.$page.meta.isNVue) {
+          const pageVm = page.$vm;
+          return METHODS[type](findElmById(id, pageVm), data);
+      }
       UniServiceJSBridge.invokeViewMethod('map.' + id, {
           type,
           data,
@@ -2565,6 +2757,11 @@ var serviceContext = (function (vue) {
       },
   ];
   const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
+  const API_CREATE_LIVE_PUSHER_CONTEXT = 'createLivePusherContext';
+  const CreateLivePusherContextProtocol = validator.concat({
+      name: 'componentInstance',
+      type: Object,
+  });
 
   const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
   class VideoContext {
@@ -8501,6 +8698,65 @@ var serviceContext = (function (vue) {
   const getBackgroundAudioManager = defineSyncApi(API_GET_BACKGROUND_AUDIO_MANAGER, () => backgroundAudioManager ||
       (backgroundAudioManager = new BackgroundAudioManager()));
 
+  class LivePusherContext {
+      constructor(id, ctx) {
+          this.id = id;
+          this.ctx = ctx;
+      }
+      start(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'start', option);
+      }
+      stop(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'stop', option);
+      }
+      pause(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'pause', option);
+      }
+      resume(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'resume', option);
+      }
+      switchCamera(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', option);
+      }
+      snapshot(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', option);
+      }
+      toggleTorch(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', option);
+      }
+      playBGM(option) {
+          return invokeVmMethod(this.ctx, 'playBGM', option);
+      }
+      stopBGM(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', option);
+      }
+      pauseBGM(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', option);
+      }
+      resumeBGM(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', option);
+      }
+      setBGMVolume(option) {
+          return invokeVmMethod(this.ctx, 'setBGMVolume', option);
+      }
+      startPreview(option) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', option);
+      }
+      stopPreview(args) {
+          return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args);
+      }
+  }
+  const createLivePusherContext = defineSyncApi(API_CREATE_LIVE_PUSHER_CONTEXT, (id, vm) => {
+      if (!vm) {
+          return console.warn('uni.createLivePusherContext: 2 arguments required, but only 1 present');
+      }
+      const elm = findElmById(id, vm);
+      if (!elm) {
+          return console.warn('Can not find `' + id + '`');
+      }
+      return new LivePusherContext(id, elm);
+  }, CreateLivePusherContextProtocol);
+
   const PI = 3.1415926535897932384626;
   const a = 6378245.0;
   const ee = 0.00669342162296594323;
@@ -11170,6 +11426,7 @@ var serviceContext = (function (vue) {
           showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
               resolve({ eventChannel });
           });
+          setStatusBarStyle();
       });
   }
   function initAnimation(path, animationType, animationDuration) {
@@ -12231,6 +12488,7 @@ var serviceContext = (function (vue) {
     uploadFile: uploadFile,
     createInnerAudioContext: createInnerAudioContext,
     getBackgroundAudioManager: getBackgroundAudioManager,
+    createLivePusherContext: createLivePusherContext,
     getLocation: getLocation,
     chooseLocation: chooseLocation,
     openLocation: openLocation,
