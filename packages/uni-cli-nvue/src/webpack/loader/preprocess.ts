@@ -8,7 +8,7 @@ import {
 import { normalizePreprocessErrMsg } from '../../utils/preprocess'
 const utils = require('loader-utils')
 function preprocessLoader(this: LoaderContext<{}>, content: string, map: any) {
-  if (content.indexOf('#ifdef') === -1) {
+  if (!content.includes('#endif')) {
     return this.callback(null, content, map)
   }
   const types: ('js' | 'html' | 'css' | 'json')[] = utils.getOptions(this)
