@@ -2192,7 +2192,7 @@ let res = await db.collection('scores').aggregate()
 ```js
 let res = await db.collection('vehicles').aggregate()
   .addFields({
-    'spec.fuel_type': 'unleaded'
+    'specs.fuel_type': 'unleaded'
   })
   .end()
 ```
