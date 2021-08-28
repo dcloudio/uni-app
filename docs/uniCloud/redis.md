@@ -766,3 +766,7 @@ const [operationType, currentValue] = await redis.eval(`local val = redis.call('
 - 云函数与redis的连接
 
   和传统开发不同，云函数实例之间是不互通的，也就是说每个使用redis的函数实例都会和redis建立一个连接，在云函数实例复用时此连接也会复用。
+
+- 云函数本地调试
+
+  目前不支持本地运行使用了Redis扩展能力的云函数，请上传到云端测试
