@@ -136,10 +136,11 @@ export default {
     _resize (size) {
       var canvas = this.$refs.canvas
       var hasChanged = !size || (canvas.width !== size.width * pixelRatio || canvas.height !== size.height * pixelRatio)
+      if (!hasChanged) return
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext('2d')
         var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-        hasChanged && wrapper(canvas)
+        wrapper(canvas)
         context.putImageData(imageData, 0, 0)
       } else {
         wrapper(canvas)
