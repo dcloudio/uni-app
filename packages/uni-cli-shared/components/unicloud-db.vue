@@ -55,7 +55,7 @@ export default {
       }
     },
     collection: {
-      type: String,
+      type: [String, Array],
       default: ''
     },
     action: {
@@ -146,6 +146,21 @@ export default {
       dataList: this.getone ? undefined : [],
       paginationInternal: {},
       errorMessage: ''
+    }
+  },
+  computed: {
+    collectionArgs () {
+      return Array.isArray(this.collection) ? this.collection : [this.collection]
+    },
+    isLookup () {
+      return (Array.isArray(this.collection) && this.collection.length > 1) || (typeof this.collection === 'string' && this.collection.indexOf(',') > -1)
+    },
+    mainCollection () {
+      if (typeof this.collection === 'string') {
+        return this.collection.split(',')[0]
+      }
+      const mainQuery = JSON.parse(JSON.stringify(this.collection[0]))
+      return mainQuery.$db[0].$param[0]
     }
   },
   created () {
@@ -314,7 +329,7 @@ export default {
         db = db.action(action)
       }
 
-      db.collection(this._getCollection()).add(value).then((res) => {
+      db.collection(this.mainCollection).add(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -388,7 +403,7 @@ export default {
         db = db.action(action)
       }
 
-      return db.collection(this._getCollection()).doc(id).update(value).then((res) => {
+      return db.collection(this.mainCollection).doc(id).update(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -418,7 +433,7 @@ export default {
         db = db.action(this.action)
       }
 
-      db = db.collection(this.collection)
+      db = db.collection(...this.collectionArgs)
 
       if (!(!this.where || !Object.keys(this.where).length)) {
         db = db.where(this.where)
@@ -510,7 +525,7 @@ export default {
         data,
         count
       } = result
-      this._isEnded = data.length < this.pageSize
+      this._isEnded = count !== undefined ? (this.paginationInternal.current * this.paginationInternal.size >= count) : (data.length < this.pageSize)
       this.hasMore = !this._isEnded
 
       const data2 = this.getone ? (data.length ? data[0] : undefined) : data
@@ -569,7 +584,7 @@ export default {
         exec = exec.action(action)
       }
 
-      exec.collection(this._getCollection()).where({
+      exec.collection(this.mainCollection).where({
         _id: dbCmd.in(ids)
       }).remove().then((res) => {
         success && success(res.result)
@@ -592,11 +607,6 @@ export default {
         }
         complete && complete()
       })
-    },
-    _getCollection () {
-      const index = this.collection.indexOf(',')
-      const collection = index > 0 ? this.collection.substring(0, index) : this.collection
-      return collection
     },
     removeData (ids) {
       const il = ids.slice(0)

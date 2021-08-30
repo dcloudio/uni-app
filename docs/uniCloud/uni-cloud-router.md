@@ -32,6 +32,13 @@
 
 ### 安装
 
+**从插件市场导入**
+
+1. 访问插件市场[uni-cloud-router](https://ext.dcloud.net.cn/plugin?id=3660)，点击右侧使用HBuilderX导入插件
+2. 在要使用uni-cloud-router的云函数目录（例：uniCloud/cloudfunctions/router）右键点击`管理公共模块依赖`，选择uni-cloud-router并确定
+
+**使用npm安装**
+
 ```bash
 npm install --save uni-cloud-router
 ```
@@ -82,9 +89,7 @@ module.exports = {
 
 ```js
 const { Controller } = require("uni-cloud-router");
-module.exports = class HelloController extends (
-  Controller
-) {
+module.exports = class HelloController extends Controller {
   sayHello() {
     return this.service.hello.sayHello();
   }
@@ -97,9 +102,7 @@ module.exports = class HelloController extends (
 
 ```js
 const { Service } = require("uni-cloud-router");
-module.exports = class HelloService extends (
-  Service
-) {
+module.exports = class HelloService extends Service {
   sayHello() {
     return {
       data: "welcome to uni-cloud-router!",
@@ -116,9 +119,13 @@ module.exports = class HelloService extends (
 
 ```js
 sayHello() {
-  uni.request('hello/sayHello', {}).then(res => {
-    this.title = res.data
+  uniCloud.callFunction({
+    name: 'hello/sayHello',
+    data: {}
   })
+  .then(res => {
+    this.title = res.data
+  });
 }
 ```
 
@@ -145,9 +152,7 @@ sayHello() {
 // controller/post.js
 const Controller = require("uni-cloud-router").Controller;
 // 必须继承 Controller 类
-module.exports = class PostController extends (
-  Controller
-) {
+module.exports = class PostController extends Controller {
   async create() {
     const { ctx, service } = this;
     // 校验参数
@@ -240,9 +245,7 @@ class PostController extends Controller {
 // service/post.js
 const Service = require("uni-cloud-router").Service;
 // 必须继承 Service
-module.exports = class PostService extends (
-  Service
-) {
+module.exports = class PostService extends Service {
   async create(data) {
     return this.db.add(data);
   }
@@ -291,8 +294,6 @@ module.exports = (options) => {
 
 示例：
 
-- [uni-id 校验 token 中间件](https://github.com/dcloudio/uni-template-admin/blob/master/cloudfunctions-aliyun/uni-admin/middleware/auth.js)
-- [uni-id 校验 permission 中间件](https://github.com/dcloudio/uni-template-admin/blob/master/cloudfunctions-aliyun/uni-admin/middleware/permission.js)
 - [云函数URL化 中间件](https://github.com/fxy060608/uni-cloud-router/blob/master/src/middleware/http.ts)
 - [ip拦截中间件](https://ext.dcloud.net.cn/plugin?id=4619)
 
@@ -368,9 +369,9 @@ module.exports = (options) => {
 }
 ```
 
-## 客户端
+### 客户端使用云函数
 
-### 发送请求
+#### 发送请求
 
 ```js
 // 使用 uniCloud 访问
@@ -400,7 +401,7 @@ uni.request({
 })
 ```
 
-### 返回结果
+#### 返回结果
 
 ```js
 {
@@ -410,3 +411,4 @@ uni.request({
   // 其他信息
 }
 ```
+

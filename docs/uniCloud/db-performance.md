@@ -26,21 +26,23 @@
 
 您应该避免使用where+skip+limit的查询方式来遍历整个集合，因为这种方式随着Skip数量的增长响应时间会越来越慢，还可能会造成请求超时。
 
-下面的代码给出了一个示例。每次查询时都指定查询条件大于上次查询结果中的最后一条记录的_id，
+下面的代码给出了一个示例。**为避免示例过于复杂，先假设没有两条记录的create_date是相等，如果create_date不能唯一标识数据，可以再额外加入其他字段，比如文章作者等**
+
+按照create_date（创建时间）降序排序，每次查询时都指定查询条件小于上次查询结果中的最后一条记录的create_date，这样不需要使用skip即可实现分页效果，同时还能保证用户在上下翻页的时候不会因为出现新增数据而引起的前后两页数据重复的问题。
 
 ```js
 const db = uniCloud.database()
 const dbCmd = db.command
 module.exports = async function(event,context) {
   const {
-    lastId,
+    lastCreateDate = Date.now(),
     pageSize
   } = event
   if(pageSize > 100){
     throw new Error('单页数据不可超过100条')
   }
   const res = await db.collection('book').where({
-    _id: dbCmd.gt(lastId)
+    create_date: dbCmd.lt(lastCreateDate)
   })
   .limit(pageSize)
   .get()

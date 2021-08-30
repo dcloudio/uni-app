@@ -438,6 +438,9 @@ module.exports = function (pagesJson, manifestJson, loader) {
     qqMapKey = sdkConfigs.maps.qqmap.key
   }
 
+  let locale = manifestJson.locale
+  locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
+
   return `
 import Vue from 'vue'
 ${genLayoutComponentsCode(pagesJson)}
@@ -452,6 +455,7 @@ global.__uniConfig.debug = ${manifestJson.debug === true};
 global.__uniConfig.networkTimeout = ${JSON.stringify(networkTimeoutConfig)};
 global.__uniConfig.sdkConfigs = ${JSON.stringify(sdkConfigs)};
 global.__uniConfig.qqMapKey = ${JSON.stringify(qqMapKey)};
+global.__uniConfig.locale = ${JSON.stringify(locale)};
 global.__uniConfig.nvue = ${JSON.stringify({ 'flex-direction': getFlexDirection(manifestJson['app-plus']) })}
 global.__uniConfig.__webpack_chunk_load__ = __webpack_chunk_load__
 ${genRegisterPageVueComponentsCode(pageComponents)}

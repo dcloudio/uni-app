@@ -27,7 +27,14 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
       defaultContext[normalize(name)] = false
     })
 
-  defaultContext.VUE2 = true
+  if (process.env.UNI_USING_VUE3) {
+    defaultContext.VUE3 = true
+  } else {
+    defaultContext.VUE2 = true
+  }
+  // nvue 只支持vue2
+  nvueContext.VUE2 = true
+  nvueContext.VUE3 = false
 
   vueContext[normalize(name)] = true
 

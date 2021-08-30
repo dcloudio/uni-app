@@ -3,6 +3,7 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 const uniI18n = require('@dcloudio/uni-cli-i18n')
+const moduleAlias = require('module-alias')
 
 require('./error-reporting')
 
@@ -18,10 +19,22 @@ if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) 
 }
 process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), defaultInputDir)
 
+const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
+
+process.env.UNI_APP_ID = manifestJsonObj.appid || ''
+process.env.UNI_APP_NAME = manifestJsonObj.name || ''
+
+// 小程序 vue3 标记
+if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
+  if (manifestJsonObj.vueVersion === '3' || manifestJsonObj.vueVersion === 3) {
+    process.env.UNI_USING_VUE3 = true
+    process.env.UNI_USING_VUE3_OPTIONS_API = true
+  }
+}
+
 // 初始化全局插件对象
 global.uniPlugin = require('@dcloudio/uni-cli-shared/lib/plugin').init()
 
-const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
 const platformOptions = manifestJsonObj[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || {}
 // 插件校验环境
 global.uniPlugin.validate.forEach(validate => {
@@ -261,7 +274,8 @@ if (platformOptions.usingComponents === true) {
 
 // 兼容历史配置 betterScopedSlots
 const modes = ['legacy', 'auto', 'augmented']
-const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOptions.betterScopedSlots ? modes[2] : platformOptions.scopedSlotsCompiler
+const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOptions.betterScopedSlots ? modes[2]
+  : platformOptions.scopedSlotsCompiler
 process.env.SCOPED_SLOTS_COMPILER = modes.includes(scopedSlotsCompiler) ? scopedSlotsCompiler : modes[1]
 // 快手小程序抽象组件编译报错，如未指定 legacy 固定为 augmented 模式
 if (process.env.UNI_PLATFORM === 'mp-kuaishou' && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
@@ -356,8 +370,6 @@ if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
   }
   console.log(perfMsg)
 }
-
-const moduleAlias = require('module-alias')
 
 // 将 template-compiler 指向修订后的版本
 moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')

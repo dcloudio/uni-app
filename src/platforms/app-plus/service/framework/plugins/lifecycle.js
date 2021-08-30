@@ -55,7 +55,7 @@ function parsePageCreateOptions (vm, route) {
 
   return {
     version: VD_SYNC_VERSION,
-    locale: plus.os.language, // TODO
+    locale: weex.requireModule('plus').getLanguage(),
     disableScroll,
     onPageScroll,
     onPageReachBottom,

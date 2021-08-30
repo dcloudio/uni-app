@@ -39,7 +39,7 @@ uni_modules                                项目根目录下
     ├── hybrid                             存放本地网页的目录，<a href="/component/web-view">详见</a>
     ├── pages                              业务页面文件存放的目录 
     ├── static                             存放应用引用静态资源（如图片、视频等）的目录，<b>注意：</b>静态资源只能存放于此
-    └── wxcomponents                       存放小程序组件的目录，<a href="/frame?id=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81">详见</a>
+    ├── wxcomponents                       存放小程序组件的目录，<a href="/frame?id=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81">详见</a>
     ├── license.md                         插件使用协议说明
     ├── package.json                       插件配置，必选(除此之外均`可选`)                          
     ├── readme.md                          插件文档
@@ -91,7 +91,7 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
     "uni_modules": { // uni_modules配置
         "dependencies": [], // 依赖的 uni_modules 插件ID列表
         "encrypt": [ // 配置云函数，公共模块，clientDB Action加密
-            "uniCloud/cloudfunctions/uni-admin/controller/permission.js"
+            "uniCloud/cloudfunctions/uni-admin/controller/permission.js" // 注意这里是真实的文件路径，uni_modules下的uniCloud不带-aliyun、-tcb后缀，但是项目根目录下的uniCloud是带有后缀的
         ],
         "platforms": { // 平台兼容性：y 表示 Yes，支持；n 表示 No，不支持；u 表示 Unknown，不确定；默认为 u
             "cloud": { // 云端平台兼容性
@@ -160,6 +160,22 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
   * 若未在uni_modules.config.json中配置平台，则上传该插件uniCloud资源时，会提示上传至选择哪个服务空间
   * 若已在uni_modules.config.json中配置平台，则上传时以配置为准，自动归属至指定的服务空间
 
+#### npmignore@npmignore
+
+uni_modules插件发布到插件市场是通常需要忽略掉一些目录或文件，比如`unpackage`、`.hbuilderx`、`node_modules`等，这时可以通过npmignore文件来实现文件的忽略。
+
+文件名：**.npmignore**，注意开头有个点。典型的npmignore文件内容如下：
+
+```
+.hbuilderx
+unpackage
+node_modules
+package-lock.json
+```
+
+**注意**
+
+- 项目根目录下的`.npmignore`对发布项目、插件模板生效。`uni_modules/插件Id/.npmignore`对发布插件生效
 
 ### 开发 uni_modules 插件
 #### 新建uni_modules目录

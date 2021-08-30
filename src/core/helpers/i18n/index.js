@@ -16,10 +16,34 @@ const messages = {
   'zh-Hant': zhHant
 }
 
-const fallbackLocale = 'en'
+let locale
 
-const i18n = initVueI18n(__PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {}, fallbackLocale)
+if (__PLATFORM__ === 'h5') {
+  locale = (__uniConfig.locale || navigator.language)
+} else if (__PLATFORM__ === 'app-plus') {
+  if (typeof weex === 'object') {
+    locale = weex.requireModule('plus').getLanguage()
+  }
+} else {
+  locale = uni.getSystemInfoSync().language
+}
+
+export const i18n = initVueI18n(locale, __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {})
 export const t = i18n.t
-export const i18nMixin = i18n.mixin
+export const i18nMixin = i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate()
+    })
+    this.$once('hook:beforeDestroy', function () {
+      unwatch()
+    })
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+}
 export const setLocale = i18n.setLocale
 export const getLocale = i18n.getLocale

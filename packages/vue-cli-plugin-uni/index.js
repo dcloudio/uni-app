@@ -87,5 +87,5 @@ const args = require('minimist')(process.argv.slice(2))
 
 module.exports.defaultModes = {
   'uni-serve': args.mode || 'development',
-  'uni-build':  args.mode || process.env.NODE_ENV
+  'uni-build': args.mode || process.env.NODE_ENV
 }

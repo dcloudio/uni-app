@@ -60,10 +60,10 @@
 |值|说明|平台差异说明|
 |:-|:-|:-|
 |feedback|打开“意见反馈”页面，用户可提交反馈内容并上传日志|App、微信小程序、QQ小程序|
-|share|触发用户转发|微信小程序、百度小程序、支付宝小程序、字节跳动小程序、QQ小程序|
-|getUserInfo|获取用户信息，可以从@getuserinfo回调中获取到用户信息，包括头像、昵称等信息|微信小程序、百度小程序、QQ小程序|
+|share|触发用户转发|微信小程序、百度小程序、支付宝小程序、字节跳动小程序、QQ小程序、快手小程序	|
+|getUserInfo|获取用户信息，可以从@getuserinfo回调中获取到用户信息，包括头像、昵称等信息|微信小程序、百度小程序、QQ小程序、快手小程序	|
 |contact | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息 |微信小程序、百度小程序|
-|getPhoneNumber | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息|微信小程序、百度小程序、字节跳动小程序、支付宝小程序。App平台另见[一键登陆](https://uniapp.dcloud.net.cn/univerify) |
+|getPhoneNumber | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息|微信小程序、百度小程序、字节跳动小程序、支付宝小程序、快手小程序。App平台另见[一键登陆](https://uniapp.dcloud.net.cn/univerify) |
 |launchApp | 小程序中打开APP，可以通过app-parameter属性设定向APP传的参数|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/launchApp.html)、[QQ小程序](https://q.qq.com/wiki/develop/miniprogram/frame/open_ability/open_app.html)|
 |openSetting | 打开授权设置页 |微信小程序、百度小程序|
 |getAuthorize | 支持小程序授权 | 支付宝小程序 |

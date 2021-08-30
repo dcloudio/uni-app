@@ -1,0 +1,96 @@
+{
+  "name": "vuex",
+  "version": "3.6.2",
+  "description": "state management for Vue.js",
+  "main": "dist/vuex.common.js",
+  "exports": {
+    ".": {
+      "module": "./dist/vuex.esm.js",
+      "require": "./dist/vuex.common.js",
+      "import": "./dist/vuex.mjs"
+    },
+    "./": "./"
+  },
+  "module": "dist/vuex.esm.js",
+  "unpkg": "dist/vuex.js",
+  "jsdelivr": "dist/vuex.js",
+  "typings": "types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "types/index.d.ts",
+    "types/helpers.d.ts",
+    "types/logger.d.ts",
+    "types/vue.d.ts"
+  ],
+  "scripts": {
+    "dev": "node examples/server.js",
+    "build": "npm run build:main && npm run build:logger",
+    "build:main": "node scripts/build-main.js",
+    "build:logger": "node scripts/build-logger.js",
+    "lint": "eslint src test",
+    "test": "npm run lint && npm run test:types && npm run test:unit && npm run test:ssr && npm run test:e2e && npm run test:esm",
+    "test:unit": "jest --testPathIgnorePatterns test/e2e",
+    "test:e2e": "start-server-and-test dev http://localhost:8080 \"jest --testPathIgnorePatterns test/unit\"",
+    "test:ssr": "cross-env VUE_ENV=server jest --testPathIgnorePatterns test/e2e",
+    "test:types": "tsc -p types/test",
+    "test:esm": "node test/esm/esm-test.js",
+    "coverage": "jest --testPathIgnorePatterns test/e2e --coverage",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "release": "node scripts/release.js",
+    "docs": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/vuex.git"
+  },
+  "author": "Evan You",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vuejs/vuex/issues"
+  },
+  "homepage": "https://github.com/vuejs/vuex#readme",
+  "peerDependencies": {
+    "vue": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@rollup/plugin-buble": "^0.21.3",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "@rollup/plugin-replace": "^2.3.2",
+    "@types/node": "^13.13.5",
+    "@vuepress/theme-vue": "^1.8.0",
+    "babel-jest": "^26.6.3",
+    "babel-loader": "^8.2.2",
+    "brotli": "^1.3.2",
+    "chalk": "^4.0.0",
+    "conventional-changelog-cli": "^2.1.1",
+    "cross-env": "^5.2.0",
+    "css-loader": "^2.1.0",
+    "enquirer": "^2.3.5",
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue-libs": "^4.0.0",
+    "execa": "^5.0.0",
+    "express": "^4.17.1",
+    "jest": "^26.6.3",
+    "puppeteer": "^4.0.0",
+    "regenerator-runtime": "^0.13.5",
+    "rollup": "^2.38.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "semver": "^7.3.2",
+    "start-server-and-test": "^1.11.7",
+    "todomvc-app-css": "^2.3.0",
+    "typescript": "^3.8.3",
+    "vue": "2.5.22",
+    "vue-loader": "15.2.1",
+    "vue-server-renderer": "2.5.22",
+    "vue-template-compiler": "2.5.22",
+    "vuepress": "^1.8.0",
+    "webpack": "^4.43.0",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-hot-middleware": "^2.25.0"
+  }
+}

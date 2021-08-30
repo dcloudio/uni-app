@@ -13,6 +13,12 @@ const {
   getGlobalUsingComponentsCode
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
+const {
+  jsPreprocessOptions
+} = require('@dcloudio/uni-cli-shared/lib/platform')
+
+const preprocessor = require('@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/preprocess')
+
 const traverse = require('@dcloudio/webpack-uni-mp-loader/lib/babel/global-component-traverse')
 
 const genStylesCode = require('../../vue-loader/lib/codegen/styleInjection')
@@ -94,6 +100,12 @@ function getStylesCode (loaderContext) {
 }
 
 module.exports = function (source, map) {
+  // 需要执行一遍条件编译 source
+  if (source.indexOf('#ifdef') !== -1) {
+    source = preprocessor.preprocess(source, jsPreprocessOptions.context, {
+      type: jsPreprocessOptions.type
+    })
+  }
   // 追加小程序全局自定义组件(仅v3)
   source = getGlobalUsingComponentsCode() + source
   const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT

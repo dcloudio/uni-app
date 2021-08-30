@@ -79,6 +79,9 @@ const plugins = [
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      UNI_APP_ID: JSON.stringify(process.env.UNI_APP_ID),
+      UNI_APP_NAME: JSON.stringify(process.env.UNI_APP_NAME),
+      UNI_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       VUE_APP_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
       HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || ''),
@@ -105,6 +108,15 @@ if (process.env.NODE_ENV === 'development') {
 // const excludeModuleReg = /node_modules(?!(\/|\\).*(weex).*)/
 
 const rules = [{
+  test: /\.(png|jpg|gif|ttf|eot|woff|woff2)$/i,
+  use: [{
+    loader: 'file-loader',
+    options: {
+      publicPath: 'assets',
+      outputPath: 'assets'
+    }
+  }]
+}, {
   test: path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
   use: [{
     loader: '@dcloudio/webpack-uni-pages-loader'
@@ -206,6 +218,15 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
     to: 'static'
   }]
+
+  const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
+  if (fs.existsSync(androidPrivacyPath)) {
+    array.push({
+      from: androidPrivacyPath,
+      to: 'androidPrivacy.json'
+    })
+  }
+
   const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, 'hybrid/html')
   if (fs.existsSync(hybridHtmlPath)) {
     array.push({
@@ -213,6 +234,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       to: 'hybrid/html'
     })
   }
+
   if (process.env.UNI_USING_NVUE_COMPILER) {
     array.push({
       from: path.resolve(getTemplatePath(), 'common'),

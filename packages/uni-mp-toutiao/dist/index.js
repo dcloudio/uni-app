@@ -192,7 +192,7 @@ function queue (hooks, data) {
       }
       if (res === false) {
         return {
-          then () {}
+          then () { }
         }
       }
     }
@@ -272,16 +272,20 @@ const promiseInterceptor = {
     if (!isPromise(res)) {
       return res
     }
-    return res.then(res => {
-      return res[1]
-    }).catch(res => {
-      return res[0]
+    return new Promise((resolve, reject) => {
+      res.then(res => {
+        if (res[0]) {
+          reject(res[0]);
+        } else {
+          resolve(res[1]);
+        }
+      });
     })
   }
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1087,7 +1091,11 @@ function initTriggerEvent (mpInstance) {
   };
 }
 
-function initHook (name, options) {
+function initHook (name, options, isComponent) {
+  {
+    // fix by Lxh 字节自定义组件Component构造器文档上写有created，但是实测只触发了lifetimes上的created
+    isComponent && (options = options.lifetimes);
+  }
   const oldHook = options[name];
   if (!oldHook) {
     options[name] = function () {
@@ -1109,7 +1117,7 @@ if (!MPPage.__$wrappered) {
   Page.after = MPPage.after;
 
   Component = function (options = {}) {
-    initHook('created', options);
+    initHook('created', options, true);
     return MPComponent(options)
   };
 }

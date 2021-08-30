@@ -1,23 +1,15 @@
 import {
-  getRealPath
+  getRealPath,
+  warpPlusSuccessCallback,
+  warpPlusErrorCallback
 } from '../util'
-
-import {
-  invoke
-} from '../../bridge'
 
 export function openDocument ({
   filePath,
   fileType
 } = {}, callbackId) {
-  plus.io.resolveLocalFileSystemURL(getRealPath(filePath), entry => {
-    plus.runtime.openFile(getRealPath(filePath))
-    invoke(callbackId, {
-      errMsg: 'openDocument:ok'
-    })
-  }, err => {
-    invoke(callbackId, {
-      errMsg: 'openDocument:fail ' + err.message
-    })
-  })
+  const successCallback = warpPlusSuccessCallback(callbackId, 'saveFile')
+  const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile')
+
+  plus.runtime.openDocument(getRealPath(filePath), undefined, successCallback, errorCallback)
 }
