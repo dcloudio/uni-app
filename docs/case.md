@@ -172,10 +172,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 <a href="https://www.cyb520.com/" target="_blank" class="clear-style"><b>宠友帮：</b></a>多端开发的创业公司案例。
 <div style="display:flex;justify-content: space-around;">
-	<a href="https://android.myapp.com/myapp/detail.htm?apkName=com.cyb520.app" target="_blank" class="clear-style barcode-view">
+	<!-- <a href="https://android.myapp.com/myapp/detail.htm?apkName=com.cyb520.app" target="_blank" class="clear-style barcode-view">
 		<img src="https://a.app.qq.com/o/image/microQr.png?pkgName=com.cyb520.app" width="200"/>
 		<span style="margin-top:15px;">App码</span>
-	</a>
+	</a>-->
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
 		<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/46ad6ef0-4f3e-11eb-8ff1-d5dcf8779628.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
