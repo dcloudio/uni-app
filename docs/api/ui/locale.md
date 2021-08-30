@@ -36,3 +36,4 @@
   * 法语 fr
   * 西班牙语 es
 * 在 [manifest.json](/collocation/manifest) -> locale 可以配置应用的默认语言。
+* 仅 3.1.5 - 3.2.4 版本会自动使用 vue-i18n 内配置的语言。
