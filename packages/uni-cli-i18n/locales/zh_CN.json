@@ -53,7 +53,7 @@
     "pluginUni.pluginIllegal": "插件不合法",
     "pluginUni.uniStatisticsNoAppid": "当前应用未配置Appid，无法使用uni统计，详情参考 {{0}}",
     "pluginUni.pleaseConfigScriptName": "请指定 package.json->uni-app->scripts 下的 script 名称",
-    "pluginUni.mpBrowserKernelDifference": "小程序各家浏览器内核及自定义组件实现机制存在差异，可能存在样式布局兼容问题，参考：",
+    "pluginUni.mpBrowserKernelDifference": "小程序各家浏览器内核及自定义组件实现机制存在差异，可能存在样式布局兼容问题，参考：{{0}}",
     "mpLoader.firstParameterNeedStaticString": "{{0}}的第一个参数必须为静态字符串",
     "mpLoader.requireTwoParameter": "{{0}}需要两个参数",
     "mpLoader.findFail": "{{0}}查找失败",

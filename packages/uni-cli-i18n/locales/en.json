@@ -53,7 +53,7 @@
     "pluginUni.pluginIllegal": "The plugin is illegal",
     "pluginUni.uniStatisticsNoAppid": "The current application is not configured with Appid, and uni statistics cannot be used. For details, see {{0}}",
     "pluginUni.pleaseConfigScriptName": "Please specify the script name under package.json->uni-app->scripts",
-    "pluginUni.mpBrowserKernelDifference": "There are differences in the implementation mechanism of the browser kernels and custom components of each mini-program, and there may be compatibility issues with styles and layouts, please refer to:",
+    "pluginUni.mpBrowserKernelDifference": "There are differences in the implementation mechanism of the browser kernels and custom components of each mini-program, and there may be compatibility issues with styles and layouts, please refer to: {{0}}",
     "mpLoader.firstParameterNeedStaticString": "The first parameter of {{0}} must be a static string",
     "mpLoader.requireTwoParameter": "{{0}} requires two parameters",
     "mpLoader.findFail": "{{0}} find fail",
