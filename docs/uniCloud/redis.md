@@ -144,7 +144,7 @@ await redis.set(key: string, value: string, mode: string, duration: number, flag
 |key			|键												|是		|																			|
 |value		|值												|是		|																			|
 |flag			|区分状态进行SET					|否		|NX：不存在时才设置，EX：存在时才设置	|
-|mode			|标识duration的单位				|否（duration不为空时必传）		|EX：单位秒，PX：单位毫秒							|
+|mode			|标识duration的单位				|否（duration不为空时必填）		|EX：单位秒，PX：单位毫秒							|
 |duration	|过期时间，到期后自动删除	|否		|																			|
 
 **返回值**
