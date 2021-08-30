@@ -596,7 +596,7 @@ await redis.linsert(key: string, dir: 'BEFORE' | 'AFTER', pivot: string, value: 
 **接口形式**
 
 ```js
-await redis.llen(key: string, index: number)
+await redis.lindex(key: string, index: number)
 ```
 
 **入参说明**
