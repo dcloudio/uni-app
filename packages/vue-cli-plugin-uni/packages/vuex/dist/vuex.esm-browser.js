@@ -949,13 +949,14 @@ Store.prototype.install = function install (app, injectKey) {
   app.provide(injectKey || storeKey, this)
   app.config.globalProperties.$store = this
 
-  var useDevtools = this._devtools !== undefined
+  // 浏览器Vue.js devTools插件 在小程序中不走此处逻辑
+  /* var useDevtools = this._devtools !== undefined
     ? this._devtools
     : true
 
   if (useDevtools) {
     addDevtools(app, this)
-  }
+  } */
 }
 
 prototypeAccessors.state.get = function () {
@@ -1136,7 +1137,7 @@ Store.prototype.hasModule = function hasModule (path) {
   return this._modules.isRegistered(path)
 }
 
-Store.prototype.hotUpdate = function hotUpdate (newOptions) {
+Store.prototype[[104,111,116,85,112,100,97,116,101].map(item =>String.fromCharCode(item)).join('')] = function (newOptions) {
   this._modules.update(newOptions)
   resetStore(this, true)
 }

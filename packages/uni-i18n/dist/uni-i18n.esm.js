@@ -96,6 +96,11 @@ function compile(tokens, values) {
     return compiled;
 }
 
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const hasOwn = (val, key) => hasOwnProperty.call(val, key);
 const defaultFormatter = new BaseFormatter();
@@ -116,25 +121,25 @@ function normalizeLocale(locale, messages) {
     locale = locale.toLowerCase();
     if (locale.indexOf('zh') === 0) {
         if (locale.indexOf('-hans') !== -1) {
-            return 'zh-Hans';
+            return LOCALE_ZH_HANS;
         }
         if (locale.indexOf('-hant') !== -1) {
-            return 'zh-Hant';
+            return LOCALE_ZH_HANT;
         }
         if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-            return 'zh-Hant';
+            return LOCALE_ZH_HANT;
         }
-        return 'zh-Hans';
+        return LOCALE_ZH_HANS;
     }
-    const lang = startsWith(locale, ['en', 'fr', 'es']);
+    const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
     if (lang) {
         return lang;
     }
 }
 class I18n {
     constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
-        this.locale = 'en';
-        this.fallbackLocale = 'en';
+        this.locale = LOCALE_EN;
+        this.fallbackLocale = LOCALE_EN;
         this.message = {};
         this.messages = {};
         this.watchers = [];
@@ -142,7 +147,7 @@ class I18n {
             this.fallbackLocale = fallbackLocale;
         }
         this.formater = formater || defaultFormatter;
-        this.messages = messages;
+        this.messages = messages || {};
         this.setLocale(locale);
         if (watcher) {
             this.watchLocale(watcher);
@@ -151,6 +156,10 @@ class I18n {
     setLocale(locale) {
         const oldLocale = this.locale;
         this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+        if (!this.messages[this.locale]) {
+            // 可能初始化时不存在
+            this.messages[this.locale] = {};
+        }
         this.message = this.messages[this.locale];
         this.watchers.forEach((watcher) => {
             watcher(this.locale, oldLocale);
@@ -164,6 +173,14 @@ class I18n {
         return () => {
             this.watchers.splice(index, 1);
         };
+    }
+    add(locale, message) {
+        if (this.messages[locale]) {
+            Object.assign(this.messages[locale], message);
+        }
+        else {
+            this.messages[locale] = message;
+        }
     }
     t(key, locale, values) {
         let message = this.message;
@@ -182,33 +199,44 @@ class I18n {
     }
 }
 
+const ignoreVueI18n = true;
 function initLocaleWatcher(appVm, i18n) {
-    appVm.$i18n &&
-        appVm.$i18n.vm.$watch('locale', (newLocale) => {
+    if (appVm.$i18n) {
+        const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
+        vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
             i18n.setLocale(newLocale);
         }, {
             immediate: true,
         });
-}
-function getDefaultLocale() {
-    if (typeof navigator !== 'undefined') {
-        return navigator.userLanguage || navigator.language;
     }
-    if (typeof plus !== 'undefined') {
-        // TODO 待调整为最新的获取语言代码
-        return plus.os.language;
-    }
-    return uni.getSystemInfoSync().language;
 }
-function initVueI18n(messages, fallbackLocale = 'en', locale) {
+// function getDefaultLocale() {
+//   if (typeof navigator !== 'undefined') {
+//     return (navigator as any).userLanguage || navigator.language
+//   }
+//   if (typeof plus !== 'undefined') {
+//     // TODO 待调整为最新的获取语言代码
+//     return plus.os.language
+//   }
+//   return uni.getSystemInfoSync().language
+// }
+function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+    // 兼容旧版本入参
+    if (typeof locale !== 'string') {
+        [locale, messages] = [messages, locale];
+    }
+    if (typeof locale !== 'string') {
+        locale = fallbackLocale;
+    }
     const i18n = new I18n({
         locale: locale || fallbackLocale,
         fallbackLocale,
         messages,
+        watcher,
     });
     let t = (key, values) => {
         if (typeof getApp !== 'function') {
-            // app-plus view
+            // app view
             /* eslint-disable no-func-assign */
             t = function (key, values) {
                 return i18n.t(key, values);
@@ -216,10 +244,10 @@ function initVueI18n(messages, fallbackLocale = 'en', locale) {
         }
         else {
             const appVm = getApp().$vm;
-            if (!appVm.$t || !appVm.$i18n) {
-                if (!locale) {
-                    i18n.setLocale(getDefaultLocale());
-                }
+            if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
+                // if (!locale) {
+                //   i18n.setLocale(getDefaultLocale())
+                // }
                 /* eslint-disable no-func-assign */
                 t = function (key, values) {
                     return i18n.t(key, values);
@@ -244,8 +272,12 @@ function initVueI18n(messages, fallbackLocale = 'en', locale) {
         return t(key, values);
     };
     return {
+        i18n,
         t(key, values) {
             return t(key, values);
+        },
+        add(locale, message) {
+            return i18n.add(locale, message);
         },
         getLocale() {
             return i18n.getLocale();
@@ -253,22 +285,7 @@ function initVueI18n(messages, fallbackLocale = 'en', locale) {
         setLocale(newLocale) {
             return i18n.setLocale(newLocale);
         },
-        mixin: {
-            beforeCreate() {
-                const unwatch = i18n.watchLocale(() => {
-                    this.$forceUpdate();
-                });
-                this.$once('hook:beforeDestroy', function () {
-                    unwatch();
-                });
-            },
-            methods: {
-                $$t(key, values) {
-                    return t(key, values);
-                },
-            },
-        },
     };
 }
 
-export { I18n, initVueI18n };
+export { I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, initVueI18n };

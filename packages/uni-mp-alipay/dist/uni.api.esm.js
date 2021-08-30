@@ -1,4 +1,8 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
+import { injectHook } from 'vue';
+
+//App
+const ON_LAUNCH = 'onLaunch';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -35,6 +39,15 @@ const navigateTo = {
         fromRes.eventChannel = getEventChannel();
     },
 };
+
+my.appLaunchHooks = [];
+function onAppLaunch(hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return injectHook(ON_LAUNCH, hook, app.$vm.$);
+    }
+    my.appLaunchHooks.push(hook);
+}
 
 function getBaseSystemInfo() {
   return my.getSystemInfoSync()
@@ -722,6 +735,7 @@ const baseApis = {
     upx2px,
     addInterceptor,
     removeInterceptor,
+    onAppLaunch,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
@@ -882,14 +896,14 @@ function createIntersectionObserver(component, options) {
 }
 
 var shims = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getProvider: getProvider,
-  setStorageSync: setStorageSync,
-  getStorageSync: getStorageSync,
-  removeStorageSync: removeStorageSync,
-  startGyroscope: startGyroscope,
-  createSelectorQuery: createSelectorQuery,
-  createIntersectionObserver: createIntersectionObserver
+    __proto__: null,
+    getProvider: getProvider,
+    setStorageSync: setStorageSync,
+    getStorageSync: getStorageSync,
+    removeStorageSync: removeStorageSync,
+    startGyroscope: startGyroscope,
+    createSelectorQuery: createSelectorQuery,
+    createIntersectionObserver: createIntersectionObserver
 });
 
 function handleNetworkInfo(fromRes, toRes) {
@@ -1315,58 +1329,58 @@ const chooseAddress = {
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  returnValue: returnValue,
-  request: request,
-  setNavigationBarColor: setNavigationBarColor,
-  setNavigationBarTitle: setNavigationBarTitle,
-  showModal: showModal,
-  showToast: showToast,
-  showActionSheet: showActionSheet,
-  showLoading: showLoading,
-  uploadFile: uploadFile,
-  downloadFile: downloadFile,
-  getFileInfo: getFileInfo,
-  compressImage: compressImage,
-  chooseVideo: chooseVideo,
-  connectSocket: connectSocket,
-  chooseImage: chooseImage,
-  previewImage: previewImage,
-  saveFile: saveFile,
-  getSavedFileInfo: getSavedFileInfo,
-  getSavedFileList: getSavedFileList,
-  removeSavedFile: removeSavedFile,
-  getLocation: getLocation,
-  openLocation: openLocation,
-  getNetworkType: getNetworkType,
-  onNetworkStatusChange: onNetworkStatusChange,
-  stopAccelerometer: stopAccelerometer,
-  stopCompass: stopCompass,
-  scanCode: scanCode,
-  setClipboardData: setClipboardData,
-  getClipboardData: getClipboardData,
-  pageScrollTo: pageScrollTo,
-  login: login,
-  getUserInfo: getUserInfo,
-  requestPayment: requestPayment,
-  getBLEDeviceServices: getBLEDeviceServices,
-  createBLEConnection: createBLEConnection,
-  closeBLEConnection: closeBLEConnection,
-  onBLEConnectionStateChange: onBLEConnectionStateChange,
-  makePhoneCall: makePhoneCall,
-  stopGyroscope: stopGyroscope,
-  getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync,
-  canvasToTempFilePath: canvasToTempFilePath,
-  setScreenBrightness: setScreenBrightness,
-  getScreenBrightness: getScreenBrightness,
-  showShareMenu: showShareMenu,
-  hideHomeButton: hideHomeButton,
-  saveImageToPhotosAlbum: saveImageToPhotosAlbum,
-  saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
-  chooseAddress: chooseAddress,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo
+    __proto__: null,
+    returnValue: returnValue,
+    request: request,
+    setNavigationBarColor: setNavigationBarColor,
+    setNavigationBarTitle: setNavigationBarTitle,
+    showModal: showModal,
+    showToast: showToast,
+    showActionSheet: showActionSheet,
+    showLoading: showLoading,
+    uploadFile: uploadFile,
+    downloadFile: downloadFile,
+    getFileInfo: getFileInfo,
+    compressImage: compressImage,
+    chooseVideo: chooseVideo,
+    connectSocket: connectSocket,
+    chooseImage: chooseImage,
+    previewImage: previewImage,
+    saveFile: saveFile,
+    getSavedFileInfo: getSavedFileInfo,
+    getSavedFileList: getSavedFileList,
+    removeSavedFile: removeSavedFile,
+    getLocation: getLocation,
+    openLocation: openLocation,
+    getNetworkType: getNetworkType,
+    onNetworkStatusChange: onNetworkStatusChange,
+    stopAccelerometer: stopAccelerometer,
+    stopCompass: stopCompass,
+    scanCode: scanCode,
+    setClipboardData: setClipboardData,
+    getClipboardData: getClipboardData,
+    pageScrollTo: pageScrollTo,
+    login: login,
+    getUserInfo: getUserInfo,
+    requestPayment: requestPayment,
+    getBLEDeviceServices: getBLEDeviceServices,
+    createBLEConnection: createBLEConnection,
+    closeBLEConnection: closeBLEConnection,
+    onBLEConnectionStateChange: onBLEConnectionStateChange,
+    makePhoneCall: makePhoneCall,
+    stopGyroscope: stopGyroscope,
+    getSystemInfo: getSystemInfo,
+    getSystemInfoSync: getSystemInfoSync,
+    canvasToTempFilePath: canvasToTempFilePath,
+    setScreenBrightness: setScreenBrightness,
+    getScreenBrightness: getScreenBrightness,
+    showShareMenu: showShareMenu,
+    hideHomeButton: hideHomeButton,
+    saveImageToPhotosAlbum: saveImageToPhotosAlbum,
+    saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
+    chooseAddress: chooseAddress,
+    redirectTo: redirectTo,
+    navigateTo: navigateTo
 });
 
 var index = initUni(shims, protocols);

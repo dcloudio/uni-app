@@ -93,6 +93,7 @@
   * [媒体查询](api/ui/media-query-observer.md)
   * [自定义组件](api/ui/nextTick.md)
   * [菜单](api/ui/menuButton.md)
+  * [语言](api/ui/locale.md)
 * 页面和窗体
   * [页面](api/window/window.md)
   * [页面通讯](api/window/communication.md) 

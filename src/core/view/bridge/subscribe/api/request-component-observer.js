@@ -19,6 +19,21 @@ function getRect (rect) {
   }
 }
 
+// 在相交比很小的情况下，Chrome会返回相交为0
+function rectifyIntersectionRatio (entrie) {
+  const {
+    intersectionRatio,
+    boundingClientRect: { height: overAllHeight, width: overAllWidth },
+    intersectionRect: { height: intersectionHeight, width: intersectionWidth }
+  } = entrie
+
+  if (intersectionRatio !== 0) return intersectionRatio
+
+  return intersectionHeight === overAllHeight
+    ? intersectionWidth / overAllWidth
+    : intersectionHeight / overAllHeight
+}
+
 const intersectionObservers = {}
 
 export function requestComponentObserver ({
@@ -44,7 +59,7 @@ export function requestComponentObserver ({
       UniViewJSBridge.publishHandler('onRequestComponentObserver', {
         reqId,
         res: {
-          intersectionRatio: entrie.intersectionRatio,
+          intersectionRatio: rectifyIntersectionRatio(entrie),
           intersectionRect: getRect(entrie.intersectionRect),
           boundingClientRect: getRect(entrie.boundingClientRect),
           relativeRect: getRect(entrie.rootBounds),

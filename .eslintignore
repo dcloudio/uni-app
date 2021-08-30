@@ -19,11 +19,14 @@ packages/*/packages/mpvue
 packages/*/packages/mpvue-page-factory
 packages/*/packages/mpvue-template-compiler
 packages/*/packages/postcss-normalize-whitespace
+packages/*/packages/uni-app
+packages/*/packages/uni-stat
 packages/*/packages/uni-cloud
 packages/*/packages/vue-loader
 packages/*/packages/vue-template-compiler
 packages/*/packages/webpack-preprocess-loader/preprocess
 packages/*/packages/vuex
+packages/*/packages/vuex3
 packages/*/template/**/*
 packages/uni-h5/src
 packages/uni-stat

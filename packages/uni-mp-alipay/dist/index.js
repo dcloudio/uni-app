@@ -285,7 +285,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -854,8 +854,17 @@ const protocols = { // 需要做转换的 API 列表
     // TODO 有没有返回值还需要测试下
   },
   chooseImage: {
-    returnValue: {
-      apFilePaths: 'tempFilePaths'
+    returnValue (result) {
+      const hasTempFilePaths = hasOwn(result, 'tempFilePaths') && result.tempFilePaths;
+      if (hasOwn(result, 'apFilePaths') && !hasTempFilePaths) {
+        result.tempFilePaths = result.apFilePaths;
+        delete result.apFilePaths;
+      }
+      if (!hasOwn(result, 'tempFiles') && hasTempFilePaths) {
+        result.tempFiles = [];
+        result.tempFilePaths.forEach(tempFilePath => result.tempFiles.push({ path: tempFilePath }));
+      }
+      return {}
     }
   },
   previewImage: {

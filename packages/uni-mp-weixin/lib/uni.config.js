@@ -28,9 +28,11 @@ module.exports = {
       'sitemap.json',
       'ext.json',
       'custom-tab-bar',
-      'plugin.json',
       'functional-pages'
     ]
+
+    if (process.env.UNI_MP_PLUGIN) copyOptions.push('plugin.json')
+
     const workers = platformOptions.workers
     workers && copyOptions.push(workers)
 
