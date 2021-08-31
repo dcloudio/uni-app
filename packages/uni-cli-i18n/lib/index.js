@@ -27,6 +27,10 @@ i18n.configure({
   staticCatalog,
   defaultLocale,
   retryInDefaultLocale: true,
+  mustacheConfig: {
+    tags: ['{', '}'],
+    disable: false
+  },
   fallbacks: {
     'en_*': 'en',
     'zh': 'zh_CN',
