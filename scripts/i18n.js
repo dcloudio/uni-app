@@ -4,15 +4,20 @@ const locales = ['en', 'es', 'fr', 'zh-Hans', 'zh-Hant']
 
 function buildI18n(namespace, dir) {
   const modules = {}
-  locales.forEach((locale) => {
+  // modules
+  // {app: { keys: ['quit'], values:{'zh-Hans': ['退出']}}}
+  locales.forEach((locale, index) => {
     const messages = buildI18nLocale(locale, namespace, dir)
     Object.keys(messages).forEach((moduleName) => {
-      ;(modules[moduleName] || (modules[moduleName] = {}))[locale] =
-        messages[moduleName]
+      if (!modules[moduleName]) {
+        modules[moduleName] = {
+          keys: Object.keys(messages[moduleName]),
+          values: {},
+        }
+      }
+      modules[moduleName].values[locale] = Object.values(messages[moduleName])
     })
   })
-  // modules
-  // {app: {en: { quit: '' },es: { quit: '' },fr: { quit: "" },'zh-Hans': { quit: '' },'zh-Hant': { quit: '' }}}
   const messagesFile = path.resolve(dir, 'messages.ts')
   fs.writeFileSync(messagesFile, generateI18nCode(namespace, modules))
   console.log('write:' + messagesFile)
@@ -52,12 +57,9 @@ import {
   } from '@dcloudio/uni-i18n'
   import { useI18n } from './useI18n'
 
-  function normalizeMessages(
-    namespace: string,
-    messages: Record<string, string>
-  ) {
-    return Object.keys(messages).reduce<Record<string, string>>((res, name) => {
-      res[namespace + name] = messages[name]
+  function normalizeMessages(module: string, keys: string[], values: string[]) {
+    return keys.reduce<Record<string, string>>((res, name, index) => {
+      res[module + name] = values[index]
       return res
     }, {})
   }
@@ -72,9 +74,12 @@ function generateI18nModuleCode(namespace, name, localeMessages) {
   return `export const initI18n${capitalize(
     name
   )}MsgsOnce = /*#__PURE__*/ once(()=> {
-  const name = '${namespace}.${name}.'      
-${Object.keys(localeMessages)
-  .map((locale) => generateI18nModuleLocaleCode(locale, localeMessages[locale]))
+  const name = '${namespace}.${name}.'
+  const keys = ${JSON.stringify(localeMessages.keys)}
+${Object.keys(localeMessages.values)
+  .map((locale) =>
+    generateI18nModuleLocaleCode(locale, localeMessages.values[locale])
+  )
   .join('')}
 })
 `
@@ -83,7 +88,7 @@ ${Object.keys(localeMessages)
 function generateI18nModuleLocaleCode(locale, messages) {
   locale = locale.toUpperCase().replace('-', '_')
   return `  if (__UNI_FEATURE_I18N_${locale}__) {
-    useI18n().add(LOCALE_${locale}, normalizeMessages(name, ${JSON.stringify(
+    useI18n().add(LOCALE_${locale}, normalizeMessages(name, keys, ${JSON.stringify(
     messages
   )}))
   }

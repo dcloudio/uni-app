@@ -21,70 +21,73 @@ function useI18n() {
   }
   return i18n;
 }
-function normalizeMessages(namespace, messages) {
-  return Object.keys(messages).reduce((res, name) => {
-    res[namespace + name] = messages[name];
+function normalizeMessages(module, keys, values) {
+  return keys.reduce((res, name, index2) => {
+    res[module + name] = values[index2];
     return res;
   }, {});
 }
 const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.async.";
+  const keys = ["error"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, {
-      error: "The connection timed out, click the screen to try again."
-    }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, [
+      "The connection timed out, click the screen to try again."
+    ]));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, {
-      error: "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
-    }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, [
+      "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+    ]));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, {
-      error: "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
-    }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, [
+      "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+    ]));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]));
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.picker.";
+  const keys = ["done", "cancel"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, ["OK", "Cancelar"]));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, ["OK", "Annuler"]));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]));
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.video.";
+  const keys = ["danmu", "volume"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, { danmu: "Danmu", volume: "Volume" }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, { danmu: "Danmu", volume: "Volumen" }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, { danmu: "Danmu", volume: "Le Volume" }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]));
   }
 });
 const E = function() {

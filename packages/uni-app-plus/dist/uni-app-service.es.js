@@ -1592,212 +1592,177 @@ var serviceContext = (function (vue) {
   }
 
   // This file is created by scripts/i18n.js
-  function normalizeMessages(namespace, messages) {
-      return Object.keys(messages).reduce((res, name) => {
-          res[namespace + name] = messages[name];
+  function normalizeMessages(module, keys, values) {
+      return keys.reduce((res, name, index) => {
+          res[module + name] = values[index];
           return res;
       }, {});
   }
   const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.app.';
+      const keys = ['quit'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { quit: 'Press back button again to exit' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Press back button again to exit']));
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, { quit: 'Pulse otra vez para salir' }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Pulse otra vez para salir']));
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              quit: "Appuyez à nouveau pour quitter l'application",
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              "Appuyez à nouveau pour quitter l'application",
+          ]));
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { quit: '再按一次退出应用' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['再按一次退出应用']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { quit: '再按一次退出應用' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['再按一次退出應用']));
       }
   });
   const initI18nShowActionSheetMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.showActionSheet.';
+      const keys = ['cancel'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: 'Cancel' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel']));
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: 'Cancelar' }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar']));
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: 'Annuler' }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: '取消' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: '取消' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消']));
       }
   });
   const initI18nShowModalMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.showModal.';
+      const keys = ['cancel', 'confirm'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: 'Cancel', confirm: 'OK' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'OK']));
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: 'Cancelar', confirm: 'OK' }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'OK']));
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: 'Annuler', confirm: 'OK' }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'OK']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: '取消', confirm: '确定' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '确定']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: '取消', confirm: '確定' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '確定']));
       }
   });
   const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.chooseImage.';
+      const keys = ['cancel', 'sourceType.album', 'sourceType.camera'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, {
-              cancel: 'Cancel',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Camera',
-          }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'Album', 'Camera']));
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              cancel: 'Cancelar',
-              'sourceType.album': 'Álbum',
-              'sourceType.camera': 'Cámara',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'Álbum', 'Cámara']));
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              cancel: 'Annuler',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Caméra',
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'Album', 'Caméra']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '从相册选择',
-              'sourceType.camera': '拍摄',
-          }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '从相册选择', '拍摄']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '從相冊選擇',
-              'sourceType.camera': '拍攝',
-          }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']));
       }
   });
   const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.chooseVideo.';
+      const keys = ['cancel', 'sourceType.album', 'sourceType.camera'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, {
-              cancel: 'Cancel',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Camera',
-          }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'Album', 'Camera']));
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              cancel: 'Cancelar',
-              'sourceType.album': 'Álbum',
-              'sourceType.camera': 'Cámara',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'Álbum', 'Cámara']));
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              cancel: 'Annuler',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Caméra',
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'Album', 'Caméra']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '从相册选择',
-              'sourceType.camera': '拍摄',
-          }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '从相册选择', '拍摄']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '從相冊選擇',
-              'sourceType.camera': '拍攝',
-          }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']));
       }
   });
   const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.scanCode.';
+      const keys = ['title', 'album', 'fail', 'flash.on', 'flash.off'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, {
-              title: 'Scan code',
-              album: 'Album',
-              fail: 'Recognition failure',
-              'flash.on': 'Tap to turn light on',
-              'flash.off': 'Tap to turn light off',
-          }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+              'Scan code',
+              'Album',
+              'Recognition failure',
+              'Tap to turn light on',
+              'Tap to turn light off',
+          ]));
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              title: 'Código de escaneo',
-              album: 'Álbum',
-              fail: 'Échec de la reconnaissance',
-              'flash.on': 'Toque para encender la luz',
-              'flash.off': 'Toque para apagar la luz',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+              'Código de escaneo',
+              'Álbum',
+              'Échec de la reconnaissance',
+              'Toque para encender la luz',
+              'Toque para apagar la luz',
+          ]));
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              title: 'Code d’analyse',
-              album: 'Album',
-              fail: 'Fallo de reconocimiento',
-              'flash.on': "Appuyez pour activer l'éclairage",
-              'flash.off': "Appuyez pour désactiver l'éclairage",
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              'Code d’analyse',
+              'Album',
+              'Fallo de reconocimiento',
+              "Appuyez pour activer l'éclairage",
+              "Appuyez pour désactiver l'éclairage",
+          ]));
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
-              title: '扫码',
-              album: '相册',
-              fail: '识别失败',
-              'flash.on': '轻触照亮',
-              'flash.off': '轻触关闭',
-          }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
+              '扫码',
+              '相册',
+              '识别失败',
+              '轻触照亮',
+              '轻触关闭',
+          ]));
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
-              title: '掃碼',
-              album: '相冊',
-              fail: '識別失敗',
-              'flash.on': '輕觸照亮',
-              'flash.off': '輕觸關閉',
-          }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
+              '掃碼',
+              '相冊',
+              '識別失敗',
+              '輕觸照亮',
+              '輕觸關閉',
+          ]));
       }
   });
   const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.startSoterAuthentication.';
+      const keys = ['authContent'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { authContent: 'Fingerprint recognition' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Fingerprint recognition']));
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              authContent: 'Reconocimiento de huellas dactilares',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Reconocimiento de huellas dactilares']));
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              authContent: "Reconnaissance de l'empreinte digitale",
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              "Reconnaissance de l'empreinte digitale",
+          ]));
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { authContent: '指纹识别中...' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['指纹识别中...']));
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { authContent: '指紋識別中...' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['指紋識別中...']));
       }
   });
 
