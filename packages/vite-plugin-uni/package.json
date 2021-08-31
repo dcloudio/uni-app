@@ -40,7 +40,7 @@
     "@types/sass": "^1.16.0"
   },
   "uni-app": {
-    "compilerVersion": "3.2.5"
+    "compilerVersion": "3.2.6"
   },
   "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7"
 }
