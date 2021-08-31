@@ -133,7 +133,7 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', { "0": process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM, "1": process.env.UNI_MP_PLUGIN ? uniI18n.__('platform') : uniI18n.__('plugin') }))
+    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', { 0: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM, 1: process.env.UNI_MP_PLUGIN ? uniI18n.__('platform') : uniI18n.__('plugin') }))
   }
 
   const targetDir = api.resolve(options.outputDir)
@@ -219,7 +219,7 @@ function analysisPluginDir () {
 
   if (!fs.pathExistsSync(pluginJsonPath)) {
     console.log()
-    console.error(uniI18n.__('pluginUni.fileNoExistsCheckAfterRetry', { "0": pluginJsonName }))
+    console.error(uniI18n.__('pluginUni.fileNoExistsCheckAfterRetry', { 0: pluginJsonName }))
     console.log()
     process.exit(0)
   }
@@ -233,7 +233,7 @@ function analysisPluginDir () {
 
   if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
     console.log()
-    console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', { "0": UNI_MP_PLUGIN_MAIN }))
+    console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', { 0: UNI_MP_PLUGIN_MAIN }))
     console.log()
     process.exit(0)
   }

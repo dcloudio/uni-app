@@ -25,7 +25,7 @@ function initPlugin (plugin) {
   try {
     pluginApi = require(path.join(plugin.id, (plugin.config.main || '/lib/uni.config.js')))
   } catch (e) {
-    console.warn(uniI18n.__('cliShared.missingUniConfig', { "0": plugin.id }))
+    console.warn(uniI18n.__('cliShared.missingUniConfig', { 0: plugin.id }))
   }
 
   pluginApi && PLUGIN_KEYS.forEach(name => {
@@ -56,7 +56,7 @@ function resolvePlugins () {
           return
         }
         if (!config.name) {
-          return console.warn(uniI18n.__('cliShared.missingNameAttribute', { "0": `${id}/package.json->uni-app` }))
+          return console.warn(uniI18n.__('cliShared.missingNameAttribute', { 0: `${id}/package.json->uni-app` }))
         }
         return {
           id,
@@ -75,7 +75,7 @@ function initExtends (name, plugin, plugins) {
       process.exit(0)
     }
     if (!plugin) {
-      console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { "0": extendsPlatform }))
+      console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { 0: extendsPlatform }))
       process.exit(0)
     }
     const extendsPlugin = plugins.find(plugin => plugin.name === extendsPlatform)
@@ -102,7 +102,7 @@ module.exports = {
     const plugins = resolvePlugins()
     const plugin = plugins.find(plugin => plugin.name === process.env.UNI_PLATFORM)
     if (!plugin) {
-      console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { "0": process.env.UNI_PLATFORM }))
+      console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { 0: process.env.UNI_PLATFORM }))
       process.exit(0)
     }
     const name = plugin.name

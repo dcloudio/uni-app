@@ -107,7 +107,7 @@ module.exports = {
         ]
         if (t.isIdentifier(value)) {
           if (value.name !== key.name) {
-            state.errors.add(uniI18n.__('mpWeChat.slotPropNoSupportReanme', { "0": key.name, "1": value.name }))
+            state.errors.add(uniI18n.__('mpWeChat.slotPropNoSupportReanme', { 0: key.name, 1: value.name }))
           }
         } else if (t.isAssignmentPattern(value)) {
           valueObjectProperties.push(t.objectProperty(t.identifier('default'), value.right))
@@ -115,7 +115,7 @@ module.exports = {
         objectProperties.push(t.objectProperty(key, t.objectExpression(valueObjectProperties)))
       })
     } else {
-      state.errors.add(uniI18n.__('mpWeChat.onlySupportDestructuringSlot', { "0": paramExprNode.name, "1": 'v-slot="{ user }"'}))
+      state.errors.add(uniI18n.__('mpWeChat.onlySupportDestructuringSlot', { 0: paramExprNode.name, 1: 'v-slot="{ user }"' }))
     }
     const jsContent = generateJsCode(genCode(t.objectExpression(objectProperties), true))
     state.files[jsFile] = jsContent

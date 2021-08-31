@@ -111,7 +111,7 @@ ${content}
     return `${eventType}${eventName}` // 原生组件不支持 bind:input 等写法，统一使用 bindinput
   },
   createScopedSlots (slotName, props, state) {
-    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', { "0": `[${slotName}]` }))
+    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', { 0: `[${slotName}]` }))
     return {
       type: 'slot',
       attr: {
@@ -124,7 +124,7 @@ ${content}
     traverseExpr,
     normalizeChildren
   }, state) {
-    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', { "0": `[${slotName}]` }))
+    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', { 0: `[${slotName}]` }))
     return {
       type: 'view',
       attr: {

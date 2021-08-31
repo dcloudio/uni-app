@@ -24,10 +24,10 @@ module.exports = function (ast, state = {}) {
         const nameNode = args[0]
         const valueNode = args[1]
         if (!t.isStringLiteral(nameNode)) {
-          throw new Error(uniI18n.__('mpLoader.firstParameterNeedStaticString', { "0": "Vue.component()" }))
+          throw new Error(uniI18n.__('mpLoader.firstParameterNeedStaticString', { 0: 'Vue.component()' }))
         }
         if (!t.isIdentifier(valueNode)) {
-          throw new Error(uniI18n.__('mpLoader.requireTwoParameter', { "0": "Vue.component()" }))
+          throw new Error(uniI18n.__('mpLoader.requireTwoParameter', { 0: 'Vue.component()' }))
         }
         imports.push({
           name: nameNode.value,

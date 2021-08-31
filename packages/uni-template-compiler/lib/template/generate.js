@@ -82,7 +82,7 @@ function processElement (ast, state, isRoot) {
       ast.attr['vue-slots'] = '{{[' + slots.reverse().map(slotName => `'${slotName}'`).join(',') + ']}}'
     }
     if (ast.attr.id && ast.attr.id.indexOf('{{') === 0) {
-      state.tips.add(uniI18n.__('templateCompiler.idAttribNotAllowInCustomComponentProps', { "0": ast.type }))
+      state.tips.add(uniI18n.__('templateCompiler.idAttribNotAllowInCustomComponentProps', { 0: ast.type }))
     }
     if (hasOwn(ast.attr, 'data') && platformName !== 'mp-toutiao') { // 百度中会出现异常情况
       // TODO 暂不输出

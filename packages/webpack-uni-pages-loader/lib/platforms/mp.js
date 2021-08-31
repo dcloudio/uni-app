@@ -42,7 +42,7 @@ const pagesJson2AppJson = {
   tabBar: function (name, value, json, fromJson) {
     if (value && value.list && value.list.length) {
       if (value.list.length < 2) {
-        console.error(uniI18n.__('pagesLoader.pagesTabbarMinItem2', { "0": "tabBar.list" }))
+        console.error(uniI18n.__('pagesLoader.pagesTabbarMinItem2', { 0: 'tabBar.list' }))
       }
       const pages = json.pages
       value.list.forEach((page, index) => {
@@ -57,7 +57,7 @@ const pagesJson2AppJson = {
               }) => path === (page.pagePath + '.html'))
             )
           ) {
-            console.error(uniI18n.__('pagesLoader.needInPagesNode', { "0": `pages.json tabBar['list'][${index}]['pagePath'] "${page.pagePath}"` }))
+            console.error(uniI18n.__('pagesLoader.needInPagesNode', { 0: `pages.json tabBar['list'][${index}]['pagePath'] "${page.pagePath}"` }))
           }
         }
       })

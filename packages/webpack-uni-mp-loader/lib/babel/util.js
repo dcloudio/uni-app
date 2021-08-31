@@ -35,7 +35,7 @@ function parseComponents (names, bindings, path) {
   }) => {
     const importDeclaration = findImportDeclaration(value, bindings)
     if (!importDeclaration) {
-      throw new Error(uniI18n.__('mpLoader.componentReferenceErrorOnlySupportImport', { "0": name }))
+      throw new Error(uniI18n.__('mpLoader.componentReferenceErrorOnlySupportImport', { 0: name }))
     }
     let source = importDeclaration.node.source.value
     if (process.UNI_LIBRARIES && process.UNI_LIBRARIES.includes(source)) {

@@ -7,7 +7,7 @@ const migraters = {
 
 module.exports = function validate (input, out, options) {
   if (!fs.existsSync(input)) {
-    return console.error(uniI18n.__('migration.errorInputNotExists', { "0": input }))
+    return console.error(uniI18n.__('migration.errorInputNotExists', { 0: input }))
   }
   Object.assign(options, migraters[options.platform].options)
   const templateExtname = options.extname.template
@@ -15,7 +15,7 @@ module.exports = function validate (input, out, options) {
   const stat = fs.lstatSync(input)
   if (stat.isFile()) {
     if (path.extname(input) !== templateExtname) {
-      return console.error(uniI18n.__('migration.errorConvertRequireFileUrl', { "0": templateExtname.substr(1) }))
+      return console.error(uniI18n.__('migration.errorConvertRequireFileUrl', { 0: templateExtname.substr(1) }))
     }
     options.target = 'file'
   } else if (stat.isDirectory()) {
@@ -26,7 +26,7 @@ module.exports = function validate (input, out, options) {
       options.target = 'folder'
     }
   } else {
-    return console.error(uniI18n.__('migration.errorCannotConvert', { "0": input }))
+    return console.error(uniI18n.__('migration.errorCannotConvert', { 0: input }))
   }
   return true
 }

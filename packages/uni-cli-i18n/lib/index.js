@@ -33,8 +33,8 @@ i18n.configure({
   },
   fallbacks: {
     'en_*': 'en',
-    'zh': 'zh_CN',
-    'zh_*': 'zh_CN',
+    zh: 'zh_CN',
+    'zh_*': 'zh_CN'
   }
 })
 
