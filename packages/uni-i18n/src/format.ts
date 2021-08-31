@@ -1,6 +1,8 @@
-const isObject = (val: unknown): val is Record<any, any> =>
+export const isArray = Array.isArray
+export const isObject = (val: unknown): val is Record<any, any> =>
   val !== null && typeof val === 'object'
 
+export const defaultDelimiters: [string, string] = ['{', '}']
 export default class BaseFormatter {
   _caches: { [key: string]: Array<Token> }
 
@@ -10,14 +12,15 @@ export default class BaseFormatter {
 
   interpolate(
     message: string,
-    values?: Record<string, unknown> | Array<unknown>
+    values?: Record<string, unknown> | Array<unknown>,
+    delimiters: [string, string] = defaultDelimiters
   ): Array<unknown> {
     if (!values) {
       return [message]
     }
     let tokens: Array<Token> = this._caches[message]
     if (!tokens) {
-      tokens = parse(message)
+      tokens = parse(message, delimiters)
       this._caches[message] = tokens
     }
     return compile(tokens, values)
@@ -32,14 +35,17 @@ type Token = {
 const RE_TOKEN_LIST_VALUE: RegExp = /^(?:\d)+/
 const RE_TOKEN_NAMED_VALUE: RegExp = /^(?:\w)+/
 
-export function parse(format: string): Array<Token> {
+export function parse(
+  format: string,
+  [startDelimiter, endDelimiter]: [string, string]
+): Array<Token> {
   const tokens: Array<Token> = []
   let position: number = 0
 
   let text: string = ''
   while (position < format.length) {
     let char: string = format[position++]
-    if (char === '{') {
+    if (char === startDelimiter) {
       if (text) {
         tokens.push({ type: 'text', value: text })
       }
@@ -47,11 +53,11 @@ export function parse(format: string): Array<Token> {
       text = ''
       let sub: string = ''
       char = format[position++]
-      while (char !== undefined && char !== '}') {
+      while (char !== undefined && char !== endDelimiter) {
         sub += char
         char = format[position++]
       }
-      const isClosed = char === '}'
+      const isClosed = char === endDelimiter
 
       const type = RE_TOKEN_LIST_VALUE.test(sub)
         ? 'list'
@@ -59,12 +65,14 @@ export function parse(format: string): Array<Token> {
         ? 'named'
         : 'unknown'
       tokens.push({ value: sub, type })
-    } else if (char === '%') {
-      // when found rails i18n syntax, skip text capture
-      if (format[position] !== '{') {
-        text += char
-      }
-    } else {
+    }
+    //  else if (char === '%') {
+    //   // when found rails i18n syntax, skip text capture
+    //   if (format[position] !== '{') {
+    //     text += char
+    //   }
+    // }
+    else {
       text += char
     }
   }
@@ -81,7 +89,7 @@ export function compile(
   const compiled: Array<unknown> = []
   let index: number = 0
 
-  const mode: string = Array.isArray(values)
+  const mode: string = isArray(values)
     ? 'list'
     : isObject(values)
     ? 'named'

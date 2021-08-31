@@ -56,6 +56,7 @@ function generatePagesJsonCode(
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, setupWindow } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue, locale } from '${manifestJsonPath}'
+const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
 const extend = Object.assign
 ${cssCode}
@@ -260,7 +261,8 @@ delete ${globalName}['____'+appid+'____']
   qqMapKey,
   nvue,
   locale,
-  router
+  locales:Object.keys(locales).reduce((res,name)=>{res[name.replace(/\\.\\/locale\\/(.*).json/,'$1')]=locales[name].default;return res},{}),
+  router,
 })
 `
   )

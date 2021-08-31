@@ -21,7 +21,8 @@ export type LocaleMessages = {
 export interface Formatter {
   interpolate: (
     message: string,
-    values?: Record<string, unknown> | Array<unknown>
+    values?: Record<string, unknown> | Array<unknown>,
+    delimiters?: [string, string]
   ) => Array<unknown>
 }
 
@@ -113,9 +114,12 @@ export class I18n {
       this.messages[this.locale] = {}
     }
     this.message = this.messages[this.locale]!
-    this.watchers.forEach((watcher) => {
-      watcher(this.locale, oldLocale)
-    })
+    // 仅发生变化时，通知
+    if (oldLocale !== this.locale) {
+      this.watchers.forEach((watcher) => {
+        watcher(this.locale, oldLocale)
+      })
+    }
   }
   getLocale() {
     return this.locale

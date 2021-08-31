@@ -1,10 +1,7 @@
 import { Plugin, ResolvedConfig } from 'vite'
-import { FileWatcher } from '../../watcher'
+import { FileWatcher, FileWatcherOptions } from '../../watcher'
 import { M } from '../../messages'
-export interface UniViteCopyPluginTarget {
-  src: string | string[]
-  dest: string
-}
+export type UniViteCopyPluginTarget = Omit<FileWatcherOptions, 'verbose'>
 export interface UniViteCopyPluginOptions {
   targets: UniViteCopyPluginTarget[]
   verbose: boolean

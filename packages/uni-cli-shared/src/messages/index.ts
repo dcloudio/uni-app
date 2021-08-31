@@ -12,4 +12,8 @@ export const M = {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'stat.warn.appid':
     '当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303',
+  'i18n.fallbackLocale.missing':
+    '当前应用未在manifest.json配置fallbackLocale，默认使用：{locale}',
+  'i18n.fallbackLocale.unmatch':
+    '当前应用配置的fallbackLocale为：${locale}，但locale目录缺少该语言文件',
 }

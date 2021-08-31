@@ -52,3 +52,8 @@ export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
     manifest[platform] && manifest[platform].uniStatistics
   )
 }
+
+export function getFallbackLocale(inputDir: string) {
+  const manifest = parseManifestJsonOnce(inputDir)
+  return manifest.fallbackLocale
+}

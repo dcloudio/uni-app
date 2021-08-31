@@ -186,6 +186,8 @@ declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
 }
 
+export declare const I18N_JSON_DELIMITERS: [string, string];
+
 export declare function initCustomDataset(): void;
 
 /**

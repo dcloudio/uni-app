@@ -5,6 +5,8 @@ export const RESPONSIVE_MIN_WIDTH = 768
 
 export const COMPONENT_NAME_PREFIX = 'VUni'
 
+export const I18N_JSON_DELIMITERS: [string, string] = ['%', '%']
+
 export const PRIMARY_COLOR = '#007aff'
 export const SELECTED_COLOR = '#0062cc' // 选中的颜色，如选项卡默认的选中颜色
 export const BACKGROUND_COLOR = '#f7f7f7' // 背景色，如标题栏默认背景色

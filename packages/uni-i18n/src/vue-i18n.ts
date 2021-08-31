@@ -1,4 +1,10 @@
-import { I18n, BuiltInLocale, LocaleMessages, LOCALE_EN } from './I18n'
+import {
+  I18n,
+  BuiltInLocale,
+  LocaleMessages,
+  LOCALE_EN,
+  LocaleWatcher,
+} from './I18n'
 
 const ignoreVueI18n = true
 
@@ -94,6 +100,9 @@ export function initVueI18n(
     },
     add(locale: BuiltInLocale, message: Record<string, string>) {
       return i18n.add(locale, message)
+    },
+    watch(fn: LocaleWatcher) {
+      return i18n.watchLocale(fn)
     },
     getLocale() {
       return i18n.getLocale()

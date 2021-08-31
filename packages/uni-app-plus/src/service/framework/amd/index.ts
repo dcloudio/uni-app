@@ -24,11 +24,15 @@ export type Define = typeof def
 export type Require = typeof req
 export type Exports = Record<string, any>
 
-export function def(name: string, deps: string[], definition: Function) {
-  req(deps, () => resolve(name, definition()))
+export function def(
+  name: string,
+  deps: string[],
+  definition: (...args: any[]) => void
+) {
+  req(deps, () => resolve(name))
 }
 
-export function req(modules: string[], definition: Function) {
+export function req(modules: string[], definition: (...args: any[]) => void) {
   Promise.all(modules.map(deps)).then((result) =>
     definition.apply(null, result)
   )
