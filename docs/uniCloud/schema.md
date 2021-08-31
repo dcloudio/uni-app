@@ -965,7 +965,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 
 表级控制，包括增删改查四种权限，分别称为：create、delete、update、read。（注意这里使用的是行业通用的crud命名，与操作数据库的方法add()、remove()、update()、get()在命名上有差异，但表意是相同的）
 
-所有的操作的默认值均为false。也就是不配置permission代表前端不能操作数据库（admin用户例外）。
+所有的操作的默认值均为false。也就是不配置permission代表前端不能操作数据库（角色为admin用户例外）。
 
 例如一个user表，里面有_id、name、pwd等字段，该表的`DB Schema`如下，代表前端用户可读（包括游客），但前端非admin用户不可新增、删除、更新数据记录。
 
