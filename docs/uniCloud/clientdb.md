@@ -954,6 +954,143 @@ db.collection('article,comment')
 }]
 ```
 
+#### 临时表联表查询@lookup-with-temp
+
+> 新增于`HBuilderX 3.2.6`
+
+在此之前clientDB联表查询只能直接使用虚拟表，而不能先对主表、副表过滤再生成虚拟表。由于生成虚拟表时需要需要整个主表和副表进行联表，在数据量大的情况下性能会很差。
+
+使用临时表进行联表查询，可以先对主表或者副表进行过滤，然后在处理后的临时表的基础上生成虚拟表。
+
+仍以上面article、comment两个表为例
+
+获取article_id为'1'的文章及其评论的数据库操作，在直接联表查询和使用临时表联表查询时写法分别如下
+
+```js
+// 直接使用虚拟表查询
+const res = await db.collection('article,comment')
+.where('article_id._value=="1"')
+.get()
+
+// 先过滤article表，再获取虚拟表联表获取评论
+const article = db.collection('article').where('article_id=="1"').getTemp() // 注意是getTemp不是get
+const res = await db.collection(article, 'comment').get()
+```
+
+直接使用虚拟表联表查询，在第一步生成虚拟表时会以主表所有数据和副表进行联表查询，如果主表数据量很大，这一步会浪费相当多的时间。先过滤主表则没有这个问题，过滤之后仅有一条数据和副表进行联表查询。
+
+**临时表（getTemp）内可以使用如下方法**
+
+> 方法调用必须严格按照顺序，比如field不能放在where之前
+
+```js
+where
+field // 关于field的使用限制见下方说明
+orderBy
+skip
+limit
+```
+
+**field使用限制**
+
+- field内仅可以进行字段过滤，不可对字段重命名、进行运算，`field('name as value')`、`field('add(score1, score2) as totalScore')`都是不支持的用法
+- 进行联表查询时仅能使用临时表内已经过滤的字段间的关联关系，例如上面article、comment的查询，如果换成以下写法就无法联表查询
+  
+  ```js
+  const article = db.collection('article').where('article_id=="1"').field('title').getTemp() // 此处过滤article表，仅保留title字段。会导致下一步查询时找不到关联关系而查询失败
+  const res = await db.collection(article, 'comment').get()
+  ```
+
+**组合出来的虚拟表查询时可以使用的方法**
+
+```js
+foreignKey
+where
+field // 关于field的使用限制见下方说明
+orderBy
+skip
+limit
+```
+
+一般情况下不需要再对虚拟表额外处理，因为数据在临时表内已经进行了过滤排序等操作。以下代码仅供演示，并无实际意义
+
+```js
+const article = db.collection('article').getTemp()
+const comment = db.collection('comment').getTemp()
+const res = await db.collection(article, comment).orderBy('title desc').get() // 按照title倒序排列
+```
+
+**权限校验**
+
+要求各个临时表组成的虚拟表要满足权限限制，即权限校验不会计算组合成虚拟表之后使用的where、field
+
+> 如下情况不能通过权限校验：虚拟表本身不满足权限限制，但是虚拟表内还有一个where用来过滤数据，过滤之后满足权限限制
+
+以下为一个订单表（order）和书籍表（book）的schema示例
+
+```js
+// order schema
+{
+  "bsonType": "object",
+  "required": [],
+  "permission": {
+    "read": "doc.uid==auth.uid",
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "id": { // 订单id
+      "bsonType": "string"
+    },
+    "book_id": { // 书籍id
+      "bsonType": "string"
+    },
+    "uid": { // 用户id
+      "bsonType": "string"
+    }
+  }
+}
+
+// book schema
+{
+  "bsonType": "object",
+  "required": [],
+  "permission": {
+    "read": true,
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "id": { // 书籍id
+      "bsonType": "string"
+    },
+    "name": { // 书籍名称
+      "bsonType": "string"
+    }
+  }
+}
+```
+
+如果先对主表进行过滤`where('uid==$cloudEnv_uid')`，则能满足权限限制（`order表的"doc.uid==auth.uid"`）
+
+```js
+const order = db.collection('order')
+.where('uid==$cloudEnv_uid') // 先过滤order表内满足条件的部分
+.getTemp()
+
+const res = await db.collection(order, 'book').get() // 可以通过权限校验
+```
+
+如果不对主表过滤，而是对虚拟表（联表结果）进行过滤，则无法满足权限限制（`order表的"doc.uid==auth.uid"`）
+
+```js
+const order = db.collection('order').getTemp()
+
+const res = await db.collection(order, 'book').where('uid==$cloudEnv_uid').get() // 对虚拟表过滤，无法通过权限校验
+```
+
 ### 查询记录过滤，where条件@where
 
 > 代码块`dbget`

@@ -43,7 +43,7 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |:-|:-|:-|
 |v-slot:default||查询状态（失败、联网中）及结果（data）|
 |ref|string|vue组件引用标记|
-|collection|string|表名。支持输入多个表名，用 `,` 分割|
+|collection|string|表名。支持输入多个表名，用 `,` 分割，自`HBuilderX 3.2.6`起也支持传入tempCollection组成的数组|
 |field|string|指定要查询的字段，多个字段用 `,` 分割。不写本属性，即表示查询所有字段。支持用 oldname as newname方式对返回字段重命名|
 |where|string|查询条件，对记录进行过滤。[见下](/uniCloud/unicloud-db?id=where)|
 |orderby|string|排序字段及正序倒序设置|
@@ -119,6 +119,67 @@ TODO：暂不支持in子查询功能。后续会补充
 	</view>
 </unicloud-db>
 
+```
+
+## collection@collection
+
+collection有以下几种形式
+
+**单个collection字符串**
+
+```html
+<unicloud-db v-slot:default="{data, loading, error, options}" collection="user">
+	<view v-if="error">{{error.message}}</view>
+	<view v-else-if="loading">正在加载...</view>
+	<view v-else>
+		{{data}}
+	</view>
+</unicloud-db>
+```
+
+**多个collection字符串拼接**
+
+用于联表查询，注意主表副表之间需要在schema内以foreignKey关联（副表支持多个）。如下示例以book作为主表，关联author表进行查询，在book表的schema内设置author_id字段指向author表
+
+```html
+<unicloud-db v-slot:default="{data, loading, error, options}" collection="book,author">
+	<view v-if="error">{{error.message}}</view>
+	<view v-else-if="loading">正在加载...</view>
+	<view v-else>
+		{{data}}
+	</view>
+</unicloud-db>
+```
+
+**多个临时表组成的数组**
+
+同样用于联表查询，但是与直接拼接多个字符串的方式不同，可以先对主表进行处理再关联。和直接使用多个表名字符串拼接相比，在主表数据量大的情况下性能有明显提升
+
+```html
+<template>
+  <unicloud-db v-slot:default="{data, loading, error, options}" :collection="colList">
+    <view v-if="error">{{error.message}}</view>
+    <view v-else-if="loading">正在加载...</view>
+    <view v-else>
+      {{data}}
+    </view>
+  </unicloud-db>
+</template>
+<script>
+  const db = uniCloud.database()
+  export default {
+    data() {
+      return {
+        colList: [
+          db.collection('book').where('name == "水浒传"').getTemp(),
+          db.collection('author').getTemp()
+        ]
+      }
+    },
+    onReady() {},
+    methods: {}
+  }
+</script>
 ```
 
 ## where@where
