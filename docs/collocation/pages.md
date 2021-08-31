@@ -338,7 +338,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 |mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
-|mp-kuaishou|Object||设置编译到 mp-kuaishou 平台的特定样式|QQ小程序|
+|mp-kuaishou|Object||设置编译到 mp-kuaishou 平台的特定样式|快手小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
 |leftWindow|Boolean|true|当存在 leftWindow时，当前页面是否显示 leftWindow|H5|
 |topWindow|Boolean|true|当存在 topWindow 时，当前页面是否显示 topWindow|H5|
