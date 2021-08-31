@@ -6717,6 +6717,24 @@ var serviceContext = (function () {
     })
   }
 
+  function compressImage$1 (tempFilePath) {
+    const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+    return new Promise((resolve) => {
+      plus.nativeUI.showWaiting();
+      plus.zip.compressImage({
+        src: tempFilePath,
+        dst: dstPath,
+        overwrite: true
+      }, () => {
+        plus.nativeUI.closeWaiting();
+        resolve(dstPath);
+      }, () => {
+        plus.nativeUI.closeWaiting();
+        resolve(tempFilePath);
+      });
+    })
+  }
+
   function chooseImage$1 ({
     count,
     sizeType,
@@ -6748,12 +6766,26 @@ var serviceContext = (function () {
 
     function openCamera () {
       const camera = plus.camera.getCamera();
-      camera.captureImage(path => successCallback([path]),
-        errorCallback, {
-          filename: TEMP_PATH + '/camera/',
-          resolution: 'high',
-          crop
-        });
+      camera.captureImage(path => {
+        // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
+        // 判断是否需要压缩
+        if (sizeType && sizeType.includes('compressed')) {
+          return getFileInfo$2(path).then(({ size }) => {
+            // 压缩阈值 0.5 兆
+            const THRESHOLD = 1024 * 1024 * 0.5;
+            return size && size > THRESHOLD
+              ? compressImage$1(path).then(dstPath => successCallback([dstPath]))
+              : successCallback([path])
+          }).catch(errorCallback)
+        }
+
+        return successCallback([path])
+      },
+      errorCallback, {
+        filename: TEMP_PATH + '/camera/',
+        resolution: 'high',
+        crop
+      });
     }
 
     function openAlbum () {
@@ -6896,7 +6928,7 @@ var serviceContext = (function () {
     });
   }
 
-  function compressImage$1 (options, callbackId) {
+  function compressImage$2 (options, callbackId) {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     const errorCallback = warpPlusErrorCallback(callbackId, 'compressImage');
     plus.zip.compressImage(Object.assign({}, options, {
@@ -11377,7 +11409,7 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    compressImage: compressImage$1,
+    compressImage: compressImage$2,
     compressVideo: compressVideo$1,
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
