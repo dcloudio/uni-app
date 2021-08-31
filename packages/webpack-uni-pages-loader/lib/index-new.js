@@ -112,7 +112,7 @@ module.exports = function (content, map) {
           if (!isAppView && jsonFile.name === 'manifest.json') {
             const content = JSON.parse(jsonFile.content)
             if (!content.launch_path && content.plus['uni-app'].nvueLaunchMode === 'fast') {
-              console.log(uniI18n.__('pagesLoader.nvueFirstPageStartModeIsFast', { "0": "https://ask.dcloud.net.cn/article/36749" }))
+              console.log(uniI18n.__('pagesLoader.nvueFirstPageStartModeIsFast', { 0: 'https://ask.dcloud.net.cn/article/36749' }))
             }
           }
           if (jsonFile.name === 'define-pages.js') {

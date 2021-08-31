@@ -133,7 +133,7 @@ module.exports = function processClass (paths, path, state) {
       //         )
       //       )
     } else {
-      state.errors.add(':class' + uniI18n.__('templateCompiler.noSupportSyntax', { "0": getCode(classValuePath.node) }))
+      state.errors.add(':class' + uniI18n.__('templateCompiler.noSupportSyntax', { 0: getCode(classValuePath.node) }))
     }
   }
   return []

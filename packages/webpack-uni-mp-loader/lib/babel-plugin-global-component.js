@@ -31,10 +31,10 @@ module.exports = function babelPluginGlobalComponent ({
                 }
                 if (callee.object.name === 'Vue' && callee.property.name === 'component') {
                   if (!args[0] || args[0].type !== 'StringLiteral') {
-                    throw new Error(uniI18n.__('mpLoader.firstParameterNeedStaticString', { "0": "Vue.component()" }))
+                    throw new Error(uniI18n.__('mpLoader.firstParameterNeedStaticString', { 0: 'Vue.component()' }))
                   }
                   if (!args[1]) {
-                    throw new Error(uniI18n.__('mpLoader.requireTwoParameter', { "0": "Vue.component()" }))
+                    throw new Error(uniI18n.__('mpLoader.requireTwoParameter', { 0: 'Vue.component()' }))
                   }
                   if (!metadata.globalComponents) {
                     metadata.globalComponents = {}

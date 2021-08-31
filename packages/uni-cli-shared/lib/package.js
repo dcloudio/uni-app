@@ -27,12 +27,12 @@ module.exports = {
     }
 
     if (!scriptOptions.env || !scriptOptions.env.UNI_PLATFORM) {
-      console.error(uniI18n.__('cliShared.requireConfigUniPlatform', { "0": `package.json->uni-app->scripts->${name}->env ` }))
+      console.error(uniI18n.__('cliShared.requireConfigUniPlatform', { 0: `package.json->uni-app->scripts->${name}->env ` }))
       process.exit(0)
     }
 
     if (PLATFORMS.indexOf(scriptOptions.env.UNI_PLATFORM) === -1) {
-      console.error(uniI18n.__('cliShared.supportPlatform', { "0": 'UNI_PLATFORM', "1": JSON.stringify(PLATFORMS)}))
+      console.error(uniI18n.__('cliShared.supportPlatform', { 0: 'UNI_PLATFORM', 1: JSON.stringify(PLATFORMS) }))
       process.exit(0)
     }
 

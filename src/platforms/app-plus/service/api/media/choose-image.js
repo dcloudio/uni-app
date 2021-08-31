@@ -81,22 +81,22 @@ export function chooseImage ({
       // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
       // 判断是否需要压缩
       if (sizeType && sizeType.includes('compressed')) {
-        return getFileInfo(path).then(({size}) => {
+        return getFileInfo(path).then(({ size }) => {
           // 压缩阈值 0.5 兆
           const THRESHOLD = 1024 * 1024 * 0.5
-          return size && size > THRESHOLD 
-                  ? compressImage(path).then(dstPath => successCallback([dstPath]))
-                  :successCallback([path])
+          return size && size > THRESHOLD
+            ? compressImage(path).then(dstPath => successCallback([dstPath]))
+            : successCallback([path])
         }).catch(errorCallback)
       }
 
       return successCallback([path])
     },
-      errorCallback, {
-        filename: TEMP_PATH + '/camera/',
-        resolution: 'high',
-        crop
-      })
+    errorCallback, {
+      filename: TEMP_PATH + '/camera/',
+      resolution: 'high',
+      crop
+    })
   }
 
   function openAlbum () {

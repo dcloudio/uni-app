@@ -78,7 +78,7 @@ function addVueId (path, state) {
         const scoped = scopeds[i]
         forIndexSet.add(scoped.forIndex)
         if (forIndexSet.size !== i + 1) {
-          state.errors.add(uniI18n.__('templateCompiler.forNestedIndexNameNoArrowRepeat', { "0": 'v-for', "1": scoped.forIndex }))
+          state.errors.add(uniI18n.__('templateCompiler.forNestedIndexNameNoArrowRepeat', { 0: 'v-for', 1: scoped.forIndex }))
           break
         }
       }

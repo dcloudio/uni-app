@@ -65,7 +65,7 @@ module.exports = function ({
         const value = prop.value.name
         const source = findSource(value, path.scope.bindings)
         if (!source) {
-          throw new Error(uniI18n.__('mpLoader.componentReferenceError', { "0": key }))
+          throw new Error(uniI18n.__('mpLoader.componentReferenceError', { 0: key }))
         }
         if (process.UNI_LIBRARIES.includes(source)) {
           const componentName = hyphenate(key)

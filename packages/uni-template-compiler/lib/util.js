@@ -116,7 +116,7 @@ function getForKey (forKey, forIndex, state) {
     } else if (t.isMemberExpression(forKey)) {
       return forKey.property.name || forKey.property.value
     } else {
-      state.tips.add(uniI18n.__('templateCompiler.noH5KeyNoSupportExpression', { "0": getCode(forKey), "1": 'https://uniapp.dcloud.io/use?id=key' }))
+      state.tips.add(uniI18n.__('templateCompiler.noH5KeyNoSupportExpression', { 0: getCode(forKey), 1: 'https://uniapp.dcloud.io/use?id=key' }))
     }
   }
   return ''

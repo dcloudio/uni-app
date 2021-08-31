@@ -58,7 +58,7 @@ if (process.env.UNI_CLOUD_SPACES) {
       const hasUniCloudSpace = spaces.length > 0
       if (spaces.length === 1) {
         const space = spaces[0]
-        console.log(uniI18n.__('pluginUni.currentProjectDefaultSpaceId', { "0": space.id }))
+        console.log(uniI18n.__('pluginUni.currentProjectDefaultSpaceId', { 0: space.id }))
       }
 
       if (
@@ -66,13 +66,13 @@ if (process.env.UNI_CLOUD_SPACES) {
         isH5 &&
         isProduction
       ) {
-        console.warn(uniI18n.__('pluginUni.unicloudReleaseH5', { "0": 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
+        console.warn(uniI18n.__('pluginUni.unicloudReleaseH5', { 0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
       } else if (
         hasUniCloudSpace &&
         isH5 &&
         !isProduction
       ) {
-        console.warn(uniI18n.__('pluginUni.unicloudShowedRunByHBuilderX', { "0": 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
+        console.warn(uniI18n.__('pluginUni.unicloudShowedRunByHBuilderX', { 0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
       }
 
       process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
@@ -295,7 +295,7 @@ if (
     process.env.UNI_USING_STAT = true
     if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
-      console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', { "0": 'https://ask.dcloud.net.cn/article/36303' }))
+      console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', { 0: 'https://ask.dcloud.net.cn/article/36303' }))
       console.log()
     }
   }
@@ -321,10 +321,10 @@ const warningMsg =
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
 // 输出编译器版本等信息
-const compile_mode_url = 'https://ask.dcloud.net.cn/article/36074'
+const compileModeUrl = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
-  let compile_mode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')
-  console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { "0": compile_mode, "1": compile_mode_url }))
+  const compileMode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')
+  console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { 0: compileMode, 1: compileModeUrl }))
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
   try {
     let info = ''
@@ -346,7 +346,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
           if (needWarning) {
             console.log(warningMsg)
           }
-          console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { "0": (isNVueCompiler ? 'uni-app' : 'weex'), "1": compile_mode_url }))
+          console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { 0: (isNVueCompiler ? 'uni-app' : 'weex'), 1: compileModeUrl }))
         } else {
           console.log(info)
           if (needWarning) {
@@ -467,7 +467,7 @@ if (
 }
 
 if (process.env.UNI_PLATFORM.startsWith('mp-')) {
-  console.log(uniI18n.__('pluginUni.mpBrowserKernelDifference', { "0": "https://uniapp.dcloud.io/matter?id=mp" }))
+  console.log(uniI18n.__('pluginUni.mpBrowserKernelDifference', { 0: 'https://uniapp.dcloud.io/matter?id=mp' }))
 }
 
 runByHBuilderX && console.log(uniI18n.__('compiling'))

@@ -298,7 +298,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
 
 function traverseRenderSlot (callExprNode, state) {
   if (!t.isStringLiteral(callExprNode.arguments[0])) {
-    state.errors.add(uniI18n.__('templateCompiler.notSupportDynamicSlotName', { "0": 'v-slot' }))
+    state.errors.add(uniI18n.__('templateCompiler.notSupportDynamicSlotName', { 0: 'v-slot' }))
     return
   }
 

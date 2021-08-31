@@ -113,7 +113,7 @@ function isNVuePage (page, root = '') {
 
 function isValidPage (page, root = '') {
   if (typeof page === 'string' || !page.path) { // 不合法的配置
-    console.warn(uniI18n.__('cliShared.pagesJsonError', { "0": 'https://uniapp.dcloud.io/collocation/pages?id=pages' }))
+    console.warn(uniI18n.__('cliShared.pagesJsonError', { 0: 'https://uniapp.dcloud.io/collocation/pages?id=pages' }))
     return false
   }
   let pagePath = page.path
@@ -391,7 +391,7 @@ function initAutoComponents () {
   })
   if (conflictFiles.length > 0) {
     conflictFiles.forEach(files => {
-      console.warn(uniI18n.__('cliShared.easycomConflict', { "0": '[' + files.map((file, index) => { return file }).join(',') + ']' }))
+      console.warn(uniI18n.__('cliShared.easycomConflict', { 0: '[' + files.map((file, index) => { return file }).join(',') + ']' }))
       console.log('\n')
     })
   }
