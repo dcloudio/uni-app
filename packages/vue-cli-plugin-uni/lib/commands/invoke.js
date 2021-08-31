@@ -1,21 +1,22 @@
 const fs = require('fs')
 const path = require('path')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 module.exports = async function add (argv) {
   const pluginName = argv._[1]
   if (!pluginName) {
-    console.error('请指定插件名称')
+    console.error(uniI18n.__('pluginUni.pleaseSpecifyPluginName'))
     process.exit(0)
   }
   const pluginPkg = require(pluginName + '/package.json')
   const options = pluginPkg['uni-app']
   if (!options) {
-    console.error('插件不合法')
+    console.error(uniI18n.__('pluginUni.pluginIllegal'))
     process.exit(0)
   }
   const name = options.name
   if (!name) {
-    console.error('插件名称不存在')
+    console.error(uniI18n.__('pluginUni.pluginNameNotExist'))
     process.exit(0)
   }
   const scripts = options.scripts || {

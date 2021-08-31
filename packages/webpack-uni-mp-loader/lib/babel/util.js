@@ -1,4 +1,5 @@
 const t = require('@babel/types')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const hyphenateRE = /\B([A-Z])/g
 
@@ -34,7 +35,7 @@ function parseComponents (names, bindings, path) {
   }) => {
     const importDeclaration = findImportDeclaration(value, bindings)
     if (!importDeclaration) {
-      throw new Error(`组件 ${name} 引用错误,仅支持 import 方式引入组件`)
+      throw new Error(uniI18n.__('mpLoader.componentReferenceErrorOnlySupportImport', { "0": name }))
     }
     let source = importDeclaration.node.source.value
     if (process.UNI_LIBRARIES && process.UNI_LIBRARIES.includes(source)) {

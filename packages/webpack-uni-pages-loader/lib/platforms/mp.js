@@ -23,6 +23,8 @@ const {
   trimMPJson
 } = require('../util')
 
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 function defaultCopy (name, value, json) {
   json[name] = value
 }
@@ -40,7 +42,7 @@ const pagesJson2AppJson = {
   tabBar: function (name, value, json, fromJson) {
     if (value && value.list && value.list.length) {
       if (value.list.length < 2) {
-        console.error('tabBar.list 需至少包含2项')
+        console.error(uniI18n.__('pagesLoader.pagesTabbarMinItem2', { "0": "tabBar.list" }))
       }
       const pages = json.pages
       value.list.forEach((page, index) => {
@@ -55,9 +57,7 @@ const pagesJson2AppJson = {
               }) => path === (page.pagePath + '.html'))
             )
           ) {
-            console.error(
-              `pages.json tabBar['list'][${index}]['pagePath'] "${page.pagePath}" 需在 pages 数组中`
-            )
+            console.error(uniI18n.__('pagesLoader.needInPagesNode', { "0": `pages.json tabBar['list'][${index}]['pagePath'] "${page.pagePath}"` }))
           }
         }
       })

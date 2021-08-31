@@ -1,4 +1,5 @@
 const t = require('@babel/types')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   METHOD_CREATE_ELEMENT,
@@ -77,7 +78,7 @@ function addVueId (path, state) {
         const scoped = scopeds[i]
         forIndexSet.add(scoped.forIndex)
         if (forIndexSet.size !== i + 1) {
-          state.errors.add(`v-for 嵌套时,索引名称 ${scoped.forIndex} 不允许重复`)
+          state.errors.add(uniI18n.__('templateCompiler.forNestedIndexNameNoArrowRepeat', { "0": 'v-for', "1": scoped.forIndex }))
           break
         }
       }
