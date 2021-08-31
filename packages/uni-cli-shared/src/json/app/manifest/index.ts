@@ -10,6 +10,7 @@ import { initConfusion } from './confusion'
 import { initUniApp } from './uniApp'
 import { initLaunchwebview } from './launchwebview'
 import { initTabBar } from './tabBar'
+import { initI18n } from './i18n'
 
 export function normalizeAppManifestJson(
   userManifestJson: Record<string, any>,
@@ -32,6 +33,7 @@ export function normalizeAppManifestJson(
     manifestJson,
     pagesJson
   )
+  initI18n(manifestJson, userManifestJson)
   return manifestJson
 }
 

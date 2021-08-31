@@ -21,10 +21,10 @@ export function uniMainJsPlugin() {
 }
 
 function createApp(code: string) {
-  return `const __app__=createApp().app;__app__._component.mpType='app';__app__._component.render=()=>{};__app__.use(uni.__vuePlugin).mount("#app");${code.replace(
+  return `${code.replace(
     'createSSRApp',
     'createVueApp as createSSRApp'
-  )}`
+  )};const __app__=createApp().app;__app__._component.mpType='app';__app__._component.render=()=>{};__app__.use(uni.__vuePlugin).mount("#app");`
 }
 
 function createLegacyApp(code: string) {

@@ -15,5 +15,5 @@ export const M = {
   'i18n.fallbackLocale.missing':
     '当前应用未在manifest.json配置fallbackLocale，默认使用：{locale}',
   'i18n.fallbackLocale.unmatch':
-    '当前应用配置的fallbackLocale为：${locale}，但locale目录缺少该语言文件',
+    '当前应用配置的fallbackLocale为：{locale}，但locale目录缺少该语言文件',
 }
