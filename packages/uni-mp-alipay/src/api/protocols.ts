@@ -1,4 +1,4 @@
-import { isPlainObject, isArray } from '@vue/shared'
+import { isPlainObject, isArray, hasOwn } from '@vue/shared'
 
 import { addSafeAreaInsets } from '@dcloudio/uni-mp-core'
 
@@ -36,7 +36,7 @@ function handleSystemInfo(
   toRes.platform = platform
 }
 
-export function returnValue(methodName: string, res: Record<string, any>) {
+export function returnValue(methodName: string, res: Record<string, any> = {}) {
   // 通用 returnValue 解析
   if (res.error || res.errorMessage) {
     res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`
@@ -224,8 +224,27 @@ export const connectSocket = {
   // TODO 有没有返回值还需要测试下
 }
 export const chooseImage = {
-  returnValue: {
-    apFilePaths: 'tempFilePaths',
+  returnValue(
+    result: my.IChooseImageSuccessResult & {
+      tempFilePaths?: string[]
+      tempFiles?: Array<{ path: string }>
+    }
+  ) {
+    const hasTempFilePaths =
+      hasOwn(result, 'tempFilePaths') && result.tempFilePaths
+    if (hasOwn(result, 'apFilePaths') && !hasTempFilePaths) {
+      result.tempFilePaths = []
+      result.apFilePaths?.forEach((apFilePath) =>
+        result.tempFilePaths?.push(apFilePath)
+      )
+    }
+    if (!hasOwn(result, 'tempFiles') && hasTempFilePaths) {
+      result.tempFiles = []
+      result.tempFilePaths?.forEach((tempFilePath) =>
+        result.tempFiles?.push({ path: tempFilePath })
+      )
+    }
+    return {}
   },
 }
 export const previewImage = {
