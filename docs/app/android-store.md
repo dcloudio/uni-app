@@ -122,6 +122,7 @@ uni-AD广告模块集成的三方SDK说明
 |快手|com.kwad.sdk|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://www.kuaishou.com/about/policy](https://www.kuaishou.com/about/policy)|
 |优量汇|com.qq.e|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://imgcache.qq.com/..privacy](https://imgcache.qq.com/gdt/cdn/adn/uniondoc/ylh_sdk_privacy_statement.html)|
 |穿山甲|com.bytedance.sdk. openadsdk.adhost|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://www.pangle.cn/privacy/partner](https://www.pangle.cn/privacy/partner)|
+|Sigmob|com.sigmob.windad|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://support.sigmob.com/#/隐私条款/](https://support.sigmob.com/#/%E9%9A%90%E7%A7%81%E6%9D%A1%E6%AC%BE/)|
 
 #### 腾讯x5内核
 
