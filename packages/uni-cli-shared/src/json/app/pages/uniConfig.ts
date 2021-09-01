@@ -4,6 +4,7 @@ import {
   getNVueFlexDirection,
   getNVueStyleCompiler,
 } from '../manifest'
+import { getLocales } from './locale'
 
 interface AppUniConfig {
   pages: string[]
@@ -28,6 +29,9 @@ interface AppUniConfig {
     downloadFile: number
   }
   tabBar?: UniApp.UniConfig['tabBar']
+  locale?: string
+  fallbackLocale?: string
+  locales?: Record<string, Record<string, string>>
 }
 
 export function normalizeAppUniConfig(
@@ -56,6 +60,7 @@ export function normalizeAppUniConfig(
     entryPagePath: pagesJson.pages[0].path,
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
     tabBar: pagesJson.tabBar,
+    locales: getLocales(process.env.UNI_INPUT_DIR),
   }
   // TODO 待支持分包
   return JSON.stringify(config)

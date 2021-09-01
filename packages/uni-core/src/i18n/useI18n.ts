@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import { getEnvLocale, I18N_JSON_DELIMITERS } from '@dcloudio/uni-shared'
 import { BuiltInLocale, initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
 
@@ -16,10 +17,51 @@ function getLocaleMessage() {
 }
 
 export function formatI18n(message: string) {
-  if (__uniConfig.locales && isI18nStr(message, I18N_JSON_DELIMITERS)) {
-    return useI18n().f(message, getLocaleMessage())
+  if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+    return useI18n().f(message, getLocaleMessage(), I18N_JSON_DELIMITERS)
   }
   return message
+}
+
+function resolveJsonObj(
+  jsonObj: Record<string, any> | undefined,
+  names: string[]
+): Record<string, any> | undefined {
+  if (names.length === 1) {
+    if (jsonObj) {
+      const value = jsonObj[names[0]]
+      if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+        return jsonObj
+      }
+    }
+    return
+  }
+  const name = names.shift()!
+  return resolveJsonObj(jsonObj && jsonObj[name], names)
+}
+
+export function defineI18nProperties(
+  obj: Record<string, any>,
+  names: string[][]
+) {
+  names.forEach((name) => defineI18nProperty(obj, name))
+}
+
+export function defineI18nProperty(obj: Record<string, any>, names: string[]) {
+  const jsonObj = resolveJsonObj(obj, names)
+  if (!jsonObj) {
+    return
+  }
+  const prop = names[names.length - 1]
+  let value = jsonObj[prop]
+  Object.defineProperty(jsonObj, prop, {
+    get() {
+      return formatI18n(value)
+    },
+    set(v) {
+      value = v
+    },
+  })
 }
 
 export function useI18n() {

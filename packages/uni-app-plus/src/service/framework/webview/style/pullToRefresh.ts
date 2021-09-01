@@ -1,4 +1,7 @@
-import { normalizePullToRefreshRpx } from '@dcloudio/uni-core'
+import {
+  initPullToRefreshI18n,
+  normalizePullToRefreshRpx,
+} from '@dcloudio/uni-core'
 import { extend } from '@vue/shared'
 
 export function initPullToRefresh(
@@ -8,15 +11,17 @@ export function initPullToRefresh(
   if (!routeMeta.enablePullDownRefresh) {
     return
   }
-  webviewStyle.pullToRefresh = normalizePullToRefreshRpx(
-    extend(
-      {},
-      plus.os.name === 'Android'
-        ? defaultAndroidPullToRefresh
-        : defaultPullToRefresh,
-      routeMeta.pullToRefresh
-    )
-  ) as unknown as PlusWebviewWebviewPullToRefreshStyles
+  webviewStyle.pullToRefresh = initPullToRefreshI18n(
+    normalizePullToRefreshRpx(
+      extend(
+        {},
+        plus.os.name === 'Android'
+          ? defaultAndroidPullToRefresh
+          : defaultPullToRefresh,
+        routeMeta.pullToRefresh
+      )
+    ) as unknown as PlusWebviewWebviewPullToRefreshStyles
+  ) as PlusWebviewWebviewPullToRefreshStyles
 }
 
 const defaultAndroidPullToRefresh = { support: true, style: 'circle' }

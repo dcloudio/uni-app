@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports[Symbol.toStringTag] = "Module";
 var vue = require("vue");
+var shared = require("@vue/shared");
 var uniShared = require("@dcloudio/uni-shared");
 var uniI18n = require("@dcloudio/uni-i18n");
-var shared = require("@vue/shared");
 var vueRouter = require("vue-router");
 let i18n;
 function getLocaleMessage() {
@@ -13,10 +13,42 @@ function getLocaleMessage() {
   return locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {};
 }
 function formatI18n(message) {
-  if (__uniConfig.locales && uniI18n.isI18nStr(message, uniShared.I18N_JSON_DELIMITERS)) {
-    return useI18n().f(message, getLocaleMessage());
+  if (uniI18n.isI18nStr(message, uniShared.I18N_JSON_DELIMITERS)) {
+    return useI18n().f(message, getLocaleMessage(), uniShared.I18N_JSON_DELIMITERS);
   }
   return message;
+}
+function resolveJsonObj(jsonObj, names) {
+  if (names.length === 1) {
+    if (jsonObj) {
+      const value = jsonObj[names[0]];
+      if (shared.isString(value) && uniI18n.isI18nStr(value, uniShared.I18N_JSON_DELIMITERS)) {
+        return jsonObj;
+      }
+    }
+    return;
+  }
+  const name = names.shift();
+  return resolveJsonObj(jsonObj && jsonObj[name], names);
+}
+function defineI18nProperties(obj, names) {
+  names.forEach((name) => defineI18nProperty(obj, name));
+}
+function defineI18nProperty(obj, names) {
+  const jsonObj = resolveJsonObj(obj, names);
+  if (!jsonObj) {
+    return;
+  }
+  const prop = names[names.length - 1];
+  let value = jsonObj[prop];
+  Object.defineProperty(jsonObj, prop, {
+    get() {
+      return formatI18n(value);
+    },
+    set(v2) {
+      value = v2;
+    }
+  });
 }
 function useI18n() {
   if (!i18n) {
@@ -101,6 +133,27 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
   }
 });
+const isEnableLocale = uniShared.once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+function initNavigationBarI18n(navigationBar) {
+  if (isEnableLocale()) {
+    defineI18nProperties(navigationBar, [
+      ["titleText"],
+      ["searchInput", "placeholder"]
+    ]);
+  }
+  return navigationBar;
+}
+function initPullToRefreshI18n(pullToRefresh) {
+  if (isEnableLocale()) {
+    const CAPTION = "caption";
+    defineI18nProperties(pullToRefresh, [
+      ["contentdown", CAPTION],
+      ["contentover", CAPTION],
+      ["contentrefresh", CAPTION]
+    ]);
+  }
+  return pullToRefresh;
+}
 const E = function() {
 };
 E.prototype = {
@@ -402,6 +455,16 @@ const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
   invokeViewMethod,
   invokeViewMethodKeepAlive
 });
+function initI18n() {
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    const i18n2 = useI18n();
+    localeKeys.forEach((locale) => i18n2.add(locale, __uniConfig.locales[locale]));
+  }
+}
+function initService() {
+  initI18n();
+}
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
   appVm2.$mpType = "app";
@@ -6615,6 +6678,7 @@ function normalizePageMeta(pageMeta) {
         pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
       }
       pageMeta.pullToRefresh = pullToRefresh;
+      __UNI_FEATURE_I18N_LOCALE__ && initPullToRefreshI18n(pullToRefresh);
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
@@ -6625,6 +6689,7 @@ function normalizePageMeta(pageMeta) {
     navigationBar.titleSize = titleSize || "16px";
     navigationBar.titleColor = titleColor || "#ffffff";
     navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
   return pageMeta;
 }
@@ -6777,6 +6842,7 @@ function initApp(vm) {
   appVm = vm;
   initAppVm(appVm);
   appVm.globalData = appVm.$options.globalData || {};
+  initService();
 }
 function wrapperComponentSetup(comp, { init, setup, before }) {
   before && before(comp);
@@ -10343,11 +10409,6 @@ function createPageHeadTitleTextTsx({
   titleText,
   titleImage
 }) {
-  if (__UNI_FEATURE_I18N_LOCALE__) {
-    if (!titleImage && titleText) {
-      titleText = formatI18n(titleText);
-    }
-  }
   return vue.createVNode("div", {
     "class": "uni-page-head-bd"
   }, [vue.createVNode("div", {

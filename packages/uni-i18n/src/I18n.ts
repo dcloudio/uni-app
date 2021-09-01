@@ -150,8 +150,12 @@ export class I18n {
       this.messages[locale] = message
     }
   }
-  f(message: string, values?: Record<string, unknown> | Array<unknown>) {
-    return this.formater.interpolate(message, values).join('')
+  f(
+    message: string,
+    values?: Record<string, unknown> | Array<unknown>,
+    delimiters?: [string, string]
+  ) {
+    return this.formater.interpolate(message, values, delimiters).join('')
   }
   t(
     key: string,

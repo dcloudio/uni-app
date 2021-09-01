@@ -1,7 +1,7 @@
 import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementBlock, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
-import { extend, isString, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 let i18n;
 function getLocaleMessage() {
@@ -10,10 +10,42 @@ function getLocaleMessage() {
   return locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {};
 }
 function formatI18n(message) {
-  if (__uniConfig.locales && isI18nStr(message, I18N_JSON_DELIMITERS)) {
-    return useI18n().f(message, getLocaleMessage());
+  if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+    return useI18n().f(message, getLocaleMessage(), I18N_JSON_DELIMITERS);
   }
   return message;
+}
+function resolveJsonObj(jsonObj, names) {
+  if (names.length === 1) {
+    if (jsonObj) {
+      const value = jsonObj[names[0]];
+      if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+        return jsonObj;
+      }
+    }
+    return;
+  }
+  const name = names.shift();
+  return resolveJsonObj(jsonObj && jsonObj[name], names);
+}
+function defineI18nProperties(obj, names) {
+  names.forEach((name) => defineI18nProperty(obj, name));
+}
+function defineI18nProperty(obj, names) {
+  const jsonObj = resolveJsonObj(obj, names);
+  if (!jsonObj) {
+    return;
+  }
+  const prop = names[names.length - 1];
+  let value = jsonObj[prop];
+  Object.defineProperty(jsonObj, prop, {
+    get() {
+      return formatI18n(value);
+    },
+    set(v2) {
+      value = v2;
+    }
+  });
 }
 function useI18n() {
   if (!i18n) {
@@ -194,6 +226,27 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
   }
 });
+const isEnableLocale = once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+function initNavigationBarI18n(navigationBar) {
+  if (isEnableLocale()) {
+    defineI18nProperties(navigationBar, [
+      ["titleText"],
+      ["searchInput", "placeholder"]
+    ]);
+  }
+  return navigationBar;
+}
+function initPullToRefreshI18n(pullToRefresh) {
+  if (isEnableLocale()) {
+    const CAPTION = "caption";
+    defineI18nProperties(pullToRefresh, [
+      ["contentdown", CAPTION],
+      ["contentover", CAPTION],
+      ["contentrefresh", CAPTION]
+    ]);
+  }
+  return pullToRefresh;
+}
 const E = function() {
 };
 E.prototype = {
@@ -1239,6 +1292,13 @@ const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
   invokeViewMethod,
   invokeViewMethodKeepAlive
 });
+function initI18n() {
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    const i18n2 = useI18n();
+    localeKeys.forEach((locale) => i18n2.add(locale, __uniConfig.locales[locale]));
+  }
+}
 function initOn() {
   const { on: on2 } = UniServiceJSBridge;
   on2(ON_RESIZE, onResize$1);
@@ -1276,8 +1336,11 @@ function createPageEvent(name) {
   };
 }
 function initService() {
-  initOn();
-  initSubscribe();
+  initI18n();
+  {
+    initOn();
+    initSubscribe();
+  }
 }
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
@@ -13297,6 +13360,7 @@ function normalizePageMeta(pageMeta) {
         pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
+      __UNI_FEATURE_I18N_LOCALE__ && initPullToRefreshI18n(pullToRefresh);
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
@@ -13307,6 +13371,7 @@ function normalizePageMeta(pageMeta) {
     navigationBar.titleSize = titleSize || "16px";
     navigationBar.titleColor = titleColor || "#ffffff";
     navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
   if (__UNI_FEATURE_PAGES__ && history.state) {
     const type = history.state.__type__;
@@ -20688,11 +20753,6 @@ function createPageHeadTitleTextTsx({
   titleText,
   titleImage
 }) {
-  if (__UNI_FEATURE_I18N_LOCALE__) {
-    if (!titleImage && titleText) {
-      titleText = formatI18n(titleText);
-    }
-  }
   return createVNode("div", {
     "class": "uni-page-head-bd"
   }, [createVNode("div", {

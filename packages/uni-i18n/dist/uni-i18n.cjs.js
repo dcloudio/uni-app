@@ -201,8 +201,8 @@ class I18n {
             this.messages[locale] = message;
         }
     }
-    f(message, values) {
-        return this.formater.interpolate(message, values).join('');
+    f(message, values, delimiters) {
+        return this.formater.interpolate(message, values, delimiters).join('');
     }
     t(key, locale, values) {
         let message = this.message;
@@ -297,8 +297,8 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     };
     return {
         i18n,
-        f(message, values) {
-            return i18n.f(message, values);
+        f(message, values, delimiters) {
+            return i18n.f(message, values, delimiters);
         },
         t(key, values) {
             return t(key, values);

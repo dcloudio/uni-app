@@ -4,7 +4,7 @@ import {
   ON_NAVIGATION_BAR_BUTTON_TAP,
 } from '@dcloudio/uni-shared'
 import { isColor } from './utils'
-import { invokeHook } from '@dcloudio/uni-core'
+import { initNavigationBarI18n, invokeHook } from '@dcloudio/uni-core'
 export function initTitleNView(
   webviewStyle: PlusWebviewWebviewStyles,
   routeMeta: UniApp.PageRouteMeta
@@ -40,8 +40,7 @@ export function initTitleNView(
         value as any
     }
   })
-
-  webviewStyle.titleNView = titleNView
+  webviewStyle.titleNView = initNavigationBarI18n(titleNView)
 }
 
 function createTitleImageTags(titleImage: string) {

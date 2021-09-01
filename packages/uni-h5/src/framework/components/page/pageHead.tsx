@@ -9,7 +9,6 @@ import {
   ICON_PATH_SEARCH,
   ICON_PATH_BACK,
   ICON_PATH_CLOSE,
-  formatI18n,
 } from '@dcloudio/uni-core'
 import { usePageMeta } from '../../setup/provide'
 import {
@@ -158,11 +157,6 @@ function createPageHeadTitleTextTsx({
   titleText,
   titleImage,
 }: UniApp.PageNavigationBar) {
-  if (__UNI_FEATURE_I18N_LOCALE__) {
-    if (!titleImage && titleText) {
-      titleText = formatI18n(titleText)
-    }
-  }
   return (
     <div class="uni-page-head-bd">
       <div

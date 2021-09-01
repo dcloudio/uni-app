@@ -100,8 +100,12 @@ export function initVueI18n(
   }
   return {
     i18n,
-    f(message: string, values?: Record<string, unknown> | Array<unknown>) {
-      return i18n.f(message, values)
+    f(
+      message: string,
+      values?: Record<string, unknown> | Array<unknown>,
+      delimiters?: [string, string]
+    ) {
+      return i18n.f(message, values, delimiters)
     },
     t(key: string, values?: Record<string, unknown> | Array<unknown>) {
       return t(key, values)

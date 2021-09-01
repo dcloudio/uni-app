@@ -65,11 +65,6 @@ ${defineLayoutComponentsCode}
 ${definePagesCode}
 ${uniRoutesCode}
 ${config.command === 'serve' ? hmrCode : ''}
-const localeKeys = Object.keys(__uniConfig.locales)
-if (localeKeys.length) {
-  const i18n = useI18n()
-  localeKeys.forEach(locale=>i18n.add(locale,__uniConfig.locales[locale]))
-}
 export {}
 `
 }

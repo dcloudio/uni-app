@@ -1130,6 +1130,7 @@ var serviceContext = (function (vue) {
   const NAVBAR_HEIGHT = 44;
   const TABBAR_HEIGHT = 50;
   const ON_REACH_BOTTOM_DISTANCE = 50;
+  const I18N_JSON_DELIMITERS = ['%', '%'];
   const PRIMARY_COLOR = '#007aff';
   const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
@@ -1461,8 +1462,8 @@ var serviceContext = (function (vue) {
               this.messages[locale] = message;
           }
       }
-      f(message, values) {
-          return this.formater.interpolate(message, values).join('');
+      f(message, values, delimiters) {
+          return this.formater.interpolate(message, values, delimiters).join('');
       }
       t(key, locale, values) {
           let message = this.message;
@@ -1557,8 +1558,8 @@ var serviceContext = (function (vue) {
       };
       return {
           i18n,
-          f(message, values) {
-              return i18n.f(message, values);
+          f(message, values, delimiters) {
+              return i18n.f(message, values, delimiters);
           },
           t(key, values) {
               return t(key, values);
@@ -1580,8 +1581,54 @@ var serviceContext = (function (vue) {
           },
       };
   }
+  function isI18nStr(value, delimiters) {
+      return value.indexOf(delimiters[0]) > -1;
+  }
 
   let i18n;
+  function getLocaleMessage() {
+      const locale = useI18n().getLocale();
+      const locales = __uniConfig.locales;
+      return (locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {});
+  }
+  function formatI18n(message) {
+      if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+          return useI18n().f(message, getLocaleMessage(), I18N_JSON_DELIMITERS);
+      }
+      return message;
+  }
+  function resolveJsonObj(jsonObj, names) {
+      if (names.length === 1) {
+          if (jsonObj) {
+              const value = jsonObj[names[0]];
+              if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+                  return jsonObj;
+              }
+          }
+          return;
+      }
+      const name = names.shift();
+      return resolveJsonObj(jsonObj && jsonObj[name], names);
+  }
+  function defineI18nProperties(obj, names) {
+      names.forEach((name) => defineI18nProperty(obj, name));
+  }
+  function defineI18nProperty(obj, names) {
+      const jsonObj = resolveJsonObj(obj, names);
+      if (!jsonObj) {
+          return;
+      }
+      const prop = names[names.length - 1];
+      let value = jsonObj[prop];
+      Object.defineProperty(jsonObj, prop, {
+          get() {
+              return formatI18n(value);
+          },
+          set(v) {
+              value = v;
+          },
+      });
+  }
   function useI18n() {
       if (!i18n) {
           let locale;
@@ -1786,6 +1833,28 @@ var serviceContext = (function (vue) {
           useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['指紋識別中...']), false);
       }
   });
+
+  const isEnableLocale = once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+  function initNavigationBarI18n(navigationBar) {
+      if (isEnableLocale()) {
+          defineI18nProperties(navigationBar, [
+              ['titleText'],
+              ['searchInput', 'placeholder'],
+          ]);
+      }
+      return navigationBar;
+  }
+  function initPullToRefreshI18n(pullToRefresh) {
+      if (isEnableLocale()) {
+          const CAPTION = 'caption';
+          defineI18nProperties(pullToRefresh, [
+              ['contentdown', CAPTION],
+              ['contentover', CAPTION],
+              ['contentrefresh', CAPTION],
+          ]);
+      }
+      return pullToRefresh;
+  }
 
   const E = function () {
       // Keep this empty so it's easier to inherit from
@@ -2100,6 +2169,14 @@ var serviceContext = (function (vue) {
       invokeViewMethodKeepAlive,
   });
 
+  function initI18n() {
+      const localeKeys = Object.keys(__uniConfig.locales);
+      if (localeKeys.length) {
+          const i18n = useI18n();
+          localeKeys.forEach((locale) => i18n.add(locale, __uniConfig.locales[locale]));
+      }
+  }
+
   function initOn() {
       const { on } = UniServiceJSBridge;
       on(ON_RESIZE, onResize);
@@ -2139,8 +2216,11 @@ var serviceContext = (function (vue) {
   }
 
   function initService() {
-      initOn();
-      initSubscribe();
+      initI18n();
+      {
+          initOn();
+          initSubscribe();
+      }
   }
   function initAppVm(appVm) {
       appVm.$vm = appVm;
@@ -10292,9 +10372,9 @@ var serviceContext = (function (vue) {
       if (!routeMeta.enablePullDownRefresh) {
           return;
       }
-      webviewStyle.pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
+      webviewStyle.pullToRefresh = initPullToRefreshI18n(normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
           ? defaultAndroidPullToRefresh
-          : defaultPullToRefresh, routeMeta.pullToRefresh));
+          : defaultPullToRefresh, routeMeta.pullToRefresh)));
   }
   const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
   const defaultPullToRefresh = {
@@ -10346,7 +10426,7 @@ var serviceContext = (function (vue) {
                   value;
           }
       });
-      webviewStyle.titleNView = titleNView;
+      webviewStyle.titleNView = initNavigationBarI18n(titleNView);
   }
   function createTitleImageTags(titleImage) {
       return [

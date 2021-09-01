@@ -4,6 +4,9 @@ import { useRoute } from 'vue-router'
 
 import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
 import {
+  defineI18nProperties,
+  initNavigationBarI18n,
+  initPullToRefreshI18n,
   initRouteMeta,
   normalizePullToRefreshRpx,
   PolySymbol,
@@ -87,6 +90,8 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
           NAVBAR_HEIGHT + (__NODE_JS__ ? 0 : safeAreaInsets.top)
       }
       pageMeta.pullToRefresh = pullToRefresh
+
+      __UNI_FEATURE_I18N_LOCALE__ && initPullToRefreshI18n(pullToRefresh)
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
@@ -97,6 +102,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
     navigationBar.titleSize = titleSize || '16px'
     navigationBar.titleColor = titleColor || '#ffffff'
     navigationBar.backgroundColor = backgroundColor || '#F7F7F7'
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar)
   }
   if (!__NODE_JS__ && __UNI_FEATURE_PAGES__ && history.state) {
     // 首页执行了redirectTo
@@ -109,5 +115,6 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
       pageMeta.isQuit = true
     }
   }
+
   return pageMeta
 }

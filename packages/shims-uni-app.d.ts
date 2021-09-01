@@ -149,6 +149,15 @@ declare namespace UniApp {
     height?: number
     range?: number
     offset?: number
+    contentdown?: {
+      caption?: string
+    }
+    contentover?: {
+      caption?: string
+    }
+    contentrefresh?: {
+      caption?: string
+    }
   }
 
   interface PagesJsonPagePlatformStyle {

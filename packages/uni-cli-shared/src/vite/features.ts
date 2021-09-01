@@ -45,7 +45,7 @@ function initProjectFeature({ inputDir }: InitFeaturesOptions) {
     i18nZhHans: true,
     i18nZhHant: true,
   }
-  const localesDir = path.resolve(inputDir, 'locales')
+  const localesDir = path.resolve(inputDir, 'locale')
   if (fs.existsSync(localesDir)) {
     if (
       fs.readdirSync(localesDir).find((file) => path.extname(file) === '.json')

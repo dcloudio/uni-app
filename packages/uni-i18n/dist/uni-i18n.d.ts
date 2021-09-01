@@ -32,7 +32,7 @@ export declare class I18n {
     getLocale(): BuiltInLocale;
     watchLocale(fn: LocaleWatcher): () => void;
     add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
-    f(message: string, values?: Record<string, unknown> | Array<unknown>): string;
+    f(message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]): string;
     t(key: string, values?: Record<string, unknown> | Array<unknown> | BuiltInLocale): string;
     t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>): string;
 }
@@ -47,7 +47,7 @@ export declare interface I18nOptions {
 
 export declare function initVueI18n(locale?: BuiltInLocale, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, watcher?: (locale: BuiltInLocale) => void): {
     i18n: I18n;
-    f(message: string, values?: Record<string, unknown> | unknown[] | undefined): string;
+    f(message: string, values?: Record<string, unknown> | unknown[] | undefined, delimiters?: [string, string] | undefined): string;
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
     add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
     watch(fn: LocaleWatcher): () => void;
