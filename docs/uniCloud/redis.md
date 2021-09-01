@@ -6,7 +6,7 @@ redis是一个内存中的数据结构存储系统，在项目中通常作为数
 
 ## 开通Redis扩展能力@buy
 
-参考[开通redis](redis-buy.md)
+参考[开通redis](uniCloud/redis-buy.md)
 
 ## 为云函数启用redis扩展能力@use-in-function
 
