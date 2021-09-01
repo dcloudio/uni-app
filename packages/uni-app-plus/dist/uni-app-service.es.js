@@ -1483,42 +1483,36 @@ var serviceContext = (function (vue) {
   }
 
   const ignoreVueI18n = true;
-  function initLocaleWatcher(appVm, i18n) {
-      if (appVm.$i18n) {
-          const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
-          vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
-              i18n.setLocale(newLocale);
-          }, {
-              immediate: true,
-          });
-      }
+  function watchAppLocale(appVm, i18n) {
+      appVm.$watch(() => appVm.$locale, (newLocale) => {
+          i18n.setLocale(newLocale);
+      });
   }
-  // function getDefaultLocale() {
-  //   if (typeof navigator !== 'undefined') {
-  //     return (navigator as any).userLanguage || navigator.language
-  //   }
-  //   if (typeof plus !== 'undefined') {
-  //     // TODO 待调整为最新的获取语言代码
-  //     return plus.os.language
-  //   }
-  //   return uni.getSystemInfoSync().language
-  // }
-  const i18nInstances = [];
-  function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+  function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
       // 兼容旧版本入参
       if (typeof locale !== 'string') {
-          [locale, messages] = [messages, locale];
+          [locale, messages] = [
+              messages,
+              locale,
+          ];
       }
       if (typeof locale !== 'string') {
-          locale = fallbackLocale;
+          locale =
+              (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
+                  LOCALE_EN;
+      }
+      if (typeof fallbackLocale !== 'string') {
+          fallbackLocale =
+              // @ts-expect-error
+              (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+                  LOCALE_EN;
       }
       const i18n = new I18n({
-          locale: locale || fallbackLocale,
+          locale,
           fallbackLocale,
           messages,
           watcher,
       });
-      i18nInstances.push(i18n);
       let t = (key, values) => {
           if (typeof getApp !== 'function') {
               // app view
@@ -1529,17 +1523,19 @@ var serviceContext = (function (vue) {
           }
           else {
               const appVm = getApp().$vm;
+              watchAppLocale(appVm, i18n);
               if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
                   // if (!locale) {
                   //   i18n.setLocale(getDefaultLocale())
                   // }
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
+                      // 触发响应式
+                      appVm.$locale;
                       return i18n.t(key, values);
                   };
               }
               else {
-                  initLocaleWatcher(appVm, i18n);
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
                       const $i18n = appVm.$i18n;
@@ -1574,10 +1570,7 @@ var serviceContext = (function (vue) {
               return i18n.getLocale();
           },
           setLocale(newLocale) {
-              // 更新所有实例 locale
-              i18nInstances.forEach((ins) => {
-                  ins.setLocale(newLocale);
-              });
+              return i18n.setLocale(newLocale);
           },
       };
   }
@@ -1640,21 +1633,7 @@ var serviceContext = (function (vue) {
                   locale = plus.webview.currentWebview().getStyle().locale;
               }
           }
-          const SET_LOCALE_API = 'i18n.setLocale';
-          {
-              i18n = initVueI18n(locale, undefined, undefined, typeof getApp === 'function'
-                  ? (locale) => {
-                      const pages = getCurrentPages();
-                      pages.forEach((page) => {
-                          UniServiceJSBridge.publishHandler(SET_LOCALE_API, locale, page.$page.id);
-                      });
-                      weex.requireModule('plus').setLanguage(locale);
-                  }
-                  : undefined);
-          }
-          if (typeof getApp !== 'function') {
-              UniViewJSBridge.subscribe(SET_LOCALE_API, i18n.setLocale);
-          }
+          i18n = initVueI18n(locale);
       }
       return i18n;
   }
@@ -2225,6 +2204,15 @@ var serviceContext = (function (vue) {
   function initAppVm(appVm) {
       appVm.$vm = appVm;
       appVm.$mpType = 'app';
+      const locale = vue.ref(useI18n().getLocale());
+      Object.defineProperty(appVm, '$locale', {
+          get() {
+              return locale.value;
+          },
+          set(v) {
+              locale.value = v;
+          },
+      });
   }
   function initPageVm(pageVm, page) {
       pageVm.route = page.route;
@@ -4404,12 +4392,22 @@ var serviceContext = (function (vue) {
   });
 
   const getLocale = defineSyncApi('getLocale', () => {
-      const i18n = useI18n();
-      return i18n.getLocale();
+      // 优先使用 $locale
+      const app = getApp({ allowDefault: true });
+      if (app && app.$vm) {
+          return app.$vm.$locale;
+      }
+      return useI18n().getLocale();
   });
   const setLocale = defineSyncApi('setLocale', (locale) => {
-      const i18n = useI18n();
-      return i18n.setLocale(locale);
+      getApp().$vm.$locale = locale;
+      {
+          const pages = getCurrentPages();
+          pages.forEach((page) => {
+              UniServiceJSBridge.publishHandler('setLocale', locale, page.$page.id);
+          });
+          weex.requireModule('plus').setLanguage(locale);
+      }
   });
 
   const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';

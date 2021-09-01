@@ -222,42 +222,36 @@ class I18n {
 }
 
 const ignoreVueI18n = true;
-function initLocaleWatcher(appVm, i18n) {
-    if (appVm.$i18n) {
-        const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
-        vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
-            i18n.setLocale(newLocale);
-        }, {
-            immediate: true,
-        });
-    }
+function watchAppLocale(appVm, i18n) {
+    appVm.$watch(() => appVm.$locale, (newLocale) => {
+        i18n.setLocale(newLocale);
+    });
 }
-// function getDefaultLocale() {
-//   if (typeof navigator !== 'undefined') {
-//     return (navigator as any).userLanguage || navigator.language
-//   }
-//   if (typeof plus !== 'undefined') {
-//     // TODO 待调整为最新的获取语言代码
-//     return plus.os.language
-//   }
-//   return uni.getSystemInfoSync().language
-// }
-const i18nInstances = [];
-function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
-        [locale, messages] = [messages, locale];
+        [locale, messages] = [
+            messages,
+            locale,
+        ];
     }
     if (typeof locale !== 'string') {
-        locale = fallbackLocale;
+        locale =
+            (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
+                LOCALE_EN;
+    }
+    if (typeof fallbackLocale !== 'string') {
+        fallbackLocale =
+            // @ts-expect-error
+            (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+                LOCALE_EN;
     }
     const i18n = new I18n({
-        locale: locale || fallbackLocale,
+        locale,
         fallbackLocale,
         messages,
         watcher,
     });
-    i18nInstances.push(i18n);
     let t = (key, values) => {
         if (typeof getApp !== 'function') {
             // app view
@@ -268,17 +262,19 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
         }
         else {
             const appVm = getApp().$vm;
+            watchAppLocale(appVm, i18n);
             if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
                 // if (!locale) {
                 //   i18n.setLocale(getDefaultLocale())
                 // }
                 /* eslint-disable no-func-assign */
                 t = function (key, values) {
+                    // 触发响应式
+                    appVm.$locale;
                     return i18n.t(key, values);
                 };
             }
             else {
-                initLocaleWatcher(appVm, i18n);
                 /* eslint-disable no-func-assign */
                 t = function (key, values) {
                     const $i18n = appVm.$i18n;
@@ -313,10 +309,7 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
             return i18n.getLocale();
         },
         setLocale(newLocale) {
-            // 更新所有实例 locale
-            i18nInstances.forEach((ins) => {
-                ins.setLocale(newLocale);
-            });
+            return i18n.setLocale(newLocale);
         },
     };
 }

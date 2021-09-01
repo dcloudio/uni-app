@@ -13,19 +13,13 @@ type Interpolate = (
   values?: Record<string, unknown> | Array<unknown>
 ) => string
 
-function initLocaleWatcher(appVm: any, i18n: I18n) {
-  if (appVm.$i18n) {
-    const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm
-    vm.$watch(
-      appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale,
-      (newLocale: BuiltInLocale) => {
-        i18n.setLocale(newLocale)
-      },
-      {
-        immediate: true,
-      }
-    )
-  }
+function watchAppLocale(appVm: any, i18n: I18n) {
+  appVm.$watch(
+    () => appVm.$locale,
+    (newLocale: string) => {
+      i18n.setLocale(newLocale)
+    }
+  )
 }
 
 // function getDefaultLocale() {
@@ -42,20 +36,32 @@ function initLocaleWatcher(appVm: any, i18n: I18n) {
 const i18nInstances: I18n[] = []
 
 export function initVueI18n(
-  locale: BuiltInLocale = LOCALE_EN,
+  locale?: string,
   messages: LocaleMessages = {},
-  fallbackLocale: BuiltInLocale = LOCALE_EN,
-  watcher?: (locale: BuiltInLocale) => void
+  fallbackLocale?: BuiltInLocale,
+  watcher?: (locale: string) => void
 ) {
   // 兼容旧版本入参
   if (typeof locale !== 'string') {
-    ;[locale, messages] = [messages as BuiltInLocale, locale as LocaleMessages]
+    ;[locale, messages] = [
+      messages as unknown as string,
+      locale as unknown as LocaleMessages,
+    ]
   }
   if (typeof locale !== 'string') {
-    locale = fallbackLocale
+    locale =
+      (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
+      LOCALE_EN
   }
+  if (typeof fallbackLocale !== 'string') {
+    fallbackLocale =
+      // @ts-expect-error
+      (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+      LOCALE_EN
+  }
+
   const i18n = new I18n({
-    locale: locale || fallbackLocale,
+    locale,
     fallbackLocale,
     messages,
     watcher,
@@ -72,16 +78,18 @@ export function initVueI18n(
       }
     } else {
       const appVm = getApp().$vm
+      watchAppLocale(appVm, i18n)
       if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
         // if (!locale) {
         //   i18n.setLocale(getDefaultLocale())
         // }
         /* eslint-disable no-func-assign */
         t = function (key, values) {
+          // 触发响应式
+          appVm.$locale
           return i18n.t(key, values)
         }
       } else {
-        initLocaleWatcher(appVm, i18n)
         /* eslint-disable no-func-assign */
         t = function (key, values) {
           const $i18n = appVm.$i18n
@@ -123,11 +131,8 @@ export function initVueI18n(
     getLocale() {
       return i18n.getLocale()
     },
-    setLocale(newLocale: BuiltInLocale) {
-      // 更新所有实例 locale
-      i18nInstances.forEach((ins) => {
-        ins.setLocale(newLocale)
-      })
+    setLocale(newLocale: string) {
+      return i18n.setLocale(newLocale)
     },
   }
 }

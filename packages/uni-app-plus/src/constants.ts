@@ -20,3 +20,5 @@ export const WEBVIEW_REMOVED = 'webviewRemoved'
 export const WEBVIEW_ID_PREFIX = 'webviewId'
 
 export const INIT_PAGE_SCROLL = 'initPageScroll'
+
+export const SET_LOCALE_API = 'setLocale'

@@ -58,9 +58,7 @@ function useI18n() {
         locale = uniShared.getEnvLocale();
       }
     }
-    {
-      i18n = uniI18n.initVueI18n(locale);
-    }
+    i18n = uniI18n.initVueI18n(locale);
   }
   return i18n;
 }
@@ -468,6 +466,15 @@ function initService() {
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
   appVm2.$mpType = "app";
+  const locale = vue.ref(useI18n().getLocale());
+  Object.defineProperty(appVm2, "$locale", {
+    get() {
+      return locale.value;
+    },
+    set(v2) {
+      locale.value = v2;
+    }
+  });
 }
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;

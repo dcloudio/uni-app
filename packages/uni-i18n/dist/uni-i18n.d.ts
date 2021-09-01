@@ -29,7 +29,7 @@ export declare class I18n {
     private formater;
     constructor({ locale, fallbackLocale, messages, watcher, formater, }: I18nOptions);
     setLocale(locale: string): void;
-    getLocale(): BuiltInLocale;
+    getLocale(): string;
     watchLocale(fn: LocaleWatcher): () => void;
     add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
     f(message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]): string;
@@ -38,21 +38,21 @@ export declare class I18n {
 }
 
 export declare interface I18nOptions {
-    locale: BuiltInLocale;
-    fallbackLocale?: BuiltInLocale;
+    locale: string;
+    fallbackLocale?: string;
     messages?: LocaleMessages;
     formater?: Formatter_2;
     watcher?: LocaleWatcher;
 }
 
-export declare function initVueI18n(locale?: BuiltInLocale, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, watcher?: (locale: BuiltInLocale) => void): {
+export declare function initVueI18n(locale?: string, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, watcher?: (locale: string) => void): {
     i18n: I18n;
     f(message: string, values?: Record<string, unknown> | unknown[] | undefined, delimiters?: [string, string] | undefined): string;
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
     add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
     watch(fn: LocaleWatcher): () => void;
-    getLocale(): BuiltInLocale;
-    setLocale(newLocale: BuiltInLocale): void;
+    getLocale(): string;
+    setLocale(newLocale: string): void;
 };
 
 export declare function isI18nStr(value: string, delimiters: [string, string]): boolean;
@@ -69,11 +69,9 @@ export declare const LOCALE_ZH_HANS = "zh-Hans";
 
 export declare const LOCALE_ZH_HANT = "zh-Hant";
 
-export declare type LocaleMessages = {
-    [name in BuiltInLocale]?: Record<string, string>;
-};
+export declare type LocaleMessages = Record<string, Record<string, string>>;
 
-export declare type LocaleWatcher = (newLocale: BuiltInLocale, oldLocale: BuiltInLocale) => void;
+export declare type LocaleWatcher = (newLocale: string, oldLocale: string) => void;
 
 export declare function parseI18nJson(jsonObj: unknown, values: Record<string, string>, delimiters: [string, string]): unknown;
 

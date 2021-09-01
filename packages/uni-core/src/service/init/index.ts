@@ -1,4 +1,5 @@
-import { ComponentPublicInstance } from 'vue'
+import { ComponentPublicInstance, ref } from 'vue'
+import { useI18n } from '../../i18n'
 import { initI18n } from './i18n'
 import { initOn } from './on'
 import { initSubscribe } from './subscribe'
@@ -14,6 +15,15 @@ export function initService() {
 export function initAppVm(appVm: ComponentPublicInstance) {
   appVm.$vm = appVm
   appVm.$mpType = 'app'
+  const locale = ref<string>(useI18n().getLocale())
+  Object.defineProperty(appVm, '$locale', {
+    get() {
+      return locale.value
+    },
+    set(v) {
+      locale.value = v
+    },
+  })
 }
 
 export function initPageVm(

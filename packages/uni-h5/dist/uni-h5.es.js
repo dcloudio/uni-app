@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementBlock, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementBlock, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -55,9 +55,7 @@ function useI18n() {
         locale = __uniConfig.locale || navigator.language;
       }
     }
-    {
-      i18n = initVueI18n(locale);
-    }
+    i18n = initVueI18n(locale);
   }
   return i18n;
 }
@@ -1345,6 +1343,15 @@ function initService() {
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
   appVm2.$mpType = "app";
+  const locale = ref(useI18n().getLocale());
+  Object.defineProperty(appVm2, "$locale", {
+    get() {
+      return locale.value;
+    },
+    set(v2) {
+      locale.value = v2;
+    }
+  });
 }
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
@@ -4331,12 +4338,14 @@ const onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {
 const offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {
 });
 const getLocale = /* @__PURE__ */ defineSyncApi("getLocale", () => {
-  const i18n2 = useI18n();
-  return i18n2.getLocale();
+  const app = getApp({ allowDefault: true });
+  if (app && app.$vm) {
+    return app.$vm.$locale;
+  }
+  return useI18n().getLocale();
 });
 const setLocale = /* @__PURE__ */ defineSyncApi("setLocale", (locale) => {
-  const i18n2 = useI18n();
-  return i18n2.setLocale(locale);
+  getApp().$vm.$locale = locale;
 });
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
 const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {

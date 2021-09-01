@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     getOpenerEventChannel: () => EventChannel
     $page: Page.PageInstance['$page']
     $mpType?: 'app' | 'page'
+    $locale?: string
     __isTabBar: boolean
   }
 

@@ -84,32 +84,7 @@ export function useI18n() {
     } else {
       locale = uni.getSystemInfoSync().language as BuiltInLocale
     }
-    const SET_LOCALE_API = 'i18n.setLocale'
-    if (__PLATFORM__ === 'app') {
-      i18n = initVueI18n(
-        locale,
-        undefined,
-        undefined,
-        typeof getApp === 'function'
-          ? (locale) => {
-              const pages = getCurrentPages()
-              pages.forEach((page) => {
-                UniServiceJSBridge.publishHandler(
-                  SET_LOCALE_API,
-                  locale,
-                  page.$page.id
-                )
-              })
-              weex.requireModule('plus').setLanguage(locale)
-            }
-          : undefined
-      )
-    } else {
-      i18n = initVueI18n(locale)
-    }
-    if (__PLATFORM__ === 'app' && typeof getApp !== 'function') {
-      UniViewJSBridge.subscribe(SET_LOCALE_API, i18n.setLocale)
-    }
+    i18n = initVueI18n(locale)
   }
   return i18n
 }

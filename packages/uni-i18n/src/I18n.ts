@@ -14,9 +14,7 @@ export type BuiltInLocale =
   | typeof LOCALE_FR
   | typeof LOCALE_ES
 
-export type LocaleMessages = {
-  [name in BuiltInLocale]?: Record<string, string>
-}
+export type LocaleMessages = Record<string, Record<string, string>>
 
 export interface Formatter {
   interpolate: (
@@ -26,14 +24,11 @@ export interface Formatter {
   ) => Array<unknown>
 }
 
-export type LocaleWatcher = (
-  newLocale: BuiltInLocale,
-  oldLocale: BuiltInLocale
-) => void
+export type LocaleWatcher = (newLocale: string, oldLocale: string) => void
 
 export interface I18nOptions {
-  locale: BuiltInLocale
-  fallbackLocale?: BuiltInLocale
+  locale: string
+  fallbackLocale?: string
   messages?: LocaleMessages
   formater?: Formatter
   watcher?: LocaleWatcher
@@ -83,8 +78,8 @@ function normalizeLocale(
 }
 
 export class I18n {
-  private locale: BuiltInLocale = LOCALE_EN
-  private fallbackLocale: BuiltInLocale = LOCALE_EN
+  private locale: string = LOCALE_EN
+  private fallbackLocale: string = LOCALE_EN
   private message: Record<string, string> = {}
   private messages: LocaleMessages = {}
   private watchers: LocaleWatcher[] = []
