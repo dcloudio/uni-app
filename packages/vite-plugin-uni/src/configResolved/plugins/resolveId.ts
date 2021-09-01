@@ -53,6 +53,7 @@ export function uniResolveIdPlugin(
           path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
         ))
       }
+      // fixed by vite 3.5.2 https://github.com/vitejs/vite/pull/4728
       if (isInHBuilderX()) {
         // 解决文件路径包含转义字符（空格）等
         // /@fs/Applications/HBuilderX%20Alpha.app/Contents/HBuilderX/plugins/uniapp-cli-vite/node_modules/vite/dist/client/env.mjs

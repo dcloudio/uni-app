@@ -7,6 +7,17 @@ var uniI18n = require("@dcloudio/uni-i18n");
 var shared = require("@vue/shared");
 var vueRouter = require("vue-router");
 let i18n;
+function getLocaleMessage() {
+  const locale = useI18n().getLocale();
+  const locales = __uniConfig.locales;
+  return locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {};
+}
+function formatI18n(message) {
+  if (__uniConfig.locales && uniI18n.isI18nStr(message, uniShared.I18N_JSON_DELIMITERS)) {
+    return useI18n().f(message, getLocaleMessage());
+  }
+  return message;
+}
 function useI18n() {
   if (!i18n) {
     let locale;
@@ -21,70 +32,73 @@ function useI18n() {
   }
   return i18n;
 }
-function normalizeMessages(namespace, messages) {
-  return Object.keys(messages).reduce((res, name) => {
-    res[namespace + name] = messages[name];
+function normalizeMessages(module, keys, values) {
+  return keys.reduce((res, name, index2) => {
+    res[module + name] = values[index2];
     return res;
   }, {});
 }
 const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.async.";
+  const keys = ["error"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, {
-      error: "The connection timed out, click the screen to try again."
-    }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, [
+      "The connection timed out, click the screen to try again."
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, {
-      error: "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
-    }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, [
+      "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, {
-      error: "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
-    }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, [
+      "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]), false);
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.picker.";
+  const keys = ["done", "cancel"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, ["OK", "Cancelar"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, ["OK", "Annuler"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.video.";
+  const keys = ["danmu", "volume"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, { danmu: "Danmu", volume: "Volume" }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, { danmu: "Danmu", volume: "Volumen" }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, { danmu: "Danmu", volume: "Le Volume" }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
   }
 });
 const E = function() {
@@ -10329,6 +10343,11 @@ function createPageHeadTitleTextTsx({
   titleText,
   titleImage
 }) {
+  if (__UNI_FEATURE_I18N_LOCALE__) {
+    if (!titleImage && titleText) {
+      titleText = formatI18n(titleText);
+    }
+  }
   return vue.createVNode("div", {
     "class": "uni-page-head-bd"
   }, [vue.createVNode("div", {
@@ -10765,4 +10784,5 @@ exports.setupApp = setupApp;
 exports.setupPage = setupPage;
 exports.setupWindow = setupWindow;
 exports.uni = uni$1;
+exports.useI18n = useI18n;
 exports.useTabBar = useTabBar;

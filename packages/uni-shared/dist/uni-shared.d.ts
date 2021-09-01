@@ -1,7 +1,8 @@
+/// <reference types="css-font-loading-module" />
+
 import { ComponentInternalInstance } from 'vue';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
-import { FontFaceDescriptors } from 'css-font-loading-module';
 import { RendererNode } from 'vue';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
@@ -185,6 +186,8 @@ export declare function getValueByDataPath(obj: any, path: string): unknown;
 declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
 }
+
+export declare const I18N_JSON_DELIMITERS: [string, string];
 
 export declare function initCustomDataset(): void;
 

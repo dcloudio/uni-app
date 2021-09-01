@@ -26,6 +26,7 @@ const BLACKLIST = [
   'cssConstant',
   'cssEnv',
   'cssVar',
+  'useI18n',
 ]
 
 export function genApiJson(code: string) {

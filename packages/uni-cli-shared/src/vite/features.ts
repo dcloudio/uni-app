@@ -3,7 +3,14 @@ import path from 'path'
 import { ConfigEnv } from 'vite'
 import { extend, isArray, isString } from '@vue/shared'
 
-interface ProjectFeatures {}
+interface ProjectFeatures {
+  i18nLocale: boolean
+  i18nEn: boolean
+  i18nEs: boolean
+  i18nFr: boolean
+  i18nZhHans: boolean
+  i18nZhHant: boolean
+}
 interface PagesFeatures {
   nvue: boolean
   pages: boolean
@@ -25,18 +32,26 @@ interface ManifestFeatures {
   promise: boolean
   longpress: boolean
   routerMode: '"hash"' | '"history"'
-  i18nEn: boolean
-  i18nEs: boolean
-  i18nFr: boolean
-  i18nZhHans: boolean
-  i18nZhHant: boolean
   vueOptionsApi: boolean
   vueProdDevTools: boolean
 }
 
-function initProjectFeature({ command }: InitFeaturesOptions) {
-  const features: ProjectFeatures = {}
-  if (command === 'build') {
+function initProjectFeature({ inputDir }: InitFeaturesOptions) {
+  const features: ProjectFeatures = {
+    i18nLocale: false,
+    i18nEn: true,
+    i18nEs: true,
+    i18nFr: true,
+    i18nZhHans: true,
+    i18nZhHant: true,
+  }
+  const localesDir = path.resolve(inputDir, 'locales')
+  if (fs.existsSync(localesDir)) {
+    if (
+      fs.readdirSync(localesDir).find((file) => path.extname(file) === '.json')
+    ) {
+      features.i18nLocale = true
+    }
   }
   return features
 }
@@ -155,11 +170,6 @@ function initManifestFeature({
     promise: false,
     longpress: true,
     routerMode: '"hash"',
-    i18nEn: true,
-    i18nEs: true,
-    i18nFr: true,
-    i18nZhHans: true,
-    i18nZhHant: true,
     vueOptionsApi: true,
     vueProdDevTools: false,
   }
@@ -175,28 +185,6 @@ function initManifestFeature({
     manifestJson.h5.router.mode === 'history'
   ) {
     features.routerMode = '"history"'
-  }
-  const platformJson = manifestJson[platform] || {}
-  const manifestFeatures = platformJson.features
-  if (manifestFeatures) {
-    const { i18n } = manifestFeatures
-    if (isArray(i18n)) {
-      if (!i18n.includes('en')) {
-        features.i18nEn = false
-      }
-      if (!i18n.includes('es')) {
-        features.i18nEs = false
-      }
-      if (!i18n.includes('fr')) {
-        features.i18nFr = false
-      }
-      if (!i18n.includes('zh-Hans')) {
-        features.i18nZhHans = false
-      }
-      if (!i18n.includes('zh-Hant')) {
-        features.i18nZhHant = false
-      }
-    }
   }
   // TODO other features
   return features
@@ -224,6 +212,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     i18nFr,
     i18nZhHans,
     i18nZhHant,
+    i18nLocale,
     vueOptionsApi,
     vueProdDevTools,
     pages,
@@ -261,6 +250,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     __UNI_FEATURE_I18N_ZH_HANS__: i18nZhHans, // 是否启用zh_Hans
     __UNI_FEATURE_I18N_ZH_HANT__: i18nZhHant, // 是否启用zh_Hant
     // 以下特性，编译器已自动识别是否需要启用
+    __UNI_FEATURE_I18N_LOCALE__: i18nLocale, // 是否启用i18n
     __UNI_FEATURE_NVUE__: nvue, // 是否启用nvue
     __UNI_FEATURE_ROUTER_MODE__: routerMode, // 路由模式
     __UNI_FEATURE_PAGES__: pages, // 是否多页面

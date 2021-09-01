@@ -107,7 +107,7 @@ var serviceContext = (function (vue) {
   const extend = Object.assign;
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
-  const isArray = Array.isArray;
+  const isArray$1 = Array.isArray;
   const isFunction = (val) => typeof val === 'function';
   const isString = (val) => typeof val === 'string';
   const isObject$1 = (val) => val !== null && typeof val === 'object';
@@ -164,7 +164,7 @@ var serviceContext = (function (vue) {
       return str;
   }
   function elemsInArray(strArr, optionalVal) {
-      if (!isArray(strArr) ||
+      if (!isArray$1(strArr) ||
           strArr.length === 0 ||
           strArr.find((val) => optionalVal.indexOf(val) === -1)) {
           return optionalVal;
@@ -189,7 +189,7 @@ var serviceContext = (function (vue) {
       if (!protocol) {
           return;
       }
-      if (!isArray(protocol)) {
+      if (!isArray$1(protocol)) {
           return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
       }
       const len = protocol.length;
@@ -219,7 +219,7 @@ var serviceContext = (function (vue) {
       // type check
       if (type != null) {
           let isValid = false;
-          const types = isArray(type) ? type : [type];
+          const types = isArray$1(type) ? type : [type];
           const expectedTypes = [];
           // value is valid as long as one of the specified types match
           for (let i = 0; i < types.length && !isValid; i++) {
@@ -252,7 +252,7 @@ var serviceContext = (function (vue) {
           valid = isObject$1(value);
       }
       else if (expectedType === 'Array') {
-          valid = isArray(value);
+          valid = isArray$1(value);
       }
       else {
           {
@@ -460,7 +460,7 @@ var serviceContext = (function (vue) {
   function wrapperOptions(interceptors, options = {}) {
       [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
           const hooks = interceptors[name];
-          if (!isArray(hooks)) {
+          if (!isArray$1(hooks)) {
               return;
           }
           const oldCallback = options[name];
@@ -474,11 +474,11 @@ var serviceContext = (function (vue) {
   }
   function wrapperReturnValue(method, returnValue) {
       const returnValueHooks = [];
-      if (isArray(globalInterceptors.returnValue)) {
+      if (isArray$1(globalInterceptors.returnValue)) {
           returnValueHooks.push(...globalInterceptors.returnValue);
       }
       const interceptor = scopedInterceptors[method];
-      if (interceptor && isArray(interceptor.returnValue)) {
+      if (interceptor && isArray$1(interceptor.returnValue)) {
           returnValueHooks.push(...interceptor.returnValue);
       }
       returnValueHooks.forEach((hook) => {
@@ -506,7 +506,7 @@ var serviceContext = (function (vue) {
   function invokeApi(method, api, options, ...params) {
       const interceptor = getApiInterceptorHooks(method);
       if (interceptor && Object.keys(interceptor).length) {
-          if (isArray(interceptor.invoke)) {
+          if (isArray$1(interceptor.invoke)) {
               const res = queue(interceptor.invoke, options);
               return res.then((options) => {
                   return api(wrapperOptions(interceptor, options), ...params);
@@ -797,7 +797,7 @@ var serviceContext = (function (vue) {
           if (key in query) {
               // an extra variable for ts types
               let currentValue = query[key];
-              if (!isArray(currentValue)) {
+              if (!isArray$1(currentValue)) {
                   currentValue = query[key] = [currentValue];
               }
               currentValue.push(value);
@@ -1262,18 +1262,20 @@ var serviceContext = (function (vue) {
       ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
   ];
 
+  const isArray = Array.isArray;
   const isObject = (val) => val !== null && typeof val === 'object';
+  const defaultDelimiters = ['{', '}'];
   class BaseFormatter {
       constructor() {
           this._caches = Object.create(null);
       }
-      interpolate(message, values) {
+      interpolate(message, values, delimiters = defaultDelimiters) {
           if (!values) {
               return [message];
           }
           let tokens = this._caches[message];
           if (!tokens) {
-              tokens = parse(message);
+              tokens = parse(message, delimiters);
               this._caches[message] = tokens;
           }
           return compile(tokens, values);
@@ -1281,24 +1283,24 @@ var serviceContext = (function (vue) {
   }
   const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
   const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-  function parse(format) {
+  function parse(format, [startDelimiter, endDelimiter]) {
       const tokens = [];
       let position = 0;
       let text = '';
       while (position < format.length) {
           let char = format[position++];
-          if (char === '{') {
+          if (char === startDelimiter) {
               if (text) {
                   tokens.push({ type: 'text', value: text });
               }
               text = '';
               let sub = '';
               char = format[position++];
-              while (char !== undefined && char !== '}') {
+              while (char !== undefined && char !== endDelimiter) {
                   sub += char;
                   char = format[position++];
               }
-              const isClosed = char === '}';
+              const isClosed = char === endDelimiter;
               const type = RE_TOKEN_LIST_VALUE.test(sub)
                   ? 'list'
                   : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
@@ -1306,12 +1308,12 @@ var serviceContext = (function (vue) {
                       : 'unknown';
               tokens.push({ value: sub, type });
           }
-          else if (char === '%') {
-              // when found rails i18n syntax, skip text capture
-              if (format[position] !== '{') {
-                  text += char;
-              }
-          }
+          //  else if (char === '%') {
+          //   // when found rails i18n syntax, skip text capture
+          //   if (format[position] !== '{') {
+          //     text += char
+          //   }
+          // }
           else {
               text += char;
           }
@@ -1322,7 +1324,7 @@ var serviceContext = (function (vue) {
   function compile(tokens, values) {
       const compiled = [];
       let index = 0;
-      const mode = Array.isArray(values)
+      const mode = isArray(values)
           ? 'list'
           : isObject(values)
               ? 'named'
@@ -1425,9 +1427,12 @@ var serviceContext = (function (vue) {
               this.messages[this.locale] = {};
           }
           this.message = this.messages[this.locale];
-          this.watchers.forEach((watcher) => {
-              watcher(this.locale, oldLocale);
-          });
+          // 仅发生变化时，通知
+          if (oldLocale !== this.locale) {
+              this.watchers.forEach((watcher) => {
+                  watcher(this.locale, oldLocale);
+              });
+          }
       }
       getLocale() {
           return this.locale;
@@ -1438,13 +1443,26 @@ var serviceContext = (function (vue) {
               this.watchers.splice(index, 1);
           };
       }
-      add(locale, message) {
-          if (this.messages[locale]) {
-              Object.assign(this.messages[locale], message);
+      add(locale, message, override = true) {
+          const curMessages = this.messages[locale];
+          if (curMessages) {
+              if (override) {
+                  Object.assign(curMessages, message);
+              }
+              else {
+                  Object.keys(message).forEach((key) => {
+                      if (!hasOwn(curMessages, key)) {
+                          curMessages[key] = message[key];
+                      }
+                  });
+              }
           }
           else {
               this.messages[locale] = message;
           }
+      }
+      f(message, values) {
+          return this.formater.interpolate(message, values).join('');
       }
       t(key, locale, values) {
           let message = this.message;
@@ -1484,6 +1502,7 @@ var serviceContext = (function (vue) {
   //   }
   //   return uni.getSystemInfoSync().language
   // }
+  const i18nInstances = [];
   function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
       // 兼容旧版本入参
       if (typeof locale !== 'string') {
@@ -1498,6 +1517,7 @@ var serviceContext = (function (vue) {
           messages,
           watcher,
       });
+      i18nInstances.push(i18n);
       let t = (key, values) => {
           if (typeof getApp !== 'function') {
               // app view
@@ -1537,17 +1557,26 @@ var serviceContext = (function (vue) {
       };
       return {
           i18n,
+          f(message, values) {
+              return i18n.f(message, values);
+          },
           t(key, values) {
               return t(key, values);
           },
-          add(locale, message) {
-              return i18n.add(locale, message);
+          add(locale, message, override = true) {
+              return i18n.add(locale, message, override);
+          },
+          watch(fn) {
+              return i18n.watchLocale(fn);
           },
           getLocale() {
               return i18n.getLocale();
           },
           setLocale(newLocale) {
-              return i18n.setLocale(newLocale);
+              // 更新所有实例 locale
+              i18nInstances.forEach((ins) => {
+                  ins.setLocale(newLocale);
+              });
           },
       };
   }
@@ -1584,212 +1613,177 @@ var serviceContext = (function (vue) {
   }
 
   // This file is created by scripts/i18n.js
-  function normalizeMessages(namespace, messages) {
-      return Object.keys(messages).reduce((res, name) => {
-          res[namespace + name] = messages[name];
+  function normalizeMessages(module, keys, values) {
+      return keys.reduce((res, name, index) => {
+          res[module + name] = values[index];
           return res;
       }, {});
   }
   const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.app.';
+      const keys = ['quit'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { quit: 'Press back button again to exit' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Press back button again to exit']), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, { quit: 'Pulse otra vez para salir' }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Pulse otra vez para salir']), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              quit: "Appuyez à nouveau pour quitter l'application",
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              "Appuyez à nouveau pour quitter l'application",
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { quit: '再按一次退出应用' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['再按一次退出应用']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { quit: '再按一次退出應用' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['再按一次退出應用']), false);
       }
   });
   const initI18nShowActionSheetMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.showActionSheet.';
+      const keys = ['cancel'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: 'Cancel' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel']), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: 'Cancelar' }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar']), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: 'Annuler' }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: '取消' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: '取消' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消']), false);
       }
   });
   const initI18nShowModalMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.showModal.';
+      const keys = ['cancel', 'confirm'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: 'Cancel', confirm: 'OK' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'OK']), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: 'Cancelar', confirm: 'OK' }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'OK']), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: 'Annuler', confirm: 'OK' }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'OK']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: '取消', confirm: '确定' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '确定']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: '取消', confirm: '確定' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '確定']), false);
       }
   });
   const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.chooseImage.';
+      const keys = ['cancel', 'sourceType.album', 'sourceType.camera'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, {
-              cancel: 'Cancel',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Camera',
-          }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'Album', 'Camera']), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              cancel: 'Cancelar',
-              'sourceType.album': 'Álbum',
-              'sourceType.camera': 'Cámara',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'Álbum', 'Cámara']), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              cancel: 'Annuler',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Caméra',
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'Album', 'Caméra']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '从相册选择',
-              'sourceType.camera': '拍摄',
-          }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '从相册选择', '拍摄']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '從相冊選擇',
-              'sourceType.camera': '拍攝',
-          }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']), false);
       }
   });
   const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.chooseVideo.';
+      const keys = ['cancel', 'sourceType.album', 'sourceType.camera'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, {
-              cancel: 'Cancel',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Camera',
-          }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'Album', 'Camera']), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              cancel: 'Cancelar',
-              'sourceType.album': 'Álbum',
-              'sourceType.camera': 'Cámara',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'Álbum', 'Cámara']), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              cancel: 'Annuler',
-              'sourceType.album': 'Album',
-              'sourceType.camera': 'Caméra',
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'Album', 'Caméra']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '从相册选择',
-              'sourceType.camera': '拍摄',
-          }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '从相册选择', '拍摄']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
-              cancel: '取消',
-              'sourceType.album': '從相冊選擇',
-              'sourceType.camera': '拍攝',
-          }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']), false);
       }
   });
   const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.scanCode.';
+      const keys = ['title', 'album', 'fail', 'flash.on', 'flash.off'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, {
-              title: 'Scan code',
-              album: 'Album',
-              fail: 'Recognition failure',
-              'flash.on': 'Tap to turn light on',
-              'flash.off': 'Tap to turn light off',
-          }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+              'Scan code',
+              'Album',
+              'Recognition failure',
+              'Tap to turn light on',
+              'Tap to turn light off',
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              title: 'Código de escaneo',
-              album: 'Álbum',
-              fail: 'Échec de la reconnaissance',
-              'flash.on': 'Toque para encender la luz',
-              'flash.off': 'Toque para apagar la luz',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+              'Código de escaneo',
+              'Álbum',
+              'Échec de la reconnaissance',
+              'Toque para encender la luz',
+              'Toque para apagar la luz',
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              title: 'Code d’analyse',
-              album: 'Album',
-              fail: 'Fallo de reconocimiento',
-              'flash.on': "Appuyez pour activer l'éclairage",
-              'flash.off': "Appuyez pour désactiver l'éclairage",
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              'Code d’analyse',
+              'Album',
+              'Fallo de reconocimiento',
+              "Appuyez pour activer l'éclairage",
+              "Appuyez pour désactiver l'éclairage",
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
-              title: '扫码',
-              album: '相册',
-              fail: '识别失败',
-              'flash.on': '轻触照亮',
-              'flash.off': '轻触关闭',
-          }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
+              '扫码',
+              '相册',
+              '识别失败',
+              '轻触照亮',
+              '轻触关闭',
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
-              title: '掃碼',
-              album: '相冊',
-              fail: '識別失敗',
-              'flash.on': '輕觸照亮',
-              'flash.off': '輕觸關閉',
-          }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
+              '掃碼',
+              '相冊',
+              '識別失敗',
+              '輕觸照亮',
+              '輕觸關閉',
+          ]), false);
       }
   });
   const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.startSoterAuthentication.';
+      const keys = ['authContent'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, { authContent: 'Fingerprint recognition' }));
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Fingerprint recognition']), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, {
-              authContent: 'Reconocimiento de huellas dactilares',
-          }));
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Reconocimiento de huellas dactilares']), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, {
-              authContent: "Reconnaissance de l'empreinte digitale",
-          }));
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              "Reconnaissance de l'empreinte digitale",
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { authContent: '指纹识别中...' }));
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['指纹识别中...']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { authContent: '指紋識別中...' }));
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['指紋識別中...']), false);
       }
   });
 
@@ -2611,7 +2605,7 @@ var serviceContext = (function (vue) {
       const res = childVal
           ? parentVal
               ? parentVal.concat(childVal)
-              : isArray(childVal)
+              : isArray$1(childVal)
                   ? childVal
                   : [childVal]
           : parentVal;
@@ -7350,7 +7344,7 @@ var serviceContext = (function (vue) {
       plus.gallery.save(options.filePath, warpPlusSuccessCallback(resolve), warpPlusErrorCallback(reject));
   }, SaveImageToPhotosAlbumProtocol, SaveImageToPhotosAlbumOptions);
 
-  const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
+  const compressImage$1 = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
       const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
       plus.zip.compressImage(extend({}, options, {
           dst,
@@ -7384,6 +7378,23 @@ var serviceContext = (function (vue) {
           }, reject);
       });
   }
+  function compressImage(tempFilePath) {
+      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+      return new Promise((resolve) => {
+          plus.nativeUI.showWaiting();
+          plus.zip.compressImage({
+              src: tempFilePath,
+              dst,
+              overwrite: true,
+          }, () => {
+              plus.nativeUI.closeWaiting();
+              resolve(dst);
+          }, () => {
+              plus.nativeUI.closeWaiting();
+              resolve(tempFilePath);
+          });
+      });
+  }
   const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, 
   // @ts-ignore crop 属性App特有
   ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
@@ -7409,7 +7420,22 @@ var serviceContext = (function (vue) {
       }
       function openCamera() {
           const camera = plus.camera.getCamera();
-          camera.captureImage((path) => successCallback([path]), errorCallback, {
+          camera.captureImage((path) => {
+              // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
+              // 判断是否需要压缩
+              if (sizeType && sizeType.includes('compressed')) {
+                  return getFileInfo(path)
+                      .then(({ size }) => {
+                      // 压缩阈值 0.5 兆
+                      const THRESHOLD = 1024 * 1024 * 0.5;
+                      return size && size > THRESHOLD
+                          ? compressImage(path).then((dstPath) => successCallback([dstPath]))
+                          : successCallback([path]);
+                  })
+                      .catch(errorCallback);
+              }
+              return successCallback([path]);
+          }, errorCallback, {
               filename: TEMP_PATH + '/camera/',
               resolution: 'high',
               crop,
@@ -9717,7 +9743,7 @@ var serviceContext = (function (vue) {
       Object.keys(options).forEach((name) => {
           if (name.indexOf('on') === 0) {
               const hooks = options[name];
-              if (isArray(hooks)) {
+              if (isArray$1(hooks)) {
                   hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
               }
               else {
@@ -9740,7 +9766,7 @@ var serviceContext = (function (vue) {
       initModules(instance, options.$renderjs, options['$' + RENDERJS_MODULES]);
   }
   function initModules(instance, modules, moduleIds = {}) {
-      if (!isArray(modules)) {
+      if (!isArray$1(modules)) {
           return;
       }
       const ownerId = instance.uid;
@@ -10309,7 +10335,7 @@ var serviceContext = (function (vue) {
           else if (name === 'titleImage' && value) {
               titleNView.tags = createTitleImageTags(value);
           }
-          else if (name === 'buttons' && isArray(value)) {
+          else if (name === 'buttons' && isArray$1(value)) {
               titleNView.buttons = value.map((button, index) => {
                   button.onclick = createTitleNViewBtnClick(index);
                   return button;
@@ -12468,7 +12494,7 @@ var serviceContext = (function (vue) {
     getRecorderManager: getRecorderManager,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
-    compressImage: compressImage,
+    compressImage: compressImage$1,
     compressVideo: compressVideo,
     chooseImage: chooseImage,
     chooseVideo: chooseVideo,
@@ -12548,7 +12574,7 @@ var serviceContext = (function (vue) {
       if ((process.env.NODE_ENV !== 'production')) {
           console.log(formatLog('publishHandler', event, args, pageIds));
       }
-      if (!isArray(pageIds)) {
+      if (!isArray$1(pageIds)) {
           pageIds = [pageIds];
       }
       const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;

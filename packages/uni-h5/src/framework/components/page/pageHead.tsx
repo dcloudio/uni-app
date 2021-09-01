@@ -9,6 +9,7 @@ import {
   ICON_PATH_SEARCH,
   ICON_PATH_BACK,
   ICON_PATH_CLOSE,
+  formatI18n,
 } from '@dcloudio/uni-core'
 import { usePageMeta } from '../../setup/provide'
 import {
@@ -157,6 +158,11 @@ function createPageHeadTitleTextTsx({
   titleText,
   titleImage,
 }: UniApp.PageNavigationBar) {
+  if (__UNI_FEATURE_I18N_LOCALE__) {
+    if (!titleImage && titleText) {
+      titleText = formatI18n(titleText)
+    }
+  }
   return (
     <div class="uni-page-head-bd">
       <div
@@ -315,7 +321,7 @@ function usePageHeadButtons({ id, navigationBar }: UniApp.PageRouteMeta) {
         }
         btn.fontFamily = fontFamily
       }
-      const pageHeadBtn = usePageHeadButton(id, index, btn, isTransparent)
+      const pageHeadBtn = usePageHeadButton(id!, index, btn, isTransparent)
       if (btn.float === 'left') {
         left.push(pageHeadBtn)
       } else {
@@ -374,7 +380,7 @@ function usePageHeadSearchInput({
   const { disabled } = searchInput!
   if (disabled) {
     const onClick = () => {
-      invokeHook(id, 'onNavigationBarSearchInputClicked')
+      invokeHook(id!, 'onNavigationBarSearchInputClicked')
     }
     return {
       focus,
@@ -385,19 +391,19 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true
-    invokeHook(id, 'onNavigationBarSearchInputFocusChanged', { focus: true })
+    invokeHook(id!, 'onNavigationBarSearchInputFocusChanged', { focus: true })
   }
   const onBlur = () => {
     focus.value = false
-    invokeHook(id, 'onNavigationBarSearchInputFocusChanged', { focus: false })
+    invokeHook(id!, 'onNavigationBarSearchInputFocusChanged', { focus: false })
   }
   const onInput = (evt: { detail: { value: string } }) => {
     text.value = evt.detail.value
-    invokeHook(id, 'onNavigationBarSearchInputChanged', { text: text.value })
+    invokeHook(id!, 'onNavigationBarSearchInputChanged', { text: text.value })
   }
   const onKeyup = (evt: KeyboardEvent) => {
     if (evt.key === 'Enter' || evt.keyCode === 13) {
-      invokeHook(id, 'onNavigationBarSearchInputConfirmed', {
+      invokeHook(id!, 'onNavigationBarSearchInputConfirmed', {
         text: text.value,
       })
     }

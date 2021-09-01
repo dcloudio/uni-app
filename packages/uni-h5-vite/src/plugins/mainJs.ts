@@ -37,10 +37,10 @@ export function uniMainJsPlugin() {
 }
 
 function createApp(code: string) {
-  return `import { plugin as __plugin } from '@dcloudio/uni-h5';createApp().app.use(__plugin).mount("#app");${code.replace(
+  return `import { plugin as __plugin } from '@dcloudio/uni-h5';${code.replace(
     'createSSRApp',
     'createVueApp as createSSRApp'
-  )}`
+  )};createApp().app.use(__plugin).mount("#app");`
 }
 
 function createLegacyApp(code: string) {
@@ -51,7 +51,7 @@ function createLegacyApp(code: string) {
 }
 
 function createSSRClientApp(code: string) {
-  return `import { plugin as __plugin } from '@dcloudio/uni-h5';import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';const { app: __app, store: __store } = createApp();__app.use(__plugin);__store && window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && __store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);__app.router.isReady().then(() => __app.mount("#app"));${code}`
+  return `import { plugin as __plugin } from '@dcloudio/uni-h5';import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';${code};const { app: __app, store: __store } = createApp();__app.use(__plugin);__store && window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && __store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);__app.router.isReady().then(() => __app.mount("#app"));`
 }
 
 function createSSRServerApp(code: string) {

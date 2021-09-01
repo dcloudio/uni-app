@@ -1,16 +1,24 @@
 export declare type BuiltInLocale = typeof LOCALE_ZH_HANS | typeof LOCALE_ZH_HANT | typeof LOCALE_EN | typeof LOCALE_FR | typeof LOCALE_ES;
 
+export declare function compileI18nJsonStr(jsonStr: string, { locale, locales, delimiters, }: {
+    locale: string;
+    locales: Record<string, Record<string, string>>;
+    delimiters: [string, string];
+}): string;
+
 export declare class Formatter {
     _caches: {
         [key: string]: Array<Token>;
     };
     constructor();
-    interpolate(message: string, values?: Record<string, unknown> | Array<unknown>): Array<unknown>;
+    interpolate(message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]): Array<unknown>;
 }
 
 declare interface Formatter_2 {
-    interpolate: (message: string, values?: Record<string, unknown> | Array<unknown>) => Array<unknown>;
+    interpolate: (message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]) => Array<unknown>;
 }
+
+export declare function hasI18nJson(jsonObj: unknown, delimiters: [string, string]): boolean;
 
 export declare class I18n {
     private locale;
@@ -23,7 +31,8 @@ export declare class I18n {
     setLocale(locale: string): void;
     getLocale(): BuiltInLocale;
     watchLocale(fn: LocaleWatcher): () => void;
-    add(locale: BuiltInLocale, message: Record<string, string>): void;
+    add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
+    f(message: string, values?: Record<string, unknown> | Array<unknown>): string;
     t(key: string, values?: Record<string, unknown> | Array<unknown> | BuiltInLocale): string;
     t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>): string;
 }
@@ -38,11 +47,17 @@ export declare interface I18nOptions {
 
 export declare function initVueI18n(locale?: BuiltInLocale, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, watcher?: (locale: BuiltInLocale) => void): {
     i18n: I18n;
+    f(message: string, values?: Record<string, unknown> | unknown[] | undefined): string;
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
-    add(locale: BuiltInLocale, message: Record<string, string>): void;
+    add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
+    watch(fn: LocaleWatcher): () => void;
     getLocale(): BuiltInLocale;
     setLocale(newLocale: BuiltInLocale): void;
 };
+
+export declare function isI18nStr(value: string, delimiters: [string, string]): boolean;
+
+export declare const isString: (val: unknown) => val is string;
 
 export declare const LOCALE_EN = "en";
 
@@ -59,6 +74,8 @@ export declare type LocaleMessages = {
 };
 
 export declare type LocaleWatcher = (newLocale: BuiltInLocale, oldLocale: BuiltInLocale) => void;
+
+export declare function parseI18nJson(jsonObj: unknown, values: Record<string, string>, delimiters: [string, string]): unknown;
 
 declare type Token = {
     type: 'text' | 'named' | 'list' | 'unknown';

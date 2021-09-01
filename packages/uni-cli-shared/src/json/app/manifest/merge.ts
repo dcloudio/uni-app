@@ -15,7 +15,7 @@ export function initRecursiveMerge(
         name: userManifestJson.versionName,
         code: userManifestJson.versionCode,
       },
-      language: userManifestJson.locale,
+      locale: userManifestJson.locale,
     },
     { plus: userManifestJson['app-plus'] }
   )
