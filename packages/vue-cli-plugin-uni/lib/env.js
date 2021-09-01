@@ -78,7 +78,7 @@ if (process.env.UNI_CLOUD_SPACES) {
       process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
         if (space.clientSecret) {
           return {
-            provider: 'aliyun',
+            provider: space.provider || 'aliyun',
             spaceName: space.name,
             spaceId: space.id,
             clientSecret: space.clientSecret,
@@ -86,7 +86,7 @@ if (process.env.UNI_CLOUD_SPACES) {
           }
         } else {
           return {
-            provider: 'tencent',
+            provider: space.provider || 'tencent',
             spaceName: space.name,
             spaceId: space.id
           }
