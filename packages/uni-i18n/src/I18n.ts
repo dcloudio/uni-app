@@ -130,12 +130,28 @@ export class I18n {
       this.watchers.splice(index, 1)
     }
   }
-  add(locale: BuiltInLocale, message: Record<string, string>) {
-    if (this.messages[locale]) {
-      Object.assign(this.messages[locale], message)
+  add(
+    locale: BuiltInLocale,
+    message: Record<string, string>,
+    override: boolean = true
+  ) {
+    const curMessages = this.messages[locale]
+    if (curMessages) {
+      if (override) {
+        Object.assign(curMessages, message)
+      } else {
+        Object.keys(message).forEach((key) => {
+          if (!hasOwn(curMessages, key)) {
+            curMessages[key] = message[key]
+          }
+        })
+      }
     } else {
       this.messages[locale] = message
     }
+  }
+  f(message: string, values?: Record<string, unknown> | Array<unknown>) {
+    return this.formater.interpolate(message, values).join('')
   }
   t(
     key: string,

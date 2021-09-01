@@ -4,12 +4,11 @@ import { ModuleGraph, Plugin } from 'vite'
 import { extend } from '@vue/shared'
 import {
   initEasycomsOnce,
+  initFeatures,
   normalizePath,
   parseManifestJson,
   parsePagesJson,
 } from '@dcloudio/uni-cli-shared'
-
-import { initFeatures } from '../../utils'
 
 const debugHmr = debug('vite:uni:hmr')
 

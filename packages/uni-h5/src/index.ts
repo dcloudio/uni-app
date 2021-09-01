@@ -29,6 +29,8 @@ export {
   View,
 } from '@dcloudio/uni-components'
 
+export { useI18n } from '@dcloudio/uni-core'
+
 export { default as plugin } from './framework/plugin'
 
 export * from './framework/setup'

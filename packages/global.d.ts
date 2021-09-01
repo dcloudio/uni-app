@@ -50,6 +50,7 @@ declare var __UNI_FEATURE_NAVIGATIONBAR__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: boolean
+declare var __UNI_FEATURE_I18N_LOCALE__: boolean
 declare var __UNI_FEATURE_I18N_EN__: boolean
 declare var __UNI_FEATURE_I18N_ES__: boolean
 declare var __UNI_FEATURE_I18N_FR__: boolean

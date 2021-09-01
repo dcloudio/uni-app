@@ -93,7 +93,7 @@ export function compileI18nJsonStr(
   return jsonStr
 }
 
-function isI18nStr(value: string, delimiters: [string, string]) {
+export function isI18nStr(value: string, delimiters: [string, string]) {
   return value.indexOf(delimiters[0]) > -1
 }
 

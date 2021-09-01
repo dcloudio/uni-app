@@ -1,10 +1,25 @@
-import { getEnvLocale } from '@dcloudio/uni-shared'
-import { BuiltInLocale, initVueI18n } from '@dcloudio/uni-i18n'
+import { getEnvLocale, I18N_JSON_DELIMITERS } from '@dcloudio/uni-shared'
+import { BuiltInLocale, initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
 
 let i18n: ReturnType<typeof initVueI18n>
 
 interface webviewStyleWithLanguage extends PlusWebviewWebviewStyles {
   locale: string
+}
+
+function getLocaleMessage() {
+  const locale = useI18n().getLocale()
+  const locales = __uniConfig.locales
+  return (
+    locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+  )
+}
+
+export function formatI18n(message: string) {
+  if (__uniConfig.locales && isI18nStr(message, I18N_JSON_DELIMITERS)) {
+    return useI18n().f(message, getLocaleMessage())
+  }
+  return message
 }
 
 export function useI18n() {

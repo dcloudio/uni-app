@@ -39,6 +39,8 @@ function initLocaleWatcher(appVm: any, i18n: I18n) {
 //   return uni.getSystemInfoSync().language
 // }
 
+const i18nInstances: I18n[] = []
+
 export function initVueI18n(
   locale: BuiltInLocale = LOCALE_EN,
   messages: LocaleMessages = {},
@@ -58,6 +60,9 @@ export function initVueI18n(
     messages,
     watcher,
   })
+
+  i18nInstances.push(i18n)
+
   let t: Interpolate = (key, values) => {
     if (typeof getApp !== 'function') {
       // app view
@@ -95,11 +100,18 @@ export function initVueI18n(
   }
   return {
     i18n,
+    f(message: string, values?: Record<string, unknown> | Array<unknown>) {
+      return i18n.f(message, values)
+    },
     t(key: string, values?: Record<string, unknown> | Array<unknown>) {
       return t(key, values)
     },
-    add(locale: BuiltInLocale, message: Record<string, string>) {
-      return i18n.add(locale, message)
+    add(
+      locale: BuiltInLocale,
+      message: Record<string, string>,
+      override: boolean = true
+    ) {
+      return i18n.add(locale, message, override)
     },
     watch(fn: LocaleWatcher) {
       return i18n.watchLocale(fn)
@@ -108,7 +120,10 @@ export function initVueI18n(
       return i18n.getLocale()
     },
     setLocale(newLocale: BuiltInLocale) {
-      return i18n.setLocale(newLocale)
+      // 更新所有实例 locale
+      i18nInstances.forEach((ins) => {
+        ins.setLocale(newLocale)
+      })
     },
   }
 }

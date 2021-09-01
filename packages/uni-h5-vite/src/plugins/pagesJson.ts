@@ -54,7 +54,7 @@ function generatePagesJsonCode(
 
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, setupWindow } from '@dcloudio/uni-h5'
+import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue, locale } from '${manifestJsonPath}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
@@ -65,6 +65,11 @@ ${defineLayoutComponentsCode}
 ${definePagesCode}
 ${uniRoutesCode}
 ${config.command === 'serve' ? hmrCode : ''}
+const localeKeys = Object.keys(__uniConfig.locales)
+if (localeKeys.length) {
+  const i18n = useI18n()
+  localeKeys.forEach(locale=>i18n.add(locale,__uniConfig.locales[locale]))
+}
 export {}
 `
 }

@@ -71,6 +71,8 @@ declare namespace UniApp {
     onReady: (fn: Function) => void
     serviceReady: boolean
     locale: string
+    fallbackLocale: string
+    locales: Record<string, Record<string, string>>
   }
 
   interface UniRoute {

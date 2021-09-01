@@ -90,7 +90,7 @@ function generateI18nModuleLocaleCode(locale, messages) {
   return `  if (__UNI_FEATURE_I18N_${locale}__) {
     useI18n().add(LOCALE_${locale}, normalizeMessages(name, keys, ${JSON.stringify(
     messages
-  )}))
+  )}), false)
   }
 `
 }

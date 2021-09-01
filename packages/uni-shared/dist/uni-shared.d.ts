@@ -1,7 +1,8 @@
+/// <reference types="css-font-loading-module" />
+
 import { ComponentInternalInstance } from 'vue';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
-import { FontFaceDescriptors } from 'css-font-loading-module';
 import { RendererNode } from 'vue';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;

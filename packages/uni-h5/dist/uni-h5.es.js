@@ -1,9 +1,20 @@
 import { withModifiers, createVNode, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementBlock, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
-import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
+import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { extend, isString, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 let i18n;
+function getLocaleMessage() {
+  const locale = useI18n().getLocale();
+  const locales = __uniConfig.locales;
+  return locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {};
+}
+function formatI18n(message) {
+  if (__uniConfig.locales && isI18nStr(message, I18N_JSON_DELIMITERS)) {
+    return useI18n().f(message, getLocaleMessage());
+  }
+  return message;
+}
 function useI18n() {
   if (!i18n) {
     let locale;
@@ -30,42 +41,42 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_EN__) {
     useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
       "The connection timed out, click the screen to try again."
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
     useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
       "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
     useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
       "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]), false);
   }
 });
 const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showActionSheet.";
   const keys = ["cancel"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel"]));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar"]));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u53D6\u6D88"]));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u53D6\u6D88"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u53D6\u6D88"]));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u53D6\u6D88"]), false);
   }
 });
 const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
@@ -74,27 +85,27 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_EN__) {
     useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
       "Please note showToast must be paired with hideToast"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
     useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
       "Tenga en cuenta que showToast debe estar emparejado con hideToast"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
     useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
       "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
       "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
       "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
-    ]));
+    ]), false);
   }
 });
 const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
@@ -103,84 +114,84 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_EN__) {
     useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
       "Please note showLoading must be paired with hideLoading"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
     useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
       "Tenga en cuenta que showLoading debe estar emparejado con hideLoading"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
     useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
       "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
       "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
-    ]));
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
       "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
-    ]));
+    ]), false);
   }
 });
 const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showModal.";
   const keys = ["cancel", "confirm"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel", "OK"]));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel", "OK"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar", "OK"]));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar", "OK"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler", "OK"]));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler", "OK"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u53D6\u6D88", "\u786E\u5B9A"]));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u53D6\u6D88", "\u786E\u5B9A"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u53D6\u6D88", "\u78BA\u5B9A"]));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u53D6\u6D88", "\u78BA\u5B9A"]), false);
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.picker.";
   const keys = ["done", "cancel"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["OK", "Cancelar"]));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["OK", "Cancelar"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["OK", "Annuler"]));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["OK", "Annuler"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.video.";
   const keys = ["danmu", "volume"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
   }
 });
 const E = function() {
@@ -20677,6 +20688,11 @@ function createPageHeadTitleTextTsx({
   titleText,
   titleImage
 }) {
+  if (__UNI_FEATURE_I18N_LOCALE__) {
+    if (!titleImage && titleText) {
+      titleText = formatI18n(titleText);
+    }
+  }
   return createVNode("div", {
     "class": "uni-page-head-bd"
   }, [createVNode("div", {
@@ -21251,4 +21267,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

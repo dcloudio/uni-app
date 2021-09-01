@@ -179,13 +179,26 @@ class I18n {
             this.watchers.splice(index, 1);
         };
     }
-    add(locale, message) {
-        if (this.messages[locale]) {
-            Object.assign(this.messages[locale], message);
+    add(locale, message, override = true) {
+        const curMessages = this.messages[locale];
+        if (curMessages) {
+            if (override) {
+                Object.assign(curMessages, message);
+            }
+            else {
+                Object.keys(message).forEach((key) => {
+                    if (!hasOwn(curMessages, key)) {
+                        curMessages[key] = message[key];
+                    }
+                });
+            }
         }
         else {
             this.messages[locale] = message;
         }
+    }
+    f(message, values) {
+        return this.formater.interpolate(message, values).join('');
     }
     t(key, locale, values) {
         let message = this.message;
@@ -225,6 +238,7 @@ function initLocaleWatcher(appVm, i18n) {
 //   }
 //   return uni.getSystemInfoSync().language
 // }
+const i18nInstances = [];
 function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
@@ -239,6 +253,7 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
         messages,
         watcher,
     });
+    i18nInstances.push(i18n);
     let t = (key, values) => {
         if (typeof getApp !== 'function') {
             // app view
@@ -278,11 +293,14 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     };
     return {
         i18n,
+        f(message, values) {
+            return i18n.f(message, values);
+        },
         t(key, values) {
             return t(key, values);
         },
-        add(locale, message) {
-            return i18n.add(locale, message);
+        add(locale, message, override = true) {
+            return i18n.add(locale, message, override);
         },
         watch(fn) {
             return i18n.watchLocale(fn);
@@ -291,7 +309,10 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
             return i18n.getLocale();
         },
         setLocale(newLocale) {
-            return i18n.setLocale(newLocale);
+            // 更新所有实例 locale
+            i18nInstances.forEach((ins) => {
+                ins.setLocale(newLocale);
+            });
         },
     };
 }
@@ -401,4 +422,4 @@ function walkJsonObj(jsonObj, walk) {
     return false;
 }
 
-export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isString, parseI18nJson };
+export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, parseI18nJson };

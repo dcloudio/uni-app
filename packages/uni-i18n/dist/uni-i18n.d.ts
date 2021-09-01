@@ -31,7 +31,8 @@ export declare class I18n {
     setLocale(locale: string): void;
     getLocale(): BuiltInLocale;
     watchLocale(fn: LocaleWatcher): () => void;
-    add(locale: BuiltInLocale, message: Record<string, string>): void;
+    add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
+    f(message: string, values?: Record<string, unknown> | Array<unknown>): string;
     t(key: string, values?: Record<string, unknown> | Array<unknown> | BuiltInLocale): string;
     t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>): string;
 }
@@ -46,12 +47,15 @@ export declare interface I18nOptions {
 
 export declare function initVueI18n(locale?: BuiltInLocale, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, watcher?: (locale: BuiltInLocale) => void): {
     i18n: I18n;
+    f(message: string, values?: Record<string, unknown> | unknown[] | undefined): string;
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
-    add(locale: BuiltInLocale, message: Record<string, string>): void;
+    add(locale: BuiltInLocale, message: Record<string, string>, override?: boolean): void;
     watch(fn: LocaleWatcher): () => void;
     getLocale(): BuiltInLocale;
     setLocale(newLocale: BuiltInLocale): void;
 };
+
+export declare function isI18nStr(value: string, delimiters: [string, string]): boolean;
 
 export declare const isString: (val: unknown) => val is string;
 

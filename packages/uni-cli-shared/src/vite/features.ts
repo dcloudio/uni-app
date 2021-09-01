@@ -4,7 +4,7 @@ import { ConfigEnv } from 'vite'
 import { extend, isArray, isString } from '@vue/shared'
 
 interface ProjectFeatures {
-  i18nLocales: boolean
+  i18nLocale: boolean
   i18nEn: boolean
   i18nEs: boolean
   i18nFr: boolean
@@ -38,7 +38,7 @@ interface ManifestFeatures {
 
 function initProjectFeature({ inputDir }: InitFeaturesOptions) {
   const features: ProjectFeatures = {
-    i18nLocales: false,
+    i18nLocale: false,
     i18nEn: true,
     i18nEs: true,
     i18nFr: true,
@@ -50,7 +50,7 @@ function initProjectFeature({ inputDir }: InitFeaturesOptions) {
     if (
       fs.readdirSync(localesDir).find((file) => path.extname(file) === '.json')
     ) {
-      features.i18nLocales = true
+      features.i18nLocale = true
     }
   }
   return features
@@ -212,7 +212,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     i18nFr,
     i18nZhHans,
     i18nZhHant,
-    i18nLocales,
+    i18nLocale,
     vueOptionsApi,
     vueProdDevTools,
     pages,
@@ -250,7 +250,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     __UNI_FEATURE_I18N_ZH_HANS__: i18nZhHans, // 是否启用zh_Hans
     __UNI_FEATURE_I18N_ZH_HANT__: i18nZhHant, // 是否启用zh_Hant
     // 以下特性，编译器已自动识别是否需要启用
-    __UNI_FEATURE_I18N_LOCALES__: i18nLocales, // 是否启用i18n
+    __UNI_FEATURE_I18N_LOCALE__: i18nLocale, // 是否启用i18n
     __UNI_FEATURE_NVUE__: nvue, // 是否启用nvue
     __UNI_FEATURE_ROUTER_MODE__: routerMode, // 路由模式
     __UNI_FEATURE_PAGES__: pages, // 是否多页面
