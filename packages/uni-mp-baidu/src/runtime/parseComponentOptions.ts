@@ -1,7 +1,15 @@
 import { hasOwn } from '@vue/shared'
 
-import { MPComponentInstance, MPComponentOptions } from '@dcloudio/uni-mp-core'
+import {
+  MPComponentInstance,
+  MPComponentOptions,
+  initMocks,
+} from '@dcloudio/uni-mp-core'
 import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
+import {
+  fixSetDataStart,
+  fixSetDataEnd,
+} from '../../../uni-mp-weixin/src/runtime/fixSetData'
 
 export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 
@@ -28,10 +36,29 @@ export function parse(componentOptions: MPComponentOptions) {
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
   // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = lifetimes.attached
-  lifetimes.attached = function attached(this: MPComponentInstance) {
+  // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
+  lifetimes.onInit = function onInit(query: any) {
+    // 百度小程序后续可能移除 pageinstance 属性，为向后兼容进行补充
+    if (!this.pageinstance || !this.pageinstance.setData) {
+      const pages = getCurrentPages()
+      this.pageinstance = pages[pages.length - 1]
+    }
+
+    // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
+    fixSetDataStart(this as MPComponentInstance)
     oldAttached.call(this)
+    this.pageinstance.$vm = this.$vm
+    this.$vm.__call_hook('onInit', query)
+  }
+  lifetimes.attached = function attached(this: MPComponentInstance) {
+    if (!this.$vm) {
+      oldAttached.call(this)
+    } else {
+      initMocks(this.$vm.$, this, mocks)
+      fixSetDataEnd(this)
+    }
     if (isPage(this) && this.$vm) {
-      // 百度 onLoad 在 attached 之前触发
+      // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstance 不是原来组件的 instance
       const pageInstance = (this as any).pageinstance
       pageInstance.$vm = this.$vm

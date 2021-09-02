@@ -1179,6 +1179,45 @@ var parseAppOptions = /*#__PURE__*/Object.freeze({
     parse: parse$2
 });
 
+/**
+ * 用于延迟调用 setData
+ * 在 setData 真实调用的时机需执行 fixSetDataEnd
+ * @param {*} mpInstance
+ */
+function fixSetDataStart(mpInstance) {
+    const setData = mpInstance.setData;
+    const setDataArgs = [];
+    mpInstance.setData = function () {
+        setDataArgs.push(arguments);
+    };
+    mpInstance.__fixInitData = function () {
+        this.setData = setData;
+        const fn = () => {
+            setDataArgs.forEach((args) => {
+                setData.apply(this, args);
+            });
+        };
+        if (setDataArgs.length) {
+            if (this.groupSetData) {
+                this.groupSetData(fn);
+            }
+            else {
+                fn();
+            }
+        }
+    };
+}
+/**
+ * 恢复真实的 setData 方法
+ * @param {*} mpInstance
+ */
+function fixSetDataEnd(mpInstance) {
+    if (mpInstance.__fixInitData) {
+        mpInstance.__fixInitData();
+        delete mpInstance.__fixInitData;
+    }
+}
+
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {
@@ -1250,10 +1289,29 @@ function parse$1(componentOptions) {
     // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
     // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
     const oldAttached = lifetimes.attached;
-    lifetimes.attached = function attached() {
+    // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
+    lifetimes.onInit = function onInit(query) {
+        // 百度小程序后续可能移除 pageinstance 属性，为向后兼容进行补充
+        if (!this.pageinstance || !this.pageinstance.setData) {
+            const pages = getCurrentPages();
+            this.pageinstance = pages[pages.length - 1];
+        }
+        // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
+        fixSetDataStart(this);
         oldAttached.call(this);
+        this.pageinstance.$vm = this.$vm;
+        this.$vm.__call_hook('onInit', query);
+    };
+    lifetimes.attached = function attached() {
+        if (!this.$vm) {
+            oldAttached.call(this);
+        }
+        else {
+            initMocks(this.$vm.$, this, mocks);
+            fixSetDataEnd(this);
+        }
         if (isPage(this) && this.$vm) {
-            // 百度 onLoad 在 attached 之前触发
+            // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
             // 百度 当组件作为页面时 pageinstance 不是原来组件的 instance
             const pageInstance = this.pageinstance;
             pageInstance.$vm = this.$vm;
