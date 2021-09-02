@@ -22,9 +22,13 @@ export const onLocaleChange = defineOnApi(API_ON_LOCALE_CHANGE, () => {})
 export const setLocale = defineSyncApi<typeof uni.setLocale>(
   API_SET_LOCALE,
   (locale) => {
-    const oldLocale = getApp().$vm.$locale
+    const app = getApp()
+    if (!app) {
+      return false
+    }
+    const oldLocale = app.$vm.$locale
     if (oldLocale !== locale) {
-      getApp().$vm.$locale = locale
+      app.$vm.$locale = locale
       if (__PLATFORM__ === 'app') {
         const pages = getCurrentPages()
         pages.forEach((page) => {

@@ -1484,9 +1484,18 @@ var serviceContext = (function (vue) {
 
   const ignoreVueI18n = true;
   function watchAppLocale(appVm, i18n) {
-      appVm.$watch(() => appVm.$locale, (newLocale) => {
-          i18n.setLocale(newLocale);
-      });
+      // 需要保证 watch 的触发在组件渲染之前
+      if (appVm.$watchLocale) {
+          // vue2
+          appVm.$watchLocale((newLocale) => {
+              i18n.setLocale(newLocale);
+          });
+      }
+      else {
+          appVm.$watch(() => appVm.$locale, (newLocale) => {
+              i18n.setLocale(newLocale);
+          });
+      }
   }
   function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
       // 兼容旧版本入参
@@ -4402,11 +4411,13 @@ var serviceContext = (function (vue) {
   });
   const onLocaleChange = defineOnApi(API_ON_LOCALE_CHANGE, () => { });
   const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
-      const oldLocale = getApp().$vm.$locale;
+      const app = getApp();
+      if (!app) {
+          return false;
+      }
+      const oldLocale = app.$vm.$locale;
       if (oldLocale !== locale) {
-          getApp().$vm.$locale = locale;
-          // 执行 uni.onLocaleChange
-          UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
+          app.$vm.$locale = locale;
           {
               const pages = getCurrentPages();
               pages.forEach((page) => {
@@ -4414,6 +4425,8 @@ var serviceContext = (function (vue) {
               });
               weex.requireModule('plus').setLanguage(locale);
           }
+          // 执行 uni.onLocaleChange
+          UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
           return true;
       }
       return false;

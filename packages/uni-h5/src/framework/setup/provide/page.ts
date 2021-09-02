@@ -5,7 +5,6 @@ import { useRoute } from 'vue-router'
 import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
 import {
   initNavigationBarI18n,
-  initPullToRefreshI18n,
   initRouteMeta,
   normalizePullToRefreshRpx,
   PolySymbol,
@@ -89,8 +88,6 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
           NAVBAR_HEIGHT + (__NODE_JS__ ? 0 : safeAreaInsets.top)
       }
       pageMeta.pullToRefresh = pullToRefresh
-
-      __UNI_FEATURE_I18N_LOCALE__ && initPullToRefreshI18n(pullToRefresh)
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {

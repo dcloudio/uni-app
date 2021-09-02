@@ -8,9 +8,13 @@ export const getLocale: typeof uni.getLocale = () => {
 }
 
 export const setLocale: typeof uni.setLocale = (locale) => {
-  const oldLocale = getApp().$vm.$locale
+  const app = getApp()
+  if (!app) {
+    return false
+  }
+  const oldLocale = app.$vm.$locale
   if (oldLocale !== locale) {
-    getApp().$vm.$locale = locale
+    app.$vm.$locale = locale
     onLocaleChangeCallbacks.forEach((fn) => fn({ locale }))
     return true
   }

@@ -141,16 +141,6 @@ function initNavigationBarI18n(navigationBar) {
     ]);
   }
 }
-function initPullToRefreshI18n(pullToRefresh) {
-  if (isEnableLocale()) {
-    const CAPTION = "caption";
-    return defineI18nProperties(pullToRefresh, [
-      ["contentdown", CAPTION],
-      ["contentover", CAPTION],
-      ["contentrefresh", CAPTION]
-    ]);
-  }
-}
 const E = function() {
 };
 E.prototype = {
@@ -6684,7 +6674,6 @@ function normalizePageMeta(pageMeta) {
         pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
       }
       pageMeta.pullToRefresh = pullToRefresh;
-      __UNI_FEATURE_I18N_LOCALE__ && initPullToRefreshI18n(pullToRefresh);
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {

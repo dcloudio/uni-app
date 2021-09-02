@@ -234,16 +234,6 @@ function initNavigationBarI18n(navigationBar) {
     ]);
   }
 }
-function initPullToRefreshI18n(pullToRefresh) {
-  if (isEnableLocale()) {
-    const CAPTION = "caption";
-    return defineI18nProperties(pullToRefresh, [
-      ["contentdown", CAPTION],
-      ["contentover", CAPTION],
-      ["contentrefresh", CAPTION]
-    ]);
-  }
-}
 const E = function() {
 };
 E.prototype = {
@@ -4349,9 +4339,13 @@ const getLocale = /* @__PURE__ */ defineSyncApi(API_GET_LOCALE, () => {
 const onLocaleChange = /* @__PURE__ */ defineOnApi(API_ON_LOCALE_CHANGE, () => {
 });
 const setLocale = /* @__PURE__ */ defineSyncApi(API_SET_LOCALE, (locale) => {
-  const oldLocale = getApp().$vm.$locale;
+  const app = getApp();
+  if (!app) {
+    return false;
+  }
+  const oldLocale = app.$vm.$locale;
   if (oldLocale !== locale) {
-    getApp().$vm.$locale = locale;
+    app.$vm.$locale = locale;
     UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
     return true;
   }
@@ -13379,7 +13373,6 @@ function normalizePageMeta(pageMeta) {
         pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
-      __UNI_FEATURE_I18N_LOCALE__ && initPullToRefreshI18n(pullToRefresh);
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
