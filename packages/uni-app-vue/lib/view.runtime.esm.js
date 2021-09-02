@@ -1268,7 +1268,7 @@ function devtoolsInitApp(app, version) {
     devtools.emit("app:init" /* APP_INIT */, app, version, {
         Fragment,
         Text,
-        Comment: Comment$1,
+        Comment,
         Static
     });
 }
@@ -1922,7 +1922,7 @@ function renderComponentRoot(instance) {
                     }
                     root = cloneVNode(root, fallthroughAttrs);
                 }
-                else if ((process.env.NODE_ENV !== 'production') && !accessedAttrs && root.type !== Comment$1) {
+                else if ((process.env.NODE_ENV !== 'production') && !accessedAttrs && root.type !== Comment) {
                     const allAttrs = Object.keys(attrs);
                     const eventAttrs = [];
                     const extraAttrs = [];
@@ -1987,7 +1987,7 @@ function renderComponentRoot(instance) {
     catch (err) {
         blockStack.length = 0;
         handleError(err, instance, 1 /* RENDER_FUNCTION */);
-        result = createVNode(Comment$1);
+        result = createVNode(Comment);
     }
     setCurrentRenderingInstance(prev);
     return result;
@@ -2026,7 +2026,7 @@ function filterSingleRoot(children) {
         const child = children[i];
         if (isVNode(child)) {
             // ignore user comment
-            if (child.type !== Comment$1 || child.children === 'v-if') {
+            if (child.type !== Comment || child.children === 'v-if') {
                 if (singleRoot) {
                     // has more than 1 non-comment child, return now
                     return;
@@ -2062,7 +2062,7 @@ const filterModelListeners = (attrs, props) => {
 };
 const isElementRoot = (vnode) => {
     return (vnode.shapeFlag & (6 /* COMPONENT */ | 1 /* ELEMENT */) ||
-        vnode.type === Comment$1 // potential v-if branch switch
+        vnode.type === Comment // potential v-if branch switch
     );
 };
 function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
@@ -2714,7 +2714,7 @@ const BaseTransitionImpl = {
             }
             // handle mode
             if (oldInnerChild &&
-                oldInnerChild.type !== Comment$1 &&
+                oldInnerChild.type !== Comment &&
                 (!isSameVNodeType(innerChild, oldInnerChild) || transitionKeyChanged)) {
                 const leavingHooks = resolveTransitionHooks(oldInnerChild, rawProps, state, instance);
                 // update old tree's hooks in case of dynamic transition
@@ -2729,7 +2729,7 @@ const BaseTransitionImpl = {
                     };
                     return emptyPlaceholder(child);
                 }
-                else if (mode === 'in-out' && innerChild.type !== Comment$1) {
+                else if (mode === 'in-out' && innerChild.type !== Comment) {
                     leavingHooks.delayLeave = (el, earlyRemove, delayedLeave) => {
                         const leavingVNodesCache = getLeavingNodesForType(state, oldInnerChild);
                         leavingVNodesCache[String(oldInnerChild.key)] = oldInnerChild;
@@ -2921,7 +2921,7 @@ function getTransitionRawChildren(children, keepComment = false) {
             ret = ret.concat(getTransitionRawChildren(child.children, keepComment));
         }
         // comment placeholders should be skipped, e.g. v-if
-        else if (keepComment || child.type !== Comment$1) {
+        else if (keepComment || child.type !== Comment) {
             ret.push(child);
         }
     }
@@ -3783,7 +3783,9 @@ const internalOptionMergeStrats = {
     beforeUpdate: mergeAsArray,
     updated: mergeAsArray,
     beforeDestroy: mergeAsArray,
+    beforeUnmount: mergeAsArray,
     destroyed: mergeAsArray,
+    unmounted: mergeAsArray,
     activated: mergeAsArray,
     deactivated: mergeAsArray,
     errorCaptured: mergeAsArray,
@@ -4684,7 +4686,7 @@ function createHydrationFunctions(rendererInternals) {
                     nextNode = nextSibling(node);
                 }
                 break;
-            case Comment$1:
+            case Comment:
                 if (domType !== 8 /* COMMENT */ || isFragmentStart) {
                     nextNode = onMismatch();
                 }
@@ -5082,7 +5084,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             case Text:
                 processText(n1, n2, container, anchor);
                 break;
-            case Comment$1:
+            case Comment:
                 processCommentNode(n1, n2, container, anchor);
                 break;
             case Static:
@@ -5548,7 +5550,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             // Give it a placeholder if this is not hydration
             // TODO handle self-defined fallback
             if (!initialVNode.el) {
-                const placeholder = (instance.subTree = createVNode(Comment$1));
+                const placeholder = (instance.subTree = createVNode(Comment));
                 processCommentNode(null, placeholder, container, anchor);
             }
             return;
@@ -6396,7 +6398,7 @@ function traverseStaticChildren(n1, n2, shallow = false) {
             }
             // also inherit for comment nodes, but not placeholders (e.g. v-if which
             // would have received .el during block patch)
-            if ((process.env.NODE_ENV !== 'production') && c2.type === Comment$1 && !c2.el) {
+            if ((process.env.NODE_ENV !== 'production') && c2.type === Comment && !c2.el) {
                 c2.el = c1.el;
             }
         }
@@ -6710,7 +6712,7 @@ function resolve(registry, name) {
 
 const Fragment = Symbol((process.env.NODE_ENV !== 'production') ? 'Fragment' : undefined);
 const Text = Symbol((process.env.NODE_ENV !== 'production') ? 'Text' : undefined);
-const Comment$1 = Symbol((process.env.NODE_ENV !== 'production') ? 'Comment' : undefined);
+const Comment = Symbol((process.env.NODE_ENV !== 'production') ? 'Comment' : undefined);
 const Static = Symbol((process.env.NODE_ENV !== 'production') ? 'Static' : undefined);
 // Since v-if and v-for are the two possible ways node structure can dynamically
 // change, once we consider v-if branches and each v-for fragment a block, we
@@ -6901,7 +6903,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
         if ((process.env.NODE_ENV !== 'production') && !type) {
             warn$1(`Invalid vnode type when creating vnode: ${type}.`);
         }
-        type = Comment$1;
+        type = Comment;
     }
     if (isVNode(type)) {
         // createVNode receiving an existing vnode. This happens in cases like
@@ -7054,13 +7056,13 @@ function createCommentVNode(text = '',
 // block to ensure correct updates.
 asBlock = false) {
     return asBlock
-        ? (openBlock(), createBlock(Comment$1, null, text))
-        : createVNode(Comment$1, null, text);
+        ? (openBlock(), createBlock(Comment, null, text))
+        : createVNode(Comment, null, text);
 }
 function normalizeVNode(child) {
     if (child == null || typeof child === 'boolean') {
         // empty placeholder
-        return createVNode(Comment$1);
+        return createVNode(Comment);
     }
     else if (isArray(child)) {
         // fragment
@@ -7277,7 +7279,7 @@ function ensureValidVNode(vnodes) {
     return vnodes.some(child => {
         if (!isVNode(child))
             return true;
-        if (child.type === Comment$1)
+        if (child.type === Comment)
             return false;
         if (child.type === Fragment &&
             !ensureValidVNode(child.children))
@@ -9033,7 +9035,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.6";
+const version = "3.2.7";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10664,4 +10666,4 @@ function normalizeContainer(container) {
     return container;
 }
 
-export { BaseTransition, Comment$1 as Comment, EffectScope, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, Transition, TransitionGroup, VueElement, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineProps, defineSSRCustomElement, devtools, effect, effectScope, flushPostFlushCbs, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, Comment, EffectScope, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, Transition, TransitionGroup, VueElement, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineProps, defineSSRCustomElement, devtools, effect, effectScope, flushPostFlushCbs, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

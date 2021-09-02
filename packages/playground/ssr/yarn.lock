@@ -221,7 +221,7 @@
     "@vue/compiler-core" "3.2.7"
     "@vue/shared" "3.2.7"
 
-"@vue/compiler-sfc@^3.2.6":
+"@vue/compiler-sfc@^3.2.7":
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.2.7.tgz#6ee803b7d5d375138fe86124b9c161eebbbc0f0d"
   integrity sha512-qjfvRw7/9Q2Qm4cDmrJwTNqnFTXSSI3z/mmS9BSJTYZqh4FC4w+IIYYLWUpS3ef6UTTYY9STC5IUZqfpIod9Uw==
@@ -293,7 +293,7 @@
     "@vue/shared" "3.2.7"
     csstype "^2.6.8"
 
-"@vue/server-renderer@^3.2.6":
+"@vue/server-renderer@^3.2.7":
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.2.7.tgz#a9589cf4ba163db457e10d88fb7bbf4aeb94c589"
   integrity sha512-cceYfK8haSn3qliOKxmpWWrJAgFzb9xNvwXoGKmMxEhhzvW1xGKnwsNMYpxAi6VAIW6Fs58s2CPuq9TAQZIjXA==
@@ -301,7 +301,7 @@
     "@vue/compiler-ssr" "3.2.7"
     "@vue/shared" "3.2.7"
 
-"@vue/shared@3.2.7", "@vue/shared@^3.2.6":
+"@vue/shared@3.2.7", "@vue/shared@^3.2.7":
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.7.tgz#c792bf92d19025e7940358536d468218a11eeedb"
   integrity sha512-YwGOcNZjOY/MmadpzFBXWyHEwZSf0lVU4XF5zpD7tXC9dmqjdo38Jkk06wATu4LYHDPW4emXKMB5YLFPWPkwFA==
@@ -2328,7 +2328,7 @@ vue-router@^4.0.11:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.14"
 
-vue@^3.2.6:
+vue@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.7.tgz#0850f2740f0cb58741f2c53bcbd9c6c705e4cc74"
   integrity sha512-kqPYCbvw6rthEA41K45dqxV+C0yrQX24zs1ZmGZTi4Sk6WkzNK8tH4jGd0yAW+lu72E+HQmz0ZhNo6zAT/WKUA==

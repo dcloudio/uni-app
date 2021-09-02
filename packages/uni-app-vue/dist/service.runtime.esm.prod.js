@@ -2538,7 +2538,7 @@ export default function vueFactory(exports) {
             }
 
             root = cloneVNode(root, fallthroughAttrs);
-          } else if ("production" !== 'production' && !accessedAttrs && root.type !== Comment$1) ;
+          } else if ("production" !== 'production' && !accessedAttrs && root.type !== Comment) ;
         }
       }
 
@@ -2571,7 +2571,7 @@ export default function vueFactory(exports) {
       handleError(err, instance, 1
       /* RENDER_FUNCTION */
       );
-      result = createVNode(Comment$1);
+      result = createVNode(Comment);
     }
 
     setCurrentRenderingInstance(prev);
@@ -2620,7 +2620,7 @@ export default function vueFactory(exports) {
 
       if (isVNode(child)) {
         // ignore user comment
-        if (child.type !== Comment$1 || child.children === 'v-if') {
+        if (child.type !== Comment || child.children === 'v-if') {
           if (singleRoot) {
             // has more than 1 non-comment child, return now
             return;
@@ -2665,7 +2665,7 @@ export default function vueFactory(exports) {
     /* COMPONENT */
     | 1
     /* ELEMENT */
-    ) || vnode.type === Comment$1 // potential v-if branch switch
+    ) || vnode.type === Comment // potential v-if branch switch
     ;
   };
 
@@ -3413,7 +3413,7 @@ export default function vueFactory(exports) {
         } // handle mode
 
 
-        if (oldInnerChild && oldInnerChild.type !== Comment$1 && (!isSameVNodeType(innerChild, oldInnerChild) || transitionKeyChanged)) {
+        if (oldInnerChild && oldInnerChild.type !== Comment && (!isSameVNodeType(innerChild, oldInnerChild) || transitionKeyChanged)) {
           var leavingHooks = resolveTransitionHooks(oldInnerChild, rawProps, state, instance); // update old tree's hooks in case of dynamic transition
 
           setTransitionHooks(oldInnerChild, leavingHooks); // switching between different views
@@ -3427,7 +3427,7 @@ export default function vueFactory(exports) {
             };
 
             return emptyPlaceholder(child);
-          } else if (mode === 'in-out' && innerChild.type !== Comment$1) {
+          } else if (mode === 'in-out' && innerChild.type !== Comment) {
             leavingHooks.delayLeave = (el, earlyRemove, delayedLeave) => {
               var leavingVNodesCache = getLeavingNodesForType(state, oldInnerChild);
               leavingVNodesCache[String(oldInnerChild.key)] = oldInnerChild; // early removal callback
@@ -3672,7 +3672,7 @@ export default function vueFactory(exports) {
         ) keyedFragmentCount++;
         ret = ret.concat(getTransitionRawChildren(child.children, keepComment));
       } // comment placeholders should be skipped, e.g. v-if
-      else if (keepComment || child.type !== Comment$1) {
+      else if (keepComment || child.type !== Comment) {
         ret.push(child);
       }
     } // #1126 if a transition children list contains multiple sub fragments, these
@@ -4640,7 +4640,9 @@ export default function vueFactory(exports) {
     beforeUpdate: mergeAsArray,
     updated: mergeAsArray,
     beforeDestroy: mergeAsArray,
+    beforeUnmount: mergeAsArray,
     destroyed: mergeAsArray,
+    unmounted: mergeAsArray,
     activated: mergeAsArray,
     deactivated: mergeAsArray,
     errorCaptured: mergeAsArray,
@@ -5420,7 +5422,7 @@ export default function vueFactory(exports) {
 
           break;
 
-        case Comment$1:
+        case Comment:
           if (domType !== 8
           /* COMMENT */
           || isFragmentStart) {
@@ -5794,7 +5796,7 @@ export default function vueFactory(exports) {
           processText(n1, n2, container, anchor);
           break;
 
-        case Comment$1:
+        case Comment:
           processCommentNode(n1, n2, container, anchor);
           break;
 
@@ -6268,7 +6270,7 @@ export default function vueFactory(exports) {
         // TODO handle self-defined fallback
 
         if (!initialVNode.el) {
-          var placeholder = instance.subTree = createVNode(Comment$1);
+          var placeholder = instance.subTree = createVNode(Comment);
           processCommentNode(null, placeholder, container, anchor);
         }
 
@@ -7574,7 +7576,7 @@ export default function vueFactory(exports) {
 
   var Fragment = Symbol(undefined);
   var Text = Symbol(undefined);
-  var Comment$1 = Symbol(undefined);
+  var Comment = Symbol(undefined);
   var Static = Symbol(undefined); // Since v-if and v-for are the two possible ways node structure can dynamically
   // change, once we consider v-if branches and each v-for fragment a block, we
   // can divide a template into nested blocks, and within each block the node
@@ -7774,7 +7776,7 @@ export default function vueFactory(exports) {
 
   function _createVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, isBlockNode = false) {
     if (!type || type === NULL_DYNAMIC_COMPONENT) {
-      type = Comment$1;
+      type = Comment;
     }
 
     if (isVNode(type)) {
@@ -7924,13 +7926,13 @@ export default function vueFactory(exports) {
   function createCommentVNode(text = '', // when used as the v-else branch, the comment node must be created as a
   // block to ensure correct updates.
   asBlock = false) {
-    return asBlock ? (openBlock(), createBlock(Comment$1, null, text)) : createVNode(Comment$1, null, text);
+    return asBlock ? (openBlock(), createBlock(Comment, null, text)) : createVNode(Comment, null, text);
   }
 
   function normalizeVNode(child) {
     if (child == null || typeof child === 'boolean') {
       // empty placeholder
-      return createVNode(Comment$1);
+      return createVNode(Comment);
     } else if (isArray(child)) {
       // fragment
       return createVNode(Fragment, null, // #3666, avoid reference pollution when reusing vnode
@@ -8180,7 +8182,7 @@ export default function vueFactory(exports) {
   function ensureValidVNode(vnodes) {
     return vnodes.some(child => {
       if (!isVNode(child)) return true;
-      if (child.type === Comment$1) return false;
+      if (child.type === Comment) return false;
       if (child.type === Fragment && !ensureValidVNode(child.children)) return false;
       return true;
     }) ? vnodes : null;
@@ -9575,7 +9577,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.6";
+  var version = "3.2.7";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10637,7 +10639,7 @@ export default function vueFactory(exports) {
   var Vue = /*#__PURE__*/Object.freeze({
     __proto__: null,
     BaseTransition: BaseTransition,
-    Comment: Comment$1,
+    Comment: Comment,
     EffectScope: EffectScope,
     Fragment: Fragment,
     KeepAlive: KeepAlive,
