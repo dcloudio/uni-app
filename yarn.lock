@@ -743,11 +743,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dcloudio/uni-i18n@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@dcloudio/uni-i18n/-/uni-i18n-0.0.3.tgz#c7ff6ea6a4ea5cd5ef8dc3d674afa2e64502c151"
-  integrity sha512-BJGl0yUkuTMv6v0r1lUzq2EURkSoM/CoKbjlf7xlDXDTUqkhUGjK5epTq2hwsi26HTxTjvl6/vf50Q5wSTFApA==
-
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.npmjs.org/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"

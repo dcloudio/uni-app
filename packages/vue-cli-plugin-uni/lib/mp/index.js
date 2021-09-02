@@ -38,6 +38,8 @@ function getProvides () {
   if (process.env.UNI_USING_COMPONENTS) {
     if (process.env.UNI_SUBPACKGE) {
       provides.createApp = [uniPath, 'createSubpackageApp']
+    } else if (process.env.UNI_MP_PLUGIN) {
+      provides.createApp = [uniPath, 'createPlugin']
     } else {
       provides.createApp = [uniPath, 'createApp']
     }
@@ -126,11 +128,12 @@ class PreprocessAssetsPlugin {
 
 function initSubpackageConfig (webpackConfig, vueOptions) {
   if (process.env.UNI_OUTPUT_DEFAULT_DIR === process.env.UNI_OUTPUT_DIR) { // 未自定义output
-    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, process.env.UNI_SUBPACKGE)
+    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, (process.env.UNI_SUBPACKGE || process.env
+      .UNI_MP_PLUGIN))
   }
   vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
   webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
-  webpackConfig.output.jsonpFunction('webpackJsonp_' + process.env.UNI_SUBPACKGE)
+  webpackConfig.output.jsonpFunction('webpackJsonp_' + (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
 }
 
 module.exports = {
@@ -154,7 +157,7 @@ module.exports = {
 
     const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
-    const beforeCode = 'import \'uni-pages\';'
+    let beforeCode = 'import \'uni-pages\';'
 
     const plugins = [
       new WebpackUniAppPlugin(),
@@ -162,8 +165,35 @@ module.exports = {
       new webpack.ProvidePlugin(getProvides())
     ]
 
-    if (process.env.UNI_SUBPACKGE && process.env.UNI_SUBPACKGE !== 'main') {
+    if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && process.env.UNI_SUBPACKGE !== 'main') {
       plugins.push(new PreprocessAssetsPlugin())
+    }
+
+    if (process.env.UNI_MP_PLUGIN) {
+      // 小程序插件入口使用
+      // packages\webpack-uni-mp-loader\lib\plugin\index-new.js -> addMPPluginRequire
+      beforeCode += `wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__ = __webpack_require__;`
+
+      const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
+      if (UNI_MP_PLUGIN_MAIN) {
+        process.UNI_ENTRY[UNI_MP_PLUGIN_MAIN.split('.')[0]] = path.resolve(process.env.UNI_INPUT_DIR,
+          UNI_MP_PLUGIN_MAIN)
+      }
+    }
+
+    const alias = { // 仅 mp-weixin
+      'mpvue-page-factory': require.resolve(
+        '@dcloudio/vue-cli-plugin-uni/packages/mpvue-page-factory')
+    }
+
+    if (process.env.UNI_USING_VUE3) {
+      alias.vuex = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex')
+      alias['@vue/devtools-api'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/devtools-api')
+
+      alias['vue-i18n'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue3/node_modules/vue-i18n')
+      alias['@dcloudio/uni-app'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-app')
+    } else {
+      alias.vuex = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3')
     }
 
     return {
@@ -182,10 +212,7 @@ module.exports = {
       },
       resolve: {
         extensions: ['.nvue'],
-        alias: { // 仅 mp-weixin
-          'mpvue-page-factory': require.resolve(
-            '@dcloudio/vue-cli-plugin-uni/packages/mpvue-page-factory')
-        }
+        alias
       },
       module: {
         rules: [{
@@ -272,7 +299,7 @@ module.exports = {
         }))
     }
 
-    if (process.env.UNI_SUBPACKGE) {
+    if (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) {
       initSubpackageConfig(webpackConfig, vueOptions)
     }
 

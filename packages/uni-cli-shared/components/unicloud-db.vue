@@ -25,6 +25,11 @@ const pageMode = {
   add: 'add',
   replace: 'replace'
 }
+const loadMode = {
+  auto: 'auto',
+  onready: 'onready',
+  manual: 'manual'
+}
 
 const attrs = [
   'pageCurrent',
@@ -90,7 +95,7 @@ export default {
       default: false
     },
     gettree: {
-      type: [Boolean, String],
+      type: [Boolean, String, Object],
       default: false
     },
     gettreepath: {
@@ -116,6 +121,18 @@ export default {
     distinct: {
       type: [Boolean, String],
       default: false
+    },
+    pageIndistinct: {
+      type: [Boolean, String],
+      default: false
+    },
+    foreignKey: {
+      type: String,
+      default: ''
+    },
+    loadtime: {
+      type: String,
+      default: 'auto'
     },
     manual: {
       type: Boolean,
@@ -146,6 +163,10 @@ export default {
       })
       return al
     }, (newValue, oldValue) => {
+      if (this.loadtime === loadMode.manual) {
+        return
+      }
+
       this.paginationInternal.size = this.pageSize
 
       let needReset = false
@@ -182,7 +203,7 @@ export default {
 
     // #ifdef MP-TOUTIAO
     let changeName
-    const events = this.$scope.dataset.eventOpts
+    const events = this.$scope.dataset.eventOpts || []
     for (var i = 0; i < events.length; i++) {
       const event = events[i]
       if (event[0].includes('^load')) {
@@ -206,7 +227,7 @@ export default {
     }
     // #endif
 
-    if (!this.manual) {
+    if (!this.manual && this.loadtime === loadMode.auto) {
       this.loadData()
     }
   },
@@ -293,7 +314,7 @@ export default {
         db = db.action(action)
       }
 
-      db.collection(this.collection).add(value).then((res) => {
+      db.collection(this._getCollection()).add(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -367,7 +388,7 @@ export default {
         db = db.action(action)
       }
 
-      return db.collection(this.collection).doc(id).update(value).then((res) => {
+      return db.collection(this._getCollection()).doc(id).update(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -389,63 +410,7 @@ export default {
         complete && complete()
       })
     },
-    _execLoadData (callback, clear) {
-      if (this.loading) {
-        return
-      }
-      this.loading = true
-      this.errorMessage = ''
-
-      this._getExec().then((res) => {
-        this.loading = false
-        const {
-          data,
-          count
-        } = res.result
-        this._isEnded = data.length < this.pageSize
-        this.hasMore = !this._isEnded
-
-        const data2 = this.getone ? (data.length ? data[0] : undefined) : data
-
-        if (this.getcount) {
-          this.paginationInternal.count = count
-        }
-
-        callback && callback(data2, this._isEnded, this.paginationInternal)
-        this._dispatchEvent(events.load, data2)
-
-        if (this.getone || this.pageData === pageMode.replace) {
-          this.dataList = data2
-        } else {
-          if (clear) {
-            this.dataList = data2
-          } else {
-            this.dataList.push(...data2)
-          }
-        }
-
-        // #ifdef H5
-        if (process.env.NODE_ENV === 'development') {
-          this._debugDataList.length = 0
-          const formatData = JSON.parse(JSON.stringify(this.dataList))
-          if (Array.isArray(this.dataList)) {
-            this._debugDataList.push(...formatData)
-          } else {
-            this._debugDataList.push(formatData)
-          }
-        }
-        // #endif
-      }).catch((err) => {
-        this.loading = false
-        this.errorMessage = err
-        callback && callback()
-        this.$emit(events.error, err)
-        if (process.env.NODE_ENV === 'development') {
-          console.error(err)
-        }
-      })
-    },
-    _getExec () {
+    getTemp (isTemp = true) {
       /* eslint-disable no-undef */
       let db = uniCloud.database()
 
@@ -460,6 +425,9 @@ export default {
       }
       if (this.field) {
         db = db.field(this.field)
+      }
+      if (this.foreignKey) {
+        db = db.foreignKey(this.foreignKey)
       }
       if (this.groupby) {
         db = db.groupBy(this.groupby)
@@ -492,9 +460,88 @@ export default {
       if (this.gettreepath) {
         getOptions.getTreePath = treeOptions
       }
-      db = db.skip(size * (current - 1)).limit(size).get(getOptions)
+      db = db.skip(size * (current - 1)).limit(size)
+
+      if (isTemp) {
+        db = db.getTemp(getOptions)
+        db.udb = this
+      } else {
+        db = db.get(getOptions)
+      }
 
       return db
+    },
+    setResult (result) {
+      if (result.code === 0) {
+        this._execLoadDataSuccess(result)
+      } else {
+        this._execLoadDataFail(new Error(result.message))
+      }
+    },
+    _execLoadData (callback, clear) {
+      if (this.loading) {
+        return
+      }
+      this.loading = true
+      this.errorMessage = ''
+
+      this._getExec().then((res) => {
+        this.loading = false
+        this._execLoadDataSuccess(res.result, callback, clear)
+
+        // #ifdef H5
+        if (process.env.NODE_ENV === 'development') {
+          this._debugDataList.length = 0
+          const formatData = JSON.parse(JSON.stringify(this.dataList))
+          if (Array.isArray(this.dataList)) {
+            this._debugDataList.push(...formatData)
+          } else {
+            this._debugDataList.push(formatData)
+          }
+        }
+        // #endif
+      }).catch((err) => {
+        this.loading = false
+        this._execLoadDataFail(err, callback)
+      })
+    },
+    _execLoadDataSuccess (result, callback, clear) {
+      const {
+        data,
+        count
+      } = result
+      this._isEnded = count !== undefined ? (this.paginationInternal.current * this.paginationInternal.size >= count) : (data.length < this.pageSize)
+      this.hasMore = !this._isEnded
+
+      const data2 = this.getone ? (data.length ? data[0] : undefined) : data
+
+      if (this.getcount) {
+        this.paginationInternal.count = count
+      }
+
+      callback && callback(data2, this._isEnded, this.paginationInternal)
+      this._dispatchEvent(events.load, data2)
+
+      if (this.getone || this.pageData === pageMode.replace) {
+        this.dataList = data2
+      } else {
+        if (clear) {
+          this.dataList = data2
+        } else {
+          this.dataList.push(...data2)
+        }
+      }
+    },
+    _execLoadDataFail (err, callback) {
+      this.errorMessage = err
+      callback && callback()
+      this.$emit(events.error, err)
+      if (process.env.NODE_ENV === 'development') {
+        console.error(err)
+      }
+    },
+    _getExec () {
+      return this.getTemp(false)
     },
     _execRemove (id, action, success, fail, complete, needConfirm, needLoading, loadingTitle) {
       if (!this.collection || !id) {
@@ -522,7 +569,7 @@ export default {
         exec = exec.action(action)
       }
 
-      exec.collection(this.collection).where({
+      exec.collection(this._getCollection()).where({
         _id: dbCmd.in(ids)
       }).remove().then((res) => {
         success && success(res.result)
@@ -545,6 +592,11 @@ export default {
         }
         complete && complete()
       })
+    },
+    _getCollection () {
+      const index = this.collection.indexOf(',')
+      const collection = index > 0 ? this.collection.substring(0, index) : this.collection
+      return collection
     },
     removeData (ids) {
       const il = ids.slice(0)

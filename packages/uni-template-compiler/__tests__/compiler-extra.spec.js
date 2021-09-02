@@ -64,14 +64,14 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<view class="static" :class="[{ active: isActive }, errorClass]"></view>',
-      '<view class="{{[\'static data-v-4\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
+      '<view class="{{[\'static\',\'data-v-4\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
         scopeId: 'data-v-4'
       }
     )
     assertCodegen(
       '<view ref="ref" :class="[{ active: isActive }, errorClass]"></view>',
-      '<view data-ref="ref" class="{{[\'data-v-5 vue-ref\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
+      '<view data-ref="ref" class="{{[\'data-v-5\',\'vue-ref\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
         scopeId: 'data-v-5'
       }
@@ -92,7 +92,7 @@ describe('mp:compiler-extra', () => {
     //     )
     assertCodegen(
       '<view :class="view" class="view"></view>',
-      '<view class="{{[\'view data-v-7\',view]}}"></view>',
+      '<view class="{{[\'view\',\'data-v-7\',view]}}"></view>',
       undefined, {
         scopeId: 'data-v-7'
       }
@@ -237,16 +237,28 @@ describe('mp:compiler-extra', () => {
 
     assertCodegen(
       '<component1 v-slot>text</component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>text</view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block>text</block></component1>'
     )
 
     assertCodegen(
       '<component1 v-slot:default>text<text>123213</text></component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>text<text>123213</text></view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block>text<text>123213</text></block></component1>'
     )
     assertCodegen(
       '<component1><template v-slot:left><text></text></template><template v-slot:right><text></text></template></component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'left\',\'right\']}}"><view slot="left"><text></text></view><view slot="right"><text></text></view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'left\',\'right\']}}"><text slot="left"></text><text slot="right"></text></component1>'
+    )
+    assertCodegen(
+      '<component1><view>view1</view><view>view2</view></component1>',
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>view1</view><view>view2</view></component1>'
+    )
+    assertCodegen(
+      '<component1><template v-slot><view>view1</view><view>view2</view><template></component1>',
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><view>view1</view><view>view2</view></block></component1>'
+    )
+    assertCodegen(
+      '<component1><template v-slot:test><view>view1</view><view>view2</view><template></component1>',
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'test\']}}"><view slot="test"><view>view1</view><view>view2</view></view></component1>'
     )
     assertCodegen(
       `<my-component>
@@ -258,7 +270,7 @@ describe('mp:compiler-extra', () => {
         <p>Here's some contact info</p>
       </template>
     </my-component>`,
-      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\',\'header\',\'footer\']}}"><view slot="header"><view class="_h1">Here might be a page title</view></view><view slot="footer"><view class="_p">Here\'s some contact info</view></view><view class="_p">A paragraph for the main content.</view></my-component>'
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\',\'header\',\'footer\']}}"><view class="_h1" slot="header">Here might be a page title</view><view class="_p" slot="footer">Here\'s some contact info</view><view class="_p">A paragraph for the main content.</view></my-component>'
     )
   })
 
@@ -366,23 +378,23 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<p class="static" :class="{ active: isActive, \'text-danger\': hasError }">2</p>',
-      '<view class="{{[\'static _p\',(isActive)?\'active\':\'\',(hasError)?\'text-danger\':\'\']}}">2</view>'
+      '<view class="{{[\'static\',\'_p\',(isActive)?\'active\':\'\',(hasError)?\'text-danger\':\'\']}}">2</view>'
     )
     assertCodegen(
       '<p class="static" :class="[activeClass, errorClass]">3</p>',
-      '<view class="{{[\'static _p\',activeClass,errorClass]}}">3</view>'
+      '<view class="{{[\'static\',\'_p\',activeClass,errorClass]}}">3</view>'
     )
     assertCodegen(
       '<p class="static" :class="[isActive ? activeClass : \'\', errorClass]">4</p>',
-      '<view class="{{[\'static _p\',isActive?activeClass:\'\',errorClass]}}">4</view>'
+      '<view class="{{[\'static\',\'_p\',isActive?activeClass:\'\',errorClass]}}">4</view>'
     )
     assertCodegen(
       '<p class="static" :class="[{ active: isActive }, errorClass]">5</p>',
-      '<view class="{{[\'static _p\',[(isActive)?\'active\':\'\'],errorClass]}}">5</view>'
+      '<view class="{{[\'static\',\'_p\',[(isActive)?\'active\':\'\'],errorClass]}}">5</view>'
     )
     assertCodegen(
       '<div class="container" :class="computedClassObject">6</div>',
-      '<view class="{{[\'container _div\',computedClassObject]}}">6</view>'
+      '<view class="{{[\'container\',\'_div\',computedClassObject]}}">6</view>'
     )
     //         assertCodegen(
     //             `<div class="container" :class="computedClassObject">6</div>`,
@@ -399,7 +411,7 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<p :class="classStr1 || classStr2" class="bg">9</p>',
-      '<view class="{{[\'bg _p\',classStr1||classStr2]}}">9</view>'
+      '<view class="{{[\'bg\',\'_p\',classStr1||classStr2]}}">9</view>'
     )
   })
 
@@ -715,6 +727,26 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{[{x:[1,2,3,4]}]}}" wx:for-item="item" wx:for-index="index"><view><block wx:for="{{item.x}}" wx:for-item="item2" wx:for-index="__i0__"><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item2})}}" bindtap="__e">{{item2+"+"+index}}</view></block></view></block>',
       'with(this){if(!_isMounted){e0=function($event,item2){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item2=_temp2.item2;var _temp,_temp2;return test(item2)}}}'
     )
+    assertCodegen(
+      '<view v-for="(item, index) in array()"><view @click="test"></view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index"><view><view data-event-opts="{{[[\'tap\',[[\'test\',[\'$event\']]]]]}}" bindtap="__e"></view></view></block>',
+      'with(this){var l0=array();$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item, index) in array()"><view @click="test(item)"></view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item})}}" bindtap="__e"></view></view></block>',
+      'with(this){var l0=array();if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return test(item)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item, index) in array()"><view @click="test(item)">{{item}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item})}}" bindtap="__e">{{item}}</view></view></block>',
+      'with(this){var l0=array();if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return test(item)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item, index) in array()"><view @click="test(item)">{{get(item)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item:item.$orig})}}" bindtap="__e">{{item.m0}}</view></view></block>',
+      'with(this){var l0=__map(array(),function(item,index){var $orig=__get_orig(item);var m0=get(item);return{$orig:$orig,m0:m0}});if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return test(item)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
   })
   it('generate bool attr', () => {
     assertCodegen(
@@ -739,8 +771,8 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<view v-if="test1(key)&&test2(key)">{{getValue(key)}}</view>',
-      '<block wx:if="{{$root.m0&&$root.m1}}"><view>{{$root.m2}}</view></block>',
-      'with(this){var m0=test1(key);var m1=test2(key);var m2=m0&&m1?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1,m2:m2}})}'
+      '<block wx:if="{{$root.m0}}"><view>{{$root.m1}}</view></block>',
+      'with(this){var m0=test1(key)&&test2(key);var m1=m0?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}'
     )
     assertCodegen(
       '<view v-for="(item,index) in list" :key="index"><view v-if="item">{{getValue(item)}}</view></view>',

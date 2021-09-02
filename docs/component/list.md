@@ -50,11 +50,12 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 |属性名|说明|类型|默认值|
 |:-|:-|:-|:-|
 |show-scrollbar|控制是否出现滚动条|boolean|true|
-|bounce|控制是否回弹效果|boolean|true|
+|bounce|控制是否回弹效果, iOS 不支持动态修改|boolean|true|
 |loadmoreoffset|触发 loadmore 事件所需要的垂直偏移距离（设备屏幕底部与 list 底部之间的距离），建议手动设置此值，设置大于0的值即可|number|0|
 |offset-accuracy|控制 onscroll 事件触发的频率：表示两次onscroll事件之间列表至少滚动了10px。注意，将该值设置为较小的数值会提高滚动事件采样的精度，但同时也会降低页面的性能|number|10|
 |pagingEnabled|是否按分页模式显示List，默认值false|boolean|true/false|
 |scrollable|是否允许List滚动|boolean|true/false|
+|enable-back-to-top|iOS点击顶部状态栏滚动条返回顶部，只支持竖向|boolean|false|
 
 `loadmoreoffset` 示意图：
 
@@ -68,6 +69,12 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 :--|:--|:--|:--|:--|
 id|list父容器滚动组件id|String|是|应为最外层滚动容器，必须是list组件
 headerHeight|吸顶距离|Number|是|子list吸顶距离最外层滚动容器顶部的距离
+
+#### 方法
+
+`scrollToElement(ref, options)`
+
+滚动到指定位置，详情 [https://uniapp.dcloud.net.cn/nvue-api?id=scrolltoelement](https://uniapp.dcloud.net.cn/nvue-api?id=scrolltoelement)
 
 #### 事件
 

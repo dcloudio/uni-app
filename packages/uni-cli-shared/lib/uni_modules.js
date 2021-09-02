@@ -21,7 +21,21 @@ function normalizeUniModulesPagesJson (pagesJson, pluginId) {
   return pagesJson
 }
 
+function initUniModules () {
+  global.uniModules = []
+  try {
+    global.uniModules = fs
+      .readdirSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules'))
+      .filter(module =>
+        fs.existsSync(
+          path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'package.json')
+        )
+      )
+  } catch (e) {}
+}
+
 module.exports = {
+  initUniModules,
   getPagesJson (content) {
     const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
     const pluginPagesJsons = []

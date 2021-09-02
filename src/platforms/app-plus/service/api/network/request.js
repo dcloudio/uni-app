@@ -46,6 +46,7 @@ export function createRequestTaskById (requestTaskId, {
   responseType,
   sslVerify = true,
   firstIpv4 = false,
+  tls,
   timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
 } = {}) {
   const stream = requireNativePlugin('stream')
@@ -99,7 +100,8 @@ export function createRequestTaskById (requestTaskId, {
     timeout: timeout || 6e5,
     // 配置和weex模块内相反
     sslVerify: !sslVerify,
-    firstIpv4: firstIpv4
+    firstIpv4: firstIpv4,
+    tls
   }
   if (method !== 'GET') {
     options.body = typeof data === 'string' ? data : JSON.stringify(data)

@@ -77,7 +77,7 @@
             {{ item.name }}
           </div>
           <div class="list-item-detail">
-            {{ item.distance ? item.distance + "米 | " : "" }}{{ item.address }}
+            {{ item.distance | distance }}{{ item.address }}
           </div>
         </div>
       </v-uni-scroll-view>
@@ -95,6 +95,17 @@ const key = __uniConfig.qqMapKey
 
 export default {
   name: 'SystemChooseLocation',
+  filters: {
+    distance (distance) {
+      if (distance > 100) {
+        return `${distance > 1000 ? (distance / 1000).toFixed(1) + 'k' : distance.toFixed(0)}m | `
+      } else if (distance > 0) {
+        return '100m内 | '
+      } else {
+        return ''
+      }
+    }
+  },
   data () {
     return {
       latitude: 0,
@@ -105,12 +116,16 @@ export default {
       list: [],
       keyword: '',
       searching: false,
-      loading: true
+      loading: true,
+      adcode: ''
     }
   },
   computed: {
     selected () {
       return this.list[this.selectedIndex]
+    },
+    boundary () {
+      return this.adcode ? `region(${this.adcode},1,${this.latitude},${this.longitude})` : `nearby(${this.latitude},${this.longitude},5000)`
     }
   },
   created () {
@@ -127,9 +142,6 @@ export default {
         this._getList()
       }
     })
-  },
-  beforeDestroy () {
-    window.removeEventListener('message', this.__messageHandle, false)
   },
   methods: {
     _choose () {
@@ -173,7 +185,7 @@ export default {
     },
     _getList () {
       this.loading = true
-      const url = this.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=nearby(${this.latitude},${this.longitude},1000)&keyword=${this.keyword}&page_size=${this.pageSize}&page_index=${this.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${this.latitude},${this.longitude}&get_poi=1&poi_options=page_size=${this.pageSize};page_index=${this.pageIndex}`
+      const url = this.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${this.boundary}&keyword=${this.keyword}&page_size=${this.pageSize}&page_index=${this.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${this.latitude},${this.longitude}&get_poi=1&poi_options=page_size=${this.pageSize};page_index=${this.pageIndex}`
       // TODO 列表加载失败提示
       getJSONP(url, {
         callback: 'callback'
@@ -181,8 +193,12 @@ export default {
         this.loading = false
         if (this.searching && 'data' in res && res.data.length) {
           this._pushData(res.data)
-        } else if ('result' in res && res.result.pois) {
-          this._pushData(res.result.pois)
+        } else if ('result' in res) {
+          const result = res.result
+          this.adcode = result.ad_info ? result.ad_info.adcode : ''
+          if (result.pois) {
+            this._pushData(result.pois)
+          }
         }
       }, () => {
         this.loading = false
@@ -234,10 +250,10 @@ export default {
 
 .uni-system-choose-location .map {
   position: absolute;
-  top: -40px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 380px;
+  height: 300px;
 }
 
 .uni-system-choose-location .map-location {

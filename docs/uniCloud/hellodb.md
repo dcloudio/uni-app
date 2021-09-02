@@ -23,7 +23,7 @@
 
 上述数据中，每行数据表示一个用户的信息，被称之为“记录(record/doc)”。name和tel称之为“字段(field)”。而“13900000000”则是第一条记录的字段tel的值。
 
-每个记录，都是一个完整的json文档，获取到记录后可以使用常规json方式操作。但集合并非json文档，集合是多个json文档的汇总，获取集合需要使用专门的API。
+每行记录，都是一个完整的json文档，获取到记录后可以使用常规json方式操作。但集合并非json文档，集合是多个json文档的汇总，获取集合需要使用专门的API。
 
 与关系型数据库的二维表格式不同，json文档数据库支持不同记录拥有不同的字段、支持多层嵌套数据。
 
@@ -47,6 +47,8 @@ _此处仅为举例，实际业务中，登录日志单独存放在另一个集�
 
 对于初学者，如果不了解数据库设计，可以参考[opendb](https://gitee.com/dcloud/opendb)，已经预置了大量常见的数据库设计。
 
+对于不熟悉传统数据库，但掌握json的js工程师而言，uniCloud的云数据库更亲切，没有传统数据库高昂的学习成本。
+
 在uniCloud web控制台新建表时，在下面的模板中也可以选择各种`opendb`表模板，直接创建。
 
 **字段的值，支持以下类型：**
@@ -64,6 +66,8 @@ _此处仅为举例，实际业务中，登录日志单独存放在另一个集�
 * Date：时间
 * Null：相当于一个占位符，表示一个字段存在但是值为空。
 
+DB Schema中还扩展了其他字段类型，但其实都是基本类型的扩展，比如file类型其实是一种特殊的object，而password类型是一种特殊的string类型。
+
 uniCloud同时支持阿里云和腾讯云，它们的数据库大体相同，有细微差异。阿里云的数据库是mongoDB4.0，腾讯云则使用自研的文档型数据库（兼容mongoDB 4.0版本）。uniCloud基本抹平了不同云厂商的差异，有差异的部分会在文档中单独标注。
 
 如果想在云函数连接其他数据库，如mysql/redis，用法和nodejs连接这些数据库是一样的。插件市场已经有人提供了插件，见下。但注意这些用法推荐用于数据导入，主业务开发不建议这么使用。因为其他服务器上的数据库和云函数环境物理上不在一起，连接会比较慢。
@@ -77,7 +81,7 @@ uniCloud同时支持阿里云和腾讯云，它们的数据库大体相同，有
 
 - 云函数操作数据库是较为传统的开发方式，使用nodejs写云函数、使用传统的MongoDB的API操作云数据库。
 
-- 客户端访问云数据库，称为[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)。这种开发方式可大幅提升开发效率，避免开发者开发服务器代码，并且支持更易用的`jql`语法操作数据库，是更为推荐的开发方式。[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)有单独一套权限和字段值控制系统，无需单独数据库安全。（使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)推荐HBuilderX 2.9.5以上版本。2.9.5以下的版本需单独下载插件，并且不支持`jql`，不再推荐使用。）
+- 客户端访问云数据库，称为[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)。这种开发方式可大幅提升开发效率，避免开发者开发服务器代码，并且支持更易用的`jql`语法操作数据库，是更为推荐的开发方式。[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)有单独一套权限和字段值控制系统，无需担心数据库安全。（使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)推荐HBuilderX 2.9.5以上版本。2.9.5以下的版本需单独下载插件，并且不支持`jql`，不再推荐使用。）
 
 不管使用哪种方法，都有很多公共的概念或功能。本文档将讲述这些公共的内容。
 
@@ -99,6 +103,8 @@ js中敲下代码块`cdb`，即可快速输入上述代码。
 
 **DBOptions参数说明**
 
+> DBOptions仅腾讯云在云函数内可用
+
 |字段		|类型		|必填	|描述											|平台差异说明	|
 |:-:		|:-:		|:-:	|:-:											|:-:					|
 |spaceId|String	|否		|同一账号下的，服务空间ID	|仅腾讯云支持	|
@@ -113,15 +119,15 @@ const db = uniCloud.database({
  
 ## 创建一个集合/数据表@createCollection
 
-新建的服务空间，没有一个集合。需要首先创建集合。
+新建的服务空间，没有数据表。需要首先创建集合/数据表。
 
-可以在uniCloud的web控制台([https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn))在web页面创建集合，也可以通过代码创建集合。
+可以在uniCloud的web控制台([https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn))在web页面创建数据表，也可以通过代码创建数据表。
 
-通过代码创建集合的方式，阿里云和腾讯云有差别：
+通过代码创建数据表的方式，阿里云和腾讯云有差别：
 
 - 阿里云
 
-调用add方法，给某集合新增数据记录时，如果该集合不存在，会自动创建该集合。如下代码给table1集合新增了一条数据，如果table1不存在，会自动创建。
+调用add方法，给某数据表新增数据记录时，如果该数据表不存在，会自动创建该数据表。如下代码给table1数据表新增了一条数据，如果table1不存在，会自动创建。
 
 ```js
 const db = uniCloud.database();
@@ -130,7 +136,7 @@ db.collection("table1").add({name: 'Ben'})
 
 - 腾讯云
 
-腾讯云提供了专门的创建集合的API，此API仅支持云函数内运行，不支持clientDB调用。
+腾讯云提供了专门的创建数据表的API，此API仅支持云函数内运行，不支持clientDB调用。
 
 ```js
 const db = uniCloud.database();
@@ -138,18 +144,18 @@ db.createCollection("table1")
 ```
 
 **注意**
-* 如果集合已存在，腾讯云调用createCollection方法会报错
-* 腾讯云调用collection的add方法不会自动创建集合，不存在的集合会报错
+* 如果数据表已存在，腾讯云调用createCollection方法会报错
+* 腾讯云调用collection的add方法不会自动创建数据表，不存在的数据表会报错
 * 阿里云没有createCollection方法
 
-## 集合的3个组成部分
+## 集合/数据表的3个组成部分
 
-每个集合，其实包含3个部分：
+每个数据表，其实包含3个部分：
 - data：数据内容
-- index：数据库索引
+- index：索引
 - schema：数据表格式定义
 
-在uniCloud的web控制台可以看到一个集合的3部分内容。
+在uniCloud的web控制台可以看到一个数据表的3部分内容。
 
 ### 数据内容@dbdata
 
@@ -157,63 +163,44 @@ data很简单，就是存放的数据记录(record)。
 
 实际上，创建一条新记录，是不管在web控制台创建，还是通过API创建，每条记录都会自带一个`_id`字段用以作为该记录的唯一标志。
 
-`_id`字段是每个集合默认自带且不可删除的字段。同时，它也是集合的索引。
+`_id`字段是每个数据表默认自带且不可删除的字段。同时，它也是数据表的索引。
+
+阿里云使用的是标准的mongoDB，`_id`是自增的，后创建的记录的`_id`总是大于先生成的`_id`。传统数据库的自然数自增字段在多物理机的大型数据库下很难保持同步，大型数据库均使用`_id`这种长度较长、不会重复且仍然保持自增规律的方式。
+
+**腾讯云使用的是兼容mongoDB的自研数据库，`_id`并非自增**
+
+插入/导入数据时也可以自行指定`_id`而不使用自动生成的`_id`，这样可以很方便的将其他数据库的数据迁移到uniCloud云数据库
 
 ### 数据库索引@dbindex
 
-所谓索引，是指在集合的众多字段中挑选一个或多个字段，让数据库引擎优先处理这些字段。设置为索引的字段，在通过该字段查询记录时可以获得更快的查询速度。
+所谓索引，是指在数据表的众多字段中挑选一个或多个字段，让数据库引擎优先处理这些字段。设置为索引的字段，在通过该字段查询记录时可以获得更快的查询速度。但设置过多索引也不合适，会造成数据新增和删除变慢。
 
-一个集合可以有多个字段被设为索引。
+一个数据表可以有多个字段被设为索引。
 
 索引分唯一型和非唯一型。
 
-唯一型索引要求整个集合多个记录的该字段的值不能重复。比如`_id`就是唯一型索引。
+唯一型索引要求整个数据表多个记录的该字段的值不能重复。比如`_id`就是唯一型索引。
 
-假使有2个人都叫“张三”，那么他们在user集合里的区分就是依靠不同的`_id`来区分。
+假使有2个人都叫“张三”，那么他们在user数据表里的区分就是依靠不同的`_id`来区分。
 
 如果我们要根据name字段来查询，为了提升查询速度，此时可以把name字段设为非唯一索引。
 
-还有“组合索引”的概念，可以把多个字段组合成一个“组合索引”。例如一个文章点赞记录明细表，设置文章id和用户id为组合索引，且将此组合索引设为唯一型索引，就可以限制同一用户对一篇文章多次点赞。
+索引内容较多，还有“组合索引”、“稀疏索引”、“地理位置索引”、“TTL索引”等概念。有单独的文档详细讲述索引，另见：[数据库索引](/uniCloud/db-index)
+
 
 **在web控制台添加上述索引**
 
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/fca53140-1d91-11eb-880a-0db19f4f74bb.jpg)
 
-**在db_init.json内添加上述索引**
-
-```json
-{
-  "opendb-news-article": {
-    "data": [],
-    "index":[{
-      "IndexName": "user_article_", // 索引名称
-      "MgoKeySchema": { // 索引规则
-          "MgoIndexKeys": [{
-              "Name": "user_id", // 索引字段
-              "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序，2dsphere：地理位置
-          },{
-              "Name": "article_id", // 索引字段
-              "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序，2dsphere：地理位置
-          }],
-          "MgoIsUnique": false // 索引是否唯一
-      }
-    }]
-  }
-}
-```
-
 **注意**
 - 如果记录中已经存在多个记录某字段相同的情况，那么将该字段设为唯一型索引会失败。
 - 如果已经设置某字段为唯一索引，在新增和修改记录时如果该字段的值之前在其他记录已存在，会失败。
-- 假如记录中不存在某个字段，则对索引字段来说其值默认为 null，如果该索引字段设为唯一型索引，则不允许存在两个或以上的该字段为null或不存在该字段的记录。
+- 假如记录中不存在某个字段，则对索引字段来说其值默认为 null，如果该索引字段设为唯一型索引，则不允许存在两个或以上的该字段为null或不存在该字段的记录。此时需要设置稀疏索引来解决多个null重复的问题
 
-#### 稀疏索引
-
-[文档已移至](uniCloud/db-index.md?id=sparse)
 
 ### 数据表格式定义@dbschema
 
-`DB Schema`是集合的表结构描述。描述集合有哪些字段、值域类型是什么、是否必填、数据操作权限等很多内容。
+`DB Schema`是集合的表结构描述。描述数据表有哪些字段、值域类型是什么、是否必填、数据操作权限等很多内容。
 
 因为json文档数据库的灵活性，data数据的字段可以不在schema的描述范围内。
 
@@ -224,23 +211,23 @@ data很简单，就是存放的数据记录(record)。
 
 ## 获取集合/数据表对象
 
-创建好集合后，可以通过API获取集合对象。
+创建好数据表后，可以通过API获取数据表对象。
 ```js
 const db = uniCloud.database();
-// 获取名为 `table1` 集合的引用
+// 获取名为 `table1` 数据表的引用
 const collection = db.collection('table1');
 ```
 
-**集合 Collection 的方法**
+**集合/数据表 Collection 的方法**
 
-通过 `db.collection(name)` 可以获取指定集合的引用，在集合上可以进行以下操作
+通过 `db.collection(name)` 可以获取指定数据表的引用，在数据表上可以进行以下操作
 
 | 类型		| 接口		| 说明																														|
 | --------	| -------	| ----------------------------------------------------------------------------------										|
 | 写		| add		| 新增记录（触发请求）																										|
 | 计数		| count		| 获取符合条件的记录条数																									|
-| 读		| get		| 获取集合中的记录，如果有使用 where 语句定义查询条件，则会返回匹配结果集 (触发请求)										|
-| 引用		| doc		| 获取对该集合中指定 id 的记录的引用																						|
+| 读		| get		| 获取数据表中的记录，如果有使用 where 语句定义查询条件，则会返回匹配结果集 (触发请求)										|
+| 引用		| doc		| 获取对该数据表中指定 id 的记录的引用																						|
 | 查询条件	| where		| 通过指定条件筛选出匹配的记录，可搭配查询指令（eq, gt, in, ...）使用														|
 |			| skip		| 跳过指定数量的文档，常用于分页，传入 offset。clientDB组件有封装好的更易用的分页，[另见](uniCloud/uni-clientdb-component)	|
 |			| orderBy	| 排序方式																													|
@@ -284,7 +271,7 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 - db_init.json位置由`cloudfunctions/db_init.json`移至`uniCloud/database/db_init.json`
 - schema不再放在db_init.json内，每个表都有一个单独的schema文件，比如news表对应的schema为`uniCloud/database/news.schema.json`
 - schema可以在`uniCloud/database`目录上右键创建
-- db_init.json文件右键初始化云数据库时依然会带上schema进行数据库的初始化，除schema外HBuilderX3.0.0以上版本使用db_init.json初始化数据库还会带上扩展校验函数，扩展校验函数位于`uniCloud/database/validateFunction`目录下，扩展校验函数文档详见：[validateFunction](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
+- `db_init.json`文件右键初始化云数据库时依然会带上schema进行数据库的初始化，除schema外HBuilderX3.0.0以上版本使用db_init.json初始化数据库还会带上扩展校验函数，扩展校验函数位于`uniCloud/database/validateFunction`目录下，扩展校验函数文档详见：[validateFunction](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
 
 **HBuilderX 3.0.0版本之前的db_init.json示例**
 
@@ -308,7 +295,7 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
         "MgoIsSparse": false // 是否为稀疏索引，请参考 https://uniapp.dcloud.net.cn/uniCloud/db-index.md?id=sparse
       }
     }],
-    "schema": {
+    "schema": { // HBuilderX 3.0.0以上版本schema不在此处，而是放在database目录下单独的`表名.schema.json`文件内
       "bsonType": "object",
       "permission": {
         ".read": true,
@@ -356,11 +343,19 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 - 如果表名与opendb中任意表名相同，web控制台导出时将不会带上schema和index。
 - web控制台导出时默认不包括`_id`字段，在导入时，数据库插入新记录时会自动补`_id`字段。如果需要指定`_id`，需要手工补足数据。
 
+在db_init.json内可以使用以下形式定义Date类型的数据：
+
+```js
+{
+  "dateObj": { // dateObj字段就是日期类型的数据
+    "$date": "2020-12-12T00:00:00.000Z" // ISO标准日期字符串
+  }
+}
+```
+
 ### 数据库回档备份和恢复@backup
 
-**此功能暂时只有腾讯云支持**
-
-uniCloud腾讯云版会在每天自动备份一次数据库，最多保留7天。这让开发者不再担心数据丢失。
+uniCloud会在每天凌晨自动备份一次数据库，最多保留7天。这让开发者不再担心数据丢失。
 
 **操作说明**
 
@@ -373,8 +368,6 @@ uniCloud腾讯云版会在每天自动备份一次数据库，最多保留7天�
 
 
 ### 数据导出为文件@export
-
-**此功能暂时只有阿里云支持**
 
 此功能主要用于导出整个集合的数据
 
@@ -393,8 +386,6 @@ uniCloud腾讯云版会在每天自动备份一次数据库，最多保留7天�
 - 数据量较大时可能需要等待一段时间才可以开始下载
 
 ### 从文件导入数据@import
-
-**此功能暂时只有阿里云支持**
 
 uniCloud提供的`db_init.json`主要是为了对数据库进行初始化，并不适合导入大量数据。与`db_init.json`不同，数据导入功能可以导入大量数据，目前支持导入 CSV、JSON 格式（关于json格式看下面注意事项）的文件数据。
 

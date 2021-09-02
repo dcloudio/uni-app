@@ -142,19 +142,19 @@ export default {
     _fixSize () {
       if (this.ratio) {
         const $el = this.$el
-        const rect = $el.getBoundingClientRect()
         if (this.mode === 'widthFix') {
-          const width = rect.width
+          const width = $el.offsetWidth
           if (width) {
             $el.style.height = fixNumber(width / this.ratio) + 'px'
           }
         } else if (this.mode === 'heightFix') {
-          const height = rect.height
+          const height = $el.offsetHeight
           if (height) {
             $el.style.width = fixNumber(height * this.ratio) + 'px'
           }
         }
       }
+      window.dispatchEvent(new CustomEvent('updateview'))
     },
     _resetSize () {
       this.$el.style.width = this.originalStyle.width
@@ -195,9 +195,9 @@ export default {
         img.src = realImagePath
       } else {
         this._clearImage()
+        this._resetData()
         // 与微信小程序保持一致，保留之前样式
-        // this._resetData()
-        this._resetSize()
+        // this._resetSize()
       }
     },
     _clearImage () {

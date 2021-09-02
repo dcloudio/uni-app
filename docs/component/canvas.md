@@ -6,19 +6,20 @@
 
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
-|type|String||指定 canvas 类型，支持 2d (2.9.0) 和 webgl|微信小程序 2.7.0+|
+|type|String||指定 canvas 类型，支持 2d (2.9.0) 和 webgl|微信小程序 2.7.0+ 字节小程序1.78.0+|
 |canvas-id|String||canvas 组件的唯一标识符||
 |disable-scroll|Boolean|false|当在 canvas 中移动时且有绑定手势事件时，禁止屏幕滚动以及下拉刷新|字节跳动小程序不支持|
-|@touchstart|EventHandle||手指触摸动作开始|字节跳动小程序不支持|
-|@touchmove|EventHandle||手指触摸后移动|字节跳动小程序不支持|
-|@touchend|EventHandle||手指触摸动作结束|字节跳动小程序不支持|
-|@touchcancel|EventHandle||手指触摸动作被打断，如来电提醒，弹窗|字节跳动小程序不支持|
+|@touchstart|EventHandle||手指触摸动作开始|字节小程序1.78.0+|
+|@touchmove|EventHandle||手指触摸后移动|字节小程序1.78.0+|
+|@touchend|EventHandle||手指触摸动作结束|字节小程序1.78.0+|
+|@touchcancel|EventHandle||手指触摸动作被打断，如来电提醒，弹窗|字节小程序1.78.0+|
 |@longtap|EventHandle||手指长按 500ms 之后触发，触发了长按事件后进行移动不会触发屏幕的滚动|字节跳动小程序不支持|
 |@error|EventHandle||当发生错误时触发 error 事件，detail = {errMsg: 'something wrong'}|字节跳动小程序不支持|
 
 **注意事项：**
 
 * canvas 标签默认宽度 300px、高度 225px，动态修改 canvas 大小后需要重新绘制。
+* h5、app-vue 中单个尺寸过大的 canvas 在 iOS/Safari 无法绘制（具体限制尺寸未公布）。
 * 同一页面中的 canvas-id 不可重复，如果使用一个已经出现过的 canvas-id，该 canvas 标签对应的画布将被隐藏并不再正常工作。
 * canvas 在微信小程序、百度小程序、QQ小程序中为原生组件，层级高于前端组件，请勿内嵌在 scroll-view、swiper、picker-view、movable-view 中使用。解决 canvas 层级过高无法覆盖，参考 [native-component](/component/native-component)。其他小程序端的 canvas 仍然为 webview 中的 canvas。
 * app-vue 中的 canvas 仍然是 webview 的 canvas。app-nvue下如需使用canvas，需下载插件，详见文档底部章节。

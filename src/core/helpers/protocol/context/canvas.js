@@ -110,7 +110,6 @@ export const canvasToTempFilePath = {
   quality: {
     type: Number,
     validator (value, params) {
-      value = Math.floor(value)
       params.quality = value > 0 && value < 1 ? value : 1
     }
   }

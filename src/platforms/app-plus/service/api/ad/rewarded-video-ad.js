@@ -24,6 +24,7 @@ class RewardedVideoAd {
 
     this._preload = options.preload !== undefined ? options.preload : true
     this._isLoad = false
+    this._isLoading = false
     this._adError = ''
     this._loadPromiseResolve = null
     this._loadPromiseReject = null
@@ -32,6 +33,7 @@ class RewardedVideoAd {
     const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options)
     rewardAd.onLoad((e) => {
       this._isLoad = true
+      this._isLoading = false
       this._lastLoadTime = Date.now()
       this._dispatchEvent('load', {})
 
@@ -41,6 +43,8 @@ class RewardedVideoAd {
       }
     })
     rewardAd.onClose((e) => {
+      this._isLoad = false
+      this._isLoading = false
       if (this._preload) {
         this._loadAd()
       }
@@ -50,6 +54,7 @@ class RewardedVideoAd {
       this._dispatchEvent('verify', { isValid: e.isValid })
     })
     rewardAd.onError((e) => {
+      this._isLoading = false
       const { code, message } = e
       const data = { code: code, errMsg: message }
       this._adError = message
@@ -78,18 +83,25 @@ class RewardedVideoAd {
 
   load () {
     return new Promise((resolve, reject) => {
+      this._loadPromiseResolve = resolve
+      this._loadPromiseReject = reject
+      if (this._isLoading) {
+        return
+      }
       if (this._isLoad) {
         resolve()
         return
       }
-      this._loadPromiseResolve = resolve
-      this._loadPromiseReject = reject
       this._loadAd()
     })
   }
 
   show () {
     return new Promise((resolve, reject) => {
+      if (this._isLoading) {
+        return
+      }
+
       const provider = this.getProvider()
       if (provider === ProviderType.CSJ && this.isExpired) {
         this._isLoad = false
@@ -118,6 +130,7 @@ class RewardedVideoAd {
 
   _loadAd () {
     this._isLoad = false
+    this._isLoading = true
     this._rewardAd.load()
   }
 

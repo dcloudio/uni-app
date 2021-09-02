@@ -1,5 +1,6 @@
 import {
-  isPlainObject
+  isPlainObject,
+  hasOwn
 } from 'uni-shared'
 import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
@@ -251,8 +252,17 @@ const protocols = { // 需要做转换的 API 列表
     // TODO 有没有返回值还需要测试下
   },
   chooseImage: {
-    returnValue: {
-      apFilePaths: 'tempFilePaths'
+    returnValue (result) {
+      const hasTempFilePaths = hasOwn(result, 'tempFilePaths') && result.tempFilePaths
+      if (hasOwn(result, 'apFilePaths') && !hasTempFilePaths) {
+        result.tempFilePaths = result.apFilePaths
+        delete result.apFilePaths
+      }
+      if (!hasOwn(result, 'tempFiles') && hasTempFilePaths) {
+        result.tempFiles = []
+        result.tempFilePaths.forEach(tempFilePath => result.tempFiles.push({ path: tempFilePath }))
+      }
+      return {}
     }
   },
   previewImage: {
@@ -365,6 +375,23 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   getUserInfo: {
+    name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
+    returnValue (result) {
+      if (my.canIUse('getOpenUserInfo')) {
+        let response = {}
+        try {
+          response = JSON.parse(result.response).response
+        } catch (e) {}
+        result.nickName = response.nickName
+        result.avatar = response.avatar
+      }
+      result.userInfo = {
+        nickName: result.nickName,
+        avatarUrl: result.avatar
+      }
+    }
+  },
+  getUserProfile: {
     name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
     returnValue (result) {
       if (my.canIUse('getOpenUserInfo')) {

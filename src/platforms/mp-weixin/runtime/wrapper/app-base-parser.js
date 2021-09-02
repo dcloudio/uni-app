@@ -11,6 +11,10 @@ import {
   getEventChannel
 } from 'uni-helpers/navigate-to'
 
+import {
+  uniIdMixin
+} from 'uni-shared'
+
 const hooks = [
   'onShow',
   'onHide',
@@ -41,14 +45,70 @@ function initEventChannel () {
   }
 }
 
+function initScopedSlotsParams () {
+  const center = {}
+  const parents = {}
+
+  Vue.prototype.$hasScopedSlotsParams = function (vueId) {
+    const has = center[vueId]
+    if (!has) {
+      parents[vueId] = this
+      this.$on('hook:destory', () => {
+        delete parents[vueId]
+      })
+    }
+    return has
+  }
+
+  Vue.prototype.$getScopedSlotsParams = function (vueId, name, key) {
+    const data = center[vueId]
+    if (data) {
+      const object = data[name] || {}
+      return key ? object[key] : object
+    } else {
+      parents[vueId] = this
+      this.$on('hook:destory', () => {
+        delete parents[vueId]
+      })
+    }
+  }
+
+  Vue.prototype.$setScopedSlotsParams = function (name, value) {
+    const vueIds = this.$options.propsData.vueId
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0]
+      const object = center[vueId] = center[vueId] || {}
+      object[name] = value
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate()
+      }
+    }
+  }
+
+  Vue.mixin({
+    destroyed () {
+      const propsData = this.$options.propsData
+      const vueId = propsData && propsData.vueId
+      if (vueId) {
+        delete center[vueId]
+        delete parents[vueId]
+      }
+    }
+  })
+}
+
 export default function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
   initEventChannel()
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-kuaishou' || __PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu') {
+    initScopedSlotsParams()
+  }
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store
   }
+  uniIdMixin(Vue)
 
   Vue.prototype.mpHost = __PLATFORM__
 
@@ -69,7 +129,7 @@ export default function parseBaseApp (vm, {
 
       delete this.$options.mpType
       delete this.$options.mpInstance
-      if (this.mpType === 'page') { // hack vue-i18n
+      if (this.mpType === 'page' && typeof getApp === 'function') { // hack vue-i18n
         const app = getApp()
         if (app.$vm && app.$vm.$i18n) {
           this._i18n = app.$vm.$i18n
@@ -88,7 +148,7 @@ export default function parseBaseApp (vm, {
         return
       }
       if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
-        if (!wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
+        if (wx.canIUse && !wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
           console.error('当前微信基础库版本过低，请将 微信开发者工具-详情-项目设置-调试基础库版本 更换为`2.3.0`以上')
         }
       }

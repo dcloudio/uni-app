@@ -21,16 +21,17 @@ exports.main = async (event, context) => {
 'use strict';
 exports.main = async (event, context) => {
 	//event为客户端上传的参数
-  ...
+  //...
   //context中可获取客户端调用的上下文
+  let clientIP = context.CLIENTIP // 客户端ip信息
+  let clientUA = context.CLIENTUA // 客户端user-agent
+  let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
+  // 以下四个属性只有使用uni-app以callFunction方式调用才能获取
   let os = context.OS //客户端操作系统，返回值：android、ios	等
   let platform = context.PLATFORM //运行平台，返回值为 mp-weixin、app-plus等
   let appid = context.APPID // manifest.json中配置的appid
-  let clientIP = context.CLIENTIP // 客户端ip信息
-  let clientUA = context.CLIENTUA // 客户端user-agent
   let deviceId = context.DEVICEID // 客户端标识，新增于HBuilderX 3.1.0，同uni-app客户端getSystemInfo接口获取的deviceId
-  let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
-	... //其它业务代码
+	//... //其它业务代码
 }
 ```
 
@@ -59,7 +60,7 @@ exports.main = async (event, context) => {
 
 |API						|描述																					|
 |--							|--																						|
-|uniCloud.callFunction()	|云函数中调用另一个云函数 [见下](uniCloud/cf-functions?id=callbyfunction)				|
+|uniCloud.callFunction()	|客户端调用云函数 [见下](uniCloud/cf-functions?id=clientcallfunction)；云函数中调用另一个云函数 [见下](uniCloud/cf-functions?id=callbyfunction)				|
 |uniCloud.database()		|云数据库对象 [详情](uniCloud/cf-database.md)											|
 |uniCloud.uploadFile()		|云函数上传文件到云存储 [详情](uniCloud/storage?id=clouduploadfile)							|
 |uniCloud.downloadFile()	|云函数下载云存储的文件到云函数运行环境 [详情](uniCloud/storage?id=clouddownloadfile)	|
@@ -69,7 +70,65 @@ exports.main = async (event, context) => {
 |uniCloud.logger			|云函数中打印日志到uniCloud日志记录系统（非HBuilderX控制台）[详情](uniCloud/cf-logger)	|
 |uniCloud.sendSms()			|发送短信 [详见](uniCloud/send-sms.md)													|
 
-	
+
+## 特殊属性
+
+**注意：下面所有的“客户端”均是相对于云函数而言，如果你使用自己的服务器调用云函数此时客户端是指你的服务器**
+
+### 获取客户端IP@clientip
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let clientIP = context.CLIENTIP // 客户端ip信息
+}
+```
+
+### 获取客户端user-agent@client-user-agent
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let clientUA = context.CLIENTUA // 客户端user-agent信息
+}
+```
+
+### 获取服务空间信息@context-space-info
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
+}
+```
+
+### 获取云函数调用来源@context-source
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let source = context.SOURCE // 当前云函数被何种方式调用
+  // client   客户端callFunction方式调用
+  // http     云函数url化方式调用
+  // timing   定时触发器调用
+  // server   由管理端调用，HBuilderX里上传并运行，仅阿里云支持，腾讯云这种方式调用也是client
+  // function 由其他云函数callFunction调用，仅阿里云支持，腾讯云这种方式调用也是client
+}
+```
+### 其他客户端信息@client-info
+
+**以下四个属性只有使用uni-app以callFunction方式调用才能获取**
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let os = context.OS //客户端操作系统，返回值：android、ios	等
+  let platform = context.PLATFORM //运行平台，返回值为 mp-weixin、app-plus等
+  let appid = context.APPID // manifest.json中配置的appid
+  let deviceId = context.DEVICEID // 客户端标识，新增于HBuilderX 3.1.0，同uni-app客户端getSystemInfo接口获取的deviceId
+}
+```
+
 ## 访问数据库
 
 云函数中支持访问本服务空间下的数据库，调用方式详见[规范](uniCloud/cf-database.md)
@@ -157,6 +216,33 @@ console.log(res)
 
 ```
 
+**发送formdata类型数据**
+
+实际业务中常有使用云函数发送formdata类型数据的需求，比如微信小程序提供的一些服务端接口（图片内容安全检测、识别图片二维码等），可以参考以下示例进行发送
+
+```js
+'use strict';
+const fs = require('fs')
+const path = require('path')
+const FormData = require('form-data'); // 此form-data需要使用npm安装，地址：https://www.npmjs.com/package/form-data
+exports.main = async (event, context) => {
+  const form = new FormData()
+  form.append('media', fs.readFileSync(path.resolve(__dirname, './test.jpg')), { // 为方便演示此处直接使用云函数目录下的test.jpg文件
+    filename: 'test.jpg',
+    contentType: 'image/jpeg'
+  });
+  form.append('otherParam', 'otherParam content');
+  const res = await uniCloud.httpclient.request('https://httpbin.org/post', {
+    method: 'POST',
+    content: form.getBuffer(), // 请求内容
+    headers: form.getHeaders(), // 请求头
+    dataType: 'json' // 此处指定为json表示将此请求的返回值解析为json
+  })
+  return res
+};
+
+```
+
 ## 使用npm
 
 云函数的运行环境是 `Node.js`，因此我们可以使用 `npm` 安装第三方依赖。
@@ -212,7 +298,7 @@ uniCloud.callFunction({
 
 ## 云函数中调用云函数@callbyfunction
 
-用法同客户端调用云函数，不支持callback形式。**云函数本地运行时使用callFunction会调用云端的云函数而不是本地云函数**
+用法同客户端调用云函数，不支持callback形式。**云函数本地运行时使用callFunction会调用云端的云函数而不是本地云函数，连接本地云函数调试时云函数内的callFunction会调用本地云函数**
 
 #### 请求参数
 
@@ -271,6 +357,72 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
 - 同一个服务空间内所有开启固定出口IP的云函数使用的是同一个IP。
 - 如果你是免费版升配到付费版，开启`固定IP`功能后，会导致付费版到期无法自动降级到免费版，请注意按时续费
 
+### 单实例多并发@concurrency
+
+> 仅阿里云支持
+
+默认情况下云函数仅支持单实例单并发，即同一时间一个实例仅可为一个用户服务（不同用户同一时间访问会被分派到不同实例进行处理）。通过修改云函数单实例并发度，可以修改云函数同一时间最多能处理多少请求。
+
+假设同时有3个请求需要处理，当实例并发度设置为1时，需要创建3个实例来处理这3个请求，每个实例分别处理1个请求。而每开启一个实例都会引发云函数冷启动；当云函数的实例并发度设置为10时（即1个实例可以同时处理10个请求），只需要创建1个实例就能处理这3个请求。这样后面2个并发请求不会造成云函数的冷启动。
+
+**开启方式**
+
+云函数详情页面配置单实例并发度即可，支持1-100之间的数值
+
+**效果**
+
+- 有效减少并发请求时云函数冷启动次数
+  
+**使用注意**
+
+- 云函数内存使用量会随着并发量增大而增加
+- 如果并发的不同请求对全局变量同时进行读写会污染全局变量，可能会导致意想不到的后果，开启单实例多并发后请不要编写修改全局变量的代码，除非你熟悉这种技术带来的特殊应用，比如下文进阶部分提到的ip过滤。
+- 设置过大的单实例多并发可能会导致实例底层网络请求排队从而导致请求超时
+
+**适用场景**
+
+|场景																	|适用性	|理由																																	|
+|:-:																	|:-:		|:-:																																	|
+|函数中有较多时间在等待下游服务的响应	|适用		|等待响应一般不消耗资源，在一个实例内并发处理可以节省费用。						|
+|函数中有共享状态且不能并发访问				|不适用	|例如全局变量，多请求并发执行修改共享状态可能会导致错误。							|
+|单个请求的执行要消耗大量CPU及内存资源|不适用	|多请求并发执行会造成资源争抢，可能会导致内存不足（OOM）或者延时增加。|
+
+**关于uni-id的特殊说明**
+
+```js
+// 开启单实例多并发前的uni-id用法
+const uniID = require('uni-id')
+exports.main = async function(event, context) {
+  const res = uniID.login({
+    // ...一些参数
+  })
+  return res
+}
+
+// 由于uni-id默认会从一个内置全局变量上获取客户端平台信息，不同请求会修改此全局变量可能造成混乱，开启单实例多并发后需要将uni-id修改为如下写法
+let uniID = require('uni-id')
+exports.main = async function(event, context) {
+  let uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
+    context: context, // 传入context防止不同请求互相影响
+    config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
+  })
+  const res = uniIDIns.login({
+    // ...一些参数
+  })
+  return res
+}
+```
+
+**进阶**
+
+开启单实例多并发后的全局变量复用并非一定是坏的结果，如果你很了解此行为，也可以对此进行有效的利用
+
+例：[ip-filter](https://ext.dcloud.net.cn/plugin?id=4619)中就利用云函数全局缓存一些ip访问信息来限制单ip访问频率，可以下载示例项目体验一下
+
+### 云函数运行环境@runtime
+
+目前腾讯云和阿里云均支持选择nodejs版本，有nodejs8、nodejs12两个选项，需要在云函数创建时设定，不可修改。需要在云函数的package.json文件的`cloudfunction-config->runtime`字段进行配置，详情参考：[云函数package.json](uniCloud/cf-functions.md?id=packagejson)
+
 ## 云函数package.json@packagejson
 
 HBuilderX 3.0版本之前，package.json只是一个标准的package.json，一般来说安装依赖或公共模块才需要。HBuilderX 3.0及以上版本，package.json也可以用来配置云函数。
@@ -300,7 +452,8 @@ package.json是一个标准json文件，不可带注释。下面是一个package
           "type": "timer",
           "config": "0 0 2 1 * * *"
       }],
-      "path": ""
+      "path": "",
+      "runtime": "Nodejs8" 
     }
 }
 ```
@@ -309,6 +462,7 @@ package.json是一个标准json文件，不可带注释。下面是一个package
 
 ```js
 {
+  "concurrency": 10, // 单个云函数实例最大并发量，不配置的情况下默认是1
   "memorySize": 256, // 函数的最大可用内存，单位MB，可选值： 128|256|512|1024|2048，默认值256
   "timeout": 5, // 函数的超时时间，单位秒，默认值5。最长为60秒，阿里云在定时触发时最长可以是600秒
   // triggers 字段是触发器数组，目前仅支持一个触发器，即数组只能填写一个，不可添加多个
@@ -321,7 +475,8 @@ package.json是一个标准json文件，不可带注释。下面是一个package
       "config": "0 0 2 1 * * *"
   }],
   // 云函数Url化path部分，阿里云需要以/http/开头
-  "path": ""
+  "path": "",
+  "runtime": "" // nodejs版本，可选Nodejs8、Nodejs12，默认：Nodejs8
 }
 ```
 
@@ -331,6 +486,8 @@ package.json是一个标准json文件，不可带注释。下面是一个package
 - 在web控制台修改云函数配置后，通过HBuilderX的下载云函数菜单会在package.json内添加修改后的云函数配置
 - 上传云函数时，如果项目下的package.json内包含云函数配置会同时进行云函数的配置更新
 - package.json只有云端部署才生效，本地运行不生效。
+- cloudfunction-config不可删除云端配置。例：云端已配置triggers（定时触发器），删除cloudfunction-config内的trigger不会删掉云端的定时触发器
+- runtime参数（nodejs版本）仅可在创建云函数时生效，不可修改
 
 ## 使用cloudfunctions_init初始化云函数@init
 
@@ -503,7 +660,7 @@ exports.main = async function() {
 
 ###  其它
 
-- 云函数中使用的时区是 `UTC+0`，而不是 `UTC+8`，在云函数中使用时间时需特别注意。
+- 云端的云函数中使用的时区是 `UTC+0`，而不是 `UTC+8`，在云函数中使用时间时需特别注意。云函数在HBuilderX本地运行时，时区则是电脑的时区，很可能是 `UTC+8`。建议使用时间戳，可以规避时区问题。
 - 使用阿里云作为服务商时，暂时无法使用相对路径读取文件，如：`fs.readFileSync('./info')`，可以替换为`fs.readFileSync(path.resolve(__dirname,'./info'))`
 - 阿里云目前能同步返回数据的最大超时时间为10秒，即云函数运行超过10秒时客户端会收到超时报错。如果你在uniCloud web控制台配置了10秒以上的超时时间，云函数是可以运行到10秒以上的，只是客户端无法接收到返回值，腾讯云没有此限制。
 

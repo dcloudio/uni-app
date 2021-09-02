@@ -6,7 +6,7 @@
 |:-|:-|:-|:-|:-|
 |src|String||图片资源地址||
 |mode|String|'scaleToFill'|图片裁剪、缩放的模式|<div style="width:68px;"></div>|
-|lazy-load|Boolean|false|图片懒加载。只针对page与scroll-view下的image有效|微信小程序、App、百度小程序、字节跳动小程序|
+|lazy-load|Boolean|false|图片懒加载。只针对page与scroll-view下的image有效|微信小程序、百度小程序、字节跳动小程序|
 |fade-show|Boolean|true|图片显示动画效果|仅App-nvue 2.3.4+ Android有效|
 |webp|boolean|false|默认不解析 webP 格式，只支持网络资源|微信小程序2.9.0|
 |show-menu-by-longpress|boolean|false|开启长按图片显示识别小程序码菜单|微信小程序2.7.0|
@@ -26,7 +26,7 @@
 
 **mode 有效值：**
 
-mode 有 13 种模式，其中 4 种是缩放模式，9 种是裁剪模式。
+mode 有 14 种模式，其中 5 种是缩放模式，9 种是裁剪模式。
 
 |模式|值|说明|
 |:-|:-|:-|

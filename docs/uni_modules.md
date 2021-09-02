@@ -39,7 +39,7 @@ uni_modules                                项目根目录下
     ├── hybrid                             存放本地网页的目录，<a href="/component/web-view">详见</a>
     ├── pages                              业务页面文件存放的目录 
     ├── static                             存放应用引用静态资源（如图片、视频等）的目录，<b>注意：</b>静态资源只能存放于此
-    └── wxcomponents                       存放小程序组件的目录，<a href="/frame?id=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81">详见</a>
+    ├── wxcomponents                       存放小程序组件的目录，<a href="/frame?id=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81">详见</a>
     ├── license.md                         插件使用协议说明
     ├── package.json                       插件配置，必选(除此之外均`可选`)                          
     ├── readme.md                          插件文档
@@ -91,7 +91,7 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
     "uni_modules": { // uni_modules配置
         "dependencies": [], // 依赖的 uni_modules 插件ID列表
         "encrypt": [ // 配置云函数，公共模块，clientDB Action加密
-            "uniCloud/cloudfunctions/uni-admin/controller/permission.js"
+            "uniCloud/cloudfunctions/uni-admin/controller/permission.js" // 注意这里是真实的文件路径，uni_modules下的uniCloud不带-aliyun、-tcb后缀，但是项目根目录下的uniCloud是带有后缀的
         ],
         "platforms": { // 平台兼容性：y 表示 Yes，支持；n 表示 No，不支持；u 表示 Unknown，不确定；默认为 u
             "cloud": { // 云端平台兼容性
@@ -142,7 +142,9 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
 ```json
 {
 	"scripts": {
-		"postupdate": "node scripts/upgrade.js" // 更新插件后执行该脚本，可从process.env.UNI_MODULES_ID获取当前被更新的插件ID，如果存在多个，以,隔开
+		"postupdate": "node scripts/upgrade.js", // 更新插件后执行该脚本，可从process.env.UNI_MODULES_ID获取当前被更新的插件ID，如果存在多个，以,隔开
+		"preupload": "node scripts/preupload.js", // 上传插件之前执行该脚本，可从process.env.UNI_MODULES_ID获取当前被更新的插件ID，如果存在多个，以,隔开
+		"postupload": "node scripts/postupload.js" // 上传插件之后(无论上传成功还是失败)执行该脚本，可从process.env.UNI_MODULES_ID获取当前被更新的插件ID，如果存在多个，以,隔开
 	},
 	"uni_modules": {
 		"uni-id": { // 插件ID
@@ -158,19 +160,41 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
   * 若未在uni_modules.config.json中配置平台，则上传该插件uniCloud资源时，会提示上传至选择哪个服务空间
   * 若已在uni_modules.config.json中配置平台，则上传时以配置为准，自动归属至指定的服务空间
 
+#### npmignore@npmignore
+
+uni_modules插件发布到插件市场是通常需要忽略掉一些目录或文件，比如`unpackage`、`.hbuilderx`、`node_modules`等，这时可以通过npmignore文件来实现文件的忽略。
+
+文件名：**.npmignore**，注意开头有个点。典型的npmignore文件内容如下：
+
+```
+.hbuilderx
+unpackage
+node_modules
+package-lock.json
+```
+
+**注意**
+
+- 项目根目录下的`.npmignore`对发布项目、插件模板生效。`uni_modules/插件Id/.npmignore`对发布插件生效
 
 ### 开发 uni_modules 插件
 #### 新建uni_modules目录
 在uni-app项目根目录下，创建uni_modules目录，在HBuilderX中可以项目右键菜单中点击`新建uni_modules目录`
+
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/de27eb20-6217-11eb-8a36-ebb87efcf8c0.png)
-**Tips**
+
+**Tips:**
 - 如果是vue-cli项目，uni_modules目录，位于`src`下，即`src/uni_modules`
 
 #### 新建uni_modules插件
 1. 在HBuilderX中uni_modules目录右键点击`新建uni_modules插件`
+
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/dd758b10-6217-11eb-8a36-ebb87efcf8c0.png)
+
 2. 填写正确的插件ID，选择插件分类
+
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/dcc6d480-6217-11eb-8a36-ebb87efcf8c0.png)
+
 插件ID命名规范：
 - 格式为：'作者ID-插件英文名称'，示例：'xx-yy'，其中作者ID和插件英文名称只能包含英文、数字
 - 作者ID由插件作者自定义，不能使用'DCloud'、'uni'等关键字，长度要求至少2位字符

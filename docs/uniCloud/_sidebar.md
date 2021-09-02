@@ -12,7 +12,7 @@
   * [数据库索引](uniCloud/db-index.md)
   * [前端操作数据库的API及JQL语法](uniCloud/clientdb.md)
   * [unicloud-db前端组件](uniCloud/unicloud-db.md)
-  * [JQL查询调试器](uniCloud/jql-runner.md)
+  * [JQL数据库管理](uniCloud/jql-runner.md)
   * [openDB](https://gitee.com/dcloud/opendb)
   * [性能优化](uniCloud/db-performance.md)
 * 云函数
@@ -29,19 +29,26 @@
 * [客户端sdk](uniCloud/client-sdk.md)
 * [uni-id用户体系](uniCloud/uni-id.md)
 * 扩展能力
-  * [uni-config-center](https://ext.dcloud.net.cn/plugin?id=4425)
+  * [uni-config-center 配置中心](https://ext.dcloud.net.cn/plugin?id=4425)
+  * [uni-starter](https://ext.dcloud.net.cn/plugin?id=5057)
   * [uniCloud admin](uniCloud/admin.md)
-  * [uni-upgrade-center](uniCloud/upgrade-center.md)
+  * [uni-upgrade-center App升级中心](uniCloud/upgrade-center.md)
   * [uni-cloud-router](uniCloud/uni-cloud-router.md)
-  * [unipay](uniCloud/unipay.md)
+  * [unipay 统一支付](uniCloud/unipay.md)
   * [发送短信](uniCloud/send-sms.md)
   * [uni一键登录](uniCloud/univerify.md)
-  * [云端一体搜索](https://ext.dcloud.net.cn/plugin?id=3851)
-  * [uni-captcha图形验证码](https://ext.dcloud.net.cn/plugin?id=4048)
+  * [uSearch 云端一体搜索](https://ext.dcloud.net.cn/plugin?id=3851)
+  * [uni-captcha 图形验证码](https://ext.dcloud.net.cn/plugin?id=4048)
+  * [uni-sec-check 内容安全](https://ext.dcloud.net.cn/plugin?id=5460)
+* [uniCloud响应体规范](uniCloud/unicloud-response-format.md)
 * [前端网页托管](uniCloud/hosting.md)
+* Redis扩展
+  * [费用说明](uniCloud/redis-buy.md)
+  * [开发文档](uniCloud/redis.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
-* [案例源码](uniCloud/resource.md)
+* [案例](uniCloud/resource.md)
+* [开发者使用反馈](https://mp.weixin.qq.com/s/p9GbRqRQuvEbmbpHJhZGmw)
 * [学习资料](uniCloud/learning.md)
 * [常见问题](uniCloud/faq.md)
 * [微信云开发转uniCloud](uniCloud/wx2unicloud.md)
@@ -85,7 +92,8 @@
 	  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/759713d0-4f2d-11eb-a16f-5b3e54966275.png" width="20" height="20"/>
 	  <div class="contact-smg">
 	  <div>uniCloud QQ交流群</div>
-	  <div>群1：1012245137 &nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=36ff837111d79a4e90e5fcd6185ec684be4fc276eb57259e08339512709d39fe">点此加入</a></div>
+	  <div>群1：1012245137 (2000人已满)</div>
+    <div>群2：749911289 &nbsp;<a target="_blank" href="//qm.qq.com/cgi-bin/qm/qr?k=iN4JdFAGhvlrOgw-gghF6cUOX1otsLpx&jump_from=webapi">点此加入</a></div>
 	  </div>
 	</div>
   <div class="contact-item">

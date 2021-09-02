@@ -7,7 +7,8 @@
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |value|String||输入框的初始内容||
-|type|String|text|input 的类型|H5 暂未支持动态切换请使用 v-if 进行整体切换|
+|type|String|text|input 的类型|H5 暂未支持动态切换，详见下方 Tips，请使用 v-if 进行整体切换|
+|text-content-type|String| |文本区域的语义，根据类型自动填充|仅 App-nvue-iOS 支持|
 |password|Boolean|false|是否是密码类型|H5和App写此属性时，type失效|
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
@@ -16,7 +17,7 @@
 |maxlength|Number|140|最大输入长度，设置为 -1 的时候不限制最大长度||
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、QQ小程序|
 |focus|Boolean|false|获取焦点。|在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。nvue 页面不支持，需使用组件的 focus()、blur() 方法控制焦点|
-|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序、App、H5|
+|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序、App、H5、快手小程序|
 |confirm-hold|Boolean|false|点击键盘右下角按钮时是否保持键盘不收起|App、微信小程序、支付宝小程序、百度小程序、QQ小程序|
 |cursor|Number||指定focus时的光标位置||
 |selection-start|Number|-1|光标起始位置，自动聚集时有效，需与selection-end搭配使用||
@@ -26,8 +27,8 @@
 |auto-blur|boolean|false|键盘收起时，是否自动失去焦点|App 3.0.0+|
 |@input|EventHandle||当键盘输入时，触发input事件，event.detail = {value}|差异见下方 Tips|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、App（2.2.3+） 、QQ小程序支持 height|
-|@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}||
-|@confirm|EventHandle||点击完成按钮时触发，event.detail = {value: value}|&nbsp;|
+|@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}|快手小程序不支持|
+|@confirm|EventHandle||点击完成按钮时触发，event.detail = {value: value}|&nbsp;快手小程序不支持|
 |@keyboardheightchange|eventhandle||键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}|微信小程序基础库2.7.0+、App 3.1.0+|
 
 **Tips**
@@ -35,15 +36,28 @@
 - `input` 事件处理函数可以直接 return 一个字符串，将替换输入框的内容。仅微信小程序支持。
 - 如果遇到 value 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/vue-api?id=_4-组件属性设置不生效解决办法)
 - `input` 组件上有默认的 `min-height` 样式，如果 `min-height` 的值大于 `height` 的值那么 `height` 样式无效。
+- H5 暂未支持动态切换，请使用 `v-if`进行整体切换。
+
+```html
+        <!-- 错误写法 -->
+	<input :type="isText?'text':'number'" placeholder="请输入内容" />
+	
+        <!-- 正确写法 -->
+	<input v-if="isText" type="text" placeholder="请输入文本" />
+	<input v-else  type="number"  placeholder="请输入数字" />
+```
+
+
 
 **type 有效值**
 
 |值|说明|平台差异说明|
 |:-|:-|:-|
 |text|文本输入键盘||
-|number|数字输入键盘|均支持，app-vue下可以输入浮点数，app-nvue和小程序平台下只能输入整数。注意iOS上app-vue弹出的数字键盘并非9宫格方式|
-|idcard|身份证输入键盘|微信、支付宝、百度、QQ小程序|
-|digit|带小数点的数字键盘|App的nvue页面、微信、支付宝、百度、头条、QQ小程序|
+|number|数字输入键盘|均支持，App平台、H5平台 3.1.22 以下版本 vue 页面在 iOS 平台显示的键盘包含负数和小数。|
+|idcard|身份证输入键盘|微信、支付宝、百度、QQ小程序、快手小程序|
+|digit|带小数点的数字键盘|均支持，App平台、H5平台 vue 页面在 iOS 平台显示的键盘包含负数。|
+|tel|电话输入键盘|仅App的nvue页面支持|
 
 **注意事项**
 
@@ -51,17 +65,23 @@
 - 小程序平台，`number` 类型只支持输入整型数字。微信开发者工具上体现不出效果，请使用真机预览。
 - 如果需要在小程序平台输入浮点型数字，请使用 `digit` 类型。
 - 小程序端input在置焦时，会表现为原生控件，此时会层级变高。如需前端组件遮盖input，需让input失焦，或使用cover-view等覆盖原生控件的方案，[参考](https://uniapp.dcloud.io/component/native-component)。具体来讲，阿里小程序的input为text且置焦为原生控件；微信、头条、QQ所有input置焦均为原生控件；百度小程序置焦时仍然是非原生的。也可以参考[原生控件](https://uniapp.dcloud.io/component/native-component)文档
-- input组件若不想弹出软键盘，可设置为disable
+- input组件若不想弹出软键盘，可设置为disabled
+
+**text-content-type 有效值**
+
+|值|说明|
+|:-|:-|
+|oneTimeCode|一次性验证码|
 
 **confirm-type 有效值**
 
 |值|说明|平台差异说明|
 |:-|:-|:-|
-|send|右下角按钮为“发送”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
+|send|右下角按钮为“发送”|微信、支付宝、百度小程序、快手小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
 |search|右下角按钮为“搜索”||
-|next|右下角按钮为“下一个”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
+|next|右下角按钮为“下一个”|微信、支付宝、百度小程序、快手小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
 |go|右下角按钮为“前往”||
-|done|右下角按钮为“完成”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
+|done|右下角按钮为“完成”|微信、支付宝、百度小程序、快手小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
 
 - App平台的nvue页面，如果是weex编译模式，需通过weex的api设置（weex模式已被淘汰）
 - App平台的vue页面及 H5平台 的弹出键盘使用的是浏览器控制的键盘，在Chrome81+、Safari13.7+之前，键盘右下角文字只能设置完成和搜索，从Chrome81+、Safari13.7+起支持设置发送、下一个。

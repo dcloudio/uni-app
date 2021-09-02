@@ -20,6 +20,12 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', opt
 }
 
 describe('mp:compiler-mp-weixin', () => {
+  it('generate class', () => {
+    assertCodegen(
+      '<view class="a external-class c" :class="class1">hello world</view>',
+      '<view class="{{[\'a\',\'external-class\',\'c\',class1]}}">hello world</view>'
+    )
+  })
   it('generate scoped slot', () => {
     assertCodegen(
       '<foo><template slot-scope="{bar}">{{ bar.foo }}</template></foo>',
@@ -78,6 +84,164 @@ describe('mp:compiler-mp-weixin', () => {
       '<foo generic:scoped-slots-foo="test-foo-foo" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'foo\']}}"></foo>',
       function (res) {
         expect(res.generic[0]).toBe('test-foo-foo')
+      }
+    )
+  })
+
+  it('generate scoped slot with scopedSlotsCompiler: auto', () => {
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
+      '<my-component generic:scoped-slots-default="test-my-component-default" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"></my-component>',
+      'with(this){}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}"><view @click="getValue(item)">{{item}}</view><template></my-component>',
+      '<my-component generic:scoped-slots-default="test-my-component-default" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"></my-component>',
+      'with(this){}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><slot :item="item"><slot></view>',
+      '<view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view>',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":item})}}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item" :test="test"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" test="{{test}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig,"test":test})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item" :test="test()"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" test="{{$root.m0}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var m0=test();var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig,"test":m0})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item" :test="test()+item"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" test="{{$root.m0+item.$orig}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var m0=test();var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig,"test":m0+$orig})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><slot :item="getValue(item)"><slot></view>',
+      '<view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{$root.m0}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view>',
+      'with(this){var m0=getValue(item);$mp.data=Object.assign({},{$root:{m0:m0}});if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":m0})}}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><slot v-bind="object"><slot></view>',
+      '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",object)}}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+  })
+
+  it('generate scoped slot with scopedSlotsCompiler: augmented', () => {
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?$getScopedSlotsParams("551070e6-1","default","item"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component1><my-component2><template v-slot="{item}">{{getValue(item)}}<template></my-component2></my-component1>',
+      '<my-component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><my-component2 vue-id="{{(\'551070e6-2\')+\',\'+(\'551070e6-1\')}}" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component2></my-component1>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-2");var m1=m0?getValue($getScopedSlotsParams("551070e6-2","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<view><slot :item="item"><slot></view>',
+      '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
+      'with(this){{$setScopedSlotsParams("default",{"item":item})}}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<view><slot :item="getValue(item)"><slot></view>',
+      '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
+      'with(this){{$setScopedSlotsParams("default",{"item":getValue(item)})}}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<view><slot v-bind="object"><slot></view>',
+      '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
+      'with(this){{$setScopedSlotsParams("default",object)}}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}<my-component><template v-slot="{item}">{{item}}<template></my-component><template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}<my-component vue-id="{{(\'551070e6-2\')+\',\'+(\'551070e6-1\')}}" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m2}}">{{$root.m3}}</block></block></my-component></block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?$getScopedSlotsParams("551070e6-1","default","item"):null;var m2=$hasScopedSlotsParams("551070e6-2");var m3=m2?$getScopedSlotsParams("551070e6-2","default","item"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1,m2:m2,m3:m3}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
       }
     )
   })

@@ -7,8 +7,7 @@ import {
 } from '../../bridge'
 
 import {
-  warpPlusErrorCallback,
-  getFileName
+  warpPlusErrorCallback
 } from '../util'
 
 import {
@@ -28,28 +27,11 @@ function getFileInfo (filePath) {
   })
 }
 
-function compressImage (tempFilePath) {
-  const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
-  return new Promise((resolve, reject) => {
-    plus.nativeUI.showWaiting()
-    plus.zip.compressImage({
-      src: tempFilePath,
-      dst: dstPath,
-      overwrite: true
-    }, () => {
-      plus.nativeUI.closeWaiting()
-      resolve(dstPath)
-    }, (error) => {
-      plus.nativeUI.closeWaiting()
-      reject(error)
-    })
-  })
-}
-
 export function chooseImage ({
   count,
   sizeType,
-  sourceType
+  sourceType,
+  crop
 } = {}, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'chooseImage', 'cancel')
 
@@ -57,35 +39,21 @@ export function chooseImage ({
     const tempFiles = []
     const tempFilePaths = []
     // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
-    paths.reduce((promise, path) => {
-      return promise.then(() => {
-        return getFileInfo(path)
-      }).then(fileInfo => {
-        const size = fileInfo.size
-        // 压缩阈值 0.5 兆
-        const THRESHOLD = 1024 * 1024 * 0.5
-        // 判断是否需要压缩
-        if (sizeType.includes('compressed') && size > THRESHOLD) {
-          return compressImage(path).then(dstPath => {
-            path = dstPath
-            return getFileInfo(path)
-          })
-        }
-        return fileInfo
-      }).then(({ size }) => {
-        tempFilePaths.push(path)
-        tempFiles.push({
-          path,
-          size
+    Promise.all(paths.map((path) => getFileInfo(path)))
+      .then((filesInfo) => {
+        filesInfo.forEach((file, index) => {
+          const path = paths[index]
+          tempFilePaths.push(path)
+          tempFiles.push({ path, size: file.size })
+        })
+
+        invoke(callbackId, {
+          errMsg: 'chooseImage:ok',
+          tempFilePaths,
+          tempFiles
         })
       })
-    }, Promise.resolve()).then(() => {
-      invoke(callbackId, {
-        errMsg: 'chooseImage:ok',
-        tempFilePaths,
-        tempFiles
-      })
-    }).catch(errorCallback)
+      .catch(errorCallback)
   }
 
   function openCamera () {
@@ -93,7 +61,8 @@ export function chooseImage ({
     camera.captureImage(path => successCallback([path]),
       errorCallback, {
         filename: TEMP_PATH + '/camera/',
-        resolution: 'high'
+        resolution: 'high',
+        crop
       })
   }
 
@@ -103,7 +72,9 @@ export function chooseImage ({
       multiple: true,
       system: false,
       filename: TEMP_PATH + '/gallery/',
-      permissionAlert: true
+      permissionAlert: true,
+      crop,
+      sizeType
     })
   }
 

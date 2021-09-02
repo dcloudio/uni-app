@@ -16,10 +16,11 @@
 
 |参数名		|类型	|必填	|说明															|
 |:-:		|:-:	|:-:	|:-:															|
+|appid		|String	|是		|DCloud appid，可以在项目manifest.json内看到		|
 |smsKey		|String	|是		|调用短信接口的密钥key，从 dev.dcloud.net.cn/uniSms 后台获取		|
 |smsSecret	|String	|是		|调用短信接口的密钥secret，从 dev.dcloud.net.cn/uniSms 后台获取	|
 |phone		|String	|是		|发送目标手机号，暂仅支持中国大陆手机号，不能填写多个手机号|
-|templateId	|String	|是		|模版Id，短信内容为固定模板，详见下方说明						|
+|templateId	|String	|是		|模版Id，短信内容为固定模板，详见下方说明（应用开发阶段，可以使用 DCloud 提供的测试模板）						|
 |data		|Object	|是		|模版里的各个变量字段，json格式										|
 
 
@@ -56,6 +57,15 @@
 
 - 短信类别：
 分为3类，即验证码类短信、通知类短信、营销类短信。验证码类短信，其模板审核简单快速，只能单次发送。
+
+**短信测试模板说明**
+
+运营商目前审核比较严格，处于开发阶段的应用可能无法通过运营商的审核。为方便开发者测试短信功能，DCloud 提供了一个测试模板，该模板的templateId为：uni_sms_test，内容为：`【DC】尊敬的用户，您的验证码是：${code}。5分钟内有效，请尽快验证。请勿泄漏您的验证码。` **(注意:目前测试模板仅联通及电信用户可用)**
+
+使用该模板的限制：
+
+1. 每日最多给10个手机号发送不超过100条短信；
+2. 使用该模板也会正常收取费用，请保证账户有充足余额。
 
 <!--
 目前短信功能包括如下模版，暂不可扩展新模版，模版形式如下。参数data内的字段会填充到模版内容里。
@@ -125,6 +135,7 @@
 exports.main = async (event, context) => {
   try {
     const res = await uniCloud.sendSms({
+      appid: '__UNI__xxxxxxx',
       smsKey: '****************',
       smsSecret: '****************',
       phone: '188********',

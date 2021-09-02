@@ -1,3 +1,7 @@
+每个端有每个端的特点，有的能被抹平，有的不可能被抹平。
+
+注意：跨端，不是把web的习惯迁移到全平台。而是按照uni的写法，然后全平台使用。
+
 ### H5正常但App异常的可能性
 1. css异常：
 
@@ -109,7 +113,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 	- uni的api在编译到web平台运行时，其实也会转为浏览器的js api。
   - App端若要使用操作window、document的库，需要通过renderjs来实现。
 	- uni的api是多端可用的。在条件编译区，每个平台的专有api也可以使用，比如wx.、plus.等api可以分别在微信下和app下使用。
-	- 出于降低小程序向uni-app迁移成本的考虑，wx的api在app里也可以直接运行，比如写wx.requst和uni.requst是一样的，但仍然建议仅在微信的条件编译区使用wx的api。
+	- 出于降低小程序向uni-app迁移成本的考虑，wx的api在app里也可以直接运行，比如写wx.request和uni.request是一样的，但仍然建议仅在微信的条件编译区使用wx的api。
 2. Tag注意
 	- uni-app的tag同小程序的tag，和HTML的tag不一样，比如div要改成view，span要改成text、a要改成navigator。
 	- 出于降低h5应用向uni-app迁移成本的考虑，写成div、span也可以运行在app和小程序上，因为uni-app编译器会把这些HTML标签编译为小程序标签。但仍然建议养成新习惯。
@@ -193,7 +197,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 
 2.自定义组件渲染差异
 
-微信/QQ/百度/字节跳动这四家小程序，自定义组件在渲染时会比App/H5端多一级节点，在写样式时需要注意：
+微信（可以使用[virtualHost](https://uniapp.dcloud.io/vue-api?id=%e5%85%b6%e4%bb%96%e9%85%8d%e7%bd%ae)配置）/QQ/百度/字节跳动这四家小程序，自定义组件在渲染时会比App/H5端多一级节点，在写样式时需要注意：
 
 * 使用`flex`布局时，直接给自定义组件的父元素设置为`display:flex`不能影响到自定义组件内部的根节点，需要设置当前自定义组件为`display:flex`才可以。
 * 在自定义组件内部设置根元素高度为100%，不能撑满自定义组件父元素。需要同时设置当前自定义组件高度为100%才可以。

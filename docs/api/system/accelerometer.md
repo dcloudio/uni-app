@@ -28,9 +28,9 @@ uni.onAccelerometerChange(function (res) {
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|HBuilderX 2.9.6+|HBuilderX 2.9.6+|基础库 2.9.3+|x|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|HBuilderX 2.9.6+|HBuilderX 2.9.6+|基础库 2.9.3+|x|x|x|x|√|
 
 ### uni.startAccelerometer(OBJECT)
 开始监听加速度数据。
@@ -45,7 +45,7 @@ uni.onAccelerometerChange(function (res) {
 
 |参数名|类型|默认|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
-|interval|String|normal|否|接口调用成功的回调|微信小程序、百度小程序|
+|interval|String|normal|否|监听加速度数据回调函数的执行频率|微信小程序、百度小程序|
 |success|Function||否|接口调用成功的回调||
 |fail|Function||否|接口调用失败的回调函数||
 |complete|Function||否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|

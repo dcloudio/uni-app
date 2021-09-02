@@ -10,7 +10,7 @@ const db = uniCloud.database();
 const collection = db.collection('user');
 ```
 
-### 集合 Collection
+### 集合 Collection@collection
 
 通过 `db.collection(name)` 可以获取指定集合的引用，在集合上可以进行以下操作
 
@@ -30,7 +30,7 @@ const collection = db.collection('user');
 查询及更新指令用于在 `where` 中指定字段需满足的条件，指令可通过 `db.command` 对象取得。
 
 
-### 记录 Record / Document
+### 记录 Record / Document@doc
 
 通过 `db.collection(collectionName).doc(docId)` 可以获取指定集合上指定 _id 的记录的引用，在记录上可以进行以下操作
 
@@ -45,7 +45,7 @@ doc(docId)方法的参数只能是字符串，即数据库默认的_id字段。
 
 如需要匹配多个`_id`的记录，应使用where方法。可以在where方法里用in指令匹配一个包含`_id`的数组。
 
-### 查询筛选指令 Query Command
+### 查询筛选指令 Query Command@query-command
 
 以下指令挂载在 `db.command` 下
 
@@ -64,7 +64,7 @@ doc(docId)方法的参数只能是字符串，即数据库默认的_id字段。
 
 如果你熟悉SQL，可查询[mongodb与sql语句对照表](https://blog.csdn.net/xinghebuluo/article/details/7012788/)进行学习。
 
-### 字段更新指令 Update Command
+### 字段更新指令 Update Command@update-command
 
 以下指令挂载在 `db.command` 下
 
@@ -80,7 +80,7 @@ doc(docId)方法的参数只能是字符串，即数据库默认的_id字段。
 |      | unshift | 数组类型字段追加头元素，支持数组 |
 
 
-## 支持的数据类型
+## 支持的数据类型@data-type
 
 数据库提供以下几种数据类型：
 * String：字符串
@@ -101,7 +101,8 @@ doc(docId)方法的参数只能是字符串，即数据库默认的_id字段。
 
 ### 时间 Date
 
-Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
+Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，连接本地云函数时，用此方法创建的时间是客户端当前时间，不是服务端当前时间，只有连接云端云函数才是服务端当前时间。
+另外，我们还单独提供了一个 API 来创建服务端当前时间，使用 serverDate 对象来创建一个服务端当前时间的标记，**该对象暂时只支持腾讯云空间**，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
 
 ```js
 // 服务端当前时间
@@ -161,7 +162,6 @@ exports.main = async (event, context) => {
 
 | 参数		| 类型	|  说明																			|
 | ----		| ------|  ----------------------------------------	|
-| inserted| Number| 插入成功条数															|
 |ids			| Array	|批量插入所有记录的id												|
 
 示例：
@@ -211,8 +211,11 @@ let res = await collection.doc('doc-id').set({
 });
 ```
 
+**注意**
 
-## 查询文档
+- 自动生成的_id是自增的，后创建的记录的_id总是大于先生成的_id
+
+## 查询文档@query
 
 支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`field()`、`count()` 等操作。
 
@@ -232,7 +235,7 @@ limit，即返回记录的最大数量，默认值为100，也就是不设置lim
 | ----| ------|  ----------------------------------------	|
 |data	| Array	| 查询结果数组															|
 
-### 添加查询条件
+### 添加查询条件@where
 
 collection.where()
 
@@ -330,7 +333,7 @@ res = {
 }
 ```
 
-### 获取查询数量
+### 获取查询数量@count
 
 collection.count()
 
@@ -373,7 +376,7 @@ let res = await collection.limit(1).get() // 只返回第一条记录
 
 - limit不设置的情况下默认返回100条数据；设置limit有最大值，腾讯云限制为最大1000条，阿里云限制为最大500条。
 
-### 设置起始位置
+### 设置起始位置@skip
 
 collection.skip(value)
 
@@ -391,7 +394,7 @@ let res = await collection.skip(4).get()
 
 **注意：数据量很大的情况下，skip性能会很差，尽量使用其他方式替代，参考：[skip性能优化](uniCloud/db-performance.md?id=skip)**
 
-### 对结果排序
+### 对结果排序@order-by
 
 collection.orderBy(field, orderType)
 
@@ -417,7 +420,7 @@ let res = await collection.orderBy("name", "asc").get()
 
 - 排序字段存在多个重复的值时排序后的分页结果，可能会出现某条记录在上一页出现又在下一页出现的情况。这时候可以通过指定额外的排序条件比如`.orderBy("name", "asc").orderBy("_id", "asc")`来规避这种情况。
 
-### 指定返回字段
+### 指定返回字段@field
 
 collection.field()
 
@@ -440,7 +443,7 @@ collection.field({ 'age': true }) //只返回age字段、_id字段，其他字�
 - field内指定是否返回某字段时，不可混用true/false。即{'a': true, 'b': false}是一种错误的参数格式
 - 只有使用{ '_id': false }明确指定不要返回_id时才会不返回_id字段，否则_id字段一定会返回。
 
-### 查询指令
+### 查询指令@dbcmd
 
 查询指令以dbCmd.开头，包括等于、不等于、大于、大于等于、小于、小于等于、in、nin、and、or。
 
@@ -1017,7 +1020,7 @@ const res = await db.collection('class').where({
 }
 ```
 
-## 删除文档
+## 删除文档@remove
 
 **方式1 通过指定文档ID删除**
 
@@ -1071,9 +1074,9 @@ db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
 	})
 ```
 
-## 更新文档
+## 更新文档@update
 
-### 更新指定文档
+### 更新指定文档@doc-update
 
 collection.doc().update(Object data)
 
@@ -1146,7 +1149,7 @@ let res = await collection.doc('doc-id').update({
 }
 ```
 
-### 更新文档，如果不存在则创建
+### 更新文档，如果不存在则创建@doc-set
 
 collection.doc().set()
 
@@ -1184,8 +1187,9 @@ let res = await collection.doc('doc-id').set({
 }
 ```
 
-### 批量更新文档
-collection.update()
+### 批量更新文档@where-update
+
+`collection.update()`
 
 ```js
 const dbCmd = db.command
@@ -1194,7 +1198,52 @@ let res = await collection.where({name: dbCmd.eq('hey')}).update({
 })
 ```
 
-### 更新数组内指定下标的元素
+### 更新并返回更新后的数据@update-and-return
+
+> 新增于HBuilderX 3.2.0-alpha
+
+此接口仅会操作一条数据，有多条数据匹配的情况下会只更新匹配的第一条并返回
+
+**示例**
+
+```js
+const db = uniCloud.database()
+await db.collection('test').where({
+  uid: '1'
+}).updateAndReturn({
+  score: db.command.inc(2)
+})
+
+// 更新前
+{
+  _id: 'xx',
+  uid: '1',
+  score: 0
+}
+// 更新后
+{
+  _id: 'xx',
+  uid: '1',
+  score: 2
+}
+
+// 接口返回值
+{
+  updated: 1,
+  doc: {
+    _id: 'xx',
+    uid: '1',
+    score: 2
+  }
+}
+```
+
+**注意**
+
+- 使用updateAndReturn时，不可使用field方法
+- 可以在事务中使用，可以使用`transaction.where().updateAndReturn()`以及`transaction.doc().updateAndReturn()`
+
+### 更新数组内指定下标的元素@update-arr-with-index
 
 ```js
 const res = await db.collection('query').doc('1').update({
@@ -1233,7 +1282,7 @@ const res = await db.collection('query').doc('1').update({
 }
 ```
 
-### 更新数组内匹配条件的元素
+### 更新数组内匹配条件的元素@update-arr-matched
 
 **注意：只可确定数组内只会被匹配到一个的时候使用**
 
@@ -1241,7 +1290,7 @@ const res = await db.collection('query').doc('1').update({
 const res = await db.collection('query').where({
 	'students.id': '001'
 }).update({
-  // 将students内id为001的name改为li
+  // 将students内id为001的name改为li，$代表where内匹配到的数组项的序号
 	'students.$.name': 'li'
 })
 ```
@@ -1279,11 +1328,11 @@ const res = await db.collection('query').where({
 }
 ```
 
-### 更新操作符
+### 更新操作符@update-operator
 
 更多数据库操作符请查看[数据库操作符](#dbcmd)
 
-#### set
+#### set@operator-set
 
 更新指令。用于设定字段等于指定值。这种方法相比传入纯 JS 对象的好处是能够指定字段等于一个对象：
 
@@ -1319,7 +1368,7 @@ let res = await db.collection('photo').doc('doc-id').update({
 }
 ```
 
-#### inc
+#### inc@operator-inc
 
 更新指令。用于指示字段自增某个值，这是个原子操作，使用这个操作指令而不是先读数据、再加、再写回的好处是：
 
@@ -1378,7 +1427,7 @@ let res = await db.collection('user').where({
 })
 ```
 
-#### mul
+#### mul@operator-mul
 
 更新指令。用于指示字段自乘某个值。
 
@@ -1432,7 +1481,7 @@ let res = await db.collection('user').where({
 })
 ```
 
-#### remove
+#### remove@operator-remove
 
 更新指令。用于表示删除某个字段。如某人删除了自己一条商品评价中的评分：
 
@@ -1458,7 +1507,7 @@ let res = await db.collection('comments').doc('comment-id').update({
 }
 ```
 
-#### push
+#### push@operator-push
 向数组尾部追加元素，支持传入单个元素或数组
 
 ```js
@@ -1484,7 +1533,7 @@ let res = await db.collection('comments').doc('comment-id').update({
 }
 ```
 
-#### pop
+#### pop@operator-pop
 删除数组尾部元素
 
 ```js
@@ -1509,7 +1558,8 @@ let res = await db.collection('comments').doc('comment-id').update({
 }
 ```
 
-#### unshift
+#### unshift@operator-unshift
+
 向数组头部添加元素，支持传入单个元素或数组。使用同push
 
 ```js
@@ -1535,7 +1585,8 @@ let res = await db.collection('comments').doc('comment-id').update({
 }
 ```
 
-#### shift
+#### shift@operator-shift
+
 删除数组头部元素。使用同pop
 
 ```js
@@ -1560,13 +1611,13 @@ let res = await db.collection('comments').doc('comment-id').update({
 }
 ```
 
-## GEO地理位置
+## GEO地理位置@geo
 
 注意：**如果需要对类型为地理位置的字段进行搜索，一定要建立地理位置索引**。
 
-### GEO数据类型
+### GEO数据类型@geo-data-type
 
-#### Point
+#### Point@geo-point
 
 用于表示地理位置点，用经纬度唯一标记一个点，这是一个特殊的数据存储类型。
 
@@ -1577,7 +1628,7 @@ let res = await db.collection('comments').doc('comment-id').update({
 new db.Geo.Point(longitude, latitude)
 ```
 
-#### LineString
+#### LineString@geo-line-string
 
 用于表示地理路径，是由两个或者更多的 `Point` 组成的线段。
 
@@ -1593,7 +1644,7 @@ new db.Geo.LineString([
 ])
 ```
 
-#### Polygon
+#### Polygon@geo-polygon
 
 用于表示地理上的一个多边形（有洞或无洞均可），它是由一个或多个**闭环** `LineString` 组成的几何图形。
 
@@ -1611,7 +1662,7 @@ new db.Geo.Polygon([
 ])
 ```
 
-#### MultiPoint
+#### MultiPoint@geo-multi-point
 
 用于表示多个点 `Point` 的集合。
 
@@ -1627,7 +1678,7 @@ new db.Geo.MultiPoint([
 ])
 ```
 
-#### MultiLineString
+#### MultiLineString@geo-multi-line-string
 
 用于表示多个地理路径 `LineString` 的集合。
 
@@ -1644,7 +1695,7 @@ new db.Geo.MultiLineString([
 ```
 
 
-#### MultiPolygon
+#### MultiPolygon@geo-multi-polygon
 
 用于表示多个地理多边形 `Polygon` 的集合。
 
@@ -1660,9 +1711,9 @@ new db.Geo.MultiPolygon([
 ])
 ```
 
-### GEO操作符
+### GEO操作符@geo-operator
 
-#### geoNear
+#### geoNear@operator-geo-near
 
 按从近到远的顺序，找出字段值在给定点的附近的记录。
 
@@ -1690,7 +1741,7 @@ let res = await db.collection('user').where({
 }).get()
 ```
 
-#### geoWithin
+#### geoWithin@operator-geo-within
 
 找出字段值在指定 Polygon / MultiPolygon 内的记录，无排序
 
@@ -1725,7 +1776,7 @@ let res = await db.collection('user').where({
 }).get()
 ```
 
-#### geoIntersects
+#### geoIntersects@operator-geo-intersects
 
 找出字段值和给定的地理位置图形相交的记录
 
@@ -1756,15 +1807,13 @@ let res = await db.collection('user').where({
 }).get()
 ```
 
-## 事务
+## 事务@transaction
 
 事务通常用来在某个数据库操作失败之后进行回滚。
 
-> 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
+> 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。另外注意：如果多条事务同时处理同一行数据，可能存在写冲突，进而导致失败。
 
-> 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
-
-### runTransaction
+### runTransaction@run-transaction
 
 **阿里云不支持此用法，请换成startTransaction以使用事务**
 
@@ -1865,7 +1914,7 @@ exports.main = async (event) => {
 }
 ```
 
-### startTransaction
+### startTransaction@start-transaction
 
 发起事务。与`runTransaction`作用类似，接收参数类型不同
 
@@ -2055,7 +2104,7 @@ let res = await db.collection('scores').aggregate()
 
 参考[聚合操作符](#aggregate-operator)
 
-### addFields
+### addFields@aggregate-add-fields
 
 聚合阶段。添加新字段到输出的记录。经过 `addFields` 聚合阶段，输出的所有记录中除了输入时带有的字段外，还将带有 `addFields` 指定的字段。
 
@@ -2143,7 +2192,7 @@ let res = await db.collection('scores').aggregate()
 ```js
 let res = await db.collection('vehicles').aggregate()
   .addFields({
-    'spec.fuel_type': 'unleaded'
+    'specs.fuel_type': 'unleaded'
   })
   .end()
 ```
@@ -2180,7 +2229,7 @@ let res = await db.collection('vehicles').aggregate()
    specs: { fuel_type: "unleaded" } }
 ```
 
-### bucket
+### bucket@aggregate-bucket
 
 聚合阶段。将输入记录根据给定的条件和边界划分成不同的组，每组即一个 `bucket`。
 
@@ -2296,7 +2345,7 @@ let res = await db.collection('items').aggregate()
 ]
 ```
 
-### bucketAuto
+### bucketAuto@aggregate-bucket-auto
 
 聚合阶段。将输入记录根据给定的条件划分成不同的组，每组即一个 `bucket`。与 `bucket` 的其中一个不同之处在于无需指定 `boundaries`，`bucketAuto` 会自动尝试将记录尽可能平均的分散到每组中。
 
@@ -2419,7 +2468,7 @@ let res = await db.collection('items').aggregate()
 }
 ```
 
-### count
+### count@aggregate-count
 
 聚合阶段。计算上一聚合阶段输入到本阶段的记录数，输出一个记录，其中指定字段的值为记录数。
 
@@ -2488,7 +2537,7 @@ let res = await db.collection('items').aggregate()
 }
 ```
 
-### geoNear
+### geoNear@aggregate-geo-near
 
 聚合阶段。将记录按照离给定点从近到远输出。
 
@@ -2496,7 +2545,6 @@ let res = await db.collection('items').aggregate()
 |----								|----			|----		|----	|----																																														|
 |near								|GeoPoint	|				|是		|GeoJSON Point，用于判断距离的点																																|
 |spherical					|true			|				|是		|必填，值为 true																																								|
-|limit							|number		|				|否		|限制返回记录数																																									|
 |maxDistance				|number		|				|否		|距离最大值																																											|
 |minDistance				|number		|				|否		|距离最小值																																											|
 |query							|Object		|				|否		|要求记录必须同时满足该条件（语法同 where）																											|
@@ -2643,7 +2691,7 @@ let res = await db.collection('attractions').aggregate()
 }
 ```
 
-### group
+### group@aggregate-group
 
 聚合阶段。将输入记录按给定表达式分组，输出时每个记录代表一个分组，每个记录的 _id 是区分不同组的 key。输出记录中也可以包括累计值，将输出字段设为累计值即会从该分组中计算累计值。
 
@@ -2804,7 +2852,7 @@ let res = await db.collection('avatar').aggregate()
 }
 ```
 
-### limit
+### limit@aggregate-limit
 
 聚合阶段。限制输出到下一阶段的记录数。
 
@@ -2858,7 +2906,7 @@ let res = await db.collection('items').aggregate()
 }
 ```
 
-### lookup
+### lookup@aggregate-lookup
 
 聚合阶段。联表查询。与同个数据库下的一个指定的集合做 left outer join(左外连接)。对该阶段的每一个输入记录，lookup 会在该记录中增加一个数组字段，该数组是被联表中满足匹配条件的记录列表。lookup 会将连接后的结果输出给下个阶段。
 
@@ -3351,7 +3399,7 @@ let res = await db.collection('orders').aggregate()
 ]
 ```
 
-### match
+### match@aggregate-match
 
 聚合阶段。根据条件过滤文档，并且把符合条件的文档传递给下一个流水线阶段。
 
@@ -3431,7 +3479,7 @@ let res = await db.collection('articles')
 { "_id" : null, "count" : 3 }
 ```
 
-### project
+### project@aggregate-project
 
 聚合阶段。把指定的字段传递给下一个流水线，指定的字段可以是某个已经存在的字段，也可以是计算出来的新字段。
 
@@ -3605,7 +3653,7 @@ let res = await db.collection('points')
 { "_id": 3, "coordinate": [3, 3] }
 ```
 
-### replaceRoot
+### replaceRoot@aggregate-replace-root
 
 聚合阶段。指定一个已有字段作为输出的根节点，也可以指定一个计算出的新字段作为根节点。
 
@@ -3686,7 +3734,7 @@ let res = await db.collection('roles')
 { "full_name": "张牧之" }
 ```
 
-### sample
+### sample@aggregate-sample
 
 聚合阶段。随机从文档中选取指定数量的记录。
 
@@ -3726,7 +3774,7 @@ let res = await db.collection('users')
 { "_id": "696529e4-7e82-4e7f-812e-5144714edff6", "name": "b" }
 ```
 
-### skip
+### skip@aggregate-skip
 
 聚合阶段。指定一个正整数，跳过对应数量的文档，输出剩下的文档。
 
@@ -3740,7 +3788,7 @@ let res = await db.collection('users')
 
 这段代码会跳过查找到的前 5 个文档，并且把剩余的文档输出。
 
-### sort
+### sort@aggregate-sort
 
 聚合阶段。根据指定的字段，对输入的文档进行排序。
 
@@ -3791,7 +3839,7 @@ let res = await db.collection('articles')
 { "_id": "2", "author": "bob",    "score": 60, "age": 18 }
 ```
 
-### sortByCount
+### sortByCount@aggregate-sort-by-count
 
 聚合阶段。根据传入的表达式，将传入的集合进行分组（group）。然后计算不同组的数量，并且将这些组按照它们的数量进行排序，返回排序后的结果。
 
@@ -3853,7 +3901,7 @@ let res = await db.collection('passages')
 { "_id": "Python", "count": 1 }
 ```
 
-### unwind
+### unwind@aggregate-unwind
 
 聚合阶段。使用指定的数组字段中的每个元素，对文档进行拆分。拆分后，文档会从一个变为一个或多个，分别对应数组的每个元素。
 
@@ -3966,7 +4014,7 @@ let res = await db.collection('products')
 { "_id": "5", "product": "sweater", "size": "L" }
 ```
 
-### end
+### end@aggregate-end
 
 标志聚合操作定义完成，发起实际聚合操作
 
@@ -3993,7 +4041,7 @@ let res = await db.collection('books').aggregate()
 
 ## 数据库操作符@dbcmd
 
-### 查询·逻辑操作符
+### 查询·逻辑操作符@dbcmd-query
 
 #### and
 
@@ -4242,7 +4290,7 @@ function nor(expressions: Expression[]): Command
 function nor(...expressions: Expression[]): Command
 ```
 
-### 查询·比较操作符
+### 查询·比较操作符@dbcmd-compare
 
 #### eq
 
@@ -4400,7 +4448,7 @@ let res = await db.collection('todos').where({
 .get()
 ```
 
-### 查询·字段操作符
+### 查询·字段操作符@dbcmd-field
 
 #### exists
 
@@ -4436,7 +4484,7 @@ let res = await db.collection('todos').where({
 .get()
 ```
 
-### 查询·数组操作符
+### 查询·数组操作符@dbcmd-array
 
 #### all
 
@@ -4577,7 +4625,7 @@ let res = await db.collection('todos').where({
 .get()
 ```
 
-### 查询·地理位置操作符
+### 查询·地理位置操作符@dbcmd-geo
 
 #### geoNear
 
@@ -4679,7 +4727,7 @@ let res = await db.collection('restaurants').where({
 }).get()
 ```
 
-### 查询·表达式操作符
+### 查询·表达式操作符@dbcmd-expr
 
 #### expr
 
@@ -4706,7 +4754,7 @@ let res = await db.collection('restaurants').where({
 ```js
 const dbCmd = db.command
 const $ = dbCmd.aggregate
-let res = await db.collection('items').where(dbCmd.expr($.gt('$ordered', '$inStock'))).get()
+let res = await db.collection('items').where(dbCmd.expr($.gt(['$ordered', '$inStock']))).get()
 ```
 
 ##### 示例代码 2：与条件语句组合使用
@@ -4726,19 +4774,19 @@ let res = await db.collection('items').where(dbCmd.expr($.gt('$ordered', '$inSto
 const dbCmd = db.command
 const $ = dbCmd.aggregate
 let res = await db.collection('items').where(dbCmd.expr(
-  $.lt(
+  $.lt([
     $.cond({
-      if: $.gte('$price', 10),
+      if: $.gte(['$price', 10]),
       then: $.multiply(['$price', '0.5']),
       else: $.multiply(['$price', '0.8']),
     })
     ,
     8
-  )
+  ])
 ).get()
 ```
 
-### 更新·字段操作符
+### 更新·字段操作符@dbcmd-update-field
 
 #### set
 
@@ -4890,7 +4938,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 })
 ```
 
-### 更新·数组操作符
+### 更新·数组操作符@dbcmd-update-array
 
 #### push
 
@@ -6324,7 +6372,7 @@ db.command.aggregate.objectToArray(<object>)
 { "_id": 3, "attributes": { "color": "yellow", "price": 10 } }
 ```
 
-```
+```js
 const $ = db.command.aggregate
 let res = await db.collection('items').aggregate()
   .project({

@@ -8,6 +8,7 @@
 - 跨平台。不管你在uniCloud里选择了阿里还是腾讯的serverless，均可以跨uni-app的全端使用。从pc到h5，从Android到iOS，以及各家小程序快应用，十几个平台全端支持
 - uniCloud提供了`clientDB`神器，减少90%的服务器开发工作量，且保障数据安全。[详见](/uniCloud/database)
 - uniCloud提供了[uni-id](/uniCloud/uni-id)、[uniPay](/uniCloud/unipay)等重要框架，大幅减少开发者的相应功能开发量。
+- uniCloud提供了[uni-starter](https://ext.dcloud.net.cn/plugin?id=5057)，客户端开发工作量大幅减少。
 - uniCloud提供了[uniCloud admin](/uniCloud/admin)，管理端开发工作量大幅减少。
 - uniCloud提供了[schema2code](/uniCloud/schema?id=autocode)，只需编制数据库schema文件，用户端和管理端的数据列表、分页、搜索、详情查看、修改、删除，全套代码均能自动生成。
 - 更易学。uniCloud提供了`JQL`查询语言，比SQL和MongoDB的查询语法更简单易掌握，尤其是联表查询非常简单。[详见](https://uniapp.dcloud.io/uniCloud/database?id=jsquery)
@@ -44,8 +45,6 @@ uni-app可以开发web界面，详见：[uni-app宽屏适配指南](https://unia
 
 如果是需要pc版admin的话，uniCloud提供了[uniCloud admin](https://uniapp.dcloud.io/uniCloud/admin)
 
-插件市场有很多uniCloud Admin系统可搜索：[https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate](https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate)
-
 ### 可否通过http url方式访问云函数或云数据库？
 
 - 场景1：比如App端微信支付，需要配服务器回调地址，此时需要一个HTTP URL。
@@ -54,11 +53,12 @@ uni-app可以开发web界面，详见：[uni-app宽屏适配指南](https://unia
 uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://uniapp.dcloud.io/uniCloud/http)
 
 ### 微信云开发支持客户端直接操作数据库，uniCloud支持吗？
+
 uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见：[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)
 
 ### 云开发是nodejs+改良版MongoDB组合，对比php+mysql的传统组合怎么样？
 
-nodejs的性能也于php，MongoDB的性能也优于mysql。
+nodejs的性能优于php，MongoDB的性能也优于mysql。
 
 对于前端而言，MongoDB这种类json的文档数据库更加易用，且有更高的灵活性。
 操作MongoDB仍然使用js的方法。
@@ -117,6 +117,7 @@ websocket的实时特性导致serverless化比较复杂，目前曲线方案有�
 1. 使用clientDB可以减少遇到冷启动问题的概率
 2. 非高频访问的云函数，合并到高频云函数中。有的开发者使用纯单页方式编写云函数，即在一个云函数中通过路由处理实现了整个应用的所有后台逻辑。参考[插件](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&cat1=7&orderBy=UpdatedDate)
 3. 非高频访问的云函数，可以通过定时任务持续运行它（注意腾讯云可以使用这个方式完全避开冷启动，而阿里云的定时任务最短周期大于资源回收周期）
+4. 配置云函数的单实例多并发
 
 ### uniCloud访问速度感觉不如传统服务器？@slow
 有开发者在一台单机上安装php或java，连接同电脑的mysql。然后与uniCloud比较速度，认为uniCloud偏慢。这里需要澄清如下差异：
@@ -136,7 +137,10 @@ clientDB就是这种情况，因为clientDB内部有权限校验系统，某些�
 从uni-id 3.0起，用户的角色权限缓存在token里，不再查库。clientDB的速度比之前提升了100毫秒左右。如果还未升级，请尽快[升级](https://ext.dcloud.net.cn/plugin?id=2116)。同时注意如果用了uniCloud admin，也要配套升级。如果自己在云函数里编写过相关业务逻辑，请务必阅读升级注意事项。
 
 - 原因4. 数据库索引
-查询表的索引要正确配置，需要在where里查询的字段都建议配上索引。
+
+查询表的索引要正确配置，需要在where里查询的字段都建议配上索引，否则查询会很慢。
+
+但注意索引不能太多，否则增删改数据时又会变慢，精准很重要。推荐详细阅读[索引文档](https://uniapp.dcloud.io/uniCloud/db-index)
 
 ### 发布H5时还得自己找个服务器部署前端网页，可以不用自己再找服务器吗？
 
@@ -149,9 +153,11 @@ uniCloud支持[前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)，
 
 ### uniCloud云数据库如何实现全文检索
 
-uniCloud的云数据库本身就是文档型数据库，可以全文检索，无需额外配置ElastciSearch等三方数据库。
+uniCloud的云数据库本身就是文档型数据库，可以全文检索。
 
 查询数据时可以传入正则表达式。相比sql的like只有前后的%，正则表达式要强大的多。详情请参考[正则表达式查询](https://uniapp.dcloud.io/uniCloud/cf-database?id=regexp)
+
+当然如果你需要额外配置ElastciSearch等三方数据库，也可以自己找服务器安装这些服务，同步数据，把需要搜索的数据同步过去。
 
 ### uniCloud内如何使用formdata
 
@@ -207,7 +213,7 @@ uniCloud的每个云函数是一个独立进程，不存在云函数级别的多
 
 ### 海外用户访问比较慢怎么办
 
-uniCloud服务商为阿里云时支持配置全球加速，步骤如下：
+国外用户需要使用全球加速。uniCloud服务商为阿里云时支持配置全球加速，步骤如下：
 
 1. 参考[阿里云全球加速](https://help.aliyun.com/document_detail/153198.html)文档，开通服务并对`自有域名`进行加速
 2. 将上述域名CNAME到`api.bspapp.com`
@@ -275,3 +281,111 @@ exports.main = async function(event){
 2. 错误信息：`The root domain of your domain is reserved by another account`
 
   当前域名有在阿里云开通全站加速相关业务（可能配置了泛域名加速），与前端网页托管冲突。可以考虑使用三级域名或去除泛域名加速改为单独配置需要加速的域名。
+
+### 授权其他用户访问服务空间@collaborator
+
+开发期间经常需要多人共用同一个服务空间，此时可以在[DCloud开发者中心](https://dev.dcloud.net.cn/)将特定应用及其关联的服务空间共享给协作者，详细步骤如下
+
+1. 在开发者中心`我创建的应用`列表页面选择特定的应用，如果应用过多可以使用AppId进行查找
+
+  ![我创建的应用](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/865a0df3-3169-48df-8b4c-8acacf1a621f.jpg)
+  
+2. 在第一步选择的应用详情页面左侧菜单点击`项目成员管理`
+3. 输入协作者邮箱并点击`添加协作者按钮`，下方会出现协作者权限配置界面
+
+  ![项目成员管理](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2e59ce9b-f202-4432-954c-d6182187ef94.jpg)
+  
+4. 勾选uniCloud并点击`设置授权服务空间`，在弹出界面勾选希望此协作者访问的服务空间
+  
+  ![设置授权服务空间](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b3c234a7-e514-4b14-b33d-e7322130bd7d.jpg)
+
+5. 点击第4步弹出界面的`保存按钮`以及第3步的`保存权限设置`按钮
+
+6. 协作者如需在uni-app项目关联此服务空间，需要在项目的`manifest.json`内配置上共享的应用的AppId（需要在源码视图编辑manifest.json）
+
+### 如何使用promise/async/await@promise
+
+uniCloud客户端callFunction及数据库相关接口会返回Promise类型结果，请参考以下写法使用：
+
+```html
+// index.vue
+<template>
+  <view class="content">
+    <button type="default" @click="testThen">promise+then</button>
+    <button type="default" @click="testAwait">async+await</button>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {}
+    },
+    methods: {
+      testThen() {
+        uniCloud.callFunction({
+          name: 'test'
+        }).then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.error(err)
+        })
+      },
+      async testAwait() {
+        const res = await uniCloud.callFunction({
+          name: 'test'
+        })
+        console.log(res)
+
+        // 如需捕获错误需使用如下写法
+        // try {
+        //   const res = await uniCloud.callFunction({
+        //     name: 'test'
+        //   })
+        //   console.log(res)
+        // } catch (err) {
+        //   console.error(err)
+        // }
+
+      }
+    }
+  }
+</script>
+
+<style>
+</style>
+```
+
+### 发生故障时如何判断故障点
+
+当你的系统出问题时，如何判断是DCloud还是阿里云或腾讯云的问题？
+
+首先再次声明，DCloud的服务仅限于开发阶段。发行部署后，应用的访问不经过DCloud的服务器。
+
+1. 通过域名判断故障点
+- unicloud.dcloud.net.cn，属于DCloud，这个网站是开发期间使用的，你的应用上线运行时，不经过DCloud服务器。
+	如果该域名可以访问，但是在该域名下操作连接阿里云或腾讯云的数据出现问题，那么也是阿里云或腾讯云出了问题。
+- bspapp.com，属于阿里云。如果该域名访问报错，说明阿里云serverless出故障了。
+- tencentcloudapi.com，属于腾讯云。如果该域名访问报错，说明腾讯云serverless出故障了。
+
+当然还有一种情况报错，其实是客户端的问题，包括浏览器的跨域问题，或者小程序的域名白名单问题，导致客户端无法连接uniCloud。这需要通过配置来解决，参考文档：[小程序和浏览器的域名访问配置](https://uniapp.dcloud.io/uniCloud/quickstart?id=%e5%b0%8f%e7%a8%8b%e5%ba%8f%e4%b8%ad%e4%bd%bf%e7%94%a8unicloud%e7%9a%84%e7%99%bd%e5%90%8d%e5%8d%95%e9%85%8d%e7%bd%ae)
+
+2. 通过测试系统判断故障点
+- [hello uniCloud 阿里云版](https://hellounicloud.dcloud.net.cn/#/)
+- [hello uniCloud 腾讯云版](https://hellounicloud.dcloud.net.cn/tcb/#/)
+
+如果测试系统不正常，那就说明这家云厂商的服务出故障了。
+
+这2个系统是完全独立的，如果两个系统都故障了，那就是2家云厂商都故障了，而不是DCloud服务故障了。再次声明，发布后的服务，不连接DCloud的服务器。
+
+当遇到uniCloud故障时，在uniCloud的QQ群或论坛里反馈即可。因为阿里云、腾讯云其实都有拨测系统，他们也会及时知道故障并解决的。
+
+### 常见数据库错误
+
+**`operation exceeded time limit`、`云数据库执行时间超限`错误**
+
+此错误一般由数据库操作超时引发，具体如何优化请参考：[性能优化](db-performance.md)
+
+**使用事务时出现`WriteConflict`错误**
+
+事务的执行会锁行，同时执行的不同事务在操作同一行数据是会存在冲突导致写入失败。尽量优化流程，避免事务互相冲突

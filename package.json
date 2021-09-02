@@ -34,7 +34,6 @@
     "release:v3": "npm run lint:cli && lerna publish --no-git-tag-version --force-publish=* --npm-tag=v3"
   },
   "dependencies": {
-    "@dcloudio/uni-i18n": "^0.0.3",
     "base64-arraybuffer": "^0.2.0",
     "intersection-observer": "^0.7.0",
     "pako": "^1.0.11",

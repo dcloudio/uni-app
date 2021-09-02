@@ -10,6 +10,7 @@
   * [组件](vue-components.md)
   * [API](vue-api.md)
   * [vuex](vue-vuex.md)
+* [从 vue2 迁移到 vue3](migration-to-vue3.md)
 * nvue教程
   * [综述](nvue-outline.md)
   * [样式](nvue-css.md)
@@ -27,6 +28,7 @@
 * [混合开发](hybrid.md)
 * [uni小程序sdk](https://nativesupport.dcloud.net.cn/README)
 * 运营服务
+  * [App升级中心](uniCloud/upgrade-center.md)
   * [uni一键登录](univerify.md)
   * [统一推送uniPush](unipush.md)
   * [uni统计](uni-stat.md)
@@ -34,6 +36,7 @@
   * [统一发行页面](m3w.md)
 * [案例](case.md)
 * [选型评估指南](select.md)
+* [应用市场上架](store.md)
 * [常见问题](faq.md)
 * 更新日志
   * [正式版](release.md)
@@ -80,7 +83,7 @@
 	  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/759713d0-4f2d-11eb-a16f-5b3e54966275.png" width="20" height="20"/>
 	  <div class="contact-smg">
 	     <div>官方QQ交流群</div>
-	  <div>群24：672494800 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=7ntnubNkRwi2DlXS02C4OEFfm2KbvnBu&jump_from=webapi">点此加入</a></div>
+	  <div>群24：672494800 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=6MWi51S5qkBlqZf2oW6tGOzMFz-bMd2-&jump_from=webapi">点此加入</a></div>
 		<div>群35：713420817（2000人已满）</div>
 		<div>群34：530305531（2000人已满）</div>
 		<div>群33：498071674（2000人已满）</div>

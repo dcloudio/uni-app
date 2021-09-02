@@ -6,9 +6,9 @@ app-vue和小程序框架，渲染引擎是webview的。但为了优化体验，
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|√|√|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|√|√|x|√|
 
 * app-nvue所有组件均为原生渲染，不存在前端组件无法覆盖原生组件的问题。但为了保持多端兼容，nvue里也实现了`cover-view`，作用于普通`view`一样。
 * 微信小程序部分原生组件实现了同层渲染，在指定的基础库版本上，某些原生组件可无需使用`cover-view`覆盖，[详见](https://developers.weixin.qq.com/miniprogram/dev/component/native-component.html)
@@ -27,15 +27,15 @@ app-vue和小程序框架，渲染引擎是webview的。但为了优化体验，
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|√|√|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|√|√|x|√|
 
 **属性说明**
 
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
-|src|String||图标路径。支持本地路径、网络路径。不支持 base64 格式。|
+|src|String||图标路径。支持本地路径、网络路径。不支持 base64 格式。||
 |@load|eventhandle||图片加载成功时触发|微信小程序 2.1.0|
 |@error|eventhandle||图片加载失败时触发|微信小程序 2.1.0|
 
@@ -90,7 +90,7 @@ app-vue上可覆盖的原生组件：`<video>`、`<map>`
 <!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view class="page">
-		<video class="video" id="demoVideo" :controls="false" :enable-progress-gesture="false" :show-center-play-btn="disable" src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20181126-lite.m4v">
+		<video class="video" id="demoVideo" :controls="false" :enable-progress-gesture="false" :show-center-play-btn="true" src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20181126-lite.m4v">
 			<cover-view class="controls-title">简单的自定义 controls</cover-view>
 			<cover-image class="controls-play img" @click="play" src="/static/play.png"></cover-image>
 			<cover-image class="controls-pause img" @click="pause" src="/static/pause.png"></cover-image>

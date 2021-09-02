@@ -1,5 +1,10 @@
 # uniCloud admin 框架
 
+#### 看视频，15分钟掌握uniCloud admin
+<a target="_blank" href="https://www.bilibili.com/video/BV17p4y1a71x?p=13">
+    <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/4332911b-6624-4587-8c77-78b68f1f8c78.jpg" alt="uniCloud admin视频教程" style="width: 60%;">
+</a>
+
 ### 什么是 uniCloud admin
 
 uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的开源框架。
@@ -12,6 +17,8 @@ uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的�
 
 下载地址：[https://ext.dcloud.net.cn/plugin?id=3268](https://ext.dcloud.net.cn/plugin?id=3268)
 
+[github 仓库可查看最新提交及修改](https://github.com/dcloudio/uniCloud-admin)，欢迎 issues、pr、star ！
+
 - 它基于 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
 - 它基于 uniCloud，是 serverless 的云开发。了解[uniCloud](https://uniapp.dcloud.io/uniCloud/README)
 - 它基于 uni-id，使用 uni-id 的用户账户、角色、权限系统。了解[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)
@@ -22,15 +29,20 @@ uniCloud admin有预置功能、插件生态和数据表管理的代码生成工
 有这套组合，管理端系统的开发变的前所未有的简单、高效、低成本。
 
 1. 预置功能
+
 - 管理员账户初始化、登录、修改密码
 - 基于uni-id的用户管理（注册、修改信息、停用启用、删除）、角色管理、权限管理
 - 顶部 topWindow 的设置：比如 logo 更换、右上角部分链接更换。详见项目根目录的`admin.config.js`文件
 - 左侧 leftWindow 的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能；另一类是静态菜单，不会根据登录用户角色变化
 - 动态菜单的数据存储在数据库表opendb-admin-menus中，基于uni-id角色权限，在菜单管理中可以对菜单进行增删改查
 - 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
+
 2. 扩展插件
+
 - uniCloud admin支持插件生态，包括cms插件、banner管理插件、日志管理插件、图表示例等，详见[插件市场](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
+
 3. 数据表管理的代码生成工具
+
 - 对于数据表的管理，如列表浏览、分页搜索、详情修改、新增删除，这些代码都无需自己开发。建好数据表的schema表结构，利用schema2code工具，即可自动生成该表的管理页面的代码。详见[schema2code](https://uniapp.dcloud.net.cn/uniCloud/schema?id=autocode)
 
 uniCloud admin是完整开源的一个uni-app项目，任何熟悉uni-app的工程师都可以自行开发扩展功能。
@@ -292,6 +304,28 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
   </view>
 </template>
 ```
+
+#### 给系统创建多个登录账户并设置不同的权限@mutiladmin
+下面以增加一个普通成员的角色为例，该角色的用户登录admin系统后只能看用户表数据，不能改动数据。
+##### 1. 先用admin账户登陆admin系统。
+- admin示例项目地址：[https://unicloudadmindemo.dcloud.net.cn/#/pages/login/login](https://unicloudadmindemo.dcloud.net.cn/#/pages/login/login)
+- 体验账号：admin      密码：123456
+
+##### 2. 创建权限。在uniCloud admin左侧菜单的权限管理，新增权限“查询信息”，标识为“read”
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/ab997406-d36e-4d42-87ab-339bd5a8a50a.jpg)
+##### 3. 创建角色。在左侧菜单的角色管理里，新增角色“普通成员”，标识为“member”，绑定上面的“查询信息”权限
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/f3b563b3-3e86-4823-9373-64c9bebdd51c.jpg)
+##### 4. 创建账户并赋予角色。在左侧菜单的用户管理里，添加用户“张三”，然后给用户赋予角色“普通成员”
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/18676740-4be8-419b-8c12-40559ded1413.jpg)
+##### 5.如果你退出账户，登陆刚刚创建的账户张三。我们发现会提示：该账户没有被赋予登录admin系统的权限, 请联系系统管理员绑定角色赋权限。因为：你登陆的账户没有访问任何admin系统菜单的权限，所以不能访问admin系统。
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0b627d45-da68-435b-995b-a191e7330624.jpg)
+##### 6.设置有查询信息权限的人，拥有访问admin系统菜单"用户管理"的权限。在左侧菜单的菜单管理里，找到菜单“用户管理”，点修改，在权限列表里勾选“查询信息”，也就是有查询信息权限的人，可以看到本菜单
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/74c48248-d8ae-4427-9abb-8a6c5d54c53d.jpg)
+##### 7.这时你用账户“张三”登陆，就能进入到admin系统。但你会看到如下图提示“权限校验未通过”。因为刚刚仅为该用户赋予了访问菜单的权限。还未赋予访问uni-id-users表的阅读权限
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/37d1604e-bcb1-4096-a373-90397b9a96c0.jpg)
+##### 8. 需要在hbuilderx中将表uni-id-users的schema文件中设置新角色的权限，将permission下的read节点配置为`"read": "'read' in auth.permission"`，并上传到云端。当然这在示例项目不能实现，需要你自己搭建admin系统，重复以上步骤，[点此下载uniCloud admin](https://ext.dcloud.net.cn/plugin?id=3268)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/81e38081-9507-4e00-bafd-7dab26e9a119.png)
+##### 9.此时你再刷新页面即可访问用户管理的数据列表
 
 ### 新增页面
 

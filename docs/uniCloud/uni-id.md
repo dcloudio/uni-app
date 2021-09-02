@@ -8,7 +8,7 @@
 
 `uni-id`为`uniCloud`开发者提供了简单、统一、可扩展的用户管理能力封装。
 
-[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)，这些产品都基于`uni-id`的账户体系。可以说`uni-id`是uniCloud不可或缺的基础能力。
+[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uni-starter](https://ext.dcloud.net.cn/plugin?id=5057)、[uniCloud admin](uniCloud/admin)，这些产品都基于`uni-id`的账户体系。可以说`uni-id`是uniCloud不可或缺的基础能力。
 
 # 组成部分
 
@@ -26,11 +26,11 @@
 
 提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
 
-示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
+示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。推荐使用[云端一体登录插件](https://ext.dcloud.net.cn/plugin?id=13)
 
 3.前端调用
 
-前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
+前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。在这个[云端一体登录插件](https://ext.dcloud.net.cn/plugin?id=13)里，有完整的登录、注册、修改密码等前后端代码示例。[详见](https://ext.dcloud.net.cn/plugin?id=13)
 
 uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
 
@@ -52,7 +52,7 @@ uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-a
 
 规范，还可以让上下游充分协同。插件市场会出现各种数据迁移插件，比如把从discuz里把用户迁移到`uni-id`中的插件，相信围绕这套规范的产业链会非常活跃。
 
-事实上，[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)等重要uniCloud产品，以及插件市场上各种优秀的轮子，都是基于`uni-id`的。
+事实上，[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uni-starter](https://ext.dcloud.net.cn/plugin?id=5057)、[uniCloud admin](uniCloud/admin)等重要uniCloud产品，以及插件市场上各种优秀的轮子，都是基于`uni-id`的。
 
 # 现状和未来
 
@@ -71,7 +71,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 
 2.邮箱验证集成
 
-邮箱验证，DCloud暂无计划开发，有需求的开发者欢迎提供pr。
+发送邮件验证邮箱真实性，DCloud暂无计划开发，有需求的开发者欢迎提供pr。
 
 3.活体检测
 
@@ -82,20 +82,20 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 `uni-id`的git仓库：[https://gitee.com/dcloud/uni-id.git](https://gitee.com/dcloud/uni-id.git)
 
 
-# 快速上手
+# 快速上手@start
 
 使用uni-id需要按照以下步骤操作
 
 **uni_modules版**
 
 1. HBuilderX 3.1.0+
-2. 插件市场导入`uni-id`公用模块uni_modules版本，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
-3. 修改公用模块`uni-id`下的`config.json`内所需参数（请参考下面config.json的说明）
-4. 在`cloudfunctions/common`下上传`uni-id`模块
-5. 在要使用`uni-id`的云函数右键选择`管理公共模块依赖`添加`uni-id`到云函数
+2. 插件市场导入`uni-id`公用模块uni_modules版本，HBuilderX会自动导入依赖的`uni-config-center`，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
+3. 在`uni-config-center`公用模块下创建`uni-id`目录，在创建的uni-id目录下再创建`config.json`文件配置uni-id所需参数（请参考下面config.json的说明），**注意：如果HBuilderX版本低于3.1.8，批量上传云函数及公共模块后需要单独再上传一次uni-id**
+4. 在`cloudfunctions/common`下上传`uni-config-center`模块以及`uni-id`模块
+5. 在要使用`uni-id`的云函数右键选择`管理公共模块依赖`添加`uni-id`到云函数，添加依赖后需要重新上传该云函数
 6. 创建`uni-id-users`、`opendb-verify-codes`集合（opendb-verify-codes是验证码表。可以使用示例项目里面的db_init.json进行初始化、也可以在web控制台新建表时选择这些表模块）
 
-**非uni_modules版本**
+**非uni_modules版本（非uni_modules版本已不再更新）**
 
 1. HBuilderX 2.9+
 2. 插件市场导入`uni-id`公用模块，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
@@ -106,12 +106,12 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
 
-**config.json的说明**
+## config.json的说明@config
 
 注意：
 
 - **config.json是一个标准json文件，不支持注释**
-- 如果不希望使用config.json初始化而是想自行传入参数，可以使用`init`方法[uniID.init](/uniCloud/uni-id?id=init)
+- 如果不希望使用config.json初始化而是想自行传入参数（一般不推荐这么做），可以使用`init`方法[uniID.init](/uniCloud/uni-id?id=init)
 
 > 在云函数URL化的场景无法获取客户端平台信息，可以在调用uni-id相关接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
 
@@ -145,7 +145,7 @@ exports.main = async (event, context) => {
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
 	"tokenExpiresThreshold": 600, // 新增于uni-id 1.1.7版本，checkToken时如果token有效期小于此值则自动获取新token，请注意将新token返回给前端保存，如果不配置此参数则不开启自动获取新token功能
-	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
+	"bindTokenToDevice": false, // 是否将token和设备绑定，设置为true会进行ua校验，uni-id 3.0.12前默认为true，3.0.12及以后版本默认调整为false
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
 	"autoSetInviteCode": false, // 是否在用户注册时自动设置邀请码，默认不自动设置
@@ -159,6 +159,11 @@ exports.main = async (event, context) => {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
 			},
+			// App QQ登录所用到的appid、appsecret需要在腾讯开放平台获取，注意：不是公众平台而是开放平台
+      "qq": {
+				"appid": "qq appid",
+				"appsecret": "qq appsecret"
+			},
 			"apple": { // 使用苹果登录时需要
 				"bundleId": "your bundleId"
 			}
@@ -171,6 +176,16 @@ exports.main = async (event, context) => {
 			"weixin": {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
+			}
+		}
+	},
+	"mp-qq": {
+		"tokenExpiresIn": 259200,
+		"oauth": {
+			// QQ小程序登录所用的appid、appsecret需要在对应的小程序管理控制台获取
+			"qq": {
+				"appid": "qq appid",
+				"appsecret": "qq appsecret"
 			}
 		}
 	},
@@ -372,21 +387,63 @@ function hasPermission(token, permission) {
 }
 ```
 
+注意：**在uniCloud admin中，封装了可视化的用户、权限、角色的管理，新增删除修改均支持。**无需自己维护。[详见](https://uniapp.dcloud.net.cn/uniCloud/admin?id=mutiladmin)
+
+**如果需要管理多端的用户，建议使用type在uni-id-users表内进行区分，不要分多个表**
+
 # uni-id的API列表@api
 
 `uni-id`作为一个云函数的公共模块，暴露了各种API，供云函数调用。
 
-## 基础功能
+## 基础功能@base
+
+### 创建uni-id实例@create-instance
+
+> uni-id 3.0.7及以上版本
+
+用法：`uniID.createInstance(Object CreateInstanceParams);`
+
+CreateInstanceParams内可以传入云函数context
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  const uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
+    context: context,
+    // config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
+  })
+  payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
+  if (payload.code) {
+  	return payload
+  }
+	const res = await uniIDIns.updateUser({
+    uid: payload.uid,
+    nickname: 'user nickname'
+  })
+	return res
+}
+```
+
+**为什么需要自行创建uni-id实例**
+
+默认情况下uni-id某些接口会自动从全局context内获取客户端的PLATFORM（平台，如：app-plus、h5、mp-weixin）信息。但是在单实例多并发的场景下可能无法正确获取（全局对象会被后面的请求覆盖，可能会导致前面一次请求使用了后面一次请求的PLATFORM信息）。因此推荐在开启云函数单实例多并发后，自行为uni-id传入context。
 
 ### 用户注册 @register
+用户注册就是将客户端用户输入的用户名和密码，经服务端：
+1. 校验用户名是否与已经注册的用户名重复，如果重复就返回错误
+2. 加密密码
+3. 生成token
+最后将`用户名` `密码` `token`存储到数据库并返回token、uid等响应参数（详见下文“响应参数”表）的过程。
 
+如上操作uni-id的注册api内部会自动完成
 用法`uniID.register(Object RegisterParams)`
 
 **注意**
 
 - 注册成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token',res.result.token)`
 
-**user参数说明**
+**参数说明**
 
 | 字段					| 类型		| 必填| 说明																																					|
 | ---						| ---			| ---	| ---																																						|
@@ -409,6 +466,7 @@ password入库时会自动进行一次sha1加密，不明文存储密码。这�
 但任何加密算法，在撞库等暴力手段面前被攻破只是时间和算力问题。使用自己特定的而不是默认的passwordSecret，并保护好passwordSecret可以数倍提升破解的算力代价。
 
 uni-id公共模块没有限制密码的强度，如长度限制、是否包含大小写或数据等限制，这类限制需要开发者自行在云函数中处理。
+**注意：RegisterParams不仅支持如上列举字段，比如可以直接传入mobile即可设置手机号码，切勿直接传入客户端传来的参数，否则这是一个极大的安全问题**
 
 **响应参数**
 
@@ -430,10 +488,18 @@ exports.main = async function(event,context) {
 		username,
 		password
 	} = event
-	// username、password验证是否合法的逻辑
-	const res = await uniID.register({
-		username,
-		password
+  //自己额外增加的校验密码规范的逻辑（可选）
+  //强弱密码校验,密码至少包含大写字母，小写字母，数字，且不少于6位
+  if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,16}$/.test(password)){
+    return {
+      code: 401,
+      msg: '密码至少包含大写字母，小写字母，数字，且不少于6位'
+    }
+  }
+	// 自动验证用户名是否与已经注册的用户名重复，如果重复会直接返回错误。否则会自动生成token并加密password存储username、password、token到数据表uni-id-users，并返回如上响应参数
+	const res = await uniID.register({ //支持传入任何值，比如可以直接传入mobile即可设置手机号码，切勿直接传入event否则这是一个极大的安全问题
+	    username,
+	    password
 	})
 	return res
 }
@@ -475,6 +541,9 @@ uniCloud.callFunction({
 
 
 ### 用户登录 @login
+登录就是通过查询数据库验证，客户端传递的“用户名”和“密码”是否匹配并返回token、uid等响应参数（详见下文“响应参数”表）的过程。
+如果你允许用户同时使用多种方式登录，需要注意：必须限制用户注册用户名不为邮箱格式且不为手机号格式，uni-id内部并未做出此类限制。否则用户可以使用他人的手机号码作为用户名注册账号，这就成了一个漏洞。具体做法可以参考[云端一体应用快速开发模版"uniStarter"](https://ext.dcloud.net.cn/plugin?id=5057)
+
 
 用法：`uniID.login(Object LoginParams)`
 
@@ -483,7 +552,7 @@ uniCloud.callFunction({
 - 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token',res.result.token)`
 - 登录时请注意自行验证数据有效性
 
-**user参数说明**
+**参数说明**
 
 | 字段		| 类型	| 必填	| 说明	|
 | ---		| ---	| ---	| ---	|
@@ -491,6 +560,10 @@ uniCloud.callFunction({
 | password	| String| 是	|密码	|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission）。`uni-id 3.0.0`起，如果配置`"removePermissionAndRoleFromToken": false`此选项不再生效	|
 | queryField	| Array| 否	|指定从哪些字段中比对username（传入参数均为username），不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
+
+**注意**
+
+- 使用邮箱时需要用户对应的记录里`email_confirmed`为1才可以登录，手机号同样需要`mobile_confirmed`为1才可以登录
 
 **响应参数**
 
@@ -513,7 +586,7 @@ exports.main = async function(event,context) {
 		username,
 		password
 	} = event
-	// username、password验证是否合法的逻辑
+	// 自动完成username、password验证是否合法的逻辑
 	const res = await uniID.login({
 		username,
 		password,
@@ -523,46 +596,15 @@ exports.main = async function(event,context) {
 }
 ```
 
-### 登出
-
-用法：`uniID.logout(String token);`
-
-**注意**
-
-- 登出成功之后应删除持久化存储的token，键值为：`uni_id_token`，`uni.removeStorageSync('uni_id_token')`
-
-```js
-  uni.removeStorageSync('uni_id_token')
-  uni.removeStorageSync('uni_id_token_expired')
-```
-
-**参数说明**
-
-| 字段| 类型	| 必填| 说明	|
-| ---	| ---		| ---	| ---		|
-| token	| String| 是	|用户token|
-
-**响应参数**
-
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| message	| String| 是	|详细信息					|
-
-**示例代码**
-
-```js
-// 云函数logout代码
-const uniID = require('uni-id')
-exports.main = async function(event,context) {
-	const res = await uniID.logout(uniIdToken)
-	return res
-}
-
-```
-
-
 ### token校验@checktoken
+一个校验客户端发起请求（uniCloud.callFunction）自带的uniIdToken，获得用户的uid、token、token的过期时间、角色、权限、用户信息(uni-id-users全部字段)的API。
+
+这是非常高频且重要的API通常用于换取操作当前云函数的用户Id。
+
+#### 思考
+如果你并没有服务端开发经验，可能会想：为什么需要通过token去换取用户Id，而不是让客户端直接传递用户Id更方便？
+这里就涉及到安全问题，有一句话叫做：“前端传递的参数都是不可信任的”。比如：你去银行取款，柜台会要求出示你的身份证来证明你是谁，而不是你直接告诉银行柜台你是谁就管用。否则这是一个极大的安全漏洞。
+综上所述：所有服务端操作涉及账户信息相关内容，都需要使用token来获得，而不是使用前端传递的参数。
 
 用法：`uniID.checkToken(String token, Object checkTokenOptions)`
 
@@ -658,18 +700,60 @@ uniCloud.callFunction({
 
 ```
 
+
+### 登出
+登出就是一个验证客户端uniCloud.callFunction自带的uniIdToken通过token校验并获取uid，将对应uid的用户的token清除的过程（uniID登出api内部会自动完成，你传入uniIdToken即可）。
+
+用法：`uniID.logout(String token);`
+
+**注意**
+
+- 登出成功之后应删除持久化存储的token，键值为：`uni_id_token`，`uni.removeStorageSync('uni_id_token')`
+
+```js
+  uni.removeStorageSync('uni_id_token')
+  uni.removeStorageSync('uni_id_token_expired')
+```
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明	|
+| ---	| ---		| ---	| ---		|
+| token	| String| 是	|用户token|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| message	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数logout代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.logout(event.uniIdToken)
+	return res
+}
+
+```
+
 ### 生成token@createtoken
 
 注意createToken接口不会将生成的token存库，只是生成token而已
 
 用法：`uniID.createToken(Object CreateTokenParams)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段					| 类型		| 必填| 说明																		|
 | ---						| ---			| ---	| ---																			|
 | uid						| String	| 是	|用户Id																		|
 | needPermission| Boolean	| 否	|标识是否需要在checkToken时返回permission	|
+| role					| Array		| 否	|指定缓存在token内的角色									|
+| permission		| Array		| 否	|指定缓存在角色内的权限										|
 
 **响应参数**
 
@@ -678,11 +762,16 @@ uniCloud.callFunction({
 | token				| String| 是	|生成的token							|
 | tokenExpired| Number| 是	|token过期时间对应的时间戳|
 
+**说明**
+
+- uni-id 3.0.0起默认缓存角色权限到token内，此功能生效时`needPermission`参数不在需要。如需调用createToken接口请自行传入role、permission
+
+
 ### 修改密码 @update-password
 
 用法：`uniID.updatePwd(Object UpdatePwdParams)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段								| 类型	| 必填| 说明													|
 | ---									| ---		| ---	| ---														|
@@ -730,7 +819,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.resetPwd(Object ResetPwdParams)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段								| 类型	| 必填| 说明													|
 | ---									| ---		| ---	| ---														|
@@ -769,7 +858,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.encryptPwd(String password)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段								| 类型	| 必填| 说明													|
 | ---									| ---		| ---	| ---														|
@@ -809,7 +898,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.setAvatar(Object SetAvatarParams)`
 
-**avatarInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明													|
 | ---		| ---		| ---	| ---														|
@@ -852,7 +941,7 @@ exports.main = async function(event,context) {
 
 此接口用于在其他接口不满足需求时使用
 
-**userInfo参数说明**
+**参数说明**
 
 | 字段| 类型	| 必填| 说明													|
 | ---	| ---		| ---	| ---														|
@@ -962,13 +1051,15 @@ exports.main = async function(event,context) {
 
 ### 自行初始化uni-id@init
 
+> 此接口已废弃，如需自行传入配置请使用uniID.createInstance接口创建uniID实例来使用
+
 用法：`uniID.init(Object InitParams);`
 
 此接口仅适用于不希望使用config.json初始化而是希望通过js的方式传入配置的情况，多数情况下不推荐使用。**如果你要使用clientDB，且必须要用这种方式初始化uni-id，必须在uni-id的config.json内也写上同样的配置。**
 
-**InitParams参数说明**
+**参数说明**
 
-InitParams格式与config.json完全相同
+InitParams格式与[config.json](https://uniapp.dcloud.io/uniCloud/uni-id?id=configjson%e7%9a%84%e8%af%b4%e6%98%8e)完全相同
 
 **响应参数**
 
@@ -977,7 +1068,7 @@ InitParams格式与config.json完全相同
 ```js
 // 云函数代码
 const uniID = require('uni-id')
-uniID.init({
+uniID.init({ // 如果在此处传入配置信息则不会再使用config.json作为配置
 	"passwordSecret": "passwordSecret-demo", // 用于加密用户密码
 	"tokenSecret": "tokenSecret-demo", // 用于生成token
 	"tokenExpiresIn": 7200, // token过期时间
@@ -1005,44 +1096,13 @@ exports.main = async function(event,context) {
 }
 ```
 
-### 创建uni-id实例@create-instance
-
-> uni-id 3.0.7及以上版本
-
-用法：`uniID.createInstance(Object CreateInstanceParams);`
-
-CreateInstanceParams内可以传入云函数context，**主要用于在单实例多并发的场景（目前uniCloud还未支持，后续会提供）**
-
-```js
-// 云函数代码
-const uniID = require('uni-id')
-exports.main = async function(event,context) {
-  const uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
-    context: context
-  })
-  payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
-  if (payload.code) {
-  	return payload
-  }
-	const res = await uniIDIns.updateUser({
-    uid: payload.uid,
-    nickname: 'user nickname'
-  })
-	return res
-}
-```
-
-**为什么需要自行创建uni-id实例**
-
-默认情况下uni-id某些接口会自动从全局context内获取客户端的PLATFORM（平台，如：app-plus、h5、mp-weixin）信息。但是在单实例多并发的场景下可能无法正确获取（全局对象会被后面的请求覆盖，可能会导致前面一次请求使用了后面一次请求的PLATFORM信息）。因此推荐在开启云函数单实例多并发后，自行为uni-id传入context。
-
-## 手机号码
+## 手机号码@mobile
 
 ### 发送短信验证码@sendsmscode
 
 用法：`uniID.sendSmsCode(Object SendSmsCodeParams)`
 
-**codeInfo**参数说明
+**参数说明**
 
 | 字段			| 类型	| 必填| 说明																																																					|
 | ---				| ---		| ---	| ---																																																						|
@@ -1086,12 +1146,11 @@ exports.main = async function(event,context) {
 ```
 
 ### 设置验证码@setVerifyCode
-
-如果你不想使用`uni-id`的sendSmsCode发送短信的话，可以使用此接口自行在库中创建验证码
+如果使用`uni-id`的sendSmsCode发送短信的话会自动设置验证码（在数据表：`opendb-verify-codes`添加一条记录)，否则你需要使用此接口自行在库中设置验证码。
 
 用法：`uniID.setVerifyCode(Object SetVerifyCodeParams)`
 
-**codeInfo**参数说明
+**参数说明**
 
 | 字段			| 类型	| 必填| 说明																																													|
 | ---				| ---		| ---	| ---																																														|
@@ -1132,12 +1191,13 @@ exports.main = async function(event,context) {
 ```
 
 ### 校验验证码@verifyCode
+一个查库校验：由`uni-id`的sendSmsCode发送短信自动设置或调用uniID.setVerifyCode手动设置的验证码的API
 
 uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验验证码方法，如果使用以上方法不需要再调用此接口，如需扩展类型请确保type和发送验证码/设置验证码时对应
 
 用法：`uniID.verifyCode(Object VerifyCodeParams)`
 
-**codeInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																																													|
 | ---		| ---		| ---	| ---																																														|
@@ -1177,28 +1237,28 @@ exports.main = async function(event,context) {
 
 用法：`uniID.loginBySms(Object LoginBySmsParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
-| 字段				| 类型	| 必填| 说明																																																	|
-| ---					| ---		| ---	| ---																																																		|
-| mobile			| String| 是	|用户手机号																																															|
-| code				| String| 是	|验证码																																																	|
-| type				| String| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
-| password		|String	| 否	|密码，type为`register`时生效																																						|
-| inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
-| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
-| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
+| 字段					| 类型		| 必填| 说明																																																	|
+| ---						| ---			| ---	| ---																																																		|
+| mobile				| String	| 是	|用户手机号																																															|
+| code					| String	| 是	|验证码																																																	|
+| type					| String	| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
+| password			|String		| 否	|密码，type为`register`时生效																																						|
+| inviteCode		|String		| 否	|邀请人的邀请码，type为`register`时生效																																	|
+| myInviteCode	|String		| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用													|
+| role					| Array		| 否	|设定用户角色，当前用户为新注册时生效																																		|
 
 **响应参数**
 
 | 字段				| 类型	| 必填| 说明																		|
 | ---					| ---		| ---	| ---																			|
 | code				| Number| 是	|错误码，0表示成功												|
-| message					| String| 是	|详细信息																	|
+| message			| String| 是	|详细信息																	|
 | uid					| String| 是	|用户uid																	|
 | type				| String| 是	|操作类型，`login`为登录、`register`为注册|
-| userInfo		| Object| 是	|用户全部信息								|
+| userInfo		| Object| 是	|用户全部信息															|
 | token				| String| -		|登录成功之后返回的token信息							|
 | tokenExpired| String| -		|token过期时间														|
 
@@ -1225,32 +1285,33 @@ exports.main = async function(event,context) {
 
 用法：`uniID.loginByUniverify(Object loginByUniverifyParams)`
 
-> 需再[开发者控制台](https://dev.dcloud.net.cn/uniLogin)开通一键登录并在config.json内配置univerify相关信息
+> 需在[开发者控制台](https://dev.dcloud.net.cn/uniLogin)开通一键登录并在config.json内配置univerify相关信息
 
 **参数说明**
 
-| 字段				| 类型	| 必填| 说明																																																	|
-| ---					| ---		| ---	| ---																																																		|
-| access_token			| String| 是	|uni.login登录成功后，返回的`access_token`参数
-| openid				| String| 是	|uni.login登录成功后，返回的`openid`参数			|
-| type				| String| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
-| password		|String	| 否	|密码，type为`register`时生效																																						|
-| inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
-| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
-| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| 字段					| 类型		| 必填| 说明																																																	|
+| ---						| ---			| ---	| ---																																																		|
+| access_token	| String	| 是	|uni.login登录成功后，返回的`access_token`参数																													|
+| openid				| String	| 是	|uni.login登录成功后，返回的`openid`参数																																|
+| type					| String	| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
+| password			|String		| 否	|密码，type为`register`时生效																																						|
+| inviteCode		|String		| 否	|邀请人的邀请码，type为`register`时生效																																	|
+| myInviteCode	|String		| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用													|
+| role					| Array		| 否	|设定用户角色  ，当前用户为新注册时生效																																	|
 
 **响应参数**
 
 | 字段				| 类型	| 说明																		|
 | ---					| ---		| ---																			|
 | code				| Number| 错误码，0表示成功												|
-| message					| String|详细信息																|
+| message			| String|详细信息																	|
 | uid					| String|用户`uid`																|
 | type				| String|操作类型，`login`为登录、`register`为注册|
-| mobile		| String|登录者手机号							|
-| userInfo		| Object|用户全部信息								|
-| token				| String|登录成功之后返回的`token`信息							|
-| tokenExpired| String|`token`过期时间														|
+| mobile			| String|登录者手机号															|
+| userInfo		| Object|用户全部信息															|
+| token				| String|登录成功之后返回的`token`信息						|
+| tokenExpired| String|`token`过期时间													|
 
 **示例代码**
 
@@ -1270,23 +1331,28 @@ exports.main = async function(event,context) {
 }
 ```
 
-### 绑定手机号
+### 绑定手机号@bind-mobile
 
 用法：`uniID.bindMobile(Object BindMobileParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
-| 字段	| 类型	| 必填| 说明																																			|
-| ---		| ---		| ---	| ---																																				|
-| uid		| String| 是	|用户Id，可以通过checkToken返回																							|
-| mobile| String| 是	|用户手机号																																	|
-| code	| String| 否	|验证码，为兼容旧版逻辑此参数不填写时不会进行验证码校验，而是直接绑定手机号	|
+| 字段				| 类型	| 必填| 说明																																			|
+| ---					| ---		| ---	| ---																																				|
+| uid					| String| 是	|用户Id，可以通过checkToken返回																							|
+| mobile			| String| 否	|用户手机号																																	|
+| code				| String| 否	|验证码，为兼容旧版逻辑此参数不填写时不会进行验证码校验，而是直接绑定手机号	|
+| access_token| String| 否	|uni.login登录成功后，返回的`access_token`参数															|
+| openid			| String| 否	|uni.login登录成功后，返回的`openid`参数																		|
+| type				| String| 否	|通过何种方式绑定手机号，sms（手机号验证码）、univerify（一键登录），默认sms|
+
+type为sms时mobile、code必传，type为univerify时access_token、openid必传
 
 **响应参数**
 
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
+| 字段		| 类型	| 必填| 说明						|
+| ---			| ---		| ---	| ---							|
+| code		| Number| 是	|错误码，0表示成功|
 | message	| String| 是	|详细信息					|
 
 **示例代码**
@@ -1317,7 +1383,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.unbindMobile(Object UnbindMobileParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																																			|
 | ---		| ---		| ---	| ---																																				|
@@ -1356,13 +1422,13 @@ exports.main = async function(event,context) {
 
 ```
 
-## 邮箱
+## 邮箱@email
 
 ### 邮箱验证码直接登录
 
 用法：`uniID.loginByEmail(Object LoginByEmailParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
 | 字段					| 类型	| 必填| 说明																																					|
 | ---						| ---		| ---	| ---																																						|
@@ -1417,7 +1483,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.bindEmail(Object BindEmailParams)`
 
-**emailInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																									|
 | ---		| ---		| ---	| ---																										|
@@ -1461,7 +1527,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.unbindEmail(Object UnbindEmailParams)`
 
-**emailInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																									|
 | ---		| ---		| ---	| ---																										|
@@ -1499,7 +1565,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 微信小程序
+## 微信@weixin
 
 ### 微信登录
 
@@ -1512,30 +1578,41 @@ exports.main = async function(event,context) {
 - 登录成功之后应持久化存储token、token过期时间，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token', res.result.token)`
 - App端获取code不可直接调用`uni.login`，详细用法可以看下面示例
 
-**参数说明**
+**APP微信登录详细配置流程**
 
-| 字段				| 类型	| 必填| 说明																																																														|
-| ---					| ---		| ---	| ---																																																															|
-| code				| String| 是	|微信登录返回的code																																																								|
-| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
-| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
+1. 在manifest.json内配置微信登录用appid
+2. **打包**并**使用**自定义基座（注意一定要在manifest.json填写微信appid后再制作自定义基座），[自定义基座使用说明](https://ask.dcloud.net.cn/article/35115)
+3. 在uni-id的config.json内app-plus对应的微信登录信息内配置appid和appsecret
+
+**LoginByWexinParams参数说明**
+
+| 字段					| 类型		| 必填| 说明																																												|
+| ---						| ---			| ---	| ---																																													|
+| code					| String	| 是	|微信登录返回的code																																						|
+| type					| String	| 否	| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册，新增于uni-id 3.3.4	|
+| myInviteCode	|String		| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																					|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用								|
+| role					| Array		| 否	|设定用户角色，当前用户为新注册时生效																													|
 
 **响应参数**
 
-| 字段						| 类型		| 必填| 说明																		|
-| ---							| ---			| ---	| ---																			|
-| code						| Number	| 是	|错误码，0表示成功												|
-| message							| String	| 是	|详细信息																	|
-| uid							| String	| 是	|用户uid																	|
-| type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
-| openid					| String	| 是	|用户openid																|
-| unionid					| String	| 否	|用户unionid，能取到此参数时会返回				|
-| token						| String	| 是	|登录成功之后返回的token信息							|
-| userInfo		    | Object  | 否	|用户全部信息，`type`为`login`时返回								|
-| tokenExpired		| String	| 是	|token过期时间														|
-| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
-| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
+| 字段						| 类型		| 必填| 说明																																								|
+| ---							| ---			| ---	| ---																																									|
+| code						| Number	| 是	|错误码，0表示成功																																		|
+| message					| String	| 是	|详细信息																																							|
+| uid							| String	| 是	|用户uid																																							|
+| type						| String	| 是	|操作类型，`login`为登录、`register`为注册																						|
+| openid					| String	| 是	|用户openid																																						|
+| unionid					| String	| 否	|用户unionid，能取到此参数时会返回																										|
+| token						| String	| 是	|登录成功之后返回的token信息																													|
+| userInfo				| Object	| 否	|用户全部信息，`type`为`login`时返回																									|
+| tokenExpired		| String	| 是	|token过期时间																																				|
+| mobileConfirmed	| Boolean	| 是	|是否已验证手机号																																			|
+| emailConfirmed	| Boolean	| 是	|是否已验证邮箱																																				|
+| sessionKey			| String	| -		|客户端为微信小程序时返回																															|
+| accessToken			| String	| -		|客户端为APP时返回，微信接口调用凭证，新增于`uni-id 3.1.1`														|
+| refreshToken		| String	| -		|客户端为APP时返回，用于刷新accessToken，新增于`uni-id 3.1.1`													|
+| expired					| Number	| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间对应的时间戳，新增于`uni-id 3.1.1`|
 
 **示例代码**
 
@@ -1640,13 +1717,14 @@ export default {
 | 字段				| 类型	| 必填| 说明																													|
 | ---					| ---		| ---	| ---																														|
 | code				| Number| 是	|错误码，0表示成功																							|
-| message					| String| 是	|详细信息																												|
+| message			| String| 是	|详细信息																												|
 | openid			| String| -		|用户openid																											|
 | unionid			| String| -		|用户unionid，可以取到此值时返回																|
 | sessionKey	| String| -		|客户端为微信小程序时返回																				|
 | accessToken	| String| -		|客户端为APP时返回																							|
-| expiresIn		| String| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间，单位（秒）|
-| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken																					|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken													|
+| expired			| Number| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间对应的时间戳，新增于`uni-id 3.1.1`|
+| expiresIn		| Number| -		|客户端为APP时返回，accessToken 接口调用凭证过期时间，单位（秒）|
 
 ```js
 // 云函数代码
@@ -1663,8 +1741,6 @@ exports.main = async function(event,context) {
 
 用法：`uniID.bindWeixin(Object BindWeixinParams);`
 
-**weixinInfo 参数说明**
-
 **参数说明**
 
 | 字段		| 类型	| 必填| 说明																																																														|
@@ -1674,10 +1750,16 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| message	| String| 是	|详细信息					|
+| 字段				| 类型	| 必填| 说明																																								|
+| ---					| ---		| ---	| ---																																									|
+| code				| Number| 是	|错误码，0表示成功																																		|
+| message			| String| 是	|详细信息																																							|
+| openid			| String| 是	|用户openid																																						|
+| unionid			| String| 否	|用户unionid，能取到此参数时会返回																										|
+| sessionKey	| String| -		|客户端为微信小程序时返回，新增于`uni-id 3.1.1`																				|
+| accessToken	| String| -		|客户端为APP时返回，微信接口调用凭证，新增于`uni-id 3.1.1`														|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken，新增于`uni-id 3.1.1`													|
+| expired			| Number| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间对应的时间戳，新增于`uni-id 3.1.1`|
 
 ```js
 // 云函数代码
@@ -1727,7 +1809,7 @@ exports.main = async function(event,context) {
 
 ### 微信数据解密
 
-用法：`uniID.wxBizDataCrypt(Object params);`
+用法：`uniID.wxBizDataCrypt(Object WxBizDataCryptParams);`
 
 **参数说明**
 
@@ -1758,7 +1840,185 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 支付宝小程序
+## QQ@qq
+
+> 新增于3.3.0版本
+
+### QQ登录
+
+**目前仅支持app和小程序的qq登录**
+
+用法：`uniID.loginByQQ(Object LoginByQQParams);`
+
+**注意**
+
+- 需要在config.json内使用QQ登录的平台下配置appid和appsecret
+- uniId会自动判断客户端平台
+- 登录成功之后应持久化存储token、token过期时间，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token', res.result.token)`
+
+**APP QQ登录详细配置流程**
+
+1. 在manifest.json内配置QQ登录用appid
+2. **打包**并**使用**自定义基座（注意一定要在manifest.json填写QQ appid后再制作自定义基座），[自定义基座使用说明](https://ask.dcloud.net.cn/article/35115)
+3. 在uni-id的config.json内app-plus对应的QQ登录信息内配置appid和appsecret
+
+**参数说明**
+
+| 字段					| 类型		| 必填					| 说明																																												|
+| ---						| ---			| ---						| ---																																													|
+| code					| String	| 小程序登录必填|QQ小程序登录返回的code																																				|
+| accessToken		| String	| APP登录必填		|QQ APP登录返回的access_token																																	|
+| type					| String	| 否						| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册，新增于uni-id 3.3.4	|
+| myInviteCode	| String	| 否						|设置当前注册用户自己的邀请码，type为`register`时生效																					|
+| needPermission| Boolean	| 否						|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用								|
+| role					| Array		| 否						|设定用户角色，当前用户为新注册时生效																													|
+
+**响应参数**
+
+| 字段						| 类型		| 必填| 说明																			|
+| ---							| ---			| ---	| ---																				|
+| code						| Number	| 是	|错误码，0表示成功													|
+| message					| String	| 是	|详细信息																		|
+| uid							| String	| 是	|用户uid																		|
+| type						| String	| 是	|操作类型，`login`为登录、`register`为注册	|
+| openid					| String	| 是	|用户openid																	|
+| unionid					| String	| 否	|用户unionid，能取到此参数时会返回					|
+| token						| String	| 是	|登录成功之后返回的token信息								|
+| userInfo				| Object	| 否	|用户全部信息，`type`为`login`时返回				|
+| tokenExpired		| String	| 是	|token过期时间															|
+| mobileConfirmed	| Boolean	| 是	|是否已验证手机号														|
+| emailConfirmed	| Boolean	| 是	|是否已验证邮箱															|
+| sessionKey			| String	| -		|客户端为QQ小程序时返回											|
+| accessToken			| String	| -		|客户端为APP时返回，值等于传入的accessToken	|
+
+**示例代码**
+
+```js
+// 云函数login-by-qq代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.loginByQQ({
+    code: event.code,
+    accessToken: event.accessToken
+  })
+	return res
+}
+
+// 客户端代码
+// 代码较长建议直接参考插件市场示例项目：https://ext.dcloud.net.cn/plugin?id=2116
+export default {
+  data() {
+    return {
+      hasQQAuth: false
+    }
+  },
+  onLoad() {
+    uni.getProvider({
+      service: 'oauth',
+      success: (res) => {
+        if (res.provider.indexOf('qq') > -1) {
+          this.hasQQAuth = true
+        }
+      }
+    })
+  },
+  methods: {
+    getQQCode() {
+      return new Promise((resolve, reject) => {
+        uni.login({
+          provider: 'qq',
+          success(res) {
+            // #ifdef APP-PLUS
+            resolve({
+              accessToken: res.authResult.access_token,
+            })
+            // #endif
+            // #ifdef MP-QQ
+            resolve({
+              code: res.code,
+            })
+            // #endif
+          },
+          fail(err) {
+            reject(new Error('QQ登录失败'))
+          }
+        })
+      })
+    },
+    loginByQQ() {
+      this.getQQCode().then(({
+        code,
+        accessToken
+      } = {}) => {
+        return uniCloud.callFunction({
+          name: 'login-by-qq',
+          data: {
+            code,
+            accessToken
+          }
+        })
+      }).then((res) => {
+        uni.showModal({
+          showCancel: false,
+          content: JSON.stringify(res.result)
+        })
+        if (res.result.code === 0) {
+          uni.setStorageSync('uni_id_token', res.result.token)
+          uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
+        }
+      }).catch((e) => {
+        console.error(e)
+        uni.showModal({
+          showCancel: false,
+          content: 'QQ登录失败，请稍后再试'
+        })
+      })
+    },
+  }
+}
+```
+
+### 绑定QQ
+
+用法：`uniID.bindQQ(Object BindQQParams);`
+
+**参数说明**
+
+| 字段				| 类型	| 必填				| 说明													|
+| ---					| ---		| ---					| ---														|
+| uid					| String| 是					|用户Id，可以通过checkToken返回	|
+| code				| String| QQ小程序必填|QQ登录返回的code								|
+| accessToken	| String| APP必填			|QQ登录返回的access_token				|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明																		|
+| ---					| ---		| ---	| ---																			|
+| code				| Number| 是	|错误码，0表示成功												|
+| message			| String| 是	|详细信息																	|
+| openid			| String| 是	|用户openid																|
+| unionid			| String| 否	|用户unionid，能取到此参数时会返回				|
+| sessionKey	| String| -		|客户端为QQ小程序时返回										|
+| accessToken	| String| -		|客户端为APP时返回，值为传入的accessToken	|
+
+### 解绑QQ
+
+用法：`uniID.unbindQQ(String uid);`
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明													|
+| ---	| ---		| ---	| ---														|
+| uid	| String| 是	|用户Id，可以通过checkToken返回	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| message	| String| 是	|详细信息					|
+
+## 支付宝@alipay
 
 ### 支付宝登录
 
@@ -1769,21 +2029,22 @@ exports.main = async function(event,context) {
 - 需要在config.json内支付宝平台下配置appid和privateKey（应用私钥）
 - 登录成功之后应持久化存储token，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token', res.result.token)`
 
-**参数说明**
+**LoginByAlipayParams参数说明**
 
-| 字段				| 类型	| 必填| 说明																																																														|
-| ---					| ---		| ---	| ---																																																															|
-| code				| String| 是	|支付宝登录返回的code																																																							|
-| myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
-| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
+| 字段					| 类型		| 必填| 说明																																												|
+| ---						| ---			| ---	| ---																																													|
+| code					| String	| 是	|支付宝登录返回的code																																					|
+| type					| String	| 否	| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册，新增于uni-id 3.3.4	|
+| myInviteCode	| String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																					|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用								|
+| role					| Array		| 否	|设定用户角色，当前用户为新注册时生效																													|
 
 **响应参数**
 
 | 字段						| 类型		| 必填| 说明																		|
 | ---							| ---			| ---	| ---																			|
 | code						| Number	| 是	|错误码，0表示成功												|
-| message							| String	| 是	|详细信息																	|
+| message					| String	| 是	|详细信息																	|
 | uid							| String	| 是	|用户uid																	|
 | type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
 | openid					| String	| 是	|用户openid																|
@@ -1846,8 +2107,6 @@ exports.main = async function(event,context) {
 
 用法：`uniID.bindAlipay(Object BindAlipayParams);`
 
-**alipayInfo 参数说明**
-
 **参数说明**
 
 | 字段| 类型	| 必填| 说明													|
@@ -1908,7 +2167,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## Apple（苹果）
+## Apple（苹果）@apple
 
 ### Apple登录@loginbyapple
 
@@ -1919,7 +2178,7 @@ exports.main = async function(event,context) {
 - 需要在config.json内的 app-plus > oauth > apple 下配置 bundleId
 - 登录成功之后应持久化存储token，键值为：uni_id_token，`uni.setStorageSync('uni_id_token', res.result.token)`
 
-**参数说明**
+**LoginByAppleParams参数说明**
 
 | 字段				| 类型	| 必填| 说明																																						   						|
 | ---					| ---		| ---	| ---																																     	     			|
@@ -2498,7 +2757,97 @@ exports.main = async function(event,context) {
 }
 ```
 
-# 数据库结构
+## 授权、禁止用户在特定客户端登录@authorize-app
+
+> 新增于3.3.0版本
+
+用户授权或者取消授权用户登录某客户端。
+
+需要注意的是客户端APPID信息是由端上传上来的，并非完全可信，尽量在入口处进行校验。例：
+
+```js
+exports.main = async function(event, context){
+  if(context.APPID !== '__UNI__xxx1') {
+    throw new Error('非法访问')
+  }
+}
+```
+
+### 设置允许登录的客户端
+
+用法：`uniID.setAuthorizedAppLogin(Object SetAuthorizedAppLoginParams);`
+
+覆盖原有dcloud_appid字段，设置指定用户允许登录的客户端
+
+**参数说明**
+
+| 字段						| 类型	| 必填| 说明																	|
+| ---							| ---		| ---	| ---																		|
+| uid							| String| 是	|用户Id																	|
+| dcloudAppidList	| Array	| 是	|指定允许登录的客户端的DCloud Appid列表	|
+
+```js
+const res = await uniID.setAuthorizedAppLogin({
+  uid: 'xxxx',
+  dcloudAppidList: ['__UNI__xxx1', '__UNI__xxx2'] // 允许登录的DCloud Appid列表
+})
+```
+
+### 新增允许登录的客户端
+
+用法：`uniID.authorizeAppLogin(Object AuthorizeAppLoginParams);`
+
+在已有允许登录的客户端列表中插入新的客户端的DCloud Appid
+
+**参数说明**
+
+| 字段				| 类型	| 必填| 说明															|
+| ---					| ---		| ---	| ---																|
+| uid					| String| 是	|用户Id															|
+| dcloudAppid	| String| 是	|指定允许登录的客户端的DCloud Appid	|
+
+```js
+const res = await uniID.authorizeAppLogin({
+  uid: 'xxxx',
+  dcloudAppid: '__UNI__xxx1' // 允许登录的客户端的DCloud Appid
+})
+```
+
+### 移除允许登录的客户端
+
+用法：`uniID.forbidAppLogin(Object ForbidAppLoginParams);`
+
+从已有允许登录的客户端列表中移除一个客户端的DCloud Appid，禁止后用户不可在特定客户端登录
+
+**参数说明**
+
+| 字段				| 类型	| 必填| 说明															|
+| ---					| ---		| ---	| ---																|
+| uid					| String| 是	|用户Id															|
+| dcloudAppid	| String| 是	|指定禁止登录的客户端的DCloud Appid	|
+
+```js
+const res = await uniID.forbidAppLogin({
+  uid: 'xxxx',
+  dcloudAppid: '__UNI__xxx1' // 禁止登录的客户端的DCloud Appid
+})
+```
+
+## 调试功能
+
+> 此类目下接口仅可用于开发调试，不要在生产环境使用
+
+### 获取当前uni-id实例使用的配置内容
+
+> 新增于3.3.0版本
+
+由于uni-id提供了多种传入配置的方式`config.json、uniID.createInstance、uniID.init（已不推荐使用）`，开发者在使用插件作者或者其他人开发的功能时容易搞错到底在哪进行配置。可以使用此接口查看实际使用的配置文件内容，方便开发调试
+
+用法：`uniID.dev.getConfig()`
+
+此接口会返回uni-id实例使用的配置内容。
+
+# 数据库结构@db-schema
 
 `uni-id`的所有数据表，都在[opendb](https://gitee.com/dcloud/opendb/)规范中。
 
@@ -2586,6 +2935,12 @@ exports.main = async function(event,context) {
 }
 ```
 
+### 用户表索引@uni-id-users-indexes
+
+目前opendb内提供的uni-id-users表包含完整的索引，数据库在索引量多且频繁更新的情况下可能会出现写入缓慢的情况，因此推荐开发者在使用uni-id-users表时可以适当删除部分没有用到的索引。
+
+例：项目内只使用了微信登录，不使用其他登录方式，可以只保留`wx_unionid、wx_openid.mp-weixin、wx_openid.app-plus`这些账号相关的索引，删除其他账号的索引
+
 ## 验证码表
 
 表名：`opendb-verify-codes` 
@@ -2646,9 +3001,46 @@ exports.main = async function(event,context) {
 - 任务表：uni-id-task
 - 任务日志表：uni-id-task-log
 
-# 错误码
+# 错误码@errcode
 
-自`1.1.0`版本使用此错误码规范
+**自`3.1.1`版本起使用此错误码规范**
+
+自`3.1.1`版本起uni-id使用errCode作为错误码，errMsg作为错误信息，为兼容旧版本，code、message字段仍保留。
+
+errCode和errMsg对照表如下：
+
+|错误码（errCode）												|详细信息（errMsg）				|说明																																|
+|---																			|---											|---																																|
+|0																				|成功											|操作成功																														|
+|uni-id-account-banned										|账号已禁用								|账号已禁用																													|
+|uni-id-user-not-exist										|用户不存在								|用户不存在																													|
+|uni-id-multi-user-matched								|匹配到多个账号						|匹配到多个账号																											|
+|uni-id-user-info-error										|用户信息不正确						|用户信息不正确																											|
+|uni-id-user-account-conflict							|用户账号冲突							|用户账号冲突（例如同时授权拥有同一个手机号的司机与乘客登录管理端）	|
+|uni-id-password-error										|密码错误									|密码错误																														|
+|uni-id-password-error-exceed-limit				|密码错误次数过多					|密码错误次数过多																										|
+|uni-id-account-already-registed					|此{type}已注册						|此账号已注册、包括手机号、微信等																		|
+|uni-id-account-not-registed							|此{type}尚未注册					|此账号尚未注册、包括手机号、微信等																	|
+|uni-id-invalid-invite-code								|邀请码无效								|邀请码无效																													|
+|uni-id-get-third-party-account-failed		|获取{account}失败				|获取三方平台账号失败																								|
+|uni-id-param-required										|{param}不可为空					|字段不可为空																												|
+|uni-id-check-device-feature-failed				|设备特征校验未通过				|设备特征校验未通过																									|
+|uni-id-token-not-exist										|云端已不包含此token			|云端已不包含此token																								|
+|uni-id-token-expired											|token已过期							|token已过期																												|
+|uni-id-check-token-failed								|token校验未通过					|token校验未通过																										|
+|uni-id-invalid-old-password							|旧密码错误								|旧密码错误																													|
+|uni-id-param-error												|{param}参数错误，{reason}|参数错误																														|
+|uni-id-invalid-verify-code								|验证码错误或已失效				|验证码错误或已失效																									|
+|uni-id-send-sms-code-failed							|验证码发送失败						|验证码发送失败																											|
+|uni-id-account-already-bound							|此{type}已绑定						|此账号已绑定，包括手机号、微信等																		|
+|uni-id-unbind-failed											|解绑失败									|解绑失败																														|
+|uni-id-set-invite-code-failed						|邀请码设置失败						|邀请码设置失败																											|
+|uni-id-modify-invite-code-is-not-allowed	|邀请码不可修改						|邀请码不可修改																											|
+|uni-id-database-operation-failed					|数据库读写异常						|数据库读写异常																											|
+|uni-id-role-not-exist										|角色不存在								|角色不存在																													|
+|uni-id-permission-not-exist							|权限不存在								|权限不存在																													|
+
+**自`1.1.0`版本使用此错误码规范**
 
 |模块											|模块码	|错误代码	|错误信息																									|
 |:-:											|:-:		|:-:			|:-:																											|
@@ -2873,6 +3265,119 @@ uni-id会自动加载custom-token.js进行处理，在所有生成token的操作
 - 使用custom-token时自行调用createToken接口会变为异步操作，需使用`await uniID.createToken(...)`
 - 不要删除原始token内的字段
 
+## 隔离不同端用户@isolate-user
+
+一个完整的项目，通常需要客户端、管理端等，但是不同端的用户在同一服务空间下使用uni-id会比较难处理。比如不同端需要不同的配置文件、登录接口需要开发者自行隔离开。自`uni-id 3.3.0`起，支持对不同端用户进行隔离，此功能在此版本是直接开启的。
+
+uni-id 3.3.0版本起用户注册时会自动在用户表的记录内标记为注册端用户，如果没有授权登录其他端的话是不可以在其他端登录的
+
+如何授权登录其他端请参考：[授权、禁止用户在特定客户端登录](uniCloud/uni-id?id=authorize-app)
+
+需要注意的是客户端APPID信息是由端上传上来的，并非完全可信，尽量在入口处进行校验。例：
+
+```js
+exports.main = async function(event, context){
+  if(context.APPID !== '__UNI__xxx1') {
+    throw new Error('应用ID非法')
+  }
+}
+```
+
+**DCloud Appid是一个很重要的配置，如无必要请勿随意更换。**
+
+> 不同端用户数据通过用户表的dcloud_appid字段隔离，同一个手机号、微信号也可以同时注册管理端和用户端，绑定账号同理。
+
+**注意**
+
+- uni-id会自动在用户表每条用户记录插入`dcloud_appid`字段（此字段是一个数组，标识此用户可以在哪些端登录）。
+- 为兼容旧版本，针对没有dcloud_appid字段的用户，允许登录任意端。
+- 如果用户数据库记录中`dcloud_appid`字段是一个空数组，表示当前用户不能在任何客户端登录
+- 已有dcloud_appid的用户，如果使用相同的用户标识（用户名、邮箱、手机、微信等）+ 不同的DCloud Appid登录会被判定为不同的用户，如果此时数据库没有对应的记录，会报用户不存在的错误
+
+## 隔离不同端配置@isolate-config
+
+> `uni-id 3.3.0`及以上版本
+
+uni-id的config.json支持配置为数组，每项都是一个完整的配置，对不同的配置使用`dcloudAppid`字段进行区分（**此字段与项目内的manifest.json里面的DCloud AppId一致**），uni-id会自动根据客户端的appid来判断该使用哪套配置。如果使用云函数url化请参考：[云函数Url化时使用](uniCloud/uni-id?id=url)
+
+需要注意的是客户端APPID信息是由端上传上来的，并非完全可信，尽量在入口处进行校验。例：
+
+```js
+exports.main = async function(event, context){
+  if(context.APPID !== '__UNI__xxx1') {
+    throw new Error('应用ID非法')
+  }
+}
+```
+
+**示例**
+
+> 数组每一项都是一个完整的配置文件，全部选项请参考：[uni-id 配置](uniCloud/uni-id?id=config)
+
+**注意：如果允许同一账号在不同端使用相同的账号+密码登录需要将不同端的passwordSecret设置成一样的**
+
+```js
+[{
+  "dcloudAppid": "__UNI__xxxx1", // 务必替换为对应项目manifest.json内的DCloud Appid
+  "isDefaultConfig": true, // 默认配置标记，未匹配到dcloudAppid的情况下使用默认配置
+  "passwordSecret": "passwordSecret-demo",
+	"tokenSecret": "tokenSecret-demo",
+	"tokenExpiresIn": 7200,
+	"tokenExpiresThreshold": 600,
+  "app-plus": {
+  	"tokenExpiresIn": 2592000,
+  	"oauth": {
+  		"weixin": {
+  			"appid": "weixin appid",
+  			"appsecret": "weixin appsecret"
+  		}
+  	}
+  }
+}, {
+  "dcloudAppid": "__UNI__xxxx2", // 务必替换为对应项目manifest.json内的DCloud Appid
+  "passwordSecret": "passwordSecret-demo",
+	"tokenSecret": "tokenSecret-demo",
+	"tokenExpiresIn": 7200,
+	"tokenExpiresThreshold": 600,
+  "app-plus": {
+  	"tokenExpiresIn": 2592000,
+  	"oauth": {
+  		"weixin": {
+  			"appid": "weixin appid",
+  			"appsecret": "weixin appsecret"
+  		}
+  	}
+  }
+}]
+```
+
+## 云函数Url化时使用@url
+
+云函数url化时uni-id无法自行获取客户端相关信息，需要开发者自行创建uniID实例并传入相关信息，以下为一个简单示例
+
+```js
+// 客户端代码示例
+uni.request({
+  url: 'https://xxx.xxx/xxx?appid=your_appid&platform=your_platform&deviceId=your_deviceId'
+})
+
+// 云函数代码示例
+const uniID = require('uni-id')
+exports.main = async function(event, context) {
+  const {
+    appid,
+    platform
+  } = event.queryStringParameters // 不同类型的请求获取参数的方式略有差异，具体如何取参数请参考：https://uniapp.dcloud.net.cn/uniCloud/http
+  context.APPID = appid
+  context.PLATFORM = platform
+  const uniIDIns = uniID.createInstance({
+    context
+  })
+  // uniIDIns.login() 使用uniIDIns来调用uni-id相关接口
+}
+```
+
+
 # 迁移指南@migration
 
 ## 自1.x.x版本升级到2.x.x@m1to2
@@ -2909,7 +3414,104 @@ uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到
 从插件市场导入支持uni_modules的uni-id，会自动安装依赖的uni-config-center到uni_modules内。如果此前并没有使用uni-config-center可以直接将uni-id的config.json移至`uni-config-center/uni-id/config.json`即可（可以参照插件市场的uni-id示例项目）
 
 - uni-id会优先使用uni-config-center内添加的配置
-- 如果批量上传后报“请在公用模块uni-id的config.json或init方法中内添加配置项”，请重新上传一次`uni-config-center`
+- 如果批量上传后报“请在公用模块uni-id的config.json或init方法中内添加配置项”，请重新上传一次`uni-id`
+
+**uni-id配置优先级**
+
+1. `uniID.init`、`uniID.createInstance`传入的配置（此配置不会对clientDB依赖的uni-id生效，不推荐使用）
+2. uni-config-center内配置的`uni-id/config.json`（推荐使用的配置方式）
+3. uni-id插件下配置的config.json（已不推荐使用的配置方式）
+
+以上三个配置不会进行合并，优先级高的先生效
+
+#### 忽略用户名邮箱大小写@case-sensitive
+
+> uni-id 3.1.0及以上版本
+
+uni-id 3.1.0版本主要有以下两个调整
+
+1. 自此版本起会对所有接口中的用户名、邮箱、密码进行前后去空格。
+
+2. 此版本之前uni-id并未忽略用户名及邮箱的大小写。这样导致了一些问题，比如用户在手机上登录不小心就会使用首字母大写的用户名或邮箱，这样就会登录失败，影响用户体验。很多应用/网站的登录都是忽略大小写的，为此uni-id在3.1.0版本起调整为默认忽略用户名、邮箱的大小写。实现方式为将用户名、邮箱均存储为小写，用户输入用户名邮箱时也转化为小写进行匹配
+
+**注意**
+
+- 此调整兼容旧版本，以登录接口为例，优先匹配用户输入用户名对应的账号，如果不存在则匹配全小写用户名对应的账号（uni-id内部进行处理实际不会增加数据库读写次数）
+- 新注册用户会将用户名/邮箱存储为全小写格式，老用户可能还存在包含大写字母的邮箱及用户名
+
+#### 补齐用户dcloud_appid字段@makeup-dcloud-appid
+
+此调整详情见：[隔离不同端用户](uniCloud/uni-id.md?id=isolate-user)
+
+> uni-id3.3.0以下版本升级到3.3.0及以上版本时，需要参照本章节补齐用户数据
+
+uni-id在3.3.0提供了根据客户端appid（项目manifest.json内配置的DCloud Appid）隔离不同用户的功能，旧版本的uni-id在注册用户时并未将当前客户端的appid存储在用户的记录内，更新到新版后这些没有dcloud_appid字段的用户和之前一样可以登录所有端。开发者使用云函数本地运行可以自行对用户数据进行修补，为用户创建dcloud_appid字段
+
+**更新后用户将只允许登录与自己数据库记录内匹配的端**
+
+云函数示例代码如下：
+
+**注意：如果要更新的记录很多可能会超时失败，此时无需重试等待数据库自行完成更新即可**
+
+**如果仅有一端，将所有用户的数据更新为同一个dcloud_appid即可，例：**
+
+```js
+exports.main = async function() {
+  const db = uniCloud.database()
+  const userCollection = db.collection('uni-id-users')
+  const res = await userCollection.where({
+    dcloud_appid: db.command.exists(false) // 更新所有不存在dcloud_appid字段的用户
+  }).update({
+    dcloud_appid: ['你项目内manifest.json里面的DCloud Appid，__UNI_xxxx形式'] // 注意这里是个数组，务必正确填写
+  })
+  return res
+}
+```
+
+**如果之前就有区分不同端的用户，可以将自己区分用户的条件加上再进行更新，例：**
+
+```js
+// 更新教师端用户的云函数
+exports.main = async function() {
+  const db = uniCloud.database()
+  const userCollection = db.collection('uni-id-users')
+  const res = await userCollection.where({
+    user_type: 'teacher', // 教师端用户
+    dcloud_appid: db.command.exists(false)
+  }).update({
+    dcloud_appid: ['教师端项目内manifest.json里面的DCloud Appid，__UNI_xxxx形式'] // 注意这里是个数组，务必正确填写
+  })
+  return res
+}
+
+// 更新学生端用户的云函数
+exports.main = async function() {
+  const db = uniCloud.database()
+  const userCollection = db.collection('uni-id-users')
+  const res = await userCollection.where({
+    user_type: 'student', // 学生端用户
+    dcloud_appid: db.command.exists(false)
+  }).update({
+    dcloud_appid: ['学生端项目内manifest.json里面的DCloud Appid，__UNI_xxxx形式'] // 注意这里是个数组，务必正确填写
+  })
+  return res
+}
+```
+
+**如果允许用户在多个端登录需要将多端的DCloud Appid都传进来，例：**
+
+```js
+exports.main = async function() {
+  const db = uniCloud.database()
+  const userCollection = db.collection('uni-id-users')
+  const res = await userCollection.where({
+    dcloud_appid: db.command.exists(false) // 更新所有不存在dcloud_appid字段的用户
+  }).update({
+    dcloud_appid: ['DCloud Appid1','DCloud Appid1'] // 注意这里是个数组，务必正确填写
+  })
+  return res
+}
+```
 
 # FAQ
 
@@ -2917,13 +3519,10 @@ uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到
   + 每次登录成功都会新增一个token，并且检查所有token的有效期删除过期token。正常情况下客户端应该判断持久化存储的token是否还在有效期内，如果还有效就直接进入应用，不再执行登录。这样相当于用户的每个设备上都存在一个有效期内的token，云端也是。
 
 - 复制token到其他环境校验不通过
-  + uni-id内会校验客户端ua，如果是在本地调试可以在云函数内修改`context.CLIENTUA`为生成token的设备ua，切记上线删除此逻辑。如果不需要设备和token绑定，可以在config内配置`bindTokenToDevice: false`来关闭绑定
+  + uni-id内会校验客户端ua，如果是在本地调试可以在云函数内修改`context.CLIENTUA`为生成token的设备ua，切记上线删除此逻辑。如果不需要设备和token绑定，可以在config内配置`bindTokenToDevice: false`来关闭绑定，`uni-id 3.0.12`及以上版本bindTokenToDevice默认值调整为了false
 
 - username、email、mobile三个字段
   + 三个字段均可能为空，但是建议限制一下插入数据库三个字段的格式，比如username不应是邮箱格式或手机号格式，因为登录时可以选择使用username或mobile或email+密码的方式
 
 - 关于邀请码
   + 目前仅手机号+验证码的注册方式支持填写邀请码
-
-- 区分前后端用户
-  + 不支持分表，推荐给用户添加标记来区分前后端用户

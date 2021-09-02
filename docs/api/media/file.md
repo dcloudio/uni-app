@@ -8,9 +8,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|√`(HBuilder X2.9.9+)`|x`(可使用wx.chooseMessageFile)`|x|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|√`(HBuilder X2.9.9+)`|x`(可使用wx.chooseMessageFile)`|x|x|x|x|x|
 
 - App端如需选择非媒体文件，可在插件市场搜索[文件选择](https://ext.dcloud.net.cn/search?q=文件选择)，其中Android端可以使用Native.js，无需原生插件，而iOS端需要原生插件。
 - App端如果想选择下载到`_doc`、`_downloads`、`_documents`等plus.io控制的目录下的文件，可通过[plus.io Api](https://www.html5plus.org/doc/zh_cn/io.html)，自己做选择框。
@@ -20,7 +20,7 @@
 
 |参数名|类型|默认值|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
-|count|Number|100|否|最多可以选择的图片张数|见下方说明|
+|count|Number|100|否|最多可以选择的文件数量|见下方说明|
 |type|String|'all'|否|所选的文件的类型|见下方说明|
 |extension|Array&lt;String&gt;||否|根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。|见下方说明|
 |sourceType|Array&lt;String&gt;|['album','camera']|否|（仅在type为`image`或`video`时可用）`album` 从相册选图，`camera` 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项||
@@ -54,8 +54,8 @@
 
 |参数|类型|说明|
 |:-|:-|:-|
-|tempFilePaths|Array&lt;String&gt;|图片的本地文件路径列表|
-|tempFiles|Array&lt;Object&gt;、Array&lt;File&gt;|图片的本地文件列表，每一项是一个 File 对象|
+|tempFilePaths|Array&lt;String&gt;|文件的本地文件路径列表|
+|tempFiles|Array&lt;Object&gt;、Array&lt;File&gt;|文件的本地文件列表，每一项是一个 File 对象|
 
 **File 对象结构如下**
 
@@ -94,7 +94,7 @@ uni.chooseFile({
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√`(基础库2.5.0+)`|x|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√`(基础库2.5.0+)`|x|x|x|√`(基础库1.18.0+)`|x|
 

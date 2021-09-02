@@ -147,6 +147,7 @@
 |mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
+|mp-kuaishou|Object||设置编译到 mp-kuaishou 平台的特定样式|快手小程序|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)||
 |renderingMode|String| |同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层|微信小程序|
 |leftWindow|Boolean|true|当存在 leftWindow 时，默认是否显示 leftWindow|H5|
@@ -155,7 +156,7 @@
 |rpxCalcMaxDeviceWidth|Number|960|rpx 计算所支持的最大设备宽度，单位 px|App、H5（2.8.12+）|
 |rpxCalcBaseDeviceWidth|Number|375|rpx 计算使用的基准设备宽度，设备实际宽度超出 rpx 计算所支持的最大设备宽度时将按基准宽度计算，单位 px|App、H5（2.8.12+）|
 |rpxCalcIncludeWidth|Number|750|rpx 计算特殊处理的值，始终按实际的设备宽度计算，单位 rpx|App、H5（2.8.12+）|
-|maxWidth|Number|1190|单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选)|H5（2.9.9+）|
+|maxWidth|Number||单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选)|H5（2.9.9+）|
 
 **注意**
 
@@ -179,6 +180,27 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 
 **注意**
 - 目前 style 节点仅支持配置 width，height 等 css 样式相关属性
+- 如果需求当存在 topwindow 时，自动隐藏页面的 navigationBar，根据需求不同在`App.vue`中配置如下 css：
+  - 只需要隐藏某个的页面 navigationBar
+	```html
+	<!-- 隐藏路径为 pages/component/view/view 页面的 navigationBar -->
+	.uni-app--showtopwindow [data-page="pages/component/view/view"] uni-page-head {
+		display: none;
+	}
+	```
+  - 需要隐藏大部分页面的 navigationBar，显示某个页面的 navigationBar 
+	```html
+	<!-- 隐藏所有页面的 navigationBar -->
+	.uni-app--showtopwindow uni-page-head {
+		display: none;
+	}
+	
+	<!-- 显示路径为 pages/component/view/view 页面的 navigationBar -->
+	.uni-app--showtopwindow [data-page="pages/component/view/view"] uni-page-head {
+		display: block;
+	}
+	```
+
 
 #### matchMedia
 
@@ -316,11 +338,12 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 |mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
+|mp-kuaishou|Object||设置编译到 mp-kuaishou 平台的特定样式|快手小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
 |leftWindow|Boolean|true|当存在 leftWindow时，当前页面是否显示 leftWindow|H5|
 |topWindow|Boolean|true|当存在 topWindow 时，当前页面是否显示 topWindow|H5|
 |rightWindow|Boolean|true|当存在 rightWindow时，当前页面是否显示 rightWindow|H5|
-|maxWidth|Number|1190|单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选)|H5（2.9.9+）|
+|maxWidth|Number||单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选)|H5（2.9.9+）|
 
 **注意**
 
@@ -376,7 +399,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 - 前端组件在渲染速度上不如原生导航栏，原生导航可以在动画期间渲染，保证动画期间不白屏，但使用前端导航栏，在新窗体进入的动画期间可能会整页白屏，越低端的手机越明显。
 - 以上讨论的是前端自定义导航栏，但在App侧，原生导航栏也提供了比小程序导航更丰富的自定义性
 	* titleNView：给原生导航栏提供更多配置，包括自定义按钮、滚动渐变效果、搜索框等，详见[titleNView](/collocation/pages?id=app-titleNView)
-	* subNView：使用nvue原生渲染，所有布局自己开发，具备一切自定义灵活度。详见[subNVue](/collocation/pages?id=app-subNVues)
+	* subNVue：使用nvue原生渲染，所有布局自己开发，具备一切自定义灵活度。详见[subNVue](/collocation/pages?id=app-subNVues)
 - 页面禁用原生导航栏后，想要改变状态栏的前景字体样式，仍可设置页面的 navigationBarTextStyle 属性（只能设置为 black或white）。如果想单独设置状态栏颜色，App端可使用[plus.navigator.setStatusBarStyle](http://www.html5plus.org/doc/zh_cn/navigator.html#plus.navigator.setStatusBarStyle)设置。注意部分低端Android手机（4.4）自身不支持设置状态栏前景色。
  
 鉴于以上问题，在原生导航能解决业务需求的情况下，尽量使用原生导航。甚至有时需要牺牲一些不是很重要的需求。在App和H5下，uni-app提供了灵活的处理方案：[titleNView](/collocation/pages?id=app-titleNView)、[subNVue](/collocation/pages?id=app-subNVues)、或整页使用nvue。但在小程序下，因为其自身的限制，没有太好的方案。有必要的话，也可以用条件编译分端处理。
@@ -416,7 +439,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 |homeButton|Boolean|false|标题栏控件是否显示Home按钮||
 |autoBackButton|Boolean|true|标题栏控件是否显示左侧返回按钮|2.6.3|
 |backButton|Object||返回按钮的样式，详见：[backButton](/collocation/pages?id=app-titleNView-backButtonStyles)|2.6.3|
-|backgroundImage|String||支持以下类型： 背景图片路径 - 如"./img/t.png"，仅支持本地文件路径， 相对路径，相对于当前页面的host位置，根据实际标题栏宽高拉伸绘制； 渐变色 - 仅支持线性渐变，两种颜色的渐变，如“linear-gradient(to top, #a80077, #66ff00)”， 其中第一个参数为渐变方向，可取值： "to right"表示从左向右渐变， “to left"表示从右向左渐变， “to bottom"表示从上到下渐变， “to top"表示从下到上渐变， “to bottom right"表示从左上角到右下角， “to top left"表示从右下角到左上角|2.6.3|
+|backgroundImage|String||支持以下类型： 背景图片路径 - 如"/static/img.png"，仅支持本地文件绝对路径，根据实际标题栏宽高拉伸绘制； 渐变色 - 仅支持线性渐变，两种颜色的渐变，如“linear-gradient(to top, #a80077, #66ff00)”， 其中第一个参数为渐变方向，可取值： "to right"表示从左向右渐变， “to left"表示从右向左渐变， “to bottom"表示从上到下渐变， “to top"表示从下到上渐变， “to bottom right"表示从左上角到右下角， “to top left"表示从右下角到左上角|2.6.3|
 |backgroundRepeat|String||仅在backgroundImage设置为图片路径时有效。 可取值： "repeat" - 背景图片在垂直方向和水平方向平铺； "repeat-x" - 背景图片在水平方向平铺，垂直方向拉伸； “repeat-y” - 背景图片在垂直方向平铺，水平方向拉伸； “no-repeat” - 背景图片在垂直方向和水平方向都拉伸。 默认使用 “no-repeat"|2.6.3|
 |titleAlign|String|"auto"|可取值： "center"-居中对齐； "left"-居左对齐； "auto"-根据平台自动选择（Android平台居左对齐，iOS平台居中对齐）|2.6.3|
 |blurEffect|String|"none"|此效果将会高斯模糊显示标题栏后的内容，仅在type为"transparent"或"float"时有效。 可取值： "dark" - 暗风格模糊，对应iOS原生UIBlurEffectStyleDark效果； "extralight" - 高亮风格模糊，对应iOS原生UIBlurEffectStyleExtraLight效果； "light" - 亮风格模糊，对应iOS原生UIBlurEffectStyleLight效果； "none" - 无模糊效果。 注意：使用模糊效果时应避免设置背景颜色，设置背景颜色可能覆盖模糊效果。|2.4.3|
@@ -932,8 +955,8 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |:-|:-|:-|:-|
 |pagePath|String|是|页面路径，必须在 pages 中先定义|
 |text|String|是|tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标|
-|iconPath|String|否|图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 postion 为 top 时，此参数无效，不支持网络图片，不支持字体图标|
-|selectedIconPath|String|否|选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 postion 为 top 时，此参数无效|
+|iconPath|String|否|图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 position 为 top 时，此参数无效，不支持网络图片，不支持字体图标|
+|selectedIconPath|String|否|选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 position 为 top 时，此参数无效|
 
 **midButton 属性说明**
 
@@ -950,7 +973,7 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 
 #### **tabbar常见问题** @tips-tabbar
 - tabbar 的 js api 见[接口-界面-tabbar](https://uniapp.dcloud.io/api/ui/tabbar)，可实现动态显示隐藏（如弹出层无法覆盖tabbar）、内容修改（如国际化）、item加角标等功能。hello uni-app中也有示例。
-- tabbar 的 item 点击事件见[页面生命周期的onTabItemTap](https://uniapp.dcloud.io/frame?id=%E9%A1%B5%E9%9D%A2%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)。
+- tabbar 的 item 点击事件见[页面生命周期的onTabItemTap](https://uniapp.dcloud.io/collocation/frame/lifecycle?id=%E9%A1%B5%E9%9D%A2%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)。
 - 代码跳转到 tabbar 页面，api只能使用[uni.switchTab](https://uniapp.dcloud.io/api/router?id=switchtab)，不能使用uni.navigateTo、uni.redirectTo；使用navigator组件跳转时必须设置[open-type="switchTab"](https://uniapp.dcloud.io/component/navigator)
 - tabbar 的默认高度，在不同平台不一样。App端的默认高度在HBuilderX 2.3.4起从56px调整为50px，与H5端统一。开发者也可以自行设定高度，调回56px。[详见](https://uniapp.dcloud.io/frame?id=%e5%9b%ba%e5%ae%9a%e5%80%bc)
 - tabbar 在H5端是div模拟的，属于前端屏幕窗口的一部分，如果要使用bottom居底定位方式，应该使用css变量`--window-bottom`，比如悬浮在tabbar上方10px的按钮，样式如下`bottom: calc(var(--window-bottom) + 10px)`
@@ -1057,9 +1080,9 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 **注意：** 
 
 - ```subPackages``` 里的pages的路径是 ``root`` 下的相对路径，不是全路径。
-- 微信小程序每个分包的大小是2M，总体积一共不能超过16M。
+- 微信小程序每个分包的大小是2M，总体积一共不能超过20M。
 - 百度小程序每个分包的大小是2M，总体积一共不能超过8M。
-- 支付宝小程序每个分包的大小是2M，总体积一共不能超过4M。
+- 支付宝小程序每个分包的大小是2M，总体积一共不能超过8M。
 - QQ小程序每个分包的大小是2M，总体积一共不能超过24M。
 - 字节小程序每个分包的大小是2M，总体积一共不能超过16M（字节小程序基础库 1.88.0 及以上版本开始支持，字节小程序开发者工具请使用大于等于 2.0.6 且小于 3.0.0 的版本）。
 - 分包下支持独立的 ```static``` 目录，用来对静态资源进行分包。

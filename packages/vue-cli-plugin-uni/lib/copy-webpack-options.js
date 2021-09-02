@@ -70,6 +70,15 @@ function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
       copyOption && copyOptions.push(copyOption)
     })
   })
+  if (process.env.UNI_PLATFORM === 'app-plus') {
+    copyOptions.push({
+      from: path.resolve(process.env.UNI_INPUT_DIR, 'android*.json'),
+      to: '[name].[ext]',
+      globOptions: {
+        ignored: require('./util').getWatchOptions().ignored
+      }
+    })
+  }
   return copyOptions
 }
 

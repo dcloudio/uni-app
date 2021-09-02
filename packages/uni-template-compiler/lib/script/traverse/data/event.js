@@ -206,6 +206,22 @@ function isValuePath (path) {
   return path.key !== 'key' && path.key !== 'id' && (path.key !== 'property' || path.parent.computed) && !(path.key === 'value' && path.parentPath.parentPath.isObjectPattern()) && !(path.key === 'left' && path.parentPath.parentPath.parentPath.isObjectPattern())
 }
 
+/**
+ * 判断 v-for 中是否包含复杂表达式：数组、对象、方法
+ */
+const isSafeScoped = (state) => {
+  const scopedArray = state.scoped
+  for (let index = 0; index < scopedArray.length; index++) {
+    const scoped = scopedArray[index]
+    const arrayExtra = scoped.forExtra[0].elements[0].value
+    // 简易判断
+    if (typeof arrayExtra === 'string' && (arrayExtra.startsWith('[') || arrayExtra.startsWith('{') || /\(.*\)/.test(arrayExtra))) {
+      return false
+    }
+  }
+  return true
+}
+
 function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false, tagName, ret) {
   const key = keyPath.node
   let type = key.value || key.name || ''
@@ -304,18 +320,9 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
           }
         }
 
-        // 判断是否是复杂表达式  数组  或  对象
-        const isNotDynamicExpression = (state) => {
-          if (!(state.scoped[0])) {
-            return true
-          }
-          const value = state.scoped[0].forExtra[0].elements[0].value
-          return !(typeof value === 'string' && (value.startsWith('[') || value.startsWith('}')))
-        }
-
-        // 如果v-for遍历的值为 数组、对象 则进入复杂表达式
-        if (isNotDynamicExpression(state)) {
-          anonymous && funcPath.traverse({
+        // 如果 v-for 遍历的值为 数组、对象、方法 则进入底部匿名表达式处理
+        if (anonymous && isSafeScoped(state)) {
+          funcPath.traverse({
             noScope: true,
             MemberExpression (path) {
               if (path.node.object.name === '$event' && path.node.property.name ===
@@ -513,8 +520,7 @@ module.exports = function processEvent (paths, path, state, isComponent, tagName
     ret.push(
       t.objectProperty(
         t.stringLiteral(ATTR_DATA_EVENT_PARAMS),
-        // 直接使用对象格式微信小程序编译会报错
-        t.stringLiteral(`{{({${params.join(',')}})}}`)
+        t.objectExpression(params.map(param => t.objectProperty(t.identifier(param), t.identifier(param), false, true)))
       )
     )
   }

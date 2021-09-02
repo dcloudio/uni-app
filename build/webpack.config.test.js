@@ -16,6 +16,7 @@ const config = service.resolveWebpackConfig()
 
 config.resolve.alias = {
   '@': resolve('src'),
+  '@dcloudio': resolve('packages'),
   'uni-core': resolve('src/core'),
   'uni-view': resolve('src/core/view'),
   'uni-service': resolve('src/core/service'),

@@ -4616,7 +4616,7 @@ function initProps (vm, propsOptions) {
       defineReactive$$1(props, key, value, function () {
         if (!isRoot && !isUpdatingChildComponent) {
           {
-            if(vm.mpHost === 'mp-baidu'){//百度 observer 在 setData callback 之后触发，直接忽略该 warn
+            if(vm.mpHost === 'mp-baidu' || vm.mpHost === 'mp-kuaishou'){//百度、快手 observer 在 setData callback 之后触发，直接忽略该 warn
                 return
             }
             //fixed by xxxxxx __next_tick_pending,uni://form-field 时不告警
@@ -5467,7 +5467,8 @@ function _diff(current, pre, path, result) {
                 var currentType = type(currentValue);
                 var preType = type(preValue);
                 if (currentType != ARRAYTYPE && currentType != OBJECTTYPE) {
-                    if (currentValue != pre[key]) {
+                    // NOTE 此处将 != 修改为 !==。涉及地方太多恐怕测试不到，如果出现数据对比问题，将其修改回来。
+                    if (currentValue !== pre[key]) {
                         setResult(result, (path == '' ? '' : path + ".") + key, currentValue);
                     }
                 } else if (currentType == ARRAYTYPE) {
@@ -5816,7 +5817,7 @@ function internalMixin(Vue) {
     Vue.util.warn(("Error in " + info + ": \"" + (err.toString()) + "\""), vm);
     console.error(err);
     /* eslint-disable no-undef */
-    var app = getApp();
+    var app = typeof getApp === 'function' && getApp();
     if (app && app.onError) {
       app.onError(err);
     }

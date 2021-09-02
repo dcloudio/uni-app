@@ -1,4 +1,5 @@
 * [组件概述](component/)
+* [vue组件](component/vue-component.md)
 * 视图容器
   * [view](component/view.md)
   * [scroll-view](component/scroll-view.md)
@@ -44,6 +45,8 @@
 * 广告
   * [ad](component/ad.md)
   * [ad-draw](component/ad-draw.md)
+  * [ad-content-page](component/ad-content-page.md)
+  * [Grid 广告](component/ad-grid.md)
 * 页面属性配置节点
   * [page-meta](component/page-meta.md)
   * [navigation-bar](component/navigation-bar.md)
@@ -144,7 +147,7 @@
 	  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/759713d0-4f2d-11eb-a16f-5b3e54966275.png" width="20" height="20"/>
 	  <div class="contact-smg">
 	     <div>官方QQ交流群</div>
-	  <div>群24：672494800 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=7ntnubNkRwi2DlXS02C4OEFfm2KbvnBu&jump_from=webapi">点此加入</a></div>
+	  <div>群21：717019120 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=aohM6OlFkEO8kB7OzlQNSi1jDdoa-rU_&jump_from=webapi">点此加入</a></div>
 		<div>群35：713420817（2000人已满）</div>
 		<div>群34：530305531（2000人已满）</div>
 		<div>群33：498071674（2000人已满）</div>
@@ -156,10 +159,10 @@
 		<div>群27：811363410（2000人已满）</div>
 		<div>群26：147867597（2000人已满）</div>
 		<div>群25：165297000（2000人已满）</div>
-		<!-- <div>群24：672494800（2000人已满）</div> -->
+		<div>群24：672494800（2000人已满）</div>
 		<div>群23：599958679（2000人已满）</div>
 		<div>群22：687186952（2000人已满）</div>
-		<div>群21：717019120（2000人已满）</div>
+		<!-- <div>群21：717019120（2000人已满）</div> -->
 		<div>群20：165796402（2000人已满）</div>
 		<div>群19：165657124（2000人已满）</div>
 		<div>群18：698592271（2000人已满）</div>

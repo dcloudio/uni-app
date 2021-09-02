@@ -62,7 +62,7 @@ const createUploadTaskById = function (uploadTaskId, {
   }
   if (files && files.length) {
     files.forEach(file => {
-      uploader.addFile(getRealPath(file.uri), {
+      uploader.addFile(getRealPath(file.uri || file.filePath), {
         key: file.name || 'file'
       })
     })

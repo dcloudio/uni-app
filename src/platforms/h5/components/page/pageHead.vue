@@ -16,23 +16,25 @@
             class="uni-btn-icon"
           >&#xe601;</i>
         </div>
-        <template v-for="(btn,index) in btns">
-          <div
-            v-if="btn.float === 'left'"
-            :key="index"
-            :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
-            :badge-text="btn.badgeText"
-            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
-            class="uni-page-head-btn"
-          >
-            <i
-              :style="_formatBtnStyle(btn)"
-              class="uni-btn-icon"
-              @click="_onBtnClick(index)"
-              v-html="_formatBtnFontText(btn)"
-            />
-          </div>
-        </template>
+        <div class="uni-page-head-ft">
+          <template v-for="(btn,index) in btns">
+            <div
+              v-if="btn.float === 'left'"
+              :key="index"
+              :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
+              :badge-text="btn.badgeText"
+              :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
+              class="uni-page-head-btn"
+            >
+              <i
+                :style="_formatBtnStyle(btn)"
+                class="uni-btn-icon"
+                @click="_onBtnClick(index)"
+                v-html="_formatBtnFontText(btn)"
+              />
+            </div>
+          </template>
+        </div>
       </div>
       <div
         v-if="!searchInput"
@@ -63,9 +65,9 @@
       >
         <div
           :style="{color:searchInput.placeholderColor}"
-          :class="[`uni-page-head-search-placeholder-${focus || text ? 'left' : searchInput.align}`]"
+          :class="[`uni-page-head-search-placeholder-${focus || showPlaceholder ? 'left' : searchInput.align}`]"
           class="uni-page-head-search-placeholder"
-          v-text="text || composing ? '' : searchInput.placeholder"
+          v-text="showPlaceholder || composing ? '' : searchInput.placeholder"
         />
         <v-uni-input
           ref="input"
@@ -79,6 +81,11 @@
           @focus="_focus"
           @blur="_blur"
           @update:value="_input"
+        />
+        <i
+          v-if="text"
+          class="uni-icon-clear"
+          @click="_clearInput"
         />
       </div>
       <div class="uni-page-head-ft">
@@ -174,7 +181,6 @@
     left: 70px;
     right: 70px;
     min-width: 0;
-    user-select: auto;
   }
 
   .uni-page-head-btn {
@@ -347,6 +353,11 @@
   uni-page-head .uni-page-head-shadow-yellow::after {
     background-image: url("https://cdn.dcloud.net.cn/img/shadow-yellow.png");
   }
+
+  uni-page-head .uni-icon-clear {
+    align-self: center;
+    padding-right: 5px;
+  }
 </style>
 <script>
 import appendCss from 'uni-platform/helpers/append-css'
@@ -442,7 +453,8 @@ export default {
     return {
       focus: false,
       text: '',
-      composing: false
+      composing: false,
+      showPlaceholder: false
     }
   },
   computed: {
@@ -496,6 +508,9 @@ export default {
       const input = this.$refs.input
       input.$watch('composing', val => {
         this.composing = val
+      })
+      input.$watch('valueSync', val => {
+        this.showPlaceholder = !!val
       })
       if (this.searchInput.disabled) {
         input.$el.addEventListener('click', () => {
@@ -568,6 +583,10 @@ export default {
       UniServiceJSBridge.emit('onNavigationBarSearchInputChanged', {
         text
       })
+    },
+    _clearInput () {
+      this.text = ''
+      this._input(this.text)
     }
   }
 }

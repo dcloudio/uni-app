@@ -8,7 +8,7 @@
 |:-|:-|:-|:-|:-|:-|
 |title|String|是|提示的内容，长度与 icon 取值有关。||
 |icon|String|否|图标，有效值详见下方说明。||
-|image|String|否|自定义图标的本地路径|App、H5、微信小程序、百度小程序|
+|image|String|否|自定义图标的本地路径（app端暂不支持gif）|App、H5、微信小程序、百度小程序|
 |mask|Boolean|否|是否显示透明蒙层，防止触摸穿透，默认：false|App、微信小程序|
 |duration|Number|否|提示的延迟时间，单位毫秒，默认：1500||
 |position|String|否|纯文本轻提示显示位置，填写有效值后只有 `title` 属性生效， 有效值详见下方说明。|App|
@@ -21,6 +21,7 @@
 |值|说明|平台差异说明|
 |:-|:-|:-|
 |success|显示成功图标，此时 title 文本最多显示 7 个汉字长度。默认值||
+|error|显示错误图标，此时 title 文本最多显示 7 个汉字长度。||
 |loading|显示加载图标，此时 title 文本最多显示 7 个汉字长度。|支付宝小程序不支持|
 |none|不显示图标，此时 title 文本在`小程序`最多可显示两行，`App`仅支持单行显示。|&nbsp;|
 
@@ -108,7 +109,7 @@ setTimeout(function () {
 |cancelText|String|否|取消按钮的文字，默认为"取消"，最多 4 个字符||
 |cancelColor|HexColor|否|取消按钮的文字颜色，默认为"#000000"|H5、微信小程序、百度小程序|
 |confirmText|String|否|确定按钮的文字，默认为"确定"，最多 4 个字符||
-|confirmColor|HexColor|否|确定按钮的文字颜色，H5平台默认为"#007aff"，微信小程序平台默认为"#3CC51F"，百度小程序平台默认为"#3c76ff"|H5、微信小程序、百度小程序|
+|confirmColor|HexColor|否|确定按钮的文字颜色，H5平台默认为"#007aff"，微信小程序平台默认为"#576B95"，百度小程序平台默认为"#3c76ff"|H5、微信小程序、百度小程序|
 |success|Function|否|接口调用成功的回调函数||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|

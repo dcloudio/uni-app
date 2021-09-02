@@ -219,7 +219,7 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 ## 在 uni-app 中使用差异
 
-`uni-app` 在发布到H5时支持所有vue的语法；发布到App和小程序时，由于平台限制，无法实现全部vue语法，但 `uni-app` 仍是是对vue语法支持度最高的跨端框架。
+`uni-app` 在发布到H5时支持所有vue的语法；发布到App和小程序时，由于平台限制，无法实现全部vue语法，但 `uni-app` 仍是对vue语法支持度最高的跨端框架。
 
 相比Web平台， Vue.js 在 `uni-app` 中使用差异主要集中在两个方面：
 
@@ -261,6 +261,120 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 {{msg}}里的内容将会被替代为对应数据对象上msg的值。无论何时，绑定的数据对象上msg发生了改变，插值处的内容都会更新。
 
+
+
+
+#### 使用 JavaScript 表达式
+
+
+迄今为止，在我们的模板中，我们一直都只绑定简单的 `property` 键值。但实际上，对于所有的数据绑定，Vue.js 都提供了完全的 `JavaScript` 表达式支持。
+
+```html
+<template>
+    <view>
+      <view>{{ number + 1 }}</view>
+      <view>{{ ok ? 'YES' : 'NO' }}</view>
+      <!-- 把一个字符串分割成字符串数组,颠倒其元素的顺序,把数组中的所有元素放入一个字符串 -->
+      <view>{{ message.split('').reverse().join('') }}</view>
+    </view>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        number:1,
+        ok:true,
+        message: 'Hello Vue!'
+      }
+    }
+  }
+</script>
+```
+
+
+
+```html
+<template>
+  <view>
+      <view v-for="(item,index) in 10">
+      <!-- 通过%运算符求余数，实现隔行换色的效果 -->
+      <view :class="'list-' + index%2">{{index%2}}</view>
+    </view>
+  </view>
+</template>
+<script>
+  export default {
+    data() {
+      return { }
+    }
+  }
+</script>
+<style>
+  .list-0{
+    background-color: #aaaaff;
+  }
+  .list-1{
+    background-color: #ffaa7f;
+  }
+</style>
+```
+
+
+这些表达式会在所属 Vue 实例的数据作用域下作为 `JavaScript` 被解析。有个限制就是，每个绑定都只能包含单个表达式，所以下面的例子都不会生效。
+
+
+```html
+<template>
+  <view>
+    <!-- 这是语句，不是表达式 -->
+    <view>{{ var a = 1 }}</view>
+    <!-- 流控制也不会生效，请使用三元表达式 -->
+    <view>{{ if (ok) { return message } }}</view>
+  </view>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        ok:true,
+        message: 'Hello Vue!'
+      }
+    }
+  }
+</script>
+```
+
+
+> 模板表达式都被放在沙盒中，只能访问**全局变量的一个白名单**：
+> - `Infinity`
+> - `undefined`
+> - `NaN`
+> - `isFinite`
+> - `isNaN`
+> - `parseFloat`
+> - `parseInt`
+> - `decodeURI`
+> - `decodeURIComponent`
+> - `encodeURI`
+> - `encodeURIComponent`
+> - `Math`
+> - `Number`
+> - `Date`
+> - `Array`
+> - `Object`
+> - `Boolean`
+> - `String`
+> - `RegExp`
+> - `Map`
+> - `Set`
+> - `JSON`
+> - `Intl`
+> 
+> 你不应该在模板表达式中试图访问用户定义的全局变量。
+
+
+
+
 ### 指令
 
 
@@ -299,7 +413,7 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 #### v-on
 
 
-v-on 指令，它用于监听 DOM 事件。v-on缩写为‘ @ ’
+v-on 指令，它用于监听 DOM 事件。v-on缩写为‘ @ ’，下文简称为 @事件
 
 
 ```html
@@ -856,12 +970,12 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 
 ### 监听事件
 
-可以用 v-on 指令监听 DOM 事件，并在触发时运行一些 `JavaScript` 代码。
+可以用@事件监听 DOM 事件，并在触发时运行一些 `JavaScript` 代码。
 
 ```html
 	<template>
 		<view>
-			<button v-on:click="counter += 1">Add 1</button>
+			<button @click="counter += 1">Add 1</button>
 			<text>The button above has been clicked {{ counter }} times.</text>
 		</view>
 	</template>
@@ -879,7 +993,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 
 ### 事件处理方法
 
-然而许多事件处理逻辑会更为复杂，所以直接把 `JavaScript` 代码写在 `v-on` 指令中是不可行的。因此 `v-on` 还可以接收一个需要调用的方法名称。
+然而许多事件处理逻辑会更为复杂，所以直接把 `JavaScript` 代码写在@事件中是不可行的。因此@事件还可以接收一个需要调用的方法名称。
 
 示例：
 
@@ -887,7 +1001,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 	<template>
 		<view>
 			<!-- `greet` 是在下面定义的方法名 -->
-			<button v-on:click="greet">Greet</button>
+			<button @click="greet">Greet</button>
 		</view>
 	</template>
 	<script>
@@ -921,8 +1035,8 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 ```html
 	<template>
 		<view>
-			<button v-on:click="say('hi')">Say hi</button>
-			<button v-on:click="say('what')">Say what</button>
+			<button @click="say('hi')">Say hi</button>
+			<button @click="say('what')">Say what</button>
 		</view>
 	</template>
 	<script>
@@ -943,7 +1057,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 ```html
 	<template>
 		<view>
-			<button v-on:click="warn('Form cannot be submitted yet.', $event)">
+			<button @click="warn('Form cannot be submitted yet.', $event)">
 			  Submit
 			</button>
 		</view>
@@ -954,7 +1068,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 				warn(message, event) {
 					// 现在我们可以访问原生事件对象
 					if (event) {
-						event.preventDefault()
+						//可访问 event.target等原生事件对象
 					}
 					uni.showToast({
 						title: message
@@ -971,12 +1085,12 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 
 ### 事件修饰符
 
-修饰符 (modifier) 是以半角句号 . 指明的特殊后缀，用于指出一个指令应该以特殊方式绑定。例如，`.prevent` 修饰符告诉 `v-on` 指令对于触发的事件调用 `event.preventDefault()`：
+修饰符 (modifier) 是以半角句号 . 指明的特殊后缀，用于指出一个指令应该以特殊方式绑定。例如，`.prevent` 修饰符告诉 @事件对于触发的事件调用 `event.preventDefault()`：
 
-v-on 提供了事件修饰符:
+@事件（v-on）提供了事件修饰符:
 
 - `.stop`: 各平台均支持， 使用时会阻止事件冒泡，在非 H5 端同时也会阻止事件的默认行为
-- `.native`: 监听原生事件，仅在 H5 平台支持
+- `.native`: 监听原生事件，各平台均支持
 - `.prevent`: 仅在 H5 平台支持
 - `.capture`: 仅在 H5 平台支持
 - `.self`: 仅在 H5 平台支持
@@ -986,15 +1100,16 @@ v-on 提供了事件修饰符:
 
 ```html
 	<!-- 阻止单击事件继续传播 -->
-	<view v-on:click.stop="doThis"></view>
+	<view @click.stop="doThis"></view>
 ```
 
 
-> 使用修饰符时，顺序很重要；相应的代码会以同样的顺序产生。因此，用 `v-on:click.prevent.self` 会阻止所有的点击，而 `v-on:click.self.prevent` 只会阻止对元素自身的点击。
+> 使用修饰符时，顺序很重要；相应的代码会以同样的顺序产生。因此，用 `@click.prevent.self` 会阻止所有的点击，而 `@click.self.prevent` 只会阻止对元素自身的点击。
+
 
 **注意**
 
-- 为兼容各端，事件需使用 **v-on** 或 **@** 的方式绑定，请勿使用小程序端的 `bind` 和 `catch` 进行事件绑定。
+- 为兼容各端，事件需使用 **@** 的方式绑定，请勿使用小程序端的 `bind` 和 `catch` 进行事件绑定；也不能在 JS 中使用`event.preventDefault()`和`event.stopPropagation()`方法；
 - 若需要禁止蒙版下的页面滚动，可使用 `@touchmove.stop.prevent="moveHandle"`，`moveHandle` 可以用来处理 `touchmove` 的事件，也可以是一个空函数。
 
 ```html
@@ -1348,8 +1463,7 @@ Vue 提供了一种更通用的方式来观察和响应 Vue 实例上的数据�
 		data() {
 			return {
 				firstName: 'Foo',
-				lastName: 'Bar',
-				fullName: 'Foo Bar'
+				lastName: 'Bar'
 			}
 		},
 		computed: {

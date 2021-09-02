@@ -8,11 +8,18 @@
 - 对于程序员，从此你又get一个新技能，用熟悉的js，轻松搞定前后台整体业务。
 - 对于开发商：
     1. 开发成本大幅下降、开发效率大幅提升、上线和迭代速度大幅提速；
-	2. 如果你是新创公司，将无需雇佣php或java等服务器工程师，每年至少节省几十万；
+    2. 如果你是新创公司，将无需雇佣php或java等服务器工程师，每年至少节省几十万；
     3. 如果你已拥有掌握php和js的全栈，那么改用新的技术栈，一样可以大幅提升开发效率、降低成本；
     4. 你只需专注于你的业务，其他什么服务器运维、弹性扩容、大并发承载、防DDoS攻击，全都不需要操心；
-	5. 除了开发成本，云资源租用成本也将大幅下降
-    5. 如果不发布H5版，你将不需要购买备案域名。小程序和App可以免域名使用服务器；
+    5. 除了开发成本，云资源租用成本也将大幅下降
+    6. 如果不发布H5版，你将不需要购买备案域名。小程序和App可以免域名使用服务器；
+
+
+### 看视频，只需25分钟，快速入门uniCloud
+
+<a target="_blank" href="https://www.bilibili.com/video/BV17p4y1a71x?p=1">
+    <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/707756af-e9a9-4d08-8db9-5d1f34b84ea6.jpg" alt="uniCloud视频教程" style="width: 70%;">
+</a>
 
 ### uniCloud是什么和不是什么
 
@@ -25,11 +32,6 @@ uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的�
 开户和付费虽然通过DCloud渠道，但实际上开发者自动在云厂商处建立了账户和充值了余额。DCloud只获取云服务厂商的返佣。
 
 开发时虽使用DCloud的工具，但应用上线时，手机端是直连阿里云或腾讯云的serverless，不经由DCloud的服务器。
-
-<video style="width:50vw;height:30vw;margin-bottom:20px;" id="video" preload="none" controls="controls" poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/e5da48fa-33c1-4379-8927-65edc6d05d5f.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/e5da48fa-33c1-4379-8927-65edc6d05d5f.mp4"></video>
-
-- [更多视频教程](https://ke.qq.com/course/3416784?taid=11123338234831568&tuin=4025c735)
-
 
 ### 什么是serverless？
 
@@ -70,7 +72,7 @@ serverless在国外兴起，但国内的发展速度已经超过了国外。微�
 
 ### uniCloud为何可降低云服务租用成本
 
-1. 传统云服务的租用，按占用的硬件资源的上限值+固定时长来租用。
+1、传统云服务的租用，按占用的硬件资源的上限值+固定时长来租用。
 
 选择CPU和内存的配置，不到满配时，资源是浪费的，接近满配就需要立即扩容新的配置。
 
@@ -84,7 +86,7 @@ serverless不是传统云，它不需要开发者选择CPU和内存配置，也�
 
 从技术原理上serverless就有明显成本优势，所以租用serverless比租用传统云要便宜的多。
 
-2. 没有名目繁多的收费项
+2、没有名目繁多的收费项
 
 在传统云的世界里，有大量的收费产品。
 
@@ -98,7 +100,7 @@ serverless不是传统云，它不需要开发者选择CPU和内存配置，也�
 
 展开说下uniCloud为什么不用买高防也不害怕DDoS：由于阿里云和腾讯云的serverless有巨大的资源池，且serverless没有固定ip，云函数使用的是阿里云和腾讯云的自有域名，前端网页托管在cdn上，DDoS攻击者打不起、也打不挂uniCloud。
 
-3. 云厂商的促销补贴
+3、云厂商的促销补贴
 
 目前阿里云为uniCloud提供了纯免费的云资源，不但云函数、云数据库免费，连存储和cdn都免费。
 
@@ -137,7 +139,7 @@ uniCloud最吸引人的是，它将开发效率提升了10倍以上。
 
 开发效率提升10倍，并非某个杀手功能的功劳，而是庞大的生态共同的作用。本章节篇幅较长，请耐心阅读。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/c50d2741-6a47-4dcd-a02c-fdd683fa4ea4.png)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/80364c0b-2dd8-4629-b0f7-cbead0df7922.png)
 
 #### 一个故事
 2020年初，uniCloud刚发布，新冠肺炎突然来袭，各地涌现大量抗疫项目需求。
@@ -180,15 +182,18 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 
 下面列举些常用的轮子
 
-1. 官方维护的插件
+**1. 官方维护的插件**
+
 - uni-id：不用再开发用户系统。用户注册、登录（含社交登录、短信验证码登录、App一键登录）、修改或重置密码、token管理、图形验证码、RBAC权限角色系统...所有与用户相关的，不管前端还是云端，代码都是现成的。[详见](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
 - uniPay：不管微信还是支付宝，不管App、微信小程序、还是支付宝小程序，不管前端还是服务端，一切都现成的，拿来即用。[详见](https://uniapp.dcloud.net.cn/uniCloud/unipay)
 - uSearch：云端一体搜索。搜索页面、输入联想、搜索历史记录、热搜词分析提取...一应俱全。[详见](https://ext.dcloud.net.cn/plugin?id=3851)
+- uni-starter：云端一体应用快速开发基本项目模版，实现快速搭建一款应用。它集成了很多通用的功能，比如登录注册、头像、设置、拦截器、banner...[详见](https://ext.dcloud.net.cn/plugin?id=5057)
 - uniCloud Admin：全端可用的admin后台。自带用户管理、权限管理、角色管理、菜单管理。更有众多admin插件，比如cms插件、banner管理插件、App升级管理插件...[详见](https://uniapp.dcloud.net.cn/uniCloud/admin)
 - uni-file-picker：前端直传uniCloud存储组件。[详见](https://ext.dcloud.net.cn/plugin?id=4079)
 - uni-captcha：云端一体图形验证码组件。[详见](https://ext.dcloud.net.cn/plugin?id=4048)
 
-2. 社区的优秀插件
+**2. 社区的优秀插件**
+
 - cms
 - 城市选择
 - banner管理
@@ -199,9 +204,11 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 - push
 - 图表统计
 
-3. 项目模板
+**3. 项目模板**
+
 上面的轮子，是与业务无关的通用轮子。除此之外，还有大量的云端一体的项目模板。
 使用这些现成的项目模板，那开发效率更是极大幅的提升。过去5、6人月的项目，现在几天就能搞定上线！
+
 |				|			|					|
 |--				|--			|--					|
 |电商			|博客		|排班				|
@@ -212,7 +219,7 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 |新闻			|考勤打卡	|红包封面			|
 
 
-在这里，我们还必须提到2个新概念：uni_module和datacom。
+在这里，我们还必须提到2个新概念：`uni_module`和`datacom`。
 - uni_module：云端一体组件最佳的承载方式。传统的npm无法处理云端一体的需求，把前端和云端的代码，一起打包到一个uni_module中，整体传播与发布，对云端一体组件的生态有重大的帮助。[详见](https://uniapp.dcloud.net.cn/uni_modules)
 - datacom：datacom是一种在前端绑定后端数据源的组件。[详见](https://uniapp.dcloud.net.cn/component/datacom)
 
@@ -299,7 +306,7 @@ HBuilderX提升了uni-app的开发效率，自然也将提升uniCloud的开发�
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/88f093d0-1abd-487d-bf24-e0627c471977.jpg)
 
 
-#### 第四层提效：语言统一的价值
+#### 第五层提效：语言统一的价值
 
 前端和云端都使用js编程语言，提高了沟通效率。
 
@@ -309,7 +316,7 @@ js和其他服务器语言，比如php或java，在过去需要Mock来翻译，�
 
 由于统一了技术栈，招聘效率、管理效率也会相应提升。。
 
-#### 第五层提效：测试效率的提升
+#### 第六层提效：测试效率的提升
 
 代码量的减少到原来的十分之一，这自然可以让code review效率和白盒测试的效率也提升了十倍。
 
@@ -317,7 +324,7 @@ js和其他服务器语言，比如php或java，在过去需要Mock来翻译，�
 
 现在，开发、测试都将变的更加轻松。
 
-#### 第六层提效：serverless让开发者专注于业务，无需分心运维
+#### 第七层提效：serverless让开发者专注于业务，无需分心运维
 
 因为serverless的免运维特点，开发商再也不用操心扩容、高并发、ddos攻击、安全漏洞补丁等一系列麻烦事。只需专注于自己的业务。
 

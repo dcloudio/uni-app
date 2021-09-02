@@ -20,6 +20,7 @@ export function getSystemInfoSync () {
 export function getSystemInfo () {
   const platform = plus.os.name.toLowerCase()
   const ios = platform === 'ios'
+  const isAndroid = platform === 'android'
   const {
     screenWidth,
     screenHeight
@@ -86,7 +87,7 @@ export function getSystemInfo () {
     windowHeight,
     statusBarHeight,
     language: plus.os.language,
-    system: plus.os.version,
+    system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
     version: plus.runtime.innerVersion,
     fontSizeSetting: '',
     platform,

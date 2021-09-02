@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "uni-core/*": [
+        "./src/core/*"
+      ],
+      "@dcloudio/*": [
+        "./packages/*"
+      ]
+    }
+  }
+}

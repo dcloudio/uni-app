@@ -17,10 +17,10 @@
 
 **src**
 
-|来源|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|网络|√|√|√|√|√|√|√|√|√|
-|本地|√|√|x|x|x|x|x|x|x|
+|来源|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|
+|:-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|网络|√|√|√|√|√|√|√|√|√|√|
+|本地|√|√|x|x|x|x|x|x|x|x|
 
 **webview-styles**
 
@@ -363,7 +363,7 @@ web-view组件在App和小程序中层级较高，如需要在vue页面中写代
 
 
 **注意事项**
-- `<web-view>` 组件默认铺满全屏并且层级高于前端组件。App端想调节大小或再其上覆盖内容需使用plus规范。
+- `<web-view>` 组件默认铺满全屏并且层级高于前端组件。App端想调节大小或在其上覆盖内容需使用plus规范。
 - `<web-view>` 组件所在窗口的标题，跟随页面的 `<title>` 值的变化而变化（不含H5端）。
 - App-vue的`web-view`加载的html页面可以运行plus的api，但注意如果该页面调用了plus.key的API监听了back按键（或使用mui的封装），会造成back监听冲突。需要该html页面移除对back的监听。或按照上面的示例代码禁止网页使用plus对象。app-nvue页面的`web-view`组件不能运行plus API。
 - `uni.webview.js` 最新版地址：[https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js)
@@ -407,4 +407,31 @@ uni.webView.navigateTo 示例，注意uni sdk放到body下面
     });
   </script>
 </html>
+```
+
+nvue webview通信示例
+```
+<template>
+	<view>
+		<web-view ref="webview" class="webview" @onPostMessage="handlePostMessage"></web-view>
+		<button class="button" @click="evalJs">evalJs(改变webview背景颜色)</text>
+	</view>
+</template>
+
+<script>
+	module.exports = {
+		data: {
+		},
+		methods: {
+			// webview向外部发送消息
+			handlePostMessage: function(data) {
+				console.log("接收到消息：" + JSON.stringify(data.detail));
+			},
+			// 调用 webview 内部逻辑
+			evalJs: function() {
+				this.$refs.webview.evalJs("document.body.style.background ='#00FF00'");
+			}
+		}
+	}
+</script>
 ```

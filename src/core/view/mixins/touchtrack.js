@@ -35,8 +35,8 @@ export default {
           changedTouches: $event.changedTouches,
           detail: {
             state,
-            x0: x,
-            y0: y,
+            x: x,
+            y: y,
             dx: x - x0,
             dy: y - y0,
             ddx: x - x1,

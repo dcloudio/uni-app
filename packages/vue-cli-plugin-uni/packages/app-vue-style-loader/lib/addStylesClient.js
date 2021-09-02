@@ -246,7 +246,7 @@ function processCss(css) {
             .replace(VAR_WINDOW_LEFT, '0px')
             .replace(VAR_WINDOW_RIGHT, '0px')
 	}
-  return css.replace(/\{[\s\S]+?\}|@media.+\{/g, function (css) {
+  return css.replace(/\{[\s\S]+?\}|@media.+?\{/g, function (css) {
     return css.replace(UPX_RE, function (a, b) {
       return uni.upx2px(b) + 'px'
     })

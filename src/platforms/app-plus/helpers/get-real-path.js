@@ -22,10 +22,13 @@ function addBase (filePath) {
 export default function getRealPath (filePath) {
   if (filePath.indexOf('/') === 0) {
     if (filePath.indexOf('//') === 0) {
-      filePath = 'https:' + filePath
-    } else {
-      return addBase(filePath.substr(1))
+      return 'https:' + filePath
     }
+    // 平台绝对路径 安卓、iOS
+    if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      return 'file://' + filePath
+    }
+    return addBase(filePath.substr(1))
   }
   // 网络资源或base64
   if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf('blob:') === 0) {

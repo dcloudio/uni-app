@@ -60,7 +60,7 @@ export function getRealPath (filePath) {
 
   // 无协议的情况补全 https
   if (filePath.indexOf('//') === 0) {
-    filePath = 'https:' + filePath
+    return 'https:' + filePath
   }
 
   // 网络资源或base64
@@ -75,6 +75,10 @@ export function getRealPath (filePath) {
   const wwwPath = 'file://' + _handleLocalPath('_www')
   // 绝对路径转换为本地文件系统路径
   if (filePath.indexOf('/') === 0) {
+    // 平台绝对路径 安卓、iOS
+    if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      return 'file://' + filePath
+    }
     return wwwPath + filePath
   }
   // 相对资源
@@ -208,7 +212,7 @@ export function warpPlusErrorCallback (callbackId, name, errMsg) {
   }
 }
 
-export function warpPlusMethod (module, name, before) {
+export function warpPlusMethod (module, name, before, after) {
   return function (options, callbackId) {
     if (typeof before === 'function') {
       options = before(options)
@@ -217,6 +221,9 @@ export function warpPlusMethod (module, name, before) {
       success (data = {}) {
         delete data.code
         delete data.message
+        if (typeof after === 'function') {
+          data = after(data)
+        }
         invoke(callbackId, Object.assign({}, data, {
           errMsg: `${name}:ok`
         }))

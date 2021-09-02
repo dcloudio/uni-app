@@ -35,6 +35,10 @@ export default {
     dataCount: {
       type: Number,
       default: 5
+    },
+    channel: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -150,7 +154,10 @@ export default {
       const data = {
         adpid: adpid || this.adpid,
         width: this.position.width,
-        count: this.dataCount
+        count: this.dataCount,
+        ext: {
+          channel: this.channel
+        }
       }
       UniViewJSBridge.publishHandler('onAdMethodCallback', {
         callbackId: this._callbackId,

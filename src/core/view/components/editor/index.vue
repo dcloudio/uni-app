@@ -16,6 +16,7 @@ import HTMLParser from 'uni-helpers/html-parser'
 import * as formats from './formats'
 import loadScript from './load-script'
 
+let textChanging = false
 export default {
   name: 'Editor',
   mixins: [subscriber, emitter, keyboard],
@@ -149,11 +150,14 @@ export default {
               const path = this.$getRealPath(src)
               quill.insertEmbed(range.index, 'image', path, Quill.sources.USER)
               const local = /^(file|blob):/.test(path) ? path : false
+              // 防止 formatText 多次触发 Quill.events.TEXT_CHANGE 事件
+              textChanging = true
               quill.formatText(range.index, 1, 'data-local', local)
               quill.formatText(range.index, 1, 'alt', alt)
               quill.formatText(range.index, 1, 'width', width)
               quill.formatText(range.index, 1, 'height', height)
               quill.formatText(range.index, 1, 'class', extClass)
+              textChanging = false
               quill.formatText(range.index, 1, 'data-custom', Object.keys(data).map(key => `${key}=${data[key]}`).join('&'))
               quill.setSelection(range.index + 1, Quill.sources.SILENT)
             }
@@ -262,7 +266,9 @@ export default {
         })
       })
       quill.on(Quill.events.TEXT_CHANGE, () => {
-        this.$trigger('input', {}, this.getContents())
+        if (!textChanging) {
+          this.$trigger('input', {}, this.getContents())
+        }
       })
       quill.on(Quill.events.SELECTION_CHANGE, this.updateStatus.bind(this))
       quill.on(Quill.events.SCROLL_OPTIMIZE, () => {

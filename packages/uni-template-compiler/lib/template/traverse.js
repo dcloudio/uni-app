@@ -273,6 +273,10 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
   if (!fallbackNodes || t.isNullLiteral(fallbackNodes)) {
     return slotNode
   }
+  // 支付宝小程序默认插槽为 $default
+  if (state.options.platform.name === 'mp-alipay') {
+    slotName = slotName === 'default' ? '$default' : slotName
+  }
   const prefix = state.options.platform.directive
   return [{
     type: 'block',
@@ -300,7 +304,7 @@ function traverseRenderSlot (callExprNode, state) {
   const slotName = callExprNode.arguments[0].value
 
   let deleteSlotName = false // 标记是否组件 slot 手动指定了 name="default"
-  if (callExprNode.arguments.length > 2) { // 作用域插槽
+  if (state.options.scopedSlotsCompiler !== 'augmented' && callExprNode.arguments.length > 2) { // 作用域插槽
     const props = {}
     callExprNode.arguments[2].properties.forEach(property => {
       props[property.key.value] = genCode(property.value)
@@ -333,6 +337,20 @@ function traverseRenderSlot (callExprNode, state) {
 }
 
 function traverseResolveScopedSlots (callExprNode, state) {
+  function single (children, slotName, ignore) {
+    if (Array.isArray(children) && children.length === 1) {
+      const child = children[0]
+      if (!child.type) {
+        return
+      }
+      if (ignore.includes(child.type)) {
+        return single(child.children, slotName, ignore)
+      }
+      child.attr = child.attr || {}
+      child.attr.slot = slotName
+      return true
+    }
+  }
   return callExprNode.arguments[0].elements.map(slotNode => {
     let keyProperty = false
     let fnProperty = false
@@ -351,11 +369,11 @@ function traverseResolveScopedSlots (callExprNode, state) {
     })
     const slotName = keyProperty.value.value
     const returnExprNodes = fnProperty.value.body.body[0].argument
-    if (!proxyProperty) {
+    const parentNode = callExprNode.$node
+    if (slotNode.scopedSlotsCompiler !== 'augmented' && !proxyProperty) {
       const resourcePath = state.options.resourcePath
       const ownerName = path.basename(resourcePath, path.extname(resourcePath))
 
-      const parentNode = callExprNode.$node
       const parentName = parentNode.type
 
       const paramExprNode = fnProperty.value.params[0]
@@ -379,14 +397,21 @@ function traverseResolveScopedSlots (callExprNode, state) {
         state
       )
     }
-    const node = {
-      type: 'view',
+    if (state.options.scopedSlotsCompiler === 'auto' && slotNode.scopedSlotsCompiler === 'augmented') {
+      parentNode.attr['scoped-slots-compiler'] = 'augmented'
+    }
+    const children = normalizeChildren(traverseExpr(returnExprNodes, state))
+    // 除百度、字节外其他小程序仅默认插槽可以支持多个节点
+    if (single(children, slotName, ['template', 'block'])) {
+      return children[0]
+    }
+    return {
+      type: 'block',
       attr: {
         slot: slotName
       },
-      children: normalizeChildren(traverseExpr(returnExprNodes, state))
+      children
     }
-    return node
   })
 }
 

@@ -48,12 +48,17 @@ function processElement (ast, state, isRoot) {
     const slots = []
     for (let i = children.length - 1; i >= 0; i--) {
       const childElement = children[i]
-      // <block name="left"></block> => <view name="left"></view>
+      /**
+       * 仅百度、字节支持使用 block 作为命名插槽根节点
+       * 此处为了统一仅忽略默认插槽
+       * <block slot="left"></block> => <view slot="left"></view>
+       */
       if (typeof childElement !== 'string' && childElement.attr.slot) {
-        if (childElement.type === 'block') {
+        const slot = childElement.attr.slot
+        if (slot && slot !== 'default' && childElement.type === 'block') {
           childElement.type = 'view'
         }
-        slots.push(childElement.attr.slot)
+        slots.push(slot)
       } else {
         defaultSlot = true
       }

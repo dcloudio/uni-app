@@ -10,6 +10,10 @@ export const chooseVideo = {
       params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES
     }
   },
+  compressed: {
+    type: Boolean,
+    default: true
+  },
   maxDuration: {
     type: Number,
     default: 60

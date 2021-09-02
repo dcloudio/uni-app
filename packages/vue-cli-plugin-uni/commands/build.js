@@ -28,7 +28,8 @@ module.exports = (api, options) => {
       '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.',
       '--auto-host': 'specify automator host',
       '--auto-port': 'specify automator port',
-      '--subpackage': 'specify subpackage'
+      '--subpackage': 'specify subpackage',
+      '--plugin': 'specify plugin'
     }
   }, async (args) => {
     for (const key in defaults) {
@@ -40,6 +41,18 @@ module.exports = (api, options) => {
     const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao']
     if (args.subpackage && platforms.includes(process.env.UNI_PLATFORM)) {
       process.env.UNI_SUBPACKGE = args.subpackage
+    }
+
+    if (args.plugin) {
+      if (process.env.UNI_PLATFORM === 'mp-weixin') {
+        process.env.UNI_MP_PLUGIN = args.plugin
+        analysisPluginDir()
+      } else {
+        console.log()
+        console.error('编译到小程序插件只支持微信小程序')
+        console.log()
+        process.exit(0)
+      }
     }
 
     require('./util').initAutomator(args)
@@ -118,7 +131,7 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM} 平台...`)
+    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM} ${process.env.UNI_MP_PLUGIN ? '插件' : '平台'}...`)
   }
 
   const targetDir = api.resolve(options.outputDir)
@@ -190,4 +203,36 @@ async function build (args, api, options) {
 
 module.exports.defaultModes = {
   'uni-build': process.env.NODE_ENV
+}
+
+/**
+ * 编译到微信小程序插件 文件校验
+ */
+function analysisPluginDir () {
+  const fs = require('fs-extra')
+
+  // plugin.json 是否存在
+  const pluginJsonName = 'plugin.json'
+  const pluginJsonPath = path.resolve(process.env.UNI_INPUT_DIR, pluginJsonName)
+
+  if (!fs.pathExistsSync(pluginJsonPath)) {
+    console.log()
+    console.error(`${pluginJsonName}文件不存在，请检查后重试`)
+    console.log()
+    process.exit(0)
+  }
+
+  const pluginJson = require(pluginJsonPath)
+
+  // main 入口文件是否存在
+  process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
+  const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
+  const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
+
+  if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
+    console.log()
+    console.error(`${UNI_MP_PLUGIN_MAIN}入口文件不存在，请检查后重试`)
+    console.log()
+    process.exit(0)
+  }
 }

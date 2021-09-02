@@ -4,7 +4,7 @@
 
 它有很多重要的作用：
 
-- 描述现有的数据格式。可以一目了然的阅读每个表、每个字段的用途。
+- 描述现有的数据含义。可以一目了然的阅读每个表、每个字段的用途。
 - 设定数据操作权限(permission)。什么样的角色可以读/写哪些数据，都在这里配置。
 - 设定字段值域能接受的格式(validator)，比如不能为空、需符合指定的正则格式。
 - 设定字段之间的约束关系(fieldRules)，比如字段结束时间需要晚于字段开始时间。
@@ -94,9 +94,11 @@ properties里的字段列表，每个字段都有很多可以设置的属性，�
 |title|string|标题，开发者维护时自用。如果不填label属性，将在生成前端表单代码时，默认用于表单项前面的label|
 |description|string|描述，开发者维护时自用。在生成前端表单代码时，如果字段未设置componentForEdit，且字段被渲染为input，那么input的placehold将默认为本描述|
 |required|array|是否必填。支持填写必填的下级字段名称。required可以在表级的描述出现，约定该表有哪些字段必填。也可以在某个字段中出现，如果该字段是一个json，可以对这个json中的哪些字段必填进行描述。详见下方示例|
-|enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。|
+|enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。**enum最多只可以枚举500条**|
 |enumType|String|字段值枚举类型，可选值tree。设为tree时，代表enum里的数据为树形结构。此时schema2code可生成多级级联选择组件|
 |arrayType|String|数组项类型，bsonType="array" 时有效，HBuilderX 3.1.0+ 支持，具体见下表arrayType可用类型|
+|fileMediaType|String|文件类型，可选值 all&#124;image&#124;video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件  HBuilderX 3.1.0+|
+|fileExtName|String|文件扩展名过滤，多个用 "," 分割，例如: jpg,png，HBuilderX 3.1.0+ 支持|
 |maximum|number|如果bsonType为数字时，可接受的最大值|
 |exclusiveMaximum|boolean|是否排除 maximum|
 |minimum|number|如果bsonType为数字时，可接受的最小值|
@@ -116,15 +118,14 @@ properties里的字段列表，每个字段都有很多可以设置的属性，�
 |label|string|字段标题。schema2code生成前端代码时，渲染表单项前面的label标题|
 |group|string|分组id。schema2code生成前端代码时，多个字段对应的表单项可以合并显示在一个uni-group组件中|
 |order|int|表单项排序序号。schema2code生成前端代码时，默认是以schema中的字段顺序从上到下排布表单项的，但如果指定了order，则按order规定的顺序进行排序。如果表单项被包含在uni-group中，则同组内按order排序|
-|component|Object&#124;Array|schema2code生成前端代码时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
+|component|Object&#124;Array|schema2code生成前端代码时，使用什么组件渲染这个表单项。已废弃。请使用下面的componentForEdit和componentForShow|
 |componentForEdit|Object&#124;Array|HBuilderX 3.1.0+, 生成前端编辑页面文件时(add.vue、edit.vue)，使用什么组件渲染这个表单项。比如使用input输入框。|
 |componentForShow|Object&#124;Array|HBuilderX 3.1.0+, 生成前端展示页面时(list.vue、detail.vue)，使用什么组件渲染。比如使用uni-dateformat格式化日期。|
 
 **注意：**
-1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 2.9.5以上版本使用`clientDB`。
-2. schema2code，入口在uniCloud web控制台的数据库schema界面，注意该功能需搭配HBuilderX 2.9.5+版本。
+1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 3.0以上版本使用`clientDB`。
+2. schema2code，是根据scheme自动生成数据的增删改查页面的功能。入口1在uniCloud web控制台的数据库schema界面，入口2在HBuilderX中点击schema右键菜单。[详见](https://ext.dcloud.net.cn/plugin?id=4684)
 3. 暂不支持子属性校验
-4. HBuilderX 3.1.0+  `component` 属性升级为 `componentForEdit`，以支持更灵活的配置不同类型的页面使用的组件，仍然兼容`component`
 
 **一个带有字段的schema基本示例**
 
@@ -178,29 +179,108 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 #### 字段类型bsonType@bsontype
 
-- bool （布尔值）
+- bool （布尔值，true|false）
 - string （字符串）
 - int （整数）
 - double （精度数。由于浮点精度问题，慎用）
-- object （对象。其中地理位置也属于object）
+- object （对象。地理位置也属于object）
 - array （数组）
 - timestamp （时间戳）
 - date （日期）
-- file 云存储文件的信息体。不直接存储文件，而是一个json object，包括云存储文件的名称、路径、文件体积等信息。
-- password （所有用户都不能通过clientDB读写，即使是admin管理员）
+- file 云存储文件的信息体。不直接存储文件，而是一个json object，包括云存储文件的名称、路径、文件体积等信息。（HBuilderX 3.1.0+ ）
+- password （一种特殊的string。这类字段不会通过clientDB传递给前端，所有用户都不能通过clientDB读写，即使是admin管理员）
 
-注意：
+复杂格式说明：
 - timestamp是一串数字的时间戳，一般通过如下js获取`var timestamp = new Date().getTime()；`。它的好处是屏蔽了时区差异。阿里云和腾讯云的云端时区是0，但在HBuilderX本地运行云函数时，如果是中国的电脑，时区则会变成8，导致显示错乱。所以推荐使用时间戳。但时间戳是一串记录毫秒的数字，不合适直接渲染到前端界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
-- 时间戳和地理位置在web控制台的数据库管理界面上无法直接在引号里录入值，需参考[文档](uniCloud/quickstart?id=editdb)
+- 日期和地理位置在web控制台的数据库管理界面上无法直接在引号里录入值，需参考[文档](uniCloud/quickstart?id=editdb)
 - double类型慎重，由于js不能精准处理浮点运算，0.1+0.2=0.30000000000000004。所以涉及金额时，建议使用int而不是double，以分为单位而不是以元为单位存储。比如微信支付默认就是以分为单位。如果使用[uniPay](uniCloud/unipay)处理支付的话，它的默认单位也是分。
+- file的json object格式存储文件的基本信息和路径，如下：
+```json
+{
+	"name": "filename.jpg",
+	"extname": "jpg",
+	"fileType": "image",
+	"url": "https://xxxx", // 必填
+	"size": 0, //单位是字节
+	"image": { //图片扩展
+		"width":10,//单位是像素
+		"height":10
+	},
+	"video":{ //video和image不会同时存在。此处仅为列举所有数据规范
+		"duration":123,//视频时长，单位是秒
+		"poster":"https://xxx" //视频封面
+	}
+}
+```
 
+在上述格式中，除了`url`外，其他均为非必填。
+
+`image`键是图片的扩展键，除了基本的宽高像素外，开发者可以自己扩展其他键，比如色位。同理`video`也可以自行扩展。
+
+举例：表的schema中定义了2个字段：_id和image，image为file类型，定义格式如下：
+
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": [],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "image": {
+        "bsonType": "file",
+        "title": "图片",
+        "description": "图片",
+        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
+        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
+      }
+    }
+  }
+}
+```
+
+前端配套组件：
+
+uni-ui组件库中包含组件：`<uni-file-picker>` 。该组件和file字段的数据库完美搭配。组件首先选择文件，并上传到uniCloud云存储，在表单提交后将上传文件的地址写入file字段中。详见：[https://ext.dcloud.net.cn/plugin?id=4079](https://ext.dcloud.net.cn/plugin?id=4079)
+
+schema2code：
+
+DB Schema定义好字段类型为file后，可以通过schema2code工具，直接生成上传表单页面，前端页面包含`<uni-file-picker>`组件，选择、上传、写库一气呵成。详见：[schema2code](/uniCloud/schema?id=autocode)
 
 #### 数组字段类型的子类型arrayType@arraytype
 
 一个字段如果bsonType是array，那么它可以进一步通过arrayType指定这个数组里每个数组项目的bsonType，值域仍然是所有的字段类型。
 
-比如一个字段存储了多张图片，那么可以设置bsonType为array，然后进一步设置arrayTpye为file。
+比如一个字段存储了多张图片，那么可以设置bsonType为array，然后进一步设置arrayType为file。
 
+比如某表的schema定义了2个字段：_id和images，images存储用户批量上传的多张图，如下：
+
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": [],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "images": {
+        "bsonType": "array",
+        "title": "图片",
+        "description": "多张图片",
+        "arrayType": "file",
+				"multiple": true, // 允许选择多张图片
+        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
+        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
+        "maxLength": 3 // 限制最大数量
+      }
+    }
+  }
+}
+```
+
+arrayType为file时，与单独的bsonType为file相同，`<uni-file-picker>`组件和schema2code均可使用。
 
 #### url格式@url
 
@@ -234,7 +314,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 #### enum属性@enum
 
-enum，即枚举。一个字段设定了enum后，该字段的合法内容，只能在enum设定的数据项中取值。
+enum，即枚举。一个字段设定了enum后，该字段的合法内容，只能在enum设定的数据项中取值，**enum最多只可以枚举500条**。
 
 enum支持3种数据格式：
 1. 简单数组
@@ -362,6 +442,10 @@ enum支持3种数据格式：
 
 ```
 
+
+**注意**
+
+- enum内对普通的二维数据表枚举时，此表数据不可超过500条
 
 #### 默认值defaultValue/forceDefaultValue@defaultvalue
 
@@ -881,7 +965,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 
 表级控制，包括增删改查四种权限，分别称为：create、delete、update、read。（注意这里使用的是行业通用的crud命名，与操作数据库的方法add()、remove()、update()、get()在命名上有差异，但表意是相同的）
 
-所有的操作的默认值均为false。也就是不配置permission代表前端不能操作数据库（admin用户例外）。
+所有的操作的默认值均为false。也就是不配置permission代表前端不能操作数据库（角色为admin用户例外）。
 
 例如一个user表，里面有_id、name、pwd等字段，该表的`DB Schema`如下，代表前端用户可读（包括游客），但前端非admin用户不可新增、删除、更新数据记录。
 
@@ -1010,10 +1094,12 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 |action			|数据操作请求同时指定的uni-clientDB-action。用于指定前端的数据操作必须同时附带执行一个action云函数，如未触发该action则权限验证失败					|
 
 **注意**
-
+- `auth`表示正在执行操作的用户对象
+- `auth.xxx`均由uni-id提供，依赖于[uni-id公共模块](uniCloud/uni-id.md)
+- `doc.xxx`表示将要查询/修改/删除的每条数据（注意并不包括新增数据，新增数据应通过值域校验进行验证），如果将要访问的数据不满足permission规则将会拒绝执行
 - `uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
 - 如果想支持使用多个`action`的用法，可以通过`"'actionRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含名为`actionRequired`的action
-- doc是有客户端条件里面提取的变量，因此create权限内不可使用doc变量，建议使用forceDefaultValue或自定义校验函数实现插入数据的校验。
+- doc是由客户端条件里面提取的变量，可以理解为将要访问的数据，因此create权限内不可使用doc变量，建议使用forceDefaultValue或自定义校验函数实现插入数据的校验。
 
 **权限规则内可以使用的运算符**
 
@@ -1041,7 +1127,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   "permission": {
     "read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
     "create": false, // 禁止新增数据记录（admin权限用户不受限）
-    "update": false, // 禁止更新数据（admin权限用户不受限）
+    "update": "'updateuser' in auth.permission", // 权限标记为updateuser的用户，和admin管理员，可以更新数据，其他人无权更新数据
     "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
@@ -1085,6 +1171,14 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 forceDefaultValue属于数据校验的范畴，在数据插入时生效，但是如果配置forceDefaultValue为`{"$env": "uid"}`也会进行用户身份的校验，未登录用户不可插入数据。
 
 例如在news表新增一条记录，权限需求是“未登录用户不能创建新闻”，其实不需要在news表的create权限里写`auth.uid != null`。只需把news表的uid字段的forceDefaultValue设为`"$env": "uid"`，create权限配置为true即可，未登录用户自然无法创建。当然实际使用时你可能需要更复杂的权限，直接使用true作为权限规则时务必注意
+
+**permission和role的使用注意**
+
+在schema中使用uni-id的permission和role，首先需要在uniCloud admin中创建好权限，然后创建角色并给该角色分配权限，最后创建用户并授权角色。
+
+这样用户登录后，uniCloud会自动分析它的permission和role，在schema里编写的关于permission和role的限制也可以一一对应上，进行有效管理。
+
+admin中创建权限、角色和用户授权，另见[文档](/uniCloud/admin?id=mutiladmin)
 
 **变量action的说明**
 
@@ -1206,14 +1300,26 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 #### 快速上手schema2code生成“通讯录”
 > 成品演示地址:[http://contacts-demo.dcloud.net.cn/](http://contacts-demo.dcloud.net.cn/)
 
+##### 首先创建“带schema的通讯录”数据表
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中“云数据库”
 2. 点击新建数据表
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/1ef863ed-d919-46f3-bd01-6092f2ed1e21.jpg)
 3. 使用[OpenDB](https://gitee.com/dcloud/opendb)表模板创建： `opendb-contacts` 通讯录表
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0e2ee195-05ae-4445-af41-45c41b2da70a.jpg)
-4. 选中刚创建好的数据表`opendb-contacts`，点击进入表结构schema界面，点击按钮 “schema2code”
+
+##### schema2code有两种方式
+- 方式1：在HBuilderX中操作
+1.1 下载刚刚创建的通讯录表的schema
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/c2ea33f4-8619-41a6-bd14-5f9ce044985d.jpg)
+1.2 项目根目录的 `uniCloud/database/opendb-contacts.schema.json`  文件上点击右键，或者在已打开的 Schema 编辑器点击右键.如果没有该菜单，请在插件市场安装插件：[https://ext.dcloud.net.cn/plugin?id=4684](https://ext.dcloud.net.cn/plugin?id=4684) 
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/82f69a99-c652-4cbc-a96b-1cfbe3d40529.jpg)
+1.3 弹出一个对话框 `schema2code`，选择要导出的项目类型（uni-app用户端项目还是admin管理端项目），以及表字段名（去掉不需要在前端展现或编辑的字段）
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/fb49118b-364e-412b-9900-f275803cce37.jpg)
+1.4 点击对话框右下角的确定按钮，将执行导入动作，如果导入的文件和工程中的文件有差异将弹出文件对比框，继续操作并确认导入
+- 方式2：在uniCloud web控制台操作
+2.1 选中刚创建好的数据表`opendb-contacts`，点击进入表结构schema界面，点击按钮 “schema2code”
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/3f93a350-2d13-4b8e-afb6-7dc367437b49.jpg)
-5. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中
+2.2 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中
   ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
 
 上图每个区域的解释如下：
@@ -1250,10 +1356,14 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 
 > 注意：需HBuilderX 3.0.5+ 支持
 
+> HBuilderX 3.1.15 schema2code 生成文件结构调整, 生成的 `pages.json` 改为 `page_init.json`，确认导入工程时自动合并到项目的 `pages.json`，`page_init.json`不会导入到工程中，仅在预览界面显示
+
+> HBuilderX 3.1.15 之前的版本 `pages.json` 导入时会覆盖用户工程中已有的 `pages.json`，导入确认时选择不导入该文件手动拷贝内容到 `pages.json`
+
 **全程演示视频**：
 </br>
 <video style="width:50vw;height:28vw;" id="video" preload="none" controls="controls"
-	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4"></video>
+	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/a04e1d03-6d9f-43bf-a74b-80e9a5c31d7f.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/a04e1d03-6d9f-43bf-a74b-80e9a5c31d7f.mp4"></video>
 
 
 
@@ -1269,7 +1379,7 @@ const dbOrderBy = 'register_date desc' // 排序字段，asc(升序)、desc(降�
 const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜索字段，支持模糊搜索的字段列表
 ```
 
-`schema2code`是一个代码辅助生成工具，生成后的代码，经常会有二次开发需求。如果二次开发后又变动schema，建议使用Git等工具管理源码，进行差异比对。
+`schema2code`是一个代码辅助生成工具。
 
 #### 生成页面控件的默认策略
 
@@ -1278,7 +1388,8 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 - 如果配置了字段的component属性，则严格按component的配置执行。
 - 如果没有配置component属性，那么默认有如下策略：
   * 字段类型为bool时，默认使用switch组件
-  * 字段类型为Array时，默认使用uni-data-checkbox组件
+  * 字段类型为Array时，默认使用uni-data-checkbox组件(显示为多选框)
+  * 字段类型为int且使用enum时，默认使用uni-data-checkbox组件(显示为单选框)
   * 字段类型为int时，满足以下2个条件时，使用slider组件
    - 必填字段
    - 配置 `minimum` 或 `maximum`
@@ -1571,51 +1682,3 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 在web控制台的 用户地址表，选择表结构schema，点schema2code生成页面，在生成的代码中会使用多级联选择组件 `<uni-data-picker>`，效果是懒加载的，选择省后，会根据省的选择去拉取市的数据。
 
 `<uni-data-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=3796](https://ext.dcloud.net.cn/plugin?id=3796)
-
-
-
-#### 生成文件上传示例@filepicker
-
-> HBuilderX 3.1.0+ 支持
-
-```json
-{
-  "schema": {
-    "bsonType": "object",
-    "required": [],
-    "properties": {
-      "_id": {
-        "description": "ID，系统自动生成"
-      },
-      "image": {
-        "bsonType": "array",
-        "title": "图片",
-        "description": "图片",
-        "arrayType": "file",
-        "fileMediaType":"image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
-        "fileExtName":"jpg,png", // 扩展名过滤，多个用 , 分割
-        "maxLength": 3, // 限制最大数量
-      }
-    }
-  }
-}
-
-```
-
-上传后的file对象
-```json
-{
-	"name": "filename.jpg",
-	"extname": "jpg",
-	"fileType": "image",
-	"url": "https://xxxx",
-	"size": 0, //单位是字节
-	"image": {
-		"width":10,//单位是像素
-		"height":10
-	}
-}
-```
-
-
-`<uni-file-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=4079](https://ext.dcloud.net.cn/plugin?id=4079)

@@ -254,7 +254,7 @@
 ```
 
 
-- 传入一个对象的所有 `property`
+- 传入一个对象的所有 `property`  (微信小程序暂不支持该用法，即: <blog-post v-bind="post"(错误)></blog-post>)
 
 如果你想要将一个对象的所有 `property` 都作为 `prop` 传入，你可以使用不带参数的 `v-bind` (取代 v-bind:prop-name)。例如，对于一个给定的对象 `post` ：
 
@@ -282,18 +282,23 @@
 
 > 每次父级组件发生变更时，子组件中所有的 prop 都将会刷新为最新的值。这意味着你不应该在一个子组件内部改变 prop。如果你这样做了，Vue 会在浏览器的控制台中发出警告。
 
-- 这个 `prop` 用来传递一个初始值；这个子组件接下来希望将其作为一个本地的 `prop` 数据来使用。
+- 这个 `prop` 用来传递一个初始值；这个子组件接下来希望将其作为一个本地的 `prop` 数据来使用。在这种情况下，最好定义一个本地的 `data property` 并将这个 `prop` 用作其**初始值**：
 
 ```html
 	<template>
 		<view>
 			<!-- 我是子组件componentA -->
-			<view>{{title}}</view>
+			<view>{{myTitle}}</view>
 		</view>
 	</template>
 	<script>
 		export default {
-			props: ['title']
+			props: ['title'],
+			data() {
+				return {
+					myTitle:this.title
+				}
+			}
 		}
 	</script>
 ```
@@ -470,7 +475,9 @@
 ### 将原生事件绑定到组件
 
 你可能有很多次想要在一个组件的根元素上直接监听一个原生事件。
-这时，你可以使用 `v-on` 的 `.native` 修饰符：
+这时，你可以使用 @事件的 `.native` 修饰符：
+
+- 注意：在app、小程序端和h5端表现不一致，h5端获取到的是浏览器原生事件。
 
 ```html
 	<template>
@@ -938,7 +945,7 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 ## 小程序不支持列表
 
 
-- 作用域插槽（字节小程序不支持、除支付宝小程序外仅支持解构插槽、不可使用作用域外数据）
+- 作用域插槽（HBuilderX 3.1.19 以下仅支持解构插槽且不可使用作用域外数据以及使用复杂的表达式）
 - 动态组件
 - 异步组件
 - `inline-template`

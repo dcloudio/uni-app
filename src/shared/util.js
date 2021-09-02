@@ -193,3 +193,5 @@ export function deepClone (vnodes, createElement) {
 
   return vnodes.map(cloneVNode)
 }
+
+export * from './uni-id-mixin'

@@ -52,7 +52,7 @@ export default {
     icon: {
       default: 'success',
       validator (value) {
-        return ['success', 'loading', 'none'].indexOf(value) !== -1
+        return ['success', 'loading', 'error', 'none'].indexOf(value) !== -1
       }
     },
     image: {
@@ -79,6 +79,9 @@ export default {
       }
       if (this.icon === 'loading') {
         return 'uni-loading'
+      }
+      if (this.icon === 'error') {
+        return 'uni-icon-error'
       }
       return ''
     }
@@ -166,6 +169,11 @@ uni-toast .uni-icon_toast {
 uni-toast .uni-icon_toast.uni-icon-success-no-circle:before {
   color: #ffffff;
   font-size: 55px;
+}
+
+uni-toast .uni-icon_toast.uni-icon-error:before {
+  color: #ffffff;
+  font-size: 50px;
 }
 
 uni-toast .uni-icon_toast.uni-loading {

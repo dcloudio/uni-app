@@ -35,6 +35,10 @@
             ]
         ]
     ],
+    "interceptors": [
+        "/core/service/api/base/interceptor.js",
+        []
+    ],
     "request": [
         "/platforms/h5/service/api/network/request.js",
         [
@@ -349,6 +353,15 @@
             ]
         ]
     ],
+    "getVideoInfo": [
+        "/platforms/h5/service/api/media/get-video-info.js",
+        [
+            [
+                "/core/helpers/protocol/media/get-video-info.js",
+                "getVideoInfo"
+            ]
+        ]
+    ],
     "createAudioContext": [
         "/core/service/api/context/audio.js",
         [
@@ -456,6 +469,19 @@
                 "makePhoneCall"
             ]
         ]
+    ],
+    "setClipboardData": [
+        "/platforms/h5/service/api/device/clipboard.js",
+        [
+            [
+                "/core/helpers/protocol/device/set-clipboard-data.js",
+                "setClipboardData"
+            ]
+        ]
+    ],
+    "getClipboardData": [
+        "/platforms/h5/service/api/device/clipboard.js",
+        []
     ],
     "vibrateLong": [
         "/platforms/h5/service/api/device/vibrate.js",
@@ -813,6 +839,14 @@
     ],
     "setRightWindowStyle": [
         "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "getLocale": [
+        "/core/service/api/ui/locale.js",
+        []
+    ],
+    "setLocale": [
+        "/core/service/api/ui/locale.js",
         []
     ],
     "$emit": [

@@ -231,8 +231,9 @@ function checkColor (e) {
 }
 
 function Pattern (image, repetition) {
-  this.image = image
-  this.repetition = repetition
+  this.type = 'pattern'
+  this.data = image
+  this.colorStop = repetition
 }
 
 class CanvasGradient {
@@ -876,7 +877,7 @@ export function canvasToTempFilePath ({
   destHeight,
   canvasId,
   fileType,
-  qualit
+  quality
 }, callbackId) {
   var pageId = getCurrentPageId()
   if (!pageId) {
@@ -897,7 +898,7 @@ export function canvasToTempFilePath ({
     destWidth,
     destHeight,
     fileType,
-    qualit,
+    quality,
     dirname,
     callbackId: cId
   })

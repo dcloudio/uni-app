@@ -4,6 +4,45 @@
 
 源码仓库：[https://gitee.com/dcloud/uni-cloud-router](https://gitee.com/dcloud/uni-cloud-router)
 
+
+---
+
+- [云函数端](#云函数端)
+  - [安装](#安装)
+  - [目录结构](#目录结构)
+  - [控制器（Controller）](#控制器controller)
+    - [如何编写 Controller](#如何编写-controller)
+    - [获取请求参数](#获取请求参数)
+    - [调用 Service](#调用-service)
+    - [定制 URL 化返回的状态码](#定制-url-化返回的状态码)
+  - [服务（Service）](#服务service)
+    - [使用场景](#使用场景)
+    - [如何编写 Service](#如何编写-service)
+    - [使用 Service](#使用-service)
+  - [中间件（Middleware）](#中间件middleware)
+    - [开发中间件](#开发中间件)
+    - [使用中间件](#使用中间件)
+  - [Context](#context)
+    - [获取方式](#获取方式)
+- [客户端](#客户端)
+  - [发送请求](#发送请求)
+  - [返回结果](#返回结果)
+
+## 云函数端
+
+### 安装
+
+**从插件市场导入**
+
+1. 访问插件市场[uni-cloud-router](https://ext.dcloud.net.cn/plugin?id=3660)，点击右侧使用HBuilderX导入插件
+2. 在要使用uni-cloud-router的云函数目录（例：uniCloud/cloudfunctions/router）右键点击`管理公共模块依赖`，选择uni-cloud-router并确定
+
+**使用npm安装**
+
+```bash
+npm install --save uni-cloud-router
+```
+
 ## 介绍
 
 ### 目录结构
@@ -50,9 +89,7 @@ module.exports = {
 
 ```js
 const { Controller } = require("uni-cloud-router");
-module.exports = class HelloController extends (
-  Controller
-) {
+module.exports = class HelloController extends Controller {
   sayHello() {
     return this.service.hello.sayHello();
   }
@@ -65,9 +102,7 @@ module.exports = class HelloController extends (
 
 ```js
 const { Service } = require("uni-cloud-router");
-module.exports = class HelloService extends (
-  Service
-) {
+module.exports = class HelloService extends Service {
   sayHello() {
     return {
       data: "welcome to uni-cloud-router!",
@@ -84,9 +119,13 @@ module.exports = class HelloService extends (
 
 ```js
 sayHello() {
-  this.request('hello/sayHello', {}).then(res => {
-    this.title = res.data
+  uniCloud.callFunction({
+    name: 'hello/sayHello',
+    data: {}
   })
+  .then(res => {
+    this.title = res.data
+  });
 }
 ```
 
@@ -113,9 +152,7 @@ sayHello() {
 // controller/post.js
 const Controller = require("uni-cloud-router").Controller;
 // 必须继承 Controller 类
-module.exports = class PostController extends (
-  Controller
-) {
+module.exports = class PostController extends Controller {
   async create() {
     const { ctx, service } = this;
     // 校验参数
@@ -208,9 +245,7 @@ class PostController extends Controller {
 // service/post.js
 const Service = require("uni-cloud-router").Service;
 // 必须继承 Service
-module.exports = class PostService extends (
-  Service
-) {
+module.exports = class PostService extends Service {
   async create(data) {
     return this.db.add(data);
   }
@@ -246,7 +281,7 @@ module.exports = (options) => {
   // 返回中间件函数
   return async function auth(ctx, next) {
     // 校验 token
-    const auth = uniID.checkToken(ctx.event.uniIdToken);
+    const auth = await uniID.checkToken(ctx.event.uniIdToken);
     if (auth.code) {
       // 校验失败，抛出错误信息
       throw { code: auth.code, message: auth.message };
@@ -259,30 +294,121 @@ module.exports = (options) => {
 
 示例：
 
-- [uni-id 校验 token 中间件](https://github.com/dcloudio/uni-template-admin/blob/master/cloudfunctions-aliyun/uni-admin/middleware/auth.js)
-- [uni-id 校验 permission 中间件](https://github.com/dcloudio/uni-template-admin/blob/master/cloudfunctions-aliyun/uni-admin/middleware/permission.js)
-- [云函数 URL 化中间件](https://github.com/fxy060608/uni-cloud-router/blob/master/src/middleware/http.ts)
+- [云函数URL化 中间件](https://github.com/fxy060608/uni-cloud-router/blob/master/src/middleware/http.ts)
+- [ip拦截中间件](https://ext.dcloud.net.cn/plugin?id=4619)
 
 #### 使用中间件
 
 1. 通过 config.js 配置
 
 ```js
-const auth = require("./middleware/auth.js"); // 引入 auth 中间件
+const auth = require('./middleware/auth.js') // 引入 auth 中间件
 module.exports = {
   debug: true, // 调试模式时，将返回 stack 错误堆栈
   baseDir: __dirname, // 指定应用根目录
   middleware: [
     [
       //数组格式，第一个元素为中间件，第二个元素为中间件生效规则配置
-      auth({ tokenSecret: "tokenSecret-demo" }), // 注册中间件
+      auth({ tokenSecret: 'tokenSecret-demo' }), // 注册中间件
       { enable: true, ignore: /\/login$/ }, // 配置当前中间件生效规则，该规则表示以`/login`结尾的路由不会执行 auth 中间件校验 token
     ],
   ],
-};
+}
 ```
 
 2. 中间件配置项
 
 - enable 控制中间件是否开启。
-- match 设置
+- match 设置只有符合某些规则的请求才会经过这个中间件。
+
+  支持类型：
+
+  - 字符串：当参数为字符串类型时，配置的是一个 action 前缀，所有以该字符串作为前缀的 action 都会匹配上。
+  - 正则：当参数为正则时，直接匹配满足正则验证的 action。
+  - 函数：当参数为一个函数时，会将请求上下文传递给这个函数，根据函数结果（true/false）来判断是否匹配。
+  - 数组：可以由字符串，正则，函数组成，任意一个匹配到即可
+
+- ignore 设置符合某些规则的请求不经过这个中间件。
+
+  支持类型：同 match
+
+### Context
+
+Context 是一个请求级别的对象，在每一次收到用户请求时，会实例化一个 Context 对象，这个对象封装了这次用户请求的信息，并提供了许多便捷的方法来获取请求参数或者设置响应信息。框架会将所有的 Service 挂载到 Context 实例上
+
+#### 获取方式
+
+最常见的 Context 实例获取方式是在 [Middleware](#中间件middleware), [Controller](#控制器controller) 以及 [Service](#服务service) 中。
+
+```js
+// 在 Controller 中通过 this.ctx 获取 Context 实例
+module.exports = class UserController extends Controller {
+  async login() {
+    const data = this.ctx.data // 从 Context 实例上获取请求参数
+  }
+}
+```
+
+```js
+// 在 Service 中通过 this.ctx 获取 Context 实例
+module.exports = class PostService extends Service {
+  async create(data) {
+    const auth = this.ctx.auth // 从 Context 实例上获取 auth(需要启用 uni-id 中间件)
+  }
+}
+```
+
+```js
+// 在 Middleware 中通过 ctx 参数获取 Context 实例
+module.exports = (options) => {
+  // 返回中间件函数
+  return async function auth(ctx, next) {
+    const data = ctx.data // 从 Context 实例上获取请求参数
+    await next()
+  }
+}
+```
+
+### 客户端使用云函数
+
+#### 发送请求
+
+```js
+// 使用 uniCloud 访问
+uniCloud.callFunction({
+  name: 'router', // 要调用的云函数名称
+  data: {
+    action: 'user/login', // 路由地址，对应 controller 下 user.js 的 login 方法
+    // 参数列表
+    data: {
+      // controller 通过 this.ctx.data 获取
+      username: 'demo',
+      password: 'demo',
+    },
+  },
+})
+```
+
+```js
+// 使用 URL 化 request 访问
+uni.request({
+  url: 'xxxxx/router/user/login', // 路由地址，对应 controller 下 user.js 的 login 方法
+  data: {
+    // controller 通过 this.ctx.data 获取
+    username: 'demo',
+    password: 'demo',
+  },
+})
+```
+
+#### 返回结果
+
+```js
+{
+  "code": "", // 异常 code，如："INVOKE_FUNCTION_FAILED"
+  "message": "", // 异常信息
+  "stack": "" // 当 config.js 中配置 debug 为 true 时，返回发生异常的堆栈信息
+  // 其他信息
+}
+```
+

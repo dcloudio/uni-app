@@ -364,7 +364,7 @@ export default {
     }
     const danmuList = this.otherData.danmuList = JSON.parse(JSON.stringify(this.danmuList || []))
     danmuList.sort(function (a, b) {
-      return (a.time || 0) - (a.time || 0)
+      return (a.time || 0) - (b.time || 0)
     })
   },
   mounted () {

@@ -17,7 +17,7 @@
 ```js
 uni.showToast({
 	title: '',
-	mask: false
+	mask: false,
 	duration: 1500
 });
 ```

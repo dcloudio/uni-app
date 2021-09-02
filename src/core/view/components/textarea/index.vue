@@ -1,6 +1,9 @@
 <template>
   <uni-textarea v-on="$listeners">
-    <div class="uni-textarea-wrapper">
+    <div
+      ref="wrapper"
+      class="uni-textarea-wrapper"
+    >
       <div
         v-show="!(composing || valueSync.length)"
         ref="placeholder"
@@ -100,18 +103,6 @@ export default {
       type: [Boolean, String],
       default: false
     },
-    cursor: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionStart: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionEnd: {
-      type: [Number, String],
-      default: -1
-    },
     confirmType: {
       type: String,
       default: ''
@@ -120,32 +111,16 @@ export default {
   data () {
     return {
       valueComposition: '',
-      composing: false,
-      focusSync: this.focus,
       height: 0,
       focusChangeSource: '',
       // iOS 13 以下版本需要修正边距
-      fixMargin: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING,
-      // Safari 14 以上修正禁用状态颜色
-      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
+      fixMargin: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
     }
   },
   computed: {
     maxlengthNumber () {
       var maxlength = Number(this.maxlength)
       return isNaN(maxlength) ? 140 : maxlength
-    },
-    cursorNumber () {
-      var cursor = Number(this.cursor)
-      return isNaN(cursor) ? -1 : cursor
-    },
-    selectionStartNumber () {
-      var selectionStart = Number(this.selectionStart)
-      return isNaN(selectionStart) ? -1 : selectionStart
-    },
-    selectionEndNumber () {
-      var selectionEnd = Number(this.selectionEnd)
-      return isNaN(selectionEnd) ? -1 : selectionEnd
     },
     valueCompute () {
       return (this.composing ? this.valueComposition : this.valueSync).split('\n')
@@ -160,20 +135,6 @@ export default {
         this.focusChangeSource = 'focus'
       }
     },
-    focusSync (val) {
-      this.$emit('update:focus', val)
-      this._checkSelection()
-      this._checkCursor()
-    },
-    cursorNumber () {
-      this._checkCursor()
-    },
-    selectionStartNumber () {
-      this._checkSelection()
-    },
-    selectionEndNumber () {
-      this._checkSelection()
-    },
     height (height) {
       let lineHeight = parseFloat(getComputedStyle(this.$el).lineHeight)
       if (isNaN(lineHeight)) {
@@ -186,7 +147,8 @@ export default {
         lineCount
       })
       if (this.autoHeight) {
-        this.$el.style.height = this.height + 'px'
+        this.$el.style.height = 'auto'
+        this.$refs.wrapper.style.height = this.height + 'px'
       }
     }
   },
@@ -227,35 +189,6 @@ export default {
         this._confirm($event)
         this.$refs.textarea.blur()
       }
-    },
-    _onFocus: function ($event) {
-      this.focusSync = true
-      this.$trigger('focus', $event, {
-        value: this.valueSync
-      })
-    },
-    _checkSelection () {
-      if (this.focusSync && (!this.focusChangeSource) && this.selectionStartNumber > -1 && this.selectionEndNumber > -1) {
-        this.$refs.textarea.selectionStart = this.selectionStartNumber
-        this.$refs.textarea.selectionEnd = this.selectionEndNumber
-      }
-    },
-    _checkCursor () {
-      if (this.focusSync && (this.focusChangeSource === 'focus' || ((!this.focusChangeSource) && this.selectionStartNumber < 0 && this.selectionEndNumber < 0)) && this.cursorNumber > -1) {
-        this.$refs.textarea.selectionEnd = this.$refs.textarea.selectionStart = this.cursorNumber
-      }
-    },
-    _onBlur: function ($event) {
-      // iOS 输入法 compositionend 事件可能晚于 blur
-      if (this.composing) {
-        this.composing = false
-        this._onInput($event, true)
-      }
-      this.focusSync = false
-      this.$trigger('blur', $event, {
-        value: this.valueSync,
-        cursor: this.$refs.textarea.selectionEnd
-      })
     },
     _onCompositionstart ($event) {
       this.composing = true
@@ -337,6 +270,7 @@ uni-textarea[hidden] {
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: inherit;
 }
 .uni-textarea-placeholder,
 .uni-textarea-line,

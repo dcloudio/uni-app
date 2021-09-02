@@ -199,6 +199,43 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
       }
     })
   }
+  // fix mp-qq https://github.com/dcloudio/uni-app/issues/2648
+  const appJsonFile = compilation.assets['app.json']
+  if (process.env.UNI_PLATFORM === 'mp-qq' && appJsonFile) {
+    const obj = JSON.parse(appJsonFile.source())
+    if (obj && obj.usingComponents && !Object.keys(obj.usingComponents).length) {
+      const componentName = 'fix-2648'
+      obj.usingComponents[componentName] = `/${componentName}`
+      const source = JSON.stringify(obj, null, 2)
+      appJsonFile.source = function () {
+        return source
+      }
+      const files = [
+        {
+          ext: 'qml',
+          source: '<!-- https://github.com/dcloudio/uni-app/issues/2648 -->'
+        },
+        {
+          ext: 'js',
+          source: 'Component({})'
+        },
+        {
+          ext: 'json',
+          source: '{"component":true}'
+        }
+      ]
+      files.forEach(({ ext, source }) => {
+        compilation.assets[`${componentName}.${ext}`] = {
+          size () {
+            return Buffer.byteLength(source, 'utf8')
+          },
+          source () {
+            return source
+          }
+        }
+      })
+    }
+  }
   if (process.env.UNI_FEATURE_OBSOLETE !== 'false') {
     if (lastComponents.length) {
       for (const name of lastComponents) {

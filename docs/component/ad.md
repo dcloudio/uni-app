@@ -17,9 +17,9 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（2.5.2+）|x|√|x|√|√|√|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|快手小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√（2.5.2+）|x|√|x|√|√|√|x|x|√|
 
 
 **开通配置广告**
@@ -40,7 +40,7 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 |:-|:-|:-|:-|:-|
 |data|Object|可选|广告数据，通过 plus.ad.getAds (参考示例代码)，设置后adpid将无效|App|
 |adpid|String||uni-AD App广告位id，在[uni-AD官网](https://uniad.dcloud.net.cn/)申请广告位|App|
-|unit-id|String||广告单元id，可在小程序管理后台的流量主模块新建|微信小程序、字节跳动小程序(最低版本1.19.0+)、QQ小程序|
+|unit-id|String||广告单元id，可在小程序管理后台的流量主模块新建|微信小程序、字节跳动小程序(最低版本1.19.0+)、QQ小程序、快手小程序|
 |ad-intervals|number||广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新）|微信小程序(基础库2.3.1+)|
 |appid|String||小程序应用 ID|百度小程序|
 |apid|String||小程序广告位 ID|百度小程序|
@@ -48,7 +48,7 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 |ad-top|Number||type为feeds时广告上边距（px），必须大于0|QQ小程序|
 |ad-width|Number||type为feeds时广告宽度（px），默认100%，最大值为屏幕宽度，最小值为265|QQ小程序|
 |ad-height|Number||type为feeds时广告高度（px），最小85，最大160|QQ小程序|
-|type|String|feed||QQ小程序、百度小程序、字节跳动小程序|
+|type|String|feed||QQ小程序、百度小程序、字节跳动小程序、快手小程序|
 |@load|EventHandle||广告加载成功的回调||
 |@error|EventHandle||广告加载失败的回调，event.detail = {errCode: }||
 |@close|EventHandle||广告关闭的回调||
@@ -60,7 +60,7 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 
 **type属性 头条**
 
-广告的类型，默认 bannner，具体类型有：banner、video（视频）、large（大图）、lImg（左图右文）、rImg（右图左文），默认值为 banner
+广告的类型，默认 banner，具体类型有：banner、video（视频）、large（大图）、lImg（左图右文）、rImg（右图左文），默认值为 banner
 
 **type属性 QQ**
 
@@ -161,7 +161,7 @@ export default {
 ```
 
 
-api的方式(仅app平台支持)
+api的方式(仅app平台支持)，不推荐使用这种调用方式，调用比较复杂，且不跨平台，开发者还需要手动处理缓存逻辑
 
 ``` html
 <template>
@@ -219,7 +219,7 @@ export default {
 ```
 
 
-使用 ad/ad-draw 模拟插屏广告效果
+使用 ad/ad-draw 模拟插屏广告效果@Interstitial
 
 ```html
 <template>

@@ -24,7 +24,8 @@ const {
 
 const {
   getInItIfStatement,
-  getDataExpressionStatement
+  getDataExpressionStatement,
+  getRenderSlotStatement
 } = require('./statements')
 
 const visitor = require('./visitor')
@@ -90,6 +91,7 @@ module.exports = function traverse (ast, state) {
   const blockStatementBody = []
   const objectPropertyArray = []
   const initExpressionStatementArray = []
+  const renderSlotStatementArray = []
   // TODO 待重构，至少 filter，method 等实现方式要调整
   babelTraverse(ast, visitor, undefined, {
     scoped: [],
@@ -100,7 +102,8 @@ module.exports = function traverse (ast, state) {
     identifierArray: identifierArray,
     propertyArray: objectPropertyArray,
     declarationArray: blockStatementBody,
-    initExpressionStatementArray: initExpressionStatementArray
+    initExpressionStatementArray: initExpressionStatementArray,
+    renderSlotStatementArray
   })
 
   if (initExpressionStatementArray.length) {
@@ -109,6 +112,10 @@ module.exports = function traverse (ast, state) {
 
   if (objectPropertyArray.length) {
     blockStatementBody.push(getDataExpressionStatement(objectPropertyArray))
+  }
+
+  if (renderSlotStatementArray.length) {
+    blockStatementBody.push(getRenderSlotStatement(state, renderSlotStatementArray))
   }
 
   reIdentifier(identifierArray)

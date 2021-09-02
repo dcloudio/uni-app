@@ -50,6 +50,9 @@
 |mp-weixin|微信小程序|
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
+|mp-qq|QQ小程序|
+|mp-toutiao|字节小程序|
+|mp-kuaishou|快手小程序|
 
 ## 资源路径说明
 
@@ -224,6 +227,9 @@ switch(uni.getSystemInfoSync().platform){
 如有必要，也可以在条件编译里自己定义一个变量，赋不同值。在后续运行代码中动态判断环境。
 
 
+### 其他环境变量
+
+其他环境变量的定义方式参考 [环境变量](/collocation/env)。
 ## 页面样式与布局
 
 uni-app的css与web的css基本一致。本文没有讲解css的用法。在你了解web的css的基础之上，本文讲述一些样式相关的注意事项。
@@ -775,6 +781,7 @@ const package = require('packageName')
 |百度小程序|支持百度小程序组件|swancomponents|
 |字节跳动小程序|支持字节跳动小程序组件|ttcomponents|
 |QQ小程序|支持QQ小程序组件|wxcomponents|
+|快手小程序|支持快手小程序组件|kscomponents|
 
 此文档要求开发者对各端小程序的**自定义组件**有一定了解，没接触过小程序**自定义组件**的可以参考：
 
@@ -783,6 +790,7 @@ const package = require('packageName')
 - [支付宝小程序自定义组件](https://docs.alipay.com/mini/framework/custom-component-overview)
 - [字节跳动小程序自定义组件](https://developer.toutiao.com/docs/framework/custom_component_intro.html)
 - [QQ小程序自定义组件](https://q.qq.com/wiki/develop/miniprogram/frame/diy_components/)
+- [快手小程序自定义组件](https://mp.kuaishou.com/docs/develop/frame/custom_comp/component_temp_style.html)
 
 **目录结构**
 

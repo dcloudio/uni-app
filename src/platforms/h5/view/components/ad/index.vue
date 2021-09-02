@@ -78,9 +78,9 @@ class AdConfig {
 
   _doCallback (adpid, success, fail) {
     AdConfig.IS++
-    var data = this._adConfig
-    if (data[adpid]) {
-      success(data[adpid])
+    var { a, b } = this._adConfig
+    if (a[adpid]) {
+      success(b, a[adpid])
     } else {
       fail(this.ERROR_INVALID_ADPID)
     }
@@ -95,7 +95,7 @@ class AdConfig {
     uni.request({
       url: this.URL,
       method: 'GET',
-      timeout: 5000,
+      timeout: 8000,
       data: {
         d: location.hostname,
         a: adpid
@@ -150,11 +150,11 @@ class AdConfig {
   }
 }
 Object.assign(AdConfig.prototype, {
-  URL: '//qy5y9ee9ch8r87pg72w5.dcloud.net.cn/hcs',
+  URL: 'https://hac1.dcloud.net.cn/ah5',
   KEY: 'uni_app_ad_config',
   CACHE_TIME: 1000 * 60 * 10,
   ERROR_INVALID_ADPID: {
-    '-5002': '无效adpid'
+    '-5002': 'invalid adpid'
   }
 })
 
@@ -234,17 +234,73 @@ class AdReport {
   }
 }
 Object.assign(AdReport.prototype, {
-  URL: '//hp66hwpyev7yx2hfughh.dcloud.net.cn/ahl',
+  URL: 'https://has1.dcloud.net.cn/ahl',
   KEY: 'uni_app_ad_guid'
 })
 
-const adProvider = {
-  hx: 'zswx_hx',
-  ky: 'zswx_ky'
+class AdScript {
+  static get instance () {
+    if (this._instance == null) {
+      this._instance = new AdScript()
+    }
+    return this._instance
+  }
+
+  constructor () {
+    this._instance = null
+    this._callback = {}
+    this._cache = {}
+  }
+
+  load (data, success, fail) {
+    const provider = data.provider
+    if (this._cache[provider] === undefined) {
+      this.loadScript(data)
+    }
+
+    if (this._cache[provider] === 1) {
+      success()
+    } else {
+      if (!this._callback[provider]) {
+        this._callback[provider] = []
+      }
+      this._callback[provider].push({
+        success,
+        fail
+      })
+    }
+  }
+
+  loadScript (data) {
+    const provider = data.provider
+    this._cache[provider] = 0
+    var ads = document.createElement('script')
+    ads.setAttribute('id', 'uniad_provider' + provider)
+    const script = data.script
+    for (const var1 in script) {
+      ads.setAttribute(var1, script[var1])
+    }
+    ads.onload = () => {
+      this._cache[provider] = 1
+      this._callback[provider].forEach(({ success }) => {
+        success()
+      })
+      this._callback[provider].length = 0
+    }
+    ads.onerror = (err) => {
+      this._cache[provider] = undefined
+      this._callback[provider].forEach(({ fail }) => {
+        fail(err)
+      })
+      this._callback[provider].length = 0
+    }
+    document.body.append(ads)
+  }
 }
 
 const CHECK_RENDER_DELAY = 1000
-const CHECK_RENDER_RETRY = 3
+const CHECK_RENDER_RETRY = 5
+const DEFAULT_WIDESCREEN_WIDTH = 750
 
 export default {
   name: 'Ad',
@@ -253,6 +309,14 @@ export default {
     adpid: {
       type: [Number, String],
       default: ''
+    },
+    adpidWidescreen: {
+      type: [Number, String],
+      default: ''
+    },
+    widescreenWidth: {
+      type: [Number, String],
+      default: DEFAULT_WIDESCREEN_WIDTH
     }
   },
   watch: {
@@ -260,19 +324,25 @@ export default {
       if (val) {
         this._loadData(val)
       }
+    },
+    adpidWidescreen (val) {
+      if (val) {
+        this._loadData(val)
+      }
     }
   },
   mounted () {
+    this._p = {}
     this._pl = []
-    this._pd = {}
     this._pi = 0
     this._checkTimer = null
     this._checkTimerCount = 0
+    this._isWidescreen = this.$refs.container.clientWidth > parseInt(this.widescreenWidth)
     this._loadData()
     AdReport.instance.get({
       h: __uniConfig.compilerVersion,
       a: this.adpid,
-      at: 30,
+      at: -3,
       ic: AdConfig.IC,
       is: AdConfig.IS
     })
@@ -286,17 +356,18 @@ export default {
       this._report(41)
     },
     _reset () {
+      this._p = {}
       this._pl = []
-      this._pd = {}
       this._pi = 0
       this._clearCheckTimer()
       this.$refs.container.innerHTML = ''
     },
     _loadData (adpid) {
       this._reset()
-      AdConfig.instance.get(adpid || this.adpid, (data) => {
-        this._pd = data
-        this._pl = data.psp.split(',')
+      const aid = adpid || (this._isWidescreen ? this.adpidWidescreen : this.adpid)
+      AdConfig.instance.get(aid, (b, a) => {
+        this._b = b
+        this._pl = a
         this._renderAd()
       }, (err) => {
         this.$trigger('error', {}, err)
@@ -307,16 +378,29 @@ export default {
         return
       }
 
-      var ap = this._pl[this._pi]
-      var data = this._pd[ap]
-      switch (ap) {
-        case adProvider.hx:
-          this._renderHX(data)
-          break
-        case adProvider.ky:
-          this._renderKY(data)
-          break
-      }
+      const data = this._pl[this._pi]
+      const providerId = data.a1
+      this._b[providerId].provider = providerId
+
+      AdScript.instance.load(this._b[providerId], () => {
+        this._renderAdView(this._b[providerId], data)
+      }, (err) => {
+        this.$trigger('error', {}, err)
+      })
+    },
+    _renderAdView (provider, data) {
+      var randomId = this._randomId()
+      var adView = document.createElement('div')
+      adView.setAttribute('class', randomId)
+      this.$refs.container.innerHTML = ''
+      this.$refs.container.append(adView)
+      let bindThis = window
+      provider.s.split('.').reduce((total, currentValue) => {
+        bindThis = total
+        return total[currentValue]
+      }, window).bind(bindThis)(data.a2, randomId, 2)
+
+      this._startCheckTimer()
     },
     _renderNext () {
       if (this._pi >= this._pl.length - 1) {
@@ -325,38 +409,6 @@ export default {
 
       this._pi++
       this._renderAd()
-    },
-    _renderHX (data) {
-      if (document.querySelector('#' + adProvider.hx)) {
-        this._renderNext()
-        return
-      }
-
-      var ad = document.createElement('script')
-      ad.src = data.src || data.url
-
-      var adView = document.createElement('div')
-      adView.setAttribute('id', adProvider.hx)
-      adView.appendChild(ad)
-
-      this.$refs.container.innerHTML = ''
-      this.$refs.container.append(adView)
-
-      this._startCheckTimer()
-    },
-    _renderKY (data) {
-      var randomId = this._randomId()
-      var ad = document.createElement('script')
-      ad.src = (data.src || data.url) + '&_ct=' + randomId
-
-      var adView = document.createElement('div')
-      adView.setAttribute('id', randomId)
-      adView.appendChild(ad)
-
-      this.$refs.container.innerHTML = ''
-      this.$refs.container.append(adView)
-
-      this._startCheckTimer()
     },
     _checkRender () {
       var hasContent = (this.$refs.container.children.length > 0 && this.$refs.container.clientHeight > 40)
@@ -388,27 +440,18 @@ export default {
       }
     },
     _report (type) {
-      var taskId = ''
-      if (this._pl.length > 0 && this._pi < this._pl.length) {
-        var data = this._pd[this._pl[this._pi]]
-        if (data) {
-          taskId = data.task_id
-        }
-      }
-
       AdReport.instance.get({
         h: __uniConfig.compilerVersion,
         a: this.adpid,
-        t: taskId,
         at: type
       })
     },
     _randomId () {
       var result = ''
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 4; i++) {
         result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
       }
-      return result
+      return '_u' + result
     }
   }
 }

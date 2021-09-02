@@ -6,3 +6,4 @@ unpackage/
 .DS_Store
 !packages/uni-app-plus/dist
 package-lock.json
+!packages/vue-cli-plugin-uni/packages/**/*

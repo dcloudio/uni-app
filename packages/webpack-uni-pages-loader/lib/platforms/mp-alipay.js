@@ -12,6 +12,10 @@ const {
   parseTabBar
 } = require('../util')
 
+function defaultCopy (name, value, json) {
+  json[name] = value
+}
+
 const pagesJson2AppJson = {
   globalStyle: function (name, value, json) {
     json.window = parseStyle(value)
@@ -22,7 +26,8 @@ const pagesJson2AppJson = {
   },
   tabBar: function (name, value, json) {
     json.tabBar = parseTabBar(value)
-  }
+  },
+  preloadRule: defaultCopy
 }
 
 function copyToJson (json, fromJson, options) {
@@ -69,6 +74,10 @@ module.exports = function (pagesJson, manifestJson) {
     app.plugins = platformJson.plugins
   }
 
+  if (platformJson.useDynamicPlugins) {
+    app.useDynamicPlugins = true
+  }
+
   if (app.usingComponents) {
     updateAppJsonUsingComponents(app.usingComponents)
   }
@@ -76,6 +85,8 @@ module.exports = function (pagesJson, manifestJson) {
   const project = Object.assign({}, manifestJson['mp-alipay'] || {})
   delete project.usingComponents
   delete project.plugins
+  delete project.useDynamicPlugins
+  !('component2' in project) && (project.component2 = true)
 
   return [{
     name: 'app',

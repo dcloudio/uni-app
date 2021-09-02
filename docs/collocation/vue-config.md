@@ -59,6 +59,23 @@ module.exports = {
 }
 ```
 
+**配置环境变量**
+
+```js
+const webpack = require('webpack')
+
+module.exports = {
+  chainWebpack: config => {
+    config
+      .plugin('define')
+      .tap(args => {
+        args[0]['process.env'].VUE_APP_TEST = '"test"'
+        return args
+      })
+  }
+}
+```
+
 **发布时删除console**
 
 `HBuilderX 2.6.8+`支持

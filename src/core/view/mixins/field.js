@@ -4,6 +4,7 @@ import {
 } from 'uni-shared'
 import emitter from './emitter'
 import keyboard from './keyboard'
+import interact from './interact'
 
 UniViewJSBridge.subscribe('getSelectedTextRange', function ({ pageId, callbackId }) {
   const activeElement = document.activeElement
@@ -29,7 +30,7 @@ let startTime
 
 export default {
   name: 'Field',
-  mixins: [emitter, keyboard],
+  mixins: [emitter, keyboard, interact],
   model: {
     prop: 'value',
     event: 'update:value'
@@ -49,11 +50,27 @@ export default {
     focus: {
       type: [Boolean, String],
       default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
     }
   },
   data () {
     return {
-      valueSync: this._getValueString(this.value)
+      composing: false,
+      valueSync: this._getValueString(this.value),
+      focusSync: this.focus,
+      // Safari 14 以上修正禁用状态颜色
+      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
     }
   },
   watch: {
@@ -63,11 +80,35 @@ export default {
       } else {
         this._blur()
       }
+    },
+    focusSync (val) {
+      this.$emit('update:focus', val)
+    },
+    cursorNumber () {
+      this._checkCursor()
+    },
+    selectionStartNumber () {
+      this._checkSelection()
+    },
+    selectionEndNumber () {
+      this._checkSelection()
     }
   },
   computed: {
     needFocus () {
       return this.autoFocus || this.focus
+    },
+    cursorNumber () {
+      var cursor = Number(this.cursor)
+      return isNaN(cursor) ? -1 : cursor
+    },
+    selectionStartNumber () {
+      var selectionStart = Number(this.selectionStart)
+      return isNaN(selectionStart) ? -1 : selectionStart
+    },
+    selectionEndNumber () {
+      var selectionEnd = Number(this.selectionEnd)
+      return isNaN(selectionEnd) ? -1 : selectionEnd
     }
   },
   created () {
@@ -76,6 +117,7 @@ export default {
     }, 100)
     this.$watch('value', valueChange)
     this.__triggerInput = throttle(($event, detail) => {
+      this.__valueChange.cancel()
       this.$emit('update:value', detail.value)
       this.$trigger('input', $event, detail)
     }, 100)
@@ -106,7 +148,9 @@ export default {
       this._field = el
       startTime = startTime || Date.now()
       if (this.needFocus) {
-        this._focus()
+        setTimeout(() => {
+          this._focus()
+        })
       }
     },
     _focus () {
@@ -127,12 +171,58 @@ export default {
           return
         }
         field.focus()
-        plus.key.showSoftKeybord()
+        // 无用户交互的 webview 需主动显示键盘（安卓）
+        if (!this.userInteract) {
+          plus.key.showSoftKeybord()
+        }
       }
     },
     _blur () {
       const field = this._field
       field && field.blur()
+    },
+    _onFocus ($event) {
+      this.focusSync = true
+      this.$trigger('focus', $event, {
+        value: this.valueSync
+      })
+      // 从 watch:focusSync 中移出到这里。在watcher中如果focus初始值为ture，则不会执行以下逻辑
+      this._checkSelection()
+      this._checkCursor()
+    },
+    _onBlur ($event) {
+      // iOS 输入法 compositionend 事件可能晚于 blur
+      if (this.composing) {
+        this.composing = false
+        this._onInput($event, true)
+      }
+      this.focusSync = false
+      const field = $event.target
+      let cursor
+      if (field.type === 'number') {
+        field.type = 'text'
+        cursor = field.selectionEnd
+        field.type = 'number'
+      } else {
+        cursor = field.selectionEnd
+      }
+      this.$trigger('blur', $event, {
+        value: this.valueSync,
+        cursor
+      })
+    },
+    _checkSelection () {
+      const field = this._field
+      if (this.focusSync && this.selectionStartNumber > -1 && this.selectionEndNumber > -1 && field.type !== 'number') {
+        field.selectionStart = this.selectionStartNumber
+        field.selectionEnd = this.selectionEndNumber
+      }
+    },
+    _checkCursor () {
+      const field = this._field
+      if (this.focusSync && this.selectionStartNumber < 0 && this.selectionEndNumber < 0 && this.cursorNumber > -1 && field.type !== 'number') {
+        field.selectionEnd = field.selectionStart = this.cursorNumber
+      }
     }
   }
 }

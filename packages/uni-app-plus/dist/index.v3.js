@@ -13,7 +13,8 @@ var serviceContext = (function () {
     'base64ToArrayBuffer',
     'arrayBufferToBase64',
     'addInterceptor',
-    'removeInterceptor'
+    'removeInterceptor',
+    'interceptors'
   ];
 
   const network = [
@@ -63,8 +64,10 @@ var serviceContext = (function () {
     'chooseFile',
     'previewImage',
     'getImageInfo',
+    'getVideoInfo',
     'saveImageToPhotosAlbum',
     'compressImage',
+    'compressVideo',
     'getRecorderManager',
     'getBackgroundAudioManager',
     'createAudioContext',
@@ -190,7 +193,9 @@ var serviceContext = (function () {
     'getRightWindowStyle',
     'setTopWindowStyle',
     'setLeftWindowStyle',
-    'setRightWindowStyle'
+    'setRightWindowStyle',
+    'getLocale',
+    'setLocale'
   ];
 
   const event = [
@@ -223,8 +228,10 @@ var serviceContext = (function () {
     'login',
     'checkSession',
     'getUserInfo',
+    'getUserProfile',
     'preLogin',
     'closeAuthView',
+    'getCheckBoxState',
     'share',
     'shareWithSystem',
     'showShareMenu',
@@ -249,7 +256,9 @@ var serviceContext = (function () {
 
   const ad = [
     'createRewardedVideoAd',
-    'createFullScreenVideoAd'
+    'createFullScreenVideoAd',
+    'createInterstitialAd',
+    'createInteractiveAd'
   ];
 
   const apis = [
@@ -282,6 +291,56 @@ var serviceContext = (function () {
     })); // https://github.com/facebook/flow/issues/285
     window.addEventListener('test-passive', null, opts);
   } catch (e) {}
+
+  function b64DecodeUnicode (str) {
+    return decodeURIComponent(atob(str).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+  }
+
+  function getCurrentUserInfo () {
+    const token = ( uni ).getStorageSync('uni_id_token') || '';
+    const tokenArr = token.split('.');
+    if (!token || tokenArr.length !== 3) {
+      return {
+        uid: null,
+        role: [],
+        permission: [],
+        tokenExpired: 0
+      }
+    }
+    let userInfo;
+    try {
+      userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+    } catch (error) {
+      throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
+    }
+    userInfo.tokenExpired = userInfo.exp * 1000;
+    delete userInfo.exp;
+    delete userInfo.iat;
+    return userInfo
+  }
+
+  function uniIdMixin (Vue) {
+    Vue.prototype.uniIDHasRole = function (roleId) {
+      const {
+        role
+      } = getCurrentUserInfo();
+      return role.indexOf(roleId) > -1
+    };
+    Vue.prototype.uniIDHasPermission = function (permissionId) {
+      const {
+        permission
+      } = getCurrentUserInfo();
+      return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1
+    };
+    Vue.prototype.uniIDTokenValid = function () {
+      const {
+        tokenExpired
+      } = getCurrentUserInfo();
+      return tokenExpired > Date.now()
+    };
+  }
 
   const _toString = Object.prototype.toString;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -638,7 +697,7 @@ var serviceContext = (function () {
         }
         if (res === false) {
           return {
-            then () {}
+            then () { }
           }
         }
       }
@@ -718,16 +777,20 @@ var serviceContext = (function () {
       if (!isPromise(res)) {
         return res
       }
-      return res.then(res => {
-        return res[1]
-      }).catch(res => {
-        return res[0]
+      return new Promise((resolve, reject) => {
+        res.then(res => {
+          if (res[0]) {
+            reject(res[0]);
+          } else {
+            resolve(res[1]);
+          }
+        });
       })
     }
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1003,7 +1066,6 @@ var serviceContext = (function () {
     quality: {
       type: Number,
       validator (value, params) {
-        value = Math.floor(value);
         params.quality = value > 0 && value < 1 ? value : 1;
       }
     }
@@ -1190,6 +1252,11 @@ var serviceContext = (function () {
       return compiled;
   }
 
+  const LOCALE_ZH_HANS = 'zh-Hans';
+  const LOCALE_ZH_HANT = 'zh-Hant';
+  const LOCALE_EN = 'en';
+  const LOCALE_FR = 'fr';
+  const LOCALE_ES = 'es';
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
   const defaultFormatter = new BaseFormatter();
@@ -1210,25 +1277,25 @@ var serviceContext = (function () {
       locale = locale.toLowerCase();
       if (locale.indexOf('zh') === 0) {
           if (locale.indexOf('-hans') !== -1) {
-              return 'zh-Hans';
+              return LOCALE_ZH_HANS;
           }
           if (locale.indexOf('-hant') !== -1) {
-              return 'zh-Hant';
+              return LOCALE_ZH_HANT;
           }
           if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-              return 'zh-Hant';
+              return LOCALE_ZH_HANT;
           }
-          return 'zh-Hans';
+          return LOCALE_ZH_HANS;
       }
-      const lang = startsWith(locale, ['en', 'fr', 'es']);
+      const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
       if (lang) {
           return lang;
       }
   }
   class I18n {
       constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
-          this.locale = 'en';
-          this.fallbackLocale = 'en';
+          this.locale = LOCALE_EN;
+          this.fallbackLocale = LOCALE_EN;
           this.message = {};
           this.messages = {};
           this.watchers = [];
@@ -1236,7 +1303,7 @@ var serviceContext = (function () {
               this.fallbackLocale = fallbackLocale;
           }
           this.formater = formater || defaultFormatter;
-          this.messages = messages;
+          this.messages = messages || {};
           this.setLocale(locale);
           if (watcher) {
               this.watchLocale(watcher);
@@ -1245,6 +1312,10 @@ var serviceContext = (function () {
       setLocale(locale) {
           const oldLocale = this.locale;
           this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+          if (!this.messages[this.locale]) {
+              // 可能初始化时不存在
+              this.messages[this.locale] = {};
+          }
           this.message = this.messages[this.locale];
           this.watchers.forEach((watcher) => {
               watcher(this.locale, oldLocale);
@@ -1259,7 +1330,7 @@ var serviceContext = (function () {
               this.watchers.splice(index, 1);
           };
       }
-      mergeLocaleMessage(locale, message) {
+      add(locale, message) {
           if (this.messages[locale]) {
               Object.assign(this.messages[locale], message);
           }
@@ -1284,33 +1355,44 @@ var serviceContext = (function () {
       }
   }
 
+  const ignoreVueI18n = true;
   function initLocaleWatcher(appVm, i18n) {
-      appVm.$i18n &&
-          appVm.$i18n.vm.$watch('locale', (newLocale) => {
+      if (appVm.$i18n) {
+          const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
+          vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
               i18n.setLocale(newLocale);
           }, {
               immediate: true,
           });
-  }
-  function getDefaultLocale() {
-      if (typeof navigator !== 'undefined') {
-          return navigator.userLanguage || navigator.language;
       }
-      if (typeof plus !== 'undefined') {
-          // TODO 待调整为最新的获取语言代码
-          return plus.os.language;
-      }
-      return uni.getSystemInfoSync().language;
   }
-  function initVueI18n(messages, fallbackLocale = 'en', locale) {
+  // function getDefaultLocale() {
+  //   if (typeof navigator !== 'undefined') {
+  //     return (navigator as any).userLanguage || navigator.language
+  //   }
+  //   if (typeof plus !== 'undefined') {
+  //     // TODO 待调整为最新的获取语言代码
+  //     return plus.os.language
+  //   }
+  //   return uni.getSystemInfoSync().language
+  // }
+  function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+      // 兼容旧版本入参
+      if (typeof locale !== 'string') {
+          [locale, messages] = [messages, locale];
+      }
+      if (typeof locale !== 'string') {
+          locale = fallbackLocale;
+      }
       const i18n = new I18n({
           locale: locale || fallbackLocale,
           fallbackLocale,
           messages,
+          watcher,
       });
       let t = (key, values) => {
           if (typeof getApp !== 'function') {
-              // app-plus view
+              // app view
               /* eslint-disable no-func-assign */
               t = function (key, values) {
                   return i18n.t(key, values);
@@ -1318,10 +1400,10 @@ var serviceContext = (function () {
           }
           else {
               const appVm = getApp().$vm;
-              if (!appVm.$t || !appVm.$i18n) {
-                  if (!locale) {
-                      i18n.setLocale(getDefaultLocale());
-                  }
+              if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
+                  // if (!locale) {
+                  //   i18n.setLocale(getDefaultLocale())
+                  // }
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
                       return i18n.t(key, values);
@@ -1346,29 +1428,18 @@ var serviceContext = (function () {
           return t(key, values);
       };
       return {
+          i18n,
           t(key, values) {
               return t(key, values);
+          },
+          add(locale, message) {
+              return i18n.add(locale, message);
           },
           getLocale() {
               return i18n.getLocale();
           },
           setLocale(newLocale) {
               return i18n.setLocale(newLocale);
-          },
-          mixin: {
-              beforeCreate() {
-                  const unwatch = i18n.watchLocale(() => {
-                      this.$forceUpdate();
-                  });
-                  this.$once('hook:beforeDestroy', function () {
-                      unwatch();
-                  });
-              },
-              methods: {
-                  $$t(key, values) {
-                      return t(key, values);
-                  },
-              },
           },
       };
   }
@@ -1546,10 +1617,32 @@ var serviceContext = (function () {
     'zh-Hant': zhHant
   };
 
-  const fallbackLocale = 'en';
+  let locale;
 
-  const i18n = initVueI18n( messages , fallbackLocale);
+  {
+    if (typeof weex === 'object') {
+      locale = weex.requireModule('plus').getLanguage();
+    }
+  }
+
+  const i18n = initVueI18n(locale,  messages );
   const t = i18n.t;
+  const i18nMixin = i18n.mixin = {
+    beforeCreate () {
+      const unwatch = i18n.i18n.watchLocale(() => {
+        this.$forceUpdate();
+      });
+      this.$once('hook:beforeDestroy', function () {
+        unwatch();
+      });
+    },
+    methods: {
+      $$t (key, values) {
+        return t(key, values)
+      }
+    }
+  };
+  const setLocale = i18n.setLocale;
   const getLocale = i18n.getLocale;
 
   const setClipboardData = {
@@ -1628,10 +1721,13 @@ var serviceContext = (function () {
   function getRealPath (filePath) {
     if (filePath.indexOf('/') === 0) {
       if (filePath.indexOf('//') === 0) {
-        filePath = 'https:' + filePath;
-      } else {
-        return addBase(filePath.substr(1))
+        return 'https:' + filePath
       }
+      // 平台绝对路径 安卓、iOS
+      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+        return 'file://' + filePath
+      }
+      return addBase(filePath.substr(1))
     }
     // 网络资源或base64
     if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
@@ -1893,6 +1989,10 @@ var serviceContext = (function () {
         params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES$2;
       }
     },
+    compressed: {
+      type: Boolean,
+      default: true
+    },
     maxDuration: {
       type: Number,
       default: 60
@@ -1930,6 +2030,33 @@ var serviceContext = (function () {
     compressImage: compressImage
   });
 
+  const compressVideo = {
+    src: {
+      type: String,
+      required: true,
+      validator (src, params) {
+        params.src = getRealPath(src);
+      }
+    },
+    quality: {
+      type: String
+    },
+    bitrate: {
+      type: Number
+    },
+    fps: {
+      type: Number
+    },
+    resolution: {
+      type: Number
+    }
+  };
+
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    compressVideo: compressVideo
+  });
+
   const getImageInfo = {
     src: {
       type: String,
@@ -1940,9 +2067,24 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getImageInfo: getImageInfo
+  });
+
+  const getVideoInfo = {
+    src: {
+      type: String,
+      required: true,
+      validator (src, params) {
+        params.src = getRealPath(src);
+      }
+    }
+  };
+
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getVideoInfo: getVideoInfo
   });
 
   const previewImage = {
@@ -1976,7 +2118,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage
   });
@@ -1991,7 +2133,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum
   });
@@ -2009,7 +2151,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -2120,7 +2262,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request
   });
@@ -2178,7 +2320,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -2199,7 +2341,7 @@ var serviceContext = (function () {
       type: String,
       validator (value, params) {
         if (value) {
-          params.type = getRealPath(value);
+          params.filePath = getRealPath(value);
         }
       }
     },
@@ -2220,7 +2362,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -2245,7 +2387,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -2266,7 +2408,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadSubPackage: loadSubPackage
   });
@@ -2288,7 +2430,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     preLogin: preLogin
   });
@@ -2489,7 +2631,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -2535,7 +2677,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -2572,7 +2714,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -2615,7 +2757,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -2635,7 +2777,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -2687,7 +2829,7 @@ var serviceContext = (function () {
     icon: {
       default: 'success',
       validator (icon, params) {
-        if (['success', 'loading', 'none'].indexOf(icon) === -1) {
+        if (['success', 'loading', 'error', 'none'].indexOf(icon) === -1) {
           params.icon = 'success';
         }
       }
@@ -2760,7 +2902,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_36 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -2859,7 +3001,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_37 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -2894,23 +3036,25 @@ var serviceContext = (function () {
   './media/choose-image.js': require_context_module_0_16,
   './media/choose-video.js': require_context_module_0_17,
   './media/compress-image.js': require_context_module_0_18,
-  './media/get-image-info.js': require_context_module_0_19,
-  './media/preview-image.js': require_context_module_0_20,
-  './media/save-image-to-photos-album.js': require_context_module_0_21,
-  './network/download-file.js': require_context_module_0_22,
-  './network/request.js': require_context_module_0_23,
-  './network/socket.js': require_context_module_0_24,
-  './network/upload-file.js': require_context_module_0_25,
-  './plugin/get-provider.js': require_context_module_0_26,
-  './plugin/load-sub-package.js': require_context_module_0_27,
-  './plugin/pre-login.js': require_context_module_0_28,
-  './route/route.js': require_context_module_0_29,
-  './storage/storage.js': require_context_module_0_30,
-  './ui/load-font-face.js': require_context_module_0_31,
-  './ui/navigation-bar.js': require_context_module_0_32,
-  './ui/page-scroll-to.js': require_context_module_0_33,
-  './ui/popup.js': require_context_module_0_34,
-  './ui/tab-bar.js': require_context_module_0_35,
+  './media/compress-video.js': require_context_module_0_19,
+  './media/get-image-info.js': require_context_module_0_20,
+  './media/get-video-info.js': require_context_module_0_21,
+  './media/preview-image.js': require_context_module_0_22,
+  './media/save-image-to-photos-album.js': require_context_module_0_23,
+  './network/download-file.js': require_context_module_0_24,
+  './network/request.js': require_context_module_0_25,
+  './network/socket.js': require_context_module_0_26,
+  './network/upload-file.js': require_context_module_0_27,
+  './plugin/get-provider.js': require_context_module_0_28,
+  './plugin/load-sub-package.js': require_context_module_0_29,
+  './plugin/pre-login.js': require_context_module_0_30,
+  './route/route.js': require_context_module_0_31,
+  './storage/storage.js': require_context_module_0_32,
+  './ui/load-font-face.js': require_context_module_0_33,
+  './ui/navigation-bar.js': require_context_module_0_34,
+  './ui/page-scroll-to.js': require_context_module_0_35,
+  './ui/popup.js': require_context_module_0_36,
+  './ui/tab-bar.js': require_context_module_0_37,
 
       };
       var req = function req(key) {
@@ -3801,7 +3945,7 @@ var serviceContext = (function () {
 
     // 无协议的情况补全 https
     if (filePath.indexOf('//') === 0) {
-      filePath = 'https:' + filePath;
+      return 'https:' + filePath
     }
 
     // 网络资源或base64
@@ -3816,6 +3960,10 @@ var serviceContext = (function () {
     const wwwPath = 'file://' + _handleLocalPath('_www');
     // 绝对路径转换为本地文件系统路径
     if (filePath.indexOf('/') === 0) {
+      // 平台绝对路径 安卓、iOS
+      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+        return 'file://' + filePath
+      }
       return wwwPath + filePath
     }
     // 相对资源
@@ -3949,7 +4097,7 @@ var serviceContext = (function () {
     }
   }
 
-  function warpPlusMethod (module, name, before) {
+  function warpPlusMethod (module, name, before, after) {
     return function (options, callbackId) {
       if (typeof before === 'function') {
         options = before(options);
@@ -3958,6 +4106,9 @@ var serviceContext = (function () {
         success (data = {}) {
           delete data.code;
           delete data.message;
+          if (typeof after === 'function') {
+            data = after(data);
+          }
           invoke$1(callbackId, Object.assign({}, data, {
             errMsg: `${name}:ok`
           }));
@@ -5945,6 +6096,7 @@ var serviceContext = (function () {
   function getSystemInfo () {
     const platform = plus.os.name.toLowerCase();
     const ios = platform === 'ios';
+    const isAndroid = platform === 'android';
     const {
       screenWidth,
       screenHeight
@@ -6011,7 +6163,7 @@ var serviceContext = (function () {
       windowHeight,
       statusBarHeight,
       language: plus.os.language,
-      system: plus.os.version,
+      system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
       version: plus.runtime.innerVersion,
       fontSizeSetting: '',
       platform,
@@ -6144,16 +6296,10 @@ var serviceContext = (function () {
     filePath,
     fileType
   } = {}, callbackId) {
-    plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
-      plus.runtime.openFile(getRealPath$1(filePath));
-      invoke$1(callbackId, {
-        errMsg: 'openDocument:ok'
-      });
-    }, err => {
-      invoke$1(callbackId, {
-        errMsg: 'openDocument:fail ' + err.message
-      });
-    });
+    const successCallback = warpPlusSuccessCallback(callbackId, 'saveFile');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile');
+
+    plus.runtime.openDocument(getRealPath$1(filePath), undefined, successCallback, errorCallback);
   }
 
   const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html';
@@ -6358,6 +6504,7 @@ var serviceContext = (function () {
     geocode = false,
     altitude = false
   } = {}, callbackId) {
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
     plus.geolocation.getCurrentPosition(
       position => {
         getLocationSuccess(type, position, callbackId);
@@ -6368,10 +6515,7 @@ var serviceContext = (function () {
           getLocationSuccess(type, e, callbackId);
           return
         }
-
-        invoke$1(callbackId, {
-          errMsg: 'getLocation:fail ' + e.message
-        });
+        errorCallback(e);
       }, {
         geocode: geocode,
         enableHighAccuracy: altitude
@@ -6573,28 +6717,11 @@ var serviceContext = (function () {
     })
   }
 
-  function compressImage$1 (tempFilePath) {
-    const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-    return new Promise((resolve, reject) => {
-      plus.nativeUI.showWaiting();
-      plus.zip.compressImage({
-        src: tempFilePath,
-        dst: dstPath,
-        overwrite: true
-      }, () => {
-        plus.nativeUI.closeWaiting();
-        resolve(dstPath);
-      }, (error) => {
-        plus.nativeUI.closeWaiting();
-        reject(error);
-      });
-    })
-  }
-
   function chooseImage$1 ({
     count,
     sizeType,
-    sourceType
+    sourceType,
+    crop
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseImage', 'cancel');
 
@@ -6602,35 +6729,21 @@ var serviceContext = (function () {
       const tempFiles = [];
       const tempFilePaths = [];
       // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
-      paths.reduce((promise, path) => {
-        return promise.then(() => {
-          return getFileInfo$2(path)
-        }).then(fileInfo => {
-          const size = fileInfo.size;
-          // 压缩阈值 0.5 兆
-          const THRESHOLD = 1024 * 1024 * 0.5;
-          // 判断是否需要压缩
-          if (sizeType.includes('compressed') && size > THRESHOLD) {
-            return compressImage$1(path).then(dstPath => {
-              path = dstPath;
-              return getFileInfo$2(path)
-            })
-          }
-          return fileInfo
-        }).then(({ size }) => {
-          tempFilePaths.push(path);
-          tempFiles.push({
-            path,
-            size
+      Promise.all(paths.map((path) => getFileInfo$2(path)))
+        .then((filesInfo) => {
+          filesInfo.forEach((file, index) => {
+            const path = paths[index];
+            tempFilePaths.push(path);
+            tempFiles.push({ path, size: file.size });
+          });
+
+          invoke$1(callbackId, {
+            errMsg: 'chooseImage:ok',
+            tempFilePaths,
+            tempFiles
           });
         })
-      }, Promise.resolve()).then(() => {
-        invoke$1(callbackId, {
-          errMsg: 'chooseImage:ok',
-          tempFilePaths,
-          tempFiles
-        });
-      }).catch(errorCallback);
+        .catch(errorCallback);
     }
 
     function openCamera () {
@@ -6638,7 +6751,8 @@ var serviceContext = (function () {
       camera.captureImage(path => successCallback([path]),
         errorCallback, {
           filename: TEMP_PATH + '/camera/',
-          resolution: 'high'
+          resolution: 'high',
+          crop
         });
     }
 
@@ -6648,7 +6762,9 @@ var serviceContext = (function () {
         multiple: true,
         system: false,
         filename: TEMP_PATH + '/gallery/',
-        permissionAlert: true
+        permissionAlert: true,
+        crop,
+        sizeType
       });
     }
 
@@ -6685,26 +6801,46 @@ var serviceContext = (function () {
 
   function chooseVideo$1 ({
     sourceType,
+    compressed,
     maxDuration,
     camera
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      plus.io.getVideoInfo({
-        filePath: tempFilePath,
-        success (videoInfo) {
-          const result = {
-            errMsg: 'chooseVideo:ok',
-            tempFilePath: tempFilePath
-          };
-          result.size = videoInfo.size;
-          result.duration = videoInfo.duration;
-          result.width = videoInfo.width;
-          result.height = videoInfo.height;
-          invoke$1(callbackId, result);
-        },
-        errorCallback
+      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+      const compressVideo = compressed ? new Promise((resolve) => {
+        plus.zip.compressVideo({
+          src: tempFilePath,
+          filename
+        }, ({ tempFilePath }) => {
+          resolve(tempFilePath);
+        }, () => {
+          resolve(tempFilePath);
+        });
+      }) : Promise.resolve(tempFilePath);
+      if (compressed) {
+        plus.nativeUI.showWaiting();
+      }
+      compressVideo.then(tempFilePath => {
+        if (compressed) {
+          plus.nativeUI.closeWaiting();
+        }
+        plus.io.getVideoInfo({
+          filePath: tempFilePath,
+          success (videoInfo) {
+            const result = {
+              errMsg: 'chooseVideo:ok',
+              tempFilePath: tempFilePath
+            };
+            result.size = videoInfo.size;
+            result.duration = videoInfo.duration;
+            result.width = videoInfo.width;
+            result.height = videoInfo.height;
+            invoke$1(callbackId, result);
+          },
+          fail: errorCallback
+        });
       });
     }
 
@@ -6760,7 +6896,7 @@ var serviceContext = (function () {
     });
   }
 
-  function compressImage$2 (options, callbackId) {
+  function compressImage$1 (options, callbackId) {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     const errorCallback = warpPlusErrorCallback(callbackId, 'compressImage');
     plus.zip.compressImage(Object.assign({}, options, {
@@ -6773,9 +6909,34 @@ var serviceContext = (function () {
     }, errorCallback);
   }
 
+  function compressVideo$1 (options, callbackId) {
+    const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+    const successCallback = warpPlusSuccessCallback(callbackId, 'compressVideo');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'compressVideo');
+    plus.zip.compressVideo(Object.assign({}, options, {
+      filename
+    }), successCallback, errorCallback);
+  }
+
   const getImageInfo$1 = warpPlusMethod('io', 'getImageInfo', options => {
     options.savePath = options.filename = TEMP_PATH + '/download/';
     return options
+  });
+
+  const getVideoInfo$1 = warpPlusMethod('io', 'getVideoInfo', options => {
+    options.filePath = options.src;
+    return options
+  }, data => {
+    return {
+      orientation: data.orientation,
+      type: data.type,
+      duration: data.duration,
+      size: data.size,
+      height: data.height,
+      width: data.width,
+      fps: data.fps || 30,
+      bitrate: data.bitrate
+    }
   });
 
   function previewImagePlus ({
@@ -7069,6 +7230,7 @@ var serviceContext = (function () {
     responseType,
     sslVerify = true,
     firstIpv4 = false,
+    tls,
     timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
   } = {}) {
     const stream = requireNativePlugin('stream');
@@ -7122,7 +7284,8 @@ var serviceContext = (function () {
       timeout: timeout || 6e5,
       // 配置和weex模块内相反
       sslVerify: !sslVerify,
-      firstIpv4: firstIpv4
+      firstIpv4: firstIpv4,
+      tls
     };
     if (method !== 'GET') {
       options.body = typeof data === 'string' ? data : JSON.stringify(data);
@@ -7375,7 +7538,7 @@ var serviceContext = (function () {
     }
     if (files && files.length) {
       files.forEach(file => {
-        uploader.addFile(getRealPath$1(file.uri), {
+        uploader.addFile(getRealPath$1(file.uri || file.filePath), {
           key: file.name || 'file'
         });
       });
@@ -7517,9 +7680,24 @@ var serviceContext = (function () {
   function login (params, callbackId) {
     const provider = params.provider || 'weixin';
     const errorCallback = warpPlusErrorCallback(callbackId, 'login');
+    const authOptions = provider === 'apple'
+      ? { scope: 'email' }
+      : params.univerifyStyle
+        ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
+        : {};
 
     getService(provider).then(service => {
       function login () {
+        if (params.onlyAuthorize && provider === 'weixin') {
+          service.authorize(({ code }) => {
+            invoke$1(callbackId, {
+              code,
+              authResult: '',
+              errMsg: 'login:ok'
+            });
+          }, errorCallback);
+          return
+        }
         service.login(res => {
           const authResult = res.target.authResult;
           invoke$1(callbackId, {
@@ -7527,7 +7705,7 @@ var serviceContext = (function () {
             authResult: authResult,
             errMsg: 'login:ok'
           });
-        }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: params.univerifyStyle } || {});
+        }, errorCallback, authOptions);
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -7595,6 +7773,12 @@ var serviceContext = (function () {
       });
     });
   }
+  /**
+   * 获取用户信息-兼容
+   */
+  function getUserProfile (params, callbackId) {
+    return getUserInfo(params, callbackId)
+  }
 
   /**
    * 获取用户信息
@@ -7618,7 +7802,44 @@ var serviceContext = (function () {
   }
 
   function closeAuthView () {
-    getService('univerify').then(service => service.closeAuthView());
+    return getService('univerify').then(service => service.closeAuthView())
+  }
+
+  function getCheckBoxState (params, callbackId) {
+    const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState');
+    try {
+      getService('univerify').then(service => {
+        const state = service.getCheckBoxState();
+        successCallback({ state });
+      });
+    } catch (error) {
+      errorCallback(error);
+    }
+  }
+
+  /**
+   * 一键登录自定义登陆按钮点击处理
+   */
+  function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
+    if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
+      Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
+      univerifyStyle.buttons.list.length > 0
+    ) {
+      univerifyStyle.buttons.list.forEach((button, index) => {
+        univerifyStyle.buttons.list[index].onclick = function () {
+          closeAuthView().then(() => {
+            errorCallback({
+              code: '30008',
+              message: '用户点击了自定义按钮',
+              index,
+              provider: button.provider
+            });
+          });
+        };
+      });
+    }
+    return univerifyStyle
   }
 
   function requestPayment (params, callbackId) {
@@ -8165,6 +8386,7 @@ var serviceContext = (function () {
   const WEBVIEW_INSERTED = 'webviewInserted';
   const WEBVIEW_REMOVED = 'webviewRemoved';
   const WEBVIEW_ID_PREFIX = 'webviewId';
+  const SET_LOCALE = 'i18n.setLocale';
 
   function createButtonOnClick (index) {
     return function onClick (btn) {
@@ -8741,7 +8963,7 @@ var serviceContext = (function () {
 
   function createPreloadWebview () {
     if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
-      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++));
+      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++), { contentAdjust: false });
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
       }
@@ -9159,6 +9381,7 @@ var serviceContext = (function () {
     const entryRoute = '/' + entryPagePath;
     const routeOptions = __uniRoutes.find(route => route.path === entryRoute);
     if (!routeOptions) {
+      console.error(`[uni-app] ${entryPagePath} not found...`);
       return
     }
 
@@ -9911,7 +10134,7 @@ var serviceContext = (function () {
     let currentSize = 0;
     for (let index = 0; index < length; index++) {
       const key = plus.storage.key(index);
-      if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
+      if (key !== STORAGE_KEYS && (key.indexOf(STORAGE_DATA_TYPE) < 0 || key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length)) {
         const value = plus.storage.getItem(key);
         currentSize += key.length + value.length;
         keys.push(key);
@@ -10065,7 +10288,7 @@ var serviceContext = (function () {
       });
       toast = true;
     } else {
-      if (icon && !~['success', 'loading', 'none'].indexOf(icon)) {
+      if (icon && !~['success', 'loading', 'error', 'none'].indexOf(icon)) {
         icon = 'success';
       }
       const waitingOptions = {
@@ -10092,11 +10315,11 @@ var serviceContext = (function () {
           interval: duration
         };
       } else {
-        if (icon === 'success') {
+        if (['success', 'error'].indexOf(icon) !== -1) {
           waitingOptions.loading = {
             display: 'block',
             height: '55px',
-            icon: '__uniappsuccess.png',
+            icon: icon === 'success' ? '__uniappsuccess.png' : '__uniapperror.png',
             interval: duration
           };
         }
@@ -10460,8 +10683,7 @@ var serviceContext = (function () {
     callbackId,
     data
   }, pageId) => {
-    const { adpid, width, count } = data;
-    getAdData(adpid, width, count, (res) => {
+    getAdData(data, (res) => {
       operateAdView(pageId, callbackId, 'success', res);
     }, (err) => {
       operateAdView(pageId, callbackId, 'fail', err);
@@ -10470,7 +10692,8 @@ var serviceContext = (function () {
 
   const _adDataCache = {};
 
-  function getAdData (adpid, width, count, onsuccess, onerror) {
+  function getAdData (data, onsuccess, onerror) {
+    const { adpid, width } = data;
     const key = adpid + '-' + width;
     const adDataList = _adDataCache[key];
     if (adDataList && adDataList.length > 0) {
@@ -10479,11 +10702,7 @@ var serviceContext = (function () {
     }
 
     plus.ad.getAds(
-      {
-        adpid,
-        count,
-        width
-      },
+      data,
       (res) => {
         const list = res.ads;
         onsuccess(list.splice(0, 1)[0]);
@@ -10524,6 +10743,7 @@ var serviceContext = (function () {
 
       this._preload = options.preload !== undefined ? options.preload : true;
       this._isLoad = false;
+      this._isLoading = false;
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
@@ -10532,6 +10752,7 @@ var serviceContext = (function () {
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
+        this._isLoading = false;
         this._lastLoadTime = Date.now();
         this._dispatchEvent('load', {});
 
@@ -10541,6 +10762,8 @@ var serviceContext = (function () {
         }
       });
       rewardAd.onClose((e) => {
+        this._isLoad = false;
+        this._isLoading = false;
         if (this._preload) {
           this._loadAd();
         }
@@ -10550,6 +10773,7 @@ var serviceContext = (function () {
         this._dispatchEvent('verify', { isValid: e.isValid });
       });
       rewardAd.onError((e) => {
+        this._isLoading = false;
         const { code, message } = e;
         const data = { code: code, errMsg: message };
         this._adError = message;
@@ -10578,18 +10802,25 @@ var serviceContext = (function () {
 
     load () {
       return new Promise((resolve, reject) => {
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        if (this._isLoading) {
+          return
+        }
         if (this._isLoad) {
           resolve();
           return
         }
-        this._loadPromiseResolve = resolve;
-        this._loadPromiseReject = reject;
         this._loadAd();
       })
     }
 
     show () {
       return new Promise((resolve, reject) => {
+        if (this._isLoading) {
+          return
+        }
+
         const provider = this.getProvider();
         if (provider === ProviderType.CSJ && this.isExpired) {
           this._isLoad = false;
@@ -10618,6 +10849,7 @@ var serviceContext = (function () {
 
     _loadAd () {
       this._isLoad = false;
+      this._isLoading = true;
       this._rewardAd.load();
     }
 
@@ -10634,15 +10866,22 @@ var serviceContext = (function () {
     return new RewardedVideoAd(options)
   }
 
+  const eventTypes = {
+    load: 'load',
+    close: 'close',
+    error: 'error',
+    adClicked: 'adClicked'
+  };
+
   const eventNames$1 = [
-    'load',
-    'close',
-    'error',
-    'adClicked'
+    eventTypes.load,
+    eventTypes.close,
+    eventTypes.error,
+    eventTypes.adClicked
   ];
 
-  class FullScreenVideoAd {
-    constructor (options = {}) {
+  class AdBase {
+    constructor (adInstance, options) {
       const _callbacks = this._callbacks = {};
       eventNames$1.forEach(item => {
         _callbacks[item] = [];
@@ -10652,80 +10891,124 @@ var serviceContext = (function () {
         };
       });
 
-      this._isLoad = false;
+      this._preload = options.preload !== undefined ? options.preload : false;
+
+      this._isLoaded = false;
+      this._isLoading = false;
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
-      this._lastLoadTime = 0;
+      this._showPromiseResolve = null;
+      this._showPromiseReject = null;
 
-      const ad = this._ad = plus.ad.createFullScreenVideoAd(options);
+      const ad = this._ad = adInstance;
       ad.onLoad((e) => {
-        this._isLoad = true;
-        this._lastLoadTime = Date.now();
-        this._dispatchEvent('load', {});
+        this._isLoaded = true;
+        this._isLoading = false;
 
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
           this._loadPromiseResolve = null;
         }
+        if (this._showPromiseResolve != null) {
+          this._showPromiseResolve();
+          this._showPromiseResolve = null;
+          this._showAd();
+        }
+
+        this._dispatchEvent(eventTypes.load, {});
       });
       ad.onClose((e) => {
-        this._isLoad = false;
-        this._dispatchEvent('close', { isEnded: e.isEnded });
+        this._isLoaded = false;
+        this._isLoading = false;
+        this._dispatchEvent(eventTypes.close, { isEnded: e.isEnded });
+
+        if (this._preload === true) {
+          this._loadAd();
+        }
       });
       ad.onError((e) => {
-        const { code, message } = e;
-        const data = { code: code, errMsg: message };
-        this._adError = message;
-        if (code === -5008) {
-          this._isLoad = false;
-        }
-        this._dispatchEvent('error', data);
+        this._isLoading = false;
+
+        const data = {
+          code: e.code,
+          errMsg: e.message
+        };
+
+        this._adError = data;
+
+        this._dispatchEvent(eventTypes.error, data);
+
+        const error = new Error(JSON.stringify(this._adError));
+        error.code = e.code;
+        error.errMsg = e.message;
 
         if (this._loadPromiseReject != null) {
-          this._loadPromiseReject(data);
+          this._loadPromiseReject(error);
           this._loadPromiseReject = null;
         }
+
+        if (this._showPromiseReject != null) {
+          this._showPromiseReject(error);
+          this._showPromiseReject = null;
+        }
       });
-      ad.onAdClicked((e) => {
-        this._dispatchEvent('adClicked', {});
+      ad.onAdClicked && ad.onAdClicked((e) => {
+        this._dispatchEvent(eventTypes.adClicked, {});
       });
     }
 
     load () {
       return new Promise((resolve, reject) => {
-        if (this._isLoad) {
-          resolve();
-          return
-        }
         this._loadPromiseResolve = resolve;
         this._loadPromiseReject = reject;
-        this._loadAd();
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._isLoaded) {
+          resolve();
+        } else {
+          this._loadAd();
+        }
       })
     }
 
     show () {
       return new Promise((resolve, reject) => {
-        if (this._isLoad) {
-          this._ad.show();
+        this._showPromiseResolve = resolve;
+        this._showPromiseReject = reject;
+
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._isLoaded) {
+          this._showAd();
           resolve();
         } else {
-          reject(new Error(this._adError));
+          this._loadAd();
         }
       })
-    }
-
-    getProvider () {
-      return this._ad.getProvider()
     }
 
     destroy () {
       this._ad.destroy();
     }
 
+    getProvider () {
+      return this._ad.getProvider()
+    }
+
     _loadAd () {
-      this._isLoad = false;
+      this._adError = '';
+      this._isLoaded = false;
+      this._isLoading = true;
       this._ad.load();
+    }
+
+    _showAd () {
+      this._ad.show();
     }
 
     _dispatchEvent (name, data) {
@@ -10737,8 +11020,275 @@ var serviceContext = (function () {
     }
   }
 
+  class FullScreenVideoAd extends AdBase {
+    constructor (options = {}) {
+      super(plus.ad.createFullScreenVideoAd(options), options);
+    }
+  }
+
   function createFullScreenVideoAd (options) {
     return new FullScreenVideoAd(options)
+  }
+
+  class InterstitialAd extends AdBase {
+    constructor (options = {}) {
+      super(plus.ad.createInterstitialAd(options), options);
+
+      this._loadAd();
+    }
+  }
+
+  function createInterstitialAd (options) {
+    return new InterstitialAd(options)
+  }
+
+  const sdkCache = {};
+  const sdkQueue = {};
+
+  function initSDK (options) {
+    const provider = options.provider;
+    if (!sdkCache[provider]) {
+      sdkCache[provider] = {};
+    }
+    if (typeof sdkCache[provider].plugin === 'object') {
+      options.success(sdkCache[provider].plugin);
+      return
+    }
+
+    if (!sdkQueue[provider]) {
+      sdkQueue[provider] = [];
+    }
+    sdkQueue[provider].push(options);
+
+    if (sdkCache[provider].status === true) {
+      options.__plugin = sdkCache[provider].plugin;
+      return
+    }
+    sdkCache[provider].status = true;
+
+    const plugin = requireNativePlugin(provider);
+    if (!plugin || !plugin.initSDK) {
+      sdkQueue[provider].forEach((item) => {
+        item.fail({
+          code: -1,
+          message: 'provider [' + provider + '] invalid'
+        });
+      });
+      sdkQueue[provider].length = 0;
+      sdkCache[provider].status = false;
+      return
+    }
+
+    // TODO
+    sdkCache[provider].plugin = plugin;
+    options.__plugin = plugin;
+    plugin.initSDK((res) => {
+      const isSuccess = (res.code === 1 || res.code === '1');
+      if (isSuccess) {
+        sdkCache[provider].plugin = plugin;
+      } else {
+        sdkCache[provider].status = false;
+      }
+
+      sdkQueue[provider].forEach((item) => {
+        if (isSuccess) {
+          item.success(item.__plugin);
+        } else {
+          item.fail(res);
+        }
+      });
+      sdkQueue[provider].length = 0;
+    });
+  }
+
+  class InteractiveAd {
+    constructor (options) {
+      const _callbacks = this._callbacks = {};
+      eventNames$1.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._ad = null;
+      this._adError = '';
+      this._adpid = options.adpid;
+      this._provider = options.provider;
+      this._userData = options.userData;
+      this._isLoaded = false;
+      this._isLoading = false;
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+      this._showPromiseResolve = null;
+      this._showPromiseReject = null;
+
+      setTimeout(() => {
+        this._init();
+      });
+    }
+
+    _init () {
+      this._adError = '';
+      initSDK({
+        provider: this._provider,
+        success: (res) => {
+          this._ad = res;
+          if (this._userData) {
+            this.bindUserData(this._userData);
+          }
+          this._loadAd();
+        },
+        fail: (err) => {
+          this._adError = err;
+          this._dispatchEvent(eventTypes.error, err);
+        }
+      });
+    }
+
+    getProvider () {
+      return this._provider
+    }
+
+    load () {
+      return new Promise((resolve, reject) => {
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._adError) {
+          this._init();
+          return
+        }
+
+        if (this._isLoaded) {
+          resolve();
+        } else {
+          this._loadAd();
+        }
+      })
+    }
+
+    show () {
+      return new Promise((resolve, reject) => {
+        this._showPromiseResolve = resolve;
+        this._showPromiseReject = reject;
+
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._adError) {
+          this._init();
+          return
+        }
+
+        if (this._isLoaded) {
+          this._showAd();
+          resolve();
+        } else {
+          this._loadAd();
+        }
+      })
+    }
+
+    destroy () {
+      if (this._ad !== null && this._ad.destroy) {
+        this._ad.destroy({
+          adpid: this._adpid
+        });
+      }
+    }
+
+    bindUserData (data) {
+      if (this._ad !== null) {
+        this._ad.bindUserData(data);
+      }
+    }
+
+    _loadAd () {
+      if (this._ad !== null) {
+        if (this._isLoading === true) {
+          return
+        }
+        this._isLoading = true;
+
+        this._ad.loadData({
+          adpid: this._adpid
+        }, (res) => {
+          this._isLoaded = true;
+          this._isLoading = false;
+
+          if (this._loadPromiseResolve != null) {
+            this._loadPromiseResolve();
+            this._loadPromiseResolve = null;
+          }
+          if (this._showPromiseResolve != null) {
+            this._showPromiseResolve();
+            this._showPromiseResolve = null;
+            this._showAd();
+          }
+
+          this._dispatchEvent(eventTypes.load, res);
+        }, (err) => {
+          this._isLoading = false;
+
+          if (this._showPromiseReject != null) {
+            this._showPromiseReject(this._createError(err));
+            this._showPromiseReject = null;
+          }
+
+          this._dispatchEvent(eventTypes.error, err);
+        });
+      }
+    }
+
+    _showAd () {
+      if (this._ad !== null && this._isLoaded === true) {
+        this._ad.show({
+          adpid: this._adpid
+        }, (res) => {
+          this._isLoaded = false;
+        }, (err) => {
+          this._isLoaded = false;
+
+          if (this._showPromiseReject != null) {
+            this._showPromiseReject(this._createError(err));
+            this._showPromiseReject = null;
+          }
+
+          this._dispatchEvent(eventTypes.error, err);
+        });
+      }
+    }
+
+    _createError (err) {
+      const error = new Error(JSON.stringify(err));
+      error.code = err.code;
+      error.errMsg = err.message;
+      return error
+    }
+
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createInteractiveAd (options) {
+    if (!options.provider) {
+      return new Error('provider invalid')
+    }
+    if (!options.adpid) {
+      return new Error('adpid invalid')
+    }
+    return new InteractiveAd(options)
   }
 
   var api = /*#__PURE__*/Object.freeze({
@@ -10827,8 +11377,10 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    compressImage: compressImage$2,
+    compressImage: compressImage$1,
+    compressVideo: compressVideo$1,
     getImageInfo: getImageInfo$1,
+    getVideoInfo: getVideoInfo$1,
     previewImagePlus: previewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
@@ -10845,9 +11397,11 @@ var serviceContext = (function () {
     getProvider: getProvider$1,
     login: login,
     getUserInfo: getUserInfo,
+    getUserProfile: getUserProfile,
     operateWXData: operateWXData,
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
+    getCheckBoxState: getCheckBoxState,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
     unsubscribePush: unsubscribePush,
@@ -10900,7 +11454,9 @@ var serviceContext = (function () {
     showTabBar: showTabBar$2,
     requestComponentInfo: requestComponentInfo$2,
     createRewardedVideoAd: createRewardedVideoAd,
-    createFullScreenVideoAd: createFullScreenVideoAd
+    createFullScreenVideoAd: createFullScreenVideoAd,
+    createInterstitialAd: createInterstitialAd,
+    createInteractiveAd: createInteractiveAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -18109,8 +18665,9 @@ var serviceContext = (function () {
   }
 
   function Pattern (image, repetition) {
-    this.image = image;
-    this.repetition = repetition;
+    this.type = 'pattern';
+    this.data = image;
+    this.colorStop = repetition;
   }
 
   class CanvasGradient {
@@ -18752,7 +19309,7 @@ var serviceContext = (function () {
     destHeight,
     canvasId,
     fileType,
-    qualit
+    quality
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
@@ -18773,7 +19330,7 @@ var serviceContext = (function () {
       destWidth,
       destHeight,
       fileType,
-      qualit,
+      quality,
       dirname,
       callbackId: cId
     });
@@ -20281,6 +20838,12 @@ var serviceContext = (function () {
     loadFontFace: loadFontFace$1
   });
 
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getLocale: getLocale,
+    setLocale: setLocale
+  });
+
   function pageScrollTo$1 (args) {
     const pages = getCurrentPages();
     if (pages.length) {
@@ -20289,7 +20852,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -20302,7 +20865,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta$1
   });
@@ -20339,7 +20902,7 @@ var serviceContext = (function () {
     callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -20363,7 +20926,7 @@ var serviceContext = (function () {
     callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -20401,10 +20964,11 @@ var serviceContext = (function () {
   './ui/create-media-query-observer.js': require_context_module_1_24,
   './ui/create-selector-query.js': require_context_module_1_25,
   './ui/load-font-face.js': require_context_module_1_26,
-  './ui/page-scroll-to.js': require_context_module_1_27,
-  './ui/set-page-meta.js': require_context_module_1_28,
-  './ui/tab-bar.js': require_context_module_1_29,
-  './ui/window.js': require_context_module_1_30,
+  './ui/locale.js': require_context_module_1_27,
+  './ui/page-scroll-to.js': require_context_module_1_28,
+  './ui/set-page-meta.js': require_context_module_1_29,
+  './ui/tab-bar.js': require_context_module_1_30,
+  './ui/window.js': require_context_module_1_31,
 
       };
       var req = function req(key) {
@@ -20443,6 +21007,9 @@ var serviceContext = (function () {
     }
     const evalJSCode =
       `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${eventType}",${args},__PAGE_ID__)`;
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, 'length', evalJSCode.length);
+    }
     pageIds.forEach(id => {
       const webview = plus.webview.getWebviewById(String(id));
       webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id));
@@ -20843,6 +21410,14 @@ var serviceContext = (function () {
 
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+
+    i18n.i18n.watchLocale(locale => {
+      const pages = getCurrentPages();
+      pages.forEach(page => {
+        publishHandler(SET_LOCALE, locale, page.$page.id);
+      });
+      weex.requireModule('plus').setLanguage(locale);
+    });
   }
 
   let appCtx;
@@ -20897,10 +21472,15 @@ var serviceContext = (function () {
       });
     });
 
+    let keyboardHeightChange = 0;
     plus.globalEvent.addEventListener('KeyboardHeightChange', function (event) {
-      publish('onKeyboardHeightChange', {
-        height: event.height
-      });
+      // 安卓设备首次获取高度为 0
+      if (keyboardHeightChange !== event.height) {
+        keyboardHeightChange = event.height;
+        publish('onKeyboardHeightChange', {
+          height: keyboardHeightChange
+        });
+      }
     });
 
     globalEvent.addEventListener('uistylechange', function (event) {
@@ -21838,7 +22418,7 @@ var serviceContext = (function () {
 
     return {
       version: VD_SYNC_VERSION,
-      locale: plus.os.language, // TODO
+      locale: weex.requireModule('plus').getLanguage(),
       disableScroll,
       onPageScroll,
       onPageReachBottom,
@@ -21914,6 +22494,8 @@ var serviceContext = (function () {
       initLifecycle(Vue);
 
       initPolyfill(Vue);
+
+      uniIdMixin(Vue);
 
       Vue.prototype.getOpenerEventChannel = function () {
         if (!this.$root.$scope.eventChannel) {

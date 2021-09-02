@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-baidu",
-  "version": "2.0.0-31620210325001",
+  "version": "2.0.0-alpha-32520210827002",
   "description": "uni-app mp-baidu",
   "main": "dist/index.js",
   "repository": {
@@ -17,5 +17,5 @@
     "name": "mp-baidu",
     "title": "百度小程序"
   },
-  "gitHead": "b366367ac0b63f41ef205dc93eee55d8e9f8f3ed"
+  "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8"
 }

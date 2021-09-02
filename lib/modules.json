@@ -58,8 +58,10 @@
     "uni.chooseFile": true,
     "uni.previewImage": true,
     "uni.getImageInfo": true,
+    "uni.getVideoInfo": true,
     "uni.saveImageToPhotosAlbum": true,
     "uni.compressImage": true,
+    "uni.compressVideo": true,
     "uni.getRecorderManager": true,
     "uni.getBackgroundAudioManager": true,
     "uni.createInnerAudioContext": true,
@@ -204,6 +206,7 @@
     "uni.login": true,
     "uni.checkSession": true,
     "uni.getUserInfo": true,
+    "uni.getUserProfile": true,
     "uni.share": true,
     "uni.showShareMenu": true,
     "uni.hideShareMenu": true,
@@ -221,6 +224,8 @@
   "title": "广告",
   "apiList": {
     "uni.createRewardedVideoAd": true,
-    "uni.createFullScreenVideoAd": true
+    "uni.createFullScreenVideoAd": true,
+    "uni.'createInterstitialAd'": true,
+    "uni.'createInteractiveAd'": true
   }
 }]

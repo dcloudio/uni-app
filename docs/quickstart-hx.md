@@ -213,7 +213,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 <div align=center>
   <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/bece2a70-4f37-11eb-8ff1-d5dcf8779628.png"/>
 </div>
-3. 在华为开发者工具中，导入生成的华为快应用项目，测试项目代码运行正常后，点击”构建“打包正式版，在[华为快应用后台](https://developer.huawei.com/consumer/cn/quickApp)上传
+3. 在华为开发者工具中，导入生成的华为快应用项目，测试项目代码运行正常后，点击”构建“打包正式版，在[华为快应用后台](https://developer.huawei.com/consumer/cn/quickApp)上传。
 
 
 **发布为QQ小程序：**

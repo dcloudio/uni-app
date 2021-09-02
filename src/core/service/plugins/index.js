@@ -24,6 +24,10 @@ import {
   getTabBarScrollPosition
 } from './app/router-guard'
 
+import {
+  uniIdMixin
+} from 'uni-shared'
+
 function getMinId (routes) {
   let minId = 0
   routes.forEach(route => {
@@ -73,6 +77,8 @@ export default {
     initPolyfill(Vue)
 
     lifecycleMixin(Vue)
+
+    uniIdMixin(Vue)
 
     /* eslint-disable no-undef */
     if (typeof __UNI_ROUTER_BASE__ !== 'undefined') {

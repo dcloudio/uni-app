@@ -17,7 +17,7 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 
 ### MediaQueryObserver 对象的方法列表
 
->tips: 和 UI 相关的 api 在组件 mountd 后执行
+>tips: 和 UI 相关的 api 在组件 mounted 后执行
 
 |方法|说明|
 |:-|:-|:-|

@@ -9,9 +9,6 @@
 2. DCloud与vue合作，在[vue.js官网](https://cn.vuejs.org/v2/guide/)提供了免费视频教程，也可以直达教程地址：[https://learning.dcloud.io](https://learning.dcloud.io)
 3. 不需要专门去学习小程序的语法，uni-app使用的是vue的语法，不是小程序自定义的语法。
 
-#### 如果你使用过mpvue
-几乎不用学习，uni-app对vue语法的支持是mpvue的超集。这里有篇[mpvue转uni-app指南](http://ask.dcloud.net.cn/article/34945)
-
 #### 如果你熟悉小程序，但不熟悉vue
 参考三方总结[https://segmentfault.com/a/1190000015684864](https://segmentfault.com/a/1190000015684864)
 
@@ -29,6 +26,8 @@
 * [《uni-app 5小时快速入门》](https://www.imooc.com/learn/1215)，出品人：meHaoTian
 * [《uni-app 快速入门 从零开始实现新闻资讯类跨端应用》](https://coding.imooc.com/class/433.html)，出品人：meHaoTian
 * [《uni-app实战直播app全栈开发》](https://study.163.com/course/courseMain.htm?courseId=1210217810&share=2&shareId=480000001892585)，出品人：帝莎IT学院
+* [《uni-app博客实战开发教程》](https://ke.qq.com/course/3455428?tuin=258d8def)，出品人：卢小兵
+* [《uni-app快速入门到社区论坛项目多端开发实战》](https://www.bilibili.com/video/BV1oy4y1j75s?p=1)，出品人：千锋教育
 
 
 目前各大视频学习网站都有不少uni-app的学习资源，更多资源请点击搜索链接：

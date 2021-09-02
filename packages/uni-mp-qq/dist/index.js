@@ -1,5 +1,55 @@
 import Vue from 'vue';
 
+function b64DecodeUnicode (str) {
+  return decodeURIComponent(atob(str).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  }).join(''))
+}
+
+function getCurrentUserInfo () {
+  const token = ( wx).getStorageSync('uni_id_token') || '';
+  const tokenArr = token.split('.');
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    }
+  }
+  let userInfo;
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
+  }
+  userInfo.tokenExpired = userInfo.exp * 1000;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo
+}
+
+function uniIdMixin (Vue) {
+  Vue.prototype.uniIDHasRole = function (roleId) {
+    const {
+      role
+    } = getCurrentUserInfo();
+    return role.indexOf(roleId) > -1
+  };
+  Vue.prototype.uniIDHasPermission = function (permissionId) {
+    const {
+      permission
+    } = getCurrentUserInfo();
+    return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1
+  };
+  Vue.prototype.uniIDTokenValid = function () {
+    const {
+      tokenExpired
+    } = getCurrentUserInfo();
+    return tokenExpired > Date.now()
+  };
+}
+
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -142,7 +192,7 @@ function queue (hooks, data) {
       }
       if (res === false) {
         return {
-          then () {}
+          then () { }
         }
       }
     }
@@ -222,16 +272,20 @@ const promiseInterceptor = {
     if (!isPromise(res)) {
       return res
     }
-    return res.then(res => {
-      return res[1]
-    }).catch(res => {
-      return res[0]
+    return new Promise((resolve, reject) => {
+      res.then(res => {
+        if (res[0]) {
+          reject(res[0]);
+        } else {
+          resolve(res[1]);
+        }
+      });
     })
   }
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -560,12 +614,20 @@ var getSystemInfo = {
   }
 };
 
+const oName = 'getUserInfo';
+const nName = 'getUserProfile';
+
+var getUserProfile = {
+  name: wx.canIUse(nName) ? nName : oName
+};
+
 const protocols = {
   navigateTo,
   redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync: getSystemInfo
+  getSystemInfoSync: getSystemInfo,
+  getUserProfile
 };
 const todos = [
   'preloadPage',
@@ -937,7 +999,7 @@ function initTriggerEvent (mpInstance) {
   };
 }
 
-function initHook (name, options) {
+function initHook (name, options, isComponent) {
   const oldHook = options[name];
   if (!oldHook) {
     options[name] = function () {
@@ -1174,6 +1236,11 @@ function initProperties (props, isBehavior = false, file = '') {
     properties.generic = {
       type: Object,
       value: null
+    };
+    // scopedSlotsCompiler auto
+    properties.scopedSlotsCompiler = {
+      type: String,
+      value: ''
     };
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
@@ -1528,14 +1595,70 @@ function initEventChannel$1 () {
   };
 }
 
+function initScopedSlotsParams () {
+  const center = {};
+  const parents = {};
+
+  Vue.prototype.$hasScopedSlotsParams = function (vueId) {
+    const has = center[vueId];
+    if (!has) {
+      parents[vueId] = this;
+      this.$on('hook:destory', () => {
+        delete parents[vueId];
+      });
+    }
+    return has
+  };
+
+  Vue.prototype.$getScopedSlotsParams = function (vueId, name, key) {
+    const data = center[vueId];
+    if (data) {
+      const object = data[name] || {};
+      return key ? object[key] : object
+    } else {
+      parents[vueId] = this;
+      this.$on('hook:destory', () => {
+        delete parents[vueId];
+      });
+    }
+  };
+
+  Vue.prototype.$setScopedSlotsParams = function (name, value) {
+    const vueIds = this.$options.propsData.vueId;
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0];
+      const object = center[vueId] = center[vueId] || {};
+      object[name] = value;
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate();
+      }
+    }
+  };
+
+  Vue.mixin({
+    destroyed () {
+      const propsData = this.$options.propsData;
+      const vueId = propsData && propsData.vueId;
+      if (vueId) {
+        delete center[vueId];
+        delete parents[vueId];
+      }
+    }
+  });
+}
+
 function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
   initEventChannel$1();
+  {
+    initScopedSlotsParams();
+  }
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store;
   }
+  uniIdMixin(Vue);
 
   Vue.prototype.mpHost = "mp-qq";
 
@@ -1556,7 +1679,7 @@ function parseBaseApp (vm, {
 
       delete this.$options.mpType;
       delete this.$options.mpInstance;
-      if (this.mpType === 'page') { // hack vue-i18n
+      if (this.mpType === 'page' && typeof getApp === 'function') { // hack vue-i18n
         const app = getApp();
         if (app.$vm && app.$vm.$i18n) {
           this._i18n = app.$vm.$i18n;
@@ -1575,7 +1698,7 @@ function parseBaseApp (vm, {
         return
       }
       {
-        if (!wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
+        if (wx.canIUse && !wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
           console.error('当前微信基础库版本过低，请将 微信开发者工具-详情-项目设置-调试基础库版本 更换为`2.3.0`以上');
         }
       }
@@ -1919,6 +2042,7 @@ function createSubpackageApp (vm) {
   const app = getApp({
     allowDefault: true
   });
+  vm.$scope = app;
   const globalData = app.globalData;
   if (globalData) {
     Object.keys(appOptions.globalData).forEach(name => {
@@ -1934,17 +2058,36 @@ function createSubpackageApp (vm) {
   });
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow((...args) => {
-      appOptions.onShow.apply(app, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide((...args) => {
-      appOptions.onHide.apply(app, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    appOptions.onLaunch.call(app, args);
+    vm.__call_hook('onLaunch', args);
+  }
+  return vm
+}
+
+function createPlugin (vm) {
+  const appOptions = parseApp$1(vm);
+  if (isFn(appOptions.onShow) && wx.onAppShow) {
+    wx.onAppShow((...args) => {
+      appOptions.onShow.apply(vm, args);
+    });
+  }
+  if (isFn(appOptions.onHide) && wx.onAppHide) {
+    wx.onAppHide((...args) => {
+      appOptions.onHide.apply(vm, args);
+    });
+  }
+  if (isFn(appOptions.onLaunch)) {
+    const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
+    appOptions.onLaunch.call(vm, args);
   }
   return vm
 }
@@ -2029,8 +2172,9 @@ wx.createApp = createApp;
 wx.createPage = createPage;
 wx.createComponent = createComponent;
 wx.createSubpackageApp = createSubpackageApp;
+wx.createPlugin = createPlugin;
 
 var uni$1 = uni;
 
 export default uni$1;
-export { createApp, createComponent, createPage, createSubpackageApp };
+export { createApp, createComponent, createPage, createPlugin, createSubpackageApp };

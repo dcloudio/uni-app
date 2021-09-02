@@ -77,6 +77,12 @@ createPage(Page)
       type: jsPreprocessOptions.type
     })
 
+    if (process.env.UNI_USING_VUE3) {
+      if (content.indexOf('createSSRApp') !== -1) {
+        content = content + ';createApp().app.mount(\'#app\');'
+      }
+    }
+
     const resourcePath = 'app'
 
     const {

@@ -36,12 +36,18 @@ class ErrorReport {
     return this._https
   }
 
-  report (type, err) {
+  report (type, err = '') {
     if (!this._shouldReport(err)) {
       return
     }
 
-    err = normalizePath(err)
+    if (typeof err === 'object') {
+      try {
+        err = err.toString()
+      } catch (e) {}
+    }
+
+    err = normalizePath(err) || ''
     err = err.replace(this._UNI_INPUT_DIR_REG, 'UNI_INPUT_DIR')
     err = err.replace(this._UNI_CLI_CONTEXT_REG, 'UNI_CLI_CONTEXT')
 
@@ -151,5 +157,5 @@ process
     global.__error_reporting__ && global.__error_reporting__('unhandledRejection', reason)
   })
   .on('uncaughtException', err => {
-    global.__error_reporting__ && global.__error_reporting__('uncaughtException', err)
+    global.__error_reporting__ && global.__error_reporting__('uncaughtException', err.stack)
   })

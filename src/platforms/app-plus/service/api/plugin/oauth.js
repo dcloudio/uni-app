@@ -5,6 +5,7 @@ import {
   warpPlusSuccessCallback,
   warpPlusErrorCallback
 } from '../util'
+import { isPlainObject } from 'uni-shared'
 
 function getService (provider) {
   return new Promise((resolve, reject) => {
@@ -21,9 +22,24 @@ function getService (provider) {
 export function login (params, callbackId) {
   const provider = params.provider || 'weixin'
   const errorCallback = warpPlusErrorCallback(callbackId, 'login')
+  const authOptions = provider === 'apple'
+    ? { scope: 'email' }
+    : params.univerifyStyle
+      ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
+      : {}
 
   getService(provider).then(service => {
     function login () {
+      if (params.onlyAuthorize && provider === 'weixin') {
+        service.authorize(({ code }) => {
+          invoke(callbackId, {
+            code,
+            authResult: '',
+            errMsg: 'login:ok'
+          })
+        }, errorCallback)
+        return
+      }
       service.login(res => {
         const authResult = res.target.authResult
         invoke(callbackId, {
@@ -31,7 +47,7 @@ export function login (params, callbackId) {
           authResult: authResult,
           errMsg: 'login:ok'
         })
-      }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: params.univerifyStyle } || {})
+      }, errorCallback, authOptions)
     }
     // 先注销再登录
     // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -99,6 +115,12 @@ export function getUserInfo (params, callbackId) {
     })
   })
 }
+/**
+ * 获取用户信息-兼容
+ */
+export function getUserProfile (params, callbackId) {
+  return getUserInfo(params, callbackId)
+}
 
 /**
  * 获取用户信息
@@ -122,5 +144,42 @@ export function preLogin (params, callbackId) {
 }
 
 export function closeAuthView () {
-  getService('univerify').then(service => service.closeAuthView())
+  return getService('univerify').then(service => service.closeAuthView())
+}
+
+export function getCheckBoxState (params, callbackId) {
+  const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState')
+  const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState')
+  try {
+    getService('univerify').then(service => {
+      const state = service.getCheckBoxState()
+      successCallback({ state })
+    })
+  } catch (error) {
+    errorCallback(error)
+  }
+}
+
+/**
+ * 一键登录自定义登陆按钮点击处理
+ */
+function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
+  if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
+    Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
+    univerifyStyle.buttons.list.length > 0
+  ) {
+    univerifyStyle.buttons.list.forEach((button, index) => {
+      univerifyStyle.buttons.list[index].onclick = function () {
+        closeAuthView().then(() => {
+          errorCallback({
+            code: '30008',
+            message: '用户点击了自定义按钮',
+            index,
+            provider: button.provider
+          })
+        })
+      }
+    })
+  }
+  return univerifyStyle
 }

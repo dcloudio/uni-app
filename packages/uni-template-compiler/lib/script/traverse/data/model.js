@@ -62,7 +62,7 @@ module.exports = function processRef (paths, path, state) {
 
     return [ // attrs:{value:value}
       t.objectProperty(
-        t.stringLiteral('value'),
+        t.stringLiteral(process.env.UNI_USING_VUE3 ? 'modelValue' : 'value'),
         t.identifier(prop)
       )
     ]

@@ -6,8 +6,8 @@
 |:-|:-|:-|:-|:-|
 |name|String||应用名称||
 |appid|String|新建 uni-app 项目时，DCloud 云端分配。用途[详见](https://ask.dcloud.net.cn/article/35907)|应用标识|| 
-|screenOrientation|Array||重力感应、横竖屏配置，可取值："portrait-primary"：竖屏正方向；"portrait-secondary"：竖屏反方向；"landscape-primary"：横屏正方向；"landscape-secondary"：横屏反方向。||
 |description|String||应用描述||
+|locale|String|auto|设置当前默认语言，具体参考 [locale](/api/ui/prompt/locale)||
 |versionName|String||版本名称，例如：1.0.0。详见下方Tips说明||
 |versionCode|String||版本号，例如：36||
 |transformPx|Boolean|true|是否转换项目的px，为true时将px转换为rpx，为false时，px为传统的实际像素||
@@ -55,6 +55,7 @@ uni 统计配置项
 |属性|类型|说明|最低版本|
 |:-|:-|:-|:-|
 |splashscreen|Object|App 启动界面信息，[详见](/collocation/manifest?id=splashscreen)||
+|screenOrientation|Array|重力感应、横竖屏配置，可取值："portrait-primary"：竖屏正方向；"portrait-secondary"：竖屏反方向；"landscape-primary"：横屏正方向；"landscape-secondary"：横屏反方向。||
 |modules|Object|权限模块，[详见](/collocation/manifest?id=modules)||
 |distribute|Object|App 发布信息，[详见](/collocation/manifest?id=distribute)||
 |usingComponents|Boolean|是否启用自定义组件模式，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|1.9.0+|
@@ -127,7 +128,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 |android|Object|Android 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |ios|Object|iOS 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |sdkConfigs|Object|SDK配置，仅打包生效 [详见](/collocation/manifest?id=sdkConfigs)|
-|orientation|Array|同 screenOrientation 配置，仅打包生效，推荐使用 screenOrientation|
+|orientation|Array|同 screenOrientation 配置，仅打包生效，已废弃，推荐使用 screenOrientation|
 
 ##### App SdkConfigs@sdkConfigs
 
@@ -239,7 +240,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 
 H5平台是SPA单页应用，普通的SEO信息即加meta字段只能在，自定义的模板html里配置首页。
 
-但SEO的时代在变，现在更有效的方式，是用uni-app同时发布一版百度小程序，这个搜索权重更高。DCloud的ask社区的H5版也是uni-app做的，同时发布了百度小程序，权重更高，每天来自百度的搜索量非常多。是一个可现身说法的好案例。
+但SEO的时代在变，现在更有效的方式，使用uni-app同时发布一版百度小程序，这个搜索权重更高。DCloud的ask社区的H5版也是uni-app做的，同时发布了百度小程序，权重更高，每天来自百度的搜索量非常多。是一个可现身说法的好案例。
 
 #### router@h5-router
 |属性|类型|默认值|说明|
@@ -354,7 +355,8 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |workers|String|Worker 代码放置的目录。 [详见](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|
 |optimization|Object| 对微信小程序的优化配置 |
 |cloudfunctionRoot|String| 配置云开发目录，参考[setting](/collocation/manifest?id=cloudfunctionRoot)|
-|uniStatistics|Object|[微信小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)||
+|uniStatistics|Object|[微信小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto|
 
 #### setting
 
@@ -431,6 +433,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |prefetches|Array|预请求的所有url的列表，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#prefetches)																|
 |optimization|Object| 对百度小程序的优化配置 |
 |uniStatistics|Object|[百度小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto|
 
 #### optimization
 
@@ -449,6 +452,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
 |navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/general-configuration)	|
 |uniStatistics|Object|[字节跳动小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto|
 
 #### 字节跳动小程序项目设置@mp-toutiao-setting
 
@@ -471,6 +475,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |groupIdList					|String Array	|需要打开群资料卡的群号列表，详见button的open-type																																		|
 |optimization|Object| 对QQ小程序的优化配置 |
 |uniStatistics|Object|[QQ小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto|
 
 #### optimization
 
@@ -481,6 +486,15 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |subPackages|Boolean|是否开启分包优化|
 
 mp-qq只支持自定义组件模式，不存在usingComponents配置
+
+
+### mp-kuaishou
+
+|属性|类型|说明|
+|:-|:-|:-|
+|appid|String|快手小程序的 AppID，登录 [https://mp.kuaishou.com](https://mp.kuaishou.com) 申请|
+|uniStatistics|Object|[快手小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：augmented|
 
 ### 关于分包优化的说明
 
@@ -535,313 +549,290 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 
 ```javascript
 {
-	"appid": "__UNI__XXXXXX，创建应用时云端分配的，不要修改。",
-	"name": "应用名称，如uni-app",
-	"description": "应用描述",
-	"versionName": "1.0.0",
-	"versionCode": "100",
-  // 是否全局关闭uni统计
-  "uniStatistics": {  
-      "enable": false//全局关闭  
-  },
-	// app-plus 节点是 App 特有配置，推荐在 HBuilderX 的 manifest.json 可视化界面操作完成配置。
-	"app-plus": {
-		// HBuilderX->manifest.json->模块权限配置
-    "optimization": {
-      "subPackages": true // HBuilderX 2.7.12+ 支持
+    "appid": "__UNI__XXXXXX，创建应用时云端分配的，不要修改。",
+    "name": "应用名称，如uni-app",
+    "description": "应用描述",
+    "versionName": "1.0.0",
+    "versionCode": "100",
+    "uniStatistics": {
+        "enable": false
     },
-    // 屏幕方向
-    "screenOrientation": [
-      "portrait-primary",
-      "landscape-primary",
-      "portrait-secondary",
-      "landscape-secondary"
-    ],
-		"modules": {
-			"Contacts": {},
-			"Fingerprint": {},
-			"Maps": {},
-			"Messaging": {},
-			"OAuth": {},
-			"Payment": {},
-			"Push": {},
-			"Share": {},
-			"Speech": {},
-			"Statistic": {},
-			"VideoPlayer": {},
-			"LivePusher": {}
-		},
-		"distribute": {
-			// Android 与 iOS 证书相关信息均在打包时完成配置
-			"android": {
-				"packagename": "Android应用包名，如io.dcloud.uniapp",
-				"keystore": "Android应用打包使用的密钥库文件",
-				"password": "Android应用打包使用密钥库中证书的密码",
-				"aliasname": "Android应用打包使用密钥库中证书的别名",
-				"schemes": [
-					"应用支持的scheme，大小写相关，推荐使用小写"
-				],
-				"theme": "程序使用的主题",
-				"android:name": "自定义程序入口类名",
-				"custompermissions": "Boolean类型，是否自定义android权限，true表示自定义权限，只使用permissions下指定的android权限，不根据用户使用的5+模块自动添加android权限，false表示自动根据用户使用的5+模块自动添加android权限",
-				"permissions": [
-					"要添加的额外的android权限，如<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\" />",
-					"<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\" />"
-				],
-				"minSdkVersion": "apk支持的最低版本，默认值为14",
-				"targetSdkVersion": "apk的目标版本，默认值为21"
-			},
-			"ios": {
-				"appid": "iOS应用标识，苹果开发网站申请的appid，如io.dcloud.uniapp",
-				"mobileprovision": "iOS应用打包配置文件",
-				"password": "iOS应用打包个人证书导入密码",
-				"p12": "iOS应用打包个人证书，打包配置文件关联的个人证书",
-				"devices": "iOS应用支持的设备类型，可取值iphone/ipad/universal",
-				"urltypes": [
-					{
-            "urlidentifier": "com.xxx.test",
-						"urlschemes": [
-							"hbuilder"// 必选，程序所支持的自定义协议名称
-						]
-					}
-				],
-				"frameworks": ["使用native.js调用API要引用的库文件名称，如CoreLocation.framework", "QuartzCore.framework"],
-				"idfa": "true|false，是否使用广告标识符，默认值为false",
-				"plistcmds": [
-					"Set :权限 使用权限的原因",
-					"Set :NSCameraUsageDescription 说明使用用户相机的原因"
-				]
-			},
-			// HBuilderX->manifest.json->SDK配置
-			"sdkConfigs": {
-				"maps": {
-					// 地图只能选一个，这里选的是百度。
-					"baidu": {
-						"appkey_ios": "",
-						"appkey_android": ""
-					}
-				},
-				"oauth": {
-					// 微信登录
-					"weixin": {
-						"appid": "",
-						"appsecret": ""
-					},
-					// QQ登录
-					"qq": {
-						"appid": ""
-					},
-					// 新浪微博登录
-					"sina": {
-						"appkey": "",
-						"appsecret": "",
-						"redirect_uri": ""
-					},
-					// 小米登录
-					"xiaomi": {
-						"appid_ios": "",
-						"appsecret_ios": "",
-						"redirect_uri_ios": "",
-						"appid_android": "",
-						"appsecret_android": "",
-						"redirect_uri_android": ""
-					}
-				},
-				"payment": {
-					// Apple应用内支付
-					"appleiap": {},
-					// 支付宝支付
-					"alipay": {
-						"scheme": ""
-					},
-					// 微信支付
-					"weixin": {
-						"appid": ""
-					}
-				},
-				"push": {
-					// 推送只能选择一个，这里选的是个推。
-					"igexin": {
-						"appid": "",
-						"appkey": "",
-						"appsecret": ""
-					}
-				},
-				"share": {
-					// 微信分享
-					"weixin": {
-						"appid": ""
-					},
-					// 新浪微博分享
-					"sina": {
-						"appkey": "",
-						"appsecret": "",
-						"redirect_uri": ""
-					},
-					// 分享到QQ
-					"qq": {
-						"appid": ""
-					}
-				},
-				"statics": {
-					// 友盟统计
-					"umeng": {
-						"appkey_ios": "",
-						"channelid_ios": "",
-						"appkey_android": "",
-						"channelid_android": ""
-					}
-				}
-			},
-			// HBuilderX->manifest.json->图标配置
-			"icons": {
-				"ios": {
-					"appstore": "必选, 1024x1024, 提交app sotre使用的图标",
-					"iphone": {
-						"app@2x": "可选，120x120，iOS7-11程序图标（iPhone4S/5/6/7/8）",
-						"app@3x": "可选，180x180，iOS7-11程序图标（iPhone6plus/7plus/8plus/X）",
-						"spotlight@2x": "可选，80x80，iOS7-11 Spotlight搜索图标（iPhone5/6/7/8）",
-						"spotlight@3x": "可选，120x120，iOS7-11 Spotlight搜索图标（iPhone6plus/7plus/8plus/X）",
-						"settings@2x": "可选，58x58，iOS5-11 Settings设置图标（iPhone5/6/7/8）",
-						"settings@3x": "可选，87x87，iOS5-11 Settings设置图标（iPhone6plus/7plus/8plus/X）",
-						"notification@2x": "可选，40x40，iOS7-11 通知栏图标（iPhone5/6/7/8）",
-						"notification@3x": "可选，60x60，iOS7-11 通知栏图标（iPhone6plus/7plus/8plus/X）"
-					},
-					"ipad": {
-						"app": "可选，76x76，iOS7-11程序图标",
-						"app@2x": "可选，152x152，iOS7-11程序图标（高分屏）",
-						"proapp@2x": "可选，167x167，iOS9-11程序图标（iPad Pro）",
-						"spotlight": "可选，40x40，iOS7-11 Spotlight搜索图标",
-						"spotlight@2x": "可选，80x80，iOS7-11 Spotlight搜索图标（高分屏）",
-						"settings": "可选，29x29，iOS5-11 设置图标",
-						"settings@2x": "可选，58x58，iOS5-11 设置图标（高分屏）",
-						"notification": "可选，20x20，iOS7-11 通知栏图标",
-						"notification@2x": "可选，40x40，iOS7-11 通知栏图标（高分屏）"
-					}
-				},
-				"android": {
-					"mdpi": "必选，48x48，普通屏程序图标",
-					"ldpi": "必选，48x48，大屏程序图标",
-					"hdpi": "必选，72x72，高分屏程序图标",
-					"xhdpi": "必选，96x96，720P高分屏程序图标",
-					"xxhdpi": "必选，144x144，1080P高分屏程序图标",
-					"xxxhdpi": "可选，192x192"
-				}
-			},
-			// HBuilderX->manifest.json->启动图配置
-			"splashscreen": {
-				"ios": {
-					"iphone": {
-						"retina35": "可选，640x960，3.5英寸设备(iPhone4)启动图片",
-						"retina40": "可选，640x1136，4.0英寸设备(iPhone5)启动图片",
-						"retina40l": "可选，1136x640，4.0英寸设备(iPhone5)横屏启动图片",
-						"retina47": "可选，750x1334，4.7英寸设备（iPhone6）启动图片",
-						"retina47l": "可选，1334x750，4.7英寸设备（iPhone6）横屏启动图片",
-						"retina55": "可选，1242x2208，5.5英寸设备（iPhone6Plus）启动图片",
-						"retina55l": "可选，2208x1242，5.5英寸设备（iPhone6Plus）横屏启动图片",
-						"iphonex": "可选，1125x2436，iPhoneX启动图片",
-						"iphonexl": "可选，2436x1125，iPhoneX横屏启动图片"
-					},
-					"ipad": {
-						"portrait": "可选，768x1004，需支持iPad时必选，iPad竖屏启动图片",
-						"portrait-retina": "可选，1536x2008，需支持iPad时必选，iPad高分屏竖屏图片",
-						"landscape": "可选，1024x748，需支持iPad时必选，iPad横屏启动图片",
-						"landscape-retina": "可选，2048x1496，需支持iPad时必选，iPad高分屏横屏启动图片",
-						"portrait7": "可选，768x1024，需支持iPad iOS7时必选，iPad竖屏启动图片",
-						"portrait-retina7": "可选，1536x2048，需支持iPad iOS7时必选，iPad高分屏竖屏图片",
-						"landscape7": "可选，1024x768，需支持iPad iOS7时必选，iPad横屏启动图片",
-						"landscape-retina7": "可选，2048x1536，需支持iPad iOS7时必选，iPad高分屏横屏启动图片"
-					}
-				},
-				"android": {
-					"mdpi": "必选，240x282，普通屏启动图片",
-					"ldpi": "必选，320x442，大屏启动图片",
-					"hdpi": "必选，480x762，高分屏启动图片",
-					"xhdpi": "必选，720x1242，720P高分屏启动图片",
-					"xxhdpi": "必选，1080x1882，1080P高分屏启动图片"
-				}
-			}
-		},
-		// HBuilderX->manifest.json->启动图配置->启动界面选项
-		"splashscreen": {
-			"waiting": true,
-			"autoclose": true
-		},
-		"error": {
-			"url": "页面加载错误时打开的页面地址，可以是网络地址，也可以是本地地址"
-		},
-		"useragent": {
-			"value": "自定义ua字符串",
-			"concatenate": "是否为追加模式"
-		},
-		"useragent_ios": {
-			"value": "与useragent的value一致，仅在iOS平台生效，当useragent和useragent_ios同时存在时优先级useragent_ios>useragent",
-			"concatenate": "与useragent的concatenate一致，仅iOS平台生效"
-		},
-		"useragent_android": {
-			"value": "与useragent的value一致，仅在Android平台生效，当useragent和useragent_android同时存在时优先级useragent_android>useragent",
-			"concatenate": "与useragent的concatenate一致，仅Android平台生效"
-		},
-		"ssl": "accept|refuse|warning，访问https网络时对非受信证书的处理逻辑",
-		"runmode": "normal",
-		"appWhitelist": [
-			"Android平台下载apk地址白名单列表",
-			"iOS平台跳转appstore地址白名单列表"
-		],
-		"schemeWhitelist": [
-			"URL Scheme白名单列表，如：mqq" //iOS要求预先指定要打开的App名单，不能随意调用任何App
-		],
-		"channel": "渠道标记，可在DCloud开发者中心查看各渠道应用的统计数据",
-		"adid": "广告联盟会员id，在DCloud开发者中心申请后填写",
-		"safearea": { //安全区域配置，仅iOS平台生效  
-			"background": "#CCCCCC", //安全区域外的背景颜色，默认值为"#FFFFFF"  
-			"bottom": { // 底部安全区域配置  
-				"offset": "none|auto" // 底部安全区域偏移，"none"表示不空出安全区域，"auto"自动计算空出安全区域，默认值为"none"  
-			},
-			"left": { //左侧安全区域配置（横屏显示时有效）  
-				"offset": "none|auto"
-			},
-			"right": { //右侧安全区域配置（横屏显示时有效）  
-				"offset": "none|auto"
-			}
-		},
-		"softinput": {
-			"navBar": "auto", //是否显示iOS软键盘上的“完成”导航条
-			"mode": "adjustResize|adjustPan" //软键盘弹出模式，
-		},
-    "popGesture": "none" //iOS上是否支持屏幕左边滑动关闭当前页面。默认是可关闭。设为none则不响应左滑动画。
-	},
-	// 快应用特有配置
-	"quickapp": {},
-	// 微信小程序特有配置
-	"mp-weixin": {
-		"appid": "wx开头的微信小程序appid",
-		"uniStatistics": {
-			"enable": false//仅微信小程序关闭uni统计
-		},
-	},
-	// 百度小程序特有配置
-	"mp-baidu": {
-		"appid": "百度小程序appid"
-	},
-	// 字节跳动小程序特有配置
-	"mp-toutiao": {
-		"appid": "字节跳动小程序appid"
-	},
-	"h5": {
-		"title": "演示", //页面标题，默认使用 manifest.json 的 name
-		"template": "index.html", //index.html模板路径，相对于应用根目录，可定制生成的 html 代码
-		"router": {
-			"mode": "history", //路由跳转模式，支持 hash|history ,默认 hash
-			"base": "/hello/" //应用基础路径，例如，如果整个单页应用服务在 /app/ 下，然后 base 就应该设为 "/app/"
-		},
-		"async": { //页面js异步加载配置
-			"loading": "AsyncLoading", //页面js加载时使用的组件（需注册为全局组件）
-			"error": "AsyncError", //页面js加载失败时使用的组件（需注册为全局组件）
-			"delay": 200, //展示 loading 加载组件的延时时间（页面 js 若在 delay 时间内加载完成，则不会显示 loading 组件）
-			"timeout": 3000 //页面js加载超时时间（超时后展示 error 对应的组件）
-		}
-	}
+    "app-plus": {
+        "screenOrientation": [
+            "portrait-primary",
+            "landscape-primary",
+            "portrait-secondary",
+            "landscape-secondary"
+        ],
+        "optimization": {
+            "subPackages": true
+        },
+        "modules": {
+            "Contacts": {},
+            "Fingerprint": {},
+            "Maps": {},
+            "Messaging": {},
+            "OAuth": {},
+            "Payment": {},
+            "Push": {},
+            "Share": {},
+            "Speech": {},
+            "Statistic": {},
+            "VideoPlayer": {},
+            "LivePusher": {}
+        },
+        "distribute": {
+            "android": {
+                "packagename": "Android应用包名，如io.dcloud.uniapp",
+                "keystore": "Android应用打包使用的密钥库文件",
+                "password": "Android应用打包使用密钥库中证书的密码",
+                "aliasname": "Android应用打包使用密钥库中证书的别名",
+                "schemes": [
+                    "应用支持的scheme，大小写相关，推荐使用小写"
+                ],
+                "theme": "程序使用的主题",
+                "android:name": "自定义程序入口类名",
+                "custompermissions": "Boolean类型，是否自定义android权限，true表示自定义权限，只使用permissions下指定的android权限，不根据用户使用的5+模块自动添加android权限，false表示自动根据用户使用的5+模块自动添加android权限",
+                "permissions": [
+                    "要添加的额外的android权限，如<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\" />",
+                    "<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\" />"
+                ],
+                "minSdkVersion": "apk支持的最低版本，默认值为14",
+                "targetSdkVersion": "apk的目标版本，默认值为21"
+            },
+            "ios": {
+                "appid": "iOS应用标识，苹果开发网站申请的appid，如io.dcloud.uniapp",
+                "mobileprovision": "iOS应用打包配置文件",
+                "password": "iOS应用打包个人证书导入密码",
+                "p12": "iOS应用打包个人证书，打包配置文件关联的个人证书",
+                "devices": "iOS应用支持的设备类型，可取值iphone/ipad/universal",
+                "urltypes": [
+                    {
+                        "urlidentifier": "com.xxx.test",
+                        "urlschemes": [
+                            "hbuilder"
+                        ]
+                    }
+                ],
+                "frameworks": [
+                    "使用native.js调用API要引用的库文件名称，如CoreLocation.framework",
+                    "QuartzCore.framework"
+                ],
+                "idfa": "true|false，是否使用广告标识符，默认值为false",
+                "plistcmds": [
+                    "Set :权限 使用权限的原因",
+                    "Set :NSCameraUsageDescription 说明使用用户相机的原因"
+                ]
+            },
+            "sdkConfigs": {
+                "maps": {
+                    "baidu": {
+                        "appkey_ios": "",
+                        "appkey_android": ""
+                    }
+                },
+                "oauth": {
+                    "weixin": {
+                        "appid": "",
+                        "appsecret": ""
+                    },
+                    "qq": {
+                        "appid": ""
+                    },
+                    "sina": {
+                        "appkey": "",
+                        "appsecret": "",
+                        "redirect_uri": ""
+                    },
+                    "xiaomi": {
+                        "appid_ios": "",
+                        "appsecret_ios": "",
+                        "redirect_uri_ios": "",
+                        "appid_android": "",
+                        "appsecret_android": "",
+                        "redirect_uri_android": ""
+                    }
+                },
+                "payment": {
+                    "appleiap": {},
+                    "alipay": {
+                        "scheme": ""
+                    },
+                    "weixin": {
+                        "appid": ""
+                    }
+                },
+                "push": {
+                    "igexin": {
+                        "appid": "",
+                        "appkey": "",
+                        "appsecret": ""
+                    }
+                },
+                "share": {
+                    "weixin": {
+                        "appid": ""
+                    },
+                    "sina": {
+                        "appkey": "",
+                        "appsecret": "",
+                        "redirect_uri": ""
+                    },
+                    "qq": {
+                        "appid": ""
+                    }
+                },
+                "statics": {
+                    "umeng": {
+                        "appkey_ios": "",
+                        "channelid_ios": "",
+                        "appkey_android": "",
+                        "channelid_android": ""
+                    }
+                }
+            },
+            "icons": {
+                "ios": {
+                    "appstore": "必选, 1024x1024, 提交app sotre使用的图标",
+                    "iphone": {
+                        "app@2x": "可选，120x120，iOS7-11程序图标（iPhone4S/5/6/7/8）",
+                        "app@3x": "可选，180x180，iOS7-11程序图标（iPhone6plus/7plus/8plus/X）",
+                        "spotlight@2x": "可选，80x80，iOS7-11 Spotlight搜索图标（iPhone5/6/7/8）",
+                        "spotlight@3x": "可选，120x120，iOS7-11 Spotlight搜索图标（iPhone6plus/7plus/8plus/X）",
+                        "settings@2x": "可选，58x58，iOS5-11 Settings设置图标（iPhone5/6/7/8）",
+                        "settings@3x": "可选，87x87，iOS5-11 Settings设置图标（iPhone6plus/7plus/8plus/X）",
+                        "notification@2x": "可选，40x40，iOS7-11 通知栏图标（iPhone5/6/7/8）",
+                        "notification@3x": "可选，60x60，iOS7-11 通知栏图标（iPhone6plus/7plus/8plus/X）"
+                    },
+                    "ipad": {
+                        "app": "可选，76x76，iOS7-11程序图标",
+                        "app@2x": "可选，152x152，iOS7-11程序图标（高分屏）",
+                        "proapp@2x": "可选，167x167，iOS9-11程序图标（iPad Pro）",
+                        "spotlight": "可选，40x40，iOS7-11 Spotlight搜索图标",
+                        "spotlight@2x": "可选，80x80，iOS7-11 Spotlight搜索图标（高分屏）",
+                        "settings": "可选，29x29，iOS5-11 设置图标",
+                        "settings@2x": "可选，58x58，iOS5-11 设置图标（高分屏）",
+                        "notification": "可选，20x20，iOS7-11 通知栏图标",
+                        "notification@2x": "可选，40x40，iOS7-11 通知栏图标（高分屏）"
+                    }
+                },
+                "android": {
+                    "mdpi": "必选，48x48，普通屏程序图标",
+                    "ldpi": "必选，48x48，大屏程序图标",
+                    "hdpi": "必选，72x72，高分屏程序图标",
+                    "xhdpi": "必选，96x96，720P高分屏程序图标",
+                    "xxhdpi": "必选，144x144，1080P高分屏程序图标",
+                    "xxxhdpi": "可选，192x192"
+                }
+            },
+            "splashscreen": {
+                "ios": {
+                    "iphone": {
+                        "retina35": "可选，640x960，3.5英寸设备(iPhone4)启动图片",
+                        "retina40": "可选，640x1136，4.0英寸设备(iPhone5)启动图片",
+                        "retina40l": "可选，1136x640，4.0英寸设备(iPhone5)横屏启动图片",
+                        "retina47": "可选，750x1334，4.7英寸设备（iPhone6）启动图片",
+                        "retina47l": "可选，1334x750，4.7英寸设备（iPhone6）横屏启动图片",
+                        "retina55": "可选，1242x2208，5.5英寸设备（iPhone6Plus）启动图片",
+                        "retina55l": "可选，2208x1242，5.5英寸设备（iPhone6Plus）横屏启动图片",
+                        "iphonex": "可选，1125x2436，iPhoneX启动图片",
+                        "iphonexl": "可选，2436x1125，iPhoneX横屏启动图片"
+                    },
+                    "ipad": {
+                        "portrait": "可选，768x1004，需支持iPad时必选，iPad竖屏启动图片",
+                        "portrait-retina": "可选，1536x2008，需支持iPad时必选，iPad高分屏竖屏图片",
+                        "landscape": "可选，1024x748，需支持iPad时必选，iPad横屏启动图片",
+                        "landscape-retina": "可选，2048x1496，需支持iPad时必选，iPad高分屏横屏启动图片",
+                        "portrait7": "可选，768x1024，需支持iPad iOS7时必选，iPad竖屏启动图片",
+                        "portrait-retina7": "可选，1536x2048，需支持iPad iOS7时必选，iPad高分屏竖屏图片",
+                        "landscape7": "可选，1024x768，需支持iPad iOS7时必选，iPad横屏启动图片",
+                        "landscape-retina7": "可选，2048x1536，需支持iPad iOS7时必选，iPad高分屏横屏启动图片"
+                    }
+                },
+                "android": {
+                    "mdpi": "必选，240x282，普通屏启动图片",
+                    "ldpi": "必选，320x442，大屏启动图片",
+                    "hdpi": "必选，480x762，高分屏启动图片",
+                    "xhdpi": "必选，720x1242，720P高分屏启动图片",
+                    "xxhdpi": "必选，1080x1882，1080P高分屏启动图片"
+                }
+            }
+        },
+        "splashscreen": {
+            "waiting": true,
+            "autoclose": true
+        },
+        "error": {
+            "url": "页面加载错误时打开的页面地址，可以是网络地址，也可以是本地地址"
+        },
+        "useragent": {
+            "value": "自定义ua字符串",
+            "concatenate": "是否为追加模式"
+        },
+        "useragent_ios": {
+            "value": "与useragent的value一致，仅在iOS平台生效，当useragent和useragent_ios同时存在时优先级useragent_ios>useragent",
+            "concatenate": "与useragent的concatenate一致，仅iOS平台生效"
+        },
+        "useragent_android": {
+            "value": "与useragent的value一致，仅在Android平台生效，当useragent和useragent_android同时存在时优先级useragent_android>useragent",
+            "concatenate": "与useragent的concatenate一致，仅Android平台生效"
+        },
+        "ssl": "accept|refuse|warning，访问https网络时对非受信证书的处理逻辑",
+        "runmode": "normal",
+        "appWhitelist": [
+            "Android平台下载apk地址白名单列表",
+            "iOS平台跳转appstore地址白名单列表"
+        ],
+        "schemeWhitelist": [
+            "URL Scheme白名单列表，如：mqq"
+        ],
+        "channel": "渠道标记，可在DCloud开发者中心查看各渠道应用的统计数据",
+        "adid": "广告联盟会员id，在DCloud开发者中心申请后填写",
+        "safearea": {
+            "background": "#CCCCCC",
+            "bottom": {
+                "offset": "none|auto"
+            },
+            "left": {
+                "offset": "none|auto"
+            },
+            "right": {
+                "offset": "none|auto"
+            }
+        },
+        "softinput": {
+            "navBar": "auto",
+            "mode": "adjustResize|adjustPan"
+        },
+        "popGesture": "none"
+    },
+    "quickapp": {},
+    "mp-weixin": {
+        "appid": "wx开头的微信小程序appid",
+        "uniStatistics": {
+            "enable": false
+        }
+    },
+    "mp-baidu": {
+        "appid": "百度小程序appid"
+    },
+    "mp-toutiao": {
+        "appid": "字节跳动小程序appid"
+    },
+    "h5": {
+        "title": "演示",
+        "template": "index.html",
+        "router": {
+            "mode": "history",
+            "base": "/hello/"
+        },
+        "async": {
+            "loading": "AsyncLoading",
+            "error": "AsyncError",
+            "delay": 200,
+            "timeout": 3000
+        }
+    }
 }
 ```
 更多配置相关的说明，请参考 [manifest.json文档说明](https://ask.dcloud.net.cn/article/94) 中的描述。可能节点的位置与普通的 App 有差异，请按照配置的名称进行对应。

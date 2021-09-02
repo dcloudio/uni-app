@@ -88,7 +88,7 @@ class InnerAudioContext {
     })
     // 和audio对象同名同效果的事件
     var eventNames = ['canplay', 'play', 'pause', 'ended', 'timeUpdate', 'error', 'waiting', 'seeking', 'seeked']
-    var stopEventNames = ['pause', 'seeking', 'seeked', 'timeUpdate']
+    var stopEventNames = ['canplay', 'pause', 'seeking', 'seeked', 'timeUpdate']
     eventNames.forEach(eventName => {
       audio.addEventListener(eventName.toLowerCase(), () => {
         // stop事件过滤
