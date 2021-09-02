@@ -583,7 +583,7 @@ const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     emitter.emit(name, ...args);
 }, EmitProtocol);
 
-const SYNC_API_RE = /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -727,6 +727,30 @@ function initWrapper(protocols) {
     };
 }
 
+const getLocale = () => {
+    // 优先使用 $locale
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return app.$vm.$locale;
+    }
+    return uni.getSystemInfoSync().language || 'zh-Hans';
+};
+const setLocale = (locale) => {
+    const oldLocale = getApp().$vm.$locale;
+    if (oldLocale !== locale) {
+        getApp().$vm.$locale = locale;
+        onLocaleChangeCallbacks.forEach((fn) => fn({ locale }));
+        return true;
+    }
+    return false;
+};
+const onLocaleChangeCallbacks = [];
+const onLocaleChange = (fn) => {
+    if (onLocaleChangeCallbacks.indexOf(fn) === -1) {
+        onLocaleChangeCallbacks.push(fn);
+    }
+};
+
 const baseApis = {
     $on,
     $off,
@@ -736,6 +760,9 @@ const baseApis = {
     addInterceptor,
     removeInterceptor,
     onAppLaunch,
+    getLocale,
+    setLocale,
+    onLocaleChange,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
@@ -929,7 +956,7 @@ function handleSystemInfo(fromRes, toRes) {
     }
     toRes.platform = platform;
 }
-function returnValue(methodName, res) {
+function returnValue(methodName, res = {}) {
     // 通用 returnValue 解析
     if (res.error || res.errorMessage) {
         res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
@@ -1107,8 +1134,18 @@ const connectSocket = {
     // TODO 有没有返回值还需要测试下
 };
 const chooseImage = {
-    returnValue: {
-        apFilePaths: 'tempFilePaths',
+    returnValue(result) {
+        var _a, _b;
+        const hasTempFilePaths = hasOwn(result, 'tempFilePaths') && result.tempFilePaths;
+        if (hasOwn(result, 'apFilePaths') && !hasTempFilePaths) {
+            result.tempFilePaths = [];
+            (_a = result.apFilePaths) === null || _a === void 0 ? void 0 : _a.forEach((apFilePath) => { var _a; return (_a = result.tempFilePaths) === null || _a === void 0 ? void 0 : _a.push(apFilePath); });
+        }
+        if (!hasOwn(result, 'tempFiles') && hasTempFilePaths) {
+            result.tempFiles = [];
+            (_b = result.tempFilePaths) === null || _b === void 0 ? void 0 : _b.forEach((tempFilePath) => { var _a; return (_a = result.tempFiles) === null || _a === void 0 ? void 0 : _a.push({ path: tempFilePath }); });
+        }
+        return {};
     },
 };
 const previewImage = {
