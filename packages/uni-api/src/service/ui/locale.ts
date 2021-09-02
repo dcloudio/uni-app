@@ -25,8 +25,6 @@ export const setLocale = defineSyncApi<typeof uni.setLocale>(
     const oldLocale = getApp().$vm.$locale
     if (oldLocale !== locale) {
       getApp().$vm.$locale = locale
-      // 执行 uni.onLocaleChange
-      UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale })
       if (__PLATFORM__ === 'app') {
         const pages = getCurrentPages()
         pages.forEach((page) => {
@@ -38,6 +36,8 @@ export const setLocale = defineSyncApi<typeof uni.setLocale>(
         })
         weex.requireModule('plus').setLanguage(locale)
       }
+      // 执行 uni.onLocaleChange
+      UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale })
       return true
     }
     return false

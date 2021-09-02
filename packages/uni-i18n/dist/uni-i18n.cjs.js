@@ -223,9 +223,18 @@ class I18n {
 
 const ignoreVueI18n = true;
 function watchAppLocale(appVm, i18n) {
-    appVm.$watch(() => appVm.$locale, (newLocale) => {
-        i18n.setLocale(newLocale);
-    });
+    // 需要保证 watch 的触发在组件渲染之前
+    if (appVm.$watchLocale) {
+        // vue2
+        appVm.$watchLocale((newLocale) => {
+            i18n.setLocale(newLocale);
+        });
+    }
+    else {
+        appVm.$watch(() => appVm.$locale, (newLocale) => {
+            i18n.setLocale(newLocale);
+        });
+    }
 }
 function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参

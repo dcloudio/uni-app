@@ -20828,9 +20828,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "style": {
       color
     },
-    "placeholder-style": {
-      color: placeholderColor
-    },
+    "placeholder-style": "color: " + placeholderColor,
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
@@ -20839,9 +20837,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "style": {
       color
     },
-    "placeholder-style": {
-      color: placeholderColor
-    },
+    "placeholder-style": "color: " + placeholderColor,
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onFocus": onFocus,

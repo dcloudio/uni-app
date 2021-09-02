@@ -14,12 +14,20 @@ type Interpolate = (
 ) => string
 
 function watchAppLocale(appVm: any, i18n: I18n) {
-  appVm.$watch(
-    () => appVm.$locale,
-    (newLocale: string) => {
+  // 需要保证 watch 的触发在组件渲染之前
+  if (appVm.$watchLocale) {
+    // vue2
+    appVm.$watchLocale((newLocale: string) => {
       i18n.setLocale(newLocale)
-    }
-  )
+    })
+  } else {
+    appVm.$watch(
+      () => appVm.$locale,
+      (newLocale: string) => {
+        i18n.setLocale(newLocale)
+      }
+    )
+  }
 }
 
 // function getDefaultLocale() {

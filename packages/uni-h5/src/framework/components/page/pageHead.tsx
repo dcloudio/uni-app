@@ -220,7 +220,7 @@ function createPageHeadSearchInputTsx(
         <Input
           disabled={true}
           style={{ color }}
-          placeholder-style={{ color: placeholderColor }}
+          placeholder-style={'color: ' + placeholderColor}
           class="uni-page-head-search-input"
           confirm-type="search"
           onClick={onClick}
@@ -229,7 +229,7 @@ function createPageHeadSearchInputTsx(
         <Input
           focus={autoFocus}
           style={{ color }}
-          placeholder-style={{ color: placeholderColor }}
+          placeholder-style={'color: ' + placeholderColor}
           class="uni-page-head-search-input"
           confirm-type="search"
           onFocus={onFocus}
