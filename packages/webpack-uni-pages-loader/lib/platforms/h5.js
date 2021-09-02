@@ -444,6 +444,7 @@ module.exports = function (pagesJson, manifestJson, loader) {
   return `
 import Vue from 'vue'
 ${genLayoutComponentsCode(pagesJson)}
+const locales = ${fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'locale')) ? 'require.context(\'./locale\', false, /\.json$/)' : '{keys(){return []}}'}
 global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
@@ -456,6 +457,8 @@ global.__uniConfig.networkTimeout = ${JSON.stringify(networkTimeoutConfig)};
 global.__uniConfig.sdkConfigs = ${JSON.stringify(sdkConfigs)};
 global.__uniConfig.qqMapKey = ${JSON.stringify(qqMapKey)};
 global.__uniConfig.locale = ${JSON.stringify(locale)};
+global.__uniConfig.fallbackLocale = ${JSON.stringify(manifestJson.fallbackLocale)};
+global.__uniConfig.locales = locales.keys().reduce((res,key)=>{res[key.replace(/\\.\\/(.*).json/,'$1')]=locales(key);return res},{});
 global.__uniConfig.nvue = ${JSON.stringify({ 'flex-direction': getFlexDirection(manifestJson['app-plus']) })}
 global.__uniConfig.__webpack_chunk_load__ = __webpack_chunk_load__
 ${genRegisterPageVueComponentsCode(pageComponents)}

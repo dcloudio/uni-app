@@ -1,6 +1,10 @@
 import {
-  initVueI18n
+  initVueI18n,
+  isI18nStr
 } from '@dcloudio/uni-i18n'
+import {
+  isStr
+} from 'uni-shared'
 
 import en from './en.json'
 import es from './es.json'
@@ -65,4 +69,89 @@ export function initAppLocale (Vue, appVm, locale) {
       localeWatchers.forEach(watch => watch(v))
     }
   })
+}
+
+export const I18N_JSON_DELIMITERS = ['%', '%']
+
+function getLocaleMessage () {
+  const locale = uni.getLocale()
+  const locales = __uniConfig.locales
+  return (
+    locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+  )
+}
+
+export function formatI18n (message) {
+  if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+    return i18n.f(message, getLocaleMessage(), I18N_JSON_DELIMITERS)
+  }
+  return message
+}
+
+function resolveJsonObj (
+  jsonObj,
+  names
+) {
+  if (names.length === 1) {
+    if (jsonObj) {
+      const value = jsonObj[names[0]]
+      if (isStr(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+        return jsonObj
+      }
+    }
+    return
+  }
+  const name = names.shift()
+  return resolveJsonObj(jsonObj && jsonObj[name], names)
+}
+
+export function defineI18nProperties (
+  obj,
+  names
+) {
+  return names.map((name) => defineI18nProperty(obj, name))
+}
+
+export function defineI18nProperty (obj, names) {
+  const jsonObj = resolveJsonObj(obj, names)
+  if (!jsonObj) {
+    return false
+  }
+  const prop = names[names.length - 1]
+  let value = jsonObj[prop]
+  Object.defineProperty(jsonObj, prop, {
+    get () {
+      return formatI18n(value)
+    },
+    set (v) {
+      value = v
+    }
+  })
+  return true
+}
+
+function isEnableLocale () {
+  return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+export function initNavigationBarI18n (navigationBar) {
+  if (isEnableLocale()) {
+    return defineI18nProperties(navigationBar, [
+      ['titleText'],
+      ['searchInput', 'placeholder']
+    ])
+  }
+}
+
+export function initPullToRefreshI18n (
+  pullToRefresh
+) {
+  if (isEnableLocale()) {
+    const CAPTION = 'caption'
+    return defineI18nProperties(pullToRefresh, [
+      ['contentdown', CAPTION],
+      ['contentover', CAPTION],
+      ['contentrefresh', CAPTION]
+    ])
+  }
 }
