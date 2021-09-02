@@ -65,6 +65,29 @@ exports[`compileI18nJsonStr pages.json->tabBar 1`] = `
       \\"pagePath\\": \\"pages/tabBar/component/component\\",
       \\"iconPath\\": \\"static/component.png\\",
       \\"selectedIconPath\\": \\"static/componentHL.png\\",
+      \\"text\\": \\"组件\\"
+    },
+    {
+      \\"pagePath\\": \\"pages/tabBar/API/API\\",
+      \\"iconPath\\": \\"static/api.png\\",
+      \\"selectedIconPath\\": \\"static/apiHL.png\\",
+      \\"text\\": \\"接口\\"
+    }
+  ]
+}"
+`;
+
+exports[`compileI18nJsonStr pages.json->tabBar with multi language 1`] = `
+"{
+  \\"color\\": \\"#7A7E83\\",
+  \\"selectedColor\\": \\"#007AFF\\",
+  \\"borderStyle\\": \\"black\\",
+  \\"backgroundColor\\": \\"#f8f8f8\\",
+  \\"list\\": [
+    {
+      \\"pagePath\\": \\"pages/tabBar/component/component\\",
+      \\"iconPath\\": \\"static/component.png\\",
+      \\"selectedIconPath\\": \\"static/componentHL.png\\",
       \\"text\\": \\"组件\\",
       \\"textLocales\\": {
         \\"zh-Hans\\": \\"组件\\",

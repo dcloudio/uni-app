@@ -71,6 +71,43 @@ describe('compileI18nJsonStr', () => {
               'tabBar.0.title': '组件',
               'tabBar.1.title': '接口',
             },
+          },
+          delimiters,
+        }
+      )
+    ).toMatchSnapshot()
+  })
+  test('pages.json->tabBar with multi language', () => {
+    expect(
+      compileI18nJsonStr(
+        JSON.stringify({
+          color: '#7A7E83',
+          selectedColor: '#007AFF',
+          borderStyle: 'black',
+          backgroundColor: '#%tabBar.backgroundColor%',
+          list: [
+            {
+              pagePath: 'pages/tabBar/component/component',
+              iconPath: 'static/component.png',
+              selectedIconPath: 'static/componentHL.png',
+              text: '%tabBar.0.title%',
+            },
+            {
+              pagePath: 'pages/tabBar/API/API',
+              iconPath: 'static/api.png',
+              selectedIconPath: 'static/apiHL.png',
+              text: '%tabBar.1.title%',
+            },
+          ],
+        }),
+        {
+          locale: 'zh-Hans',
+          locales: {
+            'zh-Hans': {
+              'tabBar.backgroundColor': 'f8f8f8',
+              'tabBar.0.title': '组件',
+              'tabBar.1.title': '接口',
+            },
             en: {
               'tabBar.backgroundColor': 'f6f6f6',
               'tabBar.0.title': 'Component',
@@ -82,6 +119,7 @@ describe('compileI18nJsonStr', () => {
       )
     ).toMatchSnapshot()
   })
+
   test('androidPrivacy.json', () => {
     expect(
       compileI18nJsonStr(

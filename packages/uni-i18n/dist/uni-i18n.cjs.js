@@ -383,11 +383,13 @@ function compileValue(jsonObj, key, localeValues, delimiters) {
         // 存在国际化
         if (isI18nStr(value, delimiters)) {
             jsonObj[key] = compileStr(value, localeValues[0].values, delimiters);
-            // 格式化国际化语言
-            const valueLocales = (jsonObj[key + 'Locales'] = {});
-            localeValues.forEach((localValue) => {
-                valueLocales[localValue.locale] = compileStr(value, localValue.values, delimiters);
-            });
+            if (localeValues.length > 1) {
+                // 格式化国际化语言
+                const valueLocales = (jsonObj[key + 'Locales'] = {});
+                localeValues.forEach((localValue) => {
+                    valueLocales[localValue.locale] = compileStr(value, localValue.values, delimiters);
+                });
+            }
         }
     }
     else {

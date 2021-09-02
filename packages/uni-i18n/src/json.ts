@@ -121,17 +121,19 @@ function compileValue(
         localeValues[0].values,
         delimiters
       )
-      // 格式化国际化语言
-      const valueLocales: Record<string, string> = ((
-        jsonObj as Record<string | number, unknown>
-      )[key + 'Locales'] = {})
-      localeValues.forEach((localValue) => {
-        valueLocales[localValue.locale] = compileStr(
-          value,
-          localValue.values,
-          delimiters
-        )
-      })
+      if (localeValues.length > 1) {
+        // 格式化国际化语言
+        const valueLocales: Record<string, string> = ((
+          jsonObj as Record<string | number, unknown>
+        )[key + 'Locales'] = {})
+        localeValues.forEach((localValue) => {
+          valueLocales[localValue.locale] = compileStr(
+            value,
+            localValue.values,
+            delimiters
+          )
+        })
+      }
     }
   } else {
     compileJsonObj(value, localeValues, delimiters)
