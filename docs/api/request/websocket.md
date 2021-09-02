@@ -60,6 +60,10 @@ var socketTask = uni.connectSocket({
 ### uni.onSocketOpen(CALLBACK)
 监听WebSocket连接打开事件。
 
+**平台兼容性**
+
+字节小程序不支持
+
 **CALLBACK 返回参数**
 
 |属性|类型|说明|
@@ -81,6 +85,10 @@ uni.onSocketOpen(function (res) {
 ### uni.onSocketError(CALLBACK)
 监听WebSocket错误。
 
+**平台兼容性**
+
+字节小程序不支持
+
 **示例代码**
 
 ```javascript
@@ -97,6 +105,10 @@ uni.onSocketError(function (res) {
 
 ### uni.sendSocketMessage(OBJECT)
 通过 WebSocket 连接发送数据，需要先 [uni.connectSocket](/api/request/websocket?id=connectsocket)，并在 [uni.onSocketOpen](/api/request/websocket?id=onsocketopen) 回调之后才能发送。
+
+**平台兼容性**
+
+字节小程序不支持
 
 **OBJECT 参数说明：**
 
@@ -139,6 +151,10 @@ function sendSocketMessage(msg) {
 ### uni.onSocketMessage(CALLBACK)
 监听WebSocket接受到服务器的消息事件。
 
+**平台兼容性**
+
+字节小程序不支持
+
 **CALLBACK 返回参数**
 
 |参数|类型|说明|
@@ -160,6 +176,10 @@ uni.onSocketMessage(function (res) {
 ### uni.closeSocket(OBJECT)
 关闭 WebSocket 连接。
 
+**平台兼容性**
+
+字节小程序不支持
+
 **OBJECT 参数说明**
 
 |参数名|类型|必填|说明|
@@ -172,6 +192,10 @@ uni.onSocketMessage(function (res) {
 
 ### uni.onSocketClose(CALLBACK)
 监听WebSocket关闭。
+
+**平台兼容性**
+
+字节小程序不支持
 
 ```javascript
 uni.connectSocket({
