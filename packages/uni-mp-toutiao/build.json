@@ -19,5 +19,6 @@
     "__GLOBAL__": "tt",
     "__PLATFORM__": "\"mp-toutiao\"",
     "__PLATFORM_TITLE__": "字节跳动小程序"
-  }
+  },
+  "external": ["@dcloudio/uni-i18n", "@vue/shared", "vue"]
 }

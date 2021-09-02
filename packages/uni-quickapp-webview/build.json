@@ -19,5 +19,6 @@
     "__GLOBAL__": "qa",
     "__PLATFORM__": "\"quickapp-webview\"",
     "__PLATFORM_TITLE__": "快应用(Webview)版"
-  }
+  },
+  "external": ["@dcloudio/uni-i18n", "@vue/shared", "vue"]
 }

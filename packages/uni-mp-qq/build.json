@@ -19,5 +19,6 @@
     "__GLOBAL__": "qq",
     "__PLATFORM__": "\"mp-qq\"",
     "__PLATFORM_TITLE__": "QQ小程序"
-  }
+  },
+  "external": ["@dcloudio/uni-i18n", "@vue/shared", "vue"]
 }

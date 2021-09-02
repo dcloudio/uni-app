@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { ComponentPublicInstance, ComponentOptions } from 'vue'
+import { ComponentPublicInstance, ComponentOptions, ref } from 'vue'
 
 import { initBaseInstance } from './componentInstance'
 import { initHooks, initUnknownHooks } from './componentHooks'
@@ -65,6 +65,8 @@ function parseApp(
     },
   }
 
+  initLocale(instance)
+
   const vueOptions = instance.$.type as ComponentOptions
 
   initHooks(appOptions, HOOKS)
@@ -86,4 +88,16 @@ export function initCreateApp(parseAppOptions?: ParseAppOptions) {
   return function createApp(vm: ComponentPublicInstance) {
     return App(parseApp(vm, parseAppOptions))
   }
+}
+
+function initLocale(appVm: ComponentPublicInstance) {
+  const locale = ref<string>(uni.getSystemInfoSync().language || 'zh-Hans')
+  Object.defineProperty(appVm, '$locale', {
+    get() {
+      return locale.value
+    },
+    set(v) {
+      locale.value = v
+    },
+  })
 }

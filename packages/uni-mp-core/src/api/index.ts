@@ -16,6 +16,7 @@ import { initWrapper } from './wrapper'
 
 import { MPProtocols } from './protocols'
 import { onAppLaunch } from './hook'
+import { getLocale, setLocale, onLocaleChange } from './locale'
 
 const baseApis = {
   $on,
@@ -26,6 +27,9 @@ const baseApis = {
   addInterceptor,
   removeInterceptor,
   onAppLaunch,
+  getLocale,
+  setLocale,
+  onLocaleChange,
 }
 
 export function initUni(api: Record<string, any>, protocols: MPProtocols) {

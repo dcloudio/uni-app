@@ -19,5 +19,6 @@
     "__GLOBAL__": "my",
     "__PLATFORM__": "\"mp-alipay\"",
     "__PLATFORM_TITLE__": "支付宝小程序"
-  }
+  },
+  "external": ["@dcloudio/uni-i18n", "@vue/shared", "vue"]
 }

@@ -19,5 +19,6 @@
     "__GLOBAL__": "wx",
     "__PLATFORM__": "\"mp-weixin\"",
     "__PLATFORM_TITLE__": "微信小程序"
-  }
+  },
+  "external": ["@dcloudio/uni-i18n", "@vue/shared", "vue"]
 }

@@ -67,7 +67,7 @@ function initUniCloudEnv() {
         process.env.UNI_CLOUD_PROVIDER = JSON.stringify(uniCloudSpaces.map((space) => {
             if (space.clientSecret) {
                 return {
-                    provider: 'aliyun',
+                    provider: space.provider || 'aliyun',
                     spaceName: space.name,
                     spaceId: space.id,
                     clientSecret: space.clientSecret,
@@ -76,7 +76,7 @@ function initUniCloudEnv() {
             }
             else {
                 return {
-                    provider: 'tencent',
+                    provider: space.provider || 'tencent',
                     spaceName: space.name,
                     spaceId: space.id,
                 };
