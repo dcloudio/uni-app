@@ -47,15 +47,15 @@ function startsWith(str: string, parts: string[]) {
   return parts.find((part) => str.indexOf(part) === 0)
 }
 
-function normalizeLocale(
+export function normalizeLocale(
   locale: string,
-  messages: LocaleMessages
+  messages?: LocaleMessages
 ): BuiltInLocale | undefined {
   if (!locale) {
     return
   }
   locale = locale.trim().replace(/_/g, '-')
-  if (messages[locale as BuiltInLocale]) {
+  if (messages && messages[locale as BuiltInLocale]) {
     return locale as BuiltInLocale
   }
   locale = locale.toLowerCase()

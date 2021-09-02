@@ -104,4 +104,5 @@ export {
   $once,
   $emit,
   onAppLaunch,
+  onLocaleChange,
 } from '@dcloudio/uni-api'

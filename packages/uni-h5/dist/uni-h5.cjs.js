@@ -8,7 +8,7 @@ var uniI18n = require("@dcloudio/uni-i18n");
 var vueRouter = require("vue-router");
 let i18n;
 function getLocaleMessage() {
-  const locale = useI18n().getLocale();
+  const locale = uni.getLocale();
   const locales = __uniConfig.locales;
   return locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {};
 }
@@ -32,12 +32,12 @@ function resolveJsonObj(jsonObj, names) {
   return resolveJsonObj(jsonObj && jsonObj[name], names);
 }
 function defineI18nProperties(obj, names) {
-  names.forEach((name) => defineI18nProperty(obj, name));
+  return names.map((name) => defineI18nProperty(obj, name));
 }
 function defineI18nProperty(obj, names) {
   const jsonObj = resolveJsonObj(obj, names);
   if (!jsonObj) {
-    return;
+    return false;
   }
   const prop = names[names.length - 1];
   let value = jsonObj[prop];
@@ -49,6 +49,7 @@ function defineI18nProperty(obj, names) {
       value = v2;
     }
   });
+  return true;
 }
 function useI18n() {
   if (!i18n) {
@@ -134,23 +135,21 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
 const isEnableLocale = uniShared.once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
-    defineI18nProperties(navigationBar, [
+    return defineI18nProperties(navigationBar, [
       ["titleText"],
       ["searchInput", "placeholder"]
     ]);
   }
-  return navigationBar;
 }
 function initPullToRefreshI18n(pullToRefresh) {
   if (isEnableLocale()) {
     const CAPTION = "caption";
-    defineI18nProperties(pullToRefresh, [
+    return defineI18nProperties(pullToRefresh, [
       ["contentdown", CAPTION],
       ["contentover", CAPTION],
       ["contentrefresh", CAPTION]
     ]);
   }
-  return pullToRefresh;
 }
 const E = function() {
 };

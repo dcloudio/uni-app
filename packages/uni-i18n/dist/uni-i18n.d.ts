@@ -45,7 +45,7 @@ export declare interface I18nOptions {
     watcher?: LocaleWatcher;
 }
 
-export declare function initVueI18n(locale?: string, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, watcher?: (locale: string) => void): {
+export declare function initVueI18n(locale?: string, messages?: LocaleMessages, fallbackLocale?: string, watcher?: (locale: string) => void): {
     i18n: I18n;
     f(message: string, values?: Record<string, unknown> | unknown[] | undefined, delimiters?: [string, string] | undefined): string;
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
@@ -72,6 +72,8 @@ export declare const LOCALE_ZH_HANT = "zh-Hant";
 export declare type LocaleMessages = Record<string, Record<string, string>>;
 
 export declare type LocaleWatcher = (newLocale: string, oldLocale: string) => void;
+
+export declare function normalizeLocale(locale: string, messages?: LocaleMessages): BuiltInLocale | undefined;
 
 export declare function parseI18nJson(jsonObj: unknown, values: Record<string, string>, delimiters: [string, string]): unknown;
 

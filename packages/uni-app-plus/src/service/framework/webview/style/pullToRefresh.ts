@@ -11,17 +11,17 @@ export function initPullToRefresh(
   if (!routeMeta.enablePullDownRefresh) {
     return
   }
-  webviewStyle.pullToRefresh = initPullToRefreshI18n(
-    normalizePullToRefreshRpx(
-      extend(
-        {},
-        plus.os.name === 'Android'
-          ? defaultAndroidPullToRefresh
-          : defaultPullToRefresh,
-        routeMeta.pullToRefresh
-      )
-    ) as unknown as PlusWebviewWebviewPullToRefreshStyles
-  ) as PlusWebviewWebviewPullToRefreshStyles
+  const pullToRefresh = normalizePullToRefreshRpx(
+    extend(
+      {},
+      plus.os.name === 'Android'
+        ? defaultAndroidPullToRefresh
+        : defaultPullToRefresh,
+      routeMeta.pullToRefresh
+    )
+  ) as unknown as PlusWebviewWebviewPullToRefreshStyles
+  initPullToRefreshI18n(pullToRefresh)
+  webviewStyle.pullToRefresh = pullToRefresh
 }
 
 const defaultAndroidPullToRefresh = { support: true, style: 'circle' }

@@ -64,7 +64,7 @@ describe('i18n', () => {
   })
   test('watchLocale', () => {
     let i = 0
-    function watcher(newLocale: BuiltInLocale, oldLocale: BuiltInLocale) {
+    function watcher(newLocale: string, oldLocale: string) {
       i++
       expect(newLocale).toBe('zh-Hans')
       expect(oldLocale).toBe('en')

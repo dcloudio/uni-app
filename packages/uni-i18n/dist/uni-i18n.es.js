@@ -117,7 +117,7 @@ function normalizeLocale(locale, messages) {
         return;
     }
     locale = locale.trim().replace(/_/g, '-');
-    if (messages[locale]) {
+    if (messages && messages[locale]) {
         return locale;
     }
     locale = locale.toLowerCase();
@@ -238,7 +238,6 @@ function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     }
     if (typeof fallbackLocale !== 'string') {
         fallbackLocale =
-            // @ts-expect-error
             (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
                 LOCALE_EN;
     }
@@ -415,4 +414,4 @@ function walkJsonObj(jsonObj, walk) {
     return false;
 }
 
-export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, parseI18nJson };
+export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, normalizeLocale, parseI18nJson };

@@ -121,7 +121,7 @@ function normalizeLocale(locale, messages) {
         return;
     }
     locale = locale.trim().replace(/_/g, '-');
-    if (messages[locale]) {
+    if (messages && messages[locale]) {
         return locale;
     }
     locale = locale.toLowerCase();
@@ -242,7 +242,6 @@ function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     }
     if (typeof fallbackLocale !== 'string') {
         fallbackLocale =
-            // @ts-expect-error
             (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
                 LOCALE_EN;
     }
@@ -431,4 +430,5 @@ exports.hasI18nJson = hasI18nJson;
 exports.initVueI18n = initVueI18n;
 exports.isI18nStr = isI18nStr;
 exports.isString = isString;
+exports.normalizeLocale = normalizeLocale;
 exports.parseI18nJson = parseI18nJson;

@@ -9,7 +9,7 @@ interface webviewStyleWithLanguage extends PlusWebviewWebviewStyles {
 }
 
 function getLocaleMessage() {
-  const locale = useI18n().getLocale()
+  const locale = uni.getLocale()
   const locales = __uniConfig.locales
   return (
     locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
@@ -44,13 +44,13 @@ export function defineI18nProperties(
   obj: Record<string, any>,
   names: string[][]
 ) {
-  names.forEach((name) => defineI18nProperty(obj, name))
+  return names.map((name) => defineI18nProperty(obj, name))
 }
 
 export function defineI18nProperty(obj: Record<string, any>, names: string[]) {
   const jsonObj = resolveJsonObj(obj, names)
   if (!jsonObj) {
-    return
+    return false
   }
   const prop = names[names.length - 1]
   let value = jsonObj[prop]
@@ -62,6 +62,7 @@ export function defineI18nProperty(obj: Record<string, any>, names: string[]) {
       value = v
     },
   })
+  return true
 }
 
 export function useI18n() {

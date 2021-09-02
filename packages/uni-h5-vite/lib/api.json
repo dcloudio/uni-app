@@ -74,6 +74,7 @@
   "onAppLaunch",
   "onCompassChange",
   "onGyroscopeChange",
+  "onLocaleChange",
   "onMemoryWarning",
   "onNetworkStatusChange",
   "onSocketClose",

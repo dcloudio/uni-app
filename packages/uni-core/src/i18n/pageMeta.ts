@@ -10,12 +10,11 @@ export function initNavigationBarI18n(
   navigationBar: UniApp.PageNavigationBar | PlusWebviewWebviewTitleNViewStyles
 ) {
   if (isEnableLocale()) {
-    defineI18nProperties(navigationBar, [
+    return defineI18nProperties(navigationBar, [
       ['titleText'],
       ['searchInput', 'placeholder'],
-    ])
+    ]) as [boolean, boolean]
   }
-  return navigationBar
 }
 
 export function initPullToRefreshI18n(
@@ -25,11 +24,10 @@ export function initPullToRefreshI18n(
 ) {
   if (isEnableLocale()) {
     const CAPTION = 'caption'
-    defineI18nProperties(pullToRefresh, [
+    return defineI18nProperties(pullToRefresh, [
       ['contentdown', CAPTION],
       ['contentover', CAPTION],
       ['contentrefresh', CAPTION],
-    ])
+    ]) as [boolean, boolean, boolean]
   }
-  return pullToRefresh
 }

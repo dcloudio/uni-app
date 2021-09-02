@@ -38,7 +38,7 @@ const i18nInstances: I18n[] = []
 export function initVueI18n(
   locale?: string,
   messages: LocaleMessages = {},
-  fallbackLocale?: BuiltInLocale,
+  fallbackLocale?: string,
   watcher?: (locale: string) => void
 ) {
   // 兼容旧版本入参
@@ -55,7 +55,6 @@ export function initVueI18n(
   }
   if (typeof fallbackLocale !== 'string') {
     fallbackLocale =
-      // @ts-expect-error
       (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
       LOCALE_EN
   }

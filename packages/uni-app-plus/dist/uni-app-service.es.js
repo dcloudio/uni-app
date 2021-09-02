@@ -1382,7 +1382,7 @@ var serviceContext = (function (vue) {
           return;
       }
       locale = locale.trim().replace(/_/g, '-');
-      if (messages[locale]) {
+      if (messages && messages[locale]) {
           return locale;
       }
       locale = locale.toLowerCase();
@@ -1503,7 +1503,6 @@ var serviceContext = (function (vue) {
       }
       if (typeof fallbackLocale !== 'string') {
           fallbackLocale =
-              // @ts-expect-error
               (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
                   LOCALE_EN;
       }
@@ -1580,7 +1579,7 @@ var serviceContext = (function (vue) {
 
   let i18n;
   function getLocaleMessage() {
-      const locale = useI18n().getLocale();
+      const locale = uni.getLocale();
       const locales = __uniConfig.locales;
       return (locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {});
   }
@@ -1604,12 +1603,12 @@ var serviceContext = (function (vue) {
       return resolveJsonObj(jsonObj && jsonObj[name], names);
   }
   function defineI18nProperties(obj, names) {
-      names.forEach((name) => defineI18nProperty(obj, name));
+      return names.map((name) => defineI18nProperty(obj, name));
   }
   function defineI18nProperty(obj, names) {
       const jsonObj = resolveJsonObj(obj, names);
       if (!jsonObj) {
-          return;
+          return false;
       }
       const prop = names[names.length - 1];
       let value = jsonObj[prop];
@@ -1621,6 +1620,7 @@ var serviceContext = (function (vue) {
               value = v;
           },
       });
+      return true;
   }
   function useI18n() {
       if (!i18n) {
@@ -1816,23 +1816,21 @@ var serviceContext = (function (vue) {
   const isEnableLocale = once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
   function initNavigationBarI18n(navigationBar) {
       if (isEnableLocale()) {
-          defineI18nProperties(navigationBar, [
+          return defineI18nProperties(navigationBar, [
               ['titleText'],
               ['searchInput', 'placeholder'],
           ]);
       }
-      return navigationBar;
   }
   function initPullToRefreshI18n(pullToRefresh) {
       if (isEnableLocale()) {
           const CAPTION = 'caption';
-          defineI18nProperties(pullToRefresh, [
+          return defineI18nProperties(pullToRefresh, [
               ['contentdown', CAPTION],
               ['contentover', CAPTION],
               ['contentrefresh', CAPTION],
           ]);
       }
-      return pullToRefresh;
   }
 
   const E = function () {
@@ -4391,7 +4389,10 @@ var serviceContext = (function (vue) {
       // window.removeEventListener('resize', onResize)
   });
 
-  const getLocale = defineSyncApi('getLocale', () => {
+  const API_SET_LOCALE = 'setLocale';
+  const API_GET_LOCALE = 'getLocale';
+  const API_ON_LOCALE_CHANGE = 'onLocaleChange';
+  const getLocale = defineSyncApi(API_GET_LOCALE, () => {
       // 优先使用 $locale
       const app = getApp({ allowDefault: true });
       if (app && app.$vm) {
@@ -4399,15 +4400,23 @@ var serviceContext = (function (vue) {
       }
       return useI18n().getLocale();
   });
-  const setLocale = defineSyncApi('setLocale', (locale) => {
-      getApp().$vm.$locale = locale;
-      {
-          const pages = getCurrentPages();
-          pages.forEach((page) => {
-              UniServiceJSBridge.publishHandler('setLocale', locale, page.$page.id);
-          });
-          weex.requireModule('plus').setLanguage(locale);
+  const onLocaleChange = defineOnApi(API_ON_LOCALE_CHANGE, () => { });
+  const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
+      const oldLocale = getApp().$vm.$locale;
+      if (oldLocale !== locale) {
+          getApp().$vm.$locale = locale;
+          // 执行 uni.onLocaleChange
+          UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
+          {
+              const pages = getCurrentPages();
+              pages.forEach((page) => {
+                  UniServiceJSBridge.publishHandler(API_SET_LOCALE, locale, page.$page.id);
+              });
+              weex.requireModule('plus').setLanguage(locale);
+          }
+          return true;
       }
+      return false;
   });
 
   const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
@@ -10370,9 +10379,11 @@ var serviceContext = (function (vue) {
       if (!routeMeta.enablePullDownRefresh) {
           return;
       }
-      webviewStyle.pullToRefresh = initPullToRefreshI18n(normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
+      const pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
           ? defaultAndroidPullToRefresh
-          : defaultPullToRefresh, routeMeta.pullToRefresh)));
+          : defaultPullToRefresh, routeMeta.pullToRefresh));
+      initPullToRefreshI18n(pullToRefresh);
+      webviewStyle.pullToRefresh = pullToRefresh;
   }
   const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
   const defaultPullToRefresh = {
@@ -10424,7 +10435,26 @@ var serviceContext = (function (vue) {
                   value;
           }
       });
-      webviewStyle.titleNView = initNavigationBarI18n(titleNView);
+      webviewStyle.titleNView = initTitleNViewI18n(titleNView, routeMeta);
+  }
+  function initTitleNViewI18n(titleNView, routeMeta) {
+      const i18nResult = initNavigationBarI18n(titleNView);
+      if (!i18nResult) {
+          return titleNView;
+      }
+      const [titleTextI18n, _searchInputPlaceholderI18n] = i18nResult;
+      if (titleTextI18n) {
+          uni.onLocaleChange(() => {
+              const webview = plus.webview.getWebviewById(routeMeta.id + '');
+              webview &&
+                  webview.setStyle({
+                      titleNView: {
+                          titleText: titleNView.titleText,
+                      },
+                  });
+          });
+      }
+      return titleNView;
   }
   function createTitleImageTags(titleImage) {
       return [
@@ -12501,6 +12531,7 @@ var serviceContext = (function (vue) {
     $once: $once,
     $emit: $emit,
     onAppLaunch: onAppLaunch,
+    onLocaleChange: onLocaleChange,
     setStorageSync: setStorageSync,
     setStorage: setStorage,
     getStorageSync: getStorageSync,

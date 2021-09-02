@@ -4,7 +4,6 @@ import { useRoute } from 'vue-router'
 
 import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
 import {
-  defineI18nProperties,
   initNavigationBarI18n,
   initPullToRefreshI18n,
   initRouteMeta,

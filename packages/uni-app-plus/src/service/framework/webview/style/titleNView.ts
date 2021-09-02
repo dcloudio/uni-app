@@ -40,7 +40,31 @@ export function initTitleNView(
         value as any
     }
   })
-  webviewStyle.titleNView = initNavigationBarI18n(titleNView)
+
+  webviewStyle.titleNView = initTitleNViewI18n(titleNView, routeMeta)
+}
+
+function initTitleNViewI18n(
+  titleNView: PlusWebviewWebviewTitleNViewStyles,
+  routeMeta: UniApp.PageRouteMeta
+) {
+  const i18nResult = initNavigationBarI18n(titleNView)
+  if (!i18nResult) {
+    return titleNView
+  }
+  const [titleTextI18n, _searchInputPlaceholderI18n] = i18nResult
+  if (titleTextI18n) {
+    uni.onLocaleChange(() => {
+      const webview = plus.webview.getWebviewById(routeMeta.id + '')
+      webview &&
+        webview.setStyle({
+          titleNView: {
+            titleText: titleNView.titleText,
+          },
+        })
+    })
+  }
+  return titleNView
 }
 
 function createTitleImageTags(titleImage: string) {

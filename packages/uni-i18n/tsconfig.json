@@ -17,5 +17,5 @@
     "lib": ["ESNext", "DOM"],
     "types": ["node", "@dcloudio/types"]
   },
-  "include": ["src"]
+  "include": ["src", "../global.d.ts", "../shims-uni-app.d.ts"]
 }
