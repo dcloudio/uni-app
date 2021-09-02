@@ -10,10 +10,10 @@ export {
 }
   from './create-app'
 
-export function createAppMixin (routes, entryRoute) {
+export function createAppMixin (Vue, routes, entryRoute) {
   return {
     created: function AppCreated () {
-      createApp(this, routes)
+      createApp(Vue, this, routes)
       // TODO
       if (!entryRoute.meta.name) { // PageNotFound
         UniServiceJSBridge.emit('onPageNotFound', {

@@ -47,3 +47,22 @@ export const i18nMixin = i18n.mixin = {
 }
 export const setLocale = i18n.setLocale
 export const getLocale = i18n.getLocale
+
+export function initAppLocale (Vue, appVm) {
+  const state = Vue.observable({
+    locale: i18n.getLocale()
+  })
+  const localeWatchers = []
+  appVm.$watchLocale = (fn) => {
+    localeWatchers.push(fn)
+  }
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return state.locale
+    },
+    set (v) {
+      state.locale = v
+      localeWatchers.forEach(watch => watch(v))
+    }
+  })
+}

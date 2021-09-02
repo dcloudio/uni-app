@@ -193,7 +193,10 @@ var serviceContext = (function () {
     'getRightWindowStyle',
     'setTopWindowStyle',
     'setLeftWindowStyle',
-    'setRightWindowStyle'
+    'setRightWindowStyle',
+    'getLocale',
+    'setLocale',
+    'onLocaleChange'
   ];
 
   const event = [
@@ -229,6 +232,7 @@ var serviceContext = (function () {
     'getUserProfile',
     'preLogin',
     'closeAuthView',
+    'getCheckBoxState',
     'share',
     'shareWithSystem',
     'showShareMenu',
@@ -787,7 +791,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1151,18 +1155,20 @@ var serviceContext = (function () {
     scanCode: scanCode
   });
 
+  const isArray = Array.isArray;
   const isObject$1 = (val) => val !== null && typeof val === 'object';
+  const defaultDelimiters = ['{', '}'];
   class BaseFormatter {
       constructor() {
           this._caches = Object.create(null);
       }
-      interpolate(message, values) {
+      interpolate(message, values, delimiters = defaultDelimiters) {
           if (!values) {
               return [message];
           }
           let tokens = this._caches[message];
           if (!tokens) {
-              tokens = parse(message);
+              tokens = parse(message, delimiters);
               this._caches[message] = tokens;
           }
           return compile(tokens, values);
@@ -1170,24 +1176,24 @@ var serviceContext = (function () {
   }
   const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
   const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-  function parse(format) {
+  function parse(format, [startDelimiter, endDelimiter]) {
       const tokens = [];
       let position = 0;
       let text = '';
       while (position < format.length) {
           let char = format[position++];
-          if (char === '{') {
+          if (char === startDelimiter) {
               if (text) {
                   tokens.push({ type: 'text', value: text });
               }
               text = '';
               let sub = '';
               char = format[position++];
-              while (char !== undefined && char !== '}') {
+              while (char !== undefined && char !== endDelimiter) {
                   sub += char;
                   char = format[position++];
               }
-              const isClosed = char === '}';
+              const isClosed = char === endDelimiter;
               const type = RE_TOKEN_LIST_VALUE.test(sub)
                   ? 'list'
                   : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
@@ -1195,12 +1201,12 @@ var serviceContext = (function () {
                       : 'unknown';
               tokens.push({ value: sub, type });
           }
-          else if (char === '%') {
-              // when found rails i18n syntax, skip text capture
-              if (format[position] !== '{') {
-                  text += char;
-              }
-          }
+          //  else if (char === '%') {
+          //   // when found rails i18n syntax, skip text capture
+          //   if (format[position] !== '{') {
+          //     text += char
+          //   }
+          // }
           else {
               text += char;
           }
@@ -1211,7 +1217,7 @@ var serviceContext = (function () {
   function compile(tokens, values) {
       const compiled = [];
       let index = 0;
-      const mode = Array.isArray(values)
+      const mode = isArray(values)
           ? 'list'
           : isObject$1(values)
               ? 'named'
@@ -1249,6 +1255,11 @@ var serviceContext = (function () {
       return compiled;
   }
 
+  const LOCALE_ZH_HANS = 'zh-Hans';
+  const LOCALE_ZH_HANT = 'zh-Hant';
+  const LOCALE_EN = 'en';
+  const LOCALE_FR = 'fr';
+  const LOCALE_ES = 'es';
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
   const defaultFormatter = new BaseFormatter();
@@ -1263,31 +1274,31 @@ var serviceContext = (function () {
           return;
       }
       locale = locale.trim().replace(/_/g, '-');
-      if (messages[locale]) {
+      if (messages && messages[locale]) {
           return locale;
       }
       locale = locale.toLowerCase();
       if (locale.indexOf('zh') === 0) {
           if (locale.indexOf('-hans') !== -1) {
-              return 'zh-Hans';
+              return LOCALE_ZH_HANS;
           }
           if (locale.indexOf('-hant') !== -1) {
-              return 'zh-Hant';
+              return LOCALE_ZH_HANT;
           }
           if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-              return 'zh-Hant';
+              return LOCALE_ZH_HANT;
           }
-          return 'zh-Hans';
+          return LOCALE_ZH_HANS;
       }
-      const lang = startsWith(locale, ['en', 'fr', 'es']);
+      const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
       if (lang) {
           return lang;
       }
   }
   class I18n {
       constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
-          this.locale = 'en';
-          this.fallbackLocale = 'en';
+          this.locale = LOCALE_EN;
+          this.fallbackLocale = LOCALE_EN;
           this.message = {};
           this.messages = {};
           this.watchers = [];
@@ -1295,8 +1306,8 @@ var serviceContext = (function () {
               this.fallbackLocale = fallbackLocale;
           }
           this.formater = formater || defaultFormatter;
-          this.messages = messages;
-          this.setLocale(locale);
+          this.messages = messages || {};
+          this.setLocale(locale || LOCALE_EN);
           if (watcher) {
               this.watchLocale(watcher);
           }
@@ -1304,10 +1315,17 @@ var serviceContext = (function () {
       setLocale(locale) {
           const oldLocale = this.locale;
           this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+          if (!this.messages[this.locale]) {
+              // 可能初始化时不存在
+              this.messages[this.locale] = {};
+          }
           this.message = this.messages[this.locale];
-          this.watchers.forEach((watcher) => {
-              watcher(this.locale, oldLocale);
-          });
+          // 仅发生变化时，通知
+          if (oldLocale !== this.locale) {
+              this.watchers.forEach((watcher) => {
+                  watcher(this.locale, oldLocale);
+              });
+          }
       }
       getLocale() {
           return this.locale;
@@ -1317,6 +1335,27 @@ var serviceContext = (function () {
           return () => {
               this.watchers.splice(index, 1);
           };
+      }
+      add(locale, message, override = true) {
+          const curMessages = this.messages[locale];
+          if (curMessages) {
+              if (override) {
+                  Object.assign(curMessages, message);
+              }
+              else {
+                  Object.keys(message).forEach((key) => {
+                      if (!hasOwn$1(curMessages, key)) {
+                          curMessages[key] = message[key];
+                      }
+                  });
+              }
+          }
+          else {
+              this.messages[locale] = message;
+          }
+      }
+      f(message, values, delimiters) {
+          return this.formater.interpolate(message, values, delimiters).join('');
       }
       t(key, locale, values) {
           let message = this.message;
@@ -1335,33 +1374,39 @@ var serviceContext = (function () {
       }
   }
 
-  function initLocaleWatcher(appVm, i18n) {
-      appVm.$i18n &&
-          appVm.$i18n.vm.$watch('locale', (newLocale) => {
-              i18n.setLocale(newLocale);
-          }, {
-              immediate: true,
-          });
+  const ignoreVueI18n = true;
+  function watchAppLocale(appVm, i18n) {
+      appVm.$watch(() => appVm.$locale, (newLocale) => {
+          i18n.setLocale(newLocale);
+      });
   }
-  function getDefaultLocale() {
-      if (typeof navigator !== 'undefined') {
-          return navigator.userLanguage || navigator.language;
+  function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
+      // 兼容旧版本入参
+      if (typeof locale !== 'string') {
+          [locale, messages] = [
+              messages,
+              locale,
+          ];
       }
-      if (typeof plus !== 'undefined') {
-          // TODO 待调整为最新的获取语言代码
-          return plus.os.language;
+      if (typeof locale !== 'string') {
+          locale =
+              (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
+                  LOCALE_EN;
       }
-      return uni.getSystemInfoSync().language;
-  }
-  function initVueI18n(messages, fallbackLocale = 'en', locale) {
+      if (typeof fallbackLocale !== 'string') {
+          fallbackLocale =
+              (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+                  LOCALE_EN;
+      }
       const i18n = new I18n({
-          locale: locale || fallbackLocale,
+          locale,
           fallbackLocale,
           messages,
+          watcher,
       });
       let t = (key, values) => {
           if (typeof getApp !== 'function') {
-              // app-plus view
+              // app view
               /* eslint-disable no-func-assign */
               t = function (key, values) {
                   return i18n.t(key, values);
@@ -1369,17 +1414,19 @@ var serviceContext = (function () {
           }
           else {
               const appVm = getApp().$vm;
-              if (!appVm.$t || !appVm.$i18n) {
-                  if (!locale) {
-                      i18n.setLocale(getDefaultLocale());
-                  }
+              watchAppLocale(appVm, i18n);
+              if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
+                  // if (!locale) {
+                  //   i18n.setLocale(getDefaultLocale())
+                  // }
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
+                      // 触发响应式
+                      appVm.$locale;
                       return i18n.t(key, values);
                   };
               }
               else {
-                  initLocaleWatcher(appVm, i18n);
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
                       const $i18n = appVm.$i18n;
@@ -1397,26 +1444,24 @@ var serviceContext = (function () {
           return t(key, values);
       };
       return {
+          i18n,
+          f(message, values, delimiters) {
+              return i18n.f(message, values, delimiters);
+          },
           t(key, values) {
               return t(key, values);
           },
+          add(locale, message, override = true) {
+              return i18n.add(locale, message, override);
+          },
+          watch(fn) {
+              return i18n.watchLocale(fn);
+          },
+          getLocale() {
+              return i18n.getLocale();
+          },
           setLocale(newLocale) {
               return i18n.setLocale(newLocale);
-          },
-          mixin: {
-              beforeCreate() {
-                  const unwatch = i18n.watchLocale(() => {
-                      this.$forceUpdate();
-                  });
-                  this.$once('hook:beforeDestroy', function () {
-                      unwatch();
-                  });
-              },
-              methods: {
-                  $$t(key, values) {
-                      return t(key, values);
-                  },
-              },
           },
       };
   }
@@ -1594,11 +1639,51 @@ var serviceContext = (function () {
     'zh-Hant': zhHant
   };
 
-  const fallbackLocale = 'en';
+  let locale;
 
-  const i18n = initVueI18n( messages , fallbackLocale);
+  {
+    if (typeof weex === 'object') {
+      locale = weex.requireModule('plus').getLanguage();
+    }
+  }
+
+  const i18n = initVueI18n(locale,  messages );
   const t = i18n.t;
+  const i18nMixin = i18n.mixin = {
+    beforeCreate () {
+      const unwatch = i18n.i18n.watchLocale(() => {
+        this.$forceUpdate();
+      });
+      this.$once('hook:beforeDestroy', function () {
+        unwatch();
+      });
+    },
+    methods: {
+      $$t (key, values) {
+        return t(key, values)
+      }
+    }
+  };
   const getLocale = i18n.getLocale;
+
+  function initAppLocale (Vue, appVm) {
+    const state = Vue.observable({
+      locale: i18n.getLocale()
+    });
+    const localeWatchers = [];
+    appVm.$watchLocale = (fn) => {
+      localeWatchers.push(fn);
+    };
+    Object.defineProperty(appVm, '$locale', {
+      get () {
+        return state.locale
+      },
+      set (v) {
+        state.locale = v;
+        localeWatchers.forEach(watch => watch(v));
+      }
+    });
+  }
 
   const setClipboardData = {
     beforeSuccess () {
@@ -6251,16 +6336,10 @@ var serviceContext = (function () {
     filePath,
     fileType
   } = {}, callbackId) {
-    plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
-      plus.runtime.openFile(getRealPath$1(filePath));
-      invoke$1(callbackId, {
-        errMsg: 'openDocument:ok'
-      });
-    }, err => {
-      invoke$1(callbackId, {
-        errMsg: 'openDocument:fail ' + err.message
-      });
-    });
+    const successCallback = warpPlusSuccessCallback(callbackId, 'saveFile');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile');
+
+    plus.runtime.openDocument(getRealPath$1(filePath), undefined, successCallback, errorCallback);
   }
 
   const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html';
@@ -6708,45 +6787,45 @@ var serviceContext = (function () {
       const tempFiles = [];
       const tempFilePaths = [];
       // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
-      paths.reduce((promise, path) => {
-        return promise.then(() => {
-          return getFileInfo$2(path)
-        }).then(fileInfo => {
-          const size = fileInfo.size;
-          // 压缩阈值 0.5 兆
-          const THRESHOLD = 1024 * 1024 * 0.5;
-          // 判断是否需要压缩
-          if (!crop && sizeType.includes('compressed') && size > THRESHOLD) {
-            return compressImage$1(path).then(dstPath => {
-              path = dstPath;
-              return getFileInfo$2(path)
-            })
-          }
-          return fileInfo
-        }).then(({ size }) => {
-          tempFilePaths.push(path);
-          tempFiles.push({
-            path,
-            size
+      Promise.all(paths.map((path) => getFileInfo$2(path)))
+        .then((filesInfo) => {
+          filesInfo.forEach((file, index) => {
+            const path = paths[index];
+            tempFilePaths.push(path);
+            tempFiles.push({ path, size: file.size });
+          });
+
+          invoke$1(callbackId, {
+            errMsg: 'chooseImage:ok',
+            tempFilePaths,
+            tempFiles
           });
         })
-      }, Promise.resolve()).then(() => {
-        invoke$1(callbackId, {
-          errMsg: 'chooseImage:ok',
-          tempFilePaths,
-          tempFiles
-        });
-      }).catch(errorCallback);
+        .catch(errorCallback);
     }
 
     function openCamera () {
       const camera = plus.camera.getCamera();
-      camera.captureImage(path => successCallback([path]),
-        errorCallback, {
-          filename: TEMP_PATH + '/camera/',
-          resolution: 'high',
-          crop
-        });
+      camera.captureImage(path => {
+        // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
+        // 判断是否需要压缩
+        if (sizeType && sizeType.includes('compressed')) {
+          return getFileInfo$2(path).then(({ size }) => {
+            // 压缩阈值 0.5 兆
+            const THRESHOLD = 1024 * 1024 * 0.5;
+            return size && size > THRESHOLD
+              ? compressImage$1(path).then(dstPath => successCallback([dstPath]))
+              : successCallback([path])
+          }).catch(errorCallback)
+        }
+
+        return successCallback([path])
+      },
+      errorCallback, {
+        filename: TEMP_PATH + '/camera/',
+        resolution: 'high',
+        crop
+      });
     }
 
     function openAlbum () {
@@ -6756,7 +6835,8 @@ var serviceContext = (function () {
         system: false,
         filename: TEMP_PATH + '/gallery/',
         permissionAlert: true,
-        crop
+        crop,
+        sizeType
       });
     }
 
@@ -7672,9 +7752,24 @@ var serviceContext = (function () {
   function login (params, callbackId) {
     const provider = params.provider || 'weixin';
     const errorCallback = warpPlusErrorCallback(callbackId, 'login');
+    const authOptions = provider === 'apple'
+      ? { scope: 'email' }
+      : params.univerifyStyle
+        ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
+        : {};
 
     getService(provider).then(service => {
       function login () {
+        if (params.onlyAuthorize && provider === 'weixin') {
+          service.authorize(({ code }) => {
+            invoke$1(callbackId, {
+              code,
+              authResult: '',
+              errMsg: 'login:ok'
+            });
+          }, errorCallback);
+          return
+        }
         service.login(res => {
           const authResult = res.target.authResult;
           invoke$1(callbackId, {
@@ -7682,7 +7777,7 @@ var serviceContext = (function () {
             authResult: authResult,
             errMsg: 'login:ok'
           });
-        }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) } || {});
+        }, errorCallback, authOptions);
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -7780,6 +7875,19 @@ var serviceContext = (function () {
 
   function closeAuthView () {
     return getService('univerify').then(service => service.closeAuthView())
+  }
+
+  function getCheckBoxState (params, callbackId) {
+    const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState');
+    try {
+      getService('univerify').then(service => {
+        const state = service.getCheckBoxState();
+        successCallback({ state });
+      });
+    } catch (error) {
+      errorCallback(error);
+    }
   }
 
   /**
@@ -8926,7 +9034,7 @@ var serviceContext = (function () {
 
   function createPreloadWebview () {
     if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
-      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++));
+      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++), { contentAdjust: false });
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
       }
@@ -11364,6 +11472,7 @@ var serviceContext = (function () {
     operateWXData: operateWXData,
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
+    getCheckBoxState: getCheckBoxState,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
     unsubscribePush: unsubscribePush,
@@ -18627,8 +18736,9 @@ var serviceContext = (function () {
   }
 
   function Pattern (image, repetition) {
-    this.image = image;
-    this.repetition = repetition;
+    this.type = 'pattern';
+    this.data = image;
+    this.colorStop = repetition;
   }
 
   class CanvasGradient {
@@ -20799,6 +20909,51 @@ var serviceContext = (function () {
     loadFontFace: loadFontFace$1
   });
 
+  function getLocale$1 () {
+    // 优先使用 $locale
+    const app = getApp({
+      allowDefault: true
+    });
+    if (app && app.$vm) {
+      return app.$vm.$locale
+    }
+    return i18n.getLocale()
+  }
+
+  function setLocale (locale) {
+    const oldLocale = getApp().$vm.$locale;
+    if (oldLocale !== locale) {
+      getApp().$vm.$locale = locale;
+      {
+        const pages = getCurrentPages();
+        pages.forEach((page) => {
+          UniServiceJSBridge.publishHandler(
+            'setLocale',
+            locale,
+            page.$page.id
+          );
+        });
+        weex.requireModule('plus').setLanguage(locale);
+      }
+      callbacks$a.forEach(callbackId => {
+        invoke$1(callbackId, { locale });
+      });
+      return true
+    }
+    return false
+  }
+  const callbacks$a = [];
+  function onLocaleChange (callbackId) {
+    callbacks$a.push(callbackId);
+  }
+
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getLocale: getLocale$1,
+    setLocale: setLocale,
+    onLocaleChange: onLocaleChange
+  });
+
   function pageScrollTo$1 (args) {
     const pages = getCurrentPages();
     if (pages.length) {
@@ -20807,7 +20962,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -20820,7 +20975,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta$1
   });
@@ -20845,19 +21000,19 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$a = [];
+  const callbacks$b = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$a.forEach(callbackId => {
+    callbacks$b.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -20865,23 +21020,23 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$b = [];
+  const callbacks$c = [];
   onMethod('onViewDidResize', res => {
-    callbacks$b.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
+    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -20919,10 +21074,11 @@ var serviceContext = (function () {
   './ui/create-media-query-observer.js': require_context_module_1_24,
   './ui/create-selector-query.js': require_context_module_1_25,
   './ui/load-font-face.js': require_context_module_1_26,
-  './ui/page-scroll-to.js': require_context_module_1_27,
-  './ui/set-page-meta.js': require_context_module_1_28,
-  './ui/tab-bar.js': require_context_module_1_29,
-  './ui/window.js': require_context_module_1_30,
+  './ui/locale.js': require_context_module_1_27,
+  './ui/page-scroll-to.js': require_context_module_1_28,
+  './ui/set-page-meta.js': require_context_module_1_29,
+  './ui/tab-bar.js': require_context_module_1_30,
+  './ui/window.js': require_context_module_1_31,
 
       };
       var req = function req(key) {
@@ -21532,12 +21688,13 @@ var serviceContext = (function () {
     });
   }
 
-  function registerApp (appVm) {
+  function registerApp (appVm, Vue) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] registerApp');
     }
     appCtx = appVm;
     appCtx.$vm = appVm;
+    initAppLocale(Vue, appVm);
 
     Object.assign(appCtx, defaultApp); // 拷贝默认实现
 
@@ -21558,7 +21715,7 @@ var serviceContext = (function () {
 
     initSubscribeHandlers();
 
-    initAppLaunch(appVm);
+    initAppLaunch(Vue);
 
     // 10s后清理临时文件
     setTimeout(clearTempFile, 10000);
@@ -22364,7 +22521,7 @@ var serviceContext = (function () {
 
     return {
       version: VD_SYNC_VERSION,
-      locale: plus.os.language, // TODO
+      locale: weex.requireModule('plus').getLanguage(),
       disableScroll,
       onPageScroll,
       onPageReachBottom,
@@ -22478,12 +22635,12 @@ var serviceContext = (function () {
                 console.log('[uni-app] launchApp');
               }
               plus.updateConfigInfo && plus.updateConfigInfo();
-              registerApp(this);
+              registerApp(this, Vue);
               oldMount.call(this, el, hydrating);
             });
             return
           }
-          registerApp(this);
+          registerApp(this, Vue);
         }
         return oldMount.call(this, el, hydrating)
       };
