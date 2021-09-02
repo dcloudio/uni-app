@@ -25,7 +25,7 @@ if (__PLATFORM__ === 'h5') {
     locale = weex.requireModule('plus').getLanguage()
   }
 } else {
-  locale = uni.getSystemInfoSync().language
+  locale = __GLOBAL__.getSystemInfoSync().language
 }
 
 export const i18n = initVueI18n(locale, __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {})
@@ -48,9 +48,9 @@ export const i18nMixin = i18n.mixin = {
 export const setLocale = i18n.setLocale
 export const getLocale = i18n.getLocale
 
-export function initAppLocale (Vue, appVm) {
+export function initAppLocale (Vue, appVm, locale) {
   const state = Vue.observable({
-    locale: i18n.getLocale()
+    locale: locale || i18n.getLocale()
   })
   const localeWatchers = []
   appVm.$watchLocale = (fn) => {

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueI18n } from '@dcloudio/uni-i18n';
 
 function b64DecodeUnicode (str) {
   return decodeURIComponent(atob(str).split('').map(function (c) {
@@ -192,7 +193,7 @@ function queue (hooks, data) {
       }
       if (res === false) {
         return {
-          then () {}
+          then () { }
         }
       }
     }
@@ -272,16 +273,20 @@ const promiseInterceptor = {
     if (!isPromise(res)) {
       return res
     }
-    return res.then(res => {
-      return res[1]
-    }).catch(res => {
-      return res[0]
+    return new Promise((resolve, reject) => {
+      res.then(res => {
+        if (res[0]) {
+          reject(res[0]);
+        } else {
+          resolve(res[1]);
+        }
+      });
     })
   }
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -394,6 +399,40 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
+function getLocale () {
+  // 优先使用 $locale
+  const app = getApp({
+    allowDefault: true
+  });
+  if (app && app.$vm) {
+    return app.$vm.$locale
+  }
+  return my.getSystemInfoSync().language || 'zh-Hans'
+}
+
+function setLocale (locale) {
+  const app = getApp();
+  if (!app) {
+    return false
+  }
+  const oldLocale = app.$vm.$locale;
+  if (oldLocale !== locale) {
+    app.$vm.$locale = locale;
+    onLocaleChangeCallbacks.forEach((fn) => fn({
+      locale
+    }));
+    return true
+  }
+  return false
+}
+
+const onLocaleChangeCallbacks = [];
+function onLocaleChange (fn) {
+  if (onLocaleChangeCallbacks.indexOf(fn) === -1) {
+    onLocaleChangeCallbacks.push(fn);
+  }
+}
+
 const interceptors = {
   promiseInterceptor
 };
@@ -401,6 +440,9 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
+  getLocale: getLocale,
+  setLocale: setLocale,
+  onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
   interceptors: interceptors
@@ -851,14 +893,14 @@ const protocols = { // 需要做转换的 API 列表
   },
   chooseImage: {
     returnValue (result) {
-      const hasTempFilePaths = hasOwn(result,'tempFilePaths') && result.tempFilePaths
-      if (hasOwn(result,'apFilePaths') && !hasTempFilePaths) {
-        result.tempFilePaths = result.apFilePaths
-        delete result.apFilePaths
+      const hasTempFilePaths = hasOwn(result, 'tempFilePaths') && result.tempFilePaths;
+      if (hasOwn(result, 'apFilePaths') && !hasTempFilePaths) {
+        result.tempFilePaths = result.apFilePaths;
+        delete result.apFilePaths;
       }
-      if (!hasOwn(result,'tempFiles') && hasTempFilePaths) {
-        result.tempFiles = []
-        result.tempFilePaths.forEach(tempFilePath => result.tempFiles.push({path: tempFilePath}))
+      if (!hasOwn(result, 'tempFiles') && hasTempFilePaths) {
+        result.tempFiles = [];
+        result.tempFilePaths.forEach(tempFilePath => result.tempFiles.push({ path: tempFilePath }));
       }
       return {}
     }
@@ -1977,6 +2019,51 @@ function handleEvent (event) {
   }
 }
 
+let locale;
+
+{
+  locale = my.getSystemInfoSync().language;
+}
+
+const i18n = initVueI18n(locale,  {});
+const t = i18n.t;
+const i18nMixin = i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+};
+const setLocale$1 = i18n.setLocale;
+const getLocale$1 = i18n.getLocale;
+
+function initAppLocale (Vue, appVm, locale) {
+  const state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  const localeWatchers = [];
+  appVm.$watchLocale = (fn) => {
+    localeWatchers.push(fn);
+  };
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return state.locale
+    },
+    set (v) {
+      state.locale = v;
+      localeWatchers.forEach(watch => watch(v));
+    }
+  });
+}
+
 const hooks = [
   'onShow',
   'onHide',
@@ -2132,6 +2219,8 @@ function parseBaseApp (vm, {
       appOptions[name] = methods[name];
     });
   }
+
+  initAppLocale(Vue, vm, my.getSystemInfoSync().language || 'zh-Hans');
 
   initHooks(appOptions, hooks);
 

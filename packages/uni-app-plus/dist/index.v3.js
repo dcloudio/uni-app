@@ -1666,9 +1666,9 @@ var serviceContext = (function () {
   };
   const getLocale = i18n.getLocale;
 
-  function initAppLocale (Vue, appVm) {
+  function initAppLocale (Vue, appVm, locale) {
     const state = Vue.observable({
-      locale: i18n.getLocale()
+      locale: locale || i18n.getLocale()
     });
     const localeWatchers = [];
     appVm.$watchLocale = (fn) => {

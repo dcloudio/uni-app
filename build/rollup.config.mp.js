@@ -84,5 +84,5 @@ module.exports = {
       __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM)
     })
   ],
-  external: ['vue']
+  external: ['vue', '@dcloudio/uni-i18n']
 }

@@ -5,6 +5,10 @@ import {
   initMocks
 } from 'uni-wrapper/util'
 
+import {
+  initAppLocale
+} from 'uni-helpers/i18n/index'
+
 import EventChannel from 'uni-helpers/EventChannel'
 
 import {
@@ -102,7 +106,8 @@ export default function parseBaseApp (vm, {
   initRefs
 }) {
   initEventChannel()
-  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-kuaishou' || __PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu') {
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ ===
+    'mp-kuaishou' || __PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu') {
     initScopedSlotsParams()
   }
   if (vm.$options.store) {
@@ -179,6 +184,8 @@ export default function parseBaseApp (vm, {
       appOptions[name] = methods[name]
     })
   }
+
+  initAppLocale(Vue, vm, __GLOBAL__.getSystemInfoSync().language || 'zh-Hans')
 
   initHooks(appOptions, hooks)
 
