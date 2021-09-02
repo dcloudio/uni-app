@@ -10382,8 +10382,47 @@ var serviceContext = (function (vue) {
       const pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
           ? defaultAndroidPullToRefresh
           : defaultPullToRefresh, routeMeta.pullToRefresh));
-      initPullToRefreshI18n(pullToRefresh);
-      webviewStyle.pullToRefresh = pullToRefresh;
+      webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
+  }
+  function initWebviewPullToRefreshI18n(pullToRefresh, routeMeta) {
+      const i18nResult = initPullToRefreshI18n(pullToRefresh);
+      if (!i18nResult) {
+          return pullToRefresh;
+      }
+      const [contentdownI18n, contentoverI18n, contentrefreshI18n] = i18nResult;
+      if (contentdownI18n || contentoverI18n || contentrefreshI18n) {
+          uni.onLocaleChange(() => {
+              const webview = plus.webview.getWebviewById(routeMeta.id + '');
+              if (!webview) {
+                  return;
+              }
+              const newPullToRefresh = {
+                  support: true,
+              };
+              if (contentdownI18n) {
+                  newPullToRefresh.contentdown = {
+                      caption: pullToRefresh.contentdown.caption,
+                  };
+              }
+              if (contentoverI18n) {
+                  newPullToRefresh.contentover = {
+                      caption: pullToRefresh.contentover.caption,
+                  };
+              }
+              if (contentrefreshI18n) {
+                  newPullToRefresh.contentrefresh = {
+                      caption: pullToRefresh.contentrefresh.caption,
+                  };
+              }
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('updateWebview', webview.id, newPullToRefresh));
+              }
+              webview.setStyle({
+                  pullToRefresh: newPullToRefresh,
+              });
+          });
+      }
+      return pullToRefresh;
   }
   const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
   const defaultPullToRefresh = {
@@ -10442,16 +10481,28 @@ var serviceContext = (function (vue) {
       if (!i18nResult) {
           return titleNView;
       }
-      const [titleTextI18n, _searchInputPlaceholderI18n] = i18nResult;
-      if (titleTextI18n) {
+      const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+      if (titleTextI18n || searchInputPlaceholderI18n) {
           uni.onLocaleChange(() => {
               const webview = plus.webview.getWebviewById(routeMeta.id + '');
-              webview &&
-                  webview.setStyle({
-                      titleNView: {
-                          titleText: titleNView.titleText,
-                      },
-                  });
+              if (!webview) {
+                  return;
+              }
+              const newTitleNView = {};
+              if (titleTextI18n) {
+                  newTitleNView.titleText = titleNView.titleText;
+              }
+              if (searchInputPlaceholderI18n) {
+                  newTitleNView.searchInput = {
+                      placeholder: titleNView.searchInput.placeholder,
+                  };
+              }
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('updateWebview', webview.id, newTitleNView));
+              }
+              webview.setStyle({
+                  titleNView: newTitleNView,
+              });
           });
       }
       return titleNView;

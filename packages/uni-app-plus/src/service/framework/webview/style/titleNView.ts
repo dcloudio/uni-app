@@ -1,6 +1,7 @@
 import { isArray } from '@vue/shared'
 import {
   BACKGROUND_COLOR,
+  formatLog,
   ON_NAVIGATION_BAR_BUTTON_TAP,
 } from '@dcloudio/uni-shared'
 import { isColor } from './utils'
@@ -52,16 +53,28 @@ function initTitleNViewI18n(
   if (!i18nResult) {
     return titleNView
   }
-  const [titleTextI18n, _searchInputPlaceholderI18n] = i18nResult
-  if (titleTextI18n) {
+  const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult
+  if (titleTextI18n || searchInputPlaceholderI18n) {
     uni.onLocaleChange(() => {
       const webview = plus.webview.getWebviewById(routeMeta.id + '')
-      webview &&
-        webview.setStyle({
-          titleNView: {
-            titleText: titleNView.titleText,
-          },
-        })
+      if (!webview) {
+        return
+      }
+      const newTitleNView: PlusWebviewWebviewTitleNViewStyles = {}
+      if (titleTextI18n) {
+        newTitleNView.titleText = titleNView.titleText
+      }
+      if (searchInputPlaceholderI18n) {
+        newTitleNView.searchInput = {
+          placeholder: titleNView.searchInput!.placeholder,
+        }
+      }
+      if (__DEV__) {
+        console.log(formatLog('updateWebview', webview.id, newTitleNView))
+      }
+      webview.setStyle({
+        titleNView: newTitleNView,
+      })
     })
   }
   return titleNView
