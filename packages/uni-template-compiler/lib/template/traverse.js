@@ -428,8 +428,15 @@ function traverseRenderList (callExprNode, state) {
 
   const prefix = state.options.platform.directive
 
+  const isBaidu = state.options.platform.name === 'mp-baidu'
+  let forValue = genCode(callExprNode.arguments[0], isBaidu)
+
+  if(isBaidu && forKey) {
+    forValue += ` trackBy ${getForKey(forKey, forIndex, state)}`
+  }
+
   const attr = {
-    [prefix + 'for']: genCode(callExprNode.arguments[0]),
+    [prefix + 'for']: forValue,
     [prefix + 'for-item']: forItem
   }
 
@@ -437,7 +444,7 @@ function traverseRenderList (callExprNode, state) {
     attr[prefix + 'for-index'] = forIndex
   }
 
-  if (forKey) {
+  if (forKey && !isBaidu) {
     const key = getForKey(forKey, forIndex, state)
     if (key) {
       attr[prefix + 'key'] = key
