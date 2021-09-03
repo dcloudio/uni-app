@@ -3,15 +3,12 @@ import {
   isServiceCustomElement,
 } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
-import {
-  UniVitePlugin,
-  initI18nOptions,
-  getFallbackLocale,
-} from '@dcloudio/uni-cli-shared'
+import { UniVitePlugin, initI18nOptions } from '@dcloudio/uni-cli-shared'
 
 export function uniOptions(): UniVitePlugin['uni'] {
   return {
     copyOptions() {
+      const platfrom = process.env.UNI_PLATFORM
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
       return {
@@ -21,10 +18,7 @@ export function uniOptions(): UniVitePlugin['uni'] {
             src: 'androidPrivacy.json',
             dest: outputDir,
             transform(source) {
-              const options = initI18nOptions(
-                inputDir,
-                getFallbackLocale(inputDir)
-              )
+              const options = initI18nOptions(platfrom, inputDir)
               if (!options) {
                 return
               }

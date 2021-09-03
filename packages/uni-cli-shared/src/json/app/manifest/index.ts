@@ -33,7 +33,7 @@ export function normalizeAppManifestJson(
     manifestJson,
     pagesJson
   )
-  initI18n(manifestJson, userManifestJson)
+  initI18n(manifestJson)
   return manifestJson
 }
 

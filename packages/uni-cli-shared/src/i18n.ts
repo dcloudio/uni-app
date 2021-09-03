@@ -1,13 +1,35 @@
 import fs from 'fs'
 import path from 'path'
-import { I18N_JSON_DELIMITERS } from '@dcloudio/uni-shared'
+import { I18N_JSON_DELIMITERS, once } from '@dcloudio/uni-shared'
+import { parseJson, parseManifestJsonOnce } from './json'
+import { M } from './messages'
 
-export function initI18nOptions(inputDir: string, fallbackLocale?: string) {
-  const locales = initLocales(path.resolve(inputDir, 'locale'))
+export function initI18nOptions(
+  platform: UniApp.PLATFORM,
+  inputDir: string,
+  warning: boolean = false,
+  withMessages: boolean = true
+) {
+  const locales = initLocales(path.resolve(inputDir, 'locale'), withMessages)
   if (!Object.keys(locales).length) {
     return
   }
-  const locale = normalizeI18nLocale(locales, fallbackLocale)
+  const manifestJson = parseManifestJsonOnce(inputDir)
+  const fallbackLocale = manifestJson.fallbackLocale || manifestJson.locale
+  const locale = resolveI18nLocale(
+    platform,
+    Object.keys(locales),
+    fallbackLocale
+  )
+  if (warning) {
+    if (!fallbackLocale) {
+      console.warn(M['i18n.fallbackLocale.missing'].replace('{locale}', locale))
+    } else if (locale !== fallbackLocale) {
+      console.warn(
+        M['i18n.fallbackLocale.unmatch'].replace('{locale}', fallbackLocale)
+      )
+    }
+  }
   return {
     locale,
     locales,
@@ -15,34 +37,44 @@ export function initI18nOptions(inputDir: string, fallbackLocale?: string) {
   }
 }
 
-function initLocales(dir: string) {
+export const initI18nOptionsOnce = once(initI18nOptions)
+
+function initLocales(dir: string, withMessages: boolean = true) {
   if (!fs.existsSync(dir)) {
     return {}
   }
   return fs.readdirSync(dir).reduce((res, filename) => {
     if (path.extname(filename) === '.json') {
       try {
-        res[path.basename(filename).replace('.json', '')] = JSON.parse(
-          fs.readFileSync(path.join(dir, filename), 'utf8')
-        )
+        res[path.basename(filename).replace('.json', '')] = withMessages
+          ? parseJson(fs.readFileSync(path.join(dir, filename), 'utf8'))
+          : {}
       } catch (e) {}
     }
     return res
   }, {} as Record<string, Record<string, string>>)
 }
 
-const defaultFallbackLocale = 'en'
-// specifying locale > en > zh-Hans > zh-Hant > first locale
-export function normalizeI18nLocale(
-  locales: Record<string, Record<string, string>>,
-  locale: string = defaultFallbackLocale
+function resolveI18nLocale(
+  platfrom: UniApp.PLATFORM,
+  locales: string[],
+  locale?: string
 ) {
-  if (locales[locale]) {
+  if (locale && locales.includes(locale)) {
     return locale
   }
+  let defaultFallbackLocale = 'en'
+  const defaultLocales = ['zh-Hans', 'zh-Hant']
+  if (platfrom === 'app' || platfrom === 'h5') {
+    defaultLocales.unshift('en')
+  } else {
+    // 小程序
+    defaultLocales.push('en')
+    defaultFallbackLocale = 'zh-Hans'
+  }
   return (
-    ['en', 'zh-Hans', 'zh-Hant'].find((n) => locales[n]) ||
-    Object.keys(locales)[0] ||
+    defaultLocales.find((locale) => locales.includes(locale)) ||
+    locales[0] ||
     defaultFallbackLocale
   )
 }

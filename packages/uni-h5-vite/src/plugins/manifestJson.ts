@@ -4,6 +4,7 @@ import {
   defineUniManifestJsonPlugin,
   normalizeNetworkTimeout,
   parseJson,
+  initI18nOptions,
 } from '@dcloudio/uni-cli-shared'
 
 const defaultRouter = {
@@ -52,6 +53,14 @@ export function uniManifestJsonPlugin(): Plugin {
         let locale: string | null | undefined = manifest.locale
         locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
 
+        const i18nOptions = initI18nOptions(
+          process.env.UNI_PLATFORM,
+          process.env.UNI_INPUT_DIR,
+          false,
+          false
+        )
+        const fallbackLocale = (i18nOptions && i18nOptions.locale) || ''
+
         const flexDirection =
           (manifest['app'] &&
             manifest['app'].nvue &&
@@ -71,6 +80,7 @@ export function uniManifestJsonPlugin(): Plugin {
   export const qqMapKey = '${qqMapKey}'
   export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
   export const locale = '${locale}'
+  export const fallbackLocale = '${fallbackLocale}'
   `,
           map: { mappings: '' },
         }
