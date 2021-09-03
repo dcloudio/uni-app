@@ -2214,9 +2214,15 @@ var serviceContext = (function (vue) {
       const locale = vue.ref(useI18n().getLocale());
       Object.defineProperty(appVm, '$locale', {
           get() {
+              {
+                  uni.$nvueState && uni.$nvueState.locale;
+              }
               return locale.value;
           },
           set(v) {
+              {
+                  uni.$nvueState && (uni.$nvueState.locale = v);
+              }
               locale.value = v;
           },
       });
