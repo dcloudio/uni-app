@@ -85,7 +85,7 @@ const app = createApp({})
 |DOM|描述	|H5		|App端|微信小程序  |说明	|
 |--	|--	|--	|--	|--	|--	|
 |template	|一个字符串模板作为 `component` 实例的标识使用。[详情](https://vue3js.cn/docs/zh/api/options-dom.html#template)	|√	|x	| x		|uni-app使用的vue是只包含运行时的版本		|
-|render	|字符串模板的另一种选择，允许你充分利用 `JavaScript` 的编程功能。[详情](https://vue3js.cn/docs/zh/api/options-dom.html#render)	|√	| x	| x		|		|
+|render	|字符串模板的另一种选择，允许你充分利用 `JavaScript` 的编程功能。[详情](https://vue3js.cn/docs/zh/api/options-dom.html#render)	|√	| x	| x		|	-	|
 
 
 
@@ -154,7 +154,7 @@ const app = createApp({})
 |$root	|当前组件树的根组件实例。如果当前实例没有父实例，此实例将会是其自己。[详情](https://vue3js.cn/docs/zh/api/instance-properties.html#root)	|√	|√	| √	||
 |$slots	|用来访问被插槽分发的内容。每个具名插槽有其相应的 `property` (例如：`v-slot:foo` 中的内容将会在 `this.$slots.foo` 中被找到)。[详情](https://vue3js.cn/docs/zh/api/instance-properties.html#slots)	|√	|x	| √	||
 |$refs	|一个对象，持有注册过 `ref attribute` 的所有 `DOM` 元素和组件实例。[详情](https://vue3js.cn/docs/zh/api/instance-properties.html#refs)	|√	|√	| √|非H5端只能用于获取自定义组件，不能用于获取内置组件实例（如：`view`、`text`）|
-|$attrs	|包含了父作用域中不作为组件 `props` 或自定义事件。[详情](https://vue3js.cn/docs/zh/api/instance-properties.html#attrs)	|√	|√	| x	||
+|$attrs	|包含了父作用域中不作为组件 `props` 或自定义事件。[详情](https://vue3js.cn/docs/zh/api/instance-properties.html#attrs)	|√	|√	| x	|-|
 
 
 ## 实例方法
@@ -187,7 +187,7 @@ const app = createApp({})
 |v-pre	| 跳过这个元素和它的子元素的编译过程。 [详情](https://vue3js.cn/docs/zh/api/directives.html#v-pre) 	|√	| √	| x		|		|
 |v-cloak| 这个指令保持在元素上直到关联组件实例结束编译。 [详情](https://vue3js.cn/docs/zh/api/directives.html#v-cloak) 	|√	| x	| x		|		|
 |v-once	| 只渲染元素和组件一次。 [详情](https://vue3js.cn/docs/zh/api/directives.html#v-once) 	|√	| √	| x		| 	|
-|v-is	| 在 `DOM` 内模板使用时，模板受原生 `HTML` 解析规则的约束。 [详情](https://vue3js.cn/docs/zh/api/directives.html#v-is) 	|√	| x	| x		| 	|
+|v-is	| 在 `DOM` 内模板使用时，模板受原生 `HTML` 解析规则的约束。 [详情](https://vue3js.cn/docs/zh/api/directives.html#v-is) 	|√	| x	| x		| -	|
 
 
 
@@ -197,7 +197,7 @@ const app = createApp({})
 | --				| --						| --	|--		|--			| --	|
 |key	| `key` 的特殊 `attribute` 主要用在 `Vue` 的虚拟 `DOM` 算法，在新旧 `nodes` 对比时辨识 `VNodes`。 [详情](https://vue3js.cn/docs/zh/api/special-attributes.html#key) 	|√	| √	| √		|	|
 |ref	| ref 被用来给元素或子组件注册引用信息。 [详情](https://vue3js.cn/docs/zh/api/special-attributes.html#ref) 	|√	| √	| √		|非 H5 平台只能获取 `vue` 组件实例不能获取到内置组件实例|
-|is	| 使用[动态组件](https://vue3js.cn/docs/zh/guide/component-dynamic-async.html)。 [详情](https://vue3js.cn/docs/zh/api/special-attributes.html#is) 	|√	| √	| x		|		|
+|is	| 使用[动态组件](https://vue3js.cn/docs/zh/guide/component-dynamic-async.html)。 [详情](https://vue3js.cn/docs/zh/api/special-attributes.html#is) 	|√	| √	| x		|	-	|
 
 
 
@@ -210,7 +210,7 @@ const app = createApp({})
 |transition-group	| 作为多个元素/组件的过渡效果。 [详情](https://vue3js.cn/docs/zh/api/built-in-components.html#transition-group) 	|√	| x	| x		|		|
 |keep-alive	| 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们，主要用于保留组件状态或避免重新渲染。 [详情](https://vue3js.cn/docs/zh/api/built-in-components.html#keep-alive) 	|√	|x	| x		|		|	
 |slot	| 作为组件模板之中的内容分发插槽。`slot` 元素自身将被替换。 [详情](https://vue3js.cn/docs/zh/api/built-in-components.html#slot) 	|√	| √	| √		|		|
-|teleport	| 将模板的一部分移动到 `DOM` 中 `Vue app` 之外的其他位置。 [详情](https://vue3js.cn/docs/zh/api/built-in-components.html#teleport) 	|√	| x	| x		|		|
+|teleport	| 将模板的一部分移动到 `DOM` 中 `Vue app` 之外的其他位置。 [详情](https://vue3js.cn/docs/zh/api/built-in-components.html#teleport) 	|√	| x	| x		|	-	|
 
 
 
