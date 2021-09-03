@@ -1,15 +1,15 @@
 #### 3.2.6.20210901-alpha
-* 【uni-app插件】
+* 【uni-app】
   + App平台 修复 3.2.1 引出的 uni.chooseImage 无法压缩拍照图像的Bug [详情](https://ask.dcloud.net.cn/question/129238)
   + 字节小程序平台 修复 部分事件无法触发的Bug [#2774](https://github.com/dcloudio/uni-app/issues/2774)
 * 【App插件(含5+App和uni-app的App端)】
   + Android平台 修复 图片选择界面设置 filter 为 video 时仍然显示`原图`按钮的Bug
   + iOS平台 修复 二维码扫码在应用横屏模式时预览画面被旋转了的Bug [详情](https://ask.dcloud.net.cn/question/116187)
+* 【uniCloud】
+  + 【重要】clientDB 新增 支持使用 getTemp 对主表、副表过滤后再联表查询，大幅提升联表查询性能 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup-with-temp)
 
 #### 3.2.5.20210827-alpha
-* 【重要】新增 uni-app Vue3 版本 支持运行和发行到 App
-* 新增 uni-app Vue3 版本 发行到H5 支持以SSR方式发行
-* 【uni-app插件】
+* 【uni-app】
   + App平台、H5平台 新增 uni.getLocale、uni.setLocale 接口，用于获取和设置应用语言 [详情](https://uniapp.dcloud.io/api/ui/locale)
   + App平台、H5平台 修复 scroll-view 组件滚动过快时 scroll 事件回调返回信息不正确的Bug [详情](https://ask.dcloud.net.cn/question/128573)
   + App平台、H5平台 修复 canvas 组件 createPattern 方法无效的Bug [详情](https://ask.dcloud.net.cn/question/128793)
@@ -34,7 +34,7 @@
   + 新增 uni-AD Sigmob广告联盟支持激励视频广告 [文档](https://uniapp.dcloud.io/api/a-d/rewarded-video)
   + 更新 uni-AD 腾讯优量汇SDK Android为4.400.1270版，iOS为4.13.02版；快手广告联盟SDK Android为3.3.13版， iOS为3.3.14版；快手内容联盟SDK Android为3.3.22版，iOS为3.3.22版
   + 优化 uni-AD 基础开屏广告填充率
-  + 【重要】Android平台 新增 Android Support Library 升级迁移到 AndroidX 
+  + 【重要】Android平台 新增 Android Support Library 升级迁移到 AndroidX
   + Android平台 新增 原生隐私政策提示框内容中的链接支持本地 html 页面地址 [详情](https://ask.dcloud.net.cn/article/36937)
   + Android平台 更新 云端打包环境 compileSdkVersion 版本为 30，buildToolsVersion 版本为 29.0.3
   + Android平台 修复 图片选择不设置 sizeType 时默认不显示`原图`按钮，选择图片会进行压缩的Bug [详情](https://ask.dcloud.net.cn/question/129156)
