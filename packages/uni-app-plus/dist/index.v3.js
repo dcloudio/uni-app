@@ -1654,9 +1654,12 @@ var serviceContext = (function () {
     }
   }
 
-  const i18n = initVueI18n(locale,  messages );
+  const i18n = initVueI18n(
+    locale,
+     messages 
+  );
   const t = i18n.t;
-  const i18nMixin = i18n.mixin = {
+  const i18nMixin = (i18n.mixin = {
     beforeCreate () {
       const unwatch = i18n.i18n.watchLocale(() => {
         this.$forceUpdate();
@@ -1670,7 +1673,7 @@ var serviceContext = (function () {
         return t(key, values)
       }
     }
-  };
+  });
   const getLocale = i18n.getLocale;
 
   function initAppLocale (Vue, appVm, locale) {
@@ -1678,7 +1681,7 @@ var serviceContext = (function () {
       locale: locale || i18n.getLocale()
     });
     const localeWatchers = [];
-    appVm.$watchLocale = (fn) => {
+    appVm.$watchLocale = fn => {
       localeWatchers.push(fn);
     };
     Object.defineProperty(appVm, '$locale', {
@@ -1709,10 +1712,7 @@ var serviceContext = (function () {
     return message
   }
 
-  function resolveJsonObj (
-    jsonObj,
-    names
-  ) {
+  function resolveJsonObj (jsonObj, names) {
     if (names.length === 1) {
       if (jsonObj) {
         const value = jsonObj[names[0]];
@@ -1726,11 +1726,8 @@ var serviceContext = (function () {
     return resolveJsonObj(jsonObj && jsonObj[name], names)
   }
 
-  function defineI18nProperties (
-    obj,
-    names
-  ) {
-    return names.map((name) => defineI18nProperty(obj, name))
+  function defineI18nProperties (obj, names) {
+    return names.map(name => defineI18nProperty(obj, name))
   }
 
   function defineI18nProperty (obj, names) {
@@ -1761,6 +1758,15 @@ var serviceContext = (function () {
         ['titleText'],
         ['searchInput', 'placeholder']
       ])
+    }
+  }
+
+  function initI18n () {
+    const localeKeys = Object.keys(__uniConfig.locales || {});
+    if (localeKeys.length) {
+      localeKeys.forEach((locale) =>
+        i18n.add(locale, __uniConfig.locales[locale])
+      );
     }
   }
 
@@ -8538,53 +8544,53 @@ var serviceContext = (function () {
   const WEBVIEW_REMOVED = 'webviewRemoved';
   const WEBVIEW_ID_PREFIX = 'webviewId';
 
-  function createButtonOnClick(index) {
-    return function onClick(btn) {
+  function createButtonOnClick (index) {
+    return function onClick (btn) {
       const pages = getCurrentPages();
       if (!pages.length) {
-        return;
+        return
       }
       btn.index = index;
       const page = pages[pages.length - 1];
       page.$vm &&
         page.$vm.__call_hook &&
-        page.$vm.__call_hook("onNavigationBarButtonTap", btn);
-    };
+        page.$vm.__call_hook('onNavigationBarButtonTap', btn);
+    }
   }
 
-  function parseTitleNViewButtons(titleNView) {
+  function parseTitleNViewButtons (titleNView) {
     const buttons = titleNView.buttons;
     if (!Array.isArray(buttons)) {
-      return titleNView;
+      return titleNView
     }
     buttons.forEach((btn, index) => {
       btn.onclick = createButtonOnClick(index);
     });
-    return titleNView;
+    return titleNView
   }
 
-  function parseTitleNView(id, routeOptions) {
+  function parseTitleNView (id, routeOptions) {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
     routeOptions.meta.statusBarStyle =
-      windowOptions.navigationBarTextStyle === "black" ? "dark" : "light";
+      windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
     if (
       // 无头
       titleNView === false ||
-      titleNView === "false" ||
-      (windowOptions.navigationStyle === "custom" &&
+      titleNView === 'false' ||
+      (windowOptions.navigationStyle === 'custom' &&
         !isPlainObject(titleNView)) ||
-      (windowOptions.transparentTitle === "always" && !isPlainObject(titleNView))
+      (windowOptions.transparentTitle === 'always' && !isPlainObject(titleNView))
     ) {
-      return false;
+      return false
     }
 
-    const titleImage = windowOptions.titleImage || "";
-    const transparentTitle = windowOptions.transparentTitle || "none";
+    const titleImage = windowOptions.titleImage || '';
+    const transparentTitle = windowOptions.transparentTitle || 'none';
     const titleNViewTypeList = {
-      none: "default",
-      auto: "transparent",
-      always: "float"
+      none: 'default',
+      auto: 'transparent',
+      always: 'float'
     };
 
     const navigationBarBackgroundColor =
@@ -8592,52 +8598,52 @@ var serviceContext = (function () {
     const ret = {
       autoBackButton: !routeOptions.meta.isQuit,
       titleText:
-        titleImage === "" ? windowOptions.navigationBarTitleText || "" : "",
+        titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
       titleColor:
-        windowOptions.navigationBarTextStyle === "black" ? "#000000" : "#ffffff",
+        windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
       type: titleNViewTypeList[transparentTitle],
       backgroundColor:
         /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
-        navigationBarBackgroundColor === "transparent"
+        navigationBarBackgroundColor === 'transparent'
           ? navigationBarBackgroundColor
-          : "#f7f7f7",
+          : '#f7f7f7',
       tags:
-        titleImage === ""
+        titleImage === ''
           ? []
           : [
-              {
-                tag: "img",
-                src: titleImage,
-                position: {
-                  left: "auto",
-                  top: "auto",
-                  width: "auto",
-                  height: "26px"
-                }
+            {
+              tag: 'img',
+              src: titleImage,
+              position: {
+                left: 'auto',
+                top: 'auto',
+                width: 'auto',
+                height: '26px'
               }
-            ]
+            }
+          ]
     };
 
     if (isPlainObject(titleNView)) {
       return initTitleNViewI18n(
         id,
         Object.assign(ret, parseTitleNViewButtons(titleNView))
-      );
+      )
     }
-    return initTitleNViewI18n(id, ret);
+    return initTitleNViewI18n(id, ret)
   }
 
-  function initTitleNViewI18n(id, titleNView) {
+  function initTitleNViewI18n (id, titleNView) {
     const i18nResult = initNavigationBarI18n(titleNView);
     if (!i18nResult) {
-      return titleNView;
+      return titleNView
     }
     const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
     if (titleTextI18n || searchInputPlaceholderI18n) {
       uni.onLocaleChange(() => {
-        const webview = plus.webview.getWebviewById(id + "");
+        const webview = plus.webview.getWebviewById(id + '');
         if (!webview) {
-          return;
+          return
         }
         const newTitleNView = {};
         if (titleTextI18n) {
@@ -8648,15 +8654,15 @@ var serviceContext = (function () {
             placeholder: titleNView.searchInput.placeholder
           };
         }
-        if (process.env.NODE_ENV !== "production") {
-          console.log("[uni-app] updateWebview", webview.id, newTitleNView);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('[uni-app] updateWebview', webview.id, newTitleNView);
         }
         webview.setStyle({
           titleNView: newTitleNView
         });
       });
     }
-    return titleNView;
+    return titleNView
   }
 
   function parsePullToRefresh (routeOptions) {
@@ -22794,6 +22800,8 @@ var serviceContext = (function () {
     }
   };
 
+  initI18n();
+
   // 挂靠在uni上，暂不做全局导出
   uni$1.__$wx__ = wx;
 
@@ -22808,7 +22816,8 @@ var serviceContext = (function () {
     __registerPage: registerPage,
     uni: uni$1,
     getApp: getApp$1,
-    getCurrentPages: getCurrentPages$1
+    getCurrentPages: getCurrentPages$1,
+    EventChannel
   };
 
   return index$1;

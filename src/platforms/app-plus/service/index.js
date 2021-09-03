@@ -1,7 +1,7 @@
 import {
   uni
 } from 'uni-core/service/uni'
-
+import EventChannel from 'uni-helpers/EventChannel'
 import {
   invokeCallbackHandler,
   removeCallbackHandler
@@ -31,6 +31,12 @@ import {
 
 import vuePlugin from './framework/plugins'
 
+import {
+  initI18n
+} from 'uni-helpers/i18n'
+
+initI18n()
+
 // 挂靠在uni上，暂不做全局导出
 uni.__$wx__ = wx
 
@@ -45,5 +51,6 @@ export default {
   __registerPage: registerPage,
   uni,
   getApp,
-  getCurrentPages
+  getCurrentPages,
+  EventChannel
 }

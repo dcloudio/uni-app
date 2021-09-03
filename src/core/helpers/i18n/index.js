@@ -1,5 +1,10 @@
-import { initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
-import { isStr } from 'uni-shared'
+import {
+  initVueI18n,
+  isI18nStr
+} from '@dcloudio/uni-i18n'
+import {
+  isStr
+} from 'uni-shared'
 
 import en from './en.json'
 import es from './es.json'
@@ -153,4 +158,13 @@ export function initTabBarI18n (tabBar) {
     })
   }
   return tabBar
+}
+
+export function initI18n () {
+  const localeKeys = Object.keys(__uniConfig.locales || {})
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) =>
+      i18n.add(locale, __uniConfig.locales[locale])
+    )
+  }
 }
