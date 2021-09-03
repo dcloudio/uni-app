@@ -55,7 +55,7 @@ export function initLocales(dir: string, withMessages: boolean = true) {
   }, {} as Record<string, Record<string, string>>)
 }
 
-function resolveI18nLocale(
+export function resolveI18nLocale(
   platfrom: UniApp.PLATFORM,
   locales: string[],
   locale?: string
