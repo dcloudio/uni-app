@@ -1,10 +1,5 @@
-import {
-  initVueI18n,
-  isI18nStr
-} from '@dcloudio/uni-i18n'
-import {
-  isStr
-} from 'uni-shared'
+import { initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
+import { isStr } from 'uni-shared'
 
 import en from './en.json'
 import es from './es.json'
@@ -23,7 +18,7 @@ const messages = {
 let locale
 
 if (__PLATFORM__ === 'h5') {
-  locale = (__uniConfig.locale || navigator.language)
+  locale = __uniConfig.locale || navigator.language
 } else if (__PLATFORM__ === 'app-plus') {
   if (typeof weex === 'object') {
     locale = weex.requireModule('plus').getLanguage()
@@ -32,9 +27,12 @@ if (__PLATFORM__ === 'h5') {
   locale = __GLOBAL__.getSystemInfoSync().language
 }
 
-export const i18n = initVueI18n(locale, __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {})
+export const i18n = initVueI18n(
+  locale,
+  __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {}
+)
 export const t = i18n.t
-export const i18nMixin = i18n.mixin = {
+export const i18nMixin = (i18n.mixin = {
   beforeCreate () {
     const unwatch = i18n.i18n.watchLocale(() => {
       this.$forceUpdate()
@@ -48,7 +46,7 @@ export const i18nMixin = i18n.mixin = {
       return t(key, values)
     }
   }
-}
+})
 export const setLocale = i18n.setLocale
 export const getLocale = i18n.getLocale
 
@@ -57,7 +55,7 @@ export function initAppLocale (Vue, appVm, locale) {
     locale: locale || i18n.getLocale()
   })
   const localeWatchers = []
-  appVm.$watchLocale = (fn) => {
+  appVm.$watchLocale = fn => {
     localeWatchers.push(fn)
   }
   Object.defineProperty(appVm, '$locale', {
@@ -88,10 +86,7 @@ export function formatI18n (message) {
   return message
 }
 
-function resolveJsonObj (
-  jsonObj,
-  names
-) {
+function resolveJsonObj (jsonObj, names) {
   if (names.length === 1) {
     if (jsonObj) {
       const value = jsonObj[names[0]]
@@ -105,11 +100,8 @@ function resolveJsonObj (
   return resolveJsonObj(jsonObj && jsonObj[name], names)
 }
 
-export function defineI18nProperties (
-  obj,
-  names
-) {
-  return names.map((name) => defineI18nProperty(obj, name))
+export function defineI18nProperties (obj, names) {
+  return names.map(name => defineI18nProperty(obj, name))
 }
 
 export function defineI18nProperty (obj, names) {
@@ -143,9 +135,7 @@ export function initNavigationBarI18n (navigationBar) {
   }
 }
 
-export function initPullToRefreshI18n (
-  pullToRefresh
-) {
+export function initPullToRefreshI18n (pullToRefresh) {
   if (isEnableLocale()) {
     const CAPTION = 'caption'
     return defineI18nProperties(pullToRefresh, [
@@ -154,4 +144,13 @@ export function initPullToRefreshI18n (
       ['contentrefresh', CAPTION]
     ])
   }
+}
+
+export function initTabBarI18n (tabBar) {
+  if (isEnableLocale()) {
+    tabBar.list.forEach(item => {
+      defineI18nProperty(item, ['text'])
+    })
+  }
+  return tabBar
 }

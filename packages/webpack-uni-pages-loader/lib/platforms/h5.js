@@ -444,7 +444,7 @@ module.exports = function (pagesJson, manifestJson, loader) {
   return `
 import Vue from 'vue'
 ${genLayoutComponentsCode(pagesJson)}
-const locales = ${fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'locale')) ? 'require.context(\'./locale\', false, /\.json$/)' : '{keys(){return []}}'}
+const locales = ${fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'locale')) ? 'require.context(\'./locale\', false, /.json$/)' : '{keys(){return []}}'}
 global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};

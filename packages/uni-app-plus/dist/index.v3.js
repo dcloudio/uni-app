@@ -350,6 +350,10 @@ var serviceContext = (function () {
     return typeof fn === 'function'
   }
 
+  function isStr (str) {
+    return typeof str === 'string'
+  }
+
   function isObject (obj) {
     return obj !== null && typeof obj === 'object'
   }
@@ -1465,6 +1469,9 @@ var serviceContext = (function () {
           },
       };
   }
+  function isI18nStr(value, delimiters) {
+      return value.indexOf(delimiters[0]) > -1;
+  }
 
   var en = {
   	"uni.app.quit": "Press back button again to exit",
@@ -1683,6 +1690,78 @@ var serviceContext = (function () {
         localeWatchers.forEach(watch => watch(v));
       }
     });
+  }
+
+  const I18N_JSON_DELIMITERS = ['%', '%'];
+
+  function getLocaleMessage () {
+    const locale = uni.getLocale();
+    const locales = __uniConfig.locales;
+    return (
+      locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+    )
+  }
+
+  function formatI18n (message) {
+    if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+      return i18n.f(message, getLocaleMessage(), I18N_JSON_DELIMITERS)
+    }
+    return message
+  }
+
+  function resolveJsonObj (
+    jsonObj,
+    names
+  ) {
+    if (names.length === 1) {
+      if (jsonObj) {
+        const value = jsonObj[names[0]];
+        if (isStr(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+          return jsonObj
+        }
+      }
+      return
+    }
+    const name = names.shift();
+    return resolveJsonObj(jsonObj && jsonObj[name], names)
+  }
+
+  function defineI18nProperties (
+    obj,
+    names
+  ) {
+    return names.map((name) => defineI18nProperty(obj, name))
+  }
+
+  function defineI18nProperty (obj, names) {
+    const jsonObj = resolveJsonObj(obj, names);
+    if (!jsonObj) {
+      return false
+    }
+    const prop = names[names.length - 1];
+    let value = jsonObj[prop];
+    Object.defineProperty(jsonObj, prop, {
+      get () {
+        return formatI18n(value)
+      },
+      set (v) {
+        value = v;
+      }
+    });
+    return true
+  }
+
+  function isEnableLocale () {
+    return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+  }
+
+  function initNavigationBarI18n (navigationBar) {
+    if (isEnableLocale()) {
+      return defineI18nProperties(navigationBar, [
+        ['titleText'],
+        ['searchInput', 'placeholder']
+      ])
+    }
   }
 
   const setClipboardData = {
@@ -8459,81 +8538,125 @@ var serviceContext = (function () {
   const WEBVIEW_REMOVED = 'webviewRemoved';
   const WEBVIEW_ID_PREFIX = 'webviewId';
 
-  function createButtonOnClick (index) {
-    return function onClick (btn) {
+  function createButtonOnClick(index) {
+    return function onClick(btn) {
       const pages = getCurrentPages();
       if (!pages.length) {
-        return
+        return;
       }
       btn.index = index;
       const page = pages[pages.length - 1];
       page.$vm &&
         page.$vm.__call_hook &&
-        page.$vm.__call_hook('onNavigationBarButtonTap', btn);
-    }
+        page.$vm.__call_hook("onNavigationBarButtonTap", btn);
+    };
   }
 
-  function parseTitleNViewButtons (titleNView) {
+  function parseTitleNViewButtons(titleNView) {
     const buttons = titleNView.buttons;
     if (!Array.isArray(buttons)) {
-      return titleNView
+      return titleNView;
     }
     buttons.forEach((btn, index) => {
       btn.onclick = createButtonOnClick(index);
     });
-    return titleNView
+    return titleNView;
   }
 
-  function parseTitleNView (routeOptions) {
+  function parseTitleNView(id, routeOptions) {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
-    routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
-    if ( // 无头
+    routeOptions.meta.statusBarStyle =
+      windowOptions.navigationBarTextStyle === "black" ? "dark" : "light";
+    if (
+      // 无头
       titleNView === false ||
-      titleNView === 'false' ||
-      (
-        windowOptions.navigationStyle === 'custom' &&
-        !isPlainObject(titleNView)
-      ) || (
-        windowOptions.transparentTitle === 'always' &&
-        !isPlainObject(titleNView)
-      )
+      titleNView === "false" ||
+      (windowOptions.navigationStyle === "custom" &&
+        !isPlainObject(titleNView)) ||
+      (windowOptions.transparentTitle === "always" && !isPlainObject(titleNView))
     ) {
-      return false
+      return false;
     }
 
-    const titleImage = windowOptions.titleImage || '';
-    const transparentTitle = windowOptions.transparentTitle || 'none';
+    const titleImage = windowOptions.titleImage || "";
+    const transparentTitle = windowOptions.transparentTitle || "none";
     const titleNViewTypeList = {
-      none: 'default',
-      auto: 'transparent',
-      always: 'float'
+      none: "default",
+      auto: "transparent",
+      always: "float"
     };
 
-    const navigationBarBackgroundColor = windowOptions.navigationBarBackgroundColor;
+    const navigationBarBackgroundColor =
+      windowOptions.navigationBarBackgroundColor;
     const ret = {
       autoBackButton: !routeOptions.meta.isQuit,
-      titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
-      titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
+      titleText:
+        titleImage === "" ? windowOptions.navigationBarTitleText || "" : "",
+      titleColor:
+        windowOptions.navigationBarTextStyle === "black" ? "#000000" : "#ffffff",
       type: titleNViewTypeList[transparentTitle],
-      backgroundColor: (/^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) || navigationBarBackgroundColor === 'transparent') ? navigationBarBackgroundColor : '#f7f7f7',
-      tags: titleImage === '' ? [] : [{
-        tag: 'img',
-        src: titleImage,
-        position: {
-          left: 'auto',
-          top: 'auto',
-          width: 'auto',
-          height: '26px'
-        }
-      }]
+      backgroundColor:
+        /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
+        navigationBarBackgroundColor === "transparent"
+          ? navigationBarBackgroundColor
+          : "#f7f7f7",
+      tags:
+        titleImage === ""
+          ? []
+          : [
+              {
+                tag: "img",
+                src: titleImage,
+                position: {
+                  left: "auto",
+                  top: "auto",
+                  width: "auto",
+                  height: "26px"
+                }
+              }
+            ]
     };
 
     if (isPlainObject(titleNView)) {
-      return Object.assign(ret, parseTitleNViewButtons(titleNView))
+      return initTitleNViewI18n(
+        id,
+        Object.assign(ret, parseTitleNViewButtons(titleNView))
+      );
     }
+    return initTitleNViewI18n(id, ret);
+  }
 
-    return ret
+  function initTitleNViewI18n(id, titleNView) {
+    const i18nResult = initNavigationBarI18n(titleNView);
+    if (!i18nResult) {
+      return titleNView;
+    }
+    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    if (titleTextI18n || searchInputPlaceholderI18n) {
+      uni.onLocaleChange(() => {
+        const webview = plus.webview.getWebviewById(id + "");
+        if (!webview) {
+          return;
+        }
+        const newTitleNView = {};
+        if (titleTextI18n) {
+          newTitleNView.titleText = titleNView.titleText;
+        }
+        if (searchInputPlaceholderI18n) {
+          newTitleNView.searchInput = {
+            placeholder: titleNView.searchInput.placeholder
+          };
+        }
+        if (process.env.NODE_ENV !== "production") {
+          console.log("[uni-app] updateWebview", webview.id, newTitleNView);
+        }
+        webview.setStyle({
+          titleNView: newTitleNView
+        });
+      });
+    }
+    return titleNView;
   }
 
   function parsePullToRefresh (routeOptions) {
@@ -8624,10 +8747,12 @@ var serviceContext = (function () {
     };
 
     // 合并
-    routeOptions.window = parseStyleUnit(Object.assign(
-      JSON.parse(JSON.stringify(__uniConfig.window || {})),
-      routeOptions.window || {}
-    ));
+    routeOptions.window = parseStyleUnit(
+      Object.assign(
+        JSON.parse(JSON.stringify(__uniConfig.window || {})),
+        routeOptions.window || {}
+      )
+    );
 
     Object.keys(routeOptions.window).forEach(name => {
       if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
@@ -8636,7 +8761,10 @@ var serviceContext = (function () {
     });
 
     const backgroundColor = routeOptions.window.backgroundColor;
-    if (/^#[a-z0-9]{6}$/i.test(backgroundColor) || backgroundColor === 'transparent') {
+    if (
+      /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
+      backgroundColor === 'transparent'
+    ) {
       if (!webviewStyle.background) {
         webviewStyle.background = backgroundColor;
       }
@@ -8645,7 +8773,7 @@ var serviceContext = (function () {
       }
     }
 
-    const titleNView = parseTitleNView(routeOptions);
+    const titleNView = parseTitleNView(id, routeOptions);
     if (titleNView) {
       if (
         id === 1 &&
@@ -8670,7 +8798,8 @@ var serviceContext = (function () {
       delete webviewStyle.popGesture;
     }
 
-    if (routeOptions.meta.isQuit) { // 退出
+    if (routeOptions.meta.isQuit) {
+      // 退出
       webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
     }
 
