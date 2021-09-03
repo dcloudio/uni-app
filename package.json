@@ -72,7 +72,7 @@
     "@vitejs/plugin-legacy": "^1.5.2",
     "@vitejs/plugin-vue": "^1.6.0",
     "@vitejs/plugin-vue-jsx": "^1.1.7",
-    "@vue/compiler-sfc": "^3.2.7",
+    "@vue/compiler-sfc": "^3.2.8",
     "acorn-loose": "^8.1.0",
     "core-js": "2",
     "eslint": "^7.17.0",
@@ -97,7 +97,7 @@
     "ts-jest": "^27.0.3",
     "typescript": "~4.3.5",
     "vite": "2.5.1",
-    "vue": "^3.2.7",
+    "vue": "^3.2.8",
     "yorkie": "^2.0.0"
   },
   "name": "uni-app-next"

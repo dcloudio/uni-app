@@ -5321,7 +5321,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.2.7";
+    Vue.version = "3.2.8";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -10975,7 +10975,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.7";
+const version = "3.2.8";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,

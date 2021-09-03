@@ -9048,7 +9048,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.7";
+const version = "3.2.8";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,

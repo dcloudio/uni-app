@@ -11287,7 +11287,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.7";
+  var version = "3.2.8";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
