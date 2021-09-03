@@ -5,12 +5,17 @@
 * [uni-app的由来](history.md)
 * [如何学习](resource.md)
 * [框架简介](frame.md)
-* vue教程
+* vue2教程
   * [基础](vue-basics.md)
   * [组件](vue-components.md)
   * [API](vue-api.md)
   * [vuex](vue-vuex.md)
 * [从 vue2 迁移到 vue3](migration-to-vue3.md)
+* vue3教程
+  * [基础](vue3-basics.md)
+  * [组件](vue3-components.md)
+  * [API](vue3-api.md)
+  * [vuex](vue3-vuex.md)
 * nvue教程
   * [综述](nvue-outline.md)
   * [样式](nvue-css.md)
