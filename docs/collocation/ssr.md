@@ -1,4 +1,10 @@
-注意：本指南仅支持 vue3 版本的 uni-app 项目（h5平台）， vue3项目的升级迁移指南参考：[uni-app 项目小程序端、H5 端支持 vue3 介绍](https://ask.dcloud.net.cn/article/37834)
+
+`uni-app`已支持`vue 3.0`开发，详见：[https://ask.dcloud.net.cn/article/37834](https://ask.dcloud.net.cn/article/37834)
+
+`uni-app`官方基于`vue 3.0 & uniCloud`提供了简单、易用的SSR支持。
+
+[news.dcloud.io](https://news.dcloud.io)是一套基于`uni-app & uniCloud` 开发的新闻系统，你可以通过浏览器查看源码，这是一个服务端渲染（SSR）的站点示例。
+
 
 #### 什么是服务器端渲染 (SSR)？
 uni-app 默认情况下，是在客户端中输出 Vue 组件，进行生成 DOM 和操作 DOM。然而，也可以将同一个组件渲染为服务器端的 HTML 字符串，将它们直接发送到浏览器，最后将这些静态标记"激活"为客户端上完全可交互的应用程序。
