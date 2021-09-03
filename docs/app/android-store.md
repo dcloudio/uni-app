@@ -122,6 +122,7 @@ uni-AD广告模块集成的三方SDK说明
 |快手|com.kwad.sdk|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://www.kuaishou.com/about/policy](https://www.kuaishou.com/about/policy)|
 |优量汇|com.qq.e|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://imgcache.qq.com/..privacy](https://imgcache.qq.com/gdt/cdn/adn/uniondoc/ylh_sdk_privacy_statement.html)|
 |穿山甲|com.bytedance.sdk. openadsdk.adhost|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://www.pangle.cn/privacy/partner](https://www.pangle.cn/privacy/partner)|
+|Sigmob|com.sigmob.windad|广告|IMEI、openid、位置信息|获取网络状态、访问Wi-Fi状态、位置信息、读写外置存储器、读取手机状态和身份|[https://support.sigmob.com/#/隐私条款/](https://support.sigmob.com/#/%E9%9A%90%E7%A7%81%E6%9D%A1%E6%AC%BE/)|
 
 #### 腾讯x5内核
 
@@ -196,8 +197,7 @@ uni-AD广告模块集成的三方SDK说明
 
 uni-AD广告基础功能包含管理其它三方广告SDK的逻辑，会通过反射判断广告SDK是否存在，在没有勾选“360广告联盟”、“今日头条穿山甲广告联盟”、“腾讯优量汇广告联盟”、”快手广告联盟“时，也可能会被华为应用市场检测为包含奇虎360、广点通/优量汇、穿山甲等广告SDK，实际上apk中并没有包含相应的广告SDK。我们已经在优化广告基础功能实现方案来避免（请关注新版本更新日志），目前可以通过以下临时方案解决：
 
-+ 向华为应用市场申诉，说明安装包中并没有包含广告SDK，只是存在反射判断广告SDK是否存在
-+ 目前我们收到此反馈此问题的都是5+ App项目，uni-app项目可能并不存在此问题，建议有条件的话将5+ App项目升级为uni-app项目
++ 请使用HX3.2.1+重新打包
 
 #### 看不懂文档不知道如何修改？
 

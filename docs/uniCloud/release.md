@@ -1,5 +1,13 @@
 注：本更新日志仅限uniCloud，包括uniCloud web控制台、uniCloud 云端运行环境。这些更新不跟随HBuilderX发版更新。
 
+#### 2021-09-01
+  + 【重要】clientDB 新增 支持使用 getTemp 对主表、副表过滤后再联表查询，大幅提升联表查询性能 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup-with-temp)
+  + 阿里云 新增 redis扩展能力，加速云函数响应 [详情](https://uniapp.dcloud.net.cn/uniCloud/redis)
+
+#### 2021-08-27
+  + uniCloud本地调试插件 修复 云函数日志 文件路径存在中文时无法点击跳转的Bug
+  + uniCloud本地调试插件 修复 阿里云事务执行 updateAndReturn 报错的Bug
+
 #### 2021-08-01
   + 云数据库 新增 updateAndReturn 方法，可以更新并返回更新后的值（仅可在云函数中使用） [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=update-and-return)
   + uniCloud本地调试插件 修复 部分情况下项目启动时报 npm 安装失败的Bug
