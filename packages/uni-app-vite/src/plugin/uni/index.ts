@@ -18,7 +18,7 @@ export function uniOptions(): UniVitePlugin['uni'] {
             src: 'androidPrivacy.json',
             dest: outputDir,
             transform(source) {
-              const options = initI18nOptions(platfrom, inputDir)
+              const options = initI18nOptions(platfrom, inputDir, false, true)
               if (!options) {
                 return
               }

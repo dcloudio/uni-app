@@ -234,6 +234,14 @@ function initNavigationBarI18n(navigationBar) {
     ]);
   }
 }
+function initTabBarI18n(tabBar2) {
+  if (isEnableLocale()) {
+    tabBar2.list.forEach((item) => {
+      defineI18nProperty(item, ["text"]);
+    });
+  }
+  return tabBar2;
+}
 const E = function() {
 };
 E.prototype = {
@@ -13414,7 +13422,7 @@ PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(__uniConfig.tabBar);
+    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
   }
   return tabBar;
 }

@@ -1,10 +1,11 @@
+import path from 'path'
+import { initLocales } from '../../../i18n'
 import { normalizeNetworkTimeout } from '../../manifest'
 import {
   getNVueCompiler,
   getNVueFlexDirection,
   getNVueStyleCompiler,
 } from '../manifest'
-import { getLocales } from './locale'
 
 interface AppUniConfig {
   pages: string[]
@@ -60,7 +61,7 @@ export function normalizeAppUniConfig(
     entryPagePath: pagesJson.pages[0].path,
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
     tabBar: pagesJson.tabBar,
-    locales: getLocales(process.env.UNI_INPUT_DIR),
+    locales: initLocales(path.join(process.env.UNI_INPUT_DIR, 'locale')),
   }
   // TODO 待支持分包
   return JSON.stringify(config)

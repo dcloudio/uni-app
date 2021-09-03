@@ -23,10 +23,10 @@ export function initI18nOptions(
   )
   if (warning) {
     if (!fallbackLocale) {
-      console.warn(M['i18n.fallbackLocale.missing'].replace('{locale}', locale))
+      console.warn(M['i18n.fallbackLocale.default'].replace('{locale}', locale))
     } else if (locale !== fallbackLocale) {
       console.warn(
-        M['i18n.fallbackLocale.unmatch'].replace('{locale}', fallbackLocale)
+        M['i18n.fallbackLocale.missing'].replace('{locale}', fallbackLocale)
       )
     }
   }
@@ -39,7 +39,7 @@ export function initI18nOptions(
 
 export const initI18nOptionsOnce = once(initI18nOptions)
 
-function initLocales(dir: string, withMessages: boolean = true) {
+export function initLocales(dir: string, withMessages: boolean = true) {
   if (!fs.existsSync(dir)) {
     return {}
   }
@@ -63,18 +63,12 @@ function resolveI18nLocale(
   if (locale && locales.includes(locale)) {
     return locale
   }
-  let defaultFallbackLocale = 'en'
   const defaultLocales = ['zh-Hans', 'zh-Hant']
   if (platfrom === 'app' || platfrom === 'h5') {
     defaultLocales.unshift('en')
   } else {
     // 小程序
     defaultLocales.push('en')
-    defaultFallbackLocale = 'zh-Hans'
   }
-  return (
-    defaultLocales.find((locale) => locales.includes(locale)) ||
-    locales[0] ||
-    defaultFallbackLocale
-  )
+  return defaultLocales.find((locale) => locales.includes(locale)) || locales[0]
 }

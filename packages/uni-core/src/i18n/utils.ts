@@ -1,4 +1,5 @@
 import { once } from '@dcloudio/uni-shared'
+import { defineI18nProperty } from '.'
 
 import { defineI18nProperties } from './useI18n'
 
@@ -30,4 +31,13 @@ export function initPullToRefreshI18n(
       ['contentrefresh', CAPTION],
     ]) as [boolean, boolean, boolean]
   }
+}
+
+export function initTabBarI18n(tabBar: UniApp.TabBarOptions) {
+  if (isEnableLocale()) {
+    tabBar.list.forEach((item) => {
+      defineI18nProperty(item, ['text'])
+    })
+  }
+  return tabBar
 }
