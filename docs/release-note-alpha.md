@@ -9,6 +9,8 @@
   + 【重要】clientDB 新增 支持使用 getTemp 对主表、副表过滤后再联表查询，大幅提升联表查询性能 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup-with-temp)
 
 #### 3.2.5.20210827-alpha
+* 【重要】新增 uni-app Vue3 版本 支持运行和发行到 App
+* 新增 uni-app Vue3 版本 发行到H5 支持以SSR方式发行
 * 【uni-app】
   + App平台、H5平台 新增 uni.getLocale、uni.setLocale 接口，用于获取和设置应用语言 [详情](https://uniapp.dcloud.io/api/ui/locale)
   + App平台、H5平台 修复 scroll-view 组件滚动过快时 scroll 事件回调返回信息不正确的Bug [详情](https://ask.dcloud.net.cn/question/128573)
