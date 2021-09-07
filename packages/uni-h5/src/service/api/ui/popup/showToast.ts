@@ -1,5 +1,5 @@
 //#region Functions
-import { reactive, nextTick, watch, watchEffect } from 'vue'
+import { reactive, nextTick, watch } from 'vue'
 import { extend } from '@vue/shared'
 import {
   defineAsyncApi,
@@ -27,7 +27,7 @@ import type {
 import { once } from '@dcloudio/uni-shared'
 //#endregion
 
-export let showToastState: ToastProps
+let showToastState: ToastProps
 let showType: 'onShowToast' | 'onShowLoading' | '' = ''
 let timeoutId: number
 const onHidePopupOnce = /*#__PURE__*/ once(() => {
