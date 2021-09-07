@@ -418,6 +418,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |enableParallelLoader	|Boolean| 是否启用多进程编译，默认为false																																												|
 |enableDistFileMinify	|Boolean| 是否压缩编译产物（仅在真机预览/真机调试时生效），默认为false																													|
 |uniStatistics				|Object	|[支付宝小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)														|
+|scopedSlotsCompiler|String|作用域插槽编译模式，HBuilderX 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto|
 
 **注意**
 
