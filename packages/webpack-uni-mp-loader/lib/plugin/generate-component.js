@@ -151,7 +151,7 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
         const source = assets[name].source()
         const [ownerName, parentName, componentName, slotName] = source.split(',')
         const json = assets[ownerName + '.json']
-        const jsonSource = json.source()
+        const jsonSource = json && json.source()
         if (jsonSource) {
           const data = JSON.parse(jsonSource)
           const usingComponents = data.usingComponents || {}
