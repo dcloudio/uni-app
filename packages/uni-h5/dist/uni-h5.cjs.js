@@ -451,7 +451,7 @@ const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
   invokeViewMethodKeepAlive
 });
 function initI18n() {
-  const localeKeys = Object.keys(__uniConfig.locales);
+  const localeKeys = Object.keys(__uniConfig.locales || {});
   if (localeKeys.length) {
     const i18n2 = useI18n();
     localeKeys.forEach((locale) => i18n2.add(locale, __uniConfig.locales[locale]));

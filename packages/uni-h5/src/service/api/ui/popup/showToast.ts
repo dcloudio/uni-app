@@ -1,5 +1,5 @@
 //#region Functions
-import { reactive, nextTick, watchEffect } from 'vue'
+import { reactive, nextTick, watch } from 'vue'
 import { extend } from '@vue/shared'
 import {
   defineAsyncApi,
@@ -34,9 +34,26 @@ const onHidePopupOnce = /*#__PURE__*/ once(() => {
   UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
 })
 
+const watchVisibleOnce = /*#__PURE__*/ once(() => {
+  watch(
+    [() => showToastState.visible, () => showToastState.duration],
+    ([visible, duration]) => {
+      if (showType === 'onShowLoading') return
+      if (visible) {
+        timeoutId && clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => {
+          hidePopup('onHideToast')
+        }, duration)
+      } else {
+        timeoutId && clearTimeout(timeoutId)
+      }
+    }
+  )
+})
+
 function createToast(args: ToastProps) {
   if (!showToastState) {
-    showToastState = reactive(args)
+    showToastState = reactive(extend(args, { visible: false }))
     // 异步执行，避免干扰 getCurrentInstance
     nextTick(() => {
       createRootApp(Toast, showToastState, () => {}).mount(ensureRoot('u-a-t'))
@@ -50,16 +67,7 @@ function createToast(args: ToastProps) {
     showToastState.visible = true
   }, 10)
 
-  watchEffect(() => {
-    if (showToastState.visible) {
-      timeoutId && clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => {
-        hidePopup('onHideToast')
-      }, showToastState.duration)
-    } else {
-      timeoutId && clearTimeout(timeoutId)
-    }
-  })
+  watchVisibleOnce()
 
   onHidePopupOnce()
 }

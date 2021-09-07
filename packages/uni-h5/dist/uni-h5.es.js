@@ -1288,7 +1288,7 @@ const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
   invokeViewMethodKeepAlive
 });
 function initI18n() {
-  const localeKeys = Object.keys(__uniConfig.locales);
+  const localeKeys = Object.keys(__uniConfig.locales || {});
   if (localeKeys.length) {
     const i18n2 = useI18n();
     localeKeys.forEach((locale) => i18n2.add(locale, __uniConfig.locales[locale]));
@@ -17883,9 +17883,23 @@ let timeoutId;
 const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
 });
+const watchVisibleOnce = /* @__PURE__ */ once(() => {
+  watch([() => showToastState.visible, () => showToastState.duration], ([visible, duration]) => {
+    if (showType === "onShowLoading")
+      return;
+    if (visible) {
+      timeoutId && clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        hidePopup("onHideToast");
+      }, duration);
+    } else {
+      timeoutId && clearTimeout(timeoutId);
+    }
+  });
+});
 function createToast(args) {
   if (!showToastState) {
-    showToastState = reactive(args);
+    showToastState = reactive(extend(args, { visible: false }));
     nextTick(() => {
       createRootApp(Toast, showToastState, () => {
       }).mount(ensureRoot("u-a-t"));
@@ -17896,16 +17910,7 @@ function createToast(args) {
   setTimeout(() => {
     showToastState.visible = true;
   }, 10);
-  watchEffect(() => {
-    if (showToastState.visible) {
-      timeoutId && clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        hidePopup("onHideToast");
-      }, showToastState.duration);
-    } else {
-      timeoutId && clearTimeout(timeoutId);
-    }
-  });
+  watchVisibleOnce();
   onHidePopupOnce$1();
 }
 const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, { resolve, reject }) => {
