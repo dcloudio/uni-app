@@ -26,14 +26,14 @@ mapContext
 |includePoints|OBJECT|缩放视野展示所有经纬度|app-nvue 2.1.5+||
 |getRegion|OBJECT|获取当前地图的视野范围|||
 |getScale|OBJECT|获取当前地图的缩放级别|||
-|addCustomLayer|OBJECT|添加个性化图层||App暂不支持 (**SDK不支持**)，微信小程序|
+|addCustomLayer|OBJECT|添加个性化图层||App暂不支持 (**需地图SDK提供支持**)，微信小程序|
 |addGroundOverlay|OBJECT|创建自定义图片图层，图片会随着地图缩放而缩放||App-nvue 3.1.0+，微信小程序|
 |addMarkers |OBJECT|添加 marker||App-nvue 3.1.0+，微信小程序|
-|fromScreenLocation|OBJECT|获取屏幕上的点对应的经纬度，坐标原点为地图左上角||App暂不支持，微信小程序|
+|fromScreenLocation|OBJECT|获取屏幕上的点对应的经纬度，坐标原点为地图左上角||App暂不支持 (**需地图SDK提供支持**)，微信小程序|
 |initMarkerCluster|OBJECT|初始化点聚合的配置，未调用时采用默认配置||App-nvue 3.1.0+，微信小程序|
 |moveAlong|OBJECT|沿指定路径移动 marker，用于轨迹回放等场景。动画完成时触发回调事件，若动画进行中，对同一 marker 再次调用 moveAlong 方法，前一次的动画将被打断。|支持 android 不支持autoRotate属性设置 默认ture|App-nvue 3.1.0+，微信小程序|
 |openMapApp|OBJECT|拉起地图APP选择导航。||App-nvue 3.1.0+，微信小程序|
-|removeCustomLayer|OBJECT|移除个性化图层 ||App暂时不支持  (**SDK不支持**)，微信小程序|
+|removeCustomLayer|OBJECT|移除个性化图层 ||App暂时不支持  (**需地图SDK提供支持**)，微信小程序|
 |removeGroundOverlay|OBJECT|移除自定义图片图层||App-nvue 3.1.0+，微信小程序|
 |removeMarkers|OBJECT|移除 marker。||App-nvue 3.1.0+，微信小程序|
 |setCenterOffset|OBJECT|设置地图中心点偏移，向后向下为增长，屏幕比例范围(0.25~0.75)，默认偏移为[0.5, 0.5]||App暂时不支持，微信小程序|
