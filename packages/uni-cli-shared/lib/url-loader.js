@@ -1,22 +1,8 @@
-const path = require('path')
-
-const isWin = /^win/.test(process.platform)
-
-const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
+const fileLoader = require('./file-loader.js')
 
 const defaultOptions = {
   limit: -1,
-  fallback: {
-    loader: 'file-loader',
-    options: {
-      publicPath (url, resourcePath, context) {
-        return '/' + normalizePath(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
-      },
-      outputPath (url, resourcePath, context) {
-        return normalizePath(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
-      }
-    }
-  }
+  fallback: fileLoader
 }
 
 const inlineLimit =
