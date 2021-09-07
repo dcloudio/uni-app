@@ -38,9 +38,9 @@ const watchVisibleOnce = /*#__PURE__*/ once(() => {
   watch(
     [() => showToastState.visible, () => showToastState.duration],
     ([visible, duration]) => {
-      if (showType === 'onShowLoading') return
       if (visible) {
         timeoutId && clearTimeout(timeoutId)
+        if (showType === 'onShowLoading') return
         timeoutId = setTimeout(() => {
           hidePopup('onHideToast')
         }, duration)
