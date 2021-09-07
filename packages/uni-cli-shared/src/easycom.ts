@@ -7,6 +7,7 @@ import { createFilter } from '@rollup/pluginutils'
 import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
+import { M } from './messages'
 
 interface EasycomOption {
   dirs?: string[]
@@ -196,17 +197,35 @@ function initAutoScanEasycoms(
   rootDir: string,
   extensions: string[]
 ) {
-  return dirs.reduce<Record<string, string>>(
+  const conflict: Record<string, string[]> = {}
+  const res = dirs.reduce<Record<string, string>>(
     (easycoms: Record<string, string>, dir: string) => {
       const curEasycoms = initAutoScanEasycom(dir, rootDir, extensions)
       Object.keys(curEasycoms).forEach((name) => {
         // Use the first component when name conflict
-        if (!easycoms[name]) {
+        const compath = easycoms[name]
+        if (!compath) {
           easycoms[name] = curEasycoms[name]
+        } else {
+          ;(conflict[compath] || (conflict[compath] = [])).push(
+            normalizeCompath(curEasycoms[name], rootDir)
+          )
         }
       })
       return easycoms
     },
     Object.create(null)
   )
+  const conflictComs = Object.keys(conflict)
+  if (conflictComs.length) {
+    console.warn(M['easycom.conflict'])
+    conflictComs.forEach((com) => {
+      console.warn([normalizeCompath(com, rootDir), conflict[com]].join(','))
+    })
+  }
+  return res
+}
+
+function normalizeCompath(compath: string, rootDir: string) {
+  return normalizePath(path.relative(rootDir, compath))
 }

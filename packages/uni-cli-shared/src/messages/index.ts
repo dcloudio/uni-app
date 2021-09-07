@@ -17,4 +17,5 @@ export const M = {
     '当前应用未在 manifest.json 配置 fallbackLocale，默认使用：{locale}',
   'i18n.fallbackLocale.missing':
     '当前应用配置的 fallbackLocale 或 locale 为：{locale}，但 locale 目录缺少该语言文件',
+  'easycom.conflict': 'easycom组件冲突：',
 }
