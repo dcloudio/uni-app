@@ -9401,7 +9401,7 @@ export default function vueFactory(exports) {
   function defineExpose(exposed) {}
   /**
    * Vue `<script setup>` compiler macro for providing props default values when
-   * using type-based `defineProps` decalration.
+   * using type-based `defineProps` declaration.
    *
    * Example usage:
    * ```ts
@@ -9577,7 +9577,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.8";
+  var version = "3.2.9";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
