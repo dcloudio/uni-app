@@ -76,13 +76,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useListeners(props, { 'label-click': _onClick })
 
     return () => {
-      const { booleanAttrs } = useBooleanAttr(props, 'disabled')
+      const booleanAttrs = useBooleanAttr(props, 'disabled')
 
       return (
         <uni-checkbox {...booleanAttrs} onClick={_onClick}>
           <div class="uni-checkbox-wrapper">
             <div
               class="uni-checkbox-input"
+              // @ts-ignore
               class={{ 'uni-checkbox-input-disabled': props.disabled }}
             >
               {checkboxChecked.value

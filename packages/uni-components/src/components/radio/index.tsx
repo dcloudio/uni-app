@@ -80,7 +80,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useListeners(props, { 'label-click': _onClick })
 
     return () => {
-      const { booleanAttrs } = useBooleanAttr(props, 'disabled')
+      const booleanAttrs = useBooleanAttr(props, 'disabled')
 
       return (
         <uni-radio {...booleanAttrs} onClick={_onClick}>

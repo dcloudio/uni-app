@@ -87,7 +87,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => {
       const { color, type } = props
-      const { booleanAttrs } = useBooleanAttr(props, 'disabled')
+      const booleanAttrs = useBooleanAttr(props, 'disabled')
 
       return (
         <uni-switch ref={rootRef} {...booleanAttrs} onClick={_onClick}>
@@ -95,6 +95,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <div
               v-show={type === 'switch'}
               class="uni-switch-input"
+              // @ts-ignore
               class={[switchChecked.value ? 'uni-switch-input-checked' : '']}
               style={{
                 backgroundColor: switchChecked.value ? color : '#DFDFDF',
