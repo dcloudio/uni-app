@@ -221,7 +221,7 @@
     "@vue/compiler-core" "3.2.9"
     "@vue/shared" "3.2.9"
 
-"@vue/compiler-sfc@^3.2.8":
+"@vue/compiler-sfc@^3.2.9":
   version "3.2.9"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.2.9.tgz#82c0cae99625a4e5b9d998cc9ef5e0c26df2a8e9"
   integrity sha512-egQCUOvb+3fz7sNx5F85ysPslbbtHiw0l2hOlqSGx5S7vQ8nzPvhxjy/VATYbd4lHZGQltA/3U090ncZu8M6hQ==
@@ -293,7 +293,7 @@
     "@vue/shared" "3.2.9"
     csstype "^2.6.8"
 
-"@vue/server-renderer@^3.2.8":
+"@vue/server-renderer@^3.2.9":
   version "3.2.9"
   resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.2.9.tgz#85945cb0c915dc1e24f38da7fe2c0359ad9e4195"
   integrity sha512-FnroIN5adULE13JEpsFTcppPcJzFspZwVUspsTj/Xi/RJ4ikLyBU4wXKw9ouzduoDRRcqggoJMKCHaC1QwS6Fw==
@@ -301,7 +301,7 @@
     "@vue/compiler-ssr" "3.2.9"
     "@vue/shared" "3.2.9"
 
-"@vue/shared@3.2.9", "@vue/shared@^3.2.8":
+"@vue/shared@3.2.9", "@vue/shared@^3.2.9":
   version "3.2.9"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.9.tgz#44e44dbd82819997f192fb7dbdb90af5715dbf52"
   integrity sha512-+CifxkLVhjKT14g/LMZil8//SdCzkMkS8VfRX0cqNJiFKK4AWvxj0KV1dhbr8czikY0DZUGQew3tRMRRChMGtA==
@@ -2309,10 +2309,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vite@2.5.3:
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-2.5.3.tgz#88d40a9efb9bec66bd87a7676c5689f35ff63742"
-  integrity sha512-1wMDnjflvtTTkMov8O/Xb5+w1/VW/Gw8oCf8f6dqgHn8lMOEqq0SaPtFEQeikFcOKCfSbiU0nEi0LDIx6DNsaQ==
+vite@2.5.4:
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-2.5.4.tgz#2dab98835be64c4157eba225e0becb9d373f608a"
+  integrity sha512-EAdbX8A6MJaqC6UuicZtoxY9+BdaBdcGVaROXvsu+vnlGyzZzm63QQgANJryIB0DvenveHAoCriN+dAnoS+TIQ==
   dependencies:
     esbuild "^0.12.17"
     postcss "^8.3.6"
@@ -2328,7 +2328,7 @@ vue-router@^4.0.11:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.14"
 
-vue@^3.2.8:
+vue@^3.2.9:
   version "3.2.9"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.9.tgz#f8373c0d78136e331ad079e18ed72deaa95be5f2"
   integrity sha512-mqRzh3Qp0Jg66foZz9F70e6xoe/mIjegyPKjC8gXBBfTP3gt4QxA3b8pXtKJRlXk894CteUIhkFnHU8xcobrXA==
