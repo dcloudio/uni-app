@@ -1,3 +1,6 @@
+import path from 'path'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
+
 import { RuleSetRule } from 'webpack'
 
 export function createFileLoader(): RuleSetRule {
@@ -7,8 +10,19 @@ export function createFileLoader(): RuleSetRule {
       {
         loader: 'file-loader',
         options: {
-          publicPath: 'assets',
-          outputPath: 'assets',
+          publicPath(_url: string, resourcePath: string) {
+            return (
+              '/' +
+              normalizePath(
+                path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+              )
+            )
+          },
+          outputPath(_url: string, resourcePath: string) {
+            return normalizePath(
+              path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+            )
+          },
         },
       },
     ],

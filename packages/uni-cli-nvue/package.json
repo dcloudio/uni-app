@@ -33,6 +33,7 @@
     "css": "~2.2.1",
     "de-indent": "^1.0.2",
     "escodegen": "^1.8.1",
+    "file-loader": "^6.2.0",
     "hash-sum": "^1.0.2",
     "he": "^1.1.0",
     "less-loader": "^10.0.1",
