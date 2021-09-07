@@ -4,7 +4,7 @@
 
 它类似于传统html中的div，用于包裹各种元素内容。
 
-如果使用[nvue](https://uniapp.dcloud.io/nvue-outline)，则需注意，包裹文字应该使用<text>组件。
+如果使用[nvue](https://uniapp.dcloud.io/nvue-outline)，则需注意，包裹文字应该使用`<text>`组件。
 
 **属性说明**
 

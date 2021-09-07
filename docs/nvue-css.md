@@ -461,18 +461,18 @@ flex {number}：值为 number 类型。
 
 |参数名							|描述																																			|
 |--								|--																																				|
-|translateX({<length/percentage>})	|X 轴方向平移，支持长度单位或百分比。																												|
-|translateY({<length/percentage>})	|Y 轴方向平移，支持长度单位或百分比。																	|
-|translate({<length/percentage>} {<length/percentage>})	|X 轴和 Y 轴方向同时平移，```translateX``` + ```translateY``` 简写。									|
-|scaleX(<number>)				|X 轴方向缩放，值为数值，表示缩放比例，不支持百分比。							|
-|scaleY(<number>)						|Y 轴方向缩放，值为数值，表示缩放比例，不支持百分比。																													|
-|scale(<number>)|X 轴和 Y 轴方向同时缩放，```scaleX``` + ```scaleY``` 简写。|
-|rotate(<angle/degree>)|将元素围绕一个定点（由 ```transform-origin``` 属性指定）旋转而不变形的转换。指定的角度定义了旋转的量度。若角度为正，则顺时针方向旋转，否则逆时针方向旋转。|
-|rotateX(<angle/degree>)|X 轴方向的旋转。|
-|rotateY(<angle/degree>)|Y 轴方向的旋转。|
-|rotateZ(<angle/degree>)|Z 轴方向的旋转。|
-|perspective(<length>)|指定了观察者与 z=0 平面的距离，使具有三维位置变换的元素产生透视效果。z>0 的三维元素比正常大，而 z<0 时则比正常小，大小程度由该属性的值决定。Android 4.1及以上版本支持。|
-|transform-origin {length/percentage/关键字(top/left/right/bottom)}:|设置一个元素变形的原点，仅支持 2D 坐标。|
+|`translateX({<length/percentage>})`	|X 轴方向平移，支持长度单位或百分比。																												|
+|`translateY({<length/percentage>})`	|Y 轴方向平移，支持长度单位或百分比。																	|
+|`translate({<length/percentage>} {<length/percentage>})`	|X 轴和 Y 轴方向同时平移，```translateX``` + ```translateY``` 简写。									|
+|`scaleX(<number>)`				|X 轴方向缩放，值为数值，表示缩放比例，不支持百分比。							|
+|`scaleY(<number>)`						|Y 轴方向缩放，值为数值，表示缩放比例，不支持百分比。																													|
+|`scale(<number>)`|X 轴和 Y 轴方向同时缩放，```scaleX``` + ```scaleY``` 简写。|
+|`rotate(<angle/degree>)`|将元素围绕一个定点（由 ```transform-origin``` 属性指定）旋转而不变形的转换。指定的角度定义了旋转的量度。若角度为正，则顺时针方向旋转，否则逆时针方向旋转。|
+|`rotateX(<angle/degree>)`|X 轴方向的旋转。|
+|`rotateY(<angle/degree>)`|Y 轴方向的旋转。|
+|`rotateZ(<angle/degree>)`|Z 轴方向的旋转。|
+|`perspective(<length>)`|指定了观察者与 z=0 平面的距离，使具有三维位置变换的元素产生透视效果。z>0 的三维元素比正常大，而 z<0 时则比正常小，大小程度由该属性的值决定。Android 4.1及以上版本支持。|
+|`transform-origin {length/percentage/关键字(top/left/right/bottom)}:`|设置一个元素变形的原点，仅支持 2D 坐标。|
 
 > 除了```perspective```和```transform-origin```，```transition```支持了```transform```的全部能力。 其中transform的```rotate``` 和```rotatez``` 等效.
 

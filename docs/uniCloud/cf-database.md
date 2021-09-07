@@ -2478,7 +2478,7 @@ let res = await db.collection('items').aggregate()
 ```js
 count(<string>)
 ```
-<string> 是输出记录数的字段的名字，不能是空字符串，不能以 $ 开头，不能包含 . 字符。
+`<string>` 是输出记录数的字段的名字，不能是空字符串，不能以 $ 开头，不能包含 . 字符。
 
 count 阶段等同于 group + project 的操作：
 ```js
