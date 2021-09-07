@@ -1,5 +1,5 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementBlock, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -1538,6 +1538,14 @@ const defineSystemComponent = (options) => {
   };
   return defineComponent(options);
 };
+const defineUnsupportedComponent = (name) => {
+  return defineBuiltInComponent({
+    name: capitalize(camelize(name)),
+    setup() {
+      return () => (openBlock(), createElementBlock("uni-" + name, null, name + " is unsupported"));
+    }
+  });
+};
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -1647,7 +1655,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1695,7 +1703,7 @@ const props$C = {
     default: ""
   }
 };
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$C,
   setup(props2, {
@@ -1793,7 +1801,7 @@ function _removeListeners(id2, listeners2, watch2) {
     }
   });
 }
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -4031,13 +4039,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$r = 0;
+let index$x = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$r++);
+    const callbackId = String(index$x++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -6197,7 +6205,7 @@ const props$B = {
     default: false
   }
 };
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$w = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -6666,7 +6674,7 @@ const props$A = {
     default: ""
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$A,
   emits: ["change"],
@@ -6742,7 +6750,7 @@ const props$z = {
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$z,
   setup(props2, {
@@ -7605,7 +7613,7 @@ const props$x = /* @__PURE__ */ extend({}, props$y, {
     default: false
   }
 });
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$x,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -7667,7 +7675,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -7731,7 +7739,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$w,
   setup(props2, {
@@ -9795,7 +9803,7 @@ const props$r = {
     default: false
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
@@ -10897,7 +10905,7 @@ const props$p = {
     }
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: props$p,
   setup(props2) {
@@ -10976,7 +10984,7 @@ const props$o = {
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$o,
   setup(props2, {
@@ -11083,7 +11091,7 @@ const props$n = {
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$n,
   setup(props2, {
@@ -11387,7 +11395,7 @@ const props$m = {
     }
   }
 };
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -11951,7 +11959,7 @@ const props$k = {
     default: false
   }
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$k,
   emits: ["changing", "change"],
@@ -12783,7 +12791,7 @@ const props$h = {
     default: "#007aff"
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$h,
   emits: ["change"],
@@ -12887,7 +12895,7 @@ function normalizeText(text2, { space, decode: decode2 }) {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -12959,7 +12967,7 @@ function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
 }
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$g,
   emit: ["confirm", "linechange", ...emit],
@@ -13080,7 +13088,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -13144,13 +13152,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$a = 0;
+let index$g = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$a++}`;
+  const id2 = _id || vm.id || `context${index$g++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -13626,7 +13634,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$9 = {
+var index$f = {
   install(app) {
     initApp$1(app);
     initViewPlugin(app);
@@ -14414,7 +14422,7 @@ const props$f = {
     default: true
   }
 };
-var index$8 = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$f,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -14643,7 +14651,7 @@ const props$e = {
     default: ""
   }
 };
-var index$7 = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$e,
@@ -16251,13 +16259,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$6 = 0;
+let index$c = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$6;
-  index$6 += prevent ? 1 : -1;
-  index$6 = Math.max(0, index$6);
-  if (index$6 > 0) {
+  let before = index$c;
+  index$c += prevent ? 1 : -1;
+  index$c = Math.max(0, index$c);
+  if (index$c > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -19623,7 +19631,7 @@ const props$1 = {
     default: 0
   }
 };
-var index$5 = /* @__PURE__ */ defineBuiltInComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -19664,7 +19672,7 @@ var index$5 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$4 = /* @__PURE__ */ defineBuiltInComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -19837,7 +19845,7 @@ const props = {
     default: ""
   }
 };
-var index$3 = /* @__PURE__ */ defineBuiltInComponent({
+var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -20457,6 +20465,12 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
+var index$8 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+var index$7 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+var index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+var index$5 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+var index$4 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+var index$3 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -21218,4 +21232,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

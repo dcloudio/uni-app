@@ -6,6 +6,8 @@ var shared = require('@vue/shared');
 
 const BUILT_IN_TAGS = [
     'ad',
+    'ad-content-page',
+    'ad-draw',
     'audio',
     'button',
     'camera',

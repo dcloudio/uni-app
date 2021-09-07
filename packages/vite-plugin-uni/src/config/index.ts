@@ -33,7 +33,8 @@ export function createConfig(
     return {
       base,
       root: process.env.VITE_ROOT_DIR,
-      publicDir: config.publicDir || false,
+      // TODO 临时设置为__static__,屏蔽警告：https://github.com/vitejs/vite/blob/824d042535033a5c3d7006978c0d05c201cd1c25/packages/vite/src/node/server/middlewares/transform.ts#L125
+      publicDir: config.publicDir || '__static__',
       define: createDefine(options),
       resolve: createResolve(options, config),
       logLevel: config.logLevel || 'warn',

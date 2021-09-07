@@ -1,4 +1,10 @@
-import { ComponentOptions, defineComponent } from 'vue'
+import {
+  ComponentOptions,
+  createElementBlock,
+  defineComponent,
+  openBlock,
+} from 'vue'
+import { camelize, capitalize } from '@vue/shared'
 import animation from './animation'
 /**
  * 内置组件（对外，比如view）
@@ -26,4 +32,20 @@ export const defineSystemComponent: typeof defineComponent = (options: any) => {
     MODE: 3, // 标记为vue3
   }
   return defineComponent(options)
+}
+/**
+ * 暂未支持的组件
+ * @param name
+ * @returns
+ */
+export const defineUnsupportedComponent = (name: string) => {
+  return defineBuiltInComponent({
+    name: capitalize(camelize(name)),
+    setup() {
+      return () => (
+        openBlock(),
+        createElementBlock('uni-' + name, null, name + ' is unsupported')
+      )
+    },
+  })
 }

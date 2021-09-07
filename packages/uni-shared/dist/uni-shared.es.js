@@ -2,6 +2,8 @@ import { isHTMLTag, isSVGTag, hyphenate, camelize, extend, isString, isPlainObje
 
 const BUILT_IN_TAGS = [
     'ad',
+    'ad-content-page',
+    'ad-draw',
     'audio',
     'button',
     'camera',

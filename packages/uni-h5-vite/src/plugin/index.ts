@@ -1,11 +1,16 @@
 import fs from 'fs'
 import path from 'path'
-import { isInHBuilderX, UniVitePlugin } from '@dcloudio/uni-cli-shared'
+import {
+  isInHBuilderX,
+  resolveMainPathOnce,
+  UniVitePlugin,
+} from '@dcloudio/uni-cli-shared'
 import { createHandleHotUpdate } from './handleHotUpdate'
 import { createTransformIndexHtml } from './transformIndexHtml'
 import { createDefine } from '../utils/features'
 import { isSsr } from '../utils'
 import { ViteDevServer } from 'vite'
+import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
 
 const external = [
   '@dcloudio/uni-app',
@@ -43,7 +48,11 @@ export const UniH5Plugin: UniVitePlugin = {
     }
     return {
       optimizeDeps: {
-        exclude: ['@dcloudio/uni-h5', '@dcloudio/uni-h5-vue'],
+        entries: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
+        exclude: external,
+        esbuildOptions: {
+          plugins: [esbuildPrePlugin()],
+        },
       },
       define: createDefine(env.command, config),
       server: {

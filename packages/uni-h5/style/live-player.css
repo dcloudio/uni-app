@@ -1,0 +1,8 @@
+uni-live-player {
+  display: block;
+  overflow: hidden;
+}
+
+uni-live-player[hidden] {
+  display: none;
+}

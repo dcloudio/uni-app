@@ -1,0 +1,8 @@
+uni-ad-content-page {
+  display: block;
+  overflow: hidden;
+}
+
+uni-ad-content-page[hidden] {
+  display: none;
+}

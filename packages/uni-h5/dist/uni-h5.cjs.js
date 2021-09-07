@@ -605,6 +605,14 @@ const defineSystemComponent = (options) => {
   };
   return vue.defineComponent(options);
 };
+const defineUnsupportedComponent = (name) => {
+  return defineBuiltInComponent({
+    name: shared.capitalize(shared.camelize(name)),
+    setup() {
+      return () => (vue.openBlock(), vue.createElementBlock("uni-" + name, null, name + " is unsupported"));
+    }
+  });
+};
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -714,7 +722,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$y = /* @__PURE__ */ defineBuiltInComponent({
+var index$E = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -762,7 +770,7 @@ const props$v = {
     default: ""
   }
 };
-var index$x = /* @__PURE__ */ defineBuiltInComponent({
+var index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$v,
   setup(props2, {
@@ -806,7 +814,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$w = /* @__PURE__ */ defineBuiltInComponent({
+var index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -1652,7 +1660,7 @@ const props$u = {
     default: false
   }
 };
-var index$v = /* @__PURE__ */ defineBuiltInComponent({
+var index$B = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -2118,7 +2126,7 @@ const props$t = {
     default: ""
   }
 };
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$t,
   emits: ["change"],
@@ -2194,7 +2202,7 @@ const props$s = {
     default: ""
   }
 };
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$s,
   setup(props2, {
@@ -2463,7 +2471,7 @@ const props$q = /* @__PURE__ */ shared.extend({}, props$r, {
     default: false
   }
 });
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$q,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2524,7 +2532,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+var index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2588,7 +2596,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$p,
   setup(props2, {
@@ -3291,7 +3299,7 @@ const props$m = {
     default: false
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$v = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: props$m,
@@ -3836,7 +3844,7 @@ const props$l = {
     default: true
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: props$l,
   emits: ["change", "scale"],
@@ -4247,7 +4255,7 @@ const props$k = {
     default: false
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
@@ -4576,7 +4584,7 @@ const props$i = {
     }
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: props$i,
   setup(props2) {
@@ -4655,7 +4663,7 @@ const props$h = {
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$h,
   setup(props2, {
@@ -4756,7 +4764,7 @@ const props$g = {
     default: ""
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$g,
   setup(props2, {
@@ -5050,7 +5058,7 @@ const props$f = {
     }
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -5135,7 +5143,7 @@ const props$e = {
     default: false
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -5462,7 +5470,7 @@ const props$d = {
     default: false
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$d,
   emits: ["changing", "change"],
@@ -5999,7 +6007,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     onSwiperDotClick
   };
 }
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$c,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -6105,7 +6113,7 @@ const props$b = {
     default: ""
   }
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$b,
   setup(props2, {
@@ -6150,7 +6158,7 @@ const props$a = {
     default: "#007aff"
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$a,
   emits: ["change"],
@@ -6245,7 +6253,7 @@ function normalizeText(text, { space, decode }) {
   }
   return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -6313,7 +6321,7 @@ const props$9 = /* @__PURE__ */ shared.extend({}, props$o, {
   }
 });
 let fixMargin = false;
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$9,
   emit: ["confirm", "linechange", ...emit],
@@ -6431,7 +6439,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
   setup(props2, {
@@ -6456,13 +6464,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
 }
-let index$a = 0;
+let index$g = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id = _id || vm.id || `context${index$a++}`;
+  const id = _id || vm.id || `context${index$g++}`;
   return `${type}.${id}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
@@ -6760,7 +6768,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory(base);
   }
 }
-var index$9 = {
+var index$f = {
   install(app) {
     initApp$1(app);
     if (__UNI_FEATURE_PAGES__) {
@@ -7388,7 +7396,7 @@ const props$8 = {
     default: true
   }
 };
-var index$8 = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$8,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -7617,7 +7625,7 @@ const props$7 = {
     default: ""
   }
 };
-var index$7 = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$7,
@@ -8384,7 +8392,7 @@ function useMap(props2, rootRef, emit2) {
     mapRef
   };
 }
-var index$6 = /* @__PURE__ */ defineBuiltInComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -8417,7 +8425,7 @@ const props$1 = {
     default: 0
   }
 };
-var index$5 = /* @__PURE__ */ defineBuiltInComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -8455,7 +8463,7 @@ var index$5 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$4 = /* @__PURE__ */ defineBuiltInComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -8702,7 +8710,7 @@ const props = {
     default: ""
   }
 };
-var index$3 = /* @__PURE__ */ defineBuiltInComponent({
+var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -9296,6 +9304,12 @@ function usePickerForm(_resetFormData, _getFormData) {
     uniForm.addField(field);
   }
 }
+var index$8 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+var index$7 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+var index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+var index$5 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+var index$4 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+var index$3 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -10661,46 +10675,52 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
   }
 });
+exports.Ad = index$8;
+exports.AdContentPage = index$7;
+exports.AdDraw = index$6;
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Button = index$w;
-exports.Canvas = index$v;
-exports.Checkbox = index$t;
-exports.CheckboxGroup = index$u;
-exports.CoverImage = index$4;
-exports.CoverView = index$5;
-exports.Editor = index$s;
-exports.Form = index$y;
-exports.Icon = index$r;
-exports.Image = index$q;
+exports.Button = index$C;
+exports.Camera = index$5;
+exports.Canvas = index$B;
+exports.Checkbox = index$z;
+exports.CheckboxGroup = index$A;
+exports.CoverImage = index$a;
+exports.CoverView = index$b;
+exports.Editor = index$y;
+exports.Form = index$E;
+exports.Icon = index$x;
+exports.Image = index$w;
 exports.Input = Input;
-exports.Label = index$x;
+exports.Label = index$D;
 exports.LayoutComponent = LayoutComponent;
-exports.Map = index$6;
-exports.MovableArea = index$p;
-exports.MovableView = index$o;
-exports.Navigator = index$n;
+exports.LivePlayer = index$4;
+exports.LivePusher = index$3;
+exports.Map = index$c;
+exports.MovableArea = index$v;
+exports.MovableView = index$u;
+exports.Navigator = index$t;
 exports.PageComponent = index$2;
-exports.Picker = index$3;
+exports.Picker = index$9;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$m;
-exports.Radio = index$k;
-exports.RadioGroup = index$l;
+exports.Progress = index$s;
+exports.Radio = index$q;
+exports.RadioGroup = index$r;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$j;
-exports.ScrollView = index$i;
-exports.Slider = index$h;
-exports.Swiper = index$g;
-exports.SwiperItem = index$f;
-exports.Switch = index$e;
-exports.Text = index$d;
-exports.Textarea = index$c;
+exports.RichText = index$p;
+exports.ScrollView = index$o;
+exports.Slider = index$n;
+exports.Swiper = index$m;
+exports.SwiperItem = index$l;
+exports.Switch = index$k;
+exports.Text = index$j;
+exports.Textarea = index$i;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$8;
-exports.View = index$b;
-exports.WebView = index$7;
+exports.Video = index$e;
+exports.View = index$h;
+exports.WebView = index$d;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.getApp = getApp$1;
@@ -10711,7 +10731,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$9;
+exports.plugin = index$f;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

@@ -20,6 +20,7 @@ export { useTouchtrack } from './helpers/useTouchtrack'
 export {
   defineBuiltInComponent,
   defineSystemComponent,
+  defineUnsupportedComponent,
 } from './helpers/component'
 export { flatVNode } from './helpers/flatVNode'
 export { uniFormKey } from './components/form'
