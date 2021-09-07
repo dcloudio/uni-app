@@ -6786,9 +6786,7 @@ var index$u = /* @__PURE__ */ defineBuiltInComponent({
       "label-click": _onClick
     });
     return () => {
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
         "onClick": _onClick
       }), [createVNode("div", {
@@ -11129,9 +11127,7 @@ var index$n = /* @__PURE__ */ defineBuiltInComponent({
       "label-click": _onClick
     });
     return () => {
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "onClick": _onClick
       }), [createVNode("div", {
@@ -12828,9 +12824,7 @@ var index$k = /* @__PURE__ */ defineBuiltInComponent({
         color,
         type
       } = props2;
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
       return createVNode("uni-switch", mergeProps({
         "ref": rootRef
       }, booleanAttrs, {

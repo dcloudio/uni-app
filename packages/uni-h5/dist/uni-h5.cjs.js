@@ -2232,9 +2232,7 @@ var index$z = /* @__PURE__ */ defineBuiltInComponent({
       uniLabel.addHandler(_onClick);
     }
     return () => {
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
       return vue.createVNode("uni-checkbox", vue.mergeProps(booleanAttrs, {
         "onClick": _onClick
       }), [vue.createVNode("div", {
@@ -4796,9 +4794,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
       uniLabel.addHandler(_onClick);
     }
     return () => {
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
       return vue.createVNode("uni-radio", vue.mergeProps(booleanAttrs, {
         "onClick": _onClick
       }), [vue.createVNode("div", {
@@ -6189,9 +6185,7 @@ var index$k = /* @__PURE__ */ defineBuiltInComponent({
         color,
         type
       } = props2;
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
       return vue.createVNode("uni-switch", vue.mergeProps({
         "ref": rootRef
       }, booleanAttrs, {

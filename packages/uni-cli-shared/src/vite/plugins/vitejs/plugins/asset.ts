@@ -3,7 +3,7 @@ import { parse as parseUrl } from 'url'
 import fs, { promises as fsp } from 'fs'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
-import { cleanUrl } from '../utils'
+import { cleanUrl, normalizePath } from '../utils'
 import { PluginContext, RenderedChunk } from 'rollup'
 import MagicString from 'magic-string'
 import { createHash } from 'crypto'
@@ -176,10 +176,26 @@ function fileToBuiltUrl(
   const contentHash = getAssetHash(content)
   const { search, hash } = parseUrl(id)
   const postfix = (search || '') + (hash || '')
-  const fileName = path.posix.relative(process.env.UNI_INPUT_DIR, id)
+  const fileName = normalizePath(
+    path.posix.relative(process.env.UNI_INPUT_DIR, file)
+  )
   if (!map.has(contentHash)) {
     map.set(contentHash, fileName)
   }
+
+  if (!fileName.includes('/static/')) {
+    const emittedSet = emittedHashMap.get(config)!
+    if (!emittedSet.has(contentHash)) {
+      pluginContext.emitFile({
+        name: fileName,
+        fileName,
+        type: 'asset',
+        source: content,
+      })
+      emittedSet.add(contentHash)
+    }
+  }
+
   url = `__VITE_ASSET__${contentHash}__${postfix ? `$_${postfix}__` : ``}`
   cache.set(id, url)
   return url
