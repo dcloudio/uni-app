@@ -13,7 +13,7 @@
   - [快手小程序](https://mp.kuaishou.com/docs/develop/frame/config/conf_appjson.html)
   - [华为快应用](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/webview-component-view)
   - [360小程序](https://mp.360.cn/doc/miniprogram/dev/#/view)
-  - [Weex](https://doc.weex.io/cn/guide/)
+  - [Weex](http://doc.weex.io/zh/guide/introduction.html)
 
 <ul class="nav-href">
 	<li class="ext-link"><a href="//ext.dcloud.net.cn/" target="__blank">插件市场</a></li>
