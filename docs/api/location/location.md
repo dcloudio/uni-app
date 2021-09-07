@@ -2,6 +2,8 @@
 获取当前的地理位置、速度。
 在微信小程序中，当用户离开应用后，此接口无法调用，除非申请后台持续定位权限；当用户点击“显示在聊天顶部”时，此接口可继续调用。
 
+除非申请后台持续定位权限---->   申请了'台持续定位权限'仍然访问不了方法，只能用 开启权限scope.userLocationBackground后调用wx.startLocationUpdateBackground以及监听wx.onLocationChange，只有在onLocationChange中才能持续获取位置信息
+
 **OBJECT 参数说明**
 
 |参数名|类型|必填|说明|平台差异说明|
