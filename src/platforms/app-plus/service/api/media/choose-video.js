@@ -28,7 +28,8 @@ export function chooseVideo ({
     const compressVideo = compressed ? new Promise((resolve) => {
       plus.zip.compressVideo({
         src: tempFilePath,
-        filename
+        filename,
+        quality: 'medium'
       }, ({ tempFilePath }) => {
         resolve(tempFilePath)
       }, () => {
