@@ -1,1 +1,2 @@
-文档仓库迁移至 [unidocs-zh](https://github.com/dcloudio/unidocs-zh)
+* [简体中文](https://github.com/dcloudio/unidocs-zh)
+* [English](https://github.com/dcloudio/unidocs-en)
