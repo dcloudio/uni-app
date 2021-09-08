@@ -1981,7 +1981,6 @@ const hooks = [
   'onShow',
   'onHide',
   'onError',
-  'onShareAppMessage',
   'onPageNotFound',
   'onThemeChange',
   'onUnhandledRejection'
