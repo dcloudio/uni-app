@@ -39,9 +39,10 @@ module.exports = [
           })
         }
         debug('vite:uni:stat')('isEnable', isEnable)
+        process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
         return {
           define: {
-            'process.env.UNI_STAT_TITLE_JSON': JSON.stringify(titlesJson),
+            'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
           },
         }
       },

@@ -10,6 +10,7 @@ export function createDefinePlugin() {
         'process.env.HBX_USER_TOKEN': JSON.stringify(
           process.env.HBX_USER_TOKEN || ''
         ),
+        'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
       },
       initDefine()
     )
