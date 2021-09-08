@@ -27,6 +27,7 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
               {
                 src: tempFilePath,
                 filename,
+                quality: 'medium',
               },
               ({ tempFilePath }: { tempFilePath: string }) => {
                 resolve(tempFilePath)
