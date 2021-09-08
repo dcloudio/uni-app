@@ -2751,17 +2751,19 @@ collection.doc(_id).remove()
 
 ```js
 const db = uniCloud.database();
-db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
+await db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
 ```
 
 删除该表所有数据
+
+注意：数据量很多的情况下这种方式删除会超时，但是数据仍会全部删除掉
+
 ```js
+const dbCmd = db.command
 const db = uniCloud.database();
-let collection = db.collection("table1")
-let res = await collection.get()
-res.data.map(async(document) => {
-  return await collection.doc(document.id).remove();
-});
+await db.collection("table1").where({
+  _id: dbCmd.neq(null)
+}).remove()
 ```
 
 #### 方式2 条件查找文档后删除
