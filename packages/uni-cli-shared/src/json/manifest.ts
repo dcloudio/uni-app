@@ -52,3 +52,10 @@ export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
     manifest[platform] && manifest[platform].uniStatistics
   )
 }
+
+export function getRouterOptions(manifestJson: Record<string, any>): {
+  mode?: 'history' | 'hash'
+  base?: string
+} {
+  return extend({}, manifestJson.h5?.router)
+}
