@@ -1,4 +1,5 @@
 export * from './I18n'
 export * from './vue-i18n'
 export * from './json'
+export { resolveLocale } from './locale'
 export { default as Formatter } from './format'

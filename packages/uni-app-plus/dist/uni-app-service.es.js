@@ -1387,10 +1387,10 @@ var serviceContext = (function (vue) {
       }
       locale = locale.toLowerCase();
       if (locale.indexOf('zh') === 0) {
-          if (locale.indexOf('-hans') !== -1) {
+          if (locale.indexOf('-hans') > -1) {
               return LOCALE_ZH_HANS;
           }
-          if (locale.indexOf('-hant') !== -1) {
+          if (locale.indexOf('-hant') > -1) {
               return LOCALE_ZH_HANT;
           }
           if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
@@ -7607,6 +7607,7 @@ var serviceContext = (function (vue) {
                   plus.zip.compressVideo({
                       src: tempFilePath,
                       filename,
+                      quality: 'medium',
                   }, ({ tempFilePath }) => {
                       resolve(tempFilePath);
                   }, () => {

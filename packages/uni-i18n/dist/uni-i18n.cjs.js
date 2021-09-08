@@ -126,10 +126,10 @@ function normalizeLocale(locale, messages) {
     }
     locale = locale.toLowerCase();
     if (locale.indexOf('zh') === 0) {
-        if (locale.indexOf('-hans') !== -1) {
+        if (locale.indexOf('-hans') > -1) {
             return LOCALE_ZH_HANS;
         }
-        if (locale.indexOf('-hant') !== -1) {
+        if (locale.indexOf('-hant') > -1) {
             return LOCALE_ZH_HANT;
         }
         if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
@@ -429,6 +429,25 @@ function walkJsonObj(jsonObj, walk) {
     return false;
 }
 
+function resolveLocale(locales) {
+    return (locale) => {
+        if (!locale) {
+            return locale;
+        }
+        locale = normalizeLocale(locale) || locale;
+        return resolveLocaleChain(locale).find((locale) => locales.indexOf(locale) > -1);
+    };
+}
+function resolveLocaleChain(locale) {
+    const chain = [];
+    const tokens = locale.split('-');
+    while (tokens.length) {
+        chain.push(tokens.join('-'));
+        tokens.pop();
+    }
+    return chain;
+}
+
 exports.Formatter = BaseFormatter;
 exports.I18n = I18n;
 exports.LOCALE_EN = LOCALE_EN;
@@ -443,3 +462,4 @@ exports.isI18nStr = isI18nStr;
 exports.isString = isString;
 exports.normalizeLocale = normalizeLocale;
 exports.parseI18nJson = parseI18nJson;
+exports.resolveLocale = resolveLocale;

@@ -59,6 +59,8 @@ export declare function isI18nStr(value: string, delimiters: [string, string]): 
 
 export declare const isString: (val: unknown) => val is string;
 
+declare type Locale = string;
+
 export declare const LOCALE_EN = "en";
 
 export declare const LOCALE_ES = "es";
@@ -76,6 +78,8 @@ export declare type LocaleWatcher = (newLocale: string, oldLocale: string) => vo
 export declare function normalizeLocale(locale: string, messages?: LocaleMessages): BuiltInLocale | undefined;
 
 export declare function parseI18nJson(jsonObj: unknown, values: Record<string, string>, delimiters: [string, string]): unknown;
+
+export declare function resolveLocale(locales: Locale[]): (locale: Locale) => string | undefined;
 
 declare type Token = {
     type: 'text' | 'named' | 'list' | 'unknown';

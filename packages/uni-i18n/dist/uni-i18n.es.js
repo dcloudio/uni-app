@@ -122,10 +122,10 @@ function normalizeLocale(locale, messages) {
     }
     locale = locale.toLowerCase();
     if (locale.indexOf('zh') === 0) {
-        if (locale.indexOf('-hans') !== -1) {
+        if (locale.indexOf('-hans') > -1) {
             return LOCALE_ZH_HANS;
         }
-        if (locale.indexOf('-hant') !== -1) {
+        if (locale.indexOf('-hant') > -1) {
             return LOCALE_ZH_HANT;
         }
         if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
@@ -425,4 +425,23 @@ function walkJsonObj(jsonObj, walk) {
     return false;
 }
 
-export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, normalizeLocale, parseI18nJson };
+function resolveLocale(locales) {
+    return (locale) => {
+        if (!locale) {
+            return locale;
+        }
+        locale = normalizeLocale(locale) || locale;
+        return resolveLocaleChain(locale).find((locale) => locales.indexOf(locale) > -1);
+    };
+}
+function resolveLocaleChain(locale) {
+    const chain = [];
+    const tokens = locale.split('-');
+    while (tokens.length) {
+        chain.push(tokens.join('-'));
+        tokens.pop();
+    }
+    return chain;
+}
+
+export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, normalizeLocale, parseI18nJson, resolveLocale };
