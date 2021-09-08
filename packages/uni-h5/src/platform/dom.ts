@@ -19,6 +19,10 @@ export function findElem(vm: ComponentPublicInstance) {
 
 const baseUrl = __IMPORT_META_ENV_BASE_URL__
 function addBase(filePath: string) {
+  // filepath可能已经被补充了baseUrl
+  if (('/' + filePath).indexOf(baseUrl) === 0) {
+    return '/' + filePath
+  }
   return baseUrl + filePath
 }
 

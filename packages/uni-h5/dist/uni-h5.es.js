@@ -1899,6 +1899,9 @@ function findElem(vm) {
 }
 const baseUrl = import.meta.env.BASE_URL;
 function addBase(filePath) {
+  if (("/" + filePath).indexOf(baseUrl) === 0) {
+    return "/" + filePath;
+  }
   return baseUrl + filePath;
 }
 function getRealPath(filePath) {

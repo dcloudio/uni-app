@@ -903,6 +903,9 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
 });
 const baseUrl = __IMPORT_META_ENV_BASE_URL__;
 function addBase(filePath) {
+  if (("/" + filePath).indexOf(baseUrl) === 0) {
+    return "/" + filePath;
+  }
   return baseUrl + filePath;
 }
 function getRealPath(filePath) {
