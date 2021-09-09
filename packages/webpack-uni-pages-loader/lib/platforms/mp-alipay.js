@@ -86,6 +86,7 @@ module.exports = function (pagesJson, manifestJson) {
   delete project.usingComponents
   delete project.plugins
   delete project.useDynamicPlugins
+  !('component2' in project) && (project.component2 = true)
 
   return [{
     name: 'app',

@@ -1,5 +1,4 @@
-
-export declare type BuiltInLocale = 'zh-Hans' | 'zh-Hant' | 'en' | 'fr' | 'es';
+export declare type BuiltInLocale = typeof LOCALE_ZH_HANS | typeof LOCALE_ZH_HANT | typeof LOCALE_EN | typeof LOCALE_FR | typeof LOCALE_ES;
 
 export declare interface Formatter {
     interpolate: (message: string, values?: Record<string, unknown> | Array<unknown>) => Array<unknown>;
@@ -16,6 +15,7 @@ export declare class I18n {
     setLocale(locale: string): void;
     getLocale(): BuiltInLocale;
     watchLocale(fn: LocaleWatcher): () => void;
+    add(locale: BuiltInLocale, message: Record<string, string>): void;
     t(key: string, values?: Record<string, unknown> | Array<unknown> | BuiltInLocale): string;
     t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>): string;
 }
@@ -23,22 +23,28 @@ export declare class I18n {
 export declare interface I18nOptions {
     locale: BuiltInLocale;
     fallbackLocale?: BuiltInLocale;
-    messages: LocaleMessages;
+    messages?: LocaleMessages;
     formater?: Formatter;
     watcher?: LocaleWatcher;
 }
 
-export declare function initVueI18n(messages: LocaleMessages, fallbackLocale?: BuiltInLocale, locale?: BuiltInLocale): {
+export declare function initVueI18n(locale?: BuiltInLocale, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, watcher?: (locale: BuiltInLocale) => void): {
+    i18n: I18n;
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
+    add(locale: BuiltInLocale, message: Record<string, string>): void;
     getLocale(): BuiltInLocale;
     setLocale(newLocale: BuiltInLocale): void;
-    mixin: {
-        beforeCreate(): void;
-        methods: {
-            $$t(key: string, values?: any): string;
-        };
-    };
 };
+
+export declare const LOCALE_EN = "en";
+
+export declare const LOCALE_ES = "es";
+
+export declare const LOCALE_FR = "fr";
+
+export declare const LOCALE_ZH_HANS = "zh-Hans";
+
+export declare const LOCALE_ZH_HANT = "zh-Hant";
 
 export declare type LocaleMessages = {
     [name in BuiltInLocale]?: Record<string, string>;

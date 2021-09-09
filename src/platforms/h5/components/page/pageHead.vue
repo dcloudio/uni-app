@@ -16,23 +16,25 @@
             class="uni-btn-icon"
           >&#xe601;</i>
         </div>
-        <template v-for="(btn,index) in btns">
-          <div
-            v-if="btn.float === 'left'"
-            :key="index"
-            :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
-            :badge-text="btn.badgeText"
-            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
-            class="uni-page-head-btn"
-          >
-            <i
-              :style="_formatBtnStyle(btn)"
-              class="uni-btn-icon"
-              @click="_onBtnClick(index)"
-              v-html="_formatBtnFontText(btn)"
-            />
-          </div>
-        </template>
+        <div class="uni-page-head-ft">
+          <template v-for="(btn,index) in btns">
+            <div
+              v-if="btn.float === 'left'"
+              :key="index"
+              :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
+              :badge-text="btn.badgeText"
+              :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
+              class="uni-page-head-btn"
+            >
+              <i
+                :style="_formatBtnStyle(btn)"
+                class="uni-btn-icon"
+                @click="_onBtnClick(index)"
+                v-html="_formatBtnFontText(btn)"
+              />
+            </div>
+          </template>
+        </div>
       </div>
       <div
         v-if="!searchInput"
@@ -84,7 +86,7 @@
           v-if="text"
           class="uni-icon-clear"
           @click="_clearInput"
-        >&#xea0f;</i>
+        />
       </div>
       <div class="uni-page-head-ft">
         <template v-for="(btn,index) in btns">

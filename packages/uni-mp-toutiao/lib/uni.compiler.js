@@ -1,6 +1,7 @@
 const compiler = require('@dcloudio/uni-mp-weixin/lib/uni.compiler.js')
 const path = require('path')
 const t = require('@babel/types')
+const crypto = require('crypto')
 
 function generateJsCode (properties = '{}') {
   return `
@@ -16,6 +17,15 @@ function generateCssCode (filename) {
   return `
 @import "./${filename}"
 `
+}
+
+function getBaseName (ownerName, parentName, slotName, resourcePath) {
+  const str = `${resourcePath}/${parentName}/${slotName}`
+  const md5 = crypto.createHash('md5').update(str).digest('hex')
+  if (process.env.NODE_ENV !== 'development') {
+    return `m${md5.substring(0, 8)}`
+  }
+  return `${ownerName}--${parentName}--${slotName}--${md5.substring(0, 4)}`
 }
 
 function hasOwn (obj, key) {
@@ -38,7 +48,7 @@ module.exports = Object.assign({}, compiler, {
     if (!state.scopedSlots) {
       state.scopedSlots = {}
     }
-    const baseName = `${ownerName}-${parentName}-${slotName}`
+    const baseName = getBaseName(ownerName, parentName, slotName, resourcePath)
     let componentName = baseName
     if (!hasOwn(state.scopedSlots, baseName)) {
       state.scopedSlots[baseName] = 0

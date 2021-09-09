@@ -21,6 +21,7 @@ if (process.env.UNI_VIEW !== 'true') {
 }
 
 const alias = {
+  '@dcloudio': resolve('packages'),
   'uni-core': resolve('src/core'),
   'uni-view': resolve('src/core/view'),
   'uni-service': resolve('src/core/service'),

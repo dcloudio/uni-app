@@ -48,7 +48,9 @@ module.exports = (api, options) => {
         process.env.UNI_MP_PLUGIN = args.plugin
         analysisPluginDir()
       } else {
+        console.log()
         console.error('编译到小程序插件只支持微信小程序')
+        console.log()
         process.exit(0)
       }
     }
@@ -129,7 +131,7 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM} 平台...`)
+    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM} ${process.env.UNI_MP_PLUGIN ? '插件' : '平台'}...`)
   }
 
   const targetDir = api.resolve(options.outputDir)
@@ -214,40 +216,23 @@ function analysisPluginDir () {
   const pluginJsonPath = path.resolve(process.env.UNI_INPUT_DIR, pluginJsonName)
 
   if (!fs.pathExistsSync(pluginJsonPath)) {
+    console.log()
     console.error(`${pluginJsonName}文件不存在，请检查后重试`)
+    console.log()
     process.exit(0)
   }
 
   const pluginJson = require(pluginJsonPath)
 
-  // index.js 入口文件是否存在
+  // main 入口文件是否存在
   process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
   const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
   const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
 
   if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
+    console.log()
     console.error(`${UNI_MP_PLUGIN_MAIN}入口文件不存在，请检查后重试`)
+    console.log()
     process.exit(0)
   }
-
-  // 目前编译到小程序插件，需要在 pages.json 中配置页面，在main.js中引入使用一下组件，因此先不做一下校验
-  // 配置的路径是否存在
-  /* const pages = pluginJson.pages || {}
-  const publicComponents = pluginJson.publicComponents || {}
-  const allFilesPath = Object.values(pages).map(item => item + '.vue').concat(Object.values(publicComponents).map(item => item + '.vue'))
-  const inexistenceFiles = []
-  if (allFilesPath.length) {
-    allFilesPath.forEach(pagePath => {
-      const curentPageAbsolutePath = path.resolve(process.env.UNI_INPUT_DIR, pagePath)
-      if (!fs.pathExistsSync(curentPageAbsolutePath)) {
-        inexistenceFiles.push(curentPageAbsolutePath)
-      }
-    })
-  }
-  if (inexistenceFiles.length) {
-    inexistenceFiles.forEach(path => {
-      console.error(`${path}文件不存在，请检查后重试`)
-    })
-    process.exit(0)
-  } */
 }
