@@ -28,6 +28,10 @@ const hooks = [
   'onUnhandledRejection'
 ]
 
+if (__PLATFORM__ === 'mp-alipay') {
+  hooks.push('onShareAppMessage')
+}
+
 function initEventChannel () {
   Vue.prototype.getOpenerEventChannel = function () {
     // 微信小程序使用自身getOpenerEventChannel
