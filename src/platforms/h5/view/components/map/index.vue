@@ -752,9 +752,9 @@ export default {
           center,
           clickable: false,
           radius: option.radius,
-          strokeWeight: option.strokeWidth,
-          fillColor: getColor(option.fillColor),
-          strokeColor: getColor(option.color),
+          strokeWeight: Number(option.strokeWidth) || 1,
+          fillColor: getColor(option.fillColor) || getColor('#00000001'),
+          strokeColor: getColor(option.color) || '#000000',
           strokeDashStyle: 'solid'
         })
         circles.push(circle)
