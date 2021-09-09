@@ -13288,10 +13288,12 @@ function usePageRoute() {
     query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
   }
   const { meta } = __uniRoutes[0];
+  const path = "/" + meta.route;
   return {
     meta,
     query,
-    path: "/" + meta.route
+    path,
+    matched: [{ path }]
   };
 }
 function initPageMeta(id2) {
@@ -13732,7 +13734,7 @@ function setupApp(comp) {
     setup(instance2) {
       const route = usePageRoute();
       const onLaunch = () => {
-        const { onLaunch: onLaunch2, onShow } = instance2;
+        const { onLaunch: onLaunch2, onShow, onPageNotFound } = instance2;
         const path = route.path.substr(1);
         const launchOptions = {
           path: path || __uniRoutes[0].meta.route,
@@ -13742,6 +13744,18 @@ function setupApp(comp) {
         };
         onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions);
         onShow && invokeArrayFns$1(onShow, launchOptions);
+        if (__UNI_FEATURE_PAGES__) {
+          if (!route.matched.length) {
+            const pageNotFoundOptions = {
+              notFound: true,
+              openType: "appLaunch",
+              path: route.path,
+              query: {},
+              scene: 1001
+            };
+            onPageNotFound && invokeArrayFns$1(onPageNotFound, pageNotFoundOptions);
+          }
+        }
       };
       injectAppLaunchHooks(instance2);
       if (__UNI_FEATURE_PAGES__) {

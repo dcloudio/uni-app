@@ -134,7 +134,7 @@ export function setupApp(comp: any) {
         return route.query
       }
       const onLaunch = () => {
-        const { onLaunch, onShow } = instance
+        const { onLaunch, onShow, onPageNotFound } = instance
         const path = route.path.substr(1)
         const launchOptions = {
           path: path || __uniRoutes[0].meta.route,
@@ -144,6 +144,19 @@ export function setupApp(comp: any) {
         }
         onLaunch && invokeArrayFns(onLaunch, launchOptions)
         onShow && invokeArrayFns(onShow, launchOptions)
+        if (__UNI_FEATURE_PAGES__) {
+          if (!route.matched.length) {
+            const pageNotFoundOptions = {
+              notFound: true,
+              openType: 'appLaunch',
+              path: route.path,
+              query: {},
+              scene: 1001,
+            }
+            onPageNotFound &&
+              invokeArrayFns(onPageNotFound, pageNotFoundOptions)
+          }
+        }
       }
       injectAppLaunchHooks(instance)
       if (__UNI_FEATURE_PAGES__) {

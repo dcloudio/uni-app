@@ -6589,10 +6589,12 @@ function usePageRoute() {
     query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
   }
   const { meta } = __uniRoutes[0];
+  const path = "/" + meta.route;
   return {
     meta,
     query,
-    path: "/" + meta.route
+    path,
+    matched: [{ path }]
   };
 }
 function initPageMeta(id) {

@@ -37,10 +37,12 @@ export function usePageRoute() {
     )
   }
   const { meta } = __uniRoutes[0]
+  const path = '/' + meta.route
   return {
     meta,
     query: query,
-    path: '/' + meta.route,
+    path,
+    matched: [{ path }],
   }
 }
 function initPageMeta(id: number) {
