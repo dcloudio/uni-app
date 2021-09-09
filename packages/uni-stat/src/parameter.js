@@ -4,7 +4,7 @@ import {
   STAT_URL,
   STAT_VERSION,
   DIFF_TIME,
-} from './config'
+} from './config.ts'
 const statConfig = {
   appid: process.env.UNI_APP_ID,
 }

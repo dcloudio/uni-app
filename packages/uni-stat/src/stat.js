@@ -24,7 +24,12 @@ import {
   isReportData,
 } from './parameter'
 
-import { STAT_URL, STAT_VERSION, STAT_H5_URL, OPERATING_TIME } from './config'
+import {
+  STAT_URL,
+  STAT_VERSION,
+  STAT_H5_URL,
+  OPERATING_TIME,
+} from './config.ts'
 let titleJsons = {}
 // #ifdef MP
 let pagesTitle = require('uni-pages?{"type":"style"}').default
