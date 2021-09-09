@@ -70,9 +70,9 @@
     "@types/uglify-js": "^3.13.1",
     "@typescript-eslint/parser": "^4.12.0",
     "@vitejs/plugin-legacy": "^1.5.3",
-    "@vitejs/plugin-vue": "^1.6.1",
+    "@vitejs/plugin-vue": "^1.6.2",
     "@vitejs/plugin-vue-jsx": "^1.1.8",
-    "@vue/compiler-sfc": "^3.2.10",
+    "@vue/compiler-sfc": "^3.2.11",
     "acorn-loose": "^8.1.0",
     "core-js": "2",
     "eslint": "^7.17.0",
@@ -96,8 +96,8 @@
     "semver": "^7.3.4",
     "ts-jest": "^27.0.3",
     "typescript": "~4.3.5",
-    "vite": "^2.5.5",
-    "vue": "^3.2.10",
+    "vite": "^2.5.6",
+    "vue": "^3.2.11",
     "yorkie": "^2.0.0"
   },
   "name": "uni-app-next"

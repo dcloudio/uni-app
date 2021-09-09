@@ -1,7 +1,6 @@
 import { once } from '@dcloudio/uni-shared'
-import { defineI18nProperty } from '.'
 
-import { defineI18nProperties } from './useI18n'
+import { defineI18nProperty, defineI18nProperties } from './useI18n'
 
 const isEnableLocale = once(
   () => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
