@@ -59,7 +59,7 @@ export function handleLink(
       initInjections(vm)
       initProvide(vm)
     }
-    vm.$callSyncHook('created')
+    vm.$callCreatedHook()
   }
   const mountedVm = function () {
     // 处理当前 vm 子

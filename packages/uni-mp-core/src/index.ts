@@ -3,7 +3,7 @@ declare module '@vue/runtime-core' {
     $vm: ComponentPublicInstance
     globalData: Record<string, any>
     $callHook: (hook: string, args?: unknown) => unknown
-    $callSyncHook: (hook: 'created') => void
+    $callCreatedHook: () => void
   }
 }
 

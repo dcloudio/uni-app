@@ -77,7 +77,7 @@ export function handleLink(
     initProvide(vm)
   }
 
-  vm.$callSyncHook('created')
+  vm.$callCreatedHook()
   vm.$callHook('mounted')
   vm.$callHook(ON_READY)
 }

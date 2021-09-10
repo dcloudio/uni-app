@@ -1333,7 +1333,7 @@ function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
         initInjections(vm);
         initProvide(vm);
     }
-    vm.$callSyncHook('created');
+    vm.$callCreatedHook();
     vm.$callHook('mounted');
     vm.$callHook(ON_READY);
 }
@@ -1356,7 +1356,7 @@ function initLifetimes(lifetimesOptions) {
     return extend(initLifetimes$1(lifetimesOptions), {
         ready() {
             if (this.$vm && lifetimesOptions.isPage(this)) {
-                this.$vm.$callSyncHook('created');
+                this.$vm.$callCreatedHook();
                 this.$vm.$callHook('mounted');
                 this.$vm.$callHook(ON_READY);
             }

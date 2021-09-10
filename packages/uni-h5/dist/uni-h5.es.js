@@ -6314,8 +6314,11 @@ function useListeners(props2, Listeners, trigger) {
 function useMethods(canvasRef, actionsWaiting) {
   let _actionsDefer = [];
   let _images = {};
-  function _resize() {
+  function _resize(size) {
     let canvas = canvasRef.value;
+    var hasChanged = !size || canvas.width !== Math.floor(size.width * pixelRatio) || canvas.height !== Math.floor(size.height * pixelRatio);
+    if (!hasChanged)
+      return;
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext("2d");
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
