@@ -1222,7 +1222,7 @@ function initLifetimes(lifetimesOptions) {
                 if (this.pageinstance) {
                     this.__webviewId__ = this.pageinstance.__pageId__;
                 }
-                this.$vm.$callSyncHook('created');
+                this.$vm.$callCreatedHook();
                 this.$vm.$callHook('mounted');
                 this.$vm.$callHook(ON_READY);
             }
@@ -1279,7 +1279,7 @@ function handleLink({ detail: { nodeId, webviewId }, }) {
             initInjections(vm);
             initProvide(vm);
         }
-        vm.$callSyncHook('created');
+        vm.$callCreatedHook();
     };
     const mountedVm = function () {
         // 处理当前 vm 子

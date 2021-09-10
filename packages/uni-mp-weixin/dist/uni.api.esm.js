@@ -700,9 +700,13 @@ const getLocale = () => {
     return uni.getSystemInfoSync().language || 'zh-Hans';
 };
 const setLocale = (locale) => {
-    const oldLocale = getApp().$vm.$locale;
+    const app = getApp();
+    if (!app) {
+        return false;
+    }
+    const oldLocale = app.$vm.$locale;
     if (oldLocale !== locale) {
-        getApp().$vm.$locale = locale;
+        app.$vm.$locale = locale;
         onLocaleChangeCallbacks.forEach((fn) => fn({ locale }));
         return true;
     }
