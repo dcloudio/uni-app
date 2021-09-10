@@ -131,7 +131,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <div style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;">
             {slots.default && slots.default()}
           </div>
-          {/* @ts-expect-error */}
           <ResizeSensor ref={sensor} onResize={_resize} />
         </uni-canvas>
       )
@@ -212,8 +211,13 @@ function useMethods(
     [key: string]: HTMLImageElement & { ready: boolean }
   } = {}
 
-  function _resize() {
+  function _resize(size?: { width: number; height: number }) {
     let canvas = canvasRef.value!
+    var hasChanged =
+      !size ||
+      canvas.width !== Math.floor(size.width * pixelRatio) ||
+      canvas.height !== Math.floor(size.height * pixelRatio)
+    if (!hasChanged) return
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext('2d')!
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height)
