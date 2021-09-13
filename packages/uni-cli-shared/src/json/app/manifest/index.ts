@@ -33,8 +33,8 @@ export function normalizeAppManifestJson(
     manifestJson,
     pagesJson
   )
-  initI18n(manifestJson)
-  return manifestJson
+
+  return initI18n(manifestJson)
 }
 
 export * from './env'

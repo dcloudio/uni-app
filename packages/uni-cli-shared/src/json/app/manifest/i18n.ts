@@ -9,14 +9,10 @@ export function initI18n(manifestJson: Record<string, any>) {
     true
   )
   if (i18nOptions) {
-    if (manifestJson.plus.tabBar) {
-      manifestJson.plus.tabBar = JSON.parse(
-        compileI18nJsonStr(
-          JSON.stringify(manifestJson.plus.tabBar),
-          i18nOptions
-        )
-      )
-    }
+    manifestJson = JSON.parse(
+      compileI18nJsonStr(JSON.stringify(manifestJson), i18nOptions)
+    )
     manifestJson.fallbackLocale = i18nOptions.locale
   }
+  return manifestJson
 }

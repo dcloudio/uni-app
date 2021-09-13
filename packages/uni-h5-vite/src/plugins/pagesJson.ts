@@ -262,7 +262,7 @@ delete ${globalName}['____'+appid+'____']
   nvue,
   locale,
   fallbackLocale,
-  locales:Object.keys(locales).reduce((res,name)=>{res[name.replace(/\\.\\/locale\\/(.*).json/,'$1')]=locales[name].default;return res},{}),
+  locales:Object.keys(locales).reduce((res,name)=>{const locale=name.replace(/\\.\\/locale\\/(uni-app.)?(.*).json/,'$2');extend(res[locale]||(res[locale]={}),locales[name].default);return res},{}),
   router,
 })
 `

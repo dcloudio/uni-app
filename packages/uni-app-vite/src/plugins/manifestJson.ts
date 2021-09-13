@@ -3,6 +3,7 @@ import { Plugin } from 'vite'
 
 import {
   defineUniManifestJsonPlugin,
+  getLocaleFiles,
   normalizeAppManifestJson,
   parseJson,
   parsePagesJsonOnce,
@@ -21,6 +22,11 @@ export function uniManifestJsonPlugin(): Plugin {
         this.addWatchFile(
           path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
         )
+        getLocaleFiles(
+          path.resolve(process.env.UNI_INPUT_DIR, 'locale')
+        ).forEach((filepath) => {
+          this.addWatchFile(filepath)
+        })
         manifestJson = normalizeAppManifestJson(
           parseJson(code),
           parsePagesJsonOnce(

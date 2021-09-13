@@ -7,6 +7,7 @@ import {
   normalizeAppConfigService,
   normalizePagesJson,
   parseManifestJsonOnce,
+  getLocaleFiles,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin(): Plugin {
@@ -20,6 +21,11 @@ export function uniPagesJsonPlugin(): Plugin {
           return
         }
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
+        getLocaleFiles(
+          path.resolve(process.env.UNI_INPUT_DIR, 'locale')
+        ).forEach((filepath) => {
+          this.addWatchFile(filepath)
+        })
         pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
         // TODO subpackages
         pagesJson.pages.forEach((page) => {

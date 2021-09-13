@@ -1,6 +1,6 @@
 import { Plugin } from 'vite'
 import { parse } from 'jsonc-parser'
-import { preJs } from '@dcloudio/uni-cli-shared'
+import { preJs, isUniAppLocaleFile } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
 const jsonExtRE = /\.json($|\?)(?!commonjs-proxy)/
@@ -17,8 +17,12 @@ export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
       if (code.includes('#endif')) {
         code = preJs(code)
       }
+      let jsonObj = parse(code)
+      if (isUniAppLocaleFile(id)) {
+        jsonObj = jsonObj.common || {}
+      }
       return {
-        code: JSON.stringify(parse(code)),
+        code: JSON.stringify(jsonObj),
         map: null,
       }
     },

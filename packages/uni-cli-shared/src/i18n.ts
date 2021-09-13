@@ -1,6 +1,9 @@
 import fs from 'fs'
 import path from 'path'
+import { sync } from 'fast-glob'
+import { extend } from '@vue/shared'
 import { I18N_JSON_DELIMITERS, once } from '@dcloudio/uni-shared'
+
 import { parseJson, parseManifestJsonOnce } from './json'
 import { M } from './messages'
 
@@ -39,6 +42,27 @@ export function initI18nOptions(
 
 export const initI18nOptionsOnce = once(initI18nOptions)
 
+const localeJsonRE = /uni-app.*.json/
+
+export function isUniAppLocaleFile(filepath: string) {
+  if (!filepath) {
+    return false
+  }
+  return localeJsonRE.test(path.basename(filepath))
+}
+
+function parseLocaleJson(filepath: string) {
+  let jsonObj = parseJson(fs.readFileSync(filepath, 'utf8'))
+  if (isUniAppLocaleFile(filepath)) {
+    jsonObj = jsonObj.common || {}
+  }
+  return jsonObj
+}
+
+export function getLocaleFiles(cwd: string) {
+  return sync('*.json', { cwd, absolute: true })
+}
+
 export function initLocales(dir: string, withMessages: boolean = true) {
   if (!fs.existsSync(dir)) {
     return {}
@@ -46,9 +70,17 @@ export function initLocales(dir: string, withMessages: boolean = true) {
   return fs.readdirSync(dir).reduce((res, filename) => {
     if (path.extname(filename) === '.json') {
       try {
-        res[path.basename(filename).replace('.json', '')] = withMessages
-          ? parseJson(fs.readFileSync(path.join(dir, filename), 'utf8'))
-          : {}
+        const locale = path
+          .basename(filename)
+          .replace(/(uni-app.)?(.*).json/, '$2')
+        if (withMessages) {
+          extend(
+            res[locale] || (res[locale] = {}),
+            parseLocaleJson(path.join(dir, filename))
+          )
+        } else {
+          res[locale] = {}
+        }
       } catch (e) {}
     }
     return res
