@@ -458,7 +458,7 @@ global.__uniConfig.sdkConfigs = ${JSON.stringify(sdkConfigs)};
 global.__uniConfig.qqMapKey = ${JSON.stringify(qqMapKey)};
 global.__uniConfig.locale = ${JSON.stringify(locale)};
 global.__uniConfig.fallbackLocale = ${JSON.stringify(manifestJson.fallbackLocale)};
-global.__uniConfig.locales = locales.keys().reduce((res,key)=>{res[key.replace(/\\.\\/(.*).json/,'$1')]=locales(key);return res},{});
+global.__uniConfig.locales = locales.keys().reduce((res,key)=>{const locale=key.replace(/\\.\\/(uni-app.)?(.*).json/,'$2');const messages = locales(key);Object.assign(res[locale]||(res[locale]={}),messages.common||messages);return res},{});
 global.__uniConfig.nvue = ${JSON.stringify({ 'flex-direction': getFlexDirection(manifestJson['app-plus']) })}
 global.__uniConfig.__webpack_chunk_load__ = __webpack_chunk_load__
 ${genRegisterPageVueComponentsCode(pageComponents)}

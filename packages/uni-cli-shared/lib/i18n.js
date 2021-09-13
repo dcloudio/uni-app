@@ -1,7 +1,11 @@
 const fs = require('fs')
 const path = require('path')
-const { parseJson } = require('./json')
-const { getManifestJson } = require('./manifest')
+const {
+  parseJson
+} = require('./json')
+const {
+  getManifestJson
+} = require('./manifest')
 
 const delimiters = ['%', '%']
 
@@ -36,17 +40,40 @@ function initI18nOptions (
   }
 }
 
+const localeJsonRE = /uni-app.*.json/
+
+function isUniAppLocaleFile (filepath) {
+  if (!filepath) {
+    return false
+  }
+  return localeJsonRE.test(path.basename(filepath))
+}
+
+function parseLocaleJson (filepath) {
+  let jsonObj = parseJson(fs.readFileSync(filepath, 'utf8'))
+  if (isUniAppLocaleFile(filepath)) {
+    jsonObj = jsonObj.common || {}
+  }
+  return jsonObj
+}
+
 function initLocales (dir, withMessages = true) {
   if (!fs.existsSync(dir)) {
     return {}
   }
   return fs.readdirSync(dir).reduce((res, filename) => {
     if (path.extname(filename) === '.json') {
-      try {
-        res[path.basename(filename).replace('.json', '')] = withMessages
-          ? parseJson(fs.readFileSync(path.join(dir, filename), 'utf8'))
-          : {}
-      } catch (e) {}
+      const locale = path
+        .basename(filename)
+        .replace(/(uni-app.)?(.*).json/, '$2')
+      if (withMessages) {
+        Object.assign(
+          res[locale] || (res[locale] = {}),
+          parseLocaleJson(path.join(dir, filename))
+        )
+      } else {
+        res[locale] = {}
+      }
     }
     return res
   }, {})

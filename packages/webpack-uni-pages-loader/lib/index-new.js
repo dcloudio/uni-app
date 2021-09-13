@@ -16,7 +16,10 @@ const {
   updateProjectJson
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
-const { initTheme, parseTheme } = require('@dcloudio/uni-cli-shared/lib/theme')
+const {
+  initTheme,
+  parseTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
 
 const {
   // pagesJsonJsFileName,
@@ -27,11 +30,15 @@ const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const parseStyle = require('./util').parseStyle
 
-const { initI18nOptions } = require('@dcloudio/uni-cli-shared/lib/i18n')
-const { parseI18nJson } = require('@dcloudio/uni-i18n')
+const {
+  initI18nOptions
+} = require('@dcloudio/uni-cli-shared/lib/i18n')
+const {
+  parseI18nJson
+} = require('@dcloudio/uni-i18n')
 
 // 将开发者手动设置的 usingComponents 调整名称，方便与自动解析到的 usingComponents 做最后合并
-function renameUsingComponents (jsonObj) {
+function renameUsingComponents(jsonObj) {
   if (jsonObj.usingComponents) {
     jsonObj.customUsingComponents = jsonObj.usingComponents
     delete jsonObj.usingComponents
@@ -39,7 +46,7 @@ function renameUsingComponents (jsonObj) {
   return jsonObj
 }
 
-module.exports = function (content, map) {
+module.exports = function(content, map) {
   this.cacheable && this.cacheable()
 
   initTheme()
@@ -60,6 +67,7 @@ module.exports = function (content, map) {
   )
 
   // this.addDependency(pagesJsonJsPath)
+  this.addContextDependency(path.resolve(process.env.UNI_INPUT_DIR, 'locale'))
   this.addDependency(manifestJsonPath)
 
   let pagesJson = parsePagesJson(content, {
@@ -117,20 +125,24 @@ module.exports = function (content, map) {
       true
     )
     if (i18nOptions) {
-      const { locale, locales, delimiters } = i18nOptions
+      const {
+        locale,
+        locales,
+        delimiters
+      } = i18nOptions
       parseI18nJson(pagesJson, locales[locale], delimiters)
     }
   }
   if (!process.env.UNI_USING_V3) {
     parsePages(
       pagesJson,
-      function (page) {
+      function(page) {
         updatePageJson(
           page.path,
           renameUsingComponents(parseStyle(page.style))
         )
       },
-      function (root, page) {
+      function(root, page) {
         updatePageJson(
           normalizePath(path.join(root, page.path)),
           renameUsingComponents(parseStyle(page.style, root))

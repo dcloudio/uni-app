@@ -3,10 +3,20 @@ const fsExtra = require('fs-extra')
 const path = require('path')
 const merge = require('merge')
 
-const { normalizePath, getFlexDirection } = require('@dcloudio/uni-cli-shared')
-const { compileI18nJsonStr } = require('@dcloudio/uni-i18n')
-const { initI18nOptions } = require('@dcloudio/uni-cli-shared/lib/i18n')
-const { hasOwn, parseStyle } = require('../../util')
+const {
+  normalizePath,
+  getFlexDirection
+} = require('@dcloudio/uni-cli-shared')
+const {
+  compileI18nJsonStr
+} = require('@dcloudio/uni-i18n')
+const {
+  initI18nOptions
+} = require('@dcloudio/uni-cli-shared/lib/i18n')
+const {
+  hasOwn,
+  parseStyle
+} = require('../../util')
 
 const wxPageOrientationMapping = {
   auto: [
@@ -95,7 +105,9 @@ function updateFileFlag (appJson) {
 }
 
 module.exports = function (pagesJson, userManifestJson, isAppView) {
-  const { app } = require('../mp')(pagesJson, userManifestJson)
+  const {
+    app
+  } = require('../mp')(pagesJson, userManifestJson)
 
   const manifest = {
     name: 'manifest'
@@ -123,8 +135,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
   // 用户配置覆盖默认配置
   manifestJson = merge.recursive(
     true,
-    manifestJson,
-    {
+    manifestJson, {
       id: userManifestJson.appid || '',
       name: userManifestJson.name || '',
       description: userManifestJson.description || '',
@@ -133,8 +144,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         code: userManifestJson.versionCode
       },
       language: userManifestJson.locale
-    },
-    {
+    }, {
       plus: userManifestJson['app-plus']
     }
   )
@@ -201,7 +211,10 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
 
   if (nvuePages && nvuePages.length) {
     const pages = {}
-    nvuePages.forEach(({ path, style }) => {
+    nvuePages.forEach(({
+      path,
+      style
+    }) => {
       pages[path] = {
         window: parseStyle(style),
         nvue: true
@@ -388,14 +401,20 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
           return (
             path.replace(/\.html$/, '.nvue') === key ||
             path.replace(/\.html$/, '.nvue') + '.nvue' === key ||
-            subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
+            subNVues.find(({
+              path
+            }) => path === key.replace(/\.nvue$/, ''))
           )
         }) &&
-        !pagesJson.pages.find(({ style = {} }) => {
+        !pagesJson.pages.find(({
+          style = {}
+        }) => {
           style = Object.assign(style, style['app-plus'])
           const subNVues = style.subNVues || []
           return subNVues.find(
-            ({ path }) => path === key.replace(/\.nvue$/, '')
+            ({
+              path
+            }) => path === key.replace(/\.nvue$/, '')
           )
         })
       ) {
@@ -491,8 +510,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
       pagesJson.tabBar.list &&
       pagesJson.tabBar.list.length
     ) {
-      const tabBar = (manifestJson.plus.tabBar = Object.assign(
-        {},
+      const tabBar = (manifestJson.plus.tabBar = Object.assign({},
         pagesJson.tabBar
       ))
       const borderStyles = {
@@ -518,9 +536,9 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         const item = tabBar.list.find(
           page =>
             page.pagePath ===
-            (process.env.UNI_USING_NATIVE
-              ? appJson.entryPagePath
-              : entryPagePath)
+          (process.env.UNI_USING_NATIVE
+            ? appJson.entryPagePath
+            : entryPagePath)
         )
         if (item) {
           tabBar.child = ['lauchwebview']
@@ -535,8 +553,8 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         true
       )
       if (i18nOptions) {
-        manifestJson.plus.tabBar = JSON.parse(
-          compileI18nJsonStr(JSON.stringify(tabBar), i18nOptions)
+        manifestJson = JSON.parse(
+          compileI18nJsonStr(JSON.stringify(manifestJson), i18nOptions)
         )
         manifestJson.fallbackLocale = i18nOptions.locale
       }
@@ -579,8 +597,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     }
     return require('./index.v3')(
       appJson,
-      manifestJson,
-      {
+      manifestJson, {
         manifest,
         pagesJson,
         normalizeNetworkTimeout
