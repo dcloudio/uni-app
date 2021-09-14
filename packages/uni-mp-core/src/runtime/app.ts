@@ -13,6 +13,7 @@ import {
   ON_SHOW,
   ON_THEME_CHANGE,
   ON_UNHANDLE_REJECTION,
+  ON_SHARE_APP_MESSAGE,
 } from '@dcloudio/uni-shared'
 
 import { injectAppLaunchHooks } from '../api/hook'
@@ -32,6 +33,10 @@ const HOOKS = [
   ON_PAGE_NOT_FOUND,
   ON_UNHANDLE_REJECTION,
 ]
+
+if (__PLATFORM__ === 'mp-alipay') {
+  HOOKS.push(ON_SHARE_APP_MESSAGE)
+}
 
 export interface ParseAppOptions {
   parse: (appOptions: MiniProgramAppOptions) => void
