@@ -1,9 +1,10 @@
+import path from 'path'
 import debug from 'debug'
 import { extend } from '@vue/shared'
 import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
 
-import { COMMON_EXCLUDE } from '@dcloudio/uni-cli-shared'
+import { COMMON_EXCLUDE, isInHBuilderX } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
@@ -73,6 +74,20 @@ export function initPlugins(
   )
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
+
+  if (isInHBuilderX()) {
+    try {
+      require(path.resolve(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        'uni_helpers/lib/bytenode'
+      ))
+      const { V } = require(path.join(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        'uni_helpers'
+      ))
+      addPlugin(plugins, V({ dir: process.env.UNI_INPUT_DIR }), 0, 'pre')
+    } catch (e) {}
+  }
 
   if (process.env.DEBUG) {
     debugPlugin(plugins.length)
