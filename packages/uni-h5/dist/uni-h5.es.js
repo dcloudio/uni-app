@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -7219,9 +7219,9 @@ function text(Quill) {
     }
   ];
   const result = {};
-  text2.forEach(({ name, scope }) => {
+  text2.forEach(({ name, scope: scope2 }) => {
     result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), {
-      scope
+      scope: scope2
     });
   });
   return result;
@@ -17706,7 +17706,7 @@ var modal = /* @__PURE__ */ defineComponent({
   }
 });
 let showModalState;
-const onHidePopupOnce$2 = /* @__PURE__ */ once(() => {
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
 });
 let currentShowModalResolve;
@@ -17717,7 +17717,7 @@ function onModalClose(type) {
   });
 }
 const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
-  onHidePopupOnce$2();
+  onHidePopupOnce$1();
   currentShowModalResolve = resolve;
   if (!showModalState) {
     showModalState = reactive(args);
@@ -17823,27 +17823,29 @@ function useToastIcon(props2) {
 let showToastState;
 let showType = "";
 let timeoutId;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
-});
-const watchVisibleOnce = /* @__PURE__ */ once(() => {
-  watch([() => showToastState.visible, () => showToastState.duration], ([visible, duration]) => {
-    if (visible) {
-      timeoutId && clearTimeout(timeoutId);
-      if (showType === "onShowLoading")
-        return;
-      timeoutId = setTimeout(() => {
-        hidePopup("onHideToast");
-      }, duration);
-    } else {
-      timeoutId && clearTimeout(timeoutId);
-    }
+const scope = effectScope();
+function watchVisible() {
+  scope.run(() => {
+    watch([() => showToastState.visible, () => showToastState.duration], ([visible, duration]) => {
+      if (visible) {
+        timeoutId && clearTimeout(timeoutId);
+        if (showType === "onShowLoading")
+          return;
+        timeoutId = setTimeout(() => {
+          hidePopup("onHideToast");
+        }, duration);
+      } else {
+        timeoutId && clearTimeout(timeoutId);
+      }
+    });
   });
-});
+}
 function createToast(args) {
   if (!showToastState) {
     showToastState = reactive(extend(args, { visible: false }));
     nextTick(() => {
+      watchVisible();
+      UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
       createRootApp(Toast, showToastState, () => {
       }).mount(ensureRoot("u-a-t"));
     });
@@ -17853,8 +17855,6 @@ function createToast(args) {
   setTimeout(() => {
     showToastState.visible = true;
   }, 10);
-  watchVisibleOnce();
-  onHidePopupOnce$1();
 }
 const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, { resolve, reject }) => {
   createToast(args);

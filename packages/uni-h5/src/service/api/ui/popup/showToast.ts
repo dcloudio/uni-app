@@ -1,5 +1,5 @@
 //#region Functions
-import { reactive, nextTick, watch } from 'vue'
+import { reactive, nextTick, watch, effectScope } from 'vue'
 import { extend } from '@vue/shared'
 import {
   defineAsyncApi,
@@ -24,38 +24,39 @@ import type {
   API_TYPE_HIDE_LOADING,
   API_TYPE_SHOW_TOAST,
 } from '@dcloudio/uni-api'
-import { once } from '@dcloudio/uni-shared'
 //#endregion
 
 let showToastState: ToastProps
 let showType: 'onShowToast' | 'onShowLoading' | '' = ''
 let timeoutId: number
-const onHidePopupOnce = /*#__PURE__*/ once(() => {
-  UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
-})
 
-const watchVisibleOnce = /*#__PURE__*/ once(() => {
-  watch(
-    [() => showToastState.visible, () => showToastState.duration],
-    ([visible, duration]) => {
-      if (visible) {
-        timeoutId && clearTimeout(timeoutId)
-        if (showType === 'onShowLoading') return
-        timeoutId = setTimeout(() => {
-          hidePopup('onHideToast')
-        }, duration)
-      } else {
-        timeoutId && clearTimeout(timeoutId)
+const scope = effectScope()
+function watchVisible() {
+  scope.run(() => {
+    watch(
+      [() => showToastState.visible, () => showToastState.duration],
+      ([visible, duration]) => {
+        if (visible) {
+          timeoutId && clearTimeout(timeoutId)
+          if (showType === 'onShowLoading') return
+          timeoutId = setTimeout(() => {
+            hidePopup('onHideToast')
+          }, duration)
+        } else {
+          timeoutId && clearTimeout(timeoutId)
+        }
       }
-    }
-  )
-})
+    )
+  })
+}
 
 function createToast(args: ToastProps) {
   if (!showToastState) {
     showToastState = reactive(extend(args, { visible: false }))
     // 异步执行，避免干扰 getCurrentInstance
     nextTick(() => {
+      watchVisible()
+      UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
       createRootApp(Toast, showToastState, () => {}).mount(ensureRoot('u-a-t'))
     })
   } else {
@@ -66,10 +67,6 @@ function createToast(args: ToastProps) {
     // 延迟一下 show 可解决窗口打开前调用 showToast 在 onHidePopup 之后触发
     showToastState.visible = true
   }, 10)
-
-  watchVisibleOnce()
-
-  onHidePopupOnce()
 }
 
 export const showToast = defineAsyncApi<API_TYPE_SHOW_TOAST>(
