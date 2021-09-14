@@ -21,6 +21,7 @@ export function getRealPath(filepath: string) {
     // 平台绝对路径 安卓、iOS
     if (
       filepath.startsWith('/storage/') ||
+      filepath.startsWith('/sdcard/') ||
       filepath.includes('/Containers/Data/Application/')
     ) {
       return 'file://' + filepath
