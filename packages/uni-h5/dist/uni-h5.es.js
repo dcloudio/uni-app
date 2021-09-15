@@ -17119,7 +17119,20 @@ function getJSONP(url, options, success, error) {
   document.body.appendChild(js);
 }
 const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude }, { resolve, reject }) => {
-  const key = __uniConfig.qqMapKey;
+  var MapType2;
+  (function(MapType22) {
+    MapType22["QQ"] = "qq";
+    MapType22["GOOGLE"] = "google";
+  })(MapType2 || (MapType2 = {}));
+  let mapType;
+  let mapKey;
+  if (__uniConfig.qqMapKey) {
+    mapType = MapType2.QQ;
+    mapKey = __uniConfig.qqMapKey;
+  } else if (__uniConfig.googleMapKey) {
+    mapType = MapType2.GOOGLE;
+    mapKey = __uniConfig.googleMapKey;
+  }
   new Promise((resolve2, reject2) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((res) => resolve2(res.coords), reject2, {
@@ -17129,28 +17142,52 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
     } else {
       reject2(new Error("device nonsupport geolocation"));
     }
-  }).catch(() => {
+  }).catch((error) => {
     return new Promise((resolve2, reject2) => {
-      getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${key}`, {
-        callback: "callback"
-      }, (res) => {
-        if ("result" in res && res.result.location) {
-          const location2 = res.result.location;
-          resolve2({
-            latitude: location2.lat,
-            longitude: location2.lng
-          }, true);
-        } else {
-          reject2(new Error(res.message || JSON.stringify(res)));
-        }
-      }, () => reject2(new Error("network error")));
+      if (mapType === MapType2.QQ) {
+        getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapKey}`, {
+          callback: "callback"
+        }, (res) => {
+          if ("result" in res && res.result.location) {
+            const location2 = res.result.location;
+            resolve2({
+              latitude: location2.lat,
+              longitude: location2.lng
+            }, true);
+          } else {
+            reject2(new Error(res.message || JSON.stringify(res)));
+          }
+        }, () => reject2(new Error("network error")));
+      } else if (mapType === MapType2.GOOGLE) {
+        request({
+          method: "POST",
+          url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapKey}`,
+          success(res) {
+            const data = res.data;
+            if ("location" in data) {
+              resolve2({
+                latitude: data.location.lat,
+                longitude: data.location.lng,
+                accuracy: data.accuracy
+              });
+            } else {
+              reject2(new Error(data.error && data.error.message || JSON.stringify(res)));
+            }
+          },
+          fail() {
+            reject2(new Error("network error"));
+          }
+        });
+      } else {
+        reject2(error);
+      }
     });
   }).then((coords, skip) => {
-    if (type && type.toUpperCase() === "WGS84" || skip) {
+    if (type && type.toUpperCase() === "WGS84" || mapType !== MapType2.QQ || skip) {
       return coords;
     }
     return new Promise((resolve2) => {
-      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapKey}&output=jsonp&pf=jsapi&ref=jsapi`, {
         callback: "cb"
       }, (res) => {
         if ("detail" in res && "points" in res.detail && res.detail.points.length) {
