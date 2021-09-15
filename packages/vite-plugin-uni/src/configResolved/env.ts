@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { ResolvedConfig } from 'vite'
 
@@ -14,4 +15,10 @@ export function initEnv(config: ResolvedConfig) {
   if (!process.env.UNI_OUTPUT_DIR) {
     process.env.UNI_OUTPUT_DIR = path.resolve(config.root, config.build.outDir)
   }
+
+  process.env.BROWSERSLIST_CONFIG = [
+    path.resolve(process.env.UNI_INPUT_DIR, '.browserslistrc'),
+    path.resolve(process.env.UNI_CLI_CONTEXT, 'package.json'),
+    path.resolve(process.cwd(), 'package.json'),
+  ].find((file) => fs.existsSync(file))
 }

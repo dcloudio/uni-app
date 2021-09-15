@@ -22,7 +22,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@rollup/pluginutils": "^4.1.0",
-    "autoprefixer": "^10.2.5",
     "cac": "^6.7.3",
     "chalk": "^4.1.1",
     "debug": "^4.3.1",
@@ -30,8 +29,7 @@
     "fs-extra": "^9.0.1",
     "jsonc-parser": "^3.0.0",
     "mime": "^2.5.2",
-    "module-alias": "^2.2.2",
-    "postcss-selector-parser": "^6.0.4"
+    "module-alias": "^2.2.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.12",

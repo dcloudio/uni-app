@@ -74,6 +74,7 @@
     "@vitejs/plugin-vue-jsx": "^1.1.8",
     "@vue/compiler-sfc": "^3.2.11",
     "acorn-loose": "^8.1.0",
+    "autoprefixer": "^10.3.4",
     "core-js": "2",
     "eslint": "^7.17.0",
     "fs-extra": "^9.0.1",
