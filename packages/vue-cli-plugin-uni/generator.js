@@ -79,8 +79,8 @@ module.exports = (api, options, rootOptions) => {
         jest: '^25.4.0'
       },
       browserslist: [
-        'Android >= 4',
-        'ios >= 8'
+        'Android >= 4.4',
+        'ios >= 9'
       ]
     }
   })
