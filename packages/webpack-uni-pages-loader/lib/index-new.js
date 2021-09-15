@@ -38,7 +38,7 @@ const {
 } = require('@dcloudio/uni-i18n')
 
 // 将开发者手动设置的 usingComponents 调整名称，方便与自动解析到的 usingComponents 做最后合并
-function renameUsingComponents(jsonObj) {
+function renameUsingComponents (jsonObj) {
   if (jsonObj.usingComponents) {
     jsonObj.customUsingComponents = jsonObj.usingComponents
     delete jsonObj.usingComponents
@@ -46,7 +46,7 @@ function renameUsingComponents(jsonObj) {
   return jsonObj
 }
 
-module.exports = function(content, map) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
   initTheme()
@@ -136,13 +136,13 @@ module.exports = function(content, map) {
   if (!process.env.UNI_USING_V3) {
     parsePages(
       pagesJson,
-      function(page) {
+      function (page) {
         updatePageJson(
           page.path,
           renameUsingComponents(parseStyle(page.style))
         )
       },
-      function(root, page) {
+      function (root, page) {
         updatePageJson(
           normalizePath(path.join(root, page.path)),
           renameUsingComponents(parseStyle(page.style, root))
