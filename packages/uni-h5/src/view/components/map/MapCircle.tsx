@@ -1,7 +1,6 @@
 import { inject, onUnmounted, watch } from 'vue'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Map, Circle } from './qqMap/types'
-import { QQMapsExt } from './qqMap'
+import { Maps, Map, Circle } from './maps'
 
 const props = {
   latitude: { type: [Number, String], require: true },
@@ -17,7 +16,7 @@ export type Props = Partial<Record<keyof typeof props, any>>
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type OnMapReadyCallback = (
   map: Map,
-  maps: QQMapsExt,
+  maps: Maps,
   trigger: CustomEventTrigger
 ) => void
 type OnMapReady = (callback: OnMapReadyCallback) => void
@@ -42,15 +41,21 @@ export default /*#__PURE__*/ defineSystemComponent({
         const center = new maps.LatLng(option.latitude, option.longitude)
         function getColor(color: string) {
           const c = color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/)
-          if (c && c.length) {
-            return maps.Color.fromHex(c[0], Number('0x' + c[1] || 255) / 255)
-          } else {
-            return undefined
+          if ('Color' in maps) {
+            if (c && c.length) {
+              return maps.Color.fromHex(
+                c[0],
+                Number('0x' + c[1] || 255) / 255
+              ).toRGBA()
+            } else {
+              return undefined
+            }
           }
+          return color
         }
         circle = new maps.Circle({
-          map,
-          center,
+          map: map as any,
+          center: center as any,
           clickable: false,
           radius: option.radius,
           strokeWeight: Number(option.strokeWidth) || 1,

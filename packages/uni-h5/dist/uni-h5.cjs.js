@@ -7652,6 +7652,11 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+var MapType;
+(function(MapType2) {
+  MapType2["QQ"] = "qq";
+  MapType2["GOOGLE"] = "google";
+})(MapType || (MapType = {}));
 const props$6 = {
   id: {
     type: [Number, String],
@@ -7732,8 +7737,8 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           let w;
           let h;
           let top;
-          let x = anchor.x;
-          let y = anchor.y;
+          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
+          let y = typeof anchor.y === "number" ? anchor.y : 1;
           if (option.iconPath && (option.width || option.height)) {
             w = option.width || img.width / img.height * option.height;
             h = option.height || img.height / img.width * option.width;
@@ -7741,37 +7746,53 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             w = img.width / 2;
             h = img.height / 2;
           }
-          x = (typeof x === "number" ? x : 0.5) * w;
-          y = (typeof y === "number" ? y : 1) * h;
           top = h - (h - y);
-          icon = new maps.MarkerImage(img.src, null, null, new maps.Point(x, y), new maps.Size(w, h));
+          if ("MarkerImage" in maps) {
+            icon = new maps.MarkerImage(img.src, null, null, new maps.Point(x * w, y * h), new maps.Size(w, h));
+          } else {
+            icon = {
+              url: img.src,
+              anchor: new maps.Point(x, y),
+              size: new maps.Size(w, h)
+            };
+          }
           marker.setPosition(position);
           marker.setIcon(icon);
-          marker.setRotation(option.rotate || 0);
+          if ("setRotation" in marker) {
+            marker.setRotation(option.rotate || 0);
+          }
           const labelOpt = option.label || {};
-          if (marker.label) {
+          if ("label" in marker) {
             marker.label.setMap(null);
             delete marker.label;
           }
           let label;
           if (labelOpt.content) {
-            label = new maps.Label({
-              position,
-              map,
-              clickable: false,
-              content: labelOpt.content,
-              style: {
-                border: "none",
-                padding: "8px",
-                background: "none",
+            if ("Label" in maps) {
+              label = new maps.Label({
+                position,
+                map,
+                clickable: false,
+                content: labelOpt.content,
+                style: {
+                  border: "none",
+                  padding: "8px",
+                  background: "none",
+                  color: labelOpt.color,
+                  fontSize: (labelOpt.fontSize || 14) + "px",
+                  lineHeight: (labelOpt.fontSize || 14) + "px",
+                  marginLeft: labelOpt.x,
+                  marginTop: labelOpt.y
+                }
+              });
+              marker.label = label;
+            } else if ("setLabel" in marker) {
+              marker.setLabel({
+                text: labelOpt.content,
                 color: labelOpt.color,
-                fontSize: (labelOpt.fontSize || 14) + "px",
-                lineHeight: (labelOpt.fontSize || 14) + "px",
-                marginLeft: labelOpt.x,
-                marginTop: labelOpt.y
-              }
-            });
-            marker.label = label;
+                fontSize: (labelOpt.fontSize || 14) + "px"
+              });
+            }
           }
           const calloutOpt = option.callout || {};
           let callout = marker.callout;
@@ -7860,7 +7881,10 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const duration = data.duration;
             const autoRotate = !!data.autoRotate;
             let rotate = Number(data.rotate) || 0;
-            const rotation = marker.getRotation();
+            let rotation = 0;
+            if ("getRotation" in marker) {
+              rotation = marker.getRotation();
+            }
             const a = marker.getPosition();
             const b = new maps.LatLng(destination.latitude, destination.longitude);
             const distance = maps.geometry.spherical.computeDistanceBetween(a, b) / 1e3;
@@ -7902,8 +7926,15 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               }
               rotate = maps.geometry.spherical.computeHeading(a, b) - lastRtate;
             }
-            marker.setRotation(rotation + rotate);
-            marker.moveTo(b, speed);
+            if ("setRotation" in marker) {
+              marker.setRotation(rotation + rotate);
+            }
+            if ("moveTo" in marker) {
+              marker.moveTo(b, speed);
+            } else {
+              marker.setPosition(b);
+              maps.event.trigger(marker, "moveend", {});
+            }
           });
         }
       };
@@ -8062,11 +8093,14 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
         const center = new maps.LatLng(option.latitude, option.longitude);
         function getColor(color) {
           const c = color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
-          if (c && c.length) {
-            return maps.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255);
-          } else {
-            return void 0;
+          if ("Color" in maps) {
+            if (c && c.length) {
+              return maps.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
+            } else {
+              return void 0;
+            }
           }
+          return color;
         }
         circle = new maps.Circle({
           map,
@@ -8250,6 +8284,20 @@ function getPoints(points) {
   }
   return newPoints;
 }
+function getLat(latLng) {
+  if ("getLat" in latLng) {
+    return latLng.getLat();
+  } else {
+    return latLng.lat();
+  }
+}
+function getLng(latLng) {
+  if ("getLng" in latLng) {
+    return latLng.getLng();
+  } else {
+    return latLng.lng();
+  }
+}
 function useMap(props2, rootRef, emit2) {
   const mapRef = vue.ref(null);
   let maps;
@@ -8303,8 +8351,8 @@ function useMap(props2, rootRef, emit2) {
           onMapReady(() => {
             const center = map.getCenter();
             uniShared.callOptions(data, {
-              latitude: center.getLat(),
-              longitude: center.getLng(),
+              latitude: getLat(center),
+              longitude: getLng(center),
               errMsg: `${type}:ok`
             });
           });
@@ -8363,12 +8411,12 @@ function useMap(props2, rootRef, emit2) {
             const northeast = latLngBounds.getNorthEast();
             uniShared.callOptions(data, {
               southwest: {
-                latitude: southwest.getLat(),
-                longitude: southwest.getLng()
+                latitude: getLat(southwest),
+                longitude: getLng(southwest)
               },
               northeast: {
-                latitude: northeast.getLat(),
-                longitude: northeast.getLng()
+                latitude: getLat(northeast),
+                longitude: getLng(northeast)
               },
               errMsg: `${type}:ok`
             });

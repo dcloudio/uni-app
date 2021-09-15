@@ -1,8 +1,7 @@
 import { inject, onUnmounted, watch, PropType } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Map } from './qqMap/types'
-import { QQMapsExt } from './qqMap'
+import { Maps, Map } from './maps'
 
 interface Position {
   left: number | string
@@ -22,7 +21,7 @@ export type Props = Partial<Record<keyof typeof props, any>>
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type OnMapReadyCallback = (
   map: Map,
-  maps: QQMapsExt,
+  maps: Maps,
   trigger: CustomEventTrigger
 ) => void
 type OnMapReady = (callback: OnMapReadyCallback) => void

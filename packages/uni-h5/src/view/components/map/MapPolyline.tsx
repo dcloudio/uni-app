@@ -1,7 +1,6 @@
 import { inject, PropType, onUnmounted, watch } from 'vue'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Map, LatLng, Polyline } from './qqMap/types'
-import { QQMapsExt } from './qqMap'
+import { Maps, Map, LatLng, Polyline } from './maps'
 
 interface Point {
   latitude: number
@@ -30,7 +29,7 @@ export type Props = Partial<Record<keyof typeof props, any>>
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type OnMapReadyCallback = (
   map: Map,
-  maps: QQMapsExt,
+  maps: Maps,
   trigger: CustomEventTrigger
 ) => void
 type OnMapReady = (callback: OnMapReadyCallback) => void
@@ -62,9 +61,9 @@ export default /*#__PURE__*/ defineSystemComponent({
         })
         const strokeWeight = Number(option.width) || 1
         polyline = new maps.Polyline({
-          map,
+          map: map as any,
           clickable: false,
-          path,
+          path: path as any,
           strokeWeight,
           strokeColor: option.color || undefined,
           strokeDashStyle: option.dottedLine ? 'dash' : 'solid',
@@ -72,9 +71,9 @@ export default /*#__PURE__*/ defineSystemComponent({
         const borderWidth = Number(option.borderWidth) || 0
         if (borderWidth) {
           polylineBorder = new maps.Polyline({
-            map,
+            map: map as any,
             clickable: false,
-            path,
+            path: path as any,
             strokeWeight: strokeWeight + borderWidth * 2,
             strokeColor: option.borderColor || undefined,
             strokeDashStyle: option.dottedLine ? 'dash' : 'solid',

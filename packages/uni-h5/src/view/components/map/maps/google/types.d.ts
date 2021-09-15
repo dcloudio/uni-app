@@ -1,0 +1,10 @@
+/// <reference types="google.maps" />
+export type GoogleMaps = typeof google.maps
+export type OverlayView = google.maps.OverlayView
+export type LatLng = google.maps.LatLng
+export type Polyline = google.maps.Polyline
+export type Map = google.maps.Map
+export type Marker = google.maps.Marker
+export type Label = google.maps.MarkerLabel
+export type Circle = google.maps.Circle
+export type Icon = google.maps.Icon

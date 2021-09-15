@@ -7,14 +7,13 @@ import {
   getLocation,
 } from '../../../service/api'
 //#endif
-import { Map } from './qqMap/types'
-import { QQMapsExt } from './qqMap'
+import { Maps, Map } from './maps'
 import MapMarker from './MapMarker'
 
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type OnMapReadyCallback = (
   map: Map,
-  maps: QQMapsExt,
+  maps: Maps,
   trigger: CustomEventTrigger
 ) => void
 type OnMapReady = (callback: OnMapReadyCallback) => void

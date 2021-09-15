@@ -3,7 +3,7 @@ class Base {
   set(key: string, val: any): void
   setOptions(options: any): void
   bindTo(a, b, c, e)
-  bindsTo(a, b, c, e)
+  bindsTo?: (a, b, c, e) => void
   changed(a)
   notify(a)
   setValues(a)
@@ -94,7 +94,7 @@ export class Overlay extends Base {
   /**
    *
    */
-  map_changed()
+  map_changed?: () => void
 }
 
 export class LatLng {

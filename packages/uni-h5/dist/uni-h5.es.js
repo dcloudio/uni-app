@@ -588,14 +588,14 @@ function attrChange(attr2) {
         style[attr3] = elementComputedStyle[attr3];
       });
       changeAttrs.length = 0;
-      callbacks$1.forEach(function(callback) {
+      callbacks.forEach(function(callback) {
         callback(style);
       });
     }, 0);
   }
   changeAttrs.push(attr2);
 }
-var callbacks$1 = [];
+var callbacks = [];
 function onChange(callback) {
   if (!getSupport()) {
     return;
@@ -604,13 +604,13 @@ function onChange(callback) {
     init();
   }
   if (typeof callback === "function") {
-    callbacks$1.push(callback);
+    callbacks.push(callback);
   }
 }
 function offChange(callback) {
-  var index2 = callbacks$1.indexOf(callback);
+  var index2 = callbacks.indexOf(callback);
   if (index2 >= 0) {
-    callbacks$1.splice(index2, 1);
+    callbacks.splice(index2, 1);
   }
 }
 var safeAreaInsets = {
@@ -14741,7 +14741,18 @@ function useWebViewSize(rootRef, iframeRef) {
   return _resize;
 }
 function createCallout(maps2) {
-  const overlay = new maps2.Overlay();
+  const overlay = new (maps2.OverlayView || maps2.Overlay)();
+  function onAdd() {
+    const div = this.div;
+    const panes = this.getPanes();
+    panes.floatPane.appendChild(div);
+  }
+  function onRemove() {
+    const parentNode = this.div.parentNode;
+    if (parentNode) {
+      parentNode.removeChild(this.div);
+    }
+  }
   class Callout {
     constructor(option = {}) {
       this.setMap = overlay.setMap;
@@ -14751,13 +14762,18 @@ function createCallout(maps2) {
       this.map_changed = overlay.map_changed;
       this.set = overlay.set;
       this.get = overlay.get;
-      this.setOptions = overlay.setOptions;
+      this.setOptions = overlay.setValues;
       this.bindTo = overlay.bindTo;
       this.bindsTo = overlay.bindsTo;
       this.notify = overlay.notify;
       this.setValues = overlay.setValues;
       this.unbind = overlay.unbind;
       this.unbindAll = overlay.unbindAll;
+      this.addListener = overlay.addListener;
+      this.onAdd = onAdd;
+      this.construct = onAdd;
+      this.onRemove = onRemove;
+      this.destroy = onRemove;
       this.option = option || {};
       const map = option.map;
       this.position = option.position;
@@ -14784,11 +14800,6 @@ function createCallout(maps2) {
     }
     get onclick() {
       return this.div.onclick;
-    }
-    construct() {
-      const div = this.div;
-      const panes = this.getPanes();
-      panes.floatPane.appendChild(div);
     }
     setOption(option) {
       this.option = option;
@@ -14831,39 +14842,56 @@ function createCallout(maps2) {
       const divStyle = this.div.style;
       divStyle.display = this.visible ? "block" : "none";
     }
-    destroy() {
-      const parentNode = this.div.parentNode;
-      if (parentNode) {
-        parentNode.removeChild(this.div);
-      }
-    }
   }
   return Callout;
 }
+var MapType;
+(function(MapType2) {
+  MapType2["QQ"] = "qq";
+  MapType2["GOOGLE"] = "google";
+})(MapType || (MapType = {}));
 let maps;
-const callbacks = [];
-const QQ_MAP_CALLBACKNAME = "__qq_map_callback__";
+const callbacksMap = {};
+const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
 function loadMaps(callback) {
+  let type;
+  let key;
+  if (__uniConfig.qqMapKey) {
+    type = MapType.QQ;
+    key = __uniConfig.qqMapKey;
+  } else if (__uniConfig.googleMapKey) {
+    type = MapType.GOOGLE;
+    key = __uniConfig.googleMapKey;
+  } else {
+    console.error("Map key not configured.");
+    return;
+  }
+  const callbacks2 = callbacksMap[type] = callbacksMap[type] || [];
   if (maps) {
     callback(maps);
-  } else if (window.qq && window.qq.maps) {
-    maps = window.qq.maps;
+  } else if (window[type] && window[type].maps) {
+    maps = window[type].maps;
+    maps.Callout = maps.Callout || createCallout(maps);
     callback(maps);
-  } else if (callbacks.length) {
-    callbacks.push(callback);
+  } else if (callbacks2.length) {
+    callbacks2.push(callback);
   } else {
-    callbacks.push(callback);
-    const key = __uniConfig.qqMapKey;
+    callbacks2.push(callback);
     const globalExt = window;
-    globalExt[QQ_MAP_CALLBACKNAME] = function() {
-      delete globalExt[QQ_MAP_CALLBACKNAME];
-      maps = window.qq.maps;
+    const callbackName = GOOGLE_MAP_CALLBACKNAME + type;
+    globalExt[callbackName] = function() {
+      delete globalExt[callbackName];
+      maps = window[type].maps;
       maps.Callout = createCallout(maps);
-      callbacks.forEach((callback2) => callback2(maps));
-      callbacks.length = 0;
+      callbacks2.forEach((callback2) => callback2(maps));
+      callbacks2.length = 0;
     };
     const script = document.createElement("script");
-    script.src = `https://map.qq.com/api/js?v=2.exp&key=${key}&callback=${QQ_MAP_CALLBACKNAME}&libraries=geometry`;
+    const src = type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&libraries=geometry&";
+    script.src = `${src}key=${key}&callback=${callbackName}`;
+    script.onerror = function() {
+      console.error("Map load failed.");
+    };
     document.body.appendChild(script);
   }
 }
@@ -14958,8 +14986,8 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           let w;
           let h;
           let top;
-          let x = anchor.x;
-          let y = anchor.y;
+          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
+          let y = typeof anchor.y === "number" ? anchor.y : 1;
           if (option.iconPath && (option.width || option.height)) {
             w = option.width || img.width / img.height * option.height;
             h = option.height || img.height / img.width * option.width;
@@ -14967,37 +14995,53 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             w = img.width / 2;
             h = img.height / 2;
           }
-          x = (typeof x === "number" ? x : 0.5) * w;
-          y = (typeof y === "number" ? y : 1) * h;
           top = h - (h - y);
-          icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x, y), new maps2.Size(w, h));
+          if ("MarkerImage" in maps2) {
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h), new maps2.Size(w, h));
+          } else {
+            icon = {
+              url: img.src,
+              anchor: new maps2.Point(x, y),
+              size: new maps2.Size(w, h)
+            };
+          }
           marker.setPosition(position);
           marker.setIcon(icon);
-          marker.setRotation(option.rotate || 0);
+          if ("setRotation" in marker) {
+            marker.setRotation(option.rotate || 0);
+          }
           const labelOpt = option.label || {};
-          if (marker.label) {
+          if ("label" in marker) {
             marker.label.setMap(null);
             delete marker.label;
           }
           let label;
           if (labelOpt.content) {
-            label = new maps2.Label({
-              position,
-              map,
-              clickable: false,
-              content: labelOpt.content,
-              style: {
-                border: "none",
-                padding: "8px",
-                background: "none",
+            if ("Label" in maps2) {
+              label = new maps2.Label({
+                position,
+                map,
+                clickable: false,
+                content: labelOpt.content,
+                style: {
+                  border: "none",
+                  padding: "8px",
+                  background: "none",
+                  color: labelOpt.color,
+                  fontSize: (labelOpt.fontSize || 14) + "px",
+                  lineHeight: (labelOpt.fontSize || 14) + "px",
+                  marginLeft: labelOpt.x,
+                  marginTop: labelOpt.y
+                }
+              });
+              marker.label = label;
+            } else if ("setLabel" in marker) {
+              marker.setLabel({
+                text: labelOpt.content,
                 color: labelOpt.color,
-                fontSize: (labelOpt.fontSize || 14) + "px",
-                lineHeight: (labelOpt.fontSize || 14) + "px",
-                marginLeft: labelOpt.x,
-                marginTop: labelOpt.y
-              }
-            });
-            marker.label = label;
+                fontSize: (labelOpt.fontSize || 14) + "px"
+              });
+            }
           }
           const calloutOpt = option.callout || {};
           let callout = marker.callout;
@@ -15086,7 +15130,10 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const duration = data.duration;
             const autoRotate = !!data.autoRotate;
             let rotate = Number(data.rotate) || 0;
-            const rotation = marker.getRotation();
+            let rotation = 0;
+            if ("getRotation" in marker) {
+              rotation = marker.getRotation();
+            }
             const a2 = marker.getPosition();
             const b = new maps2.LatLng(destination.latitude, destination.longitude);
             const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
@@ -15128,8 +15175,15 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               }
               rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
             }
-            marker.setRotation(rotation + rotate);
-            marker.moveTo(b, speed);
+            if ("setRotation" in marker) {
+              marker.setRotation(rotation + rotate);
+            }
+            if ("moveTo" in marker) {
+              marker.moveTo(b, speed);
+            } else {
+              marker.setPosition(b);
+              maps2.event.trigger(marker, "moveend", {});
+            }
           });
         }
       };
@@ -15291,11 +15345,14 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
         const center = new maps2.LatLng(option.latitude, option.longitude);
         function getColor(color) {
           const c = color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
-          if (c && c.length) {
-            return maps2.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255);
-          } else {
-            return void 0;
+          if ("Color" in maps2) {
+            if (c && c.length) {
+              return maps2.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
+            } else {
+              return void 0;
+            }
           }
+          return color;
         }
         circle = new maps2.Circle({
           map,
@@ -19356,6 +19413,20 @@ function getPoints(points) {
   }
   return newPoints;
 }
+function getLat(latLng) {
+  if ("getLat" in latLng) {
+    return latLng.getLat();
+  } else {
+    return latLng.lat();
+  }
+}
+function getLng(latLng) {
+  if ("getLng" in latLng) {
+    return latLng.getLng();
+  } else {
+    return latLng.lng();
+  }
+}
 function useMap(props2, rootRef, emit2) {
   const trigger = useCustomEvent(rootRef, emit2);
   const mapRef = ref(null);
@@ -19425,8 +19496,8 @@ function useMap(props2, rootRef, emit2) {
     return {
       scale: map.getZoom(),
       centerLocation: {
-        latitude: center.getLat(),
-        longitude: center.getLng()
+        latitude: getLat(center),
+        longitude: getLng(center)
       }
     };
   }
@@ -19455,6 +19526,9 @@ function useMap(props2, rootRef, emit2) {
       zoomControl: false,
       scaleControl: false,
       panControl: false,
+      fullscreenControl: false,
+      streetViewControl: false,
+      keyboardShortcuts: false,
       minZoom: 5,
       maxZoom: 18,
       draggable: true
@@ -19496,8 +19570,8 @@ function useMap(props2, rootRef, emit2) {
     });
     maps2.event.addListener(map2, "center_changed", () => {
       const center2 = map2.getCenter();
-      const latitude = center2.getLat();
-      const longitude = center2.getLng();
+      const latitude = getLat(center2);
+      const longitude = getLng(center2);
       emit2("update:latitude", latitude);
       emit2("update:longitude", longitude);
     });
@@ -19511,8 +19585,8 @@ function useMap(props2, rootRef, emit2) {
           onMapReady(() => {
             const center = map.getCenter();
             callOptions(data, {
-              latitude: center.getLat(),
-              longitude: center.getLng(),
+              latitude: getLat(center),
+              longitude: getLng(center),
               errMsg: `${type}:ok`
             });
           });
@@ -19573,12 +19647,12 @@ function useMap(props2, rootRef, emit2) {
             const northeast = latLngBounds.getNorthEast();
             callOptions(data, {
               southwest: {
-                latitude: southwest.getLat(),
-                longitude: southwest.getLng()
+                latitude: getLat(southwest),
+                longitude: getLng(southwest)
               },
               northeast: {
-                latitude: northeast.getLat(),
-                longitude: northeast.getLng()
+                latitude: getLat(northeast),
+                longitude: getLng(northeast)
               },
               errMsg: `${type}:ok`
             });

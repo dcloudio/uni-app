@@ -59,6 +59,7 @@ declare namespace UniApp {
     tabBar?: TabBarOptions
     subPackages?: { root: string }[]
     qqMapKey?: string
+    googleMapKey?: string
     // app-plus
     entryPagePath?: string
     entryPageQuery?: string

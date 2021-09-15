@@ -20,8 +20,6 @@ const defaultAsync = {
   suspensible: true,
 }
 
-const defaultQQMapKey = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2'
-
 export function uniManifestJsonPlugin(): Plugin {
   return defineUniManifestJsonPlugin((opts) => {
     return {
@@ -45,10 +43,12 @@ export function uniManifestJsonPlugin(): Plugin {
         const sdkConfigs = (h5 && h5.sdkConfigs) || {}
 
         const qqMapKey =
-          (sdkConfigs.maps &&
-            sdkConfigs.maps.qqmap &&
-            sdkConfigs.maps.qqmap.key) ||
-          defaultQQMapKey
+          sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
+
+        const googleMapKey =
+          sdkConfigs.maps &&
+          sdkConfigs.maps.google &&
+          sdkConfigs.maps.google.key
 
         let locale: string | null | undefined = manifest.locale
         locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
@@ -77,7 +77,8 @@ export function uniManifestJsonPlugin(): Plugin {
   // h5
   export const router = ${JSON.stringify(router)}
   export const async = ${JSON.stringify(async)}
-  export const qqMapKey = '${qqMapKey}'
+  export const qqMapKey = ${JSON.stringify(qqMapKey)}
+  export const googleMapKey = ${JSON.stringify(googleMapKey)}
   export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
   export const locale = '${locale}'
   export const fallbackLocale = '${fallbackLocale}'

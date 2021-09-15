@@ -16,8 +16,7 @@ import {
   useCustomEvent,
 } from '@dcloudio/uni-components'
 import { callOptions } from '@dcloudio/uni-shared'
-import { QQMapsExt, loadMaps } from './qqMap'
-import { Map } from './qqMap/types'
+import { Maps, Map, loadMaps, LatLng } from './maps'
 import MapMarker, {
   Props as MapMarkerProps,
   Context as MapMarkerContext,
@@ -110,6 +109,22 @@ function getPoints(points: Point[]): Point[] {
   return newPoints
 }
 
+function getLat(latLng: LatLng) {
+  if ('getLat' in latLng) {
+    return latLng.getLat()
+  } else {
+    return latLng.lat()
+  }
+}
+
+function getLng(latLng: LatLng) {
+  if ('getLng' in latLng) {
+    return latLng.getLng()
+  } else {
+    return latLng.lng()
+  }
+}
+
 function useMap(
   props: Props,
   rootRef: Ref<HTMLElement | null>,
@@ -117,7 +132,7 @@ function useMap(
 ) {
   const trigger = useCustomEvent(rootRef, emit)
   const mapRef: Ref<HTMLDivElement | null> = ref(null)
-  let maps: QQMapsExt
+  let maps: Maps
   let map: Map
   const state: MapState = reactive({
     latitude: Number(props.latitude),
@@ -127,7 +142,7 @@ function useMap(
   type CustomEventTrigger = ReturnType<typeof useCustomEvent>
   type OnMapReadyCallback = (
     map: Map,
-    maps: QQMapsExt,
+    maps: Maps,
     trigger: CustomEventTrigger
   ) => void
   const onMapReadyCallbacks: OnMapReadyCallback[] = []
@@ -172,7 +187,7 @@ function useMap(
         state.latitude = latitude
         state.longitude = longitude
         if (map) {
-          map.setCenter(new maps.LatLng(latitude, longitude))
+          map.setCenter(new maps.LatLng(latitude, longitude) as any)
         }
       }
     }
@@ -195,31 +210,31 @@ function useMap(
     onBoundsReadyCallbacks.length = 0
   }
   function getMapInfo() {
-    const center = map.getCenter()
+    const center = map.getCenter()!
     return {
       scale: map.getZoom(),
       centerLocation: {
-        latitude: center.getLat(),
-        longitude: center.getLng(),
+        latitude: getLat(center),
+        longitude: getLng(center),
       },
     }
   }
   function updateCenter() {
-    map.setCenter(new maps.LatLng(state.latitude, state.longitude))
+    map.setCenter(new maps.LatLng(state.latitude, state.longitude) as any)
   }
   function updateBounds() {
     const bounds = new maps.LatLngBounds()
     state.includePoints.forEach(({ latitude, longitude }) => {
       const latLng = new maps.LatLng(latitude, longitude)
-      bounds.extend(latLng)
+      bounds.extend(latLng as any)
     })
-    map.fitBounds(bounds)
+    map.fitBounds(bounds as any)
   }
   function initMap() {
     const mapEl = mapRef.value as HTMLDivElement
     const center = new maps.LatLng(state.latitude, state.longitude)
     const map = new maps.Map(mapEl, {
-      center,
+      center: center as any,
       zoom: Number(props.scale),
       // scrollwheel: false,
       disableDoubleClickZoom: true,
@@ -227,6 +242,9 @@ function useMap(
       zoomControl: false,
       scaleControl: false,
       panControl: false,
+      fullscreenControl: false,
+      streetViewControl: false,
+      keyboardShortcuts: false,
       minZoom: 5,
       maxZoom: 18,
       draggable: true,
@@ -291,9 +309,9 @@ function useMap(
       )
     })
     maps.event.addListener(map, 'center_changed', () => {
-      const center = map.getCenter()
-      const latitude = center.getLat()
-      const longitude = center.getLng()
+      const center = map.getCenter()!
+      const latitude = getLat(center)
+      const longitude = getLng(center)
       emit('update:latitude', latitude)
       emit('update:longitude', longitude)
     })
@@ -307,10 +325,10 @@ function useMap(
         switch (type) {
           case 'getCenterLocation':
             onMapReady(() => {
-              const center = map.getCenter()
+              const center = map.getCenter()!
               callOptions(data, {
-                latitude: center.getLat(),
-                longitude: center.getLng(),
+                latitude: getLat(center),
+                longitude: getLng(center),
                 errMsg: `${type}:ok`,
               })
             })
@@ -332,7 +350,7 @@ function useMap(
                 state.latitude = latitude
                 state.longitude = longitude
                 if (map) {
-                  map.setCenter(new maps.LatLng(latitude, longitude))
+                  map.setCenter(new maps.LatLng(latitude, longitude) as any)
                 }
                 onMapReady(() => {
                   callOptions(data, `${type}:ok`)
@@ -370,17 +388,17 @@ function useMap(
             break
           case 'getRegion':
             onBoundsReady(() => {
-              const latLngBounds = map.getBounds()
+              const latLngBounds = map.getBounds()!
               const southwest = latLngBounds.getSouthWest()
               const northeast = latLngBounds.getNorthEast()
               callOptions(data, {
                 southwest: {
-                  latitude: southwest.getLat(),
-                  longitude: southwest.getLng(),
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest),
                 },
                 northeast: {
-                  latitude: northeast.getLat(),
-                  longitude: northeast.getLng(),
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast),
                 },
                 errMsg: `${type}:ok`,
               })
@@ -402,7 +420,7 @@ function useMap(
   } catch (error) {}
   onMounted(() => {
     loadMaps((result) => {
-      maps = result as QQMapsExt
+      maps = result
       map = initMap()
       emitMapReady()
       trigger('updated', {} as Event, {})
