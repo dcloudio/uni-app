@@ -1,4 +1,4 @@
-import { hasOwn, isPlainObject } from '@vue/shared'
+import { hasOwn, isPlainObject, toRawType } from '@vue/shared'
 import { elemInArray, HTTP_METHODS } from '../../helpers/protocol'
 
 export const API_REQUEST = 'request'
@@ -95,6 +95,24 @@ export const RequestOptions: ApiOptions<API_TYPE_REQUEST> = {
       params.responseType = (value || '').toLowerCase()
       if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
         params.responseType = DEFAULT_RESPONSE_TYPE
+      }
+    },
+  },
+}
+
+export const API_CONFIG_MTLS = 'configMTLS'
+export type API_TYPE_CONFIG_MTLS = typeof uni.configMTLS
+export const ConfigMTLSProtocol: ApiProtocol<API_TYPE_CONFIG_MTLS> = {
+  certificates: {
+    type: Array,
+    required: true,
+  },
+}
+export const ConfigMTLSOptions: ApiOptions<API_TYPE_CONFIG_MTLS> = {
+  formatArgs: {
+    certificates(value: Parameters<API_TYPE_CONFIG_MTLS>[0]['certificates']) {
+      if (value.some((item) => toRawType(item.host) !== 'String')) {
+        return '参数配置错误，请确认后重试'
       }
     },
   },

@@ -5,6 +5,11 @@ import {
   defineTaskApi,
   RequestOptions,
   RequestProtocol,
+  API_CONFIG_MTLS,
+  API_TYPE_CONFIG_MTLS,
+  defineAsyncApi,
+  ConfigMTLSOptions,
+  ConfigMTLSProtocol,
 } from '@dcloudio/uni-api'
 import { base64ToArrayBuffer } from '@dcloudio/uni-api'
 import { requireNativePlugin } from '../plugin/requireNativePlugin'
@@ -255,4 +260,31 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
   },
   RequestProtocol,
   RequestOptions
+)
+
+type StreamConfigMTLSCB = {
+  type: 'success' | 'fail'
+  code: number
+  message: string
+}
+export const configMTLS = defineAsyncApi<API_TYPE_CONFIG_MTLS>(
+  API_CONFIG_MTLS,
+  ({ certificates }, { resolve, reject }) => {
+    const stream = requireNativePlugin('stream')
+    stream.configMTLS(
+      certificates,
+      ({ type, code, message }: StreamConfigMTLSCB) => {
+        switch (type) {
+          case 'success':
+            resolve({ code })
+            break
+          case 'fail':
+            reject(message, { code })
+            break
+        }
+      }
+    )
+  },
+  ConfigMTLSProtocol,
+  ConfigMTLSOptions
 )
