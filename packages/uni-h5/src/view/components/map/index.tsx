@@ -16,6 +16,7 @@ import {
   useCustomEvent,
 } from '@dcloudio/uni-components'
 import { callOptions } from '@dcloudio/uni-shared'
+import { Point } from '../../../helpers/location'
 import { Maps, Map, loadMaps, LatLng } from './maps'
 import MapMarker, {
   Props as MapMarkerProps,
@@ -29,11 +30,6 @@ import MapLocation, {
   CONTEXT_ID as MAP_LOCATION_CONTEXT_ID,
 } from './MapLocation'
 
-interface Point {
-  latitude: number
-  longitude: number
-}
-
 const props = {
   id: {
     type: String,
@@ -41,11 +37,11 @@ const props = {
   },
   latitude: {
     type: [String, Number],
-    default: 39.90374,
+    default: 0,
   },
   longitude: {
     type: [String, Number],
-    default: 116.397827,
+    default: 0,
   },
   scale: {
     type: [String, Number],

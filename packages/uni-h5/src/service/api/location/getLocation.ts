@@ -6,6 +6,7 @@ import {
   GetLocationProtocol,
   GetLocationOptions,
 } from '@dcloudio/uni-api'
+import { MapType, getMapInfo } from '../../../helpers/location'
 import { getJSONP } from '../../../helpers/getJSONP'
 import { request } from '../network/request'
 
@@ -14,19 +15,7 @@ type GeoRes = (coords: GeolocationCoordinates, skip?: boolean) => void
 export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
   API_GET_LOCATION,
   ({ type, altitude }, { resolve, reject }) => {
-    enum MapType {
-      QQ = 'qq',
-      GOOGLE = 'google',
-    }
-    let mapType: string
-    let mapKey: string
-    if (__uniConfig.qqMapKey) {
-      mapType = MapType.QQ
-      mapKey = __uniConfig.qqMapKey
-    } else if (__uniConfig.googleMapKey) {
-      mapType = MapType.GOOGLE
-      mapKey = __uniConfig.googleMapKey
-    }
+    const mapInfo = getMapInfo()
 
     new Promise((resolve: GeoRes, reject) => {
       if (navigator.geolocation) {
@@ -44,9 +33,9 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
     })
       .catch((error) => {
         return new Promise((resolve: GeoRes, reject) => {
-          if (mapType === MapType.QQ) {
+          if (mapInfo.type === MapType.QQ) {
             getJSONP(
-              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapKey}`,
+              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
               {
                 callback: 'callback',
               },
@@ -66,10 +55,10 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
               },
               () => reject(new Error('network error'))
             )
-          } else if (mapType === MapType.GOOGLE) {
+          } else if (mapInfo.type === MapType.GOOGLE) {
             request({
               method: 'POST',
-              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapKey}`,
+              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
               success(res) {
                 const data: AnyObject = res.data as AnyObject
                 if ('location' in data) {
@@ -98,14 +87,14 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
       .then((coords: GeolocationCoordinates, skip?: boolean) => {
         if (
           (type && type.toUpperCase() === 'WGS84') ||
-          mapType !== MapType.QQ ||
+          mapInfo.type !== MapType.QQ ||
           skip
         ) {
           return coords
         }
         return new Promise((resolve: GeoRes) => {
           getJSONP(
-            `https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapKey}&output=jsonp&pf=jsapi&ref=jsapi`,
+            `https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`,
             {
               callback: 'cb',
             },

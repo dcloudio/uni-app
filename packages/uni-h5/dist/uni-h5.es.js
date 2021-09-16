@@ -9894,7 +9894,7 @@ const props$q = {
     default: ""
   }
 };
-function useState$3(props2) {
+function useState$4(props2) {
   const value = reactive([...props2.value]);
   const state2 = reactive({
     value,
@@ -9923,7 +9923,7 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const wrapperRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state2 = useState$3(props2);
+    const state2 = useState$4(props2);
     const resizeSensorRef = ref(null);
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
@@ -12193,7 +12193,7 @@ const props$j = {
     default: false
   }
 };
-function useState$2(props2) {
+function useState$3(props2) {
   const interval = computed(() => {
     const interval2 = Number(props2.interval);
     return isNaN(interval2) ? 5e3 : interval2;
@@ -12622,7 +12622,7 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = ref(null);
     const slideFrameRef = ref(null);
-    const state2 = useState$2(props2);
+    const state2 = useState$3(props2);
     const slidesStyle = computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -14740,6 +14740,30 @@ function useWebViewSize(rootRef, iframeRef) {
   };
   return _resize;
 }
+const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
+const ICON_PATH_ORIGIN = "data:image/png;base64,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";
+const ICON_PATH_TARGET = "data:image/png;base64,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";
+var MapType;
+(function(MapType2) {
+  MapType2["QQ"] = "qq";
+  MapType2["GOOGLE"] = "google";
+  MapType2["UNKNOWN"] = "";
+})(MapType || (MapType = {}));
+function getMapInfo() {
+  let type = MapType.UNKNOWN;
+  let key = "";
+  if (__uniConfig.qqMapKey) {
+    type = MapType.QQ;
+    key = __uniConfig.qqMapKey;
+  } else if (__uniConfig.googleMapKey) {
+    type = MapType.GOOGLE;
+    key = __uniConfig.googleMapKey;
+  }
+  return {
+    type,
+    key
+  };
+}
 function createCallout(maps2) {
   const overlay = new (maps2.OverlayView || maps2.Overlay)();
   function onAdd() {
@@ -14845,32 +14869,20 @@ function createCallout(maps2) {
   }
   return Callout;
 }
-var MapType;
-(function(MapType2) {
-  MapType2["QQ"] = "qq";
-  MapType2["GOOGLE"] = "google";
-})(MapType || (MapType = {}));
 let maps;
 const callbacksMap = {};
 const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
 function loadMaps(callback) {
-  let type;
-  let key;
-  if (__uniConfig.qqMapKey) {
-    type = MapType.QQ;
-    key = __uniConfig.qqMapKey;
-  } else if (__uniConfig.googleMapKey) {
-    type = MapType.GOOGLE;
-    key = __uniConfig.googleMapKey;
-  } else {
+  const mapInfo = getMapInfo();
+  if (!mapInfo.key) {
     console.error("Map key not configured.");
     return;
   }
-  const callbacks2 = callbacksMap[type] = callbacksMap[type] || [];
+  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
   if (maps) {
     callback(maps);
-  } else if (window[type] && window[type].maps) {
-    maps = window[type].maps;
+  } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
+    maps = window[mapInfo.type].maps;
     maps.Callout = maps.Callout || createCallout(maps);
     callback(maps);
   } else if (callbacks2.length) {
@@ -14878,17 +14890,17 @@ function loadMaps(callback) {
   } else {
     callbacks2.push(callback);
     const globalExt = window;
-    const callbackName = GOOGLE_MAP_CALLBACKNAME + type;
+    const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
     globalExt[callbackName] = function() {
       delete globalExt[callbackName];
-      maps = window[type].maps;
+      maps = window[mapInfo.type].maps;
       maps.Callout = createCallout(maps);
       callbacks2.forEach((callback2) => callback2(maps));
       callbacks2.length = 0;
     };
     const script = document.createElement("script");
-    const src = type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&libraries=geometry&";
-    script.src = `${src}key=${key}&callback=${callbackName}`;
+    const src = mapInfo.type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&libraries=geometry&";
+    script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
     script.onerror = function() {
       console.error("Map load failed.");
     };
@@ -17119,20 +17131,7 @@ function getJSONP(url, options, success, error) {
   document.body.appendChild(js);
 }
 const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude }, { resolve, reject }) => {
-  var MapType2;
-  (function(MapType22) {
-    MapType22["QQ"] = "qq";
-    MapType22["GOOGLE"] = "google";
-  })(MapType2 || (MapType2 = {}));
-  let mapType;
-  let mapKey;
-  if (__uniConfig.qqMapKey) {
-    mapType = MapType2.QQ;
-    mapKey = __uniConfig.qqMapKey;
-  } else if (__uniConfig.googleMapKey) {
-    mapType = MapType2.GOOGLE;
-    mapKey = __uniConfig.googleMapKey;
-  }
+  const mapInfo = getMapInfo();
   new Promise((resolve2, reject2) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((res) => resolve2(res.coords), reject2, {
@@ -17144,8 +17143,8 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
     }
   }).catch((error) => {
     return new Promise((resolve2, reject2) => {
-      if (mapType === MapType2.QQ) {
-        getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapKey}`, {
+      if (mapInfo.type === MapType.QQ) {
+        getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`, {
           callback: "callback"
         }, (res) => {
           if ("result" in res && res.result.location) {
@@ -17158,10 +17157,10 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
             reject2(new Error(res.message || JSON.stringify(res)));
           }
         }, () => reject2(new Error("network error")));
-      } else if (mapType === MapType2.GOOGLE) {
+      } else if (mapInfo.type === MapType.GOOGLE) {
         request({
           method: "POST",
-          url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapKey}`,
+          url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
           success(res) {
             const data = res.data;
             if ("location" in data) {
@@ -17183,11 +17182,11 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
       }
     });
   }).then((coords, skip) => {
-    if (type && type.toUpperCase() === "WGS84" || mapType !== MapType2.QQ || skip) {
+    if (type && type.toUpperCase() === "WGS84" || mapInfo.type !== MapType.QQ || skip) {
       return coords;
     }
     return new Promise((resolve2) => {
-      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapKey}&output=jsonp&pf=jsapi&ref=jsapi`, {
+      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
         callback: "cb"
       }, (res) => {
         if ("detail" in res && "points" in res.detail && res.detail.points.length) {
@@ -17215,6 +17214,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
     reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
+const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
 const props$7 = {
   latitude: {
     type: Number
@@ -17235,6 +17235,41 @@ const props$7 = {
     default: ""
   }
 };
+function useState$2(props2) {
+  const state2 = reactive({
+    center: {
+      latitude: 0,
+      longitude: 0
+    },
+    marker: {
+      id: 1,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_TARGET,
+      width: 32,
+      height: 52
+    },
+    location: {
+      id: 2,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_ORIGIN,
+      width: 44,
+      height: 44
+    }
+  });
+  function updatePosition() {
+    if (props2.latitude && props2.longitude) {
+      state2.center.latitude = props2.latitude;
+      state2.center.longitude = props2.longitude;
+      state2.marker.latitude = props2.latitude;
+      state2.marker.longitude = props2.longitude;
+    }
+  }
+  watch([() => props2.latitude, () => props2.longitude], updatePosition);
+  updatePosition();
+  return state2;
+}
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
   props: props$7,
@@ -17242,65 +17277,82 @@ var LocationView = /* @__PURE__ */ defineSystemComponent({
   setup(props2, {
     emit: emit2
   }) {
+    const state2 = useState$2(props2);
     usePreventScroll();
-    const mapRef = ref(null);
-    const key = __uniConfig.qqMapKey;
-    const referer = "uniapp";
-    const poimarkerSrc = "https://apis.map.qq.com/tools/poimarker";
-    const src = computed(() => {
-      const {
-        latitude,
-        longitude,
-        name,
-        address
-      } = props2;
-      return latitude && longitude ? `${poimarkerSrc}?type=0&marker=coord:${latitude},${longitude};title:${name};addr:${address};&key=${key}&referer=${referer}` : "";
-    });
-    const state2 = reactive({
-      src,
-      isPoimarkerSrc: true
-    });
-    function check() {
-      const map = mapRef.value;
-      if (map.src.indexOf(poimarkerSrc) === 0) {
-        state2.isPoimarkerSrc = true;
-      } else {
-        state2.isPoimarkerSrc = false;
+    function onRegionChange(event) {
+      const centerLocation = event.detail.centerLocation;
+      if (centerLocation) {
+        state2.center.latitude = centerLocation.latitude;
+        state2.center.longitude = centerLocation.longitude;
       }
     }
     function nav() {
-      const map = mapRef.value;
-      const url = `https://map.qq.com/nav/drive#routes/page?transport=2&epointy=${props2.latitude}&epointx=${props2.longitude}&eword=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&referer=${referer}`;
-      map.src = url;
+      const mapInfo = getMapInfo();
+      let url = "";
+      if (mapInfo.type === MapType.GOOGLE) {
+        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
+        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
+      } else if (mapInfo.type === MapType.QQ) {
+        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}` : "";
+        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&from=${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}&to=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&ref=${mapInfo.key}`;
+      }
+      window.open(url);
     }
     function back() {
-      const map = mapRef.value;
-      if (map.src.indexOf(poimarkerSrc) !== 0) {
-        map.src = state2.src;
-      } else {
-        emit2("close");
-      }
-      check();
+      emit2("close");
+    }
+    function move({
+      latitude,
+      longitude
+    }) {
+      state2.location.latitude = latitude;
+      state2.location.longitude = longitude;
+      setCenter({
+        latitude,
+        longitude
+      });
+    }
+    function setCenter({
+      latitude,
+      longitude
+    }) {
+      state2.center.latitude = latitude;
+      state2.center.longitude = longitude;
+    }
+    function moveToLocation() {
+      getLocation({
+        type: "gcj02",
+        success: move,
+        fail: () => {
+        }
+      });
     }
     return () => {
       return createVNode("div", {
         "class": "uni-system-open-location"
+      }, [createVNode(Map$1, {
+        "latitude": state2.center.latitude,
+        "longitude": state2.center.longitude,
+        "class": "map",
+        "markers": [state2.marker, state2.location],
+        "onRegionchange": onRegionChange
+      }, {
+        default: () => [createVNode("div", {
+          "class": "map-move",
+          "onClick": moveToLocation
+        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
+      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
+        "class": "info"
       }, [createVNode("div", {
-        "class": {
-          "map-content": true,
-          "fix-position": state2.isPoimarkerSrc
-        }
-      }, [createVNode("iframe", {
-        "ref": mapRef,
-        "src": state2.src,
-        "allow": "geolocation",
-        "sandbox": "allow-scripts allow-same-origin allow-forms allow-top-navigation allow-modals allow-popups",
-        "frameborder": "0",
-        "onLoad": check
-      }, null, 40, ["src", "onLoad"]), state2.isPoimarkerSrc && createVNode("div", {
-        "class": "actTonav",
+        "class": "name",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.name], 8, ["onClick"]), createVNode("div", {
+        "class": "address",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.address], 8, ["onClick"]), createVNode("div", {
+        "class": "nav",
         "onClick": nav
-      }, null, 8, ["onClick"])], 2), createVNode("div", {
+      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
         "class": "nav-btn-back",
         "onClick": back
       }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
@@ -17328,7 +17380,6 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { 
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
 const props$6 = {
   latitude: {
     type: Number
@@ -17476,10 +17527,6 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
         type: "gcj02",
         success: move,
         fail: () => {
-          move({
-            latitude: 39.90960456049752,
-            longitude: 116.3972282409668
-          });
         }
       });
     }
@@ -17533,7 +17580,8 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
         "onRegionchange": onRegionChange
       }, {
         default: () => [createVNode("div", {
-          "class": "map-location"
+          "class": "map-location",
+          "style": `background-image: url("${ICON_PATH_TARGET}")`
         }, null), createVNode("div", {
           "class": "map-move",
           "onClick": moveToLocation
@@ -19328,7 +19376,6 @@ var api = {
   getProvider
 };
 const CONTEXT_ID = "MAP_LOCATION";
-const ICON_PATH = "data:image/png;base64,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";
 var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
   setup() {
@@ -19379,7 +19426,7 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
         },
         "width": "44",
         "height": "44",
-        "iconPath": ICON_PATH
+        "iconPath": ICON_PATH_ORIGIN
       }, state2), null, 16, ["iconPath"]) : null;
     };
   }
@@ -19391,11 +19438,11 @@ const props$2 = {
   },
   latitude: {
     type: [String, Number],
-    default: 39.90374
+    default: 0
   },
   longitude: {
     type: [String, Number],
-    default: 116.397827
+    default: 0
   },
   scale: {
     type: [String, Number],
@@ -19528,7 +19575,7 @@ function useMap(props2, rootRef, emit2) {
     onBoundsReadyCallbacks.forEach((callback) => callback());
     onBoundsReadyCallbacks.length = 0;
   }
-  function getMapInfo() {
+  function getMapInfo2() {
     const center = map.getCenter();
     return {
       scale: map.getZoom(),
@@ -19596,14 +19643,14 @@ function useMap(props2, rootRef, emit2) {
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "drag"
-      }, getMapInfo()));
+      }, getMapInfo2()));
     });
     maps2.event.addListener(map2, "zoom_changed", () => {
       emit2("update:scale", map2.getZoom());
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "scale"
-      }, getMapInfo()));
+      }, getMapInfo2()));
     });
     maps2.event.addListener(map2, "center_changed", () => {
       const center2 = map2.getCenter();
