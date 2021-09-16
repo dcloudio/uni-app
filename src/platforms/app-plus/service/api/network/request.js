@@ -8,6 +8,10 @@ import {
   base64ToArrayBuffer
 } from '../../bridge'
 
+import {
+  invoke
+} from 'uni-core/service/bridge'
+
 let requestTaskId = 0
 const requestTasks = {}
 
@@ -187,4 +191,24 @@ export function operateRequestTask ({
   return {
     errMsg: 'operateRequestTask:fail'
   }
+}
+
+export function configMTLS ({certificates}, callbackId) {
+  const stream = requireNativePlugin('stream')
+  stream.configMTLS(certificates, ({type, code, message}) => {
+    switch (type) {
+      case 'success':
+        invoke(callbackId, {
+          errMsg: 'configMTLS:ok',
+          code
+        })
+        break;
+      case 'fail':
+        invoke(callbackId, {
+          errMsg: 'configMTLS:fail ' + message,
+          code
+        })
+        break;
+    }
+  });
 }
