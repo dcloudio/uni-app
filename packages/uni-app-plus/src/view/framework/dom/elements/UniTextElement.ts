@@ -43,10 +43,9 @@ export class UniTextElement extends UniAnimationElement<TextProps> {
     const {
       $props: { space, decode },
     } = this
-    this.$.innerHTML = parseText(this._text, {
-      space,
-      decode,
-    }).join('<br>')
+
+    this.$.textContent = parseText(this._text, { space, decode }).join('\n')
+
     super.update(isMounted)
   }
 }
