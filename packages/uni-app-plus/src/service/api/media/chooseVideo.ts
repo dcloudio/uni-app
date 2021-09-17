@@ -1,6 +1,5 @@
 import { TEMP_PATH } from '../constants'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
-import { getFileName } from '../../../helpers/file'
 import { initI18nChooseVideoMsgsOnce, useI18n } from '@dcloudio/uni-core'
 import {
   API_TYPE_CHOOSE_VIDEO,
@@ -17,56 +16,28 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
     const { t } = useI18n()
     const errorCallback = warpPlusErrorCallback(reject)
 
-    function successCallback(tempFilePath: string = '') {
-      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(
-        tempFilePath
-      )}`
-      const compressVideo: Promise<string> = compressed
-        ? new Promise((resolve) => {
-            plus.zip.compressVideo(
-              {
-                src: tempFilePath,
-                filename,
-                quality: 'medium',
-              },
-              ({ tempFilePath }: { tempFilePath: string }) => {
-                resolve(tempFilePath)
-              },
-              () => {
-                resolve(tempFilePath)
-              }
-            )
-          })
-        : Promise.resolve(tempFilePath)
-      if (compressed) {
-        plus.nativeUI.showWaiting()
-      }
-      compressVideo.then((tempFilePath: string) => {
-        if (compressed) {
-          plus.nativeUI.closeWaiting()
-        }
-        plus.io.getVideoInfo({
-          filePath: tempFilePath,
-          success(videoInfo) {
-            const result = {
-              errMsg: 'chooseVideo:ok',
-              tempFilePath: tempFilePath,
-              size: videoInfo.size,
-              duration: videoInfo.duration,
-              width: videoInfo.width,
-              height: videoInfo.height,
-            }
-            resolve(result as any)
-          },
-          fail: errorCallback,
-        })
+    function successCallback(tempFilePath: string) {
+      plus.io.getVideoInfo({
+        filePath: tempFilePath,
+        success(videoInfo) {
+          const result = {
+            errMsg: 'chooseVideo:ok',
+            tempFilePath: tempFilePath,
+            size: videoInfo.size,
+            duration: videoInfo.duration,
+            width: videoInfo.width,
+            height: videoInfo.height,
+          }
+          // @ts-expect-error tempFile、name 仅H5支持
+          resolve(result)
+        },
+        fail: errorCallback,
       })
     }
 
     function openAlbum() {
       plus.gallery.pick(
-        // NOTE 5+此API分单选和多选，多选返回files:string[]
-        // @ts-ignore
+        // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
         ({ files }) => successCallback(files[0]),
         errorCallback,
         {
@@ -77,6 +48,8 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
           maximum: 1,
           filename: TEMP_PATH + '/gallery/',
           permissionAlert: true,
+          // @ts-expect-error 新增参数，用于视频压缩
+          videoCompress: compressed,
         }
       )
     }
@@ -87,6 +60,8 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
         index: camera === 'front' ? '2' : '1',
         videoMaximumDuration: maxDuration,
         filename: TEMP_PATH + '/camera/',
+        // @ts-expect-error 新增参数，用于视频压缩
+        videoCompress: compressed,
       })
     }
 

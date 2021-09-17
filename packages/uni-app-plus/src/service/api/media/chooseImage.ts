@@ -1,6 +1,5 @@
 import { TEMP_PATH } from '../constants'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
-import { getFileName } from '../../../helpers/file'
 import {
   API_TYPE_CHOOSE_IMAGE,
   API_CHOOSE_IMAGE,
@@ -27,30 +26,6 @@ function getFileInfo(filePath: string): Promise<PlusIoMetadata> {
   })
 }
 
-function compressImage(tempFilePath: string): Promise<string> {
-  const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(
-    tempFilePath
-  )}`
-  return new Promise((resolve) => {
-    plus.nativeUI.showWaiting()
-    plus.zip.compressImage(
-      {
-        src: tempFilePath,
-        dst,
-        overwrite: true,
-      },
-      () => {
-        plus.nativeUI.closeWaiting()
-        resolve(dst)
-      },
-      () => {
-        plus.nativeUI.closeWaiting()
-        resolve(tempFilePath)
-      }
-    )
-  })
-}
-
 type File = {
   path: string
   size: number
@@ -58,7 +33,7 @@ type File = {
 
 export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
   API_CHOOSE_IMAGE,
-  // @ts-ignore crop 属性App特有
+  // @ts-expect-error crop 属性App特有
   ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
     initI18nChooseImageMsgsOnce()
     const { t } = useI18n()
@@ -86,38 +61,17 @@ export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
 
     function openCamera() {
       const camera = plus.camera.getCamera()
-      camera.captureImage(
-        (path) => {
-          // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
-          // 判断是否需要压缩
-          if (sizeType && sizeType.includes('compressed')) {
-            return getFileInfo(path)
-              .then(({ size }) => {
-                // 压缩阈值 0.5 兆
-                const THRESHOLD = 1024 * 1024 * 0.5
-                return size && size > THRESHOLD
-                  ? compressImage(path).then((dstPath) =>
-                      successCallback([dstPath])
-                    )
-                  : successCallback([path])
-              })
-              .catch(errorCallback)
-          }
-
-          return successCallback([path])
-        },
-        errorCallback,
-        {
-          filename: TEMP_PATH + '/camera/',
-          resolution: 'high',
-          crop,
-        }
-      )
+      camera.captureImage((path) => successCallback([path]), errorCallback, {
+        filename: TEMP_PATH + '/camera/',
+        resolution: 'high',
+        crop,
+        // @ts-expect-error
+        sizeType,
+      })
     }
 
     function openAlbum() {
-      // NOTE 5+此API分单选和多选，多选返回files:string[]
-      // @ts-ignore
+      // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
       plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
         maximum: count,
         multiple: true,
