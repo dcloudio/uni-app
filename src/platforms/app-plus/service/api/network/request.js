@@ -193,22 +193,22 @@ export function operateRequestTask ({
   }
 }
 
-export function configMTLS ({certificates}, callbackId) {
+export function configMTLS ({ certificates }, callbackId) {
   const stream = requireNativePlugin('stream')
-  stream.configMTLS(certificates, ({type, code, message}) => {
+  stream.configMTLS(certificates, ({ type, code, message }) => {
     switch (type) {
       case 'success':
         invoke(callbackId, {
           errMsg: 'configMTLS:ok',
           code
         })
-        break;
+        break
       case 'fail':
         invoke(callbackId, {
           errMsg: 'configMTLS:fail ' + message,
           code
         })
-        break;
+        break
     }
-  });
+  })
 }

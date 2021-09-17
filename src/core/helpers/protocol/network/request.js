@@ -110,7 +110,7 @@ export const request = {
   }
 }
 
-export const  configMTLS = {
+export const configMTLS = {
   certificates: {
     type: Array,
     required: true,
