@@ -7,8 +7,7 @@ import {
 } from '../../bridge'
 
 import {
-  warpPlusErrorCallback,
-  getFileName
+  warpPlusErrorCallback
 } from '../util'
 
 import {
@@ -24,40 +23,20 @@ export function chooseVideo ({
   const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel')
 
   function successCallback (tempFilePath = '') {
-    const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
-    const compressVideo = compressed ? new Promise((resolve) => {
-      plus.zip.compressVideo({
-        src: tempFilePath,
-        filename,
-        quality: 'medium'
-      }, ({ tempFilePath }) => {
-        resolve(tempFilePath)
-      }, () => {
-        resolve(tempFilePath)
-      })
-    }) : Promise.resolve(tempFilePath)
-    if (compressed) {
-      plus.nativeUI.showWaiting()
-    }
-    compressVideo.then(tempFilePath => {
-      if (compressed) {
-        plus.nativeUI.closeWaiting()
-      }
-      plus.io.getVideoInfo({
-        filePath: tempFilePath,
-        success (videoInfo) {
-          const result = {
-            errMsg: 'chooseVideo:ok',
-            tempFilePath: tempFilePath
-          }
-          result.size = videoInfo.size
-          result.duration = videoInfo.duration
-          result.width = videoInfo.width
-          result.height = videoInfo.height
-          invoke(callbackId, result)
-        },
-        fail: errorCallback
-      })
+    plus.io.getVideoInfo({
+      filePath: tempFilePath,
+      success (videoInfo) {
+        const result = {
+          errMsg: 'chooseVideo:ok',
+          tempFilePath: tempFilePath
+        }
+        result.size = videoInfo.size
+        result.duration = videoInfo.duration
+        result.width = videoInfo.width
+        result.height = videoInfo.height
+        invoke(callbackId, result)
+      },
+      fail: errorCallback
     })
   }
 
@@ -69,7 +48,8 @@ export function chooseVideo ({
       multiple: true,
       maximum: 1,
       filename: TEMP_PATH + '/gallery/',
-      permissionAlert: true
+      permissionAlert: true,
+      videoCompress: compressed
     })
   }
 
@@ -78,7 +58,8 @@ export function chooseVideo ({
     plusCamera.startVideoCapture(successCallback, errorCallback, {
       index: camera === 'front' ? 2 : 1,
       videoMaximumDuration: maxDuration,
-      filename: TEMP_PATH + '/camera/'
+      filename: TEMP_PATH + '/camera/',
+      videoCompress: compressed
     })
   }
 

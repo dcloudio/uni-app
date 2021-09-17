@@ -7,8 +7,7 @@ import {
 } from '../../bridge'
 
 import {
-  warpPlusErrorCallback,
-  getFileName
+  warpPlusErrorCallback
 } from '../util'
 
 import {
@@ -28,24 +27,6 @@ function getFileInfo (filePath) {
   })
 }
 
-function compressImage (tempFilePath) {
-  const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
-  return new Promise((resolve) => {
-    plus.nativeUI.showWaiting()
-    plus.zip.compressImage({
-      src: tempFilePath,
-      dst: dstPath,
-      overwrite: true
-    }, () => {
-      plus.nativeUI.closeWaiting()
-      resolve(dstPath)
-    }, () => {
-      plus.nativeUI.closeWaiting()
-      resolve(tempFilePath)
-    })
-  })
-}
-
 export function chooseImage ({
   count,
   sizeType,
@@ -57,7 +38,6 @@ export function chooseImage ({
   function successCallback (paths) {
     const tempFiles = []
     const tempFilePaths = []
-    // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
     Promise.all(paths.map((path) => getFileInfo(path)))
       .then((filesInfo) => {
         filesInfo.forEach((file, index) => {
@@ -77,25 +57,12 @@ export function chooseImage ({
 
   function openCamera () {
     const camera = plus.camera.getCamera()
-    camera.captureImage(path => {
-      // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
-      // 判断是否需要压缩
-      if (sizeType && sizeType.includes('compressed')) {
-        return getFileInfo(path).then(({ size }) => {
-          // 压缩阈值 0.5 兆
-          const THRESHOLD = 1024 * 1024 * 0.5
-          return size && size > THRESHOLD
-            ? compressImage(path).then(dstPath => successCallback([dstPath]))
-            : successCallback([path])
-        }).catch(errorCallback)
-      }
-
-      return successCallback([path])
-    },
-    errorCallback, {
+    camera.captureImage(path => successCallback([path]),
+      errorCallback, {
       filename: TEMP_PATH + '/camera/',
       resolution: 'high',
-      crop
+      crop,
+      sizeType
     })
   }
 
