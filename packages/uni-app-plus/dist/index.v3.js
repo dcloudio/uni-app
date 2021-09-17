@@ -195,7 +195,8 @@ var serviceContext = (function () {
     'setLeftWindowStyle',
     'setRightWindowStyle',
     'getLocale',
-    'setLocale'
+    'setLocale',
+    'onLocaleChange'
   ];
 
   const event = [
@@ -347,6 +348,10 @@ var serviceContext = (function () {
 
   function isFn (fn) {
     return typeof fn === 'function'
+  }
+
+  function isStr (str) {
+    return typeof str === 'string'
   }
 
   function isObject (obj) {
@@ -1154,18 +1159,20 @@ var serviceContext = (function () {
     scanCode: scanCode
   });
 
+  const isArray = Array.isArray;
   const isObject$1 = (val) => val !== null && typeof val === 'object';
+  const defaultDelimiters = ['{', '}'];
   class BaseFormatter {
       constructor() {
           this._caches = Object.create(null);
       }
-      interpolate(message, values) {
+      interpolate(message, values, delimiters = defaultDelimiters) {
           if (!values) {
               return [message];
           }
           let tokens = this._caches[message];
           if (!tokens) {
-              tokens = parse(message);
+              tokens = parse(message, delimiters);
               this._caches[message] = tokens;
           }
           return compile(tokens, values);
@@ -1173,24 +1180,24 @@ var serviceContext = (function () {
   }
   const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
   const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-  function parse(format) {
+  function parse(format, [startDelimiter, endDelimiter]) {
       const tokens = [];
       let position = 0;
       let text = '';
       while (position < format.length) {
           let char = format[position++];
-          if (char === '{') {
+          if (char === startDelimiter) {
               if (text) {
                   tokens.push({ type: 'text', value: text });
               }
               text = '';
               let sub = '';
               char = format[position++];
-              while (char !== undefined && char !== '}') {
+              while (char !== undefined && char !== endDelimiter) {
                   sub += char;
                   char = format[position++];
               }
-              const isClosed = char === '}';
+              const isClosed = char === endDelimiter;
               const type = RE_TOKEN_LIST_VALUE.test(sub)
                   ? 'list'
                   : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
@@ -1198,12 +1205,12 @@ var serviceContext = (function () {
                       : 'unknown';
               tokens.push({ value: sub, type });
           }
-          else if (char === '%') {
-              // when found rails i18n syntax, skip text capture
-              if (format[position] !== '{') {
-                  text += char;
-              }
-          }
+          //  else if (char === '%') {
+          //   // when found rails i18n syntax, skip text capture
+          //   if (format[position] !== '{') {
+          //     text += char
+          //   }
+          // }
           else {
               text += char;
           }
@@ -1214,7 +1221,7 @@ var serviceContext = (function () {
   function compile(tokens, values) {
       const compiled = [];
       let index = 0;
-      const mode = Array.isArray(values)
+      const mode = isArray(values)
           ? 'list'
           : isObject$1(values)
               ? 'named'
@@ -1271,7 +1278,7 @@ var serviceContext = (function () {
           return;
       }
       locale = locale.trim().replace(/_/g, '-');
-      if (messages[locale]) {
+      if (messages && messages[locale]) {
           return locale;
       }
       locale = locale.toLowerCase();
@@ -1304,7 +1311,7 @@ var serviceContext = (function () {
           }
           this.formater = formater || defaultFormatter;
           this.messages = messages || {};
-          this.setLocale(locale);
+          this.setLocale(locale || LOCALE_EN);
           if (watcher) {
               this.watchLocale(watcher);
           }
@@ -1317,9 +1324,12 @@ var serviceContext = (function () {
               this.messages[this.locale] = {};
           }
           this.message = this.messages[this.locale];
-          this.watchers.forEach((watcher) => {
-              watcher(this.locale, oldLocale);
-          });
+          // 仅发生变化时，通知
+          if (oldLocale !== this.locale) {
+              this.watchers.forEach((watcher) => {
+                  watcher(this.locale, oldLocale);
+              });
+          }
       }
       getLocale() {
           return this.locale;
@@ -1330,13 +1340,26 @@ var serviceContext = (function () {
               this.watchers.splice(index, 1);
           };
       }
-      add(locale, message) {
-          if (this.messages[locale]) {
-              Object.assign(this.messages[locale], message);
+      add(locale, message, override = true) {
+          const curMessages = this.messages[locale];
+          if (curMessages) {
+              if (override) {
+                  Object.assign(curMessages, message);
+              }
+              else {
+                  Object.keys(message).forEach((key) => {
+                      if (!hasOwn$1(curMessages, key)) {
+                          curMessages[key] = message[key];
+                      }
+                  });
+              }
           }
           else {
               this.messages[locale] = message;
           }
+      }
+      f(message, values, delimiters) {
+          return this.formater.interpolate(message, values, delimiters).join('');
       }
       t(key, locale, values) {
           let message = this.message;
@@ -1356,36 +1379,31 @@ var serviceContext = (function () {
   }
 
   const ignoreVueI18n = true;
-  function initLocaleWatcher(appVm, i18n) {
-      if (appVm.$i18n) {
-          const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
-          vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
-              i18n.setLocale(newLocale);
-          }, {
-              immediate: true,
-          });
-      }
+  function watchAppLocale(appVm, i18n) {
+      appVm.$watch(() => appVm.$locale, (newLocale) => {
+          i18n.setLocale(newLocale);
+      });
   }
-  // function getDefaultLocale() {
-  //   if (typeof navigator !== 'undefined') {
-  //     return (navigator as any).userLanguage || navigator.language
-  //   }
-  //   if (typeof plus !== 'undefined') {
-  //     // TODO 待调整为最新的获取语言代码
-  //     return plus.os.language
-  //   }
-  //   return uni.getSystemInfoSync().language
-  // }
-  function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+  function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
       // 兼容旧版本入参
       if (typeof locale !== 'string') {
-          [locale, messages] = [messages, locale];
+          [locale, messages] = [
+              messages,
+              locale,
+          ];
       }
       if (typeof locale !== 'string') {
-          locale = fallbackLocale;
+          locale =
+              (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
+                  LOCALE_EN;
+      }
+      if (typeof fallbackLocale !== 'string') {
+          fallbackLocale =
+              (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+                  LOCALE_EN;
       }
       const i18n = new I18n({
-          locale: locale || fallbackLocale,
+          locale,
           fallbackLocale,
           messages,
           watcher,
@@ -1400,17 +1418,19 @@ var serviceContext = (function () {
           }
           else {
               const appVm = getApp().$vm;
+              watchAppLocale(appVm, i18n);
               if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
                   // if (!locale) {
                   //   i18n.setLocale(getDefaultLocale())
                   // }
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
+                      // 触发响应式
+                      appVm.$locale;
                       return i18n.t(key, values);
                   };
               }
               else {
-                  initLocaleWatcher(appVm, i18n);
                   /* eslint-disable no-func-assign */
                   t = function (key, values) {
                       const $i18n = appVm.$i18n;
@@ -1429,11 +1449,17 @@ var serviceContext = (function () {
       };
       return {
           i18n,
+          f(message, values, delimiters) {
+              return i18n.f(message, values, delimiters);
+          },
           t(key, values) {
               return t(key, values);
           },
-          add(locale, message) {
-              return i18n.add(locale, message);
+          add(locale, message, override = true) {
+              return i18n.add(locale, message, override);
+          },
+          watch(fn) {
+              return i18n.watchLocale(fn);
           },
           getLocale() {
               return i18n.getLocale();
@@ -1442,6 +1468,9 @@ var serviceContext = (function () {
               return i18n.setLocale(newLocale);
           },
       };
+  }
+  function isI18nStr(value, delimiters) {
+      return value.indexOf(delimiters[0]) > -1;
   }
 
   var en = {
@@ -1625,9 +1654,12 @@ var serviceContext = (function () {
     }
   }
 
-  const i18n = initVueI18n(locale,  messages );
+  const i18n = initVueI18n(
+    locale,
+     messages 
+  );
   const t = i18n.t;
-  const i18nMixin = i18n.mixin = {
+  const i18nMixin = (i18n.mixin = {
     beforeCreate () {
       const unwatch = i18n.i18n.watchLocale(() => {
         this.$forceUpdate();
@@ -1641,9 +1673,102 @@ var serviceContext = (function () {
         return t(key, values)
       }
     }
-  };
-  const setLocale = i18n.setLocale;
+  });
   const getLocale = i18n.getLocale;
+
+  function initAppLocale (Vue, appVm, locale) {
+    const state = Vue.observable({
+      locale: locale || i18n.getLocale()
+    });
+    const localeWatchers = [];
+    appVm.$watchLocale = fn => {
+      localeWatchers.push(fn);
+    };
+    Object.defineProperty(appVm, '$locale', {
+      get () {
+        return state.locale
+      },
+      set (v) {
+        state.locale = v;
+        localeWatchers.forEach(watch => watch(v));
+      }
+    });
+  }
+
+  const I18N_JSON_DELIMITERS = ['%', '%'];
+
+  function getLocaleMessage () {
+    const locale = uni.getLocale();
+    const locales = __uniConfig.locales;
+    return (
+      locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+    )
+  }
+
+  function formatI18n (message) {
+    if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+      return i18n.f(message, getLocaleMessage(), I18N_JSON_DELIMITERS)
+    }
+    return message
+  }
+
+  function resolveJsonObj (jsonObj, names) {
+    if (names.length === 1) {
+      if (jsonObj) {
+        const value = jsonObj[names[0]];
+        if (isStr(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+          return jsonObj
+        }
+      }
+      return
+    }
+    const name = names.shift();
+    return resolveJsonObj(jsonObj && jsonObj[name], names)
+  }
+
+  function defineI18nProperties (obj, names) {
+    return names.map(name => defineI18nProperty(obj, name))
+  }
+
+  function defineI18nProperty (obj, names) {
+    const jsonObj = resolveJsonObj(obj, names);
+    if (!jsonObj) {
+      return false
+    }
+    const prop = names[names.length - 1];
+    let value = jsonObj[prop];
+    Object.defineProperty(jsonObj, prop, {
+      get () {
+        return formatI18n(value)
+      },
+      set (v) {
+        value = v;
+      }
+    });
+    return true
+  }
+
+  function isEnableLocale () {
+    return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+  }
+
+  function initNavigationBarI18n (navigationBar) {
+    if (isEnableLocale()) {
+      return defineI18nProperties(navigationBar, [
+        ['titleText'],
+        ['searchInput', 'placeholder']
+      ])
+    }
+  }
+
+  function initI18n () {
+    const localeKeys = Object.keys(__uniConfig.locales || {});
+    if (localeKeys.length) {
+      localeKeys.forEach((locale) =>
+        i18n.add(locale, __uniConfig.locales[locale])
+      );
+    }
+  }
 
   const setClipboardData = {
     beforeSuccess () {
@@ -8418,7 +8543,6 @@ var serviceContext = (function () {
   const WEBVIEW_INSERTED = 'webviewInserted';
   const WEBVIEW_REMOVED = 'webviewRemoved';
   const WEBVIEW_ID_PREFIX = 'webviewId';
-  const SET_LOCALE = 'i18n.setLocale';
 
   function createButtonOnClick (index) {
     return function onClick (btn) {
@@ -8445,20 +8569,18 @@ var serviceContext = (function () {
     return titleNView
   }
 
-  function parseTitleNView (routeOptions) {
+  function parseTitleNView (id, routeOptions) {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
-    routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
-    if ( // 无头
+    routeOptions.meta.statusBarStyle =
+      windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
+    if (
+      // 无头
       titleNView === false ||
       titleNView === 'false' ||
-      (
-        windowOptions.navigationStyle === 'custom' &&
-        !isPlainObject(titleNView)
-      ) || (
-        windowOptions.transparentTitle === 'always' &&
-        !isPlainObject(titleNView)
-      )
+      (windowOptions.navigationStyle === 'custom' &&
+        !isPlainObject(titleNView)) ||
+      (windowOptions.transparentTitle === 'always' && !isPlainObject(titleNView))
     ) {
       return false
     }
@@ -8471,30 +8593,76 @@ var serviceContext = (function () {
       always: 'float'
     };
 
-    const navigationBarBackgroundColor = windowOptions.navigationBarBackgroundColor;
+    const navigationBarBackgroundColor =
+      windowOptions.navigationBarBackgroundColor;
     const ret = {
       autoBackButton: !routeOptions.meta.isQuit,
-      titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
-      titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
+      titleText:
+        titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
+      titleColor:
+        windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
       type: titleNViewTypeList[transparentTitle],
-      backgroundColor: (/^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) || navigationBarBackgroundColor === 'transparent') ? navigationBarBackgroundColor : '#f7f7f7',
-      tags: titleImage === '' ? [] : [{
-        tag: 'img',
-        src: titleImage,
-        position: {
-          left: 'auto',
-          top: 'auto',
-          width: 'auto',
-          height: '26px'
-        }
-      }]
+      backgroundColor:
+        /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
+        navigationBarBackgroundColor === 'transparent'
+          ? navigationBarBackgroundColor
+          : '#f7f7f7',
+      tags:
+        titleImage === ''
+          ? []
+          : [
+            {
+              tag: 'img',
+              src: titleImage,
+              position: {
+                left: 'auto',
+                top: 'auto',
+                width: 'auto',
+                height: '26px'
+              }
+            }
+          ]
     };
 
     if (isPlainObject(titleNView)) {
-      return Object.assign(ret, parseTitleNViewButtons(titleNView))
+      return initTitleNViewI18n(
+        id,
+        Object.assign(ret, parseTitleNViewButtons(titleNView))
+      )
     }
+    return initTitleNViewI18n(id, ret)
+  }
 
-    return ret
+  function initTitleNViewI18n (id, titleNView) {
+    const i18nResult = initNavigationBarI18n(titleNView);
+    if (!i18nResult) {
+      return titleNView
+    }
+    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    if (titleTextI18n || searchInputPlaceholderI18n) {
+      uni.onLocaleChange(() => {
+        const webview = plus.webview.getWebviewById(id + '');
+        if (!webview) {
+          return
+        }
+        const newTitleNView = {};
+        if (titleTextI18n) {
+          newTitleNView.titleText = titleNView.titleText;
+        }
+        if (searchInputPlaceholderI18n) {
+          newTitleNView.searchInput = {
+            placeholder: titleNView.searchInput.placeholder
+          };
+        }
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('[uni-app] updateWebview', webview.id, newTitleNView);
+        }
+        webview.setStyle({
+          titleNView: newTitleNView
+        });
+      });
+    }
+    return titleNView
   }
 
   function parsePullToRefresh (routeOptions) {
@@ -8585,10 +8753,12 @@ var serviceContext = (function () {
     };
 
     // 合并
-    routeOptions.window = parseStyleUnit(Object.assign(
-      JSON.parse(JSON.stringify(__uniConfig.window || {})),
-      routeOptions.window || {}
-    ));
+    routeOptions.window = parseStyleUnit(
+      Object.assign(
+        JSON.parse(JSON.stringify(__uniConfig.window || {})),
+        routeOptions.window || {}
+      )
+    );
 
     Object.keys(routeOptions.window).forEach(name => {
       if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
@@ -8597,7 +8767,10 @@ var serviceContext = (function () {
     });
 
     const backgroundColor = routeOptions.window.backgroundColor;
-    if (/^#[a-z0-9]{6}$/i.test(backgroundColor) || backgroundColor === 'transparent') {
+    if (
+      /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
+      backgroundColor === 'transparent'
+    ) {
       if (!webviewStyle.background) {
         webviewStyle.background = backgroundColor;
       }
@@ -8606,7 +8779,7 @@ var serviceContext = (function () {
       }
     }
 
-    const titleNView = parseTitleNView(routeOptions);
+    const titleNView = parseTitleNView(id, routeOptions);
     if (titleNView) {
       if (
         id === 1 &&
@@ -8631,7 +8804,8 @@ var serviceContext = (function () {
       delete webviewStyle.popGesture;
     }
 
-    if (routeOptions.meta.isQuit) { // 退出
+    if (routeOptions.meta.isQuit) {
+      // 退出
       webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
     }
 
@@ -20870,10 +21044,49 @@ var serviceContext = (function () {
     loadFontFace: loadFontFace$1
   });
 
+  function getLocale$1 () {
+    // 优先使用 $locale
+    const app = getApp({
+      allowDefault: true
+    });
+    if (app && app.$vm) {
+      return app.$vm.$locale
+    }
+    return i18n.getLocale()
+  }
+
+  function setLocale (locale) {
+    const oldLocale = getApp().$vm.$locale;
+    if (oldLocale !== locale) {
+      getApp().$vm.$locale = locale;
+      {
+        const pages = getCurrentPages();
+        pages.forEach((page) => {
+          UniServiceJSBridge.publishHandler(
+            'setLocale',
+            locale,
+            page.$page.id
+          );
+        });
+        weex.requireModule('plus').setLanguage(locale);
+      }
+      callbacks$a.forEach(callbackId => {
+        invoke$1(callbackId, { locale });
+      });
+      return true
+    }
+    return false
+  }
+  const callbacks$a = [];
+  function onLocaleChange (callbackId) {
+    callbacks$a.push(callbackId);
+  }
+
   var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    getLocale: getLocale,
-    setLocale: setLocale
+    getLocale: getLocale$1,
+    setLocale: setLocale,
+    onLocaleChange: onLocaleChange
   });
 
   function pageScrollTo$1 (args) {
@@ -20922,16 +21135,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$a = [];
+  const callbacks$b = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$a.forEach(callbackId => {
+    callbacks$b.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
   var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
@@ -20942,20 +21155,20 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$b = [];
+  const callbacks$c = [];
   onMethod('onViewDidResize', res => {
-    callbacks$b.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
+    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
@@ -21442,14 +21655,6 @@ var serviceContext = (function () {
 
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
-
-    i18n.i18n.watchLocale(locale => {
-      const pages = getCurrentPages();
-      pages.forEach(page => {
-        publishHandler(SET_LOCALE, locale, page.$page.id);
-      });
-      weex.requireModule('plus').setLanguage(locale);
-    });
   }
 
   let appCtx;
@@ -21618,12 +21823,13 @@ var serviceContext = (function () {
     });
   }
 
-  function registerApp (appVm) {
+  function registerApp (appVm, Vue) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] registerApp');
     }
     appCtx = appVm;
     appCtx.$vm = appVm;
+    initAppLocale(Vue, appVm);
 
     Object.assign(appCtx, defaultApp); // 拷贝默认实现
 
@@ -21644,7 +21850,7 @@ var serviceContext = (function () {
 
     initSubscribeHandlers();
 
-    initAppLaunch(appVm);
+    initAppLaunch(Vue);
 
     // 10s后清理临时文件
     setTimeout(clearTempFile, 10000);
@@ -22564,12 +22770,12 @@ var serviceContext = (function () {
                 console.log('[uni-app] launchApp');
               }
               plus.updateConfigInfo && plus.updateConfigInfo();
-              registerApp(this);
+              registerApp(this, Vue);
               oldMount.call(this, el, hydrating);
             });
             return
           }
-          registerApp(this);
+          registerApp(this, Vue);
         }
         return oldMount.call(this, el, hydrating)
       };
@@ -22594,6 +22800,8 @@ var serviceContext = (function () {
     }
   };
 
+  initI18n();
+
   // 挂靠在uni上，暂不做全局导出
   uni$1.__$wx__ = wx;
 
@@ -22608,7 +22816,8 @@ var serviceContext = (function () {
     __registerPage: registerPage,
     uni: uni$1,
     getApp: getApp$1,
-    getCurrentPages: getCurrentPages$1
+    getCurrentPages: getCurrentPages$1,
+    EventChannel
   };
 
   return index$1;

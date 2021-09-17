@@ -951,13 +951,14 @@ Store.prototype.install = function install (app, injectKey) {
   app.provide(injectKey || storeKey, this)
   app.config.globalProperties.$store = this
 
-  var useDevtools = this._devtools !== undefined
+  // 浏览器Vue.js devTools插件 在小程序中不走此处逻辑
+  /* var useDevtools = this._devtools !== undefined
     ? this._devtools
     : (process.env.NODE_ENV !== 'production') || false
 
   if (useDevtools) {
     addDevtools(app, this)
-  }
+  } */
 }
 
 prototypeAccessors.state.get = function () {

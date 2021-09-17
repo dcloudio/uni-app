@@ -849,6 +849,10 @@
         "/core/service/api/ui/locale.js",
         []
     ],
+    "onLocaleChange": [
+        "/core/service/api/ui/locale.js",
+        []
+    ],
     "$emit": [
         "/platforms/h5/service/api/base/event-bus.js",
         [

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueI18n } from '@dcloudio/uni-i18n';
 
 function b64DecodeUnicode (str) {
   return decodeURIComponent(atob(str).split('').map(function (c) {
@@ -398,6 +399,40 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
+function getLocale () {
+  // 优先使用 $locale
+  const app = getApp({
+    allowDefault: true
+  });
+  if (app && app.$vm) {
+    return app.$vm.$locale
+  }
+  return wx.getSystemInfoSync().language || 'zh-Hans'
+}
+
+function setLocale (locale) {
+  const app = getApp();
+  if (!app) {
+    return false
+  }
+  const oldLocale = app.$vm.$locale;
+  if (oldLocale !== locale) {
+    app.$vm.$locale = locale;
+    onLocaleChangeCallbacks.forEach((fn) => fn({
+      locale
+    }));
+    return true
+  }
+  return false
+}
+
+const onLocaleChangeCallbacks = [];
+function onLocaleChange (fn) {
+  if (onLocaleChangeCallbacks.indexOf(fn) === -1) {
+    onLocaleChangeCallbacks.push(fn);
+  }
+}
+
 const interceptors = {
   promiseInterceptor
 };
@@ -405,6 +440,9 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
+  getLocale: getLocale,
+  setLocale: setLocale,
+  onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
   interceptors: interceptors
@@ -1236,6 +1274,226 @@ function handleEvent (event) {
   }
 }
 
+var en = {
+	"uni.app.quit": "Press back button again to exit",
+	"uni.async.error": "The connection timed out, click the screen to try again.",
+	"uni.showActionSheet.cancel": "Cancel",
+	"uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
+	"uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
+	"uni.showModal.cancel": "Cancel",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Cancel",
+	"uni.chooseImage.sourceType.album": "Album",
+	"uni.chooseImage.sourceType.camera": "Camera",
+	"uni.chooseVideo.cancel": "Cancel",
+	"uni.chooseVideo.sourceType.album": "Album",
+	"uni.chooseVideo.sourceType.camera": "Camera",
+	"uni.previewImage.cancel": "Cancel",
+	"uni.previewImage.button.save": "Save Image",
+	"uni.previewImage.save.success": "Saved successfully",
+	"uni.previewImage.save.fail": "Save failed",
+	"uni.setClipboardData.success": "Content copied",
+	"uni.scanCode.title": "Scan code",
+	"uni.scanCode.album": "Album",
+	"uni.scanCode.fail": "Recognition failure",
+	"uni.scanCode.flash.on": "Tap to turn light on",
+	"uni.scanCode.flash.off": "Tap to turn light off",
+	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+	"uni.picker.done": "Done",
+	"uni.picker.cancel": "Cancel",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Volume",
+	"uni.button.feedback.title": "feedback",
+	"uni.button.feedback.send": "send"
+};
+
+var es = {
+	"uni.app.quit": "Pulse otra vez para salir",
+	"uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
+	"uni.showActionSheet.cancel": "Cancelar",
+	"uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
+	"uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
+	"uni.showModal.cancel": "Cancelar",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Cancelar",
+	"uni.chooseImage.sourceType.album": "Álbum",
+	"uni.chooseImage.sourceType.camera": "Cámara",
+	"uni.chooseVideo.cancel": "Cancelar",
+	"uni.chooseVideo.sourceType.album": "Álbum",
+	"uni.chooseVideo.sourceType.camera": "Cámara",
+	"uni.previewImage.cancel": "Cancelar",
+	"uni.previewImage.button.save": "Guardar imagen",
+	"uni.previewImage.save.success": "Guardado exitosamente",
+	"uni.previewImage.save.fail": "Error al guardar",
+	"uni.setClipboardData.success": "Contenido copiado",
+	"uni.scanCode.title": "Código de escaneo",
+	"uni.scanCode.album": "Álbum",
+	"uni.scanCode.fail": "Échec de la reconnaissance",
+	"uni.scanCode.flash.on": "Toque para encender la luz",
+	"uni.scanCode.flash.off": "Toque para apagar la luz",
+	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+	"uni.picker.done": "OK",
+	"uni.picker.cancel": "Cancelar",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Volumen",
+	"uni.button.feedback.title": "realimentación",
+	"uni.button.feedback.send": "enviar"
+};
+
+var fr = {
+	"uni.app.quit": "Appuyez à nouveau pour quitter l'application",
+	"uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
+	"uni.showActionSheet.cancel": "Annuler",
+	"uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
+	"uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
+	"uni.showModal.cancel": "Annuler",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Annuler",
+	"uni.chooseImage.sourceType.album": "Album",
+	"uni.chooseImage.sourceType.camera": "Caméra",
+	"uni.chooseVideo.cancel": "Annuler",
+	"uni.chooseVideo.sourceType.album": "Album",
+	"uni.chooseVideo.sourceType.camera": "Caméra",
+	"uni.previewImage.cancel": "Annuler",
+	"uni.previewImage.button.save": "Guardar imagen",
+	"uni.previewImage.save.success": "Enregistré avec succès",
+	"uni.previewImage.save.fail": "Échec de la sauvegarde",
+	"uni.setClipboardData.success": "Contenu copié",
+	"uni.scanCode.title": "Code d’analyse",
+	"uni.scanCode.album": "Album",
+	"uni.scanCode.fail": "Fallo de reconocimiento",
+	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
+	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
+	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+	"uni.picker.done": "OK",
+	"uni.picker.cancel": "Annuler",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Le Volume",
+	"uni.button.feedback.title": "retour d'information",
+	"uni.button.feedback.send": "envoyer"
+};
+
+var zhHans = {
+	"uni.app.quit": "再按一次退出应用",
+	"uni.async.error": "连接服务器超时，点击屏幕重试",
+	"uni.showActionSheet.cancel": "取消",
+	"uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
+	"uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
+	"uni.showModal.cancel": "取消",
+	"uni.showModal.confirm": "确定",
+	"uni.chooseImage.cancel": "取消",
+	"uni.chooseImage.sourceType.album": "从相册选择",
+	"uni.chooseImage.sourceType.camera": "拍摄",
+	"uni.chooseVideo.cancel": "取消",
+	"uni.chooseVideo.sourceType.album": "从相册选择",
+	"uni.chooseVideo.sourceType.camera": "拍摄",
+	"uni.previewImage.cancel": "取消",
+	"uni.previewImage.button.save": "保存图像",
+	"uni.previewImage.save.success": "保存图像到相册成功",
+	"uni.previewImage.save.fail": "保存图像到相册失败",
+	"uni.setClipboardData.success": "内容已复制",
+	"uni.scanCode.title": "扫码",
+	"uni.scanCode.album": "相册",
+	"uni.scanCode.fail": "识别失败",
+	"uni.scanCode.flash.on": "轻触照亮",
+	"uni.scanCode.flash.off": "轻触关闭",
+	"uni.startSoterAuthentication.authContent": "指纹识别中...",
+	"uni.picker.done": "完成",
+	"uni.picker.cancel": "取消",
+	"uni.video.danmu": "弹幕",
+	"uni.video.volume": "音量",
+	"uni.button.feedback.title": "问题反馈",
+	"uni.button.feedback.send": "发送"
+};
+
+var zhHant = {
+	"uni.app.quit": "再按一次退出應用",
+	"uni.async.error": "連接服務器超時，點擊屏幕重試",
+	"uni.showActionSheet.cancel": "取消",
+	"uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
+	"uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
+	"uni.showModal.cancel": "取消",
+	"uni.showModal.confirm": "確定",
+	"uni.chooseImage.cancel": "取消",
+	"uni.chooseImage.sourceType.album": "從相冊選擇",
+	"uni.chooseImage.sourceType.camera": "拍攝",
+	"uni.chooseVideo.cancel": "取消",
+	"uni.chooseVideo.sourceType.album": "從相冊選擇",
+	"uni.chooseVideo.sourceType.camera": "拍攝",
+	"uni.previewImage.cancel": "取消",
+	"uni.previewImage.button.save": "保存圖像",
+	"uni.previewImage.save.success": "保存圖像到相冊成功",
+	"uni.previewImage.save.fail": "保存圖像到相冊失敗",
+	"uni.setClipboardData.success": "內容已復制",
+	"uni.scanCode.title": "掃碼",
+	"uni.scanCode.album": "相冊",
+	"uni.scanCode.fail": "識別失敗",
+	"uni.scanCode.flash.on": "輕觸照亮",
+	"uni.scanCode.flash.off": "輕觸關閉",
+	"uni.startSoterAuthentication.authContent": "指紋識別中...",
+	"uni.picker.done": "完成",
+	"uni.picker.cancel": "取消",
+	"uni.video.danmu": "彈幕",
+	"uni.video.volume": "音量",
+	"uni.button.feedback.title": "問題反饋",
+	"uni.button.feedback.send": "發送"
+};
+
+const messages = {
+  en,
+  es,
+  fr,
+  'zh-Hans': zhHans,
+  'zh-Hant': zhHant
+};
+
+let locale;
+
+{
+  if (typeof weex === 'object') {
+    locale = weex.requireModule('plus').getLanguage();
+  }
+}
+
+const i18n = initVueI18n(locale,  messages );
+const t = i18n.t;
+const i18nMixin = i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+};
+const setLocale$1 = i18n.setLocale;
+const getLocale$1 = i18n.getLocale;
+
+function initAppLocale (Vue, appVm, locale) {
+  const state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  const localeWatchers = [];
+  appVm.$watchLocale = (fn) => {
+    localeWatchers.push(fn);
+  };
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return state.locale
+    },
+    set (v) {
+      state.locale = v;
+      localeWatchers.forEach(watch => watch(v));
+    }
+  });
+}
+
 class EventChannel {
   constructor (id, events) {
     this.id = id;
@@ -1417,6 +1675,8 @@ function parseBaseApp (vm, {
       appOptions[name] = methods[name];
     });
   }
+
+  initAppLocale(Vue, vm, wx.getSystemInfoSync().language || 'zh-Hans');
 
   initHooks(appOptions, hooks);
 

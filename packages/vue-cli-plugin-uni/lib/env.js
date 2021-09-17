@@ -58,7 +58,9 @@ if (process.env.UNI_CLOUD_SPACES) {
       const hasUniCloudSpace = spaces.length > 0
       if (spaces.length === 1) {
         const space = spaces[0]
-        console.log(uniI18n.__('pluginUni.currentProjectDefaultSpaceId', { 0: space.id }))
+        console.log(uniI18n.__('pluginUni.currentProjectDefaultSpaceId', {
+          0: space.id
+        }))
       }
 
       if (
@@ -66,19 +68,23 @@ if (process.env.UNI_CLOUD_SPACES) {
         isH5 &&
         isProduction
       ) {
-        console.warn(uniI18n.__('pluginUni.unicloudReleaseH5', { 0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
+        console.warn(uniI18n.__('pluginUni.unicloudReleaseH5', {
+          0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+        }))
       } else if (
         hasUniCloudSpace &&
         isH5 &&
         !isProduction
       ) {
-        console.warn(uniI18n.__('pluginUni.unicloudShowedRunByHBuilderX', { 0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5' }))
+        console.warn(uniI18n.__('pluginUni.unicloudShowedRunByHBuilderX', {
+          0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+        }))
       }
 
       process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
         if (space.clientSecret) {
           return {
-            provider: 'aliyun',
+            provider: space.provider || 'aliyun',
             spaceName: space.name,
             spaceId: space.id,
             clientSecret: space.clientSecret,
@@ -86,7 +92,7 @@ if (process.env.UNI_CLOUD_SPACES) {
           }
         } else {
           return {
-            provider: 'tencent',
+            provider: space.provider || 'tencent',
             spaceName: space.name,
             spaceId: space.id
           }
@@ -121,6 +127,12 @@ process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
   delete process.env.UNI_USING_CACHE
 }
+
+process.env.BROWSERSLIST_CONFIG = [
+  path.resolve(process.env.UNI_INPUT_DIR, '.browserslistrc'),
+  path.resolve(process.env.UNI_CLI_CONTEXT, 'package.json'),
+  path.resolve(process.cwd(), 'package.json')
+].find(file => fs.existsSync(file))
 
 const {
   normalizePath,
@@ -295,7 +307,9 @@ if (
     process.env.UNI_USING_STAT = true
     if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
-      console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', { 0: 'https://ask.dcloud.net.cn/article/36303' }))
+      console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
+        0: 'https://ask.dcloud.net.cn/article/36303'
+      }))
       console.log()
     }
   }
@@ -324,7 +338,10 @@ let hasNVue = false
 const compileModeUrl = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   const compileMode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')
-  console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { 0: compileMode, 1: compileModeUrl }))
+  console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', {
+    0: compileMode,
+    1: compileModeUrl
+  }))
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
   try {
     let info = ''
@@ -332,7 +349,8 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
       if (pagesPkg) {
         const v3Tips = `（v3）${uniI18n.__('see')}：https://ask.dcloud.net.cn/article/36599。`
-        info = uniI18n.__('compilerVersion') + '：' + pagesPkg['uni-app'].compilerVersion + (process.env.UNI_USING_V3 ? v3Tips : '')
+        info = uniI18n.__('compilerVersion') + '：' + pagesPkg['uni-app'].compilerVersion + (process.env.UNI_USING_V3
+          ? v3Tips : '')
       }
       if (process.env.UNI_USING_V3) {
         console.log(info)
@@ -346,7 +364,10 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
           if (needWarning) {
             console.log(warningMsg)
           }
-          console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', { 0: (isNVueCompiler ? 'uni-app' : 'weex'), 1: compileModeUrl }))
+          console.log(uniI18n.__('pluginUni.nvueCompileModeForDetail', {
+            0: (isNVueCompiler ? 'uni-app' : 'weex'),
+            1: compileModeUrl
+          }))
         } else {
           console.log(info)
           if (needWarning) {
@@ -467,7 +488,9 @@ if (
 }
 
 if (process.env.UNI_PLATFORM.startsWith('mp-')) {
-  console.log(uniI18n.__('pluginUni.mpBrowserKernelDifference', { 0: 'https://uniapp.dcloud.io/matter?id=mp' }))
+  console.log(uniI18n.__('pluginUni.mpBrowserKernelDifference', {
+    0: 'https://uniapp.dcloud.io/matter?id=mp'
+  }))
 }
 
 runByHBuilderX && console.log(uniI18n.__('compiling'))

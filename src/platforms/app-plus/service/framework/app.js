@@ -1,4 +1,8 @@
 import {
+  initAppLocale
+} from 'uni-helpers/i18n'
+
+import {
   callAppHook
 } from 'uni-core/service/plugins/util'
 
@@ -207,12 +211,13 @@ export function clearTempFile () {
   })
 }
 
-export function registerApp (appVm) {
+export function registerApp (appVm, Vue) {
   if (process.env.NODE_ENV !== 'production') {
     console.log('[uni-app] registerApp')
   }
   appCtx = appVm
   appCtx.$vm = appVm
+  initAppLocale(Vue, appVm)
 
   Object.assign(appCtx, defaultApp) // 拷贝默认实现
 
@@ -233,7 +238,7 @@ export function registerApp (appVm) {
 
   initSubscribeHandlers()
 
-  initAppLaunch(appVm)
+  initAppLaunch(Vue, appVm)
 
   // 10s后清理临时文件
   setTimeout(clearTempFile, 10000)

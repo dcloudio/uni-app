@@ -72,12 +72,12 @@ export default {
               console.log('[uni-app] launchApp')
             }
             plus.updateConfigInfo && plus.updateConfigInfo()
-            registerApp(this)
+            registerApp(this, Vue)
             oldMount.call(this, el, hydrating)
           })
           return
         }
-        registerApp(this)
+        registerApp(this, Vue)
       }
       return oldMount.call(this, el, hydrating)
     }

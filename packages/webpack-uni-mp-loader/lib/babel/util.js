@@ -15,8 +15,8 @@ const hyphenate = cached((str) => {
   return str.replace(hyphenateRE, '-$1').toLowerCase()
 })
 
-function findImportDeclaration (identifierName, bindings) {
-  const binding = bindings[identifierName]
+function findImportDeclaration (identifierName, path) {
+  const binding = path.scope.getBinding(identifierName)
   if (!binding) {
     return
   }
@@ -26,16 +26,18 @@ function findImportDeclaration (identifierName, bindings) {
   }
 }
 
-function parseComponents (names, bindings, path) {
+function parseComponents (names, path) {
   const components = []
   const dynamicImportMap = new Map()
   names.forEach(({
     name,
     value
   }) => {
-    const importDeclaration = findImportDeclaration(value, bindings)
+    const importDeclaration = findImportDeclaration(value, path)
     if (!importDeclaration) {
-      throw new Error(uniI18n.__('mpLoader.componentReferenceErrorOnlySupportImport', { 0: name }))
+      throw new Error(uniI18n.__('mpLoader.componentReferenceErrorOnlySupportImport', {
+        0: name
+      }))
     }
     let source = importDeclaration.node.source.value
     if (process.UNI_LIBRARIES && process.UNI_LIBRARIES.includes(source)) {

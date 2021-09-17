@@ -11,7 +11,7 @@ const {
   nvueHtmlPreprocessOptions,
   getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
-
+const fileLoader = require('@dcloudio/uni-cli-shared/lib/file-loader')
 const WebpackAppPlusNVuePlugin = process.env.UNI_USING_V3
   ? require('../packages/webpack-app-plus-plugin')
   : require('../packages/webpack-app-plus-nvue-plugin')
@@ -109,13 +109,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const rules = [{
   test: /\.(png|jpg|gif|ttf|eot|woff|woff2)$/i,
-  use: [{
-    loader: 'file-loader',
-    options: {
-      publicPath: 'assets',
-      outputPath: 'assets'
-    }
-  }]
+  use: [fileLoader]
 }, {
   test: path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
   use: [{

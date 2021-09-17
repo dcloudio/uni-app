@@ -133,7 +133,7 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', { 0: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM, 1: process.env.UNI_MP_PLUGIN ? uniI18n.__('platform') : uniI18n.__('plugin') }))
+    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', { 0: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM, 1: process.env.UNI_MP_PLUGIN ? uniI18n.__('plugin') : uniI18n.__('platform') }))
   }
 
   const targetDir = api.resolve(options.outputDir)

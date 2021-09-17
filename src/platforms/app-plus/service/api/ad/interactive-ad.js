@@ -15,8 +15,8 @@ function initSDK (options) {
   if (!sdkCache[provider]) {
     sdkCache[provider] = {}
   }
-  if (typeof sdkCache[provider].plugin === 'object') {
-    options.success(sdkCache[provider].plugin)
+  if (typeof sdkCache[provider].instance === 'object') {
+    options.success(sdkCache[provider].instance)
     return
   }
 
@@ -25,14 +25,14 @@ function initSDK (options) {
   }
   sdkQueue[provider].push(options)
 
-  if (sdkCache[provider].status === true) {
+  if (sdkCache[provider].loading === true) {
     options.__plugin = sdkCache[provider].plugin
     return
   }
-  sdkCache[provider].status = true
-
-  const plugin = requireNativePlugin(provider)
-  if (!plugin || !plugin.initSDK) {
+  sdkCache[provider].loading = true
+  const plugin = requireNativePlugin(provider) || {}
+  const initFunction = plugin.init || plugin.initSDK
+  if (!initFunction) {
     sdkQueue[provider].forEach((item) => {
       item.fail({
         code: -1,
@@ -40,19 +40,18 @@ function initSDK (options) {
       })
     })
     sdkQueue[provider].length = 0
-    sdkCache[provider].status = false
+    sdkCache[provider].loading = false
     return
   }
-
-  // TODO
   sdkCache[provider].plugin = plugin
   options.__plugin = plugin
-  plugin.initSDK((res) => {
-    const isSuccess = (res.code === 1 || res.code === '1')
+  initFunction((res) => {
+    const code = res.code
+    const isSuccess = (provider === 'BXM-AD') ? (code === 0 || code === 1) : (code === 0)
     if (isSuccess) {
-      sdkCache[provider].plugin = plugin
+      sdkCache[provider].instance = plugin
     } else {
-      sdkCache[provider].status = false
+      sdkCache[provider].loading = false
     }
 
     sdkQueue[provider].forEach((item) => {
@@ -81,7 +80,7 @@ class InteractiveAd {
     this._adError = ''
     this._adpid = options.adpid
     this._provider = options.provider
-    this._userData = options.userData
+    this._userData = options.userData || {}
     this._isLoaded = false
     this._isLoading = false
     this._loadPromiseResolve = null
@@ -169,7 +168,7 @@ class InteractiveAd {
   }
 
   bindUserData (data) {
-    if (this._ad !== null) {
+    if (this._ad !== null && this._ad.bindUserData) {
       this._ad.bindUserData(data)
     }
   }
@@ -182,7 +181,8 @@ class InteractiveAd {
       this._isLoading = true
 
       this._ad.loadData({
-        adpid: this._adpid
+        adpid: this._adpid,
+        ...this._userData
       }, (res) => {
         this._isLoaded = true
         this._isLoading = false

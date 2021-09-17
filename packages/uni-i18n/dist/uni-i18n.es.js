@@ -1,15 +1,17 @@
+const isArray = Array.isArray;
 const isObject = (val) => val !== null && typeof val === 'object';
+const defaultDelimiters = ['{', '}'];
 class BaseFormatter {
     constructor() {
         this._caches = Object.create(null);
     }
-    interpolate(message, values) {
+    interpolate(message, values, delimiters = defaultDelimiters) {
         if (!values) {
             return [message];
         }
         let tokens = this._caches[message];
         if (!tokens) {
-            tokens = parse(message);
+            tokens = parse(message, delimiters);
             this._caches[message] = tokens;
         }
         return compile(tokens, values);
@@ -17,24 +19,24 @@ class BaseFormatter {
 }
 const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
 const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-function parse(format) {
+function parse(format, [startDelimiter, endDelimiter]) {
     const tokens = [];
     let position = 0;
     let text = '';
     while (position < format.length) {
         let char = format[position++];
-        if (char === '{') {
+        if (char === startDelimiter) {
             if (text) {
                 tokens.push({ type: 'text', value: text });
             }
             text = '';
             let sub = '';
             char = format[position++];
-            while (char !== undefined && char !== '}') {
+            while (char !== undefined && char !== endDelimiter) {
                 sub += char;
                 char = format[position++];
             }
-            const isClosed = char === '}';
+            const isClosed = char === endDelimiter;
             const type = RE_TOKEN_LIST_VALUE.test(sub)
                 ? 'list'
                 : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
@@ -42,12 +44,12 @@ function parse(format) {
                     : 'unknown';
             tokens.push({ value: sub, type });
         }
-        else if (char === '%') {
-            // when found rails i18n syntax, skip text capture
-            if (format[position] !== '{') {
-                text += char;
-            }
-        }
+        //  else if (char === '%') {
+        //   // when found rails i18n syntax, skip text capture
+        //   if (format[position] !== '{') {
+        //     text += char
+        //   }
+        // }
         else {
             text += char;
         }
@@ -58,7 +60,7 @@ function parse(format) {
 function compile(tokens, values) {
     const compiled = [];
     let index = 0;
-    const mode = Array.isArray(values)
+    const mode = isArray(values)
         ? 'list'
         : isObject(values)
             ? 'named'
@@ -115,7 +117,7 @@ function normalizeLocale(locale, messages) {
         return;
     }
     locale = locale.trim().replace(/_/g, '-');
-    if (messages[locale]) {
+    if (messages && messages[locale]) {
         return locale;
     }
     locale = locale.toLowerCase();
@@ -148,7 +150,7 @@ class I18n {
         }
         this.formater = formater || defaultFormatter;
         this.messages = messages || {};
-        this.setLocale(locale);
+        this.setLocale(locale || LOCALE_EN);
         if (watcher) {
             this.watchLocale(watcher);
         }
@@ -161,9 +163,12 @@ class I18n {
             this.messages[this.locale] = {};
         }
         this.message = this.messages[this.locale];
-        this.watchers.forEach((watcher) => {
-            watcher(this.locale, oldLocale);
-        });
+        // 仅发生变化时，通知
+        if (oldLocale !== this.locale) {
+            this.watchers.forEach((watcher) => {
+                watcher(this.locale, oldLocale);
+            });
+        }
     }
     getLocale() {
         return this.locale;
@@ -174,13 +179,26 @@ class I18n {
             this.watchers.splice(index, 1);
         };
     }
-    add(locale, message) {
-        if (this.messages[locale]) {
-            Object.assign(this.messages[locale], message);
+    add(locale, message, override = true) {
+        const curMessages = this.messages[locale];
+        if (curMessages) {
+            if (override) {
+                Object.assign(curMessages, message);
+            }
+            else {
+                Object.keys(message).forEach((key) => {
+                    if (!hasOwn(curMessages, key)) {
+                        curMessages[key] = message[key];
+                    }
+                });
+            }
         }
         else {
             this.messages[locale] = message;
         }
+    }
+    f(message, values, delimiters) {
+        return this.formater.interpolate(message, values, delimiters).join('');
     }
     t(key, locale, values) {
         let message = this.message;
@@ -200,36 +218,31 @@ class I18n {
 }
 
 const ignoreVueI18n = true;
-function initLocaleWatcher(appVm, i18n) {
-    if (appVm.$i18n) {
-        const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
-        vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
-            i18n.setLocale(newLocale);
-        }, {
-            immediate: true,
-        });
-    }
+function watchAppLocale(appVm, i18n) {
+    appVm.$watch(() => appVm.$locale, (newLocale) => {
+        i18n.setLocale(newLocale);
+    });
 }
-// function getDefaultLocale() {
-//   if (typeof navigator !== 'undefined') {
-//     return (navigator as any).userLanguage || navigator.language
-//   }
-//   if (typeof plus !== 'undefined') {
-//     // TODO 待调整为最新的获取语言代码
-//     return plus.os.language
-//   }
-//   return uni.getSystemInfoSync().language
-// }
-function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
-        [locale, messages] = [messages, locale];
+        [locale, messages] = [
+            messages,
+            locale,
+        ];
     }
     if (typeof locale !== 'string') {
-        locale = fallbackLocale;
+        locale =
+            (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
+                LOCALE_EN;
+    }
+    if (typeof fallbackLocale !== 'string') {
+        fallbackLocale =
+            (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+                LOCALE_EN;
     }
     const i18n = new I18n({
-        locale: locale || fallbackLocale,
+        locale,
         fallbackLocale,
         messages,
         watcher,
@@ -244,17 +257,19 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
         }
         else {
             const appVm = getApp().$vm;
+            watchAppLocale(appVm, i18n);
             if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
                 // if (!locale) {
                 //   i18n.setLocale(getDefaultLocale())
                 // }
                 /* eslint-disable no-func-assign */
                 t = function (key, values) {
+                    // 触发响应式
+                    appVm.$locale;
                     return i18n.t(key, values);
                 };
             }
             else {
-                initLocaleWatcher(appVm, i18n);
                 /* eslint-disable no-func-assign */
                 t = function (key, values) {
                     const $i18n = appVm.$i18n;
@@ -273,11 +288,17 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     };
     return {
         i18n,
+        f(message, values, delimiters) {
+            return i18n.f(message, values, delimiters);
+        },
         t(key, values) {
             return t(key, values);
         },
-        add(locale, message) {
-            return i18n.add(locale, message);
+        add(locale, message, override = true) {
+            return i18n.add(locale, message, override);
+        },
+        watch(fn) {
+            return i18n.watchLocale(fn);
         },
         getLocale() {
             return i18n.getLocale();
@@ -288,4 +309,111 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     };
 }
 
-export { I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, initVueI18n };
+const isString = (val) => typeof val === 'string';
+let formater;
+function hasI18nJson(jsonObj, delimiters) {
+    if (!formater) {
+        formater = new BaseFormatter();
+    }
+    return walkJsonObj(jsonObj, (jsonObj, key) => {
+        const value = jsonObj[key];
+        if (isString(value)) {
+            if (isI18nStr(value, delimiters)) {
+                return true;
+            }
+        }
+        else {
+            return hasI18nJson(value, delimiters);
+        }
+    });
+}
+function parseI18nJson(jsonObj, values, delimiters) {
+    if (!formater) {
+        formater = new BaseFormatter();
+    }
+    walkJsonObj(jsonObj, (jsonObj, key) => {
+        const value = jsonObj[key];
+        if (isString(value)) {
+            if (isI18nStr(value, delimiters)) {
+                jsonObj[key] = compileStr(value, values, delimiters);
+            }
+        }
+        else {
+            parseI18nJson(value, values, delimiters);
+        }
+    });
+    return jsonObj;
+}
+function compileI18nJsonStr(jsonStr, { locale, locales, delimiters, }) {
+    if (!isI18nStr(jsonStr, delimiters)) {
+        return jsonStr;
+    }
+    if (!formater) {
+        formater = new BaseFormatter();
+    }
+    const localeValues = [];
+    Object.keys(locales).forEach((name) => {
+        if (name !== locale) {
+            localeValues.push({
+                locale: name,
+                values: locales[name],
+            });
+        }
+    });
+    localeValues.unshift({ locale, values: locales[locale] });
+    try {
+        return JSON.stringify(compileJsonObj(JSON.parse(jsonStr), localeValues, delimiters), null, 2);
+    }
+    catch (e) { }
+    return jsonStr;
+}
+function isI18nStr(value, delimiters) {
+    return value.indexOf(delimiters[0]) > -1;
+}
+function compileStr(value, values, delimiters) {
+    return formater.interpolate(value, values, delimiters).join('');
+}
+function compileValue(jsonObj, key, localeValues, delimiters) {
+    const value = jsonObj[key];
+    if (isString(value)) {
+        // 存在国际化
+        if (isI18nStr(value, delimiters)) {
+            jsonObj[key] = compileStr(value, localeValues[0].values, delimiters);
+            if (localeValues.length > 1) {
+                // 格式化国际化语言
+                const valueLocales = (jsonObj[key + 'Locales'] = {});
+                localeValues.forEach((localValue) => {
+                    valueLocales[localValue.locale] = compileStr(value, localValue.values, delimiters);
+                });
+            }
+        }
+    }
+    else {
+        compileJsonObj(value, localeValues, delimiters);
+    }
+}
+function compileJsonObj(jsonObj, localeValues, delimiters) {
+    walkJsonObj(jsonObj, (jsonObj, key) => {
+        compileValue(jsonObj, key, localeValues, delimiters);
+    });
+    return jsonObj;
+}
+function walkJsonObj(jsonObj, walk) {
+    if (isArray(jsonObj)) {
+        for (let i = 0; i < jsonObj.length; i++) {
+            if (walk(jsonObj, i)) {
+                return true;
+            }
+        }
+    }
+    else if (isObject(jsonObj)) {
+        for (const key in jsonObj) {
+            if (walk(jsonObj, key)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, normalizeLocale, parseI18nJson };

@@ -135,7 +135,7 @@ export default {
     },
     _resize (size) {
       var canvas = this.$refs.canvas
-      var hasChanged = !size || (canvas.width !== size.width * pixelRatio || canvas.height !== size.height * pixelRatio)
+      var hasChanged = !size || (canvas.width !== Math.floor(size.width * pixelRatio) || canvas.height !== Math.floor(size.height * pixelRatio))
       if (!hasChanged) return
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext('2d')
