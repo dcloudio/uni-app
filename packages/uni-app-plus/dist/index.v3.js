@@ -28,7 +28,8 @@ var serviceContext = (function () {
     'onSocketMessage',
     'closeSocket',
     'onSocketClose',
-    'getUpdateManager'
+    'getUpdateManager',
+    'configMTLS'
   ];
 
   const route = [
@@ -1849,7 +1850,7 @@ var serviceContext = (function () {
         return 'https:' + filePath
       }
       // 平台绝对路径 安卓、iOS
-      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
         return 'file://' + filePath
       }
       return addBase(filePath.substr(1))
@@ -2387,9 +2388,22 @@ var serviceContext = (function () {
     }
   };
 
+  const  configMTLS = {
+    certificates: {
+      type: Array,
+      required: true,
+      validator (value) {
+        if (value.some(item => toRawType(item.host) !== 'String')) {
+          return '参数配置错误，请确认后重试'
+        }
+      }
+    }
+  };
+
   var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    request: request
+    request: request,
+    configMTLS: configMTLS
   });
 
   const method$1 = {
@@ -4086,7 +4100,7 @@ var serviceContext = (function () {
     // 绝对路径转换为本地文件系统路径
     if (filePath.indexOf('/') === 0) {
       // 平台绝对路径 安卓、iOS
-      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
         return 'file://' + filePath
       }
       return wwwPath + filePath
@@ -6842,24 +6856,6 @@ var serviceContext = (function () {
     })
   }
 
-  function compressImage$1 (tempFilePath) {
-    const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-    return new Promise((resolve) => {
-      plus.nativeUI.showWaiting();
-      plus.zip.compressImage({
-        src: tempFilePath,
-        dst: dstPath,
-        overwrite: true
-      }, () => {
-        plus.nativeUI.closeWaiting();
-        resolve(dstPath);
-      }, () => {
-        plus.nativeUI.closeWaiting();
-        resolve(tempFilePath);
-      });
-    })
-  }
-
   function chooseImage$1 ({
     count,
     sizeType,
@@ -6871,7 +6867,6 @@ var serviceContext = (function () {
     function successCallback (paths) {
       const tempFiles = [];
       const tempFilePaths = [];
-      // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
       Promise.all(paths.map((path) => getFileInfo$2(path)))
         .then((filesInfo) => {
           filesInfo.forEach((file, index) => {
@@ -6891,25 +6886,12 @@ var serviceContext = (function () {
 
     function openCamera () {
       const camera = plus.camera.getCamera();
-      camera.captureImage(path => {
-        // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
-        // 判断是否需要压缩
-        if (sizeType && sizeType.includes('compressed')) {
-          return getFileInfo$2(path).then(({ size }) => {
-            // 压缩阈值 0.5 兆
-            const THRESHOLD = 1024 * 1024 * 0.5;
-            return size && size > THRESHOLD
-              ? compressImage$1(path).then(dstPath => successCallback([dstPath]))
-              : successCallback([path])
-          }).catch(errorCallback)
-        }
-
-        return successCallback([path])
-      },
-      errorCallback, {
+      camera.captureImage(path => successCallback([path]),
+        errorCallback, {
         filename: TEMP_PATH + '/camera/',
         resolution: 'high',
-        crop
+        crop,
+        sizeType
       });
     }
 
@@ -6965,39 +6947,20 @@ var serviceContext = (function () {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-      const compressVideo = compressed ? new Promise((resolve) => {
-        plus.zip.compressVideo({
-          src: tempFilePath,
-          filename
-        }, ({ tempFilePath }) => {
-          resolve(tempFilePath);
-        }, () => {
-          resolve(tempFilePath);
-        });
-      }) : Promise.resolve(tempFilePath);
-      if (compressed) {
-        plus.nativeUI.showWaiting();
-      }
-      compressVideo.then(tempFilePath => {
-        if (compressed) {
-          plus.nativeUI.closeWaiting();
-        }
-        plus.io.getVideoInfo({
-          filePath: tempFilePath,
-          success (videoInfo) {
-            const result = {
-              errMsg: 'chooseVideo:ok',
-              tempFilePath: tempFilePath
-            };
-            result.size = videoInfo.size;
-            result.duration = videoInfo.duration;
-            result.width = videoInfo.width;
-            result.height = videoInfo.height;
-            invoke$1(callbackId, result);
-          },
-          fail: errorCallback
-        });
+      plus.io.getVideoInfo({
+        filePath: tempFilePath,
+        success (videoInfo) {
+          const result = {
+            errMsg: 'chooseVideo:ok',
+            tempFilePath: tempFilePath
+          };
+          result.size = videoInfo.size;
+          result.duration = videoInfo.duration;
+          result.width = videoInfo.width;
+          result.height = videoInfo.height;
+          invoke$1(callbackId, result);
+        },
+        fail: errorCallback
       });
     }
 
@@ -7009,7 +6972,8 @@ var serviceContext = (function () {
         multiple: true,
         maximum: 1,
         filename: TEMP_PATH + '/gallery/',
-        permissionAlert: true
+        permissionAlert: true,
+        videoCompress: compressed
       });
     }
 
@@ -7018,7 +6982,8 @@ var serviceContext = (function () {
       plusCamera.startVideoCapture(successCallback, errorCallback, {
         index: camera === 'front' ? 2 : 1,
         videoMaximumDuration: maxDuration,
-        filename: TEMP_PATH + '/camera/'
+        filename: TEMP_PATH + '/camera/',
+        videoCompress: compressed
       });
     }
 
@@ -7053,7 +7018,7 @@ var serviceContext = (function () {
     });
   }
 
-  function compressImage$2 (options, callbackId) {
+  function compressImage$1 (options, callbackId) {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     const errorCallback = warpPlusErrorCallback(callbackId, 'compressImage');
     plus.zip.compressImage(Object.assign({}, options, {
@@ -7088,7 +7053,7 @@ var serviceContext = (function () {
       orientation: data.orientation,
       type: data.type,
       duration: data.duration,
-      size: data.size,
+      size: data.size / 1024,
       height: data.height,
       width: data.width,
       fps: data.fps || 30,
@@ -7528,6 +7493,26 @@ var serviceContext = (function () {
     return {
       errMsg: 'operateRequestTask:fail'
     }
+  }
+
+  function configMTLS$1 ({certificates}, callbackId) {
+    const stream = requireNativePlugin('stream');
+    stream.configMTLS(certificates, ({type, code, message}) => {
+      switch (type) {
+        case 'success':
+          invoke$1(callbackId, {
+            errMsg: 'configMTLS:ok',
+            code
+          });
+          break;
+        case 'fail':
+          invoke$1(callbackId, {
+            errMsg: 'configMTLS:fail ' + message,
+            code
+          });
+          break;
+      }
+    });
   }
 
   const socketTasks = {};
@@ -11256,8 +11241,8 @@ var serviceContext = (function () {
     if (!sdkCache[provider]) {
       sdkCache[provider] = {};
     }
-    if (typeof sdkCache[provider].plugin === 'object') {
-      options.success(sdkCache[provider].plugin);
+    if (typeof sdkCache[provider].instance === 'object') {
+      options.success(sdkCache[provider].instance);
       return
     }
 
@@ -11266,14 +11251,14 @@ var serviceContext = (function () {
     }
     sdkQueue[provider].push(options);
 
-    if (sdkCache[provider].status === true) {
+    if (sdkCache[provider].loading === true) {
       options.__plugin = sdkCache[provider].plugin;
       return
     }
-    sdkCache[provider].status = true;
-
-    const plugin = requireNativePlugin(provider);
-    if (!plugin || !plugin.initSDK) {
+    sdkCache[provider].loading = true;
+    const plugin = requireNativePlugin(provider) || {};
+    const initFunction = plugin.init || plugin.initSDK;
+    if (!initFunction) {
       sdkQueue[provider].forEach((item) => {
         item.fail({
           code: -1,
@@ -11281,19 +11266,18 @@ var serviceContext = (function () {
         });
       });
       sdkQueue[provider].length = 0;
-      sdkCache[provider].status = false;
+      sdkCache[provider].loading = false;
       return
     }
-
-    // TODO
     sdkCache[provider].plugin = plugin;
     options.__plugin = plugin;
-    plugin.initSDK((res) => {
-      const isSuccess = (res.code === 1 || res.code === '1');
+    initFunction((res) => {
+      const code = res.code;
+      const isSuccess = (provider === 'BXM-AD') ? (code === 0 || code === 1) : (code === 0);
       if (isSuccess) {
-        sdkCache[provider].plugin = plugin;
+        sdkCache[provider].instance = plugin;
       } else {
-        sdkCache[provider].status = false;
+        sdkCache[provider].loading = false;
       }
 
       sdkQueue[provider].forEach((item) => {
@@ -11322,7 +11306,7 @@ var serviceContext = (function () {
       this._adError = '';
       this._adpid = options.adpid;
       this._provider = options.provider;
-      this._userData = options.userData;
+      this._userData = options.userData || {};
       this._isLoaded = false;
       this._isLoading = false;
       this._loadPromiseResolve = null;
@@ -11410,7 +11394,7 @@ var serviceContext = (function () {
     }
 
     bindUserData (data) {
-      if (this._ad !== null) {
+      if (this._ad !== null && this._ad.bindUserData) {
         this._ad.bindUserData(data);
       }
     }
@@ -11423,7 +11407,8 @@ var serviceContext = (function () {
         this._isLoading = true;
 
         this._ad.loadData({
-          adpid: this._adpid
+          adpid: this._adpid,
+          ...this._userData
         }, (res) => {
           this._isLoaded = true;
           this._isLoading = false;
@@ -11583,7 +11568,7 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    compressImage: compressImage$2,
+    compressImage: compressImage$1,
     compressVideo: compressVideo$1,
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
@@ -11596,6 +11581,7 @@ var serviceContext = (function () {
     createRequestTaskById: createRequestTaskById,
     createRequestTask: createRequestTask,
     operateRequestTask: operateRequestTask,
+    configMTLS: configMTLS$1,
     createSocketTask: createSocketTask,
     operateSocketTask: operateSocketTask,
     operateUploadTask: operateUploadTask,
