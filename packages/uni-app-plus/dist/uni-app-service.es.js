@@ -5077,6 +5077,22 @@ var serviceContext = (function (vue) {
           },
       },
   };
+  const API_CONFIG_MTLS = 'configMTLS';
+  const ConfigMTLSProtocol = {
+      certificates: {
+          type: Array,
+          required: true,
+      },
+  };
+  const ConfigMTLSOptions = {
+      formatArgs: {
+          certificates(value) {
+              if (value.some((item) => toRawType(item.host) !== 'String')) {
+                  return '参数配置错误，请确认后重试';
+              }
+          },
+      },
+  };
 
   const API_DOWNLOAD_FILE = 'downloadFile';
   const DownloadFileOptions = {
@@ -7451,7 +7467,7 @@ var serviceContext = (function (vue) {
       plus.gallery.save(options.filePath, warpPlusSuccessCallback(resolve), warpPlusErrorCallback(reject));
   }, SaveImageToPhotosAlbumProtocol, SaveImageToPhotosAlbumOptions);
 
-  const compressImage$1 = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
+  const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
       const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
       plus.zip.compressImage(extend({}, options, {
           dst,
@@ -7485,25 +7501,8 @@ var serviceContext = (function (vue) {
           }, reject);
       });
   }
-  function compressImage(tempFilePath) {
-      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-      return new Promise((resolve) => {
-          plus.nativeUI.showWaiting();
-          plus.zip.compressImage({
-              src: tempFilePath,
-              dst,
-              overwrite: true,
-          }, () => {
-              plus.nativeUI.closeWaiting();
-              resolve(dst);
-          }, () => {
-              plus.nativeUI.closeWaiting();
-              resolve(tempFilePath);
-          });
-      });
-  }
   const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, 
-  // @ts-ignore crop 属性App特有
+  // @ts-expect-error crop 属性App特有
   ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
       initI18nChooseImageMsgsOnce();
       const { t } = useI18n();
@@ -7527,30 +7526,16 @@ var serviceContext = (function (vue) {
       }
       function openCamera() {
           const camera = plus.camera.getCamera();
-          camera.captureImage((path) => {
-              // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
-              // 判断是否需要压缩
-              if (sizeType && sizeType.includes('compressed')) {
-                  return getFileInfo(path)
-                      .then(({ size }) => {
-                      // 压缩阈值 0.5 兆
-                      const THRESHOLD = 1024 * 1024 * 0.5;
-                      return size && size > THRESHOLD
-                          ? compressImage(path).then((dstPath) => successCallback([dstPath]))
-                          : successCallback([path]);
-                  })
-                      .catch(errorCallback);
-              }
-              return successCallback([path]);
-          }, errorCallback, {
+          camera.captureImage((path) => successCallback([path]), errorCallback, {
               filename: TEMP_PATH + '/camera/',
               resolution: 'high',
               crop,
+              // @ts-expect-error
+              sizeType,
           });
       }
       function openAlbum() {
-          // NOTE 5+此API分单选和多选，多选返回files:string[]
-          // @ts-ignore
+          // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
           plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
               maximum: count,
               multiple: true,
@@ -7601,49 +7586,27 @@ var serviceContext = (function (vue) {
       initI18nChooseVideoMsgsOnce();
       const { t } = useI18n();
       const errorCallback = warpPlusErrorCallback(reject);
-      function successCallback(tempFilePath = '') {
-          const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-          const compressVideo = compressed
-              ? new Promise((resolve) => {
-                  plus.zip.compressVideo({
-                      src: tempFilePath,
-                      filename,
-                      quality: 'medium',
-                  }, ({ tempFilePath }) => {
-                      resolve(tempFilePath);
-                  }, () => {
-                      resolve(tempFilePath);
-                  });
-              })
-              : Promise.resolve(tempFilePath);
-          if (compressed) {
-              plus.nativeUI.showWaiting();
-          }
-          compressVideo.then((tempFilePath) => {
-              if (compressed) {
-                  plus.nativeUI.closeWaiting();
-              }
-              plus.io.getVideoInfo({
-                  filePath: tempFilePath,
-                  success(videoInfo) {
-                      const result = {
-                          errMsg: 'chooseVideo:ok',
-                          tempFilePath: tempFilePath,
-                          size: videoInfo.size,
-                          duration: videoInfo.duration,
-                          width: videoInfo.width,
-                          height: videoInfo.height,
-                      };
-                      resolve(result);
-                  },
-                  fail: errorCallback,
-              });
+      function successCallback(tempFilePath) {
+          plus.io.getVideoInfo({
+              filePath: tempFilePath,
+              success(videoInfo) {
+                  const result = {
+                      errMsg: 'chooseVideo:ok',
+                      tempFilePath: tempFilePath,
+                      size: videoInfo.size,
+                      duration: videoInfo.duration,
+                      width: videoInfo.width,
+                      height: videoInfo.height,
+                  };
+                  // @ts-expect-error tempFile、name 仅H5支持
+                  resolve(result);
+              },
+              fail: errorCallback,
           });
       }
       function openAlbum() {
           plus.gallery.pick(
-          // NOTE 5+此API分单选和多选，多选返回files:string[]
-          // @ts-ignore
+          // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
           ({ files }) => successCallback(files[0]), errorCallback, {
               filter: 'video',
               system: false,
@@ -7652,6 +7615,8 @@ var serviceContext = (function (vue) {
               maximum: 1,
               filename: TEMP_PATH + '/gallery/',
               permissionAlert: true,
+              // @ts-expect-error 新增参数，用于视频压缩
+              videoCompress: compressed,
           });
       }
       function openCamera() {
@@ -7660,6 +7625,8 @@ var serviceContext = (function (vue) {
               index: camera === 'front' ? '2' : '1',
               videoMaximumDuration: maxDuration,
               filename: TEMP_PATH + '/camera/',
+              // @ts-expect-error 新增参数，用于视频压缩
+              videoCompress: compressed,
           });
       }
       if (sourceType.length === 1) {
@@ -7951,6 +7918,19 @@ var serviceContext = (function (vue) {
           },
       });
   }, RequestProtocol, RequestOptions);
+  const configMTLS = defineAsyncApi(API_CONFIG_MTLS, ({ certificates }, { resolve, reject }) => {
+      const stream = requireNativePlugin('stream');
+      stream.configMTLS(certificates, ({ type, code, message }) => {
+          switch (type) {
+              case 'success':
+                  resolve({ code });
+                  break;
+              case 'fail':
+                  reject(message, { code });
+                  break;
+          }
+      });
+  }, ConfigMTLSProtocol, ConfigMTLSOptions);
 
   const socketTasks = [];
   const socketsMap = {};
@@ -12675,7 +12655,7 @@ var serviceContext = (function (vue) {
     getRecorderManager: getRecorderManager,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
-    compressImage: compressImage$1,
+    compressImage: compressImage,
     compressVideo: compressVideo,
     chooseImage: chooseImage,
     chooseVideo: chooseVideo,
@@ -12685,6 +12665,7 @@ var serviceContext = (function (vue) {
     offKeyboardHeightChange: offKeyboardHeightChange,
     downloadFile: downloadFile,
     request: request,
+    configMTLS: configMTLS,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
     closeSocket: closeSocket,
