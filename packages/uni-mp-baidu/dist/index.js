@@ -1703,9 +1703,12 @@ let locale;
   locale = swan.getSystemInfoSync().language;
 }
 
-const i18n = initVueI18n(locale,  {});
+const i18n = initVueI18n(
+  locale,
+   {}
+);
 const t = i18n.t;
-const i18nMixin = i18n.mixin = {
+const i18nMixin = (i18n.mixin = {
   beforeCreate () {
     const unwatch = i18n.i18n.watchLocale(() => {
       this.$forceUpdate();
@@ -1719,7 +1722,7 @@ const i18nMixin = i18n.mixin = {
       return t(key, values)
     }
   }
-};
+});
 const setLocale$1 = i18n.setLocale;
 const getLocale$1 = i18n.getLocale;
 
@@ -1728,7 +1731,7 @@ function initAppLocale (Vue, appVm, locale) {
     locale: locale || i18n.getLocale()
   });
   const localeWatchers = [];
-  appVm.$watchLocale = (fn) => {
+  appVm.$watchLocale = fn => {
     localeWatchers.push(fn);
   };
   Object.defineProperty(appVm, '$locale', {
