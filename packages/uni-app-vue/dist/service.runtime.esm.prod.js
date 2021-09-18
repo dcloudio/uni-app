@@ -2199,37 +2199,6 @@ export default function vueFactory(exports) {
     devtools = hook;
   }
 
-  var globalCompatConfig = {
-    MODE: 2
-  };
-
-  function getCompatConfigForKey(key, instance) {
-    var instanceConfig = instance && instance.type.compatConfig;
-
-    if (instanceConfig && key in instanceConfig) {
-      return instanceConfig[key];
-    }
-
-    return globalCompatConfig[key];
-  }
-
-  function isCompatEnabled(key, instance, enableForBuiltIn = false) {
-    // skip compat for built-in components
-    if (!enableForBuiltIn && instance && instance.type.__isBuiltIn) {
-      return false;
-    }
-
-    var rawMode = getCompatConfigForKey('MODE', instance) || 2;
-    var val = getCompatConfigForKey(key, instance);
-    var mode = isFunction(rawMode) ? rawMode(instance && instance.type) : rawMode;
-
-    if (mode === 2) {
-      return val !== false;
-    } else {
-      return val === true || val === 'suppress-warning';
-    }
-  }
-
   function emit(instance, event, ...rawArgs) {
     var props = instance.vnode.props || EMPTY_OBJ;
     var args = rawArgs;
@@ -2440,18 +2409,8 @@ export default function vueFactory(exports) {
     renderFnWithContext._d = true;
     return renderFnWithContext;
   }
-  /**
-   * dev only flag to track whether $attrs was used during render.
-   * If $attrs was used during render then the warning for failed attrs
-   * fallthrough can be suppressed.
-   */
 
-
-  var accessedAttrs = false;
-
-  function markAttrsAccessed() {
-    accessedAttrs = true;
-  }
+  function markAttrsAccessed() {}
 
   function renderComponentRoot(instance) {
     var {
@@ -2472,11 +2431,10 @@ export default function vueFactory(exports) {
       inheritAttrs
     } = instance;
     var result;
+    var fallthroughAttrs;
     var prev = setCurrentRenderingInstance(instance);
 
     try {
-      var fallthroughAttrs;
-
       if (vnode.shapeFlag & 4
       /* STATEFUL_COMPONENT */
       ) {
@@ -2506,65 +2464,6 @@ export default function vueFactory(exports) {
         /* we know it doesn't need it */
         ));
         fallthroughAttrs = Component.props ? attrs : getFunctionalFallthrough(attrs);
-      } // attr merging
-      // in dev mode, comments are preserved, and it's possible for a template
-      // to have comments along side the root element which makes it a fragment
-
-
-      var root = result;
-      var setRoot = undefined;
-      if ("production" !== 'production' && result.patchFlag > 0 && result.patchFlag & 2048
-      /* DEV_ROOT_FRAGMENT */
-      ) ;
-
-      if (fallthroughAttrs && inheritAttrs !== false) {
-        var keys = Object.keys(fallthroughAttrs);
-        var {
-          shapeFlag
-        } = root;
-
-        if (keys.length) {
-          if (shapeFlag & (1
-          /* ELEMENT */
-          | 6
-          /* COMPONENT */
-          )) {
-            if (propsOptions && keys.some(isModelListener)) {
-              // If a v-model listener (onUpdate:xxx) has a corresponding declared
-              // prop, it indicates this component expects to handle v-model and
-              // it should not fallthrough.
-              // related: #1543, #1643, #1989
-              fallthroughAttrs = filterModelListeners(fallthroughAttrs, propsOptions);
-            }
-
-            root = cloneVNode(root, fallthroughAttrs);
-          } else if ("production" !== 'production' && !accessedAttrs && root.type !== Comment) ;
-        }
-      }
-
-      if (false && isCompatEnabled("INSTANCE_ATTRS_CLASS_STYLE"
-      /* INSTANCE_ATTRS_CLASS_STYLE */
-      , instance) && vnode.shapeFlag & 4
-      /* STATEFUL_COMPONENT */
-      && root.shapeFlag & (1
-      /* ELEMENT */
-      | 6
-      /* COMPONENT */
-      )) ; // inherit directives
-
-      if (vnode.dirs) {
-        if ("production" !== 'production' && !isElementRoot(root)) ;
-        root.dirs = root.dirs ? root.dirs.concat(vnode.dirs) : vnode.dirs;
-      } // inherit transition data
-
-
-      if (vnode.transition) {
-        if ("production" !== 'production' && !isElementRoot(root)) ;
-        root.transition = vnode.transition;
-      }
-
-      if ("production" !== 'production' && setRoot) ;else {
-        result = root;
       }
     } catch (err) {
       blockStack.length = 0;
@@ -2572,45 +2471,54 @@ export default function vueFactory(exports) {
       /* RENDER_FUNCTION */
       );
       result = createVNode(Comment);
+    } // attr merging
+    // in dev mode, comments are preserved, and it's possible for a template
+    // to have comments along side the root element which makes it a fragment
+
+
+    var root = result;
+
+    if (fallthroughAttrs && inheritAttrs !== false) {
+      var keys = Object.keys(fallthroughAttrs);
+      var {
+        shapeFlag
+      } = root;
+
+      if (keys.length) {
+        if (shapeFlag & (1
+        /* ELEMENT */
+        | 6
+        /* COMPONENT */
+        )) {
+          if (propsOptions && keys.some(isModelListener)) {
+            // If a v-model listener (onUpdate:xxx) has a corresponding declared
+            // prop, it indicates this component expects to handle v-model and
+            // it should not fallthrough.
+            // related: #1543, #1643, #1989
+            fallthroughAttrs = filterModelListeners(fallthroughAttrs, propsOptions);
+          }
+
+          root = cloneVNode(root, fallthroughAttrs);
+        }
+      }
+    } // inherit directives
+
+
+    if (vnode.dirs) {
+      root.dirs = root.dirs ? root.dirs.concat(vnode.dirs) : vnode.dirs;
+    } // inherit transition data
+
+
+    if (vnode.transition) {
+      root.transition = vnode.transition;
     }
 
+    {
+      result = root;
+    }
     setCurrentRenderingInstance(prev);
     return result;
   }
-  /**
-   * dev only
-   * In dev mode, template root level comments are rendered, which turns the
-   * template into a fragment root, but we need to locate the single element
-   * root for attrs and scope id processing.
-   */
-
-
-  var getChildRoot = vnode => {
-    var rawChildren = vnode.children;
-    var dynamicChildren = vnode.dynamicChildren;
-    var childRoot = filterSingleRoot(rawChildren);
-
-    if (!childRoot) {
-      return [vnode, undefined];
-    }
-
-    var index = rawChildren.indexOf(childRoot);
-    var dynamicIndex = dynamicChildren ? dynamicChildren.indexOf(childRoot) : -1;
-
-    var setRoot = updatedRoot => {
-      rawChildren[index] = updatedRoot;
-
-      if (dynamicChildren) {
-        if (dynamicIndex > -1) {
-          dynamicChildren[dynamicIndex] = updatedRoot;
-        } else if (updatedRoot.patchFlag > 0) {
-          vnode.dynamicChildren = [...dynamicChildren, updatedRoot];
-        }
-      }
-    };
-
-    return [normalizeVNode(childRoot), setRoot];
-  };
 
   function filterSingleRoot(children) {
     var singleRoot;
@@ -2658,15 +2566,6 @@ export default function vueFactory(exports) {
     }
 
     return res;
-  };
-
-  var isElementRoot = vnode => {
-    return vnode.shapeFlag & (6
-    /* COMPONENT */
-    | 1
-    /* ELEMENT */
-    ) || vnode.type === Comment // potential v-if branch switch
-    ;
   };
 
   function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
@@ -3219,9 +3118,9 @@ export default function vueFactory(exports) {
     var block;
 
     if (isFunction(s)) {
-      var isCompiledSlot = s._c;
+      var trackBlock = isBlockTreeEnabled && s._c;
 
-      if (isCompiledSlot) {
+      if (trackBlock) {
         // disableTracking: false
         // allow block tracking for compiled slots
         // (see ./componentRenderContext.ts)
@@ -3231,7 +3130,7 @@ export default function vueFactory(exports) {
 
       s = s();
 
-      if (isCompiledSlot) {
+      if (trackBlock) {
         s._d = true;
         block = currentBlock;
         closeBlock();
@@ -8948,7 +8847,6 @@ export default function vueFactory(exports) {
   var resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
   var currentFlushPromise = null;
   var currentPreFlushParentJob = null;
-  var RECURSION_LIMIT = 100;
 
   function nextTick(fn) {
     var p = currentFlushPromise || resolvedPromise;
@@ -9082,14 +8980,20 @@ export default function vueFactory(exports) {
     // 2. If a component is unmounted during a parent component's update,
     //    its update can be skipped.
 
-    queue.sort((a, b) => getId(a) - getId(b));
+    queue.sort((a, b) => getId(a) - getId(b)); // conditional usage of checkRecursiveUpdate must be determined out of
+    // try ... catch block since Rollup by default de-optimizes treeshaking
+    // inside try-catch. This can leave all warning code unshaked. Although
+    // they would get eventually shaken by a minifier like terser, some minifiers
+    // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
+
+    var check = NOOP;
 
     try {
       for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
         var job = queue[flushIndex];
 
         if (job && job.active !== false) {
-          if ("production" !== 'production' && checkRecursiveUpdates(seen, job)) ; // console.log(`running:`, job.id)
+          if ("production" !== 'production' && check(job)) ; // console.log(`running:`, job.id)
 
           callWithErrorHandling(job, null, 14
           /* SCHEDULER */
@@ -9106,23 +9010,6 @@ export default function vueFactory(exports) {
 
       if (queue.length || pendingPreFlushCbs.length || pendingPostFlushCbs.length) {
         flushJobs(seen);
-      }
-    }
-  }
-
-  function checkRecursiveUpdates(seen, fn) {
-    if (!seen.has(fn)) {
-      seen.set(fn, 1);
-    } else {
-      var count = seen.get(fn);
-
-      if (count > RECURSION_LIMIT) {
-        var instance = fn.ownerInstance;
-        var componentName = instance && getComponentName(instance.type);
-        warn$1("Maximum recursive updates exceeded".concat(componentName ? " in component <".concat(componentName, ">") : "", ". ") + "This means you have a reactive effect that is mutating its own " + "dependencies and thus recursively triggering itself. Possible sources " + "include component template, render function, updated hook or " + "watcher source function.");
-        return true;
-      } else {
-        seen.set(fn, count + 1);
       }
     }
   } // Simple effect.
@@ -9577,7 +9464,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.11";
+  var version = "3.2.12";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

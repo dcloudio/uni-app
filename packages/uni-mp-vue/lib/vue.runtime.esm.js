@@ -2369,7 +2369,11 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
             return Component;
         }
         if ((process.env.NODE_ENV !== 'production') && warnMissing && !res) {
-            warn$1(`Failed to resolve ${type.slice(0, -1)}: ${name}`);
+            const extra = type === COMPONENTS
+                ? `\nIf this is a native custom element, make sure to exclude it from ` +
+                    `component resolution via compilerOptions.isCustomElement.`
+                : ``;
+            warn$1(`Failed to resolve ${type.slice(0, -1)}: ${name}${extra}`);
         }
         return res;
     }
@@ -2923,17 +2927,19 @@ function exposePropsOnRenderContext(instance) {
 function exposeSetupStateOnRenderContext(instance) {
     const { ctx, setupState } = instance;
     Object.keys(toRaw(setupState)).forEach(key => {
-        if (!setupState.__isScriptSetup && (key[0] === '$' || key[0] === '_')) {
-            warn$1(`setup() return property ${JSON.stringify(key)} should not start with "$" or "_" ` +
-                `which are reserved prefixes for Vue internals.`);
-            return;
+        if (!setupState.__isScriptSetup) {
+            if (key[0] === '$' || key[0] === '_') {
+                warn$1(`setup() return property ${JSON.stringify(key)} should not start with "$" or "_" ` +
+                    `which are reserved prefixes for Vue internals.`);
+                return;
+            }
+            Object.defineProperty(ctx, key, {
+                enumerable: true,
+                configurable: true,
+                get: () => setupState[key],
+                set: NOOP
+            });
         }
-        Object.defineProperty(ctx, key, {
-            enumerable: true,
-            configurable: true,
-            get: () => setupState[key],
-            set: NOOP
-        });
     });
 }
 
@@ -3658,11 +3664,19 @@ function flushJobs(seen) {
     // 2. If a component is unmounted during a parent component's update,
     //    its update can be skipped.
     queue.sort((a, b) => getId(a) - getId(b));
+    // conditional usage of checkRecursiveUpdate must be determined out of
+    // try ... catch block since Rollup by default de-optimizes treeshaking
+    // inside try-catch. This can leave all warning code unshaked. Although
+    // they would get eventually shaken by a minifier like terser, some minifiers
+    // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
+    const check = (process.env.NODE_ENV !== 'production')
+        ? (job) => checkRecursiveUpdates(seen, job)
+        : NOOP;
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
             const job = queue[flushIndex];
             if (job && job.active !== false) {
-                if ((process.env.NODE_ENV !== 'production') && checkRecursiveUpdates(seen, job)) {
+                if ((process.env.NODE_ENV !== 'production') && check(job)) {
                     continue;
                 }
                 // console.log(`running:`, job.id)
@@ -3968,7 +3982,7 @@ function defineEmits() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.11";
+const version = "3.2.12";
 
 // import deepCopy from './deepCopy'
 /**
@@ -4259,7 +4273,8 @@ var MPType;
 })(MPType || (MPType = {}));
 const queuePostRenderEffect$1 = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
-    const instance = (initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null));
+    const instance = (initialVNode.component =
+        createComponentInstance(initialVNode, options.parentComponent, null));
     if (__VUE_OPTIONS_API__) {
         instance.ctx.$onApplyOptions = onApplyOptions;
         instance.ctx.$children = [];
@@ -4277,8 +4292,7 @@ function mountComponent(initialVNode, options) {
     if (__VUE_OPTIONS_API__) {
         // $children
         if (options.parentComponent && instance.proxy) {
-            options.parentComponent.ctx
-                .$children.push(instance.proxy);
+            options.parentComponent.ctx.$children.push(instance.proxy);
         }
     }
     setupRenderEffect(instance);
