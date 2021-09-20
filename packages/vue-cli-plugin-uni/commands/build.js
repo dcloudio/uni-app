@@ -41,7 +41,7 @@ module.exports = (api, options) => {
       }
     }
 
-    const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao']
+    const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao', 'mp-lark']
     if (args.subpackage && platforms.includes(process.env.UNI_PLATFORM)) {
       process.env.UNI_SUBPACKGE = args.subpackage
     }

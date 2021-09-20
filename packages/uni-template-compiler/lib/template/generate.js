@@ -71,8 +71,8 @@ function processElement (ast, state, isRoot) {
       Object.keys(ast.attr.generic).forEach(scopedSlotName => {
         slots.push(scopedSlotName)
       })
-      if (platformName === 'mp-toutiao') {
-        // 用于字节跳动小程序模拟抽象节点
+      if (platformName === 'mp-toutiao' || platformName === 'mp-lark') {
+        // 用于字节跳动|飞书小程序模拟抽象节点
         ast.attr.generic = `{{${JSON.stringify(ast.attr.generic)}}}`.replace(/"/g, '\'')
       } else {
         delete ast.attr.generic

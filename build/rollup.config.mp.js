@@ -28,6 +28,10 @@ const PLATFORMS = {
     prefix: 'ks',
     title: '快手小程序'
   },
+  'mp-lark': {
+    prefix: 'tt',
+    title: '飞书小程序'
+  },
   'quickapp-webview': {
     prefix: 'qa',
     title: '快应用(Webview)版'
