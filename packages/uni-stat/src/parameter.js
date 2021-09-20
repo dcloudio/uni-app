@@ -79,7 +79,8 @@ export const getPlatformName = () => {
     'mp-toutiao': 'tt',
     'mp-qq': 'qq',
     'quickapp-native': 'qn',
-    'mp-kuaishou': 'ks'
+    'mp-kuaishou': 'ks',
+    'mp-lark': 'lark'
   }
   return platformList[process.env.VUE_APP_PLATFORM];
 }
