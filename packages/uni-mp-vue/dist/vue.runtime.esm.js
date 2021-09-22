@@ -1134,7 +1134,8 @@ class ComputedRefImpl {
 function computed(getterOrOptions, debugOptions) {
     let getter;
     let setter;
-    if (isFunction(getterOrOptions)) {
+    const onlyGetter = isFunction(getterOrOptions);
+    if (onlyGetter) {
         getter = getterOrOptions;
         setter = (process.env.NODE_ENV !== 'production')
             ? () => {
@@ -1146,7 +1147,7 @@ function computed(getterOrOptions, debugOptions) {
         getter = getterOrOptions.get;
         setter = getterOrOptions.set;
     }
-    const cRef = new ComputedRefImpl(getter, setter, isFunction(getterOrOptions) || !getterOrOptions.set);
+    const cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter);
     if ((process.env.NODE_ENV !== 'production') && debugOptions) {
         cRef.effect.onTrack = debugOptions.onTrack;
         cRef.effect.onTrigger = debugOptions.onTrigger;
@@ -2277,8 +2278,8 @@ function createAppContext() {
     };
 }
 let uid = 0;
-// fixed by xxxxxx
-function createAppAPI(render, hydrate) {
+function createAppAPI(render, // fixed by xxxxxx
+hydrate) {
     return function createApp(rootComponent, rootProps = null) {
         if (rootProps != null && !isObject(rootProps)) {
             (process.env.NODE_ENV !== 'production') && warn$1(`root props passed to app.mount() must be an object.`);
@@ -3988,7 +3989,7 @@ function createPathGetter(ctx, path) {
         return cur;
     };
 }
-function traverse(value, seen = new Set()) {
+function traverse(value, seen) {
     if (!isObject(value) || value["__v_skip" /* SKIP */]) {
         return value;
     }
@@ -4038,7 +4039,7 @@ function defineEmits() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.12";
+const version = "3.2.13";
 
 // import deepCopy from './deepCopy'
 /**

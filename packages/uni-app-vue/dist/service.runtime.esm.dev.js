@@ -2287,8 +2287,9 @@ export default function vueFactory(exports) {
   function computed(getterOrOptions, debugOptions) {
     var getter;
     var setter;
+    var onlyGetter = isFunction(getterOrOptions);
 
-    if (isFunction(getterOrOptions)) {
+    if (onlyGetter) {
       getter = getterOrOptions;
 
       setter = () => {
@@ -2299,7 +2300,7 @@ export default function vueFactory(exports) {
       setter = getterOrOptions.set;
     }
 
-    var cRef = new ComputedRefImpl(getter, setter, isFunction(getterOrOptions) || !getterOrOptions.set);
+    var cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter);
 
     if (debugOptions) {
       cRef.effect.onTrack = debugOptions.onTrack;
@@ -6100,7 +6101,7 @@ export default function vueFactory(exports) {
               app._instance = vnode.component;
               devtoolsInitApp(app, version);
             }
-            return vnode.component.proxy;
+            return getExposeProxy(vnode.component) || vnode.component.proxy;
           } else {
             warn$1("App has already been mounted.\n" + "If you want to remount the same app, move your app creation logic " + "into a factory function and create fresh app instances for each " + "mount - e.g. `const createMyApp = () => createApp(App)`");
           }
@@ -6356,13 +6357,13 @@ export default function vueFactory(exports) {
           )) {
             for (var key in props) {
               if (forcePatchValue && key.endsWith('value') || isOn(key) && !isReservedProp(key)) {
-                patchProp(el, key, null, props[key]);
+                patchProp(el, key, null, props[key], false, undefined, parentComponent);
               }
             }
           } else if (props.onClick) {
             // Fast path for click listeners (which is most often) to avoid
             // iterating through props.
-            patchProp(el, 'onClick', null, props.onClick);
+            patchProp(el, 'onClick', null, props.onClick, false, undefined, parentComponent);
           }
         } // vnode / directive hooks
 
@@ -10822,7 +10823,7 @@ export default function vueFactory(exports) {
     };
   }
 
-  function traverse(value, seen = new Set()) {
+  function traverse(value, seen) {
     if (!isObject(value) || value["__v_skip"
     /* SKIP */
     ]) {
@@ -11253,7 +11254,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.12";
+  var version = "3.2.13";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

@@ -1,16 +1,11 @@
 import { extend } from '@vue/shared'
 import { UniNode } from '@dcloudio/uni-shared'
-import {
-  App,
-  createVNode,
-  render,
-  ConcreteComponent,
-  ComponentPublicInstance,
-} from 'vue'
+import { App, createVNode, render, ComponentPublicInstance } from 'vue'
+import { VuePageComponent } from '../page/define'
 
 interface VueApp extends App {
   mountPage: (
-    pageComponent: ConcreteComponent,
+    pageComponent: VuePageComponent,
     pageProps: Record<string, any>,
     pageContainer: UniNode
   ) => ComponentPublicInstance
@@ -27,7 +22,7 @@ export function initVueApp(appVm: ComponentPublicInstance) {
   const appContext = appVm.$.appContext
   vueApp = extend(appContext.app, {
     mountPage(
-      pageComponent: ConcreteComponent,
+      pageComponent: VuePageComponent,
       pageProps: Record<string, any>,
       pageContainer: UniNode
     ) {
