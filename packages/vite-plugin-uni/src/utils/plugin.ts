@@ -103,7 +103,7 @@ function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
             return
           }
         } else if (isString(apply)) {
-          if (apply !== platform) {
+          if (!new RegExp(apply).test(platform)) {
             return
           }
         }
