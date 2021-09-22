@@ -25,7 +25,7 @@ interface WindowExt extends Window {
   [key: string]: any
 }
 
-export function loadMaps(callback: (maps: Maps) => void) {
+export function loadMaps(libraries: string[], callback: (maps: Maps) => void) {
   const mapInfo = getMapInfo()
   if (!mapInfo.key) {
     console.error('Map key not configured.')
@@ -56,10 +56,16 @@ export function loadMaps(callback: (maps: Maps) => void) {
       callbacks.length = 0
     }
     const script = document.createElement('script')
-    const src =
+    let src =
       mapInfo.type === MapType.GOOGLE
         ? 'https://maps.googleapis.com/maps/api/js?'
-        : 'https://map.qq.com/api/js?v=2.exp&libraries=geometry&'
+        : 'https://map.qq.com/api/js?v=2.exp&'
+    if (mapInfo.type === MapType.QQ) {
+      libraries.push('geometry')
+    }
+    if (libraries.length) {
+      src += `libraries=${libraries.join('%2C')}&`
+    }
     script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`
     script.onerror = function () {
       console.error('Map load failed.')

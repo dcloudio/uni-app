@@ -70,19 +70,13 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.async.";
   const keys = ["error"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "The connection timed out, click the screen to try again."
-    ]), false);
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["The connection timed out, click the screen to try again."]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
-    ]), false);
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
-    ]), false);
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]), false);
@@ -114,58 +108,38 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showToast.";
   const keys = ["unpaired"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "Please note showToast must be paired with hideToast"
-    ]), false);
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Please note showToast must be paired with hideToast"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "Tenga en cuenta que showToast debe estar emparejado con hideToast"
-    ]), false);
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Tenga en cuenta que showToast debe estar emparejado con hideToast"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
-    ]), false);
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
-      "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
-    ]), false);
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
-      "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
-    ]), false);
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"]), false);
   }
 });
 const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showLoading.";
   const keys = ["unpaired"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "Please note showLoading must be paired with hideLoading"
-    ]), false);
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Please note showLoading must be paired with hideLoading"]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "Tenga en cuenta que showLoading debe estar emparejado con hideLoading"
-    ]), false);
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Tenga en cuenta que showLoading debe estar emparejado con hideLoading"]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
-    ]), false);
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
-      "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
-    ]), false);
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
-      "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
-    ]), false);
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"]), false);
   }
 });
 const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
@@ -223,6 +197,25 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
+  }
+});
+const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.chooseLocation.";
+  const keys = ["search", "cancel"];
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Find Place", "Cancel"]), false);
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Encontrar", "Cancelar"]), false);
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Trouve", "Annuler"]), false);
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u70B9", "\u53D6\u6D88"]), false);
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u9EDE", "\u53D6\u6D88"]), false);
   }
 });
 const isEnableLocale = once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
@@ -14872,7 +14865,7 @@ function createCallout(maps2) {
 let maps;
 const callbacksMap = {};
 const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
-function loadMaps(callback) {
+function loadMaps(libraries, callback) {
   const mapInfo = getMapInfo();
   if (!mapInfo.key) {
     console.error("Map key not configured.");
@@ -14899,7 +14892,13 @@ function loadMaps(callback) {
       callbacks2.length = 0;
     };
     const script = document.createElement("script");
-    const src = mapInfo.type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&libraries=geometry&";
+    let src = mapInfo.type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&";
+    if (mapInfo.type === MapType.QQ) {
+      libraries.push("geometry");
+    }
+    if (libraries.length) {
+      src += `libraries=${libraries.join("%2C")}&`;
+    }
     script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
     script.onerror = function() {
       console.error("Map load failed.");
@@ -17392,7 +17391,7 @@ function distance(distance2) {
   if (distance2 > 100) {
     return `${distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0)}m | `;
   } else if (distance2 > 0) {
-    return "100m\u5185 | ";
+    return "<100m | ";
   } else {
     return "";
   }
@@ -17421,8 +17420,10 @@ function useList(state2) {
   const selectedRef = computed(() => list2[selectedIndexRef.value]);
   const listState = reactive({
     loading: true,
-    pageSize: 15,
+    pageSize: 20,
     pageIndex: 1,
+    hasNextPage: true,
+    nextPage: null,
     selectedIndex: selectedIndexRef,
     selected: selectedRef
   });
@@ -17441,26 +17442,68 @@ function useList(state2) {
   }
   function getList() {
     listState.loading = true;
-    const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
-    getJSONP(url, {
-      callback: "callback"
-    }, (res) => {
-      listState.loading = false;
-      if (state2.searching && "data" in res && res.data.length) {
-        pushData(res.data);
-      } else if ("result" in res) {
-        const result = res.result;
-        adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
-        if (result.pois) {
-          pushData(result.pois);
-        }
+    const mapInfo = getMapInfo();
+    if (mapInfo.type === MapType.GOOGLE) {
+      if (listState.pageIndex > 1 && listState.nextPage) {
+        listState.nextPage();
+        return;
       }
-    }, () => {
-      listState.loading = false;
-    });
+      const service = new google.maps.places.PlacesService(document.createElement("div"));
+      service[state2.searching ? "textSearch" : "nearbySearch"]({
+        location: {
+          lat: state2.latitude,
+          lng: state2.longitude
+        },
+        query: state2.keyword,
+        radius: 5e3
+      }, (results, state3, page) => {
+        listState.loading = false;
+        if (results && results.length) {
+          results.forEach((item) => {
+            list2.push({
+              name: item.name || "",
+              address: item.vicinity || item.formatted_address || "",
+              distance: 0,
+              latitude: item.geometry.location.lat(),
+              longitude: item.geometry.location.lng()
+            });
+          });
+        }
+        if (page) {
+          if (!page.hasNextPage) {
+            listState.hasNextPage = false;
+          } else {
+            listState.nextPage = () => {
+              page.nextPage();
+            };
+          }
+        }
+      });
+    } else if (mapInfo.type === MapType.QQ) {
+      const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
+      getJSONP(url, {
+        callback: "callback"
+      }, (res) => {
+        listState.loading = false;
+        if (state2.searching && "data" in res && res.data.length) {
+          pushData(res.data);
+        } else if ("result" in res) {
+          const result = res.result;
+          adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
+          if (result.pois) {
+            pushData(result.pois);
+          }
+        }
+        if (list2.length === listState.pageSize * listState.pageIndex) {
+          listState.hasNextPage = false;
+        }
+      }, () => {
+        listState.loading = false;
+      });
+    }
   }
   function loadMore() {
-    if (!listState.loading && list2.length === listState.pageSize * listState.pageIndex) {
+    if (!listState.loading && listState.hasNextPage) {
       listState.pageIndex++;
       getList();
     }
@@ -17468,6 +17511,8 @@ function useList(state2) {
   function reset() {
     listState.selectedIndex = -1;
     listState.pageIndex = 1;
+    listState.hasNextPage = true;
+    listState.nextPage = null;
     list2.splice(0, list2.length);
   }
   return {
@@ -17486,6 +17531,10 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
     emit: emit2
   }) {
     usePreventScroll();
+    initI18nChooseLocationMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
     const state2 = useState$1(props2);
     const {
       list: list2,
@@ -17577,6 +17626,8 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
         "longitude": state2.longitude,
         "class": "map",
         "show-location": true,
+        "libraries": ["places"],
+        "onUpdated": getList,
         "onRegionchange": onRegionChange
       }, {
         default: () => [createVNode("div", {
@@ -17587,7 +17638,7 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
           "onClick": moveToLocation
         }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
         _: 1
-      }, 8, ["latitude", "longitude", "show-location", "onRegionchange"]), createVNode("div", {
+      }, 8, ["latitude", "longitude", "show-location", "onUpdated", "onRegionchange"]), createVNode("div", {
         "class": "nav"
       }, [createVNode("div", {
         "class": "nav-btn back",
@@ -17606,16 +17657,16 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
       }, [createVNode(Input, {
         "value": state2.keyword,
         "class": "search-input",
-        "placeholder": "\u641C\u7D22\u5730\u70B9",
+        "placeholder": t2("uni.chooseLocation.search"),
         "onFocus": () => state2.searching = true,
         "onInput": onInput
-      }, null, 8, ["value", "onFocus", "onInput"]), state2.searching && createVNode("div", {
+      }, null, 8, ["value", "placeholder", "onFocus", "onInput"]), state2.searching && createVNode("div", {
         "class": "search-btn",
         "onClick": () => {
           state2.searching = false;
           state2.keyword = "";
         }
-      }, [createTextVNode("\u53D6\u6D88")], 8, ["onClick"])]), createVNode(ScrollView, {
+      }, [t2("uni.chooseLocation.cancel")], 8, ["onClick"])]), createVNode(ScrollView, {
         "scroll-y": true,
         "class": "list",
         "onScrolltolower": loadMore
@@ -19481,6 +19532,12 @@ const props$2 = {
   showLocation: {
     type: [Boolean, String],
     default: false
+  },
+  libraries: {
+    type: Array,
+    default() {
+      return [];
+    }
   }
 };
 function getPoints(points) {
@@ -19755,7 +19812,7 @@ function useMap(props2, rootRef, emit2) {
   } catch (error) {
   }
   onMounted(() => {
-    loadMaps((result) => {
+    loadMaps(props2.libraries, (result) => {
       maps2 = result;
       map = initMap();
       emitMapReady();

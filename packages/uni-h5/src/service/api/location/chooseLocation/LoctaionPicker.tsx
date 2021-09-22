@@ -1,3 +1,4 @@
+/// <reference types="google.maps" />
 import { extend } from '@vue/shared'
 import { ref, ExtractPropTypes, reactive, computed, watch } from 'vue'
 import { debounce } from '@dcloudio/uni-shared'
@@ -5,6 +6,8 @@ import {
   createSvgIconVNode,
   ICON_PATH_CLOSE,
   ICON_PATH_CONFIRM,
+  initI18nChooseLocationMsgsOnce,
+  useI18n,
 } from '@dcloudio/uni-core'
 import {
   defineSystemComponent,
@@ -16,6 +19,8 @@ import {
   Point,
   ICON_PATH_LOCTAION,
   ICON_PATH_TARGET,
+  MapType,
+  getMapInfo,
 } from '../../../../helpers/location'
 import { Map } from '../../../../view/components'
 import { getJSONP } from '../../../../helpers/getJSONP'
@@ -38,7 +43,7 @@ function distance(distance: number): string {
       distance > 1000 ? (distance / 1000).toFixed(1) + 'k' : distance.toFixed(0)
     }m | `
   } else if (distance > 0) {
-    return '100m内 | '
+    return '<100m | '
   } else {
     return ''
   }
@@ -83,8 +88,11 @@ function useList(state: State) {
   const selectedRef = computed(() => list[selectedIndexRef.value])
   const listState = reactive({
     loading: true,
-    pageSize: 15,
+    // google map default
+    pageSize: 20,
     pageIndex: 1,
+    hasNextPage: true,
+    nextPage: null as null | (() => void),
     selectedIndex: selectedIndexRef,
     selected: selectedRef,
   })
@@ -107,37 +115,81 @@ function useList(state: State) {
   }
   function getList() {
     listState.loading = true
-    const url = state.searching
-      ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}`
-      : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state.latitude},${state.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`
-    // TODO 列表加载失败提示
-    getJSONP(
-      url,
-      {
-        callback: 'callback',
-      },
-      (res: any) => {
-        listState.loading = false
-        if (state.searching && 'data' in res && res.data.length) {
-          pushData(res.data)
-        } else if ('result' in res) {
-          const result = res.result
-          adcodeRef.value = result.ad_info ? result.ad_info.adcode : ''
-          if (result.pois) {
-            pushData(result.pois)
+    const mapInfo = getMapInfo()
+    if (mapInfo.type === MapType.GOOGLE) {
+      if (listState.pageIndex > 1 && listState.nextPage) {
+        listState.nextPage()
+        return
+      }
+      const service = new google.maps.places.PlacesService(
+        document.createElement('div')
+      )
+      service[state.searching ? 'textSearch' : 'nearbySearch'](
+        {
+          location: {
+            lat: state.latitude,
+            lng: state.longitude,
+          },
+          query: state.keyword,
+          radius: 5000,
+        },
+        (results, state, page) => {
+          listState.loading = false
+          if (results && results.length) {
+            results.forEach((item) => {
+              list.push({
+                name: item.name || '',
+                address: item.vicinity || item.formatted_address || '',
+                distance: 0,
+                latitude: item.geometry!.location!.lat(),
+                longitude: item.geometry!.location!.lng(),
+              })
+            })
+          }
+          if (page) {
+            if (!page.hasNextPage) {
+              listState.hasNextPage = false
+            } else {
+              listState.nextPage = () => {
+                page.nextPage()
+              }
+            }
           }
         }
-      },
-      () => {
-        listState.loading = false
-      }
-    )
+      )
+    } else if (mapInfo.type === MapType.QQ) {
+      const url = state.searching
+        ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}`
+        : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state.latitude},${state.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`
+      // TODO 列表加载失败提示
+      getJSONP(
+        url,
+        {
+          callback: 'callback',
+        },
+        (res: any) => {
+          listState.loading = false
+          if (state.searching && 'data' in res && res.data.length) {
+            pushData(res.data)
+          } else if ('result' in res) {
+            const result = res.result
+            adcodeRef.value = result.ad_info ? result.ad_info.adcode : ''
+            if (result.pois) {
+              pushData(result.pois)
+            }
+          }
+          if (list.length === listState.pageSize * listState.pageIndex) {
+            listState.hasNextPage = false
+          }
+        },
+        () => {
+          listState.loading = false
+        }
+      )
+    }
   }
   function loadMore() {
-    if (
-      !listState.loading &&
-      list.length === listState.pageSize * listState.pageIndex
-    ) {
+    if (!listState.loading && listState.hasNextPage) {
       listState.pageIndex++
       getList()
     }
@@ -145,6 +197,8 @@ function useList(state: State) {
   function reset() {
     listState.selectedIndex = -1
     listState.pageIndex = 1
+    listState.hasNextPage = true
+    listState.nextPage = null
     list.splice(0, list.length)
   }
   return {
@@ -162,6 +216,8 @@ export default /*#__PURE__*/ defineSystemComponent({
   emits: ['close'],
   setup(props, { emit }) {
     usePreventScroll()
+    initI18nChooseLocationMsgsOnce()
+    const { t } = useI18n()
     const state = useState(props)
     const { list, listState, loadMore, reset, getList } = useList(state)
     const search = debounce(() => {
@@ -264,7 +320,8 @@ export default /*#__PURE__*/ defineSystemComponent({
             longitude={state.longitude}
             class="map"
             show-location
-            // @ts-ignore
+            libraries={['places']}
+            onUpdated={getList}
             onRegionchange={onRegionChange}
           >
             <div
@@ -295,7 +352,7 @@ export default /*#__PURE__*/ defineSystemComponent({
               <Input
                 value={state.keyword}
                 class="search-input"
-                placeholder="搜索地点"
+                placeholder={t('uni.chooseLocation.search')}
                 // @ts-ignore
                 onFocus={() => (state.searching = true)}
                 onInput={onInput}
@@ -308,7 +365,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                     state.keyword = ''
                   }}
                 >
-                  取消
+                  {t('uni.chooseLocation.cancel')}
                 </div>
               )}
             </div>

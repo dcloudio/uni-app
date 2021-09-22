@@ -676,3 +676,42 @@ export const initI18nButtonMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
 })
+export const initI18nChooseLocationMsgsOnce = /*#__PURE__*/ once(() => {
+  const name = 'uni.chooseLocation.'
+  const keys = ['search', 'cancel']
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, ['Find Place', 'Cancel']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, ['Encontrar', 'Cancelar']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, ['Trouve', 'Annuler']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ['搜索地点', '取消']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ['搜索地點', '取消']),
+      false
+    )
+  }
+})

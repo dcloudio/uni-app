@@ -81,6 +81,12 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
+  libraries: {
+    type: Array as PropType<string[]>,
+    default() {
+      return []
+    },
+  },
 }
 
 type Props = Record<keyof typeof props, any>
@@ -415,7 +421,7 @@ function useMap(
     )
   } catch (error) {}
   onMounted(() => {
-    loadMaps((result) => {
+    loadMaps(props.libraries, (result) => {
       maps = result
       map = initMap()
       emitMapReady()
