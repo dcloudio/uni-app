@@ -27,6 +27,8 @@ if (__PLATFORM__ === 'h5') {
 } else if (__PLATFORM__ === 'app-plus') {
   if (typeof weex === 'object') {
     locale = weex.requireModule('plus').getLanguage()
+  } else {
+    locale = ''
   }
 } else {
   locale = __GLOBAL__.getSystemInfoSync().language
