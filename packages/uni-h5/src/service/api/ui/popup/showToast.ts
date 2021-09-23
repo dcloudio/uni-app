@@ -30,7 +30,8 @@ let showToastState: ToastProps
 let showType: 'onShowToast' | 'onShowLoading' | '' = ''
 let timeoutId: number
 
-const scope = effectScope()
+const scope = /*#__PURE__*/ effectScope()
+
 function watchVisible() {
   scope.run(() => {
     watch(

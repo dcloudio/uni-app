@@ -10,6 +10,7 @@ interface ProjectFeatures {
   i18nFr: boolean
   i18nZhHans: boolean
   i18nZhHant: boolean
+  uniCloud: boolean
 }
 interface PagesFeatures {
   nvue: boolean
@@ -44,6 +45,7 @@ function initProjectFeature({ inputDir }: InitFeaturesOptions) {
     i18nFr: true,
     i18nZhHans: true,
     i18nZhHant: true,
+    uniCloud: false,
   }
   const localesDir = path.resolve(inputDir, 'locale')
   if (fs.existsSync(localesDir)) {
@@ -52,6 +54,14 @@ function initProjectFeature({ inputDir }: InitFeaturesOptions) {
     ) {
       features.i18nLocale = true
     }
+  }
+  if (process.env.UNI_CLOUD_PROVIDER) {
+    try {
+      const providers = JSON.parse(process.env.UNI_CLOUD_PROVIDER)
+      if (providers.length) {
+        features.uniCloud = true
+      }
+    } catch (e) {}
   }
   return features
 }
@@ -207,6 +217,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     wxs,
     rpx,
     nvue,
+    uniCloud,
     i18nEn,
     i18nEs,
     i18nFr,
@@ -250,6 +261,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     __UNI_FEATURE_I18N_ZH_HANS__: i18nZhHans, // 是否启用zh_Hans
     __UNI_FEATURE_I18N_ZH_HANT__: i18nZhHant, // 是否启用zh_Hant
     // 以下特性，编译器已自动识别是否需要启用
+    __UNI_FEATURE_UNI_CLOUD__: uniCloud, // 是否启用uniCloud
     __UNI_FEATURE_I18N_LOCALE__: i18nLocale, // 是否启用i18n
     __UNI_FEATURE_NVUE__: nvue, // 是否启用nvue
     __UNI_FEATURE_ROUTER_MODE__: routerMode, // 路由模式

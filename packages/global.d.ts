@@ -37,6 +37,7 @@ declare var __UNI_FEATURE_NVUE__: boolean
 declare var __UNI_FEATURE_PROMISE__: boolean
 declare var __UNI_FEATURE_LONGPRESS__: boolean
 declare var __UNI_FEATURE_ROUTER_MODE__: 'hash' | 'history'
+declare var __UNI_FEATURE_UNI_CLOUD__: boolean
 
 declare var __UNI_FEATURE_PAGES__: boolean
 declare var __UNI_FEATURE_TABBAR__: boolean

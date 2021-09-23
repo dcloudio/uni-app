@@ -13283,7 +13283,11 @@ function initApp$1(app) {
   }
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
-  uniIdMixin(globalProperties);
+  {
+    if (__UNI_FEATURE_UNI_CLOUD__) {
+      uniIdMixin(globalProperties);
+    }
+  }
   {
     globalProperties.$set = set;
     globalProperties.$applyOptions = applyOptions;
@@ -18042,7 +18046,7 @@ function useToastIcon(props2) {
 let showToastState;
 let showType = "";
 let timeoutId;
-const scope = effectScope();
+const scope = /* @__PURE__ */ effectScope();
 function watchVisible() {
   scope.run(() => {
     watch([() => showToastState.visible, () => showToastState.duration], ([visible, duration]) => {

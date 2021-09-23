@@ -16,7 +16,13 @@ export function initApp(app: App) {
   initOptionMergeStrategies(appConfig.optionMergeStrategies)
 
   const globalProperties = appConfig.globalProperties
-  uniIdMixin(globalProperties)
+  if (__PLATFORM__ === 'h5') {
+    if (__UNI_FEATURE_UNI_CLOUD__) {
+      uniIdMixin(globalProperties)
+    }
+  } else {
+    uniIdMixin(globalProperties)
+  }
   if (__VUE_OPTIONS_API__) {
     globalProperties.$set = set
     globalProperties.$applyOptions = applyOptions

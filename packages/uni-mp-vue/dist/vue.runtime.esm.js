@@ -4555,7 +4555,9 @@ function initApp(app) {
     }
     initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;
-    uniIdMixin(globalProperties);
+    {
+        uniIdMixin(globalProperties);
+    }
     if (__VUE_OPTIONS_API__) {
         globalProperties.$set = set;
         globalProperties.$applyOptions = applyOptions;

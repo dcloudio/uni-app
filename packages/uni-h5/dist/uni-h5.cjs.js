@@ -6565,7 +6565,11 @@ function initApp$1(app) {
   }
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
-  uniIdMixin(globalProperties);
+  {
+    if (__UNI_FEATURE_UNI_CLOUD__) {
+      uniIdMixin(globalProperties);
+    }
+  }
   {
     globalProperties.$set = set;
     globalProperties.$applyOptions = applyOptions;

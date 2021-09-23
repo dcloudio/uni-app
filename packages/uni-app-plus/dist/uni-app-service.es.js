@@ -9992,7 +9992,9 @@ var serviceContext = (function (vue) {
       }
       initOptionMergeStrategies(appConfig.optionMergeStrategies);
       const globalProperties = appConfig.globalProperties;
-      uniIdMixin(globalProperties);
+      {
+          uniIdMixin(globalProperties);
+      }
       {
           globalProperties.$set = set;
           globalProperties.$applyOptions = applyOptions;
