@@ -326,7 +326,8 @@ uni-input[hidden] {
   text-shadow: inherit;
 }
 
-.uni-input-input[type="search"]::-webkit-search-cancel-button {
+.uni-input-input[type="search"]::-webkit-search-cancel-button,
+.uni-input-input[type="search"]::-webkit-search-decoration {
   display: none;
 }
 
