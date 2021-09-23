@@ -1,4 +1,4 @@
-import { isSymbol, isObject, toRawType, def, isArray, isFunction, NOOP, remove, toHandlerKey, camelize, capitalize, isString, normalizeClass, extend, normalizeStyle, isOn, isPromise, EMPTY_OBJ, hasChanged, isSet, isMap, isPlainObject, invokeArrayFns, hasOwn, NO, isIntegerKey, toNumber, hyphenate, isReservedProp, EMPTY_ARR, makeMap, toTypeString } from '@vue/shared';
+import { isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, camelize, capitalize, isString, normalizeClass, extend, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, invokeArrayFns, hasOwn, NO, isIntegerKey, toNumber, hyphenate, isReservedProp, EMPTY_ARR, makeMap, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
 
 // lifecycle
@@ -231,23 +231,6 @@ function cleanupEffect(effect) {
         }
         deps.length = 0;
     }
-}
-function effect(fn, options) {
-    if (fn.effect) {
-        fn = fn.effect.fn;
-    }
-    const _effect = new ReactiveEffect(fn);
-    if (options) {
-        extend(_effect, options);
-        if (options.scope)
-            recordEffectScope(_effect, options.scope);
-    }
-    if (!options || !options.lazy) {
-        _effect.run();
-    }
-    const runner = _effect.run.bind(_effect);
-    runner.effect = _effect;
-    return runner;
 }
 let shouldTrack = true;
 const trackStack = [];
@@ -570,8 +553,6 @@ const shallowReadonlyHandlers = /*#__PURE__*/ extend({}, readonlyHandlers, {
     get: shallowReadonlyGet
 });
 
-const toReactive = (value) => isObject(value) ? reactive(value) : value;
-const toReadonly = (value) => isObject(value) ? readonly(value) : value;
 const toShallow = (value) => value;
 const getProto = (v) => Reflect.getPrototypeOf(v);
 function get$1(target, key, isReadonly = false, isShallow = false) {
@@ -961,6 +942,8 @@ function markRaw(value) {
     def(value, "__v_skip" /* SKIP */, true);
     return value;
 }
+const toReactive = (value) => isObject(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject(value) ? readonly(value) : value;
 
 function trackRefValue(ref) {
     if (isTracking()) {
@@ -996,7 +979,6 @@ function triggerRefValue(ref, newVal) {
         }
     }
 }
-const convert = (val) => isObject(val) ? reactive(val) : val;
 function isRef(r) {
     return Boolean(r && r.__v_isRef === true);
 }
@@ -1006,13 +988,19 @@ function ref(value) {
 function shallowRef(value) {
     return createRef(value, true);
 }
+function createRef(rawValue, shallow) {
+    if (isRef(rawValue)) {
+        return rawValue;
+    }
+    return new RefImpl(rawValue, shallow);
+}
 class RefImpl {
     constructor(value, _shallow) {
         this._shallow = _shallow;
         this.dep = undefined;
         this.__v_isRef = true;
         this._rawValue = _shallow ? value : toRaw(value);
-        this._value = _shallow ? value : convert(value);
+        this._value = _shallow ? value : toReactive(value);
     }
     get value() {
         trackRefValue(this);
@@ -1022,16 +1010,10 @@ class RefImpl {
         newVal = this._shallow ? newVal : toRaw(newVal);
         if (hasChanged(newVal, this._rawValue)) {
             this._rawValue = newVal;
-            this._value = this._shallow ? newVal : convert(newVal);
+            this._value = this._shallow ? newVal : toReactive(newVal);
             triggerRefValue(this, newVal);
         }
     }
-}
-function createRef(rawValue, shallow) {
-    if (isRef(rawValue)) {
-        return rawValue;
-    }
-    return new RefImpl(rawValue, shallow);
 }
 function triggerRef(ref) {
     triggerRefValue(ref, (process.env.NODE_ENV !== 'production') ? ref.value : void 0);
@@ -1134,7 +1116,8 @@ class ComputedRefImpl {
 function computed(getterOrOptions, debugOptions) {
     let getter;
     let setter;
-    if (isFunction(getterOrOptions)) {
+    const onlyGetter = isFunction(getterOrOptions);
+    if (onlyGetter) {
         getter = getterOrOptions;
         setter = (process.env.NODE_ENV !== 'production')
             ? () => {
@@ -1146,7 +1129,7 @@ function computed(getterOrOptions, debugOptions) {
         getter = getterOrOptions.get;
         setter = getterOrOptions.set;
     }
-    const cRef = new ComputedRefImpl(getter, setter, isFunction(getterOrOptions) || !getterOrOptions.set);
+    const cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter);
     if ((process.env.NODE_ENV !== 'production') && debugOptions) {
         cRef.effect.onTrack = debugOptions.onTrack;
         cRef.effect.onTrigger = debugOptions.onTrigger;
@@ -1154,7 +1137,13 @@ function computed(getterOrOptions, debugOptions) {
     return cRef;
 }
 
-function emit(instance, event, ...rawArgs) {
+function emit(event, ...args) {
+}
+function devtoolsComponentEmit(component, event, params) {
+    emit("component:emit" /* COMPONENT_EMIT */, component.appContext.app, component, event, params);
+}
+
+function emit$1(instance, event, ...rawArgs) {
     const props = instance.vnode.props || EMPTY_OBJ;
     if ((process.env.NODE_ENV !== 'production')) {
         const { emitsOptions, propsOptions: [propsOptions] } = instance;
@@ -1191,7 +1180,9 @@ function emit(instance, event, ...rawArgs) {
             args = rawArgs.map(toNumber);
         }
     }
-    if ((process.env.NODE_ENV !== 'production') || false) ;
+    if ((process.env.NODE_ENV !== 'production') || false) {
+        devtoolsComponentEmit(instance, event, args);
+    }
     if ((process.env.NODE_ENV !== 'production')) {
         const lowerCaseEvent = event.toLowerCase();
         if (lowerCaseEvent !== event && props[toHandlerKey(lowerCaseEvent)]) {
@@ -2277,8 +2268,8 @@ function createAppContext() {
     };
 }
 let uid = 0;
-// fixed by xxxxxx
-function createAppAPI(render, hydrate) {
+function createAppAPI(render, // fixed by xxxxxx
+hydrate) {
     return function createApp(rootComponent, rootProps = null) {
         if (rootProps != null && !isObject(rootProps)) {
             (process.env.NODE_ENV !== 'production') && warn$1(`root props passed to app.mount() must be an object.`);
@@ -2425,7 +2416,11 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
             return Component;
         }
         if ((process.env.NODE_ENV !== 'production') && warnMissing && !res) {
-            warn$1(`Failed to resolve ${type.slice(0, -1)}: ${name}`);
+            const extra = type === COMPONENTS
+                ? `\nIf this is a native custom element, make sure to exclude it from ` +
+                    `component resolution via compilerOptions.isCustomElement.`
+                : ``;
+            warn$1(`Failed to resolve ${type.slice(0, -1)}: ${name}${extra}`);
         }
         return res;
     }
@@ -2979,17 +2974,19 @@ function exposePropsOnRenderContext(instance) {
 function exposeSetupStateOnRenderContext(instance) {
     const { ctx, setupState } = instance;
     Object.keys(toRaw(setupState)).forEach(key => {
-        if (!setupState.__isScriptSetup && (key[0] === '$' || key[0] === '_')) {
-            warn$1(`setup() return property ${JSON.stringify(key)} should not start with "$" or "_" ` +
-                `which are reserved prefixes for Vue internals.`);
-            return;
+        if (!setupState.__isScriptSetup) {
+            if (key[0] === '$' || key[0] === '_') {
+                warn$1(`setup() return property ${JSON.stringify(key)} should not start with "$" or "_" ` +
+                    `which are reserved prefixes for Vue internals.`);
+                return;
+            }
+            Object.defineProperty(ctx, key, {
+                enumerable: true,
+                configurable: true,
+                get: () => setupState[key],
+                set: NOOP
+            });
         }
-        Object.defineProperty(ctx, key, {
-            enumerable: true,
-            configurable: true,
-            get: () => setupState[key],
-            set: NOOP
-        });
     });
 }
 
@@ -3072,7 +3069,7 @@ function createComponentInstance(vnode, parent, suspense) {
         instance.ctx = { _: instance };
     }
     instance.root = parent ? parent.root : instance;
-    instance.emit = emit.bind(null, instance);
+    instance.emit = emit$1.bind(null, instance);
     // apply custom element special handling
     if (vnode.ce) {
         vnode.ce(instance);
@@ -3714,11 +3711,19 @@ function flushJobs(seen) {
     // 2. If a component is unmounted during a parent component's update,
     //    its update can be skipped.
     queue.sort((a, b) => getId(a) - getId(b));
+    // conditional usage of checkRecursiveUpdate must be determined out of
+    // try ... catch block since Rollup by default de-optimizes treeshaking
+    // inside try-catch. This can leave all warning code unshaked. Although
+    // they would get eventually shaken by a minifier like terser, some minifiers
+    // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
+    const check = (process.env.NODE_ENV !== 'production')
+        ? (job) => checkRecursiveUpdates(seen, job)
+        : NOOP;
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
             const job = queue[flushIndex];
             if (job && job.active !== false) {
-                if ((process.env.NODE_ENV !== 'production') && checkRecursiveUpdates(seen, job)) {
+                if ((process.env.NODE_ENV !== 'production') && check(job)) {
                     continue;
                 }
                 // console.log(`running:`, job.id)
@@ -3974,7 +3979,7 @@ function createPathGetter(ctx, path) {
         return cur;
     };
 }
-function traverse(value, seen = new Set()) {
+function traverse(value, seen) {
     if (!isObject(value) || value["__v_skip" /* SKIP */]) {
         return value;
     }
@@ -4024,7 +4029,7 @@ function defineEmits() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.11";
+const version = "3.2.14";
 
 // import deepCopy from './deepCopy'
 /**
@@ -4315,7 +4320,8 @@ var MPType;
 })(MPType || (MPType = {}));
 const queuePostRenderEffect$1 = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
-    const instance = (initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null));
+    const instance = (initialVNode.component =
+        createComponentInstance(initialVNode, options.parentComponent, null));
     if (__VUE_OPTIONS_API__) {
         instance.ctx.$onApplyOptions = onApplyOptions;
         instance.ctx.$children = [];
@@ -4333,8 +4339,7 @@ function mountComponent(initialVNode, options) {
     if (__VUE_OPTIONS_API__) {
         // $children
         if (options.parentComponent && instance.proxy) {
-            options.parentComponent.ctx
-                .$children.push(instance.proxy);
+            options.parentComponent.ctx.$children.push(instance.proxy);
         }
     }
     setupRenderEffect(instance);
@@ -4343,19 +4348,8 @@ function mountComponent(initialVNode, options) {
     }
     return instance.proxy;
 }
-const prodEffectOptions = {
-    scheduler: queueJob
-};
-function createDevEffectOptions(instance) {
-    return {
-        scheduler: queueJob,
-        onTrack: instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0,
-        onTrigger: instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0
-    };
-}
 function setupRenderEffect(instance) {
-    // create reactive effect for rendering
-    instance.update = effect(function componentEffect() {
+    const componentUpdateFn = () => {
         if (!instance.isMounted) {
             instance.render && instance.render.call(instance.proxy);
             patch(instance);
@@ -4364,17 +4358,38 @@ function setupRenderEffect(instance) {
             instance.render && instance.render.call(instance.proxy);
             // updateComponent
             const { bu, u } = instance;
+            effect.allowRecurse = false;
             // beforeUpdate hook
             if (bu) {
                 invokeArrayFns(bu);
             }
+            effect.allowRecurse = true;
             patch(instance);
             // updated hook
             if (u) {
                 queuePostRenderEffect$1(u);
             }
         }
-    }, (process.env.NODE_ENV !== 'production') ? createDevEffectOptions(instance) : prodEffectOptions);
+    };
+    // create reactive effect for rendering
+    const effect = new ReactiveEffect(componentUpdateFn, () => queueJob(instance.update), instance.scope // track it in component's effect scope
+    );
+    const update = (instance.update = effect.run.bind(effect));
+    update.id = instance.uid;
+    // allowRecurse
+    // #1801, #2043 component render effects should allow recursive updates
+    effect.allowRecurse = update.allowRecurse = true;
+    if ((process.env.NODE_ENV !== 'production')) {
+        effect.onTrack = instance.rtc
+            ? e => invokeArrayFns(instance.rtc, e)
+            : void 0;
+        effect.onTrigger = instance.rtg
+            ? e => invokeArrayFns(instance.rtg, e)
+            : void 0;
+        // @ts-ignore (for scheduler)
+        update.ownerInstance = instance;
+    }
+    update();
 }
 function unmountComponent(instance) {
     const { bum, scope, update, um } = instance;

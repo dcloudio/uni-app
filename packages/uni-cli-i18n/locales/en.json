@@ -42,7 +42,7 @@
   "pluginUni.runDebugMode": "Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.",
   "pluginUni.runDebugModeNvue": "Especially the sourcemap of app-nvue has a greater impact",
   "pluginUni.runDebugModeMP": "To officially release, please click the release menu or use the cli release command to release",
-  "pluginUni.compileToMpPluginOnlySupportWeChat": "Compile to mini-program plug-in only supports WeChat mini-program",
+  "pluginUni.compileToMpPluginOnlySupportPlatform": "Compile to mini-program plug-in only supports WeChat mini-program and AliPay mini-program",
   "pluginUni.startCompileProjectToPlatform": "Start to compile the current project to the {{0}} {{1}}...",
   "pluginUni.fileNoExistsCheckAfterRetry": "{{0}} file does not exist, please check and try again",
   "pluginUni.entryDileNoExistsCheckAfterRetry": "{{0}} The entry file does not exist, please check and try again",

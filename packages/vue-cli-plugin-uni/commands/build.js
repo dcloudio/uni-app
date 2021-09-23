@@ -2,7 +2,8 @@ const path = require('path')
 
 const {
   runByHBuilderX,
-  isInHBuilderX
+  isInHBuilderX,
+  parseJson
 } = require('@dcloudio/uni-cli-shared')
 
 const uniI18n = require('@dcloudio/uni-cli-i18n')
@@ -45,13 +46,14 @@ module.exports = (api, options) => {
       process.env.UNI_SUBPACKGE = args.subpackage
     }
 
+    const mpPluginPlatforms = ['mp-weixin', 'mp-alipay']
     if (args.plugin) {
-      if (process.env.UNI_PLATFORM === 'mp-weixin') {
+      if (mpPluginPlatforms.includes(process.env.UNI_PLATFORM)) {
         process.env.UNI_MP_PLUGIN = args.plugin
         analysisPluginDir()
       } else {
         console.log()
-        console.error(uniI18n.__('pluginUni.compileToMpPluginOnlySupportWeChat'))
+        console.error(uniI18n.__('pluginUni.compileToMpPluginOnlySupportPlatform'))
         console.log()
         process.exit(0)
       }
@@ -224,7 +226,7 @@ function analysisPluginDir () {
     process.exit(0)
   }
 
-  const pluginJson = require(pluginJsonPath)
+  const pluginJson = parseJson(fs.readFileSync(pluginJsonPath, 'utf-8'), true)
 
   // main 入口文件是否存在
   process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main

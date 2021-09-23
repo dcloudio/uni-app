@@ -59,11 +59,11 @@ export function chooseImage ({
     const camera = plus.camera.getCamera()
     camera.captureImage(path => successCallback([path]),
       errorCallback, {
-      filename: TEMP_PATH + '/camera/',
-      resolution: 'high',
-      crop,
-      sizeType
-    })
+        filename: TEMP_PATH + '/camera/',
+        resolution: 'high',
+        crop,
+        sizeType
+      })
   }
 
   function openAlbum () {

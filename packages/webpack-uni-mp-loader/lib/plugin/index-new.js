@@ -80,7 +80,7 @@ function addMPPluginRequire (compilation) {
         const newlineIndex = compilation.assets[name].source().lastIndexOf('\n')
 
         const source = compilation.assets[name].source().substring(0, newlineIndex) +
-        `\nmodule.exports = wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__('${uniModuleId}');\n` +
+        `\nmodule.exports = ${process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'}.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__('${uniModuleId}');\n` +
         compilation.assets[name].source().substring(newlineIndex + 1)
 
         compilation.assets[name] = {
