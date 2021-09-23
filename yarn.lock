@@ -6670,10 +6670,10 @@ os-homedir@^1.0.0, os-homedir@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
 
-os-locale-s-fix@^1.0.8-fix:
-  version "1.0.8-fix"
-  resolved "https://registry.yarnpkg.com/os-locale-s-fix/-/os-locale-s-fix-1.0.8-fix.tgz#e9e8ab797072d650fde878692bae2765b804529a"
-  integrity sha512-00BFYcNU6Cdn8uYNGSNinXMxQtKiA5lqTQKrbhxpHToZ6aCUip6G4ygK4ui+YIkk+xtfPsHy2tETVKIgxd1iAQ==
+os-locale-s-fix@^1.0.8-fix-1:
+  version "1.0.8-fix-1"
+  resolved "https://registry.yarnpkg.com/os-locale-s-fix/-/os-locale-s-fix-1.0.8-fix-1.tgz#7db4f9fc7cea29e9266900ea0bc72aaff13ff14a"
+  integrity sha512-Sv0OvhPiMutICiwORAUefv02DCPb62IelBmo8ZsSrRHyI3FStqIWZvjqDkvtjU+lcujo7UNir+dCwKSqlEQ/5w==
   dependencies:
     lcid "^3.0.0"
 
