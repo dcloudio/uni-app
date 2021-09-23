@@ -238,7 +238,7 @@ export function registerApp (appVm, Vue) {
 
   initSubscribeHandlers()
 
-  initAppLaunch(Vue, appVm)
+  initAppLaunch(appVm)
 
   // 10s后清理临时文件
   setTimeout(clearTempFile, 10000)
