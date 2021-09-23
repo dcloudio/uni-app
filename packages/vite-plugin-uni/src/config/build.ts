@@ -8,6 +8,7 @@ export function createBuild(
 ): UserConfig['build'] {
   initEasycomsOnce(options.inputDir, options.platform)
   return {
+    chunkSizeWarningLimit: 100000000,
     rollupOptions: {
       onwarn(warning, warn) {
         if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {

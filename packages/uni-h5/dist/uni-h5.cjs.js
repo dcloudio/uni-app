@@ -10618,7 +10618,13 @@ function usePageHeadSearchInput({
     onKeyup
   };
 }
-var _sfc_main = {
+var _export_sfc = (sfc, props2) => {
+  for (const [key, val] of props2) {
+    sfc[key] = val;
+  }
+  return sfc;
+};
+const _sfc_main = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -10676,7 +10682,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-_sfc_main.render = _sfc_render;
+var PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 var PageBody = defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -10693,7 +10699,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
   if (!__UNI_FEATURE_PULL_DOWN_REFRESH__ || !pageMeta.enablePullDownRefresh) {
     return null;
   }
-  return vue.createVNode(_sfc_main, {
+  return vue.createVNode(PageRefresh, {
     "ref": refreshRef
   }, null, 512);
 }
