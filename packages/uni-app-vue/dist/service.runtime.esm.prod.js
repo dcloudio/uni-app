@@ -867,6 +867,12 @@ export default function vueFactory(exports) {
     return isNaN(n) ? val : n;
   };
 
+  var _globalThis;
+
+  var getGlobalThis = () => {
+    return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof window !== 'undefined' ? window : {});
+  };
+
   var activeEffectScope;
   var effectScopeStack = [];
 
@@ -1475,10 +1481,6 @@ export default function vueFactory(exports) {
     get: shallowReadonlyGet
   });
 
-  var toReactive = value => isObject(value) ? reactive(value) : value;
-
-  var toReadonly = value => isObject(value) ? readonly(value) : value;
-
   var toShallow = value => value;
 
   var getProto = v => Reflect.getPrototypeOf(v);
@@ -1985,6 +1987,10 @@ export default function vueFactory(exports) {
     return value;
   }
 
+  var toReactive = value => isObject(value) ? reactive(value) : value;
+
+  var toReadonly = value => isObject(value) ? readonly(value) : value;
+
   function trackRefValue(ref) {
     if (isTracking()) {
       ref = toRaw(ref);
@@ -2009,8 +2015,6 @@ export default function vueFactory(exports) {
     }
   }
 
-  var convert = val => isObject(val) ? reactive(val) : val;
-
   function isRef(r) {
     return Boolean(r && r.__v_isRef === true);
   }
@@ -2023,13 +2027,21 @@ export default function vueFactory(exports) {
     return createRef(value, true);
   }
 
+  function createRef(rawValue, shallow) {
+    if (isRef(rawValue)) {
+      return rawValue;
+    }
+
+    return new RefImpl(rawValue, shallow);
+  }
+
   class RefImpl {
     constructor(value, _shallow) {
       this._shallow = _shallow;
       this.dep = undefined;
       this.__v_isRef = true;
       this._rawValue = _shallow ? value : toRaw(value);
-      this._value = _shallow ? value : convert(value);
+      this._value = _shallow ? value : toReactive(value);
     }
 
     get value() {
@@ -2042,19 +2054,11 @@ export default function vueFactory(exports) {
 
       if (hasChanged(newVal, this._rawValue)) {
         this._rawValue = newVal;
-        this._value = this._shallow ? newVal : convert(newVal);
+        this._value = this._shallow ? newVal : toReactive(newVal);
         triggerRefValue(this);
       }
     }
 
-  }
-
-  function createRef(rawValue, shallow) {
-    if (isRef(rawValue)) {
-      return rawValue;
-    }
-
-    return new RefImpl(rawValue, shallow);
   }
 
   function triggerRef(ref) {
@@ -2195,12 +2199,27 @@ export default function vueFactory(exports) {
   }
 
   var devtools;
+  var buffer = [];
 
-  function setDevtoolsHook(hook) {
+  function setDevtoolsHook(hook, target) {
     devtools = hook;
+
+    if (devtools) {
+      devtools.enabled = true;
+      buffer.forEach(({
+        event,
+        args
+      }) => devtools.emit(event, ...args));
+      buffer = [];
+    } else {
+      var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
+      replay.push(newHook => {
+        setDevtoolsHook(newHook, target);
+      });
+    }
   }
 
-  function emit(instance, event, ...rawArgs) {
+  function emit$1(instance, event, ...rawArgs) {
     var props = instance.vnode.props || EMPTY_OBJ;
     var args = rawArgs;
     var isModelListener = event.startsWith('update:'); // for v-model update:xxx events, apply modifiers on args
@@ -5647,6 +5666,8 @@ export default function vueFactory(exports) {
 
 
   function baseCreateRenderer(options, createHydrationFns) {
+    var target = getGlobalThis();
+    target.__VUE__ = true;
     var {
       insert: hostInsert,
       remove: hostRemove,
@@ -8374,7 +8395,7 @@ export default function vueFactory(exports) {
       };
     }
     instance.root = parent ? parent.root : instance;
-    instance.emit = emit.bind(null, instance); // apply custom element special handling
+    instance.emit = emit$1.bind(null, instance); // apply custom element special handling
 
     if (vnode.ce) {
       vnode.ce(instance);
@@ -9465,7 +9486,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.13";
+  var version = "3.2.14";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

@@ -1543,10 +1543,6 @@ export default function vueFactory(exports) {
     get: shallowReadonlyGet
   });
 
-  var toReactive = value => isObject(value) ? reactive(value) : value;
-
-  var toReadonly = value => isObject(value) ? readonly(value) : value;
-
   var toShallow = value => value;
 
   var getProto = v => Reflect.getPrototypeOf(v);
@@ -2075,6 +2071,10 @@ export default function vueFactory(exports) {
     return value;
   }
 
+  var toReactive = value => isObject(value) ? reactive(value) : value;
+
+  var toReadonly = value => isObject(value) ? readonly(value) : value;
+
   function trackRefValue(ref) {
     if (isTracking()) {
       ref = toRaw(ref);
@@ -2112,8 +2112,6 @@ export default function vueFactory(exports) {
     }
   }
 
-  var convert = val => isObject(val) ? reactive(val) : val;
-
   function isRef(r) {
     return Boolean(r && r.__v_isRef === true);
   }
@@ -2126,13 +2124,21 @@ export default function vueFactory(exports) {
     return createRef(value, true);
   }
 
+  function createRef(rawValue, shallow) {
+    if (isRef(rawValue)) {
+      return rawValue;
+    }
+
+    return new RefImpl(rawValue, shallow);
+  }
+
   class RefImpl {
     constructor(value, _shallow) {
       this._shallow = _shallow;
       this.dep = undefined;
       this.__v_isRef = true;
       this._rawValue = _shallow ? value : toRaw(value);
-      this._value = _shallow ? value : convert(value);
+      this._value = _shallow ? value : toReactive(value);
     }
 
     get value() {
@@ -2145,19 +2151,11 @@ export default function vueFactory(exports) {
 
       if (hasChanged(newVal, this._rawValue)) {
         this._rawValue = newVal;
-        this._value = this._shallow ? newVal : convert(newVal);
+        this._value = this._shallow ? newVal : toReactive(newVal);
         triggerRefValue(this, newVal);
       }
     }
 
-  }
-
-  function createRef(rawValue, shallow) {
-    if (isRef(rawValue)) {
-      return rawValue;
-    }
-
-    return new RefImpl(rawValue, shallow);
   }
 
   function triggerRef(ref) {
@@ -2453,15 +2451,39 @@ export default function vueFactory(exports) {
   }
 
   var devtools;
+  var buffer = [];
 
-  function setDevtoolsHook(hook) {
+  function emit(event, ...args) {
+    if (devtools) {
+      devtools.emit(event, ...args);
+    } else {
+      buffer.push({
+        event,
+        args
+      });
+    }
+  }
+
+  function setDevtoolsHook(hook, target) {
     devtools = hook;
+
+    if (devtools) {
+      devtools.enabled = true;
+      buffer.forEach(({
+        event,
+        args
+      }) => devtools.emit(event, ...args));
+      buffer = [];
+    } else {
+      var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
+      replay.push(newHook => {
+        setDevtoolsHook(newHook, target);
+      });
+    }
   }
 
   function devtoolsInitApp(app, version) {
-    // TODO queue if devtools is undefined
-    if (!devtools) return;
-    devtools.emit("app:init"
+    emit("app:init"
     /* APP_INIT */
     , app, version, {
       Fragment,
@@ -2472,8 +2494,7 @@ export default function vueFactory(exports) {
   }
 
   function devtoolsUnmountApp(app) {
-    if (!devtools) return;
-    devtools.emit("app:unmount"
+    emit("app:unmount"
     /* APP_UNMOUNT */
     , app);
   }
@@ -2490,8 +2511,7 @@ export default function vueFactory(exports) {
 
   function createDevtoolsComponentHook(hook) {
     return component => {
-      if (!devtools) return;
-      devtools.emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
+      emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
     };
   }
 
@@ -2504,19 +2524,17 @@ export default function vueFactory(exports) {
 
   function createDevtoolsPerformanceHook(hook) {
     return (component, type, time) => {
-      if (!devtools) return;
-      devtools.emit(hook, component.appContext.app, component.uid, component, type, time);
+      emit(hook, component.appContext.app, component.uid, component, type, time);
     };
   }
 
   function devtoolsComponentEmit(component, event, params) {
-    if (!devtools) return;
-    devtools.emit("component:emit"
+    emit("component:emit"
     /* COMPONENT_EMIT */
     , component.appContext.app, component, event, params);
   }
 
-  function emit(instance, event, ...rawArgs) {
+  function emit$1(instance, event, ...rawArgs) {
     var props = instance.vnode.props || EMPTY_OBJ;
     {
       var {
@@ -6605,10 +6623,10 @@ export default function vueFactory(exports) {
 
 
   function baseCreateRenderer(options, createHydrationFns) {
+    var target = getGlobalThis();
+    target.__VUE__ = true;
     {
-      var target = getGlobalThis();
-      target.__VUE__ = true;
-      setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__);
+      setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__, target);
     }
     var {
       insert: hostInsert,
@@ -9697,7 +9715,7 @@ export default function vueFactory(exports) {
       instance.ctx = createDevRenderContext(instance);
     }
     instance.root = parent ? parent.root : instance;
-    instance.emit = emit.bind(null, instance); // apply custom element special handling
+    instance.emit = emit$1.bind(null, instance); // apply custom element special handling
 
     if (vnode.ce) {
       vnode.ce(instance);
@@ -11254,7 +11272,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.13";
+  var version = "3.2.14";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

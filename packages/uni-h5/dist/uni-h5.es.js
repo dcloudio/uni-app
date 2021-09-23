@@ -70,13 +70,19 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.async.";
   const keys = ["error"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["The connection timed out, click the screen to try again."]), false);
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+      "The connection timed out, click the screen to try again."
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."]), false);
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+      "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."]), false);
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+      "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]), false);
@@ -108,38 +114,58 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showToast.";
   const keys = ["unpaired"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Please note showToast must be paired with hideToast"]), false);
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+      "Please note showToast must be paired with hideToast"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Tenga en cuenta que showToast debe estar emparejado con hideToast"]), false);
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+      "Tenga en cuenta que showToast debe estar emparejado con hideToast"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"]), false);
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+      "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"]), false);
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
+      "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"]), false);
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
+      "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+    ]), false);
   }
 });
 const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showLoading.";
   const keys = ["unpaired"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Please note showLoading must be paired with hideLoading"]), false);
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+      "Please note showLoading must be paired with hideLoading"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Tenga en cuenta que showLoading debe estar emparejado con hideLoading"]), false);
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+      "Tenga en cuenta que showLoading debe estar emparejado con hideLoading"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"]), false);
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+      "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"]), false);
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
+      "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+    ]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"]), false);
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
+      "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+    ]), false);
   }
 });
 const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
