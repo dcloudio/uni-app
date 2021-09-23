@@ -1652,6 +1652,8 @@ var serviceContext = (function () {
   {
     if (typeof weex === 'object') {
       locale = weex.requireModule('plus').getLanguage();
+    } else {
+      locale = '';
     }
   }
 
@@ -2388,7 +2390,7 @@ var serviceContext = (function () {
     }
   };
 
-  const  configMTLS = {
+  const configMTLS = {
     certificates: {
       type: Array,
       required: true,
@@ -6888,11 +6890,11 @@ var serviceContext = (function () {
       const camera = plus.camera.getCamera();
       camera.captureImage(path => successCallback([path]),
         errorCallback, {
-        filename: TEMP_PATH + '/camera/',
-        resolution: 'high',
-        crop,
-        sizeType
-      });
+          filename: TEMP_PATH + '/camera/',
+          resolution: 'high',
+          crop,
+          sizeType
+        });
     }
 
     function openAlbum () {
@@ -7495,22 +7497,22 @@ var serviceContext = (function () {
     }
   }
 
-  function configMTLS$1 ({certificates}, callbackId) {
+  function configMTLS$1 ({ certificates }, callbackId) {
     const stream = requireNativePlugin('stream');
-    stream.configMTLS(certificates, ({type, code, message}) => {
+    stream.configMTLS(certificates, ({ type, code, message }) => {
       switch (type) {
         case 'success':
           invoke$1(callbackId, {
             errMsg: 'configMTLS:ok',
             code
           });
-          break;
+          break
         case 'fail':
           invoke$1(callbackId, {
             errMsg: 'configMTLS:fail ' + message,
             code
           });
-          break;
+          break
       }
     });
   }
@@ -21836,7 +21838,7 @@ var serviceContext = (function () {
 
     initSubscribeHandlers();
 
-    initAppLaunch(Vue);
+    initAppLaunch(appVm);
 
     // 10s后清理临时文件
     setTimeout(clearTempFile, 10000);
