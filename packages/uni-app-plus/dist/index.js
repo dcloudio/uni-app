@@ -1452,6 +1452,8 @@ let locale;
 {
   if (typeof weex === 'object') {
     locale = weex.requireModule('plus').getLanguage();
+  } else {
+    locale = '';
   }
 }
 
