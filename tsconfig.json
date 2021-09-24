@@ -22,8 +22,7 @@
       "node",
       "@dcloudio/types",
       "vue",
-      "miniprogram-api-typings",
-      "css-font-loading-module"
+      "miniprogram-api-typings"
     ],
     "rootDir": ".",
     "paths": {

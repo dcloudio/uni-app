@@ -79,7 +79,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
         .replace(`<!--app-html-->`, appHtml)
         .replace(`<!--app-context-->`, appContext)
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
-    } catch (e) {
+    } catch (e: any) {
       vite && vite.ssrFixStacktrace(e)
       res.status(500).end(e.stack)
     }

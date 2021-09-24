@@ -215,7 +215,7 @@ export const getCheckBoxState = defineAsyncApi<API_TYPE_GET_CHECK_BOX_STATE>(
         const state = service.getCheckBoxState()
         successCallback({ state })
       })
-    } catch (error) {
+    } catch (error: any) {
       errorCallback(error)
     }
   }

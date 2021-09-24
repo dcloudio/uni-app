@@ -45,7 +45,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
         }
       })
     }
-  } catch (e) {
+  } catch (e: any) {
     if (options.platform === 'h5') {
       console.error(`error when starting dev server:\n${e.stack || e}`)
     } else {
@@ -62,7 +62,7 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       ? buildSSR(options)
       : build(options))
     console.log(M['build.done'])
-  } catch (e) {
+  } catch (e: any) {
     console.error(`error during build:\n${e.stack || e}`)
     process.exit(1)
   }

@@ -54,7 +54,6 @@
     "@rollup/plugin-strip": "^2.0.0",
     "@swc/core": "^1.2.83",
     "@types/clean-css": "^4.2.5",
-    "@types/css-font-loading-module": "^0.0.6",
     "@types/debug": "^4.1.5",
     "@types/es-module-lexer": "^0.3.0",
     "@types/fs-extra": "^9.0.6",
@@ -96,7 +95,7 @@
     "rollup-plugin-vue": "^6.0.0",
     "semver": "^7.3.4",
     "ts-jest": "^27.0.3",
-    "typescript": "~4.3.5",
+    "typescript": "^4.4.3",
     "vite": "^2.5.10",
     "vue": "^3.2.16",
     "yorkie": "^2.0.0"

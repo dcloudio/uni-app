@@ -32,7 +32,7 @@ export function addFont(
   if (fonts) {
     const fontFace = new FontFace(family, source, desc)
     return fontFace.load().then(() => {
-      fonts.add(fontFace)
+      ;(fonts as any).add && (fonts as any).add(fontFace)
     })
   }
   return new Promise((resolve) => {

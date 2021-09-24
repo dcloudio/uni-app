@@ -30,7 +30,7 @@ function getCurrentUserInfo(): UniIdUserInfo {
   let userInfo
   try {
     userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]))
-  } catch (error) {
+  } catch (error: any) {
     throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
   }
   userInfo.tokenExpired = userInfo.exp * 1000

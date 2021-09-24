@@ -94,7 +94,7 @@ export const setStorage = <API_TYPE_SET_STORAGE>defineAsyncApi(
         storage.removeItemAsync(key + STORAGE_DATA_TYPE)
       }
       storage.setItemAsync(key, value, resolve, warpPlusErrorCallback(reject))
-    } catch (error) {
+    } catch (error: any) {
       reject(error.message)
     }
   },

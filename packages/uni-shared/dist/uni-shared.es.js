@@ -196,7 +196,7 @@ function addFont(family, source, desc) {
     if (fonts) {
         const fontFace = new FontFace(family, source, desc);
         return fontFace.load().then(() => {
-            fonts.add(fontFace);
+            fonts.add && fonts.add(fontFace);
         });
     }
     return new Promise((resolve) => {

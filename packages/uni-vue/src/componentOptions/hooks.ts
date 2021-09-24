@@ -44,7 +44,7 @@ export function initHooks(
     try {
       invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
       invokeHook(publicThis, ON_SHOW)
-    } catch (e) {
+    } catch (e: any) {
       console.error(e.message + '\n' + e.stack)
     }
   }

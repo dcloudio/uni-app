@@ -78,7 +78,7 @@ function createSocketTask(args: UniApp.ConnectSocketOption) {
         : args.protocols,
       header: args.header,
     })
-  } catch (error) {
+  } catch (error: any) {
     errMsg = error
   }
   return { socket, socketId, errMsg }

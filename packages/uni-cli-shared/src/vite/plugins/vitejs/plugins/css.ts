@@ -611,7 +611,7 @@ async function resolvePostcssConfig(
         typeof inlineOptions === 'string' ? inlineOptions : config.root
       // @ts-ignore
       result = await postcssrc({}, searchPath)
-    } catch (e) {
+    } catch (e: any) {
       if (!/No PostCSS Config found/.test(e.message)) {
         throw e
       }
@@ -851,7 +851,7 @@ const scss: SassStylePreprocessor = async (
       errors: [],
       deps,
     }
-  } catch (e) {
+  } catch (e: any) {
     // normalize SASS error
     e.id = e.file
     e.frame = e.formatted
@@ -1044,7 +1044,7 @@ const styl: StylePreprocessor = async (source, root, options) => {
     const deps = [...ref.deps(), ...importsDeps]
 
     return { code: result, errors: [], deps }
-  } catch (e) {
+  } catch (e: any) {
     return { code: '', errors: [e], deps: [] }
   }
 }
