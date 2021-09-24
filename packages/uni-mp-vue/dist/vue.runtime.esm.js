@@ -3153,17 +3153,8 @@ function setupStatefulComponent(instance, isSSR) {
         unsetCurrentInstance();
         if (isPromise(setupResult)) {
             setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
-            if (isSSR) {
-                // return the promise so server-renderer can wait on it
-                return setupResult
-                    .then((resolvedResult) => {
-                    handleSetupResult(instance, resolvedResult, isSSR);
-                })
-                    .catch(e => {
-                    handleError(e, instance, 0 /* SETUP_FUNCTION */);
-                });
-            }
-            else if ((process.env.NODE_ENV !== 'production')) {
+            // fixed by xxxxxx
+            if ((process.env.NODE_ENV !== 'production')) {
                 warn$1(`setup() returned a Promise, but the version of Vue you are using ` +
                     `does not support it yet.`);
             }
@@ -3208,10 +3199,6 @@ let compile;
 const isRuntimeOnly = () => !compile;
 function finishComponentSetup(instance, isSSR, skipOptions) {
     const Component = instance.type;
-    // template / render function normalization
-    if (!instance.render) {
-        instance.render = (Component.render || NOOP);
-    }
     // support for 2.x options
     if (__VUE_OPTIONS_API__ && !(false )) {
         setCurrentInstance(instance);
@@ -4029,7 +4016,7 @@ function defineEmits() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.14";
+const version = "3.2.16";
 
 // import deepCopy from './deepCopy'
 /**

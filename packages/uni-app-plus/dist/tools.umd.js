@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : window || self, factory(window.Tools = {}));
-}(this, (function (exports) { 'use strict';
+})(this, (function (exports) { 'use strict';
 
     const ACTION_TYPE_PAGE_CREATE = 1;
     const ACTION_TYPE_PAGE_CREATED = 2;
@@ -160,4 +160,4 @@
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));

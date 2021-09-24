@@ -1442,14 +1442,7 @@ const hmrDirtyComponents = new Set();
 // Note: for a component to be eligible for HMR it also needs the __hmrId option
 // to be set so that its instances can be registered / removed.
 {
-    const globalObject = typeof global !== 'undefined'
-        ? global
-        : typeof self !== 'undefined'
-            ? self
-            : typeof window !== 'undefined'
-                ? window
-                : {};
-    globalObject.__VUE_HMR_RUNTIME__ = {
+    getGlobalThis().__VUE_HMR_RUNTIME__ = {
         createRecord: tryWrap(createRecord),
         rerender: tryWrap(rerender),
         reload: tryWrap(reload)
@@ -5296,7 +5289,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.2.14";
+    Vue.version = "3.2.16";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -9660,19 +9653,11 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
         }
     }
     // template / render function normalization
-    if (isSSR) {
-        // 1. the render function may already exist, returned by `setup`
-        // 2. otherwise try to use the `Component.render`
-        // 3. if the component doesn't have a render function,
-        //    set `instance.render` to NOOP so that it can inherit the render
-        //    function from mixins/extend
-        instance.render = (instance.render ||
-            Component.render ||
-            NOOP);
-    }
-    else if (!instance.render) {
-        // could be set from setup()
-        if (compile && !Component.render) {
+    // could be already set when returned from setup()
+    if (!instance.render) {
+        // only do on-the-fly compile if not in SSR - SSR on-the-fly compliation
+        // is done by server-renderer
+        if (!isSSR && compile && !Component.render) {
             const template = (instance.vnode.props &&
                 instance.vnode.props['inline-template']) ||
                 Component.template;
@@ -10909,7 +10894,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.14";
+const version = "3.2.16";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -12450,8 +12435,9 @@ function callModelHook(el, binding, vnode, prevVNode, hook) {
     const fn = modelToUse[hook];
     fn && fn(el, binding, vnode, prevVNode);
 }
-// SSR vnode transforms
-{
+// SSR vnode transforms, only used when user includes client-oriented render
+// function in SSR
+function initVModelForSSR() {
     vModelText.getSSRProps = ({ value }) => ({ value });
     vModelRadio.getSSRProps = ({ value }, vnode) => {
         if (vnode.props && looseEqual(vnode.props.value, value)) {
@@ -12599,15 +12585,17 @@ const vShow = {
         setDisplay(el, value);
     }
 };
-{
+function setDisplay(el, value) {
+    el.style.display = value ? el._vod : 'none';
+}
+// SSR vnode transforms, only used when user includes client-oriented render
+// function in SSR
+function initVShowForSSR() {
     vShow.getSSRProps = ({ value }) => {
         if (!value) {
             return { style: { display: 'none' } };
         }
     };
-}
-function setDisplay(el, value) {
-    el.style.display = value ? el._vod : 'none';
 }
 
 // fixed by xxxxxx
@@ -12744,6 +12732,18 @@ function normalizeContainer(container) {
     }
     return container;
 }
+let ssrDirectiveInitialized = false;
+/**
+ * @internal
+ */
+const initDirectivesForSSR = () => {
+        if (!ssrDirectiveInitialized) {
+            ssrDirectiveInitialized = true;
+            initVModelForSSR();
+            initVShowForSSR();
+        }
+    }
+    ;
 
 var runtimeDom = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -12751,6 +12751,7 @@ var runtimeDom = /*#__PURE__*/Object.freeze({
   hydrate: hydrate,
   createApp: createApp,
   createSSRApp: createSSRApp,
+  initDirectivesForSSR: initDirectivesForSSR,
   defineCustomElement: defineCustomElement,
   defineSSRCustomElement: defineSSRCustomElement,
   VueElement: VueElement,

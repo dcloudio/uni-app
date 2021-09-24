@@ -3057,7 +3057,7 @@ export default function vueFactory(exports) {
           var {
             vnode
           } = instance;
-          handleSetupResult(instance, asyncSetupResult);
+          handleSetupResult(instance, asyncSetupResult, false);
 
           if (hydratedEl) {
             // vnode may have been replaced if an update happened before the
@@ -3704,7 +3704,7 @@ export default function vueFactory(exports) {
         }; // suspense-controlled or SSR.
 
 
-        if (suspensible && instance.suspense || false) {
+        if (suspensible && instance.suspense || isInSSRComponentSetup) {
           return load().then(comp => {
             return () => createInnerComp(comp, instance);
           }).catch(err => {
@@ -8468,7 +8468,7 @@ export default function vueFactory(exports) {
         if (isSSR) {
           // return the promise so server-renderer can wait on it
           return setupResult.then(resolvedResult => {
-            handleSetupResult(instance, resolvedResult);
+            handleSetupResult(instance, resolvedResult, isSSR);
           }).catch(e => {
             handleError(e, instance, 0
             /* SETUP_FUNCTION */
@@ -8480,24 +8480,28 @@ export default function vueFactory(exports) {
           instance.asyncDep = setupResult;
         }
       } else {
-        handleSetupResult(instance, setupResult);
+        handleSetupResult(instance, setupResult, isSSR);
       }
     } else {
-      finishComponentSetup(instance);
+      finishComponentSetup(instance, isSSR);
     }
   }
 
   function handleSetupResult(instance, setupResult, isSSR) {
     if (isFunction(setupResult)) {
       // setup returned an inline render function
-      {
+      if (instance.type.__ssrInlineRender) {
+        // when the function's name is `ssrRender` (compiled by SFC inline mode),
+        // set it as ssrRender instead.
+        instance.ssrRender = setupResult;
+      } else {
         instance.render = setupResult;
       }
     } else if (isObject(setupResult)) {
       instance.setupState = proxyRefs(setupResult);
     } else ;
 
-    finishComponentSetup(instance);
+    finishComponentSetup(instance, isSSR);
   }
 
   var compile;
@@ -8522,10 +8526,12 @@ export default function vueFactory(exports) {
 
   function finishComponentSetup(instance, isSSR, skipOptions) {
     var Component = instance.type; // template / render function normalization
+    // could be already set when returned from setup()
 
     if (!instance.render) {
-      // could be set from setup()
-      if (compile && !Component.render) {
+      // only do on-the-fly compile if not in SSR - SSR on-the-fly compliation
+      // is done by server-renderer
+      if (!isSSR && compile && !Component.render) {
         var template = Component.template;
 
         if (template) {
@@ -9135,7 +9141,24 @@ export default function vueFactory(exports) {
         /* WATCH_CLEANUP */
         );
       };
-    };
+    }; // in SSR there is no need to setup an actual effect, and it should be noop
+    // unless it's eager
+
+
+    if (isInSSRComponentSetup) {
+      // we will also not call the invalidate callback (+ runner is not set up)
+      onInvalidate = NOOP;
+
+      if (!cb) {
+        getter();
+      } else if (immediate) {
+        callWithAsyncErrorHandling(cb, instance, 3
+        /* WATCH_CALLBACK */
+        , [getter(), isMultiSource ? [] : undefined, onInvalidate]);
+      }
+
+      return NOOP;
+    }
 
     var oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE;
 
@@ -9486,7 +9509,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.14";
+  var version = "3.2.16";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

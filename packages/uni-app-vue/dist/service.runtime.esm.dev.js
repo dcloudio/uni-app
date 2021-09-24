@@ -2318,8 +2318,7 @@ export default function vueFactory(exports) {
   // to be set so that its instances can be registered / removed.
 
   {
-    var globalObject = typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
-    globalObject.__VUE_HMR_RUNTIME__ = {
+    getGlobalThis().__VUE_HMR_RUNTIME__ = {
       createRecord: tryWrap(createRecord),
       rerender: tryWrap(rerender),
       reload: tryWrap(reload)
@@ -4222,7 +4221,7 @@ export default function vueFactory(exports) {
         }; // suspense-controlled or SSR.
 
 
-        if (suspensible && instance.suspense || false) {
+        if (suspensible && instance.suspense || isInSSRComponentSetup) {
           return load().then(comp => {
             return () => createInnerComp(comp, instance);
           }).catch(err => {
@@ -6592,6 +6591,23 @@ export default function vueFactory(exports) {
 
     return supported;
   }
+  /**
+   * This is only called in esm-bundler builds.
+   * It is called when a renderer is created, in `baseCreateRenderer` so that
+   * importing runtime-core is side-effects free.
+   *
+   * istanbul-ignore-next
+   */
+
+
+  function initFeatureFlags() {
+    var needWarn = [];
+
+    if (needWarn.length) {
+      var multi = needWarn.length > 1;
+      console.warn("Feature flag".concat(multi ? "s" : "", " ").concat(needWarn.join(', '), " ").concat(multi ? "are" : "is", " not explicitly defined. You are running the esm-bundler build of Vue, ") + "which expects these compile-time feature flags to be globally injected " + "via the bundler config in order to get better tree-shaking in the " + "production bundle.\n\n" + "For more details, see http://link.vuejs.org/feature-flags.");
+    }
+  }
 
   var queuePostRenderEffect = queueEffectWithSuspense;
   /**
@@ -6623,6 +6639,10 @@ export default function vueFactory(exports) {
 
 
   function baseCreateRenderer(options, createHydrationFns) {
+    // compile-time feature flags check
+    {
+      initFeatureFlags();
+    }
     var target = getGlobalThis();
     target.__VUE__ = true;
     {
@@ -9848,7 +9868,11 @@ export default function vueFactory(exports) {
   function handleSetupResult(instance, setupResult, isSSR) {
     if (isFunction(setupResult)) {
       // setup returned an inline render function
-      {
+      if (instance.type.__ssrInlineRender) {
+        // when the function's name is `ssrRender` (compiled by SFC inline mode),
+        // set it as ssrRender instead.
+        instance.ssrRender = setupResult;
+      } else {
         instance.render = setupResult;
       }
     } else if (isObject(setupResult)) {
@@ -9894,10 +9918,12 @@ export default function vueFactory(exports) {
 
   function finishComponentSetup(instance, isSSR, skipOptions) {
     var Component = instance.type; // template / render function normalization
+    // could be already set when returned from setup()
 
     if (!instance.render) {
-      // could be set from setup()
-      if (compile && !Component.render) {
+      // only do on-the-fly compile if not in SSR - SSR on-the-fly compliation
+      // is done by server-renderer
+      if (!isSSR && compile && !Component.render) {
         var template = Component.template;
 
         if (template) {
@@ -10722,7 +10748,24 @@ export default function vueFactory(exports) {
         /* WATCH_CLEANUP */
         );
       };
-    };
+    }; // in SSR there is no need to setup an actual effect, and it should be noop
+    // unless it's eager
+
+
+    if (isInSSRComponentSetup) {
+      // we will also not call the invalidate callback (+ runner is not set up)
+      onInvalidate = NOOP;
+
+      if (!cb) {
+        getter();
+      } else if (immediate) {
+        callWithAsyncErrorHandling(cb, instance, 3
+        /* WATCH_CALLBACK */
+        , [getter(), isMultiSource ? [] : undefined, onInvalidate]);
+      }
+
+      return NOOP;
+    }
 
     var oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE;
 
@@ -11272,7 +11315,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.14";
+  var version = "3.2.16";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

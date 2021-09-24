@@ -1113,14 +1113,7 @@ const hmrDirtyComponents = new Set();
 // Note: for a component to be eligible for HMR it also needs the __hmrId option
 // to be set so that its instances can be registered / removed.
 {
-    const globalObject = typeof global !== 'undefined'
-        ? global
-        : typeof self !== 'undefined'
-            ? self
-            : typeof window !== 'undefined'
-                ? window
-                : {};
-    globalObject.__VUE_HMR_RUNTIME__ = {
+    shared.getGlobalThis().__VUE_HMR_RUNTIME__ = {
         createRecord: tryWrap(createRecord),
         rerender: tryWrap(rerender),
         reload: tryWrap(reload)
@@ -7489,19 +7482,11 @@ const isRuntimeOnly = () => !compile;
 function finishComponentSetup(instance, isSSR, skipOptions) {
     const Component = instance.type;
     // template / render function normalization
-    if (isSSR) {
-        // 1. the render function may already exist, returned by `setup`
-        // 2. otherwise try to use the `Component.render`
-        // 3. if the component doesn't have a render function,
-        //    set `instance.render` to NOOP so that it can inherit the render
-        //    function from mixins/extend
-        instance.render = (instance.render ||
-            Component.render ||
-            shared.NOOP);
-    }
-    else if (!instance.render) {
-        // could be set from setup()
-        if (compile && !Component.render) {
+    // could be already set when returned from setup()
+    if (!instance.render) {
+        // only do on-the-fly compile if not in SSR - SSR on-the-fly compliation
+        // is done by server-renderer
+        if (!isSSR && compile && !Component.render) {
             const template = Component.template;
             if (template) {
                 {
@@ -8725,7 +8710,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.14";
+const version = "3.2.16";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10180,8 +10165,9 @@ function callModelHook(el, binding, vnode, prevVNode, hook) {
     const fn = modelToUse[hook];
     fn && fn(el, binding, vnode, prevVNode);
 }
-// SSR vnode transforms
-{
+// SSR vnode transforms, only used when user includes client-oriented render
+// function in SSR
+function initVModelForSSR() {
     vModelText.getSSRProps = ({ value }) => ({ value });
     vModelRadio.getSSRProps = ({ value }, vnode) => {
         if (vnode.props && shared.looseEqual(vnode.props.value, value)) {
@@ -10296,15 +10282,17 @@ const vShow = {
         setDisplay(el, value);
     }
 };
-{
+function setDisplay(el, value) {
+    el.style.display = value ? el._vod : 'none';
+}
+// SSR vnode transforms, only used when user includes client-oriented render
+// function in SSR
+function initVShowForSSR() {
     vShow.getSSRProps = ({ value }) => {
         if (!value) {
             return { style: { display: 'none' } };
         }
     };
-}
-function setDisplay(el, value) {
-    el.style.display = value ? el._vod : 'none';
 }
 
 // fixed by xxxxxx
@@ -10431,6 +10419,18 @@ function normalizeContainer(container) {
     }
     return container;
 }
+let ssrDirectiveInitialized = false;
+/**
+ * @internal
+ */
+const initDirectivesForSSR = () => {
+        if (!ssrDirectiveInitialized) {
+            ssrDirectiveInitialized = true;
+            initVModelForSSR();
+            initVShowForSSR();
+        }
+    }
+    ;
 
 // This entry exports the runtime only, and is built as
 const compile$1 = () => {
@@ -10497,6 +10497,7 @@ exports.h = h;
 exports.handleError = handleError;
 exports.hydrate = hydrate;
 exports.initCustomFormatter = initCustomFormatter;
+exports.initDirectivesForSSR = initDirectivesForSSR;
 exports.inject = inject;
 exports.injectHook = injectHook;
 exports.isMemoSame = isMemoSame;
