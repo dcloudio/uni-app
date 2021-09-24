@@ -6831,6 +6831,10 @@ function setupPage(comp) {
       instance.root = instance;
       const route = usePageRoute();
       {
+        vue.nextTick(() => {
+          const { onLoad } = instance;
+          onLoad && shared.invokeArrayFns(onLoad, uniShared.decodedQuery(route.query));
+        });
         return route.query;
       }
     }

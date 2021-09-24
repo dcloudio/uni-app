@@ -1,5 +1,6 @@
 import { invokeArrayFns, isPlainObject } from '@vue/shared'
 import {
+  nextTick,
   ComponentInternalInstance,
   ComponentPublicInstance,
   createBlock,
@@ -79,8 +80,12 @@ export function setupPage(comp: any) {
     setup(instance) {
       instance.root = instance // 组件 root 指向页面
       const route = usePageRoute()
-      // node环境不触发Page生命周期
+      // node环境仅触发Page onLoad生命周期
       if (__NODE_JS__) {
+        nextTick(() => {
+          const { onLoad } = instance
+          onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
+        })
         return route.query
       }
 
