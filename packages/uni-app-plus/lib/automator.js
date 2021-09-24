@@ -1,478 +1,308 @@
-var hasOwnProperty = Object.prototype.hasOwnProperty
-var hasOwn = function (val, key) {
-  return hasOwnProperty.call(val, key)
-}
-var isUndef = function (v) {
-  return v === undefined || v === null
-}
-var isArray = Array.isArray
-var isPromise = function (obj) {
+var e,
+  t = Object.prototype.hasOwnProperty,
+  n = function (e) {
+    return null == e
+  },
+  r = Array.isArray,
+  o = function (e) {
+    var t = Object.create(null)
+    return function (n) {
+      return t[n] || (t[n] = e(n))
+    }
+  },
+  u = /\B([A-Z])/g,
+  i = o(function (e) {
+    return e.replace(u, '-$1').toLowerCase()
+  }),
+  c = /-(\w)/g,
+  a = o(function (e) {
+    return e.replace(c, function (e, t) {
+      return t ? t.toUpperCase() : ''
+    })
+  }),
+  s = o(function (e) {
+    return e.charAt(0).toUpperCase() + e.slice(1)
+  }),
+  f =
+    /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g
+function l(e, n) {
+  if (r(e)) return e
+  if (n && ((o = n), (u = e), t.call(o, u))) return [e]
+  var o,
+    u,
+    i = []
   return (
-    !!obj &&
-    (typeof obj === 'object' || typeof obj === 'function') &&
-    typeof obj.then === 'function'
+    e.replace(f, function (e, t, n, r) {
+      return i.push(n ? r.replace(/\\(\\)?/g, '$1') : t || e), r
+    }),
+    i
   )
 }
-var cacheStringFunction = function (fn) {
-  var cache = Object.create(null)
-  return function (str) {
-    var hit = cache[str]
-    return hit || (cache[str] = fn(str))
+function d(e, t) {
+  var r,
+    o = l(t, e)
+  for (r = o.shift(); !n(r); ) {
+    if (null == (e = e[r])) return
+    r = o.shift()
   }
+  return e
 }
-var hyphenateRE = /\B([A-Z])/g
-var hyphenate = cacheStringFunction(function (str) {
-  return str.replace(hyphenateRE, '-$1').toLowerCase()
-})
-var camelizeRE = /-(\w)/g
-var camelize = cacheStringFunction(function (str) {
-  return str.replace(camelizeRE, function (_, c) {
-    return c ? c.toUpperCase() : ''
-  })
-})
-var capitalize = cacheStringFunction(function (str) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-})
-var PATH_RE =
-  /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g
-function getPaths(path, data) {
-  if (isArray(path)) {
-    return path
-  }
-  if (data && hasOwn(data, path)) {
-    return [path]
-  }
-  var res = []
-  path.replace(PATH_RE, function (match, p1, offset, string) {
-    res.push(offset ? string.replace(/\\(\\)?/g, '$1') : p1 || match)
-    return string
-  })
-  return res
+function p(e) {
+  return e.__wxWebviewId__
+    ? e.__wxWebviewId__
+    : e.privateProperties
+    ? e.privateProperties.slaveId
+    : e.$page
+    ? e.$page.id
+    : void 0
 }
-function getDataByPath(data, path) {
-  var paths = getPaths(path, data)
-  var dataPath
-  for (dataPath = paths.shift(); !isUndef(dataPath); ) {
-    if (null == (data = data[dataPath])) {
-      return
-    }
-    dataPath = paths.shift()
-  }
-  return data
+function g(e) {
+  return e.route || e.uri
 }
-function findParent(vm) {
-  var parent = vm.$parent
-  while (parent) {
-    if (parent._$id) {
-      return parent
-    }
-    parent = parent.$parent
-  }
+function m(e) {
+  return e.options || (e.$page && e.$page.options) || {}
 }
-function getVmNodeId(vm) {
-  //@ts-ignore
-  {
-    if (vm._$weex) {
-      return vm._uid
-    }
-    if (vm._$id) {
-      return vm._$id
-    }
-    var parent_1 = findParent(vm)
-    if (!vm.$parent) {
-      return '-1'
-    }
-    var vnode = vm.$vnode
-    var context = vnode.context
-    // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
-    if (context && context !== parent_1 && context._$id) {
-      return context._$id + ';' + parent_1._$id + ',' + vnode.data.attrs._i
-    }
-    return parent_1._$id + ',' + vnode.data.attrs._i
-  }
+function v(e) {
+  return { id: p(e), path: g(e), query: m(e) }
 }
-
-function getPageId(page) {
-  if (page.__wxWebviewId__) {
-    //mp-weixin
-    return page.__wxWebviewId__
-  }
-  if (page.privateProperties) {
-    //mp-baidu
-    return page.privateProperties.slaveId
-  }
-  if (page.$page) {
-    //h5 and app-plus
-    return page.$page.id
-  }
-}
-function getPagePath(page) {
-  return page.route || page.uri
-}
-function getPageQuery(page) {
-  return page.options || (page.$page && page.$page.options) || {}
-}
-function parsePage(page) {
-  return {
-    id: getPageId(page),
-    path: getPagePath(page),
-    query: getPageQuery(page),
-  }
-}
-function getPageById(id) {
-  return getCurrentPages().find(function (page) {
-    return getPageId(page) === id
-  })
-}
-function getPageVm(id) {
-  var page = getPageById(id)
-  return page && page.$vm
-}
-function matchNodeId(vm, nodeId) {
-  //@ts-ignore
-  {
-    return getVmNodeId(vm) === nodeId
-  }
-}
-function findComponentVm(vm, nodeId) {
-  var res
-  if (vm) {
-    if (matchNodeId(vm, nodeId)) {
-      res = vm
-    } else {
-      vm.$children.find(function (child) {
-        res = findComponentVm(child, nodeId)
-        return res
-      })
-    }
-  }
-  return res
-}
-function getComponentVm(pageId, nodeId) {
-  var pageVm = getPageVm(pageId)
-  return pageVm && findComponentVm(pageVm, nodeId)
-}
-function getData(vm, path) {
-  var data
-  if (vm) {
-    data = path ? getDataByPath(vm.$data, path) : Object.assign({}, vm.$data)
-  }
-  return Promise.resolve({ data: data })
-}
-function setData(vm, data) {
-  if (vm) {
-    Object.keys(data).forEach(function (name) {
-      vm[name] = data[name]
+function _(e) {
+  var t = (function (e) {
+    return getCurrentPages().find(function (t) {
+      return p(t) === e
     })
-  }
-  return Promise.resolve()
+  })(e)
+  return t && t.$vm
 }
-var CALL_METHOD_ERROR
-;(function (CALL_METHOD_ERROR) {
-  CALL_METHOD_ERROR['VM_NOT_EXISTS'] = 'VM_NOT_EXISTS'
-  CALL_METHOD_ERROR['METHOD_NOT_EXISTS'] = 'METHOD_NOT_EXISTS'
-})(CALL_METHOD_ERROR || (CALL_METHOD_ERROR = {}))
-function callMethod(vm, method, args) {
-  return new Promise(function (resolve, reject) {
-    if (!vm) {
-      return reject(CALL_METHOD_ERROR.VM_NOT_EXISTS)
-    }
-    if (!vm[method]) {
-      return reject(CALL_METHOD_ERROR.VM_NOT_EXISTS)
-    }
-    var ret = vm[method].apply(vm, args)
-    isPromise(ret)
-      ? ret.then(function (res) {
-          resolve({ result: res })
-        })
-      : resolve({ result: ret })
-  })
+function h(e, t) {
+  var n = _(e)
+  return (
+    n &&
+    (function e(t, n) {
+      var r
+      return (
+        t &&
+          (!(function (e, t) {
+            return (
+              (function (e) {
+                if (e._$weex) return e._uid
+                if (e._$id) return e._$id
+                var t = (function (e) {
+                  for (var t = e.$parent; t; ) {
+                    if (t._$id) return t
+                    t = t.$parent
+                  }
+                })(e)
+                if (!e.$parent) return '-1'
+                var n = e.$vnode,
+                  r = n.context
+                return r && r !== t && r._$id
+                  ? r._$id + ';' + t._$id + ',' + n.data.attrs._i
+                  : t._$id + ',' + n.data.attrs._i
+              })(e) === t
+            )
+          })(t, n)
+            ? t.$children.find(function (t) {
+                return (r = e(t, n))
+              })
+            : (r = t)),
+        r
+      )
+    })(n, t)
+  )
 }
-
-var SYNC_APIS = [
-  'stopRecord',
-  'getRecorderManager',
-  'pauseVoice',
-  'stopVoice',
-  'pauseBackgroundAudio',
-  'stopBackgroundAudio',
-  'getBackgroundAudioManager',
-  'createAudioContext',
-  'createInnerAudioContext',
-  'createVideoContext',
-  'createCameraContext',
-  'createMapContext',
-  'canIUse',
-  'startAccelerometer',
-  'stopAccelerometer',
-  'startCompass',
-  'stopCompass',
-  'hideToast',
-  'hideLoading',
-  'showNavigationBarLoading',
-  'hideNavigationBarLoading',
-  'navigateBack',
-  'createAnimation',
-  'pageScrollTo',
-  'createSelectorQuery',
-  'createCanvasContext',
-  'createContext',
-  'drawCanvas',
-  'hideKeyboard',
-  'stopPullDownRefresh',
-  'arrayBufferToBase64',
-  'base64ToArrayBuffer',
-]
-var originUni = {}
-var SYNC_API_RE = /Sync$/
-var MOCK_API_BLACKLIST_RE = /^on|^off/
-function isSyncApi(method) {
-  return SYNC_API_RE.test(method) || SYNC_APIS.indexOf(method) !== -1
+function E(e, t) {
+  var n
+  return (
+    e && (n = t ? d(e.$data, t) : Object.assign({}, e.$data)),
+    Promise.resolve({ data: n })
+  )
 }
-function canIMock(method) {
-  return !MOCK_API_BLACKLIST_RE.test(method)
-}
-var App = {
-  getPageStack: function () {
-    return Promise.resolve({
-      pageStack: getCurrentPages().map(function (page) {
-        return parsePage(page)
+function y(e, t) {
+  return (
+    e &&
+      Object.keys(t).forEach(function (n) {
+        e[n] = t[n]
       }),
-    })
-  },
-  getCurrentPage: function () {
-    var pages = getCurrentPages()
-    var len = pages.length
-    return new Promise(function (resolve, reject) {
-      if (!len) {
-        reject(Error('getCurrentPages().length=0'))
-      } else {
-        resolve(parsePage(pages[len - 1]))
-      }
-    })
-  },
-  callUniMethod: function (params) {
-    var method = params.method
-    var args = params.args
-    return new Promise(function (resolve, reject) {
-      if (!uni[method]) {
-        return reject(Error('uni.' + method + ' not exists'))
-      }
-      if (isSyncApi(method)) {
-        return resolve({
-          result: uni[method].apply(uni, args),
+    Promise.resolve()
+  )
+}
+function w(t, n, r) {
+  return new Promise(function (o, u) {
+    if (!t) return u(e.VM_NOT_EXISTS)
+    if (!t[n]) return u(e.VM_NOT_EXISTS)
+    var i,
+      c = t[n].apply(t, r)
+    !(i = c) ||
+    ('object' != typeof i && 'function' != typeof i) ||
+    'function' != typeof i.then
+      ? o({ result: c })
+      : c.then(function (e) {
+          o({ result: e })
         })
-      }
-      var params = [
-        Object.assign({}, args[0] || {}, {
-          success: function (result) {
-            var timeout = method === 'pageScrollTo' ? 350 : 0
-            setTimeout(function () {
-              resolve({ result: result })
-            }, timeout)
-          },
-          fail: function (res) {
-            reject(Error(res.errMsg.replace(method + ':fail ', '')))
-          },
+  })
+}
+!(function (e) {
+  ;(e.VM_NOT_EXISTS = 'VM_NOT_EXISTS'),
+    (e.METHOD_NOT_EXISTS = 'METHOD_NOT_EXISTS')
+})(e || (e = {}))
+var T = [
+    'stopRecord',
+    'getRecorderManager',
+    'pauseVoice',
+    'stopVoice',
+    'pauseBackgroundAudio',
+    'stopBackgroundAudio',
+    'getBackgroundAudioManager',
+    'createAudioContext',
+    'createInnerAudioContext',
+    'createVideoContext',
+    'createCameraContext',
+    'createMapContext',
+    'canIUse',
+    'startAccelerometer',
+    'stopAccelerometer',
+    'startCompass',
+    'stopCompass',
+    'hideToast',
+    'hideLoading',
+    'showNavigationBarLoading',
+    'hideNavigationBarLoading',
+    'navigateBack',
+    'createAnimation',
+    'pageScrollTo',
+    'createSelectorQuery',
+    'createCanvasContext',
+    'createContext',
+    'drawCanvas',
+    'hideKeyboard',
+    'stopPullDownRefresh',
+    'arrayBufferToBase64',
+    'base64ToArrayBuffer',
+  ],
+  x = {},
+  P = /Sync$/,
+  S = /^on|^off/
+function O(e) {
+  return P.test(e) || -1 !== T.indexOf(e)
+}
+var $ = {
+    getPageStack: function () {
+      return Promise.resolve({
+        pageStack: getCurrentPages().map(function (e) {
+          return v(e)
         }),
-      ]
-      uni[method].apply(uni, params)
-    })
-  },
-  mockUniMethod: function (params) {
-    var method = params.method
-    if (!uni[method]) {
-      throw Error('uni.' + method + ' not exists')
-    }
-    if (!canIMock(method)) {
-      throw Error("You can't mock uni." + method)
-    }
-    // TODO getOwnPropertyDescriptor?
-    var result = params.result
-    if (isUndef(result)) {
-      // restoreUniMethod
-      if (originUni[method]) {
-        uni[method] = originUni[method]
-        delete originUni[method]
-      }
-      return Promise.resolve()
-    }
-    var mockFn = isSyncApi(method)
-      ? function () {
-          return result
-        }
-      : function (params) {
-          setTimeout(function () {
-            var isFail = result.errMsg && result.errMsg.indexOf(':fail') !== -1
-            if (isFail) {
-              params.fail && params.fail(result)
-            } else {
-              params.success && params.success(result)
-            }
-            params.complete && params.complete(result)
-          }, 4)
-        }
-    // mockFn.origin = originUni[method] || uni[method];
-    if (!originUni[method]) {
-      originUni[method] = uni[method]
-    }
-    uni[method] = mockFn
-    return Promise.resolve()
-  },
-}
-
-var Page = {
-  getData: function (params) {
-    return getData(getPageVm(params.pageId), params.path)
-  },
-  setData: function (params) {
-    return setData(getPageVm(params.pageId), params.data)
-  },
-  callMethod: function (params) {
-    var _a
-    var err =
-      ((_a = {}),
-      (_a[CALL_METHOD_ERROR.VM_NOT_EXISTS] =
-        'Page[' + params.pageId + '] not exists'),
-      (_a[CALL_METHOD_ERROR.METHOD_NOT_EXISTS] =
-        'page.' + params.method + ' not exists'),
-      _a)
-    return new Promise(function (resolve, reject) {
-      callMethod(getPageVm(params.pageId), params.method, params.args)
-        .then(function (res) {
-          return resolve(res)
-        })
-        .catch(function (type) {
-          reject(Error(err[type]))
-        })
-    })
-  },
-}
-
-function getNodeId(params) {
-  return params.nodeId || params.elementId
-}
-var Element = {
-  getData: function (params) {
-    return getData(
-      getComponentVm(params.pageId, getNodeId(params)),
-      params.path
-    )
-  },
-  setData: function (params) {
-    return setData(
-      getComponentVm(params.pageId, getNodeId(params)),
-      params.data
-    )
-  },
-  callMethod: function (params) {
-    var _a
-    var nodeId = getNodeId(params)
-    var err =
-      ((_a = {}),
-      (_a[CALL_METHOD_ERROR.VM_NOT_EXISTS] =
-        'Component[' + params.pageId + ':' + nodeId + '] not exists'),
-      (_a[CALL_METHOD_ERROR.METHOD_NOT_EXISTS] =
-        'component.' + params.method + ' not exists'),
-      _a)
-    return new Promise(function (resolve, reject) {
-      callMethod(
-        getComponentVm(params.pageId, nodeId),
-        params.method,
-        params.args
+      })
+    },
+    getCurrentPage: function () {
+      var e = getCurrentPages(),
+        t = e.length
+      return new Promise(function (n, r) {
+        t ? n(v(e[t - 1])) : r(Error('getCurrentPages().length=0'))
+      })
+    },
+    callUniMethod: function (e) {
+      var t = e.method,
+        n = e.args
+      return new Promise(function (e, r) {
+        if (!uni[t]) return r(Error('uni.' + t + ' not exists'))
+        if (O(t)) return e({ result: uni[t].apply(uni, n) })
+        var o = [
+          Object.assign({}, n[0] || {}, {
+            success: function (n) {
+              setTimeout(
+                function () {
+                  e({ result: n })
+                },
+                'pageScrollTo' === t ? 350 : 0
+              )
+            },
+            fail: function (e) {
+              r(Error(e.errMsg.replace(t + ':fail ', '')))
+            },
+          }),
+        ]
+        uni[t].apply(uni, o)
+      })
+    },
+    mockUniMethod: function (e) {
+      var t = e.method
+      if (!uni[t]) throw Error('uni.' + t + ' not exists')
+      if (
+        !(function (e) {
+          return !S.test(e)
+        })(t)
       )
-        .then(function (res) {
-          return resolve(res)
+        throw Error("You can't mock uni." + t)
+      var r = e.result
+      if (n(r)) return x[t] && ((uni[t] = x[t]), delete x[t]), Promise.resolve()
+      var o = O(t)
+        ? function () {
+            return r
+          }
+        : function (e) {
+            setTimeout(function () {
+              r.errMsg && -1 !== r.errMsg.indexOf(':fail')
+                ? e.fail && e.fail(r)
+                : e.success && e.success(r),
+                e.complete && e.complete(r)
+            }, 4)
+          }
+      return x[t] || (x[t] = uni[t]), (uni[t] = o), Promise.resolve()
+    },
+  },
+  b = {
+    getData: function (e) {
+      return E(_(e.pageId), e.path)
+    },
+    setData: function (e) {
+      return y(_(e.pageId), e.data)
+    },
+    callMethod: function (t) {
+      var n,
+        r =
+          (((n = {})[e.VM_NOT_EXISTS] = 'Page[' + t.pageId + '] not exists'),
+          (n[e.METHOD_NOT_EXISTS] = 'page.' + t.method + ' not exists'),
+          n)
+      return new Promise(function (e, n) {
+        w(_(t.pageId), t.method, t.args)
+          .then(function (t) {
+            return e(t)
+          })
+          .catch(function (e) {
+            n(Error(r[e]))
+          })
+      })
+    },
+  }
+function I(e) {
+  return e.nodeId || e.elementId
+}
+var C = {
+  getData: function (e) {
+    return E(h(e.pageId, I(e)), e.path)
+  },
+  setData: function (e) {
+    return y(h(e.pageId, I(e)), e.data)
+  },
+  callMethod: function (t) {
+    var n,
+      r = I(t),
+      o =
+        (((n = {})[e.VM_NOT_EXISTS] =
+          'Component[' + t.pageId + ':' + r + '] not exists'),
+        (n[e.METHOD_NOT_EXISTS] = 'component.' + t.method + ' not exists'),
+        n)
+    return new Promise(function (e, n) {
+      w(h(t.pageId, r), t.method, t.args)
+        .then(function (t) {
+          return e(t)
         })
-        .catch(function (type) {
-          reject(Error(err[type]))
+        .catch(function (e) {
+          n(Error(o[e]))
         })
     })
   },
 }
-
-function initPage(adapter) {
-  return {
-    'Page.getElement': function (params) {
-      return adapter.querySelector(
-        adapter.getDocument(params.pageId),
-        params.selector
-      )
-    },
-    'Page.getElements': function (params) {
-      return adapter.querySelectorAll(
-        adapter.getDocument(params.pageId),
-        params.selector
-      )
-    },
-    'Page.getWindowProperties': function (params) {
-      return adapter.queryProperties(
-        adapter.getWindow(params.pageId),
-        params.names
-      )
-    },
-  }
-}
-
-function initElement(adapter) {
-  var getEl = function (params) {
-    return adapter.getEl(params.elementId, params.pageId)
-  }
-  return {
-    'Element.getElement': function (params) {
-      return adapter.querySelector(getEl(params), params.selector)
-    },
-    'Element.getElements': function (params) {
-      return adapter.querySelectorAll(getEl(params), params.selector)
-    },
-    'Element.getDOMProperties': function (params) {
-      return adapter.queryProperties(getEl(params), params.names)
-    },
-    'Element.getProperties': function (params) {
-      var el = getEl(params)
-      var ctx = el.__vue__ || el.attr || {}
-      return adapter.queryProperties(ctx, params.names)
-    },
-    'Element.getOffset': function (params) {
-      return adapter.getOffset(getEl(params))
-    },
-    'Element.getAttributes': function (params) {
-      return adapter.queryAttributes(getEl(params), params.names)
-    },
-    'Element.getStyles': function (params) {
-      return adapter.queryStyles(getEl(params), params.names)
-    },
-    'Element.getHTML': function (params) {
-      return adapter.queryHTML(getEl(params), params.type)
-    },
-    'Element.tap': function (params) {
-      return adapter.dispatchTapEvent(getEl(params))
-    },
-    'Element.longpress': function (params) {
-      return adapter.dispatchLongpressEvent(getEl(params))
-    },
-    'Element.touchstart': function (params) {
-      return adapter.dispatchTouchEvent(getEl(params), 'touchstart', params)
-    },
-    'Element.touchmove': function (params) {
-      return adapter.dispatchTouchEvent(getEl(params), 'touchmove', params)
-    },
-    'Element.touchend': function (params) {
-      return adapter.dispatchTouchEvent(getEl(params), 'touchend', params)
-    },
-    'Element.callFunction': function (params) {
-      return adapter.callFunction(
-        getEl(params),
-        params.functionName,
-        params.args
-      )
-    },
-    'Element.triggerEvent': function (params) {
-      return adapter.triggerEvent(getEl(params), params.type, params.detail)
-    },
-  }
-}
-
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -487,645 +317,549 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
-
-function __spreadArrays() {
-  for (var s = 0, i = 0, il = arguments.length; i < il; i++)
-    s += arguments[i].length
-  for (var r = Array(s), k = 0, i = 0; i < il; i++)
-    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-      r[k] = a[j]
+function M() {
+  for (var e = 0, t = 0, n = arguments.length; t < n; t++)
+    e += arguments[t].length
+  var r = Array(e),
+    o = 0
+  for (t = 0; t < n; t++)
+    for (var u = arguments[t], i = 0, c = u.length; i < c; i++, o++) r[o] = u[i]
   return r
 }
-
-// Unique ID creation requires a high quality random # generator. In the browser we therefore
-// require the crypto API and do not support built-in fallback to lower quality random number
-// generators (like Math.random()).
-// getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
-// find the complete implementation of crypto (msCrypto) on IE11.
-var getRandomValues =
-  (typeof crypto != 'undefined' &&
-    crypto.getRandomValues &&
-    crypto.getRandomValues.bind(crypto)) ||
-  (typeof msCrypto != 'undefined' &&
-    typeof msCrypto.getRandomValues == 'function' &&
+;('undefined' != typeof crypto &&
+  crypto.getRandomValues &&
+  crypto.getRandomValues.bind(crypto)) ||
+  ('undefined' != typeof msCrypto &&
+    'function' == typeof msCrypto.getRandomValues &&
     msCrypto.getRandomValues.bind(msCrypto))
-
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */
-var byteToHex = []
-
-for (var i = 0; i < 256; ++i) {
-  byteToHex[i] = (i + 0x100).toString(16).substr(1)
-}
-
-function getDocument(pageId) {
-  var page = getCurrentPages().find(function (page) {
-    return page.$page.id === pageId
+for (var A = [], D = 0; D < 256; ++D) A[D] = (D + 256).toString(16).substr(1)
+function N(e) {
+  var t = getCurrentPages().find(function (t) {
+    return t.$page.id === e
   })
-  if (!page) {
-    throw Error('page[' + pageId + '] not found')
-  }
-  var weex = page.$vm._$weex
-  if (!weex.document.__$weex__) {
-    weex.document.__$weex__ = weex
-  }
-  return weex.document
+  if (!t) throw Error('page[' + e + '] not found')
+  var n = t.$vm._$weex
+  return n.document.__$weex__ || (n.document.__$weex__ = n), n.document
 }
-var TAGS = {}
-var U_TAGS = {}
+var k = {},
+  q = {}
 ;['text', 'image', 'input', 'textarea', 'video', 'web-view', 'slider'].forEach(
-  function (tag) {
-    TAGS[tag] = true
-    U_TAGS['u-' + tag] = true
+  function (e) {
+    ;(k[e] = !0), (q['u-' + e] = !0)
   }
 )
-var BUILITIN = [
-  'movable-view',
-  'picker',
-  'ad',
-  'button',
-  'checkbox-group',
-  'checkbox',
-  'form',
-  'icon',
-  'label',
-  'movable-area',
-  'navigator',
-  'picker-view-column',
-  'picker-view',
-  'progress',
-  'radio-group',
-  'radio',
-  'rich-text',
-  'u-slider',
-  'swiper-item',
-  'swiper',
-  'switch',
-]
-var BUILITIN_ALIAS = BUILITIN.map(function (tag) {
-  return capitalize(camelize(tag))
-})
-function transTagName(el) {
-  var tagName = el.type
-  if (U_TAGS[tagName]) {
-    return tagName.replace('u-', '')
-  }
-  var componentName = el.__vue__ && el.__vue__.$options.name
-  if (componentName === 'USlider') {
-    return 'slider'
-  }
-  if (componentName && BUILITIN_ALIAS.indexOf(componentName) !== -1) {
-    return hyphenate(componentName)
-  }
-  return tagName
+var j = [
+    'movable-view',
+    'picker',
+    'ad',
+    'button',
+    'checkbox-group',
+    'checkbox',
+    'form',
+    'icon',
+    'label',
+    'movable-area',
+    'navigator',
+    'picker-view-column',
+    'picker-view',
+    'progress',
+    'radio-group',
+    'radio',
+    'rich-text',
+    'u-slider',
+    'swiper-item',
+    'swiper',
+    'switch',
+  ],
+  R = j.map(function (e) {
+    return s(a(e))
+  })
+function V(e) {
+  var t = e.type
+  if (q[t]) return t.replace('u-', '')
+  var n = e.__vue__ && e.__vue__.$options.name
+  return 'USlider' === n ? 'slider' : n && -1 !== R.indexOf(n) ? i(n) : t
 }
-function transEl(el) {
-  var elem = {
-    elementId: el.nodeId,
-    tagName: transTagName(el),
-    nvue: true,
-  }
-  var vm = el.__vue__
-  if (vm && !vm.$options.isReserved) {
-    elem.nodeId = vm._uid
-  }
-  if (elem.tagName === 'video') {
-    elem.videoId = elem.nodeId
-  }
-  return elem
-}
-function querySelectorByFn(node, match, result) {
-  var children = node.children
-  for (var i = 0; i < children.length; i++) {
-    var childNode = children[i]
-    if (match(childNode)) {
-      if (result) {
-        result.push(childNode)
-      } else {
-        return childNode
-      }
-    }
-    if (result) {
-      querySelectorByFn(childNode, match, result)
-    } else {
-      var res = querySelectorByFn(childNode, match, result)
-      if (res) {
-        return res
-      }
-    }
-  }
-  return result
-}
-function querySelector(context, selector, result) {
-  var matchSelector
-  var match
-  if (selector.indexOf('#') === 0) {
-    matchSelector = selector.substr(1)
-    match = function (node) {
-      return node.attr && node.attr.id === matchSelector
-    }
-  } else if (selector.indexOf('.') === 0) {
-    matchSelector = selector.substr(1)
-    match = function (node) {
-      return node.classList && node.classList.indexOf(matchSelector) !== -1
-    }
-  }
-  if (match) {
-    var ret_1 = querySelectorByFn(context, match, result)
-    if (!ret_1) {
-      throw Error('Node(' + selector + ') not exists')
-    }
-    return ret_1
-  }
-  if (selector === 'body') {
-    return Object.assign({}, context, { type: 'page' })
-  }
-  if (selector.indexOf('uni-') === 0) {
-    selector = selector.replace('uni-', '')
-  }
-  var tagName = TAGS[selector] ? 'u-' + selector : selector
-  var aliasTagName =
-    BUILITIN.indexOf(tagName) !== -1 ? capitalize(camelize(tagName)) : ''
-  var ret = querySelectorByFn(
-    context,
-    function (node) {
-      return (
-        node.type === tagName ||
-        (aliasTagName &&
-          node.__vue__ &&
-          node.__vue__.$options.name === aliasTagName)
-      )
-    },
-    result
+function L(e) {
+  var t = { elementId: e.nodeId, tagName: V(e), nvue: !0 },
+    n = e.__vue__
+  return (
+    n && !n.$options.isReserved && (t.nodeId = n._uid),
+    'video' === t.tagName && (t.videoId = t.nodeId),
+    t
   )
-  if (!ret) {
-    throw Error('Node(' + selector + ') not exists')
-  }
-  return ret
 }
-var DOM_PROPERTIES = [
+function B(e, t, n) {
+  for (var r = e.children, o = 0; o < r.length; o++) {
+    var u = r[o]
+    if (t(u)) {
+      if (!n) return u
+      n.push(u)
+    }
+    if (n) B(u, t, n)
+    else {
+      var i = B(u, t, n)
+      if (i) return i
+    }
+  }
+  return n
+}
+function H(e, t, n) {
+  var r, o
+  if (
+    (0 === t.indexOf('#')
+      ? ((r = t.substr(1)),
+        (o = function (e) {
+          return e.attr && e.attr.id === r
+        }))
+      : 0 === t.indexOf('.') &&
+        ((r = t.substr(1)),
+        (o = function (e) {
+          return e.classList && -1 !== e.classList.indexOf(r)
+        })),
+    o)
+  ) {
+    var u = B(e, o, n)
+    if (!u) throw Error('Node(' + t + ') not exists')
+    return u
+  }
+  if ('body' === t) return Object.assign({}, e, { type: 'page' })
+  0 === t.indexOf('uni-') && (t = t.replace('uni-', ''))
+  var i = k[t] ? 'u-' + t : t,
+    c = -1 !== j.indexOf(i) ? s(a(i)) : '',
+    f = B(
+      e,
+      function (e) {
+        return e.type === i || (c && e.__vue__ && e.__vue__.$options.name === c)
+      },
+      n
+    )
+  if (!f) throw Error('Node(' + t + ') not exists')
+  return f
+}
+var U = [
   {
-    test: function (names) {
+    test: function (e) {
       return (
-        names.length === 2 &&
-        names.indexOf('document.documentElement.scrollWidth') !== -1 &&
-        names.indexOf('document.documentElement.scrollHeight') !== -1
+        2 === e.length &&
+        -1 !== e.indexOf('document.documentElement.scrollWidth') &&
+        -1 !== e.indexOf('document.documentElement.scrollHeight')
       )
     },
-    call: function (node) {
-      var weex = node.__$weex__ || node.ownerDocument.__$weex__
-      return new Promise(function (resolve) {
-        if (node.type === 'scroll-view' && node.children.length === 1) {
-          node = node.children[0]
-        }
-        weex.requireModule('dom').getComponentRect(node.ref, function (res) {
-          if (res.result) {
-            resolve([res.size.width, res.size.height])
-          } else {
-            resolve([0, 0])
-          }
+    call: function (e) {
+      var t = e.__$weex__ || e.ownerDocument.__$weex__
+      return new Promise(function (n) {
+        'scroll-view' === e.type &&
+          1 === e.children.length &&
+          (e = e.children[0]),
+          t.requireModule('dom').getComponentRect(e.ref, function (e) {
+            e.result ? n([e.size.width, e.size.height]) : n([0, 0])
+          })
+      })
+    },
+  },
+  {
+    test: function (e) {
+      return 1 === e.length && 'document.documentElement.scrollTop' === e[0]
+    },
+    call: function (e) {
+      var t = e.__$weex__ || e.ownerDocument.__$weex__
+      return new Promise(function (n) {
+        'scroll-view' === e.type &&
+          1 === e.children.length &&
+          (e = e.children[0]),
+          t.requireModule('dom').getComponentRect(e.ref, function (e) {
+            n([(e.size && Math.abs(e.size.top)) || 0])
+          })
+      })
+    },
+  },
+  {
+    test: function (e) {
+      return (
+        2 === e.length &&
+        -1 !== e.indexOf('offsetWidth') &&
+        -1 !== e.indexOf('offsetHeight')
+      )
+    },
+    call: function (e) {
+      var t = e.__$weex__ || e.ownerDocument.__$weex__
+      return new Promise(function (n) {
+        t.requireModule('dom').getComponentRect(e.ref, function (e) {
+          e.result ? n([e.size.width, e.size.height]) : n([0, 0])
         })
       })
     },
   },
   {
-    test: function (names) {
-      return (
-        names.length === 1 && names[0] === 'document.documentElement.scrollTop'
-      )
+    test: function (e, t) {
+      return 1 === e.length && 'innerText' === e[0]
     },
-    call: function (node) {
-      var weex = node.__$weex__ || node.ownerDocument.__$weex__
-      return new Promise(function (resolve) {
-        if (node.type === 'scroll-view' && node.children.length === 1) {
-          node = node.children[0]
-        }
-        weex.requireModule('dom').getComponentRect(node.ref, function (res) {
-          resolve([(res.size && Math.abs(res.size.top)) || 0])
-        })
-      })
-    },
-  },
-  {
-    test: function (names) {
-      return (
-        names.length === 2 &&
-        names.indexOf('offsetWidth') !== -1 &&
-        names.indexOf('offsetHeight') !== -1
-      )
-    },
-    call: function (node) {
-      var weex = node.__$weex__ || node.ownerDocument.__$weex__
-      return new Promise(function (resolve) {
-        weex.requireModule('dom').getComponentRect(node.ref, function (res) {
-          if (res.result) {
-            resolve([res.size.width, res.size.height])
-          } else {
-            resolve([0, 0])
-          }
-        })
-      })
-    },
-  },
-  {
-    test: function (names, node) {
-      return names.length === 1 && names[0] === 'innerText'
-    },
-    call: function (node) {
-      return Promise.resolve([toText(node, []).join('')])
+    call: function (e) {
+      return Promise.resolve([X(e, []).join('')])
     },
   },
 ]
-function toText(node, res) {
-  if (node.type === 'u-text') {
-    res.push(node.attr.value)
-  } else {
-    node.pureChildren.map(function (child) {
-      return toText(child, res)
-    })
-  }
-  return res
-}
-function formatHTML(html) {
-  return html.replace(/\n/g, '').replace(/<u-/g, '<').replace(/<\/u-/g, '</')
-}
-function toHTML(node, type) {
-  if (type === 'outer') {
-    if (node.role === 'body' && node.type === 'scroll-view') {
-      return '<page>' + formatHTML(toHTML(node, 'inner')) + '</page>'
-    }
-    return formatHTML(node.toString())
-  }
-  return formatHTML(
-    node.pureChildren
-      .map(function (child) {
-        return child.toString()
-      })
-      .join('')
+function X(e, t) {
+  return (
+    'u-text' === e.type
+      ? t.push(e.attr.value)
+      : e.pureChildren.map(function (e) {
+          return X(e, t)
+        }),
+    t
   )
 }
-var FUNCTIONS = {
+function W(e) {
+  return e.replace(/\n/g, '').replace(/<u-/g, '<').replace(/<\/u-/g, '</')
+}
+function z(e, t) {
+  return 'outer' === t
+    ? 'body' === e.role && 'scroll-view' === e.type
+      ? '<page>' + W(z(e, 'inner')) + '</page>'
+      : W(e.toString())
+    : W(
+        e.pureChildren
+          .map(function (e) {
+            return e.toString()
+          })
+          .join('')
+      )
+}
+var J = {
   input: {
-    input: function (el, value) {
-      el.setValue(value)
+    input: function (e, t) {
+      e.setValue(t)
     },
   },
   textarea: {
-    input: function (el, value) {
-      el.setValue(value)
+    input: function (e, t) {
+      e.setValue(t)
     },
   },
   'scroll-view': {
-    scrollTo: function (el, x, y) {
-      // TODO
-      el.scrollTo(y)
+    scrollTo: function (e, t, n) {
+      e.scrollTo(n)
     },
-    scrollTop: function (el) {
-      // TODO
+    scrollTop: function (e) {
       return 0
     },
-    scrollLeft: function (el) {
-      // TODO
+    scrollLeft: function (e) {
       return 0
     },
-    scrollWidth: function (el) {
-      // TODO
+    scrollWidth: function (e) {
       return 0
     },
-    scrollHeight: function (el) {
-      // TODO
+    scrollHeight: function (e) {
       return 0
     },
   },
   swiper: {
-    swipeTo: function (el, index) {
-      el.__vue__.current = index
+    swipeTo: function (e, t) {
+      e.__vue__.current = t
     },
   },
   'movable-view': {
-    moveTo: function (el, x, y) {
-      var vm = el.__vue__
-      vm.x = x
-      vm.y = y
+    moveTo: function (e, t, n) {
+      var r = e.__vue__
+      ;(r.x = t), (r.y = n)
     },
   },
   switch: {
-    tap: function (el) {
-      var vm = el.__vue__
-      vm.checked = !vm.checked
+    tap: function (e) {
+      var t = e.__vue__
+      t.checked = !t.checked
     },
   },
   slider: {
-    slideTo: function (el, value) {
-      el.__vue__.value = value
+    slideTo: function (e, t) {
+      e.__vue__.value = t
     },
   },
 }
-function getRoot(pageId) {
-  var doc = getDocument(pageId)
-  return doc.body
+function F(e) {
+  return N(e).body
 }
-var adapter = {
-  getWindow: function (pageId) {
-    return getRoot(pageId)
+var K = {
+  getWindow: function (e) {
+    return F(e)
   },
-  getDocument: function (pageId) {
-    return getRoot(pageId)
+  getDocument: function (e) {
+    return F(e)
   },
-  getEl: function (elementId, pageId) {
-    var doc = getDocument(pageId)
-    var element = doc.getRef(elementId)
-    if (!element) {
-      throw Error('element destroyed')
-    }
-    return element
+  getEl: function (e, t) {
+    var n = N(t).getRef(e)
+    if (!n) throw Error('element destroyed')
+    return n
   },
-  getOffset: function (node) {
-    var weex = node.__$weex__ || node.ownerDocument.__$weex__
-    return new Promise(function (resolve) {
-      weex.requireModule('dom').getComponentRect(node.ref, function (res) {
-        if (res.result) {
-          resolve({
-            left: res.size.left,
-            top: res.size.top,
-          })
-        } else {
-          resolve({
-            left: 0,
-            top: 0,
-          })
-        }
+  getOffset: function (e) {
+    var t = e.__$weex__ || e.ownerDocument.__$weex__
+    return new Promise(function (n) {
+      t.requireModule('dom').getComponentRect(e.ref, function (e) {
+        e.result
+          ? n({ left: e.size.left, top: e.size.top })
+          : n({ left: 0, top: 0 })
       })
     })
   },
-  querySelector: function (context, selector) {
-    return Promise.resolve(transEl(querySelector(context, selector)))
+  querySelector: function (e, t) {
+    return Promise.resolve(L(H(e, t)))
   },
-  querySelectorAll: function (context, selector) {
+  querySelectorAll: function (e, t) {
     return Promise.resolve({
-      elements: querySelector(context, selector, []).map(function (el) {
-        return transEl(el)
+      elements: H(e, t, []).map(function (e) {
+        return L(e)
       }),
     })
   },
-  queryProperties: function (context, names) {
-    var options = DOM_PROPERTIES.find(function (options) {
-      return options.test(names, context)
+  queryProperties: function (e, t) {
+    var n = U.find(function (n) {
+      return n.test(t, e)
     })
-    if (options) {
-      return options.call(context).then(function (properties) {
-        return {
-          properties: properties,
-        }
-      })
-    }
+    return n
+      ? n.call(e).then(function (e) {
+          return { properties: e }
+        })
+      : Promise.resolve({
+          properties: t.map(function (t) {
+            return d(e, t)
+          }),
+        })
+  },
+  queryAttributes: function (e, t) {
+    var n = e.attr
     return Promise.resolve({
-      properties: names.map(function (name) {
-        return getDataByPath(context, name)
+      attributes: t.map(function (t) {
+        return 'class' === t
+          ? (e.classList || []).join(' ')
+          : String(n[t] || n[a(t)] || '')
       }),
     })
   },
-  queryAttributes: function (context, names) {
-    var attr = context.attr
+  queryStyles: function (e, t) {
+    var n = e.style
     return Promise.resolve({
-      attributes: names.map(function (name) {
-        if (name === 'class') {
-          return (context.classList || []).join(' ')
-        }
-        return String(attr[name] || attr[camelize(name)] || '')
+      styles: t.map(function (e) {
+        return n[e]
       }),
     })
   },
-  queryStyles: function (context, names) {
-    var style = context.style
-    return Promise.resolve({
-      styles: names.map(function (name) {
-        return style[name]
-      }),
-    })
+  queryHTML: function (e, t) {
+    return Promise.resolve({ html: z(e, t) })
   },
-  queryHTML: function (context, type) {
-    return Promise.resolve({
-      html: toHTML(context, type),
-    })
-  },
-  dispatchTapEvent: function (el) {
-    el.fireEvent(
-      'click',
-      {
-        timeStamp: Date.now(),
-        target: el,
-        currentTarget: el,
-      },
-      true
-    )
-    return Promise.resolve()
-  },
-  dispatchLongpressEvent: function (el) {
-    el.fireEvent(
-      'longpress',
-      {
-        timeStamp: Date.now(),
-        target: el,
-        currentTarget: el,
-      },
-      true
-    )
-    return Promise.resolve()
-  },
-  dispatchTouchEvent: function (el, type, eventInitDict) {
-    if (!eventInitDict) {
-      eventInitDict = {}
-    }
-    if (!eventInitDict.touches) {
-      eventInitDict.touches = []
-    }
-    if (!eventInitDict.changedTouches) {
-      eventInitDict.changedTouches = []
-    }
-    if (!eventInitDict.touches.length) {
-      eventInitDict.touches.push({
-        identifier: Date.now(),
-        target: el,
-      })
-    }
-    el.fireEvent(
-      type,
-      Object.assign(
-        {
-          timeStamp: Date.now(),
-          target: el,
-          currentTarget: el,
-        },
-        eventInitDict
+  dispatchTapEvent: function (e) {
+    return (
+      e.fireEvent(
+        'click',
+        { timeStamp: Date.now(), target: e, currentTarget: e },
+        !0
       ),
-      true
+      Promise.resolve()
     )
-    return Promise.resolve()
   },
-  callFunction: function (el, functionName, args) {
-    var fn = getDataByPath(FUNCTIONS, functionName)
-    if (!fn) {
-      return Promise.reject(Error(functionName + ' not exists'))
-    }
-    return Promise.resolve({
-      result: fn.apply(null, __spreadArrays([el], args)),
-    })
+  dispatchLongpressEvent: function (e) {
+    return (
+      e.fireEvent(
+        'longpress',
+        { timeStamp: Date.now(), target: e, currentTarget: e },
+        !0
+      ),
+      Promise.resolve()
+    )
   },
-  triggerEvent: function (el, type, detail) {
-    var vm = el.__vue__
-    if (vm) {
-      vm.$trigger && vm.$trigger(type, {}, detail)
-    } else {
-      el.fireEvent(
-        type,
-        {
-          timeStamp: Date.now(),
-          target: el,
-          currentTarget: el,
-        },
-        false,
-        { params: [{ detail: detail }] }
-      )
-    }
-    return Promise.resolve()
+  dispatchTouchEvent: function (e, t, n) {
+    return (
+      n || (n = {}),
+      n.touches || (n.touches = []),
+      n.changedTouches || (n.changedTouches = []),
+      n.touches.length || n.touches.push({ identifier: Date.now(), target: e }),
+      e.fireEvent(
+        t,
+        Object.assign(
+          { timeStamp: Date.now(), target: e, currentTarget: e },
+          n
+        ),
+        !0
+      ),
+      Promise.resolve()
+    )
+  },
+  callFunction: function (e, t, n) {
+    var r = d(J, t)
+    return r
+      ? Promise.resolve({ result: r.apply(null, M([e], n)) })
+      : Promise.reject(Error(t + ' not exists'))
+  },
+  triggerEvent: function (e, t, n) {
+    var r = e.__vue__
+    return (
+      r
+        ? r.$trigger && r.$trigger(t, {}, n)
+        : e.fireEvent(
+            t,
+            { timeStamp: Date.now(), target: e, currentTarget: e },
+            !1,
+            { params: [{ detail: n }] }
+          ),
+      Promise.resolve()
+    )
   },
 }
-
-function initNativeApi() {
-  return Object.assign({}, initPage(adapter), initElement(adapter))
-}
-
-var Api = {}
-Object.keys(App).forEach(function (method) {
-  Api['App.' + method] = App[method]
-})
-Object.keys(Page).forEach(function (method) {
-  Api['Page.' + method] = Page[method]
-})
-Object.keys(Element).forEach(function (method) {
-  Api['Element.' + method] = Element[method]
-})
-var wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
-var NVueApi
-var fallback
-var socketTask
-//@ts-ignore
-{
-  fallback = function (id, method, params, data) {
-    var pageId = params.pageId
-    var page = findPageByPageId(pageId)
-    if (!page) {
-      data.error = {
-        message: 'page[' + pageId + '] not exists',
-      }
-      send(data)
-      return true
-    }
-    var isNVue = !!page.$page.meta.isNVue
-    //@ts-ignore
-    if (!isNVue) {
-      UniServiceJSBridge.publishHandler(
-        'sendAutoMessage',
-        {
-          id: id,
-          method: method,
-          params: params,
-        },
-        pageId
-      )
-      return true
-    }
-    if (!NVueApi) {
-      NVueApi = initNativeApi()
-    }
-    return NVueApi[method]
-  }
-  UniServiceJSBridge.subscribe('onAutoMessageReceive', function (res) {
-    send(res)
+var Q = {}
+Object.keys($).forEach(function (e) {
+  Q['App.' + e] = $[e]
+}),
+  Object.keys(b).forEach(function (e) {
+    Q['Page.' + e] = b[e]
+  }),
+  Object.keys(C).forEach(function (e) {
+    Q['Element.' + e] = C[e]
   })
+var Y,
+  Z,
+  G,
+  ee = process.env.UNI_AUTOMATOR_WS_ENDPOINT
+function te(e) {
+  G.send({ data: JSON.stringify(e) })
 }
-function send(data) {
-  socketTask.send({ data: JSON.stringify(data) })
-}
-function findPageByPageId(pageId) {
-  var pages = getCurrentPages()
-  if (!pageId) {
-    return pages[pages.length - 1]
-  }
-  return pages.find(function (page) {
-    return page.$page.id === pageId
-  })
-}
-function onMessage(res) {
-  var _a = JSON.parse(res.data),
-    id = _a.id,
-    method = _a.method,
-    params = _a.params
-  var data = { id: id }
-  var fn = Api[method]
-  if (!fn) {
-    if (fallback) {
-      var result = fallback(id, method, params, data)
-      if (result === true) {
-        return
-      }
-      fn = result
+function ne(e) {
+  var t = JSON.parse(e.data),
+    n = t.id,
+    r = t.method,
+    o = t.params,
+    u = { id: n },
+    i = Q[r]
+  if (!i) {
+    if (Z) {
+      var c = Z(n, r, o, u)
+      if (!0 === c) return
+      i = c
     }
-    if (!fn) {
-      data.error = {
-        message: method + ' unimplemented',
-      }
-      return send(data)
-    }
+    if (!i) return (u.error = { message: r + ' unimplemented' }), te(u)
   }
   try {
-    fn(params)
-      .then(function (res) {
-        res && (data.result = res)
+    i(o)
+      .then(function (e) {
+        e && (u.result = e)
       })
-      .catch(function (err) {
-        data.error = {
-          message: err.message,
-        }
+      .catch(function (e) {
+        u.error = { message: e.message }
       })
       .finally(function () {
-        send(data)
+        te(u)
       })
-  } catch (err) {
-    data.error = {
-      message: err.message,
-    }
-    send(data)
+  } catch (e) {
+    ;(u.error = { message: e.message }), te(u)
   }
 }
-function initRuntimeAutomator(options) {
-  if (options === void 0) {
-    options = {}
-  }
-  socketTask = uni.connectSocket({
-    url: wsEndpoint,
-    complete: function () {},
-  })
-  socketTask.onMessage(onMessage)
-  socketTask.onOpen(function (res) {
-    options.success && options.success()
-    console.log('已开启自动化测试...')
-  })
-  socketTask.onError(function (res) {
-    console.log('automator.onError', res)
-  })
-  socketTask.onClose(function () {
-    options.fail && options.fail({ errMsg: '$$initRuntimeAutomator:fail' })
-    console.log('automator.onClose')
-  })
-}
-//@ts-ignore
-{
+;(Z = function (e, t, n, r) {
+  var o = n.pageId,
+    u = (function (e) {
+      var t = getCurrentPages()
+      if (!e) return t[t.length - 1]
+      return t.find(function (t) {
+        return t.$page.id === e
+      })
+    })(o)
+  return u
+    ? !u.$page.meta.isNVue
+      ? (UniServiceJSBridge.publishHandler(
+          'sendAutoMessage',
+          { id: e, method: t, params: n },
+          o
+        ),
+        !0)
+      : (Y ||
+          (Y = Object.assign(
+            {},
+            (function (e) {
+              return {
+                'Page.getElement': function (t) {
+                  return e.querySelector(e.getDocument(t.pageId), t.selector)
+                },
+                'Page.getElements': function (t) {
+                  return e.querySelectorAll(e.getDocument(t.pageId), t.selector)
+                },
+                'Page.getWindowProperties': function (t) {
+                  return e.queryProperties(e.getWindow(t.pageId), t.names)
+                },
+              }
+            })(K),
+            (function (e) {
+              var t = function (t) {
+                return e.getEl(t.elementId, t.pageId)
+              }
+              return {
+                'Element.getElement': function (n) {
+                  return e.querySelector(t(n), n.selector)
+                },
+                'Element.getElements': function (n) {
+                  return e.querySelectorAll(t(n), n.selector)
+                },
+                'Element.getDOMProperties': function (n) {
+                  return e.queryProperties(t(n), n.names)
+                },
+                'Element.getProperties': function (n) {
+                  var r = t(n),
+                    o = r.__vue__ || r.attr || {}
+                  return e.queryProperties(o, n.names)
+                },
+                'Element.getOffset': function (n) {
+                  return e.getOffset(t(n))
+                },
+                'Element.getAttributes': function (n) {
+                  return e.queryAttributes(t(n), n.names)
+                },
+                'Element.getStyles': function (n) {
+                  return e.queryStyles(t(n), n.names)
+                },
+                'Element.getHTML': function (n) {
+                  return e.queryHTML(t(n), n.type)
+                },
+                'Element.tap': function (n) {
+                  return e.dispatchTapEvent(t(n))
+                },
+                'Element.longpress': function (n) {
+                  return e.dispatchLongpressEvent(t(n))
+                },
+                'Element.touchstart': function (n) {
+                  return e.dispatchTouchEvent(t(n), 'touchstart', n)
+                },
+                'Element.touchmove': function (n) {
+                  return e.dispatchTouchEvent(t(n), 'touchmove', n)
+                },
+                'Element.touchend': function (n) {
+                  return e.dispatchTouchEvent(t(n), 'touchend', n)
+                },
+                'Element.callFunction': function (n) {
+                  return e.callFunction(t(n), n.functionName, n.args)
+                },
+                'Element.triggerEvent': function (n) {
+                  return e.triggerEvent(t(n), n.type, n.detail)
+                },
+              }
+            })(K)
+          )),
+        Y[t])
+    : ((r.error = { message: 'page[' + o + '] not exists' }), te(r), !0)
+}),
+  UniServiceJSBridge.subscribe('onAutoMessageReceive', function (e) {
+    te(e)
+  }),
   setTimeout(function () {
-    // (global as any).testMessage = onMessage;
-    initRuntimeAutomator()
+    var e
+    void 0 === e && (e = {}),
+      (G = uni.connectSocket({ url: ee, complete: function () {} })).onMessage(
+        ne
+      ),
+      G.onOpen(function (t) {
+        e.success && e.success(), console.log('已开启自动化测试...')
+      }),
+      G.onError(function (e) {
+        console.log('automator.onError', e)
+      }),
+      G.onClose(function () {
+        e.fail && e.fail({ errMsg: '$$initRuntimeAutomator:fail' }),
+          console.log('automator.onClose')
+      })
   }, 500)
-}

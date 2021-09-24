@@ -5,5 +5,12 @@ packages/uni-automator/lib
 packages/uni-cli-nvue/lib
 packages/uni-cli-shared/lib
 packages/uni-components/lib
-packages/uni-mp-vue/lib
 packages/uni-cloud/lib
+packages/uni-mp-alipay/lib
+packages/uni-mp-baidu/lib
+packages/uni-mp-kuaishou/lib
+packages/uni-mp-qq/lib
+packages/uni-mp-toutiao/lib
+packages/uni-mp-vue/lib
+packages/uni-mp-weixin/lib
+packages/uni-mp-quickapp-webview/lib
