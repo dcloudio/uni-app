@@ -202,7 +202,7 @@
     "@vue/compiler-core" "3.2.16"
     "@vue/shared" "3.2.16"
 
-"@vue/compiler-sfc@3.2.16", "@vue/compiler-sfc@^3.2.14":
+"@vue/compiler-sfc@3.2.16", "@vue/compiler-sfc@^3.2.16":
   version "3.2.16"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.2.16.tgz#7e8c372baa0fa93f0c91058d8fa25780f7233f29"
   integrity sha512-AxaDDg0ZjY7lCoVnCq7V+K3SIEfhyIHtten7k/LRupVC/VzSbelBmW0J8bawgsjLJAfTsdWZjeezZ5JJp2DM/A==
@@ -266,7 +266,7 @@
     "@vue/shared" "3.2.16"
     csstype "^2.6.8"
 
-"@vue/server-renderer@3.2.16", "@vue/server-renderer@^3.2.14":
+"@vue/server-renderer@3.2.16", "@vue/server-renderer@^3.2.16":
   version "3.2.16"
   resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.2.16.tgz#791e47957c16f31e53a773c27b0b88d8095d4586"
   integrity sha512-g2aSNYHaExFElYmKw1bfmp3yQmBCPQzrX3Hd7bhDa7bbGGHGchOg0n31SwuMrGk/z/pho4Z0K+LPfChmcECynQ==
@@ -274,7 +274,7 @@
     "@vue/compiler-ssr" "3.2.16"
     "@vue/shared" "3.2.16"
 
-"@vue/shared@3.2.16", "@vue/shared@^3.2.14":
+"@vue/shared@3.2.16", "@vue/shared@^3.2.16":
   version "3.2.16"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.16.tgz#a7f5e37e07ac68d4b7ea8ebeba515b46d205c524"
   integrity sha512-zpv8lxuatl3ruCJCsGzrO/F4+IlLug4jbu3vaIi/wJVZKQgnsW1R/xSRJMQS6K57cl4fT/2zkrYsWh1/6H7Esw==
@@ -2132,7 +2132,7 @@ vue-router@^4.0.11:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.14"
 
-vue@^3.2.14:
+vue@^3.2.16:
   version "3.2.16"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.16.tgz#bc547784b5df360cfa64d72fd0b94cd20149cf1e"
   integrity sha512-aGm8HbZe6IIj2b/LX6QXpAwwDFrpo8E1jdTkuBX2fS42c1+mQ1n0Wl+Dxnj9cgRM7bp1MIoXbPbDyDsOrXTO0w==
