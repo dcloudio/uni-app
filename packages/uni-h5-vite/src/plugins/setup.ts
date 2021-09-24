@@ -1,7 +1,11 @@
 import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
-import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
+import {
+  EXTNAME_JS_RE,
+  normalizePath,
+  parseVueRequest,
+} from '@dcloudio/uni-cli-shared'
 
 const debugSetup = debug('vite:uni:setup')
 
@@ -25,10 +29,16 @@ export function uniSetupPlugin(): Plugin {
       }
       if (query.mpType === 'page') {
         debugSetup(filename)
-        return (
-          code +
-          `;import { setupPage } from '@dcloudio/uni-h5';setupPage(_sfc_main);`
-        )
+        // js,ts,jsx,tsx
+        const isJs = EXTNAME_JS_RE.test(filename)
+        if (isJs) {
+          code = code.replace(/export\s+default/, 'const _sfc_main =')
+        }
+        code += `;import { setupPage } from '@dcloudio/uni-h5';setupPage(_sfc_main);`
+        if (isJs) {
+          code += ';export default _sfc_main;'
+        }
+        return code
       }
     },
   }

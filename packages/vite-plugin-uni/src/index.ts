@@ -4,7 +4,6 @@ import { Options as VueOptions } from '@vitejs/plugin-vue'
 import { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
 import { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 import vuePlugin from '@vitejs/plugin-vue'
-import type VueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
 
 import {
@@ -37,7 +36,7 @@ export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string
   vueOptions?: VueOptions
-  vueJsxOptions?: VueJSXPluginOptions
+  vueJsxOptions?: VueJSXPluginOptions | boolean
   viteLegacyOptions?: ViteLegacyOptions
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
@@ -52,11 +51,6 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
 }
 
 export { runDev, runBuild } from './cli/action'
-
-let createVueJsxPlugin: typeof VueJsxPlugin | undefined
-try {
-  createVueJsxPlugin = require('@vitejs/plugin-vue-jsx')
-} catch (e) {}
 
 let createViteLegacyPlugin: typeof ViteLegacyPlugin | undefined
 try {
@@ -91,8 +85,10 @@ export default function uniPlugin(
     )
   }
 
-  if (createVueJsxPlugin && options.vueJsxOptions !== false) {
-    plugins.push(createVueJsxPlugin(initPluginVueJsxOptions(options)))
+  if (options.vueJsxOptions) {
+    plugins.push(
+      require('../lib/plugin-vue-jsx/index')(initPluginVueJsxOptions(options))
+    )
   }
 
   const uniPlugins = initExtraPlugins(

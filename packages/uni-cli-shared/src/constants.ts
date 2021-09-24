@@ -5,9 +5,9 @@ export const EXTNAME_VUE_RE = /\.(vue|nvue)$/
 export const EXTNAME_JS_RE = /\.[jt]sx?$/
 
 // APP 平台解析页面后缀的优先级
-export const PAGE_EXTNAME_APP = ['.nvue', '.vue']
+export const PAGE_EXTNAME_APP = ['.nvue', '.vue', '.tsx', '.jsx', '.js']
 // 其他平台解析页面后缀的优先级
-export const PAGE_EXTNAME = ['.vue', '.nvue']
+export const PAGE_EXTNAME = ['.vue', '.nvue', '.tsx', '.jsx', '.js']
 
 export const H5_API_STYLE_PATH = '@dcloudio/uni-h5/style/api/'
 export const H5_FRAMEWORK_STYLE_PATH = '@dcloudio/uni-h5/style/framework/'

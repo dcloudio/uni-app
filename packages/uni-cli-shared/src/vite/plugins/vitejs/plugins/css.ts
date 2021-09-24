@@ -29,7 +29,7 @@ import { Alias } from 'types/alias'
 import { transform, formatMessages } from 'esbuild'
 
 import { resolveMainPathOnce } from '../../../../utils'
-import { EXTNAME_VUE_RE } from '../../../../constants'
+import { EXTNAME_JS_RE, EXTNAME_VUE_RE } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -182,7 +182,10 @@ function normalizeCssChunkFilename(id: string) {
   return normalizePath(
     path.relative(
       process.env.UNI_INPUT_DIR,
-      id.split('?')[0].replace(EXTNAME_VUE_RE, '.css')
+      id
+        .split('?')[0]
+        .replace(EXTNAME_VUE_RE, '.css')
+        .replace(EXTNAME_JS_RE, '.css')
     )
   )
 }

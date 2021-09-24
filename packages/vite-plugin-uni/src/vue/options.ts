@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray } from '@vue/shared'
+import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { isCustomElement } from '@dcloudio/uni-shared'
 import {
@@ -114,7 +114,9 @@ export function initPluginVueOptions(
 }
 
 export function initPluginVueJsxOptions(options: VitePluginUniResolvedOptions) {
-  const vueJsxOptions = options.vueJsxOptions || (options.vueJsxOptions = {})
+  const vueJsxOptions = isPlainObject(options.vueJsxOptions)
+    ? options.vueJsxOptions
+    : (options.vueJsxOptions = {})
   if (!hasOwn(vueJsxOptions, 'optimize')) {
     vueJsxOptions.optimize = true
   }
