@@ -23,6 +23,7 @@ const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getMani
 
 process.env.UNI_APP_ID = manifestJsonObj.appid || ''
 process.env.UNI_APP_NAME = manifestJsonObj.name || ''
+process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 
 // 小程序 vue3 标记
 if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
