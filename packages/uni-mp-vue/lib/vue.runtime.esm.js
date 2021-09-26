@@ -1,5 +1,5 @@
-import { isArray, extend, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, remove, isPromise, isString, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSet, isPlainObject, toTypeString, invokeArrayFns } from '@vue/shared';
-export { camelize } from '@vue/shared';
+import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, remove, isPromise, isString, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSet, isPlainObject, toTypeString, invokeArrayFns } from '@vue/shared';
+export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -64,10 +64,25 @@ class EffectScope {
         }
     }
 }
+function effectScope(detached) {
+    return new EffectScope(detached);
+}
 function recordEffectScope(effect, scope) {
     scope = scope || activeEffectScope;
     if (scope && scope.active) {
         scope.effects.push(effect);
+    }
+}
+function getCurrentScope() {
+    return activeEffectScope;
+}
+function onScopeDispose(fn) {
+    if (activeEffectScope) {
+        activeEffectScope.cleanups.push(fn);
+    }
+    else if ((process.env.NODE_ENV !== 'production')) {
+        warn(`onScopeDispose() is called when there is no active effect scope` +
+            ` to be associated with.`);
     }
 }
 
@@ -175,6 +190,26 @@ function cleanupEffect(effect) {
         }
         deps.length = 0;
     }
+}
+function effect(fn, options) {
+    if (fn.effect) {
+        fn = fn.effect.fn;
+    }
+    const _effect = new ReactiveEffect(fn);
+    if (options) {
+        extend(_effect, options);
+        if (options.scope)
+            recordEffectScope(_effect, options.scope);
+    }
+    if (!options || !options.lazy) {
+        _effect.run();
+    }
+    const runner = _effect.run.bind(_effect);
+    runner.effect = _effect;
+    return runner;
+}
+function stop(runner) {
+    runner.effect.stop();
 }
 let shouldTrack = true;
 const trackStack = [];
@@ -1083,6 +1118,13 @@ function computed(getterOrOptions, debugOptions) {
 
 function emit(event, ...args) {
 }
+const devtoolsComponentUpdated = 
+/*#__PURE__*/ createDevtoolsComponentHook("component:updated" /* COMPONENT_UPDATED */);
+function createDevtoolsComponentHook(hook) {
+    return (component) => {
+        emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
+    };
+}
 function devtoolsComponentEmit(component, event, params) {
     emit("component:emit" /* COMPONENT_EMIT */, component.appContext.app, component, event, params);
 }
@@ -1221,6 +1263,69 @@ function isEmitListener(options, key) {
  */
 let currentRenderingInstance = null;
 let currentScopeId = null;
+/**
+ * Note: rendering calls maybe nested. The function returns the parent rendering
+ * instance if present, which should be restored after the render is done:
+ *
+ * ```js
+ * const prev = setCurrentRenderingInstance(i)
+ * // ...render
+ * setCurrentRenderingInstance(prev)
+ * ```
+ */
+function setCurrentRenderingInstance(instance) {
+    const prev = currentRenderingInstance;
+    currentRenderingInstance = instance;
+    currentScopeId = (instance && instance.type.__scopeId) || null;
+    return prev;
+}
+/**
+ * Only for backwards compat
+ * @private
+ */
+const withScopeId = (_id) => withCtx;
+/**
+ * Wrap a slot function to memoize current rendering instance
+ * @private compiler helper
+ */
+function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot // false only
+) {
+    if (!ctx)
+        return fn;
+    // already normalized
+    if (fn._n) {
+        return fn;
+    }
+    const renderFnWithContext = (...args) => {
+        // If a user calls a compiled slot inside a template expression (#1745), it
+        // can mess up block tracking, so by default we disable block tracking and
+        // force bail out when invoking a compiled slot (indicated by the ._d flag).
+        // This isn't necessary if rendering a compiled `<slot>`, so we flip the
+        // ._d flag off when invoking the wrapped fn inside `renderSlot`.
+        if (renderFnWithContext._d) {
+            setBlockTracking(-1);
+        }
+        const prevInstance = setCurrentRenderingInstance(ctx);
+        const res = fn(...args);
+        setCurrentRenderingInstance(prevInstance);
+        if (renderFnWithContext._d) {
+            setBlockTracking(1);
+        }
+        if ((process.env.NODE_ENV !== 'production') || false) {
+            devtoolsComponentUpdated(ctx);
+        }
+        return res;
+    };
+    // mark normalized to avoid duplicated wrapping
+    renderFnWithContext._n = true;
+    // mark this as compiled by default
+    // this is used in vnode.ts -> normalizeChildren() to set the slot
+    // rendering flag.
+    renderFnWithContext._c = true;
+    // disable block tracking by default
+    renderFnWithContext._d = true;
+    return renderFnWithContext;
+}
 
 function markAttrsAccessed() {
 }
@@ -2184,10 +2289,34 @@ function validateDirectiveName(name) {
  * Adds directives to a VNode.
  */
 function withDirectives(vnode, directives) {
-    {
+    const internalInstance = currentRenderingInstance;
+    if (internalInstance === null) {
         (process.env.NODE_ENV !== 'production') && warn$1(`withDirectives can only be used inside render functions.`);
         return vnode;
     }
+    const instance = internalInstance.proxy;
+    const bindings = vnode.dirs || (vnode.dirs = []);
+    for (let i = 0; i < directives.length; i++) {
+        let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
+        if (isFunction(dir)) {
+            dir = {
+                mounted: dir,
+                updated: dir
+            };
+        }
+        if (dir.deep) {
+            traverse(value);
+        }
+        bindings.push({
+            dir,
+            instance,
+            value,
+            oldValue: void 0,
+            arg,
+            modifiers
+        });
+    }
+    return vnode;
 }
 
 function createAppContext() {
@@ -2327,6 +2456,12 @@ const isTeleport = (type) => type.__isTeleport;
 
 const COMPONENTS = 'components';
 const DIRECTIVES = 'directives';
+/**
+ * @private
+ */
+function resolveComponent(name, maybeSelfReference) {
+    return resolveAsset(COMPONENTS, name, true, maybeSelfReference) || name;
+}
 const NULL_DYNAMIC_COMPONENT = Symbol();
 /**
  * @private
@@ -2336,7 +2471,7 @@ function resolveDirective(name) {
 }
 // implementation
 function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
-    const instance = currentInstance;
+    const instance = currentRenderingInstance || currentInstance;
     if (instance) {
         const Component = instance.type;
         // explicit self name has highest priority
@@ -2385,6 +2520,30 @@ const Text = Symbol((process.env.NODE_ENV !== 'production') ? 'Text' : undefined
 const Comment = Symbol((process.env.NODE_ENV !== 'production') ? 'Comment' : undefined);
 Symbol((process.env.NODE_ENV !== 'production') ? 'Static' : undefined);
 let currentBlock = null;
+// Whether we should be tracking dynamic child nodes inside a block.
+// Only tracks when this value is > 0
+// We are not using a simple boolean because this value may need to be
+// incremented/decremented by nested usage of v-once (see below)
+let isBlockTreeEnabled = 1;
+/**
+ * Block tracking sometimes needs to be disabled, for example during the
+ * creation of a tree that needs to be cached by v-once. The compiler generates
+ * code like this:
+ *
+ * ``` js
+ * _cache[1] || (
+ *   setBlockTracking(-1),
+ *   _cache[1] = createVNode(...),
+ *   setBlockTracking(1),
+ *   _cache[1]
+ * )
+ * ```
+ *
+ * @private
+ */
+function setBlockTracking(value) {
+    isBlockTreeEnabled += value;
+}
 function isVNode(value) {
     return value ? value.__v_isVNode === true : false;
 }
@@ -2443,7 +2602,8 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
         warn$1(`VNode created with invalid key (NaN). VNode type:`, vnode.type);
     }
     // track vnode for block tree
-    if (// avoid a block node from tracking itself
+    if (isBlockTreeEnabled > 0 &&
+        // avoid a block node from tracking itself
         !isBlockNode &&
         // has current parent block
         currentBlock &&
@@ -2682,6 +2842,22 @@ function mergeProps(...args) {
                 ret[key] = toMerge[key];
             }
         }
+    }
+    return ret;
+}
+
+/**
+ * For prefixing keys in v-on="obj" with "on"
+ * @private
+ */
+function toHandlers(obj) {
+    const ret = {};
+    if ((process.env.NODE_ENV !== 'production') && !isObject(obj)) {
+        warn$1(`v-on with no argument expects an object value.`);
+        return ret;
+    }
+    for (const key in obj) {
+        ret[toHandlerKey(key)] = obj[key];
     }
     return ret;
 }
@@ -3703,6 +3879,16 @@ function checkRecursiveUpdates(seen, fn) {
 function watchEffect(effect, options) {
     return doWatch(effect, null, options);
 }
+function watchPostEffect(effect, options) {
+    return doWatch(effect, null, ((process.env.NODE_ENV !== 'production')
+        ? Object.assign(options || {}, { flush: 'post' })
+        : { flush: 'post' }));
+}
+function watchSyncEffect(effect, options) {
+    return doWatch(effect, null, ((process.env.NODE_ENV !== 'production')
+        ? Object.assign(options || {}, { flush: 'sync' })
+        : { flush: 'sync' }));
+}
 // initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {};
 // implementation
@@ -3958,9 +4144,135 @@ function defineEmits() {
     }
     return null;
 }
+/**
+ * Vue `<script setup>` compiler macro for declaring a component's exposed
+ * instance properties when it is accessed by a parent component via template
+ * refs.
+ *
+ * `<script setup>` components are closed by default - i.e. varaibles inside
+ * the `<script setup>` scope is not exposed to parent unless explicitly exposed
+ * via `defineExpose`.
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the
+ * output and should **not** be actually called at runtime.
+ */
+function defineExpose(exposed) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        warnRuntimeUsage(`defineExpose`);
+    }
+}
+/**
+ * Vue `<script setup>` compiler macro for providing props default values when
+ * using type-based `defineProps` declaration.
+ *
+ * Example usage:
+ * ```ts
+ * withDefaults(defineProps<{
+ *   size?: number
+ *   labels?: string[]
+ * }>(), {
+ *   size: 3,
+ *   labels: () => ['default label']
+ * })
+ * ```
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the output
+ * and should **not** be actually called at runtime.
+ */
+function withDefaults(props, defaults) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        warnRuntimeUsage(`withDefaults`);
+    }
+    return null;
+}
+function useSlots() {
+    return getContext().slots;
+}
+function useAttrs() {
+    return getContext().attrs;
+}
+function getContext() {
+    const i = getCurrentInstance();
+    if ((process.env.NODE_ENV !== 'production') && !i) {
+        warn$1(`useContext() called without active instance.`);
+    }
+    return i.setupContext || (i.setupContext = createSetupContext(i));
+}
+/**
+ * Runtime helper for merging default declarations. Imported by compiled code
+ * only.
+ * @internal
+ */
+function mergeDefaults(
+// the base props is compiler-generated and guaranteed to be in this shape.
+props, defaults) {
+    for (const key in defaults) {
+        const val = props[key];
+        if (val) {
+            val.default = defaults[key];
+        }
+        else if (val === null) {
+            props[key] = { default: defaults[key] };
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            warn$1(`props default key "${key}" has no corresponding declaration.`);
+        }
+    }
+    return props;
+}
+/**
+ * `<script setup>` helper for persisting the current instance context over
+ * async/await flows.
+ *
+ * `@vue/compiler-sfc` converts the following:
+ *
+ * ```ts
+ * const x = await foo()
+ * ```
+ *
+ * into:
+ *
+ * ```ts
+ * let __temp, __restore
+ * const x = (([__temp, __restore] = withAsyncContext(() => foo())),__temp=await __temp,__restore(),__temp)
+ * ```
+ * @internal
+ */
+function withAsyncContext(getAwaitable) {
+    const ctx = getCurrentInstance();
+    if ((process.env.NODE_ENV !== 'production') && !ctx) {
+        warn$1(`withAsyncContext called without active current instance. ` +
+            `This is likely a bug.`);
+    }
+    let awaitable = getAwaitable();
+    unsetCurrentInstance();
+    if (isPromise(awaitable)) {
+        awaitable = awaitable.catch(e => {
+            setCurrentInstance(ctx);
+            throw e;
+        });
+    }
+    return [awaitable, () => setCurrentInstance(ctx)];
+}
+
+const ssrContextKey = Symbol((process.env.NODE_ENV !== 'production') ? `ssrContext` : ``);
+const useSSRContext = () => {
+    {
+        const ctx = inject(ssrContextKey);
+        if (!ctx) {
+            warn$1(`Server rendering context not provided. Make sure to only call ` +
+                `useSSRContext() conditionally in the server build.`);
+        }
+        return ctx;
+    }
+};
 
 // Core API ------------------------------------------------------------------
 const version = "3.2.19";
+/**
+ * @internal only exposed in compat builds
+ */
+const resolveFilter = null;
 
 // import deepCopy from './deepCopy'
 /**
@@ -4383,4 +4695,4 @@ function createVueApp(rootComponent, rootProps = null) {
 function withModifiers() { }
 function createVNode$1() { }
 
-export { callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn$1 as warn, watch, watchEffect, withDirectives, withModifiers };
+export { callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
