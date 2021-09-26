@@ -40,7 +40,7 @@ export default /*#__PURE__*/ defineSystemComponent({
       function addCircle(option: Props) {
         const center = new maps.LatLng(option.latitude, option.longitude)
         function getColor(color: string) {
-          const c = color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/)
+          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/)
           if ('Color' in maps) {
             if (c && c.length) {
               return maps.Color.fromHex(
