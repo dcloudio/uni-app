@@ -151,6 +151,12 @@ function initAppLaunch (appVm) {
 
   callAppHook(appVm, 'onLaunch', args)
   callAppHook(appVm, 'onShow', args)
+  // https://tower.im/teams/226535/todos/16905/
+  const getAppState = weex.requireModule('plus').getAppState
+  const appState = getAppState && Number(getAppState())
+  if (appState === 2) {
+    callAppHook(appVm, 'onHide', args)
+  }
 }
 
 function initTabBar () {
