@@ -19496,7 +19496,7 @@ var serviceContext = (function (vue) {
 
   return index;
 
-}(Vue));
+})(Vue);
 const uni = serviceContext.uni;
 const getApp = serviceContext.getApp;
 const getCurrentPages = serviceContext.getCurrentPages;
