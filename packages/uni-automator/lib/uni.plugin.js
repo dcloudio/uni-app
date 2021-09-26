@@ -7,7 +7,7 @@ const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 exports.default = [
-    (0, uni_cli_shared_1.defineUniMainJsPlugin)((opts) => {
+    uni_cli_shared_1.defineUniMainJsPlugin((opts) => {
         return {
             name: 'vite:uni-automator',
             enforce: 'pre',
