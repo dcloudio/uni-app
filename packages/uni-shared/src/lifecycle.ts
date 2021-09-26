@@ -26,6 +26,8 @@ import {
 } from './constants'
 
 const PAGE_HOOKS = [
+  ON_SHOW,
+  ON_HIDE,
   ON_BACK_PRESS,
   ON_PAGE_SCROLL,
   ON_TAB_ITEM_TAP,

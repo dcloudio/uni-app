@@ -9842,7 +9842,10 @@ var serviceContext = (function (vue) {
       if (mpType === 'page') {
           try {
               invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
-              invokeHook(publicThis, ON_SHOW);
+              vue.nextTick(() => {
+                  // 延迟onShow，保证组件的onShow也可以监听到
+                  invokeHook(publicThis, ON_SHOW);
+              });
           }
           catch (e) {
               console.error(e.message + '\n' + e.stack);
@@ -11336,7 +11339,10 @@ var serviceContext = (function (vue) {
           initPageVm(pageVm, __pageInstance);
           addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
           vue.onMounted(() => {
-              invokeHook(pageVm, ON_READY);
+              vue.nextTick(() => {
+                  // onShow被延迟，故onReady也同时延迟
+                  invokeHook(pageVm, ON_READY);
+              });
               // TODO preloadSubPackages
           });
           vue.onBeforeUnmount(() => {

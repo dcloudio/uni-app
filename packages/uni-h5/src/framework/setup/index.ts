@@ -96,12 +96,22 @@ export function setupPage(comp: any) {
         const { onLoad, onShow } = instance
         onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
         instance.__isVisible = true
-        onShow && invokeArrayFns(onShow)
+        if (onShow) {
+          // 延迟onShow，保证子组件的首次onShow也能生效
+          nextTick(() => {
+            invokeArrayFns(onShow)
+          })
+        }
       })
       onMounted(() => {
         onPageReady(instance)
         const { onReady } = instance
-        onReady && invokeArrayFns(onReady)
+        if (onReady) {
+          // 因为onShow被延迟，故onReady也延迟，否则会出现onReady比onShow还早
+          nextTick(() => {
+            invokeArrayFns(onReady)
+          })
+        }
       })
       onBeforeActivate(() => {
         if (!instance.__isVisible) {

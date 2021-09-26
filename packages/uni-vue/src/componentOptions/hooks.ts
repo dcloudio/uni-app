@@ -3,6 +3,7 @@ import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
 
 import {
+  nextTick,
   ComponentOptions,
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -43,7 +44,10 @@ export function initHooks(
   if (__PLATFORM__ === 'app' && mpType === 'page') {
     try {
       invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
-      invokeHook(publicThis, ON_SHOW)
+      nextTick(() => {
+        // 延迟onShow，保证组件的onShow也可以监听到
+        invokeHook(publicThis, ON_SHOW)
+      })
     } catch (e: any) {
       console.error(e.message + '\n' + e.stack)
     }

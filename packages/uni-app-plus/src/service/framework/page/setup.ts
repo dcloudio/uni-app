@@ -6,6 +6,7 @@ import {
   ON_UNLOAD,
 } from '@dcloudio/uni-shared'
 import {
+  nextTick,
   ComponentPublicInstance,
   getCurrentInstance,
   onBeforeUnmount,
@@ -35,7 +36,10 @@ export function setupPage(component: VuePageComponent) {
       )
     )
     onMounted(() => {
-      invokeHook(pageVm, ON_READY)
+      nextTick(() => {
+        // onShow被延迟，故onReady也同时延迟
+        invokeHook(pageVm, ON_READY)
+      })
       // TODO preloadSubPackages
     })
     onBeforeUnmount(() => {

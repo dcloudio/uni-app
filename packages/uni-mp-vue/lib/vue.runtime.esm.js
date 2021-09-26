@@ -1,5 +1,6 @@
 import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, remove, isPromise, isString, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSet, isPlainObject, toTypeString, invokeArrayFns } from '@vue/shared';
 export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isRootHook } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -1435,6 +1436,10 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        // fixed by xxxxxx
+        if (isRootHook(type)) {
+            target = target.root;
+        }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook
         // can be properly deduped by the scheduler. "__weh" stands for "with error
@@ -1450,7 +1455,7 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
                 // Set currentInstance during hook invocation.
                 // This assumes the hook does not synchronously trigger other hooks, which
                 // can only be false when the user does something really funky.
-                setCurrentInstance(target);
+                setCurrentInstance(target); // fixed by xxxxxx
                 const res = callWithAsyncErrorHandling(hook, target, type, args);
                 unsetCurrentInstance();
                 resetTracking();
