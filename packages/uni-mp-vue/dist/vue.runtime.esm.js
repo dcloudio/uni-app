@@ -4016,7 +4016,7 @@ function defineEmits() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.16";
+const version = "3.2.19";
 
 // import deepCopy from './deepCopy'
 /**
