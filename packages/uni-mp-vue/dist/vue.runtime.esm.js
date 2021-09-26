@@ -30,6 +30,19 @@ const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicke
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+
+const PAGE_HOOKS = [
+    ON_SHOW,
+    ON_HIDE,
+    ON_BACK_PRESS,
+    ON_PAGE_SCROLL,
+    ON_TAB_ITEM_TAP,
+    ON_REACH_BOTTOM,
+    ON_PULL_DOWN_REFRESH,
+];
+function isRootHook(name) {
+    return PAGE_HOOKS.indexOf(name) > -1;
+}
 const UniLifecycleHooks = [
     ON_SHOW,
     ON_HIDE,
@@ -1491,6 +1504,10 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        // fixed by xxxxxx
+        if (isRootHook(type)) {
+            target = target.root;
+        }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook
         // can be properly deduped by the scheduler. "__weh" stands for "with error
@@ -1506,7 +1523,7 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
                 // Set currentInstance during hook invocation.
                 // This assumes the hook does not synchronously trigger other hooks, which
                 // can only be false when the user does something really funky.
-                setCurrentInstance(target);
+                setCurrentInstance(target); // fixed by xxxxxx
                 const res = callWithAsyncErrorHandling(hook, target, type, args);
                 unsetCurrentInstance();
                 resetTracking();
