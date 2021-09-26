@@ -1,3 +1,5 @@
+/// <reference types="css-font-loading-module" />
+
 import { ComponentInternalInstance } from 'vue';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';

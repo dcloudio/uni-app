@@ -10147,6 +10147,12 @@ var serviceContext = (function (vue) {
       injectAppLaunchHooks(appVm.$);
       invokeHook(appVm, ON_LAUNCH, args);
       invokeHook(appVm, ON_SHOW, args);
+      // https://tower.im/teams/226535/todos/16905/
+      const getAppState = weex.requireModule('plus').getAppState;
+      const appState = getAppState && Number(getAppState());
+      if (appState === 2) {
+          invokeHook(appVm, ON_HIDE, args);
+      }
   }
 
   // 统一处理路径
@@ -19490,7 +19496,7 @@ var serviceContext = (function (vue) {
 
   return index;
 
-})(Vue);
+}(Vue));
 const uni = serviceContext.uni;
 const getApp = serviceContext.getApp;
 const getCurrentPages = serviceContext.getCurrentPages;
