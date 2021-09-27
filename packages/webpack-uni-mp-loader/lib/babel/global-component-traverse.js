@@ -1,31 +1,42 @@
 const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 
-const {
-  parseComponents
-} = require('./util')
+const { parseComponents } = require('./util')
+
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 module.exports = function (ast, state = {}) {
   const imports = []
-  let bindings = false
-  let parentPath = false
+  let nodePath = false
   babelTraverse(ast, {
     CallExpression (path) {
       const callee = path.node.callee
       if (!callee.object || !callee.property) {
         return
       }
-      if (callee.object.name === 'Vue' && callee.property.name === 'component') {
-        parentPath = path.parentPath
-        bindings = path.scope.bindings
+      const objectName = callee.object.name
+      const propertyName = callee.property.name
+      if (
+        propertyName === 'component' &&
+        (objectName === 'Vue' || objectName === 'app')
+      ) {
         const args = path.node.arguments
         const nameNode = args[0]
         const valueNode = args[1]
+        nodePath = path
         if (!t.isStringLiteral(nameNode)) {
-          throw new Error('Vue.component()的第一个参数必须为静态字符串')
+          throw new Error(
+            uniI18n.__('mpLoader.firstParameterNeedStaticString', {
+              0: objectName + '.component()'
+            })
+          )
         }
         if (!t.isIdentifier(valueNode)) {
-          throw new Error('Vue.component()需要两个参数')
+          throw new Error(
+            uniI18n.__('mpLoader.requireTwoParameter', {
+              0: objectName + '.component()'
+            })
+          )
         }
         imports.push({
           name: nameNode.value,
@@ -35,7 +46,7 @@ module.exports = function (ast, state = {}) {
     }
   })
   if (imports.length) {
-    state.components = parseComponents(imports, bindings, parentPath)
+    state.components = parseComponents(imports, nodePath)
   } else {
     state.components = []
   }

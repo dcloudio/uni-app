@@ -95,6 +95,8 @@ function analyzeUsingComponents () {
   //   }, {})
 }
 
+const parseRequirePath = path => /^[A-z]/.test(path) ? `./${path}` : path
+
 function normalizeUsingComponents (file, usingComponents) {
   const names = Object.keys(usingComponents)
   if (!names.length) {
@@ -102,7 +104,7 @@ function normalizeUsingComponents (file, usingComponents) {
   }
   file = path.dirname('/' + file)
   names.forEach(name => {
-    usingComponents[name] = normalizePath(path.relative(file, usingComponents[name]))
+    usingComponents[name] = normalizePath(parseRequirePath(path.relative(file, usingComponents[name])))
   })
   return usingComponents
 }

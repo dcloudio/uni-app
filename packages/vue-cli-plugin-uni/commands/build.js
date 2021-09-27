@@ -2,8 +2,11 @@ const path = require('path')
 
 const {
   runByHBuilderX,
-  isInHBuilderX
+  isInHBuilderX,
+  parseJson
 } = require('@dcloudio/uni-cli-shared')
+
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const defaults = {
   clean: true,
@@ -43,13 +46,14 @@ module.exports = (api, options) => {
       process.env.UNI_SUBPACKGE = args.subpackage
     }
 
+    const mpPluginPlatforms = ['mp-weixin', 'mp-alipay']
     if (args.plugin) {
-      if (process.env.UNI_PLATFORM === 'mp-weixin') {
+      if (mpPluginPlatforms.includes(process.env.UNI_PLATFORM)) {
         process.env.UNI_MP_PLUGIN = args.plugin
         analysisPluginDir()
       } else {
         console.log()
-        console.error('编译到小程序插件只支持微信小程序')
+        console.error(uniI18n.__('pluginUni.compileToMpPluginOnlySupportPlatform'))
         console.log()
         process.exit(0)
       }
@@ -131,7 +135,7 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM} ${process.env.UNI_MP_PLUGIN ? '插件' : '平台'}...`)
+    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', { 0: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM, 1: process.env.UNI_MP_PLUGIN ? uniI18n.__('plugin') : uniI18n.__('platform') }))
   }
 
   const targetDir = api.resolve(options.outputDir)
@@ -217,12 +221,12 @@ function analysisPluginDir () {
 
   if (!fs.pathExistsSync(pluginJsonPath)) {
     console.log()
-    console.error(`${pluginJsonName}文件不存在，请检查后重试`)
+    console.error(uniI18n.__('pluginUni.fileNoExistsCheckAfterRetry', { 0: pluginJsonName }))
     console.log()
     process.exit(0)
   }
 
-  const pluginJson = require(pluginJsonPath)
+  const pluginJson = parseJson(fs.readFileSync(pluginJsonPath, 'utf-8'), true)
 
   // main 入口文件是否存在
   process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
@@ -231,7 +235,7 @@ function analysisPluginDir () {
 
   if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
     console.log()
-    console.error(`${UNI_MP_PLUGIN_MAIN}入口文件不存在，请检查后重试`)
+    console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', { 0: UNI_MP_PLUGIN_MAIN }))
     console.log()
     process.exit(0)
   }

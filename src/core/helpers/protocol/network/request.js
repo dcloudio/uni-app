@@ -1,6 +1,7 @@
 import {
   hasOwn,
-  isPlainObject
+  isPlainObject,
+  toRawType
 } from 'uni-shared'
 
 const method = {
@@ -106,5 +107,17 @@ export const request = {
   },
   timeout: {
     type: Number
+  }
+}
+
+export const configMTLS = {
+  certificates: {
+    type: Array,
+    required: true,
+    validator (value) {
+      if (value.some(item => toRawType(item.host) !== 'String')) {
+        return '参数配置错误，请确认后重试'
+      }
+    }
   }
 }

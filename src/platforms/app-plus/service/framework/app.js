@@ -1,4 +1,8 @@
 import {
+  initAppLocale
+} from 'uni-helpers/i18n'
+
+import {
   callAppHook
 } from 'uni-core/service/plugins/util'
 
@@ -147,6 +151,12 @@ function initAppLaunch (appVm) {
 
   callAppHook(appVm, 'onLaunch', args)
   callAppHook(appVm, 'onShow', args)
+  // https://tower.im/teams/226535/todos/16905/
+  const getAppState = weex.requireModule('plus').getAppState
+  const appState = getAppState && Number(getAppState())
+  if (appState === 2) {
+    callAppHook(appVm, 'onHide', args)
+  }
 }
 
 function initTabBar () {
@@ -207,12 +217,13 @@ export function clearTempFile () {
   })
 }
 
-export function registerApp (appVm) {
+export function registerApp (appVm, Vue) {
   if (process.env.NODE_ENV !== 'production') {
     console.log('[uni-app] registerApp')
   }
   appCtx = appVm
   appCtx.$vm = appVm
+  initAppLocale(Vue, appVm)
 
   Object.assign(appCtx, defaultApp) // 拷贝默认实现
 

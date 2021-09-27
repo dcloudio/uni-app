@@ -38,7 +38,6 @@ export function chooseImage ({
   function successCallback (paths) {
     const tempFiles = []
     const tempFilePaths = []
-    // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
     Promise.all(paths.map((path) => getFileInfo(path)))
       .then((filesInfo) => {
         filesInfo.forEach((file, index) => {
@@ -62,7 +61,8 @@ export function chooseImage ({
       errorCallback, {
         filename: TEMP_PATH + '/camera/',
         resolution: 'high',
-        crop
+        crop,
+        sizeType
       })
   }
 

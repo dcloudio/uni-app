@@ -583,7 +583,7 @@ const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     emitter.emit(name, ...args);
 }, EmitProtocol);
 
-const SYNC_API_RE = /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -727,6 +727,34 @@ function initWrapper(protocols) {
     };
 }
 
+const getLocale = () => {
+    // 优先使用 $locale
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return app.$vm.$locale;
+    }
+    return uni.getSystemInfoSync().language || 'zh-Hans';
+};
+const setLocale = (locale) => {
+    const app = getApp();
+    if (!app) {
+        return false;
+    }
+    const oldLocale = app.$vm.$locale;
+    if (oldLocale !== locale) {
+        app.$vm.$locale = locale;
+        onLocaleChangeCallbacks.forEach((fn) => fn({ locale }));
+        return true;
+    }
+    return false;
+};
+const onLocaleChangeCallbacks = [];
+const onLocaleChange = (fn) => {
+    if (onLocaleChangeCallbacks.indexOf(fn) === -1) {
+        onLocaleChangeCallbacks.push(fn);
+    }
+};
+
 const baseApis = {
     $on,
     $off,
@@ -736,6 +764,9 @@ const baseApis = {
     addInterceptor,
     removeInterceptor,
     onAppLaunch,
+    getLocale,
+    setLocale,
+    onLocaleChange,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);

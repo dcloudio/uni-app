@@ -5,6 +5,7 @@ import {
   STAT_VERSION,
   DIFF_TIME
 } from './config';
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 const statConfig = require('uni-stat-config').default || require('uni-stat-config');
 const UUID_KEY = '__DC_STAT_UUID';
 const UUID_VALUE = '__DC_UUID_VALUE';
@@ -276,30 +277,30 @@ export const getPageTypes = (self) => {
 export const calibration = (eventName, options) => {
   //  login 、 share 、pay_success 、pay_fail 、register 、title
   if (!eventName) {
-    console.error(`uni.report 缺少 [eventName] 参数`);
+    console.error(`uni.report ${uniI18n.__('uniStat.missingParameter')}`);
     return true
   }
   if (typeof eventName !== 'string') {
-    console.error(`uni.report [eventName] 参数类型错误,只能为 String 类型`);
+    console.error(`uni.report [eventName] ${uniI18n.__('uniStat.parameterTypeErrrorString')}`);
     return true
   }
   if (eventName.length > 255) {
-    console.error(`uni.report [eventName] 参数长度不能大于 255`);
+    console.error(`uni.report [eventName] ${uniI18n.__('uniStat.parameterLengthLess')} 255`);
     return true
   }
 
   if (typeof options !== 'string' && typeof options !== 'object') {
-    console.error(`uni.report [options] 参数类型错误,只能为 String 或 Object 类型`);
+    console.error('uni.report [options] ' + uniI18n.__('uniStat.parameterTypeErrrorStringOrObject'));
     return true
   }
 
   if (typeof options === 'string' && options.length > 255) {
-    console.error(`uni.report [options] 参数长度不能大于 255`);
+    console.error(`uni.report [options] ${uniI18n.__('uniStat.parameterLengthLess')} 255`);
     return true
   }
 
   if (eventName === 'title' && typeof options !== 'string') {
-    console.error('uni.report [eventName] 参数为 title 时，[options] 参数只能为 String 类型');
+    console.error(`uni.report [eventName] ${uniI18n.__('uniStat.hasTitleOptionString')}`);
     return true
   }
 }

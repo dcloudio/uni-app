@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   log,
@@ -31,7 +32,7 @@ class WebpackAppPlusPlugin {
       compiler.hooks.invalid.tap('WebpackAppPlusPlugin', (fileName, changeTime) => {
         if (!compiling) {
           compiling = true
-          console.log('开始差量编译...')
+          console.log(uniI18n.__('performingHotReload'))
         }
       })
 

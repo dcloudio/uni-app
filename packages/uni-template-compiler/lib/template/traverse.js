@@ -4,6 +4,7 @@ const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 
 const generate = require('./generate')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   genCode,
@@ -297,7 +298,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
 
 function traverseRenderSlot (callExprNode, state) {
   if (!t.isStringLiteral(callExprNode.arguments[0])) {
-    state.errors.add('v-slot 不支持动态插槽名')
+    state.errors.add(uniI18n.__('templateCompiler.notSupportDynamicSlotName', { 0: 'v-slot' }))
     return
   }
 
@@ -427,8 +428,15 @@ function traverseRenderList (callExprNode, state) {
 
   const prefix = state.options.platform.directive
 
+  const isBaidu = state.options.platform.name === 'mp-baidu'
+  let forValue = genCode(callExprNode.arguments[0], isBaidu)
+
+  if (isBaidu && forKey) {
+    forValue += ` trackBy ${getForKey(forKey, forIndex, state)}`
+  }
+
   const attr = {
-    [prefix + 'for']: genCode(callExprNode.arguments[0]),
+    [prefix + 'for']: forValue,
     [prefix + 'for-item']: forItem
   }
 
@@ -436,7 +444,7 @@ function traverseRenderList (callExprNode, state) {
     attr[prefix + 'for-index'] = forIndex
   }
 
-  if (forKey) {
+  if (forKey && !isBaidu) {
     const key = getForKey(forKey, forIndex, state)
     if (key) {
       attr[prefix + 'key'] = key

@@ -1,5 +1,5 @@
 import { isPlainObject, hasOwn, isArray, extend, hyphenate, isObject, toNumber, isFunction, NOOP, camelize } from '@vue/shared';
-import { onUnmounted, injectHook } from 'vue';
+import { onUnmounted, injectHook, ref } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -549,6 +549,7 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, extend({ app: this }, options));
         },
     };
+    initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
     initUnknownHooks(appOptions, vueOptions);
@@ -565,6 +566,17 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
+}
+function initLocale(appVm) {
+    const locale = ref(uni.getSystemInfoSync().language || 'zh-Hans');
+    Object.defineProperty(appVm, '$locale', {
+        get() {
+            return locale.value;
+        },
+        set(v) {
+            locale.value = v;
+        },
+    });
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];

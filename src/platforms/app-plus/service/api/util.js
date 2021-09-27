@@ -76,7 +76,7 @@ export function getRealPath (filePath) {
   // 绝对路径转换为本地文件系统路径
   if (filePath.indexOf('/') === 0) {
     // 平台绝对路径 安卓、iOS
-    if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+    if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
       return 'file://' + filePath
     }
     return wwwPath + filePath

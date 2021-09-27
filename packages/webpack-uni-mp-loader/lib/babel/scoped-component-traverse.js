@@ -61,7 +61,7 @@ function handleComponentsObjectExpression (componentsObjExpr, path, state, prepe
       name: prop.key.name || prop.key.value,
       value: prop.value.name
     }
-  }), path.scope.bindings, path)
+  }), path)
   state.components = prepend ? components.concat(state.components) : components
 }
 
