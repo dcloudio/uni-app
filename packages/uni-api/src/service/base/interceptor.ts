@@ -113,7 +113,7 @@ export const removeInterceptor = defineSyncApi(
   RemoveInterceptorProtocol
 )
 
-export const promiseInterceptor = {
+const promiseInterceptor = {
   returnValue(res: unknown) {
     if (!isPromise(res)) {
       return res
@@ -128,4 +128,8 @@ export const promiseInterceptor = {
       })
     })
   },
+}
+
+export const interceptors = {
+  promiseInterceptor,
 }
