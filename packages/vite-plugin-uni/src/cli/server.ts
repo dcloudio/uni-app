@@ -106,24 +106,34 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
       const interfaces = os.networkInterfaces()
+      const locals: string[] = []
+      const networks: string[] = []
       Object.keys(interfaces).forEach((key) =>
         (interfaces[key] || [])
           .filter((details) => details.family === 'IPv4')
-          .map((detail) => {
-            return {
-              type: detail.address.includes('127.0.0.1')
-                ? 'Local:   '
-                : 'Network: ',
-              host: detail.address,
+          .forEach((detail) => {
+            if (detail.address.includes('127.0.0.1')) {
+              locals.push(detail.address)
+            } else {
+              networks.push(detail.address)
             }
           })
-          .forEach(({ type, host }) => {
-            const url = `${protocol}://${host}:${chalk.bold(port)}${
-              vite.config.base
-            }`
-            logger.info(`  - ${type} ${chalk.cyan(url)}`)
-          })
       )
+      locals.forEach((host) => {
+        const url = `${protocol}://${host}:${chalk.bold(port)}${
+          vite.config.base
+        }`
+        logger.info(`  - Local:    ${chalk.cyan(url)}`)
+      })
+      const networksLen = networks.length - 1
+      networks.forEach((host, index) => {
+        const url = `${protocol}://${host}:${chalk.bold(port)}${
+          vite.config.base
+        }`
+        logger.info(
+          `  ${index === networksLen ? '-' : '>'} Network:  ${chalk.cyan(url)}`
+        )
+      })
       resolve(server)
     }
     const onError = (e: Error & { code?: string }) => {
