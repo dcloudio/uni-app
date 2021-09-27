@@ -9645,8 +9645,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
 });
 function updateDocumentTitle(title) {
   {
-    const ctx = vue.useSSRContext();
-    ctx[uniShared.UNI_SSR_TITLE] = title;
+    const ssrContext = getApp$1().$.appContext.provides[vue.ssrContextKey];
+    if (ssrContext) {
+      ssrContext[uniShared.UNI_SSR_TITLE] = title;
+    }
   }
 }
 function useDocumentTitle(pageMeta) {
