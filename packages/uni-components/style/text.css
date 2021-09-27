@@ -4,5 +4,5 @@ uni-text[selectable] {
 }
 
 uni-text {
-  white-space: pre;
+  white-space: pre-line;
 }
