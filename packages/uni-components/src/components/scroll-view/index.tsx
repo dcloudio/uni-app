@@ -9,6 +9,7 @@ import {
   onActivated,
   watch,
   SetupContext,
+  nextTick,
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
@@ -481,8 +482,10 @@ function useScrollViewLoader(
   }
 
   onMounted(() => {
-    _scrollTopChanged(scrollTopNumber.value)
-    _scrollLeftChanged(scrollLeftNumber.value)
+    nextTick(() => {
+      _scrollTopChanged(scrollTopNumber.value)
+      _scrollLeftChanged(scrollLeftNumber.value)
+    })
     _scrollIntoViewChanged(props.scrollIntoView)
     let __handleScroll = function (event: Event) {
       // Unable to preventDefault inside passive event listener invocation.
