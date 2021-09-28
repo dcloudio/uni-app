@@ -1,8 +1,36 @@
 import Vue from 'vue';
 import { initVueI18n } from '@dcloudio/uni-i18n';
 
+let realAtob;
+
+const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+
+if (typeof atob !== 'function') {
+  realAtob = function (str) {
+    str = String(str).replace(/[\t\n\f\r ]+/g, '');
+    if (!b64re.test(str)) { throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.") }
+
+    // Adding the padding if missing, for semplicity
+    str += '=='.slice(2 - (str.length & 3));
+    var bitmap; var result = ''; var r1; var r2; var i = 0;
+    for (; i < str.length;) {
+      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 |
+                    (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255)
+        : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255)
+          : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+    }
+    return result
+  };
+} else {
+  // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+  realAtob = atob;
+}
+
 function b64DecodeUnicode (str) {
-  return decodeURIComponent(atob(str).split('').map(function (c) {
+  return decodeURIComponent(realAtob(str).split('').map(function (c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
   }).join(''))
 }
@@ -431,6 +459,10 @@ function onLocaleChange (fn) {
   if (onLocaleChangeCallbacks.indexOf(fn) === -1) {
     onLocaleChangeCallbacks.push(fn);
   }
+}
+
+if (typeof global !== 'undefined') {
+  global.getLocale = getLocale;
 }
 
 const interceptors = {
@@ -1304,7 +1336,9 @@ var en = {
 	"uni.video.danmu": "Danmu",
 	"uni.video.volume": "Volume",
 	"uni.button.feedback.title": "feedback",
-	"uni.button.feedback.send": "send"
+	"uni.button.feedback.send": "send",
+	"uni.chooseLocation.search": "Find Place",
+	"uni.chooseLocation.cancel": "Cancel"
 };
 
 var es = {
@@ -1337,7 +1371,9 @@ var es = {
 	"uni.video.danmu": "Danmu",
 	"uni.video.volume": "Volumen",
 	"uni.button.feedback.title": "realimentación",
-	"uni.button.feedback.send": "enviar"
+	"uni.button.feedback.send": "enviar",
+	"uni.chooseLocation.search": "Encontrar",
+	"uni.chooseLocation.cancel": "Cancelar"
 };
 
 var fr = {
@@ -1370,7 +1406,9 @@ var fr = {
 	"uni.video.danmu": "Danmu",
 	"uni.video.volume": "Le Volume",
 	"uni.button.feedback.title": "retour d'information",
-	"uni.button.feedback.send": "envoyer"
+	"uni.button.feedback.send": "envoyer",
+	"uni.chooseLocation.search": "Trouve",
+	"uni.chooseLocation.cancel": "Annuler"
 };
 
 var zhHans = {
@@ -1403,7 +1441,9 @@ var zhHans = {
 	"uni.video.danmu": "弹幕",
 	"uni.video.volume": "音量",
 	"uni.button.feedback.title": "问题反馈",
-	"uni.button.feedback.send": "发送"
+	"uni.button.feedback.send": "发送",
+	"uni.chooseLocation.search": "搜索地点",
+	"uni.chooseLocation.cancel": "取消"
 };
 
 var zhHant = {
@@ -1436,7 +1476,9 @@ var zhHant = {
 	"uni.video.danmu": "彈幕",
 	"uni.video.volume": "音量",
 	"uni.button.feedback.title": "問題反饋",
-	"uni.button.feedback.send": "發送"
+	"uni.button.feedback.send": "發送",
+	"uni.chooseLocation.search": "搜索地點",
+	"uni.chooseLocation.cancel": "取消"
 };
 
 const messages = {
@@ -1452,12 +1494,17 @@ let locale;
 {
   if (typeof weex === 'object') {
     locale = weex.requireModule('plus').getLanguage();
+  } else {
+    locale = '';
   }
 }
 
-const i18n = initVueI18n(locale,  messages );
+const i18n = initVueI18n(
+  locale,
+   messages 
+);
 const t = i18n.t;
-const i18nMixin = i18n.mixin = {
+const i18nMixin = (i18n.mixin = {
   beforeCreate () {
     const unwatch = i18n.i18n.watchLocale(() => {
       this.$forceUpdate();
@@ -1471,7 +1518,7 @@ const i18nMixin = i18n.mixin = {
       return t(key, values)
     }
   }
-};
+});
 const setLocale$1 = i18n.setLocale;
 const getLocale$1 = i18n.getLocale;
 
@@ -1480,7 +1527,7 @@ function initAppLocale (Vue, appVm, locale) {
     locale: locale || i18n.getLocale()
   });
   const localeWatchers = [];
-  appVm.$watchLocale = (fn) => {
+  appVm.$watchLocale = fn => {
     localeWatchers.push(fn);
   };
   Object.defineProperty(appVm, '$locale', {
