@@ -28,5 +28,7 @@
   "uni.video.danmu": "Danmu",
   "uni.video.volume": "Volume",
   "uni.button.feedback.title": "feedback",
-  "uni.button.feedback.send": "send"
+  "uni.button.feedback.send": "send",
+  "uni.chooseLocation.search": "Find Place",
+  "uni.chooseLocation.cancel": "Cancel"
 }
