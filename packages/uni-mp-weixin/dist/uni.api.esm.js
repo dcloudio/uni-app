@@ -438,6 +438,7 @@ const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interce
         removeInterceptorHook(globalInterceptors, method);
     }
 }, RemoveInterceptorProtocol);
+const interceptors = {};
 
 const API_ON = '$on';
 const OnProtocol = [
@@ -725,6 +726,7 @@ const baseApis = {
     $once,
     $emit,
     upx2px,
+    interceptors,
     addInterceptor,
     removeInterceptor,
     onAppLaunch,

@@ -80,7 +80,7 @@ export {
   upx2px,
   addInterceptor,
   removeInterceptor,
-  promiseInterceptor,
+  interceptors,
   arrayBufferToBase64,
   base64ToArrayBuffer,
   createIntersectionObserver,

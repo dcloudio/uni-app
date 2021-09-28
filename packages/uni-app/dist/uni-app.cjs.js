@@ -70,7 +70,7 @@ const ssrServerRef = (value, key, shallow = false) => {
         state = globalData;
     }
     state[key] = sanitise(value);
-    // SSR 模式下 watchEffect 不生效 https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L253
+    // SSR 模式下 watchEffect 不生效 https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L283
     // 故自定义ref
     return vue.customRef((track, trigger) => {
         const customTrigger = () => (trigger(), (state[key] = sanitise(value)));

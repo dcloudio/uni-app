@@ -2732,23 +2732,7 @@ var serviceContext = (function (vue) {
           removeInterceptorHook(globalInterceptors, method);
       }
   }, RemoveInterceptorProtocol);
-  const promiseInterceptor = {
-      returnValue(res) {
-          if (!isPromise(res)) {
-              return res;
-          }
-          return new Promise((resolve, reject) => {
-              res.then((res) => {
-                  if (res[0]) {
-                      reject(res[0]);
-                  }
-                  else {
-                      resolve(res[1]);
-                  }
-              });
-          });
-      },
-  };
+  const interceptors = {};
 
   const API_ON = '$on';
   const OnProtocol = [
@@ -9942,8 +9926,44 @@ var serviceContext = (function (vue) {
       });
   }
 
+  let realAtob;
+  const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+  if (typeof atob !== 'function') {
+      realAtob = function (str) {
+          str = String(str).replace(/[\t\n\f\r ]+/g, '');
+          if (!b64re.test(str)) {
+              throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+          }
+          // Adding the padding if missing, for semplicity
+          str += '=='.slice(2 - (str.length & 3));
+          var bitmap;
+          var result = '';
+          var r1;
+          var r2;
+          var i = 0;
+          for (; i < str.length;) {
+              bitmap =
+                  (b64.indexOf(str.charAt(i++)) << 18) |
+                      (b64.indexOf(str.charAt(i++)) << 12) |
+                      ((r1 = b64.indexOf(str.charAt(i++))) << 6) |
+                      (r2 = b64.indexOf(str.charAt(i++)));
+              result +=
+                  r1 === 64
+                      ? String.fromCharCode((bitmap >> 16) & 255)
+                      : r2 === 64
+                          ? String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255)
+                          : String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255, bitmap & 255);
+          }
+          return result;
+      };
+  }
+  else {
+      // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+      realAtob = atob;
+  }
   function b64DecodeUnicode(str) {
-      return decodeURIComponent(atob(str)
+      return decodeURIComponent(realAtob(str)
           .split('')
           .map(function (c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -12573,7 +12593,7 @@ var serviceContext = (function (vue) {
     upx2px: upx2px,
     addInterceptor: addInterceptor,
     removeInterceptor: removeInterceptor,
-    promiseInterceptor: promiseInterceptor,
+    interceptors: interceptors,
     arrayBufferToBase64: arrayBufferToBase64,
     base64ToArrayBuffer: base64ToArrayBuffer,
     createIntersectionObserver: createIntersectionObserver,

@@ -4,6 +4,7 @@ import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
 import {
   addInterceptor,
   removeInterceptor,
+  interceptors,
 } from '@dcloudio/uni-api/src/service/base/interceptor'
 import {
   $on,
@@ -24,6 +25,7 @@ const baseApis = {
   $once,
   $emit,
   upx2px,
+  interceptors,
   addInterceptor,
   removeInterceptor,
   onAppLaunch,

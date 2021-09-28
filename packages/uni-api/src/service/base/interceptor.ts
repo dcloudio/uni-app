@@ -1,4 +1,4 @@
-import { isArray, isFunction, isPromise, isPlainObject } from '@vue/shared'
+import { isArray, isFunction, isPlainObject } from '@vue/shared'
 
 import {
   HOOKS,
@@ -113,23 +113,4 @@ export const removeInterceptor = defineSyncApi(
   RemoveInterceptorProtocol
 )
 
-const promiseInterceptor = {
-  returnValue(res: unknown) {
-    if (!isPromise(res)) {
-      return res
-    }
-    return new Promise((resolve, reject) => {
-      res.then((res) => {
-        if (res[0]) {
-          reject(res[0])
-        } else {
-          resolve(res[1])
-        }
-      })
-    })
-  },
-}
-
-export const interceptors = {
-  promiseInterceptor,
-}
+export const interceptors = {}
