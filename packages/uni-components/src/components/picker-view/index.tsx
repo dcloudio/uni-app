@@ -3,7 +3,7 @@ import {
   ref,
   watch,
   provide,
-  ComputedRef,
+  WritableComputedRef,
   computed,
   reactive,
   VNode,
@@ -84,7 +84,7 @@ function useState(props: Props): State {
 
 export type GetPickerViewColumn = (
   columnInstance: ComponentInternalInstance
-) => ComputedRef<number>
+) => WritableComputedRef<number>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerView',
@@ -115,7 +115,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (columnVNodes as VNode[]).indexOf(vnode)
     }
     const getPickerViewColumn: GetPickerViewColumn = function (columnInstance) {
-      const ref: ComputedRef<number> = computed({
+      const ref: WritableComputedRef<number> = computed({
         get() {
           const index = getItemIndex(columnInstance.vnode)
           return state.value[index] || 0

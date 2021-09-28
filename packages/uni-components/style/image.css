@@ -13,6 +13,7 @@ uni-image[hidden] {
 uni-image > div {
   width: 100%;
   height: 100%;
+  background-repeat:no-repeat;
 }
 
 uni-image > img {

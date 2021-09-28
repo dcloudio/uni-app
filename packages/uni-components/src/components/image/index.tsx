@@ -64,17 +64,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const state = useImageState(rootRef, props)
     const trigger = useCustomEvent(rootRef, emit)
     const { fixSize } = useImageSize(rootRef, props, state)
-    useImageLoader(state, {
-      trigger,
-      fixSize,
-    })
+    useImageLoader(state, fixSize, trigger)
     return () => {
       const { mode } = props
-      const { imgSrc, modeStyle } = state
+      const { imgSrc, modeStyle, src } = state
+      let imgTsx
+      if (__NODE_JS__) {
+        imgTsx = <img src={src} draggable={props.draggable} />
+      } else {
+        imgTsx = imgSrc ? (
+          <img src={imgSrc} draggable={props.draggable} />
+        ) : (
+          <img />
+        )
+      }
       return (
         <uni-image ref={rootRef}>
           <div style={modeStyle} />
-          {imgSrc ? <img src={imgSrc} draggable={props.draggable} /> : <img />}
+          {imgTsx}
           {FIX_MODES[mode as keyof typeof FIX_MODES] ? (
             // @ts-ignore
             <ResizeSensor onResize={fixSize} />
@@ -100,10 +107,11 @@ function useImageState(rootRef: Ref<HTMLElement | null>, props: ImageProps) {
       opts[0] && (position = opts[0])
       opts[1] && (size = opts[1])
     }
-    const srcVal = imgSrc.value
     return `background-image:${
-      srcVal ? 'url("' + srcVal + '")' : 'none'
-    };background-position:${position};background-size:${size};background-repeat:no-repeat;`
+      imgSrc.value ? 'url("' + imgSrc.value + '")' : 'none'
+    };
+            background-position:${position};
+            background-size:${size};`
   })
   const state = reactive({
     rootEl: rootRef,
@@ -125,13 +133,8 @@ function useImageState(rootRef: Ref<HTMLElement | null>, props: ImageProps) {
 
 function useImageLoader(
   state: ImageState,
-  {
-    trigger,
-    fixSize,
-  }: {
-    fixSize: FixSize
-    trigger: CustomEventTrigger
-  }
+  fixSize: FixSize,
+  trigger: CustomEventTrigger
 ) {
   let img: HTMLImageElement | null
   const setState = (width = 0, height = 0, imgSrc = '') => {
@@ -147,9 +150,7 @@ function useImageLoader(
       // resetSize()
       return
     }
-    if (!img) {
-      img = new Image()
-    }
+    img = img || new Image()
     img.onload = (evt) => {
       const { width, height } = img!
       setState(width, height, src)
