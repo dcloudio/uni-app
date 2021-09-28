@@ -16,6 +16,7 @@
     ]
   },
   "replacements": {
+    "global": "global",
     "__GLOBAL__": "qq",
     "__PLATFORM__": "\"mp-qq\"",
     "__PLATFORM_TITLE__": "QQ小程序"

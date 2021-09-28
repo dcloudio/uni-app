@@ -16,6 +16,7 @@
     ]
   },
   "replacements": {
+    "global": "global",
     "__GLOBAL__": "wx",
     "__PLATFORM__": "\"mp-weixin\"",
     "__PLATFORM_TITLE__": "微信小程序"

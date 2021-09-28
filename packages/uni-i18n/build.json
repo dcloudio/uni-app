@@ -2,6 +2,9 @@
   "input": {
     "src/index.ts": ["dist/uni-i18n.es.js", "dist/uni-i18n.cjs.js"]
   },
+  "replacements": {
+    "global": "global"
+  },
   "compilerOptions": {
     "declaration": true
   }

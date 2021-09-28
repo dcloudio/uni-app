@@ -7759,26 +7759,28 @@ var index$r = /* @__PURE__ */ defineBuiltInComponent({
     const {
       fixSize
     } = useImageSize(rootRef, props2, state2);
-    useImageLoader(state2, {
-      trigger,
-      fixSize
-    });
+    useImageLoader(state2, fixSize, trigger);
     return () => {
       const {
         mode: mode2
       } = props2;
       const {
         imgSrc,
-        modeStyle
+        modeStyle,
+        src
       } = state2;
+      let imgTsx;
+      {
+        imgTsx = imgSrc ? createVNode("img", {
+          "src": imgSrc,
+          "draggable": props2.draggable
+        }, null, 8, ["src", "draggable"]) : createVNode("img", null, null);
+      }
       return createVNode("uni-image", {
         "ref": rootRef
       }, [createVNode("div", {
         "style": modeStyle
-      }, null, 4), imgSrc ? createVNode("img", {
-        "src": imgSrc,
-        "draggable": props2.draggable
-      }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode2] ? createVNode(ResizeSensor, {
+      }, null, 4), imgTsx, FIX_MODES[mode2] ? createVNode(ResizeSensor, {
         "onResize": fixSize
       }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
@@ -7797,8 +7799,9 @@ function useImageState(rootRef, props2) {
       opts[0] && (position = opts[0]);
       opts[1] && (size = opts[1]);
     }
-    const srcVal = imgSrc.value;
-    return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size};background-repeat:no-repeat;`;
+    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};
+            background-position:${position};
+            background-size:${size};`;
   });
   const state2 = reactive({
     rootEl: rootRef,
@@ -7820,10 +7823,7 @@ function useImageState(rootRef, props2) {
   });
   return state2;
 }
-function useImageLoader(state2, {
-  trigger,
-  fixSize
-}) {
+function useImageLoader(state2, fixSize, trigger) {
   let img;
   const setState = (width = 0, height = 0, imgSrc = "") => {
     state2.origWidth = width;
@@ -7836,9 +7836,7 @@ function useImageLoader(state2, {
       setState();
       return;
     }
-    if (!img) {
-      img = new Image();
-    }
+    img = img || new Image();
     img.onload = (evt) => {
       const {
         width,

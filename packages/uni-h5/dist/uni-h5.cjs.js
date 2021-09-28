@@ -2612,26 +2612,28 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
     const {
       fixSize
     } = useImageSize(rootRef, props2, state);
-    useImageLoader(state, {
-      trigger,
-      fixSize
-    });
+    useImageLoader(state, fixSize, trigger);
     return () => {
       const {
         mode: mode2
       } = props2;
       const {
         imgSrc,
-        modeStyle
+        modeStyle,
+        src
       } = state;
+      let imgTsx;
+      {
+        imgTsx = vue.createVNode("img", {
+          "src": src,
+          "draggable": props2.draggable
+        }, null, 8, ["src", "draggable"]);
+      }
       return vue.createVNode("uni-image", {
         "ref": rootRef
       }, [vue.createVNode("div", {
         "style": modeStyle
-      }, null, 4), imgSrc ? vue.createVNode("img", {
-        "src": imgSrc,
-        "draggable": props2.draggable
-      }, null, 8, ["src", "draggable"]) : vue.createVNode("img", null, null), FIX_MODES[mode2] ? vue.createVNode(ResizeSensor, {
+      }, null, 4), imgTsx, FIX_MODES[mode2] ? vue.createVNode(ResizeSensor, {
         "onResize": fixSize
       }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
@@ -2650,8 +2652,9 @@ function useImageState(rootRef, props2) {
       opts[0] && (position = opts[0]);
       opts[1] && (size = opts[1]);
     }
-    const srcVal = imgSrc.value;
-    return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size};background-repeat:no-repeat;`;
+    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};
+            background-position:${position};
+            background-size:${size};`;
   });
   const state = vue.reactive({
     rootEl: rootRef,
@@ -2667,10 +2670,7 @@ function useImageState(rootRef, props2) {
   });
   return state;
 }
-function useImageLoader(state, {
-  trigger,
-  fixSize
-}) {
+function useImageLoader(state, fixSize, trigger) {
   let img;
   const setState = (width = 0, height = 0, imgSrc = "") => {
     state.origWidth = width;
@@ -2683,9 +2683,7 @@ function useImageLoader(state, {
       setState();
       return;
     }
-    if (!img) {
-      img = new Image();
-    }
+    img = img || new Image();
     img.onload = (evt) => {
       const {
         width,

@@ -755,6 +755,9 @@ const onLocaleChange = (fn) => {
         onLocaleChangeCallbacks.push(fn);
     }
 };
+if (typeof global !== 'undefined') {
+    global.getLocale = getLocale;
+}
 
 const baseApis = {
     $on,

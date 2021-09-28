@@ -6,8 +6,6 @@ import {
   LocaleWatcher,
 } from './I18n'
 
-const ignoreVueI18n = true
-
 type Interpolate = (
   key: string,
   values?: Record<string, unknown> | Array<unknown>
@@ -30,18 +28,16 @@ function watchAppLocale(appVm: any, i18n: I18n) {
   }
 }
 
-// function getDefaultLocale() {
-//   if (typeof navigator !== 'undefined') {
-//     return (navigator as any).userLanguage || navigator.language
-//   }
-//   if (typeof plus !== 'undefined') {
-//     // TODO 待调整为最新的获取语言代码
-//     return plus.os.language
-//   }
-//   return uni.getSystemInfoSync().language
-// }
-
-const i18nInstances: I18n[] = []
+function getDefaultLocale(): string {
+  if (typeof uni !== 'undefined' && uni.getLocale) {
+    return uni.getLocale()
+  }
+  // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+  if (typeof global !== 'undefined' && (global as any).getLocale) {
+    return (global as any).getLocale()
+  }
+  return LOCALE_EN
+}
 
 export function initVueI18n(
   locale?: string,
@@ -57,9 +53,8 @@ export function initVueI18n(
     ]
   }
   if (typeof locale !== 'string') {
-    locale =
-      (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
-      LOCALE_EN
+    // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
+    locale = getDefaultLocale()
   }
   if (typeof fallbackLocale !== 'string') {
     fallbackLocale =
@@ -74,8 +69,6 @@ export function initVueI18n(
     watcher,
   })
 
-  i18nInstances.push(i18n)
-
   let t: Interpolate = (key, values) => {
     if (typeof getApp !== 'function') {
       // app view
@@ -84,31 +77,31 @@ export function initVueI18n(
         return i18n.t(key, values)
       }
     } else {
-      const appVm = getApp().$vm
-      watchAppLocale(appVm, i18n)
-      if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
-        // if (!locale) {
-        //   i18n.setLocale(getDefaultLocale())
-        // }
-        /* eslint-disable no-func-assign */
-        t = function (key, values) {
+      let isWatchedAppLocale = false
+      t = function (key, values) {
+        const appVm = getApp().$vm
+        // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
+        // options: {
+        // 	type: Array,
+        // 	default () {
+        // 		return [{
+        // 			icon: 'shop',
+        // 			text: t("uni-goods-nav.options.shop"),
+        // 		}, {
+        // 			icon: 'cart',
+        // 			text: t("uni-goods-nav.options.cart")
+        // 		}]
+        // 	}
+        // },
+        if (appVm) {
           // 触发响应式
           appVm.$locale
-          return i18n.t(key, values)
-        }
-      } else {
-        /* eslint-disable no-func-assign */
-        t = function (key, values) {
-          const $i18n = appVm.$i18n
-          const silentTranslationWarn = $i18n.silentTranslationWarn
-          $i18n.silentTranslationWarn = true
-          const msg = appVm.$t(key, values)
-          $i18n.silentTranslationWarn = silentTranslationWarn
-          if (msg !== key) {
-            return msg
+          if (!isWatchedAppLocale) {
+            isWatchedAppLocale = true
+            watchAppLocale(appVm, i18n)
           }
-          return i18n.t(key, $i18n.locale, values)
         }
+        return i18n.t(key, values)
       }
     }
     return t(key, values)

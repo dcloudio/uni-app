@@ -28,3 +28,7 @@ export const onLocaleChange: typeof uni.onLocaleChange = (fn) => {
     onLocaleChangeCallbacks.push(fn)
   }
 }
+
+if (typeof global !== 'undefined') {
+  ;(global as any).getLocale = getLocale
+}

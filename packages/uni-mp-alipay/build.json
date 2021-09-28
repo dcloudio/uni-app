@@ -16,6 +16,7 @@
     ]
   },
   "replacements": {
+    "global": "global",
     "__GLOBAL__": "my",
     "__PLATFORM__": "\"mp-alipay\"",
     "__PLATFORM_TITLE__": "支付宝小程序"

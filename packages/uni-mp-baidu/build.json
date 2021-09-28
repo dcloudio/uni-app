@@ -16,6 +16,7 @@
     ]
   },
   "replacements": {
+    "global": "global",
     "__GLOBAL__": "swan",
     "__PLATFORM__": "\"mp-baidu\"",
     "__PLATFORM_TITLE__": "百度小程序"

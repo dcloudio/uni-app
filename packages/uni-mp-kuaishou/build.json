@@ -16,6 +16,7 @@
     ]
   },
   "replacements": {
+    "global": "global",
     "__GLOBAL__": "ks",
     "__PLATFORM__": "\"mp-kuaishou\"",
     "__PLATFORM_TITLE__": "快手小程序"
