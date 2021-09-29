@@ -66,6 +66,7 @@ module.exports = (api, options, rootOptions) => {
       },
       devDependencies: {
         '@dcloudio/uni-automator': version,
+        '@dcloudio/uni-cli-i18n': version,
         '@dcloudio/uni-cli-shared': version,
         '@dcloudio/uni-migration': version,
         '@dcloudio/uni-template-compiler': version,
