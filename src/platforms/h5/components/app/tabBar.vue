@@ -12,7 +12,7 @@
         class="uni-tabbar-border"
       />
       <div
-        v-for="(item,index) in list"
+        v-for="(item,index) in visibleList"
         :key="item.isMidButton ? index : item.pagePath"
         :style="item.isMidButton ? {flex:'0 0 ' + item.width,position:'relative'} : {}"
         class="uni-tabbar__item"
@@ -36,14 +36,14 @@
           :style="{height:height}"
         >
           <div
-            v-if="item.iconPath || item.isMidButton"
+            v-if="getIconPath(item,index) || item.iconPath || item.isMidButton"
             :class="{'uni-tabbar__icon__diff':!item.text}"
             class="uni-tabbar__icon"
             :style="{width: iconWidth,height:iconWidth}"
           >
             <img
               v-if="!item.isMidButton"
-              :src="_getRealPath(selectedIndex===index?item.selectedIconPath:item.iconPath)"
+              :src="_getRealPath(getIconPath(item,index))"
             >
             <div
               v-if="item.redDot"
@@ -287,7 +287,8 @@ export default {
   },
   data () {
     return {
-      selectedIndex: 0
+      selectedIndex: 0,
+      visibleList: []
     }
   },
   computed: {
@@ -319,25 +320,45 @@ export default {
   watch: {
     $route: {
       immediate: true,
-      handler (to) {
-        if (to.meta.isTabBar) {
-          this.__path__ = to.path
-          const index = this.list.findIndex(item => to.meta.pagePath === item.pagePath)
-          if (index > -1) {
-            this.selectedIndex = index
-          }
-        }
+      handler () {
+      // 只在此做一次 visibleList 的初始化
+        if (!this.visibleList.length) this._initVisibleList()
+        this.setSelectedIndex()
+      }
+    },
+    list: {
+      deep: true,
+      handler () {
+        this._initVisibleList()
+        this.setSelectedIndex()
       }
     }
   },
   created () {
-    this._initMidButton()
+    this.list.forEach(item => {
+      if (item.visible === undefined) {
+        this.$set(item, 'visible', true)
+      }
+    })
   },
   beforeCreate () {
     this.__path__ = this.$route.path
   },
   methods: {
-    _getRealPath (filePath) {
+    getIconPath (item, index) {
+      return (this.selectedIndex === index ? item.selectedIconPath || item.iconPath : item.iconPath) || ''
+    },
+    setSelectedIndex () {
+      if (this.$route.meta.isTabBar) {
+        this.__path__ = this.$route.path
+        const index = this.visibleList.findIndex(item => this.$route.meta.pagePath === item.pagePath)
+        this.selectedIndex = index
+      }
+    },
+    _initVisibleList () {
+      this.visibleList = this._initMidButton(this.list.filter(item => item.visible !== false))
+    },
+    _getRealPath (filePath = '') {
       const SCHEME_RE = /^([a-z-]+:)?\/\//i
       const DATA_RE = /^data:.*,.*/
       if (!(SCHEME_RE.test(filePath) || DATA_RE.test(filePath)) && filePath.indexOf('/') !== 0) {
@@ -375,8 +396,8 @@ export default {
         UniServiceJSBridge.emit('onTabItemTap', detail)
       }
     },
-    _initMidButton () {
-      const listLength = this.list.length
+    _initMidButton (list) {
+      const listLength = list.length
       // 偶数则添加midButton
       if (listLength % 2 === 0 && isPlainObject(this.midButton)) {
         // 给midButton赋值默认值
@@ -388,8 +409,9 @@ export default {
         for (const key in DefaultMidButton) {
           this.midButton[key] = this.midButton[key] || DefaultMidButton[key]
         }
-        this.list.splice(~~(listLength / 2), 0, Object.assign({}, this.midButton, { isMidButton: true }))
+        list.splice(~~(listLength / 2), 0, Object.assign({}, this.midButton, { isMidButton: true }))
       }
+      return list
     },
     _uniTabbarBdStyle (item) {
       return Object.assign({}, {
