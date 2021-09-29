@@ -255,6 +255,7 @@ declare namespace UniApp {
     selectedIconPath?: string
     redDot?: boolean
     badge?: string
+    visible?: boolean
   }
 
   interface TabBarNormalItemOptions extends TabBarItemBaseOptions {

@@ -34,7 +34,7 @@ import {
 } from '@dcloudio/uni-api'
 import { useTabBar } from '../../../framework/setup/state'
 import { getRouteOptions } from '@dcloudio/uni-core'
-const setTabBarItemProps = ['text', 'iconPath', 'selectedIconPath']
+const setTabBarItemProps = ['text', 'iconPath', 'selectedIconPath', 'visible']
 const setTabBarStyleProps = [
   'color',
   'selectedColor',
@@ -144,7 +144,7 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
 export const hideTabBar = defineAsyncApi<API_TYPE_HIDE_TAB_BAR>(
   API_HIDE_TAB_BAR,
   (args, { resolve }) => {
-    setTabBar(API_HIDE_TAB_BAR, args, resolve)
+    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve)
   },
   HideTabBarProtocol
 )
@@ -152,7 +152,7 @@ export const hideTabBar = defineAsyncApi<API_TYPE_HIDE_TAB_BAR>(
 export const showTabBar = defineAsyncApi<API_TYPE_SHOW_TAB_BAR>(
   API_SHOW_TAB_BAR,
   (args, { resolve }) => {
-    setTabBar(API_SHOW_TAB_BAR, args, resolve)
+    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve)
   },
   ShowTabBarProtocol
 )

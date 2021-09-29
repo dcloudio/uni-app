@@ -6163,7 +6163,7 @@ var serviceContext = (function (vue) {
   /**
    * 动态设置 tabBar 某一项的内容
    */
-  function setTabBarItem$1(index, text, iconPath, selectedIconPath) {
+  function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible) {
       const item = {
           index,
       };
@@ -6176,7 +6176,18 @@ var serviceContext = (function (vue) {
       if (selectedIconPath) {
           item.selectedIconPath = getRealPath(selectedIconPath);
       }
-      tabBar && tabBar.setTabBarItem(item);
+      if (visible !== undefined) {
+          item.visible = config.list[index].visible = visible;
+          delete item.index;
+          const tabbarItems = config.list.map((item) => ({
+              visible: item.visible,
+          }));
+          tabbarItems[index] = item;
+          tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+      }
+      else {
+          tabBar && tabBar.setTabBarItem(item);
+      }
   }
   /**
    * 动态设置 tabBar 的整体样式
@@ -9301,8 +9312,8 @@ var serviceContext = (function (vue) {
       tabBar$1.setTabBarBadge('text', index, text);
       resolve();
   }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
-  const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath }, { resolve, reject }) => {
-      tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
+  const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath, visible }, { resolve, reject }) => {
+      tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
       const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
       if (route) {
           const meta = route.meta;

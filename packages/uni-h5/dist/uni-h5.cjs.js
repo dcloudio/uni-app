@@ -9744,16 +9744,18 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
 var TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
+    const visibleList = vue.ref([]);
     const tabBar2 = useTabBar();
+    useVisibleList(tabBar2, visibleList);
     useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2);
+    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2, visibleList);
     const {
       style,
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
     return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab);
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
       return vue.createVNode("uni-tabbar", {
         "class": "uni-tabbar-" + tabBar2.position
       }, [vue.createVNode("div", {
@@ -9776,15 +9778,26 @@ function useTabBarCssVar(tabBar2) {
     });
   });
 }
-function useSwitchTab(route, tabBar2) {
+function useVisibleList(tabBar2, visibleList) {
+  function setVisibleList() {
+    let tempList = [];
+    tempList = tabBar2.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+      tempList = tempList.filter((item) => !isMidButton(item));
+      if (tempList.length % 2 === 0) {
+        tempList.splice(Math.floor(tempList.length / 2), 0, tabBar2.list[Math.floor(tabBar2.list.length / 2)]);
+      }
+    }
+    visibleList.value = tempList;
+  }
+  vue.watchEffect(setVisibleList);
+}
+function useSwitchTab(route, tabBar2, visibleList) {
   vue.watchEffect(() => {
     const meta = route.meta;
     if (meta.isTabBar) {
       const pagePath = meta.route;
-      const index2 = tabBar2.list.findIndex((item) => item.pagePath === pagePath);
-      if (index2 === -1) {
-        return;
-      }
+      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
       tabBar2.selectedIndex = index2;
     }
   });
@@ -9867,14 +9880,13 @@ function useTabBarStyle(tabBar2) {
 function isMidButton(item) {
   return item.type === "midButton";
 }
-function createTabBarItemsTsx(tabBar2, onSwitchTab) {
+function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
   const {
-    list,
     selectedIndex,
     selectedColor,
     color
   } = tabBar2;
-  return list.map((item, index2) => {
+  return visibleList.value.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
     const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
@@ -9958,7 +9970,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     iconWidth
   } = midButton;
   return vue.createVNode("div", {
-    "key": index2,
+    "key": "midButton",
     "class": "uni-tabbar__item",
     "style": {
       flex: "0 0 " + width,

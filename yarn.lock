@@ -922,10 +922,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@dcloudio/types@2.5.8":
-  version "2.5.8"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.5.8.tgz#3aee4b179bb4c13877309dc0fe1ba4ca1ff7d3b0"
-  integrity sha512-H/6I+Ui2F/g/juepMrx3wx2jfOFI8sRlKlAxOMycR2o75/ghVIhJU6GW9hU1DYNActGsM5UhcdpZYLL0qXkr4Q==
+"@dcloudio/types@2.5.9":
+  version "2.5.9"
+  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.5.9.tgz#06365a3406b02006c76870474314e5c20f24137e"
+  integrity sha512-dLyZChtY7oZ+34MgWBCU/qAJufszn1XvVN9GXL5Yk2wk/s3vl4kbrB2YDG0pVCUn7cDPmmyRoknp38x/vSAKpQ==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"

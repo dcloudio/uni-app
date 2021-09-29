@@ -1,4 +1,4 @@
-import { watch, watchEffect, computed } from 'vue'
+import { watch, watchEffect, computed, ref, Ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
 import {
@@ -14,12 +14,18 @@ import { normalizeWindowBottom } from '../../../helpers/cssVar'
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'TabBar',
   setup() {
+    const visibleList = ref<UniApp.TabBarItemOptions[]>([])
     const tabBar = useTabBar()!
+    useVisibleList(tabBar, visibleList)
     useTabBarCssVar(tabBar)
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar)
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList)
     const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
     return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab)
+      const tabBarItemsTsx = createTabBarItemsTsx(
+        tabBar,
+        onSwitchTab,
+        visibleList
+      )
       return (
         <uni-tabbar class={'uni-tabbar-' + tabBar.position}>
           <div class="uni-tabbar" style={style.value}>
@@ -46,18 +52,44 @@ function useTabBarCssVar(tabBar: UniApp.TabBarOptions) {
   )
 }
 
+function useVisibleList(
+  tabBar: UniApp.TabBarOptions,
+  visibleList: Ref<UniApp.TabBarItemOptions[]>
+) {
+  function setVisibleList() {
+    let tempList = []
+    tempList = tabBar.list.filter((item) => item.visible !== false)
+
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+      tempList = tempList.filter((item) => !isMidButton(item))
+
+      if (tempList.length % 2 === 0) {
+        tempList.splice(
+          Math.floor(tempList.length / 2),
+          0,
+          tabBar.list[Math.floor(tabBar.list.length / 2)]
+        )
+      }
+    }
+
+    visibleList.value = tempList
+  }
+
+  watchEffect(setVisibleList)
+}
+
 function useSwitchTab(
   route: RouteLocationNormalizedLoaded,
-  tabBar: UniApp.TabBarOptions
+  tabBar: UniApp.TabBarOptions,
+  visibleList: Ref<UniApp.TabBarItemOptions[]>
 ) {
   watchEffect(() => {
     const meta = route.meta
     if (meta.isTabBar) {
       const pagePath = meta.route
-      const index = tabBar.list.findIndex((item) => item.pagePath === pagePath)
-      if (index === -1) {
-        return
-      }
+      const index = visibleList.value.findIndex(
+        (item) => item.pagePath === pagePath
+      )
       tabBar.selectedIndex = index
     }
   })
@@ -141,10 +173,11 @@ function isMidButton(item: unknown): item is UniApp.TabBarMidButtonOptions {
 
 function createTabBarItemsTsx(
   tabBar: UniApp.TabBarOptions,
-  onSwitchTab: OnSwtichTab
+  onSwitchTab: OnSwtichTab,
+  visibleList: Ref<UniApp.TabBarItemOptions[]>
 ) {
-  const { list, selectedIndex, selectedColor, color } = tabBar
-  return list.map((item, index) => {
+  const { selectedIndex, selectedColor, color } = tabBar
+  return visibleList.value.map((item, index) => {
     const selected = selectedIndex === index
     const textColor = selected ? selectedColor : color
     const iconPath =
@@ -267,7 +300,7 @@ function createTabBarMidButtonTsx(
   const { width, height, backgroundImage, iconWidth } = midButton
   return (
     <div
-      key={index}
+      key="midButton"
       class="uni-tabbar__item"
       style={{ flex: '0 0 ' + width, position: 'relative' }}
       onClick={onSwitchTab(midButton, index)}

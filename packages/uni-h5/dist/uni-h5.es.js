@@ -18549,7 +18549,7 @@ const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_RE
   UniServiceJSBridge.invokeViewMethod(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
-const setTabBarItemProps = ["text", "iconPath", "selectedIconPath"];
+const setTabBarItemProps = ["text", "iconPath", "selectedIconPath", "visible"];
 const setTabBarStyleProps = [
   "color",
   "selectedColor",
@@ -18629,10 +18629,10 @@ const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (ar
   setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
 const hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve }) => {
-  setTabBar(API_HIDE_TAB_BAR, args, resolve);
+  setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve);
 }, HideTabBarProtocol);
 const showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve }) => {
-  setTabBar(API_SHOW_TAB_BAR, args, resolve);
+  setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve);
 }, ShowTabBarProtocol);
 const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, { resolve }) => {
   setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
@@ -18649,16 +18649,18 @@ const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (ar
 var TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
+    const visibleList = ref([]);
     const tabBar2 = useTabBar();
+    useVisibleList(tabBar2, visibleList);
     useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar2);
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
     const {
       style,
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
     return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab);
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
       return createVNode("uni-tabbar", {
         "class": "uni-tabbar-" + tabBar2.position
       }, [createVNode("div", {
@@ -18681,15 +18683,26 @@ function useTabBarCssVar(tabBar2) {
     });
   });
 }
-function useSwitchTab(route, tabBar2) {
+function useVisibleList(tabBar2, visibleList) {
+  function setVisibleList() {
+    let tempList = [];
+    tempList = tabBar2.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+      tempList = tempList.filter((item) => !isMidButton(item));
+      if (tempList.length % 2 === 0) {
+        tempList.splice(Math.floor(tempList.length / 2), 0, tabBar2.list[Math.floor(tabBar2.list.length / 2)]);
+      }
+    }
+    visibleList.value = tempList;
+  }
+  watchEffect(setVisibleList);
+}
+function useSwitchTab(route, tabBar2, visibleList) {
   watchEffect(() => {
     const meta = route.meta;
     if (meta.isTabBar) {
       const pagePath = meta.route;
-      const index2 = tabBar2.list.findIndex((item) => item.pagePath === pagePath);
-      if (index2 === -1) {
-        return;
-      }
+      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
       tabBar2.selectedIndex = index2;
     }
   });
@@ -18772,14 +18785,13 @@ function useTabBarStyle(tabBar2) {
 function isMidButton(item) {
   return item.type === "midButton";
 }
-function createTabBarItemsTsx(tabBar2, onSwitchTab) {
+function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
   const {
-    list: list2,
     selectedIndex,
     selectedColor,
     color
   } = tabBar2;
-  return list2.map((item, index2) => {
+  return visibleList.value.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
     const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
@@ -18863,7 +18875,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     iconWidth
   } = midButton;
   return createVNode("div", {
-    "key": index2,
+    "key": "midButton",
     "class": "uni-tabbar__item",
     "style": {
       flex: "0 0 " + width,

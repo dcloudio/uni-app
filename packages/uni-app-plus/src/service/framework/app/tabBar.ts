@@ -52,9 +52,11 @@ function setTabBarItem(
   index: number,
   text?: string,
   iconPath?: string,
-  selectedIconPath?: string
+  selectedIconPath?: string,
+  visible?: boolean
 ) {
-  const item: Record<string, string | number> = {
+  type TabBarItem = Record<string, string | number | boolean | undefined>
+  const item: TabBarItem = {
     index,
   }
   if (text !== undefined) {
@@ -66,7 +68,19 @@ function setTabBarItem(
   if (selectedIconPath) {
     item.selectedIconPath = getRealPath(selectedIconPath)
   }
-  tabBar && tabBar.setTabBarItem(item)
+  if (visible !== undefined) {
+    item.visible = config.list[index].visible = visible
+    delete item.index
+
+    const tabbarItems = config.list.map<TabBarItem>((item) => ({
+      visible: item.visible,
+    }))
+    tabbarItems[index] = item
+
+    tabBar && tabBar.setTabBarItems({ list: tabbarItems })
+  } else {
+    tabBar && tabBar.setTabBarItem(item)
+  }
 }
 /**
  * 动态设置 tabBar 的整体样式

@@ -54,7 +54,7 @@ export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   )
   // tabBar
   if (pagesJson.tabBar) {
-    const tabBar = normalizeTabBar(pagesJson.tabBar!)
+    const tabBar = normalizeTabBar(pagesJson.tabBar!, platform)
     if (tabBar) {
       pagesJson.tabBar = tabBar
     } else {
@@ -289,29 +289,34 @@ const DEFAULT_TAB_BAR: Partial<UniApp.TabBarOptions> = {
   height: TABBAR_HEIGHT + 'px',
 }
 
-function normalizeTabBar(tabBar: UniApp.TabBarOptions) {
+function normalizeTabBar(
+  tabBar: UniApp.TabBarOptions,
+  platform: UniApp.PLATFORM
+) {
   const { list, midButton } = tabBar
   if (!list || !list.length) {
     return
   }
   tabBar = extend({}, DEFAULT_TAB_BAR, tabBar)
-  const len = list.length
-  if (len % 2 === 0 && isPlainObject(midButton)) {
-    list.splice(
-      Math.floor(len / 2),
-      0,
-      extend(
-        {
-          type: 'midButton',
-          width: '50px',
-          height: '50px',
-          iconWidth: '24px',
-        },
-        midButton
+  if (platform === 'h5') {
+    const len = list.length
+    if (len % 2 === 0 && isPlainObject(midButton)) {
+      list.splice(
+        Math.floor(len / 2),
+        0,
+        extend(
+          {
+            type: 'midButton',
+            width: '50px',
+            height: '50px',
+            iconWidth: '24px',
+          },
+          midButton
+        )
       )
-    )
-  } else {
-    delete tabBar.midButton
+    } else {
+      delete tabBar.midButton
+    }
   }
   list.forEach((item) => {
     if (item.iconPath) {
