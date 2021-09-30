@@ -12,6 +12,7 @@ import { hasOwn } from '@vue/shared'
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
+import { printHttpServerUrls } from './logger'
 
 export async function createServer(options: CliOptions & ServerOptions) {
   const server = await createViteServer(
@@ -23,6 +24,18 @@ export async function createServer(options: CliOptions & ServerOptions) {
     })
   )
   await server.listen()
+
+  const info = server.config.logger.info
+
+  info(
+    chalk.cyan(`\n  vite v${require('vite/package.json').version}`) +
+      chalk.green(` dev server running at:\n`),
+    {
+      clear: !server.config.logger.hasWarned,
+    }
+  )
+
+  printHttpServerUrls(server.httpServer!, server.config, options)
 }
 
 export async function createSSRServer(options: CliOptions & ServerOptions) {
