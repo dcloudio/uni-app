@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-baidu",
-  "version": "2.0.0-32920210927002",
+  "version": "2.0.0-alpha-32920210930001",
   "description": "uni-app mp-baidu",
   "main": "dist/index.js",
   "repository": {
