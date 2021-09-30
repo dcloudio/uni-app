@@ -28,5 +28,7 @@
   "uni.video.danmu": "彈幕",
   "uni.video.volume": "音量",
   "uni.button.feedback.title": "問題反饋",
-  "uni.button.feedback.send": "發送"
+  "uni.button.feedback.send": "發送",
+  "uni.chooseLocation.search": "搜索地點",
+  "uni.chooseLocation.cancel": "取消"
 }

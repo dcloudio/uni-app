@@ -21,7 +21,7 @@
             ref="refresherinner"
             :style="{
               'background-color': refresherBackground,
-              height: refresherThreshold + 'px',
+              height: refresherHeight + 'px',
             }"
             class="uni-scroll-view-refresher"
           >
@@ -158,13 +158,13 @@ export default {
   },
   data () {
     return {
-      lastScrollTop: this.scrollTopNumber || 0,
-      lastScrollLeft: this.scrollLeftNumber || 0,
+      lastScrollTop: this.scrollTopNumber,
+      lastScrollLeft: this.scrollLeftNumber,
       lastScrollToUpperTime: 0,
       lastScrollToLowerTime: 0,
       refresherHeight: 0,
       refreshRotate: 0,
-      refreshState: 'restore'
+      refreshState: ''
     }
   },
   computed: {
@@ -225,6 +225,7 @@ export default {
       var x = event.touches[0].pageX
       var y = event.touches[0].pageY
       var main = self.$refs.main
+
       if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
         // 横向滑动
         if (self.scrollX) {
@@ -245,13 +246,10 @@ export default {
       } else {
         // 纵向滑动
         if (self.scrollY) {
-          if (main.scrollTop === 0 && y >= touchStart.y) {
+          if (main.scrollTop === 0 && y > touchStart.y) {
             needStop = false
             // 刷新时，阻止页面滚动
             if (self.refresherEnabled && event.cancelable !== false) {
-              if (self.refreshState !== 'pulling' && self.refreshState !== 'refreshing') {
-                self.refreshState = 'pulling'
-              }
               event.preventDefault()
             }
           } else if (
@@ -267,62 +265,35 @@ export default {
           needStop = false
         }
       }
+
       if (needStop) {
         event.stopPropagation()
       }
-      // 刷新中
-      if (self.refresherEnabled && self.refreshState === 'refreshing') {
-        if (event.cancelable !== false) {
-          event.preventDefault()
-        }
-        // this.refresherThreshold
-        let dy = y - touchStart.y + self.refresherThreshold
-        if (dy <= 0) {
-          dy = 0
-          // 刷新时，阻止页面滚动
-        }
-        if (dy > self.refresherThreshold) {
-          self.refresherHeight = Math.floor(dy * 0.16) + self.refresherThreshold
-        } else {
-          self.refresherHeight = dy
-        }
-        const transform = 'translateY(' + self.refresherHeight + 'px) translateZ(0)'
-        self.$refs.content.style.transform = transform
-        self.$refs.content.style.webkitTransform = transform
-        // return
+
+      if (main.scrollTop === 0 && event.touches.length === 1) {
+        // 如果容器滑动到达顶端，则进入下拉状态
+        self.refreshState = 'pulling'
       }
-      let _dy = 0
+
       if (self.refresherEnabled && self.refreshState === 'pulling') {
-        if (event.cancelable !== false) {
-          event.preventDefault()
-        }
         const dy = y - touchStart.y
         if (self.toUpperNumber === 0) {
           self.toUpperNumber = y
         }
         if (!self.beforeRefreshing) {
-          _dy = y - self.toUpperNumber
+          self.refresherHeight = y - self.toUpperNumber
           // 之前为刷新状态则不再触发pulling
-          if (_dy > 0) {
+          if (self.refresherHeight > 0) {
             self.triggerAbort = true
             self.$trigger('refresherpulling', event, {
               deltaY: dy
             })
           }
         } else {
-          _dy = dy + self.refresherThreshold
+          self.refresherHeight = dy + self.refresherThreshold
           // 如果之前在刷新状态，则不触发刷新中断
           self.triggerAbort = false
         }
-
-        self.refresherHeight = Math.floor(_dy * 0.16)
-        if (self.refresherHeight <= 0) {
-          self.refresherHeight = 0
-        }
-
-        const transform = 'translateY(' + self.refresherHeight + 'px) translateZ(0)'
-        self.$refs.content.style.transform = transform
-        self.$refs.content.style.webkitTransform = transform
 
         const route = self.refresherHeight / self.refresherThreshold
         self.refreshRotate = (route > 1 ? 1 : route) * 360
@@ -330,8 +301,6 @@ export default {
     }
 
     this.__handleTouchStart = function (event) {
-      self.$refs.content.style.transition = ''
-      self.$refs.content.style.webkitTransition = ''
       if (event.touches.length === 1) {
         disableScrollBounce({
           disable: true
@@ -347,21 +316,8 @@ export default {
       disableScrollBounce({
         disable: false
       })
-      if (self.refreshState === 'refreshing' && self.refresherHeight < self.refresherThreshold) {
-        self._setRefreshState('restore')
-        return
-      }
       if (self.refresherHeight >= self.refresherThreshold) {
-        if (self.refreshState !== 'refreshing') {
-          self._setRefreshState('refreshing')
-        } else {
-          const transform = 'translateY(' + self.refresherThreshold + 'px) translateZ(0)'
-          self.$refs.content.style.transition = 'transform .3s ease-out'
-          self.$refs.content.style.webkitTransition =
-            '-webkit-transform .3s ease-out'
-          self.$refs.content.style.transform = transform
-          self.$refs.content.style.webkitTransform = transform
-        }
+        self._setRefreshState('refreshing')
       } else {
         self._setRefreshState('refresherabort')
       }
@@ -677,13 +633,6 @@ export default {
           }
           break
       }
-      const transform = 'translateY(' + this.refresherHeight + 'px) translateZ(0)'
-      this.$refs.content.style.transition = 'transform .3s ease-out'
-      this.$refs.content.style.webkitTransition =
-        '-webkit-transform .3s ease-out'
-      this.$refs.content.style.transform = transform
-      this.$refs.content.style.webkitTransform = transform
-
       this.refreshState = state
     },
     getScrollPosition () {
@@ -718,16 +667,12 @@ uni-scroll-view[hidden] {
 }
 
 .uni-scroll-view-content {
-  position: relative;
   width: 100%;
   height: 100%;
 }
 
 .uni-scroll-view-refresher {
-  position: absolute;
-  left: 0;
-  right: 0;
-  transform: translateY(-100%);
+  position: relative;
   overflow: hidden;
 }
 

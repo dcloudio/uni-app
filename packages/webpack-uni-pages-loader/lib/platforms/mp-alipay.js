@@ -87,6 +87,7 @@ module.exports = function (pagesJson, manifestJson) {
   delete project.plugins
   delete project.useDynamicPlugins
   !('component2' in project) && (project.component2 = true)
+  !('enableAppxNg' in project) && (project.enableAppxNg = true)
 
   return [{
     name: 'app',

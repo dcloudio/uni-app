@@ -1,6 +1,10 @@
 import {
   getJSONP
 } from '../../../helpers/get-jsonp'
+import {
+  MapType,
+  getMapInfo
+} from '../../../helpers/location'
 
 /**
  * 获取定位信息
@@ -14,7 +18,7 @@ export function getLocation ({
   const {
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge
-  const key = __uniConfig.qqMapKey
+  const mapInfo = getMapInfo()
 
   new Promise((resolve, reject) => {
     if (navigator.geolocation) {
@@ -27,26 +31,50 @@ export function getLocation ({
     }
   }).catch(() => {
     return new Promise((resolve, reject) => {
-      getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${key}`, {
-        callback: 'callback'
-      }, (res) => {
-        if ('result' in res && res.result.location) {
-          const location = res.result.location
-          resolve({
-            latitude: location.lat,
-            longitude: location.lng
-          }, true)
-        } else {
-          reject(new Error(res.message || JSON.stringify(res)))
-        }
-      }, () => reject(new Error('network error')))
+      if (mapInfo.type === MapType.QQ) {
+        getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`, {
+          callback: 'callback'
+        }, (res) => {
+          if ('result' in res && res.result.location) {
+            const location = res.result.location
+            resolve({
+              latitude: location.lat,
+              longitude: location.lng
+            }, true)
+          } else {
+            reject(new Error(res.message || JSON.stringify(res)))
+          }
+        }, () => reject(new Error('network error')))
+      } else if (mapInfo.type === MapType.GOOGLE) {
+        uni.request({
+          method: 'POST',
+          url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
+          success (res) {
+            const data = res.data
+            if ('location' in data) {
+              resolve({
+                latitude: data.location.lat,
+                longitude: data.location.lng,
+                accuracy: data.accuracy
+              })
+            } else {
+              reject(new Error((data.error && data.error.message) || JSON.stringify(res)))
+            }
+          },
+          fail () {
+            reject(new Error('network error'))
+          }
+        })
+      } else {
+        reject(new Error('network error'))
+      }
     })
   }).then((coords, skip) => {
-    if (type.toUpperCase() === 'WGS84' || skip) {
+    if (type.toUpperCase() === 'WGS84' || mapInfo.type !== MapType.QQ || skip) {
       return coords
     }
     return new Promise((resolve, reject) => {
-      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
         callback: 'cb'
       }, (res) => {
         if ('detail' in res && 'points' in res.detail && res.detail.points.length) {
