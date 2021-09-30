@@ -207,11 +207,13 @@ export default {
       })
       return al
     }, (newValue, oldValue) => {
+      this.paginationInternal.size = this.pageSize
+      if (newValue[0] !== oldValue[0]) {
+        this.paginationInternal.current = this.pageCurrent
+      }
       if (this.loadtime === loadMode.manual) {
         return
       }
-
-      this.paginationInternal.size = this.pageSize
 
       let needReset = false
       for (let i = 2; i < newValue.length; i++) {
@@ -223,9 +225,6 @@ export default {
       if (needReset) {
         this.clear()
         this.reset()
-      }
-      if (newValue[0] !== oldValue[0]) {
-        this.paginationInternal.current = this.pageCurrent
       }
 
       this._execLoadData()
