@@ -1,16 +1,15 @@
 import os from 'os'
 import { AddressInfo, Server } from 'net'
 import chalk from 'chalk'
-import { Logger, ResolvedConfig, ServerOptions } from 'vite'
+import { Logger, ResolvedConfig } from 'vite'
 export function printHttpServerUrls(
   server: Server,
-  config: ResolvedConfig,
-  _options: ServerOptions
+  config: ResolvedConfig
 ): void {
   const address = server.address()
   const isAddressInfo = (x: any): x is AddressInfo => x.address
   if (isAddressInfo(address)) {
-    const hostname = resolveHostname(true /*options.host*/)
+    const hostname = resolveHostname(true /*config.server.host*/)
     const protocol = config.server.https ? 'https' : 'http'
     printServerUrls(
       hostname,

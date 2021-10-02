@@ -35,7 +35,7 @@ export async function createServer(options: CliOptions & ServerOptions) {
     }
   )
 
-  printHttpServerUrls(server.httpServer!, server.config, options)
+  printHttpServerUrls(server.httpServer!, server.config)
 }
 
 export async function createSSRServer(options: CliOptions & ServerOptions) {
