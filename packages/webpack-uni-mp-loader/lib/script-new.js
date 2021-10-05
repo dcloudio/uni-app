@@ -1,6 +1,7 @@
 const path = require('path')
 
 const parser = require('@babel/parser')
+const babelGenerate = require('@babel/generator').default
 
 const {
   removeExt,
@@ -15,11 +16,13 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/platform')
 
 const {
+  getAutoComponents,
   isBuiltInComponentPath
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
 const {
-  updateUsingComponents
+  updateUsingComponents,
+  updateComponentPlaceholder
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const preprocessor = require('@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/preprocess')
@@ -77,14 +80,43 @@ module.exports = function (content, map) {
     type = 'Component'
   }
 
-  const {
+  let {
+    ast,
     state: {
-      components
+      components,
+      componentPlaceholders
     }
   } = traverse(parser.parse(content, getBabelParserOptions()), {
     type,
-    components: []
+    components: [],
+    componentPlaceholders: []
   })
+
+  if (componentPlaceholders.length) {
+    // generate js code after remove componentPlaceholder
+    content = babelGenerate(ast, {
+      retainLines: true,
+      decoratorsBeforeExport: true,
+      retainFunctionParens: true,
+      jsescOption: {
+        quotes: 'single'
+      }
+    }, content).code
+    // updateComponentPlaceholder and add easycom's component
+    const componentPlaceholder = Object.create(null)
+    componentPlaceholders.forEach(c => {
+      c.name = getComponentName(hyphenate(c.name))
+      c.value = getComponentName(hyphenate(c.value))
+      componentPlaceholder[c.name] = c.value
+    })
+    updateComponentPlaceholder(resourcePath, componentPlaceholder)
+    // auto components
+    const imported = new Set()
+    components.forEach(c => imported.add(getComponentName(hyphenate(c.name))))
+    const cs = getAutoComponents(componentPlaceholders.map(p => p.value)
+      .filter(p => !imported.has(p)))
+    components = (components || []).concat(cs)
+  }
 
   const callback = this.async()
 

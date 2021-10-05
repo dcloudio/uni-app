@@ -51,6 +51,43 @@ function handleObjectExpression (declaration, path, state) {
   if (componentsProperty && t.isObjectExpression(componentsProperty.value)) {
     handleComponentsObjectExpression(componentsProperty.value, path, state)
   }
+
+  // componentPlaceholder
+  const componentPlaceholder = declaration.properties.filter(prop => {
+    return t.isObjectProperty(prop) && t.isIdentifier(prop.key) &&
+      prop.key.name === 'componentPlaceholder'
+  })[0]
+
+  if (componentPlaceholder && t.isObjectExpression(componentPlaceholder.value)) {
+    handleComponentPlaceholderObjectExpression(componentPlaceholder.value, path, state)
+    // remove componentPlaceholder
+    declaration.properties = declaration.properties.filter(prop => {
+      return prop !== componentPlaceholder
+    })
+  }
+}
+
+function handleComponentPlaceholderObjectExpression (componentPlaceholderObjExpr, path, state) {
+  const properties = componentPlaceholderObjExpr.properties
+    .filter(prop => t.isObjectProperty(prop) &&
+      (t.isStringLiteral(prop.value) || t.isIdentifier(prop.value)))
+
+  const placeholders = []
+
+  properties.forEach(prop => {
+    // prop.key maybe Identifier or StringLiteral
+    // Identifier use name, StringLiteral use value
+    const key = prop.key.name || prop.key.value
+    let value = null
+    if (t.isIdentifier(prop.value)) {
+      value = prop.value.name
+    } else {
+      value = prop.value.value
+    }
+
+    placeholders.push({ name: key, value })
+  })
+  state.componentPlaceholders = (state.componentPlaceholders || []).concat(placeholders)
 }
 
 function handleComponentsObjectExpression (componentsObjExpr, path, state, prepend) {
@@ -105,6 +142,7 @@ function handleIdentifier ({
 module.exports = function (ast, state = {
   type: 'Component',
   components: [],
+  componentPlaceholders: [],
   options: {}
 }) {
   babelTraverse(ast, {

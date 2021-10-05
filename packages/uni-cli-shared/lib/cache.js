@@ -193,6 +193,23 @@ function updateComponentGenerics (name, componentGenerics) {
   }
 }
 
+function updateComponentPlaceholder (name, componentPlaceholder) {
+  const oldJsonStr = getJsonFile(name)
+  if (oldJsonStr) { // update
+    const jsonObj = JSON.parse(oldJsonStr)
+    jsonObj.componentPlaceholder = componentPlaceholder
+    const newJsonStr = JSON.stringify(jsonObj, null, 2)
+    if (newJsonStr !== oldJsonStr) {
+      updateJsonFile(name, newJsonStr)
+    }
+  } else { // add
+    const jsonObj = {
+      componentPlaceholder
+    }
+    updateJsonFile(name, jsonObj)
+  }
+}
+
 function updateGenericComponents (name, genericComponents) {
   const oldJsonStr = getJsonFile(name)
   if (oldJsonStr) { // update
@@ -344,6 +361,7 @@ module.exports = {
   updateComponentJson,
   updateSpecialMethods,
   updateUsingComponents,
+  updateComponentPlaceholder,
   updateUsingGlobalComponents,
   updateAppJsonUsingComponents,
   updateUsingAutoImportComponents,
