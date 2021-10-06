@@ -7,7 +7,7 @@ export function printHttpServerUrls(
   config: ResolvedConfig
 ): void {
   const address = server.address()
-  const isAddressInfo = (x: any): x is AddressInfo => x.address
+  const isAddressInfo = (x: any): x is AddressInfo => x?.address
   if (isAddressInfo(address)) {
     const hostname = resolveHostname(true /*config.server.host*/)
     const protocol = config.server.https ? 'https' : 'http'
