@@ -90,6 +90,10 @@ function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Com
       if (oldJsonObj.usingGlobalComponents) { // 复制 global components(针对不支持全局 usingComponents 的平台)
         jsonObj.usingGlobalComponents = oldJsonObj.usingGlobalComponents
       }
+      // componentPlaceholder
+      if (oldJsonObj.componentPlaceholder) {
+        jsonObj.componentPlaceholder = oldJsonObj.componentPlaceholder
+      }
     }
     const newJsonStr = JSON.stringify(jsonObj, null, 2)
     if (newJsonStr !== oldJsonStr) {
