@@ -114,7 +114,7 @@ module.exports = function (content, map) {
     const imported = new Set()
     components.forEach(c => imported.add(getComponentName(hyphenate(c.name))))
     const cs = getAutoComponents(componentPlaceholders.map(p => p.value)
-      .filter(p => !imported.has(p)))
+      .filter(p => !imported.has(p))).map(c => { return { name: c.name, source: c.source } })
     components = (components || []).concat(cs)
   }
 
