@@ -698,7 +698,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return uni.getSystemInfoSync().language || 'zh-Hans';
+    return wx.getSystemInfoSync().language || 'zh-Hans';
 };
 const setLocale = (locale) => {
     const app = getApp();

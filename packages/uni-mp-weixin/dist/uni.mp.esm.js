@@ -568,7 +568,7 @@ function initCreateApp(parseAppOptions) {
     };
 }
 function initLocale(appVm) {
-    const locale = ref(uni.getSystemInfoSync().language || 'zh-Hans');
+    const locale = ref(wx.getSystemInfoSync().language || 'zh-Hans');
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
