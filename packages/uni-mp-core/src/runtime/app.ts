@@ -96,7 +96,9 @@ export function initCreateApp(parseAppOptions?: ParseAppOptions) {
 }
 
 function initLocale(appVm: ComponentPublicInstance) {
-  const locale = ref<string>(uni.getSystemInfoSync().language || 'zh-Hans')
+  const locale = ref<string>(
+    __GLOBAL__.getSystemInfoSync().language || 'zh-Hans'
+  )
   Object.defineProperty(appVm, '$locale', {
     get() {
       return locale.value

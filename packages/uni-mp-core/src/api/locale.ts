@@ -4,7 +4,7 @@ export const getLocale: typeof uni.getLocale = () => {
   if (app && app.$vm) {
     return app.$vm.$locale
   }
-  return uni.getSystemInfoSync().language || 'zh-Hans'
+  return __GLOBAL__.getSystemInfoSync().language || 'zh-Hans'
 }
 
 export const setLocale: typeof uni.setLocale = (locale) => {
