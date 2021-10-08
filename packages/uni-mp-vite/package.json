@@ -1,0 +1,27 @@
+{
+  "name": "@dcloudio/uni-mp-vite",
+  "version": "3.0.0-alpha-3000020210913001",
+  "description": "uni-mp-vite",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-vite"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "uni-app": {
+    "name": "uni-mp",
+    "apply": "^mp-",
+    "main": "dist/index.js"
+  },
+  "license": "Apache-2.0",
+  "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7"
+}

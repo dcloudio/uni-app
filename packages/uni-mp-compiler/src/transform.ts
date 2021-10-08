@@ -1,0 +1,366 @@
+import { NOOP, EMPTY_OBJ, extend, isString, isArray } from '@vue/shared'
+
+import {
+  DirectiveNode,
+  ElementNode,
+  NodeTypes,
+  Property,
+  RootNode,
+  ParentNode,
+  TemplateChildNode,
+  CREATE_COMMENT,
+  TO_DISPLAY_STRING,
+  CompilerError,
+  helperNameMap,
+  ExpressionNode,
+  ElementTypes,
+  isVSlot,
+} from '@vue/compiler-core'
+import IdentifierGenerator from './identifier'
+import {
+  CodegenRootScope,
+  CodegenScope,
+  CodegenVForScope,
+  CodegenVForScopeInit,
+  CodegenVIfScope,
+  CodegenVIfScopeInit,
+  TransformOptions,
+} from './options'
+
+export type NodeTransform = (
+  node: RootNode | TemplateChildNode,
+  context: TransformContext
+) => void | (() => void) | (() => void)[]
+
+export type DirectiveTransform = (
+  dir: DirectiveNode,
+  node: ElementNode,
+  context: TransformContext,
+  augmentor?: (ret: DirectiveTransformResult) => DirectiveTransformResult
+) => DirectiveTransformResult
+
+interface DirectiveTransformResult {
+  props: Property[]
+  needRuntime?: boolean | symbol
+}
+
+export interface ErrorHandlingOptions {
+  onWarn?: (warning: CompilerError) => void
+  onError?: (error: CompilerError) => void
+}
+
+export interface TransformContext
+  extends Required<Omit<TransformOptions, 'filename'>> {
+  currentNode: RootNode | TemplateChildNode | null
+  parent: ParentNode | null
+  childIndex: number
+  helpers: Map<symbol, number>
+  identifiers: { [name: string]: number | undefined }
+  scopes: {
+    index: number
+  }
+  scope: CodegenRootScope
+  currentScope: CodegenScope
+  helper<T extends symbol>(name: T): T
+  removeHelper<T extends symbol>(name: T): void
+  helperString(name: symbol): string
+  replaceNode(node: TemplateChildNode): void
+  onNodeRemoved(): void
+  addIdentifiers(exp: ExpressionNode | string): void
+  removeIdentifiers(exp: ExpressionNode | string): void
+  addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
+  addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
+}
+
+export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
+  return !isVIfScope(scope) && !isVForScope(scope)
+}
+
+export function isVIfScope(scope: CodegenScope): scope is CodegenVIfScope {
+  return !!(scope as CodegenVIfScope).condition
+}
+
+export function isVForScope(scope: CodegenScope): scope is CodegenVForScope {
+  return !!(scope as CodegenVForScope).source
+}
+
+export function transform(root: RootNode, options: TransformOptions) {
+  const context = createTransformContext(root, options)
+  traverseNode(root, context)
+  return context
+}
+
+export function traverseNode(
+  node: RootNode | TemplateChildNode,
+  context: TransformContext
+) {
+  context.currentNode = node
+  // apply transform plugins
+  const { nodeTransforms } = context
+  const exitFns = []
+  for (let i = 0; i < nodeTransforms.length; i++) {
+    const onExit = nodeTransforms[i](node, context)
+    if (onExit) {
+      if (isArray(onExit)) {
+        exitFns.push(...onExit)
+      } else {
+        exitFns.push(onExit)
+      }
+    }
+    if (!context.currentNode) {
+      // node was removed
+      return
+    } else {
+      // node may have been replaced
+      node = context.currentNode
+    }
+  }
+
+  switch (node.type) {
+    case NodeTypes.COMMENT:
+      context.helper(CREATE_COMMENT)
+      break
+    case NodeTypes.INTERPOLATION:
+      context.helper(TO_DISPLAY_STRING)
+      break
+    // for container types, further traverse downwards
+    case NodeTypes.IF:
+      for (let i = 0; i < node.branches.length; i++) {
+        traverseNode(node.branches[i], context)
+      }
+      break
+    case NodeTypes.IF_BRANCH:
+    case NodeTypes.FOR:
+    case NodeTypes.ELEMENT:
+    case NodeTypes.ROOT:
+      traverseChildren(node, context)
+      break
+  }
+
+  // exit transforms
+  context.currentNode = node
+  let i = exitFns.length
+  while (i--) {
+    exitFns[i]()
+  }
+}
+
+export function traverseChildren(
+  parent: ParentNode,
+  context: TransformContext
+) {
+  let i = 0
+  const nodeRemoved = () => {
+    i--
+  }
+  for (; i < parent.children.length; i++) {
+    const child = parent.children[i]
+    if (isString(child)) continue
+    context.parent = parent
+    context.childIndex = i
+    context.onNodeRemoved = nodeRemoved
+    traverseNode(child, context)
+  }
+}
+function defaultOnError(error: CompilerError) {
+  throw error
+}
+
+function defaultOnWarn(msg: CompilerError) {
+  console.warn(`[Vue warn] ${msg.message}`)
+}
+
+export function createTransformContext(
+  root: RootNode,
+  {
+    isTS = false,
+    inline = false,
+    bindingMetadata = EMPTY_OBJ,
+    prefixIdentifiers = false,
+    nodeTransforms = [],
+    directiveTransforms = {},
+    isBuiltInComponent = NOOP,
+    isCustomElement = NOOP,
+    expressionPlugins = [],
+    onError = defaultOnError,
+    onWarn = defaultOnWarn,
+  }: TransformOptions
+): TransformContext {
+  const scope: CodegenRootScope = {
+    id: new IdentifierGenerator(),
+    parent: null,
+    identifiers: [],
+    properties: [],
+    scopes: [],
+  }
+  const scopes = {
+    index: 0,
+  }
+  function getScope(depth: number) {
+    let currentScope = scope
+    while (depth-- > 0) {
+      currentScope = currentScope.scopes[currentScope.scopes.length - 1]
+    }
+    return currentScope
+  }
+  function createScope(
+    parent: CodegenScope,
+    id: IdentifierGenerator,
+    initScope: CodegenVIfScopeInit | CodegenVForScopeInit
+  ) {
+    return extend(
+      {
+        id,
+        parent,
+        properties: [],
+        scopes: [],
+        get identifiers() {
+          return Object.keys(identifiers)
+        },
+      },
+      initScope
+    )
+  }
+  const identifiers = Object.create(null)
+  const context: TransformContext = {
+    // options
+    isTS,
+    inline,
+    bindingMetadata,
+    prefixIdentifiers,
+    nodeTransforms,
+    directiveTransforms,
+    expressionPlugins,
+    isBuiltInComponent,
+    isCustomElement,
+    onError,
+    onWarn,
+    // state
+    parent: null,
+    childIndex: 0,
+    helpers: new Map(),
+    identifiers,
+    scope,
+    scopes,
+    get currentScope() {
+      return getScope(scopes.index)
+    },
+    currentNode: root,
+    // methods
+    addVIfScope(initScope) {
+      const parent = getScope(scopes.index)
+      const vIfScope = createScope(
+        parent,
+        parent.id,
+        initScope
+      ) as CodegenVIfScope
+      parent.scopes.push(vIfScope)
+      return vIfScope
+    },
+    addVForScope(initScope) {
+      const parent = getScope(scopes.index - 1)
+      const vForScope = createScope(
+        parent,
+        new IdentifierGenerator(),
+        initScope
+      ) as CodegenVForScope
+      parent.scopes.push(vForScope)
+      return vForScope
+    },
+    helper(name) {
+      const count = context.helpers.get(name) || 0
+      context.helpers.set(name, count + 1)
+      return name
+    },
+    removeHelper(name) {
+      const count = context.helpers.get(name)
+      if (count) {
+        const currentCount = count - 1
+        if (!currentCount) {
+          context.helpers.delete(name)
+        } else {
+          context.helpers.set(name, currentCount)
+        }
+      }
+    },
+    helperString(name) {
+      return `_${helperNameMap[context.helper(name)]}`
+    },
+    replaceNode(node) {
+      context.parent!.children[context.childIndex] = context.currentNode = node
+    },
+    onNodeRemoved: () => {},
+    addIdentifiers(exp) {
+      if (isString(exp)) {
+        addId(exp)
+      } else if (exp.identifiers) {
+        exp.identifiers.forEach(addId)
+      } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
+        addId(exp.content)
+      }
+    },
+    removeIdentifiers(exp) {
+      if (isString(exp)) {
+        removeId(exp)
+      } else if (exp.identifiers) {
+        exp.identifiers.forEach(removeId)
+      } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
+        removeId(exp.content)
+      }
+    },
+  }
+
+  function addId(id: string) {
+    const { identifiers } = context
+    if (identifiers[id] === undefined) {
+      identifiers[id] = 0
+    }
+    identifiers[id]!++
+  }
+
+  function removeId(id: string) {
+    context.identifiers[id]!--
+  }
+
+  return context
+}
+
+export declare type StructuralDirectiveTransform = (
+  node: ElementNode,
+  dir: DirectiveNode,
+  context: TransformContext
+) => void | (() => void)
+
+export function createStructuralDirectiveTransform(
+  name: string | RegExp,
+  fn: StructuralDirectiveTransform
+): NodeTransform {
+  const matches = isString(name)
+    ? (n: string) => n === name
+    : (n: string) => name.test(n)
+
+  return (node, context) => {
+    if (node.type === NodeTypes.ELEMENT) {
+      const { props } = node
+      // structural directive transforms are not concerned with slots
+      // as they are handled separately in vSlot.ts
+      if (node.tagType === ElementTypes.TEMPLATE && props.some(isVSlot)) {
+        return
+      }
+      const exitFns = []
+      for (let i = 0; i < props.length; i++) {
+        const prop = props[i]
+        if (prop.type === NodeTypes.DIRECTIVE && matches(prop.name)) {
+          // structural directives are removed to avoid infinite recursion
+          // also we remove them *before* applying so that it can further
+          // traverse itself in case it moves the node around
+          // props.splice(i, 1)
+          // i--
+          const onExit = fn(node, prop, context)
+          if (onExit) exitFns.push(onExit)
+        }
+      }
+      return exitFns
+    }
+  }
+}

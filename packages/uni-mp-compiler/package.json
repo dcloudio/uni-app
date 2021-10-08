@@ -1,0 +1,28 @@
+{
+  "name": "@dcloudio/uni-mp-compiler",
+  "version": "3.0.0-alpha-3000020210913001",
+  "description": "uni-mp-compiler",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-compiler"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7",
+  "dependencies": {
+    "@babel/parser": "^7.15.0",
+    "@babel/types": "^7.15.0",
+    "@vue/compiler-core": "3.2.19",
+    "estree-walker": "^3.0.0"
+  }
+}
