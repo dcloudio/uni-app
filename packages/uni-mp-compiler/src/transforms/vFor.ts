@@ -8,18 +8,24 @@ import {
   SourceLocation,
   createStructuralDirectiveTransform,
   ElementTypes,
+  ElementNode,
 } from '@vue/compiler-core'
 import { createObjectProperty, createVForCallExpression } from '../ast'
 import { NodeTransform, TransformContext } from '../transform'
 import { processExpression } from './transformExpression'
 
-export interface ForNode {
+export interface VForOptions {
   source: string
   value: string
   key: string
   index: string
 }
-
+export type ForElementNode = ElementNode & {
+  vFor: VForOptions
+}
+export function isForElementNode(node: unknown): node is ForElementNode {
+  return !!(node as ForElementNode).vFor
+}
 export const transformFor = createStructuralDirectiveTransform(
   'for',
   (node, dir, _context) => {
@@ -44,7 +50,6 @@ export const transformFor = createStructuralDirectiveTransform(
     parseResult.tagType = node.tagType
     const { addIdentifiers, removeIdentifiers } = context
     const { source, value, key, index } = parseResult
-    // scopes.index++
     if (context.prefixIdentifiers) {
       value && addIdentifiers(value)
       key && addIdentifiers(key)
@@ -55,26 +60,26 @@ export const transformFor = createStructuralDirectiveTransform(
       key: key ? (key as SimpleExpressionNode).content : '',
       index: index ? (index as SimpleExpressionNode).content : '',
     }
+    const { currentScope: parentScope, popScope } = context
     const vForScope = context.addVForScope({
       source: (source as SimpleExpressionNode).content,
       ...vForData,
     })
     return () => {
-      // scopes.index--
       if (context.prefixIdentifiers) {
         value && removeIdentifiers(value)
         key && removeIdentifiers(key)
         index && removeIdentifiers(index)
       }
-      const { currentScope } = context
-      const id = currentScope.id.next()
-      ;(node as any).forNode = {
+      const id = parentScope.id.next()
+      ;(node as ForElementNode).vFor = {
         source: id,
         ...vForData,
       }
-      currentScope.properties.push(
+      parentScope.properties.push(
         createObjectProperty(id, createVForCallExpression(vForScope))
       )
+      popScope()
     }
   }
 ) as unknown as NodeTransform

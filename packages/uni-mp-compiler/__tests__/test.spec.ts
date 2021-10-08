@@ -20,19 +20,14 @@ function assert(template: string, templateCode: string, renderCode: string) {
 }
 
 describe('compiler', () => {
-  test(`generate v-for with v-if`, () => {
+  test(`basic v-if`, () => {
     assert(
-      `<view v-for="item in items"><view v-if="item.show">{{item.title}}</view></view>`,
-      `<view wx:for="{{a}}" wx:for-item="item"><view wx:if="{{item.b}}">{{item.a}}</view></view>`,
+      `<view v-if="ok"/>`,
+      `<view wx:if="{{a}}"/>`,
       `(_ctx, _cache) => {
 return {
-  a: vFor(_ctx.items, item => {
-    return {
-      a: item.title,
-      b: item.show,
-      ...(item.show ? {} : {})
-    };
-  })
+  a: _ctx.ok,
+  ...(_ctx.ok ? {} : {})
 }
 }`
     )

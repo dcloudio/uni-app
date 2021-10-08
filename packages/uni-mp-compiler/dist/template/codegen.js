@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.genElementProps = exports.genElement = exports.genNode = exports.generate = void 0;
 const codegen_1 = require("../codegen");
+const vFor_1 = require("../transforms/vFor");
+const vIf_1 = require("../transforms/vIf");
 function generate({ children }, { emitFile, filename }) {
     const context = {
         code: '',
@@ -17,6 +19,10 @@ function generate({ children }, { emitFile, filename }) {
 exports.generate = generate;
 function genNode(node, context) {
     switch (node.type) {
+        case 9 /* IF */:
+            return node.branches.forEach((node) => {
+                genElement(node, context);
+            });
         case 2 /* TEXT */:
             return genText(node, context);
         case 5 /* INTERPOLATION */:
@@ -41,13 +47,13 @@ function genVElseIf(exp, { push }) {
 function genVElse({ push }) {
     push(` wx:else`);
 }
-function genVFor(node, props, { push }) {
-    push(` wx:for="{{${node.source}}}"`);
-    if (node.value) {
-        push(` wx:for-item="${node.value}"`);
+function genVFor(opts, props, { push }) {
+    push(` wx:for="{{${opts.source}}}"`);
+    if (opts.value) {
+        push(` wx:for-item="${opts.value}"`);
     }
-    if (node.key) {
-        push(` wx:for-index="${node.key}"`);
+    if (opts.key) {
+        push(` wx:for-index="${opts.key}"`);
     }
     const keyIndex = props.findIndex((prop) => prop.type === 7 /* DIRECTIVE */ &&
         prop.name === 'bind' &&
@@ -61,25 +67,28 @@ function genVFor(node, props, { push }) {
         props.splice(keyIndex, 1);
     }
 }
+const tagMap = {
+    template: 'block',
+};
 function genElement(node, context) {
-    const { tag, children, isSelfClosing, props } = node;
+    const { children, isSelfClosing, props } = node;
+    const tag = tagMap[node.tag] || node.tag;
     const { push } = context;
     push(`<${tag}`);
-    const ifNode = node.ifNode;
-    if (ifNode) {
-        if (ifNode.name === 'if') {
-            genVIf(ifNode.condition, context);
+    if ((0, vIf_1.isIfElementNode)(node)) {
+        const { name, condition } = node.vIf;
+        if (name === 'if') {
+            genVIf(condition, context);
         }
-        else if (ifNode.name === 'else-if') {
-            genVElseIf(ifNode.condition, context);
+        else if (name === 'else-if') {
+            genVElseIf(condition, context);
         }
-        else if (ifNode.name === 'else') {
+        else if (name === 'else') {
             genVElse(context);
         }
     }
-    const forNode = node.forNode;
-    if (forNode) {
-        genVFor(forNode, props, context);
+    if ((0, vFor_1.isForElementNode)(node)) {
+        genVFor(node.vFor, props, context);
     }
     if (props.length) {
         genElementProps(props, context);

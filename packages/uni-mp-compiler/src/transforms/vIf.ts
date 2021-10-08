@@ -10,7 +10,12 @@ import {
   createCompilerError,
   createSimpleExpression,
   createStructuralDirectiveTransform,
+  DirectiveNode,
+  ElementNode,
   ErrorCodes,
+  IfBranchNode,
+  IfNode,
+  NodeTypes,
   SimpleExpressionNode,
 } from '@vue/compiler-core'
 import {
@@ -20,83 +25,174 @@ import {
 } from '../ast'
 import { genNode } from '../codegen'
 import { CodegenScope } from '../options'
-import { NodeTransform, TransformContext } from '../transform'
+import { NodeTransform, TransformContext, traverseNode } from '../transform'
 import { processExpression } from './transformExpression'
 import { rewriteExpression } from './transformIdentifier'
 
-export interface IfNode {
+interface IfOptions {
   name: string
-  condition: string
+  condition?: string
+}
+
+export type IfElementNode = ElementNode & {
+  vIf: IfOptions
+}
+export function isIfElementNode(node: unknown): node is IfElementNode {
+  return !!(node as IfElementNode).vIf
 }
 
 export const transformIf = createStructuralDirectiveTransform(
   /^(if|else|else-if)$/,
   (node, dir, _context) => {
     const context = _context as unknown as TransformContext
-    if (
-      dir.name !== 'else' &&
-      (!dir.exp || !(dir.exp as SimpleExpressionNode).content.trim())
-    ) {
-      const loc = dir.exp ? dir.exp.loc : node.loc
-      context.onError(
-        createCompilerError(ErrorCodes.X_V_IF_NO_EXPRESSION, dir.loc)
-      )
-      dir.exp = createSimpleExpression(`true`, false, loc)
-    }
-    if (context.prefixIdentifiers && dir.exp) {
-      dir.exp = processExpression(dir.exp as SimpleExpressionNode, context)
-    }
-
-    const condition = dir.exp
-      ? parseExpression(genNode(dir.exp).code)
-      : undefined
-    const { currentScope: parentScope, popScope } = context
-    const vIfScope = context.addVIfScope({
-      name: dir.name,
-      condition,
-    })
-    return () => {
-      const ifNode: IfNode = {
+    return processIf(node, dir, context, (ifNode, branch, isRoot) => {
+      const { currentScope: parentScope, popScope } = context
+      const ifOptions: IfOptions = {
         name: dir.name,
-        condition: '',
       }
-      if (condition) {
-        if (!isLiteral(condition)) {
-          ifNode.condition = rewriteExpression(
-            dir.exp!,
-            parentScope,
-            condition
-          ).content
+      branch.vIf = ifOptions
+      const condition = dir.exp
+        ? parseExpression(genNode(dir.exp).code)
+        : undefined
+      const vIfScope = context.addVIfScope({
+        name: dir.name,
+        condition,
+      })
+      return () => {
+        if (condition) {
+          if (!isLiteral(condition)) {
+            ifOptions.condition = rewriteExpression(
+              dir.exp!,
+              parentScope,
+              condition
+            ).content
+          } else {
+            ifOptions.condition = (dir.exp as SimpleExpressionNode).content
+          }
+        }
+        if (isRoot) {
+          parentScope.properties.push(createVIfSpreadElement(vIfScope))
         } else {
-          ifNode.condition = (dir.exp as SimpleExpressionNode).content
+          const vIfSpreadElement = findVIfSpreadElement(parentScope)
+          if (!vIfSpreadElement) {
+            popScope()
+            return context.onError(
+              createCompilerError(ErrorCodes.X_V_ELSE_NO_ADJACENT_IF, node.loc)
+            )
+          }
+          let alternate: ConditionalExpression | ObjectExpression =
+            createObjectExpression([])
+          if (dir.name === 'else-if') {
+            alternate = createVIfConditionalExpression(vIfScope)
+          } else if (dir.name === 'else') {
+            alternate = createObjectExpression(vIfScope.properties)
+          }
+          findVIfConditionalExpression(
+            vIfSpreadElement.argument as ConditionalExpression
+          ).alternate = alternate
         }
+        popScope()
       }
-      ;(node as any).ifNode = ifNode
-      if (dir.name === 'if') {
-        parentScope.properties.push(createVIfSpreadElement(vIfScope))
-      } else {
-        const vIfSpreadElement = findVIfSpreadElement(parentScope)
-        if (!vIfSpreadElement) {
-          popScope()
-          return context.onError(
-            createCompilerError(ErrorCodes.X_V_ELSE_NO_ADJACENT_IF, dir.loc)
-          )
-        }
-        let alternate: ConditionalExpression | ObjectExpression =
-          createObjectExpression([])
-        if (dir.name === 'else-if') {
-          alternate = createVIfConditionalExpression(vIfScope)
-        } else if (dir.name === 'else') {
-          alternate = createObjectExpression(vIfScope.properties)
-        }
-        findVIfConditionalExpression(
-          vIfSpreadElement.argument as ConditionalExpression
-        ).alternate = alternate
-      }
-      popScope()
-    }
+    })
   }
 ) as unknown as NodeTransform
+
+export function processIf(
+  node: ElementNode,
+  dir: DirectiveNode,
+  context: TransformContext,
+  processCodegen?: (
+    node: IfNode,
+    branch: IfElementNode,
+    isRoot: boolean
+  ) => (() => void) | undefined
+) {
+  if (
+    dir.name !== 'else' &&
+    (!dir.exp || !(dir.exp as SimpleExpressionNode).content.trim())
+  ) {
+    const loc = dir.exp ? dir.exp.loc : node.loc
+    context.onError(
+      createCompilerError(ErrorCodes.X_V_IF_NO_EXPRESSION, dir.loc)
+    )
+    dir.exp = createSimpleExpression(`true`, false, loc)
+  }
+
+  if (context.prefixIdentifiers && dir.exp) {
+    // dir.exp can only be simple expression because vIf transform is applied
+    // before expression transform.
+    dir.exp = processExpression(dir.exp as SimpleExpressionNode, context)
+  }
+
+  if (dir.name === 'if') {
+    const ifNode: IfNode = {
+      type: NodeTypes.IF,
+      loc: node.loc,
+      branches: [node as unknown as IfBranchNode],
+    }
+    context.replaceNode(ifNode)
+    if (processCodegen) {
+      return processCodegen(ifNode, node as IfElementNode, true)
+    }
+  } else {
+    // locate the adjacent v-if
+    const siblings = context.parent!.children
+    let i = siblings.indexOf(node)
+    while (i-- >= -1) {
+      const sibling = siblings[i]
+      if (sibling && sibling.type === NodeTypes.COMMENT) {
+        context.removeNode(sibling)
+        continue
+      }
+
+      if (
+        sibling &&
+        sibling.type === NodeTypes.TEXT &&
+        !sibling.content.trim().length
+      ) {
+        context.removeNode(sibling)
+        continue
+      }
+
+      if (sibling && sibling.type === NodeTypes.IF) {
+        // Check if v-else was followed by v-else-if
+        if (
+          dir.name === 'else-if' &&
+          (
+            sibling.branches[
+              sibling.branches.length - 1
+            ] as unknown as IfElementNode
+          ).vIf.condition === undefined
+        ) {
+          context.onError(
+            createCompilerError(ErrorCodes.X_V_ELSE_NO_ADJACENT_IF, node.loc)
+          )
+        }
+
+        // move the node to the if node's branches
+        context.removeNode()
+
+        sibling.branches.push(node as unknown as IfBranchNode)
+        const onExit =
+          processCodegen &&
+          processCodegen(sibling, node as IfElementNode, false)
+        // since the branch was removed, it will not be traversed.
+        // make sure to traverse here.
+        traverseNode(node, context)
+        // call on exit
+        if (onExit) onExit()
+        // make sure to reset currentNode after traversal to indicate this
+        // node has been removed.
+        context.currentNode = null
+      } else {
+        context.onError(
+          createCompilerError(ErrorCodes.X_V_ELSE_NO_ADJACENT_IF, node.loc)
+        )
+      }
+      break
+    }
+  }
+}
 
 function findVIfSpreadElement({ properties }: CodegenScope) {
   const len = properties.length

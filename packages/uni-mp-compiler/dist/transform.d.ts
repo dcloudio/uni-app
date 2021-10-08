@@ -24,6 +24,7 @@ export interface TransformContext extends Required<Omit<TransformOptions, 'filen
     removeHelper<T extends symbol>(name: T): void;
     helperString(name: symbol): string;
     replaceNode(node: TemplateChildNode): void;
+    removeNode(node?: TemplateChildNode): void;
     onNodeRemoved(): void;
     addIdentifiers(exp: ExpressionNode | string): void;
     removeIdentifiers(exp: ExpressionNode | string): void;

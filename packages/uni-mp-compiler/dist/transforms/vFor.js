@@ -1,9 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createForLoopParams = exports.parseForExpression = exports.transformFor = void 0;
+exports.createForLoopParams = exports.parseForExpression = exports.transformFor = exports.isForElementNode = void 0;
 const compiler_core_1 = require("@vue/compiler-core");
 const ast_1 = require("../ast");
 const transformExpression_1 = require("./transformExpression");
+function isForElementNode(node) {
+    return !!node.vFor;
+}
+exports.isForElementNode = isForElementNode;
 exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('for', (node, dir, _context) => {
     const context = _context;
     if (!dir.exp) {
@@ -18,7 +22,6 @@ exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('
     parseResult.tagType = node.tagType;
     const { addIdentifiers, removeIdentifiers } = context;
     const { source, value, key, index } = parseResult;
-    // scopes.index++
     if (context.prefixIdentifiers) {
         value && addIdentifiers(value);
         key && addIdentifiers(key);
@@ -29,24 +32,24 @@ exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('
         key: key ? key.content : '',
         index: index ? index.content : '',
     };
+    const { currentScope: parentScope, popScope } = context;
     const vForScope = context.addVForScope({
         source: source.content,
         ...vForData,
     });
     return () => {
-        // scopes.index--
         if (context.prefixIdentifiers) {
             value && removeIdentifiers(value);
             key && removeIdentifiers(key);
             index && removeIdentifiers(index);
         }
-        const { currentScope } = context;
-        const id = currentScope.id.next();
-        node.forNode = {
+        const id = parentScope.id.next();
+        node.vFor = {
             source: id,
             ...vForData,
         };
-        currentScope.properties.push((0, ast_1.createObjectProperty)(id, (0, ast_1.createVForCallExpression)(vForScope)));
+        parentScope.properties.push((0, ast_1.createObjectProperty)(id, (0, ast_1.createVForCallExpression)(vForScope)));
+        popScope();
     };
 });
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;

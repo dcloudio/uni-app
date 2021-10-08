@@ -176,6 +176,34 @@ function createTransformContext(root, { isTS = false, inline = false, bindingMet
         replaceNode(node) {
             context.parent.children[context.childIndex] = context.currentNode = node;
         },
+        removeNode(node) {
+            if (!context.parent) {
+                throw new Error(`Cannot remove root node.`);
+            }
+            const list = context.parent.children;
+            const removalIndex = node
+                ? list.indexOf(node)
+                : context.currentNode
+                    ? context.childIndex
+                    : -1;
+            /* istanbul ignore if */
+            if (removalIndex < 0) {
+                throw new Error(`node being removed is not a child of current parent`);
+            }
+            if (!node || node === context.currentNode) {
+                // current node removed
+                context.currentNode = null;
+                context.onNodeRemoved();
+            }
+            else {
+                // sibling node removed
+                if (context.childIndex > removalIndex) {
+                    context.childIndex--;
+                    context.onNodeRemoved();
+                }
+            }
+            context.parent.children.splice(removalIndex, 1);
+        },
         onNodeRemoved: () => { },
         addIdentifiers(exp) {
             if ((0, shared_1.isString)(exp)) {

@@ -62,6 +62,7 @@ export interface TransformContext
   removeHelper<T extends symbol>(name: T): void
   helperString(name: symbol): string
   replaceNode(node: TemplateChildNode): void
+  removeNode(node?: TemplateChildNode): void
   onNodeRemoved(): void
   addIdentifiers(exp: ExpressionNode | string): void
   removeIdentifiers(exp: ExpressionNode | string): void
@@ -271,6 +272,33 @@ export function createTransformContext(
     },
     replaceNode(node) {
       context.parent!.children[context.childIndex] = context.currentNode = node
+    },
+    removeNode(node) {
+      if (!context.parent) {
+        throw new Error(`Cannot remove root node.`)
+      }
+      const list = context.parent!.children
+      const removalIndex = node
+        ? list.indexOf(node)
+        : context.currentNode
+        ? context.childIndex
+        : -1
+      /* istanbul ignore if */
+      if (removalIndex < 0) {
+        throw new Error(`node being removed is not a child of current parent`)
+      }
+      if (!node || node === context.currentNode) {
+        // current node removed
+        context.currentNode = null
+        context.onNodeRemoved()
+      } else {
+        // sibling node removed
+        if (context.childIndex > removalIndex) {
+          context.childIndex--
+          context.onNodeRemoved()
+        }
+      }
+      context.parent!.children.splice(removalIndex, 1)
     },
     onNodeRemoved: () => {},
     addIdentifiers(exp) {
