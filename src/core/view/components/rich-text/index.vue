@@ -38,7 +38,7 @@ export default {
       if (typeof nodes === 'string') {
         nodes = parseHtml(nodes)
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment())
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), this)
       nodeList.appendChild(this.$refs.sensor.$el)
       const content = this.$refs.content
       content.innerHTML = ''
