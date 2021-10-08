@@ -3,10 +3,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTransformContext = exports.traverseChildren = exports.traverseNode = exports.transform = void 0;
+exports.createStructuralDirectiveTransform = exports.createTransformContext = exports.traverseChildren = exports.traverseNode = exports.transform = exports.isVForScope = exports.isVIfScope = exports.isRootScope = void 0;
 const shared_1 = require("@vue/shared");
 const compiler_core_1 = require("@vue/compiler-core");
 const identifier_1 = __importDefault(require("./identifier"));
+function isRootScope(scope) {
+    return !isVIfScope(scope) && !isVForScope(scope);
+}
+exports.isRootScope = isRootScope;
+function isVIfScope(scope) {
+    return !!scope.condition;
+}
+exports.isVIfScope = isVIfScope;
+function isVForScope(scope) {
+    return !!scope.source;
+}
+exports.isVForScope = isVForScope;
 function transform(root, options) {
     const context = createTransformContext(root, options);
     traverseNode(root, context);
@@ -90,20 +102,20 @@ function defaultOnWarn(msg) {
 function createTransformContext(root, { isTS = false, inline = false, bindingMetadata = shared_1.EMPTY_OBJ, prefixIdentifiers = false, nodeTransforms = [], directiveTransforms = {}, isBuiltInComponent = shared_1.NOOP, isCustomElement = shared_1.NOOP, expressionPlugins = [], onError = defaultOnError, onWarn = defaultOnWarn, }) {
     const scope = {
         id: new identifier_1.default(),
-        identifiers: Object.create(null),
-        body: [],
-        scopes: [],
+        identifiers: [],
+        properties: [],
     };
-    const scopes = {
-        vFor: 0,
-    };
-    function getScope(depth) {
-        let currentScope = scope;
-        while (depth-- > 0) {
-            currentScope = currentScope.scopes[currentScope.scopes.length - 1];
-        }
-        return currentScope;
+    function createScope(id, initScope) {
+        return (0, shared_1.extend)({
+            id,
+            properties: [],
+            get identifiers() {
+                return Object.keys(identifiers);
+            },
+        }, initScope);
     }
+    const identifiers = Object.create(null);
+    const scopes = [scope];
     const context = {
         // options
         isTS,
@@ -121,21 +133,24 @@ function createTransformContext(root, { isTS = false, inline = false, bindingMet
         parent: null,
         childIndex: 0,
         helpers: new Map(),
-        identifiers: Object.create(null),
+        identifiers,
         scope,
-        scopes,
         get currentScope() {
-            return getScope(scopes.vFor);
+            return scopes[scopes.length - 1];
         },
         currentNode: root,
         // methods
+        popScope() {
+            return scopes.pop();
+        },
+        addVIfScope(initScope) {
+            const vIfScope = createScope(scopes[scopes.length - 1].id, initScope);
+            scopes.push(vIfScope);
+            return vIfScope;
+        },
         addVForScope(initScope) {
-            const vForScope = (0, shared_1.extend)({
-                id: new identifier_1.default(),
-                body: [],
-                scopes: [],
-            }, initScope);
-            getScope(scopes.vFor - 1).scopes.push(vForScope);
+            const vForScope = createScope(new identifier_1.default(), initScope);
+            scopes.push(vForScope);
             return vForScope;
         },
         helper(name) {
@@ -157,6 +172,9 @@ function createTransformContext(root, { isTS = false, inline = false, bindingMet
         },
         helperString(name) {
             return `_${compiler_core_1.helperNameMap[context.helper(name)]}`;
+        },
+        replaceNode(node) {
+            context.parent.children[context.childIndex] = context.currentNode = node;
         },
         onNodeRemoved: () => { },
         addIdentifiers(exp) {
@@ -195,3 +213,34 @@ function createTransformContext(root, { isTS = false, inline = false, bindingMet
     return context;
 }
 exports.createTransformContext = createTransformContext;
+function createStructuralDirectiveTransform(name, fn) {
+    const matches = (0, shared_1.isString)(name)
+        ? (n) => n === name
+        : (n) => name.test(n);
+    return (node, context) => {
+        if (node.type === 1 /* ELEMENT */) {
+            const { props } = node;
+            // structural directive transforms are not concerned with slots
+            // as they are handled separately in vSlot.ts
+            if (node.tagType === 3 /* TEMPLATE */ && props.some(compiler_core_1.isVSlot)) {
+                return;
+            }
+            const exitFns = [];
+            for (let i = 0; i < props.length; i++) {
+                const prop = props[i];
+                if (prop.type === 7 /* DIRECTIVE */ && matches(prop.name)) {
+                    // structural directives are removed to avoid infinite recursion
+                    // also we remove them *before* applying so that it can further
+                    // traverse itself in case it moves the node around
+                    // props.splice(i, 1)
+                    // i--
+                    const onExit = fn(node, prop, context);
+                    if (onExit)
+                        exitFns.push(onExit);
+                }
+            }
+            return exitFns;
+        }
+    };
+}
+exports.createStructuralDirectiveTransform = createStructuralDirectiveTransform;

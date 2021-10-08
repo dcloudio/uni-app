@@ -11,7 +11,7 @@ import {
   TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
 import { isString, isSymbol } from '@vue/shared'
-import { CodegenOptions, CodegenScope, CodegenVForScope } from './options'
+import { CodegenOptions } from './options'
 
 interface MPCodegenContext
   extends Omit<

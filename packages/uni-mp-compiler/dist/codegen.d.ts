@@ -1,11 +1,6 @@
-import { RootNode, CodegenContext, CodegenResult, CompoundExpressionNode, SimpleExpressionNode, InterpolationNode, TextNode } from '@vue/compiler-core';
-import { CodegenOptions, CodegenVForScope } from './options';
-interface MPCodegenContext extends Omit<CodegenContext, 'sourceMap' | 'optimizeImports' | 'ssrRuntimeModuleName' | 'ssr' | 'inSSR'> {
-}
-export declare function generate(ast: RootNode, options?: CodegenOptions & {
-    onContextCreated?: (context: MPCodegenContext) => void;
-}): CodegenResult;
-export declare function genVForScope(vForScope: CodegenVForScope): string;
+import { CodegenResult, CompoundExpressionNode, InterpolationNode, SimpleExpressionNode, TextNode } from '@vue/compiler-core';
+import { CodegenOptions, CodegenScope } from './options';
+export declare function generate(scope: CodegenScope, options: CodegenOptions): Omit<CodegenResult, 'ast'>;
 declare type CodegenNode = SimpleExpressionNode | CompoundExpressionNode | InterpolationNode | TextNode | string | symbol;
 interface GenNodeContext {
     code: string;

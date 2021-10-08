@@ -1,24 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genNode = exports.genVForScope = exports.generate = void 0;
-const compiler_core_1 = require("@vue/compiler-core");
+exports.genNode = exports.generate = void 0;
 const shared_1 = require("@vue/shared");
-function generate(ast, options = {}) {
-    const context = createCodegenContext(ast, options);
-    const { push, indent, deindent, mode } = context;
+const compiler_core_1 = require("@vue/compiler-core");
+const generator_1 = __importDefault(require("@babel/generator"));
+const ast_1 = require("./ast");
+function generate(scope, options) {
     const isSetupInlined = !!options.inline;
-    // preambles
-    // in setup() inline mode, the preamble is generated in a sub context
-    // and returned separately.
-    const preambleContext = isSetupInlined
-        ? createCodegenContext(ast, options)
-        : context;
-    if (mode === 'module') {
-        genModulePreamble(ast, preambleContext, isSetupInlined);
-    }
-    else {
-        genFunctionPreamble(ast, preambleContext);
-    }
     // enter render function
     const functionName = `render`;
     const args = ['_ctx', '_cache'];
@@ -29,112 +20,24 @@ function generate(ast, options = {}) {
     const signature = options.isTS
         ? args.map((arg) => `${arg}: any`).join(',')
         : args.join(', ');
+    const codes = [];
     if (isSetupInlined) {
-        push(`(${signature}) => {`);
+        codes.push(`(${signature}) => {`);
     }
     else {
-        push(`function ${functionName}(${signature}) {`);
+        codes.push(`function ${functionName}(${signature}) {`);
     }
-    indent();
-    push(genScope(options.scope));
-    deindent();
-    push(`}`);
+    codes.push(`return ` +
+        (0, generator_1.default)((0, ast_1.createObjectExpression)(scope.properties), {
+        // concise: true,
+        }).code);
+    codes.push(`}`);
     return {
-        code: context.code,
+        code: codes.join('\n'),
         preamble: '',
-        ast,
     };
 }
 exports.generate = generate;
-function createCodegenContext(ast, { mode = 'function', prefixIdentifiers = mode === 'module', filename = `template.vue.html`, scopeId = null, runtimeGlobalName = `Vue`, runtimeModuleName = `vue`, isTS = false, }) {
-    const context = {
-        mode,
-        prefixIdentifiers,
-        filename,
-        scopeId,
-        runtimeGlobalName,
-        runtimeModuleName,
-        isTS,
-        source: ast.loc.source,
-        code: ``,
-        column: 1,
-        line: 1,
-        offset: 0,
-        indentLevel: 0,
-        pure: false,
-        map: undefined,
-        helper(key) {
-            return `_${compiler_core_1.helperNameMap[key]}`;
-        },
-        push(code, node) {
-            context.code += code;
-        },
-        indent() {
-            newline(++context.indentLevel);
-        },
-        deindent(withoutNewLine = false) {
-            if (withoutNewLine) {
-                --context.indentLevel;
-            }
-            else {
-                newline(--context.indentLevel);
-            }
-        },
-        newline() {
-            newline(context.indentLevel);
-        },
-    };
-    function newline(n) {
-        context.push('\n' + `  `.repeat(n));
-    }
-    return context;
-}
-function genModulePreamble(ast, context, inline) {
-    const { push, newline, runtimeModuleName } = context;
-    // generate import statements for helpers
-    if (ast.helpers.length) {
-        push(`import { ${ast.helpers
-            .map((s) => `${compiler_core_1.helperNameMap[s]} as _${compiler_core_1.helperNameMap[s]}`)
-            .join(', ')} } from ${JSON.stringify(runtimeModuleName)}\n`);
-    }
-    newline();
-    if (!inline) {
-        push(`export `);
-    }
-}
-function genFunctionPreamble(ast, context) {
-    const { prefixIdentifiers, push, newline, runtimeGlobalName } = context;
-    const VueBinding = runtimeGlobalName;
-    const aliasHelper = (s) => `${compiler_core_1.helperNameMap[s]}: _${compiler_core_1.helperNameMap[s]}`;
-    // Generate const declaration for helpers
-    // In prefix mode, we place the const declaration at top so it's done
-    // only once; But if we not prefixing, we place the declaration inside the
-    // with block so it doesn't incur the `in` check cost for every helper access.
-    if (ast.helpers.length > 0) {
-        if (prefixIdentifiers) {
-            push(`const { ${ast.helpers.map(aliasHelper).join(', ')} } = ${VueBinding}\n`);
-        }
-        else {
-            // "with" mode.
-            // save Vue in a separate variable to avoid collision
-            push(`const _Vue = ${VueBinding}\n`);
-            // in "with" mode, helpers are declared inside the with block to avoid
-            // has check cost, but hoists are lifted out of the function - we need
-            // to provide the helper here.
-        }
-    }
-    newline();
-    push(`return `);
-}
-function genScope(scope) {
-    return scope.body.join('\n');
-}
-function genVForScope(vForScope) {
-    return `renderListScope(${vForScope.source},(${vForScope.value},${vForScope.key},${vForScope.index})=>{
-    ${genScope(vForScope)}
-  })`;
-}
-exports.genVForScope = genVForScope;
 function createGenNodeContext() {
     const context = {
         code: '',

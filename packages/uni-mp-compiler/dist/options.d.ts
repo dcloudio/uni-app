@@ -1,4 +1,5 @@
 import { ParserPlugin } from '@babel/parser';
+import { Expression, ObjectProperty, SpreadElement } from '@babel/types';
 import { BindingMetadata, CompilerError } from '@vue/compiler-core';
 import IdentifierGenerator from './identifier';
 import { DirectiveTransform, NodeTransform } from './transform';
@@ -20,31 +21,42 @@ export interface TransformOptions extends SharedTransformCodegenOptions, ErrorHa
     isCustomElement?: (tag: string) => boolean | void;
     expressionPlugins?: ParserPlugin[];
 }
-export interface CodegenScope {
+export interface CodegenRootScope {
     id: IdentifierGenerator;
-    identifiers: {
-        [name: string]: number | undefined;
-    };
-    body: string[];
-    scopes: CodegenVForScope[];
+    identifiers: string[];
+    properties: (ObjectProperty | SpreadElement)[];
+}
+export interface CodegenVIfScopeInit {
+    name: 'if' | 'else-if' | 'else' | string;
+    condition?: Expression;
 }
 export interface CodegenVForScopeInit {
     source: string;
     value?: string;
     key?: string;
     index?: string;
-    identifiers: {
-        [name: string]: number | undefined;
-    };
 }
-export interface CodegenVForScope extends CodegenScope, CodegenVForScopeInit {
+export interface CodegenVIfScope extends CodegenRootScope, CodegenVIfScopeInit {
+}
+export interface CodegenVForScope extends CodegenRootScope, CodegenVForScopeInit {
+}
+export declare type CodegenScope = CodegenRootScope | CodegenVIfScope | CodegenVForScope;
+interface EmittedFile {
+    fileName?: string;
+    name?: string;
+    source?: string | Uint8Array;
+    type: 'asset';
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
     mode?: 'module' | 'function';
     scopeId?: string | null;
-    scope?: CodegenScope;
     runtimeModuleName?: string;
     runtimeGlobalName?: string;
+    emitFile?: (emittedFile: EmittedFile) => string;
+}
+export interface TemplateCodegenOptions {
+    filename: string;
+    emitFile: (emittedFile: EmittedFile) => string;
 }
 export declare type CompilerOptions = TransformOptions & CodegenOptions;
 export {};

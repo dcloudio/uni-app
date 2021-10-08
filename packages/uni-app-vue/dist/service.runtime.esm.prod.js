@@ -4725,9 +4725,13 @@ export default function vueFactory(exports) {
       var kebabKey;
 
       for (var _key4 in rawCurrentProps) {
-        if (!rawProps || !hasOwn(rawProps, _key4) && ((kebabKey = hyphenate(_key4)) === _key4 || !hasOwn(rawProps, kebabKey))) {
+        if (!rawProps || // for camelCase
+        !hasOwn(rawProps, _key4) && ( // it's possible the original props was passed in as kebab-case
+        // and converted to camelCase (#955)
+        (kebabKey = hyphenate(_key4)) === _key4 || !hasOwn(rawProps, kebabKey))) {
           if (options) {
-            if (rawPrevProps && (rawPrevProps[_key4] !== undefined || // for kebab-case
+            if (rawPrevProps && ( // for camelCase
+            rawPrevProps[_key4] !== undefined || // for kebab-case
             rawPrevProps[kebabKey] !== undefined)) {
               props[_key4] = resolvePropValue(options, rawCurrentProps, _key4, undefined, instance, true
               /* isAbsent */
@@ -6068,7 +6072,9 @@ export default function vueFactory(exports) {
 
         var container = // oldVNode may be an errored async setup() component inside Suspense
         // which will not have a mounted element
-        oldVNode.el && (oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
+        oldVNode.el && ( // - In the case of a Fragment, we need to provide the actual parent
+        // of the Fragment itself so it can move its children.
+        oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
         // which also requires the correct parent container
         !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
         oldVNode.shapeFlag & (6
@@ -6816,7 +6822,8 @@ export default function vueFactory(exports) {
         /* TELEPORT */
         ) {
           vnode.type.remove(vnode, parentComponent, parentSuspense, optimized, internals, doRemove);
-        } else if (dynamicChildren && (type !== Fragment || patchFlag > 0 && patchFlag & 64
+        } else if (dynamicChildren && ( // #1153: fast path should not be taken for non-stable (v-for) fragments
+        type !== Fragment || patchFlag > 0 && patchFlag & 64
         /* STABLE_FRAGMENT */
         )) {
           // fast path for block nodes: only need to unmount dynamic children.
@@ -7684,7 +7691,11 @@ export default function vueFactory(exports) {
 
     if (isBlockTreeEnabled > 0 && // avoid a block node from tracking itself
     !isBlockNode && // has current parent block
-    currentBlock && (vnode.patchFlag > 0 || shapeFlag & 6
+    currentBlock && ( // presence of a patch flag indicates this node needs patching on updates.
+    // component nodes also should always be patched, because even if the
+    // component doesn't need to update, it needs to persist the instance on to
+    // the next vnode so that it can be properly unmounted later.
+    vnode.patchFlag > 0 || shapeFlag & 6
     /* COMPONENT */
     ) && // the EVENTS flag is only for hydration and if it is the only flag, the
     // vnode should not be considered dynamic due to handler caching.
@@ -8252,7 +8263,8 @@ export default function vueFactory(exports) {
         /* CONTEXT */
         ;
         return ctx[key];
-      } else if (globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) {
+      } else if ( // window properties
+      globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) {
         {
           return globalProperties[key];
         }

@@ -1,1 +1,10 @@
-export declare function createVariableDeclaration(name: string, init: string): string;
+import { ObjectProperty, ObjectExpression, Expression, SpreadElement, ConditionalExpression, Identifier } from '@babel/types';
+import { CodegenScope, CodegenVForScope, CodegenVIfScope } from './options';
+export declare function createIdentifier(name: string): Identifier;
+export declare function createObjectProperty(name: string, value: Expression): ObjectProperty;
+export declare function createSpreadElement(argument: ConditionalExpression): SpreadElement;
+export declare function createObjectExpression(properties: Array<ObjectProperty | SpreadElement>): ObjectExpression;
+export declare function createVIfProperty(condition: Expression, { id }: CodegenScope): ObjectProperty;
+export declare function createVIfConditionalExpression({ condition, properties, }: CodegenVIfScope): ConditionalExpression;
+export declare function createVIfSpreadElement(vIfScope: CodegenVIfScope): SpreadElement;
+export declare function createVForCallExpression(vForScope: CodegenVForScope): import("@babel/types").CallExpression;

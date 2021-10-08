@@ -56,9 +56,6 @@ export interface TransformContext
   childIndex: number
   helpers: Map<symbol, number>
   identifiers: { [name: string]: number | undefined }
-  scopes: {
-    index: number
-  }
   scope: CodegenRootScope
   currentScope: CodegenScope
   helper<T extends symbol>(name: T): T
@@ -68,6 +65,7 @@ export interface TransformContext
   onNodeRemoved(): void
   addIdentifiers(exp: ExpressionNode | string): void
   removeIdentifiers(exp: ExpressionNode | string): void
+  popScope(): CodegenScope | undefined
   addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
 }
@@ -188,32 +186,18 @@ export function createTransformContext(
 ): TransformContext {
   const scope: CodegenRootScope = {
     id: new IdentifierGenerator(),
-    parent: null,
     identifiers: [],
     properties: [],
-    scopes: [],
   }
-  const scopes = {
-    index: 0,
-  }
-  function getScope(depth: number) {
-    let currentScope = scope
-    while (depth-- > 0) {
-      currentScope = currentScope.scopes[currentScope.scopes.length - 1]
-    }
-    return currentScope
-  }
+
   function createScope(
-    parent: CodegenScope,
     id: IdentifierGenerator,
     initScope: CodegenVIfScopeInit | CodegenVForScopeInit
   ) {
     return extend(
       {
         id,
-        parent,
         properties: [],
-        scopes: [],
         get identifiers() {
           return Object.keys(identifiers)
         },
@@ -222,6 +206,7 @@ export function createTransformContext(
     )
   }
   const identifiers = Object.create(null)
+  const scopes: CodegenScope[] = [scope]
   const context: TransformContext = {
     // options
     isTS,
@@ -241,30 +226,28 @@ export function createTransformContext(
     helpers: new Map(),
     identifiers,
     scope,
-    scopes,
     get currentScope() {
-      return getScope(scopes.index)
+      return scopes[scopes.length - 1]
     },
     currentNode: root,
     // methods
+    popScope() {
+      return scopes.pop()
+    },
     addVIfScope(initScope) {
-      const parent = getScope(scopes.index)
       const vIfScope = createScope(
-        parent,
-        parent.id,
+        scopes[scopes.length - 1].id,
         initScope
       ) as CodegenVIfScope
-      parent.scopes.push(vIfScope)
+      scopes.push(vIfScope)
       return vIfScope
     },
     addVForScope(initScope) {
-      const parent = getScope(scopes.index - 1)
       const vForScope = createScope(
-        parent,
         new IdentifierGenerator(),
         initScope
       ) as CodegenVForScope
-      parent.scopes.push(vForScope)
+      scopes.push(vForScope)
       return vForScope
     },
     helper(name) {

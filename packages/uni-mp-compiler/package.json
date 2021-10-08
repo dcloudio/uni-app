@@ -23,6 +23,6 @@
     "@babel/parser": "^7.15.0",
     "@babel/types": "^7.15.0",
     "@vue/compiler-core": "3.2.19",
-    "estree-walker": "^3.0.0"
+    "estree-walker": "^2.0.2"
   }
 }

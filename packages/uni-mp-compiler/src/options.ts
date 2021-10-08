@@ -31,8 +31,6 @@ export interface CodegenRootScope {
   id: IdentifierGenerator
   identifiers: string[]
   properties: (ObjectProperty | SpreadElement)[]
-  scopes: (CodegenVIfScope | CodegenVForScope)[]
-  parent: CodegenScope | null
 }
 export interface CodegenVIfScopeInit {
   name: 'if' | 'else-if' | 'else' | string

@@ -42,9 +42,9 @@ export const transformFor = createStructuralDirectiveTransform(
       return
     }
     parseResult.tagType = node.tagType
-    const { addIdentifiers, removeIdentifiers, scopes } = context
+    const { addIdentifiers, removeIdentifiers } = context
     const { source, value, key, index } = parseResult
-    scopes.index++
+    // scopes.index++
     if (context.prefixIdentifiers) {
       value && addIdentifiers(value)
       key && addIdentifiers(key)
@@ -60,7 +60,7 @@ export const transformFor = createStructuralDirectiveTransform(
       ...vForData,
     })
     return () => {
-      scopes.index--
+      // scopes.index--
       if (context.prefixIdentifiers) {
         value && removeIdentifiers(value)
         key && removeIdentifiers(key)

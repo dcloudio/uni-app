@@ -50,7 +50,7 @@ export function rewriteExpression(
     return node
   }
   babelNode = babelNode || parseExpression(genNode(node).code)
-  scope = findScope(babelNode, scope)
+  scope = findScope(babelNode, scope)!
   const id = scope.id.next()
   scope.properties.push(createObjectProperty(id, babelNode!))
   if (node.type === NodeTypes.COMPOUND_EXPRESSION) {
@@ -69,14 +69,7 @@ function findScope(node: Expression, scope: CodegenScope) {
   if (isRootScope(scope) || isVIfScope(scope)) {
     return scope
   }
-  return findVForScope(node, scope) || findRootScope(scope)
-}
-
-function findRootScope(scope: CodegenScope) {
-  while (scope.parent) {
-    scope = scope.parent
-  }
-  return scope
+  return findVForScope(node, scope)
 }
 
 function findVForScope(
@@ -88,9 +81,9 @@ function findVForScope(
       return scope
     }
   }
-  if (scope.parent) {
-    return findVForScope(node, scope.parent)
-  }
+  // if (scope.parent) {
+  //   return findVForScope(node, scope.parent)
+  // }
 }
 
 function isReferencedScope(node: Expression, scope: CodegenVForScope) {

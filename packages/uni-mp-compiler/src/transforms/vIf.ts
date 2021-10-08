@@ -50,7 +50,7 @@ export const transformIf = createStructuralDirectiveTransform(
     const condition = dir.exp
       ? parseExpression(genNode(dir.exp).code)
       : undefined
-    const { currentScope } = context
+    const { currentScope: parentScope, popScope } = context
     const vIfScope = context.addVIfScope({
       name: dir.name,
       condition,
@@ -64,7 +64,7 @@ export const transformIf = createStructuralDirectiveTransform(
         if (!isLiteral(condition)) {
           ifNode.condition = rewriteExpression(
             dir.exp!,
-            currentScope,
+            parentScope,
             condition
           ).content
         } else {
@@ -73,10 +73,11 @@ export const transformIf = createStructuralDirectiveTransform(
       }
       ;(node as any).ifNode = ifNode
       if (dir.name === 'if') {
-        currentScope.properties.push(createVIfSpreadElement(vIfScope))
+        parentScope.properties.push(createVIfSpreadElement(vIfScope))
       } else {
-        const vIfSpreadElement = findVIfSpreadElement(currentScope)
+        const vIfSpreadElement = findVIfSpreadElement(parentScope)
         if (!vIfSpreadElement) {
+          popScope()
           return context.onError(
             createCompilerError(ErrorCodes.X_V_ELSE_NO_ADJACENT_IF, dir.loc)
           )
@@ -92,6 +93,7 @@ export const transformIf = createStructuralDirectiveTransform(
           vIfSpreadElement.argument as ConditionalExpression
         ).alternate = alternate
       }
+      popScope()
     }
   }
 ) as unknown as NodeTransform

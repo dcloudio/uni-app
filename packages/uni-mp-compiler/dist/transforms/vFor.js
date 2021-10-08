@@ -3,9 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createForLoopParams = exports.parseForExpression = exports.transformFor = void 0;
 const compiler_core_1 = require("@vue/compiler-core");
 const ast_1 = require("../ast");
-const codegen_1 = require("../codegen");
 const transformExpression_1 = require("./transformExpression");
-exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('for', (_node, dir, _context) => {
+exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('for', (node, dir, _context) => {
     const context = _context;
     if (!dir.exp) {
         context.onError((0, compiler_core_1.createCompilerError)(31 /* X_V_FOR_NO_EXPRESSION */, dir.loc));
@@ -16,30 +15,38 @@ exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('
         context.onError((0, compiler_core_1.createCompilerError)(32 /* X_V_FOR_MALFORMED_EXPRESSION */, dir.loc));
         return;
     }
-    const { addIdentifiers, removeIdentifiers, scopes } = context;
+    parseResult.tagType = node.tagType;
+    const { addIdentifiers, removeIdentifiers } = context;
     const { source, value, key, index } = parseResult;
-    scopes.vFor++;
+    // scopes.index++
     if (context.prefixIdentifiers) {
         value && addIdentifiers(value);
         key && addIdentifiers(key);
         index && addIdentifiers(index);
     }
-    const vForScope = context.addVForScope({
-        source: source.content,
+    const vForData = {
         value: value ? value.content : '',
         key: key ? key.content : '',
         index: index ? index.content : '',
-        identifiers: {},
+    };
+    const vForScope = context.addVForScope({
+        source: source.content,
+        ...vForData,
     });
     return () => {
-        scopes.vFor--;
+        // scopes.index--
         if (context.prefixIdentifiers) {
             value && removeIdentifiers(value);
             key && removeIdentifiers(key);
             index && removeIdentifiers(index);
         }
         const { currentScope } = context;
-        currentScope.body.push((0, ast_1.createVariableDeclaration)(currentScope.id.next(), (0, codegen_1.genVForScope)(vForScope)));
+        const id = currentScope.id.next();
+        node.forNode = {
+            source: id,
+            ...vForData,
+        };
+        currentScope.properties.push((0, ast_1.createObjectProperty)(id, (0, ast_1.createVForCallExpression)(vForScope)));
     };
 });
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
@@ -57,6 +64,7 @@ function parseForExpression(input, context) {
         value: undefined,
         key: undefined,
         index: undefined,
+        tagType: 0 /* ELEMENT */,
     };
     if (context.prefixIdentifiers) {
         result.source = (0, transformExpression_1.processExpression)(result.source, context);

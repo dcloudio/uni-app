@@ -7,9 +7,11 @@ const codegen_1 = require("./codegen");
 const transform_1 = require("./transform");
 const transformExpression_1 = require("./transforms/transformExpression");
 const transformIdentifier_1 = require("./transforms/transformIdentifier");
+const vIf_1 = require("./transforms/vIf");
 const vFor_1 = require("./transforms/vFor");
+const codegen_2 = require("./template/codegen");
 function getBaseTransformPreset(prefixIdentifiers) {
-    const nodeTransforms = [vFor_1.transformFor];
+    const nodeTransforms = [vIf_1.transformIf, vFor_1.transformFor];
     if (prefixIdentifiers) {
         nodeTransforms.push(transformExpression_1.transformExpression);
     }
@@ -29,6 +31,10 @@ function baseCompile(template, options = {}) {
         ],
         directiveTransforms: (0, shared_1.extend)({}, directiveTransforms, options.directiveTransforms || {}),
     }));
-    return (0, codegen_1.generate)(ast, (0, shared_1.extend)({ scope: context.scope }, options));
+    const result = (0, shared_1.extend)((0, codegen_1.generate)(context.scope, options), { ast });
+    if (options.filename && options.emitFile) {
+        (0, codegen_2.generate)(ast, { filename: options.filename, emitFile: options.emitFile });
+    }
+    return result;
 }
 exports.baseCompile = baseCompile;
