@@ -1,9 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createForLoopParams = exports.parseForExpression = exports.transformFor = exports.isForElementNode = void 0;
+const shared_1 = require("@vue/shared");
 const compiler_core_1 = require("@vue/compiler-core");
 const ast_1 = require("../ast");
 const transformExpression_1 = require("./transformExpression");
+const codegen_1 = require("../codegen");
+const types_1 = require("@babel/types");
 function isForElementNode(node) {
     return !!node.vFor;
 }
@@ -27,17 +30,55 @@ exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('
         key && addIdentifiers(key);
         index && addIdentifiers(index);
     }
+    const { currentScope: parentScope, scopes, popScope } = context;
+    const sourceExpr = (0, ast_1.parseExpr)(source, context);
+    const valueCode = value && (0, codegen_1.genExpr)(value);
+    const valueExpr = valueCode
+        ? (0, ast_1.parseParam)(valueCode, context, value)
+        : undefined;
+    const valueAlias = (valueExpr && parseAlias(valueExpr, valueCode, 'v' + scopes.vFor)) ||
+        'v' + scopes.vFor;
+    const keyCode = key && (0, codegen_1.genExpr)(key);
+    const keyExpr = keyCode ? (0, ast_1.parseParam)(keyCode, context, key) : undefined;
+    const keyAlias = keyExpr && parseAlias(keyExpr, keyCode, 'k' + scopes.vFor);
+    const indexCode = index && (0, codegen_1.genExpr)(index);
+    const indexExpr = indexCode
+        ? (0, ast_1.parseParam)(indexCode, context, index)
+        : undefined;
+    const indexAlias = indexExpr && parseAlias(indexExpr, indexCode, 'i' + scopes.vFor);
     const vForData = {
-        value: value ? value.content : '',
-        key: key ? key.content : '',
-        index: index ? index.content : '',
+        source,
+        sourceExpr,
+        value,
+        valueCode,
+        valueExpr,
+        valueAlias,
+        key,
+        keyCode,
+        keyExpr,
+        keyAlias,
+        index,
+        indexCode,
+        indexExpr,
+        indexAlias,
     };
-    const { currentScope: parentScope, popScope } = context;
     const vForScope = context.addVForScope({
-        source: source.content,
         ...vForData,
+        locals: findVForLocals(parseResult),
     });
+    scopes.vFor++;
     return () => {
+        if ((0, compiler_core_1.isTemplateNode)(node)) {
+            node.children.some((c) => {
+                if (c.type === 1 /* ELEMENT */ && !isForElementNode(c)) {
+                    const key = (0, compiler_core_1.findProp)(c, 'key');
+                    if (key) {
+                        context.onError((0, compiler_core_1.createCompilerError)(33 /* X_V_FOR_TEMPLATE_KEY_PLACEMENT */, key.loc));
+                        return true;
+                    }
+                }
+            });
+        }
         if (context.prefixIdentifiers) {
             value && removeIdentifiers(value);
             key && removeIdentifiers(key);
@@ -45,13 +86,43 @@ exports.transformFor = (0, compiler_core_1.createStructuralDirectiveTransform)('
         }
         const id = parentScope.id.next();
         node.vFor = {
-            source: id,
+            sourceAlias: id,
             ...vForData,
         };
         parentScope.properties.push((0, ast_1.createObjectProperty)(id, (0, ast_1.createVForCallExpression)(vForScope)));
         popScope();
     };
 });
+function parseAlias(babelExpr, exprCode, defaultAlias) {
+    if ((0, types_1.isIdentifier)(babelExpr)) {
+        return exprCode;
+    }
+    return defaultAlias;
+}
+function findVForLocals({ value, key, index }) {
+    const ids = [];
+    if (value) {
+        findIds(value, ids);
+    }
+    if (key) {
+        findIds(key, ids);
+    }
+    if (index) {
+        findIds(index, ids);
+    }
+    return ids;
+}
+function findIds(exp, ids) {
+    if ((0, shared_1.isString)(exp)) {
+        ids.push(exp);
+    }
+    else if (exp.identifiers) {
+        exp.identifiers.forEach((id) => ids.push(id));
+    }
+    else if (exp.type === 4 /* SIMPLE_EXPRESSION */) {
+        ids.push(exp.content);
+    }
+}
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
 const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 const stripParensRE = /^\(|\)$/g;

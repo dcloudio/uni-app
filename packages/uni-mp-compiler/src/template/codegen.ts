@@ -3,6 +3,7 @@ import {
   DirectiveNode,
   ElementNode,
   ExpressionNode,
+  findProp,
   NodeTypes,
   RootNode,
   SimpleExpressionNode,
@@ -10,7 +11,7 @@ import {
   TextNode,
 } from '@vue/compiler-core'
 import { TemplateCodegenOptions } from '../options'
-import { genNode as genCodeNode } from '../codegen'
+import { genExpr } from '../codegen'
 import { isForElementNode, VForOptions } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 interface TemplateCodegenContext {
@@ -57,7 +58,7 @@ function genText(node: TextNode, { push }: TemplateCodegenContext) {
 }
 
 function genExpression(node: ExpressionNode, { push }: TemplateCodegenContext) {
-  push(`{{${genCodeNode(node).code}}}`)
+  push(`{{${genExpr(node)}}}`)
 }
 
 function genVIf(exp: string, { push }: TemplateCodegenContext) {
@@ -71,30 +72,22 @@ function genVElse({ push }: TemplateCodegenContext) {
 }
 
 function genVFor(
-  opts: VForOptions,
-  props: (AttributeNode | DirectiveNode)[],
+  { sourceAlias, valueAlias, keyAlias }: VForOptions,
+  node: ElementNode,
   { push }: TemplateCodegenContext
 ) {
-  push(` wx:for="{{${opts.source}}}"`)
-  if (opts.value) {
-    push(` wx:for-item="${opts.value}"`)
+  push(` wx:for="{{${sourceAlias}}}"`)
+  if (valueAlias) {
+    push(` wx:for-item="${valueAlias}"`)
   }
-  if (opts.key) {
-    push(` wx:for-index="${opts.key}"`)
+  if (keyAlias) {
+    push(` wx:for-index="${keyAlias}"`)
   }
-  const keyIndex = props.findIndex(
-    (prop) =>
-      prop.type === NodeTypes.DIRECTIVE &&
-      prop.name === 'bind' &&
-      prop.arg &&
-      prop.arg.type === NodeTypes.SIMPLE_EXPRESSION &&
-      prop.arg.content === 'key'
-  )
-  if (keyIndex > -1) {
-    const keyProp = props[keyIndex] as DirectiveNode
-    const key = (keyProp.exp as SimpleExpressionNode).content
+  const keyProp = findProp(node, 'key', true)
+  if (keyProp) {
+    const key = ((keyProp as DirectiveNode).exp as SimpleExpressionNode).content
     push(` wx:key="${key.includes('.') ? key.split('.')[1] : key}"`)
-    props.splice(keyIndex, 1)
+    node.props.splice(node.props.indexOf(keyProp), 1)
   }
 }
 const tagMap: Record<string, string> = {
@@ -116,7 +109,7 @@ export function genElement(node: ElementNode, context: TemplateCodegenContext) {
     }
   }
   if (isForElementNode(node)) {
-    genVFor(node.vFor, props, context)
+    genVFor(node.vFor, node, context)
   }
   if (props.length) {
     genElementProps(props, context)
@@ -140,7 +133,12 @@ export function genElementProps(
   const { push } = context
   props.forEach((prop) => {
     if (prop.type === NodeTypes.ATTRIBUTE) {
-      context.push(` ${prop.name}=${prop.value}`)
+      const { value } = prop
+      if (value) {
+        context.push(` ${prop.name}="${value.content}"`)
+      } else {
+        context.push(` ${prop.name}`)
+      }
     } else {
       const { name } = prop
       if (name === 'bind') {

@@ -27,7 +27,7 @@ function baseCompile(template, options = {}) {
         nodeTransforms: [
             ...nodeTransforms,
             ...(options.nodeTransforms || []),
-            transformIdentifier_1.transformIdentifier,
+            ...(options.skipTransformIdentifier ? [] : [transformIdentifier_1.transformIdentifier]),
         ],
         directiveTransforms: (0, shared_1.extend)({}, directiveTransforms, options.directiveTransforms || {}),
     }));

@@ -1,13 +1,23 @@
 import { ExpressionNode, SimpleExpressionNode, ElementTypes, ElementNode } from '@vue/compiler-core';
 import { NodeTransform, TransformContext } from '../transform';
-export interface VForOptions {
-    source: string;
-    value: string;
-    key: string;
-    index: string;
-}
+import { Expression, Identifier, Pattern, RestElement } from '@babel/types';
+export declare type VForOptions = Omit<ForParseResult, 'tagType'> & {
+    sourceExpr?: Expression;
+    sourceAlias?: string;
+    valueCode?: string;
+    valueExpr?: Identifier | Pattern | RestElement;
+    valueAlias?: string;
+    keyCode?: string;
+    keyExpr?: Identifier | Pattern | RestElement;
+    keyAlias?: string;
+    indexCode?: string;
+    indexExpr?: Identifier | Pattern | RestElement;
+    indexAlias?: string;
+};
 export declare type ForElementNode = ElementNode & {
-    vFor: VForOptions;
+    vFor: VForOptions & {
+        source: ExpressionNode;
+    };
 };
 export declare function isForElementNode(node: unknown): node is ForElementNode;
 export declare const transformFor: NodeTransform;

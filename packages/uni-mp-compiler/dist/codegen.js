@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genNode = exports.generate = void 0;
+exports.genExpr = exports.generate = void 0;
 const shared_1 = require("@vue/shared");
 const compiler_core_1 = require("@vue/compiler-core");
 const generator_1 = __importDefault(require("@babel/generator"));
@@ -50,6 +50,10 @@ function createGenNodeContext() {
     };
     return context;
 }
+function genExpr(node, context) {
+    return genNode(node, context).code;
+}
+exports.genExpr = genExpr;
 function genNode(node, context) {
     if (!context) {
         context = createGenNodeContext();
@@ -78,7 +82,6 @@ function genNode(node, context) {
     }
     return context;
 }
-exports.genNode = genNode;
 function genText(node, context) {
     context.push(JSON.stringify(node.content), node);
 }
@@ -89,7 +92,7 @@ function genExpression(node, context) {
 function genInterpolation(node, context) {
     const { push, helper } = context;
     push(`${helper(compiler_core_1.TO_DISPLAY_STRING)}(`);
-    genNode(node.content, context);
+    genExpr(node.content, context);
     push(`)`);
 }
 function genCompoundExpression(node, context) {
@@ -99,7 +102,7 @@ function genCompoundExpression(node, context) {
             context.push(child);
         }
         else {
-            genNode(child, context);
+            genExpr(child, context);
         }
     }
 }

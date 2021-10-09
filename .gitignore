@@ -4,6 +4,8 @@ packages/uni-app-vite/dist
 packages/uni-cli-nvue/dist
 packages/uni-cli-shared/dist
 packages/uni-h5-vite/dist
+packages/uni-mp-vite/dist
+packages/uni-mp-compiler/dist
 packages/vite-plugin-uni/dist
 
 .DS_Store

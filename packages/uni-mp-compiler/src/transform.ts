@@ -56,6 +56,9 @@ export interface TransformContext
   childIndex: number
   helpers: Map<symbol, number>
   identifiers: { [name: string]: number | undefined }
+  scopes: {
+    vFor: number
+  }
   scope: CodegenRootScope
   currentScope: CodegenScope
   helper<T extends symbol>(name: T): T
@@ -176,6 +179,7 @@ export function createTransformContext(
     inline = false,
     bindingMetadata = EMPTY_OBJ,
     prefixIdentifiers = false,
+    skipTransformIdentifier = false,
     nodeTransforms = [],
     directiveTransforms = {},
     isBuiltInComponent = NOOP,
@@ -217,6 +221,7 @@ export function createTransformContext(
     nodeTransforms,
     directiveTransforms,
     expressionPlugins,
+    skipTransformIdentifier,
     isBuiltInComponent,
     isCustomElement,
     onError,
@@ -227,6 +232,9 @@ export function createTransformContext(
     helpers: new Map(),
     identifiers,
     scope,
+    scopes: {
+      vFor: 0,
+    },
     get currentScope() {
       return scopes[scopes.length - 1]
     },

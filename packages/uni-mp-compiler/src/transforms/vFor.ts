@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import {
   createCompilerError,
   createSimpleExpression,
@@ -9,19 +10,43 @@ import {
   createStructuralDirectiveTransform,
   ElementTypes,
   ElementNode,
+  NodeTypes,
+  isTemplateNode,
+  findProp,
 } from '@vue/compiler-core'
-import { createObjectProperty, createVForCallExpression } from '../ast'
+import {
+  createObjectProperty,
+  createVForCallExpression,
+  parseExpr,
+  parseParam,
+} from '../ast'
 import { NodeTransform, TransformContext } from '../transform'
 import { processExpression } from './transformExpression'
+import { genExpr } from '../codegen'
+import {
+  Expression,
+  Identifier,
+  isIdentifier,
+  Pattern,
+  RestElement,
+} from '@babel/types'
 
-export interface VForOptions {
-  source: string
-  value: string
-  key: string
-  index: string
+export type VForOptions = Omit<ForParseResult, 'tagType'> & {
+  sourceExpr?: Expression
+  sourceAlias?: string
+  valueCode?: string
+  valueExpr?: Identifier | Pattern | RestElement
+  valueAlias?: string
+  keyCode?: string
+  keyExpr?: Identifier | Pattern | RestElement
+  keyAlias?: string
+  indexCode?: string
+  indexExpr?: Identifier | Pattern | RestElement
+  indexAlias?: string
 }
+
 export type ForElementNode = ElementNode & {
-  vFor: VForOptions
+  vFor: VForOptions & { source: ExpressionNode }
 }
 export function isForElementNode(node: unknown): node is ForElementNode {
   return !!(node as ForElementNode).vFor
@@ -55,17 +80,63 @@ export const transformFor = createStructuralDirectiveTransform(
       key && addIdentifiers(key)
       index && addIdentifiers(index)
     }
-    const vForData = {
-      value: value ? (value as SimpleExpressionNode).content : '',
-      key: key ? (key as SimpleExpressionNode).content : '',
-      index: index ? (index as SimpleExpressionNode).content : '',
+    const { currentScope: parentScope, scopes, popScope } = context
+    const sourceExpr = parseExpr(source, context)
+    const valueCode = value && genExpr(value)
+    const valueExpr = valueCode
+      ? parseParam(valueCode, context, value)
+      : undefined
+    const valueAlias =
+      (valueExpr && parseAlias(valueExpr, valueCode!, 'v' + scopes.vFor)) ||
+      'v' + scopes.vFor
+    const keyCode = key && genExpr(key)
+    const keyExpr = keyCode ? parseParam(keyCode, context, key) : undefined
+    const keyAlias = keyExpr && parseAlias(keyExpr, keyCode!, 'k' + scopes.vFor)
+    const indexCode = index && genExpr(index)
+    const indexExpr = indexCode
+      ? parseParam(indexCode, context, index)
+      : undefined
+    const indexAlias =
+      indexExpr && parseAlias(indexExpr, indexCode!, 'i' + scopes.vFor)
+    const vForData: VForOptions = {
+      source,
+      sourceExpr,
+      value,
+      valueCode,
+      valueExpr,
+      valueAlias,
+      key,
+      keyCode,
+      keyExpr,
+      keyAlias,
+      index,
+      indexCode,
+      indexExpr,
+      indexAlias,
     }
-    const { currentScope: parentScope, popScope } = context
+
     const vForScope = context.addVForScope({
-      source: (source as SimpleExpressionNode).content,
       ...vForData,
+      locals: findVForLocals(parseResult),
     })
+    scopes.vFor++
     return () => {
+      if (isTemplateNode(node)) {
+        node.children.some((c) => {
+          if (c.type === NodeTypes.ELEMENT && !isForElementNode(c)) {
+            const key = findProp(c, 'key')
+            if (key) {
+              context.onError(
+                createCompilerError(
+                  ErrorCodes.X_V_FOR_TEMPLATE_KEY_PLACEMENT,
+                  key.loc
+                )
+              )
+              return true
+            }
+          }
+        })
+      }
       if (context.prefixIdentifiers) {
         value && removeIdentifiers(value)
         key && removeIdentifiers(key)
@@ -73,7 +144,7 @@ export const transformFor = createStructuralDirectiveTransform(
       }
       const id = parentScope.id.next()
       ;(node as ForElementNode).vFor = {
-        source: id,
+        sourceAlias: id,
         ...vForData,
       }
       parentScope.properties.push(
@@ -83,6 +154,40 @@ export const transformFor = createStructuralDirectiveTransform(
     }
   }
 ) as unknown as NodeTransform
+
+function parseAlias(
+  babelExpr: Identifier | Pattern | RestElement,
+  exprCode: string,
+  defaultAlias: string
+) {
+  if (isIdentifier(babelExpr)) {
+    return exprCode
+  }
+  return defaultAlias
+}
+
+function findVForLocals({ value, key, index }: ForParseResult) {
+  const ids: string[] = []
+  if (value) {
+    findIds(value, ids)
+  }
+  if (key) {
+    findIds(key, ids)
+  }
+  if (index) {
+    findIds(index, ids)
+  }
+  return ids
+}
+function findIds(exp: string | ExpressionNode, ids: string[]) {
+  if (isString(exp)) {
+    ids.push(exp)
+  } else if (exp.identifiers) {
+    exp.identifiers.forEach((id) => ids.push(id))
+  } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
+    ids.push(exp.content)
+  }
+}
 
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/
 const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/

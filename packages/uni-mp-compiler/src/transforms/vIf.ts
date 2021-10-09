@@ -1,4 +1,3 @@
-import { parseExpression } from '@babel/parser'
 import {
   ConditionalExpression,
   isConditionalExpression,
@@ -22,8 +21,8 @@ import {
   createObjectExpression,
   createVIfConditionalExpression,
   createVIfSpreadElement,
+  parseExpr,
 } from '../ast'
-import { genNode } from '../codegen'
 import { CodegenScope } from '../options'
 import { NodeTransform, TransformContext, traverseNode } from '../transform'
 import { processExpression } from './transformExpression'
@@ -51,9 +50,7 @@ export const transformIf = createStructuralDirectiveTransform(
         name: dir.name,
       }
       branch.vIf = ifOptions
-      const condition = dir.exp
-        ? parseExpression(genNode(dir.exp).code)
-        : undefined
+      const condition = dir.exp ? parseExpr(dir.exp, context) : undefined
       const vIfScope = context.addVIfScope({
         name: dir.name,
         condition,
@@ -63,8 +60,9 @@ export const transformIf = createStructuralDirectiveTransform(
           if (!isLiteral(condition)) {
             ifOptions.condition = rewriteExpression(
               dir.exp!,
-              parentScope,
-              condition
+              context,
+              condition,
+              parentScope
             ).content
           } else {
             ifOptions.condition = (dir.exp as SimpleExpressionNode).content

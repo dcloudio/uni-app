@@ -1,4 +1,6 @@
-import { compile } from '../src/index'
+// import { inspect } from './testUtils'
+
+import { compile } from '../src'
 
 function assert(template: string, templateCode: string, renderCode: string) {
   const res = compile(template, {
@@ -7,27 +9,28 @@ function assert(template: string, templateCode: string, renderCode: string) {
     inline: true,
     emitFile({ source }) {
       console.log(source)
-      expect(source).toBe(templateCode)
+      // expect(source).toBe(templateCode)
       return ''
     },
   })
   // expect(res.template).toBe(templateCode)
   // expect(res.code).toBe(renderCode)
   // console.log(require('util').inspect(res.code, { colors: true, depth: null }))
-  // console.log(require('util').inspect(res, { colors: true, depth: null }))
+  console.log(require('util').inspect(res, { colors: true, depth: null }))
   console.log(res.code)
   expect(res.code).toBe(renderCode)
 }
 
 describe('compiler', () => {
-  test(`basic v-if`, () => {
+  test('template v-for key no prefixing on attribute key', () => {
     assert(
-      `<view v-if="ok"/>`,
-      `<view wx:if="{{a}}"/>`,
+      `<template v-for="item in items" key="key">test</template>`,
+      `<block wx:for="{{a}}" wx:for-item="item" key="key">test</block>`,
       `(_ctx, _cache) => {
 return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : {})
+  a: vFor(_ctx.items, item => {
+    return {};
+  })
 }
 }`
     )

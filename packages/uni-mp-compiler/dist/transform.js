@@ -99,7 +99,7 @@ function defaultOnError(error) {
 function defaultOnWarn(msg) {
     console.warn(`[Vue warn] ${msg.message}`);
 }
-function createTransformContext(root, { isTS = false, inline = false, bindingMetadata = shared_1.EMPTY_OBJ, prefixIdentifiers = false, nodeTransforms = [], directiveTransforms = {}, isBuiltInComponent = shared_1.NOOP, isCustomElement = shared_1.NOOP, expressionPlugins = [], onError = defaultOnError, onWarn = defaultOnWarn, }) {
+function createTransformContext(root, { isTS = false, inline = false, bindingMetadata = shared_1.EMPTY_OBJ, prefixIdentifiers = false, skipTransformIdentifier = false, nodeTransforms = [], directiveTransforms = {}, isBuiltInComponent = shared_1.NOOP, isCustomElement = shared_1.NOOP, expressionPlugins = [], onError = defaultOnError, onWarn = defaultOnWarn, }) {
     const scope = {
         id: new identifier_1.default(),
         identifiers: [],
@@ -125,6 +125,7 @@ function createTransformContext(root, { isTS = false, inline = false, bindingMet
         nodeTransforms,
         directiveTransforms,
         expressionPlugins,
+        skipTransformIdentifier,
         isBuiltInComponent,
         isCustomElement,
         onError,
@@ -135,6 +136,9 @@ function createTransformContext(root, { isTS = false, inline = false, bindingMet
         helpers: new Map(),
         identifiers,
         scope,
+        scopes: {
+            vFor: 0,
+        },
         get currentScope() {
             return scopes[scopes.length - 1];
         },

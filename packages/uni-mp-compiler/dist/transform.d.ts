@@ -18,6 +18,9 @@ export interface TransformContext extends Required<Omit<TransformOptions, 'filen
     identifiers: {
         [name: string]: number | undefined;
     };
+    scopes: {
+        vFor: number;
+    };
     scope: CodegenRootScope;
     currentScope: CodegenScope;
     helper<T extends symbol>(name: T): T;
@@ -38,7 +41,7 @@ export declare function isVForScope(scope: CodegenScope): scope is CodegenVForSc
 export declare function transform(root: RootNode, options: TransformOptions): TransformContext;
 export declare function traverseNode(node: RootNode | TemplateChildNode, context: TransformContext): void;
 export declare function traverseChildren(parent: ParentNode, context: TransformContext): void;
-export declare function createTransformContext(root: RootNode, { isTS, inline, bindingMetadata, prefixIdentifiers, nodeTransforms, directiveTransforms, isBuiltInComponent, isCustomElement, expressionPlugins, onError, onWarn, }: TransformOptions): TransformContext;
+export declare function createTransformContext(root: RootNode, { isTS, inline, bindingMetadata, prefixIdentifiers, skipTransformIdentifier, nodeTransforms, directiveTransforms, isBuiltInComponent, isCustomElement, expressionPlugins, onError, onWarn, }: TransformOptions): TransformContext;
 export declare type StructuralDirectiveTransform = (node: ElementNode, dir: DirectiveNode, context: TransformContext) => void | (() => void);
 export declare function createStructuralDirectiveTransform(name: string | RegExp, fn: StructuralDirectiveTransform): NodeTransform;
 export {};

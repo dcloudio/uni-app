@@ -38,7 +38,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       nodeTransforms: [
         ...nodeTransforms,
         ...(options.nodeTransforms || []),
-        transformIdentifier,
+        ...(options.skipTransformIdentifier ? [] : [transformIdentifier]),
       ],
       directiveTransforms: extend(
         {},

@@ -7,5 +7,5 @@ interface GenNodeContext {
     helper(key: symbol): string;
     push(code: string, node?: CodegenNode): void;
 }
-export declare function genNode(node: CodegenNode | symbol | string, context?: GenNodeContext): GenNodeContext;
+export declare function genExpr(node: CodegenNode | symbol | string, context?: GenNodeContext): string;
 export {};

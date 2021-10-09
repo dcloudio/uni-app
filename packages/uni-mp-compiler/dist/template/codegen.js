@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.genElementProps = exports.genElement = exports.genNode = exports.generate = void 0;
+const compiler_core_1 = require("@vue/compiler-core");
 const codegen_1 = require("../codegen");
 const vFor_1 = require("../transforms/vFor");
 const vIf_1 = require("../transforms/vIf");
@@ -36,7 +37,7 @@ function genText(node, { push }) {
     push(node.content);
 }
 function genExpression(node, { push }) {
-    push(`{{${(0, codegen_1.genNode)(node).code}}}`);
+    push(`{{${(0, codegen_1.genExpr)(node)}}}`);
 }
 function genVIf(exp, { push }) {
     push(` wx:if="{{${exp}}}"`);
@@ -47,24 +48,19 @@ function genVElseIf(exp, { push }) {
 function genVElse({ push }) {
     push(` wx:else`);
 }
-function genVFor(opts, props, { push }) {
-    push(` wx:for="{{${opts.source}}}"`);
-    if (opts.value) {
-        push(` wx:for-item="${opts.value}"`);
+function genVFor({ sourceAlias, valueAlias, keyAlias }, node, { push }) {
+    push(` wx:for="{{${sourceAlias}}}"`);
+    if (valueAlias) {
+        push(` wx:for-item="${valueAlias}"`);
     }
-    if (opts.key) {
-        push(` wx:for-index="${opts.key}"`);
+    if (keyAlias) {
+        push(` wx:for-index="${keyAlias}"`);
     }
-    const keyIndex = props.findIndex((prop) => prop.type === 7 /* DIRECTIVE */ &&
-        prop.name === 'bind' &&
-        prop.arg &&
-        prop.arg.type === 4 /* SIMPLE_EXPRESSION */ &&
-        prop.arg.content === 'key');
-    if (keyIndex > -1) {
-        const keyProp = props[keyIndex];
+    const keyProp = (0, compiler_core_1.findProp)(node, 'key', true);
+    if (keyProp) {
         const key = keyProp.exp.content;
         push(` wx:key="${key.includes('.') ? key.split('.')[1] : key}"`);
-        props.splice(keyIndex, 1);
+        node.props.splice(node.props.indexOf(keyProp), 1);
     }
 }
 const tagMap = {
@@ -88,7 +84,7 @@ function genElement(node, context) {
         }
     }
     if ((0, vFor_1.isForElementNode)(node)) {
-        genVFor(node.vFor, props, context);
+        genVFor(node.vFor, node, context);
     }
     if (props.length) {
         genElementProps(props, context);
@@ -109,7 +105,13 @@ function genElementProps(props, context) {
     const { push } = context;
     props.forEach((prop) => {
         if (prop.type === 6 /* ATTRIBUTE */) {
-            context.push(` ${prop.name}=${prop.value}`);
+            const { value } = prop;
+            if (value) {
+                context.push(` ${prop.name}="${value.content}"`);
+            }
+            else {
+                context.push(` ${prop.name}`);
+            }
         }
         else {
             const { name } = prop;

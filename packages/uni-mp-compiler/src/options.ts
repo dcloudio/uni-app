@@ -3,6 +3,7 @@ import { Expression, ObjectProperty, SpreadElement } from '@babel/types'
 import { BindingMetadata, CompilerError } from '@vue/compiler-core'
 import IdentifierGenerator from './identifier'
 import { DirectiveTransform, NodeTransform } from './transform'
+import { VForOptions } from './transforms/vFor'
 
 export interface ErrorHandlingOptions {
   onWarn?: (warning: CompilerError) => void
@@ -25,6 +26,7 @@ export interface TransformOptions
   isBuiltInComponent?: (tag: string) => symbol | void
   isCustomElement?: (tag: string) => boolean | void
   expressionPlugins?: ParserPlugin[]
+  skipTransformIdentifier?: boolean
 }
 
 export interface CodegenRootScope {
@@ -36,12 +38,7 @@ export interface CodegenVIfScopeInit {
   name: 'if' | 'else-if' | 'else' | string
   condition?: Expression
 }
-export interface CodegenVForScopeInit {
-  source: string
-  value?: string
-  key?: string
-  index?: string
-}
+export type CodegenVForScopeInit = VForOptions & { locals: string[] }
 export interface CodegenVIfScope
   extends CodegenRootScope,
     CodegenVIfScopeInit {}

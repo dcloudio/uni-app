@@ -75,7 +75,14 @@ function createGenNodeContext() {
   return context
 }
 
-export function genNode(
+export function genExpr(
+  node: CodegenNode | symbol | string,
+  context?: GenNodeContext
+) {
+  return genNode(node, context).code
+}
+
+function genNode(
   node: CodegenNode | symbol | string,
   context?: GenNodeContext
 ) {
@@ -122,7 +129,7 @@ function genExpression(node: SimpleExpressionNode, context: GenNodeContext) {
 function genInterpolation(node: InterpolationNode, context: GenNodeContext) {
   const { push, helper } = context
   push(`${helper(TO_DISPLAY_STRING)}(`)
-  genNode(node.content, context)
+  genExpr(node.content, context)
   push(`)`)
 }
 
@@ -135,7 +142,7 @@ function genCompoundExpression(
     if (isString(child)) {
       context.push(child)
     } else {
-      genNode(child, context)
+      genExpr(child, context)
     }
   }
 }

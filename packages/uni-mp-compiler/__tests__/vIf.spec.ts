@@ -48,6 +48,30 @@ return {
 }`
       )
     })
+    test(`template v-if w/ single <slot/> child`, () => {
+      assert(
+        `<template v-if="ok"><slot/></template>`,
+        `<block wx:if="{{a}}"><slot/></block>`,
+        `(_ctx, _cache) => {
+return {
+  a: _ctx.ok,
+  ...(_ctx.ok ? {} : {})
+}
+}`
+      )
+    })
+    test(`v-if on <slot/>`, () => {
+      assert(
+        `<slot v-if="ok"/>`,
+        `<slot wx:if="{{a}}"/>`,
+        `(_ctx, _cache) => {
+return {
+  a: _ctx.ok,
+  ...(_ctx.ok ? {} : {})
+}
+}`
+      )
+    })
     test(`component v-if`, () => {
       assert(
         `<Component v-if="ok"></Component>`,
@@ -98,6 +122,24 @@ return {
 }`
       )
     })
+    test(`multiple v-if that are sibling nodes should have different keys`, () => {
+      // <div v-if="ok"/><p v-if="orNot"/>
+    })
+    test(`increasing key: v-if + v-else-if + v-else`, () => {
+      // <div v-if="ok"/><p v-else/><div v-if="another"/><p v-else-if="orNot"/><p v-else/>
+    })
+    test(`key injection (only v-bind)`, () => {
+      // <div v-if="ok" v-bind="obj"/>
+    })
+    test(`key injection (before v-bind)`, () => {
+      // <div v-if="ok" id="foo" v-bind="obj"/>
+    })
+    test(`key injection (after v-bind)`, () => {
+      // <div v-if="ok" v-bind="obj" id="foo"/>
+    })
+    test(`key injection (w/ custom directive)`, () => {
+      // <div v-if="ok" v-foo />
+    })
     test(`v-if + v-else-if + v-else-if + v-else`, () => {
       assert(
         `<view v-if="ok"/><view v-else-if="orNot"/><view v-else-if="3"/><template v-else>fine</template>`,
@@ -130,7 +172,50 @@ return {
 }`
       )
     })
+    test(`with spaces between branches`, () => {
+      assert(
+        `<view v-if="ok"/> <view v-else-if="no"/> <view v-else/>`,
+        `<view wx:if="{{a}}"/><view wx:elif="{{b}}"/><view wx:else/>`,
+        `(_ctx, _cache) => {
+return {
+  a: _ctx.ok,
+  ...(_ctx.ok ? {} : _ctx.no ? {} : {}),
+  b: _ctx.no
+}
+}`
+      )
+    })
+    test(`with comments`, () => {
+      assert(
+        `
+        <template v-if="ok">
+        <!--comment1-->
+        <view v-if="ok2">
+          <!--comment2-->
+        </view>
+        <!--comment3-->
+        <view v-else/>
+        <!--comment4-->
+        <view/>
+      </template>
+        `,
+        `<block wx:if="{{b}}"><view wx:if="{{a}}"></view><view wx:else/><view/></block>`,
+        `(_ctx, _cache) => {
+return {
+  b: _ctx.ok,
+  ...(_ctx.ok ? {
+    a: _ctx.ok2,
+    ...(_ctx.ok2 ? {} : {})
+  } : {})
+}
+}`
+      )
+    })
+    test(`v-on with v-if`, () => {
+      // <button v-on="{ click: clickEvent }" v-if="true">w/ v-if</button>
+    })
   })
+
   describe('errors', () => {
     test('error on v-else missing adjacent v-if', () => {
       const onError = jest.fn()

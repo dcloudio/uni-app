@@ -1,11 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processIf = exports.transformIf = exports.isIfElementNode = void 0;
-const parser_1 = require("@babel/parser");
 const types_1 = require("@babel/types");
 const compiler_core_1 = require("@vue/compiler-core");
 const ast_1 = require("../ast");
-const codegen_1 = require("../codegen");
 const transform_1 = require("../transform");
 const transformExpression_1 = require("./transformExpression");
 const transformIdentifier_1 = require("./transformIdentifier");
@@ -21,9 +19,7 @@ exports.transformIf = (0, compiler_core_1.createStructuralDirectiveTransform)(/^
             name: dir.name,
         };
         branch.vIf = ifOptions;
-        const condition = dir.exp
-            ? (0, parser_1.parseExpression)((0, codegen_1.genNode)(dir.exp).code)
-            : undefined;
+        const condition = dir.exp ? (0, ast_1.parseExpr)(dir.exp, context) : undefined;
         const vIfScope = context.addVIfScope({
             name: dir.name,
             condition,
@@ -31,7 +27,7 @@ exports.transformIf = (0, compiler_core_1.createStructuralDirectiveTransform)(/^
         return () => {
             if (condition) {
                 if (!(0, types_1.isLiteral)(condition)) {
-                    ifOptions.condition = (0, transformIdentifier_1.rewriteExpression)(dir.exp, parentScope, condition).content;
+                    ifOptions.condition = (0, transformIdentifier_1.rewriteExpression)(dir.exp, context, condition, parentScope).content;
                 }
                 else {
                     ifOptions.condition = dir.exp.content;

@@ -1,8 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createVForCallExpression = exports.createVIfSpreadElement = exports.createVIfConditionalExpression = exports.createVIfProperty = exports.createObjectExpression = exports.createSpreadElement = exports.createObjectProperty = exports.createIdentifier = void 0;
+exports.parseParam = exports.parseExpr = exports.createVForCallExpression = exports.createVIfSpreadElement = exports.createVIfConditionalExpression = exports.createVIfProperty = exports.createObjectExpression = exports.createSpreadElement = exports.createObjectProperty = exports.createIdentifier = void 0;
+const shared_1 = require("@vue/shared");
 const parser_1 = require("@babel/parser");
 const types_1 = require("@babel/types");
+const compiler_core_1 = require("@vue/compiler-core");
+const codegen_1 = require("./codegen");
 function createIdentifier(name) {
     return (0, types_1.identifier)(name);
 }
@@ -31,56 +34,58 @@ function createVIfSpreadElement(vIfScope) {
     return (0, types_1.spreadElement)(createVIfConditionalExpression(vIfScope));
 }
 exports.createVIfSpreadElement = createVIfSpreadElement;
-// export function createVIfProperties(
-//   vIfScope: CodegenVIfScope,
-//   { id, scopes }: CodegenScope
-// ) {
-//   const index = scopes.indexOf(vIfScope)
-//   const vIfProperties: ObjectProperty[] = []
-//   let vIfspreadElement: SpreadElement
-//   let alternateExpr: ConditionalExpression | ObjectExpression =
-//     objectExpression([])
-//   for (let i = scopes.length - 1; i >= index; i--) {
-//     const { name, condition, properties } = scopes[i] as CodegenVIfScope
-//     if (name === 'if') {
-//       vIfProperties.push(objectProperty(identifier(id.next()), condition!))
-//       vIfspreadElement = spreadElement(
-//         conditionalExpression(
-//           condition!,
-//           objectExpression(properties),
-//           alternateExpr
-//         )
-//       )
-//     } else if (name === 'else-if') {
-//       vIfProperties.push(objectProperty(identifier(id.next()), condition!))
-//       alternateExpr = conditionalExpression(
-//         condition!,
-//         objectExpression(properties),
-//         alternateExpr
-//       )
-//     } else if (name === 'else') {
-//       alternateExpr = objectExpression(properties)
-//     }
-//   }
-//   return [...vIfProperties.reverse(), vIfspreadElement!]
-// }
+function numericLiteralToArrayExpr(num) {
+    const elements = [];
+    for (let i = 0; i < num; i++) {
+        elements.push((0, types_1.numericLiteral)(i + 1));
+    }
+    return (0, types_1.arrayExpression)(elements);
+}
 function createVForCallExpression(vForScope) {
+    let sourceExpr = vForScope.sourceExpr;
+    if ((0, types_1.isNumericLiteral)(sourceExpr)) {
+        sourceExpr = numericLiteralToArrayExpr(sourceExpr.value);
+    }
     return (0, types_1.callExpression)((0, types_1.identifier)('vFor'), [
-        (0, parser_1.parseExpression)(vForScope.source),
+        sourceExpr,
         createVForArrowFunctionExpression(vForScope),
     ]);
 }
 exports.createVForCallExpression = createVForCallExpression;
-function createVForArrowFunctionExpression(vForScope) {
+function parseExpr(code, context, node) {
+    if (!(0, shared_1.isString)(code)) {
+        node = code;
+        code = (0, codegen_1.genExpr)(code);
+    }
+    try {
+        return (0, parser_1.parseExpression)(code);
+    }
+    catch (e) {
+        context.onError((0, compiler_core_1.createCompilerError)(44 /* X_INVALID_EXPRESSION */, node && node.loc, undefined, e.message));
+    }
+}
+exports.parseExpr = parseExpr;
+function parseParam(code, context, node) {
+    const { params: [expr], } = parseExpr(`(${code})=>{}`, context, node);
+    return expr;
+}
+exports.parseParam = parseParam;
+function createVForArrowFunctionExpression({ valueExpr, keyExpr, indexExpr, properties, }) {
     const params = [];
-    if (vForScope.value) {
-        params.push((0, types_1.identifier)(vForScope.value));
+    if (valueExpr) {
+        params.push(valueExpr);
     }
-    if (vForScope.key) {
-        params.push((0, types_1.identifier)(vForScope.key));
+    else if (keyExpr || indexExpr) {
+        params.push((0, types_1.identifier)('_'));
     }
-    if (vForScope.index) {
-        params.push((0, types_1.identifier)(vForScope.index));
+    if (keyExpr) {
+        params.push(keyExpr);
     }
-    return (0, types_1.arrowFunctionExpression)(params, (0, types_1.blockStatement)([(0, types_1.returnStatement)((0, types_1.objectExpression)(vForScope.properties))]));
+    else if (indexExpr) {
+        params.push((0, types_1.identifier)('__'));
+    }
+    if (indexExpr) {
+        params.push(indexExpr);
+    }
+    return (0, types_1.arrowFunctionExpression)(params, (0, types_1.blockStatement)([(0, types_1.returnStatement)((0, types_1.objectExpression)(properties))]));
 }
