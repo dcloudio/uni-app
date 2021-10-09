@@ -1,10 +1,4 @@
-import {
-  isString,
-  hasOwn,
-  makeMap,
-  isGloballyWhitelisted,
-  babelParserDefaultPlugins,
-} from '@vue/shared'
+import { isString, hasOwn, makeMap, isGloballyWhitelisted } from '@vue/shared'
 import {
   Node,
   Identifier,
@@ -219,7 +213,7 @@ export function processExpression(
     : `(${rawExp})${asParams ? `=>{}` : ``}`
   try {
     ast = parse(source, {
-      plugins: [...context.expressionPlugins, ...babelParserDefaultPlugins],
+      plugins: context.expressionPlugins,
     }).program
   } catch (e: any) {
     context.onError(

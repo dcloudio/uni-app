@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.js && npm run test",
     "build:h5": "node scripts/build.js uni-app uni-cli-shared uni-h5 uni-i18n uni-stat uni-shared uni-h5-vite vite-plugin-uni",
     "build:app": "node scripts/build.js uni-app-plus uni-app-vite uni-app-vue uni-cli-nvue",
     "build:mp": "node scripts/build.js uni-mp-vue uni-mp-alipay uni-mp-baidu uni-mp-qq uni-mp-toutiao uni-mp-weixin uni-mp-kuaishou uni-quickapp-webview",
@@ -71,7 +71,7 @@
     "@vitejs/plugin-legacy": "^1.6.1",
     "@vitejs/plugin-vue": "^1.9.3",
     "@vitejs/plugin-vue-jsx": "^1.2.0",
-    "@vue/compiler-sfc": "^3.2.19",
+    "@vue/compiler-sfc": "^3.2.20",
     "acorn-loose": "^8.1.0",
     "autoprefixer": "^10.3.4",
     "core-js": "2",
@@ -97,7 +97,7 @@
     "ts-jest": "^27.0.3",
     "typescript": "^4.4.3",
     "vite": "^2.6.3",
-    "vue": "^3.2.19",
+    "vue": "^3.2.20",
     "yorkie": "^2.0.0"
   },
   "name": "uni-app-next"

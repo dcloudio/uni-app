@@ -100,6 +100,7 @@ var serviceContext = (function (vue) {
       }
       return expectsLowerCase ? val => !!map[val.toLowerCase()] : val => !!map[val];
   }
+
   (process.env.NODE_ENV !== 'production')
       ? Object.freeze({})
       : {};

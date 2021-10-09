@@ -2335,23 +2335,26 @@ export default function vueFactory(exports) {
     var record = map.get(id);
 
     if (!record) {
-      createRecord(id);
+      createRecord(id, instance.type);
       record = map.get(id);
     }
 
-    record.add(instance);
+    record.instances.add(instance);
   }
 
   function unregisterHMR(instance) {
-    map.get(instance.type.__hmrId).delete(instance);
+    map.get(instance.type.__hmrId).instances.delete(instance);
   }
 
-  function createRecord(id) {
+  function createRecord(id, initialDef) {
     if (map.has(id)) {
       return false;
     }
 
-    map.set(id, new Set());
+    map.set(id, {
+      initialDef: normalizeClassComponent(initialDef),
+      instances: new Set()
+    });
     return true;
   }
 
@@ -2364,9 +2367,11 @@ export default function vueFactory(exports) {
 
     if (!record) {
       return;
-    }
+    } // update initial record (for not-yet-rendered component)
 
-    [...record].forEach(instance => {
+
+    record.initialDef.render = newRender;
+    [...record.instances].forEach(instance => {
       if (newRender) {
         instance.render = newRender;
         normalizeClassComponent(instance.type).render = newRender;
@@ -2383,21 +2388,19 @@ export default function vueFactory(exports) {
   function reload(id, newComp) {
     var record = map.get(id);
     if (!record) return;
-    newComp = normalizeClassComponent(newComp); // create a snapshot which avoids the set being mutated during updates
+    newComp = normalizeClassComponent(newComp); // update initial def (for not-yet-rendered components)
 
-    var instances = [...record];
+    updateComponentDef(record.initialDef, newComp); // create a snapshot which avoids the set being mutated during updates
+
+    var instances = [...record.instances];
 
     for (var instance of instances) {
       var oldComp = normalizeClassComponent(instance.type);
 
       if (!hmrDirtyComponents.has(oldComp)) {
         // 1. Update existing comp definition to match new one
-        extend(oldComp, newComp);
-
-        for (var key in oldComp) {
-          if (key !== '__file' && !(key in newComp)) {
-            delete oldComp[key];
-          }
+        if (oldComp !== record.initialDef) {
+          updateComponentDef(oldComp, newComp);
         } // 2. mark definition dirty. This forces the renderer to replace the
         // component on patch.
 
@@ -2442,6 +2445,16 @@ export default function vueFactory(exports) {
     });
   }
 
+  function updateComponentDef(oldComp, newComp) {
+    extend(oldComp, newComp);
+
+    for (var key in oldComp) {
+      if (key !== '__file' && !(key in newComp)) {
+        delete oldComp[key];
+      }
+    }
+  }
+
   function tryWrap(fn) {
     return (id, arg) => {
       try {
@@ -2481,7 +2494,12 @@ export default function vueFactory(exports) {
       var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
       replay.push(newHook => {
         setDevtoolsHook(newHook, target);
-      });
+      }); // clear buffer after 3s - the user probably doesn't have devtools installed
+      // at all, and keeping the buffer will cause memory leaks (#4738)
+
+      setTimeout(() => {
+        buffer = [];
+      }, 3000);
     }
   }
 
@@ -11022,14 +11040,22 @@ export default function vueFactory(exports) {
    */
 
 
-  function mergeDefaults( // the base props is compiler-generated and guaranteed to be in this shape.
-  props, defaults) {
-    for (var key in defaults) {
-      var val = props[key];
+  function mergeDefaults(raw, defaults) {
+    var props = isArray(raw) ? raw.reduce((normalized, p) => (normalized[p] = {}, normalized), {}) : raw;
 
-      if (val) {
-        val.default = defaults[key];
-      } else if (val === null) {
+    for (var key in defaults) {
+      var opt = props[key];
+
+      if (opt) {
+        if (isArray(opt) || isFunction(opt)) {
+          props[key] = {
+            type: opt,
+            default: defaults[key]
+          };
+        } else {
+          opt.default = defaults[key];
+        }
+      } else if (opt === null) {
         props[key] = {
           default: defaults[key]
         };
@@ -11039,6 +11065,31 @@ export default function vueFactory(exports) {
     }
 
     return props;
+  }
+  /**
+   * Used to create a proxy for the rest element when destructuring props with
+   * defineProps().
+   * @internal
+   */
+
+
+  function createPropsRestProxy(props, excludedKeys) {
+    var ret = {};
+
+    var _loop4 = function (key) {
+      if (!excludedKeys.includes(key)) {
+        Object.defineProperty(ret, key, {
+          enumerable: true,
+          get: () => props[key]
+        });
+      }
+    };
+
+    for (var key in props) {
+      _loop4(key);
+    }
+
+    return ret;
   }
   /**
    * `<script setup>` helper for persisting the current instance context over
@@ -11331,7 +11382,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.19";
+  var version = "3.2.20";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -12447,6 +12498,7 @@ export default function vueFactory(exports) {
     createElementBlock: createElementBlock,
     createElementVNode: createBaseVNode,
     createHydrationRenderer: createHydrationRenderer,
+    createPropsRestProxy: createPropsRestProxy,
     createRenderer: createRenderer,
     createSSRApp: createSSRApp,
     createSlots: createSlots,

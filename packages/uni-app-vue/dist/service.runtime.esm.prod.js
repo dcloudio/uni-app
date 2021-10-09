@@ -2219,7 +2219,12 @@ export default function vueFactory(exports) {
       var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
       replay.push(newHook => {
         setDevtoolsHook(newHook, target);
-      });
+      }); // clear buffer after 3s - the user probably doesn't have devtools installed
+      // at all, and keeping the buffer will cause memory leaks (#4738)
+
+      setTimeout(() => {
+        buffer = [];
+      }, 3000);
     }
   }
 
@@ -9390,14 +9395,22 @@ export default function vueFactory(exports) {
    */
 
 
-  function mergeDefaults( // the base props is compiler-generated and guaranteed to be in this shape.
-  props, defaults) {
-    for (var key in defaults) {
-      var val = props[key];
+  function mergeDefaults(raw, defaults) {
+    var props = isArray(raw) ? raw.reduce((normalized, p) => (normalized[p] = {}, normalized), {}) : raw;
 
-      if (val) {
-        val.default = defaults[key];
-      } else if (val === null) {
+    for (var key in defaults) {
+      var opt = props[key];
+
+      if (opt) {
+        if (isArray(opt) || isFunction(opt)) {
+          props[key] = {
+            type: opt,
+            default: defaults[key]
+          };
+        } else {
+          opt.default = defaults[key];
+        }
+      } else if (opt === null) {
         props[key] = {
           default: defaults[key]
         };
@@ -9405,6 +9418,31 @@ export default function vueFactory(exports) {
     }
 
     return props;
+  }
+  /**
+   * Used to create a proxy for the rest element when destructuring props with
+   * defineProps().
+   * @internal
+   */
+
+
+  function createPropsRestProxy(props, excludedKeys) {
+    var ret = {};
+
+    var _loop3 = function (key) {
+      if (!excludedKeys.includes(key)) {
+        Object.defineProperty(ret, key, {
+          enumerable: true,
+          get: () => props[key]
+        });
+      }
+    };
+
+    for (var key in props) {
+      _loop3(key);
+    }
+
+    return ret;
   }
   /**
    * `<script setup>` helper for persisting the current instance context over
@@ -9525,7 +9563,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.19";
+  var version = "3.2.20";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10613,6 +10651,7 @@ export default function vueFactory(exports) {
     createElementBlock: createElementBlock,
     createElementVNode: createBaseVNode,
     createHydrationRenderer: createHydrationRenderer,
+    createPropsRestProxy: createPropsRestProxy,
     createRenderer: createRenderer,
     createSSRApp: createSSRApp,
     createSlots: createSlots,
