@@ -17,22 +17,36 @@ import {
   NodeTransform,
   TransformContext,
 } from '../transform'
+import { isForElementNode } from './vFor'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return () => {
     if (node.type === NodeTypes.INTERPOLATION) {
       node.content = rewriteExpression(node.content, context)
     } else if (node.type === NodeTypes.ELEMENT) {
+      const vFor = isForElementNode(node) && node.vFor
       for (let i = 0; i < node.props.length; i++) {
         const dir = node.props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
           const exp = dir.exp
           const arg = dir.arg
-          if (exp) {
-            dir.exp = rewriteExpression(exp, context)
-          }
           if (arg) {
             dir.arg = rewriteExpression(arg, context)
+          }
+          if (exp) {
+            if (
+              vFor &&
+              arg &&
+              arg.type === NodeTypes.SIMPLE_EXPRESSION &&
+              arg.content === 'key' &&
+              exp.type === NodeTypes.SIMPLE_EXPRESSION &&
+              exp.content === vFor.valueAlias
+            ) {
+              exp.content = '*this'
+              continue
+            }
+
+            dir.exp = rewriteExpression(exp, context)
           }
         }
       }

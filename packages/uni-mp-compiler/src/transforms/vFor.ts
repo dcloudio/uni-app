@@ -119,6 +119,10 @@ export const transformFor = createStructuralDirectiveTransform(
       ...vForData,
       locals: findVForLocals(parseResult),
     })
+    const vFor = {
+      ...vForData,
+    }
+    ;(node as ForElementNode).vFor = vFor
     scopes.vFor++
     return () => {
       if (isTemplateNode(node)) {
@@ -143,10 +147,7 @@ export const transformFor = createStructuralDirectiveTransform(
         index && removeIdentifiers(index)
       }
       const id = parentScope.id.next()
-      ;(node as ForElementNode).vFor = {
-        sourceAlias: id,
-        ...vForData,
-      }
+      vFor.sourceAlias = id
       parentScope.properties.push(
         createObjectProperty(id, createVForCallExpression(vForScope))
       )

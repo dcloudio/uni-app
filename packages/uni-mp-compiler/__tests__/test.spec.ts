@@ -22,10 +22,10 @@ function assert(template: string, templateCode: string, renderCode: string) {
 }
 
 describe('compiler', () => {
-  test('template v-for key no prefixing on attribute key', () => {
+  test(`keyed v-for`, () => {
     assert(
-      `<template v-for="item in items" key="key">test</template>`,
-      `<block wx:for="{{a}}" wx:for-item="item" key="key">test</block>`,
+      `<view v-for="(item) in items" :key="item" />`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="*this"/>`,
       `(_ctx, _cache) => {
 return {
   a: vFor(_ctx.items, item => {

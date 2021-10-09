@@ -196,6 +196,124 @@ return {
 }`
       )
     })
+    test(`template v-for`, () => {
+      assert(
+        `<template v-for="item in items">hello<view/></template>`,
+        `<block wx:for="{{a}}" wx:for-item="item">hello<view/></block>`,
+        `(_ctx, _cache) => {
+return {
+  a: vFor(_ctx.items, item => {
+    return {};
+  })
+}
+}`
+      )
+    })
+    test(`template v-for w/ <slot/>`, () => {
+      assert(
+        `<template v-for="item in items"><slot/></template>`,
+        `<block wx:for="{{a}}" wx:for-item="item"><slot/></block>`,
+        `(_ctx, _cache) => {
+return {
+  a: vFor(_ctx.items, item => {
+    return {};
+  })
+}
+}`
+      )
+    })
+    // #1907 TODO 待优化
+    test(`template v-for key injection with single child`, () => {
+      assert(
+        `<template v-for="item in items" :key="item.id"><view :id="item.id" /></template>`,
+        `<block wx:for="{{a}}" wx:for-item="item" wx:key="b"><view id="{{item.a}}"/></block>`,
+        `(_ctx, _cache) => {
+return {
+  a: vFor(_ctx.items, item => {
+    return {
+      a: item.id,
+      b: item.id
+    };
+  })
+}
+}`
+      )
+    })
+    test(`v-for on <slot/>`, () => {
+      assert(
+        `<slot v-for="item in items"></slot>`,
+        `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
+        `(_ctx, _cache) => {
+return {
+  a: vFor(_ctx.items, item => {
+    return {};
+  })
+}
+}`
+      )
+    })
+    test(`keyed v-for`, () => {
+      assert(
+        `<view v-for="(item) in items" :key="item" />`,
+        `<view wx:for="{{a}}" wx:for-item="item" wx:key="*this"/>`,
+        `(_ctx, _cache) => {
+return {
+  a: vFor(_ctx.items, item => {
+    return {};
+  })
+}
+}`
+      )
+    })
+    test(`keyed template v-for`, () => {
+      assert(
+        `<template v-for="item in items" :key="item">hello<view/></template>`,
+        `<block wx:for="{{a}}" wx:for-item="item" wx:key="*this">hello<view/></block>`,
+        `(_ctx, _cache) => {
+return {
+  a: vFor(_ctx.items, item => {
+    return {};
+  })
+}
+}`
+      )
+    })
+    test(`v-if + v-for`, () => {
+      assert(
+        `<view v-if="ok" v-for="i in list"/>`,
+        `<view wx:if="{{b}}" wx:for="{{a}}" wx:for-item="i"/>`,
+        `(_ctx, _cache) => {
+return {
+  b: _ctx.ok,
+  ...(_ctx.ok ? {
+    a: vFor(_ctx.list, i => {
+      return {};
+    })
+  } : {})
+}
+}`
+      )
+    })
+    // 1637
+    test(`v-if + v-for on <template>`, () => {
+      assert(
+        `<template v-if="ok" v-for="i in list"/>`,
+        `<block wx:if="{{b}}" wx:for="{{a}}" wx:for-item="i"/>`,
+        `(_ctx, _cache) => {
+return {
+  b: _ctx.ok,
+  ...(_ctx.ok ? {
+    a: vFor(_ctx.list, i => {
+      return {};
+    })
+  } : {})
+}
+}`
+      )
+    })
+    test(`v-for on element with custom directive`, () => {
+      // <view v-for="i in list" v-foo/>
+    })
   })
 
   describe('errors', () => {
@@ -446,7 +564,7 @@ return {
   })
   describe('prefixIdentifiers: true', () => {
     test('should prefix v-for source', () => {
-      const { node } = parseWithForTransform(`<div v-for="i in list"/>`, {
+      const { node } = parseWithForTransform(`<view v-for="i in list"/>`, {
         prefixIdentifiers: true,
         skipTransformIdentifier: true,
       })
@@ -458,7 +576,7 @@ return {
 
     test('should prefix v-for source w/ complex expression', () => {
       const { node } = parseWithForTransform(
-        `<div v-for="i in list.concat([foo])"/>`,
+        `<view v-for="i in list.concat([foo])"/>`,
         { prefixIdentifiers: true, skipTransformIdentifier: true }
       )
       expect(node.vFor.source).toMatchObject({
@@ -476,15 +594,15 @@ return {
 
     test('should not prefix v-for alias', () => {
       const { node } = parseWithForTransform(
-        `<div v-for="i in list">{{ i }}{{ j }}</div>`,
+        `<view v-for="i in list">{{ i }}{{ j }}</view>`,
         { prefixIdentifiers: true, skipTransformIdentifier: true }
       )
-      const div = node as ElementNode
-      expect((div.children[0] as InterpolationNode).content).toMatchObject({
+      const view = node as ElementNode
+      expect((view.children[0] as InterpolationNode).content).toMatchObject({
         type: NodeTypes.SIMPLE_EXPRESSION,
         content: `i`,
       })
-      expect((div.children[1] as InterpolationNode).content).toMatchObject({
+      expect((view.children[1] as InterpolationNode).content).toMatchObject({
         type: NodeTypes.SIMPLE_EXPRESSION,
         content: `_ctx.j`,
       })
@@ -492,11 +610,11 @@ return {
 
     test('should not prefix v-for aliases (multiple)', () => {
       const { node } = parseWithForTransform(
-        `<div v-for="(i, j, k) in list">{{ i + j + k }}{{ l }}</div>`,
+        `<view v-for="(i, j, k) in list">{{ i + j + k }}{{ l }}</view>`,
         { prefixIdentifiers: true, skipTransformIdentifier: true }
       )
-      const div = node as ElementNode
-      expect((div.children[0] as InterpolationNode).content).toMatchObject({
+      const view = node as ElementNode
+      expect((view.children[0] as InterpolationNode).content).toMatchObject({
         type: NodeTypes.COMPOUND_EXPRESSION,
         children: [
           { content: `i` },
@@ -506,7 +624,7 @@ return {
           { content: `k` },
         ],
       })
-      expect((div.children[1] as InterpolationNode).content).toMatchObject({
+      expect((view.children[1] as InterpolationNode).content).toMatchObject({
         type: NodeTypes.SIMPLE_EXPRESSION,
         content: `_ctx.l`,
       })
@@ -514,7 +632,7 @@ return {
 
     test('should prefix id outside of v-for', () => {
       const { node } = parseWithForTransform(
-        `<div><div v-for="i in list" />{{ i }}</div>`,
+        `<view><view v-for="i in list" />{{ i }}</view>`,
         { prefixIdentifiers: true, skipTransformIdentifier: true }
       )
       expect((node.children[1] as InterpolationNode).content).toMatchObject({
@@ -525,9 +643,9 @@ return {
 
     test('nested v-for', () => {
       const { node } = parseWithForTransform(
-        `<div v-for="i in list">
-          <div v-for="i in list">{{ i + j }}</div>{{ i }}
-        </div>`,
+        `<view v-for="i in list">
+          <view v-for="i in list">{{ i + j }}</view>{{ i }}
+        </view>`,
         { prefixIdentifiers: true, skipTransformIdentifier: true }
       )
       const outerDiv = node as ElementNode
@@ -549,9 +667,9 @@ return {
 
     test('v-for aliases w/ complex expressions', () => {
       const { node } = parseWithForTransform(
-        `<div v-for="({ foo = bar, baz: [qux = quux] }) in list">
+        `<view v-for="({ foo = bar, baz: [qux = quux] }) in list">
           {{ foo + bar + baz + qux + quux }}
-        </div>`,
+        </view>`,
         { prefixIdentifiers: true, skipTransformIdentifier: true }
       )
       expect(node.vFor.value).toMatchObject({
@@ -568,8 +686,8 @@ return {
           `] }`,
         ],
       })
-      const div = node as ElementNode
-      expect((div.children[0] as InterpolationNode).content).toMatchObject({
+      const view = node as ElementNode
+      expect((view.children[0] as InterpolationNode).content).toMatchObject({
         type: NodeTypes.COMPOUND_EXPRESSION,
         children: [
           { content: `foo` },
@@ -587,8 +705,8 @@ return {
 
     test('element v-for key expression prefixing', () => {
       assert(
-        `<div v-for="item in items" :key="itemKey(item)">test</div>`,
-        `<div wx:for="{{a}}" wx:for-item="item" wx:key="a">test</div>`,
+        `<view v-for="item in items" :key="itemKey(item)">test</view>`,
+        `<view wx:for="{{a}}" wx:for-item="item" wx:key="a">test</view>`,
         `(_ctx, _cache) => {
 return {
   a: vFor(_ctx.items, item => {
