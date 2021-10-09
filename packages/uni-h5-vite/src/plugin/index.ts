@@ -60,6 +60,7 @@ export const UniH5Plugin: UniVitePlugin = {
       },
       define: createDefine(env.command, config),
       server: {
+        host: true,
         fs: {
           strict: false,
         },

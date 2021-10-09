@@ -1,4 +1,3 @@
-import os from 'os'
 import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
@@ -8,11 +7,10 @@ import {
   ServerOptions,
 } from 'vite'
 import express from 'express'
-import { hasOwn } from '@vue/shared'
+import { printHttpServerUrls } from 'vite'
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
-import { printHttpServerUrls } from './logger'
 
 export async function createServer(options: CliOptions & ServerOptions) {
   const server = await createViteServer(
@@ -35,7 +33,7 @@ export async function createServer(options: CliOptions & ServerOptions) {
     }
   )
 
-  printHttpServerUrls(server.httpServer!, server.config)
+  server.printUrls()
 }
 
 export async function createSSRServer(options: CliOptions & ServerOptions) {
@@ -61,7 +59,6 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
   )
   // use vite's connect instance as middleware
   app.use(vite.middlewares)
-
   app.use('*', async (req, res) => {
     try {
       const { h5 } = parseManifestJson(process.env.UNI_INPUT_DIR)
@@ -100,11 +97,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
 
   const logger = createLogger(options.logLevel)
   const serverOptions = vite.config.server || {}
-  const protocol = (
-    hasOwn(options, 'https') ? options.https : serverOptions.https
-  )
-    ? 'https'
-    : 'http'
+
   let port = options.port || serverOptions.port || 3000
   let hostname: string | undefined
   if (options.host === 'localhost') {
@@ -118,35 +111,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
   }
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
-      const interfaces = os.networkInterfaces()
-      const locals: string[] = []
-      const networks: string[] = []
-      Object.keys(interfaces).forEach((key) =>
-        (interfaces[key] || [])
-          .filter((details) => details.family === 'IPv4')
-          .forEach((detail) => {
-            if (detail.address.includes('127.0.0.1')) {
-              locals.push(detail.address)
-            } else {
-              networks.push(detail.address)
-            }
-          })
-      )
-      locals.forEach((host) => {
-        const url = `${protocol}://${host}:${chalk.bold(port)}${
-          vite.config.base
-        }`
-        logger.info(`  - Local:    ${chalk.cyan(url)}`)
-      })
-      const networksLen = networks.length - 1
-      networks.forEach((host, index) => {
-        const url = `${protocol}://${host}:${chalk.bold(port)}${
-          vite.config.base
-        }`
-        logger.info(
-          `  ${index === networksLen ? '-' : '>'} Network:  ${chalk.cyan(url)}`
-        )
-      })
+      printHttpServerUrls(server, vite.config)
       resolve(server)
     }
     const onError = (e: Error & { code?: string }) => {
