@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import debug from 'debug'
@@ -10,7 +10,7 @@ import { hasOwn, isString, isPlainObject } from '@vue/shared'
 import { parseManifestJsonOnce } from './json'
 import { isInHBuilderX } from './hbx'
 
-const debugCheckUpdate = debug('uni:check-update')
+const debugCheckUpdate = debug('vite:uni:check-update')
 
 interface CheckUpdateOptions {
   inputDir: string
@@ -63,6 +63,7 @@ export async function checkUpdate(options: CheckUpdateOptions) {
   }
   const { inputDir, compilerVersion } = options
   const updateCache = readCheckUpdateCache(inputDir)
+  debugCheckUpdate('read.cache', updateCache)
   const res = checkLocalCache(updateCache, compilerVersion)
   if (res) {
     if (isString(res)) {
@@ -104,10 +105,12 @@ function normalizeUpdateCache(
 }
 
 function statUpdateCache(updateCache: CheckUpdateCache) {
+  debugCheckUpdate('stat.before', updateCache)
   const platform = process.env.UNI_PLATFORM
   const type = process.env.NODE_ENV === 'production' ? 'build' : 'dev'
   const platformOptions = updateCache[platform] as CheckUpdatePlatform
   platformOptions[type] = (platformOptions[type] || 0) + 1
+  debugCheckUpdate('stat.after', updateCache)
   return updateCache
 }
 
@@ -140,7 +143,9 @@ function readCheckUpdateCache(inputDir: string) {
   if (fs.existsSync(updateFilepath)) {
     try {
       return require(updateFilepath) as CheckUpdateCache
-    } catch (e) {}
+    } catch (e) {
+      debugCheckUpdate('read.error', e)
+    }
   }
   return createCheckUpdateCache()
 }
@@ -182,8 +187,10 @@ function writeCheckUpdateCache(
   const filepath = getCheckUpdateFilepath(inputDir)
   debugCheckUpdate('write:', filepath, updateCache)
   try {
-    fs.writeFileSync(filepath, JSON.stringify(updateCache))
-  } catch (e) {}
+    fs.outputFileSync(filepath, JSON.stringify(updateCache))
+  } catch (e: any) {
+    debugCheckUpdate('write.error', e)
+  }
 }
 
 export function md5(str: string) {
@@ -265,37 +272,49 @@ function checkVersion(
   options: CheckUpdateOptions,
   updateCache: CheckUpdateCache
 ) {
-  const postData = createPostData(
-    options,
-    parseManifestJsonOnce(options.inputDir),
-    updateCache
-  )
-  let responseData = ''
-  const req = request(
-    {
-      hostname: HOSTNAME,
-      path: PATH,
-      port: 443,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': postData.length,
+  return new Promise((resolve) => {
+    const postData = JSON.stringify({
+      id: createPostData(
+        options,
+        parseManifestJsonOnce(options.inputDir),
+        updateCache
+      ),
+    })
+    let responseData = ''
+    const req = request(
+      {
+        hostname: HOSTNAME,
+        path: PATH,
+        port: 443,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': postData.length,
+        },
       },
-    },
-    (res) => {
-      res.setEncoding('utf8')
-      res.on('data', (chunk) => {
-        responseData += chunk
-      })
-      res.on('end', () => {
-        debugCheckUpdate('response: ', responseData)
-        try {
-          handleCheckVersion(JSON.parse(responseData), updateCache)
-        } catch (e) {}
-      })
-    }
-  )
-  debugCheckUpdate('request: ', postData)
-  req.write(postData)
-  req.end()
+      (res) => {
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => {
+          responseData += chunk
+        })
+        res.on('end', () => {
+          debugCheckUpdate('response: ', responseData)
+          try {
+            handleCheckVersion(JSON.parse(responseData), updateCache)
+          } catch (e) {}
+          resolve(true)
+        })
+        res.on('error', (e) => {
+          debugCheckUpdate('response.error:', e)
+          resolve(false)
+        })
+      }
+    ).on('error', (e) => {
+      debugCheckUpdate('request.error:', e)
+      resolve(false)
+    })
+    debugCheckUpdate('request: ', postData)
+    req.write(postData)
+    req.end()
+  })
 }

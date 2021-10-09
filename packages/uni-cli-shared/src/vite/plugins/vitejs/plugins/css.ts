@@ -226,14 +226,13 @@ function findCssModuleIds(
 /**
  * Plugin applied after user plugins
  */
-export function cssPostPlugin(config: ResolvedConfig): Plugin {
+export function cssPostPlugin(
+  config: ResolvedConfig,
+  { appCss }: { appCss?: string }
+): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
   let cssChunks: Map<string, Set<string>>
-  const viewCssCode = fs.readFileSync(
-    require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
-    'utf8'
-  )
   return {
     name: 'vite:css-post',
     buildStart() {
@@ -305,7 +304,7 @@ export function cssPostPlugin(config: ResolvedConfig): Plugin {
       }
       for (const filename of cssChunks.keys()) {
         let source = await processChunkCSS(
-          (filename === 'app.css' ? viewCssCode + '\n' : '') +
+          (filename === 'app.css' ? (appCss || '') + '\n' : '') +
             genCssCode(filename),
           { dirname: path.dirname(filename), inlined: false, minify: true }
         )

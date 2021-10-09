@@ -1,3 +1,4 @@
+import fs from 'fs'
 import { Plugin } from 'vite'
 
 import {
@@ -10,6 +11,11 @@ import {
 export const configResolved: Plugin['configResolved'] = (config) => {
   removePlugins('vite:import-analysis', config)
   injectCssPlugin(config)
-  injectCssPostPlugin(config)
+  injectCssPostPlugin(config, {
+    appCss: fs.readFileSync(
+      require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
+      'utf8'
+    ),
+  })
   injectAssetPlugin(config)
 }

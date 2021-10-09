@@ -1,5 +1,5 @@
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import { SFCTemplateCompileOptions, TemplateCompiler } from '@vue/compiler-sfc'
 import { isCustomElement } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
@@ -38,7 +38,11 @@ function createUniVueTransformAssetUrls(
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
   UniVitePlugins: UniVitePlugin[],
-  uniPluginOptions: Required<Required<UniVitePlugin>['uni']>
+  uniPluginOptions: Required<
+    Omit<Required<UniVitePlugin>['uni'], 'compiler'>
+  > & {
+    compiler?: TemplateCompiler
+  }
 ) {
   const vueOptions = options.vueOptions || (options.vueOptions = {})
   if (!vueOptions.include) {
@@ -66,6 +70,7 @@ export function initPluginVueOptions(
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
   const {
+    compiler,
     compilerOptions: {
       isNativeTag,
       isCustomElement,
@@ -73,6 +78,9 @@ export function initPluginVueOptions(
       directiveTransforms,
     },
   } = uniPluginOptions
+  if (compiler) {
+    templateOptions.compiler = compiler
+  }
   compilerOptions.isNativeTag = isNativeTag
   compilerOptions.isCustomElement = isCustomElement
   if (directiveTransforms) {

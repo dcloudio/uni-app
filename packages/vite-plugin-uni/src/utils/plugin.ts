@@ -7,6 +7,7 @@ import type {
   UniViteCopyPluginTarget,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
+import { TemplateCompiler } from '@vue/compiler-sfc'
 
 interface PluginConfig {
   id: string
@@ -26,12 +27,17 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
     isNativeTag,
     isCustomElement,
   }
+  let compiler: TemplateCompiler | undefined
   UniVitePlugins.forEach((plugin) => {
     const {
+      compiler: pluginTemplateCompiler,
       copyOptions: pluginCopyOptions,
       compilerOptions: pluginCompilerOptions,
       transformEvent: pluginTransformEvent,
     } = plugin.uni || {}
+    if (pluginTemplateCompiler) {
+      compiler = pluginTemplateCompiler
+    }
     if (pluginCompilerOptions) {
       if (pluginCompilerOptions.isNativeTag) {
         compilerOptions.isNativeTag = pluginCompilerOptions.isNativeTag
@@ -61,6 +67,7 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
     }
   })
   return {
+    compiler,
     copyOptions: {
       assets,
       targets,

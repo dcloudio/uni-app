@@ -17,11 +17,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "uni-app": {
-    "name": "uni-mp",
-    "apply": "^mp-",
-    "main": "dist/index.js"
-  },
   "license": "Apache-2.0",
   "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7"
 }

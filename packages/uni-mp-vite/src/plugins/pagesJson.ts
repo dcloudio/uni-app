@@ -3,12 +3,11 @@ import { Plugin } from 'vite'
 
 import {
   defineUniPagesJsonPlugin,
-  normalizeAppPagesJson,
-  // normalizeAppConfigService,
   normalizePagesJson,
-  // parseManifestJsonOnce,
   getLocaleFiles,
+  normalizePagePath,
 } from '@dcloudio/uni-cli-shared'
+import { virtualPagePath } from './virtual'
 
 export function uniPagesJsonPlugin(): Plugin {
   let pagesJson: UniApp.PagesJson
@@ -35,7 +34,8 @@ export function uniPagesJsonPlugin(): Plugin {
         })
         return {
           code:
-            `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson),
+            `import './manifest.json.js'\n` +
+            normalizeMiniProgramPagesJson(pagesJson),
           map: this.getCombinedSourcemap(),
         }
       },
@@ -51,4 +51,18 @@ export function uniPagesJsonPlugin(): Plugin {
       },
     }
   })
+}
+
+function normalizeMiniProgramPagesJson(pagesJson: Record<string, any>) {
+  const importPagesCode: string[] = []
+  pagesJson.pages.forEach((page: UniApp.PagesJsonPageOptions) => {
+    const pagePath = page.path
+    const pagePathWithExtname = normalizePagePath(pagePath, 'app')
+    if (pagePathWithExtname) {
+      importPagesCode.push(`import('${virtualPagePath(pagePathWithExtname)}')`)
+    }
+  })
+  return `if(!Math){
+${importPagesCode.join('\n')}
+}`
 }

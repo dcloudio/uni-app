@@ -17,8 +17,11 @@ export function injectCssPlugin(config: ResolvedConfig) {
   replacePlugins([cssPlugin(config)], config)
 }
 
-export function injectCssPostPlugin(config: ResolvedConfig) {
-  replacePlugins([cssPostPlugin(config)], config)
+export function injectCssPostPlugin(
+  config: ResolvedConfig,
+  { appCss }: { appCss?: string }
+) {
+  replacePlugins([cssPostPlugin(config, { appCss })], config)
 }
 
 export function replacePlugins(plugins: Plugin[], config: ResolvedConfig) {

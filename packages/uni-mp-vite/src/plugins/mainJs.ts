@@ -11,7 +11,9 @@ export function uniMainJsPlugin() {
             ? createApp(code)
             : createLegacyApp(code)
           return {
-            code: `import './pages.json.js';` + code,
+            code:
+              `import 'plugin-vue:export-helper';import 'uni-mp-runtime';import './pages.json.js';` +
+              code,
             map: this.getCombinedSourcemap(),
           }
         }

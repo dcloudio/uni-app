@@ -32,7 +32,7 @@ export function generate(
   if (isSetupInlined) {
     codes.push(`(${signature}) => {`)
   } else {
-    codes.push(`function ${functionName}(${signature}) {`)
+    codes.push(`\nexport function ${functionName}(${signature}) {`)
   }
   codes.push(
     `return ` +

@@ -10,6 +10,8 @@ import {
 export const configResolved: Plugin['configResolved'] = (config) => {
   removePlugins('vite:import-analysis', config)
   injectCssPlugin(config)
-  injectCssPostPlugin(config)
+  injectCssPostPlugin(config, {
+    appCss: '',
+  })
   injectAssetPlugin(config)
 }

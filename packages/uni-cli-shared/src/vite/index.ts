@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import type { ParserOptions } from '@vue/compiler-core'
-import type { CompilerOptions } from '@vue/compiler-sfc'
+import type { CompilerOptions, TemplateCompiler } from '@vue/compiler-sfc'
 import { UniViteCopyPluginOptions } from './plugins/copy'
 export interface CopyOptions {
   /**
@@ -11,6 +11,7 @@ export interface CopyOptions {
 }
 
 interface UniVitePluginUniOptions {
+  compiler?: TemplateCompiler
   compilerOptions?: {
     isNativeTag: ParserOptions['isNativeTag']
     isCustomElement: ParserOptions['isCustomElement']
