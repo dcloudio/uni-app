@@ -1435,7 +1435,7 @@ function createComponent$1(vueOptions) {
 
 const createApp = initCreateApp(parseAppOptions);
 my.EventChannel = EventChannel;
-my.createApp = createApp;
+my.createApp = global.createApp = createApp;
 my.createPage = createPage;
 my.createComponent = createComponent;
 

@@ -1392,7 +1392,7 @@ const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 tt.EventChannel = EventChannel;
-tt.createApp = createApp;
+tt.createApp = global.createApp = createApp;
 tt.createPage = createPage;
 tt.createComponent = createComponent;
 

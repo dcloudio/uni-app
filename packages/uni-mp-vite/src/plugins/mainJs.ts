@@ -1,6 +1,7 @@
 import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
+import { UniMiniProgramPluginOptions } from '../plugin'
 
-export function uniMainJsPlugin() {
+export function uniMainJsPlugin(options: UniMiniProgramPluginOptions) {
   return defineUniMainJsPlugin((opts) => {
     return {
       name: 'vite:uni-mp-main-js',
@@ -23,15 +24,9 @@ export function uniMainJsPlugin() {
 }
 
 function createApp(code: string) {
-  return `${code.replace(
-    'createSSRApp',
-    'createVueApp as createSSRApp'
-  )};const __app__=createApp().app;__app__._component.mpType='app';__app__._component.render=()=>{};__app__.use(uni.__vuePlugin).mount("#app");`
+  return `${code};createApp().app.mount("#app");`
 }
 
 function createLegacyApp(code: string) {
-  return `function createApp(rootComponent,rootProps){rootComponent.mpTye='app';const app=createVueApp(rootComponent,rootProps).use(uni.__vuePlugin);app.render=()=>{};const oldMount=app.mount;app.mount=(container)=>{const appVm=oldMount.call(app,container);return appVm;};return app;};${code.replace(
-    'createApp',
-    'createVueApp'
-  )}`
+  return code
 }

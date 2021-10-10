@@ -1396,7 +1396,7 @@ const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 swan.EventChannel = EventChannel;
-swan.createApp = createApp;
+swan.createApp = global.createApp = createApp;
 swan.createPage = createPage;
 swan.createComponent = createComponent;
 

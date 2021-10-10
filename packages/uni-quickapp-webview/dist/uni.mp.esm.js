@@ -1328,7 +1328,7 @@ const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 qa.EventChannel = EventChannel;
-qa.createApp = createApp;
+qa.createApp = global.createApp = createApp;
 qa.createPage = createPage;
 qa.createComponent = createComponent;
 

@@ -2561,7 +2561,7 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
         // local registration
         // check instance[type] first which is resolved for options API
         resolve(instance[type] || Component[type], name) ||
-            // window registration
+            // global registration
             resolve(instance.appContext[type], name);
         if (!res && maybeSelfReference) {
             // fallback to implicit self-reference
@@ -3048,7 +3048,7 @@ const PublicInstanceProxyHandlers = {
             return ctx[key];
         }
         else if (
-        // window properties
+        // global properties
         ((globalProperties = appContext.config.globalProperties),
             hasOwn(globalProperties, key))) {
             {
@@ -3392,6 +3392,11 @@ let compile;
 const isRuntimeOnly = () => !compile;
 function finishComponentSetup(instance, isSSR, skipOptions) {
     const Component = instance.type;
+    // template / render function normalization
+    // could be already set when returned from setup()
+    if (!instance.render) {
+        instance.render = (Component.render || NOOP);
+    }
     // support for 2.x options
     if (__VUE_OPTIONS_API__ && !(false )) {
         setCurrentInstance(instance);
@@ -4542,61 +4547,25 @@ function getMPInstanceData(instance, keys) {
     });
     return ret;
 }
-function getVueInstanceData(instance) {
-    const { data, setupState, ctx } = instance;
-    const keys = new Set();
-    const ret = Object.create(null);
-    Object.keys(setupState).forEach(key => {
-        keys.add(key);
-        ret[key] = setupState[key];
-    });
-    if (data) {
-        Object.keys(data).forEach(key => {
-            if (!keys.has(key)) {
-                keys.add(key);
-                ret[key] = data[key];
-            }
-        });
-    }
-    if (__VUE_OPTIONS_API__) {
-        if (ctx.$computedKeys) {
-            ctx.$computedKeys.forEach((key) => {
-                if (!keys.has(key)) {
-                    keys.add(key);
-                    ret[key] = ctx[key];
-                }
-            });
-        }
-    }
-    if (ctx.$mp) {
-        // TODO
-        extend(ret, ctx.$mp.data || {});
-    }
-    // TODO form-field
-    // track
-    return { keys, data: JSON.parse(JSON.stringify(ret)) };
-}
-function patch(instance) {
+function patch(instance, data) {
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
         const start = Date.now();
         const mpInstance = ctx.$scope;
-        const { keys, data } = getVueInstanceData(instance);
+        const keys = Object.keys(data);
         // data.__webviewId__ = mpInstance.data.__webviewId__
         const diffData = diff(data, getMPInstanceData(mpInstance, keys));
         if (Object.keys(diffData).length) {
-            if (process.env.VUE_APP_DEBUG) {
-                console.log('[' +
-                    +new Date() +
-                    '][' +
-                    (mpInstance.is || mpInstance.route) +
-                    '][' +
-                    instance.uid +
-                    '][耗时' +
-                    (Date.now() - start) +
-                    ']差量更新', JSON.stringify(diffData));
-            }
+            console.log('[' +
+                +new Date() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                instance.uid +
+                '][耗时' +
+                (Date.now() - start) +
+                ']差量更新', JSON.stringify(diffData));
             ctx.__next_tick_pending = true;
             mpInstance.setData(diffData, () => {
                 ctx.__next_tick_pending = false;
@@ -4670,11 +4639,48 @@ function mountComponent(initialVNode, options) {
     }
     return instance.proxy;
 }
+const getFunctionalFallthrough = (attrs) => {
+    let res;
+    for (const key in attrs) {
+        if (key === 'class' || key === 'style' || isOn(key)) {
+            (res || (res = {}))[key] = attrs[key];
+        }
+    }
+    return res;
+};
+function renderComponentRoot(instance) {
+    const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx } = instance;
+    let result;
+    const prev = setCurrentRenderingInstance(instance);
+    try {
+        if (vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */) {
+            // withProxy is a proxy with a different `has` trap only for
+            // runtime-compiled render functions using `with` block.
+            const proxyToUse = withProxy || proxy;
+            result = render.call(proxyToUse, proxyToUse, renderCache, props, setupState, data, ctx);
+        }
+        else {
+            // functional
+            const render = Component;
+            result =
+                render.length > 1
+                    ? render(props, { attrs, slots, emit })
+                    : render(props, null /* we know it doesn't need it */)
+                        ? attrs
+                        : getFunctionalFallthrough(attrs);
+        }
+    }
+    catch (err) {
+        handleError(err, instance, 1 /* RENDER_FUNCTION */);
+        result = false;
+    }
+    setCurrentRenderingInstance(prev);
+    return result;
+}
 function setupRenderEffect(instance) {
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
-            instance.render && instance.render.call(instance.proxy);
-            patch(instance);
+            patch(instance, renderComponentRoot(instance));
         }
         else {
             instance.render && instance.render.call(instance.proxy);
@@ -4686,7 +4692,7 @@ function setupRenderEffect(instance) {
                 invokeArrayFns(bu);
             }
             effect.allowRecurse = true;
-            patch(instance);
+            patch(instance, renderComponentRoot(instance));
             // updated hook
             if (u) {
                 queuePostRenderEffect$1(u);
@@ -4928,8 +4934,7 @@ var plugin = {
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);
-            // @ts-ignore
-            createMiniProgramApp(instance);
+            global.createApp(instance);
             return instance;
         };
     },

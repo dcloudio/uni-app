@@ -1,7 +1,7 @@
-(function (window, factory) {
+(function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : window || self, factory(window.Tools = {}));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Tools = {}));
 })(this, (function (exports) { 'use strict';
 
     const ACTION_TYPE_PAGE_CREATE = 1;

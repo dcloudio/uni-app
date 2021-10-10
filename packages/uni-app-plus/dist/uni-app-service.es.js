@@ -1501,9 +1501,9 @@ var serviceContext = (function (vue) {
       if (typeof uni !== 'undefined' && uni.getLocale) {
           return uni.getLocale();
       }
-      // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 window 上挂了 getLocale
-      if (typeof window !== 'undefined' && window.getLocale) {
-          return window.getLocale();
+      // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+      if (typeof global !== 'undefined' && global.getLocale) {
+          return global.getLocale();
       }
       return LOCALE_EN;
   }
@@ -11996,7 +11996,7 @@ var serviceContext = (function (vue) {
           plus = newPlus;
           restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
           plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-          /* eslint-disable no-window-assign */
+          /* eslint-disable no-global-assign */
           // @ts-ignore
           setTimeout = newSetTimeout;
           // @ts-ignore
@@ -13238,7 +13238,7 @@ var serviceContext = (function (vue) {
     // do check in _tr_init()
     //if (static_init_done) return;
 
-    /* For some embedded targets, window variables are not initialized: */
+    /* For some embedded targets, global variables are not initialized: */
   /*#ifdef NO_INIT_GLOBAL_POINTERS
     static_l_desc.static_tree = static_ltree;
     static_l_desc.extra_bits = extra_lbits;

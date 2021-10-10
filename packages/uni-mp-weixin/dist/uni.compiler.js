@@ -7,11 +7,24 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 
-var index = initMiniProgramPlugin__default["default"]({
-    global: 'wx',
-    alias: {
-        'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'),
+const uniMiniProgramWeixinPlugin = {
+    name: 'vite:uni-mp-weixin',
+    config() {
+        return {
+            define: {
+                __VUE_CREATED_DEFERRED__: JSON.stringify('false'),
+            },
+        };
     },
-});
+};
+var index = [
+    uniMiniProgramWeixinPlugin,
+    ...initMiniProgramPlugin__default["default"]({
+        global: 'wx',
+        alias: {
+            'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'),
+        },
+    }),
+];
 
 module.exports = index;

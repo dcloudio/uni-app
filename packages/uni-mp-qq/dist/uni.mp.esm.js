@@ -1232,12 +1232,12 @@ var parseOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
-wx.createApp = createApp;
+wx.createApp = global.createApp = createApp;
 wx.createPage = createPage;
 wx.createComponent = createComponent;
 
 qq.EventChannel = EventChannel;
-qq.createApp = createApp;
+qq.createApp = global.createApp = createApp;
 qq.createPage = createPage;
 qq.createComponent = createComponent;
 

@@ -8,8 +8,7 @@ export default {
     const oldMount = app.mount
     app.mount = function mount(rootContainer: any) {
       const instance = oldMount.call(app, rootContainer)
-      // @ts-ignore
-      createMiniProgramApp(instance)
+      ;(global as any).createApp(instance)
       return instance
     }
   },

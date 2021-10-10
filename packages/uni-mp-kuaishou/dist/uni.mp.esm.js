@@ -1232,7 +1232,7 @@ var baseParseOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(baseParseOptions);
 const createComponent$1 = initCreateComponent(baseParseOptions);
-wx.createApp = createApp;
+wx.createApp = global.createApp = createApp;
 wx.createPage = createPage;
 wx.createComponent = createComponent$1;
 
@@ -1295,7 +1295,7 @@ var parseComponentOptions = extend({}, baseParseOptions, {
 
 const createComponent = initCreateComponent(parseComponentOptions);
 ks.EventChannel = EventChannel;
-ks.createApp = createApp;
+ks.createApp = global.createApp = createApp;
 ks.createPage = createPage;
 ks.createComponent = createComponent;
 

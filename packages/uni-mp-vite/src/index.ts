@@ -5,7 +5,7 @@ import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniVirtualPlugin } from './plugins/virtual'
 export default (options: UniMiniProgramPluginOptions) => {
   return [
-    uniMainJsPlugin(),
+    uniMainJsPlugin(options),
     uniManifestJsonPlugin(),
     uniPagesJsonPlugin(),
     uniVirtualPlugin(options),

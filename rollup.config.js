@@ -184,11 +184,13 @@ function createAliasPlugin(buildOption) {
 
 function createReplacePlugin(buildOption, format) {
   const replacements = {
-    global: format === 'cjs' ? 'global' : 'window',
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
     __NODE_JS__: format === 'cjs',
   }
+  // if (process.env.TARGET === 'uni-h5') {
+  //   replacements.global = format === 'cjs' ? 'global' : 'window'
+  // }
   if (buildOption.replacements) {
     Object.assign(replacements, buildOption.replacements)
   }

@@ -895,7 +895,7 @@ export default function vueFactory(exports) {
   var _globalThis;
 
   var getGlobalThis = () => {
-    return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof window !== 'undefined' ? window : {});
+    return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {});
   };
 
   function warn(msg, ...args) {
@@ -2315,7 +2315,7 @@ export default function vueFactory(exports) {
 
 
   var isHmrUpdating = false;
-  var hmrDirtyComponents = new Set(); // Expose the HMR runtime on the window object
+  var hmrDirtyComponents = new Set(); // Expose the HMR runtime on the global object
   // This makes it entirely tree-shakable without polluting the exports and makes
   // it easier to be used in toolings like vue-loader
   // Note: for a component to be eligible for HMR it also needs the __hmrId option
@@ -8669,7 +8669,7 @@ export default function vueFactory(exports) {
 
       var res = // local registration
       // check instance[type] first which is resolved for options API
-      resolve(instance[type] || Component[type], name) || // window registration
+      resolve(instance[type] || Component[type], name) || // global registration
       resolve(instance.appContext[type], name);
 
       if (!res && maybeSelfReference) {
@@ -9528,7 +9528,7 @@ export default function vueFactory(exports) {
         /* CONTEXT */
         ;
         return ctx[key];
-      } else if ( // window properties
+      } else if ( // global properties
       globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) {
         {
           return globalProperties[key];

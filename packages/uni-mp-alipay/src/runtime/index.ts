@@ -9,6 +9,6 @@ export { createComponent } from './createComponent'
 
 export const createApp = initCreateApp(parseAppOptions)
 ;(my as any).EventChannel = EventChannel
-;(my as any).createApp = createApp
+;(my as any).createApp = (global as any).createApp = createApp
 ;(my as any).createPage = createPage
 ;(my as any).createComponent = createComponent
