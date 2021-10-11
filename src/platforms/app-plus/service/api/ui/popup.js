@@ -121,24 +121,35 @@ export function showModal ({
   cancelText,
   cancelColor,
   confirmText,
-  confirmColor
+  confirmColor,
+  editable = false,
+  placeholderText	= ''
 } = {}, callbackId) {
+  // TODO 在 editable 为 true 时，content 应该是输入框中可修改内容。后续找客户端商量。
+  const buttons = showCancel ? [cancelText, confirmText] : [confirmText]
+  const tip = editable ? placeholderText : buttons
+
   content = content || ' '
-  plus.nativeUI.confirm(content, (e) => {
+  plus.nativeUI[editable ? 'prompt' : 'confirm'](content, (e) => {
     if (showCancel) {
-      invoke(callbackId, {
+      const isConfirm = e.index === 1
+      const res = {
         errMsg: 'showModal:ok',
-        confirm: e.index === 1,
+        confirm: isConfirm,
         cancel: e.index === 0 || e.index === -1
-      })
+      }
+      isConfirm && editable && (res.content = e.value)
+      invoke(callbackId, res)
     } else {
-      invoke(callbackId, {
+      const res = {
         errMsg: 'showModal:ok',
         confirm: e.index === 0,
         cancel: false
-      })
+      }
+      editable && (res.content = e.value)
+      invoke(callbackId, res)
     }
-  }, title, showCancel ? [cancelText, confirmText] : [confirmText])
+  }, title, tip, buttons)
 }
 export function showActionSheet ({
   itemList = [],
