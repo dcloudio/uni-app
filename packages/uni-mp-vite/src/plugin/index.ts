@@ -28,7 +28,7 @@ export interface UniMiniProgramPluginOptions {
   }
   project?: {
     filename: string
-    source: Record<string, unknown>
+    source: Record<string, any>
   }
   template: {
     extname: string

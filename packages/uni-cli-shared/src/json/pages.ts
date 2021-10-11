@@ -20,7 +20,15 @@ export const parsePagesJson = (
 
 export const parsePagesJsonOnce = once(parsePagesJson)
 
-export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
+export function normalizePagesJson(
+  jsonStr: string,
+  platform: UniApp.PLATFORM,
+  {
+    subpackages,
+  }: {
+    subpackages: boolean
+  } = { subpackages: false }
+) {
   let pagesJson: UniApp.PagesJson = {
     pages: [],
     globalStyle: {
@@ -35,10 +43,21 @@ export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   }
   // pages
   validatePages(pagesJson, jsonStr)
+  pagesJson.subPackages = pagesJson.subPackages || pagesJson.subpackages
+  delete pagesJson.subpackages
   // subpackages
-  pagesJson.pages.push(
-    ...normalizeSubpackages(pagesJson.subPackages || pagesJson.subpackages)
-  )
+  if (pagesJson.subPackages) {
+    if (subpackages) {
+      pagesJson.subPackages.forEach(({ pages }) => {
+        pages && normalizePages(pages, platform)
+      })
+    } else {
+      pagesJson.pages.push(...normalizeSubpackages(pagesJson.subPackages))
+      delete pagesJson.subPackages
+    }
+  } else {
+    delete pagesJson.subPackages
+  }
   // pageStyle
   normalizePages(pagesJson.pages, platform)
 
@@ -64,7 +83,7 @@ export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   return pagesJson
 }
 
-function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
+export function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
   if (!Array.isArray(pagesJson.pages)) {
     pagesJson.pages = []
     throw new Error(`[uni-app] Error: pages.json->pages parse failed.`)
@@ -79,9 +98,8 @@ function normalizePages(
   pages: UniApp.PagesJsonPageOptions[],
   platform: UniApp.PLATFORM
 ) {
-  return pages.filter((page) => {
+  return pages.forEach((page) => {
     page.style = normalizePageStyle(page.path, page.style!, platform)
-    return true
   })
 }
 
@@ -151,7 +169,8 @@ function normalizePageStyle(
       }
     }
     pageStyle.isNVue = isNVue
-    return removePlatformStyle(pageStyle)
+    removePlatformStyle(pageStyle)
+    return pageStyle
   }
   return { navigationBar: {}, isNVue }
 }
@@ -347,7 +366,7 @@ function normalizeFilepath(filepath: string) {
 
 const platforms = ['h5', 'app', 'mp-', 'quickapp']
 
-function removePlatformStyle(pageStyle: UniApp.PagesJsonPageStyle) {
+export function removePlatformStyle(pageStyle: Record<string, any>) {
   Object.keys(pageStyle).forEach((name) => {
     if (platforms.find((prefix) => name.startsWith(prefix))) {
       delete pageStyle[name as UniApp.PLATFORM]

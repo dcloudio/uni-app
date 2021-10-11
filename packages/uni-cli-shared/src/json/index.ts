@@ -1,3 +1,4 @@
+export * from './mp'
 export * from './app'
 export * from './json'
 export * from './pages'

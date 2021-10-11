@@ -54,6 +54,7 @@ export function uniVirtualPlugin({
         const filepath = normalizePath(
           path.resolve(inputDir, parseVirtualPagePath(id))
         )
+        this.addWatchFile(filepath)
         return {
           code: `import Page from '${filepath}?mpType=page'
 ${global}.createPage(Page)`,
@@ -62,6 +63,7 @@ ${global}.createPage(Page)`,
         const filepath = normalizePath(
           path.resolve(inputDir, parseVirtualComponentPath(id))
         )
+        this.addWatchFile(filepath)
         return {
           code: `import Component from '${filepath}'
 ${global}.createComponent(Component)`,
