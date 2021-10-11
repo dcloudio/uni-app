@@ -8,8 +8,11 @@ import {
   normalizePagePath,
 } from '@dcloudio/uni-cli-shared'
 import { virtualPagePath } from './virtual'
+import { UniMiniProgramPluginOptions } from '../plugin'
 
-export function uniPagesJsonPlugin(): Plugin {
+export function uniPagesJsonPlugin(
+  options: UniMiniProgramPluginOptions
+): Plugin {
   let pagesJson: UniApp.PagesJson
   return defineUniPagesJsonPlugin((opts) => {
     return {

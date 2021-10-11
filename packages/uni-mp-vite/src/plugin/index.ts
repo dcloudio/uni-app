@@ -3,6 +3,7 @@ import debug from 'debug'
 import fs from 'fs-extra'
 import { AliasOptions } from 'vite'
 import {
+  CopyOptions,
   EXTNAME_VUE_RE,
   normalizeNodeModules,
   resolveBuiltIn,
@@ -18,6 +19,7 @@ const debugMp = debug('vite:uni:mp')
 export interface UniMiniProgramPluginOptions {
   vite: {
     alias: AliasOptions
+    copyOptions: CopyOptions
   }
   global: string
   app: {
@@ -26,6 +28,7 @@ export interface UniMiniProgramPluginOptions {
   }
   project: {
     filename: string
+    source: Record<string, unknown>
   }
   template: {
     extname: string
@@ -50,7 +53,7 @@ export function uniMiniProgramPlugin(
   options: UniMiniProgramPluginOptions
 ): UniVitePlugin {
   const {
-    vite: { alias },
+    vite: { alias, copyOptions },
     template,
   } = options
   const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
@@ -70,7 +73,10 @@ export function uniMiniProgramPlugin(
   }
   return {
     name: 'vite:uni-mp',
-    uni: uniOptions({ emitFile }),
+    uni: uniOptions({
+      copyOptions,
+      miniProgram: { emitFile },
+    }),
     config() {
       return {
         resolve: {

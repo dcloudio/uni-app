@@ -7,8 +7,8 @@ export { UniMiniProgramPluginOptions } from './plugin'
 export default (options: UniMiniProgramPluginOptions) => {
   return [
     uniMainJsPlugin(options),
-    uniManifestJsonPlugin(),
-    uniPagesJsonPlugin(),
+    uniManifestJsonPlugin(options),
+    uniPagesJsonPlugin(options),
     uniVirtualPlugin(options),
     uniMiniProgramPlugin(options),
   ]

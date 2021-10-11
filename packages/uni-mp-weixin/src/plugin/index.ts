@@ -4,6 +4,8 @@ import initMiniProgramPlugin, {
   UniMiniProgramPluginOptions,
 } from '@dcloudio/uni-mp-vite'
 
+import source from './project.config.json'
+
 const uniMiniProgramWeixinPlugin: Plugin = {
   name: 'vite:uni-mp-weixin',
   config() {
@@ -15,12 +17,32 @@ const uniMiniProgramWeixinPlugin: Plugin = {
   },
 }
 
+const projectConfigFilename = 'project.config.json'
+
 const options: UniMiniProgramPluginOptions = {
   vite: {
     alias: {
       'uni-mp-runtime': resolveBuiltIn(
         '@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'
       ),
+    },
+    copyOptions: {
+      assets: ['wxcomponents'],
+      targets: [
+        {
+          src: [
+            'theme.json',
+            'sitemap.json',
+            'ext.json',
+            'custom-tab-bar',
+            'functional-pages',
+            projectConfigFilename,
+          ],
+          get dest() {
+            return process.env.UNI_OUTPUT_DIR
+          },
+        },
+      ],
     },
   },
   global: 'wx',
@@ -29,7 +51,8 @@ const options: UniMiniProgramPluginOptions = {
     subpackages: true,
   },
   project: {
-    filename: 'project.config.json',
+    filename: projectConfigFilename,
+    source,
   },
   template: {
     extname: '.wxml',

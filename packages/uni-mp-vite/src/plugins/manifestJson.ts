@@ -4,18 +4,17 @@ import { Plugin } from 'vite'
 import {
   defineUniManifestJsonPlugin,
   getLocaleFiles,
-  // normalizeAppManifestJson,
-  // parseJson,
-  // parsePagesJsonOnce,
 } from '@dcloudio/uni-cli-shared'
+import { UniMiniProgramPluginOptions } from '../plugin'
 
-export function uniManifestJsonPlugin(): Plugin {
-  // let manifestJson: Record<string, any>
+export function uniManifestJsonPlugin(
+  options: UniMiniProgramPluginOptions
+): Plugin {
   return defineUniManifestJsonPlugin((opts) => {
     return {
       name: 'vite:uni-mp-manifest-json',
       enforce: 'pre',
-      transform(code, id) {
+      transform(_code, id) {
         if (!opts.filter(id)) {
           return
         }

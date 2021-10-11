@@ -7,6 +7,55 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 
+var description = "项目配置文件。";
+var packOptions = {
+	ignore: [
+	]
+};
+var setting = {
+	urlCheck: true,
+	es6: false,
+	postcss: false,
+	minified: false,
+	newFeature: true
+};
+var compileType = "miniprogram";
+var libVersion = "";
+var appid = "touristappid";
+var projectname = "";
+var condition = {
+	search: {
+		current: -1,
+		list: [
+		]
+	},
+	conversation: {
+		current: -1,
+		list: [
+		]
+	},
+	game: {
+		current: -1,
+		list: [
+		]
+	},
+	miniprogram: {
+		current: -1,
+		list: [
+		]
+	}
+};
+var source = {
+	description: description,
+	packOptions: packOptions,
+	setting: setting,
+	compileType: compileType,
+	libVersion: libVersion,
+	appid: appid,
+	projectname: projectname,
+	condition: condition
+};
+
 const uniMiniProgramWeixinPlugin = {
     name: 'vite:uni-mp-weixin',
     config() {
@@ -17,10 +66,29 @@ const uniMiniProgramWeixinPlugin = {
         };
     },
 };
+const projectConfigFilename = 'project.config.json';
 const options = {
     vite: {
         alias: {
             'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'),
+        },
+        copyOptions: {
+            assets: ['wxcomponents'],
+            targets: [
+                {
+                    src: [
+                        'theme.json',
+                        'sitemap.json',
+                        'ext.json',
+                        'custom-tab-bar',
+                        'functional-pages',
+                        projectConfigFilename,
+                    ],
+                    get dest() {
+                        return process.env.UNI_OUTPUT_DIR;
+                    },
+                },
+            ],
         },
     },
     global: 'wx',
@@ -29,7 +97,8 @@ const options = {
         subpackages: true,
     },
     project: {
-        filename: 'project.config.json',
+        filename: projectConfigFilename,
+        source,
     },
     template: {
         extname: '.wxml',
