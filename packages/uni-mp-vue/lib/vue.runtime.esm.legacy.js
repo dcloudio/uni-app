@@ -1,74 +1,6 @@
-import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, camelize, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, invokeArrayFns, hasOwn, NO, isIntegerKey, toNumber, hyphenate, isReservedProp, EMPTY_ARR, makeMap, toTypeString } from '@vue/shared';
+import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, remove, isPromise, isString, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSet, isPlainObject, toTypeString, invokeArrayFns } from '@vue/shared';
 export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_BACK_PRESS = 'onBackPress';
-const ON_PAGE_SCROLL = 'onPageScroll';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_SHARE_TIMELINE = 'onShareTimeline';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-// navigationBar
-const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-
-const PAGE_HOOKS = [
-    ON_SHOW,
-    ON_HIDE,
-    ON_BACK_PRESS,
-    ON_PAGE_SCROLL,
-    ON_TAB_ITEM_TAP,
-    ON_REACH_BOTTOM,
-    ON_PULL_DOWN_REFRESH,
-];
-function isRootHook(name) {
-    return PAGE_HOOKS.indexOf(name) > -1;
-}
-const UniLifecycleHooks = [
-    ON_SHOW,
-    ON_HIDE,
-    ON_LAUNCH,
-    ON_ERROR,
-    ON_THEME_CHANGE,
-    ON_PAGE_NOT_FOUND,
-    ON_UNHANDLE_REJECTION,
-    ON_LOAD,
-    ON_READY,
-    ON_UNLOAD,
-    ON_RESIZE,
-    ON_BACK_PRESS,
-    ON_PAGE_SCROLL,
-    ON_TAB_ITEM_TAP,
-    ON_REACH_BOTTOM,
-    ON_PULL_DOWN_REFRESH,
-    ON_SHARE_TIMELINE,
-    ON_ADD_TO_FAVORITES,
-    ON_SHARE_APP_MESSAGE,
-    ON_NAVIGATION_BAR_BUTTON_TAP,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
-];
+import { isRootHook } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -519,7 +451,7 @@ function createGetter(isReadonly = false, shallow = false) {
         return res;
     };
 }
-const set$1 = /*#__PURE__*/ createSetter();
+const set = /*#__PURE__*/ createSetter();
 const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
@@ -570,7 +502,7 @@ function ownKeys(target) {
 }
 const mutableHandlers = {
     get,
-    set: set$1,
+    set,
     deleteProperty,
     has,
     ownKeys
@@ -655,7 +587,7 @@ function add(value) {
     }
     return this;
 }
-function set$1$1(key, value) {
+function set$1(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
     const { has, get } = getProto(target);
@@ -776,7 +708,7 @@ function createInstrumentations() {
         },
         has: has$1,
         add,
-        set: set$1$1,
+        set: set$1,
         delete: deleteEntry,
         clear,
         forEach: createForEach(false, false)
@@ -790,7 +722,7 @@ function createInstrumentations() {
         },
         has: has$1,
         add,
-        set: set$1$1,
+        set: set$1,
         delete: deleteEntry,
         clear,
         forEach: createForEach(false, true)
@@ -1574,7 +1506,7 @@ function createDuplicateChecker() {
     };
 }
 let shouldCacheAccess = true;
-function applyOptions$1(instance) {
+function applyOptions(instance) {
     const options = resolveMergedOptions(instance);
     const publicThis = instance.proxy;
     const ctx = instance.ctx;
@@ -1936,20 +1868,20 @@ const internalOptionMergeStrats = {
     methods: mergeObjectOptions,
     computed: mergeObjectOptions,
     // lifecycle
-    beforeCreate: mergeAsArray$1,
-    created: mergeAsArray$1,
-    beforeMount: mergeAsArray$1,
-    mounted: mergeAsArray$1,
-    beforeUpdate: mergeAsArray$1,
-    updated: mergeAsArray$1,
-    beforeDestroy: mergeAsArray$1,
-    beforeUnmount: mergeAsArray$1,
-    destroyed: mergeAsArray$1,
-    unmounted: mergeAsArray$1,
-    activated: mergeAsArray$1,
-    deactivated: mergeAsArray$1,
-    errorCaptured: mergeAsArray$1,
-    serverPrefetch: mergeAsArray$1,
+    beforeCreate: mergeAsArray,
+    created: mergeAsArray,
+    beforeMount: mergeAsArray,
+    mounted: mergeAsArray,
+    beforeUpdate: mergeAsArray,
+    updated: mergeAsArray,
+    beforeDestroy: mergeAsArray,
+    beforeUnmount: mergeAsArray,
+    destroyed: mergeAsArray,
+    unmounted: mergeAsArray,
+    activated: mergeAsArray,
+    deactivated: mergeAsArray,
+    errorCaptured: mergeAsArray,
+    serverPrefetch: mergeAsArray,
     // assets
     components: mergeObjectOptions,
     directives: mergeObjectOptions,
@@ -1983,7 +1915,7 @@ function normalizeInject(raw) {
     }
     return raw;
 }
-function mergeAsArray$1(to, from) {
+function mergeAsArray(to, from) {
     return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
@@ -1996,7 +1928,7 @@ function mergeWatchOptions(to, from) {
         return to;
     const merged = extend(Object.create(null), to);
     for (const key in from) {
-        merged[key] = mergeAsArray$1(to[key], from[key]);
+        merged[key] = mergeAsArray(to[key], from[key]);
     }
     return merged;
 }
@@ -3401,7 +3333,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
     if (__VUE_OPTIONS_API__ && !(false )) {
         setCurrentInstance(instance);
         pauseTracking();
-        applyOptions$1(instance);
+        applyOptions(instance);
         resetTracking();
         unsetCurrentInstance();
     }
@@ -4547,25 +4479,61 @@ function getMPInstanceData(instance, keys) {
     });
     return ret;
 }
-function patch(instance, data) {
+function getVueInstanceData(instance) {
+    const { data, setupState, ctx } = instance;
+    const keys = new Set();
+    const ret = Object.create(null);
+    Object.keys(setupState).forEach(key => {
+        keys.add(key);
+        ret[key] = setupState[key];
+    });
+    if (data) {
+        Object.keys(data).forEach(key => {
+            if (!keys.has(key)) {
+                keys.add(key);
+                ret[key] = data[key];
+            }
+        });
+    }
+    if (__VUE_OPTIONS_API__) {
+        if (ctx.$computedKeys) {
+            ctx.$computedKeys.forEach((key) => {
+                if (!keys.has(key)) {
+                    keys.add(key);
+                    ret[key] = ctx[key];
+                }
+            });
+        }
+    }
+    if (ctx.$mp) {
+        // TODO
+        extend(ret, ctx.$mp.data || {});
+    }
+    // TODO form-field
+    // track
+    return { keys, data: JSON.parse(JSON.stringify(ret)) };
+}
+function patch(instance) {
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
         const start = Date.now();
         const mpInstance = ctx.$scope;
-        const keys = Object.keys(data);
+        const { keys, data } = getVueInstanceData(instance);
         // data.__webviewId__ = mpInstance.data.__webviewId__
         const diffData = diff(data, getMPInstanceData(mpInstance, keys));
         if (Object.keys(diffData).length) {
-            console.log('[' +
-                +new Date() +
-                '][' +
-                (mpInstance.is || mpInstance.route) +
-                '][' +
-                instance.uid +
-                '][耗时' +
-                (Date.now() - start) +
-                ']差量更新', JSON.stringify(diffData));
+            if (process.env.VUE_APP_DEBUG) {
+                console.log('[' +
+                    +new Date() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    instance.uid +
+                    '][耗时' +
+                    (Date.now() - start) +
+                    ']差量更新', JSON.stringify(diffData));
+            }
             ctx.__next_tick_pending = true;
             mpInstance.setData(diffData, () => {
                 ctx.__next_tick_pending = false;
@@ -4680,7 +4648,8 @@ function renderComponentRoot(instance) {
 function setupRenderEffect(instance) {
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
-            patch(instance, renderComponentRoot(instance));
+            renderComponentRoot(instance);
+            patch(instance);
         }
         else {
             instance.render && instance.render.call(instance.proxy);
@@ -4692,7 +4661,8 @@ function setupRenderEffect(instance) {
                 invokeArrayFns(bu);
             }
             effect.allowRecurse = true;
-            patch(instance, renderComponentRoot(instance));
+            renderComponentRoot(instance);
+            patch(instance);
             // updated hook
             if (u) {
                 queuePostRenderEffect$1(u);
@@ -4780,181 +4750,4 @@ function createVueApp(rootComponent, rootProps = null) {
 function withModifiers() { }
 function createVNode$1() { }
 
-function injectLifecycleHook(name, hook, publicThis, instance) {
-    if (isFunction(hook)) {
-        injectHook(name, hook.bind(publicThis), instance);
-    }
-}
-function initHooks(options, instance, publicThis) {
-    options.mpType || publicThis.$mpType;
-    // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
-    Object.keys(options).forEach((name) => {
-        if (name.indexOf('on') === 0) {
-            const hooks = options[name];
-            if (isArray(hooks)) {
-                hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
-            }
-            else {
-                injectLifecycleHook(name, hooks, publicThis, instance);
-            }
-        }
-    });
-}
-
-function applyOptions(options, instance, publicThis) {
-    initHooks(options, instance, publicThis);
-}
-
-function set(target, key, val) {
-    return (target[key] = val);
-}
-
-function errorHandler(err, instance, info) {
-    if (!instance) {
-        throw err;
-    }
-    const app = getApp();
-    if (!app || !app.$vm) {
-        throw err;
-    }
-    {
-        app.$vm.$callHook(ON_ERROR, err, info);
-    }
-}
-function mergeAsArray(to, from) {
-    return to ? [...new Set([].concat(to, from))] : from;
-}
-function initOptionMergeStrategies(optionMergeStrategies) {
-    UniLifecycleHooks.forEach((name) => {
-        optionMergeStrategies[name] = mergeAsArray;
-    });
-}
-
-let realAtob;
-const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-if (typeof atob !== 'function') {
-    realAtob = function (str) {
-        str = String(str).replace(/[\t\n\f\r ]+/g, '');
-        if (!b64re.test(str)) {
-            throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
-        }
-        // Adding the padding if missing, for semplicity
-        str += '=='.slice(2 - (str.length & 3));
-        var bitmap;
-        var result = '';
-        var r1;
-        var r2;
-        var i = 0;
-        for (; i < str.length;) {
-            bitmap =
-                (b64.indexOf(str.charAt(i++)) << 18) |
-                    (b64.indexOf(str.charAt(i++)) << 12) |
-                    ((r1 = b64.indexOf(str.charAt(i++))) << 6) |
-                    (r2 = b64.indexOf(str.charAt(i++)));
-            result +=
-                r1 === 64
-                    ? String.fromCharCode((bitmap >> 16) & 255)
-                    : r2 === 64
-                        ? String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255)
-                        : String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255, bitmap & 255);
-        }
-        return result;
-    };
-}
-else {
-    // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
-    realAtob = atob;
-}
-function b64DecodeUnicode(str) {
-    return decodeURIComponent(realAtob(str)
-        .split('')
-        .map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    })
-        .join(''));
-}
-function getCurrentUserInfo() {
-    const token = uni.getStorageSync('uni_id_token') || '';
-    const tokenArr = token.split('.');
-    if (!token || tokenArr.length !== 3) {
-        return {
-            uid: null,
-            role: [],
-            permission: [],
-            tokenExpired: 0,
-        };
-    }
-    let userInfo;
-    try {
-        userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-    }
-    catch (error) {
-        throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
-    }
-    userInfo.tokenExpired = userInfo.exp * 1000;
-    delete userInfo.exp;
-    delete userInfo.iat;
-    return userInfo;
-}
-function uniIdMixin(globalProperties) {
-    globalProperties.uniIDHasRole = function (roleId) {
-        const { role } = getCurrentUserInfo();
-        return role.indexOf(roleId) > -1;
-    };
-    globalProperties.uniIDHasPermission = function (permissionId) {
-        const { permission } = getCurrentUserInfo();
-        return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
-    };
-    globalProperties.uniIDTokenValid = function () {
-        const { tokenExpired } = getCurrentUserInfo();
-        return tokenExpired > Date.now();
-    };
-}
-
-function initApp(app) {
-    const appConfig = app._context.config;
-    if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = errorHandler;
-    }
-    initOptionMergeStrategies(appConfig.optionMergeStrategies);
-    const globalProperties = appConfig.globalProperties;
-    {
-        uniIdMixin(globalProperties);
-    }
-    if (__VUE_OPTIONS_API__) {
-        globalProperties.$set = set;
-        globalProperties.$applyOptions = applyOptions;
-    }
-}
-
-var plugin = {
-    install(app) {
-        initApp(app);
-        // TODO 旧编译器使用了$createElement 导致告警，当切换到新编译器时，移除此类代码
-        app.config.globalProperties.$createElement = () => { };
-        const oldMount = app.mount;
-        app.mount = function mount(rootContainer) {
-            const instance = oldMount.call(app, rootContainer);
-            if (global.createApp) {
-                global.createApp(instance);
-            }
-            else {
-                // @ts-ignore 旧编译器
-                if (typeof createMiniProgramApp !== 'undefined') {
-                    // @ts-ignore
-                    createMiniProgramApp(instance);
-                }
-            }
-            return instance;
-        };
-    },
-};
-
-function createApp(rootComponent, rootProps = null) {
-    rootComponent && (rootComponent.mpType = 'app');
-    return createVueApp(rootComponent, rootProps).use(plugin);
-}
-const createSSRApp = createApp;
-
-export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

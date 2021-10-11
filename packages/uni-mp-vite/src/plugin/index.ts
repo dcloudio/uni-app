@@ -26,7 +26,7 @@ export interface UniMiniProgramPluginOptions {
     darkmode: boolean
     subpackages: boolean
   }
-  project: {
+  project?: {
     filename: string
     source: Record<string, unknown>
   }
