@@ -21,12 +21,14 @@ const onHidePopupOnce = /*#__PURE__*/ once(() => {
 
 let currentShowModalResolve: UniApp.ShowModalOptions['success']
 
-function onModalClose(type: 'cancel' | 'confirm') {
-  currentShowModalResolve &&
-    currentShowModalResolve!({
-      confirm: type === 'confirm',
-      cancel: type === 'cancel',
-    })
+function onModalClose(type: 'cancel' | 'confirm', content: string) {
+  const isConfirm = type === 'confirm'
+  const res: UniApp.ShowModalRes = {
+    confirm: isConfirm,
+    cancel: type === 'cancel',
+  }
+  isConfirm && showModalState.editable && (res.content = content)
+  currentShowModalResolve && currentShowModalResolve!(res)
 }
 
 export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(

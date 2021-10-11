@@ -9058,22 +9058,29 @@ var serviceContext = (function (vue) {
       return resolve();
   }, OpenLocationProtocol, OpenLocationOptions);
 
-  const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', showCancel = true, cancelText, cancelColor, confirmText, confirmColor, } = {}, { resolve }) => {
+  const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', showCancel = true, cancelText, cancelColor, confirmText, confirmColor, editable = false, placeholderText = '', } = {}, { resolve }) => {
+      const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
+      const tip = editable ? placeholderText : buttons;
       content = content || ' ';
-      plus.nativeUI.confirm(content, (e) => {
+      plus.nativeUI[editable ? 'prompt' : 'confirm'](content, (e) => {
           if (showCancel) {
-              resolve({
-                  confirm: e.index === 1,
+              const isConfirm = e.index === 1;
+              const res = {
+                  confirm: isConfirm,
                   cancel: e.index === 0 || e.index === -1,
-              });
+              };
+              isConfirm && editable && (res.content = e.value);
+              resolve(res);
           }
           else {
-              resolve({
+              const res = {
                   confirm: e.index === 0,
                   cancel: false,
-              });
+              };
+              editable && (res.content = e.value);
+              resolve(res);
           }
-      }, title, showCancel ? [cancelText, confirmText] : [confirmText]);
+      }, title, tip, buttons);
   }, ShowModalProtocol, ShowModalOptions);
 
   const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], itemColor = '#000000', title = '', alertText = '', popover, }, { resolve, reject }) => {

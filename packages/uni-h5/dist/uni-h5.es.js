@@ -17910,6 +17910,14 @@ const props$5 = {
   },
   visible: {
     type: Boolean
+  },
+  editable: {
+    type: Boolean,
+    default: false
+  },
+  placeholderText: {
+    type: String,
+    default: ""
   }
 };
 var modal = /* @__PURE__ */ defineComponent({
@@ -17917,12 +17925,15 @@ var modal = /* @__PURE__ */ defineComponent({
   setup(props2, {
     emit: emit2
   }) {
+    const editContent = ref("");
     const close = () => visible.value = false;
     const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm"));
+    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
     const visible = usePopup(props2, {
       onEsc: cancel,
-      onEnter: confirm
+      onEnter: () => {
+        !props2.editable && confirm();
+      }
     });
     return () => {
       const {
@@ -17930,8 +17941,11 @@ var modal = /* @__PURE__ */ defineComponent({
         content,
         showCancel,
         confirmText,
-        confirmColor
+        confirmColor,
+        editable,
+        placeholderText
       } = props2;
+      editContent.value = content;
       return createVNode(Transition, {
         "name": "uni-fade"
       }, {
@@ -17944,7 +17958,13 @@ var modal = /* @__PURE__ */ defineComponent({
         }, [createVNode("strong", {
           "class": "uni-modal__title",
           "textContent": title
-        }, null, 8, ["textContent"])]), createVNode("div", {
+        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
+          "class": "uni-modal__textarea",
+          "rows": "1",
+          "placeholder": placeholderText,
+          "value": content,
+          "onInput": (e2) => editContent.value = e2.target.value
+        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
           "class": "uni-modal__bd",
           "onTouchmovePassive": onEventStop,
           "textContent": content
@@ -17972,11 +17992,14 @@ const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
 });
 let currentShowModalResolve;
-function onModalClose(type) {
-  currentShowModalResolve && currentShowModalResolve({
-    confirm: type === "confirm",
+function onModalClose(type, content) {
+  const isConfirm = type === "confirm";
+  const res = {
+    confirm: isConfirm,
     cancel: type === "cancel"
-  });
+  };
+  isConfirm && showModalState.editable && (res.content = content);
+  currentShowModalResolve && currentShowModalResolve(res);
 }
 const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
   onHidePopupOnce$1();

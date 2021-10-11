@@ -1,5 +1,5 @@
 import { onEventPrevent, onEventStop } from '@dcloudio/uni-core'
-import { Transition, defineComponent, ExtractPropTypes } from 'vue'
+import { Transition, defineComponent, ExtractPropTypes, ref } from 'vue'
 import { usePopup, VNODE_MASK } from './utils'
 
 const props = {
@@ -34,21 +34,41 @@ const props = {
   visible: {
     type: Boolean,
   },
+  editable: {
+    type: Boolean,
+    default: false,
+  },
+  placeholderText: {
+    type: String,
+    default: '',
+  },
 }
 export type ModalProps = ExtractPropTypes<typeof props>
 
 export default /*#__PURE__*/ defineComponent({
   props,
   setup(props, { emit }) {
+    const editContent = ref('')
     const close = () => (visible.value = false)
     const cancel = () => (close(), emit('close', 'cancel'))
-    const confirm = () => (close(), emit('close', 'confirm'))
+    const confirm = () => (close(), emit('close', 'confirm', editContent.value))
     const visible = usePopup(props, {
       onEsc: cancel,
-      onEnter: confirm,
+      onEnter: () => {
+        !props.editable && confirm()
+      },
     })
     return () => {
-      const { title, content, showCancel, confirmText, confirmColor } = props
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor,
+        editable,
+        placeholderText,
+      } = props
+      editContent.value = content
       // TODO vue3 似乎有bug，不指定passive时，应该默认加上passive:false，否则浏览器会报警告，先看看vue3 会不会修复，若不修复，可以考虑手动addEventListener
       return (
         <Transition name="uni-fade">
@@ -60,12 +80,24 @@ export default /*#__PURE__*/ defineComponent({
                   <strong class="uni-modal__title" v-text={title}></strong>
                 </div>
               )}
-              <div
-                class="uni-modal__bd"
-                // @ts-ignore
-                onTouchmovePassive={onEventStop}
-                v-text={content}
-              ></div>
+              {editable ? (
+                <textarea
+                  class="uni-modal__textarea"
+                  rows="1"
+                  placeholder={placeholderText}
+                  value={content}
+                  onInput={(e: Event) =>
+                    (editContent.value = (e.target! as any).value)
+                  }
+                />
+              ) : (
+                <div
+                  class="uni-modal__bd"
+                  // @ts-ignore
+                  onTouchmovePassive={onEventStop}
+                  v-text={content}
+                ></div>
+              )}
               <div class="uni-modal__ft">
                 {showCancel && (
                   <div

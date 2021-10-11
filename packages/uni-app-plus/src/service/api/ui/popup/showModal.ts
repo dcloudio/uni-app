@@ -17,27 +17,37 @@ export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(
       cancelColor,
       confirmText,
       confirmColor,
+      editable = false,
+      placeholderText = '',
     } = {},
     { resolve }
   ) => {
+    const buttons = showCancel ? [cancelText, confirmText] : [confirmText]
+    const tip = editable ? placeholderText : buttons
     content = content || ' '
-    plus.nativeUI.confirm(
+    plus.nativeUI[editable ? 'prompt' : 'confirm'](
       content,
       (e) => {
         if (showCancel) {
-          resolve({
-            confirm: e.index === 1,
+          const isConfirm = e.index === 1
+          const res: UniApp.ShowModalRes = {
+            confirm: isConfirm,
             cancel: e.index === 0 || e.index === -1,
-          })
+          }
+          isConfirm && editable && (res.content = e.value)
+          resolve(res)
         } else {
-          resolve({
+          const res: UniApp.ShowModalRes = {
             confirm: e.index === 0,
             cancel: false,
-          })
+          }
+          editable && (res.content = e.value)
+          resolve(res)
         }
       },
-      title as PlusNativeUIConfirmStyles,
-      showCancel ? [cancelText!, confirmText!] : [confirmText!]
+      title,
+      <string & string[]>tip,
+      <string[]>buttons
     )
   },
   ShowModalProtocol,
