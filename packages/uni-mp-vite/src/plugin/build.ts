@@ -1,7 +1,9 @@
+import fs from 'fs'
 import path from 'path'
 import { UserConfig } from 'vite'
 
 import {
+  emptyDir,
   isCSSRequest,
   normalizePath,
   resolveMainPathOnce,
@@ -16,8 +18,14 @@ import {
 
 export function buildOptions(): UserConfig['build'] {
   const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  // 开始编译时，清空输出目录
+  if (fs.existsSync(outputDir)) {
+    emptyDir(outputDir)
+  }
   return {
     // sourcemap: 'inline', // TODO
+    emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
     assetsInlineLimit: 0, // TODO
     lib: {
       entry: resolveMainPathOnce(inputDir),

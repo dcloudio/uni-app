@@ -1,7 +1,9 @@
 import type { Plugin } from 'vite'
+import type { EmittedFile } from 'rollup'
 import type { ParserOptions } from '@vue/compiler-core'
 import type { CompilerOptions, TemplateCompiler } from '@vue/compiler-sfc'
 import { UniViteCopyPluginOptions } from './plugins/copy'
+
 export interface CopyOptions {
   /**
    * 静态资源，配置的目录，在 uni_modules 中同样支持
@@ -13,6 +15,9 @@ export interface CopyOptions {
 interface UniVitePluginUniOptions {
   compiler?: TemplateCompiler
   compilerOptions?: {
+    miniProgram?: {
+      emitFile?: (emittedFile: EmittedFile) => string
+    }
     isNativeTag: ParserOptions['isNativeTag']
     isCustomElement: ParserOptions['isCustomElement']
     directiveTransforms?: CompilerOptions['directiveTransforms']

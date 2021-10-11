@@ -72,6 +72,7 @@ export function initPluginVueOptions(
   const {
     compiler,
     compilerOptions: {
+      miniProgram,
       isNativeTag,
       isCustomElement,
       nodeTransforms,
@@ -80,6 +81,9 @@ export function initPluginVueOptions(
   } = uniPluginOptions
   if (compiler) {
     templateOptions.compiler = compiler
+  }
+  if (miniProgram) {
+    ;(compilerOptions as any).miniProgram = miniProgram
   }
   compilerOptions.isNativeTag = isNativeTag
   compilerOptions.isCustomElement = isCustomElement

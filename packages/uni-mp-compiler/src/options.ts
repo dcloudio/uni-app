@@ -60,7 +60,9 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
   scopeId?: string | null
   runtimeModuleName?: string
   runtimeGlobalName?: string
-  emitFile?: (emittedFile: EmittedFile) => string
+  miniProgram?: {
+    emitFile?: (emittedFile: EmittedFile) => string
+  }
 }
 
 export interface TemplateCodegenOptions {

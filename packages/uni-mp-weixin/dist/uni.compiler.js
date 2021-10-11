@@ -17,14 +17,38 @@ const uniMiniProgramWeixinPlugin = {
         };
     },
 };
-var index = [
-    uniMiniProgramWeixinPlugin,
-    ...initMiniProgramPlugin__default["default"]({
-        global: 'wx',
+const options = {
+    vite: {
         alias: {
             'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'),
         },
-    }),
-];
+    },
+    global: 'wx',
+    app: {
+        darkmode: true,
+        subpackages: true,
+    },
+    project: {
+        filename: 'project.config.json',
+    },
+    template: {
+        extname: '.wxml',
+    },
+    style: {
+        extname: '.wxss',
+        cssVars: {
+            '--status-bar-height': '25px',
+            '--window-top': '0px',
+            '--window-bottom': '0px',
+            '--window-left': '0px',
+            '--window-right': '0px',
+        },
+    },
+    filter: {
+        extname: '.wxs',
+        tag: 'wxs',
+    },
+};
+var index = [uniMiniProgramWeixinPlugin, ...initMiniProgramPlugin__default["default"](options)];
 
 module.exports = index;

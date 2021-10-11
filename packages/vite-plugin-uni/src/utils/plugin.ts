@@ -39,16 +39,7 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
       compiler = pluginTemplateCompiler
     }
     if (pluginCompilerOptions) {
-      if (pluginCompilerOptions.isNativeTag) {
-        compilerOptions.isNativeTag = pluginCompilerOptions.isNativeTag
-      }
-      if (pluginCompilerOptions.isCustomElement) {
-        compilerOptions.isCustomElement = pluginCompilerOptions.isCustomElement
-      }
-      if (pluginCompilerOptions.directiveTransforms) {
-        compilerOptions.directiveTransforms =
-          pluginCompilerOptions.directiveTransforms
-      }
+      extend(compilerOptions, pluginCompilerOptions)
     }
     if (pluginTransformEvent) {
       extend(transformEvent, pluginTransformEvent)

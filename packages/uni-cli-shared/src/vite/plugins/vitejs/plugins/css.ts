@@ -178,14 +178,14 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
   }
 }
 
-function normalizeCssChunkFilename(id: string) {
+function normalizeCssChunkFilename(id: string, extname: string = '.css') {
   return normalizePath(
     path.relative(
       process.env.UNI_INPUT_DIR,
       id
         .split('?')[0]
-        .replace(EXTNAME_VUE_RE, '.css')
-        .replace(EXTNAME_JS_RE, '.css')
+        .replace(EXTNAME_VUE_RE, extname)
+        .replace(EXTNAME_JS_RE, extname)
     )
   )
 }
@@ -228,7 +228,7 @@ function findCssModuleIds(
  */
 export function cssPostPlugin(
   config: ResolvedConfig,
-  { appCss }: { appCss?: string }
+  { appCss, extname }: { appCss?: string; extname: string }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
@@ -259,11 +259,11 @@ export function cssPostPlugin(
       moduleIds.forEach((id) => {
         if (id === mainPath) {
           // 全局样式
-          cssChunks.set('app.css', findCssModuleIds.call(this, id))
+          cssChunks.set('app' + extname, findCssModuleIds.call(this, id))
         } else if (id.includes('mpType=page')) {
           // 页面样式
           cssChunks.set(
-            normalizeCssChunkFilename(id),
+            normalizeCssChunkFilename(id, extname),
             findCssModuleIds.call(this, id)
           )
         }

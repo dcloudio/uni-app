@@ -12,6 +12,7 @@ export const configResolved: Plugin['configResolved'] = (config) => {
   removePlugins('vite:import-analysis', config)
   injectCssPlugin(config)
   injectCssPostPlugin(config, {
+    extname: '.css',
     appCss: fs.readFileSync(
       require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
       'utf8'
