@@ -13,12 +13,14 @@ export function assert(
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
-    emitFile({ source }) {
-      // console.log(source)
-      if (!options.onError) {
-        expect(source).toBe(templateCode)
-      }
-      return ''
+    miniProgram: {
+      emitFile({ source }) {
+        // console.log(source)
+        if (!options.onError) {
+          expect(source).toBe(templateCode)
+        }
+        return ''
+      },
     },
     ...options,
   })

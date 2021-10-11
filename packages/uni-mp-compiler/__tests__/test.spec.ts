@@ -7,10 +7,12 @@ function assert(template: string, templateCode: string, renderCode: string) {
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
-    emitFile({ source }) {
-      console.log(source)
-      // expect(source).toBe(templateCode)
-      return ''
+    miniProgram: {
+      emitFile({ source }) {
+        console.log(source)
+        // expect(source).toBe(templateCode)
+        return ''
+      },
     },
   })
   // expect(res.template).toBe(templateCode)
