@@ -1,9 +1,10 @@
 import { Plugin, ResolvedConfig } from 'vite'
 import {
-  formatErrMsg,
   checkUpdate,
   isWindows,
+  formatErrMsg,
   formatInfoMsg,
+  formatWarnMsg,
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
@@ -42,11 +43,17 @@ function initCheckUpdate() {
 }
 
 function initLogger({ logger }: ResolvedConfig) {
-  const { info, error } = logger
+  const { info, warn, error } = logger
   logger.info = (msg, opts) => {
     msg = formatInfoMsg(msg)
     if (msg) {
       return info(msg, opts)
+    }
+  }
+  logger.warn = (msg, opts) => {
+    msg = formatWarnMsg(msg)
+    if (msg) {
+      return warn(msg, opts)
     }
   }
   logger.error = (msg, opts) => {

@@ -1,4 +1,5 @@
 export * from './fs'
+export * from './mp'
 export * from './env'
 export * from './hbx'
 export * from './logs'
