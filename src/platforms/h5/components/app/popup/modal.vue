@@ -15,7 +15,16 @@
             v-text="title"
           />
         </div>
+        <textarea
+          v-if="editable"
+          ref="editContent"
+          class="uni-modal__textarea"
+          rows="1"
+          :placeholder="placeholderText"
+          :value="content"
+        />
         <div
+          v-else
           class="uni-modal__bd"
           @touchmove.stop
           v-text="content"
@@ -41,7 +50,7 @@
       <keypress
         :disable="!visible"
         @esc="_close('cancel')"
-        @enter="_close('confirm')"
+        @enter="!editable && _close('confirm')"
       />
     </uni-modal>
   </transition>
@@ -86,11 +95,25 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    editable: {
+      type: Boolean,
+      default: false
+    },
+    placeholderText: {
+      type: String,
+      default: ''
     }
   },
   methods: {
     _close (type) {
-      this.$emit('close', type)
+      const res = {
+        [type]: true
+      }
+      if (this.editable && type === 'confirm') {
+        res.content = this.$refs.editContent.value
+      }
+      this.$emit('close', res)
     }
   }
 }
@@ -155,6 +178,19 @@ export default {
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
+
+	uni-modal .uni-modal__textarea {
+  resize: none;
+  border: 0;
+  margin: 0;
+  width: 90%;
+  padding: 10px;
+  font-size: 20px;
+  outline: none;
+  border: none;
+  background-color: #eee;
+  text-decoration: inherit;
+}
 
 	uni-modal .uni-modal__ft {
 		position: relative;

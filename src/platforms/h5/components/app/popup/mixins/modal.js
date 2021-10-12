@@ -21,9 +21,9 @@ export default {
   },
   methods: {
     // 处理 modal close 回调
-    _onModalClose (type) {
+    _onModalClose (res) {
       this.showModal.visible = false
-      isFn(this.onModalCloseCallback) && this.onModalCloseCallback(type)
+      isFn(this.onModalCloseCallback) && this.onModalCloseCallback(res)
     }
   }
 }

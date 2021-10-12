@@ -96,7 +96,13 @@ function decodeEntities (htmlString) {
   })
 }
 
-export default function parseNodes (nodes, parentNode) {
+export default function parseNodes (nodes, parentNode, $vm) {
+  let scopeId = ''
+  while ($vm) {
+    !scopeId && (scopeId = $vm.$options._scopeId)
+    $vm = $vm.$parent
+  }
+
   nodes.forEach(function (node) {
     if (!isPlainObject(node)) {
       return
@@ -124,6 +130,7 @@ export default function parseNodes (nodes, parentNode) {
               Array.isArray(value) && (value = value.join(' '))
             case 'style':
               elem.setAttribute(name, value)
+              scopeId && elem.setAttribute(scopeId, '')
               break
             default:
               if (tagAttrs.indexOf(name) !== -1) {

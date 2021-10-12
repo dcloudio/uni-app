@@ -40,6 +40,13 @@ export class MapContext {
     this.id = id
     this.pageVm = pageVm
   }
+
+  on (name, callback) {
+    operateMapPlayer(this.id, this.pageVm, 'on', {
+      name,
+      callback
+    })
+  }
 }
 
 MapContext.prototype.$getAppMap = function () {

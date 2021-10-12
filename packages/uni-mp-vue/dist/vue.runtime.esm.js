@@ -2561,7 +2561,7 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
         // local registration
         // check instance[type] first which is resolved for options API
         resolve(instance[type] || Component[type], name) ||
-            // window registration
+            // global registration
             resolve(instance.appContext[type], name);
         if (!res && maybeSelfReference) {
             // fallback to implicit self-reference
@@ -3048,7 +3048,7 @@ const PublicInstanceProxyHandlers = {
             return ctx[key];
         }
         else if (
-        // window properties
+        // global properties
         ((globalProperties = appContext.config.globalProperties),
             hasOwn(globalProperties, key))) {
             {
@@ -3392,6 +3392,11 @@ let compile;
 const isRuntimeOnly = () => !compile;
 function finishComponentSetup(instance, isSSR, skipOptions) {
     const Component = instance.type;
+    // template / render function normalization
+    // could be already set when returned from setup()
+    if (!instance.render) {
+        instance.render = (Component.render || NOOP);
+    }
     // support for 2.x options
     if (__VUE_OPTIONS_API__ && !(false )) {
         setCurrentInstance(instance);
@@ -4276,15 +4281,21 @@ function getContext() {
  * only.
  * @internal
  */
-function mergeDefaults(
-// the base props is compiler-generated and guaranteed to be in this shape.
-props, defaults) {
+function mergeDefaults(raw, defaults) {
+    const props = isArray(raw)
+        ? raw.reduce((normalized, p) => ((normalized[p] = {}), normalized), {})
+        : raw;
     for (const key in defaults) {
-        const val = props[key];
-        if (val) {
-            val.default = defaults[key];
+        const opt = props[key];
+        if (opt) {
+            if (isArray(opt) || isFunction(opt)) {
+                props[key] = { type: opt, default: defaults[key] };
+            }
+            else {
+                opt.default = defaults[key];
+            }
         }
-        else if (val === null) {
+        else if (opt === null) {
             props[key] = { default: defaults[key] };
         }
         else if ((process.env.NODE_ENV !== 'production')) {
@@ -4341,7 +4352,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.19";
+const version = "3.2.20";
 /**
  * @internal only exposed in compat builds
  */
@@ -4664,10 +4675,48 @@ function mountComponent(initialVNode, options) {
     }
     return instance.proxy;
 }
+const getFunctionalFallthrough = (attrs) => {
+    let res;
+    for (const key in attrs) {
+        if (key === 'class' || key === 'style' || isOn(key)) {
+            (res || (res = {}))[key] = attrs[key];
+        }
+    }
+    return res;
+};
+function renderComponentRoot(instance) {
+    const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx } = instance;
+    let result;
+    const prev = setCurrentRenderingInstance(instance);
+    try {
+        if (vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */) {
+            // withProxy is a proxy with a different `has` trap only for
+            // runtime-compiled render functions using `with` block.
+            const proxyToUse = withProxy || proxy;
+            result = render.call(proxyToUse, proxyToUse, renderCache, props, setupState, data, ctx);
+        }
+        else {
+            // functional
+            const render = Component;
+            result =
+                render.length > 1
+                    ? render(props, { attrs, slots, emit })
+                    : render(props, null /* we know it doesn't need it */)
+                        ? attrs
+                        : getFunctionalFallthrough(attrs);
+        }
+    }
+    catch (err) {
+        handleError(err, instance, 1 /* RENDER_FUNCTION */);
+        result = false;
+    }
+    setCurrentRenderingInstance(prev);
+    return result;
+}
 function setupRenderEffect(instance) {
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
-            instance.render && instance.render.call(instance.proxy);
+            renderComponentRoot(instance);
             patch(instance);
         }
         else {
@@ -4680,6 +4729,7 @@ function setupRenderEffect(instance) {
                 invokeArrayFns(bu);
             }
             effect.allowRecurse = true;
+            renderComponentRoot(instance);
             patch(instance);
             // updated hook
             if (u) {
@@ -4818,8 +4868,44 @@ function initOptionMergeStrategies(optionMergeStrategies) {
     });
 }
 
+let realAtob;
+const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+if (typeof atob !== 'function') {
+    realAtob = function (str) {
+        str = String(str).replace(/[\t\n\f\r ]+/g, '');
+        if (!b64re.test(str)) {
+            throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+        }
+        // Adding the padding if missing, for semplicity
+        str += '=='.slice(2 - (str.length & 3));
+        var bitmap;
+        var result = '';
+        var r1;
+        var r2;
+        var i = 0;
+        for (; i < str.length;) {
+            bitmap =
+                (b64.indexOf(str.charAt(i++)) << 18) |
+                    (b64.indexOf(str.charAt(i++)) << 12) |
+                    ((r1 = b64.indexOf(str.charAt(i++))) << 6) |
+                    (r2 = b64.indexOf(str.charAt(i++)));
+            result +=
+                r1 === 64
+                    ? String.fromCharCode((bitmap >> 16) & 255)
+                    : r2 === 64
+                        ? String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255)
+                        : String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255, bitmap & 255);
+        }
+        return result;
+    };
+}
+else {
+    // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+    realAtob = atob;
+}
 function b64DecodeUnicode(str) {
-    return decodeURIComponent(atob(str)
+    return decodeURIComponent(realAtob(str)
         .split('')
         .map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -4883,11 +4969,21 @@ function initApp(app) {
 var plugin = {
     install(app) {
         initApp(app);
+        // TODO 旧编译器使用了$createElement 导致告警
+        app.config.globalProperties.$createElement = () => { };
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);
-            // @ts-ignore
-            createMiniProgramApp(instance);
+            if (global.createApp) {
+                global.createApp(instance);
+            }
+            else {
+                // @ts-ignore 旧编译器
+                if (typeof createMiniProgramApp !== 'undefined') {
+                    // @ts-ignore
+                    createMiniProgramApp(instance);
+                }
+            }
             return instance;
         };
     },

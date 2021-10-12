@@ -30,6 +30,15 @@ function convertLength (k, v) {
 }
 
 let isFirst = true
+const ZERO_WIDTH_CHAR = {
+  NOTE: '',
+  WARNING: '\u200B',
+  ERROR: '\u200C',
+  backup0: '\u200D',
+  backup1: '\u200E',
+  backup2: '\u200F',
+  backup3: '\uFEFF'
+}
 
 function genStyleString (input, loader) {
   var output = '{}'
@@ -56,7 +65,11 @@ function genStyleString (input, loader) {
             msgs.unshift(uniI18n.__('pluginHbuilderx.nvueCssWarning'))
             isFirst = false
           }
-          msgs.forEach(msg => console.warn(msg))
+          msgs.forEach(msg => {
+            const msgType = ZERO_WIDTH_CHAR[msg.split(':')[0]]
+            msgType && (msg = msgType + msg + msgType)
+            console.warn(msg)
+          })
         }
       }
       try {
