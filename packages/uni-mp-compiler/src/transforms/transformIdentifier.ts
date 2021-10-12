@@ -45,7 +45,6 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               exp.content = '*this'
               continue
             }
-
             dir.exp = rewriteExpression(exp, context)
           }
         }

@@ -32,6 +32,7 @@ import {
 import { CodegenScope, CodegenVForScope, CodegenVIfScope } from './options'
 import { TransformContext } from './transform'
 import { genExpr } from './codegen'
+import { V_FOR } from './runtimeHelpers'
 
 export function createIdentifier(name: string) {
   return identifier(name)
@@ -78,12 +79,15 @@ function numericLiteralToArrayExpr(num: number) {
   return arrayExpression(elements)
 }
 
-export function createVForCallExpression(vForScope: CodegenVForScope) {
+export function createVForCallExpression(
+  vForScope: CodegenVForScope,
+  context: TransformContext
+) {
   let sourceExpr: Expression = vForScope.sourceExpr!
   if (isNumericLiteral(sourceExpr)) {
     sourceExpr = numericLiteralToArrayExpr((sourceExpr as NumericLiteral).value)
   }
-  return callExpression(identifier('vFor'), [
+  return callExpression(identifier(context.helperString(V_FOR)), [
     sourceExpr,
     createVForArrowFunctionExpression(vForScope),
   ])

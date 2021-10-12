@@ -1,3 +1,4 @@
+import { formatMiniProgramEvent } from '@dcloudio/uni-cli-shared'
 import {
   AttributeNode,
   DirectiveNode,
@@ -141,12 +142,25 @@ export function genElementProps(
       }
     } else {
       const { name } = prop
-      if (name === 'bind') {
-        push(` `)
+      push(` `)
+      if (name === 'on') {
+        genOn(prop, context)
+      } else {
         genDirectiveNode(prop, context)
       }
     }
   })
+}
+function genOn(prop: DirectiveNode, { push }: TemplateCodegenContext) {
+  const arg = (prop.arg as SimpleExpressionNode).content
+  const exp = (prop.exp as SimpleExpressionNode).content
+  const modifiers = prop.modifiers
+  push(
+    `${formatMiniProgramEvent(arg, {
+      isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
+      isCapture: modifiers.includes('capture'),
+    })}="{{${exp}}}"`
+  )
 }
 
 function genDirectiveNode(

@@ -21,6 +21,7 @@ interface SharedTransformCodegenOptions {
 export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
+  cacheHandlers?: boolean
   nodeTransforms?: NodeTransform[]
   directiveTransforms?: Record<string, DirectiveTransform | undefined>
   isBuiltInComponent?: (tag: string) => symbol | void

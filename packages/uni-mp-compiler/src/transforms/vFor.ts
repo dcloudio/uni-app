@@ -149,7 +149,7 @@ export const transformFor = createStructuralDirectiveTransform(
       const id = parentScope.id.next()
       vFor.sourceAlias = id
       parentScope.properties.push(
-        createObjectProperty(id, createVForCallExpression(vForScope))
+        createObjectProperty(id, createVForCallExpression(vForScope, context))
       )
       popScope()
     }

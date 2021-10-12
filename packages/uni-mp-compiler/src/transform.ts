@@ -1,4 +1,12 @@
-import { NOOP, EMPTY_OBJ, extend, isString, isArray } from '@vue/shared'
+import {
+  NOOP,
+  EMPTY_OBJ,
+  extend,
+  isString,
+  isArray,
+  capitalize,
+  camelize,
+} from '@vue/shared'
 
 import {
   DirectiveNode,
@@ -15,6 +23,9 @@ import {
   ExpressionNode,
   ElementTypes,
   isVSlot,
+  JSChildNode,
+  CacheExpression,
+  locStub,
 } from '@vue/compiler-core'
 import IdentifierGenerator from './identifier'
 import {
@@ -51,16 +62,20 @@ export interface ErrorHandlingOptions {
 
 export interface TransformContext
   extends Required<Omit<TransformOptions, 'filename'>> {
+  selfName: string | null
   currentNode: RootNode | TemplateChildNode | null
   parent: ParentNode | null
   childIndex: number
   helpers: Map<symbol, number>
+  components: Set<string>
   identifiers: { [name: string]: number | undefined }
+  cached: number
   scopes: {
     vFor: number
   }
   scope: CodegenRootScope
   currentScope: CodegenScope
+  inVOnce: boolean
   helper<T extends symbol>(name: T): T
   removeHelper<T extends symbol>(name: T): void
   helperString(name: symbol): string
@@ -72,6 +87,7 @@ export interface TransformContext
   popScope(): CodegenScope | undefined
   addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
+  cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
 }
 
 export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
@@ -175,9 +191,11 @@ function defaultOnWarn(msg: CompilerError) {
 export function createTransformContext(
   root: RootNode,
   {
+    filename = '',
     isTS = false,
     inline = false,
     bindingMetadata = EMPTY_OBJ,
+    cacheHandlers = false,
     prefixIdentifiers = false,
     skipTransformIdentifier = false,
     nodeTransforms = [],
@@ -212,11 +230,14 @@ export function createTransformContext(
   }
   const identifiers = Object.create(null)
   const scopes: CodegenScope[] = [scope]
+  const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
+    selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     isTS,
     inline,
     bindingMetadata,
+    cacheHandlers,
     prefixIdentifiers,
     nodeTransforms,
     directiveTransforms,
@@ -230,6 +251,8 @@ export function createTransformContext(
     parent: null,
     childIndex: 0,
     helpers: new Map(),
+    components: new Set(),
+    cached: 0,
     identifiers,
     scope,
     scopes: {
@@ -239,6 +262,7 @@ export function createTransformContext(
       return scopes[scopes.length - 1]
     },
     currentNode: root,
+    inVOnce: false,
     // methods
     popScope() {
       return scopes.pop()
@@ -327,6 +351,9 @@ export function createTransformContext(
         removeId(exp.content)
       }
     },
+    cache(exp, isVNode = false) {
+      return createCacheExpression(context.cached++, exp, isVNode)
+    },
   }
 
   function addId(id: string) {
@@ -342,6 +369,20 @@ export function createTransformContext(
   }
 
   return context
+}
+
+function createCacheExpression(
+  index: number,
+  value: JSChildNode,
+  isVNode: boolean = false
+): CacheExpression {
+  return {
+    type: NodeTypes.JS_CACHE_EXPRESSION,
+    index,
+    value,
+    isVNode,
+    loc: locStub,
+  }
 }
 
 export declare type StructuralDirectiveTransform = (

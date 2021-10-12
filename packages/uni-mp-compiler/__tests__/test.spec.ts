@@ -1,8 +1,14 @@
 // import { inspect } from './testUtils'
 
 import { compile } from '../src'
+import { CompilerOptions } from '../src/options'
 
-function assert(template: string, templateCode: string, renderCode: string) {
+function assert(
+  template: string,
+  templateCode: string,
+  renderCode: string,
+  options: CompilerOptions
+) {
   const res = compile(template, {
     filename: 'foo.vue',
     prefixIdentifiers: true,
@@ -14,6 +20,7 @@ function assert(template: string, templateCode: string, renderCode: string) {
         return ''
       },
     },
+    ...options,
   })
   // expect(res.template).toBe(templateCode)
   // expect(res.code).toBe(renderCode)
@@ -24,17 +31,16 @@ function assert(template: string, templateCode: string, renderCode: string) {
 }
 
 describe('compiler', () => {
-  test(`keyed v-for`, () => {
+  test('should wrap as function if expression is inline statement', () => {
     assert(
-      `<view v-for="(item) in items" :key="item" />`,
-      `<view wx:for="{{a}}" wx:for-item="item" wx:key="*this"/>`,
+      `<div v-on:click="foo" />`,
+      `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
 return {
-  a: vFor(_ctx.items, item => {
-    return {};
-  })
+  a: _vOn(_ctx.foo)
 }
-}`
+}`,
+      {}
     )
   })
 })
