@@ -11365,7 +11365,7 @@ function decodeEntities(htmlString) {
     return wrap.innerText || wrap.textContent;
   });
 }
-function parseNodes(nodes, parentNode) {
+function parseNodes(nodes, parentNode, scopeId) {
   nodes.forEach(function(node) {
     if (!isPlainObject(node)) {
       return;
@@ -11392,6 +11392,7 @@ function parseNodes(nodes, parentNode) {
               Array.isArray(value) && (value = value.join(" "));
             case "style":
               elem.setAttribute(name, value);
+              scopeId && elem.setAttribute(scopeId, "");
               break;
             default:
               if (tagAttrs.indexOf(name) !== -1) {
@@ -11428,12 +11429,13 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
   },
   props: props$m,
   setup(props2) {
+    const vm = getCurrentInstance();
     const rootRef = ref(null);
     function _renderNodes(nodes) {
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment());
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm == null ? void 0 : vm.root.type).__scopeId || "");
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
