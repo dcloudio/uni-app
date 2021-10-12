@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-plus",
-  "version": "3.0.0-alpha-3021020211012002",
+  "version": "3.0.0-alpha-3021020211012003",
   "description": "@dcloudio/uni-app-plus",
   "files": [
     "dist",
@@ -22,5 +22,5 @@
   "dependencies": {
     "vue": "^3.2.20"
   },
-  "gitHead": "ad71849f44d867ed5452056e4167ec7f2ed56693"
+  "gitHead": "1efa8efd0a9eddeabdba75c020d015ebf31b8177"
 }
