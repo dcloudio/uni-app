@@ -68,7 +68,7 @@
     "@types/stylus": "^0.48.36",
     "@types/uglify-js": "^3.13.1",
     "@typescript-eslint/parser": "^4.12.0",
-    "@vitejs/plugin-legacy": "^1.6.1",
+    "@vitejs/plugin-legacy": "^1.6.2",
     "@vitejs/plugin-vue": "^1.9.3",
     "@vitejs/plugin-vue-jsx": "^1.2.0",
     "@vue/compiler-sfc": "^3.2.20",
@@ -96,7 +96,7 @@
     "semver": "^7.3.4",
     "ts-jest": "^27.0.3",
     "typescript": "^4.4.3",
-    "vite": "^2.6.5",
+    "vite": "^2.6.7",
     "vue": "^3.2.20",
     "yorkie": "^2.0.0"
   },
