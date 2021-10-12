@@ -1,4 +1,4 @@
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, getCurrentInstance } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import parseHtml from './html-parser'
 import parseNodes from './nodes-parser'
@@ -18,14 +18,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MODE: 3,
   },
   props,
-  setup(props) {
+  setup(props, ...args) {
+    const vm = getCurrentInstance()
     const rootRef = ref<HTMLElement | null>(null)
 
     function _renderNodes(nodes: string | unknown[]) {
       if (typeof nodes === 'string') {
         nodes = parseHtml(nodes)
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment())
+      const nodeList = parseNodes(
+        nodes,
+        document.createDocumentFragment(),
+        (vm?.root.type as any).__scopeId || ''
+      )
       rootRef.value!.firstElementChild!.innerHTML = ''
       rootRef.value!.firstElementChild!.appendChild(nodeList)
     }
