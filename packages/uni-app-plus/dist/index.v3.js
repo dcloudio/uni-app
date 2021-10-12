@@ -4831,6 +4831,9 @@ var serviceContext = (function () {
     },
     openMapApp (ctx, args) {
       return invokeVmMethod(ctx, 'openMapApp', args)
+    },
+    on (ctx, args) {
+      return ctx.on(args.name, args.callback)
     }
   };
 
@@ -10623,24 +10626,35 @@ var serviceContext = (function () {
     cancelText,
     cancelColor,
     confirmText,
-    confirmColor
+    confirmColor,
+    editable = false,
+    placeholderText	= ''
   } = {}, callbackId) {
+    // TODO 在 editable 为 true 时，content 应该是输入框中可修改内容。后续找客户端商量。
+    const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
+    const tip = editable ? placeholderText : buttons;
+
     content = content || ' ';
-    plus.nativeUI.confirm(content, (e) => {
+    plus.nativeUI[editable ? 'prompt' : 'confirm'](content, (e) => {
       if (showCancel) {
-        invoke$1(callbackId, {
+        const isConfirm = e.index === 1;
+        const res = {
           errMsg: 'showModal:ok',
-          confirm: e.index === 1,
+          confirm: isConfirm,
           cancel: e.index === 0 || e.index === -1
-        });
+        };
+        isConfirm && editable && (res.content = e.value);
+        invoke$1(callbackId, res);
       } else {
-        invoke$1(callbackId, {
+        const res = {
           errMsg: 'showModal:ok',
           confirm: e.index === 0,
           cancel: false
-        });
+        };
+        editable && (res.content = e.value);
+        invoke$1(callbackId, res);
       }
-    }, title, showCancel ? [cancelText, confirmText] : [confirmText]);
+    }, title, tip, buttons);
   }
   function showActionSheet$1 ({
     itemList = [],
@@ -19636,6 +19650,13 @@ var serviceContext = (function () {
     constructor (id, pageVm) {
       this.id = id;
       this.pageVm = pageVm;
+    }
+
+    on (name, callback) {
+      operateMapPlayer$3(this.id, this.pageVm, 'on', {
+        name,
+        callback
+      });
     }
   }
 
