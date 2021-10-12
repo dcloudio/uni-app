@@ -23,7 +23,7 @@
     "main": "dist/index.js"
   },
   "license": "Apache-2.0",
-  "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7",
+  "gitHead": "ad71849f44d867ed5452056e4167ec7f2ed56693",
   "dependencies": {
     "clean-css": "^5.1.3",
     "fs-extra": "^10.0.0",

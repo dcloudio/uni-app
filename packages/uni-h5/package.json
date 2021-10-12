@@ -27,7 +27,7 @@
     "safe-area-insets": "^1.4.1",
     "xmlhttprequest": "^1.8.0"
   },
-  "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7",
+  "gitHead": "ad71849f44d867ed5452056e4167ec7f2ed56693",
   "devDependencies": {
     "@types/google.maps": "^3.45.6"
   }

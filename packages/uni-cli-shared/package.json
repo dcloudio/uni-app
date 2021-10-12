@@ -34,7 +34,7 @@
     "tapable": "^2.2.0",
     "xregexp": "3.1.0"
   },
-  "gitHead": "453a3e6ead807864087692f4339ea3d667045fe7",
+  "gitHead": "ad71849f44d867ed5452056e4167ec7f2ed56693",
   "devDependencies": {
     "@types/hash-sum": "^1.0.0"
   }
