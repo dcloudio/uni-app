@@ -18,7 +18,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MODE: 3,
   },
   props,
-  setup(props, ...args) {
+  setup(props) {
     const vm = getCurrentInstance()
     const rootRef = ref<HTMLElement | null>(null)
 
