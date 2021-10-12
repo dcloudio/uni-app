@@ -8,6 +8,7 @@ module.exports = function (content, map) {
   this.callback(null, 'module.exports = ' + genStyleString(content, this), map)
 }
 const uniI18n = require('@dcloudio/uni-cli-i18n')
+const print = require('../../../util/console')
 
 // @todo:
 // font-relative lengths: em, ex, ch, ic
@@ -30,15 +31,6 @@ function convertLength (k, v) {
 }
 
 let isFirst = true
-const ZERO_WIDTH_CHAR = {
-  NOTE: '',
-  WARNING: '\u200B',
-  ERROR: '\u200C',
-  backup0: '\u200D',
-  backup1: '\u200E',
-  backup2: '\u200F',
-  backup3: '\uFEFF'
-}
 
 function genStyleString (input, loader) {
   var output = '{}'
@@ -66,9 +58,17 @@ function genStyleString (input, loader) {
             isFirst = false
           }
           msgs.forEach(msg => {
-            const msgType = ZERO_WIDTH_CHAR[msg.split(':')[0]]
-            msgType && (msg = msgType + msg + msgType)
-            console.warn(msg)
+            switch (msg.split(':')[0]) {
+              case 'ERROR':
+                print.error(msg)
+                break
+              case 'WARNING' :
+                print.warn(msg)
+                break
+              default:
+                print.log(msg)
+                break
+            }
           })
         }
       }
