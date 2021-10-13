@@ -1,16 +1,33 @@
 import { BaseNode } from 'estree'
 import { walk } from 'estree-walker'
-import { Expression, isIdentifier, isReferenced } from '@babel/types'
 import {
+  Expression,
+  isIdentifier,
+  isLiteral,
+  isObjectExpression,
+  isReferenced,
+  ObjectExpression,
+  ObjectProperty,
+  stringLiteral,
+} from '@babel/types'
+import {
+  AttributeNode,
   createCompoundExpression,
   createSimpleExpression,
+  DirectiveNode,
   ExpressionNode,
   NodeTypes,
   SimpleExpressionNode,
+  SourceLocation,
   TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
-import { createObjectProperty, parseExpr } from '../ast'
-import { genExpr } from '../codegen'
+import {
+  createClassBindingArrayExpression,
+  createObjectProperty,
+  isUndefined,
+  parseExpr,
+} from '../ast'
+import { genBabelExpr, genExpr } from '../codegen'
 import { CodegenScope, CodegenVForScope } from '../options'
 import {
   isRootScope,
@@ -19,7 +36,7 @@ import {
   NodeTransform,
   TransformContext,
 } from '../transform'
-import { isForElementNode } from './vFor'
+import { ForElementNode, isForElementNode } from './vFor'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return () => {
@@ -34,37 +51,122 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       )
     } else if (node.type === NodeTypes.ELEMENT) {
       const vFor = isForElementNode(node) && node.vFor
-      for (let i = 0; i < node.props.length; i++) {
-        const dir = node.props[i]
+      const { props } = node
+      for (let i = 0; i < props.length; i++) {
+        const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
           const arg = dir.arg
           if (arg) {
             // TODO 指令暂不不支持动态参数,v-bind:[arg] v-on:[event]
             if (!(arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic)) {
-              node.props.splice(i, 1)
+              props.splice(i, 1)
               i--
               continue
             }
           }
           const exp = dir.exp
           if (exp) {
-            if (
-              vFor &&
-              arg &&
-              arg.type === NodeTypes.SIMPLE_EXPRESSION &&
-              arg.content === 'key' &&
-              exp.type === NodeTypes.SIMPLE_EXPRESSION &&
-              exp.content === vFor.valueAlias
-            ) {
-              exp.content = '*this'
-              continue
+            if (isSelfKey(dir, vFor)) {
+              rewriteSelfKey(dir)
+            } else if (isClassBinding(dir)) {
+              rewriteClass(i, dir, props, context)
+            } else {
+              dir.exp = rewriteExpression(exp, context)
             }
-            dir.exp = rewriteExpression(exp, context)
           }
         }
       }
     }
   }
+}
+
+function isSelfKey(
+  { arg, exp }: DirectiveNode,
+  vFor: ForElementNode['vFor'] | false
+) {
+  return (
+    vFor &&
+    arg &&
+    exp &&
+    arg.type === NodeTypes.SIMPLE_EXPRESSION &&
+    arg.content === 'key' &&
+    exp.type === NodeTypes.SIMPLE_EXPRESSION &&
+    exp.content === vFor.valueAlias
+  )
+}
+
+function rewriteSelfKey(dir: DirectiveNode) {
+  ;(dir.exp as SimpleExpressionNode).content = '*this'
+}
+
+function isClassBinding({ arg, exp }: DirectiveNode) {
+  return (
+    arg && arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.content === 'class'
+  )
+}
+
+function findStaticClassIndex(props: (AttributeNode | DirectiveNode)[]) {
+  return props.findIndex((prop) => prop.name === 'class')
+}
+
+function rewriteClass(
+  index: number,
+  classBindingProp: DirectiveNode,
+  props: (AttributeNode | DirectiveNode)[],
+  context: TransformContext
+) {
+  if (!classBindingProp.exp) {
+    return
+  }
+  const staticClassPropIndex = findStaticClassIndex(props)
+  const staticClass =
+    staticClassPropIndex > -1
+      ? (props[staticClassPropIndex] as AttributeNode).value!.content
+      : ''
+  const expr = parseExpr(classBindingProp.exp, context)
+  if (!expr) {
+    return
+  }
+  if (isObjectExpression(expr)) {
+    // 重写{ key:value }所有的 value
+    rewriteObjectExpression(expr, classBindingProp.loc, context)
+    const arrExpr = createClassBindingArrayExpression(expr)
+    if (staticClass) {
+      if (index > staticClassPropIndex) {
+        arrExpr.elements.unshift(stringLiteral(staticClass))
+      } else {
+        arrExpr.elements.push(stringLiteral(staticClass))
+      }
+    }
+    classBindingProp.exp = createSimpleExpression(genBabelExpr(arrExpr))
+  } else {
+    classBindingProp.exp = rewriteExpression(classBindingProp.exp, context)
+  }
+}
+
+function rewriteObjectExpression(
+  expr: ObjectExpression,
+  loc: SourceLocation,
+  context: TransformContext
+) {
+  expr.properties.forEach((prop) => {
+    const { value } = prop as ObjectProperty
+    if (isLiteral(value)) {
+      return
+    } else {
+      const newExpr = parseExpr(
+        rewriteExpression(
+          createSimpleExpression(genBabelExpr(value as Expression), false, loc),
+          context,
+          value as Expression
+        ),
+        context
+      )
+      if (newExpr) {
+        ;(prop as ObjectProperty).value = newExpr
+      }
+    }
+  })
 }
 
 export function rewriteExpression(
@@ -82,6 +184,9 @@ export function rewriteExpression(
     if (!babelNode) {
       return createSimpleExpression(code)
     }
+  }
+  if (isUndefined(babelNode)) {
+    return createSimpleExpression('undefined', false, node.loc)
   }
 
   scope = findScope(babelNode, scope)!

@@ -13,6 +13,7 @@ import {
 import { default as babelGenerate } from '@babel/generator'
 import { CodegenOptions, CodegenScope } from './options'
 import { createObjectExpression } from './ast'
+import { Expression } from '@babel/types'
 
 interface CodegenContext extends CodegenOptions {
   code: string
@@ -81,11 +82,7 @@ export function generate(
   }
 
   push(`return `)
-  push(
-    babelGenerate(createObjectExpression(scope.properties), {
-      concise: true,
-    }).code
-  )
+  push(genBabelExpr(createObjectExpression(scope.properties)))
   if (useWithBlock) {
     deindent()
     push(`}`)
@@ -206,6 +203,15 @@ function createGenNodeContext() {
     },
   }
   return context
+}
+
+export function genBabelExpr(expr: Expression) {
+  return babelGenerate(expr, {
+    concise: true,
+    jsescOption: {
+      quotes: 'single',
+    },
+  }).code
 }
 
 export function genExpr(
