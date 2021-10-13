@@ -14,8 +14,7 @@ import {
   TO_HANDLER_KEY,
 } from '@vue/compiler-core'
 import { camelize, toHandlerKey } from '@vue/shared'
-import { V_ON } from '..'
-import { errorMessages, X_V_ON_DYNAMIC_EVENT } from '../errors'
+import { V_ON } from '../runtimeHelpers'
 import { DirectiveTransform, TransformContext } from '../transform'
 import { DirectiveTransformResult } from './transformElement'
 import { processExpression } from './transformExpression'
@@ -54,10 +53,6 @@ export const transformOn: DirectiveTransform = (
         arg.loc
       )
     } else {
-      // TODO 不支持动态事件
-      context.onError(
-        createCompilerError(X_V_ON_DYNAMIC_EVENT, loc, errorMessages)
-      )
       // #2388
       eventName = createCompoundExpression([
         // `${context.helperString(TO_HANDLER_KEY)}(`,

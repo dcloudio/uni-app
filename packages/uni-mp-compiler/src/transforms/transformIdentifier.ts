@@ -37,11 +37,16 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       for (let i = 0; i < node.props.length; i++) {
         const dir = node.props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
-          const exp = dir.exp
           const arg = dir.arg
           if (arg) {
-            dir.arg = rewriteExpression(arg, context)
+            // TODO 指令暂不不支持动态参数,v-bind:[arg] v-on:[event]
+            if (!(arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic)) {
+              node.props.splice(i, 1)
+              i--
+              continue
+            }
           }
+          const exp = dir.exp
           if (exp) {
             if (
               vFor &&

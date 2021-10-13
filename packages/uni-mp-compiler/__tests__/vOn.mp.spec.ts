@@ -1,6 +1,6 @@
 import { ElementNode } from '@vue/compiler-core'
 import { compile } from '../src'
-import { X_V_ON_DYNAMIC_EVENT } from '../src/errors'
+import { MPErrorCodes } from '../src/errors'
 import { CompilerOptions } from '../src/options'
 
 function parseWithVOn(template: string, options: CompilerOptions = {}) {
@@ -16,7 +16,7 @@ describe('compiler(mp): transform v-on', () => {
     const onError = jest.fn()
     parseWithVOn(`<div v-on:[event]="onClick" />`, { onError })
     expect(onError.mock.calls[0][0]).toMatchObject({
-      code: X_V_ON_DYNAMIC_EVENT,
+      code: MPErrorCodes.X_V_ON_DYNAMIC_EVENT,
       loc: {
         start: {
           line: 1,

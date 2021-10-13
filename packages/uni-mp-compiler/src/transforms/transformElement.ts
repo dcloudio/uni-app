@@ -9,6 +9,7 @@ import {
   Property,
   ExpressionNode,
 } from '@vue/compiler-core'
+import { errorMessages, MPErrorCodes } from '../errors'
 
 import { NodeTransform, TransformContext } from '../transform'
 
@@ -46,7 +47,7 @@ function processProps(node: ElementNode, context: TransformContext) {
     const prop = props[i]
     if (prop.type === NodeTypes.DIRECTIVE) {
       // directives
-      const { name, arg, exp, loc } = prop
+      const { name, arg, loc } = prop
       const isVBind = name === 'bind'
       const isVOn = name === 'on'
       // skip v-slot - it is handled by its dedicated transform.
@@ -70,25 +71,37 @@ function processProps(node: ElementNode, context: TransformContext) {
         continue
       }
 
-      // special case for v-bind and v-on with no argument
-      if (!arg && (isVBind || isVOn)) {
-        if (exp) {
-          if (isVOn) {
-            context.onError(
-              createCompilerError(ErrorCodes.X_V_ON_NO_EXPRESSION, loc)
-            )
-          }
-        } else {
+      if (isVBind || isVOn) {
+        // v-on=""
+        // v-bind=""
+        if (!arg) {
           context.onError(
             createCompilerError(
               isVBind
-                ? ErrorCodes.X_V_BIND_NO_EXPRESSION
-                : ErrorCodes.X_V_ON_NO_EXPRESSION,
-              loc
+                ? MPErrorCodes.X_V_BIND_NO_ARGUMENT
+                : MPErrorCodes.X_V_ON_NO_ARGUMENT,
+              loc,
+              errorMessages
             )
           )
+          continue
         }
-        continue
+        // v-on:[a]=""
+        // v-on:[a.b]=""
+        // v-bind:[a]=""
+        // v-bind:[a.b]=""
+        if (!(arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic)) {
+          context.onError(
+            createCompilerError(
+              isVBind
+                ? MPErrorCodes.X_V_BIND_DYNAMIC_ARGUMENT
+                : MPErrorCodes.X_V_ON_DYNAMIC_EVENT,
+              loc,
+              errorMessages
+            )
+          )
+          continue
+        }
       }
 
       const directiveTransform = context.directiveTransforms[name]
