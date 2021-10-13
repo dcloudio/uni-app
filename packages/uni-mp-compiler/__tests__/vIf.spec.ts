@@ -29,10 +29,7 @@ describe(`compiler: v-if`, () => {
         `<view v-if="ok"/>`,
         `<view wx:if="{{a}}"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : {})
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : {}) }
 }`
       )
     })
@@ -41,10 +38,7 @@ return {
         `<template v-if="ok"><view/>hello<view/></template>`,
         `<block wx:if="{{a}}"><view/>hello<view/></block>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : {})
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : {}) }
 }`
       )
     })
@@ -53,10 +47,7 @@ return {
         `<template v-if="ok"><slot/></template>`,
         `<block wx:if="{{a}}"><slot/></block>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : {})
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : {}) }
 }`
       )
     })
@@ -65,10 +56,7 @@ return {
         `<slot v-if="ok"/>`,
         `<slot wx:if="{{a}}"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : {})
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : {}) }
 }`
       )
     })
@@ -77,10 +65,7 @@ return {
         `<Component v-if="ok"></Component>`,
         `<Component wx:if="{{a}}"></Component>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : {})
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : {}) }
 }`
       )
     })
@@ -89,10 +74,7 @@ return {
         `<view v-if="ok"/><view v-else/>`,
         `<view wx:if="{{a}}"/><view wx:else/>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : {})
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : {}) }
 }`
       )
     })
@@ -101,11 +83,7 @@ return {
         `<view v-if="ok"/><view v-else-if="orNot"/>`,
         `<view wx:if="{{a}}"/><view wx:elif="{{b}}"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : _ctx.orNot ? {} : {}),
-  b: _ctx.orNot
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : _ctx.orNot ? {} : {}), b: _ctx.orNot }
 }`
       )
     })
@@ -114,11 +92,7 @@ return {
         `<view v-if="ok"/><view v-else-if="orNot"/><template v-else>fine</template>`,
         `<view wx:if="{{a}}"/><view wx:elif="{{b}}"/><block wx:else>fine</block>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : _ctx.orNot ? {} : {}),
-  b: _ctx.orNot
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : _ctx.orNot ? {} : {}), b: _ctx.orNot }
 }`
       )
     })
@@ -145,11 +119,7 @@ return {
         `<view v-if="ok"/><view v-else-if="orNot"/><view v-else-if="3"/><template v-else>fine</template>`,
         `<view wx:if="{{a}}"/><view wx:elif="{{b}}"/><view wx:elif="{{3}}"/><block wx:else>fine</block>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : _ctx.orNot ? {} : 3 ? {} : {}),
-  b: _ctx.orNot
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : _ctx.orNot ? {} : 3 ? {} : {}), b: _ctx.orNot }
 }`
       )
     })
@@ -164,11 +134,7 @@ return {
       `,
         `<view wx:if="{{a}}"/><view wx:elif="{{b}}"/><block wx:else>fine</block>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : _ctx.orNot ? {} : {}),
-  b: _ctx.orNot
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : _ctx.orNot ? {} : {}), b: _ctx.orNot }
 }`
       )
     })
@@ -177,11 +143,7 @@ return {
         `<view v-if="ok"/> <view v-else-if="no"/> <view v-else/>`,
         `<view wx:if="{{a}}"/><view wx:elif="{{b}}"/><view wx:else/>`,
         `(_ctx, _cache) => {
-return {
-  a: _ctx.ok,
-  ...(_ctx.ok ? {} : _ctx.no ? {} : {}),
-  b: _ctx.no
-}
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : _ctx.no ? {} : {}), b: _ctx.no }
 }`
       )
     })
@@ -201,13 +163,7 @@ return {
         `,
         `<block wx:if="{{b}}"><view wx:if="{{a}}"></view><view wx:else/><view/></block>`,
         `(_ctx, _cache) => {
-return {
-  b: _ctx.ok,
-  ...(_ctx.ok ? {
-    a: _ctx.ok2,
-    ...(_ctx.ok2 ? {} : {})
-  } : {})
-}
+  return { b: _ctx.ok, ...(_ctx.ok ? { a: _ctx.ok2, ...(_ctx.ok2 ? {} : {}) } : {}) }
 }`
       )
     })

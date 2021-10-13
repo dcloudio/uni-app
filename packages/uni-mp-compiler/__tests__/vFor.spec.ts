@@ -29,11 +29,7 @@ describe(`compiler: v-for`, () => {
         `<view v-for="index in 5" />`,
         `<view wx:for="{{a}}" wx:for-item="index"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor([1, 2, 3, 4, 5], index => {
-    return {};
-  })
-}
+  return { a: _vFor([1, 2, 3, 4, 5], index => { return {}; }) }
 }`
       )
     })
@@ -42,11 +38,7 @@ return {
         `<view v-for="(item) in items" />`,
         `<view wx:for="{{a}}" wx:for-item="item"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })
@@ -55,14 +47,7 @@ return {
         `<view v-for="({ id, value }) in items" />`,
         `<view wx:for="{{a}}" wx:for-item="v0"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, ({
-    id,
-    value
-  }) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, ({ id, value }) => { return {}; }) }
 }`
       )
     })
@@ -71,11 +56,7 @@ return {
         `<view v-for="([ id, value ]) in items" />`,
         `<view wx:for="{{a}}" wx:for-item="v0"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, ([id, value]) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, ([id, value]) => { return {}; }) }
 }`
       )
     })
@@ -84,11 +65,7 @@ return {
         `<view v-for="(item, key) in items" />`,
         `<view wx:for="{{a}}" wx:for-item="item" wx:for-index="key"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (item, key) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (item, key) => { return {}; }) }
 }`
       )
     })
@@ -97,11 +74,7 @@ return {
         `<view v-for="(item, key, index) in items" />`,
         `<view wx:for="{{a}}" wx:for-item="item" wx:for-index="key"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (item, key, index) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (item, key, index) => { return {}; }) }
 }`
       )
     })
@@ -110,11 +83,7 @@ return {
         `<view v-for="(value,,index) in items" />`,
         `<view wx:for="{{a}}" wx:for-item="value"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (value, __, index) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (value, __, index) => { return {}; }) }
 }`
       )
     })
@@ -123,11 +92,7 @@ return {
         `<view v-for="(,,index) in items" />`,
         `<view wx:for="{{a}}" wx:for-item="v0"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (_, __, index) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (_, __, index) => { return {}; }) }
 }`
       )
     })
@@ -136,11 +101,7 @@ return {
         `<view v-for="item in items" />`,
         `<view wx:for="{{a}}" wx:for-item="item"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })
@@ -149,11 +110,7 @@ return {
         `<view v-for="item, key in items" />`,
         `<view wx:for="{{a}}" wx:for-item="item" wx:for-index="key"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (item, key) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (item, key) => { return {}; }) }
 }`
       )
     })
@@ -162,11 +119,7 @@ return {
         `<view v-for="value, key, index in items" />`,
         `<view wx:for="{{a}}" wx:for-item="value" wx:for-index="key"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (value, key, index) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (value, key, index) => { return {}; }) }
 }`
       )
     })
@@ -175,11 +128,7 @@ return {
         `<view v-for="value, , index in items" />`,
         `<view wx:for="{{a}}" wx:for-item="value"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (value, __, index) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (value, __, index) => { return {}; }) }
 }`
       )
     })
@@ -188,11 +137,7 @@ return {
         `<view v-for=", , index in items" />`,
         `<view wx:for="{{a}}" wx:for-item="v0"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, (_, __, index) => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, (_, __, index) => { return {}; }) }
 }`
       )
     })
@@ -201,11 +146,7 @@ return {
         `<template v-for="item in items">hello<view/></template>`,
         `<block wx:for="{{a}}" wx:for-item="item">hello<view/></block>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })
@@ -214,11 +155,7 @@ return {
         `<template v-for="item in items"><slot/></template>`,
         `<block wx:for="{{a}}" wx:for-item="item"><slot/></block>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })
@@ -228,14 +165,7 @@ return {
         `<template v-for="item in items" :key="item.id"><view :id="item.id" /></template>`,
         `<block wx:for="{{a}}" wx:for-item="item" wx:key="b"><view id="{{item.a}}"/></block>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {
-      a: item.id,
-      b: item.id
-    };
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return { a: item.id, b: item.id }; }) }
 }`
       )
     })
@@ -244,11 +174,7 @@ return {
         `<slot v-for="item in items"></slot>`,
         `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })
@@ -257,11 +183,7 @@ return {
         `<view v-for="(item) in items" :key="item" />`,
         `<view wx:for="{{a}}" wx:for-item="item" wx:key="*this"/>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })
@@ -270,11 +192,7 @@ return {
         `<template v-for="item in items" :key="item">hello<view/></template>`,
         `<block wx:for="{{a}}" wx:for-item="item" wx:key="*this">hello<view/></block>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })
@@ -283,14 +201,7 @@ return {
         `<view v-if="ok" v-for="i in list"/>`,
         `<view wx:if="{{b}}" wx:for="{{a}}" wx:for-item="i"/>`,
         `(_ctx, _cache) => {
-return {
-  b: _ctx.ok,
-  ...(_ctx.ok ? {
-    a: _vFor(_ctx.list, i => {
-      return {};
-    })
-  } : {})
-}
+  return { b: _ctx.ok, ...(_ctx.ok ? { a: _vFor(_ctx.list, i => { return {}; }) } : {}) }
 }`
       )
     })
@@ -300,14 +211,7 @@ return {
         `<template v-if="ok" v-for="i in list"/>`,
         `<block wx:if="{{b}}" wx:for="{{a}}" wx:for-item="i"/>`,
         `(_ctx, _cache) => {
-return {
-  b: _ctx.ok,
-  ...(_ctx.ok ? {
-    a: _vFor(_ctx.list, i => {
-      return {};
-    })
-  } : {})
-}
+  return { b: _ctx.ok, ...(_ctx.ok ? { a: _vFor(_ctx.list, i => { return {}; }) } : {}) }
 }`
       )
     })
@@ -708,13 +612,7 @@ return {
         `<view v-for="item in items" :key="itemKey(item)">test</view>`,
         `<view wx:for="{{a}}" wx:for-item="item" wx:key="a">test</view>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {
-      a: _ctx.itemKey(item)
-    };
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return { a: _ctx.itemKey(item) }; }) }
 }`
       )
     })
@@ -725,13 +623,7 @@ return {
         `<template v-for="item in items" :key="itemKey(item)">test</template>`,
         `<block wx:for="{{a}}" wx:for-item="item" wx:key="a">test</block>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {
-      a: _ctx.itemKey(item)
-    };
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return { a: _ctx.itemKey(item) }; }) }
 }`
       )
     })
@@ -741,11 +633,7 @@ return {
         `<template v-for="item in items" key="key">test</template>`,
         `<block wx:for="{{a}}" wx:for-item="item" key="key">test</block>`,
         `(_ctx, _cache) => {
-return {
-  a: _vFor(_ctx.items, item => {
-    return {};
-  })
-}
+  return { a: _vFor(_ctx.items, item => { return {}; }) }
 }`
       )
     })

@@ -33,12 +33,10 @@ function assert(
 describe('compiler', () => {
   test('should wrap as function if expression is inline statement', () => {
     assert(
-      `<div v-on:click="foo" />`,
-      `<view bindtap="{{a}}"/>`,
+      `{{hello}}`,
+      `{{a}}`,
       `(_ctx, _cache) => {
-return {
-  a: _vOn(_ctx.foo)
-}
+  return { a: _toDisplayString(_ctx.hello) }
 }`,
       {}
     )

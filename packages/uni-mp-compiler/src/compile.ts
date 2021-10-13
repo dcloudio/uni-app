@@ -55,7 +55,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       ),
     })
   )
-  const result = extend(generate(context.scope, options), { ast })
+  const result = extend(generate(ast, context.scope, options), { ast })
   if (options.filename && options.miniProgram?.emitFile) {
     genTemplate(ast, {
       filename: options.filename,

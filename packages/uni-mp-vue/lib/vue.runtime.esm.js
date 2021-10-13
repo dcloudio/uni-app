@@ -4582,6 +4582,7 @@ const getFunctionalFallthrough = (attrs) => {
 };
 function renderComponentRoot(instance) {
     const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx } = instance;
+    instance.$ei = 0;
     let result;
     const prev = setCurrentRenderingInstance(instance);
     try {

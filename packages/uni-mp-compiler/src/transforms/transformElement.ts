@@ -95,7 +95,6 @@ function processProps(node: ElementNode, context: TransformContext) {
       if (directiveTransform) {
         const { props } = directiveTransform(prop, node, context)
         prop.exp = props[0].value as ExpressionNode
-        console.log('prop', prop)
       }
     }
   }

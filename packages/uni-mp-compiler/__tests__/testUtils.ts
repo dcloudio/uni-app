@@ -10,6 +10,7 @@ export function assert(
   options: CompilerOptions = {}
 ) {
   const res = compile(template, {
+    mode: 'module',
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,

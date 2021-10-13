@@ -2,10 +2,12 @@ import { BaseNode } from 'estree'
 import { walk } from 'estree-walker'
 import { Expression, isIdentifier, isReferenced } from '@babel/types'
 import {
+  createCompoundExpression,
   createSimpleExpression,
   ExpressionNode,
   NodeTypes,
   SimpleExpressionNode,
+  TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
 import { createObjectProperty, parseExpr } from '../ast'
 import { genExpr } from '../codegen'
@@ -22,7 +24,14 @@ import { isForElementNode } from './vFor'
 export const transformIdentifier: NodeTransform = (node, context) => {
   return () => {
     if (node.type === NodeTypes.INTERPOLATION) {
-      node.content = rewriteExpression(node.content, context)
+      node.content = rewriteExpression(
+        createCompoundExpression([
+          `${context.helperString(TO_DISPLAY_STRING)}(`,
+          node.content,
+          `)`,
+        ]),
+        context
+      )
     } else if (node.type === NodeTypes.ELEMENT) {
       const vFor = isForElementNode(node) && node.vFor
       for (let i = 0; i < node.props.length; i++) {

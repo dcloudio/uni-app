@@ -5,7 +5,7 @@ export function createApp(rootComponent: unknown, rootProps = null) {
   rootComponent && ((rootComponent as any).mpType = 'app')
   return createVueApp(rootComponent, rootProps).use(plugin)
 }
-export { vOn } from './helpers/vOn'
 export const createSSRApp = createApp
+export * from './helpers'
 // @ts-ignore
 export * from '../lib/vue.runtime.esm.js'

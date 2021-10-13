@@ -105,6 +105,10 @@ export function isVForScope(scope: CodegenScope): scope is CodegenVForScope {
 export function transform(root: RootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)
+  // finalize meta information
+  root.helpers = [...context.helpers.keys()]
+  root.components = [...context.components]
+  root.cached = context.cached
   return context
 }
 
