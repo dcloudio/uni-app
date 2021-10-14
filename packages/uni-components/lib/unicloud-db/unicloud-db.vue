@@ -76,6 +76,12 @@ export default {
         return {}
       }
     },
+    spaceInfo: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
     collection: {
       type: [String, Array],
       default: ''
@@ -189,6 +195,7 @@ export default {
   },
   created() {
     this._isEnded = false
+    this.db = uniCloud.database(this.spaceInfo)
     this.paginationInternal = {
       current: this.pageCurrent,
       size: this.pageSize,
@@ -328,7 +335,7 @@ export default {
         })
       }
       /* eslint-disable no-undef */
-      let db = uniCloud.database()
+      let db = this.db
       if (action) {
         db = db.action(action)
       }
@@ -401,8 +408,7 @@ export default {
           title: loadingTitle
         })
       }
-      /* eslint-disable no-undef */
-      let db = uniCloud.database()
+      let db = this.db
       if (action) {
         db = db.action(action)
       }
@@ -430,8 +436,7 @@ export default {
       })
     },
     getTemp(isTemp = true) {
-      /* eslint-disable no-undef */
-      let db = uniCloud.database()
+      let db = this.db
 
       if (this.action) {
         db = db.action(this.action)
@@ -567,8 +572,7 @@ export default {
         })
       }
 
-      /* eslint-disable no-undef */
-      const db = uniCloud.database()
+      const db = this.db
       const dbCmd = db.command
 
       let exec = db
