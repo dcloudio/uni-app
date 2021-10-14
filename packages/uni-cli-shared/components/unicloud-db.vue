@@ -34,6 +34,7 @@ const loadMode = {
 const attrs = [
   'pageCurrent',
   'pageSize',
+  'spaceInfo',
   'collection',
   'action',
   'field',
@@ -51,6 +52,12 @@ export default {
     options: {
       type: [Object, Array],
       default () {
+        return {}
+      }
+    },
+    spaceInfo: {
+      type: Object,
+      default() {
         return {}
       }
     },
@@ -323,7 +330,7 @@ export default {
         })
       }
       /* eslint-disable no-undef */
-      let db = uniCloud.database()
+      let db = uniCloud.database(this.spaceInfo)
       if (action) {
         db = db.action(action)
       }
@@ -397,7 +404,7 @@ export default {
         })
       }
       /* eslint-disable no-undef */
-      let db = uniCloud.database()
+      let db = uniCloud.database(this.spaceInfo)
       if (action) {
         db = db.action(action)
       }
@@ -426,7 +433,7 @@ export default {
     },
     getTemp (isTemp = true) {
       /* eslint-disable no-undef */
-      let db = uniCloud.database()
+      let db = uniCloud.database(this.spaceInfo)
 
       if (this.action) {
         db = db.action(this.action)
@@ -575,7 +582,7 @@ export default {
       }
 
       /* eslint-disable no-undef */
-      const db = uniCloud.database()
+      const db = uniCloud.database(this.spaceInfo)
       const dbCmd = db.command
 
       let exec = db
