@@ -12,6 +12,7 @@ import {
   isLiteral,
   isObjectProperty,
   binaryExpression,
+  isIdentifier,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -118,13 +119,12 @@ function rewriteStyleArrayExpression(
 ) {
   expr.elements.forEach((prop, index) => {
     if (!isStringLiteral(prop)) {
-      const code = genBabelExpr(arrayExpression([prop]))
+      const code = genBabelExpr(
+        arrayExpression([isSpreadElement(prop) ? prop.argument : prop])
+      )
       expr.elements[index] = identifier(
         rewriteStyleExpression(
-          createSimpleExpression(
-            isSpreadElement(prop) ? code : code.slice(1, -1),
-            false
-          ),
+          createSimpleExpression(code.slice(1, -1), false),
           context
         ).content
       )
@@ -187,6 +187,18 @@ function createBinaryExpression(left: Expression, right: Expression) {
 
 function createStyleBindingByArrayExpression(expr: ArrayExpression) {
   let result: Expression | undefined
+  function concat(expr: Expression) {
+    if (!result) {
+      result = expr
+    } else {
+      result = createBinaryExpression(addSemicolon(result), expr)
+    }
+  }
+  expr.elements.forEach((prop) => {
+    if (isStringLiteral(prop) || isIdentifier(prop)) {
+      concat(prop)
+    }
+  })
   return result
 }
 
