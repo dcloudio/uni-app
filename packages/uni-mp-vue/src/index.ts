@@ -7,5 +7,6 @@ export function createApp(rootComponent: unknown, rootProps = null) {
 }
 export const createSSRApp = createApp
 export * from './helpers'
+export { hyphenate } from '@vue/shared'
 // @ts-ignore
 export * from '../lib/vue.runtime.esm.js'

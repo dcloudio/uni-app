@@ -33,10 +33,10 @@ function assert(
 describe('compiler', () => {
   test('should wrap as function if expression is inline statement', () => {
     assert(
-      `<view :class="{ a: 1, b: 0, c: true, d: false, e: null, f: undefined, g: ok, h: handle(ok), i: ok>1 }"/>`,
-      `<view class="{{['a', 'c', a && 'g', b && 'h', c && 'i' ]}}"/>`,
+      `<view :class="{ ...{red:red} }"/>`,
+      `<view class="{{[ a ]}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.ok, b: _ctx.handle(_ctx.ok), c: _ctx.ok > 1 }
+  return { a: _normalizeClass({ red: _ctx.red }) }
 }`,
       {}
     )

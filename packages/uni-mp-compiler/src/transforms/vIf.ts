@@ -26,8 +26,7 @@ import {
 import { CodegenScope } from '../options'
 import { NodeTransform, TransformContext, traverseNode } from '../transform'
 import { processExpression } from './transformExpression'
-import { rewriteExpression } from './transformIdentifier'
-
+import { rewriteExpression } from './utils'
 interface IfOptions {
   name: string
   condition?: string

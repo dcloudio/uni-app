@@ -23,17 +23,14 @@ import {
   Pattern,
   RestElement,
   ArrowFunctionExpression,
-  logicalExpression,
   stringLiteral,
   StringLiteral,
   isIdentifier,
   isStringLiteral,
-  isLiteral,
   isBooleanLiteral,
   isBigIntLiteral,
   isDecimalLiteral,
   Literal,
-  LogicalExpression,
   isNullLiteral,
 } from '@babel/types'
 import {
@@ -167,37 +164,11 @@ function createVForArrowFunctionExpression({
   )
 }
 
-export function createClassBindingArrayExpression(expr: ObjectExpression) {
-  const elements: (LogicalExpression | StringLiteral)[] = []
-  expr.properties.forEach((prop) => {
-    const { value } = prop as ObjectProperty
-    if (isUndefined(value as Expression)) {
-      // remove {a:undefined}
-      return
-    }
-    if (isLiteral(value)) {
-      // {a:true,b:1,c:0} => ['a','b']
-      if (isTrueExpr(value)) {
-        elements.push(parseStringLiteral((prop as ObjectProperty).key))
-      }
-      return
-    }
-    elements.push(
-      logicalExpression(
-        '&&',
-        value as Expression,
-        parseStringLiteral((prop as ObjectProperty).key)
-      )
-    )
-  })
-  return arrayExpression(elements)
-}
-
 export function isUndefined(expr: Expression) {
   return isIdentifier(expr) && expr.name === 'undefined'
 }
 
-function isTrueExpr(expr: Literal) {
+export function isTrueExpr(expr: Literal) {
   if (isNullLiteral(expr)) {
     return false
   }
@@ -213,7 +184,7 @@ function isTrueExpr(expr: Literal) {
   return true
 }
 
-function parseStringLiteral(
+export function parseStringLiteral(
   expr: Expression | Identifier | StringLiteral | NumericLiteral
 ) {
   if (isIdentifier(expr)) {
