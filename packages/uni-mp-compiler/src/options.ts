@@ -63,12 +63,14 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
   runtimeModuleName?: string
   runtimeGlobalName?: string
   miniProgram?: {
+    directive: string
     emitFile?: (emittedFile: EmittedFile) => string
   }
 }
 
 export interface TemplateCodegenOptions {
   filename: string
+  directive: string
   emitFile: (emittedFile: EmittedFile) => string
 }
 

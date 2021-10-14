@@ -32,6 +32,7 @@ export interface UniMiniProgramPluginOptions {
   }
   template: {
     extname: string
+    directive: string
   }
   style: {
     extname: string
@@ -75,7 +76,7 @@ export function uniMiniProgramPlugin(
     name: 'vite:uni-mp',
     uni: uniOptions({
       copyOptions,
-      miniProgram: { emitFile },
+      miniProgram: { directive: template.directive, emitFile },
     }),
     config() {
       return {

@@ -56,6 +56,7 @@ const options: UniMiniProgramPluginOptions = {
   },
   template: {
     extname: '.wxml',
+    directive: 'wx:',
   },
   style: {
     extname: '.wxss',

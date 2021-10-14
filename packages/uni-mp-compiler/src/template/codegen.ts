@@ -17,15 +17,17 @@ import { isForElementNode, VForOptions } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 interface TemplateCodegenContext {
   code: string
+  directive: string
   push(code: string): void
 }
 
 export function generate(
   { children }: RootNode,
-  { emitFile, filename }: TemplateCodegenOptions
+  { emitFile, filename, directive }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
     code: '',
+    directive,
     push(code) {
       context.code += code
     },
@@ -62,32 +64,32 @@ function genExpression(node: ExpressionNode, { push }: TemplateCodegenContext) {
   push(`{{${genExpr(node)}}}`)
 }
 
-function genVIf(exp: string, { push }: TemplateCodegenContext) {
-  push(` wx:if="{{${exp}}}"`)
+function genVIf(exp: string, { push, directive }: TemplateCodegenContext) {
+  push(` ${directive}if="{{${exp}}}"`)
 }
-function genVElseIf(exp: string, { push }: TemplateCodegenContext) {
-  push(` wx:elif="{{${exp}}}"`)
+function genVElseIf(exp: string, { push, directive }: TemplateCodegenContext) {
+  push(` ${directive}elif="{{${exp}}}"`)
 }
-function genVElse({ push }: TemplateCodegenContext) {
-  push(` wx:else`)
+function genVElse({ push, directive }: TemplateCodegenContext) {
+  push(` ${directive}else`)
 }
 
 function genVFor(
   { sourceAlias, valueAlias, keyAlias }: VForOptions,
   node: ElementNode,
-  { push }: TemplateCodegenContext
+  { push, directive }: TemplateCodegenContext
 ) {
-  push(` wx:for="{{${sourceAlias}}}"`)
+  push(` ${directive}for="{{${sourceAlias}}}"`)
   if (valueAlias) {
-    push(` wx:for-item="${valueAlias}"`)
+    push(` ${directive}for-item="${valueAlias}"`)
   }
   if (keyAlias) {
-    push(` wx:for-index="${keyAlias}"`)
+    push(` ${directive}for-index="${keyAlias}"`)
   }
   const keyProp = findProp(node, 'key', true)
   if (keyProp) {
     const key = ((keyProp as DirectiveNode).exp as SimpleExpressionNode).content
-    push(` wx:key="${key.includes('.') ? key.split('.')[1] : key}"`)
+    push(` ${directive}key="${key.includes('.') ? key.split('.')[1] : key}"`)
     node.props.splice(node.props.indexOf(keyProp), 1)
   }
 }

@@ -14,6 +14,7 @@ export function uniOptions({
 }: {
   copyOptions: CopyOptions
   miniProgram: {
+    directive: string
     emitFile?: (emittedFile: EmittedFile) => string
   }
 }): UniVitePlugin['uni'] {

@@ -30,6 +30,7 @@ describe('compiler: transform v-bind', () => {
       onError,
       filename: 'foo.vue',
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -53,6 +54,7 @@ describe('compiler: transform v-bind', () => {
       onError,
       filename: 'foo.vue',
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -123,6 +125,7 @@ describe('compiler: transform v-bind', () => {
       prefixIdentifiers: false,
       filename: 'foo.vue',
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -151,6 +154,7 @@ describe('compiler: transform v-bind', () => {
       prefixIdentifiers: true,
       filename: 'foo.vue',
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -197,6 +201,7 @@ describe('compiler: transform v-bind', () => {
       filename: 'foo.vue',
       prefixIdentifiers: false,
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -225,6 +230,7 @@ describe('compiler: transform v-bind', () => {
       prefixIdentifiers: true,
       filename: 'foo.vue',
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -252,6 +258,7 @@ describe('compiler: transform v-bind', () => {
       onWarn,
       filename: 'foo.vue',
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view fooBar="{{a}}"/>`)
           return ''
@@ -279,6 +286,7 @@ describe('compiler: transform v-bind', () => {
       onWarn,
       filename: 'foo.vue',
       miniProgram: {
+        directive: 'wx:',
         emitFile({ source }) {
           expect(source).toBe(`<view foo-bar="{{a}}"/>`)
           return ''

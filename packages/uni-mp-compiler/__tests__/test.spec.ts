@@ -14,6 +14,7 @@ function assert(
     prefixIdentifiers: true,
     inline: true,
     miniProgram: {
+      directive: 'wx:',
       emitFile({ source }) {
         console.log(source)
         // expect(source).toBe(templateCode)
