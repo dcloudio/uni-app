@@ -34,15 +34,16 @@ export interface CodegenRootScope {
   id: IdentifierGenerator
   identifiers: string[]
   properties: (ObjectProperty | SpreadElement)[]
+  parent: CodegenScope | null
 }
 export interface CodegenVIfScopeInit {
   name: 'if' | 'else-if' | 'else' | string
   condition?: Expression
 }
 export type CodegenVForScopeInit = VForOptions & { locals: string[] }
-export interface CodegenVIfScope
-  extends CodegenRootScope,
-    CodegenVIfScopeInit {}
+export interface CodegenVIfScope extends CodegenRootScope, CodegenVIfScopeInit {
+  parentScope: CodegenRootScope | CodegenVForScope
+}
 export interface CodegenVForScope
   extends CodegenRootScope,
     CodegenVForScopeInit {}

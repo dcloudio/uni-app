@@ -1,4 +1,4 @@
-import { isString } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import {
   createCompilerError,
   createSimpleExpression,
@@ -14,22 +14,19 @@ import {
   isTemplateNode,
   findProp,
 } from '@vue/compiler-core'
-import {
-  createObjectProperty,
-  createVForCallExpression,
-  parseExpr,
-  parseParam,
-} from '../ast'
+import { createVForCallExpression, parseExpr, parseParam } from '../ast'
 import { NodeTransform, TransformContext } from '../transform'
 import { processExpression } from './transformExpression'
 import { genExpr } from '../codegen'
 import {
+  cloneNode,
   Expression,
   Identifier,
   isIdentifier,
   Pattern,
   RestElement,
 } from '@babel/types'
+import { rewriteExpression } from './utils'
 
 export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   sourceExpr?: Expression
@@ -119,11 +116,20 @@ export const transformFor = createStructuralDirectiveTransform(
       ...vForData,
       locals: findVForLocals(parseResult),
     })
+    // 先占位vFor，后续更新 cloneSourceExpr 为 CallExpression
+    const cloneSourceExpr = cloneNode(sourceExpr!, false)
     const vFor = {
       ...vForData,
+      sourceAlias: rewriteExpression(
+        source,
+        context,
+        cloneSourceExpr,
+        parentScope
+      ).content,
     }
     ;(node as ForElementNode).vFor = vFor
     scopes.vFor++
+
     return () => {
       if (isTemplateNode(node)) {
         node.children.some((c) => {
@@ -146,15 +152,21 @@ export const transformFor = createStructuralDirectiveTransform(
         key && removeIdentifiers(key)
         index && removeIdentifiers(index)
       }
-      const id = parentScope.id.next()
-      vFor.sourceAlias = id
-      parentScope.properties.push(
-        createObjectProperty(id, createVForCallExpression(vForScope, context))
+      extend(
+        clearExpr(cloneSourceExpr),
+        createVForCallExpression(vForScope, context)
       )
       popScope()
     }
   }
 ) as unknown as NodeTransform
+
+function clearExpr(expr: Expression) {
+  Object.keys(expr).forEach((key) => {
+    delete (expr as any)[key]
+  })
+  return expr
+}
 
 function parseAlias(
   babelExpr: Identifier | Pattern | RestElement,

@@ -12,19 +12,13 @@ import {
   createSimpleExpression,
   ExpressionNode,
   NodeTypes,
-  SimpleExpressionNode,
   SourceLocation,
 } from '@vue/compiler-core'
 import { walk, BaseNode } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
 import { CodegenScope, CodegenVForScope } from '../options'
-import {
-  isRootScope,
-  isVForScope,
-  isVIfScope,
-  TransformContext,
-} from '../transform'
+import { isVForScope, isVIfScope, TransformContext } from '../transform'
 
 export function rewriteSpreadElement(
   name: symbol,
@@ -80,50 +74,34 @@ export function rewriteExpression(
     return createSimpleExpression('undefined', false, node.loc)
   }
 
-  scope = findScope(babelNode, scope)!
+  scope = findReferencedScope(babelNode, scope)
   const id = scope.id.next()
   scope.properties.push(objectProperty(identifier(id), babelNode!))
-  if (node.type === NodeTypes.COMPOUND_EXPRESSION) {
-    const firstChild = node.children[0]
-    if (isSimpleExpression(firstChild)) {
-      const content = firstChild.content.trim()
-      if (scope.identifiers.includes(content)) {
-        return createSimpleExpression(content + '.' + id)
-      }
+  // 在v-for中包含的v-if块，所有变量需要补充当前v-for value前缀
+  if (isVIfScope(scope)) {
+    if (isVForScope(scope.parentScope)) {
+      return createSimpleExpression(scope.parentScope.valueAlias + '.' + id)
     }
+    return createSimpleExpression(id)
+  } else if (isVForScope(scope)) {
+    return createSimpleExpression(scope.valueAlias + '.' + id)
   }
   return createSimpleExpression(id)
 }
 
-// function findReferencedScope(
-//   node: Expression,
-//   scope: CodegenScope
-// ): CodegenRootScope | CodegenVForScope {
-//   if (isRootScope(scope)) {
-//     return scope
-//   }
-
-// }
-
-function findScope(node: Expression, scope: CodegenScope) {
-  if (isRootScope(scope) || isVIfScope(scope)) {
-    return scope
-  }
-  return findVForScope(node, scope) || scope
-}
-
-function findVForScope(
+function findReferencedScope(
   node: Expression,
   scope: CodegenScope
-): CodegenVForScope | undefined {
-  if (isVForScope(scope)) {
+): CodegenScope {
+  if (isVIfScope(scope)) {
+    return scope
+  } else if (isVForScope(scope)) {
     if (isReferencedScope(node, scope)) {
       return scope
     }
+    return findReferencedScope(node, scope.parent!)
   }
-  // if (scope.parent) {
-  //   return findVForScope(node, scope.parent)
-  // }
+  return scope
 }
 
 function isReferencedScope(node: Expression, scope: CodegenVForScope) {
@@ -148,8 +126,4 @@ function isReferencedScope(node: Expression, scope: CodegenVForScope) {
     },
   })
   return referenced
-}
-
-function isSimpleExpression(val: any): val is SimpleExpressionNode {
-  return val.type && val.type === NodeTypes.SIMPLE_EXPRESSION
 }

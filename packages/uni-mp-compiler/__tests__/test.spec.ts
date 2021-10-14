@@ -7,7 +7,7 @@ function assert(
   template: string,
   templateCode: string,
   renderCode: string,
-  options: CompilerOptions
+  options: CompilerOptions = {}
 ) {
   const res = compile(template, {
     filename: 'foo.vue',
@@ -31,14 +31,13 @@ function assert(
 }
 
 describe('compiler', () => {
-  test('should wrap as function if expression is inline statement', () => {
+  test('scope', () => {
     assert(
-      `<view :class="{ ...{red:red} }"/>`,
-      `<view class="{{[ a ]}}"/>`,
+      `<view v-for="item in items"><view v-for="item1 in item1" :data-id="item.id" :data-title="item1.title"/></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item"><view wx:for="{{b}}" wx:for-item="item1" data-id="{{item.a}}" data-title="{{item1.a}}"/></view>`,
       `(_ctx, _cache) => {
-  return { a: _normalizeClass({ red: _ctx.red }) }
-}`,
-      {}
+  return { a: _vFor(_ctx.items, item => { return { a: item.id }; }), b: _vFor(_ctx.item1, item1 => { return { a: item1.title }; }) }
+}`
     )
   })
 })

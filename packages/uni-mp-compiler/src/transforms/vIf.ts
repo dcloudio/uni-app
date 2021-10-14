@@ -54,19 +54,19 @@ export const transformIf = createStructuralDirectiveTransform(
         name: dir.name,
         condition,
       })
-      return () => {
-        if (condition) {
-          if (!isLiteral(condition)) {
-            ifOptions.condition = rewriteExpression(
-              dir.exp!,
-              context,
-              condition,
-              parentScope
-            ).content
-          } else {
-            ifOptions.condition = (dir.exp as SimpleExpressionNode).content
-          }
+      if (condition) {
+        if (!isLiteral(condition)) {
+          ifOptions.condition = rewriteExpression(
+            dir.exp!,
+            context,
+            condition,
+            parentScope
+          ).content
+        } else {
+          ifOptions.condition = (dir.exp as SimpleExpressionNode).content
         }
+      }
+      return () => {
         if (isRoot) {
           parentScope.properties.push(createVIfSpreadElement(vIfScope))
         } else {

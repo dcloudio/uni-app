@@ -211,10 +211,21 @@ export function createTransformContext(
     onWarn = defaultOnWarn,
   }: TransformOptions
 ): TransformContext {
-  const scope: CodegenRootScope = {
+  const rootScope: CodegenRootScope = {
     id: new IdentifierGenerator(),
     identifiers: [],
     properties: [],
+    parent: null,
+  }
+
+  function findVIfParentScope(): CodegenVForScope | CodegenRootScope {
+    for (let i = scopes.length - 1; i >= 0; i--) {
+      const scope = scopes[i]
+      if (isVForScope(scope) || isRootScope(scope)) {
+        return scope
+      }
+    }
+    return rootScope
   }
 
   function createScope(
@@ -225,6 +236,7 @@ export function createTransformContext(
       {
         id,
         properties: [],
+        parent: scopes[scopes.length - 1],
         get identifiers() {
           return Object.keys(identifiers)
         },
@@ -232,8 +244,9 @@ export function createTransformContext(
       initScope
     )
   }
+
   const identifiers = Object.create(null)
-  const scopes: CodegenScope[] = [scope]
+  const scopes: CodegenScope[] = [rootScope]
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
@@ -258,7 +271,7 @@ export function createTransformContext(
     components: new Set(),
     cached: 0,
     identifiers,
-    scope,
+    scope: rootScope,
     scopes: {
       vFor: 0,
     },
@@ -274,8 +287,8 @@ export function createTransformContext(
     addVIfScope(initScope) {
       const vIfScope = createScope(
         scopes[scopes.length - 1].id,
-        initScope
-      ) as CodegenVIfScope
+        extend(initScope, { parentScope: findVIfParentScope() })
+      ) as unknown as CodegenVIfScope
       scopes.push(vIfScope)
       return vIfScope
     },

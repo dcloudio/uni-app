@@ -161,9 +161,9 @@ describe(`compiler: v-if`, () => {
         <view/>
       </template>
         `,
-        `<block wx:if="{{b}}"><view wx:if="{{a}}"></view><view wx:else/><view/></block>`,
+        `<block wx:if="{{a}}"><view wx:if="{{b}}"></view><view wx:else/><view/></block>`,
         `(_ctx, _cache) => {
-  return { b: _ctx.ok, ...(_ctx.ok ? { a: _ctx.ok2, ...(_ctx.ok2 ? {} : {}) } : {}) }
+  return { a: _ctx.ok, ...(_ctx.ok ? { b: _ctx.ok2, ...(_ctx.ok2 ? {} : {}) } : {}) }
 }`
       )
     })

@@ -199,9 +199,9 @@ describe(`compiler: v-for`, () => {
     test(`v-if + v-for`, () => {
       assert(
         `<view v-if="ok" v-for="i in list"/>`,
-        `<view wx:if="{{b}}" wx:for="{{a}}" wx:for-item="i"/>`,
+        `<view wx:if="{{a}}" wx:for="{{b}}" wx:for-item="i"/>`,
         `(_ctx, _cache) => {
-  return { b: _ctx.ok, ...(_ctx.ok ? { a: _vFor(_ctx.list, i => { return {}; }) } : {}) }
+  return { a: _ctx.ok, ...(_ctx.ok ? { b: _vFor(_ctx.list, i => { return {}; }) } : {}) }
 }`
       )
     })
@@ -209,9 +209,9 @@ describe(`compiler: v-for`, () => {
     test(`v-if + v-for on <template>`, () => {
       assert(
         `<template v-if="ok" v-for="i in list"/>`,
-        `<block wx:if="{{b}}" wx:for="{{a}}" wx:for-item="i"/>`,
+        `<block wx:if="{{a}}" wx:for="{{b}}" wx:for-item="i"/>`,
         `(_ctx, _cache) => {
-  return { b: _ctx.ok, ...(_ctx.ok ? { a: _vFor(_ctx.list, i => { return {}; }) } : {}) }
+  return { a: _ctx.ok, ...(_ctx.ok ? { b: _vFor(_ctx.list, i => { return {}; }) } : {}) }
 }`
       )
     })
