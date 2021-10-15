@@ -116,9 +116,8 @@ function isReferencedScope(node: Expression, scope: CodegenVForScope) {
         return
       }
       if (
-        parent &&
         knownIds.includes(node.name) &&
-        isReferenced(node, parent as any)
+        (!parent || isReferenced(node, parent as any))
       ) {
         referenced = true
         return this.skip()

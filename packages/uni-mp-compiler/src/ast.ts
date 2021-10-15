@@ -16,9 +16,7 @@ import {
   Identifier,
   returnStatement,
   conditionalExpression,
-  arrayExpression,
   NumericLiteral,
-  numericLiteral,
   isNumericLiteral,
   Pattern,
   RestElement,
@@ -80,24 +78,24 @@ export function createVIfSpreadElement(vIfScope: CodegenVIfScope) {
   return spreadElement(createVIfConditionalExpression(vIfScope))
 }
 
-function numericLiteralToArrayExpr(num: number) {
-  const elements: NumericLiteral[] = []
-  for (let i = 0; i < num; i++) {
-    elements.push(numericLiteral(i + 1))
-  }
-  return arrayExpression(elements)
-}
+// function numericLiteralToArrayExpr(num: number) {
+//   const elements: NumericLiteral[] = []
+//   for (let i = 0; i < num; i++) {
+//     elements.push(numericLiteral(i + 1))
+//   }
+//   return arrayExpression(elements)
+// }
 
 export function createVForCallExpression(
   vForScope: CodegenVForScope,
   context: TransformContext
 ) {
-  let sourceExpr: Expression = vForScope.sourceExpr!
-  if (isNumericLiteral(sourceExpr)) {
-    sourceExpr = numericLiteralToArrayExpr((sourceExpr as NumericLiteral).value)
-  }
+  // let sourceExpr: Expression = vForScope.sourceExpr!
+  // if (isNumericLiteral(sourceExpr)) {
+  //   sourceExpr = numericLiteralToArrayExpr((sourceExpr as NumericLiteral).value)
+  // }
   return callExpression(identifier(context.helperString(V_FOR)), [
-    sourceExpr,
+    vForScope.sourceExpr!,
     createVForArrowFunctionExpression(vForScope),
   ])
 }

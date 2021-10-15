@@ -26,7 +26,7 @@ function assert(
   // expect(res.template).toBe(templateCode)
   // expect(res.code).toBe(renderCode)
   // console.log(require('util').inspect(res.code, { colors: true, depth: null }))
-  console.log(require('util').inspect(res, { colors: true, depth: null }))
+  // console.log(require('util').inspect(res, { colors: true, depth: null }))
   console.log(res.code)
   expect(res.code).toBe(renderCode)
 }
@@ -34,10 +34,10 @@ function assert(
 describe('compiler', () => {
   test('scope', () => {
     assert(
-      `<view v-for="item in items"><view v-for="item1 in item1" :data-id="item.id" :data-title="item1.title"/></view>`,
-      `<view wx:for="{{a}}" wx:for-item="item"><view wx:for="{{b}}" wx:for-item="item1" data-id="{{item.a}}" data-title="{{item1.a}}"/></view>`,
+      `<view v-for="(item,weekIndex) in weeks" :key="weekIndex" :data-id="item.id"><view v-for="(weeks,weeksIndex) in item" :key="weeksIndex" :data-id="weeks.id"/></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b" data-id="{{item.c}}"><view wx:for="{{item.a}}" wx:for-item="weeks" wx:key="a" data-id="{{weeks.b}}"/></view>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, item => { return { a: item.id }; }), b: _vFor(_ctx.item1, item1 => { return { a: item1.title }; }) }
+  return { a: _vFor(_ctx.weeks, (item, weekIndex) => { return { a: _vFor(item, (weeks, weeksIndex) => { return { a: weeksIndex, b: weeks.id }; }), b: weekIndex, c: item.id }; }) }
 }`
     )
   })

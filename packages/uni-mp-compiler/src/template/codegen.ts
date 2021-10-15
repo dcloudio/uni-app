@@ -83,9 +83,6 @@ function genVFor(
   if (valueAlias) {
     push(` ${directive}for-item="${valueAlias}"`)
   }
-  if (keyAlias) {
-    push(` ${directive}for-index="${keyAlias}"`)
-  }
   const keyProp = findProp(node, 'key', true)
   if (keyProp) {
     const key = ((keyProp as DirectiveNode).exp as SimpleExpressionNode).content

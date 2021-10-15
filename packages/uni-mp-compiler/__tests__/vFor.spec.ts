@@ -29,7 +29,7 @@ describe(`compiler: v-for`, () => {
         `<view v-for="index in 5" />`,
         `<view wx:for="{{a}}" wx:for-item="index"/>`,
         `(_ctx, _cache) => {
-  return { a: _vFor([1, 2, 3, 4, 5], index => { return {}; }) }
+  return { a: _vFor(5, index => { return {}; }) }
 }`
       )
     })
@@ -63,7 +63,7 @@ describe(`compiler: v-for`, () => {
     test(`value and key`, () => {
       assert(
         `<view v-for="(item, key) in items" />`,
-        `<view wx:for="{{a}}" wx:for-item="item" wx:for-index="key"/>`,
+        `<view wx:for="{{a}}" wx:for-item="item"/>`,
         `(_ctx, _cache) => {
   return { a: _vFor(_ctx.items, (item, key) => { return {}; }) }
 }`
@@ -72,7 +72,7 @@ describe(`compiler: v-for`, () => {
     test(`value, key and index`, () => {
       assert(
         `<view v-for="(item, key, index) in items" />`,
-        `<view wx:for="{{a}}" wx:for-item="item" wx:for-index="key"/>`,
+        `<view wx:for="{{a}}" wx:for-item="item"/>`,
         `(_ctx, _cache) => {
   return { a: _vFor(_ctx.items, (item, key, index) => { return {}; }) }
 }`
@@ -108,7 +108,7 @@ describe(`compiler: v-for`, () => {
     test(`unbracketed value and key`, () => {
       assert(
         `<view v-for="item, key in items" />`,
-        `<view wx:for="{{a}}" wx:for-item="item" wx:for-index="key"/>`,
+        `<view wx:for="{{a}}" wx:for-item="item"/>`,
         `(_ctx, _cache) => {
   return { a: _vFor(_ctx.items, (item, key) => { return {}; }) }
 }`
@@ -117,7 +117,7 @@ describe(`compiler: v-for`, () => {
     test(`unbracketed value, key and index`, () => {
       assert(
         `<view v-for="value, key, index in items" />`,
-        `<view wx:for="{{a}}" wx:for-item="value" wx:for-index="key"/>`,
+        `<view wx:for="{{a}}" wx:for-item="value"/>`,
         `(_ctx, _cache) => {
   return { a: _vFor(_ctx.items, (value, key, index) => { return {}; }) }
 }`

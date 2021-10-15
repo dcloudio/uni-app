@@ -25,6 +25,13 @@ describe('compiler: scope', () => {
   return { a: _vFor(_ctx.items, item => { return { a: item.id }; }), b: _vFor(_ctx.item1, item1 => { return { a: item1.title }; }) }
 }`
     )
+    assert(
+      `<view v-for="(item,weekIndex) in weeks" :key="weekIndex" :data-id="item.id"><view v-for="(weeks,weeksIndex) in item" :key="weeksIndex" :data-id="weeks.id"/></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b" data-id="{{item.c}}"><view wx:for="{{item.a}}" wx:for-item="weeks" wx:key="a" data-id="{{weeks.b}}"/></view>`,
+      `(_ctx, _cache) => {
+  return { a: _vFor(_ctx.weeks, (item, weekIndex) => { return { a: _vFor(item, (weeks, weeksIndex) => { return { a: weeksIndex, b: weeks.id }; }), b: weekIndex, c: item.id }; }) }
+}`
+    )
   })
   test('v-for + v-if', () => {
     assert(
