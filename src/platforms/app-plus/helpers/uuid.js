@@ -1,6 +1,6 @@
 let deviceId
 
 export default function () {
-  deviceId = deviceId || plus.runtime.getDCloudId()
+  deviceId = deviceId || plus.device.uuid
   return deviceId
 }
