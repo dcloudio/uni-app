@@ -6,6 +6,10 @@ import {
   isStr
 } from 'uni-shared'
 
+import {
+  DC_LOCALE
+} from '../constants'
+
 import en from './en.json'
 import es from './es.json'
 import fr from './fr.json'
@@ -23,7 +27,7 @@ const messages = {
 let locale
 
 if (__PLATFORM__ === 'h5') {
-  locale = __uniConfig.locale || navigator.language
+  locale = (window.localStorage && localStorage[DC_LOCALE]) || __uniConfig.locale || navigator.language
 } else if (__PLATFORM__ === 'app-plus') {
   if (typeof weex === 'object') {
     locale = weex.requireModule('plus').getLanguage()
