@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.14.7",
-    "@dcloudio/types": "2.5.10",
+    "@dcloudio/types": "2.5.11",
     "@jest/types": "^27.0.2",
     "@microsoft/api-extractor": "^7.13.2",
     "@rollup/plugin-alias": "^3.1.1",

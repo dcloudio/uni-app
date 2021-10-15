@@ -14,7 +14,7 @@ type GeoRes = (coords: GeolocationCoordinates, skip?: boolean) => void
 
 export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
   API_GET_LOCATION,
-  ({ type, altitude }, { resolve, reject }) => {
+  ({ type, altitude, highAccuracyExpireTime }, { resolve, reject }) => {
     const mapInfo = getMapInfo()
 
     new Promise((resolve: GeoRes, reject) => {
@@ -24,7 +24,7 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
           reject,
           {
             enableHighAccuracy: altitude,
-            timeout: 1000 * 100,
+            timeout: highAccuracyExpireTime || 1000 * 100,
           }
         )
       } else {

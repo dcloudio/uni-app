@@ -16,10 +16,12 @@ import {
   API_TYPE_CLOSE_AUTH_VIEW,
   API_GET_CHECK_BOX_STATE,
   API_TYPE_GET_CHECK_BOX_STATE,
+  API_GET_UNIVERIFY_MANAGER,
+  API_TYPE_GET_UNIVERIFY_MANAGER,
   defineAsyncApi,
   defineSyncApi,
 } from '@dcloudio/uni-api'
-import { isPlainObject, toTypeString } from '@vue/shared'
+import { isPlainObject, toTypeString, extend } from '@vue/shared'
 import {
   warpPlusSuccessCallback,
   warpPlusErrorCallback,
@@ -28,8 +30,10 @@ import {
 type Provider = PlusOauthAuthService
 type CallBack = {
   resolve: (res: any) => void
-  reject: (errMsg: string) => void
+  reject: (errMsg: string, errRes?: any) => void
 }
+
+let univerifyManager: UniverifyManager
 
 function getService(provider: string): Promise<Provider> {
   return new Promise((resolve, reject) => {
@@ -230,22 +234,69 @@ function univerifyButtonsClickHandling(
 ) {
   if (
     isPlainObject(univerifyStyle) &&
-    univerifyStyle.buttons &&
-    toTypeString(univerifyStyle.buttons.list) === '[object Array]' &&
-    univerifyStyle.buttons.list!.length > 0
+    isPlainObject(univerifyStyle.buttons) &&
+    toTypeString(univerifyStyle.buttons.list) === '[object Array]'
   ) {
     univerifyStyle.buttons.list!.forEach((button, index) => {
       univerifyStyle.buttons!.list![index].onclick = function () {
-        _closeAuthView().then(() => {
-          errorCallback({
-            code: '30008',
-            message: '用户点击了自定义按钮',
-            index,
-            provider: button.provider,
-          })
-        })
+        const res = {
+          code: '30008',
+          message: '用户点击了自定义按钮',
+          index,
+          provider: button.provider,
+        }
+        isPlainObject(univerifyManager)
+          ? univerifyManager._triggerUniverifyButtonsClick(res)
+          : _closeAuthView().then(() => {
+              errorCallback(res)
+            })
       }
     })
   }
   return univerifyStyle
 }
+
+class UniverifyManager implements UniApp.UniverifyManager {
+  provider: string = 'univerify'
+  eventName: string = 'api.univerifyButtonsClick'
+
+  close() {
+    closeAuthView()
+  }
+
+  login(options: UniApp.UniverifyLoginOptions) {
+    login(this._getOptions(options))
+  }
+
+  getCheckBoxState(options: UniApp.GetCheckBoxStateOptions) {
+    getCheckBoxState(options)
+  }
+
+  preLogin(options?: UniApp.CallBackOptions) {
+    preLogin(this._getOptions(options))
+  }
+
+  onButtonsClick(callback: UniApp.CallbackFunction) {
+    UniServiceJSBridge.on(this.eventName, callback)
+  }
+
+  offButtonsClick(callback: UniApp.CallbackFunction) {
+    UniServiceJSBridge.off(this.eventName, callback)
+  }
+
+  _triggerUniverifyButtonsClick(res: any) {
+    UniServiceJSBridge.emit(this.eventName, res)
+  }
+
+  _getOptions(options: any = {}) {
+    return extend({}, options, { provider: this.provider })
+  }
+}
+
+export const getUniverifyManager =
+  defineSyncApi<API_TYPE_GET_UNIVERIFY_MANAGER>(
+    API_GET_UNIVERIFY_MANAGER,
+    () => {
+      return univerifyManager || (univerifyManager = new UniverifyManager())
+    }
+  )

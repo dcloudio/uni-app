@@ -42,7 +42,12 @@ function getLocationSuccess(
 export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
   API_GET_LOCATION,
   (
-    { type = 'wgs84', geocode = false, altitude = false },
+    {
+      type = 'wgs84',
+      geocode = false,
+      altitude = false,
+      highAccuracyExpireTime,
+    },
     { resolve, reject }
   ) => {
     plus.geolocation.getCurrentPosition(
@@ -61,6 +66,7 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
       {
         geocode: geocode,
         enableHighAccuracy: altitude,
+        timeout: highAccuracyExpireTime,
       }
     )
   },
