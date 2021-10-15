@@ -18,5 +18,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "Apache-2.0",
+  "dependencies": {
+    "magic-string": "^0.25.7"
+  },
   "gitHead": "1efa8efd0a9eddeabdba75c020d015ebf31b8177"
 }

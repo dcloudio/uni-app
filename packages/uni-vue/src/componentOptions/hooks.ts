@@ -1,5 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
-import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
+import { LINEFEED, ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
 
 import {
@@ -49,7 +49,7 @@ export function initHooks(
         invokeHook(publicThis, ON_SHOW)
       })
     } catch (e: any) {
-      console.error(e.message + '\n' + e.stack)
+      console.error(e.message + LINEFEED + e.stack)
     }
   }
 }

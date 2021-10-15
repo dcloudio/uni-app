@@ -1,9 +1,18 @@
 import { ParserPlugin } from '@babel/parser'
 import { Expression, ObjectProperty, SpreadElement } from '@babel/types'
-import { BindingMetadata, CompilerError } from '@vue/compiler-core'
+import { BindingMetadata, CompilerError, RootNode } from '@vue/compiler-core'
 import IdentifierGenerator from './identifier'
-import { DirectiveTransform, NodeTransform } from './transform'
+import {
+  DirectiveTransform,
+  NodeTransform,
+  TransformContext,
+} from './transform'
 import { VForOptions } from './transforms/vFor'
+
+export interface CodegenRootNode extends RootNode {
+  scope: CodegenScope
+  bindingComponents: TransformContext['bindingComponents']
+}
 
 export interface ErrorHandlingOptions {
   onWarn?: (warning: CompilerError) => void

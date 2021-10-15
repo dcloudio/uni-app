@@ -14,3 +14,5 @@ console.log(
     depth: null,
   })
 )
+
+// import a from 'a.vue'

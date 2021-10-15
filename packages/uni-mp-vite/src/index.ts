@@ -1,4 +1,5 @@
 import { uniMiniProgramPlugin, UniMiniProgramPluginOptions } from './plugin'
+import { uniComponentPlugin } from './plugins/component'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
@@ -11,5 +12,6 @@ export default (options: UniMiniProgramPluginOptions) => {
     uniPagesJsonPlugin(options),
     uniVirtualPlugin(options),
     uniMiniProgramPlugin(options),
+    uniComponentPlugin(),
   ]
 }

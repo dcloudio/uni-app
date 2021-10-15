@@ -188,7 +188,7 @@ function writeCheckUpdateCache(
   debugCheckUpdate('write:', filepath, updateCache)
   try {
     fs.outputFileSync(filepath, JSON.stringify(updateCache))
-  } catch (e: any) {
+  } catch (e) {
     debugCheckUpdate('write.error', e)
   }
 }

@@ -60,6 +60,11 @@ export interface ErrorHandlingOptions {
   onError?: (error: CompilerError) => void
 }
 
+export const enum BindingComponentTypes {
+  SELF = 'self',
+  SETUP = 'setup',
+  UNKNOWN = 'unknown',
+}
 export interface TransformContext
   extends Required<Omit<TransformOptions, 'filename'>> {
   selfName: string | null
@@ -68,6 +73,10 @@ export interface TransformContext
   childIndex: number
   helpers: Map<symbol, number>
   components: Set<string>
+  bindingComponents: Record<
+    string,
+    { type: BindingComponentTypes; name: string }
+  >
   identifiers: { [name: string]: number | undefined }
   cached: number
   scopes: {
@@ -269,6 +278,7 @@ export function createTransformContext(
     childIndex: 0,
     helpers: new Map(),
     components: new Set(),
+    bindingComponents: Object.create(null),
     cached: 0,
     identifiers,
     scope: rootScope,

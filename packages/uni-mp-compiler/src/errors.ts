@@ -5,6 +5,9 @@ export const enum MPErrorCodes {
   X_V_BIND_DYNAMIC_ARGUMENT,
   X_V_BIND_MODIFIER_PROP,
   X_V_BIND_MODIFIER_ATTR,
+  X_V_IS_NOT_SUPPORTED,
+  X_NOT_SUPPORTED,
+  X_DYNAMIC_COMPONENT_NOT_SUPPORTED,
 }
 
 export const errorMessages: Record<number, string> = {
@@ -15,4 +18,8 @@ export const errorMessages: Record<number, string> = {
     'v-bind:[name]="" is not supported.',
   [MPErrorCodes.X_V_BIND_MODIFIER_PROP]: 'v-bind .prop is not supported',
   [MPErrorCodes.X_V_BIND_MODIFIER_ATTR]: 'v-bind .attr is not supported',
+  [MPErrorCodes.X_DYNAMIC_COMPONENT_NOT_SUPPORTED]:
+    '<component is=""/> is not supported',
+  [MPErrorCodes.X_NOT_SUPPORTED]: 'not supported: ',
+  [MPErrorCodes.X_V_IS_NOT_SUPPORTED]: 'v-is not supported',
 }

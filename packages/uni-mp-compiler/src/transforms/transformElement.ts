@@ -1,3 +1,4 @@
+import { camelize, capitalize } from '@vue/shared'
 import {
   NodeTypes,
   ElementTypes,
@@ -8,10 +9,19 @@ import {
   TemplateLiteral,
   Property,
   ExpressionNode,
+  isCoreComponent,
+  BindingTypes,
+  UNREF,
+  toValidAssetId,
+  findDir,
 } from '@vue/compiler-core'
 import { errorMessages, MPErrorCodes } from '../errors'
 
-import { NodeTransform, TransformContext } from '../transform'
+import {
+  BindingComponentTypes,
+  NodeTransform,
+  TransformContext,
+} from '../transform'
 
 export interface DirectiveTransformResult {
   props: Property[]
@@ -31,11 +41,130 @@ export const transformElement: NodeTransform = (node, context) => {
     ) {
       return
     }
-
+    const isComponent = node.tagType === ElementTypes.COMPONENT
+    if (isComponent) {
+      processComponent(node, context)
+    }
     const { props } = node
     if (props.length > 0) {
       processProps(node, context)
     }
+  }
+}
+
+function processComponent(node: ElementNode, context: TransformContext) {
+  const { tag } = node
+  if (context.bindingComponents[tag]) {
+    return
+  }
+
+  // 1. dynamic component
+  if (isComponentTag(tag)) {
+    return context.onError(
+      createCompilerError(
+        MPErrorCodes.X_DYNAMIC_COMPONENT_NOT_SUPPORTED,
+        node.loc,
+        errorMessages
+      )
+    )
+  }
+  if (findDir(node, 'is')) {
+    return context.onError(
+      createCompilerError(
+        MPErrorCodes.X_V_IS_NOT_SUPPORTED,
+        node.loc,
+        errorMessages
+      )
+    )
+  }
+  // TODO not supported
+  // const isProp = findProp(node, 'is')
+  // if (isProp) {
+  // }
+  // 2. built-in components (Teleport, Transition, KeepAlive, Suspense...)
+  const builtIn = isCoreComponent(tag) || context.isBuiltInComponent(tag)
+  if (builtIn) {
+    return context.onError(
+      createCompilerError(
+        MPErrorCodes.X_NOT_SUPPORTED,
+        node.loc,
+        errorMessages,
+        tag
+      )
+    )
+  }
+  // 3. user component (from setup bindings)
+  const fromSetup = resolveSetupReference(tag, context)
+  if (fromSetup) {
+    return (context.bindingComponents[tag] = {
+      name: fromSetup,
+      type: BindingComponentTypes.SETUP,
+    })
+  }
+  const dotIndex = tag.indexOf('.')
+  if (dotIndex > 0) {
+    return context.onError(
+      createCompilerError(
+        MPErrorCodes.X_NOT_SUPPORTED,
+        node.loc,
+        errorMessages,
+        tag
+      )
+    )
+  }
+
+  // 4. Self referencing component (inferred from filename)
+  if (context.selfName && capitalize(camelize(tag)) === context.selfName) {
+    return (context.bindingComponents[tag] = {
+      name: toValidAssetId(tag, `component`),
+      type: BindingComponentTypes.SELF,
+    })
+  }
+
+  // 5. user component (resolve)
+  context.bindingComponents[tag] = {
+    name: toValidAssetId(tag, `component`),
+    type: BindingComponentTypes.UNKNOWN,
+  }
+}
+
+function resolveSetupReference(name: string, context: TransformContext) {
+  const bindings = context.bindingMetadata
+  if (!bindings || bindings.__isScriptSetup === false) {
+    return
+  }
+
+  const camelName = camelize(name)
+  const PascalName = capitalize(camelName)
+  const checkType = (type: BindingTypes) => {
+    if (bindings[name] === type) {
+      return name
+    }
+    if (bindings[camelName] === type) {
+      return camelName
+    }
+    if (bindings[PascalName] === type) {
+      return PascalName
+    }
+  }
+
+  const fromConst = checkType(BindingTypes.SETUP_CONST)
+  if (fromConst) {
+    return context.inline
+      ? // in inline mode, const setup bindings (e.g. imports) can be used as-is
+        fromConst
+      : `$setup[${JSON.stringify(fromConst)}]`
+  }
+
+  const fromMaybeRef =
+    checkType(BindingTypes.SETUP_LET) ||
+    checkType(BindingTypes.SETUP_REF) ||
+    checkType(BindingTypes.SETUP_MAYBE_REF)
+  if (fromMaybeRef) {
+    return context.inline
+      ? // setup scope bindings that may be refs need to be unrefed
+        `${context.helperString(UNREF)}(${fromMaybeRef})`
+      : `$setup[${JSON.stringify(fromMaybeRef)}]`
   }
 }
 
@@ -108,81 +237,11 @@ function processProps(node: ElementNode, context: TransformContext) {
       if (directiveTransform) {
         prop.exp = directiveTransform(prop, node, context).props[0]
           .value as ExpressionNode
-        // const { arg } = prop
-        // if (arg && arg.type === NodeTypes.SIMPLE_EXPRESSION && prop.exp) {
-        //   const { content } = arg
-        //   if (content === 'class') {
-        //     hasClassBinding = true
-        //     processClass(prop, props, context)
-        //   } else if (content === 'style') {
-        //     hasStyleBinding = true
-        //     processStyle(prop, props, context)
-        //   }
-        // }
       }
     }
   }
-  // remove static class and static style
-  // if (hasClassBinding) {
-  //   const staticClassPropIndex = findStaticClassIndex(props)
-  //   if (staticClassPropIndex > -1) {
-  //     props.splice(staticClassPropIndex, 1)
-  //   }
-  // }
-  // if (hasStyleBinding) {
-  //   const staticStylePropIndex = findStaticStyleIndex(props)
-  //   if (staticStylePropIndex > -1) {
-  //     props.splice(staticStylePropIndex, 1)
-  //   }
-  // }
 }
 
 function isComponentTag(tag: string) {
   return tag[0].toLowerCase() + tag.slice(1) === 'component'
 }
-
-// function findStaticClassIndex(props: (AttributeNode | DirectiveNode)[]) {
-//   return props.findIndex((prop) => prop.name === 'class')
-// }
-// function findStaticStyleIndex(props: (AttributeNode | DirectiveNode)[]) {
-//   return props.findIndex((prop) => prop.name === 'style')
-// }
-
-// function processClass(
-//   classBindingProp: DirectiveNode,
-//   props: (AttributeNode | DirectiveNode)[],
-//   context: TransformContext
-// ) {
-//   if (!classBindingProp.exp) {
-//     return
-//   }
-//   const staticClassPropIndex = findStaticClassIndex(props)
-//   const staticClass =
-//     staticClassPropIndex > -1
-//       ? (props[staticClassPropIndex] as AttributeNode).value
-//       : ''
-//   const expr = parseExpr(classBindingProp.exp, context)
-//   if (!expr) {
-//     return
-//   }
-//   console.log(staticClass)
-//   if (isObjectExpression(expr)) {
-//     classBindingProp.exp = createSimpleExpression(
-//       genBabelExpr(createClassBindingArrayExpression(expr))
-//     )
-//   }
-// }
-// function processStyle(
-//   styleBindingPropprop: DirectiveNode,
-//   props: (AttributeNode | DirectiveNode)[],
-//   context: TransformContext
-// ) {
-//   const staticStylePropIndex = findStaticStyleIndex(props)
-//   const staticStyle =
-//     staticStylePropIndex > -1
-//       ? (props[staticStylePropIndex] as AttributeNode).value
-//       : ''
-//   if (staticStyle) {
-//     console.log(staticStyle)
-//   }
-// }

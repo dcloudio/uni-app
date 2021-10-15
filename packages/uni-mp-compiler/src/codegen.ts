@@ -10,13 +10,17 @@ import {
   TextNode,
   TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
-import { default as babelGenerate } from '@babel/generator'
-import { CodegenOptions, CodegenScope } from './options'
-import { createObjectExpression } from './ast'
 import { Expression } from '@babel/types'
+import { default as babelGenerate } from '@babel/generator'
+import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
+import { CodegenOptions, CodegenRootNode } from './options'
+import { createObjectExpression } from './ast'
+
+import { BindingComponentTypes, TransformContext } from './transform'
 
 interface CodegenContext extends CodegenOptions {
   code: string
+  bindingComponents: TransformContext['bindingComponents']
   indentLevel: number
   push(code: string, node?: CodegenNode): void
   indent(): void
@@ -25,8 +29,7 @@ interface CodegenContext extends CodegenOptions {
 }
 
 export function generate(
-  ast: RootNode,
-  scope: CodegenScope,
+  ast: CodegenRootNode,
   options: CodegenOptions
 ): Omit<CodegenResult, 'ast'> {
   const context = createCodegenContext(ast, options)
@@ -82,7 +85,7 @@ export function generate(
   }
 
   push(`return `)
-  push(genBabelExpr(createObjectExpression(scope.properties)))
+  push(genBabelExpr(createObjectExpression(ast.scope.properties)))
   if (useWithBlock) {
     deindent()
     push(`}`)
@@ -96,7 +99,7 @@ export function generate(
 }
 
 function createCodegenContext(
-  ast: RootNode,
+  ast: CodegenRootNode,
   {
     mode = 'function',
     prefixIdentifiers = mode === 'module',
@@ -114,6 +117,7 @@ function createCodegenContext(
     scopeId,
     runtimeGlobalName,
     runtimeModuleName,
+    bindingComponents: ast.bindingComponents,
     isTS,
     code: ``,
     indentLevel: 0,
@@ -142,8 +146,45 @@ function createCodegenContext(
   return context
 }
 
+function genComponentImports(
+  bindingComponents: TransformContext['bindingComponents'],
+  { push }: CodegenContext
+) {
+  const importDeclarations: string[] = []
+  Object.keys(bindingComponents).forEach((tag) => {
+    const { name, type } = bindingComponents[tag]
+    if (type === BindingComponentTypes.UNKNOWN) {
+      const source = matchEasycom(tag)
+      if (source) {
+        addImportDeclaration(importDeclarations, name, source)
+      }
+    }
+  })
+  importDeclarations.forEach((str) => push(str))
+}
+
+function genComponents(
+  bindingComponents: TransformContext['bindingComponents'],
+  { push }: CodegenContext
+) {
+  const components = Object.keys(bindingComponents).map(
+    (tag) => bindingComponents[tag].name
+  )
+  if (components.length) {
+    push(`if (!Math) {`)
+    push(`Math.max.call(Max, ${components.map((name) => name).join(', ')})`)
+    push(`}`)
+  }
+}
+
 function genFunctionPreamble(ast: RootNode, context: CodegenContext) {
-  const { prefixIdentifiers, push, newline, runtimeGlobalName } = context
+  const {
+    prefixIdentifiers,
+    push,
+    newline,
+    runtimeGlobalName,
+    bindingComponents,
+  } = context
   const VueBinding = runtimeGlobalName
   const aliasHelper = (s: symbol) => `${helperNameMap[s]}: _${helperNameMap[s]}`
   if (ast.helpers.length > 0) {
@@ -155,6 +196,8 @@ function genFunctionPreamble(ast: RootNode, context: CodegenContext) {
       push(`const _Vue = ${VueBinding}\n`)
     }
   }
+  genComponentImports(bindingComponents, context)
+  genComponents(bindingComponents, context)
   newline()
   push(`return `)
 }
@@ -164,7 +207,7 @@ function genModulePreamble(
   context: CodegenContext,
   inline?: boolean
 ) {
-  const { push, newline, runtimeModuleName } = context
+  const { push, newline, runtimeModuleName, bindingComponents } = context
   if (ast.helpers.length) {
     push(
       `import { ${ast.helpers
@@ -172,6 +215,8 @@ function genModulePreamble(
         .join(', ')} } from ${JSON.stringify(runtimeModuleName)}\n`
     )
   }
+  genComponentImports(bindingComponents, context)
+  genComponents(bindingComponents, context)
   newline()
   if (!inline) {
     push(`export `)

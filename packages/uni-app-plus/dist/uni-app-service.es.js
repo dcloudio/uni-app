@@ -5681,6 +5681,7 @@ var serviceContext = (function (vue) {
   };
   const API_CLOSE_AUTH_VIEW = 'closeAuthView';
   const API_GET_CHECK_BOX_STATE = 'getCheckBoxState';
+  const API_GET_UNIVERIFY_MANAGER = 'getUniverifyManager';
 
   const API_SHREA = 'share';
   const SCENE = [
@@ -6386,7 +6387,7 @@ var serviceContext = (function (vue) {
 
   let deviceId;
   function deviceId$1 () {
-      deviceId = deviceId || plus.runtime.getDCloudId();
+      deviceId = deviceId || plus.device.uuid;
       return deviceId;
   }
 
@@ -8985,7 +8986,7 @@ var serviceContext = (function (vue) {
           errMsg: 'getLocation:ok',
       });
   }
-  const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode = false, altitude = false }, { resolve, reject }) => {
+  const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode = false, altitude = false, highAccuracyExpireTime, }, { resolve, reject }) => {
       plus.geolocation.getCurrentPosition((position) => {
           getLocationSuccess(type, position, resolve);
       }, (e) => {
@@ -8998,6 +8999,7 @@ var serviceContext = (function (vue) {
       }, {
           geocode: geocode,
           enableHighAccuracy: altitude,
+          timeout: highAccuracyExpireTime,
       });
   }, GetLocationProtocol, GetLocationOptions);
 
@@ -9545,6 +9547,7 @@ var serviceContext = (function (vue) {
       }
   }, GetProviderProtocol);
 
+  let univerifyManager;
   function getService(provider) {
       return new Promise((resolve, reject) => {
           plus.oauth.getServices((services) => {
@@ -9692,24 +9695,59 @@ var serviceContext = (function (vue) {
    */
   function univerifyButtonsClickHandling(univerifyStyle, errorCallback) {
       if (isPlainObject(univerifyStyle) &&
-          univerifyStyle.buttons &&
-          toTypeString(univerifyStyle.buttons.list) === '[object Array]' &&
-          univerifyStyle.buttons.list.length > 0) {
+          isPlainObject(univerifyStyle.buttons) &&
+          toTypeString(univerifyStyle.buttons.list) === '[object Array]') {
           univerifyStyle.buttons.list.forEach((button, index) => {
               univerifyStyle.buttons.list[index].onclick = function () {
-                  _closeAuthView().then(() => {
-                      errorCallback({
-                          code: '30008',
-                          message: '用户点击了自定义按钮',
-                          index,
-                          provider: button.provider,
+                  const res = {
+                      code: '30008',
+                      message: '用户点击了自定义按钮',
+                      index,
+                      provider: button.provider,
+                  };
+                  isPlainObject(univerifyManager)
+                      ? univerifyManager._triggerUniverifyButtonsClick(res)
+                      : _closeAuthView().then(() => {
+                          errorCallback(res);
                       });
-                  });
               };
           });
       }
       return univerifyStyle;
   }
+  class UniverifyManager {
+      constructor() {
+          this.provider = 'univerify';
+          this.eventName = 'api.univerifyButtonsClick';
+      }
+      close() {
+          closeAuthView();
+      }
+      login(options) {
+          login(this._getOptions(options));
+      }
+      getCheckBoxState(options) {
+          getCheckBoxState(options);
+      }
+      preLogin(options) {
+          preLogin(this._getOptions(options));
+      }
+      onButtonsClick(callback) {
+          UniServiceJSBridge.on(this.eventName, callback);
+      }
+      offButtonsClick(callback) {
+          UniServiceJSBridge.off(this.eventName, callback);
+      }
+      _triggerUniverifyButtonsClick(res) {
+          UniServiceJSBridge.emit(this.eventName, res);
+      }
+      _getOptions(options = {}) {
+          return extend({}, options, { provider: this.provider });
+      }
+  }
+  const getUniverifyManager = defineSyncApi(API_GET_UNIVERIFY_MANAGER, () => {
+      return univerifyManager || (univerifyManager = new UniverifyManager());
+  });
 
   const registerRuntime = defineSyncApi('registerRuntime', (runtime) => {
       // @ts-expect-error
@@ -9859,7 +9897,7 @@ var serviceContext = (function (vue) {
               });
           }
           catch (e) {
-              console.error(e.message + '\n' + e.stack);
+              console.error(e.message + LINEFEED + e.stack);
           }
       }
   }
@@ -12771,6 +12809,7 @@ var serviceContext = (function (vue) {
     preLogin: preLogin,
     closeAuthView: closeAuthView,
     getCheckBoxState: getCheckBoxState,
+    getUniverifyManager: getUniverifyManager,
     registerRuntime: registerRuntime,
     share: share,
     shareWithSystem: shareWithSystem,

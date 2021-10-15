@@ -481,7 +481,10 @@ describe(`compiler: v-for`, () => {
     test('should prefix v-for source w/ complex expression', () => {
       const { node } = parseWithForTransform(
         `<view v-for="i in list.concat([foo])"/>`,
-        { prefixIdentifiers: true, skipTransformIdentifier: true }
+        {
+          prefixIdentifiers: true,
+          skipTransformIdentifier: true,
+        }
       )
       expect(node.vFor.source).toMatchObject({
         type: NodeTypes.COMPOUND_EXPRESSION,

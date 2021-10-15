@@ -17198,13 +17198,13 @@ function getJSONP(url, options, success, error) {
   js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
   document.body.appendChild(js);
 }
-const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude }, { resolve, reject }) => {
+const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude, highAccuracyExpireTime }, { resolve, reject }) => {
   const mapInfo = getMapInfo();
   new Promise((resolve2, reject2) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((res) => resolve2(res.coords), reject2, {
         enableHighAccuracy: altitude,
-        timeout: 1e3 * 100
+        timeout: highAccuracyExpireTime || 1e3 * 100
       });
     } else {
       reject2(new Error("device nonsupport geolocation"));
