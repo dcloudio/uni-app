@@ -52,3 +52,6 @@ export type API_TYPE_CLOSE_AUTH_VIEW = typeof uni.closeAuthView
 
 export const API_GET_CHECK_BOX_STATE = 'getCheckBoxState'
 export type API_TYPE_GET_CHECK_BOX_STATE = typeof uni.getCheckBoxState
+
+export const API_GET_UNIVERIFY_MANAGER = 'getUniverifyManager'
+export type API_TYPE_GET_UNIVERIFY_MANAGER = typeof uni.getUniverifyManager
