@@ -19,7 +19,7 @@
     "@dcloudio/uni-stat": "../../uni-stat",
     "@vue/shared": "^3.2.20",
     "vue": "^3.2.20",
-    "vue-router": "^4.0.11",
+    "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

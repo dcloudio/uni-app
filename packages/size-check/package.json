@@ -3,6 +3,6 @@
   "name": "@dcloudio/size-check",
   "version": "3.0.0-alpha-3021020211012005",
   "dependencies": {
-    "vue-router": "^4.0.11"
+    "vue-router": "^4.0.12"
   }
 }

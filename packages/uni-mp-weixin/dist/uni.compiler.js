@@ -102,6 +102,7 @@ const options = {
     },
     template: {
         extname: '.wxml',
+        directive: 'wx:',
     },
     style: {
         extname: '.wxss',
