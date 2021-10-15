@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 let i18n;
@@ -2623,7 +2623,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
+    console.error(errMsg.message + LINEFEED + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -7491,7 +7491,7 @@ function useQuill(props2, rootRef, trigger) {
           break;
         case "insertDivider":
           range = quill.getSelection(true);
-          quill.insertText(range.index, "\n", "user");
+          quill.insertText(range.index, LINEFEED, "user");
           quill.insertEmbed(range.index + 1, "divider", true, "user");
           quill.setSelection(range.index + 2, 0, "silent");
           break;
@@ -7799,9 +7799,7 @@ function useImageState(rootRef, props2) {
       opts[0] && (position = opts[0]);
       opts[1] && (size = opts[1]);
     }
-    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};
-            background-position:${position};
-            background-size:${size};`;
+    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};background-position:${position};background-size:${size};`;
   });
   const state2 = reactive({
     rootEl: rootRef,
@@ -12907,7 +12905,7 @@ const SPACE_UNICODE = {
   nbsp: "\xA0"
 };
 function parseText(text2, options) {
-  return text2.replace(/\\n/g, "\n").split("\n").map((text22) => {
+  return text2.replace(/\\n/g, LINEFEED).split(LINEFEED).map((text22) => {
     return normalizeText(text22, options);
   });
 }
@@ -13010,7 +13008,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       fixDisabledColor,
       trigger
     } = useField(props2, rootRef, emit2);
-    const valueCompute = computed(() => state2.value.split("\n"));
+    const valueCompute = computed(() => state2.value.split(LINEFEED));
     const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
     const heightRef = ref(0);
     const lineRef = ref(null);
@@ -16805,7 +16803,7 @@ class RequestTask {
 }
 function parseHeaders(headers) {
   const headersObject = {};
-  headers.split("\n").forEach((header) => {
+  headers.split(LINEFEED).forEach((header) => {
     const find = header.match(/(\S+\s*):\s*(.*)/);
     if (!find || find.length !== 3) {
       return;

@@ -119,6 +119,7 @@ export default defineConfig({
     vueJsx({ optimize: true, isCustomElement }),
   ],
   build: {
+    target: 'es2015',
     minify: true,
     lib: {
       name: 'uni-app-view',

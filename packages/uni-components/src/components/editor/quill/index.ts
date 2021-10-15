@@ -6,6 +6,7 @@ import QuillClass, {
   RangeStatic,
   StringMap,
 } from 'quill'
+import { LINEFEED } from '@dcloudio/uni-shared'
 import { useContextInfo, useSubscribe } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { CustomEventTrigger } from '../../../helpers/useEvent'
@@ -304,7 +305,7 @@ export function useQuill(
             break
           case 'insertDivider':
             range = quill.getSelection(true)
-            quill.insertText(range.index, '\n', 'user')
+            quill.insertText(range.index, LINEFEED, 'user')
             quill.insertEmbed(range.index + 1, 'divider', true, 'user')
             quill.setSelection(range.index + 2, 0, 'silent')
             break

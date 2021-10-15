@@ -229,3 +229,42 @@ function initAutoScanEasycoms(
 function normalizeCompath(compath: string, rootDir: string) {
   return normalizePath(path.relative(rootDir, compath))
 }
+
+export function addImportDeclaration(
+  importDeclarations: string[],
+  local: string,
+  source: string,
+  imported?: string
+) {
+  importDeclarations.push(createImportDeclaration(local, source, imported))
+  return local
+}
+
+function createImportDeclaration(
+  local: string,
+  source: string,
+  imported?: string
+) {
+  if (imported) {
+    return `import {${imported} as ${local}} from '${source}';`
+  }
+  return `import ${local} from '${source}';`
+}
+
+const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveDynamicComponent as __resolveDynamicComponent } from 'vue';import { resolveEasycom } from '@dcloudio/uni-app';`
+
+export function genResolveEasycomCode(
+  importDeclarations: string[],
+  code: string,
+  name: string
+) {
+  if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
+    importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
+  }
+  return `resolveEasycom(${code.replace(
+    '_resolveComponent',
+    '__resolveDynamicComponent'
+  )}, ${name})`
+}
+
+export const UNI_EASYCOM_EXCLUDE = [/App.vue$/, /@dcloudio\/uni-h5/]

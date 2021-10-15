@@ -230,6 +230,8 @@ export declare interface IUniPageNode {
 
 export declare const JSON_PROTOCOL = "json://";
 
+export declare const LINEFEED = "\n";
+
 export declare const NAVBAR_HEIGHT = 44;
 
 declare type NavigateToOptionEvents = Record<string, (...args: any[]) => void>;

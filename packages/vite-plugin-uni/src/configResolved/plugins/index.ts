@@ -10,7 +10,6 @@ import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
-import { uniEasycomPlugin } from './easycom'
 
 import { uniStaticPlugin } from './static'
 import { uniPreVuePlugin } from './preVue'
@@ -26,17 +25,11 @@ export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
 
 const UNI_H5_RE = /@dcloudio\/uni-h5/
 
-const APP_VUE_RE = /App.vue$/
-
 const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
 }
 const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
-}
-
-const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [APP_VUE_RE, UNI_H5_RE],
 }
 
 export function initPlugins(
@@ -67,11 +60,6 @@ export function initPlugins(
     'vite:vue'
   )
 
-  addPlugin(
-    plugins,
-    uniEasycomPlugin(extend(uniEasycomPluginOptions, options), config),
-    'vite:vue'
-  )
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
 

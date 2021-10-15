@@ -945,6 +945,7 @@ function debounce(fn, delay) {
     return newFn;
 }
 
+const LINEFEED = '\n';
 const NAVBAR_HEIGHT = 44;
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
@@ -1141,6 +1142,7 @@ exports.EventChannel = EventChannel;
 exports.EventModifierFlags = EventModifierFlags;
 exports.I18N_JSON_DELIMITERS = I18N_JSON_DELIMITERS;
 exports.JSON_PROTOCOL = JSON_PROTOCOL;
+exports.LINEFEED = LINEFEED;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;

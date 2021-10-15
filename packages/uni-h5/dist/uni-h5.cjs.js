@@ -1308,7 +1308,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
+    console.error(errMsg.message + uniShared.LINEFEED + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -2652,9 +2652,7 @@ function useImageState(rootRef, props2) {
       opts[0] && (position = opts[0]);
       opts[1] && (size = opts[1]);
     }
-    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};
-            background-position:${position};
-            background-size:${size};`;
+    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};background-position:${position};background-size:${size};`;
   });
   const state = vue.reactive({
     rootEl: rootRef,
@@ -6259,7 +6257,7 @@ const SPACE_UNICODE = {
   nbsp: "\xA0"
 };
 function parseText(text, options) {
-  return text.replace(/\\n/g, "\n").split("\n").map((text2) => {
+  return text.replace(/\\n/g, uniShared.LINEFEED).split(uniShared.LINEFEED).map((text2) => {
     return normalizeText(text2, options);
   });
 }
@@ -6358,7 +6356,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       fixDisabledColor,
       trigger
     } = useField(props2, rootRef, emit2);
-    const valueCompute = vue.computed(() => state.value.split("\n"));
+    const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
     const isDone = vue.computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
     const heightRef = vue.ref(0);
     const lineRef = vue.ref(null);
@@ -9540,7 +9538,7 @@ class RequestTask {
 }
 function parseHeaders(headers) {
   const headersObject = {};
-  headers.split("\n").forEach((header) => {
+  headers.split(uniShared.LINEFEED).forEach((header) => {
     const find = header.match(/(\S+\s*):\s*(.*)/);
     if (!find || find.length !== 3) {
       return;

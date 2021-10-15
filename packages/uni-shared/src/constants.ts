@@ -1,3 +1,4 @@
+export const LINEFEED = '\n'
 export const NAVBAR_HEIGHT = 44
 export const TABBAR_HEIGHT = 50
 export const ON_REACH_BOTTOM_DISTANCE = 50

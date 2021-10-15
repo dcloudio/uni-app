@@ -6,6 +6,7 @@ import {
   getAppStyleIsolation,
   parseManifestJsonOnce,
   uniConsolePlugin,
+  UNI_EASYCOM_EXCLUDE,
 } from '@dcloudio/uni-cli-shared'
 import { UniAppPlugin } from './plugin'
 import { uniTemplatePlugin } from './plugins/template'
@@ -15,6 +16,7 @@ import { uniPagesJsonPlugin } from './plugins/pagesJson'
 // import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniStatsPlugin } from './plugins/stats'
+import { uniEasycomPlugin } from './plugins/easycom'
 
 function initUniCssScopedPluginOptions() {
   const styleIsolation = getAppStyleIsolation(
@@ -32,6 +34,7 @@ function initUniCssScopedPluginOptions() {
 }
 
 const plugins = [
+  uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
   // uniResolveIdPlugin(),
   uniConsolePlugin({
     filename(filename) {

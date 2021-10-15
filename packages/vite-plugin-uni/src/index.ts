@@ -37,7 +37,7 @@ export interface VitePluginUniOptions {
   outputDir?: string
   vueOptions?: VueOptions
   vueJsxOptions?: VueJSXPluginOptions | boolean
-  viteLegacyOptions?: ViteLegacyOptions
+  viteLegacyOptions?: ViteLegacyOptions | false
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   base: string
@@ -77,7 +77,7 @@ export default function uniPlugin(
 
   const plugins: Plugin[] = []
 
-  if (createViteLegacyPlugin && options.viteLegacyOptions !== false) {
+  if (createViteLegacyPlugin && options.viteLegacyOptions) {
     plugins.push(
       ...(createViteLegacyPlugin(
         initPluginViteLegacyOptions(options)

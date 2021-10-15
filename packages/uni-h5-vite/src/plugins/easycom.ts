@@ -1,6 +1,6 @@
 import path from 'path'
-import { Plugin, ResolvedConfig } from 'vite'
-import { createFilter } from '@rollup/pluginutils'
+import { Plugin } from 'vite'
+import { createFilter, FilterPattern } from '@rollup/pluginutils'
 import { camelize, capitalize } from '@vue/shared'
 
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
@@ -13,9 +13,9 @@ import {
   buildInCssSet,
   isCombineBuiltInCss,
   matchEasycom,
+  addImportDeclaration,
+  genResolveEasycomCode,
 } from '@dcloudio/uni-cli-shared'
-
-import { UniPluginFilterOptions } from '.'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
@@ -51,16 +51,19 @@ const baseComponents = [
   'view',
 ]
 
-// const identifierRE = /^([a-zA-Z_$][a-zA-Z\\d_$]*)$/
+interface UniEasycomPluginOptions {
+  include?: FilterPattern
+  exclude?: FilterPattern
+}
 
-export function uniEasycomPlugin(
-  options: UniPluginFilterOptions,
-  config: ResolvedConfig
-): Plugin {
+export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
-  const needCombineBuiltInCss = isCombineBuiltInCss(config)
+  let needCombineBuiltInCss = false
   return {
-    name: 'vite:uni-easycom',
+    name: 'vite:uni-h5-easycom',
+    configResolved(config) {
+      needCombineBuiltInCss = isCombineBuiltInCss(config)
+    },
     transform(code, id) {
       if (!filter(id)) {
         return
@@ -126,22 +129,6 @@ export function uniEasycomPlugin(
   }
 }
 
-const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveDynamicComponent as __resolveDynamicComponent } from 'vue';import { resolveEasycom } from '@dcloudio/uni-app';`
-
-function genResolveEasycomCode(
-  importDeclarations: string[],
-  code: string,
-  name: string
-) {
-  if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
-    importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
-  }
-  return `resolveEasycom(${code.replace(
-    '_resolveComponent',
-    '__resolveDynamicComponent'
-  )}, ${name})`
-}
-
 function resolveBuiltInCssImport(name: string) {
   const cssImports: string[] = []
   if (baseComponents.includes(name)) {
@@ -168,25 +155,4 @@ function addBuiltInImportDeclaration(
     H5_COMPONENTS_PATH,
     capitalize(camelize(name))
   )
-}
-
-function addImportDeclaration(
-  importDeclarations: string[],
-  local: string,
-  source: string,
-  imported?: string
-) {
-  importDeclarations.push(createImportDeclaration(local, source, imported))
-  return local
-}
-
-function createImportDeclaration(
-  local: string,
-  source: string,
-  imported?: string
-) {
-  if (imported) {
-    return `import {${imported} as ${local}} from '${source}';`
-  }
-  return `import ${local} from '${source}';`
 }

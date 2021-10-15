@@ -28,7 +28,7 @@ function createApp(code: string) {
 }
 
 function createLegacyApp(code: string) {
-  return `function createApp(rootComponent,rootProps){rootComponent.mpTye='app';const app=createVueApp(rootComponent,rootProps).use(uni.__vuePlugin);app.render=()=>{};const oldMount=app.mount;app.mount=(container)=>{const appVm=oldMount.call(app,container);return appVm;};return app;};${code.replace(
+  return `function createApp(rootComponent,rootProps){rootComponent.mpTye='app';rootComponent.render=()=>{};const app=createVueApp(rootComponent,rootProps).use(uni.__vuePlugin);const oldMount=app.mount;app.mount=(container)=>{const appVm=oldMount.call(app,container);return appVm;};return app;};${code.replace(
     'createApp',
     'createVueApp'
   )}`

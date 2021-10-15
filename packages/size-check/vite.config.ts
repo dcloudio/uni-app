@@ -1,4 +1,5 @@
 import path from 'path'
+import { terser } from 'rollup-plugin-terser'
 import uniH5VitePlugins from '@dcloudio/uni-h5-vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import { UserConfig } from 'vite'
@@ -16,9 +17,9 @@ export default {
       entry: path.resolve(__dirname, 'src/main.ts'),
       formats: ['es'],
     },
-    // minify: false,
     rollupOptions: {
-      // external: ['vue', '@vue/shared'],
+      external: ['vue', '@vue/shared'],
+      plugins: [terser()],
       output: {
         inlineDynamicImports: true,
       },
