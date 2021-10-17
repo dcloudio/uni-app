@@ -29,11 +29,13 @@ export function uniComponentPlugin(): Plugin {
       }
       const s = new MagicString(code)
       const rewriteImports: string[] = []
-      vueComponentImports.forEach(({ n, ss, se }) => {
+      vueComponentImports.forEach(({ n, ss, se, i }) => {
         s.remove(ss, se)
-        rewriteImports.push(`import('${virtualComponentPath(n!)}')`)
+        rewriteImports.push(
+          `const ${i} = ()=>import('${virtualComponentPath(n!)}')`
+        )
       })
-      s.prepend(`if(!Math){${rewriteImports.join(';')}}`)
+      s.prepend(rewriteImports.join(';') + ';\n')
       return s.toString()
     },
   }

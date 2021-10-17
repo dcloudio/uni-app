@@ -25,11 +25,11 @@ function parseWithElementTransform(
 
 describe('compiler: element transform', () => {
   test('import + resolve component', () => {
-    const { root, code } = parseWithElementTransform(`<Foo/>`)
+    const { root } = parseWithElementTransform(`<Foo/>`)
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Foo: { name: '_component_Foo', type: BindingComponentTypes.UNKNOWN },
     })
-    expect(code).toContain(`if (!Math) {Math.max.call(Max, _component_Foo)}`)
+    // expect(code).toContain(`if (!Math) {Math.max.call(Max, _component_Foo)}`)
   })
 
   test('import + resolve component multi', () => {
@@ -48,21 +48,16 @@ describe('compiler: element transform', () => {
       Example: { name: '$setup["Example"]', type: BindingComponentTypes.SETUP },
       Test: { name: '_component_Test', type: BindingComponentTypes.SELF },
     })
-    expect(code).toContain(
-      `if (!Math) {Math.max.call(Max, _component_Foo, _component_Bar, $setup["Example"], _component_Test)}`
-    )
+    expect(code).toContain(`if (!Math) {Math.max.call(Max, $setup["Example"])}`)
   })
 
   test('resolve implcitly self-referencing component', () => {
-    const { root, code } = parseWithElementTransform(`<Example/>`, {
+    const { root } = parseWithElementTransform(`<Example/>`, {
       filename: `/foo/bar/Example.vue?vue&type=template`,
     })
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Example: { name: '_component_Example', type: BindingComponentTypes.SELF },
     })
-    expect(code).toContain(
-      `if (!Math) {Math.max.call(Max, _component_Example)}`
-    )
   })
 
   test('resolve component from setup bindings', () => {

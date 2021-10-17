@@ -151,25 +151,21 @@ function genComponentImports(
   { push }: CodegenContext
 ) {
   const importDeclarations: string[] = []
+  // 仅记录easycom和setup组件
+  const components: string[] = []
   Object.keys(bindingComponents).forEach((tag) => {
     const { name, type } = bindingComponents[tag]
     if (type === BindingComponentTypes.UNKNOWN) {
       const source = matchEasycom(tag)
       if (source) {
+        components.push(name)
         addImportDeclaration(importDeclarations, name, source)
       }
+    } else if (type === BindingComponentTypes.SETUP) {
+      components.push(name)
     }
   })
   importDeclarations.forEach((str) => push(str))
-}
-
-function genComponents(
-  bindingComponents: TransformContext['bindingComponents'],
-  { push }: CodegenContext
-) {
-  const components = Object.keys(bindingComponents).map(
-    (tag) => bindingComponents[tag].name
-  )
   if (components.length) {
     push(`if (!Math) {`)
     push(`Math.max.call(Max, ${components.map((name) => name).join(', ')})`)
@@ -197,7 +193,6 @@ function genFunctionPreamble(ast: RootNode, context: CodegenContext) {
     }
   }
   genComponentImports(bindingComponents, context)
-  genComponents(bindingComponents, context)
   newline()
   push(`return `)
 }
@@ -216,7 +211,6 @@ function genModulePreamble(
     )
   }
   genComponentImports(bindingComponents, context)
-  genComponents(bindingComponents, context)
   newline()
   if (!inline) {
     push(`export `)

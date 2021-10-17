@@ -2,6 +2,8 @@ import path from 'path'
 import { PluginContext } from 'rollup'
 import { init, parse as parseImports, ImportSpecifier } from 'es-module-lexer'
 import { extend } from '@vue/shared'
+import { isImportDeclaration, isImportDefaultSpecifier } from '@babel/types'
+import { parse } from '@babel/parser'
 import { EXTNAME_VUE, EXTNAME_VUE_RE } from '../constants'
 
 export async function findVueComponentImports(
@@ -24,7 +26,7 @@ export async function findVueComponentImports(
     return []
   }
 
-  const rewriteImports: ImportSpecifier[] = []
+  const rewriteImports: (ImportSpecifier & { i: string })[] = []
   for (let i = 0; i < imports.length; i++) {
     const importSpecifier = imports[i]
     const { n } = importSpecifier
@@ -41,7 +43,21 @@ export async function findVueComponentImports(
       continue
     }
     if (EXTNAME_VUE_RE.test(res.id)) {
-      rewriteImports.push(extend(importSpecifier, { n: res.id }))
+      const expr = parse(source.slice(importSpecifier.ss, importSpecifier.se), {
+        sourceType: 'module',
+      }).program.body[0]
+      if (isImportDeclaration(expr) && expr.specifiers.length === 1) {
+        const importDefaultSpecifier = expr.specifiers[0]
+        if (!isImportDefaultSpecifier(importDefaultSpecifier)) {
+          continue
+        }
+        rewriteImports.push(
+          extend(importSpecifier, {
+            n: res.id,
+            i: importDefaultSpecifier.local.name,
+          })
+        )
+      }
     }
   }
   return rewriteImports

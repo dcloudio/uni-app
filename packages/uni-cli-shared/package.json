@@ -19,6 +19,8 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
+    "@babel/parser": "^7.15.0",
+    "@babel/types": "^7.15.0",
     "@rollup/pluginutils": "^4.1.1",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",
