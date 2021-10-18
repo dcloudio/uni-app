@@ -132,7 +132,7 @@ export function rewriteSsrNativeTag() {
 }
 
 export function rewriteSsrRenderStyle(inputDir: string) {
-  const { unit, unitRatio, unitPrecision } = parseRpx2UnitOnce(inputDir)
+  const { unit, unitRatio, unitPrecision } = parseRpx2UnitOnce(inputDir, 'h5')
   const rpx2unit = createRpx2Unit(unit, unitRatio, unitPrecision)
   const shared = require('@vue/shared')
   const oldStringifyStyle = shared.stringifyStyle

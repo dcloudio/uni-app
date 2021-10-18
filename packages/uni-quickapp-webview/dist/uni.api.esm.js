@@ -289,13 +289,13 @@ function invokeApi(method, api, options, ...params) {
 }
 
 function handlePromise(promise) {
-    if (__UNI_FEATURE_PROMISE__) {
-        return promise
-            .then((data) => {
-            return [null, data];
-        })
-            .catch((err) => [err]);
-    }
+    // if (__UNI_FEATURE_PROMISE__) {
+    //   return promise
+    //     .then((data) => {
+    //       return [null, data]
+    //     })
+    //     .catch((err) => [err])
+    // }
     return promise;
 }
 

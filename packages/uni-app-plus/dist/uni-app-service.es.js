@@ -1064,6 +1064,13 @@ var serviceContext = (function (vue) {
       return false;
   }
   function handlePromise(promise) {
+      // if (false) {
+      //   return promise
+      //     .then((data) => {
+      //       return [null, data]
+      //     })
+      //     .catch((err) => [err])
+      // }
       return promise;
   }
   function promisify(name, fn) {

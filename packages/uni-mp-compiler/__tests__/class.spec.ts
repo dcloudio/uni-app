@@ -58,10 +58,10 @@ describe('compiler: transform class', () => {
   })
   test('v-bind:class object syntax', () => {
     assert(
-      `<view :class="{ red: isRed }"/>`,
+      `<view :class="{ red: \`\${isRed}\` }"/>`,
       `<view class="{{[a && 'red']}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.isRed }
+  return { a: \`\${_ctx.isRed}\` }
 }`
     )
     assert(
@@ -103,6 +103,13 @@ describe('compiler: transform class', () => {
     )
   })
   test('v-bind:class array syntax', () => {
+    assert(
+      `<view :class="[classA, \`\${classB}\`]"/>`,
+      `<view class="{{[a, b]}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _normalizeClass(_ctx.classA), b: _normalizeClass(\`\${_ctx.classB}\`) }
+}`
+    )
     assert(
       `<view :class="[classA, classB]"/>`,
       `<view class="{{[a, b]}}"/>`,

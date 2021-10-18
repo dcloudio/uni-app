@@ -51,6 +51,13 @@ describe('compiler: transform style', () => {
   })
   test('v-bind:style object syntax', () => {
     assert(
+      `<view :style="{ color: \`\${green}px\` }"/>`,
+      `<view style="{{'color:' + a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: \`\${_ctx.green}px\` }
+}`
+    )
+    assert(
       `<view :style="{ color: 'green' }"/>`,
       `<view style="{{'color:' + 'green'}}"/>`,
       `(_ctx, _cache) => {
@@ -98,6 +105,13 @@ describe('compiler: transform style', () => {
     )
   })
   test('v-bind:style array syntax', () => {
+    assert(
+      `<view :style="[styleA, \`\${styleB}\`]"/>`,
+      `<view style="{{a + ';' + b}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _normalizeStyle(_ctx.styleA), b: _normalizeStyle(\`\${_ctx.styleB}\`) }
+}`
+    )
     assert(
       `<view :style="[styleA, styleB]"/>`,
       `<view style="{{a + ';' + b}}"/>`,

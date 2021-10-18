@@ -20,6 +20,9 @@ export interface UniMiniProgramPluginOptions {
   vite: {
     alias: AliasOptions
     copyOptions: CopyOptions
+    inject: {
+      [name: string]: [string, string]
+    }
   }
   global: string
   app: {

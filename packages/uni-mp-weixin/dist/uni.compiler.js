@@ -69,6 +69,12 @@ const uniMiniProgramWeixinPlugin = {
 const projectConfigFilename = 'project.config.json';
 const options = {
     vite: {
+        inject: {
+            uni: [
+                uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.api.esm.js'),
+                'default',
+            ],
+        },
         alias: {
             'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'),
         },

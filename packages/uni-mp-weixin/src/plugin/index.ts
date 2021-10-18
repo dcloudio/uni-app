@@ -21,6 +21,12 @@ const projectConfigFilename = 'project.config.json'
 
 const options: UniMiniProgramPluginOptions = {
   vite: {
+    inject: {
+      uni: [
+        resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.api.esm.js'),
+        'default',
+      ],
+    },
     alias: {
       'uni-mp-runtime': resolveBuiltIn(
         '@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'

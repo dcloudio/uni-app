@@ -16,13 +16,13 @@ function hasCallback(args: unknown) {
 }
 
 export function handlePromise(promise: Promise<unknown>) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise
-      .then((data) => {
-        return [null, data]
-      })
-      .catch((err) => [err])
-  }
+  // if (__UNI_FEATURE_PROMISE__) {
+  //   return promise
+  //     .then((data) => {
+  //       return [null, data]
+  //     })
+  //     .catch((err) => [err])
+  // }
   return promise
 }
 

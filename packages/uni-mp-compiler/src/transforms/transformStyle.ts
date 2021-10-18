@@ -13,6 +13,7 @@ import {
   isObjectProperty,
   binaryExpression,
   isIdentifier,
+  isTemplateLiteral,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -159,7 +160,8 @@ function rewriteStyleObjectExpression(
         prop.key = parseStringLiteral(prop.key)
         prop.key.value = hyphenate(prop.key.value) + ':'
       }
-      if (isLiteral(value)) {
+      // {fontSize:`${fontSize}px`} => {'font-size':a}
+      if (isLiteral(value) && !isTemplateLiteral(value)) {
         return
       } else {
         const newExpr = parseExprWithRewrite(

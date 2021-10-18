@@ -4616,7 +4616,6 @@ function setupRenderEffect(instance) {
             patch(instance, renderComponentRoot(instance));
         }
         else {
-            instance.render && instance.render.call(instance.proxy);
             // updateComponent
             const { bu, u } = instance;
             effect.allowRecurse = false;

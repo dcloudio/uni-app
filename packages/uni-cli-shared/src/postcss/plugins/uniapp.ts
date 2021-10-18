@@ -101,7 +101,7 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
       return {
         OnceExit(root) {
           root.walkDecls(walkDecls(rpx2unit))
-          root.walkRules(walkRules(page))
+          page && root.walkRules(walkRules(page))
         },
       }
     },

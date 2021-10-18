@@ -55,7 +55,10 @@ export function uniSSRPlugin(): Plugin {
         chunk.code =
           generateSsrDefineCode(
             resolvedConfig,
-            parseRpx2UnitOnce(process.env.UNI_INPUT_DIR)
+            parseRpx2UnitOnce(
+              process.env.UNI_INPUT_DIR,
+              process.env.UNI_PLATFORM
+            )
           ) +
           '\n' +
           chunk.code

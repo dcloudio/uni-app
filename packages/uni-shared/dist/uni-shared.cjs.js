@@ -168,11 +168,19 @@ const defaultRpx2Unit = {
     unitRatio: 10 / 320,
     unitPrecision: 5,
 };
+const defaultMiniProgramRpx2Unit = {
+    unit: 'rpx',
+    unitRatio: 1,
+    unitPrecision: 1,
+};
 function createRpx2Unit(unit, unitRatio, unitPrecision) {
     // ignore: rpxCalcIncludeWidth
     return (val) => val.replace(unitRE, (m, $1) => {
         if (!$1) {
             return m;
+        }
+        if (unitRatio === 1) {
+            return `${$1}${unit}`;
         }
         const value = toFixed(parseFloat($1) * unitRatio, unitPrecision);
         return value === 0 ? '0' : `${value}${unit}`;
@@ -1212,6 +1220,7 @@ exports.createUniEvent = createUniEvent;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
+exports.defaultMiniProgramRpx2Unit = defaultMiniProgramRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;

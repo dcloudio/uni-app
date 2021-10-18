@@ -2522,11 +2522,6 @@ function hasCallback(args) {
   return false;
 }
 function handlePromise(promise) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise.then((data) => {
-      return [null, data];
-    }).catch((err) => [err]);
-  }
   return promise;
 }
 function promisify(name, fn) {

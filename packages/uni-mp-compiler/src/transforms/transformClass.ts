@@ -18,6 +18,7 @@ import {
   LogicalExpression,
   logicalExpression,
   StringLiteral,
+  isTemplateLiteral,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -156,7 +157,7 @@ function rewriteClassObjectExpression(
           key as Expression
         ) as Identifier
       }
-      if (isLiteral(value)) {
+      if (isLiteral(value) && !isTemplateLiteral(value)) {
         return
       } else {
         const newExpr = parseExprWithRewrite(

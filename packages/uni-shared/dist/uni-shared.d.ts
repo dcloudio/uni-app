@@ -132,6 +132,12 @@ export declare function decode(text: string | number): string;
 
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
 
+export declare const defaultMiniProgramRpx2Unit: {
+    unit: string;
+    unitRatio: number;
+    unitPrecision: number;
+};
+
 export declare const defaultRpx2Unit: {
     unit: string;
     unitRatio: number;
