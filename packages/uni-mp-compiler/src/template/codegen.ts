@@ -1,8 +1,10 @@
+import { hyphenate } from '@vue/shared'
 import { formatMiniProgramEvent } from '@dcloudio/uni-cli-shared'
 import {
   AttributeNode,
   DirectiveNode,
   ElementNode,
+  ElementTypes,
   ExpressionNode,
   findProp,
   NodeTypes,
@@ -95,7 +97,10 @@ const tagMap: Record<string, string> = {
 }
 export function genElement(node: ElementNode, context: TemplateCodegenContext) {
   const { children, isSelfClosing, props } = node
-  const tag = tagMap[node.tag] || node.tag
+  let tag = tagMap[node.tag] || node.tag
+  if (node.tagType === ElementTypes.COMPONENT) {
+    tag = hyphenate(tag)
+  }
   const { push } = context
   push(`<${tag}`)
   if (isIfElementNode(node)) {
@@ -166,7 +171,19 @@ function genDirectiveNode(
   prop: DirectiveNode,
   { push }: TemplateCodegenContext
 ) {
-  const arg = (prop.arg as SimpleExpressionNode).content
-  const exp = (prop.exp as SimpleExpressionNode).content
-  push(`${arg}="{{${exp}}}"`)
+  if (prop.name === 'slot') {
+    if (prop.arg) {
+      push(`slot="${(prop.arg as SimpleExpressionNode).content}"`)
+    }
+  } else if (prop.name === 'model') {
+    // TODO
+  } else if (prop.name === 'show') {
+    push(`hidden="{{!${(prop.exp as SimpleExpressionNode).content}}}"`)
+  } else if (prop.arg && prop.exp) {
+    const arg = (prop.arg as SimpleExpressionNode).content
+    const exp = (prop.exp as SimpleExpressionNode).content
+    push(`${arg}="{{${exp}}}"`)
+  } else {
+    throw new Error(`unknown directive` + JSON.stringify(prop))
+  }
 }

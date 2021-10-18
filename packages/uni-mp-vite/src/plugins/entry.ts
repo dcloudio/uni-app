@@ -1,5 +1,10 @@
 import path from 'path'
-import { normalizePath } from '@dcloudio/uni-cli-shared'
+import {
+  addMiniProgramComponentJson,
+  normalizeMiniProgramFilename,
+  normalizePath,
+  removeExt,
+} from '@dcloudio/uni-cli-shared'
 import { Plugin } from 'vite'
 import { UniMiniProgramPluginOptions } from '../plugin'
 
@@ -37,7 +42,7 @@ export function isUniComponentUrl(id: string) {
   return id.startsWith(uniComponentPrefix)
 }
 
-export function uniVirtualPlugin({
+export function uniEntryPlugin({
   global,
 }: UniMiniProgramPluginOptions): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -64,6 +69,10 @@ ${global}.createPage(Page)`,
           path.resolve(inputDir, parseVirtualComponentPath(id))
         )
         this.addWatchFile(filepath)
+        addMiniProgramComponentJson(
+          removeExt(normalizeMiniProgramFilename(filepath, inputDir)),
+          { component: true }
+        )
         return {
           code: `import Component from '${filepath}'
 ${global}.createComponent(Component)`,

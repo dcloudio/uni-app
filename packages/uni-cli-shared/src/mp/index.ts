@@ -1,2 +1,2 @@
 export * from './event'
-export { findVueComponentImports } from './imports'
+export { transformVueComponentImports } from './transformImports'

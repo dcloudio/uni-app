@@ -6,6 +6,7 @@ import { once } from '@dcloudio/uni-shared'
 export { default as hash } from 'hash-sum'
 
 import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
+import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 export const isWindows = os.platform() === 'win32'
 export function normalizePath(id: string): string {
   return isWindows ? id.replace(/\\/g, '/') : id
@@ -42,12 +43,8 @@ export function normalizePagePath(pagePath: string, platform: UniApp.PLATFORM) {
   console.error(`${pagePath} not found`)
 }
 
-export function removeExt(str: string, ext?: string) {
-  if (ext) {
-    const reg = new RegExp(ext.replace(/\./, '\\.') + '$')
-    return normalizePath(str.replace(reg, ''))
-  }
-  return normalizePath(str.replace(/\.\w+$/g, ''))
+export function removeExt(str: string) {
+  return str.split('?')[0].replace(/\.\w+$/g, '')
 }
 
 const NODE_MODULES_REGEX = /(\.\.\/)?node_modules/g
@@ -60,4 +57,37 @@ export function normalizeNodeModules(str: string) {
     str = str.replace('node-modules/@', 'node-modules/npm-scope-')
   }
   return str
+}
+
+export function normalizeMiniProgramFilename(
+  filename: string,
+  inputDir?: string
+) {
+  if (!inputDir) {
+    return normalizeNodeModules(filename)
+  }
+  return normalizeNodeModules(path.relative(inputDir, filename))
+}
+
+export function createUniVueTransformAssetUrls(
+  base: string
+): SFCTemplateCompileOptions['transformAssetUrls'] {
+  return {
+    base,
+    tags: {
+      audio: ['src'],
+      video: ['src', 'poster'],
+      img: ['src'],
+      image: ['src'],
+      'cover-image': ['src'],
+      // h5
+      'v-uni-audio': ['src'],
+      'v-uni-video': ['src', 'poster'],
+      'v-uni-image': ['src'],
+      'v-uni-cover-image': ['src'],
+      // nvue
+      'u-image': ['src'],
+      'u-video': ['src', 'poster'],
+    },
+  }
 }

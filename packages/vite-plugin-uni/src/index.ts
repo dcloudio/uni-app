@@ -93,7 +93,8 @@ export default function uniPlugin(
 
   const uniPlugins = initExtraPlugins(
     process.env.UNI_CLI_CONTEXT || process.cwd(),
-    (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
+    (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
+    options
   )
   debugUni(uniPlugins)
 

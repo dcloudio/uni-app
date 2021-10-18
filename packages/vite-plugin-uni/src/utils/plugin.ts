@@ -8,6 +8,7 @@ import type {
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
 import { TemplateCompiler } from '@vue/compiler-sfc'
+import { VitePluginUniResolvedOptions } from '..'
 
 interface PluginConfig {
   id: string
@@ -68,20 +69,40 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
   }
 }
 
-export function initExtraPlugins(cliRoot: string, platform: UniApp.PLATFORM) {
-  return initPlugins(resolvePlugins(cliRoot, platform))
+export function initExtraPlugins(
+  cliRoot: string,
+  platform: UniApp.PLATFORM,
+  options: VitePluginUniResolvedOptions
+) {
+  return initPlugins(resolvePlugins(cliRoot, platform), options)
 }
 
-function initPlugin({ id, config: { main } }: PluginConfig): Plugin | void {
-  const plugin = require(path.join(id, main || '/lib/uni.plugin.js'))
-  return plugin.default || plugin
+function initPlugin(
+  { id, config: { main } }: PluginConfig,
+  options: VitePluginUniResolvedOptions
+): Plugin | void {
+  let plugin = require(path.join(id, main || '/lib/uni.plugin.js'))
+  plugin = plugin.default || plugin
+  if (isFunction(plugin)) {
+    plugin = plugin(options)
+  }
+  return plugin
 }
 
-function initPlugins(plugins: PluginConfig[]): Plugin[] {
+function initPlugins(
+  plugins: PluginConfig[],
+  options: VitePluginUniResolvedOptions
+): Plugin[] {
   return plugins
-    .map((plugin) => initPlugin(plugin))
+    .map((plugin) => initPlugin(plugin, options))
     .flat()
     .filter<Plugin>(Boolean as any)
+    .map((plugin) => {
+      if (isFunction(plugin)) {
+        return plugin(options)
+      }
+      return plugin
+    })
 }
 
 function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {

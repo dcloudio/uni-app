@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import debug from 'debug'
 import { Plugin } from 'vite'
 
 import {
@@ -7,17 +8,20 @@ import {
   defineUniPagesJsonPlugin,
   getLocaleFiles,
   normalizePagePath,
-  normalizeNodeModules,
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
+  addMiniProgramPageJson,
+  addMiniProgramAppJson,
+  findChangedJsonFiles,
 } from '@dcloudio/uni-cli-shared'
-import { virtualPagePath } from './virtual'
+import { virtualPagePath } from './entry'
 import { UniMiniProgramPluginOptions } from '../plugin'
+
+const debugPagesJson = debug('vite:uni:pages-json')
 
 export function uniPagesJsonPlugin(
   options: UniMiniProgramPluginOptions
 ): Plugin {
-  let appJson: AppJson
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'vite:uni-mp-pages-json',
@@ -32,21 +36,21 @@ export function uniPagesJsonPlugin(
           this.addWatchFile(filepath)
         })
         const manifestJson = parseManifestJsonOnce(inputDir)
-        const res = parseMiniProgramPagesJson(code, process.env.UNI_PLATFORM, {
-          debug: !!manifestJson.debug,
-          darkmode:
-            options.app.darkmode &&
-            fs.existsSync(path.resolve(inputDir, 'theme.json')),
-          networkTimeout: manifestJson.networkTimeout,
-          subpackages: options.app.subpackages,
-        })
-        appJson = res.appJson
-        Object.keys(res.pageJsons).forEach((name) => {
-          this.emitFile({
-            fileName: normalizeNodeModules(name) + '.json',
-            type: 'asset',
-            source: JSON.stringify(res.pageJsons[name], null, 2),
-          })
+        const { appJson, pageJsons } = parseMiniProgramPagesJson(
+          code,
+          process.env.UNI_PLATFORM,
+          {
+            debug: !!manifestJson.debug,
+            darkmode:
+              options.app.darkmode &&
+              fs.existsSync(path.resolve(inputDir, 'theme.json')),
+            networkTimeout: manifestJson.networkTimeout,
+            subpackages: options.app.subpackages,
+          }
+        )
+        addMiniProgramAppJson(appJson)
+        Object.keys(pageJsons).forEach((name) => {
+          addMiniProgramPageJson(name, pageJsons[name])
         })
         return {
           code: `import './manifest.json.js'\n` + importPagesCode(appJson),
@@ -54,13 +58,14 @@ export function uniPagesJsonPlugin(
         }
       },
       generateBundle() {
-        if (appJson) {
+        findChangedJsonFiles().forEach((value, key) => {
+          debugPagesJson('json.changed', key)
           this.emitFile({
-            fileName: `app.json`,
             type: 'asset',
-            source: JSON.stringify(appJson, null, 2),
+            fileName: key + '.json',
+            source: value,
           })
-        }
+        })
       },
     }
   })

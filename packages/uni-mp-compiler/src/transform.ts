@@ -38,6 +38,11 @@ import {
   TransformOptions,
 } from './options'
 
+export interface ImportItem {
+  exp: string | ExpressionNode
+  path: string
+}
+
 export type NodeTransform = (
   node: RootNode | TemplateChildNode,
   context: TransformContext
@@ -73,6 +78,7 @@ export interface TransformContext
   childIndex: number
   helpers: Map<symbol, number>
   components: Set<string>
+  imports: ImportItem[]
   bindingComponents: Record<
     string,
     { type: BindingComponentTypes; name: string }
@@ -117,6 +123,7 @@ export function transform(root: RootNode, options: TransformOptions) {
   // finalize meta information
   root.helpers = [...context.helpers.keys()]
   root.components = [...context.components]
+  root.imports = context.imports
   root.cached = context.cached
   return context
 }
@@ -278,6 +285,7 @@ export function createTransformContext(
     childIndex: 0,
     helpers: new Map(),
     components: new Set(),
+    imports: [],
     bindingComponents: Object.create(null),
     cached: 0,
     identifiers,

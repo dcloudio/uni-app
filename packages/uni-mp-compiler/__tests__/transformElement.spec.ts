@@ -1,8 +1,11 @@
 import { BindingTypes, ElementNode, RootNode } from '@vue/compiler-core'
+import { compileTemplate, TemplateCompiler } from '@vue/compiler-sfc'
 import { compile } from '../src'
+import * as MPCompiler from '../src'
 import { MPErrorCodes } from '../src/errors'
 import { CodegenRootNode, CompilerOptions } from '../src/options'
 import { BindingComponentTypes } from '../src/transform'
+import { createUniVueTransformAssetUrls } from '@dcloudio/uni-cli-shared'
 
 function parseWithElementTransform(
   template: string,
@@ -24,12 +27,33 @@ function parseWithElementTransform(
 }
 
 describe('compiler: element transform', () => {
+  test(`transformAssetUrls`, () => {
+    const result = compileTemplate({
+      source: `<image src="/static/logo.png"/>`,
+      filename: 'foo.vue',
+      id: 'foo',
+      compiler: MPCompiler as unknown as TemplateCompiler,
+      compilerOptions: {
+        mode: 'module',
+      },
+      transformAssetUrls: {
+        includeAbsolute: true,
+        ...(createUniVueTransformAssetUrls('/') as Record<string, any>),
+      },
+    })
+    expect(result.code).toBe(`import _imports_0 from '/static/logo.png'
+
+export function render(_ctx, _cache) {
+  return { a: _imports_0 }
+}`)
+  })
+
   test('import + resolve component', () => {
     const { root } = parseWithElementTransform(`<Foo/>`)
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Foo: { name: '_component_Foo', type: BindingComponentTypes.UNKNOWN },
     })
-    // expect(code).toContain(`if (!Math) {Math.max.call(Max, _component_Foo)}`)
+    // expect(code).toContain(`if (!Math) { Math.max.call(Max, _component_Foo) }`)
   })
 
   test('import + resolve component multi', () => {
@@ -48,7 +72,9 @@ describe('compiler: element transform', () => {
       Example: { name: '$setup["Example"]', type: BindingComponentTypes.SETUP },
       Test: { name: '_component_Test', type: BindingComponentTypes.SELF },
     })
-    expect(code).toContain(`if (!Math) {Math.max.call(Max, $setup["Example"])}`)
+    expect(code).toContain(
+      `if (!Math) { Math.max.call(Max, $setup["Example"]) }`
+    )
   })
 
   test('resolve implcitly self-referencing component', () => {
@@ -69,7 +95,9 @@ describe('compiler: element transform', () => {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Example: { name: '$setup["Example"]', type: BindingComponentTypes.SETUP },
     })
-    expect(code).toContain(`if (!Math) {Math.max.call(Max, $setup["Example"])}`)
+    expect(code).toContain(
+      `if (!Math) { Math.max.call(Max, $setup["Example"]) }`
+    )
   })
 
   test('resolve component from setup bindings (inline)', () => {
@@ -83,7 +111,7 @@ describe('compiler: element transform', () => {
       Example: { name: '_unref(Example)', type: BindingComponentTypes.SETUP },
     })
     expect(preamble).toContain(
-      `if (!Math) {Math.max.call(Max, _unref(Example))}`
+      `if (!Math) { Math.max.call(Max, _unref(Example)) }`
     )
   })
 
@@ -97,7 +125,7 @@ describe('compiler: element transform', () => {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Example: { name: 'Example', type: BindingComponentTypes.SETUP },
     })
-    expect(preamble).toContain(`if (!Math) {Math.max.call(Max, Example)}`)
+    expect(preamble).toContain(`if (!Math) { Math.max.call(Max, Example) }`)
   })
 
   test('resolve namespaced component from setup bindings', () => {

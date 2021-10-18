@@ -4,6 +4,7 @@ export const EXTNAME_VUE = ['.vue', '.nvue']
 export const EXTNAME_VUE_RE = /\.(vue|nvue)$/
 export const EXTNAME_JS_RE = /\.[jt]sx?$/
 
+export const BINDING_COMPONENTS = '__BINDING_COMPONENTS__'
 // APP 平台解析页面后缀的优先级
 export const PAGE_EXTNAME_APP = ['.nvue', '.vue', '.tsx', '.jsx', '.js']
 // 其他平台解析页面后缀的优先级

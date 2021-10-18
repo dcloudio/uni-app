@@ -14,7 +14,7 @@ import {
   isUniPageUrl,
   parseVirtualComponentPath,
   parseVirtualPagePath,
-} from '../plugins/virtual'
+} from '../plugins/entry'
 
 export function buildOptions(): UserConfig['build'] {
   const inputDir = process.env.UNI_INPUT_DIR

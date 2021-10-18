@@ -1,0 +1,196 @@
+import { parse, ParserPlugin } from '@babel/parser'
+import {
+  ImportDeclaration,
+  isIdentifier,
+  isImportDeclaration,
+  isObjectExpression,
+  isObjectProperty,
+  isStringLiteral,
+  isVariableDeclaration,
+  ObjectProperty,
+  Program,
+  Statement,
+  StringLiteral,
+} from '@babel/types'
+import { camelize, capitalize, hyphenate } from '@vue/shared'
+import { walk } from 'estree-walker'
+import MagicString from 'magic-string'
+import { PluginContext } from 'rollup'
+import { BINDING_COMPONENTS } from '../constants'
+import { normalizeMiniProgramFilename, removeExt } from '../utils'
+
+interface TransformVueComponentImportsOptions {
+  root: string
+  resolve: PluginContext['resolve']
+  dynamicImport: (name: string, source: string) => string
+  babelParserPlugins?: ParserPlugin[]
+}
+export async function transformVueComponentImports(
+  code: string,
+  importer: string,
+  {
+    root,
+    resolve,
+    dynamicImport,
+    babelParserPlugins,
+  }: TransformVueComponentImportsOptions
+): Promise<{
+  code: string
+  usingComponents: Record<string, string>
+}> {
+  if (!code.includes(BINDING_COMPONENTS)) {
+    return { code, usingComponents: {} }
+  }
+  const s = new MagicString(code)
+  const scriptAst = parse(code, {
+    plugins: [...(babelParserPlugins || [])],
+    sourceType: 'module',
+  }).program
+
+  const imports = findVueComponentImports(
+    scriptAst.body,
+    parseComponents(scriptAst, findBindingComponents(scriptAst.body))
+  )
+  const usingComponents: Record<string, string> = {}
+  for (let i = 0; i < imports.length; i++) {
+    const {
+      tag,
+      import: {
+        start,
+        end,
+        specifiers: [specifier],
+        source,
+      },
+    } = imports[i]
+    const resolveId = await resolve(source.value, importer)
+    if (resolveId) {
+      s.overwrite(
+        start!,
+        end!,
+        dynamicImport(specifier.local.name, resolveId.id) + ';'
+      )
+      const componentName = hyphenate(tag)
+      if (!usingComponents[componentName]) {
+        usingComponents[componentName] =
+          '/' + removeExt(normalizeMiniProgramFilename(resolveId.id, root))
+      }
+    }
+  }
+  return { code: s.toString(), usingComponents }
+}
+
+type BindingComponents = Record<
+  string,
+  { tag: string; type: 'unknown' | 'setup' | 'self' }
+>
+/**
+ * 解析编译器生成的 bindingComponents
+ * @param ast
+ * @returns
+ */
+function findBindingComponents(ast: Statement[]): BindingComponents {
+  for (const node of ast) {
+    if (!isVariableDeclaration(node)) {
+      continue
+    }
+    const declarator = node.declarations[0]
+    if (
+      isIdentifier(declarator.id) &&
+      declarator.id.name === BINDING_COMPONENTS
+    ) {
+      const bindingComponents = JSON.parse(
+        (declarator.init as StringLiteral).value
+      ) as Record<string, { name: string; type: 'unknown' | 'setup' | 'self' }>
+      return Object.keys(bindingComponents).reduce<BindingComponents>(
+        (bindings, tag) => {
+          const binding = bindingComponents[tag]
+          bindings[binding.name] = {
+            tag,
+            type: binding.type,
+          }
+          return bindings
+        },
+        {}
+      )
+    }
+  }
+  return {}
+}
+/**
+ * 从 components 中查找定义的组件，修改 bindingComponents
+ * @param ast
+ * @param bindingComponents
+ */
+function parseComponents(ast: Program, bindingComponents: BindingComponents) {
+  ;(walk as any)(ast, {
+    enter(child: Node) {
+      if (!isObjectExpression(child)) {
+        return
+      }
+      const componentsProp = child.properties.find(
+        (prop) =>
+          isObjectProperty(prop) &&
+          isIdentifier(prop.key) &&
+          prop.key.name === 'components'
+      ) as ObjectProperty
+      if (!componentsProp) {
+        return
+      }
+      const componentsExpr = componentsProp.value
+      if (!isObjectExpression(componentsExpr)) {
+        return
+      }
+      componentsExpr.properties.forEach((prop) => {
+        if (!isObjectProperty(prop)) {
+          return
+        }
+        if (!isIdentifier(prop.key) && !isStringLiteral(prop.key)) {
+          return
+        }
+        if (!isIdentifier(prop.value)) {
+          return
+        }
+        const tag = isIdentifier(prop.key) ? prop.key.name : prop.key.value
+        const name = findBindingComponent(tag, bindingComponents)
+        if (name) {
+          bindingComponents[prop.value.name] = bindingComponents[name]
+        }
+      })
+    },
+  })
+  return bindingComponents
+}
+
+function findBindingComponent(
+  tag: string,
+  bindingComponents: BindingComponents
+) {
+  return Object.keys(bindingComponents).find((name) => {
+    const componentTag = bindingComponents[name].tag
+    const camelName = camelize(componentTag)
+    const PascalName = capitalize(camelName)
+    return tag === componentTag || tag === camelName || tag === PascalName
+  })
+}
+
+function findVueComponentImports(
+  ast: Statement[],
+  bindingComponents: BindingComponents
+) {
+  const imports: { tag: string; import: ImportDeclaration }[] = []
+  for (let i = 0; i < ast.length; i++) {
+    const node = ast[i]
+    if (!isImportDeclaration(node)) {
+      continue
+    }
+    if (node.specifiers.length !== 1) {
+      continue
+    }
+    const { name } = node.specifiers[0].local
+    if (!bindingComponents[name]) {
+      continue
+    }
+    imports.push({ tag: bindingComponents[name].tag, import: node })
+  }
+  return imports
+}

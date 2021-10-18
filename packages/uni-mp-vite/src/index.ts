@@ -1,17 +1,22 @@
 import { uniMiniProgramPlugin, UniMiniProgramPluginOptions } from './plugin'
-import { uniComponentPlugin } from './plugins/component'
+import { uniUsingComponentsPlugin } from './plugins/usingComponents'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
-import { uniVirtualPlugin } from './plugins/virtual'
+import { uniEntryPlugin } from './plugins/entry'
+import { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 export { UniMiniProgramPluginOptions } from './plugin'
 export default (options: UniMiniProgramPluginOptions) => {
   return [
     uniMainJsPlugin(options),
     uniManifestJsonPlugin(options),
     uniPagesJsonPlugin(options),
-    uniVirtualPlugin(options),
+    uniEntryPlugin(options),
     uniMiniProgramPlugin(options),
-    uniComponentPlugin(),
+    (options: {
+      vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
+    }) => {
+      return uniUsingComponentsPlugin(options.vueOptions?.script)
+    },
   ]
 }

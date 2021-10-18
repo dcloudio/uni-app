@@ -17,7 +17,7 @@ export function initWebpackNVueEntry(pages: UniApp.PagesJsonPageOptions[]) {
       if (!path) {
         return
       }
-      const subNVuePath = removeExt(path.split('?')[0])
+      const subNVuePath = removeExt(normalizePath(path.split('?')[0]))
       process.UNI_NVUE_ENTRY[subNVuePath] = genWebpackBase64Code(
         genNVueEntryCode(subNVuePath)
       )

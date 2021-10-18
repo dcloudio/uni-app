@@ -16,7 +16,11 @@ import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
 import { CodegenOptions, CodegenRootNode } from './options'
 import { createObjectExpression } from './ast'
 
-import { BindingComponentTypes, TransformContext } from './transform'
+import {
+  BindingComponentTypes,
+  ImportItem,
+  TransformContext,
+} from './transform'
 
 interface CodegenContext extends CodegenOptions {
   code: string
@@ -148,28 +152,44 @@ function createCodegenContext(
 
 function genComponentImports(
   bindingComponents: TransformContext['bindingComponents'],
-  { push }: CodegenContext
+  { push, newline }: CodegenContext
 ) {
+  const tags = Object.keys(bindingComponents)
   const importDeclarations: string[] = []
   // 仅记录easycom和setup组件
   const components: string[] = []
-  Object.keys(bindingComponents).forEach((tag) => {
+  tags.forEach((tag) => {
     const { name, type } = bindingComponents[tag]
     if (type === BindingComponentTypes.UNKNOWN) {
       const source = matchEasycom(tag)
       if (source) {
-        components.push(name)
-        addImportDeclaration(importDeclarations, name, source)
+        // 调整为easycom命名
+        const easycomName = name.replace('component', 'easycom')
+        bindingComponents[tag].name = easycomName
+        components.push(easycomName)
+        addImportDeclaration(importDeclarations, easycomName, source)
       }
     } else if (type === BindingComponentTypes.SETUP) {
       components.push(name)
     }
   })
-  importDeclarations.forEach((str) => push(str))
-  if (components.length) {
-    push(`if (!Math) {`)
-    push(`Math.max.call(Max, ${components.map((name) => name).join(', ')})`)
-    push(`}`)
+  if (tags.length) {
+    push(
+      `const __BINDING_COMPONENTS__ = '` +
+        JSON.stringify(bindingComponents) +
+        `'`
+    )
+    newline()
+    importDeclarations.forEach((str) => push(str))
+    if (importDeclarations.length) {
+      newline()
+    }
+    if (components.length) {
+      push(`if (!Math) {`)
+      push(` Math.max.call(Max, ${components.map((name) => name).join(', ')}) `)
+      push(`}`)
+      newline()
+    }
   }
 }
 
@@ -210,11 +230,31 @@ function genModulePreamble(
         .join(', ')} } from ${JSON.stringify(runtimeModuleName)}\n`
     )
   }
+
+  if (ast.imports.length) {
+    genImports(ast.imports, context)
+  }
+
   genComponentImports(bindingComponents, context)
   newline()
   if (!inline) {
     push(`export `)
   }
+}
+
+function genImports(
+  importsOptions: ImportItem[],
+  { push, newline }: CodegenContext
+) {
+  if (!importsOptions.length) {
+    return
+  }
+  importsOptions.forEach((imports) => {
+    push(`import `)
+    push(genExpr(imports.exp))
+    push(` from '${imports.path}'`)
+    newline()
+  })
 }
 
 type CodegenNode =

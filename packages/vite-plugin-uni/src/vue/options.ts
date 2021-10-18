@@ -1,39 +1,17 @@
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { SFCTemplateCompileOptions, TemplateCompiler } from '@vue/compiler-sfc'
+import { TemplateCompiler } from '@vue/compiler-sfc'
 import { isCustomElement } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
   UniVitePlugin,
   uniPostcssScopedPlugin,
+  createUniVueTransformAssetUrls,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
 import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { createTransformEvent } from './transforms/transformEvent'
 // import { transformContext } from './transforms/transformContext'
-
-function createUniVueTransformAssetUrls(
-  base: string
-): SFCTemplateCompileOptions['transformAssetUrls'] {
-  return {
-    base,
-    tags: {
-      audio: ['src'],
-      video: ['src', 'poster'],
-      img: ['src'],
-      image: ['src'],
-      'cover-image': ['src'],
-      // h5
-      'v-uni-audio': ['src'],
-      'v-uni-video': ['src', 'poster'],
-      'v-uni-image': ['src'],
-      'v-uni-cover-image': ['src'],
-      // nvue
-      'u-image': ['src'],
-      'u-video': ['src', 'poster'],
-    },
-  }
-}
 
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
