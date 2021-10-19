@@ -21,6 +21,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useRebuild(() => {
       const node = (textRef.value as HTMLElement).childNodes[0]
       content.text = node && node instanceof Text ? node.textContent! : ''
+      window.dispatchEvent(new CustomEvent('updateview'))
     })
 
     return () => {
