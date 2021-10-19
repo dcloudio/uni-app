@@ -127,7 +127,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           }
           const oldCurrent = state.value[index]
           if (oldCurrent !== current) {
-            state.value.splice(index, 1, current)
+            state.value[index] = current
             // 避免外部直接对此值进行修改
             const value = state.value.map((val) => val)
             emit('update:value', value)
