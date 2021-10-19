@@ -63,7 +63,7 @@ export function normalizeMiniProgramFilename(
   filename: string,
   inputDir?: string
 ) {
-  if (!inputDir) {
+  if (!inputDir || !path.isAbsolute(filename)) {
     return normalizeNodeModules(filename)
   }
   return normalizeNodeModules(path.relative(inputDir, filename))

@@ -14,6 +14,8 @@ import {
   UNREF,
   toValidAssetId,
   findDir,
+  locStub,
+  AttributeNode,
 } from '@vue/compiler-core'
 import { errorMessages, MPErrorCodes } from '../errors'
 
@@ -45,10 +47,44 @@ export const transformElement: NodeTransform = (node, context) => {
     if (isComponent) {
       processComponent(node, context)
     }
+    if (context.scopeId) {
+      addScopeId(node, context.scopeId)
+    }
     const { props } = node
     if (props.length > 0) {
       processProps(node, context)
     }
+  }
+}
+
+function createClassAttribute(clazz: string): AttributeNode {
+  return {
+    type: NodeTypes.ATTRIBUTE,
+    loc: locStub,
+    name: 'class',
+    value: {
+      type: NodeTypes.TEXT,
+      loc: locStub,
+      content: clazz,
+    },
+  }
+}
+function addScopeId(node: ElementNode, scopeId: string) {
+  const classProp = node.props.find(
+    (prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class'
+  ) as AttributeNode | undefined
+
+  if (!classProp) {
+    return node.props.unshift(createClassAttribute(scopeId))
+  }
+
+  if (classProp.value) {
+    return (classProp.value.content = classProp.value.content + ' ' + scopeId)
+  }
+  classProp.value = {
+    type: NodeTypes.TEXT,
+    loc: locStub,
+    content: scopeId,
   }
 }
 

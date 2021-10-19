@@ -22,11 +22,10 @@ import {
   createSimpleExpression,
   ExpressionNode,
   createCompoundExpression,
-  NORMALIZE_STYLE,
   SourceLocation,
 } from '@vue/compiler-core'
 import { hyphenate } from '@vue/shared'
-import { HYPHENATE } from '../runtimeHelpers'
+import { HYPHENATE, STRINGIFY_STYLE } from '../runtimeHelpers'
 import { parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
 import { TransformContext } from '../transform'
@@ -106,7 +105,7 @@ function rewriteStyleExpression(
 ) {
   return rewriteExpression(
     createCompoundExpression([
-      context.helperString(NORMALIZE_STYLE) + '(',
+      context.helperString(STRINGIFY_STYLE) + '(',
       expr,
       ')',
     ]),
@@ -143,7 +142,7 @@ function rewriteStyleObjectExpression(
     if (isSpreadElement(prop)) {
       // <view :style="{...obj}"/>
       // <view style="{{a}}"/>
-      const newExpr = rewriteSpreadElement(NORMALIZE_STYLE, prop, loc, context)
+      const newExpr = rewriteSpreadElement(STRINGIFY_STYLE, prop, loc, context)
       if (newExpr) {
         prop.argument = newExpr
       }

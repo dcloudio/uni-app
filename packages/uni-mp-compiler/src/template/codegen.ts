@@ -20,15 +20,17 @@ import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 interface TemplateCodegenContext {
   code: string
   directive: string
+  scopeId?: string | null
   push(code: string): void
 }
 
 export function generate(
   { children }: RootNode,
-  { emitFile, filename, directive }: TemplateCodegenOptions
+  { scopeId, emitFile, filename, directive }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
     code: '',
+    scopeId,
     directive,
     push(code) {
       context.code += code

@@ -30,6 +30,7 @@ interface SharedTransformCodegenOptions {
 export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
+  scopeId?: string | null
   cacheHandlers?: boolean
   nodeTransforms?: NodeTransform[]
   directiveTransforms?: Record<string, DirectiveTransform | undefined>
@@ -78,6 +79,7 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
 }
 
 export interface TemplateCodegenOptions {
+  scopeId?: string | null
   filename: string
   directive: string
   emitFile: (emittedFile: EmittedFile) => string

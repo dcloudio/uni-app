@@ -68,6 +68,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
   )
   if (options.filename && options.miniProgram?.emitFile) {
     genTemplate(ast, {
+      scopeId: options.scopeId,
       filename: options.filename,
       directive: options.miniProgram.directive,
       emitFile: options.miniProgram.emitFile,

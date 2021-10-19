@@ -18,7 +18,7 @@ export const parseManifestJson = (inputDir: string) => {
 export const parseManifestJsonOnce = once(parseManifestJson)
 
 export const parseRpx2UnitOnce = once(
-  (inputDir: string, platform: UniApp.PLATFORM) => {
+  (inputDir: string, platform: UniApp.PLATFORM = 'h5') => {
     const rpx2unit =
       platform === 'h5' || platform === 'app'
         ? defaultRpx2Unit

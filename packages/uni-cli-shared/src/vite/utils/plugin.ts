@@ -20,14 +20,17 @@ export function injectCssPlugin(config: ResolvedConfig) {
 export function injectCssPostPlugin(
   config: ResolvedConfig,
   {
-    chunkCss,
-    extname,
+    chunkCssFilename,
+    chunkCssCode,
   }: {
-    chunkCss: (filename: string, cssCode: string) => string
-    extname: string
+    chunkCssFilename: (id: string) => string | void
+    chunkCssCode: (filename: string, cssCode: string) => string
   }
 ) {
-  replacePlugins([cssPostPlugin(config, { chunkCss, extname })], config)
+  replacePlugins(
+    [cssPostPlugin(config, { chunkCssFilename, chunkCssCode })],
+    config
+  )
 }
 
 export function replacePlugins(plugins: Plugin[], config: ResolvedConfig) {

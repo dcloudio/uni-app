@@ -27,9 +27,6 @@ import type Stylus from 'stylus'
 import type Less from 'less'
 import { Alias } from 'types/alias'
 import { transform, formatMessages } from 'esbuild'
-
-import { resolveMainPathOnce } from '../../../../utils'
-import { EXTNAME_JS_RE, EXTNAME_VUE_RE } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -178,18 +175,6 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
   }
 }
 
-function normalizeCssChunkFilename(id: string, extname: string = '.css') {
-  return normalizePath(
-    path.relative(
-      process.env.UNI_INPUT_DIR,
-      id
-        .split('?')[0]
-        .replace(EXTNAME_VUE_RE, extname)
-        .replace(EXTNAME_JS_RE, extname)
-    )
-  )
-}
-
 function findCssModuleIds(
   this: PluginContext,
   moduleId: string,
@@ -229,11 +214,11 @@ function findCssModuleIds(
 export function cssPostPlugin(
   config: ResolvedConfig,
   {
-    chunkCss,
-    extname,
+    chunkCssFilename,
+    chunkCssCode,
   }: {
-    chunkCss: (filename: string, cssCode: string) => string
-    extname: string
+    chunkCssFilename: (id: string) => string | void
+    chunkCssCode: (filename: string, cssCode: string) => string
   }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
@@ -244,7 +229,7 @@ export function cssPostPlugin(
     buildStart() {
       cssChunks = new Map<string, Set<string>>()
     },
-    async transform(css, id, ssr) {
+    async transform(css, id) {
       if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
         return
       }
@@ -261,17 +246,10 @@ export function cssPostPlugin(
 
     async generateBundle() {
       const moduleIds = Array.from(this.getModuleIds())
-      const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
       moduleIds.forEach((id) => {
-        if (id === mainPath) {
-          // 全局样式
-          cssChunks.set('app' + extname, findCssModuleIds.call(this, id))
-        } else if (id.includes('mpType=page')) {
-          // 页面样式
-          cssChunks.set(
-            normalizeCssChunkFilename(id, extname),
-            findCssModuleIds.call(this, id)
-          )
+        const filename = chunkCssFilename(id)
+        if (filename) {
+          cssChunks.set(filename, findCssModuleIds.call(this, id))
         }
       })
       if (!cssChunks.size) {
@@ -310,10 +288,11 @@ export function cssPostPlugin(
       }
       for (const filename of cssChunks.keys()) {
         const cssCode = genCssCode(filename)
-        let source = await processChunkCSS(
-          chunkCss ? chunkCss(filename, cssCode) : cssCode,
-          { dirname: path.dirname(filename), inlined: false, minify: true }
-        )
+        let source = await processChunkCSS(chunkCssCode(filename, cssCode), {
+          dirname: path.dirname(filename),
+          inlined: false,
+          minify: true,
+        })
         this.emitFile({
           fileName: filename,
           type: 'asset',

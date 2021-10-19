@@ -6,9 +6,19 @@ import {
   injectCssPlugin,
   injectCssPostPlugin,
   normalizePath,
+  resolveMainPathOnce,
+  removeExt,
+  transformScopedCss,
+  normalizeMiniProgramFilename,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '.'
 import { getNVueCssPaths } from '../plugins/pagesJson'
+import {
+  isUniComponentUrl,
+  isUniPageUrl,
+  parseVirtualComponentPath,
+  parseVirtualPagePath,
+} from '../plugins/entry'
 
 const debugNVueCss = debug('vite:uni:nvue-css')
 
@@ -17,12 +27,31 @@ const shadowCss = `page::after{position:fixed;content:'';left:-1000px;top:-1000p
 export function createConfigResolved({
   style: { extname },
 }: UniMiniProgramPluginOptions): Plugin['configResolved'] {
+  function normalizeCssChunkFilename(id: string, extname: string) {
+    return (
+      removeExt(normalizeMiniProgramFilename(id, process.env.UNI_INPUT_DIR)) +
+      extname
+    )
+  }
   return (config) => {
+    const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
     removePlugins('vite:import-analysis', config)
     injectCssPlugin(config)
     injectCssPostPlugin(config, {
-      extname,
-      chunkCss(filename, cssCode) {
+      chunkCssFilename(id: string) {
+        if (id === mainPath) {
+          return 'app' + extname
+        } else if (isUniPageUrl(id)) {
+          return normalizeCssChunkFilename(parseVirtualPagePath(id), extname)
+        } else if (isUniComponentUrl(id)) {
+          return normalizeCssChunkFilename(
+            parseVirtualComponentPath(id),
+            extname
+          )
+        }
+      },
+      chunkCssCode(filename, cssCode) {
+        cssCode = transformScopedCss(cssCode)
         if (config.isProduction && filename === 'app' + extname) {
           return cssCode + shadowCss
         }
