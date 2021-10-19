@@ -12,6 +12,7 @@ export function useCover(
 ) {
   const { position, hidden, onParentReady } = useNative(rootRef)
   let cover: PlusNativeObjView
+  let requestStyleUpdate: () => void
   onParentReady((parentPosition) => {
     const viewPosition = computed(() => {
       const object: Position = {} as Position
@@ -69,7 +70,7 @@ export function useCover(
     }
     const style = reactive(updateStyle({} as CSSStyleDeclaration))
     let request: null | number = null
-    function requestStyleUpdate() {
+    requestStyleUpdate = function () {
       if (request) {
         cancelAnimationFrame(request)
       }
@@ -208,6 +209,9 @@ export function useCover(
   onBeforeUnmount(() => {
     if (cover) {
       cover.close()
+    }
+    if (requestStyleUpdate) {
+      window.removeEventListener('updateview', requestStyleUpdate)
     }
   })
 }

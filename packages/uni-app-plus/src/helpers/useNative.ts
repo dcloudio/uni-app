@@ -1,4 +1,13 @@
-import { Ref, reactive, ref, computed, provide, inject, onMounted } from 'vue'
+import {
+  Ref,
+  reactive,
+  ref,
+  computed,
+  provide,
+  inject,
+  onMounted,
+  onBeforeUnmount,
+} from 'vue'
 import { getNavigationBarHeight } from './navigationBar'
 import { getRealPath } from '../platform/getRealPath'
 
@@ -135,6 +144,10 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
     updatePosition()
     onSelfReadyCallbacks!.forEach((callback) => callback())
     onSelfReadyCallbacks = null
+  })
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('updateview', requestPositionUpdate)
   })
 
   return {
