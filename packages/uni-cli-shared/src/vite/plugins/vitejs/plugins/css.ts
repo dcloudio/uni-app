@@ -228,7 +228,13 @@ function findCssModuleIds(
  */
 export function cssPostPlugin(
   config: ResolvedConfig,
-  { appCss, extname }: { appCss?: string; extname: string }
+  {
+    chunkCss,
+    extname,
+  }: {
+    chunkCss: (filename: string, cssCode: string) => string
+    extname: string
+  }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
@@ -303,9 +309,9 @@ export function cssPostPlugin(
           .join('\n')
       }
       for (const filename of cssChunks.keys()) {
+        const cssCode = genCssCode(filename)
         let source = await processChunkCSS(
-          (filename === 'app.css' ? (appCss || '') + '\n' : '') +
-            genCssCode(filename),
+          chunkCss ? chunkCss(filename, cssCode) : cssCode,
           { dirname: path.dirname(filename), inlined: false, minify: true }
         )
         this.emitFile({

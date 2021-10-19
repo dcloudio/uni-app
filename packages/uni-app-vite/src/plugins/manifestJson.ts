@@ -10,7 +10,6 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 export function uniManifestJsonPlugin(): Plugin {
-  let manifestJson: Record<string, any>
   return defineUniManifestJsonPlugin((opts) => {
     return {
       name: 'vite:uni-app-manifest-json',
@@ -27,19 +26,13 @@ export function uniManifestJsonPlugin(): Plugin {
         ).forEach((filepath) => {
           this.addWatchFile(filepath)
         })
-        manifestJson = normalizeAppManifestJson(
+        const manifestJson = normalizeAppManifestJson(
           parseJson(code),
           parsePagesJsonOnce(
             process.env.UNI_INPUT_DIR,
             process.env.UNI_PLATFORM
           )
         )
-        return {
-          code: '',
-          map: this.getCombinedSourcemap(),
-        }
-      },
-      generateBundle() {
         // 生成一个空的app-config.js，兼容基座已有规范
         this.emitFile({
           fileName: `app-config.js`,
@@ -51,6 +44,10 @@ export function uniManifestJsonPlugin(): Plugin {
           type: 'asset',
           source: JSON.stringify(manifestJson, null, 2),
         })
+        return {
+          code: '',
+          map: this.getCombinedSourcemap(),
+        }
       },
     }
   })

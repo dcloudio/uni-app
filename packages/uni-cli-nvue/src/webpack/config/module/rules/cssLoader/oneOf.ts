@@ -13,6 +13,7 @@ const postcssLoader = {
   options: {
     sourceMap: false,
     postcssOptions: {
+      config: false,
       parser: require('postcss-comment'),
       plugins: [
         require('postcss-import')({

@@ -8,6 +8,8 @@ import {
   normalizeNodeModules,
   resolveBuiltIn,
   UniVitePlugin,
+  genNVueCssCode,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniOptions } from './uni'
@@ -59,6 +61,7 @@ export function uniMiniProgramPlugin(
   const {
     vite: { alias, copyOptions },
     template,
+    style,
   } = options
   const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
     if (emittedFile.type === 'asset') {
@@ -70,11 +73,12 @@ export function uniMiniProgramPlugin(
         )
       ).replace(EXTNAME_VUE_RE, template.extname)
       debugMp(outputFilename)
-      fs.outputFileSync(outputFilename, emittedFile.source!)
+      fs.outputFile(outputFilename, emittedFile.source!)
       return outputFilename
     }
     return ''
   }
+  let isFirst = true
   return {
     name: 'vite:uni-mp',
     uni: uniOptions({
@@ -93,5 +97,18 @@ export function uniMiniProgramPlugin(
       }
     },
     configResolved: createConfigResolved(options),
+    generateBundle() {
+      if (isFirst) {
+        // 仅生成一次
+        isFirst = false
+        this.emitFile({
+          type: 'asset',
+          fileName: 'nvue' + style.extname,
+          source: genNVueCssCode(
+            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+          ),
+        })
+      }
+    },
   }
 }

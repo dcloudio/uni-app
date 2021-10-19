@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { hasOwn } from '@vue/shared'
 import { parseJson } from '../json'
@@ -41,6 +42,7 @@ function parsePagesJson(
     pages: [],
   }
   const pageJsons: Record<string, PageWindowOptions> = {}
+  const nvuePages: string[] = []
   // preprocess
   const pagesJson = parseJson(jsonStr, true) as UniApp.PagesJson
   if (!pagesJson) {
@@ -48,6 +50,11 @@ function parsePagesJson(
   }
 
   function addPageJson(pagePath: string, style: UniApp.PagesJsonPageStyle) {
+    if (
+      fs.existsSync(path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'))
+    ) {
+      nvuePages.push(pagePath)
+    }
     pageJsons[pagePath] = parseWindowOptions(style, platform, windowOptionsMap)
   }
   // pages
@@ -116,5 +123,6 @@ function parsePagesJson(
   return {
     appJson,
     pageJsons,
+    nvuePages,
   }
 }

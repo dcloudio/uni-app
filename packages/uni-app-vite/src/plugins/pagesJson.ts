@@ -11,7 +11,6 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin(): Plugin {
-  let pagesJson: UniApp.PagesJson
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'vite:uni-app-pages-json',
@@ -26,20 +25,13 @@ export function uniPagesJsonPlugin(): Plugin {
         ).forEach((filepath) => {
           this.addWatchFile(filepath)
         })
-        pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
+        const pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
         // TODO subpackages
         pagesJson.pages.forEach((page) => {
           this.addWatchFile(
             path.resolve(process.env.UNI_INPUT_DIR, page.path + '.vue')
           )
         })
-        return {
-          code:
-            `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson),
-          map: this.getCombinedSourcemap(),
-        }
-      },
-      generateBundle() {
         this.emitFile({
           fileName: `app-config-service.js`,
           type: 'asset',
@@ -48,6 +40,11 @@ export function uniPagesJsonPlugin(): Plugin {
             parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
           ),
         })
+        return {
+          code:
+            `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson),
+          map: this.getCombinedSourcemap(),
+        }
       },
     }
   })

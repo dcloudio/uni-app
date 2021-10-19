@@ -1,8 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
-
+import { Plugin, ResolvedConfig } from 'vite'
 import {
   AppJson,
   defineUniPagesJsonPlugin,
@@ -19,13 +18,22 @@ import { UniMiniProgramPluginOptions } from '../plugin'
 
 const debugPagesJson = debug('vite:uni:pages-json')
 
+const nvueCssPathsCache = new Map<ResolvedConfig, string[]>()
+export function getNVueCssPaths(config: ResolvedConfig) {
+  return nvueCssPathsCache.get(config)
+}
+
 export function uniPagesJsonPlugin(
   options: UniMiniProgramPluginOptions
 ): Plugin {
+  let resolvedConfig: ResolvedConfig
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'vite:uni-mp-pages-json',
       enforce: 'pre',
+      configResolved(config) {
+        resolvedConfig = config
+      },
       transform(code, id) {
         if (!opts.filter(id)) {
           return
@@ -36,7 +44,7 @@ export function uniPagesJsonPlugin(
           this.addWatchFile(filepath)
         })
         const manifestJson = parseManifestJsonOnce(inputDir)
-        const { appJson, pageJsons } = parseMiniProgramPagesJson(
+        const { appJson, pageJsons, nvuePages } = parseMiniProgramPagesJson(
           code,
           process.env.UNI_PLATFORM,
           {
@@ -48,6 +56,11 @@ export function uniPagesJsonPlugin(
             subpackages: options.app.subpackages,
           }
         )
+        nvueCssPathsCache.set(
+          resolvedConfig,
+          nvuePages.map((pagePath) => pagePath + options.style.extname)
+        )
+
         addMiniProgramAppJson(appJson)
         Object.keys(pageJsons).forEach((name) => {
           addMiniProgramPageJson(name, pageJsons[name])

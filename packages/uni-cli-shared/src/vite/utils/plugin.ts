@@ -19,9 +19,15 @@ export function injectCssPlugin(config: ResolvedConfig) {
 
 export function injectCssPostPlugin(
   config: ResolvedConfig,
-  { appCss, extname }: { appCss?: string; extname: string }
+  {
+    chunkCss,
+    extname,
+  }: {
+    chunkCss: (filename: string, cssCode: string) => string
+    extname: string
+  }
 ) {
-  replacePlugins([cssPostPlugin(config, { appCss, extname })], config)
+  replacePlugins([cssPostPlugin(config, { chunkCss, extname })], config)
 }
 
 export function replacePlugins(plugins: Plugin[], config: ResolvedConfig) {
