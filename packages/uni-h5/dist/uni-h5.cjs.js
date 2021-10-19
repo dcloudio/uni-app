@@ -4393,7 +4393,7 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
           }
           const oldCurrent = state.value[index2];
           if (oldCurrent !== current) {
-            state.value.splice(index2, 1, current);
+            state.value[index2] = current;
             const value = state.value.map((val) => val);
             emit2("update:value", value);
             trigger("change", {}, {
