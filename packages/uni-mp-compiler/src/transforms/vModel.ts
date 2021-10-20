@@ -7,9 +7,12 @@ import {
   DirectiveNode,
   ElementNode,
   ExpressionNode,
+  AttributeNode,
+  createCompoundExpression,
 } from '@vue/compiler-core'
 import { DOMErrorCodes, createDOMCompilerError } from '@vue/compiler-dom'
 import { camelize } from '@vue/shared'
+import { V_ON } from '..'
 import { createBindDirectiveNode, createOnDirectiveNode } from '../ast'
 import { genExpr } from '../codegen'
 import { TransformContext } from '../transform'
@@ -59,23 +62,87 @@ export const transformModel = (
     )
   }
 
-  // native vmodel doesn't need the `modelValue` props since they are also
-  // passed to the runtime as `binding.value`. removing it reduces code size.
-  baseResult.props = baseResult.props.filter(
-    (p) =>
-      !(
-        p.key.type === NodeTypes.SIMPLE_EXPRESSION &&
-        p.key.content === 'modelValue'
-      )
-  )
+  return transformElementVModel(baseResult.props, node, context)
+}
 
-  return []
+function findInputDirectiveNode(props: (AttributeNode | DirectiveNode)[]) {
+  return props.find(
+    (prop) =>
+      prop.type === NodeTypes.DIRECTIVE &&
+      prop.name === 'on' &&
+      prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+      prop.arg.content === 'input'
+  ) as DirectiveNode | undefined
+}
+
+function transformElementVModel(
+  props: Property[],
+  node: ElementNode,
+  context: TransformContext
+): DirectiveNode[] {
+  const dirs = transformVModel(props, context, {
+    binding: 'value',
+    event: 'input',
+    formatEventCode(code) {
+      return code.replace(`= $event`, `= $event.detail.value`)
+    },
+  })
+  if (dirs.length === 2) {
+    const inputDir = findInputDirectiveNode(node.props)
+    if (inputDir && inputDir.exp) {
+      // 合并到已有的 input 事件中
+      inputDir.exp = combineVOn(dirs[1].exp!, inputDir.exp, context)
+      dirs.length = 1
+    }
+  }
+  return dirs
+}
+
+function parseVOn(exp: ExpressionNode, context: TransformContext) {
+  return genExpr(exp).slice(context.helperString(V_ON).length + 1, -1)
+}
+
+function combineVOn(
+  exp1: ExpressionNode,
+  exp2: ExpressionNode,
+  context: TransformContext
+) {
+  return wrapperVOn(
+    createCompoundExpression([
+      `[`,
+      parseVOn(exp1, context),
+      ',',
+      parseVOn(exp2, context),
+      `]`,
+    ]),
+    context
+  )
 }
 
 function transformComponentVModel(
   props: Property[],
   context: TransformContext
 ): DirectiveNode[] {
+  return transformVModel(props, context, {
+    formatEventCode(code) {
+      return code.replace(`= $event`, `= $event.detail.__args__[0]`)
+    },
+  })
+}
+
+function transformVModel(
+  props: Property[],
+  context: TransformContext,
+  {
+    binding,
+    event,
+    formatEventCode,
+  }: {
+    binding?: string
+    event?: string
+    formatEventCode: (code: string) => string
+  }
+) {
   if (props.length !== 2) {
     return []
   }
@@ -92,20 +159,22 @@ function transformComponentVModel(
     return []
   }
   const vBindModelValue = createBindDirectiveNode(
-    modelValueArg.content,
+    binding || modelValueArg.content,
     genExpr(modelValeExpr as ExpressionNode)
   )
   const vOnUpdate = createOnDirectiveNode(
-    camelize(onUpdateArg.content.replace('onUpdate:', 'update-')),
-    genExpr(
-      wrapperVOn(
-        // onUpdateExpr 通常是 ExpressionNode 或者被 cache 的 ExpressionNode
-        (onUpdateExpr.type === NodeTypes.JS_CACHE_EXPRESSION
-          ? onUpdateExpr.value
-          : onUpdateExpr) as ExpressionNode,
-        context
+    event || camelize(onUpdateArg.content.replace('onUpdate:', 'update-')),
+    formatEventCode(
+      genExpr(
+        wrapperVOn(
+          // onUpdateExpr 通常是 ExpressionNode 或者被 cache 的 ExpressionNode
+          (onUpdateExpr.type === NodeTypes.JS_CACHE_EXPRESSION
+            ? onUpdateExpr.value
+            : onUpdateExpr) as ExpressionNode,
+          context
+        )
       )
-    ).replace(`= $event`, `= $event.detail.__args__[0]`)
+    )
   )
   return [vBindModelValue, vOnUpdate]
 }
