@@ -93,15 +93,17 @@ export default {
     }
   },
   mounted () {
-    this.htmlId = WEBVIEW_ID_PREFIX + this.$page.id
-    insertHTMLWebView({
-      htmlId: this.htmlId
+    this._onParentReady(() => {
+      this.htmlId = WEBVIEW_ID_PREFIX + this.$page.id
+      insertHTMLWebView({
+        htmlId: this.htmlId
+      })
+      updateHTMLWebView({
+        src: this.$getRealPath(this.src),
+        webviewStyles: this.webviewStyles
+      })
+      UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, this.$page.id)
     })
-    updateHTMLWebView({
-      src: this.$getRealPath(this.src),
-      webviewStyles: this.webviewStyles
-    })
-    UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, this.$page.id)
   },
   beforeDestroy () {
     removeHTMLWebView()
