@@ -85,12 +85,6 @@ export default function uniPlugin(
     )
   }
 
-  if (options.vueJsxOptions) {
-    plugins.push(
-      require('../lib/plugin-vue-jsx/index')(initPluginVueJsxOptions(options))
-    )
-  }
-
   const uniPlugins = initExtraPlugins(
     process.env.UNI_CLI_CONTEXT || process.cwd(),
     (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
@@ -101,6 +95,14 @@ export default function uniPlugin(
   const uniPluginOptions = initPluginUniOptions(uniPlugins)
 
   options.copyOptions = uniPluginOptions.copyOptions
+
+  if (options.vueJsxOptions) {
+    plugins.push(
+      require('../lib/plugin-vue-jsx/index')(
+        initPluginVueJsxOptions(options, uniPluginOptions.compilerOptions)
+      )
+    )
+  }
 
   plugins.push({
     name: 'vite:uni',

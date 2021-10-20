@@ -11,7 +11,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { OutputChunk } from 'rollup'
 
 import { stripOptions } from '@dcloudio/uni-cli-shared'
-import { isCustomElement } from '@dcloudio/uni-shared'
+import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 
 function resolve(file: string) {
@@ -100,11 +100,11 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement,
+          isCustomElement: isH5CustomElement,
         },
       },
     }),
-    vueJsx({ optimize: true, isCustomElement }),
+    vueJsx({ optimize: true, isCustomElement: isH5CustomElement }),
   ],
   build: {
     target: 'modules', // keep import.meta...

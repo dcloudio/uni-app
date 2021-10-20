@@ -1,6 +1,5 @@
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { TemplateCompiler } from '@vue/compiler-sfc'
-import { isCustomElement } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
   UniVitePlugin,
@@ -103,14 +102,19 @@ export function initPluginVueOptions(
   return vueOptions
 }
 
-export function initPluginVueJsxOptions(options: VitePluginUniResolvedOptions) {
+export function initPluginVueJsxOptions(
+  options: VitePluginUniResolvedOptions,
+  {
+    isCustomElement,
+  }: Required<Required<UniVitePlugin>['uni']>['compilerOptions']
+) {
   const vueJsxOptions = isPlainObject(options.vueJsxOptions)
     ? options.vueJsxOptions
     : (options.vueJsxOptions = {})
   if (!hasOwn(vueJsxOptions, 'optimize')) {
     vueJsxOptions.optimize = true
   }
-  vueJsxOptions.isCustomElement = isCustomElement
+  vueJsxOptions.isCustomElement = isCustomElement as (tag: string) => boolean
   return vueJsxOptions
 }
 

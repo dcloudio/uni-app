@@ -15,6 +15,7 @@ import { createDefine } from '../utils/features'
 import { isSsr } from '../utils'
 import { ViteDevServer } from 'vite'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
+import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 
 const external = [
   '@dcloudio/uni-app',
@@ -39,6 +40,10 @@ export const UniH5Plugin: UniVitePlugin = {
     },
     transformEvent: {
       tap: 'click',
+    },
+    compilerOptions: {
+      isNativeTag: isH5NativeTag,
+      isCustomElement: isH5CustomElement,
     },
   },
   config(config, env) {

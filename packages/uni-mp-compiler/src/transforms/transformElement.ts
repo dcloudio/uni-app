@@ -62,23 +62,34 @@ function createClassAttribute(clazz: string): AttributeNode {
   return createAttributeNode('class', clazz)
 }
 
-function addScopeId(node: ElementNode, scopeId: string) {
+function addStaticClass(node: ElementNode, clazz: string) {
   const classProp = node.props.find(
     (prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class'
   ) as AttributeNode | undefined
 
   if (!classProp) {
-    return node.props.unshift(createClassAttribute(scopeId))
+    return node.props.unshift(createClassAttribute(clazz))
   }
 
   if (classProp.value) {
-    return (classProp.value.content = classProp.value.content + ' ' + scopeId)
+    return (classProp.value.content = classProp.value.content + ' ' + clazz)
   }
   classProp.value = {
     type: NodeTypes.TEXT,
     loc: locStub,
-    content: scopeId,
+    content: clazz,
   }
+}
+
+function addScopeId(node: ElementNode, scopeId: string) {
+  return addStaticClass(node, scopeId)
+}
+
+function addVueRef(node: ElementNode, context: TransformContext) {
+  return addStaticClass(
+    node,
+    context.scopes.vFor ? 'vue-ref-in-for' : 'vue-ref'
+  )
 }
 
 function processComponent(node: ElementNode, context: TransformContext) {
@@ -122,6 +133,9 @@ function processComponent(node: ElementNode, context: TransformContext) {
       )
     )
   }
+
+  addVueRef(node, context)
+
   // 3. user component (from setup bindings)
   const fromSetup = resolveSetupReference(tag, context)
   if (fromSetup) {

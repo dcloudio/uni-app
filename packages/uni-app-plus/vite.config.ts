@@ -8,7 +8,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
-import { isCustomElement } from '@dcloudio/uni-shared'
+import { isH5CustomElement } from '@dcloudio/uni-shared'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -112,11 +112,11 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement,
+          isCustomElement: isH5CustomElement,
         },
       },
     }),
-    vueJsx({ optimize: true, isCustomElement }),
+    vueJsx({ optimize: true, isCustomElement: isH5CustomElement }),
   ],
   build: {
     target: 'es2015',
