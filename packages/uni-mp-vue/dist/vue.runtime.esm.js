@@ -5014,7 +5014,11 @@ function vOn(value) {
 }
 function createInvoker(initialValue, instance) {
     const invoker = (e) => {
-        callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, [e]);
+        let args = [e];
+        if (e.detail && e.detail.__args__) {
+            args = e.detail.__args__;
+        }
+        callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, args);
     };
     invoker.value = initialValue;
     return invoker;

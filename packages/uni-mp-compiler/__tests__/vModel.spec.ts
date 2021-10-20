@@ -6,7 +6,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp class="vue-ref" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event.detail.__args__[0]) }
+  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event) }
 }`
     )
   })
@@ -15,7 +15,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp class="vue-ref" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event.detail.__args__[0]) }
+  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event) }
 }`,
       {
         cacheHandlers: true,

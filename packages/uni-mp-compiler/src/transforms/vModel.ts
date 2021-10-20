@@ -125,7 +125,7 @@ function transformComponentVModel(
 ): DirectiveNode[] {
   return transformVModel(props, context, {
     formatEventCode(code) {
-      return code.replace(`= $event`, `= $event.detail.__args__[0]`)
+      return code
     },
   })
 }

@@ -38,16 +38,26 @@ export function vOn(value: EventValue | undefined) {
   return name
 }
 
+interface MPEvent extends Event {
+  detail: {
+    __args__?: unknown[]
+  }
+}
+
 function createInvoker(
   initialValue: EventValue,
   instance: ComponentInternalInstance | null
 ) {
   const invoker: Invoker = (e: Event) => {
+    let args: unknown[] = [e]
+    if ((e as MPEvent).detail && (e as MPEvent).detail.__args__) {
+      args = (e as MPEvent).detail.__args__!
+    }
     callWithAsyncErrorHandling(
       patchStopImmediatePropagation(e, invoker.value),
       instance,
       ErrorCodes.NATIVE_EVENT_HANDLER,
-      [e]
+      args
     )
   }
   invoker.value = initialValue
