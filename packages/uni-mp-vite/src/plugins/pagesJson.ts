@@ -87,7 +87,10 @@ export function uniPagesJsonPlugin(
 function importPagesCode(pagesJson: AppJson) {
   const importPagesCode: string[] = []
   function importPageCode(pagePath: string) {
-    const pagePathWithExtname = normalizePagePath(pagePath, 'app')
+    const pagePathWithExtname = normalizePagePath(
+      pagePath,
+      process.env.UNI_PLATFORM
+    )
     if (pagePathWithExtname) {
       importPagesCode.push(`import('${virtualPagePath(pagePathWithExtname)}')`)
     }

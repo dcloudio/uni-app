@@ -72,16 +72,16 @@ const TAGS = [
 function isBuiltInComponent(tag) {
     return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
 }
-function isCustomElement(tag) {
+function isH5CustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
-function isNativeTag(tag) {
+function isH5NativeTag(tag) {
     return (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) && !isBuiltInComponent(tag);
 }
-function isServiceNativeTag(tag) {
+function isNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
 }
-function isServiceCustomElement(_tag) {
+function isCustomElement(_tag) {
     return false;
 }
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
@@ -1233,10 +1233,10 @@ exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
+exports.isH5CustomElement = isH5CustomElement;
+exports.isH5NativeTag = isH5NativeTag;
 exports.isNativeTag = isNativeTag;
 exports.isRootHook = isRootHook;
-exports.isServiceCustomElement = isServiceCustomElement;
-exports.isServiceNativeTag = isServiceNativeTag;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;

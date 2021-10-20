@@ -50,8 +50,10 @@ function parsePagesJson(
   }
 
   function addPageJson(pagePath: string, style: UniApp.PagesJsonPageStyle) {
+    const filename = path.join(process.env.UNI_INPUT_DIR, pagePath)
     if (
-      fs.existsSync(path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'))
+      fs.existsSync(filename + '.nvue') &&
+      !fs.existsSync(filename + '.vue')
     ) {
       nvuePages.push(pagePath)
     }

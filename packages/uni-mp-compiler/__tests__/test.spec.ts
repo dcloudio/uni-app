@@ -14,6 +14,9 @@ function assert(
     prefixIdentifiers: true,
     inline: true,
     miniProgram: {
+      slot: {
+        fallback: false,
+      },
       directive: 'wx:',
       emitFile({ source }) {
         console.log(source)
@@ -34,10 +37,10 @@ function assert(
 describe('compiler', () => {
   test('scope', () => {
     assert(
-      `<view :style="{ color: \`\${green}px\` }"/>`,
+      `<template v-if="ok"><view/>hello<view/></template>`,
       `<view style="{{'color:' + a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: \`\${_ctx.green}px\` }
+  return { a: _ctx.ok, ...(_ctx.ok ? {} : {}) }
 }`
     )
   })

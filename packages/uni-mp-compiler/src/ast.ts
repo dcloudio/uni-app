@@ -32,9 +32,14 @@ import {
   isNullLiteral,
 } from '@babel/types'
 import {
+  AttributeNode,
   createCompilerError,
+  createSimpleExpression,
+  DirectiveNode,
   ErrorCodes,
   ExpressionNode,
+  locStub,
+  NodeTypes,
 } from '@vue/compiler-core'
 import { CodegenScope, CodegenVForScope, CodegenVIfScope } from './options'
 import { TransformContext } from './transform'
@@ -192,4 +197,34 @@ export function parseStringLiteral(
     return stringLiteral(expr.value)
   }
   return stringLiteral('')
+}
+
+export function createBindDirectiveNode(
+  name: string,
+  value: string
+): DirectiveNode {
+  return {
+    type: NodeTypes.DIRECTIVE,
+    name: 'bind',
+    modifiers: [],
+    loc: locStub,
+    arg: createSimpleExpression(name, true),
+    exp: createSimpleExpression(value, false),
+  }
+}
+
+export function createAttributeNode(
+  name: string,
+  content: string
+): AttributeNode {
+  return {
+    type: NodeTypes.ATTRIBUTE,
+    loc: locStub,
+    name,
+    value: {
+      type: NodeTypes.TEXT,
+      loc: locStub,
+      content,
+    },
+  }
 }

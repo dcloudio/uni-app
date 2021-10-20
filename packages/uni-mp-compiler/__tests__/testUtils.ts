@@ -1,8 +1,18 @@
+import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { compile } from '../src/index'
 import { CompilerOptions } from '../src/options'
+
+export const miniProgram = {
+  slot: {
+    fallback: false,
+  },
+  directive: 'wx:',
+} as const
+
 export function inspect(obj: any) {
   console.log(require('util').inspect(obj, { colors: true, depth: null }))
 }
+
 export function assert(
   template: string,
   templateCode: string,
@@ -14,7 +24,12 @@ export function assert(
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
+    isNativeTag,
+    isCustomElement,
     miniProgram: {
+      slot: {
+        fallback: false,
+      },
       directive: 'wx:',
       emitFile({ source }) {
         // console.log(source)

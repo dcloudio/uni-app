@@ -61,6 +61,9 @@ const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
+    slot: {
+      fallback: false,
+    },
     extname: '.wxml',
     directive: 'wx:',
   },

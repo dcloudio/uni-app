@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { extend, isArray, isString, NormalizedStyle } from '@vue/shared'
 import {
-  isNativeTag,
+  isH5NativeTag,
   createRpx2Unit,
   Rpx2UnitOptions,
 } from '@dcloudio/uni-shared'
@@ -128,7 +128,7 @@ export function rewriteSsrNativeTag() {
   const { parserOptions } = require('@vue/compiler-dom')
   // TODO compiler-ssr时，传入的 isNativeTag 会被 @vue/compiler-dom 的 isNativeTag 覆盖
   // https://github.com/vuejs/vue-next/blob/master/packages/compiler-ssr/src/index.ts#L36
-  parserOptions.isNativeTag = isNativeTag
+  parserOptions.isNativeTag = isH5NativeTag
 }
 
 export function rewriteSsrRenderStyle(inputDir: string) {

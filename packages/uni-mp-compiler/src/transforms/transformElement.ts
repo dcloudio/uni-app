@@ -24,6 +24,7 @@ import {
   NodeTransform,
   TransformContext,
 } from '../transform'
+import { createAttributeNode } from '../ast'
 
 export interface DirectiveTransformResult {
   props: Property[]
@@ -58,17 +59,9 @@ export const transformElement: NodeTransform = (node, context) => {
 }
 
 function createClassAttribute(clazz: string): AttributeNode {
-  return {
-    type: NodeTypes.ATTRIBUTE,
-    loc: locStub,
-    name: 'class',
-    value: {
-      type: NodeTypes.TEXT,
-      loc: locStub,
-      content: clazz,
-    },
-  }
+  return createAttributeNode('class', clazz)
 }
+
 function addScopeId(node: ElementNode, scopeId: string) {
   const classProp = node.props.find(
     (prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class'

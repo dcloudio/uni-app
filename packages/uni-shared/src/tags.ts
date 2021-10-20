@@ -71,19 +71,19 @@ export function isBuiltInComponent(tag: string) {
   return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1
 }
 
-export function isCustomElement(tag: string) {
+export function isH5CustomElement(tag: string) {
   return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
 }
 
-export function isNativeTag(tag: string) {
+export function isH5NativeTag(tag: string) {
   return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag)
 }
 
-export function isServiceNativeTag(tag: string) {
+export function isNativeTag(tag: string) {
   return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag)
 }
 
-export function isServiceCustomElement(_tag: string) {
+export function isCustomElement(_tag: string) {
   return false
 }
 

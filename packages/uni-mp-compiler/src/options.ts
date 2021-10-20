@@ -19,6 +19,21 @@ export interface ErrorHandlingOptions {
   onError?: (error: CompilerError) => void
 }
 
+interface ParserOptions {
+  /**
+   * e.g. platform native elements, e.g. `<div>` for browsers
+   */
+  isNativeTag?: (tag: string) => boolean
+  /**
+   * e.g. native elements that can self-close, e.g. `<img>`, `<br>`, `<hr>`
+   */
+  isVoidTag?: (tag: string) => boolean
+  /**
+   * Separate option for end users to extend the native elements list
+   */
+  isCustomElement?: (tag: string) => boolean | void
+}
+
 interface SharedTransformCodegenOptions {
   inline?: boolean
   isTS?: boolean
@@ -73,16 +88,22 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
   runtimeModuleName?: string
   runtimeGlobalName?: string
   miniProgram?: {
+    slot: {
+      fallback: boolean
+    }
     directive: string
     emitFile?: (emittedFile: EmittedFile) => string
   }
 }
 
 export interface TemplateCodegenOptions {
+  slot: {
+    fallback: boolean
+  }
   scopeId?: string | null
   filename: string
   directive: string
   emitFile: (emittedFile: EmittedFile) => string
 }
 
-export type CompilerOptions = TransformOptions & CodegenOptions
+export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions

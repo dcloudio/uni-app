@@ -4551,6 +4551,7 @@ function patch(instance, data) {
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
+        data.r0 = 1; // ready
         const start = Date.now();
         const mpInstance = ctx.$scope;
         const keys = Object.keys(data);

@@ -2,6 +2,7 @@ import { ElementNode } from '@vue/compiler-core'
 import { compile } from '../src'
 import { MPErrorCodes } from '../src/errors'
 import { CompilerOptions } from '../src/options'
+import { assert } from './testUtils'
 
 function parseWithVOn(template: string, options: CompilerOptions = {}) {
   const { ast } = compile(template, options)
@@ -12,6 +13,22 @@ function parseWithVOn(template: string, options: CompilerOptions = {}) {
 }
 
 describe('compiler(mp): transform v-on', () => {
+  test('lazy element', () => {
+    assert(
+      `<editor/>`,
+      `<editor/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<editor @ready="ready"/>`,
+      `<block wx:if="{{r0}}"><editor bindready="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _vOn(_ctx.ready) }
+}`
+    )
+  })
   test('should error if dynamic event', () => {
     const onError = jest.fn()
     parseWithVOn(`<div v-on:[event]="onClick" />`, { onError })

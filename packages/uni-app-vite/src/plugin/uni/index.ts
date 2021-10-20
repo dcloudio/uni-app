@@ -1,7 +1,4 @@
-import {
-  isServiceNativeTag,
-  isServiceCustomElement,
-} from '@dcloudio/uni-shared'
+import { isNativeTag, isCustomElement } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import { UniVitePlugin, initI18nOptions } from '@dcloudio/uni-cli-shared'
 
@@ -29,8 +26,8 @@ export function uniOptions(): UniVitePlugin['uni'] {
       }
     },
     compilerOptions: {
-      isNativeTag: isServiceNativeTag,
-      isCustomElement: isServiceCustomElement,
+      isNativeTag,
+      isCustomElement,
     },
     transformEvent: {
       tap: 'click',

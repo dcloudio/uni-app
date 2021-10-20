@@ -72,6 +72,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       filename: options.filename,
       directive: options.miniProgram.directive,
       emitFile: options.miniProgram.emitFile,
+      slot: options.miniProgram.slot,
     })
   }
 

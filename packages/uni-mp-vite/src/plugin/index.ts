@@ -38,6 +38,10 @@ export interface UniMiniProgramPluginOptions {
   template: {
     extname: string
     directive: string
+    slot: {
+      // 是否支持fallback content
+      fallback: boolean
+    }
   }
   style: {
     extname: string
@@ -83,7 +87,11 @@ export function uniMiniProgramPlugin(
     name: 'vite:uni-mp',
     uni: uniOptions({
       copyOptions,
-      miniProgram: { directive: template.directive, emitFile },
+      miniProgram: {
+        directive: template.directive,
+        emitFile,
+        slot: template.slot,
+      },
     }),
     config() {
       return {

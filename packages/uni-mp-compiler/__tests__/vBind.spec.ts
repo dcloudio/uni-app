@@ -2,7 +2,7 @@ import { ElementNode, ErrorCodes } from '@vue/compiler-core'
 import { compile } from '../src'
 import { MPErrorCodes } from '../src/errors'
 import { CompilerOptions } from '../src/options'
-import { assert } from './testUtils'
+import { assert, miniProgram } from './testUtils'
 
 function parseWithVBind(template: string, options: CompilerOptions = {}) {
   const { ast, code } = compile(template, options)
@@ -30,7 +30,7 @@ describe('compiler: transform v-bind', () => {
       onError,
       filename: 'foo.vue',
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -54,7 +54,7 @@ describe('compiler: transform v-bind', () => {
       onError,
       filename: 'foo.vue',
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -125,7 +125,7 @@ describe('compiler: transform v-bind', () => {
       prefixIdentifiers: false,
       filename: 'foo.vue',
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -154,7 +154,7 @@ describe('compiler: transform v-bind', () => {
       prefixIdentifiers: true,
       filename: 'foo.vue',
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -201,7 +201,7 @@ describe('compiler: transform v-bind', () => {
       filename: 'foo.vue',
       prefixIdentifiers: false,
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -230,7 +230,7 @@ describe('compiler: transform v-bind', () => {
       prefixIdentifiers: true,
       filename: 'foo.vue',
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view/>`)
           return ''
@@ -258,7 +258,7 @@ describe('compiler: transform v-bind', () => {
       onWarn,
       filename: 'foo.vue',
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view fooBar="{{a}}"/>`)
           return ''
@@ -286,7 +286,7 @@ describe('compiler: transform v-bind', () => {
       onWarn,
       filename: 'foo.vue',
       miniProgram: {
-        directive: 'wx:',
+        ...miniProgram,
         emitFile({ source }) {
           expect(source).toBe(`<view foo-bar="{{a}}"/>`)
           return ''

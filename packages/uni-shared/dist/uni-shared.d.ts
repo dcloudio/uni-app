@@ -206,15 +206,15 @@ export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
 export declare function isBuiltInComponent(tag: string): boolean;
 
-export declare function isCustomElement(tag: string): boolean;
+export declare function isCustomElement(_tag: string): boolean;
+
+export declare function isH5CustomElement(tag: string): boolean;
+
+export declare function isH5NativeTag(tag: string): boolean;
 
 export declare function isNativeTag(tag: string): boolean;
 
 export declare function isRootHook(name: string): boolean;
-
-export declare function isServiceCustomElement(_tag: string): boolean;
-
-export declare function isServiceNativeTag(tag: string): boolean;
 
 export declare interface IUniPageNode {
     pageId: number;

@@ -1,7 +1,4 @@
-import {
-  isServiceNativeTag,
-  isServiceCustomElement,
-} from '@dcloudio/uni-shared'
+import { isNativeTag, isCustomElement } from '@dcloudio/uni-shared'
 import { EmittedFile } from 'rollup'
 import { CopyOptions, UniVitePlugin } from '@dcloudio/uni-cli-shared'
 import { TemplateCompiler } from '@vue/compiler-sfc'
@@ -14,6 +11,9 @@ export function uniOptions({
 }: {
   copyOptions: CopyOptions
   miniProgram: {
+    slot: {
+      fallback: boolean
+    }
     directive: string
     emitFile?: (emittedFile: EmittedFile) => string
   }
@@ -23,8 +23,8 @@ export function uniOptions({
     compiler: compiler as TemplateCompiler,
     compilerOptions: {
       miniProgram,
-      isNativeTag: isServiceNativeTag,
-      isCustomElement: isServiceCustomElement,
+      isNativeTag,
+      isCustomElement,
     },
   }
 }

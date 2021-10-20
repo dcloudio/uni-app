@@ -17,18 +17,23 @@ import { TemplateCodegenOptions } from '../options'
 import { genExpr } from '../codegen'
 import { isForElementNode, VForOptions } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
+import { createBindDirectiveNode } from '../ast'
 interface TemplateCodegenContext {
   code: string
   directive: string
   scopeId?: string | null
+  slot: {
+    fallback: boolean
+  }
   push(code: string): void
 }
 
 export function generate(
   { children }: RootNode,
-  { scopeId, emitFile, filename, directive }: TemplateCodegenOptions
+  { slot, scopeId, emitFile, filename, directive }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
+    slot,
     code: '',
     scopeId,
     directive,
@@ -49,13 +54,23 @@ export function genNode(
   switch (node.type) {
     case NodeTypes.IF:
       return node.branches.forEach((node) => {
-        genElement(node as unknown as IfElementNode, context)
+        genNode(node as unknown as IfElementNode, context)
       })
     case NodeTypes.TEXT:
       return genText(node, context)
     case NodeTypes.INTERPOLATION:
       return genExpression(node.content, context)
     case NodeTypes.ELEMENT:
+      if (node.tagType === ElementTypes.SLOT) {
+        return genSlot(node, context)
+      } else if (node.tagType === ElementTypes.COMPONENT) {
+        return genComponent(node, context)
+      } else if (node.tagType === ElementTypes.TEMPLATE) {
+        return genTemplate(node, context)
+      } else if (isLazyElement(node)) {
+        return genLazyElement(node, context)
+      }
+
       return genElement(node, context)
   }
 }
@@ -94,12 +109,123 @@ function genVFor(
     node.props.splice(node.props.indexOf(keyProp), 1)
   }
 }
-const tagMap: Record<string, string> = {
-  template: 'block',
+
+function genSlot(node: ElementNode, context: TemplateCodegenContext) {
+  if (!node.children.length) {
+    return genElement(node, context)
+  }
+  const children = node.children.slice()
+  node.children.length = 0
+  const { push } = context
+  push(`<block`)
+  const nameProp = findProp(node, 'name')
+  genVIf(
+    `$slots.` +
+      (nameProp?.type === NodeTypes.ATTRIBUTE && nameProp.value?.content
+        ? nameProp.value.content
+        : 'default'),
+    context
+  )
+  push(`>`)
+  genElement(node, context)
+  push(`</block>`)
+  push(`<block`)
+  genVElse(context)
+  push(`>`)
+  children.forEach((node) => {
+    genNode(node, context)
+  })
+  push(`</block>`)
 }
-export function genElement(node: ElementNode, context: TemplateCodegenContext) {
+
+function findSlotName(node: ElementNode) {
+  const slotProp = node.props.find(
+    (prop) => prop.type === NodeTypes.DIRECTIVE && prop.name === 'slot'
+  ) as DirectiveNode | undefined
+  if (slotProp) {
+    const { arg } = slotProp
+    if (!arg) {
+      return 'default'
+    }
+    if (arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic) {
+      return arg.content
+    }
+  }
+}
+
+function genTemplate(node: ElementNode, context: TemplateCodegenContext) {
+  const slotName = findSlotName(node)
+  if (slotName) {
+    /**
+     * 仅百度、字节支持使用 block 作为命名插槽根节点
+     * 此处为了统一仅默认替换为view
+     * <template v-slot/> => <view slot="">
+     */
+    node.tag = 'view'
+  } else {
+    // <template/> => <block/>
+    node.tag = 'block'
+  }
+  node.tagType = ElementTypes.ELEMENT
+  return genElement(node, context)
+}
+
+function genComponent(node: ElementNode, context: TemplateCodegenContext) {
+  const slots = new Set<string>()
+  if (!node.children.length) {
+    return genElement(node, context)
+  }
+  node.children.forEach((child) => {
+    if (child.type === NodeTypes.ELEMENT) {
+      slots.add(findSlotName(child) || 'default')
+    } else if (child.type === NodeTypes.TEXT) {
+      slots.add('default')
+    }
+  })
+  node.props.unshift(
+    createBindDirectiveNode(
+      'vue-slots',
+      `[${[...slots].map((name) => `'${name}'`).join(',')}]`
+    )
+  )
+  return genElement(node, context)
+}
+
+const lazyElementMap: Record<string, string[]> = {
+  editor: ['ready'],
+}
+
+function isLazyElement(node: ElementNode) {
+  const events = lazyElementMap[node.tag]
+  return (
+    events &&
+    node.props.some(
+      (prop) =>
+        prop.type === NodeTypes.DIRECTIVE &&
+        prop.name === 'on' &&
+        prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+        events.includes(prop.arg.content)
+    )
+  )
+}
+/**
+ * 部分内置组件的部分事件在初始化时会立刻触发，但标准事件需要等首次渲染才能确认事件函数，故增加wx:if="{{r0}}"
+ * @param node
+ * @param context
+ */
+function genLazyElement(node: ElementNode, context: TemplateCodegenContext) {
+  const { push } = context
+  push(`<block`)
+  // r0 => ready 首次渲染
+  genVIf(`r0`, context)
+  push(`>`)
+  genElement(node, context)
+  push(`</block>`)
+}
+
+function genElement(node: ElementNode, context: TemplateCodegenContext) {
   const { children, isSelfClosing, props } = node
-  let tag = tagMap[node.tag] || node.tag
+  let tag = node.tag
   if (node.tagType === ElementTypes.COMPONENT) {
     tag = hyphenate(tag)
   }
