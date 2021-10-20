@@ -1,3 +1,9 @@
+import {
+  CompilerError,
+  createCompilerError,
+  SourceLocation,
+} from '@vue/compiler-core'
+
 export const enum MPErrorCodes {
   X_V_ON_NO_ARGUMENT,
   X_V_ON_DYNAMIC_EVENT,
@@ -10,7 +16,7 @@ export const enum MPErrorCodes {
   X_DYNAMIC_COMPONENT_NOT_SUPPORTED,
 }
 
-export const errorMessages: Record<number, string> = {
+const MPErrorMessages: Record<number, string> = {
   [MPErrorCodes.X_V_ON_NO_ARGUMENT]: 'v-on="" is not supported',
   [MPErrorCodes.X_V_ON_DYNAMIC_EVENT]: 'v-on:[event]="" is not supported.',
   [MPErrorCodes.X_V_BIND_NO_ARGUMENT]: 'v-bind="" is not supported.',
@@ -22,4 +28,21 @@ export const errorMessages: Record<number, string> = {
     '<component is=""/> is not supported',
   [MPErrorCodes.X_NOT_SUPPORTED]: 'not supported: ',
   [MPErrorCodes.X_V_IS_NOT_SUPPORTED]: 'v-is not supported',
+}
+
+export interface MPCompilerError extends CompilerError {
+  code: MPErrorCodes
+}
+
+export function createMPCompilerError(
+  code: MPErrorCodes,
+  loc?: SourceLocation,
+  additionalMessage?: string
+) {
+  return createCompilerError(
+    code,
+    loc,
+    MPErrorMessages,
+    additionalMessage
+  ) as MPCompilerError
 }

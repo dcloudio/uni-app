@@ -19,5 +19,15 @@ export function formatMiniProgramEvent(
     return `capture-${eventType}:${eventName}`
   }
   // bind:foo-bar
-  return eventType + (eventName.indexOf('-') > -1 ? ':' : '') + eventName
+  return eventType + (isSimpleExpr(eventName) ? '' : ':') + eventName
+}
+
+function isSimpleExpr(name: string) {
+  if (name.indexOf('-') > -1) {
+    return false
+  }
+  if (name.indexOf(':') > -1) {
+    return false
+  }
+  return true
 }

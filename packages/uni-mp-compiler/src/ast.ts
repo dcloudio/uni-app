@@ -199,18 +199,27 @@ export function parseStringLiteral(
   return stringLiteral('')
 }
 
-export function createBindDirectiveNode(
+function createDirectiveNode(
   name: string,
-  value: string
+  arg: string,
+  exp: string
 ): DirectiveNode {
   return {
     type: NodeTypes.DIRECTIVE,
-    name: 'bind',
+    name,
     modifiers: [],
     loc: locStub,
-    arg: createSimpleExpression(name, true),
-    exp: createSimpleExpression(value, false),
+    arg: createSimpleExpression(arg, true),
+    exp: createSimpleExpression(exp, false),
   }
+}
+
+export function createOnDirectiveNode(name: string, value: string) {
+  return createDirectiveNode('on', name, value)
+}
+
+export function createBindDirectiveNode(name: string, value: string) {
+  return createDirectiveNode('bind', name, value)
 }
 
 export function createAttributeNode(

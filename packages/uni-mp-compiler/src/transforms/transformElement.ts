@@ -16,8 +16,9 @@ import {
   findDir,
   locStub,
   AttributeNode,
+  DirectiveNode,
 } from '@vue/compiler-core'
-import { errorMessages, MPErrorCodes } from '../errors'
+import { createMPCompilerError, MPErrorCodes } from '../errors'
 
 import {
   BindingComponentTypes,
@@ -25,6 +26,7 @@ import {
   TransformContext,
 } from '../transform'
 import { createAttributeNode } from '../ast'
+import { transformModel } from './vModel'
 
 export interface DirectiveTransformResult {
   props: Property[]
@@ -101,20 +103,15 @@ function processComponent(node: ElementNode, context: TransformContext) {
   // 1. dynamic component
   if (isComponentTag(tag)) {
     return context.onError(
-      createCompilerError(
+      createMPCompilerError(
         MPErrorCodes.X_DYNAMIC_COMPONENT_NOT_SUPPORTED,
-        node.loc,
-        errorMessages
+        node.loc
       )
     )
   }
   if (findDir(node, 'is')) {
     return context.onError(
-      createCompilerError(
-        MPErrorCodes.X_V_IS_NOT_SUPPORTED,
-        node.loc,
-        errorMessages
-      )
+      createMPCompilerError(MPErrorCodes.X_V_IS_NOT_SUPPORTED, node.loc)
     )
   }
   // TODO not supported
@@ -125,12 +122,7 @@ function processComponent(node: ElementNode, context: TransformContext) {
   const builtIn = isCoreComponent(tag) || context.isBuiltInComponent(tag)
   if (builtIn) {
     return context.onError(
-      createCompilerError(
-        MPErrorCodes.X_NOT_SUPPORTED,
-        node.loc,
-        errorMessages,
-        tag
-      )
+      createMPCompilerError(MPErrorCodes.X_NOT_SUPPORTED, node.loc, tag)
     )
   }
 
@@ -147,12 +139,7 @@ function processComponent(node: ElementNode, context: TransformContext) {
   const dotIndex = tag.indexOf('.')
   if (dotIndex > 0) {
     return context.onError(
-      createCompilerError(
-        MPErrorCodes.X_NOT_SUPPORTED,
-        node.loc,
-        errorMessages,
-        tag
-      )
+      createMPCompilerError(MPErrorCodes.X_NOT_SUPPORTED, node.loc, tag)
     )
   }
 
@@ -253,12 +240,11 @@ function processProps(node: ElementNode, context: TransformContext) {
         // v-bind=""
         if (!arg) {
           context.onError(
-            createCompilerError(
+            createMPCompilerError(
               isVBind
                 ? MPErrorCodes.X_V_BIND_NO_ARGUMENT
                 : MPErrorCodes.X_V_ON_NO_ARGUMENT,
-              loc,
-              errorMessages
+              loc
             )
           )
           continue
@@ -269,12 +255,11 @@ function processProps(node: ElementNode, context: TransformContext) {
         // v-bind:[a.b]=""
         if (!(arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic)) {
           context.onError(
-            createCompilerError(
+            createMPCompilerError(
               isVBind
                 ? MPErrorCodes.X_V_BIND_DYNAMIC_ARGUMENT
                 : MPErrorCodes.X_V_ON_DYNAMIC_EVENT,
-              loc,
-              errorMessages
+              loc
             )
           )
           continue
@@ -293,11 +278,28 @@ function processProps(node: ElementNode, context: TransformContext) {
 
       const directiveTransform = context.directiveTransforms[name]
       if (directiveTransform) {
-        prop.exp = directiveTransform(prop, node, context).props[0]
-          .value as ExpressionNode
+        const { props } = directiveTransform(prop, node, context)
+        if (props.length) {
+          prop.exp = props[0].value as ExpressionNode
+        }
       }
     }
   }
+  processVModel(node, context)
+}
+
+function processVModel(node: ElementNode, context: TransformContext) {
+  const { props } = node
+  const dirs: DirectiveNode[] = []
+  for (let i = 0; i < props.length; i++) {
+    const prop = props[i]
+    if (prop.type === NodeTypes.DIRECTIVE && prop.name === 'model') {
+      dirs.push(...transformModel(prop, node, context))
+      props.splice(i, 1)
+      i--
+    }
+  }
+  props.push(...dirs)
 }
 
 function isComponentTag(tag: string) {

@@ -8,7 +8,7 @@ import {
   createSimpleExpression,
 } from '@vue/compiler-core'
 import { DirectiveTransform } from '../transform'
-import { errorMessages, MPErrorCodes } from '../errors'
+import { createMPCompilerError, MPErrorCodes } from '../errors'
 
 export const transformBind: DirectiveTransform = (dir, _node, context) => {
   const { exp, modifiers, loc } = dir
@@ -37,20 +37,12 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
 
   if (modifiers.includes('prop')) {
     context.onWarn(
-      createCompilerError(
-        MPErrorCodes.X_V_BIND_MODIFIER_PROP,
-        loc,
-        errorMessages
-      )
+      createMPCompilerError(MPErrorCodes.X_V_BIND_MODIFIER_PROP, loc)
     )
   }
   if (modifiers.includes('attr')) {
     context.onWarn(
-      createCompilerError(
-        MPErrorCodes.X_V_BIND_MODIFIER_ATTR,
-        loc,
-        errorMessages
-      )
+      createMPCompilerError(MPErrorCodes.X_V_BIND_MODIFIER_ATTR, loc)
     )
   }
 

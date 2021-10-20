@@ -159,9 +159,15 @@ export const transformOn: DirectiveTransform = (
     //   context.cache(ret.props[0].value) as ExpressionNode,
     //   context
     // )
-    ret.props[0].value = wrapper(ret.props[0].value as ExpressionNode, context)
+    ret.props[0].value = wrapperVOn(
+      ret.props[0].value as ExpressionNode,
+      context
+    )
   } else {
-    ret.props[0].value = wrapper(ret.props[0].value as ExpressionNode, context)
+    ret.props[0].value = wrapperVOn(
+      ret.props[0].value as ExpressionNode,
+      context
+    )
   }
 
   // mark the key as handler for props normalization check
@@ -169,7 +175,7 @@ export const transformOn: DirectiveTransform = (
   return ret
 }
 
-function wrapper(value: ExpressionNode, context: TransformContext) {
+export function wrapperVOn(value: ExpressionNode, context: TransformContext) {
   return createCompoundExpression([
     `${context.helperString(V_ON)}(`,
     value,

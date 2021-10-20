@@ -303,8 +303,6 @@ function genDirectiveNode(
     if (prop.arg) {
       push(`slot="${(prop.arg as SimpleExpressionNode).content}"`)
     }
-  } else if (prop.name === 'model') {
-    // TODO
   } else if (prop.name === 'show') {
     push(`hidden="{{!${(prop.exp as SimpleExpressionNode).content}}}"`)
   } else if (prop.arg && prop.exp) {
