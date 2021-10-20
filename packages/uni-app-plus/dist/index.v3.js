@@ -1518,6 +1518,8 @@ var serviceContext = (function () {
       return value.indexOf(delimiters[0]) > -1;
   }
 
+  const NAVBAR_HEIGHT = 44;
+
   var en = {
   	"uni.app.quit": "Press back button again to exit",
   	"uni.async.error": "The connection timed out, click the screen to try again.",
@@ -6096,8 +6098,6 @@ var serviceContext = (function () {
       });
     }
   }
-
-  const NAVBAR_HEIGHT = 44;
 
   const TABBAR_HEIGHT = 50;
   const isIOS$1 = plus.os.name === 'iOS';
