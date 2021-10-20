@@ -131,6 +131,7 @@ export const transformFor = createStructuralDirectiveTransform(
     scopes.vFor++
 
     return () => {
+      scopes.vFor--
       if (isTemplateNode(node)) {
         node.children.some((c) => {
           if (c.type === NodeTypes.ELEMENT && !isForElementNode(c)) {

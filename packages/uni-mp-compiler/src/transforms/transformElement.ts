@@ -95,7 +95,7 @@ function addVueRef(node: ElementNode, context: TransformContext) {
 function processComponent(node: ElementNode, context: TransformContext) {
   const { tag } = node
   if (context.bindingComponents[tag]) {
-    return
+    return addVueRef(node, context)
   }
 
   // 1. dynamic component
@@ -217,7 +217,12 @@ function processProps(node: ElementNode, context: TransformContext) {
 
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
-    if (prop.type === NodeTypes.DIRECTIVE) {
+    if (prop.type === NodeTypes.ATTRIBUTE) {
+      // <custom ref="c"/> => <custom data-ref="c"/>
+      if (prop.name === 'ref') {
+        prop.name = 'data-ref'
+      }
+    } else {
       // directives
       const { name, arg, loc } = prop
       const isVBind = name === 'bind'
@@ -273,6 +278,16 @@ function processProps(node: ElementNode, context: TransformContext) {
             )
           )
           continue
+        }
+      }
+
+      if (isVBind) {
+        // <custom :ref="c"/> => <custom :data-ref="c" />
+        if (
+          arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+          arg.content === 'ref'
+        ) {
+          arg.content = 'data-ref'
         }
       }
 
