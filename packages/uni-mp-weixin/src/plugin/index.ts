@@ -61,6 +61,18 @@ const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
+    filter: {
+      extname: '.wxs',
+      tag: 'wxs',
+      generate(filter) {
+        if (filter.src) {
+          return `<wxs src="/${filter.src}.wxs" module="${filter.name}"/>`
+        }
+        return `<wxs module="${filter.name}">
+${filter.code}
+</wxs>`
+      },
+    },
     slot: {
       fallback: false,
     },
@@ -76,10 +88,6 @@ const options: UniMiniProgramPluginOptions = {
       '--window-left': '0px',
       '--window-right': '0px',
     },
-  },
-  filter: {
-    extname: '.wxs',
-    tag: 'wxs',
   },
 }
 

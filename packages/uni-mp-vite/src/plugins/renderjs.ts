@@ -1,13 +1,30 @@
 import debug from 'debug'
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 
-import { missingModuleName, parseRenderjs } from '@dcloudio/uni-cli-shared'
+import {
+  MiniProgramFilterOptions,
+  missingModuleName,
+  parseRenderjs,
+} from '@dcloudio/uni-cli-shared'
 
 const debugRenderjs = debug('vite:uni:renderjs')
 
+const filtersCache = new Map<ResolvedConfig, MiniProgramFilterOptions[]>()
+
+export function getFiltersCache(resolvedConfig: ResolvedConfig) {
+  return filtersCache.get(resolvedConfig) || []
+}
+
 export function uniRenderjsPlugin(): Plugin {
+  let resolvedConfig: ResolvedConfig
   return {
     name: 'vite:uni-mp-renderjs',
+    configResolved(config) {
+      resolvedConfig = config
+    },
+    buildStart() {
+      filtersCache.set(resolvedConfig, [])
+    },
     transform(code, id) {
       const { type, name } = parseRenderjs(id)
       if (!type) {
@@ -18,12 +35,12 @@ export function uniRenderjsPlugin(): Plugin {
         this.error(missingModuleName(type, code))
       }
       if (type === 'wxs') {
-        console.log('wxs', id, code)
-        // this.emitFile({
-        //   type: 'asset',
-        //   fileName: '',
-        //   source: code,
-        // })
+        filtersCache.get(resolvedConfig)!.push({
+          id,
+          type,
+          name,
+          code,
+        })
       }
       return {
         code: 'export default {}',

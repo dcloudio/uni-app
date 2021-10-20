@@ -1,4 +1,5 @@
 export * from './nvue'
 export * from './event'
 export * from './style'
+export * from './template'
 export { transformVueComponentImports } from './transformImports'

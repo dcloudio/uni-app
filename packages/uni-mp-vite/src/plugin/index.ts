@@ -1,23 +1,18 @@
-import path from 'path'
-import debug from 'debug'
-import fs from 'fs-extra'
-import { AliasOptions } from 'vite'
+import { AliasOptions, ResolvedConfig } from 'vite'
 import {
   CopyOptions,
-  EXTNAME_VUE_RE,
-  normalizeNodeModules,
   resolveBuiltIn,
   UniVitePlugin,
   genNVueCssCode,
   parseManifestJsonOnce,
+  findMiniProgramTemplateFiles,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniOptions } from './uni'
 import { buildOptions } from './build'
 import { createConfigResolved } from './configResolved'
-import { EmittedFile } from 'rollup'
+import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
-const debugMp = debug('vite:uni:mp')
 export interface UniMiniProgramPluginOptions {
   vite: {
     alias: AliasOptions
@@ -42,6 +37,11 @@ export interface UniMiniProgramPluginOptions {
       // 是否支持fallback content
       fallback: boolean
     }
+    filter?: {
+      extname: string
+      tag: string
+      generate: Parameters<typeof findMiniProgramTemplateFiles>[0]
+    }
   }
   style: {
     extname: string
@@ -53,10 +53,6 @@ export interface UniMiniProgramPluginOptions {
       '--window-right': string
     }
   }
-  filter?: {
-    extname: string
-    tag: string
-  }
 }
 
 export function uniMiniProgramPlugin(
@@ -67,22 +63,9 @@ export function uniMiniProgramPlugin(
     template,
     style,
   } = options
-  const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
-    if (emittedFile.type === 'asset') {
-      const filename = emittedFile.fileName!
-      const outputFilename = normalizeNodeModules(
-        path.resolve(
-          process.env.UNI_OUTPUT_DIR,
-          path.relative(process.env.UNI_INPUT_DIR, filename)
-        )
-      ).replace(EXTNAME_VUE_RE, template.extname)
-      debugMp(outputFilename)
-      fs.outputFile(outputFilename, emittedFile.source!)
-      return outputFilename
-    }
-    return ''
-  }
+
   let isFirst = true
+  let resolvedConfig: ResolvedConfig
   return {
     name: 'vite:uni-mp',
     uni: uniOptions({
@@ -104,8 +87,30 @@ export function uniMiniProgramPlugin(
         build: buildOptions(),
       }
     },
-    configResolved: createConfigResolved(options),
+    configResolved(config) {
+      resolvedConfig = config
+      return createConfigResolved(options)!(config)
+    },
     generateBundle() {
+      if (template.filter) {
+        const extname = template.filter.extname
+        const filterFiles = getFilterFiles(resolvedConfig, this.getModuleInfo)
+        Object.keys(filterFiles).forEach((filename) => {
+          this.emitFile({
+            type: 'asset',
+            fileName: filename + extname,
+            source: filterFiles[filename],
+          })
+        })
+      }
+      const templateFiles = getTemplateFiles(template)
+      Object.keys(templateFiles).forEach((filename) => {
+        this.emitFile({
+          type: 'asset',
+          fileName: filename + template.extname,
+          source: templateFiles[filename],
+        })
+      })
       if (isFirst) {
         // 仅生成一次
         isFirst = false
