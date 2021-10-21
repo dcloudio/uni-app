@@ -73,53 +73,55 @@ export default {
     }
   },
   mounted () {
-    this._adId = 'AdView-' + this._newGUID()
-    const adStyle = Object.assign({
-      id: this._adId
-    }, this.position)
-    const adView = this.adView = plus.ad.createAdView(adStyle)
-    adView.interceptTouchEvent(false)
-    plus.webview.currentWebview().append(adView)
-    if (this.hidden) {
-      adView.hide()
-    }
-    this.$watch('attrs', () => {
-      this._request()
-    }, {
-      deep: true
-    })
-    this.$watch('position', () => {
-      this.adView && this.adView.setStyle(this.position)
-    }, {
-      deep: true
-    })
-    // 模板渲染有效
-    adView.setDislikeListener && adView.setDislikeListener((data) => {
-      this.adView && this.adView.close()
-      this.$refs.container.style.height = '0px'
-
-      this._updateView()
-
-      this.$trigger('close', {}, data)
-    })
-    adView.setRenderingListener && adView.setRenderingListener((data) => {
-      if (data.result === 0) {
-        this.$refs.container.style.height = data.height + 'px'
-        this._updateView()
-      } else {
-        this.$trigger('error', {}, {
-          errCode: data.result
-        })
+    this._onParentReady(() => {
+      this._adId = 'AdView-' + this._newGUID()
+      const adStyle = Object.assign({
+        id: this._adId
+      }, this.position)
+      const adView = this.adView = plus.ad.createAdView(adStyle)
+      adView.interceptTouchEvent(false)
+      plus.webview.currentWebview().append(adView)
+      if (this.hidden) {
+        adView.hide()
       }
-    })
-    adView.setAdClickedListener((data) => {
-      this.$trigger('adclicked', {}, data)
-    })
+      this.$watch('attrs', () => {
+        this._request()
+      }, {
+        deep: true
+      })
+      this.$watch('position', () => {
+        this.adView && this.adView.setStyle(this.position)
+      }, {
+        deep: true
+      })
+      // 模板渲染有效
+      adView.setDislikeListener && adView.setDislikeListener((data) => {
+        this.adView && this.adView.close()
+        this.$refs.container.style.height = '0px'
 
-    this._callbackId = this.$page.id + this._adId
-    UniViewJSBridge.subscribe(this._callbackId, this._handleAdData.bind(this))
+        this._updateView()
 
-    this._request()
+        this.$trigger('close', {}, data)
+      })
+      adView.setRenderingListener && adView.setRenderingListener((data) => {
+        if (data.result === 0) {
+          this.$refs.container.style.height = data.height + 'px'
+          this._updateView()
+        } else {
+          this.$trigger('error', {}, {
+            errCode: data.result
+          })
+        }
+      })
+      adView.setAdClickedListener((data) => {
+        this.$trigger('adclicked', {}, data)
+      })
+
+      this._callbackId = this.$page.id + this._adId
+      UniViewJSBridge.subscribe(this._callbackId, this._handleAdData.bind(this))
+
+      this._request()
+    })
   },
   beforeDestroy () {
     this.adView && this.adView.close()

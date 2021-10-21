@@ -410,7 +410,7 @@ if (process.env.UNI_PLATFORM === 'h5') {
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/h5-vue-style-loader')
 }
 
-if (process.env.UNI_PLATFORM === 'mp-toutiao') {
+if (process.env.UNI_PLATFORM === 'mp-toutiao' || process.env.UNI_PLATFORM === 'mp-lark') {
   // !important 始终带有一个空格
   moduleAlias.addAlias(
     'postcss-normalize-whitespace',

@@ -40,7 +40,7 @@
 
 ## 更新日志
 
-`uni-app`一直保持高频的更新迭代，详见[uni-app 更新日志](docs/release.md)。
+`uni-app`一直保持高频的更新迭代，详见[正式版更新日志](https://uniapp.dcloud.net.cn/release)、[Alpha版更新日志](https://uniapp.dcloud.net.cn/release-note-alpha)。
 
 ## 论坛
 

@@ -13,7 +13,8 @@ import {
  */
 export function getLocation ({
   type,
-  altitude
+  altitude,
+  highAccuracyExpireTime
 }, callbackId) {
   const {
     invokeCallbackHandler: invoke
@@ -24,7 +25,7 @@ export function getLocation ({
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(res => resolve(res.coords), reject, {
         enableHighAccuracy: altitude,
-        timeout: 1000 * 100
+        timeout: highAccuracyExpireTime || 1000 * 100
       })
     } else {
       reject(new Error('device nonsupport geolocation'))

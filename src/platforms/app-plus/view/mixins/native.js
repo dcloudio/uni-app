@@ -26,15 +26,23 @@ export default {
       hidden: false
     }
   },
+  provide () {
+    return {
+      parentOnDraw: this._onDraw
+    }
+  },
+  inject: {
+    parentOnDraw: { default: null }
+  },
   created () {
     this.isNative = true
     this.onCanInsertCallbacks = []
+    this.onDrawCallbacks = []
   },
   mounted () {
     this._updatePosition()
-    this.$nextTick(() => {
-      this.onCanInsertCallbacks.forEach(callback => callback())
-    })
+    this.onCanInsertCallbacks.forEach(callback => callback())
+    this.onCanInsertCallbacks = null
     this.$on('uni-view-update', this._requestPositionUpdate)
   },
   methods: {
@@ -60,6 +68,40 @@ export default {
         delete this._positionUpdateRequest
         this._updatePosition()
       })
+    },
+    _onParentReady (parentReadyCallback) {
+      const callback = (parentPosition) => {
+        parentReadyCallback(parentPosition)
+        this.onDrawCallbacks.forEach(callback => callback(this.position))
+        this.onDrawCallbacks = null
+      }
+      this._onSelfReady(() => {
+        if (this.parentOnDraw) {
+          this.parentOnDraw(callback)
+        } else {
+          callback({
+            top: '0px',
+            left: '0px',
+            width: Number.MAX_SAFE_INTEGER + 'px',
+            height: Number.MAX_SAFE_INTEGER + 'px',
+            position: 'static'
+          })
+        }
+      })
+    },
+    _onSelfReady (callback) {
+      if (this.onCanInsertCallbacks) {
+        this.onCanInsertCallbacks.push(callback)
+      } else {
+        callback()
+      }
+    },
+    _onDraw (callback) {
+      if (this.onDrawCallbacks) {
+        this.onDrawCallbacks.push(callback)
+      } else {
+        callback(this.position)
+      }
     }
   }
 }
