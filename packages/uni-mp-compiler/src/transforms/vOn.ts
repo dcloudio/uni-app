@@ -17,7 +17,7 @@ import { camelize, toHandlerKey } from '@vue/shared'
 import { V_ON } from '../runtimeHelpers'
 import { DirectiveTransform, TransformContext } from '../transform'
 import { DirectiveTransformResult } from './transformElement'
-import { processExpression } from './transformExpression'
+import { isBuiltInIdentifier, processExpression } from './transformExpression'
 
 const fnExpRE =
   /^\s*([\w$_]+|(async\s*)?\([^)]*?\))\s*=>|^\s*(async\s+)?function(?:\s+[\w$]+)?\s*\(/
@@ -191,10 +191,14 @@ function isFilterExpr(value: ExpressionNode, context: TransformContext) {
 }
 
 export function wrapperVOn(value: ExpressionNode, context: TransformContext) {
+  if (isBuiltInIdentifier(value)) {
+    return value
+  }
   // wxs event
   if (isFilterExpr(value, context)) {
     return value
   }
+
   return createCompoundExpression([
     `${context.helperString(V_ON)}(`,
     value,

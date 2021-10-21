@@ -206,6 +206,8 @@ export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
 export declare function isBuiltInComponent(tag: string): boolean;
 
+export declare function isComponentTag(tag: string): boolean;
+
 export declare function isCustomElement(_tag: string): boolean;
 
 export declare function isH5CustomElement(tag: string): boolean;

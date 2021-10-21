@@ -186,12 +186,14 @@ export function processExpression(
     const isAllowedGlobal = isGloballyWhitelisted(rawExp)
     const isLiteral = isLiteralWhitelisted(rawExp)
     const isFilter = context.filters.includes(rawExp)
+    const isBuiltIn = isBuiltInIdentifier(rawExp)
     if (
       !asParams &&
       !isScopeVarReference &&
       !isAllowedGlobal &&
       !isLiteral &&
-      !isFilter
+      !isFilter &&
+      !isBuiltIn
     ) {
       // const bindings exposed from setup can be skipped for patching but
       // cannot be hoisted to module scope
@@ -342,4 +344,15 @@ function stringifyExpression(exp: ExpressionNode | string): string {
       .map(stringifyExpression)
       .join('')
   }
+}
+
+const builtInIdentifiers = ['__l']
+export function isBuiltInIdentifier(id: string | ExpressionNode) {
+  if (!isString(id)) {
+    if (id.type !== NodeTypes.SIMPLE_EXPRESSION) {
+      return false
+    }
+    id = id.content
+  }
+  return builtInIdentifiers.includes(id)
 }

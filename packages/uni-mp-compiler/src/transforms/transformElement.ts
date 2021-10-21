@@ -17,7 +17,10 @@ import {
   locStub,
   AttributeNode,
   DirectiveNode,
+  ComponentNode,
 } from '@vue/compiler-core'
+import { isComponentTag } from '@dcloudio/uni-shared'
+
 import { createMPCompilerError, MPErrorCodes } from '../errors'
 
 import {
@@ -46,8 +49,7 @@ export const transformElement: NodeTransform = (node, context) => {
     ) {
       return
     }
-    const isComponent = node.tagType === ElementTypes.COMPONENT
-    if (isComponent) {
+    if (node.tagType === ElementTypes.COMPONENT) {
       processComponent(node, context)
     }
     if (context.scopeId) {
@@ -87,14 +89,22 @@ function addScopeId(node: ElementNode, scopeId: string) {
   return addStaticClass(node, scopeId)
 }
 
-function addVueRef(node: ElementNode, context: TransformContext) {
+function addVueId(node: ComponentNode, context: TransformContext) {
+  let { vueId, scopes } = context
+  if (!vueId) {
+    return
+  }
+  return vueId + '-' + scopes.vueId++
+}
+
+function addVueRef(node: ComponentNode, context: TransformContext) {
   return addStaticClass(
     node,
     context.scopes.vFor ? 'vue-ref-in-for' : 'vue-ref'
   )
 }
 
-function processComponent(node: ElementNode, context: TransformContext) {
+function processComponent(node: ComponentNode, context: TransformContext) {
   const { tag } = node
   if (context.bindingComponents[tag]) {
     return addVueRef(node, context)
@@ -126,6 +136,7 @@ function processComponent(node: ElementNode, context: TransformContext) {
     )
   }
 
+  addVueId(node, context)
   addVueRef(node, context)
 
   // 3. user component (from setup bindings)
@@ -300,8 +311,4 @@ function processVModel(node: ElementNode, context: TransformContext) {
     }
   }
   props.push(...dirs)
-}
-
-function isComponentTag(tag: string) {
-  return tag[0].toLowerCase() + tag.slice(1) === 'component'
 }

@@ -84,6 +84,9 @@ function isNativeTag(tag) {
 function isCustomElement(_tag) {
     return false;
 }
+function isComponentTag(tag) {
+    return tag[0].toLowerCase() + tag.slice(1) === 'component';
+}
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
@@ -1232,6 +1235,7 @@ exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;
+exports.isComponentTag = isComponentTag;
 exports.isCustomElement = isCustomElement;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;

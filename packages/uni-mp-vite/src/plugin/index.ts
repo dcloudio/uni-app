@@ -12,6 +12,7 @@ import { uniOptions } from './uni'
 import { buildOptions } from './build'
 import { createConfigResolved } from './configResolved'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
+import { CompilerOptions } from '@vue/compiler-core'
 
 export interface UniMiniProgramPluginOptions {
   vite: {
@@ -42,6 +43,7 @@ export interface UniMiniProgramPluginOptions {
       extname: string
       generate: Parameters<typeof findMiniProgramTemplateFiles>[0]
     }
+    compilerOptions?: CompilerOptions
   }
   style: {
     extname: string
@@ -76,6 +78,7 @@ export function uniMiniProgramPlugin(
         emitFile,
         slot: template.slot,
       },
+      compilerOptions: template.compilerOptions,
     }),
     config() {
       return {

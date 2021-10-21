@@ -25,6 +25,9 @@ export function formatMiniProgramEvent(
 }
 
 function isSimpleExpr(name: string) {
+  if (name.startsWith('_')) {
+    return false
+  }
   if (name.indexOf('-') > -1) {
     return false
   }

@@ -1,5 +1,5 @@
 import { Plugin } from 'vite'
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { addComponentBindLink, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 import initMiniProgramPlugin, {
   UniMiniProgramPluginOptions,
 } from '@dcloudio/uni-mp-vite'
@@ -78,6 +78,9 @@ ${filter.code}
     },
     extname: '.wxml',
     directive: 'wx:',
+    compilerOptions: {
+      nodeTransforms: [addComponentBindLink],
+    },
   },
   style: {
     extname: '.wxss',

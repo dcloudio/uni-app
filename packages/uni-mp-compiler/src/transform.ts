@@ -86,6 +86,7 @@ export interface TransformContext
   cached: number
   scopes: {
     vFor: number
+    vueId: number
   }
   scope: CodegenRootScope
   currentScope: CodegenScope
@@ -213,6 +214,7 @@ export function createTransformContext(
     filename = '',
     isTS = false,
     inline = false,
+    vueId = null,
     scopeId = null,
     filters = [],
     bindingMetadata = EMPTY_OBJ,
@@ -270,6 +272,7 @@ export function createTransformContext(
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     isTS,
     inline,
+    vueId,
     scopeId,
     filters,
     bindingMetadata,
@@ -295,6 +298,7 @@ export function createTransformContext(
     scope: rootScope,
     scopes: {
       vFor: 0,
+      vueId: 0,
     },
     get currentScope() {
       return scopes[scopes.length - 1]

@@ -124,6 +124,9 @@ ${filter.code}
         },
         extname: '.wxml',
         directive: 'wx:',
+        compilerOptions: {
+            nodeTransforms: [uniCliShared.addComponentBindLink],
+        },
     },
     style: {
         extname: '.wxss',

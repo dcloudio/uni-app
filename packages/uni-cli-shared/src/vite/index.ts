@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite'
-import type { EmittedFile } from 'rollup'
+import type { EmittedAsset } from 'rollup'
 import type { ParserOptions } from '@vue/compiler-core'
 import type { CompilerOptions, TemplateCompiler } from '@vue/compiler-sfc'
 import { UniViteCopyPluginOptions } from './plugins/copy'
@@ -16,7 +16,7 @@ interface UniVitePluginUniOptions {
   compiler?: TemplateCompiler
   compilerOptions?: {
     miniProgram?: {
-      emitFile?: (emittedFile: EmittedFile) => string
+      emitFile?: (emittedFile: EmittedAsset) => string
     }
     isNativeTag: ParserOptions['isNativeTag']
     isCustomElement: ParserOptions['isCustomElement']

@@ -1,5 +1,6 @@
 import { ParserPlugin } from '@babel/parser'
 import { Expression, ObjectProperty, SpreadElement } from '@babel/types'
+import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 import { BindingMetadata, CompilerError, RootNode } from '@vue/compiler-core'
 import IdentifierGenerator from './identifier'
 import {
@@ -45,6 +46,7 @@ interface SharedTransformCodegenOptions {
 export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
+  vueId?: string | null
   scopeId?: string | null
   filters?: string[]
   cacheHandlers?: boolean
@@ -76,38 +78,18 @@ export interface CodegenVForScope
 
 export type CodegenScope = CodegenRootScope | CodegenVIfScope | CodegenVForScope
 
-interface EmittedFile {
-  fileName?: string
-  name?: string
-  source?: string | Uint8Array
-  type: 'asset'
-}
-
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   mode?: 'module' | 'function'
   scopeId?: string | null
   runtimeModuleName?: string
   runtimeGlobalName?: string
-  miniProgram?: {
-    slot: {
-      fallback: boolean
-    }
-    filter?: {
-      lang: string
-    }
-    directive: string
-    emitFile?: (emittedFile: EmittedFile) => string
-  }
+  miniProgram?: MiniProgramCompilerOptions
 }
 
-export interface TemplateCodegenOptions {
-  slot: {
-    fallback: boolean
-  }
+export interface TemplateCodegenOptions
+  extends Omit<MiniProgramCompilerOptions, 'filter'> {
   scopeId?: string | null
   filename: string
-  directive: string
-  emitFile: (emittedFile: EmittedFile) => string
 }
 
 export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions

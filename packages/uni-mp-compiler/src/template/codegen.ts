@@ -1,6 +1,7 @@
 import { hyphenate } from '@vue/shared'
 import { formatMiniProgramEvent } from '@dcloudio/uni-cli-shared'
 import {
+  ComponentNode,
   DirectiveNode,
   ElementNode,
   ElementTypes,
@@ -9,7 +10,9 @@ import {
   NodeTypes,
   RootNode,
   SimpleExpressionNode,
+  SlotOutletNode,
   TemplateChildNode,
+  TemplateNode,
   TextNode,
 } from '@vue/compiler-core'
 import { TemplateCodegenOptions } from '../options'
@@ -43,7 +46,7 @@ export function generate(
   children.forEach((node) => {
     genNode(node, context)
   })
-  emitFile({ type: 'asset', fileName: filename, source: context.code })
+  emitFile!({ type: 'asset', fileName: filename, source: context.code })
 }
 
 export function genNode(
@@ -69,7 +72,6 @@ export function genNode(
       } else if (isLazyElement(node)) {
         return genLazyElement(node, context)
       }
-
       return genElement(node, context)
   }
 }
@@ -109,7 +111,7 @@ function genVFor(
   }
 }
 
-function genSlot(node: ElementNode, context: TemplateCodegenContext) {
+function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   if (!node.children.length) {
     return genElement(node, context)
   }
@@ -152,7 +154,7 @@ function findSlotName(node: ElementNode) {
   }
 }
 
-function genTemplate(node: ElementNode, context: TemplateCodegenContext) {
+function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
   const slotName = findSlotName(node)
   if (slotName) {
     /**
@@ -165,11 +167,12 @@ function genTemplate(node: ElementNode, context: TemplateCodegenContext) {
     // <template/> => <block/>
     node.tag = 'block'
   }
+  // @ts-ignore
   node.tagType = ElementTypes.ELEMENT
   return genElement(node, context)
 }
 
-function genComponent(node: ElementNode, context: TemplateCodegenContext) {
+function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
   const slots = new Set<string>()
   if (!node.children.length) {
     return genElement(node, context)
@@ -288,15 +291,18 @@ function genOn(
   { push }: TemplateCodegenContext
 ) {
   const arg = (prop.arg as SimpleExpressionNode).content
-  const exp = (prop.exp as SimpleExpressionNode).content
+  const exp = prop.exp as SimpleExpressionNode
   const modifiers = prop.modifiers
-  push(
-    `${formatMiniProgramEvent(arg, {
-      isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
-      isCapture: modifiers.includes('capture'),
-      isComponent: node.tagType === ElementTypes.COMPONENT,
-    })}="{{${exp}}}"`
-  )
+  const name = formatMiniProgramEvent(arg, {
+    isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
+    isCapture: modifiers.includes('capture'),
+    isComponent: node.tagType === ElementTypes.COMPONENT,
+  })
+  if (exp.isStatic) {
+    push(`${name}="${exp.content}"`)
+  } else {
+    push(`${name}="{{${exp.content}}}"`)
+  }
 }
 
 function genDirectiveNode(
