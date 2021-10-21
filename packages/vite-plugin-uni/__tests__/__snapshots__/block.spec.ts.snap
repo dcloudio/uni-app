@@ -17,3 +17,21 @@ exports[`block normalizeBlockCode 2`] = `
   <style></style>
   "
 `;
+
+exports[`block parseBlockCode 1`] = `
+"<template><view><template></template></view></template>
+  <script>
+  export default {}
+  </script>
+  <style></style>
+  "
+`;
+
+exports[`block parseBlockCode 2`] = `
+"<template><view><template v-if=\\"a\\">a</template><template v-else>b</template></view></template>
+  <script>
+  export default {}
+  </script>
+  <style></style>
+  "
+`;

@@ -17,7 +17,7 @@ import {
 import { walk, BaseNode } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
-import { CodegenScope, CodegenVForScope } from '../options'
+import { CodegenScope } from '../options'
 import { isVForScope, isVIfScope, TransformContext } from '../transform'
 
 export function rewriteSpreadElement(
@@ -74,6 +74,13 @@ export function rewriteExpression(
     return createSimpleExpression('undefined', false, node.loc)
   }
 
+  // wxs 等表达式
+  if (context.filters?.length) {
+    if (isReferencedByIds(babelNode, context.filters)) {
+      return createSimpleExpression(genExpr(node), false, node.loc)
+    }
+  }
+
   scope = findReferencedScope(babelNode, scope)
   const id = scope.id.next()
   scope.properties.push(objectProperty(identifier(id), babelNode!))
@@ -96,7 +103,7 @@ function findReferencedScope(
   if (isVIfScope(scope)) {
     return scope
   } else if (isVForScope(scope)) {
-    if (isReferencedScope(node, scope)) {
+    if (isReferencedByIds(node, scope.locals)) {
       return scope
     }
     return findReferencedScope(node, scope.parent!)
@@ -104,8 +111,7 @@ function findReferencedScope(
   return scope
 }
 
-function isReferencedScope(node: Expression, scope: CodegenVForScope) {
-  const knownIds: string[] = scope.locals
+function isReferencedByIds(node: Expression, knownIds: string[]) {
   let referenced = false
   walk(node as unknown as BaseNode, {
     enter(node: BaseNode, parent: BaseNode) {

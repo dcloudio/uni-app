@@ -1,7 +1,6 @@
 import { hyphenate } from '@vue/shared'
 import { formatMiniProgramEvent } from '@dcloudio/uni-cli-shared'
 import {
-  AttributeNode,
   DirectiveNode,
   ElementNode,
   ElementTypes,
@@ -245,7 +244,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
     genVFor(node.vFor, node, context)
   }
   if (props.length) {
-    genElementProps(props, context)
+    genElementProps(node, context)
   }
 
   if (isSelfClosing) {
@@ -260,11 +259,11 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
 }
 
 export function genElementProps(
-  props: Array<AttributeNode | DirectiveNode>,
+  node: ElementNode,
   context: TemplateCodegenContext
 ) {
   const { push } = context
-  props.forEach((prop) => {
+  node.props.forEach((prop) => {
     if (prop.type === NodeTypes.ATTRIBUTE) {
       const { value } = prop
       if (value) {
@@ -276,14 +275,18 @@ export function genElementProps(
       const { name } = prop
       push(` `)
       if (name === 'on') {
-        genOn(prop, context)
+        genOn(prop, node, context)
       } else {
         genDirectiveNode(prop, context)
       }
     }
   })
 }
-function genOn(prop: DirectiveNode, { push }: TemplateCodegenContext) {
+function genOn(
+  prop: DirectiveNode,
+  node: ElementNode,
+  { push }: TemplateCodegenContext
+) {
   const arg = (prop.arg as SimpleExpressionNode).content
   const exp = (prop.exp as SimpleExpressionNode).content
   const modifiers = prop.modifiers
@@ -291,6 +294,7 @@ function genOn(prop: DirectiveNode, { push }: TemplateCodegenContext) {
     `${formatMiniProgramEvent(arg, {
       isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
       isCapture: modifiers.includes('capture'),
+      isComponent: node.tagType === ElementTypes.COMPONENT,
     })}="{{${exp}}}"`
   )
 }

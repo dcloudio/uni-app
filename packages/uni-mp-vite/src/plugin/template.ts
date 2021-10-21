@@ -20,7 +20,7 @@ export function getFilterFiles(
   resolvedConfig: ResolvedConfig,
   getModuleInfo: GetModuleInfo
 ) {
-  const filters: Record<string, string> = Object.create(null)
+  const filters: Record<string, MiniProgramFilterOptions> = Object.create(null)
   const filtersCache = getFiltersCache(resolvedConfig)
   if (!filtersCache.length) {
     return filters
@@ -37,7 +37,7 @@ export function getFilterFiles(
     if (templateFilename !== filterFilename) {
       // 外链
       filter.src = filterFilename
-      filters[filterFilename] = filter.code
+      filters[filterFilename] = filter
     }
   }
   filtersCache.forEach((filter) => {

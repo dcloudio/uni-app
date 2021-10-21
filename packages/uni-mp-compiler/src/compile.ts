@@ -1,6 +1,7 @@
+import fs from 'fs'
 import { baseParse } from '@vue/compiler-core'
-
 import { isString, extend } from '@vue/shared'
+import { parseFilterNames } from '@dcloudio/uni-cli-shared'
 import { generate } from './codegen'
 import { CompilerOptions } from './options'
 import { DirectiveTransform, NodeTransform, transform } from './transform'
@@ -44,6 +45,12 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
     prefixIdentifiers,
     skipTransformIdentifier: options.skipTransformIdentifier === true,
   })
+  if (options.filename && !options.filters && options.miniProgram?.filter) {
+    options.filters = parseFilters(
+      options.miniProgram.filter.lang,
+      options.filename
+    )
+  }
   const context = transform(
     ast,
     extend({}, options, {
@@ -77,4 +84,12 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
   }
 
   return result
+}
+
+function parseFilters(lang: string, filename: string) {
+  filename = filename.split('?')[0]
+  if (fs.existsSync(filename)) {
+    return parseFilterNames(lang as any, fs.readFileSync(filename, 'utf8'))
+  }
+  return []
 }

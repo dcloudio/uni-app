@@ -1,8 +1,11 @@
 import { parseVue } from '../src/utils'
-import { normalizeWxsCode } from '../src/configResolved/plugins/preVue'
+import {
+  parseWxsCode,
+  parseWxsNodes,
+} from '../src/configResolved/plugins/preVue'
 
 describe('wxs', () => {
-  test('normalizeWxsCode', () => {
+  test('parseWxsCode', () => {
     const renderjsCode = `<template><view></view><view></view></template>
   <script>
   export default {}
@@ -24,7 +27,7 @@ describe('wxs', () => {
   </style>
   `
     expect(
-      normalizeWxsCode(parseVue(renderjsCode, []), renderjsCode)
+      parseWxsCode(parseWxsNodes(parseVue(renderjsCode, [])), renderjsCode)
     ).toMatchSnapshot()
     const wxsCode = `<template><view></view><view></view></template>
     <script>
@@ -46,6 +49,8 @@ describe('wxs', () => {
     }
     </style>
     `
-    expect(normalizeWxsCode(parseVue(wxsCode, []), wxsCode)).toMatchSnapshot()
+    expect(
+      parseWxsCode(parseWxsNodes(parseVue(wxsCode, [])), wxsCode)
+    ).toMatchSnapshot()
   })
 })

@@ -16,7 +16,6 @@ import {
   RootNode,
   ParentNode,
   TemplateChildNode,
-  CREATE_COMMENT,
   TO_DISPLAY_STRING,
   CompilerError,
   helperNameMap,
@@ -156,7 +155,7 @@ export function traverseNode(
 
   switch (node.type) {
     case NodeTypes.COMMENT:
-      context.helper(CREATE_COMMENT)
+      // context.helper(CREATE_COMMENT)
       break
     case NodeTypes.INTERPOLATION:
       context.helper(TO_DISPLAY_STRING)
@@ -215,6 +214,7 @@ export function createTransformContext(
     isTS = false,
     inline = false,
     scopeId = null,
+    filters = [],
     bindingMetadata = EMPTY_OBJ,
     cacheHandlers = false,
     prefixIdentifiers = false,
@@ -271,6 +271,7 @@ export function createTransformContext(
     isTS,
     inline,
     scopeId,
+    filters,
     bindingMetadata,
     cacheHandlers,
     prefixIdentifiers,

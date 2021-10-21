@@ -46,6 +46,7 @@ export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
   scopeId?: string | null
+  filters?: string[]
   cacheHandlers?: boolean
   nodeTransforms?: NodeTransform[]
   directiveTransforms?: Record<string, DirectiveTransform | undefined>
@@ -90,6 +91,9 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
   miniProgram?: {
     slot: {
       fallback: boolean
+    }
+    filter?: {
+      lang: string
     }
     directive: string
     emitFile?: (emittedFile: EmittedFile) => string

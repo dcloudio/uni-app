@@ -45,3 +45,49 @@ exports[`wxs normalizeWxsCode 2`] = `
     </style>
     "
 `;
+
+exports[`wxs parseWxsCode 1`] = `
+"<template><view></view><view></view></template>
+  <script>
+  export default {}
+  </script>
+  <renderjs  name=\\"echarts\\">
+  export default{
+      mounted(){
+          console.log('mounted')
+      }
+  }
+  </renderjs>
+  <style>
+  .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  }
+  </style>
+  "
+`;
+
+exports[`wxs parseWxsCode 2`] = `
+"<template><view></view><view></view></template>
+    <script>
+    export default {}
+    </script>
+    <wxs  name=\\"echarts\\">
+    export default{
+        mounted(){
+            console.log('mounted')
+        }
+    }
+    </wxs>
+    <style>
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    </style>
+    "
+`;

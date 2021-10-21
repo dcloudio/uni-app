@@ -39,3 +39,23 @@ export function missingModuleName(type: 'wxs' | 'renderjs', code: string) {
 ${code}
 </script>`
 }
+
+const moduleRE = /module=["'](.*?)["']/
+
+export function parseFilterNames(lang: string, code: string) {
+  const names: string[] = []
+  const scriptTags = code.match(/<script\b[^>]*>/gm)
+  if (!scriptTags) {
+    return names
+  }
+  const langRE = new RegExp(`lang=["']${lang}["']`)
+  scriptTags.forEach((scriptTag) => {
+    if (langRE.test(scriptTag)) {
+      const matches = scriptTag.match(moduleRE)
+      if (matches) {
+        names.push(matches[1])
+      }
+    }
+  })
+  return names
+}

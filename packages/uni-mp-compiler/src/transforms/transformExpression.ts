@@ -185,7 +185,14 @@ export function processExpression(
     const isScopeVarReference = context.identifiers[rawExp]
     const isAllowedGlobal = isGloballyWhitelisted(rawExp)
     const isLiteral = isLiteralWhitelisted(rawExp)
-    if (!asParams && !isScopeVarReference && !isAllowedGlobal && !isLiteral) {
+    const isFilter = context.filters.includes(rawExp)
+    if (
+      !asParams &&
+      !isScopeVarReference &&
+      !isAllowedGlobal &&
+      !isLiteral &&
+      !isFilter
+    ) {
       // const bindings exposed from setup can be skipped for patching but
       // cannot be hoisted to module scope
       if (bindingMetadata[node.content] === BindingTypes.SETUP_CONST) {
@@ -231,6 +238,9 @@ export function processExpression(
   const ids: QualifiedId[] = []
   const parentStack: Node[] = []
   const knownIds: Record<string, number> = Object.create(context.identifiers)
+  context.filters.forEach((name) => {
+    knownIds[name] = 1
+  })
 
   walkIdentifiers(
     ast,

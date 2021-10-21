@@ -13,7 +13,7 @@ export * from './easycom'
 export * from './constants'
 export * from './preprocess'
 export * from './postcss'
-export * from './renderjs'
+export * from './filter'
 export * from './esbuild'
 export { M } from './messages'
 

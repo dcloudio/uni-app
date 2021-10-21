@@ -3,12 +3,14 @@ export function formatMiniProgramEvent(
   {
     isCatch,
     isCapture,
+    isComponent,
   }: {
     isCatch?: boolean
     isCapture?: boolean
+    isComponent?: boolean
   }
 ) {
-  if (eventName === 'click') {
+  if (!isComponent && eventName === 'click') {
     eventName = 'tap'
   }
   let eventType = 'bind'

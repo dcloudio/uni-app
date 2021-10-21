@@ -38,8 +38,8 @@ export interface UniMiniProgramPluginOptions {
       fallback: boolean
     }
     filter?: {
+      lang: string
       extname: string
-      tag: string
       generate: Parameters<typeof findMiniProgramTemplateFiles>[0]
     }
   }
@@ -71,6 +71,7 @@ export function uniMiniProgramPlugin(
     uni: uniOptions({
       copyOptions,
       miniProgram: {
+        filter: template.filter ? { lang: template.filter.lang } : undefined,
         directive: template.directive,
         emitFile,
         slot: template.slot,
@@ -96,10 +97,11 @@ export function uniMiniProgramPlugin(
         const extname = template.filter.extname
         const filterFiles = getFilterFiles(resolvedConfig, this.getModuleInfo)
         Object.keys(filterFiles).forEach((filename) => {
+          const { code } = filterFiles[filename]
           this.emitFile({
             type: 'asset',
             fileName: filename + extname,
-            source: filterFiles[filename],
+            source: code,
           })
         })
       }

@@ -109,7 +109,7 @@ const options = {
     template: {
         filter: {
             extname: '.wxs',
-            tag: 'wxs',
+            lang: 'wxs',
             generate(filter) {
                 if (filter.src) {
                     return `<wxs src="/${filter.src}.wxs" module="${filter.name}"/>`;

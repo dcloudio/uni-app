@@ -14,6 +14,9 @@ export function uniOptions({
     slot: {
       fallback: boolean
     }
+    filter?: {
+      lang: string
+    }
     directive: string
     emitFile?: (emittedFile: EmittedFile) => string
   }

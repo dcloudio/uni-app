@@ -11,7 +11,13 @@ import {
 } from '@vue/compiler-core'
 
 import { MagicString } from '@vue/compiler-sfc'
-import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
+import {
+  clearMiniProgramTemplateFilter,
+  EXTNAME_VUE,
+  normalizeMiniProgramFilename,
+  parseVueRequest,
+  removeExt,
+} from '@dcloudio/uni-cli-shared'
 import { isElementNode, parseVue } from '../../utils'
 
 const debugPreVue = debug('vite:uni:pre-vue')
@@ -22,12 +28,10 @@ const WXS_LANG_RE = /lang=["|'](renderjs|wxs)["|']/
 
 const WXS_ATTRS = ['wxs', 'renderjs']
 
-const sourceToSFC = new Map<string, string>()
-
 export function uniPreVuePlugin(): Plugin {
   return {
     name: 'vite:uni-pre-vue',
-    transform(code, id) {
+    async transform(code, id) {
       const { filename, query } = parseVueRequest(id)
       if (query.vue) {
         return
@@ -35,33 +39,42 @@ export function uniPreVuePlugin(): Plugin {
       if (!EXTNAME_VUE.includes(path.extname(filename))) {
         return
       }
-      const sourceKey = code + filename
-      const cache = sourceToSFC.get(sourceKey)
-      if (cache) {
-        debugPreVue('cache', id)
-        return {
-          code: cache,
-          map: null,
-        }
-      }
+      // 清空当前页面已缓存的 filter 信息
+      clearMiniProgramTemplateFilter(
+        removeExt(normalizeMiniProgramFilename(id, process.env.UNI_INPUT_DIR))
+      )
       const hasBlock = BLOCK_RE.test(code)
       const hasWxs = WXS_LANG_RE.test(code)
       if (!hasBlock && !hasWxs) {
         return
       }
       debugPreVue(id)
+      const watchFiles: string[] = []
       const errors: SyntaxError[] = []
       const ast = parseVue(code, errors)
       if (hasBlock) {
-        code = normalizeBlockCode(ast, code)
+        code = parseBlockCode(ast, code)
       }
       if (hasWxs) {
-        code = normalizeWxsCode(ast, code)
+        const wxsNodes = parseWxsNodes(ast)
+        code = parseWxsCode(wxsNodes, code)
+        // add watch
+        for (const wxsNode of wxsNodes) {
+          const srcProp = wxsNode.props.find(
+            (prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'src'
+          ) as AttributeNode | undefined
+          if (srcProp && srcProp.value) {
+            const resolveId = await this.resolve(srcProp.value.content, id)
+            if (resolveId) {
+              watchFiles.push(resolveId.id)
+            }
+          }
+        }
       }
       // if (errors.length) {
       //   this.error(errors.join('\n'))
       // }
-      sourceToSFC.set(sourceKey, code)
+      watchFiles.forEach((file) => this.addWatchFile(file))
       return {
         code, // 暂不提供sourcemap,意义不大
         map: null,
@@ -91,11 +104,11 @@ function traverseNode(
   }
 }
 
-export function normalizeBlockCode(ast: RootNode, code: string) {
+export function parseBlockCode(ast: RootNode, code: string) {
   const blockNodes: ElementNode[] = []
   traverseNode(ast, blockNodes)
   if (blockNodes.length) {
-    return normalizeBlockNode(code, blockNodes)
+    return parseBlockNode(code, blockNodes)
   }
   return code
 }
@@ -103,7 +116,7 @@ export function normalizeBlockCode(ast: RootNode, code: string) {
 const BLOCK_END_LEN = '</block>'.length
 const BLOCK_START_LEN = '<block'.length
 
-function normalizeBlockNode(code: string, blocks: ElementNode[]) {
+function parseBlockNode(code: string, blocks: ElementNode[]) {
   const magicString = new MagicString(code)
   blocks.forEach(({ loc }) => {
     const startOffset = loc.start.offset
@@ -118,8 +131,8 @@ function normalizeBlockNode(code: string, blocks: ElementNode[]) {
   return magicString.toString()
 }
 
-export function normalizeWxsCode(ast: RootNode, code: string) {
-  const wxsNodes = ast.children.filter(
+export function parseWxsNodes(ast: RootNode) {
+  return ast.children.filter(
     (node) =>
       node.type === NodeTypes.ELEMENT &&
       node.tag === 'script' &&
@@ -130,9 +143,12 @@ export function normalizeWxsCode(ast: RootNode, code: string) {
           prop.value &&
           WXS_ATTRS.includes(prop.value.content)
       )
-  )
+  ) as ElementNode[]
+}
+
+export function parseWxsCode(wxsNodes: ElementNode[], code: string) {
   if (wxsNodes.length) {
-    code = normalizeWxsNode(code, wxsNodes as ElementNode[])
+    code = parseWxsNode(code, wxsNodes)
   }
   return code
 }
@@ -140,7 +156,7 @@ export function normalizeWxsCode(ast: RootNode, code: string) {
 const SCRIPT_END_LEN = '</script>'.length
 const SCRIPT_START_LEN = '<script'.length
 
-function normalizeWxsNode(code: string, nodes: ElementNode[]) {
+function parseWxsNode(code: string, nodes: ElementNode[]) {
   const magicString = new MagicString(code)
   nodes.forEach(({ loc, props }) => {
     const langAttr = props.find((prop) => prop.name === 'lang') as AttributeNode

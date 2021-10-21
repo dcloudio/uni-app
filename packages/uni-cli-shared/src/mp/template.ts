@@ -11,7 +11,7 @@ export interface MiniProgramFilterOptions {
 type GenFilterFn = (filter: MiniProgramFilterOptions) => string | void
 
 const templateFilesCache = new Map<string, string>()
-const templateFiltersCache = new Map<string, Set<MiniProgramFilterOptions>>()
+const templateFiltersCache = new Map<string, MiniProgramFilterOptions[]>()
 
 export function findMiniProgramTemplateFiles(genFilter?: GenFilterFn) {
   const files: Record<string, string> = Object.create(null)
@@ -20,7 +20,7 @@ export function findMiniProgramTemplateFiles(genFilter?: GenFilterFn) {
       files[filename] = code
     } else {
       const filters = getMiniProgramTemplateFilters(filename)
-      if (filters.length) {
+      if (filters && filters.length) {
         files[filename] =
           filters.map((filter) => genFilter(filter)).join(LINEFEED) +
           LINEFEED +
@@ -42,7 +42,7 @@ export function addMiniProgramTemplateFile(filename: string, code: string) {
 }
 
 function getMiniProgramTemplateFilters(filename: string) {
-  return [...(templateFiltersCache.get(filename) || [])]
+  return templateFiltersCache.get(filename)
 }
 
 export function clearMiniProgramTemplateFilter(filename: string) {
@@ -55,11 +55,13 @@ export function addMiniProgramTemplateFilter(
 ) {
   const filters = templateFiltersCache.get(filename)
   if (filters) {
-    filters.add(filter)
+    const filterIndex = filters.findIndex((f) => f.id === filter.id)
+    if (filterIndex > -1) {
+      filters.splice(filterIndex, 1, filter)
+    } else {
+      filters.push(filter)
+    }
   } else {
-    templateFiltersCache.set(
-      filename,
-      new Set<MiniProgramFilterOptions>([filter])
-    )
+    templateFiltersCache.set(filename, [filter])
   }
 }
