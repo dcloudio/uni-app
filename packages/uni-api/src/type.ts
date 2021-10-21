@@ -20,7 +20,7 @@ type ApiProtocols<T extends ApiLike> = ApiProtocol<T> | ProtocolOptions[]
 interface ApiOptions<T extends ApiLike, P = AsyncApiOptions<T>> {
   beforeInvoke?: (args: unknown) => boolean | void | string
   beforeAll?: (res: unknown) => void
-  beforeSuccess?: (res: unknown) => void
+  beforeSuccess?: (res: unknown, args: P) => void
   formatArgs?: {
     [K in keyof P]?: ApiArgsValidator<P[K], P> | P[K]
   }
