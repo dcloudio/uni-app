@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-i18n",
-  "version": "2.0.0-alpha-32920211022003",
+  "version": "2.0.0-alpha-32920211022004",
   "description": "uni-cli-i18n",
   "main": "lib/index.js",
   "repository": {
@@ -16,5 +16,6 @@
   "dependencies": {
     "i18n": "^0.13.3",
     "os-locale-s-fix": "^1.0.8-fix-1"
-  }
+  },
+  "gitHead": "9da763efa008ae3bdb1ced0fc18b6196aaed93c8"
 }
