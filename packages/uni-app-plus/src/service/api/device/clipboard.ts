@@ -3,6 +3,8 @@ import {
   API_SET_CLIPBOARD_DATA,
   API_TYPE_GET_CLIPBOARD_DATA,
   API_TYPE_SET_CLIPBOARD_DATA,
+  SetClipboardDataOptions,
+  SetClipboardDataProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { requireNativePlugin } from '../plugin/requireNativePlugin'
@@ -29,5 +31,7 @@ export const setClipboardData = defineAsyncApi<API_TYPE_SET_CLIPBOARD_DATA>(
     const clipboard = requireNativePlugin('clipboard')
     clipboard.setString(options.data)
     resolve()
-  }
+  },
+  SetClipboardDataProtocol,
+  SetClipboardDataOptions
 )
