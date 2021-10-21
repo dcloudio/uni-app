@@ -5038,6 +5038,9 @@ function patchStopImmediatePropagation(e, value) {
 }
 
 function stringifyStyle(value) {
+    if (isString(value)) {
+        return value;
+    }
     return stringifyStyle$1(normalizeStyle(value));
 }
 
