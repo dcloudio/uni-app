@@ -57,7 +57,7 @@ export default {
     },
     spaceInfo: {
       type: Object,
-      default() {
+      default () {
         return {}
       }
     },
