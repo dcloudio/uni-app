@@ -204,7 +204,7 @@ function createApiCallback (apiName, params = {}, extras = {}) {
     const errMsg = res.errMsg
 
     if (errMsg.indexOf(apiName + ':ok') === 0) {
-      isFn(beforeSuccess) && beforeSuccess(res)
+      isFn(beforeSuccess) && beforeSuccess(res, params)
 
       hasSuccess && success(res)
 
