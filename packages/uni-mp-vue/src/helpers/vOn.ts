@@ -49,6 +49,7 @@ function createInvoker(
   instance: ComponentInternalInstance | null
 ) {
   const invoker: Invoker = (e: Event) => {
+    patchMPEvent(e)
     let args: unknown[] = [e]
     if ((e as MPEvent).detail && (e as MPEvent).detail.__args__) {
       args = (e as MPEvent).detail.__args__!
@@ -62,6 +63,13 @@ function createInvoker(
   }
   invoker.value = initialValue
   return invoker
+}
+
+function patchMPEvent(e: Event) {
+  if (e.type && e.target) {
+    e.stopPropagation = () => {}
+    e.preventDefault = () => {}
+  }
 }
 
 function patchStopImmediatePropagation(

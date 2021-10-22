@@ -4960,7 +4960,7 @@ function vFor(source, renderItem) {
     if (isArray(source) || isString(source)) {
         ret = new Array(source.length);
         for (let i = 0, l = source.length; i < l; i++) {
-            ret[i] = renderItem(source[i], i, undefined);
+            ret[i] = renderItem(source[i], i, i);
         }
     }
     else if (typeof source === 'number') {
@@ -4970,12 +4970,12 @@ function vFor(source, renderItem) {
         }
         ret = new Array(source);
         for (let i = 0; i < source; i++) {
-            ret[i] = renderItem(i + 1, i, undefined);
+            ret[i] = renderItem(i + 1, i, i);
         }
     }
     else if (isObject(source)) {
         if (source[Symbol.iterator]) {
-            ret = Array.from(source, (item, i) => renderItem(item, i, undefined));
+            ret = Array.from(source, (item, i) => renderItem(item, i, i));
         }
         else {
             const keys = Object.keys(source);
@@ -5014,6 +5014,7 @@ function vOn(value) {
 }
 function createInvoker(initialValue, instance) {
     const invoker = (e) => {
+        patchMPEvent(e);
         let args = [e];
         if (e.detail && e.detail.__args__) {
             args = e.detail.__args__;
@@ -5022,6 +5023,12 @@ function createInvoker(initialValue, instance) {
     };
     invoker.value = initialValue;
     return invoker;
+}
+function patchMPEvent(e) {
+    if (e.type && e.target) {
+        e.stopPropagation = () => { };
+        e.preventDefault = () => { };
+    }
 }
 function patchStopImmediatePropagation(e, value) {
     if (isArray(value)) {

@@ -30,16 +30,16 @@ import { rewriteExpression } from './utils'
 
 export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   sourceExpr?: Expression
-  sourceAlias?: string
-  valueCode?: string
-  valueExpr?: Identifier | Pattern | RestElement
-  valueAlias?: string
-  keyCode?: string
-  keyExpr?: Identifier | Pattern | RestElement
-  keyAlias?: string
-  indexCode?: string
-  indexExpr?: Identifier | Pattern | RestElement
-  indexAlias?: string
+  sourceAlias: string
+  valueCode: string
+  valueExpr: Identifier | Pattern | RestElement
+  valueAlias: string
+  keyCode: string
+  keyExpr: Identifier | Pattern | RestElement
+  keyAlias: string
+  indexCode: string
+  indexExpr: Identifier | Pattern | RestElement
+  indexAlias: string
 }
 
 export type ForElementNode = ElementNode & {
@@ -73,31 +73,26 @@ export const transformFor = createStructuralDirectiveTransform(
     const { addIdentifiers, removeIdentifiers } = context
     const { source, value, key, index } = parseResult
     if (context.prefixIdentifiers) {
-      value && addIdentifiers(value)
-      key && addIdentifiers(key)
-      index && addIdentifiers(index)
+      addIdentifiers(value)
+      addIdentifiers(key)
+      addIdentifiers(index)
     }
     const { currentScope: parentScope, scopes, popScope } = context
     const sourceExpr = parseExpr(source, context)
-    const valueCode = value && genExpr(value)
-    const valueExpr = valueCode
-      ? parseParam(valueCode, context, value)
-      : undefined
-    const valueAlias =
-      (valueExpr && parseAlias(valueExpr, valueCode!, 'v' + scopes.vFor)) ||
-      'v' + scopes.vFor
-    const keyCode = key && genExpr(key)
-    const keyExpr = keyCode ? parseParam(keyCode, context, key) : undefined
-    const keyAlias = keyExpr && parseAlias(keyExpr, keyCode!, 'k' + scopes.vFor)
-    const indexCode = index && genExpr(index)
-    const indexExpr = indexCode
-      ? parseParam(indexCode, context, index)
-      : undefined
-    const indexAlias =
-      indexExpr && parseAlias(indexExpr, indexCode!, 'i' + scopes.vFor)
+    const valueCode = genExpr(value)
+
+    const valueExpr = parseParam(valueCode, context, value)
+    const valueAlias = parseAlias(valueExpr, valueCode, 'v' + scopes.vFor)
+    const keyCode = genExpr(key)
+    const keyExpr = parseParam(keyCode, context, key)
+    const keyAlias = parseAlias(keyExpr, keyCode, 'k' + scopes.vFor)
+    const indexCode = genExpr(index)
+    const indexExpr = parseParam(indexCode, context, index)
+    const indexAlias = parseAlias(indexExpr, indexCode, 'i' + scopes.vFor)
     const vForData: VForOptions = {
       source,
       sourceExpr,
+      sourceAlias: '',
       value,
       valueCode,
       valueExpr,
@@ -172,12 +167,12 @@ function clearExpr(expr: Expression) {
 function parseAlias(
   babelExpr: Identifier | Pattern | RestElement,
   exprCode: string,
-  defaultAlias: string
+  fallback: string
 ) {
   if (isIdentifier(babelExpr)) {
     return exprCode
   }
-  return defaultAlias
+  return fallback
 }
 
 function findVForLocals({ value, key, index }: ForParseResult) {
@@ -209,9 +204,9 @@ const stripParensRE = /^\(|\)$/g
 
 export interface ForParseResult {
   source: ExpressionNode
-  value: ExpressionNode | undefined
-  key: ExpressionNode | undefined
-  index: ExpressionNode | undefined
+  value: ExpressionNode
+  key: ExpressionNode
+  index: ExpressionNode
   tagType: ElementTypes
 }
 
@@ -232,9 +227,9 @@ export function parseForExpression(
       RHS.trim(),
       exp.indexOf(RHS, LHS.length)
     ),
-    value: undefined,
-    key: undefined,
-    index: undefined,
+    value: createSimpleExpression('v' + context.scopes.vFor),
+    key: createSimpleExpression('k' + context.scopes.vFor),
+    index: createSimpleExpression('i' + context.scopes.vFor),
     tagType: ElementTypes.ELEMENT,
   }
   if (context.prefixIdentifiers) {

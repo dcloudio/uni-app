@@ -4,7 +4,7 @@ describe('compiler: transform v-model', () => {
   test(`component v-model`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp class="vue-ref" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
+      `<comp class="vue-ref" vue-id="2a9ec0b0-0" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.model, b: _vOn($event => _ctx.model = $event) }
 }`
@@ -13,7 +13,7 @@ describe('compiler: transform v-model', () => {
   test(`component v-model with cache`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp class="vue-ref" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
+      `<comp class="vue-ref" vue-id="2a9ec0b0-0" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.model, b: _vOn($event => _ctx.model = $event) }
 }`,

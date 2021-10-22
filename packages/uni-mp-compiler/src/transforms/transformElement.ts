@@ -66,7 +66,7 @@ function createClassAttribute(clazz: string): AttributeNode {
   return createAttributeNode('class', clazz)
 }
 
-function addStaticClass(node: ElementNode, clazz: string) {
+export function addStaticClass(node: ElementNode, clazz: string) {
   const classProp = node.props.find(
     (prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class'
   ) as AttributeNode | undefined
@@ -89,25 +89,10 @@ function addScopeId(node: ElementNode, scopeId: string) {
   return addStaticClass(node, scopeId)
 }
 
-function addVueId(node: ComponentNode, context: TransformContext) {
-  let { vueId, scopes } = context
-  if (!vueId) {
-    return
-  }
-  return vueId + '-' + scopes.vueId++
-}
-
-function addVueRef(node: ComponentNode, context: TransformContext) {
-  return addStaticClass(
-    node,
-    context.scopes.vFor ? 'vue-ref-in-for' : 'vue-ref'
-  )
-}
-
 function processComponent(node: ComponentNode, context: TransformContext) {
   const { tag } = node
   if (context.bindingComponents[tag]) {
-    return addVueRef(node, context)
+    return
   }
 
   // 1. dynamic component
@@ -135,9 +120,6 @@ function processComponent(node: ComponentNode, context: TransformContext) {
       createMPCompilerError(MPErrorCodes.X_NOT_SUPPORTED, node.loc, tag)
     )
   }
-
-  addVueId(node, context)
-  addVueRef(node, context)
 
   // 3. user component (from setup bindings)
   const fromSetup = resolveSetupReference(tag, context)

@@ -8,7 +8,7 @@ describe('compiler: codegen', () => {
       `import { vOn as _vOn, vFor as _vFor } from "vue"
 
 export function render(_ctx, _cache) {
-  return { a: _vFor(_ctx.items, item => { return {}; }), b: _vOn(_ctx.onClick) }
+  return { a: _vFor(_ctx.items, (item, k0, i0) => { return {}; }), b: _vOn(_ctx.onClick) }
 }`,
       { inline: false, mode: 'module', prefixIdentifiers: false }
     )
@@ -21,7 +21,7 @@ export function render(_ctx, _cache) {
       `import { vOn as _vOn, vFor as _vFor } from "vue"
 
 export function render(_ctx, _cache) {
-  return { a: _vFor(_ctx.items, item => { return {}; }), b: _vOn(_ctx.onClick) }
+  return { a: _vFor(_ctx.items, (item, k0, i0) => { return {}; }), b: _vOn(_ctx.onClick) }
 }`,
       { inline: false, mode: 'module' }
     )
@@ -37,7 +37,7 @@ return function render(_ctx, _cache) {
   with (_ctx) {
     const { vOn: _vOn, vFor: _vFor } = _Vue
 
-    return { a: _vFor(items, item => { return {}; }), b: _vOn(onClick) }
+    return { a: _vFor(items, (item, k0, i0) => { return {}; }), b: _vOn(onClick) }
   }
 }`,
       { inline: false, mode: 'function', prefixIdentifiers: false }
@@ -50,7 +50,7 @@ return function render(_ctx, _cache) {
       `const { vOn: _vOn, vFor: _vFor } = Vue
 
 return function render(_ctx, _cache) {
-  return { a: _vFor(_ctx.items, item => { return {}; }), b: _vOn(_ctx.onClick) }
+  return { a: _vFor(_ctx.items, (item, k0, i0) => { return {}; }), b: _vOn(_ctx.onClick) }
 }`,
       { inline: false, mode: 'function' }
     )

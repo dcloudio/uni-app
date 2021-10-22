@@ -90,6 +90,8 @@ export interface TransformContext
   }
   scope: CodegenRootScope
   currentScope: CodegenScope
+  currentVueId: string
+  vueIds: string[]
   inVOnce: boolean
   helper<T extends symbol>(name: T): T
   removeHelper<T extends symbol>(name: T): void
@@ -264,6 +266,7 @@ export function createTransformContext(
     )
   }
 
+  const vueIds: string[] = []
   const identifiers = Object.create(null)
   const scopes: CodegenScope[] = [rootScope]
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
@@ -304,6 +307,10 @@ export function createTransformContext(
       return scopes[scopes.length - 1]
     },
     currentNode: root,
+    vueIds,
+    get currentVueId() {
+      return vueIds[vueIds.length - 1]
+    },
     inVOnce: false,
     // methods
     popScope() {

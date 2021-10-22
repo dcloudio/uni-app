@@ -1128,7 +1128,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     res.errMsg = normalizeErrMsg$1(res.errMsg, name);
     shared.isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
-      shared.isFunction(beforeSuccess) && beforeSuccess(res);
+      shared.isFunction(beforeSuccess) && beforeSuccess(res, args);
       hasSuccess && success(res);
     } else {
       hasFail && fail(res);

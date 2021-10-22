@@ -2407,7 +2407,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     res.errMsg = normalizeErrMsg$1(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
-      isFunction(beforeSuccess) && beforeSuccess(res);
+      isFunction(beforeSuccess) && beforeSuccess(res, args);
       hasSuccess && success(res);
     } else {
       hasFail && fail(res);

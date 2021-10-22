@@ -946,7 +946,7 @@ var serviceContext = (function (vue) {
           res.errMsg = normalizeErrMsg$1(res.errMsg, name);
           isFunction(beforeAll) && beforeAll(res);
           if (res.errMsg === name + ':ok') {
-              isFunction(beforeSuccess) && beforeSuccess(res);
+              isFunction(beforeSuccess) && beforeSuccess(res, args);
               hasSuccess && success(res);
           }
           else {
@@ -1765,6 +1765,25 @@ var serviceContext = (function (vue) {
       }
       {
           useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']), false);
+      }
+  });
+  const initI18nSetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
+      const name = 'uni.setClipboardData.';
+      const keys = ['success'];
+      {
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Content copied']), false);
+      }
+      {
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Contenido copiado']), false);
+      }
+      {
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Contenu copié']), false);
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['内容已复制']), false);
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['內容已復制']), false);
       }
   });
   const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
@@ -4478,6 +4497,36 @@ var serviceContext = (function (vue) {
 
   const API_GET_CLIPBOARD_DATA = 'getClipboardData';
   const API_SET_CLIPBOARD_DATA = 'setClipboardData';
+  const SetClipboardDataOptions = {
+      formatArgs: {
+          showToast: true,
+      },
+      beforeInvoke() {
+          initI18nSetClipboardDataMsgsOnce();
+      },
+      beforeSuccess(res, params) {
+          if (!params.showToast)
+              return;
+          const { t } = useI18n();
+          const title = t('uni.setClipboardData.success');
+          if (title) {
+              uni.showToast({
+                  title: title,
+                  icon: 'success',
+                  mask: false,
+              });
+          }
+      },
+  };
+  const SetClipboardDataProtocol = {
+      data: {
+          type: String,
+          required: true,
+      },
+      showToast: {
+          type: Boolean,
+      },
+  };
 
   const API_ON_ACCELEROMETER = 'onAccelerometer';
   const API_OFF_ACCELEROMETER = 'offAccelerometer';
@@ -6802,7 +6851,7 @@ var serviceContext = (function (vue) {
       const clipboard = requireNativePlugin('clipboard');
       clipboard.setString(options.data);
       resolve();
-  });
+  }, SetClipboardDataProtocol, SetClipboardDataOptions);
 
   const API_ON_NETWORK_STATUS_CHANGE = 'onNetworkStatusChange';
   function networkListener() {

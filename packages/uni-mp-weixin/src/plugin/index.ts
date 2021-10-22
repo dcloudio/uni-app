@@ -11,7 +11,7 @@ const uniMiniProgramWeixinPlugin: Plugin = {
   config() {
     return {
       define: {
-        __VUE_CREATED_DEFERRED__: JSON.stringify('false'),
+        __VUE_CREATED_DEFERRED__: false,
       },
     }
   },

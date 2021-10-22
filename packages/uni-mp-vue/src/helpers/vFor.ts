@@ -59,7 +59,7 @@ export function vFor(
   if (isArray(source) || isString(source)) {
     ret = new Array(source.length)
     for (let i = 0, l = source.length; i < l; i++) {
-      ret[i] = renderItem(source[i], i, undefined)
+      ret[i] = renderItem(source[i], i, i)
     }
   } else if (typeof source === 'number') {
     if (__DEV__ && !Number.isInteger(source)) {
@@ -68,12 +68,12 @@ export function vFor(
     }
     ret = new Array(source)
     for (let i = 0; i < source; i++) {
-      ret[i] = renderItem(i + 1, i, undefined)
+      ret[i] = renderItem(i + 1, i, i)
     }
   } else if (isObject(source)) {
     if (source[Symbol.iterator as any]) {
       ret = Array.from(source as Iterable<any>, (item, i) =>
-        renderItem(item, i, undefined)
+        renderItem(item, i, i)
       )
     } else {
       const keys = Object.keys(source)

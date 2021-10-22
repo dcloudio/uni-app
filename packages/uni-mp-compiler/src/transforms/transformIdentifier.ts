@@ -1,5 +1,6 @@
 import {
   createCompoundExpression,
+  DirectiveNode,
   NodeTypes,
   TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
@@ -49,7 +50,9 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           }
           const exp = dir.exp
           if (exp) {
-            if (isSelfKey(dir, vFor)) {
+            if (isBuiltIn(dir)) {
+              // noop
+            } else if (isSelfKey(dir, vFor)) {
               rewriteSelfKey(dir)
             } else if (isClassBinding(dir)) {
               hasClassBinding = true
@@ -77,4 +80,14 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       }
     }
   }
+}
+
+// const builtInProps = ['vue-id']
+
+function isBuiltIn(_dir: DirectiveNode) {
+  return false
+  // return (
+  //   arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+  //   builtInProps.includes(arg.content)
+  // )
 }

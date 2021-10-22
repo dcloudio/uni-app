@@ -13,6 +13,7 @@ import { generate as genTemplate } from './template/codegen'
 import { transformOn } from './transforms/vOn'
 import { transformElement } from './transforms/transformElement'
 import { transformBind } from './transforms/vBind'
+import { transformComponent } from './transforms/transformComponent'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -31,6 +32,7 @@ export function getBaseTransformPreset({
     nodeTransforms.push(transformIdentifier)
   }
   nodeTransforms.push(transformElement)
+  nodeTransforms.push(transformComponent)
   if (prefixIdentifiers) {
     nodeTransforms.push(transformExpression)
   }
