@@ -410,39 +410,89 @@ export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
 })
 export const initI18nSetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.setClipboardData.'
-  const keys = ['success']
+  const keys = ['success', 'fail']
   if (__UNI_FEATURE_I18N_EN__) {
     useI18n().add(
       LOCALE_EN,
-      normalizeMessages(name, keys, ['Content copied']),
+      normalizeMessages(name, keys, [
+        'Content copied',
+        'Copy failed, please copy manually',
+      ]),
       false
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
     useI18n().add(
       LOCALE_ES,
-      normalizeMessages(name, keys, ['Contenido copiado']),
+      normalizeMessages(name, keys, [
+        'Contenido copiado',
+        'Error al copiar, copie manualmente',
+      ]),
       false
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
     useI18n().add(
       LOCALE_FR,
-      normalizeMessages(name, keys, ['Contenu copié']),
+      normalizeMessages(name, keys, [
+        'Contenu copié',
+        'Échec de la copie, copiez manuellement',
+      ]),
       false
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ['内容已复制']),
+      normalizeMessages(name, keys, ['内容已复制', '复制失败，请手动复制']),
       false
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ['內容已復制']),
+      normalizeMessages(name, keys, ['內容已復制', '復制失敗，請手動復製']),
+      false
+    )
+  }
+})
+export const initI18nGetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
+  const name = 'uni.getClipboardData.'
+  const keys = ['fail']
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, ['Reading failed, please paste manually']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, ['Error de lectura, pegue manualmente']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        'Échec de la lecture, veuillez coller manuellement',
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ['读取失败，请手动粘贴']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ['讀取失敗，請手動粘貼']),
       false
     )
   }
