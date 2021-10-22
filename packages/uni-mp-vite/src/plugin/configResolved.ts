@@ -21,7 +21,7 @@ import {
 } from '../plugins/entry'
 
 const debugNVueCss = debug('vite:uni:nvue-css')
-
+const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
 const shadowCss = `page::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}100%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}}@keyframes shadow-preload{0%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}100%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}}`
 
 export function createConfigResolved({
@@ -52,9 +52,14 @@ export function createConfigResolved({
       },
       chunkCssCode(filename, cssCode) {
         cssCode = transformScopedCss(cssCode)
-        if (config.isProduction && filename === 'app' + extname) {
-          return cssCode + shadowCss
+        if (filename === 'app' + extname) {
+          if (config.isProduction) {
+            return cssCode + shadowCss + cssVars
+          } else {
+            return cssCode + cssVars
+          }
         }
+
         const nvueCssPaths = getNVueCssPaths(config)
         if (!nvueCssPaths || !nvueCssPaths.length) {
           return cssCode

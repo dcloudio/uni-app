@@ -7,12 +7,14 @@ import {
   parseManifestJsonOnce,
   findMiniProgramTemplateFiles,
 } from '@dcloudio/uni-cli-shared'
+import { CompilerOptions } from '@vue/compiler-core'
 
 import { uniOptions } from './uni'
 import { buildOptions } from './build'
 import { createConfigResolved } from './configResolved'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
-import { CompilerOptions } from '@vue/compiler-core'
+
+import { getNVueCssPaths } from '../plugins/pagesJson'
 
 export interface UniMiniProgramPluginOptions {
   vite: {
@@ -47,13 +49,6 @@ export interface UniMiniProgramPluginOptions {
   }
   style: {
     extname: string
-    cssVars: {
-      '--status-bar-height': string
-      '--window-top': string
-      '--window-bottom': string
-      '--window-left': string
-      '--window-right': string
-    }
   }
 }
 
@@ -66,7 +61,8 @@ export function uniMiniProgramPlugin(
     style,
   } = options
 
-  let isFirst = true
+  let nvueCssEmitted = false
+
   let resolvedConfig: ResolvedConfig
   return {
     name: 'vite:uni-mp',
@@ -117,16 +113,18 @@ export function uniMiniProgramPlugin(
           source: templateFiles[filename],
         })
       })
-      if (isFirst) {
-        // 仅生成一次
-        isFirst = false
-        this.emitFile({
-          type: 'asset',
-          fileName: 'nvue' + style.extname,
-          source: genNVueCssCode(
-            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-          ),
-        })
+      if (!nvueCssEmitted) {
+        const nvueCssPaths = getNVueCssPaths(resolvedConfig)
+        if (nvueCssPaths && nvueCssPaths.length) {
+          nvueCssEmitted = true
+          this.emitFile({
+            type: 'asset',
+            fileName: 'nvue' + style.extname,
+            source: genNVueCssCode(
+              parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+            ),
+          })
+        }
       }
     },
   }
