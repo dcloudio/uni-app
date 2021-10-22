@@ -85,6 +85,7 @@ export function uniMiniProgramPlugin(
         resolve: {
           alias: {
             vue: resolveBuiltIn('@dcloudio/uni-mp-vue'),
+            '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),
             ...alias,
           },
         },

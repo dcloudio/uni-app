@@ -5051,10 +5051,14 @@ function stringifyStyle(value) {
     return stringifyStyle$1(normalizeStyle(value));
 }
 
+function setupDevtoolsPlugin() {
+    // noop
+}
+
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
     return createVueApp(rootComponent, rootProps).use(plugin);
 }
 const createSSRApp = createApp;
 
-export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, shallowReactive, shallowReadonly, shallowRef, stop, stringifyStyle, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, vFor, vOn, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, stringifyStyle, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, vFor, vOn, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
