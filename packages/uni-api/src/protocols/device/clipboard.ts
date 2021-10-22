@@ -14,7 +14,7 @@ export const SetClipboardDataOptions: ApiOptions<API_TYPE_SET_CLIPBOARD_DATA> =
       initI18nSetClipboardDataMsgsOnce()
     },
     beforeSuccess(res, params) {
-      if (params.showToast) return
+      if (!params.showToast) return
       const { t } = useI18n()
       const title = t('uni.setClipboardData.success')
       if (title) {
