@@ -17,6 +17,8 @@
   "uni.previewImage.save.success": "Saved successfully",
   "uni.previewImage.save.fail": "Save failed",
   "uni.setClipboardData.success": "Content copied",
+  "uni.setClipboardData.fail": "Copy failed, please copy manually",
+  "uni.getClipboardData.fail": "Reading failed, please paste manually",
   "uni.scanCode.title": "Scan code",
   "uni.scanCode.album": "Album",
   "uni.scanCode.fail": "Recognition failure",

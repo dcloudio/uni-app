@@ -17,6 +17,8 @@
   "uni.previewImage.save.success": "保存圖像到相冊成功",
   "uni.previewImage.save.fail": "保存圖像到相冊失敗",
   "uni.setClipboardData.success": "內容已復制",
+  "uni.setClipboardData.fail": "復制失敗，請手動復製",
+  "uni.getClipboardData.fail": "讀取失敗，請手動粘貼",
   "uni.scanCode.title": "掃碼",
   "uni.scanCode.album": "相冊",
   "uni.scanCode.fail": "識別失敗",

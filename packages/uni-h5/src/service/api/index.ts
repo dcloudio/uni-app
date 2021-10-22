@@ -20,6 +20,7 @@ export * from './device/network'
 export * from './device/accelerometer'
 export * from './device/compass'
 export * from './device/vibrate'
+export * from './device/clipboard'
 
 export * from './storage/storage'
 
