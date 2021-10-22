@@ -1,10 +1,12 @@
 import {
+  conditionalExpression,
   Expression,
   Identifier,
   identifier,
   isIdentifier,
   isReferenced,
   MemberExpression,
+  numericLiteral,
   objectProperty,
   SpreadElement,
 } from '@babel/types'
@@ -50,6 +52,25 @@ export function parseExprWithRewrite(
 ) {
   return parseExpr(
     rewriteExpression(createSimpleExpression(code, false, loc), context, node),
+    context
+  ) as Identifier | MemberExpression | undefined
+}
+
+export function parseExprWithRewriteClass(
+  code: string,
+  loc: SourceLocation,
+  context: TransformContext,
+  node: Expression
+) {
+  // a?1:0
+  return parseExpr(
+    rewriteExpression(
+      createSimpleExpression(code, false, loc),
+      context,
+      !isUndefined(node)
+        ? conditionalExpression(node, numericLiteral(1), numericLiteral(0))
+        : node
+    ),
     context
   ) as Identifier | MemberExpression | undefined
 }

@@ -37,10 +37,10 @@ function assert(
 describe('compiler', () => {
   test('scope', () => {
     assert(
-      `<view :style="{ color: \`\${green}px\` }"/>`,
-      `<view style="{{'color:' + a}}"/>`,
+      `<view :class="{ red: isRed }"/>`,
+      `<view class="{{[a && 'red']}}"/>`,
       `(_ctx, _cache) => {
-  return { a: \`\${_ctx.green}px\` }
+  return { a: _ctx.isRed ? 1 : 0 }
 }`
     )
   })

@@ -35,6 +35,7 @@ import { genBabelExpr } from '../codegen'
 import { TransformContext } from '../transform'
 import {
   parseExprWithRewrite,
+  parseExprWithRewriteClass,
   rewriteExpression,
   rewriteSpreadElement,
 } from './utils'
@@ -160,7 +161,7 @@ function rewriteClassObjectExpression(
       if (isLiteral(value) && !isTemplateLiteral(value)) {
         return
       } else {
-        const newExpr = parseExprWithRewrite(
+        const newExpr = parseExprWithRewriteClass(
           genBabelExpr(value as Expression),
           loc,
           context,

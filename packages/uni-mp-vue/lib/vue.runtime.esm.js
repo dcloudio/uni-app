@@ -4480,6 +4480,13 @@ function getMPInstanceData(instance, keys) {
     return ret;
 }
 function patch(instance, data) {
+    if (!data) {
+        return;
+    }
+    // 序列化
+    pauseTracking();
+    data = JSON.parse(JSON.stringify(data));
+    resetTracking();
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
