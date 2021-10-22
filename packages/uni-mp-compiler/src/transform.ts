@@ -9,6 +9,25 @@ import {
 } from '@vue/shared'
 
 import {
+  ConditionalExpression,
+  isObjectExpression,
+  isConditionalExpression,
+  identifier,
+  callExpression,
+  ObjectExpression,
+  objectExpression,
+  ObjectProperty,
+  SpreadElement,
+  isObjectProperty,
+  BlockStatement,
+  ArrowFunctionExpression,
+  ReturnStatement,
+  isCallExpression,
+  isIdentifier,
+  isSpreadElement,
+  CallExpression,
+} from '@babel/types'
+import {
   DirectiveNode,
   ElementNode,
   NodeTypes,
@@ -28,6 +47,7 @@ import {
 } from '@vue/compiler-core'
 import IdentifierGenerator from './identifier'
 import {
+  CodegenRootNode,
   CodegenRootScope,
   CodegenScope,
   CodegenVForScope,
@@ -36,6 +56,8 @@ import {
   CodegenVIfScopeInit,
   TransformOptions,
 } from './options'
+import { EXTEND } from './runtimeHelpers'
+import { createObjectExpression } from './ast'
 
 export interface ImportItem {
   exp: string | ExpressionNode
@@ -119,9 +141,10 @@ export function isVForScope(scope: CodegenScope): scope is CodegenVForScope {
   return !!(scope as CodegenVForScope).source
 }
 
-export function transform(root: RootNode, options: TransformOptions) {
+export function transform(root: CodegenRootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)
+  root.renderData = createRenderDataExpr(context.scope.properties, context)
   // finalize meta information
   root.helpers = [...context.helpers.keys()]
   root.components = [...context.components]
@@ -474,4 +497,115 @@ export function createStructuralDirectiveTransform(
       return exitFns
     }
   }
+}
+
+function createRenderDataExpr(
+  properties: (ObjectProperty | SpreadElement)[],
+  context: TransformContext
+) {
+  const objExpr = createObjectExpression(properties)
+  if (context.renderDataSpread || !hasSpreadElement(objExpr)) {
+    return objExpr
+  }
+  return transformObjectSpreadExpr(objExpr, context)
+}
+
+function hasSpreadElement(expr: ObjectExpression): boolean {
+  return expr.properties.some((prop) => {
+    if (isSpreadElement(prop)) {
+      return true
+    } else {
+      const objExpr = parseReturnObjExpr(prop as ObjectProperty)
+      if (objExpr) {
+        return hasSpreadElement(objExpr)
+      }
+    }
+  })
+}
+
+function parseReturnObjExpr(prop: ObjectProperty) {
+  if (
+    isObjectProperty(prop) &&
+    isCallExpression(prop.value) &&
+    isIdentifier(prop.value.callee) &&
+    prop.value.callee.name === '_vFor'
+  ) {
+    // 目前硬编码
+    return (
+      (
+        (prop.value.arguments[1] as ArrowFunctionExpression)
+          .body as BlockStatement
+      ).body[0] as ReturnStatement
+    ).argument as ObjectExpression
+  }
+}
+
+function transformObjectPropertyExpr(
+  prop: ObjectProperty,
+  context: TransformContext
+) {
+  // vFor
+  const objExpr = parseReturnObjExpr(prop)
+  if (objExpr) {
+    if (hasSpreadElement(objExpr)) {
+      ;(
+        (
+          (
+            (prop.value as CallExpression)
+              .arguments[1] as ArrowFunctionExpression
+          ).body as BlockStatement
+        ).body[0] as ReturnStatement
+      ).argument = transformObjectSpreadExpr(objExpr, context)
+    }
+  }
+  return prop
+}
+
+function transformObjectSpreadExpr(
+  objExpr: ObjectExpression,
+  context: TransformContext
+) {
+  const properties = objExpr.properties as (ObjectProperty | SpreadElement)[]
+  const args: (ObjectExpression | ConditionalExpression)[] = []
+  let objExprProperties: ObjectProperty[] = []
+  properties.forEach((prop) => {
+    if (isObjectProperty(prop)) {
+      objExprProperties.push(transformObjectPropertyExpr(prop, context))
+    } else {
+      if (objExprProperties.length) {
+        args.push(objectExpression(objExprProperties))
+      }
+      args.push(
+        transformConditionalExpression(
+          prop.argument as ConditionalExpression,
+          context
+        )
+      )
+      objExprProperties = []
+    }
+  })
+  if (objExprProperties.length) {
+    args.push(objectExpression(objExprProperties))
+  }
+  if (args.length === 1) {
+    return args[0] as ObjectExpression
+  }
+  return callExpression(identifier(context.helperString(EXTEND)), args)
+}
+function transformConditionalExpression(
+  expr: ConditionalExpression,
+  context: TransformContext
+) {
+  const { consequent, alternate } = expr
+  if (isObjectExpression(consequent) && hasSpreadElement(consequent)) {
+    expr.consequent = transformObjectSpreadExpr(consequent, context)
+  }
+  if (isObjectExpression(alternate)) {
+    if (hasSpreadElement(alternate)) {
+      expr.alternate = transformObjectSpreadExpr(alternate, context)
+    }
+  } else if (isConditionalExpression(alternate)) {
+    transformConditionalExpression(alternate, context)
+  }
+  return expr
 }
