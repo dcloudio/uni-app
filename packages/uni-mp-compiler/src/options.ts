@@ -46,7 +46,7 @@ interface SharedTransformCodegenOptions {
 export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
-  vueId?: string | null
+  hashId?: string | null
   scopeId?: string | null
   filters?: string[]
   cacheHandlers?: boolean

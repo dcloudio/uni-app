@@ -88,8 +88,8 @@ export function initRefs(
   Object.defineProperty(instance, 'refs', {
     get() {
       const $refs: Record<string, any> = {}
-      selectAllComponents(mpInstance, '.vue-ref', $refs)
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
+      selectAllComponents(mpInstance, '.v-r', $refs)
+      const forComponents = mpInstance.selectAllComponents('.v-r-i-f')
       forComponents.forEach((component) => {
         const ref = component.dataset.ref
         if (!$refs[ref]) {

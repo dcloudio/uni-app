@@ -48,7 +48,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
     skipTransformIdentifier: options.skipTransformIdentifier === true,
   })
 
-  options.vueId = genVueId(options)
+  options.hashId = genHashId(options)
 
   if (options.filename) {
     if (options.filters && options.miniProgram?.filter) {
@@ -94,9 +94,9 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
   return result
 }
 
-function genVueId(options: CompilerOptions) {
-  if (options.vueId) {
-    return options.vueId
+function genHashId(options: CompilerOptions) {
+  if (options.hashId) {
+    return options.hashId
   }
   if (options.scopeId) {
     return options.scopeId.replace('data-v-', '')

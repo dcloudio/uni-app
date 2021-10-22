@@ -28,11 +28,11 @@ export const transformComponent: NodeTransform = (node, context) => {
 }
 
 function addVueId(node: ComponentNode, context: TransformContext) {
-  let { vueId, scopes, currentScope, currentVueId } = context
-  if (!vueId) {
+  let { hashId, scopes, currentScope, currentVueId } = context
+  if (!hashId) {
     return
   }
-  vueId = vueId + '-' + scopes.vueId++
+  let vueId = hashId + '-' + scopes.vueId++
   const indexs: string[] = []
   while (currentScope) {
     if (isVForScope(currentScope)) {
@@ -60,14 +60,16 @@ function addVueId(node: ComponentNode, context: TransformContext) {
     }
   }
   if (value.includes('+')) {
-    return node.props.push(createBindDirectiveNode('vue-id', value))
+    return node.props.push(createBindDirectiveNode('v-i', value))
   }
-  return node.props.push(createAttributeNode('vue-id', value))
+  return node.props.push(createAttributeNode('v-i', value))
 }
 
 function addVueRef(node: ComponentNode, context: TransformContext) {
   return addStaticClass(
     node,
-    context.scopes.vFor ? 'vue-ref-in-for' : 'vue-ref'
+    // vue-ref-in-for
+    // vue-ref
+    context.scopes.vFor ? 'v-r-i-f' : 'v-r'
   )
 }

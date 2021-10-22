@@ -53,7 +53,7 @@ function initVm(
     return
   }
   const properties = mpInstance.props
-  initVueIds(properties.vueId, mpInstance as any)
+  initVueIds(properties.vI, mpInstance as any)
   const relationOptions: RelationOptions = {
     vuePid: mpInstance._$vuePid,
     mpInstance,

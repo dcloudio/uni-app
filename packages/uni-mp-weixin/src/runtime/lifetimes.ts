@@ -26,7 +26,7 @@ export function initLifetimes({
   return {
     attached(this: MPComponentInstance) {
       const properties = this.properties
-      initVueIds(properties.vueId, this)
+      initVueIds(properties.vI, this)
       const relationOptions: RelationOptions = {
         vuePid: this._$vuePid,
       }

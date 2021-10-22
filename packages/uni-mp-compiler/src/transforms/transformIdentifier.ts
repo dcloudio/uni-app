@@ -82,7 +82,8 @@ export const transformIdentifier: NodeTransform = (node, context) => {
   }
 }
 
-// const builtInProps = ['vue-id']
+// vue-id
+// const builtInProps = ['v-i']
 
 function isBuiltIn(_dir: DirectiveNode) {
   return false

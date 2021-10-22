@@ -37,7 +37,7 @@ function parsePropType(key: string, type: unknown, defaultValue: unknown) {
 function initDefaultProps(isBehavior: boolean = false) {
   const properties: Component.PropertyOption = {}
   if (!isBehavior) {
-    properties.vueId = {
+    properties.vI = {
       type: String,
       value: '',
     }

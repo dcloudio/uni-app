@@ -175,8 +175,8 @@ function initRefs(instance, mpInstance) {
     Object.defineProperty(instance, 'refs', {
         get() {
             const $refs = {};
-            selectAllComponents(mpInstance, '.vue-ref', $refs);
-            const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+            selectAllComponents(mpInstance, '.v-r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.v-r-i-f');
             forComponents.forEach((component) => {
                 const ref = component.dataset.ref;
                 if (!$refs[ref]) {
@@ -651,7 +651,7 @@ function parsePropType(key, type, defaultValue) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
-        properties.vueId = {
+        properties.vI = {
             type: String,
             value: '',
         };
@@ -1161,7 +1161,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {
             const properties = this.properties;
-            initVueIds(properties.vueId, this);
+            initVueIds(properties.vI, this);
             const relationOptions = {
                 vuePid: this._$vuePid,
             };

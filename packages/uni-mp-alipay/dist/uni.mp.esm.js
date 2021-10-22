@@ -623,7 +623,7 @@ function parsePropType(key, type, defaultValue) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
-        properties.vueId = {
+        properties.vI = {
             type: String,
             value: '',
         };
@@ -1357,7 +1357,7 @@ function initVm(mpInstance, createComponent) {
         return;
     }
     const properties = mpInstance.props;
-    initVueIds(properties.vueId, mpInstance);
+    initVueIds(properties.vI, mpInstance);
     const relationOptions = {
         vuePid: mpInstance._$vuePid,
         mpInstance,
