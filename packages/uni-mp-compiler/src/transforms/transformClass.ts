@@ -27,11 +27,11 @@ import {
   createSimpleExpression,
   ExpressionNode,
   createCompoundExpression,
-  NORMALIZE_CLASS,
   SourceLocation,
 } from '@vue/compiler-core'
 import { parseExpr, isTrueExpr, isUndefined, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
+import { NORMALIZE_CLASS } from '../runtimeHelpers'
 import { TransformContext } from '../transform'
 import {
   parseExprWithRewrite,

@@ -43,7 +43,7 @@ describe('compiler: transform component', () => {
       `<custom v-for="item in items"/>`,
       `<custom wx:for="{{a}}" wx:for-item="item" class="v-r-i-f" v-i="{{item.a}}" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
         nodeTransforms: [addComponentBindLink as any],
@@ -53,7 +53,7 @@ describe('compiler: transform component', () => {
       `<custom v-for="(item,key,index) in items"/>`,
       `<custom wx:for="{{a}}" wx:for-item="item" class="v-r-i-f" v-i="{{item.a}}" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, key, index) => { return { a: '2a9ec0b0-0' + '-' + index }; }) }
+  return { a: _f(_ctx.items, (item, key, index) => { return { a: '2a9ec0b0-0' + '-' + index }; }) }
 }`,
       {
         nodeTransforms: [addComponentBindLink as any],
@@ -65,7 +65,7 @@ describe('compiler: transform component', () => {
       `<custom><custom1 v-for="item in items"/></custom>`,
       `<custom vue-slots="{{['default']}}" class="v-r" v-i="2a9ec0b0-0" bind:__l="__l"><custom1 wx:for="{{a}}" wx:for-item="item" class="v-r-i-f" v-i="{{item.a}}" bind:__l="__l"/></custom>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + '2a9ec0b0-0' }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + '2a9ec0b0-0' }; }) }
 }`,
       {
         nodeTransforms: [addComponentBindLink as any],
@@ -77,7 +77,7 @@ describe('compiler: transform component', () => {
       `<custom v-for="item in items"><custom1/></custom>`,
       `<custom wx:for="{{a}}" wx:for-item="item" vue-slots="{{['default']}}" class="v-r-i-f" v-i="{{item.b}}" bind:__l="__l"><custom1 class="v-r-i-f" v-i="{{item.a}}" bind:__l="__l"/></custom>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + ('2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + ('2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
         nodeTransforms: [addComponentBindLink as any],
@@ -89,7 +89,7 @@ describe('compiler: transform component', () => {
       `<custom v-for="item in items"><custom1 v-for="item1 in item.items"/></custom>`,
       `<custom wx:for="{{a}}" wx:for-item="item" vue-slots="{{['default']}}" class="v-r-i-f" v-i="{{item.b}}" bind:__l="__l"><custom1 wx:for="{{item.a}}" wx:for-item="item1" class="v-r-i-f" v-i="{{item1.a}}" bind:__l="__l"/></custom>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return { a: _vFor(item.items, (item1, k1, i1) => { return { a: '2a9ec0b0-1' + '-' + i0 + '-' + i1 + ',' + ('2a9ec0b0-0' + '-' + i0) }; }), b: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _f(item.items, (item1, k1, i1) => { return { a: '2a9ec0b0-1' + '-' + i0 + '-' + i1 + ',' + ('2a9ec0b0-0' + '-' + i0) }; }), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
         nodeTransforms: [addComponentBindLink as any],

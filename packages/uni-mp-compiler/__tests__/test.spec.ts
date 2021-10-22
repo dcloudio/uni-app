@@ -40,7 +40,7 @@ describe('compiler', () => {
       `<view v-for="item in items"><view v-if="ok"></view></view>`,
       `<view wx:if="{{a}}">{{b}}</view>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return _ctx.ok ? {} : {}; }), b: _ctx.ok }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return _ctx.ok ? {} : {}; }), b: _ctx.ok }
 }`,
       {
         renderDataSpread: false,

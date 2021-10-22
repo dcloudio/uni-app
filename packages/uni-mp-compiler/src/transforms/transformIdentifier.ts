@@ -2,7 +2,6 @@ import {
   createCompoundExpression,
   DirectiveNode,
   NodeTypes,
-  TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
 
 import { NodeTransform } from '../transform'
@@ -19,6 +18,7 @@ import {
   isStyleBinding,
   rewriteStyle,
 } from './transformStyle'
+import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return () => {

@@ -22,14 +22,14 @@ describe('compiler: transform style', () => {
       `<view :style="foo"/>`,
       `<view style="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.foo) }
+  return { a: _s(_ctx.foo) }
 }`
     )
     assert(
       `<view :style="foo | bar"/>`,
       `<view style="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.foo | _ctx.bar) }
+  return { a: _s(_ctx.foo | _ctx.bar) }
 }`
     )
   })
@@ -38,14 +38,14 @@ describe('compiler: transform style', () => {
       `<view :style="foo" style="color:green;"/>`,
       `<view style="{{a + ';' + 'color:green;'}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.foo) }
+  return { a: _s(_ctx.foo) }
 }`
     )
     assert(
       `<view style="color:green;" :style="foo"/>`,
       `<view style="{{'color:green;' + ';' + a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.foo) }
+  return { a: _s(_ctx.foo) }
 }`
     )
   })
@@ -70,7 +70,7 @@ describe('compiler: transform style', () => {
       `<view :style="{color:'green',fontSize:'15px',backgroundColor: handle(bg),fontWeight,[padding]:box.padding,...style,...{margin:'0px'}}"/>`,
       `<view style="{{'color:' + 'green' + ';' + ('font-size:' + '15px') + ';' + ('background-color:' + a) + ';' + ('font-weight:' + b) + ';' + (c + ':' + d) + ';' + e + ';' + f}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.handle(_ctx.bg), b: _ctx.fontWeight, c: _hyphenate(_ctx.padding), d: _ctx.box.padding, e: _stringifyStyle(_ctx.style), f: _stringifyStyle({ margin: '0px' }) }
+  return { a: _ctx.handle(_ctx.bg), b: _ctx.fontWeight, c: _h(_ctx.padding), d: _ctx.box.padding, e: _s(_ctx.style), f: _s({ margin: '0px' }) }
 }`
     )
   })
@@ -93,14 +93,14 @@ describe('compiler: transform style', () => {
       `<view :style="{color:'green',fontSize:'15px',backgroundColor: handle(bg),fontWeight,[padding]:box.padding,...style,...{margin:'0px'}}" style="font-size:15px"/>`,
       `<view style="{{'color:' + 'green' + ';' + ('font-size:' + '15px') + ';' + ('background-color:' + a) + ';' + ('font-weight:' + b) + ';' + (c + ':' + d) + ';' + e + ';' + f + ';' + 'font-size:15px'}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.handle(_ctx.bg), b: _ctx.fontWeight, c: _hyphenate(_ctx.padding), d: _ctx.box.padding, e: _stringifyStyle(_ctx.style), f: _stringifyStyle({ margin: '0px' }) }
+  return { a: _ctx.handle(_ctx.bg), b: _ctx.fontWeight, c: _h(_ctx.padding), d: _ctx.box.padding, e: _s(_ctx.style), f: _s({ margin: '0px' }) }
 }`
     )
     assert(
       `<view style="font-size:15px" :style="{color:'green',fontSize:'15px',backgroundColor: handle(bg),fontWeight,[padding]:box.padding,...style,...{margin:'0px'}}"/>`,
       `<view style="{{'font-size:15px' + ';' + ('color:' + 'green' + ';' + ('font-size:' + '15px') + ';' + ('background-color:' + a) + ';' + ('font-weight:' + b) + ';' + (c + ':' + d) + ';' + e + ';' + f)}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.handle(_ctx.bg), b: _ctx.fontWeight, c: _hyphenate(_ctx.padding), d: _ctx.box.padding, e: _stringifyStyle(_ctx.style), f: _stringifyStyle({ margin: '0px' }) }
+  return { a: _ctx.handle(_ctx.bg), b: _ctx.fontWeight, c: _h(_ctx.padding), d: _ctx.box.padding, e: _s(_ctx.style), f: _s({ margin: '0px' }) }
 }`
     )
   })
@@ -109,21 +109,21 @@ describe('compiler: transform style', () => {
       `<view :style="[styleA, \`\${styleB}\`]"/>`,
       `<view style="{{a + ';' + b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.styleA), b: _stringifyStyle(\`\${_ctx.styleB}\`) }
+  return { a: _s(_ctx.styleA), b: _s(\`\${_ctx.styleB}\`) }
 }`
     )
     assert(
       `<view :style="[styleA, styleB]"/>`,
       `<view style="{{a + ';' + b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.styleA), b: _stringifyStyle(_ctx.styleB) }
+  return { a: _s(_ctx.styleA), b: _s(_ctx.styleB) }
 }`
     )
     assert(
       `<view :style="[styleA, styleB, { color:'red',fontSize }, 'font-weight:bold', ...styleC, ...[styleD,styleE], handle(styleF) ]"/>`,
       `<view style="{{a + ';' + b + ';' + c + ';' + 'font-weight:bold' + ';' + d + ';' + e + ';' + f}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.styleA), b: _stringifyStyle(_ctx.styleB), c: _stringifyStyle({ color: 'red', fontSize: _ctx.fontSize }), d: _stringifyStyle(_ctx.styleC), e: _stringifyStyle([_ctx.styleD, _ctx.styleE]), f: _stringifyStyle(_ctx.handle(_ctx.styleF)) }
+  return { a: _s(_ctx.styleA), b: _s(_ctx.styleB), c: _s({ color: 'red', fontSize: _ctx.fontSize }), d: _s(_ctx.styleC), e: _s([_ctx.styleD, _ctx.styleE]), f: _s(_ctx.handle(_ctx.styleF)) }
 }`
     )
   })
@@ -132,28 +132,28 @@ describe('compiler: transform style', () => {
       `<view :style="[styleA, styleB]" style="font-size:15px"/>`,
       `<view style="{{a + ';' + b + ';' + 'font-size:15px'}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.styleA), b: _stringifyStyle(_ctx.styleB) }
+  return { a: _s(_ctx.styleA), b: _s(_ctx.styleB) }
 }`
     )
     assert(
       `<view style="font-size:15px" :style="[styleA, styleB]"/>`,
       `<view style="{{'font-size:15px' + ';' + (a + ';' + b)}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.styleA), b: _stringifyStyle(_ctx.styleB) }
+  return { a: _s(_ctx.styleA), b: _s(_ctx.styleB) }
 }`
     )
     assert(
       `<view :style="[styleA, styleB, { color:'red',fontSize }, 'font-weight:bold', ...styleC, ...[styleD,styleE], handle(styleF) ]" style="font-size:15px"/>`,
       `<view style="{{a + ';' + b + ';' + c + ';' + 'font-weight:bold' + ';' + d + ';' + e + ';' + f + ';' + 'font-size:15px'}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.styleA), b: _stringifyStyle(_ctx.styleB), c: _stringifyStyle({ color: 'red', fontSize: _ctx.fontSize }), d: _stringifyStyle(_ctx.styleC), e: _stringifyStyle([_ctx.styleD, _ctx.styleE]), f: _stringifyStyle(_ctx.handle(_ctx.styleF)) }
+  return { a: _s(_ctx.styleA), b: _s(_ctx.styleB), c: _s({ color: 'red', fontSize: _ctx.fontSize }), d: _s(_ctx.styleC), e: _s([_ctx.styleD, _ctx.styleE]), f: _s(_ctx.handle(_ctx.styleF)) }
 }`
     )
     assert(
       `<view style="font-size:15px" :style="[styleA, styleB, { color:'red',fontSize }, 'font-weight:bold', ...styleC, ...[styleD,styleE], handle(styleF) ]"/>`,
       `<view style="{{'font-size:15px' + ';' + (a + ';' + b + ';' + c + ';' + 'font-weight:bold' + ';' + d + ';' + e + ';' + f)}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _stringifyStyle(_ctx.styleA), b: _stringifyStyle(_ctx.styleB), c: _stringifyStyle({ color: 'red', fontSize: _ctx.fontSize }), d: _stringifyStyle(_ctx.styleC), e: _stringifyStyle([_ctx.styleD, _ctx.styleE]), f: _stringifyStyle(_ctx.handle(_ctx.styleF)) }
+  return { a: _s(_ctx.styleA), b: _s(_ctx.styleB), c: _s({ color: 'red', fontSize: _ctx.fontSize }), d: _s(_ctx.styleC), e: _s([_ctx.styleD, _ctx.styleE]), f: _s(_ctx.handle(_ctx.styleF)) }
 }`
     )
   })

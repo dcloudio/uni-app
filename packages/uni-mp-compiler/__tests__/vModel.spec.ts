@@ -6,7 +6,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp class="v-r" v-i="2a9ec0b0-0" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event) }
+  return { a: _ctx.model, b: _o($event => _ctx.model = $event) }
 }`
     )
   })
@@ -15,7 +15,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp class="v-r" v-i="2a9ec0b0-0" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event) }
+  return { a: _ctx.model, b: _o($event => _ctx.model = $event) }
 }`,
       {
         cacheHandlers: true,
@@ -27,14 +27,14 @@ describe('compiler: transform v-model', () => {
       `<input v-model="model" />`,
       `<input value="{{a}}" bindinput="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event.detail.value) }
+  return { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value) }
 }`
     )
     assert(
       `<textarea v-model="model" />`,
       `<textarea value="{{a}}" bindinput="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _vOn($event => _ctx.model = $event.detail.value) }
+  return { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value) }
 }`
     )
   })
@@ -43,7 +43,7 @@ describe('compiler: transform v-model', () => {
       `<input @input="input" v-model="model" />`,
       `<input bindinput="{{a}}" value="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _vOn([$event => _ctx.model = $event.detail.value, _ctx.input]), b: _ctx.model }
+  return { a: _o([$event => _ctx.model = $event.detail.value, _ctx.input]), b: _ctx.model }
 }`
     )
   })

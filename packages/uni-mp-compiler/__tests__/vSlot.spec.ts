@@ -32,7 +32,7 @@ describe('compiler: transform v-slot', () => {
       `<custom><template v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom>`,
       `<custom vue-slots="{{['default']}}" class="v-r" v-i="2a9ec0b0-0"><view slot="default"><view>{{a}}</view></view></custom>`,
       `(_ctx, _cache) => {
-  return { a: _toDisplayString(_ctx.slotProps.item), b: slotProps }
+  return { a: _t(_ctx.slotProps.item), b: slotProps }
 }`
     )
   })

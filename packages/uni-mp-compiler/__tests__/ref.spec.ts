@@ -22,7 +22,7 @@ describe('compiler: transform ref', () => {
       `<custom v-for="item in items"/>`,
       `<custom wx:for="{{a}}" wx:for-item="item" class="v-r-i-f" v-i="{{item.a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`
     )
   })

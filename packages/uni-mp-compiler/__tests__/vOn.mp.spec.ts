@@ -25,7 +25,7 @@ describe('compiler(mp): transform v-on', () => {
       `<editor @ready="ready"/>`,
       `<block wx:if="{{r0}}"><editor bindready="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _vOn(_ctx.ready) }
+  return { a: _o(_ctx.ready) }
 }`
     )
   })

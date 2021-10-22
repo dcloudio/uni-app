@@ -17,7 +17,7 @@ describe('compiler: transform scopeId', () => {
       `<view :class="foo"/>`,
       `<view class="{{['data-v-5584ec96', a]}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _normalizeClass(_ctx.foo) }
+  return { a: _n(_ctx.foo) }
 }`,
       options
     )
@@ -35,7 +35,7 @@ describe('compiler: transform scopeId', () => {
       `<view class="bar" :class="foo"/>`,
       `<view class="{{['bar data-v-5584ec96', a]}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _normalizeClass(_ctx.foo) }
+  return { a: _n(_ctx.foo) }
 }`,
       options
     )
@@ -43,7 +43,7 @@ describe('compiler: transform scopeId', () => {
       `<view :class="foo" class="bar"/>`,
       `<view class="{{[a, 'bar data-v-5584ec96']}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _normalizeClass(_ctx.foo) }
+  return { a: _n(_ctx.foo) }
 }`,
       options
     )

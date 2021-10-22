@@ -5,10 +5,10 @@ describe('compiler: codegen', () => {
     assert(
       `<view v-for="item in items" @click="onClick"></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" bindtap="{{b}}"></view>`,
-      `import { vOn as _vOn, vFor as _vFor } from "vue"
+      `import { o as _o, f as _f } from "vue"
 
 export function render(_ctx, _cache) {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return {}; }), b: _vOn(_ctx.onClick) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick) }
 }`,
       { inline: false, mode: 'module', prefixIdentifiers: false }
     )
@@ -18,10 +18,10 @@ export function render(_ctx, _cache) {
     assert(
       `<view v-for="item in items" @click="onClick"></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" bindtap="{{b}}"></view>`,
-      `import { vOn as _vOn, vFor as _vFor } from "vue"
+      `import { o as _o, f as _f } from "vue"
 
 export function render(_ctx, _cache) {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return {}; }), b: _vOn(_ctx.onClick) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick) }
 }`,
       { inline: false, mode: 'module' }
     )
@@ -35,9 +35,9 @@ export function render(_ctx, _cache) {
 
 return function render(_ctx, _cache) {
   with (_ctx) {
-    const { vOn: _vOn, vFor: _vFor } = _Vue
+    const { o: _o, f: _f } = _Vue
 
-    return { a: _vFor(items, (item, k0, i0) => { return {}; }), b: _vOn(onClick) }
+    return { a: _f(items, (item, k0, i0) => { return {}; }), b: _o(onClick) }
   }
 }`,
       { inline: false, mode: 'function', prefixIdentifiers: false }
@@ -47,10 +47,10 @@ return function render(_ctx, _cache) {
     assert(
       `<view v-for="item in items" @click="onClick"></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" bindtap="{{b}}"></view>`,
-      `const { vOn: _vOn, vFor: _vFor } = Vue
+      `const { o: _o, f: _f } = Vue
 
 return function render(_ctx, _cache) {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return {}; }), b: _vOn(_ctx.onClick) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick) }
 }`,
       { inline: false, mode: 'function' }
     )
@@ -69,7 +69,7 @@ return function render(_ctx, _cache) {
       `{{hello}}`,
       `{{a}}`,
       `(_ctx, _cache) => {
-  return { a: _toDisplayString(_ctx.hello) }
+  return { a: _t(_ctx.hello) }
 }`
     )
   })
@@ -87,7 +87,7 @@ return function render(_ctx, _cache) {
       `{{foo}}{{bar}}nested`,
       `{{a}}{{b}}nested`,
       `(_ctx, _cache) => {
-  return { a: _toDisplayString(_ctx.foo), b: _toDisplayString(_ctx.bar) }
+  return { a: _t(_ctx.foo), b: _t(_ctx.bar) }
 }`
     )
   })

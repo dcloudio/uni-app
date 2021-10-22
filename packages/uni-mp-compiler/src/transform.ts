@@ -528,9 +528,9 @@ function parseReturnObjExpr(prop: ObjectProperty) {
     isObjectProperty(prop) &&
     isCallExpression(prop.value) &&
     isIdentifier(prop.value.callee) &&
-    prop.value.callee.name === '_vFor'
+    // 目前硬编码识别 _f,应该读取 context.helperString
+    prop.value.callee.name === '_f'
   ) {
-    // 目前硬编码
     return (
       (
         (prop.value.arguments[1] as ArrowFunctionExpression)

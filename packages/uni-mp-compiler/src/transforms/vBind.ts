@@ -1,7 +1,6 @@
 import { camelize } from '@vue/shared'
 import {
   NodeTypes,
-  CAMELIZE,
   createCompilerError,
   ErrorCodes,
   createObjectProperty,
@@ -27,7 +26,7 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
       if (arg.isStatic) {
         arg.content = camelize(arg.content)
       } else {
-        arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`
+        // arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`
       }
     } else {
       // arg.children.unshift(`${context.helperString(CAMELIZE)}(`)
