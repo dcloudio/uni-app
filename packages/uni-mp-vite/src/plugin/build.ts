@@ -33,7 +33,7 @@ export function buildOptions(): UserConfig['build'] {
     // sourcemap: 'inline', // TODO
     target: ['chrome53'],
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
-    assetsInlineLimit: 0, // TODO
+    assetsInlineLimit: 40 * 1024, // 40kb
     lib: {
       entry: resolveMainPathOnce(inputDir),
       formats: ['cjs'],

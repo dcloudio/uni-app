@@ -138,7 +138,7 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
         }
         const resolved = await resolveUrl(url, importer)
         if (resolved) {
-          return fileToUrl(resolved, config, this)
+          return fileToUrl(resolved, config, this, true)
         }
         return url
       }

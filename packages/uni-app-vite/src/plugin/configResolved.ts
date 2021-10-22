@@ -45,5 +45,7 @@ export const configResolved: Plugin['configResolved'] = (config) => {
       return cssCode
     },
   })
+  // 强制不inline
+  config.build.assetsInlineLimit = 0
   injectAssetPlugin(config)
 }

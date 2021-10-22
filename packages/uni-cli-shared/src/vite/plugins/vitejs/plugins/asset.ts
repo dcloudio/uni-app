@@ -1,5 +1,6 @@
 import path from 'path'
 import { parse as parseUrl } from 'url'
+import mime from 'mime/lite'
 import fs, { promises as fsp } from 'fs'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
@@ -137,9 +138,10 @@ export function checkPublicFile(
 export function fileToUrl(
   id: string,
   config: ResolvedConfig,
-  ctx: PluginContext
+  ctx: PluginContext,
+  canInline: boolean = false
 ): string {
-  return fileToBuiltUrl(id, config, ctx)
+  return fileToBuiltUrl(id, config, ctx, false, canInline)
 }
 
 export function getAssetFilename(
@@ -156,7 +158,8 @@ function fileToBuiltUrl(
   id: string,
   config: ResolvedConfig,
   pluginContext: PluginContext,
-  skipPublicCheck = false
+  skipPublicCheck = false,
+  canInline = false
 ): string {
   if (!skipPublicCheck && checkPublicFile(id, config)) {
     return config.base + id.slice(1)
@@ -172,31 +175,36 @@ function fileToBuiltUrl(
 
   let url: string
 
-  const map = assetHashToFilenameMap.get(config)!
-  const contentHash = getAssetHash(content)
-  const { search, hash } = parseUrl(id)
-  const postfix = (search || '') + (hash || '')
-  const fileName = normalizePath(
-    path.posix.relative(process.env.UNI_INPUT_DIR, file)
-  )
-  if (!map.has(contentHash)) {
-    map.set(contentHash, fileName)
-  }
-
-  if (!fileName.includes('/static/')) {
-    const emittedSet = emittedHashMap.get(config)!
-    if (!emittedSet.has(contentHash)) {
-      pluginContext.emitFile({
-        name: fileName,
-        fileName,
-        type: 'asset',
-        source: content,
-      })
-      emittedSet.add(contentHash)
+  if (canInline && content.length < Number(config.build.assetsInlineLimit)) {
+    // base64 inlined as a string
+    url = `data:${mime.getType(file)};base64,${content.toString('base64')}`
+  } else {
+    const map = assetHashToFilenameMap.get(config)!
+    const contentHash = getAssetHash(content)
+    const { search, hash } = parseUrl(id)
+    const postfix = (search || '') + (hash || '')
+    const fileName = normalizePath(
+      path.posix.relative(process.env.UNI_INPUT_DIR, file)
+    )
+    if (!map.has(contentHash)) {
+      map.set(contentHash, fileName)
     }
-  }
 
-  url = `__VITE_ASSET__${contentHash}__${postfix ? `$_${postfix}__` : ``}`
+    if (!fileName.includes('/static/')) {
+      const emittedSet = emittedHashMap.get(config)!
+      if (!emittedSet.has(contentHash)) {
+        pluginContext.emitFile({
+          name: fileName,
+          fileName,
+          type: 'asset',
+          source: content,
+        })
+        emittedSet.add(contentHash)
+      }
+    }
+
+    url = `__VITE_ASSET__${contentHash}__${postfix ? `$_${postfix}__` : ``}`
+  }
   cache.set(id, url)
   return url
 }
