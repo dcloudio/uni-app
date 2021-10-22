@@ -37,11 +37,14 @@ function assert(
 describe('compiler', () => {
   test('scope', () => {
     assert(
-      `<view :class="{ red: isRed }"/>`,
-      `<view class="{{[a && 'red']}}"/>`,
+      `<view v-for="item in items"><view v-if="ok"></view></view>`,
+      `<view wx:if="{{a}}">{{b}}</view>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.isRed ? 1 : 0 }
-}`
+  return { a: _vFor(_ctx.items, (item, k0, i0) => { return _ctx.ok ? {} : {}; }), b: _ctx.ok }
+}`,
+      {
+        renderDataSpread: false,
+      }
     )
   })
 })

@@ -38,7 +38,7 @@ describe('compiler: scope', () => {
       `<view v-for="item in items"><view v-if="true" :data-id="id"></view></view>`,
       `<view wx:for="{{a}}" wx:for-item="item"><view wx:if="{{true}}" data-id="{{item.a}}"></view></view>`,
       `(_ctx, _cache) => {
-  return { a: _vFor(_ctx.items, (item, k0, i0) => { return { ...(true ? { a: _ctx.id } : {}) }; }) }
+  return { a: _vFor(_ctx.items, (item, k0, i0) => { return true ? { a: _ctx.id } : {}; }) }
 }`
     )
   })
@@ -47,7 +47,7 @@ describe('compiler: scope', () => {
       `<view v-if="ok">{{ok}}</view><view v-else-if="ok1">{{ok1}}</view><view v-else-if="ok2">{{ok2}}</view><view v-else>{{ok3}}</view>`,
       `<view wx:if="{{a}}">{{b}}</view><view wx:elif="{{c}}">{{d}}</view><view wx:elif="{{e}}">{{f}}</view><view wx:else>{{g}}</view>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.ok, ...(_ctx.ok ? { b: _toDisplayString(_ctx.ok) } : _ctx.ok1 ? { d: _toDisplayString(_ctx.ok1) } : _ctx.ok2 ? { f: _toDisplayString(_ctx.ok2) } : { g: _toDisplayString(_ctx.ok3) }), c: _ctx.ok1, e: _ctx.ok2 }
+  return _extend({ a: _ctx.ok }, _ctx.ok ? { b: _toDisplayString(_ctx.ok) } : _ctx.ok1 ? { d: _toDisplayString(_ctx.ok1) } : _ctx.ok2 ? { f: _toDisplayString(_ctx.ok2) } : { g: _toDisplayString(_ctx.ok3) }, { c: _ctx.ok1, e: _ctx.ok2 })
 }`
     )
   })
@@ -56,7 +56,7 @@ describe('compiler: scope', () => {
       `<view v-if="ok"><view v-for="item in items" :key="item.id" :data-title="item.title" :data-foo="foo" @click="onClick"/></view><view v-else-if="ok1"><view v-for="item in items" :key="item.id" :data-title="item.title" :data-foo="foo" @click="onClick"/></view><view v-else><view v-for="item in items" :key="item.id" :data-title="item.title" :data-foo="foo" @click="onClick"/></view>`,
       `<view wx:if="{{a}}"><view wx:for="{{b}}" wx:for-item="item" wx:key="a" data-title="{{item.b}}" data-foo="{{c}}" bindtap="{{d}}"/></view><view wx:elif="{{e}}"><view wx:for="{{f}}" wx:for-item="item" wx:key="a" data-title="{{item.b}}" data-foo="{{g}}" bindtap="{{h}}"/></view><view wx:else><view wx:for="{{i}}" wx:for-item="item" wx:key="a" data-title="{{item.b}}" data-foo="{{j}}" bindtap="{{k}}"/></view>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.ok, ...(_ctx.ok ? { b: _vFor(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), c: _ctx.foo, d: _vOn(_ctx.onClick) } : _ctx.ok1 ? { f: _vFor(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), g: _ctx.foo, h: _vOn(_ctx.onClick) } : { i: _vFor(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), j: _ctx.foo, k: _vOn(_ctx.onClick) }), e: _ctx.ok1 }
+  return _extend({ a: _ctx.ok }, _ctx.ok ? { b: _vFor(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), c: _ctx.foo, d: _vOn(_ctx.onClick) } : _ctx.ok1 ? { f: _vFor(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), g: _ctx.foo, h: _vOn(_ctx.onClick) } : { i: _vFor(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), j: _ctx.foo, k: _vOn(_ctx.onClick) }, { e: _ctx.ok1 })
 }`
     )
   })

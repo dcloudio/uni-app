@@ -14,7 +14,6 @@ import { Expression } from '@babel/types'
 import { default as babelGenerate } from '@babel/generator'
 import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
 import { CodegenOptions, CodegenRootNode } from './options'
-import { createObjectExpression } from './ast'
 
 import {
   BindingComponentTypes,
@@ -22,7 +21,7 @@ import {
   TransformContext,
 } from './transform'
 
-interface CodegenContext extends CodegenOptions {
+interface CodegenContext extends Omit<CodegenOptions, 'renderDataExpr'> {
   code: string
   bindingComponents: TransformContext['bindingComponents']
   indentLevel: number
@@ -89,7 +88,7 @@ export function generate(
   }
 
   push(`return `)
-  push(genBabelExpr(createObjectExpression(ast.scope.properties)))
+  push(genBabelExpr(ast.renderData))
   if (useWithBlock) {
     deindent()
     push(`}`)

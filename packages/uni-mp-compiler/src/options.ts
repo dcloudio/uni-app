@@ -1,5 +1,11 @@
 import { ParserPlugin } from '@babel/parser'
-import { Expression, ObjectProperty, SpreadElement } from '@babel/types'
+import {
+  CallExpression,
+  Expression,
+  ObjectExpression,
+  ObjectProperty,
+  SpreadElement,
+} from '@babel/types'
 import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 import { BindingMetadata, CompilerError, RootNode } from '@vue/compiler-core'
 import IdentifierGenerator from './identifier'
@@ -11,7 +17,7 @@ import {
 import { VForOptions } from './transforms/vFor'
 
 export interface CodegenRootNode extends RootNode {
-  scope: CodegenScope
+  renderData: ObjectExpression | CallExpression
   bindingComponents: TransformContext['bindingComponents']
 }
 
@@ -49,6 +55,7 @@ export interface TransformOptions
   hashId?: string | null
   scopeId?: string | null
   filters?: string[]
+  renderDataSpread?: boolean
   cacheHandlers?: boolean
   nodeTransforms?: NodeTransform[]
   directiveTransforms?: Record<string, DirectiveTransform | undefined>

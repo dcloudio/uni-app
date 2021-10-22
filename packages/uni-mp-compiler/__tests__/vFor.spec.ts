@@ -201,7 +201,7 @@ describe(`compiler: v-for`, () => {
         `<view v-if="ok" v-for="i in list"/>`,
         `<view wx:if="{{a}}" wx:for="{{b}}" wx:for-item="i"/>`,
         `(_ctx, _cache) => {
-  return { a: _ctx.ok, ...(_ctx.ok ? { b: _vFor(_ctx.list, (i, k0, i0) => { return {}; }) } : {}) }
+  return _extend({ a: _ctx.ok }, _ctx.ok ? { b: _vFor(_ctx.list, (i, k0, i0) => { return {}; }) } : {})
 }`
       )
     })
@@ -211,7 +211,7 @@ describe(`compiler: v-for`, () => {
         `<template v-if="ok" v-for="i in list"/>`,
         `<block wx:if="{{a}}" wx:for="{{b}}" wx:for-item="i"/>`,
         `(_ctx, _cache) => {
-  return { a: _ctx.ok, ...(_ctx.ok ? { b: _vFor(_ctx.list, (i, k0, i0) => { return {}; }) } : {}) }
+  return _extend({ a: _ctx.ok }, _ctx.ok ? { b: _vFor(_ctx.list, (i, k0, i0) => { return {}; }) } : {})
 }`
       )
     })
