@@ -12,6 +12,7 @@ import {
   ComponentInternalInstance,
   onMounted,
   ComponentPublicInstance,
+  nextTick,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -103,6 +104,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     if (__PLATFORM__ !== 'app') {
       onMounted(onMountedCallback)
     }
+    let ColumnsPreRef: Ref<VNode[]> = ref([])
     let columnsRef: Ref<VNode[] | HTMLCollection> = ref([])
     function getItemIndex(vnode: VNode): number {
       const columnVNodes = columnsRef.value
@@ -112,7 +114,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           vnode.el
         )
       }
-      return (columnVNodes as VNode[]).indexOf(vnode)
+      let index: number = (columnVNodes as VNode[]).indexOf(vnode)
+      return index !== -1 ? index : ColumnsPreRef.value.indexOf(vnode)
     }
     const getPickerViewColumn: GetPickerViewColumn = function (columnInstance) {
       const ref: WritableComputedRef<number> = computed({
@@ -155,7 +158,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const defaultSlots = slots.default && slots.default()
       if (__PLATFORM__ !== 'app') {
         // TODO filter
-        columnsRef.value = flatVNode(defaultSlots)
+        const vnode = flatVNode(defaultSlots)
+        ColumnsPreRef.value = vnode
+        nextTick(() => {
+          columnsRef.value = vnode
+        })
       }
       return (
         <uni-picker-view ref={rootRef}>

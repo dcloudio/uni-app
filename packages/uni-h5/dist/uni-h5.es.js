@@ -9934,10 +9934,12 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     {
       onMounted(onMountedCallback);
     }
+    let ColumnsPreRef = ref([]);
     let columnsRef = ref([]);
     function getItemIndex(vnode) {
       const columnVNodes = columnsRef.value;
-      return columnVNodes.indexOf(vnode);
+      let index2 = columnVNodes.indexOf(vnode);
+      return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {
       const ref2 = computed({
@@ -9969,7 +9971,11 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       const defaultSlots = slots.default && slots.default();
       {
-        columnsRef.value = flatVNode(defaultSlots);
+        const vnode = flatVNode(defaultSlots);
+        ColumnsPreRef.value = vnode;
+        nextTick(() => {
+          columnsRef.value = vnode;
+        });
       }
       return createVNode("uni-picker-view", {
         "ref": rootRef

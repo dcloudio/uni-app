@@ -4375,10 +4375,12 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const state = useState$2(props2);
     const resizeSensorRef = vue.ref(null);
+    let ColumnsPreRef = vue.ref([]);
     let columnsRef = vue.ref([]);
     function getItemIndex(vnode) {
       const columnVNodes = columnsRef.value;
-      return columnVNodes.indexOf(vnode);
+      let index2 = columnVNodes.indexOf(vnode);
+      return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {
       const ref = vue.computed({
@@ -4410,7 +4412,11 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       const defaultSlots = slots.default && slots.default();
       {
-        columnsRef.value = flatVNode(defaultSlots);
+        const vnode = flatVNode(defaultSlots);
+        ColumnsPreRef.value = vnode;
+        vue.nextTick(() => {
+          columnsRef.value = vnode;
+        });
       }
       return vue.createVNode("uni-picker-view", {
         "ref": rootRef
