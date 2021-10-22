@@ -51,7 +51,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
   options.hashId = genHashId(options)
 
   if (options.filename) {
-    if (options.filters && options.miniProgram?.filter) {
+    if (!options.filters && options.miniProgram?.filter) {
       options.filters = parseFilters(
         options.miniProgram.filter.lang,
         options.filename

@@ -8,6 +8,14 @@ const jsonPagesCache = new Map<string, PageWindowOptions>()
 const jsonComponentsCache = new Map<string, ComponentJson>()
 const jsonUsingComponentsCache = new Map<string, UsingComponents>()
 
+export function hasJsonFile(filename: string) {
+  return (
+    filename === 'app' ||
+    jsonPagesCache.has(filename) ||
+    jsonComponentsCache.has(filename)
+  )
+}
+
 export function normalizeJsonFilename(filename: string) {
   return normalizeNodeModules(filename)
 }

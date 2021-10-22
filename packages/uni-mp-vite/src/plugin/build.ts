@@ -1,11 +1,15 @@
 import fs from 'fs'
 import path from 'path'
+import debug from 'debug'
 import { UserConfig } from 'vite'
 
 import {
   emptyDir,
+  EXTNAME_JS_RE,
   isCSSRequest,
   normalizePath,
+  hasJsonFile,
+  removeExt,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { GetManualChunk, GetModuleInfo } from 'rollup'
@@ -16,6 +20,8 @@ import {
   parseVirtualPagePath,
 } from '../plugins/entry'
 
+const debugChunk = debug('vite:uni:chunk')
+
 export function buildOptions(): UserConfig['build'] {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -25,6 +31,7 @@ export function buildOptions(): UserConfig['build'] {
   }
   return {
     // sourcemap: 'inline', // TODO
+    target: ['chrome53'],
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
     assetsInlineLimit: 0, // TODO
     lib: {
@@ -62,16 +69,47 @@ export function buildOptions(): UserConfig['build'] {
   }
 }
 
+function isVueJs(id: string) {
+  return (
+    id.includes('plugin-vue:export-helper') ||
+    (id.includes('/@vue/') && id.endsWith('.js'))
+  )
+}
+
+function isDCloudJs(id: string) {
+  return id.includes('/@dcloudio/') && id.endsWith('.js')
+}
+
+const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
+
 function createMoveToVendorChunkFn(): GetManualChunk {
   const cache = new Map<string, boolean>()
+  const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   return (id, { getModuleInfo }) => {
+    id = normalizePath(id)
     if (
-      (id.includes('node_modules') ||
-        id.includes('plugin-vue:export-helper')) &&
-      !isCSSRequest(id) &&
-      staticImportedByEntry(id, getModuleInfo, cache)
+      isVueJs(id) ||
+      isDCloudJs(id) ||
+      (id.includes('node_modules') &&
+        !isCSSRequest(id) &&
+        staticImportedByEntry(id, getModuleInfo, cache))
     ) {
-      return 'vendor'
+      debugChunk('common/vendor', id)
+      return 'common/vendor'
+    }
+    const filename = id.split('?')[0]
+    // 处理项目内的js,ts文件
+    if (EXTNAME_JS_RE.test(filename) && filename.startsWith(inputDir)) {
+      const chunkFileName = removeExt(
+        normalizePath(path.relative(inputDir, filename))
+      )
+      if (
+        !chunkFileNameBlackList.includes(chunkFileName) &&
+        !hasJsonFile(chunkFileName) // 无同名的page,component
+      ) {
+        debugChunk(chunkFileName, id)
+        return chunkFileName
+      }
     }
   }
 }

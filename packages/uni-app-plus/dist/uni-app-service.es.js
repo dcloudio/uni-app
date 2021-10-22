@@ -1769,21 +1769,30 @@ var serviceContext = (function (vue) {
   });
   const initI18nSetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.setClipboardData.';
-      const keys = ['success'];
+      const keys = ['success', 'fail'];
       {
-          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Content copied']), false);
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+              'Content copied',
+              'Copy failed, please copy manually',
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Contenido copiado']), false);
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+              'Contenido copiado',
+              'Error al copiar, copie manualmente',
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Contenu copié']), false);
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              'Contenu copié',
+              'Échec de la copie, copiez manuellement',
+          ]), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['内容已复制']), false);
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['内容已复制', '复制失败，请手动复制']), false);
       }
       {
-          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['內容已復制']), false);
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['內容已復制', '復制失敗，請手動復製']), false);
       }
   });
   const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
