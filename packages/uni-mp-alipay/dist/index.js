@@ -624,9 +624,13 @@ function setStorageSync (key, data) {
   })
 }
 function getStorageSync (key) {
-  const result = my.getStorageSync({
-    key
-  });
+  let result = { data: null }
+  try {
+    result = my.getStorageSync({
+      key
+    });
+  } catch (error) {
+  }
   // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
   return result.data !== null ? result.data : ''
 }
