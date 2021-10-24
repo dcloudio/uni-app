@@ -7,11 +7,7 @@ import {
   isObject,
   isPlainObject,
 } from '@vue/shared'
-import {
-  ComponentPublicInstance,
-  ComponentInternalInstance,
-  onUnmounted,
-} from 'vue'
+import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
 import { getEventChannel } from '../../api/protocols/navigateTo'
 import { MPComponentInstance } from '../component'
 import { getClass, getStyle, getValue } from './utils'
@@ -170,16 +166,6 @@ export function initComponentInstance(
   options: CreateComponentOptions
 ) {
   initBaseInstance(instance, options)
-  if (
-    __PLATFORM__ === 'mp-weixin' ||
-    __PLATFORM__ === 'mp-qq' ||
-    __PLATFORM__ === 'mp-toutiao' ||
-    __PLATFORM__ === 'mp-kuaishou' ||
-    __PLATFORM__ === 'mp-alipay' ||
-    __PLATFORM__ === 'mp-baidu'
-  ) {
-    initScopedSlotsParams(instance)
-  }
 
   const ctx = (instance as any).ctx
   MP_METHODS.forEach((method) => {
@@ -237,59 +223,4 @@ function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
   }
   const hooks = (this.$ as any)[name]
   return hooks && invokeArrayFns(hooks, args)
-}
-
-const center: Record<string, any> = {}
-const parents: Record<string, ComponentPublicInstance> = {}
-
-function initScopedSlotsParams(instance: ComponentInternalInstance) {
-  const ctx = (instance as any).ctx
-  ctx.$hasScopedSlotsParams = function (vueId: string) {
-    const has = center[vueId]
-    if (!has) {
-      parents[vueId] = this
-      onUnmounted(() => {
-        delete parents[vueId]
-      }, instance)
-    }
-    return has
-  }
-
-  ctx.$getScopedSlotsParams = function (
-    vueId: string,
-    name: string,
-    key: string
-  ) {
-    const data = center[vueId]
-    if (data) {
-      const object = data[name] || {}
-      return key ? object[key] : object
-    } else {
-      parents[vueId] = this
-      onUnmounted(() => {
-        delete parents[vueId]
-      }, instance)
-    }
-  }
-
-  ctx.$setScopedSlotsParams = function (name: string, value: any) {
-    const vueIds = instance.attrs.vueId as string
-    if (vueIds) {
-      const vueId = vueIds.split(',')[0]
-      const object = (center[vueId] = center[vueId] || {})
-      object[name] = value
-      if (parents[vueId]) {
-        parents[vueId].$forceUpdate()
-      }
-    }
-  }
-
-  onUnmounted(function () {
-    const propsData = instance.attrs
-    const vueId = propsData && (propsData.vueId as string)
-    if (vueId) {
-      delete center[vueId]
-      delete parents[vueId]
-    }
-  }, instance)
 }

@@ -42,7 +42,7 @@ export function initLifetimes({
         {
           mpType: isPage(mpInstance) ? 'page' : 'component',
           mpInstance,
-          slots: properties.vueSlots,
+          slots: properties.vS, // vueSlots
           parentComponent: relationOptions.parent && relationOptions.parent.$,
           onBeforeSetup(
             instance: ComponentInternalInstance,

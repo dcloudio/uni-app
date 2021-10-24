@@ -1,14 +1,13 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend, isObject, hyphenate } from '@vue/shared'
-import { cache } from '@dcloudio/uni-shared'
-import { getTarget } from '../util'
+import { cache, getDataByPath } from '@dcloudio/uni-shared'
 
 export function getValue(
   this: ComponentPublicInstance,
   dataPath: string,
   target: Record<string, any>
 ) {
-  return getTarget(target || this, dataPath)
+  return getDataByPath(target || this, dataPath)
 }
 
 export function getClass(dynamicClass: unknown, staticClass: string) {

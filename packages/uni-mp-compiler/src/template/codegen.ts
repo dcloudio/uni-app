@@ -19,7 +19,7 @@ import { TemplateCodegenOptions } from '../options'
 import { genExpr } from '../codegen'
 import { isForElementNode, VForOptions } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
-import { createBindDirectiveNode } from '../ast'
+import { findSlotName } from '../transforms/vSlot'
 interface TemplateCodegenContext {
   code: string
   directive: string
@@ -95,7 +95,7 @@ function genVElse({ push, directive }: TemplateCodegenContext) {
 }
 
 function genVFor(
-  { sourceAlias, valueAlias, keyAlias }: VForOptions,
+  { sourceAlias, valueAlias }: VForOptions,
   node: ElementNode,
   { push, directive }: TemplateCodegenContext
 ) {
@@ -112,6 +112,8 @@ function genVFor(
 }
 
 function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
+  // 移除掉所有非name属性，即移除作用域插槽的绑定指令
+  node.props = node.props.filter((prop) => prop.name === 'name')
   if (!node.children.length) {
     return genElement(node, context)
   }
@@ -139,24 +141,11 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   push(`</block>`)
 }
 
-function findSlotName(node: ElementNode) {
+function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
   const slotProp = node.props.find(
     (prop) => prop.type === NodeTypes.DIRECTIVE && prop.name === 'slot'
   ) as DirectiveNode | undefined
-  if (slotProp) {
-    const { arg } = slotProp
-    if (!arg) {
-      return 'default'
-    }
-    if (arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic) {
-      return arg.content
-    }
-  }
-}
-
-function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
-  const slotName = findSlotName(node)
-  if (slotName) {
+  if (slotProp && findSlotName(slotProp)) {
     /**
      * 仅百度、字节支持使用 block 作为命名插槽根节点
      * 此处为了统一仅默认替换为view
@@ -173,23 +162,6 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
 }
 
 function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
-  const slots = new Set<string>()
-  if (!node.children.length) {
-    return genElement(node, context)
-  }
-  node.children.forEach((child) => {
-    if (child.type === NodeTypes.ELEMENT) {
-      slots.add(findSlotName(child) || 'default')
-    } else if (child.type === NodeTypes.TEXT) {
-      slots.add('default')
-    }
-  })
-  node.props.unshift(
-    createBindDirectiveNode(
-      'vue-slots',
-      `[${[...slots].map((name) => `'${name}'`).join(',')}]`
-    )
-  )
   return genElement(node, context)
 }
 

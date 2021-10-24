@@ -1,4 +1,4 @@
-import { isArray } from '@vue/shared'
+import { extend, isArray, isPlainObject, hasOwn, NOOP } from '@vue/shared'
 import {
   callWithAsyncErrorHandling,
   ComponentInternalInstance,
@@ -8,7 +8,8 @@ import {
 
 type EventValue = Function | Function[]
 
-interface Invoker extends EventListener {
+interface Invoker {
+  (evt: MPEvent): void
   value: EventValue
 }
 
@@ -38,17 +39,20 @@ export function vOn(value: EventValue | undefined) {
   return name
 }
 
-interface MPEvent extends Event {
-  detail: {
+interface MPEvent extends WechatMiniprogram.BaseEvent {
+  detail: Record<string, any> & {
     __args__?: unknown[]
   }
+  preventDefault: () => void
+  stopPropagation: () => void
+  stopImmediatePropagation: () => void
 }
 
 function createInvoker(
   initialValue: EventValue,
   instance: ComponentInternalInstance | null
 ) {
-  const invoker: Invoker = (e: Event) => {
+  const invoker: Invoker = (e: MPEvent) => {
     patchMPEvent(e)
     let args: unknown[] = [e]
     if ((e as MPEvent).detail && (e as MPEvent).detail.__args__) {
@@ -65,15 +69,36 @@ function createInvoker(
   return invoker
 }
 
-function patchMPEvent(e: Event) {
-  if (e.type && e.target) {
-    e.stopPropagation = () => {}
-    e.preventDefault = () => {}
+function patchMPEvent(event: MPEvent) {
+  if (event.type && event.target) {
+    event.preventDefault = NOOP
+    event.stopPropagation = NOOP
+    event.stopImmediatePropagation = NOOP
+    if (!hasOwn(event, 'detail')) {
+      event.detail = {}
+    }
+    if (hasOwn(event, 'markerId')) {
+      event.detail = typeof event.detail === 'object' ? event.detail : {}
+      event.detail.markerId = (event as any).markerId
+    }
+
+    // mp-baidu，checked=>value
+    if (
+      isPlainObject(event.detail) &&
+      hasOwn(event.detail, 'checked') &&
+      !hasOwn(event.detail, 'value')
+    ) {
+      event.detail.value = event.detail.checked
+    }
+
+    if (isPlainObject(event.detail)) {
+      event.target = extend({}, event.target, event.detail)
+    }
   }
 }
 
 function patchStopImmediatePropagation(
-  e: Event,
+  e: MPEvent,
   value: EventValue
 ): EventValue {
   if (isArray(value)) {

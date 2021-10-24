@@ -1,23 +1,18 @@
-import {
-  ComponentNode,
-  ElementTypes,
-  isCoreComponent,
-  NodeTypes,
-} from '@vue/compiler-core'
-import { isComponentTag } from '@dcloudio/uni-shared'
+import { ComponentNode } from '@vue/compiler-core'
 import { isVForScope, NodeTransform, TransformContext } from '../transform'
 import { createAttributeNode, createBindDirectiveNode } from '../ast'
 import { addStaticClass } from './transformElement'
+import {
+  ATTR_VUE_ID,
+  CLASS_VUE_REF,
+  CLASS_VUE_REF_IN_FOR,
+  isUserComponent,
+} from './utils'
+import { CodegenScope } from '../options'
+import { isScopedSlotVFor } from './vSlot'
 
 export const transformComponent: NodeTransform = (node, context) => {
-  const isComponent =
-    node.type === NodeTypes.ELEMENT &&
-    node.tagType === ElementTypes.COMPONENT &&
-    !isComponentTag(node.tag) &&
-    !isCoreComponent(node.tag) &&
-    !context.isBuiltInComponent(node.tag)
-
-  if (!isComponent) {
+  if (!isUserComponent(node, context)) {
     return
   }
   addVueRef(node, context)
@@ -60,9 +55,9 @@ function addVueId(node: ComponentNode, context: TransformContext) {
     }
   }
   if (value.includes('+')) {
-    return node.props.push(createBindDirectiveNode('v-i', value))
+    return node.props.push(createBindDirectiveNode(ATTR_VUE_ID, value))
   }
-  return node.props.push(createAttributeNode('v-i', value))
+  return node.props.push(createAttributeNode(ATTR_VUE_ID, value))
 }
 
 function addVueRef(node: ComponentNode, context: TransformContext) {
@@ -70,6 +65,17 @@ function addVueRef(node: ComponentNode, context: TransformContext) {
     node,
     // vue-ref-in-for
     // vue-ref
-    context.scopes.vFor ? 'v-r-i-f' : 'v-r'
+    isInVFor(context.currentScope) ? CLASS_VUE_REF_IN_FOR : CLASS_VUE_REF
   )
+}
+
+function isInVFor(scope: CodegenScope) {
+  let parent: CodegenScope | null = scope
+  while (parent) {
+    if (isVForScope(parent) && !isScopedSlotVFor(parent)) {
+      return true
+    }
+    parent = parent.parent
+  }
+  return false
 }

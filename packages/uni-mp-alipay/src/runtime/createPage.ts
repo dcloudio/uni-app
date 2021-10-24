@@ -2,7 +2,6 @@ import { ComponentOptions } from 'vue'
 
 import {
   PAGE_HOOKS,
-  handleEvent,
   initData,
   initHooks,
   initUnknownHooks,
@@ -59,7 +58,6 @@ export function createPage(vueOptions: ComponentOptions) {
       },
     },
     __r: handleRef,
-    __e: handleEvent,
     __l: handleLink,
   }
   if (__VUE_OPTIONS_API__) {

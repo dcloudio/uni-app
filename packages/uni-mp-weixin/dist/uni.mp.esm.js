@@ -1,5 +1,5 @@
-import { isPlainObject, hasOwn, isArray, extend, hyphenate, isObject, toNumber, isFunction, NOOP, camelize } from '@vue/shared';
-import { onUnmounted, injectHook, ref } from 'vue';
+import { isPlainObject, extend, hyphenate, isObject, isArray, hasOwn, toNumber, isFunction, camelize } from '@vue/shared';
+import { injectHook, ref } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -19,6 +19,18 @@ function stringifyQuery(obj, encodeStr = encode) {
             .join('&')
         : null;
     return res ? `?${res}` : '';
+}
+
+function getDataByPath(obj, path) {
+    const parts = path.split('.');
+    const key = parts[0];
+    if (!obj) {
+        obj = {};
+    }
+    if (parts.length === 1) {
+        return obj[key];
+    }
+    return getDataByPath(obj[key], parts.slice(1).join('.'));
 }
 
 function cache(fn) {
@@ -66,111 +78,8 @@ function getEventChannel(id) {
     return eventChannelStack.shift();
 }
 
-function initBehavior(options) {
-    return Behavior(options);
-}
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach((name) => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.dataset.ref;
-        $refs[ref] = component.$vm || component;
-        {
-            if (component.dataset.vueGeneric === 'scoped') {
-                component
-                    .selectAllComponents('.scoped-ref')
-                    .forEach((scopedComponent) => {
-                    selectAllComponents(scopedComponent, selector, $refs);
-                });
-            }
-        }
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.v-r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.v-r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.dataset.ref;
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
-}
-function getTarget(obj, path) {
-    const parts = path.split('.');
-    let key = parts[0];
-    if (key.indexOf('__$n') === 0) {
-        //number index
-        key = parseInt(key.replace('__$n', ''));
-    }
-    if (!obj) {
-        obj = {};
-    }
-    if (parts.length === 1) {
-        return obj[key];
-    }
-    return getTarget(obj[key], parts.slice(1).join('.'));
-}
-
 function getValue(dataPath, target) {
-    return getTarget(target || this, dataPath);
+    return getDataByPath(target || this, dataPath);
 }
 function getClass(dynamicClass, staticClass) {
     return renderClass(staticClass, dynamicClass);
@@ -366,9 +275,6 @@ function initBaseInstance(instance, options) {
 }
 function initComponentInstance(instance, options) {
     initBaseInstance(instance, options);
-    {
-        initScopedSlotsParams(instance);
-    }
     const ctx = instance.ctx;
     MP_METHODS.forEach((method) => {
         ctx[method] = function (...args) {
@@ -415,53 +321,6 @@ function callHook(name, args) {
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
-}
-const center = {};
-const parents = {};
-function initScopedSlotsParams(instance) {
-    const ctx = instance.ctx;
-    ctx.$hasScopedSlotsParams = function (vueId) {
-        const has = center[vueId];
-        if (!has) {
-            parents[vueId] = this;
-            onUnmounted(() => {
-                delete parents[vueId];
-            }, instance);
-        }
-        return has;
-    };
-    ctx.$getScopedSlotsParams = function (vueId, name, key) {
-        const data = center[vueId];
-        if (data) {
-            const object = data[name] || {};
-            return key ? object[key] : object;
-        }
-        else {
-            parents[vueId] = this;
-            onUnmounted(() => {
-                delete parents[vueId];
-            }, instance);
-        }
-    };
-    ctx.$setScopedSlotsParams = function (name, value) {
-        const vueIds = instance.attrs.vueId;
-        if (vueIds) {
-            const vueId = vueIds.split(',')[0];
-            const object = (center[vueId] = center[vueId] || {});
-            object[name] = value;
-            if (parents[vueId]) {
-                parents[vueId].$forceUpdate();
-            }
-        }
-    };
-    onUnmounted(function () {
-        const propsData = instance.attrs;
-        const vueId = propsData && propsData.vueId;
-        if (vueId) {
-            delete center[vueId];
-            delete parents[vueId];
-        }
-    }, instance);
 }
 
 const PAGE_HOOKS = [
@@ -579,6 +438,94 @@ function initLocale(appVm) {
     });
 }
 
+function initBehavior(options) {
+    return Behavior(options);
+}
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+const EXTRAS = ['externalClasses'];
+function initExtraOptions(miniProgramComponentOptions, vueOptions) {
+    EXTRAS.forEach((name) => {
+        if (hasOwn(vueOptions, name)) {
+            miniProgramComponentOptions[name] = vueOptions[name];
+        }
+    });
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+        {
+            if (component.dataset.vueGeneric === 'scoped') {
+                component
+                    .selectAllComponents('.scoped-ref')
+                    .forEach((scopedComponent) => {
+                    selectAllComponents(scopedComponent, selector, $refs);
+                });
+            }
+        }
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.v-r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.v-r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.dataset.ref;
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function createObserver(name) {
     return function observer(newVal) {
@@ -602,7 +549,7 @@ function initDefaultProps(isBehavior = false) {
             value: '',
         };
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
-        properties.vueSlots = {
+        properties.vS = {
             type: null,
             value: [],
             observer: function (newVal) {
@@ -735,252 +682,6 @@ function applyOptions(componentOptions, vueOptions, initBehavior) {
     componentOptions.behaviors = initBehaviors(vueOptions, initBehavior);
 }
 
-function getExtraValue(instance, dataPathsArray) {
-    let context = instance;
-    dataPathsArray.forEach((dataPathArray) => {
-        const dataPath = dataPathArray[0];
-        const value = dataPathArray[2];
-        if (dataPath || typeof value !== 'undefined') {
-            // ['','',index,'disable']
-            const propPath = dataPathArray[1];
-            const valuePath = dataPathArray[3];
-            let vFor;
-            if (Number.isInteger(dataPath)) {
-                vFor = dataPath;
-            }
-            else if (!dataPath) {
-                vFor = context;
-            }
-            else if (typeof dataPath === 'string' && dataPath) {
-                if (dataPath.indexOf('#s#') === 0) {
-                    vFor = dataPath.substr(3);
-                }
-                else {
-                    vFor = getTarget(context, dataPath);
-                }
-            }
-            if (Number.isInteger(vFor)) {
-                context = value;
-            }
-            else if (!propPath) {
-                context = vFor[value];
-            }
-            else {
-                if (isArray(vFor)) {
-                    context = vFor.find((vForItem) => {
-                        return getTarget(vForItem, propPath) === value;
-                    });
-                }
-                else if (isPlainObject(vFor)) {
-                    context = Object.keys(vFor).find((vForKey) => {
-                        return getTarget(vFor[vForKey], propPath) === value;
-                    });
-                }
-                else {
-                    console.error('v-for 暂不支持循环数据：', vFor);
-                }
-            }
-            if (valuePath) {
-                context = getTarget(context, valuePath);
-            }
-        }
-    });
-    return context;
-}
-function processEventExtra(instance, extra, event) {
-    const extraObj = {};
-    if (isArray(extra) && extra.length) {
-        /**
-         *[
-         *    ['data.items', 'data.id', item.data.id],
-         *    ['metas', 'id', meta.id]
-         *],
-         *[
-         *    ['data.items', 'data.id', item.data.id],
-         *    ['metas', 'id', meta.id]
-         *],
-         *'test'
-         */
-        extra.forEach((dataPath, index) => {
-            if (typeof dataPath === 'string') {
-                if (!dataPath) {
-                    // model,prop.sync
-                    extraObj['$' + index] = instance;
-                }
-                else {
-                    if (dataPath === '$event') {
-                        // $event
-                        extraObj['$' + index] = event;
-                    }
-                    else if (dataPath === 'arguments') {
-                        if (event.detail && event.detail.__args__) {
-                            extraObj['$' + index] = event.detail.__args__;
-                        }
-                        else {
-                            extraObj['$' + index] = [event];
-                        }
-                    }
-                    else if (dataPath.indexOf('$event.') === 0) {
-                        // $event.target.value
-                        extraObj['$' + index] = getTarget(event, dataPath.replace('$event.', ''));
-                    }
-                    else {
-                        extraObj['$' + index] = getTarget(instance, dataPath);
-                    }
-                }
-            }
-            else {
-                extraObj['$' + index] = getExtraValue(instance, dataPath);
-            }
-        });
-    }
-    return extraObj;
-}
-function getObjByArray(arr) {
-    const obj = {};
-    for (let i = 1; i < arr.length; i++) {
-        const element = arr[i];
-        obj[element[0]] = element[1];
-    }
-    return obj;
-}
-function processEventArgs(instance, event, args = [], extra = [], isCustom, methodName) {
-    let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
-    if (isCustom) {
-        // 自定义事件
-        isCustomMPEvent =
-            event.currentTarget &&
-                event.currentTarget.dataset &&
-                event.currentTarget.dataset.comType === 'wx';
-        if (!args.length) {
-            // 无参数，直接传入 event 或 detail 数组
-            if (isCustomMPEvent) {
-                return [event];
-            }
-            return event.detail.__args__ || event.detail;
-        }
-    }
-    const extraObj = processEventExtra(instance, extra, event);
-    const ret = [];
-    args.forEach((arg) => {
-        if (arg === '$event') {
-            if (methodName === '__set_model' && !isCustom) {
-                // input v-model value
-                ret.push(event.target.value);
-            }
-            else {
-                if (isCustom && !isCustomMPEvent) {
-                    ret.push(event.detail.__args__[0]);
-                }
-                else {
-                    // wxcomponent 组件或内置组件
-                    ret.push(event);
-                }
-            }
-        }
-        else {
-            if (isArray(arg) && arg[0] === 'o') {
-                ret.push(getObjByArray(arg));
-            }
-            else if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
-                ret.push(extraObj[arg]);
-            }
-            else {
-                ret.push(arg);
-            }
-        }
-    });
-    return ret;
-}
-function wrapper(event) {
-    event.stopPropagation = NOOP;
-    event.preventDefault = NOOP;
-    event.target = event.target || {};
-    if (!hasOwn(event, 'detail')) {
-        event.detail = {};
-    }
-    if (hasOwn(event, 'markerId')) {
-        event.detail = typeof event.detail === 'object' ? event.detail : {};
-        event.detail.markerId = event.markerId;
-    }
-    if (isPlainObject(event.detail)) {
-        event.target = extend({}, event.target, event.detail);
-    }
-    return event;
-}
-const ONCE = '~';
-const CUSTOM = '^';
-function matchEventType(eventType, optType) {
-    return (eventType === optType ||
-        (optType === 'regionchange' &&
-            (eventType === 'begin' || eventType === 'end')));
-}
-function handleEvent(event) {
-    event = wrapper(event);
-    // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
-    const dataset = (event.currentTarget || event.target).dataset;
-    if (!dataset) {
-        return console.warn('事件信息不存在');
-    }
-    const eventOpts = (dataset.eventOpts ||
-        dataset['event-opts']); // 支付宝 web-view 组件 dataset 非驼峰
-    if (!eventOpts) {
-        return console.warn('事件信息不存在');
-    }
-    // [['handle',[1,2,a]],['handle1',[1,2,a]]]
-    const eventType = event.type;
-    const ret = [];
-    eventOpts.forEach((eventOpt) => {
-        let type = eventOpt[0];
-        const eventsArray = eventOpt[1];
-        const isCustom = type.charAt(0) === CUSTOM;
-        type = isCustom ? type.slice(1) : type;
-        const isOnce = type.charAt(0) === ONCE;
-        type = isOnce ? type.slice(1) : type;
-        if (eventsArray && matchEventType(eventType, type)) {
-            eventsArray.forEach((eventArray) => {
-                const methodName = eventArray[0];
-                if (methodName) {
-                    let handlerCtx = this.$vm;
-                    if (handlerCtx.$options.generic &&
-                        handlerCtx.$parent &&
-                        handlerCtx.$parent.$parent) {
-                        // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
-                        handlerCtx = handlerCtx.$parent.$parent;
-                    }
-                    if (methodName === '$emit') {
-                        handlerCtx.$emit.apply(handlerCtx, processEventArgs(this.$vm, event, eventArray[1], eventArray[2], isCustom, methodName));
-                        return;
-                    }
-                    const handler = handlerCtx[methodName];
-                    if (!isFunction(handler)) {
-                        throw new Error(` _vm.${methodName} is not a function`);
-                    }
-                    if (isOnce) {
-                        if (handler.once) {
-                            return;
-                        }
-                        handler.once = true;
-                    }
-                    let params = processEventArgs(this.$vm, event, eventArray[1], eventArray[2], isCustom, methodName);
-                    params = Array.isArray(params) ? params : [];
-                    // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
-                    if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
-                        // eslint-disable-next-line no-sparse-arrays
-                        params = params.concat([, , , , , , , , , , event]);
-                    }
-                    ret.push(handler.apply(handlerCtx, params));
-                }
-            });
-        }
-    });
-    if (eventType === 'input' &&
-        ret.length === 1 &&
-        typeof ret[0] !== 'undefined') {
-        return ret[0];
-    }
-}
-
 function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
     vueOptions = vueOptions.default || vueOptions;
     const options = {
@@ -1006,7 +707,6 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         },
         methods: {
             __l: handleLink,
-            __e: handleEvent,
         },
     };
     if (__VUE_OPTIONS_API__) {
@@ -1121,7 +821,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             }, {
                 mpType: isPage(mpInstance) ? 'page' : 'component',
                 mpInstance,
-                slots: properties.vueSlots,
+                slots: properties.vS,
                 parentComponent: relationOptions.parent && relationOptions.parent.$,
                 onBeforeSetup(instance, options) {
                     initRefs(instance, mpInstance);

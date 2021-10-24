@@ -21,10 +21,12 @@ declare module '@vue/runtime-core' {
   type UniLifecycleHookInstance = {
     [name in UniLifecycleHooks]: LifecycleHook
   }
-  interface ComponentInternalInstance extends UniLifecycleHookInstance {
+  interface ComponentInternalInstance {
     __isUnload: boolean
     __isVisible: boolean
     __isActive?: boolean // tabBar
+    // h5 | app
+    $wxsModules?: string[]
   }
 
   export const callSyncHook: (

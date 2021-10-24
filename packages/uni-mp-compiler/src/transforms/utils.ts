@@ -10,17 +10,42 @@ import {
   objectProperty,
   SpreadElement,
 } from '@babel/types'
+import { isComponentTag } from '@dcloudio/uni-shared'
 import {
+  ComponentNode,
   createSimpleExpression,
+  ElementTypes,
   ExpressionNode,
+  isCoreComponent,
   NodeTypes,
+  RootNode,
   SourceLocation,
+  TemplateChildNode,
 } from '@vue/compiler-core'
 import { walk, BaseNode } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
 import { CodegenScope } from '../options'
 import { isVForScope, isVIfScope, TransformContext } from '../transform'
+
+export const ATTR_VUE_ID = 'v-i'
+export const ATTR_VUE_SLOTS = 'v-s'
+export const CLASS_VUE_REF = 'v-r'
+export const CLASS_VUE_REF_IN_FOR = 'v-r-i-f'
+export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
+
+export function isUserComponent(
+  node: RootNode | TemplateChildNode,
+  context: TransformContext
+): node is ComponentNode {
+  return (
+    node.type === NodeTypes.ELEMENT &&
+    node.tagType === ElementTypes.COMPONENT &&
+    !isComponentTag(node.tag) &&
+    !isCoreComponent(node.tag) &&
+    !context.isBuiltInComponent(node.tag)
+  )
+}
 
 export function rewriteSpreadElement(
   name: symbol,
@@ -75,11 +100,20 @@ export function parseExprWithRewriteClass(
   ) as Identifier | MemberExpression | undefined
 }
 
-export function rewriteExpression(
+export function rewriteExpressionWithoutProperty(
   node: ExpressionNode,
   context: TransformContext,
   babelNode?: Expression,
   scope: CodegenScope = context.currentScope
+) {
+  return rewriteExpression(node, context, babelNode, scope, false)
+}
+export function rewriteExpression(
+  node: ExpressionNode,
+  context: TransformContext,
+  babelNode?: Expression,
+  scope: CodegenScope = context.currentScope,
+  property: boolean = true
 ) {
   if (node.type === NodeTypes.SIMPLE_EXPRESSION && node.isStatic) {
     return node
@@ -104,7 +138,9 @@ export function rewriteExpression(
 
   scope = findReferencedScope(babelNode, scope)
   const id = scope.id.next()
-  scope.properties.push(objectProperty(identifier(id), babelNode!))
+  if (property) {
+    scope.properties.push(objectProperty(identifier(id), babelNode!))
+  }
   // 在v-for中包含的v-if块，所有变量需要补充当前v-for value前缀
   if (isVIfScope(scope)) {
     if (isVForScope(scope.parentScope)) {

@@ -14,6 +14,7 @@ import { transformOn } from './transforms/vOn'
 import { transformElement } from './transforms/transformElement'
 import { transformBind } from './transforms/vBind'
 import { transformComponent } from './transforms/transformComponent'
+import { transformSlot } from './transforms/vSlot'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -27,7 +28,8 @@ export function getBaseTransformPreset({
   prefixIdentifiers: boolean
   skipTransformIdentifier: boolean
 }): TransformPreset {
-  const nodeTransforms = [transformIf, transformFor]
+  // order is important
+  const nodeTransforms = [transformIf, transformFor, transformSlot]
   if (!skipTransformIdentifier) {
     nodeTransforms.push(transformIdentifier)
   }
@@ -49,7 +51,6 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
     prefixIdentifiers,
     skipTransformIdentifier: options.skipTransformIdentifier === true,
   })
-
   options.hashId = genHashId(options)
 
   if (options.filename) {

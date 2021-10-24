@@ -4479,7 +4479,7 @@ function getMPInstanceData(instance, keys) {
     });
     return ret;
 }
-function patch(instance, data) {
+function patch(instance, data, oldData) {
     if (!data) {
         return;
     }
@@ -4495,7 +4495,7 @@ function patch(instance, data) {
         const mpInstance = ctx.$scope;
         const keys = Object.keys(data);
         // data.__webviewId__ = mpInstance.data.__webviewId__
-        const diffData = diff(data, getMPInstanceData(mpInstance, keys));
+        const diffData = diff(data, oldData || getMPInstanceData(mpInstance, keys));
         if (Object.keys(diffData).length) {
             console.log('[' +
                 +new Date() +
@@ -4720,4 +4720,4 @@ function createVueApp(rootComponent, rootProps = null) {
 function withModifiers() { }
 function createVNode$1() { }
 
-export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

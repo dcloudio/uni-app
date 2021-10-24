@@ -7,26 +7,39 @@ import {
   getInnerRange,
   SimpleExpressionNode,
   SourceLocation,
-  createStructuralDirectiveTransform,
   ElementTypes,
   ElementNode,
   NodeTypes,
   isTemplateNode,
   findProp,
+  ComponentNode,
 } from '@vue/compiler-core'
-import { createVForCallExpression, parseExpr, parseParam } from '../ast'
-import { NodeTransform, TransformContext } from '../transform'
+import { parseExpr, parseParam } from '../ast'
+import {
+  createStructuralDirectiveTransform,
+  NodeTransform,
+  TransformContext,
+} from '../transform'
 import { processExpression } from './transformExpression'
 import { genExpr } from '../codegen'
 import {
+  arrowFunctionExpression,
+  blockStatement,
+  callExpression,
   cloneNode,
   Expression,
+  identifier,
   Identifier,
   isIdentifier,
+  objectExpression,
   Pattern,
   RestElement,
+  returnStatement,
 } from '@babel/types'
 import { rewriteExpression } from './utils'
+import { CodegenVForScope } from '../options'
+import { V_FOR } from '../runtimeHelpers'
+import { createVSlotCallExpression, isScopedSlotVFor } from './vSlot'
 
 export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   sourceExpr?: Expression
@@ -50,8 +63,7 @@ export function isForElementNode(node: unknown): node is ForElementNode {
 }
 export const transformFor = createStructuralDirectiveTransform(
   'for',
-  (node, dir, _context) => {
-    const context = _context as unknown as TransformContext
+  (node, dir, context) => {
     if (!dir.exp) {
       context.onError(
         createCompilerError(ErrorCodes.X_V_FOR_NO_EXPRESSION, dir.loc)
@@ -89,10 +101,17 @@ export const transformFor = createStructuralDirectiveTransform(
     const indexCode = genExpr(index)
     const indexExpr = parseParam(indexCode, context, index)
     const indexAlias = parseAlias(indexExpr, indexCode, 'i' + scopes.vFor)
+    // 先占位vFor，后续更新 cloneSourceExpr 为 CallExpression
+    const cloneSourceExpr = cloneNode(sourceExpr!, false)
     const vForData: VForOptions = {
       source,
       sourceExpr,
-      sourceAlias: '',
+      sourceAlias: rewriteExpression(
+        source,
+        context,
+        cloneSourceExpr,
+        parentScope
+      ).content,
       value,
       valueCode,
       valueExpr,
@@ -111,17 +130,12 @@ export const transformFor = createStructuralDirectiveTransform(
       ...vForData,
       locals: findVForLocals(parseResult),
     })
-    // 先占位vFor，后续更新 cloneSourceExpr 为 CallExpression
-    const cloneSourceExpr = cloneNode(sourceExpr!, false)
+
     const vFor = {
       ...vForData,
-      sourceAlias: rewriteExpression(
-        source,
-        context,
-        cloneSourceExpr,
-        parentScope
-      ).content,
     }
+
+    const isScopedSlot = isScopedSlotVFor(vForScope)
     ;(node as ForElementNode).vFor = vFor
     scopes.vFor++
 
@@ -150,7 +164,14 @@ export const transformFor = createStructuralDirectiveTransform(
       }
       extend(
         clearExpr(cloneSourceExpr),
-        createVForCallExpression(vForScope, context)
+        isScopedSlot
+          ? createVSlotCallExpression(
+              (node as unknown as { slotComponent: ComponentNode })
+                .slotComponent,
+              vForScope,
+              context
+            )
+          : createVForCallExpression(vForScope, context)
       )
       popScope()
     }
@@ -315,4 +336,42 @@ function createParamsList(
   return args
     .slice(0, i + 1)
     .map((arg, i) => arg || createSimpleExpression(`_`.repeat(i + 1), false))
+}
+
+function createVForCallExpression(
+  vForScope: CodegenVForScope,
+  context: TransformContext
+) {
+  // let sourceExpr: Expression = vForScope.sourceExpr!
+  // if (isNumericLiteral(sourceExpr)) {
+  //   sourceExpr = numericLiteralToArrayExpr((sourceExpr as NumericLiteral).value)
+  // }
+  return callExpression(identifier(context.helperString(V_FOR)), [
+    vForScope.sourceExpr!,
+    createVForArrowFunctionExpression(vForScope),
+  ])
+}
+
+type FunctionParam = Identifier | Pattern | RestElement
+
+export function createVForArrowFunctionExpression({
+  valueExpr,
+  keyExpr,
+  indexExpr,
+  properties,
+}: CodegenVForScope) {
+  const params: FunctionParam[] = []
+  if (valueExpr) {
+    params.push(valueExpr)
+  }
+  if (keyExpr) {
+    params.push(keyExpr)
+  }
+  if (indexExpr) {
+    params.push(indexExpr)
+  }
+  return arrowFunctionExpression(
+    params,
+    blockStatement([returnStatement(objectExpression(properties))])
+  )
 }

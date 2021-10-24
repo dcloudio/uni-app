@@ -48,7 +48,7 @@ function initDefaultProps(isBehavior: boolean = false) {
       }
     }
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
-    properties.vueSlots = {
+    properties.vS = {
       type: null,
       value: [],
       observer: function (this: MPComponentInstance, newVal) {

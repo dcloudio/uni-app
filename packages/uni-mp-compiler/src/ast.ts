@@ -2,8 +2,6 @@ import { isString } from '@vue/shared'
 import { parseExpression } from '@babel/parser'
 import {
   identifier,
-  blockStatement,
-  callExpression,
   objectProperty,
   objectExpression,
   spreadElement,
@@ -12,14 +10,10 @@ import {
   Expression,
   SpreadElement,
   ConditionalExpression,
-  arrowFunctionExpression,
   Identifier,
-  returnStatement,
   conditionalExpression,
   NumericLiteral,
   isNumericLiteral,
-  Pattern,
-  RestElement,
   ArrowFunctionExpression,
   stringLiteral,
   StringLiteral,
@@ -41,10 +35,9 @@ import {
   locStub,
   NodeTypes,
 } from '@vue/compiler-core'
-import { CodegenScope, CodegenVForScope, CodegenVIfScope } from './options'
+import { CodegenScope, CodegenVIfScope } from './options'
 import { TransformContext } from './transform'
 import { genExpr } from './codegen'
-import { V_FOR } from './runtimeHelpers'
 
 export function createIdentifier(name: string) {
   return identifier(name)
@@ -91,22 +84,6 @@ export function createVIfSpreadElement(vIfScope: CodegenVIfScope) {
 //   return arrayExpression(elements)
 // }
 
-export function createVForCallExpression(
-  vForScope: CodegenVForScope,
-  context: TransformContext
-) {
-  // let sourceExpr: Expression = vForScope.sourceExpr!
-  // if (isNumericLiteral(sourceExpr)) {
-  //   sourceExpr = numericLiteralToArrayExpr((sourceExpr as NumericLiteral).value)
-  // }
-  return callExpression(identifier(context.helperString(V_FOR)), [
-    vForScope.sourceExpr!,
-    createVForArrowFunctionExpression(vForScope),
-  ])
-}
-
-type FunctionParam = Identifier | Pattern | RestElement
-
 export function parseExpr(
   code: string | ExpressionNode,
   context: TransformContext,
@@ -139,32 +116,6 @@ export function parseParam(
     params: [expr],
   } = parseExpr(`(${code})=>{}`, context, node) as ArrowFunctionExpression
   return expr
-}
-
-function createVForArrowFunctionExpression({
-  valueExpr,
-  keyExpr,
-  indexExpr,
-  properties,
-}: CodegenVForScope) {
-  const params: FunctionParam[] = []
-  if (valueExpr) {
-    params.push(valueExpr)
-  } else if (keyExpr || indexExpr) {
-    params.push(identifier('_'))
-  }
-  if (keyExpr) {
-    params.push(keyExpr)
-  } else if (indexExpr) {
-    params.push(identifier('__'))
-  }
-  if (indexExpr) {
-    params.push(indexExpr)
-  }
-  return arrowFunctionExpression(
-    params,
-    blockStatement([returnStatement(objectExpression(properties))])
-  )
 }
 
 export function isUndefined(expr: Expression) {

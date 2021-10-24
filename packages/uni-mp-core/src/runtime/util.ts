@@ -124,19 +124,3 @@ export function findVmByVueId(
     }
   }
 }
-
-export function getTarget(obj: any, path: string): unknown {
-  const parts = path.split('.')
-  let key: number | string = parts[0]
-  if (key.indexOf('__$n') === 0) {
-    //number index
-    key = parseInt(key.replace('__$n', ''))
-  }
-  if (!obj) {
-    obj = {}
-  }
-  if (parts.length === 1) {
-    return obj[key]
-  }
-  return getTarget(obj[key], parts.slice(1).join('.'))
-}

@@ -1,12 +1,13 @@
 import {
   createCompoundExpression,
   DirectiveNode,
+  isSlotOutlet,
   NodeTypes,
 } from '@vue/compiler-core'
 
 import { NodeTransform } from '../transform'
 import { isForElementNode } from './vFor'
-import { rewriteExpression } from './utils'
+import { ATTR_VUE_SLOTS, rewriteExpression } from './utils'
 import { isSelfKey, rewriteSelfKey } from './transformKey'
 import {
   findStaticClassIndex,
@@ -19,9 +20,10 @@ import {
   rewriteStyle,
 } from './transformStyle'
 import { TO_DISPLAY_STRING } from '../runtimeHelpers'
+import { rewriteSlot } from './transformSlot'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
-  return () => {
+  return function transformIdentifier() {
     if (node.type === NodeTypes.INTERPOLATION) {
       node.content = rewriteExpression(
         createCompoundExpression([
@@ -31,6 +33,8 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         ]),
         context
       )
+    } else if (isSlotOutlet(node)) {
+      rewriteSlot(node, context)
     } else if (node.type === NodeTypes.ELEMENT) {
       const vFor = isForElementNode(node) && node.vFor
       const { props } = node
@@ -82,13 +86,11 @@ export const transformIdentifier: NodeTransform = (node, context) => {
   }
 }
 
-// vue-id
-// const builtInProps = ['v-i']
+const builtInProps = [ATTR_VUE_SLOTS]
 
-function isBuiltIn(_dir: DirectiveNode) {
-  return false
-  // return (
-  //   arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
-  //   builtInProps.includes(arg.content)
-  // )
+function isBuiltIn({ arg }: DirectiveNode) {
+  return (
+    arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+    builtInProps.includes(arg.content)
+  )
 }

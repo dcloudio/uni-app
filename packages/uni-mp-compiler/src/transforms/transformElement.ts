@@ -191,8 +191,12 @@ function resolveSetupReference(name: string, context: TransformContext) {
   }
 }
 
-function processProps(node: ElementNode, context: TransformContext) {
-  const { tag, props } = node
+export function processProps(
+  node: ElementNode,
+  context: TransformContext,
+  props: ElementNode['props'] = node.props
+) {
+  const { tag } = node
   const isComponent = node.tagType === ElementTypes.COMPONENT
 
   for (let i = 0; i < props.length; i++) {
@@ -292,5 +296,7 @@ function processVModel(node: ElementNode, context: TransformContext) {
       i--
     }
   }
-  props.push(...dirs)
+  if (dirs.length) {
+    props.push(...dirs)
+  }
 }

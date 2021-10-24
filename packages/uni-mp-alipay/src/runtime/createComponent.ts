@@ -3,7 +3,6 @@ import {
   initProps,
   initBehaviors,
   initData,
-  handleEvent,
   $destroyComponent,
   initVueIds,
   initWxsCallMethods,
@@ -37,7 +36,8 @@ function initComponentProps(rawProps: Record<string, any>) {
     onVueInit: function () {},
   }
   Object.keys(properties).forEach((key) => {
-    if (key !== 'vueSlots') {
+    // vueSlots
+    if (key !== 'vS') {
       props[key] = properties[key].value
     }
   })
@@ -104,7 +104,6 @@ export function createComponent(vueOptions: ComponentOptions) {
     },
     methods: {
       __r: handleRef,
-      __e: handleEvent,
       __l: handleLink,
       triggerEvent,
     },

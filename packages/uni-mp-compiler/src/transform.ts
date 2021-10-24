@@ -39,8 +39,6 @@ import {
   CompilerError,
   helperNameMap,
   ExpressionNode,
-  ElementTypes,
-  isVSlot,
   JSChildNode,
   CacheExpression,
   locStub,
@@ -478,9 +476,9 @@ export function createStructuralDirectiveTransform(
       const { props } = node
       // structural directive transforms are not concerned with slots
       // as they are handled separately in vSlot.ts
-      if (node.tagType === ElementTypes.TEMPLATE && props.some(isVSlot)) {
-        return
-      }
+      // if (node.tagType === ElementTypes.TEMPLATE && props.some(isVSlot)) {
+      //   return
+      // }
       const exitFns = []
       for (let i = 0; i < props.length; i++) {
         const prop = props[i]
@@ -488,8 +486,8 @@ export function createStructuralDirectiveTransform(
           // structural directives are removed to avoid infinite recursion
           // also we remove them *before* applying so that it can further
           // traverse itself in case it moves the node around
-          // props.splice(i, 1)
-          // i--
+          props.splice(i, 1)
+          i--
           const onExit = fn(node, prop, context)
           if (onExit) exitFns.push(onExit)
         }

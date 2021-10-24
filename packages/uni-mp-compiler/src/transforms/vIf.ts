@@ -9,7 +9,6 @@ import {
 import {
   createCompilerError,
   createSimpleExpression,
-  createStructuralDirectiveTransform,
   DirectiveNode,
   ElementNode,
   ErrorCodes,
@@ -25,7 +24,12 @@ import {
   parseExpr,
 } from '../ast'
 import { CodegenScope } from '../options'
-import { NodeTransform, TransformContext, traverseNode } from '../transform'
+import {
+  createStructuralDirectiveTransform,
+  NodeTransform,
+  TransformContext,
+  traverseNode,
+} from '../transform'
 import { processExpression } from './transformExpression'
 import { rewriteExpression } from './utils'
 interface IfOptions {
@@ -42,8 +46,7 @@ export function isIfElementNode(node: unknown): node is IfElementNode {
 
 export const transformIf = createStructuralDirectiveTransform(
   /^(if|else|else-if)$/,
-  (node, dir, _context) => {
-    const context = _context as unknown as TransformContext
+  (node, dir, context) => {
     return processIf(node, dir, context, (ifNode, branch, isRoot) => {
       const { currentScope: parentScope, popScope } = context
       const ifOptions: IfOptions = {

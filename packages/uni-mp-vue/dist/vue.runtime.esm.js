@@ -1,74 +1,6 @@
-import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, camelize, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, invokeArrayFns, hasOwn, NO, isIntegerKey, toNumber, hyphenate, isReservedProp, EMPTY_ARR, makeMap, toTypeString, stringifyStyle as stringifyStyle$1 } from '@vue/shared';
+import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, camelize, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, toTypeString, invokeArrayFns, hasOwn, NO, isIntegerKey, toNumber, hyphenate, isReservedProp, EMPTY_ARR, makeMap, stringifyStyle as stringifyStyle$1 } from '@vue/shared';
 export { camelize as c, camelize, extend as e, hyphenate as h, normalizeClass as n, normalizeClass, normalizeProps, normalizeStyle, toDisplayString as t, toDisplayString, toHandlerKey } from '@vue/shared';
-
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_BACK_PRESS = 'onBackPress';
-const ON_PAGE_SCROLL = 'onPageScroll';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_SHARE_TIMELINE = 'onShareTimeline';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-// navigationBar
-const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-
-const PAGE_HOOKS = [
-    ON_SHOW,
-    ON_HIDE,
-    ON_BACK_PRESS,
-    ON_PAGE_SCROLL,
-    ON_TAB_ITEM_TAP,
-    ON_REACH_BOTTOM,
-    ON_PULL_DOWN_REFRESH,
-];
-function isRootHook(name) {
-    return PAGE_HOOKS.indexOf(name) > -1;
-}
-const UniLifecycleHooks = [
-    ON_SHOW,
-    ON_HIDE,
-    ON_LAUNCH,
-    ON_ERROR,
-    ON_THEME_CHANGE,
-    ON_PAGE_NOT_FOUND,
-    ON_UNHANDLE_REJECTION,
-    ON_LOAD,
-    ON_READY,
-    ON_UNLOAD,
-    ON_RESIZE,
-    ON_BACK_PRESS,
-    ON_PAGE_SCROLL,
-    ON_TAB_ITEM_TAP,
-    ON_REACH_BOTTOM,
-    ON_PULL_DOWN_REFRESH,
-    ON_SHARE_TIMELINE,
-    ON_ADD_TO_FAVORITES,
-    ON_SHARE_APP_MESSAGE,
-    ON_NAVIGATION_BAR_BUTTON_TAP,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
-    ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
-];
+import { isRootHook, ON_ERROR, UniLifecycleHooks } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -4547,7 +4479,7 @@ function getMPInstanceData(instance, keys) {
     });
     return ret;
 }
-function patch(instance, data) {
+function patch(instance, data, oldData) {
     if (!data) {
         return;
     }
@@ -4563,7 +4495,7 @@ function patch(instance, data) {
         const mpInstance = ctx.$scope;
         const keys = Object.keys(data);
         // data.__webviewId__ = mpInstance.data.__webviewId__
-        const diffData = diff(data, getMPInstanceData(mpInstance, keys));
+        const diffData = diff(data, oldData || getMPInstanceData(mpInstance, keys));
         if (Object.keys(diffData).length) {
             console.log('[' +
                 +new Date() +
@@ -5031,10 +4963,27 @@ function createInvoker(initialValue, instance) {
     invoker.value = initialValue;
     return invoker;
 }
-function patchMPEvent(e) {
-    if (e.type && e.target) {
-        e.stopPropagation = () => { };
-        e.preventDefault = () => { };
+function patchMPEvent(event) {
+    if (event.type && event.target) {
+        event.preventDefault = NOOP;
+        event.stopPropagation = NOOP;
+        event.stopImmediatePropagation = NOOP;
+        if (!hasOwn(event, 'detail')) {
+            event.detail = {};
+        }
+        if (hasOwn(event, 'markerId')) {
+            event.detail = typeof event.detail === 'object' ? event.detail : {};
+            event.detail.markerId = event.markerId;
+        }
+        // mp-baidu，checked=>value
+        if (isPlainObject(event.detail) &&
+            hasOwn(event.detail, 'checked') &&
+            !hasOwn(event.detail, 'value')) {
+            event.detail.value = event.detail.checked;
+        }
+        if (isPlainObject(event.detail)) {
+            event.target = extend({}, event.target, event.detail);
+        }
     }
 }
 function patchStopImmediatePropagation(e, value) {
@@ -5049,6 +4998,64 @@ function patchStopImmediatePropagation(e, value) {
     else {
         return value;
     }
+}
+
+function renderSlot(name, props = {}) {
+    const instance = getCurrentInstance();
+    const vueIds = instance.attrs.vI;
+    if (!vueIds) {
+        return;
+    }
+    const invoker = findScopedSlotInvoker(vueIds.split(',')[0], instance);
+    if (invoker) {
+        invoker(name, props);
+    }
+    else {
+        if (process.env.NODE_ENV !== 'production') {
+            console.error('scoped slot invoker not found', vueIds, name, props);
+        }
+    }
+}
+function findScopedSlotInvoker(vueId, instance) {
+    let parent = instance.parent;
+    while (parent) {
+        const invokers = parent.$ssi;
+        if (invokers && invokers[vueId]) {
+            return invokers[vueId];
+        }
+        parent = parent.parent;
+    }
+}
+
+//@ts-ignore
+function withScopedSlot(fn, { name, path, vueId, }) {
+    fn.path = path;
+    const instance = getCurrentInstance();
+    const scopedSlots = (instance.$ssi ||
+        (instance.$ssi = {}));
+    const invoker = scopedSlots[vueId] ||
+        (scopedSlots[vueId] = createScopedSlotInvoker(instance));
+    if (!invoker.slots[name]) {
+        invoker.slots[name] = {
+            data: {},
+            fn,
+        };
+    }
+    else {
+        invoker.slots[name].fn = fn;
+    }
+    // 返回单元素数组，因为 scoped slot 被转换成了 for 循环
+    return [invoker.slots[name].data];
+}
+function createScopedSlotInvoker(instance) {
+    const invoker = (slotName, args) => {
+        const slot = invoker.slots[slotName];
+        slot.data = slot.fn(args, 0, 0);
+        // TODO 简单的 forceUpdate,理论上，可以仅对 scoped slot 部分数据 diff 更新
+        instance.proxy.$forceUpdate();
+    };
+    invoker.slots = {};
+    return invoker;
 }
 
 function stringifyStyle(value) {
@@ -5068,4 +5075,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, vFor as f, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, vOn as o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, stringifyStyle as s, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, vFor as f, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, vOn as o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, renderSlot as r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, stringifyStyle as s, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, withScopedSlot as w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

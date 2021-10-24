@@ -413,6 +413,18 @@ function formatAppLog(type, filename, ...args) {
     res && console[type](res);
 }
 
+function getDataByPath(obj, path) {
+    const parts = path.split('.');
+    const key = parts[0];
+    if (!obj) {
+        obj = {};
+    }
+    if (parts.length === 1) {
+        return obj[key];
+    }
+    return getDataByPath(obj[key], parts.slice(1).join('.'));
+}
+
 function plusReady(callback) {
     if (typeof callback !== 'function') {
         return;
@@ -1229,6 +1241,7 @@ exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
+exports.getDataByPath = getDataByPath;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;

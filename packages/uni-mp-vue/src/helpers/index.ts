@@ -1,4 +1,6 @@
 export { vFor } from './vFor'
 export { vOn } from './vOn'
+export { renderSlot } from './renderSlot'
+export { withScopedSlot } from './withScopedSlot'
 export { stringifyStyle } from './style'
 export { setupDevtoolsPlugin } from './devtools'

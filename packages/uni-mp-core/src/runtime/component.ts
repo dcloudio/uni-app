@@ -6,7 +6,6 @@ import { initExtraOptions, initWxsCallMethods, initBehavior } from './util'
 
 import { initProps } from './componentProps'
 import { applyOptions } from './componentOptions'
-import { handleEvent } from './componentEvents'
 import { CreateComponentOptions } from './componentInstance'
 
 import Component = WechatMiniprogram.Component
@@ -102,7 +101,6 @@ export function parseComponent(
     },
     methods: {
       __l: handleLink,
-      __e: handleEvent,
     },
   }
 

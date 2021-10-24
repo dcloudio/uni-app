@@ -10,7 +10,7 @@
       }
     ]
   },
-  "external": ["@vue/shared"],
+  "external": ["@vue/shared", "@dcloudio/uni-shared"],
   "replacements": {
     "__PLATFORM__": "\"mp-weixin\""
   }

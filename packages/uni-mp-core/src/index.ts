@@ -23,7 +23,6 @@ export {
   initUnknownHooks,
 } from './runtime/componentHooks'
 export { initMocks, initComponentInstance } from './runtime/componentInstance'
-export { handleEvent } from './runtime/componentEvents'
 export { $createComponent, $destroyComponent } from './runtime/component'
 export {
   initRefs,
