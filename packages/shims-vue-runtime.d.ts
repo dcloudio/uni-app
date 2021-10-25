@@ -1,5 +1,4 @@
-import { EventChannel } from '@dcloudio/uni-shared'
-import { UniLifecycleHooks } from '@dcloudio/uni-vue/src/apiLifecycle'
+import { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -19,9 +18,9 @@ declare module '@vue/runtime-core' {
   type LifecycleHook = Function[] | null
 
   type UniLifecycleHookInstance = {
-    [name in UniLifecycleHooks]: LifecycleHook
+    [name in typeof UniLifecycleHooks[number]]: LifecycleHook
   }
-  interface ComponentInternalInstance {
+  interface ComponentInternalInstance extends UniLifecycleHookInstance {
     __isUnload: boolean
     __isVisible: boolean
     __isActive?: boolean // tabBar
@@ -29,13 +28,6 @@ declare module '@vue/runtime-core' {
     $wxsModules?: string[]
   }
 
-  export const callSyncHook: (
-    name: 'onLaunch' | 'onLoad' | 'onShow',
-    type: UniLifecycleHooks,
-    options: ComponentOptions,
-    instance: ComponentInternalInstance,
-    globalMixins: ComponentOptions[]
-  ) => void
   export const onBeforeActivate: (fn: () => void) => void
   export const onBeforeDeactivate: (fn: () => void) => void
   export const injectHook: (
