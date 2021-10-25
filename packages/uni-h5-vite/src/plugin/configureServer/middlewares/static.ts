@@ -69,11 +69,11 @@ interface UniStaticMiddlewareOptions {
   resolve: (pathname: string) => string | void
 }
 
-type NextHandler = () => void | Promise<void>
+export type NextHandler = () => void | Promise<void>
 
 export function uniStaticMiddleware(opts: UniStaticMiddlewareOptions) {
   const isEtag = !!opts.etag
-  return function (
+  return function staticMiddleware(
     req: IncomingMessage,
     res: ServerResponse,
     next: NextHandler

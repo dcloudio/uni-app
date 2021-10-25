@@ -4290,6 +4290,9 @@ const version = "3.2.20";
  */
 const resolveFilter = null;
 
+function unwrapper(target) {
+    return toRaw(unref(target));
+}
 // import deepCopy from './deepCopy'
 /**
  * https://raw.githubusercontent.com/Tencent/westore/master/packages/westore/utils/diff.js
@@ -4304,7 +4307,7 @@ function diff(current, pre) {
     return result;
 }
 function syncKeys(current, pre) {
-    current = unref(current);
+    current = unwrapper(current);
     if (current === pre)
         return;
     const rootCurrentType = toTypeString(current);
@@ -4329,7 +4332,7 @@ function syncKeys(current, pre) {
     }
 }
 function _diff(current, pre, path, result) {
-    current = unref(current);
+    current = unwrapper(current);
     if (current === pre)
         return;
     const rootCurrentType = toTypeString(current);
@@ -4341,7 +4344,7 @@ function _diff(current, pre, path, result) {
         }
         else {
             for (let key in current) {
-                const currentValue = unref(current[key]);
+                const currentValue = unwrapper(current[key]);
                 const preValue = pre[key];
                 const currentType = toTypeString(currentValue);
                 const preType = toTypeString(preValue);
@@ -4483,10 +4486,10 @@ function patch(instance, data, oldData) {
     if (!data) {
         return;
     }
-    // 序列化
-    pauseTracking();
-    data = JSON.parse(JSON.stringify(data));
-    resetTracking();
+    // 通常不用序列化，但是好像部分边界情况需要，目前还未排查到
+    // pauseTracking()
+    // data = JSON.parse(JSON.stringify(data))
+    // resetTracking()
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
@@ -4495,7 +4498,9 @@ function patch(instance, data, oldData) {
         const mpInstance = ctx.$scope;
         const keys = Object.keys(data);
         // data.__webviewId__ = mpInstance.data.__webviewId__
+        pauseTracking();
         const diffData = diff(data, oldData || getMPInstanceData(mpInstance, keys));
+        resetTracking();
         if (Object.keys(diffData).length) {
             console.log('[' +
                 +new Date() +

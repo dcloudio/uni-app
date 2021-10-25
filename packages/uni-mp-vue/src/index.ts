@@ -6,20 +6,6 @@ export function createApp(rootComponent: unknown, rootProps = null) {
   return createVueApp(rootComponent, rootProps).use(plugin)
 }
 export const createSSRApp = createApp
-export {
-  vOn as o,
-  vFor as f,
-  renderSlot as r,
-  withScopedSlot as w,
-  stringifyStyle as s,
-  setupDevtoolsPlugin,
-} from './helpers'
-export {
-  camelize as c,
-  extend as e,
-  hyphenate as h,
-  normalizeClass as n,
-  toDisplayString as t,
-} from '@vue/shared'
+export * from './helpers'
 // @ts-ignore
 export * from 'vue'

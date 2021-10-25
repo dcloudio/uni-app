@@ -55,6 +55,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
     : process.cwd()
 
+  if (options.platform === 'app-plus') {
+    options.platform = 'app'
+  }
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
   process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()

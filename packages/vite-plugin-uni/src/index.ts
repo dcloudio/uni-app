@@ -14,7 +14,6 @@ import {
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
-import { createConfigureServer } from './configureServer'
 import { uniCopyPlugin } from './plugins/copy'
 import { initExtraPlugins, initPluginUniOptions } from './utils'
 import {
@@ -109,7 +108,6 @@ export default function uniPlugin(
     config: createConfig(options, uniPlugins),
     // resolveId: createResolveId(options),
     configResolved: createConfigResolved(options),
-    configureServer: createConfigureServer(options),
   })
   plugins.push(...uniPlugins)
 

@@ -2,13 +2,14 @@ import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import { ViteDevServer } from 'vite'
-
-import { isImportRequest } from '@dcloudio/uni-cli-shared'
-
-import { VitePluginUniResolvedOptions } from '..'
+import { createFilter } from '@rollup/pluginutils'
+import {
+  isImportRequest,
+  normalizePath,
+  PUBLIC_DIR,
+} from '@dcloudio/uni-cli-shared'
 
 import { uniStaticMiddleware } from './middlewares/static'
-import { createPublicFileFilter } from '../utils'
 
 const debugStatic = debug('vite:uni:static')
 /**
@@ -16,10 +17,7 @@ const debugStatic = debug('vite:uni:static')
  * @param server
  * @param param
  */
-export const serveStatic = (
-  server: ViteDevServer,
-  { inputDir }: VitePluginUniResolvedOptions
-) => {
+export const initStatic = (server: ViteDevServer) => {
   const filter = createPublicFileFilter()
   const serve = uniStaticMiddleware({
     etag: true,
@@ -27,7 +25,7 @@ export const serveStatic = (
       if (!filter(pathname)) {
         return
       }
-      const filename = path.join(inputDir, pathname)
+      const filename = path.join(process.env.UNI_INPUT_DIR, pathname)
       if (fs.existsSync(filename)) {
         debugStatic(filename, 'success')
         return filename
@@ -43,4 +41,12 @@ export const serveStatic = (
     }
     return serve(req, res, next)
   })
+}
+
+export function createPublicFileFilter(base: string = '/') {
+  const publicDir = normalizePath(path.join(base, PUBLIC_DIR + '/**/*'))
+  const uniModulesDir = normalizePath(
+    path.join(base, 'uni_modules/*/' + PUBLIC_DIR + '/**/*')
+  )
+  return createFilter([publicDir, uniModulesDir])
 }

@@ -5,6 +5,7 @@ import {
   createLogger,
   createServer as createViteServer,
   ServerOptions,
+  ViteDevServer,
 } from 'vite'
 import express from 'express'
 import { printHttpServerUrls } from 'vite'
@@ -34,9 +35,12 @@ export async function createServer(options: CliOptions & ServerOptions) {
   )
 
   server.printUrls()
+  return server
 }
 
-export async function createSSRServer(options: CliOptions & ServerOptions) {
+export async function createSSRServer(
+  options: CliOptions & ServerOptions
+): Promise<ViteDevServer> {
   const app = express()
   /**
    * @type {import('vite').ViteDevServer}
@@ -112,7 +116,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
       printHttpServerUrls(server, vite.config)
-      resolve(server)
+      resolve(vite)
     }
     const onError = (e: Error & { code?: string }) => {
       if (e.code === 'EADDRINUSE') {

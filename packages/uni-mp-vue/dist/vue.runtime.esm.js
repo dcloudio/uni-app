@@ -1,5 +1,5 @@
-import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, camelize, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, toTypeString, invokeArrayFns, hasOwn, NO, isIntegerKey, toNumber, hyphenate, isReservedProp, EMPTY_ARR, makeMap, stringifyStyle as stringifyStyle$1 } from '@vue/shared';
-export { camelize as c, camelize, extend as e, hyphenate as h, normalizeClass as n, normalizeClass, normalizeProps, normalizeStyle, toDisplayString as t, toDisplayString, toHandlerKey } from '@vue/shared';
+import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, camelize, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, toTypeString, invokeArrayFns, hasOwn, NO, isIntegerKey, toNumber, hyphenate, isReservedProp, EMPTY_ARR, makeMap, stringifyStyle as stringifyStyle$1, toDisplayString } from '@vue/shared';
+export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, ON_ERROR, UniLifecycleHooks } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
@@ -4290,6 +4290,9 @@ const version = "3.2.20";
  */
 const resolveFilter = null;
 
+function unwrapper(target) {
+    return toRaw(unref(target));
+}
 // import deepCopy from './deepCopy'
 /**
  * https://raw.githubusercontent.com/Tencent/westore/master/packages/westore/utils/diff.js
@@ -4304,7 +4307,7 @@ function diff(current, pre) {
     return result;
 }
 function syncKeys(current, pre) {
-    current = unref(current);
+    current = unwrapper(current);
     if (current === pre)
         return;
     const rootCurrentType = toTypeString(current);
@@ -4329,7 +4332,7 @@ function syncKeys(current, pre) {
     }
 }
 function _diff(current, pre, path, result) {
-    current = unref(current);
+    current = unwrapper(current);
     if (current === pre)
         return;
     const rootCurrentType = toTypeString(current);
@@ -4341,7 +4344,7 @@ function _diff(current, pre, path, result) {
         }
         else {
             for (let key in current) {
-                const currentValue = unref(current[key]);
+                const currentValue = unwrapper(current[key]);
                 const preValue = pre[key];
                 const currentType = toTypeString(currentValue);
                 const preType = toTypeString(preValue);
@@ -4483,10 +4486,10 @@ function patch(instance, data, oldData) {
     if (!data) {
         return;
     }
-    // 序列化
-    pauseTracking();
-    data = JSON.parse(JSON.stringify(data));
-    resetTracking();
+    // 通常不用序列化，但是好像部分边界情况需要，目前还未排查到
+    // pauseTracking()
+    // data = JSON.parse(JSON.stringify(data))
+    // resetTracking()
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
@@ -4495,7 +4498,9 @@ function patch(instance, data, oldData) {
         const mpInstance = ctx.$scope;
         const keys = Object.keys(data);
         // data.__webviewId__ = mpInstance.data.__webviewId__
+        pauseTracking();
         const diffData = diff(data, oldData || getMPInstanceData(mpInstance, keys));
+        resetTracking();
         if (Object.keys(diffData).length) {
             console.log('[' +
                 +new Date() +
@@ -4891,46 +4896,6 @@ var plugin = {
     },
 };
 
-/**
- * Actual implementation
- */
-function vFor(source, renderItem) {
-    let ret;
-    if (isArray(source) || isString(source)) {
-        ret = new Array(source.length);
-        for (let i = 0, l = source.length; i < l; i++) {
-            ret[i] = renderItem(source[i], i, i);
-        }
-    }
-    else if (typeof source === 'number') {
-        if ((process.env.NODE_ENV !== 'production') && !Number.isInteger(source)) {
-            warn$1(`The v-for range expect an integer value but got ${source}.`);
-            return [];
-        }
-        ret = new Array(source);
-        for (let i = 0; i < source; i++) {
-            ret[i] = renderItem(i + 1, i, i);
-        }
-    }
-    else if (isObject(source)) {
-        if (source[Symbol.iterator]) {
-            ret = Array.from(source, (item, i) => renderItem(item, i, i));
-        }
-        else {
-            const keys = Object.keys(source);
-            ret = new Array(keys.length);
-            for (let i = 0, l = keys.length; i < l; i++) {
-                const key = keys[i];
-                ret[i] = renderItem(source[key], key, i);
-            }
-        }
-    }
-    else {
-        ret = [];
-    }
-    return ret;
-}
-
 function vOn(value) {
     const instance = getCurrentInstance();
     const name = 'e' + instance.$ei++;
@@ -4998,6 +4963,46 @@ function patchStopImmediatePropagation(e, value) {
     else {
         return value;
     }
+}
+
+/**
+ * Actual implementation
+ */
+function vFor(source, renderItem) {
+    let ret;
+    if (isArray(source) || isString(source)) {
+        ret = new Array(source.length);
+        for (let i = 0, l = source.length; i < l; i++) {
+            ret[i] = renderItem(source[i], i, i);
+        }
+    }
+    else if (typeof source === 'number') {
+        if ((process.env.NODE_ENV !== 'production') && !Number.isInteger(source)) {
+            warn$1(`The v-for range expect an integer value but got ${source}.`);
+            return [];
+        }
+        ret = new Array(source);
+        for (let i = 0; i < source; i++) {
+            ret[i] = renderItem(i + 1, i, i);
+        }
+    }
+    else if (isObject(source)) {
+        if (source[Symbol.iterator]) {
+            ret = Array.from(source, (item, i) => renderItem(item, i, i));
+        }
+        else {
+            const keys = Object.keys(source);
+            ret = new Array(keys.length);
+            for (let i = 0, l = keys.length; i < l; i++) {
+                const key = keys[i];
+                ret[i] = renderItem(source[key], key, i);
+            }
+        }
+    }
+    else {
+        ret = [];
+    }
+    return ret;
 }
 
 function renderSlot(name, props = {}) {
@@ -5069,10 +5074,21 @@ function setupDevtoolsPlugin() {
     // noop
 }
 
+const o = (value) => vOn(value);
+const f = (source, renderItem) => vFor(source, renderItem);
+const r = (name, props) => renderSlot(name, props);
+const w = (fn, options) => withScopedSlot(fn, options);
+const s = (value) => stringifyStyle(value);
+const c = (str) => camelize(str);
+const e = (target, ...sources) => extend(target, ...sources);
+const h = (str) => hyphenate(str);
+const n = (value) => normalizeClass(value);
+const t = (val) => toDisplayString(val);
+
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
     return createVueApp(rootComponent, rootProps).use(plugin);
 }
 const createSSRApp = createApp;
 
-export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, vFor as f, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, vOn as o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, renderSlot as r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, stringifyStyle as s, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, withScopedSlot as w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, ReactiveEffect, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, e, effect, effectScope, f, getCurrentInstance, getCurrentScope, h, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

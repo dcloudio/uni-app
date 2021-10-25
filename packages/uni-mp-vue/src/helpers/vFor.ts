@@ -1,7 +1,7 @@
 import { isArray, isObject, isString } from '@vue/shared'
 import { warn } from 'vue'
 
-type VForItem = Record<string, unknown>
+export type VForItem = Record<string, unknown>
 
 /**
  * v-for string

@@ -6,7 +6,7 @@ import { VitePluginUniResolvedOptions } from '..'
 export function createBuild(
   options: VitePluginUniResolvedOptions
 ): UserConfig['build'] {
-  initEasycomsOnce(options.inputDir, options.platform)
+  const {} = initEasycomsOnce(options.inputDir, options.platform)
   return {
     chunkSizeWarningLimit: 100000000,
     rollupOptions: {

@@ -6,15 +6,20 @@ import { CliOptions } from '.'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
 import { initEnv } from './utils'
+import { initEasycom } from '../utils/easycom'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, { watch: true, minify: false })
   initEnv('dev', options)
   try {
     if (options.platform === 'h5') {
-      await (options.ssr ? createSSRServer(options) : createServer(options))
+      const server = await (options.ssr
+        ? createSSRServer(options)
+        : createServer(options))
+      initEasycom(server.watcher)
     } else {
       const watcher = (await build(options)) as RollupWatcher
+      initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
       watcher.on('event', (event) => {

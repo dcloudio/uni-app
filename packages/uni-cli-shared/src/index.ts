@@ -17,4 +17,5 @@ export * from './filter'
 export * from './esbuild'
 export { M } from './messages'
 
+export * from './exports'
 export { checkUpdate } from './checkUpdate'
