@@ -125,7 +125,6 @@ export function showModal ({
   editable = false,
   placeholderText	= ''
 } = {}, callbackId) {
-  // TODO 在 editable 为 true 时，content 应该是输入框中可修改内容。后续找客户端商量。
   const buttons = showCancel ? [cancelText, confirmText] : [confirmText]
   const tip = editable ? placeholderText : buttons
 
