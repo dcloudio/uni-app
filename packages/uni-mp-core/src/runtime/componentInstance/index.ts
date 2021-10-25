@@ -1,76 +1,8 @@
 import { EventChannel, invokeArrayFns } from '@dcloudio/uni-shared'
-import {
-  capitalize,
-  hasOwn,
-  isArray,
-  toNumber,
-  isObject,
-  isPlainObject,
-} from '@vue/shared'
+import { capitalize, hasOwn, isArray } from '@vue/shared'
 import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
 import { getEventChannel } from '../../api/protocols/navigateTo'
 import { MPComponentInstance } from '../component'
-import { getClass, getStyle, getValue } from './utils'
-
-function setModel(
-  this: ComponentPublicInstance,
-  target: ComponentPublicInstance,
-  key: string,
-  value: any,
-  modifiers: string[]
-) {
-  if (isArray(modifiers)) {
-    if (modifiers.indexOf('trim') !== -1) {
-      value = (value as string).trim()
-    }
-    if (modifiers.indexOf('number') !== -1) {
-      value = toNumber(value)
-    }
-  }
-  if (!target) {
-    target = this
-  }
-  ;(target as any)[key] = value
-}
-
-function setSync(
-  this: ComponentPublicInstance,
-  target: ComponentPublicInstance,
-  key: string,
-  value: any
-) {
-  if (!target) {
-    target = this
-  }
-  ;(target as any)[key] = value
-}
-
-function getOrig(data: unknown) {
-  if (isPlainObject(data)) {
-    return (data as any).$orig || data
-  }
-  return data
-}
-
-function map(val: unknown, iteratee: Function) {
-  let ret, i, l, keys, key
-  if (isArray(val)) {
-    ret = new Array(val.length)
-    for (i = 0, l = val.length; i < l; i++) {
-      ret[i] = iteratee(val[i], i)
-    }
-    return ret
-  } else if (isObject(val)) {
-    keys = Object.keys(val)
-    ret = Object.create(null)
-    for (i = 0, l = keys.length; i < l; i++) {
-      key = keys[i]
-      ret[key] = iteratee(val[key], key, i)
-    }
-    return ret
-  }
-  return []
-}
 
 const MP_METHODS = [
   'createSelectorQuery',
@@ -179,16 +111,6 @@ export function initComponentInstance(
       }
     }
   })
-
-  // TODO other
-  ctx.__set_model = setModel
-  ctx.__set_sync = setSync
-  ctx.__get_orig = getOrig
-  // TODO
-  ctx.__get_value = getValue
-  ctx.__get_class = getClass
-  ctx.__get_style = getStyle
-  ctx.__map = map
 }
 
 export function initMocks(

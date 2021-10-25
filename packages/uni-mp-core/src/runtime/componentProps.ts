@@ -4,7 +4,7 @@ import { MPComponentOptions, MPComponentInstance } from './component'
 
 import Component = WechatMiniprogram.Component
 
-const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
+// const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
 
 function createObserver(name: string) {
   return function observer(this: MPComponentInstance, newVal: unknown) {
@@ -14,31 +14,31 @@ function createObserver(name: string) {
   }
 }
 
-function parsePropType(key: string, type: unknown, defaultValue: unknown) {
-  // [String]=>String
-  if (isArray(type) && type.length === 1) {
-    return type[0]
-  }
-  if (__PLATFORM__ === 'mp-baidu') {
-    if (
-      // [String,Boolean]=>Boolean
-      defaultValue === false &&
-      isArray(type) &&
-      type.length === 2 &&
-      type.indexOf(String) !== -1 &&
-      type.indexOf(Boolean) !== -1
-    ) {
-      return Boolean
-    }
-  }
-  return type
-}
+// function parsePropType(key: string, type: unknown, defaultValue: unknown) {
+//   // [String]=>String
+//   if (isArray(type) && type.length === 1) {
+//     return type[0]
+//   }
+//   if (__PLATFORM__ === 'mp-baidu') {
+//     if (
+//       // [String,Boolean]=>Boolean
+//       defaultValue === false &&
+//       isArray(type) &&
+//       type.length === 2 &&
+//       type.indexOf(String) !== -1 &&
+//       type.indexOf(Boolean) !== -1
+//     ) {
+//       return Boolean
+//     }
+//   }
+//   return type
+// }
 
 function initDefaultProps(isBehavior: boolean = false) {
   const properties: Component.PropertyOption = {}
   if (!isBehavior) {
     properties.vI = {
-      type: String,
+      type: null, // 均不指定类型，避免 property received type-uncompatible value 警告
       value: '',
     }
     if (__PLATFORM__ === 'mp-toutiao') {
@@ -73,6 +73,12 @@ function createProperty(key: string, prop: any) {
   return prop
 }
 
+/**
+ * 不再生成具体的 type 类型，因为微信首次初始化，值为 undefined 时，会告警：property received type-uncompatible value
+ * @param mpComponentOptions
+ * @param rawProps
+ * @param isBehavior
+ */
 export function initProps(
   mpComponentOptions: MPComponentOptions,
   rawProps: ComponentPropsOptions | null,
@@ -95,17 +101,17 @@ export function initProps(
         if (isFunction(value)) {
           value = value()
         }
-        const type = (opts as any).type as any
-        ;(opts as any).type = parsePropType(key, type, value)
+        // const type = (opts as any).type as any
+        // ;(opts as any).type = parsePropType(key, type, value)
         properties[key] = createProperty(key, {
-          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
+          type: null, //PROP_TYPES.indexOf(type) !== -1 ? type : null,
           value,
         })
       } else {
         // content:String
-        const type = parsePropType(key, opts, null)
+        // const type = parsePropType(key, opts, null)
         properties[key] = createProperty(key, {
-          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
+          type: null, //PROP_TYPES.indexOf(type) !== -1 ? type : null,
         })
       }
     })

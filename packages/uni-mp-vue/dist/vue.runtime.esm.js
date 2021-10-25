@@ -5012,13 +5012,9 @@ function renderSlot(name, props = {}) {
         return;
     }
     const invoker = findScopedSlotInvoker(vueIds.split(',')[0], instance);
+    // 可能不存在，因为插槽不是必需的
     if (invoker) {
         invoker(name, props);
-    }
-    else {
-        if (process.env.NODE_ENV !== 'production') {
-            console.error('scoped slot invoker not found', vueIds, name, props);
-        }
     }
 }
 function findScopedSlotInvoker(vueId, instance) {

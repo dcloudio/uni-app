@@ -1,4 +1,4 @@
-import { isPlainObject, extend, hyphenate, isObject, isArray, hasOwn, toNumber, isFunction, camelize } from '@vue/shared';
+import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
 import { injectHook, ref } from 'vue';
 
 const encode = encodeURIComponent;
@@ -19,26 +19,6 @@ function stringifyQuery(obj, encodeStr = encode) {
             .join('&')
         : null;
     return res ? `?${res}` : '';
-}
-
-function getDataByPath(obj, path) {
-    const parts = path.split('.');
-    const key = parts[0];
-    if (!obj) {
-        obj = {};
-    }
-    if (parts.length === 1) {
-        return obj[key];
-    }
-    return getDataByPath(obj[key], parts.slice(1).join('.'));
-}
-
-function cache(fn) {
-    const cache = Object.create(null);
-    return (str) => {
-        const hit = cache[str];
-        return hit || (cache[str] = fn(str));
-    };
 }
 const invokeArrayFns = (fns, arg) => {
     let ret;
@@ -141,154 +121,6 @@ function getEventChannel(id) {
     return eventChannelStack.shift();
 }
 
-function getValue(dataPath, target) {
-    return getDataByPath(target || this, dataPath);
-}
-function getClass(dynamicClass, staticClass) {
-    return renderClass(staticClass, dynamicClass);
-}
-function getStyle(dynamicStyle, staticStyle) {
-    if (!dynamicStyle && !staticStyle) {
-        return '';
-    }
-    var dynamicStyleObj = normalizeStyleBinding(dynamicStyle);
-    var styleObj = staticStyle
-        ? extend(staticStyle, dynamicStyleObj)
-        : dynamicStyleObj;
-    return Object.keys(styleObj)
-        .map(function (name) {
-        return hyphenate(name) + ':' + styleObj[name];
-    })
-        .join(';');
-}
-function toObject(arr) {
-    var res = {};
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i]) {
-            extend(res, arr[i]);
-        }
-    }
-    return res;
-}
-function normalizeStyleBinding(bindingStyle) {
-    if (Array.isArray(bindingStyle)) {
-        return toObject(bindingStyle);
-    }
-    if (typeof bindingStyle === 'string') {
-        return parseStyleText(bindingStyle);
-    }
-    return bindingStyle;
-}
-var parseStyleText = cache(function parseStyleText(cssText) {
-    var res = {};
-    var listDelimiter = /;(?![^(]*\))/g;
-    var propertyDelimiter = /:(.+)/;
-    cssText.split(listDelimiter).forEach(function (item) {
-        if (item) {
-            var tmp = item.split(propertyDelimiter);
-            tmp.length > 1 && (res[tmp[0].trim()] = tmp[1].trim());
-        }
-    });
-    return res;
-});
-function isDef(v) {
-    return v !== undefined && v !== null;
-}
-function renderClass(staticClass, dynamicClass) {
-    if (isDef(staticClass) || isDef(dynamicClass)) {
-        return concat(staticClass, stringifyClass(dynamicClass));
-    }
-    /* istanbul ignore next */
-    return '';
-}
-function concat(a, b) {
-    return a ? (b ? a + ' ' + b : a) : b || '';
-}
-function stringifyClass(value) {
-    if (Array.isArray(value)) {
-        return stringifyArray(value);
-    }
-    if (isObject(value)) {
-        return stringifyObject(value);
-    }
-    if (typeof value === 'string') {
-        return value;
-    }
-    /* istanbul ignore next */
-    return '';
-}
-function stringifyArray(value) {
-    var res = '';
-    var stringified;
-    for (var i = 0, l = value.length; i < l; i++) {
-        if (isDef((stringified = stringifyClass(value[i]))) && stringified !== '') {
-            if (res) {
-                res += ' ';
-            }
-            res += stringified;
-        }
-    }
-    return res;
-}
-function stringifyObject(value) {
-    var res = '';
-    for (var key in value) {
-        if (value[key]) {
-            if (res) {
-                res += ' ';
-            }
-            res += key;
-        }
-    }
-    return res;
-}
-
-function setModel(target, key, value, modifiers) {
-    if (isArray(modifiers)) {
-        if (modifiers.indexOf('trim') !== -1) {
-            value = value.trim();
-        }
-        if (modifiers.indexOf('number') !== -1) {
-            value = toNumber(value);
-        }
-    }
-    if (!target) {
-        target = this;
-    }
-    target[key] = value;
-}
-function setSync(target, key, value) {
-    if (!target) {
-        target = this;
-    }
-    target[key] = value;
-}
-function getOrig(data) {
-    if (isPlainObject(data)) {
-        return data.$orig || data;
-    }
-    return data;
-}
-function map(val, iteratee) {
-    let ret, i, l, keys, key;
-    if (isArray(val)) {
-        ret = new Array(val.length);
-        for (i = 0, l = val.length; i < l; i++) {
-            ret[i] = iteratee(val[i], i);
-        }
-        return ret;
-    }
-    else if (isObject(val)) {
-        keys = Object.keys(val);
-        ret = Object.create(null);
-        for (i = 0, l = keys.length; i < l; i++) {
-            key = keys[i];
-            ret[key] = iteratee(val[key], key, i);
-        }
-        return ret;
-    }
-    return [];
-}
 const MP_METHODS = [
     'createSelectorQuery',
     'createIntersectionObserver',
@@ -347,15 +179,6 @@ function initComponentInstance(instance, options) {
             }
         };
     });
-    // TODO other
-    ctx.__set_model = setModel;
-    ctx.__set_sync = setSync;
-    ctx.__get_orig = getOrig;
-    // TODO
-    ctx.__get_value = getValue;
-    ctx.__get_class = getClass;
-    ctx.__get_style = getStyle;
-    ctx.__map = map;
 }
 function initMocks(instance, mpInstance, mocks) {
     const ctx = instance.ctx;
@@ -580,7 +403,7 @@ function findVmByVueId(instance, vuePid) {
     }
 }
 
-const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
+// const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
 function createObserver(name) {
     return function observer(newVal) {
         if (this.$vm) {
@@ -588,18 +411,30 @@ function createObserver(name) {
         }
     };
 }
-function parsePropType(key, type, defaultValue) {
-    // [String]=>String
-    if (isArray(type) && type.length === 1) {
-        return type[0];
-    }
-    return type;
-}
+// function parsePropType(key: string, type: unknown, defaultValue: unknown) {
+//   // [String]=>String
+//   if (isArray(type) && type.length === 1) {
+//     return type[0]
+//   }
+//   if ("mp-kuaishou" === 'mp-baidu') {
+//     if (
+//       // [String,Boolean]=>Boolean
+//       defaultValue === false &&
+//       isArray(type) &&
+//       type.length === 2 &&
+//       type.indexOf(String) !== -1 &&
+//       type.indexOf(Boolean) !== -1
+//     ) {
+//       return Boolean
+//     }
+//   }
+//   return type
+// }
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
         properties.vI = {
-            type: String,
+            type: null,
             value: '',
         };
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
@@ -623,6 +458,12 @@ function createProperty(key, prop) {
     prop.observer = createObserver(key);
     return prop;
 }
+/**
+ * 不再生成具体的 type 类型，因为微信首次初始化，值为 undefined 时，会告警：property received type-uncompatible value
+ * @param mpComponentOptions
+ * @param rawProps
+ * @param isBehavior
+ */
 function initProps(mpComponentOptions, rawProps, isBehavior = false) {
     const properties = initDefaultProps(isBehavior);
     if (isArray(rawProps)) {
@@ -641,18 +482,18 @@ function initProps(mpComponentOptions, rawProps, isBehavior = false) {
                 if (isFunction(value)) {
                     value = value();
                 }
-                const type = opts.type;
-                opts.type = parsePropType(key, type);
+                // const type = (opts as any).type as any
+                // ;(opts as any).type = parsePropType(key, type, value)
                 properties[key] = createProperty(key, {
-                    type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
+                    type: null,
                     value,
                 });
             }
             else {
                 // content:String
-                const type = parsePropType(key, opts);
+                // const type = parsePropType(key, opts, null)
                 properties[key] = createProperty(key, {
-                    type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
+                    type: null, //PROP_TYPES.indexOf(type) !== -1 ? type : null,
                 });
             }
         });
