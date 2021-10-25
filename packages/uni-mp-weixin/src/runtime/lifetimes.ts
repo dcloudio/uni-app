@@ -34,13 +34,15 @@ export function initLifetimes({
       initRelation(this, relationOptions)
       // 初始化 vue 实例
       const mpInstance = this
+      const isMiniProgramPage = isPage(mpInstance)
+
       this.$vm = $createComponent(
         {
           type: vueOptions,
           props: properties,
         },
         {
-          mpType: isPage(mpInstance) ? 'page' : 'component',
+          mpType: isMiniProgramPage ? 'page' : 'component',
           mpInstance,
           slots: properties.vS, // vueSlots
           parentComponent: relationOptions.parent && relationOptions.parent.$,

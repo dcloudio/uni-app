@@ -4291,7 +4291,7 @@ const version = "3.2.20";
 const resolveFilter = null;
 
 function unwrapper(target) {
-    return toRaw(unref(target));
+    return unref(target);
 }
 // import deepCopy from './deepCopy'
 /**
@@ -4486,10 +4486,11 @@ function patch(instance, data, oldData) {
     if (!data) {
         return;
     }
-    // 通常不用序列化，但是好像部分边界情况需要，目前还未排查到
-    // pauseTracking()
-    // data = JSON.parse(JSON.stringify(data))
-    // resetTracking()
+    // TODO 微信小程序会对 props 序列化，目前通过序列化再次触发数据响应式收集，因为 render 中收集的数据可能不全面（也不能仅仅这里收集，render 中也要收集），导致子组件无法局部响应式更新
+    // 举例：
+    // uni-indexed-list 组件传递 item 给 uni-indexed-list-item 组件，uni-indexed-list-item 发送点击到 uni-indexed-list 组件中修改 item.checked
+    // uni-indexed-list 组件 render 中并未访问 item.checked（在 uni-indexed-list-item 中访问了，但被小程序序列化了，无法响应式），故无法收集依赖
+    data = JSON.parse(JSON.stringify(data));
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
@@ -4498,19 +4499,19 @@ function patch(instance, data, oldData) {
         const mpInstance = ctx.$scope;
         const keys = Object.keys(data);
         // data.__webviewId__ = mpInstance.data.__webviewId__
-        pauseTracking();
         const diffData = diff(data, oldData || getMPInstanceData(mpInstance, keys));
-        resetTracking();
         if (Object.keys(diffData).length) {
-            console.log('[' +
-                +new Date() +
-                '][' +
-                (mpInstance.is || mpInstance.route) +
-                '][' +
-                instance.uid +
-                '][耗时' +
-                (Date.now() - start) +
-                ']差量更新', JSON.stringify(diffData));
+            if (process.env.UNI_DEBUG) {
+                console.log('[' +
+                    +new Date() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    instance.uid +
+                    '][耗时' +
+                    (Date.now() - start) +
+                    ']差量更新', JSON.stringify(diffData));
+            }
             ctx.__next_tick_pending = true;
             mpInstance.setData(diffData, () => {
                 ctx.__next_tick_pending = false;

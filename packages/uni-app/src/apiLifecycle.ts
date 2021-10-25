@@ -8,6 +8,7 @@ import {
   ON_ERROR,
   ON_HIDE,
   ON_LAUNCH,
+  ON_LOAD,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -47,8 +48,8 @@ export const onPageNotFound = /*#__PURE__*/ createHook(ON_PAGE_NOT_FOUND)
 export const onUnhandledRejection = /*#__PURE__*/ createHook(
   ON_UNHANDLE_REJECTION
 )
-
-// export const onLoad = /*#__PURE__*/ createHook(ON_LOAD)
+// 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
+export const onLoad = /*#__PURE__*/ createHook(ON_LOAD)
 export const onReady = /*#__PURE__*/ createHook(ON_READY)
 export const onUnload = /*#__PURE__*/ createHook(ON_UNLOAD)
 

@@ -14,6 +14,8 @@ export declare const onHide: (hook: () => any, target?: ComponentInternalInstanc
 
 export declare const onLaunch: (hook: () => any, target?: ComponentInternalInstance | null) => any;
 
+export declare const onLoad: (hook: () => any, target?: ComponentInternalInstance | null) => any;
+
 export declare const onNavigationBarButtonTap: (hook: () => any, target?: ComponentInternalInstance | null) => any;
 
 export declare const onNavigationBarSearchInputChanged: (hook: () => any, target?: ComponentInternalInstance | null) => any;

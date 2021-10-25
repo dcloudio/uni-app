@@ -4627,7 +4627,7 @@ const ChooseImageOptions = {
         return "param extension should not be empty.";
       }
       if (!extension)
-        params.extension = [""];
+        params.extension = ["*"];
     }
   }
 };

@@ -4,8 +4,12 @@ import { parseManifestJsonOnce } from '../json'
 export function initDefine(stringifyBoolean: boolean = false) {
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   const isRunByHBuilderX = runByHBuilderX()
+  const isDebug = !!manifestJson.debug
   return {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'process.env.UNI_DEBUG': stringifyBoolean
+      ? JSON.stringify(isDebug)
+      : isDebug,
     'process.env.UNI_APP_ID': JSON.stringify(manifestJson.appid || ''),
     'process.env.UNI_APP_NAME': JSON.stringify(manifestJson.name || ''),
     'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),

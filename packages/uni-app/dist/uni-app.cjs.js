@@ -18,6 +18,8 @@ const ON_ERROR = 'onError';
 const ON_THEME_CHANGE = 'onThemeChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
 const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
 const ON_RESIZE = 'onResize';
@@ -118,7 +120,8 @@ const onError = /*#__PURE__*/ createHook(ON_ERROR);
 const onThemeChange = /*#__PURE__*/ createHook(ON_THEME_CHANGE);
 const onPageNotFound = /*#__PURE__*/ createHook(ON_PAGE_NOT_FOUND);
 const onUnhandledRejection = /*#__PURE__*/ createHook(ON_UNHANDLE_REJECTION);
-
+// 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
+const onLoad = /*#__PURE__*/ createHook(ON_LOAD);
 const onReady = /*#__PURE__*/ createHook(ON_READY);
 const onUnload = /*#__PURE__*/ createHook(ON_UNLOAD);
 const onResize = /*#__PURE__*/ createHook(ON_RESIZE);
@@ -142,6 +145,7 @@ exports.onBackPress = onBackPress;
 exports.onError = onError;
 exports.onHide = onHide;
 exports.onLaunch = onLaunch;
+exports.onLoad = onLoad;
 exports.onNavigationBarButtonTap = onNavigationBarButtonTap;
 exports.onNavigationBarSearchInputChanged = onNavigationBarSearchInputChanged;
 exports.onNavigationBarSearchInputClicked = onNavigationBarSearchInputClicked;
