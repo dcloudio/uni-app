@@ -67,7 +67,7 @@ export function createConfigResolved({
         const normalized = normalizePath(filename)
         if (nvueCssPaths.find((pageCssPath) => pageCssPath === normalized)) {
           debugNVueCss(normalized)
-          return `@import "/nvue.wxss";\n` + cssCode
+          return `@import "/nvue${extname}";\n` + cssCode
         }
         return cssCode
       },

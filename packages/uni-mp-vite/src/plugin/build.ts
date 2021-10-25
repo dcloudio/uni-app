@@ -31,7 +31,7 @@ export function buildOptions(): UserConfig['build'] {
   }
   return {
     // sourcemap: 'inline', // TODO
-    target: ['chrome53'],
+    // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
     assetsInlineLimit: 40 * 1024, // 40kb
     lib: {

@@ -14,7 +14,9 @@
   "license": "Apache-2.0",
   "uni-app": {
     "name": "mp-qq",
-    "title": "QQ小程序"
+    "title": "QQ小程序",
+    "apply": "mp-qq",
+    "main": "dist/uni.compiler.js"
   },
   "gitHead": "1efa8efd0a9eddeabdba75c020d015ebf31b8177"
 }

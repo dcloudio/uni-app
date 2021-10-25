@@ -2,10 +2,14 @@
 
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
+var path = require('path');
+var fs = require('fs-extra');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 
 var description = "项目配置文件。";
 var packOptions = {
@@ -17,7 +21,8 @@ var setting = {
 	es6: true,
 	postcss: false,
 	minified: false,
-	newFeature: true
+	newFeature: true,
+	nodeModules: false
 };
 var compileType = "miniprogram";
 var libVersion = "";
@@ -56,8 +61,29 @@ var source = {
 	condition: condition
 };
 
+let isFixed = false;
+function fix2648(bundle) {
+    if (isFixed) {
+        return;
+    }
+    const appJsonAsset = bundle['app.json'];
+    if (!appJsonAsset) {
+        return;
+    }
+    try {
+        const { usingComponents } = JSON.parse(appJsonAsset.source.toString());
+        if (usingComponents && !Object.keys(usingComponents).length) {
+            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'), `{"component":true}`);
+            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.qml'), `<!-- https://github.com/dcloudio/uni-app/issues/2648 -->`);
+            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.js'), `Component({})`);
+        }
+        isFixed = true;
+    }
+    catch (_a) { }
+}
+
 const uniMiniProgramWeixinPlugin = {
-    name: 'vite:uni-mp-weixin',
+    name: 'vite:uni-mp-qq',
     config() {
         return {
             define: {
@@ -65,31 +91,26 @@ const uniMiniProgramWeixinPlugin = {
             },
         };
     },
+    writeBundle(_, bundle) {
+        fix2648(bundle);
+    },
 };
-const projectConfigFilename = 'project.config.json';
 const options = {
     vite: {
         inject: {
             uni: [
-                uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.api.esm.js'),
+                uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-qq/dist/uni.api.esm.js'),
                 'default',
             ],
         },
         alias: {
-            'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'),
+            'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-qq/dist/uni.mp.esm.js'),
         },
         copyOptions: {
             assets: ['wxcomponents'],
             targets: [
                 {
-                    src: [
-                        'theme.json',
-                        'sitemap.json',
-                        'ext.json',
-                        'custom-tab-bar',
-                        'functional-pages',
-                        projectConfigFilename,
-                    ],
+                    src: ['custom-tab-bar'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
@@ -97,39 +118,39 @@ const options = {
             ],
         },
     },
-    global: 'wx',
+    global: 'qq',
     app: {
         darkmode: true,
         subpackages: true,
     },
     project: {
-        filename: projectConfigFilename,
+        filename: 'project.config.json',
         source,
     },
     template: {
         filter: {
-            extname: '.wxs',
+            extname: '.qs',
             lang: 'wxs',
             generate(filter, filename) {
                 if (filename) {
-                    return `<wxs src="${filename}.wxs" module="${filter.name}"/>`;
+                    return `<qs src="${filename}.qs" module="${filter.name}"/>`;
                 }
-                return `<wxs module="${filter.name}">
+                return `<qs module="${filter.name}">
 ${filter.code}
-</wxs>`;
+</qs>`;
             },
         },
         slot: {
             fallback: false,
         },
-        extname: '.wxml',
-        directive: 'wx:',
+        extname: '.qml',
+        directive: 'qq:',
         compilerOptions: {
             nodeTransforms: [uniCliShared.addComponentBindLink],
         },
     },
     style: {
-        extname: '.wxss',
+        extname: '.qss',
     },
 };
 var index = [uniMiniProgramWeixinPlugin, ...initMiniProgramPlugin__default["default"](options)];

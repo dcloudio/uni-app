@@ -1,3 +1,4 @@
+import path from 'path'
 import { EmittedAsset } from 'rollup'
 import { isComponentTag, LINEFEED } from '@dcloudio/uni-shared'
 import {
@@ -10,6 +11,7 @@ import {
   TemplateChildNode,
   TransformContext,
 } from '@vue/compiler-core'
+import { normalizeMiniProgramFilename } from '../utils'
 
 export interface MiniProgramCompilerOptions {
   slot: {
@@ -29,10 +31,28 @@ export interface MiniProgramFilterOptions {
   code: string
 }
 
-type GenFilterFn = (filter: MiniProgramFilterOptions) => string | void
+type GenFilterFn = (
+  filter: MiniProgramFilterOptions,
+  filename: string
+) => string | void
 
 const templateFilesCache = new Map<string, string>()
 const templateFiltersCache = new Map<string, MiniProgramFilterOptions[]>()
+
+function relativeFilterFilename(
+  filename: string,
+  filter: MiniProgramFilterOptions
+) {
+  if (!filter.src) {
+    return ''
+  }
+  return (
+    './' +
+    normalizeMiniProgramFilename(
+      path.relative(path.dirname(filename), filter.src)
+    )
+  )
+}
 
 export function findMiniProgramTemplateFiles(genFilter?: GenFilterFn) {
   const files: Record<string, string> = Object.create(null)
@@ -43,7 +63,11 @@ export function findMiniProgramTemplateFiles(genFilter?: GenFilterFn) {
       const filters = getMiniProgramTemplateFilters(filename)
       if (filters && filters.length) {
         files[filename] =
-          filters.map((filter) => genFilter(filter)).join(LINEFEED) +
+          filters
+            .map((filter) =>
+              genFilter(filter, relativeFilterFilename(filename, filter))
+            )
+            .join(LINEFEED) +
           LINEFEED +
           code
       } else {

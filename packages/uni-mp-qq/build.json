@@ -6,7 +6,11 @@
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-cli-shared", "@dcloudio/uni-mp-vite"]
+    "external": [
+      "fs-extra",
+      "@dcloudio/uni-cli-shared",
+      "@dcloudio/uni-mp-vite"
+    ]
   },
   {
     "input": {
