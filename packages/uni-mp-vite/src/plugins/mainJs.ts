@@ -1,16 +1,37 @@
-import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '../plugin'
+import {
+  addMiniProgramUsingComponents,
+  defineUniMainJsPlugin,
+  transformVueComponentImports,
+} from '@dcloudio/uni-cli-shared'
+import { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+import { dynamicImport } from './usingComponents'
 
-export function uniMainJsPlugin(options: UniMiniProgramPluginOptions) {
+export function uniMainJsPlugin(
+  options: Partial<SFCScriptCompileOptions> = {}
+) {
   return defineUniMainJsPlugin((opts) => {
     return {
       name: 'vite:uni-mp-main-js',
       enforce: 'pre',
-      transform(code, id) {
+      async transform(source, id) {
         if (opts.filter(id)) {
-          code = code.includes('createSSRApp')
-            ? createApp(code)
-            : createLegacyApp(code)
+          source = source.includes('createSSRApp')
+            ? createApp(source)
+            : createLegacyApp(source)
+
+          const inputDir = process.env.UNI_INPUT_DIR
+          const { code, usingComponents } = await transformVueComponentImports(
+            source,
+            id,
+            {
+              root: inputDir,
+              global: true,
+              resolve: this.resolve,
+              dynamicImport,
+              babelParserPlugins: options.babelParserPlugins,
+            }
+          )
+          addMiniProgramUsingComponents('app', usingComponents)
           return {
             code:
               `import 'plugin-vue:export-helper';import 'uni-mp-runtime';import './pages.json.js';` +

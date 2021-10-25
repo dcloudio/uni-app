@@ -12,7 +12,11 @@ import { uniRenderjsPlugin } from './plugins/renderjs'
 export { UniMiniProgramPluginOptions } from './plugin'
 export default (options: UniMiniProgramPluginOptions) => {
   return [
-    uniMainJsPlugin(options),
+    (options: {
+      vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
+    }) => {
+      return uniMainJsPlugin(options.vueOptions?.script)
+    },
     uniManifestJsonPlugin(options),
     uniPagesJsonPlugin(options),
     uniEntryPlugin(options),

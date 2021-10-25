@@ -16,7 +16,12 @@ function parseWithElementTransform(
   root: RootNode
   node: ElementNode
 } {
-  const { ast, code, preamble } = compile(`<div>${template}</div>`, options)
+  const { ast, code, preamble } = compile(`<div>${template}</div>`, {
+    generatorOpts: {
+      concise: true,
+    },
+    ...options,
+  })
   const node = (ast as any).children[0].children[0]
   return {
     code,
@@ -32,10 +37,14 @@ describe('compiler: element transform', () => {
       source: `<image src="/static/logo.png"/>`,
       filename: 'foo.vue',
       id: 'foo',
+
       compiler: MPCompiler as unknown as TemplateCompiler,
       compilerOptions: {
         mode: 'module',
-      },
+        generatorOpts: {
+          concise: true,
+        },
+      } as any,
       transformAssetUrls: {
         includeAbsolute: true,
         ...(createUniVueTransformAssetUrls('/') as Record<string, any>),

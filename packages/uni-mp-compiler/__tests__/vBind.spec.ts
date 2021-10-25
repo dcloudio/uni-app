@@ -5,7 +5,12 @@ import { CompilerOptions } from '../src/options'
 import { assert, miniProgram } from './testUtils'
 
 function parseWithVBind(template: string, options: CompilerOptions = {}) {
-  const { ast, code } = compile(template, options)
+  const { ast, code } = compile(template, {
+    generatorOpts: {
+      concise: true,
+    },
+    ...options,
+  })
   return {
     code,
     node: ast.children[0] as ElementNode,

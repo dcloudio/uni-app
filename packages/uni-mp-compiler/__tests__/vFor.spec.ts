@@ -14,7 +14,12 @@ function parseWithForTransform(
   template: string,
   options: CompilerOptions = {}
 ) {
-  const { ast } = compile(template, options)
+  const { ast } = compile(template, {
+    generatorOpts: {
+      concise: true,
+    },
+    ...options,
+  })
 
   return {
     root: ast,

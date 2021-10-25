@@ -26,6 +26,9 @@ export function assert(
     inline: true,
     isNativeTag,
     isCustomElement,
+    generatorOpts: {
+      concise: true,
+    },
     miniProgram: {
       slot: {
         fallback: false,

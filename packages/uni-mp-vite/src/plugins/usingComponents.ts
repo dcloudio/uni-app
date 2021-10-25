@@ -49,6 +49,6 @@ export function uniUsingComponentsPlugin(
   }
 }
 
-function dynamicImport(name: string, value: string) {
+export function dynamicImport(name: string, value: string) {
   return `const ${name} = ()=>import('${virtualComponentPath(value)}')`
 }

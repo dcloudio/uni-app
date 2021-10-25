@@ -1,4 +1,5 @@
 import { ParserPlugin } from '@babel/parser'
+import { GeneratorOptions } from '@babel/generator'
 import {
   CallExpression,
   Expression,
@@ -90,6 +91,7 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
   scopeId?: string | null
   runtimeModuleName?: string
   runtimeGlobalName?: string
+  generatorOpts?: GeneratorOptions
   miniProgram?: MiniProgramCompilerOptions
 }
 

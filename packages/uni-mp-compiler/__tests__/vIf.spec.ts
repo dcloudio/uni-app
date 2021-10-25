@@ -9,7 +9,12 @@ function compileWithIfTransform(
   returnIndex: number = 0,
   childrenLen: number = 1
 ) {
-  const { ast } = compile(template, options)
+  const { ast } = compile(template, {
+    generatorOpts: {
+      concise: true,
+    },
+    ...options,
+  })
   if (!options.onError) {
     expect(ast.children.length).toBe(childrenLen)
     for (let i = 0; i < childrenLen; i++) {

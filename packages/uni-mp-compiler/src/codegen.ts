@@ -1,4 +1,4 @@
-import { isString, isSymbol } from '@vue/shared'
+import { isString, isSymbol, hasOwn } from '@vue/shared'
 import {
   CodegenResult,
   CompoundExpressionNode,
@@ -11,7 +11,7 @@ import {
   TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
 import { Expression } from '@babel/types'
-import { default as babelGenerate } from '@babel/generator'
+import { default as babelGenerate, GeneratorOptions } from '@babel/generator'
 import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
 import { CodegenOptions, CodegenRootNode } from './options'
 
@@ -88,7 +88,7 @@ export function generate(
   }
 
   push(`return `)
-  push(genBabelExpr(ast.renderData))
+  push(genBabelExpr(ast.renderData, options.generatorOpts))
   if (useWithBlock) {
     deindent()
     push(`}`)
@@ -283,13 +283,12 @@ function createGenNodeContext() {
   return context
 }
 
-export function genBabelExpr(expr: Expression) {
-  return babelGenerate(expr, {
-    concise: true,
-    jsescOption: {
-      quotes: 'single',
-    },
-  }).code
+export function genBabelExpr(expr: Expression, opts: GeneratorOptions = {}) {
+  if (!hasOwn(opts, 'jsescOption')) {
+    opts.jsescOption = {}
+  }
+  opts.jsescOption!.quotes = 'single'
+  return babelGenerate(expr, opts).code
 }
 
 export function genExpr(

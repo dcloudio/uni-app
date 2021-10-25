@@ -4,7 +4,12 @@ import { CompilerOptions } from '../src/options'
 import { assert } from './testUtils'
 
 function parseWithVOn(template: string, options: CompilerOptions = {}) {
-  const { ast } = compile(template, options)
+  const { ast } = compile(template, {
+    generatorOpts: {
+      concise: true,
+    },
+    ...options,
+  })
   return {
     root: ast,
     node: ast.children[0] as ElementNode,

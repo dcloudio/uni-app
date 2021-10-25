@@ -1,8 +1,10 @@
 import { parse, ParserPlugin } from '@babel/parser'
 import {
   ImportDeclaration,
+  isCallExpression,
   isIdentifier,
   isImportDeclaration,
+  isMemberExpression,
   isObjectExpression,
   isObjectProperty,
   isStringLiteral,
@@ -16,11 +18,13 @@ import { camelize, capitalize, hyphenate } from '@vue/shared'
 import { walk } from 'estree-walker'
 import MagicString from 'magic-string'
 import { PluginContext } from 'rollup'
+import { M } from '../messages'
 import { BINDING_COMPONENTS } from '../constants'
 import { normalizeMiniProgramFilename, removeExt } from '../utils'
 
 interface TransformVueComponentImportsOptions {
   root: string
+  global?: boolean
   resolve: PluginContext['resolve']
   dynamicImport: (name: string, source: string) => string
   babelParserPlugins?: ParserPlugin[]
@@ -31,6 +35,7 @@ export async function transformVueComponentImports(
   {
     root,
     resolve,
+    global,
     dynamicImport,
     babelParserPlugins,
   }: TransformVueComponentImportsOptions
@@ -38,7 +43,7 @@ export async function transformVueComponentImports(
   code: string
   usingComponents: Record<string, string>
 }> {
-  if (!code.includes(BINDING_COMPONENTS)) {
+  if (!global && !code.includes(BINDING_COMPONENTS)) {
     return { code, usingComponents: {} }
   }
   const s = new MagicString(code)
@@ -49,7 +54,9 @@ export async function transformVueComponentImports(
 
   const imports = findVueComponentImports(
     scriptAst.body,
-    parseComponents(scriptAst, findBindingComponents(scriptAst.body))
+    global
+      ? parseGlobalComponents(scriptAst)
+      : parseComponents(scriptAst, findBindingComponents(scriptAst.body))
   )
   const usingComponents: Record<string, string> = {}
   for (let i = 0; i < imports.length; i++) {
@@ -115,6 +122,47 @@ function findBindingComponents(ast: Statement[]): BindingComponents {
     }
   }
   return {}
+}
+/**
+ * 查找全局组件定义：app.component('component-a',{})
+ * @param ast
+ * @returns
+ */
+function parseGlobalComponents(ast: Program) {
+  const bindingComponents: BindingComponents = {}
+  ;(walk as any)(ast, {
+    enter(child: Node) {
+      if (!isCallExpression(child)) {
+        return
+      }
+      const { callee } = child
+      // .component
+      if (
+        !isMemberExpression(callee) ||
+        !isIdentifier(callee.property) ||
+        callee.property.name !== 'component'
+      ) {
+        return
+      }
+      // .component('component-a',{})
+      const args = child.arguments
+      if (args.length !== 2) {
+        return
+      }
+      const [name, value] = args
+      if (!isStringLiteral(name)) {
+        return console.warn(M['mp.component.args[0]'])
+      }
+      if (!isIdentifier(value)) {
+        return console.warn(M['mp.component.args[1]'])
+      }
+      bindingComponents[value.name] = {
+        tag: name.value,
+        type: 'unknown',
+      }
+    },
+  })
+  return bindingComponents
 }
 /**
  * 从 components 中查找定义的组件，修改 bindingComponents

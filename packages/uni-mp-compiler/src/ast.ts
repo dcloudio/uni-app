@@ -94,7 +94,9 @@ export function parseExpr(
     code = genExpr(code)
   }
   try {
-    return parseExpression(code)
+    return parseExpression(code, {
+      plugins: context.expressionPlugins,
+    })
   } catch (e: any) {
     context.onError(
       createCompilerError(

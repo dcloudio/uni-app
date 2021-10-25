@@ -18,4 +18,6 @@ export const M = {
   'i18n.fallbackLocale.missing':
     '当前应用配置的 fallbackLocale 或 locale 为：{locale}，但 locale 目录缺少该语言文件',
   'easycom.conflict': 'easycom组件冲突：',
+  'mp.component.args[0]': '{0}的第一个参数必须为静态字符串',
+  'mp.component.args[1]': '{0}需要两个参数',
 }

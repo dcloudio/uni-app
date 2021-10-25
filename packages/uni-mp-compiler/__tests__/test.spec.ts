@@ -13,6 +13,9 @@ function assert(
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
+    generatorOpts: {
+      concise: true,
+    },
     miniProgram: {
       slot: {
         fallback: false,
