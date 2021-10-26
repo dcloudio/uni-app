@@ -1,4 +1,5 @@
 import { fileToUrl } from 'uni-platform/helpers/file'
+import { t } from 'uni-core/helpers/i18n'
 import _createInput from './create_input'
 import { interact } from 'uni-mixins'
 
@@ -58,7 +59,7 @@ export function chooseImage ({
     imageInput.click()
   } else {
     invoke(callbackId, {
-      errMsg: 'chooseImage:fail File chooser dialog can only be shown with a user activation.'
+      errMsg: `chooseImage:fail ${t('uni.chooseFile.notUserActivation')}`
     })
   }
 }

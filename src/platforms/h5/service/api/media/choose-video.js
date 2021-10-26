@@ -1,4 +1,5 @@
 import { fileToUrl, revokeObjectURL } from 'uni-platform/helpers/file'
+import { t } from 'uni-core/helpers/i18n'
 import _createInput from './create_input'
 import { interact } from 'uni-mixins'
 
@@ -72,7 +73,7 @@ export function chooseVideo ({
     videoInput.click()
   } else {
     invoke(callbackId, {
-      errMsg: 'chooseVideo:fail File chooser dialog can only be shown with a user activation.'
+      errMsg: `chooseVideo:fail ${t('uni.chooseFile.notUserActivation')}`
     })
   }
 }

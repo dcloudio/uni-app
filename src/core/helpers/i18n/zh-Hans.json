@@ -12,6 +12,7 @@
   "uni.chooseVideo.cancel": "取消",
   "uni.chooseVideo.sourceType.album": "从相册选择",
   "uni.chooseVideo.sourceType.camera": "拍摄",
+  "uni.chooseFile.notUserActivation": "文件选择器对话框只能在用户激活时显示",
   "uni.previewImage.cancel": "取消",
   "uni.previewImage.button.save": "保存图像",
   "uni.previewImage.save.success": "保存图像到相册成功",

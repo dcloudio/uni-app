@@ -9,16 +9,17 @@ const passiveOptions = supportsPassive ? {
 const vms = []
 let userInteract = 0
 let inited
+function setInteract (interact) { vms.forEach(vm => (vm.userInteract = interact)) }
 function addInteractListener (vm = {}) {
   if (!inited) {
     const eventNames = ['touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup']
     eventNames.forEach(eventName => {
       document.addEventListener(eventName, function () {
-        !userInteract && vms.forEach(vm => (vm.userInteract = true))
+        !userInteract && setInteract(true)
         userInteract++
 
         setTimeout(() => {
-          !--userInteract && vms.forEach(vm => (vm.userInteract = false))
+          !--userInteract && setInteract(false)
         }, 0)
       }, passiveOptions)
     })
