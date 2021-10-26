@@ -140,9 +140,11 @@ export class UniComponent extends UniNode {
   }
 
   remove() {
+    this.removeUniParent()
     this.isUnmounted = true
     this.$app.unmount()
     removeElement(this.id)
+    this.removeUniChildren()
   }
   appendChild(node: Element) {
     return (this.$holder || this.$).appendChild(node)
