@@ -23,6 +23,10 @@ export function $(id: number) {
   return elements.get(id) as UniElement<any>
 }
 
+export function getElement(id: number) {
+  return elements.get(id)
+}
+
 export function removeElement(id: number) {
   if (__DEV__) {
     console.log(formatLog('Remove', id, elements.size - 1))

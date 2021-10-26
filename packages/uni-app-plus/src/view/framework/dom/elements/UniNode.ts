@@ -1,7 +1,7 @@
 import { hasOwn } from '@vue/shared'
 import { ATTR_CHANGE_PREFIX, UniNodeJSON } from '@dcloudio/uni-shared'
 
-import { $, removeElement } from '../page'
+import { $, getElement, removeElement } from '../page'
 import { JOB_PRIORITY_WXS_PROPS, queuePostActionJob } from '../scheduler'
 import { createWxsPropsInvoker, WxsPropsInvoker } from '../wxs'
 import { destroyRenderjs } from '../renderjs'
@@ -16,6 +16,8 @@ export class UniNode {
   isUnmounted: boolean = false
   $wxsProps: Map<string, WxsPropsInvoker>
   $hasWxsProps: boolean = false
+  $parent: UniNode | undefined
+  $children: UniNode[] = []
   constructor(
     id: number,
     tag: string,
@@ -29,6 +31,10 @@ export class UniNode {
       this.$ = element
     }
     this.$wxsProps = new Map<string, WxsPropsInvoker>()
+    const parent = (this.$parent = getElement(parentNodeId))
+    if (parent) {
+      parent.appendUniChild(this)
+    }
   }
   init(nodeJson: Partial<UniNodeJSON>) {
     if (hasOwn(nodeJson, 't')) {
@@ -49,17 +55,39 @@ export class UniNode {
     this.isMounted = true
   }
   remove() {
+    this.removeUniParent()
     const { $ } = this
     $.parentNode!.removeChild($)
     this.isUnmounted = true
     removeElement(this.id)
     destroyRenderjs(this)
+    this.removeUniChildren()
   }
   appendChild(node: Node) {
     return this.$.appendChild(node)
   }
   insertBefore(newChild: Node, refChild: Node) {
     return this.$.insertBefore(newChild, refChild)
+  }
+  appendUniChild(node: UniNode) {
+    this.$children.push(node)
+  }
+  removeUniChild(node: UniNode) {
+    const index = this.$children.indexOf(node)
+    if (index >= 0) {
+      this.$children.splice(index, 1)
+    }
+  }
+  removeUniParent() {
+    const { $parent } = this
+    if ($parent) {
+      $parent.removeUniChild(this)
+      this.$parent = undefined
+    }
+  }
+  removeUniChildren() {
+    this.$children.forEach((node) => node.remove())
+    this.$children.length = 0
   }
   setWxsProps(attrs: Record<string, any>) {
     Object.keys(attrs).forEach((name) => {
