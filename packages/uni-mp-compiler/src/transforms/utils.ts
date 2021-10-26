@@ -21,6 +21,7 @@ import {
   RootNode,
   SourceLocation,
   TemplateChildNode,
+  TransformContext as VueTransformContext,
 } from '@vue/compiler-core'
 import { walk, BaseNode } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
@@ -36,7 +37,7 @@ export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
 export function isUserComponent(
   node: RootNode | TemplateChildNode,
-  context: TransformContext
+  context: TransformContext | VueTransformContext
 ): node is ComponentNode {
   return (
     node.type === NodeTypes.ELEMENT &&

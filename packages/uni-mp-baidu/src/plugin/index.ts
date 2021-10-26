@@ -6,6 +6,7 @@ import initMiniProgramPlugin, {
 
 import source from './project.swan.json'
 import { transformFor } from './transforms/vFor'
+import { transformOn } from './transforms/vOn'
 
 const uniMiniProgramBaiduPlugin: Plugin = {
   name: 'vite:uni-mp-baidu',
@@ -66,6 +67,9 @@ ${filter.code}
     directive: 's-',
     compilerOptions: {
       nodeTransforms: [transformFor],
+      directiveTransforms: {
+        on: transformOn,
+      },
     },
   },
   style: {

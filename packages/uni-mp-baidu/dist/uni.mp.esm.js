@@ -871,6 +871,15 @@ function parse$1(componentOptions) {
         __l: methods.__l,
     };
     delete methods.__l;
+    methods.__e = handleCustomEvent;
+}
+function handleCustomEvent(event) {
+    const { type, target: { dataset: { eO: eventOpts }, }, } = event;
+    const methodName = (eventOpts || {})[type];
+    if (!methodName) {
+        return console.warn(type + ' not found');
+    }
+    this[methodName](event);
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({

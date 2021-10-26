@@ -10,6 +10,7 @@ import {
   fixSetDataStart,
   fixSetDataEnd,
 } from '../../../uni-mp-weixin/src/runtime/fixSetData'
+import { ComponentPublicInstance } from 'vue'
 
 export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 
@@ -83,4 +84,29 @@ export function parse(componentOptions: MPComponentOptions) {
     __l: methods.__l,
   }
   delete methods.__l
+
+  methods.__e = handleCustomEvent
+}
+
+function handleCustomEvent(
+  this: MPComponentInstance,
+  event: {
+    type: string
+    target: { dataset: { eO: { [name: string]: string } } }
+    detail: {
+      __args__: any[]
+    }
+  }
+) {
+  const {
+    type,
+    target: {
+      dataset: { eO: eventOpts },
+    },
+  } = event
+  const methodName = (eventOpts || {})[type]
+  if (!methodName) {
+    return console.warn(type + ' not found')
+  }
+  ;(this as any)[methodName](event)
 }

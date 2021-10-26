@@ -15,13 +15,15 @@ export type {
   CompilerOptions,
   DirectiveNode,
   NodeTransform,
+  DirectiveTransform,
   TransformContext,
   SimpleExpressionNode,
 } from '@vue/compiler-core'
 
 export { genExpr } from './codegen'
 export { isForElementNode } from './transforms/vFor'
-
+export { isUserComponent } from './transforms/utils'
+export { transformOn } from './transforms/vOn'
 export * from './runtimeHelpers'
 
 export function parse(template: string, options: ParserOptions = {}): RootNode {

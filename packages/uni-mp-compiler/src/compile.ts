@@ -38,7 +38,10 @@ export function getBaseTransformPreset({
   if (prefixIdentifiers) {
     nodeTransforms.push(transformExpression)
   }
-  return [nodeTransforms, { on: transformOn, bind: transformBind }]
+  return [
+    nodeTransforms,
+    { on: transformOn as unknown as DirectiveTransform, bind: transformBind },
+  ]
 }
 
 export function baseCompile(template: string, options: CompilerOptions = {}) {

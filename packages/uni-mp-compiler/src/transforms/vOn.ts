@@ -12,10 +12,11 @@ import {
   NodeTypes,
   SimpleExpressionNode,
   TO_HANDLER_KEY,
+  DirectiveTransform,
 } from '@vue/compiler-core'
 import { camelize, toHandlerKey } from '@vue/shared'
 import { V_ON } from '../runtimeHelpers'
-import { DirectiveTransform, TransformContext } from '../transform'
+import { TransformContext } from '../transform'
 import { DirectiveTransformResult } from './transformElement'
 import { isBuiltInIdentifier, processExpression } from './transformExpression'
 
@@ -35,9 +36,10 @@ export interface VOnDirectiveNode extends DirectiveNode {
 export const transformOn: DirectiveTransform = (
   dir,
   node,
-  context,
+  _context,
   augmentor
 ) => {
+  const context = _context as unknown as TransformContext
   const { loc, modifiers, arg } = dir as VOnDirectiveNode
   if (!dir.exp && !modifiers.length) {
     context.onError(createCompilerError(ErrorCodes.X_V_ON_NO_EXPRESSION, loc))
