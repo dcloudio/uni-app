@@ -7,6 +7,8 @@ import {
 } from '@dcloudio/uni-api'
 import { fileToUrl } from '../../../helpers/file'
 import _createInput from './createInput'
+import { getInteractStatus } from '@dcloudio/uni-components'
+import { useI18n, initI18nChooseFileMsgsOnce } from '@dcloudio/uni-core'
 //#endregion
 
 //#region types
@@ -29,6 +31,8 @@ export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
     { resolve, reject }
   ) => {
     // TODO handle sizeType 尝试通过 canvas 压缩
+    initI18nChooseFileMsgsOnce()
+    const { t } = useI18n()
 
     if (imageInput) {
       document.body.removeChild(imageInput)
@@ -75,7 +79,11 @@ export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
       // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
     })
 
-    imageInput.click()
+    if (getInteractStatus()) {
+      imageInput.click()
+    } else {
+      reject(t('uni.chooseFile.notUserActivation'))
+    }
   },
   ChooseImageProtocol,
   ChooseImageOptions

@@ -13,7 +13,11 @@ export type {
 } from './helpers/useEvent'
 export * from './helpers/scroller'
 export { parseText } from './helpers/text'
-export { useUserAction } from './helpers/useUserAction'
+export {
+  useUserAction,
+  addInteractListener,
+  getInteractStatus,
+} from './helpers/useUserAction'
 export { useAttrs } from './helpers/useAttrs'
 export { useBooleanAttr } from './helpers/useBooleanAttr'
 export { useTouchtrack } from './helpers/useTouchtrack'

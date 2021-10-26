@@ -1,5 +1,6 @@
 import { updateElementStyle } from '@dcloudio/uni-shared'
 import MIMEType from './MIMEType'
+import { addInteractListener } from '@dcloudio/uni-components'
 
 export type createInputOptions = Pick<
   UniApp.ChooseFileOptions,
@@ -7,6 +8,7 @@ export type createInputOptions = Pick<
 >
 
 const ALL = 'all'
+addInteractListener()
 
 function isWXEnv(): boolean {
   const ua = window.navigator.userAgent.toLowerCase()
