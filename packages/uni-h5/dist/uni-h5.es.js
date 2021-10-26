@@ -187,6 +187,31 @@ const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u53D6\u6D88", "\u78BA\u5B9A"]), false);
   }
 });
+const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.chooseFile.";
+  const keys = ["notUserActivation"];
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+      "File chooser dialog can only be shown with a user activation"
+    ]), false);
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+      "El cuadro de di\xE1logo del selector de archivos solo se puede mostrar con la activaci\xF3n del usuario"
+    ]), false);
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+      "La bo\xEEte de dialogue du s\xE9lecteur de fichier ne peut \xEAtre affich\xE9e qu'avec une activation par l'utilisateur"
+    ]), false);
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u6587\u4EF6\u9009\u62E9\u5668\u5BF9\u8BDD\u6846\u53EA\u80FD\u5728\u7528\u6237\u6FC0\u6D3B\u65F6\u663E\u793A"]), false);
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u6587\u4EF6\u9078\u64C7\u5668\u5C0D\u8A71\u6846\u53EA\u80FD\u5728\u7528\u6236\u6FC0\u6D3B\u6642\u986F\u793A"]), false);
+  }
+});
 const initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.setClipboardData.";
   const keys = ["success", "fail"];
@@ -8032,7 +8057,8 @@ const passiveOptions$1 = passive(true);
 const states = [];
 let userInteract = 0;
 let inited;
-function addInteractListener(vm) {
+const setUserAction = (userAction) => states.forEach((vm) => vm.userAction = userAction);
+function addInteractListener(vm = { userAction: false }) {
   if (!inited) {
     const eventNames = [
       "touchstart",
@@ -8043,16 +8069,11 @@ function addInteractListener(vm) {
     ];
     eventNames.forEach((eventName) => {
       document.addEventListener(eventName, function() {
-        states.forEach((vm2) => {
-          vm2.userAction = true;
-          userInteract++;
-          setTimeout(() => {
-            userInteract--;
-            if (!userInteract) {
-              vm2.userAction = false;
-            }
-          }, 0);
-        });
+        !userInteract && setUserAction(true);
+        userInteract++;
+        setTimeout(() => {
+          !--userInteract && setUserAction(false);
+        }, 0);
       }, passiveOptions$1);
     });
     inited = true;
@@ -8065,6 +8086,7 @@ function removeInteractListener(vm) {
     states.splice(index2, 1);
   }
 }
+const getInteractStatus = () => !!userInteract;
 function useUserAction() {
   const state2 = reactive({
     userAction: false
@@ -16518,6 +16540,7 @@ const MIMEType = {
   }
 };
 const ALL = "all";
+addInteractListener();
 function isWXEnv() {
   const ua2 = window.navigator.userAgent.toLowerCase();
   const matchUA = ua2.match(/MicroMessenger/i);
@@ -16566,6 +16589,8 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({
   type,
   extension
 }, { resolve, reject }) => {
+  initI18nChooseFileMsgsOnce();
+  const { t: t2 } = useI18n();
   if (fileInput) {
     document.body.removeChild(fileInput);
     fileInput = null;
@@ -16603,7 +16628,11 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({
     };
     resolve(res);
   });
-  fileInput.click();
+  if (getInteractStatus()) {
+    fileInput.click();
+  } else {
+    reject(t2("uni.chooseFile.notUserActivation"));
+  }
 }, ChooseFileProtocol, ChooseFileOptions);
 let imageInput = null;
 const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
@@ -16611,6 +16640,8 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
   sourceType,
   extension
 }, { resolve, reject }) => {
+  initI18nChooseFileMsgsOnce();
+  const { t: t2 } = useI18n();
   if (imageInput) {
     document.body.removeChild(imageInput);
     imageInput = null;
@@ -16648,7 +16679,11 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
     };
     resolve(res);
   });
-  imageInput.click();
+  if (getInteractStatus()) {
+    imageInput.click();
+  } else {
+    reject(t2("uni.chooseFile.notUserActivation"));
+  }
 }, ChooseImageProtocol, ChooseImageOptions);
 let index$c = 0;
 let overflow = "";
@@ -16881,6 +16916,8 @@ const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, { 
 }, PreviewImageProtocol, PreviewImageOptions);
 let videoInput = null;
 const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, extension }, { resolve, reject }) => {
+  initI18nChooseFileMsgsOnce();
+  const { t: t2 } = useI18n();
   if (videoInput) {
     document.body.removeChild(videoInput);
     videoInput = null;
@@ -16931,7 +16968,11 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceTy
       resolve(callbackResult);
     }
   });
-  videoInput.click();
+  if (getInteractStatus()) {
+    videoInput.click();
+  } else {
+    reject(t2("uni.chooseFile.notUserActivation"));
+  }
 }, ChooseVideoProtocol, ChooseVideoOptions);
 const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   url,

@@ -835,7 +835,7 @@ function parse$1(componentOptions) {
         fixSetDataStart(this);
         oldAttached.call(this);
         this.pageinstance.$vm = this.$vm;
-        this.$vm.__call_hook('onInit', query);
+        this.$vm.$callHook('onInit', query);
     };
     lifetimes.attached = function attached() {
         if (!this.$vm) {

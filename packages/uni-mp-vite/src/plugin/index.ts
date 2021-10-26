@@ -7,7 +7,8 @@ import {
   parseManifestJsonOnce,
   findMiniProgramTemplateFiles,
 } from '@dcloudio/uni-cli-shared'
-import { CompilerOptions } from '@vue/compiler-core'
+
+import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 
 import { uniOptions } from './uni'
 import { buildOptions } from './build'

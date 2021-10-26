@@ -17,7 +17,7 @@ import {
 } from '@vue/compiler-core'
 import { TemplateCodegenOptions } from '../options'
 import { genExpr } from '../codegen'
-import { isForElementNode, VForOptions } from '../transforms/vFor'
+import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 interface TemplateCodegenContext {
@@ -95,11 +95,11 @@ function genVElse({ push, directive }: TemplateCodegenContext) {
 }
 
 function genVFor(
-  { sourceAlias, valueAlias }: VForOptions,
-  node: ElementNode,
+  node: ForElementNode,
   { push, directive }: TemplateCodegenContext
 ) {
-  push(` ${directive}for="{{${sourceAlias}}}"`)
+  const { sourceCode, valueAlias } = node.vFor
+  push(` ${directive}for="${sourceCode}"`)
   if (valueAlias) {
     push(` ${directive}for-item="${valueAlias}"`)
   }
@@ -216,7 +216,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
     }
   }
   if (isForElementNode(node)) {
-    genVFor(node.vFor, node, context)
+    genVFor(node, context)
   }
   if (props.length) {
     genElementProps(node, context)

@@ -44,6 +44,7 @@ import { createVSlotCallExpression, isScopedSlotVFor } from './vSlot'
 export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   sourceExpr?: Expression
   sourceAlias: string
+  sourceCode: string
   valueCode: string
   valueExpr: Identifier | Pattern | RestElement
   valueAlias: string
@@ -103,15 +104,18 @@ export const transformFor = createStructuralDirectiveTransform(
     const indexAlias = parseAlias(indexExpr, indexCode, 'i' + scopes.vFor)
     // 先占位vFor，后续更新 cloneSourceExpr 为 CallExpression
     const cloneSourceExpr = cloneNode(sourceExpr!, false)
+    const sourceAlias = rewriteExpression(
+      source,
+      context,
+      cloneSourceExpr,
+      parentScope
+    ).content
+    const sourceCode = `{{${sourceAlias}}}`
     const vForData: VForOptions = {
       source,
       sourceExpr,
-      sourceAlias: rewriteExpression(
-        source,
-        context,
-        cloneSourceExpr,
-        parentScope
-      ).content,
+      sourceAlias,
+      sourceCode,
       value,
       valueCode,
       valueExpr,

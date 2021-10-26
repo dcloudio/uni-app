@@ -160,7 +160,7 @@ export function traverseNode(
   const { nodeTransforms } = context
   const exitFns = []
   for (let i = 0; i < nodeTransforms.length; i++) {
-    const onExit = nodeTransforms[i](node, context)
+    const onExit = nodeTransforms[i](node, context as any)
     if (onExit) {
       if (isArray(onExit)) {
         exitFns.push(...onExit)

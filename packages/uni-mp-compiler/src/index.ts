@@ -10,6 +10,18 @@ import { baseCompile } from './compile'
 import { parserOptions } from './parserOptions'
 import { CompilerOptions } from './options'
 
+export { findProp } from '@vue/compiler-core'
+export type {
+  CompilerOptions,
+  DirectiveNode,
+  NodeTransform,
+  TransformContext,
+  SimpleExpressionNode,
+} from '@vue/compiler-core'
+
+export { genExpr } from './codegen'
+export { isForElementNode } from './transforms/vFor'
+
 export * from './runtimeHelpers'
 
 export function parse(template: string, options: ParserOptions = {}): RootNode {

@@ -5,8 +5,8 @@ import {
   UniVitePlugin,
   MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
-import { CompilerOptions, TemplateCompiler } from '@vue/compiler-sfc'
-
+import { TemplateCompiler } from '@vue/compiler-sfc'
+import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import * as compiler from '@dcloudio/uni-mp-compiler'
 
 export function uniOptions({
@@ -26,6 +26,6 @@ export function uniOptions({
       isNativeTag,
       isCustomElement,
       ...compilerOptions,
-    },
+    } as any,
   }
 }

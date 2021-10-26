@@ -48,7 +48,7 @@ export function parse(componentOptions: MPComponentOptions) {
     fixSetDataStart(this as MPComponentInstance)
     oldAttached.call(this)
     this.pageinstance.$vm = this.$vm
-    this.$vm.__call_hook('onInit', query)
+    this.$vm.$callHook('onInit', query)
   }
   lifetimes.attached = function attached(this: MPComponentInstance) {
     if (!this.$vm) {

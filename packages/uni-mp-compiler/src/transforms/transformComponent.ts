@@ -1,4 +1,4 @@
-import { ComponentNode } from '@vue/compiler-core'
+import { ComponentNode, findProp } from '@vue/compiler-core'
 import { isVForScope, NodeTransform, TransformContext } from '../transform'
 import { createAttributeNode, createBindDirectiveNode } from '../ast'
 import { addStaticClass } from './transformElement'
@@ -61,6 +61,10 @@ function addVueId(node: ComponentNode, context: TransformContext) {
 }
 
 function addVueRef(node: ComponentNode, context: TransformContext) {
+  // 仅配置了 ref 属性的，才需要增补 vue-ref
+  if (!findProp(node, 'ref')) {
+    return
+  }
   return addStaticClass(
     node,
     // vue-ref-in-for

@@ -7,7 +7,7 @@ import initMiniProgramPlugin, {
 import source from './project.config.json'
 import { fix2648 } from './fix2648'
 
-const uniMiniProgramWeixinPlugin: Plugin = {
+const uniMiniProgramQQPlugin: Plugin = {
   name: 'vite:uni-mp-qq',
   config() {
     return {
@@ -48,7 +48,7 @@ const options: UniMiniProgramPluginOptions = {
   },
   global: 'qq',
   app: {
-    darkmode: true,
+    darkmode: false,
     subpackages: true,
   },
   project: {
@@ -82,4 +82,4 @@ ${filter.code}
   },
 }
 
-export default [uniMiniProgramWeixinPlugin, ...initMiniProgramPlugin(options)]
+export default [uniMiniProgramQQPlugin, ...initMiniProgramPlugin(options)]

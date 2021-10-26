@@ -7,14 +7,14 @@ import {
   ObjectProperty,
   SpreadElement,
 } from '@babel/types'
+import {
+  NodeTransform as VueNodeTransform,
+  DirectiveTransform as VueDirectiveTransform,
+} from '@vue/compiler-core'
 import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 import { BindingMetadata, CompilerError, RootNode } from '@vue/compiler-core'
 import IdentifierGenerator from './identifier'
-import {
-  DirectiveTransform,
-  NodeTransform,
-  TransformContext,
-} from './transform'
+import { TransformContext } from './transform'
 import { VForOptions } from './transforms/vFor'
 
 export interface CodegenRootNode extends RootNode {
@@ -58,8 +58,8 @@ export interface TransformOptions
   filters?: string[]
   renderDataSpread?: boolean
   cacheHandlers?: boolean
-  nodeTransforms?: NodeTransform[]
-  directiveTransforms?: Record<string, DirectiveTransform | undefined>
+  nodeTransforms?: VueNodeTransform[]
+  directiveTransforms?: Record<string, VueDirectiveTransform | undefined>
   isBuiltInComponent?: (tag: string) => symbol | void
   isCustomElement?: (tag: string) => boolean | void
   expressionPlugins?: ParserPlugin[]

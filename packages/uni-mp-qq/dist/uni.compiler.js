@@ -82,7 +82,7 @@ function fix2648(bundle) {
     catch (_a) { }
 }
 
-const uniMiniProgramWeixinPlugin = {
+const uniMiniProgramQQPlugin = {
     name: 'vite:uni-mp-qq',
     config() {
         return {
@@ -120,7 +120,7 @@ const options = {
     },
     global: 'qq',
     app: {
-        darkmode: true,
+        darkmode: false,
         subpackages: true,
     },
     project: {
@@ -153,6 +153,6 @@ ${filter.code}
         extname: '.qss',
     },
 };
-var index = [uniMiniProgramWeixinPlugin, ...initMiniProgramPlugin__default["default"](options)];
+var index = [uniMiniProgramQQPlugin, ...initMiniProgramPlugin__default["default"](options)];
 
 module.exports = index;

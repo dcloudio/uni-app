@@ -275,7 +275,7 @@ export function processProps(
 
       const directiveTransform = context.directiveTransforms[name]
       if (directiveTransform) {
-        const { props } = directiveTransform(prop, node, context)
+        const { props } = directiveTransform(prop, node, context as any)
         if (props.length) {
           prop.exp = props[0].value as ExpressionNode
         }

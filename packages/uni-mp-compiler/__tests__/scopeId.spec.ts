@@ -33,7 +33,7 @@ describe('compiler: transform scopeId', () => {
     )
     assert(
       `<view class="bar" :class="foo"/>`,
-      `<view class="{{['bar data-v-5584ec96', a]}}"/>`,
+      `<view class="{{['bar', 'data-v-5584ec96', a]}}"/>`,
       `(_ctx, _cache) => {
   return { a: _n(_ctx.foo) }
 }`,
@@ -41,7 +41,7 @@ describe('compiler: transform scopeId', () => {
     )
     assert(
       `<view :class="foo" class="bar"/>`,
-      `<view class="{{[a, 'bar data-v-5584ec96']}}"/>`,
+      `<view class="{{[a, 'bar', 'data-v-5584ec96']}}"/>`,
       `(_ctx, _cache) => {
   return { a: _n(_ctx.foo) }
 }`,

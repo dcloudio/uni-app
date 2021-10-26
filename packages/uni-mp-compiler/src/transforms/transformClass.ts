@@ -82,18 +82,24 @@ export function rewriteClass(
   if (staticClassPropIndex > -1) {
     const staticClass = (props[staticClassPropIndex] as AttributeNode).value!
       .content
-    if (staticClass.trim()) {
+    if (staticClass) {
       if (!isArrayExpression(classBidingExpr)) {
         classBidingExpr = arrayExpression([classBidingExpr])
       }
+      const staticClassLiterals = parseStaticClass(staticClass)
       if (index > staticClassPropIndex) {
-        classBidingExpr.elements.unshift(stringLiteral(staticClass))
+        classBidingExpr.elements.unshift(...staticClassLiterals)
       } else {
-        classBidingExpr.elements.push(stringLiteral(staticClass))
+        classBidingExpr.elements.push(...staticClassLiterals)
       }
     }
   }
   classBindingProp.exp = createSimpleExpression(genBabelExpr(classBidingExpr))
+}
+
+function parseStaticClass(staticClass: string): StringLiteral[] {
+  // 已经在 parse 阶段格式化了多余空格等
+  return staticClass.split(' ').map((clazz) => stringLiteral(clazz))
 }
 
 function rewriteClassExpression(

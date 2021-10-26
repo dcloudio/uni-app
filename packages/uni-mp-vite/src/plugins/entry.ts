@@ -61,8 +61,8 @@ export function uniEntryPlugin({
         )
         this.addWatchFile(filepath)
         return {
-          code: `import Page from '${filepath}?mpType=page'
-${global}.createPage(Page)`,
+          code: `import MiniProgramPage from '${filepath}?mpType=page'
+${global}.createPage(MiniProgramPage)`,
         }
       } else if (isUniComponentUrl(id)) {
         const filepath = normalizePath(

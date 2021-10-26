@@ -57,7 +57,11 @@ function parsePagesJson(
     ) {
       nvuePages.push(pagePath)
     }
-    pageJsons[pagePath] = parseWindowOptions(style, platform, windowOptionsMap)
+    pageJsons[pagePath] = parseWindowOptions(
+      style,
+      platform,
+      windowOptionsMap
+    ) as PageWindowOptions
   }
   // pages
   validatePages(pagesJson, jsonStr)
