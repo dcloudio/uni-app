@@ -344,6 +344,51 @@ export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
 })
+export const initI18nChooseFileMsgsOnce = /*#__PURE__*/ once(() => {
+  const name = 'uni.chooseFile.'
+  const keys = ['notUserActivation']
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        'File chooser dialog can only be shown with a user activation',
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        'El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario',
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ['文件选择器对话框只能在用户激活时显示']),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ['文件選擇器對話框只能在用戶激活時顯示']),
+      false
+    )
+  }
+})
 export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.previewImage.'
   const keys = ['cancel', 'button.save', 'save.success', 'save.fail']

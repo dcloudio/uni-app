@@ -8,6 +8,8 @@ import {
 } from '@dcloudio/uni-api'
 import { fileToUrl, revokeObjectURL } from '../../../helpers/file'
 import _createInput from './createInput'
+import { getInteractStatus } from '@dcloudio/uni-components'
+import { useI18n, initI18nChooseFileMsgsOnce } from '@dcloudio/uni-core'
 //#endregion
 
 //#region types
@@ -20,6 +22,8 @@ let videoInput: HTMLInputElement = null as any
 export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
   API_CHOOSE_VIDEO,
   ({ sourceType, extension }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce()
+    const { t } = useI18n()
     if (videoInput) {
       document.body.removeChild(videoInput)
       videoInput = null as any
@@ -80,7 +84,11 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
       // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
     })
 
-    videoInput.click()
+    if (getInteractStatus()) {
+      videoInput.click()
+    } else {
+      reject(t('uni.chooseFile.notUserActivation'))
+    }
   },
   ChooseVideoProtocol,
   ChooseVideoOptions
