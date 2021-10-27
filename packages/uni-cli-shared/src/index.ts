@@ -15,6 +15,8 @@ export * from './preprocess'
 export * from './postcss'
 export * from './filter'
 export * from './esbuild'
+
+export * from './vue/transforms'
 export { M } from './messages'
 
 export * from './exports'
