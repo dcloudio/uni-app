@@ -2,6 +2,7 @@ import {
   hasOwn,
   isPlainObject
 } from 'uni-shared'
+import getRealPath from 'uni-platform/helpers/get-real-path'
 
 const TAGS = {
   a: '',
@@ -96,6 +97,11 @@ function decodeEntities (htmlString) {
   })
 }
 
+function normlizeValue (tagName, name, value) {
+  if (tagName === 'img' && name === 'src') return getRealPath(value)
+  return value
+}
+
 export default function parseNodes (nodes, parentNode, $vm) {
   let scopeId = ''
   while ($vm) {
@@ -134,7 +140,7 @@ export default function parseNodes (nodes, parentNode, $vm) {
               break
             default:
               if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, value)
+                elem.setAttribute(name, normlizeValue(tagName, name, value))
               }
           }
         })
