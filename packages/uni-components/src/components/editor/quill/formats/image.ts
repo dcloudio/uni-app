@@ -1,4 +1,5 @@
 import QuillClass from 'quill'
+import { getRealPath } from '@dcloudio/uni-platform'
 
 export default function (Quill: typeof QuillClass) {
   const Image = Quill.import('formats/image')
@@ -10,7 +11,7 @@ export default function (Quill: typeof QuillClass) {
     'class',
     'data-local',
   ]
-  Image.sanitize = (url: string) => url
+  Image.sanitize = (url: string) => (url ? getRealPath(url) : url)
   Image.formats = function formats(domNode: Element) {
     return ATTRIBUTES.reduce(function (
       formats: Record<string, any>,
