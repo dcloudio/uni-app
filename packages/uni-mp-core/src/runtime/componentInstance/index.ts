@@ -17,8 +17,13 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
     event: string,
     ...args: any[]
   ) {
-    if (ctx.$scope && event) {
-      ;(ctx.$scope as any).triggerEvent(event, { __args__: args })
+    const scope = ctx.$scope as MPComponentInstance
+    if (scope && event) {
+      const detail: Record<string, any> = { __args__: args }
+      if (__PLATFORM__ === 'mp-baidu') {
+        detail.__ins__ = scope
+      }
+      scope.triggerEvent(event, detail)
     }
     if (__PLATFORM__ === 'mp-alipay') {
       const vnode = this.$.vnode

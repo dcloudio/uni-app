@@ -14,7 +14,7 @@ describe('mp-baidu: transform v-on', () => {
     test(`custom event`, () => {
       assert(
         `<custom @click="click"/>`,
-        `<custom bindclick="__e" v-i="2a9ec0b0-0" data-e-o="{{a}}"/>`,
+        `<custom bindclick="__e" v-i="2a9ec0b0-0" eO="{{a}}"/>`,
         `(_ctx, _cache) => {
   return { a: { 'click': _o(_ctx.click) } }
 }`
@@ -23,7 +23,7 @@ describe('mp-baidu: transform v-on', () => {
       test(`multi custom event`, () => {
         assert(
           `<custom @unmount="unmount" @custom-mount="mount();created();"/>`,
-          `<custom bindunmount="__e" bind:custom-mount="__e" v-i="2a9ec0b0-0" data-e-o="{{a}}"/>`,
+          `<custom bindunmount="__e" bind:custom-mount="__e" v-i="2a9ec0b0-0" eO="{{a}}"/>`,
           `(_ctx, _cache) => {
   return { a: { 'custom-mount': _o($event => { _ctx.mount(); _ctx.created(); }), 'unmount': _o(_ctx.unmount) } }
 }`

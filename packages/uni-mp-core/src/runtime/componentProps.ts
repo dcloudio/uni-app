@@ -37,6 +37,14 @@ function createObserver(name: string) {
 function initDefaultProps(isBehavior: boolean = false) {
   const properties: Component.PropertyOption = {}
   if (!isBehavior) {
+    if (__PLATFORM__ === 'mp-baidu') {
+      // 百度小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
+      // event-opts
+      properties.eO = {
+        type: null,
+        value: '',
+      }
+    }
     properties.vI = {
       type: null, // 均不指定类型，避免 property received type-uncompatible value 警告
       value: '',

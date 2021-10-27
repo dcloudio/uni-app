@@ -9,6 +9,8 @@ import {
   ExpressionNode,
   AttributeNode,
   createCompoundExpression,
+  DirectiveTransform,
+  TransformContext as VueTransformContext,
 } from '@vue/compiler-core'
 import { DOMErrorCodes, createDOMCompilerError } from '@vue/compiler-dom'
 import { camelize } from '@vue/shared'
@@ -16,17 +18,22 @@ import { V_ON } from '..'
 import { createBindDirectiveNode, createOnDirectiveNode } from '../ast'
 import { genExpr } from '../codegen'
 import { TransformContext } from '../transform'
+import { DirectiveTransformResult } from './transformElement'
 import { wrapperVOn } from './vOn'
 
-export const transformModel = (
+export const transformModel: DirectiveTransform = (
   dir: DirectiveNode,
   node: ElementNode,
-  context: TransformContext
+  _context: VueTransformContext
 ) => {
-  const baseResult = baseTransform(dir, node, context as any)
+  const context = _context as unknown as TransformContext
+  const baseResult = baseTransform(dir, node, _context)
   // base transform has errors OR component v-model (only need props)
   if (!baseResult.props.length || node.tagType === ElementTypes.COMPONENT) {
-    return transformComponentVModel(baseResult.props, context)
+    return transformComponentVModel(
+      baseResult.props,
+      context
+    ) as unknown as DirectiveTransformResult
   }
 
   if (dir.arg) {
@@ -62,7 +69,11 @@ export const transformModel = (
     )
   }
 
-  return transformElementVModel(baseResult.props, node, context)
+  return transformElementVModel(
+    baseResult.props,
+    node,
+    context
+  ) as unknown as DirectiveTransformResult
 }
 
 function findInputDirectiveNode(props: (AttributeNode | DirectiveNode)[]) {
@@ -79,7 +90,7 @@ function transformElementVModel(
   props: Property[],
   node: ElementNode,
   context: TransformContext
-): DirectiveNode[] {
+) {
   const dirs = transformVModel(props, context, {
     binding: 'value',
     event: 'input',
@@ -95,7 +106,7 @@ function transformElementVModel(
       dirs.length = 1
     }
   }
-  return dirs
+  return { props: dirs }
 }
 
 function parseVOn(exp: ExpressionNode, context: TransformContext) {
@@ -122,12 +133,14 @@ function combineVOn(
 function transformComponentVModel(
   props: Property[],
   context: TransformContext
-): DirectiveNode[] {
-  return transformVModel(props, context, {
-    formatEventCode(code) {
-      return code
-    },
-  })
+) {
+  return {
+    props: transformVModel(props, context, {
+      formatEventCode(code) {
+        return code
+      },
+    }),
+  }
 }
 
 function transformVModel(

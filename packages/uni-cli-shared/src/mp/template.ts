@@ -25,7 +25,7 @@ export interface MiniProgramCompilerOptions {
 }
 export interface MiniProgramFilterOptions {
   id: string
-  type: 'wxs'
+  type: string
   name: string
   src?: string
   code: string

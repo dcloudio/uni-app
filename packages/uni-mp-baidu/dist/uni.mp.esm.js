@@ -129,8 +129,13 @@ const MP_METHODS = [
 ];
 function createEmitFn(oldEmit, ctx) {
     return function emit(event, ...args) {
-        if (ctx.$scope && event) {
-            ctx.$scope.triggerEvent(event, { __args__: args });
+        const scope = ctx.$scope;
+        if (scope && event) {
+            const detail = { __args__: args };
+            {
+                detail.__ins__ = scope;
+            }
+            scope.triggerEvent(event, detail);
         }
         return oldEmit.apply(this, [event, ...args]);
     };
@@ -433,6 +438,14 @@ function createObserver(name) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
+        {
+            // 百度小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
+            // event-opts
+            properties.eO = {
+                type: null,
+                value: '',
+            };
+        }
         properties.vI = {
             type: null,
             value: '',
@@ -693,6 +706,9 @@ Page = function (options) {
     initHook(ON_LOAD, options);
     return MPPage(options);
 };
+{
+    Page.after = MPPage.after;
+}
 Component = function (options) {
     initHook('created', options);
     return MPComponent(options);
@@ -871,11 +887,12 @@ function parse$1(componentOptions) {
         __l: methods.__l,
     };
     delete methods.__l;
+    // 百度小程序自定义组件，不支持绑定动态事件，故由 __e 分发
     methods.__e = handleCustomEvent;
 }
 function handleCustomEvent(event) {
-    const { type, target: { dataset: { eO: eventOpts }, }, } = event;
-    const methodName = (eventOpts || {})[type];
+    const { type, detail: { __ins__ }, } = event;
+    const methodName = (__ins__.properties.eO || {})[type];
     if (!methodName) {
         return console.warn(type + ' not found');
     }

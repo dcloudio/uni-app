@@ -2,6 +2,7 @@ import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { compile, CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import { transformFor } from '../src/plugin/transforms/vFor'
 import { transformOn } from '../src/plugin/transforms/vOn'
+import { transformModel } from '../src/plugin/transforms/vModel'
 
 export function assert(
   template: string,
@@ -22,6 +23,7 @@ export function assert(
     nodeTransforms: [transformFor],
     directiveTransforms: {
       on: transformOn,
+      model: transformModel,
     },
     miniProgram: {
       slot: {

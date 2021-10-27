@@ -131,8 +131,10 @@ const MP_METHODS = [
 ];
 function createEmitFn(oldEmit, ctx) {
     return function emit(event, ...args) {
-        if (ctx.$scope && event) {
-            ctx.$scope.triggerEvent(event, { __args__: args });
+        const scope = ctx.$scope;
+        if (scope && event) {
+            const detail = { __args__: args };
+            scope.triggerEvent(event, detail);
         }
         {
             const vnode = this.$.vnode;

@@ -21,7 +21,7 @@ export default (options: UniMiniProgramPluginOptions) => {
     uniPagesJsonPlugin(options),
     uniEntryPlugin(options),
     uniViteInjectPlugin(extend({}, options.vite.inject, initProvide())),
-    uniRenderjsPlugin(),
+    uniRenderjsPlugin({ lang: options.template.filter?.lang }),
     uniMiniProgramPlugin(options),
     (options: {
       vueOptions?: { script?: Partial<SFCScriptCompileOptions> }

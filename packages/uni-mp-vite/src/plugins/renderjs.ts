@@ -15,7 +15,11 @@ export function getFiltersCache(resolvedConfig: ResolvedConfig) {
   return filtersCache.get(resolvedConfig) || []
 }
 
-export function uniRenderjsPlugin(): Plugin {
+const defaultCode = {
+  code: 'export default {}',
+}
+
+export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
   let resolvedConfig: ResolvedConfig
   return {
     name: 'vite:uni-mp-renderjs',
@@ -31,10 +35,12 @@ export function uniRenderjsPlugin(): Plugin {
         return
       }
       debugRenderjs(id)
+      if (type !== lang) {
+        return defaultCode
+      }
       if (!name) {
         this.error(missingModuleName(type, code))
-      }
-      if (type === 'wxs') {
+      } else {
         filtersCache.get(resolvedConfig)!.push({
           id,
           type,
@@ -42,9 +48,7 @@ export function uniRenderjsPlugin(): Plugin {
           code,
         })
       }
-      return {
-        code: 'export default {}',
-      }
+      return defaultCode
     },
   }
 }

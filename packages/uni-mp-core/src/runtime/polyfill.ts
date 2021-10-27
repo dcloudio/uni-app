@@ -36,7 +36,11 @@ Page = function (options) {
   initHook(ON_LOAD, options)
   return MPPage(options)
 }
-
+if (__PLATFORM__ === 'mp-baidu') {
+  // 补充after，否则百度报：Cannot read property 'historyStack' of undefined
+  // https://smartprogram.baidu.com/forum/topic/show/153894
+  ;(Page as any).after = (MPPage as any).after
+}
 Component = function (options) {
   initHook('created', options)
   return MPComponent(options)

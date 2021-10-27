@@ -5023,6 +5023,11 @@ function decodeEntities(htmlString) {
     return wrap.innerText || wrap.textContent;
   });
 }
+function normlizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src")
+    return getRealPath(value);
+  return value;
+}
 function parseNodes(nodes, parentNode, scopeId) {
   nodes.forEach(function(node) {
     if (!shared.isPlainObject(node)) {
@@ -5054,7 +5059,7 @@ function parseNodes(nodes, parentNode, scopeId) {
               break;
             default:
               if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, value);
+                elem.setAttribute(name, normlizeValue(tagName, name, value));
               }
           }
         });

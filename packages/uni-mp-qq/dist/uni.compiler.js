@@ -89,6 +89,10 @@ const uniMiniProgramQQPlugin = {
             define: {
                 __VUE_CREATED_DEFERRED__: false,
             },
+            build: {
+                // css 中不支持引用本地资源
+                assetsInlineLimit: 40 * 1024, // 40kb
+            },
         };
     },
     writeBundle(_, bundle) {

@@ -10,7 +10,6 @@ import {
   fixSetDataStart,
   fixSetDataEnd,
 } from '../../../uni-mp-weixin/src/runtime/fixSetData'
-import { ComponentPublicInstance } from 'vue'
 
 export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 
@@ -84,7 +83,7 @@ export function parse(componentOptions: MPComponentOptions) {
     __l: methods.__l,
   }
   delete methods.__l
-
+  // 百度小程序自定义组件，不支持绑定动态事件，故由 __e 分发
   methods.__e = handleCustomEvent
 }
 
@@ -92,19 +91,16 @@ function handleCustomEvent(
   this: MPComponentInstance,
   event: {
     type: string
-    target: { dataset: { eO: { [name: string]: string } } }
     detail: {
-      __args__: any[]
+      __ins__: MPComponentInstance & { eO: Record<string, string> }
     }
   }
 ) {
   const {
     type,
-    target: {
-      dataset: { eO: eventOpts },
-    },
+    detail: { __ins__ },
   } = event
-  const methodName = (eventOpts || {})[type]
+  const methodName = (__ins__.properties.eO || {})[type]
   if (!methodName) {
     return console.warn(type + ' not found')
   }

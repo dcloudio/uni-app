@@ -13,6 +13,7 @@ import {
   createSimpleExpression,
   createCompoundExpression,
   CompoundExpressionNode,
+  ComponentNode,
 } from '@vue/compiler-core'
 /**
  * 百度小程序的自定义组件，不支持动态事件绑定，故转换为静态事件 + dataset
@@ -40,24 +41,35 @@ export const transformOn: DirectiveTransform = (
   ) {
     return res
   }
-  // data-event-opts
-  const opts = findProp(node, ATTR_DATA_EVENT_OPTS, true) as DirectiveNode
   const value = res.props[0].value as ExpressionNode
-  res.props[0].value = createSimpleExpression('__e', true)
+  res.props[0].value = createCustomEventExpr()
+  addEventOpts(arg.content, value, node)
+  return res
+}
+
+export function createCustomEventExpr() {
+  return createSimpleExpression('__e', true)
+}
+
+export function addEventOpts(
+  event: string,
+  value: ExpressionNode,
+  node: ComponentNode
+) {
+  const opts = findProp(node, ATTR_DATA_EVENT_OPTS, true) as DirectiveNode
   if (!opts) {
-    node.props.push(createDataEventOptsProp(arg.content, value))
+    node.props.push(createDataEventOptsProp(event, value))
   } else {
     const children = (opts.exp as CompoundExpressionNode).children
     children.splice(
       children.length - 2,
       0,
-      createDataEventOptsProperty(arg.content, value)
+      createDataEventOptsProperty(event, value)
     )
   }
-  return res
 }
 
-const ATTR_DATA_EVENT_OPTS = 'data-e-o'
+const ATTR_DATA_EVENT_OPTS = 'eO'
 
 function createDataEventOptsProperty(event: string, exp: ExpressionNode) {
   return createCompoundExpression([`'${event}'`, ': ', exp, ','])

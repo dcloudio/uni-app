@@ -25,6 +25,7 @@ import { createMPCompilerError, MPErrorCodes } from '../errors'
 
 import {
   BindingComponentTypes,
+  DirectiveTransform,
   NodeTransform,
   TransformContext,
 } from '../transform'
@@ -274,7 +275,7 @@ export function processProps(
       }
 
       const directiveTransform = context.directiveTransforms[name]
-      if (directiveTransform) {
+      if (name !== 'model' && directiveTransform) {
         const { props } = directiveTransform(prop, node, context as any)
         if (props.length) {
           prop.exp = props[0].value as ExpressionNode
@@ -282,16 +283,25 @@ export function processProps(
       }
     }
   }
-  processVModel(node, context)
+  const transformVModel = (context.directiveTransforms.model ||
+    transformModel) as unknown as DirectiveTransform
+  processVModel(node, transformVModel, context)
 }
 
-function processVModel(node: ElementNode, context: TransformContext) {
+function processVModel(
+  node: ElementNode,
+  transformVModel: DirectiveTransform,
+  context: TransformContext
+) {
   const { props } = node
   const dirs: DirectiveNode[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
     if (prop.type === NodeTypes.DIRECTIVE && prop.name === 'model') {
-      dirs.push(...transformModel(prop, node, context))
+      dirs.push(
+        ...(transformVModel(prop, node, context as any)
+          .props as unknown as DirectiveNode[])
+      )
       props.splice(i, 1)
       i--
     }
