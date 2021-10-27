@@ -7,7 +7,7 @@ import QuillClass, {
   StringMap,
 } from 'quill'
 import { useContextInfo, useSubscribe } from '@dcloudio/uni-components'
-import { getRealPath } from '@dcloudio/uni-platform'
+import { getRealPath, getBaseSystemInfo } from '@dcloudio/uni-platform'
 import { CustomEventTrigger } from '../../../helpers/useEvent'
 import HTMLParser from '../../../helpers/html-parser'
 import loadScript from './loadScript'
@@ -84,7 +84,7 @@ export function useQuill(
     () => props.placeholder,
     (value) => {
       if (quillReady) {
-        quill.root.setAttribute('data-placeholder', value)
+        setPlaceHolder(value)
       }
     }
   )
@@ -158,6 +158,12 @@ export function useQuill(
       delta,
     }
   }
+  function setPlaceHolder(placeholder: string) {
+    const placeHolderAttrName = 'data-placeholder'
+    const QuillRoot = quill.root
+    QuillRoot.getAttribute(placeHolderAttrName) !== placeholder &&
+      QuillRoot.setAttribute(placeHolderAttrName, placeholder)
+  }
   let oldStatus: StringMap = {}
   function updateStatus(range?: RangeStatic) {
     const status = range ? quill.getFormat(range) : {}
@@ -195,10 +201,21 @@ export function useQuill(
     const events = ['focus', 'blur', 'input']
     events.forEach((name) => {
       $el.addEventListener(name, ($event) => {
+        const contents = getContents()
         if (name === 'input') {
+          if (getBaseSystemInfo().platform === 'ios') {
+            const regExpContent = (contents.html.match(
+              /<span [\s\S]*>([\s\S]*)<\/span>/
+            ) || [])[1]
+            const placeholder =
+              regExpContent && regExpContent.replace(/\s/g, '')
+                ? ''
+                : props.placeholder
+            setPlaceHolder(placeholder)
+          }
           $event.stopPropagation()
         } else {
-          trigger(name, $event, getContents())
+          trigger(name, $event, contents)
         }
       })
     })
