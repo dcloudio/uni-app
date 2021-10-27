@@ -1,4 +1,5 @@
 import { hasOwn, isPlainObject } from '@vue/shared'
+import { getRealPath } from '@dcloudio/uni-platform'
 
 const TAGS = {
   a: '',
@@ -96,6 +97,11 @@ function decodeEntities(htmlString) {
   )
 }
 
+function normlizeValue(tagName, name, value) {
+  if (tagName === 'img' && name === 'src') return getRealPath(value)
+  return value
+}
+
 export default function parseNodes(nodes, parentNode, scopeId) {
   nodes.forEach(function (node) {
     if (!isPlainObject(node)) {
@@ -128,7 +134,7 @@ export default function parseNodes(nodes, parentNode, scopeId) {
               break
             default:
               if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, value)
+                elem.setAttribute(name, normlizeValue(tagName, name, value))
               }
           }
         })
