@@ -11,18 +11,11 @@ import {
   SpreadElement,
   stringLiteral,
 } from '@babel/types'
-import { isComponentTag } from '@dcloudio/uni-shared'
 import {
-  ComponentNode,
   createSimpleExpression,
-  ElementTypes,
   ExpressionNode,
-  isCoreComponent,
   NodeTypes,
-  RootNode,
   SourceLocation,
-  TemplateChildNode,
-  TransformContext as VueTransformContext,
 } from '@vue/compiler-core'
 import { walk, BaseNode } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
@@ -35,19 +28,6 @@ export const ATTR_VUE_SLOTS = 'v-s'
 export const CLASS_VUE_REF = 'v-r'
 export const CLASS_VUE_REF_IN_FOR = 'v-r-i-f'
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
-
-export function isUserComponent(
-  node: RootNode | TemplateChildNode,
-  context: TransformContext | VueTransformContext
-): node is ComponentNode {
-  return (
-    node.type === NodeTypes.ELEMENT &&
-    node.tagType === ElementTypes.COMPONENT &&
-    !isComponentTag(node.tag) &&
-    !isCoreComponent(node.tag) &&
-    !context.isBuiltInComponent(node.tag)
-  )
-}
 
 export function rewriteSpreadElement(
   name: symbol,

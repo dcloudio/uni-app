@@ -1,6 +1,6 @@
+import { isUserComponent } from '@dcloudio/uni-cli-shared'
 import {
   DirectiveTransform,
-  isUserComponent,
   transformOn as baseTransformOn,
 } from '@dcloudio/uni-mp-compiler'
 import {

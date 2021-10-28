@@ -202,12 +202,7 @@ export function processProps(
 
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
-    if (prop.type === NodeTypes.ATTRIBUTE) {
-      // <custom ref="c"/> => <custom data-ref="c"/>
-      if (prop.name === 'ref') {
-        prop.name = 'data-ref'
-      }
-    } else {
+    if (prop.type === NodeTypes.DIRECTIVE) {
       // directives
       const { name, arg, loc } = prop
       const isVBind = name === 'bind'
@@ -261,16 +256,6 @@ export function processProps(
             )
           )
           continue
-        }
-      }
-
-      if (isVBind) {
-        // <custom :ref="c"/> => <custom :data-ref="c" />
-        if (
-          arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
-          arg.content === 'ref'
-        ) {
-          arg.content = 'data-ref'
         }
       }
 

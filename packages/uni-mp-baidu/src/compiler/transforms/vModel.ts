@@ -1,7 +1,7 @@
+import { isUserComponent } from '@dcloudio/uni-cli-shared'
 import {
   DirectiveNode,
   DirectiveTransform,
-  isUserComponent,
   SimpleExpressionNode,
   transformModel as baseTransformModel,
 } from '@dcloudio/uni-mp-compiler'

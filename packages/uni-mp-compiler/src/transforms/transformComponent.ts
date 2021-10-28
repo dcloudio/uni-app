@@ -1,18 +1,19 @@
-import { ComponentNode, findProp } from '@vue/compiler-core'
+import {
+  ComponentNode,
+  findProp,
+  NodeTypes,
+  SimpleExpressionNode,
+} from '@vue/compiler-core'
+import { isUserComponent } from '@dcloudio/uni-cli-shared'
 import { isVForScope, NodeTransform, TransformContext } from '../transform'
 import { createAttributeNode, createBindDirectiveNode } from '../ast'
 import { addStaticClass } from './transformElement'
-import {
-  ATTR_VUE_ID,
-  CLASS_VUE_REF,
-  CLASS_VUE_REF_IN_FOR,
-  isUserComponent,
-} from './utils'
+import { ATTR_VUE_ID, CLASS_VUE_REF, CLASS_VUE_REF_IN_FOR } from './utils'
 import { CodegenScope } from '../options'
 import { isScopedSlotVFor } from './vSlot'
 
 export const transformComponent: NodeTransform = (node, context) => {
-  if (!isUserComponent(node, context)) {
+  if (!isUserComponent(node, context as any)) {
     return
   }
   addVueRef(node, context)
@@ -62,9 +63,16 @@ function addVueId(node: ComponentNode, context: TransformContext) {
 
 function addVueRef(node: ComponentNode, context: TransformContext) {
   // 仅配置了 ref 属性的，才需要增补 vue-ref
-  if (!findProp(node, 'ref')) {
+  const refProp = findProp(node, 'ref')
+  if (!refProp) {
     return
   }
+  if (refProp.type === NodeTypes.ATTRIBUTE) {
+    refProp.name = 'data-ref'
+  } else {
+    ;(refProp.arg as SimpleExpressionNode).content = 'data-ref'
+  }
+
   return addStaticClass(
     node,
     // vue-ref-in-for

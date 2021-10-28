@@ -38,10 +38,10 @@ function assert(
 describe('compiler', () => {
   test('scope', () => {
     assert(
-      `<unicloud-db v-slot:default="{data, loading, error, options}" collection=""><view v-if="error">{{error.message}}</view><view v-else></view></unicloud-db>`,
-      `<unicloud-db v-s="{{['default']}}" collection="" v-i="2a9ec0b0-0" slot="default"><block wx:for="{{a}}" wx:for-item="v0" wx:key="c"><view wx:if="{{v0.a}}">{{v0.b}}</view><view wx:else></view></block></unicloud-db>`,
+      `<custom :ref="custom"/>`,
+      `<custom class="v-r" data-ref="{{a}}" v-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return { a: _w(({ data, loading, error, options }, s0, i0) => { return _e({ a: error }, error ? { b: _t(error.message) } : {}, { c: s0 }); }, { name: 'default', vueId: '2a9ec0b0-0' }) }
+  return { a: _ctx.custom }
 }`
     )
   })

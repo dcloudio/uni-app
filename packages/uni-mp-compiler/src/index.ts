@@ -22,7 +22,6 @@ export type {
 
 export { genExpr } from './codegen'
 export { isForElementNode } from './transforms/vFor'
-export { isUserComponent } from './transforms/utils'
 export { transformOn } from './transforms/vOn'
 export { transformModel } from './transforms/vModel'
 export * from './runtimeHelpers'

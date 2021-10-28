@@ -25,6 +25,7 @@ import {
   TemplateChildNode,
   TemplateNode,
 } from '@vue/compiler-core'
+import { isUserComponent } from '@dcloudio/uni-cli-shared'
 import { WITH_SCOPED_SLOT } from '../runtimeHelpers'
 import { createBindDirectiveNode, parseExpr } from '../ast'
 import { genExpr } from '../codegen'
@@ -33,14 +34,13 @@ import { isVForScope, NodeTransform, TransformContext } from '../transform'
 import {
   ATTR_VUE_ID,
   ATTR_VUE_SLOTS,
-  isUserComponent,
   rewriteExpressionWithoutProperty,
   SCOPED_SLOT_IDENTIFIER,
 } from './utils'
 import { createVForArrowFunctionExpression } from './vFor'
 
 export const transformSlot: NodeTransform = (node, context) => {
-  if (!isUserComponent(node, context)) {
+  if (!isUserComponent(node, context as any)) {
     return
   }
 

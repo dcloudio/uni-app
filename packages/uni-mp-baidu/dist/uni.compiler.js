@@ -3,6 +3,7 @@
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
+var uniCliShared = require('@dcloudio/uni-cli-shared');
 var compilerCore = require('@vue/compiler-core');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -66,7 +67,7 @@ const transformOn = (dir, node, context, augmentor) => {
         !exp ||
         !compilerCore.isStaticExp(arg) ||
         !isCustomEvent(arg.content) ||
-        !uniMpCompiler.isUserComponent(node, context)) {
+        !uniCliShared.isUserComponent(node, context)) {
         return res;
     }
     const value = res.props[0].value;
@@ -134,7 +135,7 @@ function isCustomEvent(name) {
 const transformModel = (dir, node, context, augmentor) => {
     const res = uniMpCompiler.transformModel(dir, node, context, augmentor);
     const props = res.props;
-    if (props.length < 2 || !uniMpCompiler.isUserComponent(node, context)) {
+    if (props.length < 2 || !uniCliShared.isUserComponent(node, context)) {
         return res;
     }
     const { arg, exp } = props[1];
