@@ -72,6 +72,9 @@ function parseKey (el, isScopedSlot) {
     const keyIndex = forEl.children.indexOf(el)
     el.key = genVar(V_FOR, `{forIndex:${it},keyIndex:${keyIndex},key:${el.key}}`)
   }
+  if (el.tag === 'slot') {
+    el.attrs.push({ name: 'key', value: el.key })
+  }
 }
 
 function parseComponentAttrs (el, genVar) {
