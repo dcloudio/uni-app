@@ -12,7 +12,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
     array: true,
   },
   slot: {
-    fallback: false,
+    fallback: true,
   },
   directive: 's-',
 }

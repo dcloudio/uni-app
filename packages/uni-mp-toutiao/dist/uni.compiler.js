@@ -69,12 +69,12 @@ ${filter.code}
             },
         },
         slot: {
-            fallback: false,
+            fallback: true,
         },
         extname: '.ttml',
         directive: 'tt:',
         compilerOptions: {
-            nodeTransforms: [uniCliShared.addComponentBindLink],
+            nodeTransforms: [uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK)],
         },
     },
     style: {

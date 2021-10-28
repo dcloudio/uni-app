@@ -11,6 +11,7 @@ import {
   hasJsonFile,
   removeExt,
   resolveMainPathOnce,
+  normalizeMiniProgramFilename,
 } from '@dcloudio/uni-cli-shared'
 import { GetManualChunk, GetModuleInfo } from 'rollup'
 import {
@@ -57,10 +58,7 @@ export function buildOptions(): UserConfig['build'] {
                 parseVirtualComponentPath(id)
               )
             }
-            const filepath = path.relative(inputDir, id)
-            return normalizePath(
-              filepath.replace(path.extname(filepath), '.js')
-            )
+            return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
           }
           return '[name].js'
         },

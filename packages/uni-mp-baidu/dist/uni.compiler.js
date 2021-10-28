@@ -148,7 +148,7 @@ const miniProgram = {
         array: true,
     },
     slot: {
-        fallback: false,
+        fallback: true,
     },
     directive: 's-',
 };

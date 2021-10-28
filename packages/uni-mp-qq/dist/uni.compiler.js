@@ -133,7 +133,7 @@ const options = {
         extname: '.qml',
         directive: 'qq:',
         compilerOptions: {
-            nodeTransforms: [uniCliShared.addComponentBindLink],
+            nodeTransforms: [uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK)],
         },
     },
     style: {

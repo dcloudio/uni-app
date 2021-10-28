@@ -1,6 +1,9 @@
 import path from 'path'
 
-import { addComponentBindLink } from '@dcloudio/uni-cli-shared'
+import {
+  COMPONENT_BIND_LINK,
+  createTransformComponentLink,
+} from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
@@ -56,7 +59,7 @@ export const options: UniMiniProgramPluginOptions = {
     extname: '.qml',
     directive: 'qq:',
     compilerOptions: {
-      nodeTransforms: [addComponentBindLink],
+      nodeTransforms: [createTransformComponentLink(COMPONENT_BIND_LINK)],
     },
   },
   style: {

@@ -114,7 +114,8 @@ function genVFor(
 function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   // 移除掉所有非name属性，即移除作用域插槽的绑定指令
   node.props = node.props.filter((prop) => prop.name === 'name')
-  if (!node.children.length) {
+  if (!node.children.length || context.slot.fallback) {
+    // 无后备内容或支持后备内容
     return genElement(node, context)
   }
   const children = node.children.slice()

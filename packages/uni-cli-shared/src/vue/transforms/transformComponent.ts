@@ -9,30 +9,35 @@ import {
   TemplateChildNode,
   TransformContext,
 } from '@vue/compiler-core'
+import { COMPONENT_BIND_LINK, COMPONENT_ON_LINK } from '../../mp/constants'
 
-export function addComponentBindLink(
-  node: RootNode | TemplateChildNode,
-  context: TransformContext
+export function createTransformComponentLink(
+  name: typeof COMPONENT_BIND_LINK | typeof COMPONENT_ON_LINK
 ) {
-  if (
-    node.type === NodeTypes.ELEMENT &&
-    node.tagType === ElementTypes.COMPONENT
+  return function transformComponentLink(
+    node: RootNode | TemplateChildNode,
+    context: TransformContext
   ) {
-    const { tag } = node
     if (
-      isComponentTag(tag) ||
-      isCoreComponent(tag) ||
-      context.isBuiltInComponent(tag)
+      node.type === NodeTypes.ELEMENT &&
+      node.tagType === ElementTypes.COMPONENT
     ) {
-      return
+      const { tag } = node
+      if (
+        isComponentTag(tag) ||
+        isCoreComponent(tag) ||
+        context.isBuiltInComponent(tag)
+      ) {
+        return
+      }
+      node.props.push({
+        type: NodeTypes.DIRECTIVE,
+        name: 'on',
+        modifiers: [],
+        loc: locStub,
+        arg: createSimpleExpression(name, true),
+        exp: createSimpleExpression('__l', true),
+      })
     }
-    node.props.push({
-      type: NodeTypes.DIRECTIVE,
-      name: 'on',
-      modifiers: [],
-      loc: locStub,
-      arg: createSimpleExpression('__l', true),
-      exp: createSimpleExpression('__l', true),
-    })
   }
 }

@@ -117,7 +117,10 @@ ${filter.code}
         extname: '.wxml',
         directive: 'wx:',
         compilerOptions: {
-            nodeTransforms: [uniCliShared.addComponentBindLink],
+            isCustomElement: (tag) => {
+                return ['page-meta', 'navigation-bar', 'match-media'].includes(tag);
+            },
+            nodeTransforms: [uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK)],
         },
     },
     style: {

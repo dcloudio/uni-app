@@ -1,19 +1,11 @@
-import { addComponentBindLink } from '@dcloudio/uni-cli-shared'
+import {
+  COMPONENT_BIND_LINK,
+  createTransformComponentLink,
+} from '@dcloudio/uni-cli-shared'
 import { assert } from './testUtils'
 
+const nodeTransforms = [createTransformComponentLink(COMPONENT_BIND_LINK)]
 describe('compiler: transform component', () => {
-  //   test('basic', () => {
-  //     assert(
-  //       `<custom/>`,
-  //       `<custom v-i="2a9ec0b0-0" bind:__l="__l"/>`,
-  //       `(_ctx, _cache) => {
-  //   return {}
-  // }`,
-  //       {
-  //         nodeTransforms: [addComponentBindLink as any],
-  //       }
-  //     )
-  //   })
   test('component + component', () => {
     assert(
       `<custom><custom1/></custom>`,
@@ -22,7 +14,7 @@ describe('compiler: transform component', () => {
   return {}
 }`,
       {
-        nodeTransforms: [addComponentBindLink as any],
+        nodeTransforms,
       }
     )
   })
@@ -34,7 +26,7 @@ describe('compiler: transform component', () => {
   return {}
 }`,
       {
-        nodeTransforms: [addComponentBindLink as any],
+        nodeTransforms,
       }
     )
   })
@@ -46,7 +38,7 @@ describe('compiler: transform component', () => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
-        nodeTransforms: [addComponentBindLink as any],
+        nodeTransforms,
       }
     )
     assert(
@@ -56,7 +48,7 @@ describe('compiler: transform component', () => {
   return { a: _f(_ctx.items, (item, key, index) => { return { a: '2a9ec0b0-0' + '-' + index }; }) }
 }`,
       {
-        nodeTransforms: [addComponentBindLink as any],
+        nodeTransforms,
       }
     )
   })
@@ -68,7 +60,7 @@ describe('compiler: transform component', () => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + '2a9ec0b0-0' }; }) }
 }`,
       {
-        nodeTransforms: [addComponentBindLink as any],
+        nodeTransforms,
       }
     )
   })
@@ -80,7 +72,7 @@ describe('compiler: transform component', () => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + ('2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
-        nodeTransforms: [addComponentBindLink as any],
+        nodeTransforms,
       }
     )
   })
@@ -92,7 +84,7 @@ describe('compiler: transform component', () => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _f(item.items, (item1, k1, i1) => { return { a: '2a9ec0b0-1' + '-' + i0 + '-' + i1 + ',' + ('2a9ec0b0-0' + '-' + i0) }; }), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
-        nodeTransforms: [addComponentBindLink as any],
+        nodeTransforms,
       }
     )
   })
