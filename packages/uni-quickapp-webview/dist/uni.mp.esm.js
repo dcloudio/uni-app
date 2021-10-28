@@ -386,7 +386,7 @@ function initRefs(instance, mpInstance) {
     });
 }
 
-// const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
+const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function createObserver(name) {
     return function observer(newVal) {
         if (this.$vm) {
@@ -394,25 +394,17 @@ function createObserver(name) {
         }
     };
 }
-// function parsePropType(key: string, type: unknown, defaultValue: unknown) {
-//   // [String]=>String
-//   if (isArray(type) && type.length === 1) {
-//     return type[0]
-//   }
-//   if ("quickapp-webview" === 'mp-baidu') {
-//     if (
-//       // [String,Boolean]=>Boolean
-//       defaultValue === false &&
-//       isArray(type) &&
-//       type.length === 2 &&
-//       type.indexOf(String) !== -1 &&
-//       type.indexOf(Boolean) !== -1
-//     ) {
-//       return Boolean
-//     }
-//   }
-//   return type
-// }
+function parsePropType(type, defaultValue) {
+    // [String]=>String
+    if (isArray(type) && type.length === 1) {
+        return type[0];
+    }
+    return type;
+}
+function normalizePropType(type, defaultValue) {
+    const res = parsePropType(type);
+    return PROP_TYPES.indexOf(res) !== -1 ? res : null;
+}
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
@@ -442,7 +434,7 @@ function createProperty(key, prop) {
     return prop;
 }
 /**
- * 不再生成具体的 type 类型，因为微信首次初始化，值为 undefined 时，会告警：property received type-uncompatible value
+ *
  * @param mpComponentOptions
  * @param rawProps
  * @param isBehavior
@@ -465,18 +457,17 @@ function initProps(mpComponentOptions, rawProps, isBehavior = false) {
                 if (isFunction(value)) {
                     value = value();
                 }
-                // const type = (opts as any).type as any
-                // ;(opts as any).type = parsePropType(key, type, value)
+                const type = opts.type;
+                opts.type = normalizePropType(type);
                 properties[key] = createProperty(key, {
-                    type: null,
+                    type: opts.type,
                     value,
                 });
             }
             else {
                 // content:String
-                // const type = parsePropType(key, opts, null)
                 properties[key] = createProperty(key, {
-                    type: null, //PROP_TYPES.indexOf(type) !== -1 ? type : null,
+                    type: normalizePropType(opts),
                 });
             }
         });
@@ -658,7 +649,7 @@ function initTriggerEvent(mpInstance) {
         return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
     };
 }
-function initHook(name, options) {
+function initHook(name, options, isComponent) {
     const oldHook = options[name];
     if (!oldHook) {
         options[name] = function () {
@@ -766,36 +757,65 @@ function initInjections(instance) {
     }
 }
 
+// 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
+const components = [];
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     return {
+        created() {
+            components.push(this);
+        },
         attached() {
-            const properties = this.properties;
-            initVueIds(properties.vI, this);
-            const relationOptions = {
-                vuePid: this._$vuePid,
+            this.__lifetimes_attached = function () {
+                const properties = this.properties;
+                initVueIds(properties.vI, this);
+                const relationOptions = {
+                    vuePid: this._$vuePid,
+                };
+                // 初始化 vue 实例
+                const mpInstance = this;
+                const mpType = isPage(mpInstance) ? 'page' : 'component';
+                if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
+                    mpInstance.route = mpInstance.__route__;
+                }
+                // 字节跳动小程序 properties
+                // 父组件在 attached 中 setData 设置了子组件的 props，在子组件的 attached 中，并不能立刻拿到
+                // 此时子组件的 properties 中获取到的值，除了一部分初始化就有的值，只要在模板上绑定了，动态设置的 prop 的值均会根据类型返回，不会应用 prop 自己的默认值
+                // 举例： easyinput 的 styles 属性，类型为 Object，`<easyinput :styles="styles"/>` 在 attached 中 styles 的值为 null
+                // 目前 null 值会影响 render 函数执行，临时解决方案，调整 properties 中的 null 值为 undefined，让 Vue 来补充为默认值
+                // 已知的其他隐患，当使用默认值时，可能组件行为不正确，比如 countdown 组件，默认值是0，导致直接就触发了 timeup 事件，这个应该是组件自身做处理？
+                // 难道要等父组件首次 setData 完成后，再去执行子组件的初始化？
+                Object.keys(properties).forEach((name) => {
+                    if (properties[name] === null) {
+                        properties[name] = undefined;
+                    }
+                });
+                this.$vm = $createComponent({
+                    type: vueOptions,
+                    props: properties,
+                }, {
+                    mpType,
+                    mpInstance,
+                    slots: properties.vS,
+                    parentComponent: relationOptions.parent && relationOptions.parent.$,
+                    onBeforeSetup(instance, options) {
+                        initRefs(instance, mpInstance);
+                        initMocks(instance, mpInstance, mocks);
+                        initComponentInstance(instance, options);
+                    },
+                });
+                // 处理父子关系
+                initRelation(this, relationOptions);
             };
-            // 初始化 vue 实例
-            const mpInstance = this;
-            const mpType = isPage(mpInstance) ? 'page' : 'component';
-            if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
-                mpInstance.route = mpInstance.__route__;
+            let component = this;
+            while (component &&
+                component.__lifetimes_attached &&
+                components[0] &&
+                component === components[0]) {
+                components.shift();
+                component.__lifetimes_attached();
+                delete component.__lifetimes_attached;
+                component = components[0];
             }
-            this.$vm = $createComponent({
-                type: vueOptions,
-                props: properties,
-            }, {
-                mpType,
-                mpInstance,
-                slots: properties.vS,
-                parentComponent: relationOptions.parent && relationOptions.parent.$,
-                onBeforeSetup(instance, options) {
-                    initRefs(instance, mpInstance);
-                    initMocks(instance, mpInstance, mocks);
-                    initComponentInstance(instance, options);
-                },
-            });
-            // 处理父子关系
-            initRelation(this, relationOptions);
         },
         detached() {
             this.$vm && $destroyComponent(this.$vm);

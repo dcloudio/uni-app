@@ -21,7 +21,10 @@ export const resolveMainPathOnce = once((inputDir: string) => {
 })
 
 export function resolveBuiltIn(path: string) {
-  return require.resolve(path, { paths: [process.env.UNI_CLI_CONTEXT] })
+  if (process.env.UNI_CLI_CONTEXT) {
+    return require.resolve(path, { paths: [process.env.UNI_CLI_CONTEXT] })
+  }
+  return require.resolve(path)
 }
 
 export function normalizeIdentifier(str: string) {

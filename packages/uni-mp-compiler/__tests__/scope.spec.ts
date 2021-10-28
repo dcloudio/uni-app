@@ -6,7 +6,7 @@ describe('compiler: scope', () => {
       `<view v-for="item in items" :key="item.id" :class="{red: item.isRed}" @longpress="longpress" @click="onClick(item)">{{item.title}}</view>`,
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="b" class="{{[item.c && 'red']}}" bindlongpress="{{b}}" bindtap="{{item.d}}">{{item.a}}</view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _t(item.title), b: item.id, c: item.isRed ? 1 : 0, d: _o($event => _ctx.onClick(item)) }; }), b: _o(_ctx.longpress) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _t(item.title), b: item.id, c: item.isRed ? 1 : '', d: _o($event => _ctx.onClick(item)) }; }), b: _o(_ctx.longpress) }
 }`
     )
   })

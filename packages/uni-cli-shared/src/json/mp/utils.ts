@@ -32,15 +32,11 @@ export function parseWindowOptions(
   windowOptionsMap?: Record<string, string>
 ): PageWindowOptions | AppWindowOptions {
   if (!style) {
-    return {
-      component: true,
-    }
+    return {}
   }
   const platformStyle = style[platform] || {}
   removePlatformStyle(trimJson(style) as any)
-  const res: PageWindowOptions | AppWindowOptions = {
-    component: true,
-  }
+  const res: PageWindowOptions | AppWindowOptions = {}
   if (windowOptionsMap) {
     return extend(convert(res, style, windowOptionsMap), platformStyle)
   }

@@ -7341,7 +7341,7 @@ function image(Quill) {
     "class",
     "data-local"
   ];
-  Image2.sanitize = (url) => url;
+  Image2.sanitize = (url) => url ? getRealPath(url) : url;
   Image2.formats = function formats(domNode) {
     return ATTRIBUTES.reduce(function(formats2, attribute) {
       if (domNode.hasAttribute(attribute)) {
@@ -7363,6 +7363,15 @@ function image(Quill) {
     }
   };
 }
+function link(Quill) {
+  const Link = Quill.import("formats/link");
+  Link.sanitize = (url) => {
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    const protocol = anchor.href.slice(0, anchor.href.indexOf(":"));
+    return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
+  };
+}
 function register(Quill) {
   const formats = {
     divider,
@@ -7374,7 +7383,8 @@ function register(Quill) {
     box,
     font,
     text,
-    image
+    image,
+    link
   };
   const options = {};
   Object.values(formats).forEach((value) => extend(options, value(Quill)));
@@ -7395,7 +7405,7 @@ function useQuill(props2, rootRef, trigger) {
   });
   watch(() => props2.placeholder, (value) => {
     if (quillReady) {
-      quill.root.setAttribute("data-placeholder", value);
+      setPlaceHolder(value);
     }
   });
   function html2delta(html) {
@@ -7466,6 +7476,11 @@ function useQuill(props2, rootRef, trigger) {
       delta
     };
   }
+  function setPlaceHolder(placeholder) {
+    const placeHolderAttrName = "data-placeholder";
+    const QuillRoot = quill.root;
+    QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
+  }
   let oldStatus = {};
   function updateStatus(range) {
     const status = range ? quill.getFormat(range) : {};
@@ -7497,10 +7512,16 @@ function useQuill(props2, rootRef, trigger) {
     const events = ["focus", "blur", "input"];
     events.forEach((name) => {
       $el.addEventListener(name, ($event) => {
+        const contents = getContents();
         if (name === "input") {
+          if (getBaseSystemInfo().platform === "ios") {
+            const regExpContent = (contents.html.match(/<span [\s\S]*>([\s\S]*)<\/span>/) || [])[1];
+            const placeholder = regExpContent && regExpContent.replace(/\s/g, "") ? "" : props2.placeholder;
+            setPlaceHolder(placeholder);
+          }
           $event.stopPropagation();
         } else {
-          trigger(name, $event, getContents());
+          trigger(name, $event, contents);
         }
       });
     });

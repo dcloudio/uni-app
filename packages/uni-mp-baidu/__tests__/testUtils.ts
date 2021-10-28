@@ -1,8 +1,9 @@
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { compile, CompilerOptions } from '@dcloudio/uni-mp-compiler'
-import { transformFor } from '../src/plugin/transforms/vFor'
-import { transformOn } from '../src/plugin/transforms/vOn'
-import { transformModel } from '../src/plugin/transforms/vModel'
+import { transformFor } from '../src/compiler/transforms/vFor'
+import { transformOn } from '../src/compiler/transforms/vOn'
+import { transformModel } from '../src/compiler/transforms/vModel'
+import { miniProgram } from '../src/compiler/options'
 
 export function assert(
   template: string,
@@ -26,10 +27,7 @@ export function assert(
       model: transformModel,
     },
     miniProgram: {
-      slot: {
-        fallback: false,
-      },
-      directive: 's-',
+      ...miniProgram,
       emitFile({ source }) {
         // console.log(source)
         if (!options.onError) {

@@ -4,7 +4,7 @@ import { MPComponentOptions, MPComponentInstance } from './component'
 
 import Component = WechatMiniprogram.Component
 
-// const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
+const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
 
 function createObserver(name: string) {
   return function observer(this: MPComponentInstance, newVal: unknown) {
@@ -14,25 +14,34 @@ function createObserver(name: string) {
   }
 }
 
-// function parsePropType(key: string, type: unknown, defaultValue: unknown) {
-//   // [String]=>String
-//   if (isArray(type) && type.length === 1) {
-//     return type[0]
-//   }
-//   if (__PLATFORM__ === 'mp-baidu') {
-//     if (
-//       // [String,Boolean]=>Boolean
-//       defaultValue === false &&
-//       isArray(type) &&
-//       type.length === 2 &&
-//       type.indexOf(String) !== -1 &&
-//       type.indexOf(Boolean) !== -1
-//     ) {
-//       return Boolean
-//     }
-//   }
-//   return type
-// }
+function parsePropType(type: unknown, defaultValue: unknown) {
+  // [String]=>String
+  if (isArray(type) && type.length === 1) {
+    return type[0]
+  }
+  if (__PLATFORM__ === 'mp-baidu') {
+    if (
+      // [String,Boolean]=>Boolean
+      defaultValue === false &&
+      isArray(type) &&
+      type.length === 2 &&
+      type.indexOf(String) !== -1 &&
+      type.indexOf(Boolean) !== -1
+    ) {
+      return Boolean
+    }
+  }
+  return type
+}
+
+function normalizePropType(type: unknown, defaultValue: unknown) {
+  if (__PLATFORM__ === 'mp-weixin') {
+    // 不再生成具体的 type 类型，因为微信首次初始化，值为 undefined 时，会告警：property received type-uncompatible value
+    return null
+  }
+  const res = parsePropType(type, defaultValue)
+  return PROP_TYPES.indexOf(res) !== -1 ? res : null
+}
 
 function initDefaultProps(isBehavior: boolean = false) {
   const properties: Component.PropertyOption = {}
@@ -82,7 +91,7 @@ function createProperty(key: string, prop: any) {
 }
 
 /**
- * 不再生成具体的 type 类型，因为微信首次初始化，值为 undefined 时，会告警：property received type-uncompatible value
+ *
  * @param mpComponentOptions
  * @param rawProps
  * @param isBehavior
@@ -109,17 +118,16 @@ export function initProps(
         if (isFunction(value)) {
           value = value()
         }
-        // const type = (opts as any).type as any
-        // ;(opts as any).type = parsePropType(key, type, value)
+        const type = (opts as any).type as any
+        ;(opts as any).type = normalizePropType(type, value)
         properties[key] = createProperty(key, {
-          type: null, //PROP_TYPES.indexOf(type) !== -1 ? type : null,
+          type: (opts as any).type,
           value,
         })
       } else {
         // content:String
-        // const type = parsePropType(key, opts, null)
         properties[key] = createProperty(key, {
-          type: null, //PROP_TYPES.indexOf(type) !== -1 ? type : null,
+          type: normalizePropType(opts, null),
         })
       }
     })

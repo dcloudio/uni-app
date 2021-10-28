@@ -351,7 +351,6 @@ function findVmByVueId(instance, vuePid) {
     }
 }
 
-// const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
 function createObserver(name) {
     return function observer(newVal) {
         if (this.$vm) {
@@ -359,25 +358,12 @@ function createObserver(name) {
         }
     };
 }
-// function parsePropType(key: string, type: unknown, defaultValue: unknown) {
-//   // [String]=>String
-//   if (isArray(type) && type.length === 1) {
-//     return type[0]
-//   }
-//   if ("mp-weixin" === 'mp-baidu') {
-//     if (
-//       // [String,Boolean]=>Boolean
-//       defaultValue === false &&
-//       isArray(type) &&
-//       type.length === 2 &&
-//       type.indexOf(String) !== -1 &&
-//       type.indexOf(Boolean) !== -1
-//     ) {
-//       return Boolean
-//     }
-//   }
-//   return type
-// }
+function normalizePropType(type, defaultValue) {
+    {
+        // 不再生成具体的 type 类型，因为微信首次初始化，值为 undefined 时，会告警：property received type-uncompatible value
+        return null;
+    }
+}
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
@@ -407,7 +393,7 @@ function createProperty(key, prop) {
     return prop;
 }
 /**
- * 不再生成具体的 type 类型，因为微信首次初始化，值为 undefined 时，会告警：property received type-uncompatible value
+ *
  * @param mpComponentOptions
  * @param rawProps
  * @param isBehavior
@@ -430,18 +416,17 @@ function initProps(mpComponentOptions, rawProps, isBehavior = false) {
                 if (isFunction(value)) {
                     value = value();
                 }
-                // const type = (opts as any).type as any
-                // ;(opts as any).type = parsePropType(key, type, value)
+                opts.type;
+                opts.type = normalizePropType();
                 properties[key] = createProperty(key, {
-                    type: null,
+                    type: opts.type,
                     value,
                 });
             }
             else {
                 // content:String
-                // const type = parsePropType(key, opts, null)
                 properties[key] = createProperty(key, {
-                    type: null, //PROP_TYPES.indexOf(type) !== -1 ? type : null,
+                    type: normalizePropType(),
                 });
             }
         });
@@ -623,7 +608,7 @@ function initTriggerEvent(mpInstance) {
         return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
     };
 }
-function initHook(name, options) {
+function initHook(name, options, isComponent) {
     const oldHook = options[name];
     if (!oldHook) {
         options[name] = function () {

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { hasOwn } from '@vue/shared'
+import { extend, hasOwn } from '@vue/shared'
 import { parseJson } from '../json'
 import { validatePages } from '../pages'
 import { AppJson, NetworkTimeout, PageWindowOptions } from './types'
@@ -57,11 +57,12 @@ function parsePagesJson(
     ) {
       nvuePages.push(pagePath)
     }
-    pageJsons[pagePath] = parseWindowOptions(
-      style,
-      platform,
-      windowOptionsMap
-    ) as PageWindowOptions
+    pageJsons[pagePath] = extend(
+      {
+        component: true,
+      },
+      parseWindowOptions(style, platform, windowOptionsMap) as PageWindowOptions
+    )
   }
   // pages
   validatePages(pagesJson, jsonStr)

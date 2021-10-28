@@ -48,6 +48,7 @@ interface SharedTransformCodegenOptions {
   filename?: string
   bindingMetadata?: BindingMetadata
   prefixIdentifiers?: boolean
+  miniProgram?: MiniProgramCompilerOptions
 }
 
 export interface TransformOptions
@@ -92,7 +93,6 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
   runtimeModuleName?: string
   runtimeGlobalName?: string
   generatorOpts?: GeneratorOptions
-  miniProgram?: MiniProgramCompilerOptions
 }
 
 export interface TemplateCodegenOptions

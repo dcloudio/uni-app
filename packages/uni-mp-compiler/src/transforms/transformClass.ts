@@ -19,6 +19,8 @@ import {
   logicalExpression,
   StringLiteral,
   isTemplateLiteral,
+  parenthesizedExpression,
+  binaryExpression,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -40,7 +42,7 @@ import {
   rewriteSpreadElement,
 } from './utils'
 
-export function isClassBinding({ arg, exp }: DirectiveNode) {
+export function isClassBinding({ arg }: DirectiveNode) {
   return (
     arg && arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.content === 'class'
   )
@@ -63,17 +65,17 @@ export function rewriteClass(
   if (!expr) {
     return
   }
-  let classBidingExpr: Expression = expr
+  let classBindingExpr: Expression = expr
   if (isObjectExpression(expr)) {
-    classBidingExpr = createClassBindingByObjectExpression(
+    classBindingExpr = createClassBindingByObjectExpression(
       rewriteClassObjectExpression(expr, classBindingProp.loc, context)
     )
   } else if (isArrayExpression(expr)) {
-    classBidingExpr = createClassBindingByArrayExpression(
+    classBindingExpr = createClassBindingByArrayExpression(
       rewriteClassArrayExpression(expr, context)
     )
   } else {
-    classBidingExpr = parseExpr(
+    classBindingExpr = parseExpr(
       rewriteClassExpression(classBindingProp.exp, context).content,
       context
     ) as Expression
@@ -83,18 +85,49 @@ export function rewriteClass(
     const staticClass = (props[staticClassPropIndex] as AttributeNode).value!
       .content
     if (staticClass) {
-      if (!isArrayExpression(classBidingExpr)) {
-        classBidingExpr = arrayExpression([classBidingExpr])
+      if (!isArrayExpression(classBindingExpr)) {
+        classBindingExpr = arrayExpression([classBindingExpr])
       }
       const staticClassLiterals = parseStaticClass(staticClass)
       if (index > staticClassPropIndex) {
-        classBidingExpr.elements.unshift(...staticClassLiterals)
+        classBindingExpr.elements.unshift(...staticClassLiterals)
       } else {
-        classBidingExpr.elements.push(...staticClassLiterals)
+        classBindingExpr.elements.push(...staticClassLiterals)
       }
     }
   }
-  classBindingProp.exp = createSimpleExpression(genBabelExpr(classBidingExpr))
+  if (!context.miniProgram.class.array) {
+    classBindingExpr = parseClassBindingArrayExpr(classBindingExpr)
+  }
+
+  classBindingProp.exp = createSimpleExpression(genBabelExpr(classBindingExpr))
+}
+/**
+ * 目前 mp-toutiao, mp-alipay, mp-lark 不支持数组绑定class，故统一转换为字符串相加
+ * @param classBindingExpr
+ * @returns
+ */
+function parseClassBindingArrayExpr(classBindingExpr: Expression) {
+  if (!isArrayExpression(classBindingExpr)) {
+    return classBindingExpr
+  }
+  let binaryExpr!: Expression
+
+  classBindingExpr.elements.forEach((expr) => {
+    if (isArrayExpression(expr)) {
+      expr = parseClassBindingArrayExpr(expr)
+    }
+    if (!binaryExpr) {
+      binaryExpr = parenthesizedExpression(expr as Expression)
+    } else {
+      binaryExpr = binaryExpression(
+        '+',
+        binaryExpression('+', binaryExpr, stringLiteral(' ')),
+        expr as Expression
+      )
+    }
+  })
+  return binaryExpr
 }
 
 function parseStaticClass(staticClass: string): StringLiteral[] {

@@ -1,15 +1,36 @@
 'use strict';
 
-var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var fs = require('fs-extra');
+var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+
+let isFixed = false;
+function fix2648(bundle) {
+    if (isFixed) {
+        return;
+    }
+    const appJsonAsset = bundle['app.json'];
+    if (!appJsonAsset) {
+        return;
+    }
+    try {
+        const { usingComponents } = JSON.parse(appJsonAsset.source.toString());
+        if (usingComponents && !Object.keys(usingComponents).length) {
+            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'), `{"component":true}`);
+            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.qml'), `<!-- https://github.com/dcloudio/uni-app/issues/2648 -->`);
+            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.js'), `Component({})`);
+        }
+        isFixed = true;
+    }
+    catch (_a) { }
+}
 
 var description = "项目配置文件。";
 var packOptions = {
@@ -61,54 +82,13 @@ var source = {
 	condition: condition
 };
 
-let isFixed = false;
-function fix2648(bundle) {
-    if (isFixed) {
-        return;
-    }
-    const appJsonAsset = bundle['app.json'];
-    if (!appJsonAsset) {
-        return;
-    }
-    try {
-        const { usingComponents } = JSON.parse(appJsonAsset.source.toString());
-        if (usingComponents && !Object.keys(usingComponents).length) {
-            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'), `{"component":true}`);
-            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.qml'), `<!-- https://github.com/dcloudio/uni-app/issues/2648 -->`);
-            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.js'), `Component({})`);
-        }
-        isFixed = true;
-    }
-    catch (_a) { }
-}
-
-const uniMiniProgramQQPlugin = {
-    name: 'vite:uni-mp-qq',
-    config() {
-        return {
-            define: {
-                __VUE_CREATED_DEFERRED__: false,
-            },
-            build: {
-                // css 中不支持引用本地资源
-                assetsInlineLimit: 40 * 1024, // 40kb
-            },
-        };
-    },
-    writeBundle(_, bundle) {
-        fix2648(bundle);
-    },
-};
 const options = {
     vite: {
         inject: {
-            uni: [
-                uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-qq/dist/uni.api.esm.js'),
-                'default',
-            ],
+            uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-qq/dist/uni.mp.esm.js'),
+            'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: ['wxcomponents'],
@@ -132,6 +112,9 @@ const options = {
         source,
     },
     template: {
+        class: {
+            array: true,
+        },
         filter: {
             extname: '.qs',
             lang: 'wxs',
@@ -140,8 +123,8 @@ const options = {
                     return `<qs src="${filename}.qs" module="${filter.name}"/>`;
                 }
                 return `<qs module="${filter.name}">
-${filter.code}
-</qs>`;
+  ${filter.code}
+  </qs>`;
             },
         },
         slot: {
@@ -155,6 +138,24 @@ ${filter.code}
     },
     style: {
         extname: '.qss',
+    },
+};
+
+const uniMiniProgramQQPlugin = {
+    name: 'vite:uni-mp-qq',
+    config() {
+        return {
+            define: {
+                __VUE_CREATED_DEFERRED__: false,
+            },
+            build: {
+                // css 中不支持引用本地资源
+                assetsInlineLimit: 40 * 1024, // 40kb
+            },
+        };
+    },
+    writeBundle(_, bundle) {
+        fix2648(bundle);
     },
 };
 var index = [uniMiniProgramQQPlugin, ...initMiniProgramPlugin__default["default"](options)];

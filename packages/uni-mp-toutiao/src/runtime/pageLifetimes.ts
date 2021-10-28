@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-
+import { ON_READY } from '@dcloudio/uni-shared'
 import {
   MPComponentInstance,
   CreateLifetimesOptions,
@@ -9,13 +9,12 @@ import { $destroyComponent } from '@dcloudio/uni-mp-core'
 
 import { initLifetimes as initComponentLifetimes } from './componentLifetimes'
 import { instances } from './parseComponentOptions'
-import { ON_READY } from '@dcloudio/uni-shared'
 
 export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
   return extend(initComponentLifetimes(lifetimesOptions), {
     ready(this: MPComponentInstance) {
       if (this.$vm && lifetimesOptions.isPage(this)) {
-        if (__PLATFORM__ === 'quickapp-webview' && this.pageinstance) {
+        if (this.pageinstance) {
           this.__webviewId__ = (this.pageinstance as any).__pageId__
         }
         this.$vm.$callCreatedHook()

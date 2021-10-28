@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "src/plugin/index.ts": "dist/uni.compiler.js"
+      "src/compiler/index.ts": "dist/uni.compiler.js"
     },
     "output": {
       "format": "cjs"

@@ -1,40 +1,19 @@
-import { Plugin } from 'vite'
-import { addComponentBindLink, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
-import initMiniProgramPlugin, {
-  UniMiniProgramPluginOptions,
-} from '@dcloudio/uni-mp-vite'
+import path from 'path'
+
+import { addComponentBindLink } from '@dcloudio/uni-cli-shared'
+import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 
-const uniMiniProgramWeixinPlugin: Plugin = {
-  name: 'vite:uni-mp-weixin',
-  config() {
-    return {
-      define: {
-        __VUE_CREATED_DEFERRED__: false,
-      },
-      build: {
-        // css 中不支持引用本地资源
-        assetsInlineLimit: 40 * 1024, // 40kb
-      },
-    }
-  },
-}
-
 const projectConfigFilename = 'project.config.json'
 
-const options: UniMiniProgramPluginOptions = {
+export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
-      uni: [
-        resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.api.esm.js'),
-        'default',
-      ],
+      uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
     },
     alias: {
-      'uni-mp-runtime': resolveBuiltIn(
-        '@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'
-      ),
+      'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
       assets: ['wxcomponents'],
@@ -65,6 +44,9 @@ const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
+    class: {
+      array: true,
+    },
     filter: {
       extname: '.wxs',
       lang: 'wxs',
@@ -90,5 +72,3 @@ ${filter.code}
     extname: '.wxss',
   },
 }
-
-export default [uniMiniProgramWeixinPlugin, ...initMiniProgramPlugin(options)]

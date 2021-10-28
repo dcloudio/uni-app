@@ -2,6 +2,7 @@
 
 import { compile } from '../src'
 import { CompilerOptions } from '../src/options'
+import { miniProgram } from './testUtils'
 
 function assert(
   template: string,
@@ -17,10 +18,7 @@ function assert(
       concise: true,
     },
     miniProgram: {
-      slot: {
-        fallback: false,
-      },
-      directive: 'wx:',
+      ...miniProgram,
       emitFile({ source }) {
         console.log(source)
         // expect(source).toBe(templateCode)
@@ -40,10 +38,10 @@ function assert(
 describe('compiler', () => {
   test('scope', () => {
     assert(
-      `<view v-for="item in items"><view v-if="ok"></view></view>`,
-      `<view wx:if="{{a}}">{{b}}</view>`,
+      `<template slot="left"/>`,
+      `<block slot="left"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return _ctx.ok ? {} : {}; }), b: _ctx.ok }
+  return {}
 }`,
       {
         renderDataSpread: false,

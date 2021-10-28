@@ -1,8 +1,12 @@
+import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { compile } from '../src/index'
 import { CompilerOptions } from '../src/options'
 
-export const miniProgram = {
+export const miniProgram: MiniProgramCompilerOptions = {
+  class: {
+    array: true,
+  },
   slot: {
     fallback: false,
   },
@@ -30,10 +34,7 @@ export function assert(
       concise: true,
     },
     miniProgram: {
-      slot: {
-        fallback: false,
-      },
-      directive: 'wx:',
+      ...miniProgram,
       emitFile({ source }) {
         // console.log(source)
         if (!options.onError) {

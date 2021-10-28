@@ -4,7 +4,16 @@ import { LINEFEED } from '@dcloudio/uni-shared'
 import { normalizeMiniProgramFilename } from '../utils'
 
 export interface MiniProgramCompilerOptions {
+  class: {
+    /**
+     * 是否支持绑定 array 类型
+     */
+    array: boolean
+  }
   slot: {
+    /**
+     * 是否支持后备内容
+     */
     fallback: boolean
   }
   filter?: {

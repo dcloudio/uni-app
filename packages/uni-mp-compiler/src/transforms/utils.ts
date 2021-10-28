@@ -9,6 +9,7 @@ import {
   numericLiteral,
   objectProperty,
   SpreadElement,
+  stringLiteral,
 } from '@babel/types'
 import { isComponentTag } from '@dcloudio/uni-shared'
 import {
@@ -94,7 +95,7 @@ export function parseExprWithRewriteClass(
       createSimpleExpression(code, false, loc),
       context,
       !isUndefined(node)
-        ? conditionalExpression(node, numericLiteral(1), numericLiteral(0))
+        ? conditionalExpression(node, numericLiteral(1), stringLiteral(''))
         : node
     ),
     context

@@ -9,50 +9,22 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-var description = "项目配置文件。";
-var packOptions = {
-	ignore: [
-	]
-};
 var setting = {
-	urlCheck: true,
+	urlCheck: false,
 	es6: true,
 	postcss: false,
 	minified: false,
 	newFeature: true
 };
-var compileType = "miniprogram";
-var libVersion = "";
-var appid = "touristappid";
+var appid = "testAppId";
 var projectname = "";
 var condition = {
-	search: {
-		current: -1,
-		list: [
-		]
-	},
-	conversation: {
-		current: -1,
-		list: [
-		]
-	},
-	game: {
-		current: -1,
-		list: [
-		]
-	},
 	miniprogram: {
-		current: -1,
-		list: [
-		]
+		current: -1
 	}
 };
 var source = {
-	description: description,
-	packOptions: packOptions,
 	setting: setting,
-	compileType: compileType,
-	libVersion: libVersion,
 	appid: appid,
 	projectname: projectname,
 	condition: condition
@@ -68,27 +40,12 @@ const options = {
             'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: ['wxcomponents'],
-            targets: [
-                {
-                    src: [
-                        'theme.json',
-                        'sitemap.json',
-                        'ext.json',
-                        'custom-tab-bar',
-                        'functional-pages',
-                        projectConfigFilename,
-                    ],
-                    get dest() {
-                        return process.env.UNI_OUTPUT_DIR;
-                    },
-                },
-            ],
+            assets: ['ttcomponents'],
         },
     },
-    global: 'wx',
+    global: 'tt',
     app: {
-        darkmode: true,
+        darkmode: false,
         subpackages: true,
     },
     project: {
@@ -97,48 +54,48 @@ const options = {
     },
     template: {
         class: {
-            array: true,
+            array: false,
         },
         filter: {
-            extname: '.wxs',
-            lang: 'wxs',
+            extname: '.sjs',
+            lang: 'sjs',
             generate(filter, filename) {
                 if (filename) {
-                    return `<wxs src="${filename}.wxs" module="${filter.name}"/>`;
+                    return `<sjs src="${filename}.sjs" module="${filter.name}"/>`;
                 }
-                return `<wxs module="${filter.name}">
+                return `<sjs module="${filter.name}">
 ${filter.code}
-</wxs>`;
+</sjs>`;
             },
         },
         slot: {
             fallback: false,
         },
-        extname: '.wxml',
-        directive: 'wx:',
+        extname: '.ttml',
+        directive: 'tt:',
         compilerOptions: {
             nodeTransforms: [uniCliShared.addComponentBindLink],
         },
     },
     style: {
-        extname: '.wxss',
+        extname: '.ttss',
     },
 };
 
-const uniMiniProgramWeixinPlugin = {
-    name: 'vite:uni-mp-weixin',
+const uniMiniProgramToutiaoPlugin = {
+    name: 'vite:uni-mp-toutiao',
     config() {
         return {
             define: {
-                __VUE_CREATED_DEFERRED__: false,
+                __VUE_CREATED_DEFERRED__: true,
             },
             build: {
-                // css 中不支持引用本地资源
-                assetsInlineLimit: 40 * 1024, // 40kb
+                // 头条支持本地资源
+                assetsInlineLimit: 0,
             },
         };
     },
 };
-var index = [uniMiniProgramWeixinPlugin, ...initMiniProgramPlugin__default["default"](options)];
+var index = [uniMiniProgramToutiaoPlugin, ...initMiniProgramPlugin__default["default"](options)];
 
 module.exports = index;

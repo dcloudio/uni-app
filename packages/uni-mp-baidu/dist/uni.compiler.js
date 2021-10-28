@@ -1,13 +1,14 @@
 'use strict';
 
-var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
+var path = require('path');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var compilerCore = require('@vue/compiler-core');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 var appid = "";
 var host = "baiduboxapp";
@@ -142,27 +143,23 @@ const transformModel = (dir, node, context, augmentor) => {
     return res;
 };
 
-const uniMiniProgramBaiduPlugin = {
-    name: 'vite:uni-mp-baidu',
-    config() {
-        return {
-            define: {
-                __VUE_CREATED_DEFERRED__: false,
-            },
-        };
+const miniProgram = {
+    class: {
+        array: true,
     },
+    slot: {
+        fallback: false,
+    },
+    directive: 's-',
 };
 const projectConfigFilename = 'project.swan.json';
 const options = {
     vite: {
         inject: {
-            uni: [
-                uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-baidu/dist/uni.api.esm.js'),
-                'default',
-            ],
+            uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-baidu/dist/uni.mp.esm.js'),
+            'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: ['swancomponents'],
@@ -177,8 +174,7 @@ const options = {
         filename: projectConfigFilename,
         source,
     },
-    template: {
-        filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.sjs',
             lang: 'sjs',
             generate(filter, filename) {
@@ -186,25 +182,29 @@ const options = {
                     return `<import-sjs src="${filename}.sjs" module="${filter.name}"/>`;
                 }
                 return `<import-sjs module="${filter.name}">
-${filter.code}
-</import-sjs>`;
+  ${filter.code}
+  </import-sjs>`;
             },
-        },
-        slot: {
-            fallback: false,
-        },
-        extname: '.swan',
-        directive: 's-',
-        compilerOptions: {
+        }, extname: '.swan', compilerOptions: {
             nodeTransforms: [transformFor],
             directiveTransforms: {
                 on: transformOn,
                 model: transformModel,
             },
-        },
-    },
+        } }),
     style: {
         extname: '.css',
+    },
+};
+
+const uniMiniProgramBaiduPlugin = {
+    name: 'vite:uni-mp-baidu',
+    config() {
+        return {
+            define: {
+                __VUE_CREATED_DEFERRED__: false,
+            },
+        };
     },
 };
 var index = [uniMiniProgramBaiduPlugin, ...initMiniProgramPlugin__default["default"](options)];

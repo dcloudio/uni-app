@@ -1,39 +1,31 @@
-import type { Plugin } from 'vite'
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
-import initMiniProgramPlugin, {
-  UniMiniProgramPluginOptions,
-} from '@dcloudio/uni-mp-vite'
+import path from 'path'
+import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
+import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.swan.json'
 import { transformFor } from './transforms/vFor'
 import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
 
-const uniMiniProgramBaiduPlugin: Plugin = {
-  name: 'vite:uni-mp-baidu',
-  config() {
-    return {
-      define: {
-        __VUE_CREATED_DEFERRED__: false,
-      },
-    }
+export const miniProgram: MiniProgramCompilerOptions = {
+  class: {
+    array: true,
   },
+  slot: {
+    fallback: false,
+  },
+  directive: 's-',
 }
 
 const projectConfigFilename = 'project.swan.json'
 
-const options: UniMiniProgramPluginOptions = {
+export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
-      uni: [
-        resolveBuiltIn('@dcloudio/uni-mp-baidu/dist/uni.api.esm.js'),
-        'default',
-      ],
+      uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
     },
     alias: {
-      'uni-mp-runtime': resolveBuiltIn(
-        '@dcloudio/uni-mp-baidu/dist/uni.mp.esm.js'
-      ),
+      'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
       assets: ['swancomponents'],
@@ -49,6 +41,8 @@ const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
+    /* eslint-disable no-restricted-syntax */
+    ...miniProgram,
     filter: {
       extname: '.sjs',
       lang: 'sjs',
@@ -57,15 +51,11 @@ const options: UniMiniProgramPluginOptions = {
           return `<import-sjs src="${filename}.sjs" module="${filter.name}"/>`
         }
         return `<import-sjs module="${filter.name}">
-${filter.code}
-</import-sjs>`
+  ${filter.code}
+  </import-sjs>`
       },
     },
-    slot: {
-      fallback: false,
-    },
     extname: '.swan',
-    directive: 's-',
     compilerOptions: {
       nodeTransforms: [transformFor],
       directiveTransforms: {
@@ -78,5 +68,3 @@ ${filter.code}
     extname: '.css',
   },
 }
-
-export default [uniMiniProgramBaiduPlugin, ...initMiniProgramPlugin(options)]

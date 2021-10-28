@@ -76,4 +76,13 @@ describe('compiler: transform v-slot', () => {
 }`
     )
   })
+  test('old syntax', () => {
+    assert(
+      `<template slot="left"/>`,
+      `<block slot="left"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
 })

@@ -6,6 +6,7 @@ import {
   genNVueCssCode,
   parseManifestJsonOnce,
   findMiniProgramTemplateFiles,
+  MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
 
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
@@ -37,10 +38,8 @@ export interface UniMiniProgramPluginOptions {
   template: {
     extname: string
     directive: string
-    slot: {
-      // 是否支持fallback content
-      fallback: boolean
-    }
+    class: MiniProgramCompilerOptions['class']
+    slot: MiniProgramCompilerOptions['slot']
     filter?: {
       lang: string
       extname: string
@@ -70,6 +69,7 @@ export function uniMiniProgramPlugin(
     uni: uniOptions({
       copyOptions,
       miniProgram: {
+        class: template.class,
         filter: template.filter ? { lang: template.filter.lang } : undefined,
         directive: template.directive,
         emitFile,

@@ -1,0 +1,16 @@
+{
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": false,
+    "minified": false,
+    "newFeature": true
+  },
+  "appid": "testAppId",
+  "projectname": "",
+  "condition": {
+    "miniprogram": {
+      "current": -1
+    }
+  }
+}

@@ -200,6 +200,10 @@ function genLazyElement(node: ElementNode, context: TemplateCodegenContext) {
 function genElement(node: ElementNode, context: TemplateCodegenContext) {
   const { children, isSelfClosing, props } = node
   let tag = node.tag
+  // <template slot="left"/> => <block slot="left"/>
+  if (tag === 'template') {
+    tag = 'block'
+  }
   if (node.tagType === ElementTypes.COMPONENT) {
     tag = hyphenate(tag)
   }

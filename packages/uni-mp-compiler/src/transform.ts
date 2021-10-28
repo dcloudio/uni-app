@@ -247,6 +247,15 @@ export function createTransformContext(
     renderDataSpread = false,
     nodeTransforms = [],
     directiveTransforms = {},
+    miniProgram = {
+      class: {
+        array: true,
+      },
+      slot: {
+        fallback: false,
+      },
+      directive: '',
+    },
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
     expressionPlugins = [],
@@ -295,6 +304,7 @@ export function createTransformContext(
   const context: TransformContext = {
     // options
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
+    miniProgram,
     isTS,
     inline,
     hashId,
