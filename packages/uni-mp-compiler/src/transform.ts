@@ -6,6 +6,7 @@ import {
   isArray,
   capitalize,
   camelize,
+  hasOwn,
 } from '@vue/shared'
 
 import {
@@ -25,7 +26,7 @@ import {
   isCallExpression,
   isIdentifier,
   isSpreadElement,
-  CallExpression,
+  Identifier,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -523,28 +524,36 @@ function hasSpreadElement(expr: ObjectExpression): boolean {
     if (isSpreadElement(prop)) {
       return true
     } else {
-      const objExpr = parseReturnObjExpr(prop as ObjectProperty)
-      if (objExpr) {
-        return hasSpreadElement(objExpr)
+      const returnStatement = parseReturnStatement(prop as ObjectProperty)
+      if (returnStatement) {
+        return hasSpreadElement(returnStatement.argument as ObjectExpression)
       }
     }
   })
 }
 
-function parseReturnObjExpr(prop: ObjectProperty) {
+// 目前硬编码识别 _f,应该读取 context.helperString
+const returnObjExprMap = {
+  _f: 1, // _f(_ctx.items,()=>{return {}})
+  _w: 0, // _w(()=>{return {}})
+}
+
+function parseReturnStatement(prop: ObjectProperty) {
   if (
     isObjectProperty(prop) &&
     isCallExpression(prop.value) &&
-    isIdentifier(prop.value.callee) &&
-    // 目前硬编码识别 _f,应该读取 context.helperString
-    prop.value.callee.name === '_f'
+    isIdentifier(prop.value.callee)
   ) {
-    return (
-      (
-        (prop.value.arguments[1] as ArrowFunctionExpression)
-          .body as BlockStatement
+    const { name } = prop.value.callee as Identifier
+    if (hasOwn(returnObjExprMap, name)) {
+      return (
+        (
+          prop.value.arguments[
+            returnObjExprMap[name]
+          ] as ArrowFunctionExpression
+        ).body as BlockStatement
       ).body[0] as ReturnStatement
-    ).argument as ObjectExpression
+    }
   }
 }
 
@@ -552,18 +561,12 @@ function transformObjectPropertyExpr(
   prop: ObjectProperty,
   context: TransformContext
 ) {
-  // vFor
-  const objExpr = parseReturnObjExpr(prop)
-  if (objExpr) {
+  // vFor,withScopedSlot
+  const returnStatement = parseReturnStatement(prop)
+  if (returnStatement) {
+    const objExpr = returnStatement.argument as ObjectExpression
     if (hasSpreadElement(objExpr)) {
-      ;(
-        (
-          (
-            (prop.value as CallExpression)
-              .arguments[1] as ArrowFunctionExpression
-          ).body as BlockStatement
-        ).body[0] as ReturnStatement
-      ).argument = transformObjectSpreadExpr(objExpr, context)
+      returnStatement.argument = transformObjectSpreadExpr(objExpr, context)
     }
   }
   return prop

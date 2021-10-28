@@ -6,14 +6,15 @@ import {
   removeExt,
 } from '@dcloudio/uni-cli-shared'
 import { Plugin } from 'vite'
+import base64url from 'base64url'
 import { UniMiniProgramPluginOptions } from '../plugin'
 
 function encode(str: string) {
-  return Buffer.from(str).toString('base64url')
+  return base64url.encode(str)
 }
 
 function decode(str: string) {
-  return Buffer.from(str, 'base64url').toString()
+  return base64url.decode(str)
 }
 
 const uniPagePrefix = 'uniPage://'

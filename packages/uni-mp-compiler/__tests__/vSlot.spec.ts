@@ -25,6 +25,13 @@ describe('compiler: transform v-slot', () => {
   return {}
 }`
     )
+    assert(
+      `<unicloud-db v-slot:default="{data, loading, error, options}" collection=""><view v-if="error">{{error.message}}</view><view v-else></view></unicloud-db>`,
+      `<unicloud-db v-s="{{['default']}}" slot="default" collection="" v-i="2a9ec0b0-0"><block wx:for="{{a}}" wx:for-item="v0" wx:key="c"><view wx:if="{{v0.a}}">{{v0.b}}</view><view wx:else></view></block></unicloud-db>`,
+      `(_ctx, _cache) => {
+  return { a: _w(({ data, loading, error, options }, s0, i0) => { return _e({ a: error }, error ? { b: _t(error.message) } : {}, { c: s0 }); }, { name: 'default', vueId: '2a9ec0b0-0' }) }
+}`
+    )
   })
 
   test('scoped slots', () => {

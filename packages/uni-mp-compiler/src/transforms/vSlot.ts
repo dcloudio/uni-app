@@ -71,34 +71,29 @@ export const transformSlot: NodeTransform = (node, context) => {
       )
       break
     }
-    const slotName = findSlotName(slotDir)
-    if (!slotName) {
-      continue
+    const slotName = transformTemplateSlotElement(
+      slotDir,
+      slotElement,
+      node,
+      context
+    )
+    if (slotName) {
+      slots.add(slotName)
     }
-    slots.add(slotName)
-    const { exp } = slotDir
-    // non scoped slots
-    if (!exp) {
-      continue
-    }
-    // empty
-    if (exp.type === NodeTypes.SIMPLE_EXPRESSION && !exp.content.trim()) {
-      continue
-    }
-    slots.add(slotName)
-    // 使用vFor来简单处理scoped slot作用域问题
-    slotElement.children = [
-      createVForTemplate(
-        slotElement,
-        { name: slotName, value: genExpr(exp), slotComponent: node },
-        context
-      ),
-    ]
-    // v-slot="slotProps" => v-slot 避免 transformIdentifier 生成 slotProps 的变量声明
-    slotDir.exp = undefined
   }
   if (implicitDefaultChildren.length) {
     slots.add('default')
+  }
+  if (onComponentSlot) {
+    // <unicloud-db v-slot:default="{data, loading, error, options}"/>
+    // => <unicloud-db  collection=""><template v-slot:default="{data, loading, error, options}"/></unicloud-db>
+    slots.add('default')
+    const templateNode = createTemplateNode(
+      onComponentSlot,
+      implicitDefaultChildren
+    )
+    transformTemplateSlotElement(onComponentSlot, templateNode, node, context)
+    node.children = templateNode.children
   }
   if (slots.size) {
     node.props.unshift(
@@ -107,6 +102,56 @@ export const transformSlot: NodeTransform = (node, context) => {
         `[${[...slots].map((name) => `'${name}'`).join(',')}]`
       )
     )
+  }
+}
+
+function transformTemplateSlotElement(
+  slotDir: DirectiveNode,
+  slotTemplate: TemplateNode,
+  slotComponent: ComponentNode,
+  context: TransformContext
+) {
+  const slotName = findSlotName(slotDir)
+  if (!slotName) {
+    return
+  }
+  const { exp } = slotDir
+  // non scoped slots
+  if (!exp) {
+    return slotName
+  }
+  // empty
+  if (exp.type === NodeTypes.SIMPLE_EXPRESSION && !exp.content.trim()) {
+    return slotName
+  }
+
+  // 使用vFor来简单处理scoped slot作用域问题
+  slotTemplate.children = [
+    createVForTemplate(
+      slotTemplate,
+      { name: slotName, value: genExpr(exp), slotComponent },
+      context
+    ),
+  ]
+  // v-slot="slotProps" => v-slot 避免 transformIdentifier 生成 slotProps 的变量声明
+  slotDir.exp = undefined
+  return slotName
+}
+
+function createTemplateNode(
+  slotDir: DirectiveNode,
+  children: TemplateChildNode[]
+): TemplateNode {
+  return {
+    type: NodeTypes.ELEMENT,
+    tag: 'template',
+    tagType: ElementTypes.TEMPLATE,
+    loc: locStub,
+    isSelfClosing: false,
+    codegenNode: undefined,
+    ns: 0,
+    props: [slotDir],
+    children,
   }
 }
 
