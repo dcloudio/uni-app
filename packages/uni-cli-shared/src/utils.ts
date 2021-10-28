@@ -7,9 +7,21 @@ export { default as hash } from 'hash-sum'
 
 import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
 import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import { NodeTypes, ElementNode, Node } from '@vue/compiler-core'
 export const isWindows = os.platform() === 'win32'
 export function normalizePath(id: string): string {
   return isWindows ? id.replace(/\\/g, '/') : id
+}
+
+export function checkElementNodeTag(
+  node: Node | null | undefined,
+  tag: string
+): node is ElementNode {
+  return (
+    !!node &&
+    node.type === NodeTypes.ELEMENT &&
+    (node as ElementNode).tag === tag
+  )
 }
 
 export const resolveMainPathOnce = once((inputDir: string) => {

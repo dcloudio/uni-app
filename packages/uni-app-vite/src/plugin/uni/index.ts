@@ -1,6 +1,10 @@
 import { isNativeTag, isCustomElement } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
-import { UniVitePlugin, initI18nOptions } from '@dcloudio/uni-cli-shared'
+import {
+  UniVitePlugin,
+  initI18nOptions,
+  transformPageHead,
+} from '@dcloudio/uni-cli-shared'
 
 export function uniOptions(): UniVitePlugin['uni'] {
   return {
@@ -28,6 +32,7 @@ export function uniOptions(): UniVitePlugin['uni'] {
     compilerOptions: {
       isNativeTag,
       isCustomElement,
+      nodeTransforms: [transformPageHead],
     },
     transformEvent: {
       tap: 'click',

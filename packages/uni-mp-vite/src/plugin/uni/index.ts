@@ -4,6 +4,7 @@ import {
   CopyOptions,
   UniVitePlugin,
   MiniProgramCompilerOptions,
+  transformPageHead,
 } from '@dcloudio/uni-cli-shared'
 import { TemplateCompiler } from '@vue/compiler-sfc'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
@@ -26,6 +27,10 @@ export function uniOptions({
       isNativeTag,
       isCustomElement,
       ...compilerOptions,
+      nodeTransforms: [
+        transformPageHead,
+        ...(compilerOptions?.nodeTransforms || []),
+      ],
     } as any,
   }
 }
