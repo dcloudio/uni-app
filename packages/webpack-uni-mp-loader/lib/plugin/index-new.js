@@ -71,7 +71,8 @@ function addMPPluginRequire (compilation) {
   const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
   const UNI_MP_PLUGIN_EXPORT = JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
   assetsKeys.forEach(name => {
-    if ((name === UNI_MP_PLUGIN_MAIN && process.env.UNI_MP_PLUGIN) || UNI_MP_PLUGIN_EXPORT.includes(name)) {
+    const needProcess = process.env.UNI_MP_PLUGIN ? name === UNI_MP_PLUGIN_MAIN : UNI_MP_PLUGIN_EXPORT.includes(name)
+    if (needProcess) {
       const modules = compilation.modules
 
       const filePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, name))
