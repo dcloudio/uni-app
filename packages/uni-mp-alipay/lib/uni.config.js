@@ -25,12 +25,14 @@ module.exports = {
       copyOptions.push('uni_modules/' + module + '/mycomponents')
     })
 
-    if (process.env.UNI_MP_PLUGIN) {
-      copyOptions.push({
-        from: path.resolve(process.env.UNI_INPUT_DIR, 'plugin.json'),
-        transform: content => JSON.stringify(parseJson(content.toString(), true))
+    JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
+      .concat(process.env.UNI_MP_PLUGIN ? 'plugin.json' : undefined)
+      .forEach(fileName => {
+        fileName && copyOptions.push({
+          from: path.resolve(process.env.UNI_INPUT_DIR, fileName),
+          transform: content => fileName === 'plugin.json' ? JSON.stringify(parseJson(content.toString(), true)) : content
+        })
       })
-    }
 
     return copyOptions
   }

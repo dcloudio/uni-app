@@ -138,6 +138,10 @@ function initSubpackageConfig (webpackConfig, vueOptions) {
   webpackConfig.output.jsonpFunction('webpackJsonp_' + (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
 }
 
+function addToUniEntry (fileName) {
+  fileName && (process.UNI_ENTRY[fileName.split('.')[0]] = path.resolve(process.env.UNI_INPUT_DIR, fileName))
+}
+
 module.exports = {
   vueConfig: {
     parallel: false
@@ -171,17 +175,20 @@ module.exports = {
       plugins.push(new PreprocessAssetsPlugin())
     }
 
-    if (process.env.UNI_MP_PLUGIN) {
-      // 小程序插件入口使用
-      // packages\webpack-uni-mp-loader\lib\plugin\index-new.js -> addMPPluginRequire
-      beforeCode += `${process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'}.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__ = __webpack_require__;`
+    {
+      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'
+      if (process.env.UNI_MP_PLUGIN) {
+        // 小程序插件入口使用
+        // packages\webpack-uni-mp-loader\lib\plugin\index-new.js -> addMPPluginRequire
+        addToUniEntry(process.env.UNI_MP_PLUGIN_MAIN)
 
-      const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
-      if (UNI_MP_PLUGIN_MAIN) {
-        process.UNI_ENTRY[UNI_MP_PLUGIN_MAIN.split('.')[0]] = path.resolve(process.env.UNI_INPUT_DIR,
-          UNI_MP_PLUGIN_MAIN)
+        beforeCode += `${globalEnv}.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__ = __webpack_require__;`
+      } else {
+        beforeCode += `${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
       }
     }
+
+    JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT).forEach(fileName => addToUniEntry(fileName))
 
     const alias = { // 仅 mp-weixin
       'mpvue-page-factory': require.resolve(
