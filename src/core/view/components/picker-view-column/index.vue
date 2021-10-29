@@ -122,6 +122,7 @@ export default {
             break
           case 'move':
             this._handleTouchMove(e)
+            e.stopPropagation()
             break
           case 'end':
           case 'cancel':
