@@ -122,10 +122,10 @@ function normalizeLocale(locale, messages) {
     }
     locale = locale.toLowerCase();
     if (locale.indexOf('zh') === 0) {
-        if (locale.indexOf('-hans') !== -1) {
+        if (locale.indexOf('-hans') > -1) {
             return LOCALE_ZH_HANS;
         }
-        if (locale.indexOf('-hant') !== -1) {
+        if (locale.indexOf('-hant') > -1) {
             return LOCALE_ZH_HANT;
         }
         if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
@@ -217,11 +217,29 @@ class I18n {
     }
 }
 
-const ignoreVueI18n = true;
 function watchAppLocale(appVm, i18n) {
-    appVm.$watch(() => appVm.$locale, (newLocale) => {
-        i18n.setLocale(newLocale);
-    });
+    // 需要保证 watch 的触发在组件渲染之前
+    if (appVm.$watchLocale) {
+        // vue2
+        appVm.$watchLocale((newLocale) => {
+            i18n.setLocale(newLocale);
+        });
+    }
+    else {
+        appVm.$watch(() => appVm.$locale, (newLocale) => {
+            i18n.setLocale(newLocale);
+        });
+    }
+}
+function getDefaultLocale() {
+    if (typeof uni !== 'undefined' && uni.getLocale) {
+        return uni.getLocale();
+    }
+    // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+    if (typeof global !== 'undefined' && global.getLocale) {
+        return global.getLocale();
+    }
+    return LOCALE_EN;
 }
 function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参
@@ -232,9 +250,8 @@ function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
         ];
     }
     if (typeof locale !== 'string') {
-        locale =
-            (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
-                LOCALE_EN;
+        // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
+        locale = getDefaultLocale();
     }
     if (typeof fallbackLocale !== 'string') {
         fallbackLocale =
@@ -256,33 +273,32 @@ function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
             };
         }
         else {
-            const appVm = getApp().$vm;
-            watchAppLocale(appVm, i18n);
-            if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
-                // if (!locale) {
-                //   i18n.setLocale(getDefaultLocale())
-                // }
-                /* eslint-disable no-func-assign */
-                t = function (key, values) {
+            let isWatchedAppLocale = false;
+            t = function (key, values) {
+                const appVm = getApp().$vm;
+                // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
+                // options: {
+                // 	type: Array,
+                // 	default () {
+                // 		return [{
+                // 			icon: 'shop',
+                // 			text: t("uni-goods-nav.options.shop"),
+                // 		}, {
+                // 			icon: 'cart',
+                // 			text: t("uni-goods-nav.options.cart")
+                // 		}]
+                // 	}
+                // },
+                if (appVm) {
                     // 触发响应式
                     appVm.$locale;
-                    return i18n.t(key, values);
-                };
-            }
-            else {
-                /* eslint-disable no-func-assign */
-                t = function (key, values) {
-                    const $i18n = appVm.$i18n;
-                    const silentTranslationWarn = $i18n.silentTranslationWarn;
-                    $i18n.silentTranslationWarn = true;
-                    const msg = appVm.$t(key, values);
-                    $i18n.silentTranslationWarn = silentTranslationWarn;
-                    if (msg !== key) {
-                        return msg;
+                    if (!isWatchedAppLocale) {
+                        isWatchedAppLocale = true;
+                        watchAppLocale(appVm, i18n);
                     }
-                    return i18n.t(key, $i18n.locale, values);
-                };
-            }
+                }
+                return i18n.t(key, values);
+            };
         }
         return t(key, values);
     };
@@ -416,4 +432,23 @@ function walkJsonObj(jsonObj, walk) {
     return false;
 }
 
-export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, normalizeLocale, parseI18nJson };
+function resolveLocale(locales) {
+    return (locale) => {
+        if (!locale) {
+            return locale;
+        }
+        locale = normalizeLocale(locale) || locale;
+        return resolveLocaleChain(locale).find((locale) => locales.indexOf(locale) > -1);
+    };
+}
+function resolveLocaleChain(locale) {
+    const chain = [];
+    const tokens = locale.split('-');
+    while (tokens.length) {
+        chain.push(tokens.join('-'));
+        tokens.pop();
+    }
+    return chain;
+}
+
+export { BaseFormatter as Formatter, I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, compileI18nJsonStr, hasI18nJson, initVueI18n, isI18nStr, isString, normalizeLocale, parseI18nJson, resolveLocale };

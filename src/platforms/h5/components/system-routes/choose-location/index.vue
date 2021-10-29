@@ -1,17 +1,21 @@
 <template>
   <div class="uni-system-choose-location">
     <v-uni-map
-      v-if="latitude"
       :latitude="latitude"
       :longitude="longitude"
       class="map"
       show-location
-      @regionchange="_regionchange"
+      :libraries="['places']"
+      @updated="getList"
+      @regionchange="onRegionChange"
     >
-      <div class="map-location" />
+      <div
+        class="map-location"
+        :style="locationStyle"
+      />
       <div
         class="map-move"
-        @click="_moveToLocation"
+        @click="moveToLocation"
       >
         <i>&#xec32;</i>
       </div>
@@ -19,14 +23,14 @@
     <div class="nav">
       <div
         class="nav-btn back"
-        @click="_back"
+        @click="back"
       >
         <i class="uni-btn-icon">&#xe650;</i>
       </div>
       <div
         class="nav-btn confirm"
         :class="{ disable: !selected }"
-        @click="_choose"
+        @click="choose"
       >
         <i class="uni-btn-icon">&#xe651;</i>
       </div>
@@ -36,9 +40,9 @@
         <v-uni-input
           v-model="keyword"
           class="search-input"
-          placeholder="搜索地点"
+          :placeholder="$$t('uni.chooseLocation.search')"
           @focus="searching = true"
-          @input="_input"
+          @input="input"
         />
         <div
           v-if="searching"
@@ -48,13 +52,13 @@
             keyword = '';
           "
         >
-          取消
+          {{ $$t("uni.chooseLocation.cancel") }}
         </div>
       </div>
       <v-uni-scroll-view
         scroll-y
         class="list"
-        @scrolltolower="_scrolltolower"
+        @scrolltolower="loadMore"
       >
         <div
           v-if="loading"
@@ -90,8 +94,15 @@ import {
 } from 'uni-shared'
 import {
   getJSONP
-} from 'uni-platform/helpers/get-jsonp'
-const key = __uniConfig.qqMapKey
+} from '../../../helpers/get-jsonp'
+import {
+  i18nMixin
+} from 'uni-core/helpers/i18n'
+import {
+  ICON_PATH_TARGET,
+  MapType,
+  getMapInfo
+} from '../../../helpers/location'
 
 export default {
   name: 'SystemChooseLocation',
@@ -100,24 +111,32 @@ export default {
       if (distance > 100) {
         return `${distance > 1000 ? (distance / 1000).toFixed(1) + 'k' : distance.toFixed(0)}m | `
       } else if (distance > 0) {
-        return '100m内 | '
+        return '<100m | '
       } else {
         return ''
       }
     }
   },
+  mixins: [i18nMixin],
   data () {
+    const {
+      latitude,
+      longitude
+    } = this.$route.query
     return {
-      latitude: 0,
-      longitude: 0,
-      pageSize: 15,
+      latitude: latitude,
+      longitude: longitude,
+      pageSize: 20,
       pageIndex: 1,
+      hasNextPage: true,
+      nextPage: null,
       selectedIndex: -1,
       list: [],
       keyword: '',
       searching: false,
       loading: true,
-      adcode: ''
+      adcode: '',
+      locationStyle: `background-image: url("${ICON_PATH_TARGET}")`
     }
   },
   computed: {
@@ -129,50 +148,52 @@ export default {
     }
   },
   created () {
-    this._moveToLocation()
-    this._search = debounce(() => {
-      this._reset()
+    if (!this.latitude || !this.longitude) {
+      this.moveToLocation()
+    }
+    this.search = debounce(() => {
+      this.reset()
       if (this.keyword) {
-        this._getList()
+        this.getList()
       }
     }, 1000)
     this.$watch('searching', val => {
-      this._reset()
+      this.reset()
       if (!val) {
-        this._getList()
+        this.getList()
       }
     })
   },
   methods: {
-    _choose () {
+    choose () {
       if (this.selected) {
         UniViewJSBridge.publishHandler('onChooseLocation', Object.assign({}, this.selected))
         getApp().$router.back()
       }
     },
-    _back () {
+    back () {
       UniViewJSBridge.publishHandler('onChooseLocation', null)
       getApp().$router.back()
     },
-    _moveToLocation () {
+    moveToLocation () {
       uni.getLocation({
         type: 'gcj02',
-        success: this._move.bind(this),
+        success: this.move.bind(this),
         fail: () => {
-          this._move({
-            latitude: 39.90960456049752,
-            longitude: 116.3972282409668
-          })
+          // this.move({
+          //   latitude: 39.90960456049752,
+          //   longitude: 116.3972282409668
+          // })
         }
       })
     },
-    _regionchange ({ detail: { centerLocation } }) {
+    onRegionChange ({ detail: { centerLocation } }) {
       if (centerLocation) {
         // TODO 图钉 icon 动画
-        this._move(centerLocation)
+        this.move(centerLocation)
       }
     },
-    _pushData (array) {
+    pushData (array) {
       array.forEach(item => {
         this.list.push({
           name: item.title,
@@ -183,48 +204,92 @@ export default {
         })
       })
     },
-    _getList () {
+    getList () {
       this.loading = true
-      const url = this.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${this.boundary}&keyword=${this.keyword}&page_size=${this.pageSize}&page_index=${this.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${this.latitude},${this.longitude}&get_poi=1&poi_options=page_size=${this.pageSize};page_index=${this.pageIndex}`
-      // TODO 列表加载失败提示
-      getJSONP(url, {
-        callback: 'callback'
-      }, (res) => {
-        this.loading = false
-        if (this.searching && 'data' in res && res.data.length) {
-          this._pushData(res.data)
-        } else if ('result' in res) {
-          const result = res.result
-          this.adcode = result.ad_info ? result.ad_info.adcode : ''
-          if (result.pois) {
-            this._pushData(result.pois)
-          }
+      const mapInfo = getMapInfo()
+      if (mapInfo.type === MapType.GOOGLE) {
+        if (this.pageIndex > 1 && this.nextPage) {
+          this.nextPage()
+          return
         }
-      }, () => {
-        this.loading = false
-      })
-    },
-    _scrolltolower () {
-      if (!this.loading && this.list.length === this.pageSize * this.pageIndex) {
-        this.pageIndex++
-        this._getList()
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'))
+        service[this.searching ? 'textSearch' : 'nearbySearch']({
+          location: {
+            lat: this.latitude,
+            lng: this.longitude
+          },
+          query: this.keyword,
+          radius: 5000
+        }, (results, state, page) => {
+          this.loading = false
+          if (results && results.length) {
+            results.forEach((item) => {
+              this.list.push({
+                name: item.name || '',
+                address: item.vicinity || item.formatted_address || '',
+                distance: 0,
+                latitude: item.geometry.location.lat(),
+                longitude: item.geometry.location.lng()
+              })
+            })
+          }
+          if (page) {
+            if (!page.hasNextPage) {
+              this.hasNextPage = false
+            } else {
+              this.nextPage = () => {
+                page.nextPage()
+              }
+            }
+          }
+        })
+      } else if (mapInfo.type === MapType.QQ) {
+        const url = this.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${mapInfo.key}&boundary=${this.boundary}&keyword=${this.keyword}&page_size=${this.pageSize}&page_index=${this.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${mapInfo.key}&location=${this.latitude},${this.longitude}&get_poi=1&poi_options=page_size=${this.pageSize};page_index=${this.pageIndex}`
+        // TODO 列表加载失败提示
+        getJSONP(url, {
+          callback: 'callback'
+        }, (res) => {
+          this.loading = false
+          if (this.searching && 'data' in res && res.data.length) {
+            this.pushData(res.data)
+          } else if ('result' in res) {
+            const result = res.result
+            this.adcode = result.ad_info ? result.ad_info.adcode : ''
+            if (result.pois) {
+              this.pushData(result.pois)
+            }
+            if (this.list.length === this.pageSize * this.pageIndex) {
+              this.hasNextPage = false
+            }
+          }
+        }, () => {
+          this.loading = false
+        })
       }
     },
-    _reset () {
+    loadMore () {
+      if (!this.loading && this.hasNextPage) {
+        this.pageIndex++
+        this.getList()
+      }
+    },
+    reset () {
       this.selectedIndex = -1
       this.pageIndex = 1
+      this.hasNextPage = true
+      this.nextPage = null
       this.list = []
     },
-    _move ({ latitude, longitude }) {
+    move ({ latitude, longitude }) {
       this.latitude = latitude
       this.longitude = longitude
       if (!this.searching) {
-        this._reset()
-        this._getList()
+        this.reset()
+        this.getList()
       }
     },
-    _input () {
-      this._search()
+    input () {
+      this.search()
     }
   }
 }
@@ -264,7 +329,6 @@ export default {
   height: 52px;
   margin-left: -16px;
   cursor: pointer;
-  background-image: url("data:image/png;base64,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");
   background-size: 100%;
 }
 
@@ -373,7 +437,7 @@ export default {
 }
 
 .uni-system-choose-location .search-btn {
-  width: 2.8em;
+  margin-left: 5px;
   color: #007aff;
   font-size: 17px;
   text-align: center;

@@ -474,6 +474,7 @@ const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interce
         removeInterceptorHook(globalInterceptors, method);
     }
 }, RemoveInterceptorProtocol);
+const interceptors = {};
 
 const API_ON = '$on';
 const OnProtocol = [
@@ -733,7 +734,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return uni.getSystemInfoSync().language || 'zh-Hans';
+    return my.getSystemInfoSync().language || 'zh-Hans';
 };
 const setLocale = (locale) => {
     const app = getApp();
@@ -754,6 +755,9 @@ const onLocaleChange = (fn) => {
         onLocaleChangeCallbacks.push(fn);
     }
 };
+if (typeof global !== 'undefined') {
+    global.getLocale = getLocale;
+}
 
 const baseApis = {
     $on,
@@ -761,6 +765,7 @@ const baseApis = {
     $once,
     $emit,
     upx2px,
+    interceptors,
     addInterceptor,
     removeInterceptor,
     onAppLaunch,

@@ -4,6 +4,9 @@ import {
 import {
   i18n
 } from 'uni-helpers/i18n'
+import {
+  DC_LOCALE
+} from 'uni-helpers/constants'
 
 export function getLocale () {
   // 优先使用 $locale
@@ -30,6 +33,9 @@ export function setLocale (locale) {
         )
       })
       weex.requireModule('plus').setLanguage(locale)
+    }
+    if (__PLATFORM__ === 'h5') {
+      window.localStorage && (localStorage[DC_LOCALE] = locale)
     }
     callbacks.forEach(callbackId => {
       invoke(callbackId, { locale })

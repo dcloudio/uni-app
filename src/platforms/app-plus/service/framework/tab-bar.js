@@ -49,7 +49,7 @@ function setTabBarBadge (type, index, text) {
 /**
  * 动态设置 tabBar 某一项的内容
  */
-function setTabBarItem (index, text, iconPath, selectedIconPath) {
+function setTabBarItem (index, text, iconPath, selectedIconPath, visible) {
   const item = {
     index
   }
@@ -62,7 +62,17 @@ function setTabBarItem (index, text, iconPath, selectedIconPath) {
   if (selectedIconPath) {
     item.selectedIconPath = getRealPath(selectedIconPath)
   }
-  tabBar && tabBar.setTabBarItem(item)
+  if (visible !== undefined) {
+    item.visible = config.list[index].visible = visible
+    delete item.index
+
+    const tabbarItems = config.list.map(item => ({ visible: item.visible }))
+    tabbarItems[index] = item
+
+    tabBar && tabBar.setTabBarItems({ list: tabbarItems })
+  } else {
+    tabBar && tabBar.setTabBarItem(item)
+  }
 }
 /**
  * 动态设置 tabBar 的整体样式

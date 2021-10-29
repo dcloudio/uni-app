@@ -8,6 +8,7 @@ module.exports = function (content, map) {
   this.callback(null, 'module.exports = ' + genStyleString(content, this), map)
 }
 const uniI18n = require('@dcloudio/uni-cli-i18n')
+const print = require('../../../util/console')
 
 // @todo:
 // font-relative lengths: em, ex, ch, ic
@@ -56,7 +57,19 @@ function genStyleString (input, loader) {
             msgs.unshift(uniI18n.__('pluginHbuilderx.nvueCssWarning'))
             isFirst = false
           }
-          msgs.forEach(msg => console.warn(msg))
+          msgs.forEach(msg => {
+            switch (msg.split(':')[0]) {
+              case 'ERROR':
+                print.error(msg)
+                break
+              case 'WARNING' :
+                print.warn(msg)
+                break
+              default:
+                print.log(msg)
+                break
+            }
+          })
         }
       }
       try {

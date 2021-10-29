@@ -55,6 +55,7 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 
 class EventChannel {
     constructor(id, events) {
@@ -557,6 +558,9 @@ const HOOKS = [
     ON_PAGE_NOT_FOUND,
     ON_UNHANDLE_REJECTION,
 ];
+{
+    HOOKS.push(ON_SHARE_APP_MESSAGE);
+}
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
     const appOptions = {
@@ -597,7 +601,7 @@ function initCreateApp(parseAppOptions) {
     };
 }
 function initLocale(appVm) {
-    const locale = ref(uni.getSystemInfoSync().language || 'zh-Hans');
+    const locale = ref(my.getSystemInfoSync().language || 'zh-Hans');
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
