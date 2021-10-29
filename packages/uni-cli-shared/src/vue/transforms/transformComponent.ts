@@ -7,10 +7,11 @@ import {
   TransformContext,
 } from '@vue/compiler-core'
 import { COMPONENT_BIND_LINK, COMPONENT_ON_LINK } from '../../mp/constants'
-import { isUserComponent } from '../utils'
+import { isUserComponent, createAttributeNode } from '../utils'
 
 export function createTransformComponentLink(
-  name: typeof COMPONENT_BIND_LINK | typeof COMPONENT_ON_LINK
+  name: typeof COMPONENT_BIND_LINK | typeof COMPONENT_ON_LINK,
+  type: NodeTypes.ATTRIBUTE | NodeTypes.DIRECTIVE = NodeTypes.DIRECTIVE
 ) {
   return function transformComponentLink(
     node: RootNode | TemplateChildNode,
@@ -19,13 +20,17 @@ export function createTransformComponentLink(
     if (!isUserComponent(node, context)) {
       return
     }
-    node.props.push({
-      type: NodeTypes.DIRECTIVE,
-      name: 'on',
-      modifiers: [],
-      loc: locStub,
-      arg: createSimpleExpression(name, true),
-      exp: createSimpleExpression('__l', true),
-    })
+    if (type === NodeTypes.DIRECTIVE) {
+      node.props.push({
+        type: NodeTypes.DIRECTIVE,
+        name: 'on',
+        modifiers: [],
+        loc: locStub,
+        arg: createSimpleExpression(name, true),
+        exp: createSimpleExpression('__l', true),
+      })
+    } else {
+      node.props.push(createAttributeNode(name, '__l'))
+    }
   }
 }

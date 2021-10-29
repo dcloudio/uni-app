@@ -63,7 +63,7 @@ function selectAllComponents(
 ) {
   const components = mpInstance.selectAllComponents(selector)
   components.forEach((component) => {
-    const ref = component.dataset.ref
+    const ref = component.dataset.r
     $refs[ref] = component.$vm || component
     if (__PLATFORM__ === 'mp-weixin') {
       if (component.dataset.vueGeneric === 'scoped') {
@@ -88,10 +88,10 @@ export function initRefs(
   Object.defineProperty(instance, 'refs', {
     get() {
       const $refs: Record<string, any> = {}
-      selectAllComponents(mpInstance, '.v-r', $refs)
-      const forComponents = mpInstance.selectAllComponents('.v-r-i-f')
+      selectAllComponents(mpInstance, '.r', $refs)
+      const forComponents = mpInstance.selectAllComponents('.r-i-f')
       forComponents.forEach((component) => {
-        const ref = component.dataset.ref
+        const ref = component.dataset.r
         if (!$refs[ref]) {
           $refs[ref] = []
         }

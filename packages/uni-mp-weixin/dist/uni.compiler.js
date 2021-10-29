@@ -120,7 +120,10 @@ ${filter.code}
             isCustomElement: (tag) => {
                 return ['page-meta', 'navigation-bar', 'match-media'].includes(tag);
             },
-            nodeTransforms: [uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK)],
+            nodeTransforms: [
+                uniCliShared.transformRef,
+                uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK),
+            ],
         },
     },
     style: {

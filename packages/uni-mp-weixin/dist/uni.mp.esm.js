@@ -301,7 +301,7 @@ function initWxsCallMethods(methods, wxsCallMethods) {
 function selectAllComponents(mpInstance, selector, $refs) {
     const components = mpInstance.selectAllComponents(selector);
     components.forEach((component) => {
-        const ref = component.dataset.ref;
+        const ref = component.dataset.r;
         $refs[ref] = component.$vm || component;
         {
             if (component.dataset.vueGeneric === 'scoped') {
@@ -318,10 +318,10 @@ function initRefs(instance, mpInstance) {
     Object.defineProperty(instance, 'refs', {
         get() {
             const $refs = {};
-            selectAllComponents(mpInstance, '.v-r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.v-r-i-f');
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
             forComponents.forEach((component) => {
-                const ref = component.dataset.ref;
+                const ref = component.dataset.r;
                 if (!$refs[ref]) {
                     $refs[ref] = [];
                 }

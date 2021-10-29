@@ -164,17 +164,6 @@ export function findSlotName(slotDir: DirectiveNode) {
   }
 }
 
-export function isScopedSlotVFor({ source }: CodegenVForScope) {
-  if (source.type !== NodeTypes.COMPOUND_EXPRESSION) {
-    return false
-  }
-  const first = source.children[0] as ExpressionNode
-  return (
-    first.type === NodeTypes.SIMPLE_EXPRESSION &&
-    first.content.includes(SCOPED_SLOT_IDENTIFIER)
-  )
-}
-
 function findCurrentVForValueAlias(context: TransformContext) {
   let scope: CodegenScope | null = context.currentScope
   while (scope) {

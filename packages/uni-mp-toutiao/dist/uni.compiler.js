@@ -74,7 +74,10 @@ ${filter.code}
         extname: '.ttml',
         directive: 'tt:',
         compilerOptions: {
-            nodeTransforms: [uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK)],
+            nodeTransforms: [
+                uniCliShared.transformRef,
+                uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK),
+            ],
         },
     },
     style: {

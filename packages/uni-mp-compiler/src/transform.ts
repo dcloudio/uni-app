@@ -57,6 +57,7 @@ import {
 } from './options'
 import { EXTEND } from './runtimeHelpers'
 import { createObjectExpression } from './ast'
+import { SCOPED_SLOT_IDENTIFIER } from './transforms/utils'
 
 export interface ImportItem {
   exp: string | ExpressionNode
@@ -114,6 +115,7 @@ export interface TransformContext
   currentVueId: string
   vueIds: string[]
   inVOnce: boolean
+  inVFor: boolean
   helper<T extends symbol>(name: T): T
   removeHelper<T extends symbol>(name: T): void
   helperString(name: symbol): string
@@ -138,6 +140,17 @@ export function isVIfScope(scope: CodegenScope): scope is CodegenVIfScope {
 
 export function isVForScope(scope: CodegenScope): scope is CodegenVForScope {
   return !!(scope as CodegenVForScope).source
+}
+
+export function isScopedSlotVFor({ source }: CodegenVForScope) {
+  if (source.type !== NodeTypes.COMPOUND_EXPRESSION) {
+    return false
+  }
+  const first = source.children[0] as ExpressionNode
+  return (
+    first.type === NodeTypes.SIMPLE_EXPRESSION &&
+    first.content.includes(SCOPED_SLOT_IDENTIFIER)
+  )
 }
 
 export function transform(root: CodegenRootNode, options: TransformOptions) {
@@ -346,6 +359,16 @@ export function createTransformContext(
       return vueIds[vueIds.length - 1]
     },
     inVOnce: false,
+    get inVFor() {
+      let parent: CodegenScope | null = scopes[scopes.length - 1]
+      while (parent) {
+        if (isVForScope(parent) && !isScopedSlotVFor(parent)) {
+          return true
+        }
+        parent = parent.parent
+      }
+      return false
+    },
     // methods
     popScope() {
       return scopes.pop()

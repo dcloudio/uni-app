@@ -82,6 +82,10 @@ var source = {
 	condition: condition
 };
 
+const nodeTransforms = [
+    uniCliShared.transformRef,
+    uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK),
+];
 const options = {
     vite: {
         inject: {
@@ -133,7 +137,7 @@ const options = {
         extname: '.qml',
         directive: 'qq:',
         compilerOptions: {
-            nodeTransforms: [uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK)],
+            nodeTransforms,
         },
     },
     style: {

@@ -25,8 +25,6 @@ import { isVForScope, isVIfScope, TransformContext } from '../transform'
 
 export const ATTR_VUE_ID = 'v-i'
 export const ATTR_VUE_SLOTS = 'v-s'
-export const CLASS_VUE_REF = 'v-r'
-export const CLASS_VUE_REF_IN_FOR = 'v-r-i-f'
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
 export function rewriteSpreadElement(

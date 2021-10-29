@@ -21,6 +21,7 @@
     "@babel/parser": "^7.15.0",
     "@babel/types": "^7.15.0",
     "@rollup/pluginutils": "^4.1.1",
+    "@vue/compiler-core": "^3.2.20",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",
     "debug": "^4.3.1",

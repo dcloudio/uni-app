@@ -85,7 +85,7 @@
     "module-alias": "^2.2.2",
     "postcss": "^8.3.6",
     "postcss-load-config": "^3.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.4.1",
     "rollup": "^2.35.1",
     "rollup-plugin-jscc": "^2.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",

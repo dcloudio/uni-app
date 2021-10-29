@@ -2,13 +2,27 @@ import path from 'path'
 import {
   COMPONENT_ON_LINK,
   createTransformComponentLink,
+  MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
-
+import { NodeTypes } from '@vue/compiler-core'
 import source from './mini.project.json'
+import { transformRef } from './transforms/transformRef'
 
 const projectConfigFilename = 'mini.project.json'
-
+export const miniProgram: MiniProgramCompilerOptions = {
+  class: {
+    array: false,
+  },
+  slot: {
+    fallback: true,
+  },
+  directive: 'a:',
+}
+export const nodeTransforms = [
+  transformRef,
+  createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
+]
 export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
@@ -31,9 +45,8 @@ export const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
-    class: {
-      array: false,
-    },
+    /* eslint-disable no-restricted-syntax */
+    ...miniProgram,
     filter: {
       extname: '.sjs',
       lang: 'sjs',
@@ -46,13 +59,9 @@ ${filter.code}
 </sjs>`
       },
     },
-    slot: {
-      fallback: true,
-    },
     extname: '.axml',
-    directive: 'a:',
     compilerOptions: {
-      nodeTransforms: [createTransformComponentLink(COMPONENT_ON_LINK)],
+      nodeTransforms,
     },
   },
   style: {

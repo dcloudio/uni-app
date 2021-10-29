@@ -17,6 +17,7 @@ import {
 import { parseExpr, parseParam } from '../ast'
 import {
   createStructuralDirectiveTransform,
+  isScopedSlotVFor,
   NodeTransform,
   TransformContext,
 } from '../transform'
@@ -39,7 +40,7 @@ import {
 import { rewriteExpression } from './utils'
 import { CodegenVForScope } from '../options'
 import { V_FOR } from '../runtimeHelpers'
-import { createVSlotCallExpression, isScopedSlotVFor } from './vSlot'
+import { createVSlotCallExpression } from './vSlot'
 
 export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   sourceExpr?: Expression
@@ -62,6 +63,7 @@ export type ForElementNode = ElementNode & {
 export function isForElementNode(node: unknown): node is ForElementNode {
   return !!(node as ForElementNode).vFor
 }
+
 export const transformFor = createStructuralDirectiveTransform(
   'for',
   (node, dir, context) => {

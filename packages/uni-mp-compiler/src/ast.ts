@@ -26,7 +26,6 @@ import {
   isNullLiteral,
 } from '@babel/types'
 import {
-  AttributeNode,
   createCompilerError,
   createSimpleExpression,
   DirectiveNode,
@@ -173,20 +172,4 @@ export function createOnDirectiveNode(name: string, value: string) {
 
 export function createBindDirectiveNode(name: string, value: string) {
   return createDirectiveNode('bind', name, value)
-}
-
-export function createAttributeNode(
-  name: string,
-  content: string
-): AttributeNode {
-  return {
-    type: NodeTypes.ATTRIBUTE,
-    loc: locStub,
-    name,
-    value: {
-      type: NodeTypes.TEXT,
-      loc: locStub,
-      content,
-    },
-  }
 }

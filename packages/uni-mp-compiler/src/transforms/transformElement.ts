@@ -14,8 +14,6 @@ import {
   UNREF,
   toValidAssetId,
   findDir,
-  locStub,
-  AttributeNode,
   DirectiveNode,
   ComponentNode,
 } from '@vue/compiler-core'
@@ -29,8 +27,8 @@ import {
   NodeTransform,
   TransformContext,
 } from '../transform'
-import { createAttributeNode } from '../ast'
 import { transformModel } from './vModel'
+import { addStaticClass } from '@dcloudio/uni-cli-shared'
 
 export interface DirectiveTransformResult {
   props: Property[]
@@ -60,29 +58,6 @@ export const transformElement: NodeTransform = (node, context) => {
     if (props.length > 0) {
       processProps(node, context)
     }
-  }
-}
-
-function createClassAttribute(clazz: string): AttributeNode {
-  return createAttributeNode('class', clazz)
-}
-
-export function addStaticClass(node: ElementNode, clazz: string) {
-  const classProp = node.props.find(
-    (prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class'
-  ) as AttributeNode | undefined
-
-  if (!classProp) {
-    return node.props.unshift(createClassAttribute(clazz))
-  }
-
-  if (classProp.value) {
-    return (classProp.value.content = classProp.value.content + ' ' + clazz)
-  }
-  classProp.value = {
-    type: NodeTypes.TEXT,
-    loc: locStub,
-    content: clazz,
   }
 }
 

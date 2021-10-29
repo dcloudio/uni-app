@@ -3,11 +3,16 @@ import path from 'path'
 import {
   COMPONENT_BIND_LINK,
   createTransformComponentLink,
+  transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 
+export const nodeTransforms = [
+  transformRef,
+  createTransformComponentLink(COMPONENT_BIND_LINK),
+]
 export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
@@ -59,7 +64,7 @@ export const options: UniMiniProgramPluginOptions = {
     extname: '.qml',
     directive: 'qq:',
     compilerOptions: {
-      nodeTransforms: [createTransformComponentLink(COMPONENT_BIND_LINK)],
+      nodeTransforms,
     },
   },
   style: {

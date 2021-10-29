@@ -1,5 +1,8 @@
 import path from 'path'
-import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
+import {
+  MiniProgramCompilerOptions,
+  transformRef,
+} from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.swan.json'
@@ -57,7 +60,7 @@ export const options: UniMiniProgramPluginOptions = {
     },
     extname: '.swan',
     compilerOptions: {
-      nodeTransforms: [transformFor],
+      nodeTransforms: [transformRef, transformFor],
       directiveTransforms: {
         on: transformOn,
         model: transformModel,

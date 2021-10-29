@@ -2,6 +2,7 @@ import path from 'path'
 import {
   COMPONENT_BIND_LINK,
   createTransformComponentLink,
+  transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
@@ -52,7 +53,10 @@ ${filter.code}
     extname: '.ttml',
     directive: 'tt:',
     compilerOptions: {
-      nodeTransforms: [createTransformComponentLink(COMPONENT_BIND_LINK)],
+      nodeTransforms: [
+        transformRef,
+        createTransformComponentLink(COMPONENT_BIND_LINK),
+      ],
     },
   },
   style: {

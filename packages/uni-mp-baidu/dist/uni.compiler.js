@@ -2,8 +2,8 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
+var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var compilerCore = require('@vue/compiler-core');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -187,7 +187,7 @@ const options = {
   </import-sjs>`;
             },
         }, extname: '.swan', compilerOptions: {
-            nodeTransforms: [transformFor],
+            nodeTransforms: [uniCliShared.transformRef, transformFor],
             directiveTransforms: {
                 on: transformOn,
                 model: transformModel,
