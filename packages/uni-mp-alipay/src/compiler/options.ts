@@ -9,6 +9,7 @@ import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import source from './mini.project.json'
 import { transformRef } from './transforms/transformRef'
 import { event } from './event'
+import { transformOpenType } from './transforms/transformOpenType'
 
 const projectConfigFilename = 'mini.project.json'
 
@@ -27,6 +28,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
 // TODO getPhoneNumber 等事件
 export const nodeTransforms = [
   transformRef,
+  transformOpenType,
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
 ]
 export const tags = [

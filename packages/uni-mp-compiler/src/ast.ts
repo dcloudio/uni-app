@@ -27,12 +27,8 @@ import {
 } from '@babel/types'
 import {
   createCompilerError,
-  createSimpleExpression,
-  DirectiveNode,
   ErrorCodes,
   ExpressionNode,
-  locStub,
-  NodeTypes,
 } from '@vue/compiler-core'
 import { CodegenScope, CodegenVIfScope } from './options'
 import { TransformContext } from './transform'
@@ -149,27 +145,4 @@ export function parseStringLiteral(
     return stringLiteral(expr.value)
   }
   return stringLiteral('')
-}
-
-function createDirectiveNode(
-  name: string,
-  arg: string,
-  exp: string
-): DirectiveNode {
-  return {
-    type: NodeTypes.DIRECTIVE,
-    name,
-    modifiers: [],
-    loc: locStub,
-    arg: createSimpleExpression(arg, true),
-    exp: createSimpleExpression(exp, false),
-  }
-}
-
-export function createOnDirectiveNode(name: string, value: string) {
-  return createDirectiveNode('on', name, value)
-}
-
-export function createBindDirectiveNode(name: string, value: string) {
-  return createDirectiveNode('bind', name, value)
 }

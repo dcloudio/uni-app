@@ -1,7 +1,10 @@
 import { ComponentNode } from '@vue/compiler-core'
-import { createAttributeNode, isUserComponent } from '@dcloudio/uni-cli-shared'
+import {
+  createAttributeNode,
+  createBindDirectiveNode,
+  isUserComponent,
+} from '@dcloudio/uni-cli-shared'
 import { isVForScope, NodeTransform, TransformContext } from '../transform'
-import { createBindDirectiveNode } from '../ast'
 import { ATTR_VUE_ID } from './utils'
 
 export const transformComponent: NodeTransform = (node, context) => {

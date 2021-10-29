@@ -25,9 +25,12 @@ import {
   TemplateChildNode,
   TemplateNode,
 } from '@vue/compiler-core'
-import { isUserComponent } from '@dcloudio/uni-cli-shared'
+import {
+  createBindDirectiveNode,
+  isUserComponent,
+} from '@dcloudio/uni-cli-shared'
 import { WITH_SCOPED_SLOT } from '../runtimeHelpers'
-import { createBindDirectiveNode, parseExpr } from '../ast'
+import { parseExpr } from '../ast'
 import { genExpr } from '../codegen'
 import { CodegenScope, CodegenVForScope } from '../options'
 import { isVForScope, NodeTransform, TransformContext } from '../transform'

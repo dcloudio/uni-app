@@ -87,6 +87,43 @@ const eventMap = {
     animationfinish: 'animationEnd',
 };
 
+function transformOpenType(node) {
+    var _a;
+    if (node.type !== 1 /* ELEMENT */ || node.tag !== 'button') {
+        return;
+    }
+    const openTypeProp = compilerCore.findProp(node, 'open-type');
+    if (!openTypeProp) {
+        return;
+    }
+    if (openTypeProp.type !== 6 /* ATTRIBUTE */ ||
+        ((_a = openTypeProp.value) === null || _a === void 0 ? void 0 : _a.content) !== 'getPhoneNumber') {
+        return;
+    }
+    openTypeProp.value.content = 'getAuthorize';
+    const { props } = node;
+    props.splice(props.indexOf(openTypeProp) + 1, 0, uniCliShared.createAttributeNode('scope', 'phoneNumber'));
+    let getPhoneNumberMethodName = '';
+    const getPhoneNumberPropIndex = props.findIndex((prop) => {
+        if (prop.type === 7 /* DIRECTIVE */ && prop.name === 'on') {
+            const { arg, exp } = prop;
+            if ((arg === null || arg === void 0 ? void 0 : arg.type) === 4 /* SIMPLE_EXPRESSION */ &&
+                (exp === null || exp === void 0 ? void 0 : exp.type) === 4 /* SIMPLE_EXPRESSION */ &&
+                arg.isStatic &&
+                arg.content === 'getphonenumber') {
+                getPhoneNumberMethodName = exp.content;
+                return true;
+            }
+        }
+    });
+    if (!getPhoneNumberMethodName) {
+        return;
+    }
+    props.splice(getPhoneNumberPropIndex, 1);
+    props.push(uniCliShared.createOnDirectiveNode('getAuthorize', `$onAliGetAuthorize('${getPhoneNumberMethodName}',$event)`));
+    props.push(uniCliShared.createOnDirectiveNode('error', `$onAliAuthError('${getPhoneNumberMethodName}',$event)`));
+}
+
 const projectConfigFilename = 'mini.project.json';
 const miniProgram = {
     event,
@@ -103,6 +140,7 @@ const miniProgram = {
 // TODO getPhoneNumber 等事件
 const nodeTransforms = [
     transformRef,
+    transformOpenType,
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, 6 /* ATTRIBUTE */),
 ];
 const tags = [

@@ -2,6 +2,8 @@ import { isComponentTag } from '@dcloudio/uni-shared'
 import {
   AttributeNode,
   ComponentNode,
+  createSimpleExpression,
+  DirectiveNode,
   ElementNode,
   ElementTypes,
   isCoreComponent,
@@ -65,4 +67,27 @@ export function addStaticClass(node: ElementNode, clazz: string) {
     loc: locStub,
     content: clazz,
   }
+}
+
+function createDirectiveNode(
+  name: string,
+  arg: string,
+  exp: string
+): DirectiveNode {
+  return {
+    type: NodeTypes.DIRECTIVE,
+    name,
+    modifiers: [],
+    loc: locStub,
+    arg: createSimpleExpression(arg, true),
+    exp: createSimpleExpression(exp, false),
+  }
+}
+
+export function createOnDirectiveNode(name: string, value: string) {
+  return createDirectiveNode('on', name, value)
+}
+
+export function createBindDirectiveNode(name: string, value: string) {
+  return createDirectiveNode('bind', name, value)
 }

@@ -1,6 +1,15 @@
 import { assert } from './testUtils'
 
 describe('mp-alipay: transform v-on', () => {
+  test('getphonenumber', () => {
+    assert(
+      `<button open-type='getPhoneNumber' @getphonenumber="getPhoneNumber">获取手机号</button>`,
+      `<button open-type="getAuthorize" scope="phoneNumber" onGetAuthorize="{{a}}" onError="{{b}}">获取手机号</button>`,
+      `(_ctx, _cache) => {
+  return { a: _o($event => _ctx.$onAliGetAuthorize('getPhoneNumber', $event)), b: _o($event => _ctx.$onAliAuthError('getPhoneNumber', $event)) }
+}`
+    )
+  })
   test('basic', () => {
     assert(
       `<view v-on:click="onClick"/>`,

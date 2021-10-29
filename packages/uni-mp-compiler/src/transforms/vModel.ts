@@ -1,3 +1,4 @@
+import { camelize } from '@vue/shared'
 import {
   Property,
   transformModel as baseTransform,
@@ -13,9 +14,12 @@ import {
   TransformContext as VueTransformContext,
 } from '@vue/compiler-core'
 import { DOMErrorCodes, createDOMCompilerError } from '@vue/compiler-dom'
-import { camelize } from '@vue/shared'
-import { V_ON } from '..'
-import { createBindDirectiveNode, createOnDirectiveNode } from '../ast'
+
+import {
+  createBindDirectiveNode,
+  createOnDirectiveNode,
+} from '@dcloudio/uni-cli-shared'
+import { V_ON } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
 import { TransformContext } from '../transform'
 import { DirectiveTransformResult } from './transformElement'
