@@ -2,13 +2,30 @@ import path from 'path'
 import {
   COMPONENT_BIND_LINK,
   createTransformComponentLink,
+  MiniProgramCompilerOptions,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
+import { transformSwiper } from './transforms/transformSwiper'
 
 const projectConfigFilename = 'project.config.json'
+
+export const nodeTransforms = [
+  transformRef,
+  transformSwiper,
+  createTransformComponentLink(COMPONENT_BIND_LINK),
+]
+export const miniProgram: MiniProgramCompilerOptions = {
+  class: {
+    array: false,
+  },
+  slot: {
+    fallback: true,
+  },
+  directive: 'tt:',
+}
 
 export const options: UniMiniProgramPluginOptions = {
   vite: {
@@ -32,9 +49,8 @@ export const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
-    class: {
-      array: false,
-    },
+    /* eslint-disable no-restricted-syntax */
+    ...miniProgram,
     filter: {
       extname: '.sjs',
       lang: 'sjs',
@@ -47,16 +63,9 @@ ${filter.code}
 </sjs>`
       },
     },
-    slot: {
-      fallback: true,
-    },
     extname: '.ttml',
-    directive: 'tt:',
     compilerOptions: {
-      nodeTransforms: [
-        transformRef,
-        createTransformComponentLink(COMPONENT_BIND_LINK),
-      ],
+      nodeTransforms,
     },
   },
   style: {

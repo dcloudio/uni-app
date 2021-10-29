@@ -3,6 +3,8 @@
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
+var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
+var compilerCore = require('@vue/compiler-core');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -30,7 +32,51 @@ var source = {
 	condition: condition
 };
 
+function transformSwiper(node) {
+    if (node.type !== 1 /* ELEMENT */ || node.tag !== 'swiper') {
+        return;
+    }
+    const disableTouchProp = compilerCore.findProp(node, 'disable-touch', false, true);
+    if (!disableTouchProp) {
+        return;
+    }
+    const { props } = node;
+    if (disableTouchProp.type === 6 /* ATTRIBUTE */) {
+        // <swiper disable-touch/> => <swiper :touchable="false"/>
+        props.splice(props.indexOf(disableTouchProp), 1, uniCliShared.createBindDirectiveNode('touchable', 'false'));
+    }
+    else {
+        if (disableTouchProp.exp) {
+            // <swiper :disable-touch="true"/> => <swiper :touchable="!(true)"/>
+            let touchable = '';
+            if (disableTouchProp.exp.type === 4 /* SIMPLE_EXPRESSION */) {
+                if (disableTouchProp.exp.content === 'true') {
+                    touchable = 'false';
+                }
+                else if (disableTouchProp.exp.content === 'false') {
+                    touchable = 'true';
+                }
+            }
+            props.splice(props.indexOf(disableTouchProp), 1, uniCliShared.createBindDirectiveNode('touchable', touchable || `!(${uniMpCompiler.genExpr(disableTouchProp.exp)})`));
+        }
+    }
+}
+
 const projectConfigFilename = 'project.config.json';
+const nodeTransforms = [
+    uniCliShared.transformRef,
+    transformSwiper,
+    uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK),
+];
+const miniProgram = {
+    class: {
+        array: false,
+    },
+    slot: {
+        fallback: true,
+    },
+    directive: 'tt:',
+};
 const options = {
     vite: {
         inject: {
@@ -52,11 +98,7 @@ const options = {
         filename: projectConfigFilename,
         source,
     },
-    template: {
-        class: {
-            array: false,
-        },
-        filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.sjs',
             lang: 'sjs',
             generate(filter, filename) {
@@ -67,19 +109,9 @@ const options = {
 ${filter.code}
 </sjs>`;
             },
-        },
-        slot: {
-            fallback: true,
-        },
-        extname: '.ttml',
-        directive: 'tt:',
-        compilerOptions: {
-            nodeTransforms: [
-                uniCliShared.transformRef,
-                uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK),
-            ],
-        },
-    },
+        }, extname: '.ttml', compilerOptions: {
+            nodeTransforms,
+        } }),
     style: {
         extname: '.ttss',
     },
