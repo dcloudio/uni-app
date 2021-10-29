@@ -12,8 +12,9 @@ export default {
     const oldMount = app.mount
     app.mount = function mount(rootContainer: any) {
       const instance = oldMount.call(app, rootContainer)
-      if ((global as any).createApp) {
-        ;(global as any).createApp(instance)
+      const createApp = getCreateApp()
+      if (createApp) {
+        createApp(instance)
       } else {
         // @ts-ignore 旧编译器
         if (typeof createMiniProgramApp !== 'undefined') {
@@ -21,8 +22,16 @@ export default {
           createMiniProgramApp(instance)
         }
       }
-
       return instance
     }
   },
+}
+
+function getCreateApp() {
+  if (typeof global !== 'undefined') {
+    return (global as any).createApp
+  } else if (typeof my !== 'undefined') {
+    // 支付宝小程序没有global
+    return (my as any).createApp
+  }
 }

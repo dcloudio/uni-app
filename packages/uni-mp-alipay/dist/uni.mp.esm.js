@@ -683,7 +683,8 @@ function initBehavior({ properties }) {
     };
 }
 function initRelation(mpInstance, detail) {
-    mpInstance.props.onVueInit(detail);
+    // onVueInit
+    mpInstance.props.onVI(detail);
 }
 function initSpecialMethods(mpInstance) {
     if (!mpInstance.$vm) {
@@ -742,8 +743,8 @@ function handleRef(ref) {
     if (!ref) {
         return;
     }
-    const refName = ref.props['data-ref'];
-    const refInForName = ref.props['data-ref-in-for'];
+    const refName = ref.props['data-r']; // data-ref
+    const refInForName = ref.props['data-r-i-f']; // data-ref-in-for
     if (!refName && !refInForName) {
         return;
     }
@@ -828,46 +829,48 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
     });
 }
 
-function createPage$1(vueOptions) {
-    vueOptions = vueOptions.default || vueOptions;
-    const pageOptions = {
-        onLoad(query) {
-            this.options = query;
-            this.$page = {
-                fullPath: '/' + this.route + stringifyQuery(query),
-            };
-            // 初始化 vue 实例
-            this.$vm = createVueComponent('page', this, vueOptions);
-            initSpecialMethods(this);
-            this.$vm.$callHook(ON_LOAD, query);
-        },
-        onReady() {
-            initChildVues(this);
-            this.$vm.$callHook('mounted');
-            this.$vm.$callHook(ON_READY);
-        },
-        onUnload() {
-            if (this.$vm) {
-                this.$vm.$callHook(ON_UNLOAD);
-                $destroyComponent(this.$vm);
-            }
-        },
-        events: {
-            // 支付宝小程序有些页面事件只能放在events下
-            onBack() {
-                this.$vm.$callHook(ON_BACK_PRESS);
+function initCreatePage() {
+    return function createPage(vueOptions) {
+        vueOptions = vueOptions.default || vueOptions;
+        const pageOptions = {
+            onLoad(query) {
+                this.options = query;
+                this.$page = {
+                    fullPath: '/' + this.route + stringifyQuery(query),
+                };
+                // 初始化 vue 实例
+                this.$vm = createVueComponent('page', this, vueOptions);
+                initSpecialMethods(this);
+                this.$vm.$callHook(ON_LOAD, query);
             },
-        },
-        __r: handleRef,
-        __l: handleLink,
+            onReady() {
+                initChildVues(this);
+                this.$vm.$callHook('mounted');
+                this.$vm.$callHook(ON_READY);
+            },
+            onUnload() {
+                if (this.$vm) {
+                    this.$vm.$callHook(ON_UNLOAD);
+                    $destroyComponent(this.$vm);
+                }
+            },
+            events: {
+                // 支付宝小程序有些页面事件只能放在events下
+                onBack() {
+                    this.$vm.$callHook(ON_BACK_PRESS);
+                },
+            },
+            __r: handleRef,
+            __l: handleLink,
+        };
+        if (__VUE_OPTIONS_API__) {
+            pageOptions.data = initData(vueOptions);
+        }
+        initHooks(pageOptions, PAGE_HOOKS);
+        initUnknownHooks(pageOptions, vueOptions);
+        initWxsCallMethods(pageOptions, vueOptions.wxsCallMethods);
+        return Page(pageOptions);
     };
-    if (__VUE_OPTIONS_API__) {
-        pageOptions.data = initData(vueOptions);
-    }
-    initHooks(pageOptions, PAGE_HOOKS);
-    initUnknownHooks(pageOptions, vueOptions);
-    initWxsCallMethods(pageOptions, vueOptions.wxsCallMethods);
-    return Page(pageOptions);
 }
 
 function initComponentProps(rawProps) {
@@ -877,7 +880,8 @@ function initComponentProps(rawProps) {
     initProps(propertiesOptions, rawProps, false);
     const properties = propertiesOptions.properties;
     const props = {
-        onVueInit: function () { },
+        // onVueInit
+        onVI: function () { },
     };
     Object.keys(properties).forEach((key) => {
         // vueSlots
@@ -917,60 +921,64 @@ function initVm(mpInstance, createComponent) {
         }
     }
 }
-function createComponent$1(vueOptions) {
-    vueOptions = vueOptions.default || vueOptions;
-    const mpComponentOptions = {
-        props: initComponentProps(vueOptions.props),
-        didMount() {
-            const createComponent = (parent) => {
-                return createVueComponent('component', this, vueOptions, parent);
-            };
-            if (my.dd) {
-                // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
-                setTimeout(() => {
+function initCreateComponent() {
+    return function createComponent(vueOptions) {
+        vueOptions = vueOptions.default || vueOptions;
+        const mpComponentOptions = {
+            props: initComponentProps(vueOptions.props),
+            didMount() {
+                const createComponent = (parent) => {
+                    return createVueComponent('component', this, vueOptions, parent);
+                };
+                if (my.dd) {
+                    // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
+                    setTimeout(() => {
+                        initVm(this, createComponent);
+                    }, 4);
+                }
+                else {
                     initVm(this, createComponent);
-                }, 4);
-            }
-            else {
-                initVm(this, createComponent);
-            }
-            initSpecialMethods(this);
-            if (isComponent2) {
-                this.$vm.$callHook('mounted');
-            }
-        },
-        didUnmount() {
-            $destroyComponent(this.$vm);
-        },
-        methods: {
-            __r: handleRef,
-            __l: handleLink,
-            triggerEvent,
-        },
-    };
-    if (__VUE_OPTIONS_API__) {
-        mpComponentOptions.data = initData(vueOptions);
-        mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior);
-    }
-    if (isComponent2) {
-        mpComponentOptions.onInit = function onInit() {
-            initVm(this, (parent) => {
-                return createVueComponent('component', this, vueOptions, parent);
-            });
+                }
+                initSpecialMethods(this);
+                if (isComponent2) {
+                    this.$vm.$callHook('mounted');
+                }
+            },
+            didUnmount() {
+                $destroyComponent(this.$vm);
+            },
+            methods: {
+                __r: handleRef,
+                __l: handleLink,
+                triggerEvent,
+            },
         };
-        mpComponentOptions.deriveDataFromProps = createObserver();
-    }
-    else {
-        mpComponentOptions.didUpdate = createObserver(true);
-    }
-    initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
-    return Component(mpComponentOptions);
+        if (__VUE_OPTIONS_API__) {
+            mpComponentOptions.data = initData(vueOptions);
+            mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior);
+        }
+        if (isComponent2) {
+            mpComponentOptions.onInit = function onInit() {
+                initVm(this, (parent) => {
+                    return createVueComponent('component', this, vueOptions, parent);
+                });
+            };
+            mpComponentOptions.deriveDataFromProps = createObserver();
+        }
+        else {
+            mpComponentOptions.didUpdate = createObserver(true);
+        }
+        initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
+        return Component(mpComponentOptions);
+    };
 }
 
 const createApp = initCreateApp(parseAppOptions);
+const createPage = initCreatePage();
+const createComponent = initCreateComponent();
 my.EventChannel = EventChannel;
-my.createApp = global.createApp = createApp;
+my.createApp = createApp;
 my.createPage = createPage;
 my.createComponent = createComponent;
 
-export { createApp, createComponent$1 as createComponent, createPage$1 as createPage };
+export { createApp, createComponent, createPage };

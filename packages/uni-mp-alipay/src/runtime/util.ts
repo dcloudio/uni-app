@@ -48,7 +48,8 @@ export function initRelation(
   mpInstance: MPComponentInstance,
   detail: RelationOptions
 ) {
-  mpInstance.props.onVueInit(detail)
+  // onVueInit
+  mpInstance.props.onVI(detail)
 }
 
 export function initSpecialMethods(
@@ -128,8 +129,8 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
   if (!ref) {
     return
   }
-  const refName = ref.props['data-ref']
-  const refInForName = ref.props['data-ref-in-for']
+  const refName = ref.props['data-r'] // data-ref
+  const refInForName = ref.props['data-r-i-f'] // data-ref-in-for
   if (!refName && !refInForName) {
     return
   }

@@ -38,6 +38,7 @@ export interface UniMiniProgramPluginOptions {
   template: {
     extname: string
     directive: string
+    event?: MiniProgramCompilerOptions['event']
     class: MiniProgramCompilerOptions['class']
     slot: MiniProgramCompilerOptions['slot']
     filter?: {
@@ -69,6 +70,7 @@ export function uniMiniProgramPlugin(
     uni: uniOptions({
       copyOptions,
       miniProgram: {
+        event: template.event,
         class: template.class,
         filter: template.filter ? { lang: template.filter.lang } : undefined,
         directive: template.directive,

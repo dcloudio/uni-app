@@ -4882,8 +4882,9 @@ var plugin = {
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);
-            if (global.createApp) {
-                global.createApp(instance);
+            const createApp = getCreateApp();
+            if (createApp) {
+                createApp(instance);
             }
             else {
                 // @ts-ignore 旧编译器
@@ -4896,6 +4897,15 @@ var plugin = {
         };
     },
 };
+function getCreateApp() {
+    if (typeof global !== 'undefined') {
+        return global.createApp;
+    }
+    else if (typeof my !== 'undefined') {
+        // 支付宝小程序没有global
+        return my.createApp;
+    }
+}
 
 function vOn(value) {
     const instance = getCurrentInstance();
