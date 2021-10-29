@@ -9,11 +9,9 @@ import {
   isSpreadElement,
   identifier,
   ObjectExpression,
-  isLiteral,
   isObjectProperty,
   binaryExpression,
   isIdentifier,
-  isTemplateLiteral,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -30,6 +28,7 @@ import { parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
 import { TransformContext } from '../transform'
 import {
+  isStaticLiteral,
   parseExprWithRewrite,
   rewirteWithHelper,
   rewriteExpression,
@@ -160,7 +159,7 @@ function rewriteStyleObjectExpression(
         prop.key.value = hyphenate(prop.key.value) + ':'
       }
       // {fontSize:`${fontSize}px`} => {'font-size':a}
-      if (isLiteral(value) && !isTemplateLiteral(value)) {
+      if (isStaticLiteral(value)) {
         return
       } else {
         const newExpr = parseExprWithRewrite(

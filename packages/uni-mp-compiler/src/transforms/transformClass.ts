@@ -18,7 +18,6 @@ import {
   LogicalExpression,
   logicalExpression,
   StringLiteral,
-  isTemplateLiteral,
   parenthesizedExpression,
   binaryExpression,
 } from '@babel/types'
@@ -36,6 +35,7 @@ import { genBabelExpr } from '../codegen'
 import { NORMALIZE_CLASS } from '../runtimeHelpers'
 import { TransformContext } from '../transform'
 import {
+  isStaticLiteral,
   parseExprWithRewrite,
   parseExprWithRewriteClass,
   rewriteExpression,
@@ -197,7 +197,7 @@ function rewriteClassObjectExpression(
           key as Expression
         ) as Identifier
       }
-      if (isLiteral(value) && !isTemplateLiteral(value)) {
+      if (isStaticLiteral(value)) {
         return
       } else {
         const newExpr = parseExprWithRewriteClass(

@@ -10937,6 +10937,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
             break;
           case "move":
             handleTouchMove(e2);
+            e2.stopPropagation();
             break;
           case "end":
           case "cancel":

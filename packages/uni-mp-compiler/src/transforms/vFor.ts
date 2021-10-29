@@ -104,13 +104,15 @@ export const transformFor = createStructuralDirectiveTransform(
     const indexCode = genExpr(index)
     const indexExpr = parseParam(indexCode, context, index)
     const indexAlias = parseAlias(indexExpr, indexCode, 'i' + scopes.vFor)
-    // 先占位vFor，后续更新 cloneSourceExpr 为 CallExpression
+    // 先占位 vFor，后续更新 cloneSourceExpr 为 CallExpression
     const cloneSourceExpr = cloneNode(sourceExpr!, false)
     const sourceAlias = rewriteExpression(
       source,
       context,
       cloneSourceExpr,
-      parentScope
+      parentScope,
+      // 强制 rewrite，因为即使是字符串，数字，也要走 vFor 函数
+      { property: true, ignoreLiteral: true }
     ).content
     const sourceCode = `{{${sourceAlias}}}`
     const vForData: VForOptions = {

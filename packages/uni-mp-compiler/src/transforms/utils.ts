@@ -4,7 +4,9 @@ import {
   Identifier,
   identifier,
   isIdentifier,
+  isLiteral,
   isReferenced,
+  isTemplateLiteral,
   MemberExpression,
   numericLiteral,
   objectProperty,
@@ -15,6 +17,7 @@ import {
   createSimpleExpression,
   ExpressionNode,
   NodeTypes,
+  SimpleExpressionNode,
   SourceLocation,
 } from '@vue/compiler-core'
 import { walk, BaseNode } from 'estree-walker'
@@ -86,14 +89,17 @@ export function rewriteExpressionWithoutProperty(
   babelNode?: Expression,
   scope: CodegenScope = context.currentScope
 ) {
-  return rewriteExpression(node, context, babelNode, scope, false)
+  return rewriteExpression(node, context, babelNode, scope, {
+    property: false,
+    ignoreLiteral: false,
+  })
 }
 export function rewriteExpression(
   node: ExpressionNode,
   context: TransformContext,
   babelNode?: Expression,
   scope: CodegenScope = context.currentScope,
-  property: boolean = true
+  { property, ignoreLiteral } = { property: true, ignoreLiteral: false }
 ) {
   if (node.type === NodeTypes.SIMPLE_EXPRESSION && node.isStatic) {
     return node
@@ -104,6 +110,9 @@ export function rewriteExpression(
     if (!babelNode) {
       return createSimpleExpression(code)
     }
+  }
+  if (!ignoreLiteral && isStaticLiteral(babelNode)) {
+    return node as SimpleExpressionNode
   }
   if (isUndefined(babelNode)) {
     return createSimpleExpression('undefined', false, node.loc)
@@ -168,4 +177,8 @@ function isReferencedByIds(node: Expression, knownIds: string[]) {
     },
   })
   return referenced
+}
+
+export function isStaticLiteral(value: object | null | undefined) {
+  return isLiteral(value) && !isTemplateLiteral(value)
 }

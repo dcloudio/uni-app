@@ -29,6 +29,15 @@ describe('compiler: transform v-bind', () => {
     )
   })
 
+  test('literal', () => {
+    assert(
+      `<view :number="20" :str="'str'" :boolean="true" :null="null" :undefined="undefined"/>`,
+      `<view number="{{20}}" str="{{'str'}}" boolean="{{true}}" null="{{null}}" undefined="{{undefined}}"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
   test('dynamic arg', () => {
     const onError = jest.fn()
     parseWithVBind(`<view v-bind:[id]="id" />`, {

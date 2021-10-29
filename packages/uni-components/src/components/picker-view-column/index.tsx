@@ -230,6 +230,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               break
             case 'move':
               handleTouchMove(e)
+              e.stopPropagation()
               break
             case 'end':
             case 'cancel':

@@ -1,8 +1,6 @@
 import {
   ConditionalExpression,
   isConditionalExpression,
-  isLiteral,
-  isTemplateLiteral,
   isSpreadElement,
   ObjectExpression,
 } from '@babel/types'
@@ -31,7 +29,7 @@ import {
   traverseNode,
 } from '../transform'
 import { processExpression } from './transformExpression'
-import { rewriteExpression } from './utils'
+import { isStaticLiteral, rewriteExpression } from './utils'
 interface IfOptions {
   name: string
   condition?: string
@@ -59,7 +57,7 @@ export const transformIf = createStructuralDirectiveTransform(
         condition,
       })
       if (condition) {
-        if (!isLiteral(condition) || isTemplateLiteral(condition)) {
+        if (!isStaticLiteral(condition)) {
           ifOptions.condition = rewriteExpression(
             dir.exp!,
             context,

@@ -38,10 +38,10 @@ function assert(
 describe('compiler', () => {
   test('scope', () => {
     assert(
-      `<custom :ref="custom"/>`,
-      `<custom class="v-r" data-ref="{{a}}" v-i="2a9ec0b0-0"/>`,
+      `<view :number="20" :str="'str'" :boolean="true" :null="null" :undefined="undefined"/>`,
+      `<view number="{{20}}" str="{{'str'}}" boolean="{{true}}" null="{{null}}" undefined="{{undefined}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.custom }
+  return {}
 }`
     )
   })
