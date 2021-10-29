@@ -15,6 +15,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
     array: false,
   },
   slot: {
+    $slots: true,
     fallback: true,
   },
   directive: 'a:',

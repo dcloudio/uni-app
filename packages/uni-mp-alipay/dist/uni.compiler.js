@@ -1141,6 +1141,7 @@ const miniProgram = {
         array: false,
     },
     slot: {
+        $slots: true,
         fallback: true,
     },
     directive: 'a:',

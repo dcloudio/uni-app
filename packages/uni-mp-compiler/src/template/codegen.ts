@@ -1,5 +1,8 @@
 import { hyphenate } from '@vue/shared'
-import { formatMiniProgramEvent } from '@dcloudio/uni-cli-shared'
+import {
+  formatMiniProgramEvent,
+  MiniProgramCompilerOptions,
+} from '@dcloudio/uni-cli-shared'
 import {
   ComponentNode,
   DirectiveNode,
@@ -24,9 +27,7 @@ interface TemplateCodegenContext {
   code: string
   directive: string
   scopeId?: string | null
-  slot: {
-    fallback: boolean
-  }
+  slot: MiniProgramCompilerOptions['slot']
   push(code: string): void
 }
 
@@ -242,7 +243,6 @@ export function genElementProps(
   node: ElementNode,
   context: TemplateCodegenContext
 ) {
-  const { push } = context
   node.props.forEach((prop) => {
     if (prop.type === NodeTypes.ATTRIBUTE) {
       const { value } = prop
@@ -253,7 +253,6 @@ export function genElementProps(
       }
     } else {
       const { name } = prop
-      push(` `)
       if (name === 'on') {
         genOn(prop, node, context)
       } else {
@@ -276,9 +275,9 @@ function genOn(
     isComponent: node.tagType === ElementTypes.COMPONENT,
   })
   if (exp.isStatic) {
-    push(`${name}="${exp.content}"`)
+    push(` ${name}="${exp.content}"`)
   } else {
-    push(`${name}="{{${exp.content}}}"`)
+    push(` ${name}="{{${exp.content}}}"`)
   }
 }
 
@@ -288,14 +287,14 @@ function genDirectiveNode(
 ) {
   if (prop.name === 'slot') {
     if (prop.arg) {
-      push(`slot="${(prop.arg as SimpleExpressionNode).content}"`)
+      push(` slot="${(prop.arg as SimpleExpressionNode).content}"`)
     }
   } else if (prop.name === 'show') {
-    push(`hidden="{{!${(prop.exp as SimpleExpressionNode).content}}}"`)
+    push(` hidden="{{!${(prop.exp as SimpleExpressionNode).content}}}"`)
   } else if (prop.arg && prop.exp) {
     const arg = (prop.arg as SimpleExpressionNode).content
     const exp = (prop.exp as SimpleExpressionNode).content
-    push(`${arg}="{{${exp}}}"`)
+    push(` ${arg}="{{${exp}}}"`)
   } else {
     throw new Error(`unknown directive` + JSON.stringify(prop))
   }

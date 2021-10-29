@@ -12,9 +12,13 @@ export interface MiniProgramCompilerOptions {
   }
   slot: {
     /**
+     * 是否支持 $slots.default 访问
+     */
+    $slots?: boolean
+    /**
      * 是否支持后备内容
      */
-    fallback: boolean
+    fallback?: boolean
   }
   filter?: {
     lang: string

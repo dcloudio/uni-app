@@ -95,7 +95,8 @@ export const transformSlot: NodeTransform = (node, context) => {
     transformTemplateSlotElement(onComponentSlot, templateNode, node, context)
     node.children = templateNode.children
   }
-  if (slots.size) {
+  // 不支持 $slots, 则自动补充 props
+  if (slots.size && !context.miniProgram.slot.$slots) {
     node.props.unshift(
       createBindDirectiveNode(
         ATTR_VUE_SLOTS,
