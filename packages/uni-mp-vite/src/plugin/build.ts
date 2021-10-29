@@ -13,7 +13,7 @@ import {
   resolveMainPathOnce,
   normalizeMiniProgramFilename,
 } from '@dcloudio/uni-cli-shared'
-import { GetManualChunk, GetModuleInfo } from 'rollup'
+import { GetManualChunk, GetModuleInfo, Plugin, PreRenderedChunk } from 'rollup'
 import {
   isUniComponentUrl,
   isUniPageUrl,
@@ -44,25 +44,9 @@ export function buildOptions(): UserConfig['build'] {
       output: {
         entryFileNames: 'app.js',
         manualChunks: createMoveToVendorChunkFn(),
-        chunkFileNames(chunk) {
-          if (chunk.isDynamicEntry && chunk.facadeModuleId) {
-            let id = chunk.facadeModuleId
-            if (isUniPageUrl(id)) {
-              id = path.resolve(
-                process.env.UNI_INPUT_DIR,
-                parseVirtualPagePath(id)
-              )
-            } else if (isUniComponentUrl(id)) {
-              id = path.resolve(
-                process.env.UNI_INPUT_DIR,
-                parseVirtualComponentPath(id)
-              )
-            }
-            return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
-          }
-          return '[name].js'
-        },
+        chunkFileNames: createChunkFileNames(inputDir),
         assetFileNames: '[name][extname]',
+        plugins: [dynamicImportPolyfill()],
       },
     },
   }
@@ -147,4 +131,36 @@ function staticImportedByEntry(
   )
   cache.set(id, someImporterIs)
   return someImporterIs
+}
+
+function createChunkFileNames(
+  inputDir: string
+): (chunkInfo: PreRenderedChunk) => string {
+  return function chunkFileNames(chunk) {
+    if (chunk.isDynamicEntry && chunk.facadeModuleId) {
+      let id = chunk.facadeModuleId
+      if (isUniPageUrl(id)) {
+        id = path.resolve(process.env.UNI_INPUT_DIR, parseVirtualPagePath(id))
+      } else if (isUniComponentUrl(id)) {
+        id = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          parseVirtualComponentPath(id)
+        )
+      }
+      return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
+    }
+    return '[name].js'
+  }
+}
+
+function dynamicImportPolyfill(): Plugin {
+  return {
+    name: 'dynamic-import-polyfill',
+    renderDynamicImport() {
+      return {
+        left: '(',
+        right: ')',
+      }
+    },
+  }
 }

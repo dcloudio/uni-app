@@ -34,6 +34,8 @@ function parsePagesJson(
     networkTimeout,
     subpackages,
     windowOptionsMap,
+    tabBarOptionsMap,
+    tabBarItemOptionsMap,
   }: ParsePagesJsonOptions = {
     subpackages: false,
   }
@@ -107,7 +109,12 @@ function parsePagesJson(
 
   // tabBar
   if (pagesJson.tabBar) {
-    const tabBar = parseTabBar(pagesJson.tabBar!, platform)
+    const tabBar = parseTabBar(
+      pagesJson.tabBar!,
+      platform,
+      tabBarOptionsMap,
+      tabBarItemOptionsMap
+    )
     if (tabBar) {
       appJson.tabBar = tabBar
     }

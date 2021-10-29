@@ -54,6 +54,7 @@ export function uniPagesJsonPlugin(
               fs.existsSync(path.resolve(inputDir, 'theme.json')),
             networkTimeout: manifestJson.networkTimeout,
             subpackages: options.app.subpackages,
+            ...options.json,
           }
         )
         nvueCssPathsCache.set(

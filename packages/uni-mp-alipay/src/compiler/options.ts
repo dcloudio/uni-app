@@ -19,7 +19,8 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   slot: {
     $slots: true,
-    fallback: true,
+    // 支付宝 fallback 有 bug，当多个带默认 slot 组件嵌套使用时，所有的默认slot均会显示，如uni-file-picker(image)
+    fallback: false,
   },
   directive: 'a:',
 }
@@ -57,6 +58,33 @@ export const options: UniMiniProgramPluginOptions = {
     },
   },
   global: 'my',
+  json: {
+    windowOptionsMap: {
+      defaultTitle: 'navigationBarTitleText',
+      pullRefresh: 'enablePullDownRefresh',
+      allowsBounceVertical: 'allowsBounceVertical',
+      titleBarColor: 'navigationBarBackgroundColor',
+      optionMenu: 'optionMenu',
+      backgroundColor: 'backgroundColor',
+      usingComponents: 'usingComponents',
+      navigationBarShadow: 'navigationBarShadow',
+      titleImage: 'titleImage',
+      transparentTitle: 'transparentTitle',
+      titlePenetrate: 'titlePenetrate',
+    },
+    tabBarOptionsMap: {
+      textColor: 'color',
+      selectedColor: 'selectedColor',
+      backgroundColor: 'backgroundColor',
+      items: 'list',
+    },
+    tabBarItemOptionsMap: {
+      pagePath: 'pagePath',
+      name: 'text',
+      icon: 'iconPath',
+      activeIcon: 'selectedIconPath',
+    },
+  },
   app: {
     darkmode: false,
     subpackages: true,

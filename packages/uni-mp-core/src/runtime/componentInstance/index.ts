@@ -68,7 +68,15 @@ export function initBaseInstance(
   if (__PLATFORM__ === 'mp-alipay') {
     Object.defineProperty(instance, 'slots', {
       get() {
-        return this.$scope && this.$scope.props.$slots
+        if (this.$scope) {
+          const slots = this.$scope.props.$slots
+          if (slots.$default) {
+            slots.default = slots.$default
+          } else {
+            delete slots.default
+          }
+          return slots
+        }
       },
     })
   } else {
