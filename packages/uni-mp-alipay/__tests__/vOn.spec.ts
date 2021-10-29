@@ -1,33 +1,17 @@
-import { ElementNode, ErrorCodes } from '@vue/compiler-core'
-import { compile } from '../src'
-import { CompilerOptions } from '../src/options'
 import { assert } from './testUtils'
 
-function parseWithVOn(template: string, options: CompilerOptions = {}) {
-  const { ast } = compile(template, {
-    generatorOpts: {
-      concise: true,
-    },
-    ...options,
-  })
-  return {
-    root: ast,
-    node: ast.children[0] as ElementNode,
-  }
-}
-
-describe('compiler: transform v-on', () => {
+describe('mp-alipay: transform v-on', () => {
   test('basic', () => {
     assert(
       `<view v-on:click="onClick"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.onClick) }
 }`
     )
     assert(
       `<custom v-on:click="onClick"/>`,
-      `<custom bindclick="{{a}}" v-i="2a9ec0b0-0"/>`,
+      `<custom onClick="{{a}}" v-i="2a9ec0b0-0" onVI="__l"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.onClick) }
 }`
@@ -45,7 +29,7 @@ describe('compiler: transform v-on', () => {
   test('should wrap as function if expression is inline statement', () => {
     assert(
       `<view @click="i++"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => _ctx.i++) }
 }`
@@ -54,7 +38,7 @@ describe('compiler: transform v-on', () => {
   test('should handle multiple inline statement', () => {
     assert(
       `<view @click="foo();bar()"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => { _ctx.foo(); _ctx.bar(); }) }
 }`
@@ -63,7 +47,7 @@ describe('compiler: transform v-on', () => {
   test('should handle multi-line statement', () => {
     assert(
       `<view @click="\nfoo();\nbar()\n"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   with (_ctx) {
     const { o: _o } = _Vue
@@ -77,7 +61,7 @@ describe('compiler: transform v-on', () => {
   test('inline statement w/ prefixIdentifiers: true', () => {
     assert(
       `<view @click="foo($event)"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => _ctx.foo($event)) }
 }`
@@ -86,7 +70,7 @@ describe('compiler: transform v-on', () => {
   test('multiple inline statements w/ prefixIdentifiers: true', () => {
     assert(
       `<view @click="foo($event);bar()"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => { _ctx.foo($event); _ctx.bar(); }) }
 }`
@@ -95,7 +79,7 @@ describe('compiler: transform v-on', () => {
   test('should NOT wrap as function if expression is already function expression', () => {
     assert(
       `<view @click="$event => foo($event)"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => _ctx.foo($event)) }
 }`
@@ -108,7 +92,7 @@ describe('compiler: transform v-on', () => {
     foo($event)
   }
 "/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => { _ctx.foo($event); }) }
 }`
@@ -121,7 +105,7 @@ describe('compiler: transform v-on', () => {
     foo($event)
   }
 "/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(function ($event) { _ctx.foo($event); }) }
 }`
@@ -130,7 +114,7 @@ describe('compiler: transform v-on', () => {
   test('should NOT wrap as function if expression is complex member expression', () => {
     assert(
       `<view @click="a['b' + c]"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   with (_ctx) {
     const { o: _o } = _Vue
@@ -147,7 +131,7 @@ describe('compiler: transform v-on', () => {
   test('complex member expression w/ prefixIdentifiers: true', () => {
     assert(
       `<view @click="a['b' + c]"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.a['b' + _ctx.c]) }
 }`
@@ -156,39 +140,17 @@ describe('compiler: transform v-on', () => {
   test('function expression w/ prefixIdentifiers: true', () => {
     assert(
       `<view @click="e => foo(e)"/>`,
-      `<view bindtap="{{a}}"/>`,
+      `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(e => _ctx.foo(e)) }
 }`
     )
   })
-  test('should error if no expression AND no modifier', () => {
-    const onError = jest.fn()
-    parseWithVOn(`<div v-on:click />`, { onError })
-    expect(onError.mock.calls[0][0]).toMatchObject({
-      code: ErrorCodes.X_V_ON_NO_EXPRESSION,
-      loc: {
-        start: {
-          line: 1,
-          column: 6,
-        },
-        end: {
-          line: 1,
-          column: 16,
-        },
-      },
-    })
-  })
-  test('should NOT error if no expression but has modifier', () => {
-    const onError = jest.fn()
-    parseWithVOn(`<div v-on:click.prevent />`, { onError })
-    expect(onError).not.toHaveBeenCalled()
-  })
 
   test('case conversion for kebab-case events', () => {
     assert(
       `<view v-on:foo-bar="onMount"/>`,
-      `<view bind:foo-bar="{{a}}"/>`,
+      `<view onFooBar="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.onMount) }
 }`
@@ -198,7 +160,7 @@ describe('compiler: transform v-on', () => {
   test('case conversion for vnode hooks', () => {
     assert(
       `<view v-on:vnode-mounted="onMount"/>`,
-      `<view bind:vnode-mounted="{{a}}"/>`,
+      `<view onVnodeMounted="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.onMount) }
 }`
@@ -209,7 +171,7 @@ describe('compiler: transform v-on', () => {
     test('empty handler', () => {
       assert(
         `<view v-on:click.prevent />`,
-        `<view catchtap="{{a}}"/>`,
+        `<view catchTap="{{a}}"/>`,
         `(_ctx, _cache) => {
   return { a: _o(() => {}) }
 }`

@@ -87,13 +87,21 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
     { ast }
   )
   if (options.filename && options.miniProgram?.emitFile) {
+    const {
+      class: clazz,
+      directive,
+      emitFile,
+      event,
+      slot,
+    } = options.miniProgram
     genTemplate(ast, {
-      class: options.miniProgram.class,
+      class: clazz,
       scopeId: options.scopeId,
       filename: options.filename,
-      directive: options.miniProgram.directive,
-      emitFile: options.miniProgram.emitFile,
-      slot: options.miniProgram.slot,
+      directive,
+      emitFile,
+      event,
+      slot,
     })
   }
 

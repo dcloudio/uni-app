@@ -6,7 +6,12 @@
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-cli-shared", "@dcloudio/uni-mp-vite"]
+    "external": [
+      "@vue/shared",
+      "@vue/compiler-core",
+      "@dcloudio/uni-cli-shared",
+      "@dcloudio/uni-mp-vite"
+    ]
   },
   {
     "input": {

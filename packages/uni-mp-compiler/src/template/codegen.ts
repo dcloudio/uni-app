@@ -27,16 +27,25 @@ interface TemplateCodegenContext {
   code: string
   directive: string
   scopeId?: string | null
+  event: MiniProgramCompilerOptions['event']
   slot: MiniProgramCompilerOptions['slot']
   push(code: string): void
 }
 
 export function generate(
   { children }: RootNode,
-  { slot, scopeId, emitFile, filename, directive }: TemplateCodegenOptions
+  {
+    slot,
+    event,
+    scopeId,
+    emitFile,
+    filename,
+    directive,
+  }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
     slot,
+    event,
     code: '',
     scopeId,
     directive,
@@ -264,12 +273,12 @@ export function genElementProps(
 function genOn(
   prop: DirectiveNode,
   node: ElementNode,
-  { push }: TemplateCodegenContext
+  { push, event }: TemplateCodegenContext
 ) {
   const arg = (prop.arg as SimpleExpressionNode).content
   const exp = prop.exp as SimpleExpressionNode
   const modifiers = prop.modifiers
-  const name = formatMiniProgramEvent(arg, {
+  const name = (event?.format || formatMiniProgramEvent)(arg, {
     isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
     isCapture: modifiers.includes('capture'),
     isComponent: node.tagType === ElementTypes.COMPONENT,

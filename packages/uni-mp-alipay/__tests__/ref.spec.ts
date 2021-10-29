@@ -1,6 +1,6 @@
 import { assert } from './testUtils'
 
-describe('compiler: transform ref', () => {
+describe('mp-alipay: transform ref', () => {
   test('without ref', () => {
     assert(
       `<custom/>`,

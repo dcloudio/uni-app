@@ -4,6 +4,12 @@ import { LINEFEED } from '@dcloudio/uni-shared'
 import { normalizeMiniProgramFilename } from '../utils'
 
 export interface MiniProgramCompilerOptions {
+  event?: {
+    format(
+      name: string,
+      opts: { isCatch?: boolean; isCapture?: boolean; isComponent?: boolean }
+    ): string
+  }
   class: {
     /**
      * 是否支持绑定 array 类型

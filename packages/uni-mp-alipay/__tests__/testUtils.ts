@@ -1,7 +1,11 @@
-import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
+import { isNativeTag } from '@dcloudio/uni-shared'
 import { compile, CompilerOptions } from '@dcloudio/uni-mp-compiler'
 
-import { miniProgram, nodeTransforms } from '../src/compiler/options'
+import {
+  isCustomElement,
+  miniProgram,
+  nodeTransforms,
+} from '../src/compiler/options'
 
 export function assert(
   template: string,

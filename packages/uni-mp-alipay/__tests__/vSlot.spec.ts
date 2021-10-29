@@ -1,6 +1,6 @@
 import { assert } from './testUtils'
 
-describe('compiler: transform v-slot', () => {
+describe('mp-alipay: transform v-slot', () => {
   test('default slot', () => {
     assert(
       `<custom><template v-slot/></custom>`,
