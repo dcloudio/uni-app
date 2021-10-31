@@ -802,7 +802,7 @@ const scss: SassStylePreprocessor = async (
       if (resolved) {
         rebaseUrls(resolved, options.filename, options.alias).then(done)
       } else {
-        done(null)
+        done && done(null)
       }
     })
   }

@@ -79,7 +79,7 @@ export function render(_ctx, _cache) {
       Foo: { name: '_component_Foo', type: BindingComponentTypes.UNKNOWN },
       Bar: { name: '_component_Bar', type: BindingComponentTypes.UNKNOWN },
       Example: { name: '$setup["Example"]', type: BindingComponentTypes.SETUP },
-      Test: { name: '_component_Test', type: BindingComponentTypes.SELF },
+      Test: { name: '_component_Test', type: BindingComponentTypes.UNKNOWN },
     })
     expect(code).toContain(
       `if (!Math) { Math.max.call(Max, $setup["Example"]) }`
@@ -91,7 +91,10 @@ export function render(_ctx, _cache) {
       filename: `/foo/bar/Example.vue?vue&type=template`,
     })
     expect((root as CodegenRootNode).bindingComponents).toEqual({
-      Example: { name: '_component_Example', type: BindingComponentTypes.SELF },
+      Example: {
+        name: '_component_Example',
+        type: BindingComponentTypes.UNKNOWN,
+      },
     })
   })
 

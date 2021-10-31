@@ -1,13 +1,4 @@
-import {
-  NOOP,
-  EMPTY_OBJ,
-  extend,
-  isString,
-  isArray,
-  capitalize,
-  camelize,
-  hasOwn,
-} from '@vue/shared'
+import { NOOP, EMPTY_OBJ, extend, isString, isArray, hasOwn } from '@vue/shared'
 
 import {
   ConditionalExpression,
@@ -314,10 +305,11 @@ export function createTransformContext(
   const vueIds: string[] = []
   const identifiers = Object.create(null)
   const scopes: CodegenScope[] = [rootScope]
-  const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
+  // const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
-    selfName: nameMatch && capitalize(camelize(nameMatch[1])),
+    // 暂不提供根据文件名生成递归组件
+    selfName: '', //nameMatch && capitalize(camelize(nameMatch[1])),
     miniProgram,
     isTS,
     inline,

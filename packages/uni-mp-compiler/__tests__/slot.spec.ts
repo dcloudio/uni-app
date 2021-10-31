@@ -37,4 +37,13 @@ describe('compiler: transform slot', () => {
 }`
     )
   })
+  test('slot with v-for', () => {
+    assert(
+      `<slot v-for="(item,index) in items" :key="index"></slot>`,
+      `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
+      `(_ctx, _cache) => {
+  return { a: _f(_ctx.items, (item, index, i0) => { return { a: _r(\"default\", { key: index }) }; }) }
+}`
+    )
+  })
 })
