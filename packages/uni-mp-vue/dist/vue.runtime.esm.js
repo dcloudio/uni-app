@@ -5022,6 +5022,13 @@ function renderSlot(name, props = {}) {
     if (!vueIds) {
         return;
     }
+    if (!instance.parent && !instance.isMounted) {
+        // 头条小程序首次 render 时，还没有 parent
+        onMounted(() => {
+            renderSlot(name, props);
+        }, instance);
+        return;
+    }
     const invoker = findScopedSlotInvoker(vueIds.split(',')[0], instance);
     // 可能不存在，因为插槽不是必需的
     if (invoker) {
