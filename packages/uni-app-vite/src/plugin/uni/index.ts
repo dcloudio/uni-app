@@ -4,6 +4,8 @@ import {
   UniVitePlugin,
   initI18nOptions,
   transformPageHead,
+  transformMatchMedia,
+  transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniOptions(): UniVitePlugin['uni'] {
@@ -32,10 +34,11 @@ export function uniOptions(): UniVitePlugin['uni'] {
     compilerOptions: {
       isNativeTag,
       isCustomElement,
-      nodeTransforms: [transformPageHead],
-    },
-    transformEvent: {
-      tap: 'click',
+      nodeTransforms: [
+        transformTapToClick,
+        transformMatchMedia,
+        transformPageHead,
+      ],
     },
   }
 }

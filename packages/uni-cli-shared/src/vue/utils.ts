@@ -69,7 +69,7 @@ export function addStaticClass(node: ElementNode, clazz: string) {
   }
 }
 
-function createDirectiveNode(
+export function createDirectiveNode(
   name: string,
   arg: string,
   exp: string

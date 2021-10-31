@@ -1,14 +1,38 @@
 import path from 'path'
-
+import type { CompilerOptions } from '@vue/compiler-core'
 import {
-  COMPONENT_BIND_LINK,
-  createTransformComponentLink,
+  isNativeTag,
+  isCustomElement as baseIsCustomElement,
+} from '@dcloudio/uni-shared'
+import {
+  MiniProgramCompilerOptions,
+  transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 
+export const compilerOptions: CompilerOptions = {
+  isNativeTag,
+  isCustomElement: (tag) => {
+    return (
+      ['page-meta', 'navigation-bar', 'match-media'].includes(tag) ||
+      baseIsCustomElement(tag)
+    )
+  },
+  nodeTransforms: [transformRef, transformComponentLink],
+}
+
+export const miniProgram: MiniProgramCompilerOptions = {
+  class: {
+    array: true,
+  },
+  slot: {
+    fallback: false,
+  },
+  directive: 'wx:',
+}
 const projectConfigFilename = 'project.config.json'
 
 export const options: UniMiniProgramPluginOptions = {
@@ -48,9 +72,8 @@ export const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
-    class: {
-      array: true,
-    },
+    /* eslint-disable no-restricted-syntax */
+    ...miniProgram,
     filter: {
       extname: '.wxs',
       lang: 'wxs',
@@ -63,20 +86,8 @@ ${filter.code}
 </wxs>`
       },
     },
-    slot: {
-      fallback: false,
-    },
     extname: '.wxml',
-    directive: 'wx:',
-    compilerOptions: {
-      isCustomElement: (tag) => {
-        return ['page-meta', 'navigation-bar', 'match-media'].includes(tag)
-      },
-      nodeTransforms: [
-        transformRef,
-        createTransformComponentLink(COMPONENT_BIND_LINK),
-      ],
-    },
+    compilerOptions,
   },
   style: {
     extname: '.wxss',

@@ -7,10 +7,11 @@
       "format": "cjs"
     },
     "external": [
+      "@vue/compiler-core",
+      "@dcloudio/uni-shared",
       "@dcloudio/uni-cli-shared",
-      "@dcloudio/uni-mp-compiler",
       "@dcloudio/uni-mp-vite",
-      "@vue/compiler-core"
+      "@dcloudio/uni-mp-compiler"
     ]
   },
   {

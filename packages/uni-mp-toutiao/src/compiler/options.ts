@@ -1,8 +1,10 @@
 import path from 'path'
+import type { CompilerOptions } from '@vue/compiler-core'
+import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import {
-  COMPONENT_BIND_LINK,
-  createTransformComponentLink,
   MiniProgramCompilerOptions,
+  transformComponentLink,
+  transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -12,11 +14,18 @@ import { transformSwiper } from './transforms/transformSwiper'
 
 const projectConfigFilename = 'project.config.json'
 
-export const nodeTransforms = [
+const nodeTransforms = [
   transformRef,
   transformSwiper,
-  createTransformComponentLink(COMPONENT_BIND_LINK),
+  transformMatchMedia,
+  transformComponentLink,
 ]
+
+export const compilerOptions: CompilerOptions = {
+  isNativeTag,
+  isCustomElement,
+  nodeTransforms,
+}
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
     array: false,
@@ -64,9 +73,6 @@ ${filter.code}
       },
     },
     extname: '.ttml',
-    compilerOptions: {
-      nodeTransforms,
-    },
   },
   style: {
     extname: '.ttss',

@@ -1,9 +1,14 @@
 import path from 'path'
-import { NodeTypes } from '@vue/compiler-core'
+import { CompilerOptions, NodeTypes } from '@vue/compiler-core'
+import {
+  isNativeTag,
+  isCustomElement as baseIsCustomElement,
+} from '@dcloudio/uni-shared'
 import {
   COMPONENT_ON_LINK,
   createTransformComponentLink,
   MiniProgramCompilerOptions,
+  transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import source from './mini.project.json'
@@ -25,12 +30,18 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'a:',
 }
-// TODO getPhoneNumber 等事件
-export const nodeTransforms = [
+const nodeTransforms = [
   transformRef,
   transformOpenType,
+  transformMatchMedia,
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
 ]
+export const compilerOptions: CompilerOptions = {
+  isNativeTag,
+  isCustomElement,
+  nodeTransforms,
+}
+
 export const tags = [
   'lifestyle',
   'life-follow',
@@ -44,9 +55,11 @@ export const tags = [
   'ix-native-list',
   'mkt',
 ]
-export function isCustomElement(tag: string) {
-  return tags.includes(tag)
+
+function isCustomElement(tag: string) {
+  return tags.includes(tag) || baseIsCustomElement(tag)
 }
+
 export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
@@ -108,10 +121,7 @@ export const options: UniMiniProgramPluginOptions = {
       },
     },
     extname: '.axml',
-    compilerOptions: {
-      isCustomElement,
-      nodeTransforms,
-    },
+    compilerOptions,
   },
   style: {
     extname: '.acss',

@@ -2,6 +2,7 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
+var uniShared = require('@dcloudio/uni-shared');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var compilerCore = require('@vue/compiler-core');
@@ -144,6 +145,11 @@ const transformModel = (dir, node, context, augmentor) => {
     return res;
 };
 
+const nodeTransforms = [uniCliShared.transformRef, transformFor, uniCliShared.transformMatchMedia];
+const directiveTransforms = {
+    on: transformOn,
+    model: transformModel,
+};
 const miniProgram = {
     class: {
         array: true,
@@ -152,6 +158,12 @@ const miniProgram = {
         fallback: true,
     },
     directive: 's-',
+};
+const compilerOptions = {
+    isNativeTag: uniShared.isNativeTag,
+    isCustomElement: uniShared.isCustomElement,
+    nodeTransforms,
+    directiveTransforms,
 };
 const projectConfigFilename = 'project.swan.json';
 const options = {
@@ -186,13 +198,7 @@ const options = {
   ${filter.code}
   </import-sjs>`;
             },
-        }, extname: '.swan', compilerOptions: {
-            nodeTransforms: [uniCliShared.transformRef, transformFor],
-            directiveTransforms: {
-                on: transformOn,
-                model: transformModel,
-            },
-        } }),
+        }, extname: '.swan', compilerOptions }),
     style: {
         extname: '.css',
     },

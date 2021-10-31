@@ -4,6 +4,8 @@ import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import {
   isInHBuilderX,
   resolveMainPathOnce,
+  transformMatchMedia,
+  transformTapToClick,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
 import { createHandleHotUpdate } from './handleHotUpdate'
@@ -21,13 +23,14 @@ export const UniH5Plugin: UniVitePlugin = {
     copyOptions: {
       assets: ['hybrid/html'],
     },
-    transformEvent: {
-      tap: 'click',
-    },
     compilerOptions: {
       isNativeTag: isH5NativeTag,
       isCustomElement: isH5CustomElement,
-      nodeTransforms: [transformPageHead],
+      nodeTransforms: [
+        transformTapToClick,
+        transformMatchMedia,
+        transformPageHead,
+      ],
     },
   },
   config(config, env) {

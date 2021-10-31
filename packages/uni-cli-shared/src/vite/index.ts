@@ -23,7 +23,6 @@ interface UniVitePluginUniOptions {
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']
   }
-  transformEvent?: Record<string, string>
   copyOptions?: CopyOptions | (() => CopyOptions)
 }
 export interface UniVitePlugin extends Plugin {

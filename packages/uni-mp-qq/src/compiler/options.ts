@@ -1,18 +1,38 @@
 import path from 'path'
-
+import type { CompilerOptions } from '@vue/compiler-core'
+import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import {
-  COMPONENT_BIND_LINK,
-  createTransformComponentLink,
+  MiniProgramCompilerOptions,
+  transformComponentLink,
+  transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 
-export const nodeTransforms = [
+const nodeTransforms = [
   transformRef,
-  createTransformComponentLink(COMPONENT_BIND_LINK),
+  transformMatchMedia,
+  transformComponentLink,
 ]
+
+export const compilerOptions: CompilerOptions = {
+  isNativeTag,
+  isCustomElement,
+  nodeTransforms,
+}
+
+export const miniProgram: MiniProgramCompilerOptions = {
+  class: {
+    array: true,
+  },
+  slot: {
+    fallback: false,
+  },
+  directive: 'qq:',
+}
+
 export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
@@ -43,9 +63,8 @@ export const options: UniMiniProgramPluginOptions = {
     source,
   },
   template: {
-    class: {
-      array: true,
-    },
+    /* eslint-disable no-restricted-syntax */
+    ...miniProgram,
     filter: {
       extname: '.qs',
       lang: 'wxs',
@@ -58,14 +77,8 @@ export const options: UniMiniProgramPluginOptions = {
   </qs>`
       },
     },
-    slot: {
-      fallback: false,
-    },
     extname: '.qml',
-    directive: 'qq:',
-    compilerOptions: {
-      nodeTransforms,
-    },
+    compilerOptions,
   },
   style: {
     extname: '.qss',

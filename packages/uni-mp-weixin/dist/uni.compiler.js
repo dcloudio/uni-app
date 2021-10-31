@@ -2,6 +2,7 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
+var uniShared = require('@dcloudio/uni-shared');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -58,6 +59,23 @@ var source = {
 	condition: condition
 };
 
+const compilerOptions = {
+    isNativeTag: uniShared.isNativeTag,
+    isCustomElement: (tag) => {
+        return (['page-meta', 'navigation-bar', 'match-media'].includes(tag) ||
+            uniShared.isCustomElement(tag));
+    },
+    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
+};
+const miniProgram = {
+    class: {
+        array: true,
+    },
+    slot: {
+        fallback: false,
+    },
+    directive: 'wx:',
+};
 const projectConfigFilename = 'project.config.json';
 const options = {
     vite: {
@@ -95,11 +113,7 @@ const options = {
         filename: projectConfigFilename,
         source,
     },
-    template: {
-        class: {
-            array: true,
-        },
-        filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.wxs',
             lang: 'wxs',
             generate(filter, filename) {
@@ -110,22 +124,7 @@ const options = {
 ${filter.code}
 </wxs>`;
             },
-        },
-        slot: {
-            fallback: false,
-        },
-        extname: '.wxml',
-        directive: 'wx:',
-        compilerOptions: {
-            isCustomElement: (tag) => {
-                return ['page-meta', 'navigation-bar', 'match-media'].includes(tag);
-            },
-            nodeTransforms: [
-                uniCliShared.transformRef,
-                uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK),
-            ],
-        },
-    },
+        }, extname: '.wxml', compilerOptions }),
     style: {
         extname: '.wxss',
     },

@@ -1,10 +1,6 @@
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { compile, CompilerOptions } from '@dcloudio/uni-mp-compiler'
-import { transformFor } from '../src/compiler/transforms/vFor'
-import { transformOn } from '../src/compiler/transforms/vOn'
-import { transformModel } from '../src/compiler/transforms/vModel'
-import { miniProgram } from '../src/compiler/options'
-import { transformRef } from '@dcloudio/uni-cli-shared'
+import { miniProgram, compilerOptions } from '../src/compiler/options'
 
 export function assert(
   template: string,
@@ -22,11 +18,6 @@ export function assert(
     generatorOpts: {
       concise: true,
     },
-    nodeTransforms: [transformRef, transformFor],
-    directiveTransforms: {
-      on: transformOn,
-      model: transformModel,
-    },
     miniProgram: {
       ...miniProgram,
       emitFile({ source }) {
@@ -37,6 +28,7 @@ export function assert(
         return ''
       },
     },
+    ...compilerOptions,
     ...options,
   })
   if (!options.onError) {

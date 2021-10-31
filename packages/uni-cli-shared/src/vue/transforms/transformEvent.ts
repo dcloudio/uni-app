@@ -1,8 +1,10 @@
 import { DirectiveNode, NodeTransform } from '@vue/compiler-core'
-import { isElementNode, isSimpleExpressionNode } from '../../utils'
+import { isElementNode, isSimpleExpressionNode } from '../../vite/utils/ast'
 
-export function createTransformEvent(options: Record<string, string>) {
-  const transformEvent: NodeTransform = (node) => {
+export function createTransformEvent(
+  options: Record<string, string>
+): NodeTransform {
+  return function transformEvent(node) {
     if (!isElementNode(node)) {
       return
     }
@@ -17,5 +19,4 @@ export function createTransformEvent(options: Record<string, string>) {
       }
     })
   }
-  return transformEvent
 }

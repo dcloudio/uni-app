@@ -34,16 +34,12 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
       compiler: pluginTemplateCompiler,
       copyOptions: pluginCopyOptions,
       compilerOptions: pluginCompilerOptions,
-      transformEvent: pluginTransformEvent,
     } = plugin.uni || {}
     if (pluginTemplateCompiler) {
       compiler = pluginTemplateCompiler
     }
     if (pluginCompilerOptions) {
       extend(compilerOptions, pluginCompilerOptions)
-    }
-    if (pluginTransformEvent) {
-      extend(transformEvent, pluginTransformEvent)
     }
     if (pluginCopyOptions) {
       let copyOptions = pluginCopyOptions as CopyOptions

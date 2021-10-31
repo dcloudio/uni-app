@@ -2,14 +2,69 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
+var shared = require('@vue/shared');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var compilerCore = require('@vue/compiler-core');
-var shared = require('@vue/shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+
+const BUILT_IN_TAGS = [
+    'ad',
+    'ad-content-page',
+    'ad-draw',
+    'audio',
+    'button',
+    'camera',
+    'canvas',
+    'checkbox',
+    'checkbox-group',
+    'cover-image',
+    'cover-view',
+    'editor',
+    'form',
+    'functional-page-navigator',
+    'icon',
+    'image',
+    'input',
+    'label',
+    'live-player',
+    'live-pusher',
+    'map',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'official-account',
+    'open-data',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'text',
+    'textarea',
+    'video',
+    'view',
+    'web-view',
+].map((tag) => 'uni-' + tag);
+function isBuiltInComponent(tag) {
+    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
+}
+function isNativeTag(tag) {
+    return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
+}
+function isCustomElement$1(_tag) {
+    return false;
+}
 
 var component2 = true;
 var enableAppxNg = true;
@@ -137,12 +192,17 @@ const miniProgram = {
     },
     directive: 'a:',
 };
-// TODO getPhoneNumber 等事件
 const nodeTransforms = [
     transformRef,
     transformOpenType,
+    uniCliShared.transformMatchMedia,
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, 6 /* ATTRIBUTE */),
 ];
+const compilerOptions = {
+    isNativeTag,
+    isCustomElement,
+    nodeTransforms,
+};
 const tags = [
     'lifestyle',
     'life-follow',
@@ -157,7 +217,7 @@ const tags = [
     'mkt',
 ];
 function isCustomElement(tag) {
-    return tags.includes(tag);
+    return tags.includes(tag) || isCustomElement$1();
 }
 const options = {
     vite: {
@@ -215,10 +275,7 @@ const options = {
                 // 暂不处理，让开发者自己全部使用 src 引入
                 return `<import-sjs name="${filter.name}" from="${filename}.sjs"/>`;
             },
-        }, extname: '.axml', compilerOptions: {
-            isCustomElement,
-            nodeTransforms,
-        } }),
+        }, extname: '.axml', compilerOptions }),
     style: {
         extname: '.acss',
     },

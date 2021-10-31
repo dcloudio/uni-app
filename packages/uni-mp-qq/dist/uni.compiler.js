@@ -3,6 +3,7 @@
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var fs = require('fs-extra');
+var uniShared = require('@dcloudio/uni-shared');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -84,8 +85,23 @@ var source = {
 
 const nodeTransforms = [
     uniCliShared.transformRef,
-    uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_BIND_LINK),
+    uniCliShared.transformMatchMedia,
+    uniCliShared.transformComponentLink,
 ];
+const compilerOptions = {
+    isNativeTag: uniShared.isNativeTag,
+    isCustomElement: uniShared.isCustomElement,
+    nodeTransforms,
+};
+const miniProgram = {
+    class: {
+        array: true,
+    },
+    slot: {
+        fallback: false,
+    },
+    directive: 'qq:',
+};
 const options = {
     vite: {
         inject: {
@@ -115,11 +131,7 @@ const options = {
         filename: 'project.config.json',
         source,
     },
-    template: {
-        class: {
-            array: true,
-        },
-        filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.qs',
             lang: 'wxs',
             generate(filter, filename) {
@@ -130,16 +142,7 @@ const options = {
   ${filter.code}
   </qs>`;
             },
-        },
-        slot: {
-            fallback: false,
-        },
-        extname: '.qml',
-        directive: 'qq:',
-        compilerOptions: {
-            nodeTransforms,
-        },
-    },
+        }, extname: '.qml', compilerOptions }),
     style: {
         extname: '.qss',
     },

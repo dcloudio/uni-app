@@ -1,6 +1,9 @@
 import path from 'path'
+import type { CompilerOptions } from '@vue/compiler-core'
+import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import {
   MiniProgramCompilerOptions,
+  transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -10,6 +13,11 @@ import { transformFor } from './transforms/vFor'
 import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
 
+const nodeTransforms = [transformRef, transformFor, transformMatchMedia]
+const directiveTransforms = {
+  on: transformOn,
+  model: transformModel,
+}
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
     array: true,
@@ -18,6 +26,13 @@ export const miniProgram: MiniProgramCompilerOptions = {
     fallback: true,
   },
   directive: 's-',
+}
+
+export const compilerOptions: CompilerOptions = {
+  isNativeTag,
+  isCustomElement,
+  nodeTransforms,
+  directiveTransforms,
 }
 
 const projectConfigFilename = 'project.swan.json'
@@ -59,13 +74,7 @@ export const options: UniMiniProgramPluginOptions = {
       },
     },
     extname: '.swan',
-    compilerOptions: {
-      nodeTransforms: [transformRef, transformFor],
-      directiveTransforms: {
-        on: transformOn,
-        model: transformModel,
-      },
-    },
+    compilerOptions,
   },
   style: {
     extname: '.css',

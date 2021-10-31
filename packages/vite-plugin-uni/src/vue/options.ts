@@ -1,16 +1,14 @@
-import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { TemplateCompiler } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE_RE,
   UniVitePlugin,
   uniPostcssScopedPlugin,
   createUniVueTransformAssetUrls,
+  onContextCreated,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
-import { transformMatchMedia } from './transforms/transformMatchMedia'
-import { createTransformEvent } from './transforms/transformEvent'
-// import { transformContext } from './transforms/transformContext'
 
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
@@ -64,11 +62,11 @@ export function initPluginVueOptions(
   }
   compilerOptions.isNativeTag = isNativeTag
   compilerOptions.isCustomElement = isCustomElement
-  if (directiveTransforms) {
-    compilerOptions.directiveTransforms = extend(
-      compilerOptions.directiveTransforms || {},
-      directiveTransforms
-    )
+  ;(compilerOptions as any).onContextCreated = onContextCreated
+
+  compilerOptions.directiveTransforms = {
+    ...compilerOptions.directiveTransforms,
+    ...directiveTransforms,
   }
 
   if (!compilerOptions.nodeTransforms) {
@@ -84,18 +82,6 @@ export function initPluginVueOptions(
   //   compilerOptions.compatConfig || {},
   //   compatConfig
   // )
-
-  const eventOpts = UniVitePlugins.reduce<Record<string, string>>(
-    (eventOpts, UniVitePlugin) => {
-      return extend(eventOpts, UniVitePlugin.uni?.transformEvent)
-    },
-    {}
-  )
-  // compilerOptions.nodeTransforms.unshift(transformContext)
-  compilerOptions.nodeTransforms.unshift(createTransformEvent(eventOpts))
-  if (options.platform !== 'mp-weixin') {
-    compilerOptions.nodeTransforms.unshift(transformMatchMedia)
-  }
 
   // App,MP 平台不支持使用静态节点
   compilerOptions.hoistStatic = false
