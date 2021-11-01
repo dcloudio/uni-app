@@ -14,7 +14,7 @@ export const ChooseVideoOptions: ApiOptions<API_TYPE_CHOOSE_VIDEO> = {
       if (extension instanceof Array && extension.length === 0) {
         return 'param extension should not be empty.'
       }
-      if (!extension) params.extension = ['']
+      if (!extension) params.extension = ['*']
     },
   },
 }
