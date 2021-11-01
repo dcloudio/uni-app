@@ -56,6 +56,7 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/uni-mp-baidu': version,
         '@dcloudio/uni-mp-alipay': version,
         '@dcloudio/uni-mp-toutiao': version,
+        '@dcloudio/uni-mp-lark': version,
         '@dcloudio/uni-mp-360': version,
         '@dcloudio/uni-mp-kuaishou': version,
         '@dcloudio/uni-quickapp-native': version,
