@@ -24,7 +24,11 @@ export interface MiniProgramCompilerOptions {
     /**
      * 是否支持后备内容
      */
-    fallback?: boolean
+    fallbackContent?: boolean
+    /**
+     * 是否支持动态插槽名
+     */
+    dynamicSlotNames?: boolean
   }
   filter?: {
     lang: string

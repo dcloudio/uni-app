@@ -98,7 +98,8 @@ const miniProgram = {
         array: true,
     },
     slot: {
-        fallback: false,
+        fallbackContent: false,
+        dynamicSlotNames: true,
     },
     directive: 'qq:',
 };

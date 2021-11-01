@@ -31,7 +31,8 @@ export const miniProgram: MiniProgramCompilerOptions = {
     array: false,
   },
   slot: {
-    fallback: true,
+    fallbackContent: true,
+    dynamicSlotNames: true,
   },
   directive: 'tt:',
 }

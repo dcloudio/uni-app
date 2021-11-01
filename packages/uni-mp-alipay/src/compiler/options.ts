@@ -26,7 +26,8 @@ export const miniProgram: MiniProgramCompilerOptions = {
   slot: {
     $slots: true,
     // 支付宝 fallback 有 bug，当多个带默认 slot 组件嵌套使用时，所有的默认slot均会显示，如uni-file-picker(image)
-    fallback: false,
+    fallbackContent: false,
+    dynamicSlotNames: true,
   },
   directive: 'a:',
 }

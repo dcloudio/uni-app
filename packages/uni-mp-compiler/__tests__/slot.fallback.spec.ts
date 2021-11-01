@@ -4,7 +4,7 @@ const options = {
   miniProgram: {
     ...miniProgram,
     slot: {
-      fallback: true,
+      fallbackContent: true,
     },
   },
 }
