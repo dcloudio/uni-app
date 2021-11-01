@@ -137,6 +137,8 @@ module.exports = {
     return {
       sourceType: 'module',
       plugins: [
+        ['pipelineOperator', { proposal: 'minimal' }],
+        'doExpressions',
         'optionalChaining',
         'typescript',
         ['decorators', {

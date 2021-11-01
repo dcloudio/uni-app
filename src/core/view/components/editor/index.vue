@@ -16,6 +16,19 @@ import HTMLParser from 'uni-helpers/html-parser'
 import * as formats from './formats'
 import loadScript from './load-script'
 
+function isiOS () {
+  if (__PLATFORM__ === 'app-plus') {
+    return plus.os.name.toLowerCase() === 'ios'
+  } else if (__PLATFORM__ === 'h5') {
+    const ua = navigator.userAgent
+    const isIOS = /iphone|ipad|ipod/i.test(ua)
+    const isMac = /Macintosh|Mac/i.test(ua)
+    const isIPadOS = isMac && navigator.maxTouchPoints > 0
+    return isIOS || isIPadOS
+  }
+  return false
+}
+
 let textChanging = false
 export default {
   name: 'Editor',
@@ -65,7 +78,7 @@ export default {
     },
     placeholder (value) {
       if (this.quillReady) {
-        this.quill.root.setAttribute('data-placeholder', value)
+        this.setPlaceHolder(value)
       }
     }
   },
@@ -238,6 +251,11 @@ export default {
         }, this.$page.id)
       }
     },
+    setPlaceHolder (value) {
+      const placeHolderAttrName = 'data-placeholder'
+      const QuillRoot = this.quill.root
+      QuillRoot.getAttribute(placeHolderAttrName) !== value && QuillRoot.setAttribute(placeHolderAttrName, value)
+    },
     initQuill (imageResizeModules) {
       const Quill = window.Quill
       formats.register(Quill)
@@ -258,10 +276,16 @@ export default {
       const events = ['focus', 'blur', 'input']
       events.forEach(name => {
         $el.addEventListener(name, ($event) => {
+          const contents = this.getContents()
           if (name === 'input') {
+            if (isiOS()) {
+              const regExpContent = (contents.html.match(/<span [\s\S]*>([\s\S]*)<\/span>/) || [])[1]
+              const placeholder = regExpContent && regExpContent.replace(/\s/g, '') ? '' : this.placeholder
+              this.setPlaceHolder(placeholder)
+            }
             $event.stopPropagation()
           } else {
-            this.$trigger(name, $event, this.getContents())
+            this.$trigger(name, $event, contents)
           }
         })
       })

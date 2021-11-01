@@ -22,7 +22,7 @@ export function setClipboardData ({
   const textarea = document.createElement('textarea')
   textarea.id = '#clipboard'
   textarea.style.position = 'absolute'
-  textarea.style.top = '0'
+  textarea.style.top = '-9999px'
   textarea.style.zIndex = '-9999'
   document.body.appendChild(textarea)
   textarea.value = data
@@ -30,10 +30,6 @@ export function setClipboardData ({
   textarea.select()
   const result = document.execCommand('Copy', false, null)
   if (result) {
-    uni.showToast({
-      title: '复制成功',
-      icon: 'none'
-    })
     return {
       errMsg: 'setClipboardData:ok'
     }
