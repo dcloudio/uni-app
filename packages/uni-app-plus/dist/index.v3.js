@@ -28,7 +28,8 @@ var serviceContext = (function () {
     'onSocketMessage',
     'closeSocket',
     'onSocketClose',
-    'getUpdateManager'
+    'getUpdateManager',
+    'configMTLS'
   ];
 
   const route = [
@@ -293,8 +294,36 @@ var serviceContext = (function () {
     window.addEventListener('test-passive', null, opts);
   } catch (e) {}
 
+  let realAtob;
+
+  const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+
+  if (typeof atob !== 'function') {
+    realAtob = function (str) {
+      str = String(str).replace(/[\t\n\f\r ]+/g, '');
+      if (!b64re.test(str)) { throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.") }
+
+      // Adding the padding if missing, for semplicity
+      str += '=='.slice(2 - (str.length & 3));
+      var bitmap; var result = ''; var r1; var r2; var i = 0;
+      for (; i < str.length;) {
+        bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 |
+                      (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+
+        result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255)
+          : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255)
+            : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+      }
+      return result
+    };
+  } else {
+    // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+    realAtob = atob;
+  }
+
   function b64DecodeUnicode (str) {
-    return decodeURIComponent(atob(str).split('').map(function (c) {
+    return decodeURIComponent(realAtob(str).split('').map(function (c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
     }).join(''))
   }
@@ -1283,10 +1312,10 @@ var serviceContext = (function () {
       }
       locale = locale.toLowerCase();
       if (locale.indexOf('zh') === 0) {
-          if (locale.indexOf('-hans') !== -1) {
+          if (locale.indexOf('-hans') > -1) {
               return LOCALE_ZH_HANS;
           }
-          if (locale.indexOf('-hant') !== -1) {
+          if (locale.indexOf('-hant') > -1) {
               return LOCALE_ZH_HANT;
           }
           if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
@@ -1378,11 +1407,29 @@ var serviceContext = (function () {
       }
   }
 
-  const ignoreVueI18n = true;
   function watchAppLocale(appVm, i18n) {
-      appVm.$watch(() => appVm.$locale, (newLocale) => {
-          i18n.setLocale(newLocale);
-      });
+      // 需要保证 watch 的触发在组件渲染之前
+      if (appVm.$watchLocale) {
+          // vue2
+          appVm.$watchLocale((newLocale) => {
+              i18n.setLocale(newLocale);
+          });
+      }
+      else {
+          appVm.$watch(() => appVm.$locale, (newLocale) => {
+              i18n.setLocale(newLocale);
+          });
+      }
+  }
+  function getDefaultLocale() {
+      if (typeof uni !== 'undefined' && uni.getLocale) {
+          return uni.getLocale();
+      }
+      // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+      if (typeof global !== 'undefined' && global.getLocale) {
+          return global.getLocale();
+      }
+      return LOCALE_EN;
   }
   function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
       // 兼容旧版本入参
@@ -1393,9 +1440,8 @@ var serviceContext = (function () {
           ];
       }
       if (typeof locale !== 'string') {
-          locale =
-              (typeof uni !== 'undefined' && uni.getLocale && uni.getLocale()) ||
-                  LOCALE_EN;
+          // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
+          locale = getDefaultLocale();
       }
       if (typeof fallbackLocale !== 'string') {
           fallbackLocale =
@@ -1417,33 +1463,32 @@ var serviceContext = (function () {
               };
           }
           else {
-              const appVm = getApp().$vm;
-              watchAppLocale(appVm, i18n);
-              if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
-                  // if (!locale) {
-                  //   i18n.setLocale(getDefaultLocale())
-                  // }
-                  /* eslint-disable no-func-assign */
-                  t = function (key, values) {
+              let isWatchedAppLocale = false;
+              t = function (key, values) {
+                  const appVm = getApp().$vm;
+                  // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
+                  // options: {
+                  // 	type: Array,
+                  // 	default () {
+                  // 		return [{
+                  // 			icon: 'shop',
+                  // 			text: t("uni-goods-nav.options.shop"),
+                  // 		}, {
+                  // 			icon: 'cart',
+                  // 			text: t("uni-goods-nav.options.cart")
+                  // 		}]
+                  // 	}
+                  // },
+                  if (appVm) {
                       // 触发响应式
                       appVm.$locale;
-                      return i18n.t(key, values);
-                  };
-              }
-              else {
-                  /* eslint-disable no-func-assign */
-                  t = function (key, values) {
-                      const $i18n = appVm.$i18n;
-                      const silentTranslationWarn = $i18n.silentTranslationWarn;
-                      $i18n.silentTranslationWarn = true;
-                      const msg = appVm.$t(key, values);
-                      $i18n.silentTranslationWarn = silentTranslationWarn;
-                      if (msg !== key) {
-                          return msg;
+                      if (!isWatchedAppLocale) {
+                          isWatchedAppLocale = true;
+                          watchAppLocale(appVm, i18n);
                       }
-                      return i18n.t(key, $i18n.locale, values);
-                  };
-              }
+                  }
+                  return i18n.t(key, values);
+              };
           }
           return t(key, values);
       };
@@ -1472,6 +1517,8 @@ var serviceContext = (function () {
   function isI18nStr(value, delimiters) {
       return value.indexOf(delimiters[0]) > -1;
   }
+
+  const NAVBAR_HEIGHT = 44;
 
   var en = {
   	"uni.app.quit": "Press back button again to exit",
@@ -1503,7 +1550,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "Danmu",
   	"uni.video.volume": "Volume",
   	"uni.button.feedback.title": "feedback",
-  	"uni.button.feedback.send": "send"
+  	"uni.button.feedback.send": "send",
+  	"uni.chooseLocation.search": "Find Place",
+  	"uni.chooseLocation.cancel": "Cancel"
   };
 
   var es = {
@@ -1536,7 +1585,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "Danmu",
   	"uni.video.volume": "Volumen",
   	"uni.button.feedback.title": "realimentación",
-  	"uni.button.feedback.send": "enviar"
+  	"uni.button.feedback.send": "enviar",
+  	"uni.chooseLocation.search": "Encontrar",
+  	"uni.chooseLocation.cancel": "Cancelar"
   };
 
   var fr = {
@@ -1569,7 +1620,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "Danmu",
   	"uni.video.volume": "Le Volume",
   	"uni.button.feedback.title": "retour d'information",
-  	"uni.button.feedback.send": "envoyer"
+  	"uni.button.feedback.send": "envoyer",
+  	"uni.chooseLocation.search": "Trouve",
+  	"uni.chooseLocation.cancel": "Annuler"
   };
 
   var zhHans = {
@@ -1602,7 +1655,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "弹幕",
   	"uni.video.volume": "音量",
   	"uni.button.feedback.title": "问题反馈",
-  	"uni.button.feedback.send": "发送"
+  	"uni.button.feedback.send": "发送",
+  	"uni.chooseLocation.search": "搜索地点",
+  	"uni.chooseLocation.cancel": "取消"
   };
 
   var zhHant = {
@@ -1635,7 +1690,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "彈幕",
   	"uni.video.volume": "音量",
   	"uni.button.feedback.title": "問題反饋",
-  	"uni.button.feedback.send": "發送"
+  	"uni.button.feedback.send": "發送",
+  	"uni.chooseLocation.search": "搜索地點",
+  	"uni.chooseLocation.cancel": "取消"
   };
 
   const messages = {
@@ -1651,6 +1708,8 @@ var serviceContext = (function () {
   {
     if (typeof weex === 'object') {
       locale = weex.requireModule('plus').getLanguage();
+    } else {
+      locale = '';
     }
   }
 
@@ -1849,7 +1908,7 @@ var serviceContext = (function () {
         return 'https:' + filePath
       }
       // 平台绝对路径 安卓、iOS
-      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
         return 'file://' + filePath
       }
       return addBase(filePath.substr(1))
@@ -2387,9 +2446,22 @@ var serviceContext = (function () {
     }
   };
 
+  const configMTLS = {
+    certificates: {
+      type: Array,
+      required: true,
+      validator (value) {
+        if (value.some(item => toRawType(item.host) !== 'String')) {
+          return '参数配置错误，请确认后重试'
+        }
+      }
+    }
+  };
+
   var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    request: request
+    request: request,
+    configMTLS: configMTLS
   });
 
   const method$1 = {
@@ -4086,7 +4158,7 @@ var serviceContext = (function () {
     // 绝对路径转换为本地文件系统路径
     if (filePath.indexOf('/') === 0) {
       // 平台绝对路径 安卓、iOS
-      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
         return 'file://' + filePath
       }
       return wwwPath + filePath
@@ -4761,6 +4833,9 @@ var serviceContext = (function () {
     },
     openMapApp (ctx, args) {
       return invokeVmMethod(ctx, 'openMapApp', args)
+    },
+    on (ctx, args) {
+      return ctx.on(args.name, args.callback)
     }
   };
 
@@ -6024,8 +6099,6 @@ var serviceContext = (function () {
     }
   }
 
-  const NAVBAR_HEIGHT = 44;
-
   const TABBAR_HEIGHT = 50;
   const isIOS$1 = plus.os.name === 'iOS';
   let config;
@@ -6068,7 +6141,7 @@ var serviceContext = (function () {
   /**
    * 动态设置 tabBar 某一项的内容
    */
-  function setTabBarItem$1 (index, text, iconPath, selectedIconPath) {
+  function setTabBarItem$1 (index, text, iconPath, selectedIconPath, visible) {
     const item = {
       index
     };
@@ -6081,7 +6154,17 @@ var serviceContext = (function () {
     if (selectedIconPath) {
       item.selectedIconPath = getRealPath$1(selectedIconPath);
     }
-    tabBar && tabBar.setTabBarItem(item);
+    if (visible !== undefined) {
+      item.visible = config.list[index].visible = visible;
+      delete item.index;
+
+      const tabbarItems = config.list.map(item => ({ visible: item.visible }));
+      tabbarItems[index] = item;
+
+      tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+    } else {
+      tabBar && tabBar.setTabBarItem(item);
+    }
   }
   /**
    * 动态设置 tabBar 的整体样式
@@ -6842,24 +6925,6 @@ var serviceContext = (function () {
     })
   }
 
-  function compressImage$1 (tempFilePath) {
-    const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-    return new Promise((resolve) => {
-      plus.nativeUI.showWaiting();
-      plus.zip.compressImage({
-        src: tempFilePath,
-        dst: dstPath,
-        overwrite: true
-      }, () => {
-        plus.nativeUI.closeWaiting();
-        resolve(dstPath);
-      }, () => {
-        plus.nativeUI.closeWaiting();
-        resolve(tempFilePath);
-      });
-    })
-  }
-
   function chooseImage$1 ({
     count,
     sizeType,
@@ -6871,7 +6936,6 @@ var serviceContext = (function () {
     function successCallback (paths) {
       const tempFiles = [];
       const tempFilePaths = [];
-      // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
       Promise.all(paths.map((path) => getFileInfo$2(path)))
         .then((filesInfo) => {
           filesInfo.forEach((file, index) => {
@@ -6891,26 +6955,13 @@ var serviceContext = (function () {
 
     function openCamera () {
       const camera = plus.camera.getCamera();
-      camera.captureImage(path => {
-        // fix By Lxh 暂时添加拍照压缩逻辑，等客户端增加逻辑后修改
-        // 判断是否需要压缩
-        if (sizeType && sizeType.includes('compressed')) {
-          return getFileInfo$2(path).then(({ size }) => {
-            // 压缩阈值 0.5 兆
-            const THRESHOLD = 1024 * 1024 * 0.5;
-            return size && size > THRESHOLD
-              ? compressImage$1(path).then(dstPath => successCallback([dstPath]))
-              : successCallback([path])
-          }).catch(errorCallback)
-        }
-
-        return successCallback([path])
-      },
-      errorCallback, {
-        filename: TEMP_PATH + '/camera/',
-        resolution: 'high',
-        crop
-      });
+      camera.captureImage(path => successCallback([path]),
+        errorCallback, {
+          filename: TEMP_PATH + '/camera/',
+          resolution: 'high',
+          crop,
+          sizeType
+        });
     }
 
     function openAlbum () {
@@ -6965,39 +7016,20 @@ var serviceContext = (function () {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-      const compressVideo = compressed ? new Promise((resolve) => {
-        plus.zip.compressVideo({
-          src: tempFilePath,
-          filename
-        }, ({ tempFilePath }) => {
-          resolve(tempFilePath);
-        }, () => {
-          resolve(tempFilePath);
-        });
-      }) : Promise.resolve(tempFilePath);
-      if (compressed) {
-        plus.nativeUI.showWaiting();
-      }
-      compressVideo.then(tempFilePath => {
-        if (compressed) {
-          plus.nativeUI.closeWaiting();
-        }
-        plus.io.getVideoInfo({
-          filePath: tempFilePath,
-          success (videoInfo) {
-            const result = {
-              errMsg: 'chooseVideo:ok',
-              tempFilePath: tempFilePath
-            };
-            result.size = videoInfo.size;
-            result.duration = videoInfo.duration;
-            result.width = videoInfo.width;
-            result.height = videoInfo.height;
-            invoke$1(callbackId, result);
-          },
-          fail: errorCallback
-        });
+      plus.io.getVideoInfo({
+        filePath: tempFilePath,
+        success (videoInfo) {
+          const result = {
+            errMsg: 'chooseVideo:ok',
+            tempFilePath: tempFilePath
+          };
+          result.size = videoInfo.size;
+          result.duration = videoInfo.duration;
+          result.width = videoInfo.width;
+          result.height = videoInfo.height;
+          invoke$1(callbackId, result);
+        },
+        fail: errorCallback
       });
     }
 
@@ -7009,7 +7041,8 @@ var serviceContext = (function () {
         multiple: true,
         maximum: 1,
         filename: TEMP_PATH + '/gallery/',
-        permissionAlert: true
+        permissionAlert: true,
+        videoCompress: compressed
       });
     }
 
@@ -7018,7 +7051,8 @@ var serviceContext = (function () {
       plusCamera.startVideoCapture(successCallback, errorCallback, {
         index: camera === 'front' ? 2 : 1,
         videoMaximumDuration: maxDuration,
-        filename: TEMP_PATH + '/camera/'
+        filename: TEMP_PATH + '/camera/',
+        videoCompress: compressed
       });
     }
 
@@ -7053,7 +7087,7 @@ var serviceContext = (function () {
     });
   }
 
-  function compressImage$2 (options, callbackId) {
+  function compressImage$1 (options, callbackId) {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     const errorCallback = warpPlusErrorCallback(callbackId, 'compressImage');
     plus.zip.compressImage(Object.assign({}, options, {
@@ -7088,7 +7122,7 @@ var serviceContext = (function () {
       orientation: data.orientation,
       type: data.type,
       duration: data.duration,
-      size: data.size,
+      size: data.size / 1024,
       height: data.height,
       width: data.width,
       fps: data.fps || 30,
@@ -7528,6 +7562,26 @@ var serviceContext = (function () {
     return {
       errMsg: 'operateRequestTask:fail'
     }
+  }
+
+  function configMTLS$1 ({ certificates }, callbackId) {
+    const stream = requireNativePlugin('stream');
+    stream.configMTLS(certificates, ({ type, code, message }) => {
+      switch (type) {
+        case 'success':
+          invoke$1(callbackId, {
+            errMsg: 'configMTLS:ok',
+            code
+          });
+          break
+        case 'fail':
+          invoke$1(callbackId, {
+            errMsg: 'configMTLS:fail ' + message,
+            code
+          });
+          break
+      }
+    });
   }
 
   const socketTasks = {};
@@ -10572,24 +10626,35 @@ var serviceContext = (function () {
     cancelText,
     cancelColor,
     confirmText,
-    confirmColor
+    confirmColor,
+    editable = false,
+    placeholderText	= ''
   } = {}, callbackId) {
+    // TODO 在 editable 为 true 时，content 应该是输入框中可修改内容。后续找客户端商量。
+    const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
+    const tip = editable ? placeholderText : buttons;
+
     content = content || ' ';
-    plus.nativeUI.confirm(content, (e) => {
+    plus.nativeUI[editable ? 'prompt' : 'confirm'](content, (e) => {
       if (showCancel) {
-        invoke$1(callbackId, {
+        const isConfirm = e.index === 1;
+        const res = {
           errMsg: 'showModal:ok',
-          confirm: e.index === 1,
+          confirm: isConfirm,
           cancel: e.index === 0 || e.index === -1
-        });
+        };
+        isConfirm && editable && (res.content = e.value);
+        invoke$1(callbackId, res);
       } else {
-        invoke$1(callbackId, {
+        const res = {
           errMsg: 'showModal:ok',
           confirm: e.index === 0,
           cancel: false
-        });
+        };
+        editable && (res.content = e.value);
+        invoke$1(callbackId, res);
       }
-    }, title, showCancel ? [cancelText, confirmText] : [confirmText]);
+    }, title, tip, buttons);
   }
   function showActionSheet$1 ({
     itemList = [],
@@ -10683,9 +10748,10 @@ var serviceContext = (function () {
     text,
     iconPath,
     selectedIconPath,
-    pagePath
+    pagePath,
+    visible
   }) {
-    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
+    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
       const meta = route.meta;
@@ -11256,8 +11322,8 @@ var serviceContext = (function () {
     if (!sdkCache[provider]) {
       sdkCache[provider] = {};
     }
-    if (typeof sdkCache[provider].plugin === 'object') {
-      options.success(sdkCache[provider].plugin);
+    if (typeof sdkCache[provider].instance === 'object') {
+      options.success(sdkCache[provider].instance);
       return
     }
 
@@ -11266,14 +11332,14 @@ var serviceContext = (function () {
     }
     sdkQueue[provider].push(options);
 
-    if (sdkCache[provider].status === true) {
+    if (sdkCache[provider].loading === true) {
       options.__plugin = sdkCache[provider].plugin;
       return
     }
-    sdkCache[provider].status = true;
-
-    const plugin = requireNativePlugin(provider);
-    if (!plugin || !plugin.initSDK) {
+    sdkCache[provider].loading = true;
+    const plugin = requireNativePlugin(provider) || {};
+    const initFunction = plugin.init || plugin.initSDK;
+    if (!initFunction) {
       sdkQueue[provider].forEach((item) => {
         item.fail({
           code: -1,
@@ -11281,19 +11347,18 @@ var serviceContext = (function () {
         });
       });
       sdkQueue[provider].length = 0;
-      sdkCache[provider].status = false;
+      sdkCache[provider].loading = false;
       return
     }
-
-    // TODO
     sdkCache[provider].plugin = plugin;
     options.__plugin = plugin;
-    plugin.initSDK((res) => {
-      const isSuccess = (res.code === 1 || res.code === '1');
+    initFunction((res) => {
+      const code = res.code;
+      const isSuccess = (provider === 'BXM-AD') ? (code === 0 || code === 1) : (code === 0);
       if (isSuccess) {
-        sdkCache[provider].plugin = plugin;
+        sdkCache[provider].instance = plugin;
       } else {
-        sdkCache[provider].status = false;
+        sdkCache[provider].loading = false;
       }
 
       sdkQueue[provider].forEach((item) => {
@@ -11322,7 +11387,7 @@ var serviceContext = (function () {
       this._adError = '';
       this._adpid = options.adpid;
       this._provider = options.provider;
-      this._userData = options.userData;
+      this._userData = options.userData || {};
       this._isLoaded = false;
       this._isLoading = false;
       this._loadPromiseResolve = null;
@@ -11410,7 +11475,7 @@ var serviceContext = (function () {
     }
 
     bindUserData (data) {
-      if (this._ad !== null) {
+      if (this._ad !== null && this._ad.bindUserData) {
         this._ad.bindUserData(data);
       }
     }
@@ -11423,7 +11488,8 @@ var serviceContext = (function () {
         this._isLoading = true;
 
         this._ad.loadData({
-          adpid: this._adpid
+          adpid: this._adpid,
+          ...this._userData
         }, (res) => {
           this._isLoaded = true;
           this._isLoading = false;
@@ -11583,7 +11649,7 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    compressImage: compressImage$2,
+    compressImage: compressImage$1,
     compressVideo: compressVideo$1,
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
@@ -11596,6 +11662,7 @@ var serviceContext = (function () {
     createRequestTaskById: createRequestTaskById,
     createRequestTask: createRequestTask,
     operateRequestTask: operateRequestTask,
+    configMTLS: configMTLS$1,
     createSocketTask: createSocketTask,
     operateSocketTask: operateSocketTask,
     operateUploadTask: operateUploadTask,
@@ -19584,6 +19651,13 @@ var serviceContext = (function () {
       this.id = id;
       this.pageVm = pageVm;
     }
+
+    on (name, callback) {
+      operateMapPlayer$3(this.id, this.pageVm, 'on', {
+        name,
+        callback
+      });
+    }
   }
 
   MapContext.prototype.$getAppMap = function () {
@@ -21763,6 +21837,12 @@ var serviceContext = (function () {
 
     callAppHook(appVm, 'onLaunch', args);
     callAppHook(appVm, 'onShow', args);
+    // https://tower.im/teams/226535/todos/16905/
+    const getAppState = weex.requireModule('plus').getAppState;
+    const appState = getAppState && Number(getAppState());
+    if (appState === 2) {
+      callAppHook(appVm, 'onHide', args);
+    }
   }
 
   function initTabBar () {
@@ -21850,7 +21930,7 @@ var serviceContext = (function () {
 
     initSubscribeHandlers();
 
-    initAppLaunch(Vue);
+    initAppLaunch(appVm);
 
     // 10s后清理临时文件
     setTimeout(clearTempFile, 10000);
