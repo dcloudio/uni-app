@@ -2,16 +2,18 @@ const fs = require('fs-extra')
 const path = require('path')
 const chalk = require('chalk')
 const execa = require('execa')
+const { spawn } = require('child_process')
 
 const { extract } = require('./apiExtractor')
 
-const { targets: allTargets, fuzzyMatchTarget } = require('./utils')
+const { targets: allTargets, fuzzyMatchTarget, priority } = require('./utils')
 
 const args = require('minimist')(process.argv.slice(2))
 const targets = args._
 // const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
 const isRelease = args.release
+const multiProcess = args.m
 // const buildTypes = args.t || args.types || isRelease
 const buildAllMatching = args.all || args.a
 
@@ -25,14 +27,68 @@ async function run() {
   }
 }
 
+function buildWithChildProcess(target) {
+  const args = [__filename, target]
+  devOnly && args.push('-d')
+  isRelease && args.push('--release')
+  const child = spawn('node', args, {
+    cwd: process.cwd(),
+    stdio: 'inherit',
+  })
+  return new Promise((resolve, reject) => {
+    child.on('exit', () => {
+      const exitCode = child.exitCode
+      if (exitCode === 0) {
+        resolve()
+      } else {
+        reject(new Error(`build ${target} failed with error code ${exitCode}`))
+      }
+    })
+  })
+}
+
+function getTargetGroup(targets) {
+  const group = {}
+  for (let i = 0; i < targets.length; i++) {
+    const target = targets[i]
+    const targetPriority = priority[target]
+    if (!group[targetPriority]) {
+      group[targetPriority] = [target]
+    } else {
+      group[targetPriority].push(target)
+    }
+  }
+  return group
+}
+
 async function buildAll(targets) {
-  for (const target of targets) {
-    console.log(`\n${chalk.blueBright(chalk.bold(target))}:`)
-    await build(target)
+  if (!multiProcess) {
+    for (const target of targets) {
+      await build(target)
+    }
+    return
+  }
+  if (targets.length === 1) {
+    // child process or single target
+    await build(targets[0])
+    return
+  }
+  console.warn('compiling with multi process')
+  const group = getTargetGroup(targets)
+  const keys = Object.keys(group).sort((a, b) => {
+    return b - a
+  })
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    const groupTargets = group[key]
+    await Promise.all(
+      groupTargets.map((target) => buildWithChildProcess(target))
+    )
   }
 }
 
 async function build(target) {
+  console.log(`\n${chalk.blueBright(chalk.bold(target))}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
 
