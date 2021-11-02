@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-nvue",
-  "version": "3.0.0-alpha-3021020211027001",
+  "version": "3.0.0-alpha-3021220211102001",
   "description": "uni-cli-nvue",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
