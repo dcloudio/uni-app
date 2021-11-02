@@ -74,6 +74,7 @@ ${filter.code}
       },
     },
     extname: '.ttml',
+    compilerOptions,
   },
   style: {
     extname: '.ttss',

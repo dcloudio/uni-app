@@ -7,16 +7,19 @@ export interface ScopedSlotInvokers {
 }
 
 interface ScopedSlotFn {
-  (args: Data, key: number, index: number): Record<string, any>
+  (args: Data, key: string, slotName: string): Record<string, any>
   path: string
 }
 
+interface ScopedSlotData {
+  [key: string]: Data
+}
 interface ScopedSlotInvoker {
-  (slotName: string, args: Data): void
+  (slotName: string, args: Data, key?: string | number): void
   slots: {
     [slotName: string]: {
       fn: ScopedSlotFn
-      data: Data
+      data: ScopedSlotData
     }
   }
 }
@@ -48,14 +51,23 @@ export function withScopedSlot(
   } else {
     invoker.slots[name].fn = fn
   }
-  // 返回单元素数组，因为 scoped slot 被转换成了 for 循环
-  return [invoker.slots[name].data]
+  return invoker.slots[name].data
 }
 
 function createScopedSlotInvoker(instance: ComponentInternalInstance) {
-  const invoker: ScopedSlotInvoker = (slotName: string, args: Data) => {
+  const invoker: ScopedSlotInvoker = (
+    slotName: string,
+    args: Data,
+    key?: string | number
+  ) => {
     const slot = invoker.slots[slotName]
-    slot.data = slot.fn(args, 0, 0)
+    const hasKey = typeof key !== 'undefined'
+    key = (key || '0') + ''
+    if (!hasKey) {
+      // 循环第一个 slot 时，重置 data
+      slot.data = {}
+    }
+    slot.data[key] = slot.fn(args, key, slotName + (hasKey ? '-' + key : ''))
     // TODO 简单的 forceUpdate,理论上，可以仅对 scoped slot 部分数据 diff 更新
     instance.proxy!.$forceUpdate()
   }

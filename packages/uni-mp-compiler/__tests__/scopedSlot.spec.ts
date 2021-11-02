@@ -4,7 +4,7 @@ describe('compiler: transform scoped slots', () => {
   test('basic', () => {
     assert(
       `<view><slot :item="item" :index="index"/></view>`,
-      `<view><slot/></view>`,
+      `<view><slot name="default"/></view>`,
       `(_ctx, _cache) => {
   return { a: _r("default", { item: _ctx.item, index: _ctx.index }) }
 }`

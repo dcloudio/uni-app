@@ -19,6 +19,7 @@ import {
   NodeTypes,
   SimpleExpressionNode,
   SourceLocation,
+  TransformContext as VueTransformContext,
 } from '@vue/compiler-core'
 import { walk, BaseNode } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
@@ -96,9 +97,9 @@ export function rewriteExpressionWithoutProperty(
 }
 export function rewriteExpression(
   node: ExpressionNode,
-  context: TransformContext,
+  context: TransformContext | VueTransformContext,
   babelNode?: Expression,
-  scope: CodegenScope = context.currentScope,
+  scope: CodegenScope = (context as TransformContext).currentScope,
   { property, ignoreLiteral } = { property: true, ignoreLiteral: false }
 ) {
   if (node.type === NodeTypes.SIMPLE_EXPRESSION && node.isStatic) {
@@ -106,7 +107,7 @@ export function rewriteExpression(
   }
   if (!babelNode) {
     const code = genExpr(node)
-    babelNode = parseExpr(code, context, node)
+    babelNode = parseExpr(code, context as TransformContext, node)
     if (!babelNode) {
       return createSimpleExpression(code)
     }
@@ -119,8 +120,8 @@ export function rewriteExpression(
   }
 
   // wxs 等表达式
-  if (context.filters?.length) {
-    if (isReferencedByIds(babelNode, context.filters)) {
+  if ((context as TransformContext).filters?.length) {
+    if (isReferencedByIds(babelNode, (context as TransformContext).filters)) {
       return createSimpleExpression(genExpr(node), false, node.loc)
     }
   }

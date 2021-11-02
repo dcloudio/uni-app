@@ -5016,7 +5016,7 @@ function vFor(source, renderItem) {
     return ret;
 }
 
-function renderSlot(name, props = {}) {
+function renderSlot(name, props = {}, key) {
     const instance = getCurrentInstance();
     const vueIds = instance.attrs.vI;
     if (!vueIds) {
@@ -5025,14 +5025,14 @@ function renderSlot(name, props = {}) {
     if (!instance.parent && !instance.isMounted) {
         // 头条小程序首次 render 时，还没有 parent
         onMounted(() => {
-            renderSlot(name, props);
+            renderSlot(name, props, key);
         }, instance);
         return;
     }
     const invoker = findScopedSlotInvoker(vueIds.split(',')[0], instance);
     // 可能不存在，因为插槽不是必需的
     if (invoker) {
-        invoker(name, props);
+        invoker(name, props, key);
     }
 }
 function findScopedSlotInvoker(vueId, instance) {
@@ -5063,13 +5063,18 @@ function withScopedSlot(fn, { name, path, vueId, }) {
     else {
         invoker.slots[name].fn = fn;
     }
-    // 返回单元素数组，因为 scoped slot 被转换成了 for 循环
-    return [invoker.slots[name].data];
+    return invoker.slots[name].data;
 }
 function createScopedSlotInvoker(instance) {
-    const invoker = (slotName, args) => {
+    const invoker = (slotName, args, key) => {
         const slot = invoker.slots[slotName];
-        slot.data = slot.fn(args, 0, 0);
+        const hasKey = typeof key !== 'undefined';
+        key = (key || '0') + '';
+        if (!hasKey) {
+            // 循环第一个 slot 时，重置 data
+            slot.data = {};
+        }
+        slot.data[key] = slot.fn(args, key, slotName + (hasKey ? '-' + key : ''));
         // TODO 简单的 forceUpdate,理论上，可以仅对 scoped slot 部分数据 diff 更新
         instance.proxy.$forceUpdate();
     };
@@ -5090,7 +5095,7 @@ function setupDevtoolsPlugin() {
 
 const o = (value) => vOn(value);
 const f = (source, renderItem) => vFor(source, renderItem);
-const r = (name, props) => renderSlot(name, props);
+const r = (name, props, key) => renderSlot(name, props, key);
 const w = (fn, options) => withScopedSlot(fn, options);
 const s = (value) => stringifyStyle(value);
 const c = (str) => camelize(str);

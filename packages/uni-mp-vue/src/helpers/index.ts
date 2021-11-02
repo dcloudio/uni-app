@@ -18,7 +18,8 @@ export const f: typeof vFor = (
   source: any,
   renderItem: (...args: any[]) => VForItem
 ) => vFor(source, renderItem)
-export const r: typeof renderSlot = (name, props) => renderSlot(name, props)
+export const r: typeof renderSlot = (name, props, key) =>
+  renderSlot(name, props, key)
 export const w: typeof withScopedSlot = (fn, options) =>
   withScopedSlot(fn, options)
 export const s: typeof stringifyStyle = (value) => stringifyStyle(value)

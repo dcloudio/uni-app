@@ -37,7 +37,7 @@ var source = {
 	setting: setting
 };
 
-const transformFor = (node) => {
+const transformFor = (node, context) => {
     if (!uniMpCompiler.isForElementNode(node)) {
         return;
     }
@@ -45,7 +45,7 @@ const transformFor = (node) => {
     if (keyProp) {
         const { exp } = keyProp;
         if (exp) {
-            const key = uniMpCompiler.genExpr(exp);
+            const key = uniMpCompiler.rewriteExpression(exp, context).content;
             node.vFor.sourceCode = `${node.vFor.sourceAlias} trackBy ${key}`;
             node.props.splice(node.props.indexOf(keyProp), 1);
         }

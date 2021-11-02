@@ -123,7 +123,13 @@ function genVFor(
 
 function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   // 移除掉所有非name属性，即移除作用域插槽的绑定指令
-  node.props = node.props.filter((prop) => prop.name === 'name')
+  node.props = node.props.filter((prop) => {
+    if (prop.type === NodeTypes.ATTRIBUTE) {
+      return prop.name === 'name'
+    } else if (prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION) {
+      return prop.arg.content === 'name'
+    }
+  })
   if (!node.children.length || context.slot.fallbackContent) {
     // 无后备内容或支持后备内容
     return genElement(node, context)
@@ -154,9 +160,16 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
 
 function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
   const slotProp = node.props.find(
-    (prop) => prop.type === NodeTypes.DIRECTIVE && prop.name === 'slot'
+    (prop) =>
+      prop.type === NodeTypes.DIRECTIVE &&
+      (prop.name === 'slot' ||
+        (prop.name === 'bind' &&
+          prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+          prop.arg.content === 'slot'))
   ) as DirectiveNode | undefined
-  if (slotProp && findSlotName(slotProp)) {
+
+  // 为 bind 时，通常是作用域插槽生成的 vSlot.ts:197 createBindDirectiveNode('slot',...)
+  if (slotProp && (slotProp.name === 'bind' || findSlotName(slotProp))) {
     /**
      * 仅百度、字节支持使用 block 作为命名插槽根节点
      * 此处为了统一仅默认替换为view
@@ -213,7 +226,11 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
   let tag = node.tag
   // <template slot="left"/> => <block slot="left"/>
   if (tag === 'template') {
-    tag = 'block'
+    if (findProp(node, 'slot')) {
+      tag = 'view'
+    } else {
+      tag = 'block'
+    }
   }
   if (node.tagType === ElementTypes.COMPONENT) {
     tag = hyphenate(tag)

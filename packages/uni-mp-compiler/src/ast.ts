@@ -98,7 +98,7 @@ export function parseExpr(
         ErrorCodes.X_INVALID_EXPRESSION,
         node && node.loc,
         undefined,
-        e.message
+        '\n' + code + '\n' + e.message
       )
     )
   }

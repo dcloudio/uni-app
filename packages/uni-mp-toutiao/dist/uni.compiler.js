@@ -2,6 +2,10 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
+var uniShared = require('@dcloudio/uni-shared');
+var uniCliShared = require('@dcloudio/uni-cli-shared');
+var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
+var compilerCore = require('@vue/compiler-core');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -29,7 +33,48 @@ var source = {
 	condition: condition
 };
 
+function transformSwiper(node) {
+    if (node.type !== 1 /* ELEMENT */ || node.tag !== 'swiper') {
+        return;
+    }
+    const disableTouchProp = compilerCore.findProp(node, 'disable-touch', false, true);
+    if (!disableTouchProp) {
+        return;
+    }
+    const { props } = node;
+    if (disableTouchProp.type === 6 /* ATTRIBUTE */) {
+        // <swiper disable-touch/> => <swiper :touchable="false"/>
+        props.splice(props.indexOf(disableTouchProp), 1, uniCliShared.createBindDirectiveNode('touchable', 'false'));
+    }
+    else {
+        if (disableTouchProp.exp) {
+            // <swiper :disable-touch="true"/> => <swiper :touchable="!(true)"/>
+            let touchable = '';
+            if (disableTouchProp.exp.type === 4 /* SIMPLE_EXPRESSION */) {
+                if (disableTouchProp.exp.content === 'true') {
+                    touchable = 'false';
+                }
+                else if (disableTouchProp.exp.content === 'false') {
+                    touchable = 'true';
+                }
+            }
+            props.splice(props.indexOf(disableTouchProp), 1, uniCliShared.createBindDirectiveNode('touchable', touchable || `!(${uniMpCompiler.genExpr(disableTouchProp.exp)})`));
+        }
+    }
+}
+
 const projectConfigFilename = 'project.config.json';
+const nodeTransforms = [
+    uniCliShared.transformRef,
+    transformSwiper,
+    uniCliShared.transformMatchMedia,
+    uniCliShared.transformComponentLink,
+];
+const compilerOptions = {
+    isNativeTag: uniShared.isNativeTag,
+    isCustomElement: uniShared.isCustomElement,
+    nodeTransforms,
+};
 const miniProgram = {
     class: {
         array: false,
@@ -72,7 +117,7 @@ const options = {
 ${filter.code}
 </sjs>`;
             },
-        }, extname: '.ttml' }),
+        }, extname: '.ttml', compilerOptions }),
     style: {
         extname: '.ttss',
     },

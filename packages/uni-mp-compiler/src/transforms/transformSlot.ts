@@ -2,9 +2,11 @@ import {
   AttributeNode,
   createCompilerError,
   createCompoundExpression,
+  createSimpleExpression,
   DirectiveNode,
   ErrorCodes,
   ExpressionNode,
+  findProp,
   isBindKey,
   isStaticExp,
   NodeTypes,
@@ -14,16 +16,21 @@ import {
 import { camelize } from '@vue/shared'
 import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
-import { TransformContext } from '../transform'
+import { isVForScope, TransformContext } from '../transform'
 import { processProps } from './transformElement'
 import { rewriteExpression } from './utils'
+import {
+  createAttributeNode,
+  createBindDirectiveNode,
+} from '@dcloudio/uni-cli-shared'
 
 export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
   let slotName: string | ExpressionNode = `"default"`
   let hasOtherDir = false
   const nonNameProps: (AttributeNode | DirectiveNode)[] = []
-  for (let i = 0; i < node.props.length; i++) {
-    const p = node.props[i]
+  const { props } = node
+  for (let i = 0; i < props.length; i++) {
+    const p = props[i]
     if (p.type === NodeTypes.ATTRIBUTE) {
       if (p.value) {
         if (p.name === 'name') {
@@ -65,17 +72,51 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       }
     })
     if (properties.length) {
+      const slotKey = parseScopedSlotKey(context)
+      const nameProps = findProp(node, 'name')
+      if (!nameProps) {
+        // 生成默认的 default 插槽名
+        if (slotKey) {
+          props.push(
+            createBindDirectiveNode(
+              'name',
+              rewriteExpression(
+                createSimpleExpression('"default-"+' + slotKey),
+                context
+              ).content
+            )
+          )
+        } else {
+          props.push(createAttributeNode('name', 'default'))
+        }
+      }
       rewriteExpression(
         createCompoundExpression([
           context.helperString(RENDER_SLOT) + '(',
           slotName,
           ',',
           `{${properties.join(',')}}`,
+          `${slotKey ? ',' + slotKey : ''}`,
           ')',
         ]),
         context
       )
     }
+  }
+}
+
+function parseScopedSlotKey(context: TransformContext) {
+  let { currentScope } = context
+  const indexs: string[] = []
+  while (currentScope) {
+    if (isVForScope(currentScope)) {
+      indexs.push(currentScope.indexAlias)
+    }
+    currentScope = currentScope.parent!
+  }
+  const inFor = !!indexs.length
+  if (inFor) {
+    return indexs.reverse().join(`+'-'+`)
   }
 }
 

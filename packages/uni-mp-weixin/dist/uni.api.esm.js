@@ -833,16 +833,39 @@ const previewImage = {
     },
 };
 
+const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+
 const getProvider = initGetProvider({
     oauth: ['weixin'],
     share: ['weixin'],
     payment: ['wxpay'],
     push: ['weixin'],
 });
+function initComponentMocks(component) {
+    const res = Object.create(null);
+    mocks.forEach((name) => {
+        res[name] = component[name];
+    });
+    return res;
+}
+/**
+ * 微信小程序内部会 Object.keys(vm)，导致告警
+ * Avoid app logic that relies on enumerating keys on a component instance. The keys will be empty in production mode to avoid performance overhead.
+ * @returns
+ */
+function createSelectorQuery() {
+    const query = wx.createSelectorQuery();
+    const oldIn = query.in;
+    query.in = function newIn(component) {
+        return oldIn.call(this, initComponentMocks(component));
+    };
+    return query;
+}
 
 var shims = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    getProvider: getProvider
+    getProvider: getProvider,
+    createSelectorQuery: createSelectorQuery
 });
 
 var protocols = /*#__PURE__*/Object.freeze({
