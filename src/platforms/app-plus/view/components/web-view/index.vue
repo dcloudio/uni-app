@@ -2,6 +2,7 @@
   <uni-web-view v-on="$listeners" />
 </template>
 <script>
+import native from '../../mixins/native'
 import {
   WEBVIEW_INSERTED,
   WEBVIEW_REMOVED,
@@ -72,6 +73,7 @@ const removeHTMLWebView = () => {
 
 export default {
   name: 'WebView',
+  mixins: [native],
   props: {
     src: {
       type: String,
