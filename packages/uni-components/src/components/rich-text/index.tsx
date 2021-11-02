@@ -1,5 +1,9 @@
 import { onMounted, ref, watch, getCurrentInstance } from 'vue'
-import { defineBuiltInComponent } from '@dcloudio/uni-components'
+import {
+  defineBuiltInComponent,
+  useCustomEvent,
+  EmitEvent,
+} from '@dcloudio/uni-components'
 import parseHtml from './html-parser'
 import parseNodes from './nodes-parser'
 
@@ -18,9 +22,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MODE: 3,
   },
   props,
-  setup(props) {
+  emits: [
+    'click',
+    'touchstart',
+    'touchmove',
+    'touchcancel',
+    'touchend',
+    'longpress',
+  ],
+  setup(props, { emit, attrs }) {
     const vm = getCurrentInstance()
     const rootRef = ref<HTMLElement | null>(null)
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
+    const hasItemClick = !!attrs.onItemclick
+
+    function triggerItemClick(e: Event, detail = {}) {
+      trigger('itemclick', e, detail)
+    }
 
     function _renderNodes(nodes: string | unknown[]) {
       if (typeof nodes === 'string') {
@@ -29,7 +47,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const nodeList = parseNodes(
         nodes,
         document.createDocumentFragment(),
-        (vm?.root.type as any).__scopeId || ''
+        (vm?.root?.type as any).__scopeId || '',
+        hasItemClick && triggerItemClick
       )
       rootRef.value!.firstElementChild!.innerHTML = ''
       rootRef.value!.firstElementChild!.appendChild(nodeList)
