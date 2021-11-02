@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-vite",
-  "version": "3.0.0-alpha-3021220211102001",
+  "version": "3.0.0-alpha-3021220211102002",
   "description": "uni-mp-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,5 +21,5 @@
     "base64url": "^3.0.1",
     "magic-string": "^0.25.7"
   },
-  "gitHead": "1efa8efd0a9eddeabdba75c020d015ebf31b8177"
+  "gitHead": "7bcc3303c15141d377645a4995ce186f10ed6b78"
 }
