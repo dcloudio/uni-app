@@ -72,24 +72,7 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       }
     })
     if (properties.length) {
-      const slotKey = parseScopedSlotKey(context)
-      const nameProps = findProp(node, 'name')
-      if (!nameProps) {
-        // 生成默认的 default 插槽名
-        if (slotKey) {
-          props.push(
-            createBindDirectiveNode(
-              'name',
-              rewriteExpression(
-                createSimpleExpression('"default-"+' + slotKey),
-                context
-              ).content
-            )
-          )
-        } else {
-          props.push(createAttributeNode('name', 'default'))
-        }
-      }
+      const slotKey = transformScopedSlotKey(node, context)
       rewriteExpression(
         createCompoundExpression([
           context.helperString(RENDER_SLOT) + '(',
@@ -103,6 +86,35 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       )
     }
   }
+}
+
+function transformScopedSlotKey(
+  node: SlotOutletNode,
+  context: TransformContext
+) {
+  if (!context.miniProgram.slot.dynamicSlotNames) {
+    return
+  }
+  const { props } = node
+  const slotKey = parseScopedSlotKey(context)
+  const nameProps = findProp(node, 'name')
+  if (!nameProps) {
+    // 生成默认的 default 插槽名
+    if (slotKey) {
+      props.push(
+        createBindDirectiveNode(
+          'name',
+          rewriteExpression(
+            createSimpleExpression('"default-"+' + slotKey),
+            context
+          ).content
+        )
+      )
+    } else {
+      props.push(createAttributeNode('name', 'default'))
+    }
+  }
+  return slotKey
 }
 
 function parseScopedSlotKey(context: TransformContext) {

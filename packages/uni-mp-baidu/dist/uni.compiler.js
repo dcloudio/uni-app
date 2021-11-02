@@ -41,15 +41,19 @@ const transformFor = (node, context) => {
     if (!uniMpCompiler.isForElementNode(node)) {
         return;
     }
+    const { vFor, props } = node;
+    let sourceCode = vFor.valueAlias + ' in ' + vFor.sourceAlias;
     const keyProp = uniMpCompiler.findProp(node, 'key', true);
     if (keyProp) {
         const { exp } = keyProp;
         if (exp) {
             const key = uniMpCompiler.rewriteExpression(exp, context).content;
-            node.vFor.sourceCode = `${node.vFor.sourceAlias} trackBy ${key}`;
-            node.props.splice(node.props.indexOf(keyProp), 1);
+            sourceCode = sourceCode + ' trackBy ' + key;
+            props.splice(props.indexOf(keyProp), 1);
         }
     }
+    vFor.valueAlias = '';
+    vFor.sourceCode = sourceCode;
 };
 
 /**
@@ -156,6 +160,7 @@ const miniProgram = {
     },
     slot: {
         fallbackContent: true,
+        // https://github.com/baidu/san/discussions/601
         dynamicSlotNames: false,
     },
     directive: 's-',

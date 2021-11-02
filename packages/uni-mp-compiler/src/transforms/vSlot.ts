@@ -194,10 +194,6 @@ function createVForTemplate(
 ) {
   const key = 's' + context.scopes.vFor
   const keyProp: DirectiveNode = createBindDirectiveNode('key', key)
-  const slotProp: DirectiveNode = createBindDirectiveNode(
-    'slot',
-    `i${context.scopes.vFor}`
-  )
   const vForProp: DirectiveNode = {
     type: NodeTypes.DIRECTIVE,
     name: 'for',
@@ -210,13 +206,17 @@ function createVForTemplate(
       })`
     ),
   }
+  const props = [vForProp, keyProp]
+  if (context.miniProgram.slot.dynamicSlotNames) {
+    props.push(createBindDirectiveNode('slot', `i${context.scopes.vFor}`))
+  }
   return {
     loc: slotElement.loc,
     ns: 0,
     tag: 'template',
     type: NodeTypes.ELEMENT,
     tagType: ElementTypes.TEMPLATE,
-    props: [vForProp, keyProp, slotProp],
+    props,
     isSelfClosing: false,
     codegenNode: undefined,
     children: slotElement.children,

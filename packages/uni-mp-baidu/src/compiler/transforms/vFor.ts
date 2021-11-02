@@ -10,13 +10,17 @@ export const transformFor: NodeTransform = (node, context) => {
   if (!isForElementNode(node)) {
     return
   }
+  const { vFor, props } = node
+  let sourceCode = vFor.valueAlias + ' in ' + vFor.sourceAlias
   const keyProp = findProp(node, 'key', true)
   if (keyProp) {
     const { exp } = keyProp as DirectiveNode
     if (exp) {
       const key = rewriteExpression(exp, context).content
-      node.vFor.sourceCode = `${node.vFor.sourceAlias} trackBy ${key}`
-      node.props.splice(node.props.indexOf(keyProp), 1)
+      sourceCode = sourceCode + ' trackBy ' + key
+      props.splice(props.indexOf(keyProp), 1)
     }
   }
+  vFor.valueAlias = ''
+  vFor.sourceCode = sourceCode
 }

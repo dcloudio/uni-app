@@ -24,6 +24,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   slot: {
     fallbackContent: true,
+    // https://github.com/baidu/san/discussions/601
     dynamicSlotNames: false,
   },
   directive: 's-',
