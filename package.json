@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.14.7",
-    "@dcloudio/types": "2.5.12",
+    "@dcloudio/types": "2.5.13",
     "@jest/types": "^27.0.2",
     "@microsoft/api-extractor": "^7.13.2",
     "@rollup/plugin-alias": "^3.1.1",
@@ -71,7 +71,7 @@
     "@vitejs/plugin-legacy": "^1.6.2",
     "@vitejs/plugin-vue": "^1.9.4",
     "@vitejs/plugin-vue-jsx": "^1.2.0",
-    "@vue/compiler-sfc": "^3.2.20",
+    "@vue/compiler-sfc": "^3.2.21",
     "acorn-loose": "^8.1.0",
     "autoprefixer": "^10.3.4",
     "core-js": "2",
@@ -97,7 +97,7 @@
     "ts-jest": "^27.0.3",
     "typescript": "^4.4.3",
     "vite": "^2.6.13",
-    "vue": "^3.2.20",
+    "vue": "^3.2.21",
     "yorkie": "^2.0.0"
   },
   "name": "uni-app-next"

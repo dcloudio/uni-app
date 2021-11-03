@@ -20,7 +20,7 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "vue": "^3.2.20"
+    "vue": "^3.2.21"
   },
   "gitHead": "7bcc3303c15141d377645a4995ce186f10ed6b78"
 }
