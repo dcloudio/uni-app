@@ -2501,6 +2501,7 @@ export default function vueFactory(exports) {
 
   var devtools;
   var buffer = [];
+  var devtoolsNotInstalled = false;
 
   function emit(event) {
     for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key6 = 1; _key6 < _len5; _key6++) {
@@ -2509,7 +2510,7 @@ export default function vueFactory(exports) {
 
     if (devtools) {
       devtools.emit(event, ...args);
-    } else {
+    } else if (!devtoolsNotInstalled) {
       buffer.push({
         event,
         args
@@ -2530,7 +2531,11 @@ export default function vueFactory(exports) {
         return devtools.emit(event, ...args);
       });
       buffer = [];
-    } else {
+    } else if ( // handle late devtools injection - only do this if we are in an actual
+    // browser environment to avoid the timer handle stalling test runner exit
+    // (#4815)
+    // eslint-disable-next-line no-restricted-globals
+    typeof window !== 'undefined' && !navigator.userAgent.includes('jsdom')) {
       var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
       replay.push(newHook => {
         setDevtoolsHook(newHook, target);
@@ -2538,8 +2543,16 @@ export default function vueFactory(exports) {
       // at all, and keeping the buffer will cause memory leaks (#4738)
 
       setTimeout(() => {
-        buffer = [];
+        if (!devtools) {
+          target.__VUE_DEVTOOLS_HOOK_REPLAY__ = null;
+          devtoolsNotInstalled = true;
+          buffer = [];
+        }
       }, 3000);
+    } else {
+      // non-browser env, assume not installed
+      devtoolsNotInstalled = true;
+      buffer = [];
     }
   }
 
@@ -6012,7 +6025,7 @@ export default function vueFactory(exports) {
   */
 
 
-  var isBuiltInDirective = /*#__PURE__*/makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text');
+  var isBuiltInDirective = /*#__PURE__*/makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo');
 
   function validateDirectiveName(name) {
     if (isBuiltInDirective(name)) {
@@ -11554,7 +11567,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.20";
+  var version = "3.2.21";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

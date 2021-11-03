@@ -2242,7 +2242,11 @@ export default function vueFactory(exports) {
         return devtools.emit(event, ...args);
       });
       buffer = [];
-    } else {
+    } else if ( // handle late devtools injection - only do this if we are in an actual
+    // browser environment to avoid the timer handle stalling test runner exit
+    // (#4815)
+    // eslint-disable-next-line no-restricted-globals
+    typeof window !== 'undefined' && !navigator.userAgent.includes('jsdom')) {
       var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
       replay.push(newHook => {
         setDevtoolsHook(newHook, target);
@@ -2250,8 +2254,13 @@ export default function vueFactory(exports) {
       // at all, and keeping the buffer will cause memory leaks (#4738)
 
       setTimeout(() => {
-        buffer = [];
+        if (!devtools) {
+          target.__VUE_DEVTOOLS_HOOK_REPLAY__ = null;
+          buffer = [];
+        }
       }, 3000);
+    } else {
+      buffer = [];
     }
   }
 
@@ -9704,7 +9713,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.20";
+  var version = "3.2.21";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

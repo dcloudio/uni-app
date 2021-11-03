@@ -2284,7 +2284,7 @@ return withDirectives(h(comp), [
   [bar, this.y]
 ])
 */
-const isBuiltInDirective = /*#__PURE__*/ makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text');
+const isBuiltInDirective = /*#__PURE__*/ makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo');
 function validateDirectiveName(name) {
     if (isBuiltInDirective(name)) {
         warn$1('Do not use built-in directive ids as custom directive id: ' + name);
@@ -4284,7 +4284,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.20";
+const version = "3.2.21";
 /**
  * @internal only exposed in compat builds
  */
