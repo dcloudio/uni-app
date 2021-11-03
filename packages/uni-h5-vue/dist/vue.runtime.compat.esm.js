@@ -1591,11 +1591,12 @@ function tryWrap(fn) {
 
 let devtools;
 let buffer = [];
+let devtoolsNotInstalled = false;
 function emit(event, ...args) {
     if (devtools) {
         devtools.emit(event, ...args);
     }
-    else {
+    else if (!devtoolsNotInstalled) {
         buffer.push({ event, args });
     }
 }
@@ -1606,7 +1607,13 @@ function setDevtoolsHook(hook, target) {
         buffer.forEach(({ event, args }) => devtools.emit(event, ...args));
         buffer = [];
     }
-    else {
+    else if (
+    // handle late devtools injection - only do this if we are in an actual
+    // browser environment to avoid the timer handle stalling test runner exit
+    // (#4815)
+    // eslint-disable-next-line no-restricted-globals
+    typeof window !== 'undefined' &&
+        !navigator.userAgent.includes('jsdom')) {
         const replay = (target.__VUE_DEVTOOLS_HOOK_REPLAY__ =
             target.__VUE_DEVTOOLS_HOOK_REPLAY__ || []);
         replay.push((newHook) => {
@@ -1615,8 +1622,17 @@ function setDevtoolsHook(hook, target) {
         // clear buffer after 3s - the user probably doesn't have devtools installed
         // at all, and keeping the buffer will cause memory leaks (#4738)
         setTimeout(() => {
-            buffer = [];
+            if (!devtools) {
+                target.__VUE_DEVTOOLS_HOOK_REPLAY__ = null;
+                devtoolsNotInstalled = true;
+                buffer = [];
+            }
         }, 3000);
+    }
+    else {
+        // non-browser env, assume not installed
+        devtoolsNotInstalled = true;
+        buffer = [];
     }
 }
 function devtoolsInitApp(app, version) {
@@ -5200,7 +5216,7 @@ return withDirectives(h(comp), [
   [bar, this.y]
 ])
 */
-const isBuiltInDirective = /*#__PURE__*/ makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text');
+const isBuiltInDirective = /*#__PURE__*/ makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo');
 function validateDirectiveName(name) {
     if (isBuiltInDirective(name)) {
         warn$1('Do not use built-in directive ids as custom directive id: ' + name);
@@ -5335,7 +5351,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.2.20";
+    Vue.version = "3.2.21";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -6839,7 +6855,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
     };
     const mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
-        // 2.x compat may pre-creaate the component instance before actually
+        // 2.x compat may pre-create the component instance before actually
         // mounting
         const compatMountInstance = initialVNode.isCompatRoot && initialVNode.component;
         const instance = compatMountInstance ||
@@ -11052,7 +11068,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.20";
+const version = "3.2.21";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -11201,16 +11217,8 @@ function patchClass(el, value, isSVG) {
 
 function patchStyle(el, prev, next) {
     const style = el.style;
-    const currentDisplay = style.display;
-    if (!next) {
-        el.removeAttribute('style');
-    }
-    else if (isString(next)) {
-        if (prev !== next) {
-            style.cssText = next;
-        }
-    }
-    else {
+    const isCssString = isString(next);
+    if (next && !isCssString) {
         for (const key in next) {
             setStyle(style, key, next[key]);
         }
@@ -11222,11 +11230,22 @@ function patchStyle(el, prev, next) {
             }
         }
     }
-    // indicates that the `display` of the element is controlled by `v-show`,
-    // so we always keep the current `display` value regardless of the `style` value,
-    // thus handing over control to `v-show`.
-    if ('_vod' in el) {
-        style.display = currentDisplay;
+    else {
+        const currentDisplay = style.display;
+        if (isCssString) {
+            if (prev !== next) {
+                style.cssText = next;
+            }
+        }
+        else if (prev) {
+            el.removeAttribute('style');
+        }
+        // indicates that the `display` of the element is controlled by `v-show`,
+        // so we always keep the current `display` value regardless of the `style`
+        // value, thus handing over control to `v-show`.
+        if ('_vod' in el) {
+            style.display = currentDisplay;
+        }
     }
     // fixed by xxxxxx
     const { __wxsStyle } = el;
@@ -11691,22 +11710,11 @@ class VueElement extends BaseClass {
             }
             this.attachShadow({ mode: 'open' });
         }
-        // set initial attrs
-        for (let i = 0; i < this.attributes.length; i++) {
-            this._setAttr(this.attributes[i].name);
-        }
-        // watch future attr changes
-        new MutationObserver(mutations => {
-            for (const m of mutations) {
-                this._setAttr(m.attributeName);
-            }
-        }).observe(this, { attributes: true });
     }
     connectedCallback() {
         this._connected = true;
         if (!this._instance) {
             this._resolveDef();
-            this._update();
         }
     }
     disconnectedCallback() {
@@ -11725,8 +11733,18 @@ class VueElement extends BaseClass {
         if (this._resolved) {
             return;
         }
+        this._resolved = true;
+        // set initial attrs
+        for (let i = 0; i < this.attributes.length; i++) {
+            this._setAttr(this.attributes[i].name);
+        }
+        // watch future attr changes
+        new MutationObserver(mutations => {
+            for (const m of mutations) {
+                this._setAttr(m.attributeName);
+            }
+        }).observe(this, { attributes: true });
         const resolve = (def) => {
-            this._resolved = true;
             const { props, styles } = def;
             const hasOptions = !isArray(props);
             const rawKeys = props ? (hasOptions ? Object.keys(props) : props) : [];
@@ -11741,14 +11759,11 @@ class VueElement extends BaseClass {
                     }
                 }
             }
-            if (numberProps) {
-                this._numberProps = numberProps;
-                this._update();
-            }
+            this._numberProps = numberProps;
             // check if there are props set pre-upgrade or connect
             for (const key of Object.keys(this)) {
                 if (key[0] !== '_') {
-                    this._setProp(key, this[key]);
+                    this._setProp(key, this[key], true, false);
                 }
             }
             // defining getter/setters on prototype
@@ -11762,7 +11777,10 @@ class VueElement extends BaseClass {
                     }
                 });
             }
+            // apply CSS
             this._applyStyles(styles);
+            // initial render
+            this._update();
         };
         const asyncDef = this._def.__asyncLoader;
         if (asyncDef) {
@@ -11788,10 +11806,10 @@ class VueElement extends BaseClass {
     /**
      * @internal
      */
-    _setProp(key, val, shouldReflect = true) {
+    _setProp(key, val, shouldReflect = true, shouldUpdate = true) {
         if (val !== this._props[key]) {
             this._props[key] = val;
-            if (this._instance) {
+            if (shouldUpdate && this._instance) {
                 this._update();
             }
             // reflect
