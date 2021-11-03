@@ -29,6 +29,7 @@ interface TemplateCodegenContext {
   scopeId?: string | null
   event: MiniProgramCompilerOptions['event']
   slot: MiniProgramCompilerOptions['slot']
+  lazyElement: MiniProgramCompilerOptions['lazyElement']
   push(code: string): void
 }
 
@@ -41,6 +42,7 @@ export function generate(
     emitFile,
     filename,
     directive,
+    lazyElement,
   }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
@@ -49,6 +51,7 @@ export function generate(
     code: '',
     scopeId,
     directive,
+    lazyElement,
     push(code) {
       context.code += code
     },
@@ -79,7 +82,7 @@ export function genNode(
         return genComponent(node, context)
       } else if (node.tagType === ElementTypes.TEMPLATE) {
         return genTemplate(node, context)
-      } else if (isLazyElement(node)) {
+      } else if (isLazyElement(node, context)) {
         return genLazyElement(node, context)
       }
       return genElement(node, context)
@@ -189,12 +192,11 @@ function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
   return genElement(node, context)
 }
 
-const lazyElementMap: Record<string, string[]> = {
-  editor: ['ready'],
-}
-
-function isLazyElement(node: ElementNode) {
-  const events = lazyElementMap[node.tag]
+function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
+  if (!context.lazyElement) {
+    return false
+  }
+  const events = context.lazyElement[node.tag]
   return (
     events &&
     node.props.some(

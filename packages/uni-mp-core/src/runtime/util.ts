@@ -124,3 +124,45 @@ export function findVmByVueId(
     }
   }
 }
+
+const EVENT_OPTS = 'eO'
+/**
+ * 需要搭配：
+ * ./componentInstance/index.ts:24 triggerEvent 时传递 __ins__
+ * ./componentProps.ts:49 增加 properties eO
+ * @param this
+ * @param event
+ * @returns
+ */
+export function handleEvent(
+  this: MPComponentInstance,
+  event: {
+    type: string
+    target: {
+      dataset: Record<string, any>
+    }
+    detail: {
+      __ins__: MPComponentInstance & { eO: Record<string, string> }
+    }
+  }
+) {
+  const {
+    type,
+    target: { dataset },
+    detail: { __ins__ },
+  } = event
+  let methodName: string = type
+  // 快手小程序的 __l 方法也会走此处逻辑，但没有 __ins__
+  if (__ins__) {
+    // 自定义事件，通过 triggerEvent 传递 __ins__
+    methodName = (__ins__.properties[EVENT_OPTS] || {})[type]
+  } else if (dataset && dataset[EVENT_OPTS]) {
+    // 快手小程序 input 等内置组件的 input 事件也会走此逻辑，所以从 dataset 中读取
+    methodName = dataset[EVENT_OPTS][type]
+  }
+
+  if (!(this as any)[methodName]) {
+    return console.warn(type + ' not found')
+  }
+  ;(this as any)[methodName](event)
+}

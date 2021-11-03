@@ -132,6 +132,10 @@ function createEmitFn(oldEmit, ctx) {
         const scope = ctx.$scope;
         if (scope && event) {
             const detail = { __args__: args };
+            // 百度小程序，快手小程序，自定义组件不能绑定动态事件
+            {
+                detail.__ins__ = scope;
+            }
             scope.triggerEvent(event, detail);
         }
         return oldEmit.apply(this, [event, ...args]);
@@ -404,6 +408,32 @@ function findVmByVueId(instance, vuePid) {
         }
     }
 }
+const EVENT_OPTS = 'eO';
+/**
+ * 需要搭配：
+ * ./componentInstance/index.ts:24 triggerEvent 时传递 __ins__
+ * ./componentProps.ts:49 增加 properties eO
+ * @param this
+ * @param event
+ * @returns
+ */
+function handleEvent(event) {
+    const { type, target: { dataset }, detail: { __ins__ }, } = event;
+    let methodName = type;
+    // 快手小程序的 __l 方法也会走此处逻辑，但没有 __ins__
+    if (__ins__) {
+        // 自定义事件，通过 triggerEvent 传递 __ins__
+        methodName = (__ins__.properties[EVENT_OPTS] || {})[type];
+    }
+    else if (dataset && dataset[EVENT_OPTS]) {
+        // 快手小程序 input 等内置组件的 input 事件也会走此逻辑，所以从 dataset 中读取
+        methodName = dataset[EVENT_OPTS][type];
+    }
+    if (!this[methodName]) {
+        return console.warn(type + ' not found');
+    }
+    this[methodName](event);
+}
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function createObserver(name) {
@@ -427,6 +457,14 @@ function normalizePropType(type, defaultValue) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
+        {
+            // 百度小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
+            // event-opts
+            properties.eO = {
+                type: null,
+                value: '',
+            };
+        }
         properties.vI = {
             type: null,
             value: '',
@@ -764,12 +802,13 @@ var baseParseOptions = /*#__PURE__*/Object.freeze({
     initLifetimes: initLifetimes
 });
 
-const createApp = initCreateApp();
-const createPage = initCreatePage(baseParseOptions);
-const createComponent$1 = initCreateComponent(baseParseOptions);
-wx.createApp = global.createApp = createApp;
-wx.createPage = createPage;
-wx.createComponent = createComponent$1;
+function parse$1(pageOptions) {
+    // 快手小程序自定义组件，不支持绑定动态事件，故由 __e 分发
+    pageOptions.methods.__e = handleEvent;
+}
+var parsePageOptions = extend({}, baseParseOptions, {
+    parse: parse$1,
+});
 
 /**
  * 用于延迟调用 setData
@@ -823,11 +862,15 @@ function parse(componentOptions) {
         }
         oldAttached.call(this);
     };
+    // 快手小程序自定义组件，不支持绑定动态事件，故由 __e 分发
+    componentOptions.methods.__e = handleEvent;
 }
 var parseComponentOptions = extend({}, baseParseOptions, {
     parse,
 });
 
+const createApp = initCreateApp();
+const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 ks.EventChannel = EventChannel;
 ks.createApp = global.createApp = createApp;

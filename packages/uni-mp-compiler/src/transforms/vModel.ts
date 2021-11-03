@@ -1,4 +1,4 @@
-import { camelize } from '@vue/shared'
+import { camelize, isString, isSymbol } from '@vue/shared'
 import {
   Property,
   transformModel as baseTransform,
@@ -18,6 +18,7 @@ import { DOMErrorCodes, createDOMCompilerError } from '@vue/compiler-dom'
 import {
   createBindDirectiveNode,
   createOnDirectiveNode,
+  ATTR_DATASET_EVENT_OPTS,
 } from '@dcloudio/uni-cli-shared'
 import { V_ON } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
@@ -103,14 +104,98 @@ function transformElementVModel(
     },
   })
   if (dirs.length === 2) {
-    const inputDir = findInputDirectiveNode(node.props)
-    if (inputDir && inputDir.exp) {
-      // 合并到已有的 input 事件中
-      inputDir.exp = combineVOn(dirs[1].exp!, inputDir.exp, context)
+    // 快手小程序的 input v-model 被转换到 data-e-o 中，补充到 data-e-o 中
+    const inputExp = findDatasetEventOpts(node)
+    if (inputExp) {
+      inputExp.children[2] = combineVOn(
+        dirs[1].exp!,
+        inputExp.children[2] as ExpressionNode,
+        context
+      )
       dirs.length = 1
+    } else {
+      const inputDir = findInputDirectiveNode(node.props)
+      if (inputDir && inputDir.exp) {
+        // 合并到已有的 input 事件中
+        inputDir.exp = combineVOn(dirs[1].exp!, inputDir.exp, context)
+        dirs.length = 1
+      }
     }
   }
   return { props: dirs }
+}
+
+/**
+ * {
+ *  "type": 7,
+ *  "name": "bind",
+ *  "loc": {},
+ *  "modifiers": [],
+ *  "arg": {
+ *    "type": 4,
+ *    "loc": {},
+ *    "content": "data-e-o",
+ *    "isStatic": true,
+ *    "constType": 3
+ *  },
+ * "exp": {
+ *  "type": 8,
+ *  "loc": {},
+ *  "children": ["{", {
+ *   "type": 8,
+ *   "loc": {},
+ *   "children": ["'input'", ": ", {
+ *    "type": 8,
+ *    "loc": {},
+ *    "children": ["_o(", {
+ *     "type": 4,
+ *     "content": "_ctx.input",
+ *     "isStatic": false,
+ *     "constType": 0,
+ *     "loc": {}
+ *    }, ")"]
+ *   }, ","]
+ *  }, "}"]
+ * }
+ * }
+ * @param node
+ * @returns
+ */
+function findDatasetEventOpts(node: ElementNode) {
+  const eventOptsProp = findProp(
+    node,
+    ATTR_DATASET_EVENT_OPTS,
+    true,
+    false
+  ) as DirectiveNode
+  if (!eventOptsProp) {
+    return
+  }
+  const { exp } = eventOptsProp
+  if (exp?.type !== NodeTypes.COMPOUND_EXPRESSION) {
+    return
+  }
+  for (let i = 0; i < exp.children.length; i++) {
+    const childExp = exp.children[i]
+    if (isSymbol(childExp) || isString(childExp)) {
+      continue
+    }
+    if (childExp.type !== NodeTypes.COMPOUND_EXPRESSION) {
+      continue
+    }
+    if (childExp.children[0] !== `'input'`) {
+      continue
+    }
+    const inputExp = childExp.children[2]
+    if (
+      isSymbol(inputExp) ||
+      isString(inputExp) ||
+      inputExp.type !== NodeTypes.COMPOUND_EXPRESSION
+    ) {
+      continue
+    }
+    return childExp
+  }
 }
 
 function parseVOn(exp: ExpressionNode, context: TransformContext) {

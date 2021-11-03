@@ -46,6 +46,7 @@ export interface UniMiniProgramPluginOptions {
     event?: MiniProgramCompilerOptions['event']
     class: MiniProgramCompilerOptions['class']
     slot: MiniProgramCompilerOptions['slot']
+    lazyElement?: MiniProgramCompilerOptions['lazyElement']
     filter?: {
       lang: string
       extname: string
@@ -79,6 +80,7 @@ export function uniMiniProgramPlugin(
         class: template.class,
         filter: template.filter ? { lang: template.filter.lang } : undefined,
         directive: template.directive,
+        lazyElement: template.lazyElement,
         emitFile,
         slot: template.slot,
       },

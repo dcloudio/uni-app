@@ -57,7 +57,7 @@ export function getFilterFiles(
 export function getTemplateFiles(
   template: UniMiniProgramPluginOptions['template']
 ) {
-  const files = findMiniProgramTemplateFiles(template.filter!.generate)
+  const files = findMiniProgramTemplateFiles(template.filter?.generate)
   clearMiniProgramTemplateFiles()
   return files
 }

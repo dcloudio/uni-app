@@ -59,10 +59,14 @@ function parsePagesJson(
     ) {
       nvuePages.push(pagePath)
     }
+    const windowOptions: PageWindowOptions = {}
+    if (platform === 'mp-baidu') {
+      // 仅百度小程序需要页面配置 component:true
+      // 快手小程序反而不能配置 component:true，故不能统一添加，目前硬编码处理
+      windowOptions.component = true
+    }
     pageJsons[pagePath] = extend(
-      {
-        component: true,
-      },
+      windowOptions,
       parseWindowOptions(style, platform, windowOptionsMap) as PageWindowOptions
     )
   }

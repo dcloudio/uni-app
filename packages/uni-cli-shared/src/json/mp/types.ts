@@ -21,7 +21,7 @@ type Style = 'v2' | string
 type RestartStrategy = 'homePage' | 'homePageAndLatestPage' | string
 
 export interface PageWindowOptions extends ShareWindowOptions {
-  component: true // 百度小程序页面必须配置component: true
+  component?: true // 百度小程序页面必须配置component: true
   disableScroll?: boolean // false
   usingComponents?: UsingComponents
   initialRenderingCache?: 'static' | string

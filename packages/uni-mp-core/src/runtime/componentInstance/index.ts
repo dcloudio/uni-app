@@ -20,7 +20,8 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
     const scope = ctx.$scope as MPComponentInstance
     if (scope && event) {
       const detail: Record<string, any> = { __args__: args }
-      if (__PLATFORM__ === 'mp-baidu') {
+      // 百度小程序，快手小程序，自定义组件不能绑定动态事件
+      if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') {
         detail.__ins__ = scope
       }
       scope.triggerEvent(event, detail)

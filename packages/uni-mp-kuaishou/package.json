@@ -14,7 +14,9 @@
   "license": "Apache-2.0",
   "uni-app": {
     "name": "mp-kuaishou",
-    "title": "快手小程序"
+    "title": "快手小程序",
+    "apply": "mp-kuaishou",
+    "main": "dist/uni.compiler.js"
   },
   "gitHead": "7bcc3303c15141d377645a4995ce186f10ed6b78"
 }

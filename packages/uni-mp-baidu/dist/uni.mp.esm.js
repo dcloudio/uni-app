@@ -132,6 +132,7 @@ function createEmitFn(oldEmit, ctx) {
         const scope = ctx.$scope;
         if (scope && event) {
             const detail = { __args__: args };
+            // 百度小程序，快手小程序，自定义组件不能绑定动态事件
             {
                 detail.__ins__ = scope;
             }
@@ -406,6 +407,32 @@ function findVmByVueId(instance, vuePid) {
             return parentVm;
         }
     }
+}
+const EVENT_OPTS = 'eO';
+/**
+ * 需要搭配：
+ * ./componentInstance/index.ts:24 triggerEvent 时传递 __ins__
+ * ./componentProps.ts:49 增加 properties eO
+ * @param this
+ * @param event
+ * @returns
+ */
+function handleEvent(event) {
+    const { type, target: { dataset }, detail: { __ins__ }, } = event;
+    let methodName = type;
+    // 快手小程序的 __l 方法也会走此处逻辑，但没有 __ins__
+    if (__ins__) {
+        // 自定义事件，通过 triggerEvent 传递 __ins__
+        methodName = (__ins__.properties[EVENT_OPTS] || {})[type];
+    }
+    else if (dataset && dataset[EVENT_OPTS]) {
+        // 快手小程序 input 等内置组件的 input 事件也会走此逻辑，所以从 dataset 中读取
+        methodName = dataset[EVENT_OPTS][type];
+    }
+    if (!this[methodName]) {
+        return console.warn(type + ' not found');
+    }
+    this[methodName](event);
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
@@ -890,15 +917,7 @@ function parse$1(componentOptions) {
     };
     delete methods.__l;
     // 百度小程序自定义组件，不支持绑定动态事件，故由 __e 分发
-    methods.__e = handleCustomEvent;
-}
-function handleCustomEvent(event) {
-    const { type, detail: { __ins__ }, } = event;
-    const methodName = (__ins__.properties.eO || {})[type];
-    if (!methodName) {
-        return console.warn(type + ' not found');
-    }
-    this[methodName](event);
+    methods.__e = handleEvent;
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({

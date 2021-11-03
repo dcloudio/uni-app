@@ -46,7 +46,7 @@ function normalizePropType(type: unknown, defaultValue: unknown) {
 function initDefaultProps(isBehavior: boolean = false) {
   const properties: Component.PropertyOption = {}
   if (!isBehavior) {
-    if (__PLATFORM__ === 'mp-baidu') {
+    if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') {
       // 百度小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
       // event-opts
       properties.eO = {
@@ -57,12 +57,6 @@ function initDefaultProps(isBehavior: boolean = false) {
     properties.vI = {
       type: null, // 均不指定类型，避免 property received type-uncompatible value 警告
       value: '',
-    }
-    if (__PLATFORM__ === 'mp-toutiao') {
-      // 用于字节跳动小程序模拟抽象节点
-      properties.generic = {
-        type: Object,
-      }
     }
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
     properties.vS = {

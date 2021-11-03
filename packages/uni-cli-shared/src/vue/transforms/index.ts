@@ -8,6 +8,15 @@ export * from './transformPageHead'
 export * from './transformComponent'
 export * from './transformEvent'
 export * from './transformTag'
+export {
+  ATTR_DATASET_EVENT_OPTS,
+  createTransformOn,
+  defaultMatch as matchTransformOn,
+} from './vOn'
+export {
+  createTransformModel,
+  defaultMatch as matchTransformModel,
+} from './vModel'
 
 export const transformMatchMedia = createTransformTag({
   'match-media': 'uni-match-media',

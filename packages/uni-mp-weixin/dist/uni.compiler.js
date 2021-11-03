@@ -16,7 +16,7 @@ var packOptions = {
 	]
 };
 var setting = {
-	urlCheck: true,
+	urlCheck: false,
 	es6: true,
 	postcss: false,
 	minified: false,
@@ -76,6 +76,9 @@ const miniProgram = {
         dynamicSlotNames: true,
     },
     directive: 'wx:',
+    lazyElement: {
+        editor: ['ready'],
+    },
 };
 const projectConfigFilename = 'project.config.json';
 const options = {

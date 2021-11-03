@@ -434,12 +434,6 @@ function initDefaultProps(isBehavior = false) {
             type: null,
             value: '',
         };
-        {
-            // 用于字节跳动小程序模拟抽象节点
-            properties.generic = {
-                type: Object,
-            };
-        }
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
         properties.vS = {
             type: null,

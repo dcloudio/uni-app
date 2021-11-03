@@ -93,6 +93,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       emitFile,
       event,
       slot,
+      lazyElement,
     } = options.miniProgram
     genTemplate(ast, {
       class: clazz,
@@ -102,6 +103,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       emitFile,
       event,
       slot,
+      lazyElement,
     })
   }
 

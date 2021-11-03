@@ -33,6 +33,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dynamicSlotNames: true,
   },
   directive: 'wx:',
+  lazyElement: {
+    editor: ['ready'],
+  },
 }
 const projectConfigFilename = 'project.config.json'
 
