@@ -94,5 +94,6 @@ export {
   $emit,
   onAppLaunch,
   onLocaleChange,
+  setPageMeta,
 } from '@dcloudio/uni-api'
 //#endif

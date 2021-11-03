@@ -97,7 +97,7 @@ export const showNavigationBarLoading =
       setNavigationBar(
         getCurrentPageMeta(),
         API_SHOW_NAVIGATION_BAR_LOADING,
-        args,
+        args || {},
         resolve,
         reject
       )
@@ -111,7 +111,7 @@ export const hideNavigationBarLoading =
       setNavigationBar(
         getCurrentPageMeta(),
         API_HIDE_NAVIGATION_BAR_LOADING,
-        args,
+        args || {},
         resolve,
         reject
       )

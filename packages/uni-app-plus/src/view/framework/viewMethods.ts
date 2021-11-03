@@ -1,7 +1,9 @@
+import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import {
   API_LOAD_FONT_FACE,
   API_PAGE_SCROLL_TO,
+  API_SET_PAGE_META,
   SelectorQueryRequest,
 } from '@dcloudio/uni-api'
 import {
@@ -9,9 +11,9 @@ import {
   registerViewMethod,
   getCurrentPageId,
 } from '@dcloudio/uni-core'
-import { ComponentPublicInstance } from 'vue'
-import { requestComponentInfo } from '../../../../uni-h5/src/platform'
 import {
+  requestComponentInfo,
+  setCurrentPageMeta,
   addIntersectionObserver,
   removeIntersectionObserver,
   addMediaQueryObserver,
@@ -65,4 +67,7 @@ export function initViewMethods() {
   })
   registerViewMethod(pageId, API_PAGE_SCROLL_TO, pageScrollTo)
   registerViewMethod(pageId, API_LOAD_FONT_FACE, loadFontFace)
+  registerViewMethod(pageId, API_SET_PAGE_META, (args) => {
+    setCurrentPageMeta(null, args)
+  })
 }

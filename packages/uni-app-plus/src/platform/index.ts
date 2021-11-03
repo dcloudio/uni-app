@@ -1,5 +1,6 @@
 export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { requestComponentInfo } from '../service/api/ui/requestComponentInfo'
+export { setCurrentPageMeta } from '../service/api/ui/setPageMeta'
 export { getRealPath } from './getRealPath'
 export { operateVideoPlayer } from '../service/api/context/operateVideoPlayer'
 export { operateMap } from '../service/api/context/operateMap'

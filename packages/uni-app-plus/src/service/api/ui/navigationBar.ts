@@ -66,7 +66,7 @@ export const hideNavigationBarLoading =
     }
   )
 
-function setPageMeta(statusBarStyle: StatusBarStyle) {
+function setPageStatusBarStyle(statusBarStyle: StatusBarStyle) {
   const pages = getCurrentPages()
   if (!pages.length) {
     return
@@ -100,7 +100,7 @@ export const setNavigationBarColor =
         plus.navigator.setStatusBarStyle(statusBarStyle)
 
         // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
-        setPageMeta(statusBarStyle)
+        setPageStatusBarStyle(statusBarStyle)
 
         const style = webview.getStyle()
         if (style && style.titleNView) {

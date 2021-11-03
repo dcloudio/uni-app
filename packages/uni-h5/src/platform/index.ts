@@ -3,6 +3,7 @@ export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { operateVideoPlayer } from '../service/api/context/operateVideoPlayer'
 export { operateMap } from '../service/api/context/operateMap'
 export { requestComponentInfo } from '../service/api/ui/requestComponentInfo'
+export { setCurrentPageMeta } from '../service/api/ui/setPageMeta'
 export {
   addIntersectionObserver,
   removeIntersectionObserver,

@@ -110,6 +110,7 @@
   "setLocale",
   "setNavigationBarColor",
   "setNavigationBarTitle",
+  "setPageMeta",
   "setRightWindowStyle",
   "setScreenBrightness",
   "setStorage",

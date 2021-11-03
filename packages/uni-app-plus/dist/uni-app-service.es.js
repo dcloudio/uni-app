@@ -1272,6 +1272,10 @@ var serviceContext = (function (vue) {
       }, page.$page.id, callback);
   }
 
+  function setCurrentPageMeta(page, options) {
+      UniServiceJSBridge.invokeViewMethod('setPageMeta', options, page.$page.id);
+  }
+
   const isArray = Array.isArray;
   const isObject = (val) => val !== null && typeof val === 'object';
   const defaultDelimiters = ['{', '}'];
@@ -4469,6 +4473,11 @@ var serviceContext = (function (vue) {
           return true;
       }
       return false;
+  });
+
+  const API_SET_PAGE_META = 'setPageMeta';
+  const setPageMeta = defineAsyncApi(API_SET_PAGE_META, (options, { resolve }) => {
+      resolve(setCurrentPageMeta(getCurrentPageVm(), options));
   });
 
   const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
@@ -9349,7 +9358,7 @@ var serviceContext = (function (vue) {
       plus.nativeUI.closeWaiting();
       resolve();
   });
-  function setPageMeta(statusBarStyle) {
+  function setPageStatusBarStyle(statusBarStyle) {
       const pages = getCurrentPages();
       if (!pages.length) {
           return;
@@ -9370,7 +9379,7 @@ var serviceContext = (function (vue) {
           const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light';
           plus.navigator.setStatusBarStyle(statusBarStyle);
           // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
-          setPageMeta(statusBarStyle);
+          setPageStatusBarStyle(statusBarStyle);
           const style = webview.getStyle();
           if (style && style.titleNView) {
               if (style.titleNView.autoBackButton) {
@@ -12752,6 +12761,7 @@ var serviceContext = (function (vue) {
     $emit: $emit,
     onAppLaunch: onAppLaunch,
     onLocaleChange: onLocaleChange,
+    setPageMeta: setPageMeta,
     setStorageSync: setStorageSync,
     setStorage: setStorage,
     getStorageSync: getStorageSync,
