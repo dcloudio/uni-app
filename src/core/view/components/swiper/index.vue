@@ -162,7 +162,6 @@ export default {
   mounted () {
     this._currentCheck()
     this.touchtrack(this.$refs.slidesWrapper, '_handleContentTrack', true)
-    this._resetLayout()
     this.$watch(() => {
       return this.autoplay && !this.userTracking
     }, this._inintAutoplay)
