@@ -88,4 +88,13 @@ describe('compiler: transform component', () => {
       }
     )
   })
+  test(`component with boolean attribute`, () => {
+    assert(
+      `<uni-collapse accordion/>`,
+      `<uni-collapse accordion="{{true}}" v-i="2a9ec0b0-0"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
 })

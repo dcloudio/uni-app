@@ -1,4 +1,4 @@
-import { ComponentNode } from '@vue/compiler-core'
+import { ComponentNode, NodeTypes } from '@vue/compiler-core'
 import {
   createAttributeNode,
   createBindDirectiveNode,
@@ -12,6 +12,7 @@ export const transformComponent: NodeTransform = (node, context) => {
     return
   }
   addVueId(node, context)
+  processBooleanAttr(node)
   return function postTransformComponent() {
     context.vueIds.pop()
   }
@@ -53,4 +54,19 @@ function addVueId(node: ComponentNode, context: TransformContext) {
     return node.props.push(createBindDirectiveNode(ATTR_VUE_ID, value))
   }
   return node.props.push(createAttributeNode(ATTR_VUE_ID, value))
+}
+/**
+ * <uni-collapse accordion/> => <uni-collapse :accordion="true"/>
+ * 否则部分平台(快手)可能获取到的 accordion 是空字符串
+ * @param param0
+ */
+function processBooleanAttr({ props }: ComponentNode) {
+  props.forEach((prop, index) => {
+    if (
+      prop.type === NodeTypes.ATTRIBUTE &&
+      typeof prop.value === 'undefined'
+    ) {
+      props.splice(index, 1, createBindDirectiveNode(prop.name, 'true'))
+    }
+  })
 }
