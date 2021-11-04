@@ -17,7 +17,7 @@
 
 开发一次，编译到13个平台。依次扫描13个二维码，亲自体验最全面的跨平台效果！
 
-<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/34f0ca40-799a-46df-9e6e-0cc99fde278f.jpg"/>
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/d005fcf6-5a81-4955-9dc1-24ebafca5fe7.jpg"/>
 
 *注： 某些平台不能提交简单demo，补充了一些其他功能。*
 
