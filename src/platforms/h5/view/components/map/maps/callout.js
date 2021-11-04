@@ -107,6 +107,11 @@ export function createCallout (maps) {
 
     destroy = onRemove
   }
-  Callout.prototype = overlay
+  const prototype = Callout.prototype
+  for (const key in overlay) {
+    if (!(key in prototype)) {
+      prototype[key] = overlay[key]
+    }
+  }
   return Callout
 }
