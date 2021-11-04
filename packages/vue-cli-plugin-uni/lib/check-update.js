@@ -21,6 +21,7 @@ class Upate {
   get uniId () {
     return this._uniId
   }
+
   set uniId (value) {
     this._uniId = value
   }
@@ -28,6 +29,7 @@ class Upate {
   get appId () {
     return this._appId
   }
+
   set appId (value) {
     this._appId = value
   }
@@ -35,6 +37,7 @@ class Upate {
   get compilerVersion () {
     return this._compilerVersion
   }
+
   set compilerVersion (value) {
     this._compilerVersion = value
   }
@@ -42,6 +45,7 @@ class Upate {
   get isAlpha () {
     return this._isAlpha
   }
+
   set isAlpha (value) {
     this._isAlpha = value
   }
@@ -49,6 +53,7 @@ class Upate {
   get wt () {
     return this._wt
   }
+
   set wt (value) {
     this._wt = value
   }
@@ -56,6 +61,7 @@ class Upate {
   get lc () {
     return this._lc
   }
+
   set lc (value) {
     this._lc = value
   }
@@ -63,6 +69,7 @@ class Upate {
   get lcin () {
     return this._lcin
   }
+
   set lcin (value) {
     this._lcin = value
   }
@@ -257,17 +264,17 @@ Object.assign(Upate.prototype, {
   DEFAULT_INTERVAL: 1000 * 60 * 60 * 24
 })
 
-function getLc() {
-  let result = []
-  const locale_dir = path.join(process.env.UNI_CLI_CONTEXT, 'src/locale')
-  if (!fs.existsSync(locale_dir)) {
+function getLc () {
+  const result = []
+  const localeDir = path.join(process.env.UNI_CLI_CONTEXT, 'src/locale')
+  if (!fs.existsSync(localeDir)) {
     return result
   }
 
-  let files = fs.readdirSync(locale_dir)
+  const files = fs.readdirSync(localeDir)
   for (let i = files.length - 1; i >= 0; i--) {
-    let filePath = files[i]
-    let extName = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase()
+    const filePath = files[i]
+    const extName = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase()
     if (extName !== 'json') {
       continue
     }
@@ -300,9 +307,9 @@ module.exports = async function checkUpdate () {
     update.uniId = manifest.appid
     const appIdKey = process.env.UNI_PLATFORM.includes('quickapp') ? 'package' : 'appid'
     update.appId = manifest[process.env.UNI_PLATFORM] ? (manifest[process.env.UNI_PLATFORM][appIdKey] || '') : ''
-    const cf = manifest['mp-weixin'] ? manifest['mp-weixin']['cloudfunctionRoot'] : ''
+    const cf = manifest['mp-weixin'] ? manifest['mp-weixin'].cloudfunctionRoot : ''
     update.wt = (cf && cf.length) ? 1 : 0
-    update.lc = manifest['locale'] ? manifest['locale'] : ''
+    update.lc = manifest.locale ? manifest.locale : ''
     update.lcin = getLc().join(',')
     update.check()
   } catch (e) {

@@ -193,7 +193,7 @@ describe('codegen', () => {
       `with(this){return _c('p',{slot:"one"})}`
     )
   })
-  
+
   it('generate slot with v-for', () => {
     assertCodegen(
       '<div><slot v-for="item in list"></slot></div>',

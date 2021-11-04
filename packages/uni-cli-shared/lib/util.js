@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 const hash = require('hash-sum')
 const crypto = require('crypto')
 
@@ -20,7 +21,7 @@ function getCLIContext () {
   if (isInHBuilderX) {
     return context
   }
-  const pnpmFind = __dirname.match(/.+?[\/\\].pnpm[\/\\]/)
+  const pnpmFind = __dirname.match(/.+?[/\\].pnpm[/\\]/)
   if (pnpmFind) {
     const pnpm = pnpmFind[0]
     context = path.resolve(pnpm, '../../')
