@@ -85,8 +85,7 @@ function getH5Options (manifestJson) {
   }
 
   /* eslint-disable no-mixed-operators */
-  h5.template = h5.template && path.resolve(process.env.UNI_INPUT_DIR, h5.template) || path.resolve(__dirname,
-    '../../../../public/index.html')
+  h5.template = h5.template && path.resolve(process.env.UNI_INPUT_DIR, h5.template) || path.resolve(require('./util').getCLIContext(), 'public/index.html')
 
   h5.devServer = h5.devServer || {}
 
