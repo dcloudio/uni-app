@@ -67,7 +67,10 @@ function initHook(
       this: CustomAppInstanceProperty | CustomComponentInstanceProperty,
       args: unknown
     ) {
-      if (__PLATFORM__ === 'mp-toutiao' && hook === 'onError') {
+      if (
+        (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') &&
+        hook === 'onError'
+      ) {
         return getApp().$vm.$callHook(hook, args)
       }
       return this.$vm && this.$vm.$callHook(hook, args)

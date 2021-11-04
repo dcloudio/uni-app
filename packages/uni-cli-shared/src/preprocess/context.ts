@@ -11,6 +11,7 @@ const DEFAULT_KEYS = [
   'MP_ALIPAY',
   'MP_BAIDU',
   'MP_QQ',
+  'MP_LARK',
   'MP_TOUTIAO',
   'MP_WEIXIN',
   'MP_KUAISHOU',

@@ -42,7 +42,7 @@ export const removeInfoFormatter: Formatter = {
     return ''
   },
 }
-const REMOVED_WARN_MSGS = ['warnings when minifying css:']
+const REMOVED_WARN_MSGS: string[] = []
 export const removeWarnFormatter: Formatter = {
   test(msg) {
     return !!REMOVED_WARN_MSGS.find((m) => msg.includes(m))

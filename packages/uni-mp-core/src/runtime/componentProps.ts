@@ -1,4 +1,4 @@
-import { ComponentPropsOptions } from 'vue'
+import { onBeforeMount, ComponentPropsOptions } from 'vue'
 import { isArray, isPlainObject, isFunction } from '@vue/shared'
 import { MPComponentOptions, MPComponentInstance } from './component'
 
@@ -8,8 +8,22 @@ const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
 
 function createObserver(name: string) {
   return function observer(this: MPComponentInstance, newVal: unknown) {
-    if (this.$vm) {
-      this.$vm.$.props[name] = newVal // 为了触发其他非 render watcher
+    const { $vm } = this
+    if ($vm) {
+      // 为了触发其他非 render watcher
+      const instance = $vm.$
+      // 飞书小程序初始化太慢，导致 observer 触发时，vue 组件的 created 可能还没触发，此时开发者可能已经定义了 watch
+      // 但因为 created 还没触发，导致部分组件出错，如 uni-collapse，在 created 中初始化了 this.children
+      // 自定义 watch 中使用了 this.children
+      if (__PLATFORM__ === 'mp-lark') {
+        if (instance.isMounted) {
+          instance.props[name] = newVal
+        } else {
+          onBeforeMount(() => (instance.props[name] = newVal), instance)
+        }
+      } else {
+        instance.props[name] = newVal
+      }
     }
   }
 }

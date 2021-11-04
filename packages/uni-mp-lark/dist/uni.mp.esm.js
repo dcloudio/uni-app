@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize, isObject } from '@vue/shared';
-import { injectHook, ref } from 'vue';
+import { injectHook, ref, onBeforeMount } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -419,7 +419,12 @@ function createObserver(name) {
             // 但因为 created 还没触发，导致部分组件出错，如 uni-collapse，在 created 中初始化了 this.children
             // 自定义 watch 中使用了 this.children
             {
-                instance.props[name] = newVal;
+                if (instance.isMounted) {
+                    instance.props[name] = newVal;
+                }
+                else {
+                    onBeforeMount(() => (instance.props[name] = newVal), instance);
+                }
             }
         }
     };
@@ -791,12 +796,7 @@ function initInjections(instance) {
     }
 }
 
-// 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
-const components = [];
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
-    function created() {
-        components.push(this);
-    }
     function attached() {
         const properties = this.properties;
         initVueIds(properties.vI, this);
@@ -830,25 +830,9 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function detached() {
         this.$vm && $destroyComponent(this.$vm);
     }
-    return {
-        created,
-        attached() {
-            this.__lifetimes_attached = function () {
-                attached.call(this);
-            };
-            let component = this;
-            while (component &&
-                component.__lifetimes_attached &&
-                components[0] &&
-                component === components[0]) {
-                components.shift();
-                component.__lifetimes_attached();
-                delete component.__lifetimes_attached;
-                component = components[0];
-            }
-        },
-        detached,
-    };
+    {
+        return { attached, detached };
+    }
 }
 function fixProperties(properties) {
     // 字节跳动小程序 properties

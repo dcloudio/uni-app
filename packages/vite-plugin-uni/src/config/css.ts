@@ -25,6 +25,7 @@ export function createCss(
     postcss: resolvePostcssConfig(options.inputDir),
     preprocessorOptions: {
       scss: {
+        charset: false,
         additionalData: resolveAdditionalData(options.inputDir),
       },
     },

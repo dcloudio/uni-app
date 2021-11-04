@@ -1,10 +1,10 @@
 'use strict';
 
+var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var fs = require('fs-extra');
 var uniShared = require('@dcloudio/uni-shared');
-var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -158,7 +158,7 @@ const uniMiniProgramQQPlugin = {
             },
             build: {
                 // css 中不支持引用本地资源
-                assetsInlineLimit: 40 * 1024, // 40kb
+                assetsInlineLimit: uniCliShared.ASSETS_INLINE_LIMIT,
             },
         };
     },

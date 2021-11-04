@@ -1,0 +1,22 @@
+{
+  "name": "@dcloudio/uni-mp-lark",
+  "version": "3.0.0-alpha-3021220211102002",
+  "description": "uni-app mp-lark",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-lark"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-lark",
+    "title": "飞书小程序",
+    "apply": "mp-lark",
+    "main": "dist/uni.compiler.js"
+  },
+  "gitHead": "7bcc3303c15141d377645a4995ce186f10ed6b78"
+}

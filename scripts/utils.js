@@ -12,6 +12,7 @@ const priority = {
   'uni-mp-baidu': 70,
   'uni-mp-kuaishou': 70,
   'uni-mp-qq': 70,
+  'uni-mp-lark': 70,
   'uni-mp-toutiao': 70,
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,

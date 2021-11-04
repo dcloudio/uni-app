@@ -1,5 +1,5 @@
 import { Plugin } from 'vite'
-
+import { ASSETS_INLINE_LIMIT } from '@dcloudio/uni-cli-shared'
 import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 
 import { fix2648 } from './fix2648'
@@ -14,7 +14,7 @@ const uniMiniProgramQQPlugin: Plugin = {
       },
       build: {
         // css 中不支持引用本地资源
-        assetsInlineLimit: 40 * 1024, // 40kb
+        assetsInlineLimit: ASSETS_INLINE_LIMIT,
       },
     }
   },

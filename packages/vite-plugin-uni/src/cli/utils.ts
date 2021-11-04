@@ -14,6 +14,7 @@ export const PLATFORMS = [
   'mp-alipay',
   'mp-baidu',
   'mp-qq',
+  'mp-lark',
   'mp-toutiao',
   'mp-weixin',
   'quickapp-webview-huawei',

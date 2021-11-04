@@ -389,8 +389,16 @@ function initRefs(instance, mpInstance) {
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function createObserver(name) {
     return function observer(newVal) {
-        if (this.$vm) {
-            this.$vm.$.props[name] = newVal; // 为了触发其他非 render watcher
+        const { $vm } = this;
+        if ($vm) {
+            // 为了触发其他非 render watcher
+            const instance = $vm.$;
+            // 飞书小程序初始化太慢，导致 observer 触发时，vue 组件的 created 可能还没触发，此时开发者可能已经定义了 watch
+            // 但因为 created 还没触发，导致部分组件出错，如 uni-collapse，在 created 中初始化了 this.children
+            // 自定义 watch 中使用了 this.children
+            {
+                instance.props[name] = newVal;
+            }
         }
     };
 }
@@ -757,70 +765,57 @@ function initInjections(instance) {
     }
 }
 
-// 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
-const components = [];
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
-    return {
-        created() {
-            components.push(this);
-        },
-        attached() {
-            this.__lifetimes_attached = function () {
-                const properties = this.properties;
-                initVueIds(properties.vI, this);
-                const relationOptions = {
-                    vuePid: this._$vuePid,
-                };
-                // 初始化 vue 实例
-                const mpInstance = this;
-                const mpType = isPage(mpInstance) ? 'page' : 'component';
-                if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
-                    mpInstance.route = mpInstance.__route__;
-                }
-                // 字节跳动小程序 properties
-                // 父组件在 attached 中 setData 设置了子组件的 props，在子组件的 attached 中，并不能立刻拿到
-                // 此时子组件的 properties 中获取到的值，除了一部分初始化就有的值，只要在模板上绑定了，动态设置的 prop 的值均会根据类型返回，不会应用 prop 自己的默认值
-                // 举例： easyinput 的 styles 属性，类型为 Object，`<easyinput :styles="styles"/>` 在 attached 中 styles 的值为 null
-                // 目前 null 值会影响 render 函数执行，临时解决方案，调整 properties 中的 null 值为 undefined，让 Vue 来补充为默认值
-                // 已知的其他隐患，当使用默认值时，可能组件行为不正确，比如 countdown 组件，默认值是0，导致直接就触发了 timeup 事件，这个应该是组件自身做处理？
-                // 难道要等父组件首次 setData 完成后，再去执行子组件的初始化？
-                Object.keys(properties).forEach((name) => {
-                    if (properties[name] === null) {
-                        properties[name] = undefined;
-                    }
-                });
-                this.$vm = $createComponent({
-                    type: vueOptions,
-                    props: properties,
-                }, {
-                    mpType,
-                    mpInstance,
-                    slots: properties.vS,
-                    parentComponent: relationOptions.parent && relationOptions.parent.$,
-                    onBeforeSetup(instance, options) {
-                        initRefs(instance, mpInstance);
-                        initMocks(instance, mpInstance, mocks);
-                        initComponentInstance(instance, options);
-                    },
-                });
-                // 处理父子关系
-                initRelation(this, relationOptions);
-            };
-            let component = this;
-            while (component &&
-                component.__lifetimes_attached &&
-                components[0] &&
-                component === components[0]) {
-                components.shift();
-                component.__lifetimes_attached();
-                delete component.__lifetimes_attached;
-                component = components[0];
-            }
-        },
-        detached() {
-            this.$vm && $destroyComponent(this.$vm);
-        },
-    };
+    function attached() {
+        const properties = this.properties;
+        initVueIds(properties.vI, this);
+        const relationOptions = {
+            vuePid: this._$vuePid,
+        };
+        // 初始化 vue 实例
+        const mpInstance = this;
+        const mpType = isPage(mpInstance) ? 'page' : 'component';
+        if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
+            mpInstance.route = mpInstance.__route__;
+        }
+        fixProperties(properties);
+        this.$vm = $createComponent({
+            type: vueOptions,
+            props: properties,
+        }, {
+            mpType,
+            mpInstance,
+            slots: properties.vS,
+            parentComponent: relationOptions.parent && relationOptions.parent.$,
+            onBeforeSetup(instance, options) {
+                initRefs(instance, mpInstance);
+                initMocks(instance, mpInstance, mocks);
+                initComponentInstance(instance, options);
+            },
+        });
+        // 处理父子关系
+        initRelation(this, relationOptions);
+    }
+    function detached() {
+        this.$vm && $destroyComponent(this.$vm);
+    }
+    {
+        return { attached, detached };
+    }
+}
+function fixProperties(properties) {
+    // 字节跳动小程序 properties
+    // 父组件在 attached 中 setData 设置了子组件的 props，在子组件的 attached 中，并不能立刻拿到
+    // 此时子组件的 properties 中获取到的值，除了一部分初始化就有的值，只要在模板上绑定了，动态设置的 prop 的值均会根据类型返回，不会应用 prop 自己的默认值
+    // 举例： easyinput 的 styles 属性，类型为 Object，`<easyinput :styles="styles"/>` 在 attached 中 styles 的值为 null
+    // 目前 null 值会影响 render 函数执行，临时解决方案，调整 properties 中的 null 值为 undefined，让 Vue 来补充为默认值
+    // 已知的其他隐患，当使用默认值时，可能组件行为不正确，比如 countdown 组件，默认值是0，导致直接就触发了 timeup 事件，这个应该是组件自身做处理？
+    // 难道要等父组件首次 setData 完成后，再去执行子组件的初始化？
+    Object.keys(properties).forEach((name) => {
+        if (properties[name] === null) {
+            properties[name] = undefined;
+        }
+    });
 }
 
 const instances = Object.create(null);

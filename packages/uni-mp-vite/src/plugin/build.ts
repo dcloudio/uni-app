@@ -34,8 +34,6 @@ export function buildOptions(): UserConfig['build'] {
     // sourcemap: 'inline', // TODO
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
-    // 由各个小程序控制，目前已知百度支持本地路径，其他不支持
-    // assetsInlineLimit: 0, // 40kb
     lib: {
       entry: resolveMainPathOnce(inputDir),
       formats: ['cjs'],
