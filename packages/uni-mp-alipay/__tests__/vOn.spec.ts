@@ -20,7 +20,7 @@ describe('mp-alipay: transform v-on', () => {
     )
     assert(
       `<custom v-on:click="onClick"/>`,
-      `<custom onClick="{{a}}" v-i="2a9ec0b0-0" onVI="__l"/>`,
+      `<custom onClick="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.onClick) }
 }`

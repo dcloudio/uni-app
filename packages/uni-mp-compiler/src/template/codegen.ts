@@ -1,4 +1,5 @@
 import { hyphenate } from '@vue/shared'
+import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import {
   formatMiniProgramEvent,
   MiniProgramCompilerOptions,
@@ -23,6 +24,7 @@ import { genExpr } from '../codegen'
 import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
+import { renameSlot } from '../transforms/utils'
 interface TemplateCodegenContext {
   code: string
   directive: string
@@ -146,7 +148,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
     `$slots.` +
       (nameProp?.type === NodeTypes.ATTRIBUTE && nameProp.value?.content
         ? nameProp.value.content
-        : 'default'),
+        : SLOT_DEFAULT_NAME),
     context
   )
   push(`>`)
@@ -234,6 +236,17 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
       tag = 'block'
     }
   }
+  // 无用的 block
+  if (
+    tag === 'block' &&
+    props.length === 0 &&
+    !isIfElementNode(node) &&
+    !isForElementNode(node)
+  ) {
+    return children.forEach((node) => {
+      genNode(node, context)
+    })
+  }
   if (node.tagType === ElementTypes.COMPONENT) {
     tag = hyphenate(tag)
   }
@@ -315,7 +328,7 @@ function genDirectiveNode(
 ) {
   if (prop.name === 'slot') {
     if (prop.arg) {
-      push(` slot="${(prop.arg as SimpleExpressionNode).content}"`)
+      push(` slot="${renameSlot((prop.arg as SimpleExpressionNode).content)}"`)
     }
   } else if (prop.name === 'show') {
     push(` hidden="{{!${(prop.exp as SimpleExpressionNode).content}}}"`)

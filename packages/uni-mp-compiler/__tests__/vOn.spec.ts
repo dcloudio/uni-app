@@ -27,7 +27,7 @@ describe('compiler: transform v-on', () => {
     )
     assert(
       `<custom v-on:click="onClick"/>`,
-      `<custom bindclick="{{a}}" v-i="2a9ec0b0-0"/>`,
+      `<custom bindclick="{{a}}" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.onClick) }
 }`

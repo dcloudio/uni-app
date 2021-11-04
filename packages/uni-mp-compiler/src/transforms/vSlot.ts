@@ -25,6 +25,7 @@ import {
   TemplateChildNode,
   TemplateNode,
 } from '@vue/compiler-core'
+import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import {
   createBindDirectiveNode,
   isUserComponent,
@@ -37,6 +38,7 @@ import { isVForScope, NodeTransform, TransformContext } from '../transform'
 import {
   ATTR_VUE_ID,
   ATTR_VUE_SLOTS,
+  renameSlot,
   rewriteExpressionWithoutProperty,
   SCOPED_SLOT_IDENTIFIER,
 } from './utils'
@@ -85,12 +87,12 @@ export const transformSlot: NodeTransform = (node, context) => {
     }
   }
   if (implicitDefaultChildren.length) {
-    slots.add('default')
+    slots.add(SLOT_DEFAULT_NAME)
   }
   if (onComponentSlot) {
     // <unicloud-db v-slot:default="{data, loading, error, options}"/>
     // => <unicloud-db  collection=""><template v-slot:default="{data, loading, error, options}"/></unicloud-db>
-    slots.add('default')
+    slots.add(SLOT_DEFAULT_NAME)
     const templateNode = createTemplateNode(
       onComponentSlot,
       implicitDefaultChildren
@@ -103,7 +105,7 @@ export const transformSlot: NodeTransform = (node, context) => {
     node.props.unshift(
       createBindDirectiveNode(
         ATTR_VUE_SLOTS,
-        `[${[...slots].map((name) => `'${name}'`).join(',')}]`
+        `[${[...slots].map((name) => `'${renameSlot(name)}'`).join(',')}]`
       )
     )
   }
@@ -137,6 +139,13 @@ function transformTemplateSlotElement(
       context
     ),
   ]
+  if (context.miniProgram.slot.dynamicSlotNames) {
+    // 已经在 vFor 中补充 slot，故需要移除 slotTemplate 中的
+    const index = slotTemplate.props.indexOf(slotDir)
+    if (index > -1) {
+      slotTemplate.props.splice(index, 1)
+    }
+  }
   // v-slot="slotProps" => v-slot 避免 transformIdentifier 生成 slotProps 的变量声明
   slotDir.exp = undefined
   return slotName
@@ -161,7 +170,7 @@ function createTemplateNode(
 
 export function findSlotName(slotDir: DirectiveNode) {
   if (!slotDir.arg) {
-    return 'default'
+    return SLOT_DEFAULT_NAME
   }
   if (isStaticExp(slotDir.arg)) {
     return slotDir.arg.content
@@ -233,9 +242,11 @@ const slotNameRE = /\('(.*)',/
  */
 function findCurrentSlotName(source: ExpressionNode) {
   return stringLiteral(
-    ((source as CompoundExpressionNode).children[1] as string).match(
-      slotNameRE
-    )![1]
+    renameSlot(
+      ((source as CompoundExpressionNode).children[1] as string).match(
+        slotNameRE
+      )![1]
+    )
   )
 }
 

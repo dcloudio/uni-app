@@ -27,6 +27,8 @@ const invokeArrayFns = (fns, arg) => {
     }
     return ret;
 };
+// quickapp-webview 不能使用 default 作为插槽名称
+const SLOT_DEFAULT_NAME = 'd';
 // lifecycle
 // App and Page
 const ON_SHOW = 'onShow';
@@ -157,6 +159,9 @@ function initBaseInstance(instance, options) {
             options.slots.forEach((name) => {
                 instance.slots[name] = true;
             });
+            if (instance.slots[SLOT_DEFAULT_NAME]) {
+                instance.slots.default = true;
+            }
         }
     }
     ctx.getOpenerEventChannel = function () {
@@ -416,12 +421,12 @@ function normalizePropType(type, defaultValue) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
-        properties.vI = {
+        properties.uI = {
             type: null,
             value: '',
         };
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
-        properties.vS = {
+        properties.uS = {
             type: null,
             value: [],
             observer: function (newVal) {
@@ -768,7 +773,7 @@ function initInjections(instance) {
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         const properties = this.properties;
-        initVueIds(properties.vI, this);
+        initVueIds(properties.uI, this);
         const relationOptions = {
             vuePid: this._$vuePid,
         };
@@ -785,7 +790,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }, {
             mpType,
             mpInstance,
-            slots: properties.vS,
+            slots: properties.uS,
             parentComponent: relationOptions.parent && relationOptions.parent.$,
             onBeforeSetup(instance, options) {
                 initRefs(instance, mpInstance);

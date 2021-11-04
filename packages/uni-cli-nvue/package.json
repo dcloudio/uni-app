@@ -18,7 +18,9 @@
   },
   "uni-app": {
     "name": "uni-cli-nvue",
-    "apply": "app",
+    "apply": [
+      "app"
+    ],
     "main": "dist/plugin.js"
   },
   "license": "Apache-2.0",

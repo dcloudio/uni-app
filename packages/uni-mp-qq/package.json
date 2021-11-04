@@ -15,7 +15,9 @@
   "uni-app": {
     "name": "mp-qq",
     "title": "QQ小程序",
-    "apply": "mp-qq",
+    "apply": [
+      "mp-qq"
+    ],
     "main": "dist/uni.compiler.js"
   },
   "gitHead": "7bcc3303c15141d377645a4995ce186f10ed6b78"

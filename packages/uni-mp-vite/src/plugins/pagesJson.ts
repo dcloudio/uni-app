@@ -61,7 +61,9 @@ export function uniPagesJsonPlugin(
           resolvedConfig,
           nvuePages.map((pagePath) => pagePath + options.style.extname)
         )
-
+        if (options.json?.formatAppJson) {
+          options.json.formatAppJson(appJson, manifestJson, pageJsons)
+        }
         addMiniProgramAppJson(appJson)
         Object.keys(pageJsons).forEach((name) => {
           addMiniProgramPageJson(name, pageJsons[name])

@@ -4,6 +4,9 @@ export const TABBAR_HEIGHT = 50
 export const ON_REACH_BOTTOM_DISTANCE = 50
 export const RESPONSIVE_MIN_WIDTH = 768
 
+// quickapp-webview 不能使用 default 作为插槽名称
+export const SLOT_DEFAULT_NAME = 'd'
+
 export const COMPONENT_NAME_PREFIX = 'VUni'
 
 export const I18N_JSON_DELIMITERS: [string, string] = ['%', '%']

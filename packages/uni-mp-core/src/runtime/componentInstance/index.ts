@@ -1,4 +1,8 @@
-import { EventChannel, invokeArrayFns } from '@dcloudio/uni-shared'
+import {
+  EventChannel,
+  invokeArrayFns,
+  SLOT_DEFAULT_NAME,
+} from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray } from '@vue/shared'
 import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
 import { getEventChannel } from '../../api/protocols/navigateTo'
@@ -76,6 +80,9 @@ export function initBaseInstance(
           } else {
             delete slots.default
           }
+          if (slots[SLOT_DEFAULT_NAME]) {
+            slots.default = true
+          }
           return slots
         }
       },
@@ -86,6 +93,9 @@ export function initBaseInstance(
       options.slots.forEach((name) => {
         instance.slots[name] = true as any
       })
+      if (instance.slots[SLOT_DEFAULT_NAME]) {
+        instance.slots.default = true as any
+      }
     }
   }
 

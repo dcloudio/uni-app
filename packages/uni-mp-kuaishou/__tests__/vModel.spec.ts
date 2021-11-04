@@ -4,7 +4,7 @@ describe('mp-kuaishou: transform v-model', () => {
   test(`component v-model`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp v-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}" modelValue="{{b}}" bindupdateModelValue="__e"/>`,
+      `<comp u-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}" modelValue="{{b}}" bindupdateModelValue="__e"/>`,
       `(_ctx, _cache) => {
   return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _ctx.model }
 }`
@@ -13,7 +13,7 @@ describe('mp-kuaishou: transform v-model', () => {
   test(`component v-model with cache`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp v-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}" modelValue="{{b}}" bindupdateModelValue="__e"/>`,
+      `<comp u-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}" modelValue="{{b}}" bindupdateModelValue="__e"/>`,
       `(_ctx, _cache) => {
   return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _ctx.model }
 }`,

@@ -31,6 +31,11 @@ export interface UniMiniProgramPluginOptions {
     windowOptionsMap?: Record<string, string>
     tabBarOptionsMap?: Record<string, string>
     tabBarItemOptionsMap?: Record<string, string>
+    formatAppJson?: (
+      appJson: Record<string, any>,
+      manifestJson: Record<string, any>,
+      pagesJson: Record<string, any>
+    ) => void
   }
   app: {
     darkmode: boolean

@@ -8,7 +8,7 @@ export function renderSlot(
   key?: string | number
 ) {
   const instance = getCurrentInstance() as ComponentInternalInstance
-  const vueIds = instance.attrs.vI as string
+  const vueIds = instance.attrs.uI as string
   if (!vueIds) {
     return
   }

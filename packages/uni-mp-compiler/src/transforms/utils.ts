@@ -13,6 +13,7 @@ import {
   SpreadElement,
   stringLiteral,
 } from '@babel/types'
+import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import {
   createSimpleExpression,
   ExpressionNode,
@@ -26,10 +27,14 @@ import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
 import { CodegenScope } from '../options'
 import { isVForScope, isVIfScope, TransformContext } from '../transform'
-
-export const ATTR_VUE_ID = 'v-i'
-export const ATTR_VUE_SLOTS = 'v-s'
+// v-i,v-s 不能在 quickapp-webview 中使用，估计是内部处理成了指令之类的
+export const ATTR_VUE_ID = 'u-i'
+export const ATTR_VUE_SLOTS = 'u-s'
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
+
+export function renameSlot(name: string) {
+  return name === 'default' ? SLOT_DEFAULT_NAME : name
+}
 
 export function rewriteSpreadElement(
   name: symbol,

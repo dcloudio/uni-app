@@ -138,6 +138,9 @@ const uniMiniProgramToutiaoPlugin = {
     },
 };
 options.template.slot.fallbackContent = false;
+// 飞书不支持：
+// <view tt:for="{{items}}" tt:for-item="item" tt:key="id" slot="{{item.slot}}">{{item.text}}</view>
+options.template.slot.dynamicSlotNames = false;
 var index = [uniMiniProgramToutiaoPlugin, ...initMiniProgramPlugin__default["default"](options)];
 
 module.exports = index;

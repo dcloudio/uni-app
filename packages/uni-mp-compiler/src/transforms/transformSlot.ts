@@ -13,19 +13,20 @@ import {
   SimpleExpressionNode,
   SlotOutletNode,
 } from '@vue/compiler-core'
-import { camelize } from '@vue/shared'
+import { camelize, isString } from '@vue/shared'
+import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
 import { isVForScope, TransformContext } from '../transform'
 import { processProps } from './transformElement'
-import { rewriteExpression } from './utils'
+import { renameSlot, rewriteExpression } from './utils'
 import {
   createAttributeNode,
   createBindDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
 
 export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
-  let slotName: string | ExpressionNode = `"default"`
+  let slotName: string | ExpressionNode = `"${SLOT_DEFAULT_NAME}"`
   let hasOtherDir = false
   const nonNameProps: (AttributeNode | DirectiveNode)[] = []
   const { props } = node
@@ -76,7 +77,7 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       rewriteExpression(
         createCompoundExpression([
           context.helperString(RENDER_SLOT) + '(',
-          slotName,
+          renameSlot(isString(slotName) ? slotName : genExpr(slotName)),
           ',',
           `{${properties.join(',')}}`,
           `${slotKey ? ',' + slotKey : ''}`,
@@ -105,13 +106,13 @@ function transformScopedSlotKey(
         createBindDirectiveNode(
           'name',
           rewriteExpression(
-            createSimpleExpression('"default-"+' + slotKey),
+            createSimpleExpression(`"${SLOT_DEFAULT_NAME}-"+` + slotKey),
             context
           ).content
         )
       )
     } else {
-      props.push(createAttributeNode('name', 'default'))
+      props.push(createAttributeNode('name', SLOT_DEFAULT_NAME))
     }
   }
   return slotKey

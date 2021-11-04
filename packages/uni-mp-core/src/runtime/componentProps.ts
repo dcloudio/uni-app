@@ -68,12 +68,12 @@ function initDefaultProps(isBehavior: boolean = false) {
         value: '',
       }
     }
-    properties.vI = {
+    properties.uI = {
       type: null, // 均不指定类型，避免 property received type-uncompatible value 警告
       value: '',
     }
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
-    properties.vS = {
+    properties.uS = {
       type: null,
       value: [],
       observer: function (this: MPComponentInstance, newVal) {

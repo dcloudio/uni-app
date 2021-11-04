@@ -38,7 +38,7 @@ function initComponentProps(rawProps: Record<string, any>) {
   }
   Object.keys(properties).forEach((key) => {
     // vueSlots
-    if (key !== 'vS') {
+    if (key !== 'uS') {
       props[key] = properties[key].value
     }
   })
@@ -54,7 +54,7 @@ function initVm(
     return
   }
   const properties = mpInstance.props
-  initVueIds(properties.vI, mpInstance as any)
+  initVueIds(properties.uI, mpInstance as any)
   const relationOptions: RelationOptions = {
     vuePid: mpInstance._$vuePid,
     mpInstance,

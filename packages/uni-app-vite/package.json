@@ -18,7 +18,9 @@
   },
   "uni-app": {
     "name": "uni-app-plus",
-    "apply": "app",
+    "apply": [
+      "app"
+    ],
     "main": "dist/index.js"
   },
   "license": "Apache-2.0",

@@ -15,7 +15,9 @@
   "uni-app": {
     "name": "mp-lark",
     "title": "飞书小程序",
-    "apply": "mp-lark",
+    "apply": [
+      "mp-lark"
+    ],
     "main": "dist/uni.compiler.js"
   },
   "gitHead": "7bcc3303c15141d377645a4995ce186f10ed6b78"

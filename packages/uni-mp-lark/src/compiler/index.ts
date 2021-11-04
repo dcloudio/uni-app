@@ -20,5 +20,7 @@ const uniMiniProgramToutiaoPlugin: Plugin = {
 }
 
 options.template.slot.fallbackContent = false
-
+// 飞书不支持：
+// <view tt:for="{{items}}" tt:for-item="item" tt:key="id" slot="{{item.slot}}">{{item.text}}</view>
+options.template.slot.dynamicSlotNames = false
 export default [uniMiniProgramToutiaoPlugin, ...initMiniProgramPlugin(options)]

@@ -36,7 +36,7 @@ function assert(
 }
 
 assert(
-  `<template slot="left"/>`,
+  `<template v-for="item in items"><slot/></template>`,
   `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
   `(_ctx, _cache) => {
 return { a: _f(_ctx.items, (item, index, i0) => { return { a: _r(\"default\", { key: index }) }; }) }

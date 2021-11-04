@@ -1,6 +1,6 @@
 import path from 'path'
 import { Plugin } from 'vite'
-
+import { hasOwn } from '@vue/shared'
 import {
   defineUniManifestJsonPlugin,
   getLocaleFiles,
@@ -27,23 +27,28 @@ export function uniManifestJsonPlugin(
         })
         if (options.project) {
           const template = options.project.source
-          let projectname = path.basename(inputDir)
-          if (projectname === 'src') {
-            projectname = path.basename(path.dirname(inputDir))
-          }
-          template.projectname = projectname
-          // TODO condition
-          if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
-            if (!template.setting) {
-              template.setting = {}
+          if (hasOwn(template, 'appid')) {
+            let projectname = path.basename(inputDir)
+            if (projectname === 'src') {
+              projectname = path.basename(path.dirname(inputDir))
             }
-            template.setting.urlCheck = false
+            template.projectname = projectname
+            // TODO condition
+            if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+              if (!template.setting) {
+                template.setting = {}
+              }
+              template.setting.urlCheck = false
+            }
+            projectJson = parseMiniProgramProjectJson(
+              code,
+              process.env.UNI_PLATFORM,
+              { template }
+            )
+          } else {
+            // 无需解析，直接拷贝，如 quickapp-webview
+            projectJson = template
           }
-          projectJson = parseMiniProgramProjectJson(
-            code,
-            process.env.UNI_PLATFORM,
-            { template }
-          )
         }
 
         return {

@@ -26,7 +26,7 @@ export function initLifetimes({
   return {
     attached(this: MPComponentInstance) {
       const properties = this.properties
-      initVueIds(properties.vI, this)
+      initVueIds(properties.uI, this)
       const relationOptions: RelationOptions = {
         vuePid: this._$vuePid,
       }
@@ -44,7 +44,7 @@ export function initLifetimes({
         {
           mpType: isMiniProgramPage ? 'page' : 'component',
           mpInstance,
-          slots: properties.vS, // vueSlots
+          slots: properties.uS, // vueSlots
           parentComponent: relationOptions.parent && relationOptions.parent.$,
           onBeforeSetup(
             instance: ComponentInternalInstance,

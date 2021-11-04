@@ -15,7 +15,7 @@ describe('mp-alipay: transform component', () => {
   test(`match-media`, () => {
     assert(
       `<match-media/>`,
-      `<uni-match-media v-i="2a9ec0b0-0" onVI="__l"/>`,
+      `<uni-match-media u-i="2a9ec0b0-0" onVI="__l"/>`,
       `(_ctx, _cache) => {
   return {}
 }`

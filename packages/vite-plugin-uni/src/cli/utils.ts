@@ -17,6 +17,7 @@ export const PLATFORMS = [
   'mp-lark',
   'mp-toutiao',
   'mp-weixin',
+  'quickapp-webview',
   'quickapp-webview-huawei',
   'quickapp-webview-union',
 ]
@@ -59,6 +60,14 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
   if (options.platform === 'app-plus') {
     options.platform = 'app'
   }
+  if (
+    options.platform === 'quickapp-webview-huawei' ||
+    options.platform === 'quickapp-webview-union'
+  ) {
+    process.env.UNI_SUB_PLATFORM = options.platform
+    options.platform = 'quickapp-webview'
+  }
+
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
   process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()
@@ -74,7 +83,7 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
         process.cwd(),
         'dist',
         process.env.NODE_ENV === 'production' ? 'build' : 'dev',
-        process.env.UNI_PLATFORM
+        process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
       )
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!

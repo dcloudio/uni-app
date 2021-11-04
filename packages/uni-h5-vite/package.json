@@ -18,7 +18,9 @@
   },
   "uni-app": {
     "name": "uni-h5",
-    "apply": "h5",
+    "apply": [
+      "h5"
+    ],
     "main": "dist/index.js"
   },
   "license": "Apache-2.0",

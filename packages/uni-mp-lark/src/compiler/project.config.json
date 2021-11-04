@@ -2,8 +2,8 @@
   "setting": {
     "urlCheck": false,
     "es6": true,
-    "postcss": false,
-    "minified": false,
+    "postcss": true,
+    "minified": true,
     "newFeature": true
   },
   "appid": "testAppId",

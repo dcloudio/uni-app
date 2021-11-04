@@ -5018,7 +5018,7 @@ function vFor(source, renderItem) {
 
 function renderSlot(name, props = {}, key) {
     const instance = getCurrentInstance();
-    const vueIds = instance.attrs.vI;
+    const vueIds = instance.attrs.uI;
     if (!vueIds) {
         return;
     }
