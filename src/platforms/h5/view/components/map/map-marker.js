@@ -131,7 +131,7 @@ export default {
           w = img.width / 2
           h = img.height / 2
         }
-        const top = h - (h - y)
+        const top = h - (h - y * h)
         if ('MarkerImage' in maps) {
           icon = new maps.MarkerImage(
             img.src,
@@ -189,6 +189,7 @@ export default {
         let callout = marker.callout
         let calloutStyle
         if (calloutOpt.content || title) {
+          const boxShadow = '0px 0px 3px 1px rgba(0,0,0,0.5)'
           calloutStyle = calloutOpt.content
             ? {
               position,
@@ -200,7 +201,7 @@ export default {
               borderRadius: calloutOpt.borderRadius,
               bgColor: calloutOpt.bgColor,
               padding: calloutOpt.padding,
-              boxShadow: calloutOpt.boxShadow,
+              boxShadow: calloutOpt.boxShadow || boxShadow,
               display: calloutOpt.display
             }
             : {
@@ -208,7 +209,7 @@ export default {
               map,
               top,
               content: title,
-              boxShadow: '0px 0px 3px 1px rgba(0,0,0,0.5)'
+              boxShadow: boxShadow
             }
           if (callout) {
             callout.setOption(calloutStyle)
