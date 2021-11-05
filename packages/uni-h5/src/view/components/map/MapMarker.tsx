@@ -254,7 +254,11 @@ export default /*#__PURE__*/ defineSystemComponent({
             }
           }
         }
-        img.src = getRealPath(option.iconPath)
+        if (option.iconPath) {
+          img.src = getRealPath(option.iconPath)
+        } else {
+          console.error('Marker.iconPath is required.')
+        }
       }
       function addMarker(props: Props) {
         marker = new maps.Marker({
