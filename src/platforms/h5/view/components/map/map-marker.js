@@ -232,7 +232,11 @@ export default {
           }
         }
       }
-      img.src = getRealPath(option.iconPath)
+      if (option.iconPath) {
+        img.src = getRealPath(option.iconPath)
+      } else {
+        console.error('Marker.iconPath is required.')
+      }
     },
     removeMarker () {
       const marker = this._marker
