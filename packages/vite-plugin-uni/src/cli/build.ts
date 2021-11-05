@@ -1,10 +1,19 @@
-import fs from 'fs-extra'
 import path from 'path'
+import fs from 'fs-extra'
 import { build as buildByVite, BuildOptions, InlineConfig } from 'vite'
+import {
+  initPreContext,
+  normalizeAppManifestJson,
+  parseManifestJsonOnce,
+  parsePagesJsonOnce,
+} from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 
 export async function build(options: CliOptions) {
+  if (options.platform === 'app' && (options as BuildOptions).manifest) {
+    return buildManifestJson()
+  }
   return buildByVite(
     addConfigFile(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
@@ -57,4 +66,23 @@ function initBuildOptions(
     mode: process.env.NODE_ENV,
     build,
   }
+}
+
+function buildManifestJson() {
+  const platform = 'app'
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+
+  const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+  process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
+  initPreContext(platform)
+
+  const manifestJson = normalizeAppManifestJson(
+    parseManifestJsonOnce(inputDir),
+    parsePagesJsonOnce(inputDir, platform)
+  )
+  fs.outputFileSync(
+    path.resolve(outputDir, 'manifest.json'),
+    JSON.stringify(manifestJson, null, 2)
+  )
 }
