@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app",
-  "version": "3.0.0-alpha-3021220211105001",
+  "version": "3.0.0-alpha-3021220211105002",
   "description": "@dcloudio/uni-app",
   "main": "./dist/uni-app.cjs.js",
   "module": "./dist/uni-app.es.js",
@@ -18,5 +18,5 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "gitHead": "7bcc3303c15141d377645a4995ce186f10ed6b78"
+  "gitHead": "3c201f9001ec17e2b6f2b1f071b637ecc4946088"
 }
