@@ -41,7 +41,6 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       const { props } = node
       let hasClassBinding = false
       let hasStyleBinding = false
-      debugger
       for (let i = 0; i < props.length; i++) {
         const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {

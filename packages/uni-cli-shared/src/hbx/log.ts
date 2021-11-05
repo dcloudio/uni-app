@@ -1,3 +1,5 @@
+import path from 'path'
+import { normalizePath } from '../utils'
 import { Formatter } from '../logs/format'
 
 const SIGNAL_H5_LOCAL = ' > Local:'
@@ -49,5 +51,43 @@ export const removeWarnFormatter: Formatter = {
   },
   format() {
     return ''
+  },
+}
+
+const fileRE = /file:\s(.*):(\d+):(\d+)/
+
+export const FilenameFormatter: Formatter = {
+  test(msg) {
+    return fileRE.test(msg)
+  },
+  format(msg) {
+    return msg.replace(fileRE, (_, filename, line, column) => {
+      return `file: ${filename.split('?')[0]}:${line}:${column}`
+    })
+  },
+}
+
+export const HBuilderXFileFormatter: Formatter = {
+  test(msg) {
+    return fileRE.test(msg)
+  },
+  format(msg) {
+    return (
+      msg
+        // remove color
+        .replace(/\x1B[[(?);]{0,2}(;?\d)*./g, '')
+        .replace(fileRE, (_, filename, line, column) => {
+          return (
+            'at ' +
+            normalizePath(
+              path.relative(process.env.UNI_INPUT_DIR, filename.split('?')[0])
+            ) +
+            ':' +
+            line +
+            ':' +
+            column
+          )
+        })
+    )
   },
 }

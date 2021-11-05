@@ -1,11 +1,13 @@
 import { once } from '@dcloudio/uni-shared'
 
-import { isInHBuilderX } from '../hbx/env'
+import { isInHBuilderX, runByHBuilderX } from '../hbx/env'
 import { moduleAliasFormatter } from '../hbx/alias'
 import {
   h5ServeFormatter,
   removeInfoFormatter,
   removeWarnFormatter,
+  FilenameFormatter,
+  HBuilderXFileFormatter,
 } from '../hbx/log'
 
 export interface Formatter {
@@ -20,6 +22,11 @@ const warnFormatters: Formatter[] = []
 const initErrFormattersOnce = once(() => {
   if (isInHBuilderX()) {
     errFormatters.push(moduleAliasFormatter)
+  }
+  if (runByHBuilderX()) {
+    errFormatters.push(HBuilderXFileFormatter)
+  } else {
+    errFormatters.push(FilenameFormatter)
   }
 })
 
