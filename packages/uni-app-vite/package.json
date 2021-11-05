@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-vite",
-  "version": "3.0.0-alpha-3021220211105002",
+  "version": "3.0.0-alpha-3021220211105003",
   "description": "uni-app-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,7 @@
     "main": "dist/index.js"
   },
   "license": "Apache-2.0",
-  "gitHead": "3c201f9001ec17e2b6f2b1f071b637ecc4946088",
+  "gitHead": "375aa189ff38eb12bdd359a0a5b3725660c2f628",
   "dependencies": {
     "clean-css": "^5.1.3",
     "fs-extra": "^10.0.0",
