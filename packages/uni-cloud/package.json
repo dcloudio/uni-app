@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cloud",
-  "version": "3.0.0-alpha-3021220211105006",
+  "version": "3.0.0-alpha-3021220211105007",
   "description": "@dcloudio/uni-cloud",
   "main": "dist/uni-cloud.cjs.js",
   "module": "dist/uni-cloud.es.js",
@@ -21,5 +21,5 @@
   "uni-app": {
     "name": "uniCloud"
   },
-  "gitHead": "42656641c7e53aab726888f124cd7da58c44e56a"
+  "gitHead": "639fc61420ba233355f18ee75cfa80b81efc38ed"
 }

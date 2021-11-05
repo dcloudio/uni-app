@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-shared",
-  "version": "3.0.0-alpha-3021220211105006",
+  "version": "3.0.0-alpha-3021220211105007",
   "description": "@dcloudio/uni-shared",
   "main": "./dist/uni-shared.cjs.js",
   "module": "./dist/uni-shared.es.js",
@@ -18,5 +18,5 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "gitHead": "42656641c7e53aab726888f124cd7da58c44e56a"
+  "gitHead": "639fc61420ba233355f18ee75cfa80b81efc38ed"
 }
