@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "3.0.0-alpha-3021220211105004",
+  "version": "3.0.0-alpha-3021220211105005",
   "description": "@dcloudio/uni-automator",
   "main": "dist/index.js",
   "files": [
@@ -25,7 +25,7 @@
       "mp-weixin"
     ]
   },
-  "gitHead": "375aa189ff38eb12bdd359a0a5b3725660c2f628",
+  "gitHead": "42656641c7e53aab726888f124cd7da58c44e56a",
   "dependencies": {
     "address": "^1.1.2",
     "cross-env": "^7.0.3",

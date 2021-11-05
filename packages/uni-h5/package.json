@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "3.0.0-alpha-3021220211105004",
+  "version": "3.0.0-alpha-3021220211105005",
   "description": "@dcloudio/uni-h5",
   "main": "./dist/uni-h5.cjs.js",
   "module": "./dist/uni-h5.es.js",
@@ -27,7 +27,7 @@
     "safe-area-insets": "^1.4.1",
     "xmlhttprequest": "^1.8.0"
   },
-  "gitHead": "375aa189ff38eb12bdd359a0a5b3725660c2f628",
+  "gitHead": "42656641c7e53aab726888f124cd7da58c44e56a",
   "devDependencies": {
     "@types/google.maps": "^3.45.6"
   }
