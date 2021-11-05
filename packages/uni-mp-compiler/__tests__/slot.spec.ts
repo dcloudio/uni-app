@@ -9,6 +9,22 @@ describe('compiler: transform slot', () => {
   return {}
 }`
     )
+    assert(
+      `<button><slot name="default"/></button>`,
+      `<button><slot name="d"/></button>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+  test('dynamic', () => {
+    assert(
+      `<button><slot :name="name"/></button>`,
+      `<button><slot name="{{a}}"/></button>`,
+      `(_ctx, _cache) => {
+  return { a: _d(_ctx.name) }
+}`
+    )
   })
   test('fallback content', () => {
     assert(

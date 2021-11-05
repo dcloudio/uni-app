@@ -1,5 +1,5 @@
 import { hyphenate } from '@vue/shared'
-import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
+import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   formatMiniProgramEvent,
   MiniProgramCompilerOptions,
@@ -24,7 +24,6 @@ import { genExpr } from '../codegen'
 import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
-import { renameSlot } from '../transforms/utils'
 interface TemplateCodegenContext {
   code: string
   directive: string
@@ -328,7 +327,15 @@ function genDirectiveNode(
 ) {
   if (prop.name === 'slot') {
     if (prop.arg) {
-      push(` slot="${renameSlot((prop.arg as SimpleExpressionNode).content)}"`)
+      const arg = prop.arg as SimpleExpressionNode
+
+      push(
+        ` slot="${
+          arg.isStatic
+            ? dynamicSlotName(arg.content)
+            : '{{' + arg.content + '}}'
+        }"`
+      )
     }
   } else if (prop.name === 'show') {
     push(` hidden="{{!${(prop.exp as SimpleExpressionNode).content}}}"`)

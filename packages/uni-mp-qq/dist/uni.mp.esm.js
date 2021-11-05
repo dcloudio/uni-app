@@ -1,6 +1,28 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
 import { injectHook, ref } from 'vue';
 
+// quickapp-webview 不能使用 default 作为插槽名称
+const SLOT_DEFAULT_NAME = 'd';
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
     const res = obj
@@ -27,27 +49,6 @@ const invokeArrayFns = (fns, arg) => {
     }
     return ret;
 };
-// quickapp-webview 不能使用 default 作为插槽名称
-const SLOT_DEFAULT_NAME = 'd';
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 
 class EventChannel {
     constructor(id, events) {
@@ -153,15 +154,13 @@ function initBaseInstance(instance, options) {
     // $vm
     ctx.$scope.$vm = instance.proxy;
     // slots
-    {
-        instance.slots = {};
-        if (isArray(options.slots) && options.slots.length) {
-            options.slots.forEach((name) => {
-                instance.slots[name] = true;
-            });
-            if (instance.slots[SLOT_DEFAULT_NAME]) {
-                instance.slots.default = true;
-            }
+    instance.slots = {};
+    if (isArray(options.slots) && options.slots.length) {
+        options.slots.forEach((name) => {
+            instance.slots[name] = true;
+        });
+        if (instance.slots[SLOT_DEFAULT_NAME]) {
+            instance.slots.default = true;
         }
     }
     ctx.getOpenerEventChannel = function () {
@@ -450,9 +449,10 @@ function initDefaultProps(isBehavior = false) {
             value: [],
             observer: function (newVal) {
                 const $slots = Object.create(null);
-                newVal.forEach((slotName) => {
-                    $slots[slotName] = true;
-                });
+                newVal &&
+                    newVal.forEach((slotName) => {
+                        $slots[slotName] = true;
+                    });
                 this.setData({
                     $slots,
                 });
@@ -723,7 +723,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
-                slots: properties.uS,
+                slots: properties.uS || {},
                 parentComponent: relationOptions.parent && relationOptions.parent.$,
                 onBeforeSetup(instance, options) {
                     initRefs(instance, mpInstance);

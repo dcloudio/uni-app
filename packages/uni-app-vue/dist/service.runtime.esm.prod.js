@@ -35,6 +35,16 @@ export default function vueFactory(exports) {
    */
 
   var capitalize$1 = cacheStringFunction$1(str => str.charAt(0).toUpperCase() + str.slice(1));
+  var JSON_PROTOCOL = 'json://'; // lifecycle
+  // App and Page
+
+  var ON_SHOW = 'onShow';
+  var ON_HIDE = 'onHide';
+  var ON_BACK_PRESS = 'onBackPress';
+  var ON_PAGE_SCROLL = 'onPageScroll';
+  var ON_TAB_ITEM_TAP = 'onTabItemTap';
+  var ON_REACH_BOTTOM = 'onReachBottom';
+  var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 
   function isElement(el) {
     // Element
@@ -606,16 +616,6 @@ export default function vueFactory(exports) {
 
   }
 
-  var JSON_PROTOCOL = 'json://'; // lifecycle
-  // App and Page
-
-  var ON_SHOW = 'onShow';
-  var ON_HIDE = 'onHide';
-  var ON_BACK_PRESS = 'onBackPress';
-  var ON_PAGE_SCROLL = 'onPageScroll';
-  var ON_TAB_ITEM_TAP = 'onTabItemTap';
-  var ON_REACH_BOTTOM = 'onReachBottom';
-  var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
   var PAGE_HOOKS = [ON_SHOW, ON_HIDE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH];
 
   function isRootHook(name) {

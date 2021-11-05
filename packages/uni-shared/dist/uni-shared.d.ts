@@ -146,6 +146,8 @@ export declare const defaultRpx2Unit: {
 
 declare type DictArray = [number, number][];
 
+export declare function dynamicSlotName(name: string): string;
+
 export declare class EventChannel {
     id?: number;
     private listener;

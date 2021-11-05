@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import { isComponentTag } from '@dcloudio/uni-shared'
 import {
   AttributeNode,
@@ -10,6 +11,7 @@ import {
   locStub,
   NodeTypes,
   RootNode,
+  ExpressionNode,
   TemplateChildNode,
   TransformContext,
 } from '@vue/compiler-core'
@@ -72,7 +74,7 @@ export function addStaticClass(node: ElementNode, clazz: string) {
 export function createDirectiveNode(
   name: string,
   arg: string,
-  exp: string
+  exp: string | ExpressionNode
 ): DirectiveNode {
   return {
     type: NodeTypes.DIRECTIVE,
@@ -80,7 +82,7 @@ export function createDirectiveNode(
     modifiers: [],
     loc: locStub,
     arg: createSimpleExpression(arg, true),
-    exp: createSimpleExpression(exp, false),
+    exp: isString(exp) ? createSimpleExpression(exp, false) : exp,
   }
 }
 
@@ -88,6 +90,9 @@ export function createOnDirectiveNode(name: string, value: string) {
   return createDirectiveNode('on', name, value)
 }
 
-export function createBindDirectiveNode(name: string, value: string) {
+export function createBindDirectiveNode(
+  name: string,
+  value: string | ExpressionNode
+) {
   return createDirectiveNode('bind', name, value)
 }

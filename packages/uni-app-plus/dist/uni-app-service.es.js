@@ -146,6 +146,54 @@ var serviceContext = (function (vue) {
    */
   const capitalize = cacheStringFunction$1((str) => str.charAt(0).toUpperCase() + str.slice(1));
 
+  const LINEFEED = '\n';
+  const NAVBAR_HEIGHT = 44;
+  const TABBAR_HEIGHT = 50;
+  const ON_REACH_BOTTOM_DISTANCE = 50;
+  const I18N_JSON_DELIMITERS = ['%', '%'];
+  const PRIMARY_COLOR = '#007aff';
+  const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
+  const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+  const DATA_RE = /^data:.*,.*/;
+  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+  const WXS_PROTOCOL = 'wxs://';
+  const WXS_MODULES = 'wxsModules';
+  const RENDERJS_MODULES = 'renderjsModules';
+  // lifecycle
+  // App and Page
+  const ON_SHOW = 'onShow';
+  const ON_HIDE = 'onHide';
+  //App
+  const ON_LAUNCH = 'onLaunch';
+  const ON_ERROR = 'onError';
+  const ON_THEME_CHANGE = 'onThemeChange';
+  const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
+  const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+  const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+  //Page
+  const ON_LOAD = 'onLoad';
+  const ON_READY = 'onReady';
+  const ON_UNLOAD = 'onUnload';
+  const ON_RESIZE = 'onResize';
+  const ON_BACK_PRESS = 'onBackPress';
+  const ON_PAGE_SCROLL = 'onPageScroll';
+  const ON_TAB_ITEM_TAP = 'onTabItemTap';
+  const ON_REACH_BOTTOM = 'onReachBottom';
+  const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+  const ON_SHARE_TIMELINE = 'onShareTimeline';
+  const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+  const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
+  // navigationBar
+  const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+  // framework
+  const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
+  const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
+  const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
+
   let lastLogTime = 0;
   function formatLog(module, ...args) {
       const now = Date.now();
@@ -544,54 +592,6 @@ var serviceContext = (function (vue) {
       };
       return newFn;
   }
-
-  const LINEFEED = '\n';
-  const NAVBAR_HEIGHT = 44;
-  const TABBAR_HEIGHT = 50;
-  const ON_REACH_BOTTOM_DISTANCE = 50;
-  const I18N_JSON_DELIMITERS = ['%', '%'];
-  const PRIMARY_COLOR = '#007aff';
-  const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
-  const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-  const DATA_RE = /^data:.*,.*/;
-  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
-  const WXS_PROTOCOL = 'wxs://';
-  const WXS_MODULES = 'wxsModules';
-  const RENDERJS_MODULES = 'renderjsModules';
-  // lifecycle
-  // App and Page
-  const ON_SHOW = 'onShow';
-  const ON_HIDE = 'onHide';
-  //App
-  const ON_LAUNCH = 'onLaunch';
-  const ON_ERROR = 'onError';
-  const ON_THEME_CHANGE = 'onThemeChange';
-  const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
-  const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-  const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-  //Page
-  const ON_LOAD = 'onLoad';
-  const ON_READY = 'onReady';
-  const ON_UNLOAD = 'onUnload';
-  const ON_RESIZE = 'onResize';
-  const ON_BACK_PRESS = 'onBackPress';
-  const ON_PAGE_SCROLL = 'onPageScroll';
-  const ON_TAB_ITEM_TAP = 'onTabItemTap';
-  const ON_REACH_BOTTOM = 'onReachBottom';
-  const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-  const ON_SHARE_TIMELINE = 'onShareTimeline';
-  const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-  const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-  // navigationBar
-  const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-  const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-  const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-  const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-  const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-  // framework
-  const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
-  const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
-  const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
   class EventChannel {
       constructor(id, events) {

@@ -10,6 +10,7 @@ import { vFor, VForItem } from './vFor'
 import { renderSlot } from './renderSlot'
 import { withScopedSlot } from './withScopedSlot'
 import { stringifyStyle } from './style'
+import { dynamicSlot } from './dynamicSlot'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -18,6 +19,7 @@ export const f: typeof vFor = (
   source: any,
   renderItem: (...args: any[]) => VForItem
 ) => vFor(source, renderItem)
+export const d: typeof dynamicSlot = (names) => dynamicSlot(names)
 export const r: typeof renderSlot = (name, props, key) =>
   renderSlot(name, props, key)
 export const w: typeof withScopedSlot = (fn, options) =>

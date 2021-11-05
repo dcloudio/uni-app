@@ -21,6 +21,7 @@ import {
 } from './transformStyle'
 import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'
+import { rewriteVSlot } from './vSlot'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -40,6 +41,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       const { props } = node
       let hasClassBinding = false
       let hasStyleBinding = false
+      debugger
       for (let i = 0; i < props.length; i++) {
         const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
@@ -47,9 +49,14 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           if (arg) {
             // TODO 指令暂不不支持动态参数,v-bind:[arg] v-on:[event]
             if (!(arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic)) {
-              props.splice(i, 1)
-              i--
-              continue
+              // v-slot:[slotName] 支持
+              if (dir.name === 'slot') {
+                rewriteVSlot(dir, context)
+              } else {
+                props.splice(i, 1)
+                i--
+                continue
+              }
             }
           }
           const exp = dir.exp
@@ -88,9 +95,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
 
 const builtInProps = [ATTR_VUE_SLOTS]
 
-function isBuiltIn({ arg }: DirectiveNode) {
+function isBuiltIn({ arg, exp }: DirectiveNode) {
   return (
     arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
-    builtInProps.includes(arg.content)
+    builtInProps.includes(arg.content) &&
+    exp?.type === NodeTypes.SIMPLE_EXPRESSION
   )
 }

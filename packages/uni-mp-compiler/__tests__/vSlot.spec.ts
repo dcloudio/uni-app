@@ -83,6 +83,15 @@ describe('compiler: transform v-slot', () => {
 }`
     )
   })
+  test(`dynamic slot names`, () => {
+    assert(
+      `<named><template v-slot:[slotName]>{{ slotName }}</template></named>`,
+      `<named u-s="{{c}}" u-i="2a9ec0b0-0"><view slot="{{b}}">{{a}}</view></named>`,
+      `(_ctx, _cache) => {
+  return { a: _t(_ctx.slotName), b: _d(_ctx.slotName), c: _d([_ctx.slotName]) }
+}`
+    )
+  })
   test('old syntax', () => {
     assert(
       `<template slot="left"/>`,

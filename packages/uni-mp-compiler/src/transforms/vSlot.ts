@@ -7,10 +7,12 @@ import {
   objectProperty,
   stringLiteral,
 } from '@babel/types'
+import { isString } from '@vue/shared'
 import {
   ComponentNode,
   CompoundExpressionNode,
   createCompilerError,
+  createCompoundExpression,
   createSimpleExpression,
   DirectiveNode,
   ElementTypes,
@@ -25,7 +27,7 @@ import {
   TemplateChildNode,
   TemplateNode,
 } from '@vue/compiler-core'
-import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
+import { dynamicSlotName, SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import {
   createBindDirectiveNode,
   isUserComponent,
@@ -38,20 +40,19 @@ import { isVForScope, NodeTransform, TransformContext } from '../transform'
 import {
   ATTR_VUE_ID,
   ATTR_VUE_SLOTS,
-  renameSlot,
+  rewriteExpression,
   rewriteExpressionWithoutProperty,
   SCOPED_SLOT_IDENTIFIER,
 } from './utils'
 import { createVForArrowFunctionExpression } from './vFor'
+import { DYNAMIC_SLOT } from '..'
 
 export const transformSlot: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
     return
   }
-
   const { children } = node
-
-  const slots = new Set<string>()
+  const slots = new Set<string | ExpressionNode>()
   const onComponentSlot = findDir(node, 'slot', true)
   const implicitDefaultChildren: TemplateChildNode[] = []
 
@@ -102,13 +103,46 @@ export const transformSlot: NodeTransform = (node, context) => {
   }
   // 不支持 $slots, 则自动补充 props
   if (slots.size && !context.miniProgram.slot.$slots) {
-    node.props.unshift(
-      createBindDirectiveNode(
-        ATTR_VUE_SLOTS,
-        `[${[...slots].map((name) => `'${renameSlot(name)}'`).join(',')}]`
-      )
-    )
+    const slotsArr = [...slots]
+    const hasDynamic = slotsArr.find((name) => !isString(name))
+    let value: string | ExpressionNode
+
+    if (hasDynamic) {
+      const children: (string | ExpressionNode)[] = []
+      const len = slotsArr.length - 1
+      slotsArr.forEach((name, index) => {
+        if (isString(name)) {
+          children.push(`'${dynamicSlotName(name)}'`)
+        } else {
+          children.push(name)
+        }
+        if (index < len) {
+          children.push(',')
+        }
+      })
+      value = createCompoundExpression([
+        context.helperString(DYNAMIC_SLOT) + '([',
+        ...children,
+        '])',
+      ])
+    } else {
+      value = `[${slotsArr
+        .map((name) => `'${dynamicSlotName(name as string)}'`)
+        .join(',')}]`
+    }
+    node.props.unshift(createBindDirectiveNode(ATTR_VUE_SLOTS, value))
   }
+}
+
+export function rewriteVSlot(dir: DirectiveNode, context: TransformContext) {
+  dir.arg = rewriteExpression(
+    createCompoundExpression([
+      context.helperString(DYNAMIC_SLOT) + '(',
+      dir.arg!,
+      ')',
+    ]),
+    context
+  )
 }
 
 function transformTemplateSlotElement(
@@ -175,6 +209,7 @@ export function findSlotName(slotDir: DirectiveNode) {
   if (isStaticExp(slotDir.arg)) {
     return slotDir.arg.content
   }
+  return slotDir.arg
 }
 
 function findCurrentVForValueAlias(context: TransformContext) {
@@ -195,7 +230,7 @@ function createVForTemplate(
     value,
     slotComponent,
   }: {
-    name: string
+    name: string | ExpressionNode
     value: string
     slotComponent: ComponentNode
   },
@@ -203,6 +238,7 @@ function createVForTemplate(
 ) {
   const key = 's' + context.scopes.vFor
   const keyProp: DirectiveNode = createBindDirectiveNode('key', key)
+  const source = isString(name) ? `'${name}'` : genExpr(name)
   const vForProp: DirectiveNode = {
     type: NodeTypes.DIRECTIVE,
     name: 'for',
@@ -210,7 +246,7 @@ function createVForTemplate(
     modifiers: [],
     arg: undefined,
     exp: createSimpleExpression(
-      `(${value}, ${key}) in ${SCOPED_SLOT_IDENTIFIER}('${name}', ${
+      `(${value}, ${key}) in ${SCOPED_SLOT_IDENTIFIER}(${source}, ${
         findCurrentVForValueAlias(context) || `''`
       })`
     ),
@@ -242,7 +278,7 @@ const slotNameRE = /\('(.*)',/
  */
 function findCurrentSlotName(source: ExpressionNode) {
   return stringLiteral(
-    renameSlot(
+    dynamicSlotName(
       ((source as CompoundExpressionNode).children[1] as string).match(
         slotNameRE
       )![1]

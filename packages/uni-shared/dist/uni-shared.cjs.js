@@ -90,6 +90,66 @@ function isComponentTag(tag) {
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
+const LINEFEED = '\n';
+const NAVBAR_HEIGHT = 44;
+const TABBAR_HEIGHT = 50;
+const ON_REACH_BOTTOM_DISTANCE = 50;
+const RESPONSIVE_MIN_WIDTH = 768;
+// quickapp-webview 不能使用 default 作为插槽名称
+const SLOT_DEFAULT_NAME = 'd';
+const COMPONENT_NAME_PREFIX = 'VUni';
+const I18N_JSON_DELIMITERS = ['%', '%'];
+const PRIMARY_COLOR = '#007aff';
+const SELECTED_COLOR = '#0062cc'; // 选中的颜色，如选项卡默认的选中颜色
+const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
+const UNI_SSR = '__uniSSR';
+const UNI_SSR_TITLE = 'title';
+const UNI_SSR_STORE = 'store';
+const UNI_SSR_DATA = 'data';
+const UNI_SSR_GLOBAL_DATA = 'globalData';
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+const WXS_PROTOCOL = 'wxs://';
+const JSON_PROTOCOL = 'json://';
+const WXS_MODULES = 'wxsModules';
+const RENDERJS_MODULES = 'renderjsModules';
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
+const ON_PAGE_SCROLL = 'onPageScroll';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_SHARE_TIMELINE = 'onShareTimeline';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
+// navigationBar
+const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+// framework
+const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
+const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
+const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
+const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
+
 function resolveOwnerVm(vm) {
     if (!vm) {
         return;
@@ -120,6 +180,9 @@ function resolveOwnerEl(instance) {
         }
     }
     return vnode.el;
+}
+function dynamicSlotName(name) {
+    return name === 'default' ? SLOT_DEFAULT_NAME : name;
 }
 
 let lastLogTime = 0;
@@ -968,66 +1031,6 @@ function debounce(fn, delay) {
     return newFn;
 }
 
-const LINEFEED = '\n';
-const NAVBAR_HEIGHT = 44;
-const TABBAR_HEIGHT = 50;
-const ON_REACH_BOTTOM_DISTANCE = 50;
-const RESPONSIVE_MIN_WIDTH = 768;
-// quickapp-webview 不能使用 default 作为插槽名称
-const SLOT_DEFAULT_NAME = 'd';
-const COMPONENT_NAME_PREFIX = 'VUni';
-const I18N_JSON_DELIMITERS = ['%', '%'];
-const PRIMARY_COLOR = '#007aff';
-const SELECTED_COLOR = '#0062cc'; // 选中的颜色，如选项卡默认的选中颜色
-const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
-const UNI_SSR = '__uniSSR';
-const UNI_SSR_TITLE = 'title';
-const UNI_SSR_STORE = 'store';
-const UNI_SSR_DATA = 'data';
-const UNI_SSR_GLOBAL_DATA = 'globalData';
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
-const WXS_PROTOCOL = 'wxs://';
-const JSON_PROTOCOL = 'json://';
-const WXS_MODULES = 'wxsModules';
-const RENDERJS_MODULES = 'renderjsModules';
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_BACK_PRESS = 'onBackPress';
-const ON_PAGE_SCROLL = 'onPageScroll';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_SHARE_TIMELINE = 'onShareTimeline';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-// navigationBar
-const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-// framework
-const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
-const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
-const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
-const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
-
 class EventChannel {
     constructor(id, events) {
         this.id = id;
@@ -1240,6 +1243,7 @@ exports.decode = decode;
 exports.decodedQuery = decodedQuery;
 exports.defaultMiniProgramRpx2Unit = defaultMiniProgramRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
+exports.dynamicSlotName = dynamicSlotName;
 exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
 exports.formatLog = formatLog;

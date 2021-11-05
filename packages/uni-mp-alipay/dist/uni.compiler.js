@@ -186,9 +186,9 @@ const miniProgram = {
         array: false,
     },
     slot: {
-        $slots: true,
+        $slots: false,
         // 支付宝 fallback 有 bug，当多个带默认 slot 组件嵌套使用时，所有的默认slot均会显示，如uni-file-picker(image)
-        fallbackContent: false,
+        fallbackContent: true,
         dynamicSlotNames: true,
     },
     directive: 'a:',

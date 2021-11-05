@@ -78,9 +78,10 @@ function initDefaultProps(isBehavior: boolean = false) {
       value: [],
       observer: function (this: MPComponentInstance, newVal) {
         const $slots = Object.create(null)
-        newVal.forEach((slotName: string) => {
-          $slots[slotName] = true
-        })
+        newVal &&
+          newVal.forEach((slotName: string) => {
+            $slots[slotName] = true
+          })
         this.setData({
           $slots,
         })

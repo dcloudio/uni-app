@@ -70,32 +70,13 @@ export function initBaseInstance(
   ctx.$scope.$vm = (instance as any).proxy!
 
   // slots
-  if (__PLATFORM__ === 'mp-alipay') {
-    Object.defineProperty(instance, 'slots', {
-      get() {
-        if (this.$scope) {
-          const slots = this.$scope.props.$slots
-          if (slots.$default) {
-            slots.default = slots.$default
-          } else {
-            delete slots.default
-          }
-          if (slots[SLOT_DEFAULT_NAME]) {
-            slots.default = true
-          }
-          return slots
-        }
-      },
+  instance.slots = {}
+  if (isArray(options.slots) && options.slots.length) {
+    options.slots.forEach((name) => {
+      instance.slots[name] = true as any
     })
-  } else {
-    instance.slots = {}
-    if (isArray(options.slots) && options.slots.length) {
-      options.slots.forEach((name) => {
-        instance.slots[name] = true as any
-      })
-      if (instance.slots[SLOT_DEFAULT_NAME]) {
-        instance.slots.default = true as any
-      }
+    if (instance.slots[SLOT_DEFAULT_NAME]) {
+      instance.slots.default = true as any
     }
   }
 

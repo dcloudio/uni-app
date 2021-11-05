@@ -1,5 +1,29 @@
-import { isPlainObject, hasOwn, capitalize, isFunction, extend, isArray, EMPTY_OBJ, camelize } from '@vue/shared';
+import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, EMPTY_OBJ, camelize } from '@vue/shared';
 import { injectHook, ref } from 'vue';
+
+// quickapp-webview 不能使用 default 作为插槽名称
+const SLOT_DEFAULT_NAME = 'd';
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -27,29 +51,6 @@ const invokeArrayFns = (fns, arg) => {
     }
     return ret;
 };
-// quickapp-webview 不能使用 default 作为插槽名称
-const SLOT_DEFAULT_NAME = 'd';
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_BACK_PRESS = 'onBackPress';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 
 class EventChannel {
     constructor(id, events) {
@@ -162,24 +163,14 @@ function initBaseInstance(instance, options) {
     // $vm
     ctx.$scope.$vm = instance.proxy;
     // slots
-    {
-        Object.defineProperty(instance, 'slots', {
-            get() {
-                if (this.$scope) {
-                    const slots = this.$scope.props.$slots;
-                    if (slots.$default) {
-                        slots.default = slots.$default;
-                    }
-                    else {
-                        delete slots.default;
-                    }
-                    if (slots[SLOT_DEFAULT_NAME]) {
-                        slots.default = true;
-                    }
-                    return slots;
-                }
-            },
+    instance.slots = {};
+    if (isArray(options.slots) && options.slots.length) {
+        options.slots.forEach((name) => {
+            instance.slots[name] = true;
         });
+        if (instance.slots[SLOT_DEFAULT_NAME]) {
+            instance.slots.default = true;
+        }
     }
     ctx.getOpenerEventChannel = function () {
         if (!this.__eventChannel__) {
@@ -423,9 +414,10 @@ function initDefaultProps(isBehavior = false) {
             value: [],
             observer: function (newVal) {
                 const $slots = Object.create(null);
-                newVal.forEach((slotName) => {
-                    $slots[slotName] = true;
-                });
+                newVal &&
+                    newVal.forEach((slotName) => {
+                        $slots[slotName] = true;
+                    });
                 this.setData({
                     $slots,
                 });

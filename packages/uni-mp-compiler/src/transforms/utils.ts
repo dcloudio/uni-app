@@ -13,7 +13,6 @@ import {
   SpreadElement,
   stringLiteral,
 } from '@babel/types'
-import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import {
   createSimpleExpression,
   ExpressionNode,
@@ -31,10 +30,6 @@ import { isVForScope, isVIfScope, TransformContext } from '../transform'
 export const ATTR_VUE_ID = 'u-i'
 export const ATTR_VUE_SLOTS = 'u-s'
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
-
-export function renameSlot(name: string) {
-  return name === 'default' ? SLOT_DEFAULT_NAME : name
-}
 
 export function rewriteSpreadElement(
   name: symbol,

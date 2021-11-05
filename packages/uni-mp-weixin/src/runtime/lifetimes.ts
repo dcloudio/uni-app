@@ -44,7 +44,7 @@ export function initLifetimes({
         {
           mpType: isMiniProgramPage ? 'page' : 'component',
           mpInstance,
-          slots: properties.uS, // vueSlots
+          slots: properties.uS || {}, // vueSlots
           parentComponent: relationOptions.parent && relationOptions.parent.$,
           onBeforeSetup(
             instance: ComponentInternalInstance,

@@ -230,7 +230,7 @@ export function processExpression(
         ErrorCodes.X_INVALID_EXPRESSION,
         node.loc,
         undefined,
-        e.message
+        '\n' + source + '\n' + e.message
       )
     )
     return node

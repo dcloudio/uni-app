@@ -13,17 +13,18 @@ import {
   SimpleExpressionNode,
   SlotOutletNode,
 } from '@vue/compiler-core'
-import { camelize, isString } from '@vue/shared'
-import { SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
+import { camelize } from '@vue/shared'
+import { dynamicSlotName, SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
 import { isVForScope, TransformContext } from '../transform'
 import { processProps } from './transformElement'
-import { renameSlot, rewriteExpression } from './utils'
+import { rewriteExpression } from './utils'
 import {
   createAttributeNode,
   createBindDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
+import { DYNAMIC_SLOT } from '..'
 
 export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
   let slotName: string | ExpressionNode = `"${SLOT_DEFAULT_NAME}"`
@@ -35,6 +36,7 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
     if (p.type === NodeTypes.ATTRIBUTE) {
       if (p.value) {
         if (p.name === 'name') {
+          p.value.content = dynamicSlotName(p.value.content)
           slotName = JSON.stringify(p.value.content)
         } else {
           p.name = camelize(p.name)
@@ -46,7 +48,17 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
         hasOtherDir = true
       }
       if (p.name === 'bind' && isBindKey(p.arg, 'name')) {
-        if (p.exp) slotName = p.exp
+        if (p.exp) {
+          p.exp = rewriteExpression(
+            createCompoundExpression([
+              context.helperString(DYNAMIC_SLOT) + '(',
+              p.exp,
+              ')',
+            ]),
+            context
+          )
+          slotName = p.exp
+        }
       } else {
         if (p.name === 'bind' && p.arg && isStaticExp(p.arg)) {
           p.arg.content = camelize(p.arg.content)
@@ -77,7 +89,7 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       rewriteExpression(
         createCompoundExpression([
           context.helperString(RENDER_SLOT) + '(',
-          renameSlot(isString(slotName) ? slotName : genExpr(slotName)),
+          slotName,
           ',',
           `{${properties.join(',')}}`,
           `${slotKey ? ',' + slotKey : ''}`,

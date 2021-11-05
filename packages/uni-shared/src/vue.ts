@@ -2,6 +2,7 @@ import { ComponentInternalInstance, VNode } from 'vue'
 import { hyphenate } from '@vue/shared'
 
 import { isBuiltInComponent } from './tags'
+import { SLOT_DEFAULT_NAME } from './constants'
 
 export function resolveOwnerVm(vm: ComponentInternalInstance) {
   if (!vm) {
@@ -37,4 +38,8 @@ export function resolveOwnerEl(instance: ComponentInternalInstance) {
     }
   }
   return vnode.el
+}
+
+export function dynamicSlotName(name: string) {
+  return name === 'default' ? SLOT_DEFAULT_NAME : name
 }

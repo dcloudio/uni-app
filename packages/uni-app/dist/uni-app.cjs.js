@@ -5,7 +5,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var vue = require('vue');
 var shared = require('@vue/shared');
 
-const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 const UNI_SSR = '__uniSSR';
 const UNI_SSR_DATA = 'data';
 // lifecycle
@@ -37,6 +36,7 @@ const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicke
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 
 function assertKey(key, shallow = false) {
     if (!key) {
