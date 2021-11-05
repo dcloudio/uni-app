@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "2.0.0-32920211029001",
+  "version": "2.0.0-32920211029002",
   "description": "uni-app automator",
   "main": "dist/index.js",
   "repository": {
