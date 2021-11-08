@@ -7799,12 +7799,32 @@ const props$6 = {
     default: ""
   }
 };
+function useMarkerLabelStyle(id) {
+  const className = "uni-map-marker-label-" + id;
+  const styleEl = document.createElement("style");
+  styleEl.id = className;
+  document.head.appendChild(styleEl);
+  return function updateMarkerLabelStyle(style) {
+    const newStyle = Object.assign({}, style, {
+      position: "absolute",
+      top: "70px",
+      borderStyle: "solid"
+    });
+    const div = document.createElement("div");
+    Object.keys(newStyle).forEach((key) => {
+      div.style[key] = newStyle[key];
+    });
+    styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
+    return className;
+  };
+}
 var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$6,
   setup(props2) {
     const id = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id);
     let marker;
     onMapReady((map, maps, trigger) => {
       function updateMarker(option) {
@@ -7848,29 +7868,34 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           }
           let label;
           if (labelOpt.content) {
+            const labelStyle = {
+              borderColor: labelOpt.borderColor,
+              borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
+              padding: (Number(labelOpt.padding) || 0) + "px",
+              borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
+              backgroundColor: labelOpt.bgColor,
+              color: labelOpt.color,
+              fontSize: (labelOpt.fontSize || 14) + "px",
+              lineHeight: (labelOpt.fontSize || 14) + "px",
+              marginLeft: (Number(labelOpt.x) || 0) + "px",
+              marginTop: (Number(labelOpt.y) || 0) + "px"
+            };
             if ("Label" in maps) {
               label = new maps.Label({
                 position,
                 map,
                 clickable: false,
                 content: labelOpt.content,
-                style: {
-                  border: "none",
-                  padding: "8px",
-                  background: "none",
-                  color: labelOpt.color,
-                  fontSize: (labelOpt.fontSize || 14) + "px",
-                  lineHeight: (labelOpt.fontSize || 14) + "px",
-                  marginLeft: labelOpt.x,
-                  marginTop: labelOpt.y
-                }
+                style: labelStyle
               });
               marker.label = label;
             } else if ("setLabel" in marker) {
+              const className = updateMarkerLabelStyle(labelStyle);
               marker.setLabel({
                 text: labelOpt.content,
-                color: labelOpt.color,
-                fontSize: (labelOpt.fontSize || 14) + "px"
+                color: labelStyle.color,
+                fontSize: labelStyle.fontSize,
+                className
               });
             }
           }

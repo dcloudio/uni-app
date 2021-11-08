@@ -947,7 +947,7 @@ export interface LabelOptions {
   /**
    * Label样式，例如：{color:"#000000",backgroundColor:"red"}
    */
-  style?: Object
+  style?: Partial<CSSStyleDeclaration>
   /**
    * 如果为true，表示标签可见，默认为true。
    */
