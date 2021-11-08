@@ -114,6 +114,48 @@ interface MarkerExt {
 interface GMarkerExt extends GMarker, MarkerExt {}
 interface QMarkerExt extends QMarker, MarkerExt {}
 type Marker = GMarkerExt | QMarkerExt
+type MarkerLabelStyle = Partial<
+  Pick<
+    CSSStyleDeclaration,
+    | 'position'
+    | 'top'
+    | 'borderStyle'
+    | 'borderColor'
+    | 'borderWidth'
+    | 'padding'
+    | 'borderRadius'
+    | 'backgroundColor'
+    | 'color'
+    | 'fontSize'
+    | 'lineHeight'
+    | 'marginLeft'
+    | 'marginTop'
+  >
+>
+
+function useMarkerLabelStyle(id: string) {
+  const className = 'uni-map-marker-label-' + id
+  const styleEl = document.createElement('style')
+  styleEl.id = className
+  document.head.appendChild(styleEl)
+  onUnmounted(() => {
+    styleEl.remove()
+  })
+  return function updateMarkerLabelStyle(style: MarkerLabelStyle) {
+    const newStyle: MarkerLabelStyle = Object.assign({}, style, {
+      position: 'absolute',
+      top: '70px',
+      borderStyle: 'solid',
+    })
+    const div = document.createElement('div')
+    Object.keys(newStyle).forEach((key) => {
+      div.style[key as keyof MarkerLabelStyle] =
+        newStyle[key as keyof MarkerLabelStyle] || ''
+    })
+    styleEl.innerText = `.${className}{${div.getAttribute('style')}}`
+    return className
+  }
+}
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapMarker',
@@ -121,10 +163,11 @@ export default /*#__PURE__*/ defineSystemComponent({
   setup(props) {
     const id = String(Number(props.id) !== NaN ? props.id : '')
     const onMapReady: OnMapReady = inject('onMapReady') as OnMapReady
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id)
     let marker: Marker
     function removeMarker() {
       if (marker) {
-        if (marker.label) {
+        if (marker.label && 'setMap' in marker.label) {
           ;(marker.label as QLabel).setMap(null)
         }
         if (marker.callout) {
@@ -181,29 +224,34 @@ export default /*#__PURE__*/ defineSystemComponent({
           }
           let label
           if (labelOpt.content) {
+            const labelStyle = {
+              borderColor: labelOpt.borderColor,
+              borderWidth: (Number(labelOpt.borderWidth) || 0) + 'px',
+              padding: (Number(labelOpt.padding) || 0) + 'px',
+              borderRadius: (Number(labelOpt.borderRadius) || 0) + 'px',
+              backgroundColor: labelOpt.bgColor,
+              color: labelOpt.color,
+              fontSize: (labelOpt.fontSize || 14) + 'px',
+              lineHeight: (labelOpt.fontSize || 14) + 'px',
+              marginLeft: (Number(labelOpt.x) || 0) + 'px',
+              marginTop: (Number(labelOpt.y) || 0) + 'px',
+            }
             if ('Label' in maps) {
               label = new maps.Label({
                 position: position as QLatLng,
                 map: map as QMap,
                 clickable: false,
                 content: labelOpt.content,
-                style: {
-                  border: 'none',
-                  padding: '8px',
-                  background: 'none',
-                  color: labelOpt.color,
-                  fontSize: (labelOpt.fontSize || 14) + 'px',
-                  lineHeight: (labelOpt.fontSize || 14) + 'px',
-                  marginLeft: labelOpt.x,
-                  marginTop: labelOpt.y,
-                },
+                style: labelStyle,
               })
               marker.label = label
             } else if ('setLabel' in marker) {
+              const className = updateMarkerLabelStyle(labelStyle)
               marker.setLabel({
                 text: labelOpt.content,
-                color: labelOpt.color,
-                fontSize: (labelOpt.fontSize || 14) + 'px',
+                color: labelStyle.color,
+                fontSize: labelStyle.fontSize,
+                className,
               })
             }
           }
