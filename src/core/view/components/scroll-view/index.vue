@@ -226,6 +226,7 @@ export default {
       var y = event.touches[0].pageY
       var main = self.$refs.main
 
+      if (touchStart === null) return
       if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
         // 横向滑动
         if (self.scrollX) {
