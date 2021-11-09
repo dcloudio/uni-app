@@ -27,9 +27,10 @@ jobs:
 
       - run: pnpm install
 
-      - uses: fxy060608/size-check-action@v1.1.3
+      - uses: fxy060608/size-check-action@v1.1.4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          manager: pnpm
           build_script: build
           files: packages/size-check/dist/size-check.es.js packages/size-check/dist/style.css packages/uni-app/dist/uni-app.es.js packages/uni-h5-vue/dist/vue.runtime.esm.js packages/uni-mp-vue/dist/vue.runtime.esm.js packages/uni-mp-alipay/dist/uni.api.esm.js packages/uni-mp-alipay/dist/uni.mp.esm.js packages/uni-mp-baidu/dist/uni.api.esm.js packages/uni-mp-baidu/dist/uni.mp.esm.js packages/uni-mp-qq/dist/uni.api.esm.js packages/uni-mp-qq/dist/uni.mp.esm.js packages/uni-mp-toutiao/dist/uni.api.esm.js packages/uni-mp-toutiao/dist/uni.mp.esm.js packages/uni-mp-weixin/dist/uni.api.esm.js packages/uni-mp-weixin/dist/uni.mp.esm.js packages/uni-quickapp-webview/dist/uni.api.esm.js packages/uni-quickapp-webview/dist/uni.mp.esm.js
 
