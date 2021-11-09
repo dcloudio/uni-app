@@ -1128,7 +1128,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     res.errMsg = normalizeErrMsg$1(res.errMsg, name);
     shared.isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
-      shared.isFunction(beforeSuccess) && beforeSuccess(res);
+      shared.isFunction(beforeSuccess) && beforeSuccess(res, args);
       hasSuccess && success(res);
     } else {
       hasFail && fail(res);
@@ -5030,7 +5030,12 @@ function decodeEntities(htmlString) {
     return wrap.innerText || wrap.textContent;
   });
 }
-function parseNodes(nodes, parentNode, scopeId) {
+function normlizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src")
+    return getRealPath(value);
+  return value;
+}
+function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
   nodes.forEach(function(node) {
     if (!shared.isPlainObject(node)) {
       return;
@@ -5061,14 +5066,15 @@ function parseNodes(nodes, parentNode, scopeId) {
               break;
             default:
               if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, value);
+                elem.setAttribute(name, normlizeValue(tagName, name, value));
               }
           }
         });
       }
+      processClickEvent(node, elem, triggerItemClick);
       const children = node.children;
       if (Array.isArray(children) && children.length) {
-        parseNodes(node.children, elem);
+        parseNodes(node.children, elem, scopeId, triggerItemClick);
       }
       parentNode.appendChild(elem);
     } else {
@@ -5078,6 +5084,15 @@ function parseNodes(nodes, parentNode, scopeId) {
     }
   });
   return parentNode;
+}
+function processClickEvent(node, elem, triggerItemClick) {
+  if (["a", "img"].includes(node.name) && triggerItemClick) {
+    elem.setAttribute("onClick", "return false;");
+    elem.addEventListener("click", (e2) => {
+      triggerItemClick(e2, { node });
+      e2.stopPropagation();
+    }, true);
+  }
 }
 const props$f = {
   nodes: {
@@ -5093,14 +5108,24 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$f,
-  setup(props2) {
+  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress"],
+  setup(props2, {
+    emit: emit2,
+    attrs
+  }) {
     const vm = vue.getCurrentInstance();
     const rootRef = vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const hasItemClick = !!attrs.onItemclick;
+    function triggerItemClick(e2, detail = {}) {
+      trigger("itemclick", e2, detail);
+    }
     function _renderNodes(nodes) {
+      var _a;
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm == null ? void 0 : vm.root.type).__scopeId || "");
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), ((_a = vm == null ? void 0 : vm.root) == null ? void 0 : _a.type).__scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -7794,7 +7819,7 @@ function useMarkerLabelStyle(id) {
     });
     const div = document.createElement("div");
     Object.keys(newStyle).forEach((key) => {
-      div.style[key] = newStyle[key];
+      div.style[key] = newStyle[key] || "";
     });
     styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
     return className;
