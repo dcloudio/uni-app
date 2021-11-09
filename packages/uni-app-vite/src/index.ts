@@ -8,6 +8,7 @@ import {
   uniConsolePlugin,
   UNI_EASYCOM_EXCLUDE,
 } from '@dcloudio/uni-cli-shared'
+import { plugins as nvuePlugins } from '@dcloudio/uni-cli-nvue'
 import { UniAppPlugin } from './plugin'
 import { uniTemplatePlugin } from './plugins/template'
 import { uniMainJsPlugin } from './plugins/mainJs'
@@ -59,5 +60,7 @@ const uniCssScopedPluginOptions = initUniCssScopedPluginOptions()
 if (uniCssScopedPluginOptions) {
   plugins.unshift(uniCssScopedPlugin(uniCssScopedPluginOptions))
 }
-
+if (process.env.UNI_NVUE_COMPILER !== 'vue') {
+  plugins.push(...nvuePlugins)
+}
 export default plugins

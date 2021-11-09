@@ -1,4 +1,4 @@
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 
 import { options } from './options'

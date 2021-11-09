@@ -10,6 +10,7 @@ const UniAppNVuePlugin = (): UniVitePlugin => {
   let isPagesJsonChanged: boolean = false
   return {
     name: 'vite:uni-cli-nvue',
+    enforce: 'post',
     config() {
       if (process.env.UNI_NVUE_COMPILER === 'vue') {
         return

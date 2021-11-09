@@ -18,8 +18,10 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "uni-app": {
-    "name": "uniCloud"
-  },
-  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "dependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105008"
+  }
 }

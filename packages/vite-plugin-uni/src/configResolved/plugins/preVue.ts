@@ -17,8 +17,9 @@ import {
   normalizeMiniProgramFilename,
   parseVueRequest,
   removeExt,
+  isElementNode,
+  parseVue,
 } from '@dcloudio/uni-cli-shared'
-import { isElementNode, parseVue } from '../../utils'
 
 const debugPreVue = debug('vite:uni:pre-vue')
 

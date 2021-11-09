@@ -1,5 +1,5 @@
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { TemplateCompiler } from '@vue/compiler-sfc'
+import type { TemplateCompiler } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE_RE,
   UniVitePlugin,

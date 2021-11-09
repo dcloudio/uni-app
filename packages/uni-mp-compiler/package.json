@@ -19,10 +19,14 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
+    "@babel/generator": "^7.15.0",
     "@babel/parser": "^7.15.0",
     "@babel/types": "^7.15.0",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105008",
     "@vue/compiler-core": "^3.2.21",
     "@vue/compiler-dom": "^3.2.21",
+    "@vue/compiler-sfc": "^3.2.21",
     "estree-walker": "^2.0.2"
   }
 }

@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { parseVueRequest } from '../utils'
 import { EXTNAME_VUE } from '../../constants'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'

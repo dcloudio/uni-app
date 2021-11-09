@@ -15,5 +15,9 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105008"
   }
 }

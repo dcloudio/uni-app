@@ -1,7 +1,7 @@
-import { ComponentInternalInstance } from 'vue';
-import { ComponentOptionsBase } from 'vue';
-import { ComponentPublicInstance } from 'vue';
-import { RendererNode } from 'vue';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
+import { ComponentOptionsBase } from '@vue/runtime-core';
+import { ComponentPublicInstance } from '@vue/runtime-core';
+import { RendererNode } from '@vue/runtime-core';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 

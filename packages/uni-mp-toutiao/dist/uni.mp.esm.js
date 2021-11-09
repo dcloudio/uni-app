@@ -42,6 +42,7 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
+
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -924,14 +925,14 @@ function parse(componentOptions, { handleLink }) {
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    instances: instances,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    parse: parse,
-    initLifetimes: initLifetimes$1
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  instances: instances,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  parse: parse,
+  initLifetimes: initLifetimes$1
 });
 
 function initLifetimes(lifetimesOptions) {
@@ -964,13 +965,13 @@ function initLifetimes(lifetimesOptions) {
 }
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    parse: parse,
-    initLifetimes: initLifetimes
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  parse: parse,
+  initLifetimes: initLifetimes
 });
 
 const createApp = initCreateApp();

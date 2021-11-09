@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { rule, Rule, Declaration, Plugin } from 'postcss'
+import type { Rule, Declaration, Plugin } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import {
   createRpx2Unit,
@@ -54,6 +54,7 @@ function createBodyBackgroundRule(origRule: Rule) {
     }
   })
   if (bgDecls.length) {
+    const { rule } = require('postcss')
     origRule.after(rule({ selector: 'body' }).append(bgDecls))
   }
 }

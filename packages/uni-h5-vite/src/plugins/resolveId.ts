@@ -3,6 +3,7 @@ import debug from 'debug'
 import { Plugin } from 'vite'
 
 import { resolveBuiltIn, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
+import { ownerModuleName } from '../utils'
 
 const debugResolve = debug('vite:uni:resolve')
 
@@ -13,8 +14,8 @@ export function uniResolveIdPlugin(): Plugin {
     enforce: 'pre',
     configResolved() {
       const { MODE } = parseCompatConfigOnce(process.env.UNI_INPUT_DIR)
-      resolveCache['@dcloudio/uni-h5'] = resolveBuiltIn(
-        path.join('@dcloudio/uni-h5', 'dist/uni-h5.es.js')
+      resolveCache[ownerModuleName] = resolveBuiltIn(
+        path.join(ownerModuleName, 'dist/uni-h5.es.js')
       )
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
         path.join(
@@ -32,10 +33,10 @@ export function uniResolveIdPlugin(): Plugin {
         debugResolve('cache', id, cache)
         return cache
       }
-      if (
-        id.startsWith('@dcloudio/uni-h5/style') ||
-        id.startsWith('@dcloudio/uni-components/style')
-      ) {
+      if (id.startsWith('@dcloudio/uni-h5/style')) {
+        return (resolveCache[id] = resolveBuiltIn(id))
+      }
+      if (id.startsWith('@dcloudio/uni-components/style')) {
         return (resolveCache[id] = resolveBuiltIn(id))
       }
     },

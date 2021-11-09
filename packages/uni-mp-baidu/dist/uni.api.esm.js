@@ -897,9 +897,9 @@ function requestPayment(params) {
 }
 
 var shims = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getProvider: getProvider,
-    requestPayment: requestPayment
+  __proto__: null,
+  getProvider: getProvider,
+  requestPayment: requestPayment
 });
 
 function createTodoMethod(contextName, methodName) {
@@ -972,21 +972,21 @@ const getAccountInfoSync = {
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    request: request,
-    connectSocket: connectSocket,
-    getRecorderManager: getRecorderManager,
-    getBackgroundAudioManager: getBackgroundAudioManager,
-    scanCode: scanCode,
-    navigateToMiniProgram: navigateToMiniProgram,
-    navigateBackMiniProgram: navigateBackMiniProgram,
-    showShareMenu: showShareMenu,
-    getAccountInfoSync: getAccountInfoSync,
-    redirectTo: redirectTo,
-    navigateTo: navigateTo,
-    previewImage: previewImage,
-    getSystemInfo: getSystemInfo,
-    getSystemInfoSync: getSystemInfoSync
+  __proto__: null,
+  request: request,
+  connectSocket: connectSocket,
+  getRecorderManager: getRecorderManager,
+  getBackgroundAudioManager: getBackgroundAudioManager,
+  scanCode: scanCode,
+  navigateToMiniProgram: navigateToMiniProgram,
+  navigateBackMiniProgram: navigateBackMiniProgram,
+  showShareMenu: showShareMenu,
+  getAccountInfoSync: getAccountInfoSync,
+  redirectTo: redirectTo,
+  navigateTo: navigateTo,
+  previewImage: previewImage,
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfoSync
 });
 
 var index = initUni(shims, protocols);

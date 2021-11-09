@@ -6,7 +6,7 @@ import {
   MiniProgramCompilerOptions,
   transformPageHead,
 } from '@dcloudio/uni-cli-shared'
-import { TemplateCompiler } from '@vue/compiler-sfc'
+import type { TemplateCompiler } from '@vue/compiler-sfc'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import * as compiler from '@dcloudio/uni-mp-compiler'
 

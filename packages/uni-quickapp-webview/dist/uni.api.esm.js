@@ -884,17 +884,17 @@ if (qa.canIUse('getVendorPaymentProvider')) {
 const getProvider = initGetProvider(providers);
 
 var shims = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getProvider: getProvider
+  __proto__: null,
+  getProvider: getProvider
 });
 
 var protocols = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    redirectTo: redirectTo,
-    navigateTo: navigateTo,
-    previewImage: previewImage,
-    getSystemInfo: getSystemInfo,
-    getSystemInfoSync: getSystemInfoSync
+  __proto__: null,
+  redirectTo: redirectTo,
+  navigateTo: navigateTo,
+  previewImage: previewImage,
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfoSync
 });
 
 var index = initUni(shims, protocols);

@@ -1,6 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
+import chalk from 'chalk'
+import postcssrc from 'postcss-load-config'
+import { PluginContext, RollupError, SourceMap } from 'rollup'
 import {
   // createDebugger,
   isExternalUrl,
@@ -14,9 +17,6 @@ import {
 } from '../utils'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
-import postcssrc from 'postcss-load-config'
-import { PluginContext, RollupError, SourceMap } from 'rollup'
-import chalk from 'chalk'
 import { ResolveFn, ViteDevServer } from '../'
 import { fileToUrl, assetUrlRE, getAssetFilename } from './asset'
 import * as Postcss from 'postcss'
@@ -25,7 +25,7 @@ import type Sass from 'sass'
 // and causes the CI tests fail, see: https://github.com/vitejs/vite/pull/2860
 import type Stylus from 'stylus'
 import type Less from 'less'
-import { Alias } from 'types/alias'
+import type { Alias } from 'types/alias'
 import { transform, formatMessages } from 'esbuild'
 // const debug = createDebugger('vite:css')
 

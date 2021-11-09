@@ -15,7 +15,6 @@ import { isSsr } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
 import { external } from './configureServer/ssr'
 import { createConfigureServer } from './configureServer'
-import { transformPageHead } from './transforms/transformPageHead'
 
 export const UniH5Plugin: UniVitePlugin = {
   name: 'vite:uni-h5',
@@ -26,11 +25,7 @@ export const UniH5Plugin: UniVitePlugin = {
     compilerOptions: {
       isNativeTag: isH5NativeTag,
       isCustomElement: isH5CustomElement,
-      nodeTransforms: [
-        transformTapToClick,
-        transformMatchMedia,
-        transformPageHead,
-      ],
+      nodeTransforms: [transformTapToClick, transformMatchMedia],
     },
   },
   config(config, env) {

@@ -1,8 +1,9 @@
+import path from 'path'
 import debug from 'debug'
 import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import { Options as VueOptions } from '@vitejs/plugin-vue'
-import { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
-import { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
+import type { Options as VueOptions } from '@vitejs/plugin-vue'
+import type { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
+import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 import vuePlugin from '@vitejs/plugin-vue'
 import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
 
@@ -25,11 +26,14 @@ import {
 
 const debugUni = debug('vite:uni:plugin')
 
-const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+const pkg = require(path.resolve(__dirname, '../package.json'))
 
 initModuleAlias()
 
 process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
+process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
+  ? 'a'
+  : 'r'
 
 export interface VitePluginUniOptions {
   inputDir?: string

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { Loader, Plugin } from 'esbuild'
+import type { Loader, Plugin } from 'esbuild'
 import { preJs } from '@dcloudio/uni-cli-shared'
 
 export const JS_TYPES_RE = /\.(?:j|t)sx?$|\.mjs$/

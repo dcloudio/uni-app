@@ -1,12 +1,16 @@
 import { RuleSetRule } from 'webpack'
 import { makeMap } from '@vue/shared'
 import type { CompilerOptions, CompiledResult } from 'vue-template-compiler'
-import { initEasycomsOnce } from '@dcloudio/uni-cli-shared'
+import {
+  initEasycomsOnce,
+  resolveComponentsLibPath,
+} from '@dcloudio/uni-cli-shared'
 import { createCompilerOptions } from './compilerOptions'
 import { resolveLib } from '../../../../../utils'
 import { generateEasycomCode } from './easycom'
 import { VueLoaderOptions } from '../../../../../../lib/vue-loader'
 import { resolveLoader } from '../../../../loader'
+import { NVueCompilerOptions } from '../../../../../types'
 const preprocessLoader = {
   loader: resolveLoader('preprocess'),
   options: {
@@ -15,7 +19,10 @@ const preprocessLoader = {
 }
 
 export function createVueLoader(options: NVueCompilerOptions): RuleSetRule {
-  initEasycomsOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM)
+  initEasycomsOnce(process.env.UNI_INPUT_DIR, {
+    dirs: [resolveComponentsLibPath()],
+    platform: process.env.UNI_PLATFORM,
+  })
   return {
     test: [/\.nvue(\?[^?]+)?$/, /\.vue(\?[^?]+)?$/],
     use: [

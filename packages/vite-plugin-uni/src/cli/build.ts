@@ -73,7 +73,7 @@ function buildManifestJson() {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
 
-  const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+  const pkg = require(path.resolve(__dirname, '../../package.json'))
   process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
   initPreContext(platform)
 

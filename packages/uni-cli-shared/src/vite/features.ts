@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { ConfigEnv } from 'vite'
+import type { ConfigEnv } from 'vite'
 import { extend, isArray, isString } from '@vue/shared'
 
 interface ProjectFeatures {

@@ -42,6 +42,7 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
+
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -767,8 +768,8 @@ function parse$2(appOptions) {
 }
 
 var parseAppOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    parse: parse$2
+  __proto__: null,
+  parse: parse$2
 });
 
 /**
@@ -934,13 +935,13 @@ function parse$1(componentOptions) {
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation,
-    parse: parse$1,
-    handleLink: handleLink,
-    initLifetimes: initLifetimes
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation,
+  parse: parse$1,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes
 });
 
 function parse(pageOptions) {
@@ -966,13 +967,13 @@ function parse(pageOptions) {
 }
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    parse: parse,
-    handleLink: handleLink,
-    initLifetimes: initLifetimes,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation
+  __proto__: null,
+  parse: parse,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation
 });
 
 const createApp = initCreateApp(parseAppOptions);

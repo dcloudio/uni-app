@@ -7,7 +7,7 @@ import type {
   UniViteCopyPluginTarget,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
-import { TemplateCompiler } from '@vue/compiler-sfc'
+import type { TemplateCompiler } from '@vue/compiler-sfc'
 import { VitePluginUniResolvedOptions } from '..'
 
 interface PluginConfig {

@@ -8,6 +8,7 @@
     },
     "external": [
       "@vue/compiler-core",
+      "@vue/shared",
       "@dcloudio/uni-shared",
       "@dcloudio/uni-cli-shared",
       "@dcloudio/uni-mp-vite",

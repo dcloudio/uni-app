@@ -1,1 +1,1 @@
-export { Plugin } from 'vite'
+export type { Plugin } from 'vite'

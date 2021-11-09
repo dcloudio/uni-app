@@ -1,4 +1,4 @@
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { assetPlugin } from '../plugins/vitejs/plugins/asset'
 import { cssPlugin, cssPostPlugin } from '../plugins/vitejs/plugins/css'
 export type CreateUniViteFilterPlugin = (

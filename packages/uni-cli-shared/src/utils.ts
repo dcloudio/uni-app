@@ -4,9 +4,10 @@ import path from 'path'
 import { camelize, capitalize } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 export { default as hash } from 'hash-sum'
-
+import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import debug from 'debug'
 import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
-import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+
 import {
   NodeTypes,
   ElementNode,
@@ -33,11 +34,54 @@ export const resolveMainPathOnce = once((inputDir: string) => {
   return normalizePath(path.resolve(inputDir, 'main.js'))
 })
 
-export function resolveBuiltIn(path: string) {
-  if (process.env.UNI_CLI_CONTEXT) {
-    return require.resolve(path, { paths: [process.env.UNI_CLI_CONTEXT] })
+let componentsLibPath: string = ''
+export function resolveComponentsLibPath() {
+  if (!componentsLibPath) {
+    componentsLibPath = path.resolve(
+      resolveBuiltIn('@dcloudio/uni-components/package.json'),
+      '../lib'
+    )
   }
-  return require.resolve(path)
+  return componentsLibPath
+}
+
+const ownerModules = ['@dcloudio/uni-app', '@dcloudio/vite-plugin-uni']
+
+const paths: string[] = []
+
+function initPaths() {
+  const cliContext = process.env.UNI_CLI_CONTEXT
+  if (cliContext) {
+    const pathSet = new Set<string>()
+    pathSet.add(path.join(cliContext, 'node_modules'))
+    ;[`@dcloudio/uni-` + process.env.UNI_PLATFORM, ...ownerModules].forEach(
+      (ownerModule) => {
+        try {
+          pathSet.add(
+            path.resolve(
+              require.resolve(ownerModule + '/package.json', {
+                paths: [cliContext],
+              }),
+              '../node_modules'
+            )
+          )
+        } catch (e) {}
+      }
+    )
+    paths.push(...pathSet)
+    debug('uni-paths')(paths)
+  }
+}
+
+export function getBuiltInPaths() {
+  if (!paths.length) {
+    initPaths()
+  }
+  return paths
+}
+
+export function resolveBuiltIn(path: string) {
+  return require.resolve(path, { paths: getBuiltInPaths() })
 }
 
 export function normalizeIdentifier(str: string) {

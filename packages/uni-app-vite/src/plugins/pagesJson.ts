@@ -9,6 +9,7 @@ import {
   parseManifestJsonOnce,
   getLocaleFiles,
 } from '@dcloudio/uni-cli-shared'
+import { initWebpackNVueEntry } from '@dcloudio/uni-cli-nvue'
 
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
@@ -26,6 +27,11 @@ export function uniPagesJsonPlugin(): Plugin {
           this.addWatchFile(filepath)
         })
         const pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
+
+        if (process.env.UNI_NVUE_COMPILER !== 'vue') {
+          initWebpackNVueEntry(pagesJson.pages)
+        }
+
         // TODO subpackages
         pagesJson.pages.forEach((page) => {
           this.addWatchFile(

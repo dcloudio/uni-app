@@ -4,6 +4,7 @@ var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var uniShared = require('@dcloudio/uni-shared');
+var shared = require('@vue/shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -18,22 +19,6 @@ var source = {
 	compilerOptions: compilerOptions$1
 };
 
-/**
- * Make a map and return a function for checking if a key
- * is in that map.
- * IMPORTANT: all calls of this function must be prefixed with
- * \/\*#\_\_PURE\_\_\*\/
- * So that rollup can tree-shake them if necessary.
- */
-
-(process.env.NODE_ENV !== 'production')
-    ? Object.freeze({})
-    : {};
-(process.env.NODE_ENV !== 'production') ? Object.freeze([]) : [];
-const extend = Object.assign;
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-
 const properties = ['name', 'versionName', 'versionCode'];
 function formatAppJson(_appJson, manifestJson, _pagesJson) {
     const appJson = _appJson;
@@ -41,7 +26,7 @@ function formatAppJson(_appJson, manifestJson, _pagesJson) {
     appJson.appType = 'webapp';
     appJson.minPlatformVersion = 1070;
     properties.forEach((name) => {
-        if (hasOwn(manifestJson, name)) {
+        if (shared.hasOwn(manifestJson, name)) {
             appJson[name] = manifestJson[name];
         }
     });
@@ -57,11 +42,11 @@ function formatAppJson(_appJson, manifestJson, _pagesJson) {
         appJson.package = appJson.name;
     }
     if (manifestJson['quickapp-webview']) {
-        extend(appJson, manifestJson['quickapp-webview']);
+        shared.extend(appJson, manifestJson['quickapp-webview']);
     }
     if (process.env.UNI_SUB_PLATFORM &&
         manifestJson[process.env.UNI_SUB_PLATFORM]) {
-        extend(appJson, manifestJson[process.env.UNI_SUB_PLATFORM]);
+        shared.extend(appJson, manifestJson[process.env.UNI_SUB_PLATFORM]);
     }
     if (!appJson.package) {
         console.warn('manifest.json->quickapp-webview 缺少 package 配置');

@@ -6,7 +6,11 @@ import {
   createRpx2Unit,
   Rpx2UnitOptions,
 } from '@dcloudio/uni-shared'
-import { parseRpx2UnitOnce, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import {
+  parseRpx2UnitOnce,
+  resolveBuiltIn,
+  getBuiltInPaths,
+} from '@dcloudio/uni-cli-shared'
 import { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import resolve from 'resolve'
 
@@ -103,14 +107,18 @@ function initResolveSyncOpts(opts?: resolve.SyncOpts) {
     opts.paths = [opts.paths]
   }
   if (isArray(opts.paths)) {
-    opts.paths.push(path.join(process.env.UNI_CLI_CONTEXT, 'node_modules'))
+    opts.paths.push(...getBuiltInPaths())
   }
   return opts
 }
 
 export function rewriteSsrResolve(mode?: 2 | 3) {
   // 解决 ssr 时 __vite_ssr_import__("vue") 的映射
-  const resolve = require('resolve')
+  const resolve = require(require.resolve('resolve', {
+    paths: [
+      path.resolve(require.resolve('vite/package.json'), '../node_modules'),
+    ],
+  }))
   const oldSync = resolve.sync
   resolve.sync = (id: string, opts?: resolve.SyncOpts) => {
     if (id === 'vue') {
@@ -125,7 +133,8 @@ export function rewriteSsrResolve(mode?: 2 | 3) {
 }
 
 export function rewriteSsrNativeTag() {
-  const { parserOptions } = require('@vue/compiler-dom')
+  // @ts-ignore
+  const { parserOptions } = require(resolveBuiltIn('@vue/compiler-dom'))
   // TODO compiler-ssr时，传入的 isNativeTag 会被 @vue/compiler-dom 的 isNativeTag 覆盖
   // https://github.com/vuejs/vue-next/blob/master/packages/compiler-ssr/src/index.ts#L36
   parserOptions.isNativeTag = isH5NativeTag

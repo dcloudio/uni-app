@@ -1,4 +1,4 @@
-import { ResolvedConfig } from 'vite'
+import type { ResolvedConfig } from 'vite'
 
 export * from './ast'
 export * from './url'

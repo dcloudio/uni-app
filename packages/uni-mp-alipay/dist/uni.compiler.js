@@ -2,9 +2,9 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var shared = require('@vue/shared');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var compilerCore = require('@vue/compiler-core');
+var shared = require('@vue/shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 

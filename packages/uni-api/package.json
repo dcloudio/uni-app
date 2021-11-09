@@ -12,5 +12,10 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105008",
+    "@types/pako": "^1.0.2",
+    "pako": "^2.0.3"
   }
 }

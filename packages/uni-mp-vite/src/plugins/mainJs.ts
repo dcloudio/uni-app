@@ -3,7 +3,7 @@ import {
   defineUniMainJsPlugin,
   transformVueComponentImports,
 } from '@dcloudio/uni-cli-shared'
-import { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import { dynamicImport } from './usingComponents'
 
 export function uniMainJsPlugin(

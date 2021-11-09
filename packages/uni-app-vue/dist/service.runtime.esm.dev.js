@@ -41,12 +41,32 @@ export default function vueFactory(exports) {
   // App and Page
 
   var ON_SHOW = 'onShow';
-  var ON_HIDE = 'onHide';
+  var ON_HIDE = 'onHide'; //App
+
+  var ON_LAUNCH = 'onLaunch';
+  var ON_ERROR = 'onError';
+  var ON_THEME_CHANGE = 'onThemeChange';
+  var ON_PAGE_NOT_FOUND = 'onPageNotFound';
+  var ON_UNHANDLE_REJECTION = 'onUnhandledRejection'; //Page
+
+  var ON_LOAD = 'onLoad';
+  var ON_READY = 'onReady';
+  var ON_UNLOAD = 'onUnload';
+  var ON_RESIZE = 'onResize';
   var ON_BACK_PRESS = 'onBackPress';
   var ON_PAGE_SCROLL = 'onPageScroll';
   var ON_TAB_ITEM_TAP = 'onTabItemTap';
   var ON_REACH_BOTTOM = 'onReachBottom';
   var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+  var ON_SHARE_TIMELINE = 'onShareTimeline';
+  var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+  var ON_SHARE_APP_MESSAGE = 'onShareAppMessage'; // navigationBar
+
+  var ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
 
   function isElement(el) {
     // Element
@@ -165,9 +185,10 @@ export default function vueFactory(exports) {
       var listeners = this.listeners[evt.type];
 
       if (!listeners) {
-        {
+        if ("development" !== 'production') {
           console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
         }
+
         return false;
       } // 格式化事件类型
 
@@ -576,7 +597,7 @@ export default function vueFactory(exports) {
   class UniCommentNode extends UniNode {
     constructor(text, container) {
       super(NODE_TYPE_COMMENT, '#comment', container);
-      this._text = text;
+      this._text = "development" !== 'production' ? text : '';
     }
 
     toJSON() {
@@ -640,6 +661,8 @@ export default function vueFactory(exports) {
   function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
   }
+
+  [ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
   /**
    * Make a map and return a function for checking if a key
    * is in that map.
@@ -647,7 +670,6 @@ export default function vueFactory(exports) {
    * \/\*#\_\_PURE\_\_\*\/
    * So that rollup can tree-shake them if necessary.
    */
-
 
   function makeMap(str, expectsLowerCase) {
     var map = Object.create(null);

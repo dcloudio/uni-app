@@ -1,6 +1,6 @@
 import path from 'path'
-import { Plugin } from 'vite'
-import { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+import type { Plugin } from 'vite'
+import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE,
   parseVueRequest,

@@ -33,12 +33,10 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
 }
 
 function initCheckUpdate() {
-  const pkg = require('@dcloudio/vite-plugin-uni/package.json')
   checkUpdate({
     inputDir: process.env.UNI_INPUT_DIR,
-    compilerVersion:
-      (pkg['uni-app'] && pkg['uni-app']['compilerVersion']) || '',
-    versionType: pkg.version.includes('alpha') ? 'a' : 'r',
+    compilerVersion: process.env.UNI_COMPILER_VERSION,
+    versionType: process.env.UNI_COMPILER_VERSION_TYPE,
   })
 }
 

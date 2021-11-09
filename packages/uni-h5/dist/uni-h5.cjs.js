@@ -7812,7 +7812,7 @@ function useMarkerLabelStyle(id) {
     });
     const div = document.createElement("div");
     Object.keys(newStyle).forEach((key) => {
-      div.style[key] = newStyle[key];
+      div.style[key] = newStyle[key] || "";
     });
     styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
     return className;

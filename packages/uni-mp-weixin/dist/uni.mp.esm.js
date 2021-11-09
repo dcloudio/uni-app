@@ -42,6 +42,7 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
+
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -709,12 +710,12 @@ function handleLink(event) {
 }
 
 var parseOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    initLifetimes: initLifetimes
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes
 });
 
 const createApp = initCreateApp();

@@ -13,8 +13,6 @@ import {
   normalizePath,
 } from '@dcloudio/uni-cli-shared'
 
-const pkg = require('@dcloudio/vite-plugin-uni/package.json')
-
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
@@ -246,7 +244,7 @@ function generateConfig(
   delete pagesJson.pages
   delete pagesJson.subPackages
   delete pagesJson.subpackages
-  pagesJson.compilerVersion = pkg['uni-app'].compilerVersion
+  pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
   return (
     (config.command === 'serve'
       ? ''

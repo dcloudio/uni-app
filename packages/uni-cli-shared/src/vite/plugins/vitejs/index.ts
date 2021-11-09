@@ -1,1 +1,1 @@
-export { ResolveFn, ViteDevServer } from 'vite'
+export type { ResolveFn, ViteDevServer } from 'vite'

@@ -1,3 +1,3 @@
-import { NodeTransform } from '@vue/compiler-core'
+import type { NodeTransform } from '@vue/compiler-core'
 
 export const transformRenderjs: NodeTransform = () => {}

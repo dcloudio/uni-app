@@ -40,11 +40,10 @@ function clearEasycom() {
   easycomsInvalidCache.clear()
 }
 
-export function initEasycoms(inputDir: string, platform: UniApp.PLATFORM) {
-  const buildInComponentsDir = path.resolve(
-    require.resolve('@dcloudio/uni-components'),
-    '../lib'
-  )
+export function initEasycoms(
+  inputDir: string,
+  { dirs, platform }: { dirs: string[]; platform: UniApp.PLATFORM }
+) {
   const componentsDir = path.resolve(inputDir, 'components')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
   const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
@@ -53,9 +52,9 @@ export function initEasycoms(inputDir: string, platform: UniApp.PLATFORM) {
     const easycomOptions: EasycomOption = {
       dirs:
         easycom && easycom.autoscan === false
-          ? [buildInComponentsDir] // 禁止自动扫描
+          ? [...dirs] // 禁止自动扫描
           : [
-              buildInComponentsDir,
+              ...dirs,
               componentsDir,
               ...initUniModulesEasycomDirs(uniModulesDir),
             ],

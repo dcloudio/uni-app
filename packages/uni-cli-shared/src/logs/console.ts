@@ -1,4 +1,4 @@
-import { MagicString } from '@vue/compiler-sfc'
+import MagicString from 'magic-string'
 import { normalizePath } from '../utils'
 
 const F = '__f__'

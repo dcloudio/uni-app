@@ -7,9 +7,12 @@ import { CallExpression } from 'estree'
 
 import { createFilter } from '@rollup/pluginutils'
 import { MagicString } from '@vue/compiler-sfc'
-
+import {
+  isIdentifier,
+  isCallExpression,
+  isMemberExpression,
+} from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
-import { isIdentifier, isCallExpression, isMemberExpression } from '../../utils'
 
 const debugSSR = debug('vite:uni:ssr')
 

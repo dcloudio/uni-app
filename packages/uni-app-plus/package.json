@@ -19,8 +19,25 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "dependencies": {
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "uni-app": {
+    "name": "uni-app-plus",
+    "apply": [
+      "app"
+    ],
+    "main": "dist/uni.compiler.js"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-components": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-h5": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105008",
+    "@vue/compiler-sfc": "^3.2.21",
+    "autoprefixer": "^10.4.0",
     "vue": "^3.2.21"
   },
-  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
+  "dependencies": {
+    "@dcloudio/uni-app-vite": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-app-vue": "3.0.0-alpha-3021220211105008"
+  }
 }

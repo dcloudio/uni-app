@@ -1,4 +1,4 @@
-import { ComponentInternalInstance, VNode } from 'vue'
+import type { ComponentInternalInstance, VNode } from '@vue/runtime-core'
 import { hyphenate } from '@vue/shared'
 
 import { isBuiltInComponent } from './tags'

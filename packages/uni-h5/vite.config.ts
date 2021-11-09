@@ -39,7 +39,7 @@ const rollupPlugins = [
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
     },
     // 忽略 pako 内部条件编译
-    exclude: [resolve('../../node_modules/pako/**')],
+    exclude: ['**/*/pako.esm.mjs'],
   }),
 ]
 if (FORMAT === 'cjs') {

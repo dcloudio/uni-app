@@ -863,17 +863,17 @@ function createSelectorQuery() {
 }
 
 var shims = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getProvider: getProvider,
-    createSelectorQuery: createSelectorQuery
+  __proto__: null,
+  getProvider: getProvider,
+  createSelectorQuery: createSelectorQuery
 });
 
 var protocols = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    redirectTo: redirectTo,
-    previewImage: previewImage,
-    getSystemInfo: getSystemInfo,
-    getSystemInfoSync: getSystemInfoSync
+  __proto__: null,
+  redirectTo: redirectTo,
+  previewImage: previewImage,
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfoSync
 });
 
 var index = initUni(shims, protocols);

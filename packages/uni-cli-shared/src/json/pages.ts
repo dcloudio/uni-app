@@ -4,7 +4,6 @@ import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { normalizePath } from '../utils'
 import { parseJson } from './json'
-import { initWebpackNVueEntry } from './app/pages'
 
 export const parsePagesJson = (
   inputDir: string,
@@ -60,11 +59,6 @@ export function normalizePagesJson(
   }
   // pageStyle
   normalizePages(pagesJson.pages, platform)
-
-  if (platform === 'app' && process.env.UNI_NVUE_COMPILER !== 'vue') {
-    initWebpackNVueEntry(pagesJson.pages)
-  }
-
   // globalStyle
   pagesJson.globalStyle = normalizePageStyle(
     null,

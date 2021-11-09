@@ -44,6 +44,7 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
+
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -604,8 +605,8 @@ function parse(appOptions) {
 }
 
 var parseAppOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    parse: parse
+  __proto__: null,
+  parse: parse
 });
 
 function handleLink$1(event) {

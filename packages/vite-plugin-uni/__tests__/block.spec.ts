@@ -1,4 +1,4 @@
-import { parseVue } from '../src/utils'
+import { parseVue } from '@dcloudio/uni-cli-shared'
 import { parseBlockCode } from '../src/configResolved/plugins/preVue'
 
 describe('block', () => {

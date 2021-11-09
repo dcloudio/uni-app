@@ -1,6 +1,6 @@
 import { sep } from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 import { BaseNode, Program, Identifier } from 'estree'
 
@@ -14,7 +14,7 @@ import { AcornNode } from 'rollup'
 
 import { walk } from 'estree-walker'
 import { extend } from '@vue/shared'
-import { MagicString } from '@vue/compiler-sfc'
+import MagicString from 'magic-string'
 
 import { isProperty, isReference, isMemberExpression, isJsFile } from '../utils'
 

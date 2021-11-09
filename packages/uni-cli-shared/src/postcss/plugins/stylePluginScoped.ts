@@ -1,4 +1,4 @@
-import { Plugin, PluginCreator, Rule, AtRule } from 'postcss'
+import type { Plugin, PluginCreator, Rule, AtRule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 
 const scopedPlugin: PluginCreator<string> = () => {

@@ -1,4 +1,4 @@
-import { ComponentInternalInstance } from 'vue';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { ref } from 'vue';
 import { shallowRef } from 'vue';
 

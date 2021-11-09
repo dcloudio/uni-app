@@ -6,7 +6,7 @@ import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniEntryPlugin } from './plugins/entry'
-import { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import { uniRenderjsPlugin } from './plugins/renderjs'
 
 export { UniMiniProgramPluginOptions } from './plugin'

@@ -21,10 +21,18 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021220211105008",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105008",
     "@rollup/pluginutils": "^4.1.0",
+    "@vitejs/plugin-legacy": "^1.6.2",
+    "@vitejs/plugin-vue": "^1.9.4",
+    "@vue/compiler-core": "^3.2.21",
+    "@vue/compiler-dom": "^3.2.21",
+    "@vue/compiler-sfc": "^3.2.21",
     "cac": "^6.7.3",
     "chalk": "^4.1.1",
     "debug": "^4.3.1",
+    "estree-walker": "^2.0.2",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
     "jsonc-parser": "^3.0.0",
@@ -35,7 +43,9 @@
     "@types/express": "^4.17.12",
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.0",
-    "@types/sass": "^1.16.0"
+    "@types/sass": "^1.16.0",
+    "@vue/babel-plugin-jsx": "^1.1.1",
+    "chokidar": "^3.5.2"
   },
   "uni-app": {
     "compilerVersion": "3.2.10"

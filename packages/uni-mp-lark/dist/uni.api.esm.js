@@ -859,8 +859,8 @@ const getProvider = initGetProvider({
 });
 
 var shims = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getProvider: getProvider
+  __proto__: null,
+  getProvider: getProvider
 });
 
 const chooseImage = {
@@ -936,23 +936,23 @@ const getFileInfo = {
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    chooseImage: chooseImage,
-    connectSocket: connectSocket,
-    chooseVideo: chooseVideo,
-    scanCode: scanCode,
-    startAccelerometer: startAccelerometer,
-    showToast: showToast,
-    showLoading: showLoading,
-    showModal: showModal,
-    showActionSheet: showActionSheet,
-    login: login,
-    getUserInfo: getUserInfo,
-    requestPayment: requestPayment,
-    getFileInfo: getFileInfo,
-    redirectTo: redirectTo,
-    navigateTo: navigateTo,
-    previewImage: previewImage
+  __proto__: null,
+  chooseImage: chooseImage,
+  connectSocket: connectSocket,
+  chooseVideo: chooseVideo,
+  scanCode: scanCode,
+  startAccelerometer: startAccelerometer,
+  showToast: showToast,
+  showLoading: showLoading,
+  showModal: showModal,
+  showActionSheet: showActionSheet,
+  login: login,
+  getUserInfo: getUserInfo,
+  requestPayment: requestPayment,
+  getFileInfo: getFileInfo,
+  redirectTo: redirectTo,
+  navigateTo: navigateTo,
+  previewImage: previewImage
 });
 
 var uni = initUni(shims, protocols);

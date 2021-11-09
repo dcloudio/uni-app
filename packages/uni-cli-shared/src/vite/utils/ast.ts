@@ -1,4 +1,4 @@
-import {
+import type {
   Literal,
   BaseNode,
   Property,
@@ -83,7 +83,7 @@ export function parseVue(code: string, errors: SyntaxError[]) {
     isNativeTag: () => true,
     isPreTag: () => true,
     getTextMode: () => TextModes.DATA,
-    onError: (e) => {
+    onError: (e: any) => {
       errors.push(e)
     },
   })

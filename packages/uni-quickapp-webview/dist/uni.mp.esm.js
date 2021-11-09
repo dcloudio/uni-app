@@ -42,6 +42,7 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
+
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -918,23 +919,23 @@ function handleLink({ detail: { nodeId, webviewId }, }) {
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    mocks: mocks,
-    isPage: isPage,
-    parse: parse,
-    initLifetimes: initLifetimes$1
+  __proto__: null,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  mocks: mocks,
+  isPage: isPage,
+  parse: parse,
+  initLifetimes: initLifetimes$1
 });
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    parse: parse,
-    initLifetimes: initLifetimes
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  parse: parse,
+  initLifetimes: initLifetimes
 });
 
 const createApp = initCreateApp();
