@@ -27,7 +27,7 @@ jobs:
 
       - run: pnpm install
 
-      - uses: fxy060608/size-check-action@v1.1.4
+      - uses: fxy060608/size-check-action@v1.1.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           manager: pnpm
