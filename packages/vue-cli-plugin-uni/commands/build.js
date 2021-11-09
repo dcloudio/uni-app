@@ -3,7 +3,9 @@ const path = require('path')
 const {
   runByHBuilderX,
   isInHBuilderX,
-  parseJson
+  parseJson,
+  parsePagesJson,
+  parseManifestJson
 } = require('@dcloudio/uni-cli-shared')
 
 const uniI18n = require('@dcloudio/uni-cli-i18n')
@@ -32,13 +34,18 @@ module.exports = (api, options) => {
       '--auto-host': 'specify automator host',
       '--auto-port': 'specify automator port',
       '--subpackage': 'specify subpackage',
-      '--plugin': 'specify plugin'
+      '--plugin': 'specify plugin',
+      '--manifest': 'build manifest.json'
     }
   }, async (args) => {
     for (const key in defaults) {
       if (args[key] == null) {
         args[key] = defaults[key]
       }
+    }
+
+    if (args.manifest && process.env.UNI_PLATFORM === 'app-plus') {
+      return buildManifestJson()
     }
 
     const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao', 'mp-lark']
@@ -135,7 +142,10 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', { 0: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM, 1: process.env.UNI_MP_PLUGIN ? uniI18n.__('plugin') : uniI18n.__('platform') }))
+    logWithSpinner(uniI18n.__('pluginUni.startCompileProjectToPlatform', {
+      0: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+      1: process.env.UNI_MP_PLUGIN ? uniI18n.__('plugin') : uniI18n.__('platform')
+    }))
   }
 
   const targetDir = api.resolve(options.outputDir)
@@ -161,7 +171,8 @@ async function build (args, api, options) {
     process.env.UNI_USING_V3_NATIVE ||
     (process.UNI_NVUE_ENTRY && Object.keys(process.UNI_NVUE_ENTRY).length)
   ) {
-    webpackConfigs.push(require('@dcloudio/vue-cli-plugin-hbuilderx/build/webpack.nvue.conf.js')(process.UNI_NVUE_ENTRY))
+    webpackConfigs.push(require('@dcloudio/vue-cli-plugin-hbuilderx/build/webpack.nvue.conf.js')(process
+      .UNI_NVUE_ENTRY))
   }
 
   return new Promise((resolve, reject) => {
@@ -178,7 +189,8 @@ async function build (args, api, options) {
         return reject('Build failed with errors.')
       }
 
-      if (!args.silent && (process.env.UNI_PLATFORM !== 'app-plus' || process.env.UNI_AUTOMATOR_WS_ENDPOINT)) {
+      if (!args.silent && (process.env.UNI_PLATFORM !== 'app-plus' || process.env
+        .UNI_AUTOMATOR_WS_ENDPOINT)) {
         const targetDirShort = path.relative(
           api.service.context,
           process.env.UNI_OUTPUT_DIR
@@ -195,7 +207,8 @@ async function build (args, api, options) {
             console.log('https://uniapp.dcloud.io/uniCloud/hosting')
           }
         } else {
-          const dirMsg = runByHBuilderX ? '' : `The ${chalk.cyan(targetDirShort)} directory is ready. `
+          const dirMsg = runByHBuilderX ? ''
+            : `The ${chalk.cyan(targetDirShort)} directory is ready. `
           done(`Build complete. ${dirMsg}Watching for changes...`)
         }
       }
@@ -221,7 +234,9 @@ function analysisPluginDir () {
 
   if (!fs.pathExistsSync(pluginJsonPath)) {
     console.log()
-    console.error(uniI18n.__('pluginUni.fileNoExistsCheckAfterRetry', { 0: pluginJsonName }))
+    console.error(uniI18n.__('pluginUni.fileNoExistsCheckAfterRetry', {
+      0: pluginJsonName
+    }))
     console.log()
     process.exit(0)
   }
@@ -235,8 +250,35 @@ function analysisPluginDir () {
 
   if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
     console.log()
-    console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', { 0: UNI_MP_PLUGIN_MAIN }))
+    console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', {
+      0: UNI_MP_PLUGIN_MAIN
+    }))
     console.log()
     process.exit(0)
   }
+}
+
+function buildManifestJson () {
+  const fs = require('fs-extra')
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  const pagesJsonPath = path.resolve(inputDir, 'pages.json')
+  const manifestJsonPath = path.resolve(inputDir, 'manifest.json')
+
+  const pagesJson = parsePagesJson(fs.readFileSync(pagesJsonPath, 'utf8'))
+  const manifestJson = parseManifestJson(fs.readFileSync(manifestJsonPath, 'utf8'))
+
+  const res = require('@dcloudio/webpack-uni-pages-loader/lib/platforms/app-plus/index.js')(pagesJson,
+    manifestJson,
+    false)
+  if (res && res[0]) {
+    fs.outputFileSync(
+      path.resolve(outputDir, 'manifest.json'),
+      res[0].content
+    )
+  }
+  const {
+    done
+  } = require('@vue/cli-shared-utils')
+  done('Build complete.')
 }
