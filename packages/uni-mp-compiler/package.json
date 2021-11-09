@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-compiler",
-  "version": "3.0.0-alpha-3021320211109001",
+  "version": "3.0.0-alpha-3021320211109002",
   "description": "uni-mp-compiler",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "Apache-2.0",
-  "gitHead": "1efa8efd0a9eddeabdba75c020d015ebf31b8177",
+  "gitHead": "b0973e2960189dccd4ca60712a932760e58138eb",
   "dependencies": {
     "@babel/parser": "^7.15.0",
     "@babel/types": "^7.15.0",
