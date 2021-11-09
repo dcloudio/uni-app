@@ -29,6 +29,7 @@ jobs:
 
       - uses: fxy060608/size-check-action@v1.1.5
         with:
+          branch: next
           github_token: ${{ secrets.GITHUB_TOKEN }}
           manager: pnpm
           build_script: build
