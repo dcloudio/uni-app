@@ -2137,7 +2137,7 @@ function initScopedSlotsParams () {
     const has = center[vueId];
     if (!has) {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -2151,7 +2151,7 @@ function initScopedSlotsParams () {
       return key ? object[key] : object
     } else {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
