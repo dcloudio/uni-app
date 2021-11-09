@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-alpha-3021220211105011",
+  "version": "3.0.0-alpha-3021220211105012",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -8,6 +8,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
+    "bin",
     "dist",
     "lib"
   ],
@@ -21,8 +22,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021220211105011",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105011",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021220211105012",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105012",
     "@rollup/pluginutils": "^4.1.0",
     "@vitejs/plugin-legacy": "^1.6.2",
     "@vitejs/plugin-vue": "^1.9.4",
