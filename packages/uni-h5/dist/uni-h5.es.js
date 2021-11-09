@@ -15293,8 +15293,8 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               color: labelOpt.color,
               fontSize: (labelOpt.fontSize || 14) + "px",
               lineHeight: (labelOpt.fontSize || 14) + "px",
-              marginLeft: (Number(labelOpt.x) || 0) + "px",
-              marginTop: (Number(labelOpt.y) || 0) + "px"
+              marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
+              marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
             };
             if ("Label" in maps2) {
               label = new maps2.Label({
