@@ -49,6 +49,21 @@ const ownerModules = ['@dcloudio/uni-app', '@dcloudio/vite-plugin-uni']
 
 const paths: string[] = []
 
+function resolveNodeModulePath(modulePath: string) {
+  const nodeModulesPaths: string[] = []
+  const nodeModulesPath = path.join(modulePath, 'node_modules')
+  if (fs.existsSync(nodeModulesPath)) {
+    nodeModulesPaths.push(nodeModulesPath)
+  }
+  const index = modulePath.lastIndexOf('node_modules')
+  if (index > -1) {
+    nodeModulesPaths.push(
+      path.join(modulePath.substr(0, index), 'node_modules')
+    )
+  }
+  return nodeModulesPaths
+}
+
 function initPaths() {
   const cliContext = process.env.UNI_CLI_CONTEXT
   if (cliContext) {
@@ -56,16 +71,19 @@ function initPaths() {
     pathSet.add(path.join(cliContext, 'node_modules'))
     ;[`@dcloudio/uni-` + process.env.UNI_PLATFORM, ...ownerModules].forEach(
       (ownerModule) => {
+        let pkgPath: string = ''
         try {
-          pathSet.add(
-            path.resolve(
-              require.resolve(ownerModule + '/package.json', {
-                paths: [cliContext],
-              }),
-              '../node_modules'
-            )
-          )
+          pkgPath = require.resolve(ownerModule + '/package.json', {
+            paths: [cliContext],
+          })
         } catch (e) {}
+        if (pkgPath) {
+          resolveNodeModulePath(path.dirname(pkgPath)).forEach(
+            (nodeModulePath) => {
+              pathSet.add(nodeModulePath)
+            }
+          )
+        }
       }
     )
     paths.push(...pathSet)

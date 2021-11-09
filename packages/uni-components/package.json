@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-components",
-  "version": "3.0.0-alpha-3021220211105012",
+  "version": "3.0.0-alpha-3021320211109003",
   "description": "@dcloudio/uni-components",
   "main": "index.js",
   "files": [
@@ -18,6 +18,6 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-shared": "3.0.0-alpha-3021220211105012"
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003"
   }
 }

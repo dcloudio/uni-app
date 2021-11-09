@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-weixin",
-  "version": "3.0.0-alpha-3021220211105012",
+  "version": "3.0.0-alpha-3021320211109003",
   "description": "uni-app mp-weixin",
   "main": "dist/index.js",
   "files": [
@@ -29,8 +29,8 @@
     "@vue/compiler-core": "^3.2.21"
   },
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021220211105012",
-    "@dcloudio/uni-mp-vite": "3.0.0-alpha-3021220211105012",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3021220211105012"
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211109003",
+    "@dcloudio/uni-mp-vite": "3.0.0-alpha-3021320211109003",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3021320211109003"
   }
 }
