@@ -89,6 +89,12 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
 
+  if (options.subpackage) {
+    process.env.UNI_SUBPACKAGE = options.subpackage
+    process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir =
+      path.resolve(process.env.UNI_OUTPUT_DIR, options.subpackage)
+  }
+
   initAutomator(options)
 
   if (process.env.NODE_ENV === 'production') {
@@ -122,7 +128,8 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {
-  if (!autoPort) {
+  // 发行分包也不需要自动化测试
+  if (!autoPort || process.env.UNI_SUBPACKAGE) {
     return
   }
   process.env.UNI_AUTOMATOR_WS_ENDPOINT =

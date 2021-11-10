@@ -319,6 +319,43 @@ function initCreateApp(parseAppOptions) {
         return App(parseApp(vm, parseAppOptions));
     };
 }
+function initCreateSubpackageApp(parseAppOptions) {
+    return function createApp(vm) {
+        const appOptions = parseApp(vm, parseAppOptions);
+        const app = getApp({
+            allowDefault: true,
+        });
+        vm.$.ctx.$scope = app;
+        const globalData = app.globalData;
+        if (globalData) {
+            Object.keys(appOptions.globalData).forEach((name) => {
+                if (!hasOwn(globalData, name)) {
+                    globalData[name] = appOptions.globalData[name];
+                }
+            });
+        }
+        Object.keys(appOptions).forEach((name) => {
+            if (!hasOwn(app, name)) {
+                app[name] = appOptions[name];
+            }
+        });
+        if (isFunction(appOptions.onShow) && qq.onAppShow) {
+            qq.onAppShow((args) => {
+                vm.$callHook('onShow', args);
+            });
+        }
+        if (isFunction(appOptions.onHide) && qq.onAppHide) {
+            qq.onAppHide((args) => {
+                vm.$callHook('onHide', args);
+            });
+        }
+        if (isFunction(appOptions.onLaunch)) {
+            const args = qq.getLaunchOptionsSync && qq.getLaunchOptionsSync();
+            vm.$callHook('onLaunch', args);
+        }
+        return App(appOptions);
+    };
+}
 function initLocale(appVm) {
     const locale = ref(qq.getSystemInfoSync().language || 'zh-Hans');
     Object.defineProperty(appVm, '$locale', {
@@ -781,13 +818,16 @@ var parseOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
+const createSubpackageApp = initCreateSubpackageApp();
 wx.createApp = global.createApp = createApp;
 wx.createPage = createPage;
 wx.createComponent = createComponent;
+wx.createSubpackageApp = createSubpackageApp;
 
 qq.EventChannel = EventChannel;
 qq.createApp = global.createApp = createApp;
 qq.createPage = createPage;
 qq.createComponent = createComponent;
+qq.createSubpackageApp = createSubpackageApp;
 
-export { createApp, createComponent, createPage };
+export { createApp, createComponent, createPage, createSubpackageApp };

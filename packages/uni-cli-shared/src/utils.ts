@@ -19,6 +19,9 @@ export function normalizePath(id: string): string {
   return isWindows ? id.replace(/\\/g, '/') : id
 }
 
+export function relativeFile(from: string, to: string) {
+  return normalizePath(path.relative(path.dirname(from), to))
+}
 export function checkElementNodeTag(
   node: RootNode | TemplateChildNode | null | undefined,
   tag: string

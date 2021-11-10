@@ -10,6 +10,7 @@ import {
   removeExt,
   transformScopedCss,
   normalizeMiniProgramFilename,
+  relativeFile,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '.'
 import { getNVueCssPaths } from '../plugins/pagesJson'
@@ -67,7 +68,10 @@ export function createConfigResolved({
         const normalized = normalizePath(filename)
         if (nvueCssPaths.find((pageCssPath) => pageCssPath === normalized)) {
           debugNVueCss(normalized)
-          return `@import "/nvue${extname}";\n` + cssCode
+          return (
+            `@import "${relativeFile(normalized, 'nvue' + extname)}";\n` +
+            cssCode
+          )
         }
         return cssCode
       },

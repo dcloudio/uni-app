@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, hasOwn, isFunction } from '@vue/shared'
 import { ComponentPublicInstance, ComponentOptions, ref } from 'vue'
 
 import { initBaseInstance } from './componentInstance'
@@ -92,6 +92,45 @@ function parseApp(
 export function initCreateApp(parseAppOptions?: ParseAppOptions) {
   return function createApp(vm: ComponentPublicInstance) {
     return App(parseApp(vm, parseAppOptions))
+  }
+}
+
+export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
+  return function createApp(vm: ComponentPublicInstance) {
+    const appOptions = parseApp(vm, parseAppOptions)
+    const app = getApp({
+      allowDefault: true,
+    })
+    ;(vm.$ as any).ctx.$scope = app
+    const globalData = app.globalData
+    if (globalData) {
+      Object.keys(appOptions.globalData).forEach((name) => {
+        if (!hasOwn(globalData, name)) {
+          globalData[name] = appOptions.globalData[name]
+        }
+      })
+    }
+    Object.keys(appOptions).forEach((name) => {
+      if (!hasOwn(app, name)) {
+        app[name] = appOptions[name]
+      }
+    })
+    if (isFunction(appOptions.onShow) && __GLOBAL__.onAppShow) {
+      __GLOBAL__.onAppShow((args: unknown) => {
+        vm.$callHook('onShow', args)
+      })
+    }
+    if (isFunction(appOptions.onHide) && __GLOBAL__.onAppHide) {
+      __GLOBAL__.onAppHide((args: unknown) => {
+        vm.$callHook('onHide', args)
+      })
+    }
+    if (isFunction(appOptions.onLaunch)) {
+      const args =
+        __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
+      vm.$callHook('onLaunch', args)
+    }
+    return App(appOptions)
   }
 }
 

@@ -1,16 +1,23 @@
 import { extend } from '@vue/shared'
+import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import { initProvide, uniViteInjectPlugin } from '@dcloudio/uni-cli-shared'
+
 import { uniMiniProgramPlugin, UniMiniProgramPluginOptions } from './plugin'
 import { uniUsingComponentsPlugin } from './plugins/usingComponents'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniEntryPlugin } from './plugins/entry'
-import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+
 import { uniRenderjsPlugin } from './plugins/renderjs'
+import { uniSubpackagePlugin } from './plugins/subpackage'
 
 export { UniMiniProgramPluginOptions } from './plugin'
 export default (options: UniMiniProgramPluginOptions) => {
+  if (!options.app.subpackages) {
+    delete process.env.UNI_SUBPACKAGE
+  }
+
   return [
     (options: {
       vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
@@ -28,5 +35,6 @@ export default (options: UniMiniProgramPluginOptions) => {
     }) => {
       return uniUsingComponentsPlugin(options.vueOptions?.script)
     },
+    ...(process.env.UNI_SUBPACKAGE ? [uniSubpackagePlugin(options)] : []),
   ]
 }

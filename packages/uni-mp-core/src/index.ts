@@ -7,7 +7,7 @@ declare module '@vue/runtime-core' {
   }
 }
 
-export { initCreateApp } from './runtime/app'
+export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
 export { initCreatePage } from './runtime/page'
 export { initCreateComponent } from './runtime/component'
 

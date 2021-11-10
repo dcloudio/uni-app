@@ -23,6 +23,7 @@ export interface CliOptions {
   clearScreen?: boolean
   autoHost?: string
   autoPort?: number
+  subpackage?: string
 }
 
 cli
@@ -36,8 +37,9 @@ cli
   .option('--clearScreen', `[boolean] allow/disable clear screen when logging`)
   .option('-d, --debug [feat]', `[string | boolean] show debug logs`)
   .option('-f, --filter <filter>', `[string] filter debug logs`)
-  .option('--autoHost', `[string] specify automator hostname`)
-  .option('--autoPort', `[number] specify automator port`)
+  .option('--autoHost [autoHost]', `[string] specify automator hostname`)
+  .option('--autoPort [autoPort]', `[number] specify automator port`)
+  .option('--subpackage [subpackage]', `[string] specify subpackage to build`)
 
 cli
   .command('')

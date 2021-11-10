@@ -9,6 +9,7 @@ declare namespace NodeJS {
     UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string
     UNI_CLI_CONTEXT: string
+    UNI_SUBPACKAGE?: string
     UNI_COMPILER_VERSION: string
     UNI_COMPILER_VERSION_TYPE: 'a' | 'r'
     UNI_HBUILDERX_PLUGINS: string

@@ -1,12 +1,16 @@
 import { extend } from '@vue/shared'
 import { ComponentJson, PageWindowOptions, UsingComponents } from './types'
-import { normalizeNodeModules } from '../../utils'
+import { removeExt, relativeFile, normalizeNodeModules } from '../../utils'
 
 let appJsonCache: Record<string, any> = {}
 const jsonFilesCache = new Map<string, string>()
 const jsonPagesCache = new Map<string, PageWindowOptions>()
 const jsonComponentsCache = new Map<string, ComponentJson>()
 const jsonUsingComponentsCache = new Map<string, UsingComponents>()
+
+export function isPageFile(file: string) {
+  return jsonPagesCache.has(removeExt(file))
+}
 
 export function hasJsonFile(filename: string) {
   return (
@@ -22,16 +26,25 @@ export function normalizeJsonFilename(filename: string) {
 
 export function findChangedJsonFiles() {
   const changedJsonFiles = new Map<string, string>()
-  function findChangedFile(name: string, json: Record<string, any>) {
+  function findChangedFile(filename: string, json: Record<string, any>) {
     const newJson = extend({}, json)
     if (!newJson.usingComponents) {
       newJson.usingComponents = {}
     }
-    extend(newJson.usingComponents, jsonUsingComponentsCache.get(name))
+    extend(newJson.usingComponents, jsonUsingComponentsCache.get(filename))
+    const usingComponents = newJson.usingComponents
+    // 格式化为相对路径，这样作为分包也可以直接运行
+    Object.keys(usingComponents).forEach((name) => {
+      usingComponents[name] = relativeFile(
+        filename,
+        usingComponents[name].slice(1)
+      )
+    })
+
     const jsonStr = JSON.stringify(newJson, null, 2)
-    if (jsonFilesCache.get(name) !== jsonStr) {
-      changedJsonFiles.set(name, jsonStr)
-      jsonFilesCache.set(name, jsonStr)
+    if (jsonFilesCache.get(filename) !== jsonStr) {
+      changedJsonFiles.set(filename, jsonStr)
+      jsonFilesCache.set(filename, jsonStr)
     }
   }
   function findChangedFiles(jsonsCache: Map<string, any>) {

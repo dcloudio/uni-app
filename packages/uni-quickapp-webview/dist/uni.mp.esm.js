@@ -319,6 +319,43 @@ function initCreateApp(parseAppOptions) {
         return App(parseApp(vm, parseAppOptions));
     };
 }
+function initCreateSubpackageApp(parseAppOptions) {
+    return function createApp(vm) {
+        const appOptions = parseApp(vm, parseAppOptions);
+        const app = getApp({
+            allowDefault: true,
+        });
+        vm.$.ctx.$scope = app;
+        const globalData = app.globalData;
+        if (globalData) {
+            Object.keys(appOptions.globalData).forEach((name) => {
+                if (!hasOwn(globalData, name)) {
+                    globalData[name] = appOptions.globalData[name];
+                }
+            });
+        }
+        Object.keys(appOptions).forEach((name) => {
+            if (!hasOwn(app, name)) {
+                app[name] = appOptions[name];
+            }
+        });
+        if (isFunction(appOptions.onShow) && qa.onAppShow) {
+            qa.onAppShow((args) => {
+                vm.$callHook('onShow', args);
+            });
+        }
+        if (isFunction(appOptions.onHide) && qa.onAppHide) {
+            qa.onAppHide((args) => {
+                vm.$callHook('onHide', args);
+            });
+        }
+        if (isFunction(appOptions.onLaunch)) {
+            const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
+            vm.$callHook('onLaunch', args);
+        }
+        return App(appOptions);
+    };
+}
 function initLocale(appVm) {
     const locale = ref(qa.getSystemInfoSync().language || 'zh-Hans');
     Object.defineProperty(appVm, '$locale', {
@@ -941,9 +978,11 @@ var parsePageOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
+const createSubpackageApp = initCreateSubpackageApp();
 qa.EventChannel = EventChannel;
 qa.createApp = global.createApp = createApp;
 qa.createPage = createPage;
 qa.createComponent = createComponent;
+qa.createSubpackageApp = createSubpackageApp;
 
-export { createApp, createComponent, createPage };
+export { createApp, createComponent, createPage, createSubpackageApp };

@@ -334,6 +334,43 @@ function initCreateApp(parseAppOptions) {
         return App(parseApp(vm, parseAppOptions));
     };
 }
+function initCreateSubpackageApp(parseAppOptions) {
+    return function createApp(vm) {
+        const appOptions = parseApp(vm, parseAppOptions);
+        const app = getApp({
+            allowDefault: true,
+        });
+        vm.$.ctx.$scope = app;
+        const globalData = app.globalData;
+        if (globalData) {
+            Object.keys(appOptions.globalData).forEach((name) => {
+                if (!hasOwn(globalData, name)) {
+                    globalData[name] = appOptions.globalData[name];
+                }
+            });
+        }
+        Object.keys(appOptions).forEach((name) => {
+            if (!hasOwn(app, name)) {
+                app[name] = appOptions[name];
+            }
+        });
+        if (isFunction(appOptions.onShow) && my.onAppShow) {
+            my.onAppShow((args) => {
+                vm.$callHook('onShow', args);
+            });
+        }
+        if (isFunction(appOptions.onHide) && my.onAppHide) {
+            my.onAppHide((args) => {
+                vm.$callHook('onHide', args);
+            });
+        }
+        if (isFunction(appOptions.onLaunch)) {
+            const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
+            vm.$callHook('onLaunch', args);
+        }
+        return App(appOptions);
+    };
+}
 function initLocale(appVm) {
     const locale = ref(my.getSystemInfoSync().language || 'zh-Hans');
     Object.defineProperty(appVm, '$locale', {
@@ -571,20 +608,15 @@ function onAliGetAuthorize(method, $event) {
     my.getPhoneNumber({
         success: (res) => {
             $event.type = 'getphonenumber';
-            const response = JSON.parse(res.response).response;
-            if (response.code === '10000') {
-                // success
-                $event.detail.errMsg = 'getPhoneNumber:ok';
-                $event.detail.encryptedData = res.response;
-            }
-            else {
-                $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + res.response;
-            }
+            const response = JSON.parse(res.response);
+            $event.detail.errMsg = 'getPhoneNumber:ok';
+            $event.detail.encryptedData = response.response;
+            $event.detail.sign = response.sign;
             this[method]($event);
         },
-        fail: () => {
+        fail: (res) => {
             $event.type = 'getphonenumber';
-            $event.detail.errMsg = 'getPhoneNumber:fail';
+            $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res);
             this[method]($event);
         },
     });
@@ -983,9 +1015,11 @@ function initCreateComponent() {
 const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage();
 const createComponent = initCreateComponent();
+const createSubpackageApp = initCreateSubpackageApp(parseAppOptions);
 my.EventChannel = EventChannel;
 my.createApp = createApp;
 my.createPage = createPage;
 my.createComponent = createComponent;
+my.createSubpackageApp = createSubpackageApp;
 
-export { createApp, createComponent, createPage };
+export { createApp, createComponent, createPage, createSubpackageApp };
