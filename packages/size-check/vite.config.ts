@@ -18,7 +18,7 @@ export default {
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', '@vue/shared'],
+      // external: ['vue', '@vue/shared'],
       plugins: [terser()],
       output: {
         inlineDynamicImports: true,
