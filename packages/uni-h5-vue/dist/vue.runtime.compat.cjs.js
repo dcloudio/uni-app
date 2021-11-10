@@ -9856,6 +9856,8 @@ function warn$1(msg, ...args) {
     const appWarnHandler = instance && instance.appContext.config.warnHandler;
     const trace = getComponentTrace();
     if (appWarnHandler) {
+        // fixed by xxxxxx Cannot convert a Symbol value to a string
+        args[0] = String(args[0]);
         callWithErrorHandling(appWarnHandler, instance, 11 /* APP_WARN_HANDLER */, [
             msg + args.join(''),
             instance && instance.proxy,

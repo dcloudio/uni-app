@@ -72,7 +72,9 @@ function isH5CustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
 function isH5NativeTag(tag) {
-    return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag);
+    return (tag !== 'head' &&
+        (isHTMLTag(tag) || isSVGTag(tag)) &&
+        !isBuiltInComponent(tag));
 }
 function isNativeTag(tag) {
     return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag);

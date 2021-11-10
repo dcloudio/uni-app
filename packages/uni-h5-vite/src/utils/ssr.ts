@@ -10,9 +10,12 @@ import {
   parseRpx2UnitOnce,
   resolveBuiltIn,
   getBuiltInPaths,
+  transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import resolve from 'resolve'
+import { resolveComponentType } from '@vue/compiler-dom'
+import { transformPageHead } from '../plugin/transforms/transformPageHead'
 
 export function isSsr(
   command: ConfigEnv['command'],
@@ -134,10 +137,24 @@ export function rewriteSsrResolve(mode?: 2 | 3) {
 
 export function rewriteSsrNativeTag() {
   // @ts-ignore
-  const { parserOptions } = require(resolveBuiltIn('@vue/compiler-dom'))
+  const compilerDom = require(resolveBuiltIn('@vue/compiler-dom'))
   // TODO compiler-ssr时，传入的 isNativeTag 会被 @vue/compiler-dom 的 isNativeTag 覆盖
   // https://github.com/vuejs/vue-next/blob/master/packages/compiler-ssr/src/index.ts#L36
-  parserOptions.isNativeTag = isH5NativeTag
+  compilerDom.parserOptions.isNativeTag = isH5NativeTag
+
+  // ssr 时，ssrTransformComponent 执行时机很早，导致无法正确重写 tag，故通过 resolveComponentType 解决重写
+  const oldResolveComponentType =
+    compilerDom.resolveComponentType as typeof resolveComponentType
+  const newResolveComponentType: typeof resolveComponentType = function (
+    node,
+    context,
+    ssr
+  ) {
+    transformPageHead(node, context)
+    transformMatchMedia(node, context)
+    return oldResolveComponentType(node, context, ssr)
+  }
+  compilerDom.resolveComponentType = newResolveComponentType
 }
 
 export function rewriteSsrRenderStyle(inputDir: string) {

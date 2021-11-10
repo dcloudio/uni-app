@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "uni -d uni:*",
-    "build": "uni build -d uni:*",
-    "dev:ssr": "uni -d uni:* --ssr",
+    "dev": "uni -d",
+    "build": "uni build",
+    "dev:ssr": "uni --ssr",
     "build:ssr": "uni build --ssr"
   },
   "dependencies": {

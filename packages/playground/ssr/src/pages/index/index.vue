@@ -1,34 +1,40 @@
 <template>
-  <text v-if="item">{{ item.title }}</text>
-  <text v-else>...</text>
-  <ssr-cover-image />
-  <ssr-cover-view />
-  <ssr-icon />
-  <ssr-image />
-  <!-- <ssr-match-media /> -->
-  <!-- <ssr-movable-area /> -->
-  <ssr-progress />
-  <ssr-scroll-view />
-  <ssr-swiper />
-  <ssr-text />
-  <ssr-view />
-  <ssr-button />
-  <ssr-canvas />
-  <ssr-editor />
-  <ssr-form />
-  <ssr-label />
-  <ssr-navigator />
-  <ssr-rich-text />
-  <ssr-textarea />
-  <ssr-slider />
-  <ssr-map />
-  <ssr-picker-view />
-  <ssr-picker />
-  <ssr-webview />
-  <ssr-unicloud-db />
+<view id="ssr-log"></view>
+<page-meta>
+  <head>
+    <meta name="keywords" content="uni-app ssr" />
+    <meta name="description" content="hello uni-app ssr" />
+  </head>
+</page-meta>
+<text v-if="item">{{ item.title }}</text>
+<text v-else>...</text>
+<ssr-cover-image />
+<ssr-cover-view />
+<ssr-icon />
+<ssr-image />
+<ssr-match-media />
+<!-- <ssr-movable-area /> -->
+<ssr-progress />
+<ssr-scroll-view />
+<ssr-swiper />
+<ssr-text />
+<ssr-view />
+<ssr-button />
+<ssr-canvas />
+<ssr-editor />
+<ssr-form />
+<ssr-label />
+<ssr-navigator />
+<ssr-rich-text />
+<ssr-textarea />
+<ssr-slider />
+<ssr-map />
+<ssr-picker-view />
+<ssr-picker />
+<ssr-webview />
+<ssr-unicloud-db />
 
-  <!-- <ssr-video /> dataOptions is not a function -->
-  <view id="ssr-log"></view>
+<!-- <ssr-video /> dataOptions is not a function -->
 </template>
 
 <script>
@@ -69,6 +75,13 @@ export default {
 </script>
 
 <style>
+:deep(iframe) {
+  top: 200px !important;
+}
+#ssr-log {
+  font-size: 20px;
+  color: red;
+}
 .content {
   display: flex;
   flex-direction: column;

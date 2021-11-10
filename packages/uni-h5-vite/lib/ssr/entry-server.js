@@ -88,6 +88,12 @@ function renderHeadMeta(ctx) {
     return ''
   }
   return ctx.__teleportBuffers.head
-    .map((buffer) => buffer.toString())
+    .map((buffer) =>
+      buffer
+        .toString()
+        .replace(/\s+data-v-[a-f0-9]{8}/gi, '')
+        .replace('<!--[-->', '')
+        .replace('<!--]--><!---->', '')
+    )
     .join('\n')
 }

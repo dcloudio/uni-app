@@ -22,6 +22,7 @@ const scrolldoneEvent = {
 }
 
 export default {
+  name: 'PageMeta',
   props: {
     backgroundTextStyle: {
       type: String,

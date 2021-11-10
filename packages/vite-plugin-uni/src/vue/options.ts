@@ -5,7 +5,6 @@ import {
   UniVitePlugin,
   uniPostcssScopedPlugin,
   createUniVueTransformAssetUrls,
-  onContextCreated,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
@@ -62,7 +61,6 @@ export function initPluginVueOptions(
   }
   compilerOptions.isNativeTag = isNativeTag
   compilerOptions.isCustomElement = isCustomElement
-  ;(compilerOptions as any).onContextCreated = onContextCreated
 
   compilerOptions.directiveTransforms = {
     ...compilerOptions.directiveTransforms,

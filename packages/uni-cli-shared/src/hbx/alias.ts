@@ -25,6 +25,14 @@ export function initModuleAlias() {
   }
 }
 
+function supportAutoInstallPlugin() {
+  return false
+}
+
+function sendSignal(lang: string) {
+  return console.error(`%HXRunUniAPPPluginName%${lang}%HXRunUniAPPPluginName%`)
+}
+
 export const moduleAliasFormatter: Formatter = {
   test(msg) {
     return msg.includes('Preprocessor dependency')
@@ -43,7 +51,11 @@ export const moduleAliasFormatter: Formatter = {
       preprocessor = 'compile-stylus'
     }
     if (lang) {
-      return `预编译器错误：代码使用了${lang}语言，但未安装相应的编译器插件，请前往插件市场安装该插件:
+      const autoInstall = supportAutoInstallPlugin()
+      autoInstall && sendSignal(preprocessor)
+      return `预编译器错误：代码使用了${lang}语言，但未安装相应的编译器插件，${
+        autoInstall ? '正在从' : '请前往'
+      }插件市场安装该插件:
 https://ext.dcloud.net.cn/plugin?name=${preprocessor}`
     }
     return msg

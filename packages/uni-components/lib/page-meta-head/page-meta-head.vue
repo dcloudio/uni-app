@@ -5,5 +5,6 @@
 </template>
 <script>
 export default {
+  name: 'PageMetaHead',
 }
 </script>

@@ -27,6 +27,7 @@
     "@vue/server-renderer": "3.2.21"
   },
   "devDependencies": {
+    "@vue/compiler-core": "3.2.21",
     "esbuild": "^0.13.2"
   }
 }

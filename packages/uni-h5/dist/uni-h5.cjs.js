@@ -6847,11 +6847,30 @@ function initHistory() {
 var index$f = {
   install(app) {
     initApp$1(app);
+    app.config.warnHandler = warnHandler;
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
   }
 };
+function warnHandler(msg, instance, trace) {
+  if (instance) {
+    const name = instance.$.type.name;
+    if (name === "PageMetaHead") {
+      return;
+    }
+    const parent = instance.$.parent;
+    if (parent && parent.type.name === "PageMeta") {
+      return;
+    }
+  }
+  const warnArgs = [`[Vue warn]: ${msg}`];
+  if (trace.length) {
+    warnArgs.push(`
+`, trace);
+  }
+  console.warn(...warnArgs);
+}
 let appVm;
 function getApp$1() {
   return appVm;

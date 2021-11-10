@@ -13859,11 +13859,30 @@ var index$f = {
     initApp$1(app);
     initViewPlugin(app);
     initServicePlugin(app);
+    app.config.warnHandler = warnHandler;
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
   }
 };
+function warnHandler(msg, instance2, trace) {
+  if (instance2) {
+    const name = instance2.$.type.name;
+    if (name === "PageMetaHead") {
+      return;
+    }
+    const parent = instance2.$.parent;
+    if (parent && parent.type.name === "PageMeta") {
+      return;
+    }
+  }
+  const warnArgs = [`[Vue warn]: ${msg}`];
+  if (trace.length) {
+    warnArgs.push(`
+`, trace);
+  }
+  console.warn(...warnArgs);
+}
 let appVm;
 function getApp$1() {
   return appVm;
