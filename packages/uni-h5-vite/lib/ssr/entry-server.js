@@ -84,10 +84,10 @@ function renderAppContext(ctx) {
 }
 
 function renderHeadMeta(ctx) {
-  if (!ctx.__teleportBuffers || !ctx.__teleportBuffers.__head__) {
+  if (!ctx.__teleportBuffers || !ctx.__teleportBuffers.head) {
     return ''
   }
-  return ctx.__teleportBuffers.__head__
+  return ctx.__teleportBuffers.head
     .map((buffer) => buffer.toString())
     .join('\n')
 }

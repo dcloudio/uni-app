@@ -10,6 +10,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { createHandleHotUpdate } from './handleHotUpdate'
 import { createTransformIndexHtml } from './transformIndexHtml'
+import { transformPageHead } from './transforms/transformPageHead'
 import { createDefine } from '../utils/features'
 import { isSsr } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
@@ -25,7 +26,11 @@ export const UniH5Plugin: UniVitePlugin = {
     compilerOptions: {
       isNativeTag: isH5NativeTag,
       isCustomElement: isH5CustomElement,
-      nodeTransforms: [transformTapToClick, transformMatchMedia],
+      nodeTransforms: [
+        transformTapToClick,
+        transformMatchMedia,
+        transformPageHead,
+      ],
     },
   },
   config(config, env) {

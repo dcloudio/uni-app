@@ -76,7 +76,11 @@ export function isH5CustomElement(tag: string) {
 }
 
 export function isH5NativeTag(tag: string) {
-  return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag)
+  return (
+    tag !== 'head' &&
+    (isHTMLTag(tag) || isSVGTag(tag)) &&
+    !isBuiltInComponent(tag)
+  )
 }
 
 export function isNativeTag(tag: string) {

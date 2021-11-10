@@ -1,5 +1,5 @@
 <template>
-  <teleport to="__head__">
+  <teleport to="head">
     <slot />
   </teleport>
 </template>
