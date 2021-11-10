@@ -33,7 +33,7 @@
     "@dcloudio/uni-h5-vue": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003",
-    "@vue/server-renderer": "^3.2.21",
+    "@vue/server-renderer": "3.2.21",
     "localstorage-polyfill": "^1.0.1",
     "pako": "^2.0.3",
     "safe-area-insets": "^1.4.1",
@@ -45,6 +45,6 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211109003",
     "@types/google.maps": "^3.45.6",
     "acorn-loose": "^8.2.1",
-    "vue": "^3.2.21"
+    "vue": "3.2.21"
   }
 }

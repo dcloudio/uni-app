@@ -23,13 +23,13 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003",
     "@rollup/pluginutils": "^4.1.1",
-    "@vue/compiler-core": "^3.2.21",
-    "@vue/compiler-dom": "^3.2.21",
+    "@vue/compiler-core": "3.2.21",
+    "@vue/compiler-dom": "3.2.21",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",
     "debug": "^4.3.2",
     "es-module-lexer": "^0.9.3",
-    "esbuild": "^0.13.12",
+    "esbuild": "^0.13.2",
     "estree-walker": "^2.0.2",
     "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
@@ -49,7 +49,7 @@
     "@types/hash-sum": "^1.0.0",
     "@types/less": "^3.0.3",
     "@types/stylus": "^0.48.36",
-    "@vue/compiler-sfc": "^3.2.21",
-    "postcss": "^8.3.11"
+    "@vue/compiler-sfc": "3.2.21",
+    "postcss": "^8.3.8"
   }
 }

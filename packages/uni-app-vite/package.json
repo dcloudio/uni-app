@@ -31,6 +31,6 @@
     "postcss-modules": "^4.1.3"
   },
   "devDependencies": {
-    "@vue/compiler-core": "^3.2.21"
+    "@vue/compiler-core": "3.2.21"
   }
 }

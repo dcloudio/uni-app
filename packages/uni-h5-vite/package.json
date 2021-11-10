@@ -22,11 +22,11 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003",
     "@rollup/pluginutils": "^4.1.1",
-    "@vue/compiler-dom": "^3.2.21",
-    "@vue/compiler-sfc": "^3.2.21",
-    "@vue/server-renderer": "^3.2.21"
+    "@vue/compiler-dom": "3.2.21",
+    "@vue/compiler-sfc": "3.2.21",
+    "@vue/server-renderer": "3.2.21"
   },
   "devDependencies": {
-    "esbuild": "^0.13.12"
+    "esbuild": "^0.13.2"
   }
 }

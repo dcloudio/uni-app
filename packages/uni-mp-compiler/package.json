@@ -24,9 +24,9 @@
     "@babel/types": "^7.15.0",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003",
-    "@vue/compiler-core": "^3.2.21",
-    "@vue/compiler-dom": "^3.2.21",
-    "@vue/compiler-sfc": "^3.2.21",
+    "@vue/compiler-core": "3.2.21",
+    "@vue/compiler-dom": "3.2.21",
+    "@vue/compiler-sfc": "3.2.21",
     "estree-walker": "^2.0.2"
   }
 }

@@ -11,7 +11,7 @@
   "dependencies": {
     "@dcloudio/uni-app": "../../uni-app",
     "@dcloudio/uni-h5": "../../uni-h5",
-    "vue": "^3.2.21",
+    "vue": "3.2.21",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   },
