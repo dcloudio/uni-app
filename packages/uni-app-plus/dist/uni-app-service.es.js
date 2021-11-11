@@ -6848,13 +6848,16 @@ var serviceContext = (function (vue) {
   }, MakePhoneCallProtocol);
 
   function requireNativePlugin(pluginName) {
-      /* eslint-disable no-undef */
       if (typeof weex !== 'undefined') {
           return weex.requireModule(pluginName);
       }
-      /* eslint-disable no-undef */
       return __requireNativePlugin__(pluginName);
   }
+  function sendNativeEvent(event, data, callback) {
+      // 实时获取weex module（weex可能会变化，比如首页nvue加速显示时）
+      return requireNativePlugin('plus').sendNativeEvent(event, data, callback);
+  }
+  const sendHostEvent = sendNativeEvent;
 
   const getClipboardData = defineAsyncApi(API_GET_CLIPBOARD_DATA, (_, { resolve, reject }) => {
       const clipboard = requireNativePlugin('clipboard');
@@ -12894,6 +12897,8 @@ var serviceContext = (function (vue) {
     shareWithSystem: shareWithSystem,
     requestPayment: requestPayment,
     requireNativePlugin: requireNativePlugin,
+    sendNativeEvent: sendNativeEvent,
+    sendHostEvent: sendHostEvent,
     __vuePlugin: index$1,
     restoreGlobal: restoreGlobal,
     createRewardedVideoAd: createRewardedVideoAd,
