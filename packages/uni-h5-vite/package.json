@@ -24,9 +24,13 @@
     "@rollup/pluginutils": "^4.1.1",
     "@vue/compiler-dom": "3.2.21",
     "@vue/compiler-sfc": "3.2.21",
-    "@vue/server-renderer": "3.2.21"
+    "@vue/server-renderer": "3.2.21",
+    "debug": "^4.3.2",
+    "mime": "^3.0.0",
+    "module-alias": "^2.2.2"
   },
   "devDependencies": {
+    "@types/mime": "^2.0.3",
     "@vue/compiler-core": "3.2.21",
     "esbuild": "^0.13.2"
   }
