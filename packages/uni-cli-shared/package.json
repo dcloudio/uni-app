@@ -37,6 +37,8 @@
     "jsonc-parser": "^3.0.0",
     "magic-string": "^0.25.7",
     "merge": "^2.1.1",
+    "mime": "^3.0.0",
+    "module-alias": "^2.2.2",
     "postcss-import": "^14.0.2",
     "postcss-load-config": "^3.1.0",
     "postcss-selector-parser": "^6.0.6",
@@ -48,6 +50,7 @@
   "devDependencies": {
     "@types/hash-sum": "^1.0.0",
     "@types/less": "^3.0.3",
+    "@types/mime": "^2.0.3",
     "@types/stylus": "^0.48.36",
     "@vue/compiler-sfc": "3.2.21",
     "postcss": "^8.3.8"

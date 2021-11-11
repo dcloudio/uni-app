@@ -38,6 +38,7 @@
     "loader-utils": "^1.1.0",
     "lru-cache": "^4.1.2",
     "merge-source-map": "^1.1.0",
+    "module-alias": "^2.2.2",
     "postcss": "^8.3.8",
     "postcss-comment": "^2.0.0",
     "postcss-import": "^14.0.2",

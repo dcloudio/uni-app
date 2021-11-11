@@ -18,6 +18,7 @@ import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniStatsPlugin } from './plugins/stats'
 import { uniEasycomPlugin } from './plugins/easycom'
+import { uniConfusionPlugin } from './plugins/confusion'
 
 function initUniCssScopedPluginOptions() {
   const styleIsolation = getAppStyleIsolation(
@@ -54,6 +55,7 @@ const plugins = [
   uniTemplatePlugin(),
   uniStatsPlugin(),
   uniAppPlugin(),
+  uniConfusionPlugin(),
 ]
 
 const uniCssScopedPluginOptions = initUniCssScopedPluginOptions()

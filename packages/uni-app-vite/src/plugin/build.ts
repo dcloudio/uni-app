@@ -5,9 +5,8 @@ import { ConfigEnv, UserConfig } from 'vite'
 import {
   emptyDir,
   normalizePath,
-  isConfusionFile,
-  hasConfusionFile,
   resolveMainPathOnce,
+  APP_SERVICE_FILENAME,
 } from '@dcloudio/uni-cli-shared'
 
 export function buildOptions(configEnv: ConfigEnv): UserConfig['build'] {
@@ -22,7 +21,7 @@ export function buildOptions(configEnv: ConfigEnv): UserConfig['build'] {
     emptyOutDir: false, // 不清空输出目录，否则会影响 webpack 的输出
     assetsInlineLimit: 0,
     rollupOptions: {
-      input: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
+      input: resolveMainPathOnce(inputDir),
       external: ['vue'],
       output: {
         name: 'AppService',
@@ -30,7 +29,7 @@ export function buildOptions(configEnv: ConfigEnv): UserConfig['build'] {
         amd: {
           autoId: true,
         },
-        entryFileNames: 'app-service.js',
+        entryFileNames: APP_SERVICE_FILENAME,
         sourcemapPathTransform(relativeSourcePath, sourcemapPath) {
           const sourcePath = normalizePath(
             path.relative(
@@ -43,22 +42,10 @@ export function buildOptions(configEnv: ConfigEnv): UserConfig['build'] {
           }
           return 'uni-app:///' + sourcePath
         },
-        manualChunks(id) {
-          if (hasConfusionFile()) {
-            if (
-              configEnv.mode === 'production' &&
-              isConfusionFile(path.relative(inputDir, id))
-            ) {
-              return 'app-confusion'
-            }
-          }
-        },
+        manualChunks: {},
         chunkFileNames(chunk) {
           if (chunk.isDynamicEntry && chunk.facadeModuleId) {
-            const filepath = path.relative(
-              process.env.UNI_INPUT_DIR,
-              chunk.facadeModuleId
-            )
+            const filepath = path.relative(inputDir, chunk.facadeModuleId)
             return normalizePath(
               filepath.replace(path.extname(filepath), '.js')
             )

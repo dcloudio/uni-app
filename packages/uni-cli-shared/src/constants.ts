@@ -6,6 +6,8 @@ export const EXTNAME_JS_RE = /\.[jt]sx?$/
 
 export const ASSETS_INLINE_LIMIT = 40 * 1024
 
+export const APP_SERVICE_FILENAME = 'app-service.js'
+
 export const BINDING_COMPONENTS = '__BINDING_COMPONENTS__'
 // APP 平台解析页面后缀的优先级
 export const PAGE_EXTNAME_APP = ['.nvue', '.vue', '.tsx', '.jsx', '.js']
