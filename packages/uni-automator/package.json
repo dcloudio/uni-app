@@ -38,5 +38,8 @@
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
     "ws": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7"
   }
 }

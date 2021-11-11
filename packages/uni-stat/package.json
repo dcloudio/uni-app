@@ -22,5 +22,8 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:3.0.0-alpha-3021320211109003",
     "debug": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7"
   }
 }

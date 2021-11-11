@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@types/loader-utils": "^2.0.3",
+    "@types/module-alias": "^2.0.1",
     "@types/terser-webpack-plugin": "^5.0.4",
     "@types/webpack-sources": "^2.1.1",
     "vue-template-compiler": "^2.6.14"
