@@ -3,6 +3,7 @@ const promises: Record<string, Promise<unknown>> = {
     resolves.require = req
   }),
 }
+
 const resolves: Record<string, (...args: any[]) => void> = {}
 
 function deps(name: string) {

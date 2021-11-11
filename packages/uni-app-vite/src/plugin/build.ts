@@ -49,7 +49,7 @@ export function buildOptions(configEnv: ConfigEnv): UserConfig['build'] {
               configEnv.mode === 'production' &&
               isConfusionFile(path.relative(inputDir, id))
             ) {
-              return 'app-confusion.js'
+              return 'app-confusion'
             }
           }
         },
