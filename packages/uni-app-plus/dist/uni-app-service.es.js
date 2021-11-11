@@ -2285,7 +2285,7 @@ var serviceContext = (function (vue) {
       pageVm.$page = page;
       pageVm.$mpType = 'page';
       if (page.meta.isTabBar) {
-          pageVm.__isTabBar = true;
+          pageVm.$.__isTabBar = true;
           // TODO preload? 初始化时，状态肯定是激活
           pageVm.$.__isActive = true;
       }
@@ -10394,7 +10394,7 @@ var serviceContext = (function (vue) {
   function getCurrentPages$1() {
       const curPages = [];
       pages.forEach((page) => {
-          if (page.__isTabBar) {
+          if (page.$.__isTabBar) {
               if (page.$.__isActive) {
                   curPages.push(page);
               }
@@ -11834,14 +11834,14 @@ var serviceContext = (function (vue) {
       if (len >= 1) {
           // 前一个页面是非 tabBar 页面
           currentPage = pages[len - 1];
-          if (currentPage && !currentPage.__isTabBar) {
+          if (currentPage && !currentPage.$.__isTabBar) {
               // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
               // 该情况下目标页tabBarPage的visible是不对的
               // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
               // 简单起见，暂时直接判断该情况，执行onShow
               callOnShow = true;
               pages.reverse().forEach((page) => {
-                  if (!page.__isTabBar && page !== currentPage) {
+                  if (!page.$.__isTabBar && page !== currentPage) {
                       closePage(page, 'none');
                   }
               });
@@ -11872,7 +11872,7 @@ var serviceContext = (function (vue) {
               tabBarPage = page;
           }
           else {
-              if (page.__isTabBar) {
+              if (page.$.__isTabBar) {
                   page.$.__isActive = false;
               }
           }

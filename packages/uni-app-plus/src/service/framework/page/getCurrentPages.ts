@@ -20,7 +20,7 @@ export function getAllPages() {
 export function getCurrentPages() {
   const curPages: ComponentPublicInstance[] = []
   pages.forEach((page) => {
-    if (page.__isTabBar) {
+    if (page.$.__isTabBar) {
       if (page.$.__isActive) {
         curPages.push(page)
       }

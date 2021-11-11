@@ -41,7 +41,7 @@ export function initPageVm(
   pageVm.$page = page
   pageVm.$mpType = 'page'
   if (page.meta.isTabBar) {
-    pageVm.__isTabBar = true
+    pageVm.$.__isTabBar = true
     // TODO preload? 初始化时，状态肯定是激活
     pageVm.$.__isActive = true
   }

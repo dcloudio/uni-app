@@ -12,7 +12,6 @@ declare module '@vue/runtime-core' {
     $page: Page.PageInstance['$page']
     $mpType?: 'app' | 'page'
     $locale?: string
-    __isTabBar: boolean
   }
 
   type LifecycleHook = Function[] | null
@@ -24,6 +23,7 @@ declare module '@vue/runtime-core' {
     __isUnload: boolean
     __isVisible: boolean
     __isActive?: boolean // tabBar
+    __isTabBar?: boolean
     // h5 | app
     $wxsModules?: string[]
   }

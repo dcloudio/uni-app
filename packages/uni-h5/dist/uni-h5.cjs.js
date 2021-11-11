@@ -479,7 +479,7 @@ function initPageVm(pageVm, page) {
   pageVm.$page = page;
   pageVm.$mpType = "page";
   if (page.meta.isTabBar) {
-    pageVm.__isTabBar = true;
+    pageVm.$.__isTabBar = true;
     pageVm.$.__isActive = true;
   }
 }
@@ -6741,7 +6741,7 @@ function getCurrentPages$1() {
   const curPages = [];
   const pages = currentPagesMap.values();
   for (const page of pages) {
-    if (page.__isTabBar) {
+    if (page.$.__isTabBar) {
       if (page.$.__isActive) {
         curPages.push(page);
       }

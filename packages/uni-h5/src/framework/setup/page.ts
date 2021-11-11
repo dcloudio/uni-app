@@ -46,7 +46,7 @@ export function getCurrentPages() {
   const curPages: ComponentPublicInstance[] = []
   const pages = currentPagesMap.values()
   for (const page of pages) {
-    if (page.__isTabBar) {
+    if (page.$.__isTabBar) {
       if (page.$.__isActive) {
         curPages.push(page)
       }
