@@ -2,7 +2,7 @@ import {
   uniCssScopedPlugin,
   UNI_EASYCOM_EXCLUDE,
 } from '@dcloudio/uni-cli-shared'
-import { UniH5Plugin } from './plugin'
+import { uniH5PLugin } from './plugin'
 import { uniCssPlugin } from './plugins/css'
 import { uniEasycomPlugin } from './plugins/easycom'
 import { uniInjectPlugin } from './plugins/inject'
@@ -26,5 +26,5 @@ export default [
   uniSSRPlugin(),
   uniSetupPlugin(),
   uniRenderjsPlugin(),
-  UniH5Plugin,
+  uniH5PLugin(),
 ]
