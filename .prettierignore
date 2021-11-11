@@ -6,6 +6,7 @@ packages/uni-cli-nvue/lib
 packages/uni-cli-shared/lib
 packages/uni-components/lib
 packages/uni-cloud/lib
+packages/uni-stat/lib
 packages/uni-mp-alipay/lib
 packages/uni-mp-baidu/lib
 packages/uni-mp-kuaishou/lib
