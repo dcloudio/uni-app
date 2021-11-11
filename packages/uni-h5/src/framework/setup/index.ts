@@ -90,28 +90,18 @@ export function setupPage(comp: any) {
       }
 
       const pageMeta = usePageMeta()
-
-      onBeforeMount(() => {
+      // 放在 onMounted 中，可以保证子组件中监听的相关生命周期也可以触发，比如onShow,onPageScroll
+      onMounted(() => {
         onPageShow(instance, pageMeta)
         const { onLoad, onShow } = instance
         onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
         instance.__isVisible = true
-        if (onShow) {
-          // 延迟onShow，保证子组件的首次onShow也能生效
-          nextTick(() => {
-            invokeArrayFns(onShow)
-          })
-        }
+        onShow && invokeArrayFns(onShow)
       })
       onMounted(() => {
         onPageReady(instance)
         const { onReady } = instance
-        if (onReady) {
-          // 因为onShow被延迟，故onReady也延迟，否则会出现onReady比onShow还早
-          nextTick(() => {
-            invokeArrayFns(onReady)
-          })
-        }
+        onReady && invokeArrayFns(onReady)
       })
       onBeforeActivate(() => {
         if (!instance.__isVisible) {

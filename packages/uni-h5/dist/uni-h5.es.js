@@ -13933,25 +13933,17 @@ function setupPage(comp) {
       instance2.root = instance2;
       const route = usePageRoute();
       const pageMeta = usePageMeta();
-      onBeforeMount(() => {
+      onMounted(() => {
         onPageShow(instance2, pageMeta);
         const { onLoad, onShow } = instance2;
         onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
         instance2.__isVisible = true;
-        if (onShow) {
-          nextTick(() => {
-            invokeArrayFns$1(onShow);
-          });
-        }
+        onShow && invokeArrayFns$1(onShow);
       });
       onMounted(() => {
         onPageReady(instance2);
         const { onReady } = instance2;
-        if (onReady) {
-          nextTick(() => {
-            invokeArrayFns$1(onReady);
-          });
-        }
+        onReady && invokeArrayFns$1(onReady);
       });
       onBeforeActivate(() => {
         if (!instance2.__isVisible) {
