@@ -11,6 +11,7 @@ import {
 
 export function uniManifestJsonPlugin(): Plugin {
   return defineUniManifestJsonPlugin((opts) => {
+    const inputDir = process.env.UNI_INPUT_DIR
     return {
       name: 'vite:uni-app-manifest-json',
       enforce: 'pre',
@@ -18,22 +19,16 @@ export function uniManifestJsonPlugin(): Plugin {
         if (!opts.filter(id)) {
           return
         }
-        this.addWatchFile(
-          path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
-        )
-        getLocaleFiles(
-          path.resolve(process.env.UNI_INPUT_DIR, 'locale')
-        ).forEach((filepath) => {
+        this.addWatchFile(path.resolve(inputDir, 'manifest.json'))
+        getLocaleFiles(path.resolve(inputDir, 'locale')).forEach((filepath) => {
           this.addWatchFile(filepath)
         })
         const manifestJson = normalizeAppManifestJson(
           parseJson(code),
-          parsePagesJsonOnce(
-            process.env.UNI_INPUT_DIR,
-            process.env.UNI_PLATFORM
-          )
+          parsePagesJsonOnce(inputDir, process.env.UNI_PLATFORM)
         )
-        // 生成一个空的app-config.js，兼容基座已有规范
+
+        // 生成一个空的 app-config.js，兼容基座已有规范
         this.emitFile({
           fileName: `app-config.js`,
           type: 'asset',

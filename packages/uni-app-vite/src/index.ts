@@ -9,7 +9,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
 } from '@dcloudio/uni-cli-shared'
 import { plugins as nvuePlugins } from '@dcloudio/uni-cli-nvue'
-import { UniAppPlugin } from './plugin'
+import { uniAppPlugin } from './plugin'
 import { uniTemplatePlugin } from './plugins/template'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
@@ -53,7 +53,7 @@ const plugins = [
   uniRenderjsPlugin(),
   uniTemplatePlugin(),
   uniStatsPlugin(),
-  UniAppPlugin,
+  uniAppPlugin(),
 ]
 
 const uniCssScopedPluginOptions = initUniCssScopedPluginOptions()

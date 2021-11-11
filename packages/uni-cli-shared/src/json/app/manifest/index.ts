@@ -38,7 +38,7 @@ export function normalizeAppManifestJson(
 }
 
 export * from './env'
-
+export { isConfusionFile, hasConfusionFile } from './confusion'
 export {
   getNVueCompiler,
   getNVueStyleCompiler,

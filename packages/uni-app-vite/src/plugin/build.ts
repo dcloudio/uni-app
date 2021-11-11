@@ -1,14 +1,16 @@
 import fs from 'fs'
 import path from 'path'
-import { UserConfig } from 'vite'
+import { ConfigEnv, UserConfig } from 'vite'
 
 import {
   emptyDir,
   normalizePath,
+  isConfusionFile,
+  hasConfusionFile,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 
-export function buildOptions(): UserConfig['build'] {
+export function buildOptions(configEnv: ConfigEnv): UserConfig['build'] {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
@@ -41,7 +43,16 @@ export function buildOptions(): UserConfig['build'] {
           }
           return 'uni-app:///' + sourcePath
         },
-        manualChunks: {},
+        manualChunks(id) {
+          if (hasConfusionFile()) {
+            if (
+              configEnv.mode === 'production' &&
+              isConfusionFile(path.relative(inputDir, id))
+            ) {
+              return 'app-confusion.js'
+            }
+          }
+        },
         chunkFileNames(chunk) {
           if (chunk.isDynamicEntry && chunk.facadeModuleId) {
             const filepath = path.relative(
