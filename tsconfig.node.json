@@ -9,6 +9,7 @@
     "outDir": "dist",
     "module": "commonjs",
     "lib": ["ESNext", "DOM"],
-    "sourceMap": false
+    "sourceMap": false,
+    "skipLibCheck": true
   }
 }
