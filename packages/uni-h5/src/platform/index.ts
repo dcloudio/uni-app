@@ -15,3 +15,4 @@ export {
 export * from './saveImage'
 export * from './constants'
 export { getSameOriginUrl } from '../helpers/file'
+export { getEnterOptions, getLaunchOptions } from '../framework/setup/utils'

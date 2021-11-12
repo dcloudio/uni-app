@@ -8,6 +8,7 @@ import {
 import { ComponentPublicInstance } from '@vue/runtime-core'
 import { invokeHook } from '../../helpers/hook'
 import { getCurrentPage } from '../../helpers/page'
+import { LaunchOptions } from '../utils'
 
 export function initOn() {
   const { on } = UniServiceJSBridge
@@ -21,17 +22,10 @@ function onResize(res: UniApp.WindowResizeResult) {
   UniServiceJSBridge.invokeOnCallback('onWindowResize', res) // API
 }
 
-function onAppEnterForeground() {
+function onAppEnterForeground(enterOptions: LaunchOptions) {
   const page = getCurrentPage()
-  const showOptions = {
-    path: '',
-    query: {},
-  }
-  if (page) {
-    showOptions.path = page.$page.route
-    showOptions.query = page.$page.options
-  }
-  invokeHook(getApp() as ComponentPublicInstance, ON_SHOW, showOptions)
+
+  invokeHook(getApp() as ComponentPublicInstance, ON_SHOW, enterOptions)
   invokeHook(page as ComponentPublicInstance, ON_SHOW)
 }
 

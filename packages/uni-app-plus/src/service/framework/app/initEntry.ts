@@ -1,4 +1,5 @@
 import { getRouteOptions } from '@dcloudio/uni-core'
+import { parseRedirectInfo } from './utils'
 
 let isInitEntryPage = false
 
@@ -14,9 +15,10 @@ export function initEntry() {
   const weexPlus = weex.requireModule('plus')
 
   if (weexPlus.getRedirectInfo) {
-    const info = weexPlus.getRedirectInfo() || {}
-    entryPagePath = info.path
-    entryPageQuery = info.query ? '?' + info.query : ''
+    const { path, query, referrerInfo } = parseRedirectInfo()
+    entryPagePath = path
+    entryPageQuery = query
+    __uniConfig.referrerInfo = referrerInfo
   } else {
     const argsJsonStr = plus.runtime.arguments
     if (!argsJsonStr) {

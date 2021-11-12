@@ -66,7 +66,13 @@ function parseApp(
       injectAppLaunchHooks(internalInstance)
 
       ctx.globalData = this.globalData
-      instance.$callHook(ON_LAUNCH, extend({ app: this }, options))
+      instance.$callHook(
+        ON_LAUNCH,
+        extend(
+          { app: { mixin: internalInstance.appContext.app.mixin } },
+          options
+        )
+      )
     },
   }
 

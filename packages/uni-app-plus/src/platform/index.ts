@@ -24,3 +24,8 @@ export function getSameOriginUrl(url: string): Promise<string> {
   return Promise.resolve(url)
 }
 export const TEMP_PATH = ''
+
+export {
+  getEnterOptions,
+  getLaunchOptions,
+} from '../service/framework/app/utils'

@@ -1397,17 +1397,9 @@ function onResize$1(res) {
   invokeHook(getCurrentPage(), ON_RESIZE, res);
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
-function onAppEnterForeground() {
+function onAppEnterForeground(enterOptions2) {
   const page = getCurrentPage();
-  const showOptions = {
-    path: "",
-    query: {}
-  };
-  if (page) {
-    showOptions.path = page.$page.route;
-    showOptions.query = page.$page.options;
-  }
-  invokeHook(getApp(), ON_SHOW, showOptions);
+  invokeHook(getApp(), ON_SHOW, enterOptions2);
   invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
@@ -1508,6 +1500,17 @@ function initAppConfig(appConfig) {
 }
 function initServicePlugin(app) {
   initAppConfig(app._context.config);
+}
+function createLaunchOptions() {
+  return {
+    path: "",
+    query: {},
+    scene: 1001,
+    referrerInfo: {
+      appId: "",
+      extraData: {}
+    }
+  };
 }
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
@@ -4473,6 +4476,14 @@ function injectAppLaunchHooks(appInstance) {
     injectHook(ON_LAUNCH, hook, appInstance);
   });
 }
+const API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
+const getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+  return getEnterOptions();
+});
+const API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
+const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+  return getLaunchOptions();
+});
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
   {
@@ -6083,6 +6094,25 @@ function revokeObjectURL(url) {
   const URL = window.URL || window.webkitURL;
   URL.revokeObjectURL(url);
   delete files[url];
+}
+const launchOptions = createLaunchOptions();
+const enterOptions = createLaunchOptions();
+function getEnterOptions() {
+  return enterOptions;
+}
+function getLaunchOptions() {
+  return launchOptions;
+}
+function initLaunchOptions({
+  path,
+  query
+}) {
+  extend(launchOptions, {
+    path,
+    query
+  });
+  extend(enterOptions, launchOptions);
+  return launchOptions;
 }
 var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
@@ -13976,14 +14006,14 @@ function setupApp(comp) {
       const onLaunch = () => {
         const { onLaunch: onLaunch2, onShow, onPageNotFound } = instance2;
         const path = route.path.substr(1);
-        const launchOptions = {
+        const launchOptions2 = extend({
+          app: { mixin: instance2.appContext.app.mixin }
+        }, initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query),
-          scene: 1001,
-          app: instance2.proxy
-        };
-        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions);
-        onShow && invokeArrayFns$1(onShow, launchOptions);
+          query: decodedQuery(route.query)
+        }));
+        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
+        onShow && invokeArrayFns$1(onShow, launchOptions2);
         if (__UNI_FEATURE_PAGES__) {
           if (!route.matched.length) {
             const pageNotFoundOptions = {
@@ -14038,7 +14068,12 @@ function onMessage(evt) {
   }
 }
 function onVisibilityChange() {
-  UniServiceJSBridge.emit(document.visibilityState === "visible" ? ON_APP_ENTER_FOREGROUND : ON_APP_ENTER_BACKGROUND);
+  const { emit: emit2 } = UniServiceJSBridge;
+  if (document.visibilityState === "visible") {
+    emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
+  } else {
+    emit2(ON_APP_ENTER_BACKGROUND);
+  }
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -19667,6 +19702,8 @@ var api = {
   onAppLaunch,
   onLocaleChange,
   setPageMeta,
+  getEnterOptionsSync,
+  getLaunchOptionsSync,
   cssVar,
   cssEnv,
   cssConstant,
@@ -21826,4 +21863,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

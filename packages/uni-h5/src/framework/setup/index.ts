@@ -1,4 +1,4 @@
-import { invokeArrayFns, isPlainObject } from '@vue/shared'
+import { extend, invokeArrayFns, isPlainObject } from '@vue/shared'
 import {
   nextTick,
   ComponentInternalInstance,
@@ -29,6 +29,7 @@ import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
+import { initLaunchOptions, getEnterOptions } from './utils'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
@@ -141,12 +142,15 @@ export function setupApp(comp: any) {
       const onLaunch = () => {
         const { onLaunch, onShow, onPageNotFound } = instance
         const path = route.path.substr(1)
-        const launchOptions = {
-          path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query),
-          scene: 1001,
-          app: instance.proxy,
-        }
+        const launchOptions = extend(
+          {
+            app: { mixin: instance.appContext.app.mixin },
+          },
+          initLaunchOptions({
+            path: path || __uniRoutes[0].meta.route,
+            query: decodedQuery(route.query),
+          })
+        )
         onLaunch && invokeArrayFns(onLaunch, launchOptions)
         onShow && invokeArrayFns(onShow, launchOptions)
         if (__UNI_FEATURE_PAGES__) {
@@ -213,9 +217,10 @@ function onMessage(evt: {
   }
 }
 function onVisibilityChange() {
-  UniServiceJSBridge.emit(
-    document.visibilityState === 'visible'
-      ? ON_APP_ENTER_FOREGROUND
-      : ON_APP_ENTER_BACKGROUND
-  )
+  const { emit } = UniServiceJSBridge
+  if (document.visibilityState === 'visible') {
+    emit(ON_APP_ENTER_FOREGROUND, getEnterOptions())
+  } else {
+    emit(ON_APP_ENTER_BACKGROUND)
+  }
 }

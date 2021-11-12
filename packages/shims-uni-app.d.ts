@@ -61,6 +61,10 @@ declare namespace UniApp {
     qqMapKey?: string
     googleMapKey?: string
     // app-plus
+    referrerInfo?: {
+      appId: string
+      extraData: Record<string, any>
+    }
     entryPagePath?: string
     entryPageQuery?: string
     realEntryPagePath?: string

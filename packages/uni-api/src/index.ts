@@ -19,7 +19,7 @@ export * from './service/ui/setPageMeta'
 
 export * from './service/keyboard/getSelectedTextRange'
 
-export * from './service/hook/app'
+export * from './service/lifecycle/app'
 
 // protocols
 export * from './protocols/base/canIUse'

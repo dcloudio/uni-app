@@ -2225,17 +2225,9 @@ var serviceContext = (function (vue) {
       invokeHook(getCurrentPage(), ON_RESIZE, res);
       UniServiceJSBridge.invokeOnCallback('onWindowResize', res); // API
   }
-  function onAppEnterForeground() {
+  function onAppEnterForeground(enterOptions) {
       const page = getCurrentPage();
-      const showOptions = {
-          path: '',
-          query: {},
-      };
-      if (page) {
-          showOptions.path = page.$page.route;
-          showOptions.query = page.$page.options;
-      }
-      invokeHook(getApp(), ON_SHOW, showOptions);
+      invokeHook(getApp(), ON_SHOW, enterOptions);
       invokeHook(page, ON_SHOW);
   }
   function onAppEnterBackground() {
@@ -2341,6 +2333,18 @@ var serviceContext = (function (vue) {
 
   function initServicePlugin(app) {
       initAppConfig(app._context.config);
+  }
+
+  function createLaunchOptions() {
+      return {
+          path: '',
+          query: {},
+          scene: 1001,
+          referrerInfo: {
+              appId: '',
+              extraData: {},
+          },
+      };
   }
 
   function getRealPath(filepath) {
@@ -2647,6 +2651,55 @@ var serviceContext = (function (vue) {
           component: component.$el.nodeId,
       }, _pageId);
       UniServiceJSBridge.unsubscribe(getEventName(reqId));
+  }
+
+  const EVENT_BACKBUTTON = 'backbutton';
+  function backbuttonListener() {
+      uni.navigateBack({
+          from: 'backbutton',
+          success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+      });
+  }
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+  function getLaunchOptions() {
+      return launchOptions;
+  }
+  function getEnterOptions() {
+      return enterOptions;
+  }
+  function initEnterOptions({ path, query, referrerInfo, }) {
+      extend(enterOptions, {
+          path,
+          query: query ? parseQuery(query) : {},
+          referrerInfo: referrerInfo || {},
+      });
+  }
+  function initLaunchOptions({ path, query, referrerInfo, }) {
+      extend(launchOptions, {
+          path,
+          query: query ? parseQuery(query) : {},
+          referrerInfo: referrerInfo || {},
+      });
+      extend(enterOptions, launchOptions);
+      return launchOptions;
+  }
+  function parseRedirectInfo() {
+      const weexPlus = weex.requireModule('plus');
+      const { path, query, extraData, userAction } = weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+          appId: '',
+          extraData: {},
+      };
+      if (extraData) {
+          referrerInfo.extraData = extraData;
+      }
+      return {
+          path,
+          query: query ? '?' + query : '',
+          referrerInfo,
+          userAction,
+      };
   }
 
   const TEMP_PATH$1 = '';
@@ -4507,6 +4560,14 @@ var serviceContext = (function (vue) {
           vue.injectHook(ON_LAUNCH, hook, appInstance);
       });
   }
+  const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
+  const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+      return getEnterOptions();
+  });
+  const API_GET_LAUNCH_OPTIONS_SYNC = 'getLaunchOptionsSync';
+  const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+      return getLaunchOptions();
+  });
 
   const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
 
@@ -10179,9 +10240,10 @@ var serviceContext = (function (vue) {
       let entryPageQuery;
       const weexPlus = weex.requireModule('plus');
       if (weexPlus.getRedirectInfo) {
-          const info = weexPlus.getRedirectInfo() || {};
-          entryPagePath = info.path;
-          entryPageQuery = info.query ? '?' + info.query : '';
+          const { path, query, referrerInfo } = parseRedirectInfo();
+          entryPagePath = path;
+          entryPageQuery = query;
+          __uniConfig.referrerInfo = referrerInfo;
       }
       else {
           const argsJsonStr = plus.runtime.arguments;
@@ -10244,14 +10306,6 @@ var serviceContext = (function (vue) {
       }
   }
 
-  const EVENT_BACKBUTTON = 'backbutton';
-  function backbuttonListener() {
-      uni.navigateBack({
-          from: 'backbutton',
-          success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-      });
-  }
-
   function initGlobalEvent() {
       const plusGlobalEvent = plus.globalEvent;
       const weexGlobalEvent = weex.requireModule('globalEvent');
@@ -10268,7 +10322,11 @@ var serviceContext = (function (vue) {
           emit(ON_APP_ENTER_BACKGROUND);
       });
       plusGlobalEvent.addEventListener('resume', () => {
-          emit(ON_APP_ENTER_FOREGROUND);
+          const info = parseRedirectInfo();
+          if (info.userAction) {
+              initEnterOptions(info);
+          }
+          emit(ON_APP_ENTER_FOREGROUND, getEnterOptions());
       });
       weexGlobalEvent.addEventListener('uistylechange', function (event) {
           const args = {
@@ -10303,12 +10361,15 @@ var serviceContext = (function (vue) {
   }
 
   function initAppLaunch(appVm) {
-      const args = {
-          path: __uniConfig.entryPagePath,
-          query: {},
-          scene: 1001,
-          app: appVm,
-      };
+      const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+      const args = extend({
+          // 为了让 uni-stat 在 uni.onLaunch 中可以 mixin
+          app: { mixin: appVm.$.appContext.app.mixin },
+      }, initLaunchOptions({
+          path: entryPagePath,
+          query: entryPageQuery,
+          referrerInfo: referrerInfo,
+      }));
       injectAppLaunchHooks(appVm.$);
       invokeHook(appVm, ON_LAUNCH, args);
       invokeHook(appVm, ON_SHOW, args);
@@ -12775,6 +12836,8 @@ var serviceContext = (function (vue) {
     onAppLaunch: onAppLaunch,
     onLocaleChange: onLocaleChange,
     setPageMeta: setPageMeta,
+    getEnterOptionsSync: getEnterOptionsSync,
+    getLaunchOptionsSync: getLaunchOptionsSync,
     setStorageSync: setStorageSync,
     setStorage: setStorage,
     getStorageSync: getStorageSync,

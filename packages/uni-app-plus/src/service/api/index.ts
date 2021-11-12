@@ -107,4 +107,6 @@ export {
   onAppLaunch,
   onLocaleChange,
   setPageMeta,
+  getEnterOptionsSync,
+  getLaunchOptionsSync,
 } from '@dcloudio/uni-api'

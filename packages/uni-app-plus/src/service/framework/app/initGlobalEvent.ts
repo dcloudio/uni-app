@@ -5,7 +5,13 @@ import {
   ON_THEME_CHANGE,
   ON_KEYBOARD_HEIGHT_CHANGE,
 } from '@dcloudio/uni-shared'
-import { EVENT_BACKBUTTON, backbuttonListener } from './utils'
+import {
+  EVENT_BACKBUTTON,
+  backbuttonListener,
+  parseRedirectInfo,
+  initEnterOptions,
+  getEnterOptions,
+} from './utils'
 
 export function initGlobalEvent() {
   const plusGlobalEvent = (plus as any).globalEvent
@@ -25,7 +31,11 @@ export function initGlobalEvent() {
   })
 
   plusGlobalEvent.addEventListener('resume', () => {
-    emit(ON_APP_ENTER_FOREGROUND)
+    const info = parseRedirectInfo()
+    if (info.userAction) {
+      initEnterOptions(info)
+    }
+    emit(ON_APP_ENTER_FOREGROUND, getEnterOptions())
   })
 
   weexGlobalEvent.addEventListener(
