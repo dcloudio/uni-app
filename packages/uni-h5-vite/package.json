@@ -25,7 +25,9 @@
     "@vue/compiler-dom": "3.2.21",
     "@vue/compiler-sfc": "3.2.21",
     "@vue/server-renderer": "3.2.21",
+    "@vue/shared": "3.2.21",
     "debug": "^4.3.2",
+    "fs-extra": "^10.0.0",
     "mime": "^3.0.0",
     "module-alias": "^2.2.2"
   },

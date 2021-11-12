@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import {
   EXTNAME_JS_RE,
   normalizePath,

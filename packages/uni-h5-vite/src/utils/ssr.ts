@@ -12,7 +12,7 @@ import {
   getBuiltInPaths,
   transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
-import { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
+import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import resolve from 'resolve'
 import { resolveComponentType } from '@vue/compiler-dom'
 import { transformPageHead } from '../plugin/transforms/transformPageHead'

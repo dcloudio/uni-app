@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url'
 import { IncomingMessage, ServerResponse } from 'http'
-import { ViteDevServer } from 'vite'
+import type { ViteDevServer } from 'vite'
 import { NextHandler } from './static'
 import path from 'path'
 import { EXTNAME_VUE_RE } from '@dcloudio/uni-cli-shared'

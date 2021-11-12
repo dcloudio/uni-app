@@ -1,4 +1,4 @@
-import { ViteDevServer } from 'vite'
+import type { ViteDevServer } from 'vite'
 
 export const external = [
   '@dcloudio/uni-app',

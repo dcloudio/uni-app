@@ -1,4 +1,4 @@
-import { ResolvedConfig } from 'vite'
+import type { ResolvedConfig } from 'vite'
 import { UniVitePlugin } from '@dcloudio/uni-cli-shared'
 import { createHandleHotUpdate } from './handleHotUpdate'
 import { createTransformIndexHtml } from './transformIndexHtml'

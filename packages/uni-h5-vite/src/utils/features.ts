@@ -1,4 +1,4 @@
-import { ConfigEnv, UserConfig } from 'vite'
+import type { ConfigEnv, UserConfig } from 'vite'
 import {
   parsePagesJsonOnce,
   parseManifestJsonOnce,

@@ -22,6 +22,7 @@
     "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003",
+    "@vue/shared": "3.2.21",
     "base64url": "^3.0.1",
     "debug": "^4.3.2",
     "magic-string": "^0.25.7"

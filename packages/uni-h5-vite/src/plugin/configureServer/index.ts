@@ -2,7 +2,7 @@ import {
   getRouterOptions,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { uniTimestampMiddleware } from './middlewares/timestamp'
 import { initSSR } from './ssr'
 import { initStatic } from './static'

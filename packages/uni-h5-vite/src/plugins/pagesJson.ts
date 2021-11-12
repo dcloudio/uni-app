@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import {
   API_DEPS_CSS,
   FEATURE_DEFINES,

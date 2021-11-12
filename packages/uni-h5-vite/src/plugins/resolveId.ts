@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 import { resolveBuiltIn, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
 import { ownerModuleName } from '../utils'

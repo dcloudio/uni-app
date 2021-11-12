@@ -29,6 +29,7 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-mp-vite": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3021320211109003",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003",
     "fs-extra": "^10.0.0"
   }
 }

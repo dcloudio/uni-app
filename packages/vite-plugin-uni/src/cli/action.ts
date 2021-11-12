@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
-import { BuildOptions, ServerOptions } from 'vite'
+import type { BuildOptions, ServerOptions } from 'vite'
 import { M } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'

@@ -1,5 +1,5 @@
 import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { rewriteDefault } from '@vue/compiler-sfc'
 
 import { missingModuleName, parseRenderjs } from '@dcloudio/uni-cli-shared'

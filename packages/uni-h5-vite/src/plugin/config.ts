@@ -1,7 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-import { normalizePath, Plugin, ResolvedConfig } from 'vite'
-import { isInHBuilderX, resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
+import type { Plugin, ResolvedConfig } from 'vite'
+import {
+  isInHBuilderX,
+  normalizePath,
+  resolveMainPathOnce,
+} from '@dcloudio/uni-cli-shared'
 import { createDefine, isSsr } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
 import { external } from './configureServer/ssr'

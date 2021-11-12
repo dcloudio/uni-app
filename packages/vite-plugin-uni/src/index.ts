@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
+import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import type { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
 import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'

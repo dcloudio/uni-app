@@ -15,7 +15,7 @@ const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 //Page
 const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
+const ON_READY$1 = 'onReady';
 const ON_UNLOAD = 'onUnload';
 const ON_RESIZE = 'onResize';
 const ON_TAB_ITEM_TAP = 'onTabItemTap';
@@ -194,7 +194,7 @@ function initHook$1(mpOptions, hook, excludes) {
         };
     }
 }
-const EXCLUDE_HOOKS = [ON_READY];
+const EXCLUDE_HOOKS = [ON_READY$1];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
     hooks.forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
@@ -646,6 +646,8 @@ function initCreatePage(parseOptions) {
         return Component(parsePage(vuePageOptions, parseOptions));
     };
 }
+
+const ON_READY = 'onReady';
 
 const MPPage = Page;
 const MPComponent = Component;

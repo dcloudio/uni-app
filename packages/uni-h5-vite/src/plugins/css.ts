@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { OutputAsset, OutputChunk } from 'rollup'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 
 import { buildInCssSet, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 

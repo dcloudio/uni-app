@@ -25,6 +25,8 @@
     "@rollup/pluginutils": "^4.1.1",
     "@vue/compiler-core": "3.2.21",
     "@vue/compiler-dom": "3.2.21",
+    "@vue/shared": "3.2.21",
+    "chalk": "^4.1.1",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",
     "debug": "^4.3.2",

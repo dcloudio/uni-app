@@ -1,6 +1,76 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
 import { injectHook, ref } from 'vue';
 
+// lifecycle
+// App and Page
+const ON_SHOW$1 = 'onShow';
+//Page
+const ON_LOAD$1 = 'onLoad';
+const ON_READY$1 = 'onReady';
+
+class EventChannel$1 {
+    constructor(id, events) {
+        this.id = id;
+        this.listener = {};
+        this.emitCache = {};
+        if (events) {
+            Object.keys(events).forEach((name) => {
+                this.on(name, events[name]);
+            });
+        }
+    }
+    emit(eventName, ...args) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
+        }
+        fns.forEach((opt) => {
+            opt.fn.apply(opt.fn, args);
+        });
+        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
+    }
+    on(eventName, fn) {
+        this._addListener(eventName, 'on', fn);
+        this._clearCache(eventName);
+    }
+    once(eventName, fn) {
+        this._addListener(eventName, 'once', fn);
+        this._clearCache(eventName);
+    }
+    off(eventName, fn) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return;
+        }
+        if (fn) {
+            for (let i = 0; i < fns.length;) {
+                if (fns[i].fn === fn) {
+                    fns.splice(i, 1);
+                    i--;
+                }
+                i++;
+            }
+        }
+        else {
+            delete this.listener[eventName];
+        }
+    }
+    _clearCache(eventName) {
+        const cacheArgs = this.emitCache[eventName];
+        if (cacheArgs) {
+            for (; cacheArgs.length > 0;) {
+                this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
+            }
+        }
+    }
+    _addListener(eventName, type, fn) {
+        (this.listener[eventName] || (this.listener[eventName] = [])).push({
+            fn,
+            type,
+        });
+    }
+}
+
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
 // lifecycle
@@ -800,13 +870,13 @@ function parse$2(appOptions) {
         if (!this.$vm) {
             this.onLaunch(args);
         }
-        this.$vm.$callHook(ON_SHOW, args);
+        this.$vm.$callHook(ON_SHOW$1, args);
     };
 }
 
 var parseAppOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  parse: parse$2
+    __proto__: null,
+    parse: parse$2
 });
 
 /**
@@ -881,7 +951,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {
                 this.$vm.$callHook('mounted');
-                this.$vm.$callHook(ON_READY);
+                this.$vm.$callHook(ON_READY$1);
             }
         },
         detached() {
@@ -947,8 +1017,8 @@ function parse$1(componentOptions) {
             const pageInstance = this.pageinstance;
             pageInstance.$vm = this.$vm;
             if (hasOwn(pageInstance, '_$args')) {
-                this.$vm.$callHook(ON_LOAD, pageInstance._$args);
-                this.$vm.$callHook(ON_SHOW);
+                this.$vm.$callHook(ON_LOAD$1, pageInstance._$args);
+                this.$vm.$callHook(ON_SHOW$1);
                 delete pageInstance._$args;
             }
         }
@@ -972,13 +1042,13 @@ function parse$1(componentOptions) {
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
-  parse: parse$1,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes
+    __proto__: null,
+    mocks: mocks,
+    isPage: isPage,
+    initRelation: initRelation,
+    parse: parse$1,
+    handleLink: handleLink,
+    initLifetimes: initLifetimes
 });
 
 function parse(pageOptions) {
@@ -987,15 +1057,15 @@ function parse(pageOptions) {
     // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
     methods.onShow = function onShow() {
         if (this.$vm && this._$loaded) {
-            this.$vm.$callHook(ON_SHOW);
+            this.$vm.$callHook(ON_SHOW$1);
         }
     };
     methods.onLoad = function onLoad(args) {
         // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
         if (this.$vm) {
             this._$loaded = true;
-            this.$vm.$callHook(ON_LOAD, args);
-            this.$vm.$callHook(ON_SHOW);
+            this.$vm.$callHook(ON_LOAD$1, args);
+            this.$vm.$callHook(ON_SHOW$1);
         }
         else {
             this.pageinstance._$args = args;
@@ -1004,20 +1074,20 @@ function parse(pageOptions) {
 }
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  parse: parse,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation
+    __proto__: null,
+    parse: parse,
+    handleLink: handleLink,
+    initLifetimes: initLifetimes,
+    mocks: mocks,
+    isPage: isPage,
+    initRelation: initRelation
 });
 
 const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 const createSubpackageApp = initCreateSubpackageApp(parseAppOptions);
-swan.EventChannel = EventChannel;
+swan.EventChannel = EventChannel$1;
 swan.createApp = global.createApp = createApp;
 swan.createPage = createPage;
 swan.createComponent = createComponent;

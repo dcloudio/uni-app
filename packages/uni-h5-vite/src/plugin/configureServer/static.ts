@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import { ViteDevServer } from 'vite'
+import type { ViteDevServer } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import {
   isImportRequest,

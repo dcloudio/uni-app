@@ -34,9 +34,11 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3021320211109003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211109003",
     "@vue/server-renderer": "3.2.21",
+    "@vue/shared": "3.2.21",
     "localstorage-polyfill": "^1.0.1",
     "pako": "^2.0.3",
     "safe-area-insets": "^1.4.1",
+    "vue-router": "^4.0.12",
     "xmlhttprequest": "^1.8.0"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",

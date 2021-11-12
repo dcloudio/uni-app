@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 
 import { extend } from '@vue/shared'
 

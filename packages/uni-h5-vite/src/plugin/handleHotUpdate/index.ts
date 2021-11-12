@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { ModuleGraph, Plugin } from 'vite'
+import type { ModuleGraph, Plugin } from 'vite'
 import { extend } from '@vue/shared'
 import {
   initEasycomsOnce,

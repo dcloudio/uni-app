@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 
-import { LogLevel } from 'vite'
+import type { LogLevel } from 'vite'
 
 import { PLATFORMS } from './utils'
 import { runBuild, runDev } from './action'
