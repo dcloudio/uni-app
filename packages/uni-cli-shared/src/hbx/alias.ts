@@ -26,7 +26,7 @@ export function initModuleAlias() {
 }
 
 function supportAutoInstallPlugin() {
-  return false
+  return true
 }
 
 function sendSignal(lang: string) {
