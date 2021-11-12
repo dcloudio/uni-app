@@ -17,5 +17,3 @@ export function sendNativeEvent(
   // 实时获取weex module（weex可能会变化，比如首页nvue加速显示时）
   return requireNativePlugin('plus').sendNativeEvent(event, data, callback)
 }
-
-export const sendHostEvent = sendNativeEvent

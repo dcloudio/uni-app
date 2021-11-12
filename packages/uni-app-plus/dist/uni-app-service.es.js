@@ -6857,7 +6857,6 @@ var serviceContext = (function (vue) {
       // 实时获取weex module（weex可能会变化，比如首页nvue加速显示时）
       return requireNativePlugin('plus').sendNativeEvent(event, data, callback);
   }
-  const sendHostEvent = sendNativeEvent;
 
   const getClipboardData = defineAsyncApi(API_GET_CLIPBOARD_DATA, (_, { resolve, reject }) => {
       const clipboard = requireNativePlugin('clipboard');
@@ -12136,6 +12135,17 @@ var serviceContext = (function (vue) {
       __uniConfig.serviceReady = true;
   }
 
+  const sendHostEvent = sendNativeEvent;
+  const API_NAVIGATE_TO_MINI_PROGRAM = 'navigateToMiniProgram';
+  const navigateToMiniProgram = defineAsyncApi(API_NAVIGATE_TO_MINI_PROGRAM, (data, { resolve, reject }) => {
+      sendHostEvent(API_NAVIGATE_TO_MINI_PROGRAM, data, (res) => {
+          if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
+              return reject(res.errMsg.split(' ')[1]);
+          }
+          resolve();
+      });
+  });
+
   const EventType = {
       load: 'load',
       close: 'close',
@@ -12898,9 +12908,10 @@ var serviceContext = (function (vue) {
     requestPayment: requestPayment,
     requireNativePlugin: requireNativePlugin,
     sendNativeEvent: sendNativeEvent,
-    sendHostEvent: sendHostEvent,
     __vuePlugin: index$1,
     restoreGlobal: restoreGlobal,
+    sendHostEvent: sendHostEvent,
+    navigateToMiniProgram: navigateToMiniProgram,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,
