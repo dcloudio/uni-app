@@ -23,9 +23,9 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3021320211112001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211112001",
     "@rollup/pluginutils": "^4.1.1",
-    "@vue/compiler-core": "3.2.21",
-    "@vue/compiler-dom": "3.2.21",
-    "@vue/shared": "3.2.21",
+    "@vue/compiler-core": "3.2.22",
+    "@vue/compiler-dom": "3.2.22",
+    "@vue/shared": "3.2.22",
     "chalk": "^4.1.1",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",
@@ -56,7 +56,7 @@
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.1",
     "@types/stylus": "^0.48.36",
-    "@vue/compiler-sfc": "3.2.21",
+    "@vue/compiler-sfc": "3.2.22",
     "postcss": "^8.3.8"
   }
 }

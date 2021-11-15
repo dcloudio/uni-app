@@ -2541,6 +2541,8 @@ export default function vueFactory(exports) {
   }
 
   function setDevtoolsHook(hook, target) {
+    var _a, _b;
+
     devtools = hook;
 
     if (devtools) {
@@ -2557,7 +2559,9 @@ export default function vueFactory(exports) {
     // browser environment to avoid the timer handle stalling test runner exit
     // (#4815)
     // eslint-disable-next-line no-restricted-globals
-    typeof window !== 'undefined' && !navigator.userAgent.includes('jsdom')) {
+    typeof window !== 'undefined' && // some envs mock window but not fully
+    window.HTMLElement && // also exclude jsdom
+    !((_b = (_a = window.navigator) === null || _a === void 0 ? void 0 : _a.userAgent) === null || _b === void 0 ? void 0 : _b.includes('jsdom'))) {
       var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
       replay.push(newHook => {
         setDevtoolsHook(newHook, target);
@@ -8400,8 +8404,8 @@ export default function vueFactory(exports) {
    *
    * #2080
    * Inside keyed `template` fragment static children, if a fragment is moved,
-   * the children will always moved so that need inherit el form previous nodes
-   * to ensure correct moved position.
+   * the children will always be moved. Therefore, in order to ensure correct move
+   * position, el should be inherited from previous nodes.
    */
 
 
@@ -9402,7 +9406,7 @@ export default function vueFactory(exports) {
           var existing = ret[key];
           var incoming = toMerge[key];
 
-          if (existing !== incoming) {
+          if (existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
             ret[key] = existing ? [].concat(existing, incoming) : incoming;
           }
         } else if (key !== '') {
@@ -11589,7 +11593,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.21";
+  var version = "3.2.22";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
