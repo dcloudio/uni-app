@@ -7,7 +7,8 @@ const PLATFORMS = [
   'mp-qq',
   'mp-baidu',
   'mp-alipay',
-  'mp-toutiao'
+  'mp-toutiao',
+  'mp-jd',
 ]
 
 module.exports = {

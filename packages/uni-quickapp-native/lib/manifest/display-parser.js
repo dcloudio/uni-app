@@ -5,6 +5,7 @@ const PLATFORMS = [
   'mp-qq',
   'mp-baidu',
   'mp-alipay',
+  'mp-jd',
   'mp-toutiao',
   'quickapp-native'
 ]
