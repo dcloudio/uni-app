@@ -74,3 +74,15 @@ exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
     process.exit(1)
   }
 }
+
+exports.resolvePackages = (dirname) => {
+  dirname = path.resolve(__dirname, dirname)
+  return fs
+    .readdirSync(dirname)
+    .filter(
+      (p) =>
+        !p.endsWith('.ts') &&
+        !p.startsWith('.') &&
+        fs.existsSync(path.join(dirname, p, 'package.json'))
+    )
+}

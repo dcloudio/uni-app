@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const { prompt } = require('enquirer')
+const { resolvePackages } = require('./utils')
 const args = process.argv.slice(2)
 const packages = [
   ...resolvePackages('../packages'),
@@ -9,18 +10,6 @@ const packages = [
     path.join('playground', pkg)
   ),
 ]
-
-function resolvePackages(dirname) {
-  dirname = path.resolve(__dirname, dirname)
-  return fs
-    .readdirSync(dirname)
-    .filter(
-      (p) =>
-        !p.endsWith('.ts') &&
-        !p.startsWith('.') &&
-        fs.existsSync(path.join(dirname, p, 'package.json'))
-    )
-}
 
 const getPkgRoot = (pkg) => path.resolve(__dirname, '../packages/' + pkg)
 

@@ -20,4 +20,5 @@ export const M = {
   'easycom.conflict': 'easycom组件冲突：',
   'mp.component.args[0]': '{0}的第一个参数必须为静态字符串',
   'mp.component.args[1]': '{0}需要两个参数',
+  'mp.360.unsupported': 'vue3暂不支持360小程序',
 }

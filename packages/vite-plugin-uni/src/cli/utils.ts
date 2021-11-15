@@ -43,6 +43,10 @@ export function addConfigFile(inlineConfig: InlineConfig) {
 }
 
 export function initEnv(type: 'dev' | 'build', options: CliOptions) {
+  if (options.platform === 'mp-360') {
+    console.error(M['mp.360.unsupported'])
+    process.exit(0)
+  }
   if (type === 'dev') {
     process.env.NODE_ENV = 'development'
   } else if (type === 'build') {
