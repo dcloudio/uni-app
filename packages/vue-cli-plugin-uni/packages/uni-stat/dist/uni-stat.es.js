@@ -82,6 +82,7 @@ const getPlatformName = () => {
     'mp-baidu': 'bd',
     'mp-toutiao': 'tt',
     'mp-qq': 'qq',
+    'mp-jd': 'jd',
     'quickapp-native': 'qn',
     'mp-kuaishou': 'ks',
   };
