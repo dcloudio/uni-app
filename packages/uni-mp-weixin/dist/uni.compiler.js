@@ -3,7 +3,6 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniShared = require('@dcloudio/uni-shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -59,12 +58,8 @@ var source = {
 	condition: condition
 };
 
+const customElements = ['page-meta', 'navigation-bar', 'match-media'];
 const compilerOptions = {
-    isNativeTag: uniShared.isNativeTag,
-    isCustomElement: (tag) => {
-        return (['page-meta', 'navigation-bar', 'match-media'].includes(tag) ||
-            uniShared.isCustomElement(tag));
-    },
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
 };
 const miniProgram = {
@@ -117,7 +112,7 @@ const options = {
         filename: projectConfigFilename,
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.wxs',
             lang: 'wxs',
             generate(filter, filename) {

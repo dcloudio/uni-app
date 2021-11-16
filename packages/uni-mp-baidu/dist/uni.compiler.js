@@ -2,7 +2,6 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniShared = require('@dcloudio/uni-shared');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 
@@ -65,6 +64,7 @@ const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn);
  */
 const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel);
 
+const customElements = ['follow-swan', 'login', 'inline-payment-panel'];
 const nodeTransforms = [uniCliShared.transformRef, transformFor, uniCliShared.transformMatchMedia];
 const directiveTransforms = {
     on: transformOn,
@@ -82,8 +82,6 @@ const miniProgram = {
     directive: 's-',
 };
 const compilerOptions = {
-    isNativeTag: uniShared.isNativeTag,
-    isCustomElement: uniShared.isCustomElement,
     nodeTransforms,
     directiveTransforms,
 };
@@ -109,7 +107,7 @@ const options = {
         filename: projectConfigFilename,
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.sjs',
             lang: 'sjs',
             generate(filter, filename) {

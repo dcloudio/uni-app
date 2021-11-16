@@ -1,4 +1,7 @@
-import { isNativeTag, isCustomElement } from '@dcloudio/uni-shared'
+import {
+  isMiniProgramNativeTag as isNativeTag,
+  createIsCustomElement,
+} from '@dcloudio/uni-shared'
 
 import {
   CopyOptions,
@@ -13,8 +16,10 @@ import * as compiler from '@dcloudio/uni-mp-compiler'
 export function uniOptions({
   copyOptions,
   miniProgram,
+  customElements,
   compilerOptions,
 }: {
+  customElements?: string[]
   copyOptions: CopyOptions
   miniProgram: MiniProgramCompilerOptions
   compilerOptions?: CompilerOptions
@@ -25,7 +30,7 @@ export function uniOptions({
     compilerOptions: {
       miniProgram,
       isNativeTag,
-      isCustomElement,
+      isCustomElement: createIsCustomElement(customElements),
       ...compilerOptions,
       nodeTransforms: [
         transformPageHead,

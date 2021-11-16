@@ -3,7 +3,6 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniShared = require('@dcloudio/uni-shared');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -135,8 +134,6 @@ const directiveTransforms = {
     model: transformModel,
 };
 const compilerOptions = {
-    isNativeTag: uniShared.isNativeTag,
-    isCustomElement: uniShared.isCustomElement,
     nodeTransforms,
     directiveTransforms,
 };

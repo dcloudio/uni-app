@@ -1,6 +1,5 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
-import { isNativeTag, isCustomElement } from '@dcloudio/uni-shared'
 import {
   MiniProgramCompilerOptions,
   transformComponentLink,
@@ -12,8 +11,6 @@ import source from './jsconfig.json'
 import { formatAppJson } from './utils'
 
 export const compilerOptions: CompilerOptions = {
-  isNativeTag,
-  isCustomElement,
   nodeTransforms: [transformRef, transformComponentLink],
 }
 

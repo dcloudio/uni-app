@@ -1,6 +1,5 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
-import { isNativeTag, isCustomElement } from '@dcloudio/uni-shared'
 import {
   MiniProgramCompilerOptions,
   transformComponentLink,
@@ -17,9 +16,8 @@ const directiveTransforms = {
   on: transformOn,
   model: transformModel,
 }
+
 export const compilerOptions: CompilerOptions = {
-  isNativeTag,
-  isCustomElement,
   nodeTransforms,
   directiveTransforms,
 }

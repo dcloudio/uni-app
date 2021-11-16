@@ -1,10 +1,6 @@
 import path from 'path'
 import { CompilerOptions, NodeTypes } from '@vue/compiler-core'
 import {
-  isNativeTag,
-  isCustomElement as baseIsCustomElement,
-} from '@dcloudio/uni-shared'
-import {
   COMPONENT_ON_LINK,
   createTransformComponentLink,
   MiniProgramCompilerOptions,
@@ -38,12 +34,10 @@ const nodeTransforms = [
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
 ]
 export const compilerOptions: CompilerOptions = {
-  isNativeTag,
-  isCustomElement,
   nodeTransforms,
 }
 
-export const tags = [
+export const customElements = [
   'lifestyle',
   'life-follow',
   'contact-button',
@@ -56,10 +50,6 @@ export const tags = [
   'ix-native-list',
   'mkt',
 ]
-
-function isCustomElement(tag: string) {
-  return tags.includes(tag) || baseIsCustomElement(tag)
-}
 
 export const options: UniMiniProgramPluginOptions = {
   vite: {
@@ -112,6 +102,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.sjs',
       lang: 'sjs',

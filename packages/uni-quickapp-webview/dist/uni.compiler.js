@@ -3,7 +3,6 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniShared = require('@dcloudio/uni-shared');
 var shared = require('@vue/shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -57,8 +56,6 @@ function formatAppJson(_appJson, manifestJson, _pagesJson) {
 }
 
 const compilerOptions = {
-    isNativeTag: uniShared.isNativeTag,
-    isCustomElement: uniShared.isCustomElement,
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
 };
 const miniProgram = {

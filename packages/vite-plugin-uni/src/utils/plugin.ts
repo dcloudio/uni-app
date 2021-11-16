@@ -1,7 +1,6 @@
 import path from 'path'
 import type { Plugin } from 'vite'
 import { extend, isArray, isString, isFunction } from '@vue/shared'
-import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import type {
   CopyOptions,
   UniViteCopyPluginTarget,
@@ -24,10 +23,7 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
   const assets: string[] = []
   const targets: UniViteCopyPluginTarget[] = []
   const transformEvent: Record<string, string> = Object.create(null)
-  const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {
-    isNativeTag,
-    isCustomElement,
-  }
+  const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {}
   let compiler: TemplateCompiler | undefined
   UniVitePlugins.forEach((plugin) => {
     const {

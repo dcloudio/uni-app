@@ -1,5 +1,8 @@
 import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
-import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
+import {
+  createIsCustomElement,
+  isMiniProgramNativeTag as isNativeTag,
+} from '@dcloudio/uni-shared'
 import { compile } from '../src/index'
 import { CompilerOptions } from '../src/options'
 
@@ -30,7 +33,7 @@ export function assert(
     prefixIdentifiers: true,
     inline: true,
     isNativeTag,
-    isCustomElement,
+    isCustomElement: createIsCustomElement([]),
     generatorOpts: {
       concise: true,
     },

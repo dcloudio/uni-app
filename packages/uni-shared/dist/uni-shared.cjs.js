@@ -80,11 +80,16 @@ function isH5NativeTag(tag) {
         (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) &&
         !isBuiltInComponent(tag));
 }
-function isNativeTag(tag) {
+function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
 }
-function isCustomElement(_tag) {
-    return false;
+function isMiniProgramNativeTag(tag) {
+    return isBuiltInComponent(tag);
+}
+function createIsCustomElement(tags = []) {
+    return function isCustomElement(tag) {
+        return tags.includes(tag);
+    };
 }
 function isComponentTag(tag) {
     return tag[0].toLowerCase() + tag.slice(1) === 'component';
@@ -1281,6 +1286,7 @@ exports.addFont = addFont;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
+exports.createIsCustomElement = createIsCustomElement;
 exports.createRpx2Unit = createRpx2Unit;
 exports.createUniEvent = createUniEvent;
 exports.debounce = debounce;
@@ -1300,12 +1306,12 @@ exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
+exports.isAppNativeTag = isAppNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentTag = isComponentTag;
-exports.isCustomElement = isCustomElement;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
-exports.isNativeTag = isNativeTag;
+exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;

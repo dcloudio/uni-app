@@ -112,6 +112,8 @@ number,
 Partial<UniNodeJSON | UniNodeJSONMinify>?
 ];
 
+export declare function createIsCustomElement(tags?: string[]): (tag: string) => boolean;
+
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
 
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
@@ -214,17 +216,17 @@ export declare type InsertAction = [typeof ACTION_TYPE_INSERT, number, number, n
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
+export declare function isAppNativeTag(tag: string): boolean;
+
 export declare function isBuiltInComponent(tag: string): boolean;
 
 export declare function isComponentTag(tag: string): boolean;
-
-export declare function isCustomElement(_tag: string): boolean;
 
 export declare function isH5CustomElement(tag: string): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
 
-export declare function isNativeTag(tag: string): boolean;
+export declare function isMiniProgramNativeTag(tag: string): boolean;
 
 export declare function isRootHook(name: string): boolean;
 

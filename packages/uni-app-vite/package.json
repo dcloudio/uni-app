@@ -24,8 +24,10 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3021320211115001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211115001",
     "@rollup/pluginutils": "^4.1.1",
+    "@vitejs/plugin-vue": "^1.9.4",
     "debug": "^4.3.2",
-    "fs-extra": "^10.0.0"
+    "fs-extra": "^10.0.0",
+    "rollup": "^2.57.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

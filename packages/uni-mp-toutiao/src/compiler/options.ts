@@ -1,6 +1,5 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
-import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import {
   MiniProgramCompilerOptions,
   transformComponentLink,
@@ -22,8 +21,6 @@ const nodeTransforms = [
 ]
 
 export const compilerOptions: CompilerOptions = {
-  isNativeTag,
-  isCustomElement,
   nodeTransforms,
 }
 export const miniProgram: MiniProgramCompilerOptions = {

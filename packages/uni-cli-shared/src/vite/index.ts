@@ -18,8 +18,8 @@ interface UniVitePluginUniOptions {
     miniProgram?: {
       emitFile?: (emittedFile: EmittedAsset) => string
     }
-    isNativeTag: ParserOptions['isNativeTag']
-    isCustomElement: ParserOptions['isCustomElement']
+    isNativeTag?: ParserOptions['isNativeTag']
+    isCustomElement?: ParserOptions['isCustomElement']
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']
   }

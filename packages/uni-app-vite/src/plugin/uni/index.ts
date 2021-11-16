@@ -1,4 +1,4 @@
-import { isNativeTag, isCustomElement } from '@dcloudio/uni-shared'
+import { isAppNativeTag as isNativeTag } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import {
   UniVitePlugin,
@@ -33,7 +33,6 @@ export function uniOptions(): UniVitePlugin['uni'] {
     },
     compilerOptions: {
       isNativeTag,
-      isCustomElement,
       nodeTransforms: [
         transformTapToClick,
         transformMatchMedia,

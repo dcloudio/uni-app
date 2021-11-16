@@ -2,7 +2,6 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniShared = require('@dcloudio/uni-shared');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var compilerCore = require('@vue/compiler-core');
@@ -71,8 +70,6 @@ const nodeTransforms = [
     uniCliShared.transformComponentLink,
 ];
 const compilerOptions = {
-    isNativeTag: uniShared.isNativeTag,
-    isCustomElement: uniShared.isCustomElement,
     nodeTransforms,
 };
 const miniProgram = {

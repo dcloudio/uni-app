@@ -83,12 +83,18 @@ export function isH5NativeTag(tag: string) {
   )
 }
 
-export function isNativeTag(tag: string) {
+export function isAppNativeTag(tag: string) {
   return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag)
 }
 
-export function isCustomElement(_tag: string) {
-  return false
+export function isMiniProgramNativeTag(tag: string) {
+  return isBuiltInComponent(tag)
+}
+
+export function createIsCustomElement(tags: string[] = []) {
+  return function isCustomElement(tag: string) {
+    return tags.includes(tag)
+  }
 }
 
 export function isComponentTag(tag: string) {

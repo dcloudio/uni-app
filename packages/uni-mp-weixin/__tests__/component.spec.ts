@@ -1,6 +1,16 @@
 import { assert } from './testUtils'
-
+import { customElements } from '../src/compiler/options'
 describe('mp-weixin: transform component', () => {
+  test(`built-in component`, () => {
+    const code = customElements.map((tag) => `<${tag}/>`).join('')
+    assert(
+      code,
+      code,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
   test('lazy element', () => {
     assert(
       `<editor/>`,
@@ -14,15 +24,6 @@ describe('mp-weixin: transform component', () => {
       `<block wx:if="{{r0}}"><editor bindready="{{a}}"/></block>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.ready) }
-}`
-    )
-  })
-  test(`match-media`, () => {
-    assert(
-      `<match-media/>`,
-      `<match-media/>`,
-      `(_ctx, _cache) => {
-  return {}
 }`
     )
   })

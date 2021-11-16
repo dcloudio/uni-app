@@ -4,7 +4,6 @@ var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var fs = require('fs-extra');
-var uniShared = require('@dcloudio/uni-shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -89,8 +88,6 @@ const nodeTransforms = [
     uniCliShared.transformComponentLink,
 ];
 const compilerOptions = {
-    isNativeTag: uniShared.isNativeTag,
-    isCustomElement: uniShared.isCustomElement,
     nodeTransforms,
 };
 const miniProgram = {

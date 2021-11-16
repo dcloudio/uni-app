@@ -72,7 +72,7 @@
     "minimist": "^1.2.5",
     "miniprogram-api-typings": "^3.4.4",
     "prettier": "^2.4.1",
-    "rollup": "^2.35.1",
+    "rollup": "^2.57.0",
     "rollup-plugin-jscc": "^2.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",

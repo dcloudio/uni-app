@@ -52,6 +52,7 @@ export interface UniMiniProgramPluginOptions {
     class: MiniProgramCompilerOptions['class']
     slot: MiniProgramCompilerOptions['slot']
     lazyElement?: MiniProgramCompilerOptions['lazyElement']
+    customElements?: string[]
     filter?: {
       lang: string
       extname: string
@@ -80,6 +81,7 @@ export function uniMiniProgramPlugin(
     name: 'vite:uni-mp',
     uni: uniOptions({
       copyOptions,
+      customElements: template.customElements,
       miniProgram: {
         event: template.event,
         class: template.class,

@@ -1,10 +1,6 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
-  isNativeTag,
-  isCustomElement as baseIsCustomElement,
-} from '@dcloudio/uni-shared'
-import {
   MiniProgramCompilerOptions,
   transformComponentLink,
   transformRef,
@@ -13,14 +9,9 @@ import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 
+export const customElements = ['page-meta', 'navigation-bar', 'match-media']
+
 export const compilerOptions: CompilerOptions = {
-  isNativeTag,
-  isCustomElement: (tag) => {
-    return (
-      ['page-meta', 'navigation-bar', 'match-media'].includes(tag) ||
-      baseIsCustomElement(tag)
-    )
-  },
   nodeTransforms: [transformRef, transformComponentLink],
 }
 
@@ -78,6 +69,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.wxs',
       lang: 'wxs',

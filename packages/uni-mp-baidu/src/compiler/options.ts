@@ -1,6 +1,5 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
-import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import {
   MiniProgramCompilerOptions,
   transformMatchMedia,
@@ -13,6 +12,7 @@ import { transformFor } from './transforms/vFor'
 import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
 
+export const customElements = ['follow-swan', 'login', 'inline-payment-panel']
 const nodeTransforms = [transformRef, transformFor, transformMatchMedia]
 const directiveTransforms = {
   on: transformOn,
@@ -31,8 +31,6 @@ export const miniProgram: MiniProgramCompilerOptions = {
 }
 
 export const compilerOptions: CompilerOptions = {
-  isNativeTag,
-  isCustomElement,
   nodeTransforms,
   directiveTransforms,
 }
@@ -63,6 +61,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.sjs',
       lang: 'sjs',

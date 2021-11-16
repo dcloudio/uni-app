@@ -11,61 +11,6 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-const BUILT_IN_TAGS = [
-    'ad',
-    'ad-content-page',
-    'ad-draw',
-    'audio',
-    'button',
-    'camera',
-    'canvas',
-    'checkbox',
-    'checkbox-group',
-    'cover-image',
-    'cover-view',
-    'editor',
-    'form',
-    'functional-page-navigator',
-    'icon',
-    'image',
-    'input',
-    'label',
-    'live-player',
-    'live-pusher',
-    'map',
-    'movable-area',
-    'movable-view',
-    'navigator',
-    'official-account',
-    'open-data',
-    'picker',
-    'picker-view',
-    'picker-view-column',
-    'progress',
-    'radio',
-    'radio-group',
-    'rich-text',
-    'scroll-view',
-    'slider',
-    'swiper',
-    'swiper-item',
-    'switch',
-    'text',
-    'textarea',
-    'video',
-    'view',
-    'web-view',
-].map((tag) => 'uni-' + tag);
-function isBuiltInComponent(tag) {
-    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
-}
-function isNativeTag(tag) {
-    return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
-}
-function isCustomElement$1(_tag) {
-    return false;
-}
-
 var component2 = true;
 var enableAppxNg = true;
 var source = {
@@ -200,11 +145,9 @@ const nodeTransforms = [
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, 6 /* ATTRIBUTE */),
 ];
 const compilerOptions = {
-    isNativeTag,
-    isCustomElement,
     nodeTransforms,
 };
-const tags = [
+const customElements = [
     'lifestyle',
     'life-follow',
     'contact-button',
@@ -217,9 +160,6 @@ const tags = [
     'ix-native-list',
     'mkt',
 ];
-function isCustomElement(tag) {
-    return tags.includes(tag) || isCustomElement$1();
-}
 const options = {
     vite: {
         inject: {
@@ -268,7 +208,7 @@ const options = {
         filename: projectConfigFilename,
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.sjs',
             lang: 'sjs',
             generate(filter, filename) {
