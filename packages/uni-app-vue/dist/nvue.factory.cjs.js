@@ -1,4 +1,12 @@
-export default function vueFactory(exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = vueFactory;
+
+function vueFactory(exports) {
+  'use strict';
   /**
    * Make a map and return a function for checking if a key
    * is in that map.
@@ -6,675 +14,6 @@ export default function vueFactory(exports) {
    * \/\*#\_\_PURE\_\_\*\/
    * So that rollup can tree-shake them if necessary.
    */
-  Object.freeze({});
-  Object.freeze([]);
-  var extend$1 = Object.assign;
-
-  var cacheStringFunction$1 = fn => {
-    var cache = Object.create(null);
-    return str => {
-      var hit = cache[str];
-      return hit || (cache[str] = fn(str));
-    };
-  };
-
-  var camelizeRE$1 = /-(\w)/g;
-  /**
-   * @private
-   */
-
-  var camelize$1 = cacheStringFunction$1(str => {
-    return str.replace(camelizeRE$1, (_, c) => c ? c.toUpperCase() : '');
-  });
-  var hyphenateRE$1 = /\B([A-Z])/g;
-  /**
-   * @private
-   */
-
-  var hyphenate$1 = cacheStringFunction$1(str => str.replace(hyphenateRE$1, '-$1').toLowerCase());
-  /**
-   * @private
-   */
-
-  var capitalize$1 = cacheStringFunction$1(str => str.charAt(0).toUpperCase() + str.slice(1));
-  var JSON_PROTOCOL = 'json://'; // lifecycle
-  // App and Page
-
-  var ON_SHOW = 'onShow';
-  var ON_HIDE = 'onHide';
-  var ON_BACK_PRESS = 'onBackPress';
-  var ON_PAGE_SCROLL = 'onPageScroll';
-  var ON_TAB_ITEM_TAP = 'onTabItemTap';
-  var ON_REACH_BOTTOM = 'onReachBottom';
-  var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-
-  function isElement(el) {
-    // Element
-    return el.nodeType === 1;
-  }
-
-  function resolveOwnerEl(instance) {
-    var {
-      vnode
-    } = instance;
-
-    if (isElement(vnode.el)) {
-      return vnode.el;
-    }
-
-    var {
-      subTree
-    } = instance; // ShapeFlags.ARRAY_CHILDREN = 1<<4
-
-    if (subTree.shapeFlag & 16) {
-      var elemVNode = subTree.children.find(vnode => isElement(vnode.el));
-
-      if (elemVNode) {
-        return elemVNode.el;
-      }
-    }
-
-    return vnode.el;
-  }
-
-  var lastLogTime = 0;
-
-  function formatLog(module) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
-      args[_key2 - 1] = arguments[_key2];
-    }
-
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]\uFF1A").concat(args.map(arg => JSON.stringify(arg)).join(' '));
-  }
-
-  class DOMException extends Error {
-    constructor(message) {
-      super(message);
-      this.name = 'DOMException';
-    }
-
-  }
-
-  function normalizeEventType(type, options) {
-    if (options) {
-      if (options.capture) {
-        type += 'Capture';
-      }
-
-      if (options.once) {
-        type += 'Once';
-      }
-
-      if (options.passive) {
-        type += 'Passive';
-      }
-    }
-
-    return "on".concat(capitalize$1(camelize$1(type)));
-  }
-
-  class UniEvent {
-    constructor(type, opts) {
-      this.defaultPrevented = false;
-      this.timeStamp = Date.now();
-      this._stop = false;
-      this._end = false;
-      this.type = type;
-      this.bubbles = !!opts.bubbles;
-      this.cancelable = !!opts.cancelable;
-    }
-
-    preventDefault() {
-      this.defaultPrevented = true;
-    }
-
-    stopImmediatePropagation() {
-      this._end = this._stop = true;
-    }
-
-    stopPropagation() {
-      this._stop = true;
-    }
-
-  }
-
-  function createUniEvent(evt) {
-    if (evt instanceof UniEvent) {
-      return evt;
-    }
-
-    var [type] = parseEventName(evt.type);
-    var uniEvent = new UniEvent(type, {
-      bubbles: false,
-      cancelable: false
-    });
-    extend$1(uniEvent, evt);
-    return uniEvent;
-  }
-
-  class UniEventTarget {
-    constructor() {
-      this.listeners = Object.create(null);
-    }
-
-    dispatchEvent(evt) {
-      var listeners = this.listeners[evt.type];
-
-      if (!listeners) {
-        {
-          console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
-        }
-        return false;
-      } // 格式化事件类型
-
-
-      var event = createUniEvent(evt);
-      var len = listeners.length;
-
-      for (var i = 0; i < len; i++) {
-        listeners[i].call(this, event);
-
-        if (event._end) {
-          break;
-        }
-      }
-
-      return event.cancelable && event.defaultPrevented;
-    }
-
-    addEventListener(type, listener, options) {
-      type = normalizeEventType(type, options);
-      (this.listeners[type] || (this.listeners[type] = [])).push(listener);
-    }
-
-    removeEventListener(type, callback, options) {
-      type = normalizeEventType(type, options);
-      var listeners = this.listeners[type];
-
-      if (!listeners) {
-        return;
-      }
-
-      var index = listeners.indexOf(callback);
-
-      if (index > -1) {
-        listeners.splice(index, 1);
-      }
-    }
-
-  }
-
-  var optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
-
-  function parseEventName(name) {
-    var options;
-
-    if (optionsModifierRE$1.test(name)) {
-      options = {};
-      var m;
-
-      while (m = name.match(optionsModifierRE$1)) {
-        name = name.slice(0, name.length - m[0].length);
-        options[m[0].toLowerCase()] = true;
-      }
-    }
-
-    return [hyphenate$1(name.slice(2)), options];
-  }
-
-  var EventModifierFlags = {
-    stop: 1,
-    prevent: 1 << 1,
-    self: 1 << 2
-  };
-
-  function encodeModifier(modifiers) {
-    var flag = 0;
-
-    if (modifiers.includes('stop')) {
-      flag |= EventModifierFlags.stop;
-    }
-
-    if (modifiers.includes('prevent')) {
-      flag |= EventModifierFlags.prevent;
-    }
-
-    if (modifiers.includes('self')) {
-      flag |= EventModifierFlags.self;
-    }
-
-    return flag;
-  }
-
-  var NODE_TYPE_ELEMENT = 1;
-  var NODE_TYPE_TEXT = 3;
-  var NODE_TYPE_COMMENT = 8;
-
-  function sibling(node, type) {
-    var {
-      parentNode
-    } = node;
-
-    if (!parentNode) {
-      return null;
-    }
-
-    var {
-      childNodes
-    } = parentNode;
-    return childNodes[childNodes.indexOf(node) + (type === 'n' ? 1 : -1)] || null;
-  }
-
-  function removeNode(node) {
-    var {
-      parentNode
-    } = node;
-
-    if (parentNode) {
-      parentNode.removeChild(node);
-    }
-  }
-
-  function checkNodeId(node) {
-    if (!node.nodeId && node.pageNode) {
-      node.nodeId = node.pageNode.genId();
-    }
-  } // 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
-
-
-  class UniNode extends UniEventTarget {
-    constructor(nodeType, nodeName, container) {
-      super();
-      this.pageNode = null;
-      this.parentNode = null;
-      this._text = null;
-
-      if (container) {
-        var {
-          pageNode
-        } = container;
-
-        if (pageNode) {
-          this.pageNode = pageNode;
-          this.nodeId = pageNode.genId();
-          !pageNode.isUnmounted && pageNode.onCreate(this, nodeName);
-        }
-      }
-
-      this.nodeType = nodeType;
-      this.nodeName = nodeName;
-      this.childNodes = [];
-    }
-
-    get firstChild() {
-      return this.childNodes[0] || null;
-    }
-
-    get lastChild() {
-      var {
-        childNodes
-      } = this;
-      var length = childNodes.length;
-      return length ? childNodes[length - 1] : null;
-    }
-
-    get nextSibling() {
-      return sibling(this, 'n');
-    }
-
-    get nodeValue() {
-      return null;
-    }
-
-    set nodeValue(_val) {}
-
-    get textContent() {
-      return this._text || '';
-    }
-
-    set textContent(text) {
-      this._text = text;
-
-      if (this.pageNode && !this.pageNode.isUnmounted) {
-        this.pageNode.onTextContent(this, text);
-      }
-    }
-
-    get parentElement() {
-      var {
-        parentNode
-      } = this;
-
-      if (parentNode && parentNode.nodeType === NODE_TYPE_ELEMENT) {
-        return parentNode;
-      }
-
-      return null;
-    }
-
-    get previousSibling() {
-      return sibling(this, 'p');
-    }
-
-    appendChild(newChild) {
-      return this.insertBefore(newChild, null);
-    }
-
-    cloneNode(deep) {
-      var cloned = extend$1(Object.create(Object.getPrototypeOf(this)), this);
-      var {
-        attributes
-      } = cloned;
-
-      if (attributes) {
-        cloned.attributes = extend$1({}, attributes);
-      }
-
-      if (deep) {
-        cloned.childNodes = cloned.childNodes.map(childNode => childNode.cloneNode(true));
-      }
-
-      return cloned;
-    }
-
-    insertBefore(newChild, refChild) {
-      removeNode(newChild);
-      newChild.pageNode = this.pageNode;
-      newChild.parentNode = this;
-      checkNodeId(newChild);
-      var {
-        childNodes
-      } = this;
-
-      if (refChild) {
-        var index = childNodes.indexOf(refChild);
-
-        if (index === -1) {
-          throw new DOMException("Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.");
-        }
-
-        childNodes.splice(index, 0, newChild);
-      } else {
-        childNodes.push(newChild);
-      }
-
-      return this.pageNode && !this.pageNode.isUnmounted ? this.pageNode.onInsertBefore(this, newChild, refChild) : newChild;
-    }
-
-    removeChild(oldChild) {
-      var {
-        childNodes
-      } = this;
-      var index = childNodes.indexOf(oldChild);
-
-      if (index === -1) {
-        throw new DOMException("Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
-      }
-
-      oldChild.parentNode = null;
-      childNodes.splice(index, 1);
-      return this.pageNode && !this.pageNode.isUnmounted ? this.pageNode.onRemoveChild(oldChild) : oldChild;
-    }
-
-  }
-
-  var ATTR_CLASS = 'class';
-  var ATTR_STYLE = 'style';
-  var ATTR_V_OWNER_ID = '.vOwnerId';
-  var ATTR_V_RENDERJS = '.vRenderjs';
-
-  class UniBaseNode extends UniNode {
-    constructor(nodeType, nodeName, container) {
-      super(nodeType, nodeName, container);
-      this.attributes = Object.create(null);
-      this.style = null;
-      this.vShow = null;
-      this._html = null;
-    }
-
-    get className() {
-      return this.attributes[ATTR_CLASS] || '';
-    }
-
-    set className(val) {
-      this.setAttribute(ATTR_CLASS, val);
-    }
-
-    get innerHTML() {
-      return '';
-    }
-
-    set innerHTML(html) {
-      this._html = html;
-    }
-
-    addEventListener(type, listener, options) {
-      super.addEventListener(type, listener, options);
-
-      if (this.pageNode && !this.pageNode.isUnmounted) {
-        if (listener.wxsEvent) {
-          this.pageNode.onAddWxsEvent(this, normalizeEventType(type, options), listener.wxsEvent, encodeModifier(listener.modifiers || []));
-        } else {
-          this.pageNode.onAddEvent(this, normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
-        }
-      }
-    }
-
-    removeEventListener(type, callback, options) {
-      super.removeEventListener(type, callback, options);
-
-      if (this.pageNode && !this.pageNode.isUnmounted) {
-        this.pageNode.onRemoveEvent(this, normalizeEventType(type, options));
-      }
-    }
-
-    getAttribute(qualifiedName) {
-      if (qualifiedName === ATTR_STYLE) {
-        return this.style;
-      }
-
-      return this.attributes[qualifiedName];
-    }
-
-    removeAttribute(qualifiedName) {
-      if (qualifiedName == ATTR_STYLE) {
-        this.style = null;
-      } else {
-        delete this.attributes[qualifiedName];
-      }
-
-      if (this.pageNode && !this.pageNode.isUnmounted) {
-        this.pageNode.onRemoveAttribute(this, qualifiedName);
-      }
-    }
-
-    setAttribute(qualifiedName, value) {
-      if (qualifiedName === ATTR_STYLE) {
-        this.style = value;
-      } else {
-        this.attributes[qualifiedName] = value;
-      }
-
-      if (this.pageNode && !this.pageNode.isUnmounted) {
-        this.pageNode.onSetAttribute(this, qualifiedName, value);
-      }
-    }
-
-    toJSON() {
-      var {
-        attr,
-        normalize
-      } = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var {
-        attributes,
-        style,
-        listeners,
-        _text
-      } = this;
-      var res = {};
-
-      if (Object.keys(attributes).length) {
-        res.a = normalize ? normalize(attributes) : attributes;
-      }
-
-      var events = Object.keys(listeners);
-
-      if (events.length) {
-        var w = undefined;
-        var e = {};
-        events.forEach(name => {
-          var handlers = listeners[name];
-
-          if (handlers.length) {
-            // 可能存在多个 handler 且不同 modifiers 吗？
-            var {
-              wxsEvent,
-              modifiers
-            } = handlers[0];
-            var modifier = encodeModifier(modifiers || []);
-
-            if (!wxsEvent) {
-              e[name] = modifier;
-            } else {
-              if (!w) {
-                w = {};
-              }
-
-              w[name] = [normalize ? normalize(wxsEvent) : wxsEvent, modifier];
-            }
-          }
-        });
-        res.e = normalize ? normalize(e, false) : e;
-
-        if (w) {
-          res.w = normalize ? normalize(w, false) : w;
-        }
-      }
-
-      if (style !== null) {
-        res.s = normalize ? normalize(style) : style;
-      }
-
-      if (!attr) {
-        res.i = this.nodeId;
-        res.n = this.nodeName;
-      }
-
-      if (_text !== null) {
-        res.t = normalize ? normalize(_text) : _text;
-      }
-
-      return res;
-    }
-
-  }
-
-  class UniCommentNode extends UniNode {
-    constructor(text, container) {
-      super(NODE_TYPE_COMMENT, '#comment', container);
-      this._text = text;
-    }
-
-    toJSON() {
-      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      // 暂时不传递 text 到 view 层，没啥意义，节省点数据量
-      return opts.attr ? {} : {
-        i: this.nodeId
-      }; // return opts.attr
-      //   ? { t: this._text as string }
-      //   : {
-      //       i: this.nodeId!,
-      //       t: this._text as string,
-      //     }
-    }
-
-  }
-
-  class UniElement extends UniBaseNode {
-    constructor(nodeName, container) {
-      super(NODE_TYPE_ELEMENT, nodeName.toUpperCase(), container);
-      this.tagName = this.nodeName;
-    }
-
-  }
-
-  class UniInputElement extends UniElement {
-    get value() {
-      return this.getAttribute('value');
-    }
-
-    set value(val) {
-      this.setAttribute('value', val);
-    }
-
-  }
-
-  class UniTextAreaElement extends UniInputElement {}
-
-  class UniTextNode extends UniBaseNode {
-    constructor(text, container) {
-      super(NODE_TYPE_TEXT, '#text', container);
-      this._text = text;
-    }
-
-    get nodeValue() {
-      return this._text || '';
-    }
-
-    set nodeValue(text) {
-      this._text = text;
-
-      if (this.pageNode && !this.pageNode.isUnmounted) {
-        this.pageNode.onNodeValue(this, text);
-      }
-    }
-
-  }
-
-  var forcePatchProps = {
-    AD: ['data'],
-    'AD-DRAW': ['data'],
-    'LIVE-PLAYER': ['picture-in-picture-mode'],
-    MAP: ['markers', 'polyline', 'circles', 'controls', 'include-points', 'polygons'],
-    PICKER: ['range', 'value'],
-    'PICKER-VIEW': ['value'],
-    'RICH-TEXT': ['nodes'],
-    VIDEO: ['danmu-list', 'header'],
-    'WEB-VIEW': ['webview-styles']
-  };
-  var forcePatchPropKeys = ['animation'];
-
-  var forcePatchProp = (el, key) => {
-    if (forcePatchPropKeys.indexOf(key) > -1) {
-      return true;
-    }
-
-    var keys = forcePatchProps[el.nodeName];
-
-    if (keys && keys.indexOf(key) > -1) {
-      return true;
-    }
-
-    return false;
-  };
-
-  var PAGE_HOOKS = [ON_SHOW, ON_HIDE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH];
-
-  function isRootHook(name) {
-    return PAGE_HOOKS.indexOf(name) > -1;
-  }
-  /**
-   * Make a map and return a function for checking if a key
-   * is in that map.
-   * IMPORTANT: all calls of this function must be prefixed with
-   * \/\*#\_\_PURE\_\_\*\/
-   * So that rollup can tree-shake them if necessary.
-   */
-
 
   function makeMap(str, expectsLowerCase) {
     var map = Object.create(null);
@@ -767,19 +106,12 @@ export default function vueFactory(exports) {
     }
 
     return props;
-  } // These tag configs are shared between compiler-dom and runtime-dom, so they
-  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-
-
-  var HTML_TAGS = 'html,body,base,head,link,meta,style,title,address,article,aside,footer,' + 'header,h1,h2,h3,h4,h5,h6,nav,section,div,dd,dl,dt,figcaption,' + 'figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,' + 'data,dfn,em,i,kbd,mark,q,rp,rt,ruby,s,samp,small,span,strong,sub,sup,' + 'time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,' + 'canvas,script,noscript,del,ins,caption,col,colgroup,table,thead,tbody,td,' + 'th,tr,button,datalist,fieldset,form,input,label,legend,meter,optgroup,' + 'option,output,progress,select,textarea,details,dialog,menu,' + 'summary,template,blockquote,iframe,tfoot'; // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
-
-  var SVG_TAGS = 'svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,' + 'defs,desc,discard,ellipse,feBlend,feColorMatrix,feComponentTransfer,' + 'feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,' + 'feDistanceLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,' + 'feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,' + 'fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,' + 'foreignObject,g,hatch,hatchpath,image,line,linearGradient,marker,mask,' + 'mesh,meshgradient,meshpatch,meshrow,metadata,mpath,path,pattern,' + 'polygon,polyline,radialGradient,rect,set,solidcolor,stop,switch,symbol,' + 'text,textPath,title,tspan,unknown,use,view';
-  var isHTMLTag = /*#__PURE__*/makeMap(HTML_TAGS);
-  var isSVGTag = /*#__PURE__*/makeMap(SVG_TAGS);
+  }
   /**
    * For converting {{ interpolation }} values to displayed strings.
    * @private
    */
+
 
   var toDisplayString = val => {
     return val == null ? '' : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
@@ -808,8 +140,8 @@ export default function vueFactory(exports) {
     return val;
   };
 
-  var EMPTY_OBJ = Object.freeze({});
-  var EMPTY_ARR = Object.freeze([]);
+  var EMPTY_OBJ = {};
+  var EMPTY_ARR = [];
 
   var NOOP = () => {};
   /**
@@ -933,12 +265,17 @@ export default function vueFactory(exports) {
     return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {});
   };
 
-  function warn(msg) {
-    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-      args[_key3 - 1] = arguments[_key3];
+  var latestNodeId = 1;
+
+  class NVueTextNode {
+    constructor(text) {
+      this.instanceId = '';
+      this.nodeId = latestNodeId++;
+      this.parentNode = null;
+      this.nodeType = 3;
+      this.text = text;
     }
 
-    console.warn("[Vue warn] ".concat(msg), ...args);
   }
 
   var activeEffectScope;
@@ -965,8 +302,6 @@ export default function vueFactory(exports) {
         } finally {
           this.off();
         }
-      } else {
-        warn("cannot run an inactive effect scope.");
       }
     }
 
@@ -1029,8 +364,6 @@ export default function vueFactory(exports) {
   function onScopeDispose(fn) {
     if (activeEffectScope) {
       activeEffectScope.cleanups.push(fn);
-    } else {
-      warn("onScopeDispose() is called when there is no active effect scope" + " to be associated with.");
     }
   }
 
@@ -1096,8 +429,8 @@ export default function vueFactory(exports) {
   var maxMarkerBits = 30;
   var effectStack = [];
   var activeEffect;
-  var ITERATE_KEY = Symbol('iterate');
-  var MAP_KEY_ITERATE_KEY = Symbol('Map key iterate');
+  var ITERATE_KEY = Symbol('');
+  var MAP_KEY_ITERATE_KEY = Symbol('');
 
   class ReactiveEffect {
     constructor(fn) {
@@ -1231,13 +564,7 @@ export default function vueFactory(exports) {
       depsMap.set(key, dep = createDep());
     }
 
-    var eventInfo = {
-      effect: activeEffect,
-      target,
-      type,
-      key
-    };
-    trackEffects(dep, eventInfo);
+    trackEffects(dep);
   }
 
   function isTracking() {
@@ -1261,12 +588,6 @@ export default function vueFactory(exports) {
     if (shouldTrack) {
       dep.add(activeEffect);
       activeEffect.deps.push(dep);
-
-      if (activeEffect.onTrack) {
-        activeEffect.onTrack(Object.assign({
-          effect: activeEffect
-        }, debuggerEventExtraInfo));
-      }
     }
   }
 
@@ -1340,19 +661,10 @@ export default function vueFactory(exports) {
       }
     }
 
-    var eventInfo = {
-      target,
-      type,
-      key,
-      newValue,
-      oldValue,
-      oldTarget
-    };
-
     if (deps.length === 1) {
       if (deps[0]) {
         {
-          triggerEffects(deps[0], eventInfo);
+          triggerEffects(deps[0]);
         }
       }
     } else {
@@ -1365,7 +677,7 @@ export default function vueFactory(exports) {
       }
 
       {
-        triggerEffects(createDep(effects), eventInfo);
+        triggerEffects(createDep(effects));
       }
     }
   }
@@ -1374,12 +686,6 @@ export default function vueFactory(exports) {
     // spread into array for stabilization
     for (var _effect2 of isArray(dep) ? dep : [...dep]) {
       if (_effect2 !== activeEffect || _effect2.allowRecurse) {
-        if (_effect2.onTrigger) {
-          _effect2.onTrigger(extend({
-            effect: _effect2
-          }, debuggerEventExtraInfo));
-        }
-
         if (_effect2.scheduler) {
           _effect2.scheduler();
         } else {
@@ -1410,8 +716,8 @@ export default function vueFactory(exports) {
         } // we run the method using the original args first (which may be reactive)
 
 
-        for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
-          args[_key4] = arguments[_key4];
+        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
+          args[_key2] = arguments[_key2];
         }
 
         var res = arr[key](...args);
@@ -1428,8 +734,8 @@ export default function vueFactory(exports) {
       instrumentations[key] = function () {
         pauseTracking();
 
-        for (var _len4 = arguments.length, args = new Array(_len4), _key5 = 0; _key5 < _len4; _key5++) {
-          args[_key5] = arguments[_key5];
+        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+          args[_key3] = arguments[_key3];
         }
 
         var res = toRaw(this)[key].apply(this, args);
@@ -1526,7 +832,7 @@ export default function vueFactory(exports) {
         } else if (hasChanged(value, oldValue)) {
           trigger(target, "set"
           /* SET */
-          , key, value, oldValue);
+          , key, value);
         }
       }
 
@@ -1536,13 +842,13 @@ export default function vueFactory(exports) {
 
   function deleteProperty(target, key) {
     var hadKey = hasOwn(target, key);
-    var oldValue = target[key];
+    target[key];
     var result = Reflect.deleteProperty(target, key);
 
     if (result && hadKey) {
       trigger(target, "delete"
       /* DELETE */
-      , key, undefined, oldValue);
+      , key, undefined);
     }
 
     return result;
@@ -1578,16 +884,10 @@ export default function vueFactory(exports) {
     get: readonlyGet,
 
     set(target, key) {
-      {
-        console.warn("Set operation on key \"".concat(String(key), "\" failed: target is readonly."), target);
-      }
       return true;
     },
 
     deleteProperty(target, key) {
-      {
-        console.warn("Delete operation on key \"".concat(String(key), "\" failed: target is readonly."), target);
-      }
       return true;
     }
 
@@ -1702,8 +1002,6 @@ export default function vueFactory(exports) {
     if (!hadKey) {
       key = toRaw(key);
       hadKey = has.call(target, key);
-    } else {
-      checkIdentityKeys(target, has, key);
     }
 
     var oldValue = get.call(target, key);
@@ -1716,7 +1014,7 @@ export default function vueFactory(exports) {
     } else if (hasChanged(value, oldValue)) {
       trigger(target, "set"
       /* SET */
-      , key, value, oldValue);
+      , key, value);
     }
 
     return this;
@@ -1733,18 +1031,16 @@ export default function vueFactory(exports) {
     if (!hadKey) {
       key = toRaw(key);
       hadKey = has.call(target, key);
-    } else {
-      checkIdentityKeys(target, has, key);
     }
 
-    var oldValue = get ? get.call(target, key) : undefined; // forward the operation before queueing reactions
+    get ? get.call(target, key) : undefined; // forward the operation before queueing reactions
 
     var result = target.delete(key);
 
     if (hadKey) {
       trigger(target, "delete"
       /* DELETE */
-      , key, undefined, oldValue);
+      , key, undefined);
     }
 
     return result;
@@ -1752,15 +1048,14 @@ export default function vueFactory(exports) {
 
   function clear() {
     var target = toRaw(this);
-    var hadItems = target.size !== 0;
-    var oldTarget = isMap(target) ? new Map(target) : new Set(target); // forward the operation before queueing reactions
+    var hadItems = target.size !== 0; // forward the operation before queueing reactions
 
     var result = target.clear();
 
     if (hadItems) {
       trigger(target, "clear"
       /* CLEAR */
-      , undefined, undefined, oldTarget);
+      , undefined, undefined);
     }
 
     return result;
@@ -1829,10 +1124,6 @@ export default function vueFactory(exports) {
 
   function createReadonlyMethod(type) {
     return function () {
-      {
-        var key = (arguments.length <= 0 ? undefined : arguments[0]) ? "on key \"".concat(arguments.length <= 0 ? undefined : arguments[0], "\" ") : "";
-        console.warn("".concat(capitalize(type), " operation ").concat(key, "failed: target is readonly."), toRaw(this));
-      }
       return type === "delete"
       /* DELETE */
       ? false : this;
@@ -1971,16 +1262,6 @@ export default function vueFactory(exports) {
   var shallowReadonlyCollectionHandlers = {
     get: /*#__PURE__*/createInstrumentationGetter(true, true)
   };
-
-  function checkIdentityKeys(target, has, key) {
-    var rawKey = toRaw(key);
-
-    if (rawKey !== key && has.call(target, rawKey)) {
-      var type = toRawType(target);
-      console.warn("Reactive ".concat(type, " contains both the raw and reactive ") + "versions of the same object".concat(type === "Map" ? " as keys" : "", ", ") + "which can lead to inconsistencies. " + "Avoid differentiating between the raw and reactive versions " + "of an object and only use the reactive version if possible.");
-    }
-  }
-
   var reactiveMap = new WeakMap();
   var shallowReactiveMap = new WeakMap();
   var readonlyMap = new WeakMap();
@@ -2060,9 +1341,6 @@ export default function vueFactory(exports) {
 
   function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers, proxyMap) {
     if (!isObject(target)) {
-      {
-        console.warn("value cannot be made reactive: ".concat(String(target)));
-      }
       return target;
     } // target is already a Proxy, return it.
     // exception: calling readonly() on a reactive object
@@ -2148,13 +1426,7 @@ export default function vueFactory(exports) {
       }
 
       {
-        trackEffects(ref.dep, {
-          target: ref,
-          type: "get"
-          /* GET */
-          ,
-          key: 'value'
-        });
+        trackEffects(ref.dep);
       }
     }
   }
@@ -2164,14 +1436,7 @@ export default function vueFactory(exports) {
 
     if (ref.dep) {
       {
-        triggerEffects(ref.dep, {
-          target: ref,
-          type: "set"
-          /* SET */
-          ,
-          key: 'value',
-          newValue: newVal
-        });
+        triggerEffects(ref.dep);
       }
     }
   }
@@ -2216,14 +1481,14 @@ export default function vueFactory(exports) {
       if (hasChanged(newVal, this._rawValue)) {
         this._rawValue = newVal;
         this._value = this._shallow ? newVal : toReactive(newVal);
-        triggerRefValue(this, newVal);
+        triggerRefValue(this);
       }
     }
 
   }
 
   function triggerRef(ref) {
-    triggerRefValue(ref, ref.value);
+    triggerRefValue(ref);
   }
 
   function unref(ref) {
@@ -2275,10 +1540,6 @@ export default function vueFactory(exports) {
   }
 
   function toRefs(object) {
-    if (!isProxy(object)) {
-      console.warn("toRefs() expects a reactive object but received a plain one.");
-    }
-
     var ret = isArray(object) ? new Array(object.length) : {};
 
     for (var key in object) {
@@ -2353,177 +1614,14 @@ export default function vueFactory(exports) {
 
     if (onlyGetter) {
       getter = getterOrOptions;
-
-      setter = () => {
-        console.warn('Write operation failed: computed value is readonly');
-      };
+      setter = NOOP;
     } else {
       getter = getterOrOptions.get;
       setter = getterOrOptions.set;
     }
 
     var cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter);
-
-    if (debugOptions) {
-      cRef.effect.onTrack = debugOptions.onTrack;
-      cRef.effect.onTrigger = debugOptions.onTrigger;
-    }
-
     return cRef;
-  }
-  /* eslint-disable no-restricted-globals */
-
-
-  var isHmrUpdating = false;
-  var hmrDirtyComponents = new Set(); // Expose the HMR runtime on the global object
-  // This makes it entirely tree-shakable without polluting the exports and makes
-  // it easier to be used in toolings like vue-loader
-  // Note: for a component to be eligible for HMR it also needs the __hmrId option
-  // to be set so that its instances can be registered / removed.
-
-  {
-    getGlobalThis().__VUE_HMR_RUNTIME__ = {
-      createRecord: tryWrap(createRecord),
-      rerender: tryWrap(rerender),
-      reload: tryWrap(reload)
-    };
-  }
-  var map = new Map();
-
-  function registerHMR(instance) {
-    var id = instance.type.__hmrId;
-    var record = map.get(id);
-
-    if (!record) {
-      createRecord(id, instance.type);
-      record = map.get(id);
-    }
-
-    record.instances.add(instance);
-  }
-
-  function unregisterHMR(instance) {
-    map.get(instance.type.__hmrId).instances.delete(instance);
-  }
-
-  function createRecord(id, initialDef) {
-    if (map.has(id)) {
-      return false;
-    }
-
-    map.set(id, {
-      initialDef: normalizeClassComponent(initialDef),
-      instances: new Set()
-    });
-    return true;
-  }
-
-  function normalizeClassComponent(component) {
-    return isClassComponent(component) ? component.__vccOpts : component;
-  }
-
-  function rerender(id, newRender) {
-    var record = map.get(id);
-
-    if (!record) {
-      return;
-    } // update initial record (for not-yet-rendered component)
-
-
-    record.initialDef.render = newRender;
-    [...record.instances].forEach(instance => {
-      if (newRender) {
-        instance.render = newRender;
-        normalizeClassComponent(instance.type).render = newRender;
-      }
-
-      instance.renderCache = []; // this flag forces child components with slot content to update
-
-      isHmrUpdating = true;
-      instance.update();
-      isHmrUpdating = false;
-    });
-  }
-
-  function reload(id, newComp) {
-    var record = map.get(id);
-    if (!record) return;
-    newComp = normalizeClassComponent(newComp); // update initial def (for not-yet-rendered components)
-
-    updateComponentDef(record.initialDef, newComp); // create a snapshot which avoids the set being mutated during updates
-
-    var instances = [...record.instances];
-
-    for (var instance of instances) {
-      var oldComp = normalizeClassComponent(instance.type);
-
-      if (!hmrDirtyComponents.has(oldComp)) {
-        // 1. Update existing comp definition to match new one
-        if (oldComp !== record.initialDef) {
-          updateComponentDef(oldComp, newComp);
-        } // 2. mark definition dirty. This forces the renderer to replace the
-        // component on patch.
-
-
-        hmrDirtyComponents.add(oldComp);
-      } // 3. invalidate options resolution cache
-
-
-      instance.appContext.optionsCache.delete(instance.type); // 4. actually update
-
-      if (instance.ceReload) {
-        // custom element
-        hmrDirtyComponents.add(oldComp);
-        instance.ceReload(newComp.styles);
-        hmrDirtyComponents.delete(oldComp);
-      } else if (instance.parent) {
-        // 4. Force the parent instance to re-render. This will cause all updated
-        // components to be unmounted and re-mounted. Queue the update so that we
-        // don't end up forcing the same parent to re-render multiple times.
-        queueJob(instance.parent.update); // instance is the inner component of an async custom element
-        // invoke to reset styles
-
-        if (instance.parent.type.__asyncLoader && instance.parent.ceReload) {
-          instance.parent.ceReload(newComp.styles);
-        }
-      } else if (instance.appContext.reload) {
-        // root instance mounted via createApp() has a reload method
-        instance.appContext.reload();
-      } else if (typeof window !== 'undefined') {
-        // root instance inside tree created via raw render(). Force reload.
-        window.location.reload();
-      } else {
-        console.warn('[HMR] Root or manually mounted instance modified. Full reload required.');
-      }
-    } // 5. make sure to cleanup dirty hmr components after update
-
-
-    queuePostFlushCb(() => {
-      for (var _instance of instances) {
-        hmrDirtyComponents.delete(normalizeClassComponent(_instance.type));
-      }
-    });
-  }
-
-  function updateComponentDef(oldComp, newComp) {
-    extend(oldComp, newComp);
-
-    for (var key in oldComp) {
-      if (key !== '__file' && !(key in newComp)) {
-        delete oldComp[key];
-      }
-    }
-  }
-
-  function tryWrap(fn) {
-    return (id, arg) => {
-      try {
-        return fn(id, arg);
-      } catch (e) {
-        console.error(e);
-        console.warn("[HMR] Something went wrong during Vue component hot-reload. " + "Full reload required.");
-      }
-    };
   }
 
   var devtools;
@@ -2531,8 +1629,8 @@ export default function vueFactory(exports) {
   var devtoolsNotInstalled = false;
 
   function emit(event) {
-    for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key6 = 1; _key6 < _len5; _key6++) {
-      args[_key6 - 1] = arguments[_key6];
+    for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key4 = 1; _key4 < _len3; _key4++) {
+      args[_key4 - 1] = arguments[_key4];
     }
 
     if (devtools) {
@@ -2565,9 +1663,7 @@ export default function vueFactory(exports) {
     // (#4815)
     // eslint-disable-next-line no-restricted-globals
     typeof window !== 'undefined' && // some envs mock window but not fully
-    // eslint-disable-next-line no-restricted-globals
     window.HTMLElement && // also exclude jsdom
-    // eslint-disable-next-line no-restricted-globals
     !((_b = (_a = window.navigator) === null || _a === void 0 ? void 0 : _a.userAgent) === null || _b === void 0 ? void 0 : _b.includes('jsdom'))) {
       var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
       replay.push(newHook => {
@@ -2622,19 +1718,6 @@ export default function vueFactory(exports) {
     };
   }
 
-  var devtoolsPerfStart = /*#__PURE__*/createDevtoolsPerformanceHook("perf:start"
-  /* PERFORMANCE_START */
-  );
-  var devtoolsPerfEnd = /*#__PURE__*/createDevtoolsPerformanceHook("perf:end"
-  /* PERFORMANCE_END */
-  );
-
-  function createDevtoolsPerformanceHook(hook) {
-    return (component, type, time) => {
-      emit(hook, component.appContext.app, component.uid, component, type, time);
-    };
-  }
-
   function devtoolsComponentEmit(component, event, params) {
     emit("component:emit"
     /* COMPONENT_EMIT */
@@ -2644,34 +1727,10 @@ export default function vueFactory(exports) {
   function emit$1(instance, event) {
     var props = instance.vnode.props || EMPTY_OBJ;
 
-    for (var _len6 = arguments.length, rawArgs = new Array(_len6 > 2 ? _len6 - 2 : 0), _key7 = 2; _key7 < _len6; _key7++) {
-      rawArgs[_key7 - 2] = arguments[_key7];
+    for (var _len4 = arguments.length, rawArgs = new Array(_len4 > 2 ? _len4 - 2 : 0), _key5 = 2; _key5 < _len4; _key5++) {
+      rawArgs[_key5 - 2] = arguments[_key5];
     }
 
-    {
-      var {
-        emitsOptions,
-        propsOptions: [propsOptions]
-      } = instance;
-
-      if (emitsOptions) {
-        if (!(event in emitsOptions) && !false) {
-          if (!propsOptions || !(toHandlerKey(event) in propsOptions)) {
-            warn$1("Component emitted event \"".concat(event, "\" but it is neither declared in ") + "the emits option nor as an \"".concat(toHandlerKey(event), "\" prop."));
-          }
-        } else {
-          var validator = emitsOptions[event];
-
-          if (isFunction(validator)) {
-            var isValid = validator(...rawArgs);
-
-            if (!isValid) {
-              warn$1("Invalid event arguments: event validation failed for event \"".concat(event, "\"."));
-            }
-          }
-        }
-      }
-    }
     var args = rawArgs;
     var isModelListener = event.startsWith('update:'); // for v-model update:xxx events, apply modifiers on args
 
@@ -2691,16 +1750,10 @@ export default function vueFactory(exports) {
       }
     }
 
-    {
+    if (__VUE_PROD_DEVTOOLS__) {
       devtoolsComponentEmit(instance, event, args);
     }
-    {
-      var lowerCaseEvent = event.toLowerCase();
 
-      if (lowerCaseEvent !== event && props[toHandlerKey(lowerCaseEvent)]) {
-        warn$1("Event \"".concat(lowerCaseEvent, "\" is emitted in component ") + "".concat(formatComponentName(instance, instance.type), " but the handler is registered for \"").concat(event, "\". ") + "Note that HTML attributes are case-insensitive and you cannot use " + "v-on to listen to camelCase events when using in-DOM templates. " + "You should probably use \"".concat(hyphenate(event), "\" instead of \"").concat(event, "\"."));
-      }
-    }
     var handlerName;
     var handler = props[handlerName = toHandlerKey(event)] || // also try camelCase event handler (#2249)
     props[handlerName = toHandlerKey(camelize(event))]; // for v-model update:xxx events, also trigger kebab-case equivalent
@@ -2746,7 +1799,7 @@ export default function vueFactory(exports) {
 
     var hasExtends = false;
 
-    if (!isFunction(comp)) {
+    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
       var extendEmits = raw => {
         var normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true);
 
@@ -2880,9 +1933,10 @@ export default function vueFactory(exports) {
         setBlockTracking(1);
       }
 
-      {
+      if (__VUE_PROD_DEVTOOLS__) {
         devtoolsComponentUpdated(ctx);
       }
+
       return res;
     }; // mark normalized to avoid duplicated wrapping
 
@@ -2896,18 +1950,8 @@ export default function vueFactory(exports) {
     renderFnWithContext._d = true;
     return renderFnWithContext;
   }
-  /**
-   * dev only flag to track whether $attrs was used during render.
-   * If $attrs was used during render then the warning for failed attrs
-   * fallthrough can be suppressed.
-   */
 
-
-  var accessedAttrs = false;
-
-  function markAttrsAccessed() {
-    accessedAttrs = true;
-  }
+  function markAttrsAccessed() {}
 
   function renderComponentRoot(instance) {
     var {
@@ -2930,9 +1974,6 @@ export default function vueFactory(exports) {
     var result;
     var fallthroughAttrs;
     var prev = setCurrentRenderingInstance(instance);
-    {
-      accessedAttrs = false;
-    }
 
     try {
       if (vnode.shapeFlag & 4
@@ -2947,11 +1988,8 @@ export default function vueFactory(exports) {
         // functional
         var _render = Component; // in dev, mark attrs accessed if optional props (attrs === props)
 
-        if ("development" !== 'production' && attrs === props) {
-          markAttrsAccessed();
-        }
-
-        result = normalizeVNode(_render.length > 1 ? _render(props, "development" !== 'production' ? {
+        if ("production" !== 'production' && attrs === props) ;
+        result = normalizeVNode(_render.length > 1 ? _render(props, "production" !== 'production' ? {
           get attrs() {
             markAttrsAccessed();
             return attrs;
@@ -2980,13 +2018,6 @@ export default function vueFactory(exports) {
 
 
     var root = result;
-    var setRoot = undefined;
-
-    if (result.patchFlag > 0 && result.patchFlag & 2048
-    /* DEV_ROOT_FRAGMENT */
-    ) {
-      [root, setRoot] = getChildRoot(result);
-    }
 
     if (fallthroughAttrs && inheritAttrs !== false) {
       var keys = Object.keys(fallthroughAttrs);
@@ -3009,98 +2040,26 @@ export default function vueFactory(exports) {
           }
 
           root = cloneVNode(root, fallthroughAttrs);
-        } else if (!accessedAttrs && root.type !== Comment) {
-          var allAttrs = Object.keys(attrs);
-          var eventAttrs = [];
-          var extraAttrs = [];
-
-          for (var i = 0, l = allAttrs.length; i < l; i++) {
-            var key = allAttrs[i];
-
-            if (isOn(key)) {
-              // ignore v-model handlers when they fail to fallthrough
-              if (!isModelListener(key)) {
-                // remove `on`, lowercase first letter to reflect event casing
-                // accurately
-                eventAttrs.push(key[2].toLowerCase() + key.slice(3));
-              }
-            } else {
-              extraAttrs.push(key);
-            }
-          }
-
-          if (extraAttrs.length) {
-            warn$1("Extraneous non-props attributes (" + "".concat(extraAttrs.join(', '), ") ") + "were passed to component but could not be automatically inherited " + "because component renders fragment or text root nodes.");
-          }
-
-          if (eventAttrs.length) {
-            warn$1("Extraneous non-emits event listeners (" + "".concat(eventAttrs.join(', '), ") ") + "were passed to component but could not be automatically inherited " + "because component renders fragment or text root nodes. " + "If the listener is intended to be a component custom event listener only, " + "declare it using the \"emits\" option.");
-          }
         }
       }
     } // inherit directives
 
 
     if (vnode.dirs) {
-      if (!isElementRoot(root)) {
-        warn$1("Runtime directive used on component with non-element root node. " + "The directives will not function as intended.");
-      }
-
       root.dirs = root.dirs ? root.dirs.concat(vnode.dirs) : vnode.dirs;
     } // inherit transition data
 
 
     if (vnode.transition) {
-      if (!isElementRoot(root)) {
-        warn$1("Component inside <Transition> renders non-element root node " + "that cannot be animated.");
-      }
-
       root.transition = vnode.transition;
     }
 
-    if (setRoot) {
-      setRoot(root);
-    } else {
+    {
       result = root;
     }
-
     setCurrentRenderingInstance(prev);
     return result;
   }
-  /**
-   * dev only
-   * In dev mode, template root level comments are rendered, which turns the
-   * template into a fragment root, but we need to locate the single element
-   * root for attrs and scope id processing.
-   */
-
-
-  var getChildRoot = vnode => {
-    var rawChildren = vnode.children;
-    var dynamicChildren = vnode.dynamicChildren;
-    var childRoot = filterSingleRoot(rawChildren);
-
-    if (!childRoot) {
-      return [vnode, undefined];
-    }
-
-    var index = rawChildren.indexOf(childRoot);
-    var dynamicIndex = dynamicChildren ? dynamicChildren.indexOf(childRoot) : -1;
-
-    var setRoot = updatedRoot => {
-      rawChildren[index] = updatedRoot;
-
-      if (dynamicChildren) {
-        if (dynamicIndex > -1) {
-          dynamicChildren[dynamicIndex] = updatedRoot;
-        } else if (updatedRoot.patchFlag > 0) {
-          vnode.dynamicChildren = [...dynamicChildren, updatedRoot];
-        }
-      }
-    };
-
-    return [normalizeVNode(childRoot), setRoot];
-  };
 
   function filterSingleRoot(children) {
     var singleRoot;
@@ -3150,15 +2109,6 @@ export default function vueFactory(exports) {
     return res;
   };
 
-  var isElementRoot = vnode => {
-    return vnode.shapeFlag & (6
-    /* COMPONENT */
-    | 1
-    /* ELEMENT */
-    ) || vnode.type === Comment // potential v-if branch switch
-    ;
-  };
-
   function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
     var {
       props: prevProps,
@@ -3170,14 +2120,7 @@ export default function vueFactory(exports) {
       children: nextChildren,
       patchFlag
     } = nextVNode;
-    var emits = component.emitsOptions; // Parent component's render function was hot-updated. Since this may have
-    // caused the child component's slots content to have changed, we need to
-    // force the child to update as well.
-
-    if ((prevChildren || nextChildren) && isHmrUpdating) {
-      return true;
-    } // force child update for runtime directive or transition on component vnode.
-
+    var emits = component.emitsOptions; // force child update for runtime directive or transition on component vnode.
 
     if (nextVNode.dirs || nextVNode.transition) {
       return true;
@@ -3316,8 +2259,7 @@ export default function vueFactory(exports) {
         createElement
       }
     } = rendererInternals;
-    var hiddenContainer = createElement('div', container); // fixed by xxxxxx
-
+    var hiddenContainer = createElement('div');
     var suspense = vnode.suspense = createSuspenseBoundary(vnode, parentSuspense, parentComponent, container, hiddenContainer, anchor, isSVG, slotScopeIds, optimized, rendererInternals); // start mounting the content subtree in an off-dom container
 
     patch(null, suspense.pendingBranch = vnode.ssContent, hiddenContainer, null, parentComponent, suspense, isSVG, slotScopeIds); // now check if we have encountered any async deps
@@ -3391,7 +2333,7 @@ export default function vueFactory(exports) {
 
         suspense.effects.length = 0; // discard previous container
 
-        suspense.hiddenContainer = createElement('div', container); // fixed by xxxxxx
+        suspense.hiddenContainer = createElement('div');
 
         if (isInFallback) {
           // already in fallback state
@@ -3455,18 +2397,8 @@ export default function vueFactory(exports) {
     }
   }
 
-  var hasWarned = false;
-
   function createSuspenseBoundary(vnode, parent, parentComponent, container, hiddenContainer, anchor, isSVG, slotScopeIds, optimized, rendererInternals) {
     var isHydrating = arguments.length > 10 && arguments[10] !== undefined ? arguments[10] : false;
-
-    /* istanbul ignore if */
-    if (!hasWarned) {
-      hasWarned = true; // @ts-ignore `console.info` cannot be null error
-
-      console[console.info ? 'info' : 'log']("<Suspense> is an experimental feature and its API will likely change.");
-    }
-
     var {
       p: patch,
       m: move,
@@ -3498,15 +2430,6 @@ export default function vueFactory(exports) {
 
       resolve() {
         var resume = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-        {
-          if (!resume && !suspense.pendingBranch) {
-            throw new Error("suspense.resolve() is called without a pending branch.");
-          }
-
-          if (suspense.isUnmounted) {
-            throw new Error("suspense.resolve() is called on an already unmounted suspense boundary.");
-          }
-        }
         var {
           vnode,
           activeBranch,
@@ -3659,9 +2582,6 @@ export default function vueFactory(exports) {
           var {
             vnode
           } = instance;
-          {
-            pushWarningContext(vnode);
-          }
           handleSetupResult(instance, asyncSetupResult, false);
 
           if (hydratedEl) {
@@ -3682,10 +2602,7 @@ export default function vueFactory(exports) {
             remove(placeholder);
           }
 
-          updateHOCHostEl(instance, vnode.el);
-          {
-            popWarningContext();
-          } // only decrease deps count if suspense is not already resolved
+          updateHOCHostEl(instance, vnode.el); // only decrease deps count if suspense is not already resolved
 
           if (isInPendingSuspense && --suspense.deps === 0) {
             suspense.resolve();
@@ -3767,11 +2684,6 @@ export default function vueFactory(exports) {
 
     if (isArray(s)) {
       var singleChild = filterSingleRoot(s);
-
-      if (!singleChild) {
-        warn$1("<Suspense> slots expect a single root node.");
-      }
-
       s = singleChild;
     }
 
@@ -3812,11 +2724,7 @@ export default function vueFactory(exports) {
   }
 
   function provide(key, value) {
-    if (!currentInstance) {
-      {
-        warn$1("provide() can only be used inside setup().");
-      }
-    } else {
+    if (!currentInstance) ;else {
       var provides = currentInstance.provides; // by default an instance inherits its parent's provides object
       // but when it needs to provide values of its own, it creates its
       // own provides object using parent provides object as prototype.
@@ -3851,11 +2759,7 @@ export default function vueFactory(exports) {
         return provides[key];
       } else if (arguments.length > 1) {
         return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue.call(instance.proxy) : defaultValue;
-      } else {
-        warn$1("injection \"".concat(String(key), "\" not found."));
-      }
-    } else {
-      warn$1("inject() can only be used inside setup() or functional components.");
+      } else ;
     }
   }
 
@@ -3911,11 +2815,6 @@ export default function vueFactory(exports) {
 
         if (!children || !children.length) {
           return;
-        } // warn multiple elements
-
-
-        if (children.length > 1) {
-          warn$1('<transition> can only be used on a single element or component. Use ' + '<transition-group> for lists.');
         } // there's no need to track reactivity for these props so use the raw
         // props for a bit better perf
 
@@ -3923,12 +2822,7 @@ export default function vueFactory(exports) {
         var rawProps = toRaw(props);
         var {
           mode
-        } = rawProps; // check mode
-
-        if (mode && !['in-out', 'out-in', 'default'].includes(mode)) {
-          warn$1("invalid <transition> mode: ".concat(mode));
-        } // at this point children has a guaranteed length of 1.
-
+        } = rawProps; // at this point children has a guaranteed length of 1.
 
         var child = children[0];
 
@@ -4301,19 +3195,11 @@ export default function vueFactory(exports) {
       }).then(comp => {
         if (thisRequest !== pendingRequest && pendingRequest) {
           return pendingRequest;
-        }
-
-        if (!comp) {
-          warn$1("Async component loader resolved to undefined. " + "If you are using retry(), make sure to return its return value.");
         } // interop module default
 
 
         if (comp && (comp.__esModule || comp[Symbol.toStringTag] === 'Module')) {
           comp = comp.default;
-        }
-
-        if (comp && !isObject(comp) && !isFunction(comp)) {
-          throw new Error("Invalid async component load result: ".concat(comp));
         }
 
         resolvedComp = comp;
@@ -4453,9 +3339,11 @@ export default function vueFactory(exports) {
       var cache = new Map();
       var keys = new Set();
       var current = null;
-      {
+
+      if (__VUE_PROD_DEVTOOLS__) {
         instance.__v_cache = cache;
       }
+
       var parentSuspense = instance.suspense;
       var {
         renderer: {
@@ -4467,7 +3355,7 @@ export default function vueFactory(exports) {
           }
         }
       } = sharedContext;
-      var storageContainer = createElement('div', null); // fixed by xxxxx
+      var storageContainer = createElement('div');
 
       sharedContext.activate = (vnode, container, anchor, isSVG, optimized) => {
         var instance = vnode.component;
@@ -4489,7 +3377,8 @@ export default function vueFactory(exports) {
             invokeVNodeHook(vnodeHook, instance.parent, vnode);
           }
         }, parentSuspense);
-        {
+
+        if (__VUE_PROD_DEVTOOLS__) {
           // Update components tree
           devtoolsComponentAdded(instance);
         }
@@ -4513,7 +3402,8 @@ export default function vueFactory(exports) {
 
           instance.isDeactivated = true;
         }, parentSuspense);
-        {
+
+        if (__VUE_PROD_DEVTOOLS__) {
           // Update components tree
           devtoolsComponentAdded(instance);
         }
@@ -4604,9 +3494,6 @@ export default function vueFactory(exports) {
         var rawVNode = children[0];
 
         if (children.length > 1) {
-          {
-            warn$1("KeepAlive should contain exactly one component child.");
-          }
           current = null;
           return children;
         } else if (!isVNode(rawVNode) || !(rawVNode.shapeFlag & 4
@@ -4803,19 +3690,6 @@ export default function vueFactory(exports) {
     var prepend = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
     if (target) {
-      // fixed by xxxxxx
-      if (isRootHook(type)) {
-        target = target.root;
-      }
-
-      var {
-        __page_container__
-      } = target.root.vnode; // 仅限 App 端
-
-      if (__page_container__) {
-        __page_container__.onInjectHook(type);
-      }
-
       var hooks = target[type] || (target[type] = []); // cache the error handling wrapper for injected hooks so the same hook
       // can be properly deduped by the scheduler. "__weh" stands for "with error
       // handling".
@@ -4831,10 +3705,10 @@ export default function vueFactory(exports) {
         // This assumes the hook does not synchronously trigger other hooks, which
         // can only be false when the user does something really funky.
 
-        setCurrentInstance(target); // fixed by xxxxxx
+        setCurrentInstance(target);
 
-        for (var _len7 = arguments.length, args = new Array(_len7), _key8 = 0; _key8 < _len7; _key8++) {
-          args[_key8] = arguments[_key8];
+        for (var _len5 = arguments.length, args = new Array(_len5), _key6 = 0; _key6 < _len5; _key6++) {
+          args[_key6] = arguments[_key6];
         }
 
         var res = callWithAsyncErrorHandling(hook, target, type, args);
@@ -4850,10 +3724,6 @@ export default function vueFactory(exports) {
       }
 
       return wrappedHook;
-    } else {
-      var apiName = toHandlerKey((ErrorTypeStrings[type] || type.replace(/^on/, '')).replace(/ hook$/, '')); // fixed by xxxxxx
-
-      warn$1("".concat(apiName, " is called when there is no active component instance to be ") + "associated with. " + "Lifecycle injection APIs can only be used during execution of setup()." + (" If you are using async setup(), make sure to register lifecycle " + "hooks before the first await statement."));
     }
   }
 
@@ -4899,17 +3769,6 @@ export default function vueFactory(exports) {
     injectHook("ec"
     /* ERROR_CAPTURED */
     , hook, target);
-  }
-
-  function createDuplicateChecker() {
-    var cache = Object.create(null);
-    return (type, key) => {
-      if (cache[key]) {
-        warn$1("".concat(type, " property \"").concat(key, "\" is already defined in ").concat(cache[key], "."));
-      } else {
-        cache[key] = type;
-      }
-    };
   }
 
   var shouldCacheAccess = true;
@@ -4961,18 +3820,7 @@ export default function vueFactory(exports) {
       directives,
       filters
     } = options;
-    var checkDuplicateProperties = createDuplicateChecker();
-    {
-      var [propsOptions] = instance.propsOptions;
-
-      if (propsOptions) {
-        for (var key in propsOptions) {
-          checkDuplicateProperties("Props"
-          /* PROPS */
-          , key);
-        }
-      }
-    } // options initialization order (to be consistent with Vue 2):
+    var checkDuplicateProperties = null; // options initialization order (to be consistent with Vue 2):
     // - props (already done outside of this function)
     // - inject
     // - methods
@@ -4985,112 +3833,55 @@ export default function vueFactory(exports) {
     }
 
     if (methods) {
-      for (var _key9 in methods) {
-        var methodHandler = methods[_key9];
+      for (var key in methods) {
+        var methodHandler = methods[key];
 
         if (isFunction(methodHandler)) {
           // In dev mode, we use the `createRenderContext` function to define
           // methods to the proxy target, and those are read-only but
           // reconfigurable, so it needs to be redefined here
           {
-            Object.defineProperty(ctx, _key9, {
-              value: methodHandler.bind(publicThis),
-              configurable: true,
-              enumerable: true,
-              writable: true
-            });
+            ctx[key] = methodHandler.bind(publicThis);
           }
-          {
-            checkDuplicateProperties("Methods"
-            /* METHODS */
-            , _key9);
-          }
-        } else {
-          warn$1("Method \"".concat(_key9, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. ") + "Did you reference the function correctly?");
         }
       }
     }
 
     if (dataOptions) {
-      (function () {
-        if (!isFunction(dataOptions)) {
-          warn$1("The data option must be a function. " + "Plain object usage is no longer supported.");
-        }
-
-        var data = dataOptions.call(publicThis, publicThis);
-
-        if (isPromise(data)) {
-          warn$1("data() returned a Promise - note data() cannot be async; If you " + "intend to perform data fetching before component renders, use " + "async setup() + <Suspense>.");
-        }
-
-        if (!isObject(data)) {
-          warn$1("data() should return an object.");
-        } else {
-          instance.data = reactive(data);
-          {
-            var _loop = function (_key10) {
-              checkDuplicateProperties("Data"
-              /* DATA */
-              , _key10); // expose data on ctx during dev
-
-              if (_key10[0] !== '$' && _key10[0] !== '_') {
-                Object.defineProperty(ctx, _key10, {
-                  configurable: true,
-                  enumerable: true,
-                  get: () => data[_key10],
-                  set: NOOP
-                });
-              }
-            };
-
-            for (var _key10 in data) {
-              _loop(_key10);
-            }
-          }
-        }
-      })();
+      var data = dataOptions.call(publicThis, publicThis);
+      if (!isObject(data)) ;else {
+        instance.data = reactive(data);
+      }
     } // state initialization complete at this point - start caching access
 
 
     shouldCacheAccess = true;
 
     if (computedOptions) {
-      var _loop2 = function (_key11) {
-        var opt = computedOptions[_key11];
+      var _loop = function (_key7) {
+        var opt = computedOptions[_key7];
         var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
-
-        if (get === NOOP) {
-          warn$1("Computed property \"".concat(_key11, "\" has no getter."));
-        }
-
-        var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : () => {
-          warn$1("Write operation failed: computed property \"".concat(_key11, "\" is readonly."));
-        };
+        var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
         var c = computed({
           get,
           set
         });
-        Object.defineProperty(ctx, _key11, {
+        Object.defineProperty(ctx, _key7, {
           enumerable: true,
           configurable: true,
           get: () => c.value,
           set: v => c.value = v
         });
-        {
-          checkDuplicateProperties("Computed"
-          /* COMPUTED */
-          , _key11);
-        }
       };
 
-      for (var _key11 in computedOptions) {
-        _loop2(_key11);
+      for (var _key7 in computedOptions) {
+        _loop(_key7);
       }
     }
 
     if (watchOptions) {
-      for (var _key12 in watchOptions) {
-        createWatcher(watchOptions[_key12], ctx, publicThis, _key12);
+      for (var _key8 in watchOptions) {
+        createWatcher(watchOptions[_key8], ctx, publicThis, _key8);
       }
     }
 
@@ -5154,13 +3945,7 @@ export default function vueFactory(exports) {
 
 
     if (components) instance.components = components;
-    if (directives) instance.directives = directives; // fixed by xxxxxx
-
-    var customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
-
-    if (customApplyOptions) {
-      customApplyOptions(options, instance, publicThis);
-    }
+    if (directives) instance.directives = directives;
   }
 
   function resolveInjections(injectOptions, ctx) {
@@ -5171,7 +3956,7 @@ export default function vueFactory(exports) {
       injectOptions = normalizeInject(injectOptions);
     }
 
-    var _loop3 = function (key) {
+    var _loop2 = function (key) {
       var opt = injectOptions[key];
       var injected = void 0;
 
@@ -5197,24 +3982,15 @@ export default function vueFactory(exports) {
             set: v => injected.value = v
           });
         } else {
-          {
-            warn$1("injected property \"".concat(key, "\" is a ref and will be auto-unwrapped ") + "and no longer needs `.value` in the next minor release. " + "To opt-in to the new behavior now, " + "set `app.config.unwrapInjectedRef = true` (this config is " + "temporary and will not be needed in the future.)");
-          }
           ctx[key] = injected;
         }
       } else {
         ctx[key] = injected;
       }
-
-      {
-        checkDuplicateProperties("Inject"
-        /* INJECT */
-        , key);
-      }
     };
 
     for (var key in injectOptions) {
-      _loop3(key);
+      _loop2(key);
     }
   }
 
@@ -5230,8 +4006,6 @@ export default function vueFactory(exports) {
 
       if (isFunction(handler)) {
         watch(getter, handler);
-      } else {
-        warn$1("Invalid watch handler specified by key \"".concat(raw, "\""), handler);
       }
     } else if (isFunction(raw)) {
       watch(getter, raw.bind(publicThis));
@@ -5243,13 +4017,9 @@ export default function vueFactory(exports) {
 
         if (isFunction(_handler)) {
           watch(getter, _handler, raw);
-        } else {
-          warn$1("Invalid watch handler specified by key \"".concat(raw.handler, "\""), _handler);
         }
       }
-    } else {
-      warn$1("Invalid watch option: \"".concat(key, "\""), raw);
-    }
+    } else ;
   }
   /**
    * Resolve merged options and cache it on the component.
@@ -5310,9 +4080,7 @@ export default function vueFactory(exports) {
     }
 
     for (var key in from) {
-      if (asMixin && key === 'expose') {
-        warn$1("\"expose\" option is ignored when declared in mixins or extends. " + "It should only be declared in the base component itself.");
-      } else {
+      if (asMixin && key === 'expose') ;else {
         var strat = internalOptionMergeStrats[key] || strats && strats[key];
         to[key] = strat ? strat(to[key], from[key]) : from[key];
       }
@@ -5417,11 +4185,6 @@ export default function vueFactory(exports) {
       if (!(key in props)) {
         props[key] = undefined;
       }
-    } // validation
-
-
-    {
-      validateProps(rawProps || {}, props, instance);
     }
 
     if (isStateful) {
@@ -5455,7 +4218,7 @@ export default function vueFactory(exports) {
     if ( // always force full diff in dev
     // - #1942 if hmr is enabled with sfc component
     // - vite#872 non-sfc component used by sfc component
-    !(instance.type.__hmrId || instance.parent && instance.parent.type.__hmrId) && (optimized || patchFlag > 0) && !(patchFlag & 16
+    (optimized || patchFlag > 0) && !(patchFlag & 16
     /* FULL_PROPS */
     )) {
       if (patchFlag & 8
@@ -5502,21 +4265,21 @@ export default function vueFactory(exports) {
 
       var kebabKey;
 
-      for (var _key13 in rawCurrentProps) {
+      for (var _key9 in rawCurrentProps) {
         if (!rawProps || // for camelCase
-        !hasOwn(rawProps, _key13) && ( // it's possible the original props was passed in as kebab-case
+        !hasOwn(rawProps, _key9) && ( // it's possible the original props was passed in as kebab-case
         // and converted to camelCase (#955)
-        (kebabKey = hyphenate(_key13)) === _key13 || !hasOwn(rawProps, kebabKey))) {
+        (kebabKey = hyphenate(_key9)) === _key9 || !hasOwn(rawProps, kebabKey))) {
           if (options) {
             if (rawPrevProps && ( // for camelCase
-            rawPrevProps[_key13] !== undefined || // for kebab-case
+            rawPrevProps[_key9] !== undefined || // for kebab-case
             rawPrevProps[kebabKey] !== undefined)) {
-              props[_key13] = resolvePropValue(options, rawCurrentProps, _key13, undefined, instance, true
+              props[_key9] = resolvePropValue(options, rawCurrentProps, _key9, undefined, instance, true
               /* isAbsent */
               );
             }
           } else {
-            delete props[_key13];
+            delete props[_key9];
           }
         }
       } // in the case of functional component w/o props declaration, props and
@@ -5524,9 +4287,9 @@ export default function vueFactory(exports) {
 
 
       if (attrs !== rawCurrentProps) {
-        for (var _key14 in attrs) {
-          if (!rawProps || !hasOwn(rawProps, _key14)) {
-            delete attrs[_key14];
+        for (var _key10 in attrs) {
+          if (!rawProps || !hasOwn(rawProps, _key10)) {
+            delete attrs[_key10];
             hasAttrsChanged = true;
           }
         }
@@ -5538,10 +4301,6 @@ export default function vueFactory(exports) {
       trigger(instance, "set"
       /* SET */
       , '$attrs');
-    }
-
-    {
-      validateProps(rawProps || {}, props, instance);
     }
   }
 
@@ -5582,8 +4341,8 @@ export default function vueFactory(exports) {
       var castValues = rawCastValues || EMPTY_OBJ;
 
       for (var i = 0; i < needCastKeys.length; i++) {
-        var _key15 = needCastKeys[i];
-        props[_key15] = resolvePropValue(options, rawCurrentProps, _key15, castValues[_key15], instance, !hasOwn(castValues, _key15));
+        var _key11 = needCastKeys[i];
+        props[_key11] = resolvePropValue(options, rawCurrentProps, _key11, castValues[_key11], instance, !hasOwn(castValues, _key11));
       }
     }
 
@@ -5648,7 +4407,7 @@ export default function vueFactory(exports) {
 
     var hasExtends = false;
 
-    if (!isFunction(comp)) {
+    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
       var extendProps = raw => {
         hasExtends = true;
         var [props, keys] = normalizePropsOptions(raw, appContext, true);
@@ -5676,10 +4435,6 @@ export default function vueFactory(exports) {
 
     if (isArray(raw)) {
       for (var i = 0; i < raw.length; i++) {
-        if (!isString(raw[i])) {
-          warn$1("props must be strings when using array syntax.", raw[i]);
-        }
-
         var normalizedKey = camelize(raw[i]);
 
         if (validatePropName(normalizedKey)) {
@@ -5687,10 +4442,6 @@ export default function vueFactory(exports) {
         }
       }
     } else if (raw) {
-      if (!isObject(raw)) {
-        warn$1("invalid props options", raw);
-      }
-
       for (var key in raw) {
         var _normalizedKey = camelize(key);
 
@@ -5726,8 +4477,6 @@ export default function vueFactory(exports) {
   function validatePropName(key) {
     if (key[0] !== '$') {
       return true;
-    } else {
-      warn$1("Invalid prop name: \"".concat(key, "\" is a reserved property."));
     }
 
     return false;
@@ -5753,160 +4502,6 @@ export default function vueFactory(exports) {
 
     return -1;
   }
-  /**
-   * dev only
-   */
-
-
-  function validateProps(rawProps, props, instance) {
-    var resolvedValues = toRaw(props);
-    var options = instance.propsOptions[0];
-
-    for (var key in options) {
-      var opt = options[key];
-      if (opt == null) continue;
-      validateProp(key, resolvedValues[key], opt, !hasOwn(rawProps, key) && !hasOwn(rawProps, hyphenate(key)));
-    }
-  }
-  /**
-   * dev only
-   */
-
-
-  function validateProp(name, value, prop, isAbsent) {
-    var {
-      type,
-      required,
-      validator
-    } = prop; // required!
-
-    if (required && isAbsent) {
-      warn$1('Missing required prop: "' + name + '"');
-      return;
-    } // missing but optional
-
-
-    if (value == null && !prop.required) {
-      return;
-    } // type check
-
-
-    if (type != null && type !== true) {
-      var isValid = false;
-      var types = isArray(type) ? type : [type];
-      var expectedTypes = []; // value is valid as long as one of the specified types match
-
-      for (var i = 0; i < types.length && !isValid; i++) {
-        var {
-          valid,
-          expectedType
-        } = assertType(value, types[i]);
-        expectedTypes.push(expectedType || '');
-        isValid = valid;
-      }
-
-      if (!isValid) {
-        warn$1(getInvalidTypeMessage(name, value, expectedTypes));
-        return;
-      }
-    } // custom validator
-
-
-    if (validator && !validator(value)) {
-      warn$1('Invalid prop: custom validator check failed for prop "' + name + '".');
-    }
-  }
-
-  var isSimpleType = /*#__PURE__*/makeMap('String,Number,Boolean,Function,Symbol,BigInt');
-  /**
-   * dev only
-   */
-
-  function assertType(value, type) {
-    var valid;
-    var expectedType = getType(type);
-
-    if (isSimpleType(expectedType)) {
-      var t = typeof value;
-      valid = t === expectedType.toLowerCase(); // for primitive wrapper objects
-
-      if (!valid && t === 'object') {
-        valid = value instanceof type;
-      }
-    } else if (expectedType === 'Object') {
-      valid = isObject(value);
-    } else if (expectedType === 'Array') {
-      valid = isArray(value);
-    } else if (expectedType === 'null') {
-      valid = value === null;
-    } else {
-      valid = value instanceof type;
-    }
-
-    return {
-      valid,
-      expectedType
-    };
-  }
-  /**
-   * dev only
-   */
-
-
-  function getInvalidTypeMessage(name, value, expectedTypes) {
-    var message = "Invalid prop: type check failed for prop \"".concat(name, "\".") + " Expected ".concat(expectedTypes.map(capitalize).join(' | '));
-    var expectedType = expectedTypes[0];
-    var receivedType = toRawType(value);
-    var expectedValue = styleValue(value, expectedType);
-    var receivedValue = styleValue(value, receivedType); // check if we need to specify expected value
-
-    if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-      message += " with value ".concat(expectedValue);
-    }
-
-    message += ", got ".concat(receivedType, " "); // check if we need to specify received value
-
-    if (isExplicable(receivedType)) {
-      message += "with value ".concat(receivedValue, ".");
-    }
-
-    return message;
-  }
-  /**
-   * dev only
-   */
-
-
-  function styleValue(value, type) {
-    if (type === 'String') {
-      return "\"".concat(value, "\"");
-    } else if (type === 'Number') {
-      return "".concat(Number(value));
-    } else {
-      return "".concat(value);
-    }
-  }
-  /**
-   * dev only
-   */
-
-
-  function isExplicable(type) {
-    var explicitTypes = ['string', 'number', 'boolean'];
-    return explicitTypes.some(elem => type.toLowerCase() === elem);
-  }
-  /**
-   * dev only
-   */
-
-
-  function isBoolean() {
-    for (var _len8 = arguments.length, args = new Array(_len8), _key16 = 0; _key16 < _len8; _key16++) {
-      args[_key16] = arguments[_key16];
-    }
-
-    return args.some(elem => elem.toLowerCase() === 'boolean');
-  }
 
   var isInternalKey = key => key[0] === '_' || key === '$stable';
 
@@ -5914,10 +4509,6 @@ export default function vueFactory(exports) {
 
   var normalizeSlot = (key, rawSlot, ctx) => {
     var normalized = withCtx(function () {
-      if (currentInstance) {
-        warn$1("Slot \"".concat(key, "\" invoked outside of the render function: ") + "this will not track dependencies used in the slot. " + "Invoke the slot function inside the render function instead.");
-      }
-
       return normalizeSlotValue(rawSlot(...arguments));
     }, ctx);
     normalized._c = false;
@@ -5935,9 +4526,6 @@ export default function vueFactory(exports) {
         slots[key] = normalizeSlot(key, value, ctx);
       } else if (value != null) {
         (function () {
-          {
-            warn$1("Non-function value encountered for slot \"".concat(key, "\". ") + "Prefer function slots for better performance.");
-          }
           var normalized = normalizeSlotValue(value);
 
           slots[key] = () => normalized;
@@ -5947,10 +4535,6 @@ export default function vueFactory(exports) {
   };
 
   var normalizeVNodeSlots = (instance, children) => {
-    if (!isKeepAlive(instance.vnode) && !false) {
-      warn$1("Non-function value encountered for default slot. " + "Prefer function slots for better performance.");
-    }
-
     var normalized = normalizeSlotValue(children);
 
     instance.slots.default = () => normalized;
@@ -5997,11 +4581,7 @@ export default function vueFactory(exports) {
 
       if (type) {
         // compiled slots.
-        if (isHmrUpdating) {
-          // Parent was HMR updated so slot content may have changed.
-          // force update slots and mark instance for hmr as well
-          extend(slots, children);
-        } else if (optimized && type === 1
+        if (optimized && type === 1
         /* STABLE */
         ) {
           // compiled AND stable.
@@ -6045,27 +4625,6 @@ export default function vueFactory(exports) {
     }
   };
   /**
-  Runtime helper for applying directives to a vnode. Example usage:
-  
-  const comp = resolveComponent('comp')
-  const foo = resolveDirective('foo')
-  const bar = resolveDirective('bar')
-  
-  return withDirectives(h(comp), [
-    [foo, this.x],
-    [bar, this.y]
-  ])
-  */
-
-
-  var isBuiltInDirective = /*#__PURE__*/makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo');
-
-  function validateDirectiveName(name) {
-    if (isBuiltInDirective(name)) {
-      warn$1('Do not use built-in directive ids as custom directive id: ' + name);
-    }
-  }
-  /**
    * Adds directives to a VNode.
    */
 
@@ -6074,7 +4633,6 @@ export default function vueFactory(exports) {
     var internalInstance = currentRenderingInstance;
 
     if (internalInstance === null) {
-      warn$1("withDirectives can only be used inside render functions.");
       return vnode;
     }
 
@@ -6162,7 +4720,6 @@ export default function vueFactory(exports) {
       var rootProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
       if (rootProps != null && !isObject(rootProps)) {
-        warn$1("root props passed to app.mount() must be an object.");
         rootProps = null;
       }
 
@@ -6182,54 +4739,36 @@ export default function vueFactory(exports) {
           return context.config;
         },
 
-        set config(v) {
-          {
-            warn$1("app.config cannot be replaced. Modify individual options instead.");
-          }
-        },
+        set config(v) {},
 
         use(plugin) {
-          for (var _len9 = arguments.length, options = new Array(_len9 > 1 ? _len9 - 1 : 0), _key17 = 1; _key17 < _len9; _key17++) {
-            options[_key17 - 1] = arguments[_key17];
+          for (var _len6 = arguments.length, options = new Array(_len6 > 1 ? _len6 - 1 : 0), _key12 = 1; _key12 < _len6; _key12++) {
+            options[_key12 - 1] = arguments[_key12];
           }
 
-          if (installedPlugins.has(plugin)) {
-            warn$1("Plugin has already been applied to target app.");
-          } else if (plugin && isFunction(plugin.install)) {
+          if (installedPlugins.has(plugin)) ;else if (plugin && isFunction(plugin.install)) {
             installedPlugins.add(plugin);
             plugin.install(app, ...options);
           } else if (isFunction(plugin)) {
             installedPlugins.add(plugin);
             plugin(app, ...options);
-          } else {
-            warn$1("A plugin must either be a function or an object with an \"install\" " + "function.");
-          }
-
+          } else ;
           return app;
         },
 
         mixin(mixin) {
-          {
+          if (__VUE_OPTIONS_API__) {
             if (!context.mixins.includes(mixin)) {
               context.mixins.push(mixin);
-            } else {
-              warn$1('Mixin has already been applied to target app' + (mixin.name ? ": ".concat(mixin.name) : ''));
             }
           }
+
           return app;
         },
 
         component(name, component) {
-          {
-            validateComponentName(name, context.config);
-          }
-
           if (!component) {
             return context.components[name];
-          }
-
-          if (context.components[name]) {
-            warn$1("Component \"".concat(name, "\" has already been registered in target app."));
           }
 
           context.components[name] = component;
@@ -6237,16 +4776,8 @@ export default function vueFactory(exports) {
         },
 
         directive(name, directive) {
-          {
-            validateDirectiveName(name);
-          }
-
           if (!directive) {
             return context.directives[name];
-          }
-
-          if (context.directives[name]) {
-            warn$1("Directive \"".concat(name, "\" has already been registered in target app."));
           }
 
           context.directives[name] = directive;
@@ -6258,13 +4789,7 @@ export default function vueFactory(exports) {
             var vnode = createVNode(rootComponent, rootProps); // store app context on the root VNode.
             // this will be set on the root instance on initial mount.
 
-            vnode.appContext = context; // HMR root reload
-
-            {
-              context.reload = () => {
-                render(cloneVNode(vnode), rootContainer, isSVG);
-              };
-            }
+            vnode.appContext = context;
 
             if (isHydrate && hydrate) {
               hydrate(vnode, rootContainer);
@@ -6275,36 +4800,32 @@ export default function vueFactory(exports) {
             isMounted = true;
             app._container = rootContainer;
             rootContainer.__vue_app__ = app;
-            {
+
+            if (__VUE_PROD_DEVTOOLS__) {
               app._instance = vnode.component;
               devtoolsInitApp(app, version);
             }
+
             return getExposeProxy(vnode.component) || vnode.component.proxy;
-          } else {
-            warn$1("App has already been mounted.\n" + "If you want to remount the same app, move your app creation logic " + "into a factory function and create fresh app instances for each " + "mount - e.g. `const createMyApp = () => createApp(App)`");
           }
         },
 
         unmount() {
           if (isMounted) {
             render(null, app._container);
-            {
+
+            if (__VUE_PROD_DEVTOOLS__) {
               app._instance = null;
               devtoolsUnmountApp(app);
             }
+
             delete app._container.__vue_app__;
-          } else {
-            warn$1("Cannot unmount an app that is not mounted.");
           }
         },
 
         provide(key, value) {
-          if (key in context.provides) {
-            warn$1("App already provides property with key \"".concat(String(key), "\". ") + "It will be overwritten with the new value.");
-          } // TypeScript doesn't allow symbols as index type
+          // TypeScript doesn't allow symbols as index type
           // https://github.com/Microsoft/TypeScript/issues/24587
-
-
           context.provides[key] = value;
           return app;
         }
@@ -6343,7 +4864,6 @@ export default function vueFactory(exports) {
 
     var hydrate = (vnode, container) => {
       if (!container.hasChildNodes()) {
-        warn$1("Attempting to hydrate existing markup but container is empty. " + "Performing full mount instead.");
         patch(null, vnode, container);
         flushPostFlushCbs();
         return;
@@ -6383,7 +4903,6 @@ export default function vueFactory(exports) {
           } else {
             if (node.data !== vnode.children) {
               hasMismatch = true;
-              warn$1("Hydration text mismatch:" + "\n- Client: ".concat(JSON.stringify(node.data)) + "\n- Server: ".concat(JSON.stringify(vnode.children)));
               node.data = vnode.children;
             }
 
@@ -6494,9 +5013,7 @@ export default function vueFactory(exports) {
           /* SUSPENSE */
           ) {
             nextNode = vnode.type.hydrate(node, vnode, parentComponent, parentSuspense, isSVGContainer(parentNode(node)), slotScopeIds, optimized, rendererInternals, hydrateNode);
-          } else {
-            warn$1('Invalid HostVNode type:', type, "(".concat(typeof type, ")"));
-          }
+          } else ;
 
       }
 
@@ -6570,16 +5087,9 @@ export default function vueFactory(exports) {
         && // skip if element has innerHTML / textContent
         !(props && (props.innerHTML || props.textContent))) {
           var next = hydrateChildren(el.firstChild, vnode, el, parentComponent, parentSuspense, slotScopeIds, optimized);
-          var _hasWarned = false;
 
           while (next) {
-            hasMismatch = true;
-
-            if (!_hasWarned) {
-              warn$1("Hydration children mismatch in <".concat(vnode.type, ">: ") + "server rendered element contains more child nodes than client vdom.");
-              _hasWarned = true;
-            } // The SSRed DOM contains more nodes than it should. Remove them.
-
+            hasMismatch = true; // The SSRed DOM contains more nodes than it should. Remove them.
 
             var cur = next;
             next = next.nextSibling;
@@ -6590,7 +5100,6 @@ export default function vueFactory(exports) {
         ) {
           if (el.textContent !== vnode.children) {
             hasMismatch = true;
-            warn$1("Hydration text content mismatch in <".concat(vnode.type, ">:\n") + "- Client: ".concat(el.textContent, "\n") + "- Server: ".concat(vnode.children));
             el.textContent = vnode.children;
           }
         }
@@ -6603,7 +5112,6 @@ export default function vueFactory(exports) {
       optimized = optimized || !!parentVNode.dynamicChildren;
       var children = parentVNode.children;
       var l = children.length;
-      var hasWarned = false;
 
       for (var i = 0; i < l; i++) {
         var vnode = optimized ? children[i] : children[i] = normalizeVNode(children[i]);
@@ -6613,13 +5121,7 @@ export default function vueFactory(exports) {
         } else if (vnode.type === Text && !vnode.children) {
           continue;
         } else {
-          hasMismatch = true;
-
-          if (!hasWarned) {
-            warn$1("Hydration children mismatch in <".concat(container.tagName.toLowerCase(), ">: ") + "server rendered element contains fewer child nodes than client vdom.");
-            hasWarned = true;
-          } // the SSRed DOM didn't contain enough nodes. Mount the missing ones.
-
+          hasMismatch = true; // the SSRed DOM didn't contain enough nodes. Mount the missing ones.
 
           patch(null, vnode, container, null, parentComponent, parentSuspense, isSVGContainer(container), slotScopeIds);
         }
@@ -6647,17 +5149,13 @@ export default function vueFactory(exports) {
         // back. This should have led to node/children mismatch warnings.
         hasMismatch = true; // since the anchor is missing, we need to create one and insert it
 
-        insert(vnode.anchor = createComment("]", container), container, next); // fixed by xxxxxx
-
+        insert(vnode.anchor = createComment("]"), container, next);
         return next;
       }
     };
 
     var handleMismatch = (node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragment) => {
       hasMismatch = true;
-      warn$1("Hydration node mismatch:\n- Client vnode:", vnode.type, "\n- Server rendered DOM:", node, node.nodeType === 3
-      /* TEXT */
-      ? "(text)" : isComment(node) && node.data === '[' ? "(start of fragment)" : "");
       vnode.el = null;
 
       if (isFragment) {
@@ -6706,53 +5204,6 @@ export default function vueFactory(exports) {
 
     return [hydrate, hydrateNode];
   }
-
-  var supported;
-  var perf;
-
-  function startMeasure(instance, type) {
-    if (instance.appContext.config.performance && isSupported()) {
-      perf.mark("vue-".concat(type, "-").concat(instance.uid));
-    }
-
-    {
-      devtoolsPerfStart(instance, type, supported ? perf.now() : Date.now());
-    }
-  }
-
-  function endMeasure(instance, type) {
-    if (instance.appContext.config.performance && isSupported()) {
-      var startTag = "vue-".concat(type, "-").concat(instance.uid);
-      var endTag = startTag + ":end";
-      perf.mark(endTag);
-      perf.measure("<".concat(formatComponentName(instance, instance.type), "> ").concat(type), startTag, endTag);
-      perf.clearMarks(startTag);
-      perf.clearMarks(endTag);
-    }
-
-    {
-      devtoolsPerfEnd(instance, type, supported ? perf.now() : Date.now());
-    }
-  }
-
-  function isSupported() {
-    if (supported !== undefined) {
-      return supported;
-    }
-    /* eslint-disable no-restricted-globals */
-
-
-    if (typeof window !== 'undefined' && window.performance) {
-      supported = true;
-      perf = window.performance;
-    } else {
-      supported = false;
-    }
-    /* eslint-enable no-restricted-globals */
-
-
-    return supported;
-  }
   /**
    * This is only called in esm-bundler builds.
    * It is called when a renderer is created, in `baseCreateRenderer` so that
@@ -6763,11 +5214,12 @@ export default function vueFactory(exports) {
 
 
   function initFeatureFlags() {
-    var needWarn = [];
+    if (typeof __VUE_OPTIONS_API__ !== 'boolean') {
+      getGlobalThis().__VUE_OPTIONS_API__ = true;
+    }
 
-    if (needWarn.length) {
-      var multi = needWarn.length > 1;
-      console.warn("Feature flag".concat(multi ? "s" : "", " ").concat(needWarn.join(', '), " ").concat(multi ? "are" : "is", " not explicitly defined. You are running the esm-bundler build of Vue, ") + "which expects these compile-time feature flags to be globally injected " + "via the bundler config in order to get better tree-shaking in the " + "production bundle.\n\n" + "For more details, see http://link.vuejs.org/feature-flags.");
+    if (typeof __VUE_PROD_DEVTOOLS__ !== 'boolean') {
+      getGlobalThis().__VUE_PROD_DEVTOOLS__ = false;
     }
   }
 
@@ -6807,9 +5259,11 @@ export default function vueFactory(exports) {
     }
     var target = getGlobalThis();
     target.__VUE__ = true;
-    {
+
+    if (__VUE_PROD_DEVTOOLS__) {
       setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__, target);
     }
+
     var {
       insert: hostInsert,
       remove: hostRemove,
@@ -6835,7 +5289,7 @@ export default function vueFactory(exports) {
       var parentSuspense = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
       var isSVG = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : false;
       var slotScopeIds = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : null;
-      var optimized = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : isHmrUpdating ? false : !!n2.dynamicChildren;
+      var optimized = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : !!n2.dynamicChildren;
 
       if (n1 === n2) {
         return;
@@ -6873,8 +5327,6 @@ export default function vueFactory(exports) {
         case Static:
           if (n1 == null) {
             mountStaticNode(n2, container, anchor, isSVG);
-          } else {
-            patchStaticNode(n1, n2, container, isSVG);
           }
 
           break;
@@ -6900,9 +5352,7 @@ export default function vueFactory(exports) {
           /* SUSPENSE */
           ) {
             type.process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals);
-          } else {
-            warn$1('Invalid VNode type:', type, "(".concat(typeof type, ")"));
-          }
+          } else ;
 
       } // set ref
 
@@ -6914,8 +5364,7 @@ export default function vueFactory(exports) {
 
     var processText = (n1, n2, container, anchor) => {
       if (n1 == null) {
-        hostInsert(n2.el = hostCreateText(n2.children, container), // fixed by xxxxxx
-        container, anchor);
+        hostInsert(n2.el = hostCreateText(n2.children), container, anchor);
       } else {
         var el = n2.el = n1.el;
 
@@ -6927,8 +5376,7 @@ export default function vueFactory(exports) {
 
     var processCommentNode = (n1, n2, container, anchor) => {
       if (n1 == null) {
-        hostInsert(n2.el = hostCreateComment(n2.children || '', container), // fixed by xxxxxx
-        container, anchor);
+        hostInsert(n2.el = hostCreateComment(n2.children || ''), container, anchor);
       } else {
         // there's no support for dynamic comments
         n2.el = n1.el;
@@ -6937,23 +5385,6 @@ export default function vueFactory(exports) {
 
     var mountStaticNode = (n2, container, anchor, isSVG) => {
       [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG);
-    };
-    /**
-     * Dev / HMR only
-     */
-
-
-    var patchStaticNode = (n1, n2, container, isSVG) => {
-      // static nodes are only patched during dev for HMR
-      if (n2.children !== n1.children) {
-        var anchor = hostNextSibling(n1.anchor); // remove existing
-
-        removeStaticNode(n1);
-        [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG);
-      } else {
-        n2.el = n1.el;
-        n2.anchor = n1.anchor;
-      }
     };
 
     var moveStaticNode = (_ref10, container, nextSibling) => {
@@ -7009,9 +5440,17 @@ export default function vueFactory(exports) {
         patchFlag,
         dirs
       } = vnode;
-      {
-        el = vnode.el = hostCreateElement( // fixed by xxxxxx
-        vnode.type, container); // mount children first, since some props may rely on child content
+
+      if (vnode.el && hostCloneNode !== undefined && patchFlag === -1
+      /* HOISTED */
+      ) {
+        // If a vnode has non-null el, it means it's being reused.
+        // Only static vnodes can be reused, so its mounted DOM nodes should be
+        // exactly the same, and we can simply do a clone here.
+        // only do this in production since cloned trees cannot be HMR updated.
+        el = vnode.el = hostCloneNode(vnode.el);
+      } else {
+        el = vnode.el = hostCreateElement(vnode.type, isSVG, props && props.is, props); // mount children first, since some props may rely on child content
         // being already rendered, e.g. `<select value>`
 
         if (shapeFlag & 8
@@ -7058,7 +5497,8 @@ export default function vueFactory(exports) {
 
         setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
       }
-      {
+
+      if (__VUE_PROD_DEVTOOLS__) {
         Object.defineProperty(el, '__vnode', {
           value: vnode,
           enumerable: false
@@ -7106,12 +5546,6 @@ export default function vueFactory(exports) {
       if (parentComponent) {
         var subTree = parentComponent.subTree;
 
-        if (subTree.patchFlag > 0 && subTree.patchFlag & 2048
-        /* DEV_ROOT_FRAGMENT */
-        ) {
-          subTree = filterSingleRoot(subTree.children) || subTree;
-        }
-
         if (vnode === subTree) {
           var parentVNode = parentComponent.vnode;
           setScopeId(el, parentVNode, parentVNode.scopeId, parentVNode.slotScopeIds, parentComponent.parent);
@@ -7152,21 +5586,10 @@ export default function vueFactory(exports) {
         invokeDirectiveHook(n2, n1, parentComponent, 'beforeUpdate');
       }
 
-      if (isHmrUpdating) {
-        // HMR updated, force full diff
-        patchFlag = 0;
-        optimized = false;
-        dynamicChildren = null;
-      }
-
       var areChildrenSVG = isSVG && n2.type !== 'foreignObject';
 
       if (dynamicChildren) {
         patchBlockChildren(n1.dynamicChildren, dynamicChildren, el, parentComponent, parentSuspense, areChildrenSVG, slotScopeIds);
-
-        if (parentComponent && parentComponent.type.__hmrId) {
-          traverseStaticChildren(n1, n2);
-        }
       } else if (!optimized) {
         // full diff
         patchChildren(n1, n2, el, null, parentComponent, parentSuspense, areChildrenSVG, slotScopeIds, false);
@@ -7287,9 +5710,9 @@ export default function vueFactory(exports) {
         }
 
         if (oldProps !== EMPTY_OBJ) {
-          for (var _key18 in oldProps) {
-            if (!isReservedProp(_key18) && !(_key18 in newProps)) {
-              hostPatchProp(el, _key18, oldProps[_key18], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+          for (var _key13 in oldProps) {
+            if (!isReservedProp(_key13) && !(_key13 in newProps)) {
+              hostPatchProp(el, _key13, oldProps[_key13], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
             }
           }
         }
@@ -7301,23 +5724,13 @@ export default function vueFactory(exports) {
     };
 
     var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized) => {
-      var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText('', container); // fixed by xxxxxx
-
-      var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText('', container); // fixed by xxxxxx
-
+      var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText('');
+      var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText('');
       var {
         patchFlag,
         dynamicChildren,
         slotScopeIds: fragmentSlotScopeIds
-      } = n2;
-
-      if (isHmrUpdating) {
-        // HMR updated, force full diff
-        patchFlag = 0;
-        optimized = false;
-        dynamicChildren = null;
-      } // check if this is a slot fragment with :slotted scope ids
-
+      } = n2; // check if this is a slot fragment with :slotted scope ids
 
       if (fragmentSlotScopeIds) {
         slotScopeIds = slotScopeIds ? slotScopeIds.concat(fragmentSlotScopeIds) : fragmentSlotScopeIds;
@@ -7340,9 +5753,7 @@ export default function vueFactory(exports) {
           // patch children order, but it may contain dynamicChildren.
           patchBlockChildren(n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, isSVG, slotScopeIds);
 
-          if (parentComponent && parentComponent.type.__hmrId) {
-            traverseStaticChildren(n1, n2);
-          } else if ( // #2080 if the stable fragment has a key, it's a <template v-for> that may
+          if ( // #2080 if the stable fragment has a key, it's a <template v-for> that may
           //  get moved around. Make sure all root level vnodes inherit el.
           // #2134 or if it's a component root, it may also get moved around
           // as the component is being moved.
@@ -7378,16 +5789,7 @@ export default function vueFactory(exports) {
     };
 
     var mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
-      var instance = initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense);
-
-      if (instance.type.__hmrId) {
-        registerHMR(instance);
-      }
-
-      {
-        pushWarningContext(initialVNode);
-        startMeasure(instance, "mount");
-      } // inject renderer internals for keepAlive
+      var instance = initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense); // inject renderer internals for keepAlive
 
       if (isKeepAlive(initialVNode)) {
         instance.ctx.renderer = internals;
@@ -7395,13 +5797,7 @@ export default function vueFactory(exports) {
 
 
       {
-        {
-          startMeasure(instance, "init");
-        }
         setupComponent(instance);
-        {
-          endMeasure(instance, "init");
-        }
       } // setup() is async. This component relies on async logic to be resolved
       // before proceeding
 
@@ -7417,24 +5813,7 @@ export default function vueFactory(exports) {
         return;
       }
 
-      setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized); // fixed by xxxxxx 对根节点设置ownerid
-
-      if (instance.$wxsModules) {
-        var el = resolveOwnerEl(instance);
-
-        if (el) {
-          el.setAttribute(ATTR_V_OWNER_ID, instance.uid);
-          var {
-            $renderjsModules
-          } = instance.type;
-          $renderjsModules && el.setAttribute(ATTR_V_RENDERJS, $renderjsModules);
-        }
-      }
-
-      {
-        popWarningContext();
-        endMeasure(instance, "mount");
-      }
+      setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized);
     };
 
     var updateComponent = (n1, n2, optimized) => {
@@ -7442,15 +5821,7 @@ export default function vueFactory(exports) {
 
       if (shouldUpdateComponent(n1, n2, optimized)) {
         if (instance.asyncDep && !instance.asyncResolved) {
-          // async & still pending - just update props and slots
-          // since the component's reactive effect for render isn't set-up yet
-          {
-            pushWarningContext(n2);
-          }
           updateComponentPreRender(instance, n2, optimized);
-          {
-            popWarningContext();
-          }
           return;
         } else {
           // normal update
@@ -7499,20 +5870,8 @@ export default function vueFactory(exports) {
           if (el && hydrateNode) {
             // vnode has adopted host node - perform hydration instead of mount.
             var hydrateSubTree = () => {
-              {
-                startMeasure(instance, "render");
-              }
               instance.subTree = renderComponentRoot(instance);
-              {
-                endMeasure(instance, "render");
-              }
-              {
-                startMeasure(instance, "hydrate");
-              }
               hydrateNode(el, instance.subTree, instance, parentSuspense, null);
-              {
-                endMeasure(instance, "hydrate");
-              }
             };
 
             if (isAsyncWrapperVNode) {
@@ -7525,20 +5884,8 @@ export default function vueFactory(exports) {
               hydrateSubTree();
             }
           } else {
-            {
-              startMeasure(instance, "render");
-            }
             var subTree = instance.subTree = renderComponentRoot(instance);
-            {
-              endMeasure(instance, "render");
-            }
-            {
-              startMeasure(instance, "patch");
-            }
             patch(null, subTree, container, anchor, instance, parentSuspense, isSVG);
-            {
-              endMeasure(instance, "patch");
-            }
             initialVNode.el = subTree.el;
           } // mounted hook
 
@@ -7563,9 +5910,11 @@ export default function vueFactory(exports) {
           }
 
           instance.isMounted = true;
-          {
+
+          if (__VUE_PROD_DEVTOOLS__) {
             devtoolsComponentAdded(instance);
           } // #2458: deference mount-only object parameters to prevent memleaks
+
 
           initialVNode = container = anchor = null;
         } else {
@@ -7581,11 +5930,8 @@ export default function vueFactory(exports) {
           } = instance;
           var originNext = next;
 
-          var _vnodeHook;
+          var _vnodeHook; // Disallow component effect recursion during pre-lifecycle hooks.
 
-          {
-            pushWarningContext(next || instance.vnode);
-          } // Disallow component effect recursion during pre-lifecycle hooks.
 
           effect.allowRecurse = false;
 
@@ -7606,26 +5952,13 @@ export default function vueFactory(exports) {
             invokeVNodeHook(_vnodeHook, _parent, next, vnode);
           }
 
-          effect.allowRecurse = true; // render
-
-          {
-            startMeasure(instance, "render");
-          }
+          effect.allowRecurse = true;
           var nextTree = renderComponentRoot(instance);
-          {
-            endMeasure(instance, "render");
-          }
           var prevTree = instance.subTree;
           instance.subTree = nextTree;
-          {
-            startMeasure(instance, "patch");
-          }
           patch(prevTree, nextTree, // parent may have changed if it's in a teleport
           hostParentNode(prevTree.el), // anchor may have changed if it's in a fragment
           getNextHostNode(prevTree), instance, parentSuspense, isSVG);
-          {
-            endMeasure(instance, "patch");
-          }
           next.el = nextTree.el;
 
           if (originNext === null) {
@@ -7645,11 +5978,8 @@ export default function vueFactory(exports) {
             queuePostRenderEffect(() => invokeVNodeHook(_vnodeHook, _parent, next, vnode), parentSuspense);
           }
 
-          {
+          if (__VUE_PROD_DEVTOOLS__) {
             devtoolsComponentUpdated(instance);
-          }
-          {
-            popWarningContext();
           }
         }
       }; // create reactive effect for rendering
@@ -7662,12 +5992,6 @@ export default function vueFactory(exports) {
       // #1801, #2043 component render effects should allow recursive updates
 
       effect.allowRecurse = update.allowRecurse = true;
-      {
-        effect.onTrack = instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0;
-        effect.onTrigger = instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0; // @ts-ignore (for scheduler)
-
-        update.ownerInstance = instance;
-      }
       update();
     };
 
@@ -7868,10 +6192,6 @@ export default function vueFactory(exports) {
           var nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
 
           if (nextChild.key != null) {
-            if (keyToNewIndexMap.has(nextChild.key)) {
-              warn$1("Duplicate keys found during update:", JSON.stringify(nextChild.key), "Make sure keys are unique.");
-            }
-
             keyToNewIndexMap.set(nextChild.key, i);
           }
         } // 5.2 loop through old children left to be patched and try to patch
@@ -8198,10 +6518,6 @@ export default function vueFactory(exports) {
     };
 
     var unmountComponent = (instance, parentSuspense, doRemove) => {
-      if (instance.type.__hmrId) {
-        unregisterHMR(instance);
-      }
-
       var {
         bum,
         scope,
@@ -8243,7 +6559,7 @@ export default function vueFactory(exports) {
         }
       }
 
-      {
+      if (__VUE_PROD_DEVTOOLS__) {
         devtoolsComponentRemoved(instance);
       }
     };
@@ -8335,12 +6651,6 @@ export default function vueFactory(exports) {
       i: owner,
       r: ref
     } = rawRef;
-
-    if (!owner) {
-      warn$1("Missing ref owner context. ref cannot be used on hoisted vnodes. " + "A vnode with ref must be created inside the render function.");
-      return;
-    }
-
     var oldRef = oldRawRef && oldRawRef.r;
     var refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
     var setupState = owner.setupState; // dynamic ref changed. unset old ref
@@ -8392,9 +6702,7 @@ export default function vueFactory(exports) {
       callWithErrorHandling(ref, owner, 12
       /* FUNCTION_REF */
       , [value, refs]);
-    } else {
-      warn$1('Invalid template ref type:', value, "(".concat(typeof value, ")"));
-    }
+    } else ;
   }
 
   function invokeVNodeHook(hook, instance, vnode) {
@@ -8439,12 +6747,6 @@ export default function vueFactory(exports) {
           }
 
           if (!shallow) traverseStaticChildren(c1, c2);
-        } // also inherit for comment nodes, but not placeholders (e.g. v-if which
-        // would have received .el during block patch)
-
-
-        if (c2.type === Comment && !c2.el) {
-          c2.el = c1.el;
         }
       }
     }
@@ -8514,22 +6816,12 @@ export default function vueFactory(exports) {
 
     if (isString(targetSelector)) {
       if (!select) {
-        warn$1("Current renderer does not support string target for Teleports. " + "(missing querySelector renderer option)");
         return null;
       } else {
         var target = select(targetSelector);
-
-        if (!target) {
-          warn$1("Failed to locate Teleport target with selector \"".concat(targetSelector, "\". ") + "Note the target element must exist before the component is mounted - " + "i.e. the target cannot be rendered by the component itself, and " + "ideally should be outside of the entire Vue component tree.");
-        }
-
         return target;
       }
     } else {
-      if (!targetSelector && !isTeleportDisabled(props)) {
-        warn$1("Invalid Teleport target: ".concat(targetSelector));
-      }
-
       return targetSelector;
     }
   };
@@ -8554,33 +6846,21 @@ export default function vueFactory(exports) {
         shapeFlag,
         children,
         dynamicChildren
-      } = n2; // #3302
-      // HMR updated, force full diff
-
-      if (isHmrUpdating) {
-        optimized = false;
-        dynamicChildren = null;
-      }
+      } = n2;
 
       if (n1 == null) {
         // insert anchors in the main view
-        var placeholder = n2.el = createComment('teleport start', container) // fixed by xxxxxx
-        ; // fixed by xxxxxx
-
-        var mainAnchor = n2.anchor = createComment('teleport end', container) // fixed by xxxxxx
-        ; // fixed by xxxxxx
-
+        var placeholder = n2.el = createText('');
+        var mainAnchor = n2.anchor = createText('');
         insert(placeholder, container, anchor);
         insert(mainAnchor, container, anchor);
         var target = n2.target = resolveTarget(n2.props, querySelector);
-        var targetAnchor = n2.targetAnchor = createText('', container); // fixed by xxxxxx
+        var targetAnchor = n2.targetAnchor = createText('');
 
         if (target) {
           insert(targetAnchor, target); // #2652 we could be teleporting from a non-SVG tree into an SVG tree
 
           isSVG = isSVG || isTargetSVG(target);
-        } else if (!disabled) {
-          warn$1('Invalid Teleport target on mount:', target, "(".concat(typeof target, ")"));
         }
 
         var mount = (container, anchor) => {
@@ -8641,8 +6921,6 @@ export default function vueFactory(exports) {
               moveTeleport(n2, nextTarget, null, internals, 0
               /* TARGET_CHANGE */
               );
-            } else {
-              warn$1('Invalid Teleport target on update:', _target, "(".concat(typeof _target, ")"));
             }
           } else if (wasDisabled) {
             // disabled -> enabled
@@ -8841,14 +7119,7 @@ export default function vueFactory(exports) {
         return Component;
       }
 
-      if (warnMissing && !res) {
-        var extra = type === COMPONENTS ? "\nIf this is a native custom element, make sure to exclude it from " + "component resolution via compilerOptions.isCustomElement." : "";
-        warn$1("Failed to resolve ".concat(type.slice(0, -1), ": ").concat(name).concat(extra));
-      }
-
       return res;
-    } else {
-      warn$1("resolve".concat(capitalize(type.slice(0, -1)), " ") + "can only be used in render() or setup().");
     }
   }
 
@@ -8856,10 +7127,10 @@ export default function vueFactory(exports) {
     return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
   }
 
-  var Fragment = Symbol('Fragment');
-  var Text = Symbol('Text');
-  var Comment = Symbol('Comment');
-  var Static = Symbol('Static'); // Since v-if and v-for are the two possible ways node structure can dynamically
+  var Fragment = Symbol(undefined);
+  var Text = Symbol(undefined);
+  var Comment = Symbol(undefined);
+  var Static = Symbol(undefined); // Since v-if and v-for are the two possible ways node structure can dynamically
   // change, once we consider v-if branches and each v-for fragment a block, we
   // can divide a template into nested blocks, and within each block the node
   // structure would be stable. This allows us to skip most children diffing
@@ -8963,17 +7234,8 @@ export default function vueFactory(exports) {
   }
 
   function isSameVNodeType(n1, n2) {
-    if (n2.shapeFlag & 6
-    /* COMPONENT */
-    && hmrDirtyComponents.has(n2.type)) {
-      // HMR only: if the component has been hot-updated, force a reload.
-      return false;
-    }
-
     return n1.type === n2.type && n1.key === n2.key;
   }
-
-  var vnodeArgsTransformer;
   /**
    * Internal API for registering an arguments transform for createVNode
    * used for creating stubs in the test-utils
@@ -8981,17 +7243,8 @@ export default function vueFactory(exports) {
    * typings
    */
 
-  function transformVNodeArgs(transformer) {
-    vnodeArgsTransformer = transformer;
-  }
 
-  var createVNodeWithArgsTransform = function () {
-    for (var _len10 = arguments.length, args = new Array(_len10), _key19 = 0; _key19 < _len10; _key19++) {
-      args[_key19] = arguments[_key19];
-    }
-
-    return _createVNode(...(vnodeArgsTransformer ? vnodeArgsTransformer(args, currentRenderingInstance) : args));
-  };
+  function transformVNodeArgs(transformer) {}
 
   var InternalObjectKey = "__vInternal";
 
@@ -9064,11 +7317,6 @@ export default function vueFactory(exports) {
       : 16
       /* ARRAY_CHILDREN */
       ;
-    } // validate key
-
-
-    if (vnode.key !== vnode.key) {
-      warn$1("VNode created with invalid key (NaN). VNode type:", vnode.type);
     } // track vnode for block tree
 
 
@@ -9091,7 +7339,7 @@ export default function vueFactory(exports) {
     return vnode;
   }
 
-  var createVNode = createVNodeWithArgsTransform;
+  var createVNode = _createVNode;
 
   function _createVNode(type) {
     var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -9101,10 +7349,6 @@ export default function vueFactory(exports) {
     var isBlockNode = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
 
     if (!type || type === NULL_DYNAMIC_COMPONENT) {
-      if (!type) {
-        warn$1("Invalid vnode type when creating vnode: ".concat(type, "."));
-      }
-
       type = Comment;
     }
 
@@ -9164,14 +7408,6 @@ export default function vueFactory(exports) {
     : isFunction(type) ? 2
     /* FUNCTIONAL_COMPONENT */
     : 0;
-
-    if (shapeFlag & 4
-    /* STATEFUL_COMPONENT */
-    && isProxy(type)) {
-      type = toRaw(type);
-      warn$1("Vue received a Component which was made a reactive object. This can " + "lead to unnecessary performance overhead, and should be avoided by " + "marking the component with `markRaw` or using `shallowRef` " + "instead of `ref`.", "\nComponent that was made reactive: ", type);
-    }
-
     return createBaseVNode(type, props, children, patchFlag, dynamicProps, shapeFlag, isBlockNode, true);
   }
 
@@ -9203,9 +7439,7 @@ export default function vueFactory(exports) {
       mergeRef && ref ? isArray(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref,
       scopeId: vnode.scopeId,
       slotScopeIds: vnode.slotScopeIds,
-      children: patchFlag === -1
-      /* HOISTED */
-      && isArray(children) ? children.map(deepCloneVNode) : children,
+      children: children,
       target: vnode.target,
       targetAnchor: vnode.targetAnchor,
       staticCount: vnode.staticCount,
@@ -9236,21 +7470,6 @@ export default function vueFactory(exports) {
       el: vnode.el,
       anchor: vnode.anchor
     };
-    return cloned;
-  }
-  /**
-   * Dev only, for HMR of hoisted vnodes reused in v-for
-   * https://github.com/vitejs/vite/issues/2022
-   */
-
-
-  function deepCloneVNode(vnode) {
-    var cloned = cloneVNode(vnode);
-
-    if (isArray(vnode.children)) {
-      cloned.children = vnode.children.map(deepCloneVNode);
-    }
-
     return cloned;
   }
   /**
@@ -9440,11 +7659,6 @@ export default function vueFactory(exports) {
         ret[i] = renderItem(source[i], i, undefined, cached && cached[i]);
       }
     } else if (typeof source === 'number') {
-      if (!Number.isInteger(source)) {
-        warn$1("The v-for range expect an integer value but got ".concat(source, "."));
-        return [];
-      }
-
       ret = new Array(source);
 
       for (var _i2 = 0; _i2 < source; _i2++) {
@@ -9513,17 +7727,10 @@ export default function vueFactory(exports) {
       }, fallback && fallback());
     }
 
-    var slot = slots[name];
-
-    if (slot && slot.length > 1) {
-      warn$1("SSR-optimized slot function detected in a non-SSR-optimized render " + "function. You need to mark this component with $dynamic-slots in the " + "parent template.");
-
-      slot = () => [];
-    } // a compiled slot disables block tracking by default to avoid manual
+    var slot = slots[name]; // a compiled slot disables block tracking by default to avoid manual
     // invocation interfering with template-based block tracking, but in
     // `renderSlot` we can be sure that it's template-based so we can force
     // enable it.
-
 
     if (slot && slot._c) {
       slot._d = false;
@@ -9569,11 +7776,6 @@ export default function vueFactory(exports) {
   function toHandlers(obj) {
     var ret = {};
 
-    if (!isObject(obj)) {
-      warn$1("v-on with no argument expects an object value.");
-      return ret;
-    }
-
     for (var key in obj) {
       ret[toHandlerKey(key)] = obj[key];
     }
@@ -9597,17 +7799,17 @@ export default function vueFactory(exports) {
     $: i => i,
     $el: i => i.vnode.el,
     $data: i => i.data,
-    $props: i => shallowReadonly(i.props),
-    $attrs: i => shallowReadonly(i.attrs),
-    $slots: i => shallowReadonly(i.slots),
-    $refs: i => shallowReadonly(i.refs),
+    $props: i => i.props,
+    $attrs: i => i.attrs,
+    $slots: i => i.slots,
+    $refs: i => i.refs,
     $parent: i => getPublicInstance(i.parent),
     $root: i => getPublicInstance(i.root),
     $emit: i => i.emit,
-    $options: i => resolveMergedOptions(i),
+    $options: i => __VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type,
     $forceUpdate: i => () => queueJob(i.update),
     $nextTick: i => nextTick.bind(i.proxy),
-    $watch: i => instanceWatch.bind(i)
+    $watch: i => __VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP
   });
   var PublicInstanceProxyHandlers = {
     get(_ref17, key) {
@@ -9622,25 +7824,12 @@ export default function vueFactory(exports) {
         accessCache,
         type,
         appContext
-      } = instance; // for internal formatters to know that this is a Vue instance
-
-      if (key === '__isVue') {
-        return true;
-      } // prioritize <script setup> bindings during dev.
-      // this allows even properties that start with _ or $ to be used - so that
-      // it aligns with the production behavior where the render fn is inlined and
-      // indeed has access to all declared variables.
-
-
-      if (setupState !== EMPTY_OBJ && setupState.__isScriptSetup && hasOwn(setupState, key)) {
-        return setupState[key];
-      } // data / props / ctx
+      } = instance; // data / props / ctx
       // This getter gets called for every property access on the render context
       // during render and is a major hotspot. The most expensive part of this
       // is the multiple hasOwn() calls. It's much faster to do a simple property
       // access on a plain object, so we use an accessCache object (with null
       // prototype) to memoize what access type a key corresponds to.
-
 
       var normalizedProps;
 
@@ -9692,7 +7881,7 @@ export default function vueFactory(exports) {
           /* CONTEXT */
           ;
           return ctx[key];
-        } else if (shouldCacheAccess) {
+        } else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
           accessCache[key] = 4
           /* OTHER */
           ;
@@ -9707,7 +7896,6 @@ export default function vueFactory(exports) {
           track(instance, "get"
           /* GET */
           , key);
-          markAttrsAccessed();
         }
 
         return publicGetter(instance);
@@ -9725,15 +7913,7 @@ export default function vueFactory(exports) {
         {
           return globalProperties[key];
         }
-      } else if (currentRenderingInstance && (!isString(key) || // #1091 avoid internal isRef/isVNode checks on component instance leading
-      // to infinite warning loop
-      key.indexOf('__v') !== 0)) {
-        if (data !== EMPTY_OBJ && (key[0] === '$' || key[0] === '_') && hasOwn(data, key)) {
-          warn$1("Property ".concat(JSON.stringify(key), " must be accessed via $data because it starts with a reserved ") + "character (\"$\" or \"_\") and is not proxied on the render context.");
-        } else if (instance === currentRenderingInstance) {
-          warn$1("Property ".concat(JSON.stringify(key), " was accessed during render ") + "but is not defined on instance.");
-        }
-      }
+      } else ;
     },
 
     set(_ref18, key, value) {
@@ -9751,21 +7931,13 @@ export default function vueFactory(exports) {
       } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
         data[key] = value;
       } else if (hasOwn(instance.props, key)) {
-        warn$1("Attempting to mutate prop \"".concat(key, "\". Props are readonly."), instance);
         return false;
       }
 
       if (key[0] === '$' && key.slice(1) in instance) {
-        warn$1("Attempting to mutate public property \"".concat(key, "\". ") + "Properties starting with $ are reserved and readonly.", instance);
         return false;
       } else {
-        if (key in instance.appContext.config.globalProperties) {
-          Object.defineProperty(ctx, key, {
-            enumerable: true,
-            configurable: true,
-            value
-          });
-        } else {
+        {
           ctx[key] = value;
         }
       }
@@ -9789,12 +7961,6 @@ export default function vueFactory(exports) {
     }
 
   };
-  {
-    PublicInstanceProxyHandlers.ownKeys = target => {
-      warn$1("Avoid app logic that relies on enumerating keys on a component instance. " + "The keys will be empty in production mode to avoid performance overhead.");
-      return Reflect.ownKeys(target);
-    };
-  }
   var RuntimeCompiledPublicInstanceProxyHandlers = /*#__PURE__*/extend({}, PublicInstanceProxyHandlers, {
     get(target, key) {
       // fast path for unscopables when using `with` block
@@ -9807,83 +7973,10 @@ export default function vueFactory(exports) {
 
     has(_, key) {
       var has = key[0] !== '_' && !isGloballyWhitelisted(key);
-
-      if (!has && PublicInstanceProxyHandlers.has(_, key)) {
-        warn$1("Property ".concat(JSON.stringify(key), " should not start with _ which is a reserved prefix for Vue internals."));
-      }
-
       return has;
     }
 
-  }); // dev only
-  // In dev mode, the proxy target exposes the same properties as seen on `this`
-  // for easier console inspection. In prod mode it will be an empty object so
-  // these properties definitions can be skipped.
-
-  function createDevRenderContext(instance) {
-    var target = {}; // expose internal instance for proxy handlers
-
-    Object.defineProperty(target, "_", {
-      configurable: true,
-      enumerable: false,
-      get: () => instance
-    }); // expose public properties
-
-    Object.keys(publicPropertiesMap).forEach(key => {
-      Object.defineProperty(target, key, {
-        configurable: true,
-        enumerable: false,
-        get: () => publicPropertiesMap[key](instance),
-        // intercepted by the proxy so no need for implementation,
-        // but needed to prevent set errors
-        set: NOOP
-      });
-    });
-    return target;
-  } // dev only
-
-
-  function exposePropsOnRenderContext(instance) {
-    var {
-      ctx,
-      propsOptions: [propsOptions]
-    } = instance;
-
-    if (propsOptions) {
-      Object.keys(propsOptions).forEach(key => {
-        Object.defineProperty(ctx, key, {
-          enumerable: true,
-          configurable: true,
-          get: () => instance.props[key],
-          set: NOOP
-        });
-      });
-    }
-  } // dev only
-
-
-  function exposeSetupStateOnRenderContext(instance) {
-    var {
-      ctx,
-      setupState
-    } = instance;
-    Object.keys(toRaw(setupState)).forEach(key => {
-      if (!setupState.__isScriptSetup) {
-        if (key[0] === '$' || key[0] === '_') {
-          warn$1("setup() return property ".concat(JSON.stringify(key), " should not start with \"$\" or \"_\" ") + "which are reserved prefixes for Vue internals.");
-          return;
-        }
-
-        Object.defineProperty(ctx, key, {
-          enumerable: true,
-          configurable: true,
-          get: () => setupState[key],
-          set: NOOP
-        });
-      }
-    });
-  }
-
+  });
   var emptyAppContext = createAppContext();
   var uid$1 = 0;
 
@@ -9960,7 +8053,9 @@ export default function vueFactory(exports) {
       sp: null
     };
     {
-      instance.ctx = createDevRenderContext(instance);
+      instance.ctx = {
+        _: instance
+      };
     }
     instance.root = parent ? parent.root : instance;
     instance.emit = emit$1.bind(null, instance); // apply custom element special handling
@@ -9986,16 +8081,6 @@ export default function vueFactory(exports) {
     currentInstance = null;
   };
 
-  var isBuiltInTag = /*#__PURE__*/makeMap('slot,component');
-
-  function validateComponentName(name, config) {
-    var appIsNativeTag = config.isNativeTag || NO;
-
-    if (isBuiltInTag(name) || appIsNativeTag(name)) {
-      warn$1('Do not use built-in or reserved HTML elements as component id: ' + name);
-    }
-  }
-
   function isStatefulComponent(instance) {
     return instance.vnode.shapeFlag & 4
     /* STATEFUL_COMPONENT */
@@ -10020,40 +8105,12 @@ export default function vueFactory(exports) {
   }
 
   function setupStatefulComponent(instance, isSSR) {
-    var Component = instance.type;
-    {
-      if (Component.name) {
-        validateComponentName(Component.name, instance.appContext.config);
-      }
-
-      if (Component.components) {
-        var names = Object.keys(Component.components);
-
-        for (var i = 0; i < names.length; i++) {
-          validateComponentName(names[i], instance.appContext.config);
-        }
-      }
-
-      if (Component.directives) {
-        var _names = Object.keys(Component.directives);
-
-        for (var _i4 = 0; _i4 < _names.length; _i4++) {
-          validateDirectiveName(_names[_i4]);
-        }
-      }
-
-      if (Component.compilerOptions && isRuntimeOnly()) {
-        warn$1("\"compilerOptions\" is only supported when using a build of Vue that " + "includes the runtime compiler. Since you are using a runtime-only " + "build, the options should be passed via your build tool config instead.");
-      }
-    } // 0. create render proxy property access cache
+    var Component = instance.type; // 0. create render proxy property access cache
 
     instance.accessCache = Object.create(null); // 1. create public instance / render proxy
     // also mark it raw so it's never observed
 
-    instance.proxy = markRaw(new Proxy(instance.ctx, PublicInstanceProxyHandlers));
-    {
-      exposePropsOnRenderContext(instance);
-    } // 2. call setup()
+    instance.proxy = markRaw(new Proxy(instance.ctx, PublicInstanceProxyHandlers)); // 2. call setup()
 
     var {
       setup
@@ -10065,7 +8122,7 @@ export default function vueFactory(exports) {
       pauseTracking();
       var setupResult = callWithErrorHandling(setup, instance, 0
       /* SETUP_FUNCTION */
-      , [shallowReadonly(instance.props), setupContext]);
+      , [instance.props, setupContext]);
       resetTracking();
       unsetCurrentInstance();
 
@@ -10105,22 +8162,14 @@ export default function vueFactory(exports) {
         instance.render = setupResult;
       }
     } else if (isObject(setupResult)) {
-      if (isVNode(setupResult)) {
-        warn$1("setup() should not return VNodes directly - " + "return a render function instead.");
-      } // setup returned bindings.
+      // setup returned bindings.
       // assuming a render function compiled from template is present.
-
-
-      {
+      if (__VUE_PROD_DEVTOOLS__) {
         instance.devtoolsRawSetupState = setupResult;
       }
+
       instance.setupState = proxyRefs(setupResult);
-      {
-        exposeSetupStateOnRenderContext(instance);
-      }
-    } else if (setupResult !== undefined) {
-      warn$1("setup() should return an object. Received: ".concat(setupResult === null ? 'null' : typeof setupResult));
-    }
+    } else ;
 
     finishComponentSetup(instance, isSSR);
   }
@@ -10156,9 +8205,6 @@ export default function vueFactory(exports) {
         var template = Component.template;
 
         if (template) {
-          {
-            startMeasure(instance, "compile");
-          }
           var {
             isCustomElement,
             compilerOptions
@@ -10172,9 +8218,6 @@ export default function vueFactory(exports) {
             delimiters
           }, compilerOptions), componentCompilerOptions);
           Component.render = compile(template, finalCompilerOptions);
-          {
-            endMeasure(instance, "compile");
-          }
         }
       }
 
@@ -10188,45 +8231,22 @@ export default function vueFactory(exports) {
     } // support for 2.x options
 
 
-    {
+    if (__VUE_OPTIONS_API__ && !false) {
       setCurrentInstance(instance);
       pauseTracking();
       applyOptions(instance);
       resetTracking();
       unsetCurrentInstance();
-    } // warn missing template/render
-    // the runtime compilation of template in SSR is done by server-render
-
-    if (!Component.render && instance.render === NOOP && !isSSR) {
-      /* istanbul ignore if */
-      if (!compile && Component.template) {
-        warn$1("Component provided template option but " + "runtime compilation is not supported in this build of Vue." + " Configure your bundler to alias \"vue\" to \"vue/dist/vue.esm-bundler.js\"."
-        /* should not happen */
-        );
-      } else {
-        warn$1("Component is missing template or render function.");
-      }
     }
   }
 
   function createAttrsProxy(instance) {
     return new Proxy(instance.attrs, {
       get(target, key) {
-        markAttrsAccessed();
         track(instance, "get"
         /* GET */
         , '$attrs');
         return target[key];
-      },
-
-      set() {
-        warn$1("setupContext.attrs is readonly.");
-        return false;
-      },
-
-      deleteProperty() {
-        warn$1("setupContext.attrs is readonly.");
-        return false;
       }
 
     });
@@ -10234,38 +8254,20 @@ export default function vueFactory(exports) {
 
   function createSetupContext(instance) {
     var expose = exposed => {
-      if (instance.exposed) {
-        warn$1("expose() should be called only once per setup().");
-      }
-
       instance.exposed = exposed || {};
     };
 
     var attrs;
     {
-      // We use getters in dev in case libs like test-utils overwrite instance
-      // properties (overwrites should not be done in prod)
-      return Object.freeze({
+      return {
         get attrs() {
           return attrs || (attrs = createAttrsProxy(instance));
         },
 
-        get slots() {
-          return shallowReadonly(instance.slots);
-        },
-
-        get emit() {
-          return function (event) {
-            for (var _len11 = arguments.length, args = new Array(_len11 > 1 ? _len11 - 1 : 0), _key20 = 1; _key20 < _len11; _key20++) {
-              args[_key20 - 1] = arguments[_key20];
-            }
-
-            return instance.emit(event, ...args);
-          };
-        },
-
+        slots: instance.slots,
+        emit: instance.emit,
         expose
-      });
+      };
     }
   }
 
@@ -10328,14 +8330,6 @@ export default function vueFactory(exports) {
 
   var stack = [];
 
-  function pushWarningContext(vnode) {
-    stack.push(vnode);
-  }
-
-  function popWarningContext() {
-    stack.pop();
-  }
-
   function warn$1(msg) {
     // avoid props formatting or warn handler tracking deps that might be mutated
     // during patch, leading to infinite recursion.
@@ -10344,8 +8338,8 @@ export default function vueFactory(exports) {
     var appWarnHandler = instance && instance.appContext.config.warnHandler;
     var trace = getComponentTrace();
 
-    for (var _len12 = arguments.length, args = new Array(_len12 > 1 ? _len12 - 1 : 0), _key21 = 1; _key21 < _len12; _key21++) {
-      args[_key21 - 1] = arguments[_key21];
+    for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key14 = 1; _key14 < _len7; _key14++) {
+      args[_key14 - 1] = arguments[_key14];
     }
 
     if (appWarnHandler) {
@@ -10460,96 +8454,6 @@ export default function vueFactory(exports) {
     }
   }
 
-  var ErrorTypeStrings = {
-    ["sp"
-    /* SERVER_PREFETCH */
-    ]: 'serverPrefetch hook',
-    ["bc"
-    /* BEFORE_CREATE */
-    ]: 'beforeCreate hook',
-    ["c"
-    /* CREATED */
-    ]: 'created hook',
-    ["bm"
-    /* BEFORE_MOUNT */
-    ]: 'beforeMount hook',
-    ["m"
-    /* MOUNTED */
-    ]: 'mounted hook',
-    ["bu"
-    /* BEFORE_UPDATE */
-    ]: 'beforeUpdate hook',
-    ["u"
-    /* UPDATED */
-    ]: 'updated',
-    ["bum"
-    /* BEFORE_UNMOUNT */
-    ]: 'beforeUnmount hook',
-    ["um"
-    /* UNMOUNTED */
-    ]: 'unmounted hook',
-    ["a"
-    /* ACTIVATED */
-    ]: 'activated hook',
-    ["da"
-    /* DEACTIVATED */
-    ]: 'deactivated hook',
-    ["ec"
-    /* ERROR_CAPTURED */
-    ]: 'errorCaptured hook',
-    ["rtc"
-    /* RENDER_TRACKED */
-    ]: 'renderTracked hook',
-    ["rtg"
-    /* RENDER_TRIGGERED */
-    ]: 'renderTriggered hook',
-    [0
-    /* SETUP_FUNCTION */
-    ]: 'setup function',
-    [1
-    /* RENDER_FUNCTION */
-    ]: 'render function',
-    [2
-    /* WATCH_GETTER */
-    ]: 'watcher getter',
-    [3
-    /* WATCH_CALLBACK */
-    ]: 'watcher callback',
-    [4
-    /* WATCH_CLEANUP */
-    ]: 'watcher cleanup function',
-    [5
-    /* NATIVE_EVENT_HANDLER */
-    ]: 'native event handler',
-    [6
-    /* COMPONENT_EVENT_HANDLER */
-    ]: 'component event handler',
-    [7
-    /* VNODE_HOOK */
-    ]: 'vnode hook',
-    [8
-    /* DIRECTIVE_HOOK */
-    ]: 'directive hook',
-    [9
-    /* TRANSITION_HOOK */
-    ]: 'transition hook',
-    [10
-    /* APP_ERROR_HANDLER */
-    ]: 'app errorHandler',
-    [11
-    /* APP_WARN_HANDLER */
-    ]: 'app warnHandler',
-    [12
-    /* FUNCTION_REF */
-    ]: 'ref function',
-    [13
-    /* ASYNC_COMPONENT_LOADER */
-    ]: 'async component loader',
-    [14
-    /* SCHEDULER */
-    ]: 'scheduler flush. This is likely a Vue internals bug. ' + 'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/vue-next'
-  };
-
   function callWithErrorHandling(fn, instance, type, args) {
     var res;
 
@@ -10593,7 +8497,7 @@ export default function vueFactory(exports) {
 
       var exposedInstance = instance.proxy; // in production the hook receives only the error code
 
-      var errorInfo = ErrorTypeStrings[type];
+      var errorInfo = type;
 
       while (cur) {
         var errorCapturedHooks = cur.ec;
@@ -10626,25 +8530,8 @@ export default function vueFactory(exports) {
   function logError(err, type, contextVNode) {
     var throwInDev = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
     {
-      var info = ErrorTypeStrings[type];
-
-      if (contextVNode) {
-        pushWarningContext(contextVNode);
-      }
-
-      warn$1("Unhandled error".concat(info ? " during execution of ".concat(info) : ""));
-
-      if (contextVNode) {
-        popWarningContext();
-      } // crash in dev by default so it's more noticeable
-
-
-      if (throwInDev) {
-        // throw err fixed by xxxxxx 避免 error 导致 App 端不可用（比如跳转时报错）
-        console.error(err);
-      } else {
-        console.error(err);
-      }
+      // recover in prod to reduce the impact on end-user
+      console.error(err);
     }
   }
 
@@ -10657,19 +8544,10 @@ export default function vueFactory(exports) {
   var preFlushIndex = 0;
   var pendingPostFlushCbs = [];
   var activePostFlushCbs = null;
-  var postFlushIndex = 0; // fixed by xxxxxx iOS
-
-  var iOSPromise = {
-    then(callback) {
-      setTimeout(() => callback(), 0);
-    }
-
-  };
-  var isIOS = exports.platform === 'iOS';
-  var resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
+  var postFlushIndex = 0;
+  var resolvedPromise = Promise.resolve();
   var currentFlushPromise = null;
   var currentPreFlushParentJob = null;
-  var RECURSION_LIMIT = 100;
 
   function nextTick(fn) {
     var p = currentFlushPromise || resolvedPromise;
@@ -10757,15 +8635,8 @@ export default function vueFactory(exports) {
       currentPreFlushParentJob = parentJob;
       activePreFlushCbs = [...new Set(pendingPreFlushCbs)];
       pendingPreFlushCbs.length = 0;
-      {
-        seen = seen || new Map();
-      }
 
       for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
-        if (checkRecursiveUpdates(seen, activePreFlushCbs[preFlushIndex])) {
-          continue;
-        }
-
         activePreFlushCbs[preFlushIndex]();
       }
 
@@ -10788,16 +8659,9 @@ export default function vueFactory(exports) {
       }
 
       activePostFlushCbs = deduped;
-      {
-        seen = seen || new Map();
-      }
       activePostFlushCbs.sort((a, b) => getId(a) - getId(b));
 
       for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-        if (checkRecursiveUpdates(seen, activePostFlushCbs[postFlushIndex])) {
-          continue;
-        }
-
         activePostFlushCbs[postFlushIndex]();
       }
 
@@ -10811,9 +8675,6 @@ export default function vueFactory(exports) {
   function flushJobs(seen) {
     isFlushPending = false;
     isFlushing = true;
-    {
-      seen = seen || new Map();
-    }
     flushPreFlushCbs(seen); // Sort queue before flush.
     // This ensures that:
     // 1. Components are updated from parent to child. (because parent is always
@@ -10828,17 +8689,14 @@ export default function vueFactory(exports) {
     // they would get eventually shaken by a minifier like terser, some minifiers
     // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
 
-    var check = job => checkRecursiveUpdates(seen, job);
+    var check = NOOP;
 
     try {
       for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
         var job = queue[flushIndex];
 
         if (job && job.active !== false) {
-          if ("development" !== 'production' && check(job)) {
-            continue;
-          } // console.log(`running:`, job.id)
-
+          if ("production" !== 'production' && check(job)) ; // console.log(`running:`, job.id)
 
           callWithErrorHandling(job, null, 14
           /* SCHEDULER */
@@ -10848,30 +8706,13 @@ export default function vueFactory(exports) {
     } finally {
       flushIndex = 0;
       queue.length = 0;
-      flushPostFlushCbs(seen);
+      flushPostFlushCbs();
       isFlushing = false;
       currentFlushPromise = null; // some postFlushCb queued jobs!
       // keep flushing until it drains.
 
       if (queue.length || pendingPreFlushCbs.length || pendingPostFlushCbs.length) {
         flushJobs(seen);
-      }
-    }
-  }
-
-  function checkRecursiveUpdates(seen, fn) {
-    if (!seen.has(fn)) {
-      seen.set(fn, 1);
-    } else {
-      var count = seen.get(fn);
-
-      if (count > RECURSION_LIMIT) {
-        var instance = fn.ownerInstance;
-        var componentName = instance && getComponentName(instance.type);
-        warn$1("Maximum recursive updates exceeded".concat(componentName ? " in component <".concat(componentName, ">") : "", ". ") + "This means you have a reactive effect that is mutating its own " + "dependencies and thus recursively triggering itself. Possible sources " + "include component template, render function, updated hook or " + "watcher source function.");
-        return true;
-      } else {
-        seen.set(fn, count + 1);
       }
     }
   } // Simple effect.
@@ -10882,25 +8723,21 @@ export default function vueFactory(exports) {
   }
 
   function watchPostEffect(effect, options) {
-    return doWatch(effect, null, Object.assign(options || {}, {
+    return doWatch(effect, null, {
       flush: 'post'
-    }));
+    });
   }
 
   function watchSyncEffect(effect, options) {
-    return doWatch(effect, null, Object.assign(options || {}, {
+    return doWatch(effect, null, {
       flush: 'sync'
-    }));
+    });
   } // initial value for watchers to trigger on undefined initial values
 
 
   var INITIAL_WATCHER_VALUE = {}; // implementation
 
   function watch(source, cb, options) {
-    if (!isFunction(cb)) {
-      warn$1("`watch(fn, options?)` signature has been moved to a separate API. " + "Use `watchEffect(fn, options?)` instead. `watch` now only " + "supports `watch(source, cb, options?) signature.");
-    }
-
     return doWatch(source, cb, options);
   }
 
@@ -10912,21 +8749,6 @@ export default function vueFactory(exports) {
       onTrack,
       onTrigger
     } = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ;
-
-    if (!cb) {
-      if (immediate !== undefined) {
-        warn$1("watch() \"immediate\" option is only respected when using the " + "watch(source, callback, options?) signature.");
-      }
-
-      if (deep !== undefined) {
-        warn$1("watch() \"deep\" option is only respected when using the " + "watch(source, callback, options?) signature.");
-      }
-    }
-
-    var warnInvalidSource = s => {
-      warn$1("Invalid watch source: ", s, "A watch source can only be a getter/effect function, a ref, " + "a reactive object, or an array of these types.");
-    };
-
     var instance = currentInstance;
     var getter;
     var forceTrigger = false;
@@ -10953,9 +8775,7 @@ export default function vueFactory(exports) {
           return callWithErrorHandling(s, instance, 2
           /* WATCH_GETTER */
           );
-        } else {
-          warnInvalidSource(s);
-        }
+        } else ;
       });
     } else if (isFunction(source)) {
       if (cb) {
@@ -10981,7 +8801,6 @@ export default function vueFactory(exports) {
       }
     } else {
       getter = NOOP;
-      warnInvalidSource(source);
     }
 
     if (cb && deep) {
@@ -11068,11 +8887,7 @@ export default function vueFactory(exports) {
       };
     }
 
-    var effect = new ReactiveEffect(getter, scheduler);
-    {
-      effect.onTrack = onTrack;
-      effect.onTrigger = onTrigger;
-    } // initial run
+    var effect = new ReactiveEffect(getter, scheduler); // initial run
 
     if (cb) {
       if (immediate) {
@@ -11166,24 +8981,15 @@ export default function vueFactory(exports) {
     }
 
     return value;
-  } // dev only
-
-
-  var warnRuntimeUsage = method => warn$1("".concat(method, "() is a compiler-hint helper that is only usable inside ") + "<script setup> of a single file component. Its arguments should be " + "compiled away and passing it at runtime has no effect."); // implementation
+  } // implementation
 
 
   function defineProps() {
-    {
-      warnRuntimeUsage("defineProps");
-    }
     return null;
   } // implementation
 
 
   function defineEmits() {
-    {
-      warnRuntimeUsage("defineEmits");
-    }
     return null;
   }
   /**
@@ -11200,11 +9006,7 @@ export default function vueFactory(exports) {
    */
 
 
-  function defineExpose(exposed) {
-    {
-      warnRuntimeUsage("defineExpose");
-    }
-  }
+  function defineExpose(exposed) {}
   /**
    * Vue `<script setup>` compiler macro for providing props default values when
    * using type-based `defineProps` declaration.
@@ -11226,9 +9028,6 @@ export default function vueFactory(exports) {
 
 
   function withDefaults(props, defaults) {
-    {
-      warnRuntimeUsage("withDefaults");
-    }
     return null;
   }
 
@@ -11242,11 +9041,6 @@ export default function vueFactory(exports) {
 
   function getContext() {
     var i = getCurrentInstance();
-
-    if (!i) {
-      warn$1("useContext() called without active instance.");
-    }
-
     return i.setupContext || (i.setupContext = createSetupContext(i));
   }
   /**
@@ -11275,9 +9069,7 @@ export default function vueFactory(exports) {
         props[key] = {
           default: defaults[key]
         };
-      } else {
-        warn$1("props default key \"".concat(key, "\" has no corresponding declaration."));
-      }
+      } else ;
     }
 
     return props;
@@ -11292,7 +9084,7 @@ export default function vueFactory(exports) {
   function createPropsRestProxy(props, excludedKeys) {
     var ret = {};
 
-    var _loop4 = function (key) {
+    var _loop3 = function (key) {
       if (!excludedKeys.includes(key)) {
         Object.defineProperty(ret, key, {
           enumerable: true,
@@ -11302,7 +9094,7 @@ export default function vueFactory(exports) {
     };
 
     for (var key in props) {
-      _loop4(key);
+      _loop3(key);
     }
 
     return ret;
@@ -11329,11 +9121,6 @@ export default function vueFactory(exports) {
 
   function withAsyncContext(getAwaitable) {
     var ctx = getCurrentInstance();
-
-    if (!ctx) {
-      warn$1("withAsyncContext called without active current instance. " + "This is likely a bug.");
-    }
-
     var awaitable = getAwaitable();
     unsetCurrentInstance();
 
@@ -11375,7 +9162,7 @@ export default function vueFactory(exports) {
     }
   }
 
-  var ssrContextKey = Symbol("ssrContext");
+  var ssrContextKey = Symbol("");
 
   var useSSRContext = () => {
     {
@@ -11391,177 +9178,8 @@ export default function vueFactory(exports) {
 
   function initCustomFormatter() {
     /* eslint-disable no-restricted-globals */
-    if (typeof window === 'undefined') {
+    {
       return;
-    }
-
-    var vueStyle = {
-      style: 'color:#3ba776'
-    };
-    var numberStyle = {
-      style: 'color:#0b1bc9'
-    };
-    var stringStyle = {
-      style: 'color:#b62e24'
-    };
-    var keywordStyle = {
-      style: 'color:#9d288c'
-    }; // custom formatter for Chrome
-    // https://www.mattzeunert.com/2016/02/19/custom-chrome-devtools-object-formatters.html
-
-    var formatter = {
-      header(obj) {
-        // TODO also format ComponentPublicInstance & ctx.slots/attrs in setup
-        if (!isObject(obj)) {
-          return null;
-        }
-
-        if (obj.__isVue) {
-          return ['div', vueStyle, "VueInstance"];
-        } else if (isRef(obj)) {
-          return ['div', {}, ['span', vueStyle, genRefFlag(obj)], '<', formatValue(obj.value), ">"];
-        } else if (isReactive(obj)) {
-          return ['div', {}, ['span', vueStyle, 'Reactive'], '<', formatValue(obj), ">".concat(isReadonly(obj) ? " (readonly)" : "")];
-        } else if (isReadonly(obj)) {
-          return ['div', {}, ['span', vueStyle, 'Readonly'], '<', formatValue(obj), '>'];
-        }
-
-        return null;
-      },
-
-      hasBody(obj) {
-        return obj && obj.__isVue;
-      },
-
-      body(obj) {
-        if (obj && obj.__isVue) {
-          return ['div', {}, ...formatInstance(obj.$)];
-        }
-      }
-
-    };
-
-    function formatInstance(instance) {
-      var blocks = [];
-
-      if (instance.type.props && instance.props) {
-        blocks.push(createInstanceBlock('props', toRaw(instance.props)));
-      }
-
-      if (instance.setupState !== EMPTY_OBJ) {
-        blocks.push(createInstanceBlock('setup', instance.setupState));
-      }
-
-      if (instance.data !== EMPTY_OBJ) {
-        blocks.push(createInstanceBlock('data', toRaw(instance.data)));
-      }
-
-      var computed = extractKeys(instance, 'computed');
-
-      if (computed) {
-        blocks.push(createInstanceBlock('computed', computed));
-      }
-
-      var injected = extractKeys(instance, 'inject');
-
-      if (injected) {
-        blocks.push(createInstanceBlock('injected', injected));
-      }
-
-      blocks.push(['div', {}, ['span', {
-        style: keywordStyle.style + ';opacity:0.66'
-      }, '$ (internal): '], ['object', {
-        object: instance
-      }]]);
-      return blocks;
-    }
-
-    function createInstanceBlock(type, target) {
-      target = extend({}, target);
-
-      if (!Object.keys(target).length) {
-        return ['span', {}];
-      }
-
-      return ['div', {
-        style: 'line-height:1.25em;margin-bottom:0.6em'
-      }, ['div', {
-        style: 'color:#476582'
-      }, type], ['div', {
-        style: 'padding-left:1.25em'
-      }, ...Object.keys(target).map(key => {
-        return ['div', {}, ['span', keywordStyle, key + ': '], formatValue(target[key], false)];
-      })]];
-    }
-
-    function formatValue(v) {
-      var asRaw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-      if (typeof v === 'number') {
-        return ['span', numberStyle, v];
-      } else if (typeof v === 'string') {
-        return ['span', stringStyle, JSON.stringify(v)];
-      } else if (typeof v === 'boolean') {
-        return ['span', keywordStyle, v];
-      } else if (isObject(v)) {
-        return ['object', {
-          object: asRaw ? toRaw(v) : v
-        }];
-      } else {
-        return ['span', stringStyle, String(v)];
-      }
-    }
-
-    function extractKeys(instance, type) {
-      var Comp = instance.type;
-
-      if (isFunction(Comp)) {
-        return;
-      }
-
-      var extracted = {};
-
-      for (var key in instance.ctx) {
-        if (isKeyOfType(Comp, key, type)) {
-          extracted[key] = instance.ctx[key];
-        }
-      }
-
-      return extracted;
-    }
-
-    function isKeyOfType(Comp, key, type) {
-      var opts = Comp[type];
-
-      if (isArray(opts) && opts.includes(key) || isObject(opts) && key in opts) {
-        return true;
-      }
-
-      if (Comp.extends && isKeyOfType(Comp.extends, key, type)) {
-        return true;
-      }
-
-      if (Comp.mixins && Comp.mixins.some(m => isKeyOfType(m, key, type))) {
-        return true;
-      }
-    }
-
-    function genRefFlag(v) {
-      if (v._shallow) {
-        return "ShallowRef";
-      }
-
-      if (v.effect) {
-        return "ComputedRef";
-      }
-
-      return "Ref";
-    }
-
-    if (window.devtoolsFormatters) {
-      window.devtoolsFormatters.push(formatter);
-    } else {
-      window.devtoolsFormatters = [formatter];
     }
   }
 
@@ -11625,29 +9243,13 @@ export default function vueFactory(exports) {
    */
 
   var compatUtils = null;
-
-  function createElement(tagName, container) {
-    if (tagName === 'input') {
-      return new UniInputElement(tagName, container);
-    } else if (tagName === 'textarea') {
-      return new UniTextAreaElement(tagName, container);
-    }
-
-    return new UniElement(tagName, container);
-  }
-
-  function createTextNode(text, container) {
-    return new UniTextNode(text, container);
-  }
-
-  function createComment(text, container) {
-    return new UniCommentNode(text, container);
-  }
-
-  var tempContainer;
   var nodeOps = {
     insert: (child, parent, anchor) => {
-      parent.insertBefore(child, anchor || null);
+      if (!anchor) {
+        return parent.appendChild(child);
+      }
+
+      return parent.insertBefore(child, anchor);
     },
     remove: child => {
       var parent = child.parentNode;
@@ -11656,222 +9258,22 @@ export default function vueFactory(exports) {
         parent.removeChild(child);
       }
     },
-    createElement: (tag, container) => {
-      return createElement(tag, container);
+    createElement: tag => {
+      return document.createElement(tag);
     },
-    createText: (text, container) => createTextNode(text, container),
-    createComment: (text, container) => createComment(text, container),
+    createText: text => new NVueTextNode(text),
+    createComment: text => document.createComment(text),
     setText: (node, text) => {
-      node.nodeValue = text;
+      node.text = text;
     },
     setElementText: (el, text) => {
-      el.textContent = text;
+      if (el.parentNode) {
+        el.parentNode.setAttr('value', text);
+      }
     },
     parentNode: node => node.parentNode,
-    nextSibling: node => node.nextSibling,
-
-    // querySelector: selector => doc.querySelector(selector),
-    setScopeId(el, id) {
-      el.setAttribute(id, '');
-    },
-
-    cloneNode(el) {
-      var cloned = el.cloneNode(true); // #3072
-      // - in `patchDOMProp`, we store the actual value in the `el._value` property.
-      // - normally, elements using `:value` bindings will not be hoisted, but if
-      //   the bound value is a constant, e.g. `:value="true"` - they do get
-      //   hoisted.
-      // - in production, hoisted nodes are cloned when subsequent inserts, but
-      //   cloneNode() does not copy the custom property we attached.
-      // - This may need to account for other custom DOM properties we attach to
-      //   elements in addition to `_value` in the future.
-
-      if ("_value" in el) {
-        cloned._value = el._value;
-      }
-
-      return cloned;
-    },
-
-    // __UNSAFE__
-    // Reason: innerHTML.
-    // Static content here can only come from compiled templates.
-    // As long as the user only uses trusted templates, this is safe.
-    insertStaticContent(content, parent, anchor) {
-      var temp = tempContainer || (tempContainer = createElement('div'));
-      temp.innerHTML = content;
-      var first = temp.firstChild;
-      var node = first;
-      var last = node;
-
-      while (node) {
-        last = node;
-        nodeOps.insert(node, parent, anchor);
-        node = temp.firstChild;
-      }
-
-      return [first, last];
-    }
-
-  }; // compiler should normalize class + :class bindings on the same element
-  // into a single binding ['staticClass', dynamic]
-
-  function patchClass(el, value) {
-    if (value == null) {
-      value = '';
-    }
-
-    el.setAttribute('class', value);
-  }
-
-  function patchStyle(el, prev, next) {
-    if (!next) {
-      el.removeAttribute('style');
-    } else if (isString(next)) {
-      if (prev !== next) {
-        el.setAttribute('style', next);
-      }
-    } else {
-      var batchedStyles = {};
-      var isPrevObj = prev && !isString(prev);
-
-      if (isPrevObj) {
-        for (var key in prev) {
-          if (next[key] == null) {
-            batchedStyles[key] = '';
-          }
-        }
-
-        for (var _key22 in next) {
-          var value = next[_key22];
-
-          if (value !== prev[_key22]) {
-            batchedStyles[_key22] = value;
-          }
-        }
-      } else {
-        for (var _key23 in next) {
-          batchedStyles[_key23] = next[_key23];
-        }
-      }
-
-      if (Object.keys(batchedStyles).length) {
-        el.setAttribute('style', batchedStyles);
-      }
-    }
-  }
-
-  function patchAttr(el, key, value) {
-    if (value == null) {
-      el.removeAttribute(key);
-    } else {
-      el.setAttribute(key, value);
-    }
-  }
-
-  function addEventListener(el, event, handler, options) {
-    el.addEventListener(event, handler, options);
-  }
-
-  function removeEventListener(el, event, handler, options) {
-    el.removeEventListener(event, handler, options);
-  }
-
-  function patchEvent(el, rawName, prevValue, nextValue) {
-    var instance = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-    // vei = vue event invokers
-    var invokers = el._vei || (el._vei = {});
-    var existingInvoker = invokers[rawName];
-
-    if (nextValue && existingInvoker) {
-      // patch
-      existingInvoker.value = nextValue;
-    } else {
-      var [name, options] = parseName(rawName);
-
-      if (nextValue) {
-        // add
-        var invoker = invokers[rawName] = createInvoker(nextValue, instance);
-        addEventListener(el, name, invoker, options);
-      } else if (existingInvoker) {
-        // remove
-        removeEventListener(el, name, existingInvoker, options);
-        invokers[rawName] = undefined;
-      }
-    }
-  }
-
-  var optionsModifierRE = /(?:Once|Passive|Capture)$/;
-
-  function parseName(name) {
-    var options;
-
-    if (optionsModifierRE.test(name)) {
-      options = {};
-      var m;
-
-      while (m = name.match(optionsModifierRE)) {
-        name = name.slice(0, name.length - m[0].length);
-        options[m[0].toLowerCase()] = true;
-      }
-    }
-
-    return [hyphenate(name.slice(2)), options];
-  }
-
-  function createInvoker(initialValue, instance) {
-    var invoker = e => {
-      callWithAsyncErrorHandling(invoker.value, instance, 5
-      /* NATIVE_EVENT_HANDLER */
-      , [e]);
-    };
-
-    invoker.value = initialValue;
-    var modifiers = new Set(); // 合并 modifiers
-
-    if (isArray(invoker.value)) {
-      invoker.value.forEach(v => {
-        if (v.modifiers) {
-          v.modifiers.forEach(m => {
-            modifiers.add(m);
-          });
-        }
-      });
-    } else {
-      if (invoker.value.modifiers) {
-        invoker.value.modifiers.forEach(m => {
-          modifiers.add(m);
-        });
-      }
-
-      initWxsEvent(invoker, instance);
-    }
-
-    invoker.modifiers = [...modifiers];
-    return invoker;
-  }
-
-  function initWxsEvent(invoker, instance) {
-    if (!instance) {
-      return;
-    }
-
-    var {
-      $wxsModules
-    } = instance;
-
-    if (!$wxsModules) {
-      return;
-    }
-
-    var invokerSourceCode = invoker.value.toString();
-
-    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
-      return;
-    }
-
-    invoker.wxsEvent = invoker.value();
-  }
+    nextSibling: node => node.nextSibling
+  };
 
   var patchProp = function (el, key, prevValue, nextValue) {
     var isSVG = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
@@ -11879,43 +9281,6 @@ export default function vueFactory(exports) {
     var parentComponent = arguments.length > 6 ? arguments[6] : undefined;
     var parentSuspense = arguments.length > 7 ? arguments[7] : undefined;
     var unmountChildren = arguments.length > 8 ? arguments[8] : undefined;
-
-    switch (key) {
-      // special
-      case 'class':
-        patchClass(el, nextValue);
-        break;
-
-      case 'style':
-        patchStyle(el, prevValue, nextValue);
-        break;
-
-      default:
-        if (isOn(key)) {
-          // ignore v-model listeners
-          if (!isModelListener(key)) {
-            patchEvent(el, key, prevValue, nextValue, parentComponent);
-          }
-        } else {
-          // 非基本类型
-          if (isObject(nextValue)) {
-            var equal = prevValue === nextValue; // 可触发收集响应式数据的最新依赖
-
-            nextValue = JSON_PROTOCOL + JSON.stringify(nextValue);
-
-            if (equal && el.getAttribute(key) === nextValue) {
-              return;
-            }
-          } else if (prevValue === nextValue) {
-            // 基本类型
-            return;
-          }
-
-          patchAttr(el, key, nextValue);
-        }
-
-        break;
-    }
   };
 
   function useCssModule() {
@@ -11926,21 +9291,18 @@ export default function vueFactory(exports) {
       var instance = getCurrentInstance();
 
       if (!instance) {
-        warn$1("useCssModule must be called inside setup()");
         return EMPTY_OBJ;
       }
 
       var modules = instance.type.__cssModules;
 
       if (!modules) {
-        warn$1("Current instance does not have CSS modules injected.");
         return EMPTY_OBJ;
       }
 
       var mod = modules[name];
 
       if (!mod) {
-        warn$1("Current instance does not have CSS module named \"".concat(name, "\"."));
         return EMPTY_OBJ;
       }
 
@@ -11958,7 +9320,6 @@ export default function vueFactory(exports) {
     /* istanbul ignore next */
 
     if (!instance) {
-      warn$1("useCssVars is called without current active component instance.");
       return;
     }
 
@@ -12002,488 +9363,8 @@ export default function vueFactory(exports) {
     }
   }
 
-  var TRANSITION = 'transition';
-  var ANIMATION = 'animation'; // DOM Transition is a higher-order-component based on the platform-agnostic
-  // base Transition component, with DOM-specific logic.
-
-  var Transition = (props, _ref22) => {
-    var {
-      slots
-    } = _ref22;
-    return h(BaseTransition, resolveTransitionProps(props), slots);
-  };
-
-  Transition.displayName = 'Transition';
-  var DOMTransitionPropsValidators = {
-    name: String,
-    type: String,
-    css: {
-      type: Boolean,
-      default: true
-    },
-    duration: [String, Number, Object],
-    enterFromClass: String,
-    enterActiveClass: String,
-    enterToClass: String,
-    appearFromClass: String,
-    appearActiveClass: String,
-    appearToClass: String,
-    leaveFromClass: String,
-    leaveActiveClass: String,
-    leaveToClass: String
-  };
-  var TransitionPropsValidators = Transition.props = /*#__PURE__*/extend({}, BaseTransition.props, DOMTransitionPropsValidators);
-  /**
-   * #3227 Incoming hooks may be merged into arrays when wrapping Transition
-   * with custom HOCs.
-   */
-
-  var callHook$1 = function (hook) {
-    var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-    if (isArray(hook)) {
-      hook.forEach(h => h(...args));
-    } else if (hook) {
-      hook(...args);
-    }
-  };
-  /**
-   * Check if a hook expects a callback (2nd arg), which means the user
-   * intends to explicitly control the end of the transition.
-   */
-
-
-  var hasExplicitCallback = hook => {
-    return hook ? isArray(hook) ? hook.some(h => h.length > 1) : hook.length > 1 : false;
-  };
-
-  function resolveTransitionProps(rawProps) {
-    var baseProps = {};
-
-    for (var key in rawProps) {
-      if (!(key in DOMTransitionPropsValidators)) {
-        baseProps[key] = rawProps[key];
-      }
-    }
-
-    if (rawProps.css === false) {
-      return baseProps;
-    }
-
-    var {
-      name = 'v',
-      type,
-      duration,
-      enterFromClass = "".concat(name, "-enter-from"),
-      enterActiveClass = "".concat(name, "-enter-active"),
-      enterToClass = "".concat(name, "-enter-to"),
-      appearFromClass = enterFromClass,
-      appearActiveClass = enterActiveClass,
-      appearToClass = enterToClass,
-      leaveFromClass = "".concat(name, "-leave-from"),
-      leaveActiveClass = "".concat(name, "-leave-active"),
-      leaveToClass = "".concat(name, "-leave-to")
-    } = rawProps;
-    var durations = normalizeDuration(duration);
-    var enterDuration = durations && durations[0];
-    var leaveDuration = durations && durations[1];
-    var {
-      onBeforeEnter,
-      onEnter,
-      onEnterCancelled,
-      onLeave,
-      onLeaveCancelled,
-      onBeforeAppear = onBeforeEnter,
-      onAppear = onEnter,
-      onAppearCancelled = onEnterCancelled
-    } = baseProps;
-
-    var finishEnter = (el, isAppear, done) => {
-      removeTransitionClass(el, isAppear ? appearToClass : enterToClass);
-      removeTransitionClass(el, isAppear ? appearActiveClass : enterActiveClass);
-      done && done();
-    };
-
-    var finishLeave = (el, done) => {
-      removeTransitionClass(el, leaveToClass);
-      removeTransitionClass(el, leaveActiveClass);
-      done && done();
-    };
-
-    var makeEnterHook = isAppear => {
-      return (el, done) => {
-        var hook = isAppear ? onAppear : onEnter;
-
-        var resolve = () => finishEnter(el, isAppear, done);
-
-        callHook$1(hook, [el, resolve]);
-        nextFrame(() => {
-          removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass);
-          addTransitionClass(el, isAppear ? appearToClass : enterToClass);
-
-          if (!hasExplicitCallback(hook)) {
-            whenTransitionEnds(el, type, enterDuration, resolve);
-          }
-        });
-      };
-    };
-
-    return extend(baseProps, {
-      onBeforeEnter(el) {
-        callHook$1(onBeforeEnter, [el]);
-        addTransitionClass(el, enterFromClass);
-        addTransitionClass(el, enterActiveClass);
-      },
-
-      onBeforeAppear(el) {
-        callHook$1(onBeforeAppear, [el]);
-        addTransitionClass(el, appearFromClass);
-        addTransitionClass(el, appearActiveClass);
-      },
-
-      onEnter: makeEnterHook(false),
-      onAppear: makeEnterHook(true),
-
-      onLeave(el, done) {
-        var resolve = () => finishLeave(el, done);
-
-        addTransitionClass(el, leaveFromClass); // force reflow so *-leave-from classes immediately take effect (#2593)
-
-        forceReflow();
-        addTransitionClass(el, leaveActiveClass);
-        nextFrame(() => {
-          removeTransitionClass(el, leaveFromClass);
-          addTransitionClass(el, leaveToClass);
-
-          if (!hasExplicitCallback(onLeave)) {
-            whenTransitionEnds(el, type, leaveDuration, resolve);
-          }
-        });
-        callHook$1(onLeave, [el, resolve]);
-      },
-
-      onEnterCancelled(el) {
-        finishEnter(el, false);
-        callHook$1(onEnterCancelled, [el]);
-      },
-
-      onAppearCancelled(el) {
-        finishEnter(el, true);
-        callHook$1(onAppearCancelled, [el]);
-      },
-
-      onLeaveCancelled(el) {
-        finishLeave(el);
-        callHook$1(onLeaveCancelled, [el]);
-      }
-
-    });
-  }
-
-  function normalizeDuration(duration) {
-    if (duration == null) {
-      return null;
-    } else if (isObject(duration)) {
-      return [NumberOf(duration.enter), NumberOf(duration.leave)];
-    } else {
-      var n = NumberOf(duration);
-      return [n, n];
-    }
-  }
-
-  function NumberOf(val) {
-    var res = toNumber(val);
-    validateDuration(res);
-    return res;
-  }
-
-  function validateDuration(val) {
-    if (typeof val !== 'number') {
-      warn$1("<transition> explicit duration is not a valid number - " + "got ".concat(JSON.stringify(val), "."));
-    } else if (isNaN(val)) {
-      warn$1("<transition> explicit duration is NaN - " + 'the duration expression might be incorrect.');
-    }
-  }
-
-  function addTransitionClass(el, cls) {
-    cls.split(/\s+/).forEach(c => c && el.classList.add(c));
-    (el._vtc || (el._vtc = new Set())).add(cls);
-  }
-
-  function removeTransitionClass(el, cls) {
-    cls.split(/\s+/).forEach(c => c && el.classList.remove(c));
-    var {
-      _vtc
-    } = el;
-
-    if (_vtc) {
-      _vtc.delete(cls);
-
-      if (!_vtc.size) {
-        el._vtc = undefined;
-      }
-    }
-  }
-
-  function nextFrame(cb) {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(cb);
-    });
-  }
-
-  var endId = 0;
-
-  function whenTransitionEnds(el, expectedType, explicitTimeout, resolve) {
-    var id = el._endId = ++endId;
-
-    var resolveIfNotStale = () => {
-      if (id === el._endId) {
-        resolve();
-      }
-    };
-
-    if (explicitTimeout) {
-      return setTimeout(resolveIfNotStale, explicitTimeout);
-    }
-
-    var {
-      type,
-      timeout,
-      propCount
-    } = getTransitionInfo(el, expectedType);
-
-    if (!type) {
-      return resolve();
-    }
-
-    var endEvent = type + 'end';
-    var ended = 0;
-
-    var end = () => {
-      el.removeEventListener(endEvent, onEnd);
-      resolveIfNotStale();
-    };
-
-    var onEnd = e => {
-      if (e.target === el && ++ended >= propCount) {
-        end();
-      }
-    };
-
-    setTimeout(() => {
-      if (ended < propCount) {
-        end();
-      }
-    }, timeout + 1);
-    el.addEventListener(endEvent, onEnd);
-  }
-
-  function getTransitionInfo(el, expectedType) {
-    var styles = window.getComputedStyle(el); // JSDOM may return undefined for transition properties
-
-    var getStyleProperties = key => (styles[key] || '').split(', ');
-
-    var transitionDelays = getStyleProperties(TRANSITION + 'Delay');
-    var transitionDurations = getStyleProperties(TRANSITION + 'Duration');
-    var transitionTimeout = getTimeout(transitionDelays, transitionDurations);
-    var animationDelays = getStyleProperties(ANIMATION + 'Delay');
-    var animationDurations = getStyleProperties(ANIMATION + 'Duration');
-    var animationTimeout = getTimeout(animationDelays, animationDurations);
-    var type = null;
-    var timeout = 0;
-    var propCount = 0;
-    /* istanbul ignore if */
-
-    if (expectedType === TRANSITION) {
-      if (transitionTimeout > 0) {
-        type = TRANSITION;
-        timeout = transitionTimeout;
-        propCount = transitionDurations.length;
-      }
-    } else if (expectedType === ANIMATION) {
-      if (animationTimeout > 0) {
-        type = ANIMATION;
-        timeout = animationTimeout;
-        propCount = animationDurations.length;
-      }
-    } else {
-      timeout = Math.max(transitionTimeout, animationTimeout);
-      type = timeout > 0 ? transitionTimeout > animationTimeout ? TRANSITION : ANIMATION : null;
-      propCount = type ? type === TRANSITION ? transitionDurations.length : animationDurations.length : 0;
-    }
-
-    var hasTransform = type === TRANSITION && /\b(transform|all)(,|$)/.test(styles[TRANSITION + 'Property']);
-    return {
-      type,
-      timeout,
-      propCount,
-      hasTransform
-    };
-  }
-
-  function getTimeout(delays, durations) {
-    while (delays.length < durations.length) {
-      delays = delays.concat(delays);
-    }
-
-    return Math.max(...durations.map((d, i) => toMs(d) + toMs(delays[i])));
-  } // Old versions of Chromium (below 61.0.3163.100) formats floating pointer
-  // numbers in a locale-dependent way, using a comma instead of a dot.
-  // If comma is not replaced with a dot, the input will be rounded down
-  // (i.e. acting as a floor function) causing unexpected behaviors
-
-
-  function toMs(s) {
-    return Number(s.slice(0, -1).replace(',', '.')) * 1000;
-  } // synchronously force layout to put elements into a certain state
-
-
-  function forceReflow() {
-    return document.body.offsetHeight;
-  }
-
-  var positionMap = new WeakMap();
-  var newPositionMap = new WeakMap();
-  var TransitionGroupImpl = {
-    name: 'TransitionGroup',
-    props: /*#__PURE__*/extend({}, TransitionPropsValidators, {
-      tag: String,
-      moveClass: String
-    }),
-
-    setup(props, _ref23) {
-      var {
-        slots
-      } = _ref23;
-      var instance = getCurrentInstance();
-      var state = useTransitionState();
-      var prevChildren;
-      var children;
-      onUpdated(() => {
-        // children is guaranteed to exist after initial render
-        if (!prevChildren.length) {
-          return;
-        }
-
-        var moveClass = props.moveClass || "".concat(props.name || 'v', "-move");
-
-        if (!hasCSSTransform(prevChildren[0].el, instance.vnode.el, moveClass)) {
-          return;
-        } // we divide the work into three loops to avoid mixing DOM reads and writes
-        // in each iteration - which helps prevent layout thrashing.
-
-
-        prevChildren.forEach(callPendingCbs);
-        prevChildren.forEach(recordPosition);
-        var movedChildren = prevChildren.filter(applyTranslation); // force reflow to put everything in position
-
-        forceReflow();
-        movedChildren.forEach(c => {
-          var el = c.el;
-          var style = el.style;
-          addTransitionClass(el, moveClass);
-          style.transform = style.webkitTransform = style.transitionDuration = '';
-
-          var cb = el._moveCb = e => {
-            if (e && e.target !== el) {
-              return;
-            }
-
-            if (!e || /transform$/.test(e.propertyName)) {
-              el.removeEventListener('transitionend', cb);
-              el._moveCb = null;
-              removeTransitionClass(el, moveClass);
-            }
-          };
-
-          el.addEventListener('transitionend', cb);
-        });
-      });
-      return () => {
-        var rawProps = toRaw(props);
-        var cssTransitionProps = resolveTransitionProps(rawProps);
-        var tag = rawProps.tag || Fragment;
-        prevChildren = children;
-        children = slots.default ? getTransitionRawChildren(slots.default()) : [];
-
-        for (var i = 0; i < children.length; i++) {
-          var child = children[i];
-
-          if (child.key != null) {
-            setTransitionHooks(child, resolveTransitionHooks(child, cssTransitionProps, state, instance));
-          } else {
-            warn$1("<TransitionGroup> children must be keyed.");
-          }
-        }
-
-        if (prevChildren) {
-          for (var _i5 = 0; _i5 < prevChildren.length; _i5++) {
-            var _child = prevChildren[_i5];
-            setTransitionHooks(_child, resolveTransitionHooks(_child, cssTransitionProps, state, instance));
-            positionMap.set(_child, _child.el.getBoundingClientRect());
-          }
-        }
-
-        return createVNode(tag, null, children);
-      };
-    }
-
-  };
-  var TransitionGroup = TransitionGroupImpl;
-
-  function callPendingCbs(c) {
-    var el = c.el;
-
-    if (el._moveCb) {
-      el._moveCb();
-    }
-
-    if (el._enterCb) {
-      el._enterCb();
-    }
-  }
-
-  function recordPosition(c) {
-    newPositionMap.set(c, c.el.getBoundingClientRect());
-  }
-
-  function applyTranslation(c) {
-    var oldPos = positionMap.get(c);
-    var newPos = newPositionMap.get(c);
-    var dx = oldPos.left - newPos.left;
-    var dy = oldPos.top - newPos.top;
-
-    if (dx || dy) {
-      var s = c.el.style;
-      s.transform = s.webkitTransform = "translate(".concat(dx, "px,").concat(dy, "px)");
-      s.transitionDuration = '0s';
-      return c;
-    }
-  }
-
-  function hasCSSTransform(el, root, moveClass) {
-    // Detect whether an element with the move class applied has
-    // CSS transitions. Since the element may be inside an entering
-    // transition at this very moment, we make a clone of it and remove
-    // all other transition classes applied to ensure only the move class
-    // is applied.
-    var clone = el.cloneNode();
-
-    if (el._vtc) {
-      el._vtc.forEach(cls => {
-        cls.split(/\s+/).forEach(c => c && clone.classList.remove(c));
-      });
-    }
-
-    moveClass.split(/\s+/).forEach(c => c && clone.classList.add(c));
-    clone.style.display = 'none';
-    var container = root.nodeType === 1 ? root : root.parentNode;
-    container.appendChild(clone);
-    var {
-      hasTransform
-    } = getTransitionInfo(clone);
-    container.removeChild(clone);
-    return hasTransform;
+  function addEventListener(el, event, handler, options) {
+    el.addEventListener(event, handler, options);
   }
 
   var getModelAssigner = vnode => {
@@ -12494,14 +9375,14 @@ export default function vueFactory(exports) {
 
 
   var vModelText = {
-    created(el, _ref24, vnode) {
+    created(el, _ref22, vnode) {
       var {
         value,
         modifiers: {
           trim,
           number
         }
-      } = _ref24;
+      } = _ref22;
       el.value = value == null ? '' : value;
       el._assign = getModelAssigner(vnode);
       addEventListener(el, 'input', e => {
@@ -12522,10 +9403,10 @@ export default function vueFactory(exports) {
       });
     },
 
-    beforeUpdate(el, _ref25, vnode) {
+    beforeUpdate(el, _ref23, vnode) {
       var {
         value
-      } = _ref25;
+      } = _ref23;
       el._assign = getModelAssigner(vnode);
       var newValue = value == null ? '' : value;
 
@@ -12561,8 +9442,8 @@ export default function vueFactory(exports) {
         if (guard && guard(event, modifiers)) return;
       }
 
-      for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key24 = 1; _key24 < _len13; _key24++) {
-        args[_key24 - 1] = arguments[_key24];
+      for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key15 = 1; _key15 < _len8; _key15++) {
+        args[_key15 - 1] = arguments[_key15];
       }
 
       return fn(event, ...args);
@@ -12602,26 +9483,26 @@ export default function vueFactory(exports) {
   };
 
   var vShow = {
-    beforeMount(el, _ref26) {
+    beforeMount(el, _ref24) {
       var {
         value
-      } = _ref26;
+      } = _ref24;
       setDisplay(el, value);
     },
 
-    updated(el, _ref27) {
+    updated(el, _ref25) {
       var {
         value,
         oldValue
-      } = _ref27;
+      } = _ref25;
       if (!value === !oldValue) return;
       setDisplay(el, value);
     },
 
-    beforeUnmount(el, _ref28) {
+    beforeUnmount(el, _ref26) {
       var {
         value
-      } = _ref28;
+      } = _ref26;
       setDisplay(el, value);
     }
 
@@ -12632,8 +9513,7 @@ export default function vueFactory(exports) {
   }
 
   var rendererOptions = extend({
-    patchProp,
-    forcePatchProp
+    patchProp
   }, nodeOps); // lazy create the renderer - this makes core renderer logic tree-shakable
   // in case the user only imports reactivity utilities from Vue.
 
@@ -12650,39 +9530,17 @@ export default function vueFactory(exports) {
 
   var createApp = function () {
     var app = ensureRenderer().createApp(...arguments);
-    {
-      injectNativeTagCheck(app);
-    }
     var {
       mount
     } = app;
 
     app.mount = container => {
-      if (isString(container)) {
-        container = createComment(container);
-      }
-
-      return container && mount(container, false, false);
+      if (container !== '#root') return;
+      return mount(container);
     };
 
     return app;
   };
-
-  var createSSRApp = createApp;
-
-  function injectNativeTagCheck(app) {
-    // Inject `isNativeTag`
-    // this is used for component name validation (dev only)
-    Object.defineProperty(app.config, 'isNativeTag', {
-      value: tag => isHTMLTag(tag) || isSVGTag(tag),
-      writable: false
-    });
-  } // 在h5平台测试时，需要的mock
-
-
-  function onBeforeActivate() {}
-
-  function onBeforeDeactivate() {}
 
   var Vue = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -12696,32 +9554,23 @@ export default function vueFactory(exports) {
     Suspense: Suspense,
     Teleport: Teleport,
     Text: Text,
-    Transition: Transition,
-    TransitionGroup: TransitionGroup,
     callWithAsyncErrorHandling: callWithAsyncErrorHandling,
     callWithErrorHandling: callWithErrorHandling,
-    camelize: camelize,
-    capitalize: capitalize,
     cloneVNode: cloneVNode,
     compatUtils: compatUtils,
     computed: computed,
     createApp: createApp,
     createBlock: createBlock,
-    createComment: createComment,
     createCommentVNode: createCommentVNode,
-    createElement: createElement,
     createElementBlock: createElementBlock,
     createElementVNode: createBaseVNode,
     createHydrationRenderer: createHydrationRenderer,
     createPropsRestProxy: createPropsRestProxy,
     createRenderer: createRenderer,
-    createSSRApp: createSSRApp,
     createSlots: createSlots,
     createStaticVNode: createStaticVNode,
-    createTextNode: createTextNode,
     createTextVNode: createTextVNode,
     createVNode: createVNode,
-    createVueApp: createApp,
     customRef: customRef,
     defineAsyncComponent: defineAsyncComponent,
     defineComponent: defineComponent,
@@ -12760,12 +9609,7 @@ export default function vueFactory(exports) {
     mergeDefaults: mergeDefaults,
     mergeProps: mergeProps,
     nextTick: nextTick,
-    normalizeClass: normalizeClass,
-    normalizeProps: normalizeProps,
-    normalizeStyle: normalizeStyle,
     onActivated: onActivated,
-    onBeforeActivate: onBeforeActivate,
-    onBeforeDeactivate: onBeforeDeactivate,
     onBeforeMount: onBeforeMount,
     onBeforeUnmount: onBeforeUnmount,
     onBeforeUpdate: onBeforeUpdate,
@@ -12805,8 +9649,6 @@ export default function vueFactory(exports) {
     ssrContextKey: ssrContextKey,
     ssrUtils: ssrUtils,
     stop: stop,
-    toDisplayString: toDisplayString,
-    toHandlerKey: toHandlerKey,
     toHandlers: toHandlers,
     toRaw: toRaw,
     toRef: toRef,
@@ -12835,7 +9677,14 @@ export default function vueFactory(exports) {
     withKeys: withKeys,
     withMemo: withMemo,
     withModifiers: withModifiers,
-    withScopeId: withScopeId
+    withScopeId: withScopeId,
+    camelize: camelize,
+    capitalize: capitalize,
+    normalizeClass: normalizeClass,
+    normalizeProps: normalizeProps,
+    normalizeStyle: normalizeStyle,
+    toDisplayString: toDisplayString,
+    toHandlerKey: toHandlerKey
   });
   exports.Vue = Vue;
 }

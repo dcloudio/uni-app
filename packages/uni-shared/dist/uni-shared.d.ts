@@ -1,6 +1,8 @@
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { ComponentOptionsBase } from '@vue/runtime-core';
 import { ComponentPublicInstance } from '@vue/runtime-core';
+import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
+import { createApp } from 'vue';
 import { RendererNode } from '@vue/runtime-core';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
@@ -172,6 +174,10 @@ export declare const EventModifierFlags: {
     self: number;
 };
 
+export declare const forcePatchProp: (el: {
+    nodeName: string;
+}, key: string) => boolean;
+
 export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
 
 export declare function formatDateTime({ date, mode }: {
@@ -266,6 +272,109 @@ export declare function normalizeTarget(el: HTMLElement): {
     offsetTop: number;
     offsetLeft: number;
 };
+
+export declare interface NVue {
+    config: NVueConfigAPI;
+    document: NVueDocument;
+    requireModule: (name: string) => Record<string, unknown> | void;
+    supports: (condition: string) => boolean | void;
+    isRegisteredModule: (name: string, method?: string) => boolean;
+    isRegisteredComponent: (name: string) => boolean;
+}
+
+export declare interface NVueConfigAPI {
+    bundleUrl: string;
+    bundleType: string;
+    env: NVueEnvironment;
+}
+
+export declare interface NVueDocument {
+    id: string;
+    URL: string;
+    taskCenter: NVueTaskCenter;
+    open: () => void;
+    close: () => void;
+    createElement: (tagName: string, props?: Record<string, unknown>) => NVueElement;
+    createComment: (text: string) => Record<string, unknown>;
+    fireEvent: (type: string) => void;
+    destroy: () => void;
+}
+
+export declare interface NVueElement {
+    nodeType: number;
+    nodeId: string;
+    type: string;
+    ref: string;
+    text?: string;
+    parentNode: NVueElement | null;
+    children: Array<NVueElement>;
+    previousSibling: NVueElement | null;
+    nextSibling: NVueElement | null;
+    appendChild: (node: NVueElement) => void;
+    removeChild: (node: NVueElement, preserved?: boolean) => void;
+    insertBefore: (node: NVueElement, before: NVueElement) => void;
+    insertAfter: (node: NVueElement, after: NVueElement) => void;
+    setAttr: (key: string, value: any, silent?: boolean) => void;
+    setAttrs: (attrs: Record<string, unknown>, silent?: boolean) => void;
+    setStyle: (key: string, value: any, silent?: boolean) => void;
+    setStyles: (attrs: Record<string, unknown>, silent?: boolean) => void;
+    addEvent: (type: string, handler: Function, args?: Array<any>) => void;
+    removeEvent: (type: string) => void;
+    fireEvent: (type: string) => void;
+    destroy: () => void;
+}
+
+export declare interface NVueEnvironment {
+    platform: string;
+    osName: string;
+    osVersion: string;
+    appName: string;
+    appVersion: string;
+    deviceModel: string;
+    deviceWidth: number;
+    deviceHeight: number;
+    scale: number;
+    userAgent?: string;
+    dpr?: number;
+    rem?: number;
+}
+
+export declare interface NVueInstanceContext {
+    Vue: Vue;
+}
+
+export declare interface NVueInstanceOption {
+    instanceId: string;
+    config: NVueConfigAPI;
+    document?: NVueDocument;
+    Vue?: Vue;
+    app?: ComponentPublicInstance_2;
+    data?: Record<string, unknown>;
+}
+
+export declare interface NVueRuntimeContext {
+    nvue: NVue;
+    service: Record<string, unknown>;
+    BroadcastChannel?: Function;
+    SharedObject: Record<string, unknown>;
+}
+
+export declare interface NVueTaskCenter {
+    instanceId: string;
+    callbackManager: unknown;
+    send: (type: string, params: Record<string, unknown>, args: any[], options?: Record<string, unknown>) => void;
+    registerHook: (componentId: string, type: string, hook: string, fn: Function) => void;
+    updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
+}
+
+export declare class NVueTextNode {
+    instanceId: string;
+    nodeId: number;
+    parentNode: null | NVueElement;
+    nodeType: 3;
+    text: string;
+    constructor(text: string);
+}
 
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
 
@@ -659,6 +768,10 @@ export declare class UniTextNode extends UniBaseNode {
 }
 
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
+
+export declare interface Vue {
+    createApp: typeof createApp;
+}
 
 export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
 

@@ -490,6 +490,17 @@ function getDataByPath(obj, path) {
     return getDataByPath(obj[key], parts.slice(1).join('.'));
 }
 
+let latestNodeId = 1;
+class NVueTextNode {
+    constructor(text) {
+        this.instanceId = '';
+        this.nodeId = latestNodeId++;
+        this.parentNode = null;
+        this.nodeType = 3;
+        this.text = text;
+    }
+}
+
 function plusReady(callback) {
     if (typeof callback !== 'function') {
         return;
@@ -921,6 +932,37 @@ class UniTextNode extends UniBaseNode {
     }
 }
 
+const forcePatchProps = {
+    AD: ['data'],
+    'AD-DRAW': ['data'],
+    'LIVE-PLAYER': ['picture-in-picture-mode'],
+    MAP: [
+        'markers',
+        'polyline',
+        'circles',
+        'controls',
+        'include-points',
+        'polygons',
+    ],
+    PICKER: ['range', 'value'],
+    'PICKER-VIEW': ['value'],
+    'RICH-TEXT': ['nodes'],
+    VIDEO: ['danmu-list', 'header'],
+    'WEB-VIEW': ['webview-styles'],
+};
+const forcePatchPropKeys = ['animation'];
+
+const forcePatchProp = (el, key) => {
+    if (forcePatchPropKeys.indexOf(key) > -1) {
+        return true;
+    }
+    const keys = forcePatchProps[el.nodeName];
+    if (keys && keys.indexOf(key) > -1) {
+        return true;
+    }
+    return false;
+};
+
 const ACTION_TYPE_PAGE_CREATE = 1;
 const ACTION_TYPE_PAGE_CREATED = 2;
 const ACTION_TYPE_CREATE = 3;
@@ -1178,6 +1220,7 @@ exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
 exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
+exports.NVueTextNode = NVueTextNode;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
@@ -1246,6 +1289,7 @@ exports.decodedQuery = decodedQuery;
 exports.defaultMiniProgramRpx2Unit = defaultMiniProgramRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.dynamicSlotName = dynamicSlotName;
+exports.forcePatchProp = forcePatchProp;
 exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
 exports.formatLog = formatLog;
