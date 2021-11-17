@@ -33,7 +33,6 @@ type File = {
 
 export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
   API_CHOOSE_IMAGE,
-  // @ts-expect-error crop 属性App特有
   ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
     initI18nChooseImageMsgsOnce()
     const { t } = useI18n()
