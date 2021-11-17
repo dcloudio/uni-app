@@ -1,6 +1,6 @@
 import type { ComponentInternalInstance } from 'vue'
 //@ts-ignore
-import { patch, getCurrentInstance } from 'vue'
+import { patch, getCurrentInstance, setCurrentRenderingInstance } from 'vue'
 
 export interface ScopedSlotInvokers {
   [vueId: string]: ScopedSlotInvoker
@@ -36,8 +36,8 @@ export function withScopedSlot(
     vueId: string
   }
 ) {
-  fn.path = path
   const instance = getCurrentInstance() as ComponentInternalInstance
+  fn.path = path
   const scopedSlots = ((instance as any).$ssi ||
     (((instance as any).$ssi as ScopedSlotInvokers) = {})) as ScopedSlotInvokers
   const invoker =
@@ -67,7 +67,10 @@ function createScopedSlotInvoker(instance: ComponentInternalInstance) {
       // 循环第一个 slot 时，重置 data
       slot.data = {}
     }
+    // 确保当前 slot 的上下文，类似 withCtx
+    const prevInstance = setCurrentRenderingInstance(instance)
     slot.data[key] = slot.fn(args, key, slotName + (hasKey ? '-' + key : ''))
+    setCurrentRenderingInstance(prevInstance)
     // TODO 简单的 forceUpdate,理论上，可以仅对 scoped slot 部分数据 diff 更新
     instance.proxy!.$forceUpdate()
   }
