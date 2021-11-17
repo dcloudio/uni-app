@@ -2882,7 +2882,9 @@ const getPublicInstance = (i) => {
 };
 const publicPropertiesMap = extend(Object.create(null), {
     $: i => i,
-    $el: i => i.vnode.el,
+    // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
+    // $el: i => i.vnode.el,
+    $el: i => i.__$el || (i.__$el = {}),
     $data: i => i.data,
     $props: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.props) : i.props),
     $attrs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.attrs) : i.attrs),
@@ -4880,6 +4882,7 @@ var plugin = {
         initApp(app);
         // TODO 旧编译器使用了$createElement 导致告警，当切换到新编译器时，移除此类代码
         app.config.globalProperties.$createElement = () => { };
+        app.config.globalProperties.$el = {};
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);
@@ -5127,4 +5130,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, ReactiveEffect, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineComponent, defineEmits, defineExpose, defineProps, e, effect, effectScope, f, getCurrentInstance, getCurrentScope, h, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineComponent, defineEmits, defineExpose, defineProps, e, effect, effectScope, f, getCurrentInstance, getCurrentScope, h, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

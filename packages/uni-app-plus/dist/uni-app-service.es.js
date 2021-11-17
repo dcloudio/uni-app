@@ -5044,6 +5044,7 @@ var serviceContext = (function (vue) {
           type: [Number, String],
       },
   };
+  const API_CLOSE_PREVIEW_IMAGE = 'closePreviewImage';
 
   const API_GET_VIDEO_INFO = 'getVideoInfo';
   const GetVideoInfoOptions = {
@@ -7500,6 +7501,16 @@ var serviceContext = (function (vue) {
       });
       resolve();
   }, PreviewImageProtocol, PreviewImageOptions);
+  const closePreviewImage = defineAsyncApi(API_CLOSE_PREVIEW_IMAGE, (_, { resolve, reject }) => {
+      try {
+          // @ts-expect-error
+          plus.nativeUI.closePreviewImage();
+          resolve();
+      }
+      catch (error) {
+          reject();
+      }
+  });
 
   let recorder;
   let recording = false;
@@ -12904,6 +12915,7 @@ var serviceContext = (function (vue) {
     getImageInfo: getImageInfo,
     getVideoInfo: getVideoInfo,
     previewImage: previewImage,
+    closePreviewImage: closePreviewImage,
     getRecorderManager: getRecorderManager,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,

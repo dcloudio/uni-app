@@ -8,6 +8,7 @@ export default {
 
     // TODO 旧编译器使用了$createElement 导致告警，当切换到新编译器时，移除此类代码
     app.config.globalProperties.$createElement = () => {}
+    app.config.globalProperties.$el = {}
 
     const oldMount = app.mount
     app.mount = function mount(rootContainer: any) {

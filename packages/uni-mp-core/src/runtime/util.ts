@@ -166,3 +166,13 @@ export function handleEvent(
   }
   ;(this as any)[methodName](event)
 }
+/**
+ * @param properties
+ */
+export function fixProperties(properties: Record<string, any>) {
+  Object.keys(properties).forEach((name) => {
+    if (properties[name] === null) {
+      properties[name] = undefined
+    }
+  })
+}

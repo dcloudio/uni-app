@@ -30,6 +30,7 @@ export {
   initWxsCallMethods,
   findVmByVueId,
   handleEvent,
+  fixProperties,
 } from './runtime/util'
 
 // protocols

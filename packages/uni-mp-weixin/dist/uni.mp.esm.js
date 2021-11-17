@@ -392,6 +392,16 @@ function findVmByVueId(instance, vuePid) {
         }
     }
 }
+/**
+ * @param properties
+ */
+function fixProperties(properties) {
+    Object.keys(properties).forEach((name) => {
+        if (properties[name] === null) {
+            properties[name] = undefined;
+        }
+    });
+}
 
 function createObserver(name) {
     return function observer(newVal) {
@@ -697,6 +707,8 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 初始化 vue 实例
             const mpInstance = this;
             const isMiniProgramPage = isPage(mpInstance);
+            // 微信小程序 properties 为了解决警告问题，目前所有 type 都默认为 null，故导致部分 prop 默认值初始化不正确，故将 null 值 替换为 undefined
+            fixProperties(properties);
             this.$vm = $createComponent({
                 type: vueOptions,
                 props: properties,
