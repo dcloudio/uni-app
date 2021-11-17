@@ -10,7 +10,7 @@ import {
   t
 } from 'uni-core/helpers/i18n'
 
-export function previewImagePlus ({
+export function previewImagePlus({
   current = 0,
   background = '#000000',
   indicator = 'number',
@@ -83,5 +83,18 @@ export function previewImagePlus ({
   })
   return {
     errMsg: 'previewImage:ok'
+  }
+}
+
+export function closePreviewImagePlus() {
+  try {
+    plus.nativeUI.closePreviewImage()
+    return {
+      errMsg: 'closePreviewImagePlus:ok'
+    }
+  } catch (error) {
+    return {
+      errMsg: 'closePreviewImagePlus:fail'
+    }
   }
 }

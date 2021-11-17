@@ -25,3 +25,7 @@ export function previewImage (args = {}) {
 
   return invokeMethod('previewImagePlus', args)
 }
+
+export function closePreviewImage (args = {}) {
+  return invokeMethod('closePreviewImagePlus', args)
+}
