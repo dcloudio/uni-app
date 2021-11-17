@@ -260,11 +260,11 @@ export function cssPostPlugin(
       const processChunkCSS = async (
         css: string,
         {
-          dirname,
+          filename,
           inlined,
           minify,
         }: {
-          dirname: string
+          filename: string
           inlined: boolean
           minify: boolean
         }
@@ -272,13 +272,17 @@ export function cssPostPlugin(
         // replace asset url references with resolved url.
         css = css.replace(assetUrlRE, (_, fileHash, postfix = '') => {
           return normalizePath(
-            path.relative(dirname, getAssetFilename(fileHash, config) + postfix)
+            path.relative(
+              path.dirname(filename),
+              getAssetFilename(fileHash, config) + postfix
+            )
           )
         })
         if (minify && config.build.minify) {
           css = await minifyCSS(css, config)
         }
-        return css
+        // 压缩后再处理，小程序平台会补充 @import nvue 代码，esbuild 的压缩会把 `@import "./nvue.css";` 的空格移除，变成 `@import"./nvue.css";` 在支付宝小程序中不支持
+        return chunkCssCode(filename, css)
       }
 
       const genCssCode = (fileName: string) => {
@@ -288,8 +292,8 @@ export function cssPostPlugin(
       }
       for (const filename of cssChunks.keys()) {
         const cssCode = genCssCode(filename)
-        let source = await processChunkCSS(chunkCssCode(filename, cssCode), {
-          dirname: path.dirname(filename),
+        let source = await processChunkCSS(cssCode, {
+          filename: filename,
           inlined: false,
           minify: true,
         })

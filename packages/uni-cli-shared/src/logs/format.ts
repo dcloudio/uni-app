@@ -8,6 +8,8 @@ import {
   removeWarnFormatter,
   FilenameFormatter,
   HBuilderXFileFormatter,
+  HBuilderXVueFileFormatter,
+  VueFilenameFormatter,
 } from '../hbx/log'
 
 export interface Formatter {
@@ -25,8 +27,10 @@ const initErrFormattersOnce = once(() => {
   }
   if (runByHBuilderX()) {
     errFormatters.push(HBuilderXFileFormatter)
+    errFormatters.push(HBuilderXVueFileFormatter)
   } else {
     errFormatters.push(FilenameFormatter)
+    errFormatters.push(VueFilenameFormatter)
   }
 })
 
