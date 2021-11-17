@@ -2,6 +2,7 @@ import { hyphenate } from '@vue/shared'
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   formatMiniProgramEvent,
+  isElementNode,
   MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -186,6 +187,21 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
   }
   // @ts-ignore
   node.tagType = ElementTypes.ELEMENT
+
+  // 仅单个子节点的命名插槽(非作用域)，直接使用子节点作为插槽使用，避免多增加的 view 节点影响 flex 排版
+  if (
+    slotProp &&
+    node.tag === 'view' &&
+    !isForElementNode(node) &&
+    node.children.length === 1
+  ) {
+    const child = node.children[0]
+    if (isElementNode(child) && !isForElementNode(child)) {
+      child.props.push(slotProp)
+      return genElement(child, context)
+    }
+  }
+
   return genElement(node, context)
 }
 

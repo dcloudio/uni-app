@@ -36,7 +36,7 @@ function assert(
 }
 
 assert(
-  `<button><slot :name="name"/></button>`,
+  `<custom><template v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom>`,
   `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
   `(_ctx, _cache) => {
 return { a: _f(_ctx.items, (item, index, i0) => { return { a: _r(\"default\", { key: index }) }; }) }

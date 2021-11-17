@@ -34,6 +34,16 @@ describe('compiler: transform v-slot', () => {
     )
   })
 
+  test(`names slots with single child`, () => {
+    assert(
+      `<uni-list-item class="item"><template v-slot:body><view class="item"></view></template></uni-list-item>`,
+      `<uni-list-item u-s="{{['body']}}" class="item" u-i="2a9ec0b0-0"><view class="item" slot="body"></view></uni-list-item>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
   test('scoped slots', () => {
     assert(
       `<custom><template v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom>`,
