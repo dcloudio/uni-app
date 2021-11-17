@@ -12,6 +12,10 @@ const uniMiniProgramAlipayPlugin: Plugin = {
       },
       build: {
         assetsInlineLimit: 0,
+        terserOptions: {
+          compress: false,
+          mangle: false,
+        },
       },
     }
   },

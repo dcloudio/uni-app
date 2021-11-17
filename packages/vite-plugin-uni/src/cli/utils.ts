@@ -101,11 +101,6 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
 
   initAutomator(options)
 
-  if (process.env.NODE_ENV === 'production') {
-    if (!(options as BuildOptions).minify) {
-      ;(options as BuildOptions).minify = 'terser'
-    }
-  }
   if (process.env.UNI_PLATFORM === 'app') {
     const pkg = require('../../package.json')
     console.log(

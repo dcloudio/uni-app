@@ -7647,9 +7647,7 @@ var serviceContext = (function (vue) {
           }, reject);
       });
   }
-  const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, 
-  // @ts-expect-error crop 属性App特有
-  ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
+  const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
       initI18nChooseImageMsgsOnce();
       const { t } = useI18n();
       const errorCallback = warpPlusErrorCallback(reject);

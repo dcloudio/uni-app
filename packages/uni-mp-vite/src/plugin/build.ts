@@ -34,13 +34,11 @@ export function buildOptions(): UserConfig['build'] {
     // sourcemap: 'inline', // TODO
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
-    lib: {
-      entry: resolveMainPathOnce(inputDir),
-      formats: ['cjs'],
-    },
     rollupOptions: {
+      input: resolveMainPathOnce(inputDir),
       output: {
         entryFileNames: 'app.js',
+        format: 'cjs',
         manualChunks: createMoveToVendorChunkFn(),
         chunkFileNames: createChunkFileNames(inputDir),
         assetFileNames: '[name][extname]',
