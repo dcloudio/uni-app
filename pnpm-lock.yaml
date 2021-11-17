@@ -5,7 +5,7 @@ importers:
   .:
     specifiers:
       '@dcloudio/types': ^2.5.13
-      '@dcloudio/uni-api': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-api': 3.0.0-alpha-3021320211117002
       '@jest/types': ^27.0.2
       '@microsoft/api-extractor': ^7.13.2
       '@rollup/plugin-alias': ^3.1.1
@@ -123,13 +123,13 @@ importers:
 
   packages/size-check:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-components': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-components': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3021320211117002
     devDependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components
@@ -141,7 +141,7 @@ importers:
 
   packages/uni-api:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@types/pako': ^1.0.2
       pako: ^2.0.3
     devDependencies:
@@ -151,11 +151,11 @@ importers:
 
   packages/uni-app:
     specifiers:
-      '@dcloudio/uni-cloud': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-components': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-stat': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cloud': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-components': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-stat': 3.0.0-alpha-3021320211117002
       '@vue/shared': 3.2.22
     dependencies:
       '@dcloudio/uni-cloud': link:../uni-cloud
@@ -167,12 +167,12 @@ importers:
 
   packages/uni-app-plus:
     specifiers:
-      '@dcloudio/uni-app-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-app-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-components': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-app-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-app-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-components': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-sfc': 3.2.22
       autoprefixer: ^10.4.0
       vue: 3.2.22
@@ -190,10 +190,10 @@ importers:
 
   packages/uni-app-vite:
     specifiers:
-      '@dcloudio/uni-cli-nvue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-nvue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@vitejs/plugin-vue': ^1.9.4
@@ -217,13 +217,13 @@ importers:
 
   packages/uni-app-vue:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-automator:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
       '@types/debug': ^4.1.7
       address: ^1.1.2
       cross-env: ^7.0.3
@@ -254,8 +254,8 @@ importers:
     specifiers:
       '@babel/core': ^7.15.5
       '@babel/preset-env': ^7.15.5
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@types/loader-utils': ^2.0.3
       '@types/module-alias': ^2.0.1
       '@types/terser-webpack-plugin': ^5.0.4
@@ -343,8 +343,8 @@ importers:
     specifiers:
       '@babel/parser': ^7.15.0
       '@babel/types': ^7.15.0
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/hash-sum': ^1.0.0
@@ -420,9 +420,9 @@ importers:
 
   packages/uni-cloud:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -430,15 +430,15 @@ importers:
 
   packages/uni-components:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-core:
     specifiers:
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       safe-area-insets: ^1.4.1
     devDependencies:
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -449,11 +449,11 @@ importers:
   packages/uni-h5:
     specifiers:
       '@dcloudio/uni-cli-i18n': ^2.0.0-32920211029004
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@types/google.maps': ^3.45.6
       '@vue/server-renderer': 3.2.22
       '@vue/shared': 3.2.22
@@ -485,8 +485,8 @@ importers:
 
   packages/uni-h5-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/mime': ^2.0.3
@@ -528,9 +528,9 @@ importers:
 
   packages/uni-mp-alipay:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
       '@vue/shared': 3.2.22
     dependencies:
@@ -542,12 +542,12 @@ importers:
 
   packages/uni-mp-baidu:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -564,8 +564,8 @@ importers:
       '@babel/generator': ^7.15.0
       '@babel/parser': ^7.15.0
       '@babel/types': ^7.15.0
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
       '@vue/compiler-dom': 3.2.22
       '@vue/compiler-sfc': 3.2.22
@@ -589,12 +589,12 @@ importers:
 
   packages/uni-mp-kuaishou:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -608,12 +608,12 @@ importers:
 
   packages/uni-mp-lark:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -627,11 +627,11 @@ importers:
 
   packages/uni-mp-qq:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
       fs-extra: ^10.0.0
     dependencies:
@@ -646,11 +646,11 @@ importers:
 
   packages/uni-mp-toutiao:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -662,10 +662,10 @@ importers:
 
   packages/uni-mp-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@types/debug': ^4.1.7
       '@vue/compiler-sfc': 3.2.22
       '@vue/shared': 3.2.22
@@ -687,16 +687,16 @@ importers:
 
   packages/uni-mp-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
     devDependencies:
       '@dcloudio/uni-mp-vue': 'link:'
 
   packages/uni-mp-weixin:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -708,10 +708,10 @@ importers:
 
   packages/uni-quickapp-webview:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@vue/compiler-core': 3.2.22
       '@vue/shared': 3.2.22
     dependencies:
@@ -734,7 +734,7 @@ importers:
 
   packages/uni-stat:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
       '@types/debug': ^4.1.7
       debug: ^4.3.2
     dependencies:
@@ -745,8 +745,8 @@ importers:
 
   packages/uni-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
     devDependencies:
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
@@ -756,8 +756,8 @@ importers:
       '@babel/core': ^7.15.5
       '@babel/plugin-syntax-import-meta': ^7.10.4
       '@babel/plugin-transform-typescript': ^7.15.4
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211117002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211117002
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/express': ^4.17.12
