@@ -126,7 +126,10 @@ export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
 }
 
 export function isVIfScope(scope: CodegenScope): scope is CodegenVIfScope {
-  return !!(scope as CodegenVIfScope).condition
+  return (
+    !!(scope as CodegenVIfScope).condition ||
+    (scope as CodegenVIfScope).name === 'else'
+  )
 }
 
 export function isVForScope(scope: CodegenScope): scope is CodegenVForScope {

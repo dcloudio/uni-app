@@ -175,6 +175,16 @@ describe(`compiler: v-if`, () => {
     test(`v-on with v-if`, () => {
       // <button v-on="{ click: clickEvent }" v-if="true">w/ v-if</button>
     })
+
+    test(`v-for + v-if + v-else`, () => {
+      assert(
+        `<view v-for="item in items"><uni-icons v-if="ok"/><uni-icons v-else :title="item.title"/></view>`,
+        `<view wx:for="{{a}}" wx:for-item="item"><uni-icons wx:if="{{b}}" u-i="{{item.a}}"/><uni-icons wx:else title="{{item.b}}" u-i="{{item.c}}"/></view>`,
+        `(_ctx, _cache) => {
+  return { a: _f(_ctx.items, (item, k0, i0) => { return _ctx.ok ? { a: '2a9ec0b0-0' + '-' + i0 } : { b: item.title, c: '2a9ec0b0-1' + '-' + i0 }; }), b: _ctx.ok }
+}`
+      )
+    })
   })
 
   describe('errors', () => {
