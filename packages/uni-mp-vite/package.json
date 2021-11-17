@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-vite",
-  "version": "3.0.0-alpha-3021320211117003",
+  "version": "3.0.0-alpha-3021320211117004",
   "description": "uni-mp-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,10 +18,10 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211117003",
-    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3021320211117003",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3021320211117003",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3021320211117003",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211117004",
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3021320211117004",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3021320211117004",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021320211117004",
     "@vue/shared": "3.2.22",
     "base64url": "^3.0.1",
     "debug": "^4.3.2",
