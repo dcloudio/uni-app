@@ -17,6 +17,7 @@
   "chooseVideo",
   "clearStorage",
   "clearStorageSync",
+  "closePreviewImage",
   "closeSocket",
   "connectSocket",
   "createAnimation",

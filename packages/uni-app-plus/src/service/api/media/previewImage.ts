@@ -4,6 +4,8 @@ import {
   defineAsyncApi,
   PreviewImageProtocol,
   PreviewImageOptions,
+  API_CLOSE_PREVIEW_IMAGE,
+  API_TYPE_CLOSE_PREVIEW_IMAGE,
 } from '@dcloudio/uni-api'
 
 import { isPlainObject } from '@vue/shared'
@@ -95,4 +97,17 @@ export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
   },
   PreviewImageProtocol,
   PreviewImageOptions
+)
+
+export const closePreviewImage = defineAsyncApi<API_TYPE_CLOSE_PREVIEW_IMAGE>(
+  API_CLOSE_PREVIEW_IMAGE,
+  (_, { resolve, reject }) => {
+    try {
+      // @ts-expect-error
+      plus.nativeUI.closePreviewImage()
+      resolve()
+    } catch (error) {
+      reject()
+    }
+  }
 )

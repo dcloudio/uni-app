@@ -30,3 +30,6 @@ export const PreviewImageProtocol: ApiProtocol<API_TYPE_PREVIEW_IMAGE> = {
     type: [Number, String],
   },
 }
+
+export const API_CLOSE_PREVIEW_IMAGE = 'closePreviewImage'
+export type API_TYPE_CLOSE_PREVIEW_IMAGE = typeof uni.closePreviewImage
