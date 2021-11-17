@@ -79,7 +79,8 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
 
-  if (process.env.UNI_OUTPUT_DIR) {
+  const hasOutputDir = !!process.env.UNI_OUTPUT_DIR
+  if (hasOutputDir) {
     ;(options as BuildOptions).outDir = process.env.UNI_OUTPUT_DIR
   } else {
     if (!(options as BuildOptions).outDir) {
@@ -92,11 +93,17 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
-
+  // 兼容 HBuilderX 旧参数
+  if (process.env.UNI_SUBPACKGE) {
+    options.subpackage = process.env.UNI_SUBPACKGE
+  }
   if (options.subpackage) {
     process.env.UNI_SUBPACKAGE = options.subpackage
-    process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir =
-      path.resolve(process.env.UNI_OUTPUT_DIR, options.subpackage)
+    if (!hasOutputDir) {
+      // 未指定，则自动补充
+      process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir =
+        path.resolve(process.env.UNI_OUTPUT_DIR, options.subpackage)
+    }
   }
 
   initAutomator(options)
