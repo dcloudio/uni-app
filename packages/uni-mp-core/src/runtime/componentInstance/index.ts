@@ -131,7 +131,7 @@ export function initMocks(
   const ctx = (instance as any).ctx
   mocks.forEach((mock) => {
     if (hasOwn(mpInstance, mock)) {
-      ctx[mock] = mpInstance[mock]
+      ;(instance as any)[mock] = ctx[mock] = mpInstance[mock]
     }
   })
 }
