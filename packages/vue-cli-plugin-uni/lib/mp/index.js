@@ -193,8 +193,6 @@ module.exports = {
 
       alias['vue-i18n'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue3/node_modules/vue-i18n')
       alias['@dcloudio/uni-app'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-app')
-    } else {
-      alias.vuex = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3')
     }
 
     return {
