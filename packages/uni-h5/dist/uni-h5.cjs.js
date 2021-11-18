@@ -1222,7 +1222,7 @@ function getApiInterceptorHooks(method) {
   }
   return interceptor;
 }
-function invokeApi(method, api2, options, ...params) {
+function invokeApi(method, api2, options, params) {
   const interceptor = getApiInterceptorHooks(method);
   if (interceptor && Object.keys(interceptor).length) {
     if (shared.isArray(interceptor.invoke)) {
@@ -1246,12 +1246,12 @@ function handlePromise(promise) {
   return promise;
 }
 function promisify(name, fn) {
-  return (args = {}) => {
+  return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args));
+      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, shared.extend(args, { success: resolve, fail: reject }));
+      invokeApi(name, fn, shared.extend(args, { success: resolve, fail: reject }), rest);
     })));
   };
 }

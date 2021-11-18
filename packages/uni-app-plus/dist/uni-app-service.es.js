@@ -1040,7 +1040,7 @@ var serviceContext = (function (vue) {
       }
       return interceptor;
   }
-  function invokeApi(method, api, options, ...params) {
+  function invokeApi(method, api, options, params) {
       const interceptor = getApiInterceptorHooks(method);
       if (interceptor && Object.keys(interceptor).length) {
           if (isArray$1(interceptor.invoke)) {
@@ -1074,12 +1074,12 @@ var serviceContext = (function (vue) {
       return promise;
   }
   function promisify(name, fn) {
-      return (args = {}) => {
+      return (args = {}, ...rest) => {
           if (hasCallback(args)) {
-              return wrapperReturnValue(name, invokeApi(name, fn, args));
+              return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
           }
           return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-              invokeApi(name, fn, extend(args, { success: resolve, fail: reject }));
+              invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
           })));
       };
   }

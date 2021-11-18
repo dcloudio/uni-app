@@ -272,7 +272,7 @@ function getApiInterceptorHooks(method) {
     }
     return interceptor;
 }
-function invokeApi(method, api, options, ...params) {
+function invokeApi(method, api, options, params) {
     const interceptor = getApiInterceptorHooks(method);
     if (interceptor && Object.keys(interceptor).length) {
         if (isArray(interceptor.invoke)) {
@@ -622,17 +622,17 @@ function promisify(name, api) {
     if (!isFunction(api)) {
         return api;
     }
-    return function promiseApi(options = {}) {
+    return function promiseApi(options = {}, ...rest) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options));
+            return wrapperReturnValue(name, invokeApi(name, api, options, rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, extend({}, options, {
                 success: resolve,
                 fail: reject,
-            }));
+            }), rest);
         })));
     };
 }
