@@ -11,6 +11,8 @@ import {
   normalizePagesRoute,
   normalizePagePath,
   normalizePath,
+  isEnableTreeShaking,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin(): Plugin {
@@ -79,8 +81,11 @@ function getGlobal(ssr?: boolean) {
 // 兼容 wx 对象
 function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
   const name = getGlobal(ssr)
-  if (config.command === 'build' && !ssr) {
-    // 非SSR的发行模式，补充全局 uni 对象
+  const enableTreeShaking = isEnableTreeShaking(
+    parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+  )
+  if (enableTreeShaking && config.command === 'build' && !ssr) {
+    // 非 SSR 的发行模式，补充全局 uni 对象
     return `${name}.uni = {};${name}.wx = {}`
   }
 

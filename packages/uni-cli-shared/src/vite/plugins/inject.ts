@@ -16,7 +16,13 @@ import { walk } from 'estree-walker'
 import { extend } from '@vue/shared'
 import MagicString from 'magic-string'
 
-import { isProperty, isReference, isMemberExpression, isJsFile } from '../utils'
+import {
+  isProperty,
+  isReference,
+  isMemberExpression,
+  isJsFile,
+  isAssignmentExpression,
+} from '../utils'
 
 interface Scope {
   parent: Scope
@@ -46,6 +52,7 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   delete modules.sourceMap
   delete modules.callback
 
+  const reassignments = new Set<string>()
   const modulesMap = new Map<string, string | [string, string]>()
   const namespaceModulesMap = new Map<string, string | [string, string]>()
   Object.keys(modules).forEach((name) => {
@@ -105,7 +112,12 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
 
       const newImports = new Map()
 
-      function handleReference(node: BaseNode, name: string, keypath: string) {
+      function handleReference(
+        node: BaseNode,
+        name: string,
+        keypath: string,
+        parent?: BaseNode
+      ) {
         let mod = modulesMap.get(keypath)
         if (!mod && hasNamespace) {
           const mods = keypath.split('.')
@@ -128,8 +140,15 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
         if (mod && !imports.has(name) && !scope.contains(name)) {
           if (typeof mod === 'string') mod = [mod, 'default']
           if (mod[0] === id) return false
-
           const hash = `${keypath}:${mod[0]}:${mod[1]}`
+          // 当 API 被覆盖定义后，不再摇树
+          if (reassignments.has(hash)) {
+            return false
+          }
+          if (parent && isAssignmentExpression(parent)) {
+            reassignments.add(hash)
+            return false
+          }
 
           const importLocalName =
             name === keypath ? name : makeLegalIdentifier(`$inject_${keypath}`)
@@ -184,7 +203,7 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
 
           if (isReference(node, parent)) {
             const { name, keypath } = flatten(node)
-            const handled = handleReference(node, name, keypath)
+            const handled = handleReference(node, name, keypath, parent)
             if (handled) {
               this.skip()
             }

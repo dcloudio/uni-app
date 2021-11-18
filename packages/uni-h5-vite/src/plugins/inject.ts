@@ -10,6 +10,8 @@ import {
   buildInCssSet,
   uniViteInjectPlugin,
   isCombineBuiltInCss,
+  isEnableTreeShaking,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 const apiJson = require(path.resolve(__dirname, '../../lib/api.json'))
@@ -49,17 +51,27 @@ export function uniInjectPlugin(): Plugin {
       }
     })
   }
-  const injectPlugin = uniViteInjectPlugin(
-    extend(uniInjectPluginOptions, {
-      callback,
-    })
-  )
+  let injectPlugin: Plugin
+
   return {
     name: 'vite:uni-h5-inject',
     apply: 'build',
     enforce: 'post',
     configResolved(config) {
       resolvedConfig = config
+      const enableTreeShaking = isEnableTreeShaking(
+        parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+      )
+      if (!enableTreeShaking) {
+        // 不启用摇树优化，移除 wx、uni 等 API 配置
+        delete uniInjectPluginOptions['wx.']
+        delete uniInjectPluginOptions['uni.']
+      }
+      injectPlugin = uniViteInjectPlugin(
+        extend(uniInjectPluginOptions, {
+          callback,
+        })
+      )
     },
     transform(code, id) {
       return injectPlugin.transform!.call(this, code, id)
