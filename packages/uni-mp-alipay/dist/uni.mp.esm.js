@@ -138,7 +138,9 @@ function createEmitFn(oldEmit, ctx) {
         const scope = ctx.$scope;
         if (scope && event) {
             const detail = { __args__: args };
-            scope.triggerEvent(event, detail);
+            {
+                scope.triggerEvent(event, detail);
+            }
         }
         {
             const vnode = this.$.vnode;

@@ -205,7 +205,9 @@ function createEmitFn(oldEmit, ctx) {
             {
                 detail.__ins__ = scope;
             }
-            scope.triggerEvent(event, detail);
+            {
+                scope.triggerEvent(event, detail);
+            }
         }
         return oldEmit.apply(this, [event, ...args]);
     };

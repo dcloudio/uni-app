@@ -28,8 +28,8 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
       if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') {
         detail.__ins__ = scope
       }
-      // 京东小程序 triggerEvent 只读
       if (__PLATFORM__ === 'mp-jd') {
+        // 京东小程序 triggerEvent 只读
         ;(scope._triggerEvent || scope.triggerEvent)(event, detail)
       } else {
         scope.triggerEvent(event, detail)

@@ -32,6 +32,7 @@
     "de-indent": "^1.0.2",
     "escodegen": "^1.8.1",
     "file-loader": "^6.2.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
     "hash-sum": "^2.0.0",
     "he": "^1.1.0",
     "indexes-of": "^1.0.1",
