@@ -28,7 +28,12 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
       if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') {
         detail.__ins__ = scope
       }
-      scope.triggerEvent(event, detail)
+      // 京东小程序 triggerEvent 只读
+      if (__PLATFORM__ === 'mp-jd') {
+        ;(scope._triggerEvent || scope.triggerEvent)(event, detail)
+      } else {
+        scope.triggerEvent(event, detail)
+      }
     }
     if (__PLATFORM__ === 'mp-alipay') {
       const vnode = this.$.vnode
