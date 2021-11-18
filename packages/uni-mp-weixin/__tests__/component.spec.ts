@@ -11,7 +11,7 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
-  test('lazy element', () => {
+  test('lazy element: editor', () => {
     assert(
       `<editor/>`,
       `<editor/>`,
@@ -24,6 +24,43 @@ describe('mp-weixin: transform component', () => {
       `<block wx:if="{{r0}}"><editor bindready="{{a}}"/></block>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.ready) }
+}`
+    )
+  })
+  test('lazy element: canvas', () => {
+    assert(
+      `<canvas/>`,
+      `<canvas/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<canvas canvas-id="myCanvas" id="myCanvas"/>`,
+      `<canvas canvas-id="myCanvas" id="myCanvas"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<canvas :id="id"/>`,
+      `<block wx:if="{{r0}}"><canvas id="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.id }
+}`
+    )
+    assert(
+      `<canvas :canvas-id="id"/>`,
+      `<block wx:if="{{r0}}"><canvas canvas-id="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.id }
+}`
+    )
+    assert(
+      `<canvas :canvas-id="id" :id="id"/>`,
+      `<block wx:if="{{r0}}"><canvas canvas-id="{{a}}" id="{{b}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.id, b: _ctx.id }
 }`
     )
   })

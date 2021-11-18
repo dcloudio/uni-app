@@ -147,7 +147,7 @@ const miniProgram = {
     },
     directive: 'ks:',
     lazyElement: {
-        switch: ['change'],
+        switch: [{ name: 'on', arg: ['change'] }],
     },
 };
 const projectConfigFilename = 'project.config.json';

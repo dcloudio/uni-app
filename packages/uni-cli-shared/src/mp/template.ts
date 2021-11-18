@@ -8,7 +8,7 @@ export interface MiniProgramCompilerOptions {
    * 需要延迟渲染的组件，通常是某个组件的某个事件会立刻触发，需要延迟到首次 render 之后，比如微信 editor 的 ready 事件，快手 switch 的 change
    */
   lazyElement?: {
-    [name: string]: string[]
+    [name: string]: { name: 'on' | 'bind'; arg: string[] }[]
   }
   event?: {
     format(

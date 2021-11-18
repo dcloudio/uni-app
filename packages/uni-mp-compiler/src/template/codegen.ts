@@ -213,16 +213,20 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   if (!context.lazyElement) {
     return false
   }
-  const events = context.lazyElement[node.tag]
-  return (
-    events &&
-    node.props.some(
-      (prop) =>
-        prop.type === NodeTypes.DIRECTIVE &&
-        prop.name === 'on' &&
-        prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
-        events.includes(prop.arg.content)
-    )
+  const lazyProps = context.lazyElement[node.tag]
+  if (!lazyProps) {
+    return
+  }
+  return node.props.some(
+    (prop) =>
+      prop.type === NodeTypes.DIRECTIVE &&
+      lazyProps.find((lazyProp) => {
+        return (
+          prop.name === lazyProp.name &&
+          prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+          lazyProp.arg.includes(prop.arg.content)
+        )
+      })
   )
 }
 /**

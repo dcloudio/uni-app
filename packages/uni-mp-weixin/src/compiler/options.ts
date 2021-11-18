@@ -25,7 +25,8 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'wx:',
   lazyElement: {
-    editor: ['ready'],
+    canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],
+    editor: [{ name: 'on', arg: ['ready'] }],
   },
 }
 const projectConfigFilename = 'project.config.json'
