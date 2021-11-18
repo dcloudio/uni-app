@@ -22,5 +22,21 @@ export function createBuild(
         : process.env.NODE_ENV === 'production'
         ? 'terser'
         : false,
+    rollupOptions: {
+      onwarn(warning, warn) {
+        if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
+          const { message } = warning
+          // ignore
+          if (
+            message.includes('"vue"') ||
+            message.includes('"resolveComponent"') ||
+            message.includes('"@dcloudio/uni-h5"')
+          ) {
+            return
+          }
+        }
+        warn(warning)
+      },
+    },
   }
 }

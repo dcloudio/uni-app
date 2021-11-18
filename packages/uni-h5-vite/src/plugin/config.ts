@@ -43,20 +43,6 @@ export function createConfig(options: {
         rollupOptions: {
           // resolveSSRExternal 会判定package.json，hbx 工程可能没有，通过 rollup 来配置
           external: isSsr(env.command, config) ? external : [],
-          onwarn(warning, warn) {
-            if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
-              const { message } = warning
-              // ignore
-              if (
-                message.includes('"vue"') ||
-                message.includes('"resolveComponent"') ||
-                message.includes('"@dcloudio/uni-h5"')
-              ) {
-                return
-              }
-            }
-            warn(warning)
-          },
           output: {
             chunkFileNames(chunkInfo) {
               const { assetsDir } = options.resolvedConfig!.build

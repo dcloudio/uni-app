@@ -1,2 +1,6 @@
 export * from './env'
-export { initModuleAlias } from './alias'
+export {
+  initModuleAlias,
+  installHBuilderXPlugin,
+  formatInstallHBuilderXPluginTips,
+} from './alias'

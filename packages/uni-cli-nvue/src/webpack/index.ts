@@ -12,6 +12,7 @@ import {
 import { createConfig } from './config'
 import { initModuleAlias } from './alias'
 import { NVueCompilerOptions } from '../types'
+import { formatErrors } from './utils'
 
 const initModuleAliasOnce = once(initModuleAlias)
 
@@ -27,22 +28,24 @@ function runWebpack(
       if (err) {
         return reject(err.stack || err)
       }
-      if (stats!.hasErrors()) {
-        return reject(stats!.toString())
-      }
-      if (stats!.hasWarnings()) {
-        const info = stats!.toJson({ all: false, warnings: true })
-        console.warn(info.warnings)
-      }
-      if (process.env.DEBUG) {
-        console.log(
-          stats!.toString({
-            all: false,
-            assets: true,
-            colors: true, // 在控制台展示颜色
-            // timings: true,
-          })
-        )
+      if (stats) {
+        if (stats.hasErrors()) {
+          return reject(formatErrors(stats.compilation.errors))
+        }
+        if (stats.hasWarnings()) {
+          const info = stats.toJson({ all: false, warnings: true })
+          console.warn(info.warnings)
+        }
+        if (process.env.DEBUG) {
+          console.log(
+            stats.toString({
+              all: false,
+              assets: true,
+              colors: true, // 在控制台展示颜色
+              // timings: true,
+            })
+          )
+        }
       }
       resolve(compiler)
     })
