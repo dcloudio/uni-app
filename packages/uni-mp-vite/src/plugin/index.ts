@@ -1,3 +1,4 @@
+import path from 'path'
 import { AliasOptions, ResolvedConfig } from 'vite'
 import {
   CopyOptions,
@@ -99,6 +100,7 @@ export function uniMiniProgramPlugin(
           alias: {
             vue: resolveBuiltIn('@dcloudio/uni-mp-vue'),
             '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),
+            'vue-i18n': path.resolve(__dirname, '../../lib/vue-i18n'),
             ...alias,
           },
         },

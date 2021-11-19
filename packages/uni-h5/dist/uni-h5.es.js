@@ -13414,6 +13414,7 @@ function initHooks(options, instance2, publicThis) {
     instance2.__isVisible = true;
     try {
       invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
+      delete instance2.attrs.__pageQuery;
     } catch (e2) {
       console.error(e2.message + LINEFEED + e2.stack);
     }

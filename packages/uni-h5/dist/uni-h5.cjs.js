@@ -6540,6 +6540,7 @@ function initHooks(options, instance, publicThis) {
     instance.__isVisible = true;
     try {
       invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      delete instance.attrs.__pageQuery;
     } catch (e2) {
       console.error(e2.message + uniShared.LINEFEED + e2.stack);
     }
