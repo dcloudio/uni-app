@@ -174,6 +174,8 @@ export function cleanOptions(options: CliOptions) {
   delete ret.logLevel
   delete ret.l
   delete ret.clearScreen
+  delete ret.m
+  delete ret.mode
 
   delete ret.autoHost
   delete ret.autoPort

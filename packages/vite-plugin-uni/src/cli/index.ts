@@ -20,6 +20,8 @@ export interface CliOptions {
   f?: string
   logLevel?: LogLevel
   l?: LogLevel
+  m?: string
+  mode?: string
   clearScreen?: boolean
   autoHost?: string
   autoPort?: number
@@ -37,6 +39,7 @@ cli
   .option('--clearScreen', `[boolean] allow/disable clear screen when logging`)
   .option('-d, --debug [feat]', `[string | boolean] show debug logs`)
   .option('-f, --filter <filter>', `[string] filter debug logs`)
+  .option('-m, --mode <mode>', `[string] set env mode`)
   .option('--autoHost [autoHost]', `[string] specify automator hostname`)
   .option('--autoPort [autoPort]', `[number] specify automator port`)
   .option('--subpackage [subpackage]', `[string] specify subpackage to build`)
@@ -81,7 +84,6 @@ cli
       default: true,
     }
   )
-  .option('-m, --mode <mode>', `[string] set env mode`)
   .option('-w, --watch', `[boolean] rebuilds when modules have changed on disk`)
   .action(runBuild)
 

@@ -63,7 +63,7 @@ function initBuildOptions(
     root: process.env.VITE_ROOT_DIR,
     logLevel: options.logLevel,
     clearScreen: options.clearScreen,
-    mode: process.env.NODE_ENV,
+    mode: options.mode,
     build,
   }
 }
