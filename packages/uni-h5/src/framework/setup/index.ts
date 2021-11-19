@@ -92,10 +92,11 @@ export function setupPage(comp: any) {
 
       const pageMeta = usePageMeta()
       // 放在 onMounted 中，可以保证子组件中监听的相关生命周期也可以触发，比如onShow,onPageScroll
+      const { onLoad } = instance
+      onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
       onMounted(() => {
         onPageShow(instance, pageMeta)
-        const { onLoad, onShow } = instance
-        onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
+        const { onShow } = instance
         instance.__isVisible = true
         onShow && invokeArrayFns(onShow)
       })
