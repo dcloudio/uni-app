@@ -33,13 +33,17 @@ import { initLaunchOptions, getEnterOptions } from './utils'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
-  setup: (instance: ComponentInternalInstance) => Record<string, any> | void
+  setup: (instance: ComponentInternalInstance) => Record<string, unknown> | void
+  afterSetup?: (
+    instance: ComponentInternalInstance,
+    query: Record<string, unknown>
+  ) => void
   before?: (comp: DefineComponent) => void
 }
 
 function wrapperComponentSetup(
   comp: DefineComponent,
-  { init, setup, before }: SetupComponentOptions
+  { init, setup, before, afterSetup }: SetupComponentOptions
 ) {
   before && before(comp)
   const oldSetup = comp.setup
@@ -49,6 +53,9 @@ function wrapperComponentSetup(
     const query = setup(instance)
     if (oldSetup) {
       return oldSetup(query || props, ctx)
+    }
+    if (afterSetup) {
+      afterSetup(instance, query!)
     }
   }
 }
@@ -78,6 +85,11 @@ export function setupWindow(comp: any, id: number) {
 export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
+    afterSetup(instance, query) {
+      // 因为 onLoad 是在 setup 执行过程中添加的，故需要放在 after 中执行
+      const { onLoad } = instance
+      onLoad && invokeArrayFns(onLoad, decodedQuery(query))
+    },
     setup(instance) {
       instance.root = instance // 组件 root 指向页面
       const route = usePageRoute()
@@ -89,12 +101,9 @@ export function setupPage(comp: any) {
         })
         return route.query
       }
-
       const pageMeta = usePageMeta()
-      // 放在 onMounted 中，可以保证子组件中监听的相关生命周期也可以触发，比如onShow,onPageScroll
-      const { onLoad } = instance
-      onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
       onMounted(() => {
+        // 放在 onMounted 中，可以保证子组件中监听的相关生命周期也可以触发，比如onShow,onPageScroll
         onPageShow(instance, pageMeta)
         const { onShow } = instance
         instance.__isVisible = true
