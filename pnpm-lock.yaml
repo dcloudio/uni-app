@@ -99,6 +99,7 @@ importers:
   packages/playground/ssr:
     specifiers:
       '@dcloudio/uni-app': ../../uni-app
+      '@dcloudio/uni-components': ../../uni-components
       '@dcloudio/uni-h5': ../../uni-h5
       '@dcloudio/vite-plugin-uni': ../../vite-plugin-uni
       compression: ^1.7.4
@@ -110,6 +111,7 @@ importers:
       vuex: ^4.0.2
     dependencies:
       '@dcloudio/uni-app': link:../../uni-app
+      '@dcloudio/uni-components': link:../../uni-components
       '@dcloudio/uni-h5': link:../../uni-h5
       vue: 3.2.22
       vue-router: 4.0.12_vue@3.2.22
