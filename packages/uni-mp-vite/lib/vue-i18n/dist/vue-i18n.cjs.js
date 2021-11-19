@@ -21,6 +21,18 @@ var vue = require('vue');
  */
 const VERSION = '9.1.9';
 
+/**
+ * 目前暂不支持任何语法
+ * @param source
+ * @param _
+ * @returns
+ */
+function compileToFunction(source, _ = {}) {
+    return ((ctx) => {
+        return ctx.normalize([source]);
+    });
+}
+
 const warnMessages = {
     [6 /* FALLBACK_TO_ROOT */]: `Fall back to {type} '{key}' with root locale.`,
     [7 /* NOT_SUPPORTED_PRESERVE */]: `Not supported 'preserve'.`,
@@ -1797,7 +1809,7 @@ function injectGlobalFields(app, composer) {
 }
 
 // register message compiler at vue-i18n
-coreBase.registerMessageCompiler(coreBase.compileToFunction);
+coreBase.registerMessageCompiler(compileToFunction);
 // NOTE: experimental !!
 {
     const target = shared.getGlobalThis();

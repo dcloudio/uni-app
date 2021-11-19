@@ -4,11 +4,11 @@
   * Released under the MIT License.
   */
 import { getGlobalThis, format, makeSymbol, isPlainObject, isArray, hasOwn, isObject, isBoolean, isString, isRegExp, isFunction, assign, isNumber, warn, createEmitter, isEmptyObject } from '@intlify/shared';
-import { createCompileError, handleFlatJson, createCoreContext, updateFallbackLocale, resolveValue, clearDateTimeFormat, clearNumberFormat, setAdditionalMeta, NOT_REOSLVED, isTranslateFallbackWarn, isTranslateMissingWarn, parseTranslateArgs, translate, MISSING_RESOLVE_VALUE, parseDateTimeArgs, datetime, parseNumberArgs, number, getLocaleChain, registerMessageCompiler, compileToFunction, setDevToolsHook } from '@intlify/core-base';
+import { createCompileError, handleFlatJson, createCoreContext, updateFallbackLocale, resolveValue, clearDateTimeFormat, clearNumberFormat, setAdditionalMeta, NOT_REOSLVED, isTranslateFallbackWarn, isTranslateMissingWarn, parseTranslateArgs, translate, MISSING_RESOLVE_VALUE, parseDateTimeArgs, datetime, parseNumberArgs, number, getLocaleChain, registerMessageCompiler, setDevToolsHook } from '@intlify/core-base';
 import { ref, getCurrentInstance, computed, watch, createVNode, Text, h, Fragment, inject, onMounted, onUnmounted, isRef } from 'vue';
 import { setupDevtoolsPlugin } from '@vue/devtools-api';
 import { VueDevToolsLabels, VueDevToolsPlaceholders, VueDevToolsTimelineColors } from '@intlify/vue-devtools';
-console.log('custom vue-i18n......')
+
 /**
  * Vue I18n Version
  *
@@ -47,6 +47,18 @@ function initFeatureFlags() {
             `configure your bundler to explicitly replace feature flag globals ` +
             `with boolean literals to get proper tree-shaking in the final bundle.`);
     }
+}
+
+/**
+ * 目前暂不支持任何语法
+ * @param source
+ * @param _
+ * @returns
+ */
+function compileToFunction(source, _ = {}) {
+    return ((ctx) => {
+        return ctx.normalize([source]);
+    });
 }
 
 const warnMessages = {
