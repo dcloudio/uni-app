@@ -5,7 +5,7 @@ importers:
   .:
     specifiers:
       '@dcloudio/types': ^2.5.13
-      '@dcloudio/uni-api': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-api': 3.0.0-alpha-3021320211119001
       '@jest/types': ^27.0.2
       '@microsoft/api-extractor': ^7.13.2
       '@rollup/plugin-alias': ^3.1.1
@@ -125,13 +125,13 @@ importers:
 
   packages/size-check:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-components': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-components': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3021320211119001
     devDependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components
@@ -143,7 +143,7 @@ importers:
 
   packages/uni-api:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@types/pako': ^1.0.2
       pako: ^2.0.3
     devDependencies:
@@ -153,11 +153,11 @@ importers:
 
   packages/uni-app:
     specifiers:
-      '@dcloudio/uni-cloud': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-components': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-stat': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cloud': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-components': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-stat': 3.0.0-alpha-3021320211119001
       '@vue/shared': 3.2.22
     dependencies:
       '@dcloudio/uni-cloud': link:../uni-cloud
@@ -169,12 +169,12 @@ importers:
 
   packages/uni-app-plus:
     specifiers:
-      '@dcloudio/uni-app-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-app-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-components': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-app-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-app-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-components': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-h5': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-sfc': 3.2.22
       autoprefixer: ^10.4.0
       vue: 3.2.22
@@ -192,10 +192,10 @@ importers:
 
   packages/uni-app-vite:
     specifiers:
-      '@dcloudio/uni-cli-nvue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-nvue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@vitejs/plugin-vue': ^1.9.4
@@ -219,13 +219,13 @@ importers:
 
   packages/uni-app-vue:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-automator:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
       '@types/debug': ^4.1.7
       address: ^1.1.2
       cross-env: ^7.0.3
@@ -256,8 +256,8 @@ importers:
     specifiers:
       '@babel/core': ^7.15.5
       '@babel/preset-env': ^7.15.5
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@types/loader-utils': ^2.0.3
       '@types/module-alias': ^2.0.1
       '@types/terser-webpack-plugin': ^5.0.4
@@ -345,8 +345,8 @@ importers:
     specifiers:
       '@babel/parser': ^7.15.0
       '@babel/types': ^7.15.0
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/hash-sum': ^1.0.0
@@ -424,9 +424,9 @@ importers:
 
   packages/uni-cloud:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -434,15 +434,15 @@ importers:
 
   packages/uni-components:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-core:
     specifiers:
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       safe-area-insets: ^1.4.1
     devDependencies:
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -453,11 +453,11 @@ importers:
   packages/uni-h5:
     specifiers:
       '@dcloudio/uni-cli-i18n': ^2.0.0-32920211029004
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@types/google.maps': ^3.45.6
       '@vue/server-renderer': 3.2.22
       '@vue/shared': 3.2.22
@@ -489,8 +489,8 @@ importers:
 
   packages/uni-h5-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/mime': ^2.0.3
@@ -532,9 +532,9 @@ importers:
 
   packages/uni-mp-alipay:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
       '@vue/shared': 3.2.22
     dependencies:
@@ -546,12 +546,12 @@ importers:
 
   packages/uni-mp-baidu:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -568,8 +568,8 @@ importers:
       '@babel/generator': ^7.15.0
       '@babel/parser': ^7.15.0
       '@babel/types': ^7.15.0
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
       '@vue/compiler-dom': 3.2.22
       '@vue/compiler-sfc': 3.2.22
@@ -593,12 +593,12 @@ importers:
 
   packages/uni-mp-kuaishou:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -612,12 +612,12 @@ importers:
 
   packages/uni-mp-lark:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -631,11 +631,11 @@ importers:
 
   packages/uni-mp-qq:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
       fs-extra: ^10.0.0
     dependencies:
@@ -650,11 +650,11 @@ importers:
 
   packages/uni-mp-toutiao:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -666,10 +666,10 @@ importers:
 
   packages/uni-mp-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@intlify/core-base': 9.1.9
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
@@ -697,16 +697,16 @@ importers:
 
   packages/uni-mp-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
     devDependencies:
       '@dcloudio/uni-mp-vue': 'link:'
 
   packages/uni-mp-weixin:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -718,10 +718,10 @@ importers:
 
   packages/uni-quickapp-webview:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@vue/compiler-core': 3.2.22
       '@vue/shared': 3.2.22
     dependencies:
@@ -744,7 +744,7 @@ importers:
 
   packages/uni-stat:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
       '@types/debug': ^4.1.7
       debug: ^4.3.2
     dependencies:
@@ -755,8 +755,8 @@ importers:
 
   packages/uni-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
     devDependencies:
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
@@ -766,8 +766,8 @@ importers:
       '@babel/core': ^7.15.5
       '@babel/plugin-syntax-import-meta': ^7.10.4
       '@babel/plugin-transform-typescript': ^7.15.4
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211118002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211118002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3021320211119001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3021320211119001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/express': ^4.17.12
@@ -2833,14 +2833,6 @@ packages:
       '@types/yargs-parser': 20.2.1
     dev: true
 
-  /@types/yauzl/2.9.2:
-    resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==}
-    requiresBuild: true
-    dependencies:
-      '@types/node': 14.17.33
-    dev: true
-    optional: true
-
   /@typescript-eslint/parser/5.4.0_eslint@7.32.0+typescript@4.4.4:
     resolution: {integrity: sha512-JoB41EmxiYpaEsRwpZEYAJ9XQURPFer8hpkIW9GiaspVLX8oqbqNM8P4EP8HOZg96yaALiLEVWllA2E8vwsIKw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -3785,7 +3777,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: registry.npmjs.org/fsevents/2.3.2
 
   /chrome-trace-event/1.0.3:
     resolution: {integrity: sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==}
@@ -3830,7 +3822,7 @@ packages:
       object-assign: 4.1.1
       string-width: 4.2.3
     optionalDependencies:
-      colors: 1.4.0
+      colors: registry.npmjs.org/colors/1.4.0
     dev: true
 
   /cli-truncate/2.1.0:
@@ -3896,13 +3888,6 @@ packages:
     resolution: {integrity: sha512-erNRLao/Y3Fv54qUa0LBB+//Uf3YwMUmdJinN20yMXm9zdKKqH9wt7R9IIVZ+K7ShzfpLV/Zg8+VyrBJYB4lpg==}
     engines: {node: '>=0.1.90'}
     dev: true
-
-  /colors/1.4.0:
-    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
-    engines: {node: '>=0.1.90'}
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /combined-stream/1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -4429,147 +4414,28 @@ packages:
     resolution: {integrity: sha512-1HQ2M2sPtxwnvOvT1ZClHyQDiggdNjURWpY2we6aMKCQiUVxTmVs2UYPLIrD84sS+kMdUwfBSylbJPwNnBrnHQ==}
     dev: false
 
-  /esbuild-android-arm64/0.13.14:
-    resolution: {integrity: sha512-Q+Xhfp827r+ma8/DJgpMRUbDZfefsk13oePFEXEIJ4gxFbNv5+vyiYXYuKm43/+++EJXpnaYmEnu4hAKbAWYbA==}
-    cpu: [arm64]
-    os: [android]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-darwin-64/0.13.14:
-    resolution: {integrity: sha512-YmOhRns6QBNSjpVdTahi/yZ8dscx9ai7a6OY6z5ACgOuQuaQ2Qk2qgJ0/siZ6LgD0gJFMV8UINFV5oky5TFNQQ==}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-darwin-arm64/0.13.14:
-    resolution: {integrity: sha512-Lp00VTli2jqZghSa68fx3fEFCPsO1hK59RMo1PRap5RUjhf55OmaZTZYnCDI0FVlCtt+gBwX5qwFt4lc6tI1xg==}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-freebsd-64/0.13.14:
-    resolution: {integrity: sha512-BKosI3jtvTfnmsCW37B1TyxMUjkRWKqopR0CE9AF2ratdpkxdR24Vpe3gLKNyWiZ7BE96/SO5/YfhbPUzY8wKw==}
-    cpu: [x64]
-    os: [freebsd]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-freebsd-arm64/0.13.14:
-    resolution: {integrity: sha512-yd2uh0yf+fWv5114+SYTl4/1oDWtr4nN5Op+PGxAkMqHfYfLjFKpcxwCo/QOS/0NWqPVE8O41IYZlFhbEN2B8Q==}
-    cpu: [arm64]
-    os: [freebsd]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-32/0.13.14:
-    resolution: {integrity: sha512-a8rOnS1oWSfkkYWXoD2yXNV4BdbDKA7PNVQ1klqkY9SoSApL7io66w5H44mTLsfyw7G6Z2vLlaLI2nz9MMAowA==}
-    cpu: [ia32]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-64/0.13.14:
-    resolution: {integrity: sha512-yPZSoMs9W2MC3Dw+6kflKt5FfQm6Dicex9dGIr1OlHRsn3Hm7yGMUTctlkW53KknnZdOdcdd5upxvbxqymczVQ==}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-arm/0.13.14:
-    resolution: {integrity: sha512-8chZE4pkKRvJ/M/iwsNQ1KqsRg2RyU5eT/x2flNt/f8F2TVrDreR7I0HEeCR50wLla3B1C3wTIOzQBmjuc6uWg==}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-arm64/0.13.14:
-    resolution: {integrity: sha512-Lvo391ln9PzC334e+jJ2S0Rt0cxP47eoH5gFyv/E8HhOnEJTvm7A+RRnMjjHnejELacTTfYgFGQYPjLsi/jObQ==}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-mips64le/0.13.14:
-    resolution: {integrity: sha512-MZhgxbmrWbpY3TOE029O6l5tokG9+Yoj2hW7vdit/d/VnmneqeGrSHADuDL6qXM8L5jaCiaivb4VhsyVCpdAbQ==}
-    cpu: [mips64el]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-ppc64le/0.13.14:
-    resolution: {integrity: sha512-un7KMwS7fX1Un6BjfSZxTT8L5cV/8Uf4SAhM7WYy2XF8o8TI+uRxxD03svZnRNIPsN2J5cl6qV4n7Iwz+yhhVw==}
-    cpu: [ppc64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-netbsd-64/0.13.14:
-    resolution: {integrity: sha512-5ekKx/YbOmmlTeNxBjh38Uh5TGn5C4uyqN17i67k18pS3J+U2hTVD7rCxcFcRS1AjNWumkVL3jWqYXadFwMS0Q==}
-    cpu: [x64]
-    os: [netbsd]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-openbsd-64/0.13.14:
-    resolution: {integrity: sha512-9bzvwewHjct2Cv5XcVoE1yW5YTW12Sk838EYfA46abgnhxGoFSD1mFcaztp5HHC43AsF+hQxbSFG/RilONARUA==}
-    cpu: [x64]
-    os: [openbsd]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-sunos-64/0.13.14:
-    resolution: {integrity: sha512-mjMrZB76M6FmoiTvj/RGWilrioR7gVwtFBRVugr9qLarXMIU1W/pQx+ieEOtflrW61xo8w1fcxyHsVVGRvoQ0w==}
-    cpu: [x64]
-    os: [sunos]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-windows-32/0.13.14:
-    resolution: {integrity: sha512-GZa6mrx2rgfbH/5uHg0Rdw50TuOKbdoKCpEBitzmG5tsXBdce+cOL+iFO5joZc6fDVCLW3Y6tjxmSXRk/v20Hg==}
-    cpu: [ia32]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-windows-64/0.13.14:
-    resolution: {integrity: sha512-Lsgqah24bT7ClHjLp/Pj3A9wxjhIAJyWQcrOV4jqXAFikmrp2CspA8IkJgw7HFjx6QrJuhpcKVbCAe/xw0i2yw==}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-windows-arm64/0.13.14:
-    resolution: {integrity: sha512-KP8FHVlWGhM7nzYtURsGnskXb/cBCPTfj0gOKfjKq2tHtYnhDZywsUG57nk7TKhhK0fL11LcejHG3LRW9RF/9A==}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
   /esbuild/0.13.14:
     resolution: {integrity: sha512-xu4D+1ji9x53ocuomcY+KOrwAnWzhBu/wTEjpdgZ8I1c8i5vboYIeigMdzgY1UowYBKa2vZgVgUB32bu7gkxeg==}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      esbuild-android-arm64: 0.13.14
-      esbuild-darwin-64: 0.13.14
-      esbuild-darwin-arm64: 0.13.14
-      esbuild-freebsd-64: 0.13.14
-      esbuild-freebsd-arm64: 0.13.14
-      esbuild-linux-32: 0.13.14
-      esbuild-linux-64: 0.13.14
-      esbuild-linux-arm: 0.13.14
-      esbuild-linux-arm64: 0.13.14
-      esbuild-linux-mips64le: 0.13.14
-      esbuild-linux-ppc64le: 0.13.14
-      esbuild-netbsd-64: 0.13.14
-      esbuild-openbsd-64: 0.13.14
-      esbuild-sunos-64: 0.13.14
-      esbuild-windows-32: 0.13.14
-      esbuild-windows-64: 0.13.14
-      esbuild-windows-arm64: 0.13.14
+      esbuild-android-arm64: registry.npmjs.org/esbuild-android-arm64/0.13.14
+      esbuild-darwin-64: registry.npmjs.org/esbuild-darwin-64/0.13.14
+      esbuild-darwin-arm64: registry.npmjs.org/esbuild-darwin-arm64/0.13.14
+      esbuild-freebsd-64: registry.npmjs.org/esbuild-freebsd-64/0.13.14
+      esbuild-freebsd-arm64: registry.npmjs.org/esbuild-freebsd-arm64/0.13.14
+      esbuild-linux-32: registry.npmjs.org/esbuild-linux-32/0.13.14
+      esbuild-linux-64: registry.npmjs.org/esbuild-linux-64/0.13.14
+      esbuild-linux-arm: registry.npmjs.org/esbuild-linux-arm/0.13.14
+      esbuild-linux-arm64: registry.npmjs.org/esbuild-linux-arm64/0.13.14
+      esbuild-linux-mips64le: registry.npmjs.org/esbuild-linux-mips64le/0.13.14
+      esbuild-linux-ppc64le: registry.npmjs.org/esbuild-linux-ppc64le/0.13.14
+      esbuild-netbsd-64: registry.npmjs.org/esbuild-netbsd-64/0.13.14
+      esbuild-openbsd-64: registry.npmjs.org/esbuild-openbsd-64/0.13.14
+      esbuild-sunos-64: registry.npmjs.org/esbuild-sunos-64/0.13.14
+      esbuild-windows-32: registry.npmjs.org/esbuild-windows-32/0.13.14
+      esbuild-windows-64: registry.npmjs.org/esbuild-windows-64/0.13.14
+      esbuild-windows-arm64: registry.npmjs.org/esbuild-windows-arm64/0.13.14
 
   /escalade/3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}
@@ -4602,7 +4468,7 @@ packages:
       esutils: 2.0.3
       optionator: 0.8.3
     optionalDependencies:
-      source-map: 0.6.1
+      source-map: registry.npmjs.org/source-map/0.6.1
     dev: false
 
   /escodegen/2.0.0:
@@ -4615,7 +4481,7 @@ packages:
       esutils: 2.0.3
       optionator: 0.8.3
     optionalDependencies:
-      source-map: 0.6.1
+      source-map: registry.npmjs.org/source-map/0.6.1
     dev: true
 
   /eslint-scope/5.1.1:
@@ -4885,7 +4751,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      '@types/yauzl': 2.9.2
+      '@types/yauzl': registry.npmjs.org/@types/yauzl/2.9.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5078,13 +4944,6 @@ packages:
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
-
-  /fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-    requiresBuild: true
-    optional: true
 
   /function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
@@ -5873,7 +5732,7 @@ packages:
       micromatch: 4.0.4
       walker: 1.0.8
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: registry.npmjs.org/fsevents/2.3.2
     dev: true
 
   /jest-jasmine2/27.3.1:
@@ -6298,14 +6157,14 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
 
   /jsonfile/6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
 
   /jsprim/1.4.1:
     resolution: {integrity: sha1-MT5mvB5cwG5Di8G3SZwuXFastqI=}
@@ -6623,7 +6482,7 @@ packages:
     resolution: {integrity: sha512-xTYd4JVHpSCW+aqDof6w/MebaMVNTVYBZhbB/vi513xXdiPT92JMVCo0Jq8W2UZnzYRFeVbQiQ+I25l13JuKvA==}
     hasBin: true
     optionalDependencies:
-      minimist: 1.2.5
+      minimist: registry.npmjs.org/minimist/1.2.5
     dev: true
 
   /make-plural/6.2.2:
@@ -7615,7 +7474,7 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: registry.npmjs.org/fsevents/2.3.2
 
   /run-parallel/1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -8467,7 +8326,7 @@ packages:
       resolve: 1.20.0
       rollup: 2.60.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: registry.npmjs.org/fsevents/2.3.2
     dev: true
 
   /vlq/0.2.3:
@@ -8798,5 +8657,217 @@ packages:
       lodash.isequal: 4.5.0
       validator: 8.2.0
     optionalDependencies:
-      commander: 2.20.3
+      commander: registry.npmjs.org/commander/2.20.3
     dev: true
+
+  registry.npmjs.org/@types/yauzl/2.9.2:
+    resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@types/yauzl/-/yauzl-2.9.2.tgz}
+    name: '@types/yauzl'
+    version: 2.9.2
+    requiresBuild: true
+    dependencies:
+      '@types/node': 14.17.33
+    dev: true
+    optional: true
+
+  registry.npmjs.org/colors/1.4.0:
+    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/colors/-/colors-1.4.0.tgz}
+    name: colors
+    version: 1.4.0
+    engines: {node: '>=0.1.90'}
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  registry.npmjs.org/commander/2.20.3:
+    resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/commander/-/commander-2.20.3.tgz}
+    name: commander
+    version: 2.20.3
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  registry.npmjs.org/esbuild-android-arm64/0.13.14:
+    resolution: {integrity: sha512-Q+Xhfp827r+ma8/DJgpMRUbDZfefsk13oePFEXEIJ4gxFbNv5+vyiYXYuKm43/+++EJXpnaYmEnu4hAKbAWYbA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-android-arm64/-/esbuild-android-arm64-0.13.14.tgz}
+    name: esbuild-android-arm64
+    version: 0.13.14
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-darwin-64/0.13.14:
+    resolution: {integrity: sha512-YmOhRns6QBNSjpVdTahi/yZ8dscx9ai7a6OY6z5ACgOuQuaQ2Qk2qgJ0/siZ6LgD0gJFMV8UINFV5oky5TFNQQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-darwin-64/-/esbuild-darwin-64-0.13.14.tgz}
+    name: esbuild-darwin-64
+    version: 0.13.14
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-darwin-arm64/0.13.14:
+    resolution: {integrity: sha512-Lp00VTli2jqZghSa68fx3fEFCPsO1hK59RMo1PRap5RUjhf55OmaZTZYnCDI0FVlCtt+gBwX5qwFt4lc6tI1xg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.13.14.tgz}
+    name: esbuild-darwin-arm64
+    version: 0.13.14
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-freebsd-64/0.13.14:
+    resolution: {integrity: sha512-BKosI3jtvTfnmsCW37B1TyxMUjkRWKqopR0CE9AF2ratdpkxdR24Vpe3gLKNyWiZ7BE96/SO5/YfhbPUzY8wKw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-freebsd-64/-/esbuild-freebsd-64-0.13.14.tgz}
+    name: esbuild-freebsd-64
+    version: 0.13.14
+    cpu: [x64]
+    os: [freebsd]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-freebsd-arm64/0.13.14:
+    resolution: {integrity: sha512-yd2uh0yf+fWv5114+SYTl4/1oDWtr4nN5Op+PGxAkMqHfYfLjFKpcxwCo/QOS/0NWqPVE8O41IYZlFhbEN2B8Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-freebsd-arm64/-/esbuild-freebsd-arm64-0.13.14.tgz}
+    name: esbuild-freebsd-arm64
+    version: 0.13.14
+    cpu: [arm64]
+    os: [freebsd]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-linux-32/0.13.14:
+    resolution: {integrity: sha512-a8rOnS1oWSfkkYWXoD2yXNV4BdbDKA7PNVQ1klqkY9SoSApL7io66w5H44mTLsfyw7G6Z2vLlaLI2nz9MMAowA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-linux-32/-/esbuild-linux-32-0.13.14.tgz}
+    name: esbuild-linux-32
+    version: 0.13.14
+    cpu: [ia32]
+    os: [linux]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-linux-64/0.13.14:
+    resolution: {integrity: sha512-yPZSoMs9W2MC3Dw+6kflKt5FfQm6Dicex9dGIr1OlHRsn3Hm7yGMUTctlkW53KknnZdOdcdd5upxvbxqymczVQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-linux-64/-/esbuild-linux-64-0.13.14.tgz}
+    name: esbuild-linux-64
+    version: 0.13.14
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-linux-arm/0.13.14:
+    resolution: {integrity: sha512-8chZE4pkKRvJ/M/iwsNQ1KqsRg2RyU5eT/x2flNt/f8F2TVrDreR7I0HEeCR50wLla3B1C3wTIOzQBmjuc6uWg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-linux-arm/-/esbuild-linux-arm-0.13.14.tgz}
+    name: esbuild-linux-arm
+    version: 0.13.14
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-linux-arm64/0.13.14:
+    resolution: {integrity: sha512-Lvo391ln9PzC334e+jJ2S0Rt0cxP47eoH5gFyv/E8HhOnEJTvm7A+RRnMjjHnejELacTTfYgFGQYPjLsi/jObQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-linux-arm64/-/esbuild-linux-arm64-0.13.14.tgz}
+    name: esbuild-linux-arm64
+    version: 0.13.14
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-linux-mips64le/0.13.14:
+    resolution: {integrity: sha512-MZhgxbmrWbpY3TOE029O6l5tokG9+Yoj2hW7vdit/d/VnmneqeGrSHADuDL6qXM8L5jaCiaivb4VhsyVCpdAbQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-linux-mips64le/-/esbuild-linux-mips64le-0.13.14.tgz}
+    name: esbuild-linux-mips64le
+    version: 0.13.14
+    cpu: [mips64el]
+    os: [linux]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-linux-ppc64le/0.13.14:
+    resolution: {integrity: sha512-un7KMwS7fX1Un6BjfSZxTT8L5cV/8Uf4SAhM7WYy2XF8o8TI+uRxxD03svZnRNIPsN2J5cl6qV4n7Iwz+yhhVw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-linux-ppc64le/-/esbuild-linux-ppc64le-0.13.14.tgz}
+    name: esbuild-linux-ppc64le
+    version: 0.13.14
+    cpu: [ppc64]
+    os: [linux]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-netbsd-64/0.13.14:
+    resolution: {integrity: sha512-5ekKx/YbOmmlTeNxBjh38Uh5TGn5C4uyqN17i67k18pS3J+U2hTVD7rCxcFcRS1AjNWumkVL3jWqYXadFwMS0Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-netbsd-64/-/esbuild-netbsd-64-0.13.14.tgz}
+    name: esbuild-netbsd-64
+    version: 0.13.14
+    cpu: [x64]
+    os: [netbsd]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-openbsd-64/0.13.14:
+    resolution: {integrity: sha512-9bzvwewHjct2Cv5XcVoE1yW5YTW12Sk838EYfA46abgnhxGoFSD1mFcaztp5HHC43AsF+hQxbSFG/RilONARUA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-openbsd-64/-/esbuild-openbsd-64-0.13.14.tgz}
+    name: esbuild-openbsd-64
+    version: 0.13.14
+    cpu: [x64]
+    os: [openbsd]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-sunos-64/0.13.14:
+    resolution: {integrity: sha512-mjMrZB76M6FmoiTvj/RGWilrioR7gVwtFBRVugr9qLarXMIU1W/pQx+ieEOtflrW61xo8w1fcxyHsVVGRvoQ0w==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-sunos-64/-/esbuild-sunos-64-0.13.14.tgz}
+    name: esbuild-sunos-64
+    version: 0.13.14
+    cpu: [x64]
+    os: [sunos]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-windows-32/0.13.14:
+    resolution: {integrity: sha512-GZa6mrx2rgfbH/5uHg0Rdw50TuOKbdoKCpEBitzmG5tsXBdce+cOL+iFO5joZc6fDVCLW3Y6tjxmSXRk/v20Hg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-windows-32/-/esbuild-windows-32-0.13.14.tgz}
+    name: esbuild-windows-32
+    version: 0.13.14
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-windows-64/0.13.14:
+    resolution: {integrity: sha512-Lsgqah24bT7ClHjLp/Pj3A9wxjhIAJyWQcrOV4jqXAFikmrp2CspA8IkJgw7HFjx6QrJuhpcKVbCAe/xw0i2yw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-windows-64/-/esbuild-windows-64-0.13.14.tgz}
+    name: esbuild-windows-64
+    version: 0.13.14
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/esbuild-windows-arm64/0.13.14:
+    resolution: {integrity: sha512-KP8FHVlWGhM7nzYtURsGnskXb/cBCPTfj0gOKfjKq2tHtYnhDZywsUG57nk7TKhhK0fL11LcejHG3LRW9RF/9A==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-windows-arm64/-/esbuild-windows-arm64-0.13.14.tgz}
+    name: esbuild-windows-arm64
+    version: 0.13.14
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/fsevents/2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz}
+    name: fsevents
+    version: 2.3.2
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/graceful-fs/4.2.8:
+    resolution: {integrity: sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.8.tgz}
+    name: graceful-fs
+    version: 4.2.8
+    requiresBuild: true
+    optional: true
+
+  registry.npmjs.org/minimist/1.2.5:
+    resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz}
+    name: minimist
+    version: 1.2.5
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  registry.npmjs.org/source-map/0.6.1:
+    resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz}
+    name: source-map
+    version: 0.6.1
+    engines: {node: '>=0.10.0'}
+    requiresBuild: true
+    optional: true

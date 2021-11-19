@@ -10042,6 +10042,7 @@ var serviceContext = (function (vue) {
           instance.__isVisible = true;
           try {
               invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
+              delete instance.attrs.__pageQuery;
           }
           catch (e) {
               console.error(e.message + LINEFEED + e.stack);
