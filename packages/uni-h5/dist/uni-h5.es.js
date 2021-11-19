@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 let i18n;
@@ -13399,7 +13399,7 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
   }
 }
 function initHooks(options, instance2, publicThis) {
-  options.mpType || publicThis.$mpType;
+  const mpType = options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hooks = options[name];
@@ -13410,6 +13410,17 @@ function initHooks(options, instance2, publicThis) {
       }
     }
   });
+  if (mpType === "page") {
+    instance2.__isVisible = true;
+    try {
+      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
+    } catch (e2) {
+      console.error(e2.message + LINEFEED + e2.stack);
+    }
+    nextTick(() => {
+      invokeHook(publicThis, ON_SHOW);
+    });
+  }
 }
 function applyOptions(options, instance2, publicThis) {
   initHooks(options, instance2, publicThis);
@@ -13963,13 +13974,10 @@ function setupPage(comp) {
     setup(instance2) {
       instance2.root = instance2;
       const route = usePageRoute();
+      instance2.attrs.__pageQuery = decodedQuery(route.query);
       const pageMeta = usePageMeta();
-      onMounted(() => {
+      onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
-        const { onLoad, onShow } = instance2;
-        onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
-        instance2.__isVisible = true;
-        onShow && invokeArrayFns$1(onShow);
       });
       onMounted(() => {
         onPageReady(instance2);

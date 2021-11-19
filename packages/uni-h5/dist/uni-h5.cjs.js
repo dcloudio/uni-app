@@ -6525,7 +6525,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
-  options.mpType || publicThis.$mpType;
+  const mpType = options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hooks = options[name];
@@ -6536,6 +6536,17 @@ function initHooks(options, instance, publicThis) {
       }
     }
   });
+  if (mpType === "page") {
+    instance.__isVisible = true;
+    try {
+      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+    } catch (e2) {
+      console.error(e2.message + uniShared.LINEFEED + e2.stack);
+    }
+    vue.nextTick(() => {
+      invokeHook(publicThis, uniShared.ON_SHOW);
+    });
+  }
 }
 function applyOptions(options, instance, publicThis) {
   initHooks(options, instance, publicThis);
@@ -6919,12 +6930,9 @@ function setupPage(comp) {
     setup(instance) {
       instance.root = instance;
       const route = usePageRoute();
+      instance.attrs.__pageQuery = uniShared.decodedQuery(route.query);
       {
-        vue.nextTick(() => {
-          const { onLoad } = instance;
-          onLoad && shared.invokeArrayFns(onLoad, uniShared.decodedQuery(route.query));
-        });
-        return route.query;
+        return instance.attrs.__pageQuery;
       }
     }
   });

@@ -33,17 +33,13 @@ import { initLaunchOptions, getEnterOptions } from './utils'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
-  setup: (instance: ComponentInternalInstance) => Record<string, unknown> | void
-  afterSetup?: (
-    instance: ComponentInternalInstance,
-    query: Record<string, unknown>
-  ) => void
+  setup: (instance: ComponentInternalInstance) => Record<string, any> | void
   before?: (comp: DefineComponent) => void
 }
 
 function wrapperComponentSetup(
   comp: DefineComponent,
-  { init, setup, before, afterSetup }: SetupComponentOptions
+  { init, setup, before }: SetupComponentOptions
 ) {
   before && before(comp)
   const oldSetup = comp.setup
@@ -53,9 +49,6 @@ function wrapperComponentSetup(
     const query = setup(instance)
     if (oldSetup) {
       return oldSetup(query || props, ctx)
-    }
-    if (afterSetup) {
-      afterSetup(instance, query!)
     }
   }
 }
@@ -85,29 +78,17 @@ export function setupWindow(comp: any, id: number) {
 export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
-    afterSetup(instance, query) {
-      // 因为 onLoad 是在 setup 执行过程中添加的，故需要放在 after 中执行
-      const { onLoad } = instance
-      onLoad && invokeArrayFns(onLoad, decodedQuery(query))
-    },
     setup(instance) {
       instance.root = instance // 组件 root 指向页面
       const route = usePageRoute()
-      // node环境仅触发Page onLoad生命周期
+      // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
+      instance.attrs.__pageQuery = decodedQuery(route.query)
       if (__NODE_JS__) {
-        nextTick(() => {
-          const { onLoad } = instance
-          onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
-        })
-        return route.query
+        return instance.attrs.__pageQuery as Record<string, unknown>
       }
       const pageMeta = usePageMeta()
-      onMounted(() => {
-        // 放在 onMounted 中，可以保证子组件中监听的相关生命周期也可以触发，比如onShow,onPageScroll
+      onBeforeMount(() => {
         onPageShow(instance, pageMeta)
-        const { onShow } = instance
-        instance.__isVisible = true
-        onShow && invokeArrayFns(onShow)
       })
       onMounted(() => {
         onPageReady(instance)

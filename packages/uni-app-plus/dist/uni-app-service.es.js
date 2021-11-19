@@ -10039,16 +10039,17 @@ var serviceContext = (function (vue) {
           }
       });
       if (mpType === 'page') {
+          instance.__isVisible = true;
           try {
               invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
-              vue.nextTick(() => {
-                  // 延迟onShow，保证组件的onShow也可以监听到
-                  invokeHook(publicThis, ON_SHOW);
-              });
           }
           catch (e) {
               console.error(e.message + LINEFEED + e.stack);
           }
+          vue.nextTick(() => {
+              // 延迟onShow，保证组件的onShow也可以监听到
+              invokeHook(publicThis, ON_SHOW);
+          });
       }
   }
 

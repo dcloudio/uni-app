@@ -41,15 +41,16 @@ export function initHooks(
       }
     }
   })
-  if (__PLATFORM__ === 'app' && mpType === 'page') {
+  if ((__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') && mpType === 'page') {
+    instance.__isVisible = true
     try {
       invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
-      nextTick(() => {
-        // 延迟onShow，保证组件的onShow也可以监听到
-        invokeHook(publicThis, ON_SHOW)
-      })
     } catch (e: any) {
       console.error(e.message + LINEFEED + e.stack)
     }
+    nextTick(() => {
+      // 延迟onShow，保证组件的onShow也可以监听到
+      invokeHook(publicThis, ON_SHOW)
+    })
   }
 }
