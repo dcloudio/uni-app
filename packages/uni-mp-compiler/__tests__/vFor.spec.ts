@@ -204,7 +204,7 @@ describe(`compiler: v-for`, () => {
     test(`v-if + v-for`, () => {
       assert(
         `<view v-if="ok" v-for="i in list"/>`,
-        `<view wx:if="{{a}}" wx:for="{{b}}" wx:for-item="i"/>`,
+        `<block wx:if="{{a}}"><view wx:for="{{b}}" wx:for-item="i"/></block>`,
         `(_ctx, _cache) => {
   return _e({ a: _ctx.ok }, _ctx.ok ? { b: _f(_ctx.list, (i, k0, i0) => { return {}; }) } : {})
 }`
@@ -214,7 +214,7 @@ describe(`compiler: v-for`, () => {
     test(`v-if + v-for on <template>`, () => {
       assert(
         `<template v-if="ok" v-for="i in list"/>`,
-        `<block wx:if="{{a}}" wx:for="{{b}}" wx:for-item="i"/>`,
+        `<block wx:if="{{a}}"><block wx:for="{{b}}" wx:for-item="i"/></block>`,
         `(_ctx, _cache) => {
   return _e({ a: _ctx.ok }, _ctx.ok ? { b: _f(_ctx.list, (i, k0, i0) => { return {}; }) } : {})
 }`

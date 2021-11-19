@@ -270,8 +270,11 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
     tag = hyphenate(tag)
   }
   const { push } = context
-  push(`<${tag}`)
-  if (isIfElementNode(node)) {
+
+  const hasVIf = isIfElementNode(node)
+  const hasVFor = isForElementNode(node)
+  const hasVIfAndVFor = hasVIf && hasVFor
+  function genVIfCode(node: IfElementNode) {
     const { name, condition } = node.vIf
     if (name === 'if') {
       genVIf(condition!, context)
@@ -281,7 +284,18 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
       genVElse(context)
     }
   }
-  if (isForElementNode(node)) {
+  // 小程序中 wx:else wx:elif 不支持与 wx:for 同时使用
+  // 故 if 需要补充一层 block
+  if (hasVIfAndVFor) {
+    push(`<block`)
+    genVIfCode(node)
+    push(`>`)
+  }
+  push(`<${tag}`)
+  if (!hasVIfAndVFor && hasVIf) {
+    genVIfCode(node)
+  }
+  if (hasVFor) {
     genVFor(node, context)
   }
   if (props.length) {
@@ -296,6 +310,9 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
       genNode(node, context)
     })
     push(`</${tag}>`)
+  }
+  if (hasVIfAndVFor) {
+    push(`</block>`)
   }
 }
 
