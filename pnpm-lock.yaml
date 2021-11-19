@@ -375,6 +375,7 @@ importers:
       postcss-import: ^14.0.2
       postcss-load-config: ^3.1.0
       postcss-selector-parser: ^6.0.6
+      resolve: ^1.20.0
       rollup-plugin-copy: ^3.4.0
       tapable: ^2.2.0
       xregexp: 3.1.0
@@ -405,6 +406,7 @@ importers:
       postcss-import: 14.0.2_postcss@8.3.11
       postcss-load-config: 3.1.0
       postcss-selector-parser: 6.0.6
+      resolve: 1.20.0
       rollup-plugin-copy: 3.4.0
       tapable: 2.2.1
       xregexp: 3.1.0

@@ -2,10 +2,8 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { camelize, capitalize } from '@vue/shared'
-import { once } from '@dcloudio/uni-shared'
 export { default as hash } from 'hash-sum'
 import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
-import debug from 'debug'
 import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
 
 import {
@@ -14,95 +12,22 @@ import {
   RootNode,
   TemplateChildNode,
 } from '@vue/compiler-core'
+
+export let isRunningWithYarnPnp: boolean
+try {
+  isRunningWithYarnPnp = Boolean(require('pnpapi'))
+} catch {}
+
 export const isWindows = os.platform() === 'win32'
 export function normalizePath(id: string): string {
   return isWindows ? id.replace(/\\/g, '/') : id
 }
 
-export function relativeFile(from: string, to: string) {
-  return normalizePath(path.relative(path.dirname(from), to))
-}
 export function checkElementNodeTag(
   node: RootNode | TemplateChildNode | null | undefined,
   tag: string
 ): node is ElementNode {
   return !!node && node.type === NodeTypes.ELEMENT && node.tag === tag
-}
-
-export const resolveMainPathOnce = once((inputDir: string) => {
-  const mainTsPath = path.resolve(inputDir, 'main.ts')
-  if (fs.existsSync(mainTsPath)) {
-    return normalizePath(mainTsPath)
-  }
-  return normalizePath(path.resolve(inputDir, 'main.js'))
-})
-
-let componentsLibPath: string = ''
-export function resolveComponentsLibPath() {
-  if (!componentsLibPath) {
-    componentsLibPath = path.resolve(
-      resolveBuiltIn('@dcloudio/uni-components/package.json'),
-      '../lib'
-    )
-  }
-  return componentsLibPath
-}
-
-const ownerModules = ['@dcloudio/uni-app', '@dcloudio/vite-plugin-uni']
-
-const paths: string[] = []
-
-function resolveNodeModulePath(modulePath: string) {
-  const nodeModulesPaths: string[] = []
-  const nodeModulesPath = path.join(modulePath, 'node_modules')
-  if (fs.existsSync(nodeModulesPath)) {
-    nodeModulesPaths.push(nodeModulesPath)
-  }
-  const index = modulePath.lastIndexOf('node_modules')
-  if (index > -1) {
-    nodeModulesPaths.push(
-      path.join(modulePath.substr(0, index), 'node_modules')
-    )
-  }
-  return nodeModulesPaths
-}
-
-function initPaths() {
-  const cliContext = process.env.UNI_CLI_CONTEXT
-  if (cliContext) {
-    const pathSet = new Set<string>()
-    pathSet.add(path.join(cliContext, 'node_modules'))
-    ;[`@dcloudio/uni-` + process.env.UNI_PLATFORM, ...ownerModules].forEach(
-      (ownerModule) => {
-        let pkgPath: string = ''
-        try {
-          pkgPath = require.resolve(ownerModule + '/package.json', {
-            paths: [cliContext],
-          })
-        } catch (e) {}
-        if (pkgPath) {
-          resolveNodeModulePath(path.dirname(pkgPath)).forEach(
-            (nodeModulePath) => {
-              pathSet.add(nodeModulePath)
-            }
-          )
-        }
-      }
-    )
-    paths.push(...pathSet)
-    debug('uni-paths')(paths)
-  }
-}
-
-export function getBuiltInPaths() {
-  if (!paths.length) {
-    initPaths()
-  }
-  return paths
-}
-
-export function resolveBuiltIn(path: string) {
-  return require.resolve(path, { paths: getBuiltInPaths() })
 }
 
 export function normalizeIdentifier(str: string) {

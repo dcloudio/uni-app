@@ -19,7 +19,7 @@ const pkgs = {
     next: '4.0.2',
   },
   'vue-i18n': {
-    next: '9.1.7',
+    next: '9.1.9',
   },
   vite: {
     latest: '2.6.14',

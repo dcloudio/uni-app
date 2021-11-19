@@ -1,6 +1,7 @@
 import { extend } from '@vue/shared'
 import { ComponentJson, PageWindowOptions, UsingComponents } from './types'
-import { removeExt, relativeFile, normalizeNodeModules } from '../../utils'
+import { removeExt, normalizeNodeModules } from '../../utils'
+import { relativeFile } from '../../resolve'
 
 let appJsonCache: Record<string, any> = {}
 const jsonFilesCache = new Map<string, string>()

@@ -16,6 +16,7 @@ export * from './preprocess'
 export * from './postcss'
 export * from './filter'
 export * from './esbuild'
+export * from './resolve'
 
 export { M } from './messages'
 
