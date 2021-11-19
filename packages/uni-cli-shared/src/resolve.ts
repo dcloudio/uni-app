@@ -6,6 +6,7 @@ import resolve from 'resolve'
 import { once } from '@dcloudio/uni-shared'
 
 import { normalizePath } from './utils'
+import { isInHBuilderX } from './hbx/env'
 
 const DEFAULT_EXTENSIONS = ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
 function resolveWithSymlinks(id: string, basedir: string): string {
@@ -16,6 +17,7 @@ function resolveWithSymlinks(id: string, basedir: string): string {
     preserveSymlinks: true,
   })
 }
+
 export function relativeFile(from: string, to: string) {
   const relativePath = normalizePath(path.relative(path.dirname(from), to))
   return relativePath.startsWith('.') ? relativePath : './' + relativePath
@@ -53,23 +55,25 @@ function initPaths() {
   if (cliContext) {
     const pathSet = new Set<string>()
     pathSet.add(path.join(cliContext, 'node_modules'))
-    ;[`@dcloudio/uni-` + process.env.UNI_PLATFORM, ...ownerModules].forEach(
-      (ownerModule) => {
-        let pkgPath: string = ''
-        try {
-          pkgPath = require.resolve(ownerModule + '/package.json', {
-            paths: [cliContext],
-          })
-        } catch (e) {}
-        if (pkgPath) {
-          resolveNodeModulePath(path.dirname(pkgPath)).forEach(
-            (nodeModulePath) => {
-              pathSet.add(nodeModulePath)
-            }
-          )
+    if (!isInHBuilderX()) {
+      ;[`@dcloudio/uni-` + process.env.UNI_PLATFORM, ...ownerModules].forEach(
+        (ownerModule) => {
+          let pkgPath: string = ''
+          try {
+            pkgPath = require.resolve(ownerModule + '/package.json', {
+              paths: [cliContext],
+            })
+          } catch (e) {}
+          if (pkgPath) {
+            resolveNodeModulePath(path.dirname(pkgPath)).forEach(
+              (nodeModulePath) => {
+                pathSet.add(nodeModulePath)
+              }
+            )
+          }
         }
-      }
-    )
+      )
+    }
     paths.push(...pathSet)
     debug('uni-paths')(paths)
   }
@@ -89,13 +93,20 @@ export function resolveBuiltIn(path: string) {
 let componentsLibPath: string = ''
 export function resolveComponentsLibPath() {
   if (!componentsLibPath) {
-    componentsLibPath = path.join(
-      resolveWithSymlinks(
-        '@dcloudio/uni-components/package.json',
-        process.env.UNI_INPUT_DIR
-      ),
-      '../lib'
-    )
+    if (isInHBuilderX()) {
+      componentsLibPath = path.join(
+        resolveBuiltIn('@dcloudio/uni-components/package.json'),
+        '../lib'
+      )
+    } else {
+      componentsLibPath = path.join(
+        resolveWithSymlinks(
+          '@dcloudio/uni-components/package.json',
+          process.env.UNI_INPUT_DIR
+        ),
+        '../lib'
+      )
+    }
   }
   return componentsLibPath
 }

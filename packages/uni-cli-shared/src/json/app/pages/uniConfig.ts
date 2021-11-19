@@ -6,6 +6,7 @@ import {
   getNVueFlexDirection,
   getNVueStyleCompiler,
 } from '../manifest'
+import { getSplashscreen } from '../manifest/splashscreen'
 
 interface AppUniConfig {
   pages: string[]
@@ -39,6 +40,7 @@ export function normalizeAppUniConfig(
   pagesJson: UniApp.PagesJson,
   manifestJson: Record<string, any>
 ) {
+  const { autoclose, alwaysShowBeforeRender } = getSplashscreen(manifestJson)
   const config: AppUniConfig = {
     pages: [],
     globalStyle: pagesJson.globalStyle,
@@ -51,11 +53,8 @@ export function normalizeAppUniConfig(
       manifestJson['app-plus']?.renderer === 'native' ? 'native' : 'auto',
     appname: manifestJson.name || '',
     splashscreen: {
-      alwaysShowBeforeRender: process.env
-        .UNI_SPLASHSCREEN_ALWAYSSHOWBEFORERENDER
-        ? true
-        : false,
-      autoclose: process.env.UNI_SPLASHSCREEN_AUTOCLOSE ? true : false,
+      alwaysShowBeforeRender,
+      autoclose,
     },
     compilerVersion: process.env.UNI_COMPILER_VERSION,
     entryPagePath: pagesJson.pages[0].path,

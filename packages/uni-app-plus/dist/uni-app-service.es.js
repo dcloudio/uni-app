@@ -12101,7 +12101,7 @@ var serviceContext = (function (vue) {
   }
 
   function initSubscribeHandlers() {
-      const { subscribe, subscribeHandler } = UniServiceJSBridge;
+      const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
       onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
           subscribeHandler(type, data, pageId);
       });
@@ -12118,6 +12118,11 @@ var serviceContext = (function (vue) {
           subscribe(WEBVIEW_INSERTED, onWebviewInserted);
           subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
           subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod);
+          const routeOptions = getRouteOptions('/' + __uniConfig.entryPagePath);
+          if (routeOptions && !routeOptions.meta.isNVue) {
+              // 防止首页 webview 初始化过早， service 还未开始监听
+              publishHandler(ON_WEBVIEW_READY, {}, 1);
+          }
       }
   }
 

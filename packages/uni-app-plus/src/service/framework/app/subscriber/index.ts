@@ -1,4 +1,4 @@
-import { subscribeServiceMethod } from '@dcloudio/uni-core'
+import { getRouteOptions, subscribeServiceMethod } from '@dcloudio/uni-core'
 import {
   ON_WXS_INVOKE_CALL_METHOD,
   WEB_INVOKE_APPSERVICE,
@@ -22,7 +22,7 @@ import {
 import { onWxsInvokeCallMethod } from './wxs'
 
 export function initSubscribeHandlers() {
-  const { subscribe, subscribeHandler } = UniServiceJSBridge
+  const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge
 
   onPlusMessage<{ type: string; data: Record<string, any>; pageId: number }>(
     'subscribeHandler',
@@ -48,5 +48,11 @@ export function initSubscribeHandlers() {
     subscribe(WEBVIEW_INSERTED, onWebviewInserted)
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved)
     subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
+
+    const routeOptions = getRouteOptions('/' + __uniConfig.entryPagePath)
+    if (routeOptions && !routeOptions.meta.isNVue) {
+      // 防止首页 webview 初始化过早， service 还未开始监听
+      publishHandler(ON_WEBVIEW_READY, {}, 1)
+    }
   }
 }

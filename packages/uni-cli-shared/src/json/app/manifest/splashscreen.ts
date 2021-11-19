@@ -26,17 +26,22 @@ export function initSplashscreen(
     }
     manifestJson.plus.splashscreen.autoclose = true
     manifestJson.plus.splashscreen.delay = 0
-    // 简单起见，直接设置环境变量，这样生成uniConfig时，直接读取判断
-    process.env.UNI_SPLASHSCREEN_ALWAYSSHOWBEFORERENDER = 'true'
   } else {
     // 不启用白屏检测
     delete manifestJson.plus.splashscreen.target
     if (manifestJson.plus.splashscreen.autoclose) {
       // 启用 uni-app 框架关闭 splash
       manifestJson.plus.splashscreen.autoclose = false // 原 5+ autoclose 改为 false
-      // 简单起见，直接设置环境变量，这样生成uniConfig时，直接读取判断
-      process.env.UNI_SPLASHSCREEN_AUTOCLOSE = 'true'
     }
   }
   delete manifestJson.plus.splashscreen.alwaysShowBeforeRender
+}
+
+export function getSplashscreen(manifestJson: Record<string, any>) {
+  const splashscreenOptions = manifestJson['app-plus']?.splashscreen
+  return {
+    autoclose: splashscreenOptions.autoclose !== false,
+    alwaysShowBeforeRender:
+      splashscreenOptions.alwaysShowBeforeRender !== false,
+  }
 }
