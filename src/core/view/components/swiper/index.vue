@@ -487,6 +487,7 @@ export default {
       }
     },
     _handleTrackStart () {
+      if (!this.items.length) return
       this._cancelSchedule()
       this._contentTrackViewport = this._viewportPosition
       this._contentTrackSpeed = 0
@@ -494,6 +495,7 @@ export default {
       this._cancelViewportAnimation()
     },
     _handleTrackMove (data) {
+      if (!this.items.length) return
       var self = this
       var contentTrackT = this._contentTrackT
       this._contentTrackT = Date.now()
@@ -528,6 +530,7 @@ export default {
       }
     },
     _handleTrackEnd (isCancel) {
+      if (!this.items.length) return
       this.userTracking = false
       var t = this._contentTrackSpeed / Math.abs(this._contentTrackSpeed)
       var n = 0

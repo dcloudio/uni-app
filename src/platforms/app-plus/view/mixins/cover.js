@@ -8,7 +8,8 @@ export default {
   name: 'Cover',
   data () {
     return {
-      style: {}
+      style: {},
+      parentPosition: {}
     }
   },
   computed: {
@@ -17,12 +18,12 @@ export default {
       for (const key in this.position) {
         let val = this.position[key]
         const valNumber = parseFloat(val)
-        const parentValNumber = parseFloat(this._nativeParent.position[key])
+        const parentValNumber = parseFloat(this.parentPosition[key])
         if (key === 'top' || key === 'left') {
           val = Math.max(valNumber, parentValNumber) + 'px'
         } else if (key === 'width' || key === 'height') {
           const base = key === 'width' ? 'left' : 'top'
-          const parentStart = parseFloat(this._nativeParent.position[base])
+          const parentStart = parseFloat(this.parentPosition[base])
           const viewStart = parseFloat(this.position[base])
           const diff1 = Math.max(parentStart - viewStart, 0)
           const diff2 = Math.max((viewStart + valNumber) - (parentStart + parentValNumber), 0)
@@ -91,16 +92,10 @@ export default {
     this._nativeParent = $parent
   },
   mounted () {
-    this._updateStyle()
-    const $nativeParent = this._nativeParent
-    if ($nativeParent.isNative) {
-      if ($nativeParent._isMounted) {
-        this._onCanInsert()
-      } else {
-        $nativeParent.onCanInsertCallbacks.push(() => {
-          this._onCanInsert()
-        })
-      }
+    this._onParentReady((parentPosition) => {
+      this.parentPosition = this._nativeParent.position || parentPosition
+      this._updateStyle()
+      this._onCanInsert()
       this.$watch('hidden', (val) => {
         this.cover && this.cover[val ? 'hide' : 'show']()
       })
@@ -115,7 +110,7 @@ export default {
         }
       }, { deep: true })
       this.$on('uni-view-update', this._requestStyleUpdate)
-    }
+    })
   },
   beforeDestroy () {
     if (this._nativeParent.isNative) {
@@ -139,7 +134,7 @@ export default {
       for (const key in this.position) {
         let val = this.position[key]
         if (key === 'top' || key === 'left') {
-          val = Math.min((parseFloat(val) - parseFloat(this._nativeParent.position[key])), 0) + 'px'
+          val = Math.min((parseFloat(val) - parseFloat(this.parentPosition[key])), 0) + 'px'
         }
         position[key] = val
       }

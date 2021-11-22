@@ -38,10 +38,9 @@ function processStaticClass (classArrayExpression, staticClassPath, state) {
     }
     staticClassPath.remove()
   }
-  if (
-    state.options.platform.name === 'mp-toutiao' ||
-        state.options.platform.name === 'mp-alipay'
-  ) {
+
+  const transPlatform = ['mp-toutiao', 'mp-alipay', 'mp-lark']
+  if (transPlatform.includes(state.options.platform.name)) {
     // classArrayExpression => binaryExpression
     return processClassArrayExpressionElements(classArrayExpression)
   }

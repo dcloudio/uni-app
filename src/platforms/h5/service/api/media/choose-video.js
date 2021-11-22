@@ -1,5 +1,7 @@
 import { fileToUrl, revokeObjectURL } from 'uni-platform/helpers/file'
+import { t } from 'uni-core/helpers/i18n'
 import _createInput from './create_input'
+import { interact } from 'uni-mixins'
 
 const {
   invokeCallbackHandler: invoke
@@ -67,5 +69,11 @@ export function chooseVideo ({
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
 
-  videoInput.click()
+  if (interact.getStatus()) {
+    videoInput.click()
+  } else {
+    invoke(callbackId, {
+      errMsg: `chooseVideo:fail ${t('uni.chooseFile.notUserActivation')}`
+    })
+  }
 }

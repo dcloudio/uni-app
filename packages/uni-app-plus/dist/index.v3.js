@@ -234,6 +234,7 @@ var serviceContext = (function () {
     'preLogin',
     'closeAuthView',
     'getCheckBoxState',
+    'getUniverifyManager',
     'share',
     'shareWithSystem',
     'showShareMenu',
@@ -1534,7 +1535,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Cancel",
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Camera",
-  	"uni.previewImage.cancel": "Cancel",
+  	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
   	"uni.previewImage.button.save": "Save Image",
   	"uni.previewImage.save.success": "Saved successfully",
   	"uni.previewImage.save.fail": "Save failed",
@@ -1569,6 +1570,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Cancelar",
   	"uni.chooseVideo.sourceType.album": "Álbum",
   	"uni.chooseVideo.sourceType.camera": "Cámara",
+  	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
   	"uni.previewImage.cancel": "Cancelar",
   	"uni.previewImage.button.save": "Guardar imagen",
   	"uni.previewImage.save.success": "Guardado exitosamente",
@@ -1604,6 +1606,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Annuler",
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Caméra",
+  	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
   	"uni.previewImage.cancel": "Annuler",
   	"uni.previewImage.button.save": "Guardar imagen",
   	"uni.previewImage.save.success": "Enregistré avec succès",
@@ -1639,6 +1642,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "从相册选择",
   	"uni.chooseVideo.sourceType.camera": "拍摄",
+  	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在用户激活时显示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存图像",
   	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1674,6 +1678,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "從相冊選擇",
   	"uni.chooseVideo.sourceType.camera": "拍攝",
+  	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在用戶激活時顯示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存圖像",
   	"uni.previewImage.save.success": "保存圖像到相冊成功",
@@ -1830,11 +1835,20 @@ var serviceContext = (function () {
   }
 
   const setClipboardData = {
-    beforeSuccess () {
+    data: {
+      type: String,
+      required: true
+    },
+    showToast: {
+      type: Boolean,
+      default: true
+    },
+    beforeSuccess (res, params) {
+      if (!params.showToast) return
       const title = t('uni.setClipboardData.success');
       if (title) {
         uni.showToast({
-          title: t('uni.setClipboardData.success'),
+          title,
           icon: 'success',
           mask: false,
           style: {
@@ -3604,7 +3618,7 @@ var serviceContext = (function () {
       const errMsg = res.errMsg;
 
       if (errMsg.indexOf(apiName + ':ok') === 0) {
-        isFn(beforeSuccess) && beforeSuccess(res);
+        isFn(beforeSuccess) && beforeSuccess(res, params);
 
         hasSuccess && success(res);
 
@@ -6293,7 +6307,7 @@ var serviceContext = (function () {
   let deviceId;
 
   function deviceId$1 () {
-    deviceId = deviceId || plus.runtime.getDCloudId();
+    deviceId = deviceId || plus.device.uuid;
     return deviceId
   }
 
@@ -6710,7 +6724,8 @@ var serviceContext = (function () {
   function getLocation$1 ({
     type = 'wgs84',
     geocode = false,
-    altitude = false
+    altitude = false,
+    highAccuracyExpireTime
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
     plus.geolocation.getCurrentPosition(
@@ -6726,7 +6741,8 @@ var serviceContext = (function () {
         errorCallback(e);
       }, {
         geocode: geocode,
-        enableHighAccuracy: altitude
+        enableHighAccuracy: altitude,
+        timeout: highAccuracyExpireTime
       }
     );
   }
@@ -7876,6 +7892,8 @@ var serviceContext = (function () {
     }
   }
 
+  let univerifyManager;
+
   function getService (provider) {
     return new Promise((resolve, reject) => {
       plus.oauth.getServices(services => {
@@ -7888,20 +7906,21 @@ var serviceContext = (function () {
   /**
    * 微信登录
    */
-  function login (params, callbackId) {
+  function login (params, callbackId, plus = true) {
     const provider = params.provider || 'weixin';
-    const errorCallback = warpPlusErrorCallback(callbackId, 'login');
+    const errorCallback = warpErrorCallback(callbackId, 'login', plus);
     const authOptions = provider === 'apple'
       ? { scope: 'email' }
       : params.univerifyStyle
         ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
         : {};
+    const _invoke = plus ? invoke$1 : callback.invoke;
 
     getService(provider).then(service => {
       function login () {
         if (params.onlyAuthorize && provider === 'weixin') {
           service.authorize(({ code }) => {
-            invoke$1(callbackId, {
+            _invoke(callbackId, {
               code,
               authResult: '',
               errMsg: 'login:ok'
@@ -7911,7 +7930,7 @@ var serviceContext = (function () {
         }
         service.login(res => {
           const authResult = res.target.authResult;
-          invoke$1(callbackId, {
+          _invoke(callbackId, {
             code: authResult.code,
             authResult: authResult,
             errMsg: 'login:ok'
@@ -8006,9 +8025,9 @@ var serviceContext = (function () {
     }
   }
 
-  function preLogin$1 (params, callbackId) {
-    const successCallback = warpPlusSuccessCallback(callbackId, 'preLogin');
-    const errorCallback = warpPlusErrorCallback(callbackId, 'preLogin');
+  function preLogin$1 (params, callbackId, plus) {
+    const successCallback = warpSuccessCallback(callbackId, 'preLogin', plus);
+    const errorCallback = warpErrorCallback(callbackId, 'preLogin', plus);
     getService(params.provider).then(service => service.preLogin(successCallback, errorCallback)).catch(errorCallback);
   }
 
@@ -8016,9 +8035,9 @@ var serviceContext = (function () {
     return getService('univerify').then(service => service.closeAuthView())
   }
 
-  function getCheckBoxState (params, callbackId) {
-    const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState');
-    const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState');
+  function getCheckBoxState (params, callbackId, plus) {
+    const successCallback = warpSuccessCallback(callbackId, 'getCheckBoxState', plus);
+    const errorCallback = warpErrorCallback(callbackId, 'getCheckBoxState', plus);
     try {
       getService('univerify').then(service => {
         const state = service.getCheckBoxState();
@@ -8033,24 +8052,94 @@ var serviceContext = (function () {
    * 一键登录自定义登陆按钮点击处理
    */
   function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
-    if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
-      Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
-      univerifyStyle.buttons.list.length > 0
-    ) {
+    if (isPlainObject(univerifyStyle) && isPlainObject(univerifyStyle.buttons) && toRawType(univerifyStyle.buttons.list) === 'Array') {
       univerifyStyle.buttons.list.forEach((button, index) => {
         univerifyStyle.buttons.list[index].onclick = function () {
-          closeAuthView().then(() => {
-            errorCallback({
-              code: '30008',
-              message: '用户点击了自定义按钮',
-              index,
-              provider: button.provider
+          const res = {
+            code: '30008',
+            message: '用户点击了自定义按钮',
+            index,
+            provider: button.provider
+          };
+          isPlainObject(univerifyManager)
+            ? univerifyManager._triggerUniverifyButtonsClick(res)
+            : closeAuthView().then(() => {
+              errorCallback(res);
             });
-          });
         };
       });
     }
     return univerifyStyle
+  }
+
+  class UniverifyManager {
+    constructor () {
+      this.provider = 'univerify';
+      this.eventName = 'api.univerifyButtonsClick';
+    }
+
+    close () {
+      closeAuthView();
+    }
+
+    login (options) {
+      this._warp((data, callbackId) => login(data, callbackId, false), this._getOptions(options));
+    }
+
+    getCheckBoxState (options) {
+      this._warp((_, callbackId) => getCheckBoxState(_, callbackId, false), options);
+    }
+
+    preLogin (options) {
+      this._warp((data, callbackId) => preLogin$1(data, callbackId, false), this._getOptions(options));
+    }
+
+    onButtonsClick (callback) {
+      UniServiceJSBridge.on(this.eventName, callback);
+    }
+
+    offButtonsClick (callback) {
+      UniServiceJSBridge.off(this.eventName, callback);
+    }
+
+    _triggerUniverifyButtonsClick (res) {
+      UniServiceJSBridge.emit(this.eventName, res);
+    }
+
+    _warp (fn, options) {
+      return callback.warp(fn)(this._getOptions(options))
+    }
+
+    _getOptions (options = {}) {
+      return Object.assign({}, options, { provider: this.provider })
+    }
+  }
+
+  function getUniverifyManager () {
+    return univerifyManager || (univerifyManager = new UniverifyManager())
+  }
+
+  function warpSuccessCallback (callbackId, name, plus = true) {
+    return plus
+      ? warpPlusSuccessCallback(callbackId, name)
+      : (options) => {
+        callback.invoke(callbackId, Object.assign({}, options, {
+          errMsg: `${name}:ok`
+        }));
+      }
+  }
+
+  function warpErrorCallback (callbackId, name, plus = true) {
+    return plus
+      ? warpPlusErrorCallback(callbackId, name)
+      : (error) => {
+        const { code = 0, message: errorMessage } = error;
+        callback.invoke(callbackId, {
+          errMsg: `${name}:fail ${errorMessage || ''}`,
+          errCode: code,
+          code
+        });
+      }
   }
 
   function requestPayment (params, callbackId) {
@@ -10630,7 +10719,6 @@ var serviceContext = (function () {
     editable = false,
     placeholderText	= ''
   } = {}, callbackId) {
-    // TODO 在 editable 为 true 时，content 应该是输入框中可修改内容。后续找客户端商量。
     const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
     const tip = editable ? placeholderText : buttons;
 
@@ -11675,6 +11763,7 @@ var serviceContext = (function () {
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
     getCheckBoxState: getCheckBoxState,
+    getUniverifyManager: getUniverifyManager,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
     unsubscribePush: unsubscribePush,

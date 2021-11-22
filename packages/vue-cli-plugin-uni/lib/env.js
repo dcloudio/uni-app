@@ -49,6 +49,9 @@ process.env.UNI_USING_V3_SCOPED = true
 
 process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
 
+// 导出到小程序插件
+process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.plugins || {}).map(pluginName => platformOptions.plugins[pluginName].export))
+
 const isH5 = !process.env.UNI_SUB_PLATFORM && process.env.UNI_PLATFORM === 'h5'
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -104,11 +107,13 @@ if (process.env.UNI_CLOUD_SPACES) {
 }
 
 // 初始化环境变量
-const defaultOutputDir = '../../../../dist/' +
+process.env.UNI_CLI_CONTEXT = require('@dcloudio/uni-cli-shared/lib/util').getCLIContext()
+
+const defaultOutputDir = './dist/' +
   (process.env.NODE_ENV === 'production' ? 'build' : 'dev') + '/' +
   (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM)
 
-process.env.UNI_OUTPUT_DEFAULT_DIR = path.resolve(__dirname, defaultOutputDir)
+process.env.UNI_OUTPUT_DEFAULT_DIR = path.resolve(process.env.UNI_CLI_CONTEXT, defaultOutputDir)
 if (process.env.UNI_OUTPUT_DIR && process.env.UNI_OUTPUT_DIR.indexOf('./') === 0) {
   process.env.UNI_OUTPUT_DIR = path.resolve(process.cwd(), process.env.UNI_OUTPUT_DIR)
 }
@@ -120,8 +125,6 @@ process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || process.env.UNI_OUTPU
 if (process.env.UNI_PLATFORM === 'app-plus') {
   process.env.UNI_OUTPUT_TMP_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, '../.tmp/app-plus')
 }
-
-process.env.UNI_CLI_CONTEXT = path.resolve(__dirname, '../../../../')
 
 process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 
@@ -410,7 +413,7 @@ if (process.env.UNI_PLATFORM === 'h5') {
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/h5-vue-style-loader')
 }
 
-if (process.env.UNI_PLATFORM === 'mp-toutiao') {
+if (process.env.UNI_PLATFORM === 'mp-toutiao' || process.env.UNI_PLATFORM === 'mp-lark') {
   // !important 始终带有一个空格
   moduleAlias.addAlias(
     'postcss-normalize-whitespace',

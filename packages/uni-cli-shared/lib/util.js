@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 const hash = require('hash-sum')
 const crypto = require('crypto')
 
@@ -13,6 +14,24 @@ try {
 
 const isInHBuilderX = !!aboutPkg
 const isInHBuilderXAlpha = !!(isInHBuilderX && aboutPkg.alpha)
+
+function getCLIContext () {
+  var context = path.resolve(__dirname, '../../../../')
+  // const isInHBuilderX = fs.existsSync(path.resolve(context, 'bin/uniapp-cli.js'))
+  if (isInHBuilderX) {
+    return context
+  }
+  const pnpmFind = __dirname.match(/.+?[/\\].pnpm[/\\]/)
+  if (pnpmFind) {
+    const pnpm = pnpmFind[0]
+    context = path.resolve(pnpm, '../../')
+  }
+  const isInCLI = fs.existsSync(path.resolve(context, './src'))
+  if (isInCLI) {
+    return context
+  }
+  return process.cwd()
+}
 
 function removeExt (str, ext) {
   if (ext) {
@@ -105,6 +124,7 @@ const _hasOwnProperty = Object.prototype.hasOwnProperty
 module.exports = {
   isInHBuilderX,
   isInHBuilderXAlpha,
+  getCLIContext,
   normalizeNodeModules,
   md5,
   hasOwn (obj, key) {

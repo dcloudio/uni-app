@@ -159,29 +159,34 @@ export default {
         }
         let label
         if (labelOpt.content) {
+          const labelStyle = {
+            borderColor: labelOpt.borderColor,
+            borderWidth: (Number(labelOpt.borderWidth) || 0) + 'px',
+            padding: (Number(labelOpt.padding) || 0) + 'px',
+            borderRadius: (Number(labelOpt.borderRadius) || 0) + 'px',
+            backgroundColor: labelOpt.bgColor,
+            color: labelOpt.color,
+            fontSize: (labelOpt.fontSize || 14) + 'px',
+            lineHeight: (labelOpt.fontSize || 14) + 'px',
+            marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + 'px',
+            marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + 'px'
+          }
           if ('Label' in maps) {
             label = new maps.Label({
               position: position,
               map: map,
               clickable: false,
               content: labelOpt.content,
-              style: {
-                border: 'none',
-                padding: '8px',
-                background: 'none',
-                color: labelOpt.color,
-                fontSize: (labelOpt.fontSize || 14) + 'px',
-                lineHeight: (labelOpt.fontSize || 14) + 'px',
-                marginLeft: labelOpt.x,
-                marginTop: labelOpt.y
-              }
+              style: labelStyle
             })
             marker.label = label
           } else if ('setLabel' in marker) {
+            const className = this.updateMarkerLabelStyle(this.id, labelStyle)
             marker.setLabel({
               text: labelOpt.content,
-              color: labelOpt.color,
-              fontSize: (labelOpt.fontSize || 14) + 'px'
+              color: labelStyle.color,
+              fontSize: labelStyle.fontSize,
+              className
             })
           }
         }
@@ -238,10 +243,33 @@ export default {
         console.error('Marker.iconPath is required.')
       }
     },
+    updateMarkerLabelStyle (id, style) {
+      const className = 'uni-map-marker-label-' + id
+      let styleEl = document.getElementById(className)
+      if (!styleEl) {
+        styleEl = document.createElement('style')
+        styleEl.id = className
+        document.head.appendChild(styleEl)
+        this.$once('hook:destroyed', () => {
+          styleEl.remove()
+        })
+      }
+      const newStyle = Object.assign({}, style, {
+        position: 'absolute',
+        top: '70px',
+        borderStyle: 'solid'
+      })
+      const div = document.createElement('div')
+      Object.keys(newStyle).forEach(key => {
+        div.style[key] = newStyle[key] || ''
+      })
+      styleEl.innerText = `.${className}{${div.getAttribute('style')}}`
+      return className
+    },
     removeMarker () {
       const marker = this._marker
       if (marker) {
-        if (marker.label) {
+        if (marker.label && 'setMap' in marker.label) {
           marker.label.setMap(null)
         }
         if (marker.callout) {

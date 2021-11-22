@@ -725,11 +725,6 @@ const customize = cached((str) => {
 });
 
 function initTriggerEvent (mpInstance) {
-  {
-    if (!wx.canIUse || !wx.canIUse('nextTick')) {
-      return
-    }
-  }
   const oldTriggerEvent = mpInstance.triggerEvent;
   mpInstance.triggerEvent = function (event, ...args) {
     return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
@@ -1320,7 +1315,7 @@ var en = {
 	"uni.chooseVideo.cancel": "Cancel",
 	"uni.chooseVideo.sourceType.album": "Album",
 	"uni.chooseVideo.sourceType.camera": "Camera",
-	"uni.previewImage.cancel": "Cancel",
+	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
 	"uni.previewImage.button.save": "Save Image",
 	"uni.previewImage.save.success": "Saved successfully",
 	"uni.previewImage.save.fail": "Save failed",
@@ -1355,6 +1350,7 @@ var es = {
 	"uni.chooseVideo.cancel": "Cancelar",
 	"uni.chooseVideo.sourceType.album": "Álbum",
 	"uni.chooseVideo.sourceType.camera": "Cámara",
+	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
 	"uni.previewImage.cancel": "Cancelar",
 	"uni.previewImage.button.save": "Guardar imagen",
 	"uni.previewImage.save.success": "Guardado exitosamente",
@@ -1390,6 +1386,7 @@ var fr = {
 	"uni.chooseVideo.cancel": "Annuler",
 	"uni.chooseVideo.sourceType.album": "Album",
 	"uni.chooseVideo.sourceType.camera": "Caméra",
+	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
 	"uni.previewImage.cancel": "Annuler",
 	"uni.previewImage.button.save": "Guardar imagen",
 	"uni.previewImage.save.success": "Enregistré avec succès",
@@ -1425,6 +1422,7 @@ var zhHans = {
 	"uni.chooseVideo.cancel": "取消",
 	"uni.chooseVideo.sourceType.album": "从相册选择",
 	"uni.chooseVideo.sourceType.camera": "拍摄",
+	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在用户激活时显示",
 	"uni.previewImage.cancel": "取消",
 	"uni.previewImage.button.save": "保存图像",
 	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1460,6 +1458,7 @@ var zhHant = {
 	"uni.chooseVideo.cancel": "取消",
 	"uni.chooseVideo.sourceType.album": "從相冊選擇",
 	"uni.chooseVideo.sourceType.camera": "拍攝",
+	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在用戶激活時顯示",
 	"uni.previewImage.cancel": "取消",
 	"uni.previewImage.button.save": "保存圖像",
 	"uni.previewImage.save.success": "保存圖像到相冊成功",

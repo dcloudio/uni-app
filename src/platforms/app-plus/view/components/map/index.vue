@@ -189,34 +189,36 @@ export default {
     }
   },
   mounted () {
-    const mapStyle = Object.assign({}, this.attrs, this.position)
-    if (this.latitude && this.longitude) {
-      mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
-    }
-    const map = this.map = plus.maps.create(this.$page.id + '-map-' + (this.id || Date.now()), mapStyle)
-    map.__markers__ = []
-    map.__markers_map__ = {}
-    map.__lines__ = []
-    map.__circles__ = []
-    map.setZoom(parseInt(this.scale))
-    plus.webview.currentWebview().append(map)
-    if (this.hidden) {
-      map.hide()
-    }
-    this.$watch('position', () => {
-      this.map && this.map.setStyles(this.position)
-    }, {
-      deep: true
+    this._onParentReady(() => {
+      const mapStyle = Object.assign({}, this.attrs, this.position)
+      if (this.latitude && this.longitude) {
+        mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
+      }
+      const map = this.map = plus.maps.create(this.$page.id + '-map-' + (this.id || Date.now()), mapStyle)
+      map.__markers__ = []
+      map.__markers_map__ = {}
+      map.__lines__ = []
+      map.__circles__ = []
+      map.setZoom(parseInt(this.scale))
+      plus.webview.currentWebview().append(map)
+      if (this.hidden) {
+        map.hide()
+      }
+      this.$watch('position', () => {
+        this.map && this.map.setStyles(this.position)
+      }, {
+        deep: true
+      })
+      map.onclick = (e) => {
+        this.$trigger('click', {}, e)
+      }
+      map.onstatuschanged = (e) => {
+        this.$trigger('regionchange', {}, {})
+      }
+      this._addMarkers(this.markers)
+      this._addMapLines(this.polyline)
+      this._addMapCircles(this.circles)
     })
-    map.onclick = (e) => {
-      this.$trigger('click', {}, e)
-    }
-    map.onstatuschanged = (e) => {
-      this.$trigger('regionchange', {}, {})
-    }
-    this._addMarkers(this.markers)
-    this._addMapLines(this.polyline)
-    this._addMapCircles(this.circles)
   },
   beforeDestroy () {
     this.map && this.map.close()

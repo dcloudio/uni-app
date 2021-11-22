@@ -15,7 +15,7 @@ function resolve (dir) {
 }
 
 function resolveModule (dir) {
-  return path.resolve(__dirname, '../../..', dir)
+  return path.resolve(process.env.UNI_CLI_CONTEXT, './node_modules', dir)
 }
 
 module.exports = function configureWebpack (platformOptions, manifestPlatformOptions, vueOptions, api) {
@@ -184,8 +184,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       platformWebpackConfig = platformWebpackConfig(webpackConfig, vueOptions, api)
     }
     // 移除 node_modules 目录，避免受路径上的 node_modules 影响
-    webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !==
-      'node_modules')
+    if (require('@dcloudio/uni-cli-shared/lib/util').isInHBuilderX) {
+      webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !== 'node_modules')
+    }
 
     const plugins = []
 
@@ -298,6 +299,17 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }
     } catch (e) {}
 
+    const resolveLoaderAlias = {}
+    const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']
+    modules.forEach(m => {
+      const { dependencies } = require(`${m}/package.json`)
+      Object.keys(dependencies).forEach(key => {
+        if (/-loader$/.test(key)) {
+          resolveLoaderAlias[key] = require.resolve(key)
+        }
+      })
+    })
+
     return merge({
       devtool: false,
       resolve: {
@@ -324,6 +336,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       module: {
         noParse: /^(vue|vue-router|vuex|vuex-router-sync)$/,
         rules
+      },
+      resolveLoader: {
+        alias: resolveLoaderAlias
       },
       plugins,
       performance: {

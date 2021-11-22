@@ -794,11 +794,6 @@ const customize = cached((str) => {
 });
 
 function initTriggerEvent (mpInstance) {
-  {
-    if (!wx.canIUse || !wx.canIUse('nextTick')) {
-      return
-    }
-  }
   const oldTriggerEvent = mpInstance.triggerEvent;
   mpInstance.triggerEvent = function (event, ...args) {
     return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
@@ -1470,7 +1465,7 @@ function initScopedSlotsParams () {
     const has = center[vueId];
     if (!has) {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -1484,7 +1479,7 @@ function initScopedSlotsParams () {
       return key ? object[key] : object
     } else {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }

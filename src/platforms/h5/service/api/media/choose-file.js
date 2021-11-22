@@ -1,5 +1,7 @@
 import { fileToUrl } from 'uni-platform/helpers/file'
+import { t } from 'uni-core/helpers/i18n'
 import _createInput from './create_input'
+import { interact } from 'uni-mixins'
 
 const {
   invokeCallbackHandler: invoke
@@ -55,5 +57,11 @@ export function chooseFile ({
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
 
-  fileInput.click()
+  if (interact.getStatus()) {
+    fileInput.click()
+  } else {
+    invoke(callbackId, {
+      errMsg: `chooseFile:fail ${t('uni.chooseFile.notUserActivation')}`
+    })
+  }
 }

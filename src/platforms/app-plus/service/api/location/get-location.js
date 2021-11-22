@@ -52,7 +52,8 @@ function getLocationSuccess (type, position, callbackId) {
 export function getLocation ({
   type = 'wgs84',
   geocode = false,
-  altitude = false
+  altitude = false,
+  highAccuracyExpireTime
 } = {}, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation')
   plus.geolocation.getCurrentPosition(
@@ -68,7 +69,8 @@ export function getLocation ({
       errorCallback(e)
     }, {
       geocode: geocode,
-      enableHighAccuracy: altitude
+      enableHighAccuracy: altitude,
+      timeout: highAccuracyExpireTime
     }
   )
 }

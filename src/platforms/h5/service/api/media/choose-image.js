@@ -1,5 +1,7 @@
 import { fileToUrl } from 'uni-platform/helpers/file'
+import { t } from 'uni-core/helpers/i18n'
 import _createInput from './create_input'
+import { interact } from 'uni-mixins'
 
 const {
   invokeCallbackHandler: invoke
@@ -27,7 +29,6 @@ export function chooseImage ({
     type: 'image'
   })
   document.body.appendChild(imageInput)
-
   imageInput.addEventListener('change', function (event) {
     const tempFiles = []
     const fileCount = event.target.files.length
@@ -54,5 +55,11 @@ export function chooseImage ({
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
 
-  imageInput.click()
+  if (interact.getStatus()) {
+    imageInput.click()
+  } else {
+    invoke(callbackId, {
+      errMsg: `chooseImage:fail ${t('uni.chooseFile.notUserActivation')}`
+    })
+  }
 }

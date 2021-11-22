@@ -61,7 +61,7 @@ function initScopedSlotsParams () {
     const has = center[vueId]
     if (!has) {
       parents[vueId] = this
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId]
       })
     }
@@ -75,7 +75,7 @@ function initScopedSlotsParams () {
       return key ? object[key] : object
     } else {
       parents[vueId] = this
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId]
       })
     }
@@ -111,7 +111,7 @@ export default function parseBaseApp (vm, {
 }) {
   initEventChannel()
   if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ ===
-    'mp-kuaishou' || __PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu') {
+    'mp-kuaishou' || __PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-lark') {
     initScopedSlotsParams()
   }
   if (vm.$options.store) {
