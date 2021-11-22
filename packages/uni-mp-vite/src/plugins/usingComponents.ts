@@ -8,8 +8,9 @@ import {
   normalizeMiniProgramFilename,
   addMiniProgramUsingComponents,
   removeExt,
+  isPageFile,
 } from '@dcloudio/uni-cli-shared'
-import { virtualComponentPath } from './entry'
+import { virtualComponentPath, virtualPagePath } from './entry'
 
 export function uniUsingComponentsPlugin(
   options: Partial<SFCScriptCompileOptions> = {}
@@ -50,5 +51,13 @@ export function uniUsingComponentsPlugin(
 }
 
 export function dynamicImport(name: string, value: string) {
+  // 开发者可能将页面作为组件来引用
+  const relativePath = normalizeMiniProgramFilename(
+    value,
+    process.env.UNI_INPUT_DIR
+  )
+  if (isPageFile(relativePath)) {
+    return `const ${name} = ()=>import('${virtualPagePath(value)}')`
+  }
   return `const ${name} = ()=>import('${virtualComponentPath(value)}')`
 }
