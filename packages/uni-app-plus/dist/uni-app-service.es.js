@@ -2686,9 +2686,9 @@ var serviceContext = (function (vue) {
   }
   function parseRedirectInfo() {
       const weexPlus = weex.requireModule('plus');
-      const { path, query, extraData, userAction } = weexPlus.getRedirectInfo() || {};
+      const { path, query, extraData, userAction, fromAppid } = weexPlus.getRedirectInfo() || {};
       const referrerInfo = {
-          appId: '',
+          appId: fromAppid,
           extraData: {},
       };
       if (extraData) {

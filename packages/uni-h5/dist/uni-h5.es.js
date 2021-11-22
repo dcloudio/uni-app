@@ -21564,10 +21564,11 @@ function usePageHeadSearchInput({
   };
 }
 var _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {
-    sfc[key] = val;
+    target[key] = val;
   }
-  return sfc;
+  return target;
 };
 const _sfc_main = {
   name: "PageRefresh",
