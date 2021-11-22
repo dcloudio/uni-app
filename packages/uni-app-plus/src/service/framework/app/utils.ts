@@ -55,10 +55,10 @@ interface RedirectInfo extends Omit<LaunchOptions, 'query' | 'scene'> {
 
 export function parseRedirectInfo(): RedirectInfo {
   const weexPlus = weex.requireModule('plus')
-  const { path, query, extraData, userAction } =
+  const { path, query, extraData, userAction, fromAppid } =
     weexPlus.getRedirectInfo() || {}
   const referrerInfo: UniApp.UniConfig['referrerInfo'] = {
-    appId: '',
+    appId: fromAppid,
     extraData: {},
   }
   if (extraData) {
