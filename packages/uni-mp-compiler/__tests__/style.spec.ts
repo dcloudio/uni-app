@@ -157,4 +157,36 @@ describe('compiler: transform style', () => {
 }`
     )
   })
+  test(`State-Driven Dynamic CSS`, () => {
+    assert(
+      `<view/>`,
+      `<view style="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _s(_ctx.__cssVars()) }
+}`,
+      {
+        bindingCssVars: ['color'],
+      }
+    )
+    assert(
+      `<view :style="style"/>`,
+      `<view style="{{a + ';' + b}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _s(_ctx.style), b: _s(_ctx.__cssVars()) }
+}`,
+      {
+        bindingCssVars: ['color'],
+      }
+    )
+    assert(
+      `<view :style="[style]"/>`,
+      `<view style="{{a + ';' + b}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _s(_ctx.style), b: _s(_ctx.__cssVars()) }
+}`,
+      {
+        bindingCssVars: ['color'],
+      }
+    )
+  })
 })

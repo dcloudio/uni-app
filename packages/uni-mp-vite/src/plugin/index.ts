@@ -18,6 +18,10 @@ import { createConfigResolved } from './configResolved'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
 import { getNVueCssPaths } from '../plugins/pagesJson'
+import {
+  SFCTemplateCompileOptions,
+  SFCTemplateCompileResults,
+} from '@vue/compiler-sfc'
 
 export interface UniMiniProgramPluginOptions {
   vite: {
@@ -78,6 +82,9 @@ export function uniMiniProgramPlugin(
   let nvueCssEmitted = false
 
   let resolvedConfig: ResolvedConfig
+
+  rewriteCompileTemplate()
+
   return {
     name: 'vite:uni-mp',
     uni: uniOptions({
@@ -146,5 +153,16 @@ export function uniMiniProgramPlugin(
         }
       }
     },
+  }
+}
+
+function rewriteCompileTemplate() {
+  const compiler = require(resolveBuiltIn('@vue/compiler-sfc'))
+  const { compileTemplate } = compiler
+  compiler.compileTemplate = (
+    options: SFCTemplateCompileOptions
+  ): SFCTemplateCompileResults => {
+    ;(options.compilerOptions as any).bindingCssVars = options.ssrCssVars || []
+    return compileTemplate(options)
   }
 }

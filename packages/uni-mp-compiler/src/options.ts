@@ -65,6 +65,7 @@ export interface TransformOptions
   isCustomElement?: (tag: string) => boolean | void
   expressionPlugins?: ParserPlugin[]
   skipTransformIdentifier?: boolean
+  bindingCssVars?: string[]
 }
 
 export interface CodegenRootScope {

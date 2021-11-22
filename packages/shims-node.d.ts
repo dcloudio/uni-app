@@ -4,6 +4,7 @@ declare namespace NodeJS {
   }
   interface ProcessEnv {
     NODE_ENV: 'production' | 'development' | 'test'
+    UNI_NODE_ENV: 'production' | 'development' | 'test'
     UNI_PLATFORM: UniApp.PLATFORM
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
     UNI_INPUT_DIR: string

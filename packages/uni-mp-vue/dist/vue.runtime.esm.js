@@ -4726,6 +4726,54 @@ function createVueApp(rootComponent, rootProps = null) {
     return app;
 }
 
+function useCssModule(name = '$style') {
+    /* istanbul ignore else */
+    {
+        const instance = getCurrentInstance();
+        if (!instance) {
+            (process.env.NODE_ENV !== 'production') && warn$1(`useCssModule must be called inside setup()`);
+            return EMPTY_OBJ;
+        }
+        const modules = instance.type.__cssModules;
+        if (!modules) {
+            (process.env.NODE_ENV !== 'production') && warn$1(`Current instance does not have CSS modules injected.`);
+            return EMPTY_OBJ;
+        }
+        const mod = modules[name];
+        if (!mod) {
+            (process.env.NODE_ENV !== 'production') &&
+                warn$1(`Current instance does not have CSS module named "${name}".`);
+            return EMPTY_OBJ;
+        }
+        return mod;
+    }
+}
+
+/**
+ * Runtime helper for SFC's CSS variable injection feature.
+ * @private
+ */
+function useCssVars(getter) {
+    const instance = getCurrentInstance();
+    /* istanbul ignore next */
+    if (!instance) {
+        (process.env.NODE_ENV !== 'production') &&
+            warn$1(`useCssVars is called without current active component instance.`);
+        return;
+    }
+    initCssVarsRender(instance, getter);
+}
+function initCssVarsRender(instance, getter) {
+    instance.ctx.__cssVars = () => {
+        const vars = getter(instance.proxy);
+        const cssVars = {};
+        for (const key in vars) {
+            cssVars[`--${key}`] = vars[key];
+        }
+        return cssVars;
+    };
+}
+
 function withModifiers() { }
 function createVNode$1() { }
 
@@ -5133,4 +5181,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineComponent, defineEmits, defineExpose, defineProps, e, effect, effectScope, f, getCurrentInstance, getCurrentScope, h, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineComponent, defineEmits, defineExpose, defineProps, e, effect, effectScope, f, getCurrentInstance, getCurrentScope, h, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

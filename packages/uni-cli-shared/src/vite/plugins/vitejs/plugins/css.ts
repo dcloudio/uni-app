@@ -3,6 +3,7 @@ import path from 'path'
 import glob from 'fast-glob'
 import chalk from 'chalk'
 import postcssrc from 'postcss-load-config'
+import { dataToEsm } from '@rollup/pluginutils'
 import { PluginContext, RollupError, SourceMap } from 'rollup'
 import {
   // createDebugger,
@@ -233,10 +234,14 @@ export function cssPostPlugin(
       if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
         return
       }
+      const modules = cssModulesCache.get(config)!.get(id)
+      const modulesCode =
+        modules && dataToEsm(modules, { namedExports: true, preferConst: true })
+
       // build CSS handling ----------------------------------------------------
       styles.set(id, css)
       return {
-        code: '',
+        code: modulesCode || '',
         map: { mappings: '' },
         // avoid the css module from being tree-shaken so that we can retrieve
         // it in renderChunk()

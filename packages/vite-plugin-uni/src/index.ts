@@ -115,6 +115,14 @@ export default function uniPlugin(
   })
   plugins.push(...uniPlugins)
 
+  // 执行 build 命令时，vite 强制了 NODE_ENV
+  // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405
+  // const config = await resolveConfig(inlineConfig, 'build', 'production')
+  // 在 @vitejs/plugin-vue 之前校正回来
+  if (process.env.UNI_NODE_ENV !== process.env.NODE_ENV) {
+    process.env.NODE_ENV = process.env.UNI_NODE_ENV
+  }
+
   plugins.unshift(
     vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))
   )

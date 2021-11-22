@@ -20,7 +20,7 @@ import {
   JOB_PRIORITY_UPDATE,
   queuePostActionJob,
 } from '../scheduler'
-import { decodeAttr } from '../utils'
+import { decodeAttr, isCssVar } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
 import { initRenderjs } from '../renderjs'
 
@@ -131,6 +131,8 @@ export class UniElement<T extends object> extends UniNode {
     value = decodeAttr(this.$, value)
     if (this.$propNames.indexOf(name) !== -1) {
       ;(this.$props as any)[name] = value
+    } else if (isCssVar(name)) {
+      this.$.style.setProperty(name, value as string)
     } else {
       if (!this.wxsPropsInvoke(name, value)) {
         this.$.setAttribute(name, value as string)
@@ -140,6 +142,8 @@ export class UniElement<T extends object> extends UniNode {
   removeAttribute(name: string) {
     if (this.$propNames.indexOf(name) !== -1) {
       delete (this.$props as any)[name]
+    } else if (isCssVar(name)) {
+      this.$.style.removeProperty(name)
     } else {
       this.$.removeAttribute(name)
     }

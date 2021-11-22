@@ -15,6 +15,7 @@ import { transformElement } from './transforms/transformElement'
 import { transformBind } from './transforms/vBind'
 import { transformComponent } from './transforms/transformComponent'
 import { transformSlot } from './transforms/vSlot'
+import { transformRoot } from './transforms/transformRoot'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -29,7 +30,12 @@ export function getBaseTransformPreset({
   skipTransformIdentifier: boolean
 }): TransformPreset {
   // order is important
-  const nodeTransforms = [transformIf, transformFor, transformSlot]
+  const nodeTransforms = [
+    transformRoot,
+    transformIf,
+    transformFor,
+    transformSlot,
+  ]
   if (!skipTransformIdentifier) {
     nodeTransforms.push(transformIdentifier)
   }

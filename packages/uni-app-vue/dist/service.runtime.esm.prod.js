@@ -10134,13 +10134,28 @@ export default function vueFactory(exports) {
     if (vnode.shapeFlag & 1
     /* ELEMENT */
     && vnode.el) {
-      var style = vnode.el.style;
-
-      for (var key in vars) {
-        style.setProperty("--".concat(key), vars[key]);
-      }
+      setVarsOnNode(vnode.el, vars);
     } else if (vnode.type === Fragment) {
       vnode.children.forEach(c => setVarsOnVNode(c, vars));
+    } else if (vnode.type === Static) {
+      var {
+        el,
+        anchor
+      } = vnode;
+
+      while (el) {
+        setVarsOnNode(el, vars);
+        if (el === anchor) break;
+        el = el.nextSibling;
+      }
+    }
+  }
+
+  function setVarsOnNode(el, vars) {
+    if (el.nodeType === 1) {
+      for (var key in vars) {
+        el.setAttribute("--".concat(key), vars[key]);
+      }
     }
   }
 

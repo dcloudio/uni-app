@@ -56,6 +56,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
       process.env.NODE_ENV = 'production'
     }
   }
+  // vite 会修改 NODE_ENV，存储在 UNI_NODE_ENV 中，稍后校正 NODE_ENV
+  process.env.UNI_NODE_ENV = process.env.VITE_USER_NODE_ENV =
+    process.env.NODE_ENV
 
   process.env.UNI_CLI_CONTEXT = isInHBuilderX()
     ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
