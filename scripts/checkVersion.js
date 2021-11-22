@@ -25,10 +25,10 @@ const pkgs = {
     latest: '2.6.14',
   },
   '@vitejs/plugin-vue': {
-    latest: '1.9.4',
+    latest: '1.10.0',
   },
   '@vitejs/plugin-vue-jsx': {
-    latest: '1.2.0',
+    latest: '1.3.0',
   },
   '@vitejs/plugin-legacy': {
     latest: '1.6.2',

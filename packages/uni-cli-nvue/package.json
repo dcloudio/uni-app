@@ -19,8 +19,8 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.5",
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3021320211119003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211119003",
     "@vue/shared": "3.2.22",
