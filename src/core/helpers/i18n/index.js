@@ -158,7 +158,7 @@ export function initPullToRefreshI18n (pullToRefresh) {
 }
 
 export function initTabBarI18n (tabBar) {
-  if (isEnableLocale()) {
+  if (isEnableLocale() && tabBar.list) {
     tabBar.list.forEach(item => {
       defineI18nProperty(item, ['text'])
     })
