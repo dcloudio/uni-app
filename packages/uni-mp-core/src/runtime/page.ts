@@ -1,6 +1,6 @@
 import { ComponentOptions } from 'vue'
 
-import { ON_LOAD, stringifyQuery } from '@dcloudio/uni-shared'
+import { addLeadingSlash, ON_LOAD, stringifyQuery } from '@dcloudio/uni-shared'
 
 import {
   ParseComponentOptions,
@@ -32,7 +32,7 @@ function parsePage(
   ) {
     ;(this as any).options = query
     ;(this as any).$page = {
-      fullPath: '/' + (this as any).route + stringifyQuery(query),
+      fullPath: addLeadingSlash((this as any).route + stringifyQuery(query)),
     }
     return this.$vm && this.$vm.$callHook(ON_LOAD, query)
   }

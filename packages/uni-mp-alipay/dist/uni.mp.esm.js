@@ -45,6 +45,12 @@ function stringifyQuery(obj, encodeStr = encode) {
     return res ? `?${res}` : '';
 }
 
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -877,7 +883,7 @@ function initCreatePage() {
             onLoad(query) {
                 this.options = query;
                 this.$page = {
-                    fullPath: '/' + this.route + stringifyQuery(query),
+                    fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
                 };
                 // 初始化 vue 实例
                 this.$vm = createVueComponent('page', this, vueOptions);

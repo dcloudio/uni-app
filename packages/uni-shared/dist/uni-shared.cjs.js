@@ -995,8 +995,14 @@ function cacheStringFunction(fn) {
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
 function removeLeadingSlash(str) {
-    return str.indexOf('/') === 0 ? str.substr(1) : str;
+    return hasLeadingSlash(str) ? str.substr(1) : str;
 }
 const invokeArrayFns = (fns, arg) => {
     let ret;
@@ -1283,6 +1289,7 @@ exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
 exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
+exports.addLeadingSlash = addLeadingSlash;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;

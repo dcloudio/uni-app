@@ -73,7 +73,7 @@ export * from './ad/interactiveAd'
 export * from './route/navigateBack'
 export { navigateTo } from './route/navigateTo'
 export * from './route/redirectTo'
-export * from './route/reLaunch'
+export { reLaunch } from './route/reLaunch'
 export { switchTab } from './route/switchTab'
 export * from './route/preloadPage'
 

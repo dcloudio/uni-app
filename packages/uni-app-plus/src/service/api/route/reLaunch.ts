@@ -2,6 +2,7 @@ import {
   API_RE_LAUNCH,
   API_TYPE_RE_LAUNCH,
   defineAsyncApi,
+  DefineAsyncApiFn,
   ReLaunchOptions,
   ReLaunchProtocol,
 } from '@dcloudio/uni-api'
@@ -13,20 +14,25 @@ import { setStatusBarStyle } from '../../statusBar'
 import { closePage, navigate, RouteOptions } from './utils'
 import { showWebview } from './webview'
 
+export const $reLaunch: DefineAsyncApiFn<API_TYPE_RE_LAUNCH> = (
+  { url },
+  { resolve, reject }
+) => {
+  const { path, query } = parseUrl(url)
+  navigate(path, () => {
+    _reLaunch({
+      url,
+      path,
+      query,
+    })
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
 export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
   API_RE_LAUNCH,
-  ({ url }, { resolve, reject }) => {
-    const { path, query } = parseUrl(url)
-    navigate(path, () => {
-      _reLaunch({
-        url,
-        path,
-        query,
-      })
-        .then(resolve)
-        .catch(reject)
-    })
-  },
+  $reLaunch,
   ReLaunchProtocol,
   ReLaunchOptions
 )

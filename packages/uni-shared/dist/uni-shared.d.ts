@@ -45,6 +45,8 @@ number
 
 export declare function addFont(family: string, source: string, desc?: FontFaceDescriptors): Promise<void>;
 
+export declare function addLeadingSlash(str: string): string;
+
 /**
  * nodeId
  * event

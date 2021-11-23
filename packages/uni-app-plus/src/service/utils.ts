@@ -1,4 +1,5 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
+import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 
 export function getCurrentWebview() {
@@ -45,7 +46,7 @@ export function isTabBarPage(path = '') {
       return page.$page.meta.isTabBar
     }
     if (!/^\//.test(path)) {
-      path = '/' + path
+      path = addLeadingSlash(path)
     }
     const route = __uniRoutes.find((route) => route.path === path)
     return route && route.meta.isTabBar

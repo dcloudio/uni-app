@@ -1,4 +1,4 @@
-import { EventChannel } from '@dcloudio/uni-shared'
+import { addLeadingSlash, EventChannel } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 import { ComponentPublicInstance, getCurrentInstance } from 'vue'
 import { rpx2px } from './util'
@@ -122,7 +122,7 @@ export function initPageInternalInstance(
   const { id, route } = meta
   return {
     id: id!,
-    path: '/' + route,
+    path: addLeadingSlash(route),
     route: route,
     fullPath: url,
     options: pageQuery,

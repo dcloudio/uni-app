@@ -5,6 +5,7 @@ import {
   API_ON_TAB_BAR_MID_BUTTON_TAP,
   OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
+import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { getRealPath } from '../../../platform'
 import { useTabBar } from '../../setup/state'
@@ -102,7 +103,7 @@ function useSwitchTab(
         )
       }
       const { pagePath, text } = tabBarItem
-      let url = '/' + pagePath
+      let url = addLeadingSlash(pagePath)
       if (url === __uniRoutes[0].alias) {
         url = '/'
       }

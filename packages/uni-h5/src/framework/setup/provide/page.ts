@@ -2,7 +2,11 @@ import { extend } from '@vue/shared'
 import { reactive, provide, inject } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  NAVBAR_HEIGHT,
+  parseQuery,
+} from '@dcloudio/uni-shared'
 import {
   initNavigationBarI18n,
   initRouteMeta,
@@ -37,7 +41,7 @@ export function usePageRoute() {
     )
   }
   const { meta } = __uniRoutes[0]
-  const path = '/' + meta.route
+  const path = addLeadingSlash(meta.route)
   return {
     meta,
     query: query,

@@ -1,4 +1,5 @@
 import { getRouteOptions } from '@dcloudio/uni-core'
+import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { ON_WEBVIEW_READY } from '../../../../constants'
 import { $navigateTo } from '../../../api/route/navigateTo'
 import { $switchTab } from '../../../api/route/switchTab'
@@ -36,7 +37,7 @@ function onLaunchWebviewReady() {
   if (autoclose && !alwaysShowBeforeRender) {
     plus.navigator.closeSplashscreen()
   }
-  const entryPagePath = '/' + __uniConfig.entryPagePath
+  const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath!)
   const routeOptions = getRouteOptions(entryPagePath)!
   if (!routeOptions.meta.isNVue) {
     // 非 nvue 首页，需要主动跳转

@@ -10,6 +10,7 @@ import {
 } from '@dcloudio/uni-mp-core'
 
 import {
+  addLeadingSlash,
   ON_BACK_PRESS,
   ON_LOAD,
   ON_READY,
@@ -34,7 +35,7 @@ export function initCreatePage() {
       onLoad(query) {
         this.options = query
         this.$page = {
-          fullPath: '/' + this.route + stringifyQuery(query),
+          fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         }
         // 初始化 vue 实例
         this.$vm = createVueComponent('page', this, vueOptions)

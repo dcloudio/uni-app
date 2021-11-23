@@ -1,4 +1,5 @@
 dist
+packages/uni-app-plus/lib
 packages/uni-app-vite/lib
 packages/uni-app-vue/lib
 packages/uni-automator/lib
@@ -6,6 +7,7 @@ packages/uni-cli-nvue/lib
 packages/uni-cli-shared/lib
 packages/uni-components/lib
 packages/uni-cloud/lib
+packages/uni-h5/lib
 packages/uni-stat/lib
 packages/uni-mp-alipay/lib
 packages/uni-mp-baidu/lib

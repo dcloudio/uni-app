@@ -7,7 +7,12 @@ import {
   SwitchTabProtocol,
 } from '@dcloudio/uni-api'
 import { invokeHook } from '@dcloudio/uni-core'
-import { ON_HIDE, ON_SHOW, parseUrl } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  ON_HIDE,
+  ON_SHOW,
+  parseUrl,
+} from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
 import tabBar from '../../framework/app/tabBar'
@@ -89,7 +94,7 @@ function _switchTab({
   let tabBarPage: ComponentPublicInstance | undefined
   // 查找当前 tabBarPage，且设置 visible
   getAllPages().forEach((page) => {
-    if ('/' + page.route === path) {
+    if (addLeadingSlash(page.route) === path) {
       if (!page.$.__isActive) {
         // 之前未显示
         callOnShow = true

@@ -4,7 +4,9 @@ import {
   ON_APP_ENTER_FOREGROUND,
   ON_THEME_CHANGE,
   ON_KEYBOARD_HEIGHT_CHANGE,
+  addLeadingSlash,
 } from '@dcloudio/uni-shared'
+import { $reLaunch } from '../../api/route/reLaunch'
 import {
   EVENT_BACKBUTTON,
   backbuttonListener,
@@ -32,8 +34,12 @@ export function initGlobalEvent() {
 
   plusGlobalEvent.addEventListener('resume', () => {
     const info = parseRedirectInfo()
-    if (info.userAction) {
+    if (info && info.userAction) {
       initEnterOptions(info)
+      $reLaunch(
+        { url: addLeadingSlash(info.path) + info.query },
+        { resolve() {}, reject() {} }
+      )
     }
     emit(ON_APP_ENTER_FOREGROUND, getEnterOptions())
   })

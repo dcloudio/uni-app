@@ -11,7 +11,7 @@ import {
   invokeHook,
 } from '@dcloudio/uni-core'
 import { useI18n } from '@dcloudio/uni-core'
-import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
+import { addLeadingSlash, ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
 import { removePage } from '../../framework/page/getCurrentPages'
@@ -41,7 +41,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
       delete __uniConfig.realEntryPagePath
       uni.reLaunch({
-        url: '/' + __uniConfig.entryPagePath,
+        url: addLeadingSlash(__uniConfig.entryPagePath),
       })
     } else {
       const { delta, animationType, animationDuration } = args

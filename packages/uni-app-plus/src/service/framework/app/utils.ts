@@ -53,21 +53,23 @@ interface RedirectInfo extends Omit<LaunchOptions, 'query' | 'scene'> {
   userAction: boolean
 }
 
-export function parseRedirectInfo(): RedirectInfo {
+export function parseRedirectInfo(): RedirectInfo | void {
   const weexPlus = weex.requireModule('plus')
-  const { path, query, extraData, userAction, fromAppid } =
-    weexPlus.getRedirectInfo() || {}
-  const referrerInfo: UniApp.UniConfig['referrerInfo'] = {
-    appId: fromAppid,
-    extraData: {},
-  }
-  if (extraData) {
-    referrerInfo.extraData = extraData
-  }
-  return {
-    path,
-    query: query ? '?' + query : '',
-    referrerInfo,
-    userAction,
+  if (weexPlus.getRedirectInfo) {
+    const { path, query, extraData, userAction, fromAppid } =
+      weexPlus.getRedirectInfo() || {}
+    const referrerInfo: UniApp.UniConfig['referrerInfo'] = {
+      appId: fromAppid,
+      extraData: {},
+    }
+    if (extraData) {
+      referrerInfo.extraData = extraData
+    }
+    return {
+      path,
+      query: query ? '?' + query : '',
+      referrerInfo,
+      userAction,
+    }
   }
 }

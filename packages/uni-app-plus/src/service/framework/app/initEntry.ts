@@ -1,4 +1,5 @@
 import { getRouteOptions } from '@dcloudio/uni-core'
+import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { parseRedirectInfo } from './utils'
 
 let isInitEntryPage = false
@@ -15,7 +16,7 @@ export function initEntry() {
   const weexPlus = weex.requireModule('plus')
 
   if (weexPlus.getRedirectInfo) {
-    const { path, query, referrerInfo } = parseRedirectInfo()
+    const { path, query, referrerInfo } = parseRedirectInfo()!
     entryPagePath = path
     entryPageQuery = query
     __uniConfig.referrerInfo = referrerInfo
@@ -38,7 +39,7 @@ export function initEntry() {
     return
   }
 
-  const entryRoute = '/' + entryPagePath
+  const entryRoute = addLeadingSlash(entryPagePath)
   const routeOptions = getRouteOptions(entryRoute)
   if (!routeOptions) {
     return

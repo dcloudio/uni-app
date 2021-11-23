@@ -1,5 +1,6 @@
 import { getRouteOptions, subscribeServiceMethod } from '@dcloudio/uni-core'
 import {
+  addLeadingSlash,
   ON_WXS_INVOKE_CALL_METHOD,
   WEB_INVOKE_APPSERVICE,
 } from '@dcloudio/uni-shared'
@@ -49,7 +50,9 @@ export function initSubscribeHandlers() {
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved)
     subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
 
-    const routeOptions = getRouteOptions('/' + __uniConfig.entryPagePath)
+    const routeOptions = getRouteOptions(
+      addLeadingSlash(__uniConfig.entryPagePath!)
+    )
     if (routeOptions && !routeOptions.meta.isNVue) {
       // 防止首页 webview 初始化过早， service 还未开始监听
       publishHandler(ON_WEBVIEW_READY, {}, 1)

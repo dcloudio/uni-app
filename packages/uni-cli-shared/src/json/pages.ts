@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+import { addLeadingSlash, once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { normalizePath } from '../utils'
 import { parseJson } from './json'
 
@@ -353,7 +353,7 @@ function normalizeFilepath(filepath: string) {
     !(SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) &&
     filepath.indexOf('/') !== 0
   ) {
-    return '/' + filepath
+    return addLeadingSlash(filepath)
   }
   return filepath
 }

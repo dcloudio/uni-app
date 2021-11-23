@@ -21,6 +21,7 @@ import { PluginContext } from 'rollup'
 import { M } from '../messages'
 import { BINDING_COMPONENTS } from '../constants'
 import { normalizeMiniProgramFilename, removeExt } from '../utils'
+import { addLeadingSlash } from '@dcloudio/uni-shared'
 
 interface TransformVueComponentImportsOptions {
   root: string
@@ -78,8 +79,9 @@ export async function transformVueComponentImports(
       )
       const componentName = hyphenate(tag)
       if (!usingComponents[componentName]) {
-        usingComponents[componentName] =
-          '/' + removeExt(normalizeMiniProgramFilename(resolveId.id, root))
+        usingComponents[componentName] = addLeadingSlash(
+          removeExt(normalizeMiniProgramFilename(resolveId.id, root))
+        )
       }
     }
   }

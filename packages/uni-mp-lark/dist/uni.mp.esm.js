@@ -108,6 +108,12 @@ function stringifyQuery(obj, encodeStr = encode) {
     return res ? `?${res}` : '';
 }
 
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -777,7 +783,7 @@ function parsePage(vueOptions, parseOptions) {
     methods.onLoad = function (query) {
         this.options = query;
         this.$page = {
-            fullPath: '/' + this.route + stringifyQuery(query),
+            fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         };
         return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };

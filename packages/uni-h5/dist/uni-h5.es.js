@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 let i18n;
@@ -909,7 +909,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
   const { id: id2, route } = meta;
   return {
     id: id2,
-    path: "/" + route,
+    path: addLeadingSlash(route),
     route,
     fullPath: url,
     options: pageQuery,
@@ -1023,7 +1023,7 @@ function getRealRoute(fromRoute, toRoute) {
   toRoute = toRouteArray.join("/");
   const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
-  return "/" + fromRouteArray.concat(toRouteArray).join("/");
+  return addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
 }
 function getRouteOptions(path, alias = false) {
   if (alias) {
@@ -1995,8 +1995,8 @@ function findElem(vm) {
 }
 const baseUrl = import.meta.env.BASE_URL;
 function addBase(filePath) {
-  if (("/" + filePath).indexOf(baseUrl) === 0) {
-    return "/" + filePath;
+  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return addLeadingSlash(filePath);
   }
   return baseUrl + filePath;
 }
@@ -13552,7 +13552,7 @@ function usePageRoute() {
     query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
   }
   const { meta } = __uniRoutes[0];
-  const path = "/" + meta.route;
+  const path = addLeadingSlash(meta.route);
   return {
     meta,
     query,
@@ -18896,13 +18896,13 @@ function setProperties(item, props2, propsData) {
   });
 }
 function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
-  const oldTabBarRoute = getRouteOptions("/" + oldPagePath);
+  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
   if (oldTabBarRoute) {
     const { meta } = oldTabBarRoute;
     delete meta.tabBarIndex;
     meta.isQuit = meta.isTabBar = false;
   }
-  const newTabBarRoute = getRouteOptions("/" + newPagePath);
+  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
   if (newTabBarRoute) {
     const { meta } = newTabBarRoute;
     meta.tabBarIndex = index2;
@@ -19049,7 +19049,7 @@ function useSwitchTab(route, tabBar2, visibleList) {
         pagePath,
         text: text2
       } = tabBarItem;
-      let url = "/" + pagePath;
+      let url = addLeadingSlash(pagePath);
       if (url === __uniRoutes[0].alias) {
         url = "/";
       }

@@ -353,7 +353,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
   const { id, route } = meta;
   return {
     id,
-    path: "/" + route,
+    path: uniShared.addLeadingSlash(route),
     route,
     fullPath: url,
     options: pageQuery,
@@ -398,7 +398,7 @@ function getRealRoute(fromRoute, toRoute) {
   toRoute = toRouteArray.join("/");
   const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
-  return "/" + fromRouteArray.concat(toRouteArray).join("/");
+  return uniShared.addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
 }
 function findUniTarget(target) {
   while (target && target.tagName.indexOf("UNI-") !== 0) {
@@ -903,8 +903,8 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
 });
 const baseUrl = __IMPORT_META_ENV_BASE_URL__;
 function addBase(filePath) {
-  if (("/" + filePath).indexOf(baseUrl) === 0) {
-    return "/" + filePath;
+  if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return uniShared.addLeadingSlash(filePath);
   }
   return baseUrl + filePath;
 }
@@ -6678,7 +6678,7 @@ function usePageRoute() {
     query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
   }
   const { meta } = __uniRoutes[0];
-  const path = "/" + meta.route;
+  const path = uniShared.addLeadingSlash(meta.route);
   return {
     meta,
     query,
@@ -9897,7 +9897,7 @@ function useSwitchTab(route, tabBar2, visibleList) {
         pagePath,
         text
       } = tabBarItem;
-      let url = "/" + pagePath;
+      let url = uniShared.addLeadingSlash(pagePath);
       if (url === __uniRoutes[0].alias) {
         url = "/";
       }
