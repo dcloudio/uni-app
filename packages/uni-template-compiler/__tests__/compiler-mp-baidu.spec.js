@@ -18,7 +18,7 @@ describe('mp:compiler-mp-baidu', () => {
   it('generate component', () => {
     assertCodegen(
       '<login @getphonenumber="getphonenumbers" @loaderror="loaderrors"></login>',
-      '<login data-event-opts=\"{{[[\'getphonenumber\',[[\'getphonenumbers\',[\'$event\']]]],[\'loaderror\',[[\'loaderrors\',[\'$event\']]]]]}}\" bindgetphonenumber=\"__e\" bindloaderror=\"__e\"></login>'
+      '<login data-event-opts="{{[[\'getphonenumber\',[[\'getphonenumbers\',[\'$event\']]]],[\'loaderror\',[[\'loaderrors\',[\'$event\']]]]]}}" bindgetphonenumber="__e" bindloaderror="__e"></login>'
     )
   })
   it('generate class', () => {
