@@ -47,7 +47,6 @@
     "postcss-modules": "^4.2.2",
     "postcss-selector-parser": "^6.0.6",
     "resolve": "^1.20.0",
-    "rollup-plugin-copy": "^3.4.0",
     "tapable": "^2.2.0",
     "xregexp": "3.1.0"
   },
