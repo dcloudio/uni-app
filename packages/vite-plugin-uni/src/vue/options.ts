@@ -5,6 +5,8 @@ import {
   UniVitePlugin,
   uniPostcssScopedPlugin,
   createUniVueTransformAssetUrls,
+  getBaseNodeTransforms,
+  isExternalUrl,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
@@ -36,10 +38,6 @@ export function initPluginVueOptions(
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
-  templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
-    options.base
-  )
-
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
@@ -53,6 +51,7 @@ export function initPluginVueOptions(
       directiveTransforms,
     },
   } = uniPluginOptions
+
   if (compiler) {
     templateOptions.compiler = compiler
   }
@@ -70,6 +69,18 @@ export function initPluginVueOptions(
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
+  if (options.platform === 'h5') {
+    templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
+      isExternalUrl(options.base) ? options.base : ''
+    )
+  } else {
+    // 替换内置的 transformAssetUrls 逻辑
+    templateOptions.transformAssetUrls = {
+      tags: {},
+    }
+    compilerOptions.nodeTransforms.push(...getBaseNodeTransforms(options.base))
+  }
+
   if (nodeTransforms) {
     compilerOptions.nodeTransforms.push(...nodeTransforms)
   }

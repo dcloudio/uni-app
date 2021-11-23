@@ -1,11 +1,15 @@
 import { BindingTypes, ElementNode, RootNode } from '@vue/compiler-core'
-import { compileTemplate, TemplateCompiler } from '@vue/compiler-sfc'
+import {
+  compileTemplate,
+  SFCTemplateCompileOptions,
+  TemplateCompiler,
+} from '@vue/compiler-sfc'
 import { compile } from '../src'
 import * as MPCompiler from '../src'
 import { MPErrorCodes } from '../src/errors'
 import { CodegenRootNode, CompilerOptions } from '../src/options'
 import { BindingComponentTypes } from '../src/transform'
-import { createUniVueTransformAssetUrls } from '@dcloudio/uni-cli-shared'
+import { getBaseNodeTransforms } from '@dcloudio/uni-cli-shared'
 
 function parseWithElementTransform(
   template: string,
@@ -33,27 +37,37 @@ function parseWithElementTransform(
 
 describe('compiler: element transform', () => {
   test(`transformAssetUrls`, () => {
-    const result = compileTemplate({
-      source: `<image src="/static/logo.png"/>`,
+    const options: SFCTemplateCompileOptions = {
       filename: 'foo.vue',
       id: 'foo',
-
       compiler: MPCompiler as unknown as TemplateCompiler,
       compilerOptions: {
         mode: 'module',
         generatorOpts: {
           concise: true,
         },
-      } as any,
-      transformAssetUrls: {
-        includeAbsolute: true,
-        ...(createUniVueTransformAssetUrls('/') as Record<string, any>),
-      },
-    })
-    expect(result.code).toBe(`import _imports_0 from '/static/logo.png'
+        nodeTransforms: getBaseNodeTransforms('/'),
+      } as CompilerOptions,
+      transformAssetUrls: false,
+    } as SFCTemplateCompileOptions
 
+    expect(
+      compileTemplate({
+        ...options,
+        source: `<image src="/static/logo.png"/>`,
+      }).code
+    ).toBe(`
 export function render(_ctx, _cache) {
-  return { a: _imports_0 }
+  return {}
+}`)
+    expect(
+      compileTemplate({
+        ...options,
+        source: `<image src="../static/logo.png"/>`,
+      }).code
+    ).toBe(`
+export function render(_ctx, _cache) {
+  return {}
 }`)
   })
 

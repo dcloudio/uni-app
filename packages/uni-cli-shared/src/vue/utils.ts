@@ -15,6 +15,8 @@ import {
   TemplateChildNode,
   TransformContext,
 } from '@vue/compiler-core'
+import { createAssetUrlTransformWithOptions } from './transforms/templateTransformAssetUrl'
+import { createSrcsetTransformWithOptions } from './transforms/templateTransformSrcset'
 
 export const VUE_REF = 'r'
 export const VUE_REF_IN_FOR = 'r-i-f'
@@ -95,4 +97,34 @@ export function createBindDirectiveNode(
   value: string | ExpressionNode
 ) {
   return createDirectiveNode('bind', name, value)
+}
+
+export function createUniVueTransformAssetUrls(base: string) {
+  return {
+    base,
+    includeAbsolute: true,
+    tags: {
+      audio: ['src'],
+      video: ['src', 'poster'],
+      img: ['src'],
+      image: ['src'],
+      'cover-image': ['src'],
+      // h5
+      'v-uni-audio': ['src'],
+      'v-uni-video': ['src', 'poster'],
+      'v-uni-image': ['src'],
+      'v-uni-cover-image': ['src'],
+      // nvue
+      'u-image': ['src'],
+      'u-video': ['src', 'poster'],
+    },
+  }
+}
+
+export function getBaseNodeTransforms(base: string) {
+  const transformAssetUrls = createUniVueTransformAssetUrls(base)
+  return [
+    createAssetUrlTransformWithOptions(transformAssetUrls),
+    createSrcsetTransformWithOptions(transformAssetUrls),
+  ]
 }

@@ -25,6 +25,7 @@
     "@rollup/pluginutils": "^4.1.1",
     "@vue/compiler-core": "3.2.22",
     "@vue/compiler-dom": "3.2.22",
+    "@vue/compiler-sfc": "3.2.22",
     "@vue/shared": "3.2.22",
     "chalk": "^4.1.1",
     "chokidar": "^3.5.2",
@@ -58,7 +59,6 @@
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.1",
     "@types/stylus": "^0.48.36",
-    "@vue/compiler-sfc": "3.2.22",
     "postcss": "^8.3.8"
   }
 }

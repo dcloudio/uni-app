@@ -8,6 +8,8 @@ export * from './transformPageHead'
 export * from './transformComponent'
 export * from './transformEvent'
 export * from './transformTag'
+export { createAssetUrlTransformWithOptions } from './templateTransformAssetUrl'
+export { createSrcsetTransformWithOptions } from './templateTransformSrcset'
 export {
   ATTR_DATASET_EVENT_OPTS,
   createTransformOn,

@@ -3,7 +3,6 @@ import os from 'os'
 import path from 'path'
 import { camelize, capitalize } from '@vue/shared'
 export { default as hash } from 'hash-sum'
-import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
 
 import {
@@ -76,27 +75,4 @@ export function normalizeMiniProgramFilename(
     return normalizeNodeModules(filename)
   }
   return normalizeNodeModules(path.relative(inputDir, filename))
-}
-
-export function createUniVueTransformAssetUrls(
-  base: string
-): SFCTemplateCompileOptions['transformAssetUrls'] {
-  return {
-    base,
-    tags: {
-      audio: ['src'],
-      video: ['src', 'poster'],
-      img: ['src'],
-      image: ['src'],
-      'cover-image': ['src'],
-      // h5
-      'v-uni-audio': ['src'],
-      'v-uni-video': ['src', 'poster'],
-      'v-uni-image': ['src'],
-      'v-uni-cover-image': ['src'],
-      // nvue
-      'u-image': ['src'],
-      'u-video': ['src', 'poster'],
-    },
-  }
 }
