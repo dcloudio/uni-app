@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-template-compiler",
-  "version": "2.0.0-alpha-32920211123001",
+  "version": "2.0.0-alpha-32920211123002",
   "description": "uni-template-compiler",
   "main": "lib/index.js",
   "repository": {
@@ -22,5 +22,5 @@
     "@babel/types": "^7.3.3",
     "vue-template-compiler": "^2.6.10"
   },
-  "gitHead": "315a22303222154f438890454373d87768941ed8"
+  "gitHead": "32aa276f0c9fdfc8849332f6f260337668dbbdaa"
 }
