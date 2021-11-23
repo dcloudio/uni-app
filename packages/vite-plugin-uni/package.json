@@ -46,6 +46,7 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/express": "^4.17.12",
+    "@types/fs-extra": "^9.0.13",
     "@types/sass": "^1.16.0",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "chokidar": "^3.5.2"

@@ -53,6 +53,7 @@
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
     "@types/debug": "^4.1.7",
+    "@types/fs-extra": "^9.0.13",
     "@types/hash-sum": "^1.0.0",
     "@types/less": "^3.0.3",
     "@types/mime": "^2.0.3",
