@@ -220,7 +220,7 @@ export default {
             callout.setOption(calloutStyle)
           } else {
             callout = marker.callout = new maps.Callout(calloutStyle)
-            callout.div.onclick = function ($event) {
+            callout.div.onclick = ($event) => {
               if (this.id !== '') {
                 this.$parent.$trigger('callouttap', $event, {
                   markerId: this.id
