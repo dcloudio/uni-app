@@ -85,3 +85,16 @@ export function previewImagePlus ({
     errMsg: 'previewImage:ok'
   }
 }
+
+export function closePreviewImagePlus () {
+  try {
+    plus.nativeUI.closePreviewImage()
+    return {
+      errMsg: 'closePreviewImagePlus:ok'
+    }
+  } catch (error) {
+    return {
+      errMsg: 'closePreviewImagePlus:fail'
+    }
+  }
+}

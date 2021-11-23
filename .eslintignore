@@ -25,6 +25,7 @@ packages/*/packages/uni-cloud
 packages/*/packages/vue-loader
 packages/*/packages/vue-template-compiler
 packages/*/packages/webpack-preprocess-loader/preprocess
+packages/*/packages/sass-loader
 packages/*/packages/vuex
 packages/*/packages/vuex3
 packages/*/template/**/*

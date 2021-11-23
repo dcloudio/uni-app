@@ -547,7 +547,7 @@ export default {
       }
     },
     _handleContentTrack (e) {
-      if (this.disableTouch) {
+      if (this.disableTouch || !this.items.length) {
         return
       }
       if (!this._invalid) {
