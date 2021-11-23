@@ -1,6 +1,7 @@
 import { extend } from '@vue/shared'
-import { parseQuery } from '@dcloudio/uni-shared'
+import { addLeadingSlash, parseQuery } from '@dcloudio/uni-shared'
 import { createLaunchOptions, LaunchOptions } from '@dcloudio/uni-core'
+import { $reLaunch } from '../../api/route/reLaunch'
 
 export const EVENT_BACKBUTTON = 'backbutton'
 
@@ -32,6 +33,17 @@ export function initEnterOptions({
     query: query ? parseQuery(query) : {},
     referrerInfo: referrerInfo || {},
   })
+}
+
+export function initEnterReLaunch(info: RedirectInfo) {
+  __uniConfig.realEntryPagePath =
+    __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+  __uniConfig.entryPagePath = info.path
+  __uniConfig.entryPageQuery = info.query
+  $reLaunch(
+    { url: addLeadingSlash(info.path) + info.query },
+    { resolve() {}, reject() {} }
+  )
 }
 
 export function initLaunchOptions({

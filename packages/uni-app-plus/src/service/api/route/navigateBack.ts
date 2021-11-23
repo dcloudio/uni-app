@@ -36,7 +36,11 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     uni.hideLoading()
     if (page.$page.meta.isQuit) {
       quit()
-    } else if (page.$page.id === 1 && __uniConfig.realEntryPagePath) {
+    } else if (
+      // 处于直达页面
+      page.$page.route === __uniConfig.entryPagePath &&
+      __uniConfig.realEntryPagePath
+    ) {
       // condition
       __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
       delete __uniConfig.realEntryPagePath

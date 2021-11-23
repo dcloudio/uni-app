@@ -2659,6 +2659,1757 @@ var serviceContext = (function (vue) {
       UniServiceJSBridge.unsubscribe(getEventName(reqId));
   }
 
+  const isIOS$1 = plus.os.name === 'iOS';
+  let config;
+  /**
+   * tabbar显示状态
+   */
+  let visible = true;
+  let tabBar;
+  /**
+   * 设置角标
+   * @param {string} type
+   * @param {number} index
+   * @param {string} text
+   */
+  function setTabBarBadge$1(type, index, text) {
+      if (!tabBar) {
+          return;
+      }
+      if (type === 'none') {
+          tabBar.hideTabBarRedDot({
+              index,
+          });
+          tabBar.removeTabBarBadge({
+              index,
+          });
+      }
+      else if (type === 'text') {
+          tabBar.setTabBarBadge({
+              index,
+              text,
+          });
+      }
+      else if (type === 'redDot') {
+          tabBar.showTabBarRedDot({
+              index,
+          });
+      }
+  }
+  /**
+   * 动态设置 tabBar 某一项的内容
+   */
+  function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible) {
+      const item = {
+          index,
+      };
+      if (text !== undefined) {
+          item.text = text;
+      }
+      if (iconPath) {
+          item.iconPath = getRealPath(iconPath);
+      }
+      if (selectedIconPath) {
+          item.selectedIconPath = getRealPath(selectedIconPath);
+      }
+      if (visible !== undefined) {
+          item.visible = config.list[index].visible = visible;
+          delete item.index;
+          const tabbarItems = config.list.map((item) => ({
+              visible: item.visible,
+          }));
+          tabbarItems[index] = item;
+          tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+      }
+      else {
+          tabBar && tabBar.setTabBarItem(item);
+      }
+  }
+  /**
+   * 动态设置 tabBar 的整体样式
+   * @param {Object} style 样式
+   */
+  function setTabBarStyle$1(style) {
+      tabBar && tabBar.setTabBarStyle(style);
+  }
+  /**
+   * 隐藏 tabBar
+   * @param {boolean} animation 是否需要动画效果
+   */
+  function hideTabBar$1(animation) {
+      visible = false;
+      tabBar &&
+          tabBar.hideTabBar({
+              animation,
+          });
+  }
+  /**
+   * 显示 tabBar
+   * @param {boolean} animation 是否需要动画效果
+   */
+  function showTabBar$1(animation) {
+      visible = true;
+      tabBar &&
+          tabBar.showTabBar({
+              animation,
+          });
+  }
+  const maskClickCallback = [];
+  var tabBar$1 = {
+      id: '0',
+      init(options, clickCallback) {
+          if (options && options.list.length) {
+              config = options;
+          }
+          try {
+              tabBar = weex.requireModule('uni-tabview');
+          }
+          catch (error) {
+              console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
+          }
+          tabBar.onMaskClick(() => {
+              maskClickCallback.forEach((callback) => {
+                  callback();
+              });
+          });
+          tabBar &&
+              tabBar.onClick(({ index }) => {
+                  clickCallback(config.list[index], index);
+              });
+          tabBar &&
+              tabBar.onMidButtonClick(() => {
+                  // publish('onTabBarMidButtonTap', {})
+              });
+      },
+      indexOf(page) {
+          const itemLength = config && config.list && config.list.length;
+          if (itemLength) {
+              for (let i = 0; i < itemLength; i++) {
+                  if (config.list[i].pagePath === page ||
+                      config.list[i].pagePath === `${page}.html`) {
+                      return i;
+                  }
+              }
+          }
+          return -1;
+      },
+      switchTab(page) {
+          const index = this.indexOf(page);
+          if (index >= 0) {
+              tabBar &&
+                  tabBar.switchSelect({
+                      index,
+                  });
+              return true;
+          }
+          return false;
+      },
+      setTabBarBadge: setTabBarBadge$1,
+      setTabBarItem: setTabBarItem$1,
+      setTabBarStyle: setTabBarStyle$1,
+      hideTabBar: hideTabBar$1,
+      showTabBar: showTabBar$1,
+      append(webview) {
+          tabBar &&
+              tabBar.append({
+                  id: webview.id,
+              }, ({ code }) => {
+                  if (code !== 0) {
+                      setTimeout(() => {
+                          this.append(webview);
+                      }, 20);
+                  }
+              });
+      },
+      get visible() {
+          return visible;
+      },
+      get height() {
+          return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
+              plus.navigator.getSafeAreaInsets().deviceBottom);
+      },
+      // tabBar是否遮挡内容区域
+      get cover() {
+          const array = ['extralight', 'light', 'dark'];
+          return isIOS$1 && array.indexOf(config.blurEffect) >= 0;
+      },
+      setStyle({ mask }) {
+          tabBar.setMask({
+              color: mask,
+          });
+      },
+      addEventListener(_name, callback) {
+          maskClickCallback.push(callback);
+      },
+      removeEventListener(_name, callback) {
+          const callbackIndex = maskClickCallback.indexOf(callback);
+          maskClickCallback.splice(callbackIndex, 1);
+      },
+  };
+
+  const VD_SYNC = 'vdSync';
+  const APP_SERVICE_ID = '__uniapp__service';
+  const ON_WEBVIEW_READY = 'onWebviewReady';
+  const ACTION_TYPE_DICT = 0;
+  const WEBVIEW_INSERTED = 'webviewInserted';
+  const WEBVIEW_REMOVED = 'webviewRemoved';
+
+  let vueApp;
+  function getVueApp() {
+      return vueApp;
+  }
+  function initVueApp(appVm) {
+      const appContext = appVm.$.appContext;
+      vueApp = extend(appContext.app, {
+          mountPage(pageComponent, pageProps, pageContainer) {
+              const vnode = vue.createVNode(pageComponent, pageProps);
+              // store app context on the root VNode.
+              // this will be set on the root instance on initial mount.
+              vnode.appContext = appContext;
+              vnode.__page_container__ = pageContainer;
+              vue.render(vnode, pageContainer);
+              const publicThis = vnode.component.proxy;
+              publicThis.__page_container__ = pageContainer;
+              return publicThis;
+          },
+          unmountPage: (pageInstance) => {
+              const { __page_container__ } = pageInstance;
+              if (__page_container__) {
+                  __page_container__.isUnmounted = true;
+                  vue.render(null, __page_container__);
+              }
+          },
+      });
+  }
+
+  const pages = [];
+  function addCurrentPage(page) {
+      pages.push(page);
+  }
+  function getPageById(id) {
+      return pages.find((page) => page.$page.id === id);
+  }
+  function getAllPages() {
+      return pages;
+  }
+  function getCurrentPages$1() {
+      const curPages = [];
+      pages.forEach((page) => {
+          if (page.$.__isTabBar) {
+              if (page.$.__isActive) {
+                  curPages.push(page);
+              }
+          }
+          else {
+              curPages.push(page);
+          }
+      });
+      return curPages;
+  }
+  function removeCurrentPage() {
+      const page = getCurrentPage();
+      if (!page) {
+          return;
+      }
+      removePage(page);
+  }
+  function removePage(curPage) {
+      const index = pages.findIndex((page) => page === curPage);
+      if (index === -1) {
+          return;
+      }
+      if (!curPage.$page.meta.isNVue) {
+          getVueApp().unmountPage(curPage);
+      }
+      pages.splice(index, 1);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('removePage', curPage.$page));
+      }
+  }
+
+  class UniPageNode extends UniNode {
+      constructor(pageId, options, setup = false) {
+          super(NODE_TYPE_PAGE, '#page', null);
+          this._id = 1;
+          this._created = false;
+          this._updating = false;
+          this._createActionMap = new Map();
+          this.updateActions = [];
+          this.dicts = [];
+          this.nodeId = 0;
+          this.pageId = pageId;
+          this.pageNode = this;
+          this.options = options;
+          this.isUnmounted = false;
+          this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
+          this.createdAction = [ACTION_TYPE_PAGE_CREATED];
+          this.normalizeDict = this._normalizeDict.bind(this);
+          this._update = this.update.bind(this);
+          setup && this.setup();
+      }
+      _normalizeDict(value, normalizeValue = true) {
+          if (!isPlainObject(value)) {
+              return this.addDict(value);
+          }
+          const dictArray = [];
+          Object.keys(value).forEach((n) => {
+              const dict = [this.addDict(n)];
+              const v = value[n];
+              if (normalizeValue) {
+                  dict.push(this.addDict(v));
+              }
+              else {
+                  dict.push(v);
+              }
+              dictArray.push(dict);
+          });
+          return dictArray;
+      }
+      addDict(value) {
+          const { dicts } = this;
+          const index = dicts.indexOf(value);
+          if (index > -1) {
+              return index;
+          }
+          return dicts.push(value) - 1;
+      }
+      onInjectHook(hook) {
+          if ((hook === ON_PAGE_SCROLL || hook === ON_REACH_BOTTOM) &&
+              !this.scrollAction) {
+              this.scrollAction = [
+                  ACTION_TYPE_PAGE_SCROLL,
+                  this.options.onReachBottomDistance,
+              ];
+              this.push(this.scrollAction);
+          }
+      }
+      onCreate(thisNode, nodeName) {
+          pushCreateAction(this, thisNode.nodeId, nodeName);
+          return thisNode;
+      }
+      onInsertBefore(thisNode, newChild, refChild) {
+          pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
+          return newChild;
+      }
+      onRemoveChild(oldChild) {
+          pushRemoveAction(this, oldChild.nodeId);
+          return oldChild;
+      }
+      onAddEvent(thisNode, name, flag) {
+          if (thisNode.parentNode) {
+              pushAddEventAction(this, thisNode.nodeId, name, flag);
+          }
+      }
+      onAddWxsEvent(thisNode, name, wxsEvent, flag) {
+          if (thisNode.parentNode) {
+              pushAddWxsEventAction(this, thisNode.nodeId, name, wxsEvent, flag);
+          }
+      }
+      onRemoveEvent(thisNode, name) {
+          if (thisNode.parentNode) {
+              pushRemoveEventAction(this, thisNode.nodeId, name);
+          }
+      }
+      onSetAttribute(thisNode, qualifiedName, value) {
+          if (thisNode.parentNode) {
+              pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
+          }
+      }
+      onRemoveAttribute(thisNode, qualifiedName) {
+          if (thisNode.parentNode) {
+              pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
+          }
+      }
+      onTextContent(thisNode, text) {
+          if (thisNode.parentNode) {
+              pushSetTextAction(this, thisNode.nodeId, text);
+          }
+      }
+      onNodeValue(thisNode, val) {
+          if (thisNode.parentNode) {
+              pushSetTextAction(this, thisNode.nodeId, val);
+          }
+      }
+      genId() {
+          return this._id++;
+      }
+      push(action, extras) {
+          if (this.isUnmounted) {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('PageNode', 'push.prevent', action));
+              }
+              return;
+          }
+          switch (action[0]) {
+              case ACTION_TYPE_CREATE:
+                  this._createActionMap.set(action[1], action);
+                  break;
+              case ACTION_TYPE_INSERT:
+                  const createAction = this._createActionMap.get(action[1]);
+                  if (createAction) {
+                      createAction[3] = action[2]; // parentNodeId
+                      createAction[4] = action[3]; // anchorId
+                      if (extras) {
+                          createAction[5] = extras;
+                      }
+                  }
+                  else {
+                      if ((process.env.NODE_ENV !== 'production')) {
+                          console.error(formatLog(`Insert`, action, 'not found createAction'));
+                      }
+                  }
+                  break;
+          }
+          // insert 被合并进 create
+          if (action[0] !== ACTION_TYPE_INSERT) {
+              this.updateActions.push(action);
+          }
+          if (!this._updating) {
+              this._updating = true;
+              vue.queuePostFlushCb(this._update);
+          }
+      }
+      restore() {
+          this.clear();
+          this.push(this.createAction);
+          if (this.scrollAction) {
+              this.push(this.scrollAction);
+          }
+          const restoreNode = (node) => {
+              this.onCreate(node, node.nodeName);
+              this.onInsertBefore(node.parentNode, node, null);
+              node.childNodes.forEach((childNode) => {
+                  restoreNode(childNode);
+              });
+          };
+          this.childNodes.forEach((childNode) => restoreNode(childNode));
+          this.push(this.createdAction);
+      }
+      setup() {
+          this.send([this.createAction]);
+      }
+      update() {
+          const { dicts, updateActions, _createActionMap } = this;
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
+          }
+          // 首次
+          if (!this._created) {
+              this._created = true;
+              updateActions.push(this.createdAction);
+          }
+          if (updateActions.length) {
+              if (dicts.length) {
+                  updateActions.unshift([ACTION_TYPE_DICT, dicts]);
+              }
+              this.send(updateActions);
+          }
+          this.clear();
+      }
+      clear() {
+          this.dicts.length = 0;
+          this.updateActions.length = 0;
+          this._updating = false;
+          this._createActionMap.clear();
+      }
+      send(action) {
+          UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
+      }
+      fireEvent(id, evt) {
+          const node = findNodeById(id, this);
+          if (node) {
+              node.dispatchEvent(evt);
+          }
+          else if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
+          }
+      }
+  }
+  function getPageNode(pageId) {
+      const page = getPageById(pageId);
+      if (!page)
+          return null;
+      return page.__page_container__;
+  }
+  function findNode(name, value, uniNode) {
+      if (typeof uniNode === 'number') {
+          uniNode = getPageNode(uniNode);
+      }
+      if (uniNode[name] === value) {
+          return uniNode;
+      }
+      const { childNodes } = uniNode;
+      for (let i = 0; i < childNodes.length; i++) {
+          const uniNode = findNode(name, value, childNodes[i]);
+          if (uniNode) {
+              return uniNode;
+          }
+      }
+      return null;
+  }
+  function findNodeById(nodeId, uniNode) {
+      return findNode('nodeId', nodeId, uniNode);
+  }
+  function findNodeByTagName(tagName, uniNode) {
+      return findNode('nodeName', tagName.toUpperCase(), uniNode);
+  }
+  function pushCreateAction(pageNode, nodeId, nodeName) {
+      pageNode.push([
+          ACTION_TYPE_CREATE,
+          nodeId,
+          pageNode.addDict(nodeName),
+          -1,
+          -1,
+      ]);
+  }
+  function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
+      const nodeJson = newChild.toJSON({
+          attr: true,
+          normalize: pageNode.normalizeDict,
+      });
+      pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
+  }
+  function pushRemoveAction(pageNode, nodeId) {
+      pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
+  }
+  function pushAddEventAction(pageNode, nodeId, name, value) {
+      pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
+  }
+  function pushAddWxsEventAction(pageNode, nodeId, name, wxsEvent, value) {
+      pageNode.push([
+          ACTION_TYPE_ADD_WXS_EVENT,
+          nodeId,
+          pageNode.addDict(name),
+          pageNode.addDict(wxsEvent),
+          value,
+      ]);
+  }
+  function pushRemoveEventAction(pageNode, nodeId, name) {
+      pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
+  }
+  function normalizeAttrValue(pageNode, name, value) {
+      return name === 'style' && isPlainObject(value)
+          ? pageNode.normalizeDict(value)
+          : pageNode.addDict(value);
+  }
+  function pushSetAttributeAction(pageNode, nodeId, name, value) {
+      pageNode.push([
+          ACTION_TYPE_SET_ATTRIBUTE,
+          nodeId,
+          pageNode.addDict(name),
+          normalizeAttrValue(pageNode, name, value),
+      ]);
+  }
+  function pushRemoveAttributeAction(pageNode, nodeId, name) {
+      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
+  }
+  function pushSetTextAction(pageNode, nodeId, text) {
+      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
+  }
+  function createPageNode(pageId, pageOptions, setup) {
+      return new UniPageNode(pageId, pageOptions, setup);
+  }
+
+  function setupPage(component) {
+      const oldSetup = component.setup;
+      component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
+      component.setup = (_, ctx) => {
+          const { attrs: { __pageId, __pagePath, __pageQuery, __pageInstance }, } = ctx;
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog(__pagePath, 'setup'));
+          }
+          const instance = vue.getCurrentInstance();
+          const pageVm = instance.proxy;
+          initPageVm(pageVm, __pageInstance);
+          addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+          vue.onMounted(() => {
+              vue.nextTick(() => {
+                  // onShow被延迟，故onReady也同时延迟
+                  invokeHook(pageVm, ON_READY);
+              });
+              // TODO preloadSubPackages
+          });
+          vue.onBeforeUnmount(() => {
+              invokeHook(pageVm, ON_UNLOAD);
+          });
+          if (oldSetup) {
+              return oldSetup(__pageQuery, ctx);
+          }
+      };
+      return component;
+  }
+  function initScope(pageId, vm, pageInstance) {
+      const $getAppWebview = () => {
+          return plus.webview.getWebviewById(pageId + '');
+      };
+      vm.$getAppWebview = $getAppWebview;
+      vm.$.ctx.$scope = {
+          $getAppWebview,
+      };
+      vm.getOpenerEventChannel = () => {
+          if (!pageInstance.eventChannel) {
+              pageInstance.eventChannel = new EventChannel(pageId);
+          }
+          return pageInstance.eventChannel;
+      };
+      return vm;
+  }
+
+  function isVuePageAsyncComponent(component) {
+      return isFunction(component);
+  }
+  const pagesMap = new Map();
+  function definePage(pagePath, asyncComponent) {
+      pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+  }
+  function createPage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
+      const pageNode = createPageNode(__pageId, pageOptions, true);
+      const app = getVueApp();
+      const component = pagesMap.get(__pagePath)();
+      const mountPage = (component) => app.mountPage(component, {
+          __pageId,
+          __pagePath,
+          __pageQuery,
+          __pageInstance,
+      }, pageNode);
+      if (isPromise(component)) {
+          return component.then((component) => mountPage(component));
+      }
+      return mountPage(component);
+  }
+  function createFactory(component) {
+      return () => {
+          if (isVuePageAsyncComponent(component)) {
+              return component().then((component) => setupPage(component));
+          }
+          return setupPage(component);
+      };
+  }
+
+  let isInitEntryPage = false;
+  function initEntry() {
+      if (isInitEntryPage) {
+          return;
+      }
+      isInitEntryPage = true;
+      let entryPagePath;
+      let entryPageQuery;
+      const weexPlus = weex.requireModule('plus');
+      if (weexPlus.getRedirectInfo) {
+          const { path, query, referrerInfo } = parseRedirectInfo();
+          entryPagePath = path;
+          entryPageQuery = query;
+          __uniConfig.referrerInfo = referrerInfo;
+      }
+      else {
+          const argsJsonStr = plus.runtime.arguments;
+          if (!argsJsonStr) {
+              return;
+          }
+          try {
+              const args = JSON.parse(argsJsonStr);
+              entryPagePath = args.path || args.pathName;
+              entryPageQuery = args.query ? '?' + args.query : '';
+          }
+          catch (e) { }
+      }
+      if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+          if (entryPageQuery) {
+              __uniConfig.entryPageQuery = entryPageQuery;
+          }
+          return;
+      }
+      const entryRoute = addLeadingSlash(entryPagePath);
+      const routeOptions = getRouteOptions(entryRoute);
+      if (!routeOptions) {
+          return;
+      }
+      if (!routeOptions.meta.isTabBar) {
+          __uniConfig.realEntryPagePath =
+              __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+      }
+      __uniConfig.entryPagePath = entryPagePath;
+      __uniConfig.entryPageQuery = entryPageQuery;
+  }
+
+  function initRouteOptions(path, openType) {
+      // 需要序列化一遍
+      const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
+      routeOptions.meta = initRouteMeta(routeOptions.meta);
+      if (openType === 'reLaunch' ||
+          (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo
+      ) {
+          routeOptions.meta.isQuit = true;
+      }
+      else if (!routeOptions.meta.isTabBar) {
+          routeOptions.meta.isQuit = false;
+      }
+      // TODO
+      //   if (routeOptions.meta.isTabBar) {
+      //     routeOptions.meta.visible = true
+      //   }
+      return routeOptions;
+  }
+
+  function initNVue(webviewStyle, routeMeta, path) {
+      if (path && routeMeta.isNVue) {
+          webviewStyle.uniNView = {
+              path,
+              defaultFontSize: __uniConfig.defaultFontSize,
+              viewport: __uniConfig.viewport,
+          };
+      }
+  }
+
+  const colorRE = /^#[a-z0-9]{6}$/i;
+  function isColor(color) {
+      return color && (colorRE.test(color) || color === 'transparent');
+  }
+
+  function initBackgroundColor(webviewStyle, routeMeta) {
+      const { backgroundColor } = routeMeta;
+      if (!backgroundColor) {
+          return;
+      }
+      if (!isColor(backgroundColor)) {
+          return;
+      }
+      if (!webviewStyle.background) {
+          webviewStyle.background = backgroundColor;
+      }
+      if (!webviewStyle.backgroundColorTop) {
+          webviewStyle.backgroundColorTop = backgroundColor;
+      }
+  }
+
+  function initPopGesture(webviewStyle, routeMeta) {
+      // 不支持 hide
+      if (webviewStyle.popGesture === 'hide') {
+          delete webviewStyle.popGesture;
+      }
+      // 似乎没用了吧？记得是之前流应用时，需要 appback 的逻辑
+      if (routeMeta.isQuit) {
+          webviewStyle.popGesture = (plus.os.name === 'iOS' ? 'appback' : 'none');
+      }
+  }
+
+  function initPullToRefresh(webviewStyle, routeMeta) {
+      if (!routeMeta.enablePullDownRefresh) {
+          return;
+      }
+      const pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
+          ? defaultAndroidPullToRefresh
+          : defaultPullToRefresh, routeMeta.pullToRefresh));
+      webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
+  }
+  function initWebviewPullToRefreshI18n(pullToRefresh, routeMeta) {
+      const i18nResult = initPullToRefreshI18n(pullToRefresh);
+      if (!i18nResult) {
+          return pullToRefresh;
+      }
+      const [contentdownI18n, contentoverI18n, contentrefreshI18n] = i18nResult;
+      if (contentdownI18n || contentoverI18n || contentrefreshI18n) {
+          uni.onLocaleChange(() => {
+              const webview = plus.webview.getWebviewById(routeMeta.id + '');
+              if (!webview) {
+                  return;
+              }
+              const newPullToRefresh = {
+                  support: true,
+              };
+              if (contentdownI18n) {
+                  newPullToRefresh.contentdown = {
+                      caption: pullToRefresh.contentdown.caption,
+                  };
+              }
+              if (contentoverI18n) {
+                  newPullToRefresh.contentover = {
+                      caption: pullToRefresh.contentover.caption,
+                  };
+              }
+              if (contentrefreshI18n) {
+                  newPullToRefresh.contentrefresh = {
+                      caption: pullToRefresh.contentrefresh.caption,
+                  };
+              }
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('updateWebview', webview.id, newPullToRefresh));
+              }
+              webview.setStyle({
+                  pullToRefresh: newPullToRefresh,
+              });
+          });
+      }
+      return pullToRefresh;
+  }
+  const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
+  const defaultPullToRefresh = {
+      support: true,
+      style: 'default',
+      height: '50px',
+      range: '200px',
+      contentdown: {
+          caption: '',
+      },
+      contentover: {
+          caption: '',
+      },
+      contentrefresh: {
+          caption: '',
+      },
+  };
+
+  function initTitleNView(webviewStyle, routeMeta) {
+      const { navigationBar } = routeMeta;
+      if (navigationBar.style === 'custom') {
+          return false;
+      }
+      let autoBackButton = true;
+      if (routeMeta.isQuit) {
+          autoBackButton = false;
+      }
+      const titleNView = {
+          autoBackButton,
+      };
+      Object.keys(navigationBar).forEach((name) => {
+          const value = navigationBar[name];
+          if (name === 'backgroundColor') {
+              titleNView.backgroundColor = isColor(value)
+                  ? value
+                  : BACKGROUND_COLOR;
+          }
+          else if (name === 'titleImage' && value) {
+              titleNView.tags = createTitleImageTags(value);
+          }
+          else if (name === 'buttons' && isArray$1(value)) {
+              titleNView.buttons = value.map((button, index) => {
+                  button.onclick = createTitleNViewBtnClick(index);
+                  return button;
+              });
+          }
+          else {
+              titleNView[name] =
+                  value;
+          }
+      });
+      webviewStyle.titleNView = initTitleNViewI18n(titleNView, routeMeta);
+  }
+  function initTitleNViewI18n(titleNView, routeMeta) {
+      const i18nResult = initNavigationBarI18n(titleNView);
+      if (!i18nResult) {
+          return titleNView;
+      }
+      const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+      if (titleTextI18n || searchInputPlaceholderI18n) {
+          uni.onLocaleChange(() => {
+              const webview = plus.webview.getWebviewById(routeMeta.id + '');
+              if (!webview) {
+                  return;
+              }
+              const newTitleNView = {};
+              if (titleTextI18n) {
+                  newTitleNView.titleText = titleNView.titleText;
+              }
+              if (searchInputPlaceholderI18n) {
+                  newTitleNView.searchInput = {
+                      placeholder: titleNView.searchInput.placeholder,
+                  };
+              }
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('updateWebview', webview.id, newTitleNView));
+              }
+              webview.setStyle({
+                  titleNView: newTitleNView,
+              });
+          });
+      }
+      return titleNView;
+  }
+  function createTitleImageTags(titleImage) {
+      return [
+          {
+              tag: 'img',
+              src: titleImage,
+              position: {
+                  left: 'auto',
+                  top: 'auto',
+                  width: 'auto',
+                  height: '26px',
+              },
+          },
+      ];
+  }
+  function createTitleNViewBtnClick(index) {
+      return function onClick(btn) {
+          btn.index = index;
+          invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn);
+      };
+  }
+
+  function parseWebviewStyle(path, routeMeta) {
+      const webviewStyle = {
+          bounce: 'vertical',
+      };
+      Object.keys(routeMeta).forEach((name) => {
+          if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+              webviewStyle[name] =
+                  routeMeta[name];
+          }
+      });
+      initNVue(webviewStyle, routeMeta, path);
+      initPopGesture(webviewStyle, routeMeta);
+      initBackgroundColor(webviewStyle, routeMeta);
+      initTitleNView(webviewStyle, routeMeta);
+      initPullToRefresh(webviewStyle, routeMeta);
+      return webviewStyle;
+  }
+  const WEBVIEW_STYLE_BLACKLIST = [
+      'id',
+      'route',
+      'isNVue',
+      'isQuit',
+      'isEntry',
+      'isTabBar',
+      'tabBarIndex',
+      'windowTop',
+      'topWindow',
+      'leftWindow',
+      'rightWindow',
+      'maxWidth',
+      'usingComponents',
+      'disableScroll',
+      'enablePullDownRefresh',
+      'navigationBar',
+      'pullToRefresh',
+      'onReachBottomDistance',
+      'pageOrientation',
+      'backgroundColor',
+  ];
+
+  let id = 2;
+  function getWebviewId() {
+      return id;
+  }
+  function genWebviewId() {
+      return id++;
+  }
+  function encode$1(val) {
+      return val;
+  }
+  function initUniPageUrl(path, query) {
+      const queryString = query ? stringifyQuery$1(query, encode$1) : '';
+      return {
+          path: path.substr(1),
+          query: queryString ? queryString.substr(1) : queryString,
+      };
+  }
+  function initDebugRefresh(isTab, path, query) {
+      const queryString = query ? stringifyQuery$1(query, encode$1) : '';
+      return {
+          isTab,
+          arguments: JSON.stringify({
+              path: path.substr(1),
+              query: queryString ? queryString.substr(1) : queryString,
+          }),
+      };
+  }
+
+  function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
+      const curWebviewId = genWebviewId();
+      const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta);
+      curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('createNVueWebview', curWebviewId, path, curWebviewStyle));
+      }
+      curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
+      return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
+          nvue: true,
+      }, webviewStyle));
+  }
+
+  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
+  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
+  const ANI_DURATION = 300;
+  const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
+  const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
+  const WEBVIEW_ID_PREFIX = 'webviewId';
+
+  let preloadWebview$1;
+  function setPreloadWebview(webview) {
+      preloadWebview$1 = webview;
+  }
+  function getPreloadWebview() {
+      return preloadWebview$1;
+  }
+  function createPreloadWebview() {
+      if (!preloadWebview$1 || preloadWebview$1.__uniapp_route) {
+          // 不存在，或已被使用
+          preloadWebview$1 = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), 
+          // @ts-expect-error
+          { contentAdjust: false });
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('createPreloadWebview', preloadWebview$1.id));
+          }
+      }
+      return preloadWebview$1;
+  }
+
+  function getCurrentWebview() {
+      const page = getCurrentPage();
+      if (page) {
+          return page.$getAppWebview();
+      }
+      return null;
+  }
+  function getWebview(page) {
+      if (page) {
+          return page.$getAppWebview();
+      }
+      return getCurrentWebview();
+  }
+  let pullDownRefreshWebview = null;
+  function getPullDownRefreshWebview() {
+      return pullDownRefreshWebview;
+  }
+  function setPullDownRefreshWebview(webview) {
+      pullDownRefreshWebview = webview;
+  }
+  function isTabBarPage$1(path = '') {
+      if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+          return false;
+      }
+      try {
+          if (!path) {
+              const pages = getCurrentPages();
+              if (!pages.length) {
+                  return false;
+              }
+              const page = pages[pages.length - 1];
+              if (!page) {
+                  return false;
+              }
+              return page.$page.meta.isTabBar;
+          }
+          if (!/^\//.test(path)) {
+              path = addLeadingSlash(path);
+          }
+          const route = __uniRoutes.find((route) => route.path === path);
+          return route && route.meta.isTabBar;
+      }
+      catch (e) {
+          if (process.env.NODE_ENV !== 'production') {
+              console.log('getCurrentPages is not ready');
+          }
+      }
+      return false;
+  }
+
+  function onWebviewClose(webview) {
+      const { popupSubNVueWebviews } = webview;
+      if (!popupSubNVueWebviews) {
+          return;
+      }
+      webview.addEventListener('close', () => {
+          Object.keys(popupSubNVueWebviews).forEach((id) => {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('onWebviewClose', webview.id, 'popupSubNVueWebview', id, 'close'));
+              }
+              popupSubNVueWebviews[id].close('none');
+          });
+      });
+  }
+
+  let lastStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  function restoreOldSetStatusBarStyle(setStatusBarStyle) {
+      oldSetStatusBarStyle = setStatusBarStyle;
+  }
+  function newSetStatusBarStyle(style) {
+      lastStatusBarStyle = style;
+      oldSetStatusBarStyle(style);
+  }
+  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+  function setStatusBarStyle(statusBarStyle) {
+      if (!statusBarStyle) {
+          const page = getCurrentPage();
+          if (!page) {
+              return;
+          }
+          statusBarStyle = page.$page.statusBarStyle;
+          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+              return;
+          }
+      }
+      if (statusBarStyle === lastStatusBarStyle) {
+          return;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('setStatusBarStyle', statusBarStyle));
+      }
+      lastStatusBarStyle = statusBarStyle;
+      plus.navigator.setStatusBarStyle(statusBarStyle);
+  }
+
+  function onWebviewPopGesture(webview) {
+      let popStartStatusBarStyle;
+      webview.addEventListener('popGesture', (e) => {
+          if (e.type === 'start') {
+              // 设置下一个页面的 statusBarStyle
+              const pages = getCurrentPages();
+              const page = pages[pages.length - 2];
+              popStartStatusBarStyle = lastStatusBarStyle;
+              const statusBarStyle = page && page.$page.statusBarStyle;
+              statusBarStyle && setStatusBarStyle(statusBarStyle);
+          }
+          else if (e.type === 'end' && !e.result) {
+              // 拖拽未完成,设置为当前状态栏前景色
+              setStatusBarStyle(popStartStatusBarStyle);
+          }
+          else if (e.type === 'end' && e.result) {
+              removeCurrentPage();
+              setStatusBarStyle();
+              // 触发前一个页面 onShow
+              invokeHook(ON_SHOW);
+          }
+      });
+  }
+
+  function onWebviewRecovery(webview) {
+      if (webview.nvue) {
+          return;
+      }
+      const webviewId = webview.id;
+      const { subscribe, unsubscribe } = UniServiceJSBridge;
+      const onWebviewRecoveryReady = (_, pageId) => {
+          if (webviewId !== pageId) {
+              return;
+          }
+          unsubscribe(ON_WEBVIEW_READY, onWebviewRecoveryReady);
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog(`Recovery`, webviewId, 'ready'));
+          }
+          const page = getPageById(parseInt(pageId));
+          if (page) {
+              const pageNode = page.__page_container__;
+              pageNode.restore();
+          }
+      };
+      // @ts-expect-error
+      webview.addEventListener('recovery', () => {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('Recovery', webview.id));
+          }
+          subscribe(ON_WEBVIEW_READY, onWebviewRecoveryReady);
+      });
+  }
+
+  function onWebviewResize(webview) {
+      const { emit } = UniServiceJSBridge;
+      const onResize = function ({ width, height, }) {
+          const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+          const res = {
+              deviceOrientation: landscape ? 'landscape' : 'portrait',
+              size: {
+                  windowWidth: Math.ceil(width),
+                  windowHeight: Math.ceil(height),
+              },
+          };
+          emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
+      };
+      webview.addEventListener('resize', debounce(onResize, 50));
+  }
+
+  const WEBVIEW_LISTENERS = {
+      pullToRefresh: ON_PULL_DOWN_REFRESH,
+      titleNViewSearchInputChanged: ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+      titleNViewSearchInputConfirmed: ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+      titleNViewSearchInputClicked: ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+      titleNViewSearchInputFocusChanged: ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+  };
+  function initWebviewEvent(webview) {
+      const id = parseInt(webview.id);
+      Object.keys(WEBVIEW_LISTENERS).forEach((name) => {
+          const hook = WEBVIEW_LISTENERS[name];
+          webview.addEventListener(name, (e) => {
+              if (hook === ON_PULL_DOWN_REFRESH) {
+                  // 设置当前正在下拉刷新的webview
+                  setPullDownRefreshWebview(webview);
+              }
+              invokeHook(id, hook, e);
+          });
+      });
+      onWebviewClose(webview);
+      onWebviewResize(webview);
+      if (plus.os.name === 'iOS') {
+          onWebviewRecovery(webview);
+          onWebviewPopGesture(webview);
+      }
+  }
+
+  function initWebviewStyle(webview, path, query, routeMeta) {
+      const webviewStyle = parseWebviewStyle(path, routeMeta);
+      webviewStyle.uniPageUrl = initUniPageUrl(path, query);
+      const isTabBar = !!routeMeta.isTabBar;
+      if (!routeMeta.isNVue) {
+          webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
+      }
+      else {
+          // android 需要使用
+          webviewStyle.isTab = isTabBar;
+      }
+      webviewStyle.locale = weex.requireModule('plus').getLanguage();
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('updateWebview', webviewStyle));
+      }
+      webview.setStyle(webviewStyle);
+  }
+
+  function getStatusbarHeight() {
+      // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+      return plus.navigator.isImmersedStatusbar()
+          ? Math.round(plus.os.name === 'iOS'
+              ? plus.navigator.getSafeAreaInsets().top
+              : plus.navigator.getStatusbarHeight())
+          : 0;
+  }
+  function getStatusBarStyle() {
+      let style = plus.navigator.getStatusBarStyle();
+      if (style === 'UIStatusBarStyleBlackTranslucent' ||
+          style === 'UIStatusBarStyleBlackOpaque' ||
+          style === 'null') {
+          style = 'light';
+      }
+      else if (style === 'UIStatusBarStyleDefault') {
+          style = 'dark';
+      }
+      return style;
+  }
+
+  function warpPlusSuccessCallback(resolve, after) {
+      return function successCallback(data) {
+          delete data.code;
+          delete data.message;
+          if (typeof after === 'function') {
+              data = after(data);
+          }
+          resolve(data);
+      };
+  }
+  function warpPlusErrorCallback(reject, errMsg) {
+      return function errorCallback(error) {
+          error = error || {};
+          // 一键登录errorCallback新增 appid、metadata、uid 参数返回
+          errMsg = error.message || errMsg || '';
+          delete error.message;
+          reject(errMsg, extend({ code: 0 }, error));
+      };
+  }
+  function warpPlusEvent(plusObject, event) {
+      return function () {
+          const object = plusObject();
+          object(function (data) {
+              if (data) {
+                  delete data.code;
+                  delete data.message;
+              }
+              UniServiceJSBridge.invokeOnCallback(event, data);
+          });
+      };
+  }
+  function warpPlusMethod(plusObject, before, after) {
+      return function (options, { resolve, reject }) {
+          const object = plusObject();
+          object(extend({}, typeof before === 'function' ? before(options) : options, {
+              success: warpPlusSuccessCallback(resolve, after),
+              fail: warpPlusErrorCallback(reject),
+          }));
+      };
+  }
+  function isTabBarPage(path = '') {
+      if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+          return false;
+      }
+      try {
+          if (!path) {
+              const pages = getCurrentPages();
+              if (!pages.length) {
+                  return false;
+              }
+              const page = pages[pages.length - 1];
+              if (!page) {
+                  return false;
+              }
+              return page.$page.meta.isTabBar;
+          }
+          if (!/^\//.test(path)) {
+              path = addLeadingSlash(path);
+          }
+          const route = getRouteOptions(path);
+          return route && route.meta.isTabBar;
+      }
+      catch (e) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('isTabBarPage', e));
+          }
+      }
+      return false;
+  }
+
+  function initSubNVues(webview, path, routeMeta) {
+      const subNVues = routeMeta.subNVues || [];
+      subNVues.forEach((subNVue) => {
+          if (!subNVue.path) {
+              return;
+          }
+          const style = subNVue.style || {};
+          const isNavigationBar = subNVue.type === 'navigationBar';
+          const isPopup = subNVue.type === 'popup';
+          style.uniNView = {
+              path: subNVue.path.replace('.nvue', '.js'),
+              defaultFontSize: __uniConfig.defaultFontSize,
+              viewport: __uniConfig.viewport,
+          };
+          const extras = {
+              __uniapp_host: path,
+              __uniapp_origin: style.uniNView.path.split('?')[0].replace('.js', ''),
+              __uniapp_origin_id: webview.id,
+              __uniapp_origin_type: webview.__uniapp_type,
+          };
+          let maskWebview;
+          if (isNavigationBar) {
+              style.position = 'dock';
+              style.dock = 'top';
+              style.top = '0';
+              style.width = '100%';
+              style.height = String(NAVBAR_HEIGHT + getStatusbarHeight());
+              delete style.left;
+              delete style.right;
+              delete style.bottom;
+              delete style.margin;
+          }
+          else if (isPopup) {
+              style.position = 'absolute';
+              if (isTabBarPage(path)) {
+                  maskWebview = tabBar$1;
+              }
+              else {
+                  maskWebview = webview;
+              }
+              extras.__uniapp_mask = style.mask || 'rgba(0,0,0,0.5)';
+              extras.__uniapp_mask_id = maskWebview.id;
+          }
+          delete style.mask;
+          const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
+          if (isPopup) {
+              if (!maskWebview.popupSubNVueWebviews) {
+                  maskWebview.popupSubNVueWebviews = {};
+              }
+              maskWebview.popupSubNVueWebviews[subNVueWebview.id] = subNVueWebview;
+              const hideSubNVue = function () {
+                  maskWebview.setStyle({
+                      mask: 'none',
+                  });
+                  subNVueWebview.hide('auto');
+              };
+              maskWebview.addEventListener('maskClick', hideSubNVue);
+              let isRemoved = false; // 增加个 remove 标记，防止出错
+              subNVueWebview.addEventListener('show', () => {
+                  if (!isRemoved) {
+                      plus.key.removeEventListener('backbutton', backbuttonListener);
+                      plus.key.addEventListener('backbutton', hideSubNVue);
+                      isRemoved = true;
+                  }
+              });
+              subNVueWebview.addEventListener('hide', () => {
+                  if (isRemoved) {
+                      plus.key.removeEventListener('backbutton', hideSubNVue);
+                      plus.key.addEventListener('backbutton', backbuttonListener);
+                      isRemoved = false;
+                  }
+              });
+              subNVueWebview.addEventListener('close', () => {
+                  delete maskWebview.popupSubNVueWebviews[subNVueWebview.id];
+                  if (isRemoved) {
+                      plus.key.removeEventListener('backbutton', hideSubNVue);
+                      plus.key.addEventListener('backbutton', backbuttonListener);
+                      isRemoved = false;
+                  }
+              });
+          }
+          else {
+              webview.append(subNVueWebview);
+          }
+      });
+  }
+
+  function initWebview(webview, path, query, routeMeta) {
+      // 首页或非 nvue 页面
+      if (webview.id === '1' || !routeMeta.isNVue) {
+          // path 必须参数为空，因为首页已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
+          initWebviewStyle(webview, '', query, routeMeta);
+      }
+      initSubNVues(webview, path, routeMeta);
+      initWebviewEvent(webview);
+  }
+
+  function createWebview(options) {
+      if (options.routeOptions.meta.isNVue) {
+          return createNVueWebview(options);
+      }
+      if (getWebviewId() === 2) {
+          // 如果首页非 nvue，则直接返回 Launch Webview
+          return plus.webview.getLaunchWebview();
+      }
+      return getPreloadWebview();
+  }
+  function onWebviewReady(pageId, callback) {
+      UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
+  }
+
+  const preloadWebviews = {};
+  function removePreloadWebview(webview) {
+      const url = Object.keys(preloadWebviews).find((url) => preloadWebviews[url].id === webview.id);
+      if (url) {
+          if (process.env.NODE_ENV !== 'production') {
+              console.log(`[uni-app] removePreloadWebview(${webview.id})`);
+          }
+          delete preloadWebviews[url];
+      }
+  }
+  function closePreloadWebview({ url }) {
+      const webview = preloadWebviews[url];
+      if (webview) {
+          if (webview.__page__) {
+              if (!getCurrentPages().find((page) => page === webview.__page__)) {
+                  // 未使用
+                  webview.close('none');
+              }
+              else {
+                  // 被使用
+                  webview.__preload__ = false;
+              }
+          }
+          else {
+              // 未使用
+              webview.close('none');
+          }
+          delete preloadWebviews[url];
+      }
+      return webview;
+  }
+  function preloadWebview({ url, path, query, }) {
+      if (!preloadWebviews[url]) {
+          const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find((route) => route.path === path)));
+          preloadWebviews[url] = createWebview({
+              path,
+              routeOptions,
+              query,
+              webviewStyle: {
+                  __preload__: true,
+                  __query__: JSON.stringify(query),
+              },
+          });
+      }
+      return preloadWebviews[url];
+  }
+
+  function closeWebview(webview, animationType, animationDuration) {
+      webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+  }
+  function showWebview(webview, animationType, animationDuration, showCallback, delay) {
+      if (typeof delay === 'undefined') {
+          delay = webview.nvue ? 0 : 100;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('showWebview', 'delay', delay));
+      }
+      const execShowCallback = function () {
+          if (execShowCallback._called) {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('execShowCallback', 'prevent'));
+              }
+              return;
+          }
+          execShowCallback._called = true;
+          showCallback && showCallback();
+          navigateFinish();
+      };
+      execShowCallback._called = false;
+      setTimeout(() => {
+          const timer = setTimeout(() => {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('showWebview', 'callback', 'timer'));
+              }
+              execShowCallback();
+          }, animationDuration + 150);
+          webview.show(animationType, animationDuration, () => {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('showWebview', 'callback'));
+              }
+              if (!execShowCallback._called) {
+                  clearTimeout(timer);
+              }
+              execShowCallback();
+          });
+      }, delay);
+  }
+  function backWebview(webview, callback) {
+      const children = webview.children();
+      if (!children || !children.length) {
+          // 有子 webview
+          return callback();
+      }
+      // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+      const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
+          children[0];
+      childWebview.canBack(({ canBack }) => {
+          if (canBack) {
+              childWebview.back(); // webview 返回
+          }
+          else {
+              callback();
+          }
+      });
+  }
+
+  let pendingNavigator = false;
+  function setPendingNavigator(path, callback, msg) {
+      pendingNavigator = {
+          path,
+          nvue: getRouteMeta(path).isNVue,
+          callback,
+      };
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('setPendingNavigator', path, msg));
+      }
+  }
+  function closePage(page, animationType, animationDuration) {
+      removePage(page);
+      closeWebview(page.$getAppWebview(), animationType, animationDuration);
+  }
+  function navigate(path, callback, isAppLaunch = false) {
+      if (!isAppLaunch && pendingNavigator) {
+          return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
+      }
+      if (__uniConfig.renderer === 'native') {
+          // 纯原生无需wait逻辑
+          // 如果是首页还未初始化，需要等一等，其他无需等待
+          if (getCurrentPages().length === 0) {
+              return setPendingNavigator(path, callback, 'waitForReady');
+          }
+          return callback();
+      }
+      // 未创建 preloadWebview 或 preloadWebview 已被使用
+      const waitPreloadWebview = !preloadWebview$1 || (preloadWebview$1 && preloadWebview$1.__uniapp_route);
+      // 已创建未 loaded
+      const waitPreloadWebviewReady = preloadWebview$1 && !preloadWebview$1.loaded;
+      if (waitPreloadWebview || waitPreloadWebviewReady) {
+          setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
+      }
+      else {
+          callback();
+      }
+      if (waitPreloadWebviewReady) {
+          onWebviewReady(preloadWebview$1.id, pendingNavigate);
+      }
+  }
+  function pendingNavigate() {
+      if (!pendingNavigator) {
+          return;
+      }
+      const { callback } = pendingNavigator;
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('pendingNavigate', pendingNavigator.path));
+      }
+      pendingNavigator = false;
+      return callback();
+  }
+  function navigateFinish() {
+      if (__uniConfig.renderer === 'native') {
+          if (!pendingNavigator) {
+              return;
+          }
+          if (pendingNavigator.nvue) {
+              return pendingNavigate();
+          }
+          return;
+      }
+      // 创建预加载
+      const preloadWebview = createPreloadWebview();
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
+      }
+      if (!pendingNavigator) {
+          return;
+      }
+      if (pendingNavigator.nvue) {
+          return pendingNavigate();
+      }
+      preloadWebview.loaded
+          ? pendingNavigator.callback()
+          : onWebviewReady(preloadWebview.id, pendingNavigate);
+  }
+
+  function registerPage({ url, path, query, openType, webview, eventChannel, }) {
+      // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
+      if (webview) {
+          initEntry();
+      }
+      if (preloadWebviews[url]) {
+          webview = preloadWebviews[url];
+          const _webview = webview;
+          if (_webview.__page__) {
+              // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
+              if (getCurrentPages().find((page) => page === _webview.__page__)) {
+                  if ((process.env.NODE_ENV !== 'production')) {
+                      console.log(formatLog('uni-app', `preloadWebview(${path},${_webview.id}) already in use`));
+                  }
+                  webview = undefined;
+              }
+              else {
+                  if (eventChannel) {
+                      _webview.__page__.$page.eventChannel = eventChannel;
+                  }
+                  addCurrentPage(_webview.__page__);
+                  if ((process.env.NODE_ENV !== 'production')) {
+                      console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
+                  }
+                  return _webview;
+              }
+          }
+      }
+      const routeOptions = initRouteOptions(path, openType);
+      if (!webview) {
+          webview = createWebview({ path, routeOptions, query });
+      }
+      else {
+          webview = plus.webview.getWebviewById(webview.id);
+          webview.nvue = routeOptions.meta.isNVue;
+      }
+      routeOptions.meta.id = parseInt(webview.id);
+      const isTabBar = !!routeOptions.meta.isTabBar;
+      if (isTabBar) {
+          tabBar$1.append(webview);
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('registerPage', path, webview.id));
+      }
+      initWebview(webview, path, query, routeOptions.meta);
+      const route = path.substr(1);
+      webview.__uniapp_route = route;
+      const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
+      initNVueEntryPage(webview);
+      if (webview.nvue) {
+          // nvue 时，先启用一个占位 vm
+          const fakeNVueVm = createNVueVm(parseInt(webview.id), webview, pageInstance);
+          initPageVm(fakeNVueVm, pageInstance);
+          addCurrentPage(fakeNVueVm);
+      }
+      else {
+          createPage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
+      }
+      return webview;
+  }
+  function initPageOptions({ meta }) {
+      const statusbarHeight = getStatusbarHeight();
+      const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+      return {
+          css: true,
+          route: meta.route,
+          version: 1,
+          locale: '',
+          platform,
+          pixelRatio,
+          windowWidth,
+          disableScroll: meta.disableScroll === true,
+          onPageScroll: false,
+          onPageReachBottom: false,
+          onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
+              ? meta.onReachBottomDistance
+              : ON_REACH_BOTTOM_DISTANCE,
+          statusbarHeight,
+          windowTop: meta.navigationBar.type === 'float' ? statusbarHeight + NAVBAR_HEIGHT : 0,
+          windowBottom: tabBar$1.indexOf(meta.route) >= 0 && tabBar$1.cover ? tabBar$1.height : 0,
+      };
+  }
+  function initNVueEntryPage(webview) {
+      const isLaunchNVuePage = webview.id === '1' && webview.nvue;
+      // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+      if (isLaunchNVuePage) {
+          if (__uniConfig.splashscreen &&
+              __uniConfig.splashscreen.autoclose &&
+              !__uniConfig.splashscreen.alwaysShowBeforeRender) {
+              plus.navigator.closeSplashscreen();
+          }
+          __uniConfig.onReady(function () {
+              navigateFinish();
+          });
+      }
+  }
+  function createNVueVm(pageId, webview, pageInstance) {
+      return {
+          $: {},
+          onNVuePageCreated(vm, curNVuePage) {
+              vm.$ = {}; // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
+              vm.$getAppWebview = () => webview;
+              vm.getOpenerEventChannel = curNVuePage.getOpenerEventChannel;
+              // 替换真实的 nvue 的 vm
+              initPageVm(vm, pageInstance);
+              const pages = getAllPages();
+              const index = pages.findIndex((p) => p === curNVuePage);
+              if (index > -1) {
+                  pages.splice(index, 1, vm);
+              }
+              if (webview.__preload__) {
+                  webview.__page__ = vm;
+              }
+          },
+          $getAppWebview() {
+              return webview;
+          },
+          getOpenerEventChannel() {
+              if (!pageInstance.eventChannel) {
+                  pageInstance.eventChannel = new EventChannel(pageId);
+              }
+              return pageInstance.eventChannel;
+          },
+      };
+  }
+
+  const $reLaunch = ({ url }, { resolve, reject }) => {
+      const { path, query } = parseUrl(url);
+      navigate(path, () => {
+          _reLaunch({
+              url,
+              path,
+              query,
+          })
+              .then(resolve)
+              .catch(reject);
+      });
+  };
+  const reLaunch = defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+  function _reLaunch({ url, path, query }) {
+      return new Promise((resolve) => {
+          // 获取目前所有页面
+          const pages = getAllPages().slice(0);
+          const routeOptions = __uniRoutes.find((route) => route.path === path);
+          if (routeOptions.meta.isTabBar) {
+              tabBar$1.switchTab(path.slice(1));
+          }
+          showWebview(registerPage({
+              url,
+              path,
+              query,
+              openType: 'reLaunch',
+          }), 'none', 0, () => {
+              pages.forEach((page) => closePage(page, 'none'));
+              resolve(undefined);
+          });
+          setStatusBarStyle();
+      });
+  }
+
   const EVENT_BACKBUTTON = 'backbutton';
   function backbuttonListener() {
       uni.navigateBack({
@@ -2680,6 +4431,13 @@ var serviceContext = (function (vue) {
           query: query ? parseQuery(query) : {},
           referrerInfo: referrerInfo || {},
       });
+  }
+  function initEnterReLaunch(info) {
+      __uniConfig.realEntryPagePath =
+          __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+      __uniConfig.entryPagePath = info.path;
+      __uniConfig.entryPageQuery = info.query;
+      $reLaunch({ url: addLeadingSlash(info.path) + info.query }, { resolve() { }, reject() { } });
   }
   function initLaunchOptions({ path, query, referrerInfo, }) {
       extend(launchOptions, {
@@ -2723,14 +4481,14 @@ var serviceContext = (function (vue) {
 
   const EPS = 1e-4;
   const BASE_DEVICE_WIDTH = 750;
-  let isIOS$1 = false;
+  let isIOS = false;
   let deviceWidth = 0;
   let deviceDPR = 0;
   function checkDeviceWidth() {
       const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
       deviceWidth = windowWidth;
       deviceDPR = pixelRatio;
-      isIOS$1 = platform === 'ios';
+      isIOS = platform === 'ios';
   }
   function checkValue(value, defaultValue) {
       const newValue = Number(value);
@@ -2758,7 +4516,7 @@ var serviceContext = (function (vue) {
       }
       result = Math.floor(result + EPS);
       if (result === 0) {
-          if (deviceDPR === 1 || !isIOS$1) {
+          if (deviceDPR === 1 || !isIOS) {
               result = 1;
           }
           else {
@@ -5141,7 +6899,7 @@ var serviceContext = (function (vue) {
   };
   const RESPONSE_TYPE = ['text', 'arraybuffer'];
   const DEFAULT_RESPONSE_TYPE = 'text';
-  const encode$1 = encodeURIComponent;
+  const encode = encodeURIComponent;
   function stringifyQuery(url, data) {
       let str = url.split('#');
       const hash = str[1] || '';
@@ -5163,7 +6921,7 @@ var serviceContext = (function (vue) {
               else if (isPlainObject(v)) {
                   v = JSON.stringify(v);
               }
-              params[encode$1(key)] = encode$1(v);
+              params[encode(key)] = encode(v);
           }
       }
       query = Object.keys(params)
@@ -5987,76 +7745,6 @@ var serviceContext = (function (vue) {
       },
   };
 
-  function warpPlusSuccessCallback(resolve, after) {
-      return function successCallback(data) {
-          delete data.code;
-          delete data.message;
-          if (typeof after === 'function') {
-              data = after(data);
-          }
-          resolve(data);
-      };
-  }
-  function warpPlusErrorCallback(reject, errMsg) {
-      return function errorCallback(error) {
-          error = error || {};
-          // 一键登录errorCallback新增 appid、metadata、uid 参数返回
-          errMsg = error.message || errMsg || '';
-          delete error.message;
-          reject(errMsg, extend({ code: 0 }, error));
-      };
-  }
-  function warpPlusEvent(plusObject, event) {
-      return function () {
-          const object = plusObject();
-          object(function (data) {
-              if (data) {
-                  delete data.code;
-                  delete data.message;
-              }
-              UniServiceJSBridge.invokeOnCallback(event, data);
-          });
-      };
-  }
-  function warpPlusMethod(plusObject, before, after) {
-      return function (options, { resolve, reject }) {
-          const object = plusObject();
-          object(extend({}, typeof before === 'function' ? before(options) : options, {
-              success: warpPlusSuccessCallback(resolve, after),
-              fail: warpPlusErrorCallback(reject),
-          }));
-      };
-  }
-  function isTabBarPage$1(path = '') {
-      if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
-          return false;
-      }
-      try {
-          if (!path) {
-              const pages = getCurrentPages();
-              if (!pages.length) {
-                  return false;
-              }
-              const page = pages[pages.length - 1];
-              if (!page) {
-                  return false;
-              }
-              return page.$page.meta.isTabBar;
-          }
-          if (!/^\//.test(path)) {
-              path = addLeadingSlash(path);
-          }
-          const route = getRouteOptions(path);
-          return route && route.meta.isTabBar;
-      }
-      catch (e) {
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.error(formatLog('isTabBarPage', e));
-          }
-      }
-      return false;
-  }
-
   const STORAGE_DATA_TYPE = '__TYPE';
   const STORAGE_KEYS = 'uni-storage-keys';
   function parseValue(value) {
@@ -6274,265 +7962,6 @@ var serviceContext = (function (vue) {
       }, errorCallback);
   }, SaveFileProtocol, SaveFileOptions);
 
-  const isIOS = plus.os.name === 'iOS';
-  let config;
-  /**
-   * tabbar显示状态
-   */
-  let visible = true;
-  let tabBar;
-  /**
-   * 设置角标
-   * @param {string} type
-   * @param {number} index
-   * @param {string} text
-   */
-  function setTabBarBadge$1(type, index, text) {
-      if (!tabBar) {
-          return;
-      }
-      if (type === 'none') {
-          tabBar.hideTabBarRedDot({
-              index,
-          });
-          tabBar.removeTabBarBadge({
-              index,
-          });
-      }
-      else if (type === 'text') {
-          tabBar.setTabBarBadge({
-              index,
-              text,
-          });
-      }
-      else if (type === 'redDot') {
-          tabBar.showTabBarRedDot({
-              index,
-          });
-      }
-  }
-  /**
-   * 动态设置 tabBar 某一项的内容
-   */
-  function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible) {
-      const item = {
-          index,
-      };
-      if (text !== undefined) {
-          item.text = text;
-      }
-      if (iconPath) {
-          item.iconPath = getRealPath(iconPath);
-      }
-      if (selectedIconPath) {
-          item.selectedIconPath = getRealPath(selectedIconPath);
-      }
-      if (visible !== undefined) {
-          item.visible = config.list[index].visible = visible;
-          delete item.index;
-          const tabbarItems = config.list.map((item) => ({
-              visible: item.visible,
-          }));
-          tabbarItems[index] = item;
-          tabBar && tabBar.setTabBarItems({ list: tabbarItems });
-      }
-      else {
-          tabBar && tabBar.setTabBarItem(item);
-      }
-  }
-  /**
-   * 动态设置 tabBar 的整体样式
-   * @param {Object} style 样式
-   */
-  function setTabBarStyle$1(style) {
-      tabBar && tabBar.setTabBarStyle(style);
-  }
-  /**
-   * 隐藏 tabBar
-   * @param {boolean} animation 是否需要动画效果
-   */
-  function hideTabBar$1(animation) {
-      visible = false;
-      tabBar &&
-          tabBar.hideTabBar({
-              animation,
-          });
-  }
-  /**
-   * 显示 tabBar
-   * @param {boolean} animation 是否需要动画效果
-   */
-  function showTabBar$1(animation) {
-      visible = true;
-      tabBar &&
-          tabBar.showTabBar({
-              animation,
-          });
-  }
-  const maskClickCallback = [];
-  var tabBar$1 = {
-      id: '0',
-      init(options, clickCallback) {
-          if (options && options.list.length) {
-              config = options;
-          }
-          try {
-              tabBar = weex.requireModule('uni-tabview');
-          }
-          catch (error) {
-              console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
-          }
-          tabBar.onMaskClick(() => {
-              maskClickCallback.forEach((callback) => {
-                  callback();
-              });
-          });
-          tabBar &&
-              tabBar.onClick(({ index }) => {
-                  clickCallback(config.list[index], index);
-              });
-          tabBar &&
-              tabBar.onMidButtonClick(() => {
-                  // publish('onTabBarMidButtonTap', {})
-              });
-      },
-      indexOf(page) {
-          const itemLength = config && config.list && config.list.length;
-          if (itemLength) {
-              for (let i = 0; i < itemLength; i++) {
-                  if (config.list[i].pagePath === page ||
-                      config.list[i].pagePath === `${page}.html`) {
-                      return i;
-                  }
-              }
-          }
-          return -1;
-      },
-      switchTab(page) {
-          const index = this.indexOf(page);
-          if (index >= 0) {
-              tabBar &&
-                  tabBar.switchSelect({
-                      index,
-                  });
-              return true;
-          }
-          return false;
-      },
-      setTabBarBadge: setTabBarBadge$1,
-      setTabBarItem: setTabBarItem$1,
-      setTabBarStyle: setTabBarStyle$1,
-      hideTabBar: hideTabBar$1,
-      showTabBar: showTabBar$1,
-      append(webview) {
-          tabBar &&
-              tabBar.append({
-                  id: webview.id,
-              }, ({ code }) => {
-                  if (code !== 0) {
-                      setTimeout(() => {
-                          this.append(webview);
-                      }, 20);
-                  }
-              });
-      },
-      get visible() {
-          return visible;
-      },
-      get height() {
-          return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
-              plus.navigator.getSafeAreaInsets().deviceBottom);
-      },
-      // tabBar是否遮挡内容区域
-      get cover() {
-          const array = ['extralight', 'light', 'dark'];
-          return isIOS && array.indexOf(config.blurEffect) >= 0;
-      },
-      setStyle({ mask }) {
-          tabBar.setMask({
-              color: mask,
-          });
-      },
-      addEventListener(_name, callback) {
-          maskClickCallback.push(callback);
-      },
-      removeEventListener(_name, callback) {
-          const callbackIndex = maskClickCallback.indexOf(callback);
-          maskClickCallback.splice(callbackIndex, 1);
-      },
-  };
-
-  function getCurrentWebview() {
-      const page = getCurrentPage();
-      if (page) {
-          return page.$getAppWebview();
-      }
-      return null;
-  }
-  function getWebview(page) {
-      if (page) {
-          return page.$getAppWebview();
-      }
-      return getCurrentWebview();
-  }
-  let pullDownRefreshWebview = null;
-  function getPullDownRefreshWebview() {
-      return pullDownRefreshWebview;
-  }
-  function setPullDownRefreshWebview(webview) {
-      pullDownRefreshWebview = webview;
-  }
-  function isTabBarPage(path = '') {
-      if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
-          return false;
-      }
-      try {
-          if (!path) {
-              const pages = getCurrentPages();
-              if (!pages.length) {
-                  return false;
-              }
-              const page = pages[pages.length - 1];
-              if (!page) {
-                  return false;
-              }
-              return page.$page.meta.isTabBar;
-          }
-          if (!/^\//.test(path)) {
-              path = addLeadingSlash(path);
-          }
-          const route = __uniRoutes.find((route) => route.path === path);
-          return route && route.meta.isTabBar;
-      }
-      catch (e) {
-          if (process.env.NODE_ENV !== 'production') {
-              console.log('getCurrentPages is not ready');
-          }
-      }
-      return false;
-  }
-
-  function getStatusbarHeight() {
-      // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-      return plus.navigator.isImmersedStatusbar()
-          ? Math.round(plus.os.name === 'iOS'
-              ? plus.navigator.getSafeAreaInsets().top
-              : plus.navigator.getStatusbarHeight())
-          : 0;
-  }
-  function getStatusBarStyle() {
-      let style = plus.navigator.getStatusBarStyle();
-      if (style === 'UIStatusBarStyleBlackTranslucent' ||
-          style === 'UIStatusBarStyleBlackOpaque' ||
-          style === 'null') {
-          style = 'light';
-      }
-      else if (style === 'UIStatusBarStyleDefault') {
-          style = 'dark';
-      }
-      return style;
-  }
-
   let deviceId;
   function deviceId$1 () {
       deviceId = deviceId || plus.device.uuid;
@@ -6576,7 +8005,7 @@ var serviceContext = (function (vue) {
           height: 0,
           cover: false,
       };
-      if (isTabBarPage$1()) {
+      if (isTabBarPage()) {
           tabBarView.height = tabBar$1.visible ? tabBar$1.height : 0;
           tabBarView.cover = tabBar$1.cover;
       }
@@ -9482,7 +10911,7 @@ var serviceContext = (function (vue) {
       resolve();
   }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
   const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath, visible }, { resolve, reject }) => {
-      if (!isTabBarPage()) {
+      if (!isTabBarPage$1()) {
           return reject('not TabBar page');
       }
       tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
@@ -9502,7 +10931,7 @@ var serviceContext = (function (vue) {
       resolve();
   }, SetTabBarItemProtocol, SetTabBarItemOptions);
   const setTabBarStyle = defineAsyncApi(API_SET_TAB_BAR_STYLE, (style = {}, { resolve, reject }) => {
-      if (!isTabBarPage()) {
+      if (!isTabBarPage$1()) {
           return reject('not TabBar page');
       }
       const borderStyles = {
@@ -9518,7 +10947,7 @@ var serviceContext = (function (vue) {
   }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
   const hideTabBar = defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve, reject }) => {
       const animation = args && args.animation;
-      if (!isTabBarPage()) {
+      if (!isTabBarPage$1()) {
           return reject('not TabBar page');
       }
       tabBar$1.hideTabBar(Boolean(animation));
@@ -9526,7 +10955,7 @@ var serviceContext = (function (vue) {
   }, HideTabBarProtocol);
   const showTabBar = defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve, reject }) => {
       const animation = args && args.animation;
-      if (!isTabBarPage()) {
+      if (!isTabBarPage$1()) {
           return reject('not TabBar page');
       }
       tabBar$1.showTabBar(Boolean(animation));
@@ -9545,13 +10974,6 @@ var serviceContext = (function (vue) {
       setTabBarBadgeNone(index);
       resolve();
   }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-
-  const VD_SYNC = 'vdSync';
-  const APP_SERVICE_ID = '__uniapp__service';
-  const ON_WEBVIEW_READY = 'onWebviewReady';
-  const ACTION_TYPE_DICT = 0;
-  const WEBVIEW_INSERTED = 'webviewInserted';
-  const WEBVIEW_REMOVED = 'webviewRemoved';
 
   const EVENT_TYPE_NAME = 'UniAppSubNVue';
   class SubNvue {
@@ -10250,52 +11672,6 @@ var serviceContext = (function (vue) {
       }
   }
 
-  let isInitEntryPage = false;
-  function initEntry() {
-      if (isInitEntryPage) {
-          return;
-      }
-      isInitEntryPage = true;
-      let entryPagePath;
-      let entryPageQuery;
-      const weexPlus = weex.requireModule('plus');
-      if (weexPlus.getRedirectInfo) {
-          const { path, query, referrerInfo } = parseRedirectInfo();
-          entryPagePath = path;
-          entryPageQuery = query;
-          __uniConfig.referrerInfo = referrerInfo;
-      }
-      else {
-          const argsJsonStr = plus.runtime.arguments;
-          if (!argsJsonStr) {
-              return;
-          }
-          try {
-              const args = JSON.parse(argsJsonStr);
-              entryPagePath = args.path || args.pathName;
-              entryPageQuery = args.query ? '?' + args.query : '';
-          }
-          catch (e) { }
-      }
-      if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
-          if (entryPageQuery) {
-              __uniConfig.entryPageQuery = entryPageQuery;
-          }
-          return;
-      }
-      const entryRoute = addLeadingSlash(entryPagePath);
-      const routeOptions = getRouteOptions(entryRoute);
-      if (!routeOptions) {
-          return;
-      }
-      if (!routeOptions.meta.isTabBar) {
-          __uniConfig.realEntryPagePath =
-              __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-      }
-      __uniConfig.entryPagePath = entryPagePath;
-      __uniConfig.entryPageQuery = entryPageQuery;
-  }
-
   function initTabBar() {
       const { tabBar } = __uniConfig;
       const len = tabBar && tabBar.list && tabBar.list.length;
@@ -10326,1375 +11702,6 @@ var serviceContext = (function (vue) {
       }
   }
 
-  let vueApp;
-  function getVueApp() {
-      return vueApp;
-  }
-  function initVueApp(appVm) {
-      const appContext = appVm.$.appContext;
-      vueApp = extend(appContext.app, {
-          mountPage(pageComponent, pageProps, pageContainer) {
-              const vnode = vue.createVNode(pageComponent, pageProps);
-              // store app context on the root VNode.
-              // this will be set on the root instance on initial mount.
-              vnode.appContext = appContext;
-              vnode.__page_container__ = pageContainer;
-              vue.render(vnode, pageContainer);
-              const publicThis = vnode.component.proxy;
-              publicThis.__page_container__ = pageContainer;
-              return publicThis;
-          },
-          unmountPage: (pageInstance) => {
-              const { __page_container__ } = pageInstance;
-              if (__page_container__) {
-                  __page_container__.isUnmounted = true;
-                  vue.render(null, __page_container__);
-              }
-          },
-      });
-  }
-
-  const pages = [];
-  function addCurrentPage(page) {
-      pages.push(page);
-  }
-  function getPageById(id) {
-      return pages.find((page) => page.$page.id === id);
-  }
-  function getAllPages() {
-      return pages;
-  }
-  function getCurrentPages$1() {
-      const curPages = [];
-      pages.forEach((page) => {
-          if (page.$.__isTabBar) {
-              if (page.$.__isActive) {
-                  curPages.push(page);
-              }
-          }
-          else {
-              curPages.push(page);
-          }
-      });
-      return curPages;
-  }
-  function removeCurrentPage() {
-      const page = getCurrentPage();
-      if (!page) {
-          return;
-      }
-      removePage(page);
-  }
-  function removePage(curPage) {
-      const index = pages.findIndex((page) => page === curPage);
-      if (index === -1) {
-          return;
-      }
-      if (!curPage.$page.meta.isNVue) {
-          getVueApp().unmountPage(curPage);
-      }
-      pages.splice(index, 1);
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('removePage', curPage.$page));
-      }
-  }
-
-  class UniPageNode extends UniNode {
-      constructor(pageId, options, setup = false) {
-          super(NODE_TYPE_PAGE, '#page', null);
-          this._id = 1;
-          this._created = false;
-          this._updating = false;
-          this._createActionMap = new Map();
-          this.updateActions = [];
-          this.dicts = [];
-          this.nodeId = 0;
-          this.pageId = pageId;
-          this.pageNode = this;
-          this.options = options;
-          this.isUnmounted = false;
-          this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
-          this.createdAction = [ACTION_TYPE_PAGE_CREATED];
-          this.normalizeDict = this._normalizeDict.bind(this);
-          this._update = this.update.bind(this);
-          setup && this.setup();
-      }
-      _normalizeDict(value, normalizeValue = true) {
-          if (!isPlainObject(value)) {
-              return this.addDict(value);
-          }
-          const dictArray = [];
-          Object.keys(value).forEach((n) => {
-              const dict = [this.addDict(n)];
-              const v = value[n];
-              if (normalizeValue) {
-                  dict.push(this.addDict(v));
-              }
-              else {
-                  dict.push(v);
-              }
-              dictArray.push(dict);
-          });
-          return dictArray;
-      }
-      addDict(value) {
-          const { dicts } = this;
-          const index = dicts.indexOf(value);
-          if (index > -1) {
-              return index;
-          }
-          return dicts.push(value) - 1;
-      }
-      onInjectHook(hook) {
-          if ((hook === ON_PAGE_SCROLL || hook === ON_REACH_BOTTOM) &&
-              !this.scrollAction) {
-              this.scrollAction = [
-                  ACTION_TYPE_PAGE_SCROLL,
-                  this.options.onReachBottomDistance,
-              ];
-              this.push(this.scrollAction);
-          }
-      }
-      onCreate(thisNode, nodeName) {
-          pushCreateAction(this, thisNode.nodeId, nodeName);
-          return thisNode;
-      }
-      onInsertBefore(thisNode, newChild, refChild) {
-          pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
-          return newChild;
-      }
-      onRemoveChild(oldChild) {
-          pushRemoveAction(this, oldChild.nodeId);
-          return oldChild;
-      }
-      onAddEvent(thisNode, name, flag) {
-          if (thisNode.parentNode) {
-              pushAddEventAction(this, thisNode.nodeId, name, flag);
-          }
-      }
-      onAddWxsEvent(thisNode, name, wxsEvent, flag) {
-          if (thisNode.parentNode) {
-              pushAddWxsEventAction(this, thisNode.nodeId, name, wxsEvent, flag);
-          }
-      }
-      onRemoveEvent(thisNode, name) {
-          if (thisNode.parentNode) {
-              pushRemoveEventAction(this, thisNode.nodeId, name);
-          }
-      }
-      onSetAttribute(thisNode, qualifiedName, value) {
-          if (thisNode.parentNode) {
-              pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
-          }
-      }
-      onRemoveAttribute(thisNode, qualifiedName) {
-          if (thisNode.parentNode) {
-              pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
-          }
-      }
-      onTextContent(thisNode, text) {
-          if (thisNode.parentNode) {
-              pushSetTextAction(this, thisNode.nodeId, text);
-          }
-      }
-      onNodeValue(thisNode, val) {
-          if (thisNode.parentNode) {
-              pushSetTextAction(this, thisNode.nodeId, val);
-          }
-      }
-      genId() {
-          return this._id++;
-      }
-      push(action, extras) {
-          if (this.isUnmounted) {
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('PageNode', 'push.prevent', action));
-              }
-              return;
-          }
-          switch (action[0]) {
-              case ACTION_TYPE_CREATE:
-                  this._createActionMap.set(action[1], action);
-                  break;
-              case ACTION_TYPE_INSERT:
-                  const createAction = this._createActionMap.get(action[1]);
-                  if (createAction) {
-                      createAction[3] = action[2]; // parentNodeId
-                      createAction[4] = action[3]; // anchorId
-                      if (extras) {
-                          createAction[5] = extras;
-                      }
-                  }
-                  else {
-                      if ((process.env.NODE_ENV !== 'production')) {
-                          console.error(formatLog(`Insert`, action, 'not found createAction'));
-                      }
-                  }
-                  break;
-          }
-          // insert 被合并进 create
-          if (action[0] !== ACTION_TYPE_INSERT) {
-              this.updateActions.push(action);
-          }
-          if (!this._updating) {
-              this._updating = true;
-              vue.queuePostFlushCb(this._update);
-          }
-      }
-      restore() {
-          this.clear();
-          this.push(this.createAction);
-          if (this.scrollAction) {
-              this.push(this.scrollAction);
-          }
-          const restoreNode = (node) => {
-              this.onCreate(node, node.nodeName);
-              this.onInsertBefore(node.parentNode, node, null);
-              node.childNodes.forEach((childNode) => {
-                  restoreNode(childNode);
-              });
-          };
-          this.childNodes.forEach((childNode) => restoreNode(childNode));
-          this.push(this.createdAction);
-      }
-      setup() {
-          this.send([this.createAction]);
-      }
-      update() {
-          const { dicts, updateActions, _createActionMap } = this;
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
-          }
-          // 首次
-          if (!this._created) {
-              this._created = true;
-              updateActions.push(this.createdAction);
-          }
-          if (updateActions.length) {
-              if (dicts.length) {
-                  updateActions.unshift([ACTION_TYPE_DICT, dicts]);
-              }
-              this.send(updateActions);
-          }
-          this.clear();
-      }
-      clear() {
-          this.dicts.length = 0;
-          this.updateActions.length = 0;
-          this._updating = false;
-          this._createActionMap.clear();
-      }
-      send(action) {
-          UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
-      }
-      fireEvent(id, evt) {
-          const node = findNodeById(id, this);
-          if (node) {
-              node.dispatchEvent(evt);
-          }
-          else if ((process.env.NODE_ENV !== 'production')) {
-              console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
-          }
-      }
-  }
-  function getPageNode(pageId) {
-      const page = getPageById(pageId);
-      if (!page)
-          return null;
-      return page.__page_container__;
-  }
-  function findNode(name, value, uniNode) {
-      if (typeof uniNode === 'number') {
-          uniNode = getPageNode(uniNode);
-      }
-      if (uniNode[name] === value) {
-          return uniNode;
-      }
-      const { childNodes } = uniNode;
-      for (let i = 0; i < childNodes.length; i++) {
-          const uniNode = findNode(name, value, childNodes[i]);
-          if (uniNode) {
-              return uniNode;
-          }
-      }
-      return null;
-  }
-  function findNodeById(nodeId, uniNode) {
-      return findNode('nodeId', nodeId, uniNode);
-  }
-  function findNodeByTagName(tagName, uniNode) {
-      return findNode('nodeName', tagName.toUpperCase(), uniNode);
-  }
-  function pushCreateAction(pageNode, nodeId, nodeName) {
-      pageNode.push([
-          ACTION_TYPE_CREATE,
-          nodeId,
-          pageNode.addDict(nodeName),
-          -1,
-          -1,
-      ]);
-  }
-  function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
-      const nodeJson = newChild.toJSON({
-          attr: true,
-          normalize: pageNode.normalizeDict,
-      });
-      pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
-  }
-  function pushRemoveAction(pageNode, nodeId) {
-      pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
-  }
-  function pushAddEventAction(pageNode, nodeId, name, value) {
-      pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
-  }
-  function pushAddWxsEventAction(pageNode, nodeId, name, wxsEvent, value) {
-      pageNode.push([
-          ACTION_TYPE_ADD_WXS_EVENT,
-          nodeId,
-          pageNode.addDict(name),
-          pageNode.addDict(wxsEvent),
-          value,
-      ]);
-  }
-  function pushRemoveEventAction(pageNode, nodeId, name) {
-      pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
-  }
-  function normalizeAttrValue(pageNode, name, value) {
-      return name === 'style' && isPlainObject(value)
-          ? pageNode.normalizeDict(value)
-          : pageNode.addDict(value);
-  }
-  function pushSetAttributeAction(pageNode, nodeId, name, value) {
-      pageNode.push([
-          ACTION_TYPE_SET_ATTRIBUTE,
-          nodeId,
-          pageNode.addDict(name),
-          normalizeAttrValue(pageNode, name, value),
-      ]);
-  }
-  function pushRemoveAttributeAction(pageNode, nodeId, name) {
-      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
-  }
-  function pushSetTextAction(pageNode, nodeId, text) {
-      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
-  }
-  function createPageNode(pageId, pageOptions, setup) {
-      return new UniPageNode(pageId, pageOptions, setup);
-  }
-
-  function setupPage(component) {
-      const oldSetup = component.setup;
-      component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-      component.setup = (_, ctx) => {
-          const { attrs: { __pageId, __pagePath, __pageQuery, __pageInstance }, } = ctx;
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog(__pagePath, 'setup'));
-          }
-          const instance = vue.getCurrentInstance();
-          const pageVm = instance.proxy;
-          initPageVm(pageVm, __pageInstance);
-          addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-          vue.onMounted(() => {
-              vue.nextTick(() => {
-                  // onShow被延迟，故onReady也同时延迟
-                  invokeHook(pageVm, ON_READY);
-              });
-              // TODO preloadSubPackages
-          });
-          vue.onBeforeUnmount(() => {
-              invokeHook(pageVm, ON_UNLOAD);
-          });
-          if (oldSetup) {
-              return oldSetup(__pageQuery, ctx);
-          }
-      };
-      return component;
-  }
-  function initScope(pageId, vm, pageInstance) {
-      const $getAppWebview = () => {
-          return plus.webview.getWebviewById(pageId + '');
-      };
-      vm.$getAppWebview = $getAppWebview;
-      vm.$.ctx.$scope = {
-          $getAppWebview,
-      };
-      vm.getOpenerEventChannel = () => {
-          if (!pageInstance.eventChannel) {
-              pageInstance.eventChannel = new EventChannel(pageId);
-          }
-          return pageInstance.eventChannel;
-      };
-      return vm;
-  }
-
-  function isVuePageAsyncComponent(component) {
-      return isFunction(component);
-  }
-  const pagesMap = new Map();
-  function definePage(pagePath, asyncComponent) {
-      pagesMap.set(pagePath, once(createFactory(asyncComponent)));
-  }
-  function createPage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
-      const pageNode = createPageNode(__pageId, pageOptions, true);
-      const app = getVueApp();
-      const component = pagesMap.get(__pagePath)();
-      const mountPage = (component) => app.mountPage(component, {
-          __pageId,
-          __pagePath,
-          __pageQuery,
-          __pageInstance,
-      }, pageNode);
-      if (isPromise(component)) {
-          return component.then((component) => mountPage(component));
-      }
-      return mountPage(component);
-  }
-  function createFactory(component) {
-      return () => {
-          if (isVuePageAsyncComponent(component)) {
-              return component().then((component) => setupPage(component));
-          }
-          return setupPage(component);
-      };
-  }
-
-  function initRouteOptions(path, openType) {
-      // 需要序列化一遍
-      const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
-      routeOptions.meta = initRouteMeta(routeOptions.meta);
-      if (openType === 'reLaunch' ||
-          (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo
-      ) {
-          routeOptions.meta.isQuit = true;
-      }
-      else if (!routeOptions.meta.isTabBar) {
-          routeOptions.meta.isQuit = false;
-      }
-      // TODO
-      //   if (routeOptions.meta.isTabBar) {
-      //     routeOptions.meta.visible = true
-      //   }
-      return routeOptions;
-  }
-
-  function initNVue(webviewStyle, routeMeta, path) {
-      if (path && routeMeta.isNVue) {
-          webviewStyle.uniNView = {
-              path,
-              defaultFontSize: __uniConfig.defaultFontSize,
-              viewport: __uniConfig.viewport,
-          };
-      }
-  }
-
-  const colorRE = /^#[a-z0-9]{6}$/i;
-  function isColor(color) {
-      return color && (colorRE.test(color) || color === 'transparent');
-  }
-
-  function initBackgroundColor(webviewStyle, routeMeta) {
-      const { backgroundColor } = routeMeta;
-      if (!backgroundColor) {
-          return;
-      }
-      if (!isColor(backgroundColor)) {
-          return;
-      }
-      if (!webviewStyle.background) {
-          webviewStyle.background = backgroundColor;
-      }
-      if (!webviewStyle.backgroundColorTop) {
-          webviewStyle.backgroundColorTop = backgroundColor;
-      }
-  }
-
-  function initPopGesture(webviewStyle, routeMeta) {
-      // 不支持 hide
-      if (webviewStyle.popGesture === 'hide') {
-          delete webviewStyle.popGesture;
-      }
-      // 似乎没用了吧？记得是之前流应用时，需要 appback 的逻辑
-      if (routeMeta.isQuit) {
-          webviewStyle.popGesture = (plus.os.name === 'iOS' ? 'appback' : 'none');
-      }
-  }
-
-  function initPullToRefresh(webviewStyle, routeMeta) {
-      if (!routeMeta.enablePullDownRefresh) {
-          return;
-      }
-      const pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
-          ? defaultAndroidPullToRefresh
-          : defaultPullToRefresh, routeMeta.pullToRefresh));
-      webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
-  }
-  function initWebviewPullToRefreshI18n(pullToRefresh, routeMeta) {
-      const i18nResult = initPullToRefreshI18n(pullToRefresh);
-      if (!i18nResult) {
-          return pullToRefresh;
-      }
-      const [contentdownI18n, contentoverI18n, contentrefreshI18n] = i18nResult;
-      if (contentdownI18n || contentoverI18n || contentrefreshI18n) {
-          uni.onLocaleChange(() => {
-              const webview = plus.webview.getWebviewById(routeMeta.id + '');
-              if (!webview) {
-                  return;
-              }
-              const newPullToRefresh = {
-                  support: true,
-              };
-              if (contentdownI18n) {
-                  newPullToRefresh.contentdown = {
-                      caption: pullToRefresh.contentdown.caption,
-                  };
-              }
-              if (contentoverI18n) {
-                  newPullToRefresh.contentover = {
-                      caption: pullToRefresh.contentover.caption,
-                  };
-              }
-              if (contentrefreshI18n) {
-                  newPullToRefresh.contentrefresh = {
-                      caption: pullToRefresh.contentrefresh.caption,
-                  };
-              }
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('updateWebview', webview.id, newPullToRefresh));
-              }
-              webview.setStyle({
-                  pullToRefresh: newPullToRefresh,
-              });
-          });
-      }
-      return pullToRefresh;
-  }
-  const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
-  const defaultPullToRefresh = {
-      support: true,
-      style: 'default',
-      height: '50px',
-      range: '200px',
-      contentdown: {
-          caption: '',
-      },
-      contentover: {
-          caption: '',
-      },
-      contentrefresh: {
-          caption: '',
-      },
-  };
-
-  function initTitleNView(webviewStyle, routeMeta) {
-      const { navigationBar } = routeMeta;
-      if (navigationBar.style === 'custom') {
-          return false;
-      }
-      let autoBackButton = true;
-      if (routeMeta.isQuit) {
-          autoBackButton = false;
-      }
-      const titleNView = {
-          autoBackButton,
-      };
-      Object.keys(navigationBar).forEach((name) => {
-          const value = navigationBar[name];
-          if (name === 'backgroundColor') {
-              titleNView.backgroundColor = isColor(value)
-                  ? value
-                  : BACKGROUND_COLOR;
-          }
-          else if (name === 'titleImage' && value) {
-              titleNView.tags = createTitleImageTags(value);
-          }
-          else if (name === 'buttons' && isArray$1(value)) {
-              titleNView.buttons = value.map((button, index) => {
-                  button.onclick = createTitleNViewBtnClick(index);
-                  return button;
-              });
-          }
-          else {
-              titleNView[name] =
-                  value;
-          }
-      });
-      webviewStyle.titleNView = initTitleNViewI18n(titleNView, routeMeta);
-  }
-  function initTitleNViewI18n(titleNView, routeMeta) {
-      const i18nResult = initNavigationBarI18n(titleNView);
-      if (!i18nResult) {
-          return titleNView;
-      }
-      const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
-      if (titleTextI18n || searchInputPlaceholderI18n) {
-          uni.onLocaleChange(() => {
-              const webview = plus.webview.getWebviewById(routeMeta.id + '');
-              if (!webview) {
-                  return;
-              }
-              const newTitleNView = {};
-              if (titleTextI18n) {
-                  newTitleNView.titleText = titleNView.titleText;
-              }
-              if (searchInputPlaceholderI18n) {
-                  newTitleNView.searchInput = {
-                      placeholder: titleNView.searchInput.placeholder,
-                  };
-              }
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('updateWebview', webview.id, newTitleNView));
-              }
-              webview.setStyle({
-                  titleNView: newTitleNView,
-              });
-          });
-      }
-      return titleNView;
-  }
-  function createTitleImageTags(titleImage) {
-      return [
-          {
-              tag: 'img',
-              src: titleImage,
-              position: {
-                  left: 'auto',
-                  top: 'auto',
-                  width: 'auto',
-                  height: '26px',
-              },
-          },
-      ];
-  }
-  function createTitleNViewBtnClick(index) {
-      return function onClick(btn) {
-          btn.index = index;
-          invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn);
-      };
-  }
-
-  function parseWebviewStyle(path, routeMeta) {
-      const webviewStyle = {
-          bounce: 'vertical',
-      };
-      Object.keys(routeMeta).forEach((name) => {
-          if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
-              webviewStyle[name] =
-                  routeMeta[name];
-          }
-      });
-      initNVue(webviewStyle, routeMeta, path);
-      initPopGesture(webviewStyle, routeMeta);
-      initBackgroundColor(webviewStyle, routeMeta);
-      initTitleNView(webviewStyle, routeMeta);
-      initPullToRefresh(webviewStyle, routeMeta);
-      return webviewStyle;
-  }
-  const WEBVIEW_STYLE_BLACKLIST = [
-      'id',
-      'route',
-      'isNVue',
-      'isQuit',
-      'isEntry',
-      'isTabBar',
-      'tabBarIndex',
-      'windowTop',
-      'topWindow',
-      'leftWindow',
-      'rightWindow',
-      'maxWidth',
-      'usingComponents',
-      'disableScroll',
-      'enablePullDownRefresh',
-      'navigationBar',
-      'pullToRefresh',
-      'onReachBottomDistance',
-      'pageOrientation',
-      'backgroundColor',
-  ];
-
-  let id = 2;
-  function getWebviewId() {
-      return id;
-  }
-  function genWebviewId() {
-      return id++;
-  }
-  function encode(val) {
-      return val;
-  }
-  function initUniPageUrl(path, query) {
-      const queryString = query ? stringifyQuery$1(query, encode) : '';
-      return {
-          path: path.substr(1),
-          query: queryString ? queryString.substr(1) : queryString,
-      };
-  }
-  function initDebugRefresh(isTab, path, query) {
-      const queryString = query ? stringifyQuery$1(query, encode) : '';
-      return {
-          isTab,
-          arguments: JSON.stringify({
-              path: path.substr(1),
-              query: queryString ? queryString.substr(1) : queryString,
-          }),
-      };
-  }
-
-  function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
-      const curWebviewId = genWebviewId();
-      const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta);
-      curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('createNVueWebview', curWebviewId, path, curWebviewStyle));
-      }
-      curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
-          nvue: true,
-      }, webviewStyle));
-  }
-
-  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
-  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
-  const ANI_DURATION = 300;
-  const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
-  const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
-  const WEBVIEW_ID_PREFIX = 'webviewId';
-
-  let preloadWebview$1;
-  function setPreloadWebview(webview) {
-      preloadWebview$1 = webview;
-  }
-  function getPreloadWebview() {
-      return preloadWebview$1;
-  }
-  function createPreloadWebview() {
-      if (!preloadWebview$1 || preloadWebview$1.__uniapp_route) {
-          // 不存在，或已被使用
-          preloadWebview$1 = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), 
-          // @ts-expect-error
-          { contentAdjust: false });
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('createPreloadWebview', preloadWebview$1.id));
-          }
-      }
-      return preloadWebview$1;
-  }
-
-  function onWebviewClose(webview) {
-      const { popupSubNVueWebviews } = webview;
-      if (!popupSubNVueWebviews) {
-          return;
-      }
-      webview.addEventListener('close', () => {
-          Object.keys(popupSubNVueWebviews).forEach((id) => {
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('onWebviewClose', webview.id, 'popupSubNVueWebview', id, 'close'));
-              }
-              popupSubNVueWebviews[id].close('none');
-          });
-      });
-  }
-
-  let lastStatusBarStyle;
-  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-  function restoreOldSetStatusBarStyle(setStatusBarStyle) {
-      oldSetStatusBarStyle = setStatusBarStyle;
-  }
-  function newSetStatusBarStyle(style) {
-      lastStatusBarStyle = style;
-      oldSetStatusBarStyle(style);
-  }
-  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-  function setStatusBarStyle(statusBarStyle) {
-      if (!statusBarStyle) {
-          const page = getCurrentPage();
-          if (!page) {
-              return;
-          }
-          statusBarStyle = page.$page.statusBarStyle;
-          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-              return;
-          }
-      }
-      if (statusBarStyle === lastStatusBarStyle) {
-          return;
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('setStatusBarStyle', statusBarStyle));
-      }
-      lastStatusBarStyle = statusBarStyle;
-      plus.navigator.setStatusBarStyle(statusBarStyle);
-  }
-
-  function onWebviewPopGesture(webview) {
-      let popStartStatusBarStyle;
-      webview.addEventListener('popGesture', (e) => {
-          if (e.type === 'start') {
-              // 设置下一个页面的 statusBarStyle
-              const pages = getCurrentPages();
-              const page = pages[pages.length - 2];
-              popStartStatusBarStyle = lastStatusBarStyle;
-              const statusBarStyle = page && page.$page.statusBarStyle;
-              statusBarStyle && setStatusBarStyle(statusBarStyle);
-          }
-          else if (e.type === 'end' && !e.result) {
-              // 拖拽未完成,设置为当前状态栏前景色
-              setStatusBarStyle(popStartStatusBarStyle);
-          }
-          else if (e.type === 'end' && e.result) {
-              removeCurrentPage();
-              setStatusBarStyle();
-              // 触发前一个页面 onShow
-              invokeHook(ON_SHOW);
-          }
-      });
-  }
-
-  function onWebviewRecovery(webview) {
-      if (webview.nvue) {
-          return;
-      }
-      const webviewId = webview.id;
-      const { subscribe, unsubscribe } = UniServiceJSBridge;
-      const onWebviewRecoveryReady = (_, pageId) => {
-          if (webviewId !== pageId) {
-              return;
-          }
-          unsubscribe(ON_WEBVIEW_READY, onWebviewRecoveryReady);
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog(`Recovery`, webviewId, 'ready'));
-          }
-          const page = getPageById(parseInt(pageId));
-          if (page) {
-              const pageNode = page.__page_container__;
-              pageNode.restore();
-          }
-      };
-      // @ts-expect-error
-      webview.addEventListener('recovery', () => {
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('Recovery', webview.id));
-          }
-          subscribe(ON_WEBVIEW_READY, onWebviewRecoveryReady);
-      });
-  }
-
-  function onWebviewResize(webview) {
-      const { emit } = UniServiceJSBridge;
-      const onResize = function ({ width, height, }) {
-          const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
-          const res = {
-              deviceOrientation: landscape ? 'landscape' : 'portrait',
-              size: {
-                  windowWidth: Math.ceil(width),
-                  windowHeight: Math.ceil(height),
-              },
-          };
-          emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
-      };
-      webview.addEventListener('resize', debounce(onResize, 50));
-  }
-
-  const WEBVIEW_LISTENERS = {
-      pullToRefresh: ON_PULL_DOWN_REFRESH,
-      titleNViewSearchInputChanged: ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
-      titleNViewSearchInputConfirmed: ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
-      titleNViewSearchInputClicked: ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
-      titleNViewSearchInputFocusChanged: ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
-  };
-  function initWebviewEvent(webview) {
-      const id = parseInt(webview.id);
-      Object.keys(WEBVIEW_LISTENERS).forEach((name) => {
-          const hook = WEBVIEW_LISTENERS[name];
-          webview.addEventListener(name, (e) => {
-              if (hook === ON_PULL_DOWN_REFRESH) {
-                  // 设置当前正在下拉刷新的webview
-                  setPullDownRefreshWebview(webview);
-              }
-              invokeHook(id, hook, e);
-          });
-      });
-      onWebviewClose(webview);
-      onWebviewResize(webview);
-      if (plus.os.name === 'iOS') {
-          onWebviewRecovery(webview);
-          onWebviewPopGesture(webview);
-      }
-  }
-
-  function initWebviewStyle(webview, path, query, routeMeta) {
-      const webviewStyle = parseWebviewStyle(path, routeMeta);
-      webviewStyle.uniPageUrl = initUniPageUrl(path, query);
-      const isTabBar = !!routeMeta.isTabBar;
-      if (!routeMeta.isNVue) {
-          webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
-      }
-      else {
-          // android 需要使用
-          webviewStyle.isTab = isTabBar;
-      }
-      webviewStyle.locale = weex.requireModule('plus').getLanguage();
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('updateWebview', webviewStyle));
-      }
-      webview.setStyle(webviewStyle);
-  }
-
-  function initSubNVues(webview, path, routeMeta) {
-      const subNVues = routeMeta.subNVues || [];
-      subNVues.forEach((subNVue) => {
-          if (!subNVue.path) {
-              return;
-          }
-          const style = subNVue.style || {};
-          const isNavigationBar = subNVue.type === 'navigationBar';
-          const isPopup = subNVue.type === 'popup';
-          style.uniNView = {
-              path: subNVue.path.replace('.nvue', '.js'),
-              defaultFontSize: __uniConfig.defaultFontSize,
-              viewport: __uniConfig.viewport,
-          };
-          const extras = {
-              __uniapp_host: path,
-              __uniapp_origin: style.uniNView.path.split('?')[0].replace('.js', ''),
-              __uniapp_origin_id: webview.id,
-              __uniapp_origin_type: webview.__uniapp_type,
-          };
-          let maskWebview;
-          if (isNavigationBar) {
-              style.position = 'dock';
-              style.dock = 'top';
-              style.top = '0';
-              style.width = '100%';
-              style.height = String(NAVBAR_HEIGHT + getStatusbarHeight());
-              delete style.left;
-              delete style.right;
-              delete style.bottom;
-              delete style.margin;
-          }
-          else if (isPopup) {
-              style.position = 'absolute';
-              if (isTabBarPage$1(path)) {
-                  maskWebview = tabBar$1;
-              }
-              else {
-                  maskWebview = webview;
-              }
-              extras.__uniapp_mask = style.mask || 'rgba(0,0,0,0.5)';
-              extras.__uniapp_mask_id = maskWebview.id;
-          }
-          delete style.mask;
-          const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
-          if (isPopup) {
-              if (!maskWebview.popupSubNVueWebviews) {
-                  maskWebview.popupSubNVueWebviews = {};
-              }
-              maskWebview.popupSubNVueWebviews[subNVueWebview.id] = subNVueWebview;
-              const hideSubNVue = function () {
-                  maskWebview.setStyle({
-                      mask: 'none',
-                  });
-                  subNVueWebview.hide('auto');
-              };
-              maskWebview.addEventListener('maskClick', hideSubNVue);
-              let isRemoved = false; // 增加个 remove 标记，防止出错
-              subNVueWebview.addEventListener('show', () => {
-                  if (!isRemoved) {
-                      plus.key.removeEventListener('backbutton', backbuttonListener);
-                      plus.key.addEventListener('backbutton', hideSubNVue);
-                      isRemoved = true;
-                  }
-              });
-              subNVueWebview.addEventListener('hide', () => {
-                  if (isRemoved) {
-                      plus.key.removeEventListener('backbutton', hideSubNVue);
-                      plus.key.addEventListener('backbutton', backbuttonListener);
-                      isRemoved = false;
-                  }
-              });
-              subNVueWebview.addEventListener('close', () => {
-                  delete maskWebview.popupSubNVueWebviews[subNVueWebview.id];
-                  if (isRemoved) {
-                      plus.key.removeEventListener('backbutton', hideSubNVue);
-                      plus.key.addEventListener('backbutton', backbuttonListener);
-                      isRemoved = false;
-                  }
-              });
-          }
-          else {
-              webview.append(subNVueWebview);
-          }
-      });
-  }
-
-  function initWebview(webview, path, query, routeMeta) {
-      // 首页或非 nvue 页面
-      if (webview.id === '1' || !routeMeta.isNVue) {
-          // path 必须参数为空，因为首页已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
-          initWebviewStyle(webview, '', query, routeMeta);
-      }
-      initSubNVues(webview, path, routeMeta);
-      initWebviewEvent(webview);
-  }
-
-  function createWebview(options) {
-      if (options.routeOptions.meta.isNVue) {
-          return createNVueWebview(options);
-      }
-      if (getWebviewId() === 2) {
-          // 如果首页非 nvue，则直接返回 Launch Webview
-          return plus.webview.getLaunchWebview();
-      }
-      return getPreloadWebview();
-  }
-  function onWebviewReady(pageId, callback) {
-      UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
-  }
-
-  const preloadWebviews = {};
-  function removePreloadWebview(webview) {
-      const url = Object.keys(preloadWebviews).find((url) => preloadWebviews[url].id === webview.id);
-      if (url) {
-          if (process.env.NODE_ENV !== 'production') {
-              console.log(`[uni-app] removePreloadWebview(${webview.id})`);
-          }
-          delete preloadWebviews[url];
-      }
-  }
-  function closePreloadWebview({ url }) {
-      const webview = preloadWebviews[url];
-      if (webview) {
-          if (webview.__page__) {
-              if (!getCurrentPages().find((page) => page === webview.__page__)) {
-                  // 未使用
-                  webview.close('none');
-              }
-              else {
-                  // 被使用
-                  webview.__preload__ = false;
-              }
-          }
-          else {
-              // 未使用
-              webview.close('none');
-          }
-          delete preloadWebviews[url];
-      }
-      return webview;
-  }
-  function preloadWebview({ url, path, query, }) {
-      if (!preloadWebviews[url]) {
-          const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find((route) => route.path === path)));
-          preloadWebviews[url] = createWebview({
-              path,
-              routeOptions,
-              query,
-              webviewStyle: {
-                  __preload__: true,
-                  __query__: JSON.stringify(query),
-              },
-          });
-      }
-      return preloadWebviews[url];
-  }
-
-  function closeWebview(webview, animationType, animationDuration) {
-      webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
-  }
-  function showWebview(webview, animationType, animationDuration, showCallback, delay) {
-      if (typeof delay === 'undefined') {
-          delay = webview.nvue ? 0 : 100;
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('showWebview', 'delay', delay));
-      }
-      const execShowCallback = function () {
-          if (execShowCallback._called) {
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('execShowCallback', 'prevent'));
-              }
-              return;
-          }
-          execShowCallback._called = true;
-          showCallback && showCallback();
-          navigateFinish();
-      };
-      execShowCallback._called = false;
-      setTimeout(() => {
-          const timer = setTimeout(() => {
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('showWebview', 'callback', 'timer'));
-              }
-              execShowCallback();
-          }, animationDuration + 150);
-          webview.show(animationType, animationDuration, () => {
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('showWebview', 'callback'));
-              }
-              if (!execShowCallback._called) {
-                  clearTimeout(timer);
-              }
-              execShowCallback();
-          });
-      }, delay);
-  }
-  function backWebview(webview, callback) {
-      const children = webview.children();
-      if (!children || !children.length) {
-          // 有子 webview
-          return callback();
-      }
-      // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
-      const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
-          children[0];
-      childWebview.canBack(({ canBack }) => {
-          if (canBack) {
-              childWebview.back(); // webview 返回
-          }
-          else {
-              callback();
-          }
-      });
-  }
-
-  let pendingNavigator = false;
-  function setPendingNavigator(path, callback, msg) {
-      pendingNavigator = {
-          path,
-          nvue: getRouteMeta(path).isNVue,
-          callback,
-      };
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('setPendingNavigator', path, msg));
-      }
-  }
-  function closePage(page, animationType, animationDuration) {
-      removePage(page);
-      closeWebview(page.$getAppWebview(), animationType, animationDuration);
-  }
-  function navigate(path, callback, isAppLaunch = false) {
-      if (!isAppLaunch && pendingNavigator) {
-          return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
-      }
-      if (__uniConfig.renderer === 'native') {
-          // 纯原生无需wait逻辑
-          // 如果是首页还未初始化，需要等一等，其他无需等待
-          if (getCurrentPages().length === 0) {
-              return setPendingNavigator(path, callback, 'waitForReady');
-          }
-          return callback();
-      }
-      // 未创建 preloadWebview 或 preloadWebview 已被使用
-      const waitPreloadWebview = !preloadWebview$1 || (preloadWebview$1 && preloadWebview$1.__uniapp_route);
-      // 已创建未 loaded
-      const waitPreloadWebviewReady = preloadWebview$1 && !preloadWebview$1.loaded;
-      if (waitPreloadWebview || waitPreloadWebviewReady) {
-          setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
-      }
-      else {
-          callback();
-      }
-      if (waitPreloadWebviewReady) {
-          onWebviewReady(preloadWebview$1.id, pendingNavigate);
-      }
-  }
-  function pendingNavigate() {
-      if (!pendingNavigator) {
-          return;
-      }
-      const { callback } = pendingNavigator;
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('pendingNavigate', pendingNavigator.path));
-      }
-      pendingNavigator = false;
-      return callback();
-  }
-  function navigateFinish() {
-      if (__uniConfig.renderer === 'native') {
-          if (!pendingNavigator) {
-              return;
-          }
-          if (pendingNavigator.nvue) {
-              return pendingNavigate();
-          }
-          return;
-      }
-      // 创建预加载
-      const preloadWebview = createPreloadWebview();
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
-      }
-      if (!pendingNavigator) {
-          return;
-      }
-      if (pendingNavigator.nvue) {
-          return pendingNavigate();
-      }
-      preloadWebview.loaded
-          ? pendingNavigator.callback()
-          : onWebviewReady(preloadWebview.id, pendingNavigate);
-  }
-
-  function registerPage({ url, path, query, openType, webview, eventChannel, }) {
-      // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
-      if (webview) {
-          initEntry();
-      }
-      if (preloadWebviews[url]) {
-          webview = preloadWebviews[url];
-          const _webview = webview;
-          if (_webview.__page__) {
-              // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
-              if (getCurrentPages().find((page) => page === _webview.__page__)) {
-                  if ((process.env.NODE_ENV !== 'production')) {
-                      console.log(formatLog('uni-app', `preloadWebview(${path},${_webview.id}) already in use`));
-                  }
-                  webview = undefined;
-              }
-              else {
-                  if (eventChannel) {
-                      _webview.__page__.$page.eventChannel = eventChannel;
-                  }
-                  addCurrentPage(_webview.__page__);
-                  if ((process.env.NODE_ENV !== 'production')) {
-                      console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
-                  }
-                  return _webview;
-              }
-          }
-      }
-      const routeOptions = initRouteOptions(path, openType);
-      if (!webview) {
-          webview = createWebview({ path, routeOptions, query });
-      }
-      else {
-          webview = plus.webview.getWebviewById(webview.id);
-          webview.nvue = routeOptions.meta.isNVue;
-      }
-      routeOptions.meta.id = parseInt(webview.id);
-      const isTabBar = !!routeOptions.meta.isTabBar;
-      if (isTabBar) {
-          tabBar$1.append(webview);
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('registerPage', path, webview.id));
-      }
-      initWebview(webview, path, query, routeOptions.meta);
-      const route = path.substr(1);
-      webview.__uniapp_route = route;
-      const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
-      initNVueEntryPage(webview);
-      if (webview.nvue) {
-          // nvue 时，先启用一个占位 vm
-          const fakeNVueVm = createNVueVm(parseInt(webview.id), webview, pageInstance);
-          initPageVm(fakeNVueVm, pageInstance);
-          addCurrentPage(fakeNVueVm);
-      }
-      else {
-          createPage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
-      }
-      return webview;
-  }
-  function initPageOptions({ meta }) {
-      const statusbarHeight = getStatusbarHeight();
-      const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
-      return {
-          css: true,
-          route: meta.route,
-          version: 1,
-          locale: '',
-          platform,
-          pixelRatio,
-          windowWidth,
-          disableScroll: meta.disableScroll === true,
-          onPageScroll: false,
-          onPageReachBottom: false,
-          onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
-              ? meta.onReachBottomDistance
-              : ON_REACH_BOTTOM_DISTANCE,
-          statusbarHeight,
-          windowTop: meta.navigationBar.type === 'float' ? statusbarHeight + NAVBAR_HEIGHT : 0,
-          windowBottom: tabBar$1.indexOf(meta.route) >= 0 && tabBar$1.cover ? tabBar$1.height : 0,
-      };
-  }
-  function initNVueEntryPage(webview) {
-      const isLaunchNVuePage = webview.id === '1' && webview.nvue;
-      // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-      if (isLaunchNVuePage) {
-          if (__uniConfig.splashscreen &&
-              __uniConfig.splashscreen.autoclose &&
-              !__uniConfig.splashscreen.alwaysShowBeforeRender) {
-              plus.navigator.closeSplashscreen();
-          }
-          __uniConfig.onReady(function () {
-              navigateFinish();
-          });
-      }
-  }
-  function createNVueVm(pageId, webview, pageInstance) {
-      return {
-          $: {},
-          onNVuePageCreated(vm, curNVuePage) {
-              vm.$ = {}; // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
-              vm.$getAppWebview = () => webview;
-              vm.getOpenerEventChannel = curNVuePage.getOpenerEventChannel;
-              // 替换真实的 nvue 的 vm
-              initPageVm(vm, pageInstance);
-              const pages = getAllPages();
-              const index = pages.findIndex((p) => p === curNVuePage);
-              if (index > -1) {
-                  pages.splice(index, 1, vm);
-              }
-              if (webview.__preload__) {
-                  webview.__page__ = vm;
-              }
-          },
-          $getAppWebview() {
-              return webview;
-          },
-          getOpenerEventChannel() {
-              if (!pageInstance.eventChannel) {
-                  pageInstance.eventChannel = new EventChannel(pageId);
-              }
-              return pageInstance.eventChannel;
-          },
-      };
-  }
-
-  const $reLaunch = ({ url }, { resolve, reject }) => {
-      const { path, query } = parseUrl(url);
-      navigate(path, () => {
-          _reLaunch({
-              url,
-              path,
-              query,
-          })
-              .then(resolve)
-              .catch(reject);
-      });
-  };
-  const reLaunch = defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
-  function _reLaunch({ url, path, query }) {
-      return new Promise((resolve) => {
-          // 获取目前所有页面
-          const pages = getAllPages().slice(0);
-          const routeOptions = __uniRoutes.find((route) => route.path === path);
-          if (routeOptions.meta.isTabBar) {
-              tabBar$1.switchTab(path.slice(1));
-          }
-          showWebview(registerPage({
-              url,
-              path,
-              query,
-              openType: 'reLaunch',
-          }), 'none', 0, () => {
-              pages.forEach((page) => closePage(page, 'none'));
-              resolve(undefined);
-          });
-          setStatusBarStyle();
-      });
-  }
-
   function initGlobalEvent() {
       const plusGlobalEvent = plus.globalEvent;
       const weexGlobalEvent = weex.requireModule('globalEvent');
@@ -11714,7 +11721,7 @@ var serviceContext = (function (vue) {
           const info = parseRedirectInfo();
           if (info && info.userAction) {
               initEnterOptions(info);
-              $reLaunch({ url: addLeadingSlash(info.path) + info.query }, { resolve() { }, reject() { } });
+              initEnterReLaunch(info);
           }
           emit(ON_APP_ENTER_FOREGROUND, getEnterOptions());
       });
@@ -12676,7 +12683,10 @@ var serviceContext = (function (vue) {
       if (page.$page.meta.isQuit) {
           quit();
       }
-      else if (page.$page.id === 1 && __uniConfig.realEntryPagePath) {
+      else if (
+      // 处于直达页面
+      page.$page.route === __uniConfig.entryPagePath &&
+          __uniConfig.realEntryPagePath) {
           // condition
           __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
           delete __uniConfig.realEntryPagePath;
