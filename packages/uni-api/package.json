@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-api",
-  "version": "3.0.0-alpha-3021320211123001",
+  "version": "3.0.0-alpha-3021320211123002",
   "description": "@dcloudio/uni-api",
   "sideEffects": false,
   "repository": {
@@ -14,7 +14,7 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "devDependencies": {
-    "@dcloudio/uni-shared": "3.0.0-alpha-3021320211123001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3021320211123002",
     "@types/pako": "^1.0.2",
     "pako": "^2.0.3"
   }
