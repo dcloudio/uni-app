@@ -38,6 +38,11 @@ const matchCss = /\.css$/i;
  * @param {Function<string>} addNormalizedDependency
  * @returns {Importer}
  */
+const fs = require('fs')
+const preprocessor = require('../../webpack-preprocess-loader/preprocess/lib/preprocess')
+const {
+  cssPreprocessOptions
+} = require('@dcloudio/uni-cli-shared')
 
 function webpackImporter(resourcePath, resolve, addNormalizedDependency) {
   function dirContextFrom(fileContext) {
@@ -51,6 +56,18 @@ function webpackImporter(resourcePath, resolve, addNormalizedDependency) {
       // Add the resolvedFilename as dependency. Although we're also using stats.includedFiles, this might come
       // in handy when an error occurs. In this case, we don't get stats.includedFiles from node-sass.
       addNormalizedDependency(resolvedFile);
+      const file = resolvedFile.replace(matchCss, '')
+      if (fs.existsSync(file)) {
+        const contents = fs.readFileSync(file, 'utf8')
+        if (contents.includes('#endif')) {
+          return {
+            file,
+            contents: preprocessor.preprocess(contents, cssPreprocessOptions.context, {
+              type: cssPreprocessOptions.type
+            })
+          }
+        }
+      }
       return {
         // By removing the CSS file extension, we trigger node-sass to include the CSS file instead of just linking it.
         file: resolvedFile.replace(matchCss, '')
