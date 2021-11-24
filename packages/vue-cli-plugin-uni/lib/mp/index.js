@@ -197,6 +197,9 @@ module.exports = {
       alias.vuex = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3')
     }
 
+    // 使用外层依赖的版本
+    alias['regenerator-runtime'] = require.resolve('regenerator-runtime')
+
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
