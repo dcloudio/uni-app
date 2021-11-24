@@ -1,6 +1,15 @@
 import { assert } from './testUtils'
 import { customElements } from '../src/compiler/options'
 describe('mp-weixin: transform component', () => {
+  test(`component with v-show`, () => {
+    assert(
+      `<custom v-show="ok"/>`,
+      `<custom data-c-h="{{!a}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.ok }
+}`
+    )
+  })
   test(`built-in component`, () => {
     const code = customElements.map((tag) => `<${tag}/>`).join('')
     assert(

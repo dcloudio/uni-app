@@ -75,6 +75,9 @@ const miniProgram = {
         canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],
         editor: [{ name: 'on', arg: ['ready'] }],
     },
+    component: {
+        vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
+    },
 };
 const projectConfigFilename = 'project.config.json';
 const options = {

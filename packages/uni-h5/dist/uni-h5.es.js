@@ -16784,10 +16784,9 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({
     };
     resolve(res);
   });
-  if (getInteractStatus()) {
-    fileInput.click();
-  } else {
-    reject(t2("uni.chooseFile.notUserActivation"));
+  fileInput.click();
+  if (!getInteractStatus()) {
+    console.warn(t2("uni.chooseFile.notUserActivation"));
   }
 }, ChooseFileProtocol, ChooseFileOptions);
 let imageInput = null;
@@ -16835,10 +16834,9 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
     };
     resolve(res);
   });
-  if (getInteractStatus()) {
-    imageInput.click();
-  } else {
-    reject(t2("uni.chooseFile.notUserActivation"));
+  imageInput.click();
+  if (!getInteractStatus()) {
+    console.warn(t2("uni.chooseFile.notUserActivation"));
   }
 }, ChooseImageProtocol, ChooseImageOptions);
 let index$c = 0;
@@ -17135,10 +17133,9 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceTy
       resolve(callbackResult);
     }
   });
-  if (getInteractStatus()) {
-    videoInput.click();
-  } else {
-    reject(t2("uni.chooseFile.notUserActivation"));
+  videoInput.click();
+  if (!getInteractStatus()) {
+    console.warn(t2("uni.chooseFile.notUserActivation"));
   }
 }, ChooseVideoProtocol, ChooseVideoOptions);
 const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({

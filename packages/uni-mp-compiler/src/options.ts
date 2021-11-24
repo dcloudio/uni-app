@@ -100,6 +100,7 @@ export interface TemplateCodegenOptions
   extends Omit<MiniProgramCompilerOptions, 'filter'> {
   scopeId?: string | null
   filename: string
+  isBuiltInComponent: Required<TransformOptions>['isBuiltInComponent']
 }
 
 export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions

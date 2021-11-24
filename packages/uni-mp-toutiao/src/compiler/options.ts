@@ -1,6 +1,7 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
+  COMPONENT_CUSTOM_HIDDEN_BIND,
   MiniProgramCompilerOptions,
   transformComponentLink,
   transformMatchMedia,
@@ -32,6 +33,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dynamicSlotNames: true,
   },
   directive: 'tt:',
+  component: {
+    vShow: COMPONENT_CUSTOM_HIDDEN_BIND,
+  },
 }
 
 export const options: UniMiniProgramPluginOptions = {

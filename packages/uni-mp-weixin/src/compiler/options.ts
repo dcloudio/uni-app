@@ -1,6 +1,7 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
+  COMPONENT_CUSTOM_HIDDEN,
   MiniProgramCompilerOptions,
   transformComponentLink,
   transformRef,
@@ -27,6 +28,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
   lazyElement: {
     canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],
     editor: [{ name: 'on', arg: ['ready'] }],
+  },
+  component: {
+    vShow: COMPONENT_CUSTOM_HIDDEN,
   },
 }
 const projectConfigFilename = 'project.config.json'

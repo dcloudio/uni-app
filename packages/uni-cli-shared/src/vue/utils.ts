@@ -23,7 +23,9 @@ export const VUE_REF_IN_FOR = 'r-i-f'
 
 export function isUserComponent(
   node: RootNode | TemplateChildNode,
-  context: TransformContext
+  context: {
+    isBuiltInComponent: TransformContext['isBuiltInComponent']
+  }
 ): node is ComponentNode {
   return (
     node.type === NodeTypes.ELEMENT &&

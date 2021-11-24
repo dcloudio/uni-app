@@ -99,6 +99,9 @@ const miniProgram = {
         dynamicSlotNames: true,
     },
     directive: 'qq:',
+    component: {
+        vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
+    },
 };
 const options = {
     vite: {

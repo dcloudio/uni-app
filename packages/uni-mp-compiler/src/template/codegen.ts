@@ -3,6 +3,7 @@ import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   formatMiniProgramEvent,
   isElementNode,
+  isUserComponent,
   MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -25,6 +26,7 @@ import { genExpr } from '../codegen'
 import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
+import { TransformContext } from '../transform'
 interface TemplateCodegenContext {
   code: string
   directive: string
@@ -32,6 +34,8 @@ interface TemplateCodegenContext {
   event: MiniProgramCompilerOptions['event']
   slot: MiniProgramCompilerOptions['slot']
   lazyElement: MiniProgramCompilerOptions['lazyElement']
+  component: MiniProgramCompilerOptions['component']
+  isBuiltInComponent: TransformContext['isBuiltInComponent']
   push(code: string): void
 }
 
@@ -45,6 +49,8 @@ export function generate(
     filename,
     directive,
     lazyElement,
+    isBuiltInComponent,
+    component,
   }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
@@ -54,6 +60,8 @@ export function generate(
     scopeId,
     directive,
     lazyElement,
+    component,
+    isBuiltInComponent,
     push(code) {
       context.code += code
     },
@@ -266,7 +274,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
       genNode(node, context)
     })
   }
-  if (node.tagType === ElementTypes.COMPONENT) {
+  if (isUserComponent(node, context)) {
     tag = hyphenate(tag)
   }
   const { push } = context
@@ -333,7 +341,7 @@ export function genElementProps(
       if (name === 'on') {
         genOn(prop, node, context)
       } else {
-        genDirectiveNode(prop, context)
+        genDirectiveNode(prop, node, context)
       }
     }
   })
@@ -341,7 +349,7 @@ export function genElementProps(
 function genOn(
   prop: DirectiveNode,
   node: ElementNode,
-  { push, event }: TemplateCodegenContext
+  { push, event, isBuiltInComponent }: TemplateCodegenContext
 ) {
   const arg = (prop.arg as SimpleExpressionNode).content
   const exp = prop.exp as SimpleExpressionNode
@@ -349,7 +357,7 @@ function genOn(
   const name = (event?.format || formatMiniProgramEvent)(arg, {
     isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
     isCapture: modifiers.includes('capture'),
-    isComponent: node.tagType === ElementTypes.COMPONENT,
+    isComponent: isUserComponent(node, { isBuiltInComponent }),
   })
   if (exp.isStatic) {
     push(` ${name}="${exp.content}"`)
@@ -360,8 +368,10 @@ function genOn(
 
 function genDirectiveNode(
   prop: DirectiveNode,
-  { push }: TemplateCodegenContext
+  node: ElementNode,
+  context: TemplateCodegenContext
 ) {
+  const { push, component } = context
   if (prop.name === 'slot') {
     if (prop.arg) {
       const arg = prop.arg as SimpleExpressionNode
@@ -375,7 +385,13 @@ function genDirectiveNode(
       )
     }
   } else if (prop.name === 'show') {
-    push(` hidden="{{!${(prop.exp as SimpleExpressionNode).content}}}"`)
+    let hiddenPropName = 'hidden'
+    if (isUserComponent(node, context) && component && component.vShow) {
+      hiddenPropName = component.vShow
+    }
+    push(
+      ` ${hiddenPropName}="{{!${(prop.exp as SimpleExpressionNode).content}}}"`
+    )
   } else if (prop.arg && prop.exp) {
     const arg = (prop.arg as SimpleExpressionNode).content
     const exp = (prop.exp as SimpleExpressionNode).content

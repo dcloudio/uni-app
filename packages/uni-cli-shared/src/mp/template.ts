@@ -39,6 +39,12 @@ export interface MiniProgramCompilerOptions {
   filter?: {
     lang: string
   }
+  component?: {
+    /**
+     * 自定义组件自定义 hidden 属性用于实现 v-show
+     */
+    vShow: string
+  }
   directive: string
   emitFile?: (emittedFile: EmittedAsset) => string
 }

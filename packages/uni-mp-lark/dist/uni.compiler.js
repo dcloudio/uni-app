@@ -81,6 +81,9 @@ const miniProgram = {
         dynamicSlotNames: true,
     },
     directive: 'tt:',
+    component: {
+        vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN_BIND,
+    },
 };
 const options = {
     vite: {

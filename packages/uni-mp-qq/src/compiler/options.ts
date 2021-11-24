@@ -1,6 +1,7 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
+  COMPONENT_CUSTOM_HIDDEN,
   MiniProgramCompilerOptions,
   transformComponentLink,
   transformMatchMedia,
@@ -29,6 +30,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dynamicSlotNames: true,
   },
   directive: 'qq:',
+  component: {
+    vShow: COMPONENT_CUSTOM_HIDDEN,
+  },
 }
 
 export const options: UniMiniProgramPluginOptions = {
