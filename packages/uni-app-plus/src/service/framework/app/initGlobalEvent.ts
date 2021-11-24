@@ -4,14 +4,16 @@ import {
   ON_APP_ENTER_FOREGROUND,
   ON_THEME_CHANGE,
   ON_KEYBOARD_HEIGHT_CHANGE,
+  addLeadingSlash,
 } from '@dcloudio/uni-shared'
+import { $reLaunch } from '../../api/route/_reLaunch'
 import {
   EVENT_BACKBUTTON,
   backbuttonListener,
   parseRedirectInfo,
   initEnterOptions,
   getEnterOptions,
-  initEnterReLaunch,
+  RedirectInfo,
 } from './utils'
 
 export function initGlobalEvent() {
@@ -88,4 +90,15 @@ export function onPlusMessage<T>(
   once: boolean = false
 ) {
   UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once)
+}
+
+function initEnterReLaunch(info: RedirectInfo) {
+  __uniConfig.realEntryPagePath =
+    __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+  __uniConfig.entryPagePath = info.path
+  __uniConfig.entryPageQuery = info.query
+  $reLaunch(
+    { url: addLeadingSlash(info.path) + info.query },
+    { resolve() {}, reject() {} }
+  )
 }
