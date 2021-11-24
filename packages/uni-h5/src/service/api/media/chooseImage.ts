@@ -79,10 +79,10 @@ export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
       // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
     })
 
-    if (getInteractStatus()) {
-      imageInput.click()
-    } else {
-      reject(t('uni.chooseFile.notUserActivation'))
+    imageInput.click()
+
+    if (!getInteractStatus()) {
+      console.warn(t('uni.chooseFile.notUserActivation'))
     }
   },
   ChooseImageProtocol,
