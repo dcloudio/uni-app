@@ -70,7 +70,7 @@ export function chooseVideo ({
   })
 
   videoInput.click()
-  
+
   if (!interact.getStatus()) {
     console.warn(`${t('uni.chooseFile.notUserActivation')}`)
   }

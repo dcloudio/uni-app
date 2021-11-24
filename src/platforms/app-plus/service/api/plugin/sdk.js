@@ -9,7 +9,7 @@ export const sendHostEvent = sendNativeEvent
 
 export function navigateToMiniProgram (data, callbackId) {
   sendHostEvent(
-    'navigateToMiniProgram',
+    'navigateToUniMP',
     data,
     (res) => {
       if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {

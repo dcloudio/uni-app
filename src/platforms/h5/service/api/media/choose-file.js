@@ -58,7 +58,7 @@ export function chooseFile ({
   })
 
   fileInput.click()
-  
+
   if (!interact.getStatus()) {
     console.warn(`${t('uni.chooseFile.notUserActivation')}`)
   }
