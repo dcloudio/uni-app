@@ -26,7 +26,7 @@ export function initModuleAlias() {
 }
 
 function supportAutoInstallPlugin() {
-  return true
+  return !!process.env.HX_Version
 }
 
 export function installHBuilderXPlugin(plugin: string) {
