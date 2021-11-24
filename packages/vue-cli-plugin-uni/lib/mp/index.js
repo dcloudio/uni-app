@@ -195,6 +195,9 @@ module.exports = {
       alias['@dcloudio/uni-app'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-app')
     }
 
+    // 使用外层依赖的版本
+    alias['regenerator-runtime'] = require.resolve('regenerator-runtime')
+
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {

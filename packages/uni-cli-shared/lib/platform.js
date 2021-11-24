@@ -90,7 +90,11 @@ module.exports = {
   },
   getMPRuntimePath () {
     if (process.env.UNI_USING_VUE3) {
-      return require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM + '/dist/uni.mp.esm.js')
+      try {
+        return require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM + '/dist/uni.mp.esm.js')
+      } catch (error) {
+        throw new Error('Vue3 项目暂不支持当前小程序')
+      }
     }
     return require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   },

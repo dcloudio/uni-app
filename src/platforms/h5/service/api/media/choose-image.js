@@ -55,11 +55,9 @@ export function chooseImage ({
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
 
-  if (interact.getStatus()) {
-    imageInput.click()
-  } else {
-    invoke(callbackId, {
-      errMsg: `chooseImage:fail ${t('uni.chooseFile.notUserActivation')}`
-    })
+  imageInput.click()
+
+  if (!interact.getStatus()) {
+    console.warn(`${t('uni.chooseFile.notUserActivation')}`)
   }
 }
