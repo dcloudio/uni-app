@@ -36,7 +36,6 @@
     "@vue/server-renderer": "3.2.22",
     "@vue/shared": "3.2.22",
     "localstorage-polyfill": "^1.0.1",
-    "pako": "^2.0.3",
     "safe-area-insets": "^1.4.1",
     "vue-router": "^4.0.12",
     "xmlhttprequest": "^1.8.0"

@@ -144,12 +144,8 @@ importers:
   packages/uni-api:
     specifiers:
       '@dcloudio/uni-shared': 3.0.0-alpha-3021320211123002
-      '@types/pako': ^1.0.2
-      pako: ^1.0.11
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
-      '@types/pako': 1.0.2
-      pako: 1.0.11
 
   packages/uni-app:
     specifiers:
@@ -175,8 +171,10 @@ importers:
       '@dcloudio/uni-h5': 3.0.0-alpha-3021320211123002
       '@dcloudio/uni-i18n': 3.0.0-alpha-3021320211123002
       '@dcloudio/uni-shared': 3.0.0-alpha-3021320211123002
+      '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.22
       autoprefixer: ^10.4.0
+      pako: ^1.0.11
       vue: 3.2.22
     dependencies:
       '@dcloudio/uni-app-vite': link:../uni-app-vite
@@ -186,8 +184,10 @@ importers:
       '@dcloudio/uni-h5': link:../uni-h5
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
+      '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.22
       autoprefixer: 10.4.0
+      pako: 1.0.11
       vue: 3.2.22
 
   packages/uni-app-vite:
@@ -441,10 +441,8 @@ importers:
   packages/uni-components:
     specifiers:
       '@dcloudio/uni-shared': 3.0.0-alpha-3021320211123002
-      pako: ^1.0.11
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
-      pako: 1.0.11
 
   packages/uni-core:
     specifiers:
@@ -471,7 +469,6 @@ importers:
       '@vue/shared': 3.2.22
       acorn-loose: ^8.2.1
       localstorage-polyfill: ^1.0.1
-      pako: ^2.0.3
       safe-area-insets: ^1.4.1
       vue: 3.2.22
       vue-router: ^4.0.12
@@ -484,7 +481,6 @@ importers:
       '@vue/server-renderer': 3.2.22_vue@3.2.22
       '@vue/shared': 3.2.22
       localstorage-polyfill: 1.0.1
-      pako: 2.0.4
       safe-area-insets: 1.4.1
       vue-router: 4.0.12_vue@3.2.22
       xmlhttprequest: 1.8.0
@@ -6986,10 +6982,6 @@ packages:
   /pako/1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
     dev: true
-
-  /pako/2.0.4:
-    resolution: {integrity: sha512-v8tweI900AUkZN6heMU/4Uy4cXRc2AYNRggVmTR+dEncawDJgCdLMximOVA2p4qO57WMynangsfGRb5WD6L1Bg==}
-    dev: false
 
   /parent-module/1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}

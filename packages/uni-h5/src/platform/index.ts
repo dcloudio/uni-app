@@ -16,3 +16,6 @@ export * from './saveImage'
 export * from './constants'
 export { getSameOriginUrl } from '../helpers/file'
 export { getEnterOptions, getLaunchOptions } from '../framework/setup/utils'
+
+export const inflateRaw = (...args: any[]): any => {}
+export const deflateRaw = (...args: any[]): any => {}

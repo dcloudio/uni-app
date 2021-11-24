@@ -29,3 +29,5 @@ export {
   getEnterOptions,
   getLaunchOptions,
 } from '../service/framework/app/utils'
+
+export { inflateRaw, deflateRaw } from 'pako'

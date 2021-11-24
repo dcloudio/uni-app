@@ -328,7 +328,7 @@ function initNavigationBarI18n(navigationBar) {
   }
 }
 function initTabBarI18n(tabBar2) {
-  if (isEnableLocale()) {
+  if (isEnableLocale() && tabBar2.list) {
     tabBar2.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
@@ -3946,6 +3946,7 @@ const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_D
     if (imgData && imgData.length) {
       data.data = new Uint8ClampedArray(imgData);
     }
+    delete data.compressed;
     resolve(data);
   }
   operateCanvas(canvasId, pageId, "getImageData", {
@@ -3978,7 +3979,9 @@ const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_D
       resolve(data2);
     });
   };
-  data = Array.prototype.slice.call(data);
+  {
+    data = Array.prototype.slice.call(data);
+  }
   operate();
 }, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
 const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({
@@ -6115,6 +6118,10 @@ function initLaunchOptions({
   extend(enterOptions, launchOptions);
   return launchOptions;
 }
+const inflateRaw = (...args) => {
+};
+const deflateRaw = (...args) => {
+};
 var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
@@ -6745,13 +6752,13 @@ function useMethods(canvasRef, actionsWaiting) {
     compressed
   }, resolve) {
     try {
+      if (false)
+        ;
       if (!height) {
         height = Math.round(data.length / 4 / width);
       }
       const canvas = getTempCanvas(width, height);
       const context = canvas.getContext("2d");
-      if (false)
-        ;
       context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
       canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
       canvas.height = canvas.width = 0;

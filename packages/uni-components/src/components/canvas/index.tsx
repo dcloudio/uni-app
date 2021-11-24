@@ -13,12 +13,13 @@ import {
   saveImage,
   getSameOriginUrl,
   getRealPath,
+  inflateRaw,
+  deflateRaw,
 } from '@dcloudio/uni-platform'
 import ResizeSensor from '../resize-sensor'
 import { useNativeEvent, NativeEventTrigger } from '../../helpers/useEvent'
 import { pixelRatio, wrapper, initHidpi } from '../../helpers/hidpi'
 import { once } from '@dcloudio/uni-shared'
-import pako from 'pako'
 
 const initHidpiOnce = /*#__PURE__*/ once(() => {
   return __NODE_JS__ ? onMounted(initHidpi) : initHidpi()
@@ -562,7 +563,7 @@ function useMethods(
       } else {
         const imgData = context.getImageData(0, 0, destWidth, destHeight)
         if (__PLATFORM__ === 'app') {
-          data = pako.deflateRaw(imgData.data as any, { to: 'string' })
+          data = deflateRaw(imgData.data as any, { to: 'string' })
           compressed = true
         } else {
           // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
@@ -609,7 +610,7 @@ function useMethods(
   ) {
     try {
       if (__PLATFORM__ === 'app' && compressed) {
-        data = pako.inflateRaw(data) as any
+        data = inflateRaw(data) as any
       }
       if (!height) {
         height = Math.round(data.length / 4 / width)

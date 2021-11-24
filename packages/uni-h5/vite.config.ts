@@ -38,8 +38,6 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
     },
-    // 忽略 pako 内部条件编译
-    exclude: ['**/*/pako.esm.mjs'],
   }),
 ]
 if (FORMAT === 'cjs') {

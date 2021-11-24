@@ -142,7 +142,7 @@ function initNavigationBarI18n(navigationBar) {
   }
 }
 function initTabBarI18n(tabBar2) {
-  if (isEnableLocale()) {
+  if (isEnableLocale() && tabBar2.list) {
     tabBar2.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
@@ -1561,6 +1561,10 @@ function getSameOriginUrl(url) {
   }
   return urlToFile(url).then(fileToUrl);
 }
+const inflateRaw = (...args) => {
+};
+const deflateRaw = (...args) => {
+};
 var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
@@ -2043,13 +2047,13 @@ function useMethods(canvasRef, actionsWaiting) {
     compressed
   }, resolve) {
     try {
+      if (false)
+        ;
       if (!height) {
         height = Math.round(data.length / 4 / width);
       }
       const canvas = getTempCanvas(width, height);
       const context = canvas.getContext("2d");
-      if (false)
-        ;
       context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
       canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
       canvas.height = canvas.width = 0;

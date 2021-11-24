@@ -31,9 +31,8 @@ import { once, ON_ERROR } from '@dcloudio/uni-shared'
 
 import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
 
-import { TEMP_PATH } from '@dcloudio/uni-platform'
+import { TEMP_PATH, inflateRaw, deflateRaw } from '@dcloudio/uni-platform'
 
-import pako from 'pako'
 //#endregion
 
 //#region UniServiceJSBridge
@@ -1049,7 +1048,7 @@ export const canvasGetImageData =
         let imgData = data.data
         if (imgData && imgData.length) {
           if (__PLATFORM__ === 'app' && data.compressed) {
-            imgData = pako.inflateRaw(imgData) as any
+            imgData = inflateRaw(imgData) as any
           }
           data.data = new Uint8ClampedArray(imgData) as any
         }
@@ -1110,7 +1109,7 @@ export const canvasPutImageData =
         __PLATFORM__ === 'app' &&
         (plus.os.name !== 'iOS' || typeof __WEEX_DEVTOOL__ === 'boolean')
       ) {
-        data = pako.deflateRaw(data as any, { to: 'string' }) as any
+        data = deflateRaw(data as any, { to: 'string' }) as any
         compressed = true
       } else {
         // fix ... 操作符
