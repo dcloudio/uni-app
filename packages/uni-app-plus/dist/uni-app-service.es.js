@@ -19100,7 +19100,7 @@ var serviceContext = (function (vue) {
   const sendHostEvent = sendNativeEvent;
   const API_NAVIGATE_TO_MINI_PROGRAM = 'navigateToMiniProgram';
   const navigateToMiniProgram = defineAsyncApi(API_NAVIGATE_TO_MINI_PROGRAM, (data, { resolve, reject }) => {
-      sendHostEvent(API_NAVIGATE_TO_MINI_PROGRAM, data, (res) => {
+      sendHostEvent('navigateToUniMP', data, (res) => {
           if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
               return reject(res.errMsg.split(' ')[1]);
           }
