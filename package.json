@@ -13,7 +13,6 @@
     "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "ls-lint": "ls-lint",
     "test": "jest",
     "preinstall": "node ./scripts/preinstall.js",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
