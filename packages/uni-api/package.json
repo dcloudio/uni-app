@@ -16,6 +16,6 @@
   "devDependencies": {
     "@dcloudio/uni-shared": "3.0.0-alpha-3021320211123002",
     "@types/pako": "^1.0.2",
-    "pako": "^2.0.3"
+    "pako": "^1.0.11"
   }
 }

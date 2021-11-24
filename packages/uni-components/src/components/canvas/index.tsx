@@ -18,6 +18,7 @@ import ResizeSensor from '../resize-sensor'
 import { useNativeEvent, NativeEventTrigger } from '../../helpers/useEvent'
 import { pixelRatio, wrapper, initHidpi } from '../../helpers/hidpi'
 import { once } from '@dcloudio/uni-shared'
+import pako from 'pako'
 
 const initHidpiOnce = /*#__PURE__*/ once(() => {
   return __NODE_JS__ ? onMounted(initHidpi) : initHidpi()
@@ -561,7 +562,6 @@ function useMethods(
       } else {
         const imgData = context.getImageData(0, 0, destWidth, destHeight)
         if (__PLATFORM__ === 'app') {
-          const pako = require('pako') // eslint-disable-line no-restricted-globals
           data = pako.deflateRaw(imgData.data as any, { to: 'string' })
           compressed = true
         } else {
@@ -608,15 +608,14 @@ function useMethods(
     resolve: (res: any) => void
   ) {
     try {
+      if (__PLATFORM__ === 'app' && compressed) {
+        data = pako.inflateRaw(data) as any
+      }
       if (!height) {
         height = Math.round(data.length / 4 / width)
       }
       const canvas = getTempCanvas(width, height)
       const context = canvas.getContext('2d')!
-      if (__PLATFORM__ === 'app' && compressed) {
-        const pako = require('pako') // eslint-disable-line no-restricted-globals
-        data = pako.inflateRaw(data) as any
-      }
       context.putImageData(
         new ImageData(new Uint8ClampedArray(data), width, height),
         0,
