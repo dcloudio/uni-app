@@ -33,7 +33,7 @@ export function initPullToRefreshI18n(
 }
 
 export function initTabBarI18n(tabBar: UniApp.TabBarOptions) {
-  if (isEnableLocale()) {
+  if (isEnableLocale() && tabBar.list) {
     tabBar.list.forEach((item) => {
       defineI18nProperty(item, ['text'])
     })
