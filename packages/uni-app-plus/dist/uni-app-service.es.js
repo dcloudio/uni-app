@@ -2702,7 +2702,7 @@ var serviceContext = (function (vue) {
               referrerInfo.extraData = extraData;
           }
           return {
-              path,
+              path: path || '',
               query: query ? '?' + query : '',
               referrerInfo,
               userAction,
@@ -17096,8 +17096,10 @@ var serviceContext = (function (vue) {
       const weexPlus = weex.requireModule('plus');
       if (weexPlus.getRedirectInfo) {
           const { path, query, referrerInfo } = parseRedirectInfo();
-          entryPagePath = path;
-          entryPageQuery = query;
+          if (path) {
+              entryPagePath = path;
+              entryPageQuery = query;
+          }
           __uniConfig.referrerInfo = referrerInfo;
       }
       else {
@@ -18546,7 +18548,7 @@ var serviceContext = (function (vue) {
       });
       plusGlobalEvent.addEventListener('resume', () => {
           const info = parseRedirectInfo();
-          if (info && info.userAction) {
+          if (info && info.userAction && info.path) {
               initEnterOptions(info);
               initEnterReLaunch(info);
           }

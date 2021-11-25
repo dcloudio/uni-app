@@ -17,8 +17,10 @@ export function initEntry() {
 
   if (weexPlus.getRedirectInfo) {
     const { path, query, referrerInfo } = parseRedirectInfo()!
-    entryPagePath = path
-    entryPageQuery = query
+    if (path) {
+      entryPagePath = path
+      entryPageQuery = query
+    }
     __uniConfig.referrerInfo = referrerInfo
   } else {
     const argsJsonStr = plus.runtime.arguments

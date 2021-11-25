@@ -66,7 +66,7 @@ export function parseRedirectInfo(): RedirectInfo | void {
       referrerInfo.extraData = extraData
     }
     return {
-      path,
+      path: path || '',
       query: query ? '?' + query : '',
       referrerInfo,
       userAction,

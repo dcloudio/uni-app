@@ -35,7 +35,7 @@ export function initGlobalEvent() {
 
   plusGlobalEvent.addEventListener('resume', () => {
     const info = parseRedirectInfo()
-    if (info && info.userAction) {
+    if (info && info.userAction && info.path) {
       initEnterOptions(info)
       initEnterReLaunch(info)
     }
