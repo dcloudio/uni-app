@@ -852,6 +852,10 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
     loading: {
       type: [Boolean, String],
       default: false
+    },
+    plain: {
+      type: [Boolean, String],
+      default: false
     }
   },
   setup(props2, {
@@ -892,12 +896,13 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
       const hoverClass = props2.hoverClass;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       const loadingAttrs = useBooleanAttr(props2, "loading");
+      const plainAttrs = useBooleanAttr(props2, "plain");
       const hasHoverClass = hoverClass && hoverClass !== "none";
       return vue.createVNode("uni-button", vue.mergeProps({
         "ref": rootRef,
         "onClick": onClick,
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, booleanAttrs, loadingAttrs), [slots.default && slots.default()], 16, ["onClick"]);
+      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
 });
