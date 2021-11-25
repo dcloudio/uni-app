@@ -1,29 +1,13 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assetPlugin } from '../plugins/vitejs/plugins/asset'
 import { cssPlugin, cssPostPlugin } from '../plugins/vitejs/plugins/css'
-import { assetPlugin as h5AssetPlugin } from '../plugins/vitejs/plugins/h5Asset'
-import {
-  cssPlugin as h5CssPlugin,
-  cssPostPlugin as h5CssPostPlugin,
-} from '../plugins/vitejs/plugins/h5Css'
+
 export type CreateUniViteFilterPlugin = (
   opts: UniViteFilterPluginOptions
 ) => Plugin
 export interface UniViteFilterPluginOptions {
   resolvedConfig: ResolvedConfig
   filter: (id: string) => boolean
-}
-
-export function injectH5AssetPlugin(config: ResolvedConfig) {
-  replacePlugins([h5AssetPlugin(config)], config)
-}
-
-export function injectH5CssPlugin(config: ResolvedConfig) {
-  replacePlugins([h5CssPlugin(config)], config)
-}
-
-export function injectH5CssPostPlugin(config: ResolvedConfig) {
-  replacePlugins([h5CssPostPlugin(config)], config)
 }
 
 export function injectAssetPlugin(config: ResolvedConfig) {

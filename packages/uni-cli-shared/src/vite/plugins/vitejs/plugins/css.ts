@@ -867,7 +867,7 @@ const sass: SassStylePreprocessor = (source, root, options, aliasResolver) =>
     aliasResolver
   )
 
-export function preprocessCss(content: string) {
+function preprocessCss(content: string) {
   if (content.includes('#endif')) {
     return preCss(content)
   }

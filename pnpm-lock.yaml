@@ -468,6 +468,7 @@ importers:
       '@vue/server-renderer': 3.2.22
       '@vue/shared': 3.2.22
       acorn-loose: ^8.2.1
+      acorn-walk: ^8.2.0
       localstorage-polyfill: ^1.0.1
       safe-area-insets: ^1.4.1
       vue: 3.2.22
@@ -489,6 +490,7 @@ importers:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@types/google.maps': 3.47.0
       acorn-loose: 8.2.1
+      acorn-walk: 8.2.0
       vue: 3.2.22
 
   packages/uni-h5-vite:
@@ -3198,6 +3200,11 @@ packages:
 
   /acorn-walk/7.2.0:
     resolution: {integrity: sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==}
+    engines: {node: '>=0.4.0'}
+    dev: true
+
+  /acorn-walk/8.2.0:
+    resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
     engines: {node: '>=0.4.0'}
     dev: true
 
