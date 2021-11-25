@@ -2263,7 +2263,8 @@ const HTTP_METHODS = [
   "PUT",
   "DELETE",
   "TRACE",
-  "CONNECT"
+  "CONNECT",
+  "PATCH"
 ];
 function elemInArray(str, arr) {
   if (!str || arr.indexOf(str) === -1) {

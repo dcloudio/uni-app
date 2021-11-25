@@ -699,6 +699,7 @@ var serviceContext = (function (vue) {
       'DELETE',
       'TRACE',
       'CONNECT',
+      'PATCH',
   ];
   function elemInArray(str, arr) {
       if (!str || arr.indexOf(str) === -1) {
