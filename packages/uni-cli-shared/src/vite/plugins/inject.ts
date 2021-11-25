@@ -219,7 +219,10 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
       if (newImports.size === 0) {
         return {
           code,
-          ast,
+          // 不能返回 ast ，否则会导致代码不能被再次修改
+          // 比如 App.vue 中，console.log('uniCloud') 触发了 inject 检测，检测完，发现不需要
+          // 此时返回 ast，会导致 import { setupApp } from '@dcloudio/uni-h5' 不会被编译
+          // ast
           map: sourceMap ? magicString.generateMap({ hires: true }) : null,
         }
       }
