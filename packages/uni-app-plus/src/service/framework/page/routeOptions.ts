@@ -9,8 +9,8 @@ export function initRouteOptions(path: string, openType: UniApp.OpenType) {
   routeOptions.meta = initRouteMeta(routeOptions.meta)
 
   if (
-    openType === 'reLaunch' ||
-    (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo
+    !__uniConfig.realEntryPagePath &&
+    (openType === 'reLaunch' || getCurrentPages().length === 0) // redirectTo
   ) {
     routeOptions.meta.isQuit = true
   } else if (!routeOptions.meta.isTabBar) {

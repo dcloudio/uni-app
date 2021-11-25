@@ -17168,8 +17168,8 @@ var serviceContext = (function (vue) {
       // 需要序列化一遍
       const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
       routeOptions.meta = initRouteMeta(routeOptions.meta);
-      if (openType === 'reLaunch' ||
-          (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo
+      if (!__uniConfig.realEntryPagePath &&
+          (openType === 'reLaunch' || getCurrentPages().length === 0) // redirectTo
       ) {
           routeOptions.meta.isQuit = true;
       }
@@ -17501,6 +17501,26 @@ var serviceContext = (function (vue) {
       });
   }
 
+  /**
+   * 是否处于直达页面
+   * @param page
+   * @returns
+   */
+  function isDirectPage(page) {
+      return (__uniConfig.realEntryPagePath &&
+          page.$page.route === __uniConfig.entryPagePath);
+  }
+  /**
+   * 重新启动到首页
+   */
+  function reLaunchEntryPage() {
+      __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+      delete __uniConfig.realEntryPagePath;
+      uni.reLaunch({
+          url: addLeadingSlash(__uniConfig.entryPagePath),
+      });
+  }
+
   let lastStatusBarStyle;
   let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
   function restoreOldSetStatusBarStyle(setStatusBarStyle) {
@@ -17621,10 +17641,16 @@ var serviceContext = (function (vue) {
               setStatusBarStyle(popStartStatusBarStyle);
           }
           else if (e.type === 'end' && e.result) {
+              const page = getCurrentPage();
               removeCurrentPage();
               setStatusBarStyle();
-              // 触发前一个页面 onShow
-              invokeHook(ON_SHOW);
+              if (page && isDirectPage(page)) {
+                  reLaunchEntryPage();
+              }
+              else {
+                  // 触发前一个页面 onShow
+                  invokeHook(ON_SHOW);
+              }
           }
       });
   }
@@ -19520,16 +19546,8 @@ var serviceContext = (function (vue) {
       if (page.$page.meta.isQuit) {
           quit();
       }
-      else if (
-      // 处于直达页面
-      page.$page.route === __uniConfig.entryPagePath &&
-          __uniConfig.realEntryPagePath) {
-          // condition
-          __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
-          delete __uniConfig.realEntryPagePath;
-          uni.reLaunch({
-              url: addLeadingSlash(__uniConfig.entryPagePath),
-          });
+      else if (isDirectPage(page)) {
+          reLaunchEntryPage();
       }
       else {
           const { delta, animationType, animationDuration } = args;
