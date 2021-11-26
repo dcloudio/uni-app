@@ -364,6 +364,10 @@
             ]
         ]
     ],
+    "closePreviewImage": [
+        "/platforms/h5/service/api/media/preview-image.js",
+        []
+    ],
     "getImageInfo": [
         "/platforms/h5/service/api/media/get-image-info.js",
         [
