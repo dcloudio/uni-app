@@ -27,7 +27,7 @@ export function registerConfig (config, Vue) {
 
   if (__uniConfig.nvueCompiler === 'uni-app') {
     __uniConfig.viewport = plus.screen.resolutionWidth
-    __uniConfig.defaultFontSize = __uniConfig.viewport / 20
+    __uniConfig.defaultFontSize = 16
   }
 
   parseRoutes(__uniConfig)
