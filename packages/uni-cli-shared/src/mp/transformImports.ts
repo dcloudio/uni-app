@@ -20,7 +20,11 @@ import MagicString from 'magic-string'
 import { PluginContext } from 'rollup'
 import { M } from '../messages'
 import { BINDING_COMPONENTS } from '../constants'
-import { normalizeMiniProgramFilename, removeExt } from '../utils'
+import {
+  normalizeMiniProgramFilename,
+  normalizeParsePlugins,
+  removeExt,
+} from '../utils'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 
 interface TransformVueComponentImportsOptions {
@@ -47,9 +51,10 @@ export async function transformVueComponentImports(
   if (!global && !code.includes(BINDING_COMPONENTS)) {
     return { code, usingComponents: {} }
   }
+
   const s = new MagicString(code)
   const scriptAst = parse(code, {
-    plugins: [...(babelParserPlugins || [])],
+    plugins: normalizeParsePlugins(importer, babelParserPlugins),
     sourceType: 'module',
   }).program
 

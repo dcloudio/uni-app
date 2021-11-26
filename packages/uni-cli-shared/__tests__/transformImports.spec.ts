@@ -51,6 +51,44 @@ export function createApp() {
         'component-b': '/components/component-b',
       })
     })
+    test(`ts`, async () => {
+      const source = `
+import { createSSRApp } from 'vue'
+import ComponentA from './components/component-a.vue'
+import ComponentB from './components/component-b.vue'
+export function createApp() {
+  const app = createSSRApp(App)
+  app.provide('UseRequestConfigContext', {
+    requestMethod: (param: any) => {},
+  })
+  app.component('component-a',ComponentA)
+  app.component('component-b',ComponentB)
+  return {
+    app
+  }
+}
+`
+      const { code, usingComponents } = await transformVueComponentImports(
+        source,
+        importer.replace('.js', '.ts'),
+        {
+          root,
+          global: true,
+          resolve,
+          dynamicImport,
+        }
+      )
+      expect(code).toContain(
+        `const ComponentA = ()=>import('${root}/components/component-a.vue')`
+      )
+      expect(code).toContain(
+        `const ComponentB = ()=>import('${root}/components/component-b.vue')`
+      )
+      expect(usingComponents).toMatchObject({
+        'component-a': '/components/component-a',
+        'component-b': '/components/component-b',
+      })
+    })
   })
   describe('local', () => {
     const importer = '/usr/xxx/projects/test/src/pages/index/index.vue'

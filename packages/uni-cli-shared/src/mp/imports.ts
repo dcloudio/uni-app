@@ -5,7 +5,14 @@ import { extend } from '@vue/shared'
 import { isImportDeclaration, isImportDefaultSpecifier } from '@babel/types'
 import { parse } from '@babel/parser'
 import { EXTNAME_VUE, EXTNAME_VUE_RE } from '../constants'
-
+import { normalizeParsePlugins } from '../utils'
+/**
+ * 暂时没用
+ * @param source
+ * @param importer
+ * @param resolve
+ * @returns
+ */
 export async function findVueComponentImports(
   source: string,
   importer: string,
@@ -44,6 +51,7 @@ export async function findVueComponentImports(
     }
     if (EXTNAME_VUE_RE.test(res.id)) {
       const expr = parse(source.slice(importSpecifier.ss, importSpecifier.se), {
+        plugins: normalizeParsePlugins(res.id),
         sourceType: 'module',
       }).program.body[0]
       if (isImportDeclaration(expr) && expr.specifiers.length === 1) {

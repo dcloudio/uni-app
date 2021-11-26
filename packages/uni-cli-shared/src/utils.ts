@@ -3,7 +3,7 @@ import os from 'os'
 import path from 'path'
 import { camelize, capitalize } from '@vue/shared'
 export { default as hash } from 'hash-sum'
-import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
+import { EXTNAME_TS_RE, PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
 
 import {
   NodeTypes,
@@ -11,6 +11,7 @@ import {
   RootNode,
   TemplateChildNode,
 } from '@vue/compiler-core'
+import { ParserPlugin } from '@babel/parser'
 
 export let isRunningWithYarnPnp: boolean
 try {
@@ -75,4 +76,18 @@ export function normalizeMiniProgramFilename(
     return normalizeNodeModules(filename)
   }
   return normalizeNodeModules(path.relative(inputDir, filename))
+}
+
+export function normalizeParsePlugins(
+  importer: string,
+  babelParserPlugins?: ParserPlugin[]
+) {
+  const isTS = EXTNAME_TS_RE.test(importer.split('?')[0])
+  const plugins: ParserPlugin[] = []
+  if (isTS) {
+    plugins.push('jsx')
+  }
+  if (babelParserPlugins) plugins.push(...babelParserPlugins)
+  if (isTS) plugins.push('typescript', 'decorators-legacy')
+  return plugins
 }

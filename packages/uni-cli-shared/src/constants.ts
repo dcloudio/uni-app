@@ -1,8 +1,10 @@
 export const PUBLIC_DIR = 'static'
 export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx']
+export const EXTNAME_TS = ['.ts', '.tsx']
 export const EXTNAME_VUE = ['.vue', '.nvue']
 export const EXTNAME_VUE_RE = /\.(vue|nvue)$/
 export const EXTNAME_JS_RE = /\.[jt]sx?$/
+export const EXTNAME_TS_RE = /\.tsx?$/
 
 export const ASSETS_INLINE_LIMIT = 40 * 1024
 
