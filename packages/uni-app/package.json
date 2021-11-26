@@ -29,6 +29,6 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3030020211125001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3030020211125001",
     "@dcloudio/uni-stat": "3.0.0-alpha-3030020211125001",
-    "@vue/shared": "3.2.22"
+    "@vue/shared": "3.2.23"
   }
 }

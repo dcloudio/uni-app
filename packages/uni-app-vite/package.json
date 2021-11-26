@@ -32,6 +32,6 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "@vue/compiler-core": "3.2.22"
+    "@vue/compiler-core": "3.2.23"
   }
 }

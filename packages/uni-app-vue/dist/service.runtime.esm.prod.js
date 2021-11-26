@@ -1050,7 +1050,7 @@ export default function vueFactory(exports) {
   var effectTrackDepth = 0;
   var trackOpBit = 1;
   /**
-   * The bitwise track markers support at most 30 levels op recursion.
+   * The bitwise track markers support at most 30 levels of recursion.
    * This value is chosen to enable modern JS engines to use a SMI on all platforms.
    * When recursion depth is greater, fall back to using a full cleanup.
    */
@@ -1440,7 +1440,7 @@ export default function vueFactory(exports) {
     return function set(target, key, value, receiver) {
       var oldValue = target[key];
 
-      if (!shallow) {
+      if (!shallow && !isReadonly(value)) {
         value = toRaw(value);
         oldValue = toRaw(oldValue);
 
@@ -4175,7 +4175,7 @@ export default function vueFactory(exports) {
         current = current.parent;
       }
 
-      hook();
+      return hook();
     });
 
     injectHook(type, wrappedHook, target); // In addition to registering it on the target instance, we walk up the parent
@@ -8364,51 +8364,51 @@ export default function vueFactory(exports) {
 
         if (n !== undefined) {
           switch (n) {
-            case 0
+            case 1
             /* SETUP */
             :
               return setupState[key];
 
-            case 1
+            case 2
             /* DATA */
             :
               return data[key];
 
-            case 3
+            case 4
             /* CONTEXT */
             :
               return ctx[key];
 
-            case 2
+            case 3
             /* PROPS */
             :
               return props[key];
             // default: just fallthrough
           }
         } else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
-          accessCache[key] = 0
+          accessCache[key] = 1
           /* SETUP */
           ;
           return setupState[key];
         } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-          accessCache[key] = 1
+          accessCache[key] = 2
           /* DATA */
           ;
           return data[key];
         } else if ( // only cache other properties when instance has declared (thus stable)
         // props
         (normalizedProps = instance.propsOptions[0]) && hasOwn(normalizedProps, key)) {
-          accessCache[key] = 2
+          accessCache[key] = 3
           /* PROPS */
           ;
           return props[key];
         } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-          accessCache[key] = 3
+          accessCache[key] = 4
           /* CONTEXT */
           ;
           return ctx[key];
         } else if (shouldCacheAccess) {
-          accessCache[key] = 4
+          accessCache[key] = 0
           /* OTHER */
           ;
         }
@@ -8430,7 +8430,7 @@ export default function vueFactory(exports) {
         return cssModule;
       } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
         // user may set custom properties to `this` that start with `$`
-        accessCache[key] = 3
+        accessCache[key] = 4
         /* CONTEXT */
         ;
         return ctx[key];
@@ -8483,7 +8483,7 @@ export default function vueFactory(exports) {
         }
       } = _ref19;
       var normalizedProps;
-      return accessCache[key] !== undefined || data !== EMPTY_OBJ && hasOwn(data, key) || setupState !== EMPTY_OBJ && hasOwn(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
+      return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn(data, key) || setupState !== EMPTY_OBJ && hasOwn(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
     }
 
   };
@@ -9746,7 +9746,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.22";
+  var version = "3.2.23";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

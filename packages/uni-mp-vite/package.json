@@ -25,7 +25,7 @@
     "@intlify/core-base": "9.1.9",
     "@intlify/shared": "9.1.9",
     "@intlify/vue-devtools": "9.1.9",
-    "@vue/shared": "3.2.22",
+    "@vue/shared": "3.2.23",
     "base64url": "^3.0.1",
     "debug": "^4.3.2",
     "magic-string": "^0.25.7"
@@ -33,6 +33,6 @@
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
     "@types/debug": "^4.1.7",
-    "@vue/compiler-sfc": "3.2.22"
+    "@vue/compiler-sfc": "3.2.23"
   }
 }
