@@ -64,6 +64,7 @@ var serviceContext = (function () {
     'chooseImage',
     'chooseFile',
     'previewImage',
+    'closePreviewImage',
     'getImageInfo',
     'getVideoInfo',
     'saveImageToPhotosAlbum',
@@ -254,7 +255,8 @@ var serviceContext = (function () {
     'sendNativeEvent',
     'preloadPage',
     'unPreloadPage',
-    'loadSubPackage'
+    'loadSubPackage',
+    'sendHostEvent'
   ];
 
   const ad = [
@@ -1642,7 +1644,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "从相册选择",
   	"uni.chooseVideo.sourceType.camera": "拍摄",
-  	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在用户激活时显示",
+  	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存图像",
   	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1678,7 +1680,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "從相冊選擇",
   	"uni.chooseVideo.sourceType.camera": "拍攝",
-  	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在用戶激活時顯示",
+  	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存圖像",
   	"uni.previewImage.save.success": "保存圖像到相冊成功",
@@ -1717,6 +1719,26 @@ var serviceContext = (function () {
       locale = '';
     }
   }
+
+  function initI18nMessages () {
+    if (!isEnableLocale()) {
+      return
+    }
+    const localeKeys = Object.keys(__uniConfig.locales);
+    if (localeKeys.length) {
+      localeKeys.forEach((locale) => {
+        const curMessages = messages[locale];
+        const userMessages = __uniConfig.locales[locale];
+        if (curMessages) {
+          Object.assign(curMessages, userMessages);
+        } else {
+          messages[locale] = userMessages;
+        }
+      });
+    }
+  }
+
+  initI18nMessages();
 
   const i18n = initVueI18n(
     locale,
@@ -1813,7 +1835,7 @@ var serviceContext = (function () {
   }
 
   function isEnableLocale () {
-    return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+    return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
   }
 
   function initNavigationBarI18n (navigationBar) {
@@ -1825,14 +1847,14 @@ var serviceContext = (function () {
     }
   }
 
-  function initI18n () {
-    const localeKeys = Object.keys(__uniConfig.locales || {});
-    if (localeKeys.length) {
-      localeKeys.forEach((locale) =>
-        i18n.add(locale, __uniConfig.locales[locale])
-      );
-    }
-  }
+  // export function initI18n() {
+  //   const localeKeys = Object.keys(__uniConfig.locales || {})
+  //   if (localeKeys.length) {
+  //     localeKeys.forEach((locale) =>
+  //       i18n.add(locale, __uniConfig.locales[locale])
+  //     )
+  //   }
+  // }
 
   const setClipboardData = {
     data: {
@@ -2362,7 +2384,8 @@ var serviceContext = (function () {
     PUT: 'PUT',
     DELETE: 'DELETE',
     TRACE: 'TRACE',
-    CONNECT: 'CONNECT'
+    CONNECT: 'CONNECT',
+    PATCH: 'PATCH'
   };
   const dataType = {
     JSON: 'json'
@@ -4339,6 +4362,8 @@ var serviceContext = (function () {
     return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
+  const AUDIO_DEFAULT_CATEGORY = 'ambient';
+
   const audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
@@ -4385,6 +4410,7 @@ var serviceContext = (function () {
     audio.src = '';
     audio.volume = 1;
     audio.startTime = 0;
+    audio.setSessionCategory(AUDIO_DEFAULT_CATEGORY);
     return {
       errMsg: 'createAudioInstance:ok',
       audioId
@@ -4411,7 +4437,8 @@ var serviceContext = (function () {
     autoplay = false,
     loop = false,
     obeyMuteSwitch,
-    volume
+    volume,
+    category = AUDIO_DEFAULT_CATEGORY
   }) {
     const audio = audios[audioId];
     if (audio) {
@@ -4429,6 +4456,9 @@ var serviceContext = (function () {
         audio.volume = style.volume = volume;
       }
       audio.setStyles(style);
+      if (category) {
+        audio.setSessionCategory(category);
+      }
       initStateChage(audioId);
     }
     return {
@@ -7222,6 +7252,19 @@ var serviceContext = (function () {
     }
   }
 
+  function closePreviewImagePlus () {
+    try {
+      plus.nativeUI.closePreviewImage();
+      return {
+        errMsg: 'closePreviewImagePlus:ok'
+      }
+    } catch (error) {
+      return {
+        errMsg: 'closePreviewImagePlus:fail'
+      }
+    }
+  }
+
   let recorder$1;
   let recordTimeout$1;
 
@@ -8666,6 +8709,25 @@ var serviceContext = (function () {
         errMsg: 'loadSubPackage:ok'
       });
     });
+  }
+
+  const sendHostEvent = sendNativeEvent;
+
+  function navigateToMiniProgram (data, callbackId) {
+    sendHostEvent(
+      'navigateToUniMP',
+      data,
+      (res) => {
+        if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
+          return invoke$1(callbackId, {
+            errMsg: res.errMsg
+          })
+        }
+        invoke$1(callbackId, {
+          errMsg: 'navigateToMiniProgram:ok'
+        });
+      }
+    );
   }
 
   const VD_SYNC_VERSION = 2;
@@ -10839,6 +10901,11 @@ var serviceContext = (function () {
     pagePath,
     visible
   }) {
+    if (!isTabBarPage()) {
+      return {
+        errMsg: 'setTabBarItem:fail not TabBar page'
+      }
+    }
     tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
@@ -11742,6 +11809,7 @@ var serviceContext = (function () {
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
     previewImagePlus: previewImagePlus,
+    closePreviewImagePlus: closePreviewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -11779,6 +11847,8 @@ var serviceContext = (function () {
     onNativeEventReceive: onNativeEventReceive,
     sendNativeEvent: sendNativeEvent,
     loadSubPackage: loadSubPackage$2,
+    sendHostEvent: sendHostEvent,
+    navigateToMiniProgram: navigateToMiniProgram,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
@@ -20219,9 +20289,14 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
+  function closePreviewImage (args = {}) {
+    return invokeMethod('closePreviewImagePlus', args)
+  }
+
   var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    previewImage: previewImage$1
+    previewImage: previewImage$1,
+    closePreviewImage: closePreviewImage
   });
 
   const callbacks$8 = {
@@ -22968,8 +23043,6 @@ var serviceContext = (function () {
       };
     }
   };
-
-  initI18n();
 
   // 挂靠在uni上，暂不做全局导出
   uni$1.__$wx__ = wx;

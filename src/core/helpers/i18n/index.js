@@ -7,7 +7,7 @@ import {
 } from 'uni-shared'
 
 import {
-  DC_LOCALE
+  UNI_STORAGE_LOCALE
 } from '../constants'
 
 import en from './en.json'
@@ -27,7 +27,7 @@ const messages = {
 let locale
 
 if (__PLATFORM__ === 'h5') {
-  locale = (window.localStorage && localStorage[DC_LOCALE]) || __uniConfig.locale || navigator.language
+  locale = (window.localStorage && localStorage[UNI_STORAGE_LOCALE]) || __uniConfig.locale || navigator.language
 } else if (__PLATFORM__ === 'app-plus') {
   if (typeof weex === 'object') {
     locale = weex.requireModule('plus').getLanguage()
@@ -37,6 +37,26 @@ if (__PLATFORM__ === 'h5') {
 } else {
   locale = __GLOBAL__.getSystemInfoSync().language
 }
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales)
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale]
+      const userMessages = __uniConfig.locales[locale]
+      if (curMessages) {
+        Object.assign(curMessages, userMessages)
+      } else {
+        messages[locale] = userMessages
+      }
+    })
+  }
+}
+
+initI18nMessages()
 
 export const i18n = initVueI18n(
   locale,
@@ -134,7 +154,7 @@ export function defineI18nProperty (obj, names) {
 }
 
 function isEnableLocale () {
-  return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 }
 
 export function initNavigationBarI18n (navigationBar) {
@@ -166,11 +186,11 @@ export function initTabBarI18n (tabBar) {
   return tabBar
 }
 
-export function initI18n () {
-  const localeKeys = Object.keys(__uniConfig.locales || {})
-  if (localeKeys.length) {
-    localeKeys.forEach((locale) =>
-      i18n.add(locale, __uniConfig.locales[locale])
-    )
-  }
-}
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }

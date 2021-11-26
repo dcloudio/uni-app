@@ -31,12 +31,6 @@ import {
 
 import vuePlugin from './framework/plugins'
 
-import {
-  initI18n
-} from 'uni-helpers/i18n'
-
-initI18n()
-
 // 挂靠在uni上，暂不做全局导出
 uni.__$wx__ = wx
 
