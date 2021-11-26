@@ -1702,13 +1702,17 @@ var serviceContext = (function () {
   	"uni.chooseLocation.cancel": "取消"
   };
 
-  const messages = {
-    en,
-    es,
-    fr,
-    'zh-Hans': zhHans,
-    'zh-Hant': zhHant
-  };
+  const messages = {};
+
+  {
+    Object.assign(messages, {
+      en,
+      es,
+      fr,
+      'zh-Hans': zhHans,
+      'zh-Hant': zhHant
+    });
+  }
 
   let locale;
 
@@ -5802,7 +5806,7 @@ var serviceContext = (function () {
       animationDuration: 200,
       uniNView: {
         path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
-        defaultFontSize: plus_.screen.resolutionWidth / 20,
+        defaultFontSize: 16,
         viewport: plus_.screen.resolutionWidth
       }
     };

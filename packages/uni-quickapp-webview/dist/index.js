@@ -1445,11 +1445,33 @@ function handleEvent (event) {
   }
 }
 
+const messages = {};
+
 let locale;
 
 {
   locale = qa.getSystemInfoSync().language;
 }
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
@@ -1492,6 +1514,19 @@ function initAppLocale (Vue, appVm, locale) {
     }
   });
 }
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
 
 const hooks = [
   'onShow',
