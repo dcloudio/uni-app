@@ -14129,7 +14129,7 @@ var serviceContext = (function (vue) {
                 process.env &&
                 process.env.VUE_APP_TEMPLATE_PATH) ||
                 ''}/${url}.js`,
-              defaultFontSize: plus_.screen.resolutionWidth / 20,
+              defaultFontSize: 16,
               viewport: plus_.screen.resolutionWidth,
           },
       };
