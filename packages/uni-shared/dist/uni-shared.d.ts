@@ -593,6 +593,8 @@ export declare const UNI_SSR_STORE = "store";
 
 export declare const UNI_SSR_TITLE = "title";
 
+export declare const UNI_STORAGE_LOCALE = "UNI_LOCALE";
+
 export declare class UniBaseNode extends UniNode {
     attributes: Record<string, unknown>;
     style: null | string | Record<string, string | string[]>;

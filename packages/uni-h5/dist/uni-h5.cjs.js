@@ -6,6 +6,7 @@ var shared = require("@vue/shared");
 var uniShared = require("@dcloudio/uni-shared");
 var uniI18n = require("@dcloudio/uni-i18n");
 var vueRouter = require("vue-router");
+const isEnableLocale = uniShared.once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -60,6 +61,13 @@ function useI18n() {
       }
     }
     i18n = uniI18n.initVueI18n(locale);
+    if (isEnableLocale()) {
+      const localeKeys = Object.keys(__uniConfig.locales || {});
+      if (localeKeys.length) {
+        localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
+      }
+      i18n.setLocale(locale);
+    }
   }
   return i18n;
 }
@@ -132,7 +140,6 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
   }
 });
-const isEnableLocale = uniShared.once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
@@ -450,16 +457,6 @@ const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
   invokeViewMethod,
   invokeViewMethodKeepAlive
 });
-function initI18n() {
-  const localeKeys = Object.keys(__uniConfig.locales || {});
-  if (localeKeys.length) {
-    const i18n2 = useI18n();
-    localeKeys.forEach((locale) => i18n2.add(locale, __uniConfig.locales[locale]));
-  }
-}
-function initService() {
-  initI18n();
-}
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
   appVm2.$mpType = "app";
@@ -6901,7 +6898,6 @@ function initApp(vm) {
   appVm = vm;
   initAppVm(appVm);
   appVm.globalData = appVm.$options.globalData || {};
-  initService();
 }
 function wrapperComponentSetup(comp, { init, setup, before }) {
   before && before(comp);

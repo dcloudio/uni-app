@@ -1,11 +1,9 @@
 import { ComponentPublicInstance, ref } from 'vue'
 import { useI18n } from '../../i18n'
-import { initI18n } from './i18n'
 import { initOn } from './on'
 import { initSubscribe } from './subscribe'
 
 export function initService() {
-  initI18n()
   if (!__NODE_JS__) {
     initOn()
     initSubscribe()

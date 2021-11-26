@@ -1,8 +1,9 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { I18N_JSON_DELIMITERS, once, passive, initCustomDataset, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, passive, initCustomDataset, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
+const isEnableLocale = once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -53,10 +54,17 @@ function useI18n() {
     let locale;
     {
       {
-        locale = __uniConfig.locale || navigator.language;
+        locale = window.localStorage && localStorage[UNI_STORAGE_LOCALE] || __uniConfig.locale || navigator.language;
       }
     }
     i18n = initVueI18n(locale);
+    if (isEnableLocale()) {
+      const localeKeys = Object.keys(__uniConfig.locales || {});
+      if (localeKeys.length) {
+        localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
+      }
+      i18n.setLocale(locale);
+    }
   }
   return i18n;
 }
@@ -318,7 +326,6 @@ const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u9EDE", "\u53D6\u6D88"]), false);
   }
 });
-const isEnableLocale = once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
@@ -1380,13 +1387,6 @@ const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
   invokeViewMethod,
   invokeViewMethodKeepAlive
 });
-function initI18n() {
-  const localeKeys = Object.keys(__uniConfig.locales || {});
-  if (localeKeys.length) {
-    const i18n2 = useI18n();
-    localeKeys.forEach((locale) => i18n2.add(locale, __uniConfig.locales[locale]));
-  }
-}
 function initOn() {
   const { on: on2 } = UniServiceJSBridge;
   on2(ON_RESIZE, onResize$1);
@@ -1416,7 +1416,6 @@ function createPageEvent(name) {
   };
 }
 function initService() {
-  initI18n();
   {
     initOn();
     initSubscribe();
@@ -4453,6 +4452,9 @@ const setLocale = /* @__PURE__ */ defineSyncApi(API_SET_LOCALE, (locale) => {
   const oldLocale = app.$vm.$locale;
   if (oldLocale !== locale) {
     app.$vm.$locale = locale;
+    {
+      window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale);
+    }
     UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
     return true;
   }

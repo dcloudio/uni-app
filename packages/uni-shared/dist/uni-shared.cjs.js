@@ -102,6 +102,7 @@ const NAVBAR_HEIGHT = 44;
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const RESPONSIVE_MIN_WIDTH = 768;
+const UNI_STORAGE_LOCALE = 'UNI_LOCALE';
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
 const COMPONENT_NAME_PREFIX = 'VUni';
@@ -1276,6 +1277,7 @@ exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
+exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
 exports.UniElement = UniElement;

@@ -1617,6 +1617,10 @@ var serviceContext = (function (vue) {
       return value.indexOf(delimiters[0]) > -1;
   }
 
+  const isEnableLocale = once(() => typeof __uniConfig !== 'undefined' &&
+      __uniConfig.locales &&
+      !!Object.keys(__uniConfig.locales).length);
+
   let i18n;
   function getLocaleMessage() {
       const locale = uni.getLocale();
@@ -1674,6 +1678,15 @@ var serviceContext = (function (vue) {
               }
           }
           i18n = initVueI18n(locale);
+          // 自定义locales
+          if (isEnableLocale()) {
+              const localeKeys = Object.keys(__uniConfig.locales || {});
+              if (localeKeys.length) {
+                  localeKeys.forEach((locale) => i18n.add(locale, __uniConfig.locales[locale]));
+              }
+              // initVueI18n 时 messages 还没有，导致用户自定义 locale 可能不生效，当设置完 messages 后，重新设置 locale
+              i18n.setLocale(locale);
+          }
       }
       return i18n;
   }
@@ -1881,7 +1894,6 @@ var serviceContext = (function (vue) {
       }
   });
 
-  const isEnableLocale = once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
   function initNavigationBarI18n(navigationBar) {
       if (isEnableLocale()) {
           return defineI18nProperties(navigationBar, [
@@ -2214,14 +2226,6 @@ var serviceContext = (function (vue) {
       invokeViewMethodKeepAlive,
   });
 
-  function initI18n() {
-      const localeKeys = Object.keys(__uniConfig.locales || {});
-      if (localeKeys.length) {
-          const i18n = useI18n();
-          localeKeys.forEach((locale) => i18n.add(locale, __uniConfig.locales[locale]));
-      }
-  }
-
   function initOn() {
       const { on } = UniServiceJSBridge;
       on(ON_RESIZE, onResize);
@@ -2253,7 +2257,6 @@ var serviceContext = (function (vue) {
   }
 
   function initService() {
-      initI18n();
       {
           initOn();
           initSubscribe();
