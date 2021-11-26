@@ -16,12 +16,16 @@ import fr from './fr.json'
 import zhHans from './zh-Hans.json'
 import zhHant from './zh-Hant.json'
 
-const messages = {
-  en,
-  es,
-  fr,
-  'zh-Hans': zhHans,
-  'zh-Hant': zhHant
+const messages = {}
+
+if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
+  Object.assign(messages, {
+    en,
+    es,
+    fr,
+    'zh-Hans': zhHans,
+    'zh-Hant': zhHant
+  })
 }
 
 let locale
