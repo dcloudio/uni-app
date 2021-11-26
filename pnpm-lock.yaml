@@ -17,7 +17,7 @@ importers:
       '@rollup/plugin-strip': ^2.0.0
       '@types/jest': ^26.0.23
       '@typescript-eslint/parser': ^5.3.0
-      '@vitejs/plugin-vue': ^1.10.0
+      '@vitejs/plugin-vue': ^1.10.1
       '@vitejs/plugin-vue-jsx': ^1.3.0
       '@vue/reactivity': 3.2.23
       '@vue/runtime-core': 3.2.23
@@ -63,7 +63,7 @@ importers:
       '@rollup/plugin-strip': 2.1.0_rollup@2.60.1
       '@types/jest': 26.0.24
       '@typescript-eslint/parser': 5.4.0_eslint@7.32.0+typescript@4.5.2
-      '@vitejs/plugin-vue': 1.10.0_vite@2.6.14
+      '@vitejs/plugin-vue': 1.10.1_vite@2.6.14
       '@vitejs/plugin-vue-jsx': 1.3.0
       '@vue/reactivity': 3.2.23
       '@vue/runtime-core': 3.2.23
@@ -199,7 +199,7 @@ importers:
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
-      '@vitejs/plugin-vue': ^1.10.0
+      '@vitejs/plugin-vue': ^1.10.1
       '@vue/compiler-core': 3.2.23
       debug: ^4.3.2
       fs-extra: ^10.0.0
@@ -210,7 +210,7 @@ importers:
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.1
-      '@vitejs/plugin-vue': 1.10.0_vite@2.6.14
+      '@vitejs/plugin-vue': 1.10.1_vite@2.6.14
       debug: 4.3.2
       fs-extra: 10.0.0
       rollup: 2.60.1
@@ -784,7 +784,7 @@ importers:
       '@types/fs-extra': ^9.0.13
       '@types/sass': ^1.16.0
       '@vitejs/plugin-legacy': ^1.6.3
-      '@vitejs/plugin-vue': ^1.10.0
+      '@vitejs/plugin-vue': ^1.10.1
       '@vue/babel-plugin-jsx': ^1.1.1
       '@vue/compiler-core': 3.2.23
       '@vue/compiler-dom': 3.2.23
@@ -807,7 +807,7 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.1
       '@vitejs/plugin-legacy': 1.6.3_vite@2.6.14
-      '@vitejs/plugin-vue': 1.10.0_vite@2.6.14
+      '@vitejs/plugin-vue': 1.10.1_vite@2.6.14
       '@vue/compiler-core': 3.2.23
       '@vue/compiler-dom': 3.2.23
       '@vue/compiler-sfc': 3.2.23
@@ -2932,8 +2932,8 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue/1.10.0_vite@2.6.14:
-    resolution: {integrity: sha512-XkSN7lduhQ3z/WMXv2spqt9TCS0znCjnvIGmbud2bxViWWWR4JWXE+x/cQZ/klR0Ug4Ts9eubL7LXAysON5Uvg==}
+  /@vitejs/plugin-vue/1.10.1_vite@2.6.14:
+    resolution: {integrity: sha512-oL76QETMSpVE9jIScirGB2bYJEVU/+r+g+K7oG+sXPs9TZljqveoVRsmLyXlMZTjpQkLL8gz527cW80NMGVKJg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
