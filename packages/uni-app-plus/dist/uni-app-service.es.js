@@ -13227,7 +13227,7 @@ var serviceContext = (function (vue) {
               });
           tabBar &&
               tabBar.onMidButtonClick(() => {
-                  // publish('onTabBarMidButtonTap', {})
+                  return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
               });
       },
       indexOf(page) {

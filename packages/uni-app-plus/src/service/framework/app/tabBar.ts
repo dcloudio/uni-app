@@ -2,6 +2,11 @@ import { TABBAR_HEIGHT } from '@dcloudio/uni-shared'
 
 import { getRealPath } from '../../../platform/getRealPath'
 
+import {
+  API_ON_TAB_BAR_MID_BUTTON_TAP,
+  OnTabBarMidButtonTap,
+} from '@dcloudio/uni-api'
+
 const isIOS = plus.os.name === 'iOS'
 
 let config: UniApp.TabBarOptions
@@ -136,7 +141,9 @@ export default {
       })
     tabBar &&
       tabBar.onMidButtonClick(() => {
-        // publish('onTabBarMidButtonTap', {})
+        return UniServiceJSBridge.invokeOnCallback<OnTabBarMidButtonTap>(
+          API_ON_TAB_BAR_MID_BUTTON_TAP
+        )
       })
   },
   indexOf(page: string) {
