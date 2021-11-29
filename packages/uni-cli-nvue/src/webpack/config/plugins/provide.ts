@@ -1,5 +1,5 @@
 import { ProvidePlugin } from 'webpack'
-import { initProvide, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { initAppProvide, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 import { resolveLib } from '../../../utils'
 
 export function createProvidePlugin() {
@@ -13,6 +13,6 @@ export function createProvidePlugin() {
       resolveLib('require-native-plugin.js'),
       'default',
     ],
-    ...initProvide(),
+    ...initAppProvide(),
   })
 }

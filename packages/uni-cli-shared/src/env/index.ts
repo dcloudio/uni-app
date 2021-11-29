@@ -1,2 +1,2 @@
 export { initDefine } from './define'
-export { initProvide } from './provide'
+export { initAppProvide } from './provide'

@@ -1,6 +1,6 @@
 import path from 'path'
 import {
-  initProvide,
+  initAppProvide,
   uniViteInjectPlugin,
   uniCssScopedPlugin,
   getAppStyleIsolation,
@@ -50,7 +50,7 @@ const plugins = [
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
-  uniViteInjectPlugin(initProvide()),
+  uniViteInjectPlugin(initAppProvide()),
   uniRenderjsPlugin(),
   uniTemplatePlugin(),
   uniStatsPlugin(),

@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
-import { initProvide, uniViteInjectPlugin } from '@dcloudio/uni-cli-shared'
+import { uniViteInjectPlugin } from '@dcloudio/uni-cli-shared'
 
 import { uniMiniProgramPlugin, UniMiniProgramPluginOptions } from './plugin'
 import { uniUsingComponentsPlugin } from './plugins/usingComponents'
@@ -27,7 +27,7 @@ export default (options: UniMiniProgramPluginOptions) => {
     uniManifestJsonPlugin(options),
     uniPagesJsonPlugin(options),
     uniEntryPlugin(options),
-    uniViteInjectPlugin(extend({}, options.vite.inject, initProvide())),
+    uniViteInjectPlugin(extend({}, options.vite.inject)),
     uniRenderjsPlugin({ lang: options.template.filter?.lang }),
     uniMiniProgramPlugin(options),
     (options: {
