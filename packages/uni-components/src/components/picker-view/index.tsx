@@ -107,14 +107,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let ColumnsPreRef: Ref<VNode[]> = ref([])
     let columnsRef: Ref<VNode[] | HTMLCollection> = ref([])
     function getItemIndex(vnode: VNode): number {
-      const columnVNodes = columnsRef.value
-      if (__PLATFORM__ === 'app' && columnVNodes instanceof HTMLCollection) {
-        return Array.prototype.indexOf.call(
-          columnVNodes as HTMLCollection,
-          vnode.el
-        )
+      const columnVNodes = (columnsRef.value as VNode[]).filter(
+        (ref) => typeof ref.type !== 'symbol'
+      )
+      if (__PLATFORM__ === 'app' && columnVNodes) {
+        return Array.prototype.indexOf.call(columnVNodes, vnode.el)
       }
-      let index: number = (columnVNodes as VNode[]).indexOf(vnode)
+      let index: number = columnVNodes.indexOf(vnode)
       return index !== -1 ? index : ColumnsPreRef.value.indexOf(vnode)
     }
     const getPickerViewColumn: GetPickerViewColumn = function (columnInstance) {
