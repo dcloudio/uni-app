@@ -706,7 +706,7 @@ async function doUrlReplace(
   return `url(${wrap}${await replacer(rawUrl)}${wrap})`
 }
 
-async function minifyCSS(css: string, config: ResolvedConfig) {
+export async function minifyCSS(css: string, config: ResolvedConfig) {
   const { code, warnings } = await transform(css, {
     loader: 'css',
     minify: true,
