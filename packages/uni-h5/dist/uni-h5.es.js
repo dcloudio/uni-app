@@ -12024,6 +12024,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     });
     _scrollIntoViewChanged(props2.scrollIntoView);
     let __handleScroll = function(event) {
+      event.preventDefault();
       event.stopPropagation();
       _handleScroll(event);
     };
@@ -12112,8 +12113,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       }
     };
     main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
-    main.value.addEventListener("touchmove", __handleTouchMove);
-    main.value.addEventListener("scroll", __handleScroll, passiveOptions);
+    main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
+    main.value.addEventListener("scroll", __handleScroll, passive(false));
     main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
     onBeforeUnmount(() => {
       main.value.removeEventListener("touchstart", __handleTouchStart);

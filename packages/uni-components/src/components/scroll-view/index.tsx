@@ -488,8 +488,7 @@ function useScrollViewLoader(
     })
     _scrollIntoViewChanged(props.scrollIntoView)
     let __handleScroll = function (event: Event) {
-      // Unable to preventDefault inside passive event listener invocation.
-      // event.preventDefault();
+      event.preventDefault()
       event.stopPropagation()
       _handleScroll(event as MouseEvent)
     }
@@ -611,8 +610,8 @@ function useScrollViewLoader(
       __handleTouchStart,
       passiveOptions
     )
-    main.value!.addEventListener('touchmove', __handleTouchMove)
-    main.value!.addEventListener('scroll', __handleScroll, passiveOptions)
+    main.value!.addEventListener('touchmove', __handleTouchMove, passive(false))
+    main.value!.addEventListener('scroll', __handleScroll, passive(false))
     main.value!.addEventListener('touchend', __handleTouchEnd, passiveOptions)
     initScrollBounce()
 
