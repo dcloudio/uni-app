@@ -327,7 +327,15 @@ export default {
       this.__handleTouchStart,
       passiveOptions
     )
-    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove)
+    this.$refs.main.addEventListener(
+      'touchmove', 
+      this.__handleTouchMove,
+      supportsPassive
+        ? {
+          passive: false
+        }
+        : false
+    )
     this.$refs.main.addEventListener(
       'scroll',
       this.__handleScroll,
