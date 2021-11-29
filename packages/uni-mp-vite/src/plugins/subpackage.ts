@@ -1,6 +1,6 @@
 import { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
-import { isPageFile, relativeFile } from '@dcloudio/uni-cli-shared'
+import { isMiniProgramPageFile, relativeFile } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '../plugin'
 
 export function uniSubpackagePlugin({
@@ -16,7 +16,7 @@ export function uniSubpackagePlugin({
       const appJsFile = 'app.js'
       const appCssFile = 'app' + extname
       Object.keys(bundle).forEach((name) => {
-        if (!isPageFile(name)) {
+        if (!isMiniProgramPageFile(name)) {
           return
         }
         // 仅页面级 wxss 需要补充 app.wxss

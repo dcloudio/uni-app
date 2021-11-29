@@ -5,7 +5,8 @@ import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import type { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
 import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 import vuePlugin from '@vitejs/plugin-vue'
-import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
+import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
+import legacyPlugin from '@vitejs/plugin-legacy'
 
 import {
   CopyOptions,
@@ -55,11 +56,6 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
 
 export { runDev, runBuild } from './cli/action'
 
-let createViteLegacyPlugin: typeof ViteLegacyPlugin | undefined
-try {
-  createViteLegacyPlugin = require('@vitejs/plugin-legacy')
-} catch (e) {}
-
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin[] {
@@ -80,9 +76,9 @@ export default function uniPlugin(
 
   const plugins: Plugin[] = []
 
-  if (createViteLegacyPlugin && options.viteLegacyOptions) {
+  if (options.viteLegacyOptions) {
     plugins.push(
-      ...(createViteLegacyPlugin(
+      ...(legacyPlugin(
         initPluginViteLegacyOptions(options)
       ) as unknown as Plugin[])
     )
@@ -101,7 +97,7 @@ export default function uniPlugin(
 
   if (options.vueJsxOptions) {
     plugins.push(
-      require('../lib/plugin-vue-jsx/index')(
+      vueJsxPlugin(
         initPluginVueJsxOptions(options, uniPluginOptions.compilerOptions)
       )
     )

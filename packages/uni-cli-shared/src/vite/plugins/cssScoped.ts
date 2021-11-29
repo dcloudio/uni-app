@@ -1,9 +1,7 @@
 import path from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
-import { parseVueRequest } from '../utils'
 import { EXTNAME_VUE } from '../../constants'
-import { createFilter, FilterPattern } from '@rollup/pluginutils'
 import { preHtml, preJs } from '../../preprocess'
 
 const debugScoped = debug('vite:uni:scoped')
@@ -18,33 +16,21 @@ function addScoped(code: string) {
 }
 
 interface UniCssScopedPluginOptions {
-  include?: FilterPattern
-  exclude?: FilterPattern
+  filter: (id: string) => boolean
 }
 
 export function uniCssScopedPlugin(
-  options: UniCssScopedPluginOptions = {}
+  { filter }: UniCssScopedPluginOptions = { filter: () => false }
 ): Plugin {
-  const filter = createFilter(options.include, options.exclude)
   return {
     name: 'vite:uni-css-scoped',
     enforce: 'pre',
     transform(code, id) {
-      if (id.endsWith('App.vue')) {
-        return
-      }
       if (!filter(id)) return null
-
-      const { filename, query } = parseVueRequest(id)
-      if (query.vue) {
-        return
-      }
-      if (EXTNAME_VUE.includes(path.extname(filename))) {
-        debugScoped(id)
-        return {
-          code: addScoped(code),
-          map: null,
-        }
+      debugScoped(id)
+      return {
+        code: addScoped(code),
+        map: null,
       }
     },
     // 仅 h5

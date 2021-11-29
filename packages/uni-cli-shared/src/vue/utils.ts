@@ -17,9 +17,16 @@ import {
 } from '@vue/compiler-core'
 import { createAssetUrlTransformWithOptions } from './transforms/templateTransformAssetUrl'
 import { createSrcsetTransformWithOptions } from './transforms/templateTransformSrcset'
+import { parseVueRequest } from '../vite/utils/url'
+import { EXTNAME_VUE_RE } from '../constants'
 
 export const VUE_REF = 'r'
 export const VUE_REF_IN_FOR = 'r-i-f'
+
+export function isVueSfcFile(id: string) {
+  const { filename, query } = parseVueRequest(id)
+  return EXTNAME_VUE_RE.test(filename) && !query.vue
+}
 
 export function isUserComponent(
   node: RootNode | TemplateChildNode,

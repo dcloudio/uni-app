@@ -2,8 +2,28 @@ import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { addLeadingSlash, once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
-import { normalizePath } from '../utils'
+import { removeExt, normalizePath } from '../utils'
 import { parseJson } from './json'
+import { isVueSfcFile } from '../vue/utils'
+
+const pagesCacheSet: Set<string> = new Set()
+
+export function isUniPageFile(
+  file: string,
+  inputDir: string = process.env.UNI_INPUT_DIR
+) {
+  if (inputDir && path.isAbsolute(file)) {
+    file = normalizePath(path.relative(inputDir, file))
+  }
+  return pagesCacheSet.has(removeExt(file))
+}
+
+export function isUniPageSfcFile(
+  file: string,
+  inputDir: string = process.env.UNI_INPUT_DIR
+) {
+  return isVueSfcFile(file) && isUniPageFile(file, inputDir)
+}
 
 export const parsePagesJson = (
   inputDir: string,
@@ -18,7 +38,13 @@ export const parsePagesJson = (
 }
 
 export const parsePagesJsonOnce = once(parsePagesJson)
-
+/**
+ * 目前 App 和 H5 使用了该方法
+ * @param jsonStr
+ * @param platform
+ * @param param2
+ * @returns
+ */
 export function normalizePagesJson(
   jsonStr: string,
   platform: UniApp.PLATFORM,
@@ -74,6 +100,10 @@ export function normalizePagesJson(
       delete pagesJson.tabBar
     }
   }
+  // 缓存页面列表
+  pagesCacheSet.clear()
+  pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
+
   return pagesJson
 }
 

@@ -1,7 +1,9 @@
+import path from 'path'
 import { extend } from '@vue/shared'
 import { ComponentJson, PageWindowOptions, UsingComponents } from './types'
-import { removeExt, normalizeNodeModules } from '../../utils'
+import { removeExt, normalizePath, normalizeNodeModules } from '../../utils'
 import { relativeFile } from '../../resolve'
+import { isVueSfcFile } from '../../vue/utils'
 
 let appJsonCache: Record<string, any> = {}
 const jsonFilesCache = new Map<string, string>()
@@ -9,8 +11,15 @@ const jsonPagesCache = new Map<string, PageWindowOptions>()
 const jsonComponentsCache = new Map<string, ComponentJson>()
 const jsonUsingComponentsCache = new Map<string, UsingComponents>()
 
-export function isPageFile(file: string) {
+export function isMiniProgramPageFile(file: string, inputDir?: string) {
+  if (inputDir && path.isAbsolute(file)) {
+    file = normalizePath(path.relative(inputDir, file))
+  }
   return jsonPagesCache.has(removeExt(file))
+}
+
+export function isMiniProgramPageSfcFile(file: string, inputDir?: string) {
+  return isVueSfcFile(file) && isMiniProgramPageFile(file, inputDir)
 }
 
 export function hasJsonFile(filename: string) {

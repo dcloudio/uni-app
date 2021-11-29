@@ -62,7 +62,7 @@ export function uniEntryPlugin({
         )
         this.addWatchFile(filepath)
         return {
-          code: `import MiniProgramPage from '${filepath}?mpType=page'
+          code: `import MiniProgramPage from '${filepath}'
 ${global}.createPage(MiniProgramPage)`,
         }
       } else if (isUniComponentUrl(id)) {

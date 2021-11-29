@@ -181,7 +181,7 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
     pagePathWithExtname = pageOptions.path + '.vue'
   }
   const pageIdent = normalizeIdentifier(pageOptions.path)
-  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}?mpType=page')
+  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}')
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
 

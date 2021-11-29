@@ -10,6 +10,7 @@ import {
   resolveMainPathOnce,
   normalizePath,
   removeExt,
+  isUniPageFile,
 } from '@dcloudio/uni-cli-shared'
 
 let appCss = ''
@@ -21,14 +22,15 @@ function normalizeCssChunkFilename(id: string) {
   )
 }
 export const configResolved: Plugin['configResolved'] = (config) => {
-  const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
+  const inputDir = process.env.UNI_INPUT_DIR
+  const mainPath = resolveMainPathOnce(inputDir)
   removePlugins('vite:import-analysis', config)
   injectCssPlugin(config)
   injectCssPostPlugin(config, {
     chunkCssFilename(id: string) {
       if (id === mainPath) {
         return 'app.css'
-      } else if (id.includes('mpType=page')) {
+      } else if (isUniPageFile(id, inputDir)) {
         return normalizeCssChunkFilename(id)
       }
     },

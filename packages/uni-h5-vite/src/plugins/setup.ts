@@ -5,6 +5,7 @@ import {
   EXTNAME_JS_RE,
   normalizePath,
   parseVueRequest,
+  isUniPageSfcFile,
 } from '@dcloudio/uni-cli-shared'
 
 const debugSetup = debug('vite:uni:setup')
@@ -27,7 +28,7 @@ export function uniSetupPlugin(): Plugin {
           `;import { setupApp } from '@dcloudio/uni-h5';setupApp(_sfc_main);`
         )
       }
-      if (query.mpType === 'page') {
+      if (isUniPageSfcFile(id)) {
         debugSetup(filename)
         // js,ts,jsx,tsx
         const isJs = EXTNAME_JS_RE.test(filename)

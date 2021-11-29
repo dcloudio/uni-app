@@ -1,4 +1,5 @@
 import {
+  isVueSfcFile,
   uniCssScopedPlugin,
   UNI_EASYCOM_EXCLUDE,
 } from '@dcloudio/uni-cli-shared'
@@ -16,7 +17,9 @@ import { uniSSRPlugin } from './plugins/ssr'
 
 export default [
   uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
-  uniCssScopedPlugin(),
+  uniCssScopedPlugin({
+    filter: (id) => isVueSfcFile(id) && !id.endsWith('App.vue'),
+  }),
   uniResolveIdPlugin(),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
