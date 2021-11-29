@@ -54,7 +54,7 @@ function generatePagesJsonCode(
 
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow } from '@dcloudio/uni-h5'
+import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from '${manifestJsonPath}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
@@ -181,7 +181,7 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
     pagePathWithExtname = pageOptions.path + '.vue'
   }
   const pageIdent = normalizeIdentifier(pageOptions.path)
-  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}')
+  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}').then(com => setupPage(com.default || com))
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
 

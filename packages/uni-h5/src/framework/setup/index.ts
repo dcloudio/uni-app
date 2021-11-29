@@ -1,6 +1,5 @@
 import { extend, invokeArrayFns, isPlainObject } from '@vue/shared'
 import {
-  nextTick,
   ComponentInternalInstance,
   ComponentPublicInstance,
   createBlock,
