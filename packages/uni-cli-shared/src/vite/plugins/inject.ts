@@ -77,6 +77,8 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   const callback = options.callback
   return {
     name: 'vite:uni-inject',
+    // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
+    enforce: 'post',
     transform(code, id) {
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
