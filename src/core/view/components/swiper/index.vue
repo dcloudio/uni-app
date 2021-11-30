@@ -448,7 +448,7 @@ export default {
          * current -> 1
          * position -> 2
          * length -> 3
-         * 
+         *
          * position -> -1
          */
           for (; position > current;) {
