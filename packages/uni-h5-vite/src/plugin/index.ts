@@ -23,8 +23,6 @@ export function uniH5PLugin(): UniVitePlugin {
     config: createConfig(configOptions),
     configResolved(config) {
       configOptions.resolvedConfig = config
-      // TODO 禁止 optimizeDeps
-      ;(config as any).cacheDir = ''
     },
     configureServer: createConfigureServer(),
     handleHotUpdate: createHandleHotUpdate(),
