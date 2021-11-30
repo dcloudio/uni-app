@@ -10,7 +10,7 @@ import {
   resolveMainPathOnce,
   normalizePath,
   removeExt,
-  isUniPageFile,
+  isUniPageSfcFile,
 } from '@dcloudio/uni-cli-shared'
 
 let appCss = ''
@@ -30,7 +30,7 @@ export const configResolved: Plugin['configResolved'] = (config) => {
     chunkCssFilename(id: string) {
       if (id === mainPath) {
         return 'app.css'
-      } else if (isUniPageFile(id, inputDir)) {
+      } else if (isUniPageSfcFile(id, inputDir)) {
         return normalizeCssChunkFilename(id)
       }
     },
