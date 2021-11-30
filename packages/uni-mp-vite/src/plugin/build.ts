@@ -67,7 +67,7 @@ function createMoveToVendorChunkFn(): GetManualChunk {
     const filename = id.split('?')[0]
     // 处理项目内的js,ts文件
     if (EXTNAME_JS_RE.test(filename)) {
-      if (filename.startsWith(inputDir)) {
+      if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
         const chunkFileName = removeExt(
           normalizePath(path.relative(inputDir, filename))
         )
