@@ -5917,6 +5917,9 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
         for (; position + length < current; ) {
           position += length;
         }
+        if (position + length - current < current - position) {
+          position += length;
+        }
       } else {
         for (; position + length < current; ) {
           position += length;
