@@ -123,7 +123,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     if (matchRule && matchRule.use) {
       if (runByHBuilderX) {
         matchRule.use.forEach(matchUse => {
-          if (matchUse.loader === 'ts-loader') {
+          if (matchUse.loader.includes('ts-loader')) {
             Object.assign(matchUse.options, tsLoaderOptions)
           }
         })
