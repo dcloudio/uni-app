@@ -2678,13 +2678,6 @@ var serviceContext = (function (vue) {
   function getEnterOptions() {
       return enterOptions;
   }
-  function initEnterOptions({ path, query, referrerInfo, }) {
-      extend(enterOptions, {
-          path,
-          query: query ? parseQuery(query) : {},
-          referrerInfo: referrerInfo || {},
-      });
-  }
   function initLaunchOptions({ path, query, referrerInfo, }) {
       extend(launchOptions, {
           path,
@@ -18577,11 +18570,12 @@ var serviceContext = (function (vue) {
           emit(ON_APP_ENTER_BACKGROUND);
       });
       plusGlobalEvent.addEventListener('resume', () => {
-          const info = parseRedirectInfo();
-          if (info && info.userAction && info.path) {
-              initEnterOptions(info);
-              initEnterReLaunch(info);
-          }
+          // TODO 暂时不用
+          // const info = parseRedirectInfo()
+          // if (info && info.userAction && info.path) {
+          //   initEnterOptions(info)
+          //   initEnterReLaunch(info)
+          // }
           emit(ON_APP_ENTER_FOREGROUND, getEnterOptions());
       });
       weexGlobalEvent.addEventListener('uistylechange', function (event) {
@@ -18614,13 +18608,6 @@ var serviceContext = (function (vue) {
   }
   function onPlusMessage(type, callback, once = false) {
       UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
-  }
-  function initEnterReLaunch(info) {
-      __uniConfig.realEntryPagePath =
-          __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-      __uniConfig.entryPagePath = info.path;
-      __uniConfig.entryPageQuery = info.query;
-      $reLaunch({ url: addLeadingSlash(info.path) + info.query }, { resolve() { }, reject() { } });
   }
 
   function initAppLaunch(appVm) {

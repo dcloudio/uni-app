@@ -10,8 +10,6 @@ import { $reLaunch } from '../../api/route/_reLaunch'
 import {
   EVENT_BACKBUTTON,
   backbuttonListener,
-  parseRedirectInfo,
-  initEnterOptions,
   getEnterOptions,
   RedirectInfo,
 } from './utils'
@@ -34,11 +32,12 @@ export function initGlobalEvent() {
   })
 
   plusGlobalEvent.addEventListener('resume', () => {
-    const info = parseRedirectInfo()
-    if (info && info.userAction && info.path) {
-      initEnterOptions(info)
-      initEnterReLaunch(info)
-    }
+    // TODO 暂时不用
+    // const info = parseRedirectInfo()
+    // if (info && info.userAction && info.path) {
+    //   initEnterOptions(info)
+    //   initEnterReLaunch(info)
+    // }
     emit(ON_APP_ENTER_FOREGROUND, getEnterOptions())
   })
 
