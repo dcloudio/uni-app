@@ -296,6 +296,9 @@ function useLayout(
         for (; position + length < current; ) {
           position += length
         }
+        if (position + length - current < current - position) {
+          position += length
+        }
       } else {
         for (; position + length < current; ) {
           position += length
@@ -335,9 +338,11 @@ function useLayout(
             : 0
       }
       animateViewport(state.current, 'autoplay', circularEnabled.value ? 1 : 0)
+      // @ts-ignore setTimeout -> NodeJS.Timeout
       timer = setTimeout(callback, state.interval)
     }
     if (!(invalid || items.length <= state.displayMultipleItems)) {
+      // @ts-ignore setTimeout -> NodeJS.Timeout
       timer = setTimeout(callback, state.interval)
     }
   }
