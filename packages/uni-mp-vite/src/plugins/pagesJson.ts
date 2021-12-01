@@ -12,6 +12,7 @@ import {
   addMiniProgramPageJson,
   addMiniProgramAppJson,
   findChangedJsonFiles,
+  mergeMiniProgramAppJson,
 } from '@dcloudio/uni-cli-shared'
 import { virtualPagePath } from './entry'
 import { UniMiniProgramPluginOptions } from '../plugin'
@@ -61,6 +62,9 @@ export function uniPagesJsonPlugin(
           resolvedConfig,
           nvuePages.map((pagePath) => pagePath + options.style.extname)
         )
+
+        mergeMiniProgramAppJson(appJson, manifestJson[process.env.UNI_PLATFORM])
+
         if (options.json?.formatAppJson) {
           options.json.formatAppJson(appJson, manifestJson, pageJsons)
         }

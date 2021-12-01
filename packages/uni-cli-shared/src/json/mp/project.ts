@@ -24,6 +24,10 @@ const projectKeys = [
   'cloudbaseRoot',
 ]
 
+export function isMiniProgramProjectJsonKey(name: string) {
+  return projectKeys.includes(name)
+}
+
 export function parseMiniProgramProjectJson(
   jsonStr: string,
   platform: UniApp.PLATFORM,

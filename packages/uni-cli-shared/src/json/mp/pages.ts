@@ -6,6 +6,7 @@ import { validatePages } from '../pages'
 import { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
+import { isMiniProgramProjectJsonKey } from './project'
 
 interface ParsePagesJsonOptions {
   debug?: boolean
@@ -23,6 +24,20 @@ export function parseMiniProgramPagesJson(
   options: ParsePagesJsonOptions = { subpackages: false }
 ) {
   return parsePagesJson(jsonStr, platform, options)
+}
+
+export function mergeMiniProgramAppJson(
+  appJson: Record<string, any>,
+  platformJson: Record<string, any> = {}
+) {
+  Object.keys(platformJson).forEach((name) => {
+    if (
+      !isMiniProgramProjectJsonKey(name) &&
+      !['usingComponents', 'optimization'].includes(name)
+    ) {
+      appJson[name] = platformJson[name]
+    }
+  })
 }
 
 function parsePagesJson(
