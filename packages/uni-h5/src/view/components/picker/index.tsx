@@ -619,7 +619,7 @@ function usePickerMethods(
       case mode.MULTISELECTOR:
         {
           if (!Array.isArray(val)) {
-            val = []
+            val = state.valueArray
           }
           if (!Array.isArray(state.valueSync)) {
             state.valueSync = []
