@@ -4298,6 +4298,7 @@ const resolveFilter = null;
 function unwrapper(target) {
     return unref(target);
 }
+
 // import deepCopy from './deepCopy'
 /**
  * https://raw.githubusercontent.com/Tencent/westore/master/packages/westore/utils/diff.js
@@ -4479,6 +4480,7 @@ function nextTick$1(instance, fn) {
 }
 
 function clone(src, seen) {
+    src = unwrapper(src);
     const type = typeof src;
     if (type === 'object' && src !== null) {
         let copy = seen.get(src);
