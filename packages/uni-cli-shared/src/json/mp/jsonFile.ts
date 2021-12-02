@@ -42,13 +42,16 @@ export function findChangedJsonFiles() {
       newJson.usingComponents = {}
     }
     extend(newJson.usingComponents, jsonUsingComponentsCache.get(filename))
-    const usingComponents = newJson.usingComponents
+    const usingComponents = newJson.usingComponents as Record<string, string>
     // 格式化为相对路径，这样作为分包也可以直接运行
     Object.keys(usingComponents).forEach((name) => {
-      usingComponents[name] = relativeFile(
-        filename,
-        usingComponents[name].slice(1)
-      )
+      const componentFilename = usingComponents[name]
+      if (componentFilename.startsWith('/')) {
+        usingComponents[name] = relativeFile(
+          filename,
+          componentFilename.slice(1)
+        )
+      }
     })
 
     const jsonStr = JSON.stringify(newJson, null, 2)
