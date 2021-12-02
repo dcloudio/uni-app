@@ -68,6 +68,17 @@ function initDefaultProps(isBehavior: boolean = false) {
         value: '',
       }
     }
+    // 组件 ref
+    properties.uR = {
+      type: null,
+      value: '',
+    }
+    // 组件 ref-in-for
+    properties.uRIF = {
+      type: null,
+      value: '',
+    }
+    // 组件 id
     properties.uI = {
       type: null, // 均不指定类型，避免 property received type-uncompatible value 警告
       value: '',

@@ -3,6 +3,7 @@ import {
   ComponentOptions,
   ComponentInternalInstance,
   ComponentPublicInstance,
+  nextTick,
 } from 'vue'
 
 import { MPComponentInstance, MPComponentOptions } from './component'
@@ -63,21 +64,8 @@ function selectAllComponents(
 ) {
   const components = mpInstance.selectAllComponents(selector)
   components.forEach((component) => {
-    const ref = component.dataset.r
+    const ref = component.properties.uR
     $refs[ref] = component.$vm || component
-    if (__PLATFORM__ === 'mp-weixin') {
-      if (component.dataset.vueGeneric === 'scoped') {
-        component
-          .selectAllComponents('.scoped-ref')
-          .forEach((scopedComponent) => {
-            selectAllComponents(
-              scopedComponent as MPComponentInstance,
-              selector,
-              $refs
-            )
-          })
-      }
-    }
   })
 }
 
@@ -91,7 +79,10 @@ export function initRefs(
       selectAllComponents(mpInstance, '.r', $refs)
       const forComponents = mpInstance.selectAllComponents('.r-i-f')
       forComponents.forEach((component) => {
-        const ref = component.dataset.r
+        const ref = component.properties.uR
+        if (!ref) {
+          return
+        }
         if (!$refs[ref]) {
           $refs[ref] = []
         }
@@ -175,4 +166,17 @@ export function fixProperties(properties: Record<string, any>) {
       properties[name] = undefined
     }
   })
+}
+
+export function nextSetDataTick(mpInstance: MPComponentInstance, fn: Function) {
+  // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+  mpInstance.setData({ r1: 1 }, () => fn())
+}
+
+export function initSetRef(mpInstance: MPComponentInstance) {
+  if (!mpInstance._$setRef) {
+    mpInstance._$setRef = (fn: Function) => {
+      nextTick(() => nextSetDataTick(mpInstance, fn))
+    }
+  }
 }

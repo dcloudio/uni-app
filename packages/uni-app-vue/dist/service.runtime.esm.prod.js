@@ -9016,6 +9016,7 @@ export default function vueFactory(exports) {
       var cur = instance.parent; // the exposed instance is the render proxy to keep it consistent with 2.x
 
       var exposedInstance = instance.proxy; // in production the hook receives only the error code
+      // fixed by xxxxxx
 
       var errorInfo = type;
 

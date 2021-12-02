@@ -2385,7 +2385,9 @@ const BaseTransitionImpl = {
             // check mode
             if ((process.env.NODE_ENV !== 'production') &&
                 mode &&
-                mode !== 'in-out' && mode !== 'out-in' && mode !== 'default') {
+                mode !== 'in-out' &&
+                mode !== 'out-in' &&
+                mode !== 'default') {
                 warn$1(`invalid <transition> mode: ${mode}`);
             }
             // at this point children has a guaranteed length of 1.
@@ -7787,7 +7789,9 @@ function warn$1(msg, ...args) {
     const trace = getComponentTrace();
     if (appWarnHandler) {
         // fixed by xxxxxx Cannot convert a Symbol value to a string
-        args[0] = String(args[0]);
+        if (args.length) {
+            args[0] = String(args[0]);
+        }
         callWithErrorHandling(appWarnHandler, instance, 11 /* APP_WARN_HANDLER */, [
             msg + args.join(''),
             instance && instance.proxy,
@@ -7952,7 +7956,8 @@ function handleError(err, instance, type, throwInDev = true) {
         // the exposed instance is the render proxy to keep it consistent with 2.x
         const exposedInstance = instance.proxy;
         // in production the hook receives only the error code
-        const errorInfo = (process.env.NODE_ENV !== 'production') ? ErrorTypeStrings[type] : type;
+        // fixed by xxxxxx
+        const errorInfo = (process.env.NODE_ENV !== 'production') ? ErrorTypeStrings[type] || type : type;
         while (cur) {
             const errorCapturedHooks = cur.ec;
             if (errorCapturedHooks) {
@@ -7975,7 +7980,7 @@ function handleError(err, instance, type, throwInDev = true) {
 }
 function logError(err, type, contextVNode, throwInDev = true) {
     if ((process.env.NODE_ENV !== 'production')) {
-        const info = ErrorTypeStrings[type];
+        const info = ErrorTypeStrings[type] || type; // fixed by xxxxxx
         if (contextVNode) {
             pushWarningContext(contextVNode);
         }

@@ -31,9 +31,9 @@ function addVueRef(node: ComponentNode, context: TransformContext) {
     return
   }
   if (refProp.type === NodeTypes.ATTRIBUTE) {
-    refProp.name = 'data-' + VUE_REF
+    refProp.name = 'u-' + VUE_REF
   } else {
-    ;(refProp.arg as SimpleExpressionNode).content = 'data-' + VUE_REF
+    ;(refProp.arg as SimpleExpressionNode).content = 'u-' + VUE_REF
   }
 
   return addStaticClass(

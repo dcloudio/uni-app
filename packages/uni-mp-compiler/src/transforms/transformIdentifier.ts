@@ -22,6 +22,7 @@ import {
 import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'
 import { rewriteVSlot } from './vSlot'
+import { rewriteRef } from './transformRef'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -41,6 +42,9 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       const { props } = node
       let hasClassBinding = false
       let hasStyleBinding = false
+
+      rewriteRef(node, context)
+
       for (let i = 0; i < props.length; i++) {
         const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {

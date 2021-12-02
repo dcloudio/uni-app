@@ -1470,7 +1470,8 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
         return wrappedHook;
     }
     else if ((process.env.NODE_ENV !== 'production')) {
-        const apiName = toHandlerKey(ErrorTypeStrings[type].replace(/ hook$/, ''));
+        // fixed by xxxxxx
+        const apiName = toHandlerKey((ErrorTypeStrings[type] || type.replace(/^on/, '')).replace(/ hook$/, ''));
         warn$1(`${apiName} is called when there is no active component instance to be ` +
             `associated with. ` +
             `Lifecycle injection APIs can only be used during execution of setup().` +
@@ -3676,7 +3677,8 @@ function logError(err, type, contextVNode, throwInDev = true) {
         }
         // crash in dev by default so it's more noticeable
         if (throwInDev) {
-            throw err;
+            // throw err fixed by xxxxxx 避免 error 导致 小程序 端不可用（比如跳转时报错）
+            console.error(err);
         }
         else {
             console.error(err);
@@ -4476,6 +4478,46 @@ function nextTick$1(instance, fn) {
     });
 }
 
+function clone(src, seen) {
+    const type = typeof src;
+    if (type === 'object' && src !== null) {
+        let copy = seen.get(src);
+        if (typeof copy !== 'undefined') {
+            //  (circular refs)
+            return copy;
+        }
+        if (isArray(src)) {
+            const len = src.length;
+            copy = new Array(len);
+            seen.set(src, copy);
+            for (let i = 0; i < len; i++) {
+                copy[i] = clone(src[i], seen);
+            }
+        }
+        else {
+            copy = Object.create(null);
+            seen.set(src, copy);
+            for (const name in src) {
+                if (hasOwn(src, name)) {
+                    copy[name] = clone(src[name], seen);
+                }
+            }
+        }
+        return copy;
+    }
+    if (type !== 'symbol') {
+        return src;
+    }
+}
+/**
+ * 与微信小程序保持一致的深度克隆
+ * @param src
+ * @returns
+ */
+function deepCopy(src) {
+    return clone(src, typeof WeakMap !== 'undefined' ? new WeakMap() : new Map());
+}
+
 function getMPInstanceData(instance, keys) {
     const data = instance.data;
     const ret = Object.create(null);
@@ -4493,7 +4535,8 @@ function patch(instance, data, oldData) {
     // 举例：
     // uni-indexed-list 组件传递 item 给 uni-indexed-list-item 组件，uni-indexed-list-item 发送点击到 uni-indexed-list 组件中修改 item.checked
     // uni-indexed-list 组件 render 中并未访问 item.checked（在 uni-indexed-list-item 中访问了，但被小程序序列化了，无法响应式），故无法收集依赖
-    data = JSON.parse(JSON.stringify(data));
+    data = deepCopy(data);
+    // data = JSON.parse(JSON.stringify(data))
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {

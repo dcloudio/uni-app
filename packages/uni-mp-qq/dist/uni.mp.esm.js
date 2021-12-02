@@ -479,7 +479,7 @@ function initWxsCallMethods(methods, wxsCallMethods) {
 function selectAllComponents(mpInstance, selector, $refs) {
     const components = mpInstance.selectAllComponents(selector);
     components.forEach((component) => {
-        const ref = component.dataset.r;
+        const ref = component.properties.uR;
         $refs[ref] = component.$vm || component;
     });
 }
@@ -490,7 +490,10 @@ function initRefs(instance, mpInstance) {
             selectAllComponents(mpInstance, '.r', $refs);
             const forComponents = mpInstance.selectAllComponents('.r-i-f');
             forComponents.forEach((component) => {
-                const ref = component.dataset.r;
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
                 if (!$refs[ref]) {
                     $refs[ref] = [];
                 }
@@ -560,6 +563,17 @@ function normalizePropType(type, defaultValue) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
+        // 组件 ref
+        properties.uR = {
+            type: null,
+            value: '',
+        };
+        // 组件 ref-in-for
+        properties.uRIF = {
+            type: null,
+            value: '',
+        };
+        // 组件 id
         properties.uI = {
             type: null,
             value: '',
@@ -859,8 +873,10 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook(ON_READY$1);
+                {
+                    this.$vm.$callHook('mounted');
+                    this.$vm.$callHook(ON_READY$1);
+                }
             }
         },
         detached() {

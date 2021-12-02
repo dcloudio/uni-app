@@ -59,7 +59,6 @@ export function initBaseInstance(
   options: CreateComponentOptions
 ) {
   const ctx = (instance as any).ctx
-
   // mp
   ctx.mpType = options.mpType // @deprecated
   ctx.$mpType = options.mpType

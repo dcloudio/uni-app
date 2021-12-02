@@ -30,7 +30,7 @@ function addVueRef(node, context) {
     if (!refProp) {
         return;
     }
-    const dataRef = 'data-' +
+    const dataRef = 'u-' +
         (context.inVFor
             ? uniCliShared.VUE_REF_IN_FOR
             : uniCliShared.VUE_REF);

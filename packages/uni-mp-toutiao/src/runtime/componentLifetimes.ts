@@ -6,6 +6,7 @@ import {
   CreateComponentOptions,
   CreateLifetimesOptions,
   fixProperties,
+  initSetRef,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -32,6 +33,7 @@ export function initLifetimes({
     components.push(this)
   }
   function attached(this: MPComponentInstance) {
+    initSetRef(this)
     const properties = this.properties
     initVueIds(properties.uI, this)
     const relationOptions: RelationOptions = {

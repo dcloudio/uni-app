@@ -1,5 +1,5 @@
-import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, EMPTY_OBJ, camelize } from '@vue/shared';
-import { injectHook, ref } from 'vue';
+import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, EMPTY_OBJ, isString, camelize } from '@vue/shared';
+import { injectHook, ref, isRef } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -450,6 +450,17 @@ function normalizePropType(type, defaultValue) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
+        // 组件 ref
+        properties.uR = {
+            type: null,
+            value: '',
+        };
+        // 组件 ref-in-for
+        properties.uRIF = {
+            type: null,
+            value: '',
+        };
+        // 组件 id
         properties.uI = {
             type: null,
             value: '',
@@ -785,23 +796,44 @@ function initChildVues(mpInstance) {
     }
     delete mpInstance._$childVues;
 }
-// TODO vue3
 function handleRef(ref) {
     if (!ref) {
         return;
     }
-    const refName = ref.props['data-r']; // data-ref
-    const refInForName = ref.props['data-r-i-f']; // data-ref-in-for
+    const refName = ref.props.uR; // data-ref
+    const refInForName = ref.props.uRIF; // data-ref-in-for
     if (!refName && !refInForName) {
         return;
     }
     const instance = this.$vm.$;
     const refs = instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs;
+    const refValue = ref.$vm || ref;
     if (refName) {
-        refs[refName] = ref.$vm || ref;
+        if (isString(refName)) {
+            refs[refName] = refValue;
+            if (hasOwn(instance.setupState, refName)) {
+                instance.setupState[refName] = refValue;
+            }
+        }
+        else {
+            setRef(refName, refValue, refs);
+        }
     }
     else if (refInForName) {
-        (refs[refInForName] || (refs[refInForName] = [])).push(ref.$vm || ref);
+        if (isString(refInForName)) {
+            (refs[refInForName] || (refs[refInForName] = [])).push(refValue);
+        }
+        else {
+            setRef(refInForName, refValue, refs);
+        }
+    }
+}
+function setRef(ref, refValue, refs) {
+    if (isRef(ref)) {
+        ref.value = refValue;
+    }
+    else if (isFunction(ref)) {
+        ref(refValue, refs);
     }
 }
 function triggerEvent(type, detail) {

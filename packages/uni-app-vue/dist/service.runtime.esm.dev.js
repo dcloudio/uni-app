@@ -10592,8 +10592,9 @@ export default function vueFactory(exports) {
       var cur = instance.parent; // the exposed instance is the render proxy to keep it consistent with 2.x
 
       var exposedInstance = instance.proxy; // in production the hook receives only the error code
+      // fixed by xxxxxx
 
-      var errorInfo = ErrorTypeStrings[type];
+      var errorInfo = ErrorTypeStrings[type] || type;
 
       while (cur) {
         var errorCapturedHooks = cur.ec;
@@ -10626,7 +10627,7 @@ export default function vueFactory(exports) {
   function logError(err, type, contextVNode) {
     var throwInDev = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
     {
-      var info = ErrorTypeStrings[type];
+      var info = ErrorTypeStrings[type] || type; // fixed by xxxxxx
 
       if (contextVNode) {
         pushWarningContext(contextVNode);

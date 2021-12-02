@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
-import { injectHook, ref } from 'vue';
+import { injectHook, ref, nextTick } from 'vue';
 
 // lifecycle
 // App and Page
@@ -488,7 +488,7 @@ function initWxsCallMethods(methods, wxsCallMethods) {
 function selectAllComponents(mpInstance, selector, $refs) {
     const components = mpInstance.selectAllComponents(selector);
     components.forEach((component) => {
-        const ref = component.dataset.r;
+        const ref = component.properties.uR;
         $refs[ref] = component.$vm || component;
     });
 }
@@ -499,7 +499,10 @@ function initRefs(instance, mpInstance) {
             selectAllComponents(mpInstance, '.r', $refs);
             const forComponents = mpInstance.selectAllComponents('.r-i-f');
             forComponents.forEach((component) => {
-                const ref = component.dataset.r;
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
                 if (!$refs[ref]) {
                     $refs[ref] = [];
                 }
@@ -564,6 +567,17 @@ function fixProperties(properties) {
         }
     });
 }
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
+}
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function createObserver(name) {
@@ -614,6 +628,17 @@ function initDefaultProps(isBehavior = false) {
                 value: '',
             };
         }
+        // 组件 ref
+        properties.uR = {
+            type: null,
+            value: '',
+        };
+        // 组件 ref-in-for
+        properties.uRIF = {
+            type: null,
+            value: '',
+        };
+        // 组件 id
         properties.uI = {
             type: null,
             value: '',
@@ -939,6 +964,10 @@ function fixSetDataEnd(mpInstance) {
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {
+            // 微信 和 QQ 不需要延迟 setRef
+            {
+                initSetRef(this);
+            }
             const properties = this.properties;
             initVueIds(properties.uI, this);
             const relationOptions = {
@@ -970,8 +999,12 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook(ON_READY$1);
+                {
+                    nextSetDataTick(this, () => {
+                        this.$vm.$callHook('mounted');
+                        this.$vm.$callHook(ON_READY$1);
+                    });
+                }
             }
         },
         detached() {
@@ -1043,9 +1076,11 @@ function parse$1(componentOptions) {
             }
         }
         else {
-            // 百度小程序组件不触发methods内的onReady
+            // 百度小程序组件不触发 methods 内的 onReady
             if (this.$vm) {
-                this.$vm.$callHook('mounted');
+                nextSetDataTick(this, () => {
+                    this.$vm.$callHook('mounted');
+                });
             }
         }
     };

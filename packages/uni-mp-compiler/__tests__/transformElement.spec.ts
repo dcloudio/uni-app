@@ -76,7 +76,7 @@ export function render(_ctx, _cache) {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Foo: { name: '_component_Foo', type: BindingComponentTypes.UNKNOWN },
     })
-    // expect(code).toContain(`if (!Math) { Math.max.call(Max, _component_Foo) }`)
+    // expect(code).toContain(`if (!Math) { Math.max.call(null, _component_Foo) }`)
   })
 
   test('import + resolve component multi', () => {
@@ -96,7 +96,7 @@ export function render(_ctx, _cache) {
       Test: { name: '_component_Test', type: BindingComponentTypes.UNKNOWN },
     })
     expect(code).toContain(
-      `if (!Math) { Math.max.call(Max, $setup["Example"]) }`
+      `if (!Math) { Math.max.call(null, $setup["Example"]) }`
     )
   })
 
@@ -122,7 +122,7 @@ export function render(_ctx, _cache) {
       Example: { name: '$setup["Example"]', type: BindingComponentTypes.SETUP },
     })
     expect(code).toContain(
-      `if (!Math) { Math.max.call(Max, $setup["Example"]) }`
+      `if (!Math) { Math.max.call(null, $setup["Example"]) }`
     )
   })
 
@@ -137,7 +137,7 @@ export function render(_ctx, _cache) {
       Example: { name: '_unref(Example)', type: BindingComponentTypes.SETUP },
     })
     expect(preamble).toContain(
-      `if (!Math) { Math.max.call(Max, _unref(Example)) }`
+      `if (!Math) { Math.max.call(null, _unref(Example)) }`
     )
   })
 
@@ -151,7 +151,7 @@ export function render(_ctx, _cache) {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Example: { name: 'Example', type: BindingComponentTypes.SETUP },
     })
-    expect(preamble).toContain(`if (!Math) { Math.max.call(Max, Example) }`)
+    expect(preamble).toContain(`if (!Math) { Math.max.call(null, Example) }`)
   })
 
   test('resolve namespaced component from setup bindings', () => {

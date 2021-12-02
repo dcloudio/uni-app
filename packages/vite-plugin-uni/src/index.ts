@@ -115,7 +115,10 @@ export default function uniPlugin(
   // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405
   // const config = await resolveConfig(inlineConfig, 'build', 'production')
   // 在 @vitejs/plugin-vue 之前校正回来
-  if (process.env.UNI_NODE_ENV !== process.env.NODE_ENV) {
+  if (
+    process.env.UNI_NODE_ENV &&
+    process.env.UNI_NODE_ENV !== process.env.NODE_ENV
+  ) {
     process.env.NODE_ENV = process.env.UNI_NODE_ENV
   }
 

@@ -1,3 +1,4 @@
+import { BindingTypes } from '@vue/compiler-core'
 import { assert } from './testUtils'
 
 describe('mp-alipay: transform ref', () => {
@@ -17,36 +18,89 @@ describe('mp-alipay: transform ref', () => {
 }`
     )
   })
+
   test('static ref', () => {
     assert(
       `<custom ref="custom"/>`,
-      `<custom ref="__r" data-r="custom" u-i="2a9ec0b0-0" onVI="__l"/>`,
-      `(_ctx, _cache) => {
+      `<custom ref="__r" u-r="custom" u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
   return {}
+}`,
+      {
+        inline: false,
+      }
+    )
+    assert(
+      `<custom v-for="item in items" ref="custom"/>`,
+      `<custom a:for="{{a}}" a:for-item="item" ref="__r" u-r-i-f="custom" u-i="{{item.a}}" onVI="__l"/>`,
+      `import { f as _f } from "vue"
+const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
+}`,
+      {
+        inline: false,
+      }
+    )
+  })
+  test('static ref with inline', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `(_ctx, _cache) => {
+  return { a: (_value, _refs) => { _refs['custom'] = _value; } }
 }`
     )
     assert(
       `<custom v-for="item in items" ref="custom"/>`,
-      `<custom a:for="{{a}}" a:for-item="item" ref="__r" data-r-i-f="custom" u-i="{{item.a}}" onVI="__l"/>`,
+      `<custom a:for="{{a}}" a:for-item="item" ref="__r" u-r-i-f="{{b}}" u-i="{{item.a}}" onVI="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }), b: (_value, _refs) => { _refs['custom'] = _value; } }
 }`
+    )
+  })
+  test('static ref with inline and setup-ref', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `(_ctx, _cache) => {
+  return { a: (_value, _refs) => { _refs['custom'] = _value; custom.value = _value; } }
+}`,
+      {
+        bindingMetadata: {
+          custom: BindingTypes.SETUP_REF,
+        },
+      }
     )
   })
   test('dynamic ref', () => {
     assert(
       `<custom :ref="custom"/>`,
-      `<custom ref="__r" data-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
-      `(_ctx, _cache) => {
+      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
   return { a: _ctx.custom }
-}`
+}`,
+      {
+        inline: false,
+      }
     )
     assert(
       `<custom v-for="item in items" :ref="custom"/>`,
-      `<custom a:for="{{a}}" a:for-item="item" ref="__r" data-r-i-f="{{b}}" u-i="{{item.a}}" onVI="__l"/>`,
-      `(_ctx, _cache) => {
+      `<custom a:for="{{a}}" a:for-item="item" ref="__r" u-r-i-f="{{b}}" u-i="{{item.a}}" onVI="__l"/>`,
+      `import { f as _f } from "vue"
+const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
-}`
+}`,
+      {
+        inline: false,
+      }
     )
   })
 })

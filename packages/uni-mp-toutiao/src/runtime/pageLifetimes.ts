@@ -3,6 +3,7 @@ import { ON_READY } from '@dcloudio/uni-shared'
 import {
   MPComponentInstance,
   CreateLifetimesOptions,
+  nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 
 import { $destroyComponent } from '@dcloudio/uni-mp-core'
@@ -18,8 +19,10 @@ export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
           this.__webviewId__ = (this.pageinstance as any).__pageId__
         }
         this.$vm.$callCreatedHook()
-        this.$vm.$callHook('mounted')
-        this.$vm.$callHook(ON_READY)
+        nextSetDataTick(this, () => {
+          this.$vm!.$callHook('mounted')
+          this.$vm!.$callHook(ON_READY)
+        })
       } else {
         this.is && console.warn(this.is + ' is not ready')
       }

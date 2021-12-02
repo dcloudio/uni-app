@@ -11,6 +11,7 @@ import { renderSlot } from './renderSlot'
 import { withScopedSlot } from './withScopedSlot'
 import { stringifyStyle } from './style'
 import { dynamicSlot } from './dynamicSlot'
+import { setRef } from './ref'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -32,3 +33,4 @@ export const e: typeof extend = (target: object, ...sources: any[]) =>
 export const h: typeof hyphenate = (str) => hyphenate(str)
 export const n: typeof normalizeClass = (value) => normalizeClass(value)
 export const t: typeof toDisplayString = (val) => toDisplayString(val)
+export const sr: typeof setRef = (ref, id) => setRef(ref, id)

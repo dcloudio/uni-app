@@ -3,6 +3,7 @@ import { registerRuntimeHelpers } from '@vue/compiler-core'
 export const V_ON = Symbol(`vOn`)
 export const V_FOR = Symbol(`vFor`)
 export const EXTEND = Symbol(`extend`)
+export const SET_REF = Symbol(`setRef`)
 export const CAMELIZE = Symbol(`camelize`)
 export const HYPHENATE = Symbol(`hyphenate`)
 export const RENDER_SLOT = Symbol(`renderSlot`)
@@ -15,6 +16,7 @@ registerRuntimeHelpers({
   [V_ON]: 'o',
   [V_FOR]: 'f',
   [EXTEND]: 'e',
+  [SET_REF]: 'sr',
   [CAMELIZE]: 'c',
   [HYPHENATE]: 'h',
   [RENDER_SLOT]: 'r',

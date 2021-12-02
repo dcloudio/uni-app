@@ -31,6 +31,8 @@ export {
   findVmByVueId,
   handleEvent,
   fixProperties,
+  nextSetDataTick,
+  initSetRef,
 } from './runtime/util'
 
 // protocols

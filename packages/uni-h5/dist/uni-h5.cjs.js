@@ -5627,7 +5627,7 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     const max = Number(props2.max);
     const min = Number(props2.min);
     const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+    return e2 < min ? min : e2 > max ? max : computeController.mul.call(null.round((e2 - min) / step), step) + min;
   };
   const _onUserChangedValue = (e2) => {
     const max = Number(props2.max);
@@ -9226,7 +9226,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
       case mode.MULTISELECTOR:
         {
           if (!Array.isArray(val)) {
-            val = [];
+            val = state.valueArray;
           }
           if (!Array.isArray(state.valueSync)) {
             state.valueSync = [];

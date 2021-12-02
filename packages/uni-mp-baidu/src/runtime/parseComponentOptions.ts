@@ -1,10 +1,10 @@
 import { hasOwn } from '@vue/shared'
-
 import {
   MPComponentInstance,
   MPComponentOptions,
   initMocks,
   handleEvent,
+  nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 import {
@@ -69,9 +69,11 @@ export function parse(componentOptions: MPComponentOptions) {
         delete pageInstance._$args
       }
     } else {
-      // 百度小程序组件不触发methods内的onReady
+      // 百度小程序组件不触发 methods 内的 onReady
       if (this.$vm) {
-        this.$vm.$callHook('mounted')
+        nextSetDataTick(this, () => {
+          this.$vm!.$callHook('mounted')
+        })
       }
     }
   }

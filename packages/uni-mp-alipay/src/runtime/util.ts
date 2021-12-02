@@ -1,9 +1,11 @@
-import { hasOwn, isFunction, camelize, EMPTY_OBJ } from '@vue/shared'
+import { hasOwn, isFunction, camelize, EMPTY_OBJ, isString } from '@vue/shared'
 
 import {
   ComponentPublicInstance,
   ComponentOptions,
   ComponentInternalInstance,
+  isRef,
+  Ref,
 } from 'vue'
 
 import {
@@ -124,13 +126,12 @@ export function initChildVues(
   delete mpInstance._$childVues
 }
 
-// TODO vue3
 export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
   if (!ref) {
     return
   }
-  const refName = ref.props['data-r'] // data-ref
-  const refInForName = ref.props['data-r-i-f'] // data-ref-in-for
+  const refName = ref.props.uR // data-ref
+  const refInForName = ref.props.uRIF // data-ref-in-for
   if (!refName && !refInForName) {
     return
   }
@@ -138,10 +139,34 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
   const refs =
     instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs
 
+  const refValue = ref.$vm || ref
   if (refName) {
-    refs[refName] = ref.$vm || ref
+    if (isString(refName)) {
+      refs[refName] = refValue
+      if (hasOwn(instance.setupState, refName)) {
+        instance.setupState[refName] = refValue
+      }
+    } else {
+      setRef(refName, refValue, refs)
+    }
   } else if (refInForName) {
-    ;(refs[refInForName] || (refs[refInForName] = [])).push(ref.$vm || ref)
+    if (isString(refInForName)) {
+      ;(refs[refInForName] || (refs[refInForName] = [])).push(refValue)
+    } else {
+      setRef(refInForName, refValue, refs)
+    }
+  }
+}
+
+function setRef(
+  ref: Ref | ((ref: object | null, refs: Record<string, any>) => void),
+  refValue: Object,
+  refs: Record<string, unknown>
+) {
+  if (isRef(ref)) {
+    ref.value = refValue
+  } else if (isFunction(ref)) {
+    ref(refValue, refs)
   }
 }
 

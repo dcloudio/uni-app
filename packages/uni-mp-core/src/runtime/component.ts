@@ -14,6 +14,7 @@ export interface CustomComponentInstanceProperty {
   $vm?: ComponentPublicInstance
   _$vueId: string
   _$vuePid?: string
+  _$setRef?: (fn: Function) => void
 }
 
 export type MPComponentOptions = Component.Options<

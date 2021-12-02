@@ -1,4 +1,5 @@
 import { transformRef } from '@dcloudio/uni-cli-shared'
+import { BindingTypes } from '@vue/compiler-core'
 import { assert } from './testUtils'
 
 const nodeTransforms = [transformRef]
@@ -28,9 +29,39 @@ describe('compiler: transform ref', () => {
   test('static ref', () => {
     assert(
       `<custom ref="custom"/>`,
-      `<custom class="r" data-r="custom" u-i="2a9ec0b0-0"/>`,
+      `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
+      `import { sr as _sr } from "vue"
+const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
+  return { a: _sr('custom', '2a9ec0b0-0') }
+}`,
+      {
+        inline: false,
+        nodeTransforms,
+      }
+    )
+    assert(
+      `<custom v-for="item in items" ref="custom"/>`,
+      `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="custom" u-i="{{item.b}}"/>`,
+      `import { sr as _sr, f as _f } from "vue"
+const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr('custom', '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
+}`,
+      {
+        inline: false,
+        nodeTransforms,
+      }
+    )
+  })
+  test('static ref with inline', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return {}
+  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; }, '2a9ec0b0-0') }
 }`,
       {
         nodeTransforms,
@@ -38,11 +69,56 @@ describe('compiler: transform ref', () => {
     )
     assert(
       `<custom v-for="item in items" ref="custom"/>`,
-      `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" data-r="custom" u-i="{{item.a}}"/>`,
+      `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="custom" u-i="{{item.b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr((_value, _refs) => { _refs['custom'] = _value; }, '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
+        nodeTransforms,
+      }
+    )
+  })
+  test('static ref with inline and setup-ref', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
+      `(_ctx, _cache) => {
+  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; custom.value = _value; }, '2a9ec0b0-0') }
+}`,
+      {
+        bindingMetadata: {
+          custom: BindingTypes.SETUP_REF,
+        },
+        nodeTransforms,
+      }
+    )
+  })
+  test('static ref with inline and setup-maybe-ref', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
+      `(_ctx, _cache) => {
+  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; _isRef(custom) && (custom.value = _value); }, '2a9ec0b0-0') }
+}`,
+      {
+        bindingMetadata: {
+          custom: BindingTypes.SETUP_MAYBE_REF,
+        },
+        nodeTransforms,
+      }
+    )
+  })
+  test('static ref with inline and setup-let', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
+      `(_ctx, _cache) => {
+  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; _isRef(custom) ? custom.value = _value : custom = _value; }, '2a9ec0b0-0') }
+}`,
+      {
+        bindingMetadata: {
+          custom: BindingTypes.SETUP_LET,
+        },
         nodeTransforms,
       }
     )
@@ -50,9 +126,39 @@ describe('compiler: transform ref', () => {
   test('dynamic ref', () => {
     assert(
       `<custom :ref="custom"/>`,
-      `<custom class="r" data-r="{{a}}" u-i="2a9ec0b0-0"/>`,
+      `<custom class="r" u-r="{{b}}" u-i="2a9ec0b0-0"/>`,
+      `import { sr as _sr } from "vue"
+const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
+  return { a: _sr(_ctx.custom, '2a9ec0b0-0'), b: _ctx.custom }
+}`,
+      {
+        inline: false,
+        nodeTransforms,
+      }
+    )
+    assert(
+      `<custom v-for="item in items" :ref="custom"/>`,
+      `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="{{b}}" u-i="{{item.b}}"/>`,
+      `import { sr as _sr, f as _f } from "vue"
+const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
+
+export function render(_ctx, _cache) {
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr(_ctx.custom, '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
+}`,
+      {
+        inline: false,
+        nodeTransforms,
+      }
+    )
+  })
+  test('dynamic ref with inline', () => {
+    assert(
+      `<custom :ref="custom"/>`,
+      `<custom class="r" u-r="{{b}}" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.custom }
+  return { a: _sr(_ctx.custom, '2a9ec0b0-0'), b: _ctx.custom }
 }`,
       {
         nodeTransforms,
@@ -60,9 +166,9 @@ describe('compiler: transform ref', () => {
     )
     assert(
       `<custom v-for="item in items" :ref="custom"/>`,
-      `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" data-r="{{b}}" u-i="{{item.a}}"/>`,
+      `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="{{b}}" u-i="{{item.b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr(_ctx.custom, '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
 }`,
       {
         nodeTransforms,

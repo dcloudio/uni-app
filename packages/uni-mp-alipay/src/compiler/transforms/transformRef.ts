@@ -31,7 +31,7 @@ function addVueRef(node: ComponentNode, context: TransformContext) {
     return
   }
   const dataRef =
-    'data-' +
+    'u-' +
     ((context as unknown as { inVFor: boolean }).inVFor
       ? VUE_REF_IN_FOR
       : VUE_REF)

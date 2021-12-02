@@ -134,7 +134,7 @@ export function createApp() {
       const __BINDING_COMPONENTS__ = '{"test":{"name":"_easycom_test","type":"unknown"},"test1":{"name":"_component_test1","type":"unknown"},"MyComponentName":{"name":"_component_MyComponentName","type":"unknown"},"my-component-name":{"name":"_component_my_component_name","type":"unknown"}}';
       import _easycom_test from "${root}/components/test/test.vue";
       if (!Math) {
-        Math.max.call(Max, _easycom_test);
+        Math.max.call(null, _easycom_test);
       }
       function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         return {};
@@ -201,7 +201,7 @@ export function createApp() {
       const source = `import { defineComponent as _defineComponent } from "vue";
       const __BINDING_COMPONENTS__ = '{"test1":{"name":"test1","type":"setup"},"MyComponentName":{"name":"MyComponentName","type":"setup"},"my-component-name":{"name":"MyComponentName","type":"setup"}}';
       if (!Math) {
-        Math.max.call(Max, test1, MyComponentName, MyComponentName);
+        Math.max.call(null, test1, MyComponentName, MyComponentName);
       }
       import test1 from "../../components/test1.vue";
       import MyComponentName from "../../components/test1.vue";
@@ -237,7 +237,7 @@ export function createApp() {
       const __BINDING_COMPONENTS__ = '{"test":{"name":"_easycom_test","type":"unknown"},"test1":{"name":"test1","type":"setup"},"MyComponentName":{"name":"MyComponentName","type":"setup"},"my-component-name":{"name":"MyComponentName","type":"setup"}}';
       import _easycom_test from "${root}/components/test/test.vue";
       if (!Math) {
-        Math.max.call(Max, _easycom_test, test1, MyComponentName, MyComponentName);
+        Math.max.call(null, _easycom_test, test1, MyComponentName, MyComponentName);
       }
       import test1 from "../../components/test1.vue";
       import MyComponentName from "../../components/test1.vue";

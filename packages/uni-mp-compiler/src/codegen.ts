@@ -185,7 +185,9 @@ function genComponentImports(
     }
     if (components.length) {
       push(`if (!Math) {`)
-      push(` Math.max.call(Max, ${components.map((name) => name).join(', ')}) `)
+      push(
+        ` Math.max.call(null, ${components.map((name) => name).join(', ')}) `
+      )
       push(`}`)
       newline()
     }

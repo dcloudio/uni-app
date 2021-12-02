@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize, isObject } from '@vue/shared';
-import { injectHook, ref } from 'vue';
+import { injectHook, ref, nextTick } from 'vue';
 
 const ON_READY$1 = 'onReady';
 
@@ -482,7 +482,7 @@ function initWxsCallMethods(methods, wxsCallMethods) {
 function selectAllComponents(mpInstance, selector, $refs) {
     const components = mpInstance.selectAllComponents(selector);
     components.forEach((component) => {
-        const ref = component.dataset.r;
+        const ref = component.properties.uR;
         $refs[ref] = component.$vm || component;
     });
 }
@@ -493,7 +493,10 @@ function initRefs(instance, mpInstance) {
             selectAllComponents(mpInstance, '.r', $refs);
             const forComponents = mpInstance.selectAllComponents('.r-i-f');
             forComponents.forEach((component) => {
-                const ref = component.dataset.r;
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
                 if (!$refs[ref]) {
                     $refs[ref] = [];
                 }
@@ -532,6 +535,17 @@ function fixProperties(properties) {
         }
     });
 }
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
+}
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function createObserver(name) {
@@ -563,6 +577,17 @@ function normalizePropType(type, defaultValue) {
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
+        // 组件 ref
+        properties.uR = {
+            type: null,
+            value: '',
+        };
+        // 组件 ref-in-for
+        properties.uRIF = {
+            type: null,
+            value: '',
+        };
+        // 组件 id
         properties.uI = {
             type: null,
             value: '',
@@ -924,6 +949,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         components.push(this);
     }
     function attached() {
+        initSetRef(this);
         const properties = this.properties;
         initVueIds(properties.uI, this);
         const relationOptions = {
@@ -1030,8 +1056,10 @@ function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
         initProvide(vm);
     }
     vm.$callCreatedHook();
-    vm.$callHook('mounted');
-    vm.$callHook(ON_READY$1);
+    nextSetDataTick(this, () => {
+        vm.$callHook('mounted');
+        vm.$callHook(ON_READY$1);
+    });
 }
 function parse(componentOptions, { handleLink }) {
     componentOptions.methods.__l = handleLink;
@@ -1056,8 +1084,10 @@ function initLifetimes(lifetimesOptions) {
                     this.__webviewId__ = this.pageinstance.__pageId__;
                 }
                 this.$vm.$callCreatedHook();
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook(ON_READY$1);
+                nextSetDataTick(this, () => {
+                    this.$vm.$callHook('mounted');
+                    this.$vm.$callHook(ON_READY$1);
+                });
             }
             else {
                 this.is && console.warn(this.is + ' is not ready');

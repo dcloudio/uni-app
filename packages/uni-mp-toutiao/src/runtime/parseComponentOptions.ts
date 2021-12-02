@@ -1,6 +1,10 @@
 import { hasOwn } from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
-import { MPComponentInstance, MPComponentOptions } from '@dcloudio/uni-mp-core'
+import {
+  MPComponentInstance,
+  MPComponentOptions,
+  nextSetDataTick,
+} from '@dcloudio/uni-mp-core'
 
 import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
@@ -79,8 +83,10 @@ export function handleLink(
   }
 
   vm.$callCreatedHook()
-  vm.$callHook('mounted')
-  vm.$callHook(ON_READY)
+  nextSetDataTick(this, () => {
+    vm.$callHook('mounted')
+    vm.$callHook(ON_READY)
+  })
 }
 
 export function parse(
