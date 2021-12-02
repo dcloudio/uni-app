@@ -17374,7 +17374,7 @@ var serviceContext = (function (vue) {
       };
   }
 
-  function parseWebviewStyle(path, routeMeta) {
+  function parseWebviewStyle(path, routeMeta, webview) {
       const webviewStyle = {
           bounce: 'vertical',
       };
@@ -17384,7 +17384,10 @@ var serviceContext = (function (vue) {
                   routeMeta[name];
           }
       });
-      initNVue(webviewStyle, routeMeta, path);
+      if (webview.id !== '1') {
+          // 首页 nvue 已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
+          initNVue(webviewStyle, routeMeta, path);
+      }
       initPopGesture(webviewStyle, routeMeta);
       initBackgroundColor(webviewStyle, routeMeta);
       initTitleNView(webviewStyle, routeMeta);
@@ -17724,7 +17727,7 @@ var serviceContext = (function (vue) {
   }
 
   function initWebviewStyle(webview, path, query, routeMeta) {
-      const webviewStyle = parseWebviewStyle(path, routeMeta);
+      const webviewStyle = parseWebviewStyle(path, routeMeta, webview);
       webviewStyle.uniPageUrl = initUniPageUrl(path, query);
       const isTabBar = !!routeMeta.isTabBar;
       if (!routeMeta.isNVue) {
@@ -17831,8 +17834,7 @@ var serviceContext = (function (vue) {
   function initWebview(webview, path, query, routeMeta) {
       // 首页或非 nvue 页面
       if (webview.id === '1' || !routeMeta.isNVue) {
-          // path 必须参数为空，因为首页已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
-          initWebviewStyle(webview, '', query, routeMeta);
+          initWebviewStyle(webview, path, query, routeMeta);
       }
       initSubNVues(webview, path, routeMeta);
       initWebviewEvent(webview);

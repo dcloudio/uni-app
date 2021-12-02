@@ -7,7 +7,8 @@ import { DebugRefresh, InitUniPageUrl } from '../utils'
 
 export function parseWebviewStyle(
   path: string,
-  routeMeta: UniApp.PageRouteMeta
+  routeMeta: UniApp.PageRouteMeta,
+  webview: PlusWebviewWebviewObject
 ): PlusWebviewWebviewStyles & {
   uniPageUrl?: InitUniPageUrl
   debugRefresh?: DebugRefresh
@@ -24,7 +25,10 @@ export function parseWebviewStyle(
         routeMeta[name as keyof UniApp.PageRouteMeta]
     }
   })
-  initNVue(webviewStyle, routeMeta, path)
+  if (webview.id !== '1') {
+    // 首页 nvue 已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
+    initNVue(webviewStyle, routeMeta, path)
+  }
   initPopGesture(webviewStyle, routeMeta)
   initBackgroundColor(webviewStyle, routeMeta)
   initTitleNView(webviewStyle, routeMeta)
