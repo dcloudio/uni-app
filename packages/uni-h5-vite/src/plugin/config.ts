@@ -35,6 +35,9 @@ export function createConfig(options: {
         fs: {
           strict: false,
         },
+        watch: {
+          ignored: ['**/uniCloud**'],
+        },
       },
       ssr: {
         external,
