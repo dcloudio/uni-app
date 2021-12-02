@@ -6,6 +6,7 @@ import {
   getNVueFlexDirection,
   getNVueStyleCompiler,
 } from '../manifest'
+import { parseArguments } from '../manifest/arguments'
 import { getSplashscreen } from '../manifest/splashscreen'
 
 interface AppUniConfig {
@@ -24,6 +25,8 @@ interface AppUniConfig {
   appname: string
   compilerVersion: string
   entryPagePath: string
+  entryPageQuery: string
+  realEntryPagePath: string
   networkTimeout: {
     request: number
     connectSocket: number
@@ -41,6 +44,7 @@ export function normalizeAppUniConfig(
   manifestJson: Record<string, any>
 ) {
   const { autoclose, alwaysShowBeforeRender } = getSplashscreen(manifestJson)
+
   const config: AppUniConfig = {
     pages: [],
     globalStyle: pagesJson.globalStyle,
@@ -57,11 +61,44 @@ export function normalizeAppUniConfig(
       autoclose,
     },
     compilerVersion: process.env.UNI_COMPILER_VERSION,
-    entryPagePath: pagesJson.pages[0].path,
+    ...parseEntryPagePath(pagesJson),
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
     tabBar: pagesJson.tabBar,
     locales: initLocales(path.join(process.env.UNI_INPUT_DIR, 'locale')),
   }
   // TODO 待支持分包
   return JSON.stringify(config)
+}
+
+function parseEntryPagePath(pagesJson: UniApp.PagesJson) {
+  const res = {
+    entryPagePath: '',
+    entryPageQuery: '',
+    realEntryPagePath: '',
+  }
+  if (!pagesJson.pages.length) {
+    return res
+  }
+  res.entryPagePath = pagesJson.pages[0].path
+  const argsJsonStr = parseArguments(pagesJson)
+  if (argsJsonStr) {
+    try {
+      const args = JSON.parse(argsJsonStr)
+      const entryPagePath = args.path || args.pathName
+      const realEntryPagePath = res.entryPagePath
+      if (entryPagePath && realEntryPagePath !== entryPagePath) {
+        res.entryPagePath = entryPagePath
+        res.entryPageQuery = args.query ? '?' + args.query : ''
+        // non tabBar page
+        if (
+          !(pagesJson.tabBar?.list || []).find(
+            (page) => page.pagePath === entryPagePath
+          )
+        ) {
+          res.realEntryPagePath = realEntryPagePath
+        }
+      }
+    } catch (e) {}
+  }
+  return res
 }
