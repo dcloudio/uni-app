@@ -7,12 +7,16 @@ import { once } from '@dcloudio/uni-shared'
 
 import { normalizePath } from './utils'
 import { isInHBuilderX } from './hbx/env'
+import { extensions } from './constants'
 
-const DEFAULT_EXTENSIONS = ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
+export function requireResolve(filename: string, basedir: string) {
+  return resolveWithSymlinks(filename, basedir)
+}
+
 function resolveWithSymlinks(id: string, basedir: string): string {
   return resolve.sync(id, {
     basedir,
-    extensions: DEFAULT_EXTENSIONS,
+    extensions,
     // necessary to work with pnpm
     preserveSymlinks: true,
   })

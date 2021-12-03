@@ -6,6 +6,15 @@ export const EXTNAME_VUE_RE = /\.(vue|nvue)$/
 export const EXTNAME_JS_RE = /\.[jt]sx?$/
 export const EXTNAME_TS_RE = /\.tsx?$/
 
+export const extensions = [
+  '.mjs',
+  '.js',
+  '.ts',
+  '.jsx',
+  '.tsx',
+  '.json',
+].concat(EXTNAME_VUE)
+
 export const ASSETS_INLINE_LIMIT = 40 * 1024
 
 export const APP_SERVICE_FILENAME = 'app-service.js'
