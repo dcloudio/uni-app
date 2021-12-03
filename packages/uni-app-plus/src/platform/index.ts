@@ -15,15 +15,11 @@ export {
   removeMediaQueryObserver,
 } from '../service/api/ui/mediaQueryObserver'
 
-export function saveImage(
-  base64: string,
-  dirname: string,
-  callback: (error: Error | null, tempFilePath: string) => void
-) {}
+export { saveImage } from './saveImage'
 export function getSameOriginUrl(url: string): Promise<string> {
   return Promise.resolve(url)
 }
-export const TEMP_PATH = ''
+export { TEMP_PATH } from '../service/api/constants'
 
 export {
   getEnterOptions,
