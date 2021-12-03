@@ -284,22 +284,24 @@ function initCreateSubpackageApp(parseAppOptions) {
                 app[name] = appOptions[name];
             }
         });
-        if (isFunction(appOptions.onShow) && wx.onAppShow) {
-            wx.onAppShow((args) => {
-                vm.$callHook('onShow', args);
-            });
-        }
-        if (isFunction(appOptions.onHide) && wx.onAppHide) {
-            wx.onAppHide((args) => {
-                vm.$callHook('onHide', args);
-            });
-        }
-        if (isFunction(appOptions.onLaunch)) {
-            const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-            vm.$callHook('onLaunch', args);
-        }
-        return App(appOptions);
+        initAppLifecycle(appOptions, vm);
     };
+}
+function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onShow) && wx.onAppShow) {
+        wx.onAppShow((args) => {
+            vm.$callHook('onShow', args);
+        });
+    }
+    if (isFunction(appOptions.onHide) && wx.onAppHide) {
+        wx.onAppHide((args) => {
+            vm.$callHook('onHide', args);
+        });
+    }
+    if (isFunction(appOptions.onLaunch)) {
+        const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
+        vm.$callHook('onLaunch', args || {});
+    }
 }
 function initLocale(appVm) {
     const locale = ref(wx.getSystemInfoSync().language || 'zh-Hans');
@@ -670,6 +672,12 @@ function initCreatePage(parseOptions) {
     };
 }
 
+function initCreatePluginApp(parseAppOptions) {
+    return function createApp(vm) {
+        initAppLifecycle(parseApp(vm, parseAppOptions), vm);
+    };
+}
+
 const ON_READY = 'onReady';
 
 const MPPage = Page;
@@ -787,10 +795,12 @@ var parseOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
+const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
 wx.createApp = global.createApp = createApp;
 wx.createPage = createPage;
 wx.createComponent = createComponent;
+wx.createPluginApp = createPluginApp;
 wx.createSubpackageApp = createSubpackageApp;
 
-export { createApp, createComponent, createPage, createSubpackageApp };
+export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };

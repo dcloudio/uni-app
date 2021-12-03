@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
 export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
 export { initCreatePage } from './runtime/page'
 export { initCreateComponent } from './runtime/component'
+export { initCreatePluginApp } from './runtime/plugin'
 
 export { initUni } from './api/index'
 export { initGetProvider } from './api/shims'

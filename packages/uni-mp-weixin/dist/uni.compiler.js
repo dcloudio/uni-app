@@ -91,6 +91,7 @@ const options = {
         copyOptions: {
             assets: ['wxcomponents'],
             targets: [
+                ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
                     src: [
                         'theme.json',
@@ -111,6 +112,7 @@ const options = {
     app: {
         darkmode: true,
         subpackages: true,
+        plugins: true,
     },
     project: {
         filename: projectConfigFilename,

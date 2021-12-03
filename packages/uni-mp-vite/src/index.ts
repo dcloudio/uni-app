@@ -11,13 +11,16 @@ import { uniEntryPlugin } from './plugins/entry'
 
 import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniSubpackagePlugin } from './plugins/subpackage'
+import { uniMiniProgramPluginPlugin } from './plugins/plugin'
 
 export { UniMiniProgramPluginOptions } from './plugin'
 export default (options: UniMiniProgramPluginOptions) => {
   if (!options.app.subpackages) {
     delete process.env.UNI_SUBPACKAGE
   }
-
+  if (!options.app.plugins) {
+    delete process.env.UNI_MP_PLUGIN
+  }
   return [
     (options: {
       vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
@@ -36,5 +39,6 @@ export default (options: UniMiniProgramPluginOptions) => {
       return uniUsingComponentsPlugin(options.vueOptions?.script)
     },
     ...(process.env.UNI_SUBPACKAGE ? [uniSubpackagePlugin(options)] : []),
+    ...(process.env.UNI_MP_PLUGIN ? [uniMiniProgramPluginPlugin(options)] : []),
   ]
 }

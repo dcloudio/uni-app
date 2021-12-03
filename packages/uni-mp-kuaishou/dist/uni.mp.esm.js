@@ -416,22 +416,24 @@ function initCreateSubpackageApp(parseAppOptions) {
                 app[name] = appOptions[name];
             }
         });
-        if (isFunction(appOptions.onShow) && ks.onAppShow) {
-            ks.onAppShow((args) => {
-                vm.$callHook('onShow', args);
-            });
-        }
-        if (isFunction(appOptions.onHide) && ks.onAppHide) {
-            ks.onAppHide((args) => {
-                vm.$callHook('onHide', args);
-            });
-        }
-        if (isFunction(appOptions.onLaunch)) {
-            const args = ks.getLaunchOptionsSync && ks.getLaunchOptionsSync();
-            vm.$callHook('onLaunch', args);
-        }
-        return App(appOptions);
+        initAppLifecycle(appOptions, vm);
     };
+}
+function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onShow) && ks.onAppShow) {
+        ks.onAppShow((args) => {
+            vm.$callHook('onShow', args);
+        });
+    }
+    if (isFunction(appOptions.onHide) && ks.onAppHide) {
+        ks.onAppHide((args) => {
+            vm.$callHook('onHide', args);
+        });
+    }
+    if (isFunction(appOptions.onLaunch)) {
+        const args = ks.getLaunchOptionsSync && ks.getLaunchOptionsSync();
+        vm.$callHook('onLaunch', args || {});
+    }
 }
 function initLocale(appVm) {
     const locale = ref(ks.getSystemInfoSync().language || 'zh-Hans');

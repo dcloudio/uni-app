@@ -29,7 +29,9 @@ export default {
 }
 
 function getCreateApp() {
-  const method = process.env.UNI_SUBPACKAGE
+  const method = process.env.UNI_MP_PLUGIN
+    ? 'createPluginApp'
+    : process.env.UNI_SUBPACKAGE
     ? 'createSubpackageApp'
     : 'createApp'
   if (typeof global !== 'undefined') {

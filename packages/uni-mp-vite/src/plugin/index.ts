@@ -43,8 +43,18 @@ export interface UniMiniProgramPluginOptions {
     ) => void
   }
   app: {
-    darkmode: boolean
-    subpackages: boolean
+    /**
+     * 是否支持darkmode
+     */
+    darkmode?: boolean
+    /**
+     * 是否支持subpackages
+     */
+    subpackages?: boolean
+    /**
+     * 是否支持发行插件
+     */
+    plugins?: boolean
   }
   project?: {
     filename: string

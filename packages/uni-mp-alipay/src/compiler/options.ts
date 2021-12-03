@@ -2,6 +2,7 @@ import path from 'path'
 import { CompilerOptions, NodeTypes } from '@vue/compiler-core'
 import {
   COMPONENT_ON_LINK,
+  copyMiniProgramPluginJson,
   createTransformComponentLink,
   MiniProgramCompilerOptions,
   transformMatchMedia,
@@ -61,6 +62,7 @@ export const options: UniMiniProgramPluginOptions = {
     },
     copyOptions: {
       assets: ['mycomponents'],
+      targets: process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : [],
     },
   },
   global: 'my',
@@ -94,6 +96,7 @@ export const options: UniMiniProgramPluginOptions = {
   app: {
     darkmode: false,
     subpackages: true,
+    plugins: true,
   },
   project: {
     filename: projectConfigFilename,

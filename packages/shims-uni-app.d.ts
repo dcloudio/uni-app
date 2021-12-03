@@ -235,6 +235,12 @@ declare namespace UniApp {
 
   interface PagesJson {
     pages: PagesJsonPageOptions[]
+    preloadRule?: {
+      [page: string]: {
+        network?: 'all' | 'wifi'
+        packages: string[]
+      }
+    }
     subpackages?: PagesJsonSubpackagesOptions[]
     subPackages?: PagesJsonSubpackagesOptions[]
     globalStyle: PagesJsonPageStyle

@@ -412,22 +412,24 @@ function initCreateSubpackageApp(parseAppOptions) {
                 app[name] = appOptions[name];
             }
         });
-        if (isFunction(appOptions.onShow) && qa.onAppShow) {
-            qa.onAppShow((args) => {
-                vm.$callHook('onShow', args);
-            });
-        }
-        if (isFunction(appOptions.onHide) && qa.onAppHide) {
-            qa.onAppHide((args) => {
-                vm.$callHook('onHide', args);
-            });
-        }
-        if (isFunction(appOptions.onLaunch)) {
-            const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
-            vm.$callHook('onLaunch', args);
-        }
-        return App(appOptions);
+        initAppLifecycle(appOptions, vm);
     };
+}
+function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onShow) && qa.onAppShow) {
+        qa.onAppShow((args) => {
+            vm.$callHook('onShow', args);
+        });
+    }
+    if (isFunction(appOptions.onHide) && qa.onAppHide) {
+        qa.onAppHide((args) => {
+            vm.$callHook('onHide', args);
+        });
+    }
+    if (isFunction(appOptions.onLaunch)) {
+        const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
+        vm.$callHook('onLaunch', args || {});
+    }
 }
 function initLocale(appVm) {
     const locale = ref(qa.getSystemInfoSync().language || 'zh-Hans');

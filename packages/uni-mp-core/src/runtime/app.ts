@@ -42,7 +42,7 @@ export interface ParseAppOptions {
   parse: (appOptions: MiniProgramAppOptions) => void
 }
 
-function parseApp(
+export function parseApp(
   instance: ComponentPublicInstance,
   parseAppOptions?: ParseAppOptions
 ) {
@@ -121,22 +121,28 @@ export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
         app[name] = appOptions[name]
       }
     })
-    if (isFunction(appOptions.onShow) && __GLOBAL__.onAppShow) {
-      __GLOBAL__.onAppShow((args: unknown) => {
-        vm.$callHook('onShow', args)
-      })
-    }
-    if (isFunction(appOptions.onHide) && __GLOBAL__.onAppHide) {
-      __GLOBAL__.onAppHide((args: unknown) => {
-        vm.$callHook('onHide', args)
-      })
-    }
-    if (isFunction(appOptions.onLaunch)) {
-      const args =
-        __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
-      vm.$callHook('onLaunch', args)
-    }
-    return App(appOptions)
+    initAppLifecycle(appOptions, vm)
+  }
+}
+
+export function initAppLifecycle(
+  appOptions: MiniProgramAppOptions,
+  vm: ComponentPublicInstance
+) {
+  if (isFunction(appOptions.onShow) && __GLOBAL__.onAppShow) {
+    __GLOBAL__.onAppShow((args: unknown) => {
+      vm.$callHook('onShow', args)
+    })
+  }
+  if (isFunction(appOptions.onHide) && __GLOBAL__.onAppHide) {
+    __GLOBAL__.onAppHide((args: unknown) => {
+      vm.$callHook('onHide', args)
+    })
+  }
+  if (isFunction(appOptions.onLaunch)) {
+    const args =
+      __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
+    vm.$callHook('onLaunch', args || {})
   }
 }
 

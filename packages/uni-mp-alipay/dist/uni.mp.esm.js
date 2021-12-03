@@ -362,22 +362,24 @@ function initCreateSubpackageApp(parseAppOptions) {
                 app[name] = appOptions[name];
             }
         });
-        if (isFunction(appOptions.onShow) && my.onAppShow) {
-            my.onAppShow((args) => {
-                vm.$callHook('onShow', args);
-            });
-        }
-        if (isFunction(appOptions.onHide) && my.onAppHide) {
-            my.onAppHide((args) => {
-                vm.$callHook('onHide', args);
-            });
-        }
-        if (isFunction(appOptions.onLaunch)) {
-            const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
-            vm.$callHook('onLaunch', args);
-        }
-        return App(appOptions);
+        initAppLifecycle(appOptions, vm);
     };
+}
+function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onShow) && my.onAppShow) {
+        my.onAppShow((args) => {
+            vm.$callHook('onShow', args);
+        });
+    }
+    if (isFunction(appOptions.onHide) && my.onAppHide) {
+        my.onAppHide((args) => {
+            vm.$callHook('onHide', args);
+        });
+    }
+    if (isFunction(appOptions.onLaunch)) {
+        const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
+        vm.$callHook('onLaunch', args || {});
+    }
 }
 function initLocale(appVm) {
     const locale = ref(my.getSystemInfoSync().language || 'zh-Hans');
@@ -615,6 +617,12 @@ function $destroyComponent(instance) {
         $destroyComponentFn = getApp().$vm.$destroyComponent;
     }
     return $destroyComponentFn(instance);
+}
+
+function initCreatePluginApp(parseAppOptions) {
+    return function createApp(vm) {
+        initAppLifecycle(parseApp(vm, parseAppOptions), vm);
+    };
 }
 
 function onAliAuthError(method, $event) {
@@ -1055,11 +1063,13 @@ function initCreateComponent() {
 const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage();
 const createComponent = initCreateComponent();
+const createPluginApp = initCreatePluginApp(parseAppOptions);
 const createSubpackageApp = initCreateSubpackageApp(parseAppOptions);
 my.EventChannel = EventChannel;
 my.createApp = createApp;
 my.createPage = createPage;
 my.createComponent = createComponent;
+my.createPluginApp = createPluginApp;
 my.createSubpackageApp = createSubpackageApp;
 
-export { createApp, createComponent, createPage, createSubpackageApp };
+export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };

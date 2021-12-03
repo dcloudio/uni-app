@@ -170,6 +170,7 @@ const options = {
         },
         copyOptions: {
             assets: ['mycomponents'],
+            targets: process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : [],
         },
     },
     global: 'my',
@@ -203,6 +204,7 @@ const options = {
     app: {
         darkmode: false,
         subpackages: true,
+        plugins: true,
     },
     project: {
         filename: projectConfigFilename,

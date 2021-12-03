@@ -13,6 +13,7 @@ export function initDefine(stringifyBoolean: boolean = false) {
     'process.env.UNI_APP_ID': JSON.stringify(manifestJson.appid || ''),
     'process.env.UNI_APP_NAME': JSON.stringify(manifestJson.name || ''),
     'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
+    'process.env.UNI_MP_PLUGIN': JSON.stringify(process.env.UNI_MP_PLUGIN),
     'process.env.UNI_SUBPACKAGE': JSON.stringify(process.env.UNI_SUBPACKAGE),
     'process.env.UNI_COMPILER_VERSION': JSON.stringify(
       process.env.UNI_COMPILER_VERSION

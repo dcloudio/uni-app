@@ -421,22 +421,24 @@ function initCreateSubpackageApp(parseAppOptions) {
                 app[name] = appOptions[name];
             }
         });
-        if (isFunction(appOptions.onShow) && swan.onAppShow) {
-            swan.onAppShow((args) => {
-                vm.$callHook('onShow', args);
-            });
-        }
-        if (isFunction(appOptions.onHide) && swan.onAppHide) {
-            swan.onAppHide((args) => {
-                vm.$callHook('onHide', args);
-            });
-        }
-        if (isFunction(appOptions.onLaunch)) {
-            const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
-            vm.$callHook('onLaunch', args);
-        }
-        return App(appOptions);
+        initAppLifecycle(appOptions, vm);
     };
+}
+function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onShow) && swan.onAppShow) {
+        swan.onAppShow((args) => {
+            vm.$callHook('onShow', args);
+        });
+    }
+    if (isFunction(appOptions.onHide) && swan.onAppHide) {
+        swan.onAppHide((args) => {
+            vm.$callHook('onHide', args);
+        });
+    }
+    if (isFunction(appOptions.onLaunch)) {
+        const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
+        vm.$callHook('onLaunch', args || {});
+    }
 }
 function initLocale(appVm) {
     const locale = ref(swan.getSystemInfoSync().language || 'zh-Hans');

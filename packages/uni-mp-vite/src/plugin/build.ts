@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import { UserConfig } from 'vite'
+import { BuildOptions, UserConfig } from 'vite'
 
 import {
   emptyDir,
@@ -12,6 +12,8 @@ import {
   resolveMainPathOnce,
   normalizeMiniProgramFilename,
   isCSSRequest,
+  parseManifestJsonOnce,
+  M,
 } from '@dcloudio/uni-cli-shared'
 import { GetManualChunk, GetModuleInfo, Plugin, PreRenderedChunk } from 'rollup'
 import {
@@ -24,12 +26,20 @@ import {
 const debugChunk = debug('vite:uni:chunk')
 
 export function buildOptions(): UserConfig['build'] {
+  const platform = process.env.UNI_PLATFORM
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
   if (fs.existsSync(outputDir)) {
     emptyDir(outputDir)
   }
+  return createBuildOptions(inputDir, platform)
+}
+
+export function createBuildOptions(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+): BuildOptions {
   return {
     // sourcemap: 'inline', // TODO
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
@@ -41,8 +51,14 @@ export function buildOptions(): UserConfig['build'] {
       formats: ['cjs'],
     },
     rollupOptions: {
+      input: parseRollupInput(inputDir, platform),
       output: {
-        entryFileNames: 'app.js',
+        entryFileNames(chunk) {
+          if (chunk.name === 'main') {
+            return 'app.js'
+          }
+          return chunk.name + '.js'
+        },
         format: 'cjs',
         manualChunks: createMoveToVendorChunkFn(),
         chunkFileNames: createChunkFileNames(inputDir),
@@ -51,6 +67,29 @@ export function buildOptions(): UserConfig['build'] {
       },
     },
   }
+}
+
+function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
+  const inputOptions: Record<string, string> = {
+    app: resolveMainPathOnce(inputDir),
+  }
+  if (process.env.UNI_MP_PLUGIN) {
+    return inputOptions
+  }
+  const manifestJson = parseManifestJsonOnce(inputDir)
+  const plugins = manifestJson[platform]?.plugins || {}
+  Object.keys(plugins).forEach((name) => {
+    const pluginExport = plugins[name].export
+    if (!pluginExport) {
+      return
+    }
+    const pluginExportFile = path.resolve(inputDir, pluginExport)
+    if (!fs.existsSync(pluginExportFile)) {
+      notFound(pluginExportFile)
+    }
+    inputOptions[removeExt(pluginExport)] = pluginExportFile
+  })
+  return inputOptions
 }
 
 function isVueJs(id: string) {
@@ -162,4 +201,11 @@ function dynamicImportPolyfill(): Plugin {
       }
     },
   }
+}
+
+export function notFound(filename: string): never {
+  console.log()
+  console.error(M['file.notfound'].replace('{file}', filename))
+  console.log()
+  process.exit(0)
 }

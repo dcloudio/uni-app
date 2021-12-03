@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
   COMPONENT_CUSTOM_HIDDEN,
+  copyMiniProgramPluginJson,
   MiniProgramCompilerOptions,
   transformComponentLink,
   transformRef,
@@ -46,6 +47,7 @@ export const options: UniMiniProgramPluginOptions = {
     copyOptions: {
       assets: ['wxcomponents'],
       targets: [
+        ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
           src: [
             'theme.json',
@@ -66,6 +68,7 @@ export const options: UniMiniProgramPluginOptions = {
   app: {
     darkmode: true,
     subpackages: true,
+    plugins: true,
   },
   project: {
     filename: projectConfigFilename,

@@ -26,6 +26,7 @@ export interface CliOptions {
   autoHost?: string
   autoPort?: number
   subpackage?: string
+  plugin?: boolean
 }
 
 cli
@@ -43,6 +44,7 @@ cli
   .option('--autoHost [autoHost]', `[string] specify automator hostname`)
   .option('--autoPort [autoPort]', `[number] specify automator port`)
   .option('--subpackage [subpackage]', `[string] specify subpackage to build`)
+  .option('--plugin', `[boolean] build plugin`)
 
 cli
   .command('')

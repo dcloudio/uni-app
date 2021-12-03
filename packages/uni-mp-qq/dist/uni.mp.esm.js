@@ -412,22 +412,24 @@ function initCreateSubpackageApp(parseAppOptions) {
                 app[name] = appOptions[name];
             }
         });
-        if (isFunction(appOptions.onShow) && qq.onAppShow) {
-            qq.onAppShow((args) => {
-                vm.$callHook('onShow', args);
-            });
-        }
-        if (isFunction(appOptions.onHide) && qq.onAppHide) {
-            qq.onAppHide((args) => {
-                vm.$callHook('onHide', args);
-            });
-        }
-        if (isFunction(appOptions.onLaunch)) {
-            const args = qq.getLaunchOptionsSync && qq.getLaunchOptionsSync();
-            vm.$callHook('onLaunch', args);
-        }
-        return App(appOptions);
+        initAppLifecycle(appOptions, vm);
     };
+}
+function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onShow) && qq.onAppShow) {
+        qq.onAppShow((args) => {
+            vm.$callHook('onShow', args);
+        });
+    }
+    if (isFunction(appOptions.onHide) && qq.onAppHide) {
+        qq.onAppHide((args) => {
+            vm.$callHook('onHide', args);
+        });
+    }
+    if (isFunction(appOptions.onLaunch)) {
+        const args = qq.getLaunchOptionsSync && qq.getLaunchOptionsSync();
+        vm.$callHook('onLaunch', args || {});
+    }
 }
 function initLocale(appVm) {
     const locale = ref(qq.getSystemInfoSync().language || 'zh-Hans');
@@ -804,6 +806,12 @@ function initCreatePage(parseOptions) {
     };
 }
 
+function initCreatePluginApp(parseAppOptions) {
+    return function createApp(vm) {
+        initAppLifecycle(parseApp(vm, parseAppOptions), vm);
+    };
+}
+
 const MPPage = Page;
 const MPComponent = Component;
 const customizeRE = /:/g;
@@ -919,10 +927,12 @@ var parseOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
+const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
 wx.createApp = global.createApp = createApp;
 wx.createPage = createPage;
 wx.createComponent = createComponent;
+wx.createPluginApp = createPluginApp;
 wx.createSubpackageApp = createSubpackageApp;
 
 qq.EventChannel = EventChannel$1;
@@ -931,4 +941,4 @@ qq.createPage = createPage;
 qq.createComponent = createComponent;
 qq.createSubpackageApp = createSubpackageApp;
 
-export { createApp, createComponent, createPage, createSubpackageApp };
+export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };

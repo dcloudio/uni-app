@@ -4995,9 +4995,11 @@ var plugin = {
     },
 };
 function getCreateApp() {
-    const method = process.env.UNI_SUBPACKAGE
-        ? 'createSubpackageApp'
-        : 'createApp';
+    const method = process.env.UNI_MP_PLUGIN
+        ? 'createPluginApp'
+        : process.env.UNI_SUBPACKAGE
+            ? 'createSubpackageApp'
+            : 'createApp';
     if (typeof global !== 'undefined') {
         return global[method];
     }

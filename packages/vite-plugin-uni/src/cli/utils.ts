@@ -47,6 +47,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     console.error(M['mp.360.unsupported'])
     process.exit(0)
   }
+  if (options.plugin) {
+    process.env.UNI_MP_PLUGIN = 'true'
+  }
   if (type === 'dev') {
     process.env.NODE_ENV = 'development'
   } else if (type === 'build') {
@@ -137,8 +140,8 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {
-  // 发行分包也不需要自动化测试
-  if (!autoPort || process.env.UNI_SUBPACKAGE) {
+  // 发行分包,插件也不需要自动化测试
+  if (!autoPort || process.env.UNI_SUBPACKAGE || process.env.UNI_MP_PLUGIN) {
     return
   }
   process.env.UNI_AUTOMATOR_WS_ENDPOINT =
