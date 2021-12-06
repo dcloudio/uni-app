@@ -4,35 +4,29 @@ import {
   normalizeMiniProgramFilename,
   normalizePath,
   removeExt,
+  encodeBase64Url,
+  decodeBase64Url,
 } from '@dcloudio/uni-cli-shared'
 import { Plugin } from 'vite'
-import base64url from 'base64url'
+
 import { UniMiniProgramPluginOptions } from '../plugin'
-
-function encode(str: string) {
-  return base64url.encode(str)
-}
-
-function decode(str: string) {
-  return base64url.decode(str)
-}
 
 const uniPagePrefix = 'uniPage://'
 const uniComponentPrefix = 'uniComponent://'
 
 export function virtualPagePath(filepath: string) {
-  return uniPagePrefix + encode(filepath)
+  return uniPagePrefix + encodeBase64Url(filepath)
 }
 export function virtualComponentPath(filepath: string) {
-  return uniComponentPrefix + encode(filepath)
+  return uniComponentPrefix + encodeBase64Url(filepath)
 }
 
 export function parseVirtualPagePath(uniPageUrl: string) {
-  return decode(uniPageUrl.replace(uniPagePrefix, ''))
+  return decodeBase64Url(uniPageUrl.replace(uniPagePrefix, ''))
 }
 
 export function parseVirtualComponentPath(uniComponentUrl: string) {
-  return decode(uniComponentUrl.replace(uniComponentPrefix, ''))
+  return decodeBase64Url(uniComponentUrl.replace(uniComponentPrefix, ''))
 }
 
 export function isUniPageUrl(id: string) {

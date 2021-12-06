@@ -13,7 +13,7 @@ interface AppUniConfig {
   pages: string[]
   globalStyle: UniApp.PagesJsonPageStyle
   nvue: {
-    compiler: 'uni-app' | 'weex' | 'vue'
+    compiler: 'uni-app' | 'weex' | 'vue' | 'vite'
     styleCompiler: 'weex' | 'uni-app'
     'flex-direction': 'row' | 'row-reverse' | 'column' | 'column-reverse'
   }

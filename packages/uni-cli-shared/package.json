@@ -27,6 +27,7 @@
     "@vue/compiler-dom": "3.2.23",
     "@vue/compiler-sfc": "3.2.23",
     "@vue/shared": "3.2.23",
+    "base64url": "^3.0.1",
     "chalk": "^4.1.1",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",

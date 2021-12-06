@@ -16,7 +16,7 @@ declare namespace NodeJS {
     UNI_COMPILER_VERSION_TYPE: 'a' | 'r'
     UNI_HBUILDERX_PLUGINS: string
     UNI_RENDERER?: 'native'
-    UNI_NVUE_COMPILER: 'uni-app' | 'weex' | 'vue'
+    UNI_NVUE_COMPILER: 'uni-app' | 'weex' | 'vue' | 'vite'
     UNI_NVUE_STYLE_COMPILER: 'uni-app' | 'weex'
     UNI_APP_CODE_SPLITING?: 'true'
     UNI_AUTOMATOR_WS_ENDPOINT?: string

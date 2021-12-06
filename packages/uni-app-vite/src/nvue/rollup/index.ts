@@ -2,10 +2,11 @@ import { RollupOptions } from 'rollup'
 import vue from '@vitejs/plugin-vue'
 import { EXTNAME_VUE_RE, removeExt } from '@dcloudio/uni-cli-shared'
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
+import { createUniNVuePagePath } from '../plugins/entry'
 
 export function createRollupOptions(pagePath: string): RollupOptions {
   return {
-    input: pagePath,
+    input: createUniNVuePagePath(pagePath),
     context: 'global',
     external: ['vue'],
     preserveEntrySignatures: false,

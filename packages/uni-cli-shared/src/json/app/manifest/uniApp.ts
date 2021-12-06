@@ -3,7 +3,7 @@ import { getNVueCompiler, getNVueFlexDirection } from './nvue'
 interface UniAppOptions {
   control: 'uni-v3'
   compilerVersion: string
-  nvueCompiler: 'uni-app' | 'weex'
+  nvueCompiler: 'uni-app' | 'weex' | 'vite' | 'vue'
   renderer: 'auto'
   nvue: {
     'flex-direction': 'row' | 'row-reverse' | 'column' | 'column-reverse'

@@ -21,6 +21,8 @@ import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniStatsPlugin } from './plugins/stats'
 import { uniEasycomPlugin } from './plugins/easycom'
 import { uniConfusionPlugin } from './plugins/confusion'
+import { uniNVuePlugin } from './nvue'
+import { uniNVueEntryPlugin } from './nvue/plugins/entry'
 
 function initUniCssScopedPluginFilter(
   inputDir: string
@@ -65,7 +67,10 @@ const filter = initUniCssScopedPluginFilter(process.env.UNI_INPUT_DIR)
 if (filter) {
   plugins.unshift(uniCssScopedPlugin({ filter }))
 }
-if (process.env.UNI_NVUE_COMPILER !== 'vue') {
+if (process.env.UNI_NVUE_COMPILER === 'vite') {
+  plugins.push(uniNVuePlugin('pages/demo/demo'))
+  plugins.push(uniNVueEntryPlugin())
+} else if (process.env.UNI_NVUE_COMPILER !== 'vue') {
   plugins.push(...nvuePlugins)
 }
 

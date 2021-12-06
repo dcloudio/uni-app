@@ -363,6 +363,7 @@ importers:
       '@vue/compiler-dom': 3.2.23
       '@vue/compiler-sfc': 3.2.23
       '@vue/shared': 3.2.23
+      base64url: ^3.0.1
       chalk: ^4.1.1
       chokidar: ^3.5.2
       compare-versions: ^3.6.0
@@ -396,6 +397,7 @@ importers:
       '@vue/compiler-dom': 3.2.23
       '@vue/compiler-sfc': 3.2.23
       '@vue/shared': 3.2.23
+      base64url: 3.0.1
       chalk: 4.1.2
       chokidar: 3.5.2
       compare-versions: 3.6.0
@@ -686,7 +688,6 @@ importers:
       '@types/debug': ^4.1.7
       '@vue/compiler-sfc': 3.2.23
       '@vue/shared': 3.2.23
-      base64url: ^3.0.1
       debug: ^4.3.2
       magic-string: ^0.25.7
     dependencies:
@@ -698,7 +699,6 @@ importers:
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
       '@vue/shared': 3.2.23
-      base64url: 3.0.1
       debug: 4.3.2
       magic-string: 0.25.7
     devDependencies:

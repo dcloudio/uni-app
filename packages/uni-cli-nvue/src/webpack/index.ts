@@ -7,6 +7,7 @@ import {
   normalizePath,
   parsePagesJsonOnce,
   removeExt,
+  polyfillCode,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -97,20 +98,7 @@ function genNVueEntryCode(route: string) {
 import App from '${normalizePath(
     path.resolve(process.env.UNI_INPUT_DIR, route)
   )}.nvue?mpType=page'  
-if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
-    Promise.prototype.finally = function(callback) {
-    var promise = this.constructor
-    return this.then(function(value) {
-        return promise.resolve(callback()).then(function() {
-        return value
-        })
-    }, function(reason) {
-        return promise.resolve(callback()).then(function() {
-        throw reason
-        })
-    })
-    }
-}
+${polyfillCode}
 App.mpType = 'page'
 App.route = '${route}'
 App.el = '#root'

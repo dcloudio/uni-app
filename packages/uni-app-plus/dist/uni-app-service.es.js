@@ -2663,6 +2663,20 @@ var serviceContext = (function (vue) {
       UniServiceJSBridge.unsubscribe(getEventName(reqId));
   }
 
+  const DEVICE_FREQUENCY = 200;
+  const NETWORK_TYPES = [
+      'unknown',
+      'none',
+      'ethernet',
+      'wifi',
+      '2g',
+      '3g',
+      '4g',
+      '5g',
+  ];
+  const TEMP_PATH_BASE = '_doc/uniapp_temp';
+  const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
+
   const EVENT_BACKBUTTON = 'backbutton';
   function backbuttonListener() {
       uni.navigateBack({
@@ -9543,8 +9557,6 @@ var serviceContext = (function (vue) {
 
   var pako_1 = pako;
 
-  const TEMP_PATH$1 = '';
-
   const API_UPX2PX = 'upx2px';
   const Upx2pxProtocol = [
       {
@@ -10850,7 +10862,7 @@ var serviceContext = (function (vue) {
           reject();
           return;
       }
-      const dirname = `${TEMP_PATH$1}/canvas`;
+      const dirname = `${TEMP_PATH}/canvas`;
       operateCanvas(canvasId, pageId, 'toTempFilePath', {
           x,
           y,
@@ -13465,20 +13477,6 @@ var serviceContext = (function (vue) {
   const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
       return resolve(getSystemInfoSync());
   });
-
-  const DEVICE_FREQUENCY = 200;
-  const NETWORK_TYPES = [
-      'unknown',
-      'none',
-      'ethernet',
-      'wifi',
-      '2g',
-      '3g',
-      '4g',
-      '5g',
-  ];
-  const TEMP_PATH_BASE = '_doc/uniapp_temp';
-  const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
 
   let listener$1 = null;
   const onCompassChange = (defineOnApi(API_ON_COMPASS, () => {
