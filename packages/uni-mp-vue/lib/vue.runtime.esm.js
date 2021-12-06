@@ -4298,6 +4298,9 @@ const resolveFilter = null;
 function unwrapper(target) {
     return unref(target);
 }
+function defineAsyncComponent(source) {
+    console.error('defineAsyncComponent is unsupported');
+}
 
 // import deepCopy from './deepCopy'
 /**
@@ -4822,4 +4825,4 @@ function initCssVarsRender(instance, getter) {
 function withModifiers() { }
 function createVNode$1() { }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
