@@ -2384,7 +2384,9 @@ const BaseTransitionImpl = {
             // check mode
             if ((process.env.NODE_ENV !== 'production') &&
                 mode &&
-                mode !== 'in-out' && mode !== 'out-in' && mode !== 'default') {
+                mode !== 'in-out' &&
+                mode !== 'out-in' &&
+                mode !== 'default') {
                 warn$1(`invalid <transition> mode: ${mode}`);
             }
             // at this point children has a guaranteed length of 1.
@@ -3692,7 +3694,7 @@ function setFullProps(instance, rawProps, props, attrs) {
                 }
             }
             else if (!isEmitListener(instance.emitsOptions, key)) {
-                if (value !== attrs[key]) {
+                if (!(key in attrs) || value !== attrs[key]) {
                     attrs[key] = value;
                     hasAttrsChanged = true;
                 }
@@ -8791,7 +8793,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.23";
+const version = "3.2.24";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -9447,7 +9449,7 @@ class VueElement extends BaseClass {
                 // HMR
                 if ((process.env.NODE_ENV !== 'production')) {
                     instance.ceReload = newStyles => {
-                        // alawys reset styles
+                        // always reset styles
                         if (this._styles) {
                             this._styles.forEach(s => this.shadowRoot.removeChild(s));
                             this._styles.length = 0;

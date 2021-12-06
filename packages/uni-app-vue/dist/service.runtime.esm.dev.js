@@ -5569,7 +5569,7 @@ export default function vueFactory(exports) {
             (rawCastValues || (rawCastValues = {}))[camelKey] = value;
           }
         } else if (!isEmitListener(instance.emitsOptions, key)) {
-          if (value !== attrs[key]) {
+          if (!(key in attrs) || value !== attrs[key]) {
             attrs[key] = value;
             hasAttrsChanged = true;
           }
@@ -11601,7 +11601,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.23";
+  var version = "3.2.24";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,
