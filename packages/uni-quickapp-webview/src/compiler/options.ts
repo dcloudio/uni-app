@@ -28,6 +28,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
 const projectConfigFilename = 'jsconfig.json'
 
 export const options: UniMiniProgramPluginOptions = {
+  cdn: process.env.UNI_SUB_PLATFORM === 'quickapp-webview-huawei' ? 200 : 201,
   vite: {
     inject: {
       uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],

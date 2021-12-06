@@ -38,6 +38,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
 const projectConfigFilename = 'project.config.json'
 
 export const options: UniMiniProgramPluginOptions = {
+  cdn: 9,
   vite: {
     inject: {
       uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],

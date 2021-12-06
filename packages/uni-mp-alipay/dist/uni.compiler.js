@@ -161,6 +161,7 @@ const customElements = [
     'mkt',
 ];
 const options = {
+    cdn: 2,
     vite: {
         inject: {
             uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],

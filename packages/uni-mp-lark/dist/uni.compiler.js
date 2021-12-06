@@ -86,6 +86,7 @@ const miniProgram = {
     },
 };
 const options = {
+    cdn: 4,
     vite: {
         inject: {
             uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
@@ -137,6 +138,7 @@ const uniMiniProgramToutiaoPlugin = {
         };
     },
 };
+options.cdn = 10;
 options.template.slot.fallbackContent = false;
 // 飞书不支持：
 // <view tt:for="{{items}}" tt:for-item="item" tt:key="id" slot="{{item.slot}}">{{item.text}}</view>

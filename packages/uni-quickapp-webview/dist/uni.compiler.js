@@ -70,6 +70,7 @@ const miniProgram = {
 };
 const projectConfigFilename = 'jsconfig.json';
 const options = {
+    cdn: process.env.UNI_SUB_PLATFORM === 'quickapp-webview-huawei' ? 200 : 201,
     vite: {
         inject: {
             uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],

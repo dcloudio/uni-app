@@ -24,6 +24,7 @@ import {
 } from '@vue/compiler-sfc'
 
 export interface UniMiniProgramPluginOptions {
+  cdn?: number
   vite: {
     alias: AliasOptions
     copyOptions: CopyOptions

@@ -16110,11 +16110,7 @@ var serviceContext = (function (vue) {
       type: 'loading',
       icon: 'loading',
   }), callbacks), ShowLoadingProtocol, ShowLoadingOptions);
-  const _showToast = ({ title = '', icon = 'success', image = '', duration = 1500, mask = false, position, 
-  // @ts-ignore ToastType
-  type = 'toast', 
-  // @ts-ignore PlusNativeUIWaitingStyles
-  style, }, { resolve, reject }) => {
+  const _showToast = ({ title = '', icon = 'success', image = '', duration = 1500, mask = false, position, type = 'toast', style, }, { resolve, reject }) => {
       hide('');
       toastType = type;
       if (['top', 'center', 'bottom'].includes(String(position))) {
@@ -16171,9 +16167,10 @@ var serviceContext = (function (vue) {
               reject(`${error}`);
           }
       }
-      timeout = setTimeout(() => {
-          hide('');
-      }, duration);
+      if (toastType === 'toast')
+          timeout = setTimeout(() => {
+              hide('');
+          }, duration);
       return resolve();
   };
   const showToast = defineAsyncApi(API_SHOW_TOAST, _showToast, ShowToastProtocol, ShowToastOptions);

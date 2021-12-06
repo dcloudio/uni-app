@@ -81,6 +81,7 @@ const miniProgram = {
 };
 const projectConfigFilename = 'project.config.json';
 const options = {
+    cdn: 1,
     vite: {
         inject: {
             uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],

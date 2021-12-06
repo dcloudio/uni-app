@@ -87,6 +87,7 @@ const compilerOptions = {
 };
 const projectConfigFilename = 'project.swan.json';
 const options = {
+    cdn: 3,
     vite: {
         inject: {
             uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],

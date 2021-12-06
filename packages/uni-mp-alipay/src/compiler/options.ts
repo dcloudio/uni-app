@@ -53,6 +53,7 @@ export const customElements = [
 ]
 
 export const options: UniMiniProgramPluginOptions = {
+  cdn: 2,
   vite: {
     inject: {
       uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],

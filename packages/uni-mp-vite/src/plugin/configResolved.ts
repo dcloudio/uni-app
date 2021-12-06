@@ -23,11 +23,15 @@ import {
 
 const debugNVueCss = debug('vite:uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
-const shadowCss = `page::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}100%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}}@keyframes shadow-preload{0%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}100%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}}`
+
+const genShadowCss = (cdn: string) => {
+  return `page::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(${cdn}/img/shadow-grey.png)}100%{background-image:url(${cdn}/img/shadow-grey.png)}}@keyframes shadow-preload{0%{background-image:url(${cdn}/img/shadow-grey.png)}100%{background-image:url(${cdn}/img/shadow-grey.png)}}`
+}
 const genComponentCustomHiddenCss = (name: string) =>
   `[${name.replace(':', '')}="true"]{display: none !important;}`
 
 export function createConfigResolved({
+  cdn,
   style: { extname },
   template: { component },
 }: UniMiniProgramPluginOptions): Plugin['configResolved'] {
@@ -63,7 +67,12 @@ export function createConfigResolved({
               genComponentCustomHiddenCss(component.vShow)) ||
             ''
           if (config.isProduction) {
-            return cssCode + shadowCss + cssVars + componentCustomHiddenCss
+            return (
+              cssCode +
+              genShadowCss(`https://cdn${cdn || ''}.dcloud.net.cn`) +
+              cssVars +
+              componentCustomHiddenCss
+            )
           } else {
             return cssCode + cssVars + componentCustomHiddenCss
           }

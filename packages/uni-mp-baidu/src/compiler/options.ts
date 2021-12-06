@@ -38,6 +38,7 @@ export const compilerOptions: CompilerOptions = {
 const projectConfigFilename = 'project.swan.json'
 
 export const options: UniMiniProgramPluginOptions = {
+  cdn: 3,
   vite: {
     inject: {
       uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],

@@ -19,6 +19,8 @@ const uniMiniProgramToutiaoPlugin: Plugin = {
   },
 }
 
+options.cdn = 10
+
 options.template.slot.fallbackContent = false
 // 飞书不支持：
 // <view tt:for="{{items}}" tt:for-item="item" tt:key="id" slot="{{item.slot}}">{{item.text}}</view>
