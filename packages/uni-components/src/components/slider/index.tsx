@@ -197,7 +197,7 @@ function useSliderLoader(
       ? min
       : e > max
       ? max
-      : computeController.mul.call(null.round((e - min) / step), step) + min
+      : computeController.mul.call(Math.round((e - min) / step), step) + min
   }
 
   const _onUserChangedValue = (e: MouseEvent) => {
