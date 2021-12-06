@@ -1795,6 +1795,50 @@ var serviceContext = (function (vue) {
           useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']), false);
       }
   });
+  const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
+      const name = 'uni.previewImage.';
+      const keys = ['cancel', 'button.save', 'save.success', 'save.fail'];
+      {
+          useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+              'Cancel',
+              'Save Image',
+              'Saved successfully',
+              'Save failed',
+          ]), false);
+      }
+      {
+          useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+              'Cancelar',
+              'Guardar imagen',
+              'Guardado exitosamente',
+              'Error al guardar',
+          ]), false);
+      }
+      {
+          useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+              'Annuler',
+              'Guardar imagen',
+              'Enregistré avec succès',
+              'Échec de la sauvegarde',
+          ]), false);
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
+              '取消',
+              '保存图像',
+              '保存图像到相册成功',
+              '保存图像到相册失败',
+          ]), false);
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
+              '取消',
+              '保存圖像',
+              '保存圖像到相冊成功',
+              '保存圖像到相冊失敗',
+          ]), false);
+      }
+  });
   const initI18nSetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.setClipboardData.';
       const keys = ['success', 'fail'];
@@ -14269,7 +14313,7 @@ var serviceContext = (function (vue) {
   }, GetVideoInfoProtocol, GetVideoInfoOptions);
 
   const previewImage = defineAsyncApi(API_PREVIEW_IMAGE, ({ current = 0, indicator = 'number', loop = false, urls, longPressActions }, { resolve, reject }) => {
-      initI18nChooseImageMsgsOnce();
+      initI18nPreviewImageMsgsOnce();
       const { t } = useI18n();
       urls = urls.map((url) => getRealPath(url));
       const index = Number(current);

@@ -123,6 +123,7 @@ export function uniMiniProgramPlugin(
             'vue-i18n': path.resolve(__dirname, '../../lib/vue-i18n'),
             ...alias,
           },
+          preserveSymlinks: true,
         },
         build: buildOptions(),
       }

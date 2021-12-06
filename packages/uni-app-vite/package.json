@@ -27,7 +27,7 @@
     "@vitejs/plugin-vue": "^1.10.1",
     "debug": "^4.3.2",
     "fs-extra": "^10.0.0",
-    "rollup": "^2.57.0"
+    "rollup": "^2.59.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

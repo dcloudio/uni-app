@@ -27,9 +27,9 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
 
     let jsonPath = ''
 
-    plugin.resolveId = function (id, importer, options, ssr) {
+    plugin.resolveId = function (id, importer, options) {
       const res =
-        origResolveId && origResolveId.call(this, id, importer, options, ssr)
+        origResolveId && origResolveId.call(this, id, importer, options)
       if (res) {
         return res
       }

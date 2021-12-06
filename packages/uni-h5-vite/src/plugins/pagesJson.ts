@@ -14,15 +14,17 @@ import {
   isEnableTreeShaking,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
+import { isSSR } from '../utils'
 
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'vite:uni-h5-pages-json',
       enforce: 'pre',
-      transform(code, id, ssr) {
+      transform(code, id, opt) {
         if (opts.filter(id)) {
           const { resolvedConfig } = opts
+          const ssr = isSSR(opt)
           return {
             code:
               registerGlobalCode(resolvedConfig, ssr) +

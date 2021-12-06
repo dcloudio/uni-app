@@ -17,6 +17,10 @@ import resolve from 'resolve'
 import { resolveComponentType } from '@vue/compiler-dom'
 import { transformPageHead } from '../plugin/transforms/transformPageHead'
 
+// Temporal handling for 2.7 breaking change
+export const isSSR = (opt: { ssr?: boolean } | boolean | undefined) =>
+  opt === undefined ? false : typeof opt === 'boolean' ? opt : opt?.ssr === true
+
 export function isSsr(
   command: ConfigEnv['command'],
   config: UserConfig | ResolvedConfig
@@ -86,17 +90,12 @@ export function generateSsrEntryServerCode() {
   )
 }
 
-export function rewriteSsrVue(mode?: 2 | 3) {
+export function rewriteSsrVue() {
   // 解决 @vue/server-renderer 中引入 vue 的映射
-  let vuePath: string
-  if (mode === 2) {
-    vuePath = resolveBuiltIn(
-      '@dcloudio/uni-h5-vue/dist/vue.runtime.compat.cjs.js'
-    )
-  } else {
-    vuePath = resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js')
-  }
-  require('module-alias').addAlias('vue', vuePath)
+  require('module-alias').addAlias(
+    'vue',
+    resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js')
+  )
 }
 
 function initResolveSyncOpts(opts?: resolve.SyncOpts) {
@@ -115,7 +114,7 @@ function initResolveSyncOpts(opts?: resolve.SyncOpts) {
   return opts
 }
 
-export function rewriteSsrResolve(mode?: 2 | 3) {
+export function rewriteSsrResolve() {
   // 解决 ssr 时 __vite_ssr_import__("vue") 的映射
   const resolve = require(require.resolve('resolve', {
     paths: [
@@ -125,11 +124,9 @@ export function rewriteSsrResolve(mode?: 2 | 3) {
   const oldSync = resolve.sync
   resolve.sync = (id: string, opts?: resolve.SyncOpts) => {
     if (id === 'vue') {
-      return resolveBuiltIn(
-        `@dcloudio/uni-h5-vue/dist/vue.runtime.${
-          mode === 2 ? 'compat.' : ''
-        }cjs.js`
-      )
+      return resolveBuiltIn(`@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js`)
+    } else if (id === 'vue/package.json') {
+      return resolveBuiltIn(`@dcloudio/uni-h5-vue/package.json`)
     }
     return oldSync(id, initResolveSyncOpts(opts))
   }

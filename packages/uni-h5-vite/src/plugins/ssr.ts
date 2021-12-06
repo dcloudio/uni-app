@@ -3,10 +3,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 
 import { OutputChunk } from 'rollup'
 
-import {
-  parseCompatConfigOnce,
-  parseRpx2UnitOnce,
-} from '@dcloudio/uni-cli-shared'
+import { parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
 
 import {
   isSsr,
@@ -31,10 +28,9 @@ export function uniSSRPlugin(): Plugin {
       resolvedConfig = config
       entryServerJs = path.join(process.env.UNI_INPUT_DIR, ENTRY_SERVER_JS)
       if (isSsr(resolvedConfig.command, resolvedConfig)) {
-        const { MODE } = parseCompatConfigOnce(process.env.UNI_INPUT_DIR)
         initSsrDefine(resolvedConfig)
-        rewriteSsrVue(MODE)
-        rewriteSsrResolve(MODE)
+        rewriteSsrVue()
+        rewriteSsrResolve()
         rewriteSsrNativeTag()
         rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
       }

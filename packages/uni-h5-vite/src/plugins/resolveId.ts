@@ -2,7 +2,7 @@ import path from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
 
-import { resolveBuiltIn, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
+import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 import { ownerModuleName } from '../utils'
 
 const debugResolve = debug('vite:uni:resolve')
@@ -12,16 +12,12 @@ export function uniResolveIdPlugin(): Plugin {
   return {
     name: 'vite:uni-h5-resolve-id',
     enforce: 'pre',
-    configResolved() {
-      const { MODE } = parseCompatConfigOnce(process.env.UNI_INPUT_DIR)
+    config() {
       resolveCache[ownerModuleName] = resolveBuiltIn(
         path.join(ownerModuleName, 'dist/uni-h5.es.js')
       )
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
-        path.join(
-          '@dcloudio/uni-h5-vue',
-          `dist/vue.runtime.${MODE === 2 ? 'compat.' : ''}esm.js`
-        )
+        path.join('@dcloudio/uni-h5-vue', `dist/vue.runtime.esm.js`)
       )
     },
     resolveId(id) {
