@@ -10,7 +10,7 @@ import {
 
 import { isPlainObject } from '@vue/shared'
 
-import { initI18nChooseImageMsgsOnce, useI18n } from '@dcloudio/uni-core'
+import { initI18nPreviewImageMsgsOnce, useI18n } from '@dcloudio/uni-core'
 
 import { getRealPath } from '../../../platform/getRealPath'
 
@@ -20,7 +20,7 @@ export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
     { current = 0, indicator = 'number', loop = false, urls, longPressActions },
     { resolve, reject }
   ) => {
-    initI18nChooseImageMsgsOnce()
+    initI18nPreviewImageMsgsOnce()
     const { t } = useI18n()
 
     urls = urls.map((url) => getRealPath(url))
