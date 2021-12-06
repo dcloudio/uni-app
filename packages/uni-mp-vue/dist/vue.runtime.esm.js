@@ -5260,6 +5260,7 @@ const e = (target, ...sources) => extend(target, ...sources);
 const h = (str) => hyphenate(str);
 const n = (value) => normalizeClass(value);
 const t = (val) => toDisplayString(val);
+// export const p: typeof renderProps = (props) => renderProps(props)
 const sr = (ref, id) => setRef(ref, id);
 
 function createApp(rootComponent, rootProps = null) {
