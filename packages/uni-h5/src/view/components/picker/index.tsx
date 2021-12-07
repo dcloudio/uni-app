@@ -256,7 +256,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     _createDate()
     _setValueSync()
 
-    const popup = usePopupStyle(props)
+    const popup = usePopupStyle(state)
     watchEffect(() => {
       state.isDesktop = popup.isDesktop.value
       state.popupStyle = popup.popupStyle.value
