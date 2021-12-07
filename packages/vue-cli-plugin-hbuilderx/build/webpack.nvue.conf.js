@@ -84,6 +84,8 @@ const plugins = [
       UNI_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       VUE_APP_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
+      UNICLOUD_DEBUG: process.env.UNICLOUD_DEBUG,
+      RUN_BY_HBUILDERX: process.env.RUN_BY_HBUILDERX,
       HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || ''),
       UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT)
     }
