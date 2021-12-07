@@ -6,6 +6,7 @@ import {
   createServer as createViteServer,
   ServerOptions,
   ViteDevServer,
+  printHttpServerUrls,
 } from 'vite'
 import express from 'express'
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
@@ -121,7 +122,7 @@ export async function createSSRServer(
   }
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
-      vite.printUrls()
+      printHttpServerUrls(server, vite.config)
       printStartupDuration(logger)
       resolve(vite)
     }
