@@ -1,4 +1,6 @@
 import { ComponentOptions, ComponentPublicInstance } from 'vue'
+// @ts-ignore
+import { pruneComponentPropsCache } from 'vue'
 import {
   initProps,
   initBehaviors,
@@ -102,7 +104,10 @@ export function initCreateComponent() {
         }
       },
       didUnmount() {
-        $destroyComponent(this.$vm)
+        if (this.$vm) {
+          pruneComponentPropsCache(this.$vm.$.uid)
+          $destroyComponent(this.$vm)
+        }
       },
       methods: {
         __r: handleRef,

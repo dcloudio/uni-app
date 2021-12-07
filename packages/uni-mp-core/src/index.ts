@@ -16,7 +16,11 @@ export { initUni } from './api/index'
 export { initGetProvider } from './api/shims'
 
 // mp-alipay
-export { initData, initBehaviors } from './runtime/componentOptions'
+export {
+  initData,
+  initBehaviors,
+  updateComponentProps,
+} from './runtime/componentOptions'
 export { initProps } from './runtime/componentProps'
 export {
   PAGE_HOOKS,

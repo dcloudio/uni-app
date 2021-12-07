@@ -10,7 +10,7 @@ async function getVersion(name, tag = 'latest') {
 
 const pkgs = {
   vue: {
-    next: '3.2.23',
+    next: '3.2.24',
   },
   'vue-router': {
     next: '4.0.12',

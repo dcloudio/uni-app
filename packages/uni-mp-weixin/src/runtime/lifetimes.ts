@@ -1,4 +1,6 @@
 import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+// @ts-ignore
+import { findComponentPropsData, pruneComponentPropsCache } from 'vue'
 
 import {
   RelationOptions,
@@ -12,7 +14,6 @@ import {
   initMocks,
   initVueIds,
   initSetRef,
-  fixProperties,
   nextSetDataTick,
   $createComponent,
   $destroyComponent,
@@ -45,13 +46,10 @@ export function initLifetimes({
       const mpInstance = this
       const isMiniProgramPage = isPage(mpInstance)
 
-      // 微信小程序 properties 为了解决警告问题，目前所有 type 都默认为 null，故导致部分 prop 默认值初始化不正确，故将 null 值 替换为 undefined
-      fixProperties(properties)
-
       this.$vm = $createComponent(
         {
           type: vueOptions,
-          props: properties,
+          props: findComponentPropsData(properties.uP) || {},
         },
         {
           mpType: isMiniProgramPage ? 'page' : 'component',
@@ -87,7 +85,10 @@ export function initLifetimes({
       }
     },
     detached(this: MPComponentInstance) {
-      this.$vm && $destroyComponent(this.$vm)
+      if (this.$vm) {
+        pruneComponentPropsCache(this.$vm.$.uid)
+        $destroyComponent(this.$vm)
+      }
     },
   }
 }

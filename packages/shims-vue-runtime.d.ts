@@ -24,6 +24,8 @@ declare module '@vue/runtime-core' {
     __isVisible: boolean
     __isActive?: boolean // tabBar
     __isTabBar?: boolean
+    // mp
+    $propsCaches?: Record<string, Record<string, any>[]>
     // h5 | app
     $wxsModules?: string[]
   }

@@ -27,6 +27,7 @@ import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import { TransformContext } from '../transform'
+import { ATTR_VUE_PROPS } from '../transforms/utils'
 interface TemplateCodegenContext {
   code: string
   directive: string
@@ -214,6 +215,20 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
 }
 
 function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
+  if (context.component?.getPropertySync) {
+    return genElement(node, context)
+  }
+  if (isIfElementNode(node) || isForElementNode(node)) {
+    return genElement(node, context)
+  }
+  const prop = findProp(node, ATTR_VUE_PROPS) as DirectiveNode
+  if (!prop) {
+    return genElement(node, context)
+  }
+  ;(node as IfElementNode).vIf = {
+    name: 'if',
+    condition: (prop.exp as SimpleExpressionNode).content,
+  }
   return genElement(node, context)
 }
 

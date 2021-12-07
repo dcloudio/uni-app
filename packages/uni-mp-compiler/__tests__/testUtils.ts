@@ -15,6 +15,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dynamicSlotNames: true,
   },
   directive: 'wx:',
+  component: {
+    getPropertySync: true,
+  },
 } as const
 
 export function inspect(obj: any) {

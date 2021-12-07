@@ -1,39 +1,66 @@
-import { isArray, isPlainObject } from '@vue/shared'
-import { ComponentOptions } from 'vue'
+import { isArray } from '@vue/shared'
+import { ComponentInternalInstance, ComponentOptions, toRaw } from 'vue'
+
+import {
+  // @ts-ignore
+  findComponentPropsData,
+  // @ts-ignore
+  invalidateJob,
+  // @ts-ignore
+  updateProps,
+} from 'vue'
+
+import { MPComponentInstance } from '..'
 
 import { MPComponentOptions } from './component'
-import { CustomAppInstanceProperty } from './app'
 import { initProps } from './componentProps'
 
-export function initData(vueOptions: ComponentOptions) {
-  let data = vueOptions.data || {}
+export function initData(_: ComponentOptions) {
+  return {}
+}
 
-  if (typeof data === 'function') {
-    try {
-      const appConfig =
-        getApp<CustomAppInstanceProperty>().$vm!.$.appContext.config
-      data = data.call(appConfig.globalProperties)
-    } catch (e) {
-      if (process.env.VUE_APP_DEBUG) {
-        console.warn(
-          '根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。',
-          data,
-          e
-        )
-      }
+export function initPropsObserver(componentOptions: MPComponentOptions) {
+  const observe = function observe(this: MPComponentInstance) {
+    const up = this.properties.uP
+    if (!up || !this.$vm) {
+      return
+    }
+    updateComponentProps(up, this.$vm.$)
+  }
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
+    componentOptions.observers = {
+      uP: observe,
     }
   } else {
-    try {
-      // 对 data 格式化
-      data = JSON.parse(JSON.stringify(data))
-    } catch (e) {}
+    ;(componentOptions.properties as any).uP.observer = observe
   }
+}
 
-  if (!isPlainObject(data)) {
-    data = {}
+export function updateComponentProps(
+  up: string,
+  instance: ComponentInternalInstance
+) {
+  const prevProps = toRaw(instance.props)
+  const nextProps = findComponentPropsData(up) || {}
+  if (hasPropsChanged(prevProps, nextProps)) {
+    updateProps(instance, nextProps, prevProps, false)
+    invalidateJob(instance.update)
+    instance.update()
   }
+}
 
-  return data
+function hasPropsChanged(prevProps: Data, nextProps: Data): boolean {
+  const nextKeys = Object.keys(nextProps)
+  if (nextKeys.length !== Object.keys(prevProps).length) {
+    return true
+  }
+  for (let i = 0; i < nextKeys.length; i++) {
+    const key = nextKeys[i]
+    if (nextProps[key] !== prevProps[key]) {
+      return true
+    }
+  }
+  return false
 }
 
 export function initBehaviors(

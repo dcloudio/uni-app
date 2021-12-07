@@ -137,6 +137,9 @@ const miniProgram = {
         dynamicSlotNames: true,
     },
     directive: 'a:',
+    component: {
+        getPropertySync: true,
+    },
 };
 const nodeTransforms = [
     transformRef,

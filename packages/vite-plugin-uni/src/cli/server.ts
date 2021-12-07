@@ -8,10 +8,9 @@ import {
   ViteDevServer,
 } from 'vite'
 import express from 'express'
-import { printHttpServerUrls } from 'vite'
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
-import { addConfigFile, cleanOptions } from './utils'
+import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 
 export async function createServer(options: CliOptions & ServerOptions) {
   const server = await createViteServer(
@@ -25,9 +24,9 @@ export async function createServer(options: CliOptions & ServerOptions) {
   )
   await server.listen()
 
-  const info = server.config.logger.info
+  const logger = server.config.logger
 
-  info(
+  logger.info(
     chalk.cyan(`\n  vite v${require('vite/package.json').version}`) +
       chalk.green(` dev server running at:\n`),
     {
@@ -36,6 +35,9 @@ export async function createServer(options: CliOptions & ServerOptions) {
   )
 
   server.printUrls()
+
+  printStartupDuration(logger)
+
   return server
 }
 
@@ -119,7 +121,8 @@ export async function createSSRServer(
   }
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
-      printHttpServerUrls(server, vite.config)
+      vite.printUrls()
+      printStartupDuration(logger)
       resolve(vite)
     }
     const onError = (e: Error & { code?: string }) => {

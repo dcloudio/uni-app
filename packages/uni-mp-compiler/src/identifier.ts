@@ -1,6 +1,6 @@
 export default class IdentifierGenerator {
-  private _chars: string =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  // u 被框架占用了，不提供 u 开头的变量名
+  private _chars: string = 'abcdefghijklmnopqrstvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
   private _nextIds: number[] = [0]
 
   next() {

@@ -4,18 +4,18 @@ describe('compiler: transform v-model', () => {
   test(`component v-model`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp u-i="2a9ec0b0-0" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
+      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _o($event => _ctx.model = $event) }
+  return { a: _o($event => _ctx.model = $event), b: _p({ modelValue: _ctx.model }) }
 }`
     )
   })
   test(`component v-model with cache`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp u-i="2a9ec0b0-0" modelValue="{{a}}" bindupdateModelValue="{{b}}"/>`,
+      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _o($event => _ctx.model = $event) }
+  return { a: _o($event => _ctx.model = $event), b: _p({ modelValue: _ctx.model }) }
 }`,
       {
         cacheHandlers: true,

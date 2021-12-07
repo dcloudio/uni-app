@@ -1,7 +1,8 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { BuildOptions, InlineConfig } from 'vite'
+import chalk from 'chalk'
+import { BuildOptions, InlineConfig, Logger } from 'vite'
 
 import { M, isInHBuilderX, initModulePaths } from '@dcloudio/uni-cli-shared'
 
@@ -187,4 +188,15 @@ export function cleanOptions(options: CliOptions) {
   delete ret.autoPort
 
   return ret
+}
+
+export function printStartupDuration(logger: Logger) {
+  // @ts-ignore
+  if (global.__vite_start_time) {
+    // @ts-ignore
+    const startupDuration = performance.now() - global.__vite_start_time
+    logger.info(
+      `\n  ${chalk.cyan(`ready in ${Math.ceil(startupDuration)}ms.`)}\n`
+    )
+  }
 }

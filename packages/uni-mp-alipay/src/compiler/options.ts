@@ -27,6 +27,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dynamicSlotNames: true,
   },
   directive: 'a:',
+  component: {
+    getPropertySync: true,
+  },
 }
 const nodeTransforms = [
   transformRef,

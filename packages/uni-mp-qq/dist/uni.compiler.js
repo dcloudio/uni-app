@@ -101,6 +101,7 @@ const miniProgram = {
     directive: 'qq:',
     component: {
         vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
+        getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
     },
 };
 const options = {

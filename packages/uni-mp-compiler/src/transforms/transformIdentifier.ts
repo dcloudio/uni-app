@@ -23,6 +23,12 @@ import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'
 import { rewriteVSlot } from './vSlot'
 import { rewriteRef } from './transformRef'
+import {
+  isPropsBinding,
+  rewriteBinding,
+  rewritePropsBinding,
+} from './transformComponent'
+import { isUserComponent } from '@dcloudio/uni-cli-shared'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -39,11 +45,17 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       rewriteSlot(node, context)
     } else if (node.type === NodeTypes.ELEMENT) {
       const vFor = isForElementNode(node) && node.vFor
-      const { props } = node
+
       let hasClassBinding = false
       let hasStyleBinding = false
 
       rewriteRef(node, context)
+
+      if (isUserComponent(node, context)) {
+        rewriteBinding(node, context)
+      }
+
+      const { props } = node
 
       for (let i = 0; i < props.length; i++) {
         const dir = props[i]
@@ -74,6 +86,8 @@ export const transformIdentifier: NodeTransform = (node, context) => {
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
               rewriteStyle(i, dir, props, context)
+            } else if (isPropsBinding(dir)) {
+              rewritePropsBinding(dir, context)
             } else {
               dir.exp = rewriteExpression(exp, context)
             }

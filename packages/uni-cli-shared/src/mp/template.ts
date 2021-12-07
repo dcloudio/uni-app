@@ -43,7 +43,11 @@ export interface MiniProgramCompilerOptions {
     /**
      * 自定义组件自定义 hidden 属性用于实现 v-show
      */
-    vShow: string
+    vShow?: string
+    /**
+     * 父组件 setData 后，子组件的 properties 是否可以同步获取，目前仅 mp-weixin，mp-qq，mp-alipay 支持
+     */
+    getPropertySync?: boolean
   }
   directive: string
   emitFile?: (emittedFile: EmittedAsset) => string

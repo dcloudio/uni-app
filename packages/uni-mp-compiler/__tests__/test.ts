@@ -37,7 +37,10 @@ function assert(
 }
 
 assert(
-  `<custom v-for="item in items" ref="custom"/>`,
+  `<custom class="a"  
+  dd
+  a-b="b" :class="c" 
+  :a-c="c" b="bb" :c="cc" :data-d="dd" @click="d" :b="d"/>`,
   `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
   `(_ctx, _cache) => {
 return { a: _f(_ctx.items, (item, index, i0) => { return { a: _r(\"default\", { key: index }) }; }) }

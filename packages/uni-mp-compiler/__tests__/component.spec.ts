@@ -91,9 +91,18 @@ describe('compiler: transform component', () => {
   test(`component with boolean attribute`, () => {
     assert(
       `<uni-collapse accordion/>`,
-      `<uni-collapse accordion="{{true}}" u-i="2a9ec0b0-0"/>`,
+      `<uni-collapse u-i="2a9ec0b0-0" u-p="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return {}
+  return { a: _p({ accordion: true }) }
+}`
+    )
+  })
+  test(`component with props`, () => {
+    assert(
+      `<uni-collapse ref="a" :ref="b" slot="c" :slot="d" class="e" :class="f" style="g" :style="h" @click="i" v-model:first="j" v-model:last="k" prop-a="l" :prop-b="m" data-a="n" :data-b="o" />`,
+      `<uni-collapse ref="a" ref="{{a}}" slot="c" slot="{{b}}" class="{{['e', c]}}" style="{{'g' + ';' + d}}" bindclick="{{e}}" data-a="n" data-b="{{f}}" u-i="2a9ec0b0-0" bindupdateFirst="{{g}}" bindupdateLast="{{h}}" u-p="{{i}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.b, b: _ctx.d, c: _n(_ctx.f), d: _s(_ctx.h), e: _o(_ctx.i), f: _ctx.o, g: _o($event => _ctx.j = $event), h: _o($event => _ctx.k = $event), i: _p({ ['prop-a']: 'l', ['prop-b']: _ctx.m, first: _ctx.j, last: _ctx.k }) }
 }`
     )
   })

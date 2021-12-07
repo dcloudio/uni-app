@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+const { performance } = require('perf_hooks')
+global.__vite_start_time = performance.now()
 const debugIndex = process.argv.findIndex((arg) => /^(?:-d|--debug)$/.test(arg))
 const filterIndex = process.argv.findIndex((arg) =>
   /^(?:-f|--filter)$/.test(arg)

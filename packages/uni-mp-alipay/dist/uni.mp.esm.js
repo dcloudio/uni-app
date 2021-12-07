@@ -1,5 +1,5 @@
 import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, EMPTY_OBJ, isString, camelize } from '@vue/shared';
-import { injectHook, ref, isRef } from 'vue';
+import { injectHook, ref, toRaw, findComponentPropsData, updateProps, invalidateJob, isRef, pruneComponentPropsCache } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -437,21 +437,10 @@ function findVmByVueId(instance, vuePid) {
     }
 }
 
-const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
-function parsePropType(type, defaultValue) {
-    // [String]=>String
-    if (isArray(type) && type.length === 1) {
-        return type[0];
-    }
-    return type;
-}
-function normalizePropType(type, defaultValue) {
-    const res = parsePropType(type);
-    return PROP_TYPES.indexOf(res) !== -1 ? res : null;
-}
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
+        // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
         // 组件 ref
         properties.uR = {
             type: null,
@@ -464,6 +453,11 @@ function initDefaultProps(isBehavior = false) {
         };
         // 组件 id
         properties.uI = {
+            type: null,
+            value: '',
+        };
+        // 组件 props
+        properties.uP = {
             type: null,
             value: '',
         };
@@ -485,77 +479,40 @@ function initDefaultProps(isBehavior = false) {
     }
     return properties;
 }
-function createProperty(key, prop) {
-    {
-        return prop;
-    }
-}
 /**
  *
  * @param mpComponentOptions
  * @param rawProps
  * @param isBehavior
  */
-function initProps(mpComponentOptions, rawProps, isBehavior = false) {
-    const properties = initDefaultProps(isBehavior);
-    if (isArray(rawProps)) {
-        rawProps.forEach((key) => {
-            properties[key] = createProperty(key, {
-                type: null,
-            });
-        });
-    }
-    else if (isPlainObject(rawProps)) {
-        Object.keys(rawProps).forEach((key) => {
-            const opts = rawProps[key];
-            if (isPlainObject(opts)) {
-                // title:{type:String,default:''}
-                let value = opts.default;
-                if (isFunction(value)) {
-                    value = value();
-                }
-                const type = opts.type;
-                opts.type = normalizePropType(type);
-                properties[key] = createProperty(key, {
-                    type: opts.type,
-                    value,
-                });
-            }
-            else {
-                // content:String
-                properties[key] = createProperty(key, {
-                    type: normalizePropType(opts),
-                });
-            }
-        });
-    }
-    mpComponentOptions.properties = properties;
+function initProps(mpComponentOptions, _rawProps, isBehavior = false) {
+    mpComponentOptions.properties = initDefaultProps(isBehavior);
 }
 
-function initData(vueOptions) {
-    let data = vueOptions.data || {};
-    if (typeof data === 'function') {
-        try {
-            const appConfig = getApp().$vm.$.appContext.config;
-            data = data.call(appConfig.globalProperties);
-        }
-        catch (e) {
-            if (process.env.VUE_APP_DEBUG) {
-                console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data, e);
-            }
+function initData(_) {
+    return {};
+}
+function updateComponentProps(up, instance) {
+    const prevProps = toRaw(instance.props);
+    const nextProps = findComponentPropsData(up) || {};
+    if (hasPropsChanged(prevProps, nextProps)) {
+        updateProps(instance, nextProps, prevProps, false);
+        invalidateJob(instance.update);
+        instance.update();
+    }
+}
+function hasPropsChanged(prevProps, nextProps) {
+    const nextKeys = Object.keys(nextProps);
+    if (nextKeys.length !== Object.keys(prevProps).length) {
+        return true;
+    }
+    for (let i = 0; i < nextKeys.length; i++) {
+        const key = nextKeys[i];
+        if (nextProps[key] !== prevProps[key]) {
+            return true;
         }
     }
-    else {
-        try {
-            // 对 data 格式化
-            data = JSON.parse(JSON.stringify(data));
-        }
-        catch (e) { }
-    }
-    if (!isPlainObject(data)) {
-        data = {};
-    }
-    return data;
+    return false;
 }
 function initBehaviors(vueOptions, initBehavior) {
     const vueBehaviors = vueOptions.behaviors;
@@ -681,56 +638,6 @@ function handleLink$1(event) {
         parentVm = this.$vm;
     }
     detail.parent = parentVm;
-}
-
-function equal(a, b) {
-    if (a === b)
-        return true;
-    if (a && b && typeof a === 'object' && typeof b === 'object') {
-        const arrA = isArray(a);
-        const arrB = isArray(b);
-        let i, length, key;
-        if (arrA && arrB) {
-            length = a.length;
-            if (length !== b.length)
-                return false;
-            for (i = length; i-- !== 0;) {
-                if (!equal(a[i], b[i]))
-                    return false;
-            }
-            return true;
-        }
-        if (arrA !== arrB)
-            return false;
-        const dateA = a instanceof Date;
-        const dateB = b instanceof Date;
-        if (dateA !== dateB)
-            return false;
-        if (dateA && dateB)
-            return a.getTime() === b.getTime();
-        const regexpA = a instanceof RegExp;
-        const regexpB = b instanceof RegExp;
-        if (regexpA !== regexpB)
-            return false;
-        if (regexpA && regexpB)
-            return a.toString() === b.toString();
-        const keys = Object.keys(a);
-        length = keys.length;
-        if (length !== Object.keys(b).length) {
-            return false;
-        }
-        for (i = length; i-- !== 0;) {
-            if (!hasOwn(b, keys[i]))
-                return false;
-        }
-        for (i = length; i-- !== 0;) {
-            key = keys[i];
-            if (!equal(a[key], b[key]))
-                return false;
-        }
-        return true;
-    }
-    return false;
 }
 
 const isComponent2 = my.canIUse('component2');
@@ -862,25 +769,13 @@ function triggerEvent(type, detail) {
         detail,
     });
 }
-const IGNORES = ['$slots', '$scopedSlots'];
+// const IGNORES = ['$slots', '$scopedSlots']
 function createObserver(isDidUpdate = false) {
     return function observe(props) {
-        const prevProps = isDidUpdate ? props : this.props;
         const nextProps = isDidUpdate ? this.props : props;
-        if (equal(prevProps, nextProps)) {
-            return;
+        if (nextProps.uP) {
+            updateComponentProps(nextProps.uP, this.$vm.$);
         }
-        Object.keys(prevProps).forEach((name) => {
-            if (IGNORES.indexOf(name) === -1) {
-                const prevValue = prevProps[name];
-                const nextValue = nextProps[name];
-                if (!isFunction(prevValue) &&
-                    !isFunction(nextValue) &&
-                    !equal(prevValue, nextValue)) {
-                    this.$vm.$.props[name] = nextProps[name];
-                }
-            }
-        });
     };
 }
 const handleLink = (function () {
@@ -904,7 +799,7 @@ const handleLink = (function () {
 function createVueComponent(mpType, mpInstance, vueOptions, parent) {
     return $createComponent({
         type: vueOptions,
-        props: mpInstance.props,
+        props: findComponentPropsData(mpInstance.props && mpInstance.props.uP) || {},
     }, {
         mpType,
         mpInstance,
@@ -951,7 +846,7 @@ function initCreatePage() {
             __l: handleLink,
         };
         if (__VUE_OPTIONS_API__) {
-            pageOptions.data = initData(vueOptions);
+            pageOptions.data = initData();
         }
         initHooks(pageOptions, PAGE_HOOKS);
         initUnknownHooks(pageOptions, vueOptions);
@@ -960,6 +855,7 @@ function initCreatePage() {
     };
 }
 
+// @ts-ignore
 function initComponentProps(rawProps) {
     const propertiesOptions = {
         properties: {},
@@ -1032,7 +928,10 @@ function initCreateComponent() {
                 }
             },
             didUnmount() {
-                $destroyComponent(this.$vm);
+                if (this.$vm) {
+                    pruneComponentPropsCache(this.$vm.$.uid);
+                    $destroyComponent(this.$vm);
+                }
             },
             methods: {
                 __r: handleRef,
@@ -1041,7 +940,7 @@ function initCreateComponent() {
             },
         };
         if (__VUE_OPTIONS_API__) {
-            mpComponentOptions.data = initData(vueOptions);
+            mpComponentOptions.data = initData();
             mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior);
         }
         if (isComponent2) {

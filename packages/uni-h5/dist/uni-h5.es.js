@@ -20555,7 +20555,7 @@ var index$9 = /* @__PURE__ */ defineBuiltInComponent({
     _createTime();
     _createDate();
     _setValueSync();
-    const popup = usePopupStyle(props2);
+    const popup = usePopupStyle(state2);
     watchEffect(() => {
       state2.isDesktop = popup.isDesktop.value;
       state2.popupStyle = popup.popupStyle.value;

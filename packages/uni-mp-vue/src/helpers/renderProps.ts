@@ -1,50 +1,28 @@
-import { ComponentInternalInstance, getCurrentInstance } from 'vue'
-import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
-import { hasOwn } from '@vue/shared'
+import { getCurrentInstance, guardReactiveProps } from 'vue'
 
-const propsCacheMap = new Map<
-  number | string | unknown,
-  Record<string, any>[]
->()
+const propsCaches: Record<string, Record<string, any>[]> = Object.create(null)
 
-export function renderProps(props: Record<string, any>) {
-  const {
-    ctx: { $scope },
-  } = getCurrentInstance()! as ComponentInternalInstance & {
-    ctx: { $scope: MPComponentInstance }
-  }
-  const webviewId = findWebviewId($scope)
-  let propsCache = propsCacheMap.get(webviewId)!
-  if (!propsCache) {
-    propsCache = Object.create(null)
-  }
-  return propsCache.push(props)
+export function renderProps(props: Data) {
+  const { uid } = getCurrentInstance()!
+  const propsId =
+    (propsCaches[uid] || (propsCaches[uid] = [])).push(
+      guardReactiveProps(props)!
+    ) - 1
+  // 强制每次更新
+  return uid + ',' + propsId + ',' + Math.random()
 }
 
-let findWebviewId = (
-  $scope: MPComponentInstance
-): number | string | unknown => {
-  if (hasOwn($scope, '__wxWebviewId__')) {
-    // mp-weixin || mp-qq || mp-kuaishou
-    findWebviewId = ($scope: MPComponentInstance) => {
-      return $scope.__wxWebviewId__
-    }
+export function pruneComponentPropsCache(uid: number) {
+  delete propsCaches[uid]
+}
+
+export function findComponentPropsData(up: string) {
+  if (!up) {
+    return
   }
-  if (hasOwn($scope, '__webviewId__')) {
-    // mp-toutiao || mp-lark || quickapp-webview
-    findWebviewId = ($scope: MPComponentInstance) => {
-      return $scope.__webviewId__
-    }
+  const [uid, propsId] = up.split(',')
+  if (!propsCaches[uid]) {
+    return
   }
-  if (hasOwn($scope, 'pageinstance')) {
-    // mp-baidu
-    findWebviewId = ($scope: MPComponentInstance) => {
-      return $scope.pageinstance
-    }
-  }
-  // mp-alipay
-  findWebviewId = ($scope: MPComponentInstance) => {
-    return $scope.$viewId || ($scope.$page as any).$viewId
-  }
-  return findWebviewId($scope)
+  return propsCaches[uid][parseInt(propsId)]
 }

@@ -7,12 +7,15 @@ import {
   isRef,
   Ref,
 } from 'vue'
+// @ts-ignore
+import { findComponentPropsData } from 'vue'
 
 import {
   initMocks,
   $createComponent,
   initComponentInstance,
   CreateComponentOptions,
+  updateComponentProps,
 } from '@dcloudio/uni-mp-core'
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
@@ -196,31 +199,17 @@ export function triggerEvent(
   })
 }
 
-const IGNORES = ['$slots', '$scopedSlots']
+// const IGNORES = ['$slots', '$scopedSlots']
 
 export function createObserver(isDidUpdate: boolean = false) {
   return function observe(
     this: MPComponentInstance,
     props: Record<string, any>
   ) {
-    const prevProps = isDidUpdate ? props : this.props
     const nextProps = isDidUpdate ? this.props : props
-    if (deepEqual(prevProps, nextProps)) {
-      return
+    if (nextProps.uP) {
+      updateComponentProps(nextProps.uP, this.$vm.$)
     }
-    Object.keys(prevProps).forEach((name) => {
-      if (IGNORES.indexOf(name) === -1) {
-        const prevValue = prevProps[name]
-        const nextValue = nextProps[name]
-        if (
-          !isFunction(prevValue) &&
-          !isFunction(nextValue) &&
-          !deepEqual(prevValue, nextValue)
-        ) {
-          this.$vm.$.props[name] = nextProps[name]
-        }
-      }
-    })
   }
 }
 
@@ -259,7 +248,8 @@ export function createVueComponent(
   return $createComponent(
     {
       type: vueOptions,
-      props: mpInstance.props,
+      props:
+        findComponentPropsData(mpInstance.props && mpInstance.props.uP) || {},
     },
     {
       mpType,

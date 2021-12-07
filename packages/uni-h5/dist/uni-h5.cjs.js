@@ -8959,7 +8959,7 @@ var index$9 = /* @__PURE__ */ defineBuiltInComponent({
     _createTime();
     _createDate();
     _setValueSync();
-    const popup = usePopupStyle(props2);
+    const popup = usePopupStyle(state);
     vue.watchEffect(() => {
       state.isDesktop = popup.isDesktop.value;
       state.popupStyle = popup.popupStyle.value;

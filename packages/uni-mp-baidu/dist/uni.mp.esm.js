@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
-import { injectHook, ref, nextTick } from 'vue';
+import { injectHook, ref, nextTick, toRaw, findComponentPropsData, updateProps, invalidateJob, pruneComponentPropsCache } from 'vue';
 
 // lifecycle
 // App and Page
@@ -559,16 +559,6 @@ function handleEvent(event) {
     }
     this[methodName](event);
 }
-/**
- * @param properties
- */
-function fixProperties(properties) {
-    Object.keys(properties).forEach((name) => {
-        if (properties[name] === null) {
-            properties[name] = undefined;
-        }
-    });
-}
 function nextSetDataTick(mpInstance, fn) {
     // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
     mpInstance.setData({ r1: 1 }, () => fn());
@@ -581,44 +571,6 @@ function initSetRef(mpInstance) {
     }
 }
 
-const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
-function createObserver(name) {
-    return function observer(newVal) {
-        const { $vm } = this;
-        if ($vm) {
-            // 为了触发其他非 render watcher
-            const instance = $vm.$;
-            // 飞书小程序初始化太慢，导致 observer 触发时，vue 组件的 created 可能还没触发，此时开发者可能已经定义了 watch
-            // 但因为 created 还没触发，导致部分组件出错，如 uni-collapse，在 created 中初始化了 this.children
-            // 自定义 watch 中使用了 this.children
-            {
-                instance.props[name] = newVal;
-            }
-        }
-    };
-}
-function parsePropType(type, defaultValue) {
-    // [String]=>String
-    if (isArray(type) && type.length === 1) {
-        return type[0];
-    }
-    {
-        if (
-        // [String,Boolean]=>Boolean
-        defaultValue === false &&
-            isArray(type) &&
-            type.length === 2 &&
-            type.indexOf(String) !== -1 &&
-            type.indexOf(Boolean) !== -1) {
-            return Boolean;
-        }
-    }
-    return type;
-}
-function normalizePropType(type, defaultValue) {
-    const res = parsePropType(type, defaultValue);
-    return PROP_TYPES.indexOf(res) !== -1 ? res : null;
-}
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
@@ -630,6 +582,7 @@ function initDefaultProps(isBehavior = false) {
                 value: '',
             };
         }
+        // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
         // 组件 ref
         properties.uR = {
             type: null,
@@ -642,6 +595,11 @@ function initDefaultProps(isBehavior = false) {
         };
         // 组件 id
         properties.uI = {
+            type: null,
+            value: '',
+        };
+        // 组件 props
+        properties.uP = {
             type: null,
             value: '',
         };
@@ -663,76 +621,52 @@ function initDefaultProps(isBehavior = false) {
     }
     return properties;
 }
-function createProperty(key, prop) {
-    prop.observer = createObserver(key);
-    return prop;
-}
 /**
  *
  * @param mpComponentOptions
  * @param rawProps
  * @param isBehavior
  */
-function initProps(mpComponentOptions, rawProps, isBehavior = false) {
-    const properties = initDefaultProps(isBehavior);
-    if (isArray(rawProps)) {
-        rawProps.forEach((key) => {
-            properties[key] = createProperty(key, {
-                type: null,
-            });
-        });
-    }
-    else if (isPlainObject(rawProps)) {
-        Object.keys(rawProps).forEach((key) => {
-            const opts = rawProps[key];
-            if (isPlainObject(opts)) {
-                // title:{type:String,default:''}
-                let value = opts.default;
-                if (isFunction(value)) {
-                    value = value();
-                }
-                const type = opts.type;
-                opts.type = normalizePropType(type, value);
-                properties[key] = createProperty(key, {
-                    type: opts.type,
-                    value,
-                });
-            }
-            else {
-                // content:String
-                properties[key] = createProperty(key, {
-                    type: normalizePropType(opts, null),
-                });
-            }
-        });
-    }
-    mpComponentOptions.properties = properties;
+function initProps(mpComponentOptions, _rawProps, isBehavior = false) {
+    mpComponentOptions.properties = initDefaultProps(isBehavior);
 }
 
-function initData(vueOptions) {
-    let data = vueOptions.data || {};
-    if (typeof data === 'function') {
-        try {
-            const appConfig = getApp().$vm.$.appContext.config;
-            data = data.call(appConfig.globalProperties);
+function initData(_) {
+    return {};
+}
+function initPropsObserver(componentOptions) {
+    const observe = function observe() {
+        const up = this.properties.uP;
+        if (!up || !this.$vm) {
+            return;
         }
-        catch (e) {
-            if (process.env.VUE_APP_DEBUG) {
-                console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data, e);
-            }
+        updateComponentProps(up, this.$vm.$);
+    };
+    {
+        componentOptions.properties.uP.observer = observe;
+    }
+}
+function updateComponentProps(up, instance) {
+    const prevProps = toRaw(instance.props);
+    const nextProps = findComponentPropsData(up) || {};
+    if (hasPropsChanged(prevProps, nextProps)) {
+        updateProps(instance, nextProps, prevProps, false);
+        invalidateJob(instance.update);
+        instance.update();
+    }
+}
+function hasPropsChanged(prevProps, nextProps) {
+    const nextKeys = Object.keys(nextProps);
+    if (nextKeys.length !== Object.keys(prevProps).length) {
+        return true;
+    }
+    for (let i = 0; i < nextKeys.length; i++) {
+        const key = nextKeys[i];
+        if (nextProps[key] !== prevProps[key]) {
+            return true;
         }
     }
-    else {
-        try {
-            // 对 data 格式化
-            data = JSON.parse(JSON.stringify(data));
-        }
-        catch (e) { }
-    }
-    if (!isPlainObject(data)) {
-        data = {};
-    }
-    return data;
+    return false;
 }
 function initBehaviors(vueOptions, initBehavior) {
     const vueBehaviors = vueOptions.behaviors;
@@ -781,7 +715,7 @@ function initBehaviors(vueOptions, initBehavior) {
     return behaviors;
 }
 function applyOptions(componentOptions, vueOptions, initBehavior) {
-    componentOptions.data = initData(vueOptions);
+    componentOptions.data = initData();
     componentOptions.behaviors = initBehaviors(vueOptions, initBehavior);
 }
 
@@ -790,6 +724,7 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
     const options = {
         multipleSlots: true,
         addGlobalClass: true,
+        pureDataPattern: /^uP$/,
     };
     if (vueOptions.options) {
         extend(options, vueOptions.options);
@@ -816,6 +751,7 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         applyOptions(mpComponentOptions, vueOptions, initBehavior);
     }
     initProps(mpComponentOptions, vueOptions.props, false);
+    initPropsObserver(mpComponentOptions);
     initExtraOptions(mpComponentOptions, vueOptions);
     initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
     if (parse) {
@@ -963,6 +899,7 @@ function fixSetDataEnd(mpInstance) {
     }
 }
 
+// @ts-ignore
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {
@@ -980,11 +917,9 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 初始化 vue 实例
             const mpInstance = this;
             const isMiniProgramPage = isPage(mpInstance);
-            // 微信小程序 properties 为了解决警告问题，目前所有 type 都默认为 null，故导致部分 prop 默认值初始化不正确，故将 null 值 替换为 undefined
-            fixProperties(properties);
             this.$vm = $createComponent({
                 type: vueOptions,
-                props: properties,
+                props: findComponentPropsData(properties.uP) || {},
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
@@ -1010,7 +945,10 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             }
         },
         detached() {
-            this.$vm && $destroyComponent(this.$vm);
+            if (this.$vm) {
+                pruneComponentPropsCache(this.$vm.$.uid);
+                $destroyComponent(this.$vm);
+            }
         },
     };
 }

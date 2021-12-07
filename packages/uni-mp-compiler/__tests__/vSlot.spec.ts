@@ -26,8 +26,8 @@ describe('compiler: transform v-slot', () => {
 }`
     )
     assert(
-      `<unicloud-db v-slot:default="{data, loading, error, options}" collection=""><view v-if="error">{{error.message}}</view><view v-else></view></unicloud-db>`,
-      `<unicloud-db u-s="{{['d']}}" slot="d" collection="" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="v0" wx:key="c" slot="{{v0.d}}"><view wx:if="{{v0.a}}">{{v0.b}}</view><view wx:else></view></view></unicloud-db>`,
+      `<unicloud-db v-slot:default="{data, loading, error, options}"><view v-if="error">{{error.message}}</view><view v-else></view></unicloud-db>`,
+      `<unicloud-db u-s="{{['d']}}" slot="d" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="v0" wx:key="c" slot="{{v0.d}}"><view wx:if="{{v0.a}}">{{v0.b}}</view><view wx:else></view></view></unicloud-db>`,
       `(_ctx, _cache) => {
   return { a: _w(({ data, loading, error, options }, s0, i0) => { return _e({ a: error }, error ? { b: _t(error.message) } : {}, { c: s0, d: i0 }); }, { name: 'd', vueId: '2a9ec0b0-0' }) }
 }`
@@ -87,9 +87,9 @@ describe('compiler: transform v-slot', () => {
   test('v-for + v-for + scoped slots', () => {
     assert(
       `<view v-for="item in items"><custom v-for="item1 in item.list" :item="item1"><template v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom></view>`,
-      `<view wx:for="{{a}}" wx:for-item="item"><custom wx:for="{{item.a}}" wx:for-item="item1" u-s="{{['d']}}" item="{{item1.b}}" u-i="{{item1.c}}"><view wx:for="{{item1.a}}" wx:for-item="slotProps" wx:key="b" slot="{{slotProps.c}}"><view>{{slotProps.a}}</view></view></custom></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item"><custom wx:for="{{item.a}}" wx:for-item="item1" u-s="{{['d']}}" u-i="{{item1.b}}" u-p="{{item1.c}}"><view wx:for="{{item1.a}}" wx:for-item="slotProps" wx:key="b" slot="{{slotProps.c}}"><view>{{slotProps.a}}</view></view></custom></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _f(item.list, (item1, k1, i1) => { return { a: _w((slotProps, s2, i2) => { return { a: _t(slotProps.item), b: s2, c: i2 }; }, { name: 'd', vueId: '2a9ec0b0-0' + '-' + i0 + '-' + i1 }), b: item1, c: '2a9ec0b0-0' + '-' + i0 + '-' + i1 }; }) }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _f(item.list, (item1, k1, i1) => { return { a: _w((slotProps, s2, i2) => { return { a: _t(slotProps.item), b: s2, c: i2 }; }, { name: 'd', vueId: '2a9ec0b0-0' + '-' + i0 + '-' + i1 }), b: '2a9ec0b0-0' + '-' + i0 + '-' + i1, c: _p({ item: item1 }) }; }) }; }) }
 }`
     )
   })

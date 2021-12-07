@@ -5,7 +5,7 @@ import { ComponentOptions, ComponentPublicInstance } from 'vue'
 import { initExtraOptions, initWxsCallMethods, initBehavior } from './util'
 
 import { initProps } from './componentProps'
-import { applyOptions } from './componentOptions'
+import { applyOptions, initPropsObserver } from './componentOptions'
 import { CreateComponentOptions } from './componentInstance'
 
 import Component = WechatMiniprogram.Component
@@ -80,6 +80,7 @@ export function parseComponent(
   const options: Component.ComponentOptions = {
     multipleSlots: true,
     addGlobalClass: true,
+    pureDataPattern: /^uP$/,
   }
 
   if (vueOptions.options) {
@@ -110,6 +111,8 @@ export function parseComponent(
   }
 
   initProps(mpComponentOptions, vueOptions.props, false)
+
+  initPropsObserver(mpComponentOptions)
 
   initExtraOptions(mpComponentOptions, vueOptions)
 

@@ -4,18 +4,18 @@ describe('mp-baidu: transform v-model', () => {
   test(`component v-model`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp u-i="2a9ec0b0-0" eO="{{a}}" modelValue="{{b}}" bindupdateModelValue="__e"/>`,
+      `<comp s-if="{{b}}" u-i="2a9ec0b0-0" eO="{{a}}" bindupdateModelValue="__e" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _ctx.model }
+  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _p({ modelValue: _ctx.model }) }
 }`
     )
   })
   test(`component v-model with cache`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp u-i="2a9ec0b0-0" eO="{{a}}" modelValue="{{b}}" bindupdateModelValue="__e"/>`,
+      `<comp s-if="{{b}}" u-i="2a9ec0b0-0" eO="{{a}}" bindupdateModelValue="__e" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _ctx.model }
+  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _p({ modelValue: _ctx.model }) }
 }`,
       {
         cacheHandlers: true,

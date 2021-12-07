@@ -32,6 +32,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   directive: 'qq:',
   component: {
     vShow: COMPONENT_CUSTOM_HIDDEN,
+    getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
   },
 }
 
