@@ -36,8 +36,7 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
       }
     }
     if (__PLATFORM__ === 'mp-alipay') {
-      const vnode = this.$.vnode
-      const props = vnode && vnode.props
+      const props = scope.props as unknown as Record<string, unknown>
       if (props && props[`on${capitalize(event)}`]) {
         return
       }

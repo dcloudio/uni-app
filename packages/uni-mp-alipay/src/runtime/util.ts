@@ -183,12 +183,8 @@ export function triggerEvent(
     return
   }
 
-  const eventOpts = this.props['data-event-opts']
-
   const target = {
-    dataset: {
-      eventOpts,
-    },
+    dataset: {},
   }
 
   handler({
