@@ -1,15 +1,22 @@
-import { getCurrentInstance, guardReactiveProps } from 'vue'
+import {
+  ComponentInternalInstance,
+  getCurrentInstance,
+  guardReactiveProps,
+} from 'vue'
 
 const propsCaches: Record<string, Record<string, any>[]> = Object.create(null)
 
 export function renderProps(props: Data) {
-  const { uid } = getCurrentInstance()!
+  const { uid, __counter } =
+    getCurrentInstance()! as ComponentInternalInstance & {
+      __counter: number
+    }
   const propsId =
     (propsCaches[uid] || (propsCaches[uid] = [])).push(
       guardReactiveProps(props)!
     ) - 1
   // 强制每次更新
-  return uid + ',' + propsId + ',' + Math.random()
+  return uid + ',' + propsId + ',' + __counter
 }
 
 export function pruneComponentPropsCache(uid: number) {

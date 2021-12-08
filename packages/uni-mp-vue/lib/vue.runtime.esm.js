@@ -4749,6 +4749,8 @@ function renderComponentRoot(instance) {
     instance.$ei = 0;
     // props
     pruneComponentPropsCache(uid);
+    instance.__counter =
+        instance.__counter === 0 ? 1 : 0;
     let result;
     const prev = setCurrentRenderingInstance(instance);
     try {

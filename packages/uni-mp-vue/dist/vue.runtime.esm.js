@@ -4749,6 +4749,8 @@ function renderComponentRoot(instance) {
     instance.$ei = 0;
     // props
     pruneComponentPropsCache(uid);
+    instance.__counter =
+        instance.__counter === 0 ? 1 : 0;
     let result;
     const prev = setCurrentRenderingInstance(instance);
     try {
@@ -5076,10 +5078,10 @@ function initApp(app) {
 
 const propsCaches = Object.create(null);
 function renderProps(props) {
-    const { uid } = getCurrentInstance();
+    const { uid, __counter } = getCurrentInstance();
     const propsId = (propsCaches[uid] || (propsCaches[uid] = [])).push(guardReactiveProps(props)) - 1;
     // 强制每次更新
-    return uid + ',' + propsId + ',' + Math.random();
+    return uid + ',' + propsId + ',' + __counter;
 }
 function pruneComponentPropsCache(uid) {
     delete propsCaches[uid];

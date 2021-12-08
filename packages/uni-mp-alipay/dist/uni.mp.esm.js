@@ -149,8 +149,7 @@ function createEmitFn(oldEmit, ctx) {
             }
         }
         {
-            const vnode = this.$.vnode;
-            const props = vnode && vnode.props;
+            const props = scope.props;
             if (props && props[`on${capitalize(event)}`]) {
                 return;
             }
@@ -756,11 +755,8 @@ function triggerEvent(type, detail) {
     if (!handler) {
         return;
     }
-    const eventOpts = this.props['data-event-opts'];
     const target = {
-        dataset: {
-            eventOpts,
-        },
+        dataset: {},
     };
     handler({
         type: customize(type),
