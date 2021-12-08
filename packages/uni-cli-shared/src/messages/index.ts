@@ -22,4 +22,4 @@ export const M = {
   'mp.component.args[1]': '{0}需要两个参数',
   'mp.360.unsupported': 'vue3暂不支持360小程序',
   'file.notfound': '{file} 文件不存在',
-}
+} as const

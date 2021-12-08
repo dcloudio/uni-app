@@ -1,11 +1,11 @@
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
-import type { BuildOptions, ServerOptions } from 'vite'
+import { BuildOptions, createLogger, ServerOptions } from 'vite'
 import { M } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
-import { initEnv } from './utils'
+import { initEnv, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
 
 export async function runDev(options: CliOptions & ServerOptions) {
@@ -30,13 +30,13 @@ export async function runDev(options: CliOptions & ServerOptions) {
           console.log(M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {
           event.result.close()
-          if (options.platform !== 'app') {
-            // 非App平台无需处理增量同步
-            return console.log(M['dev.watching.end'])
-          }
           if (isFirstEnd) {
             // 首次全量同步
-            return (isFirstEnd = false), console.log(M['dev.watching.end'])
+            return (
+              (isFirstEnd = false),
+              console.log(M['dev.watching.end']),
+              printStartupDuration(createLogger(options.logLevel), false)
+            )
           }
           if (process.env.UNI_APP_CHANGED_FILES) {
             return console.log(

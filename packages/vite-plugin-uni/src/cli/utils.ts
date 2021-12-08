@@ -191,13 +191,18 @@ export function cleanOptions(options: CliOptions) {
   return ret
 }
 
-export function printStartupDuration(logger: Logger) {
+export function printStartupDuration(
+  logger: Logger,
+  whitespace: boolean = true
+) {
   // @ts-ignore
   if (global.__vite_start_time) {
     // @ts-ignore
     const startupDuration = performance.now() - global.__vite_start_time
     logger.info(
-      `\n  ${chalk.cyan(`ready in ${Math.ceil(startupDuration)}ms.`)}\n`
+      `${whitespace ? `\n  ` : ''}${chalk.cyan(
+        `ready in ${Math.ceil(startupDuration)}ms.`
+      )}\n`
     )
   }
 }

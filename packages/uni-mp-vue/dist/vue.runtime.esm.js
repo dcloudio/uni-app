@@ -5246,11 +5246,13 @@ function vFor(source, renderItem) {
 
 function renderSlot(name, props = {}, key) {
     const instance = getCurrentInstance();
-    const vueIds = instance.attrs.uI;
+    const { parent, isMounted, ctx: { $scope }, } = instance;
+    // mp-alipay 为 props
+    const vueIds = ($scope.properties || $scope.props).uI;
     if (!vueIds) {
         return;
     }
-    if (!instance.parent && !instance.isMounted) {
+    if (!parent && !isMounted) {
         // 头条小程序首次 render 时，还没有 parent
         onMounted(() => {
             renderSlot(name, props, key);
