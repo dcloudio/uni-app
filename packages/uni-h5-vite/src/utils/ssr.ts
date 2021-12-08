@@ -11,6 +11,7 @@ import {
   resolveBuiltIn,
   getBuiltInPaths,
   transformMatchMedia,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
 import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import resolve from 'resolve'
@@ -96,6 +97,12 @@ export function rewriteSsrVue() {
     'vue',
     resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js')
   )
+  // TODO vite 2.7.0 版本会定制 require 的解析，解析后缓存的文件路径会被格式化，导致 windows 平台路径不一致，导致 cache 不生效
+  if (require('os').platform() === 'win32') {
+    require('vue')
+    const vuePath = require.resolve('vue')
+    require.cache[normalizePath(vuePath)] = require.cache[vuePath]
+  }
 }
 
 function initResolveSyncOpts(opts?: resolve.SyncOpts) {
