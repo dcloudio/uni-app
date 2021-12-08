@@ -2,10 +2,20 @@ import type { ViteDevServer } from 'vite'
 
 export const external = [
   '@dcloudio/uni-app',
+  '@dcloudio/uni-app-plus',
   '@dcloudio/uni-cloud',
+  '@dcloudio/uni-components',
   '@dcloudio/uni-h5',
   '@dcloudio/uni-h5-vue',
   '@dcloudio/uni-i18n',
+  '@dcloudio/uni-mp-alipay',
+  '@dcloudio/uni-mp-baidu',
+  '@dcloudio/uni-mp-kuaishou',
+  '@dcloudio/uni-mp-lark',
+  '@dcloudio/uni-mp-qq',
+  '@dcloudio/uni-mp-toutiao',
+  '@dcloudio/uni-mp-weixin',
+  '@dcloudio/uni-quickapp-webview',
   '@dcloudio/uni-shared',
   '@dcloudio/uni-stat',
   '@vue/shared',
@@ -13,6 +23,14 @@ export const external = [
   'vue-i18n',
   'vue-router',
   'vuex',
+  // dev
+  '@dcloudio/types',
+  '@dcloudio/uni-automator',
+  '@dcloudio/uni-cli-shared',
+  '@dcloudio/vite-plugin-uni',
+  'autoprefixer',
+  'typescript',
+  'vite',
 ]
 
 export function initSSR(server: ViteDevServer) {
