@@ -1,4 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
+import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
 import type { ScopedSlotInvokers } from './withScopedSlot'
 import { onMounted, getCurrentInstance } from 'vue'
 
@@ -7,12 +8,20 @@ export function renderSlot(
   props: Data = {},
   key?: string | number
 ) {
-  const instance = getCurrentInstance() as ComponentInternalInstance
-  const vueIds = instance.attrs.uI as string
+  const instance = getCurrentInstance() as ComponentInternalInstance & {
+    ctx: { $scope: MPComponentInstance }
+  }
+  const {
+    parent,
+    isMounted,
+    ctx: { $scope },
+  } = instance
+  // mp-alipay 为 props
+  const vueIds = ($scope.properties || $scope.props).uI as string
   if (!vueIds) {
     return
   }
-  if (!instance.parent && !instance.isMounted) {
+  if (!parent && !isMounted) {
     // 头条小程序首次 render 时，还没有 parent
     onMounted(() => {
       renderSlot(name, props, key)
