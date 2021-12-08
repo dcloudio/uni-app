@@ -186,18 +186,18 @@ describe(`compiler: v-for`, () => {
     test(`keyed v-for`, () => {
       assert(
         `<view v-for="(item) in items" :key="item" />`,
-        `<view wx:for="{{a}}" wx:for-item="item" wx:key="*this"/>`,
+        `<view wx:for="{{a}}" wx:for-item="item" wx:key="a"/>`,
         `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: item }; }) }
 }`
       )
     })
     test(`keyed template v-for`, () => {
       assert(
         `<template v-for="item in items" :key="item">hello<view/></template>`,
-        `<block wx:for="{{a}}" wx:for-item="item" wx:key="*this">hello<view/></block>`,
+        `<block wx:for="{{a}}" wx:for-item="item" wx:key="a">hello<view/></block>`,
         `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: item }; }) }
 }`
       )
     })

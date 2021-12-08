@@ -103,6 +103,8 @@ function isComponentProp(name: string) {
       'onVI',
       'ref',
       'slot',
+      'key',
+      'is',
     ].includes(name)
   ) {
     return false

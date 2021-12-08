@@ -6,9 +6,7 @@ import {
 } from '@vue/compiler-core'
 
 import { NodeTransform } from '../transform'
-import { isForElementNode } from './vFor'
 import { ATTR_VUE_SLOTS, rewriteExpression } from './utils'
-import { isSelfKey, rewriteSelfKey } from './transformKey'
 import {
   findStaticClassIndex,
   isClassBinding,
@@ -44,8 +42,6 @@ export const transformIdentifier: NodeTransform = (node, context) => {
     } else if (isSlotOutlet(node)) {
       rewriteSlot(node, context)
     } else if (node.type === NodeTypes.ELEMENT) {
-      const vFor = isForElementNode(node) && node.vFor
-
       let hasClassBinding = false
       let hasStyleBinding = false
 
@@ -78,8 +74,6 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           if (exp) {
             if (isBuiltIn(dir)) {
               // noop
-            } else if (isSelfKey(dir, vFor)) {
-              rewriteSelfKey(dir)
             } else if (isClassBinding(dir)) {
               hasClassBinding = true
               rewriteClass(i, dir, props, context)
