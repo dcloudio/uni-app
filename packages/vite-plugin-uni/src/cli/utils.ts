@@ -2,6 +2,7 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import chalk from 'chalk'
+import { performance } from 'perf_hooks'
 import { BuildOptions, InlineConfig, Logger } from 'vite'
 
 import { M, isInHBuilderX, initModulePaths } from '@dcloudio/uni-cli-shared'
