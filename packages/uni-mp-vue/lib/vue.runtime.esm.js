@@ -4778,6 +4778,13 @@ function renderComponentRoot(instance) {
     setCurrentRenderingInstance(prev);
     return result;
 }
+const updateComponentPreRender = (instance) => {
+    pauseTracking();
+    // props update may have triggered pre-flush watchers.
+    // flush them before the render update.
+    flushPreFlushCbs(undefined, instance.update);
+    resetTracking();
+};
 function setupRenderEffect(instance) {
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
@@ -4787,6 +4794,7 @@ function setupRenderEffect(instance) {
             // updateComponent
             const { bu, u } = instance;
             effect.allowRecurse = false;
+            updateComponentPreRender(instance);
             // beforeUpdate hook
             if (bu) {
                 invokeArrayFns(bu);
