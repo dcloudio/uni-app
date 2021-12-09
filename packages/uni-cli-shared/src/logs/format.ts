@@ -1,23 +1,21 @@
 import { once } from '@dcloudio/uni-shared'
 
-import { isInHBuilderX, runByHBuilderX } from '../hbx/env'
+import { isInHBuilderX } from '../hbx/env'
 import { moduleAliasFormatter } from '../hbx/alias'
 import {
   h5ServeFormatter,
   removeInfoFormatter,
   removeWarnFormatter,
-  FilenameFormatter,
-  HBuilderXFileFormatter,
-  HBuilderXVueFileFormatter,
-  VueFilenameFormatter,
+  errorFormatter,
 } from '../hbx/log'
+import { LogErrorOptions, LogOptions } from 'vite'
 
-export interface Formatter {
-  test: (msg: string) => boolean
-  format: (msg: string) => string
+export interface Formatter<T extends LogOptions = LogOptions> {
+  test: (msg: string, options?: T) => boolean
+  format: (msg: string, options?: T) => string
 }
 
-const errFormatters: Formatter[] = []
+const errFormatters: Formatter<LogErrorOptions>[] = []
 const infoFormatters: Formatter[] = []
 const warnFormatters: Formatter[] = []
 
@@ -25,13 +23,7 @@ const initErrFormattersOnce = once(() => {
   if (isInHBuilderX()) {
     errFormatters.push(moduleAliasFormatter)
   }
-  if (runByHBuilderX()) {
-    errFormatters.push(HBuilderXFileFormatter)
-    errFormatters.push(HBuilderXVueFileFormatter)
-  } else {
-    errFormatters.push(FilenameFormatter)
-    errFormatters.push(VueFilenameFormatter)
-  }
+  errFormatters.push(errorFormatter)
 })
 
 const initInfoFormattersOnce = once(() => {
@@ -51,29 +43,29 @@ const initWarnFormattersOnce = once(() => {
   warnFormatters.push(removeWarnFormatter)
 })
 
-export function formatErrMsg(msg: string) {
+export function formatErrMsg(msg: string, options?: LogErrorOptions) {
   initErrFormattersOnce()
-  const formatter = errFormatters.find(({ test }) => test(msg))
+  const formatter = errFormatters.find(({ test }) => test(msg, options))
   if (formatter) {
-    return formatter.format(msg)
+    return formatter.format(msg, options)
   }
   return msg
 }
 
-export function formatInfoMsg(msg: string) {
+export function formatInfoMsg(msg: string, options?: LogOptions) {
   initInfoFormattersOnce()
-  const formatter = infoFormatters.find(({ test }) => test(msg))
+  const formatter = infoFormatters.find(({ test }) => test(msg, options))
   if (formatter) {
-    return formatter.format(msg)
+    return formatter.format(msg, options)
   }
   return msg
 }
 
-export function formatWarnMsg(msg: string) {
+export function formatWarnMsg(msg: string, options?: LogOptions) {
   initWarnFormattersOnce()
-  const formatter = warnFormatters.find(({ test }) => test(msg))
+  const formatter = warnFormatters.find(({ test }) => test(msg, options))
   if (formatter) {
-    return formatter.format(msg)
+    return formatter.format(msg, options)
   }
   return msg
 }

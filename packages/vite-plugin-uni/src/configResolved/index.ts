@@ -43,19 +43,19 @@ function initCheckUpdate() {
 function initLogger({ logger }: ResolvedConfig) {
   const { info, warn, error } = logger
   logger.info = (msg, opts) => {
-    msg = formatInfoMsg(msg)
+    msg = formatInfoMsg(msg, opts)
     if (msg) {
       return info(msg, opts)
     }
   }
   logger.warn = (msg, opts) => {
-    msg = formatWarnMsg(msg)
+    msg = formatWarnMsg(msg, opts)
     if (msg) {
       return warn(msg, opts)
     }
   }
   logger.error = (msg, opts) => {
-    msg = formatErrMsg(msg)
+    msg = formatErrMsg(msg, opts)
     if (msg) {
       return error(msg, opts)
     }

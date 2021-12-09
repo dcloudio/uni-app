@@ -1,10 +1,15 @@
 import path from 'path'
+import chalk from 'chalk'
+import { LogErrorOptions } from 'vite'
 import { normalizePath } from '../utils'
 import { Formatter } from '../logs/format'
+import { RollupError } from 'rollup'
 
 const SIGNAL_H5_LOCAL = ' > Local:'
 const SIGNAL_H5_NETWORK = ' > Network:'
+
 const networkLogs: string[] = []
+
 export const h5ServeFormatter: Formatter = {
   test(msg) {
     return msg.includes(SIGNAL_H5_LOCAL) || msg.includes(SIGNAL_H5_NETWORK)
@@ -54,71 +59,61 @@ export const removeWarnFormatter: Formatter = {
   },
 }
 
-const fileRE = /file:\s(.*):(\d+):(\d+)/
-export const FilenameFormatter: Formatter = {
-  test(msg) {
-    return fileRE.test(msg)
+export const errorFormatter: Formatter<LogErrorOptions> = {
+  test(_, opts) {
+    return !!(opts && opts.error)
   },
-  format(msg) {
-    return msg.replace(fileRE, (_, filename, line, column) => {
-      return `file: ${filename.split('?')[0]}:${line}:${column}`
-    })
+  format(_, opts) {
+    return buildErrorMessage(opts!.error!, [], false)
   },
 }
 
-const vueFileRE = /file:\s(.*)\?vue&type=(.*)/
-export const VueFilenameFormatter: Formatter = {
-  test(msg) {
-    return vueFileRE.test(msg)
-  },
-  format(msg) {
-    return msg.replace(vueFileRE, (_, filename) => {
-      return `file: ${filename.split('?')[0]}`
-    })
-  },
-}
-
-export const HBuilderXFileFormatter: Formatter = {
-  test(msg) {
-    return fileRE.test(msg)
-  },
-  format(msg) {
-    return (
-      msg
-        // remove color
-        .replace(/\x1B[[(?);]{0,2}(;?\d)*./g, '')
-        .replace(fileRE, (_, filename, line, column) => {
-          return (
-            'at ' +
-            normalizePath(
-              path.relative(process.env.UNI_INPUT_DIR, filename.split('?')[0])
-            ) +
-            ':' +
-            line +
-            ':' +
-            column
-          )
-        })
+function buildErrorMessage(
+  err: RollupError,
+  args: string[] = [],
+  includeStack = true
+): string {
+  if (err.plugin) {
+    args.push(
+      `${chalk.magenta('[plugin:' + err.plugin + ']')} ${chalk.red(
+        err.message
+      )}`
     )
-  },
+  } else {
+    args.push(chalk.red(err.message))
+  }
+  if (err.id) {
+    args.push(
+      `at ${chalk.cyan(
+        normalizePath(
+          path.relative(process.env.UNI_INPUT_DIR, err.id.split('?')[0])
+        ) +
+          ':' +
+          (err.loc?.line || 1) +
+          ':' +
+          (err.loc?.column || 0)
+      )}`
+    )
+  }
+  if (err.frame) {
+    args.push(chalk.yellow(pad(err.frame)))
+  }
+  if (includeStack && err.stack) {
+    args.push(pad(cleanStack(err.stack)))
+  }
+  return args.join('\n')
 }
 
-export const HBuilderXVueFileFormatter: Formatter = {
-  test(msg) {
-    return vueFileRE.test(msg)
-  },
-  format(msg) {
-    return (
-      msg
-        // remove color
-        .replace(/\x1B[[(?);]{0,2}(;?\d)*./g, '')
-        .replace(vueFileRE, (_, filename) => {
-          return (
-            'at ' +
-            normalizePath(path.relative(process.env.UNI_INPUT_DIR, filename)) +
-            ':1'
-          )
-        })
-    )
-  },
+function cleanStack(stack: string) {
+  return stack
+    .split(/\n/g)
+    .filter((l) => /^\s*at/.test(l))
+    .join('\n')
+}
+
+const splitRE = /\r?\n/
+
+function pad(source: string, n = 2): string {
+  const lines = source.split(splitRE)
+  return lines.map((l) => ` `.repeat(n) + l).join(`\n`)
 }

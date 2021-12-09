@@ -61,6 +61,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
       process.env.NODE_ENV = 'production'
     }
   }
+  if (!options.mode) {
+    options.mode = process.env.NODE_ENV
+  }
   // vite 会修改 NODE_ENV，存储在 UNI_NODE_ENV 中，稍后校正 NODE_ENV
   process.env.UNI_NODE_ENV = process.env.VITE_USER_NODE_ENV =
     process.env.NODE_ENV
