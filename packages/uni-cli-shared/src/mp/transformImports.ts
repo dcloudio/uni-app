@@ -1,13 +1,17 @@
 import { parse, ParserPlugin } from '@babel/parser'
 import {
+  IfStatement,
   ImportDeclaration,
+  isBlockStatement,
   isCallExpression,
   isIdentifier,
+  isIfStatement,
   isImportDeclaration,
   isMemberExpression,
   isObjectExpression,
   isObjectProperty,
   isStringLiteral,
+  isUnaryExpression,
   isVariableDeclaration,
   ObjectProperty,
   Program,
@@ -18,6 +22,7 @@ import { camelize, capitalize, hyphenate } from '@vue/shared'
 import { walk } from 'estree-walker'
 import MagicString from 'magic-string'
 import { PluginContext } from 'rollup'
+import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { M } from '../messages'
 import { BINDING_COMPONENTS } from '../constants'
 import {
@@ -25,7 +30,6 @@ import {
   normalizeParsePlugins,
   removeExt,
 } from '../utils'
-import { addLeadingSlash } from '@dcloudio/uni-shared'
 
 interface TransformVueComponentImportsOptions {
   root: string
@@ -103,6 +107,7 @@ type BindingComponents = Record<
  * @returns
  */
 function findBindingComponents(ast: Statement[]): BindingComponents {
+  const mapping = findUnpluginComponents(ast)
   for (const node of ast) {
     if (!isVariableDeclaration(node)) {
       continue
@@ -117,10 +122,10 @@ function findBindingComponents(ast: Statement[]): BindingComponents {
       ) as Record<string, { name: string; type: 'unknown' | 'setup' | 'self' }>
       return Object.keys(bindingComponents).reduce<BindingComponents>(
         (bindings, tag) => {
-          const binding = bindingComponents[tag]
-          bindings[binding.name] = {
+          const { name, type } = bindingComponents[tag]
+          bindings[mapping[name] || name] = {
             tag,
-            type: binding.type,
+            type: type,
           }
           return bindings
         },
@@ -129,6 +134,39 @@ function findBindingComponents(ast: Statement[]): BindingComponents {
     }
   }
   return {}
+}
+
+function findUnpluginComponents(ast: Statement[]): Record<string, string> {
+  const res = Object.create(null)
+  // if(!Array){}
+  const ifStatement = ast.find(
+    (statement) =>
+      isIfStatement(statement) &&
+      isUnaryExpression(statement.test) &&
+      statement.test.operator === '!' &&
+      isIdentifier(statement.test.argument) &&
+      statement.test.argument.name === 'Array'
+  ) as IfStatement
+  if (!ifStatement) {
+    return res
+  }
+  if (!isBlockStatement(ifStatement.consequent)) {
+    return res
+  }
+  for (const node of ifStatement.consequent.body) {
+    if (!isVariableDeclaration(node)) {
+      continue
+    }
+    const { id, init } = node.declarations[0]
+    if (
+      isIdentifier(id) &&
+      isIdentifier(init) &&
+      init.name.includes('unplugin_components')
+    ) {
+      res[id.name] = init.name
+    }
+  }
+  return res
 }
 /**
  * 查找全局组件定义：app.component('component-a',{})

@@ -5,6 +5,7 @@ import {
   helperNameMap,
   InterpolationNode,
   NodeTypes,
+  RESOLVE_COMPONENT,
   RootNode,
   SimpleExpressionNode,
   TextNode,
@@ -178,6 +179,26 @@ function genComponentImports(
         JSON.stringify(bindingComponents) +
         `'`
     )
+    const resolveComponents: string[] = []
+    const names: string[] = []
+    Object.keys(bindingComponents).forEach((id) => {
+      const { type, name } = bindingComponents[id]
+      if (type === BindingComponentTypes.UNKNOWN) {
+        resolveComponents.push(
+          `const ${name} = _${helperNameMap[RESOLVE_COMPONENT]}("${id}");`
+        )
+        names.push(name)
+      }
+    })
+    if (resolveComponents.length) {
+      newline()
+      push(`if (!Array) {`)
+      resolveComponents.forEach((code) => {
+        push(code)
+      })
+      push(`Math.max.call(null, ${names.join(', ')});`)
+      push(`}`)
+    }
     newline()
     importDeclarations.forEach((str) => push(str))
     if (importDeclarations.length) {

@@ -16,6 +16,7 @@ import {
   findDir,
   DirectiveNode,
   ComponentNode,
+  RESOLVE_COMPONENT,
 } from '@vue/compiler-core'
 import { isComponentTag } from '@dcloudio/uni-shared'
 
@@ -125,6 +126,7 @@ function processComponent(node: ComponentNode, context: TransformContext) {
     name: toValidAssetId(tag, `component`),
     type: BindingComponentTypes.UNKNOWN,
   }
+  context.helper(RESOLVE_COMPONENT)
 }
 
 function resolveSetupReference(name: string, context: TransformContext) {

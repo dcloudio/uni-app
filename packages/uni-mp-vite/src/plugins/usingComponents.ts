@@ -17,6 +17,7 @@ export function uniUsingComponentsPlugin(
 ): Plugin {
   return {
     name: 'vite:uni-mp-using-component',
+    enforce: 'post',
     async transform(source, id) {
       const { filename, query } = parseVueRequest(id)
       if (query.vue) {

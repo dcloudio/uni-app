@@ -162,6 +162,43 @@ export function createApp() {
       })
     })
 
+    test(`unplugin-vue-components`, async () => {
+      const source = `import { ref, watch } from 'vue';/* unplugin-vue-components disabled */import __unplugin_components_0 from '${root}/components/test1.vue';
+      const _sfc_main = {
+        setup() {
+          const visible = ref(false);
+          watch(visible, () => {
+            console.log("parent visible change");
+          });
+          return {
+            visible
+          };
+        }
+      };
+      import { o as _o, resolveComponent as _resolveComponent, p as _p } from "vue";
+      const __BINDING_COMPONENTS__ = '{"Test1":{"name":"_component_Test","type":"unknown"}}';
+      if (!Array) {const _component_Test = __unplugin_components_0;Math.max.call(null, _component_Test);}
+      function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+        return {};
+      }
+      import _export_sfc from "plugin-vue:export-helper";
+      export default /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+  `
+      const { code, usingComponents } = await transformVueComponentImports(
+        source,
+        importer,
+        {
+          root,
+          resolve,
+          dynamicImport,
+        }
+      )
+      expect(code).toContain(
+        `const __unplugin_components_0 = ()=>import('${root}/components/test1.vue')`
+      )
+      expect(usingComponents).toMatchObject({ test1: '/components/test1' })
+    })
+
     test(`PascalCase`, async () => {
       const source = `import test1 from "../../components/test1.vue";
       import MyComponentName from "../../components/test1.vue";
