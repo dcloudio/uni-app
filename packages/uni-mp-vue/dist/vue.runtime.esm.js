@@ -1,6 +1,6 @@
-import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, isIntegerKey, makeMap, toTypeString, invokeArrayFns, NO, toNumber, EMPTY_ARR, stringifyStyle as stringifyStyle$1, toDisplayString } from '@vue/shared';
+import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, toTypeString, isIntegerKey, makeMap, invokeArrayFns, NO, toNumber, EMPTY_ARR, stringifyStyle as stringifyStyle$1, toDisplayString } from '@vue/shared';
 export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, ON_ERROR, UniLifecycleHooks, dynamicSlotName } from '@dcloudio/uni-shared';
+import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, dynamicSlotName } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -4785,7 +4785,48 @@ const updateComponentPreRender = (instance) => {
     flushPreFlushCbs(undefined, instance.update);
     resetTracking();
 };
+function componentUpdateScopedSlotsFn() {
+    const scopedSlotsData = this.$scopedSlotsData;
+    if (!scopedSlotsData || scopedSlotsData.length === 0) {
+        return;
+    }
+    const start = Date.now();
+    const mpInstance = this.ctx.$scope;
+    const oldData = mpInstance.data;
+    const diffData = Object.create(null);
+    scopedSlotsData.forEach(({ path, index, data }) => {
+        const oldScopedSlotData = getValueByDataPath(oldData, path);
+        const diffPath = `${path}[${index}]`;
+        if (typeof oldScopedSlotData === 'undefined' ||
+            typeof oldScopedSlotData[index] === 'undefined') {
+            diffData[diffPath] = data;
+        }
+        else {
+            const diffScopedSlotData = diff(data, oldScopedSlotData[index]);
+            Object.keys(diffScopedSlotData).forEach(name => {
+                diffData[diffPath + '.' + name] = diffScopedSlotData[name];
+            });
+        }
+    });
+    scopedSlotsData.length = 0;
+    if (Object.keys(diffData).length) {
+        if (process.env.UNI_DEBUG) {
+            console.log('[' +
+                +new Date() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                this.uid +
+                '][耗时' +
+                (Date.now() - start) +
+                ']作用域插槽差量更新', JSON.stringify(diffData));
+        }
+        mpInstance.setData(diffData);
+    }
+}
 function setupRenderEffect(instance) {
+    const updateScopedSlots = componentUpdateScopedSlotsFn.bind(instance);
+    instance.$updateScopedSlots = () => nextTick(() => queueJob(updateScopedSlots));
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
             patch(instance, renderComponentRoot(instance));
@@ -5267,7 +5308,7 @@ function renderSlot(name, props = {}, key) {
         }, instance);
         return;
     }
-    const invoker = findScopedSlotInvoker(vueIds.split(',')[0], instance);
+    const invoker = findScopedSlotInvoker(vueIds, instance);
     // 可能不存在，因为插槽不是必需的
     if (invoker) {
         invoker(name, props, key);
@@ -5284,7 +5325,6 @@ function findScopedSlotInvoker(vueId, instance) {
     }
 }
 
-//@ts-ignore
 function withScopedSlot(fn, { name, path, vueId, }) {
     const instance = getCurrentInstance();
     fn.path = path;
@@ -5294,30 +5334,30 @@ function withScopedSlot(fn, { name, path, vueId, }) {
         (scopedSlots[vueId] = createScopedSlotInvoker(instance));
     if (!invoker.slots[name]) {
         invoker.slots[name] = {
-            data: {},
             fn,
         };
     }
     else {
         invoker.slots[name].fn = fn;
     }
-    return invoker.slots[name].data;
+    return getValueByDataPath(instance.ctx.$scope.data, path);
 }
 function createScopedSlotInvoker(instance) {
-    const invoker = (slotName, args, key) => {
+    const invoker = (slotName, args, index) => {
         const slot = invoker.slots[slotName];
-        const hasKey = typeof key !== 'undefined';
-        key = (key || '0') + '';
-        if (!hasKey) {
-            // 循环第一个 slot 时，重置 data
-            slot.data = {};
-        }
+        const hasIndex = typeof index !== 'undefined';
+        index = index || 0;
         // 确保当前 slot 的上下文，类似 withCtx
         const prevInstance = setCurrentRenderingInstance(instance);
-        slot.data[key] = slot.fn(args, key, slotName + (hasKey ? '-' + key : ''));
+        const data = slot.fn(args, slotName + (hasIndex ? '-' + index : ''), index);
+        const path = slot.fn.path;
         setCurrentRenderingInstance(prevInstance);
-        // TODO 简单的 forceUpdate,理论上，可以仅对 scoped slot 部分数据 diff 更新
-        instance.proxy.$forceUpdate();
+        (instance.$scopedSlotsData || (instance.$scopedSlotsData = [])).push({
+            path,
+            index,
+            data,
+        });
+        instance.$updateScopedSlots();
     };
     invoker.slots = {};
     return invoker;
@@ -5402,4 +5442,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

@@ -17,7 +17,7 @@ import { camelize } from '@vue/shared'
 import { dynamicSlotName, SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
-import { isVForScope, TransformContext } from '../transform'
+import { isScopedSlotVFor, isVForScope, TransformContext } from '../transform'
 import { processProps } from './transformElement'
 import { rewriteExpression } from './utils'
 import {
@@ -85,14 +85,15 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       }
     })
     if (properties.length) {
-      const slotKey = transformScopedSlotKey(node, context)
+      transformScopedSlotName(node, context)
+      const vForIndexAlias = parseVForIndexAlias(context)
       rewriteExpression(
         createCompoundExpression([
           context.helperString(RENDER_SLOT) + '(',
           slotName,
           ',',
           `{${properties.join(',')}}`,
-          `${slotKey ? ',' + slotKey : ''}`,
+          `${vForIndexAlias ? ',' + vForIndexAlias : ''}`,
           ')',
         ]),
         context
@@ -101,7 +102,17 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
   }
 }
 
-function transformScopedSlotKey(
+function parseVForIndexAlias(context: TransformContext) {
+  let { currentScope } = context
+  while (currentScope) {
+    if (isVForScope(currentScope) && !isScopedSlotVFor(currentScope)) {
+      return currentScope.indexAlias
+    }
+    currentScope = currentScope.parent!
+  }
+}
+
+function transformScopedSlotName(
   node: SlotOutletNode,
   context: TransformContext
 ) {
@@ -127,7 +138,6 @@ function transformScopedSlotKey(
       props.push(createAttributeNode('name', SLOT_DEFAULT_NAME))
     }
   }
-  return slotKey
 }
 
 function parseScopedSlotKey(context: TransformContext) {

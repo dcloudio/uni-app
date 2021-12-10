@@ -25,7 +25,8 @@ declare module '@vue/runtime-core' {
     __isActive?: boolean // tabBar
     __isTabBar?: boolean
     // mp
-    $propsCaches?: Record<string, Record<string, any>[]>
+    $updateScopedSlots: () => void
+    $scopedSlotsData?: { path: string; index: number; data: Data }[]
     // h5 | app
     $wxsModules?: string[]
   }

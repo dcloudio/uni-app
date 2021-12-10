@@ -1,3 +1,5 @@
+import { isString } from '@vue/shared'
+
 export function cache<T>(fn: (str: string) => T) {
   const cache: Record<string, T> = Object.create(null)
   return (str: string) => {
@@ -113,6 +115,10 @@ export function callOptions(
 }
 
 export function getValueByDataPath(obj: any, path: string): unknown {
+  if (!isString(path)) {
+    return
+  }
+  path = path.replace(/\[(\d+)\]/g, '.$1')
   const parts = path.split('.')
   let key: number | string = parts[0]
   if (!obj) {

@@ -236,8 +236,11 @@ function createVForTemplate(
   },
   context: TransformContext
 ) {
-  const key = 's' + context.scopes.vFor
-  const keyProp: DirectiveNode = createBindDirectiveNode('key', key)
+  const slotName = 's' + context.scopes.vFor
+  const keyProp: DirectiveNode = createBindDirectiveNode(
+    'key',
+    'i' + context.scopes.vFor
+  )
   const source = isString(name) ? `'${name}'` : genExpr(name)
   const vForProp: DirectiveNode = {
     type: NodeTypes.DIRECTIVE,
@@ -246,14 +249,14 @@ function createVForTemplate(
     modifiers: [],
     arg: undefined,
     exp: createSimpleExpression(
-      `(${value}, ${key}) in ${SCOPED_SLOT_IDENTIFIER}(${source}, ${
+      `(${value}, ${slotName}) in ${SCOPED_SLOT_IDENTIFIER}(${source}, ${
         findCurrentVForValueAlias(context) || `''`
       })`
     ),
   }
   const props = [vForProp, keyProp]
   if (context.miniProgram.slot.dynamicSlotNames) {
-    props.push(createBindDirectiveNode('slot', `i${context.scopes.vFor}`))
+    props.push(createBindDirectiveNode('slot', slotName))
   }
   return {
     loc: slotElement.loc,
@@ -286,15 +289,18 @@ function findCurrentSlotName(source: ExpressionNode) {
   )
 }
 
-function createPathBinaryExpr(scope: CodegenVForScope) {
+function createPathBinaryExpr(
+  scope: CodegenVForScope,
+  computed: boolean = true
+) {
   return binaryExpression(
     '+',
     binaryExpression(
       '+',
-      stringLiteral(parseVForPath(scope.sourceAlias) + '.'),
+      stringLiteral(parseVForPath(scope.sourceAlias) + (computed ? '[' : '.')),
       identifier(scope.indexAlias)
     ),
-    stringLiteral('.')
+    stringLiteral(computed ? '].' : '.')
   )
 }
 
@@ -303,6 +309,7 @@ export function findCurrentPath(id: string, scope: CodegenScope) {
   let binaryExpr: BinaryExpression | null = null
   while (parent) {
     if (isVForScope(parent)) {
+      // const computed = !isScopedSlotVFor(parent)
       if (!binaryExpr) {
         binaryExpr = createPathBinaryExpr(parent)
       } else {
@@ -362,15 +369,15 @@ export function createVSlotCallExpression(
   vForScope: CodegenVForScope,
   context: TransformContext
 ) {
-  const { source /*, sourceAlias*/ } = vForScope
-  // const id = parseVForPath(sourceAlias)
+  const { source, sourceAlias } = vForScope
+  const id = parseVForPath(sourceAlias)
   return callExpression(identifier(context.helperString(WITH_SCOPED_SLOT)), [
     createVForArrowFunctionExpression(vForScope),
     objectExpression([
-      // 插槽名称，数据更新path，vueId
+      // 插槽名称，数据更新 path，vueId
       objectProperty(identifier('name'), findCurrentSlotName(source)),
-      // 暂不生成path
-      // objectProperty(identifier('path'), findCurrentPath(id, vForScope)),
+      // 暂不生成 path
+      objectProperty(identifier('path'), findCurrentPath(id, vForScope)),
       objectProperty(
         identifier('vueId'),
         findCurrentVueIdExpr(slotComponent, context)

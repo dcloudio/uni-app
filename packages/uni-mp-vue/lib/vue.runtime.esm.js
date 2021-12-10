@@ -1,6 +1,6 @@
 import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isPromise, isString, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSet, isPlainObject, toTypeString, invokeArrayFns } from '@vue/shared';
 export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook } from '@dcloudio/uni-shared';
+import { isRootHook, getValueByDataPath } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -4785,7 +4785,48 @@ const updateComponentPreRender = (instance) => {
     flushPreFlushCbs(undefined, instance.update);
     resetTracking();
 };
+function componentUpdateScopedSlotsFn() {
+    const scopedSlotsData = this.$scopedSlotsData;
+    if (!scopedSlotsData || scopedSlotsData.length === 0) {
+        return;
+    }
+    const start = Date.now();
+    const mpInstance = this.ctx.$scope;
+    const oldData = mpInstance.data;
+    const diffData = Object.create(null);
+    scopedSlotsData.forEach(({ path, index, data }) => {
+        const oldScopedSlotData = getValueByDataPath(oldData, path);
+        const diffPath = `${path}[${index}]`;
+        if (typeof oldScopedSlotData === 'undefined' ||
+            typeof oldScopedSlotData[index] === 'undefined') {
+            diffData[diffPath] = data;
+        }
+        else {
+            const diffScopedSlotData = diff(data, oldScopedSlotData[index]);
+            Object.keys(diffScopedSlotData).forEach(name => {
+                diffData[diffPath + '.' + name] = diffScopedSlotData[name];
+            });
+        }
+    });
+    scopedSlotsData.length = 0;
+    if (Object.keys(diffData).length) {
+        if (process.env.UNI_DEBUG) {
+            console.log('[' +
+                +new Date() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                this.uid +
+                '][耗时' +
+                (Date.now() - start) +
+                ']作用域插槽差量更新', JSON.stringify(diffData));
+        }
+        mpInstance.setData(diffData);
+    }
+}
 function setupRenderEffect(instance) {
+    const updateScopedSlots = componentUpdateScopedSlotsFn.bind(instance);
+    instance.$updateScopedSlots = () => nextTick(() => queueJob(updateScopedSlots));
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
             patch(instance, renderComponentRoot(instance));
@@ -4936,4 +4977,4 @@ function initCssVarsRender(instance, getter) {
 function withModifiers() { }
 function createVNode$1() { }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, guardReactiveProps, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, effect, effectScope, getCurrentInstance, getCurrentScope, guardReactiveProps, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

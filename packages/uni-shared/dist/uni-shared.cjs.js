@@ -484,18 +484,6 @@ function formatAppLog(type, filename, ...args) {
     res && console[type](res);
 }
 
-function getDataByPath(obj, path) {
-    const parts = path.split('.');
-    const key = parts[0];
-    if (!obj) {
-        obj = {};
-    }
-    if (parts.length === 1) {
-        return obj[key];
-    }
-    return getDataByPath(obj[key], parts.slice(1).join('.'));
-}
-
 let latestNodeId = 1;
 class NVueTextNode {
     constructor(text) {
@@ -1063,6 +1051,10 @@ function callOptions(options, data) {
     }
 }
 function getValueByDataPath(obj, path) {
+    if (!shared.isString(path)) {
+        return;
+    }
+    path = path.replace(/\[(\d+)\]/g, '.$1');
     const parts = path.split('.');
     let key = parts[0];
     if (!obj) {
@@ -1309,7 +1301,6 @@ exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
-exports.getDataByPath = getDataByPath;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;

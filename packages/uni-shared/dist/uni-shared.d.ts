@@ -193,8 +193,6 @@ export declare function formatLog(module: string, ...args: any[]): string;
 
 export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDataset): DOMStringMap & Record<string, any>;
 
-export declare function getDataByPath(obj: Record<string | number, any>, path: string): unknown;
-
 export declare function getEnvLocale(): string;
 
 export declare function getLen(str?: string): number;

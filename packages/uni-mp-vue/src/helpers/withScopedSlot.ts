@@ -1,25 +1,22 @@
+import { getValueByDataPath } from '@dcloudio/uni-shared'
 import type { ComponentInternalInstance } from 'vue'
 //@ts-ignore
-import { patch, getCurrentInstance, setCurrentRenderingInstance } from 'vue'
+import { diff, getCurrentInstance, setCurrentRenderingInstance } from 'vue'
 
 export interface ScopedSlotInvokers {
   [vueId: string]: ScopedSlotInvoker
 }
 
 interface ScopedSlotFn {
-  (args: Data, key: string, slotName: string): Record<string, any>
+  (args: Data, slotName: string, index: number): Record<string, any>
   path: string
 }
 
-interface ScopedSlotData {
-  [key: string]: Data
-}
 interface ScopedSlotInvoker {
-  (slotName: string, args: Data, key?: string | number): void
+  (slotName: string, args: Data, index?: number): void
   slots: {
     [slotName: string]: {
       fn: ScopedSlotFn
-      data: ScopedSlotData
     }
   }
 }
@@ -45,34 +42,34 @@ export function withScopedSlot(
     (scopedSlots[vueId] = createScopedSlotInvoker(instance))
   if (!invoker.slots[name]) {
     invoker.slots[name] = {
-      data: {},
       fn,
     }
   } else {
     invoker.slots[name].fn = fn
   }
-  return invoker.slots[name].data
+  return getValueByDataPath((instance as any).ctx.$scope.data, path)
 }
 
 function createScopedSlotInvoker(instance: ComponentInternalInstance) {
   const invoker: ScopedSlotInvoker = (
     slotName: string,
     args: Data,
-    key?: string | number
+    index?: number
   ) => {
     const slot = invoker.slots[slotName]
-    const hasKey = typeof key !== 'undefined'
-    key = (key || '0') + ''
-    if (!hasKey) {
-      // 循环第一个 slot 时，重置 data
-      slot.data = {}
-    }
+    const hasIndex = typeof index !== 'undefined'
+    index = index || 0
     // 确保当前 slot 的上下文，类似 withCtx
     const prevInstance = setCurrentRenderingInstance(instance)
-    slot.data[key] = slot.fn(args, key, slotName + (hasKey ? '-' + key : ''))
+    const data = slot.fn(args, slotName + (hasIndex ? '-' + index : ''), index)
+    const path = slot.fn.path
     setCurrentRenderingInstance(prevInstance)
-    // TODO 简单的 forceUpdate,理论上，可以仅对 scoped slot 部分数据 diff 更新
-    instance.proxy!.$forceUpdate()
+    ;(instance.$scopedSlotsData || (instance.$scopedSlotsData = [])).push({
+      path,
+      index,
+      data,
+    })
+    instance.$updateScopedSlots()
   }
   invoker.slots = {}
   return invoker

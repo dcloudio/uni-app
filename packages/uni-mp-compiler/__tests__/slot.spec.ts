@@ -67,7 +67,7 @@ describe('compiler: transform slot', () => {
       `<view v-for="(item,index) in items" :key="index"><slot v-for="(item1,index1) in item.list" :key="index1"></slot></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><slot wx:for="{{item.a}}" wx:for-item="item1" name="{{item1.a}}"></slot></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, index, i0) => { return { a: _f(item.list, (item1, index1, i1) => { return { a: "d-" + i0 + '-' + i1, b: _r("d", { key: index1 }, i0 + '-' + i1) }; }), b: index }; }) }
+  return { a: _f(_ctx.items, (item, index, i0) => { return { a: _f(item.list, (item1, index1, i1) => { return { a: "d-" + i0 + '-' + i1, b: _r("d", { key: index1 }, i1) }; }), b: index }; }) }
 }`
     )
   })

@@ -3,11 +3,7 @@ import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
 import type { ScopedSlotInvokers } from './withScopedSlot'
 import { onMounted, getCurrentInstance } from 'vue'
 
-export function renderSlot(
-  name: string,
-  props: Data = {},
-  key?: string | number
-) {
+export function renderSlot(name: string, props: Data = {}, key?: number) {
   const instance = getCurrentInstance() as ComponentInternalInstance & {
     ctx: { $scope: MPComponentInstance }
   }
@@ -28,7 +24,7 @@ export function renderSlot(
     }, instance)
     return
   }
-  const invoker = findScopedSlotInvoker(vueIds.split(',')[0], instance)
+  const invoker = findScopedSlotInvoker(vueIds, instance)
   // 可能不存在，因为插槽不是必需的
   if (invoker) {
     invoker(name, props, key)
