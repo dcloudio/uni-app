@@ -176,7 +176,10 @@ function rewriteCompileTemplate() {
   compiler.compileTemplate = (
     options: SFCTemplateCompileOptions
   ): SFCTemplateCompileResults => {
-    ;(options.compilerOptions as any).bindingCssVars = options.ssrCssVars || []
+    if (options.compilerOptions) {
+      ;(options.compilerOptions as any).bindingCssVars =
+        options.ssrCssVars || []
+    }
     return compileTemplate(options)
   }
 }
