@@ -1,3 +1,7 @@
+import {
+  parseRedirectInfo
+} from './utils'
+
 function parseRoutes (config) {
   __uniRoutes.length = 0
   /* eslint-disable no-mixed-operators */
@@ -51,9 +55,16 @@ export function initEntryPage () {
   const weexPlus = weex.requireModule('plus')
 
   if (weexPlus.getRedirectInfo) {
-    const info = weexPlus.getRedirectInfo() || {}
-    entryPagePath = info.path
-    entryPageQuery = info.query ? ('?' + info.query) : ''
+    const {
+      path,
+      query,
+      referrerInfo
+    } = parseRedirectInfo()
+    if (path) {
+      entryPagePath = path
+      entryPageQuery = query
+    }
+    __uniConfig.referrerInfo = referrerInfo
   } else {
     const argsJsonStr = plus.runtime.arguments
     if (!argsJsonStr) {

@@ -56,6 +56,7 @@ function webpackImporter(resourcePath, resolve, addNormalizedDependency) {
       // Add the resolvedFilename as dependency. Although we're also using stats.includedFiles, this might come
       // in handy when an error occurs. In this case, we don't get stats.includedFiles from node-sass.
       addNormalizedDependency(resolvedFile);
+      // fixed by xxxxxx
       const file = resolvedFile.replace(matchCss, '')
       if (fs.existsSync(file)) {
         const contents = fs.readFileSync(file, 'utf8')

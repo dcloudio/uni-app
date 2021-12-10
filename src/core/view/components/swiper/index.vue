@@ -444,13 +444,6 @@ export default {
             position -= length
           }
         } else if (n > 0) {
-        /**
-         * current -> 1
-         * position -> 2
-         * length -> 3
-         *
-         * position -> -1
-         */
           for (; position > current;) {
             position -= length
           }

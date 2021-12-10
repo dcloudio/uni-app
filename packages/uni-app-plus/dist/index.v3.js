@@ -256,7 +256,8 @@ var serviceContext = (function () {
     'preloadPage',
     'unPreloadPage',
     'loadSubPackage',
-    'sendHostEvent'
+    'sendHostEvent',
+    'navigateToMiniProgram'
   ];
 
   const ad = [
@@ -9229,7 +9230,7 @@ var serviceContext = (function () {
     });
   }
 
-  function onWebviewPopGesture (webview) {
+  function onWebviewPopGesture(webview) {
     let popStartStatusBarStyle;
     webview.addEventListener('popGesture', e => {
       if (e.type === 'start') {
@@ -9246,14 +9247,47 @@ var serviceContext = (function () {
         const pages = getCurrentPages();
         const page = pages[pages.length - 1];
         page && page.$remove();
-
         setStatusBarStyle();
-
-        UniServiceJSBridge.emit('onAppRoute', {
-          type: 'navigateBack'
-        });
+        if (page && isDirectPage(page)) {
+          reLaunchEntryPage();
+        } else {
+          UniServiceJSBridge.emit('onAppRoute', {
+            type: 'navigateBack'
+          });
+        }
       }
     });
+  }
+
+
+  /**
+   * 是否处于直达页面
+   * @param page
+   * @returns
+   */
+  function isDirectPage(page) {
+    return (
+      __uniConfig.realEntryPagePath &&
+      page.$page.route === __uniConfig.entryPagePath
+    )
+  }
+  /**
+   * 重新启动到首页
+   */
+  function reLaunchEntryPage() {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+      url: addLeadingSlash(__uniConfig.entryPagePath),
+    });
+  }
+
+  function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0
+  }
+
+  function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str
   }
 
   let preloadWebview;
@@ -9757,6 +9791,64 @@ var serviceContext = (function () {
     return pageVm
   }
 
+  const extend = Object.assign;
+
+  function createLaunchOptions () {
+    return {
+      path: '',
+      query: {},
+      scene: 1001,
+      referrerInfo: {
+        appId: '',
+        extraData: {}
+      }
+    }
+  }
+
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+
+  function initLaunchOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(launchOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+    extend(enterOptions, launchOptions);
+    return launchOptions
+  }
+
+  function parseRedirectInfo () {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        extraData,
+        userAction,
+        fromAppid
+      } =
+      weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+        appId: fromAppid,
+        extraData: {}
+      };
+      if (extraData) {
+        referrerInfo.extraData = extraData;
+      }
+      return {
+        path: path || '',
+        query: query ? '?' + query : '',
+        referrerInfo,
+        userAction
+      }
+    }
+  }
+
   let isInitEntryPage = false;
 
   function initEntryPage () {
@@ -9771,9 +9863,16 @@ var serviceContext = (function () {
     const weexPlus = weex.requireModule('plus');
 
     if (weexPlus.getRedirectInfo) {
-      const info = weexPlus.getRedirectInfo() || {};
-      entryPagePath = info.path;
-      entryPageQuery = info.query ? ('?' + info.query) : '';
+      const {
+        path,
+        query,
+        referrerInfo
+      } = parseRedirectInfo();
+      if (path) {
+        entryPagePath = path;
+        entryPageQuery = query;
+      }
+      __uniConfig.referrerInfo = referrerInfo;
     } else {
       const argsJsonStr = plus.runtime.arguments;
       if (!argsJsonStr) {
@@ -21997,11 +22096,11 @@ var serviceContext = (function () {
   }
 
   function initAppLaunch (appVm) {
-    const args = {
+    const args = initLaunchOptions({
       path: __uniConfig.entryPagePath,
-      query: {},
-      scene: 1001
-    };
+      query: __uniConfig.entryPageQuery,
+      referrerInfo: __uniConfig.referrerInfo
+    });
 
     callAppHook(appVm, 'onLaunch', args);
     callAppHook(appVm, 'onShow', args);

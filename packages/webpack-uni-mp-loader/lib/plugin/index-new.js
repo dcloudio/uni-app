@@ -47,9 +47,11 @@ function addSubPackagesRequire (compilation) {
           name.indexOf(root + '/') === 0 &&
           name !== subPackageVendorPath
         ) {
-          const source =
-            `require('${normalizePath(path.relative(path.dirname(name), subPackageVendorPath))}');` +
-            compilation.assets[name].source()
+          let relativePath = normalizePath(path.relative(path.dirname(name), subPackageVendorPath))
+          if (!relativePath.startsWith('.')) {
+            relativePath = './' + relativePath
+          }
+          const source = `require('${relativePath}');` + compilation.assets[name].source()
 
           compilation.assets[name] = {
             size () {
