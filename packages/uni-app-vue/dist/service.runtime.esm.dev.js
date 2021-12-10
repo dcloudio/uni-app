@@ -41,12 +41,24 @@ export default function vueFactory(exports) {
   // App and Page
 
   var ON_SHOW = 'onShow';
-  var ON_HIDE = 'onHide';
+  var ON_HIDE = 'onHide'; //Page
+
+  var ON_LOAD = 'onLoad';
+  var ON_UNLOAD = 'onUnload';
   var ON_BACK_PRESS = 'onBackPress';
   var ON_PAGE_SCROLL = 'onPageScroll';
   var ON_TAB_ITEM_TAP = 'onTabItemTap';
   var ON_REACH_BOTTOM = 'onReachBottom';
   var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+  var ON_SHARE_TIMELINE = 'onShareTimeline';
+  var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+  var ON_SHARE_APP_MESSAGE = 'onShareAppMessage'; // navigationBar
+
+  var ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+  var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
 
   function isElement(el) {
     // Element
@@ -662,7 +674,7 @@ export default function vueFactory(exports) {
     return false;
   };
 
-  var PAGE_HOOKS = [ON_SHOW, ON_HIDE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH];
+  var PAGE_HOOKS = [ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
 
   function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
