@@ -9230,7 +9230,7 @@ var serviceContext = (function () {
     });
   }
 
-  function onWebviewPopGesture(webview) {
+  function onWebviewPopGesture (webview) {
     let popStartStatusBarStyle;
     webview.addEventListener('popGesture', e => {
       if (e.type === 'start') {
@@ -9259,13 +9259,12 @@ var serviceContext = (function () {
     });
   }
 
-
   /**
    * 是否处于直达页面
    * @param page
    * @returns
    */
-  function isDirectPage(page) {
+  function isDirectPage (page) {
     return (
       __uniConfig.realEntryPagePath &&
       page.$page.route === __uniConfig.entryPagePath
@@ -9274,19 +9273,19 @@ var serviceContext = (function () {
   /**
    * 重新启动到首页
    */
-  function reLaunchEntryPage() {
+  function reLaunchEntryPage () {
     __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
     delete __uniConfig.realEntryPagePath;
     uni.reLaunch({
-      url: addLeadingSlash(__uniConfig.entryPagePath),
+      url: addLeadingSlash(__uniConfig.entryPagePath)
     });
   }
 
-  function hasLeadingSlash(str) {
+  function hasLeadingSlash (str) {
     return str.indexOf('/') === 0
   }
 
-  function addLeadingSlash(str) {
+  function addLeadingSlash (str) {
     return hasLeadingSlash(str) ? str : '/' + str
   }
 
