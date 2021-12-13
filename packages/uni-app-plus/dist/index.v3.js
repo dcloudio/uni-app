@@ -9807,6 +9807,22 @@ var serviceContext = (function () {
   const enterOptions = createLaunchOptions();
   const launchOptions = createLaunchOptions();
 
+  function getEnterOptions () {
+    return enterOptions
+  }
+
+  function initEnterOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(enterOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+  }
+
   function initLaunchOptions ({
     path,
     query,
@@ -21707,18 +21723,12 @@ var serviceContext = (function () {
       callCurrentPageHook('onHide');
     }
 
-    function onAppEnterForeground () {
+    function onAppEnterForeground (enterOptions) {
+      callAppHook(getApp(), 'onShow', enterOptions);
       const pages = getCurrentPages();
       if (pages.length === 0) {
         return
       }
-      const page = pages[pages.length - 1];
-      const args = {
-        path: page.route,
-        query: page.options
-      };
-
-      callAppHook(getApp(), 'onShow', args);
       callCurrentPageHook('onShow');
     }
 
@@ -22038,7 +22048,11 @@ var serviceContext = (function () {
     });
 
     plus.globalEvent.addEventListener('resume', () => {
-      emit('onAppEnterForeground');
+      const info = parseRedirectInfo();
+      if (info && info.userAction) {
+        initEnterOptions(info);
+      }
+      emit('onAppEnterForeground', getEnterOptions());
     });
 
     plus.globalEvent.addEventListener('netchange', () => {
