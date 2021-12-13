@@ -12,6 +12,8 @@ import {
   backbuttonListener,
   getEnterOptions,
   RedirectInfo,
+  parseRedirectInfo,
+  initEnterOptions,
 } from './utils'
 
 export function initGlobalEvent() {
@@ -32,12 +34,10 @@ export function initGlobalEvent() {
   })
 
   plusGlobalEvent.addEventListener('resume', () => {
-    // TODO 暂时不用
-    // const info = parseRedirectInfo()
-    // if (info && info.userAction && info.path) {
-    //   initEnterOptions(info)
-    //   initEnterReLaunch(info)
-    // }
+    const info = parseRedirectInfo()
+    if (info && info.userAction) {
+      initEnterOptions(info)
+    }
     emit(ON_APP_ENTER_FOREGROUND, getEnterOptions())
   })
 
