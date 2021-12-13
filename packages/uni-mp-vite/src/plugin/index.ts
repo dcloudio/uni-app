@@ -18,7 +18,7 @@ import { createConfigResolved } from './configResolved'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
 import { getNVueCssPaths } from '../plugins/pagesJson'
-import {
+import type {
   SFCTemplateCompileOptions,
   SFCTemplateCompileResults,
 } from '@vue/compiler-sfc'

@@ -21,6 +21,9 @@ export function initPluginVueOptions(
   }
 ) {
   const vueOptions = options.vueOptions || (options.vueOptions = {})
+  // if (!hasOwn(vueOptions, 'reactivityTransform')) {
+  //   vueOptions.reactivityTransform = true
+  // }
   if (!vueOptions.include) {
     vueOptions.include = []
   }

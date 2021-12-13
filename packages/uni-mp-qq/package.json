@@ -24,7 +24,7 @@
   "devDependencies": {
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3030120211210003",
     "@types/fs-extra": "^9.0.13",
-    "@vue/compiler-core": "3.2.24"
+    "@vue/compiler-core": "3.2.26"
   },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030120211210003",

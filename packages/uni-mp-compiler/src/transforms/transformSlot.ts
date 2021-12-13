@@ -7,7 +7,7 @@ import {
   ErrorCodes,
   ExpressionNode,
   findProp,
-  isBindKey,
+  isStaticArgOf,
   isStaticExp,
   NodeTypes,
   SimpleExpressionNode,
@@ -47,7 +47,7 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       if (p.name !== 'bind') {
         hasOtherDir = true
       }
-      if (p.name === 'bind' && isBindKey(p.arg, 'name')) {
+      if (p.name === 'bind' && isStaticArgOf(p.arg, 'name')) {
         if (p.exp) {
           p.exp = rewriteExpression(
             createCompoundExpression([

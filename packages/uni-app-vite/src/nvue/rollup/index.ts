@@ -21,9 +21,8 @@ export function createRollupOptions(pagePath: string): RollupOptions {
     plugins: [
       vue({
         include: [EXTNAME_VUE_RE],
-        ssr: false,
         isProduction: process.env.NODE_ENV === 'production',
-        refTransform: true,
+        // reactivityTransform: true,
         template: {
           compilerOptions: {
             // TODO

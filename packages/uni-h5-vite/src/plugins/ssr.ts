@@ -24,15 +24,19 @@ export function uniSSRPlugin(): Plugin {
   const entryServerJsCode = generateSsrEntryServerCode()
   return {
     name: 'vite:uni-h5-ssr',
+    config(userConfig, env) {
+      if (isSsr(env.command, userConfig)) {
+        rewriteSsrVue()
+        rewriteSsrResolve()
+        rewriteSsrNativeTag()
+        rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
+      }
+    },
     configResolved(config: ResolvedConfig) {
       resolvedConfig = config
       entryServerJs = path.join(process.env.UNI_INPUT_DIR, ENTRY_SERVER_JS)
       if (isSsr(resolvedConfig.command, resolvedConfig)) {
         initSsrDefine(resolvedConfig)
-        rewriteSsrVue()
-        rewriteSsrResolve()
-        rewriteSsrNativeTag()
-        rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
       }
     },
     resolveId(id) {

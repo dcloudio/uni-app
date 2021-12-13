@@ -12,6 +12,16 @@ const hbxPlugins = {
 } as const
 
 export function initModuleAlias() {
+  const compilerSfcPath = require.resolve('@vue/compiler-sfc')
+  const serverRendererPath = require.resolve('@vue/server-renderer')
+  moduleAlias.addAliases({
+    '@vue/shared': require.resolve('@vue/shared'),
+    '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
+    '@vue/compiler-sfc': compilerSfcPath,
+    '@vue/server-renderer': serverRendererPath,
+    'vue/compiler-sfc': compilerSfcPath,
+    'vue/server-renderer': serverRendererPath,
+  })
   if (isInHBuilderX()) {
     Object.keys(hbxPlugins).forEach((name) => {
       moduleAlias.addAlias(

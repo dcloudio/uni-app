@@ -1048,21 +1048,25 @@ function toRefs(object) {
     return ret;
 }
 class ObjectRefImpl {
-    constructor(_object, _key) {
+    constructor(_object, _key, _defaultValue) {
         this._object = _object;
         this._key = _key;
+        this._defaultValue = _defaultValue;
         this.__v_isRef = true;
     }
     get value() {
-        return this._object[this._key];
+        const val = this._object[this._key];
+        return val === undefined ? this._defaultValue : val;
     }
     set value(newVal) {
         this._object[this._key] = newVal;
     }
 }
-function toRef(object, key) {
+function toRef(object, key, defaultValue) {
     const val = object[key];
-    return isRef(val) ? val : new ObjectRefImpl(object, key);
+    return isRef(val)
+        ? val
+        : new ObjectRefImpl(object, key, defaultValue);
 }
 
 class ComputedRefImpl {
@@ -2651,10 +2655,10 @@ const createVNodeWithArgsTransform = (...args) => {
 };
 const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
-const normalizeRef = ({ ref }) => {
+const normalizeRef = ({ ref, ref_key, ref_for }) => {
     return (ref != null
         ? isString(ref) || isRef(ref) || isFunction(ref)
-            ? { i: currentRenderingInstance, r: ref }
+            ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for }
             : ref
         : null);
 };
@@ -3227,6 +3231,7 @@ function createComponentInstance(vnode, parent, suspense) {
         root: null,
         next: null,
         subTree: null,
+        effect: null,
         update: null,
         scope: new EffectScope(true /* detached */),
         render: null,
@@ -4388,7 +4393,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.24";
+const version = "3.2.26";
 /**
  * @internal only exposed in compat builds
  */
@@ -4824,6 +4829,9 @@ function componentUpdateScopedSlotsFn() {
         mpInstance.setData(diffData);
     }
 }
+function toggleRecurse({ effect, update }, allowed) {
+    effect.allowRecurse = update.allowRecurse = allowed;
+}
 function setupRenderEffect(instance) {
     const updateScopedSlots = componentUpdateScopedSlotsFn.bind(instance);
     instance.$updateScopedSlots = () => nextTick(() => queueJob(updateScopedSlots));
@@ -4834,13 +4842,14 @@ function setupRenderEffect(instance) {
         else {
             // updateComponent
             const { bu, u } = instance;
-            effect.allowRecurse = false;
+            // Disallow component effect recursion during pre-lifecycle hooks.
+            toggleRecurse(instance, false);
             updateComponentPreRender(instance);
             // beforeUpdate hook
             if (bu) {
                 invokeArrayFns(bu);
             }
-            effect.allowRecurse = true;
+            toggleRecurse(instance, true);
             patch(instance, renderComponentRoot(instance));
             // updated hook
             if (u) {
@@ -4855,7 +4864,7 @@ function setupRenderEffect(instance) {
     update.id = instance.uid;
     // allowRecurse
     // #1801, #2043 component render effects should allow recursive updates
-    effect.allowRecurse = update.allowRecurse = true;
+    toggleRecurse(instance, true);
     if ((process.env.NODE_ENV !== 'production')) {
         effect.onTrack = instance.rtc
             ? e => invokeArrayFns(instance.rtc, e)

@@ -25,7 +25,7 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030120211210003",
     "@dcloudio/uni-mp-vite": "3.0.0-alpha-3030120211210003",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3030120211210003",
-    "@vue/compiler-core": "3.2.24",
-    "@vue/shared": "3.2.24"
+    "@vue/compiler-core": "3.2.26",
+    "@vue/shared": "3.2.26"
   }
 }

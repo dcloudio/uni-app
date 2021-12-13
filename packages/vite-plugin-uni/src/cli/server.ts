@@ -36,8 +36,8 @@ export async function createServer(options: CliOptions & ServerOptions) {
   )
 
   server.printUrls()
-
-  printStartupDuration(logger)
+  // printUrls 会在 nextTick 中输出
+  process.nextTick(() => printStartupDuration(logger))
 
   return server
 }
@@ -123,7 +123,7 @@ export async function createSSRServer(
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
       printHttpServerUrls(server, vite.config)
-      printStartupDuration(logger)
+      process.nextTick(() => printStartupDuration(logger))
       resolve(vite)
     }
     const onError = (e: Error & { code?: string }) => {

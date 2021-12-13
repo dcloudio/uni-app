@@ -5,7 +5,6 @@ import {
   createCompilerError,
   ErrorCodes,
   ElementNode,
-  isBindKey,
   TemplateLiteral,
   Property,
   ExpressionNode,
@@ -17,6 +16,7 @@ import {
   DirectiveNode,
   ComponentNode,
   RESOLVE_COMPONENT,
+  isStaticArgOf,
 } from '@vue/compiler-core'
 import { isComponentTag } from '@dcloudio/uni-shared'
 
@@ -200,7 +200,7 @@ export function processProps(
       // skip v-is and :is on <component>
       if (
         name === 'is' ||
-        (isVBind && isBindKey(arg, 'is') && isComponentTag(tag))
+        (isVBind && isStaticArgOf(arg, 'is') && isComponentTag(tag))
       ) {
         continue
       }
