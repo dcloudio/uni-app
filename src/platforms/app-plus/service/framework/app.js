@@ -46,7 +46,10 @@ import {
 } from './backbutton'
 
 import {
-  initLaunchOptions
+  getEnterOptions,
+  initEnterOptions,
+  initLaunchOptions,
+  parseRedirectInfo
 } from './utils'
 
 let appCtx
@@ -90,7 +93,11 @@ function initGlobalListeners () {
   })
 
   plus.globalEvent.addEventListener('resume', () => {
-    emit('onAppEnterForeground')
+    const info = parseRedirectInfo()
+    if (info && info.userAction) {
+      initEnterOptions(info)
+    }
+    emit('onAppEnterForeground', getEnterOptions())
   })
 
   plus.globalEvent.addEventListener('netchange', () => {
