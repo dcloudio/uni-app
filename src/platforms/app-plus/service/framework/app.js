@@ -45,6 +45,10 @@ import {
   backbuttonListener
 } from './backbutton'
 
+import {
+  initLaunchOptions
+} from './utils'
+
 let appCtx
 
 const defaultApp = {
@@ -143,11 +147,11 @@ function onPlusMessage (e) {
 }
 
 function initAppLaunch (appVm) {
-  const args = {
+  const args = initLaunchOptions({
     path: __uniConfig.entryPagePath,
-    query: {},
-    scene: 1001
-  }
+    query: __uniConfig.entryPageQuery,
+    referrerInfo: __uniConfig.referrerInfo
+  })
 
   callAppHook(appVm, 'onLaunch', args)
   callAppHook(appVm, 'onShow', args)

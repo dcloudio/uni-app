@@ -57,11 +57,9 @@ export function chooseFile ({
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
 
-  if (interact.getStatus()) {
-    fileInput.click()
-  } else {
-    invoke(callbackId, {
-      errMsg: `chooseFile:fail ${t('uni.chooseFile.notUserActivation')}`
-    })
+  fileInput.click()
+
+  if (!interact.getStatus()) {
+    console.warn(`${t('uni.chooseFile.notUserActivation')}`)
   }
 }

@@ -29,6 +29,7 @@ export function setClipboardData ({
   textarea.focus()
   textarea.select()
   const result = document.execCommand('Copy', false, null)
+  textarea.blur()
   if (result) {
     return {
       errMsg: 'setClipboardData:ok'

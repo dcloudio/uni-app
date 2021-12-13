@@ -252,10 +252,9 @@ class AdScript {
     this._cache = {}
   }
 
-  load (data, success, fail) {
-    const provider = data.provider
+  load (provider, script, success, fail) {
     if (this._cache[provider] === undefined) {
-      this.loadScript(data)
+      this.loadScript(script)
     }
 
     if (this._cache[provider] === 1) {
@@ -271,12 +270,10 @@ class AdScript {
     }
   }
 
-  loadScript (data) {
-    const provider = data.provider
+  loadScript (provider, script) {
     this._cache[provider] = 0
     var ads = document.createElement('script')
     ads.setAttribute('id', 'uniad_provider' + provider)
-    const script = data.script
     for (const var1 in script) {
       ads.setAttribute(var1, script[var1])
     }
@@ -295,6 +292,59 @@ class AdScript {
       this._callback[provider].length = 0
     }
     document.body.append(ads)
+  }
+}
+
+class AdTencent {
+  static get instance () {
+    if (this._instance == null) {
+      this._instance = new AdTencent()
+    }
+    return this._instance
+  }
+
+  constructor () {
+    this._instance = null
+    this._callback = {}
+    this._cache = {}
+    window.TencentGDT = window.TencentGDT || []
+  }
+
+  load (appid, placementid, success, fail) {
+    if (!this._callback[placementid]) {
+      this._callback[placementid] = []
+    }
+    this._callback[placementid].push({
+      success,
+      fail
+    })
+
+    if (!this._cache[placementid]) {
+      this._cache[placementid] = {
+        isReady: false
+      }
+      window.TencentGDT.push({
+        app_id: appid,
+        placement_id: placementid,
+        type: 'native',
+        count: 1,
+        onComplete: (res) => {
+          this._cache[placementid].isReady = true
+          this._callback[placementid].forEach(({ success, fail }) => {
+            if (res && Array.isArray(res) && res.length) {
+              success(res[0])
+            } else {
+              fail(res)
+            }
+            this._callback[placementid].length = 0
+          })
+        }
+      })
+    }
+
+    if (this._cache[placementid].isReady === true) {
+      window.TencentGDT.NATIVE.loadAd(placementid)
+    }
   }
 }
 
@@ -361,10 +411,12 @@ export default {
       this._pi = 0
       this._clearCheckTimer()
       this.$refs.container.innerHTML = ''
+      this._isReady = false
     },
     _loadData (adpid) {
       this._reset()
-      const aid = adpid || (this._isWidescreen ? this.adpidWidescreen : this.adpid)
+      const id = adpid || this.adpid
+      const aid = (this._isWidescreen ? (this.adpidWidescreen || id) : id)
       AdConfig.instance.get(aid, (b, a) => {
         this._b = b
         this._pl = a
@@ -379,26 +431,47 @@ export default {
       }
 
       const data = this._pl[this._pi]
-      const providerId = data.a1
-      this._b[providerId].provider = providerId
+      const providerConfig = this._b[data.a1][data.t]
 
-      AdScript.instance.load(this._b[providerId], () => {
-        this._renderAdView(this._b[providerId], data)
-      }, (err) => {
-        this.$trigger('error', {}, err)
-      })
-    },
-    _renderAdView (provider, data) {
       var randomId = this._randomId()
+
+      if (data.a1 === '10011') {
+        AdTencent.instance.load(data.a3, data.a2, (res) => {
+          window.TencentGDT.NATIVE.renderAd(res, randomId)
+        })
+        this._startCheckTimer()
+      } else if (data.a1 === '10012') {
+        this._renderAdView(providerConfig, data, randomId)
+      } else {
+        AdScript.instance.load(data.t, providerConfig.script, () => {
+          this._renderAdView(providerConfig, data, randomId)
+        }, (err) => {
+          this.$trigger('error', {}, err)
+        })
+      }
+    },
+    _renderAdView (providerConfig, data, randomId) {
       var adView = document.createElement('div')
       adView.setAttribute('class', randomId)
+      adView.setAttribute('id', randomId)
       this.$refs.container.innerHTML = ''
       this.$refs.container.append(adView)
-      let bindThis = window
-      provider.s.split('.').reduce((total, currentValue) => {
-        bindThis = total
-        return total[currentValue]
-      }, window).bind(bindThis)(data.a2, randomId, 2)
+
+      if (data.a1 === '10011') {
+      } else if (data.a1 === '10012') {
+        var adScript = document.createElement('script')
+        const script = providerConfig.script
+        for (const var1 in script) {
+          adScript.setAttribute(var1, script[var1])
+        }
+        adView.appendChild(adScript)
+      } else {
+        let bindThis = window
+        providerConfig.s.split('.').reduce((total, currentValue) => {
+          bindThis = total
+          return total[currentValue]
+        }, window).bind(bindThis)(data.a2, randomId, 2)
+      }
 
       this._startCheckTimer()
     },

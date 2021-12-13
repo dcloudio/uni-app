@@ -123,7 +123,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     if (matchRule && matchRule.use) {
       if (runByHBuilderX) {
         matchRule.use.forEach(matchUse => {
-          if (matchUse.loader === 'ts-loader') {
+          if (matchUse.loader.includes('ts-loader')) {
             Object.assign(matchUse.options, tsLoaderOptions)
           }
         })
@@ -326,7 +326,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             '?' +
             JSON.stringify({
               type: 'stat'
-            })
+            }),
+          vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3')
         },
         modules: [
           process.env.UNI_INPUT_DIR,

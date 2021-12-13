@@ -84,7 +84,8 @@ const plugins = [
       UNI_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       VUE_APP_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
-      HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || ''),
+      UNICLOUD_DEBUG: process.env.UNICLOUD_DEBUG,
+      RUN_BY_HBUILDERX: process.env.RUN_BY_HBUILDERX,
       UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT)
     }
   }),
@@ -266,6 +267,18 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   }
   plugins.push(new CopyWebpackPlugin(array))
 }
+
+try {
+  if (process.env.UNI_HBUILDERX_PLUGINS) {
+    require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers/lib/bytenode'))
+    const {
+      W
+    } = require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+    plugins.push(new W({
+      dir: process.env.UNI_INPUT_DIR
+    }))
+  }
+} catch (e) {}
 
 module.exports = function () {
   return {

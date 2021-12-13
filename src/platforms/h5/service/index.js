@@ -10,11 +10,6 @@ import {
   getCurrentPages
 }
   from 'uni-core/service/plugins/app'
-import {
-  initI18n
-} from 'uni-helpers/i18n'
-
-initI18n()
 
 initOn(UniServiceJSBridge.on, {
   getApp,

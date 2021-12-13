@@ -69,11 +69,9 @@ export function chooseVideo ({
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
 
-  if (interact.getStatus()) {
-    videoInput.click()
-  } else {
-    invoke(callbackId, {
-      errMsg: `chooseVideo:fail ${t('uni.chooseFile.notUserActivation')}`
-    })
+  videoInput.click()
+
+  if (!interact.getStatus()) {
+    console.warn(`${t('uni.chooseFile.notUserActivation')}`)
   }
 }

@@ -162,6 +162,7 @@ export default {
   mounted () {
     this._currentCheck()
     this.touchtrack(this.$refs.slidesWrapper, '_handleContentTrack', true)
+    this._resetLayout()
     this.$watch(() => {
       return this.autoplay && !this.userTracking
     }, this._inintAutoplay)
@@ -449,6 +450,9 @@ export default {
           for (; position + length < current;) {
             position += length
           }
+          if (position + length - current < current - position) {
+            position += length
+          }
         } else {
           for (; position + length < current;) {
             position += length
@@ -543,7 +547,7 @@ export default {
       }
     },
     _handleContentTrack (e) {
-      if (this.disableTouch) {
+      if (this.disableTouch || !this.items.length) {
         return
       }
       if (!this._invalid) {

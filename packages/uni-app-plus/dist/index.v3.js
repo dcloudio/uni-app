@@ -64,6 +64,7 @@ var serviceContext = (function () {
     'chooseImage',
     'chooseFile',
     'previewImage',
+    'closePreviewImage',
     'getImageInfo',
     'getVideoInfo',
     'saveImageToPhotosAlbum',
@@ -234,6 +235,7 @@ var serviceContext = (function () {
     'preLogin',
     'closeAuthView',
     'getCheckBoxState',
+    'getUniverifyManager',
     'share',
     'shareWithSystem',
     'showShareMenu',
@@ -253,7 +255,9 @@ var serviceContext = (function () {
     'sendNativeEvent',
     'preloadPage',
     'unPreloadPage',
-    'loadSubPackage'
+    'loadSubPackage',
+    'sendHostEvent',
+    'navigateToMiniProgram'
   ];
 
   const ad = [
@@ -1534,7 +1538,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Cancel",
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Camera",
-  	"uni.previewImage.cancel": "Cancel",
+  	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
   	"uni.previewImage.button.save": "Save Image",
   	"uni.previewImage.save.success": "Saved successfully",
   	"uni.previewImage.save.fail": "Save failed",
@@ -1569,6 +1573,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Cancelar",
   	"uni.chooseVideo.sourceType.album": "Álbum",
   	"uni.chooseVideo.sourceType.camera": "Cámara",
+  	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
   	"uni.previewImage.cancel": "Cancelar",
   	"uni.previewImage.button.save": "Guardar imagen",
   	"uni.previewImage.save.success": "Guardado exitosamente",
@@ -1604,6 +1609,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Annuler",
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Caméra",
+  	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
   	"uni.previewImage.cancel": "Annuler",
   	"uni.previewImage.button.save": "Guardar imagen",
   	"uni.previewImage.save.success": "Enregistré avec succès",
@@ -1639,6 +1645,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "从相册选择",
   	"uni.chooseVideo.sourceType.camera": "拍摄",
+  	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存图像",
   	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1674,6 +1681,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "從相冊選擇",
   	"uni.chooseVideo.sourceType.camera": "拍攝",
+  	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存圖像",
   	"uni.previewImage.save.success": "保存圖像到相冊成功",
@@ -1695,13 +1703,17 @@ var serviceContext = (function () {
   	"uni.chooseLocation.cancel": "取消"
   };
 
-  const messages = {
-    en,
-    es,
-    fr,
-    'zh-Hans': zhHans,
-    'zh-Hant': zhHant
-  };
+  const messages = {};
+
+  {
+    Object.assign(messages, {
+      en,
+      es,
+      fr,
+      'zh-Hans': zhHans,
+      'zh-Hant': zhHant
+    });
+  }
 
   let locale;
 
@@ -1712,6 +1724,26 @@ var serviceContext = (function () {
       locale = '';
     }
   }
+
+  function initI18nMessages () {
+    if (!isEnableLocale()) {
+      return
+    }
+    const localeKeys = Object.keys(__uniConfig.locales);
+    if (localeKeys.length) {
+      localeKeys.forEach((locale) => {
+        const curMessages = messages[locale];
+        const userMessages = __uniConfig.locales[locale];
+        if (curMessages) {
+          Object.assign(curMessages, userMessages);
+        } else {
+          messages[locale] = userMessages;
+        }
+      });
+    }
+  }
+
+  initI18nMessages();
 
   const i18n = initVueI18n(
     locale,
@@ -1808,7 +1840,7 @@ var serviceContext = (function () {
   }
 
   function isEnableLocale () {
-    return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+    return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
   }
 
   function initNavigationBarI18n (navigationBar) {
@@ -1820,21 +1852,30 @@ var serviceContext = (function () {
     }
   }
 
-  function initI18n () {
-    const localeKeys = Object.keys(__uniConfig.locales || {});
-    if (localeKeys.length) {
-      localeKeys.forEach((locale) =>
-        i18n.add(locale, __uniConfig.locales[locale])
-      );
-    }
-  }
+  // export function initI18n() {
+  //   const localeKeys = Object.keys(__uniConfig.locales || {})
+  //   if (localeKeys.length) {
+  //     localeKeys.forEach((locale) =>
+  //       i18n.add(locale, __uniConfig.locales[locale])
+  //     )
+  //   }
+  // }
 
   const setClipboardData = {
-    beforeSuccess () {
+    data: {
+      type: String,
+      required: true
+    },
+    showToast: {
+      type: Boolean,
+      default: true
+    },
+    beforeSuccess (res, params) {
+      if (!params.showToast) return
       const title = t('uni.setClipboardData.success');
       if (title) {
         uni.showToast({
-          title: t('uni.setClipboardData.success'),
+          title,
           icon: 'success',
           mask: false,
           style: {
@@ -2348,7 +2389,8 @@ var serviceContext = (function () {
     PUT: 'PUT',
     DELETE: 'DELETE',
     TRACE: 'TRACE',
-    CONNECT: 'CONNECT'
+    CONNECT: 'CONNECT',
+    PATCH: 'PATCH'
   };
   const dataType = {
     JSON: 'json'
@@ -3604,7 +3646,7 @@ var serviceContext = (function () {
       const errMsg = res.errMsg;
 
       if (errMsg.indexOf(apiName + ':ok') === 0) {
-        isFn(beforeSuccess) && beforeSuccess(res);
+        isFn(beforeSuccess) && beforeSuccess(res, params);
 
         hasSuccess && success(res);
 
@@ -4325,6 +4367,8 @@ var serviceContext = (function () {
     return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
+  const AUDIO_DEFAULT_CATEGORY = 'ambient';
+
   const audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
@@ -4371,6 +4415,7 @@ var serviceContext = (function () {
     audio.src = '';
     audio.volume = 1;
     audio.startTime = 0;
+    audio.setSessionCategory(AUDIO_DEFAULT_CATEGORY);
     return {
       errMsg: 'createAudioInstance:ok',
       audioId
@@ -4397,7 +4442,8 @@ var serviceContext = (function () {
     autoplay = false,
     loop = false,
     obeyMuteSwitch,
-    volume
+    volume,
+    category = AUDIO_DEFAULT_CATEGORY
   }) {
     const audio = audios[audioId];
     if (audio) {
@@ -4415,6 +4461,9 @@ var serviceContext = (function () {
         audio.volume = style.volume = volume;
       }
       audio.setStyles(style);
+      if (category) {
+        audio.setSessionCategory(category);
+      }
       initStateChage(audioId);
     }
     return {
@@ -5758,7 +5807,7 @@ var serviceContext = (function () {
       animationDuration: 200,
       uniNView: {
         path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
-        defaultFontSize: plus_.screen.resolutionWidth / 20,
+        defaultFontSize: 16,
         viewport: plus_.screen.resolutionWidth
       }
     };
@@ -6293,7 +6342,7 @@ var serviceContext = (function () {
   let deviceId;
 
   function deviceId$1 () {
-    deviceId = deviceId || plus.runtime.getDCloudId();
+    deviceId = deviceId || plus.device.uuid;
     return deviceId
   }
 
@@ -6710,7 +6759,8 @@ var serviceContext = (function () {
   function getLocation$1 ({
     type = 'wgs84',
     geocode = false,
-    altitude = false
+    altitude = false,
+    highAccuracyExpireTime
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
     plus.geolocation.getCurrentPosition(
@@ -6726,7 +6776,8 @@ var serviceContext = (function () {
         errorCallback(e);
       }, {
         geocode: geocode,
-        enableHighAccuracy: altitude
+        enableHighAccuracy: altitude,
+        timeout: highAccuracyExpireTime
       }
     );
   }
@@ -7203,6 +7254,19 @@ var serviceContext = (function () {
     });
     return {
       errMsg: 'previewImage:ok'
+    }
+  }
+
+  function closePreviewImagePlus () {
+    try {
+      plus.nativeUI.closePreviewImage();
+      return {
+        errMsg: 'closePreviewImagePlus:ok'
+      }
+    } catch (error) {
+      return {
+        errMsg: 'closePreviewImagePlus:fail'
+      }
     }
   }
 
@@ -7876,6 +7940,8 @@ var serviceContext = (function () {
     }
   }
 
+  let univerifyManager;
+
   function getService (provider) {
     return new Promise((resolve, reject) => {
       plus.oauth.getServices(services => {
@@ -7888,20 +7954,21 @@ var serviceContext = (function () {
   /**
    * 微信登录
    */
-  function login (params, callbackId) {
+  function login (params, callbackId, plus = true) {
     const provider = params.provider || 'weixin';
-    const errorCallback = warpPlusErrorCallback(callbackId, 'login');
+    const errorCallback = warpErrorCallback(callbackId, 'login', plus);
     const authOptions = provider === 'apple'
       ? { scope: 'email' }
       : params.univerifyStyle
         ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
         : {};
+    const _invoke = plus ? invoke$1 : callback.invoke;
 
     getService(provider).then(service => {
       function login () {
         if (params.onlyAuthorize && provider === 'weixin') {
           service.authorize(({ code }) => {
-            invoke$1(callbackId, {
+            _invoke(callbackId, {
               code,
               authResult: '',
               errMsg: 'login:ok'
@@ -7911,7 +7978,7 @@ var serviceContext = (function () {
         }
         service.login(res => {
           const authResult = res.target.authResult;
-          invoke$1(callbackId, {
+          _invoke(callbackId, {
             code: authResult.code,
             authResult: authResult,
             errMsg: 'login:ok'
@@ -8006,9 +8073,9 @@ var serviceContext = (function () {
     }
   }
 
-  function preLogin$1 (params, callbackId) {
-    const successCallback = warpPlusSuccessCallback(callbackId, 'preLogin');
-    const errorCallback = warpPlusErrorCallback(callbackId, 'preLogin');
+  function preLogin$1 (params, callbackId, plus) {
+    const successCallback = warpSuccessCallback(callbackId, 'preLogin', plus);
+    const errorCallback = warpErrorCallback(callbackId, 'preLogin', plus);
     getService(params.provider).then(service => service.preLogin(successCallback, errorCallback)).catch(errorCallback);
   }
 
@@ -8016,9 +8083,9 @@ var serviceContext = (function () {
     return getService('univerify').then(service => service.closeAuthView())
   }
 
-  function getCheckBoxState (params, callbackId) {
-    const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState');
-    const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState');
+  function getCheckBoxState (params, callbackId, plus) {
+    const successCallback = warpSuccessCallback(callbackId, 'getCheckBoxState', plus);
+    const errorCallback = warpErrorCallback(callbackId, 'getCheckBoxState', plus);
     try {
       getService('univerify').then(service => {
         const state = service.getCheckBoxState();
@@ -8033,24 +8100,94 @@ var serviceContext = (function () {
    * 一键登录自定义登陆按钮点击处理
    */
   function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
-    if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
-      Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
-      univerifyStyle.buttons.list.length > 0
-    ) {
+    if (isPlainObject(univerifyStyle) && isPlainObject(univerifyStyle.buttons) && toRawType(univerifyStyle.buttons.list) === 'Array') {
       univerifyStyle.buttons.list.forEach((button, index) => {
         univerifyStyle.buttons.list[index].onclick = function () {
-          closeAuthView().then(() => {
-            errorCallback({
-              code: '30008',
-              message: '用户点击了自定义按钮',
-              index,
-              provider: button.provider
+          const res = {
+            code: '30008',
+            message: '用户点击了自定义按钮',
+            index,
+            provider: button.provider
+          };
+          isPlainObject(univerifyManager)
+            ? univerifyManager._triggerUniverifyButtonsClick(res)
+            : closeAuthView().then(() => {
+              errorCallback(res);
             });
-          });
         };
       });
     }
     return univerifyStyle
+  }
+
+  class UniverifyManager {
+    constructor () {
+      this.provider = 'univerify';
+      this.eventName = 'api.univerifyButtonsClick';
+    }
+
+    close () {
+      closeAuthView();
+    }
+
+    login (options) {
+      this._warp((data, callbackId) => login(data, callbackId, false), this._getOptions(options));
+    }
+
+    getCheckBoxState (options) {
+      this._warp((_, callbackId) => getCheckBoxState(_, callbackId, false), options);
+    }
+
+    preLogin (options) {
+      this._warp((data, callbackId) => preLogin$1(data, callbackId, false), this._getOptions(options));
+    }
+
+    onButtonsClick (callback) {
+      UniServiceJSBridge.on(this.eventName, callback);
+    }
+
+    offButtonsClick (callback) {
+      UniServiceJSBridge.off(this.eventName, callback);
+    }
+
+    _triggerUniverifyButtonsClick (res) {
+      UniServiceJSBridge.emit(this.eventName, res);
+    }
+
+    _warp (fn, options) {
+      return callback.warp(fn)(this._getOptions(options))
+    }
+
+    _getOptions (options = {}) {
+      return Object.assign({}, options, { provider: this.provider })
+    }
+  }
+
+  function getUniverifyManager () {
+    return univerifyManager || (univerifyManager = new UniverifyManager())
+  }
+
+  function warpSuccessCallback (callbackId, name, plus = true) {
+    return plus
+      ? warpPlusSuccessCallback(callbackId, name)
+      : (options) => {
+        callback.invoke(callbackId, Object.assign({}, options, {
+          errMsg: `${name}:ok`
+        }));
+      }
+  }
+
+  function warpErrorCallback (callbackId, name, plus = true) {
+    return plus
+      ? warpPlusErrorCallback(callbackId, name)
+      : (error) => {
+        const { code = 0, message: errorMessage } = error;
+        callback.invoke(callbackId, {
+          errMsg: `${name}:fail ${errorMessage || ''}`,
+          errCode: code,
+          code
+        });
+      }
   }
 
   function requestPayment (params, callbackId) {
@@ -8579,6 +8716,25 @@ var serviceContext = (function () {
     });
   }
 
+  const sendHostEvent = sendNativeEvent;
+
+  function navigateToMiniProgram (data, callbackId) {
+    sendHostEvent(
+      'navigateToUniMP',
+      data,
+      (res) => {
+        if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
+          return invoke$1(callbackId, {
+            errMsg: res.errMsg
+          })
+        }
+        invoke$1(callbackId, {
+          errMsg: 'navigateToMiniProgram:ok'
+        });
+      }
+    );
+  }
+
   const VD_SYNC_VERSION = 2;
 
   const PAGE_CREATE = 2;
@@ -9074,7 +9230,7 @@ var serviceContext = (function () {
     });
   }
 
-  function onWebviewPopGesture (webview) {
+  function onWebviewPopGesture(webview) {
     let popStartStatusBarStyle;
     webview.addEventListener('popGesture', e => {
       if (e.type === 'start') {
@@ -9091,14 +9247,47 @@ var serviceContext = (function () {
         const pages = getCurrentPages();
         const page = pages[pages.length - 1];
         page && page.$remove();
-
         setStatusBarStyle();
-
-        UniServiceJSBridge.emit('onAppRoute', {
-          type: 'navigateBack'
-        });
+        if (page && isDirectPage(page)) {
+          reLaunchEntryPage();
+        } else {
+          UniServiceJSBridge.emit('onAppRoute', {
+            type: 'navigateBack'
+          });
+        }
       }
     });
+  }
+
+
+  /**
+   * 是否处于直达页面
+   * @param page
+   * @returns
+   */
+  function isDirectPage(page) {
+    return (
+      __uniConfig.realEntryPagePath &&
+      page.$page.route === __uniConfig.entryPagePath
+    )
+  }
+  /**
+   * 重新启动到首页
+   */
+  function reLaunchEntryPage() {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+      url: addLeadingSlash(__uniConfig.entryPagePath),
+    });
+  }
+
+  function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0
+  }
+
+  function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str
   }
 
   let preloadWebview;
@@ -9602,6 +9791,64 @@ var serviceContext = (function () {
     return pageVm
   }
 
+  const extend = Object.assign;
+
+  function createLaunchOptions () {
+    return {
+      path: '',
+      query: {},
+      scene: 1001,
+      referrerInfo: {
+        appId: '',
+        extraData: {}
+      }
+    }
+  }
+
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+
+  function initLaunchOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(launchOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+    extend(enterOptions, launchOptions);
+    return launchOptions
+  }
+
+  function parseRedirectInfo () {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        extraData,
+        userAction,
+        fromAppid
+      } =
+      weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+        appId: fromAppid,
+        extraData: {}
+      };
+      if (extraData) {
+        referrerInfo.extraData = extraData;
+      }
+      return {
+        path: path || '',
+        query: query ? '?' + query : '',
+        referrerInfo,
+        userAction
+      }
+    }
+  }
+
   let isInitEntryPage = false;
 
   function initEntryPage () {
@@ -9616,9 +9863,16 @@ var serviceContext = (function () {
     const weexPlus = weex.requireModule('plus');
 
     if (weexPlus.getRedirectInfo) {
-      const info = weexPlus.getRedirectInfo() || {};
-      entryPagePath = info.path;
-      entryPageQuery = info.query ? ('?' + info.query) : '';
+      const {
+        path,
+        query,
+        referrerInfo
+      } = parseRedirectInfo();
+      if (path) {
+        entryPagePath = path;
+        entryPageQuery = query;
+      }
+      __uniConfig.referrerInfo = referrerInfo;
     } else {
       const argsJsonStr = plus.runtime.arguments;
       if (!argsJsonStr) {
@@ -10630,7 +10884,6 @@ var serviceContext = (function () {
     editable = false,
     placeholderText	= ''
   } = {}, callbackId) {
-    // TODO 在 editable 为 true 时，content 应该是输入框中可修改内容。后续找客户端商量。
     const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
     const tip = editable ? placeholderText : buttons;
 
@@ -10751,6 +11004,11 @@ var serviceContext = (function () {
     pagePath,
     visible
   }) {
+    if (!isTabBarPage()) {
+      return {
+        errMsg: 'setTabBarItem:fail not TabBar page'
+      }
+    }
     tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
@@ -11654,6 +11912,7 @@ var serviceContext = (function () {
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
     previewImagePlus: previewImagePlus,
+    closePreviewImagePlus: closePreviewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -11675,6 +11934,7 @@ var serviceContext = (function () {
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
     getCheckBoxState: getCheckBoxState,
+    getUniverifyManager: getUniverifyManager,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
     unsubscribePush: unsubscribePush,
@@ -11690,6 +11950,8 @@ var serviceContext = (function () {
     onNativeEventReceive: onNativeEventReceive,
     sendNativeEvent: sendNativeEvent,
     loadSubPackage: loadSubPackage$2,
+    sendHostEvent: sendHostEvent,
+    navigateToMiniProgram: navigateToMiniProgram,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
@@ -20130,9 +20392,14 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
+  function closePreviewImage (args = {}) {
+    return invokeMethod('closePreviewImagePlus', args)
+  }
+
   var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    previewImage: previewImage$1
+    previewImage: previewImage$1,
+    closePreviewImage: closePreviewImage
   });
 
   const callbacks$8 = {
@@ -21829,11 +22096,11 @@ var serviceContext = (function () {
   }
 
   function initAppLaunch (appVm) {
-    const args = {
+    const args = initLaunchOptions({
       path: __uniConfig.entryPagePath,
-      query: {},
-      scene: 1001
-    };
+      query: __uniConfig.entryPageQuery,
+      referrerInfo: __uniConfig.referrerInfo
+    });
 
     callAppHook(appVm, 'onLaunch', args);
     callAppHook(appVm, 'onShow', args);
@@ -22879,8 +23146,6 @@ var serviceContext = (function () {
       };
     }
   };
-
-  initI18n();
 
   // 挂靠在uni上，暂不做全局导出
   uni$1.__$wx__ = wx;

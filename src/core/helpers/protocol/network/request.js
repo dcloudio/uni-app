@@ -12,7 +12,8 @@ const method = {
   PUT: 'PUT',
   DELETE: 'DELETE',
   TRACE: 'TRACE',
-  CONNECT: 'CONNECT'
+  CONNECT: 'CONNECT',
+  PATCH: 'PATCH'
 }
 const dataType = {
   JSON: 'json'

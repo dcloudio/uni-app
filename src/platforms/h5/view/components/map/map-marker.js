@@ -168,8 +168,8 @@ export default {
             color: labelOpt.color,
             fontSize: (labelOpt.fontSize || 14) + 'px',
             lineHeight: (labelOpt.fontSize || 14) + 'px',
-            marginLeft: (Number(labelOpt.x) || 0) + 'px',
-            marginTop: (Number(labelOpt.y) || 0) + 'px'
+            marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + 'px',
+            marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + 'px'
           }
           if ('Label' in maps) {
             label = new maps.Label({
@@ -220,7 +220,7 @@ export default {
             callout.setOption(calloutStyle)
           } else {
             callout = marker.callout = new maps.Callout(calloutStyle)
-            callout.div.onclick = function ($event) {
+            callout.div.onclick = ($event) => {
               if (this.id !== '') {
                 this.$parent.$trigger('callouttap', $event, {
                   markerId: this.id

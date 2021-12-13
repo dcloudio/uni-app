@@ -23,6 +23,11 @@ export function setTabBarItem ({
   pagePath,
   visible
 }) {
+  if (!isTabBarPage()) {
+    return {
+      errMsg: 'setTabBarItem:fail not TabBar page'
+    }
+  }
   tabBar.setTabBarItem(index, text, iconPath, selectedIconPath, visible)
   const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
   if (route) {
