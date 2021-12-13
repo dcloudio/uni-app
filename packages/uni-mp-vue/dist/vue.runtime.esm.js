@@ -4858,8 +4858,8 @@ function setupRenderEffect(instance) {
         }
     };
     // create reactive effect for rendering
-    const effect = new ReactiveEffect(componentUpdateFn, () => queueJob(instance.update), instance.scope // track it in component's effect scope
-    );
+    const effect = (instance.effect = new ReactiveEffect(componentUpdateFn, () => queueJob(instance.update), instance.scope // track it in component's effect scope
+    ));
     const update = (instance.update = effect.run.bind(effect));
     update.id = instance.uid;
     // allowRecurse
