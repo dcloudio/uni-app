@@ -119,11 +119,19 @@ function parsePagesJson(
 
   // window
   if (pagesJson.globalStyle) {
-    appJson.window = parseWindowOptions(
+    const windowOptions = parseWindowOptions(
       pagesJson.globalStyle,
       platform,
       windowOptionsMap
     )
+    const { usingComponents } = windowOptions as PageWindowOptions
+    if (usingComponents) {
+      delete (windowOptions as PageWindowOptions).usingComponents
+      appJson.usingComponents = usingComponents
+    } else {
+      delete appJson.usingComponents
+    }
+    appJson.window = windowOptions
   }
 
   // tabBar
@@ -138,7 +146,7 @@ function parsePagesJson(
       appJson.tabBar = tabBar
     }
   }
-  ;['preloadRule', 'workers', 'usingComponents'].forEach((name) => {
+  ;['preloadRule', 'workers'].forEach((name) => {
     if (hasOwn(pagesJson, name)) {
       appJson[name] = pagesJson[name]
     }

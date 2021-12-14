@@ -37,7 +37,7 @@ export function normalizeJsonFilename(filename: string) {
 export function findChangedJsonFiles() {
   const changedJsonFiles = new Map<string, string>()
   function findChangedFile(filename: string, json: Record<string, any>) {
-    const newJson = extend({}, json)
+    const newJson = JSON.parse(JSON.stringify(json))
     if (!newJson.usingComponents) {
       newJson.usingComponents = {}
     }
