@@ -1,4 +1,11 @@
-import { hasOwn, isFunction, camelize, EMPTY_OBJ, isString } from '@vue/shared'
+import {
+  hasOwn,
+  isFunction,
+  camelize,
+  isArray,
+  isString,
+  remove,
+} from '@vue/shared'
 
 import {
   ComponentPublicInstance,
@@ -7,8 +14,9 @@ import {
   isRef,
   Ref,
 } from 'vue'
-// @ts-ignore
-import { findComponentPropsData } from 'vue'
+
+// @ts-ignore EMPTY_OBJ 不能从 @vue/shared 中引入，从 vue 中导入，保持一致
+import { findComponentPropsData, EMPTY_OBJ, setTemplateRef } from 'vue'
 
 import {
   initMocks,
@@ -20,7 +28,6 @@ import {
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
 
-import deepEqual from './deepEqual'
 import { ON_READY } from '@dcloudio/uni-shared'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
@@ -142,34 +149,54 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
   const refs =
     instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs
 
+  const { setupState } = instance
   const refValue = ref.$vm || ref
   if (refName) {
     if (isString(refName)) {
       refs[refName] = refValue
-      if (hasOwn(instance.setupState, refName)) {
-        instance.setupState[refName] = refValue
+      if (hasOwn(setupState, refName)) {
+        setupState[refName] = refValue
       }
     } else {
-      setRef(refName, refValue, refs)
+      setRef(refName, refValue, refs, setupState)
     }
   } else if (refInForName) {
     if (isString(refInForName)) {
       ;(refs[refInForName] || (refs[refInForName] = [])).push(refValue)
     } else {
-      setRef(refInForName, refValue, refs)
+      setRef(refInForName, refValue, refs, setupState)
     }
   }
 }
 
+type VNodeRef =
+  | string
+  | Ref
+  | ((ref: object | null, refs: Record<string, any>) => void)
+
+type TemplateRef = {
+  r: VNodeRef
+  k?: string // setup ref key
+  f?: boolean // refInFor marker
+}
+
+function isTemplateRef(opts: unknown): opts is TemplateRef {
+  return !!(opts && (opts as TemplateRef).r)
+}
+
 function setRef(
   ref: Ref | ((ref: object | null, refs: Record<string, any>) => void),
-  refValue: Object,
-  refs: Record<string, unknown>
+  refValue: ComponentPublicInstance,
+  refs: Record<string, unknown>,
+  setupState: Data
 ) {
   if (isRef(ref)) {
     ref.value = refValue
   } else if (isFunction(ref)) {
-    ref(refValue, refs)
+    const templateRef = ref(refValue, refs)
+    if (isTemplateRef(templateRef)) {
+      setTemplateRef(templateRef, refValue, setupState)
+    }
   }
 }
 

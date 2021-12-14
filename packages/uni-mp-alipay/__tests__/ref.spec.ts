@@ -54,14 +54,14 @@ export function render(_ctx, _cache) {
       `<custom ref="custom"/>`,
       `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: (_value, _refs) => { _refs['custom'] = _value; } }
+  return { a: () => ({ r: custom }) }
 }`
     )
     assert(
       `<custom v-for="item in items" ref="custom"/>`,
       `<custom a:for="{{a}}" a:for-item="item" ref="__r" u-r-i-f="{{b}}" u-i="{{item.a}}" onVI="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }), b: (_value, _refs) => { _refs['custom'] = _value; } }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }), b: () => ({ r: custom, f: 1 }) }
 }`
     )
   })
@@ -70,11 +70,39 @@ export function render(_ctx, _cache) {
       `<custom ref="custom"/>`,
       `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: (_value, _refs) => { _refs['custom'] = _value; custom.value = _value; } }
+  return { a: () => ({ r: custom, k: 'custom' }) }
 }`,
       {
         bindingMetadata: {
           custom: BindingTypes.SETUP_REF,
+        },
+      }
+    )
+  })
+  test('static ref with inline and setup-maybe-ref', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `(_ctx, _cache) => {
+  return { a: () => ({ r: custom, k: 'custom' }) }
+}`,
+      {
+        bindingMetadata: {
+          custom: BindingTypes.SETUP_MAYBE_REF,
+        },
+      }
+    )
+  })
+  test('static ref with inline and setup-let', () => {
+    assert(
+      `<custom ref="custom"/>`,
+      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `(_ctx, _cache) => {
+  return { a: () => ({ r: custom, k: 'custom' }) }
+}`,
+      {
+        bindingMetadata: {
+          custom: BindingTypes.SETUP_LET,
         },
       }
     )

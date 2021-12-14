@@ -219,6 +219,7 @@ function initBaseInstance(instance, options) {
     // mp
     ctx.mpType = options.mpType; // @deprecated
     ctx.$mpType = options.mpType;
+    ctx.$mpPlatform = "quickapp-webview";
     ctx.$scope = options.mpInstance;
     // TODO @deprecated
     ctx.$mp = {};

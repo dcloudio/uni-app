@@ -1,24 +1,18 @@
 import {
   arrowFunctionExpression,
-  assignmentExpression,
-  blockStatement,
-  callExpression,
-  conditionalExpression,
   Expression,
-  expressionStatement,
   identifier,
-  logicalExpression,
-  memberExpression,
-  Statement,
+  objectExpression,
+  objectProperty,
+  ObjectProperty,
+  numericLiteral,
   stringLiteral,
 } from '@babel/types'
 import {
   AttributeNode,
-  BindingTypes,
   DirectiveNode,
   ElementNode,
   findProp,
-  IS_REF,
 } from '@vue/compiler-core'
 import {
   createBindDirectiveNode,
@@ -45,7 +39,7 @@ export function rewriteRef(node: ElementNode, context: TransformContext) {
   }
   if (findProp(node, 'ref')) {
     // 支付宝小程序
-    const code = parseRefCode(refProp, vueIdProp, context)
+    const code = parseAlipayRefCode(refProp, context)
     if (code && context.inline && !isDirectiveNode(refProp)) {
       refProp.value!.content = code
       const refPropIndex = node.props.findIndex((prop) => prop === refProp)
@@ -60,29 +54,40 @@ export function rewriteRef(node: ElementNode, context: TransformContext) {
   }
 }
 
-function parseRefCode(
+function parseRef(
   prop: AttributeNode | DirectiveNode,
-  vueIdProp: AttributeNode | DirectiveNode,
   context: TransformContext
 ) {
   let expr: Expression | undefined
+  let refKey = ''
   const isDir = isDirectiveNode(prop)
   if (isDir) {
     if (prop.exp) {
       expr = parseExpr(prop.exp, context, prop.exp)
     }
   } else {
-    if (prop.value?.content) {
-      expr = context.inline
-        ? processInlineRef(context, prop.value.content)
-        : stringLiteral(prop.value.content)
+    const { value } = prop
+    if (value && value.content) {
+      if (context.inline && context.bindingMetadata[value.content]) {
+        expr = identifier(value.content)
+        refKey = value.content
+      } else {
+        expr = stringLiteral(value.content)
+      }
     }
   }
+  return { expr, refKey }
+}
 
+function parseRefCode(
+  prop: AttributeNode | DirectiveNode,
+  context: TransformContext
+) {
+  const { expr, refKey } = parseRef(prop, context)
   if (!expr) {
-    return
+    return { code: '', refKey }
   }
-  return genBabelExpr(expr)
+  return { code: genBabelExpr(expr), refKey }
 }
 
 function rewriteRefProp(
@@ -102,72 +107,62 @@ function rewriteRefProp(
   if (!id) {
     return
   }
+  const { code, refKey } = parseRefCode(prop, context)
+  const opts = Object.create(null)
+  if (refKey) {
+    opts.k = refKey
+  }
+  if (context.inVFor) {
+    opts.f = 1
+  }
   parseExprWithRewrite(
     context.helperString(SET_REF) +
       '(' +
-      parseRefCode(prop, vueIdProp, context) +
+      code +
       ', ' +
       id +
+      (Object.keys(opts).length ? ', ' + JSON.stringify(opts) : '') +
       ')',
     prop.loc,
     context
   )
 }
 
-function processInlineRef(context: TransformContext, raw: string) {
-  const statements: Statement[] = []
-  statements.push(
-    expressionStatement(
-      assignmentExpression(
-        '=',
-        memberExpression(identifier('_refs'), stringLiteral(raw), true),
-        identifier('_value')
-      )
-    )
-  )
-  const { bindingMetadata, helperString } = context
-  const type = bindingMetadata[raw]
-  if (type === BindingTypes.SETUP_REF) {
-    statements.push(
-      expressionStatement(
-        assignmentExpression(
-          '=',
-          memberExpression(identifier(raw), identifier('value')),
-          identifier('_value')
-        )
-      )
-    )
-  } else if (type === BindingTypes.SETUP_MAYBE_REF) {
-    statements.push(
-      expressionStatement(
-        logicalExpression(
-          '&&',
-          callExpression(identifier(helperString(IS_REF)), [identifier(raw)]),
-          assignmentExpression(
-            '=',
-            memberExpression(identifier(raw), identifier('value')),
-            identifier('_value')
-          )
-        )
-      )
-    )
-  } else if (type === BindingTypes.SETUP_LET) {
-    statements.push(
-      expressionStatement(
-        conditionalExpression(
-          callExpression(identifier(helperString(IS_REF)), [identifier(raw)]),
-          assignmentExpression(
-            '=',
-            memberExpression(identifier(raw), identifier('value')),
-            identifier('_value')
-          ),
-          assignmentExpression('=', identifier(raw), identifier('_value'))
-        )
-      )
-    )
+function parseAlipayRefCode(
+  prop: AttributeNode | DirectiveNode,
+  context: TransformContext
+) {
+  let expr: Expression | undefined
+  const isDir = isDirectiveNode(prop)
+  if (isDir) {
+    if (prop.exp) {
+      expr = parseExpr(prop.exp, context, prop.exp)
+    }
+  } else {
+    if (prop.value?.content) {
+      expr = context.inline
+        ? processInlineRef(prop, context)
+        : stringLiteral(prop.value.content)
+    }
   }
-  return arrowFunctionExpression(
-    [identifier('_value'), identifier('_refs')],
-    blockStatement(statements)
+
+  if (!expr) {
+    return
+  }
+  return genBabelExpr(expr)
+}
+
+function processInlineRef(prop: AttributeNode, context: TransformContext) {
+  const properties: ObjectProperty[] = []
+  const { refKey } = parseRef(prop, context)
+  properties.push(
+    objectProperty(identifier('r'), identifier(prop.value!.content))
   )
+  if (refKey) {
+    properties.push(objectProperty(identifier('k'), stringLiteral(refKey)))
+  }
+  if (context.inVFor) {
+    properties.push(objectProperty(identifier('f'), numericLiteral(1)))
+  }
+  return arrowFunctionExpression([], objectExpression(properties))
 }

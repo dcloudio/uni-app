@@ -16025,7 +16025,7 @@ var serviceContext = (function (vue) {
           errMsg: 'getLocation:ok',
       });
   }
-  const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode = false, altitude = false, highAccuracyExpireTime, }, { resolve, reject }) => {
+  const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode = false, altitude = false, highAccuracyExpireTime, isHighAccuracy = false, }, { resolve, reject }) => {
       plus.geolocation.getCurrentPosition((position) => {
           getLocationSuccess(type, position, resolve);
       }, (e) => {
@@ -16037,7 +16037,7 @@ var serviceContext = (function (vue) {
           reject('getLocation:fail ' + e.message);
       }, {
           geocode: geocode,
-          enableHighAccuracy: altitude,
+          enableHighAccuracy: isHighAccuracy || altitude,
           timeout: highAccuracyExpireTime,
       });
   }, GetLocationProtocol, GetLocationOptions);

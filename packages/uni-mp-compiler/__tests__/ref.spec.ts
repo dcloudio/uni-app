@@ -50,7 +50,7 @@ const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"un
 if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
 
 export function render(_ctx, _cache) {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr('custom', '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr('custom', '2a9ec0b0-0' + '-' + i0, { "f": 1 }), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
         inline: false,
@@ -63,7 +63,7 @@ export function render(_ctx, _cache) {
       `<custom ref="custom"/>`,
       `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; }, '2a9ec0b0-0') }
+  return { a: _sr('custom', '2a9ec0b0-0') }
 }`,
       {
         nodeTransforms,
@@ -73,7 +73,7 @@ export function render(_ctx, _cache) {
       `<custom v-for="item in items" ref="custom"/>`,
       `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="custom" u-i="{{item.b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr((_value, _refs) => { _refs['custom'] = _value; }, '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr('custom', '2a9ec0b0-0' + '-' + i0, { "f": 1 }), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
       {
         nodeTransforms,
@@ -85,7 +85,7 @@ export function render(_ctx, _cache) {
       `<custom ref="custom"/>`,
       `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; custom.value = _value; }, '2a9ec0b0-0') }
+  return { a: _sr(custom, '2a9ec0b0-0', { "k": "custom" }) }
 }`,
       {
         bindingMetadata: {
@@ -100,7 +100,7 @@ export function render(_ctx, _cache) {
       `<custom ref="custom"/>`,
       `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; _isRef(custom) && (custom.value = _value); }, '2a9ec0b0-0') }
+  return { a: _sr(custom, '2a9ec0b0-0', { "k": "custom" }) }
 }`,
       {
         bindingMetadata: {
@@ -115,7 +115,7 @@ export function render(_ctx, _cache) {
       `<custom ref="custom"/>`,
       `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return { a: _sr((_value, _refs) => { _refs['custom'] = _value; _isRef(custom) ? custom.value = _value : custom = _value; }, '2a9ec0b0-0') }
+  return { a: _sr(custom, '2a9ec0b0-0', { "k": "custom" }) }
 }`,
       {
         bindingMetadata: {
@@ -149,7 +149,7 @@ const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"un
 if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
 
 export function render(_ctx, _cache) {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr(_ctx.custom, '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr(_ctx.custom, '2a9ec0b0-0' + '-' + i0, { "f": 1 }), b: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
 }`,
       {
         inline: false,
@@ -172,7 +172,7 @@ export function render(_ctx, _cache) {
       `<custom v-for="item in items" :ref="custom"/>`,
       `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="{{b}}" u-i="{{item.b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr(_ctx.custom, '2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr(_ctx.custom, '2a9ec0b0-0' + '-' + i0, { "f": 1 }), b: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }
 }`,
       {
         nodeTransforms,

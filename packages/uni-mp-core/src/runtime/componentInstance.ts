@@ -61,6 +61,7 @@ export function initBaseInstance(
   // mp
   ctx.mpType = options.mpType // @deprecated
   ctx.$mpType = options.mpType
+  ctx.$mpPlatform = __PLATFORM__
   ctx.$scope = options.mpInstance
 
   // TODO @deprecated

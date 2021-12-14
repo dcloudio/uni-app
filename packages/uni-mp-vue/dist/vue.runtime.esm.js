@@ -1,5 +1,5 @@
 import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isFunction, NOOP, remove, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, isString, normalizeClass, normalizeStyle, isOn, isPromise, EMPTY_OBJ, isSet, isMap, isPlainObject, toTypeString, isIntegerKey, makeMap, invokeArrayFns, NO, toNumber, EMPTY_ARR, stringifyStyle as stringifyStyle$1, toDisplayString } from '@vue/shared';
-export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
+export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, dynamicSlotName } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
@@ -4704,6 +4704,86 @@ function onApplyOptions(options, instance, publicThis) {
     delete instance.ctx.$onApplyOptions;
 }
 
+/**
+ * Function for handling a template ref
+ */
+function setRef$1(instance, isUnmount = false) {
+    const { setupState, $templateRefs, ctx: { $scope, $mpPlatform } } = instance;
+    if ($mpPlatform === 'mp-alipay') {
+        return;
+    }
+    if (!$templateRefs || !$scope) {
+        return;
+    }
+    if (isUnmount) {
+        return $templateRefs.forEach(templateRef => setTemplateRef(templateRef, null, setupState));
+    }
+    const doSet = () => {
+        const mpComponents = $scope
+            .selectAllComponents('.r')
+            .concat($scope.selectAllComponents('.r-i-f'));
+        $templateRefs.forEach(templateRef => setTemplateRef(templateRef, findComponentPublicInstance(mpComponents, templateRef.i), setupState));
+    };
+    if ($scope._$setRef) {
+        $scope._$setRef(doSet);
+    }
+    else {
+        nextTick$1(instance, doSet);
+    }
+}
+function findComponentPublicInstance(mpComponents, id) {
+    const mpInstance = mpComponents.find(com => com && (com.properties || com.props).uI === id);
+    if (mpInstance) {
+        return mpInstance.$vm;
+    }
+    return null;
+}
+function setTemplateRef({ r, f }, refValue, setupState) {
+    if (isFunction(r)) {
+        r(refValue, {});
+    }
+    else {
+        const _isString = isString(r);
+        const _isRef = isRef(r);
+        if (_isString || _isRef) {
+            if (f) {
+                if (!_isRef) {
+                    return;
+                }
+                if (!isArray(r.value)) {
+                    r.value = [];
+                }
+                const existing = r.value;
+                if (existing.indexOf(refValue) === -1) {
+                    existing.push(refValue);
+                    if (!refValue) {
+                        return;
+                    }
+                    // 实例销毁时，移除
+                    onBeforeUnmount(() => remove(existing, refValue), refValue.$);
+                }
+            }
+            else if (_isString) {
+                if (hasOwn(setupState, r)) {
+                    setupState[r] = refValue;
+                }
+            }
+            else if (isRef(r)) {
+                r.value = refValue;
+            }
+            else if ((process.env.NODE_ENV !== 'production')) {
+                warnRef(r);
+            }
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            warnRef(r);
+        }
+    }
+}
+function warnRef(ref) {
+    warn$1('Invalid template ref type:', ref, `(${typeof ref})`);
+}
+
 var MPType;
 (function (MPType) {
     MPType["APP"] = "app";
@@ -4751,6 +4831,7 @@ const getFunctionalFallthrough = (attrs) => {
 };
 function renderComponentRoot(instance) {
     const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx, uid, appContext: { app: { config: { globalProperties: { pruneComponentPropsCache } } } } } = instance;
+    instance.$templateRefs = [];
     instance.$ei = 0;
     // props
     pruneComponentPropsCache(uid);
@@ -4780,6 +4861,7 @@ function renderComponentRoot(instance) {
         handleError(err, instance, 1 /* RENDER_FUNCTION */);
         result = false;
     }
+    setRef$1(instance);
     setCurrentRenderingInstance(prev);
     return result;
 }
@@ -4837,6 +4919,9 @@ function setupRenderEffect(instance) {
     instance.$updateScopedSlots = () => nextTick(() => queueJob(updateScopedSlots));
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
+            onBeforeUnmount(() => {
+                setRef$1(instance, true);
+            }, instance);
             patch(instance, renderComponentRoot(instance));
         }
         else {
@@ -5391,40 +5476,9 @@ function dynamicSlot(names) {
     return names.map((name) => dynamicSlotName(name));
 }
 
-function setRef(ref, id) {
-    const { proxy, ctx: { $scope }, setupState, } = getCurrentInstance();
-    const doSet = () => {
-        let mpInstance = $scope
-            .selectAllComponents('.r')
-            .find((com) => com && com.properties.uI === id);
-        if (!mpInstance) {
-            mpInstance = $scope
-                .selectAllComponents('.r-i-f')
-                .find((com) => com && com.properties.uI === id);
-        }
-        if (!mpInstance) {
-            return;
-        }
-        // TODO 目前 $refs 实时从selectAllComponents中获取，不在 setRef 中对 $refs 做处理
-        const refValue = mpInstance.$vm;
-        if (isString(ref)) {
-            if (hasOwn(setupState, ref)) {
-                setupState[ref] = refValue;
-            }
-        }
-        else if (isRef(ref)) {
-            ref.value = refValue;
-        }
-        else if (isFunction(ref)) {
-            ref(refValue, {});
-        }
-    };
-    if ($scope._$setRef) {
-        $scope._$setRef(doSet);
-    }
-    else {
-        proxy.$nextTick(doSet);
-    }
+function setRef(ref, id, opts = {}) {
+    const { $templateRefs } = getCurrentInstance();
+    $templateRefs.push({ i: id, r: ref, k: opts.k, f: opts.f });
 }
 
 function setupDevtoolsPlugin() {
@@ -5443,7 +5497,7 @@ const h = (str) => hyphenate(str);
 const n = (value) => normalizeClass(value);
 const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
-const sr = (ref, id) => setRef(ref, id);
+const sr = (ref, id, opts) => setRef(ref, id, opts);
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -5451,4 +5505,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

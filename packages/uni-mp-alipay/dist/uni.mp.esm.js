@@ -1,5 +1,5 @@
-import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, EMPTY_OBJ, isString, camelize } from '@vue/shared';
-import { injectHook, ref, toRaw, findComponentPropsData, updateProps, invalidateJob, isRef, pruneComponentPropsCache } from 'vue';
+import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, isString, camelize } from '@vue/shared';
+import { injectHook, ref, toRaw, findComponentPropsData, updateProps, invalidateJob, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -162,6 +162,7 @@ function initBaseInstance(instance, options) {
     // mp
     ctx.mpType = options.mpType; // @deprecated
     ctx.$mpType = options.mpType;
+    ctx.$mpPlatform = "mp-alipay";
     ctx.$scope = options.mpInstance;
     // TODO @deprecated
     ctx.$mp = {};
@@ -721,16 +722,17 @@ function handleRef(ref) {
     }
     const instance = this.$vm.$;
     const refs = instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs;
+    const { setupState } = instance;
     const refValue = ref.$vm || ref;
     if (refName) {
         if (isString(refName)) {
             refs[refName] = refValue;
-            if (hasOwn(instance.setupState, refName)) {
-                instance.setupState[refName] = refValue;
+            if (hasOwn(setupState, refName)) {
+                setupState[refName] = refValue;
             }
         }
         else {
-            setRef(refName, refValue, refs);
+            setRef(refName, refValue, refs, setupState);
         }
     }
     else if (refInForName) {
@@ -738,16 +740,22 @@ function handleRef(ref) {
             (refs[refInForName] || (refs[refInForName] = [])).push(refValue);
         }
         else {
-            setRef(refInForName, refValue, refs);
+            setRef(refInForName, refValue, refs, setupState);
         }
     }
 }
-function setRef(ref, refValue, refs) {
+function isTemplateRef(opts) {
+    return !!(opts && opts.r);
+}
+function setRef(ref, refValue, refs, setupState) {
     if (isRef(ref)) {
         ref.value = refValue;
     }
     else if (isFunction(ref)) {
-        ref(refValue, refs);
+        const templateRef = ref(refValue, refs);
+        if (isTemplateRef(templateRef)) {
+            setTemplateRef(templateRef, refValue, setupState);
+        }
     }
 }
 function triggerEvent(type, detail) {
