@@ -14,6 +14,7 @@ import {
 export function getLocation ({
   type,
   altitude,
+  isHighAccuracy,
   highAccuracyExpireTime
 }, callbackId) {
   const {
@@ -24,7 +25,7 @@ export function getLocation ({
   new Promise((resolve, reject) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(res => resolve(res.coords), reject, {
-        enableHighAccuracy: altitude,
+        enableHighAccuracy: isHighAccuracy || altitude,
         timeout: highAccuracyExpireTime || 1000 * 100
       })
     } else {
