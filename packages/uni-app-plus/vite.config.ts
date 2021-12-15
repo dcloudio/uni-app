@@ -8,6 +8,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
+import { cssTarget } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 
 function resolve(file: string) {
@@ -120,6 +121,7 @@ export default defineConfig({
   ],
   build: {
     target: 'es2015',
+    cssTarget,
     minify: true,
     lib: {
       name: 'uni-app-view',

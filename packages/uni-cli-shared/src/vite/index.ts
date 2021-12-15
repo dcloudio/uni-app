@@ -4,6 +4,7 @@ import type { ParserOptions } from '@vue/compiler-core'
 import type { CompilerOptions, TemplateCompiler } from '@vue/compiler-sfc'
 import { UniViteCopyPluginOptions } from './plugins/copy'
 
+export const cssTarget = 'chrome53'
 export interface CopyOptions {
   /**
    * 静态资源，配置的目录，在 uni_modules 中同样支持

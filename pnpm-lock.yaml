@@ -167,6 +167,7 @@ importers:
     specifiers:
       '@dcloudio/uni-app-vite': 3.0.0-alpha-3030120211215001
       '@dcloudio/uni-app-vue': 3.0.0-alpha-3030120211215001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211215001
       '@dcloudio/uni-components': 3.0.0-alpha-3030120211215001
       '@dcloudio/uni-h5': 3.0.0-alpha-3030120211215001
       '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211215001
@@ -180,6 +181,7 @@ importers:
       '@dcloudio/uni-app-vite': link:../uni-app-vite
       '@dcloudio/uni-app-vue': link:../uni-app-vue
     devDependencies:
+      '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components
       '@dcloudio/uni-h5': link:../uni-h5
       '@dcloudio/uni-i18n': link:../uni-i18n
