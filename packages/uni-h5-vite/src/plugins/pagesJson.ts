@@ -105,7 +105,7 @@ ${name}.wx = uni
 ${name}.uni = uni
 ${name}.UniViewJSBridge = UniViewJSBridge
 ${name}.UniServiceJSBridge = UniServiceJSBridge
-${name}.__setupPage = setupPage
+${name}.__setupPage = (com)=>setupPage(com)
 `
 }
 
