@@ -132,6 +132,10 @@ export const props = /*#__PURE__*/ extend(
       type: String,
       default: 'done',
     },
+    confirmHold: {
+      type: Boolean,
+      default: false,
+    },
   },
   keyboardProps
 )

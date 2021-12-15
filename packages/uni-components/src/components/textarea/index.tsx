@@ -97,7 +97,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (isDone.value) {
         confirm(event)
         const textarea = event.target as HTMLTextAreaElement
-        textarea.blur()
+        !props.confirmHold && textarea.blur()
       }
     }
 

@@ -116,10 +116,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if ((event as KeyboardEvent).key !== 'Enter') {
         return
       }
+      const input = event.target as HTMLInputElement
       event.stopPropagation()
       trigger('confirm', event, {
-        value: (event.target as HTMLInputElement).value,
+        value: input.value,
       })
+      !props.confirmHold && input.blur()
     }
     return () => {
       let inputNode =
