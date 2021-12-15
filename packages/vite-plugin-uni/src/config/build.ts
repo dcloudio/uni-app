@@ -1,5 +1,6 @@
 import { UserConfig } from 'vite'
 import {
+  cssTarget,
   initEasycomsOnce,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
@@ -15,6 +16,7 @@ export function createBuild(
     platform: process.env.UNI_PLATFORM,
   })
   return {
+    cssTarget,
     chunkSizeWarningLimit: 100000000,
     minify:
       config.build && hasOwn(config.build, 'minify')

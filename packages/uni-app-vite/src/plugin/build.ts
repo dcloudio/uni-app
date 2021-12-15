@@ -4,7 +4,6 @@ import { ConfigEnv, UserConfig } from 'vite'
 
 import {
   emptyDir,
-  cssTarget,
   normalizePath,
   resolveMainPathOnce,
   APP_SERVICE_FILENAME,
@@ -20,7 +19,6 @@ export function buildOptions(configEnv: ConfigEnv): UserConfig['build'] {
   return {
     // sourcemap: 'inline',
     emptyOutDir: false, // 不清空输出目录，否则会影响 webpack 的输出
-    cssTarget,
     assetsInlineLimit: 0,
     rollupOptions: {
       input: resolveMainPathOnce(inputDir),
