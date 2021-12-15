@@ -187,7 +187,7 @@ export default {
     _onKeyUpEnter: function ($event) {
       if (this.isDone) {
         this._confirm($event)
-        this.$refs.textarea.blur()
+        !this.confirmHold && this.$refs.textarea.blur()
       }
     },
     _onCompositionstart ($event) {
