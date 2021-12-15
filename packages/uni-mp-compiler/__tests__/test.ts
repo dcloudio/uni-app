@@ -60,7 +60,7 @@ addMiniProgramPageJson(filename, {
   },
 })
 assert(
-  `<van-button/>`,
+  `<van-button><template #default><view/></template></van-button>`,
   `<van-button u-i="dc555fe4-0"/>`,
   `(_ctx, _cache) => {
 return {}

@@ -51,11 +51,12 @@ export const transformSlot: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
     return
   }
-  const { children } = node
+
+  const { tag, children } = node
   const slots = new Set<string | ExpressionNode>()
   const onComponentSlot = findDir(node, 'slot', true)
   const implicitDefaultChildren: TemplateChildNode[] = []
-
+  const isMiniProgramComponent = context.isMiniProgramComponent(tag)
   for (let i = 0; i < children.length; i++) {
     const slotElement = children[i]
     let slotDir: DirectiveNode | undefined
@@ -83,6 +84,15 @@ export const transformSlot: NodeTransform = (node, context) => {
       node,
       context
     )
+
+    // 小程序组件默认插槽，直接移除<template #default>节点
+    if (isMiniProgramComponent) {
+      if (slotName === 'default' && slotElement.children.length === 1) {
+        children.splice(i, 1, slotElement.children[0])
+      }
+      continue
+    }
+
     if (slotName) {
       slots.add(slotName)
     }
