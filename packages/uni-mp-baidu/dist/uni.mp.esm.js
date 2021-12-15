@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
-import { injectHook, ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, nextTick, getExposeProxy, findComponentPropsData, toRaw, updateProps, invalidateJob, pruneComponentPropsCache } from 'vue';
 
 // lifecycle
 // App and Page
@@ -492,8 +492,15 @@ function selectAllComponents(mpInstance, selector, $refs) {
     const components = mpInstance.selectAllComponents(selector);
     components.forEach((component) => {
         const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
+        $refs[ref] = findRefValue(component);
     });
+}
+function findRefValue(component) {
+    const vm = component.$vm;
+    if (vm) {
+        return getExposeProxy(vm.$) || vm;
+    }
+    return component;
 }
 function initRefs(instance, mpInstance) {
     Object.defineProperty(instance, 'refs', {
@@ -509,7 +516,7 @@ function initRefs(instance, mpInstance) {
                 if (!$refs[ref]) {
                     $refs[ref] = [];
                 }
-                $refs[ref].push(component.$vm || component);
+                $refs[ref].push(findRefValue(component));
             });
             return $refs;
         },

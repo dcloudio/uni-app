@@ -38,6 +38,7 @@ export {
   fixProperties,
   nextSetDataTick,
   initSetRef,
+  findRefValue,
 } from './runtime/util'
 
 // protocols

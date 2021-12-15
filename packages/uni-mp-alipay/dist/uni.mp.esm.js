@@ -1,5 +1,5 @@
 import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, isString, camelize } from '@vue/shared';
-import { injectHook, ref, toRaw, findComponentPropsData, updateProps, invalidateJob, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, getExposeProxy, toRaw, findComponentPropsData, updateProps, invalidateJob, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -417,6 +417,13 @@ function initWxsCallMethods(methods, wxsCallMethods) {
         };
     });
 }
+function findRefValue(component) {
+    const vm = component.$vm;
+    if (vm) {
+        return getExposeProxy(vm.$) || vm;
+    }
+    return component;
+}
 function findVmByVueId(instance, vuePid) {
     // 标准 vue3 中 没有 $children，定制了内核
     const $children = instance.$children;
@@ -728,7 +735,7 @@ function handleRef(ref) {
     const instance = this.$vm.$;
     const refs = instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs;
     const { setupState } = instance;
-    const refValue = ref.$vm || ref;
+    const refValue = findRefValue(ref);
     if (refName) {
         if (isString(refName)) {
             refs[refName] = refValue;

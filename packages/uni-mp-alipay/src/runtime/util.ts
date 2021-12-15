@@ -24,6 +24,7 @@ import {
   initComponentInstance,
   CreateComponentOptions,
   updateComponentProps,
+  findRefValue,
 } from '@dcloudio/uni-mp-core'
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
@@ -150,7 +151,7 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
     instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs
 
   const { setupState } = instance
-  const refValue = ref.$vm || ref
+  const refValue = findRefValue(ref as any)
   if (refName) {
     if (isString(refName)) {
       refs[refName] = refValue

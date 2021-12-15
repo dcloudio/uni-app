@@ -5,6 +5,8 @@ import {
   ComponentPublicInstance,
   nextTick,
 } from 'vue'
+// @ts-ignore
+import { getExposeProxy } from 'vue'
 
 import { MPComponentInstance, MPComponentOptions } from './component'
 
@@ -65,8 +67,16 @@ function selectAllComponents(
   const components = mpInstance.selectAllComponents(selector)
   components.forEach((component) => {
     const ref = component.properties.uR
-    $refs[ref] = component.$vm || component
+    $refs[ref] = findRefValue(component as MPComponentInstance)
   })
+}
+
+export function findRefValue(component: MPComponentInstance) {
+  const vm = component.$vm
+  if (vm) {
+    return getExposeProxy(vm.$) || vm
+  }
+  return component
 }
 
 export function initRefs(
@@ -86,7 +96,7 @@ export function initRefs(
         if (!$refs[ref]) {
           $refs[ref] = []
         }
-        $refs[ref].push(component.$vm || component)
+        $refs[ref].push(findRefValue(component as MPComponentInstance))
       })
       return $refs
     },
