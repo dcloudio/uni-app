@@ -1,7 +1,12 @@
 import path from 'path'
 import { extend } from '@vue/shared'
 import { ComponentJson, PageWindowOptions, UsingComponents } from './types'
-import { removeExt, normalizePath, normalizeNodeModules } from '../../utils'
+import {
+  removeExt,
+  normalizePath,
+  normalizeNodeModules,
+  normalizeMiniProgramFilename,
+} from '../../utils'
 import { relativeFile } from '../../resolve'
 import { isVueSfcFile } from '../../vue/utils'
 
@@ -28,6 +33,13 @@ export function hasJsonFile(filename: string) {
     jsonPagesCache.has(filename) ||
     jsonComponentsCache.has(filename)
   )
+}
+
+export function findJsonFile(filename: string) {
+  if (filename === 'app') {
+    return appJsonCache
+  }
+  return jsonPagesCache.get(filename) || jsonComponentsCache.get(filename)
 }
 
 export function normalizeJsonFilename(filename: string) {
@@ -94,4 +106,56 @@ export function addMiniProgramUsingComponents(
   json: UsingComponents
 ) {
   jsonUsingComponentsCache.set(filename, json)
+}
+
+export function isMiniProgramUsingComponent(
+  name: string,
+  options: {
+    filename: string
+    inputDir: string
+    componentsDir?: string
+  }
+) {
+  return findMiniProgramUsingComponents(options).includes(name)
+}
+
+export function findMiniProgramUsingComponents({
+  filename,
+  inputDir,
+  componentsDir,
+}: {
+  filename: string
+  inputDir: string
+  componentsDir?: string
+}) {
+  if (!componentsDir) {
+    return []
+  }
+  const globalUsingComponents = appJsonCache && appJsonCache.usingComponents
+  const miniProgramComponents: string[] = []
+  if (globalUsingComponents) {
+    miniProgramComponents.push(
+      ...findMiniProgramUsingComponent(globalUsingComponents, componentsDir)
+    )
+  }
+
+  const jsonFile = findJsonFile(
+    removeExt(normalizeMiniProgramFilename(filename, inputDir))
+  )
+  if (jsonFile?.usingComponents) {
+    miniProgramComponents.push(
+      ...findMiniProgramUsingComponent(jsonFile.usingComponents, componentsDir)
+    )
+  }
+  return miniProgramComponents
+}
+
+function findMiniProgramUsingComponent(
+  usingComponents: Record<string, string>,
+  componentsDir: string
+) {
+  return Object.keys(usingComponents).filter((name) => {
+    const path = usingComponents[name]
+    return path.includes(componentsDir + '/')
+  })
 }

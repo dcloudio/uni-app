@@ -17,6 +17,8 @@ export const compilerOptions: CompilerOptions = {
   nodeTransforms: [transformRef, transformComponentLink],
 }
 
+const COMPONENTS_DIR = 'wxcomponents'
+
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
     array: true,
@@ -31,6 +33,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
     editor: [{ name: 'on', arg: ['ready'] }],
   },
   component: {
+    dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN,
     getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
   },
@@ -47,7 +50,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: ['wxcomponents'],
+      assets: [COMPONENTS_DIR],
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {

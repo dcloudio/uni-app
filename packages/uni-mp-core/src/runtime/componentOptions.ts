@@ -13,7 +13,6 @@ import {
 import { MPComponentInstance } from '..'
 
 import { MPComponentOptions } from './component'
-import { initProps } from './componentProps'
 
 export function initData(_: ComponentOptions) {
   return {}
@@ -22,17 +21,34 @@ export function initData(_: ComponentOptions) {
 export function initPropsObserver(componentOptions: MPComponentOptions) {
   const observe = function observe(this: MPComponentInstance) {
     const up = this.properties.uP
-    if (!up || !this.$vm) {
+    if (!up) {
       return
     }
-    updateComponentProps(up, this.$vm.$)
+    if (this.$vm) {
+      updateComponentProps(up, this.$vm.$)
+    } else if (this.properties.uT === 'm') {
+      // 小程序组件
+      updateMiniProgramComponentProperties(up, this)
+    }
   }
   if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
-    componentOptions.observers = {
-      uP: observe,
+    if (!componentOptions.observers) {
+      componentOptions.observers = {}
     }
+    componentOptions.observers.uP = observe
   } else {
     ;(componentOptions.properties as any).uP.observer = observe
+  }
+}
+
+function updateMiniProgramComponentProperties(
+  up: string,
+  mpInstance: MPComponentInstance
+) {
+  const prevProps = mpInstance.properties
+  const nextProps = findComponentPropsData(up) || {}
+  if (hasPropsChanged(prevProps, nextProps, false)) {
+    mpInstance.setData(nextProps)
   }
 }
 
@@ -49,9 +65,13 @@ export function updateComponentProps(
   }
 }
 
-function hasPropsChanged(prevProps: Data, nextProps: Data): boolean {
+function hasPropsChanged(
+  prevProps: Data,
+  nextProps: Data,
+  checkLen: boolean = true
+): boolean {
   const nextKeys = Object.keys(nextProps)
-  if (nextKeys.length !== Object.keys(prevProps).length) {
+  if (checkLen && nextKeys.length !== Object.keys(prevProps).length) {
     return true
   }
   for (let i = 0; i < nextKeys.length; i++) {
@@ -100,14 +120,12 @@ export function initBehaviors(
   }
   if (vueExtends && vueExtends.props) {
     const behavior = {}
-    initProps(behavior, vueExtends.props, true)
     behaviors.push(initBehavior(behavior) as string)
   }
   if (isArray(vueMixins)) {
     vueMixins.forEach((vueMixin) => {
       if (vueMixin.props) {
         const behavior = {}
-        initProps(behavior, vueMixin.props, true)
         behaviors.push(initBehavior(behavior) as string)
       }
     })

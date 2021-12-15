@@ -456,6 +456,11 @@ function initDefaultProps(isBehavior = false) {
             type: null,
             value: '',
         };
+        // 组件类型 m: 小程序组件
+        properties.uT = {
+            type: null,
+            value: '',
+        };
         // 组件 props
         properties.uP = {
             type: null,
@@ -482,11 +487,13 @@ function initDefaultProps(isBehavior = false) {
 /**
  *
  * @param mpComponentOptions
- * @param rawProps
  * @param isBehavior
  */
-function initProps(mpComponentOptions, _rawProps, isBehavior = false) {
-    mpComponentOptions.properties = initDefaultProps(isBehavior);
+function initProps(mpComponentOptions) {
+    if (!mpComponentOptions.properties) {
+        mpComponentOptions.properties = {};
+    }
+    extend(mpComponentOptions.properties, initDefaultProps());
 }
 
 function initData(_) {
@@ -501,9 +508,9 @@ function updateComponentProps(up, instance) {
         instance.update();
     }
 }
-function hasPropsChanged(prevProps, nextProps) {
+function hasPropsChanged(prevProps, nextProps, checkLen = true) {
     const nextKeys = Object.keys(nextProps);
-    if (nextKeys.length !== Object.keys(prevProps).length) {
+    if (checkLen && nextKeys.length !== Object.keys(prevProps).length) {
         return true;
     }
     for (let i = 0; i < nextKeys.length; i++) {
@@ -546,14 +553,12 @@ function initBehaviors(vueOptions, initBehavior) {
     }
     if (vueExtends && vueExtends.props) {
         const behavior = {};
-        initProps(behavior, vueExtends.props, true);
         behaviors.push(initBehavior(behavior));
     }
     if (isArray(vueMixins)) {
         vueMixins.forEach((vueMixin) => {
             if (vueMixin.props) {
                 const behavior = {};
-                initProps(behavior, vueMixin.props, true);
                 behaviors.push(initBehavior(behavior));
             }
         });
@@ -864,7 +869,7 @@ function initComponentProps(rawProps) {
     const propertiesOptions = {
         properties: {},
     };
-    initProps(propertiesOptions, rawProps, false);
+    initProps(propertiesOptions);
     const properties = propertiesOptions.properties;
     const props = {
         // onVueInit

@@ -45,6 +45,7 @@ interface ParserOptions {
 interface SharedTransformCodegenOptions {
   inline?: boolean
   isTS?: boolean
+  root?: string
   filename?: string
   bindingMetadata?: BindingMetadata
   prefixIdentifiers?: boolean

@@ -14,7 +14,7 @@ import { event } from './event'
 import { transformOpenType } from './transforms/transformOpenType'
 
 const projectConfigFilename = 'mini.project.json'
-
+const COMPONENTS_DIR = 'mycomponents'
 export const miniProgram: MiniProgramCompilerOptions = {
   event,
   class: {
@@ -28,6 +28,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'a:',
   component: {
+    dir: COMPONENTS_DIR,
     getPropertySync: true,
   },
 }
@@ -65,7 +66,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: ['mycomponents'],
+      assets: [COMPONENTS_DIR],
       targets: process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : [],
     },
   },

@@ -70,6 +70,7 @@ const directiveTransforms = {
     on: transformOn,
     model: transformModel,
 };
+const COMPONENTS_DIR = 'swancomponents';
 const miniProgram = {
     class: {
         array: true,
@@ -80,6 +81,9 @@ const miniProgram = {
         dynamicSlotNames: false,
     },
     directive: 's-',
+    component: {
+        dir: COMPONENTS_DIR,
+    },
 };
 const compilerOptions = {
     nodeTransforms,
@@ -96,7 +100,7 @@ const options = {
             'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: ['swancomponents'],
+            assets: [COMPONENTS_DIR],
         },
     },
     global: 'swan',

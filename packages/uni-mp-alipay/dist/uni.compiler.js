@@ -125,6 +125,7 @@ function transformOpenType(node) {
 }
 
 const projectConfigFilename = 'mini.project.json';
+const COMPONENTS_DIR = 'mycomponents';
 const miniProgram = {
     event,
     class: {
@@ -138,6 +139,7 @@ const miniProgram = {
     },
     directive: 'a:',
     component: {
+        dir: COMPONENTS_DIR,
         getPropertySync: true,
     },
 };
@@ -173,7 +175,7 @@ const options = {
             'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: ['mycomponents'],
+            assets: [COMPONENTS_DIR],
             targets: process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : [],
         },
     },

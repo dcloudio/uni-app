@@ -1,6 +1,8 @@
-import { ON_LOAD } from '@dcloudio/uni-shared'
 import { camelize } from '@vue/shared'
+import { ON_LOAD } from '@dcloudio/uni-shared'
 import { MPComponentInstance } from './component'
+import { initPropsObserver } from './componentOptions'
+import { initProps } from './componentProps'
 
 const MPPage = Page
 const MPComponent = Component
@@ -54,5 +56,11 @@ if (__PLATFORM__ === 'mp-baidu') {
 }
 Component = function (options) {
   initHook('created', options, true)
+  // 小程序组件
+  const isVueComponent = options.properties && options.properties.uP
+  if (!isVueComponent) {
+    initProps(options)
+    initPropsObserver(options)
+  }
   return MPComponent(options)
 }

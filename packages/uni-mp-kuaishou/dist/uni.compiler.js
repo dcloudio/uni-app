@@ -137,6 +137,7 @@ const compilerOptions = {
     nodeTransforms,
     directiveTransforms,
 };
+const COMPONENTS_DIR = 'kscomponents';
 const miniProgram = {
     class: {
         array: false,
@@ -148,6 +149,9 @@ const miniProgram = {
     directive: 'ks:',
     lazyElement: {
         switch: [{ name: 'on', arg: ['change'] }],
+    },
+    component: {
+        dir: COMPONENTS_DIR,
     },
 };
 const projectConfigFilename = 'project.config.json';
@@ -161,7 +165,7 @@ const options = {
             'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: ['kscomponents'],
+            assets: [COMPONENTS_DIR],
         },
     },
     global: 'ks',

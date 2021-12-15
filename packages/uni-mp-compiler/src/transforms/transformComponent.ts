@@ -12,7 +12,15 @@ import {
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import { isVForScope, NodeTransform, TransformContext } from '../transform'
-import { ATTR_VUE_ID, ATTR_VUE_PROPS, rewirteWithHelper } from './utils'
+import {
+  ATTR_COM_TYPE,
+  ATTR_VUE_ID,
+  ATTR_VUE_PROPS,
+  ATTR_VUE_REF,
+  ATTR_VUE_REF_IN_FOR,
+  ATTR_VUE_SLOTS,
+  rewirteWithHelper,
+} from './utils'
 import { genExpr, genBabelExpr } from '../codegen'
 import {
   identifier,
@@ -29,11 +37,21 @@ export const transformComponent: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
     return
   }
+
+  addComponentType(node, context)
+
   addVueId(node, context)
   processBooleanAttr(node)
   return function postTransformComponent() {
     context.vueIds.pop()
   }
+}
+
+function addComponentType(node: ComponentNode, context: TransformContext) {
+  if (!context.isMiniProgramComponent(node.tag)) {
+    return
+  }
+  node.props.push(createAttributeNode(ATTR_COM_TYPE, 'm'))
 }
 
 function addVueId(node: ComponentNode, context: TransformContext) {
@@ -94,10 +112,12 @@ function isComponentProp(name: string) {
     [
       'class',
       'style',
-      'u-i',
-      'u-r',
-      'u-r-i-f',
-      'u-s',
+      ATTR_VUE_ID,
+      ATTR_VUE_PROPS,
+      ATTR_VUE_SLOTS,
+      ATTR_VUE_REF,
+      ATTR_VUE_REF_IN_FOR,
+      ATTR_COM_TYPE,
       'eO',
       'e-o',
       'onVI',

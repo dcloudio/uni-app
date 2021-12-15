@@ -20,6 +20,7 @@ const nodeTransforms = [
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
+const COMPONENTS_DIR = 'wxcomponents'
 
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
@@ -31,6 +32,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'qq:',
   component: {
+    dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN,
     getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
   },
@@ -46,7 +48,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: ['wxcomponents'],
+      assets: [COMPONENTS_DIR],
       targets: [
         {
           src: ['custom-tab-bar'],

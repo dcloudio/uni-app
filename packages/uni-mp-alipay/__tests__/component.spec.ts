@@ -1,3 +1,4 @@
+import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
 import { customElements } from '../src/compiler/options'
 import { assert } from './testUtils'
 
@@ -19,6 +20,24 @@ describe('mp-alipay: transform component', () => {
       `(_ctx, _cache) => {
   return {}
 }`
+    )
+  })
+  test(`mini program component`, () => {
+    const filename = 'pages/vant/vant'
+    addMiniProgramPageJson(filename, {
+      usingComponents: {
+        'van-button': 'mycomponents/button/index',
+      },
+    })
+    assert(
+      `<van-button/>`,
+      `<van-button u-t="m" u-i="dc555fe4-0" onVI="__l"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      {
+        filename,
+      }
     )
   })
 })

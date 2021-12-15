@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
-import { injectHook, ref, toRaw, findComponentPropsData, updateProps, invalidateJob, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, findComponentPropsData, toRaw, updateProps, invalidateJob, pruneComponentPropsCache } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -417,6 +417,11 @@ function initDefaultProps(isBehavior = false) {
             type: null,
             value: '',
         };
+        // 组件类型 m: 小程序组件
+        properties.uT = {
+            type: null,
+            value: '',
+        };
         // 组件 props
         properties.uP = {
             type: null,
@@ -443,11 +448,13 @@ function initDefaultProps(isBehavior = false) {
 /**
  *
  * @param mpComponentOptions
- * @param rawProps
  * @param isBehavior
  */
-function initProps(mpComponentOptions, _rawProps, isBehavior = false) {
-    mpComponentOptions.properties = initDefaultProps(isBehavior);
+function initProps(mpComponentOptions) {
+    if (!mpComponentOptions.properties) {
+        mpComponentOptions.properties = {};
+    }
+    extend(mpComponentOptions.properties, initDefaultProps());
 }
 
 function initData(_) {
@@ -456,15 +463,29 @@ function initData(_) {
 function initPropsObserver(componentOptions) {
     const observe = function observe() {
         const up = this.properties.uP;
-        if (!up || !this.$vm) {
+        if (!up) {
             return;
         }
-        updateComponentProps(up, this.$vm.$);
+        if (this.$vm) {
+            updateComponentProps(up, this.$vm.$);
+        }
+        else if (this.properties.uT === 'm') {
+            // 小程序组件
+            updateMiniProgramComponentProperties(up, this);
+        }
     };
     {
-        componentOptions.observers = {
-            uP: observe,
-        };
+        if (!componentOptions.observers) {
+            componentOptions.observers = {};
+        }
+        componentOptions.observers.uP = observe;
+    }
+}
+function updateMiniProgramComponentProperties(up, mpInstance) {
+    const prevProps = mpInstance.properties;
+    const nextProps = findComponentPropsData(up) || {};
+    if (hasPropsChanged(prevProps, nextProps, false)) {
+        mpInstance.setData(nextProps);
     }
 }
 function updateComponentProps(up, instance) {
@@ -476,9 +497,9 @@ function updateComponentProps(up, instance) {
         instance.update();
     }
 }
-function hasPropsChanged(prevProps, nextProps) {
+function hasPropsChanged(prevProps, nextProps, checkLen = true) {
     const nextKeys = Object.keys(nextProps);
-    if (nextKeys.length !== Object.keys(prevProps).length) {
+    if (checkLen && nextKeys.length !== Object.keys(prevProps).length) {
         return true;
     }
     for (let i = 0; i < nextKeys.length; i++) {
@@ -521,14 +542,12 @@ function initBehaviors(vueOptions, initBehavior) {
     }
     if (vueExtends && vueExtends.props) {
         const behavior = {};
-        initProps(behavior, vueExtends.props, true);
         behaviors.push(initBehavior(behavior));
     }
     if (isArray(vueMixins)) {
         vueMixins.forEach((vueMixin) => {
             if (vueMixin.props) {
                 const behavior = {};
-                initProps(behavior, vueMixin.props, true);
                 behaviors.push(initBehavior(behavior));
             }
         });
@@ -571,7 +590,7 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
     if (__VUE_OPTIONS_API__) {
         applyOptions(mpComponentOptions, vueOptions, initBehavior);
     }
-    initProps(mpComponentOptions, vueOptions.props, false);
+    initProps(mpComponentOptions, vueOptions.props);
     initPropsObserver(mpComponentOptions);
     initExtraOptions(mpComponentOptions, vueOptions);
     initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
@@ -668,6 +687,12 @@ Page = function (options) {
 };
 Component = function (options) {
     initHook('created', options);
+    // 小程序组件
+    const isVueComponent = options.properties && options.properties.uP;
+    if (!isVueComponent) {
+        initProps(options);
+        initPropsObserver(options);
+    }
     return MPComponent(options);
 };
 

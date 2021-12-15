@@ -1,5 +1,6 @@
 import { assert } from './testUtils'
 import { customElements } from '../src/compiler/options'
+import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
 describe('mp-baidu: transform component', () => {
   test(`built-in component`, () => {
     const code = customElements.map((tag) => `<${tag}/>`).join('')
@@ -18,6 +19,24 @@ describe('mp-baidu: transform component', () => {
       `(_ctx, _cache) => {
   return {}
 }`
+    )
+  })
+  test(`mini program component`, () => {
+    const filename = 'pages/vant/vant'
+    addMiniProgramPageJson(filename, {
+      usingComponents: {
+        'van-button': 'swancomponents/button/index',
+      },
+    })
+    assert(
+      `<van-button/>`,
+      `<van-button u-t="m" u-i="dc555fe4-0"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      {
+        filename,
+      }
     )
   })
 })

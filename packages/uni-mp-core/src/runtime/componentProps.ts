@@ -1,4 +1,4 @@
-import type { ComponentPropsOptions } from 'vue'
+import { extend } from '@vue/shared'
 import type { MPComponentOptions, MPComponentInstance } from './component'
 
 import Component = WechatMiniprogram.Component
@@ -30,6 +30,11 @@ function initDefaultProps(isBehavior: boolean = false) {
       type: null,
       value: '',
     }
+    // 组件类型 m: 小程序组件
+    properties.uT = {
+      type: null,
+      value: '',
+    }
     // 组件 props
     properties.uP = {
       type: null,
@@ -57,13 +62,11 @@ function initDefaultProps(isBehavior: boolean = false) {
 /**
  *
  * @param mpComponentOptions
- * @param rawProps
  * @param isBehavior
  */
-export function initProps(
-  mpComponentOptions: MPComponentOptions,
-  _rawProps: ComponentPropsOptions | null,
-  isBehavior: boolean = false
-) {
-  mpComponentOptions.properties = initDefaultProps(isBehavior)
+export function initProps(mpComponentOptions: MPComponentOptions) {
+  if (!mpComponentOptions.properties) {
+    mpComponentOptions.properties = {}
+  }
+  extend(mpComponentOptions.properties, initDefaultProps())
 }

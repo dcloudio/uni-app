@@ -24,6 +24,7 @@ const nodeTransforms = [
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
+const COMPONENTS_DIR = 'ttcomponents'
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
     array: false,
@@ -34,6 +35,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'tt:',
   component: {
+    dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN_BIND,
   },
 }
@@ -48,7 +50,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: ['ttcomponents'],
+      assets: [COMPONENTS_DIR],
     },
   },
   global: 'tt',

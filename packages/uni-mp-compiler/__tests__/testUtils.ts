@@ -16,6 +16,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'wx:',
   component: {
+    dir: 'wxcomponents',
     getPropertySync: true,
   },
 } as const
@@ -31,6 +32,7 @@ export function assert(
   options: CompilerOptions = {}
 ) {
   const res = compile(template, {
+    root: '',
     mode: 'module',
     filename: 'foo.vue',
     prefixIdentifiers: true,

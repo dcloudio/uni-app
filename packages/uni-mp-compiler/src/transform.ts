@@ -35,6 +35,7 @@ import {
   CacheExpression,
   locStub,
 } from '@vue/compiler-core'
+import { findMiniProgramUsingComponents } from '@dcloudio/uni-cli-shared'
 import IdentifierGenerator from './identifier'
 import {
   CodegenRootNode,
@@ -83,7 +84,7 @@ export const enum BindingComponentTypes {
   UNKNOWN = 'unknown',
 }
 export interface TransformContext
-  extends Required<Omit<TransformOptions, 'filename'>> {
+  extends Required<Omit<TransformOptions, 'filename' | 'root'>> {
   selfName: string | null
   currentNode: RootNode | TemplateChildNode | null
   parent: ParentNode | null
@@ -119,6 +120,7 @@ export interface TransformContext
   addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
+  isMiniProgramComponent(name: string): boolean
 }
 
 export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
@@ -240,8 +242,9 @@ function defaultOnWarn(msg: CompilerError) {
 }
 
 export function createTransformContext(
-  root: RootNode,
+  rootNode: RootNode,
   {
+    root = '',
     filename = '',
     isTS = false,
     inline = false,
@@ -310,6 +313,12 @@ export function createTransformContext(
   const vueIds: string[] = []
   const identifiers = Object.create(null)
   const scopes: CodegenScope[] = [rootScope]
+
+  const miniProgramComponents = findMiniProgramUsingComponents({
+    filename,
+    componentsDir: miniProgram.component?.dir,
+    inputDir: root,
+  })
   // const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
@@ -351,7 +360,7 @@ export function createTransformContext(
     get currentScope() {
       return scopes[scopes.length - 1]
     },
-    currentNode: root,
+    currentNode: rootNode,
     vueIds,
     get currentVueId() {
       return vueIds[vueIds.length - 1]
@@ -457,6 +466,9 @@ export function createTransformContext(
     },
     cache(exp, isVNode = false) {
       return createCacheExpression(context.cached++, exp, isVNode)
+    },
+    isMiniProgramComponent(name) {
+      return miniProgramComponents.includes(name)
     },
   }
 

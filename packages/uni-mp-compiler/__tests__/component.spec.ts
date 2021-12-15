@@ -1,4 +1,5 @@
 import {
+  addMiniProgramPageJson,
   COMPONENT_BIND_LINK,
   createTransformComponentLink,
 } from '@dcloudio/uni-cli-shared'
@@ -104,6 +105,25 @@ describe('compiler: transform component', () => {
       `(_ctx, _cache) => {
   return { a: _ctx.b, b: _ctx.d, c: _n(_ctx.f), d: _s(_ctx.h), e: _o(_ctx.i), f: _ctx.o, g: _ctx.r, h: _ctx.t, i: _o($event => _ctx.j = $event), j: _o($event => _ctx.k = $event), k: _p({ ['prop-a']: 'l', ['prop-b']: _ctx.m, first: _ctx.j, last: _ctx.k }) }
 }`
+    )
+  })
+  test(`mini program component`, () => {
+    const filename = 'pages/vant/vant'
+    addMiniProgramPageJson(filename, {
+      usingComponents: {
+        'van-button': 'wxcomponents/button/index',
+      },
+    })
+    assert(
+      `<van-button/>`,
+      `<van-button u-t="m" u-i="dc555fe4-0" bind:__l="__l"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      {
+        filename,
+        nodeTransforms,
+      }
     )
   })
 })

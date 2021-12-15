@@ -28,6 +28,7 @@ export function uniOptions({
     copyOptions,
     compiler: compiler as TemplateCompiler,
     compilerOptions: {
+      root: process.env.UNI_INPUT_DIR,
       miniProgram,
       isNativeTag,
       isCustomElement: createIsCustomElement(customElements),

@@ -13,6 +13,7 @@ import {
   SpreadElement,
   stringLiteral,
 } from '@babel/types'
+import { VUE_REF, VUE_REF_IN_FOR } from '@dcloudio/uni-cli-shared'
 import {
   createSimpleExpression,
   ExpressionNode,
@@ -30,6 +31,10 @@ import { isVForScope, isVIfScope, TransformContext } from '../transform'
 export const ATTR_VUE_ID = 'u-i'
 export const ATTR_VUE_SLOTS = 'u-s'
 export const ATTR_VUE_PROPS = 'u-p'
+export const ATTR_VUE_REF = 'u-' + VUE_REF
+export const ATTR_VUE_REF_IN_FOR = 'u-' + VUE_REF_IN_FOR
+export const ATTR_COM_TYPE = 'u-t'
+
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
 export function rewriteSpreadElement(

@@ -72,6 +72,7 @@ const nodeTransforms = [
 const compilerOptions = {
     nodeTransforms,
 };
+const COMPONENTS_DIR = 'ttcomponents';
 const miniProgram = {
     class: {
         array: false,
@@ -82,6 +83,7 @@ const miniProgram = {
     },
     directive: 'tt:',
     component: {
+        dir: COMPONENTS_DIR,
         vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN_BIND,
     },
 };
@@ -95,7 +97,7 @@ const options = {
             'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: ['ttcomponents'],
+            assets: [COMPONENTS_DIR],
         },
     },
     global: 'tt',

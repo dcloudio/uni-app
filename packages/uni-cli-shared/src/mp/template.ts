@@ -41,6 +41,10 @@ export interface MiniProgramCompilerOptions {
   }
   component?: {
     /**
+     * 平台自定义组件目录，如 wxcomponents
+     */
+    dir?: string
+    /**
      * 自定义组件自定义 hidden 属性用于实现 v-show
      */
     vShow?: string

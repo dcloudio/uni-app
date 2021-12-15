@@ -1,6 +1,9 @@
 // import { inspect } from './testUtils'
 
-import { transformRef } from '@dcloudio/uni-cli-shared'
+import {
+  addMiniProgramPageJson,
+  transformComponentLink,
+} from '@dcloudio/uni-cli-shared'
 import { compile } from '../src/index'
 import { CompilerOptions } from '../src/options'
 import { miniProgram } from './testUtils'
@@ -36,17 +39,34 @@ function assert(
   }
 }
 
+// assert(
+//   `<custom class="a"
+//   dd
+//   a-b="b" :class="c"
+//   :a-c="c" b="bb" :c="cc" :data-d="dd" @click="d" :b="d"/>`,
+//   `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
+//   `(_ctx, _cache) => {
+// return { a: _f(_ctx.items, (item, index, i0) => { return { a: _r(\"default\", { key: index }) }; }) }
+// }`,
+//   {
+//     inline: false,
+//     nodeTransforms: [transformRef],
+//   }
+// )
+const filename = 'pages/vant/vant'
+addMiniProgramPageJson(filename, {
+  usingComponents: {
+    'van-button': 'wxcomponents/button/index',
+  },
+})
 assert(
-  `<custom class="a"  
-  dd
-  a-b="b" :class="c" 
-  :a-c="c" b="bb" :c="cc" :data-d="dd" @click="d" :b="d"/>`,
-  `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
+  `<van-button/>`,
+  `<van-button u-i="dc555fe4-0"/>`,
   `(_ctx, _cache) => {
-return { a: _f(_ctx.items, (item, index, i0) => { return { a: _r(\"default\", { key: index }) }; }) }
+return {}
 }`,
   {
-    inline: false,
-    nodeTransforms: [transformRef],
+    filename,
+    nodeTransforms: [transformComponentLink],
   }
 )

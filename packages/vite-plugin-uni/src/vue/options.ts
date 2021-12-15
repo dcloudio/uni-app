@@ -97,6 +97,8 @@ export function initPluginVueOptions(
 
   // App,MP 平台不支持使用静态节点
   compilerOptions.hoistStatic = false
+  // 小程序使用了
+  ;(compilerOptions as any).root = process.env.UNI_INPUT_DIR
   return vueOptions
 }
 

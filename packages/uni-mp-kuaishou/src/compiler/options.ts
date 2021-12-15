@@ -21,7 +21,7 @@ export const compilerOptions: CompilerOptions = {
   nodeTransforms,
   directiveTransforms,
 }
-
+const COMPONENTS_DIR = 'kscomponents'
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
     array: false,
@@ -33,6 +33,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
   directive: 'ks:',
   lazyElement: {
     switch: [{ name: 'on', arg: ['change'] }],
+  },
+  component: {
+    dir: COMPONENTS_DIR,
   },
 }
 const projectConfigFilename = 'project.config.json'
@@ -47,7 +50,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: ['kscomponents'],
+      assets: [COMPONENTS_DIR],
     },
   },
   global: 'ks',
