@@ -10,6 +10,13 @@ import {
   ICON_PATH_BACK,
   ICON_PATH_CLOSE,
 } from '@dcloudio/uni-core'
+import {
+  ON_NAVIGATION_BAR_BUTTON_TAP,
+  ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+  ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+  ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+  ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+} from '@dcloudio/uni-shared'
 import { usePageMeta } from '../../setup/provide'
 import {
   usePageHeadTransparent,
@@ -357,7 +364,7 @@ function usePageHeadButton(
     badgeText: btn.badgeText,
     iconStyle,
     onClick() {
-      invokeHook(pageId, 'onNavigationBarButtonTap', extend({ index }, btn))
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index }, btn))
     },
   }
 }
@@ -374,7 +381,7 @@ function usePageHeadSearchInput({
   const { disabled } = searchInput!
   if (disabled) {
     const onClick = () => {
-      invokeHook(id!, 'onNavigationBarSearchInputClicked')
+      invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED)
     }
     return {
       focus,
@@ -385,19 +392,25 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true
-    invokeHook(id!, 'onNavigationBarSearchInputFocusChanged', { focus: true })
+    invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: true,
+    })
   }
   const onBlur = () => {
     focus.value = false
-    invokeHook(id!, 'onNavigationBarSearchInputFocusChanged', { focus: false })
+    invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: false,
+    })
   }
   const onInput = (evt: { detail: { value: string } }) => {
     text.value = evt.detail.value
-    invokeHook(id!, 'onNavigationBarSearchInputChanged', { text: text.value })
+    invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+      text: text.value,
+    })
   }
   const onKeyup = (evt: KeyboardEvent) => {
     if (evt.key === 'Enter' || evt.keyCode === 13) {
-      invokeHook(id!, 'onNavigationBarSearchInputConfirmed', {
+      invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
         text: text.value,
       })
     }

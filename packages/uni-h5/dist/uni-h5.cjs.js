@@ -10721,7 +10721,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
     badgeText: btn.badgeText,
     iconStyle,
     onClick() {
-      invokeHook(pageId, "onNavigationBarButtonTap", shared.extend({
+      invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({
         index: index2
       }, btn));
     }
@@ -10741,7 +10741,7 @@ function usePageHeadSearchInput({
   } = searchInput;
   if (disabled) {
     const onClick = () => {
-      invokeHook(id, "onNavigationBarSearchInputClicked");
+      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
     };
     return {
       focus,
@@ -10752,25 +10752,25 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true;
-    invokeHook(id, "onNavigationBarSearchInputFocusChanged", {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: true
     });
   };
   const onBlur = () => {
     focus.value = false;
-    invokeHook(id, "onNavigationBarSearchInputFocusChanged", {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: false
     });
   };
   const onInput = (evt) => {
     text.value = evt.detail.value;
-    invokeHook(id, "onNavigationBarSearchInputChanged", {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
       text: text.value
     });
   };
   const onKeyup = (evt) => {
     if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id, "onNavigationBarSearchInputConfirmed", {
+      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
         text: text.value
       });
     }
