@@ -1,6 +1,6 @@
 export default {
   oauth: ['jd'],
   share: ['jd'],
-  payment: [''],
-  push: ['']
+  payment: ['jd'],
+  push: ['jd']
 }
