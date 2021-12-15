@@ -16,9 +16,8 @@ const debugConsole = debug('vite:uni:console')
 export function uniConsolePlugin(options: ConsoleOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
-    name: 'vite:uni-app-console',
+    name: 'vite:uni-console',
     enforce: 'pre',
-    apply: 'build',
     transform(code, id) {
       if (!filter(id)) return null
       if (!isJsFile(id)) return null

@@ -8308,6 +8308,10 @@ const props$v = /* @__PURE__ */ extend({}, {
   confirmType: {
     type: String,
     default: "done"
+  },
+  confirmHold: {
+    type: Boolean,
+    default: false
   }
 }, props$y);
 const emit = [
@@ -8596,10 +8600,12 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       if (event.key !== "Enter") {
         return;
       }
+      const input = event.target;
       event.stopPropagation();
       trigger("confirm", event, {
-        value: event.target.value
+        value: input.value
       });
+      !props2.confirmHold && input.blur();
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
@@ -13268,7 +13274,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       if (isDone.value) {
         confirm(event);
         const textarea = event.target;
-        textarea.blur();
+        !props2.confirmHold && textarea.blur();
       }
     }
     {
@@ -13989,6 +13995,9 @@ function setupWindow(comp, id2) {
   });
 }
 function setupPage(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "page";
+  }
   return setupComponent(comp, {
     init: initPage,
     setup(instance2) {
@@ -14028,6 +14037,9 @@ function setupPage(comp) {
   });
 }
 function setupApp(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "app";
+  }
   return setupComponent(comp, {
     init: initApp,
     setup(instance2) {

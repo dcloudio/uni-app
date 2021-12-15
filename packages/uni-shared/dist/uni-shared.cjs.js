@@ -483,6 +483,9 @@ function formatAppLog(type, filename, ...args) {
     const res = normalizeLog(type, filename, args);
     res && console[type](res);
 }
+function formatH5Log(type, filename, ...args) {
+    console[type].apply(console, [...args, filename]);
+}
 
 let latestNodeId = 1;
 class NVueTextNode {
@@ -1309,6 +1312,7 @@ exports.dynamicSlotName = dynamicSlotName;
 exports.forcePatchProp = forcePatchProp;
 exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
+exports.formatH5Log = formatH5Log;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;

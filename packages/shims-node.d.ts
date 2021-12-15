@@ -21,5 +21,6 @@ declare namespace NodeJS {
     UNI_APP_CODE_SPLITING?: 'true'
     UNI_AUTOMATOR_WS_ENDPOINT?: string
     UNI_H5_BASE?: string
+    UNI_H5_BROWSER?: 'builtin'
   }
 }

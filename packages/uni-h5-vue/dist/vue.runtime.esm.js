@@ -1185,6 +1185,12 @@ function reload(id, newComp) {
     const record = map.get(id);
     if (!record)
         return;
+    // fixed by xxxxxx 解决页面刷新 setupPage
+    if (typeof window !== 'undefined' &&
+        window.__setupPage &&
+        record.initialDef.__mpType === 'page') {
+        window.__setupPage(newComp);
+    }
     newComp = normalizeClassComponent(newComp);
     // update initial def (for not-yet-rendered components)
     updateComponentDef(record.initialDef, newComp);

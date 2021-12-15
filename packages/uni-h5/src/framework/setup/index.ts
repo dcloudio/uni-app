@@ -75,6 +75,9 @@ export function setupWindow(comp: any, id: number) {
 }
 
 export function setupPage(comp: any) {
+  if (__DEV__) {
+    comp.__mpType = 'page'
+  }
   return setupComponent(comp, {
     init: initPage,
     setup(instance) {
@@ -121,6 +124,9 @@ export function setupPage(comp: any) {
 }
 
 export function setupApp(comp: any) {
+  if (__DEV__) {
+    comp.__mpType = 'app'
+  }
   return setupComponent(comp, {
     init: initApp,
     setup(instance) {

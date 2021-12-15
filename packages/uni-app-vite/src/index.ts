@@ -1,11 +1,10 @@
-import path from 'path'
 import {
   initAppProvide,
   uniViteInjectPlugin,
   uniCssScopedPlugin,
   getAppStyleIsolation,
   parseManifestJsonOnce,
-  uniConsolePlugin,
+  uniHBuilderXConsolePlugin,
   UNI_EASYCOM_EXCLUDE,
   isVueSfcFile,
   isUniPageFile,
@@ -43,15 +42,7 @@ function initUniCssScopedPluginFilter(
 const plugins = [
   uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
   // uniResolveIdPlugin(),
-  uniConsolePlugin({
-    filename(filename) {
-      filename = path.relative(process.env.UNI_INPUT_DIR, filename)
-      if (filename.startsWith('.') || path.isAbsolute(filename)) {
-        return ''
-      }
-      return filename
-    },
-  }),
+  uniHBuilderXConsolePlugin(),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),

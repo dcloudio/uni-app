@@ -189,6 +189,8 @@ export declare function formatDateTime({ date, mode }: {
     mode?: string | undefined;
 }): string;
 
+export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
+
 export declare function formatLog(module: string, ...args: any[]): string;
 
 export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDataset): DOMStringMap & Record<string, any>;
