@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app",
-  "version": "3.0.0-alpha-3030120211215001",
+  "version": "3.0.0-alpha-3030120211216001",
   "description": "@dcloudio/uni-app",
   "main": "./dist/uni-app.cjs.js",
   "module": "./dist/uni-app.es.js",
@@ -24,11 +24,11 @@
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
-    "@dcloudio/uni-cloud": "3.0.0-alpha-3030120211215001",
-    "@dcloudio/uni-components": "3.0.0-alpha-3030120211215001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3030120211215001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3030120211215001",
-    "@dcloudio/uni-stat": "3.0.0-alpha-3030120211215001",
+    "@dcloudio/uni-cloud": "3.0.0-alpha-3030120211216001",
+    "@dcloudio/uni-components": "3.0.0-alpha-3030120211216001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3030120211216001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3030120211216001",
+    "@dcloudio/uni-stat": "3.0.0-alpha-3030120211216001",
     "@vue/shared": "3.2.26"
   }
 }

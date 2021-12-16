@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-3030120211215001",
+  "version": "3.0.0-alpha-3030120211216001",
   "workspaces": [
     "packages/*"
   ],
@@ -13,7 +13,7 @@
     "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "test": "jest && tsc -p ./test-dts/tsconfig.json",
+    "test": "tsc -p ./test-dts/tsconfig.json && jest",
     "test-dts": "tsc -p ./test-dts/tsconfig.json && tsc -p ./test-dts/tsconfig.build.json",
     "preinstall": "node ./scripts/preinstall.js",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
@@ -42,8 +42,8 @@
   },
   "devDependencies": {
     "@dcloudio/types": "^2.5.14",
-    "@dcloudio/uni-api": "3.0.0-alpha-3030120211215001",
-    "@dcloudio/uni-app": "3.0.0-alpha-3030120211215001",
+    "@dcloudio/uni-api": "3.0.0-alpha-3030120211216001",
+    "@dcloudio/uni-app": "3.0.0-alpha-3030120211216001",
     "@jest/types": "^27.0.2",
     "@microsoft/api-extractor": "^7.19.2",
     "@rollup/plugin-alias": "^3.1.1",
