@@ -213,15 +213,16 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
     to: 'static'
   }]
-
-  const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
-  if (fs.existsSync(androidPrivacyPath)) {
-    array.push({
-      from: androidPrivacyPath,
-      to: 'androidPrivacy.json'
-    })
+  // 自动化测试时，不启用androidPrivacy.json
+  if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+    const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
+    if (fs.existsSync(androidPrivacyPath)) {
+      array.push({
+        from: androidPrivacyPath,
+        to: 'androidPrivacy.json'
+      })
+    }
   }
-
   const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, 'hybrid/html')
   if (fs.existsSync(hybridHtmlPath)) {
     array.push({
