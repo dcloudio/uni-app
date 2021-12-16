@@ -134,6 +134,8 @@ export function rewriteSsrResolve() {
       return resolveBuiltIn(`@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js`)
     } else if (id === 'vue/package.json') {
       return resolveBuiltIn(`@dcloudio/uni-h5-vue/package.json`)
+    } else if (id === 'vue/server-renderer/package.json') {
+      return resolveBuiltIn(`@vue/server-renderer/package.json`)
     }
     return oldSync(id, initResolveSyncOpts(opts))
   }

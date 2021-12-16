@@ -86,25 +86,21 @@ function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
   const enableTreeShaking = isEnableTreeShaking(
     parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   )
+
   if (enableTreeShaking && config.command === 'build' && !ssr) {
     // 非 SSR 的发行模式，补充全局 uni 对象
-    return `${name}.uni = {};${name}.wx = {}`
+    return `import { upx2px } from '@dcloudio/uni-h5';${name}.uni = {};${name}.wx = {};${name}.rpx2px = upx2px`
   }
 
-  const rpx2pxCode =
-    !ssr && config.define!.__UNI_FEATURE_RPX__
-      ? `import {upx2px} from '@dcloudio/uni-h5'
-  ${name}.rpx2px = upx2px
-`
-      : ''
-  return `${rpx2pxCode}
-import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
+  return `
+import {uni,upx2px,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
 ${name}.getApp = getApp
 ${name}.getCurrentPages = getCurrentPages
 ${name}.wx = uni
 ${name}.uni = uni
 ${name}.UniViewJSBridge = UniViewJSBridge
 ${name}.UniServiceJSBridge = UniServiceJSBridge
+${name}.rpx2px = upx2px
 ${name}.__setupPage = (com)=>setupPage(com)
 `
 }
