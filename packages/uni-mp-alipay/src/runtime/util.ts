@@ -9,7 +9,7 @@ import {
 } from 'vue'
 
 // @ts-ignore EMPTY_OBJ 不能从 @vue/shared 中引入，从 vue 中导入，保持一致
-import { findComponentPropsData, EMPTY_OBJ, setTemplateRef } from 'vue'
+import { EMPTY_OBJ, setTemplateRef } from 'vue'
 
 import {
   initMocks,
@@ -18,6 +18,7 @@ import {
   CreateComponentOptions,
   updateComponentProps,
   findRefValue,
+  findPropsData,
 } from '@dcloudio/uni-mp-core'
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
@@ -265,8 +266,7 @@ export function createVueComponent(
   return $createComponent(
     {
       type: vueOptions,
-      props:
-        findComponentPropsData(mpInstance.props && mpInstance.props.uP) || {},
+      props: findPropsData(mpInstance.props, mpType === 'page'),
     },
     {
       mpType,

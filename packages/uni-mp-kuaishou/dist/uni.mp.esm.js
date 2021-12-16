@@ -574,43 +574,33 @@ function initSetRef(mpInstance) {
     }
 }
 
+const builtInProps = [
+    // 百度小程序,快手小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
+    // event-opts
+    'eO',
+    // 组件 ref
+    'uR',
+    // 组件 ref-in-for
+    'uRIF',
+    // 组件 id
+    'uI',
+    // 组件类型 m: 小程序组件
+    'uT',
+    // 组件 props
+    'uP',
+    // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+    'uS',
+];
 function initDefaultProps(isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
-        {
-            // 百度小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
-            // event-opts
-            properties.eO = {
+        // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
+        builtInProps.forEach((name) => {
+            properties[name] = {
                 type: null,
                 value: '',
             };
-        }
-        // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
-        // 组件 ref
-        properties.uR = {
-            type: null,
-            value: '',
-        };
-        // 组件 ref-in-for
-        properties.uRIF = {
-            type: null,
-            value: '',
-        };
-        // 组件 id
-        properties.uI = {
-            type: null,
-            value: '',
-        };
-        // 组件类型 m: 小程序组件
-        properties.uT = {
-            type: null,
-            value: '',
-        };
-        // 组件 props
-        properties.uP = {
-            type: null,
-            value: '',
-        };
+        });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
         properties.uS = {
             type: null,
@@ -639,6 +629,45 @@ function initProps(mpComponentOptions) {
         mpComponentOptions.properties = {};
     }
     extend(mpComponentOptions.properties, initDefaultProps());
+}
+/**
+ * 初始化页面 props，方便接收页面参数，类型均为String，默认值均为''
+ * @param param
+ * @param rawProps
+ */
+function initPageProps({ properties }, rawProps) {
+    if (isArray(rawProps)) {
+        rawProps.forEach((key) => {
+            properties[key] = {
+                type: String,
+                value: '',
+            };
+        });
+    }
+    else if (isPlainObject(rawProps)) {
+        Object.keys(rawProps).forEach((key) => {
+            properties[key] = {
+                type: String,
+                value: '',
+            };
+        });
+    }
+}
+function findPropsData(properties, isPage) {
+    return ((isPage
+        ? findPagePropsData(properties)
+        : findComponentPropsData(properties.uP)) || {});
+}
+function findPagePropsData(properties) {
+    const propsData = {};
+    if (isPlainObject(properties)) {
+        Object.keys(properties).forEach((name) => {
+            if (builtInProps.indexOf(name) === -1) {
+                propsData[name] = properties[name];
+            }
+        });
+    }
+    return propsData;
 }
 
 function initData(_) {
@@ -809,6 +838,7 @@ function parsePage(vueOptions, parseOptions) {
         handleLink,
         initLifetimes,
     });
+    initPageProps(miniProgramPageOptions, (vueOptions.default || vueOptions).props);
     const methods = miniProgramPageOptions.methods;
     methods.onLoad = function (query) {
         this.options = query;
@@ -889,7 +919,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             const isMiniProgramPage = isPage(mpInstance);
             this.$vm = $createComponent({
                 type: vueOptions,
-                props: findComponentPropsData(properties.uP) || {},
+                props: findPropsData(properties, isMiniProgramPage),
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,

@@ -1,12 +1,13 @@
 import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 // @ts-ignore
-import { findComponentPropsData, pruneComponentPropsCache } from 'vue'
+import { pruneComponentPropsCache } from 'vue'
 
 import {
   RelationOptions,
   MPComponentInstance,
   CreateComponentOptions,
   CreateLifetimesOptions,
+  findPropsData,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -49,7 +50,7 @@ export function initLifetimes({
       this.$vm = $createComponent(
         {
           type: vueOptions,
-          props: findComponentPropsData(properties.uP) || {},
+          props: findPropsData(properties, isMiniProgramPage),
         },
         {
           mpType: isMiniProgramPage ? 'page' : 'component',

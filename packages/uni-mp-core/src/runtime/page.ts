@@ -8,6 +8,7 @@ import {
   CustomComponentInstanceProperty,
 } from './component'
 import { PAGE_HOOKS, initHooks, initUnknownHooks } from './componentHooks'
+import { initPageProps } from './componentProps'
 
 function parsePage(
   vueOptions: ComponentOptions,
@@ -22,6 +23,11 @@ function parsePage(
     handleLink,
     initLifetimes,
   })
+
+  initPageProps(
+    miniProgramPageOptions,
+    (vueOptions.default || vueOptions).props
+  )
 
   const methods =
     miniProgramPageOptions.methods as WechatMiniprogram.Component.MethodOption
