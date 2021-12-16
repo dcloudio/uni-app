@@ -1,11 +1,4 @@
-import {
-  hasOwn,
-  isFunction,
-  camelize,
-  isArray,
-  isString,
-  remove,
-} from '@vue/shared'
+import { hasOwn, isFunction, camelize, isString } from '@vue/shared'
 
 import {
   ComponentPublicInstance,

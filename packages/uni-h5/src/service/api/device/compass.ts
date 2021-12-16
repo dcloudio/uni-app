@@ -43,9 +43,10 @@ export const startCompass = <API_TYPE_START_COMPASS>(
       window.addEventListener('deviceorientation', listener, false)
     }
     if (!listener) {
-      if (DeviceOrientationEvent.requestPermission) {
-        DeviceOrientationEvent.requestPermission()
-          .then((res) => {
+      if ((DeviceOrientationEvent as any).requestPermission) {
+        ;(DeviceOrientationEvent as any)
+          .requestPermission()
+          .then((res: string) => {
             if (res === 'granted') {
               addEventListener()
               resolve()
@@ -53,7 +54,7 @@ export const startCompass = <API_TYPE_START_COMPASS>(
               reject(`${res}`)
             }
           })
-          .catch((error) => {
+          .catch((error: any) => {
             reject(`${error}`)
           })
         return

@@ -18585,7 +18585,7 @@ function usePopupStyle(props2) {
     const fixSize = () => {
       const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
       popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + windowTop;
+      popupHeight.value = windowHeight + (windowTop || 0);
     };
     window.addEventListener("resize", fixSize);
     fixSize();

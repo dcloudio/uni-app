@@ -462,7 +462,7 @@ function useControls(
   function toggleControls() {
     state.controlsVisible = !state.controlsVisible
   }
-  let hideTiming: number | null
+  let hideTiming: ReturnType<typeof setTimeout> | null
   function autoHideStart() {
     hideTiming = setTimeout(() => {
       state.controlsVisible = false

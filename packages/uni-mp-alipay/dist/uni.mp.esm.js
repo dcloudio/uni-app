@@ -872,7 +872,7 @@ function initCreatePage() {
 }
 
 // @ts-ignore
-function initComponentProps(rawProps) {
+function initComponentProps(_rawProps) {
     const propertiesOptions = {
         properties: {},
     };

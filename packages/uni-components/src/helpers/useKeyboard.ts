@@ -2,7 +2,7 @@ import { Ref, watch } from 'vue'
 import { CustomEventTrigger } from './useEvent'
 import { plusReady } from '@dcloudio/uni-shared'
 
-let resetTimer: number
+let resetTimer: ReturnType<typeof setTimeout>
 let isAndroid: boolean
 let osVersion: string
 let keyboardHeight: number

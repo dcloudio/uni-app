@@ -71,7 +71,7 @@ export const setStorage = <API_TYPE_SET_STORAGE>defineAsyncApi(
     try {
       setStorageSync(key, data)
       resolve()
-    } catch (error) {
+    } catch (error: any) {
       reject(error.message)
     }
   },
@@ -114,7 +114,7 @@ export const getStorage = <API_TYPE_GET_STORAGE>defineAsyncApi(
       resolve({
         data,
       })
-    } catch (error) {
+    } catch (error: any) {
       reject(error.message)
     }
   },

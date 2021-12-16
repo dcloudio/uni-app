@@ -16,7 +16,7 @@
     "skipLibCheck": true,
     "jsx": "preserve",
     "lib": ["esnext", "dom"],
-    "types": ["jest", "node", "@dcloudio/types", "miniprogram-api-typings"],
+    "types": ["jest", "@dcloudio/types", "miniprogram-api-typings"],
     "rootDir": ".",
     "paths": {
       "types/alias": ["packages/uni-cli-shared/types/alias.d.ts"],

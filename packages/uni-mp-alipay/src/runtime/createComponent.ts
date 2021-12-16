@@ -28,11 +28,11 @@ declare function Component<P, D, M extends tinyapp.IComponentMethods>(
   options: tinyapp.ComponentOptions<P, D, M>
 ): void
 
-function initComponentProps(rawProps: Record<string, any>) {
+function initComponentProps(_rawProps: Record<string, any>) {
   const propertiesOptions = {
     properties: {},
   }
-  initProps(propertiesOptions, rawProps, false)
+  initProps(propertiesOptions)
   const properties = propertiesOptions.properties as Record<string, any>
   const props: Record<string, any> = {
     // onVueInit

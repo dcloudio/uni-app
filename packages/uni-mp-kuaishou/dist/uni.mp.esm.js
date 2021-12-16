@@ -771,7 +771,7 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
     if (__VUE_OPTIONS_API__) {
         applyOptions(mpComponentOptions, vueOptions, initBehavior);
     }
-    initProps(mpComponentOptions, vueOptions.props);
+    initProps(mpComponentOptions);
     initPropsObserver(mpComponentOptions);
     initExtraOptions(mpComponentOptions, vueOptions);
     initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);

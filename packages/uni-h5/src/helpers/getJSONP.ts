@@ -13,13 +13,13 @@ export function getJSONP(
   var callbackKey = options.callback || 'callback'
   var callbackName = '__callback' + Date.now()
   var timeout = options.timeout || 30000
-  var timing: number
+  var timing: ReturnType<typeof setTimeout>
   function end() {
     clearTimeout(timing)
-    delete window[callbackName]
+    delete (window as any)[callbackName]
     js.remove()
   }
-  window[callbackName] = (res: any) => {
+  ;(window as any)[callbackName] = (res: any) => {
     if (typeof success === 'function') {
       success(res)
     }

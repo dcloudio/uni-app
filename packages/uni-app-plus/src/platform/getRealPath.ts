@@ -42,7 +42,7 @@ export function getRealPath(filepath: string) {
     } else {
       const page = getCurrentPage()
       if (page) {
-        return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath)
+        return wwwPath + getRealRoute(addLeadingSlash(page.route!), filepath)
       }
     }
   }

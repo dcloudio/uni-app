@@ -85,27 +85,40 @@ const onShow = /*#__PURE__*/ createHook(uniShared.ON_SHOW);
 const onHide = /*#__PURE__*/ createHook(uniShared.ON_HIDE);
 const onLaunch = /*#__PURE__*/ createHook(uniShared.ON_LAUNCH);
 const onError = /*#__PURE__*/ createHook(uniShared.ON_ERROR);
-const onThemeChange = /*#__PURE__*/ createHook(uniShared.ON_THEME_CHANGE);
-const onPageNotFound = /*#__PURE__*/ createHook(uniShared.ON_PAGE_NOT_FOUND);
-const onUnhandledRejection = /*#__PURE__*/ createHook(uniShared.ON_UNHANDLE_REJECTION);
+const onThemeChange = 
+/*#__PURE__*/ createHook(uniShared.ON_THEME_CHANGE);
+const onPageNotFound = 
+/*#__PURE__*/ createHook(uniShared.ON_PAGE_NOT_FOUND);
+const onUnhandledRejection = 
+/*#__PURE__*/ createHook(uniShared.ON_UNHANDLE_REJECTION);
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
 const onLoad = /*#__PURE__*/ createHook(uniShared.ON_LOAD);
 const onReady = /*#__PURE__*/ createHook(uniShared.ON_READY);
 const onUnload = /*#__PURE__*/ createHook(uniShared.ON_UNLOAD);
 const onResize = /*#__PURE__*/ createHook(uniShared.ON_RESIZE);
-const onBackPress = /*#__PURE__*/ createHook(uniShared.ON_BACK_PRESS);
-const onPageScroll = /*#__PURE__*/ createHook(uniShared.ON_PAGE_SCROLL);
-const onTabItemTap = /*#__PURE__*/ createHook(uniShared.ON_TAB_ITEM_TAP);
+const onBackPress = 
+/*#__PURE__*/ createHook(uniShared.ON_BACK_PRESS);
+const onPageScroll = 
+/*#__PURE__*/ createHook(uniShared.ON_PAGE_SCROLL);
+const onTabItemTap = 
+/*#__PURE__*/ createHook(uniShared.ON_TAB_ITEM_TAP);
 const onReachBottom = /*#__PURE__*/ createHook(uniShared.ON_REACH_BOTTOM);
 const onPullDownRefresh = /*#__PURE__*/ createHook(uniShared.ON_PULL_DOWN_REFRESH);
-const onShareTimeline = /*#__PURE__*/ createHook(uniShared.ON_SHARE_TIMELINE);
-const onAddToFavorites = /*#__PURE__*/ createHook(uniShared.ON_ADD_TO_FAVORITES);
-const onShareAppMessage = /*#__PURE__*/ createHook(uniShared.ON_SHARE_APP_MESSAGE);
-const onNavigationBarButtonTap = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP);
-const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED);
+const onShareTimeline = 
+/*#__PURE__*/ createHook(uniShared.ON_SHARE_TIMELINE);
+const onAddToFavorites = 
+/*#__PURE__*/ createHook(uniShared.ON_ADD_TO_FAVORITES);
+const onShareAppMessage = 
+/*#__PURE__*/ createHook(uniShared.ON_SHARE_APP_MESSAGE);
+const onNavigationBarButtonTap = 
+/*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP);
+const onNavigationBarSearchInputChanged = 
+/*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED);
 const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
-const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
+const onNavigationBarSearchInputConfirmed = 
+/*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
+const onNavigationBarSearchInputFocusChanged = 
+/*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;

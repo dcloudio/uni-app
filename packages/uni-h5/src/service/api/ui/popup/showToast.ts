@@ -28,7 +28,7 @@ import type {
 
 let showToastState: ToastProps
 let showType: 'onShowToast' | 'onShowLoading' | '' = ''
-let timeoutId: number
+let timeoutId: ReturnType<typeof setTimeout>
 
 const scope = /*#__PURE__*/ effectScope()
 

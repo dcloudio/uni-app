@@ -110,7 +110,7 @@ export function parseComponent(
     applyOptions(mpComponentOptions, vueOptions, initBehavior)
   }
 
-  initProps(mpComponentOptions, vueOptions.props, false)
+  initProps(mpComponentOptions)
 
   initPropsObserver(mpComponentOptions)
 

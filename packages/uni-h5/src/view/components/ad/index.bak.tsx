@@ -298,7 +298,7 @@ const CHECK_RENDER_DELAY = 1000
 const CHECK_RENDER_RETRY = 5
 
 class AdRender {
-  private _checkTimer: number | null
+  private _checkTimer: ReturnType<typeof setTimeout> | null
   private _pi: number = 0
   private _pl: any[] = []
   private _b: any = {}

@@ -1,7 +1,7 @@
 export function preventDoubleTap() {
   if (String(navigator.vendor).indexOf('Apple') === 0) {
     let firstEvent: MouseEvent | null = null
-    let timeout: number
+    let timeout: ReturnType<typeof setTimeout>
     // 用于全局禁用 iOS 双击包含手势
     document.documentElement.addEventListener('click', (event) => {
       const TIME_MAX = 450

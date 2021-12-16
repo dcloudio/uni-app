@@ -44,9 +44,10 @@ export const startAccelerometer = <API_TYPE_START_ACCELEROMETER>(
       window.addEventListener('devicemotion', listener, false)
     }
     if (!listener) {
-      if (DeviceMotionEvent.requestPermission) {
-        DeviceMotionEvent.requestPermission()
-          .then((res) => {
+      if ((DeviceMotionEvent as any).requestPermission) {
+        ;(DeviceMotionEvent as any)
+          .requestPermission()
+          .then((res: string) => {
             if (res === 'granted') {
               addEventListener()
               resolve()
@@ -54,7 +55,7 @@ export const startAccelerometer = <API_TYPE_START_ACCELEROMETER>(
               reject(`${res}`)
             }
           })
-          .catch((error) => {
+          .catch((error: any) => {
             reject(`${error}`)
           })
         return

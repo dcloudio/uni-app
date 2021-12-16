@@ -8,7 +8,7 @@ import { DebugRefresh, InitUniPageUrl } from '../utils'
 export function parseWebviewStyle(
   path: string,
   routeMeta: UniApp.PageRouteMeta,
-  webview: PlusWebviewWebviewObject
+  webview: { id: string }
 ): PlusWebviewWebviewStyles & {
   uniPageUrl?: InitUniPageUrl
   debugRefresh?: DebugRefresh

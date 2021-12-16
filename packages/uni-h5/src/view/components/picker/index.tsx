@@ -485,7 +485,7 @@ function useSystem() {
   return _system
 }
 
-let __contentVisibleDelay: number
+let __contentVisibleDelay: ReturnType<typeof setTimeout>
 function usePickerMethods(
   props: Props,
   state: State,
