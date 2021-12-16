@@ -256,7 +256,13 @@ declare namespace UniApp {
     }
     condition?: {
       current?: number
-      list?: { name?: string; path: string; query?: string }[]
+      list?: {
+        id?: string | number
+        name?: string
+        path?: string
+        pathName?: string
+        query?: string
+      }[]
     }
   }
 

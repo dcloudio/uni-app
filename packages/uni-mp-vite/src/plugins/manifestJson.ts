@@ -5,6 +5,7 @@ import {
   defineUniManifestJsonPlugin,
   getLocaleFiles,
   parseMiniProgramProjectJson,
+  parsePagesJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '../plugin'
 
@@ -21,6 +22,7 @@ export function uniManifestJsonPlugin(
           return
         }
         const inputDir = process.env.UNI_INPUT_DIR
+        const platform = process.env.UNI_PLATFORM
         this.addWatchFile(path.resolve(inputDir, 'manifest.json'))
         getLocaleFiles(path.resolve(inputDir, 'locale')).forEach((filepath) => {
           this.addWatchFile(filepath)
@@ -40,11 +42,10 @@ export function uniManifestJsonPlugin(
               }
               template.setting.urlCheck = false
             }
-            projectJson = parseMiniProgramProjectJson(
-              code,
-              process.env.UNI_PLATFORM,
-              { template }
-            )
+            projectJson = parseMiniProgramProjectJson(code, platform, {
+              template,
+              pagesJson: parsePagesJsonOnce(inputDir, platform),
+            })
           } else {
             // 无需解析，直接拷贝，如 quickapp-webview
             projectJson = template
