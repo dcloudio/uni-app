@@ -259,10 +259,24 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
  */
 function genLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   const { push } = context
+  if (!isIfElementNode(node)) {
+    push(`<block`)
+    // r0 => ready 首次渲染
+    genVIf(`r0`, context)
+    push(`>`)
+    genElement(node, context)
+    push(`</block>`)
+    return
+  }
+  // v-if,v-else-if 无需处理
+  if (node.vIf.name !== 'else') {
+    return genElement(node, context)
+  }
   push(`<block`)
-  // r0 => ready 首次渲染
-  genVIf(`r0`, context)
+  genVElse(context)
   push(`>`)
+  node.vIf.name = 'if'
+  node.vIf.condition = 'r0'
   genElement(node, context)
   push(`</block>`)
 }
