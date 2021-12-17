@@ -16,6 +16,7 @@ import { transformBind } from './transforms/vBind'
 import { transformComponent } from './transforms/transformComponent'
 import { transformSlot } from './transforms/vSlot'
 import { transformRoot } from './transforms/transformRoot'
+import { transformTag } from './transforms/transformTag'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -32,6 +33,7 @@ export function getBaseTransformPreset({
   // order is important
   const nodeTransforms = [
     transformRoot,
+    transformTag,
     transformIf,
     transformFor,
     transformSlot,
