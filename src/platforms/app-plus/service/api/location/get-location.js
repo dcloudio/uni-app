@@ -71,7 +71,8 @@ export function getLocation ({
     }, {
       geocode: geocode,
       enableHighAccuracy: isHighAccuracy || altitude,
-      timeout: highAccuracyExpireTime
+      timeout: highAccuracyExpireTime,
+      coordsType: type
     }
   )
 }
