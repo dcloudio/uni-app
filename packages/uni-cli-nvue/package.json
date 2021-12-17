@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-nvue",
-  "version": "3.0.0-alpha-3030220211217001",
+  "version": "3.0.0-alpha-3030220211217002",
   "description": "uni-cli-nvue",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,8 +21,8 @@
   "dependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030220211217001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3030220211217001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030220211217002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3030220211217002",
     "@vue/shared": "3.2.26",
     "acorn": "^5.2.1",
     "babel-loader": "^8.2.2",

@@ -16360,9 +16360,6 @@ var serviceContext = (function (vue) {
       resolve();
   }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
   const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath, visible }, { resolve, reject }) => {
-      if (!isTabBarPage()) {
-          return reject('not TabBar page');
-      }
       tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
       const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
       if (route) {
