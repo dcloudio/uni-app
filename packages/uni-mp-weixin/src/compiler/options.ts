@@ -11,7 +11,12 @@ import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 
-export const customElements = ['page-meta', 'navigation-bar', 'match-media']
+export const customElements = [
+  'page-container',
+  'page-meta',
+  'navigation-bar',
+  'match-media',
+]
 
 export const compilerOptions: CompilerOptions = {
   nodeTransforms: [transformRef, transformComponentLink],

@@ -58,7 +58,12 @@ var source = {
 	condition: condition
 };
 
-const customElements = ['page-meta', 'navigation-bar', 'match-media'];
+const customElements = [
+    'page-container',
+    'page-meta',
+    'navigation-bar',
+    'match-media',
+];
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
 };
