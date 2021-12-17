@@ -97,15 +97,23 @@ function parsePagesJson(
   pagesJson.subPackages = pagesJson.subPackages || pagesJson.subpackages
   if (pagesJson.subPackages) {
     if (subpackages) {
-      appJson.subPackages = pagesJson.subPackages.map(({ root, pages }) => {
-        return {
-          root,
-          pages: pages.map((page) => {
-            addPageJson(normalizePath(path.join(root, page.path)), page.style)
-            return page.path
-          }),
+      appJson.subPackages = pagesJson.subPackages.map(
+        ({ root, pages, ...rest }) => {
+          return extend(
+            {
+              root,
+              pages: pages.map((page) => {
+                addPageJson(
+                  normalizePath(path.join(root, page.path)),
+                  page.style
+                )
+                return page.path
+              }),
+            },
+            rest
+          )
         }
-      })
+      )
     } else {
       pagesJson.subPackages.forEach(({ root, pages }) => {
         pages.forEach((page) => {
@@ -146,7 +154,7 @@ function parsePagesJson(
       appJson.tabBar = tabBar
     }
   }
-  ;['preloadRule', 'workers'].forEach((name) => {
+  ;['preloadRule', 'workers', 'plugins'].forEach((name) => {
     if (hasOwn(pagesJson, name)) {
       appJson[name] = pagesJson[name]
     }

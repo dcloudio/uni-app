@@ -36,6 +36,12 @@ const pkgs = {
   '@dcloudio/types': {
     latest: '2.5.14',
   },
+  autoprefixer: {
+    latest: '10.4.0',
+  },
+  'rollup-plugin-copy': {
+    latest: '3.4.0',
+  },
 }
 
 async function checkVersions() {
