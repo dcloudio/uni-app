@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
 import {
   isInHBuilderX,
   normalizePath,
@@ -9,6 +9,7 @@ import {
 import { createDefine, isSsr } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
 import { external } from './configureServer/ssr'
+import { extend, hasOwn } from '@vue/shared'
 export function createConfig(options: {
   resolvedConfig: ResolvedConfig | null
 }): Plugin['config'] {
@@ -21,6 +22,26 @@ export function createConfig(options: {
         process.exit()
       }
     }
+
+    const server: ServerOptions = {
+      host: true,
+      fs: { strict: false },
+      watch: {
+        ignored: ['**/uniCloud**'],
+      },
+    }
+    const { server: userServer } = config
+    if (userServer) {
+      if (hasOwn(userServer, 'host')) {
+        server.host = userServer.host
+      }
+      if (hasOwn(userServer, 'fs')) {
+        extend(server.fs, userServer.fs)
+      }
+      if (hasOwn(userServer, 'watch')) {
+        extend(server.watch, userServer.watch)
+      }
+    }
     return {
       optimizeDeps: {
         entries: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
@@ -30,15 +51,7 @@ export function createConfig(options: {
         },
       },
       define: createDefine(env.command, config),
-      server: {
-        host: true,
-        fs: {
-          strict: false,
-        },
-        watch: {
-          ignored: ['**/uniCloud**'],
-        },
-      },
+      server,
       ssr: {
         external,
       },

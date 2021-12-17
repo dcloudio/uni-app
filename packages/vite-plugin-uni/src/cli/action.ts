@@ -9,7 +9,7 @@ import { initEnv, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
 
 export async function runDev(options: CliOptions & ServerOptions) {
-  extend(options, { watch: true, minify: false })
+  extend(options, { watch: {}, minify: false })
   initEnv('dev', options)
   try {
     if (options.platform === 'h5') {
