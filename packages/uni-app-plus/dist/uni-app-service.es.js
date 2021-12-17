@@ -16039,6 +16039,7 @@ var serviceContext = (function (vue) {
           geocode: geocode,
           enableHighAccuracy: isHighAccuracy || altitude,
           timeout: highAccuracyExpireTime,
+          coordsType: type,
       });
   }, GetLocationProtocol, GetLocationOptions);
 
