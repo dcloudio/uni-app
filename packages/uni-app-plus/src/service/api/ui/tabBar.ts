@@ -50,9 +50,6 @@ export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(
     { index, text, iconPath, selectedIconPath, pagePath, visible },
     { resolve, reject }
   ) => {
-    if (!isTabBarPage()) {
-      return reject('not TabBar page')
-    }
     tabBar.setTabBarItem(index, text, iconPath, selectedIconPath, visible)
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
     if (route) {
