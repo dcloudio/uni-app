@@ -100,7 +100,7 @@ export function initBehaviors(
   const behaviors: string[] = []
   if (isArray(vueBehaviors)) {
     vueBehaviors.forEach((behavior) => {
-      behaviors.push(behavior.replace('uni://', `${__PLATFORM_PREFIX__}://`))
+      behaviors.push(behavior.replace('uni://', '__GLOBAL__://'))
       if (behavior === 'uni://form-field') {
         if (isArray(vueProps)) {
           vueProps.push('name')

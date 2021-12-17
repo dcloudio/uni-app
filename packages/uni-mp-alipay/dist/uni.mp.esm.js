@@ -553,7 +553,7 @@ function initBehaviors(vueOptions, initBehavior) {
     const behaviors = [];
     if (isArray(vueBehaviors)) {
         vueBehaviors.forEach((behavior) => {
-            behaviors.push(behavior.replace('uni://', `${__PLATFORM_PREFIX__}://`));
+            behaviors.push(behavior.replace('uni://', 'my://'));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
