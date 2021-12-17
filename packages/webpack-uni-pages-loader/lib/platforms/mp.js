@@ -12,9 +12,16 @@ const {
   updateAppJsonUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
-const { darkmode, hasTheme } = require('@dcloudio/uni-cli-shared/lib/theme')
+const {
+  darkmode,
+  hasTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
 
-const { hasOwn, parseStyle, trimMPJson } = require('../util')
+const {
+  hasOwn,
+  parseStyle,
+  trimMPJson
+} = require('../util')
 
 const uniI18n = require('@dcloudio/uni-cli-i18n')
 
@@ -36,7 +43,9 @@ const pagesJson2AppJson = {
     if (value && value.list && value.list.length) {
       if (value.list.length < 2) {
         console.error(
-          uniI18n.__('pagesLoader.pagesTabbarMinItem2', { 0: 'tabBar.list' })
+          uniI18n.__('pagesLoader.pagesTabbarMinItem2', {
+            0: 'tabBar.list'
+          })
         )
       }
       const pages = json.pages
@@ -48,7 +57,9 @@ const pagesJson2AppJson = {
               fromJson.nvue &&
               fromJson.nvue.pages &&
               fromJson.nvue.pages.find(
-                ({ path }) => path === page.pagePath + '.html'
+                ({
+                  path
+                }) => path === page.pagePath + '.html'
               )
             )
           ) {
@@ -64,7 +75,8 @@ const pagesJson2AppJson = {
     json[name] = value
   },
   preloadRule: defaultCopy,
-  workers: defaultCopy
+  workers: defaultCopy,
+  plugins: defaultCopy
 }
 
 const manifestJson2AppJson = {
@@ -250,8 +262,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
       Object.keys(platformJson).forEach(key => {
         if (
-          !projectKeys.includes(key) &&
-          ['usingComponents', 'optimization'].indexOf(key) === -1
+          !projectKeys.includes(key) && ['usingComponents', 'optimization'].indexOf(key) === -1
         ) {
           // usingComponents 是编译模式开关，需要过滤，不能拷贝到 app
           app[key] = platformJson[key]
@@ -300,8 +311,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
       Object.keys(platformJson).forEach(key => {
         if (
-          !projectKeys.includes(key) &&
-          ['usingComponents', 'optimization'].indexOf(key) === -1
+          !projectKeys.includes(key) && ['usingComponents', 'optimization'].indexOf(key) === -1
         ) {
           // usingComponents 是编译模式开关，需要过滤，不能拷贝到 app
           app[key] = platformJson[key]
