@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1316,6 +1316,7 @@ var en = {
 	"uni.chooseVideo.sourceType.album": "Album",
 	"uni.chooseVideo.sourceType.camera": "Camera",
 	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
+	"uni.previewImage.cancel": "Cancel",
 	"uni.previewImage.button.save": "Save Image",
 	"uni.previewImage.save.success": "Saved successfully",
 	"uni.previewImage.save.fail": "Save failed",

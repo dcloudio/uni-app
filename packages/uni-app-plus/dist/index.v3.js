@@ -1539,6 +1539,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Camera",
   	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
+  	"uni.previewImage.cancel": "Cancel",
   	"uni.previewImage.button.save": "Save Image",
   	"uni.previewImage.save.success": "Saved successfully",
   	"uni.previewImage.save.fail": "Save failed",
@@ -11019,11 +11020,6 @@ var serviceContext = (function () {
     pagePath,
     visible
   }) {
-    if (!isTabBarPage()) {
-      return {
-        errMsg: 'setTabBarItem:fail not TabBar page'
-      }
-    }
     tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
