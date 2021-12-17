@@ -5,8 +5,8 @@ importers:
   .:
     specifiers:
       '@dcloudio/types': ^2.5.14
-      '@dcloudio/uni-api': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-app': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-api': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-app': 3.0.0-alpha-3030220211217001
       '@jest/types': ^27.0.2
       '@microsoft/api-extractor': ^7.19.2
       '@rollup/plugin-alias': ^3.1.1
@@ -127,13 +127,13 @@ importers:
 
   packages/size-check:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-components': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-h5': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-components': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-h5': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3030220211217001
     devDependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components
@@ -145,17 +145,17 @@ importers:
 
   packages/uni-api:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-app:
     specifiers:
-      '@dcloudio/uni-cloud': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-components': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-stat': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cloud': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-components': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-stat': 3.0.0-alpha-3030220211217001
       '@vue/shared': 3.2.26
     dependencies:
       '@dcloudio/uni-cloud': link:../uni-cloud
@@ -167,13 +167,13 @@ importers:
 
   packages/uni-app-plus:
     specifiers:
-      '@dcloudio/uni-app-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-app-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-components': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-h5': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-app-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-app-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-components': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-h5': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.26
       autoprefixer: ^10.4.0
@@ -196,10 +196,10 @@ importers:
 
   packages/uni-app-vite:
     specifiers:
-      '@dcloudio/uni-cli-nvue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-nvue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
@@ -227,13 +227,13 @@ importers:
 
   packages/uni-app-vue:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-automator:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
       address: ^1.1.2
@@ -266,8 +266,8 @@ importers:
     specifiers:
       '@babel/core': ^7.16.0
       '@babel/preset-env': ^7.16.0
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@types/loader-utils': ^2.0.3
       '@types/module-alias': ^2.0.1
       '@types/terser-webpack-plugin': ^5.0.4
@@ -355,8 +355,8 @@ importers:
     specifiers:
       '@babel/parser': ^7.16.4
       '@babel/types': ^7.16.0
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
@@ -440,9 +440,9 @@ importers:
 
   packages/uni-cloud:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -450,7 +450,7 @@ importers:
 
   packages/uni-components:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@types/quill': ^1.3.7
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
@@ -458,9 +458,9 @@ importers:
 
   packages/uni-core:
     specifiers:
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       safe-area-insets: ^1.4.1
     devDependencies:
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -471,11 +471,11 @@ importers:
   packages/uni-h5:
     specifiers:
       '@dcloudio/uni-cli-i18n': ^2.0.0-32920211029004
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@types/google.maps': ^3.45.6
       '@vue/server-renderer': 3.2.26
       '@vue/shared': 3.2.26
@@ -507,8 +507,8 @@ importers:
 
   packages/uni-h5-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
@@ -552,9 +552,9 @@ importers:
 
   packages/uni-mp-alipay:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
       '@vue/shared': 3.2.26
     dependencies:
@@ -566,12 +566,12 @@ importers:
 
   packages/uni-mp-baidu:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -588,8 +588,8 @@ importers:
       '@babel/generator': ^7.16.0
       '@babel/parser': ^7.16.4
       '@babel/types': ^7.16.0
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
       '@vue/compiler-dom': 3.2.26
       '@vue/compiler-sfc': 3.2.26
@@ -613,12 +613,12 @@ importers:
 
   packages/uni-mp-kuaishou:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -632,12 +632,12 @@ importers:
 
   packages/uni-mp-lark:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -651,11 +651,11 @@ importers:
 
   packages/uni-mp-qq:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@types/fs-extra': ^9.0.13
       '@vue/compiler-core': 3.2.26
       fs-extra: ^10.0.0
@@ -672,11 +672,11 @@ importers:
 
   packages/uni-mp-toutiao:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -688,10 +688,10 @@ importers:
 
   packages/uni-mp-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@intlify/core-base': 9.1.9
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
@@ -717,16 +717,16 @@ importers:
 
   packages/uni-mp-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
     devDependencies:
       '@dcloudio/uni-mp-vue': 'link:'
 
   packages/uni-mp-weixin:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
@@ -738,10 +738,10 @@ importers:
 
   packages/uni-quickapp-webview:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@vue/compiler-core': 3.2.26
       '@vue/shared': 3.2.26
     dependencies:
@@ -764,7 +764,7 @@ importers:
 
   packages/uni-stat:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
       '@types/debug': ^4.1.7
       debug: ^4.3.2
     dependencies:
@@ -775,8 +775,8 @@ importers:
 
   packages/uni-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
     devDependencies:
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
@@ -786,8 +786,8 @@ importers:
       '@babel/core': ^7.16.0
       '@babel/plugin-syntax-import-meta': ^7.10.4
       '@babel/plugin-transform-typescript': ^7.16.1
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030120211217001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030120211217001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030220211217001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3030220211217001
       '@rollup/pluginutils': ^4.1.1
       '@types/debug': ^4.1.7
       '@types/express': ^4.17.12
@@ -2851,7 +2851,7 @@ packages:
     dev: true
 
   /@types/yauzl/2.9.2:
-    resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==}
+    resolution: {integrity: sha1-xI5dVq/xREQJ45+hZLC01FUqe3o=, tarball: '@types/yauzl/download/@types/yauzl-2.9.2.tgz'}
     requiresBuild: true
     dependencies:
       '@types/node': 14.18.0
@@ -3912,7 +3912,7 @@ packages:
     dev: true
 
   /colors/1.4.0:
-    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
+    resolution: {integrity: sha1-xQSRR51MG9rtLJztMs98fcI2D3g=, tarball: colors/download/colors-1.4.0.tgz}
     engines: {node: '>=0.1.90'}
     requiresBuild: true
     dev: true
@@ -4446,14 +4446,14 @@ packages:
     dev: false
 
   /esbuild-android-arm64/0.13.15:
-    resolution: {integrity: sha512-m602nft/XXeO8YQPUDVoHfjyRVPdPgjyyXOxZ44MK/agewFFkPa8tUo6lAzSWh5Ui5PB4KR9UIFTSBKh/RrCmg==}
+    resolution: {integrity: sha512-m602nft/XXeO8YQPUDVoHfjyRVPdPgjyyXOxZ44MK/agewFFkPa8tUo6lAzSWh5Ui5PB4KR9UIFTSBKh/RrCmg==, tarball: esbuild-android-arm64/download/esbuild-android-arm64-0.13.15.tgz}
     cpu: [arm64]
     os: [android]
     requiresBuild: true
     optional: true
 
   /esbuild-android-arm64/0.14.2:
-    resolution: {integrity: sha512-hEixaKMN3XXCkoe+0WcexO4CcBVU5DCSUT+7P8JZiWZCbAjSkc9b6Yz2X5DSfQmRCtI/cQRU6TfMYrMQ5NBfdw==}
+    resolution: {integrity: sha512-hEixaKMN3XXCkoe+0WcexO4CcBVU5DCSUT+7P8JZiWZCbAjSkc9b6Yz2X5DSfQmRCtI/cQRU6TfMYrMQ5NBfdw==, tarball: esbuild-android-arm64/download/esbuild-android-arm64-0.14.2.tgz}
     cpu: [arm64]
     os: [android]
     requiresBuild: true
@@ -4461,14 +4461,14 @@ packages:
     optional: true
 
   /esbuild-darwin-64/0.13.15:
-    resolution: {integrity: sha512-ihOQRGs2yyp7t5bArCwnvn2Atr6X4axqPpEdCFPVp7iUj4cVSdisgvEKdNR7yH3JDjW6aQDw40iQFoTqejqxvQ==}
+    resolution: {integrity: sha512-ihOQRGs2yyp7t5bArCwnvn2Atr6X4axqPpEdCFPVp7iUj4cVSdisgvEKdNR7yH3JDjW6aQDw40iQFoTqejqxvQ==, tarball: esbuild-darwin-64/download/esbuild-darwin-64-0.13.15.tgz}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     optional: true
 
   /esbuild-darwin-64/0.14.2:
-    resolution: {integrity: sha512-Uq8t0cbJQkxkQdbUfOl2wZqZ/AtLZjvJulR1HHnc96UgyzG9YlCLSDMiqjM+NANEy7/zzvwKJsy3iNC9wwqLJA==}
+    resolution: {integrity: sha512-Uq8t0cbJQkxkQdbUfOl2wZqZ/AtLZjvJulR1HHnc96UgyzG9YlCLSDMiqjM+NANEy7/zzvwKJsy3iNC9wwqLJA==, tarball: esbuild-darwin-64/download/esbuild-darwin-64-0.14.2.tgz}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
@@ -4476,14 +4476,14 @@ packages:
     optional: true
 
   /esbuild-darwin-arm64/0.13.15:
-    resolution: {integrity: sha512-i1FZssTVxUqNlJ6cBTj5YQj4imWy3m49RZRnHhLpefFIh0To05ow9DTrXROTE1urGTQCloFUXTX8QfGJy1P8dQ==}
+    resolution: {integrity: sha512-i1FZssTVxUqNlJ6cBTj5YQj4imWy3m49RZRnHhLpefFIh0To05ow9DTrXROTE1urGTQCloFUXTX8QfGJy1P8dQ==, tarball: esbuild-darwin-arm64/download/esbuild-darwin-arm64-0.13.15.tgz}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     optional: true
 
   /esbuild-darwin-arm64/0.14.2:
-    resolution: {integrity: sha512-619MSa17sr7YCIrUj88KzQu2ESA4jKYtIYfLU/smX6qNgxQt3Y/gzM4s6sgJ4fPQzirvmXgcHv1ZNQAs/Xh48A==}
+    resolution: {integrity: sha512-619MSa17sr7YCIrUj88KzQu2ESA4jKYtIYfLU/smX6qNgxQt3Y/gzM4s6sgJ4fPQzirvmXgcHv1ZNQAs/Xh48A==, tarball: esbuild-darwin-arm64/download/esbuild-darwin-arm64-0.14.2.tgz}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
@@ -4491,14 +4491,14 @@ packages:
     optional: true
 
   /esbuild-freebsd-64/0.13.15:
-    resolution: {integrity: sha512-G3dLBXUI6lC6Z09/x+WtXBXbOYQZ0E8TDBqvn7aMaOCzryJs8LyVXKY4CPnHFXZAbSwkCbqiPuSQ1+HhrNk7EA==}
+    resolution: {integrity: sha512-G3dLBXUI6lC6Z09/x+WtXBXbOYQZ0E8TDBqvn7aMaOCzryJs8LyVXKY4CPnHFXZAbSwkCbqiPuSQ1+HhrNk7EA==, tarball: esbuild-freebsd-64/download/esbuild-freebsd-64-0.13.15.tgz}
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
     optional: true
 
   /esbuild-freebsd-64/0.14.2:
-    resolution: {integrity: sha512-aP6FE/ZsChZpUV6F3HE3x1Pz0paoYXycJ7oLt06g0G9dhJKknPawXCqQg/WMyD+ldCEZfo7F1kavenPdIT/SGQ==}
+    resolution: {integrity: sha512-aP6FE/ZsChZpUV6F3HE3x1Pz0paoYXycJ7oLt06g0G9dhJKknPawXCqQg/WMyD+ldCEZfo7F1kavenPdIT/SGQ==, tarball: esbuild-freebsd-64/download/esbuild-freebsd-64-0.14.2.tgz}
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
@@ -4506,14 +4506,14 @@ packages:
     optional: true
 
   /esbuild-freebsd-arm64/0.13.15:
-    resolution: {integrity: sha512-KJx0fzEDf1uhNOZQStV4ujg30WlnwqUASaGSFPhznLM/bbheu9HhqZ6mJJZM32lkyfGJikw0jg7v3S0oAvtvQQ==}
+    resolution: {integrity: sha512-KJx0fzEDf1uhNOZQStV4ujg30WlnwqUASaGSFPhznLM/bbheu9HhqZ6mJJZM32lkyfGJikw0jg7v3S0oAvtvQQ==, tarball: esbuild-freebsd-arm64/download/esbuild-freebsd-arm64-0.13.15.tgz}
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
     optional: true
 
   /esbuild-freebsd-arm64/0.14.2:
-    resolution: {integrity: sha512-LSm98WTb1QIhyS83+Po0KTpZNdd2XpVpI9ua5rLWqKWbKeNRFwOsjeiuwBaRNc+O32s9oC2ZMefETxHBV6VNkQ==}
+    resolution: {integrity: sha512-LSm98WTb1QIhyS83+Po0KTpZNdd2XpVpI9ua5rLWqKWbKeNRFwOsjeiuwBaRNc+O32s9oC2ZMefETxHBV6VNkQ==, tarball: esbuild-freebsd-arm64/download/esbuild-freebsd-arm64-0.14.2.tgz}
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
@@ -4521,14 +4521,14 @@ packages:
     optional: true
 
   /esbuild-linux-32/0.13.15:
-    resolution: {integrity: sha512-ZvTBPk0YWCLMCXiFmD5EUtB30zIPvC5Itxz0mdTu/xZBbbHJftQgLWY49wEPSn2T/TxahYCRDWun5smRa0Tu+g==}
+    resolution: {integrity: sha512-ZvTBPk0YWCLMCXiFmD5EUtB30zIPvC5Itxz0mdTu/xZBbbHJftQgLWY49wEPSn2T/TxahYCRDWun5smRa0Tu+g==, tarball: esbuild-linux-32/download/esbuild-linux-32-0.13.15.tgz}
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
     optional: true
 
   /esbuild-linux-32/0.14.2:
-    resolution: {integrity: sha512-8VxnNEyeUbiGflTKcuVc5JEPTqXfsx2O6ABwUbfS1Hp26lYPRPC7pKQK5Dxa0MBejGc50jy7YZae3EGQUQ8EkQ==}
+    resolution: {integrity: sha512-8VxnNEyeUbiGflTKcuVc5JEPTqXfsx2O6ABwUbfS1Hp26lYPRPC7pKQK5Dxa0MBejGc50jy7YZae3EGQUQ8EkQ==, tarball: esbuild-linux-32/download/esbuild-linux-32-0.14.2.tgz}
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
@@ -4536,14 +4536,14 @@ packages:
     optional: true
 
   /esbuild-linux-64/0.13.15:
-    resolution: {integrity: sha512-eCKzkNSLywNeQTRBxJRQ0jxRCl2YWdMB3+PkWFo2BBQYC5mISLIVIjThNtn6HUNqua1pnvgP5xX0nHbZbPj5oA==}
+    resolution: {integrity: sha512-eCKzkNSLywNeQTRBxJRQ0jxRCl2YWdMB3+PkWFo2BBQYC5mISLIVIjThNtn6HUNqua1pnvgP5xX0nHbZbPj5oA==, tarball: esbuild-linux-64/download/esbuild-linux-64-0.13.15.tgz}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     optional: true
 
   /esbuild-linux-64/0.14.2:
-    resolution: {integrity: sha512-4bzMS2dNxOJoFIiHId4w+tqQzdnsch71JJV1qZnbnErSFWcR9lRgpSqWnTTFtv6XM+MvltRzSXC5wQ7AEBY6Hg==}
+    resolution: {integrity: sha512-4bzMS2dNxOJoFIiHId4w+tqQzdnsch71JJV1qZnbnErSFWcR9lRgpSqWnTTFtv6XM+MvltRzSXC5wQ7AEBY6Hg==, tarball: esbuild-linux-64/download/esbuild-linux-64-0.14.2.tgz}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
@@ -4551,14 +4551,14 @@ packages:
     optional: true
 
   /esbuild-linux-arm/0.13.15:
-    resolution: {integrity: sha512-wUHttDi/ol0tD8ZgUMDH8Ef7IbDX+/UsWJOXaAyTdkT7Yy9ZBqPg8bgB/Dn3CZ9SBpNieozrPRHm0BGww7W/jA==}
+    resolution: {integrity: sha512-wUHttDi/ol0tD8ZgUMDH8Ef7IbDX+/UsWJOXaAyTdkT7Yy9ZBqPg8bgB/Dn3CZ9SBpNieozrPRHm0BGww7W/jA==, tarball: esbuild-linux-arm/download/esbuild-linux-arm-0.13.15.tgz}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
     optional: true
 
   /esbuild-linux-arm/0.14.2:
-    resolution: {integrity: sha512-PaylahvMHhH8YMfJPMKEqi64qA0Su+d4FNfHKvlKes/2dUe4QxgbwXT9oLVgy8iJdcFMrO7By4R8fS8S0p8aVQ==}
+    resolution: {integrity: sha512-PaylahvMHhH8YMfJPMKEqi64qA0Su+d4FNfHKvlKes/2dUe4QxgbwXT9oLVgy8iJdcFMrO7By4R8fS8S0p8aVQ==, tarball: esbuild-linux-arm/download/esbuild-linux-arm-0.14.2.tgz}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
@@ -4566,14 +4566,14 @@ packages:
     optional: true
 
   /esbuild-linux-arm64/0.13.15:
-    resolution: {integrity: sha512-bYpuUlN6qYU9slzr/ltyLTR9YTBS7qUDymO8SV7kjeNext61OdmqFAzuVZom+OLW1HPHseBfJ/JfdSlx8oTUoA==}
+    resolution: {integrity: sha512-bYpuUlN6qYU9slzr/ltyLTR9YTBS7qUDymO8SV7kjeNext61OdmqFAzuVZom+OLW1HPHseBfJ/JfdSlx8oTUoA==, tarball: esbuild-linux-arm64/download/esbuild-linux-arm64-0.13.15.tgz}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     optional: true
 
   /esbuild-linux-arm64/0.14.2:
-    resolution: {integrity: sha512-RlIVp0RwJrdtasDF1vTFueLYZ8WuFzxoQ1OoRFZOTyJHCGCNgh7xJIC34gd7B7+RT0CzLBB4LcM5n0LS+hIoww==}
+    resolution: {integrity: sha512-RlIVp0RwJrdtasDF1vTFueLYZ8WuFzxoQ1OoRFZOTyJHCGCNgh7xJIC34gd7B7+RT0CzLBB4LcM5n0LS+hIoww==, tarball: esbuild-linux-arm64/download/esbuild-linux-arm64-0.14.2.tgz}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
@@ -4581,14 +4581,14 @@ packages:
     optional: true
 
   /esbuild-linux-mips64le/0.13.15:
-    resolution: {integrity: sha512-KlVjIG828uFPyJkO/8gKwy9RbXhCEUeFsCGOJBepUlpa7G8/SeZgncUEz/tOOUJTcWMTmFMtdd3GElGyAtbSWg==}
+    resolution: {integrity: sha512-KlVjIG828uFPyJkO/8gKwy9RbXhCEUeFsCGOJBepUlpa7G8/SeZgncUEz/tOOUJTcWMTmFMtdd3GElGyAtbSWg==, tarball: esbuild-linux-mips64le/download/esbuild-linux-mips64le-0.13.15.tgz}
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
     optional: true
 
   /esbuild-linux-mips64le/0.14.2:
-    resolution: {integrity: sha512-Fdwrq2roFnO5oetIiUQQueZ3+5soCxBSJswg3MvYaXDomj47BN6oAWMZgLrFh1oVrtWrxSDLCJBenYdbm2s+qQ==}
+    resolution: {integrity: sha512-Fdwrq2roFnO5oetIiUQQueZ3+5soCxBSJswg3MvYaXDomj47BN6oAWMZgLrFh1oVrtWrxSDLCJBenYdbm2s+qQ==, tarball: esbuild-linux-mips64le/download/esbuild-linux-mips64le-0.14.2.tgz}
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
@@ -4596,14 +4596,14 @@ packages:
     optional: true
 
   /esbuild-linux-ppc64le/0.13.15:
-    resolution: {integrity: sha512-h6gYF+OsaqEuBjeesTBtUPw0bmiDu7eAeuc2OEH9S6mV9/jPhPdhOWzdeshb0BskRZxPhxPOjqZ+/OqLcxQwEQ==}
+    resolution: {integrity: sha512-h6gYF+OsaqEuBjeesTBtUPw0bmiDu7eAeuc2OEH9S6mV9/jPhPdhOWzdeshb0BskRZxPhxPOjqZ+/OqLcxQwEQ==, tarball: esbuild-linux-ppc64le/download/esbuild-linux-ppc64le-0.13.15.tgz}
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
     optional: true
 
   /esbuild-linux-ppc64le/0.14.2:
-    resolution: {integrity: sha512-vxptskw8JfCDD9QqpRO0XnsM1osuWeRjPaXX1TwdveLogYsbdFtcuiuK/4FxGiNMUr1ojtnCS2rMPbY8puc5NA==}
+    resolution: {integrity: sha512-vxptskw8JfCDD9QqpRO0XnsM1osuWeRjPaXX1TwdveLogYsbdFtcuiuK/4FxGiNMUr1ojtnCS2rMPbY8puc5NA==, tarball: esbuild-linux-ppc64le/download/esbuild-linux-ppc64le-0.14.2.tgz}
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
@@ -4611,14 +4611,14 @@ packages:
     optional: true
 
   /esbuild-netbsd-64/0.13.15:
-    resolution: {integrity: sha512-3+yE9emwoevLMyvu+iR3rsa+Xwhie7ZEHMGDQ6dkqP/ndFzRHkobHUKTe+NCApSqG5ce2z4rFu+NX/UHnxlh3w==}
+    resolution: {integrity: sha512-3+yE9emwoevLMyvu+iR3rsa+Xwhie7ZEHMGDQ6dkqP/ndFzRHkobHUKTe+NCApSqG5ce2z4rFu+NX/UHnxlh3w==, tarball: esbuild-netbsd-64/download/esbuild-netbsd-64-0.13.15.tgz}
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
     optional: true
 
   /esbuild-netbsd-64/0.14.2:
-    resolution: {integrity: sha512-I8+LzYK5iSNpspS9eCV9sW67Rj8FgMHimGri4mKiGAmN0pNfx+hFX146rYtzGtewuxKtTsPywWteHx+hPRLDsw==}
+    resolution: {integrity: sha512-I8+LzYK5iSNpspS9eCV9sW67Rj8FgMHimGri4mKiGAmN0pNfx+hFX146rYtzGtewuxKtTsPywWteHx+hPRLDsw==, tarball: esbuild-netbsd-64/download/esbuild-netbsd-64-0.14.2.tgz}
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
@@ -4626,14 +4626,14 @@ packages:
     optional: true
 
   /esbuild-openbsd-64/0.13.15:
-    resolution: {integrity: sha512-wTfvtwYJYAFL1fSs8yHIdf5GEE4NkbtbXtjLWjM3Cw8mmQKqsg8kTiqJ9NJQe5NX/5Qlo7Xd9r1yKMMkHllp5g==}
+    resolution: {integrity: sha512-wTfvtwYJYAFL1fSs8yHIdf5GEE4NkbtbXtjLWjM3Cw8mmQKqsg8kTiqJ9NJQe5NX/5Qlo7Xd9r1yKMMkHllp5g==, tarball: esbuild-openbsd-64/download/esbuild-openbsd-64-0.13.15.tgz}
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
     optional: true
 
   /esbuild-openbsd-64/0.14.2:
-    resolution: {integrity: sha512-120HgMe9elidWUvM2E6mMf0csrGwx8sYDqUIJugyMy1oHm+/nT08bTAVXuwYG/rkMIqsEO9AlMxuYnwR6En/3Q==}
+    resolution: {integrity: sha512-120HgMe9elidWUvM2E6mMf0csrGwx8sYDqUIJugyMy1oHm+/nT08bTAVXuwYG/rkMIqsEO9AlMxuYnwR6En/3Q==, tarball: esbuild-openbsd-64/download/esbuild-openbsd-64-0.14.2.tgz}
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
@@ -4641,14 +4641,14 @@ packages:
     optional: true
 
   /esbuild-sunos-64/0.13.15:
-    resolution: {integrity: sha512-lbivT9Bx3t1iWWrSnGyBP9ODriEvWDRiweAs69vI+miJoeKwHWOComSRukttbuzjZ8r1q0mQJ8Z7yUsDJ3hKdw==}
+    resolution: {integrity: sha512-lbivT9Bx3t1iWWrSnGyBP9ODriEvWDRiweAs69vI+miJoeKwHWOComSRukttbuzjZ8r1q0mQJ8Z7yUsDJ3hKdw==, tarball: esbuild-sunos-64/download/esbuild-sunos-64-0.13.15.tgz}
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
     optional: true
 
   /esbuild-sunos-64/0.14.2:
-    resolution: {integrity: sha512-Q3xcf9Uyfra9UuCFxoLixVvdigo0daZaKJ97TL2KNA4bxRUPK18wwGUk3AxvgDQZpRmg82w9PnkaNYo7a+24ow==}
+    resolution: {integrity: sha512-Q3xcf9Uyfra9UuCFxoLixVvdigo0daZaKJ97TL2KNA4bxRUPK18wwGUk3AxvgDQZpRmg82w9PnkaNYo7a+24ow==, tarball: esbuild-sunos-64/download/esbuild-sunos-64-0.14.2.tgz}
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
@@ -4656,14 +4656,14 @@ packages:
     optional: true
 
   /esbuild-windows-32/0.13.15:
-    resolution: {integrity: sha512-fDMEf2g3SsJ599MBr50cY5ve5lP1wyVwTe6aLJsM01KtxyKkB4UT+fc5MXQFn3RLrAIAZOG+tHC+yXObpSn7Nw==}
+    resolution: {integrity: sha512-fDMEf2g3SsJ599MBr50cY5ve5lP1wyVwTe6aLJsM01KtxyKkB4UT+fc5MXQFn3RLrAIAZOG+tHC+yXObpSn7Nw==, tarball: esbuild-windows-32/download/esbuild-windows-32-0.13.15.tgz}
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
     optional: true
 
   /esbuild-windows-32/0.14.2:
-    resolution: {integrity: sha512-TW7O49tPsrq+N1sW8mb3m24j/iDGa4xzAZH4wHWwoIzgtZAYPKC0hpIhufRRG/LA30bdMChO9pjJZ5mtcybtBQ==}
+    resolution: {integrity: sha512-TW7O49tPsrq+N1sW8mb3m24j/iDGa4xzAZH4wHWwoIzgtZAYPKC0hpIhufRRG/LA30bdMChO9pjJZ5mtcybtBQ==, tarball: esbuild-windows-32/download/esbuild-windows-32-0.14.2.tgz}
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
@@ -4671,14 +4671,14 @@ packages:
     optional: true
 
   /esbuild-windows-64/0.13.15:
-    resolution: {integrity: sha512-9aMsPRGDWCd3bGjUIKG/ZOJPKsiztlxl/Q3C1XDswO6eNX/Jtwu4M+jb6YDH9hRSUflQWX0XKAfWzgy5Wk54JQ==}
+    resolution: {integrity: sha512-9aMsPRGDWCd3bGjUIKG/ZOJPKsiztlxl/Q3C1XDswO6eNX/Jtwu4M+jb6YDH9hRSUflQWX0XKAfWzgy5Wk54JQ==, tarball: esbuild-windows-64/download/esbuild-windows-64-0.13.15.tgz}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     optional: true
 
   /esbuild-windows-64/0.14.2:
-    resolution: {integrity: sha512-Rym6ViMNmi1E2QuQMWy0AFAfdY0wGwZD73BnzlsQBX5hZBuy/L+Speh7ucUZ16gwsrMM9v86icZUDrSN/lNBKg==}
+    resolution: {integrity: sha512-Rym6ViMNmi1E2QuQMWy0AFAfdY0wGwZD73BnzlsQBX5hZBuy/L+Speh7ucUZ16gwsrMM9v86icZUDrSN/lNBKg==, tarball: esbuild-windows-64/download/esbuild-windows-64-0.14.2.tgz}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
@@ -4686,14 +4686,14 @@ packages:
     optional: true
 
   /esbuild-windows-arm64/0.13.15:
-    resolution: {integrity: sha512-zzvyCVVpbwQQATaf3IG8mu1IwGEiDxKkYUdA4FpoCHi1KtPa13jeScYDjlW0Qh+ebWzpKfR2ZwvqAQkSWNcKjA==}
+    resolution: {integrity: sha512-zzvyCVVpbwQQATaf3IG8mu1IwGEiDxKkYUdA4FpoCHi1KtPa13jeScYDjlW0Qh+ebWzpKfR2ZwvqAQkSWNcKjA==, tarball: esbuild-windows-arm64/download/esbuild-windows-arm64-0.13.15.tgz}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     optional: true
 
   /esbuild-windows-arm64/0.14.2:
-    resolution: {integrity: sha512-ZrLbhr0vX5Em/P1faMnHucjVVWPS+m3tktAtz93WkMZLmbRJevhiW1y4CbulBd2z0MEdXZ6emDa1zFHq5O5bSA==}
+    resolution: {integrity: sha512-ZrLbhr0vX5Em/P1faMnHucjVVWPS+m3tktAtz93WkMZLmbRJevhiW1y4CbulBd2z0MEdXZ6emDa1zFHq5O5bSA==, tarball: esbuild-windows-arm64/download/esbuild-windows-arm64-0.14.2.tgz}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
@@ -5258,7 +5258,7 @@ packages:
     dev: true
 
   /fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    resolution: {integrity: sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=, tarball: fsevents/download/fsevents-2.3.2.tgz}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
