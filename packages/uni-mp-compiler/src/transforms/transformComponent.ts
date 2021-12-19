@@ -1,3 +1,4 @@
+import { camelize } from '@vue/shared'
 import {
   ComponentNode,
   createSimpleExpression,
@@ -23,6 +24,7 @@ import {
 } from './utils'
 import { genExpr, genBabelExpr } from '../codegen'
 import {
+  Expression,
   identifier,
   logicalExpression,
   objectExpression,
@@ -140,9 +142,23 @@ function isComponentProp(name: string) {
  * @param context
  */
 export function rewriteBinding(
-  { props }: ComponentNode,
+  { tag, props }: ComponentNode,
   context: TransformContext
 ) {
+  const isMiniProgramComponent = context.isMiniProgramComponent(tag)
+
+  const createObjectProperty = isMiniProgramComponent
+    ? (name: string, value: Expression) =>
+        objectProperty(identifier(camelize(name)), value)
+    : (name: string, value: Expression) => {
+        const computed = !isSimpleIdentifier(name)
+        return objectProperty(
+          computed ? stringLiteral(name) : identifier(name),
+          value,
+          computed
+        )
+      }
+
   const properties: ObjectProperty[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
@@ -151,13 +167,8 @@ export function rewriteBinding(
       if (!isComponentProp(name)) {
         continue
       }
-      const computed = !isSimpleIdentifier(name)
       properties.push(
-        objectProperty(
-          computed ? stringLiteral(name) : identifier(name),
-          stringLiteral(prop.value?.content || ''),
-          computed
-        )
+        createObjectProperty(name, stringLiteral(prop.value?.content || ''))
       )
     } else if (prop.type === NodeTypes.DIRECTIVE) {
       if (prop.name !== 'bind') {
@@ -176,15 +187,7 @@ export function rewriteBinding(
         if (!valueExpr) {
           continue
         }
-        const name = arg.content
-        const computed = !isSimpleIdentifier(name)
-        properties.push(
-          objectProperty(
-            computed ? stringLiteral(name) : identifier(name),
-            valueExpr,
-            computed
-          )
-        )
+        properties.push(createObjectProperty(arg.content, valueExpr))
       } else {
         // :[dynamic]="dynamic"
         const leftExpr = parseExpr(genExpr(arg), context, exp)
