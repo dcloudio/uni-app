@@ -148,9 +148,17 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
     // 无后备内容或支持后备内容
     return genElement(node, context)
   }
+  const { push } = context
+  const isVIfSlot = isIfElementNode(node)
+  if (isVIfSlot) {
+    push(`<block`)
+    genVIfCode(node, context)
+    push(`>`)
+    delete (node as any).vIf
+  }
   const children = node.children.slice()
   node.children.length = 0
-  const { push } = context
+
   push(`<block`)
   const nameProp = findProp(node, 'name')
   genVIf(
@@ -170,6 +178,9 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
     genNode(node, context)
   })
   push(`</block>`)
+  if (isVIfSlot) {
+    push(`</block>`)
+  }
 }
 
 function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
@@ -281,6 +292,17 @@ function genLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   push(`</block>`)
 }
 
+function genVIfCode(node: IfElementNode, context: TemplateCodegenContext) {
+  const { name, condition } = node.vIf
+  if (name === 'if') {
+    genVIf(condition!, context)
+  } else if (name === 'else-if') {
+    genVElseIf(condition!, context)
+  } else if (name === 'else') {
+    genVElse(context)
+  }
+}
+
 function genElement(node: ElementNode, context: TemplateCodegenContext) {
   const { children, isSelfClosing, props } = node
   let tag = node.tag
@@ -311,26 +333,17 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
   const hasVIf = isIfElementNode(node)
   const hasVFor = isForElementNode(node)
   const hasVIfAndVFor = hasVIf && hasVFor
-  function genVIfCode(node: IfElementNode) {
-    const { name, condition } = node.vIf
-    if (name === 'if') {
-      genVIf(condition!, context)
-    } else if (name === 'else-if') {
-      genVElseIf(condition!, context)
-    } else if (name === 'else') {
-      genVElse(context)
-    }
-  }
+
   // 小程序中 wx:else wx:elif 不支持与 wx:for 同时使用
   // 故 if 需要补充一层 block
   if (hasVIfAndVFor) {
     push(`<block`)
-    genVIfCode(node)
+    genVIfCode(node, context)
     push(`>`)
   }
   push(`<${tag}`)
   if (!hasVIfAndVFor && hasVIf) {
-    genVIfCode(node)
+    genVIfCode(node, context)
   }
   if (hasVFor) {
     genVFor(node, context)

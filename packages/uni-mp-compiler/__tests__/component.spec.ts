@@ -115,10 +115,10 @@ describe('compiler: transform component', () => {
       },
     })
     assert(
-      `<van-button><template #default><view/></template><template #head><view/></template></van-button>`,
-      `<van-button u-t="m" u-i="dc555fe4-0" bind:__l="__l"><view/><view slot="head"/></van-button>`,
+      `<van-button custom-style="background-color: unset;" :close-on-click-overlay="true"><template #default><view/></template><template #head><view/></template></van-button>`,
+      `<van-button u-t="m" u-i="dc555fe4-0" bind:__l="__l" u-p="{{a}}"><view/><view slot="head"/></van-button>`,
       `(_ctx, _cache) => {
-  return {}
+  return { a: _p({ customStyle: 'background-color: unset;', closeOnClickOverlay: true }) }
 }`,
       {
         filename,

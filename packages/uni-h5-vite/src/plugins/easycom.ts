@@ -3,7 +3,7 @@ import type { Plugin } from 'vite'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
 import { camelize, capitalize } from '@vue/shared'
 
-import { isBuiltInComponent } from '@dcloudio/uni-shared'
+import { COMPONENT_PREFIX, isBuiltInComponent } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE,
   H5_COMPONENTS_STYLE_PATH,
@@ -82,6 +82,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
         (str, name) => {
           if (name && !name.startsWith('_')) {
             if (isBuiltInComponent(name)) {
+              name = name.replace(COMPONENT_PREFIX, '')
               const local = `__syscom_${i++}`
               if (needCombineBuiltInCss) {
                 // 发行模式下，应该将内置组件css输出到入口css中

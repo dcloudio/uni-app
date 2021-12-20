@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
 
-const BUILT_IN_TAGS = [
+const BUILT_IN_TAG_NAMES = [
     'ad',
     'ad-content-page',
     'ad-draw',
@@ -48,7 +48,8 @@ const BUILT_IN_TAGS = [
     'video',
     'view',
     'web-view',
-].map((tag) => 'uni-' + tag);
+];
+const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
 const TAGS = [
     'app',
     'layout',
@@ -70,7 +71,8 @@ const TAGS = [
     'shadow-root',
 ].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
-    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
+    // h5 平台会被转换为 v-uni-
+    return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1;
 }
 function isH5CustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
@@ -1223,6 +1225,7 @@ exports.ATTR_V_RENDERJS = ATTR_V_RENDERJS;
 exports.ATTR_V_SHOW = ATTR_V_SHOW;
 exports.BACKGROUND_COLOR = BACKGROUND_COLOR;
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
+exports.BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;

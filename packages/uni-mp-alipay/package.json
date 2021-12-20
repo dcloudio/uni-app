@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-alipay",
-  "version": "3.0.0-alpha-3030220211217002",
+  "version": "3.0.0-alpha-3030220211217005",
   "description": "uni-app mp-alipay",
   "main": "dist/index.js",
   "repository": {
@@ -22,9 +22,9 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030220211217002",
-    "@dcloudio/uni-mp-vite": "3.0.0-alpha-3030220211217002",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3030220211217002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030220211217005",
+    "@dcloudio/uni-mp-vite": "3.0.0-alpha-3030220211217005",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3030220211217005",
     "@vue/compiler-core": "3.2.26",
     "@vue/shared": "3.2.26"
   }

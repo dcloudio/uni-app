@@ -1,3 +1,4 @@
+import { BUILT_IN_TAG_NAMES, COMPONENT_PREFIX } from '@dcloudio/uni-shared'
 import { createTransformTag } from './transformTag'
 import { createTransformEvent } from './transformEvent'
 import { createTransformComponentLink } from './transformComponent'
@@ -19,6 +20,13 @@ export {
   createTransformModel,
   defaultMatch as matchTransformModel,
 } from './vModel'
+
+export const transformH5BuiltInComponents = createTransformTag(
+  BUILT_IN_TAG_NAMES.reduce<Record<string, string>>(
+    (tags, tag) => ((tags[tag] = COMPONENT_PREFIX + tag), tags),
+    {}
+  )
+)
 
 export const transformMatchMedia = createTransformTag({
   'match-media': 'uni-match-media',

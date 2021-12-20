@@ -262,7 +262,7 @@ export function render(_ctx, _cache) {
 
     test('v-is', () => {
       const onError = jest.fn()
-      parseWithElementTransform(`<div v-is="'foo'" />`, {
+      parseWithElementTransform(`<view v-is="'foo'" />`, {
         onError,
       })
       expect(onError).toHaveBeenCalledTimes(1)

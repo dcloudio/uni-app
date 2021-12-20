@@ -79,6 +79,8 @@ export declare const ATTR_V_SHOW = ".vShow";
 
 export declare const BACKGROUND_COLOR = "#f7f7f7";
 
+export declare const BUILT_IN_TAG_NAMES: string[];
+
 export declare const BUILT_IN_TAGS: string[];
 
 export declare function cache<T>(fn: (str: string) => T): (str: string) => T;
