@@ -1,6 +1,6 @@
 import { isHTMLTag, isSVGTag } from '@vue/shared'
 
-export const BUILT_IN_TAGS = [
+export const BUILT_IN_TAG_NAMES = [
   'ad',
   'ad-content-page',
   'ad-draw',
@@ -44,7 +44,9 @@ export const BUILT_IN_TAGS = [
   'video',
   'view',
   'web-view',
-].map((tag) => 'uni-' + tag)
+]
+
+export const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
 
 export const TAGS = [
   'app',
@@ -68,7 +70,8 @@ export const TAGS = [
 ].map((tag) => 'uni-' + tag)
 
 export function isBuiltInComponent(tag: string) {
-  return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1
+  // h5 平台会被转换为 v-uni-
+  return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1
 }
 
 export function isH5CustomElement(tag: string) {

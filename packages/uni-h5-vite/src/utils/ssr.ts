@@ -12,6 +12,7 @@ import {
   getBuiltInPaths,
   transformMatchMedia,
   normalizePath,
+  transformH5BuiltInComponents,
 } from '@dcloudio/uni-cli-shared'
 import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import resolve from 'resolve'
@@ -158,6 +159,7 @@ export function rewriteSsrNativeTag() {
   ) {
     transformPageHead(node, context)
     transformMatchMedia(node, context)
+    transformH5BuiltInComponents(node, context)
     return oldResolveComponentType(node, context, ssr)
   }
   compilerDom.resolveComponentType = newResolveComponentType
