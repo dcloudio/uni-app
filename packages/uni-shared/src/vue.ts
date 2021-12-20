@@ -30,8 +30,8 @@ export function resolveOwnerEl(instance: ComponentInternalInstance) {
   const { subTree } = instance
   // ShapeFlags.ARRAY_CHILDREN = 1<<4
   if (subTree.shapeFlag & 16) {
-    const elemVNode = (subTree.children as VNode[]).find((vnode) =>
-      isElement(vnode.el as Element)
+    const elemVNode = (subTree.children as VNode[]).find(
+      (vnode) => vnode.el && isElement(vnode.el as Element)
     )
     if (elemVNode) {
       return elemVNode.el

@@ -79,7 +79,7 @@ export default function vueFactory(exports) {
     } = instance; // ShapeFlags.ARRAY_CHILDREN = 1<<4
 
     if (subTree.shapeFlag & 16) {
-      var elemVNode = subTree.children.find(vnode => isElement(vnode.el));
+      var elemVNode = subTree.children.find(vnode => vnode.el && isElement(vnode.el));
 
       if (elemVNode) {
         return elemVNode.el;

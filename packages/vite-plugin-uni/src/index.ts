@@ -17,7 +17,11 @@ import {
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { uniCopyPlugin } from './plugins/copy'
-import { initExtraPlugins, initPluginUniOptions } from './utils'
+import {
+  initExtraPlugins,
+  initPluginUniOptions,
+  rewriteCompilerSfcParse,
+} from './utils'
 import {
   initPluginViteLegacyOptions,
   initPluginVueJsxOptions,
@@ -30,6 +34,8 @@ const debugUni = debug('vite:uni:plugin')
 const pkg = require(path.resolve(__dirname, '../package.json'))
 
 initModuleAlias()
+
+rewriteCompilerSfcParse()
 
 process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
 process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')

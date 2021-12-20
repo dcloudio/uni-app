@@ -180,7 +180,7 @@ function resolveOwnerEl(instance) {
     const { subTree } = instance;
     // ShapeFlags.ARRAY_CHILDREN = 1<<4
     if (subTree.shapeFlag & 16) {
-        const elemVNode = subTree.children.find((vnode) => isElement(vnode.el));
+        const elemVNode = subTree.children.find((vnode) => vnode.el && isElement(vnode.el));
         if (elemVNode) {
             return elemVNode.el;
         }

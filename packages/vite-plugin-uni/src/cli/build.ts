@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { build as buildByVite, BuildOptions, InlineConfig } from 'vite'
+import { extend } from '@vue/shared'
 import {
   initPreContext,
   normalizeAppManifestJson,
@@ -11,8 +12,20 @@ import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 
 export async function build(options: CliOptions) {
-  if (options.platform === 'app' && (options as BuildOptions).manifest) {
-    return buildManifestJson()
+  if (options.platform === 'app') {
+    if ((options as BuildOptions).manifest) {
+      return buildManifestJson()
+    }
+    if (process.env.UNI_RENDERER === 'native') {
+      return buildByVite(
+        addConfigFile(
+          extend(
+            { nvue: true },
+            initBuildOptions(options, cleanOptions(options) as BuildOptions)
+          )
+        )
+      )
+    }
   }
   return buildByVite(
     addConfigFile(
