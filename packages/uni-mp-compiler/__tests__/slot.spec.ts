@@ -53,6 +53,22 @@ describe('compiler: transform slot', () => {
 }`
     )
   })
+  test('slot with v-if', () => {
+    assert(
+      `<slot v-if="header" name="header"/><slot v-else-if="body" name="body"/><slot v-else name="footer"/>`,
+      `<slot wx:if="{{a}}" name="header"/><slot wx:elif="{{b}}" name="body"/><slot wx:else name="footer"/>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.header }, _ctx.header ? {} : _ctx.body ? {} : {}, { b: _ctx.body })
+}`
+    )
+    assert(
+      `<slot v-if="header" name="header"><view>header</view></slot><slot v-else-if="body" name="body"><view>body</view></slot><slot v-else name="footer"><view>footer</view></slot>`,
+      `<block wx:if="{{a}}"><block wx:if="{{$slots.header}}"><slot name="header"></slot></block><block wx:else><view>header</view></block></block><block wx:elif="{{b}}"><block wx:if="{{$slots.body}}"><slot name="body"></slot></block><block wx:else><view>body</view></block></block><block wx:else><block wx:if="{{$slots.footer}}"><slot name="footer"></slot></block><block wx:else><view>footer</view></block></block>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.header }, _ctx.header ? {} : _ctx.body ? {} : {}, { b: _ctx.body })
+}`
+    )
+  })
   test('slot with v-for', () => {
     assert(
       `<slot v-for="(item,index) in items" :key="index"></slot>`,
