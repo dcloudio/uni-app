@@ -2056,18 +2056,15 @@ var serviceContext = (function () {
     chooseLocation: chooseLocation
   });
 
-  const type = {
-    WGS84: 'WGS84',
-    GCJ02: 'GCJ02'
-  };
+  const coordTypes = ['wgs84', 'gcj02'];
+
   const getLocation = {
     type: {
       type: String,
       validator (value, params) {
-        value = (value || '').toUpperCase();
-        params.type = Object.values(type).indexOf(value) < 0 ? type.WGS84 : value;
-      },
-      default: type.WGS84
+        value = (value || '').toLowerCase();
+        params.type = coordTypes.indexOf(value) < 0 ? coordTypes[0] : value;
+      }
     },
     altitude: {
       type: Boolean,
@@ -6778,7 +6775,8 @@ var serviceContext = (function () {
       }, {
         geocode: geocode,
         enableHighAccuracy: altitude,
-        timeout: highAccuracyExpireTime
+        timeout: highAccuracyExpireTime,
+        coordsType: type
       }
     );
   }
