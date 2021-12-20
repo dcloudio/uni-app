@@ -11800,11 +11800,11 @@ var serviceContext = (function (vue) {
   };
 
   const API_GET_LOCATION = 'getLocation';
-  const coordTypes = ['WGS84', 'GCJ02'];
+  const coordTypes = ['wgs84', 'gcj02'];
   const GetLocationOptions = {
       formatArgs: {
           type(value, params) {
-              value = (value || '').toUpperCase();
+              value = (value || '').toLowerCase();
               if (coordTypes.indexOf(value) === -1) {
                   params.type = coordTypes[0];
               }
