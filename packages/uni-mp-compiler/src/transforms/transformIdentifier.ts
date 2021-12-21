@@ -81,7 +81,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               hasStyleBinding = true
               rewriteStyle(i, dir, props, context)
             } else if (isPropsBinding(dir)) {
-              rewritePropsBinding(dir, context)
+              rewritePropsBinding(dir, node, context)
             } else {
               dir.exp = rewriteExpression(exp, context)
             }

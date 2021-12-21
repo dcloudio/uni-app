@@ -106,7 +106,15 @@ describe('compiler: transform component', () => {
   return { a: _ctx.b, b: _ctx.d, c: _n(_ctx.f), d: _s(_ctx.h), e: _o(_ctx.i), f: _ctx.o, g: _ctx.r, h: _ctx.t, i: _o($event => _ctx.j = $event), j: _o($event => _ctx.k = $event), k: _p({ ['prop-a']: 'l', ['prop-b']: _ctx.m, first: _ctx.j, last: _ctx.k }) }
 }`
     )
+    assert(
+      `<uni-collapse v-if="ok" :accordion="true"/><uni-collapse v-else :accordion="true"/>`,
+      `<uni-collapse wx:if="{{a}}" u-i="2a9ec0b0-0" u-p="{{b}}"/><uni-collapse wx:else u-i="2a9ec0b0-1" u-p="{{c||''}}"/>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _p({ accordion: true }) } : { c: _p({ accordion: true }) })
+}`
+    )
   })
+
   test(`mini program component`, () => {
     const filename = 'pages/vant/vant'
     addMiniProgramPageJson(filename, {

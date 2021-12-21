@@ -179,7 +179,7 @@ describe(`compiler: v-if`, () => {
     test(`v-for + v-if + v-else`, () => {
       assert(
         `<view v-for="item in items"><uni-icons v-if="ok"/><uni-icons v-else :title="item.title"/></view>`,
-        `<view wx:for="{{a}}" wx:for-item="item"><uni-icons wx:if="{{b}}" u-i="{{item.a}}"/><uni-icons wx:else u-i="{{item.b}}" u-p="{{item.c}}"/></view>`,
+        `<view wx:for="{{a}}" wx:for-item="item"><uni-icons wx:if="{{b}}" u-i="{{item.a}}"/><uni-icons wx:else u-i="{{item.b}}" u-p="{{item.c||''}}"/></view>`,
         `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return _ctx.ok ? { a: '2a9ec0b0-0' + '-' + i0 } : { b: '2a9ec0b0-1' + '-' + i0, c: _p({ title: item.title }) }; }), b: _ctx.ok }
 }`

@@ -3,6 +3,7 @@ import {
   ComponentNode,
   createSimpleExpression,
   DirectiveNode,
+  ElementNode,
   isSimpleIdentifier,
   isStaticExp,
   NodeTypes,
@@ -34,6 +35,7 @@ import {
 } from '@babel/types'
 import { RENDER_PROPS } from '../runtimeHelpers'
 import { parseExpr } from '../ast'
+import { isIfElementNode } from './vIf'
 
 export const transformComponent: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
@@ -229,6 +231,7 @@ export function isPropsBinding({ arg }: DirectiveNode) {
 
 export function rewritePropsBinding(
   dir: DirectiveNode,
+  node: ElementNode,
   context: TransformContext
 ) {
   dir.exp = createSimpleExpression(
@@ -239,6 +242,6 @@ export function rewritePropsBinding(
         dir.loc,
         context
       )!
-    )
+    ) + (isIfElementNode(node) && node.vIf.name === 'else' ? `||''` : '')
   )
 }
