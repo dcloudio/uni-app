@@ -10,7 +10,7 @@ describe('compiler: transform component', () => {
   test('component + component', () => {
     assert(
       `<custom><custom1/></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0" bind:__l="__l"><custom1 u-i="2a9ec0b0-1,2a9ec0b0-0" bind:__l="__l"/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0" bind:__l="__l"><custom1 u-s="{{['d']}}" slot="d" u-i="2a9ec0b0-1,2a9ec0b0-0" bind:__l="__l"/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`,
@@ -22,7 +22,7 @@ describe('compiler: transform component', () => {
   test('component + component + component', () => {
     assert(
       `<custom><custom1><custom2/><custom2/></custom1></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0" bind:__l="__l"><custom1 u-s="{{['d']}}" u-i="2a9ec0b0-1,2a9ec0b0-0" bind:__l="__l"><custom2 u-i="2a9ec0b0-2,2a9ec0b0-1" bind:__l="__l"/><custom2 u-i="2a9ec0b0-3,2a9ec0b0-1" bind:__l="__l"/></custom1></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0" bind:__l="__l"><custom1 u-s="{{['d']}}" slot="d" u-i="2a9ec0b0-1,2a9ec0b0-0" bind:__l="__l"><view slot="d"><custom2 u-i="2a9ec0b0-2,2a9ec0b0-1" bind:__l="__l"/><custom2 u-i="2a9ec0b0-3,2a9ec0b0-1" bind:__l="__l"/></view></custom1></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`,
@@ -56,7 +56,7 @@ describe('compiler: transform component', () => {
   test('component + component with v-for', () => {
     assert(
       `<custom><custom1 v-for="item in items"/></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0" bind:__l="__l"><custom1 wx:for="{{a}}" wx:for-item="item" u-i="{{item.a}}" bind:__l="__l"/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0" bind:__l="__l"><view slot="d"><custom1 wx:for="{{a}}" wx:for-item="item" u-i="{{item.a}}" bind:__l="__l"/></view></custom>`,
       `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + '2a9ec0b0-0' }; }) }
 }`,
@@ -68,7 +68,7 @@ describe('compiler: transform component', () => {
   test('component with v-for + component', () => {
     assert(
       `<custom v-for="item in items"><custom1/></custom>`,
-      `<custom wx:for="{{a}}" wx:for-item="item" u-s="{{['d']}}" u-i="{{item.b}}" bind:__l="__l"><custom1 u-i="{{item.a}}" bind:__l="__l"/></custom>`,
+      `<custom wx:for="{{a}}" wx:for-item="item" u-s="{{['d']}}" u-i="{{item.b}}" bind:__l="__l"><custom1 u-s="{{['d']}}" slot="d" u-i="{{item.a}}" bind:__l="__l"/></custom>`,
       `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-1' + '-' + i0 + ',' + ('2a9ec0b0-0' + '-' + i0), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,
@@ -80,7 +80,7 @@ describe('compiler: transform component', () => {
   test('component with v-for + component with v-for', () => {
     assert(
       `<custom v-for="item in items"><custom1 v-for="item1 in item.items"/></custom>`,
-      `<custom wx:for="{{a}}" wx:for-item="item" u-s="{{['d']}}" u-i="{{item.b}}" bind:__l="__l"><custom1 wx:for="{{item.a}}" wx:for-item="item1" u-i="{{item1.a}}" bind:__l="__l"/></custom>`,
+      `<custom wx:for="{{a}}" wx:for-item="item" u-s="{{['d']}}" u-i="{{item.b}}" bind:__l="__l"><view slot="d"><custom1 wx:for="{{item.a}}" wx:for-item="item1" u-i="{{item1.a}}" bind:__l="__l"/></view></custom>`,
       `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _f(item.items, (item1, k1, i1) => { return { a: '2a9ec0b0-1' + '-' + i0 + '-' + i1 + ',' + ('2a9ec0b0-0' + '-' + i0) }; }), b: '2a9ec0b0-0' + '-' + i0 }; }) }
 }`,

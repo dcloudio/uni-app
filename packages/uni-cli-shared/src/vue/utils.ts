@@ -85,7 +85,7 @@ export function addStaticClass(node: ElementNode, clazz: string) {
 export function createDirectiveNode(
   name: string,
   arg: string,
-  exp: string | ExpressionNode
+  exp?: string | ExpressionNode
 ): DirectiveNode {
   return {
     type: NodeTypes.DIRECTIVE,

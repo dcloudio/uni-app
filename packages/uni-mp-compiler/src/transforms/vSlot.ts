@@ -15,6 +15,7 @@ import {
   createCompoundExpression,
   createSimpleExpression,
   DirectiveNode,
+  ElementNode,
   ElementTypes,
   ErrorCodes,
   ExpressionNode,
@@ -30,6 +31,7 @@ import {
 import { dynamicSlotName, SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import {
   createBindDirectiveNode,
+  createDirectiveNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import { WITH_SCOPED_SLOT } from '../runtimeHelpers'
@@ -45,7 +47,7 @@ import {
   SCOPED_SLOT_IDENTIFIER,
 } from './utils'
 import { createVForArrowFunctionExpression } from './vFor'
-import { DYNAMIC_SLOT } from '..'
+import { DYNAMIC_SLOT } from '../runtimeHelpers'
 
 export const transformSlot: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
@@ -78,6 +80,10 @@ export const transformSlot: NodeTransform = (node, context) => {
       )
       break
     }
+    if (!slotDir.arg) {
+      // v-slot => v-slot:default
+      slotDir.arg = createSimpleExpression('default', true)
+    }
     const slotName = transformTemplateSlotElement(
       slotDir,
       slotElement,
@@ -97,19 +103,47 @@ export const transformSlot: NodeTransform = (node, context) => {
       slots.add(slotName)
     }
   }
+
+  if (isMiniProgramComponent) {
+    return
+  }
+
   if (implicitDefaultChildren.length) {
     slots.add(SLOT_DEFAULT_NAME)
   }
+
   if (onComponentSlot) {
     // <unicloud-db v-slot:default="{data, loading, error, options}"/>
-    // => <unicloud-db  collection=""><template v-slot:default="{data, loading, error, options}"/></unicloud-db>
+    // => <unicloud-db collection=""><template v-slot:default="{data, loading, error, options}"/></unicloud-db>
     slots.add(SLOT_DEFAULT_NAME)
     const templateNode = createTemplateNode(
       onComponentSlot,
       implicitDefaultChildren
     )
     transformTemplateSlotElement(onComponentSlot, templateNode, node, context)
-    node.children = templateNode.children
+    node.children = [templateNode]
+  } else {
+    if (implicitDefaultChildren.length) {
+      // <custom>test</custom> => <custom><template #default>test</template></custom>
+      const vSlotDir = createDirectiveNode('slot', 'default')
+      const child = implicitDefaultChildren[0] as ElementNode
+      const isSingleElementNode =
+        implicitDefaultChildren.length === 1 &&
+        child.type === NodeTypes.ELEMENT &&
+        !findDir(child, 'for')
+      if (isSingleElementNode) {
+        child.props.unshift(vSlotDir)
+      } else {
+        const templateNode = createTemplateNode(
+          vSlotDir,
+          implicitDefaultChildren
+        )
+        implicitDefaultChildren.forEach((child) => {
+          node.children.splice(node.children.indexOf(child), 1)
+        })
+        node.children.unshift(templateNode)
+      }
+    }
   }
   // 不支持 $slots, 则自动补充 props
   if (slots.size && !context.miniProgram.slot.$slots) {

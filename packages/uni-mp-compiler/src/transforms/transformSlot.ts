@@ -31,6 +31,10 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
   let hasOtherDir = false
   const nonNameProps: (AttributeNode | DirectiveNode)[] = []
   const { props } = node
+  // 默认插槽强制设置name
+  if (!findProp(node, 'name')) {
+    props.unshift(createAttributeNode('name', 'default'))
+  }
   for (let i = 0; i < props.length; i++) {
     const p = props[i]
     if (p.type === NodeTypes.ATTRIBUTE) {
@@ -119,24 +123,24 @@ function transformScopedSlotName(
   if (!context.miniProgram.slot.dynamicSlotNames) {
     return
   }
-  const { props } = node
   const slotKey = parseScopedSlotKey(context)
+  if (!slotKey) {
+    return
+  }
   const nameProps = findProp(node, 'name')
-  if (!nameProps) {
-    // 生成默认的 default 插槽名
-    if (slotKey) {
-      props.push(
-        createBindDirectiveNode(
-          'name',
-          rewriteExpression(
-            createSimpleExpression(`"${SLOT_DEFAULT_NAME}-"+` + slotKey),
-            context
-          ).content
-        )
+  if (nameProps && nameProps.type === NodeTypes.ATTRIBUTE && nameProps.value) {
+    const { props } = node
+    props.splice(
+      props.indexOf(nameProps),
+      1,
+      createBindDirectiveNode(
+        'name',
+        rewriteExpression(
+          createSimpleExpression(`"${nameProps.value.content}-"+` + slotKey),
+          context
+        ).content
       )
-    } else {
-      props.push(createAttributeNode('name', SLOT_DEFAULT_NAME))
-    }
+    )
   }
 }
 

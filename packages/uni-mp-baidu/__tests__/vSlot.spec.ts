@@ -4,14 +4,14 @@ describe('compiler: transform v-slot', () => {
   test('default slot', () => {
     assert(
       `<custom><template v-slot/></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d"/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<custom>test</custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0">test</custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d">test</view></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -27,7 +27,7 @@ describe('compiler: transform v-slot', () => {
     )
     assert(
       `<unicloud-db v-slot:default="{data, loading, error, options}"><view v-if="error">{{error.message}}</view><view v-else></view></unicloud-db>`,
-      `<unicloud-db u-s="{{['d']}}" slot="d" u-i="2a9ec0b0-0"><block s-for="v0 in a trackBy v0.a"><view s-if="{{v0.b}}">{{v0.c}}</view><view s-else></view></block></unicloud-db>`,
+      `<unicloud-db u-s="{{['d']}}" slot="d" u-i="2a9ec0b0-0"><view slot="d"><block s-for="v0 in a trackBy v0.a"><view s-if="{{v0.b}}">{{v0.c}}</view><view s-else></view></block></view></unicloud-db>`,
       `(_ctx, _cache) => {
   return { a: _w(({ data, loading, error, options }, s0, i0) => { return _e({ a: i0, b: error }, error ? { c: _t(error.message) } : {}); }, { name: 'd', path: 'a', vueId: '2a9ec0b0-0' }) }
 }`

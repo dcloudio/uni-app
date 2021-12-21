@@ -4,14 +4,21 @@ describe('compiler: transform v-slot', () => {
   test('default slot', () => {
     assert(
       `<custom><template v-slot/></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d"/></custom>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<custom><template #default/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d"/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<custom>test</custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0">test</custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d">test</view></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`

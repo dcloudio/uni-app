@@ -4,7 +4,7 @@ describe('compiler: transform slot', () => {
   test('basic', () => {
     assert(
       `<button><slot/></button>`,
-      `<button><slot/></button>`,
+      `<button><slot name="d"/></button>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -29,7 +29,7 @@ describe('compiler: transform slot', () => {
   test('fallback content', () => {
     assert(
       `<button><slot>Submit</slot></button>`,
-      `<button><block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else>Submit</block></button>`,
+      `<button><block wx:if="{{$slots.d}}"><slot name="d"></slot></block><block wx:else>Submit</block></button>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -75,6 +75,13 @@ describe('compiler: transform slot', () => {
       `<slot wx:for="{{a}}" wx:for-item="item" name="{{item.a}}"></slot>`,
       `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, index, i0) => { return { a: "d-" + i0, b: _r("d", { key: index }, i0) }; }) }
+}`
+    )
+    assert(
+      `<slot v-for="(item,index) in items" :key="index" name="test"></slot>`,
+      `<slot wx:for="{{a}}" wx:for-item="item" name="{{item.a}}"></slot>`,
+      `(_ctx, _cache) => {
+  return { a: _f(_ctx.items, (item, index, i0) => { return { a: "test-" + i0, b: _r("test", { key: index }, i0) }; }) }
 }`
     )
   })
