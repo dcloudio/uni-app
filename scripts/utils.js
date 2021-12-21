@@ -4,10 +4,11 @@ const chalk = require('chalk')
 
 const priority = {
   'uni-shared': 100,
-  'uni-app': 90,
-  'uni-stat': 90,
   'uni-i18n': 90,
-  'uni-mp-vue': 80,
+  'uni-app': 90,
+  'uni-cli-shared': 80,
+  'uni-stat': 75,
+  'uni-mp-vue': 75,
   'uni-mp-alipay': 70,
   'uni-mp-baidu': 70,
   'uni-mp-kuaishou': 70,
@@ -16,7 +17,6 @@ const priority = {
   'uni-mp-toutiao': 70,
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,
-  'uni-cli-shared': 60,
   'uni-cli-nvue': 55,
   'uni-h5': 50,
   'uni-h5-vite': 40,
