@@ -49,7 +49,7 @@ function processTouches (touches) {
   return []
 }
 
-function isPCEvent (name) {
+function isMouseEvent (name) {
   return name.startsWith('mouse') || ['contextmenu'].includes(name)
 }
 
@@ -94,7 +94,7 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     stopPropagation () {}
   })
 
-  if (isPCEvent(name)) {
+  if (isMouseEvent(name)) {
     const {
       top
     } = getWindowOffset()
