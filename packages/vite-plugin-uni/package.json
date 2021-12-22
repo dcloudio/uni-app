@@ -53,7 +53,7 @@
     "chokidar": "^3.5.2"
   },
   "peerDependencies": {
-    "vite": "^2.7.5"
+    "vite": "^2.7.0"
   },
   "uni-app": {
     "compilerVersion": "3.3.2"
