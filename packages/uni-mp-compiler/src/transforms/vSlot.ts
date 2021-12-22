@@ -48,6 +48,7 @@ import {
 } from './utils'
 import { createVForArrowFunctionExpression } from './vFor'
 import { DYNAMIC_SLOT } from '../runtimeHelpers'
+import { transformTag } from './transformTag'
 
 export const transformSlot: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
@@ -127,6 +128,8 @@ export const transformSlot: NodeTransform = (node, context) => {
       // <custom>test</custom> => <custom><template #default>test</template></custom>
       const vSlotDir = createDirectiveNode('slot', 'default')
       const child = implicitDefaultChildren[0] as ElementNode
+      // 此时处于父节点的 transform，child 还未被转换标签，故需要先转换，否则 isUserComponent 会判断失败，比如 div
+      transformTag(child, context)
       const isSingleComponent =
         implicitDefaultChildren.length === 1 &&
         isUserComponent(child, context) &&

@@ -5,7 +5,7 @@ import {
 import { ElementTypes } from '@vue/compiler-core'
 import { NodeTransform } from '../transform'
 
-export const transformTag: NodeTransform = (node, context) => {
+export const transformTag: NodeTransform = (node, _) => {
   if (!isElementNode(node)) {
     return
   }
