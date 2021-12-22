@@ -124,6 +124,14 @@ export default {
       default () {
         return []
       }
+    },
+    enable3D: {
+      type: Boolean,
+      default: false
+    },
+    enablePoi: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -174,6 +182,20 @@ export default {
     showLocation (val) {
       this.mapReady(() => {
         this[val ? 'createLocation' : 'removeLocation']()
+      })
+    },
+    enable3D (val) {
+      this.mapReady(() => {
+        this._map.setViewMode && this._map.setViewMode(val ? '3D' : '2D')
+      })
+    },
+    enablePoi (val) {
+      this.mapReady(() => {
+        const features = ['base', this.enable3D ? 'building3d' : 'building2d']
+        if (val) {
+          features.push('point')
+        }
+        this._map.setBaseMap && this._map.setBaseMap({ type: 'vector', features })
       })
     }
   },
@@ -339,6 +361,13 @@ export default {
     },
     init () {
       const maps = this._maps
+      const options = {}
+      if (!this.enablePoi) {
+        options.baseMap = {
+          type: 'vector',
+          features: ['base', this.enable3D ? 'building3d' : 'building2d']
+        }
+      }
       var center = new maps.LatLng(this.center.latitude, this.center.longitude)
       var map = this._map = new maps.Map(this.$refs.map, {
         center,
@@ -354,7 +383,9 @@ export default {
         keyboardShortcuts: false,
         minZoom: 5,
         maxZoom: 18,
-        draggable: true
+        draggable: true,
+        viewMode: this.enable3D ? '3D' : '2D',
+        ...options
       })
       var boundsChangedEvent = maps.event.addListener(map, 'bounds_changed', e => {
         boundsChangedEvent.remove()
