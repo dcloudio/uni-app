@@ -41,7 +41,7 @@
     "node": ">=10.0.0"
   },
   "devDependencies": {
-    "@dcloudio/types": "^2.5.14",
+    "@dcloudio/types": "^2.5.15",
     "@dcloudio/uni-api": "3.0.0-alpha-3030220211217009",
     "@dcloudio/uni-app": "3.0.0-alpha-3030220211217009",
     "@jest/types": "^27.0.2",
