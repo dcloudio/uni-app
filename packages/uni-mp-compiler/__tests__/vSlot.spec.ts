@@ -23,6 +23,13 @@ describe('compiler: transform v-slot', () => {
   return {}
 }`
     )
+    assert(
+      `<custom><view>test</view></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d">test</view></custom>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
   })
   test('named slots', () => {
     assert(

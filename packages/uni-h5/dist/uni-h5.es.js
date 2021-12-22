@@ -1249,7 +1249,7 @@ function getWxsVm(el) {
   }
 }
 const isClickEvent = (val) => val.type === "click";
-const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
+const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {

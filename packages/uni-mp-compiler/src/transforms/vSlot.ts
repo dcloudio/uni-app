@@ -127,11 +127,11 @@ export const transformSlot: NodeTransform = (node, context) => {
       // <custom>test</custom> => <custom><template #default>test</template></custom>
       const vSlotDir = createDirectiveNode('slot', 'default')
       const child = implicitDefaultChildren[0] as ElementNode
-      const isSingleElementNode =
+      const isSingleComponent =
         implicitDefaultChildren.length === 1 &&
-        child.type === NodeTypes.ELEMENT &&
+        isUserComponent(child, context) &&
         !findDir(child, 'for')
-      if (isSingleElementNode) {
+      if (isSingleComponent) {
         child.props.unshift(vSlotDir)
       } else {
         const templateNode = createTemplateNode(
