@@ -22,13 +22,13 @@ const pkgs = {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.7.3',
+    latest: '2.7.5',
   },
   '@vitejs/plugin-vue': {
     latest: '2.0.1',
   },
   '@vitejs/plugin-vue-jsx': {
-    latest: '1.3.2',
+    latest: '1.3.3',
   },
   '@vitejs/plugin-legacy': {
     latest: '1.6.4',

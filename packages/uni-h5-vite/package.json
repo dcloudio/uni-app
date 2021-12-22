@@ -21,7 +21,7 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030220211217007",
     "@dcloudio/uni-shared": "3.0.0-alpha-3030220211217007",
-    "@rollup/pluginutils": "^4.1.1",
+    "@rollup/pluginutils": "^4.1.2",
     "@vue/compiler-dom": "3.2.26",
     "@vue/compiler-sfc": "3.2.26",
     "@vue/server-renderer": "3.2.26",
