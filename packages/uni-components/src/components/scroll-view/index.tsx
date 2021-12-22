@@ -495,13 +495,15 @@ function useScrollViewLoader(
     let touchStart: {
       x: number
       y: number
-    } = {
+    } | null = {
       x: 0,
       y: 0,
     }
     let needStop: boolean | null = null
 
     let __handleTouchMove = function (event: TouchEvent) {
+      if (touchStart === null) return
+
       let x = event.touches[0].pageX
       let y = event.touches[0].pageY
       let _main = main.value!
@@ -592,10 +594,7 @@ function useScrollViewLoader(
       }
     }
     let __handleTouchEnd = function (event: TouchEvent) {
-      touchStart = {
-        x: 0,
-        y: 0,
-      }
+      touchStart = null
       disableScrollBounce({
         disable: false,
       })
