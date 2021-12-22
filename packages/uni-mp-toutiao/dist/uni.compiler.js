@@ -1,8 +1,8 @@
 'use strict';
 
+var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniCliShared = require('@dcloudio/uni-cli-shared');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var compilerCore = require('@vue/compiler-core');
 
@@ -134,8 +134,7 @@ const uniMiniProgramToutiaoPlugin = {
                 __VUE_CREATED_DEFERRED__: true,
             },
             build: {
-                // 头条支持本地资源
-                assetsInlineLimit: 0,
+                assetsInlineLimit: uniCliShared.ASSETS_INLINE_LIMIT,
             },
         };
     },

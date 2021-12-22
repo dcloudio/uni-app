@@ -5,7 +5,7 @@ import fs, { promises as fsp } from 'fs'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
-import { PluginContext, RenderedChunk } from 'rollup'
+import type { OutputOptions, PluginContext, RenderedChunk } from 'rollup'
 import MagicString from 'magic-string'
 import { createHash } from 'crypto'
 
@@ -150,6 +150,83 @@ export function getAssetFilename(
 ): string | undefined {
   return assetHashToFilenameMap.get(config)?.get(hash)
 }
+
+/**
+ * converts the source filepath of the asset to the output filename based on the assetFileNames option. \
+ * this function imitates the behavior of rollup.js. \
+ * https://rollupjs.org/guide/en/#outputassetfilenames
+ *
+ * @example
+ * ```ts
+ * const content = Buffer.from('text');
+ * const fileName = assetFileNamesToFileName(
+ *   'assets/[name].[hash][extname]',
+ *   '/path/to/file.txt',
+ *   getAssetHash(content),
+ *   content
+ * )
+ * // fileName: 'assets/file.982d9e3e.txt'
+ * ```
+ *
+ * @param assetFileNames filename pattern. e.g. `'assets/[name].[hash][extname]'`
+ * @param file filepath of the asset
+ * @param contentHash hash of the asset. used for `'[hash]'` placeholder
+ * @param content content of the asset. passed to `assetFileNames` if `assetFileNames` is a function
+ * @returns output filename
+ */
+export function assetFileNamesToFileName(
+  assetFileNames: Exclude<OutputOptions['assetFileNames'], undefined>,
+  file: string,
+  contentHash: string,
+  content: string | Buffer
+): string {
+  const basename = path.basename(file)
+
+  // placeholders for `assetFileNames`
+  // `hash` is slightly different from the rollup's one
+  const extname = path.extname(basename)
+  const ext = extname.substring(1)
+  const name = basename.slice(0, -extname.length)
+  const hash = contentHash
+
+  if (typeof assetFileNames === 'function') {
+    assetFileNames = assetFileNames({
+      name: file,
+      source: content,
+      type: 'asset',
+    })
+    if (typeof assetFileNames !== 'string') {
+      throw new TypeError('assetFileNames must return a string')
+    }
+  } else if (typeof assetFileNames !== 'string') {
+    throw new TypeError('assetFileNames must be a string or a function')
+  }
+
+  const fileName = assetFileNames.replace(
+    /\[\w+\]/g,
+    (placeholder: string): string => {
+      switch (placeholder) {
+        case '[ext]':
+          return ext
+
+        case '[extname]':
+          return extname
+
+        case '[hash]':
+          return hash
+
+        case '[name]':
+          return name
+      }
+      throw new Error(
+        `invalid placeholder ${placeholder} in assetFileNames "${assetFileNames}"`
+      )
+    }
+  )
+
+  return fileName
+}
+
 /**
  * Register an asset to be emitted as part of the bundle (if necessary)
  * and returns the resolved public URL
@@ -183,10 +260,16 @@ function fileToBuiltUrl(
     const contentHash = getAssetHash(content)
     const { search, hash } = parseUrl(id)
     const postfix = (search || '') + (hash || '')
-    const fileName = path.posix.relative(
-      normalizePath(process.env.UNI_INPUT_DIR),
-      file
-    )
+
+    const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+    let fileName = file.startsWith(inputDir)
+      ? path.posix.relative(inputDir, file)
+      : assetFileNamesToFileName(
+          path.posix.join(config.build.assetsDir, '[name].[hash][extname]'),
+          file,
+          contentHash,
+          content
+        )
 
     if (!map.has(contentHash)) {
       map.set(contentHash, fileName)

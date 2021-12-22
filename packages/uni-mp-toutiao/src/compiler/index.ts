@@ -1,4 +1,5 @@
 import { Plugin } from 'vite'
+import { ASSETS_INLINE_LIMIT } from '@dcloudio/uni-cli-shared'
 import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 
 import { options } from './options'
@@ -11,8 +12,7 @@ const uniMiniProgramToutiaoPlugin: Plugin = {
         __VUE_CREATED_DEFERRED__: true,
       },
       build: {
-        // 头条支持本地资源
-        assetsInlineLimit: 0,
+        assetsInlineLimit: ASSETS_INLINE_LIMIT,
       },
     }
   },
