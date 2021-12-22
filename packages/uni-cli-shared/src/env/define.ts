@@ -5,7 +5,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   const isRunByHBuilderX = runByHBuilderX()
   const isDebug = !!manifestJson.debug
+
   return {
+    ...initCustomDefine(),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.UNI_DEBUG': stringifyBoolean
       ? JSON.stringify(isDebug)
@@ -31,4 +33,17 @@ export function initDefine(stringifyBoolean: boolean = false) {
     // 兼容旧版本
     'process.env.VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
   }
+}
+
+function initCustomDefine() {
+  let define: Record<string, string> = {}
+  if (process.env.UNI_CUSTOM_DEFINE) {
+    try {
+      define = JSON.parse(process.env.UNI_CUSTOM_DEFINE)
+    } catch (e: any) {}
+  }
+  return Object.keys(define).reduce<Record<string, string>>((res, name) => {
+    res['process.env.' + name] = JSON.stringify(define[name])
+    return res
+  }, {})
 }

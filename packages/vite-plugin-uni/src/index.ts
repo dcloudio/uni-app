@@ -78,7 +78,7 @@ export default function uniPlugin(
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
 
-  initPreContext(options.platform)
+  initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
   const plugins: Plugin[] = []
 

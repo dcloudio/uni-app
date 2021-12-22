@@ -22,5 +22,8 @@ declare namespace NodeJS {
     UNI_AUTOMATOR_WS_ENDPOINT?: string
     UNI_H5_BASE?: string
     UNI_H5_BROWSER?: 'builtin'
+    UNI_CUSTOM_SCRIPT?: string
+    UNI_CUSTOM_DEFINE?: string
+    UNI_CUSTOM_CONTEXT?: string
   }
 }

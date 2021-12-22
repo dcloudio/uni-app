@@ -5,7 +5,12 @@ import chalk from 'chalk'
 import { performance } from 'perf_hooks'
 import { BuildOptions, InlineConfig, Logger } from 'vite'
 
-import { M, isInHBuilderX, initModulePaths } from '@dcloudio/uni-cli-shared'
+import {
+  M,
+  isInHBuilderX,
+  initModulePaths,
+  parseScripts,
+} from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
@@ -82,13 +87,14 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     process.env.UNI_SUB_PLATFORM = options.platform
     options.platform = 'quickapp-webview'
   }
-
-  process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
-
   process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()
 
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
+
+  initCustomScripts(options)
+
+  process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
   const hasOutputDir = !!process.env.UNI_OUTPUT_DIR
   if (hasOutputDir) {
@@ -208,4 +214,18 @@ export function printStartupDuration(
       )}\n`
     )
   }
+}
+
+function initCustomScripts(options: CliOptions) {
+  const custom = parseScripts(
+    process.env.UNI_SCRIPT || options.platform!, // process.env.UNI_SCRIPT 是 HBuilderX 传递的
+    path.join(process.env.VITE_ROOT_DIR!, 'package.json')
+  )
+  if (!custom) {
+    return
+  }
+  options.platform = custom.platform
+  process.env.UNI_CUSTOM_SCRIPT = custom.name
+  process.env.UNI_CUSTOM_DEFINE = JSON.stringify(custom.define)
+  process.env.UNI_CUSTOM_CONTEXT = JSON.stringify(custom.context)
 }
