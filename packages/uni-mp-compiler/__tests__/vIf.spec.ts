@@ -50,7 +50,7 @@ describe(`compiler: v-if`, () => {
     test(`template v-if w/ single <slot/> child`, () => {
       assert(
         `<template v-if="ok"><slot/></template>`,
-        `<block wx:if="{{a}}"><slot name="d"/></block>`,
+        `<block wx:if="{{a}}"><slot/></block>`,
         `(_ctx, _cache) => {
   return _e({ a: _ctx.ok }, _ctx.ok ? {} : {})
 }`
@@ -59,7 +59,7 @@ describe(`compiler: v-if`, () => {
     test(`v-if on <slot/>`, () => {
       assert(
         `<slot v-if="ok"/>`,
-        `<slot wx:if="{{a}}" name="d"/>`,
+        `<slot wx:if="{{a}}"/>`,
         `(_ctx, _cache) => {
   return _e({ a: _ctx.ok }, _ctx.ok ? {} : {})
 }`

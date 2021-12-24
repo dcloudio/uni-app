@@ -30,7 +30,6 @@ import {
 import { dynamicSlotName, SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
 import {
   createBindDirectiveNode,
-  createDirectiveNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import { WITH_SCOPED_SLOT } from '../runtimeHelpers'
@@ -121,19 +120,6 @@ export const transformSlot: NodeTransform = (node, context) => {
     )
     transformTemplateSlotElement(onComponentSlot, templateNode, node, context)
     node.children = [templateNode]
-  } else {
-    if (implicitDefaultChildren.length) {
-      // <custom>test</custom> => <custom><template #default>test</template></custom>
-      implicitDefaultChildren.forEach((child) => {
-        node.children.splice(node.children.indexOf(child), 1)
-      })
-      node.children.unshift(
-        createTemplateNode(
-          createDirectiveNode('slot', 'default'),
-          implicitDefaultChildren
-        )
-      )
-    }
   }
   // 不支持 $slots, 则自动补充 props
   if (slots.size && !context.miniProgram.slot.$slots) {

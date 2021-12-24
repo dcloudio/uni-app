@@ -19,7 +19,7 @@ import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
 import { isScopedSlotVFor, isVForScope, TransformContext } from '../transform'
 import { processProps } from './transformElement'
-import { rewriteExpression } from './utils'
+import { removeAttribute, rewriteExpression } from './utils'
 import {
   createAttributeNode,
   createBindDirectiveNode,
@@ -102,6 +102,16 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
         ]),
         context
       )
+    } else {
+      // 非作用域默认插槽直接移除命名
+      if (slotName === `"${SLOT_DEFAULT_NAME}"`) {
+        removeAttribute(node, 'name')
+      }
+    }
+  } else {
+    // 非作用域默认插槽直接移除命名
+    if (slotName === `"${SLOT_DEFAULT_NAME}"`) {
+      removeAttribute(node, 'name')
     }
   }
 }

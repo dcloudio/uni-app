@@ -158,7 +158,7 @@ describe(`compiler: v-for`, () => {
     test(`template v-for w/ <slot/>`, () => {
       assert(
         `<template v-for="item in items"><slot/></template>`,
-        `<block wx:for="{{a}}" wx:for-item="item"><slot name="d"/></block>`,
+        `<block wx:for="{{a}}" wx:for-item="item"><slot/></block>`,
         `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }) }
 }`
@@ -177,7 +177,7 @@ describe(`compiler: v-for`, () => {
     test(`v-for on <slot/>`, () => {
       assert(
         `<slot v-for="item in items"></slot>`,
-        `<slot wx:for="{{a}}" wx:for-item="item" name="d"></slot>`,
+        `<slot wx:for="{{a}}" wx:for-item="item"></slot>`,
         `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }) }
 }`

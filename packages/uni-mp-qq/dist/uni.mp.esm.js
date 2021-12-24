@@ -589,6 +589,18 @@ function initProps(mpComponentOptions) {
     }
     extend(mpComponentOptions.properties, initDefaultProps());
 }
+const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
+function parsePropType(type, defaultValue) {
+    // [String]=>String
+    if (isArray(type) && type.length === 1) {
+        return type[0];
+    }
+    return type;
+}
+function normalizePropType(type, defaultValue) {
+    const res = parsePropType(type);
+    return PROP_TYPES.indexOf(res) !== -1 ? res : null;
+}
 /**
  * 初始化页面 props，方便接收页面参数，类型均为String，默认值均为''
  * @param param
@@ -605,10 +617,26 @@ function initPageProps({ properties }, rawProps) {
     }
     else if (isPlainObject(rawProps)) {
         Object.keys(rawProps).forEach((key) => {
-            properties[key] = {
-                type: String,
-                value: '',
-            };
+            const opts = rawProps[key];
+            if (isPlainObject(opts)) {
+                // title:{type:String,default:''}
+                let value = opts.default;
+                if (isFunction(value)) {
+                    value = value();
+                }
+                const type = opts.type;
+                opts.type = normalizePropType(type);
+                properties[key] = {
+                    type: opts.type,
+                    value,
+                };
+            }
+            else {
+                // content:String
+                properties[key] = {
+                    type: normalizePropType(opts),
+                };
+            }
         });
     }
 }

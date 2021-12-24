@@ -16,6 +16,7 @@ import {
 import { VUE_REF, VUE_REF_IN_FOR } from '@dcloudio/uni-cli-shared'
 import {
   createSimpleExpression,
+  ElementNode,
   ExpressionNode,
   NodeTypes,
   SimpleExpressionNode,
@@ -188,4 +189,11 @@ function isReferencedByIds(node: Expression, knownIds: string[]) {
 
 export function isStaticLiteral(value: object | null | undefined) {
   return isLiteral(value) && !isTemplateLiteral(value)
+}
+
+export function removeAttribute(node: ElementNode, name: string) {
+  const index = node.props.findIndex((prop) => prop.name === name)
+  if (index > -1) {
+    node.props.splice(index, 1)
+  }
 }

@@ -422,14 +422,15 @@ function genDirectiveNode(
   if (prop.name === 'slot') {
     if (prop.arg) {
       const arg = prop.arg as SimpleExpressionNode
-
-      push(
-        ` slot="${
-          arg.isStatic
-            ? dynamicSlotName(arg.content)
-            : '{{' + arg.content + '}}'
-        }"`
-      )
+      if (arg.isStatic) {
+        const slotName = dynamicSlotName(arg.content)
+        // 非作用域默认插槽不生成 slot 属性
+        if (slotName !== SLOT_DEFAULT_NAME) {
+          push(` slot="${slotName}"`)
+        }
+      } else {
+        push(` slot="{{${arg.content}}}"`)
+      }
     }
   } else if (prop.name === 'show') {
     let hiddenPropName = 'hidden'

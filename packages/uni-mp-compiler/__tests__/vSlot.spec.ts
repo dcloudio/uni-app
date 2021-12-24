@@ -4,28 +4,28 @@ describe('compiler: transform v-slot', () => {
   test('default slot', () => {
     assert(
       `<custom><template v-slot/></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d"/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<custom><template #default/></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d"/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<custom>test</custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d">test</view></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0">test</custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<custom><div>test</div></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d">test</view></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view>test</view></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -34,14 +34,14 @@ describe('compiler: transform v-slot', () => {
   test('named slots', () => {
     assert(
       `<custom><template v-slot:header/><template v-slot:default/><template v-slot:footer/></custom>`,
-      `<custom u-s="{{['header','d','footer']}}" u-i="2a9ec0b0-0"><view slot="header"/><view slot="d"/><view slot="footer"/></custom>`,
+      `<custom u-s="{{['header','d','footer']}}" u-i="2a9ec0b0-0"><view slot="header"/><view/><view slot="footer"/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<unicloud-db v-slot:default="{data, loading, error, options}"><view v-if="error">{{error.message}}</view><view v-else></view></unicloud-db>`,
-      `<unicloud-db u-s="{{['d']}}" slot="d" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="v0" wx:key="c" slot="{{v0.d}}"><view wx:if="{{v0.a}}">{{v0.b}}</view><view wx:else></view></view></unicloud-db>`,
+      `<unicloud-db u-s="{{['d']}}" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="v0" wx:key="c" slot="{{v0.d}}"><view wx:if="{{v0.a}}">{{v0.b}}</view><view wx:else></view></view></unicloud-db>`,
       `(_ctx, _cache) => {
   return { a: _w(({ data, loading, error, options }, s0, i0) => { return _e({ a: error }, error ? { b: _t(error.message) } : {}, { c: i0, d: s0 }); }, { name: 'd', path: 'a', vueId: '2a9ec0b0-0' }) }
 }`

@@ -4,14 +4,14 @@ describe('compiler: transform slot', () => {
   test('basic', () => {
     assert(
       `<button><slot/></button>`,
-      `<button><slot name="d"/></button>`,
+      `<button><slot/></button>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<button><slot name="default"/></button>`,
-      `<button><slot name="d"/></button>`,
+      `<button><slot/></button>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -29,7 +29,7 @@ describe('compiler: transform slot', () => {
   test('fallback content', () => {
     assert(
       `<button><slot>Submit</slot></button>`,
-      `<button><block wx:if="{{$slots.d}}"><slot name="d"></slot></block><block wx:else>Submit</block></button>`,
+      `<button><block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else>Submit</block></button>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -56,7 +56,7 @@ describe('compiler: transform slot', () => {
   test('slot with component', () => {
     assert(
       `<view><custom><slot><view>fallback</view></slot></custom></view>`,
-      `<view><custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d"><block wx:if="{{$slots.d}}"><slot name="d"></slot></block><block wx:else><view>fallback</view></block></view></custom></view>`,
+      `<view><custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else><view>fallback</view></block></custom></view>`,
       `(_ctx, _cache) => {
   return {}
 }`
