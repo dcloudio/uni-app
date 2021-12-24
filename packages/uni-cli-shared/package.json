@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "3.0.0-alpha-3030220211217012",
+  "version": "3.0.0-alpha-3030320211224001",
   "description": "@dcloudio/uni-cli-shared",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,8 +20,8 @@
   "dependencies": {
     "@babel/parser": "^7.16.4",
     "@babel/types": "^7.16.0",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3030220211217012",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3030220211217012",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3030320211224001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3030320211224001",
     "@rollup/pluginutils": "^4.1.2",
     "@vue/compiler-core": "3.2.26",
     "@vue/compiler-dom": "3.2.26",
