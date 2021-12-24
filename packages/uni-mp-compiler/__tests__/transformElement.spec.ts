@@ -76,16 +76,16 @@ export function render(_ctx, _cache) {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Foo: { name: '_component_Foo', type: BindingComponentTypes.UNKNOWN },
     })
-    // expect(code).toContain(`if (!Math) { Math.max.call(null, _component_Foo) }`)
   })
 
   test('import + resolve component multi', () => {
     const { root, code } = parseWithElementTransform(
-      `<Foo/><Bar/><Example/><Test/>`,
+      `<Foo/><Bar/><Example/><Example1/><Test/>`,
       {
         filename: `/foo/bar/Test.vue?vue&type=template`,
         bindingMetadata: {
           Example: BindingTypes.SETUP_MAYBE_REF,
+          Example1: BindingTypes.SETUP_MAYBE_REF,
         },
       }
     )
@@ -93,10 +93,14 @@ export function render(_ctx, _cache) {
       Foo: { name: '_component_Foo', type: BindingComponentTypes.UNKNOWN },
       Bar: { name: '_component_Bar', type: BindingComponentTypes.UNKNOWN },
       Example: { name: '$setup["Example"]', type: BindingComponentTypes.SETUP },
+      Example1: {
+        name: '$setup["Example1"]',
+        type: BindingComponentTypes.SETUP,
+      },
       Test: { name: '_component_Test', type: BindingComponentTypes.UNKNOWN },
     })
     expect(code).toContain(
-      `if (!Math) { Math.max.call(null, $setup["Example"]) }`
+      `if (!Math) { ($setup["Example"]+$setup["Example1"])() }`
     )
   })
 
@@ -121,9 +125,7 @@ export function render(_ctx, _cache) {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Example: { name: '$setup["Example"]', type: BindingComponentTypes.SETUP },
     })
-    expect(code).toContain(
-      `if (!Math) { Math.max.call(null, $setup["Example"]) }`
-    )
+    expect(code).toContain(`if (!Math) { ($setup["Example"])() }`)
   })
 
   test('resolve component from setup bindings (inline)', () => {
@@ -136,9 +138,7 @@ export function render(_ctx, _cache) {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Example: { name: '_unref(Example)', type: BindingComponentTypes.SETUP },
     })
-    expect(preamble).toContain(
-      `if (!Math) { Math.max.call(null, _unref(Example)) }`
-    )
+    expect(preamble).toContain(`if (!Math) { (_unref(Example))() }`)
   })
 
   test('resolve component from setup bindings (inline const)', () => {
@@ -151,7 +151,7 @@ export function render(_ctx, _cache) {
     expect((root as CodegenRootNode).bindingComponents).toEqual({
       Example: { name: 'Example', type: BindingComponentTypes.SETUP },
     })
-    expect(preamble).toContain(`if (!Math) { Math.max.call(null, Example) }`)
+    expect(preamble).toContain(`if (!Math) { (Example)() }`)
   })
 
   test('resolve namespaced component from setup bindings', () => {

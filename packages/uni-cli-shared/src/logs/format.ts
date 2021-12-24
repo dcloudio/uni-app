@@ -1,6 +1,6 @@
 import { once } from '@dcloudio/uni-shared'
 
-import { isInHBuilderX } from '../hbx/env'
+import { isInHBuilderX, runByHBuilderX } from '../hbx/env'
 import { moduleAliasFormatter } from '../hbx/alias'
 import {
   h5ServeFormatter,
@@ -27,7 +27,7 @@ const initErrFormattersOnce = once(() => {
 })
 
 const initInfoFormattersOnce = once(() => {
-  if (isInHBuilderX()) {
+  if (runByHBuilderX()) {
     if (
       // 开发模式下
       process.env.UNI_PLATFORM === 'h5' &&

@@ -12040,6 +12040,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     };
     let needStop = null;
     let __handleTouchMove = function(event) {
+      if (touchStart === null)
+        return;
       let x = event.touches[0].pageX;
       let y = event.touches[0].pageY;
       let _main = main.value;
@@ -12108,10 +12110,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       }
     };
     let __handleTouchEnd = function(event) {
-      touchStart = {
-        x: 0,
-        y: 0
-      };
+      touchStart = null;
       if (state2.refresherHeight >= props2.refresherThreshold) {
         _setRefreshState("refreshing");
       } else {

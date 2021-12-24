@@ -4,49 +4,84 @@ import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE,
   parseVueRequest,
-  transformVueComponentImports,
-  normalizeMiniProgramFilename,
-  addMiniProgramUsingComponents,
-  removeExt,
   isMiniProgramPageFile,
+  parseProgram,
+  parseScriptDescriptor,
+  parseTemplateDescriptor,
+  parseMainDescriptor,
+  updateMiniProgramComponentsByMainFilename,
+  transformDynamicImports,
+  updateMiniProgramComponentsByScriptFilename,
+  updateMiniProgramComponentsByTemplateFilename,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
 
 export function uniUsingComponentsPlugin(
   options: Partial<SFCScriptCompileOptions> = {}
 ): Plugin {
+  const parseAst = (source: string, id: string) => {
+    return parseProgram(source, id, {
+      babelParserPlugins: options.babelParserPlugins,
+    })
+  }
+  const inputDir = process.env.UNI_INPUT_DIR
   return {
     name: 'vite:uni-mp-using-component',
     enforce: 'post',
     async transform(source, id) {
       const { filename, query } = parseVueRequest(id)
+      if (filename.endsWith('App.vue')) {
+        return null
+      }
       if (query.vue) {
+        if (query.type === 'script') {
+          // 需要主动监听
+          this.addWatchFile(filename)
+          const descriptor = await parseScriptDescriptor(
+            filename,
+            parseAst(source, id),
+            {
+              resolve: this.resolve,
+              isExternal: true,
+            }
+          )
+          updateMiniProgramComponentsByScriptFilename(filename, inputDir)
+          return transformDynamicImports(
+            source,
+            descriptor.imports,
+            dynamicImport
+          )
+        } else if (query.type === 'template') {
+          // 需要主动监听
+          this.addWatchFile(filename)
+          const descriptor = await parseTemplateDescriptor(
+            filename,
+            parseAst(source, id),
+            {
+              resolve: this.resolve,
+              isExternal: true,
+            }
+          )
+          updateMiniProgramComponentsByTemplateFilename(filename, inputDir)
+          return transformDynamicImports(
+            source,
+            descriptor.imports,
+            dynamicImport
+          )
+        }
         return null
       }
       if (!EXTNAME_VUE.includes(path.extname(filename))) {
         return null
       }
-      const inputDir = process.env.UNI_INPUT_DIR
-      const { code, usingComponents } = await transformVueComponentImports(
-        source,
-        id,
-        {
-          root: inputDir,
-          resolve: this.resolve,
-          dynamicImport,
-          babelParserPlugins: options.babelParserPlugins,
-        }
-      )
 
-      addMiniProgramUsingComponents(
-        removeExt(normalizeMiniProgramFilename(id, inputDir)),
-        usingComponents
-      )
+      const ast = parseAst(source, id)
 
-      return {
-        code,
-        map: this.getCombinedSourcemap(),
-      }
+      const descriptor = await parseMainDescriptor(filename, ast, this.resolve)
+
+      updateMiniProgramComponentsByMainFilename(filename, inputDir)
+
+      return transformDynamicImports(source, descriptor.imports, dynamicImport)
     },
   }
 }

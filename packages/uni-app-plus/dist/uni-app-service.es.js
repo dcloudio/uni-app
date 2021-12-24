@@ -12724,7 +12724,7 @@ var serviceContext = (function (vue) {
   const API_SHREA = 'share';
   const SCENE = [
       'WXSceneSession',
-      'WXSenceTimeline',
+      'WXSceneTimeline',
       'WXSceneFavorite',
   ];
   const SahreOptions = {

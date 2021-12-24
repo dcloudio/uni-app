@@ -42,6 +42,10 @@ export function findJsonFile(filename: string) {
   return jsonPagesCache.get(filename) || jsonComponentsCache.get(filename)
 }
 
+export function findUsingComponents(filename: string) {
+  return jsonUsingComponentsCache.get(filename)
+}
+
 export function normalizeJsonFilename(filename: string) {
   return normalizeNodeModules(filename)
 }

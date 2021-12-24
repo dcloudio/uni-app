@@ -196,7 +196,7 @@ function genComponentImports(
       resolveComponents.forEach((code) => {
         push(code)
       })
-      push(`Math.max.call(null, ${names.join(', ')});`)
+      push(`(${names.join('+')})()`)
       push(`}`)
     }
     newline()
@@ -206,9 +206,7 @@ function genComponentImports(
     }
     if (components.length) {
       push(`if (!Math) {`)
-      push(
-        ` Math.max.call(null, ${components.map((name) => name).join(', ')}) `
-      )
+      push(` (${components.map((name) => name).join('+')})() `)
       push(`}`)
       newline()
     }

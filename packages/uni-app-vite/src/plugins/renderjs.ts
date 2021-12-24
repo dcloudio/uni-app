@@ -5,6 +5,7 @@ import { Plugin, ResolvedConfig } from 'vite'
 import { RENDERJS_MODULES, WXS_MODULES } from '@dcloudio/uni-shared'
 
 import {
+  cleanUrl,
   hash,
   missingModuleName,
   normalizePath,
@@ -34,7 +35,11 @@ export function uniRenderjsPlugin(): Plugin {
       if (!type) {
         return
       }
+      if (type !== 'wxs' && type !== 'renderjs') {
+        return
+      }
       debugRenderjs(id)
+      this.addWatchFile(cleanUrl(id))
       if (!name) {
         this.error(missingModuleName(type, code))
       }

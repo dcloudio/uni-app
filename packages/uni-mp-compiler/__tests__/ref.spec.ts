@@ -32,7 +32,7 @@ describe('compiler: transform ref', () => {
       `<custom class="r" u-r="custom" u-i="2a9ec0b0-0"/>`,
       `import { resolveComponent as _resolveComponent, sr as _sr } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return { a: _sr('custom', '2a9ec0b0-0') }
@@ -47,7 +47,7 @@ export function render(_ctx, _cache) {
       `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="custom" u-i="{{item.b}}"/>`,
       `import { resolveComponent as _resolveComponent, sr as _sr, f as _f } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr('custom', '2a9ec0b0-0' + '-' + i0, { "f": 1 }), b: '2a9ec0b0-0' + '-' + i0 }; }) }
@@ -131,7 +131,7 @@ export function render(_ctx, _cache) {
       `<custom class="r" u-r="{{b}}" u-i="2a9ec0b0-0"/>`,
       `import { resolveComponent as _resolveComponent, sr as _sr } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return { a: _sr(_ctx.custom, '2a9ec0b0-0'), b: _ctx.custom }
@@ -146,7 +146,7 @@ export function render(_ctx, _cache) {
       `<custom wx:for="{{a}}" wx:for-item="item" class="r-i-f" u-r="{{b}}" u-i="{{item.b}}"/>`,
       `import { resolveComponent as _resolveComponent, sr as _sr, f as _f } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _sr(_ctx.custom, '2a9ec0b0-0' + '-' + i0, { "f": 1 }), b: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }

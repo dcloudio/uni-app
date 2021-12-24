@@ -2,6 +2,7 @@ import debug from 'debug'
 import { Plugin, ResolvedConfig } from 'vite'
 
 import {
+  cleanUrl,
   MiniProgramFilterOptions,
   missingModuleName,
   parseRenderjs,
@@ -38,6 +39,7 @@ export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
       if (type !== lang) {
         return defaultCode
       }
+      this.addWatchFile(cleanUrl(id))
       if (!name) {
         this.error(missingModuleName(type, code))
       } else {

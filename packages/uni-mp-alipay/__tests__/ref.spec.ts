@@ -25,7 +25,7 @@ describe('mp-alipay: transform ref', () => {
       `<custom ref="__r" u-r="custom" u-i="2a9ec0b0-0" onVI="__l"/>`,
       `import { resolveComponent as _resolveComponent } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return {}
@@ -39,7 +39,7 @@ export function render(_ctx, _cache) {
       `<custom a:for="{{a}}" a:for-item="item" ref="__r" u-r-i-f="custom" u-i="{{item.a}}" onVI="__l"/>`,
       `import { resolveComponent as _resolveComponent, f as _f } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }) }
@@ -113,7 +113,7 @@ export function render(_ctx, _cache) {
       `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
       `import { resolveComponent as _resolveComponent } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return { a: _ctx.custom }
@@ -127,7 +127,7 @@ export function render(_ctx, _cache) {
       `<custom a:for="{{a}}" a:for-item="item" ref="__r" u-r-i-f="{{b}}" u-i="{{item.a}}" onVI="__l"/>`,
       `import { resolveComponent as _resolveComponent, f as _f } from "vue"
 const __BINDING_COMPONENTS__ = '{"custom":{"name":"_component_custom","type":"unknown"}}'
-if (!Array) {const _component_custom = _resolveComponent("custom");Math.max.call(null, _component_custom);}
+if (!Array) {const _component_custom = _resolveComponent("custom");(_component_custom)()}
 
 export function render(_ctx, _cache) {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }), b: _ctx.custom }

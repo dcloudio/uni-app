@@ -1,7 +1,8 @@
 import {
-  addMiniProgramUsingComponents,
   defineUniMainJsPlugin,
-  transformVueComponentImports,
+  parseProgram,
+  transformDynamicImports,
+  updateMiniProgramGlobalComponents,
 } from '@dcloudio/uni-cli-shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import { dynamicImport } from './usingComponents'
@@ -20,22 +21,20 @@ export function uniMainJsPlugin(
             : createLegacyApp(source)
 
           const inputDir = process.env.UNI_INPUT_DIR
-          const { code, usingComponents } = await transformVueComponentImports(
-            source,
+          const { imports } = await updateMiniProgramGlobalComponents(
             id,
-            {
-              root: inputDir,
-              global: true,
-              resolve: this.resolve,
-              dynamicImport,
+            parseProgram(source, id, {
               babelParserPlugins: options.babelParserPlugins,
+            }),
+            {
+              inputDir,
+              resolve: this.resolve,
             }
           )
-          addMiniProgramUsingComponents('app', usingComponents)
           return {
             code:
               `import 'plugin-vue:export-helper';import 'uni-mp-runtime';import './pages.json.js';` +
-              code,
+              (await transformDynamicImports(source, imports, dynamicImport)),
             map: this.getCombinedSourcemap(),
           }
         }
