@@ -1,5 +1,5 @@
 import { ComponentPropsOptions } from '@vue/runtime-core'
-import { extend, isArray, isPlainObject } from '@vue/shared'
+import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
 import type { MPComponentOptions, MPComponentInstance } from './component'
 // @ts-ignore
 import { findComponentPropsData } from 'vue'
@@ -64,6 +64,34 @@ export function initProps(mpComponentOptions: MPComponentOptions) {
   }
   extend(mpComponentOptions.properties, initDefaultProps())
 }
+
+const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
+
+function parsePropType(type: unknown, defaultValue: unknown) {
+  // [String]=>String
+  if (isArray(type) && type.length === 1) {
+    return type[0]
+  }
+  if (__PLATFORM__ === 'mp-baidu') {
+    if (
+      // [String,Boolean]=>Boolean
+      defaultValue === false &&
+      isArray(type) &&
+      type.length === 2 &&
+      type.indexOf(String) !== -1 &&
+      type.indexOf(Boolean) !== -1
+    ) {
+      return Boolean
+    }
+  }
+  return type
+}
+
+function normalizePropType(type: unknown, defaultValue: unknown) {
+  const res = parsePropType(type, defaultValue)
+  return PROP_TYPES.indexOf(res) !== -1 ? res : null
+}
+
 /**
  * 初始化页面 props，方便接收页面参数，类型均为String，默认值均为''
  * @param param
@@ -82,9 +110,24 @@ export function initPageProps(
     })
   } else if (isPlainObject(rawProps)) {
     Object.keys(rawProps).forEach((key) => {
-      properties![key] = {
-        type: String,
-        value: '',
+      const opts = rawProps[key]
+      if (isPlainObject(opts)) {
+        // title:{type:String,default:''}
+        let value = (opts as any).default
+        if (isFunction(value)) {
+          value = value()
+        }
+        const type = (opts as any).type as any
+        ;(opts as any).type = normalizePropType(type, value)
+        properties![key] = {
+          type: (opts as any).type,
+          value,
+        }
+      } else {
+        // content:String
+        properties![key] = {
+          type: normalizePropType(opts, null),
+        }
       }
     })
   }
