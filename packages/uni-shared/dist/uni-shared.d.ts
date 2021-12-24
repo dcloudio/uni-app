@@ -1,6 +1,6 @@
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { ComponentOptionsBase } from '@vue/runtime-core';
-import { ComponentPublicInstance } from '@vue/runtime-core';
+import type { ComponentPublicInstance } from '@vue/runtime-core';
 import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
 import { createApp } from 'vue';
 import { RendererNode } from '@vue/runtime-core';
@@ -223,6 +223,8 @@ export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 export declare function isAppNativeTag(tag: string): boolean;
 
 export declare function isBuiltInComponent(tag: string): boolean;
+
+export declare function isComponentInternalInstance(vm: unknown): vm is ComponentInternalInstance;
 
 export declare function isComponentTag(tag: string): boolean;
 
@@ -538,9 +540,11 @@ export declare function removeLeadingSlash(str: string): string;
 
 export declare const RENDERJS_MODULES = "renderjsModules";
 
+export declare function resolveComponentInstance(instance?: ComponentInternalInstance | ComponentPublicInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
+
 export declare function resolveOwnerEl(instance: ComponentInternalInstance): RendererNode | null;
 
-export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
+export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
 

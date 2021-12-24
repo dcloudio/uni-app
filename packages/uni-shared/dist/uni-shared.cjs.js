@@ -160,6 +160,13 @@ const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
 function resolveOwnerVm(vm) {
     if (!vm) {
         return;
@@ -1325,6 +1332,7 @@ exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
+exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
@@ -1340,6 +1348,7 @@ exports.parseUrl = parseUrl;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;
+exports.resolveComponentInstance = resolveComponentInstance;
 exports.resolveOwnerEl = resolveOwnerEl;
 exports.resolveOwnerVm = resolveOwnerVm;
 exports.sanitise = sanitise;

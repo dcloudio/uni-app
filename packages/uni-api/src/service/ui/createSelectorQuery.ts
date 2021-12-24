@@ -1,12 +1,13 @@
-import { ComponentPublicInstance } from 'vue'
+import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import { resolveComponentInstance } from '@dcloudio/uni-shared'
 import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
+import { requestComponentInfo } from '@dcloudio/uni-platform'
+import { getContextInfo } from '@dcloudio/uni-components'
 import { defineSyncApi } from '../../helpers/api'
 import { CanvasContext } from '../context/canvas'
 import { EditorContext } from '../context/editor'
 import { MapContext } from '../context/createMapContext'
 import { VideoContext } from '../context/createVideoContext'
-import { requestComponentInfo } from '@dcloudio/uni-platform'
-import { getContextInfo } from '@dcloudio/uni-components'
 
 type NodeField = UniApp.NodeField
 export interface SelectorQueryNodeInfo
@@ -153,8 +154,8 @@ class SelectorQuery implements UniApp.SelectorQuery {
     return this._nodesRef as NodesRef
   }
 
-  in(component?: ComponentPublicInstance) {
-    this._component = component || undefined
+  in(component?: ComponentPublicInstance | ComponentInternalInstance) {
+    this._component = resolveComponentInstance(component)
     return this
   }
 
@@ -199,6 +200,7 @@ class SelectorQuery implements UniApp.SelectorQuery {
 
 export const createSelectorQuery = <typeof uni.createSelectorQuery>(
   defineSyncApi('createSelectorQuery', (context?: any) => {
+    context = resolveComponentInstance(context)
     if (context && !getPageIdByVm(context)) {
       context = null
     }

@@ -1,8 +1,27 @@
-import type { ComponentInternalInstance, VNode } from '@vue/runtime-core'
+import type {
+  ComponentInternalInstance,
+  ComponentPublicInstance,
+  VNode,
+} from '@vue/runtime-core'
 import { hyphenate } from '@vue/shared'
 
 import { isBuiltInComponent } from './tags'
 import { SLOT_DEFAULT_NAME } from './constants'
+
+export function isComponentInternalInstance(
+  vm: unknown
+): vm is ComponentInternalInstance {
+  return !!(vm as ComponentInternalInstance).appContext
+}
+
+export function resolveComponentInstance(
+  instance?: ComponentInternalInstance | ComponentPublicInstance
+) {
+  return (
+    instance &&
+    (isComponentInternalInstance(instance) ? instance.proxy! : instance)
+  )
+}
 
 export function resolveOwnerVm(vm: ComponentInternalInstance) {
   if (!vm) {

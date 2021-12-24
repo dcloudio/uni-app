@@ -194,6 +194,14 @@ var serviceContext = (function (vue) {
   const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
   const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
+  function isComponentInternalInstance(vm) {
+      return !!vm.appContext;
+  }
+  function resolveComponentInstance(instance) {
+      return (instance &&
+          (isComponentInternalInstance(instance) ? instance.proxy : instance));
+  }
+
   let lastLogTime = 0;
   function formatLog(module, ...args) {
       const now = Date.now();
@@ -2066,7 +2074,8 @@ var serviceContext = (function (vue) {
       });
   }
 
-  function getPageIdByVm(vm) {
+  function getPageIdByVm(instance) {
+      const vm = resolveComponentInstance(instance);
       if (vm.$page) {
           return vm.$page.id;
       }
@@ -11007,6 +11016,7 @@ var serviceContext = (function (vue) {
       }
   }
   const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (context, options) => {
+      context = resolveComponentInstance(context);
       if (context && !getPageIdByVm(context)) {
           options = context;
           context = null;
@@ -11044,6 +11054,7 @@ var serviceContext = (function (vue) {
       }
   }
   const createMediaQueryObserver = defineSyncApi('createMediaQueryObserver', (context) => {
+      context = resolveComponentInstance(context);
       if (context && !getPageIdByVm(context)) {
           context = null;
       }
@@ -11207,7 +11218,7 @@ var serviceContext = (function (vue) {
           return this._nodesRef;
       }
       in(component) {
-          this._component = component || undefined;
+          this._component = resolveComponentInstance(component);
           return this;
       }
       select(selector) {
@@ -11230,6 +11241,7 @@ var serviceContext = (function (vue) {
       }
   }
   const createSelectorQuery = (defineSyncApi('createSelectorQuery', (context) => {
+      context = resolveComponentInstance(context);
       if (context && !getPageIdByVm(context)) {
           context = null;
       }
