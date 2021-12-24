@@ -13,6 +13,7 @@ import {
   ElementTypes,
   ExpressionNode,
   findProp,
+  isSlotOutlet,
   NodeTypes,
   RootNode,
   SimpleExpressionNode,
@@ -216,7 +217,11 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
     node.children.length === 1
   ) {
     const child = node.children[0]
-    if (isElementNode(child) && !isForElementNode(child)) {
+    if (
+      isElementNode(child) &&
+      !isForElementNode(child) &&
+      !isSlotOutlet(child)
+    ) {
       child.props.push(slotProp)
       return genElement(child, context)
     }

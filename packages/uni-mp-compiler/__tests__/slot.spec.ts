@@ -53,6 +53,15 @@ describe('compiler: transform slot', () => {
 }`
     )
   })
+  test('slot with component', () => {
+    assert(
+      `<view><custom><slot><view>fallback</view></slot></custom></view>`,
+      `<view><custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view slot="d"><block wx:if="{{$slots.d}}"><slot name="d"></slot></block><block wx:else><view>fallback</view></block></view></custom></view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
   test('slot with v-if', () => {
     assert(
       `<slot v-if="header" name="header"/><slot v-else-if="body" name="body"/><slot v-else name="footer"/>`,
