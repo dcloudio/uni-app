@@ -1,7 +1,14 @@
 const uniI18n = require('@dcloudio/uni-cli-i18n')
 
+function isPlainObject(a) {
+  if (a === null) {
+    return false
+  }
+  return typeof a === 'object'
+}
+
 module.exports = {
-  initCustomScript (name, pkgPath) {
+  initCustomScript(name, pkgPath) {
     const pkg = require(pkgPath)
     const uniAppOptions = pkg['uni-app']
 
@@ -19,6 +26,16 @@ module.exports = {
     if (!scriptOptions.env || !scriptOptions.env.UNI_PLATFORM) {
       console.error(uniI18n.__('cliShared.requireConfigUniPlatform', { 0: `package.json->uni-app->scripts->${name}->env ` }))
       process.exit(0)
+    }
+
+    if (isPlainObject(scriptOptions.define)) {
+      Object.keys(uniAppOptions.scripts).forEach(scriptName => {
+        if (scriptName !== name) {
+          const define = uniAppOptions.scripts[scriptName].define
+          Object.keys(define).forEach(name => define[name] = false)
+          Object.assign(scriptOptions.define, define)
+        }
+      })
     }
 
     process.env.UNI_PLATFORM = scriptOptions.env.UNI_PLATFORM
