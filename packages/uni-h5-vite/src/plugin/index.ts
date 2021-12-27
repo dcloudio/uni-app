@@ -10,7 +10,7 @@ import { createUni } from './uni'
 import { createConfig } from './config'
 import { isString } from '@vue/shared'
 
-export function uniH5PLugin(): UniVitePlugin {
+export function uniH5Plugin(): UniVitePlugin {
   const configOptions: {
     resolvedConfig: ResolvedConfig | null
   } = {

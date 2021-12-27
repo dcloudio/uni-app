@@ -8,3 +8,5 @@ export const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out'
 export const VIEW_WEBVIEW_PATH = '_www/__uniappview.html'
 
 export const WEBVIEW_ID_PREFIX = 'webviewId'
+
+export const SDK_UNI_MP_NATIVE_EVENT = 'uniMPNativeEvent'

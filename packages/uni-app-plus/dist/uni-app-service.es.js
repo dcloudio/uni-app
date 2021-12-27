@@ -17216,6 +17216,14 @@ var serviceContext = (function (vue) {
       }
   }
 
+  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
+  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
+  const ANI_DURATION = 300;
+  const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
+  const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
+  const WEBVIEW_ID_PREFIX = 'webviewId';
+  const SDK_UNI_MP_NATIVE_EVENT = 'uniMPNativeEvent';
+
   function initGlobalEvent() {
       const plusGlobalEvent = plus.globalEvent;
       const weexGlobalEvent = weex.requireModule('globalEvent');
@@ -17252,6 +17260,11 @@ var serviceContext = (function (vue) {
               emit(ON_KEYBOARD_HEIGHT_CHANGE, {
                   height: keyboardHeightChange,
               });
+          }
+      });
+      weexGlobalEvent.addEventListener(SDK_UNI_MP_NATIVE_EVENT, function (res) {
+          if (res && res.event) {
+              emit(SDK_UNI_MP_NATIVE_EVENT + '.' + res.event, res.data);
           }
       });
       plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
@@ -17483,13 +17496,6 @@ var serviceContext = (function (vue) {
           });
       });
   }
-
-  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
-  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
-  const ANI_DURATION = 300;
-  const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
-  const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
-  const WEBVIEW_ID_PREFIX = 'webviewId';
 
   function initNVue(webviewStyle, routeMeta, path) {
       if (path && routeMeta.isNVue) {
@@ -19161,6 +19167,10 @@ var serviceContext = (function (vue) {
           resolve();
       });
   });
+  function onHostEventReceive(name, fn) {
+      UniServiceJSBridge.on(SDK_UNI_MP_NATIVE_EVENT + '.' + name, fn);
+  }
+  const onNativeEventReceive = onHostEventReceive;
 
   const EventType = {
       load: 'load',
@@ -19929,6 +19939,8 @@ var serviceContext = (function (vue) {
     restoreGlobal: restoreGlobal,
     sendHostEvent: sendHostEvent,
     navigateToMiniProgram: navigateToMiniProgram,
+    onHostEventReceive: onHostEventReceive,
+    onNativeEventReceive: onNativeEventReceive,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,

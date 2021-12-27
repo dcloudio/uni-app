@@ -1,5 +1,6 @@
 import { defineAsyncApi } from '@dcloudio/uni-api'
 import { sendNativeEvent } from './requireNativePlugin'
+import { SDK_UNI_MP_NATIVE_EVENT } from '../../constants'
 
 export const sendHostEvent = sendNativeEvent
 
@@ -26,3 +27,12 @@ export const navigateToMiniProgram =
       })
     }
   )
+
+export function onHostEventReceive(
+  name: string,
+  fn: (...args: unknown[]) => void
+) {
+  UniServiceJSBridge.on(SDK_UNI_MP_NATIVE_EVENT + '.' + name, fn)
+}
+
+export const onNativeEventReceive = onHostEventReceive
