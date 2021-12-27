@@ -33,6 +33,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 function loader(content) {
   const options = (0, _loaderUtils.getOptions)(this) || {};
+  // fixed by xxxxxx
+  const isNVue = !!options.nvue
+  delete options.nvue
   (0, _schemaUtils.default)(_options.default, options, {
     name: 'Sass Loader',
     baseDataPath: 'options'
@@ -54,7 +57,7 @@ function loader(content) {
       mainFiles: ['_index', 'index', '...'],
       extensions: ['.scss', '.sass', '.css', '...']
     });
-    sassOptions.importer.push((0, _webpackImporter.default)(this.resourcePath, resolve, addNormalizedDependency));
+    sassOptions.importer.push((0, _webpackImporter.default)(this.resourcePath, resolve, addNormalizedDependency, isNVue));
   } // Skip empty files, otherwise it will stop webpack, see issue #21
 
 
