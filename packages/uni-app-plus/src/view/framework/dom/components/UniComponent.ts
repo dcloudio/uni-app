@@ -232,3 +232,15 @@ export function setHolderText(holder: Element, clazz: string, text: string) {
   // 添加文本节点
   holder.appendChild(document.createTextNode(text))
 }
+
+const vModelNames = ['value', 'modelValue']
+export function initVModel(props: Record<string, any>) {
+  vModelNames.forEach((name) => {
+    if (hasOwn(props, name)) {
+      const event = 'onUpdate:' + name
+      if (!hasOwn(props, event)) {
+        props[event] = (v: string) => (props[name] = v)
+      }
+    }
+  })
+}
