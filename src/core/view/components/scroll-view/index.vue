@@ -225,7 +225,7 @@ export default {
 
     this.__handleTouchMove = function (event) {
       if (touchStart === null) return
-      
+
       var x = event.touches[0].pageX
       var y = event.touches[0].pageY
       var main = self.$refs.main

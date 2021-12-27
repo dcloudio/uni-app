@@ -160,6 +160,18 @@ class ComponentDescriptor {
     // TODO options
     return (this.$vm.$emit(eventName, detail), this)
   }
+
+  setTimeout (handler: TimerHandler, timeout ? : number) {
+    return window.setTimeout(handler, timeout)
+  }
+
+  clearTimeout (handle ? : number) {
+    return window.clearTimeout(handle)
+  }
+
+  getBoundingClientRect () {
+    return this.$el.getBoundingClientRect()
+  }
 }
 
 export function createComponentDescriptor (vm, isOwnerInstance = true) {
