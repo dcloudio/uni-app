@@ -7,7 +7,12 @@ import {
   parseComponent,
   CustomComponentInstanceProperty,
 } from './component'
-import { PAGE_HOOKS, initHooks, initUnknownHooks } from './componentHooks'
+import {
+  PAGE_INIT_HOOKS,
+  initHooks,
+  initUnknownHooks,
+  initRuntimeHooks,
+} from './componentHooks'
 import { initPageProps } from './componentProps'
 
 function parsePage(
@@ -43,9 +48,9 @@ function parsePage(
     return this.$vm && this.$vm.$callHook(ON_LOAD, query)
   }
 
-  initHooks(methods, PAGE_HOOKS)
+  initHooks(methods, PAGE_INIT_HOOKS)
   initUnknownHooks(methods, vueOptions)
-
+  initRuntimeHooks(methods, vueOptions.__runtimeHooks)
   parse && parse(miniProgramPageOptions, { handleLink })
 
   return miniProgramPageOptions

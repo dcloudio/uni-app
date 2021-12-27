@@ -24,9 +24,10 @@ export {
 } from './runtime/componentOptions'
 export { initProps } from './runtime/componentProps'
 export {
-  PAGE_HOOKS,
   initHooks,
   initUnknownHooks,
+  initRuntimeHooks,
+  PAGE_INIT_HOOKS,
 } from './runtime/componentHooks'
 export { initMocks, initComponentInstance } from './runtime/componentInstance'
 export { $createComponent, $destroyComponent } from './runtime/component'

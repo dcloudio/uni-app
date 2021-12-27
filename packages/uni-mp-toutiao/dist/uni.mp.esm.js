@@ -185,6 +185,12 @@ class EventChannel {
     }
 }
 
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
+    onPageScroll: 1,
+    onShareAppMessage: 1 << 1,
+    onShareTimeline: 1 << 2,
+};
+
 const eventChannels = {};
 const eventChannelStack = [];
 function getEventChannel(id) {
@@ -290,7 +296,7 @@ function callHook(name, args) {
     return hooks && invokeArrayFns(hooks, args);
 }
 
-const PAGE_HOOKS = [
+const PAGE_INIT_HOOKS = [
     ON_LOAD,
     ON_SHOW,
     ON_HIDE,
@@ -340,6 +346,17 @@ function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
 }
 function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
     findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+}
+function initRuntimeHooks(mpOptions, runtimeHooks) {
+    if (!runtimeHooks) {
+        return;
+    }
+    const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
+    hooks.forEach((hook) => {
+        if (runtimeHooks & MINI_PROGRAM_PAGE_RUNTIME_HOOKS[hook]) {
+            initHook$1(mpOptions, hook, []);
+        }
+    });
 }
 
 tt.appLaunchHooks = [];
@@ -848,8 +865,9 @@ function parsePage(vueOptions, parseOptions) {
         };
         return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };
-    initHooks(methods, PAGE_HOOKS);
+    initHooks(methods, PAGE_INIT_HOOKS);
     initUnknownHooks(methods, vueOptions);
+    initRuntimeHooks(methods, vueOptions.__runtimeHooks);
     parse && parse(miniProgramPageOptions, { handleLink });
     return miniProgramPageOptions;
 }
