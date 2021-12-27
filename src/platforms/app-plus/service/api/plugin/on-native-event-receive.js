@@ -10,6 +10,10 @@ UniServiceJSBridge.on('api.uniMPNativeEvent', function (res) {
   })
 })
 
+export function onHostEventReceive (callbackId) {
+  callbacks.push(callbackId)
+}
+
 export function onNativeEventReceive (callbackId) {
   callbacks.push(callbackId)
 }
