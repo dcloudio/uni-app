@@ -258,6 +258,12 @@ export declare const JSON_PROTOCOL = "json://";
 
 export declare const LINEFEED = "\n";
 
+export declare const MINI_PROGRAM_PAGE_RUNTIME_HOOKS: {
+    readonly onPageScroll: 1;
+    readonly onShareAppMessage: number;
+    readonly onShareTimeline: number;
+};
+
 export declare const NAVBAR_HEIGHT = 44;
 
 declare type NavigateToOptionEvents = Record<string, (...args: any[]) => void>;

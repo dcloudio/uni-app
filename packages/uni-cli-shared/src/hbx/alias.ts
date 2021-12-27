@@ -8,7 +8,7 @@ const hbxPlugins = {
   less: 'compile-less/node_modules/less',
   sass: 'compile-dart-sass/node_modules/sass',
   stylus: 'compile-stylus/node_modules/stylus',
-  // pug: 'compile-pug-cli/node_modules/pug',
+  pug: 'compile-pug-cli/node_modules/pug',
 } as const
 
 export function initModuleAlias() {

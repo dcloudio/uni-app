@@ -35,6 +35,10 @@ export function hasJsonFile(filename: string) {
   )
 }
 
+export function getComponentJsonFilenames() {
+  return [...jsonComponentsCache.keys()]
+}
+
 export function findJsonFile(filename: string) {
   if (filename === 'app') {
     return appJsonCache

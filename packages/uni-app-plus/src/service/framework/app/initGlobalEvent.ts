@@ -5,6 +5,7 @@ import {
   ON_THEME_CHANGE,
   ON_KEYBOARD_HEIGHT_CHANGE,
 } from '@dcloudio/uni-shared'
+import { SDK_UNI_MP_NATIVE_EVENT } from '../../constants'
 import {
   EVENT_BACKBUTTON,
   backbuttonListener,
@@ -58,6 +59,15 @@ export function initGlobalEvent() {
         emit(ON_KEYBOARD_HEIGHT_CHANGE, {
           height: keyboardHeightChange,
         })
+      }
+    }
+  )
+
+  weexGlobalEvent.addEventListener(
+    SDK_UNI_MP_NATIVE_EVENT,
+    function (res: { event: string; data: unknown }) {
+      if (res && res.event) {
+        emit(SDK_UNI_MP_NATIVE_EVENT + '.' + res.event, res.data)
       }
     }
   )

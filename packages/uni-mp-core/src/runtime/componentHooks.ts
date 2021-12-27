@@ -1,4 +1,5 @@
 import {
+  MINI_PROGRAM_PAGE_RUNTIME_HOOKS,
   ON_ADD_TO_FAVORITES,
   ON_HIDE,
   ON_LOAD,
@@ -18,7 +19,7 @@ import { MiniProgramAppOptions } from '../index'
 import { CustomAppInstanceProperty } from './app'
 import { CustomComponentInstanceProperty } from './component'
 
-export const PAGE_HOOKS = [
+export const PAGE_INIT_HOOKS = [
   ON_LOAD,
   ON_SHOW,
   ON_HIDE,
@@ -94,4 +95,21 @@ export function initUnknownHooks(
   excludes: string[] = EXCLUDE_HOOKS
 ) {
   findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes))
+}
+
+export function initRuntimeHooks(
+  mpOptions: MiniProgramAppOptions | WechatMiniprogram.Component.MethodOption,
+  runtimeHooks?: number
+) {
+  if (!runtimeHooks) {
+    return
+  }
+  const hooks = Object.keys(
+    MINI_PROGRAM_PAGE_RUNTIME_HOOKS
+  ) as (keyof typeof MINI_PROGRAM_PAGE_RUNTIME_HOOKS)[]
+  hooks.forEach((hook) => {
+    if (runtimeHooks & MINI_PROGRAM_PAGE_RUNTIME_HOOKS[hook]) {
+      initHook(mpOptions, hook, [])
+    }
+  })
 }

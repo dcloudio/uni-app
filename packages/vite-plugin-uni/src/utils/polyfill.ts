@@ -9,7 +9,7 @@ export function rewriteCompilerSfcParse() {
   const compilerSfc = require(resolveBuiltIn('@vue/compiler-sfc'))
   const { parse } = compilerSfc
   compilerSfc.parse = (source: string, options: SFCParseOptions) => {
-    if (options.filename) {
+    if (options?.filename) {
       const extname = path.extname(options.filename)
       // wxs、filter、renderjs
       if (extname && !EXTNAME_VUE.includes(extname)) {

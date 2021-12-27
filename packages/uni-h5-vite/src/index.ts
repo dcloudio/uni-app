@@ -6,7 +6,7 @@ import {
   uniViteInjectPlugin,
   UNI_EASYCOM_EXCLUDE,
 } from '@dcloudio/uni-cli-shared'
-import { uniH5PLugin } from './plugin'
+import { uniH5Plugin } from './plugin'
 import { uniCssPlugin } from './plugins/css'
 import { uniEasycomPlugin } from './plugins/easycom'
 import { uniInjectPlugin } from './plugins/inject'
@@ -35,5 +35,5 @@ export default [
   uniSSRPlugin(),
   uniSetupPlugin(),
   uniRenderjsPlugin(),
-  uniH5PLugin(),
+  uniH5Plugin(),
 ]

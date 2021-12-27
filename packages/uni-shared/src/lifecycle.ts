@@ -75,3 +75,9 @@ export const UniLifecycleHooks = [
   ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
   ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ] as const
+
+export const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
+  onPageScroll: 1,
+  onShareAppMessage: 1 << 1,
+  onShareTimeline: 1 << 2,
+} as const

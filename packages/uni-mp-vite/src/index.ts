@@ -10,6 +10,7 @@ import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniEntryPlugin } from './plugins/entry'
 
 import { uniRenderjsPlugin } from './plugins/renderjs'
+import { uniRuntimeHooksPlugin } from './plugins/runtimeHooks'
 import { uniSubpackagePlugin } from './plugins/subpackage'
 import { uniMiniProgramPluginPlugin } from './plugins/plugin'
 
@@ -32,6 +33,7 @@ export default (options: UniMiniProgramPluginOptions) => {
     uniEntryPlugin(options),
     uniViteInjectPlugin(extend({}, options.vite.inject)),
     uniRenderjsPlugin({ lang: options.template.filter?.lang }),
+    uniRuntimeHooksPlugin(),
     uniMiniProgramPlugin(options),
     (options: {
       vueOptions?: { script?: Partial<SFCScriptCompileOptions> }

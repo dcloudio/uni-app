@@ -1202,6 +1202,11 @@ const UniLifecycleHooks = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
+    onPageScroll: 1,
+    onShareAppMessage: 1 << 1,
+    onShareTimeline: 1 << 2,
+};
 
 function getEnvLocale() {
     const { env } = process;
@@ -1242,6 +1247,7 @@ exports.EventModifierFlags = EventModifierFlags;
 exports.I18N_JSON_DELIMITERS = I18N_JSON_DELIMITERS;
 exports.JSON_PROTOCOL = JSON_PROTOCOL;
 exports.LINEFEED = LINEFEED;
+exports.MINI_PROGRAM_PAGE_RUNTIME_HOOKS = MINI_PROGRAM_PAGE_RUNTIME_HOOKS;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
