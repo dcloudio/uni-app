@@ -161,12 +161,12 @@ class ComponentDescriptor {
     return (this.$vm.$emit(eventName, detail), this)
   }
 
-  setTimeout (handler: TimerHandler, timeout ? : number) {
+  setTimeout (handler, timeout) {
     return window.setTimeout(handler, timeout)
   }
 
-  clearTimeout (handle ? : number) {
-    return window.clearTimeout(handle)
+  clearTimeout (handler) {
+    return window.clearTimeout(handler)
   }
 
   getBoundingClientRect () {
