@@ -80,6 +80,8 @@ const miniProgram = {
     lazyElement: {
         canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],
         editor: [{ name: 'on', arg: ['ready'] }],
+        // iOS 平台需要延迟
+        textarea: [{ name: 'on', arg: ['input'] }],
     },
     component: {
         dir: COMPONENTS_DIR,

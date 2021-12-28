@@ -20,6 +20,36 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test('lazy element: textarea', () => {
+    assert(
+      `<textarea></textarea>`,
+      `<textarea></textarea>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<textarea @input="input"></textarea>`,
+      `<block wx:if="{{r0}}"><textarea bindinput="{{a}}"></textarea></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.input) }
+}`
+    )
+    assert(
+      `<textarea v-model="text"></textarea>`,
+      `<block wx:if="{{r0}}"><textarea value="{{a}}" bindinput="{{b}}"></textarea></block>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.text, b: _o($event => _ctx.text = $event.detail.value) }
+}`
+    )
+    assert(
+      `<textarea v-if="ok1" @input="input"/><textarea v-else-if="ok2"/><textarea v-else @input="input"/>`,
+      `<textarea wx:if="{{a}}" bindinput="{{b}}"/><textarea wx:elif="{{c}}"/><block wx:else><textarea wx:if="{{r0}}" bindinput="{{d}}"/></block>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.input) } : _ctx.ok2 ? {} : { d: _o(_ctx.input) }, { c: _ctx.ok2 })
+}`
+    )
+  })
   test('lazy element: editor', () => {
     assert(
       `<editor/>`,
