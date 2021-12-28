@@ -28,7 +28,7 @@ import type Stylus from 'stylus'
 import type Less from 'less'
 import type { Alias } from 'types/alias'
 import { transform, formatMessages } from 'esbuild'
-import { preCss } from '../../../../preprocess'
+import { preCss, preNVueCss } from '../../../../preprocess'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -372,7 +372,7 @@ function getCssResolversKeys(
 async function compileCSS(
   id: string,
   code: string,
-  config: ResolvedConfig,
+  config: ResolvedConfig & { nvue?: true },
   urlReplacer: CssUrlReplacer,
   atImportResolvers: CSSAtImportResolvers,
   server?: ViteDevServer
@@ -436,7 +436,8 @@ async function compileCSS(
       code,
       config.root,
       opts,
-      atImportResolvers
+      atImportResolvers,
+      !!config.nvue
     )
     if (preprocessResult.errors.length) {
       throw preprocessResult.errors[0]
@@ -756,14 +757,16 @@ type StylePreprocessor = (
   source: string,
   root: string,
   options: StylePreprocessorOptions,
-  resolvers: CSSAtImportResolvers
+  resolvers: CSSAtImportResolvers,
+  isNVue: boolean
 ) => StylePreprocessorResults | Promise<StylePreprocessorResults>
 
 type SassStylePreprocessor = (
   source: string,
   root: string,
   options: SassStylePreprocessorOptions,
-  resolvers: CSSAtImportResolvers
+  resolvers: CSSAtImportResolvers,
+  isNVue: boolean
 ) => StylePreprocessorResults | Promise<StylePreprocessorResults>
 
 export interface StylePreprocessorResults {
@@ -804,13 +807,14 @@ const scss: SassStylePreprocessor = async (
   source,
   root,
   options,
-  resolvers
+  resolvers,
+  isNVue
 ) => {
   const render = loadPreprocessor(PreprocessLang.sass, root).render
   const internalImporter: Sass.Importer = (url, importer, done) => {
     resolvers.sass(url, importer).then((resolved) => {
       if (resolved) {
-        rebaseUrls(resolved, options.filename, options.alias).then(done)
+        rebaseUrls(resolved, options.filename, options.alias, isNVue).then(done)
       } else {
         done && done(null)
       }
@@ -856,7 +860,13 @@ const scss: SassStylePreprocessor = async (
   }
 }
 
-const sass: SassStylePreprocessor = (source, root, options, aliasResolver) =>
+const sass: SassStylePreprocessor = (
+  source,
+  root,
+  options,
+  aliasResolver,
+  isNVue
+) =>
   scss(
     source,
     root,
@@ -864,12 +874,13 @@ const sass: SassStylePreprocessor = (source, root, options, aliasResolver) =>
       ...options,
       indentedSyntax: true,
     },
-    aliasResolver
+    aliasResolver,
+    isNVue
   )
 
-function preprocessCss(content: string) {
+function preprocessCss(content: string, isNVue: boolean = false) {
   if (content.includes('#endif')) {
-    return preCss(content)
+    return isNVue ? preNVueCss(content) : preCss(content)
   }
   return content
 }
@@ -880,12 +891,13 @@ function preprocessCss(content: string) {
 async function rebaseUrls(
   file: string,
   rootFile: string,
-  alias: Alias[]
+  alias: Alias[],
+  isNVue: boolean = false
 ): Promise<Sass.ImporterReturnType> {
   file = path.resolve(file) // ensure os-specific flashes
 
   // 条件编译
-  const contents = preprocessCss(fs.readFileSync(file, 'utf-8'))
+  const contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue)
 
   // in the same dir, no need to rebase
   const fileDir = path.dirname(file)
@@ -919,13 +931,20 @@ async function rebaseUrls(
 }
 
 // .less
-const less: StylePreprocessor = async (source, root, options, resolvers) => {
+const less: StylePreprocessor = async (
+  source,
+  root,
+  options,
+  resolvers,
+  isNVue
+) => {
   const nodeLess = loadPreprocessor(PreprocessLang.less, root)
   const viteResolverPlugin = createViteLessPlugin(
     nodeLess,
     options.filename,
     options.alias,
-    resolvers
+    resolvers,
+    isNVue
   )
   source = await getSource(source, options.filename, options.additionalData)
 
@@ -962,7 +981,8 @@ function createViteLessPlugin(
   less: typeof Less,
   rootFile: string,
   alias: Alias[],
-  resolvers: CSSAtImportResolvers
+  resolvers: CSSAtImportResolvers,
+  isNVue: boolean
 ): Less.Plugin {
   if (!ViteLessManager) {
     ViteLessManager = class ViteManager extends less.FileManager {
@@ -996,7 +1016,12 @@ function createViteLessPlugin(
           path.join(dir, '*')
         )
         if (resolved) {
-          const result = await rebaseUrls(resolved, this.rootFile, this.alias)
+          const result = await rebaseUrls(
+            resolved,
+            this.rootFile,
+            this.alias,
+            isNVue
+          )
           let contents: string
           if (result && 'contents' in result) {
             contents = result.contents
