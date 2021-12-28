@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1128,9 +1128,15 @@ const customize = cached((str) => {
 
 function initTriggerEvent (mpInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent;
-  mpInstance.triggerEvent = function (event, ...args) {
+  const newTriggerEvent = function (event, ...args) {
     return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
   };
+  try {
+    // 京东小程序 triggerEvent 为只读
+    mpInstance.triggerEvent = newTriggerEvent;
+  } catch (error) {
+    mpInstance._triggerEvent = newTriggerEvent;
+  }
 }
 
 function initHook (name, options, isComponent) {
@@ -1729,11 +1735,33 @@ function handleEvent (event) {
   }
 }
 
+const messages = {};
+
 let locale;
 
 {
   locale = swan.getSystemInfoSync().language;
 }
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
@@ -1777,6 +1805,19 @@ function initAppLocale (Vue, appVm, locale) {
   });
 }
 
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
 const hooks = [
   'onShow',
   'onHide',
@@ -1811,7 +1852,7 @@ function initScopedSlotsParams () {
     const has = center[vueId];
     if (!has) {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -1825,7 +1866,7 @@ function initScopedSlotsParams () {
       return key ? object[key] : object
     } else {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -2419,17 +2460,17 @@ function createPlugin (vm) {
   const appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && swan.onAppShow) {
     swan.onAppShow((...args) => {
-      appOptions.onShow.apply(vm, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && swan.onAppHide) {
     swan.onAppHide((...args) => {
-      appOptions.onHide.apply(vm, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }

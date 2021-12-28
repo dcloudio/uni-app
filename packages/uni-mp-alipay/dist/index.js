@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -2051,11 +2051,33 @@ function handleEvent (event) {
   }
 }
 
+const messages = {};
+
 let locale;
 
 {
   locale = my.getSystemInfoSync().language;
 }
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
@@ -2099,6 +2121,19 @@ function initAppLocale (Vue, appVm, locale) {
   });
 }
 
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
 const hooks = [
   'onShow',
   'onHide',
@@ -2137,7 +2172,7 @@ function initScopedSlotsParams () {
     const has = center[vueId];
     if (!has) {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -2151,7 +2186,7 @@ function initScopedSlotsParams () {
       return key ? object[key] : object
     } else {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -2570,18 +2605,15 @@ function parseApp (vm) {
     my.getPhoneNumber({
       success: (res) => {
         $event.type = 'getphonenumber';
-        const response = JSON.parse(res.response).response;
-        if (response.code === '10000') { // success
-          $event.detail.errMsg = 'getPhoneNumber:ok';
-          $event.detail.encryptedData = res.response;
-        } else {
-          $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + res.response;
-        }
+        const response = JSON.parse(res.response);
+        $event.detail.errMsg = 'getPhoneNumber:ok';
+        $event.detail.encryptedData = response.response;
+        $event.detail.sign = response.sign;
         this[method]($event);
       },
       fail: (res) => {
         $event.type = 'getphonenumber';
-        $event.detail.errMsg = 'getPhoneNumber:fail';
+        $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res);
         this[method]($event);
       }
     });
@@ -2898,17 +2930,17 @@ function createPlugin (vm) {
   const appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && my.onAppShow) {
     my.onAppShow((...args) => {
-      appOptions.onShow.apply(vm, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && my.onAppHide) {
     my.onAppHide((...args) => {
-      appOptions.onHide.apply(vm, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }
