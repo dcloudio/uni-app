@@ -19,6 +19,7 @@
   "dependencies": {
     "@dcloudio/uni-stat": "^2.0.0-32920211029001",
     "buffer-json": "^2.0.0",
+    "clone-deep": "^4.0.1",
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.0",
     "envinfo": "^6.0.1",
@@ -27,6 +28,7 @@
     "lru-cache": "^4.1.2",
     "mkdirp": "^0.5.1",
     "module-alias": "^2.1.0",
+    "neo-async": "^2.6.1",
     "postcss": "^7.0.7",
     "postcss-import": "^12.0.1",
     "postcss-selector-parser": "^5.0.0",
