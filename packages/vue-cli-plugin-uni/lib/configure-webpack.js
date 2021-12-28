@@ -69,12 +69,14 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
 
   const tsConfigJsonFile = fs.existsSync(userTsConfigJson) ? userTsConfigJson : defaultTsConfigJson
 
+  const context = isInHBuilderX ? process.env.UNI_INPUT_DIR : process.env.UNI_CLI_CONTEXT
+
   const tsLoaderOptions = {
-    context: process.env.UNI_INPUT_DIR,
+    context,
     configFile: tsConfigJsonFile,
     transpileOnly: false,
     compilerOptions: {
-      baseUrl: process.env.UNI_INPUT_DIR,
+      baseUrl: context,
       typeRoots: [resolveModule('@dcloudio/types'), resolveModule('@types')],
       types: [
         'uni-app',
@@ -302,7 +304,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     const resolveLoaderAlias = {}
     const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']
     modules.forEach(m => {
-      const { dependencies } = require(`${m}/package.json`)
+      const {
+        dependencies
+      } = require(`${m}/package.json`)
       Object.keys(dependencies).forEach(key => {
         if (/-loader$/.test(key)) {
           resolveLoaderAlias[key] = require.resolve(key)
