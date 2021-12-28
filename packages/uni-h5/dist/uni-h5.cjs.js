@@ -6797,7 +6797,7 @@ function normalizeRouteKey(path, id2) {
 }
 function useKeepAliveRoute() {
   const route = vueRouter.useRoute();
-  const routeKey = vue.computed(() => normalizeRouteKey(route.path, getStateId()));
+  const routeKey = vue.computed(() => normalizeRouteKey("/" + route.meta.route, getStateId()));
   const isTabBar = vue.computed(() => route.meta.isTabBar);
   return {
     routeKey,

@@ -104,7 +104,9 @@ export function normalizeRouteKey(path: string, id: number) {
 
 export function useKeepAliveRoute() {
   const route = useRoute()
-  const routeKey = computed(() => normalizeRouteKey(route.path, getStateId()))
+  const routeKey = computed(() =>
+    normalizeRouteKey('/' + route.meta.route, getStateId())
+  )
   const isTabBar = computed(() => route.meta.isTabBar)
   return {
     routeKey,
