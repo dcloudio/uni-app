@@ -628,8 +628,8 @@ function initCreatePluginApp(parseAppOptions) {
 function onAliAuthError(method, $event) {
     $event.type = 'getphonenumber';
     $event.detail.errMsg =
-        'getPhoneNumber:fail Error: ' +
-            $event.detail.errorMessage(this)[method]($event);
+        'getPhoneNumber:fail Error: ' + $event.detail.errorMessage;
+    method($event);
 }
 function onAliGetAuthorize(method, $event) {
     my.getPhoneNumber({
@@ -639,12 +639,12 @@ function onAliGetAuthorize(method, $event) {
             $event.detail.errMsg = 'getPhoneNumber:ok';
             $event.detail.encryptedData = response.response;
             $event.detail.sign = response.sign;
-            this[method]($event);
+            method($event);
         },
         fail: (res) => {
             $event.type = 'getphonenumber';
             $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res);
-            this[method]($event);
+            method($event);
         },
     });
 }

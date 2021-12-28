@@ -6,7 +6,14 @@ describe('mp-alipay: transform v-on', () => {
       `<button open-type='getPhoneNumber' @getphonenumber="getPhoneNumber">获取手机号</button>`,
       `<button open-type="getAuthorize" scope="phoneNumber" onGetAuthorize="{{a}}" onError="{{b}}">获取手机号</button>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.$onAliGetAuthorize('getPhoneNumber', $event)), b: _o($event => _ctx.$onAliAuthError('getPhoneNumber', $event)) }
+  return { a: _o($event => _ctx.$onAliGetAuthorize(_ctx.getPhoneNumber, $event)), b: _o($event => _ctx.$onAliAuthError(_ctx.getPhoneNumber, $event)) }
+}`
+    )
+    assert(
+      `<button open-type='getPhoneNumber' @getphonenumber="getPhoneNumber($event)">获取手机号</button>`,
+      `<button open-type="getAuthorize" scope="phoneNumber" onGetAuthorize="{{a}}" onError="{{b}}">获取手机号</button>`,
+      `(_ctx, _cache) => {
+  return { a: _o($event => _ctx.$onAliGetAuthorize($event => { _ctx.getPhoneNumber($event); }, $event)), b: _o($event => _ctx.$onAliAuthError($event => { _ctx.getPhoneNumber($event); }, $event)) }
 }`
     )
   })

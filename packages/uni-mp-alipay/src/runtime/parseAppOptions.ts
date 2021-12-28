@@ -4,18 +4,18 @@ import { MiniProgramAppOptions } from '@dcloudio/uni-mp-core'
 
 function onAliAuthError(
   this: ComponentPublicInstance,
-  method: string,
+  method: ($event: unknown) => void,
   $event: any
 ) {
   $event.type = 'getphonenumber'
   $event.detail.errMsg =
-    'getPhoneNumber:fail Error: ' +
-    $event.detail.errorMessage(this as any)[method]($event)
+    'getPhoneNumber:fail Error: ' + $event.detail.errorMessage
+  method($event)
 }
 
 function onAliGetAuthorize(
   this: ComponentPublicInstance,
-  method: string,
+  method: ($event: unknown) => void,
   $event: any
 ) {
   my.getPhoneNumber({
@@ -25,12 +25,12 @@ function onAliGetAuthorize(
       $event.detail.errMsg = 'getPhoneNumber:ok'
       $event.detail.encryptedData = response.response
       $event.detail.sign = response.sign
-      ;(this as any)[method]($event)
+      method($event)
     },
     fail: (res) => {
       $event.type = 'getphonenumber'
       $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res)
-      ;(this as any)[method]($event)
+      method($event)
     },
   })
 }

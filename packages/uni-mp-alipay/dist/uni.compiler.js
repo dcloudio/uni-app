@@ -120,8 +120,11 @@ function transformOpenType(node) {
         return;
     }
     props.splice(getPhoneNumberPropIndex, 1);
-    props.push(uniCliShared.createOnDirectiveNode('getAuthorize', `$onAliGetAuthorize('${getPhoneNumberMethodName}',$event)`));
-    props.push(uniCliShared.createOnDirectiveNode('error', `$onAliAuthError('${getPhoneNumberMethodName}',$event)`));
+    const method = compilerCore.isSimpleIdentifier(getPhoneNumberMethodName)
+        ? getPhoneNumberMethodName
+        : `$event => { ${getPhoneNumberMethodName} }`;
+    props.push(uniCliShared.createOnDirectiveNode('getAuthorize', `$onAliGetAuthorize(${method},$event)`));
+    props.push(uniCliShared.createOnDirectiveNode('error', `$onAliAuthError(${method},$event)`));
 }
 
 const projectConfigFilename = 'mini.project.json';

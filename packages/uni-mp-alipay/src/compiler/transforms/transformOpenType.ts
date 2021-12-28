@@ -1,5 +1,6 @@
 import {
   findProp,
+  isSimpleIdentifier,
   NodeTypes,
   RootNode,
   TemplateChildNode,
@@ -49,16 +50,16 @@ export function transformOpenType(node: RootNode | TemplateChildNode) {
     return
   }
   props.splice(getPhoneNumberPropIndex, 1)
+  const method = isSimpleIdentifier(getPhoneNumberMethodName)
+    ? getPhoneNumberMethodName
+    : `$event => { ${getPhoneNumberMethodName} }`
   props.push(
     createOnDirectiveNode(
       'getAuthorize',
-      `$onAliGetAuthorize('${getPhoneNumberMethodName}',$event)`
+      `$onAliGetAuthorize(${method},$event)`
     )
   )
   props.push(
-    createOnDirectiveNode(
-      'error',
-      `$onAliAuthError('${getPhoneNumberMethodName}',$event)`
-    )
+    createOnDirectiveNode('error', `$onAliAuthError(${method},$event)`)
   )
 }
