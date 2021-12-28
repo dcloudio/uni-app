@@ -24,18 +24,23 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
   const targets: UniViteCopyPluginTarget[] = []
   const transformEvent: Record<string, string> = Object.create(null)
   const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {}
+  const jsxOptions: Required<UniVitePlugin>['uni']['jsxOptions'] = {}
   let compiler: TemplateCompiler | undefined
   UniVitePlugins.forEach((plugin) => {
     const {
       compiler: pluginTemplateCompiler,
       copyOptions: pluginCopyOptions,
       compilerOptions: pluginCompilerOptions,
+      jsxOptions: pluginJsxOptions,
     } = plugin.uni || {}
     if (pluginTemplateCompiler) {
       compiler = pluginTemplateCompiler
     }
     if (pluginCompilerOptions) {
       extend(compilerOptions, pluginCompilerOptions)
+    }
+    if (pluginJsxOptions) {
+      extend(jsxOptions, pluginJsxOptions)
     }
     if (pluginCopyOptions) {
       let copyOptions = pluginCopyOptions as CopyOptions
@@ -58,6 +63,7 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
     },
     transformEvent,
     compilerOptions,
+    jsxOptions,
   }
 }
 

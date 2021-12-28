@@ -70,7 +70,10 @@ export function initEasycoms(
   const res = {
     options,
     filter: createFilter(
-      ['components/*/*.vue', 'uni_modules/*/components/*/*.vue'],
+      [
+        'components/*/*.(vue|jsx|tsx)',
+        'uni_modules/*/components/*/*.(vue|jsx|tsx)',
+      ],
       [],
       {
         resolve: inputDir,
@@ -110,7 +113,7 @@ function initEasycom({
   dirs,
   rootDir,
   custom,
-  extensions = ['.vue'],
+  extensions = ['.vue', '.jsx', '.tsx'],
 }: EasycomOption) {
   clearEasycom()
   const easycomsObj = Object.create(null)

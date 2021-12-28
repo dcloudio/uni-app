@@ -3,6 +3,7 @@ import {
   transformMatchMedia,
   transformPageHead,
   transformTapToClick,
+  transformUniH5Jsx,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
 import { isH5NativeTag, isH5CustomElement } from '@dcloudio/uni-shared'
@@ -25,5 +26,8 @@ export function createUni(): UniVitePlugin['uni'] {
       assets: ['hybrid/html'],
     },
     compilerOptions,
+    jsxOptions: {
+      babelPlugins: [transformUniH5Jsx],
+    },
   }
 }

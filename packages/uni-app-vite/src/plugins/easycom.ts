@@ -3,11 +3,11 @@ import { Plugin } from 'vite'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
 
 import {
-  EXTNAME_VUE,
   parseVueRequest,
   matchEasycom,
   addImportDeclaration,
   genResolveEasycomCode,
+  EXTNAME_VUE_TEMPLATE,
 } from '@dcloudio/uni-cli-shared'
 
 interface UniEasycomPluginOptions {
@@ -26,7 +26,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       const { filename, query } = parseVueRequest(id)
       if (
         query.type !== 'template' &&
-        (query.vue || !EXTNAME_VUE.includes(path.extname(filename)))
+        (query.vue || !EXTNAME_VUE_TEMPLATE.includes(path.extname(filename)))
       ) {
         return
       }

@@ -5,7 +5,6 @@ import { camelize, capitalize } from '@vue/shared'
 
 import { COMPONENT_PREFIX, isBuiltInComponent } from '@dcloudio/uni-shared'
 import {
-  EXTNAME_VUE,
   H5_COMPONENTS_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
   COMPONENT_DEPS_CSS,
@@ -15,6 +14,7 @@ import {
   matchEasycom,
   addImportDeclaration,
   genResolveEasycomCode,
+  EXTNAME_VUE_TEMPLATE,
 } from '@dcloudio/uni-cli-shared'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
@@ -71,7 +71,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       const { filename, query } = parseVueRequest(id)
       if (
         query.type !== 'template' &&
-        (query.vue || !EXTNAME_VUE.includes(path.extname(filename)))
+        (query.vue || !EXTNAME_VUE_TEMPLATE.includes(path.extname(filename)))
       ) {
         return
       }

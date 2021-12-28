@@ -46,7 +46,7 @@ export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string
   vueOptions?: VueOptions
-  vueJsxOptions?: VueJSXPluginOptions | boolean
+  vueJsxOptions?: (VueJSXPluginOptions & { babelPlugins?: any[] }) | boolean
   viteLegacyOptions?: ViteLegacyOptions | false
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
@@ -104,7 +104,11 @@ export default function uniPlugin(
   if (options.vueJsxOptions) {
     plugins.push(
       vueJsxPlugin(
-        initPluginVueJsxOptions(options, uniPluginOptions.compilerOptions)
+        initPluginVueJsxOptions(
+          options,
+          uniPluginOptions.compilerOptions,
+          uniPluginOptions.jsxOptions
+        )
       )
     )
   }

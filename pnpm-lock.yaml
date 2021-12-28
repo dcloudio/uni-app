@@ -353,6 +353,7 @@ importers:
 
   packages/uni-cli-shared:
     specifiers:
+      '@babel/core': ^7.16.5
       '@babel/parser': ^7.16.4
       '@babel/types': ^7.16.0
       '@dcloudio/uni-i18n': 3.0.0-alpha-3030420211227001
@@ -395,7 +396,8 @@ importers:
       tapable: ^2.2.0
       xregexp: 3.1.0
     dependencies:
-      '@babel/parser': 7.16.4
+      '@babel/core': 7.16.5
+      '@babel/parser': 7.16.6
       '@babel/types': 7.16.0
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
@@ -3242,7 +3244,7 @@ packages:
   /@vue/compiler-core/3.2.26:
     resolution: {integrity: sha512-N5XNBobZbaASdzY9Lga2D9Lul5vdCIOXvUMd6ThcN8zgqQhPKfCV+wfAJNNJKQkSHudnYRO2gEB+lp0iN3g2Tw==}
     dependencies:
-      '@babel/parser': 7.16.4
+      '@babel/parser': 7.16.6
       '@vue/shared': 3.2.26
       estree-walker: 2.0.2
       source-map: 0.6.1
@@ -3256,7 +3258,7 @@ packages:
   /@vue/compiler-sfc/3.2.26:
     resolution: {integrity: sha512-ePpnfktV90UcLdsDQUh2JdiTuhV0Skv2iYXxfNMOK/F3Q+2BO0AulcVcfoksOpTJGmhhfosWfMyEaEf0UaWpIw==}
     dependencies:
-      '@babel/parser': 7.16.4
+      '@babel/parser': 7.16.6
       '@vue/compiler-core': 3.2.26
       '@vue/compiler-dom': 3.2.26
       '@vue/compiler-ssr': 3.2.26
@@ -3279,7 +3281,7 @@ packages:
   /@vue/reactivity-transform/3.2.26:
     resolution: {integrity: sha512-XKMyuCmzNA7nvFlYhdKwD78rcnmPb7q46uoR00zkX6yZrUmcCQ5OikiwUEVbvNhL5hBJuvbSO95jB5zkUon+eQ==}
     dependencies:
-      '@babel/parser': 7.16.4
+      '@babel/parser': 7.16.6
       '@vue/compiler-core': 3.2.26
       '@vue/shared': 3.2.26
       estree-walker: 2.0.2

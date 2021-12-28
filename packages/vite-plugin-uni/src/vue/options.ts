@@ -106,7 +106,8 @@ export function initPluginVueJsxOptions(
   options: VitePluginUniResolvedOptions,
   {
     isCustomElement,
-  }: Required<Required<UniVitePlugin>['uni']>['compilerOptions']
+  }: Required<Required<UniVitePlugin>['uni']>['compilerOptions'],
+  jsxOptions: Required<Required<UniVitePlugin>['uni']>['jsxOptions']
 ) {
   const vueJsxOptions = isPlainObject(options.vueJsxOptions)
     ? options.vueJsxOptions
@@ -115,6 +116,13 @@ export function initPluginVueJsxOptions(
     vueJsxOptions.optimize = true
   }
   vueJsxOptions.isCustomElement = isCustomElement as (tag: string) => boolean
+  if (!vueJsxOptions.babelPlugins) {
+    vueJsxOptions.babelPlugins = []
+  }
+  if (isArray(jsxOptions.babelPlugins)) {
+    vueJsxOptions.babelPlugins.push(...jsxOptions.babelPlugins)
+  }
+
   return vueJsxOptions
 }
 

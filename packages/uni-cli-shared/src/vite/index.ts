@@ -24,6 +24,9 @@ interface UniVitePluginUniOptions {
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']
   }
+  jsxOptions?: {
+    babelPlugins?: any[]
+  }
   copyOptions?: CopyOptions | (() => CopyOptions)
 }
 export interface UniVitePlugin extends Plugin {
