@@ -8,7 +8,6 @@ import {
   parseManifestJsonOnce,
   findMiniProgramTemplateFiles,
   MiniProgramCompilerOptions,
-  getComponentJsonFilenames,
 } from '@dcloudio/uni-cli-shared'
 
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
@@ -23,7 +22,6 @@ import type {
   SFCTemplateCompileOptions,
   SFCTemplateCompileResults,
 } from '@vue/compiler-sfc'
-import { hasOwn } from '@vue/shared'
 
 export interface UniMiniProgramPluginOptions {
   cdn?: number
@@ -154,16 +152,6 @@ export function uniMiniProgramPlugin(
           fileName: filename + template.extname,
           source: templateFiles[filename],
         })
-      })
-      // 部分组件可能模板为空
-      getComponentJsonFilenames().forEach((jsonFilename) => {
-        if (!hasOwn(templateFiles, jsonFilename)) {
-          this.emitFile({
-            type: 'asset',
-            fileName: jsonFilename + template.extname,
-            source: `<block/>`,
-          })
-        }
       })
       if (!nvueCssEmitted) {
         const nvueCssPaths = getNVueCssPaths(resolvedConfig)
