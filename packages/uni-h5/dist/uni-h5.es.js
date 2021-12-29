@@ -10123,7 +10123,10 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     let ColumnsPreRef = ref([]);
     let columnsRef = ref([]);
     function getItemIndex(vnode) {
-      const columnVNodes = columnsRef.value.filter((ref2) => typeof ref2.type !== "symbol");
+      let columnVNodes = columnsRef.value;
+      {
+        columnVNodes = columnVNodes.filter((ref2) => typeof ref2.type !== "symbol");
+      }
       let index2 = columnVNodes.indexOf(vnode);
       return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
