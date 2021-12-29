@@ -76,3 +76,7 @@ export function getRouterOptions(manifestJson: Record<string, any>): {
 export function isEnableTreeShaking(manifestJson: Record<string, any>) {
   return manifestJson.h5?.optimization?.treeShaking?.enable !== false
 }
+
+export function getDevServerOptions(manifestJson: Record<string, any>) {
+  return extend({}, manifestJson.h5?.devServer)
+}

@@ -4,7 +4,9 @@ import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
 import {
   isInHBuilderX,
   normalizePath,
+  getDevServerOptions,
   resolveMainPathOnce,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 import { createDefine, isSsr } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
@@ -13,11 +15,10 @@ import { extend, hasOwn } from '@vue/shared'
 export function createConfig(options: {
   resolvedConfig: ResolvedConfig | null
 }): Plugin['config'] {
+  const inputDir = process.env.UNI_INPUT_DIR
   return function config(config, env) {
     if (isInHBuilderX()) {
-      if (
-        !fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'index.html'))
-      ) {
+      if (!fs.existsSync(path.resolve(inputDir, 'index.html'))) {
         console.error(`请确认您的项目模板是否支持vue3：根目录缺少 index.html`)
         process.exit()
       }
@@ -29,7 +30,9 @@ export function createConfig(options: {
       watch: {
         ignored: ['**/uniCloud**'],
       },
+      ...getDevServerOptions(parseManifestJsonOnce(inputDir)),
     }
+
     const { server: userServer } = config
     if (userServer) {
       if (hasOwn(userServer, 'host')) {
@@ -42,9 +45,10 @@ export function createConfig(options: {
         extend(server.watch, userServer.watch)
       }
     }
+
     return {
       optimizeDeps: {
-        entries: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
+        entries: resolveMainPathOnce(inputDir),
         exclude: external,
         esbuildOptions: {
           plugins: [esbuildPrePlugin()],
@@ -64,7 +68,7 @@ export function createConfig(options: {
               const { assetsDir } = options.resolvedConfig!.build
               if (chunkInfo.facadeModuleId) {
                 const dirname = path.relative(
-                  process.env.UNI_INPUT_DIR,
+                  inputDir,
                   path.dirname(chunkInfo.facadeModuleId)
                 )
                 if (dirname) {
