@@ -24,7 +24,13 @@ export function isUniPageSfcFile(
 ) {
   return isVueSfcFile(file) && isUniPageFile(file, inputDir)
 }
-
+/**
+ * 小程序平台慎用，因为该解析不支持 subpackages
+ * @param inputDir
+ * @param platform
+ * @param normalize
+ * @returns
+ */
 export const parsePagesJson = (
   inputDir: string,
   platform: UniApp.PLATFORM,
@@ -36,7 +42,9 @@ export const parsePagesJson = (
   }
   return parseJson(jsonStr, true) as UniApp.PagesJson
 }
-
+/**
+ * 该方法解析出来的是不支持 subpackages，会被合并入 pages
+ */
 export const parsePagesJsonOnce = once(parsePagesJson)
 /**
  * 目前 App 和 H5 使用了该方法
@@ -147,7 +155,7 @@ function normalizeSubpackages(
 
 function normalizeSubpackageSubNVues(
   root: string,
-  style: UniApp.PagesJsonPageStyle
+  style: UniApp.PagesJsonPageStyle = { navigationBar: {} }
 ) {
   const platformStyle = style['app'] || style['app-plus']
   if (!platformStyle) {
@@ -438,3 +446,19 @@ function normalizePullToRefresh(
 ): UniApp.PageRefreshOptions | undefined {
   return pageStyle.pullToRefresh
 }
+
+function parseSubpackagesRoot(inputDir: string, platform: UniApp.PLATFORM) {
+  const pagesJson = parsePagesJson(inputDir, platform, false)
+  const subpackages = pagesJson.subPackages || pagesJson.subpackages
+  const roots: string[] = []
+  if (isArray(subpackages)) {
+    subpackages.forEach(({ root }) => {
+      if (root) {
+        roots.push(root)
+      }
+    })
+  }
+  return roots
+}
+
+export const parseSubpackagesRootOnce = once(parseSubpackagesRoot)
