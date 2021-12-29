@@ -15,8 +15,8 @@ import { extend, hasOwn } from '@vue/shared'
 export function createConfig(options: {
   resolvedConfig: ResolvedConfig | null
 }): Plugin['config'] {
-  const inputDir = process.env.UNI_INPUT_DIR
   return function config(config, env) {
+    const inputDir = process.env.UNI_INPUT_DIR
     if (isInHBuilderX()) {
       if (!fs.existsSync(path.resolve(inputDir, 'index.html'))) {
         console.error(`请确认您的项目模板是否支持vue3：根目录缺少 index.html`)
