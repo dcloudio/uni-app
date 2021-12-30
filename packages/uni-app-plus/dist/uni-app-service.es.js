@@ -6397,7 +6397,7 @@ var serviceContext = (function (vue) {
 
   var ZStream = zstream;
 
-  var toString$1 = Object.prototype.toString;
+  var toString$2 = Object.prototype.toString;
 
   /* Public constants ==========================================================*/
   /* ===========================================================================*/
@@ -6561,7 +6561,7 @@ var serviceContext = (function (vue) {
       if (typeof opt.dictionary === 'string') {
         // If we need to compress text, change encoding to utf8.
         dict = strings.string2buf(opt.dictionary);
-      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$2.call(opt.dictionary) === '[object ArrayBuffer]') {
         dict = new Uint8Array(opt.dictionary);
       } else {
         dict = opt.dictionary;
@@ -6619,7 +6619,7 @@ var serviceContext = (function (vue) {
     if (typeof data === 'string') {
       // If we need to compress text, change encoding to utf8.
       strm.input = strings.string2buf(data);
-    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$2.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;
@@ -9181,7 +9181,7 @@ var serviceContext = (function (vue) {
 
   var GZheader = gzheader;
 
-  var toString = Object.prototype.toString;
+  var toString$1 = Object.prototype.toString;
 
   /**
    * class Inflate
@@ -9322,7 +9322,7 @@ var serviceContext = (function (vue) {
       // Convert data if needed
       if (typeof opt.dictionary === 'string') {
         opt.dictionary = strings.string2buf(opt.dictionary);
-      } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
         opt.dictionary = new Uint8Array(opt.dictionary);
       }
       if (opt.raw) { //In raw mode we need to set the dictionary early
@@ -9380,7 +9380,7 @@ var serviceContext = (function (vue) {
     if (typeof data === 'string') {
       // Only binary strings can be decompressed on practice
       strm.input = strings.binstring2buf(data);
-    } else if (toString.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;
@@ -14920,20 +14920,24 @@ var serviceContext = (function (vue) {
       const options = {
           method,
           url: url.trim(),
-          // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
           headers,
           type: responseType === 'arraybuffer' ? 'base64' : 'text',
-          // weex 官方文档未说明实际支持 timeout，单位：ms
           timeout: timeout || 6e5,
           // 配置和weex模块内相反
           sslVerify: !sslVerify,
           firstIpv4: firstIpv4,
           tls,
       };
+      let withArrayBuffer = false;
       if (method !== 'GET') {
-          options.body = typeof data === 'string' ? data : JSON.stringify(data);
+          if (toString.call(data) === '[object ArrayBuffer]') {
+              withArrayBuffer = true;
+          }
+          else {
+              options.body = typeof data === 'string' ? data : JSON.stringify(data);
+          }
       }
-      stream.fetch(options, ({ ok, status, data, headers, errorMsg, }) => {
+      const callback = ({ ok, status, data, headers, errorMsg, }) => {
           if (aborted) {
               return;
           }
@@ -14958,7 +14962,16 @@ var serviceContext = (function (vue) {
               }
               reject(errMsg);
           }
-      });
+      };
+      if (withArrayBuffer) {
+          stream.fetchWithArrayBuffer({
+              '@type': 'binary',
+              base64: arrayBufferToBase64(data)
+          }, options, callback);
+      }
+      else {
+          stream.fetch(options, callback);
+      }
       return new RequestTask({
           abort() {
               aborted = true;

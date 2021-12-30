@@ -11,17 +11,10 @@ import {
   ConfigMTLSOptions,
   ConfigMTLSProtocol,
 } from '@dcloudio/uni-api'
-import { base64ToArrayBuffer } from '@dcloudio/uni-api'
+import { base64ToArrayBuffer, arrayBufferToBase64 } from '@dcloudio/uni-api'
 import { requireNativePlugin } from '../plugin/requireNativePlugin'
+import { Stream, FetchOptions, FetchCallback, FetchHeaders } from './stream'
 
-type Type = 'base64' | 'text'
-type Headers = Record<string, string>
-type Options = UniApp.RequestOptions & {
-  tls: any
-  headers: Headers
-  type: Type
-  body?: string | Data
-}
 interface RequestTasks {
   abort: Function
 }
@@ -139,8 +132,8 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       data = JSON.stringify(data)
     }
 
-    const stream = requireNativePlugin('stream')
-    const headers: Headers = {}
+    const stream: Stream = requireNativePlugin('stream')
+    const headers: FetchHeaders = {}
     let abortTimeout: ReturnType<typeof setTimeout>
     let aborted: boolean
     let hasContentType = false
@@ -183,70 +176,74 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       }, timeout + 200) // TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
     }
 
-    const options: Options = {
+    const options: FetchOptions = {
       method,
       url: url.trim(),
-      // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
       headers,
       type: responseType === 'arraybuffer' ? 'base64' : 'text',
-      // weex 官方文档未说明实际支持 timeout，单位：ms
       timeout: timeout || 6e5,
       // 配置和weex模块内相反
       sslVerify: !sslVerify,
       firstIpv4: firstIpv4,
       tls,
     }
-
+    let withArrayBuffer: boolean = false
     if (method !== 'GET') {
-      options.body = typeof data === 'string' ? data : JSON.stringify(data)
-    }
-
-    stream.fetch(
-      options,
-      ({
-        ok,
-        status,
-        data,
-        headers,
-        errorMsg,
-      }: {
-        ok: boolean
-        status: number
-        data: string
-        headers: Headers
-        errorMsg: string
-      }) => {
-        if (aborted) {
-          return
-        }
-        if (abortTimeout) {
-          clearTimeout(abortTimeout)
-        }
-        const statusCode = status
-        if (statusCode > 0) {
-          resolve(
-            formatResponse(
-              {
-                data:
-                  ok && responseType === 'arraybuffer'
-                    ? base64ToArrayBuffer(data)
-                    : data,
-                statusCode,
-                header: headers,
-                cookies: cookiesParse(headers),
-              },
-              args
-            )
-          )
-        } else {
-          let errMsg = 'abort statusCode:' + statusCode
-          if (errorMsg) {
-            errMsg = errMsg + ' ' + errorMsg
-          }
-          reject(errMsg)
-        }
+      if (toString.call(data) === '[object ArrayBuffer]') {
+        withArrayBuffer = true
+      } else {
+        options.body = typeof data === 'string' ? data : JSON.stringify(data)
       }
-    )
+    }
+    const callback: FetchCallback = ({
+      ok,
+      status,
+      data,
+      headers,
+      errorMsg,
+    }) => {
+      if (aborted) {
+        return
+      }
+      if (abortTimeout) {
+        clearTimeout(abortTimeout)
+      }
+      const statusCode = status
+      if (statusCode > 0) {
+        resolve(
+          formatResponse(
+            {
+              data:
+                ok && responseType === 'arraybuffer'
+                  ? base64ToArrayBuffer(data)
+                  : data,
+              statusCode,
+              header: headers,
+              cookies: cookiesParse(headers),
+            },
+            args
+          )
+        )
+      } else {
+        let errMsg = 'abort statusCode:' + statusCode
+        if (errorMsg) {
+          errMsg = errMsg + ' ' + errorMsg
+        }
+        reject(errMsg)
+      }
+    }
+    if (withArrayBuffer) {
+      stream.fetchWithArrayBuffer(
+        {
+          '@type': 'binary',
+          base64: arrayBufferToBase64(data as ArrayBuffer),
+        },
+        options,
+        callback
+      )
+    } else {
+      stream.fetch(options, callback)
+    }
 
     return new RequestTask({
       abort() {
