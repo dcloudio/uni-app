@@ -200,22 +200,23 @@ module.exports = {
 
     // 使用外层依赖的版本
     alias['regenerator-runtime'] = require.resolve('regenerator-runtime')
-    const optimization = {}
+    const output = {
+      pathinfo: process.env.UNI_MINIMIZE !== 'true',
+      filename: '[name].js',
+      chunkFilename: '[id].js',
+      globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
+      // sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
+    }
     if (process.env.UNI_MINIMIZE === 'true' && process.env.NODE_ENV === 'development') {
-      optimization.namedChunks = true
+      output.pathinfo = false
     }
     return {
-      mode: process.env.UNI_MINIMIZE === 'true' || process.env.NODE_ENV === 'production' ? 'production'
+      mode: process.env.NODE_ENV === 'production' ? 'production'
         : 'development',
       entry () {
         return process.UNI_ENTRY
       },
-      output: {
-        filename: '[name].js',
-        chunkFilename: '[id].js',
-        globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
-        // sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
-      },
+      output,
       performance: {
         hints: false
       },
@@ -263,8 +264,7 @@ module.exports = {
           }]
         }]
       },
-      plugins,
-      optimization
+      plugins
     }
   },
   chainWebpack (webpackConfig, vueOptions, api) {
