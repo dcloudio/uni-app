@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
@@ -8,6 +9,7 @@ import {
   UniViteCopyPluginTarget,
   parseSubpackagesRootOnce,
   normalizePath,
+  getPlatforms,
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
@@ -31,10 +33,29 @@ export function uniCopyPlugin({
   copyOptions!.assets.forEach((asset) => {
     assets.push(asset)
   })
+  const platform = process.env.UNI_PLATFORM
+  // 非当前平台 static 目录
+  const platformStaticDirs = getPlatforms()
+    .filter((p) => {
+      if (platform === 'app') {
+        return p !== 'app' && p !== 'app-plus'
+      }
+      return p !== platform
+    })
+    .map((p) => '/' + PUBLIC_DIR + '/' + p)
+
   const targets: UniViteCopyPluginTarget[] = [
     {
       src: assets,
       dest: outputDir,
+      watchOptions: {
+        ignored(path: string) {
+          const normalizedPath = normalizePath(path)
+          if (platformStaticDirs.find((dir) => normalizedPath.includes(dir))) {
+            return fs.statSync(normalizedPath).isDirectory
+          }
+        },
+      },
     },
   ]
   targets.push(...copyOptions!.targets)

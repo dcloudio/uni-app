@@ -1,7 +1,11 @@
+import type { WatchOptions } from 'chokidar'
 import type { Plugin, ResolvedConfig } from 'vite'
 import { FileWatcher, FileWatcherOptions } from '../../watcher'
 import { M } from '../../messages'
-export type UniViteCopyPluginTarget = Omit<FileWatcherOptions, 'verbose'>
+
+export type UniViteCopyPluginTarget = Omit<FileWatcherOptions, 'verbose'> & {
+  watchOptions?: WatchOptions
+}
 export interface UniViteCopyPluginOptions {
   targets: UniViteCopyPluginTarget[]
   verbose: boolean
@@ -28,7 +32,7 @@ export function uniViteCopyPlugin({
       inited = true
       return new Promise((resolve) => {
         Promise.all(
-          targets.map((target) => {
+          targets.map(({ watchOptions, ...target }) => {
             return new Promise((resolve) => {
               new FileWatcher({
                 verbose,
@@ -36,6 +40,7 @@ export function uniViteCopyPlugin({
               }).watch(
                 {
                   cwd: process.env.UNI_INPUT_DIR,
+                  ...watchOptions,
                 },
                 (watcher) => {
                   if (process.env.NODE_ENV !== 'development') {

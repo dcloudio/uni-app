@@ -1,8 +1,9 @@
 import path from 'path'
 import type { Plugin } from 'vite'
 import { extend, isArray, isString, isFunction } from '@vue/shared'
-import type {
+import {
   CopyOptions,
+  registerPlatform,
   UniViteCopyPluginTarget,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -116,6 +117,8 @@ function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
         }
         const { apply } = config
         if (isArray(apply)) {
+          // 注册所有平台
+          apply.forEach((p) => registerPlatform(p))
           if (!apply.includes(platform)) {
             return
           }
