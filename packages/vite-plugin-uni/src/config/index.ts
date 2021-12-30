@@ -39,7 +39,7 @@ export function createConfig(
       logLevel: config.logLevel || 'warn',
       optimizeDeps: createOptimizeDeps(options),
       build: createBuild(options, config),
-      css: createCss(options),
+      css: createCss(options, config),
     }
   }
 }
