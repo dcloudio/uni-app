@@ -4604,7 +4604,7 @@ function clone(src, seen) {
             }
         }
         else {
-            copy = Object.create(null);
+            copy = {};
             seen.set(src, copy);
             for (const name in src) {
                 if (hasOwn(src, name)) {
