@@ -61,8 +61,32 @@ export function initPluginVueOptions(
   if (miniProgram) {
     ;(compilerOptions as any).miniProgram = miniProgram
   }
-  compilerOptions.isNativeTag = isNativeTag
-  compilerOptions.isCustomElement = isCustomElement
+
+  if (isNativeTag) {
+    const userIsNativeTag = compilerOptions.isNativeTag
+    compilerOptions.isNativeTag = (tag) => {
+      if (isNativeTag(tag)) {
+        return true
+      }
+      if (userIsNativeTag && userIsNativeTag(tag)) {
+        return true
+      }
+      return false
+    }
+  }
+
+  if (isCustomElement) {
+    const userIsCustomElement = compilerOptions.isCustomElement
+    compilerOptions.isCustomElement = (tag) => {
+      if (isCustomElement(tag)) {
+        return true
+      }
+      if (userIsCustomElement && userIsCustomElement(tag)) {
+        return true
+      }
+      return false
+    }
+  }
 
   compilerOptions.directiveTransforms = {
     ...compilerOptions.directiveTransforms,
