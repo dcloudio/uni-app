@@ -126,7 +126,7 @@ export default {
     })
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'visible') {
-        UniServiceJSBridge.emit('onAppEnterForeground')
+        UniServiceJSBridge.emit('onAppEnterForeground', {})
       } else {
         UniServiceJSBridge.emit('onAppEnterBackground')
       }

@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-ui",
-  "version": "2.0.1-32920211122003",
+  "version": "2.0.1-33520211229001",
   "description": "uni-app h5 ui",
   "main": "dist/index.umd.min.js",
   "repository": {
@@ -13,5 +13,5 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "315a22303222154f438890454373d87768941ed8"
+  "gitHead": "32aa276f0c9fdfc8849332f6f260337668dbbdaa"
 }

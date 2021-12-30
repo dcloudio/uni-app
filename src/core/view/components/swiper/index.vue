@@ -450,6 +450,9 @@ export default {
           for (; position + length < current;) {
             position += length
           }
+          if (position + length - current < current - position) {
+            position += length
+          }
         } else {
           for (; position + length < current;) {
             position += length
@@ -547,7 +550,7 @@ export default {
       }
     },
     _handleContentTrack (e) {
-      if (this.disableTouch) {
+      if (this.disableTouch || !this.items.length) {
         return
       }
       if (!this._invalid) {

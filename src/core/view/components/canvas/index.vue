@@ -446,15 +446,15 @@ export default {
       callbackId
     }) {
       try {
+        if (__PLATFORM__ === 'app-plus' && compressed) {
+          const pako = require('pako')
+          data = pako.inflateRaw(data)
+        }
         if (!height) {
           height = Math.round(data.length / 4 / width)
         }
         const canvas = getTempCanvas(width, height)
         const context = canvas.getContext('2d')
-        if (__PLATFORM__ === 'app-plus' && compressed) {
-          const pako = require('pako')
-          data = pako.inflateRaw(data)
-        }
         context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0)
         this.$refs.canvas.getContext('2d').drawImage(canvas, x, y, width, height)
         canvas.height = canvas.width = 0

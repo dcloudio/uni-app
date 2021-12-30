@@ -18,6 +18,11 @@ if (process.env.UNI_VIEW !== 'true') {
     commonjs2: 'vue-router',
     root: 'VueRouter'
   }
+  externals['@dcloudio/uni-i18n'] = {
+    commonjs: '@dcloudio/uni-i18n',
+    commonjs2: '@dcloudio/uni-i18n',
+    root: '@dcloudio/uni-i18n'
+  }
 }
 
 const alias = {

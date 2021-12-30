@@ -45,6 +45,13 @@ import {
   backbuttonListener
 } from './backbutton'
 
+import {
+  getEnterOptions,
+  initEnterOptions,
+  initLaunchOptions,
+  parseRedirectInfo
+} from './utils'
+
 let appCtx
 
 const defaultApp = {
@@ -86,7 +93,11 @@ function initGlobalListeners () {
   })
 
   plus.globalEvent.addEventListener('resume', () => {
-    emit('onAppEnterForeground')
+    const info = parseRedirectInfo()
+    if (info && info.userAction) {
+      initEnterOptions(info)
+    }
+    emit('onAppEnterForeground', getEnterOptions())
   })
 
   plus.globalEvent.addEventListener('netchange', () => {
@@ -143,11 +154,11 @@ function onPlusMessage (e) {
 }
 
 function initAppLaunch (appVm) {
-  const args = {
+  const args = initLaunchOptions({
     path: __uniConfig.entryPagePath,
-    query: {},
-    scene: 1001
-  }
+    query: __uniConfig.entryPageQuery,
+    referrerInfo: __uniConfig.referrerInfo
+  })
 
   callAppHook(appVm, 'onLaunch', args)
   callAppHook(appVm, 'onShow', args)

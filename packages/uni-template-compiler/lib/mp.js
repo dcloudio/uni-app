@@ -53,6 +53,16 @@ const tags = {
     'web-view',
     'editor'
   ],
+  'mp-baidu': [
+    'follow-swan',
+    'login',
+    'inline-payment-panel'
+  ],
+  'mp-weixin': [
+    'page-meta',
+    'navigation-bar',
+    'match-media'
+  ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
     'lifestyle',
@@ -111,7 +121,9 @@ ${content}
     return `${eventType}${eventName}` // 原生组件不支持 bind:input 等写法，统一使用 bindinput
   },
   createScopedSlots (slotName, props, state) {
-    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', { 0: `[${slotName}]` }))
+    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', {
+      0: `[${slotName}]`
+    }))
     return {
       type: 'slot',
       attr: {
@@ -124,7 +136,9 @@ ${content}
     traverseExpr,
     normalizeChildren
   }, state) {
-    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', { 0: `[${slotName}]` }))
+    state.errors.add(uniI18n.__('templateCompiler.notCurrentlySupportScopedSlot', {
+      0: `[${slotName}]`
+    }))
     return {
       type: 'view',
       attr: {

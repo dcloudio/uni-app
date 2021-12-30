@@ -147,11 +147,7 @@ function normalizeNodes (nodes, ctx, options) {
 }
 
 function getRichText (weex) {
-  const {
-    scale,
-    deviceWidth
-  } = weex.config.env
-  const defaultFontSize = deviceWidth / scale / 20
+  const defaultFontSize = 16
   return {
     props: {
       nodes: {

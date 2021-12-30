@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1316,6 +1316,7 @@ var en = {
 	"uni.chooseVideo.sourceType.album": "Album",
 	"uni.chooseVideo.sourceType.camera": "Camera",
 	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
+	"uni.previewImage.cancel": "Cancel",
 	"uni.previewImage.button.save": "Save Image",
 	"uni.previewImage.save.success": "Saved successfully",
 	"uni.previewImage.save.fail": "Save failed",
@@ -1422,7 +1423,7 @@ var zhHans = {
 	"uni.chooseVideo.cancel": "取消",
 	"uni.chooseVideo.sourceType.album": "从相册选择",
 	"uni.chooseVideo.sourceType.camera": "拍摄",
-	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在用户激活时显示",
+	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
 	"uni.previewImage.cancel": "取消",
 	"uni.previewImage.button.save": "保存图像",
 	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1458,7 +1459,7 @@ var zhHant = {
 	"uni.chooseVideo.cancel": "取消",
 	"uni.chooseVideo.sourceType.album": "從相冊選擇",
 	"uni.chooseVideo.sourceType.camera": "拍攝",
-	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在用戶激活時顯示",
+	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
 	"uni.previewImage.cancel": "取消",
 	"uni.previewImage.button.save": "保存圖像",
 	"uni.previewImage.save.success": "保存圖像到相冊成功",
@@ -1480,13 +1481,17 @@ var zhHant = {
 	"uni.chooseLocation.cancel": "取消"
 };
 
-const messages = {
-  en,
-  es,
-  fr,
-  'zh-Hans': zhHans,
-  'zh-Hant': zhHant
-};
+const messages = {};
+
+{
+  Object.assign(messages, {
+    en,
+    es,
+    fr,
+    'zh-Hans': zhHans,
+    'zh-Hant': zhHant
+  });
+}
 
 let locale;
 
@@ -1497,6 +1502,26 @@ let locale;
     locale = '';
   }
 }
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
@@ -1539,6 +1564,19 @@ function initAppLocale (Vue, appVm, locale) {
     }
   });
 }
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
 
 class EventChannel {
   constructor (id, events) {

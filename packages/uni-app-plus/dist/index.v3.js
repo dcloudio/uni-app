@@ -64,6 +64,7 @@ var serviceContext = (function () {
     'chooseImage',
     'chooseFile',
     'previewImage',
+    'closePreviewImage',
     'getImageInfo',
     'getVideoInfo',
     'saveImageToPhotosAlbum',
@@ -254,7 +255,9 @@ var serviceContext = (function () {
     'sendNativeEvent',
     'preloadPage',
     'unPreloadPage',
-    'loadSubPackage'
+    'loadSubPackage',
+    'sendHostEvent',
+    'navigateToMiniProgram'
   ];
 
   const ad = [
@@ -825,7 +828,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1536,6 +1539,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Camera",
   	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
+  	"uni.previewImage.cancel": "Cancel",
   	"uni.previewImage.button.save": "Save Image",
   	"uni.previewImage.save.success": "Saved successfully",
   	"uni.previewImage.save.fail": "Save failed",
@@ -1642,7 +1646,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "从相册选择",
   	"uni.chooseVideo.sourceType.camera": "拍摄",
-  	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在用户激活时显示",
+  	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存图像",
   	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1678,7 +1682,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "從相冊選擇",
   	"uni.chooseVideo.sourceType.camera": "拍攝",
-  	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在用戶激活時顯示",
+  	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存圖像",
   	"uni.previewImage.save.success": "保存圖像到相冊成功",
@@ -1700,13 +1704,17 @@ var serviceContext = (function () {
   	"uni.chooseLocation.cancel": "取消"
   };
 
-  const messages = {
-    en,
-    es,
-    fr,
-    'zh-Hans': zhHans,
-    'zh-Hant': zhHant
-  };
+  const messages = {};
+
+  {
+    Object.assign(messages, {
+      en,
+      es,
+      fr,
+      'zh-Hans': zhHans,
+      'zh-Hant': zhHant
+    });
+  }
 
   let locale;
 
@@ -1717,6 +1725,26 @@ var serviceContext = (function () {
       locale = '';
     }
   }
+
+  function initI18nMessages () {
+    if (!isEnableLocale()) {
+      return
+    }
+    const localeKeys = Object.keys(__uniConfig.locales);
+    if (localeKeys.length) {
+      localeKeys.forEach((locale) => {
+        const curMessages = messages[locale];
+        const userMessages = __uniConfig.locales[locale];
+        if (curMessages) {
+          Object.assign(curMessages, userMessages);
+        } else {
+          messages[locale] = userMessages;
+        }
+      });
+    }
+  }
+
+  initI18nMessages();
 
   const i18n = initVueI18n(
     locale,
@@ -1813,7 +1841,7 @@ var serviceContext = (function () {
   }
 
   function isEnableLocale () {
-    return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+    return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
   }
 
   function initNavigationBarI18n (navigationBar) {
@@ -1825,14 +1853,14 @@ var serviceContext = (function () {
     }
   }
 
-  function initI18n () {
-    const localeKeys = Object.keys(__uniConfig.locales || {});
-    if (localeKeys.length) {
-      localeKeys.forEach((locale) =>
-        i18n.add(locale, __uniConfig.locales[locale])
-      );
-    }
-  }
+  // export function initI18n() {
+  //   const localeKeys = Object.keys(__uniConfig.locales || {})
+  //   if (localeKeys.length) {
+  //     localeKeys.forEach((locale) =>
+  //       i18n.add(locale, __uniConfig.locales[locale])
+  //     )
+  //   }
+  // }
 
   const setClipboardData = {
     data: {
@@ -2028,18 +2056,15 @@ var serviceContext = (function () {
     chooseLocation: chooseLocation
   });
 
-  const type = {
-    WGS84: 'WGS84',
-    GCJ02: 'GCJ02'
-  };
+  const coordTypes = ['wgs84', 'gcj02'];
+
   const getLocation = {
     type: {
       type: String,
       validator (value, params) {
-        value = (value || '').toUpperCase();
-        params.type = Object.values(type).indexOf(value) < 0 ? type.WGS84 : value;
-      },
-      default: type.WGS84
+        value = (value || '').toLowerCase();
+        params.type = coordTypes.indexOf(value) < 0 ? coordTypes[0] : value;
+      }
     },
     altitude: {
       type: Boolean,
@@ -2362,7 +2387,8 @@ var serviceContext = (function () {
     PUT: 'PUT',
     DELETE: 'DELETE',
     TRACE: 'TRACE',
-    CONNECT: 'CONNECT'
+    CONNECT: 'CONNECT',
+    PATCH: 'PATCH'
   };
   const dataType = {
     JSON: 'json'
@@ -4339,6 +4365,8 @@ var serviceContext = (function () {
     return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
+  const AUDIO_DEFAULT_CATEGORY = 'ambient';
+
   const audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
@@ -4385,6 +4413,7 @@ var serviceContext = (function () {
     audio.src = '';
     audio.volume = 1;
     audio.startTime = 0;
+    audio.setSessionCategory(AUDIO_DEFAULT_CATEGORY);
     return {
       errMsg: 'createAudioInstance:ok',
       audioId
@@ -4411,7 +4440,8 @@ var serviceContext = (function () {
     autoplay = false,
     loop = false,
     obeyMuteSwitch,
-    volume
+    volume,
+    category = AUDIO_DEFAULT_CATEGORY
   }) {
     const audio = audios[audioId];
     if (audio) {
@@ -4429,6 +4459,9 @@ var serviceContext = (function () {
         audio.volume = style.volume = volume;
       }
       audio.setStyles(style);
+      if (category) {
+        audio.setSessionCategory(category);
+      }
       initStateChage(audioId);
     }
     return {
@@ -5772,7 +5805,7 @@ var serviceContext = (function () {
       animationDuration: 200,
       uniNView: {
         path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
-        defaultFontSize: plus_.screen.resolutionWidth / 20,
+        defaultFontSize: 16,
         viewport: plus_.screen.resolutionWidth
       }
     };
@@ -6742,7 +6775,8 @@ var serviceContext = (function () {
       }, {
         geocode: geocode,
         enableHighAccuracy: altitude,
-        timeout: highAccuracyExpireTime
+        timeout: highAccuracyExpireTime,
+        coordsType: type
       }
     );
   }
@@ -7219,6 +7253,19 @@ var serviceContext = (function () {
     });
     return {
       errMsg: 'previewImage:ok'
+    }
+  }
+
+  function closePreviewImagePlus () {
+    try {
+      plus.nativeUI.closePreviewImage();
+      return {
+        errMsg: 'closePreviewImagePlus:ok'
+      }
+    } catch (error) {
+      return {
+        errMsg: 'closePreviewImagePlus:fail'
+      }
     }
   }
 
@@ -8668,6 +8715,25 @@ var serviceContext = (function () {
     });
   }
 
+  const sendHostEvent = sendNativeEvent;
+
+  function navigateToMiniProgram (data, callbackId) {
+    sendHostEvent(
+      'navigateToUniMP',
+      data,
+      (res) => {
+        if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
+          return invoke$1(callbackId, {
+            errMsg: res.errMsg
+          })
+        }
+        invoke$1(callbackId, {
+          errMsg: 'navigateToMiniProgram:ok'
+        });
+      }
+    );
+  }
+
   const VD_SYNC_VERSION = 2;
 
   const PAGE_CREATE = 2;
@@ -9180,14 +9246,46 @@ var serviceContext = (function () {
         const pages = getCurrentPages();
         const page = pages[pages.length - 1];
         page && page.$remove();
-
         setStatusBarStyle();
-
-        UniServiceJSBridge.emit('onAppRoute', {
-          type: 'navigateBack'
-        });
+        if (page && isDirectPage(page)) {
+          reLaunchEntryPage();
+        } else {
+          UniServiceJSBridge.emit('onAppRoute', {
+            type: 'navigateBack'
+          });
+        }
       }
     });
+  }
+
+  /**
+   * 是否处于直达页面
+   * @param page
+   * @returns
+   */
+  function isDirectPage (page) {
+    return (
+      __uniConfig.realEntryPagePath &&
+      page.$page.route === __uniConfig.entryPagePath
+    )
+  }
+  /**
+   * 重新启动到首页
+   */
+  function reLaunchEntryPage () {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+      url: addLeadingSlash(__uniConfig.entryPagePath)
+    });
+  }
+
+  function hasLeadingSlash (str) {
+    return str.indexOf('/') === 0
+  }
+
+  function addLeadingSlash (str) {
+    return hasLeadingSlash(str) ? str : '/' + str
   }
 
   let preloadWebview;
@@ -9691,6 +9789,80 @@ var serviceContext = (function () {
     return pageVm
   }
 
+  const extend = Object.assign;
+
+  function createLaunchOptions () {
+    return {
+      path: '',
+      query: {},
+      scene: 1001,
+      referrerInfo: {
+        appId: '',
+        extraData: {}
+      }
+    }
+  }
+
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+
+  function getEnterOptions () {
+    return enterOptions
+  }
+
+  function initEnterOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(enterOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+  }
+
+  function initLaunchOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(launchOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+    extend(enterOptions, launchOptions);
+    return launchOptions
+  }
+
+  function parseRedirectInfo () {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        extraData,
+        userAction,
+        fromAppid
+      } =
+      weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+        appId: fromAppid,
+        extraData: {}
+      };
+      if (extraData) {
+        referrerInfo.extraData = extraData;
+      }
+      return {
+        path: path || '',
+        query: query ? '?' + query : '',
+        referrerInfo,
+        userAction
+      }
+    }
+  }
+
   let isInitEntryPage = false;
 
   function initEntryPage () {
@@ -9705,9 +9877,16 @@ var serviceContext = (function () {
     const weexPlus = weex.requireModule('plus');
 
     if (weexPlus.getRedirectInfo) {
-      const info = weexPlus.getRedirectInfo() || {};
-      entryPagePath = info.path;
-      entryPageQuery = info.query ? ('?' + info.query) : '';
+      const {
+        path,
+        query,
+        referrerInfo
+      } = parseRedirectInfo();
+      if (path) {
+        entryPagePath = path;
+        entryPageQuery = query;
+      }
+      __uniConfig.referrerInfo = referrerInfo;
     } else {
       const argsJsonStr = plus.runtime.arguments;
       if (!argsJsonStr) {
@@ -11742,6 +11921,7 @@ var serviceContext = (function () {
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
     previewImagePlus: previewImagePlus,
+    closePreviewImagePlus: closePreviewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -11779,6 +11959,8 @@ var serviceContext = (function () {
     onNativeEventReceive: onNativeEventReceive,
     sendNativeEvent: sendNativeEvent,
     loadSubPackage: loadSubPackage$2,
+    sendHostEvent: sendHostEvent,
+    navigateToMiniProgram: navigateToMiniProgram,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
@@ -20219,9 +20401,14 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
+  function closePreviewImage (args = {}) {
+    return invokeMethod('closePreviewImagePlus', args)
+  }
+
   var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    previewImage: previewImage$1
+    previewImage: previewImage$1,
+    closePreviewImage: closePreviewImage
   });
 
   const callbacks$8 = {
@@ -21530,18 +21717,12 @@ var serviceContext = (function () {
       callCurrentPageHook('onHide');
     }
 
-    function onAppEnterForeground () {
+    function onAppEnterForeground (enterOptions) {
+      callAppHook(getApp(), 'onShow', enterOptions);
       const pages = getCurrentPages();
       if (pages.length === 0) {
         return
       }
-      const page = pages[pages.length - 1];
-      const args = {
-        path: page.route,
-        query: page.options
-      };
-
-      callAppHook(getApp(), 'onShow', args);
       callCurrentPageHook('onShow');
     }
 
@@ -21861,7 +22042,11 @@ var serviceContext = (function () {
     });
 
     plus.globalEvent.addEventListener('resume', () => {
-      emit('onAppEnterForeground');
+      const info = parseRedirectInfo();
+      if (info && info.userAction) {
+        initEnterOptions(info);
+      }
+      emit('onAppEnterForeground', getEnterOptions());
     });
 
     plus.globalEvent.addEventListener('netchange', () => {
@@ -21918,11 +22103,11 @@ var serviceContext = (function () {
   }
 
   function initAppLaunch (appVm) {
-    const args = {
+    const args = initLaunchOptions({
       path: __uniConfig.entryPagePath,
-      query: {},
-      scene: 1001
-    };
+      query: __uniConfig.entryPageQuery,
+      referrerInfo: __uniConfig.referrerInfo
+    });
 
     callAppHook(appVm, 'onLaunch', args);
     callAppHook(appVm, 'onShow', args);
@@ -22968,8 +23153,6 @@ var serviceContext = (function () {
       };
     }
   };
-
-  initI18n();
 
   // 挂靠在uni上，暂不做全局导出
   uni$1.__$wx__ = wx;
