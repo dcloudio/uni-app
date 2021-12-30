@@ -1,4 +1,11 @@
-import { extend, isArray, isPlainObject, hasOwn, NOOP } from '@vue/shared'
+import {
+  extend,
+  isArray,
+  isPlainObject,
+  hasOwn,
+  NOOP,
+  isString,
+} from '@vue/shared'
 import {
   callWithAsyncErrorHandling,
   ComponentInternalInstance,
@@ -13,13 +20,23 @@ interface Invoker {
   value: EventValue
 }
 
-export function vOn(value: EventValue | undefined) {
+export function vOn(value: EventValue | undefined, key?: number | string) {
   const instance = getCurrentInstance()! as unknown as {
     $ei: number
-    ctx: { $scope: Record<string, any> }
+    ctx: { $scope: Record<string, any>; $mpPlatform: UniApp.PLATFORM }
   }
-  const name = 'e' + instance.$ei++
-  const mpInstance = instance.ctx.$scope
+  const ctx = instance.ctx
+  // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
+  const extraKey =
+    typeof key !== 'undefined' &&
+    (ctx.$mpPlatform === 'mp-weixin' || ctx.$mpPlatform === 'mp-qq') &&
+    (isString(key) || typeof key === 'number')
+      ? '_' + key
+      : ''
+
+  const name = 'e' + instance.$ei++ + extraKey
+
+  const mpInstance = ctx.$scope
   if (!value) {
     // remove
     delete mpInstance[name]

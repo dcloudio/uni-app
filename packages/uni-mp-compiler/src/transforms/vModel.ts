@@ -37,6 +37,7 @@ export const transformModel: DirectiveTransform = (
   if (!baseResult.props.length || node.tagType === ElementTypes.COMPONENT) {
     return transformComponentVModel(
       baseResult.props,
+      node,
       context
     ) as unknown as DirectiveTransformResult
   }
@@ -96,7 +97,7 @@ function transformElementVModel(
   node: ElementNode,
   context: TransformContext
 ) {
-  const dirs = transformVModel(props, context, {
+  const dirs = transformVModel(props, node, context, {
     binding: 'value',
     event: 'input',
     formatEventCode(code) {
@@ -110,6 +111,7 @@ function transformElementVModel(
       inputExp.children[2] = combineVOn(
         dirs[1].exp!,
         inputExp.children[2] as ExpressionNode,
+        node,
         context
       )
       dirs.length = 1
@@ -117,7 +119,7 @@ function transformElementVModel(
       const inputDir = findInputDirectiveNode(node.props)
       if (inputDir && inputDir.exp) {
         // 合并到已有的 input 事件中
-        inputDir.exp = combineVOn(dirs[1].exp!, inputDir.exp, context)
+        inputDir.exp = combineVOn(dirs[1].exp!, inputDir.exp, node, context)
         dirs.length = 1
       }
     }
@@ -205,6 +207,7 @@ function parseVOn(exp: ExpressionNode, context: TransformContext) {
 function combineVOn(
   exp1: ExpressionNode,
   exp2: ExpressionNode,
+  node: ElementNode,
   context: TransformContext
 ) {
   return wrapperVOn(
@@ -215,16 +218,18 @@ function combineVOn(
       parseVOn(exp2, context),
       `]`,
     ]),
+    node,
     context
   )
 }
 
 function transformComponentVModel(
   props: Property[],
+  node: ElementNode,
   context: TransformContext
 ) {
   return {
-    props: transformVModel(props, context, {
+    props: transformVModel(props, node, context, {
       formatEventCode(code) {
         return code
       },
@@ -234,6 +239,7 @@ function transformComponentVModel(
 
 function transformVModel(
   props: Property[],
+  node: ElementNode,
   context: TransformContext,
   {
     binding,
@@ -273,6 +279,7 @@ function transformVModel(
           (onUpdateExpr.type === NodeTypes.JS_CACHE_EXPRESSION
             ? onUpdateExpr.value
             : onUpdateExpr) as ExpressionNode,
+          node,
           context
         )
       )

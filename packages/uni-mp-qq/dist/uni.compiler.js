@@ -99,6 +99,9 @@ const miniProgram = {
         fallbackContent: false,
         dynamicSlotNames: true,
     },
+    event: {
+        key: true,
+    },
     directive: 'qq:',
     component: {
         dir: COMPONENTS_DIR,

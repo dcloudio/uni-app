@@ -76,6 +76,9 @@ const miniProgram = {
         fallbackContent: false,
         dynamicSlotNames: true,
     },
+    event: {
+        key: true,
+    },
     directive: 'wx:',
     lazyElement: {
         canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],

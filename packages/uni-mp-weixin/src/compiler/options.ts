@@ -32,6 +32,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
     fallbackContent: false,
     dynamicSlotNames: true,
   },
+  event: {
+    key: true,
+  },
   directive: 'wx:',
   lazyElement: {
     canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],

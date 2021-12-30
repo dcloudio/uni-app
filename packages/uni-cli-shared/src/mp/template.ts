@@ -11,7 +11,8 @@ export interface MiniProgramCompilerOptions {
     [name: string]: { name: 'on' | 'bind'; arg: string[] }[]
   }
   event?: {
-    format(
+    key?: boolean
+    format?(
       name: string,
       opts: { isCatch?: boolean; isCapture?: boolean; isComponent?: boolean }
     ): string

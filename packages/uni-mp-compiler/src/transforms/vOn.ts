@@ -1,3 +1,4 @@
+import { isDirectiveNode } from '@dcloudio/uni-cli-shared'
 import {
   createCompilerError,
   createCompoundExpression,
@@ -13,8 +14,11 @@ import {
   SimpleExpressionNode,
   TO_HANDLER_KEY,
   DirectiveTransform,
+  ElementNode,
+  findProp,
 } from '@vue/compiler-core'
 import { camelize, toHandlerKey } from '@vue/shared'
+import { genExpr } from '..'
 import { V_ON } from '../runtimeHelpers'
 import { TransformContext } from '../transform'
 import { DirectiveTransformResult } from './transformElement'
@@ -165,11 +169,13 @@ export const transformOn: DirectiveTransform = (
     // )
     ret.props[0].value = wrapperVOn(
       ret.props[0].value as ExpressionNode,
+      node,
       context
     )
   } else {
     ret.props[0].value = wrapperVOn(
       ret.props[0].value as ExpressionNode,
+      node,
       context
     )
   }
@@ -192,7 +198,11 @@ function isFilterExpr(value: ExpressionNode, context: TransformContext) {
   return false
 }
 
-export function wrapperVOn(value: ExpressionNode, context: TransformContext) {
+export function wrapperVOn(
+  value: ExpressionNode,
+  node: ElementNode,
+  context: TransformContext
+) {
   if (isBuiltInIdentifier(value)) {
     return value
   }
@@ -200,10 +210,22 @@ export function wrapperVOn(value: ExpressionNode, context: TransformContext) {
   if (isFilterExpr(value, context)) {
     return value
   }
-
+  const keys: string[] = []
+  if (context.miniProgram.event?.key && context.inVFor) {
+    const keyProp = findProp(node, 'key')
+    // 仅对 v-for 中 item.id 类型做处理，使用索引无需处理，避免引发更多问题
+    if (keyProp && isDirectiveNode(keyProp) && keyProp.exp) {
+      const keyCode = genExpr(keyProp.exp)
+      if (keyCode && keyCode.includes('.')) {
+        keys.push(',')
+        keys.push(genExpr(keyProp.exp))
+      }
+    }
+  }
   return createCompoundExpression([
     `${context.helperString(V_ON)}(`,
     value,
+    ...keys,
     `)`,
   ])
 }

@@ -5279,10 +5279,17 @@ function getCreateApp() {
     }
 }
 
-function vOn(value) {
+function vOn(value, key) {
     const instance = getCurrentInstance();
-    const name = 'e' + instance.$ei++;
-    const mpInstance = instance.ctx.$scope;
+    const ctx = instance.ctx;
+    // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
+    const extraKey = typeof key !== 'undefined' &&
+        (ctx.$mpPlatform === 'mp-weixin' || ctx.$mpPlatform === 'mp-qq') &&
+        (isString(key) || typeof key === 'number')
+        ? '_' + key
+        : '';
+    const name = 'e' + instance.$ei++ + extraKey;
+    const mpInstance = ctx.$scope;
     if (!value) {
         // remove
         delete mpInstance[name];
@@ -5486,7 +5493,7 @@ function setupDevtoolsPlugin() {
     // noop
 }
 
-const o = (value) => vOn(value);
+const o = (value, key) => vOn(value, key);
 const f = (source, renderItem) => vFor(source, renderItem);
 const d = (names) => dynamicSlot(names);
 const r = (name, props, key) => renderSlot(name, props, key);
