@@ -13,6 +13,7 @@ import {
   onMounted,
   ComponentPublicInstance,
   nextTick,
+  Comment,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -113,7 +114,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         return Array.prototype.indexOf.call(columnVNodes, vnode.el)
       } else {
         columnVNodes = (columnVNodes as VNode[]).filter(
-          (ref) => typeof ref.type !== 'symbol'
+          (vnode) => vnode.type !== Comment
         )
       }
       let index: number = (columnVNodes as VNode[]).indexOf(vnode)
