@@ -22,7 +22,7 @@ const pkgs = {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.7.9',
+    latest: '2.7.10',
   },
   '@vitejs/plugin-vue': {
     latest: '2.0.1',
@@ -37,7 +37,7 @@ const pkgs = {
     latest: '2.5.15',
   },
   autoprefixer: {
-    latest: '10.4.0',
+    latest: '10.4.1',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',
