@@ -35,6 +35,10 @@
     "webpackImporter": {
       "description": "Enables/Disables default `webpack` importer (https://github.com/webpack-contrib/sass-loader#webpackimporter).",
       "type": "boolean"
+    },
+    "nvue": {
+      "description": "nvue",
+      "type": "boolean"
     }
   },
   "additionalProperties": false

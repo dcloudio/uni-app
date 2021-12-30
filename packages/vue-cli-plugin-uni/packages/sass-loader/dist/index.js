@@ -35,7 +35,6 @@ function loader(content) {
   const options = (0, _loaderUtils.getOptions)(this) || {};
   // fixed by xxxxxx
   const isNVue = !!options.nvue;
-  delete options.nvue;
   (0, _schemaUtils.default)(_options.default, options, {
     name: 'Sass Loader',
     baseDataPath: 'options'
