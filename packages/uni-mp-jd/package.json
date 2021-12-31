@@ -1,0 +1,21 @@
+{
+  "name": "@dcloudio/uni-mp-jd",
+  "version": "2.0.0-32920211029001",
+  "description": "uni-app mp-jd",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-jd"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "shixiaolei6",
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-jd",
+    "title": "京东小程序"
+  },
+  "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8"
+}

@@ -59,6 +59,7 @@ const tags = {
     'inline-payment-panel'
   ],
   'mp-weixin': [
+    'page-container',
     'page-meta',
     'navigation-bar',
     'match-media'

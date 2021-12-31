@@ -185,9 +185,13 @@ export default {
   },
   methods: {
     _onKeyup ($event) {
+      const input = $event.target
       this.$trigger('confirm', $event, {
-        value: $event.target.value
+        value: input.value
       })
+      if (!this.confirmHold) {
+        input.blur()
+      }
     },
     _onInput ($event, force) {
       let outOfMaxlength = false

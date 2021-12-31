@@ -251,6 +251,7 @@ var serviceContext = (function () {
     'getSubNVueById',
     'getCurrentSubNVue',
     'setPageMeta',
+    'onHostEventReceive',
     'onNativeEventReceive',
     'sendNativeEvent',
     'preloadPage',
@@ -6758,6 +6759,7 @@ var serviceContext = (function () {
     type = 'wgs84',
     geocode = false,
     altitude = false,
+    isHighAccuracy = false,
     highAccuracyExpireTime
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
@@ -6774,7 +6776,7 @@ var serviceContext = (function () {
         errorCallback(e);
       }, {
         geocode: geocode,
-        enableHighAccuracy: altitude,
+        enableHighAccuracy: isHighAccuracy || altitude,
         timeout: highAccuracyExpireTime,
         coordsType: type
       }
@@ -7541,46 +7543,59 @@ var serviceContext = (function () {
       firstIpv4: firstIpv4,
       tls
     };
+    let withArrayBuffer;
     if (method !== 'GET') {
-      options.body = typeof data === 'string' ? data : JSON.stringify(data);
+      if (toString.call(data) === '[object ArrayBuffer]') {
+        withArrayBuffer = true;
+      } else {
+        options.body = typeof data === 'string' ? data : JSON.stringify(data);
+      }
     }
+    const callback = ({
+      ok,
+      status,
+      data,
+      headers,
+      errorMsg
+    }) => {
+      if (aborted) {
+        return
+      }
+      if (abortTimeout) {
+        clearTimeout(abortTimeout);
+      }
+      const statusCode = status;
+      if (statusCode > 0) {
+        publishStateChange$1({
+          requestTaskId,
+          state: 'success',
+          data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
+          statusCode,
+          header: headers,
+          cookies: cookiesParse(headers)
+        });
+      } else {
+        let errMsg = 'abort statusCode:' + statusCode;
+        if (errorMsg) {
+          errMsg = errMsg + ' ' + errorMsg;
+        }
+        publishStateChange$1({
+          requestTaskId,
+          state: 'fail',
+          statusCode,
+          errMsg
+        });
+      }
+    };
     try {
-      stream.fetch(options, ({
-        ok,
-        status,
-        data,
-        headers,
-        errorMsg
-      }) => {
-        if (aborted) {
-          return
-        }
-        if (abortTimeout) {
-          clearTimeout(abortTimeout);
-        }
-        const statusCode = status;
-        if (statusCode > 0) {
-          publishStateChange$1({
-            requestTaskId,
-            state: 'success',
-            data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
-            statusCode,
-            header: headers,
-            cookies: cookiesParse(headers)
-          });
-        } else {
-          let errMsg = 'abort statusCode:' + statusCode;
-          if (errorMsg) {
-            errMsg = errMsg + ' ' + errorMsg;
-          }
-          publishStateChange$1({
-            requestTaskId,
-            state: 'fail',
-            statusCode,
-            errMsg
-          });
-        }
-      });
+      if (withArrayBuffer) {
+        stream.fetchWithArrayBuffer({
+          '@type': 'binary',
+          base64: arrayBufferToBase64$2(data)
+        }, options, callback);
+      } else {
+        stream.fetch(options, callback);
+      }
       requestTasks[requestTaskId] = {
         abort () {
           aborted = true;
@@ -8586,6 +8601,10 @@ var serviceContext = (function () {
       invoke$1(callbackId, res.event, res.data);
     });
   });
+
+  function onHostEventReceive (callbackId) {
+    callbacks$3.push(callbackId);
+  }
 
   function onNativeEventReceive (callbackId) {
     callbacks$3.push(callbackId);
@@ -11956,6 +11975,7 @@ var serviceContext = (function () {
     restoreGlobal: restoreGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
+    onHostEventReceive: onHostEventReceive,
     onNativeEventReceive: onNativeEventReceive,
     sendNativeEvent: sendNativeEvent,
     loadSubPackage: loadSubPackage$2,
@@ -15787,7 +15807,7 @@ var serviceContext = (function () {
 
   var zstream = ZStream;
 
-  var toString = Object.prototype.toString;
+  var toString$1 = Object.prototype.toString;
 
   /* Public constants ==========================================================*/
   /* ===========================================================================*/
@@ -15951,7 +15971,7 @@ var serviceContext = (function () {
       if (typeof opt.dictionary === 'string') {
         // If we need to compress text, change encoding to utf8.
         dict = strings.string2buf(opt.dictionary);
-      } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
         dict = new Uint8Array(opt.dictionary);
       } else {
         dict = opt.dictionary;
@@ -16009,7 +16029,7 @@ var serviceContext = (function () {
     if (typeof data === 'string') {
       // If we need to compress text, change encoding to utf8.
       strm.input = strings.string2buf(data);
-    } else if (toString.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;
@@ -18561,7 +18581,7 @@ var serviceContext = (function () {
 
   var gzheader = GZheader;
 
-  var toString$1 = Object.prototype.toString;
+  var toString$2 = Object.prototype.toString;
 
   /**
    * class Inflate
@@ -18702,7 +18722,7 @@ var serviceContext = (function () {
       // Convert data if needed
       if (typeof opt.dictionary === 'string') {
         opt.dictionary = strings.string2buf(opt.dictionary);
-      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$2.call(opt.dictionary) === '[object ArrayBuffer]') {
         opt.dictionary = new Uint8Array(opt.dictionary);
       }
       if (opt.raw) { //In raw mode we need to set the dictionary early
@@ -18760,7 +18780,7 @@ var serviceContext = (function () {
     if (typeof data === 'string') {
       // Only binary strings can be decompressed on practice
       strm.input = strings.binstring2buf(data);
-    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$2.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;

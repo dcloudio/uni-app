@@ -2930,17 +2930,17 @@ function createPlugin (vm) {
   const appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && my.onAppShow) {
     my.onAppShow((...args) => {
-      appOptions.onShow.apply(vm, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && my.onAppHide) {
     my.onAppHide((...args) => {
-      appOptions.onHide.apply(vm, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }
