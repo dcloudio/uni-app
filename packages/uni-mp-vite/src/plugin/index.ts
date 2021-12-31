@@ -9,7 +9,11 @@ import {
   findMiniProgramTemplateFiles,
   MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
-
+import type {
+  SFCDescriptor,
+  SFCScriptBlock,
+  SFCScriptCompileOptions,
+} from '@vue/compiler-sfc'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 
 import { uniOptions } from './uni'
@@ -18,10 +22,6 @@ import { createConfigResolved } from './configResolved'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
 import { getNVueCssPaths } from '../plugins/pagesJson'
-import type {
-  SFCTemplateCompileOptions,
-  SFCTemplateCompileResults,
-} from '@vue/compiler-sfc'
 
 export interface UniMiniProgramPluginOptions {
   cdn?: number
@@ -95,7 +95,7 @@ export function uniMiniProgramPlugin(
 
   let resolvedConfig: ResolvedConfig
 
-  rewriteCompileTemplate()
+  rewriteCompileScript()
 
   return {
     name: 'vite:uni-mp',
@@ -170,16 +170,17 @@ export function uniMiniProgramPlugin(
   }
 }
 
-function rewriteCompileTemplate() {
+function rewriteCompileScript() {
   const compiler = require(resolveBuiltIn('@vue/compiler-sfc'))
-  const { compileTemplate } = compiler
-  compiler.compileTemplate = (
-    options: SFCTemplateCompileOptions
-  ): SFCTemplateCompileResults => {
-    if (options.compilerOptions) {
-      ;(options.compilerOptions as any).bindingCssVars =
-        options.ssrCssVars || []
+  const { compileScript } = compiler
+  compiler.compileScript = (
+    sfc: SFCDescriptor,
+    options: SFCScriptCompileOptions
+  ): SFCScriptBlock => {
+    if (options?.templateOptions?.compilerOptions) {
+      ;(options.templateOptions.compilerOptions as any).bindingCssVars =
+        sfc.cssVars || []
     }
-    return compileTemplate(options)
+    return compileScript(sfc, options)
   }
 }
