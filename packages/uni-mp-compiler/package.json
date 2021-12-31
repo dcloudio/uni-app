@@ -30,6 +30,7 @@
     "estree-walker": "^2.0.2"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "3.2.26"
+    "@vue/compiler-sfc": "3.2.26",
+    "source-map": "^0.6.1"
   }
 }

@@ -8,9 +8,9 @@ export function uniAppPlugin(): UniVitePlugin {
   return {
     name: 'vite:uni-app',
     uni: uniOptions(),
-    config(_, env) {
+    config(config, env) {
       return {
-        build: buildOptions(env),
+        build: buildOptions(config, env),
       }
     },
     configResolved,

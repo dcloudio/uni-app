@@ -31,11 +31,16 @@ export function uniMainJsPlugin(
               resolve: this.resolve,
             }
           )
+          const { code, map } = await transformDynamicImports(source, imports, {
+            id,
+            sourceMap: !!opts.resolvedConfig.build.sourcemap,
+            dynamicImport,
+          })
           return {
             code:
               `import 'plugin-vue:export-helper';import 'uni-mp-runtime';import './pages.json.js';` +
-              (await transformDynamicImports(source, imports, dynamicImport)),
-            map: this.getCombinedSourcemap(),
+              code,
+            map,
           }
         }
       },

@@ -92,6 +92,7 @@ export type CodegenScope = CodegenRootScope | CodegenVIfScope | CodegenVForScope
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   mode?: 'module' | 'function'
   scopeId?: string | null
+  sourceMap?: boolean
   runtimeModuleName?: string
   runtimeGlobalName?: string
   generatorOpts?: GeneratorOptions

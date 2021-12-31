@@ -14966,7 +14966,7 @@ var serviceContext = (function (vue) {
       if (withArrayBuffer) {
           stream.fetchWithArrayBuffer({
               '@type': 'binary',
-              base64: arrayBufferToBase64(data)
+              base64: arrayBufferToBase64(data),
           }, options, callback);
       }
       else {

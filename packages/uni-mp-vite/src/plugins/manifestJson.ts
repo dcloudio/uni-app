@@ -54,7 +54,7 @@ export function uniManifestJsonPlugin(
 
         return {
           code: '',
-          map: this.getCombinedSourcemap(),
+          map: { mappings: '' },
         }
       },
       generateBundle() {

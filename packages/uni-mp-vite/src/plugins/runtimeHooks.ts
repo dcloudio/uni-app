@@ -33,7 +33,10 @@ export function uniRuntimeHooksPlugin(): Plugin {
       for (const hook of hooks) {
         flag |= MINI_PROGRAM_PAGE_RUNTIME_HOOKS[hook]
       }
-      return source + `;_sfc_main.__runtimeHooks = ${flag};`
+      return {
+        code: source + `;_sfc_main.__runtimeHooks = ${flag};`,
+        map: { mappings: '' },
+      }
     },
   }
 }

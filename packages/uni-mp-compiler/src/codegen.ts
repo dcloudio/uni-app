@@ -1,10 +1,14 @@
 import { isString, isSymbol, hasOwn } from '@vue/shared'
 import {
+  advancePositionWithMutation,
   CodegenResult,
   CompoundExpressionNode,
   helperNameMap,
   InterpolationNode,
+  isSimpleIdentifier,
+  locStub,
   NodeTypes,
+  Position,
   RESOLVE_COMPONENT,
   RootNode,
   SimpleExpressionNode,
@@ -14,6 +18,7 @@ import {
 import { Expression } from '@babel/types'
 import { default as babelGenerate, GeneratorOptions } from '@babel/generator'
 import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
+import { SourceMapGenerator } from 'source-map'
 import { CodegenOptions, CodegenRootNode } from './options'
 
 import {
@@ -24,8 +29,13 @@ import {
 
 interface CodegenContext extends Omit<CodegenOptions, 'renderDataExpr'> {
   code: string
+  source: string
+  line: number
+  column: number
+  offset: number
   bindingComponents: TransformContext['bindingComponents']
   indentLevel: number
+  map?: SourceMapGenerator
   push(code: string, node?: CodegenNode): void
   indent(): void
   deindent(withoutNewLine?: boolean): void
@@ -99,6 +109,8 @@ export function generate(
   return {
     code: context.code,
     preamble: isSetupInlined ? preambleContext.code : ``,
+    // SourceMapGenerator does have toJSON() method but it's not in the types
+    map: context.map ? (context.map as any).toJSON() : undefined,
   }
 }
 
@@ -112,6 +124,7 @@ function createCodegenContext(
     runtimeGlobalName = `Vue`,
     runtimeModuleName = `vue`,
     isTS = false,
+    sourceMap = false,
   }: CodegenOptions
 ): CodegenContext {
   const context: CodegenContext = {
@@ -123,10 +136,30 @@ function createCodegenContext(
     runtimeModuleName,
     bindingComponents: ast.bindingComponents,
     isTS,
+    source: ast.loc.source,
     code: ``,
+    column: 1,
+    line: 1,
+    offset: 0,
     indentLevel: 0,
     push(code, node) {
       context.code += code
+      if (context.map) {
+        if (node) {
+          let name
+          if (node.type === NodeTypes.SIMPLE_EXPRESSION && !node.isStatic) {
+            const content = node.content.replace(/^_ctx\./, '')
+            if (content !== node.content && isSimpleIdentifier(content)) {
+              name = content
+            }
+          }
+          addMapping(node.loc.start, name)
+        }
+        advancePositionWithMutation(context, code)
+        if (node && node.loc !== locStub) {
+          addMapping(node.loc.end)
+        }
+      }
     },
     indent() {
       newline(++context.indentLevel)
@@ -146,6 +179,27 @@ function createCodegenContext(
   function newline(n: number) {
     context.push('\n' + `  `.repeat(n))
   }
+
+  function addMapping(loc: Position, name?: string) {
+    context.map!.addMapping({
+      name,
+      source: context.filename || '',
+      original: {
+        line: loc.line,
+        column: loc.column - 1, // source-map column is 0 based
+      },
+      generated: {
+        line: context.line,
+        column: context.column - 1,
+      },
+    })
+  }
+  // 暂时无需提供 sourcemap 支持
+  // if (sourceMap) {
+  //   // lazy require source-map implementation
+  //   context.map = new SourceMapGenerator()
+  //   context.map!.setSourceContent(filename, context.source)
+  // }
 
   return context
 }
@@ -282,8 +336,6 @@ type CodegenNode =
   | CompoundExpressionNode
   | InterpolationNode
   | TextNode
-  | string
-  | symbol
 
 interface GenNodeContext {
   code: string

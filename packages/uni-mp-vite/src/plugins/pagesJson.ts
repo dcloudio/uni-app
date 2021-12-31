@@ -37,7 +37,7 @@ export function uniPagesJsonPlugin(
       },
       transform(code, id) {
         if (!opts.filter(id)) {
-          return
+          return null
         }
         const inputDir = process.env.UNI_INPUT_DIR
         this.addWatchFile(path.resolve(inputDir, 'pages.json'))
@@ -74,7 +74,7 @@ export function uniPagesJsonPlugin(
         })
         return {
           code: `import './manifest.json.js'\n` + importPagesCode(appJson),
-          map: this.getCombinedSourcemap(),
+          map: { mappings: '' },
         }
       },
       generateBundle() {

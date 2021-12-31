@@ -52,7 +52,9 @@ export function createApp() {
         'component-b': '/components/component-b',
       })
       expect(imports.length).toBe(2)
-      const code = await transformDynamicImports(source, imports, dynamicImport)
+      const { code } = await transformDynamicImports(source, imports, {
+        dynamicImport,
+      })
       expect(code).toContain(`import App from './App.vue'`)
       expect(code).toContain(
         `const ComponentA = ()=>import('${inputDir}/components/component-a.vue')`
@@ -94,7 +96,9 @@ export function createApp() {
         'component-b': '/components/component-b',
       })
       expect(imports.length).toBe(2)
-      const code = await transformDynamicImports(source, imports, dynamicImport)
+      const { code } = await transformDynamicImports(source, imports, {
+        dynamicImport,
+      })
       expect(code).toContain(`import App from './App.vue'`)
       expect(code).toContain(
         `const ComponentA = ()=>import('${inputDir}/components/component-a.vue')`
@@ -119,7 +123,7 @@ export function createApp() {
         usingComponents
       )
       expect(
-        await transformDynamicImports(source, imports, dynamicImport)
+        (await transformDynamicImports(source, imports, { dynamicImport })).code
       ).toContain(code)
     }
 

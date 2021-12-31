@@ -1,5 +1,5 @@
 import path from 'path'
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE,
@@ -25,13 +25,23 @@ export function uniUsingComponentsPlugin(
     })
   }
   const inputDir = process.env.UNI_INPUT_DIR
+  let resolvedConfig: ResolvedConfig
   return {
     name: 'vite:uni-mp-using-component',
     enforce: 'post',
+    configResolved(config) {
+      resolvedConfig = config
+    },
     async transform(source, id) {
       const { filename, query } = parseVueRequest(id)
       if (filename.endsWith('App.vue')) {
         return null
+      }
+      const sourceMap = !!resolvedConfig.build.sourcemap
+      const dynamicImportOptions = {
+        id,
+        sourceMap,
+        dynamicImport,
       }
       if (query.vue) {
         if (query.type === 'script') {
@@ -49,7 +59,7 @@ export function uniUsingComponentsPlugin(
           return transformDynamicImports(
             source,
             descriptor.imports,
-            dynamicImport
+            dynamicImportOptions
           )
         } else if (query.type === 'template') {
           // 需要主动监听
@@ -66,7 +76,7 @@ export function uniUsingComponentsPlugin(
           return transformDynamicImports(
             source,
             descriptor.imports,
-            dynamicImport
+            dynamicImportOptions
           )
         }
         return null
@@ -81,7 +91,11 @@ export function uniUsingComponentsPlugin(
 
       updateMiniProgramComponentsByMainFilename(filename, inputDir)
 
-      return transformDynamicImports(source, descriptor.imports, dynamicImport)
+      return transformDynamicImports(
+        source,
+        descriptor.imports,
+        dynamicImportOptions
+      )
     },
   }
 }

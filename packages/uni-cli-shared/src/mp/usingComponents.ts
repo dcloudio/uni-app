@@ -567,10 +567,21 @@ async function parseVueComponentImports(
 export async function transformDynamicImports(
   code: string,
   imports: ImportDeclaration[],
-  dynamicImport: (name: string, source: string) => string
+  {
+    id,
+    sourceMap,
+    dynamicImport,
+  }: {
+    id?: string
+    sourceMap?: boolean
+    dynamicImport: (name: string, source: string) => string
+  }
 ) {
   if (!imports.length) {
-    return code
+    return {
+      code,
+      map: null,
+    }
   }
   const s = new MagicString(code)
   for (let i = 0; i < imports.length; i++) {
@@ -586,5 +597,8 @@ export async function transformDynamicImports(
       dynamicImport(specifier.local.name, source.value) + ';'
     )
   }
-  return s.toString()
+  return {
+    code: s.toString(),
+    map: null,
+  }
 }

@@ -16,10 +16,6 @@ export function getFiltersCache(resolvedConfig: ResolvedConfig) {
   return filtersCache.get(resolvedConfig) || []
 }
 
-const defaultCode = {
-  code: 'export default {}',
-}
-
 export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
   let resolvedConfig: ResolvedConfig
   return {
@@ -33,11 +29,14 @@ export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
     transform(code, id) {
       const { type, name } = parseRenderjs(id)
       if (!type) {
-        return
+        return null
       }
       debugRenderjs(id)
       if (type !== lang) {
-        return defaultCode
+        return {
+          code: 'export default {}',
+          map: { mappings: '' },
+        }
       }
       this.addWatchFile(cleanUrl(id))
       if (!name) {
@@ -50,7 +49,10 @@ export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
           code,
         })
       }
-      return defaultCode
+      return {
+        code: 'export default {}',
+        map: { mappings: '' },
+      }
     },
   }
 }

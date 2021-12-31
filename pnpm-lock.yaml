@@ -597,6 +597,7 @@ importers:
       '@vue/compiler-sfc': 3.2.26
       '@vue/shared': 3.2.26
       estree-walker: ^2.0.2
+      source-map: ^0.6.1
     dependencies:
       '@babel/generator': 7.16.0
       '@babel/parser': 7.16.4
@@ -609,6 +610,7 @@ importers:
       estree-walker: 2.0.2
     devDependencies:
       '@vue/compiler-sfc': 3.2.26
+      source-map: 0.6.1
 
   packages/uni-mp-core:
     specifiers: {}
