@@ -52,9 +52,11 @@ export function uniPreVuePlugin(): Plugin {
       debugPreVue(id)
       const watchFiles: string[] = []
       const errors: SyntaxError[] = []
-      const ast = parseVue(code, errors)
+      let ast = parseVue(code, errors)
       if (hasBlock) {
         code = parseBlockCode(ast, code)
+        // 重新解析新的 code
+        ast = parseVue(code, errors)
       }
       if (hasWxs) {
         const wxsNodes = parseWxsNodes(ast)
