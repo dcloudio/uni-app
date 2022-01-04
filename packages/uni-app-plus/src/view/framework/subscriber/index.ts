@@ -1,11 +1,11 @@
 import { useI18n } from '@dcloudio/uni-core'
-import { ON_WEBVIEW_READY, SET_LOCALE_API, VD_SYNC } from '../../../constants'
+import { ON_WEBVIEW_READY, API_SET_LOCALE, VD_SYNC } from '../../../constants'
 import { onVdSync } from '../dom'
 
 export function initSubscribeHandlers() {
   const { subscribe } = UniViewJSBridge
   subscribe(VD_SYNC, onVdSync)
-  subscribe(SET_LOCALE_API, useI18n().setLocale)
+  subscribe(API_SET_LOCALE, (local) => useI18n().setLocale(local))
   subscribe(ON_WEBVIEW_READY, onWebviewReady)
 }
 
