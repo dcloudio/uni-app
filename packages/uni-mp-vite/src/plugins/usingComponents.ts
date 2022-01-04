@@ -13,6 +13,7 @@ import {
   transformDynamicImports,
   updateMiniProgramComponentsByScriptFilename,
   updateMiniProgramComponentsByTemplateFilename,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
 
@@ -37,7 +38,7 @@ export function uniUsingComponentsPlugin(
       if (filename.endsWith('App.vue')) {
         return null
       }
-      const sourceMap = !!resolvedConfig.build.sourcemap
+      const sourceMap = withSourcemap(resolvedConfig)
       const dynamicImportOptions = {
         id,
         sourceMap,

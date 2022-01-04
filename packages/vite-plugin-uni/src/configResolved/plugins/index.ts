@@ -42,14 +42,14 @@ export function initPlugins(
 
   addPlugin(
     plugins,
-    uniPrePlugin(extend(uniPrePluginOptions, options)),
+    uniPrePlugin(config, extend(uniPrePluginOptions, options)),
     0,
     'pre'
   )
 
   addPlugin(
     plugins,
-    uniPreCssPlugin(extend(uniPreCssPluginOptions, options)),
+    uniPreCssPlugin(config, extend(uniPreCssPluginOptions, options)),
     'vite:css'
   )
   addPlugin(plugins, uniPreVuePlugin(), 'vite:vue', 'pre')

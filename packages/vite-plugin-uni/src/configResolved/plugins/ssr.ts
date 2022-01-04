@@ -11,6 +11,7 @@ import {
   isIdentifier,
   isCallExpression,
   isMemberExpression,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 
@@ -19,7 +20,7 @@ const debugSSR = debug('vite:uni:ssr')
 const KEYED_FUNC_RE = /(ssrRef|shallowSsrRef)/
 
 export function uniSSRPlugin(
-  _config: ResolvedConfig,
+  config: ResolvedConfig,
   options: UniPluginFilterOptions
 ): Plugin {
   const filter = createFilter(options.include, options.exclude)
@@ -58,7 +59,7 @@ export function uniSSRPlugin(
       })
       return {
         code: s.toString(),
-        map: s.generateMap().toString(),
+        map: withSourcemap(config) ? s.generateMap().toString() : null,
       }
     },
   }

@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import {
   preJs,
@@ -8,6 +8,7 @@ import {
   EXTNAME_JS,
   EXTNAME_VUE,
   parseVueRequest,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 
@@ -17,8 +18,12 @@ const debugPreJsTry = debug('vite:uni:pre-js-try')
 
 const PRE_JS_EXTNAME = ['.json', '.css'].concat(EXTNAME_VUE).concat(EXTNAME_JS)
 const PRE_HTML_EXTNAME = EXTNAME_VUE
-export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
+export function uniPrePlugin(
+  config: ResolvedConfig,
+  options: UniPluginFilterOptions
+): Plugin {
   const filter = createFilter(options.include, options.exclude)
+
   return {
     name: 'vite:uni-pre',
     transform(code, id) {
@@ -26,9 +31,6 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
         return
       }
       const { filename, query } = parseVueRequest(id)
-      if (query.vue && query.type !== 'template') {
-        return
-      }
       const extname = path.extname(filename)
       const isHtml =
         query.type === 'template' || PRE_HTML_EXTNAME.includes(extname)
@@ -51,7 +53,7 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
       }
       return {
         code,
-        map: this.getCombinedSourcemap(),
+        map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
       }
     },
   }

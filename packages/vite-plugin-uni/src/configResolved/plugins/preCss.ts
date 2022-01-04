@@ -1,7 +1,7 @@
 import debug from 'debug'
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
-import { preJs } from '@dcloudio/uni-cli-shared'
+import { preJs, withSourcemap } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
 
@@ -13,7 +13,10 @@ const cssLangRE = new RegExp(cssLangs)
  * preprocess css
  * @param options
  */
-export function uniPreCssPlugin(options: UniPluginFilterOptions): Plugin {
+export function uniPreCssPlugin(
+  config: ResolvedConfig,
+  options: UniPluginFilterOptions
+): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
     name: 'vite:uni-pre-css',
@@ -31,7 +34,7 @@ export function uniPreCssPlugin(options: UniPluginFilterOptions): Plugin {
       debugPre(id)
       return {
         code: preJs(code),
-        map: this.getCombinedSourcemap(),
+        map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
       }
     },
   }

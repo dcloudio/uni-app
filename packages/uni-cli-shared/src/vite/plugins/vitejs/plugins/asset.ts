@@ -2,12 +2,13 @@ import path from 'path'
 import { parse as parseUrl } from 'url'
 import mime from 'mime/lite'
 import fs, { promises as fsp } from 'fs'
+import MagicString from 'magic-string'
+import { createHash } from 'crypto'
+import type { OutputOptions, PluginContext, RenderedChunk } from 'rollup'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
-import type { OutputOptions, PluginContext, RenderedChunk } from 'rollup'
-import MagicString from 'magic-string'
-import { createHash } from 'crypto'
+import { withSourcemap } from '../../../../vite/utils/utils'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -100,7 +101,7 @@ export function assetPlugin(config: ResolvedConfig): Plugin {
       if (s) {
         return {
           code: s.toString(),
-          map: config.build.sourcemap ? s.generateMap({ hires: true }) : null,
+          map: withSourcemap(config) ? s.generateMap({ hires: true }) : null,
         }
       } else {
         return null
