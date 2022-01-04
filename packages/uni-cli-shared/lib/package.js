@@ -35,7 +35,9 @@ module.exports = {
         if (scriptName !== name) {
           const define = uniAppOptions.scripts[scriptName].define
           Object.keys(define).forEach(name => {
-            if (typeof scriptOptions.define[name] === "undefined") {
+            if (typeof scriptOptions.define[name] !== "undefined") {
+              delete define[name]
+            } else {
               define[name] = false
             }
           })
