@@ -31,6 +31,7 @@ import { usePageMeta, usePageRoute } from './provide'
 import { initLaunchOptions, getEnterOptions } from './utils'
 
 interface SetupComponentOptions {
+  clone?: boolean
   init: (vm: ComponentPublicInstance) => void
   setup: (instance: ComponentInternalInstance) => Record<string, any> | void
   before?: (comp: DefineComponent) => void
@@ -38,8 +39,11 @@ interface SetupComponentOptions {
 
 function wrapperComponentSetup(
   comp: DefineComponent,
-  { init, setup, before }: SetupComponentOptions
+  { clone, init, setup, before }: SetupComponentOptions
 ) {
+  if (clone) {
+    comp = extend({}, comp)
+  }
   before && before(comp)
   const oldSetup = comp.setup
   comp.setup = (props, ctx) => {
@@ -50,15 +54,14 @@ function wrapperComponentSetup(
       return oldSetup(query || props, ctx)
     }
   }
+  return comp
 }
 
 function setupComponent(comp: any, options: SetupComponentOptions) {
   if (comp && (comp.__esModule || comp[Symbol.toStringTag] === 'Module')) {
-    wrapperComponentSetup(comp.default, options)
-  } else {
-    wrapperComponentSetup(comp, options)
+    return wrapperComponentSetup(comp.default, options)
   }
-  return comp
+  return wrapperComponentSetup(comp, options)
 }
 
 export function setupWindow(comp: any, id: number) {
@@ -79,6 +82,7 @@ export function setupPage(comp: any) {
     comp.__mpType = 'page'
   }
   return setupComponent(comp, {
+    clone: true,
     init: initPage,
     setup(instance) {
       instance.root = instance // 组件 root 指向页面

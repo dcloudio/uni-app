@@ -6911,7 +6911,10 @@ function initApp(vm) {
   initAppVm(appVm);
   appVm.globalData = appVm.$options.globalData || {};
 }
-function wrapperComponentSetup(comp, { init, setup, before }) {
+function wrapperComponentSetup(comp, { clone, init, setup, before }) {
+  if (clone) {
+    comp = shared.extend({}, comp);
+  }
   before && before(comp);
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
@@ -6922,14 +6925,13 @@ function wrapperComponentSetup(comp, { init, setup, before }) {
       return oldSetup(query || props2, ctx);
     }
   };
+  return comp;
 }
 function setupComponent(comp, options) {
   if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    wrapperComponentSetup(comp.default, options);
-  } else {
-    wrapperComponentSetup(comp, options);
+    return wrapperComponentSetup(comp.default, options);
   }
-  return comp;
+  return wrapperComponentSetup(comp, options);
 }
 function setupWindow(comp, id) {
   return setupComponent(comp, {
@@ -6948,6 +6950,7 @@ function setupPage(comp) {
     comp.__mpType = "page";
   }
   return setupComponent(comp, {
+    clone: true,
     init: initPage,
     setup(instance) {
       instance.root = instance;
