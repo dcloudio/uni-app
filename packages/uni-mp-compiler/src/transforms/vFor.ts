@@ -13,11 +13,14 @@ import {
   isTemplateNode,
   findProp,
   ComponentNode,
+  findDir,
+  TemplateChildNode,
 } from '@vue/compiler-core'
 import { parseExpr, parseParam } from '../ast'
 import {
   createStructuralDirectiveTransform,
   isScopedSlotVFor,
+  isVForScope,
   NodeTransform,
   TransformContext,
 } from '../transform'
@@ -37,10 +40,15 @@ import {
   RestElement,
   returnStatement,
 } from '@babel/types'
-import { rewriteExpression } from './utils'
-import { CodegenVForScope } from '../options'
+import {
+  findReferencedScope,
+  isReferencedByIds,
+  rewriteExpression,
+} from './utils'
+import { CodegenScope, CodegenVForScope } from '../options'
 import { V_FOR } from '../runtimeHelpers'
 import { createVSlotCallExpression } from './vSlot'
+import { isElementNode } from '@dcloudio/uni-cli-shared'
 
 export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   sourceExpr?: Expression
@@ -106,13 +114,36 @@ export const transformFor = createStructuralDirectiveTransform(
     const indexAlias = parseAlias(indexExpr, indexCode, 'i' + scopes.vFor)
     // 先占位 vFor，后续更新 cloneSourceExpr 为 CallExpression
     const cloneSourceExpr = cloneNode(sourceExpr!, false)
+
+    const sourceAliasReferencedScope = findReferencedScope(
+      cloneSourceExpr,
+      context.currentScope
+    )
+    // 寻找子节点中 if 指令作用域
+    const vIfReferencedScope = findVIfReferencedScope(
+      node,
+      context.currentScope,
+      context
+    )
+    // 取最近的作用域
+    const referencedScope =
+      vIfReferencedScope &&
+      context.getScopeIndex(vIfReferencedScope) >
+        context.getScopeIndex(sourceAliasReferencedScope)
+        ? vIfReferencedScope
+        : sourceAliasReferencedScope
+
     const sourceAlias = rewriteExpression(
       source,
       context,
       cloneSourceExpr,
       parentScope,
       // 强制 rewrite，因为即使是字符串，数字，也要走 vFor 函数
-      { property: true, ignoreLiteral: true }
+      {
+        property: true,
+        ignoreLiteral: true,
+        referencedScope,
+      }
     ).content
     const sourceCode = `{{${sourceAlias}}}`
     const vForData: VForOptions = {
@@ -202,6 +233,75 @@ function parseAlias(
     return exprCode
   }
   return fallback
+}
+
+function parseVForScope(currentScope: CodegenScope) {
+  while (currentScope) {
+    if (isVForScope(currentScope) && !isScopedSlotVFor(currentScope)) {
+      return currentScope
+    }
+    currentScope = currentScope.parent!
+  }
+}
+
+function findVIfReferencedScope(
+  node: ElementNode,
+  currentScope: CodegenScope | null,
+  context: TransformContext
+): CodegenVForScope | undefined {
+  if (!currentScope) {
+    return
+  }
+  const vForScope = parseVForScope(currentScope)
+  if (!vForScope) {
+    return
+  }
+  if (
+    !node.children.find((item) => checkVIfReferenced(item, vForScope, context))
+  ) {
+    return findVIfReferencedScope(node, currentScope.parent, context)
+  }
+  return vForScope
+}
+
+function checkVIfReferenced(
+  node: TemplateChildNode,
+  vForScope: CodegenVForScope,
+  context: TransformContext
+): boolean {
+  if (!isElementNode(node)) {
+    return false
+  }
+  // 嵌套 for 不查找
+  if (findDir(node, 'for')) {
+    return false
+  }
+  const ifDir = findDir(node, 'if')
+  if (ifDir) {
+    return checkDirReferenced(ifDir.exp, vForScope, context)
+  }
+  const elseIfDir = findDir(node, 'else-if')
+  if (elseIfDir) {
+    return checkDirReferenced(elseIfDir.exp, vForScope, context)
+  }
+
+  return !!node.children.find((item) =>
+    checkVIfReferenced(item, vForScope, context)
+  )
+}
+
+function checkDirReferenced(
+  node: ExpressionNode | undefined,
+  vForScope: CodegenVForScope,
+  context: TransformContext
+) {
+  if (node) {
+    const babelNode = parseExpr(node, context)
+    if (babelNode && isReferencedByIds(babelNode, vForScope.locals)) {
+      return true
+    }
+  }
+  return false
 }
 
 function findVForLocals({ value, key, index }: ForParseResult) {

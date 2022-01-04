@@ -107,7 +107,18 @@ export function rewriteExpression(
   context: TransformContext | VueTransformContext,
   babelNode?: Expression,
   scope: CodegenScope = (context as TransformContext).currentScope,
-  { property, ignoreLiteral } = { property: true, ignoreLiteral: false }
+  {
+    property,
+    ignoreLiteral,
+    referencedScope,
+  }: {
+    property: boolean
+    ignoreLiteral: boolean
+    referencedScope?: CodegenScope
+  } = {
+    property: true,
+    ignoreLiteral: false,
+  }
 ) {
   if (node.type === NodeTypes.SIMPLE_EXPRESSION && node.isStatic) {
     return node
@@ -133,24 +144,27 @@ export function rewriteExpression(
     }
   }
 
-  scope = findReferencedScope(babelNode, scope)
-  const id = scope.id.next()
+  referencedScope = referencedScope || findReferencedScope(babelNode, scope)
+  const id = referencedScope!.id.next()
   if (property) {
-    scope.properties.push(objectProperty(identifier(id), babelNode!))
+    referencedScope!.properties.push(objectProperty(identifier(id), babelNode!))
   }
-  // 在v-for中包含的v-if块，所有变量需要补充当前v-for value前缀
-  if (isVIfScope(scope)) {
-    if (isVForScope(scope.parentScope)) {
-      return createSimpleExpression(scope.parentScope.valueAlias + '.' + id)
+
+  // 在 v-for 中包含的 v-if 块，所有变量需要补充当前 v-for value 前缀
+  if (isVIfScope(referencedScope!)) {
+    if (isVForScope(referencedScope.parentScope)) {
+      return createSimpleExpression(
+        referencedScope.parentScope.valueAlias + '.' + id
+      )
     }
     return createSimpleExpression(id)
-  } else if (isVForScope(scope)) {
-    return createSimpleExpression(scope.valueAlias + '.' + id)
+  } else if (isVForScope(referencedScope!)) {
+    return createSimpleExpression(referencedScope.valueAlias + '.' + id)
   }
   return createSimpleExpression(id)
 }
 
-function findReferencedScope(
+export function findReferencedScope(
   node: Expression,
   scope: CodegenScope
 ): CodegenScope {
@@ -165,7 +179,7 @@ function findReferencedScope(
   return scope
 }
 
-function isReferencedByIds(node: Expression, knownIds: string[]) {
+export function isReferencedByIds(node: Expression, knownIds: string[]) {
   let referenced = false
   walk(node as unknown as BaseNode, {
     enter(node: BaseNode, parent: BaseNode) {

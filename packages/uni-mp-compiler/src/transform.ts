@@ -117,6 +117,7 @@ export interface TransformContext
   addIdentifiers(exp: ExpressionNode | string): void
   removeIdentifiers(exp: ExpressionNode | string): void
   popScope(): CodegenScope | undefined
+  getScopeIndex(scope: CodegenScope): number
   addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
@@ -377,6 +378,9 @@ export function createTransformContext(
       return false
     },
     // methods
+    getScopeIndex(scope: CodegenScope) {
+      return scopes.indexOf(scope)
+    },
     popScope() {
       return scopes.pop()
     },
