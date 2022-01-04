@@ -1,3 +1,4 @@
+import { hasOwn } from '@vue/shared'
 import fs from 'fs'
 
 interface Package {
@@ -24,7 +25,8 @@ export function parseScripts(name: string, pkgPath: string) {
   }
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as Package
 
-  const options = pkg['uni-app']?.scripts?.[name]
+  const scripts = pkg['uni-app']?.scripts || {}
+  const options = scripts[name]
   if (!options) {
     return
   }
@@ -35,10 +37,22 @@ export function parseScripts(name: string, pkgPath: string) {
     process.exit(0)
   }
   const { UNI_PLATFORM, ...define } = options.env
+  const context = options.define || {}
+  // 补充当前编译环境未定义的其他编译环境 define
+  Object.keys(scripts).forEach((scriptName) => {
+    if (scriptName !== name) {
+      const scriptDefine = scripts[scriptName].define || {}
+      Object.keys(scriptDefine).forEach((key) => {
+        if (!hasOwn(context, key)) {
+          context[key] = false
+        }
+      })
+    }
+  })
   return {
     name: name,
     platform: UNI_PLATFORM,
     define,
-    context: options.define || {},
+    context,
   }
 }

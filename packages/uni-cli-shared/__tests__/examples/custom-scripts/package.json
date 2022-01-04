@@ -1,0 +1,26 @@
+{
+  "uni-app": {
+    "scripts": {
+      "H5-WEIXIN": {
+        "title": "H5-WEIXIN",
+        "env": {
+          "UNI_PLATFORM": "H5"
+        },
+        "define": {
+          "H5-BASE": true,
+          "H5-WEIXIN": true
+        }
+      },
+      "H5-QQ": {
+        "title": "H5-QQ",
+        "env": {
+          "UNI_PLATFORM": "H5"
+        },
+        "define": {
+          "H5-BASE": false,
+          "H5-QQ": true
+        }
+      }
+    }
+  }
+}
