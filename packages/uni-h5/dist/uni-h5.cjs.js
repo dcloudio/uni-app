@@ -2580,7 +2580,7 @@ const props$p = {
   },
   draggable: {
     type: Boolean,
-    default: true
+    default: false
   }
 };
 const FIX_MODES = {
