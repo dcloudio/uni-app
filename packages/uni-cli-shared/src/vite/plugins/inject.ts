@@ -147,7 +147,11 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
           if (reassignments.has(hash)) {
             return false
           }
-          if (parent && isAssignmentExpression(parent)) {
+          if (
+            parent &&
+            isAssignmentExpression(parent) &&
+            parent.left === node
+          ) {
             reassignments.add(hash)
             return false
           }
