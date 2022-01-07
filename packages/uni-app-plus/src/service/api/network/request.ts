@@ -111,8 +111,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       responseType,
       sslVerify,
       firstIpv4,
-      // NOTE 属性有但是types没有
-      // @ts-ignore
+      // @ts-ignore tls 缺少 types 类型
       tls,
     } = args
 
