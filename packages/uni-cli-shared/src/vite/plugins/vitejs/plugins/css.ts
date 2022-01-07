@@ -711,6 +711,7 @@ export async function minifyCSS(css: string, config: ResolvedConfig) {
   const { code, warnings } = await transform(css, {
     loader: 'css',
     minify: true,
+    target: config.build.cssTarget || undefined,
   })
   if (warnings.length) {
     const msgs = await formatMessages(warnings, { kind: 'warning' })
