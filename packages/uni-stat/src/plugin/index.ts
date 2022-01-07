@@ -5,7 +5,7 @@ import {
   defineUniMainJsPlugin,
   getUniStatistics,
   parseManifestJsonOnce,
-  parsePagesJsonOnce,
+  parsePagesJson,
 } from '@dcloudio/uni-cli-shared'
 
 export default [
@@ -32,8 +32,14 @@ export default [
         }
         const titlesJson = Object.create(null)
         if (isEnable) {
-          parsePagesJsonOnce(inputDir, platform).pages.forEach((page: any) => {
-            const titleText = page.style.navigationBar.titleText || ''
+          parsePagesJson(inputDir, platform).pages.forEach((page: any) => {
+            const style = page.style || {}
+            const titleText =
+              // MP
+              style.navigationBarTitleText ||
+              // H5 || App
+              style.navigationBar?.titleText ||
+              ''
             if (titleText) {
               titlesJson[page.path] = titleText
             }

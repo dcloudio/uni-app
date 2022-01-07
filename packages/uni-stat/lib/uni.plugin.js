@@ -31,8 +31,16 @@ var index = [
                 }
                 const titlesJson = Object.create(null);
                 if (isEnable) {
-                    uniCliShared.parsePagesJsonOnce(inputDir, platform).pages.forEach((page) => {
-                        const titleText = page.style.navigationBar.titleText || '';
+                    uniCliShared.parsePagesJson(inputDir, platform).pages.forEach((page) => {
+                        var _a;
+                        const style = page.style || {};
+                        const titleText = 
+                        // MP
+                        style.navigationBarTitleText ||
+                            (
+                            // H5 || App
+                            (_a = style.navigationBar) === null || _a === void 0 ? void 0 : _a.titleText) ||
+                            '';
                         if (titleText) {
                             titlesJson[page.path] = titleText;
                         }

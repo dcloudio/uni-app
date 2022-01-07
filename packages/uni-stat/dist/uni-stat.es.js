@@ -383,17 +383,7 @@ const requestData = (done) => {
   });
 };
 
-let titleJsons = {};
-// #ifdef MP
-let pagesTitle = require('uni-pages?{"type":"style"}').default;
-pagesTitle = pagesTitle.pages;
-for (let i in pagesTitle) {
-  titleJsons[i] = pagesTitle[i].navigationBarTitleText || '';
-}
-// #endif
-// #ifndef MP
-titleJsons = process.env.UNI_STAT_TITLE_JSON;
-// #endif
+const titleJsons = process.env.UNI_STAT_TITLE_JSON;
 
 const statConfig = {
   appid: process.env.UNI_APP_ID,
