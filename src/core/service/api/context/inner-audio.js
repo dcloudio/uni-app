@@ -60,6 +60,9 @@ const props = [
   },
   {
     name: 'volume'
+  },
+  {
+    name: 'sessionCategory'
   }
 ]
 

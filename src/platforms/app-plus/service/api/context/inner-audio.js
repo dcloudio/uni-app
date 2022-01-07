@@ -6,7 +6,7 @@ import {
   publish
 } from '../../bridge'
 
-const AUDIO_DEFAULT_CATEGORY = 'ambient'
+const AUDIO_DEFAULT_SESSION_CATEGORY = 'ambient'
 
 const audios = {}
 
@@ -54,7 +54,7 @@ export function createAudioInstance () {
   audio.src = ''
   audio.volume = 1
   audio.startTime = 0
-  audio.setSessionCategory(AUDIO_DEFAULT_CATEGORY)
+  audio.setSessionCategory(AUDIO_DEFAULT_SESSION_CATEGORY)
   return {
     errMsg: 'createAudioInstance:ok',
     audioId
@@ -82,7 +82,7 @@ export function setAudioState ({
   loop = false,
   obeyMuteSwitch,
   volume,
-  category = AUDIO_DEFAULT_CATEGORY
+  sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY
 }) {
   const audio = audios[audioId]
   if (audio) {
@@ -100,8 +100,8 @@ export function setAudioState ({
       audio.volume = style.volume = volume
     }
     audio.setStyles(style)
-    if (category) {
-      audio.setSessionCategory(category)
+    if (sessionCategory) {
+      audio.setSessionCategory(sessionCategory)
     }
     initStateChage(audioId)
   }
