@@ -1,5 +1,7 @@
+import { getCurrentInstance } from 'vue'
 import { useHover } from '../../helpers/useHover'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
+import { useAttrs } from '../../helpers/useAttrs'
 
 const OPEN_TYPES = [
   'navigate',
@@ -49,11 +51,17 @@ const props = {
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Navigator',
+  inheritAttrs: false,
   compatConfig: {
     MODE: 3,
   },
   props,
   setup(props, { slots }) {
+    const vm = getCurrentInstance()
+    const __scopeId = (vm?.root?.type as any).__scopeId || ''
+    const { $attrs, $excludeAttrs, $listeners } = useAttrs({
+      excludeListeners: true,
+    })
     const { hovering, binding } = useHover(props)
 
     function onClick($event: MouseEvent) {
@@ -98,16 +106,31 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     return () => {
-      const { hoverClass } = props
+      const { hoverClass, url } = props
       const hasHoverClass = props.hoverClass && props.hoverClass !== 'none'
       return (
-        <uni-navigator
-          class={hasHoverClass && hovering.value ? hoverClass : ''}
-          {...(hasHoverClass && binding)}
-          onClick={onClick}
+        <a
+          href={url}
+          onClick={(e) => {
+            e.preventDefault()
+            return false
+          }}
+          style={{ 'text-decoration': 'none' }}
+          {...$listeners.value}
         >
-          {slots.default && slots.default()}
-        </uni-navigator>
+          <uni-navigator
+            class={hasHoverClass && hovering.value ? hoverClass : ''}
+            {...(hasHoverClass && binding)}
+            {...$attrs.value}
+            {...$excludeAttrs.value}
+            {...{
+              [__scopeId]: '',
+            }}
+            onClick={onClick}
+          >
+            {slots.default && slots.default()}
+          </uni-navigator>
+        </a>
       )
     }
   },
