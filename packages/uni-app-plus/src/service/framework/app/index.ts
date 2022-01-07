@@ -1,7 +1,7 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
-import { initAppVm, initService } from '@dcloudio/uni-core'
+import { initAppVm, initService, defineGlobalData } from '@dcloudio/uni-core'
 
 import { initEntry } from './initEntry'
 import { initTabBar } from './initTabBar'
@@ -42,10 +42,7 @@ export function registerApp(appVm: ComponentPublicInstance) {
 
   extend(appCtx, defaultApp) // 拷贝默认实现
 
-  const { $options } = appVm
-  if ($options) {
-    appCtx.globalData = extend($options.globalData || {}, appCtx.globalData)
-  }
+  defineGlobalData(appCtx, defaultApp.globalData)
 
   initService()
 

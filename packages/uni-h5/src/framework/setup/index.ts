@@ -183,8 +183,12 @@ export function setupApp(comp: any) {
     },
     before(comp) {
       comp.mpType = 'app'
-      comp.setup = () => () => {
-        return openBlock(), createBlock(LayoutComponent)
+      const { setup } = comp
+      comp.setup = (props, ctx) => {
+        setup && setup(props, ctx)
+        return () => {
+          return openBlock(), createBlock(LayoutComponent)
+        }
       }
     },
   })

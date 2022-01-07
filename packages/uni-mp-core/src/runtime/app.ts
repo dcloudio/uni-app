@@ -56,15 +56,12 @@ export function parseApp(
         // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
         return
       }
-
       initBaseInstance(internalInstance, {
         mpType: 'app',
         mpInstance: this,
         slots: [],
       })
-
       injectAppLaunchHooks(internalInstance)
-
       ctx.globalData = this.globalData
       instance.$callHook(
         ON_LAUNCH,

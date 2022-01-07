@@ -2409,6 +2409,18 @@ var serviceContext = (function (vue) {
           },
       };
   }
+  function defineGlobalData(app, defaultGlobalData) {
+      const options = app.$options || {};
+      options.globalData = extend(options.globalData || {}, defaultGlobalData);
+      Object.defineProperty(app, 'globalData', {
+          get() {
+              return options.globalData;
+          },
+          set(newGlobalData) {
+              options.globalData = newGlobalData;
+          },
+      });
+  }
 
   function getRealPath(filepath) {
       // 无协议的情况补全 https
@@ -14865,8 +14877,7 @@ var serviceContext = (function (vue) {
   }
   const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
       let { header, method, data, timeout, url, responseType, sslVerify, firstIpv4, 
-      // NOTE 属性有但是types没有
-      // @ts-ignore
+      // @ts-ignore tls 缺少 types 类型
       tls, } = args;
       let contentType;
       for (const name in header) {
@@ -19107,10 +19118,7 @@ var serviceContext = (function (vue) {
       appCtx = appVm;
       initAppVm(appCtx);
       extend(appCtx, defaultApp); // 拷贝默认实现
-      const { $options } = appVm;
-      if ($options) {
-          appCtx.globalData = extend($options.globalData || {}, appCtx.globalData);
-      }
+      defineGlobalData(appCtx, defaultApp.globalData);
       initService();
       initEntry();
       initTabBar();

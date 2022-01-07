@@ -1512,6 +1512,18 @@ function createLaunchOptions() {
     }
   };
 }
+function defineGlobalData(app, defaultGlobalData) {
+  const options = app.$options || {};
+  options.globalData = extend(options.globalData || {}, defaultGlobalData);
+  Object.defineProperty(app, "globalData", {
+    get() {
+      return options.globalData;
+    },
+    set(newGlobalData) {
+      options.globalData = newGlobalData;
+    }
+  });
+}
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
@@ -9997,6 +10009,7 @@ const props$r = {
 };
 var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
+  inheritAttrs: false,
   compatConfig: {
     MODE: 3
   },
@@ -10004,6 +10017,15 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const vm = getCurrentInstance();
+    const __scopeId = vm && vm.root.type.__scopeId || "";
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
     const {
       hovering,
       binding
@@ -10044,14 +10066,21 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const {
-        hoverClass
+        hoverClass,
+        url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      return createVNode("uni-navigator", mergeProps({
+      return createVNode("a", {
+        "class": "navigator-wrap",
+        "href": url,
+        "onClick": onEventPrevent
+      }, [createVNode("uni-navigator", mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, {
+      }, hasHoverClass && binding, $attrs.value, $excludeAttrs.value, $listeners.value, {
+        [__scopeId]: ""
+      }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"]);
+      }), [slots.default && slots.default()], 16, ["onClick"])], 8, ["href", "onClick"]);
     };
   }
 });
@@ -11652,11 +11681,10 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     function _renderNodes(nodes) {
-      var _a;
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), ((_a = vm == null ? void 0 : vm.root) == null ? void 0 : _a.type).__scopeId || "", hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm && vm.root.type).__scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -13964,7 +13992,7 @@ function getApp$1() {
 function initApp(vm) {
   appVm = vm;
   initAppVm(appVm);
-  appVm.globalData = appVm.$options.globalData || {};
+  defineGlobalData(appVm);
   initService();
   initView();
 }
@@ -14092,8 +14120,12 @@ function setupApp(comp) {
     },
     before(comp2) {
       comp2.mpType = "app";
-      comp2.setup = () => () => {
-        return openBlock(), createBlock(LayoutComponent);
+      const { setup } = comp2;
+      comp2.setup = (props2, ctx) => {
+        setup && setup(props2, ctx);
+        return () => {
+          return openBlock(), createBlock(LayoutComponent);
+        };
       };
     }
   });
