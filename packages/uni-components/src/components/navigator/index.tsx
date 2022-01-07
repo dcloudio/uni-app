@@ -2,6 +2,7 @@ import { getCurrentInstance } from 'vue'
 import { useHover } from '../../helpers/useHover'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { useAttrs } from '../../helpers/useAttrs'
+import { onEventPrevent } from '@dcloudio/uni-core'
 
 const OPEN_TYPES = [
   'navigate',
@@ -58,7 +59,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props,
   setup(props, { slots }) {
     const vm = getCurrentInstance()
-    const __scopeId = (vm?.root?.type as any).__scopeId || ''
+    const __scopeId = (vm && (vm.root.type as any).__scopeId) || ''
     const { $attrs, $excludeAttrs, $listeners } = useAttrs({
       excludeListeners: true,
     })
@@ -110,12 +111,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const hasHoverClass = props.hoverClass && props.hoverClass !== 'none'
       return (
         <a
+          class="navigator-wrap"
           href={url}
-          onClick={(e) => {
-            e.preventDefault()
-            return false
-          }}
-          style={{ 'text-decoration': 'none' }}
+          onClick={onEventPrevent}
           {...$listeners.value}
         >
           <uni-navigator

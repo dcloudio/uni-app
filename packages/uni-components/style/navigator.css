@@ -13,3 +13,7 @@ uni-navigator[hidden] {
   background-color: rgba(0, 0, 0, 0.1);
   opacity: 0.7;
 }
+
+.navigator-wrap {
+  text-decoration: none;
+}
