@@ -198,7 +198,7 @@ class UniverifyManager {
   }
 
   login (options) {
-    this._warp((data, callbackId) => login(data, callbackId, false), this._getOptions(options))
+    this._warp((data, callbackId) => login(data, callbackId, false), options)
   }
 
   getCheckBoxState (options) {
@@ -206,7 +206,7 @@ class UniverifyManager {
   }
 
   preLogin (options) {
-    this._warp((data, callbackId) => preLogin(data, callbackId, false), this._getOptions(options))
+    this._warp((data, callbackId) => preLogin(data, callbackId, false), options)
   }
 
   onButtonsClick (callback) {
