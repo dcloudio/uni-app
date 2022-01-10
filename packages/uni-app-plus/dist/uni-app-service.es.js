@@ -17240,6 +17240,25 @@ var serviceContext = (function (vue) {
       }
   }
 
+  const sendHostEvent = sendNativeEvent;
+  const API_NAVIGATE_TO_MINI_PROGRAM = 'navigateToMiniProgram';
+  const navigateToMiniProgram = defineAsyncApi(API_NAVIGATE_TO_MINI_PROGRAM, (data, { resolve, reject }) => {
+      sendHostEvent('navigateToUniMP', data, (res) => {
+          if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
+              return reject(res.errMsg.split(' ')[1]);
+          }
+          resolve();
+      });
+  });
+  const hostEventCallbacks = [];
+  function onHostEventReceive(fn) {
+      hostEventCallbacks.push(fn);
+  }
+  const onNativeEventReceive = onHostEventReceive;
+  function invokeHostEvent(event, data) {
+      hostEventCallbacks.forEach((fn) => fn(event, data));
+  }
+
   const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
   const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
   const ANI_DURATION = 300;
@@ -17288,7 +17307,7 @@ var serviceContext = (function (vue) {
       });
       weexGlobalEvent.addEventListener(SDK_UNI_MP_NATIVE_EVENT, function (res) {
           if (res && res.event) {
-              emit(SDK_UNI_MP_NATIVE_EVENT + '.' + res.event, res.data);
+              invokeHostEvent(res.event, res.data);
           }
       });
       plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
@@ -19178,21 +19197,6 @@ var serviceContext = (function (vue) {
       __uniConfig.serviceReady = true;
   }
 
-  const sendHostEvent = sendNativeEvent;
-  const API_NAVIGATE_TO_MINI_PROGRAM = 'navigateToMiniProgram';
-  const navigateToMiniProgram = defineAsyncApi(API_NAVIGATE_TO_MINI_PROGRAM, (data, { resolve, reject }) => {
-      sendHostEvent('navigateToUniMP', data, (res) => {
-          if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
-              return reject(res.errMsg.split(' ')[1]);
-          }
-          resolve();
-      });
-  });
-  function onHostEventReceive(name, fn) {
-      UniServiceJSBridge.on(SDK_UNI_MP_NATIVE_EVENT + '.' + name, fn);
-  }
-  const onNativeEventReceive = onHostEventReceive;
-
   const EventType = {
       load: 'load',
       close: 'close',
@@ -19788,6 +19792,10 @@ var serviceContext = (function (vue) {
 
   var uni$1 = {
     __proto__: null,
+    sendHostEvent: sendHostEvent,
+    navigateToMiniProgram: navigateToMiniProgram,
+    onHostEventReceive: onHostEventReceive,
+    onNativeEventReceive: onNativeEventReceive,
     navigateTo: navigateTo,
     reLaunch: reLaunch,
     switchTab: switchTab,
@@ -19958,10 +19966,6 @@ var serviceContext = (function (vue) {
     sendNativeEvent: sendNativeEvent,
     __vuePlugin: index$1,
     restoreGlobal: restoreGlobal,
-    sendHostEvent: sendHostEvent,
-    navigateToMiniProgram: navigateToMiniProgram,
-    onHostEventReceive: onHostEventReceive,
-    onNativeEventReceive: onNativeEventReceive,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,

@@ -5,6 +5,7 @@ import {
   ON_THEME_CHANGE,
   ON_KEYBOARD_HEIGHT_CHANGE,
 } from '@dcloudio/uni-shared'
+import { invokeHostEvent } from '../../api/plugin/sdk'
 import { SDK_UNI_MP_NATIVE_EVENT } from '../../constants'
 import {
   EVENT_BACKBUTTON,
@@ -67,7 +68,7 @@ export function initGlobalEvent() {
     SDK_UNI_MP_NATIVE_EVENT,
     function (res: { event: string; data: unknown }) {
       if (res && res.event) {
-        emit(SDK_UNI_MP_NATIVE_EVENT + '.' + res.event, res.data)
+        invokeHostEvent(res.event, res.data)
       }
     }
   )

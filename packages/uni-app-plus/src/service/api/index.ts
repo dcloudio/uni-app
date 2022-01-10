@@ -63,7 +63,12 @@ export * from './plugin/requestPayment'
 export * from './plugin/requireNativePlugin'
 export * from './plugin/vuePlugin'
 export * from './plugin/restoreGlobal'
-export * from './plugin/sdk'
+export {
+  sendHostEvent,
+  navigateToMiniProgram,
+  onHostEventReceive,
+  onNativeEventReceive,
+} from './plugin/sdk'
 
 export * from './ad/rewardedVideoAd'
 export * from './ad/fullScreenVideoAd'
