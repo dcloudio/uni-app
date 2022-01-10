@@ -34,10 +34,10 @@ const pkgs = {
     latest: '1.6.4',
   },
   '@dcloudio/types': {
-    latest: '2.5.15',
+    latest: '2.5.16',
   },
   autoprefixer: {
-    latest: '10.4.1',
+    latest: '10.4.2',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',
