@@ -117,6 +117,7 @@ module.exports = {
   PREFIX_CLASS: 'c',
   PREFIX_STYLE: 's',
   PREFIX_EVENT: 'e',
+  PREFIX_TEXT: 't',
   IDENTIFIER_FOR: '__$$for$$__',
   IDENTIFIER_ATTR: '__$$attr$$__',
   IDENTIFIER_METHOD: '__$$method$$__',
@@ -124,5 +125,6 @@ module.exports = {
   IDENTIFIER_CLASS: '__$$class$$__',
   IDENTIFIER_STYLE: '__$$style$$__',
   IDENTIFIER_EVENT: '__$$event$$__',
-  IDENTIFIER_GLOBAL: '__$$global$$__'
+  IDENTIFIER_GLOBAL: '__$$global$$__',
+  IDENTIFIER_TEXT: '__$$text$$__'
 }

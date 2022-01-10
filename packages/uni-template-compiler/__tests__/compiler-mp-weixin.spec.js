@@ -54,6 +54,24 @@ describe('mp:compiler-mp-weixin', () => {
     )
   })
 
+  it('generate string express with escape quote', () => {
+    assertCodegen(
+      `<view :data-text="text+'\\''"></view>`,
+      '<view data-text="{{$root.a0}}"></view>',
+      `with(this){var a0=text+"'";$mp.data=Object.assign({},{$root:{a0:a0}})}`
+    )
+    assertCodegen(
+      `<view>{{text+'\\''}}</view>`,
+      '<view>{{$root.t0}}</view>',
+      `with(this){var t0=text+"'";$mp.data=Object.assign({},{$root:{t0:t0}})}`
+    )
+    assertCodegen(
+      `<view>{{text+"\\""}}</view>`,
+      '<view>{{$root.t0}}</view>',
+      `with(this){var t0=text+"\\"";$mp.data=Object.assign({},{$root:{t0:t0}})}`
+    )
+  })
+
   it('generate named scoped slot', () => {
     assertCodegen(
       '<foo><template slot="foo" slot-scope="{bar}">{{ bar.foo }}</template></foo>',
