@@ -111,26 +111,26 @@ function processBooleanAttr({ props }: ComponentNode) {
   })
 }
 
+const builtInProps = [
+  'class',
+  'style',
+  ATTR_VUE_ID,
+  ATTR_VUE_PROPS,
+  ATTR_VUE_SLOTS,
+  ATTR_VUE_REF,
+  ATTR_VUE_REF_IN_FOR,
+  ATTR_COM_TYPE,
+  'eO',
+  'e-o',
+  'onVI',
+  'ref',
+  'slot',
+  'key',
+  'is',
+]
+
 function isComponentProp(name: string) {
-  if (
-    [
-      'class',
-      'style',
-      ATTR_VUE_ID,
-      ATTR_VUE_PROPS,
-      ATTR_VUE_SLOTS,
-      ATTR_VUE_REF,
-      ATTR_VUE_REF_IN_FOR,
-      ATTR_COM_TYPE,
-      'eO',
-      'e-o',
-      'onVI',
-      'ref',
-      'slot',
-      'key',
-      'is',
-    ].includes(name)
-  ) {
+  if (builtInProps.includes(name)) {
     return false
   }
   if (name.startsWith('data-')) {

@@ -1,9 +1,9 @@
 import path from 'path'
 import { ResolvedId } from 'rollup'
 import { findUsingComponents } from '../src/json/mp/jsonFile'
+import { parseProgram } from '../src/mp/ast'
 import {
   parseMainDescriptor,
-  parseProgram,
   transformDynamicImports,
   updateMiniProgramComponentsByMainFilename,
   updateMiniProgramGlobalComponents,

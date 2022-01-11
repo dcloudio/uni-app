@@ -1,3 +1,4 @@
+export * from './ast'
 export * from './nvue'
 export * from './event'
 export * from './style'
@@ -6,7 +7,6 @@ export * from './constants'
 export { HTML_TO_MINI_PROGRAM_TAGS } from './tags'
 export { copyMiniProgramPluginJson } from './plugin'
 export {
-  parseProgram,
   parseMainDescriptor,
   parseScriptDescriptor,
   parseTemplateDescriptor,
@@ -16,3 +16,9 @@ export {
   updateMiniProgramComponentsByScriptFilename,
   updateMiniProgramComponentsByTemplateFilename,
 } from './usingComponents'
+export {
+  hasExternalClasses,
+  parseExternalClasses,
+  findMiniProgramComponentExternalClasses,
+  updateMiniProgramComponentExternalClasses,
+} from './externalClasses'

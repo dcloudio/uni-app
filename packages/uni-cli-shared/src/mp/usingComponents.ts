@@ -17,7 +17,6 @@ import {
   Statement,
   StringLiteral,
 } from '@babel/types'
-import { parse, ParserPlugin } from '@babel/parser'
 import { walk } from 'estree-walker'
 import MagicString from 'magic-string'
 import type { PluginContext } from 'rollup'
@@ -25,11 +24,7 @@ import { camelize, capitalize, hyphenate } from '@vue/shared'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { M } from '../messages'
 import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
-import {
-  normalizeMiniProgramFilename,
-  normalizeParsePlugins,
-  removeExt,
-} from '../utils'
+import { normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
 import { addMiniProgramUsingComponents } from '../json/mp/jsonFile'
 
@@ -37,17 +32,6 @@ type BindingComponents = Record<
   string,
   { tag: string; type: 'unknown' | 'setup' | 'self' }
 >
-
-export function parseProgram(
-  code: string,
-  importer: string,
-  { babelParserPlugins }: { babelParserPlugins?: ParserPlugin[] }
-) {
-  return parse(code, {
-    plugins: normalizeParsePlugins(importer, babelParserPlugins),
-    sourceType: 'module',
-  }).program
-}
 
 const mainDescriptors = new Map<string, MainDescriptor>()
 const scriptDescriptors = new Map<string, ScriptDescriptor>()
