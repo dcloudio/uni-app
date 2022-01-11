@@ -38,7 +38,7 @@ const evts: AudioEvnets[] = [
   'pause',
 ]
 
-const AUDIO_DEFAULT_CATEGORY: string = 'ambient'
+const AUDIO_DEFAULT_SESSION_CATEGORY: string = 'ambient'
 
 const initStateChage = (audioId: string) => {
   const audio = audios[audioId]
@@ -80,7 +80,7 @@ function createAudioInstance() {
   audio.src = ''
   audio.volume = 1
   audio.startTime = 0
-  audio.setSessionCategory(AUDIO_DEFAULT_CATEGORY)
+  audio.setSessionCategory(AUDIO_DEFAULT_SESSION_CATEGORY)
   return {
     errMsg: 'createAudioInstance:ok',
     audioId,
@@ -95,7 +95,7 @@ function setAudioState({
   loop = false,
   obeyMuteSwitch,
   volume,
-  category = AUDIO_DEFAULT_CATEGORY,
+  sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY,
 }: {
   audioId: string
   autoplay?: boolean
@@ -104,7 +104,7 @@ function setAudioState({
   src?: string
   startTime?: number
   volume?: number
-  category?: string
+  sessionCategory?: string
 }) {
   const audio = audios[audioId]
   if (audio) {
@@ -122,8 +122,8 @@ function setAudioState({
       audio.volume = style.volume = volume
     }
     audio.setStyles(style)
-    if (category) {
-      audio.setSessionCategory(category)
+    if (sessionCategory) {
+      audio.setSessionCategory(sessionCategory)
     }
     initStateChage(audioId)
   }
