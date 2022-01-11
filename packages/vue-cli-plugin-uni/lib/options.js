@@ -1,10 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 
-const {
-  sassLoaderVersion
-} = require('@dcloudio/uni-cli-shared/lib/scss')
-
 const isWin = /^win/.test(process.platform)
 
 function genTranspileDepRegex (depPath) {
@@ -85,14 +81,7 @@ module.exports = function initOptions (options) {
   if (!outputStyle || outputStyle === 'compressed') {
     options.css.loaderOptions.sass.sassOptions.outputStyle = 'expanded'
   }
-
-  if (sassLoaderVersion < 8) {
-    options.css.loaderOptions.sass.data = sassData
-  } else {
-    const name = sassLoaderVersion >= 9 ? 'additionalData' : 'prependData'
-    options.css.loaderOptions.sass[name] = sassData
-  }
-
+  options.css.loaderOptions.sass.prependData = sassData
   const userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
   if (fs.existsSync(userPostcssConfigPath)) {
     options.css.loaderOptions.postcss.config.path = userPostcssConfigPath

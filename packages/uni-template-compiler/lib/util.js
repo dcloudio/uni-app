@@ -232,6 +232,34 @@ function isSimpleObjectExpression (node) {
   }) => !t.isIdentifier(key) || !(t.isIdentifier(value) || t.isStringLiteral(value) || t.isBooleanLiteral(value) ||
     t.isNumericLiteral(value) || t.isNullLiteral(value)))
 }
+/**
+ * 是否包含转义引号
+ * @param {*} path
+ * @returns {boolean}
+ */
+function hasEscapeQuote (path) {
+  let has = false
+  function hasEscapeQuote (node) {
+    const quote = node.extra ? node.extra.raw[0] : '"'
+    if (node.value.includes(quote)) {
+      return true
+    }
+  }
+  if (path.isStringLiteral()) {
+    return hasEscapeQuote(path.node)
+  } else {
+    path.traverse({
+      noScope: true,
+      StringLiteral (path) {
+        if (hasEscapeQuote(path.node)) {
+          has = true
+          path.stop()
+        }
+      }
+    })
+  }
+  return has
+}
 
 module.exports = {
   hasOwn,
@@ -263,5 +291,6 @@ module.exports = {
   }),
   processMemberExpression,
   getForIndexIdentifier,
-  isSimpleObjectExpression
+  isSimpleObjectExpression,
+  hasEscapeQuote
 }
