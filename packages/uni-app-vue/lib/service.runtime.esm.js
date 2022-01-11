@@ -5330,11 +5330,12 @@ function baseCreateRenderer(options, createHydrationFns) {
                 value: vnode,
                 enumerable: false
             });
-            Object.defineProperty(el, '__vueParentComponent', {
-                value: parentComponent,
-                enumerable: false
-            });
         }
+        // fixed by xxxxxx (框架始终都要能访问到__vueParentComponent，主要是renderjs)
+        Object.defineProperty(el, '__vueParentComponent', {
+            value: parentComponent,
+            enumerable: false
+        });
         if (dirs) {
             invokeDirectiveHook(vnode, null, parentComponent, 'beforeMount');
         }
