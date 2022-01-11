@@ -11198,6 +11198,10 @@ var serviceContext = (function (vue) {
           }, callback);
           return this._selectorQuery;
       }
+      node(_callback) {
+          // TODO
+          return this._selectorQuery;
+      }
   }
   class SelectorQuery {
       constructor(page) {
@@ -15308,7 +15312,7 @@ var serviceContext = (function (vue) {
       'seeked',
       'pause',
   ];
-  const AUDIO_DEFAULT_CATEGORY = 'ambient';
+  const AUDIO_DEFAULT_SESSION_CATEGORY = 'ambient';
   const initStateChage = (audioId) => {
       const audio = audios[audioId];
       if (!audio) {
@@ -15347,13 +15351,13 @@ var serviceContext = (function (vue) {
       audio.src = '';
       audio.volume = 1;
       audio.startTime = 0;
-      audio.setSessionCategory(AUDIO_DEFAULT_CATEGORY);
+      audio.setSessionCategory(AUDIO_DEFAULT_SESSION_CATEGORY);
       return {
           errMsg: 'createAudioInstance:ok',
           audioId,
       };
   }
-  function setAudioState({ audioId, src, startTime, autoplay = false, loop = false, obeyMuteSwitch, volume, category = AUDIO_DEFAULT_CATEGORY, }) {
+  function setAudioState({ audioId, src, startTime, autoplay = false, loop = false, obeyMuteSwitch, volume, sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY, }) {
       const audio = audios[audioId];
       if (audio) {
           const style = {
@@ -15370,8 +15374,8 @@ var serviceContext = (function (vue) {
               audio.volume = style.volume = volume;
           }
           audio.setStyles(style);
-          if (category) {
-              audio.setSessionCategory(category);
+          if (sessionCategory) {
+              audio.setSessionCategory(sessionCategory);
           }
           initStateChage(audioId);
       }

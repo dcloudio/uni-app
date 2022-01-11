@@ -4269,6 +4269,9 @@ class NodesRef {
     }, callback);
     return this._selectorQuery;
   }
+  node(_callback) {
+    return this._selectorQuery;
+  }
 }
 class SelectorQuery {
   constructor(page) {
