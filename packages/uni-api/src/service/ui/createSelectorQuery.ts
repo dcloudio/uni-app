@@ -113,6 +113,11 @@ class NodesRef implements UniApp.NodesRef {
     )
     return this._selectorQuery
   }
+
+  node(_callback: (result: any) => void) {
+    // TODO
+    return this._selectorQuery
+  }
 }
 
 class SelectorQuery implements UniApp.SelectorQuery {
