@@ -4366,7 +4366,7 @@ var serviceContext = (function () {
     return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
-  const AUDIO_DEFAULT_CATEGORY = 'ambient';
+  const AUDIO_DEFAULT_SESSION_CATEGORY = 'ambient';
 
   const audios = {};
 
@@ -4414,7 +4414,7 @@ var serviceContext = (function () {
     audio.src = '';
     audio.volume = 1;
     audio.startTime = 0;
-    audio.setSessionCategory(AUDIO_DEFAULT_CATEGORY);
+    audio.setSessionCategory(AUDIO_DEFAULT_SESSION_CATEGORY);
     return {
       errMsg: 'createAudioInstance:ok',
       audioId
@@ -4442,7 +4442,7 @@ var serviceContext = (function () {
     loop = false,
     obeyMuteSwitch,
     volume,
-    category = AUDIO_DEFAULT_CATEGORY
+    sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY
   }) {
     const audio = audios[audioId];
     if (audio) {
@@ -4460,8 +4460,8 @@ var serviceContext = (function () {
         audio.volume = style.volume = volume;
       }
       audio.setStyles(style);
-      if (category) {
-        audio.setSessionCategory(category);
+      if (sessionCategory) {
+        audio.setSessionCategory(sessionCategory);
       }
       initStateChage(audioId);
     }
@@ -8145,7 +8145,7 @@ var serviceContext = (function () {
     }
 
     login (options) {
-      this._warp((data, callbackId) => login(data, callbackId, false), this._getOptions(options));
+      this._warp((data, callbackId) => login(data, callbackId, false), options);
     }
 
     getCheckBoxState (options) {
@@ -8153,7 +8153,7 @@ var serviceContext = (function () {
     }
 
     preLogin (options) {
-      this._warp((data, callbackId) => preLogin$1(data, callbackId, false), this._getOptions(options));
+      this._warp((data, callbackId) => preLogin$1(data, callbackId, false), options);
     }
 
     onButtonsClick (callback) {
@@ -20154,6 +20154,9 @@ var serviceContext = (function () {
     },
     {
       name: 'volume'
+    },
+    {
+      name: 'sessionCategory'
     }
   ];
 
