@@ -1,6 +1,11 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { build as buildByVite, BuildOptions, InlineConfig } from 'vite'
+import {
+  build as buildByVite,
+  BuildOptions,
+  InlineConfig,
+  ServerOptions,
+} from 'vite'
 import { extend } from '@vue/shared'
 import {
   initPreContext,
@@ -10,22 +15,11 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
+import { RollupWatcher, RollupWatcherEvent } from 'rollup'
 
 export async function build(options: CliOptions) {
   if (options.platform === 'app') {
-    if ((options as BuildOptions).manifest) {
-      return buildManifestJson()
-    }
-    if (process.env.UNI_RENDERER === 'native') {
-      return buildByVite(
-        addConfigFile(
-          extend(
-            { nvue: true },
-            initBuildOptions(options, cleanOptions(options) as BuildOptions)
-          )
-        )
-      )
-    }
+    return buildApp(options)
   }
   return buildByVite(
     addConfigFile(
@@ -98,4 +92,106 @@ function buildManifestJson() {
     path.resolve(outputDir, 'manifest.json'),
     JSON.stringify(manifestJson, null, 2)
   )
+}
+
+export async function buildApp(options: CliOptions) {
+  if ((options as BuildOptions).manifest) {
+    return buildManifestJson()
+  }
+  if (process.env.UNI_RENDERER === 'native') {
+    return buildByVite(
+      addConfigFile(
+        extend(
+          { nvue: true },
+          initBuildOptions(options, cleanOptions(options) as BuildOptions)
+        )
+      )
+    )
+  }
+  // 指定为 vue 方便 App 插件初始化 vue 所需插件列表
+  process.env.UNI_COMPILER = 'vue'
+  const vueBuilder = await buildByVite(
+    addConfigFile(
+      initBuildOptions(options, cleanOptions(options) as BuildOptions)
+    )
+  )
+  // 临时指定为 nvue 方便 App 插件初始化 nvue 所需插件列表
+  process.env.UNI_COMPILER = 'nvue'
+  const nvueBuilder = await buildByVite(
+    addConfigFile(
+      extend(
+        { nvue: true },
+        initBuildOptions(options, cleanOptions(options) as BuildOptions)
+      )
+    )
+  )
+  // 还原为 vue
+  process.env.UNI_COMPILER = 'vue'
+
+  if ((options as ServerOptions).watch) {
+    return initAppWatcher(
+      vueBuilder as RollupWatcher,
+      nvueBuilder as RollupWatcher
+    )
+  }
+}
+
+class AppWatcher {
+  private _vueStart: boolean = false
+  private _vueEnd: boolean = false
+  private _nvueStart: boolean = false
+  private _nvueEnd: boolean = false
+  private _callback!: (event: RollupWatcherEvent) => void
+  on(callback: (event: RollupWatcherEvent) => void) {
+    this._callback = callback
+  }
+  _bundleVueStart(event: RollupWatcherEvent) {
+    this._vueStart = true
+    this._bundleStart(event)
+  }
+  _bundleVueEnd(event: RollupWatcherEvent) {
+    this._vueEnd = true
+    this._bundleEnd(event)
+  }
+  _bundleNVueStart(event: RollupWatcherEvent) {
+    this._nvueStart = true
+    this._bundleStart(event)
+  }
+  _bundleNVueEnd(event: RollupWatcherEvent) {
+    this._nvueEnd = true
+    this._bundleEnd(event)
+  }
+  _bundleStart(event: RollupWatcherEvent) {
+    if (this._vueStart && this._nvueStart) {
+      this._callback(event)
+    }
+  }
+  _bundleEnd(event: RollupWatcherEvent) {
+    if (this._vueEnd && this._nvueEnd) {
+      this._callback(event)
+    }
+  }
+}
+
+function initAppWatcher(vueWatcher: RollupWatcher, nvueWatcher: RollupWatcher) {
+  const appWatcher = new AppWatcher()
+  vueWatcher.on('event', (event) => {
+    if (event.code === 'BUNDLE_START') {
+      appWatcher._bundleVueStart(event)
+    } else if (event.code === 'BUNDLE_END') {
+      appWatcher._bundleVueEnd(event)
+    }
+  })
+  nvueWatcher.on('event', (event) => {
+    if (event.code === 'BUNDLE_START') {
+      appWatcher._bundleNVueStart(event)
+    } else if (event.code === 'BUNDLE_END') {
+      appWatcher._bundleNVueEnd(event)
+    }
+  })
+  return {
+    on(_, fn) {
+      appWatcher.on(fn as (event: RollupWatcherEvent) => void)
+    },
+  } as RollupWatcher
 }

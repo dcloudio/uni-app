@@ -1,6 +1,6 @@
 import { compileTemplate } from '@vue/compiler-sfc'
 
-import { uniAppPlugin } from '../../../uni-app-vite/src/plugin'
+import { uniAppPlugin } from '../../../uni-app-vite/src/vue/plugin'
 import {
   ref,
   nextTick,

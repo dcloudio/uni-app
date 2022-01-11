@@ -1,4 +1,5 @@
 import { Plugin, ResolvedConfig } from 'vite'
+import { extend } from '@vue/shared'
 import {
   checkUpdate,
   isWindows,
@@ -40,10 +41,10 @@ function initCheckUpdate() {
   })
 }
 
-function initLogger({ logger }: ResolvedConfig) {
+function initLogger({ logger, nvue }: ResolvedConfig & { nvue?: boolean }) {
   const { info, warn, error } = logger
   logger.info = (msg, opts) => {
-    msg = formatInfoMsg(msg, opts)
+    msg = formatInfoMsg(msg, extend({ nvue }, opts))
     if (msg) {
       return info(msg, opts)
     }
