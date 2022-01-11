@@ -76,22 +76,22 @@ function addMPPluginRequire (compilation) {
     const needProcess = process.env.UNI_MP_PLUGIN ? name === UNI_MP_PLUGIN_MAIN : UNI_MP_PLUGIN_EXPORT.includes(name)
     if (needProcess) {
       const modules = compilation.modules
-
+      const orignalSource = compilation.assets[name].source()
+      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx';
       const filePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, name))
-
       const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === filePath).id
+      const newlineIndex = orignalSource.lastIndexOf('\n')
 
-      const newlineIndex = compilation.assets[name].source().lastIndexOf('\n')
-
-      const source = compilation.assets[name].source().substring(0, newlineIndex) +
-    `\nmodule.exports = ${process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'}.__webpack_require_${(process.env.UNI_MP_PLUGIN || 'UNI_MP_PLUGIN').replace(/-/g, '_')}__('${uniModuleId}');\n` +
-    compilation.assets[name].source().substring(newlineIndex + 1)
+      const source =
+        orignalSource.substring(0, newlineIndex)
+        + `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n`
+        + orignalSource.substring(newlineIndex + 1)
 
       compilation.assets[name] = {
-        size () {
+        size() {
           return Buffer.byteLength(source, 'utf8')
         },
-        source () {
+        source() {
           return source
         }
       }

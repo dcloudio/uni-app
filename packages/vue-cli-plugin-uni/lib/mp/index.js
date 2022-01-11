@@ -178,11 +178,12 @@ module.exports = {
 
     {
       const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx';
-      [].concat(process.env.UNI_MP_PLUGIN ? process.env.UNI_MP_PLUGIN_MAIN : JSON.parse(process.env
-        .UNI_MP_PLUGIN_EXPORT))
-        .forEach(fileName => addToUniEntry(fileName))
-      beforeCode +=
-        `${globalEnv}.__webpack_require_${(process.env.UNI_MP_PLUGIN || 'UNI_MP_PLUGIN').replace(/-/g, '_')}__ = __webpack_require__;`
+      [].concat(
+        process.env.UNI_MP_PLUGIN
+          ? process.env.UNI_MP_PLUGIN_MAIN
+          : JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
+      ).forEach(fileName => addToUniEntry(fileName))
+      beforeCode += `${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     }
 
     const alias = { // 仅 mp-weixin
