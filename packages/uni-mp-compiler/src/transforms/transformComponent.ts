@@ -112,6 +112,7 @@ function processBooleanAttr({ props }: ComponentNode) {
 }
 
 const builtInProps = [
+  'id',
   'class',
   'style',
   ATTR_VUE_ID,

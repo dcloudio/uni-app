@@ -3,7 +3,6 @@ import path from 'path'
 import { Plugin } from 'vite'
 
 import {
-  removePlugins,
   injectAssetPlugin,
   injectCssPlugin,
   injectCssPostPlugin,
@@ -24,7 +23,6 @@ function normalizeCssChunkFilename(id: string) {
 export const configResolved: Plugin['configResolved'] = (config) => {
   const inputDir = process.env.UNI_INPUT_DIR
   const mainPath = resolveMainPathOnce(inputDir)
-  removePlugins('vite:import-analysis', config)
   injectCssPlugin(config)
   injectCssPostPlugin(config, {
     chunkCssFilename(id: string) {
