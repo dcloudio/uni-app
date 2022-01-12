@@ -14,3 +14,9 @@ export function transformWithEsbuild(
     return esbuild.build(options)
   })
 }
+
+export function esbuild(options: BuildOptions) {
+  return import('esbuild').then((esbuild) => {
+    return esbuild.build(options)
+  })
+}
