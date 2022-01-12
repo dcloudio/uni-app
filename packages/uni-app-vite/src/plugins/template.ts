@@ -1,46 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { Plugin } from 'vite'
-import { OutputBundle } from 'rollup'
-import { parsePagesJsonOnce } from '@dcloudio/uni-cli-shared'
-import { APP_RENDERJS_JS, APP_WXS_JS } from './renderjs'
-
-function genViewHtml(bundle: OutputBundle) {
-  const viewHtmlStr = fs.readFileSync(
-    path.resolve(__dirname, '../../lib/template/__uniappview.html'),
-    'utf8'
-  )
-  const { globalStyle } = parsePagesJsonOnce(
-    process.env.UNI_INPUT_DIR,
-    process.env.UNI_PLATFORM
-  )
-  const __uniConfig = {
-    globalStyle: {
-      rpxCalcMaxDeviceWidth: (globalStyle as any).rpxCalcMaxDeviceWidth,
-      rpxCalcBaseDeviceWidth: (globalStyle as any).rpxCalcBaseDeviceWidth,
-    },
-  }
-  const wxsCode = bundle[APP_WXS_JS]
-    ? `<script src="${APP_WXS_JS}"></script>`
-    : ''
-  const renderjsCode = bundle[APP_RENDERJS_JS]
-    ? `<script src="${APP_RENDERJS_JS}"></script>`
-    : ''
-
-  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
-    ? `<script src="__uniappautomator.js"></script>`
-    : ''
-
-  return viewHtmlStr
-    .toString()
-    .replace('<!--wxsCode-->', wxsCode)
-    .replace('<!--renderjsCode-->', renderjsCode)
-    .replace('<!--automatorCode-->', automatorCode)
-    .replace(
-      '/*__uniConfig*/',
-      `var __uniConfig = ${JSON.stringify(__uniConfig)}`
-    )
-}
+import { templateDir } from '../utils'
 
 export function uniTemplatePlugin(): Plugin {
   let outputDir: string
@@ -56,18 +17,11 @@ export function uniTemplatePlugin(): Plugin {
           overwrite: true,
         }
       )
-      fs.copySync(path.resolve(__dirname, '../../lib/template/'), outputDir, {
+      fs.copySync(templateDir, outputDir, {
         overwrite: true,
         filter(src) {
           return !src.includes('__uniappview.html')
         },
-      })
-    },
-    generateBundle(_, bundle) {
-      this.emitFile({
-        fileName: '__uniappview.html',
-        source: genViewHtml(bundle),
-        type: 'asset',
       })
     },
   }

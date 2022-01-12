@@ -1,6 +1,6 @@
 import path from 'path'
 import { Plugin } from 'vite'
-export function uniNVuePlugin(): Plugin {
+export function uniAppNVuePlugin(): Plugin {
   return {
     name: 'uni:app-nvue',
     config() {

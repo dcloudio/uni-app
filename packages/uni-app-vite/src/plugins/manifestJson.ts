@@ -41,7 +41,7 @@ export function uniManifestJsonPlugin(): Plugin {
         })
         return {
           code: '',
-          map: this.getCombinedSourcemap(),
+          map: null,
         }
       },
     }

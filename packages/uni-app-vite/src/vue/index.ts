@@ -9,15 +9,16 @@ import {
   isVueSfcFile,
   isUniPageFile,
 } from '@dcloudio/uni-cli-shared'
-import { uniAppPlugin } from '../vue/plugin'
 import { uniTemplatePlugin } from '../plugins/template'
-import { uniMainJsPlugin } from '../plugins/mainJs'
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'
-import { uniPagesJsonPlugin } from '../plugins/pagesJson'
-import { uniRenderjsPlugin } from '../plugins/renderjs'
 import { uniStatsPlugin } from '../plugins/stats'
 import { uniEasycomPlugin } from '../plugins/easycom'
-import { uniConfusionPlugin } from '../plugins/confusion'
+import { uniConfusionPlugin } from './plugins/confusion'
+import { uniMainJsPlugin } from './plugins/mainJs'
+import { uniPagesJsonPlugin } from './plugins/pagesJson'
+import { uniRenderjsPlugin } from './plugins/renderjs'
+
+import { uniAppVuePlugin } from './plugin'
 
 function initUniCssScopedPluginFilter(
   inputDir: string
@@ -46,7 +47,7 @@ export function initVuePlugins() {
     uniRenderjsPlugin(),
     uniTemplatePlugin(),
     uniStatsPlugin(),
-    uniAppPlugin(),
+    uniAppVuePlugin(),
     uniConfusionPlugin(),
   ]
   const filter = initUniCssScopedPluginFilter(process.env.UNI_INPUT_DIR)
