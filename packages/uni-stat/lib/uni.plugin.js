@@ -7,9 +7,10 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var debug__default = /*#__PURE__*/_interopDefaultLegacy(debug);
 
-var index = [
+var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
         let isEnable = false;
+        let isNVue = false;
         return {
             name: 'uni:stat',
             enforce: 'pre',
@@ -17,6 +18,7 @@ var index = [
                 if (isSsr(env.command, config)) {
                     return;
                 }
+                isNVue = config.nvue;
                 const inputDir = process.env.UNI_INPUT_DIR;
                 const platform = process.env.UNI_PLATFORM;
                 isEnable = uniCliShared.getUniStatistics(inputDir, platform).enable === true;
@@ -55,7 +57,7 @@ var index = [
                 };
             },
             transform(code, id) {
-                if (isEnable && opts.filter(id)) {
+                if (isEnable && !isNVue && opts.filter(id)) {
                     return {
                         code: code + `;import '@dcloudio/uni-stat';`,
                         map: null,

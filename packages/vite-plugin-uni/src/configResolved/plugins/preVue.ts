@@ -30,8 +30,12 @@ const WXS_LANG_RE = /lang=["|'](renderjs|wxs)["|']/
 const WXS_ATTRS = ['wxs', 'renderjs']
 
 export function uniPreVuePlugin(): Plugin {
+  let isNVue = false
   return {
     name: 'uni:pre-vue',
+    config(config) {
+      isNVue = (config as any).nvue
+    },
     async transform(code, id) {
       const { filename, query } = parseVueRequest(id)
       if (query.vue) {
@@ -45,7 +49,8 @@ export function uniPreVuePlugin(): Plugin {
         removeExt(normalizeMiniProgramFilename(id, process.env.UNI_INPUT_DIR))
       )
       const hasBlock = BLOCK_RE.test(code)
-      const hasWxs = WXS_LANG_RE.test(code)
+      // nvue 不支持 renderjs，wxs
+      const hasWxs = !isNVue && WXS_LANG_RE.test(code)
       if (!hasBlock && !hasWxs) {
         return
       }
@@ -55,10 +60,12 @@ export function uniPreVuePlugin(): Plugin {
       let ast = parseVue(code, errors)
       if (hasBlock) {
         code = parseBlockCode(ast, code)
-        // 重新解析新的 code
-        ast = parseVue(code, errors)
       }
       if (hasWxs) {
+        if (hasBlock) {
+          // 重新解析新的 code
+          ast = parseVue(code, errors)
+        }
         const wxsNodes = parseWxsNodes(ast)
         code = parseWxsCode(wxsNodes, code)
         // add watch

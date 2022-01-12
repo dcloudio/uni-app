@@ -1,6 +1,7 @@
 import { once } from '@dcloudio/uni-shared'
 import {
   COMMON_EXCLUDE,
+  isInHybridNVue,
   uniViteInjectPlugin,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -17,58 +18,65 @@ const uniCloudSpaces: {
   apiEndpoint?: string
 }[] = []
 
-initUniCloudEnv()
+const initUniCloudEnvOnce = once(initUniCloudEnv)
+
+initUniCloudEnvOnce()
 
 /**
  * @type {import('vite').Plugin}
  */
-const UniCloudPlugin: UniVitePlugin = {
-  name: 'uni:cloud',
-  config(config) {
-    const silent = config.build && config.build.ssr ? true : false
-    if (silent) {
-      return
-    }
-    const len = uniCloudSpaces.length
-    if (!len) {
-      return
-    }
-    if (len === 1) {
-      console.log(
-        `本项目的uniCloud使用的默认服务空间spaceId为：${uniCloudSpaces[0].id}`
-      )
-    }
-    if (
-      process.env.UNI_PLATFORM === 'h5' &&
-      !process.env.UNI_SUB_PLATFORM &&
-      process.env.NODE_ENV === 'production'
-    ) {
-      console.warn(
-        '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
-      )
-    }
-    return {}
-  },
-  configureServer(server) {
-    if (server.httpServer) {
-      server.httpServer.on('listening', () => {
-        process.nextTick(() => {
-          initUniCloudWarningOnce()
+function uniCloudPlugin(): UniVitePlugin {
+  return {
+    name: 'uni:cloud',
+    config(config) {
+      const silent = config.build && config.build.ssr ? true : false
+      if (silent) {
+        return
+      }
+      const len = uniCloudSpaces.length
+      if (!len) {
+        return
+      }
+      if (isInHybridNVue(config)) {
+        return
+      }
+      if (len === 1) {
+        console.log(
+          `本项目的uniCloud使用的默认服务空间spaceId为：${uniCloudSpaces[0].id}`
+        )
+      }
+      if (
+        process.env.UNI_PLATFORM === 'h5' &&
+        !process.env.UNI_SUB_PLATFORM &&
+        process.env.NODE_ENV === 'production'
+      ) {
+        console.warn(
+          '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+        )
+      }
+      return {}
+    },
+    configureServer(server) {
+      if (server.httpServer) {
+        server.httpServer.on('listening', () => {
+          process.nextTick(() => {
+            initUniCloudWarningOnce()
+          })
         })
-      })
-    } else {
-      initUniCloudWarningOnce()
-    }
-  },
-  closeBundle() {
-    if (process.env.UNI_PLATFORM === 'h5' && !process.env.UNI_SSR_CLIENT) {
-      console.log()
-      console.log(
-        '欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：'
-      )
-      console.log('https://uniapp.dcloud.io/uniCloud/hosting')
-    }
-  },
+      } else {
+        initUniCloudWarningOnce()
+      }
+    },
+    closeBundle() {
+      if (process.env.UNI_PLATFORM === 'h5' && !process.env.UNI_SSR_CLIENT) {
+        console.log()
+        console.log(
+          '欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：'
+        )
+        console.log('https://uniapp.dcloud.io/uniCloud/hosting')
+      }
+    },
+  }
 }
 
 const initUniCloudWarningOnce = once(() => {
@@ -110,9 +118,9 @@ function initUniCloudEnv() {
   } catch (e) {}
 }
 
-export default [
-  UniCloudPlugin,
-  uniViteInjectPlugin({
+export default () => [
+  uniCloudPlugin(),
+  uniViteInjectPlugin('uni:cloud-inject', {
     exclude: [...COMMON_EXCLUDE],
     uniCloud: ['@dcloudio/uni-cloud', 'default'],
   }),

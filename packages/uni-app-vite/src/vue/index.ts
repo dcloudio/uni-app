@@ -42,7 +42,7 @@ export function initVuePlugins() {
     uniMainJsPlugin(),
     uniManifestJsonPlugin(),
     uniPagesJsonPlugin(),
-    uniViteInjectPlugin(initAppProvide()),
+    uniViteInjectPlugin('uni:app-inject', initAppProvide()),
     uniRenderjsPlugin(),
     uniTemplatePlugin(),
     uniStatsPlugin(),

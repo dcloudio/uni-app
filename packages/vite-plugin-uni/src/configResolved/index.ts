@@ -6,6 +6,7 @@ import {
   formatErrMsg,
   formatInfoMsg,
   formatWarnMsg,
+  isInHybridNVue,
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
@@ -16,11 +17,16 @@ import { customResolver } from '../config/resolve'
 
 export function createConfigResolved(options: VitePluginUniResolvedOptions) {
   return ((config) => {
-    initEnv(config)
+    // 如果是混合编译且是 nvue 时，部分逻辑无需执行
+    if (!isInHybridNVue(config)) {
+      initEnv(config)
+    }
     initLogger(config)
     initOptions(options, config)
     initPlugins(config, options)
-    initCheckUpdate()
+    if (!isInHybridNVue(config)) {
+      initCheckUpdate()
+    }
     if (isWindows) {
       // TODO 等 https://github.com/vitejs/vite/issues/3331 修复后，可以移除下列代码
       const item = config.resolve.alias.find((item) =>

@@ -18,7 +18,7 @@ describe('inject', () => {
     parse: (code: string) => parse(code).program,
   } as unknown as TransformPluginContext
   test(`basic`, () => {
-    const plugin = uniViteInjectPlugin(injectOptions)
+    const plugin = uniViteInjectPlugin('uni:inject', injectOptions)
     expect(
       (
         plugin.transform!.call(
@@ -30,7 +30,7 @@ describe('inject', () => {
     ).toMatchSnapshot()
   })
   test(`reassignment`, () => {
-    const plugin = uniViteInjectPlugin(injectOptions)
+    const plugin = uniViteInjectPlugin('uni:inject', injectOptions)
     expect(
       (
         plugin.transform!.call(

@@ -31,7 +31,7 @@ export default (options: UniMiniProgramPluginOptions) => {
     uniManifestJsonPlugin(options),
     uniPagesJsonPlugin(options),
     uniEntryPlugin(options),
-    uniViteInjectPlugin(extend({}, options.vite.inject)),
+    uniViteInjectPlugin('uni:mp-inject', extend({}, options.vite.inject)),
     uniRenderjsPlugin({ lang: options.template.filter?.lang }),
     uniRuntimeHooksPlugin(),
     uniMiniProgramPlugin(options),

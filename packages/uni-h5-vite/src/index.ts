@@ -25,7 +25,10 @@ export default [
   }),
   uniResolveIdPlugin(),
   ...(process.env.UNI_H5_BROWSER === 'builtin'
-    ? [uniViteInjectPlugin(initH5Provide()), uniHBuilderXConsolePlugin()]
+    ? [
+        uniViteInjectPlugin('uni:h5-inject-hbx', initH5Provide()),
+        uniHBuilderXConsolePlugin(),
+      ]
     : []),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),

@@ -136,12 +136,18 @@ export default function uniPlugin(
     vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))
   )
 
-  plugins.push(
-    uniCopyPlugin({
-      outputDir: process.env.UNI_OUTPUT_DIR,
-      copyOptions: options.copyOptions,
-    })
-  )
+  // 混合编译时，nvue 下，不需要 copy
+  if (
+    process.env.UNI_RENDERER === 'native' ||
+    process.env.UNI_COMPILER === 'vue'
+  ) {
+    plugins.push(
+      uniCopyPlugin({
+        outputDir: process.env.UNI_OUTPUT_DIR,
+        copyOptions: options.copyOptions,
+      })
+    )
+  }
 
   return plugins
 }

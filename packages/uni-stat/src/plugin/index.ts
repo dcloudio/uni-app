@@ -8,9 +8,10 @@ import {
   parsePagesJson,
 } from '@dcloudio/uni-cli-shared'
 
-export default [
+export default () => [
   defineUniMainJsPlugin((opts) => {
     let isEnable = false
+    let isNVue = false
     return {
       name: 'uni:stat',
       enforce: 'pre',
@@ -18,6 +19,7 @@ export default [
         if (isSsr(env.command, config)) {
           return
         }
+        isNVue = (config as any).nvue
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_PLATFORM!
         isEnable = getUniStatistics(inputDir, platform).enable === true
@@ -54,7 +56,7 @@ export default [
         }
       },
       transform(code, id) {
-        if (isEnable && opts.filter(id)) {
+        if (isEnable && !isNVue && opts.filter(id)) {
           return {
             code: code + `;import '@dcloudio/uni-stat';`,
             map: null,
