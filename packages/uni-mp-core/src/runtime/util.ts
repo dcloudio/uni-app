@@ -4,8 +4,6 @@ import {
   ComponentInternalInstance,
   ComponentPublicInstance,
   nextTick,
-  markRaw,
-  proxyRefs,
 } from 'vue'
 
 import { MPComponentInstance, MPComponentOptions } from './component'
