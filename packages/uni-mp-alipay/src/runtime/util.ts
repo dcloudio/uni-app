@@ -17,7 +17,6 @@ import {
   initComponentInstance,
   CreateComponentOptions,
   updateComponentProps,
-  findRefValue,
   findPropsData,
 } from '@dcloudio/uni-mp-core'
 
@@ -145,7 +144,7 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
     instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs
 
   const { setupState } = instance
-  const refValue = findRefValue(ref as any)
+  const refValue = ref.$vm
   if (refName) {
     if (isString(refName)) {
       refs[refName] = refValue

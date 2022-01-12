@@ -3520,9 +3520,11 @@ function getExposeProxy(instance) {
                     if (key in target) {
                         return target[key];
                     }
-                    else if (key in publicPropertiesMap) {
-                        return publicPropertiesMap[key](instance);
-                    }
+                    // fixed by xxxxxx 框架内部需要访问很多非 public 属性，暂不做限制
+                    return instance.proxy[key];
+                    // else if (key in publicPropertiesMap) {
+                    //   return publicPropertiesMap[key](instance)
+                    // }
                 }
             })));
     }
@@ -4812,7 +4814,7 @@ function mountComponent(initialVNode, options) {
     if (__VUE_OPTIONS_API__) {
         // $children
         if (options.parentComponent && instance.proxy) {
-            options.parentComponent.ctx.$children.push(instance.proxy);
+            options.parentComponent.ctx.$children.push(getExposeProxy(instance) || instance.proxy);
         }
     }
     setupRenderEffect(instance);

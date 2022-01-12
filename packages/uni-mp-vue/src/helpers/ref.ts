@@ -1,6 +1,4 @@
 import { ComponentInternalInstance, getCurrentInstance, Ref } from 'vue'
-// @ts-ignore
-import { getExposeProxy } from 'vue'
 
 type VNodeRef =
   | string

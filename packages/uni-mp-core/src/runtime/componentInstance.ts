@@ -70,9 +70,6 @@ export function initBaseInstance(
     ctx._self = {}
   }
 
-  // $vm
-  ctx.$scope.$vm = (instance as any).proxy!
-
   // slots
   instance.slots = {}
   if (isArray(options.slots) && options.slots.length) {

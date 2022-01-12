@@ -1,6 +1,8 @@
 import { extend } from '@vue/shared'
 
 import { ComponentOptions, ComponentPublicInstance } from 'vue'
+// @ts-expect-error
+import { getExposeProxy } from 'vue'
 
 import { initExtraOptions, initWxsCallMethods, initBehavior } from './util'
 
@@ -149,7 +151,11 @@ export function $createComponent(
   if (!$createComponentFn) {
     $createComponentFn = getApp().$vm.$createComponent
   }
-  return $createComponentFn(initialVNode, options)
+  const proxy = $createComponentFn(
+    initialVNode,
+    options
+  ) as ComponentPublicInstance
+  return getExposeProxy(proxy.$) || proxy
 }
 
 export function $destroyComponent(instance: ComponentPublicInstance) {

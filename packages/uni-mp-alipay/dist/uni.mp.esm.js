@@ -1,5 +1,5 @@
 import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, isString, camelize } from '@vue/shared';
-import { injectHook, ref, getExposeProxy, findComponentPropsData, toRaw, updateProps, invalidateJob, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -175,8 +175,6 @@ function initBaseInstance(instance, options) {
     if (__VUE_OPTIONS_API__) {
         ctx._self = {};
     }
-    // $vm
-    ctx.$scope.$vm = instance.proxy;
     // slots
     instance.slots = {};
     if (isArray(options.slots) && options.slots.length) {
@@ -434,13 +432,6 @@ function initWxsCallMethods(methods, wxsCallMethods) {
         };
     });
 }
-function findRefValue(component) {
-    const vm = component.$vm;
-    if (vm) {
-        return getExposeProxy(vm.$) || vm;
-    }
-    return component;
-}
 function findVmByVueId(instance, vuePid) {
     // 标准 vue3 中 没有 $children，定制了内核
     const $children = instance.$children;
@@ -610,7 +601,8 @@ function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
         $createComponentFn = getApp().$vm.$createComponent;
     }
-    return $createComponentFn(initialVNode, options);
+    const proxy = $createComponentFn(initialVNode, options);
+    return getExposeProxy(proxy.$) || proxy;
 }
 function $destroyComponent(instance) {
     if (!$destroyComponentFn) {
@@ -766,7 +758,7 @@ function handleRef(ref) {
     const instance = this.$vm.$;
     const refs = instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs;
     const { setupState } = instance;
-    const refValue = findRefValue(ref);
+    const refValue = ref.$vm;
     if (refName) {
         if (isString(refName)) {
             refs[refName] = refValue;
