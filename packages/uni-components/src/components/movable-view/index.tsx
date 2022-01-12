@@ -388,6 +388,7 @@ function useMovableViewState(
     }
   }
   function __handleTouchMove(event: TouchtrackEvent) {
+    event.stopPropagation()
     if (!_isScaling && !props.disabled && _isTouching) {
       let x = _translateX
       let y = _translateY
