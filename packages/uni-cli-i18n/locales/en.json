@@ -62,7 +62,7 @@
   "mpLoader.componentReferenceError": "Component {{0}} reference error",
   "mpLoader.componentReferenceErrorOnlySupportImport": "Component {{0}} reference error, only supports import components",
   "pagesLoader.pagesNodeCannotNull": "Pages node in pages.json cannot be empty",
-  "pagesLoader.nvueFirstPageStartModeIsFast": "Nvue homepage startup mode: fast. For details, see: {{0}}",
+  "pagesLoader.nvueFirstPageStartModeIsFast": "nvue homepage startup mode: fast. For details, see: {{0}}",
   "pagesLoader.pagesTabbarMinItem2": "{{0}} must contain at least 2 items",
   "pagesLoader.needInPagesNode": "{{0}} needs to be in the pages array",
   "i18n.fallbackLocale.default": "fallbackLocale is missing in manifest.json, use：{{locale}}",
