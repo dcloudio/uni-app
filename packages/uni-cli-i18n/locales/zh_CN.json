@@ -62,7 +62,7 @@
   "mpLoader.componentReferenceError": "组件 {{0}} 引用错误",
   "mpLoader.componentReferenceErrorOnlySupportImport": "组件 {{0}} 引用错误，仅支持 import 方式引入组件",
   "pagesLoader.pagesNodeCannotNull": "pages.json 中的 pages 节点不能为空",
-  "pagesLoader.nvueFirstPageStartModeIsFast": "nvue 首页启动模式: fast, 详见: {{0}}",
+  "pagesLoader.nvueFirstPageStartModeIsFast": "App 启动模式: fast, 详见: {{0}}",
   "pagesLoader.pagesTabbarMinItem2": "{{0}} 需至少包含2项",
   "pagesLoader.needInPagesNode": "{{0}} 需在 pages 数组中",
   "i18n.fallbackLocale.default": "当前应用未在 manifest.json 配置 fallbackLocale，默认使用：{{locale}}",
