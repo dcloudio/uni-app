@@ -6,7 +6,9 @@ import {
   emptyDir,
   isInHybridNVue,
   normalizePath,
+  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
+import { nvueOutDir } from '../utils'
 
 export function buildOptions(
   userConfig: UserConfig,
@@ -15,7 +17,12 @@ export function buildOptions(
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
-  if (!isInHybridNVue(userConfig)) {
+  if (isInHybridNVue(userConfig)) {
+    const nvueOutputDir = nvueOutDir()
+    if (fs.existsSync(nvueOutputDir)) {
+      emptyDir(nvueOutputDir)
+    }
+  } else {
     if (fs.existsSync(outputDir)) {
       emptyDir(outputDir)
     }
@@ -27,6 +34,7 @@ export function buildOptions(
     assetsInlineLimit: 0,
     rollupOptions: {
       external: ['vue'],
+      input: resolveMainPathOnce(inputDir),
       output: {
         sourcemapPathTransform(relativeSourcePath, sourcemapPath) {
           const sourcePath = normalizePath(

@@ -3,15 +3,21 @@ import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {
     return {
-      name: 'uni:app-vue-main-js',
+      name: 'uni:app-nvue-main-js',
       enforce: 'pre',
       transform(code, id) {
         if (opts.filter(id)) {
-          code = code.includes('createSSRApp')
-            ? createApp(code)
-            : createLegacyApp(code)
+          if (process.env.UNI_RENDERER === 'native') {
+            code = code.includes('createSSRApp')
+              ? createApp(code)
+              : createLegacyApp(code)
+            return {
+              code: `import './pages.json.js';` + code,
+              map: { mappings: '' },
+            }
+          }
           return {
-            code: `import './pages.json.js';` + code,
+            code: `import './pages.json.js'`,
             map: { mappings: '' },
           }
         }

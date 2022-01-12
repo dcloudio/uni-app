@@ -2,7 +2,6 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
-  resolveMainPathOnce,
   parsePagesJsonOnce,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -13,14 +12,12 @@ import { configResolved } from './configResolved'
 import { templateDir } from '../../utils'
 
 export function uniAppVuePlugin(): UniVitePlugin {
-  const inputDir = process.env.UNI_INPUT_DIR
   return {
     name: 'uni:app-vue',
     config() {
       return {
         build: {
           rollupOptions: {
-            input: resolveMainPathOnce(inputDir),
             output: {
               name: 'AppService',
               format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',

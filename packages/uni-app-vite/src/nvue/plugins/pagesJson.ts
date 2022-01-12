@@ -3,17 +3,17 @@ import { Plugin } from 'vite'
 
 import {
   defineUniPagesJsonPlugin,
-  normalizeAppPagesJson,
   normalizeAppConfigService,
   normalizePagesJson,
   parseManifestJsonOnce,
   getLocaleFiles,
+  normalizeAppNVuePagesJson,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
-      name: 'uni:app-vue-pages-json',
+      name: 'uni:app-nvue-pages-json',
       enforce: 'pre',
       transform(code, id) {
         if (!opts.filter(id)) {
@@ -27,23 +27,30 @@ export function uniPagesJsonPlugin(): Plugin {
         })
         const pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
         pagesJson.pages.forEach((page) => {
-          if (!page.style.isNVue) {
+          if (page.style.isNVue) {
             this.addWatchFile(
-              path.resolve(process.env.UNI_INPUT_DIR, page.path + '.vue')
+              path.resolve(process.env.UNI_INPUT_DIR, page.path + '.nvue')
             )
           }
         })
-        this.emitFile({
-          fileName: `app-config-service.js`,
-          type: 'asset',
-          source: normalizeAppConfigService(
-            pagesJson,
-            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-          ),
-        })
+        if (process.env.UNI_RENDERER === 'native') {
+          this.emitFile({
+            fileName: `app-config-service.js`,
+            type: 'asset',
+            source: normalizeAppConfigService(
+              pagesJson,
+              parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+            ),
+          })
+          return {
+            code:
+              `import './manifest.json.js'\n` +
+              normalizeAppNVuePagesJson(pagesJson),
+            map: { mappings: '' },
+          }
+        }
         return {
-          code:
-            `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson),
+          code: normalizeAppNVuePagesJson(pagesJson),
           map: { mappings: '' },
         }
       },

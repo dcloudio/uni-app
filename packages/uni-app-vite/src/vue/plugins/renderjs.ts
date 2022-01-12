@@ -24,7 +24,7 @@ export function uniRenderjsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   let changed: boolean = false
   return {
-    name: 'uni:app-renderjs',
+    name: 'uni:app-vue-renderjs',
     configResolved(config) {
       resolvedConfig = config
       wxsModulesCache.set(resolvedConfig, new Map<string, string>())
@@ -78,7 +78,7 @@ export function uniRenderjsPlugin(): Plugin {
           ;(Comp.$${type} || (Comp.$${type} = [])).push('${name}')
           ;(Comp.$${globalName} || (Comp.$${globalName} = {}))['${name}'] = '${moduleHashId}'
         }`,
-        map: null,
+        map: { mappings: '' },
       }
     },
     generateBundle() {

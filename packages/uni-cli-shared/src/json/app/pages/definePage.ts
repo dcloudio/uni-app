@@ -26,3 +26,19 @@ export function definePageCode(pagesJson: Record<string, any>) {
   })
   return importPagesCode.join('\n') + '\n' + definePagesCode.join('\n')
 }
+
+export function defineNVuePageCode(pagesJson: Record<string, any>) {
+  const importNVuePagesCode: string[] = []
+  pagesJson.pages.forEach((page: UniApp.PagesJsonPageOptions) => {
+    if (!page.style.isNVue) {
+      return
+    }
+    const pagePathWithExtname = normalizePagePath(page.path, 'app')
+    if (pagePathWithExtname) {
+      importNVuePagesCode.push(
+        `import('./${pagePathWithExtname}').then(()=>{})`
+      )
+    }
+  })
+  return importNVuePagesCode.join('\n')
+}

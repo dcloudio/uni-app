@@ -14,8 +14,9 @@ import {
   isCSSRequest,
   parseManifestJsonOnce,
   M,
+  dynamicImportPolyfill,
 } from '@dcloudio/uni-cli-shared'
-import { GetManualChunk, GetModuleInfo, Plugin, PreRenderedChunk } from 'rollup'
+import { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
   isUniComponentUrl,
   isUniPageUrl,
@@ -188,18 +189,6 @@ function createChunkFileNames(
       return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
     }
     return '[name].js'
-  }
-}
-
-function dynamicImportPolyfill(): Plugin {
-  return {
-    name: 'dynamic-import-polyfill',
-    renderDynamicImport() {
-      return {
-        left: '(',
-        right: ')',
-      }
-    },
   }
 }
 
