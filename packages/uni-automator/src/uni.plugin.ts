@@ -5,7 +5,7 @@ import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
 export default [
   defineUniMainJsPlugin((opts) => {
     return {
-      name: 'vite:uni-automator',
+      name: 'uni:automator',
       enforce: 'pre',
       configResolved() {
         if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {

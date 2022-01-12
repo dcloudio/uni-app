@@ -8,7 +8,7 @@ const SPECIAL_QUERY_RE = /[\?&](?:worker|sharedworker|raw|url)\b/
 
 export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
   return {
-    name: 'vite:uni-json',
+    name: 'uni:json',
     transform(code, id) {
       if (!jsonExtRE.test(id)) return null
       if (SPECIAL_QUERY_RE.test(id)) return null

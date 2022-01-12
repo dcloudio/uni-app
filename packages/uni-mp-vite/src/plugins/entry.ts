@@ -42,7 +42,7 @@ export function uniEntryPlugin({
 }: UniMiniProgramPluginOptions): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   return {
-    name: 'vite:uni-virtual',
+    name: 'uni:virtual',
     enforce: 'pre',
     resolveId(id) {
       if (isUniPageUrl(id) || isUniComponentUrl(id)) {

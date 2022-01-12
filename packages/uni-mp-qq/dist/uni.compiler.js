@@ -157,7 +157,7 @@ const options = {
 };
 
 const uniMiniProgramQQPlugin = {
-    name: 'vite:uni-mp-qq',
+    name: 'uni:mp-qq',
     config() {
         return {
             define: {

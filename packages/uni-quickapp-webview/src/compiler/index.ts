@@ -4,7 +4,7 @@ import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
 
 const uniQuickappWebviewPlugin: Plugin = {
-  name: 'vite:uni-quickapp-webview',
+  name: 'uni:quickapp-webview',
   config() {
     return {
       define: {

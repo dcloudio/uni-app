@@ -17,7 +17,7 @@ export function uniViteCopyPlugin({
   let resolvedConfig: ResolvedConfig
   let inited = false
   return {
-    name: 'vite:uni-copy',
+    name: 'uni:copy',
     apply: 'build',
     configResolved(config) {
       resolvedConfig = config

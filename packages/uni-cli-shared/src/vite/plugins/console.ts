@@ -12,13 +12,13 @@ export interface ConsoleOptions {
   exclude?: FilterPattern
 }
 
-const debugConsole = debug('vite:uni:console')
+const debugConsole = debug('uni:console')
 
 export function uniConsolePlugin(options: ConsoleOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   let resolvedConfig: ResolvedConfig
   return {
-    name: 'vite:uni-console',
+    name: 'uni:console',
     enforce: 'pre',
     configResolved(config) {
       resolvedConfig = config

@@ -15,7 +15,7 @@ export function uniManifestJsonPlugin(
   let projectJson: Record<string, any>
   return defineUniManifestJsonPlugin((opts) => {
     return {
-      name: 'vite:uni-mp-manifest-json',
+      name: 'uni:mp-manifest-json',
       enforce: 'pre',
       transform(code, id) {
         if (!opts.filter(id)) {

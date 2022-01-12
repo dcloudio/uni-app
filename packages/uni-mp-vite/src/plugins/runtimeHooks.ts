@@ -6,7 +6,7 @@ type RuntimeHooks = keyof typeof MINI_PROGRAM_PAGE_RUNTIME_HOOKS
 
 export function uniRuntimeHooksPlugin(): Plugin {
   return {
-    name: 'vite:uni-mp-runtime-hooks',
+    name: 'uni:mp-runtime-hooks',
     enforce: 'post',
     async transform(source, id) {
       if (!isUniPageSfcFile(id)) {

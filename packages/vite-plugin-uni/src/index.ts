@@ -29,7 +29,7 @@ import {
 } from './vue'
 // import { createResolveId } from './resolveId'
 
-const debugUni = debug('vite:uni:plugin')
+const debugUni = debug('uni:plugin')
 
 const pkg = require(path.resolve(__dirname, '../package.json'))
 
@@ -114,7 +114,7 @@ export default function uniPlugin(
   }
 
   plugins.push({
-    name: 'vite:uni',
+    name: 'uni',
     config: createConfig(options, uniPlugins),
     // resolveId: createResolveId(options),
     configResolved: createConfigResolved(options),

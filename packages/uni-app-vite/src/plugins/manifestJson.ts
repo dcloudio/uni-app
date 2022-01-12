@@ -13,7 +13,7 @@ export function uniManifestJsonPlugin(): Plugin {
   return defineUniManifestJsonPlugin((opts) => {
     const inputDir = process.env.UNI_INPUT_DIR
     return {
-      name: 'vite:uni-app-manifest-json',
+      name: 'uni:app-manifest-json',
       enforce: 'pre',
       transform(code, id) {
         if (!opts.filter(id)) {

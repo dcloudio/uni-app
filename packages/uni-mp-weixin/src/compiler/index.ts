@@ -4,7 +4,7 @@ import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
 
 const uniMiniProgramWeixinPlugin: Plugin = {
-  name: 'vite:uni-mp-weixin',
+  name: 'uni:mp-weixin',
   config() {
     return {
       define: {

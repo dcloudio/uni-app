@@ -14,7 +14,7 @@ export function uniConfusionPlugin(): Plugin {
   const hasConfusion =
     process.env.NODE_ENV === 'production' && hasConfusionFile(inputDir)
   return {
-    name: 'vite:uni-app-confusion',
+    name: 'uni:app-confusion',
     enforce: 'post',
     apply: 'build',
     config() {

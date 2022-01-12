@@ -7,7 +7,7 @@ export function uniSubpackagePlugin({
   style: { extname },
 }: UniMiniProgramPluginOptions): Plugin {
   return {
-    name: 'vite:uni-mp-subpackage',
+    name: 'uni:mp-subpackage',
     enforce: 'post',
     generateBundle: createNonAppGenerateBundle(extname),
   }

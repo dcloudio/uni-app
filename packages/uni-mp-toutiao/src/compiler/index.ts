@@ -5,7 +5,7 @@ import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
 
 const uniMiniProgramToutiaoPlugin: Plugin = {
-  name: 'vite:uni-mp-toutiao',
+  name: 'uni:mp-toutiao',
   config() {
     return {
       define: {

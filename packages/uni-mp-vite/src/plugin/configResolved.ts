@@ -21,7 +21,7 @@ import {
   parseVirtualPagePath,
 } from '../plugins/entry'
 
-const debugNVueCss = debug('vite:uni:nvue-css')
+const debugNVueCss = debug('uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
 
 const genShadowCss = (cdn: string) => {
@@ -114,7 +114,7 @@ export function createConfigResolved({
 
 function adjustCssExtname(extname: string): Plugin {
   return {
-    name: 'vite:uni-adjust-css-extname',
+    name: 'uni:adjust-css-extname',
     generateBundle(_, bundle) {
       const files = Object.keys(bundle)
       files.forEach((name) => {

@@ -3,12 +3,12 @@ import { Plugin } from 'vite'
 
 import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 
-const debugResolve = debug('vite:uni:resolve')
+const debugResolve = debug('uni:app-resolve-id')
 
 export function uniResolveIdPlugin(): Plugin {
   const resolveCache: Record<string, string> = {}
   return {
-    name: 'vite:uni-app-resolve-id',
+    name: 'uni:app-resolve-id',
     enforce: 'pre',
     configResolved() {
       resolveCache['@dcloudio/uni-app-vue'] = resolveBuiltIn(

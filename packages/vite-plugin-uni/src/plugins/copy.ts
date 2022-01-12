@@ -13,7 +13,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
-const debugCopy = debug('vite:uni:copy')
+const debugCopy = debug('uni:copy')
 
 export function uniCopyPlugin({
   outputDir,

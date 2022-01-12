@@ -6,7 +6,7 @@ const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()
 export function uniStatsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   return {
-    name: 'vite:uni-app-stats',
+    name: 'uni:app-stats',
     enforce: 'post',
     configResolved(config) {
       resolvedConfig = config

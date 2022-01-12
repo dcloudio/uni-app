@@ -12,9 +12,9 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 
-const debugPreJs = debug('vite:uni:pre-js')
-const debugPreHtml = debug('vite:uni:pre-html')
-const debugPreJsTry = debug('vite:uni:pre-js-try')
+const debugPreJs = debug('uni:pre-js')
+const debugPreHtml = debug('uni:pre-html')
+const debugPreJsTry = debug('uni:pre-js-try')
 
 const PRE_JS_EXTNAME = ['.json', '.css'].concat(EXTNAME_VUE).concat(EXTNAME_JS)
 const PRE_HTML_EXTNAME = EXTNAME_VUE
@@ -25,7 +25,7 @@ export function uniPrePlugin(
   const filter = createFilter(options.include, options.exclude)
 
   return {
-    name: 'vite:uni-pre',
+    name: 'uni:pre',
     transform(code, id) {
       if (!filter(id)) {
         return

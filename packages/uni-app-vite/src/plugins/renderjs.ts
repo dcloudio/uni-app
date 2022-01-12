@@ -13,7 +13,7 @@ import {
   transformWithEsbuild,
 } from '@dcloudio/uni-cli-shared'
 
-const debugRenderjs = debug('vite:uni:renderjs')
+const debugRenderjs = debug('uni:app-renderjs')
 
 export const APP_WXS_JS = 'app-wxs.js'
 export const APP_RENDERJS_JS = 'app-renderjs.js'
@@ -24,7 +24,7 @@ export function uniRenderjsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   let changed: boolean = false
   return {
-    name: 'vite:uni-app-renderjs',
+    name: 'uni:app-renderjs',
     configResolved(config) {
       resolvedConfig = config
       wxsModulesCache.set(resolvedConfig, new Map<string, string>())

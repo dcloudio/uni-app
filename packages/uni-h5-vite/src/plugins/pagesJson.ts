@@ -19,7 +19,7 @@ import { isSSR } from '../utils'
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
-      name: 'vite:uni-h5-pages-json',
+      name: 'uni:h5-pages-json',
       enforce: 'pre',
       transform(code, id, opt) {
         if (opts.filter(id)) {

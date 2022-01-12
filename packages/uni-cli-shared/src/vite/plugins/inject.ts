@@ -39,8 +39,8 @@ export interface InjectOptions {
   [str: string]: Injectment | FilterPattern | Boolean | Function | undefined
 }
 
-const debugInject = debug('vite:uni:inject')
-const debugInjectTry = debug('vite:uni:inject-try')
+const debugInject = debug('uni:inject')
+const debugInjectTry = debug('uni:inject-try')
 
 export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   if (!options) throw new Error('Missing options')
@@ -76,7 +76,7 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   const sourceMap = options.sourceMap !== false
   const callback = options.callback
   return {
-    name: 'vite:uni-inject',
+    name: 'uni:inject',
     // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
     enforce: 'post',
     transform(code, id) {

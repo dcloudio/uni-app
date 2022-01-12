@@ -130,7 +130,7 @@ const options = {
 };
 
 const uniMiniProgramBaiduPlugin = {
-    name: 'vite:uni-mp-baidu',
+    name: 'uni:mp-baidu',
     config() {
         return {
             define: {

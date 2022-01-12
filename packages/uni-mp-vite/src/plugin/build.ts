@@ -23,7 +23,7 @@ import {
   parseVirtualPagePath,
 } from '../plugins/entry'
 
-const debugChunk = debug('vite:uni:chunk')
+const debugChunk = debug('uni:chunk')
 
 export function buildOptions(): UserConfig['build'] {
   const platform = process.env.UNI_PLATFORM

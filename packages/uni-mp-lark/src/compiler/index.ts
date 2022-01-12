@@ -5,7 +5,7 @@ import { ASSETS_INLINE_LIMIT } from '@dcloudio/uni-cli-shared'
 import { options } from '@dcloudio/uni-mp-toutiao/src/compiler/options'
 
 const uniMiniProgramToutiaoPlugin: Plugin = {
-  name: 'vite:uni-mp-lark',
+  name: 'uni:mp-lark',
   config() {
     return {
       define: {

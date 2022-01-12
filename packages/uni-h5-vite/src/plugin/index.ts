@@ -18,7 +18,7 @@ export function uniH5Plugin(): UniVitePlugin {
   }
   rewriteReadFileSync()
   return {
-    name: 'vite:uni-h5',
+    name: 'uni:h5',
     uni: createUni(),
     config: createConfig(configOptions),
     configResolved(config) {

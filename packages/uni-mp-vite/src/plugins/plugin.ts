@@ -27,7 +27,7 @@ export function uniMiniProgramPluginPlugin({
     )
   }
   return {
-    name: 'vite:uni-mp-plugin',
+    name: 'uni:mp-plugin',
     enforce: 'post',
     config() {
       return {

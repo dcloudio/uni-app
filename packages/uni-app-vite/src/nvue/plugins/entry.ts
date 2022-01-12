@@ -24,7 +24,7 @@ function parseUniNvuePagePath(uniNVuePageUrl: string) {
 export function uniNVueEntryPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   return {
-    name: 'vite:uni-app-nvue-entry',
+    name: 'uni:app-nvue-entry',
     enforce: 'pre',
     resolveId(id) {
       if (isUniNVuePageUrl(id)) {

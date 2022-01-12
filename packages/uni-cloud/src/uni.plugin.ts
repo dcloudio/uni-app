@@ -23,7 +23,7 @@ initUniCloudEnv()
  * @type {import('vite').Plugin}
  */
 const UniCloudPlugin: UniVitePlugin = {
-  name: 'vite:uni-cloud',
+  name: 'uni:cloud',
   config(config) {
     const silent = config.build && config.build.ssr ? true : false
     if (silent) {

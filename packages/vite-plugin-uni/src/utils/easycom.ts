@@ -7,7 +7,7 @@ import {
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 
-const debugEasycom = debug('vite:uni:easycom')
+const debugEasycom = debug('uni:easycom')
 export const initEasycom = (watcher?: FSWatcher) => {
   const { filter, refresh, options } = initEasycomsOnce(
     process.env.UNI_INPUT_DIR,

@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 import { EXTNAME_VUE } from '../../constants'
 import { preHtml, preJs } from '../../preprocess'
 
-const debugScoped = debug('vite:uni:scoped')
+const debugScoped = debug('uni:scoped')
 
 const SCOPED_RE = /<style\s[^>]*scoped[^>]*>/i
 
@@ -23,7 +23,7 @@ export function uniCssScopedPlugin(
   { filter }: UniCssScopedPluginOptions = { filter: () => false }
 ): Plugin {
   return {
-    name: 'vite:uni-css-scoped',
+    name: 'uni:css-scoped',
     enforce: 'pre',
     transform(code, id) {
       if (!filter(id)) return null

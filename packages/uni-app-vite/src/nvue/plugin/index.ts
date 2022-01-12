@@ -2,7 +2,7 @@ import path from 'path'
 import { Plugin } from 'vite'
 export function uniNVuePlugin(): Plugin {
   return {
-    name: 'vite:uni-app-nvue',
+    name: 'uni:app-nvue',
     config() {
       return {
         build: {
