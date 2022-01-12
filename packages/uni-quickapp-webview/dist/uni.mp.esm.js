@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize, isObject } from '@vue/shared';
-import { injectHook, ref, nextTick, getExposeProxy, findComponentPropsData, toRaw, updateProps, invalidateJob, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
 const ON_READY$1 = 'onReady';
 
@@ -232,8 +232,6 @@ function initBaseInstance(instance, options) {
     if (__VUE_OPTIONS_API__) {
         ctx._self = {};
     }
-    // $vm
-    ctx.$scope.$vm = instance.proxy;
     // slots
     instance.slots = {};
     if (isArray(options.slots) && options.slots.length) {
@@ -500,15 +498,8 @@ function selectAllComponents(mpInstance, selector, $refs) {
     const components = mpInstance.selectAllComponents(selector);
     components.forEach((component) => {
         const ref = component.properties.uR;
-        $refs[ref] = findRefValue(component);
+        $refs[ref] = component.$vm || component;
     });
-}
-function findRefValue(component) {
-    const vm = component.$vm;
-    if (vm) {
-        return getExposeProxy(vm.$) || vm;
-    }
-    return component;
 }
 function initRefs(instance, mpInstance) {
     Object.defineProperty(instance, 'refs', {
@@ -524,7 +515,7 @@ function initRefs(instance, mpInstance) {
                 if (!$refs[ref]) {
                     $refs[ref] = [];
                 }
-                $refs[ref].push(findRefValue(component));
+                $refs[ref].push(component.$vm || component);
             });
             return $refs;
         },
@@ -816,7 +807,8 @@ function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
         $createComponentFn = getApp().$vm.$createComponent;
     }
-    return $createComponentFn(initialVNode, options);
+    const proxy = $createComponentFn(initialVNode, options);
+    return getExposeProxy(proxy.$) || proxy;
 }
 function $destroyComponent(instance) {
     if (!$destroyComponentFn) {
