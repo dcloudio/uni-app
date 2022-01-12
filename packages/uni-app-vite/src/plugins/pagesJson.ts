@@ -14,7 +14,7 @@ import { initWebpackNVueEntry } from '@dcloudio/uni-cli-nvue'
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
-      name: 'vite:uni-app-pages-json',
+      name: 'uni:app-pages-json',
       enforce: 'pre',
       transform(code, id) {
         if (!opts.filter(id)) {

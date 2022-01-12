@@ -12,7 +12,7 @@ export default [
   defineUniMainJsPlugin((opts) => {
     let isEnable = false
     return {
-      name: 'vite:uni-stat',
+      name: 'uni:stat',
       enforce: 'pre',
       config(config, env) {
         if (isSsr(env.command, config)) {
@@ -45,7 +45,7 @@ export default [
             }
           })
         }
-        debug('vite:uni:stat')('isEnable', isEnable)
+        debug('uni:stat')('isEnable', isEnable)
         process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
         return {
           define: {

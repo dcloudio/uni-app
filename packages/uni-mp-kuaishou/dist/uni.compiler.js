@@ -184,7 +184,7 @@ const options = {
 };
 
 const uniMiniProgramKuaishouPlugin = {
-    name: 'vite:uni-mp-kuaishou',
+    name: 'uni:mp-kuaishou',
     config() {
         return {
             define: {

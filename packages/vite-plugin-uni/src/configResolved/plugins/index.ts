@@ -16,7 +16,7 @@ import { uniPreVuePlugin } from './preVue'
 import { uniSSRPlugin } from './ssr'
 import { uniResolveIdPlugin } from './resolveId'
 
-const debugPlugin = debug('vite:uni:plugin')
+const debugPlugin = debug('uni:plugin')
 
 export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
   include?: FilterPattern

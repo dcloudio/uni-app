@@ -7,7 +7,7 @@ export function uniMainJsPlugin() {
     let pagesJsonJsPath = ''
     let runSSR = false
     return {
-      name: 'vite:uni-h5-main-js',
+      name: 'uni:h5-main-js',
       enforce: 'pre',
       configResolved(config) {
         pagesJsonJsPath = normalizePath(

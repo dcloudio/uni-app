@@ -7,13 +7,13 @@ import {
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 
-const debugSetup = debug('vite:uni:setup')
+const debugSetup = debug('uni:setup')
 
 export function uniSetupPlugin(): Plugin {
   let appVuePath: string
   let resolvedConfig: ResolvedConfig
   return {
-    name: 'vite:uni-setup',
+    name: 'uni:setup',
     configResolved(config) {
       resolvedConfig = config
       appVuePath = normalizePath(

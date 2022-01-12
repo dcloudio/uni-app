@@ -127,7 +127,7 @@ ${filter.code}
 };
 
 const uniMiniProgramToutiaoPlugin = {
-    name: 'vite:uni-mp-toutiao',
+    name: 'uni:mp-toutiao',
     config() {
         return {
             define: {

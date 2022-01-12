@@ -4,7 +4,7 @@ import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
 
 const uniMiniProgramKuaishouPlugin: Plugin = {
-  name: 'vite:uni-mp-kuaishou',
+  name: 'uni:mp-kuaishou',
   config() {
     return {
       define: {

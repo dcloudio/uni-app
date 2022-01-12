@@ -11,7 +11,7 @@ import {
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 
-const debugHmr = debug('vite:uni:hmr')
+const debugHmr = debug('uni:hmr')
 
 async function invalidate(file: string, moduleGraph: ModuleGraph) {
   const mods = await moduleGraph.getModulesByFile(normalizePath(file))

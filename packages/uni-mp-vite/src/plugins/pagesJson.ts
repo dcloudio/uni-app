@@ -17,7 +17,7 @@ import {
 import { virtualPagePath } from './entry'
 import { UniMiniProgramPluginOptions } from '../plugin'
 
-const debugPagesJson = debug('vite:uni:pages-json')
+const debugPagesJson = debug('uni:pages-json')
 
 const nvueCssPathsCache = new Map<ResolvedConfig, string[]>()
 export function getNVueCssPaths(config: ResolvedConfig) {
@@ -30,7 +30,7 @@ export function uniPagesJsonPlugin(
   let resolvedConfig: ResolvedConfig
   return defineUniPagesJsonPlugin((opts) => {
     return {
-      name: 'vite:uni-mp-pages-json',
+      name: 'uni:mp-pages-json',
       enforce: 'pre',
       configResolved(config) {
         resolvedConfig = config

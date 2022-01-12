@@ -127,7 +127,7 @@ ${filter.code}
 };
 
 const uniMiniProgramToutiaoPlugin = {
-    name: 'vite:uni-mp-lark',
+    name: 'uni:mp-lark',
     config() {
         return {
             define: {

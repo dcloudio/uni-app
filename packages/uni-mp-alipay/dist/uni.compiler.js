@@ -234,7 +234,7 @@ const options = {
 };
 
 const uniMiniProgramAlipayPlugin = {
-    name: 'vite:uni-mp-alipay',
+    name: 'uni:mp-alipay',
     config() {
         return {
             define: {

@@ -18,7 +18,7 @@ interface UniEasycomPluginOptions {
 export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
-    name: 'vite:uni-app-easycom',
+    name: 'uni:app-easycom',
     transform(code, id) {
       if (!filter(id)) {
         return

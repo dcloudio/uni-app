@@ -11,7 +11,7 @@ import {
 
 import { uniStaticMiddleware } from './middlewares/static'
 
-const debugStatic = debug('vite:uni:static')
+const debugStatic = debug('uni:static')
 /**
  * devServer时提供static等目录的静态资源服务
  * @param server

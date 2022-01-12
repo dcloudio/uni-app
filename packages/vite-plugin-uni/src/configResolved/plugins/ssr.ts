@@ -15,7 +15,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 
-const debugSSR = debug('vite:uni:ssr')
+const debugSSR = debug('uni:ssr')
 
 const KEYED_FUNC_RE = /(ssrRef|shallowSsrRef)/
 
@@ -25,7 +25,7 @@ export function uniSSRPlugin(
 ): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
-    name: 'vite:uni-ssr',
+    name: 'uni:ssr',
     transform(code, id) {
       if (!filter(id)) return null
       if (!KEYED_FUNC_RE.test(code)) {

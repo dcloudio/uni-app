@@ -2,7 +2,7 @@ import type { Plugin } from 'vite'
 import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
 const uniMiniProgramBaiduPlugin: Plugin = {
-  name: 'vite:uni-mp-baidu',
+  name: 'uni:mp-baidu',
   config() {
     return {
       define: {

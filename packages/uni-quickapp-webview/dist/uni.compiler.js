@@ -110,7 +110,7 @@ ${filter.code}
 };
 
 const uniQuickappWebviewPlugin = {
-    name: 'vite:uni-quickapp-webview',
+    name: 'uni:quickapp-webview',
     config() {
         return {
             define: {

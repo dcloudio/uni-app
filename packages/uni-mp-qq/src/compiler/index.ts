@@ -6,7 +6,7 @@ import { fix2648 } from './fix2648'
 import { options } from './options'
 
 const uniMiniProgramQQPlugin: Plugin = {
-  name: 'vite:uni-mp-qq',
+  name: 'uni:mp-qq',
   config() {
     return {
       define: {

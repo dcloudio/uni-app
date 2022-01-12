@@ -54,7 +54,7 @@ export function uniInjectPlugin(): Plugin {
   let injectPlugin: Plugin
 
   return {
-    name: 'vite:uni-h5-inject',
+    name: 'uni:h5-inject',
     apply: 'build',
     enforce: 'post',
     configResolved(config) {

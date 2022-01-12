@@ -4,7 +4,7 @@ import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
 
 const uniMiniProgramAlipayPlugin: Plugin = {
-  name: 'vite:uni-mp-alipay',
+  name: 'uni:mp-alipay',
   config() {
     return {
       define: {

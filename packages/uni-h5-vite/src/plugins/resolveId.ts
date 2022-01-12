@@ -5,12 +5,12 @@ import type { Plugin } from 'vite'
 import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 import { ownerModuleName } from '../utils'
 
-const debugResolve = debug('vite:uni:resolve')
+const debugResolve = debug('uni:resolve')
 
 export function uniResolveIdPlugin(): Plugin {
   const resolveCache: Record<string, string> = {}
   return {
-    name: 'vite:uni-h5-resolve-id',
+    name: 'uni:h5-resolve-id',
     enforce: 'pre',
     config() {
       resolveCache[ownerModuleName] = resolveBuiltIn(

@@ -23,7 +23,7 @@ export function uniSSRPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   const entryServerJsCode = generateSsrEntryServerCode()
   return {
-    name: 'vite:uni-h5-ssr',
+    name: 'uni:h5-ssr',
     config(userConfig, env) {
       if (isSsr(env.command, userConfig)) {
         rewriteSsrVue()

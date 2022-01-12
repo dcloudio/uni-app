@@ -28,7 +28,7 @@ export function uniUsingComponentsPlugin(
   const inputDir = process.env.UNI_INPUT_DIR
   let resolvedConfig: ResolvedConfig
   return {
-    name: 'vite:uni-mp-using-component',
+    name: 'uni:mp-using-component',
     enforce: 'post',
     configResolved(config) {
       resolvedConfig = config

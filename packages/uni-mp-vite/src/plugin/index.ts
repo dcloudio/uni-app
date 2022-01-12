@@ -98,7 +98,7 @@ export function uniMiniProgramPlugin(
   rewriteCompileScript()
 
   return {
-    name: 'vite:uni-mp',
+    name: 'uni:mp',
     uni: uniOptions({
       copyOptions,
       customElements: template.customElements,

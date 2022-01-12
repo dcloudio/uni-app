@@ -3,7 +3,7 @@ import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {
     return {
-      name: 'vite:uni-app-main-js',
+      name: 'uni:app-main-js',
       enforce: 'pre',
       transform(code, id) {
         if (opts.filter(id)) {

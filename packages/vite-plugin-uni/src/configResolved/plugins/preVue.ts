@@ -21,7 +21,7 @@ import {
   parseVue,
 } from '@dcloudio/uni-cli-shared'
 
-const debugPreVue = debug('vite:uni:pre-vue')
+const debugPreVue = debug('uni:pre-vue')
 
 const BLOCK_RE = /<\/block>/
 
@@ -31,7 +31,7 @@ const WXS_ATTRS = ['wxs', 'renderjs']
 
 export function uniPreVuePlugin(): Plugin {
   return {
-    name: 'vite:uni-pre-vue',
+    name: 'uni:pre-vue',
     async transform(code, id) {
       const { filename, query } = parseVueRequest(id)
       if (query.vue) {

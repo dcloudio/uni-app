@@ -21,7 +21,7 @@ export function uniCssPlugin(): Plugin {
   let file = ''
   let fileName = ''
   return {
-    name: 'vite:uni-h5-css',
+    name: 'uni:h5-css',
     apply: 'build',
     enforce: 'pre',
     configResolved(config) {

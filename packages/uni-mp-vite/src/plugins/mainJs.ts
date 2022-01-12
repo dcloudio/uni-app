@@ -13,7 +13,7 @@ export function uniMainJsPlugin(
 ) {
   return defineUniMainJsPlugin((opts) => {
     return {
-      name: 'vite:uni-mp-main-js',
+      name: 'uni:mp-main-js',
       enforce: 'pre',
       async transform(source, id) {
         if (opts.filter(id)) {

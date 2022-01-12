@@ -14,7 +14,7 @@ import {
 import { getFiltersCache } from '../plugins/renderjs'
 import { UniMiniProgramPluginOptions } from '.'
 
-const debugTemplate = debug('vite:uni:mp-template')
+const debugTemplate = debug('uni:mp-template')
 
 export function getFilterFiles(
   resolvedConfig: ResolvedConfig,

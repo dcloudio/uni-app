@@ -60,7 +60,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   let needCombineBuiltInCss = false
   return {
-    name: 'vite:uni-h5-easycom',
+    name: 'uni:h5-easycom',
     configResolved(config) {
       needCombineBuiltInCss = isCombineBuiltInCss(config)
     },

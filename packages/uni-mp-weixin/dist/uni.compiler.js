@@ -150,7 +150,7 @@ ${filter.code}
 };
 
 const uniMiniProgramWeixinPlugin = {
-    name: 'vite:uni-mp-weixin',
+    name: 'uni:mp-weixin',
     config() {
         return {
             define: {
