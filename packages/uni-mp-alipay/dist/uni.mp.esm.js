@@ -550,10 +550,8 @@ function hasPropsChanged(prevProps, nextProps, checkLen = true) {
     }
     return false;
 }
-function initBehaviors(vueOptions, initBehavior) {
+function initBehaviors(vueOptions) {
     const vueBehaviors = vueOptions.behaviors;
-    const vueExtends = vueOptions.extends;
-    const vueMixins = vueOptions.mixins;
     let vueProps = vueOptions.props;
     if (!vueProps) {
         vueOptions.props = vueProps = [];
@@ -577,18 +575,6 @@ function initBehaviors(vueOptions, initBehavior) {
                         default: '',
                     };
                 }
-            }
-        });
-    }
-    if (vueExtends && vueExtends.props) {
-        const behavior = {};
-        behaviors.push(initBehavior(behavior));
-    }
-    if (isArray(vueMixins)) {
-        vueMixins.forEach((vueMixin) => {
-            if (vueMixin.props) {
-                const behavior = {};
-                behaviors.push(initBehavior(behavior));
             }
         });
     }
@@ -680,15 +666,6 @@ const mocks = ['$id'];
 const customizeRE = /:/g;
 function customize(str) {
     return camelize(str.replace(customizeRE, '-'));
-}
-function initBehavior({ properties }) {
-    const props = {};
-    Object.keys(properties).forEach((key) => {
-        props[key] = properties[key].value;
-    });
-    return {
-        props,
-    };
 }
 function initRelation(mpInstance, detail) {
     // onVueInit
@@ -981,7 +958,7 @@ function initCreateComponent() {
         };
         if (__VUE_OPTIONS_API__) {
             mpComponentOptions.data = initData();
-            mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior);
+            mpComponentOptions.mixins = initBehaviors(vueOptions);
         }
         if (isComponent2) {
             mpComponentOptions.onInit = function onInit() {
