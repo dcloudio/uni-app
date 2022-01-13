@@ -1,10 +1,12 @@
 import path from 'path'
 import fs from 'fs-extra'
+import debug from 'debug'
 import { transformWithEsbuild } from '@dcloudio/uni-cli-shared'
 import type { BuildOptions, PluginBuild } from 'esbuild'
 import type { Plugin } from 'vite'
 import { nvueOutDir } from '../../utils'
 
+const debugEsbuild = debug('uni:app-nvue-esbuild')
 export function uniEsbuildPlugin(): Plugin {
   let buildOptions: BuildOptions
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -15,6 +17,9 @@ export function uniEsbuildPlugin(): Plugin {
       buildOptions = {
         format: 'iife',
         minify: config.build.minify ? true : false,
+        banner: {
+          js: `"use weex:vue";`,
+        },
         bundle: true,
         write: false,
         plugins: [esbuildGlobalPlugin({ vue: 'Vue' })],
@@ -32,6 +37,7 @@ export function uniEsbuildPlugin(): Plugin {
           entryPoints.push(name)
         }
       })
+      debugEsbuild('start', entryPoints.length, entryPoints)
       await Promise.all(
         entryPoints.map((filename) => {
           return buildNVuePage(filename, buildOptions).then((code) => {
@@ -39,6 +45,7 @@ export function uniEsbuildPlugin(): Plugin {
           })
         })
       )
+      debugEsbuild('end')
     },
   }
 }
