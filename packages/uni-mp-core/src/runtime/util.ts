@@ -8,10 +8,6 @@ import {
 
 import { MPComponentInstance, MPComponentOptions } from './component'
 
-export function initBehavior(options: any) {
-  return Behavior(options)
-}
-
 export function initVueIds(
   vueIds: string | undefined,
   mpInstance: MPComponentInstance

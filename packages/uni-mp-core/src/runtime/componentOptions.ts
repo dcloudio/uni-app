@@ -83,13 +83,8 @@ function hasPropsChanged(
   return false
 }
 
-export function initBehaviors(
-  vueOptions: ComponentOptions,
-  initBehavior: (behavior: any) => string | { props: any }
-): string[] {
+export function initBehaviors(vueOptions: ComponentOptions): string[] {
   const vueBehaviors = vueOptions.behaviors
-  const vueExtends = vueOptions.extends
-  const vueMixins = vueOptions.mixins
 
   let vueProps = vueOptions.props
 
@@ -118,26 +113,13 @@ export function initBehaviors(
       }
     })
   }
-  if (vueExtends && vueExtends.props) {
-    const behavior = {}
-    behaviors.push(initBehavior(behavior) as string)
-  }
-  if (isArray(vueMixins)) {
-    vueMixins.forEach((vueMixin) => {
-      if (vueMixin.props) {
-        const behavior = {}
-        behaviors.push(initBehavior(behavior) as string)
-      }
-    })
-  }
   return behaviors
 }
 
 export function applyOptions(
   componentOptions: MPComponentOptions,
-  vueOptions: ComponentOptions,
-  initBehavior: (behavior: unknown) => string
+  vueOptions: ComponentOptions
 ) {
   componentOptions.data = initData(vueOptions)
-  componentOptions.behaviors = initBehaviors(vueOptions, initBehavior)
+  componentOptions.behaviors = initBehaviors(vueOptions)
 }

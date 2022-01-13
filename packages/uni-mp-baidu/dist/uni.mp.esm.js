@@ -468,9 +468,6 @@ function initLocale(appVm) {
     });
 }
 
-function initBehavior(options) {
-    return Behavior(options);
-}
 function initVueIds(vueIds, mpInstance) {
     if (!vueIds) {
         return;
@@ -772,10 +769,8 @@ function hasPropsChanged(prevProps, nextProps, checkLen = true) {
     }
     return false;
 }
-function initBehaviors(vueOptions, initBehavior) {
+function initBehaviors(vueOptions) {
     const vueBehaviors = vueOptions.behaviors;
-    const vueExtends = vueOptions.extends;
-    const vueMixins = vueOptions.mixins;
     let vueProps = vueOptions.props;
     if (!vueProps) {
         vueOptions.props = vueProps = [];
@@ -802,23 +797,11 @@ function initBehaviors(vueOptions, initBehavior) {
             }
         });
     }
-    if (vueExtends && vueExtends.props) {
-        const behavior = {};
-        behaviors.push(initBehavior(behavior));
-    }
-    if (isArray(vueMixins)) {
-        vueMixins.forEach((vueMixin) => {
-            if (vueMixin.props) {
-                const behavior = {};
-                behaviors.push(initBehavior(behavior));
-            }
-        });
-    }
     return behaviors;
 }
-function applyOptions(componentOptions, vueOptions, initBehavior) {
+function applyOptions(componentOptions, vueOptions) {
     componentOptions.data = initData();
-    componentOptions.behaviors = initBehaviors(vueOptions, initBehavior);
+    componentOptions.behaviors = initBehaviors(vueOptions);
 }
 
 function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
@@ -850,7 +833,7 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         },
     };
     if (__VUE_OPTIONS_API__) {
-        applyOptions(mpComponentOptions, vueOptions, initBehavior);
+        applyOptions(mpComponentOptions, vueOptions);
     }
     initProps(mpComponentOptions);
     initPropsObserver(mpComponentOptions);
