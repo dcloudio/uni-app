@@ -40,16 +40,6 @@ function customize(str: string) {
   return camelize(str.replace(customizeRE, '-'))
 }
 
-export function initBehavior({ properties }: Record<string, any>) {
-  const props: Record<string, any> = {}
-  Object.keys(properties).forEach((key) => {
-    props[key] = properties[key].value
-  })
-  return {
-    props,
-  }
-}
-
 export function initRelation(
   mpInstance: MPComponentInstance,
   detail: RelationOptions

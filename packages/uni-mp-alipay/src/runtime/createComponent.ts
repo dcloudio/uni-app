@@ -10,7 +10,6 @@ import {
   initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 import {
-  initBehavior,
   handleRef,
   handleLink,
   triggerEvent,
@@ -117,7 +116,7 @@ export function initCreateComponent() {
     }
     if (__VUE_OPTIONS_API__) {
       mpComponentOptions.data = initData(vueOptions)
-      mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior)
+      mpComponentOptions.mixins = initBehaviors(vueOptions)
     }
 
     if (isComponent2) {

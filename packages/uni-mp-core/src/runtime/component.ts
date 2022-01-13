@@ -4,7 +4,7 @@ import { ComponentOptions, ComponentPublicInstance } from 'vue'
 // @ts-expect-error
 import { getExposeProxy } from 'vue'
 
-import { initExtraOptions, initWxsCallMethods, initBehavior } from './util'
+import { initExtraOptions, initWxsCallMethods } from './util'
 
 import { initProps } from './componentProps'
 import { applyOptions, initPropsObserver } from './componentOptions'
@@ -109,7 +109,7 @@ export function parseComponent(
   }
 
   if (__VUE_OPTIONS_API__) {
-    applyOptions(mpComponentOptions, vueOptions, initBehavior)
+    applyOptions(mpComponentOptions, vueOptions)
   }
 
   initProps(mpComponentOptions)
