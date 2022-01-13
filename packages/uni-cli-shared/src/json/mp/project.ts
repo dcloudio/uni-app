@@ -6,6 +6,7 @@ interface ParseMiniProgramProjectJsonOptions {
   pagesJson: UniApp.PagesJson
 }
 interface ProjectConfig {
+  appid: string
   projectname: string
   condition?: {
     miniprogram?: UniApp.PagesJson['condition']
@@ -57,6 +58,9 @@ export function parseMiniProgramProjectJson(
       projectJson.condition = {}
     }
     projectJson.condition.miniprogram = miniprogram
+  }
+  if (!projectJson.appid) {
+    projectJson.appid = 'touristappid'
   }
   return projectJson
 }
