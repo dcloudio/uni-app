@@ -7,6 +7,7 @@ import {
 
 import { uniEasycomPlugin } from '../plugins/easycom'
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'
+import { uniStatsPlugin } from '../plugins/stats'
 import { uniAppNVuePlugin } from './plugin'
 import { uniEsbuildPlugin } from './plugins/esbuild'
 import { uniMainJsPlugin } from './plugins/mainJs'
@@ -20,6 +21,7 @@ export function initNVuePlugins() {
     ...(process.env.UNI_RENDERER === 'native' ? [uniManifestJsonPlugin()] : []),
     uniPagesJsonPlugin(),
     uniViteInjectPlugin('uni:app-inject', initAppProvide()),
+    uniStatsPlugin(),
     uniAppNVuePlugin(),
     uniEsbuildPlugin(),
   ]
