@@ -77,21 +77,21 @@ function addMPPluginRequire (compilation) {
     if (needProcess) {
       const modules = compilation.modules
       const orignalSource = compilation.assets[name].source()
-      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx';
+      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'
       const filePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, name))
       const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === filePath).id
       const newlineIndex = orignalSource.lastIndexOf('\n')
 
       const source =
-        orignalSource.substring(0, newlineIndex)
-        + `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n`
-        + orignalSource.substring(newlineIndex + 1)
+        orignalSource.substring(0, newlineIndex) +
+        `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n` +
+        orignalSource.substring(newlineIndex + 1)
 
       compilation.assets[name] = {
-        size() {
+        size () {
           return Buffer.byteLength(source, 'utf8')
         },
-        source() {
+        source () {
           return source
         }
       }
