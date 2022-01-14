@@ -255,6 +255,12 @@ function hasEscapeQuote (path) {
           has = true
           path.stop()
         }
+      },
+      TemplateElement (path) {
+        if (path.node.value.cooked.includes('\'')) {
+          has = true
+          path.stop()
+        }
       }
     })
   }
