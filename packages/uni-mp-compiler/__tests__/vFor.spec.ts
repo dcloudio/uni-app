@@ -32,7 +32,14 @@ describe(`compiler: v-for`, () => {
     test(`number expression`, () => {
       assert(
         `<view v-for="index in 5" />`,
-        `<view wx:for="{{a}}" wx:for-item="index"/>`,
+        `<view wx:for="{{a}}" wx:for-item="index" wx:for-index="i0"/>`,
+        `(_ctx, _cache) => {
+  return { a: _f(5, (index, k0, i0) => { return {}; }) }
+}`
+      )
+      assert(
+        `<view v-for="index of 5" />`,
+        `<view wx:for="{{a}}" wx:for-item="index" wx:for-index="i0"/>`,
         `(_ctx, _cache) => {
   return { a: _f(5, (index, k0, i0) => { return {}; }) }
 }`
