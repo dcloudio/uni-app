@@ -123,10 +123,14 @@ function genVFor(
   node: ForElementNode,
   { push, directive }: TemplateCodegenContext
 ) {
-  const { sourceCode, valueAlias } = node.vFor
+  const { sourceCode, valueAlias, indexAlias } = node.vFor
   push(` ${directive}for="${sourceCode}"`)
+  debugger
   if (valueAlias) {
     push(` ${directive}for-item="${valueAlias}"`)
+  }
+  if (valueAlias === 'index') {
+    push(` ${directive}for-index="${indexAlias}"`)
   }
   const keyProp = findProp(node, 'key', true)
   if (keyProp) {
