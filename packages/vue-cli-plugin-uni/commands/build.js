@@ -248,7 +248,7 @@ function analysisPluginDir () {
     process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
     const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
     const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
-  
+
     if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
       console.log()
       console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', {
