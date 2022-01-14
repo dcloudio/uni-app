@@ -545,7 +545,7 @@ export default {
       }
     },
     _report (type, currentChannel) {
-      let reportData = {
+      const reportData = {
         h: __uniConfig.compilerVersion,
         a: this.adpid,
         at: type
