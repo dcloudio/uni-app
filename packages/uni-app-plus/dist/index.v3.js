@@ -11349,9 +11349,7 @@ var serviceContext = (function () {
         this._dispatchEvent('adClicked', {});
       });
 
-      if (this._preload) {
-        this._loadAd();
-      }
+      this._loadAd();
     }
 
     get isExpired () {
