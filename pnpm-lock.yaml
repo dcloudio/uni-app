@@ -46,7 +46,7 @@ importers:
       semver: ^7.3.5
       ts-jest: ^27.0.3
       typescript: ^4.5.3
-      vite: ^2.7.10
+      vite: ^2.7.12
       vue: 3.2.26
       vue-router: ^4.0.12
       yorkie: ^2.0.0
@@ -65,7 +65,7 @@ importers:
       '@rollup/plugin-strip': 2.1.0_rollup@2.60.2
       '@types/jest': 26.0.24
       '@typescript-eslint/parser': 5.5.0_eslint@7.32.0+typescript@4.5.3
-      '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
+      '@vitejs/plugin-vue': 2.0.1_vite@2.7.12+vue@3.2.26
       '@vitejs/plugin-vue-jsx': 1.3.3
       '@vue/reactivity': 3.2.26
       '@vue/runtime-core': 3.2.26
@@ -93,7 +93,7 @@ importers:
       semver: 7.3.5
       ts-jest: 27.1.0_560d4ec5932803928b08544817dafdad
       typescript: 4.5.3
-      vite: 2.7.10
+      vite: 2.7.12
       vue: 3.2.26
       vue-router: 4.0.12_vue@3.2.26
       yorkie: 2.0.0
@@ -107,7 +107,7 @@ importers:
       compression: ^1.7.4
       cypress: ^7.3.0
       serve-static: ^1.14.1
-      vite: ^2.7.10
+      vite: ^2.7.12
       vue: 3.2.26
       vue-router: ^4.0.12
       vuex: ^4.0.2
@@ -123,7 +123,7 @@ importers:
       compression: 1.7.4
       cypress: 7.7.0
       serve-static: 1.14.1
-      vite: 2.7.10
+      vite: 2.7.12
 
   packages/size-check:
     specifiers:
@@ -215,7 +215,7 @@ importers:
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.2
-      '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
+      '@vitejs/plugin-vue': 2.0.1_vite@2.7.12+vue@3.2.26
       '@vue/compiler-sfc': 3.2.26
       debug: 4.3.3
       fs-extra: 10.0.0
@@ -821,8 +821,8 @@ importers:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.2
-      '@vitejs/plugin-legacy': 1.6.4_vite@2.7.10
-      '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
+      '@vitejs/plugin-legacy': 1.6.4_vite@2.7.12
+      '@vitejs/plugin-vue': 2.0.1_vite@2.7.12+vue@3.2.26
       '@vitejs/plugin-vue-jsx': 1.3.3
       '@vue/compiler-core': 3.2.26
       '@vue/compiler-dom': 3.2.26
@@ -3187,7 +3187,7 @@ packages:
       eslint-visitor-keys: 3.1.0
     dev: true
 
-  /@vitejs/plugin-legacy/1.6.4_vite@2.7.10:
+  /@vitejs/plugin-legacy/1.6.4_vite@2.7.12:
     resolution: {integrity: sha512-geH2F3hTRN++E4n9NZ0JFumxIWUKqW4FA9PAgM7Q6RvUOUUYW4tlURhEmCBYfZSN24H/yX3mEolX+wFVErsAYQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -3198,7 +3198,7 @@ packages:
       magic-string: 0.25.7
       regenerator-runtime: 0.13.9
       systemjs: 6.11.0
-      vite: 2.7.10
+      vite: 2.7.12
     dev: false
 
   /@vitejs/plugin-vue-jsx/1.3.3:
@@ -3214,14 +3214,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@vitejs/plugin-vue/2.0.1_vite@2.7.10+vue@3.2.26:
+  /@vitejs/plugin-vue/2.0.1_vite@2.7.12+vue@3.2.26:
     resolution: {integrity: sha512-wtdMnGVvys9K8tg+DxowU1ytTrdVveXr3LzdhaKakysgGXyrsfaeds2cDywtvujEASjWOwWL/OgWM+qoeM8Plg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
       vue: ^3.2.25
     dependencies:
-      vite: 2.7.10
+      vite: 2.7.12
       vue: 3.2.26
 
   /@vue/babel-helper-vue-transform-on/1.0.2:
@@ -8952,8 +8952,8 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vite/2.7.10:
-    resolution: {integrity: sha512-KEY96ntXUid1/xJihJbgmLZx7QSC2D4Tui0FdS0Old5OokYzFclcofhtxtjDdGOk/fFpPbHv9yw88+rB93Tb8w==}
+  /vite/2.7.12:
+    resolution: {integrity: sha512-KvPYToRQWhRfBeVkyhkZ5hASuHQkqZUUdUcE3xyYtq5oYEPIJ0h9LWiWTO6v990glmSac2cEPeYeXzpX5Z6qKQ==}
     engines: {node: '>=12.2.0'}
     hasBin: true
     peerDependencies:
