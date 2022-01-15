@@ -1,7 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import chalk from 'chalk'
+import colors from 'picocolors'
 import { performance } from 'perf_hooks'
 import { BuildOptions, InlineConfig, Logger } from 'vite'
 
@@ -209,7 +209,7 @@ export function printStartupDuration(
     // @ts-ignore
     const startupDuration = performance.now() - global.__vite_start_time
     logger.info(
-      `${whitespace ? `\n  ` : ''}${chalk.cyan(
+      `${whitespace ? `\n  ` : ''}${colors.cyan(
         `ready in ${Math.ceil(startupDuration)}ms.`
       )}\n`
     )

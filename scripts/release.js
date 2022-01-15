@@ -1,7 +1,7 @@
 const args = require('minimist')(process.argv.slice(2))
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
+const colors = require('picocolors')
 const semver = require('semver')
 const currentVersion = require('../package.json').version
 const { prompt } = require('enquirer')
@@ -22,10 +22,10 @@ const bin = (name) => path.resolve(__dirname, '../node_modules/.bin/' + name)
 const run = (bin, args, opts = {}) =>
   execa(bin, args, { stdio: 'inherit', ...opts })
 const dryRun = (bin, args, opts = {}) =>
-  console.log(chalk.blue(`[dryrun] ${bin} ${args.join(' ')}`), opts)
+  console.log(colors.blue(`[dryrun] ${bin} ${args.join(' ')}`), opts)
 const runIfNotDry = isDryRun ? dryRun : run
 const getPkgRoot = (pkg) => path.resolve(__dirname, '../packages/' + pkg)
-const step = (msg) => console.log(chalk.cyan(msg))
+const step = (msg) => console.log(colors.cyan(msg))
 
 async function main() {
   const targetVersion = (
@@ -106,7 +106,7 @@ async function main() {
 
   if (skippedPackages.length) {
     console.log(
-      chalk.yellow(
+      colors.yellow(
         `The following packages are skipped and NOT published:\n- ${skippedPackages.join(
           '\n- '
         )}`
@@ -142,7 +142,7 @@ function updateDeps(pkg, depType, version) {
       packages.includes(dep.replace(/^@dcloudio\//, ''))
     ) {
       console.log(
-        chalk.yellow(`${pkg.name} -> ${depType} -> ${dep}@${version}`)
+        colors.yellow(`${pkg.name} -> ${depType} -> ${dep}@${version}`)
       )
       deps[dep] = version
     }
@@ -181,10 +181,10 @@ async function publishPackage(pkgName, version, runIfNotDry) {
         stdio: 'pipe',
       }
     )
-    console.log(chalk.green(`Successfully published ${pkgName}@${version}`))
+    console.log(colors.green(`Successfully published ${pkgName}@${version}`))
   } catch (e) {
     if (e.stderr.match(/previously published/)) {
-      console.log(chalk.red(`Skipping already published: ${pkgName}`))
+      console.log(colors.red(`Skipping already published: ${pkgName}`))
     } else {
       throw e
     }

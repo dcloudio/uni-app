@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
+const colors = require('picocolors')
 const { prompt } = require('enquirer')
 const { resolvePackages } = require('./utils')
 const args = process.argv.slice(2)
@@ -38,7 +38,7 @@ function updateDeps(pkg, depType, module, oldVersion, newVersion) {
     if (deps[name].includes(oldVersion)) {
       deps[name] = deps[name].replace(oldVersion, newVersion)
       console.log(
-        chalk.yellow(`${pkg.name} -> ${depType} -> ${name}@${newVersion}`)
+        colors.yellow(`${pkg.name} -> ${depType} -> ${name}@${newVersion}`)
       )
     }
   }

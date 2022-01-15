@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import chalk from 'chalk'
+import colors from 'picocolors'
 import {
   createLogger,
   createServer as createViteServer,
@@ -28,8 +28,8 @@ export async function createServer(options: CliOptions & ServerOptions) {
   const logger = server.config.logger
 
   logger.info(
-    chalk.cyan(`\n  vite v${require('vite/package.json').version}`) +
-      chalk.green(` dev server running at:\n`),
+    colors.cyan(`\n  vite v${require('vite/package.json').version}`) +
+      colors.green(` dev server running at:\n`),
     {
       clear: !server.config.logger.hasWarned,
     }

@@ -36,13 +36,13 @@
     "@vue/compiler-sfc": "3.2.26",
     "@vue/shared": "3.2.26",
     "cac": "^6.7.3",
-    "chalk": "^4.1.1",
     "debug": "^4.3.2",
     "estree-walker": "^2.0.2",
     "express": "^4.17.1",
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
-    "jsonc-parser": "^3.0.0"
+    "jsonc-parser": "^3.0.0",
+    "picocolors": "^1.0.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

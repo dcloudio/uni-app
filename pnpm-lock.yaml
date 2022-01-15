@@ -24,7 +24,6 @@ importers:
       '@vue/runtime-core': 3.2.26
       '@vue/runtime-dom': 3.2.26
       '@vue/shared': 3.2.26
-      chalk: ^4.1.1
       core-js: ^2.6.12
       enquirer: ^2.3.6
       eslint: ^7.17.0
@@ -35,6 +34,7 @@ importers:
       mini-types: ^0.1.7
       minimist: ^1.2.5
       miniprogram-api-typings: ^3.4.4
+      picocolors: ^1.0.0
       prettier: ^2.4.1
       rollup: ^2.57.0
       rollup-plugin-jscc: ^2.0.0
@@ -46,7 +46,7 @@ importers:
       semver: ^7.3.5
       ts-jest: ^27.0.3
       typescript: ^4.5.3
-      vite: ^2.7.10
+      vite: ^2.7.12
       vue: 3.2.26
       vue-router: ^4.0.12
       yorkie: ^2.0.0
@@ -65,13 +65,12 @@ importers:
       '@rollup/plugin-strip': 2.1.0_rollup@2.60.2
       '@types/jest': 26.0.24
       '@typescript-eslint/parser': 5.5.0_eslint@7.32.0+typescript@4.5.3
-      '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
+      '@vitejs/plugin-vue': 2.0.1_vite@2.7.12+vue@3.2.26
       '@vitejs/plugin-vue-jsx': 1.3.3
       '@vue/reactivity': 3.2.26
       '@vue/runtime-core': 3.2.26
       '@vue/runtime-dom': 3.2.26
       '@vue/shared': 3.2.26
-      chalk: 4.1.2
       core-js: 2.6.12
       enquirer: 2.3.6
       eslint: 7.32.0
@@ -82,6 +81,7 @@ importers:
       mini-types: 0.1.7
       minimist: 1.2.5
       miniprogram-api-typings: 3.4.4
+      picocolors: 1.0.0
       prettier: 2.5.1
       rollup: 2.60.2
       rollup-plugin-jscc: 2.0.0_rollup@2.60.2
@@ -93,7 +93,7 @@ importers:
       semver: 7.3.5
       ts-jest: 27.1.0_560d4ec5932803928b08544817dafdad
       typescript: 4.5.3
-      vite: 2.7.10
+      vite: 2.7.12
       vue: 3.2.26
       vue-router: 4.0.12_vue@3.2.26
       yorkie: 2.0.0
@@ -107,7 +107,7 @@ importers:
       compression: ^1.7.4
       cypress: ^7.3.0
       serve-static: ^1.14.1
-      vite: ^2.7.10
+      vite: ^2.7.12
       vue: 3.2.26
       vue-router: ^4.0.12
       vuex: ^4.0.2
@@ -123,7 +123,7 @@ importers:
       compression: 1.7.4
       cypress: 7.7.0
       serve-static: 1.14.1
-      vite: 2.7.10
+      vite: 2.7.12
 
   packages/size-check:
     specifiers:
@@ -216,7 +216,7 @@ importers:
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.2
-      '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
+      '@vitejs/plugin-vue': 2.0.1_vite@2.7.12+vue@3.2.26
       '@vue/compiler-sfc': 3.2.26
       debug: 4.3.3
       fs-extra: 10.0.0
@@ -374,7 +374,6 @@ importers:
       '@vue/server-renderer': 3.2.26
       '@vue/shared': 3.2.26
       base64url: ^3.0.1
-      chalk: ^4.1.1
       chokidar: ^3.5.2
       compare-versions: ^3.6.0
       debug: ^4.3.2
@@ -389,6 +388,7 @@ importers:
       merge: ^2.1.1
       mime: ^3.0.0
       module-alias: ^2.2.2
+      picocolors: ^1.0.0
       postcss: ^8.4.5
       postcss-import: ^14.0.2
       postcss-load-config: ^3.1.0
@@ -410,7 +410,6 @@ importers:
       '@vue/server-renderer': 3.2.26_vue@3.2.26
       '@vue/shared': 3.2.26
       base64url: 3.0.1
-      chalk: 4.1.2
       chokidar: 3.5.2
       compare-versions: 3.6.0
       debug: 4.3.3
@@ -425,6 +424,7 @@ importers:
       merge: 2.1.1
       mime: 3.0.0
       module-alias: 2.2.2
+      picocolors: 1.0.0
       postcss-import: 14.0.2_postcss@8.4.5
       postcss-load-config: 3.1.0
       postcss-modules: 4.2.2_postcss@8.4.5
@@ -808,7 +808,6 @@ importers:
       '@vue/compiler-sfc': 3.2.26
       '@vue/shared': 3.2.26
       cac: ^6.7.3
-      chalk: ^4.1.1
       chokidar: ^3.5.2
       debug: ^4.3.2
       estree-walker: ^2.0.2
@@ -816,6 +815,7 @@ importers:
       fs-extra: ^10.0.0
       hash-sum: ^2.0.0
       jsonc-parser: ^3.0.0
+      picocolors: ^1.0.0
     dependencies:
       '@babel/core': 7.16.5
       '@babel/plugin-syntax-import-meta': 7.10.4_@babel+core@7.16.5
@@ -823,21 +823,21 @@ importers:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.2
-      '@vitejs/plugin-legacy': 1.6.4_vite@2.7.10
-      '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
+      '@vitejs/plugin-legacy': 1.6.4_vite@2.7.12
+      '@vitejs/plugin-vue': 2.0.1_vite@2.7.12+vue@3.2.26
       '@vitejs/plugin-vue-jsx': 1.3.3
       '@vue/compiler-core': 3.2.26
       '@vue/compiler-dom': 3.2.26
       '@vue/compiler-sfc': 3.2.26
       '@vue/shared': 3.2.26
       cac: 6.7.12
-      chalk: 4.1.2
       debug: 4.3.3
       estree-walker: 2.0.2
       express: 4.17.1
       fs-extra: 10.0.0
       hash-sum: 2.0.0
       jsonc-parser: 3.0.0
+      picocolors: 1.0.0
     devDependencies:
       '@types/debug': 4.1.7
       '@types/express': 4.17.13
@@ -3189,7 +3189,7 @@ packages:
       eslint-visitor-keys: 3.1.0
     dev: true
 
-  /@vitejs/plugin-legacy/1.6.4_vite@2.7.10:
+  /@vitejs/plugin-legacy/1.6.4_vite@2.7.12:
     resolution: {integrity: sha512-geH2F3hTRN++E4n9NZ0JFumxIWUKqW4FA9PAgM7Q6RvUOUUYW4tlURhEmCBYfZSN24H/yX3mEolX+wFVErsAYQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -3200,7 +3200,7 @@ packages:
       magic-string: 0.25.7
       regenerator-runtime: 0.13.9
       systemjs: 6.11.0
-      vite: 2.7.10
+      vite: 2.7.12
     dev: false
 
   /@vitejs/plugin-vue-jsx/1.3.3:
@@ -3216,14 +3216,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@vitejs/plugin-vue/2.0.1_vite@2.7.10+vue@3.2.26:
+  /@vitejs/plugin-vue/2.0.1_vite@2.7.12+vue@3.2.26:
     resolution: {integrity: sha512-wtdMnGVvys9K8tg+DxowU1ytTrdVveXr3LzdhaKakysgGXyrsfaeds2cDywtvujEASjWOwWL/OgWM+qoeM8Plg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
       vue: ^3.2.25
     dependencies:
-      vite: 2.7.10
+      vite: 2.7.12
       vue: 3.2.26
 
   /@vue/babel-helper-vue-transform-on/1.0.2:
@@ -3582,6 +3582,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       color-convert: 2.0.1
+    dev: true
 
   /ansi-styles/5.2.0:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
@@ -4054,6 +4055,7 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
+    dev: true
 
   /char-regex/1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
@@ -4164,12 +4166,14 @@ packages:
     engines: {node: '>=7.0.0'}
     dependencies:
       color-name: 1.1.4
+    dev: true
 
   /color-name/1.1.3:
     resolution: {integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=}
 
   /color-name/1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+    dev: true
 
   /colorette/2.0.16:
     resolution: {integrity: sha512-hUewv7oMjCp+wkBv5Rm0v87eJhq4woh5rSR+42YSQJKecCqgIqNkZ6lAlQms/BwHPJA5NKMRlpxPRv0n8HQW6g==}
@@ -8502,6 +8506,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       has-flag: 4.0.0
+    dev: true
 
   /supports-color/8.1.1:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
@@ -8954,8 +8959,8 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vite/2.7.10:
-    resolution: {integrity: sha512-KEY96ntXUid1/xJihJbgmLZx7QSC2D4Tui0FdS0Old5OokYzFclcofhtxtjDdGOk/fFpPbHv9yw88+rB93Tb8w==}
+  /vite/2.7.12:
+    resolution: {integrity: sha512-KvPYToRQWhRfBeVkyhkZ5hASuHQkqZUUdUcE3xyYtq5oYEPIJ0h9LWiWTO6v990glmSac2cEPeYeXzpX5Z6qKQ==}
     engines: {node: '>=12.2.0'}
     hasBin: true
     peerDependencies:
