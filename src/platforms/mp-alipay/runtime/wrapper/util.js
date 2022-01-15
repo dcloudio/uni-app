@@ -115,11 +115,12 @@ export function handleRef (ref) {
   if (ref.props['data-com-type'] === 'wx') {
     const eventProps = {}
     let refProps = ref.props
+    let eventList = refProps['data-event-list'].split(',')
     // 初始化支付宝小程序组件事件
     Object.keys(refProps).forEach(key => {
-      const handler = refProps[key]
-      const res = key.match(/^on([A-Z])(\S*)/)
-      if (res && typeof handler === 'function' && handler.name === 'bound handleEvent') {
+      if (eventList.includes(key)) {
+        const handler = refProps[key]
+        const res = key.match(/^on([A-Z])(\S*)/)
         const event = res && (res[1].toLowerCase() + res[2])
         refProps[key] = eventProps[key] = function () {
           const props = Object.assign({}, refProps)

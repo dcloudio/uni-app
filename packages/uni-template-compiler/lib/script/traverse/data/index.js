@@ -1,7 +1,8 @@
 const t = require('@babel/types')
 
 const {
-  ATTR_DATA_COM_TYPE
+  ATTR_DATA_COM_TYPE,
+  ATTR_DATA_EVENT_LIST
 } = require('../../../constants')
 
 const processRef = require('./ref')
@@ -49,6 +50,20 @@ module.exports = function traverseData (path, state, tagName) {
         t.objectProperty(
           t.stringLiteral('ref'),
           t.stringLiteral('__r')
+        )
+      )
+      const properties = path.node.properties.find(prop => prop.key.name === 'on').value.properties
+      const list = []
+      for (let index = 0; index < properties.length; index++) {
+        const element = properties[index]
+        if (element.value.value === '__e') {
+          list.push(element.key.value)
+        }
+      }
+      addAttrProperties.push(
+        t.objectProperty(
+          t.stringLiteral(ATTR_DATA_EVENT_LIST),
+          t.stringLiteral(list.join(','))
         )
       )
     }
