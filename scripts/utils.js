@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
+const colors = require('picocolors')
 
 const priority = {
   'uni-shared': 100,
@@ -65,8 +65,8 @@ exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
   } else {
     console.log()
     console.error(
-      `  ${chalk.bgRed.white(' ERROR ')} ${chalk.red(
-        `Target ${chalk.underline(partialTargets)} not found!`
+      `  ${colors.bgRed.white(' ERROR ')} ${colors.red(
+        `Target ${colors.underline(partialTargets)} not found!`
       )}`
     )
     console.log()

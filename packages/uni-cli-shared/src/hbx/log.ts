@@ -1,5 +1,5 @@
 import path from 'path'
-import chalk from 'chalk'
+import colors from 'picocolors'
 import { LogErrorOptions } from 'vite'
 import { normalizePath } from '../utils'
 import { Formatter } from '../logs/format'
@@ -75,16 +75,16 @@ function buildErrorMessage(
 ): string {
   if (err.plugin) {
     args.push(
-      `${chalk.magenta('[plugin:' + err.plugin + ']')} ${chalk.red(
+      `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(
         err.message
       )}`
     )
   } else {
-    args.push(chalk.red(err.message))
+    args.push(colors.red(err.message))
   }
   if (err.id) {
     args.push(
-      `at ${chalk.cyan(
+      `at ${colors.cyan(
         normalizePath(
           path.relative(process.env.UNI_INPUT_DIR, err.id.split('?')[0])
         ) +
@@ -96,7 +96,7 @@ function buildErrorMessage(
     )
   }
   if (err.frame) {
-    args.push(chalk.yellow(pad(err.frame)))
+    args.push(colors.yellow(pad(err.frame)))
   }
   if (includeStack && err.stack) {
     args.push(pad(cleanStack(err.stack)))

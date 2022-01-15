@@ -46,6 +46,8 @@ module.exports = {
       files: [
         'packages/{uni-cli-shared,uni-cli-nvue,uni-app-vite,uni-h5-vite,uni-mp-vite,uni-mp-compiler,vite-plugin-uni}/**',
         'packages/*/vite.config.ts',
+        '.eslintrc.js',
+        'scripts/**',
       ],
       rules: {
         'no-restricted-globals': ['error', ...DOMGlobals],
