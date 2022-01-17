@@ -12760,7 +12760,7 @@ export function vueFactory(exports) {
 
   function onBeforeDeactivate() {}
 
-  var Vue = /*#__PURE__*/Object.freeze({
+  var Vue = {
     __proto__: null,
     BaseTransition: BaseTransition,
     Comment: Comment,
@@ -12912,6 +12912,6 @@ export function vueFactory(exports) {
     withMemo: withMemo,
     withModifiers: withModifiers,
     withScopeId: withScopeId
-  });
+  };
   exports.Vue = Vue;
 }

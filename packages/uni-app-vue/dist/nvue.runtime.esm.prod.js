@@ -1,4 +1,4 @@
-export function vueFactory(exports, document) {
+export function nvueFactory(exports, document) {
   /**
    * Make a map and return a function for checking if a key
    * is in that map.
@@ -9094,20 +9094,6 @@ export function vueFactory(exports, document) {
 
 
   var version = "3.2.26";
-  var _ssrUtils = {
-    createComponentInstance,
-    setupComponent,
-    renderComponentRoot,
-    setCurrentRenderingInstance,
-    isVNode,
-    normalizeVNode
-  };
-  /**
-   * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
-   * @internal
-   */
-
-  var ssrUtils = _ssrUtils;
   /**
    * @internal only exposed in compat builds
    */
@@ -9139,12 +9125,10 @@ export function vueFactory(exports, document) {
     createText: text => new NVueTextNode(text),
     createComment: text => document.createComment(text),
     setText: (node, text) => {
-      node.text = text;
+      node.setAttr('value', text);
     },
     setElementText: (el, text) => {
-      if (el.parentNode) {
-        el.parentNode.setAttr('value', text);
-      }
+      el.setAttr('value', text);
     },
     parentNode: node => node.parentNode,
     nextSibling: node => node.nextSibling
@@ -9410,14 +9394,13 @@ export function vueFactory(exports, document) {
     } = app;
 
     app.mount = container => {
-      if (container !== '#root') return;
       return mount(container);
     };
 
     return app;
   };
 
-  var Vue = /*#__PURE__*/Object.freeze({
+  var Vue = {
     __proto__: null,
     BaseTransition: BaseTransition,
     Comment: Comment,
@@ -9522,7 +9505,6 @@ export function vueFactory(exports, document) {
     shallowReadonly: shallowReadonly,
     shallowRef: shallowRef,
     ssrContextKey: ssrContextKey,
-    ssrUtils: ssrUtils,
     stop: stop,
     toHandlers: toHandlers,
     toRaw: toRaw,
@@ -9560,6 +9542,6 @@ export function vueFactory(exports, document) {
     normalizeStyle: normalizeStyle,
     toDisplayString: toDisplayString,
     toHandlerKey: toHandlerKey
-  });
+  };
   exports.Vue = Vue;
 }

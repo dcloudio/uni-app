@@ -4,6 +4,7 @@
       "src/service/index.ts": ["dist/service.runtime.esm.dev.js"]
     },
     "output": {
+      "freeze": false,
       "banner": "export function vueFactory (exports) {\n",
       "footer": "}"
     },
@@ -20,6 +21,7 @@
       "src/service/index.ts": ["dist/service.runtime.esm.prod.js"]
     },
     "output": {
+      "freeze": false,
       "banner": "export function vueFactory (exports) {\n",
       "footer": "}"
     },
@@ -43,10 +45,11 @@
   },
   {
     "input": {
-      "src/nvue/factory.ts": ["dist/nvue.runtime.esm.dev.js"]
+      "src/nvue/index.ts": ["dist/nvue.runtime.esm.dev.js"]
     },
     "output": {
-      "banner": "export function vueFactory (exports, document) {\n",
+      "freeze": false,
+      "banner": "export function nvueFactory (exports, document) {\n",
       "footer": "}"
     },
     "replacements": {
@@ -59,10 +62,11 @@
   },
   {
     "input": {
-      "src/nvue/factory.ts": ["dist/nvue.runtime.esm.prod.js"]
+      "src/nvue/index.ts": ["dist/nvue.runtime.esm.prod.js"]
     },
     "output": {
-      "banner": "export function vueFactory (exports, document) {\n",
+      "freeze": false,
+      "banner": "export function nvueFactory (exports, document) {\n",
       "footer": "}"
     },
     "replacements": {
