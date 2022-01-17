@@ -40,5 +40,37 @@
       "__VUE_PROD_DEVTOOLS__": "false"
     },
     "external": ["@vue/shared"]
+  },
+  {
+    "input": {
+      "src/nvue/factory.ts": ["dist/nvue.runtime.esm.dev.js"]
+    },
+    "output": {
+      "banner": "export function vueFactory (exports) {\n",
+      "footer": "}"
+    },
+    "replacements": {
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "process.env.NODE_ENV": "\"development\""
+    },
+    "external": false,
+    "babel": true
+  },
+  {
+    "input": {
+      "src/nvue/factory.ts": ["dist/nvue.runtime.esm.prod.js"]
+    },
+    "output": {
+      "banner": "export function vueFactory (exports) {\n",
+      "footer": "}"
+    },
+    "replacements": {
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "process.env.NODE_ENV": "\"production\""
+    },
+    "external": false,
+    "babel": true
   }
 ]

@@ -228,10 +228,7 @@ importers:
       esbuild: 0.13.15
 
   packages/uni-app-vue:
-    specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3030820220114001
-    devDependencies:
-      '@dcloudio/uni-shared': link:../uni-shared
+    specifiers: {}
 
   packages/uni-automator:
     specifiers:
