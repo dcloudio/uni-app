@@ -8457,6 +8457,13 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
       field.selectionEnd = field.selectionStart = state2.cursor;
     }
   }
+  function getFieldSelectionEnd(field) {
+    if (field.type === "number") {
+      return null;
+    } else {
+      return field.selectionEnd;
+    }
+  }
   function initField() {
     const field = fieldRef.value;
     const onFocus = function(event) {
@@ -8476,7 +8483,7 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
       if (!state2.composing) {
         triggerInput(event, {
           value: field.value,
-          cursor: field.selectionEnd
+          cursor: getFieldSelectionEnd(field)
         }, force);
       }
     };
@@ -8486,18 +8493,9 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
         onInput(event, true);
       }
       state2.focus = false;
-      const field2 = event.target;
-      let cursor;
-      if (field2.type === "number") {
-        field2.type = "text";
-        cursor = field2.selectionEnd;
-        field2.type = "number";
-      } else {
-        cursor = field2.selectionEnd;
-      }
       trigger("blur", event, {
         value: state2.value,
-        cursor
+        cursor: getFieldSelectionEnd(event.target)
       });
     };
     field.addEventListener("change", (event) => event.stopPropagation());
@@ -10033,13 +10031,6 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
     const vm = getCurrentInstance();
     const __scopeId = vm && vm.root.type.__scopeId || "";
     const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const {
       hovering,
       binding
     } = useHover(props2);
@@ -10089,7 +10080,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": onEventPrevent
       }, [createVNode("uni-navigator", mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, $attrs.value, $excludeAttrs.value, $listeners.value, {
+      }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
