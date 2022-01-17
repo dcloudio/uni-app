@@ -1,7 +1,6 @@
 import { getCurrentInstance } from 'vue'
 import { useHover } from '../../helpers/useHover'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { useAttrs } from '../../helpers/useAttrs'
 import { onEventPrevent } from '@dcloudio/uni-core'
 
 const OPEN_TYPES = [
@@ -60,9 +59,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(props, { slots }) {
     const vm = getCurrentInstance()
     const __scopeId = (vm && (vm.root.type as any).__scopeId) || ''
-    const { $attrs, $excludeAttrs, $listeners } = useAttrs({
-      excludeListeners: true,
-    })
     const { hovering, binding } = useHover(props)
 
     function onClick($event: MouseEvent) {
@@ -114,9 +110,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <uni-navigator
             class={hasHoverClass && hovering.value ? hoverClass : ''}
             {...(hasHoverClass && binding)}
-            {...$attrs.value}
-            {...$excludeAttrs.value}
-            {...$listeners.value}
+            {...(vm ? vm.attrs : {})}
             {...{
               [__scopeId]: '',
             }}
