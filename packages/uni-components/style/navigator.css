@@ -16,4 +16,30 @@ uni-navigator[hidden] {
 
 .navigator-wrap {
   text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.navigator-wrap:link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.navigator-wrap:visited {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.navigator-wrap:hover {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.navigator-wrap:active {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
