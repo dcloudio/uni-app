@@ -46,7 +46,7 @@
       "src/nvue/factory.ts": ["dist/nvue.runtime.esm.dev.js"]
     },
     "output": {
-      "banner": "export function vueFactory (exports) {\n",
+      "banner": "export function vueFactory (exports, document) {\n",
       "footer": "}"
     },
     "replacements": {
@@ -62,7 +62,7 @@
       "src/nvue/factory.ts": ["dist/nvue.runtime.esm.prod.js"]
     },
     "output": {
-      "banner": "export function vueFactory (exports) {\n",
+      "banner": "export function vueFactory (exports, document) {\n",
       "footer": "}"
     },
     "replacements": {
