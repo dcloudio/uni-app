@@ -8446,14 +8446,14 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1) {
+    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && field.type !== "number") {
       field.selectionStart = state2.selectionStart;
       field.selectionEnd = state2.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1) {
+    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && field.type !== "number") {
       field.selectionEnd = field.selectionStart = state2.cursor;
     }
   }
@@ -8486,9 +8486,18 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
         onInput(event, true);
       }
       state2.focus = false;
+      const field2 = event.target;
+      let cursor;
+      if (field2.type === "number") {
+        field2.type = "text";
+        cursor = field2.selectionEnd;
+        field2.type = "number";
+      } else {
+        cursor = field2.selectionEnd;
+      }
       trigger("blur", event, {
         value: state2.value,
-        cursor: event.target.selectionEnd
+        cursor
       });
     };
     field.addEventListener("change", (event) => event.stopPropagation());
