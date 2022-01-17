@@ -10,7 +10,7 @@
   },
   {
     "input": {
-      "src/service/index.ts": "dist/uni-app-service.es.js"
+      "src/service/index.ts": "dist/uni.runtime.esm.js"
     },
     "output": {
       "freeze": false,

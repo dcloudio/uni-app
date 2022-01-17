@@ -4,7 +4,7 @@
       "src/service/index.ts": ["dist/service.runtime.esm.dev.js"]
     },
     "output": {
-      "banner": "export default function vueFactory (exports) {\n",
+      "banner": "export function vueFactory (exports) {\n",
       "footer": "}"
     },
     "replacements": {
@@ -20,7 +20,7 @@
       "src/service/index.ts": ["dist/service.runtime.esm.prod.js"]
     },
     "output": {
-      "banner": "export default function vueFactory (exports) {\n",
+      "banner": "export function vueFactory (exports) {\n",
       "footer": "}"
     },
     "replacements": {
@@ -40,29 +40,5 @@
       "__VUE_PROD_DEVTOOLS__": "false"
     },
     "external": ["@vue/shared"]
-  },
-  {
-    "input": {
-      "src/nvue/factory.ts": ["dist/nvue.factory.cjs.js"]
-    },
-    "output": {
-      "banner": "export default function vueFactory (exports) {\n",
-      "footer": "}"
-    },
-    "replacements": {
-      "process.env.NODE_ENV": "\"production\""
-    },
-    "external": false,
-    "babel": true
-  },
-  {
-    "input": {
-      "src/nvue/index.ts": ["dist/nvue.service.cjs.js"]
-    },
-    "replacements": {
-      "process.env.NODE_ENV": "\"production\""
-    },
-    "external": false,
-    "babel": true
   }
 ]

@@ -1,4 +1,4 @@
-export default function vueFactory(exports) {
+export function vueFactory(exports) {
   /**
    * Make a map and return a function for checking if a key
    * is in that map.
