@@ -17,6 +17,7 @@ import { transformComponent } from './transforms/transformComponent'
 import { transformSlot } from './transforms/vSlot'
 import { transformRoot } from './transforms/transformRoot'
 import { transformTag } from './transforms/transformTag'
+import { transformHtml } from './transforms/vHtml'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -34,6 +35,7 @@ export function getBaseTransformPreset({
   const nodeTransforms = [
     transformRoot,
     transformTag,
+    transformHtml,
     transformIf,
     transformFor,
     transformSlot,
