@@ -19,9 +19,29 @@ function compile(source: string) {
     compilerOptions: {
       ...compilerOptions,
     },
-  }).ast!.children[0] as ElementNode
+  })
 }
+
+function genAst(source: string) {
+  return compile(source).ast!.children[0] as ElementNode
+}
+
+function genCode(source: string) {
+  return compile(source).code
+}
+
+const codes = [
+  `<view>hello</view>`,
+  `<video></video>`,
+  `<video><view></view></video>`,
+]
+
 describe('app-nvue: compiler', () => {
+  codes.forEach((code) => {
+    test(code, () => {
+      expect(genCode(code)).toMatchSnapshot()
+    })
+  })
   test('u-tags', () => {
     ;[
       'text',
@@ -32,24 +52,19 @@ describe('app-nvue: compiler', () => {
       'web-view',
       'slider',
     ].forEach((tag) => {
-      expect(compile(`<${tag}></${tag}>`).tag).toBe(`u-${tag}`)
+      expect(genAst(`<${tag}></${tag}>`).tag).toBe(`u-${tag}`)
     })
   })
-  test('video', () => {
-    expect(compile(`<video></video>`).children.length).toBe(0)
-    expect(
-      (compile(`<video><view></view></video>`).children[0] as ElementNode).tag
-    ).toBe('u-scalable')
-  })
+
   test('scroll-view', () => {
-    compile(`<view></view>`)
+    genAst(`<view></view>`)
   })
   test('render-whole', () => {
     expect(
       (
         (
           findProp(
-            compile(`<view :render-whole="true">hello</view>`),
+            genAst(`<view :render-whole="true">hello</view>`),
             'appendAsTree',
             true,
             false
@@ -60,13 +75,13 @@ describe('app-nvue: compiler', () => {
   })
   test('unitary tag', () => {
     expect(
-      findProp(compile(`<text>hello</text>`), 'appendAsTree', true, false)
+      findProp(genAst(`<text>hello</text>`), 'appendAsTree', true, false)
     ).toBeTruthy()
   })
   test('tap=>click', () => {
     expect(
       (
-        findDir(compile(`<view @tap="click"></view>`), 'on')!
+        findDir(genAst(`<view @tap="click"></view>`), 'on')!
           .arg as SimpleExpressionNode
       ).content
     ).toBe('click')

@@ -13,6 +13,7 @@ import { nvueOutDir } from '../../utils'
 import { transformRenderWhole } from './transforms/transformRenderWhole'
 import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
+import { transformText } from './transforms/transformText'
 const uTags = {
   text: 'u-text',
   image: 'u-image',
@@ -27,6 +28,7 @@ export function initNVueNodeTransforms() {
   // 优先级必须确保 renderWhole > appendAsTree
   return [
     createTransformTag(uTags),
+    transformText,
     transformVideo,
     transformRenderWhole,
     transformAppendAsTree,

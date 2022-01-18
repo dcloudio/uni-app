@@ -5,7 +5,6 @@ export const transformRenderWhole: NodeTransform = (node, _) => {
   if (!isElementNode(node)) {
     return
   }
-  debugger
   const prop = findProp(node, 'render-whole')
   if (!prop) {
     return

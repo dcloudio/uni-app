@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app-nvue: compiler <video></video> 1`] = `
+"import { openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"u-video\\"))
+}"
+`;
+
+exports[`app-nvue: compiler <video><view></view></video> 1`] = `
+"import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-scalable\\", { style: {position:\\"absolute\\",left:\\"0\\",right:\\"0\\",top:\\"0\\",bottom:\\"0\\"} }, [
+  /*#__PURE__*/_createElementVNode(\\"view\\")
+], -1 /* HOISTED */)
+const _hoisted_2 = [
+  _hoisted_1
+]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"u-video\\", null, _hoisted_2))
+}"
+`;
+
+exports[`app-nvue: compiler <view>hello</view> 1`] = `
+"import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = [\\"appendAsTree\\"]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"view\\", null, [
+    _createElementVNode(\\"u-text\\", { appendAsTree: true }, \\"hello\\", 8 /* PROPS */, _hoisted_1)
+  ]))
+}"
+`;
