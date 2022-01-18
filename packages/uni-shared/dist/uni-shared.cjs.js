@@ -129,7 +129,34 @@ function isH5NativeTag(tag) {
 function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
 }
+const NVUE_CUSTOM_COMPONENTS = [
+    'ad',
+    'ad-draw',
+    'button',
+    'checkbox-group',
+    'checkbox',
+    'form',
+    'icon',
+    'label',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'picker',
+    'progress',
+    'radio-group',
+    'radio',
+    'rich-text',
+    'swiper-item',
+    'swiper',
+    'switch',
+    'slider',
+    'picker-view',
+    'picker-view-column',
+];
 function isAppNVueNativeTag(tag) {
+    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+        return false;
+    }
     if (isBuiltInComponent(tag)) {
         return true;
     }

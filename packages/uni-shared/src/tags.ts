@@ -136,7 +136,35 @@ export function isAppNativeTag(tag: string) {
   return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag)
 }
 
+const NVUE_CUSTOM_COMPONENTS = [
+  'ad',
+  'ad-draw',
+  'button',
+  'checkbox-group',
+  'checkbox',
+  'form',
+  'icon',
+  'label',
+  'movable-area',
+  'movable-view',
+  'navigator',
+  'picker',
+  'progress',
+  'radio-group',
+  'radio',
+  'rich-text',
+  'swiper-item',
+  'swiper',
+  'switch',
+  'slider',
+  'picker-view',
+  'picker-view-column',
+]
+
 export function isAppNVueNativeTag(tag: string) {
+  if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+    return false
+  }
   if (isBuiltInComponent(tag)) {
     return true
   }
