@@ -13,6 +13,8 @@ import { uniEsbuildPlugin } from './plugins/esbuild'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 
+export { initNVueNodeTransforms } from './plugin'
+
 export function initNVuePlugins() {
   return [
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),

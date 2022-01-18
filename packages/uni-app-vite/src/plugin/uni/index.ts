@@ -9,6 +9,8 @@ import {
   UniViteCopyPluginOptions,
 } from '@dcloudio/uni-cli-shared'
 
+import { initNVueNodeTransforms } from '../../nvue'
+
 export function uniOptions(): UniVitePlugin['uni'] {
   return {
     copyOptions() {
@@ -38,6 +40,9 @@ export function uniOptions(): UniVitePlugin['uni'] {
     compilerOptions: {
       isNativeTag,
       nodeTransforms: [
+        ...(process.env.UNI_COMPILER === 'nvue'
+          ? initNVueNodeTransforms()
+          : []),
         transformTapToClick,
         transformMatchMedia,
         transformPageHead,

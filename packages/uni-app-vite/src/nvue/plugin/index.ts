@@ -1,5 +1,6 @@
 import path from 'path'
 import {
+  createTransformTag,
   dynamicImportPolyfill,
   normalizePath,
   parseVueRequest,
@@ -9,6 +10,29 @@ import {
 import { PreRenderedChunk } from 'rollup'
 import { Plugin } from 'vite'
 import { nvueOutDir } from '../../utils'
+import { transformRenderWhole } from './transforms/transformRenderWhole'
+import { transformAppendAsTree } from './transforms/transformAppendAsTree'
+import { transformVideo } from './transforms/transformVideo'
+const uTags = {
+  text: 'u-text',
+  image: 'u-image',
+  input: 'u-input',
+  textarea: 'u-textarea',
+  video: 'u-video',
+  'web-view': 'u-web-view',
+  slider: 'u-slider',
+}
+
+export function initNVueNodeTransforms() {
+  // 优先级必须确保 renderWhole > appendAsTree
+  return [
+    createTransformTag(uTags),
+    transformVideo,
+    transformRenderWhole,
+    transformAppendAsTree,
+  ]
+}
+
 export function uniAppNVuePlugin(): Plugin {
   return {
     name: 'uni:app-nvue',
