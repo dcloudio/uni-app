@@ -69,6 +69,16 @@ export const TAGS = [
   'shadow-root',
 ].map((tag) => 'uni-' + tag)
 
+export const NVUE_BUILT_IN_TAGS = [
+  'text',
+  'image',
+  'input',
+  'textarea',
+  'video',
+  'web-view',
+  'slider',
+]
+
 export function isBuiltInComponent(tag: string) {
   // h5 平台会被转换为 v-uni-
   return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1
@@ -88,6 +98,17 @@ export function isH5NativeTag(tag: string) {
 
 export function isAppNativeTag(tag: string) {
   return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag)
+}
+
+export function isAppNVueNativeTag(tag: string) {
+  if (isAppNativeTag(tag)) {
+    return true
+  }
+  // u-text,u-video...
+  if (NVUE_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
+    return true
+  }
+  return false
 }
 
 export function isMiniProgramNativeTag(tag: string) {
