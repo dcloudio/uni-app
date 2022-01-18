@@ -8869,7 +8869,139 @@ const nodeOps = {
     nextSibling: node => node.nextSibling
 };
 
-const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => { };
+function patchAttr(el, key, value) {
+    if (value == null) ;
+    else {
+        el.setAttr(key, value);
+    }
+}
+
+function addEventListener(el, event, handler, options) {
+    el.addEvent(event, handler);
+}
+function removeEventListener(el, event) {
+    el.removeEvent(event);
+}
+function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
+    // vei = vue event invokers
+    const invokers = el._vei || (el._vei = {});
+    const existingInvoker = invokers[rawName];
+    if (nextValue && existingInvoker) {
+        // patch
+        existingInvoker.value = nextValue;
+    }
+    else {
+        const [name, options] = parseName(rawName);
+        if (nextValue) {
+            // add
+            const invoker = (invokers[rawName] = createInvoker(nextValue, instance));
+            addEventListener(el, name, invoker);
+        }
+        else if (existingInvoker) {
+            // remove
+            removeEventListener(el, name);
+            invokers[rawName] = undefined;
+        }
+    }
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function parseName(name) {
+    let options;
+    if (optionsModifierRE.test(name)) {
+        options = {};
+        let m;
+        while ((m = name.match(optionsModifierRE))) {
+            name = name.slice(0, name.length - m[0].length);
+            options[m[0].toLowerCase()] = true;
+        }
+    }
+    return [hyphenate(name.slice(2)), options];
+}
+function createInvoker(initialValue, instance) {
+    const invoker = (e) => {
+        callWithAsyncErrorHandling(invoker.value, instance, 5 /* NATIVE_EVENT_HANDLER */, [e]);
+    };
+    invoker.value = initialValue;
+    const modifiers = new Set();
+    // 合并 modifiers
+    if (isArray(invoker.value)) {
+        invoker.value.forEach(v => {
+            if (v.modifiers) {
+                v.modifiers.forEach((m) => {
+                    modifiers.add(m);
+                });
+            }
+        });
+    }
+    else {
+        if (invoker.value.modifiers) {
+            invoker.value.modifiers.forEach((m) => {
+                modifiers.add(m);
+            });
+        }
+        initWxsEvent(invoker, instance);
+    }
+    invoker.modifiers = [...modifiers];
+    return invoker;
+}
+function initWxsEvent(invoker, instance) {
+    if (!instance) {
+        return;
+    }
+    const { $wxsModules } = instance;
+    if (!$wxsModules) {
+        return;
+    }
+    const invokerSourceCode = invoker.value.toString();
+    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
+        return;
+    }
+    invoker.wxsEvent = invoker.value();
+}
+
+function patchStyle(el, prev, next) {
+    if (!next) ;
+    else if (isString(next)) ;
+    else {
+        const batchedStyles = {};
+        const isPrevObj = prev && !isString(prev);
+        if (isPrevObj) {
+            for (const key in prev) {
+                if (next[key] == null) {
+                    batchedStyles[key] = '';
+                }
+            }
+            for (const key in next) {
+                const value = next[key];
+                if (value !== prev[key]) {
+                    batchedStyles[key] = value;
+                }
+            }
+        }
+        else {
+            for (const key in next) {
+                batchedStyles[key] = next[key];
+            }
+        }
+        el.setStyles(batchedStyles);
+    }
+}
+
+const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
+    if (key === 'class') ;
+    else if (key === 'style') {
+        patchStyle(el, prevValue, nextValue);
+    }
+    else if (isOn(key)) {
+        // ignore v-model listeners
+        if (!isModelListener(key)) {
+            patchEvent(el, key, prevValue, nextValue, parentComponent);
+        }
+    }
+    else {
+        patchAttr(el, key, nextValue);
+    }
+};
 
 function useCssModule(name = '$style') {
     /* istanbul ignore else */
@@ -8933,10 +9065,6 @@ function setVarsOnVNode(vnode, vars) {
     else if (vnode.type === Fragment) {
         vnode.children.forEach(c => setVarsOnVNode(c, vars));
     }
-}
-
-function addEventListener(el, event, handler, options) {
-    el.addEventListener(event, handler, options);
 }
 
 const getModelAssigner = (vnode) => {

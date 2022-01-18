@@ -9151,12 +9151,161 @@ export function nvueFactory(exports, document) {
     nextSibling: node => node.nextSibling
   };
 
+  function patchAttr(el, key, value) {
+    if (value == null) ;else {
+      el.setAttr(key, value);
+    }
+  }
+
+  function addEventListener(el, event, handler, options) {
+    el.addEvent(event, handler);
+  }
+
+  function removeEventListener(el, event) {
+    el.removeEvent(event);
+  }
+
+  function patchEvent(el, rawName, prevValue, nextValue) {
+    var instance = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
+    // vei = vue event invokers
+    var invokers = el._vei || (el._vei = {});
+    var existingInvoker = invokers[rawName];
+
+    if (nextValue && existingInvoker) {
+      // patch
+      existingInvoker.value = nextValue;
+    } else {
+      var [name, options] = parseName(rawName);
+
+      if (nextValue) {
+        // add
+        var invoker = invokers[rawName] = createInvoker(nextValue, instance);
+        addEventListener(el, name, invoker);
+      } else if (existingInvoker) {
+        // remove
+        removeEventListener(el, name);
+        invokers[rawName] = undefined;
+      }
+    }
+  }
+
+  var optionsModifierRE = /(?:Once|Passive|Capture)$/;
+
+  function parseName(name) {
+    var options;
+
+    if (optionsModifierRE.test(name)) {
+      options = {};
+      var m;
+
+      while (m = name.match(optionsModifierRE)) {
+        name = name.slice(0, name.length - m[0].length);
+        options[m[0].toLowerCase()] = true;
+      }
+    }
+
+    return [hyphenate(name.slice(2)), options];
+  }
+
+  function createInvoker(initialValue, instance) {
+    var invoker = e => {
+      callWithAsyncErrorHandling(invoker.value, instance, 5
+      /* NATIVE_EVENT_HANDLER */
+      , [e]);
+    };
+
+    invoker.value = initialValue;
+    var modifiers = new Set(); // 合并 modifiers
+
+    if (isArray(invoker.value)) {
+      invoker.value.forEach(v => {
+        if (v.modifiers) {
+          v.modifiers.forEach(m => {
+            modifiers.add(m);
+          });
+        }
+      });
+    } else {
+      if (invoker.value.modifiers) {
+        invoker.value.modifiers.forEach(m => {
+          modifiers.add(m);
+        });
+      }
+
+      initWxsEvent(invoker, instance);
+    }
+
+    invoker.modifiers = [...modifiers];
+    return invoker;
+  }
+
+  function initWxsEvent(invoker, instance) {
+    if (!instance) {
+      return;
+    }
+
+    var {
+      $wxsModules
+    } = instance;
+
+    if (!$wxsModules) {
+      return;
+    }
+
+    var invokerSourceCode = invoker.value.toString();
+
+    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
+      return;
+    }
+
+    invoker.wxsEvent = invoker.value();
+  }
+
+  function patchStyle(el, prev, next) {
+    if (!next) ;else if (isString(next)) ;else {
+      var batchedStyles = {};
+      var isPrevObj = prev && !isString(prev);
+
+      if (isPrevObj) {
+        for (var key in prev) {
+          if (next[key] == null) {
+            batchedStyles[key] = '';
+          }
+        }
+
+        for (var _key14 in next) {
+          var value = next[_key14];
+
+          if (value !== prev[_key14]) {
+            batchedStyles[_key14] = value;
+          }
+        }
+      } else {
+        for (var _key15 in next) {
+          batchedStyles[_key15] = next[_key15];
+        }
+      }
+
+      el.setStyles(batchedStyles);
+    }
+  }
+
   var patchProp = function (el, key, prevValue, nextValue) {
     var isSVG = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     var prevChildren = arguments.length > 5 ? arguments[5] : undefined;
     var parentComponent = arguments.length > 6 ? arguments[6] : undefined;
     var parentSuspense = arguments.length > 7 ? arguments[7] : undefined;
     var unmountChildren = arguments.length > 8 ? arguments[8] : undefined;
+    if (key === 'class') ;else if (key === 'style') {
+      patchStyle(el, prevValue, nextValue);
+    } else if (isOn(key)) {
+      // ignore v-model listeners
+      if (!isModelListener(key)) {
+        patchEvent(el, key, prevValue, nextValue, parentComponent);
+      }
+    } else {
+      patchAttr(el, key, nextValue);
+    }
   };
 
   function useCssModule() {
@@ -9239,10 +9388,6 @@ export function nvueFactory(exports, document) {
     }
   }
 
-  function addEventListener(el, event, handler, options) {
-    el.addEventListener(event, handler, options);
-  }
-
   var getModelAssigner = vnode => {
     var fn = vnode.props['onUpdate:modelValue'];
     return isArray(fn) ? value => invokeArrayFns(fn, value) : fn;
@@ -9318,8 +9463,8 @@ export function nvueFactory(exports, document) {
         if (guard && guard(event, modifiers)) return;
       }
 
-      for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key14 = 1; _key14 < _len7; _key14++) {
-        args[_key14 - 1] = arguments[_key14];
+      for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key16 = 1; _key16 < _len7; _key16++) {
+        args[_key16 - 1] = arguments[_key16];
       }
 
       return fn(event, ...args);
