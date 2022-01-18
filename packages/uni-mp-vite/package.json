@@ -25,8 +25,8 @@
     "@intlify/core-base": "9.1.9",
     "@intlify/shared": "9.1.9",
     "@intlify/vue-devtools": "9.1.9",
-    "@vue/compiler-sfc": "3.2.26",
-    "@vue/shared": "3.2.26",
+    "@vue/compiler-sfc": "3.2.27",
+    "@vue/shared": "3.2.27",
     "debug": "^4.3.2",
     "magic-string": "^0.25.7"
   },
