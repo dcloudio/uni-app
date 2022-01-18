@@ -1,3 +1,4 @@
+import { NVUE_U_BUILT_IN_TAGS } from '@dcloudio/uni-shared'
 import {
   DirectiveNode,
   ElementNode,
@@ -32,6 +33,8 @@ function genCode(source: string) {
 
 const codes = [
   `<view>hello</view>`,
+  `<view><text>hello</text></view>`,
+  `<view>hello{{a}}<view>aaa{{a}}</view>{{b}}</view>`,
   `<video></video>`,
   `<video><view></view></video>`,
 ]
@@ -43,15 +46,7 @@ describe('app-nvue: compiler', () => {
     })
   })
   test('u-tags', () => {
-    ;[
-      'text',
-      'image',
-      'input',
-      'textarea',
-      'video',
-      'web-view',
-      'slider',
-    ].forEach((tag) => {
+    NVUE_U_BUILT_IN_TAGS.forEach((tag) => {
       expect(genAst(`<${tag}></${tag}>`).tag).toBe(`u-${tag}`)
     })
   })
