@@ -71,6 +71,41 @@ const TAGS = [
     'shadow-root',
 ].map((tag) => 'uni-' + tag);
 const NVUE_BUILT_IN_TAGS = [
+    'svg',
+    'view',
+    'a',
+    'div',
+    'img',
+    'image',
+    'text',
+    'span',
+    'input',
+    'textarea',
+    'spinner',
+    'select',
+    'slider',
+    'slider-neighbor',
+    'indicator',
+    'canvas',
+    'list',
+    'cell',
+    'header',
+    'loading',
+    'loading-indicator',
+    'refresh',
+    'scrollable',
+    'scroller',
+    'video',
+    'web',
+    'embed',
+    'tabbar',
+    'tabheader',
+    'datepicker',
+    'timepicker',
+    'marquee',
+    'countdown',
+];
+const NVUE_U_BUILT_IN_TAGS = [
     'text',
     'image',
     'input',
@@ -95,11 +130,11 @@ function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
 }
 function isAppNVueNativeTag(tag) {
-    if (isAppNativeTag(tag)) {
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     // u-text,u-video...
-    if (NVUE_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
+    if (NVUE_U_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
         return true;
     }
     return false;
@@ -1273,6 +1308,7 @@ exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
 exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
 exports.NVUE_BUILT_IN_TAGS = NVUE_BUILT_IN_TAGS;
+exports.NVUE_U_BUILT_IN_TAGS = NVUE_U_BUILT_IN_TAGS;
 exports.NVueTextNode = NVueTextNode;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
