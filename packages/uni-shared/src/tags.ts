@@ -137,6 +137,9 @@ export function isAppNativeTag(tag: string) {
 }
 
 export function isAppNVueNativeTag(tag: string) {
+  if (isBuiltInComponent(tag)) {
+    return true
+  }
   if (NVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
   }

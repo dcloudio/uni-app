@@ -130,6 +130,9 @@ function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
 }
 function isAppNVueNativeTag(tag) {
+    if (isBuiltInComponent(tag)) {
+        return true;
+    }
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }

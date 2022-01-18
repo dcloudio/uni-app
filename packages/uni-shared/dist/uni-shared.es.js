@@ -126,6 +126,9 @@ function isAppNativeTag(tag) {
     return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag);
 }
 function isAppNVueNativeTag(tag) {
+    if (isBuiltInComponent(tag)) {
+        return true;
+    }
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
