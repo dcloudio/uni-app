@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import { isAppNativeTag, isAppNVueNativeTag } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import {
@@ -32,6 +34,11 @@ export function uniOptions(): UniVitePlugin['uni'] {
             return compileI18nJsonStr(source.toString(), options)
           },
         })
+        const debugFilename = '__nvue_debug__'
+        const debugFilepath = path.resolve(inputDir, debugFilename)
+        if (fs.existsSync(debugFilepath)) {
+          fs.copyFileSync(debugFilepath, path.resolve(outputDir, debugFilename))
+        }
       }
       return {
         assets: ['hybrid/html/**/*', 'uni_modules/*/hybrid/html/**/*'],
