@@ -265,6 +265,7 @@ export function nvueFactory(exports, document) {
       this.parentNode = null;
       this.nodeType = 3;
       this.text = text;
+      this.children = [];
     }
 
   }
