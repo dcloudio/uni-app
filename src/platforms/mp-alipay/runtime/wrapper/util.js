@@ -115,7 +115,7 @@ export function handleRef (ref) {
   if (ref.props['data-com-type'] === 'wx') {
     const eventProps = {}
     let refProps = ref.props
-    let eventList = refProps['data-event-list'].split(',')
+    const eventList = refProps['data-event-list'].split(',')
     // 初始化支付宝小程序组件事件
     Object.keys(refProps).forEach(key => {
       if (eventList.includes(key)) {
@@ -220,3 +220,19 @@ export const handleLink = (function () {
     (this._$childVues || (this._$childVues = [])).unshift(detail)
   }
 })()
+
+export const handleWrap = function (mp, destory) {
+  const vueId = mp.props.vueId
+  const list = mp.props['data-event-list'].split(',')
+  list.forEach(eventName => {
+    const key = `${eventName}${vueId}`
+    if (destory) {
+      delete this[key]
+    } else {
+      // TODO remove handleRef
+      this[key] = function () {
+        mp.props[eventName].apply(this, arguments)
+      }
+    }
+  })
+}

@@ -12,6 +12,7 @@ import {
 import {
   handleRef,
   handleLink,
+  handleWrap,
   initBehavior,
   initRelation,
   triggerEvent,
@@ -115,6 +116,7 @@ export default function parseComponent (vueComponentOptions) {
       __r: handleRef,
       __e: handleEvent,
       __l: handleLink,
+      __w: handleWrap,
       triggerEvent
     }
   }

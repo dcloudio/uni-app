@@ -56,7 +56,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<credit-pay @change="onChange" @cancle="onCancle">text</credit-pay>',
-      '<credit-pay onChange="__e" onCancle="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" ref="__r" data-event-list="onChange,onCancle" onVueInit="__l">text</credit-pay>',
+      '<plugin-wrapper onChange="__e" onCancle="__e" vue-id="551070e6-1" onPluginWrap="__w" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" ref="__r" data-event-list="onChange,onCancle" onVueInit="__l"><credit-pay onChange="{{\'onChange\'+\'551070e6-1\'}}" onCancle="{{\'onCancle\'+\'551070e6-1\'}}" onVueInit="__l">text</credit-pay></plugin-wrapper>',
       undefined,
       undefined,
       {
