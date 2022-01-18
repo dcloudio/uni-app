@@ -1,4 +1,4 @@
-import { isAppNativeTag as isNativeTag } from '@dcloudio/uni-shared'
+import { isAppNativeTag, isAppNVueNativeTag } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import {
   UniVitePlugin,
@@ -12,6 +12,7 @@ import {
 import { initNVueNodeTransforms } from '../../nvue'
 
 export function uniOptions(): UniVitePlugin['uni'] {
+  const isNVueCompiler = process.env.UNI_COMPILER === 'nvue'
   return {
     copyOptions() {
       const platfrom = process.env.UNI_PLATFORM
@@ -38,11 +39,9 @@ export function uniOptions(): UniVitePlugin['uni'] {
       }
     },
     compilerOptions: {
-      isNativeTag,
+      isNativeTag: isNVueCompiler ? isAppNVueNativeTag : isAppNativeTag,
       nodeTransforms: [
-        ...(process.env.UNI_COMPILER === 'nvue'
-          ? initNVueNodeTransforms()
-          : []),
+        ...(isNVueCompiler ? initNVueNodeTransforms() : []),
         transformTapToClick,
         transformMatchMedia,
         transformPageHead,
