@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-i18n",
-  "version": "2.0.1-alpha-33820220114001",
+  "version": "2.0.1-alpha-33820220118001",
   "description": "@dcloudio/uni-i18n",
   "main": "./dist/uni-i18n.cjs.js",
   "module": "./dist/uni-i18n.es.js",
