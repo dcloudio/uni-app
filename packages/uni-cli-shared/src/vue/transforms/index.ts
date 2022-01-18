@@ -33,7 +33,13 @@ export const transformMatchMedia = createTransformTag({
 })
 
 export const transformTapToClick = createTransformEvent({
-  tap: 'click',
+  tap: (node) => {
+    // 地图组件有自己特定的 tap 事件
+    if (node.tag === 'map' || node.tag === 'v-uni-map') {
+      return 'tap'
+    }
+    return 'click'
+  },
 })
 
 export const transformComponentLink =
