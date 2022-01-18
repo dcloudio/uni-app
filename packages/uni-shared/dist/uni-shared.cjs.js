@@ -70,6 +70,15 @@ const TAGS = [
     'resize-sensor',
     'shadow-root',
 ].map((tag) => 'uni-' + tag);
+const NVUE_BUILT_IN_TAGS = [
+    'text',
+    'image',
+    'input',
+    'textarea',
+    'video',
+    'web-view',
+    'slider',
+];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-
     return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1;
@@ -84,6 +93,16 @@ function isH5NativeTag(tag) {
 }
 function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
+}
+function isAppNVueNativeTag(tag) {
+    if (isAppNativeTag(tag)) {
+        return true;
+    }
+    // u-text,u-video...
+    if (NVUE_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
+        return true;
+    }
+    return false;
 }
 function isMiniProgramNativeTag(tag) {
     return isBuiltInComponent(tag);
@@ -1253,6 +1272,7 @@ exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
 exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
+exports.NVUE_BUILT_IN_TAGS = NVUE_BUILT_IN_TAGS;
 exports.NVueTextNode = NVueTextNode;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
@@ -1336,6 +1356,7 @@ exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
+exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;

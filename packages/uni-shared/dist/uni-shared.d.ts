@@ -222,6 +222,8 @@ export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
 export declare function isAppNativeTag(tag: string): boolean;
 
+export declare function isAppNVueNativeTag(tag: string): boolean;
+
 export declare function isBuiltInComponent(tag: string): boolean;
 
 export declare function isComponentInternalInstance(vm: unknown): vm is ComponentInternalInstance;
@@ -295,6 +297,8 @@ export declare interface NVue {
     isRegisteredModule: (name: string, method?: string) => boolean;
     isRegisteredComponent: (name: string) => boolean;
 }
+
+export declare const NVUE_BUILT_IN_TAGS: string[];
 
 export declare interface NVueConfigAPI {
     bundleUrl: string;
