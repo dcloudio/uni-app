@@ -70,6 +70,42 @@ export const TAGS = [
 ].map((tag) => 'uni-' + tag)
 
 export const NVUE_BUILT_IN_TAGS = [
+  'svg',
+  'view',
+  'a',
+  'div',
+  'img',
+  'image',
+  'text',
+  'span',
+  'input',
+  'textarea',
+  'spinner',
+  'select',
+  'slider',
+  'slider-neighbor',
+  'indicator',
+  'canvas',
+  'list',
+  'cell',
+  'header',
+  'loading',
+  'loading-indicator',
+  'refresh',
+  'scrollable',
+  'scroller',
+  'video',
+  'web',
+  'embed',
+  'tabbar',
+  'tabheader',
+  'datepicker',
+  'timepicker',
+  'marquee',
+  'countdown',
+]
+
+export const NVUE_U_BUILT_IN_TAGS = [
   'text',
   'image',
   'input',
@@ -101,11 +137,11 @@ export function isAppNativeTag(tag: string) {
 }
 
 export function isAppNVueNativeTag(tag: string) {
-  if (isAppNativeTag(tag)) {
+  if (NVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
   }
   // u-text,u-video...
-  if (NVUE_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
+  if (NVUE_U_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
     return true
   }
   return false

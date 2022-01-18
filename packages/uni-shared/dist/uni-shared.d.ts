@@ -300,6 +300,8 @@ export declare interface NVue {
 
 export declare const NVUE_BUILT_IN_TAGS: string[];
 
+export declare const NVUE_U_BUILT_IN_TAGS: string[];
+
 export declare interface NVueConfigAPI {
     bundleUrl: string;
     bundleType: string;
