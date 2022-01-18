@@ -236,6 +236,42 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
       })
     }
   }
+  // fix mp-alipay plugin
+  if (process.env.UNI_PLATFORM === 'mp-alipay' && appJsonFile) {
+    const obj = JSON.parse(appJsonFile.source())
+    if (obj && obj.usingComponents && !Object.keys(obj.usingComponents).length) {
+      const componentName = 'plugin-wrapper'
+      obj.usingComponents[componentName] = `/${componentName}`
+      const source = JSON.stringify(obj, null, 2)
+      appJsonFile.source = function () {
+        return source
+      }
+      const files = [
+        {
+          ext: 'axml',
+          source: '<slot></slot>'
+        },
+        {
+          ext: 'js',
+          source: 'Component({onInit(){this.props.onPluginWrap(this)},didUnmount(){this.props.onPluginWrap(this,false)}})'
+        },
+        {
+          ext: 'json',
+          source: '{"component":true}'
+        }
+      ]
+      files.forEach(({ ext, source }) => {
+        compilation.assets[`${componentName}.${ext}`] = {
+          size () {
+            return Buffer.byteLength(source, 'utf8')
+          },
+          source () {
+            return source
+          }
+        }
+      })
+    }
+  }
   if (process.env.UNI_FEATURE_OBSOLETE !== 'false') {
     if (lastComponents.length) {
       for (const name of lastComponents) {

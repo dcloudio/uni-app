@@ -167,7 +167,8 @@ module.exports = {
               tagNode.value = getComponentName(hyphenate(tagName))
 
               // 组件增加 vueId
-              if (this.options.platform.isComponent(tagNode.value)) {
+              // 跳过支付宝插件组件
+              if (this.options.platform.isComponent(tagNode.value) && !tagNode.$mpPlugin) {
                 addVueId(path, this)
               }
 

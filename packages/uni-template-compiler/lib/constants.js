@@ -28,6 +28,7 @@ const INTERNAL_GET_EVENT = '__get_event'
 const INTERNAL_GET_REFS = '__get_refs'
 const INTERNAL_EVENT_PROXY = '__e'
 const INTERNAL_EVENT_LINK = '__l'
+const INTERNAL_EVENT_WRAP = '__w'
 
 const ALLOWED_GLOBAL_OBJECT = [
   'Math',
@@ -63,6 +64,7 @@ module.exports = {
   ATTR_DATA_EVENT_OPTS: 'data-event-opts',
   ATTR_DATA_COM_TYPE: 'data-com-type',
   ATTR_DATA_EVENT_PARAMS: 'data-event-params',
+  ATTR_DATA_EVENT_LIST: 'data-event-list',
   ATTE_DATA_CUSTOM_HIDDEN: 'data-custom-hidden',
   INTERNAL_GET_ORIG,
   INTERNAL_GET_CLASS,
@@ -71,6 +73,7 @@ module.exports = {
   INTERNAL_GET_REFS,
   INTERNAL_EVENT_PROXY,
   INTERNAL_EVENT_LINK,
+  INTERNAL_EVENT_WRAP,
   INTERNAL_SET_MODEL,
   INTERNAL_SET_SYNC,
   METHOD_BUILT_IN: [
