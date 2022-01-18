@@ -393,6 +393,7 @@ export declare class NVueTextNode {
     parentNode: null | NVueElement;
     nodeType: 3;
     text: string;
+    children: unknown[];
     constructor(text: string);
 }
 

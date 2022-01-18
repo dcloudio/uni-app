@@ -588,6 +588,7 @@ class NVueTextNode {
         this.parentNode = null;
         this.nodeType = 3;
         this.text = text;
+        this.children = [];
     }
 }
 
