@@ -1,4 +1,4 @@
-export function initComponents(Vue, weex) {
+export function initComponents(uni, Vue, weex) {
   var components = function(vue) {
     "use strict";
     const OPEN_TYPES = [
@@ -95,9 +95,7 @@ export function initComponents(Vue, weex) {
       }) {
         const onClick = createNavigatorOnClick(props);
         return () => {
-          return vue.createVNode("div", vue.mergeProps({
-            "class": "clazz"
-          }, useHoverClass(props.hoverClass), {
+          return vue.createVNode("div", vue.mergeProps(useHoverClass(props.hoverClass), {
             "onClick": onClick
           }), [slots.default && slots.default()]);
         };

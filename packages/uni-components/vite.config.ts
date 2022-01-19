@@ -14,7 +14,7 @@ export default defineConfig({
     rollupOptions: {
       external: ['uni', 'vue', 'weex'],
       output: {
-        banner: 'export function initComponents(Vue, weex) {',
+        banner: 'export function initComponents(uni, Vue, weex) {',
         footer: 'return components\n}',
         entryFileNames: 'components.js',
         globals: {
