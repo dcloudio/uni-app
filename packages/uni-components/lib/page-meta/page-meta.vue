@@ -5,7 +5,9 @@
 </template>
 <script>
 import { onMounted } from 'vue'
+// #ifndef H5
 import { onResize } from '@dcloudio/uni-app'
+// #endif
 // #ifdef H5
 import { onWindowResize } from '@dcloudio/uni-h5'
 // #endif
