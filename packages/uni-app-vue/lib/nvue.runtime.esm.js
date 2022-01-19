@@ -1,5 +1,5 @@
 import { NVueTextNode } from '@dcloudio/uni-shared';
-import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isGloballyWhitelisted, parseStringStyle as parseStringStyle$1 } from '@vue/shared';
+import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isGloballyWhitelisted, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 function warn(msg, ...args) {
@@ -8930,7 +8930,7 @@ function transformAttr(el, key, value, instance) {
         }
         if (opts['style'].indexOf(key) !== -1) {
             if (isString(value)) {
-                return parseStringStyle$1(value);
+                return parseStringStyle(value);
             }
             return normalizeStyle(value);
         }
@@ -9062,18 +9062,6 @@ function initWxsEvent(invoker, instance) {
     invoker.wxsEvent = invoker.value();
 }
 
-const listDelimiterRE = /;(?![^(]*\))/g;
-const propertyDelimiterRE = /:(.+)/;
-function parseStringStyle(cssText) {
-    const ret = {};
-    cssText.split(listDelimiterRE).forEach(item => {
-        if (item) {
-            const tmp = item.split(propertyDelimiterRE);
-            tmp.length > 1 && (ret[camelize(tmp[0].trim())] = tmp[1].trim());
-        }
-    });
-    return ret;
-}
 function patchStyle(el, prev, next) {
     if (!next) {
         // TODO remove styles
@@ -9088,19 +9076,19 @@ function patchStyle(el, prev, next) {
     if (isPrevObj) {
         for (const key in prev) {
             if (next[key] == null) {
-                batchedStyles[key] = '';
+                batchedStyles[camelize(key)] = '';
             }
         }
         for (const key in next) {
             const value = next[key];
             if (value !== prev[key]) {
-                batchedStyles[key] = value;
+                batchedStyles[camelize(key)] = value;
             }
         }
     }
     else {
         for (const key in next) {
-            batchedStyles[key] = next[key];
+            batchedStyles[camelize(key)] = next[key];
         }
     }
     el.setStyles(batchedStyles);

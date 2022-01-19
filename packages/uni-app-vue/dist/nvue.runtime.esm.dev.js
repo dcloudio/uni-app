@@ -26,7 +26,7 @@ export function nvueFactory(exports, document) {
 
       for (var i = 0; i < value.length; i++) {
         var item = value[i];
-        var normalized = isString(item) ? parseStringStyle$1(item) : normalizeStyle(item);
+        var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
 
         if (normalized) {
           for (var key in normalized) {
@@ -43,14 +43,14 @@ export function nvueFactory(exports, document) {
     }
   }
 
-  var listDelimiterRE$1 = /;(?![^(]*\))/g;
-  var propertyDelimiterRE$1 = /:(.+)/;
+  var listDelimiterRE = /;(?![^(]*\))/g;
+  var propertyDelimiterRE = /:(.+)/;
 
-  function parseStringStyle$1(cssText) {
+  function parseStringStyle(cssText) {
     var ret = {};
-    cssText.split(listDelimiterRE$1).forEach(item => {
+    cssText.split(listDelimiterRE).forEach(item => {
       if (item) {
-        var tmp = item.split(propertyDelimiterRE$1);
+        var tmp = item.split(propertyDelimiterRE);
         tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
       }
     });
@@ -11047,7 +11047,7 @@ export function nvueFactory(exports, document) {
 
       if (opts['style'].indexOf(key) !== -1) {
         if (isString(value)) {
-          return parseStringStyle$1(value);
+          return parseStringStyle(value);
         }
 
         return normalizeStyle(value);
@@ -11212,20 +11212,6 @@ export function nvueFactory(exports, document) {
     invoker.wxsEvent = invoker.value();
   }
 
-  var listDelimiterRE = /;(?![^(]*\))/g;
-  var propertyDelimiterRE = /:(.+)/;
-
-  function parseStringStyle(cssText) {
-    var ret = {};
-    cssText.split(listDelimiterRE).forEach(item => {
-      if (item) {
-        var tmp = item.split(propertyDelimiterRE);
-        tmp.length > 1 && (ret[camelize(tmp[0].trim())] = tmp[1].trim());
-      }
-    });
-    return ret;
-  }
-
   function patchStyle(el, prev, next) {
     if (!next) {
       // TODO remove styles
@@ -11243,7 +11229,7 @@ export function nvueFactory(exports, document) {
     if (isPrevObj) {
       for (var key in prev) {
         if (next[key] == null) {
-          batchedStyles[key] = '';
+          batchedStyles[camelize(key)] = '';
         }
       }
 
@@ -11251,12 +11237,12 @@ export function nvueFactory(exports, document) {
         var value = next[_key21];
 
         if (value !== prev[_key21]) {
-          batchedStyles[_key21] = value;
+          batchedStyles[camelize(_key21)] = value;
         }
       }
     } else {
       for (var _key22 in next) {
-        batchedStyles[_key22] = next[_key22];
+        batchedStyles[camelize(_key22)] = next[_key22];
       }
     }
 
