@@ -17,7 +17,7 @@ const priority = {
   'uni-mp-toutiao': 70,
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,
-  'uni-cli-nvue': 55,
+  'uni-components': 55,
   'uni-h5': 50,
   'uni-h5-vite': 40,
   'uni-mp-compiler': 40,

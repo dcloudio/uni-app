@@ -1,7 +1,6 @@
 packages/playground/*/dist
 packages/size-check/dist
 packages/uni-app-vite/dist
-packages/uni-cli-nvue/dist
 packages/uni-cli-shared/dist
 packages/uni-h5-vite/dist
 packages/uni-mp-vite/dist
