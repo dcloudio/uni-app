@@ -3,12 +3,19 @@ import {
   createNavigatorOnClick,
   navigatorProps,
 } from '../../components/navigator'
+import { useHoverClass } from '../utils'
 
 export default defineComponent({
   name: 'Navigator',
   props: navigatorProps,
   setup(props, { slots }) {
     const onClick = createNavigatorOnClick(props)
-    return () => <div onClick={onClick}>{slots.default && slots.default()}</div>
+    return () => {
+      return (
+        <div {...useHoverClass(props.hoverClass)} onClick={onClick}>
+          {slots.default && slots.default()}
+        </div>
+      )
+    }
   },
 })

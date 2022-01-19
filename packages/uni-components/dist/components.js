@@ -81,6 +81,12 @@ export function initComponents(Vue, weex) {
         }
       };
     }
+    function useHoverClass(hoverClass) {
+      if (hoverClass && hoverClass !== "none") {
+        return {};
+      }
+      return { hoverClass };
+    }
     var Navigator = vue.defineComponent({
       name: "Navigator",
       props: navigatorProps,
@@ -88,9 +94,13 @@ export function initComponents(Vue, weex) {
         slots
       }) {
         const onClick = createNavigatorOnClick(props);
-        return () => vue.createVNode("div", {
-          "onClick": onClick
-        }, [slots.default && slots.default()]);
+        return () => {
+          return vue.createVNode("div", vue.mergeProps({
+            "class": "clazz"
+          }, useHoverClass(props.hoverClass), {
+            "onClick": onClick
+          }), [slots.default && slots.default()]);
+        };
       }
     });
     var index = {
