@@ -26,7 +26,7 @@ export function nvueFactory(exports, document) {
 
       for (var i = 0; i < value.length; i++) {
         var item = value[i];
-        var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+        var normalized = isString(item) ? parseStringStyle$1(item) : normalizeStyle(item);
 
         if (normalized) {
           for (var key in normalized) {
@@ -43,14 +43,14 @@ export function nvueFactory(exports, document) {
     }
   }
 
-  var listDelimiterRE = /;(?![^(]*\))/g;
-  var propertyDelimiterRE = /:(.+)/;
+  var listDelimiterRE$1 = /;(?![^(]*\))/g;
+  var propertyDelimiterRE$1 = /:(.+)/;
 
-  function parseStringStyle(cssText) {
+  function parseStringStyle$1(cssText) {
     var ret = {};
-    cssText.split(listDelimiterRE).forEach(item => {
+    cssText.split(listDelimiterRE$1).forEach(item => {
       if (item) {
-        var tmp = item.split(propertyDelimiterRE);
+        var tmp = item.split(propertyDelimiterRE$1);
         tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
       }
     });
@@ -9152,10 +9152,133 @@ export function nvueFactory(exports, document) {
     nextSibling: node => node.nextSibling
   };
 
+  function isUndef(val) {
+    return val === undefined || val === null;
+  }
+
+  function parseStylesheet(instance) {
+    return instance.type.__stylesheet || {};
+  }
+
   function patchAttr(el, key, value) {
+    var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    if (instance) {
+      value = transformAttr(el, key, value, instance);
+    }
+
     if (value == null) ;else {
       el.setAttr(key, value);
     }
+  }
+
+  var ATTR_HOVER_CLASS = 'hoverClass';
+  var ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
+  var ATTR_PLACEHOLDER_STYLE = 'placeholderStyle';
+  var ATTR_INDICATOR_CLASS = 'indicatorClass';
+  var ATTR_INDICATOR_STYLE = 'indicatorStyle';
+  var ATTR_MASK_CLASS = 'maskClass';
+  var ATTR_MASK_STYLE = 'maskStyle';
+  var CLASS_AND_STYLES = {
+    view: {
+      class: [ATTR_HOVER_CLASS],
+      style: []
+    },
+    button: {
+      class: [ATTR_HOVER_CLASS],
+      style: []
+    },
+    navigator: {
+      class: [ATTR_HOVER_CLASS],
+      style: []
+    },
+    'u-input': {
+      class: [ATTR_PLACEHOLDER_CLASS],
+      style: [ATTR_PLACEHOLDER_STYLE]
+    },
+    'u-textarea': {
+      class: [ATTR_PLACEHOLDER_CLASS],
+      style: [ATTR_PLACEHOLDER_STYLE]
+    },
+    'picker-view': {
+      class: [ATTR_INDICATOR_CLASS, ATTR_MASK_CLASS],
+      style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
+    }
+  };
+
+  function transformAttr(el, key, value, instance) {
+    if (!value) {
+      return value;
+    }
+
+    var opts = CLASS_AND_STYLES[el.type];
+
+    if (opts) {
+      if (opts['class'].indexOf(key) !== -1) {
+        return parseStylesheet(instance)[value] || {};
+      }
+
+      if (opts['style'].indexOf(key) !== -1) {
+        if (isString(value)) {
+          return parseStringStyle$1(value);
+        }
+
+        return normalizeStyle(value);
+      }
+    }
+
+    return value;
+  } // compiler should normalize class + :class bindings on the same element
+  // into a single binding ['staticClass', dynamic]
+
+
+  function patchClass(el, pre, next) {
+    var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    // 移除 class
+    if (next == null) {
+      return;
+    }
+
+    if (!instance) {
+      return;
+    }
+
+    var oldStyle = getStyle(pre, instance);
+    var newStyle = getStyle(next, instance);
+    var cur, name;
+    var batchedStyles = {};
+
+    for (name in oldStyle) {
+      if (isUndef(newStyle[name])) {
+        batchedStyles[name] = '';
+      }
+    }
+
+    for (name in newStyle) {
+      cur = newStyle[name];
+
+      if (cur !== oldStyle[name]) {
+        batchedStyles[name] = cur;
+      }
+    }
+
+    el.setStyles(batchedStyles);
+  }
+
+  function getStyle(clazz, instance) {
+    if (!clazz) {
+      return {};
+    }
+
+    var classList = clazz.split(' ');
+    var stylesheet = parseStylesheet(instance);
+    var result = {};
+    classList.forEach(name => {
+      var style = stylesheet[name];
+      extend(result, style);
+    });
+    return result;
   }
 
   function addEventListener(el, event, handler, options) {
@@ -9262,33 +9385,55 @@ export function nvueFactory(exports, document) {
     invoker.wxsEvent = invoker.value();
   }
 
+  var listDelimiterRE = /;(?![^(]*\))/g;
+  var propertyDelimiterRE = /:(.+)/;
+
+  function parseStringStyle(cssText) {
+    var ret = {};
+    cssText.split(listDelimiterRE).forEach(item => {
+      if (item) {
+        var tmp = item.split(propertyDelimiterRE);
+        tmp.length > 1 && (ret[camelize(tmp[0].trim())] = tmp[1].trim());
+      }
+    });
+    return ret;
+  }
+
   function patchStyle(el, prev, next) {
-    if (!next) ;else if (isString(next)) ;else {
-      var batchedStyles = {};
-      var isPrevObj = prev && !isString(prev);
+    if (!next) {
+      // TODO remove styles
+      // el.setStyles({})
+      return;
+    }
 
-      if (isPrevObj) {
-        for (var key in prev) {
-          if (next[key] == null) {
-            batchedStyles[key] = '';
-          }
-        }
+    if (isString(next)) {
+      next = parseStringStyle(next);
+    }
 
-        for (var _key14 in next) {
-          var value = next[_key14];
+    var batchedStyles = {};
+    var isPrevObj = prev && !isString(prev);
 
-          if (value !== prev[_key14]) {
-            batchedStyles[_key14] = value;
-          }
-        }
-      } else {
-        for (var _key15 in next) {
-          batchedStyles[_key15] = next[_key15];
+    if (isPrevObj) {
+      for (var key in prev) {
+        if (next[key] == null) {
+          batchedStyles[key] = '';
         }
       }
 
-      el.setStyles(batchedStyles);
+      for (var _key14 in next) {
+        var value = next[_key14];
+
+        if (value !== prev[_key14]) {
+          batchedStyles[_key14] = value;
+        }
+      }
+    } else {
+      for (var _key15 in next) {
+        batchedStyles[_key15] = next[_key15];
+      }
     }
+
+    el.setStyles(batchedStyles);
   }
 
   var patchProp = function (el, key, prevValue, nextValue) {
@@ -9297,7 +9442,10 @@ export function nvueFactory(exports, document) {
     var parentComponent = arguments.length > 6 ? arguments[6] : undefined;
     var parentSuspense = arguments.length > 7 ? arguments[7] : undefined;
     var unmountChildren = arguments.length > 8 ? arguments[8] : undefined;
-    if (key === 'class') ;else if (key === 'style') {
+
+    if (key === 'class') {
+      patchClass(el, prevValue, nextValue, parentComponent);
+    } else if (key === 'style') {
       patchStyle(el, prevValue, nextValue);
     } else if (isOn(key)) {
       // ignore v-model listeners
@@ -9305,7 +9453,7 @@ export function nvueFactory(exports, document) {
         patchEvent(el, key, prevValue, nextValue, parentComponent);
       }
     } else {
-      patchAttr(el, key, nextValue);
+      patchAttr(el, key, nextValue, parentComponent);
     }
   };
 
@@ -9387,151 +9535,6 @@ export function nvueFactory(exports, document) {
     } else if (vnode.type === Fragment) {
       vnode.children.forEach(c => setVarsOnVNode(c, vars));
     }
-  }
-
-  var getModelAssigner = vnode => {
-    var fn = vnode.props['onUpdate:modelValue'];
-    return isArray(fn) ? value => invokeArrayFns(fn, value) : fn;
-  }; // We are exporting the v-model runtime directly as vnode hooks so that it can
-  // be tree-shaken in case v-model is never used.
-
-
-  var vModelText = {
-    created(el, _ref23, vnode) {
-      var {
-        value,
-        modifiers: {
-          trim,
-          number
-        }
-      } = _ref23;
-      el.value = value == null ? '' : value;
-      el._assign = getModelAssigner(vnode);
-      addEventListener(el, 'input', e => {
-        var domValue = e.detail.value; // 从 view 层接收到新值后，赋值给 service 层元素，注意，需要临时解除 pageNode，否则赋值 value 会触发向 view 层的再次同步数据
-
-        var pageNode = el.pageNode;
-        el.pageNode = null;
-        el.value = domValue;
-        el.pageNode = pageNode;
-
-        if (trim) {
-          domValue = domValue.trim();
-        } else if (number) {
-          domValue = toNumber(domValue);
-        }
-
-        el._assign(domValue);
-      });
-    },
-
-    beforeUpdate(el, _ref24, vnode) {
-      var {
-        value
-      } = _ref24;
-      el._assign = getModelAssigner(vnode);
-      var newValue = value == null ? '' : value;
-
-      if (el.value !== newValue) {
-        el.value = newValue;
-      }
-    }
-
-  };
-  var systemModifiers = ['ctrl', 'shift', 'alt', 'meta'];
-  var modifierGuards = {
-    stop: e => e.stopPropagation(),
-    prevent: e => e.preventDefault(),
-    self: e => e.target !== e.currentTarget,
-    ctrl: e => !e.ctrlKey,
-    shift: e => !e.shiftKey,
-    alt: e => !e.altKey,
-    meta: e => !e.metaKey,
-    left: e => 'button' in e && e.button !== 0,
-    middle: e => 'button' in e && e.button !== 1,
-    right: e => 'button' in e && e.button !== 2,
-    exact: (e, modifiers) => systemModifiers.some(m => e["".concat(m, "Key")] && !modifiers.includes(m))
-  };
-  /**
-   * @private
-   */
-
-  var withModifiers = (fn, modifiers) => {
-    // fixed by xxxxxx 补充 modifiers 标记，方便同步给 view 层
-    var wrapper = function (event) {
-      for (var i = 0; i < modifiers.length; i++) {
-        var guard = modifierGuards[modifiers[i]];
-        if (guard && guard(event, modifiers)) return;
-      }
-
-      for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key16 = 1; _key16 < _len7; _key16++) {
-        args[_key16 - 1] = arguments[_key16];
-      }
-
-      return fn(event, ...args);
-    };
-
-    wrapper.modifiers = modifiers;
-    return wrapper;
-  }; // Kept for 2.x compat.
-  // Note: IE11 compat for `spacebar` and `del` is removed for now.
-
-
-  var keyNames = {
-    esc: 'escape',
-    space: ' ',
-    up: 'arrow-up',
-    left: 'arrow-left',
-    right: 'arrow-right',
-    down: 'arrow-down',
-    delete: 'backspace'
-  };
-  /**
-   * @private
-   */
-
-  var withKeys = (fn, modifiers) => {
-    return event => {
-      if (!('key' in event)) {
-        return;
-      }
-
-      var eventKey = hyphenate(event.key);
-
-      if (modifiers.some(k => k === eventKey || keyNames[k] === eventKey)) {
-        return fn(event);
-      }
-    };
-  };
-
-  var vShow = {
-    beforeMount(el, _ref25) {
-      var {
-        value
-      } = _ref25;
-      setDisplay(el, value);
-    },
-
-    updated(el, _ref26) {
-      var {
-        value,
-        oldValue
-      } = _ref26;
-      if (!value === !oldValue) return;
-      setDisplay(el, value);
-    },
-
-    beforeUnmount(el, _ref27) {
-      var {
-        value
-      } = _ref27;
-      setDisplay(el, value);
-    }
-
-  };
-
-  function setDisplay(el, value) {
-    el.setAttribute('.vShow', !!value);
   }
 
   var rendererOptions = extend({
@@ -9683,8 +9686,6 @@ export function nvueFactory(exports, document) {
     useSSRContext: useSSRContext,
     useSlots: useSlots,
     useTransitionState: useTransitionState,
-    vModelText: vModelText,
-    vShow: vShow,
     version: version,
     warn: warn$1,
     watch: watch,
@@ -9695,9 +9696,7 @@ export function nvueFactory(exports, document) {
     withCtx: withCtx,
     withDefaults: withDefaults,
     withDirectives: withDirectives,
-    withKeys: withKeys,
     withMemo: withMemo,
-    withModifiers: withModifiers,
     withScopeId: withScopeId,
     camelize: camelize,
     capitalize: capitalize,
