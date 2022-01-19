@@ -18,6 +18,7 @@ import {
   isIdentifier,
   isSpreadElement,
   Identifier,
+  spreadElement,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -50,6 +51,7 @@ import {
 import { EXTEND } from './runtimeHelpers'
 import { createObjectExpression } from './ast'
 import { SCOPED_SLOT_IDENTIFIER } from './transforms/utils'
+import { genBabelExpr } from './codegen'
 
 export interface ImportItem {
   exp: string | ExpressionNode
@@ -550,7 +552,15 @@ function createRenderDataExpr(
   context: TransformContext
 ) {
   const objExpr = createObjectExpression(properties)
-  if (context.renderDataSpread || !hasSpreadElement(objExpr)) {
+  if (!hasSpreadElement(objExpr)) {
+    return objExpr
+  }
+  // filters: ['test']
+  // v-if="text.aa()"
+  if (context.filters.length) {
+    transformFilterObjectSpreadExpr(objExpr, context)
+  }
+  if (context.renderDataSpread) {
     return objExpr
   }
   return transformObjectSpreadExpr(objExpr, context)
@@ -654,6 +664,70 @@ function transformConditionalExpression(
     }
   } else if (isConditionalExpression(alternate)) {
     transformConditionalExpression(alternate, context)
+  }
+  return expr
+}
+
+function transformFilterObjectSpreadExpr(
+  objExpr: ObjectExpression,
+  context: TransformContext
+) {
+  const properties = objExpr.properties as (ObjectProperty | SpreadElement)[]
+  properties.forEach((prop) => {
+    if (isObjectProperty(prop)) {
+      transformFilterObjectPropertyExpr(prop, context)
+    } else {
+      prop.argument = transformFilterConditionalExpression(
+        prop.argument as ConditionalExpression,
+        context
+      )
+    }
+  })
+}
+
+function transformFilterObjectPropertyExpr(
+  prop: ObjectProperty,
+  context: TransformContext
+) {
+  // vFor, withScopedSlot
+  const returnStatement = parseReturnStatement(prop)
+  if (returnStatement) {
+    const objExpr = returnStatement.argument as ObjectExpression
+    if (hasSpreadElement(objExpr)) {
+      transformFilterObjectSpreadExpr(objExpr, context)
+    }
+  }
+}
+function transformFilterConditionalExpression(
+  expr: ConditionalExpression,
+  context: TransformContext
+) {
+  const { test, consequent, alternate } = expr
+  if (isObjectExpression(consequent) && hasSpreadElement(consequent)) {
+    transformFilterObjectSpreadExpr(consequent, context)
+  }
+  if (isObjectExpression(alternate)) {
+    if (hasSpreadElement(alternate)) {
+      transformFilterObjectSpreadExpr(alternate, context)
+    }
+  } else if (isConditionalExpression(alternate)) {
+    expr.alternate = transformFilterConditionalExpression(alternate, context)
+  }
+  const testCode = genBabelExpr(test)
+  // filter test
+  if (context.filters.find((filter) => testCode.includes(filter + '.'))) {
+    // test.aa() ? {a:1} : {b:2} => {...{a:1},...{b:2}}
+    const properties: SpreadElement[] = []
+    if (!isObjectExpression(consequent) || consequent.properties.length) {
+      properties.push(spreadElement(consequent))
+    }
+    if (
+      !isObjectExpression(expr.alternate) ||
+      expr.alternate.properties.length
+    ) {
+      properties.push(spreadElement(expr.alternate))
+    }
+    return objectExpression(properties)
   }
   return expr
 }

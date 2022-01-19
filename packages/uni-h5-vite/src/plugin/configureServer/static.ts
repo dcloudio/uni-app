@@ -1,10 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import type { ViteDevServer } from 'vite'
+import type { Connect, ViteDevServer } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import {
   isImportRequest,
+  isInternalRequest,
   normalizePath,
   PUBLIC_DIR,
 } from '@dcloudio/uni-cli-shared'
@@ -34,13 +35,25 @@ export const initStatic = (server: ViteDevServer) => {
       }
     },
   })
-  server.middlewares.use((req, res, next) => {
-    // skip import request
-    if (isImportRequest(req.url!)) {
-      return next()
+  const viteServePublicMiddlewareIndex = server.middlewares.stack.findIndex(
+    (middleware) => {
+      return (
+        (middleware.handle as Function).name === 'viteServePublicMiddleware'
+      )
     }
-    return serve(req, res, next)
-  })
+  )
+  // 替换 vite 自带的 public middleware
+  if (viteServePublicMiddlewareIndex > -1) {
+    server.middlewares.stack.splice(viteServePublicMiddlewareIndex, 1, {
+      route: '',
+      handle: ((req, res, next) => {
+        if (isImportRequest(req.url!) || isInternalRequest(req.url!)) {
+          return next()
+        }
+        return serve(req, res, next)
+      }) as Connect.NextHandleFunction,
+    })
+  }
 }
 
 export function createPublicFileFilter(base: string = '/') {
