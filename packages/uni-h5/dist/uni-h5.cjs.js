@@ -773,7 +773,7 @@ function provideForm(trigger) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$v = {
+const props$u = {
   for: {
     type: String,
     default: ""
@@ -781,7 +781,7 @@ const props$v = {
 };
 var index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$v,
+  props: props$u,
   setup(props2, {
     slots
   }) {
@@ -1667,7 +1667,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$u = {
+const props$t = {
   canvasId: {
     type: String,
     default: ""
@@ -1683,7 +1683,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$u,
+  props: props$t,
   computed: {
     id() {
       return this.canvasId;
@@ -2140,7 +2140,7 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$t = {
+const props$s = {
   name: {
     type: String,
     default: ""
@@ -2148,7 +2148,7 @@ const props$t = {
 };
 var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$t,
+  props: props$s,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2200,7 +2200,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$s = {
+const props$r = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2224,7 +2224,7 @@ const props$s = {
 };
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$s,
+  props: props$r,
   setup(props2, {
     slots
   }) {
@@ -2291,7 +2291,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$r = {
+const props$q = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2463,7 +2463,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$q = /* @__PURE__ */ shared.extend({}, props$r, {
+const props$p = /* @__PURE__ */ shared.extend({}, props$q, {
   id: {
     type: String,
     default: ""
@@ -2491,7 +2491,7 @@ const props$q = /* @__PURE__ */ shared.extend({}, props$r, {
 });
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$q,
+  props: props$p,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2577,7 +2577,7 @@ var index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$p = {
+const props$o = {
   src: {
     type: String,
     default: ""
@@ -2616,7 +2616,7 @@ const IMAGE_MODES = {
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$p,
+  props: props$o,
   setup(props2, {
     emit: emit2
   }) {
@@ -2866,7 +2866,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$o = /* @__PURE__ */ shared.extend({}, {
+const props$n = /* @__PURE__ */ shared.extend({}, {
   name: {
     type: String,
     default: ""
@@ -2935,7 +2935,7 @@ const props$o = /* @__PURE__ */ shared.extend({}, {
     type: Boolean,
     default: false
   }
-}, props$r);
+}, props$q);
 const emit = [
   "input",
   "focus",
@@ -3130,7 +3130,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
+const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3142,7 +3142,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$n,
+  props: props$m,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3320,7 +3320,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$m = {
+const props$l = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -3329,7 +3329,7 @@ const props$m = {
 var index$v = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$m,
+  props: props$l,
   setup(props2, {
     slots
   }) {
@@ -3817,7 +3817,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$l = {
+const props$k = {
   direction: {
     type: String,
     default: "none"
@@ -3873,7 +3873,7 @@ const props$l = {
 };
 var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$l,
+  props: props$k,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -4244,8 +4244,14 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$k = {
+const OPEN_TYPES = [
+  "navigate",
+  "redirect",
+  "switchTab",
+  "reLaunch",
+  "navigateBack"
+];
+const navigatorProps = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -4282,13 +4288,49 @@ const props$k = {
     default: false
   }
 };
+function createNavigatorOnClick(props2) {
+  return () => {
+    if (props2.openType !== "navigateBack" && !props2.url) {
+      console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+      return;
+    }
+    switch (props2.openType) {
+      case "navigate":
+        uni.navigateTo({
+          url: props2.url
+        });
+        break;
+      case "redirect":
+        uni.redirectTo({
+          url: props2.url,
+          exists: props2.exists
+        });
+        break;
+      case "switchTab":
+        uni.switchTab({
+          url: props2.url
+        });
+        break;
+      case "reLaunch":
+        uni.reLaunch({
+          url: props2.url
+        });
+        break;
+      case "navigateBack":
+        uni.navigateBack({
+          delta: props2.delta
+        });
+        break;
+    }
+  };
+}
 var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
     MODE: 3
   },
-  props: props$k,
+  props: navigatorProps,
   setup(props2, {
     slots
   }) {
@@ -4298,40 +4340,7 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
-    function onClick($event) {
-      if (props2.openType !== "navigateBack" && !props2.url) {
-        console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
-        return;
-      }
-      switch (props2.openType) {
-        case "navigate":
-          uni.navigateTo({
-            url: props2.url
-          });
-          break;
-        case "redirect":
-          uni.redirectTo({
-            url: props2.url,
-            exists: props2.exists
-          });
-          break;
-        case "switchTab":
-          uni.switchTab({
-            url: props2.url
-          });
-          break;
-        case "reLaunch":
-          uni.reLaunch({
-            url: props2.url
-          });
-          break;
-        case "navigateBack":
-          uni.navigateBack({
-            delta: props2.delta
-          });
-          break;
-      }
-    }
+    const onClick = createNavigatorOnClick(props2);
     return () => {
       const {
         hoverClass,
@@ -6399,7 +6408,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$9 = /* @__PURE__ */ shared.extend({}, props$o, {
+const props$9 = /* @__PURE__ */ shared.extend({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
