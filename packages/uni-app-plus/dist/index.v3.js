@@ -4366,7 +4366,7 @@ var serviceContext = (function () {
     return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
-  const AUDIO_DEFAULT_SESSION_CATEGORY = 'ambient';
+  const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback';
 
   const audios = {};
 
@@ -11349,9 +11349,7 @@ var serviceContext = (function () {
         this._dispatchEvent('adClicked', {});
       });
 
-      if (this._preload) {
-        this._loadAd();
-      }
+      this._loadAd();
     }
 
     get isExpired () {
