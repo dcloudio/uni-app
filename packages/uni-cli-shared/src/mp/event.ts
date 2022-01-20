@@ -1,3 +1,4 @@
+import { customizeEvent } from '@dcloudio/uni-shared'
 export function formatMiniProgramEvent(
   eventName: string,
   {
@@ -10,6 +11,10 @@ export function formatMiniProgramEvent(
     isComponent?: boolean
   }
 ) {
+  if (isComponent) {
+    // 自定义组件的自定义事件需要格式化，因为 triggerEvent 时也会格式化
+    eventName = customizeEvent(eventName)
+  }
   if (!isComponent && eventName === 'click') {
     eventName = 'tap'
   }

@@ -1,5 +1,4 @@
-import { camelize } from '@vue/shared'
-import { ON_LOAD } from '@dcloudio/uni-shared'
+import { customizeEvent, ON_LOAD } from '@dcloudio/uni-shared'
 import { MPComponentInstance } from './component'
 import { initPropsObserver } from './componentOptions'
 import { initProps } from './componentProps'
@@ -7,16 +6,10 @@ import { initProps } from './componentProps'
 const MPPage = Page
 const MPComponent = Component
 
-const customizeRE = /:/g
-
-function customize(str: string) {
-  return camelize(str.replace(customizeRE, '-'))
-}
-
 function initTriggerEvent(mpInstance: MPComponentInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent
   mpInstance.triggerEvent = function (event, ...args) {
-    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+    return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args])
   }
 }
 

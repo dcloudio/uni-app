@@ -122,6 +122,8 @@ export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrec
 
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
 
+export declare function customizeEvent(str: string): string;
+
 export declare const DATA_RE: RegExp;
 
 export declare function debounce(fn: Function, delay: number): {

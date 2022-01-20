@@ -44,13 +44,18 @@ function addVueRef(node, context) {
     props.splice(props.indexOf(refProp), 0, uniCliShared.createAttributeNode('ref', '__r'));
 }
 
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return shared.camelize(str.replace(customizeRE, '-'));
+}
+
 const event = {
     format(name, { isCatch, isComponent }) {
         if (!isComponent && name === 'click') {
             name = 'tap';
         }
         name = eventMap[name] || name;
-        return `${isCatch ? 'catch' : 'on'}${shared.capitalize(shared.camelize(name))}`;
+        return `${isCatch ? 'catch' : 'on'}${shared.capitalize(customizeEvent(name))}`;
     },
 };
 const eventMap = {
