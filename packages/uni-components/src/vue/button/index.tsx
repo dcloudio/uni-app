@@ -7,51 +7,11 @@ import { withWebEvent } from '../../helpers/useEvent'
 import { UniFormCtx, uniFormKey } from '../form'
 import { uniLabelKey, UniLabelCtx } from '../label'
 import { useListeners } from '../../helpers/useListeners'
+import { buttonProps } from '../../components/button'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Button',
-  props: {
-    id: {
-      type: String,
-      default: '',
-    },
-    hoverClass: {
-      type: String,
-      default: 'button-hover',
-    },
-    hoverStartTime: {
-      type: [Number, String],
-      default: 20,
-    },
-    hoverStayTime: {
-      type: [Number, String],
-      default: 70,
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      default: false,
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false,
-    },
-    formType: {
-      type: String,
-      default: '',
-    },
-    openType: {
-      type: String,
-      default: '',
-    },
-    loading: {
-      type: [Boolean, String],
-      default: false,
-    },
-    plain: {
-      type: [Boolean, String],
-      default: false,
-    },
-  },
+  props: buttonProps,
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
     if (__PLATFORM__ === 'app') {

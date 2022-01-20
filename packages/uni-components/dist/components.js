@@ -1,4 +1,4 @@
-export function initComponents(Vue, weex) {
+export function initComponents(uni, Vue, weex) {
   var components = function(vue) {
     "use strict";
     const OPEN_TYPES = [
@@ -81,6 +81,12 @@ export function initComponents(Vue, weex) {
         }
       };
     }
+    function useHoverClass(hoverClass) {
+      if (hoverClass && hoverClass !== "none") {
+        return {};
+      }
+      return { hoverClass };
+    }
     var Navigator = vue.defineComponent({
       name: "Navigator",
       props: navigatorProps,
@@ -88,9 +94,11 @@ export function initComponents(Vue, weex) {
         slots
       }) {
         const onClick = createNavigatorOnClick(props);
-        return () => vue.createVNode("div", {
-          "onClick": onClick
-        }, [slots.default && slots.default()]);
+        return () => {
+          return vue.createVNode("div", vue.mergeProps(useHoverClass(props.hoverClass), {
+            "onClick": onClick
+          }), [slots.default && slots.default()]);
+        };
       }
     });
     var index = {
