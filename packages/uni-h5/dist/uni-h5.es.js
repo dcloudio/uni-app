@@ -1634,6 +1634,7 @@ var animation = {
   }
 };
 const defineBuiltInComponent = (options) => {
+  options.__reserved = true;
   const { props: props2, mixins } = options;
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
@@ -1641,6 +1642,7 @@ const defineBuiltInComponent = (options) => {
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
+  options.__reserved = true;
   options.compatConfig = {
     MODE: 3
   };
@@ -1909,50 +1911,51 @@ function _removeListeners(id2, listeners2, watch2) {
     }
   });
 }
+const buttonProps = {
+  id: {
+    type: String,
+    default: ""
+  },
+  hoverClass: {
+    type: String,
+    default: "button-hover"
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 20
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 70
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  formType: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: ""
+  },
+  loading: {
+    type: [Boolean, String],
+    default: false
+  },
+  plain: {
+    type: [Boolean, String],
+    default: false
+  }
+};
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    hoverClass: {
-      type: String,
-      default: "button-hover"
-    },
-    hoverStartTime: {
-      type: [Number, String],
-      default: 20
-    },
-    hoverStayTime: {
-      type: [Number, String],
-      default: 70
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    formType: {
-      type: String,
-      default: ""
-    },
-    openType: {
-      type: String,
-      default: ""
-    },
-    loading: {
-      type: [Boolean, String],
-      default: false
-    },
-    plain: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
+  props: buttonProps,
   setup(props2, {
     slots
   }) {
@@ -3094,25 +3097,38 @@ class MapContext {
   }
   $getAppMap() {
   }
-  addCustomLayer() {
+  addCustomLayer(options) {
+    operateMapWrap(this.id, this.pageId, "addCustomLayer", options);
   }
-  removeCustomLayer() {
+  removeCustomLayer(options) {
+    operateMapWrap(this.id, this.pageId, "removeCustomLayer", options);
   }
-  addGroundOverlay() {
+  addGroundOverlay(options) {
+    operateMapWrap(this.id, this.pageId, "addGroundOverlay", options);
   }
-  removeGroundOverlay() {
+  removeGroundOverlay(options) {
+    operateMapWrap(this.id, this.pageId, "removeGroundOverlay", options);
   }
-  updateGroundOverlay() {
+  updateGroundOverlay(options) {
+    operateMapWrap(this.id, this.pageId, "updateGroundOverlay", options);
   }
-  initMarkerCluster() {
+  initMarkerCluster(options) {
+    operateMapWrap(this.id, this.pageId, "initMarkerCluster", options);
   }
-  addMarkers() {
+  addMarkers(options) {
+    operateMapWrap(this.id, this.pageId, "addMarkers", options);
   }
-  removeMarkers() {
+  removeMarkers(options) {
+    operateMapWrap(this.id, this.pageId, "removeMarkers", options);
   }
-  moveAlong() {
+  moveAlong(options) {
+    operateMapWrap(this.id, this.pageId, "moveAlong", options);
   }
-  openMapApp() {
+  openMapApp(options) {
+    operateMapWrap(this.id, this.pageId, "openMapApp", options);
+  }
+  on(options) {
+    operateMapWrap(this.id, this.pageId, "on", options);
   }
 }
 const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {

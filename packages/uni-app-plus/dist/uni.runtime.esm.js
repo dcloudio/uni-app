@@ -2671,6 +2671,9 @@ var serviceContext = (function (vue) {
       openMapApp(ctx, args) {
           return invokeVmMethod(ctx, 'openMapApp', args);
       },
+      on(ctx, args) {
+          return ctx.on(args.name, args.callback);
+      },
   };
   function operateMap(id, pageId, type, data, operateMapCallback) {
       const page = getCurrentPages().find((page) => page.$page.id === pageId);
@@ -9947,16 +9950,39 @@ var serviceContext = (function (vue) {
               return plus.maps.getMapById(this.pageId + '-map-' + this.id);
           }
       }
-      addCustomLayer() { }
-      removeCustomLayer() { }
-      addGroundOverlay() { }
-      removeGroundOverlay() { }
-      updateGroundOverlay() { }
-      initMarkerCluster() { }
-      addMarkers() { }
-      removeMarkers() { }
-      moveAlong() { }
-      openMapApp() { }
+      addCustomLayer(options) {
+          operateMapWrap(this.id, this.pageId, 'addCustomLayer', options);
+      }
+      removeCustomLayer(options) {
+          operateMapWrap(this.id, this.pageId, 'removeCustomLayer', options);
+      }
+      addGroundOverlay(options) {
+          operateMapWrap(this.id, this.pageId, 'addGroundOverlay', options);
+      }
+      removeGroundOverlay(options) {
+          operateMapWrap(this.id, this.pageId, 'removeGroundOverlay', options);
+      }
+      updateGroundOverlay(options) {
+          operateMapWrap(this.id, this.pageId, 'updateGroundOverlay', options);
+      }
+      initMarkerCluster(options) {
+          operateMapWrap(this.id, this.pageId, 'initMarkerCluster', options);
+      }
+      addMarkers(options) {
+          operateMapWrap(this.id, this.pageId, 'addMarkers', options);
+      }
+      removeMarkers(options) {
+          operateMapWrap(this.id, this.pageId, 'removeMarkers', options);
+      }
+      moveAlong(options) {
+          operateMapWrap(this.id, this.pageId, 'moveAlong', options);
+      }
+      openMapApp(options) {
+          operateMapWrap(this.id, this.pageId, 'openMapApp', options);
+      }
+      on(options) {
+          operateMapWrap(this.id, this.pageId, 'on', options);
+      }
   }
   const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
       if (context) {
