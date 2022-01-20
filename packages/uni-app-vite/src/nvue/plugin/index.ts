@@ -41,7 +41,7 @@ export function uniAppNVuePlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const mainPath = resolveMainPathOnce(inputDir)
   function normalizeCssChunkFilename(id: string) {
-    return removeExt(normalizePath(path.relative(inputDir, id))) + '.css'
+    return removeExt(normalizePath(path.relative(inputDir, id))) + '.css.js'
   }
   return {
     name: 'uni:app-nvue',
@@ -78,16 +78,13 @@ export function uniAppNVuePlugin(): Plugin {
     configResolved: createConfigResolved({
       chunkCssFilename(id: string) {
         if (id === mainPath) {
-          return 'app.css'
+          return 'app.css.js'
         } else if (isUniPageSfcFile(id, inputDir)) {
           return normalizeCssChunkFilename(id)
         }
       },
-      chunkCssCode(filename, cssCode) {
-        if (filename === 'app.css') {
-          return cssCode
-        }
-        return cssCode
+      chunkCssCode(_, cssCode) {
+        return 'export default {}'
       },
     }),
   }

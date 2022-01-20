@@ -648,6 +648,12 @@ importers:
     devDependencies:
       '@vue/compiler-core': 3.2.27
 
+  packages/uni-nvue-styler:
+    specifiers:
+      postcss: ^8.4.5
+    dependencies:
+      postcss: 8.4.5
+
   packages/uni-quickapp-webview:
     specifiers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030820220114003
