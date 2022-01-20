@@ -221,11 +221,10 @@ function createComponentDescriptor(
   vm: ComponentDescriptorVm,
   isOwnerInstance = true
 ) {
-  if (isOwnerInstance && vm) {
-    if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5') {
+    if (isOwnerInstance && vm) {
       vm = resolveOwnerVm((vm as ComponentPublicInstance).$)!
     }
-    // TODO App
   }
   if (vm && vm.$el) {
     if (!vm.$el.__wxsComponentDescriptor) {
