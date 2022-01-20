@@ -101,6 +101,7 @@ function normalizeMouseEvent(evt: Record<string, any>, mouseEvt: MouseEvent) {
   evt.pageY = mouseEvt.pageY - top
   evt.clientX = mouseEvt.clientX
   evt.clientY = mouseEvt.clientY - top
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)]
 }
 
 function createTouchEvent(evt: MouseEvent, top: number) {
