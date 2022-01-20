@@ -13435,11 +13435,11 @@ function addSubscribe(name, callback, pageId) {
     callback(type, data, resolve);
   });
 }
-function removeSubscribe(name) {
+function removeSubscribe(name, pageId) {
   if (!name) {
     return;
   }
-  unregisterViewMethod(getCurrentPageId(), name);
+  unregisterViewMethod(pageId || getCurrentPageId(), name);
 }
 function useSubscribe(callback, name, multiple, pageId) {
   const instance2 = getCurrentInstance();
@@ -13454,7 +13454,7 @@ function useSubscribe(callback, name, multiple, pageId) {
     }
   });
   onBeforeUnmount(() => {
-    removeSubscribe(name || normalizeEvent(vm));
+    removeSubscribe(name || normalizeEvent(vm), pageId);
   });
 }
 function useOn(name, callback) {
