@@ -2,16 +2,27 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
+  isUniPageSfcFile,
+  normalizePath,
   parsePagesJsonOnce,
+  removeExt,
+  resolveMainPathOnce,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
 import { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
-import { configResolved } from '../../plugin/configResolved'
+import { createConfigResolved } from '../../plugin/configResolved'
 import { templateDir } from '../../utils'
 
 export function uniAppVuePlugin(): UniVitePlugin {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const mainPath = resolveMainPathOnce(inputDir)
+  let appCss = ''
+
+  function normalizeCssChunkFilename(id: string) {
+    return removeExt(normalizePath(path.relative(inputDir, id))) + '.css'
+  }
   return {
     name: 'uni:app-vue',
     config() {
@@ -30,7 +41,27 @@ export function uniAppVuePlugin(): UniVitePlugin {
         },
       }
     },
-    configResolved,
+    configResolved: createConfigResolved({
+      chunkCssFilename(id: string) {
+        if (id === mainPath) {
+          return 'app.css'
+        } else if (isUniPageSfcFile(id, inputDir)) {
+          return normalizeCssChunkFilename(id)
+        }
+      },
+      chunkCssCode(filename, cssCode) {
+        if (filename === 'app.css') {
+          if (!appCss) {
+            appCss = fs.readFileSync(
+              require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
+              'utf8'
+            )
+          }
+          return appCss + '\n' + cssCode
+        }
+        return cssCode
+      },
+    }),
     generateBundle(_, bundle) {
       this.emitFile({
         fileName: '__uniappview.html',

@@ -2,6 +2,7 @@ import path from 'path'
 import {
   createTransformTag,
   dynamicImportPolyfill,
+  isUniPageSfcFile,
   normalizePath,
   parseVueRequest,
   removeExt,
@@ -14,7 +15,7 @@ import { transformRenderWhole } from './transforms/transformRenderWhole'
 import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
 import { transformText } from './transforms/transformText'
-import { configResolved } from '../../plugin/configResolved'
+import { createConfigResolved } from '../../plugin/configResolved'
 const uTags = {
   text: 'u-text',
   image: 'u-image',
@@ -37,11 +38,14 @@ export function initNVueNodeTransforms() {
 }
 
 export function uniAppNVuePlugin(): Plugin {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const mainPath = resolveMainPathOnce(inputDir)
+  function normalizeCssChunkFilename(id: string) {
+    return removeExt(normalizePath(path.relative(inputDir, id))) + '.css'
+  }
   return {
     name: 'uni:app-nvue',
     config() {
-      const inputDir = process.env.UNI_INPUT_DIR
-      const mainPath = resolveMainPathOnce(inputDir)
       return {
         lib: {
           // 必须使用 lib 模式，否则会生成 preload 等代码
@@ -71,7 +75,21 @@ export function uniAppNVuePlugin(): Plugin {
         },
       }
     },
-    configResolved,
+    configResolved: createConfigResolved({
+      chunkCssFilename(id: string) {
+        if (id === mainPath) {
+          return 'app.css'
+        } else if (isUniPageSfcFile(id, inputDir)) {
+          return normalizeCssChunkFilename(id)
+        }
+      },
+      chunkCssCode(filename, cssCode) {
+        if (filename === 'app.css') {
+          return cssCode
+        }
+        return cssCode
+      },
+    }),
   }
 }
 
