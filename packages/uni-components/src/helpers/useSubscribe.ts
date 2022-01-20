@@ -48,11 +48,11 @@ function addSubscribe(
   )
 }
 
-function removeSubscribe(name: string) {
+function removeSubscribe(name: string, pageId?: number) {
   if (!name) {
     return
   }
-  unregisterViewMethod(getCurrentPageId(), name)
+  unregisterViewMethod(pageId || getCurrentPageId(), name)
 }
 
 export function useSubscribe<Res = any>(
@@ -76,7 +76,7 @@ export function useSubscribe<Res = any>(
     }
   })
   onBeforeUnmount(() => {
-    removeSubscribe(name || normalizeEvent(vm)!)
+    removeSubscribe(name || normalizeEvent(vm)!, pageId)
   })
 }
 
