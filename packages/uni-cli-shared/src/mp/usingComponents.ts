@@ -237,11 +237,26 @@ function findBindingComponent(
   })
 }
 
+function normalizeComponentId(id: string) {
+  // _unref(test) => test
+  if (id.includes('_unref(')) {
+    return id.replace('_unref(', '').replace(')', '')
+  }
+  // $setup["test"] => test
+  if (id.includes('$setup[')) {
+    return id.replace('$setup["', '').replace('"', '')
+  }
+  return id
+}
+
 function parseBindingComponents(
   templateBindingComponents: BindingComponents,
   scriptBindingComponents: BindingComponents
 ) {
-  const bindingComponents: BindingComponents = { ...templateBindingComponents }
+  const bindingComponents: BindingComponents = {}
+  Object.keys(templateBindingComponents).forEach((id) => {
+    bindingComponents[normalizeComponentId(id)] = templateBindingComponents[id]
+  })
   Object.keys(scriptBindingComponents).forEach((id) => {
     const { tag } = scriptBindingComponents[id]
     const name = findBindingComponent(tag, templateBindingComponents)
