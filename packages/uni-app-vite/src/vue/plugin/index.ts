@@ -8,7 +8,7 @@ import {
 import { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
-import { configResolved } from './configResolved'
+import { configResolved } from '../../plugin/configResolved'
 import { templateDir } from '../../utils'
 
 export function uniAppVuePlugin(): UniVitePlugin {

@@ -53,6 +53,8 @@ export function uniEsbuildPlugin(): Plugin {
 function buildNVuePage(filename: string, options: BuildOptions) {
   return transformWithEsbuild(
     `import NVuePageComponent from './${filename}'
+import NVuePageComponentStyle from './${filename.replace('.js', '.css')}'    
+NVuePageComponent.__stylesheet = NVuePageComponentStyle
 Vue.createApp(NVuePageComponent).mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),
     options

@@ -14,6 +14,7 @@ import { transformRenderWhole } from './transforms/transformRenderWhole'
 import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
 import { transformText } from './transforms/transformText'
+import { configResolved } from '../../plugin/configResolved'
 const uTags = {
   text: 'u-text',
   image: 'u-image',
@@ -70,6 +71,7 @@ export function uniAppNVuePlugin(): Plugin {
         },
       }
     },
+    configResolved,
   }
 }
 
