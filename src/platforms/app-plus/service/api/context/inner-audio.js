@@ -6,7 +6,7 @@ import {
   publish
 } from '../../bridge'
 
-const AUDIO_DEFAULT_SESSION_CATEGORY = 'ambient'
+const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback'
 
 const audios = {}
 
