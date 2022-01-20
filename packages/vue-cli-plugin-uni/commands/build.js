@@ -34,7 +34,7 @@ module.exports = (api, options) => {
       '--auto-host': 'specify automator host',
       '--auto-port': 'specify automator port',
       '--subpackage': 'specify subpackage',
-      '--plugin': 'specify plugin',
+      '--plugin': 'specify mp plugin',
       '--manifest': 'build manifest.json'
     }
   }, async (args) => {
@@ -48,7 +48,7 @@ module.exports = (api, options) => {
       return buildManifestJson()
     }
 
-    const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao', 'mp-lark']
+    const platforms = ['mp-weixin', 'mp-qq', 'mp-jd', 'mp-baidu', 'mp-alipay', 'mp-toutiao', 'mp-lark']
     if (args.subpackage && platforms.includes(process.env.UNI_PLATFORM)) {
       process.env.UNI_SUBPACKGE = args.subpackage
     }
@@ -244,17 +244,19 @@ function analysisPluginDir () {
   const pluginJson = parseJson(fs.readFileSync(pluginJsonPath, 'utf-8'), true)
 
   // main 入口文件是否存在
-  process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
-  const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
-  const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
+  if (pluginJson.main) {
+    process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
+    const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
+    const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
 
-  if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
-    console.log()
-    console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', {
-      0: UNI_MP_PLUGIN_MAIN
-    }))
-    console.log()
-    process.exit(0)
+    if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
+      console.log()
+      console.error(uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', {
+        0: UNI_MP_PLUGIN_MAIN
+      }))
+      console.log()
+      process.exit(0)
+    }
   }
 }
 

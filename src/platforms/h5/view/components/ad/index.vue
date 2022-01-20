@@ -436,6 +436,7 @@ export default {
       const data = this._pl[this._pi]
       const providerConfig = this._b[data.a1][data.t]
       const script = providerConfig.script
+      this._currentChannel = data.a1
 
       var id = this._randomId()
       var view = this._createView(id)
@@ -517,7 +518,7 @@ export default {
     _checkRender () {
       var hasContent = (this.$refs.container.children.length > 0 && this.$refs.container.clientHeight > 40)
       if (hasContent) {
-        this._report(40)
+        this._report(40, this._currentChannel)
       }
       return hasContent
     },
@@ -543,12 +544,16 @@ export default {
         this._checkTimer = null
       }
     },
-    _report (type) {
-      AdReport.instance.get({
+    _report (type, currentChannel) {
+      const reportData = {
         h: __uniConfig.compilerVersion,
         a: this.adpid,
         at: type
-      })
+      }
+      if (currentChannel) {
+        reportData.t = currentChannel
+      }
+      AdReport.instance.get(reportData)
     },
     _randomId () {
       var result = ''

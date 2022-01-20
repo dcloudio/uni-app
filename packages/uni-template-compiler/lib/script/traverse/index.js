@@ -12,6 +12,7 @@ const {
   IDENTIFIER_STYLE,
   IDENTIFIER_EVENT,
   IDENTIFIER_GLOBAL,
+  IDENTIFIER_TEXT,
   PREFIX_ATTR,
   PREFIX_GLOBAL,
   PREFIX_METHOD,
@@ -19,7 +20,8 @@ const {
   PREFIX_FOR,
   PREFIX_CLASS,
   PREFIX_STYLE,
-  PREFIX_EVENT
+  PREFIX_EVENT,
+  PREFIX_TEXT
 } = require('../../constants')
 
 const {
@@ -62,6 +64,10 @@ function reIdentifier (identifierArray) {
     },
     [IDENTIFIER_ATTR]: {
       prefix: PREFIX_ATTR,
+      id: 0
+    },
+    [IDENTIFIER_TEXT]: {
+      prefix: PREFIX_TEXT,
       id: 0
     }
   }

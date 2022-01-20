@@ -352,9 +352,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     if (process.env.UNI_PLATFORM === 'app-plus') {
       const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
       if (pagesPkg) {
-        const v3Tips = `（v3）${uniI18n.__('see')}：https://ask.dcloud.net.cn/article/36599。`
-        info = uniI18n.__('compilerVersion') + '：' + pagesPkg['uni-app'].compilerVersion + (process.env.UNI_USING_V3
-          ? v3Tips : '')
+        info = uniI18n.__('compilerVersion') + '：' + pagesPkg['uni-app'].compilerVersion
       }
       if (process.env.UNI_USING_V3) {
         console.log(info)
