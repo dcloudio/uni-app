@@ -92,7 +92,7 @@ function normalizeClickEvent(
   const { x, y } = mouseEvt
   const top = getWindowTop()
   evt.detail = { x, y: y - top }
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)]
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)]
 }
 
 function normalizeMouseEvent(evt: Record<string, any>, mouseEvt: MouseEvent) {
@@ -103,14 +103,14 @@ function normalizeMouseEvent(evt: Record<string, any>, mouseEvt: MouseEvent) {
   evt.clientY = mouseEvt.clientY - top
 }
 
-function createTouchEvent(evt: MouseEvent) {
+function createTouchEvent(evt: MouseEvent, top: number) {
   return {
     force: 1,
     identifier: 0,
     clientX: evt.clientX,
-    clientY: evt.clientY,
+    clientY: evt.clientY - top,
     pageX: evt.pageX,
-    pageY: evt.pageY,
+    pageY: evt.pageY - top,
   }
 }
 

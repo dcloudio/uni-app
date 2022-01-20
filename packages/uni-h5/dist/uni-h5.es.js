@@ -737,17 +737,20 @@ const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
 }, ["stop"]);
+function getWindowOffsetCssVar(style, name) {
+  return parseInt((style.getPropertyValue(name).match(/\d+/) || ["0"])[0]);
+}
 function getWindowTop() {
   const style = document.documentElement.style;
-  const top = parseInt(style.getPropertyValue("--window-top"));
+  const top = getWindowOffsetCssVar(style, "--window-top");
   return top ? top + out.top : 0;
 }
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = getWindowTop();
-  const bottom = parseInt(style.getPropertyValue("--window-bottom"));
-  const left = parseInt(style.getPropertyValue("--window-left"));
-  const right = parseInt(style.getPropertyValue("--window-right"));
+  const bottom = getWindowOffsetCssVar(style, "--window-bottom");
+  const left = getWindowOffsetCssVar(style, "--window-left");
+  const right = getWindowOffsetCssVar(style, "--window-right");
   return {
     top,
     bottom: bottom ? bottom + out.bottom : 0,
@@ -1312,7 +1315,7 @@ function normalizeClickEvent(evt, mouseEvt) {
   const { x, y } = mouseEvt;
   const top = getWindowTop();
   evt.detail = { x, y: y - top };
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)];
 }
 function normalizeMouseEvent(evt, mouseEvt) {
   const top = getWindowTop();
@@ -1321,14 +1324,14 @@ function normalizeMouseEvent(evt, mouseEvt) {
   evt.clientX = mouseEvt.clientX;
   evt.clientY = mouseEvt.clientY - top;
 }
-function createTouchEvent(evt) {
+function createTouchEvent(evt, top) {
   return {
     force: 1,
     identifier: 0,
     clientX: evt.clientX,
-    clientY: evt.clientY,
+    clientY: evt.clientY - top,
     pageX: evt.pageX,
-    pageY: evt.pageY
+    pageY: evt.pageY - top
   };
 }
 function normalizeTouchEvent(touches, top) {
