@@ -1199,8 +1199,8 @@ class ComponentDescriptor {
   }
 }
 function createComponentDescriptor(vm, isOwnerInstance = true) {
-  if (isOwnerInstance && vm) {
-    {
+  {
+    if (isOwnerInstance && vm) {
       vm = resolveOwnerVm(vm.$);
     }
   }
