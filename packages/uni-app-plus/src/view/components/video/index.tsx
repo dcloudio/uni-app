@@ -83,6 +83,14 @@ const props = {
     type: [Boolean, String],
     default: true,
   },
+  vslideGesture: {
+    type: [Boolean, String],
+    default: false,
+  },
+  vslideGestureInFullscreen: {
+    type: [Boolean, String],
+    default: false,
+  },
   showPlayBtn: {
     type: [Boolean, String],
     default: true,
