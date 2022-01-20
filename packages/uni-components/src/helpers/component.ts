@@ -14,6 +14,8 @@ import animation from './animation'
 export const defineBuiltInComponent: typeof defineComponent = (
   options: any
 ) => {
+  // 标记为保留组件，这样框架其他地方可以据此来识别，比如 onLoad 等生命周期的注入会忽略系统保留组件
+  options.__reserved = true
   // TODO 可能会补充特殊标记
   const { props, mixins } = options
   // 补充内置组件animation
@@ -28,6 +30,8 @@ export const defineBuiltInComponent: typeof defineComponent = (
  * @returns
  */
 export const defineSystemComponent: typeof defineComponent = (options: any) => {
+  // 标记为保留组件
+  options.__reserved = true
   ;(options as ComponentOptions).compatConfig = {
     MODE: 3, // 标记为vue3
   }

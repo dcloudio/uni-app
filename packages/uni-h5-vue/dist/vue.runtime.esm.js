@@ -3867,6 +3867,10 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
         // fixed by xxxxxx
         if (isRootHook(type)) {
+            // 系统保留组件，如 view,app 等
+            if (target.type.__reserved) {
+                return;
+            }
             target = target.root;
         }
         const hooks = target[type] || (target[type] = []);
