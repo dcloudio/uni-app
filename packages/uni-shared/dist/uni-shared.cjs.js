@@ -285,6 +285,10 @@ function resolveOwnerEl(instance) {
 function dynamicSlotName(name) {
     return name === 'default' ? SLOT_DEFAULT_NAME : name;
 }
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return shared.camelize(str.replace(customizeRE, '-'));
+}
 
 let lastLogTime = 0;
 function formatLog(module, ...args) {
@@ -1406,6 +1410,7 @@ exports.callOptions = callOptions;
 exports.createIsCustomElement = createIsCustomElement;
 exports.createRpx2Unit = createRpx2Unit;
 exports.createUniEvent = createUniEvent;
+exports.customizeEvent = customizeEvent;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;

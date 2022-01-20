@@ -1,4 +1,4 @@
-import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
+import { camelize, isPlainObject, isArray, hasOwn, isFunction, extend } from '@vue/shared';
 import { injectHook, ref, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
 const ON_READY$1 = 'onReady';
@@ -87,6 +87,11 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -849,14 +854,10 @@ function initCreatePluginApp(parseAppOptions) {
 
 const MPPage = Page;
 const MPComponent = Component;
-const customizeRE = /:/g;
-function customize(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     mpInstance.triggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
+        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
     };
 }
 function initHook(name, options, isComponent) {

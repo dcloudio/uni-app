@@ -1,4 +1,5 @@
-import { camelize, capitalize } from '@vue/shared'
+import { capitalize } from '@vue/shared'
+import { customizeEvent } from '@dcloudio/uni-shared'
 import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 
 export const event: MiniProgramCompilerOptions['event'] = {
@@ -7,7 +8,7 @@ export const event: MiniProgramCompilerOptions['event'] = {
       name = 'tap'
     }
     name = eventMap[name] || name
-    return `${isCatch ? 'catch' : 'on'}${capitalize(camelize(name))}`
+    return `${isCatch ? 'catch' : 'on'}${capitalize(customizeEvent(name))}`
   },
 }
 

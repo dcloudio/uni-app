@@ -1,4 +1,4 @@
-import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, isString, camelize } from '@vue/shared';
+import { camelize, isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, isString } from '@vue/shared';
 import { injectHook, ref, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
@@ -24,6 +24,11 @@ const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
+
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -663,10 +668,6 @@ function handleLink$1(event) {
 
 const isComponent2 = my.canIUse('component2');
 const mocks = ['$id'];
-const customizeRE = /:/g;
-function customize(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
 function initRelation(mpInstance, detail) {
     // onVueInit
     mpInstance.props.onVI(detail);
@@ -771,7 +772,7 @@ function setRef(ref, refValue, refs, setupState) {
     }
 }
 function triggerEvent(type, detail) {
-    const handler = this.props[customize('on-' + type)];
+    const handler = this.props[customizeEvent('on-' + type)];
     if (!handler) {
         return;
     }
@@ -779,7 +780,7 @@ function triggerEvent(type, detail) {
         dataset: {},
     };
     handler({
-        type: customize(type),
+        type: customizeEvent(type),
         target,
         currentTarget: target,
         detail,
