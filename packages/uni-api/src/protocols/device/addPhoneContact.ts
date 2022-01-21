@@ -1,13 +1,25 @@
 export const API_ADD_PHONE_CONTACT = 'addPhoneContact'
 export type API_TYPE_ADD_PHONE_CONTACT = typeof uni.addPhoneContact
 
+export const AddPhoneContactOptions: ApiOptions<API_TYPE_ADD_PHONE_CONTACT> = {
+  formatArgs: {
+    firstName(firstName) {
+      if (!firstName)
+        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;'
+    },
+  },
+}
+
 export const AddPhoneContactProtocol: ApiProtocol<API_TYPE_ADD_PHONE_CONTACT> =
   {
+    firstName: {
+      type: String,
+      required: true,
+    },
     photoFilePath: String,
     nickName: String,
     lastName: String,
     middleName: String,
-    firstName: String,
     remark: String,
     mobilePhoneNumber: String,
     weChatNumber: String,
