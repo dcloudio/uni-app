@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import {
   API_DEPS_CSS,
   FEATURE_DEFINES,
@@ -11,18 +11,20 @@ import {
   normalizePagesRoute,
   normalizePagePath,
   normalizePath,
+  isEnableTreeShaking,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-
-const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+import { isSSR } from '../utils'
 
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
-      name: 'vite:uni-h5-pages-json',
+      name: 'uni:h5-pages-json',
       enforce: 'pre',
-      transform(code, id, ssr) {
+      transform(code, id, opt) {
         if (opts.filter(id)) {
           const { resolvedConfig } = opts
+          const ssr = isSSR(opt)
           return {
             code:
               registerGlobalCode(resolvedConfig, ssr) +
@@ -54,7 +56,7 @@ function generatePagesJsonCode(
 
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow } from '@dcloudio/uni-h5'
+import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from '${manifestJsonPath}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
@@ -81,25 +83,25 @@ function getGlobal(ssr?: boolean) {
 // 兼容 wx 对象
 function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
   const name = getGlobal(ssr)
-  if (config.command === 'build' && !ssr) {
-    // 非SSR的发行模式，补充全局 uni 对象
-    return `${name}.uni = {};${name}.wx = {}`
+  const enableTreeShaking = isEnableTreeShaking(
+    parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+  )
+
+  if (enableTreeShaking && config.command === 'build' && !ssr) {
+    // 非 SSR 的发行模式，补充全局 uni 对象
+    return `import { upx2px } from '@dcloudio/uni-h5';${name}.uni = {};${name}.wx = {};${name}.rpx2px = upx2px`
   }
 
-  const rpx2pxCode =
-    !ssr && config.define!.__UNI_FEATURE_RPX__
-      ? `import {upx2px} from '@dcloudio/uni-h5'
-  ${name}.rpx2px = upx2px
-`
-      : ''
-  return `${rpx2pxCode}
-import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
+  return `
+import {uni,upx2px,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
 ${name}.getApp = getApp
 ${name}.getCurrentPages = getCurrentPages
 ${name}.wx = uni
 ${name}.uni = uni
 ${name}.UniViewJSBridge = UniViewJSBridge
 ${name}.UniServiceJSBridge = UniServiceJSBridge
+${name}.rpx2px = upx2px
+${name}.__setupPage = (com)=>setupPage(com)
 `
 }
 
@@ -178,7 +180,7 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
     pagePathWithExtname = pageOptions.path + '.vue'
   }
   const pageIdent = normalizeIdentifier(pageOptions.path)
-  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}?mpType=page')
+  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}').then(com => setupPage(com.default || com))
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
 
@@ -246,7 +248,7 @@ function generateConfig(
   delete pagesJson.pages
   delete pagesJson.subPackages
   delete pagesJson.subpackages
-  pagesJson.compilerVersion = pkg['uni-app'].compilerVersion
+  pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
   return (
     (config.command === 'serve'
       ? ''

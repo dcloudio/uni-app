@@ -33,31 +33,29 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
 }
 
 function initCheckUpdate() {
-  const pkg = require('@dcloudio/vite-plugin-uni/package.json')
   checkUpdate({
     inputDir: process.env.UNI_INPUT_DIR,
-    compilerVersion:
-      (pkg['uni-app'] && pkg['uni-app']['compilerVersion']) || '',
-    versionType: pkg.version.includes('alpha') ? 'a' : 'r',
+    compilerVersion: process.env.UNI_COMPILER_VERSION,
+    versionType: process.env.UNI_COMPILER_VERSION_TYPE,
   })
 }
 
 function initLogger({ logger }: ResolvedConfig) {
   const { info, warn, error } = logger
   logger.info = (msg, opts) => {
-    msg = formatInfoMsg(msg)
+    msg = formatInfoMsg(msg, opts)
     if (msg) {
       return info(msg, opts)
     }
   }
   logger.warn = (msg, opts) => {
-    msg = formatWarnMsg(msg)
+    msg = formatWarnMsg(msg, opts)
     if (msg) {
       return warn(msg, opts)
     }
   }
   logger.error = (msg, opts) => {
-    msg = formatErrMsg(msg)
+    msg = formatErrMsg(msg, opts)
     if (msg) {
       return error(msg, opts)
     }

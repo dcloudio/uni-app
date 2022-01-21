@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isString, isPlainObject } from '@vue/shared'
 const DEFAULT_KEYS = [
   'APP',
   'APP_NVUE',
@@ -11,9 +11,11 @@ const DEFAULT_KEYS = [
   'MP_ALIPAY',
   'MP_BAIDU',
   'MP_QQ',
+  'MP_LARK',
   'MP_TOUTIAO',
   'MP_WEIXIN',
   'MP_KUAISHOU',
+  'MP_JD',
   'QUICKAPP_NATIVE',
   'QUICKAPP_WEBVIEW',
   'QUICKAPP_WEBVIEW_HUAWEI',
@@ -35,7 +37,7 @@ export function getPreNVueContext() {
 
 export function initPreContext(
   platform: UniApp.PLATFORM,
-  userPreContext?: Record<string, boolean>
+  userPreContext?: Record<string, boolean> | string
 ) {
   const vueContext = Object.create(null)
   const nvueContext = Object.create(null)
@@ -65,9 +67,18 @@ export function initPreContext(
   }
 
   if (userPreContext) {
-    Object.keys(userPreContext).forEach((key) => {
-      defaultContext[normalizeKey(key)] = !!userPreContext[key]
-    })
+    if (isString(userPreContext)) {
+      try {
+        userPreContext = JSON.parse(userPreContext)
+      } catch (e) {}
+    }
+    if (isPlainObject(userPreContext)) {
+      Object.keys(userPreContext).forEach((key) => {
+        defaultContext[normalizeKey(key)] = !!(
+          userPreContext as Record<string, boolean>
+        )[key]
+      })
+    }
   }
   extend(preVueContext, defaultContext, vueContext)
   extend(preNVueContext, defaultContext, nvueContext)

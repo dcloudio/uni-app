@@ -1,12 +1,12 @@
 export const API_GET_LOCATION = 'getLocation'
 export type API_TYPE_GET_LOCATION = typeof uni.getLocation
 
-const coordTypes = ['WGS84', 'GCJ02']
+const coordTypes = ['wgs84', 'gcj02']
 
 export const GetLocationOptions: ApiOptions<API_TYPE_GET_LOCATION> = {
   formatArgs: {
     type(value, params) {
-      value = (value || '').toUpperCase()
+      value = (value || '').toLowerCase()
       if (coordTypes.indexOf(value) === -1) {
         params.type = coordTypes[0]
       } else {

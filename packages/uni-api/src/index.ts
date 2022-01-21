@@ -15,10 +15,11 @@ export * from './service/ui/createAnimation'
 export * from './service/ui/tabBar'
 export * from './service/ui/window'
 export * from './service/ui/locale'
+export * from './service/ui/setPageMeta'
 
 export * from './service/keyboard/getSelectedTextRange'
 
-export * from './service/hook/app'
+export * from './service/lifecycle/app'
 
 // protocols
 export * from './protocols/base/canIUse'
@@ -117,7 +118,6 @@ export {
 export { handlePromise } from './helpers/api/promise'
 export { invokeApi, wrapperReturnValue } from './helpers/interceptor'
 export { requestComponentObserver } from './helpers/requestComponentObserver'
-
 // types
 
 export { DefineAsyncApiFn } from './helpers/api'

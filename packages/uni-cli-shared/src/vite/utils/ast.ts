@@ -1,9 +1,10 @@
-import {
+import type {
   Literal,
   BaseNode,
   Property,
   Identifier,
   CallExpression,
+  AssignmentExpression,
   MemberExpression,
   MethodDefinition,
   ExportSpecifier,
@@ -24,6 +25,10 @@ export const isProperty = (node: BaseNode): node is Property =>
 
 export const isIdentifier = (node: BaseNode): node is Identifier =>
   node.type === 'Identifier'
+
+export const isAssignmentExpression = (
+  node: BaseNode
+): node is AssignmentExpression => node.type === 'AssignmentExpression'
 
 export const isCallExpression = (node: BaseNode): node is CallExpression =>
   node.type === 'CallExpression'
@@ -83,7 +88,7 @@ export function parseVue(code: string, errors: SyntaxError[]) {
     isNativeTag: () => true,
     isPreTag: () => true,
     getTextMode: () => TextModes.DATA,
-    onError: (e) => {
+    onError: (e: any) => {
       errors.push(e)
     },
   })

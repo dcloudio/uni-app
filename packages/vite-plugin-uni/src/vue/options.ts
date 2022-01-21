@@ -1,39 +1,15 @@
-import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { SFCTemplateCompileOptions, TemplateCompiler } from '@vue/compiler-sfc'
-import { isCustomElement } from '@dcloudio/uni-shared'
+import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import type { TemplateCompiler } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE_RE,
   UniVitePlugin,
   uniPostcssScopedPlugin,
+  createUniVueTransformAssetUrls,
+  getBaseNodeTransforms,
+  isExternalUrl,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
-import { transformMatchMedia } from './transforms/transformMatchMedia'
-import { createTransformEvent } from './transforms/transformEvent'
-// import { transformContext } from './transforms/transformContext'
-
-function createUniVueTransformAssetUrls(
-  base: string
-): SFCTemplateCompileOptions['transformAssetUrls'] {
-  return {
-    base,
-    tags: {
-      audio: ['src'],
-      video: ['src', 'poster'],
-      img: ['src'],
-      image: ['src'],
-      'cover-image': ['src'],
-      // h5
-      'v-uni-audio': ['src'],
-      'v-uni-video': ['src', 'poster'],
-      'v-uni-image': ['src'],
-      'v-uni-cover-image': ['src'],
-      // nvue
-      'u-image': ['src'],
-      'u-video': ['src', 'poster'],
-    },
-  }
-}
 
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
@@ -45,6 +21,9 @@ export function initPluginVueOptions(
   }
 ) {
   const vueOptions = options.vueOptions || (options.vueOptions = {})
+  // if (!hasOwn(vueOptions, 'reactivityTransform')) {
+  //   vueOptions.reactivityTransform = true
+  // }
   if (!vueOptions.include) {
     vueOptions.include = []
   }
@@ -62,10 +41,6 @@ export function initPluginVueOptions(
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
-  templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
-    options.base
-  )
-
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
@@ -79,24 +54,60 @@ export function initPluginVueOptions(
       directiveTransforms,
     },
   } = uniPluginOptions
+
   if (compiler) {
     templateOptions.compiler = compiler
   }
   if (miniProgram) {
     ;(compilerOptions as any).miniProgram = miniProgram
   }
-  compilerOptions.isNativeTag = isNativeTag
-  compilerOptions.isCustomElement = isCustomElement
-  if (directiveTransforms) {
-    compilerOptions.directiveTransforms = extend(
-      compilerOptions.directiveTransforms || {},
-      directiveTransforms
-    )
+
+  if (isNativeTag) {
+    const userIsNativeTag = compilerOptions.isNativeTag
+    compilerOptions.isNativeTag = (tag) => {
+      if (isNativeTag(tag)) {
+        return true
+      }
+      if (userIsNativeTag && userIsNativeTag(tag)) {
+        return true
+      }
+      return false
+    }
+  }
+
+  if (isCustomElement) {
+    const userIsCustomElement = compilerOptions.isCustomElement
+    compilerOptions.isCustomElement = (tag) => {
+      if (isCustomElement(tag)) {
+        return true
+      }
+      if (userIsCustomElement && userIsCustomElement(tag)) {
+        return true
+      }
+      return false
+    }
+  }
+
+  compilerOptions.directiveTransforms = {
+    ...compilerOptions.directiveTransforms,
+    ...directiveTransforms,
   }
 
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
+  if (options.platform === 'h5') {
+    templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
+      isExternalUrl(options.base) ? options.base : ''
+    )
+  } else {
+    // 替换内置的 transformAssetUrls 逻辑
+    templateOptions.transformAssetUrls = {
+      tags: {},
+    }
+    compilerOptions.nodeTransforms.push(...getBaseNodeTransforms(options.base))
+  }
+
   if (nodeTransforms) {
     compilerOptions.nodeTransforms.push(...nodeTransforms)
   }
@@ -108,31 +119,34 @@ export function initPluginVueOptions(
   //   compatConfig
   // )
 
-  const eventOpts = UniVitePlugins.reduce<Record<string, string>>(
-    (eventOpts, UniVitePlugin) => {
-      return extend(eventOpts, UniVitePlugin.uni?.transformEvent)
-    },
-    {}
-  )
-  // compilerOptions.nodeTransforms.unshift(transformContext)
-  compilerOptions.nodeTransforms.unshift(createTransformEvent(eventOpts))
-  if (options.platform !== 'mp-weixin') {
-    compilerOptions.nodeTransforms.unshift(transformMatchMedia)
-  }
-
   // App,MP 平台不支持使用静态节点
   compilerOptions.hoistStatic = false
+  // 小程序使用了
+  ;(compilerOptions as any).root = process.env.UNI_INPUT_DIR
   return vueOptions
 }
 
-export function initPluginVueJsxOptions(options: VitePluginUniResolvedOptions) {
+export function initPluginVueJsxOptions(
+  options: VitePluginUniResolvedOptions,
+  {
+    isCustomElement,
+  }: Required<Required<UniVitePlugin>['uni']>['compilerOptions'],
+  jsxOptions: Required<Required<UniVitePlugin>['uni']>['jsxOptions']
+) {
   const vueJsxOptions = isPlainObject(options.vueJsxOptions)
     ? options.vueJsxOptions
     : (options.vueJsxOptions = {})
   if (!hasOwn(vueJsxOptions, 'optimize')) {
     vueJsxOptions.optimize = true
   }
-  vueJsxOptions.isCustomElement = isCustomElement
+  vueJsxOptions.isCustomElement = isCustomElement as (tag: string) => boolean
+  if (!vueJsxOptions.babelPlugins) {
+    vueJsxOptions.babelPlugins = []
+  }
+  if (isArray(jsxOptions.babelPlugins)) {
+    vueJsxOptions.babelPlugins.push(...jsxOptions.babelPlugins)
+  }
+
   return vueJsxOptions
 }
 

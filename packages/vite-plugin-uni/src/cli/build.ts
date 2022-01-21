@@ -1,10 +1,32 @@
-import fs from 'fs-extra'
 import path from 'path'
+import fs from 'fs-extra'
 import { build as buildByVite, BuildOptions, InlineConfig } from 'vite'
+import { extend } from '@vue/shared'
+import {
+  initPreContext,
+  normalizeAppManifestJson,
+  parseManifestJsonOnce,
+  parsePagesJsonOnce,
+} from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 
 export async function build(options: CliOptions) {
+  if (options.platform === 'app') {
+    if ((options as BuildOptions).manifest) {
+      return buildManifestJson()
+    }
+    if (process.env.UNI_RENDERER === 'native') {
+      return buildByVite(
+        addConfigFile(
+          extend(
+            { nvue: true },
+            initBuildOptions(options, cleanOptions(options) as BuildOptions)
+          )
+        )
+      )
+    }
+  }
   return buildByVite(
     addConfigFile(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
@@ -54,7 +76,26 @@ function initBuildOptions(
     root: process.env.VITE_ROOT_DIR,
     logLevel: options.logLevel,
     clearScreen: options.clearScreen,
-    mode: process.env.NODE_ENV,
+    mode: options.mode,
     build,
   }
+}
+
+function buildManifestJson() {
+  const platform = 'app'
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+
+  const pkg = require(path.resolve(__dirname, '../../package.json'))
+  process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
+  initPreContext(platform)
+
+  const manifestJson = normalizeAppManifestJson(
+    parseManifestJsonOnce(inputDir),
+    parsePagesJsonOnce(inputDir, platform)
+  )
+  fs.outputFileSync(
+    path.resolve(outputDir, 'manifest.json'),
+    JSON.stringify(manifestJson, null, 2)
+  )
 }

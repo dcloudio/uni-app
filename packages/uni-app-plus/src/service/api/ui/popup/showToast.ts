@@ -17,6 +17,7 @@ import {
 
 type Resolve = (res?: any) => void
 type Reject = (errMsg?: string, errRes?: any) => void
+type CallBacks = { resolve: Resolve; reject: Reject }
 
 type ToastType = 'loading' | 'toast' | ''
 
@@ -30,7 +31,7 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
   (args, callbacks) =>
     _showToast(
       extend({}, args, {
-        type: 'loading',
+        type: 'loading' as ToastType,
         icon: 'loading' as UniApp.ShowToastOptions['icon'],
       }),
       callbacks
@@ -38,6 +39,11 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
   ShowLoadingProtocol,
   ShowLoadingOptions
 )
+
+interface _ShowToast extends UniApp.ShowToastOptions {
+  type?: ToastType
+  style?: PlusNativeUIWaitingStyles
+}
 
 const _showToast = (
   {
@@ -47,12 +53,10 @@ const _showToast = (
     duration = 1500,
     mask = false,
     position,
-    // @ts-ignore ToastType
     type = 'toast',
-    // @ts-ignore PlusNativeUIWaitingStyles
     style,
-  }: UniApp.ShowToastOptions,
-  { resolve, reject }: { resolve: Resolve; reject: Reject }
+  }: _ShowToast,
+  { resolve, reject }: CallBacks
 ) => {
   hide('')
   toastType = type
@@ -109,9 +113,10 @@ const _showToast = (
     }
   }
 
-  timeout = setTimeout(() => {
-    hide('')
-  }, duration)
+  if (toastType === 'toast')
+    timeout = setTimeout(() => {
+      hide('')
+    }, duration)
   return resolve()
 }
 export const showToast = defineAsyncApi<API_TYPE_SHOW_TOAST>(
@@ -131,10 +136,7 @@ export const hideLoading = defineAsyncApi<API_TYPE_HIDE_LOADING>(
   (_, callbacks) => hide('loading', callbacks)
 )
 
-function hide(
-  type: string = 'toast',
-  callbacks?: { resolve: Resolve; reject: Reject }
-) {
+function hide(type: ToastType = 'toast', callbacks?: CallBacks) {
   if (type && type !== toastType) {
     // 应该不需要失败回调，在页面后退时，会主动 hideToast 和 hideLoading，如果 reject 会出异常。
     return callbacks && callbacks.resolve()

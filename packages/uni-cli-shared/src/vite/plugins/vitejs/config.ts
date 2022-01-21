@@ -1,1 +1,1 @@
-export { ResolvedConfig } from 'vite'
+export type { ResolvedConfig } from 'vite'

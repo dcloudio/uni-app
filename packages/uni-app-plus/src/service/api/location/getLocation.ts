@@ -47,6 +47,7 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
       geocode = false,
       altitude = false,
       highAccuracyExpireTime,
+      isHighAccuracy = false,
     },
     { resolve, reject }
   ) => {
@@ -65,8 +66,9 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
       },
       {
         geocode: geocode,
-        enableHighAccuracy: altitude,
+        enableHighAccuracy: isHighAccuracy || altitude,
         timeout: highAccuracyExpireTime,
+        coordsType: type,
       }
     )
   },

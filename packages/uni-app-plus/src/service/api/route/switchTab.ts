@@ -7,7 +7,12 @@ import {
   SwitchTabProtocol,
 } from '@dcloudio/uni-api'
 import { invokeHook } from '@dcloudio/uni-core'
-import { ON_HIDE, ON_SHOW, parseUrl } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  ON_HIDE,
+  ON_SHOW,
+  parseUrl,
+} from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
 import tabBar from '../../framework/app/tabBar'
@@ -61,14 +66,14 @@ function _switchTab({
   if (len >= 1) {
     // 前一个页面是非 tabBar 页面
     currentPage = pages[len - 1]! as ComponentPublicInstance
-    if (currentPage && !currentPage.__isTabBar) {
+    if (currentPage && !currentPage.$.__isTabBar) {
       // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
       // 该情况下目标页tabBarPage的visible是不对的
       // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
       // 简单起见，暂时直接判断该情况，执行onShow
       callOnShow = true
       pages.reverse().forEach((page) => {
-        if (!page.__isTabBar && page !== currentPage) {
+        if (!page.$.__isTabBar && page !== currentPage) {
           closePage(page, 'none')
         }
       })
@@ -89,7 +94,7 @@ function _switchTab({
   let tabBarPage: ComponentPublicInstance | undefined
   // 查找当前 tabBarPage，且设置 visible
   getAllPages().forEach((page) => {
-    if ('/' + page.route === path) {
+    if (addLeadingSlash(page.route) === path) {
       if (!page.$.__isActive) {
         // 之前未显示
         callOnShow = true
@@ -97,7 +102,7 @@ function _switchTab({
       page.$.__isActive = true
       tabBarPage = page
     } else {
-      if (page.__isTabBar) {
+      if (page.$.__isTabBar) {
         page.$.__isActive = false
       }
     }

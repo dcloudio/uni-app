@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, hasOwn, isFunction } from '@vue/shared'
 import { ComponentPublicInstance, ComponentOptions, ref } from 'vue'
 
 import { initBaseInstance } from './componentInstance'
@@ -42,7 +42,7 @@ export interface ParseAppOptions {
   parse: (appOptions: MiniProgramAppOptions) => void
 }
 
-function parseApp(
+export function parseApp(
   instance: ComponentPublicInstance,
   parseAppOptions?: ParseAppOptions
 ) {
@@ -56,17 +56,20 @@ function parseApp(
         // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
         return
       }
-
       initBaseInstance(internalInstance, {
         mpType: 'app',
         mpInstance: this,
         slots: [],
       })
-
       injectAppLaunchHooks(internalInstance)
-
       ctx.globalData = this.globalData
-      instance.$callHook(ON_LAUNCH, extend({ app: this }, options))
+      instance.$callHook(
+        ON_LAUNCH,
+        extend(
+          { app: { mixin: internalInstance.appContext.app.mixin } },
+          options
+        )
+      )
     },
   }
 
@@ -92,6 +95,51 @@ function parseApp(
 export function initCreateApp(parseAppOptions?: ParseAppOptions) {
   return function createApp(vm: ComponentPublicInstance) {
     return App(parseApp(vm, parseAppOptions))
+  }
+}
+
+export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
+  return function createApp(vm: ComponentPublicInstance) {
+    const appOptions = parseApp(vm, parseAppOptions)
+    const app = getApp({
+      allowDefault: true,
+    })
+    ;(vm.$ as any).ctx.$scope = app
+    const globalData = app.globalData
+    if (globalData) {
+      Object.keys(appOptions.globalData).forEach((name) => {
+        if (!hasOwn(globalData, name)) {
+          globalData[name] = appOptions.globalData[name]
+        }
+      })
+    }
+    Object.keys(appOptions).forEach((name) => {
+      if (!hasOwn(app, name)) {
+        app[name] = appOptions[name]
+      }
+    })
+    initAppLifecycle(appOptions, vm)
+  }
+}
+
+export function initAppLifecycle(
+  appOptions: MiniProgramAppOptions,
+  vm: ComponentPublicInstance
+) {
+  if (isFunction(appOptions.onShow) && __GLOBAL__.onAppShow) {
+    __GLOBAL__.onAppShow((args: unknown) => {
+      vm.$callHook('onShow', args)
+    })
+  }
+  if (isFunction(appOptions.onHide) && __GLOBAL__.onAppHide) {
+    __GLOBAL__.onAppHide((args: unknown) => {
+      vm.$callHook('onHide', args)
+    })
+  }
+  if (isFunction(appOptions.onLaunch)) {
+    const args =
+      __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
+    vm.$callHook('onLaunch', args || {})
   }
 }
 

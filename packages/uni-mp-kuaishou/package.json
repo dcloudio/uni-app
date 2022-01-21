@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-kuaishou",
-  "version": "3.0.0-alpha-3021320211109002",
+  "version": "3.0.0-alpha-3030820220114001",
   "description": "uni-app mp-kuaishou",
   "main": "dist/index.js",
   "repository": {
@@ -14,7 +14,22 @@
   "license": "Apache-2.0",
   "uni-app": {
     "name": "mp-kuaishou",
-    "title": "快手小程序"
+    "title": "快手小程序",
+    "apply": [
+      "mp-kuaishou"
+    ],
+    "main": "dist/uni.compiler.js"
   },
-  "gitHead": "b0973e2960189dccd4ca60712a932760e58138eb"
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "devDependencies": {
+    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3030820220114001",
+    "@vue/compiler-core": "3.2.26"
+  },
+  "dependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030820220114001",
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3030820220114001",
+    "@dcloudio/uni-mp-vite": "3.0.0-alpha-3030820220114001",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3030820220114001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114001"
+  }
 }

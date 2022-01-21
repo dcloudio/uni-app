@@ -27,4 +27,5 @@ export {
 } from './Node'
 export { UniTextNode } from './Text'
 export { EventModifierFlags } from './encode'
+export * from './utils'
 export * from './Action'

@@ -1,20 +1,73 @@
-import { ComponentPropsOptions } from 'vue'
-import { isArray, isPlainObject, isFunction } from '@vue/shared'
-import { MPComponentOptions, MPComponentInstance } from './component'
+import { ComponentPropsOptions } from '@vue/runtime-core'
+import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
+import type { MPComponentOptions, MPComponentInstance } from './component'
+// @ts-ignore
+import { findComponentPropsData } from 'vue'
 
 import Component = WechatMiniprogram.Component
 
-const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
+const builtInProps = [
+  // 百度小程序,快手小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
+  // event-opts
+  'eO',
+  // 组件 ref
+  'uR',
+  // 组件 ref-in-for
+  'uRIF',
+  // 组件 id
+  'uI',
+  // 组件类型 m: 小程序组件
+  'uT',
+  // 组件 props
+  'uP',
+  // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+  'uS',
+]
 
-function createObserver(name: string) {
-  return function observer(this: MPComponentInstance, newVal: unknown) {
-    if (this.$vm) {
-      this.$vm.$.props[name] = newVal // 为了触发其他非 render watcher
+function initDefaultProps(isBehavior: boolean = false) {
+  const properties: Component.PropertyOption = {}
+  if (!isBehavior) {
+    // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
+    builtInProps.forEach((name) => {
+      properties[name] = {
+        type: null,
+        value: '',
+      }
+    })
+    // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+    properties.uS = {
+      type: null,
+      value: [],
+      observer: function (this: MPComponentInstance, newVal) {
+        const $slots = Object.create(null)
+        newVal &&
+          newVal.forEach((slotName: string) => {
+            $slots[slotName] = true
+          })
+        this.setData({
+          $slots,
+        })
+      },
     }
   }
+  return properties
 }
 
-function parsePropType(key: string, type: unknown, defaultValue: unknown) {
+/**
+ *
+ * @param mpComponentOptions
+ * @param isBehavior
+ */
+export function initProps(mpComponentOptions: MPComponentOptions) {
+  if (!mpComponentOptions.properties) {
+    mpComponentOptions.properties = {}
+  }
+  extend(mpComponentOptions.properties, initDefaultProps())
+}
+
+const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
+
+function parsePropType(type: unknown, defaultValue: unknown) {
   // [String]=>String
   if (isArray(type) && type.length === 1) {
     return type[0]
@@ -34,57 +87,26 @@ function parsePropType(key: string, type: unknown, defaultValue: unknown) {
   return type
 }
 
-function initDefaultProps(isBehavior: boolean = false) {
-  const properties: Component.PropertyOption = {}
-  if (!isBehavior) {
-    properties.vueId = {
-      type: String,
-      value: '',
-    }
-    if (__PLATFORM__ === 'mp-toutiao') {
-      // 用于字节跳动小程序模拟抽象节点
-      properties.generic = {
-        type: Object,
-      }
-    }
-    // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
-    properties.vueSlots = {
-      type: null,
-      value: [],
-      observer: function (this: MPComponentInstance, newVal) {
-        const $slots = Object.create(null)
-        newVal.forEach((slotName: string) => {
-          $slots[slotName] = true
-        })
-        this.setData({
-          $slots,
-        })
-      },
-    }
-  }
-  return properties
+function normalizePropType(type: unknown, defaultValue: unknown) {
+  const res = parsePropType(type, defaultValue)
+  return PROP_TYPES.indexOf(res) !== -1 ? res : null
 }
 
-function createProperty(key: string, prop: any) {
-  if (__PLATFORM__ === 'mp-alipay') {
-    return prop
-  }
-  prop.observer = createObserver(key)
-  return prop
-}
-
-export function initProps(
-  mpComponentOptions: MPComponentOptions,
-  rawProps: ComponentPropsOptions | null,
-  isBehavior: boolean = false
+/**
+ * 初始化页面 props，方便接收页面参数，类型均为String，默认值均为''
+ * @param param
+ * @param rawProps
+ */
+export function initPageProps(
+  { properties }: MPComponentOptions,
+  rawProps: ComponentPropsOptions | null
 ) {
-  const properties = initDefaultProps(isBehavior)
-
   if (isArray(rawProps)) {
     rawProps.forEach((key) => {
-      properties[key] = createProperty(key, {
-        type: null,
-      })
+      properties![key] = {
+        type: String,
+        value: '',
+      }
     })
   } else if (isPlainObject(rawProps)) {
     Object.keys(rawProps).forEach((key) => {
@@ -96,20 +118,40 @@ export function initProps(
           value = value()
         }
         const type = (opts as any).type as any
-        ;(opts as any).type = parsePropType(key, type, value)
-        properties[key] = createProperty(key, {
-          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
+        ;(opts as any).type = normalizePropType(type, value)
+        properties![key] = {
+          type: (opts as any).type,
           value,
-        })
+        }
       } else {
         // content:String
-        const type = parsePropType(key, opts, null)
-        properties[key] = createProperty(key, {
-          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
-        })
+        properties![key] = {
+          type: normalizePropType(opts, null),
+        }
       }
     })
   }
+}
 
-  mpComponentOptions.properties = properties
+export function findPropsData(
+  properties: Record<string, any>,
+  isPage: boolean
+) {
+  return (
+    (isPage
+      ? findPagePropsData(properties)
+      : findComponentPropsData(properties.uP)) || {}
+  )
+}
+
+function findPagePropsData(properties: Record<string, any>) {
+  const propsData: Record<string, any> = {}
+  if (isPlainObject(properties)) {
+    Object.keys(properties).forEach((name) => {
+      if (builtInProps.indexOf(name) === -1) {
+        propsData[name] = (properties as Record<string, any>)[name]
+      }
+    })
+  }
+  return propsData
 }

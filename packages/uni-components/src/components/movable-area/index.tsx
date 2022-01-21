@@ -24,6 +24,7 @@ const props = {
 }
 
 type Props = ExtractPropTypes<typeof props>
+type _TouchEvent = '_onTouchstart' | '_onTouchmove' | '_onTouchend'
 export interface MovableViewContext {
   rootRef: Ref<HTMLElement | null>
   setParent: Function
@@ -49,10 +50,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let events = ['onTouchstart', 'onTouchmove', 'onTouchend']
     events.forEach((event) => {
       let existing = (_listeners as any)[event]
-      let ours =
-        movableAreaEvents[
-          `_${event}` as '_onTouchstart' | '_onTouchmove' | '_onTouchend'
-        ]
+      let ours = movableAreaEvents[`_${event}` as _TouchEvent]
       ;(_listeners as any)[event] = existing
         ? [].concat(existing, ours as any)
         : ours

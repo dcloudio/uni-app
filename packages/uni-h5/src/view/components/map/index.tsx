@@ -370,7 +370,7 @@ function useMap(
               if (context) {
                 try {
                   context.translate(data)
-                } catch (error) {
+                } catch (error: any) {
                   callOptions(data, `${type}:fail ${error.message}`)
                 }
                 callOptions(data, `${type}:ok`)

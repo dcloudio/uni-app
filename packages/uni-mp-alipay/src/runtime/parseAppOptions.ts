@@ -4,37 +4,33 @@ import { MiniProgramAppOptions } from '@dcloudio/uni-mp-core'
 
 function onAliAuthError(
   this: ComponentPublicInstance,
-  method: string,
+  method: ($event: unknown) => void,
   $event: any
 ) {
   $event.type = 'getphonenumber'
   $event.detail.errMsg =
-    'getPhoneNumber:fail Error: ' +
-    $event.detail.errorMessage(this as any)[method]($event)
+    'getPhoneNumber:fail Error: ' + $event.detail.errorMessage
+  method($event)
 }
 
 function onAliGetAuthorize(
   this: ComponentPublicInstance,
-  method: string,
+  method: ($event: unknown) => void,
   $event: any
 ) {
   my.getPhoneNumber({
-    success: (res: Record<string, any>) => {
+    success: (res) => {
       $event.type = 'getphonenumber'
-      const response = JSON.parse(res.response).response
-      if (response.code === '10000') {
-        // success
-        $event.detail.errMsg = 'getPhoneNumber:ok'
-        $event.detail.encryptedData = res.response
-      } else {
-        $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + res.response
-      }
-      ;(this as any)[method]($event)
+      const response = JSON.parse(res.response)
+      $event.detail.errMsg = 'getPhoneNumber:ok'
+      $event.detail.encryptedData = response.response
+      $event.detail.sign = response.sign
+      method($event)
     },
-    fail: () => {
+    fail: (res) => {
       $event.type = 'getphonenumber'
-      $event.detail.errMsg = 'getPhoneNumber:fail'
-      ;(this as any)[method]($event)
+      $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res)
+      method($event)
     },
   })
 }

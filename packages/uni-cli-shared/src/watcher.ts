@@ -68,14 +68,14 @@ export class FileWatcher {
     if (content) {
       return fs
         .outputFile(to, content)
-        .catch((e) => {
+        .catch(() => {
           // this.info('copy', e)
         })
         .then(() => this.onChange && this.onChange())
     }
     return fs
       .copy(this.from(from), to, { overwrite: true })
-      .catch((e) => {
+      .catch(() => {
         // this.info('copy', e)
       })
       .then(() => this.onChange && this.onChange())
@@ -85,7 +85,7 @@ export class FileWatcher {
     this.info('remove', from + '=>' + to)
     return fs
       .remove(to)
-      .catch((e) => {
+      .catch(() => {
         // this.info('remove', e)
       })
       .then(() => this.onChange && this.onChange())

@@ -1,10 +1,12 @@
+import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import { Options as VueOptions } from '@vitejs/plugin-vue'
-import { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
-import { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
+import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
+import type { Options as VueOptions } from '@vitejs/plugin-vue'
+import type { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
+import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 import vuePlugin from '@vitejs/plugin-vue'
-import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
+import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
+import legacyPlugin from '@vitejs/plugin-legacy'
 
 import {
   CopyOptions,
@@ -14,9 +16,12 @@ import {
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
-import { createConfigureServer } from './configureServer'
 import { uniCopyPlugin } from './plugins/copy'
-import { initExtraPlugins, initPluginUniOptions } from './utils'
+import {
+  initExtraPlugins,
+  initPluginUniOptions,
+  rewriteCompilerSfcParse,
+} from './utils'
 import {
   initPluginViteLegacyOptions,
   initPluginVueJsxOptions,
@@ -24,20 +29,25 @@ import {
 } from './vue'
 // import { createResolveId } from './resolveId'
 
-const debugUni = debug('vite:uni:plugin')
+const debugUni = debug('uni:plugin')
 
-const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+const pkg = require(path.resolve(__dirname, '../package.json'))
 
 initModuleAlias()
 
+rewriteCompilerSfcParse()
+
 process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
+process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
+  ? 'a'
+  : 'r'
 
 export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string
   vueOptions?: VueOptions
-  vueJsxOptions?: VueJSXPluginOptions | boolean
-  viteLegacyOptions?: ViteLegacyOptions
+  vueJsxOptions?: (VueJSXPluginOptions & { babelPlugins?: any[] }) | boolean
+  viteLegacyOptions?: ViteLegacyOptions | false
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   base: string
@@ -51,11 +61,6 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
 }
 
 export { runDev, runBuild } from './cli/action'
-
-let createViteLegacyPlugin: typeof ViteLegacyPlugin | undefined
-try {
-  createViteLegacyPlugin = require('@vitejs/plugin-legacy')
-} catch (e) {}
 
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
@@ -73,27 +78,22 @@ export default function uniPlugin(
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
 
-  initPreContext(options.platform)
+  initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
   const plugins: Plugin[] = []
 
-  if (createViteLegacyPlugin && options.viteLegacyOptions !== false) {
+  if (options.viteLegacyOptions) {
     plugins.push(
-      ...(createViteLegacyPlugin(
+      ...(legacyPlugin(
         initPluginViteLegacyOptions(options)
       ) as unknown as Plugin[])
     )
   }
 
-  if (options.vueJsxOptions) {
-    plugins.push(
-      require('../lib/plugin-vue-jsx/index')(initPluginVueJsxOptions(options))
-    )
-  }
-
   const uniPlugins = initExtraPlugins(
     process.env.UNI_CLI_CONTEXT || process.cwd(),
-    (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
+    (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
+    options
   )
   debugUni(uniPlugins)
 
@@ -101,14 +101,36 @@ export default function uniPlugin(
 
   options.copyOptions = uniPluginOptions.copyOptions
 
+  if (options.vueJsxOptions) {
+    plugins.push(
+      vueJsxPlugin(
+        initPluginVueJsxOptions(
+          options,
+          uniPluginOptions.compilerOptions,
+          uniPluginOptions.jsxOptions
+        )
+      )
+    )
+  }
+
   plugins.push({
-    name: 'vite:uni',
+    name: 'uni',
     config: createConfig(options, uniPlugins),
     // resolveId: createResolveId(options),
     configResolved: createConfigResolved(options),
-    configureServer: createConfigureServer(options),
   })
   plugins.push(...uniPlugins)
+
+  // 执行 build 命令时，vite 强制了 NODE_ENV
+  // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405
+  // const config = await resolveConfig(inlineConfig, 'build', 'production')
+  // 在 @vitejs/plugin-vue 之前校正回来
+  if (
+    process.env.UNI_NODE_ENV &&
+    process.env.UNI_NODE_ENV !== process.env.NODE_ENV
+  ) {
+    process.env.NODE_ENV = process.env.UNI_NODE_ENV
+  }
 
   plugins.unshift(
     vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))

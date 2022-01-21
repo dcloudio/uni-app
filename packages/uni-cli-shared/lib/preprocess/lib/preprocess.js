@@ -381,9 +381,13 @@ function getTestTemplate(test) {
   return new Function("context", "with (context||{}){ return ( " + test + " ); }");
 }
 
-function testPasses(test,context) {
-  var testFn = getTestTemplate(test);
-  return testFn(context, getDeepPropFromObj);
+// fixed by xxxxxx
+function testPasses(test, context) {
+  var testFn = getTestTemplate(test)
+  try {
+    return testFn(context, getDeepPropFromObj)
+  } catch (e) {}
+  return false
 }
 
 function getFileContents(path, failSilent, requesterPath) {

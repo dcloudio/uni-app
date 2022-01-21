@@ -1,6 +1,6 @@
 import { sep } from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 import { BaseNode, Program, Identifier } from 'estree'
 
@@ -14,9 +14,15 @@ import { AcornNode } from 'rollup'
 
 import { walk } from 'estree-walker'
 import { extend } from '@vue/shared'
-import { MagicString } from '@vue/compiler-sfc'
+import MagicString from 'magic-string'
 
-import { isProperty, isReference, isMemberExpression, isJsFile } from '../utils'
+import {
+  isProperty,
+  isReference,
+  isMemberExpression,
+  isJsFile,
+  isAssignmentExpression,
+} from '../utils'
 
 interface Scope {
   parent: Scope
@@ -33,8 +39,8 @@ export interface InjectOptions {
   [str: string]: Injectment | FilterPattern | Boolean | Function | undefined
 }
 
-const debugInject = debug('vite:uni:inject')
-const debugInjectTry = debug('vite:uni:inject-try')
+const debugInject = debug('uni:inject')
+const debugInjectTry = debug('uni:inject-try')
 
 export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   if (!options) throw new Error('Missing options')
@@ -46,6 +52,7 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   delete modules.sourceMap
   delete modules.callback
 
+  const reassignments = new Set<string>()
   const modulesMap = new Map<string, string | [string, string]>()
   const namespaceModulesMap = new Map<string, string | [string, string]>()
   Object.keys(modules).forEach((name) => {
@@ -69,7 +76,9 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   const sourceMap = options.sourceMap !== false
   const callback = options.callback
   return {
-    name: 'vite:uni-inject',
+    name: 'uni:inject',
+    // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
+    enforce: 'post',
     transform(code, id) {
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
@@ -105,7 +114,12 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
 
       const newImports = new Map()
 
-      function handleReference(node: BaseNode, name: string, keypath: string) {
+      function handleReference(
+        node: BaseNode,
+        name: string,
+        keypath: string,
+        parent?: BaseNode
+      ) {
         let mod = modulesMap.get(keypath)
         if (!mod && hasNamespace) {
           const mods = keypath.split('.')
@@ -128,8 +142,19 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
         if (mod && !imports.has(name) && !scope.contains(name)) {
           if (typeof mod === 'string') mod = [mod, 'default']
           if (mod[0] === id) return false
-
           const hash = `${keypath}:${mod[0]}:${mod[1]}`
+          // 当 API 被覆盖定义后，不再摇树
+          if (reassignments.has(hash)) {
+            return false
+          }
+          if (
+            parent &&
+            isAssignmentExpression(parent) &&
+            parent.left === node
+          ) {
+            reassignments.add(hash)
+            return false
+          }
 
           const importLocalName =
             name === keypath ? name : makeLegalIdentifier(`$inject_${keypath}`)
@@ -184,7 +209,7 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
 
           if (isReference(node, parent)) {
             const { name, keypath } = flatten(node)
-            const handled = handleReference(node, name, keypath)
+            const handled = handleReference(node, name, keypath, parent)
             if (handled) {
               this.skip()
             }
@@ -200,7 +225,10 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
       if (newImports.size === 0) {
         return {
           code,
-          ast,
+          // 不能返回 ast ，否则会导致代码不能被再次修改
+          // 比如 App.vue 中，console.log('uniCloud') 触发了 inject 检测，检测完，发现不需要
+          // 此时返回 ast，会导致 import { setupApp } from '@dcloudio/uni-h5' 不会被编译
+          // ast
           map: sourceMap ? magicString.generateMap({ hires: true }) : null,
         }
       }

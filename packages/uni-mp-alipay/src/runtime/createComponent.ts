@@ -1,15 +1,15 @@
 import { ComponentOptions, ComponentPublicInstance } from 'vue'
+// @ts-ignore
+import { pruneComponentPropsCache } from 'vue'
 import {
   initProps,
   initBehaviors,
   initData,
-  handleEvent,
   $destroyComponent,
   initVueIds,
   initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 import {
-  initBehavior,
   handleRef,
   handleLink,
   triggerEvent,
@@ -27,17 +27,19 @@ declare function Component<P, D, M extends tinyapp.IComponentMethods>(
   options: tinyapp.ComponentOptions<P, D, M>
 ): void
 
-function initComponentProps(rawProps: Record<string, any>) {
+function initComponentProps(_rawProps: Record<string, any>) {
   const propertiesOptions = {
     properties: {},
   }
-  initProps(propertiesOptions, rawProps, false)
+  initProps(propertiesOptions)
   const properties = propertiesOptions.properties as Record<string, any>
   const props: Record<string, any> = {
-    onVueInit: function () {},
+    // onVueInit
+    onVI: function () {},
   }
   Object.keys(properties).forEach((key) => {
-    if (key !== 'vueSlots') {
+    // vueSlots
+    if (key !== 'uS') {
       props[key] = properties[key].value
     }
   })
@@ -53,7 +55,7 @@ function initVm(
     return
   }
   const properties = mpInstance.props
-  initVueIds(properties.vueId, mpInstance as any)
+  initVueIds(properties.uI, mpInstance as any)
   const relationOptions: RelationOptions = {
     vuePid: mpInstance._$vuePid,
     mpInstance,
@@ -78,57 +80,61 @@ function initVm(
   }
 }
 
-export function createComponent(vueOptions: ComponentOptions) {
-  vueOptions = vueOptions.default || vueOptions
-  const mpComponentOptions: tinyapp.ComponentOptions = {
-    props: initComponentProps(vueOptions.props),
-    didMount() {
-      const createComponent = (parent?: ComponentPublicInstance) => {
-        return createVueComponent('component', this, vueOptions, parent)
-      }
-      if ((my as any).dd) {
-        // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
-        setTimeout(() => {
+export function initCreateComponent() {
+  return function createComponent(vueOptions: ComponentOptions) {
+    vueOptions = vueOptions.default || vueOptions
+    const mpComponentOptions: tinyapp.ComponentOptions = {
+      props: initComponentProps(vueOptions.props),
+      didMount() {
+        const createComponent = (parent?: ComponentPublicInstance) => {
+          return createVueComponent('component', this, vueOptions, parent)
+        }
+        if ((my as any).dd) {
+          // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
+          setTimeout(() => {
+            initVm(this, createComponent)
+          }, 4)
+        } else {
           initVm(this, createComponent)
-        }, 4)
-      } else {
-        initVm(this, createComponent)
-      }
-      initSpecialMethods(this)
-      if (isComponent2) {
-        this.$vm.$callHook('mounted')
-      }
-    },
-    didUnmount() {
-      $destroyComponent(this.$vm)
-    },
-    methods: {
-      __r: handleRef,
-      __e: handleEvent,
-      __l: handleLink,
-      triggerEvent,
-    },
-  }
-  if (__VUE_OPTIONS_API__) {
-    mpComponentOptions.data = initData(vueOptions)
-    mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior)
-  }
-
-  if (isComponent2) {
-    mpComponentOptions.onInit = function onInit(this: MPComponentInstance) {
-      initVm(this, (parent?: ComponentPublicInstance) => {
-        return createVueComponent('component', this, vueOptions, parent)
-      })
+        }
+        initSpecialMethods(this)
+        if (isComponent2) {
+          this.$vm.$callHook('mounted')
+        }
+      },
+      didUnmount() {
+        if (this.$vm) {
+          pruneComponentPropsCache(this.$vm.$.uid)
+          $destroyComponent(this.$vm)
+        }
+      },
+      methods: {
+        __r: handleRef,
+        __l: handleLink,
+        triggerEvent,
+      },
     }
-    mpComponentOptions.deriveDataFromProps = createObserver()
-  } else {
-    mpComponentOptions.didUpdate = createObserver(true)
+    if (__VUE_OPTIONS_API__) {
+      mpComponentOptions.data = initData(vueOptions)
+      mpComponentOptions.mixins = initBehaviors(vueOptions)
+    }
+
+    if (isComponent2) {
+      mpComponentOptions.onInit = function onInit(this: MPComponentInstance) {
+        initVm(this, (parent?: ComponentPublicInstance) => {
+          return createVueComponent('component', this, vueOptions, parent)
+        })
+      }
+      mpComponentOptions.deriveDataFromProps = createObserver()
+    } else {
+      mpComponentOptions.didUpdate = createObserver(true)
+    }
+
+    initWxsCallMethods(
+      mpComponentOptions.methods as WechatMiniprogram.Component.MethodOption,
+      vueOptions.wxsCallMethods
+    )
+
+    return Component(mpComponentOptions)
   }
-
-  initWxsCallMethods(
-    mpComponentOptions.methods as WechatMiniprogram.Component.MethodOption,
-    vueOptions.wxsCallMethods
-  )
-
-  return Component(mpComponentOptions)
 }

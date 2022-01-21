@@ -21,6 +21,7 @@ export const HTTP_METHODS = [
   'DELETE',
   'TRACE',
   'CONNECT',
+  'PATCH',
 ]
 
 export function elemInArray<T = string>(str: T, arr: T[]) {

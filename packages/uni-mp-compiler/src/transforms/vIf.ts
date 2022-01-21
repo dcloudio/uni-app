@@ -1,14 +1,12 @@
 import {
   ConditionalExpression,
   isConditionalExpression,
-  isLiteral,
   isSpreadElement,
   ObjectExpression,
 } from '@babel/types'
 import {
   createCompilerError,
   createSimpleExpression,
-  createStructuralDirectiveTransform,
   DirectiveNode,
   ElementNode,
   ErrorCodes,
@@ -24,10 +22,14 @@ import {
   parseExpr,
 } from '../ast'
 import { CodegenScope } from '../options'
-import { NodeTransform, TransformContext, traverseNode } from '../transform'
+import {
+  createStructuralDirectiveTransform,
+  NodeTransform,
+  TransformContext,
+  traverseNode,
+} from '../transform'
 import { processExpression } from './transformExpression'
-import { rewriteExpression } from './transformIdentifier'
-
+import { isStaticLiteral, rewriteExpression } from './utils'
 interface IfOptions {
   name: string
   condition?: string
@@ -42,8 +44,7 @@ export function isIfElementNode(node: unknown): node is IfElementNode {
 
 export const transformIf = createStructuralDirectiveTransform(
   /^(if|else|else-if)$/,
-  (node, dir, _context) => {
-    const context = _context as unknown as TransformContext
+  (node, dir, context) => {
     return processIf(node, dir, context, (ifNode, branch, isRoot) => {
       const { currentScope: parentScope, popScope } = context
       const ifOptions: IfOptions = {
@@ -55,19 +56,19 @@ export const transformIf = createStructuralDirectiveTransform(
         name: dir.name,
         condition,
       })
-      return () => {
-        if (condition) {
-          if (!isLiteral(condition)) {
-            ifOptions.condition = rewriteExpression(
-              dir.exp!,
-              context,
-              condition,
-              parentScope
-            ).content
-          } else {
-            ifOptions.condition = (dir.exp as SimpleExpressionNode).content
-          }
+      if (condition) {
+        if (!isStaticLiteral(condition)) {
+          ifOptions.condition = rewriteExpression(
+            dir.exp!,
+            context,
+            condition,
+            parentScope
+          ).content
+        } else {
+          ifOptions.condition = (dir.exp as SimpleExpressionNode).content
         }
+      }
+      return () => {
         if (isRoot) {
           parentScope.properties.push(createVIfSpreadElement(vIfScope))
         } else {

@@ -1,29 +1,31 @@
 import path from 'path'
 import { defineUniMainJsPlugin, normalizePath } from '@dcloudio/uni-cli-shared'
-import { isSsr, isSsrManifest } from '../utils'
+import { isSSR, isSsr, isSsrManifest } from '../utils'
 
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {
     let pagesJsonJsPath = ''
-    let isSSR = false
+    let runSSR = false
     return {
-      name: 'vite:uni-h5-main-js',
+      name: 'uni:h5-main-js',
       enforce: 'pre',
       configResolved(config) {
         pagesJsonJsPath = normalizePath(
           path.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js')
         )
-        isSSR =
+        runSSR =
           isSsr(config.command, config) || isSsrManifest(config.command, config)
       },
-      transform(code, id, ssr) {
+      transform(code, id, options) {
         if (opts.filter(id)) {
-          if (!isSSR) {
+          if (!runSSR) {
             code = code.includes('createSSRApp')
               ? createApp(code)
               : createLegacyApp(code)
           } else {
-            code = ssr ? createSSRServerApp(code) : createSSRClientApp(code)
+            code = isSSR(options)
+              ? createSSRServerApp(code)
+              : createSSRClientApp(code)
           }
           code = `import '${pagesJsonJsPath}';${code}`
           return {

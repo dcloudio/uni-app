@@ -26,7 +26,7 @@ import {
   JOB_PRIORITY_RENDERJS,
   queuePostActionJob,
 } from '../scheduler'
-import { decodeAttr } from '../utils'
+import { decodeAttr, isCssVar } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
 import { initRenderjs } from '../renderjs'
 
@@ -128,6 +128,8 @@ export class UniComponent extends UniNode {
       } else {
         this.$props.style = newStyle
       }
+    } else if (isCssVar(name)) {
+      this.$.style.setProperty(name, value as string)
     } else {
       value = decodeAttr(this.$ || $(this.pid).$, value)
       if (!this.wxsPropsInvoke(name, value, true)) {
@@ -136,7 +138,11 @@ export class UniComponent extends UniNode {
     }
   }
   removeAttr(name: string) {
-    this.$props[name] = null
+    if (isCssVar(name)) {
+      this.$.style.removeProperty(name)
+    } else {
+      this.$props[name] = null
+    }
   }
 
   remove() {
@@ -225,4 +231,16 @@ export function setHolderText(holder: Element, clazz: string, text: string) {
   })
   // 添加文本节点
   holder.appendChild(document.createTextNode(text))
+}
+
+const vModelNames = ['value', 'modelValue']
+export function initVModel(props: Record<string, any>) {
+  vModelNames.forEach((name) => {
+    if (hasOwn(props, name)) {
+      const event = 'onUpdate:' + name
+      if (!hasOwn(props, event)) {
+        props[event] = (v: string) => (props[name] = v)
+      }
+    }
+  })
 }

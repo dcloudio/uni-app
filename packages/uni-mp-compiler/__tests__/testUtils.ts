@@ -1,8 +1,30 @@
+import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
+import {
+  createIsCustomElement,
+  isMiniProgramNativeTag as isNativeTag,
+} from '@dcloudio/uni-shared'
 import { compile } from '../src/index'
 import { CompilerOptions } from '../src/options'
+
+export const miniProgram: MiniProgramCompilerOptions = {
+  class: {
+    array: true,
+  },
+  slot: {
+    fallbackContent: false,
+    dynamicSlotNames: true,
+  },
+  directive: 'wx:',
+  component: {
+    dir: 'wxcomponents',
+    getPropertySync: true,
+  },
+} as const
+
 export function inspect(obj: any) {
   console.log(require('util').inspect(obj, { colors: true, depth: null }))
 }
+
 export function assert(
   template: string,
   templateCode: string,
@@ -10,10 +32,18 @@ export function assert(
   options: CompilerOptions = {}
 ) {
   const res = compile(template, {
+    root: '',
+    mode: 'module',
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
+    isNativeTag,
+    isCustomElement: createIsCustomElement([]),
+    generatorOpts: {
+      concise: true,
+    },
     miniProgram: {
+      ...miniProgram,
       emitFile({ source }) {
         // console.log(source)
         if (!options.onError) {

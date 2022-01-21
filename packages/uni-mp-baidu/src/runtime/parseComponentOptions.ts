@@ -1,15 +1,16 @@
 import { hasOwn } from '@vue/shared'
-
 import {
   MPComponentInstance,
   MPComponentOptions,
   initMocks,
+  handleEvent,
+  nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 import {
   fixSetDataStart,
   fixSetDataEnd,
-} from '../../../uni-mp-weixin/src/runtime/fixSetData'
+} from '@dcloudio/uni-mp-weixin/src/runtime/fixSetData'
 
 export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 
@@ -48,7 +49,7 @@ export function parse(componentOptions: MPComponentOptions) {
     fixSetDataStart(this as MPComponentInstance)
     oldAttached.call(this)
     this.pageinstance.$vm = this.$vm
-    this.$vm.__call_hook('onInit', query)
+    this.$vm.$callHook('onInit', query)
   }
   lifetimes.attached = function attached(this: MPComponentInstance) {
     if (!this.$vm) {
@@ -68,9 +69,11 @@ export function parse(componentOptions: MPComponentOptions) {
         delete pageInstance._$args
       }
     } else {
-      // 百度小程序组件不触发methods内的onReady
+      // 百度小程序组件不触发 methods 内的 onReady
       if (this.$vm) {
-        this.$vm.$callHook('mounted')
+        nextSetDataTick(this, () => {
+          this.$vm!.$callHook('mounted')
+        })
       }
     }
   }
@@ -83,4 +86,6 @@ export function parse(componentOptions: MPComponentOptions) {
     __l: methods.__l,
   }
   delete methods.__l
+  // 百度小程序自定义组件，不支持绑定动态事件，故由 __e 分发
+  methods.__e = handleEvent
 }

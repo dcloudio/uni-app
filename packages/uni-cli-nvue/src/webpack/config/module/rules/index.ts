@@ -1,4 +1,5 @@
 import { RuleSetRule } from 'webpack'
+import { NVueCompilerOptions } from '../../../../types'
 import { createBabelLoader } from './babelLoader'
 import { createCssLoaders } from './cssLoader'
 import { createFileLoader } from './fileLoader'

@@ -1,9 +1,10 @@
 import debug from 'debug'
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
 
 import { isJsFile, parseVueRequest } from '../utils'
 import { rewriteConsoleExpr } from '../../logs/console'
+import { withSourcemap } from '../../vite/utils/utils'
 
 export interface ConsoleOptions {
   filename?: (filename: string) => string
@@ -11,14 +12,17 @@ export interface ConsoleOptions {
   exclude?: FilterPattern
 }
 
-const debugConsole = debug('vite:uni:console')
+const debugConsole = debug('uni:console')
 
 export function uniConsolePlugin(options: ConsoleOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
+  let resolvedConfig: ResolvedConfig
   return {
-    name: 'vite:uni-app-console',
+    name: 'uni:console',
     enforce: 'pre',
-    apply: 'build',
+    configResolved(config) {
+      resolvedConfig = config
+    },
     transform(code, id) {
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
@@ -33,10 +37,12 @@ export function uniConsolePlugin(options: ConsoleOptions): Plugin {
         return null
       }
       debugConsole(id)
-      return {
-        code: rewriteConsoleExpr(filename, code),
-        map: null,
-      }
+      return rewriteConsoleExpr(
+        id,
+        filename,
+        code,
+        withSourcemap(resolvedConfig)
+      )
     },
   }
 }

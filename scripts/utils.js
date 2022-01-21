@@ -4,31 +4,34 @@ const chalk = require('chalk')
 
 const priority = {
   'uni-shared': 100,
-  'uni-app': 90,
-  'uni-stat': 90,
   'uni-i18n': 90,
-  'uni-mp-vue': 80,
+  'uni-app': 90,
+  'uni-cli-shared': 80,
+  'uni-stat': 75,
+  'uni-mp-vue': 75,
   'uni-mp-alipay': 70,
   'uni-mp-baidu': 70,
   'uni-mp-kuaishou': 70,
   'uni-mp-qq': 70,
+  'uni-mp-lark': 70,
   'uni-mp-toutiao': 70,
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,
-  'uni-cli-shared': 60,
   'uni-cli-nvue': 55,
   'uni-h5': 50,
   'uni-h5-vite': 40,
+  'uni-mp-compiler': 40,
+  'uni-mp-vite': 35,
   'uni-app-vue': 35,
   'uni-app-plus': 30,
   'uni-app-vite': 30,
-  'uni-mp-vite': 30,
-  'uni-mp-compiler': 30,
   'vite-plugin-uni': 20,
   'uni-cloud': 10,
   'uni-automator': 10,
   'size-check': 1,
 }
+
+exports.priority = priority
 
 const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
   if (!fs.statSync(`packages/${f}`).isDirectory()) {
@@ -70,4 +73,16 @@ exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
 
     process.exit(1)
   }
+}
+
+exports.resolvePackages = (dirname) => {
+  dirname = path.resolve(__dirname, dirname)
+  return fs
+    .readdirSync(dirname)
+    .filter(
+      (p) =>
+        !p.endsWith('.ts') &&
+        !p.startsWith('.') &&
+        fs.existsSync(path.join(dirname, p, 'package.json'))
+    )
 }

@@ -1,13 +1,14 @@
 import path from 'path'
 import type { Plugin } from 'vite'
 import { extend, isArray, isString, isFunction } from '@vue/shared'
-import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
-import type {
+import {
   CopyOptions,
+  registerPlatform,
   UniViteCopyPluginTarget,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
-import { TemplateCompiler } from '@vue/compiler-sfc'
+import type { TemplateCompiler } from '@vue/compiler-sfc'
+import { VitePluginUniResolvedOptions } from '..'
 
 interface PluginConfig {
   id: string
@@ -23,17 +24,15 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
   const assets: string[] = []
   const targets: UniViteCopyPluginTarget[] = []
   const transformEvent: Record<string, string> = Object.create(null)
-  const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {
-    isNativeTag,
-    isCustomElement,
-  }
+  const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {}
+  const jsxOptions: Required<UniVitePlugin>['uni']['jsxOptions'] = {}
   let compiler: TemplateCompiler | undefined
   UniVitePlugins.forEach((plugin) => {
     const {
       compiler: pluginTemplateCompiler,
       copyOptions: pluginCopyOptions,
       compilerOptions: pluginCompilerOptions,
-      transformEvent: pluginTransformEvent,
+      jsxOptions: pluginJsxOptions,
     } = plugin.uni || {}
     if (pluginTemplateCompiler) {
       compiler = pluginTemplateCompiler
@@ -41,8 +40,8 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
     if (pluginCompilerOptions) {
       extend(compilerOptions, pluginCompilerOptions)
     }
-    if (pluginTransformEvent) {
-      extend(transformEvent, pluginTransformEvent)
+    if (pluginJsxOptions) {
+      extend(jsxOptions, pluginJsxOptions)
     }
     if (pluginCopyOptions) {
       let copyOptions = pluginCopyOptions as CopyOptions
@@ -65,23 +64,44 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
     },
     transformEvent,
     compilerOptions,
+    jsxOptions,
   }
 }
 
-export function initExtraPlugins(cliRoot: string, platform: UniApp.PLATFORM) {
-  return initPlugins(resolvePlugins(cliRoot, platform))
+export function initExtraPlugins(
+  cliRoot: string,
+  platform: UniApp.PLATFORM,
+  options: VitePluginUniResolvedOptions
+) {
+  return initPlugins(resolvePlugins(cliRoot, platform), options)
 }
 
-function initPlugin({ id, config: { main } }: PluginConfig): Plugin | void {
-  const plugin = require(path.join(id, main || '/lib/uni.plugin.js'))
-  return plugin.default || plugin
+function initPlugin(
+  { id, config: { main } }: PluginConfig,
+  options: VitePluginUniResolvedOptions
+): Plugin | void {
+  let plugin = require(path.join(id, main || '/lib/uni.plugin.js'))
+  plugin = plugin.default || plugin
+  if (isFunction(plugin)) {
+    plugin = plugin(options)
+  }
+  return plugin
 }
 
-function initPlugins(plugins: PluginConfig[]): Plugin[] {
+function initPlugins(
+  plugins: PluginConfig[],
+  options: VitePluginUniResolvedOptions
+): Plugin[] {
   return plugins
-    .map((plugin) => initPlugin(plugin))
+    .map((plugin) => initPlugin(plugin, options))
     .flat()
     .filter<Plugin>(Boolean as any)
+    .map((plugin) => {
+      if (isFunction(plugin)) {
+        return plugin(options)
+      }
+      return plugin
+    })
 }
 
 function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
@@ -97,6 +117,8 @@ function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
         }
         const { apply } = config
         if (isArray(apply)) {
+          // 注册所有平台
+          apply.forEach((p) => registerPlatform(p))
           if (!apply.includes(platform)) {
             return
           }

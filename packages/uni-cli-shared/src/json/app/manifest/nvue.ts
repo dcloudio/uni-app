@@ -13,6 +13,9 @@ export function getNVueCompiler(manifestJson: Record<string, any>) {
     if (nvueCompiler === 'vue') {
       return 'vue'
     }
+    if (nvueCompiler === 'vite') {
+      return 'vite'
+    }
   }
   return 'uni-app'
 }

@@ -5,5 +5,10 @@ export * from './mainJs'
 export * from './jsonJs'
 export * from './console'
 
-export { assetPlugin } from './vitejs/plugins/asset'
-export { isCSSRequest, cssPlugin, cssPostPlugin } from './vitejs/plugins/css'
+export { assetPlugin, getAssetHash } from './vitejs/plugins/asset'
+export {
+  isCSSRequest,
+  cssPlugin,
+  cssPostPlugin,
+  minifyCSS,
+} from './vitejs/plugins/css'

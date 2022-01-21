@@ -9,7 +9,6 @@ export interface VueQuery {
   index?: number
   lang?: string
   raw?: boolean
-  mpType?: 'page'
 }
 
 export function parseVueRequest(id: string) {

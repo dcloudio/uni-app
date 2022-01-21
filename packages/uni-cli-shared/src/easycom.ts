@@ -40,11 +40,10 @@ function clearEasycom() {
   easycomsInvalidCache.clear()
 }
 
-export function initEasycoms(inputDir: string, platform: UniApp.PLATFORM) {
-  const buildInComponentsDir = path.resolve(
-    require.resolve('@dcloudio/uni-components'),
-    '../lib'
-  )
+export function initEasycoms(
+  inputDir: string,
+  { dirs, platform }: { dirs: string[]; platform: UniApp.PLATFORM }
+) {
   const componentsDir = path.resolve(inputDir, 'components')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
   const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
@@ -53,9 +52,9 @@ export function initEasycoms(inputDir: string, platform: UniApp.PLATFORM) {
     const easycomOptions: EasycomOption = {
       dirs:
         easycom && easycom.autoscan === false
-          ? [buildInComponentsDir] // 禁止自动扫描
+          ? [...dirs] // 禁止自动扫描
           : [
-              buildInComponentsDir,
+              ...dirs,
               componentsDir,
               ...initUniModulesEasycomDirs(uniModulesDir),
             ],
@@ -71,7 +70,10 @@ export function initEasycoms(inputDir: string, platform: UniApp.PLATFORM) {
   const res = {
     options,
     filter: createFilter(
-      ['components/*/*.vue', 'uni_modules/*/components/*/*.vue'],
+      [
+        'components/*/*.(vue|jsx|tsx)',
+        'uni_modules/*/components/*/*.(vue|jsx|tsx)',
+      ],
       [],
       {
         resolve: inputDir,
@@ -111,7 +113,7 @@ function initEasycom({
   dirs,
   rootDir,
   custom,
-  extensions = ['.vue'],
+  extensions = ['.vue', '.jsx', '.tsx'],
 }: EasycomOption) {
   clearEasycom()
   const easycomsObj = Object.create(null)
@@ -229,3 +231,42 @@ function initAutoScanEasycoms(
 function normalizeCompath(compath: string, rootDir: string) {
   return normalizePath(path.relative(rootDir, compath))
 }
+
+export function addImportDeclaration(
+  importDeclarations: string[],
+  local: string,
+  source: string,
+  imported?: string
+) {
+  importDeclarations.push(createImportDeclaration(local, source, imported))
+  return local
+}
+
+function createImportDeclaration(
+  local: string,
+  source: string,
+  imported?: string
+) {
+  if (imported) {
+    return `import {${imported} as ${local}} from '${source}';`
+  }
+  return `import ${local} from '${source}';`
+}
+
+const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveDynamicComponent as __resolveDynamicComponent } from 'vue';import { resolveEasycom } from '@dcloudio/uni-app';`
+
+export function genResolveEasycomCode(
+  importDeclarations: string[],
+  code: string,
+  name: string
+) {
+  if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
+    importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
+  }
+  return `resolveEasycom(${code.replace(
+    '_resolveComponent',
+    '__resolveDynamicComponent'
+  )}, ${name})`
+}
+
+export const UNI_EASYCOM_EXCLUDE = [/App.vue$/, /@dcloudio\/uni-h5/]

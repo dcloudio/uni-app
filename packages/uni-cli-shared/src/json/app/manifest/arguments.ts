@@ -2,16 +2,22 @@ export function initArguments(
   manifestJson: Record<string, any>,
   pagesJson: UniApp.PagesJson
 ) {
+  const args = parseArguments(pagesJson)
+  if (args) {
+    manifestJson.plus.arguments = args
+  }
+}
+
+export function parseArguments(pagesJson: UniApp.PagesJson) {
   if (process.env.NODE_ENV !== 'development') {
     return
   }
   // 指定了入口
   if (process.env.UNI_CLI_LAUNCH_PAGE_PATH) {
-    manifestJson.plus.arguments = JSON.stringify({
+    return JSON.stringify({
       path: process.env.UNI_CLI_LAUNCH_PAGE_PATH,
       query: process.env.UNI_CLI_LAUNCH_PAGE_QUERY,
     })
-    return
   }
 
   const condition = pagesJson.condition
@@ -24,6 +30,6 @@ export function initArguments(
     if (current >= list.length) {
       current = 0
     }
-    manifestJson.plus.arguments = JSON.stringify(list[current])
+    return JSON.stringify(list[current])
   }
 }

@@ -8,7 +8,10 @@ export const isInHBuilderX = once(() => {
       process.cwd(),
       '../about/package.json'
     ))
-    return name === 'about'
+    if (name === 'about') {
+      process.env.UNI_HBUILDERX_PLUGINS = path.resolve(process.cwd(), '..')
+      return true
+    }
   } catch (e) {
     // console.error(e)
   }

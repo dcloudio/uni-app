@@ -1,12 +1,18 @@
 [
   {
     "input": {
-      "src/plugin/index.ts": "dist/uni.compiler.js"
+      "src/compiler/index.ts": "dist/uni.compiler.js"
     },
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-cli-shared", "@dcloudio/uni-mp-vite"]
+    "external": [
+      "@vue/compiler-core",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-cli-shared",
+      "@dcloudio/uni-mp-vite",
+      "@dcloudio/uni-mp-compiler"
+    ]
   },
   {
     "input": {

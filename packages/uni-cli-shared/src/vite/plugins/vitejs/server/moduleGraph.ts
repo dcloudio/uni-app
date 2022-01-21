@@ -1,1 +1,1 @@
-export { ModuleNode } from 'vite'
+export type { ModuleNode } from 'vite'

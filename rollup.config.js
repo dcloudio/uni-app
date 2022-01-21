@@ -89,6 +89,7 @@ function createConfig(entryFile, output, buildOption) {
         sourceMap: output.sourcemap,
         declaration: shouldEmitDeclarations,
         declarationMap: false,
+        skipLibCheck: true,
       },
       exclude: ['**/__tests__', 'test-dts'],
     },

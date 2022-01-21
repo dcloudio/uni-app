@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-vue",
-  "version": "3.0.0-alpha-3021320211109002",
+  "version": "3.0.0-alpha-3030820220114001",
   "description": "@dcloudio/uni-vue",
   "files": [
     "dist"
@@ -15,5 +15,9 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3030820220114001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114001"
   }
 }

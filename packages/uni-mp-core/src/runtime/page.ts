@@ -1,13 +1,19 @@
 import { ComponentOptions } from 'vue'
 
-import { ON_LOAD, stringifyQuery } from '@dcloudio/uni-shared'
+import { addLeadingSlash, ON_LOAD, stringifyQuery } from '@dcloudio/uni-shared'
 
 import {
   ParseComponentOptions,
   parseComponent,
   CustomComponentInstanceProperty,
 } from './component'
-import { PAGE_HOOKS, initHooks, initUnknownHooks } from './componentHooks'
+import {
+  PAGE_INIT_HOOKS,
+  initHooks,
+  initUnknownHooks,
+  initRuntimeHooks,
+} from './componentHooks'
+import { initPageProps } from './componentProps'
 
 function parsePage(
   vueOptions: ComponentOptions,
@@ -23,6 +29,11 @@ function parsePage(
     initLifetimes,
   })
 
+  initPageProps(
+    miniProgramPageOptions,
+    (vueOptions.default || vueOptions).props
+  )
+
   const methods =
     miniProgramPageOptions.methods as WechatMiniprogram.Component.MethodOption
 
@@ -32,14 +43,14 @@ function parsePage(
   ) {
     ;(this as any).options = query
     ;(this as any).$page = {
-      fullPath: '/' + (this as any).route + stringifyQuery(query),
+      fullPath: addLeadingSlash((this as any).route + stringifyQuery(query)),
     }
     return this.$vm && this.$vm.$callHook(ON_LOAD, query)
   }
 
-  initHooks(methods, PAGE_HOOKS)
+  initHooks(methods, PAGE_INIT_HOOKS)
   initUnknownHooks(methods, vueOptions)
-
+  initRuntimeHooks(methods, vueOptions.__runtimeHooks)
   parse && parse(miniProgramPageOptions, { handleLink })
 
   return miniProgramPageOptions

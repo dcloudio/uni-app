@@ -1,7 +1,13 @@
+export const LINEFEED = '\n'
 export const NAVBAR_HEIGHT = 44
 export const TABBAR_HEIGHT = 50
 export const ON_REACH_BOTTOM_DISTANCE = 50
 export const RESPONSIVE_MIN_WIDTH = 768
+
+export const UNI_STORAGE_LOCALE = 'UNI_LOCALE'
+
+// quickapp-webview 不能使用 default 作为插槽名称
+export const SLOT_DEFAULT_NAME = 'd'
 
 export const COMPONENT_NAME_PREFIX = 'VUni'
 

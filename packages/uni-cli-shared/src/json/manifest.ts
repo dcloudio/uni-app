@@ -1,7 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import { extend } from '@vue/shared'
-import { once, defaultRpx2Unit } from '@dcloudio/uni-shared'
+import {
+  once,
+  defaultRpx2Unit,
+  defaultMiniProgramRpx2Unit,
+} from '@dcloudio/uni-shared'
 
 import { parseJson } from './json'
 
@@ -13,10 +17,19 @@ export const parseManifestJson = (inputDir: string) => {
 
 export const parseManifestJsonOnce = once(parseManifestJson)
 
-export const parseRpx2UnitOnce = once((inputDir: string) => {
-  const { h5 } = parseManifestJsonOnce(inputDir)
-  return extend({}, defaultRpx2Unit, (h5 && h5.rpx) || {})
-})
+export const parseRpx2UnitOnce = once(
+  (inputDir: string, platform: UniApp.PLATFORM = 'h5') => {
+    const rpx2unit =
+      platform === 'h5' || platform === 'app'
+        ? defaultRpx2Unit
+        : defaultMiniProgramRpx2Unit
+    const platformOptions = parseManifestJsonOnce(inputDir)[platform]
+    if (platformOptions && platformOptions.rpx) {
+      return extend({}, rpx2unit, platformOptions)
+    }
+    return extend({}, rpx2unit)
+  }
+)
 
 interface CompilerCompatConfig {
   MODE?: 2 | 3
@@ -58,4 +71,12 @@ export function getRouterOptions(manifestJson: Record<string, any>): {
   base?: string
 } {
   return extend({}, manifestJson.h5?.router)
+}
+
+export function isEnableTreeShaking(manifestJson: Record<string, any>) {
+  return manifestJson.h5?.optimization?.treeShaking?.enable !== false
+}
+
+export function getDevServerOptions(manifestJson: Record<string, any>) {
+  return extend({}, manifestJson.h5?.devServer)
 }

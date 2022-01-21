@@ -94,5 +94,8 @@ export {
   $emit,
   onAppLaunch,
   onLocaleChange,
+  setPageMeta,
+  getEnterOptionsSync,
+  getLaunchOptionsSync,
 } from '@dcloudio/uni-api'
 //#endif

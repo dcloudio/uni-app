@@ -1,7 +1,7 @@
 import '@dcloudio/uni-components/style/text.css'
+import { LINEFEED, UniNodeJSON } from '@dcloudio/uni-shared'
 import { DecodeOptions, parseText } from '@dcloudio/uni-components'
 import { UniAnimationElement } from './UniAnimationElement'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
 
 interface TextProps {
   space: DecodeOptions['space']
@@ -44,7 +44,7 @@ export class UniTextElement extends UniAnimationElement<TextProps> {
       $props: { space, decode },
     } = this
 
-    this.$.textContent = parseText(this._text, { space, decode }).join('\n')
+    this.$.textContent = parseText(this._text, { space, decode }).join(LINEFEED)
 
     super.update(isMounted)
   }

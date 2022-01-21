@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`wxs normalizeWxsCode 1`] = `
+exports[`wxs parseWxsCode 1`] = `
 "<template><view></view><view></view></template>
   <script>
   export default {}
@@ -23,7 +23,7 @@ exports[`wxs normalizeWxsCode 1`] = `
   "
 `;
 
-exports[`wxs normalizeWxsCode 2`] = `
+exports[`wxs parseWxsCode 2`] = `
 "<template><view></view><view></view></template>
     <script>
     export default {}

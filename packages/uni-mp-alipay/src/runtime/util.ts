@@ -1,21 +1,27 @@
-import { hasOwn, isFunction, camelize, EMPTY_OBJ } from '@vue/shared'
+import { hasOwn, isFunction, camelize, isString } from '@vue/shared'
 
 import {
   ComponentPublicInstance,
   ComponentOptions,
   ComponentInternalInstance,
+  isRef,
+  Ref,
 } from 'vue'
+
+// @ts-ignore EMPTY_OBJ 不能从 @vue/shared 中引入，从 vue 中导入，保持一致
+import { EMPTY_OBJ, setTemplateRef } from 'vue'
 
 import {
   initMocks,
   $createComponent,
   initComponentInstance,
   CreateComponentOptions,
+  updateComponentProps,
+  findPropsData,
 } from '@dcloudio/uni-mp-core'
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
 
-import deepEqual from './deepEqual'
 import { ON_READY } from '@dcloudio/uni-shared'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
@@ -34,21 +40,12 @@ function customize(str: string) {
   return camelize(str.replace(customizeRE, '-'))
 }
 
-export function initBehavior({ properties }: Record<string, any>) {
-  const props: Record<string, any> = {}
-  Object.keys(properties).forEach((key) => {
-    props[key] = properties[key].value
-  })
-  return {
-    props,
-  }
-}
-
 export function initRelation(
   mpInstance: MPComponentInstance,
   detail: RelationOptions
 ) {
-  mpInstance.props.onVueInit(detail)
+  // onVueInit
+  mpInstance.props.onVI(detail)
 }
 
 export function initSpecialMethods(
@@ -123,13 +120,12 @@ export function initChildVues(
   delete mpInstance._$childVues
 }
 
-// TODO vue3
 export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
   if (!ref) {
     return
   }
-  const refName = ref.props['data-ref']
-  const refInForName = ref.props['data-ref-in-for']
+  const refName = ref.props.uR // data-ref
+  const refInForName = ref.props.uRIF // data-ref-in-for
   if (!refName && !refInForName) {
     return
   }
@@ -137,10 +133,54 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
   const refs =
     instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs
 
+  const { setupState } = instance
+  const refValue = ref.$vm
   if (refName) {
-    refs[refName] = ref.$vm || ref
+    if (isString(refName)) {
+      refs[refName] = refValue
+      if (hasOwn(setupState, refName)) {
+        setupState[refName] = refValue
+      }
+    } else {
+      setRef(refName, refValue, refs, setupState)
+    }
   } else if (refInForName) {
-    ;(refs[refInForName] || (refs[refInForName] = [])).push(ref.$vm || ref)
+    if (isString(refInForName)) {
+      ;(refs[refInForName] || (refs[refInForName] = [])).push(refValue)
+    } else {
+      setRef(refInForName, refValue, refs, setupState)
+    }
+  }
+}
+
+type VNodeRef =
+  | string
+  | Ref
+  | ((ref: object | null, refs: Record<string, any>) => void)
+
+type TemplateRef = {
+  r: VNodeRef
+  k?: string // setup ref key
+  f?: boolean // refInFor marker
+}
+
+function isTemplateRef(opts: unknown): opts is TemplateRef {
+  return !!(opts && (opts as TemplateRef).r)
+}
+
+function setRef(
+  ref: Ref | ((ref: object | null, refs: Record<string, any>) => void),
+  refValue: ComponentPublicInstance,
+  refs: Record<string, unknown>,
+  setupState: Data
+) {
+  if (isRef(ref)) {
+    ref.value = refValue
+  } else if (isFunction(ref)) {
+    const templateRef = ref(refValue, refs)
+    if (isTemplateRef(templateRef)) {
+      setTemplateRef(templateRef, refValue, setupState)
+    }
   }
 }
 
@@ -154,12 +194,8 @@ export function triggerEvent(
     return
   }
 
-  const eventOpts = this.props['data-event-opts']
-
   const target = {
-    dataset: {
-      eventOpts,
-    },
+    dataset: {},
   }
 
   handler({
@@ -170,31 +206,17 @@ export function triggerEvent(
   })
 }
 
-const IGNORES = ['$slots', '$scopedSlots']
+// const IGNORES = ['$slots', '$scopedSlots']
 
 export function createObserver(isDidUpdate: boolean = false) {
   return function observe(
     this: MPComponentInstance,
     props: Record<string, any>
   ) {
-    const prevProps = isDidUpdate ? props : this.props
     const nextProps = isDidUpdate ? this.props : props
-    if (deepEqual(prevProps, nextProps)) {
-      return
+    if (nextProps.uP) {
+      updateComponentProps(nextProps.uP, this.$vm.$)
     }
-    Object.keys(prevProps).forEach((name) => {
-      if (IGNORES.indexOf(name) === -1) {
-        const prevValue = prevProps[name]
-        const nextValue = nextProps[name]
-        if (
-          !isFunction(prevValue) &&
-          !isFunction(nextValue) &&
-          !deepEqual(prevValue, nextValue)
-        ) {
-          this.$vm.$.props[name] = nextProps[name]
-        }
-      }
-    })
   }
 }
 
@@ -233,7 +255,7 @@ export function createVueComponent(
   return $createComponent(
     {
       type: vueOptions,
-      props: mpInstance.props,
+      props: findPropsData(mpInstance.props, mpType === 'page'),
     },
     {
       mpType,

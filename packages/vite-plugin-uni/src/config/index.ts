@@ -9,7 +9,6 @@ import {
 import { VitePluginUniResolvedOptions } from '..'
 import { createCss } from './css'
 import { createResolve } from './resolve'
-import { createServer } from './server'
 import { createBuild } from './build'
 import { createOptimizeDeps } from './optimizeDeps'
 import { createDefine } from './define'
@@ -39,9 +38,8 @@ export function createConfig(
       resolve: createResolve(options, config),
       logLevel: config.logLevel || 'warn',
       optimizeDeps: createOptimizeDeps(options),
-      server: createServer(options),
-      build: createBuild(options),
-      css: createCss(options),
+      build: createBuild(options, config),
+      css: createCss(options, config),
     }
   }
 }

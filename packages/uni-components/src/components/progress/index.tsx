@@ -144,7 +144,7 @@ function _activeAnimation(state: ProgerssState, props: ProgressProps) {
       } else {
         state.currentPercent += 1
       }
-    }, parseFloat(props.duration as string))
+    }, parseFloat(props.duration as string)) as unknown as number
   } else {
     state.currentPercent = state.realPercent
   }

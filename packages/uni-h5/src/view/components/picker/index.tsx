@@ -256,7 +256,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     _createDate()
     _setValueSync()
 
-    const popup = usePopupStyle(props)
+    const popup = usePopupStyle(state)
     watchEffect(() => {
       state.isDesktop = popup.isDesktop.value
       state.popupStyle = popup.popupStyle.value
@@ -485,7 +485,7 @@ function useSystem() {
   return _system
 }
 
-let __contentVisibleDelay: number
+let __contentVisibleDelay: ReturnType<typeof setTimeout>
 function usePickerMethods(
   props: Props,
   state: State,
@@ -619,7 +619,7 @@ function usePickerMethods(
       case mode.MULTISELECTOR:
         {
           if (!Array.isArray(val)) {
-            val = []
+            val = state.valueArray
           }
           if (!Array.isArray(state.valueSync)) {
             state.valueSync = []

@@ -6,7 +6,7 @@ import { wrapperH5WxsEvent } from './componentWxs'
 
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
-  val.type.indexOf('mouse') === 0
+  val.type.indexOf('mouse') === 0 || ['contextmenu'].includes(val.type)
 // normalizeNativeEvent
 export function $nne(
   evt: Event,

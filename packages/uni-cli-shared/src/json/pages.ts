@@ -1,11 +1,36 @@
 import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
-import { normalizePath } from '../utils'
+import { addLeadingSlash, once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+import { removeExt, normalizePath } from '../utils'
 import { parseJson } from './json'
-import { initWebpackNVueEntry } from './app/pages'
+import { isVueSfcFile } from '../vue/utils'
 
+const pagesCacheSet: Set<string> = new Set()
+
+export function isUniPageFile(
+  file: string,
+  inputDir: string = process.env.UNI_INPUT_DIR
+) {
+  if (inputDir && path.isAbsolute(file)) {
+    file = normalizePath(path.relative(inputDir, file))
+  }
+  return pagesCacheSet.has(removeExt(file))
+}
+
+export function isUniPageSfcFile(
+  file: string,
+  inputDir: string = process.env.UNI_INPUT_DIR
+) {
+  return isVueSfcFile(file) && isUniPageFile(file, inputDir)
+}
+/**
+ * 小程序平台慎用，因为该解析不支持 subpackages
+ * @param inputDir
+ * @param platform
+ * @param normalize
+ * @returns
+ */
 export const parsePagesJson = (
   inputDir: string,
   platform: UniApp.PLATFORM,
@@ -17,9 +42,17 @@ export const parsePagesJson = (
   }
   return parseJson(jsonStr, true) as UniApp.PagesJson
 }
-
+/**
+ * 该方法解析出来的是不支持 subpackages，会被合并入 pages
+ */
 export const parsePagesJsonOnce = once(parsePagesJson)
-
+/**
+ * 目前 App 和 H5 使用了该方法
+ * @param jsonStr
+ * @param platform
+ * @param param2
+ * @returns
+ */
 export function normalizePagesJson(
   jsonStr: string,
   platform: UniApp.PLATFORM,
@@ -60,11 +93,6 @@ export function normalizePagesJson(
   }
   // pageStyle
   normalizePages(pagesJson.pages, platform)
-
-  if (platform === 'app' && process.env.UNI_NVUE_COMPILER !== 'vue') {
-    initWebpackNVueEntry(pagesJson.pages)
-  }
-
   // globalStyle
   pagesJson.globalStyle = normalizePageStyle(
     null,
@@ -80,6 +108,10 @@ export function normalizePagesJson(
       delete pagesJson.tabBar
     }
   }
+  // 缓存页面列表
+  pagesCacheSet.clear()
+  pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
+
   return pagesJson
 }
 
@@ -123,7 +155,7 @@ function normalizeSubpackages(
 
 function normalizeSubpackageSubNVues(
   root: string,
-  style: UniApp.PagesJsonPageStyle
+  style: UniApp.PagesJsonPageStyle = { navigationBar: {} }
 ) {
   const platformStyle = style['app'] || style['app-plus']
   if (!platformStyle) {
@@ -359,7 +391,7 @@ function normalizeFilepath(filepath: string) {
     !(SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) &&
     filepath.indexOf('/') !== 0
   ) {
-    return '/' + filepath
+    return addLeadingSlash(filepath)
   }
   return filepath
 }
@@ -414,3 +446,19 @@ function normalizePullToRefresh(
 ): UniApp.PageRefreshOptions | undefined {
   return pageStyle.pullToRefresh
 }
+
+function parseSubpackagesRoot(inputDir: string, platform: UniApp.PLATFORM) {
+  const pagesJson = parsePagesJson(inputDir, platform, false)
+  const subpackages = pagesJson.subPackages || pagesJson.subpackages
+  const roots: string[] = []
+  if (isArray(subpackages)) {
+    subpackages.forEach(({ root }) => {
+      if (root) {
+        roots.push(root)
+      }
+    })
+  }
+  return roots
+}
+
+export const parseSubpackagesRootOnce = once(parseSubpackagesRoot)

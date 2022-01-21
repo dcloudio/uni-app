@@ -4,7 +4,7 @@ export const API_SHREA = 'share'
 export type API_TYPE_SHARE = typeof uni.share
 const SCENE: Parameters<API_TYPE_SHARE>[0]['scene'][] = [
   'WXSceneSession',
-  'WXSenceTimeline',
+  'WXSceneTimeline',
   'WXSceneFavorite',
 ]
 export const SahreOptions: ApiOptions<API_TYPE_SHARE> = {

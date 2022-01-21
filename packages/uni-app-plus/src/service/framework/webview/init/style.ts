@@ -8,7 +8,7 @@ export function initWebviewStyle(
   query: Record<string, any>,
   routeMeta: UniApp.PageRouteMeta
 ) {
-  const webviewStyle = parseWebviewStyle(path, routeMeta)
+  const webviewStyle = parseWebviewStyle(path, routeMeta, webview)
   webviewStyle.uniPageUrl = initUniPageUrl(path, query)
   const isTabBar = !!routeMeta.isTabBar
   if (!routeMeta.isNVue) {

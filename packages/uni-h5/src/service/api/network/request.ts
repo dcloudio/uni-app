@@ -6,6 +6,7 @@ import {
   RequestOptions,
   RequestProtocol,
 } from '@dcloudio/uni-api'
+import { LINEFEED } from '@dcloudio/uni-shared'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,
@@ -155,7 +156,7 @@ class RequestTask implements UniApp.RequestTask {
  */
 function parseHeaders(headers: string) {
   const headersObject: Record<string, string> = {}
-  headers.split('\n').forEach((header) => {
+  headers.split(LINEFEED).forEach((header) => {
     const find = header.match(/(\S+\s*):\s*(.*)/)
     if (!find || find.length !== 3) {
       return

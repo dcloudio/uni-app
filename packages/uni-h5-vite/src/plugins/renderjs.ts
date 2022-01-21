@@ -1,14 +1,14 @@
 import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { rewriteDefault } from '@vue/compiler-sfc'
 
 import { missingModuleName, parseRenderjs } from '@dcloudio/uni-cli-shared'
 
-const debugRenderjs = debug('vite:uni:renderjs')
+const debugRenderjs = debug('uni:h5-renderjs')
 
 export function uniRenderjsPlugin(): Plugin {
   return {
-    name: 'vite:uni-h5-renderjs',
+    name: 'uni:h5-renderjs',
     transform(code, id) {
       const { type, name } = parseRenderjs(id)
       if (!type) {

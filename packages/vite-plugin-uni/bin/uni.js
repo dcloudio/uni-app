@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+const { performance } = require('perf_hooks')
+global.__vite_start_time = performance.now()
 const debugIndex = process.argv.findIndex((arg) => /^(?:-d|--debug)$/.test(arg))
 const filterIndex = process.argv.findIndex((arg) =>
   /^(?:-f|--filter)$/.test(arg)
@@ -6,13 +8,7 @@ const filterIndex = process.argv.findIndex((arg) =>
 if (debugIndex > 0) {
   let value = process.argv[debugIndex + 1]
   if (!value || value.startsWith('-')) {
-    value = 'vite:*'
-  } else {
-    // support debugging multiple flags with comma-separated list
-    value = value
-      .split(',')
-      .map((v) => `vite:${v}`)
-      .join(',')
+    value = 'vite:*,uni:*'
   }
   process.env.DEBUG = value
 

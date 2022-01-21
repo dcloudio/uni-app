@@ -45,7 +45,7 @@ export default /*#__PURE__*/ defineSystemComponent({
     })
     if (!__NODE_JS__) {
       const onMapReady: OnMapReady = inject('onMapReady') as OnMapReady
-      let timer: number
+      let timer: ReturnType<typeof setTimeout>
       function compassChangeHandler(res: { direction: number }) {
         state.rotate = res.direction
       }

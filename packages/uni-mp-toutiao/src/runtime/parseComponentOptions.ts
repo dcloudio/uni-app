@@ -1,6 +1,10 @@
 import { hasOwn } from '@vue/shared'
-
-import { MPComponentInstance, MPComponentOptions } from '@dcloudio/uni-mp-core'
+import { ComponentPublicInstance } from 'vue'
+import {
+  MPComponentInstance,
+  MPComponentOptions,
+  nextSetDataTick,
+} from '@dcloudio/uni-mp-core'
 
 import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
@@ -29,7 +33,8 @@ interface RelationOptions {
   webviewId: string
 }
 
-export const instances = Object.create(null)
+export const instances: Record<string, ComponentPublicInstance> =
+  Object.create(null)
 
 export function initRelation(mpInstance: MPComponentInstance, detail: Object) {
   // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
@@ -37,7 +42,7 @@ export function initRelation(mpInstance: MPComponentInstance, detail: Object) {
     ? mpInstance.__nodeId__
     : mpInstance.__nodeid__
   const webviewId = mpInstance.__webviewId__ + ''
-  instances[webviewId + '_' + nodeId] = mpInstance.$vm
+  instances[webviewId + '_' + nodeId] = mpInstance.$vm!
   mpInstance.triggerEvent('__l', {
     vuePid: (detail as any).vuePid,
     nodeId,
@@ -70,7 +75,7 @@ export function handleLink(
   if (__VUE_OPTIONS_API__) {
     ;(parentVm as any).$children.push(vm)
     const parent = parentVm.$ as any
-    vm.$.provides = parent
+    ;(vm.$ as any).provides = parent
       ? parent.provides
       : Object.create(parent.appContext.provides)
     initInjections(vm)
@@ -78,8 +83,10 @@ export function handleLink(
   }
 
   vm.$callCreatedHook()
-  vm.$callHook('mounted')
-  vm.$callHook(ON_READY)
+  nextSetDataTick(this, () => {
+    vm.$callHook('mounted')
+    vm.$callHook(ON_READY)
+  })
 }
 
 export function parse(

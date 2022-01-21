@@ -81,7 +81,7 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
     function upload(realFiles: File[]) {
       var xhr = new XMLHttpRequest()
       var form = new FormData()
-      var timer: number
+      var timer: ReturnType<typeof setTimeout>
       Object.keys(formData).forEach((key) => {
         form.append(key, formData[key])
       })

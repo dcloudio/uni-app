@@ -1,6 +1,6 @@
 import { isHTMLTag, isSVGTag } from '@vue/shared'
 
-export const BUILT_IN_TAGS = [
+export const BUILT_IN_TAG_NAMES = [
   'ad',
   'ad-content-page',
   'ad-draw',
@@ -44,7 +44,9 @@ export const BUILT_IN_TAGS = [
   'video',
   'view',
   'web-view',
-].map((tag) => 'uni-' + tag)
+]
+
+export const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
 
 export const TAGS = [
   'app',
@@ -68,23 +70,38 @@ export const TAGS = [
 ].map((tag) => 'uni-' + tag)
 
 export function isBuiltInComponent(tag: string) {
-  return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1
+  // h5 平台会被转换为 v-uni-
+  return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1
 }
 
-export function isCustomElement(tag: string) {
+export function isH5CustomElement(tag: string) {
   return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
 }
 
-export function isNativeTag(tag: string) {
-  return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag)
+export function isH5NativeTag(tag: string) {
+  return (
+    tag !== 'head' &&
+    (isHTMLTag(tag) || isSVGTag(tag)) &&
+    !isBuiltInComponent(tag)
+  )
 }
 
-export function isServiceNativeTag(tag: string) {
+export function isAppNativeTag(tag: string) {
   return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag)
 }
 
-export function isServiceCustomElement(_tag: string) {
-  return false
+export function isMiniProgramNativeTag(tag: string) {
+  return isBuiltInComponent(tag)
+}
+
+export function createIsCustomElement(tags: string[] = []) {
+  return function isCustomElement(tag: string) {
+    return tags.includes(tag)
+  }
+}
+
+export function isComponentTag(tag: string) {
+  return tag[0].toLowerCase() + tag.slice(1) === 'component'
 }
 
 export const COMPONENT_SELECTOR_PREFIX = 'uni-'

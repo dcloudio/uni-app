@@ -272,7 +272,7 @@ function getApiInterceptorHooks(method) {
     }
     return interceptor;
 }
-function invokeApi(method, api, options, ...params) {
+function invokeApi(method, api, options, params) {
     const interceptor = getApiInterceptorHooks(method);
     if (interceptor && Object.keys(interceptor).length) {
         if (isArray(interceptor.invoke)) {
@@ -289,13 +289,13 @@ function invokeApi(method, api, options, ...params) {
 }
 
 function handlePromise(promise) {
-    if (__UNI_FEATURE_PROMISE__) {
-        return promise
-            .then((data) => {
-            return [null, data];
-        })
-            .catch((err) => [err]);
-    }
+    // if (__UNI_FEATURE_PROMISE__) {
+    //   return promise
+    //     .then((data) => {
+    //       return [null, data]
+    //     })
+    //     .catch((err) => [err])
+    // }
     return promise;
 }
 
@@ -622,17 +622,17 @@ function promisify(name, api) {
     if (!isFunction(api)) {
         return api;
     }
-    return function promiseApi(options = {}) {
+    return function promiseApi(options = {}, ...rest) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options));
+            return wrapperReturnValue(name, invokeApi(name, api, options, rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, extend({}, options, {
                 success: resolve,
                 fail: reject,
-            }));
+            }), rest);
         })));
     };
 }
@@ -932,14 +932,14 @@ function createIntersectionObserver(component, options) {
 }
 
 var shims = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getProvider: getProvider,
-    setStorageSync: setStorageSync,
-    getStorageSync: getStorageSync,
-    removeStorageSync: removeStorageSync,
-    startGyroscope: startGyroscope,
-    createSelectorQuery: createSelectorQuery,
-    createIntersectionObserver: createIntersectionObserver
+  __proto__: null,
+  getProvider: getProvider,
+  setStorageSync: setStorageSync,
+  getStorageSync: getStorageSync,
+  removeStorageSync: removeStorageSync,
+  startGyroscope: startGyroscope,
+  createSelectorQuery: createSelectorQuery,
+  createIntersectionObserver: createIntersectionObserver
 });
 
 function handleNetworkInfo(fromRes, toRes) {
@@ -1375,58 +1375,58 @@ const chooseAddress = {
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    returnValue: returnValue,
-    request: request,
-    setNavigationBarColor: setNavigationBarColor,
-    setNavigationBarTitle: setNavigationBarTitle,
-    showModal: showModal,
-    showToast: showToast,
-    showActionSheet: showActionSheet,
-    showLoading: showLoading,
-    uploadFile: uploadFile,
-    downloadFile: downloadFile,
-    getFileInfo: getFileInfo,
-    compressImage: compressImage,
-    chooseVideo: chooseVideo,
-    connectSocket: connectSocket,
-    chooseImage: chooseImage,
-    previewImage: previewImage,
-    saveFile: saveFile,
-    getSavedFileInfo: getSavedFileInfo,
-    getSavedFileList: getSavedFileList,
-    removeSavedFile: removeSavedFile,
-    getLocation: getLocation,
-    openLocation: openLocation,
-    getNetworkType: getNetworkType,
-    onNetworkStatusChange: onNetworkStatusChange,
-    stopAccelerometer: stopAccelerometer,
-    stopCompass: stopCompass,
-    scanCode: scanCode,
-    setClipboardData: setClipboardData,
-    getClipboardData: getClipboardData,
-    pageScrollTo: pageScrollTo,
-    login: login,
-    getUserInfo: getUserInfo,
-    requestPayment: requestPayment,
-    getBLEDeviceServices: getBLEDeviceServices,
-    createBLEConnection: createBLEConnection,
-    closeBLEConnection: closeBLEConnection,
-    onBLEConnectionStateChange: onBLEConnectionStateChange,
-    makePhoneCall: makePhoneCall,
-    stopGyroscope: stopGyroscope,
-    getSystemInfo: getSystemInfo,
-    getSystemInfoSync: getSystemInfoSync,
-    canvasToTempFilePath: canvasToTempFilePath,
-    setScreenBrightness: setScreenBrightness,
-    getScreenBrightness: getScreenBrightness,
-    showShareMenu: showShareMenu,
-    hideHomeButton: hideHomeButton,
-    saveImageToPhotosAlbum: saveImageToPhotosAlbum,
-    saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
-    chooseAddress: chooseAddress,
-    redirectTo: redirectTo,
-    navigateTo: navigateTo
+  __proto__: null,
+  returnValue: returnValue,
+  request: request,
+  setNavigationBarColor: setNavigationBarColor,
+  setNavigationBarTitle: setNavigationBarTitle,
+  showModal: showModal,
+  showToast: showToast,
+  showActionSheet: showActionSheet,
+  showLoading: showLoading,
+  uploadFile: uploadFile,
+  downloadFile: downloadFile,
+  getFileInfo: getFileInfo,
+  compressImage: compressImage,
+  chooseVideo: chooseVideo,
+  connectSocket: connectSocket,
+  chooseImage: chooseImage,
+  previewImage: previewImage,
+  saveFile: saveFile,
+  getSavedFileInfo: getSavedFileInfo,
+  getSavedFileList: getSavedFileList,
+  removeSavedFile: removeSavedFile,
+  getLocation: getLocation,
+  openLocation: openLocation,
+  getNetworkType: getNetworkType,
+  onNetworkStatusChange: onNetworkStatusChange,
+  stopAccelerometer: stopAccelerometer,
+  stopCompass: stopCompass,
+  scanCode: scanCode,
+  setClipboardData: setClipboardData,
+  getClipboardData: getClipboardData,
+  pageScrollTo: pageScrollTo,
+  login: login,
+  getUserInfo: getUserInfo,
+  requestPayment: requestPayment,
+  getBLEDeviceServices: getBLEDeviceServices,
+  createBLEConnection: createBLEConnection,
+  closeBLEConnection: closeBLEConnection,
+  onBLEConnectionStateChange: onBLEConnectionStateChange,
+  makePhoneCall: makePhoneCall,
+  stopGyroscope: stopGyroscope,
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfoSync,
+  canvasToTempFilePath: canvasToTempFilePath,
+  setScreenBrightness: setScreenBrightness,
+  getScreenBrightness: getScreenBrightness,
+  showShareMenu: showShareMenu,
+  hideHomeButton: hideHomeButton,
+  saveImageToPhotosAlbum: saveImageToPhotosAlbum,
+  saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
+  chooseAddress: chooseAddress,
+  redirectTo: redirectTo,
+  navigateTo: navigateTo
 });
 
 var index = initUni(shims, protocols);

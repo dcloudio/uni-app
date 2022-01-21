@@ -1,5 +1,4 @@
-import { EventChannel } from '@dcloudio/uni-shared'
-import { UniLifecycleHooks } from '@dcloudio/uni-vue/src/apiLifecycle'
+import { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -13,27 +12,25 @@ declare module '@vue/runtime-core' {
     $page: Page.PageInstance['$page']
     $mpType?: 'app' | 'page'
     $locale?: string
-    __isTabBar: boolean
   }
 
   type LifecycleHook = Function[] | null
 
   type UniLifecycleHookInstance = {
-    [name in UniLifecycleHooks]: LifecycleHook
+    [name in typeof UniLifecycleHooks[number]]: LifecycleHook
   }
   interface ComponentInternalInstance extends UniLifecycleHookInstance {
     __isUnload: boolean
     __isVisible: boolean
     __isActive?: boolean // tabBar
+    __isTabBar?: boolean
+    // mp
+    $updateScopedSlots: () => void
+    $scopedSlotsData?: { path: string; index: number; data: Data }[]
+    // h5 | app
+    $wxsModules?: string[]
   }
 
-  export const callSyncHook: (
-    name: 'onLaunch' | 'onLoad' | 'onShow',
-    type: UniLifecycleHooks,
-    options: ComponentOptions,
-    instance: ComponentInternalInstance,
-    globalMixins: ComponentOptions[]
-  ) => void
   export const onBeforeActivate: (fn: () => void) => void
   export const onBeforeDeactivate: (fn: () => void) => void
   export const injectHook: (

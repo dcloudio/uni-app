@@ -1,4 +1,4 @@
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 import {
   defineUniManifestJsonPlugin,
@@ -23,7 +23,7 @@ const defaultAsync = {
 export function uniManifestJsonPlugin(): Plugin {
   return defineUniManifestJsonPlugin((opts) => {
     return {
-      name: 'vite:uni-h5-manifest-json',
+      name: 'uni:h5-manifest-json',
       enforce: 'pre',
       transform(code, id) {
         if (!opts.filter(id)) {

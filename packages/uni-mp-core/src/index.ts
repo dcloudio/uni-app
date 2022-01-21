@@ -7,29 +7,39 @@ declare module '@vue/runtime-core' {
   }
 }
 
-export { initCreateApp } from './runtime/app'
+export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
 export { initCreatePage } from './runtime/page'
 export { initCreateComponent } from './runtime/component'
+export { initCreatePluginApp } from './runtime/plugin'
+export { findPropsData } from './runtime/componentProps'
 
 export { initUni } from './api/index'
 export { initGetProvider } from './api/shims'
 
 // mp-alipay
-export { initData, initBehaviors } from './runtime/componentOptions'
+export {
+  initData,
+  initBehaviors,
+  updateComponentProps,
+} from './runtime/componentOptions'
 export { initProps } from './runtime/componentProps'
 export {
-  PAGE_HOOKS,
   initHooks,
   initUnknownHooks,
+  initRuntimeHooks,
+  PAGE_INIT_HOOKS,
 } from './runtime/componentHooks'
 export { initMocks, initComponentInstance } from './runtime/componentInstance'
-export { handleEvent } from './runtime/componentEvents'
 export { $createComponent, $destroyComponent } from './runtime/component'
 export {
   initRefs,
   initVueIds,
   initWxsCallMethods,
   findVmByVueId,
+  handleEvent,
+  fixProperties,
+  nextSetDataTick,
+  initSetRef,
 } from './runtime/util'
 
 // protocols

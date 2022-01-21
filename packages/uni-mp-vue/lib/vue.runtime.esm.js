@@ -1,6 +1,6 @@
-import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, remove, isPromise, isString, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSet, isPlainObject, toTypeString, invokeArrayFns } from '@vue/shared';
-export { camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook } from '@dcloudio/uni-shared';
+import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isPromise, isString, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSet, isPlainObject, toTypeString, invokeArrayFns } from '@vue/shared';
+export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isRootHook, getValueByDataPath } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -127,7 +127,7 @@ const targetMap = new WeakMap();
 let effectTrackDepth = 0;
 let trackOpBit = 1;
 /**
- * The bitwise track markers support at most 30 levels op recursion.
+ * The bitwise track markers support at most 30 levels of recursion.
  * This value is chosen to enable modern JS engines to use a SMI on all platforms.
  * When recursion depth is greater, fall back to using a full cleanup.
  */
@@ -456,7 +456,7 @@ const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
         let oldValue = target[key];
-        if (!shallow) {
+        if (!shallow && !isReadonly(value)) {
             value = toRaw(value);
             oldValue = toRaw(oldValue);
             if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
@@ -1048,21 +1048,25 @@ function toRefs(object) {
     return ret;
 }
 class ObjectRefImpl {
-    constructor(_object, _key) {
+    constructor(_object, _key, _defaultValue) {
         this._object = _object;
         this._key = _key;
+        this._defaultValue = _defaultValue;
         this.__v_isRef = true;
     }
     get value() {
-        return this._object[this._key];
+        const val = this._object[this._key];
+        return val === undefined ? this._defaultValue : val;
     }
     set value(newVal) {
         this._object[this._key] = newVal;
     }
 }
-function toRef(object, key) {
+function toRef(object, key, defaultValue) {
     const val = object[key];
-    return isRef(val) ? val : new ObjectRefImpl(object, key);
+    return isRef(val)
+        ? val
+        : new ObjectRefImpl(object, key, defaultValue);
 }
 
 class ComputedRefImpl {
@@ -1407,7 +1411,7 @@ function registerKeepAliveHook(hook, type, target = currentInstance) {
                 }
                 current = current.parent;
             }
-            hook();
+            return hook();
         });
     injectHook(type, wrappedHook, target);
     // In addition to registering it on the target instance, we walk up the parent
@@ -1470,7 +1474,8 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
         return wrappedHook;
     }
     else if ((process.env.NODE_ENV !== 'production')) {
-        const apiName = toHandlerKey(ErrorTypeStrings[type].replace(/ hook$/, ''));
+        // fixed by xxxxxx
+        const apiName = toHandlerKey((ErrorTypeStrings[type] || type.replace(/^on/, '')).replace(/ hook$/, ''));
         warn$1(`${apiName} is called when there is no active component instance to be ` +
             `associated with. ` +
             `Lifecycle injection APIs can only be used during execution of setup().` +
@@ -1967,6 +1972,99 @@ isSSR = false) {
     }
     instance.attrs = attrs;
 }
+function updateProps(instance, rawProps, rawPrevProps, optimized) {
+    const { props, attrs, vnode: { patchFlag } } = instance;
+    const rawCurrentProps = toRaw(props);
+    const [options] = instance.propsOptions;
+    let hasAttrsChanged = false;
+    if (
+    // always force full diff in dev
+    // - #1942 if hmr is enabled with sfc component
+    // - vite#872 non-sfc component used by sfc component
+    !((process.env.NODE_ENV !== 'production') &&
+        (instance.type.__hmrId ||
+            (instance.parent && instance.parent.type.__hmrId))) &&
+        (optimized || patchFlag > 0) &&
+        !(patchFlag & 16 /* FULL_PROPS */)) {
+        if (patchFlag & 8 /* PROPS */) {
+            // Compiler-generated props & no keys change, just set the updated
+            // the props.
+            const propsToUpdate = instance.vnode.dynamicProps;
+            for (let i = 0; i < propsToUpdate.length; i++) {
+                let key = propsToUpdate[i];
+                // PROPS flag guarantees rawProps to be non-null
+                const value = rawProps[key];
+                if (options) {
+                    // attr / props separation was done on init and will be consistent
+                    // in this code path, so just check if attrs have it.
+                    if (hasOwn(attrs, key)) {
+                        if (value !== attrs[key]) {
+                            attrs[key] = value;
+                            hasAttrsChanged = true;
+                        }
+                    }
+                    else {
+                        const camelizedKey = camelize(key);
+                        props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance, false /* isAbsent */);
+                    }
+                }
+                else {
+                    if (value !== attrs[key]) {
+                        attrs[key] = value;
+                        hasAttrsChanged = true;
+                    }
+                }
+            }
+        }
+    }
+    else {
+        // full props update.
+        if (setFullProps(instance, rawProps, props, attrs)) {
+            hasAttrsChanged = true;
+        }
+        // in case of dynamic props, check if we need to delete keys from
+        // the props object
+        let kebabKey;
+        for (const key in rawCurrentProps) {
+            if (!rawProps ||
+                // for camelCase
+                (!hasOwn(rawProps, key) &&
+                    // it's possible the original props was passed in as kebab-case
+                    // and converted to camelCase (#955)
+                    ((kebabKey = hyphenate(key)) === key || !hasOwn(rawProps, kebabKey)))) {
+                if (options) {
+                    if (rawPrevProps &&
+                        // for camelCase
+                        (rawPrevProps[key] !== undefined ||
+                            // for kebab-case
+                            rawPrevProps[kebabKey] !== undefined)) {
+                        props[key] = resolvePropValue(options, rawCurrentProps, key, undefined, instance, true /* isAbsent */);
+                    }
+                }
+                else {
+                    delete props[key];
+                }
+            }
+        }
+        // in the case of functional component w/o props declaration, props and
+        // attrs point to the same object so it should already have been updated.
+        if (attrs !== rawCurrentProps) {
+            for (const key in attrs) {
+                if (!rawProps || !hasOwn(rawProps, key)) {
+                    delete attrs[key];
+                    hasAttrsChanged = true;
+                }
+            }
+        }
+    }
+    // trigger updates for $attrs in case it's used in component slots
+    if (hasAttrsChanged) {
+        trigger(instance, "set" /* SET */, '$attrs');
+    }
+    if ((process.env.NODE_ENV !== 'production')) {
+        validateProps(rawProps || {}, props, instance);
+    }
+}
 function setFullProps(instance, rawProps, props, attrs) {
     const [options, needCastKeys] = instance.propsOptions;
     let hasAttrsChanged = false;
@@ -1990,7 +2088,7 @@ function setFullProps(instance, rawProps, props, attrs) {
                 }
             }
             else if (!isEmitListener(instance.emitsOptions, key)) {
-                if (value !== attrs[key]) {
+                if (!(key in attrs) || value !== attrs[key]) {
                     attrs[key] = value;
                     hasAttrsChanged = true;
                 }
@@ -2284,7 +2382,7 @@ return withDirectives(h(comp), [
   [bar, this.y]
 ])
 */
-const isBuiltInDirective = /*#__PURE__*/ makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text');
+const isBuiltInDirective = /*#__PURE__*/ makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo');
 function validateDirectiveName(name) {
     if (isBuiltInDirective(name)) {
         warn$1('Do not use built-in directive ids as custom directive id: ' + name);
@@ -2557,10 +2655,10 @@ const createVNodeWithArgsTransform = (...args) => {
 };
 const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
-const normalizeRef = ({ ref }) => {
+const normalizeRef = ({ ref, ref_key, ref_for }) => {
     return (ref != null
         ? isString(ref) || isRef(ref) || isFunction(ref)
-            ? { i: currentRenderingInstance, r: ref }
+            ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for }
             : ref
         : null);
 };
@@ -2837,7 +2935,8 @@ function mergeProps(...args) {
             else if (isOn(key)) {
                 const existing = ret[key];
                 const incoming = toMerge[key];
-                if (existing !== incoming) {
+                if (existing !== incoming &&
+                    !(isArray(existing) && existing.includes(incoming))) {
                     ret[key] = existing
                         ? [].concat(existing, incoming)
                         : incoming;
@@ -2881,7 +2980,9 @@ const getPublicInstance = (i) => {
 };
 const publicPropertiesMap = extend(Object.create(null), {
     $: i => i,
-    $el: i => i.vnode.el,
+    // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
+    // $el: i => i.vnode.el,
+    $el: i => i.__$el || (i.__$el = {}),
     $data: i => i.data,
     $props: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.props) : i.props),
     $attrs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.attrs) : i.attrs),
@@ -2923,23 +3024,23 @@ const PublicInstanceProxyHandlers = {
             const n = accessCache[key];
             if (n !== undefined) {
                 switch (n) {
-                    case 0 /* SETUP */:
+                    case 1 /* SETUP */:
                         return setupState[key];
-                    case 1 /* DATA */:
+                    case 2 /* DATA */:
                         return data[key];
-                    case 3 /* CONTEXT */:
+                    case 4 /* CONTEXT */:
                         return ctx[key];
-                    case 2 /* PROPS */:
+                    case 3 /* PROPS */:
                         return props[key];
                     // default: just fallthrough
                 }
             }
             else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
-                accessCache[key] = 0 /* SETUP */;
+                accessCache[key] = 1 /* SETUP */;
                 return setupState[key];
             }
             else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-                accessCache[key] = 1 /* DATA */;
+                accessCache[key] = 2 /* DATA */;
                 return data[key];
             }
             else if (
@@ -2947,15 +3048,15 @@ const PublicInstanceProxyHandlers = {
             // props
             (normalizedProps = instance.propsOptions[0]) &&
                 hasOwn(normalizedProps, key)) {
-                accessCache[key] = 2 /* PROPS */;
+                accessCache[key] = 3 /* PROPS */;
                 return props[key];
             }
             else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-                accessCache[key] = 3 /* CONTEXT */;
+                accessCache[key] = 4 /* CONTEXT */;
                 return ctx[key];
             }
             else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
-                accessCache[key] = 4 /* OTHER */;
+                accessCache[key] = 0 /* OTHER */;
             }
         }
         const publicGetter = publicPropertiesMap[key];
@@ -2976,7 +3077,7 @@ const PublicInstanceProxyHandlers = {
         }
         else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
             // user may set custom properties to `this` that start with `$`
-            accessCache[key] = 3 /* CONTEXT */;
+            accessCache[key] = 4 /* CONTEXT */;
             return ctx[key];
         }
         else if (
@@ -3040,7 +3141,7 @@ const PublicInstanceProxyHandlers = {
     },
     has({ _: { data, setupState, accessCache, ctx, appContext, propsOptions } }, key) {
         let normalizedProps;
-        return (accessCache[key] !== undefined ||
+        return (!!accessCache[key] ||
             (data !== EMPTY_OBJ && hasOwn(data, key)) ||
             (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) ||
             ((normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key)) ||
@@ -3130,6 +3231,7 @@ function createComponentInstance(vnode, parent, suspense) {
         root: null,
         next: null,
         subTree: null,
+        effect: null,
         update: null,
         scope: new EffectScope(true /* detached */),
         render: null,
@@ -3418,9 +3520,11 @@ function getExposeProxy(instance) {
                     if (key in target) {
                         return target[key];
                     }
-                    else if (key in publicPropertiesMap) {
-                        return publicPropertiesMap[key](instance);
-                    }
+                    // fixed by xxxxxx 框架内部需要访问很多非 public 属性，暂不做限制
+                    return instance.proxy[key];
+                    // else if (key in publicPropertiesMap) {
+                    //   return publicPropertiesMap[key](instance)
+                    // }
                 }
             })));
     }
@@ -3673,7 +3777,8 @@ function logError(err, type, contextVNode, throwInDev = true) {
         }
         // crash in dev by default so it's more noticeable
         if (throwInDev) {
-            throw err;
+            // throw err fixed by xxxxxx 避免 error 导致 小程序 端不可用（比如跳转时报错）
+            console.error(err);
         }
         else {
             console.error(err);
@@ -3742,6 +3847,12 @@ function queueFlush() {
     if (!isFlushing && !isFlushPending) {
         isFlushPending = true;
         currentFlushPromise = resolvedPromise.then(flushJobs);
+    }
+}
+function invalidateJob(job) {
+    const i = queue.indexOf(job);
+    if (i > flushIndex) {
+        queue.splice(i, 1);
     }
 }
 function queueCb(cb, activeQueue, pendingQueue, index) {
@@ -4284,11 +4395,18 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.20";
+const version = "3.2.26";
 /**
  * @internal only exposed in compat builds
  */
 const resolveFilter = null;
+
+function unwrapper(target) {
+    return unref(target);
+}
+function defineAsyncComponent(source) {
+    console.error('defineAsyncComponent is unsupported');
+}
 
 // import deepCopy from './deepCopy'
 /**
@@ -4304,7 +4422,7 @@ function diff(current, pre) {
     return result;
 }
 function syncKeys(current, pre) {
-    current = unref(current);
+    current = unwrapper(current);
     if (current === pre)
         return;
     const rootCurrentType = toTypeString(current);
@@ -4329,7 +4447,7 @@ function syncKeys(current, pre) {
     }
 }
 function _diff(current, pre, path, result) {
-    current = unref(current);
+    current = unwrapper(current);
     if (current === pre)
         return;
     const rootCurrentType = toTypeString(current);
@@ -4341,7 +4459,7 @@ function _diff(current, pre, path, result) {
         }
         else {
             for (let key in current) {
-                const currentValue = unref(current[key]);
+                const currentValue = unwrapper(current[key]);
                 const preValue = pre[key];
                 const currentType = toTypeString(currentValue);
                 const preType = toTypeString(preValue);
@@ -4470,6 +4588,47 @@ function nextTick$1(instance, fn) {
     });
 }
 
+function clone(src, seen) {
+    src = unwrapper(src);
+    const type = typeof src;
+    if (type === 'object' && src !== null) {
+        let copy = seen.get(src);
+        if (typeof copy !== 'undefined') {
+            //  (circular refs)
+            return copy;
+        }
+        if (isArray(src)) {
+            const len = src.length;
+            copy = new Array(len);
+            seen.set(src, copy);
+            for (let i = 0; i < len; i++) {
+                copy[i] = clone(src[i], seen);
+            }
+        }
+        else {
+            copy = {};
+            seen.set(src, copy);
+            for (const name in src) {
+                if (hasOwn(src, name)) {
+                    copy[name] = clone(src[name], seen);
+                }
+            }
+        }
+        return copy;
+    }
+    if (type !== 'symbol') {
+        return src;
+    }
+}
+/**
+ * 与微信小程序保持一致的深度克隆
+ * @param src
+ * @returns
+ */
+function deepCopy(src) {
+    return clone(src, typeof WeakMap !== 'undefined' ? new WeakMap() : new Map());
+}
+
 function getMPInstanceData(instance, keys) {
     const data = instance.data;
     const ret = Object.create(null);
@@ -4479,25 +4638,37 @@ function getMPInstanceData(instance, keys) {
     });
     return ret;
 }
-function patch(instance, data) {
+function patch(instance, data, oldData) {
+    if (!data) {
+        return;
+    }
+    // TODO 微信小程序会对 props 序列化，目前通过序列化再次触发数据响应式收集，因为 render 中收集的数据可能不全面（也不能仅仅这里收集，render 中也要收集），导致子组件无法局部响应式更新
+    // 举例：
+    // uni-indexed-list 组件传递 item 给 uni-indexed-list-item 组件，uni-indexed-list-item 发送点击到 uni-indexed-list 组件中修改 item.checked
+    // uni-indexed-list 组件 render 中并未访问 item.checked（在 uni-indexed-list-item 中访问了，但被小程序序列化了，无法响应式），故无法收集依赖
+    data = deepCopy(data);
+    // data = JSON.parse(JSON.stringify(data))
     const ctx = instance.ctx;
     const mpType = ctx.mpType;
     if (mpType === 'page' || mpType === 'component') {
+        data.r0 = 1; // ready
         const start = Date.now();
         const mpInstance = ctx.$scope;
         const keys = Object.keys(data);
         // data.__webviewId__ = mpInstance.data.__webviewId__
-        const diffData = diff(data, getMPInstanceData(mpInstance, keys));
+        const diffData = diff(data, oldData || getMPInstanceData(mpInstance, keys));
         if (Object.keys(diffData).length) {
-            console.log('[' +
-                +new Date() +
-                '][' +
-                (mpInstance.is || mpInstance.route) +
-                '][' +
-                instance.uid +
-                '][耗时' +
-                (Date.now() - start) +
-                ']差量更新', JSON.stringify(diffData));
+            if (process.env.UNI_DEBUG) {
+                console.log('[' +
+                    +new Date() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    instance.uid +
+                    '][耗时' +
+                    (Date.now() - start) +
+                    ']差量更新', JSON.stringify(diffData));
+            }
             ctx.__next_tick_pending = true;
             mpInstance.setData(diffData, () => {
                 ctx.__next_tick_pending = false;
@@ -4535,6 +4706,87 @@ function onApplyOptions(options, instance, publicThis) {
     delete instance.ctx.$onApplyOptions;
 }
 
+/**
+ * Function for handling a template ref
+ */
+function setRef(instance, isUnmount = false) {
+    const { setupState, $templateRefs, ctx: { $scope, $mpPlatform } } = instance;
+    if ($mpPlatform === 'mp-alipay') {
+        return;
+    }
+    if (!$templateRefs || !$scope) {
+        return;
+    }
+    if (isUnmount) {
+        return $templateRefs.forEach(templateRef => setTemplateRef(templateRef, null, setupState));
+    }
+    const doSet = () => {
+        const mpComponents = $scope
+            .selectAllComponents('.r')
+            .concat($scope.selectAllComponents('.r-i-f'));
+        $templateRefs.forEach(templateRef => setTemplateRef(templateRef, findComponentPublicInstance(mpComponents, templateRef.i), setupState));
+    };
+    if ($scope._$setRef) {
+        $scope._$setRef(doSet);
+    }
+    else {
+        nextTick$1(instance, doSet);
+    }
+}
+function findComponentPublicInstance(mpComponents, id) {
+    const mpInstance = mpComponents.find(com => com && (com.properties || com.props).uI === id);
+    if (mpInstance) {
+        const vm = mpInstance.$vm;
+        return getExposeProxy(vm.$) || vm;
+    }
+    return null;
+}
+function setTemplateRef({ r, f }, refValue, setupState) {
+    if (isFunction(r)) {
+        r(refValue, {});
+    }
+    else {
+        const _isString = isString(r);
+        const _isRef = isRef(r);
+        if (_isString || _isRef) {
+            if (f) {
+                if (!_isRef) {
+                    return;
+                }
+                if (!isArray(r.value)) {
+                    r.value = [];
+                }
+                const existing = r.value;
+                if (existing.indexOf(refValue) === -1) {
+                    existing.push(refValue);
+                    if (!refValue) {
+                        return;
+                    }
+                    // 实例销毁时，移除
+                    onBeforeUnmount(() => remove(existing, refValue), refValue.$);
+                }
+            }
+            else if (_isString) {
+                if (hasOwn(setupState, r)) {
+                    setupState[r] = refValue;
+                }
+            }
+            else if (isRef(r)) {
+                r.value = refValue;
+            }
+            else if ((process.env.NODE_ENV !== 'production')) {
+                warnRef(r);
+            }
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            warnRef(r);
+        }
+    }
+}
+function warnRef(ref) {
+    warn$1('Invalid template ref type:', ref, `(${typeof ref})`);
+}
+
 var MPType;
 (function (MPType) {
     MPType["APP"] = "app";
@@ -4562,7 +4814,7 @@ function mountComponent(initialVNode, options) {
     if (__VUE_OPTIONS_API__) {
         // $children
         if (options.parentComponent && instance.proxy) {
-            options.parentComponent.ctx.$children.push(instance.proxy);
+            options.parentComponent.ctx.$children.push(getExposeProxy(instance) || instance.proxy);
         }
     }
     setupRenderEffect(instance);
@@ -4581,7 +4833,13 @@ const getFunctionalFallthrough = (attrs) => {
     return res;
 };
 function renderComponentRoot(instance) {
-    const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx } = instance;
+    const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx, uid, appContext: { app: { config: { globalProperties: { pruneComponentPropsCache } } } } } = instance;
+    instance.$templateRefs = [];
+    instance.$ei = 0;
+    // props
+    pruneComponentPropsCache(uid);
+    instance.__counter =
+        instance.__counter === 0 ? 1 : 0;
     let result;
     const prev = setCurrentRenderingInstance(instance);
     try {
@@ -4606,24 +4864,80 @@ function renderComponentRoot(instance) {
         handleError(err, instance, 1 /* RENDER_FUNCTION */);
         result = false;
     }
+    setRef(instance);
     setCurrentRenderingInstance(prev);
     return result;
 }
+const updateComponentPreRender = (instance) => {
+    pauseTracking();
+    // props update may have triggered pre-flush watchers.
+    // flush them before the render update.
+    flushPreFlushCbs(undefined, instance.update);
+    resetTracking();
+};
+function componentUpdateScopedSlotsFn() {
+    const scopedSlotsData = this.$scopedSlotsData;
+    if (!scopedSlotsData || scopedSlotsData.length === 0) {
+        return;
+    }
+    const start = Date.now();
+    const mpInstance = this.ctx.$scope;
+    const oldData = mpInstance.data;
+    const diffData = Object.create(null);
+    scopedSlotsData.forEach(({ path, index, data }) => {
+        const oldScopedSlotData = getValueByDataPath(oldData, path);
+        const diffPath = `${path}[${index}]`;
+        if (typeof oldScopedSlotData === 'undefined' ||
+            typeof oldScopedSlotData[index] === 'undefined') {
+            diffData[diffPath] = data;
+        }
+        else {
+            const diffScopedSlotData = diff(data, oldScopedSlotData[index]);
+            Object.keys(diffScopedSlotData).forEach(name => {
+                diffData[diffPath + '.' + name] = diffScopedSlotData[name];
+            });
+        }
+    });
+    scopedSlotsData.length = 0;
+    if (Object.keys(diffData).length) {
+        if (process.env.UNI_DEBUG) {
+            console.log('[' +
+                +new Date() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                this.uid +
+                '][耗时' +
+                (Date.now() - start) +
+                ']作用域插槽差量更新', JSON.stringify(diffData));
+        }
+        mpInstance.setData(diffData);
+    }
+}
+function toggleRecurse({ effect, update }, allowed) {
+    effect.allowRecurse = update.allowRecurse = allowed;
+}
 function setupRenderEffect(instance) {
+    const updateScopedSlots = componentUpdateScopedSlotsFn.bind(instance);
+    instance.$updateScopedSlots = () => nextTick(() => queueJob(updateScopedSlots));
     const componentUpdateFn = () => {
         if (!instance.isMounted) {
+            onBeforeUnmount(() => {
+                setRef(instance, true);
+            }, instance);
             patch(instance, renderComponentRoot(instance));
         }
         else {
-            instance.render && instance.render.call(instance.proxy);
             // updateComponent
             const { bu, u } = instance;
-            effect.allowRecurse = false;
+            // Disallow component effect recursion during pre-lifecycle hooks.
+            toggleRecurse(instance, false);
+            updateComponentPreRender(instance);
             // beforeUpdate hook
             if (bu) {
                 invokeArrayFns(bu);
             }
-            effect.allowRecurse = true;
+            toggleRecurse(instance, true);
             patch(instance, renderComponentRoot(instance));
             // updated hook
             if (u) {
@@ -4632,13 +4946,13 @@ function setupRenderEffect(instance) {
         }
     };
     // create reactive effect for rendering
-    const effect = new ReactiveEffect(componentUpdateFn, () => queueJob(instance.update), instance.scope // track it in component's effect scope
-    );
+    const effect = (instance.effect = new ReactiveEffect(componentUpdateFn, () => queueJob(instance.update), instance.scope // track it in component's effect scope
+    ));
     const update = (instance.update = effect.run.bind(effect));
     update.id = instance.uid;
     // allowRecurse
     // #1801, #2043 component render effects should allow recursive updates
-    effect.allowRecurse = update.allowRecurse = true;
+    toggleRecurse(instance, true);
     if ((process.env.NODE_ENV !== 'production')) {
         effect.onTrack = instance.rtc
             ? e => invokeArrayFns(instance.rtc, e)
@@ -4709,7 +5023,55 @@ function createVueApp(rootComponent, rootProps = null) {
     return app;
 }
 
+function useCssModule(name = '$style') {
+    /* istanbul ignore else */
+    {
+        const instance = getCurrentInstance();
+        if (!instance) {
+            (process.env.NODE_ENV !== 'production') && warn$1(`useCssModule must be called inside setup()`);
+            return EMPTY_OBJ;
+        }
+        const modules = instance.type.__cssModules;
+        if (!modules) {
+            (process.env.NODE_ENV !== 'production') && warn$1(`Current instance does not have CSS modules injected.`);
+            return EMPTY_OBJ;
+        }
+        const mod = modules[name];
+        if (!mod) {
+            (process.env.NODE_ENV !== 'production') &&
+                warn$1(`Current instance does not have CSS module named "${name}".`);
+            return EMPTY_OBJ;
+        }
+        return mod;
+    }
+}
+
+/**
+ * Runtime helper for SFC's CSS variable injection feature.
+ * @private
+ */
+function useCssVars(getter) {
+    const instance = getCurrentInstance();
+    /* istanbul ignore next */
+    if (!instance) {
+        (process.env.NODE_ENV !== 'production') &&
+            warn$1(`useCssVars is called without current active component instance.`);
+        return;
+    }
+    initCssVarsRender(instance, getter);
+}
+function initCssVarsRender(instance, getter) {
+    instance.ctx.__cssVars = () => {
+        const vars = getter(instance.proxy);
+        const cssVars = {};
+        for (const key in vars) {
+            cssVars[`--${key}`] = vars[key];
+        }
+        return cssVars;
+    };
+}
+
 function withModifiers() { }
 function createVNode$1() { }
 
-export { EffectScope, ReactiveEffect, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmits, defineExpose, defineProps, effect, effectScope, getCurrentInstance, getCurrentScope, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onUnmounted, onUpdated, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, useAttrs, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

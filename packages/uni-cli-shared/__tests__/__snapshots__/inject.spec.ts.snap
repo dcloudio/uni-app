@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`inject basic 1`] = `
+"import { reLaunch as $inject_uni_reLaunch } from '@dcloudio/uni-h5';
+
+uni.test();$inject_uni_reLaunch();"
+`;
+
+exports[`inject reassignment 1`] = `
+"import { reLaunch as $inject_uni_reLaunch } from '@dcloudio/uni-h5';
+
+import { navigateTo as $inject_uni_navigateTo } from '@dcloudio/uni-h5';
+
+$inject_uni_reLaunch();uni.reLaunch=()=>{};uni.reLaunch();$inject_uni_navigateTo();const temp = $inject_uni_navigateTo;$inject_uni_navigateTo();temp();"
+`;

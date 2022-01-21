@@ -275,7 +275,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               src={control.iconPath}
               style={control.position}
               auto-size
-              // @ts-expect-error
               onClick={() =>
                 control.clickable &&
                 trigger('controltap', {} as Event, { controlId: control.id })

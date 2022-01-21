@@ -1,9 +1,16 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { BuildOptions, InlineConfig } from 'vite'
+import chalk from 'chalk'
+import { performance } from 'perf_hooks'
+import { BuildOptions, InlineConfig, Logger } from 'vite'
 
-import { M, isInHBuilderX, initModulePaths } from '@dcloudio/uni-cli-shared'
+import {
+  M,
+  isInHBuilderX,
+  initModulePaths,
+  parseScripts,
+} from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
@@ -14,8 +21,10 @@ export const PLATFORMS = [
   'mp-alipay',
   'mp-baidu',
   'mp-qq',
+  'mp-lark',
   'mp-toutiao',
   'mp-weixin',
+  'quickapp-webview',
   'quickapp-webview-huawei',
   'quickapp-webview-union',
 ]
@@ -41,6 +50,13 @@ export function addConfigFile(inlineConfig: InlineConfig) {
 }
 
 export function initEnv(type: 'dev' | 'build', options: CliOptions) {
+  if (options.platform === 'mp-360') {
+    console.error(M['mp.360.unsupported'])
+    process.exit(0)
+  }
+  if (options.plugin) {
+    process.env.UNI_MP_PLUGIN = 'true'
+  }
   if (type === 'dev') {
     process.env.NODE_ENV = 'development'
   } else if (type === 'build') {
@@ -50,19 +66,38 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
       process.env.NODE_ENV = 'production'
     }
   }
+  if (!options.mode) {
+    options.mode = process.env.NODE_ENV
+  }
+  // vite 会修改 NODE_ENV，存储在 UNI_NODE_ENV 中，稍后校正 NODE_ENV
+  process.env.UNI_NODE_ENV = process.env.VITE_USER_NODE_ENV =
+    process.env.NODE_ENV
 
   process.env.UNI_CLI_CONTEXT = isInHBuilderX()
     ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
     : process.cwd()
 
-  process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
-
+  if (options.platform === 'app-plus') {
+    options.platform = 'app'
+  }
+  if (
+    options.platform === 'quickapp-webview-huawei' ||
+    options.platform === 'quickapp-webview-union'
+  ) {
+    process.env.UNI_SUB_PLATFORM = options.platform
+    options.platform = 'quickapp-webview'
+  }
   process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()
 
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
 
-  if (process.env.UNI_OUTPUT_DIR) {
+  initCustomScripts(options)
+
+  process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
+
+  const hasOutputDir = !!process.env.UNI_OUTPUT_DIR
+  if (hasOutputDir) {
     ;(options as BuildOptions).outDir = process.env.UNI_OUTPUT_DIR
   } else {
     if (!(options as BuildOptions).outDir) {
@@ -70,19 +105,26 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
         process.cwd(),
         'dist',
         process.env.NODE_ENV === 'production' ? 'build' : 'dev',
-        process.env.UNI_PLATFORM
+        process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
       )
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
+  // 兼容 HBuilderX 旧参数
+  if (process.env.UNI_SUBPACKGE) {
+    options.subpackage = process.env.UNI_SUBPACKGE
+  }
+  if (options.subpackage) {
+    process.env.UNI_SUBPACKAGE = options.subpackage
+    if (!hasOutputDir) {
+      // 未指定，则自动补充
+      process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir =
+        path.resolve(process.env.UNI_OUTPUT_DIR, options.subpackage)
+    }
+  }
 
   initAutomator(options)
 
-  if (process.env.NODE_ENV === 'production') {
-    if (!(options as BuildOptions).minify) {
-      ;(options as BuildOptions).minify = 'terser'
-    }
-  }
   if (process.env.UNI_PLATFORM === 'app') {
     const pkg = require('../../package.json')
     console.log(
@@ -109,7 +151,8 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {
-  if (!autoPort) {
+  // 发行分包,插件也不需要自动化测试
+  if (!autoPort || process.env.UNI_SUBPACKAGE || process.env.UNI_MP_PLUGIN) {
     return
   }
   process.env.UNI_AUTOMATOR_WS_ENDPOINT =
@@ -148,9 +191,41 @@ export function cleanOptions(options: CliOptions) {
   delete ret.logLevel
   delete ret.l
   delete ret.clearScreen
+  delete ret.m
+  delete ret.mode
 
   delete ret.autoHost
   delete ret.autoPort
 
   return ret
+}
+
+export function printStartupDuration(
+  logger: Logger,
+  whitespace: boolean = true
+) {
+  // @ts-ignore
+  if (global.__vite_start_time) {
+    // @ts-ignore
+    const startupDuration = performance.now() - global.__vite_start_time
+    logger.info(
+      `${whitespace ? `\n  ` : ''}${chalk.cyan(
+        `ready in ${Math.ceil(startupDuration)}ms.`
+      )}\n`
+    )
+  }
+}
+
+function initCustomScripts(options: CliOptions) {
+  const custom = parseScripts(
+    process.env.UNI_SCRIPT || options.platform!, // process.env.UNI_SCRIPT 是 HBuilderX 传递的
+    path.join(process.env.VITE_ROOT_DIR!, 'package.json')
+  )
+  if (!custom) {
+    return
+  }
+  options.platform = custom.platform
+  process.env.UNI_CUSTOM_SCRIPT = custom.name
+  process.env.UNI_CUSTOM_DEFINE = JSON.stringify(custom.define)
+  process.env.UNI_CUSTOM_CONTEXT = JSON.stringify(custom.context)
 }

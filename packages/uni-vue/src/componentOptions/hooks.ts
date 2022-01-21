@@ -1,5 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
-import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
+import { LINEFEED, ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
 
 import {
@@ -41,15 +41,17 @@ export function initHooks(
       }
     }
   })
-  if (__PLATFORM__ === 'app' && mpType === 'page') {
+  if ((__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') && mpType === 'page') {
+    instance.__isVisible = true
     try {
       invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
-      nextTick(() => {
-        // 延迟onShow，保证组件的onShow也可以监听到
-        invokeHook(publicThis, ON_SHOW)
-      })
+      delete instance.attrs.__pageQuery
     } catch (e: any) {
-      console.error(e.message + '\n' + e.stack)
+      console.error(e.message + LINEFEED + e.stack)
     }
+    nextTick(() => {
+      // 延迟onShow，保证组件的onShow也可以监听到
+      invokeHook(publicThis, ON_SHOW)
+    })
   }
 }

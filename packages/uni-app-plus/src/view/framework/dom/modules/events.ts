@@ -48,7 +48,7 @@ export function patchEvent(el: UniCustomElement, name: string, flag: number) {
     if (!isEventListenerExists(el, type)) {
       el.addEventListener(
         type,
-        (el.__listeners[type] = createInvoker(el.__id, flag, options)),
+        (el.__listeners[type] = createInvoker(el.__id!, flag, options)),
         options
       )
     }

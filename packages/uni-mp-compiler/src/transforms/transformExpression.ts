@@ -185,7 +185,16 @@ export function processExpression(
     const isScopeVarReference = context.identifiers[rawExp]
     const isAllowedGlobal = isGloballyWhitelisted(rawExp)
     const isLiteral = isLiteralWhitelisted(rawExp)
-    if (!asParams && !isScopeVarReference && !isAllowedGlobal && !isLiteral) {
+    const isFilter = context.filters.includes(rawExp)
+    const isBuiltIn = isBuiltInIdentifier(rawExp)
+    if (
+      !asParams &&
+      !isScopeVarReference &&
+      !isAllowedGlobal &&
+      !isLiteral &&
+      !isFilter &&
+      !isBuiltIn
+    ) {
       // const bindings exposed from setup can be skipped for patching but
       // cannot be hoisted to module scope
       if (bindingMetadata[node.content] === BindingTypes.SETUP_CONST) {
@@ -221,7 +230,7 @@ export function processExpression(
         ErrorCodes.X_INVALID_EXPRESSION,
         node.loc,
         undefined,
-        e.message
+        '\n' + source + '\n' + e.message
       )
     )
     return node
@@ -231,6 +240,9 @@ export function processExpression(
   const ids: QualifiedId[] = []
   const parentStack: Node[] = []
   const knownIds: Record<string, number> = Object.create(context.identifiers)
+  context.filters.forEach((name) => {
+    knownIds[name] = 1
+  })
 
   walkIdentifiers(
     ast,
@@ -332,4 +344,15 @@ function stringifyExpression(exp: ExpressionNode | string): string {
       .map(stringifyExpression)
       .join('')
   }
+}
+
+const builtInIdentifiers = ['__l']
+export function isBuiltInIdentifier(id: string | ExpressionNode) {
+  if (!isString(id)) {
+    if (id.type !== NodeTypes.SIMPLE_EXPRESSION) {
+      return false
+    }
+    id = id.content
+  }
+  return builtInIdentifiers.includes(id)
 }

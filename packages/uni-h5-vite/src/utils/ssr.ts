@@ -2,13 +2,26 @@ import path from 'path'
 import fs from 'fs-extra'
 import { extend, isArray, isString, NormalizedStyle } from '@vue/shared'
 import {
-  isNativeTag,
+  isH5NativeTag,
   createRpx2Unit,
   Rpx2UnitOptions,
 } from '@dcloudio/uni-shared'
-import { parseRpx2UnitOnce, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
-import { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
+import {
+  parseRpx2UnitOnce,
+  resolveBuiltIn,
+  getBuiltInPaths,
+  transformMatchMedia,
+  normalizePath,
+  transformH5BuiltInComponents,
+} from '@dcloudio/uni-cli-shared'
+import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import resolve from 'resolve'
+import { resolveComponentType } from '@vue/compiler-dom'
+import { transformPageHead } from '../plugin/transforms/transformPageHead'
+
+// Temporal handling for 2.7 breaking change
+export const isSSR = (opt: { ssr?: boolean } | boolean | undefined) =>
+  opt === undefined ? false : typeof opt === 'boolean' ? opt : opt?.ssr === true
 
 export function isSsr(
   command: ConfigEnv['command'],
@@ -79,17 +92,18 @@ export function generateSsrEntryServerCode() {
   )
 }
 
-export function rewriteSsrVue(mode?: 2 | 3) {
+export function rewriteSsrVue() {
   // 解决 @vue/server-renderer 中引入 vue 的映射
-  let vuePath: string
-  if (mode === 2) {
-    vuePath = resolveBuiltIn(
-      '@dcloudio/uni-h5-vue/dist/vue.runtime.compat.cjs.js'
-    )
-  } else {
-    vuePath = resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js')
+  require('module-alias').addAlias(
+    'vue',
+    resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js')
+  )
+  // TODO vite 2.7.0 版本会定制 require 的解析，解析后缓存的文件路径会被格式化，导致 windows 平台路径不一致，导致 cache 不生效
+  if (require('os').platform() === 'win32') {
+    require('vue')
+    const vuePath = require.resolve('vue')
+    require.cache[normalizePath(vuePath)] = require.cache[vuePath]
   }
-  require('module-alias').addAlias('vue', vuePath)
 }
 
 function initResolveSyncOpts(opts?: resolve.SyncOpts) {
@@ -103,36 +117,56 @@ function initResolveSyncOpts(opts?: resolve.SyncOpts) {
     opts.paths = [opts.paths]
   }
   if (isArray(opts.paths)) {
-    opts.paths.push(path.join(process.env.UNI_CLI_CONTEXT, 'node_modules'))
+    opts.paths.push(...getBuiltInPaths())
   }
   return opts
 }
 
-export function rewriteSsrResolve(mode?: 2 | 3) {
+export function rewriteSsrResolve() {
   // 解决 ssr 时 __vite_ssr_import__("vue") 的映射
-  const resolve = require('resolve')
+  const resolve = require(require.resolve('resolve', {
+    paths: [
+      path.resolve(require.resolve('vite/package.json'), '../node_modules'),
+    ],
+  }))
   const oldSync = resolve.sync
   resolve.sync = (id: string, opts?: resolve.SyncOpts) => {
     if (id === 'vue') {
-      return resolveBuiltIn(
-        `@dcloudio/uni-h5-vue/dist/vue.runtime.${
-          mode === 2 ? 'compat.' : ''
-        }cjs.js`
-      )
+      return resolveBuiltIn(`@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js`)
+    } else if (id === 'vue/package.json') {
+      return resolveBuiltIn(`@dcloudio/uni-h5-vue/package.json`)
+    } else if (id === 'vue/server-renderer/package.json') {
+      return resolveBuiltIn(`@vue/server-renderer/package.json`)
     }
     return oldSync(id, initResolveSyncOpts(opts))
   }
 }
 
 export function rewriteSsrNativeTag() {
-  const { parserOptions } = require('@vue/compiler-dom')
+  // @ts-ignore
+  const compilerDom = require(resolveBuiltIn('@vue/compiler-dom'))
   // TODO compiler-ssr时，传入的 isNativeTag 会被 @vue/compiler-dom 的 isNativeTag 覆盖
   // https://github.com/vuejs/vue-next/blob/master/packages/compiler-ssr/src/index.ts#L36
-  parserOptions.isNativeTag = isNativeTag
+  compilerDom.parserOptions.isNativeTag = isH5NativeTag
+
+  // ssr 时，ssrTransformComponent 执行时机很早，导致无法正确重写 tag，故通过 resolveComponentType 解决重写
+  const oldResolveComponentType =
+    compilerDom.resolveComponentType as typeof resolveComponentType
+  const newResolveComponentType: typeof resolveComponentType = function (
+    node,
+    context,
+    ssr
+  ) {
+    transformPageHead(node, context)
+    transformMatchMedia(node, context)
+    transformH5BuiltInComponents(node, context)
+    return oldResolveComponentType(node, context, ssr)
+  }
+  compilerDom.resolveComponentType = newResolveComponentType
 }
 
 export function rewriteSsrRenderStyle(inputDir: string) {
-  const { unit, unitRatio, unitPrecision } = parseRpx2UnitOnce(inputDir)
+  const { unit, unitRatio, unitPrecision } = parseRpx2UnitOnce(inputDir, 'h5')
   const rpx2unit = createRpx2Unit(unit, unitRatio, unitPrecision)
   const shared = require('@vue/shared')
   const oldStringifyStyle = shared.stringifyStyle

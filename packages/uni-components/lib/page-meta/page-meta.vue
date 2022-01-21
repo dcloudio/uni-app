@@ -4,6 +4,11 @@
   </view>
 </template>
 <script>
+import { onMounted } from 'vue'
+import { onResize } from '@dcloudio/uni-app'
+// #ifdef H5
+import { onWindowResize } from '@dcloudio/uni-h5'
+// #endif
 const scrolldoneEvent = {
   type: 'scrolldone',
   target: {
@@ -22,6 +27,31 @@ const scrolldoneEvent = {
 }
 
 export default {
+  name: 'PageMeta',
+  setup(props, { emit }) {
+    // #ifndef H5
+    onResize((evt) => {
+      emit('resize', evt)
+    })
+    // #endif
+
+    // #ifdef H5
+    onMounted(() => {
+      onWindowResize(evt => {
+        emit('resize', evt)
+      })
+    })
+    // #endif
+
+    // let currentInstance = getCurrentInstance()
+    // let proxy = currentInstance.proxy
+    // onPageScroll((evt) => {
+    //   if (proxy._invokePageScrollToFlag === true && evt.scrollTop === proxy._invokeScrollTop) {
+    //     proxy._invokePageScrollToFlag = false
+    //     emit('scrolldone', scrolldoneEvent)
+    //   }
+    // })
+  },
   props: {
     backgroundTextStyle: {
       type: String,
@@ -66,23 +96,6 @@ export default {
   created () {
     const page = getCurrentPages()[0]
     this.$pageVm = page.$vm || page
-    // event
-    // h5 暂不支持生命周期 onResize,补充后，可以移除该条件编译
-    // #ifdef H5
-    uni.onWindowResize(evt => {
-      this.$emit('resize', evt)
-    })
-    // #endif
-    // #ifndef H5
-    this.$pageVm.$on('hook:onResize', evt => {
-      this.$emit('resize', evt)
-    })
-    // #endif
-    // 父节点一定是 page
-    this.$pageVm.$on('hook:onPageScroll', evt => {
-      this.$emit('scroll', evt)
-    })
-
     // #ifdef APP-PLUS
     this._currentWebview = page.$getAppWebview()
     if (this.enablePullDownRefresh) {
@@ -117,6 +130,9 @@ export default {
     ], () => {
       this.pageScrollTo()
     })
+
+    // this._invokeScrollTop = -1
+    // this._invokePageScrollToFlag = false
   },
   beforeMount () {
     this.setBackgroundColor()
@@ -147,7 +163,7 @@ export default {
     setBackgroundTextStyle () {
       // TODO h5 app-plus 暂不支持
       // #ifdef MP
-      uni.setBackgroundTextStyle({
+      uni.setBackgroundTextStyle && uni.setBackgroundTextStyle({
         textStyle: this.backgroundTextStyle
       })
       // #endif
@@ -155,7 +171,7 @@ export default {
     setBackgroundColor () {
       // TODO h5 app-plus 暂不支持
       // #ifdef MP
-      uni.setBackgroundColor({
+      uni.setBackgroundColor && uni.setBackgroundColor({
         backgroundColor: this.backgroundColor,
         backgroundColorTop: this.backgroundColorTop,
         backgroundColorBottom: this.backgroundColorBottom
@@ -171,17 +187,14 @@ export default {
       if (isNaN(scrollTop)) {
         return
       }
-      const pageScrollDone = (evt) => {
-        if (evt.scrollTop === scrollTop) {
-          this.$pageVm.$off('hook:onPageScroll', pageScrollDone)
-          this.$emit('scrolldone', scrolldoneEvent)
-        }
-      }
+
+      // this._invokeScrollTop = scrollTop
+
       uni.pageScrollTo({
         scrollTop,
         duration: this.scrollDuration,
         success: () => {
-          this.$pageVm.$on('hook:onPageScroll', pageScrollDone)
+          //this._invokePageScrollToFlag = true
         }
       })
     }

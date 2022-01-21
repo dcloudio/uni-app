@@ -1,1 +1,1 @@
-export { formatAppLog } from './formatLog'
+export { formatAppLog, formatH5Log } from './formatLog'

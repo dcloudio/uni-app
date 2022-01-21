@@ -1,12 +1,11 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "3.0.0-alpha-3021320211109002",
+  "version": "3.0.0-alpha-3030820220114001",
   "description": "@dcloudio/uni-cli-shared",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/**/*.js",
-    "dist/**/*.d.ts",
+    "dist",
     "lib"
   ],
   "repository": {
@@ -19,23 +18,50 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "@rollup/pluginutils": "^4.1.1",
+    "@babel/core": "^7.16.5",
+    "@babel/parser": "^7.16.4",
+    "@babel/types": "^7.16.0",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3030820220114001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114001",
+    "@rollup/pluginutils": "^4.1.2",
+    "@vue/compiler-core": "3.2.26",
+    "@vue/compiler-dom": "3.2.26",
+    "@vue/compiler-sfc": "3.2.26",
+    "@vue/server-renderer": "3.2.26",
+    "@vue/shared": "3.2.26",
+    "base64url": "^3.0.1",
+    "chalk": "^4.1.1",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",
-    "debug": "^4.3.1",
+    "debug": "^4.3.2",
+    "es-module-lexer": "^0.9.3",
+    "esbuild": "^0.13.12",
     "estree-walker": "^2.0.2",
     "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
     "jsonc-parser": "^3.0.0",
+    "magic-string": "^0.25.7",
     "merge": "^2.1.1",
+    "mime": "^3.0.0",
+    "module-alias": "^2.2.2",
+    "postcss-import": "^14.0.2",
+    "postcss-load-config": "^3.1.0",
+    "postcss-modules": "^4.2.2",
     "postcss-selector-parser": "^6.0.6",
-    "rollup-plugin-copy": "^3.4.0",
+    "resolve": "^1.20.0",
     "tapable": "^2.2.0",
     "xregexp": "3.1.0"
   },
-  "gitHead": "b0973e2960189dccd4ca60712a932760e58138eb",
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@types/hash-sum": "^1.0.0"
+    "@types/debug": "^4.1.7",
+    "@types/fs-extra": "^9.0.13",
+    "@types/hash-sum": "^1.0.0",
+    "@types/less": "^3.0.3",
+    "@types/mime": "^2.0.3",
+    "@types/module-alias": "^2.0.1",
+    "@types/stylus": "^0.48.36",
+    "postcss": "^8.4.5"
   }
 }

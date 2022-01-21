@@ -1,6 +1,14 @@
-import { EventChannel } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  EventChannel,
+  resolveComponentInstance,
+} from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
-import { ComponentPublicInstance, getCurrentInstance } from 'vue'
+import {
+  ComponentInternalInstance,
+  ComponentPublicInstance,
+  getCurrentInstance,
+} from 'vue'
 import { rpx2px } from './util'
 
 export function useCurrentPageId() {
@@ -11,7 +19,10 @@ export function useCurrentPageId() {
   return getCurrentInstance()!.root.proxy!.$page.id
 }
 
-export function getPageIdByVm(vm: ComponentPublicInstance) {
+export function getPageIdByVm(
+  instance: ComponentPublicInstance | ComponentInternalInstance
+) {
+  const vm = resolveComponentInstance(instance)!
   if (vm.$page) {
     return vm.$page.id
   }
@@ -122,7 +133,7 @@ export function initPageInternalInstance(
   const { id, route } = meta
   return {
     id: id!,
-    path: '/' + route,
+    path: addLeadingSlash(route),
     route: route,
     fullPath: url,
     options: pageQuery,

@@ -1,3 +1,5 @@
+import { addLeadingSlash } from '@dcloudio/uni-shared'
+
 export function normalizeRoute(toRoute: string) {
   if (toRoute.indexOf('/') === 0) {
     return toRoute
@@ -27,7 +29,7 @@ export function getRealRoute(fromRoute: string, toRoute: string): string {
   toRoute = toRouteArray.join('/')
   const fromRouteArray = fromRoute.length > 0 ? fromRoute.split('/') : []
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1)
-  return '/' + fromRouteArray.concat(toRouteArray).join('/')
+  return addLeadingSlash(fromRouteArray.concat(toRouteArray).join('/'))
 }
 
 export function getRouteOptions(path: string, alias: boolean = false) {

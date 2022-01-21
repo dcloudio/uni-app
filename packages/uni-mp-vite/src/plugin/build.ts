@@ -1,77 +1,136 @@
 import fs from 'fs'
 import path from 'path'
-import { UserConfig } from 'vite'
+import debug from 'debug'
+import { BuildOptions, UserConfig } from 'vite'
 
 import {
   emptyDir,
-  isCSSRequest,
+  EXTNAME_JS_RE,
   normalizePath,
+  hasJsonFile,
+  removeExt,
   resolveMainPathOnce,
+  normalizeMiniProgramFilename,
+  isCSSRequest,
+  parseManifestJsonOnce,
+  M,
 } from '@dcloudio/uni-cli-shared'
-import { GetManualChunk, GetModuleInfo } from 'rollup'
+import { GetManualChunk, GetModuleInfo, Plugin, PreRenderedChunk } from 'rollup'
 import {
   isUniComponentUrl,
   isUniPageUrl,
   parseVirtualComponentPath,
   parseVirtualPagePath,
-} from '../plugins/virtual'
+} from '../plugins/entry'
+
+const debugChunk = debug('uni:chunk')
 
 export function buildOptions(): UserConfig['build'] {
+  const platform = process.env.UNI_PLATFORM
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
   if (fs.existsSync(outputDir)) {
     emptyDir(outputDir)
   }
+  return createBuildOptions(inputDir, platform)
+}
+
+export function createBuildOptions(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+): BuildOptions {
   return {
     // sourcemap: 'inline', // TODO
+    // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
-    assetsInlineLimit: 0, // TODO
     lib: {
+      // 必须使用 lib 模式，否则会生成 preload 等代码
+      fileName: 'app.js',
       entry: resolveMainPathOnce(inputDir),
       formats: ['cjs'],
     },
     rollupOptions: {
+      input: parseRollupInput(inputDir, platform),
       output: {
-        entryFileNames: 'app.js',
-        manualChunks: createMoveToVendorChunkFn(),
-        chunkFileNames(chunk) {
-          if (chunk.isDynamicEntry && chunk.facadeModuleId) {
-            let id = chunk.facadeModuleId
-            if (isUniPageUrl(id)) {
-              id = path.resolve(
-                process.env.UNI_INPUT_DIR,
-                parseVirtualPagePath(id)
-              )
-            } else if (isUniComponentUrl(id)) {
-              id = path.resolve(
-                process.env.UNI_INPUT_DIR,
-                parseVirtualComponentPath(id)
-              )
-            }
-            const filepath = path.relative(inputDir, id)
-            return normalizePath(
-              filepath.replace(path.extname(filepath), '.js')
-            )
+        entryFileNames(chunk) {
+          if (chunk.name === 'main') {
+            return 'app.js'
           }
-          return '[name].js'
+          return chunk.name + '.js'
         },
+        format: 'cjs',
+        manualChunks: createMoveToVendorChunkFn(),
+        chunkFileNames: createChunkFileNames(inputDir),
         assetFileNames: '[name][extname]',
+        plugins: [dynamicImportPolyfill()],
       },
     },
   }
 }
 
+function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
+  const inputOptions: Record<string, string> = {
+    app: resolveMainPathOnce(inputDir),
+  }
+  if (process.env.UNI_MP_PLUGIN) {
+    return inputOptions
+  }
+  const manifestJson = parseManifestJsonOnce(inputDir)
+  const plugins = manifestJson[platform]?.plugins || {}
+  Object.keys(plugins).forEach((name) => {
+    const pluginExport = plugins[name].export
+    if (!pluginExport) {
+      return
+    }
+    const pluginExportFile = path.resolve(inputDir, pluginExport)
+    if (!fs.existsSync(pluginExportFile)) {
+      notFound(pluginExportFile)
+    }
+    inputOptions[removeExt(pluginExport)] = pluginExportFile
+  })
+  return inputOptions
+}
+
+function isVueJs(id: string) {
+  return id.includes('plugin-vue:export-helper')
+}
+
+const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
+
 function createMoveToVendorChunkFn(): GetManualChunk {
   const cache = new Map<string, boolean>()
+  const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   return (id, { getModuleInfo }) => {
+    id = normalizePath(id)
+    const filename = id.split('?')[0]
+    // 处理项目内的js,ts文件
+    if (EXTNAME_JS_RE.test(filename)) {
+      if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
+        const chunkFileName = removeExt(
+          normalizePath(path.relative(inputDir, filename))
+        )
+        if (
+          !chunkFileNameBlackList.includes(chunkFileName) &&
+          !hasJsonFile(chunkFileName) // 无同名的page,component
+        ) {
+          debugChunk(chunkFileName, id)
+          return chunkFileName
+        }
+        return
+      }
+      // 非项目内的 js 资源，均打包到 vendor
+      debugChunk('common/vendor', id)
+      return 'common/vendor'
+    }
     if (
-      (id.includes('node_modules') ||
-        id.includes('plugin-vue:export-helper')) &&
-      !isCSSRequest(id) &&
-      staticImportedByEntry(id, getModuleInfo, cache)
+      isVueJs(id) ||
+      (id.includes('node_modules') &&
+        !isCSSRequest(id) &&
+        staticImportedByEntry(id, getModuleInfo, cache))
     ) {
-      return 'vendor'
+      debugChunk('common/vendor', id)
+      return 'common/vendor'
     }
   }
 }
@@ -110,4 +169,43 @@ function staticImportedByEntry(
   )
   cache.set(id, someImporterIs)
   return someImporterIs
+}
+
+function createChunkFileNames(
+  inputDir: string
+): (chunkInfo: PreRenderedChunk) => string {
+  return function chunkFileNames(chunk) {
+    if (chunk.isDynamicEntry && chunk.facadeModuleId) {
+      let id = chunk.facadeModuleId
+      if (isUniPageUrl(id)) {
+        id = path.resolve(process.env.UNI_INPUT_DIR, parseVirtualPagePath(id))
+      } else if (isUniComponentUrl(id)) {
+        id = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          parseVirtualComponentPath(id)
+        )
+      }
+      return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
+    }
+    return '[name].js'
+  }
+}
+
+function dynamicImportPolyfill(): Plugin {
+  return {
+    name: 'dynamic-import-polyfill',
+    renderDynamicImport() {
+      return {
+        left: '(',
+        right: ')',
+      }
+    },
+  }
+}
+
+export function notFound(filename: string): never {
+  console.log()
+  console.error(M['file.notfound'].replace('{file}', filename))
+  console.log()
+  process.exit(0)
 }

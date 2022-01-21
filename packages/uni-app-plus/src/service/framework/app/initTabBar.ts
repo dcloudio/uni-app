@@ -1,5 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
-import { ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared'
+import { addLeadingSlash, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared'
 import tabBarInstance from './tabBar'
 
 export function initTabBar() {
@@ -20,7 +20,7 @@ export function initTabBar() {
     tabBar!,
     (item: UniApp.TabBarItemOptions, index: number) => {
       uni.switchTab({
-        url: '/' + item.pagePath,
+        url: addLeadingSlash(item.pagePath),
         openType: 'switchTab',
         from: 'tabBar',
         success() {

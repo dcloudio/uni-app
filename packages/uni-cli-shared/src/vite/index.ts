@@ -1,9 +1,10 @@
 import type { Plugin } from 'vite'
-import type { EmittedFile } from 'rollup'
+import type { EmittedAsset } from 'rollup'
 import type { ParserOptions } from '@vue/compiler-core'
 import type { CompilerOptions, TemplateCompiler } from '@vue/compiler-sfc'
 import { UniViteCopyPluginOptions } from './plugins/copy'
 
+export const cssTarget = 'chrome53'
 export interface CopyOptions {
   /**
    * 静态资源，配置的目录，在 uni_modules 中同样支持
@@ -16,14 +17,16 @@ interface UniVitePluginUniOptions {
   compiler?: TemplateCompiler
   compilerOptions?: {
     miniProgram?: {
-      emitFile?: (emittedFile: EmittedFile) => string
+      emitFile?: (emittedFile: EmittedAsset) => string
     }
-    isNativeTag: ParserOptions['isNativeTag']
-    isCustomElement: ParserOptions['isCustomElement']
+    isNativeTag?: ParserOptions['isNativeTag']
+    isCustomElement?: ParserOptions['isCustomElement']
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']
   }
-  transformEvent?: Record<string, string>
+  jsxOptions?: {
+    babelPlugins?: any[]
+  }
   copyOptions?: CopyOptions | (() => CopyOptions)
 }
 export interface UniVitePlugin extends Plugin {

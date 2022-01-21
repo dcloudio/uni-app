@@ -1,8 +1,16 @@
 import fs from 'fs'
-import { OutputAsset, OutputChunk } from 'rollup'
-import { Plugin, ResolvedConfig } from 'vite'
+import path from 'path'
 
-import { buildInCssSet, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { normalizePath, Plugin, ResolvedConfig } from 'vite'
+
+import {
+  buildInCssSet,
+  minifyCSS,
+  getAssetHash,
+  resolveBuiltIn,
+  isExternalUrl,
+} from '@dcloudio/uni-cli-shared'
+import { OutputOptions } from 'rollup'
 
 function isCombineBuiltInCss(config: ResolvedConfig) {
   return config.command === 'build' && config.build.cssCodeSplit
@@ -10,41 +18,148 @@ function isCombineBuiltInCss(config: ResolvedConfig) {
 
 export function uniCssPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
+  let file = ''
+  let fileName = ''
   return {
-    name: 'vite:uni-h5-css',
+    name: 'uni:h5-css',
     apply: 'build',
-    enforce: 'post',
+    enforce: 'pre',
     configResolved(config) {
       resolvedConfig = config
+      file = path.join(process.env.UNI_INPUT_DIR, 'uni.css')
     },
-    generateBundle(_opts, bundle) {
-      // 将内置组件样式，合并进入首页
+    async generateBundle() {
       if (!isCombineBuiltInCss(resolvedConfig) || !buildInCssSet.size) {
         return
       }
-      const chunks = Object.values(bundle)
-      const entryChunk = chunks.find(
-        (chunk) => chunk.type === 'chunk' && chunk.isEntry
-      ) as OutputChunk | undefined
-      if (!entryChunk) {
-        return
-      }
-      const entryName = entryChunk.name
-      const entryCssAsset = chunks.find(
-        ({ name }) => name === entryName + '.css'
-      ) as OutputAsset
-      if (entryCssAsset) {
-        entryCssAsset.source =
-          generateBuiltInCssCode([...buildInCssSet]) +
-          '\n' +
-          entryCssAsset.source
-      }
+      // 生成框架css
+      const content = await minifyCSS(
+        generateBuiltInCssCode([...buildInCssSet]),
+        resolvedConfig
+      )
+      const contentHash = getAssetHash(Buffer.from(content, 'utf-8'))
+      const assetFileNames = path.posix.join(
+        resolvedConfig.build.assetsDir,
+        '[name].[hash][extname]'
+      )
+      fileName = assetFileNamesToFileName(
+        assetFileNames,
+        file,
+        contentHash,
+        content
+      )
+      const name = normalizePath(path.relative(resolvedConfig.root, file))
+      this.emitFile({
+        name,
+        fileName,
+        type: 'asset',
+        source: content,
+      })
+    },
+    transformIndexHtml: {
+      enforce: 'post',
+      transform() {
+        if (!fileName) {
+          return
+        }
+        // 追加框架css
+        return [
+          {
+            tag: 'link',
+            attrs: {
+              rel: 'stylesheet',
+              href: toPublicPath(fileName, resolvedConfig),
+            },
+            injectTo: 'head-prepend',
+          },
+        ]
+      },
     },
   }
+}
+
+function toPublicPath(filename: string, config: ResolvedConfig) {
+  return isExternalUrl(filename) ? filename : config.base + filename
 }
 
 function generateBuiltInCssCode(cssImports: string[]) {
   return cssImports
     .map((cssImport) => fs.readFileSync(resolveBuiltIn(cssImport), 'utf8'))
     .join('\n')
+}
+
+/**
+ * converts the source filepath of the asset to the output filename based on the assetFileNames option. \
+ * this function imitates the behavior of rollup.js. \
+ * https://rollupjs.org/guide/en/#outputassetfilenames
+ *
+ * @example
+ * ```ts
+ * const content = Buffer.from('text');
+ * const fileName = assetFileNamesToFileName(
+ *   'assets/[name].[hash][extname]',
+ *   '/path/to/file.txt',
+ *   getAssetHash(content),
+ *   content
+ * )
+ * // fileName: 'assets/file.982d9e3e.txt'
+ * ```
+ *
+ * @param assetFileNames filename pattern. e.g. `'assets/[name].[hash][extname]'`
+ * @param file filepath of the asset
+ * @param contentHash hash of the asset. used for `'[hash]'` placeholder
+ * @param content content of the asset. passed to `assetFileNames` if `assetFileNames` is a function
+ * @returns output filename
+ */
+export function assetFileNamesToFileName(
+  assetFileNames: Exclude<OutputOptions['assetFileNames'], undefined>,
+  file: string,
+  contentHash: string,
+  content: string | Buffer
+): string {
+  const basename = path.basename(file)
+
+  // placeholders for `assetFileNames`
+  // `hash` is slightly different from the rollup's one
+  const extname = path.extname(basename)
+  const ext = extname.substr(1)
+  const name = basename.slice(0, -extname.length)
+  const hash = contentHash
+
+  if (typeof assetFileNames === 'function') {
+    assetFileNames = assetFileNames({
+      name: file,
+      source: content,
+      type: 'asset',
+    })
+    if (typeof assetFileNames !== 'string') {
+      throw new TypeError('assetFileNames must return a string')
+    }
+  } else if (typeof assetFileNames !== 'string') {
+    throw new TypeError('assetFileNames must be a string or a function')
+  }
+
+  const fileName = assetFileNames.replace(
+    /\[\w+\]/g,
+    (placeholder: string): string => {
+      switch (placeholder) {
+        case '[ext]':
+          return ext
+
+        case '[extname]':
+          return extname
+
+        case '[hash]':
+          return hash
+
+        case '[name]':
+          return name
+      }
+      throw new Error(
+        `invalid placeholder ${placeholder} in assetFileNames "${assetFileNames}"`
+      )
+    }
+  )
+
+  return fileName
 }

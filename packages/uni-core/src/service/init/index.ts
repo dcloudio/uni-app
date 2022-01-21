@@ -1,11 +1,9 @@
 import { ComponentPublicInstance, ref } from 'vue'
 import { useI18n } from '../../i18n'
-import { initI18n } from './i18n'
 import { initOn } from './on'
 import { initSubscribe } from './subscribe'
 
 export function initService() {
-  initI18n()
   if (!__NODE_JS__) {
     initOn()
     initSubscribe()
@@ -41,7 +39,7 @@ export function initPageVm(
   pageVm.$page = page
   pageVm.$mpType = 'page'
   if (page.meta.isTabBar) {
-    pageVm.__isTabBar = true
+    pageVm.$.__isTabBar = true
     // TODO preload? 初始化时，状态肯定是激活
     pageVm.$.__isActive = true
   }

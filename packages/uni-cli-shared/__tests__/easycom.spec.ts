@@ -6,7 +6,9 @@ const rootDir = path.resolve(__dirname, 'examples/easycom')
 
 describe('easycom', () => {
   test('initEasycom with dirs', () => {
-    expect(initEasycoms(rootDir, 'h5').easycoms).toEqual([
+    expect(
+      initEasycoms(rootDir, { platform: 'h5', dirs: [] }).easycoms
+    ).toEqual([
       {
         pattern: new RegExp('^test$'),
         replacement: normalizePath(

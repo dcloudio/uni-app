@@ -36,7 +36,9 @@ export function invokeHook(
       return (vm as any).__call_hook(name, args)
     }
   }
-  const hooks = vm.$[name as string]
+  const hooks = (vm.$ as unknown as { [name: string]: Function[] })[
+    name as string
+  ]
   return hooks && invokeArrayFns(hooks, args)
 }
 
@@ -52,6 +54,8 @@ export function hasHook(vm: ComponentPublicInstance | number, name: string) {
   if (!vm) {
     return false
   }
-  const hooks = vm.$[name]
+  const hooks = (vm.$ as unknown as { [name: string]: Function[] })[
+    name as string
+  ]
   return !!(hooks && hooks.length)
 }

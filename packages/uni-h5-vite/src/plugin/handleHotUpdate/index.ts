@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { ModuleGraph, Plugin } from 'vite'
+import type { ModuleGraph, Plugin } from 'vite'
 import { extend } from '@vue/shared'
 import {
   initEasycomsOnce,
@@ -8,9 +8,10 @@ import {
   normalizePath,
   parseManifestJson,
   parsePagesJson,
+  resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 
-const debugHmr = debug('vite:uni:hmr')
+const debugHmr = debug('uni:hmr')
 
 async function invalidate(file: string, moduleGraph: ModuleGraph) {
   const mods = await moduleGraph.getModulesByFile(normalizePath(file))
@@ -63,7 +64,10 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
     debugHmr('define', define)
     if (isPagesJson) {
       const easycom = pagesJson.easycom || {}
-      const { options, refresh } = initEasycomsOnce(inputDir, platform)
+      const { options, refresh } = initEasycomsOnce(inputDir, {
+        dirs: [resolveComponentsLibPath()],
+        platform,
+      })
       if (
         !equal(
           { autoscan: easycom.autoscan, custom: easycom.custom },

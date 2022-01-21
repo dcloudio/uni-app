@@ -1,6 +1,6 @@
 'use strict';
 
-var version = "3.0.0-alpha-3021120211020001";
+var version = "3.0.0-alpha-3030820220114001";
 
 const STAT_VERSION = version;
 const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
@@ -385,17 +385,7 @@ const requestData = (done) => {
   });
 };
 
-let titleJsons = {};
-// #ifdef MP
-let pagesTitle = require('uni-pages?{"type":"style"}').default;
-pagesTitle = pagesTitle.pages;
-for (let i in pagesTitle) {
-  titleJsons[i] = pagesTitle[i].navigationBarTitleText || '';
-}
-// #endif
-// #ifndef MP
-titleJsons = process.env.UNI_STAT_TITLE_JSON;
-// #endif
+const titleJsons = process.env.UNI_STAT_TITLE_JSON;
 
 const statConfig = {
   appid: process.env.UNI_APP_ID,

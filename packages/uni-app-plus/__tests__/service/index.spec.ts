@@ -1,6 +1,6 @@
 import { compileTemplate } from '@vue/compiler-sfc'
 
-import { UniAppPlugin } from '../../../uni-app-vite/src/plugin'
+import { uniAppPlugin } from '../../../uni-app-vite/src/plugin'
 import {
   ref,
   nextTick,
@@ -33,7 +33,7 @@ const defaultPageNodeOptions = {
   windowBottom: 0,
 }
 
-const { uni } = UniAppPlugin
+const { uni } = uniAppPlugin()
 
 function compile(source: string) {
   return compileTemplate({

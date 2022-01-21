@@ -272,7 +272,7 @@ function getApiInterceptorHooks(method) {
     }
     return interceptor;
 }
-function invokeApi(method, api, options, ...params) {
+function invokeApi(method, api, options, params) {
     const interceptor = getApiInterceptorHooks(method);
     if (interceptor && Object.keys(interceptor).length) {
         if (isArray(interceptor.invoke)) {
@@ -289,13 +289,13 @@ function invokeApi(method, api, options, ...params) {
 }
 
 function handlePromise(promise) {
-    if (__UNI_FEATURE_PROMISE__) {
-        return promise
-            .then((data) => {
-            return [null, data];
-        })
-            .catch((err) => [err]);
-    }
+    // if (__UNI_FEATURE_PROMISE__) {
+    //   return promise
+    //     .then((data) => {
+    //       return [null, data]
+    //     })
+    //     .catch((err) => [err])
+    // }
     return promise;
 }
 
@@ -622,17 +622,17 @@ function promisify(name, api) {
     if (!isFunction(api)) {
         return api;
     }
-    return function promiseApi(options = {}) {
+    return function promiseApi(options = {}, ...rest) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options));
+            return wrapperReturnValue(name, invokeApi(name, api, options, rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, extend({}, options, {
                 success: resolve,
                 fail: reject,
-            }));
+            }), rest);
         })));
     };
 }
@@ -859,8 +859,8 @@ const getProvider = initGetProvider({
 });
 
 var shims = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getProvider: getProvider
+  __proto__: null,
+  getProvider: getProvider
 });
 
 const chooseImage = {
@@ -936,23 +936,23 @@ const getFileInfo = {
 };
 
 var protocols = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    chooseImage: chooseImage,
-    connectSocket: connectSocket,
-    chooseVideo: chooseVideo,
-    scanCode: scanCode,
-    startAccelerometer: startAccelerometer,
-    showToast: showToast,
-    showLoading: showLoading,
-    showModal: showModal,
-    showActionSheet: showActionSheet,
-    login: login,
-    getUserInfo: getUserInfo,
-    requestPayment: requestPayment,
-    getFileInfo: getFileInfo,
-    redirectTo: redirectTo,
-    navigateTo: navigateTo,
-    previewImage: previewImage
+  __proto__: null,
+  chooseImage: chooseImage,
+  connectSocket: connectSocket,
+  chooseVideo: chooseVideo,
+  scanCode: scanCode,
+  startAccelerometer: startAccelerometer,
+  showToast: showToast,
+  showLoading: showLoading,
+  showModal: showModal,
+  showActionSheet: showActionSheet,
+  login: login,
+  getUserInfo: getUserInfo,
+  requestPayment: requestPayment,
+  getFileInfo: getFileInfo,
+  redirectTo: redirectTo,
+  navigateTo: navigateTo,
+  previewImage: previewImage
 });
 
 var index = initUni(shims, protocols);

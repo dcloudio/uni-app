@@ -1,10 +1,12 @@
+import fs from 'fs'
 import path from 'path'
-import { hasOwn } from '@vue/shared'
+import { extend, hasOwn } from '@vue/shared'
 import { parseJson } from '../json'
 import { validatePages } from '../pages'
 import { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
+import { isMiniProgramProjectJsonKey } from './project'
 
 interface ParsePagesJsonOptions {
   debug?: boolean
@@ -24,6 +26,20 @@ export function parseMiniProgramPagesJson(
   return parsePagesJson(jsonStr, platform, options)
 }
 
+export function mergeMiniProgramAppJson(
+  appJson: Record<string, any>,
+  platformJson: Record<string, any> = {}
+) {
+  Object.keys(platformJson).forEach((name) => {
+    if (
+      !isMiniProgramProjectJsonKey(name) &&
+      !['usingComponents', 'optimization', 'scopedSlotsCompiler'].includes(name)
+    ) {
+      appJson[name] = platformJson[name]
+    }
+  })
+}
+
 function parsePagesJson(
   jsonStr: string,
   platform: UniApp.PLATFORM,
@@ -33,6 +49,8 @@ function parsePagesJson(
     networkTimeout,
     subpackages,
     windowOptionsMap,
+    tabBarOptionsMap,
+    tabBarItemOptionsMap,
   }: ParsePagesJsonOptions = {
     subpackages: false,
   }
@@ -41,6 +59,7 @@ function parsePagesJson(
     pages: [],
   }
   const pageJsons: Record<string, PageWindowOptions> = {}
+  const nvuePages: string[] = []
   // preprocess
   const pagesJson = parseJson(jsonStr, true) as UniApp.PagesJson
   if (!pagesJson) {
@@ -48,7 +67,23 @@ function parsePagesJson(
   }
 
   function addPageJson(pagePath: string, style: UniApp.PagesJsonPageStyle) {
-    pageJsons[pagePath] = parseWindowOptions(style, platform, windowOptionsMap)
+    const filename = path.join(process.env.UNI_INPUT_DIR, pagePath)
+    if (
+      fs.existsSync(filename + '.nvue') &&
+      !fs.existsSync(filename + '.vue')
+    ) {
+      nvuePages.push(pagePath)
+    }
+    const windowOptions: PageWindowOptions = {}
+    if (platform === 'mp-baidu') {
+      // 仅百度小程序需要页面配置 component:true
+      // 快手小程序反而不能配置 component:true，故不能统一添加，目前硬编码处理
+      windowOptions.component = true
+    }
+    pageJsons[pagePath] = extend(
+      windowOptions,
+      parseWindowOptions(style, platform, windowOptionsMap) as PageWindowOptions
+    )
   }
   // pages
   validatePages(pagesJson, jsonStr)
@@ -62,15 +97,23 @@ function parsePagesJson(
   pagesJson.subPackages = pagesJson.subPackages || pagesJson.subpackages
   if (pagesJson.subPackages) {
     if (subpackages) {
-      appJson.subPackages = pagesJson.subPackages.map(({ root, pages }) => {
-        return {
-          root,
-          pages: pages.map((page) => {
-            addPageJson(normalizePath(path.join(root, page.path)), page.style)
-            return page.path
-          }),
+      appJson.subPackages = pagesJson.subPackages.map(
+        ({ root, pages, ...rest }) => {
+          return extend(
+            {
+              root,
+              pages: pages.map((page) => {
+                addPageJson(
+                  normalizePath(path.join(root, page.path)),
+                  page.style
+                )
+                return page.path
+              }),
+            },
+            rest
+          )
         }
-      })
+      )
     } else {
       pagesJson.subPackages.forEach(({ root, pages }) => {
         pages.forEach((page) => {
@@ -84,21 +127,34 @@ function parsePagesJson(
 
   // window
   if (pagesJson.globalStyle) {
-    appJson.window = parseWindowOptions(
+    const windowOptions = parseWindowOptions(
       pagesJson.globalStyle,
       platform,
       windowOptionsMap
     )
+    const { usingComponents } = windowOptions as PageWindowOptions
+    if (usingComponents) {
+      delete (windowOptions as PageWindowOptions).usingComponents
+      appJson.usingComponents = usingComponents
+    } else {
+      delete appJson.usingComponents
+    }
+    appJson.window = windowOptions
   }
 
   // tabBar
   if (pagesJson.tabBar) {
-    const tabBar = parseTabBar(pagesJson.tabBar!, platform)
+    const tabBar = parseTabBar(
+      pagesJson.tabBar!,
+      platform,
+      tabBarOptionsMap,
+      tabBarItemOptionsMap
+    )
     if (tabBar) {
       appJson.tabBar = tabBar
     }
   }
-  ;['preloadRule', 'workers', 'usingComponents'].forEach((name) => {
+  ;['preloadRule', 'workers', 'plugins'].forEach((name) => {
     if (hasOwn(pagesJson, name)) {
       appJson[name] = pagesJson[name]
     }
@@ -116,5 +172,6 @@ function parsePagesJson(
   return {
     appJson,
     pageJsons,
+    nvuePages,
   }
 }

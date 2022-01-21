@@ -47,6 +47,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       type: [Boolean, String],
       default: false,
     },
+    plain: {
+      type: [Boolean, String],
+      default: false,
+    },
   },
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
@@ -102,6 +106,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const hoverClass = props.hoverClass
       const booleanAttrs = useBooleanAttr(props, 'disabled')
       const loadingAttrs = useBooleanAttr(props, 'loading')
+      const plainAttrs = useBooleanAttr(props, 'plain')
       const hasHoverClass = hoverClass && hoverClass !== 'none'
 
       return (
@@ -112,6 +117,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           {...(hasHoverClass && binding)}
           {...booleanAttrs}
           {...loadingAttrs}
+          {...plainAttrs}
         >
           {slots.default && slots.default()}
         </uni-button>

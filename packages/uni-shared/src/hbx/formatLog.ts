@@ -62,3 +62,11 @@ export function formatAppLog(
   const res = normalizeLog(type, filename, args)
   res && console[type](res)
 }
+
+export function formatH5Log(
+  type: keyof Console,
+  filename: string,
+  ...args: unknown[]
+) {
+  ;(console[type] as Function).apply(console, [...args, filename])
+}

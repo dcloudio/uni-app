@@ -1,3 +1,4 @@
+import { ComponentPublicInstance } from 'vue'
 import { MPComponentInstance } from '@dcloudio/uni-mp-core'
 
 import {
@@ -23,7 +24,7 @@ export function initRelation(mpInstance: MPComponentInstance) {
   // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
   const nodeId = mpInstance.nodeId + ''
   const webviewId = (mpInstance as any).pageinstance.__pageId__ + ''
-  instances[webviewId + '_' + nodeId] = mpInstance.$vm
+  instances[webviewId + '_' + nodeId] = mpInstance.$vm!
   mpInstance.triggerEvent('__l', {
     nodeId,
     webviewId,
@@ -38,13 +39,19 @@ export function handleLink(
     detail: RelationOptions
   }
 ) {
-  const vm = instances[webviewId + '_' + nodeId]
+  const vm = instances[webviewId + '_' + nodeId] as ComponentPublicInstance & {
+    _$childVues?: [Function, Function][]
+  }
   if (!vm) {
     return
   }
-  let parentVm = instances[webviewId + '_' + vm.$scope.ownerId]
+  let parentVm = instances[
+    webviewId + '_' + (vm.$scope as any).ownerId
+  ] as ComponentPublicInstance & {
+    _$childVues?: [Function, Function][]
+  }
   if (!parentVm) {
-    parentVm = this.$vm
+    parentVm = this.$vm!
   }
 
   vm.$.parent = parentVm.$
@@ -53,7 +60,7 @@ export function handleLink(
     if (__VUE_OPTIONS_API__) {
       ;(parentVm as any).$children.push(vm)
       const parent = parentVm.$ as any
-      vm.$.provides = parent
+      ;(vm.$ as any).provides = parent
         ? parent.provides
         : Object.create(parent.appContext.provides)
       initInjections(vm)
@@ -64,8 +71,8 @@ export function handleLink(
   const mountedVm = function () {
     // 处理当前 vm 子
     if (vm._$childVues) {
-      vm._$childVues.forEach(([createdVm]: Function[]) => createdVm())
-      vm._$childVues.forEach(([, mountedVm]: Function[]) => mountedVm())
+      vm._$childVues.forEach(([createdVm]) => createdVm())
+      vm._$childVues.forEach(([, mountedVm]) => mountedVm())
       delete vm._$childVues
     }
     vm.$callHook('mounted')

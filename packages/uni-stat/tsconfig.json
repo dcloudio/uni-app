@@ -12,8 +12,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": false,
-    "lib": ["ESNext", "DOM"],
-    "types": ["node", "@dcloudio/types"]
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["src"]
 }

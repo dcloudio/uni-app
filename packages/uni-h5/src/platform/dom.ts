@@ -1,6 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
 import { getRealRoute } from '@dcloudio/uni-core'
-import { DATA_RE, SCHEME_RE } from '@dcloudio/uni-shared'
+import { addLeadingSlash, DATA_RE, SCHEME_RE } from '@dcloudio/uni-shared'
 declare global {
   interface ImportMeta {
     env: {
@@ -20,8 +20,8 @@ export function findElem(vm: ComponentPublicInstance) {
 const baseUrl = __IMPORT_META_ENV_BASE_URL__
 function addBase(filePath: string) {
   // filepath可能已经被补充了baseUrl
-  if (('/' + filePath).indexOf(baseUrl) === 0) {
-    return '/' + filePath
+  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return addLeadingSlash(filePath)
   }
   return baseUrl + filePath
 }

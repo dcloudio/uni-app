@@ -3,11 +3,16 @@ export function formatMiniProgramEvent(
   {
     isCatch,
     isCapture,
+    isComponent,
   }: {
     isCatch?: boolean
     isCapture?: boolean
+    isComponent?: boolean
   }
 ) {
+  if (!isComponent && eventName === 'click') {
+    eventName = 'tap'
+  }
   let eventType = 'bind'
   if (isCatch) {
     eventType = 'catch'
@@ -15,6 +20,19 @@ export function formatMiniProgramEvent(
   if (isCapture) {
     return `capture-${eventType}:${eventName}`
   }
-  // 原生组件不支持 bind:input 等写法，统一使用 bindinput
-  return `${eventType}${eventName}`
+  // bind:foo-bar
+  return eventType + (isSimpleExpr(eventName) ? '' : ':') + eventName
+}
+
+function isSimpleExpr(name: string) {
+  if (name.startsWith('_')) {
+    return false
+  }
+  if (name.indexOf('-') > -1) {
+    return false
+  }
+  if (name.indexOf(':') > -1) {
+    return false
+  }
+  return true
 }

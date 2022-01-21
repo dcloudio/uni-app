@@ -1,5 +1,16 @@
-{
-  "input": {
-    "src/index.js": ["dist/uni-stat.es.js", "dist/uni-stat.cjs.js"]
+[
+  {
+    "input": {
+      "src/plugin/index.ts": "lib/uni.plugin.js"
+    },
+    "output": {
+      "format": "cjs"
+    },
+    "external": ["debug", "@dcloudio/uni-cli-shared"]
+  },
+  {
+    "input": {
+      "src/index.js": ["dist/uni-stat.es.js", "dist/uni-stat.cjs.js"]
+    }
   }
-}
+]

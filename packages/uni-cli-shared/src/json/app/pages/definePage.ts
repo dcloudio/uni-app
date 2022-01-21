@@ -14,11 +14,11 @@ export function definePageCode(pagesJson: Record<string, any>) {
       if (process.env.UNI_APP_CODE_SPLITING) {
         // 拆分页面
         importPagesCode.push(
-          `const ${pageIdentifier} = ()=>import('./${pagePathWithExtname}?mpType=page')`
+          `const ${pageIdentifier} = ()=>import('./${pagePathWithExtname}')`
         )
       } else {
         importPagesCode.push(
-          `import ${pageIdentifier} from './${pagePathWithExtname}?mpType=page'`
+          `import ${pageIdentifier} from './${pagePathWithExtname}'`
         )
       }
       definePagesCode.push(`__definePage('${pagePath}',${pageIdentifier})`)

@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
 
-const BUILT_IN_TAGS = [
+const BUILT_IN_TAG_NAMES = [
     'ad',
     'ad-content-page',
     'ad-draw',
@@ -48,7 +48,8 @@ const BUILT_IN_TAGS = [
     'video',
     'view',
     'web-view',
-].map((tag) => 'uni-' + tag);
+];
+const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
 const TAGS = [
     'app',
     'layout',
@@ -70,23 +71,102 @@ const TAGS = [
     'shadow-root',
 ].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
-    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
+    // h5 平台会被转换为 v-uni-
+    return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1;
 }
-function isCustomElement(tag) {
+function isH5CustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
-function isNativeTag(tag) {
-    return (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) && !isBuiltInComponent(tag);
+function isH5NativeTag(tag) {
+    return (tag !== 'head' &&
+        (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) &&
+        !isBuiltInComponent(tag));
 }
-function isServiceNativeTag(tag) {
+function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
 }
-function isServiceCustomElement(_tag) {
-    return false;
+function isMiniProgramNativeTag(tag) {
+    return isBuiltInComponent(tag);
+}
+function createIsCustomElement(tags = []) {
+    return function isCustomElement(tag) {
+        return tags.includes(tag);
+    };
+}
+function isComponentTag(tag) {
+    return tag[0].toLowerCase() + tag.slice(1) === 'component';
 }
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
+const LINEFEED = '\n';
+const NAVBAR_HEIGHT = 44;
+const TABBAR_HEIGHT = 50;
+const ON_REACH_BOTTOM_DISTANCE = 50;
+const RESPONSIVE_MIN_WIDTH = 768;
+const UNI_STORAGE_LOCALE = 'UNI_LOCALE';
+// quickapp-webview 不能使用 default 作为插槽名称
+const SLOT_DEFAULT_NAME = 'd';
+const COMPONENT_NAME_PREFIX = 'VUni';
+const I18N_JSON_DELIMITERS = ['%', '%'];
+const PRIMARY_COLOR = '#007aff';
+const SELECTED_COLOR = '#0062cc'; // 选中的颜色，如选项卡默认的选中颜色
+const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
+const UNI_SSR = '__uniSSR';
+const UNI_SSR_TITLE = 'title';
+const UNI_SSR_STORE = 'store';
+const UNI_SSR_DATA = 'data';
+const UNI_SSR_GLOBAL_DATA = 'globalData';
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+const WXS_PROTOCOL = 'wxs://';
+const JSON_PROTOCOL = 'json://';
+const WXS_MODULES = 'wxsModules';
+const RENDERJS_MODULES = 'renderjsModules';
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
+const ON_PAGE_SCROLL = 'onPageScroll';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_SHARE_TIMELINE = 'onShareTimeline';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
+// navigationBar
+const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+// framework
+const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
+const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
+const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
+const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
+
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
 function resolveOwnerVm(vm) {
     if (!vm) {
         return;
@@ -111,12 +191,15 @@ function resolveOwnerEl(instance) {
     const { subTree } = instance;
     // ShapeFlags.ARRAY_CHILDREN = 1<<4
     if (subTree.shapeFlag & 16) {
-        const elemVNode = subTree.children.find((vnode) => isElement(vnode.el));
+        const elemVNode = subTree.children.find((vnode) => vnode.el && isElement(vnode.el));
         if (elemVNode) {
             return elemVNode.el;
         }
     }
     return vnode.el;
+}
+function dynamicSlotName(name) {
+    return name === 'default' ? SLOT_DEFAULT_NAME : name;
 }
 
 let lastLogTime = 0;
@@ -168,11 +251,19 @@ const defaultRpx2Unit = {
     unitRatio: 10 / 320,
     unitPrecision: 5,
 };
+const defaultMiniProgramRpx2Unit = {
+    unit: 'rpx',
+    unitRatio: 1,
+    unitPrecision: 1,
+};
 function createRpx2Unit(unit, unitRatio, unitPrecision) {
     // ignore: rpxCalcIncludeWidth
     return (val) => val.replace(unitRE, (m, $1) => {
         if (!$1) {
             return m;
+        }
+        if (unitRatio === 1) {
+            return `${$1}${unit}`;
         }
         const value = toFixed(parseFloat($1) * unitRatio, unitPrecision);
         return value === 0 ? '0' : `${value}${unit}`;
@@ -400,6 +491,20 @@ function normalizeLog(type, filename, args) {
 function formatAppLog(type, filename, ...args) {
     const res = normalizeLog(type, filename, args);
     res && console[type](res);
+}
+function formatH5Log(type, filename, ...args) {
+    console[type].apply(console, [...args, filename]);
+}
+
+let latestNodeId = 1;
+class NVueTextNode {
+    constructor(text) {
+        this.instanceId = '';
+        this.nodeId = latestNodeId++;
+        this.parentNode = null;
+        this.nodeType = 3;
+        this.text = text;
+    }
 }
 
 function plusReady(callback) {
@@ -833,6 +938,37 @@ class UniTextNode extends UniBaseNode {
     }
 }
 
+const forcePatchProps = {
+    AD: ['data'],
+    'AD-DRAW': ['data'],
+    'LIVE-PLAYER': ['picture-in-picture-mode'],
+    MAP: [
+        'markers',
+        'polyline',
+        'circles',
+        'controls',
+        'include-points',
+        'polygons',
+    ],
+    PICKER: ['range', 'value'],
+    'PICKER-VIEW': ['value'],
+    'RICH-TEXT': ['nodes'],
+    VIDEO: ['danmu-list', 'header'],
+    'WEB-VIEW': ['webview-styles'],
+};
+const forcePatchPropKeys = ['animation'];
+
+const forcePatchProp = (el, key) => {
+    if (forcePatchPropKeys.indexOf(key) > -1) {
+        return true;
+    }
+    const keys = forcePatchProps[el.nodeName];
+    if (keys && keys.indexOf(key) > -1) {
+        return true;
+    }
+    return false;
+};
+
 const ACTION_TYPE_PAGE_CREATE = 1;
 const ACTION_TYPE_PAGE_CREATED = 2;
 const ACTION_TYPE_CREATE = 3;
@@ -860,8 +996,14 @@ function cacheStringFunction(fn) {
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
 function removeLeadingSlash(str) {
-    return str.indexOf('/') === 0 ? str.substr(1) : str;
+    return hasLeadingSlash(str) ? str.substr(1) : str;
 }
 const invokeArrayFns = (fns, arg) => {
     let ret;
@@ -921,6 +1063,10 @@ function callOptions(options, data) {
     }
 }
 function getValueByDataPath(obj, path) {
+    if (!shared.isString(path)) {
+        return;
+    }
+    path = path.replace(/\[(\d+)\]/g, '.$1');
     const parts = path.split('.');
     let key = parts[0];
     if (!obj) {
@@ -944,63 +1090,6 @@ function debounce(fn, delay) {
     };
     return newFn;
 }
-
-const NAVBAR_HEIGHT = 44;
-const TABBAR_HEIGHT = 50;
-const ON_REACH_BOTTOM_DISTANCE = 50;
-const RESPONSIVE_MIN_WIDTH = 768;
-const COMPONENT_NAME_PREFIX = 'VUni';
-const I18N_JSON_DELIMITERS = ['%', '%'];
-const PRIMARY_COLOR = '#007aff';
-const SELECTED_COLOR = '#0062cc'; // 选中的颜色，如选项卡默认的选中颜色
-const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
-const UNI_SSR = '__uniSSR';
-const UNI_SSR_TITLE = 'title';
-const UNI_SSR_STORE = 'store';
-const UNI_SSR_DATA = 'data';
-const UNI_SSR_GLOBAL_DATA = 'globalData';
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
-const WXS_PROTOCOL = 'wxs://';
-const JSON_PROTOCOL = 'json://';
-const WXS_MODULES = 'wxsModules';
-const RENDERJS_MODULES = 'renderjsModules';
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_BACK_PRESS = 'onBackPress';
-const ON_PAGE_SCROLL = 'onPageScroll';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_SHARE_TIMELINE = 'onShareTimeline';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-// navigationBar
-const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-// framework
-const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
-const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
-const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
-const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
 class EventChannel {
     constructor(id, events) {
@@ -1066,13 +1155,23 @@ class EventChannel {
 }
 
 const PAGE_HOOKS = [
+    ON_LOAD,
     ON_SHOW,
     ON_HIDE,
+    ON_UNLOAD,
     ON_BACK_PRESS,
     ON_PAGE_SCROLL,
     ON_TAB_ITEM_TAP,
     ON_REACH_BOTTOM,
     ON_PULL_DOWN_REFRESH,
+    ON_SHARE_TIMELINE,
+    ON_SHARE_APP_MESSAGE,
+    ON_ADD_TO_FAVORITES,
+    ON_NAVIGATION_BAR_BUTTON_TAP,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+    ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
 function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
@@ -1103,6 +1202,11 @@ const UniLifecycleHooks = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
+    onPageScroll: 1,
+    onShareAppMessage: 1 << 1,
+    onShareTimeline: 1 << 2,
+};
 
 function getEnvLocale() {
     const { env } = process;
@@ -1133,6 +1237,7 @@ exports.ATTR_V_RENDERJS = ATTR_V_RENDERJS;
 exports.ATTR_V_SHOW = ATTR_V_SHOW;
 exports.BACKGROUND_COLOR = BACKGROUND_COLOR;
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
+exports.BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
@@ -1141,11 +1246,14 @@ exports.EventChannel = EventChannel;
 exports.EventModifierFlags = EventModifierFlags;
 exports.I18N_JSON_DELIMITERS = I18N_JSON_DELIMITERS;
 exports.JSON_PROTOCOL = JSON_PROTOCOL;
+exports.LINEFEED = LINEFEED;
+exports.MINI_PROGRAM_PAGE_RUNTIME_HOOKS = MINI_PROGRAM_PAGE_RUNTIME_HOOKS;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
 exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
+exports.NVueTextNode = NVueTextNode;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
@@ -1182,6 +1290,7 @@ exports.RENDERJS_MODULES = RENDERJS_MODULES;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.SCHEME_RE = SCHEME_RE;
 exports.SELECTED_COLOR = SELECTED_COLOR;
+exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.UNI_SSR = UNI_SSR;
@@ -1189,6 +1298,7 @@ exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
+exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
 exports.UniElement = UniElement;
@@ -1202,17 +1312,23 @@ exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
 exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
+exports.addLeadingSlash = addLeadingSlash;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
+exports.createIsCustomElement = createIsCustomElement;
 exports.createRpx2Unit = createRpx2Unit;
 exports.createUniEvent = createUniEvent;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
+exports.defaultMiniProgramRpx2Unit = defaultMiniProgramRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
+exports.dynamicSlotName = dynamicSlotName;
+exports.forcePatchProp = forcePatchProp;
 exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
+exports.formatH5Log = formatH5Log;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
@@ -1220,12 +1336,14 @@ exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
+exports.isAppNativeTag = isAppNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
-exports.isCustomElement = isCustomElement;
-exports.isNativeTag = isNativeTag;
+exports.isComponentInternalInstance = isComponentInternalInstance;
+exports.isComponentTag = isComponentTag;
+exports.isH5CustomElement = isH5CustomElement;
+exports.isH5NativeTag = isH5NativeTag;
+exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
-exports.isServiceCustomElement = isServiceCustomElement;
-exports.isServiceNativeTag = isServiceNativeTag;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;
@@ -1236,6 +1354,7 @@ exports.parseUrl = parseUrl;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;
+exports.resolveComponentInstance = resolveComponentInstance;
 exports.resolveOwnerEl = resolveOwnerEl;
 exports.resolveOwnerVm = resolveOwnerVm;
 exports.sanitise = sanitise;

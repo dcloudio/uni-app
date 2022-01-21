@@ -8,7 +8,8 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
-import { isCustomElement } from '@dcloudio/uni-shared'
+import { cssTarget } from '@dcloudio/uni-cli-shared'
+import { isH5CustomElement } from '@dcloudio/uni-shared'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -33,7 +34,7 @@ const rollupPlugins = [
       _NODE_JS_: 0,
     },
     // 忽略 pako 内部条件编译
-    exclude: [resolve('../../node_modules/pako/**')],
+    exclude: ['**/pako/**/*.js'],
   }),
   babel({
     babelHelpers: 'bundled',
@@ -112,13 +113,15 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement,
+          isCustomElement: isH5CustomElement,
         },
       },
     }),
-    vueJsx({ optimize: true, isCustomElement }),
+    vueJsx({ optimize: true, isCustomElement: isH5CustomElement }),
   ],
   build: {
+    target: 'es2015',
+    cssTarget,
     minify: true,
     lib: {
       name: 'uni-app-view',

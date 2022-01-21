@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { formatLog } from '@dcloudio/uni-shared'
+import { addLeadingSlash, formatLog } from '@dcloudio/uni-shared'
 import { getRouteOptions } from '@dcloudio/uni-core'
 interface PlusResult extends Record<string, any> {
   code?: number
@@ -83,7 +83,7 @@ export function isTabBarPage(path = '') {
       return page.$page.meta.isTabBar
     }
     if (!/^\//.test(path)) {
-      path = '/' + path
+      path = addLeadingSlash(path)
     }
     const route = getRouteOptions(path)
     return route && route.meta.isTabBar

@@ -61,6 +61,10 @@ declare namespace UniApp {
     qqMapKey?: string
     googleMapKey?: string
     // app-plus
+    referrerInfo?: {
+      appId: string
+      extraData: Record<string, any>
+    }
     entryPagePath?: string
     entryPageQuery?: string
     realEntryPagePath?: string
@@ -171,6 +175,8 @@ declare namespace UniApp {
     'mp-toutiao'?: PagesJsonPageStyle
     'mp-weixin'?: PagesJsonPageStyle
     'mp-kuaishou'?: PagesJsonPageStyle
+    'mp-lark'?: PagesJsonPageStyle
+    'mp-jd'?: PagesJsonPageStyle
     'quickapp-webview'?: PagesJsonPageStyle
     'quickapp-webview-huawei'?: PagesJsonPageStyle
     'quickapp-webview-union'?: PagesJsonPageStyle
@@ -229,6 +235,12 @@ declare namespace UniApp {
 
   interface PagesJson {
     pages: PagesJsonPageOptions[]
+    preloadRule?: {
+      [page: string]: {
+        network?: 'all' | 'wifi'
+        packages: string[]
+      }
+    }
     subpackages?: PagesJsonSubpackagesOptions[]
     subPackages?: PagesJsonSubpackagesOptions[]
     globalStyle: PagesJsonPageStyle
@@ -244,7 +256,13 @@ declare namespace UniApp {
     }
     condition?: {
       current?: number
-      list?: { name?: string; path: string; query?: string }[]
+      list?: {
+        id?: string | number
+        name?: string
+        path?: string
+        pathName?: string
+        query?: string
+      }[]
     }
   }
 

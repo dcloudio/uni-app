@@ -1,29 +1,42 @@
 import {
-  isServiceNativeTag,
-  isServiceCustomElement,
+  isMiniProgramNativeTag as isNativeTag,
+  createIsCustomElement,
 } from '@dcloudio/uni-shared'
-import { EmittedFile } from 'rollup'
-import { CopyOptions, UniVitePlugin } from '@dcloudio/uni-cli-shared'
-import { TemplateCompiler } from '@vue/compiler-sfc'
 
+import {
+  CopyOptions,
+  UniVitePlugin,
+  MiniProgramCompilerOptions,
+  transformPageHead,
+} from '@dcloudio/uni-cli-shared'
+import type { TemplateCompiler } from '@vue/compiler-sfc'
+import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import * as compiler from '@dcloudio/uni-mp-compiler'
 
 export function uniOptions({
   copyOptions,
   miniProgram,
+  customElements,
+  compilerOptions,
 }: {
+  customElements?: string[]
   copyOptions: CopyOptions
-  miniProgram: {
-    emitFile?: (emittedFile: EmittedFile) => string
-  }
+  miniProgram: MiniProgramCompilerOptions
+  compilerOptions?: CompilerOptions
 }): UniVitePlugin['uni'] {
   return {
     copyOptions,
     compiler: compiler as TemplateCompiler,
     compilerOptions: {
+      root: process.env.UNI_INPUT_DIR,
       miniProgram,
-      isNativeTag: isServiceNativeTag,
-      isCustomElement: isServiceCustomElement,
-    },
+      isNativeTag,
+      isCustomElement: createIsCustomElement(customElements),
+      ...compilerOptions,
+      nodeTransforms: [
+        transformPageHead,
+        ...(compilerOptions?.nodeTransforms || []),
+      ],
+    } as any,
   }
 }

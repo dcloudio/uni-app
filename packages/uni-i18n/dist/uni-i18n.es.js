@@ -121,6 +121,10 @@ function normalizeLocale(locale, messages) {
         return locale;
     }
     locale = locale.toLowerCase();
+    if (locale === 'chinese') {
+        // 支付宝
+        return LOCALE_ZH_HANS;
+    }
     if (locale.indexOf('zh') === 0) {
         if (locale.indexOf('-hans') > -1) {
             return LOCALE_ZH_HANS;

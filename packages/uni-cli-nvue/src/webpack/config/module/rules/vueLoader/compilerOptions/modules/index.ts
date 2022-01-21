@@ -1,4 +1,5 @@
 import { ModuleOptions } from 'vue-template-compiler'
+import { NVueCompilerOptions } from '../../../../../../../types'
 import { createAssetUrlModule } from './assetUrl'
 import { createBoolAttrModule } from './boolAttr'
 import { createEasycomModule } from './easycom'

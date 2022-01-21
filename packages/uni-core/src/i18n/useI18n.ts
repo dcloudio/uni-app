@@ -1,6 +1,11 @@
 import { isString } from '@vue/shared'
-import { getEnvLocale, I18N_JSON_DELIMITERS } from '@dcloudio/uni-shared'
+import {
+  getEnvLocale,
+  I18N_JSON_DELIMITERS,
+  UNI_STORAGE_LOCALE,
+} from '@dcloudio/uni-shared'
 import { BuiltInLocale, initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
+import { isEnableLocale } from './utils'
 
 let i18n: ReturnType<typeof initVueI18n>
 
@@ -72,7 +77,9 @@ export function useI18n() {
       if (__NODE_JS__) {
         locale = getEnvLocale() as BuiltInLocale
       } else {
-        locale = (__uniConfig.locale || navigator.language) as BuiltInLocale
+        locale = ((window.localStorage && localStorage[UNI_STORAGE_LOCALE]) ||
+          __uniConfig.locale ||
+          navigator.language) as BuiltInLocale
       }
     } else if (__PLATFORM__ === 'app') {
       if (typeof getApp === 'function') {
@@ -86,6 +93,18 @@ export function useI18n() {
       locale = uni.getSystemInfoSync().language as BuiltInLocale
     }
     i18n = initVueI18n(locale)
+
+    // 自定义locales
+    if (isEnableLocale()) {
+      const localeKeys = Object.keys(__uniConfig.locales || {})
+      if (localeKeys.length) {
+        localeKeys.forEach((locale) =>
+          i18n.add(locale as BuiltInLocale, __uniConfig.locales[locale])
+        )
+      }
+      // initVueI18n 时 messages 还没有，导致用户自定义 locale 可能不生效，当设置完 messages 后，重新设置 locale
+      i18n.setLocale(locale)
+    }
   }
   return i18n
 }

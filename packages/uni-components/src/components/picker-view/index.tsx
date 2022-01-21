@@ -13,6 +13,7 @@ import {
   onMounted,
   ComponentPublicInstance,
   nextTick,
+  Comment,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -105,13 +106,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       onMounted(onMountedCallback)
     }
     let ColumnsPreRef: Ref<VNode[]> = ref([])
+    // app HTMLCollection, H5 VNode[]
     let columnsRef: Ref<VNode[] | HTMLCollection> = ref([])
     function getItemIndex(vnode: VNode): number {
-      const columnVNodes = columnsRef.value
+      let columnVNodes = columnsRef.value
       if (__PLATFORM__ === 'app' && columnVNodes instanceof HTMLCollection) {
-        return Array.prototype.indexOf.call(
-          columnVNodes as HTMLCollection,
-          vnode.el
+        return Array.prototype.indexOf.call(columnVNodes, vnode.el)
+      } else {
+        columnVNodes = (columnVNodes as VNode[]).filter(
+          (vnode) => vnode.type !== Comment
         )
       }
       let index: number = (columnVNodes as VNode[]).indexOf(vnode)

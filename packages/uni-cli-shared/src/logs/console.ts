@@ -1,8 +1,13 @@
-import { MagicString } from '@vue/compiler-sfc'
+import MagicString from 'magic-string'
 import { normalizePath } from '../utils'
 
 const F = '__f__'
-export function rewriteConsoleExpr(filename: string, code: string) {
+export function rewriteConsoleExpr(
+  id: string,
+  filename: string,
+  code: string,
+  sourceMap: boolean = false
+) {
   filename = normalizePath(filename)
   const re = /(console\.(log|info|debug|warn|error))\(([^)]+)\)/g
   const locate = getLocator(code)
@@ -16,7 +21,10 @@ export function rewriteConsoleExpr(filename: string, code: string) {
       F + `('${type}','at ${filename}:${locate(match.index).line + 1}',`
     )
   }
-  return s.toString()
+  return {
+    code: s.toString(),
+    map: sourceMap ? s.generateMap({ source: id, hires: true }) : null,
+  }
 }
 
 function getLocator(source: string) {

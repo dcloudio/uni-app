@@ -1,7 +1,27 @@
-import { ComponentInternalInstance, VNode } from 'vue'
+import type {
+  ComponentInternalInstance,
+  ComponentPublicInstance,
+  VNode,
+} from '@vue/runtime-core'
 import { hyphenate } from '@vue/shared'
 
 import { isBuiltInComponent } from './tags'
+import { SLOT_DEFAULT_NAME } from './constants'
+
+export function isComponentInternalInstance(
+  vm: unknown
+): vm is ComponentInternalInstance {
+  return !!(vm as ComponentInternalInstance).appContext
+}
+
+export function resolveComponentInstance(
+  instance?: ComponentInternalInstance | ComponentPublicInstance
+) {
+  return (
+    instance &&
+    (isComponentInternalInstance(instance) ? instance.proxy! : instance)
+  )
+}
 
 export function resolveOwnerVm(vm: ComponentInternalInstance) {
   if (!vm) {
@@ -29,12 +49,16 @@ export function resolveOwnerEl(instance: ComponentInternalInstance) {
   const { subTree } = instance
   // ShapeFlags.ARRAY_CHILDREN = 1<<4
   if (subTree.shapeFlag & 16) {
-    const elemVNode = (subTree.children as VNode[]).find((vnode) =>
-      isElement(vnode.el as Element)
+    const elemVNode = (subTree.children as VNode[]).find(
+      (vnode) => vnode.el && isElement(vnode.el as Element)
     )
     if (elemVNode) {
       return elemVNode.el
     }
   }
   return vnode.el
+}
+
+export function dynamicSlotName(name: string) {
+  return name === 'default' ? SLOT_DEFAULT_NAME : name
 }

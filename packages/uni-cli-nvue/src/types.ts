@@ -1,1 +1,1 @@
-interface NVueCompilerOptions {}
+export interface NVueCompilerOptions {}

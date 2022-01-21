@@ -1,14 +1,29 @@
-import path from 'path'
 import { UserConfig } from 'vite'
-import { initEasycomsOnce, normalizePath } from '@dcloudio/uni-cli-shared'
+import {
+  cssTarget,
+  initEasycomsOnce,
+  resolveComponentsLibPath,
+} from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
+import { hasOwn } from '@vue/shared'
 
 export function createBuild(
-  options: VitePluginUniResolvedOptions
+  options: VitePluginUniResolvedOptions,
+  config: UserConfig
 ): UserConfig['build'] {
-  initEasycomsOnce(options.inputDir, options.platform)
+  initEasycomsOnce(options.inputDir, {
+    dirs: [resolveComponentsLibPath()],
+    platform: process.env.UNI_PLATFORM,
+  })
   return {
+    cssTarget,
     chunkSizeWarningLimit: 100000000,
+    minify:
+      config.build && hasOwn(config.build, 'minify')
+        ? config.build.minify
+        : process.env.NODE_ENV === 'production'
+        ? 'terser'
+        : false,
     rollupOptions: {
       onwarn(warning, warn) {
         if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
@@ -23,23 +38,6 @@ export function createBuild(
           }
         }
         warn(warning)
-      },
-      output: {
-        chunkFileNames(chunkInfo) {
-          if (chunkInfo.facadeModuleId) {
-            const dirname = path.relative(
-              options.inputDir,
-              path.dirname(chunkInfo.facadeModuleId)
-            )
-            if (dirname) {
-              return `${options.assetsDir}/${normalizePath(dirname).replace(
-                /\//g,
-                '-'
-              )}-[name].[hash].js`
-            }
-          }
-          return '[name].[hash].js'
-        },
       },
     },
   }

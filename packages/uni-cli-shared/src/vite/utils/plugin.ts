@@ -1,6 +1,8 @@
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { extend } from '@vue/shared'
 import { assetPlugin } from '../plugins/vitejs/plugins/asset'
 import { cssPlugin, cssPostPlugin } from '../plugins/vitejs/plugins/css'
+
 export type CreateUniViteFilterPlugin = (
   opts: UniViteFilterPluginOptions
 ) => Plugin
@@ -19,9 +21,25 @@ export function injectCssPlugin(config: ResolvedConfig) {
 
 export function injectCssPostPlugin(
   config: ResolvedConfig,
-  { appCss, extname }: { appCss?: string; extname: string }
+  {
+    chunkCssFilename,
+    chunkCssCode,
+  }: {
+    chunkCssFilename: (id: string) => string | void
+    chunkCssCode: (filename: string, cssCode: string) => string
+  }
 ) {
-  replacePlugins([cssPostPlugin(config, { appCss, extname })], config)
+  const newCssPostPlugin = cssPostPlugin(config, {
+    chunkCssFilename,
+    chunkCssCode,
+  })
+  const oldCssPostPlugin = config.plugins.find(
+    (p) => p.name === newCssPostPlugin.name
+  )
+  // 直接覆盖原有方法，不能删除，替换，因为 unocss 在 pre 阶段已经获取到了旧的 css-post 插件对象
+  if (oldCssPostPlugin) {
+    extend(oldCssPostPlugin, newCssPostPlugin)
+  }
 }
 
 export function replacePlugins(plugins: Plugin[], config: ResolvedConfig) {

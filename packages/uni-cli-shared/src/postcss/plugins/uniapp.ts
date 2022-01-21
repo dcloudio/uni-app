@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { rule, Rule, Declaration, Plugin } from 'postcss'
+import type { Rule, Declaration, Plugin } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import {
   createRpx2Unit,
@@ -7,6 +7,7 @@ import {
   isBuiltInComponent,
   COMPONENT_SELECTOR_PREFIX,
 } from '@dcloudio/uni-shared'
+import { parseRpx2UnitOnce } from '../../json/manifest'
 
 interface UniAppCssProcessorOptions {
   page?: string
@@ -15,12 +16,7 @@ interface UniAppCssProcessorOptions {
   unitPrecision?: number // 单位精度，默认5
 }
 
-const defaultUniAppCssProcessorOptions = extend(
-  {
-    page: 'body',
-  },
-  defaultRpx2Unit
-)
+const defaultUniAppCssProcessorOptions = extend({}, defaultRpx2Unit)
 
 const BG_PROPS = [
   'background',
@@ -36,23 +32,17 @@ const BG_PROPS = [
 
 function transform(
   selector: selectorParser.Node,
-  page: string,
-  state: { bg: boolean }
+  state: { bg: boolean },
+  { rewriteTag }: TransformOptions
 ) {
   if (selector.type !== 'tag') {
     return
   }
+
   const { value } = selector
-  if (isBuiltInComponent(value)) {
-    selector.value = COMPONENT_SELECTOR_PREFIX + value
-  } else if (value === 'page') {
-    if (!page) {
-      return
-    }
-    selector.value = page
-    if (page !== 'body') {
-      state.bg = true
-    }
+  selector.value = rewriteTag(value)
+  if (value === 'page' && selector.value === 'uni-page-body') {
+    state.bg = true
   }
 }
 
@@ -64,15 +54,22 @@ function createBodyBackgroundRule(origRule: Rule) {
     }
   })
   if (bgDecls.length) {
+    const { rule } = require('postcss')
     origRule.after(rule({ selector: 'body' }).append(bgDecls))
   }
 }
 
-function walkRules(page: string) {
+type RewriteTag = (tag: string) => string
+
+interface TransformOptions {
+  rewriteTag: RewriteTag
+}
+
+function walkRules(options: TransformOptions) {
   return (rule: Rule) => {
     const state = { bg: false }
     rule.selector = selectorParser((selectors) =>
-      selectors.walk((selector) => transform(selector, page, state))
+      selectors.walk((selector) => transform(selector, state, options))
     ).processSync(rule.selector)
     state.bg && createBodyBackgroundRule(rule)
   }
@@ -88,8 +85,47 @@ function walkDecls(rpx2unit: ReturnType<typeof createRpx2Unit>) {
   }
 }
 
+const baiduTags: Record<string, string> = {
+  navigator: 'nav',
+}
+
+function rewriteBaiduTags(tag: string) {
+  return baiduTags[tag] || tag
+}
+
+function rewriteUniH5Tags(tag: string) {
+  if (tag === 'page') {
+    return 'uni-page-body'
+  }
+  if (isBuiltInComponent(tag)) {
+    return COMPONENT_SELECTOR_PREFIX + tag
+  }
+  return tag
+}
+
+function rewriteUniAppTags(tag: string) {
+  if (tag === 'page') {
+    return 'body'
+  }
+  if (isBuiltInComponent(tag)) {
+    return COMPONENT_SELECTOR_PREFIX + tag
+  }
+  return tag
+}
+
+const transforms: Record<string, RewriteTag | undefined> = {
+  h5: rewriteUniH5Tags,
+  app: rewriteUniAppTags,
+  'mp-baidu': rewriteBaiduTags,
+}
+
 const uniapp = (opts?: UniAppCssProcessorOptions) => {
-  const { page, unit, unitRatio, unitPrecision } = extend(
+  const platform = process.env.UNI_PLATFORM
+  if (!opts) {
+    const inputDir = process.env.UNI_INPUT_DIR
+    opts = extend(parseRpx2UnitOnce(inputDir, platform))
+  }
+  const { unit, unitRatio, unitPrecision } = extend(
     {},
     defaultUniAppCssProcessorOptions,
     opts || {}
@@ -101,7 +137,14 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
       return {
         OnceExit(root) {
           root.walkDecls(walkDecls(rpx2unit))
-          root.walkRules(walkRules(page))
+          const rewriteTag = transforms[platform]
+          if (rewriteTag) {
+            root.walkRules(
+              walkRules({
+                rewriteTag,
+              })
+            )
+          }
         },
       }
     },

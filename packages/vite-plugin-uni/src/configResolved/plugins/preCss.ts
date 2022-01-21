@@ -1,22 +1,25 @@
 import debug from 'debug'
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
-import { preJs } from '@dcloudio/uni-cli-shared'
+import { preJs, withSourcemap } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
 
-const debugPre = debug('vite:uni:pre-css')
-const debugPreTry = debug('vite:uni:pre-css-try')
+const debugPre = debug('uni:pre-css')
+const debugPreTry = debug('uni:pre-css-try')
 const cssLangs = `\\.(css|less|sass|scss|styl|stylus|postcss)($|\\?)`
 const cssLangRE = new RegExp(cssLangs)
 /**
  * preprocess css
  * @param options
  */
-export function uniPreCssPlugin(options: UniPluginFilterOptions): Plugin {
+export function uniPreCssPlugin(
+  config: ResolvedConfig,
+  options: UniPluginFilterOptions
+): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
-    name: 'vite:uni-pre-css',
+    name: 'uni:pre-css',
     transform(code, id) {
       if (!cssLangRE.test(id)) {
         return
@@ -31,7 +34,7 @@ export function uniPreCssPlugin(options: UniPluginFilterOptions): Plugin {
       debugPre(id)
       return {
         code: preJs(code),
-        map: this.getCombinedSourcemap(),
+        map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
       }
     },
   }

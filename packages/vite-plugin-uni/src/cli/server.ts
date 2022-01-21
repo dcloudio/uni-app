@@ -5,17 +5,19 @@ import {
   createLogger,
   createServer as createViteServer,
   ServerOptions,
+  ViteDevServer,
+  printHttpServerUrls,
 } from 'vite'
 import express from 'express'
-import { printHttpServerUrls } from 'vite'
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
-import { addConfigFile, cleanOptions } from './utils'
+import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 
 export async function createServer(options: CliOptions & ServerOptions) {
   const server = await createViteServer(
     addConfigFile({
       root: process.env.VITE_ROOT_DIR,
+      mode: options.mode,
       logLevel: options.logLevel,
       clearScreen: options.clearScreen,
       server: cleanOptions(options) as ServerOptions,
@@ -23,9 +25,9 @@ export async function createServer(options: CliOptions & ServerOptions) {
   )
   await server.listen()
 
-  const info = server.config.logger.info
+  const logger = server.config.logger
 
-  info(
+  logger.info(
     chalk.cyan(`\n  vite v${require('vite/package.json').version}`) +
       chalk.green(` dev server running at:\n`),
     {
@@ -34,9 +36,15 @@ export async function createServer(options: CliOptions & ServerOptions) {
   )
 
   server.printUrls()
+  // printUrls 会在 nextTick 中输出
+  process.nextTick(() => printStartupDuration(logger))
+
+  return server
 }
 
-export async function createSSRServer(options: CliOptions & ServerOptions) {
+export async function createSSRServer(
+  options: CliOptions & ServerOptions
+): Promise<ViteDevServer> {
   const app = express()
   /**
    * @type {import('vite').ViteDevServer}
@@ -44,6 +52,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
   const vite = await createViteServer(
     addConfigFile({
       root: process.env.VITE_ROOT_DIR,
+      mode: options.mode,
       logLevel: options.logLevel,
       clearScreen: options.clearScreen,
       server: {
@@ -77,7 +86,8 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
         )
       ).render
 
-      const [appHtml, preloadLinks, appContext, title] = await render(url)
+      const { title, headMeta, preloadLinks, appHtml, appContext } =
+        await render(url)
 
       const icon = template.includes('rel="icon"')
         ? ''
@@ -85,6 +95,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
 
       const html = template
         .replace(/<title>(.*?)<\/title>/, `${icon}<title>${title}</title>`)
+        .replace(`<!--head-meta-->`, headMeta)
         .replace(`<!--preload-links-->`, preloadLinks)
         .replace(`<!--app-html-->`, appHtml)
         .replace(`<!--app-context-->`, appContext)
@@ -112,7 +123,8 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
       printHttpServerUrls(server, vite.config)
-      resolve(server)
+      process.nextTick(() => printStartupDuration(logger))
+      resolve(vite)
     }
     const onError = (e: Error & { code?: string }) => {
       if (e.code === 'EADDRINUSE') {

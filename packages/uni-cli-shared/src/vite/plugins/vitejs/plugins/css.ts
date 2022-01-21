@@ -1,6 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
+import chalk from 'chalk'
+import postcssrc from 'postcss-load-config'
+import { dataToEsm } from '@rollup/pluginutils'
+import { PluginContext, RollupError, SourceMap } from 'rollup'
 import {
   // createDebugger,
   isExternalUrl,
@@ -14,9 +18,6 @@ import {
 } from '../utils'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
-import postcssrc from 'postcss-load-config'
-import { PluginContext, RollupError, SourceMap } from 'rollup'
-import chalk from 'chalk'
 import { ResolveFn, ViteDevServer } from '../'
 import { fileToUrl, assetUrlRE, getAssetFilename } from './asset'
 import * as Postcss from 'postcss'
@@ -25,11 +26,9 @@ import type Sass from 'sass'
 // and causes the CI tests fail, see: https://github.com/vitejs/vite/pull/2860
 import type Stylus from 'stylus'
 import type Less from 'less'
-import { Alias } from 'types/alias'
+import type { Alias } from 'types/alias'
 import { transform, formatMessages } from 'esbuild'
-
-import { resolveMainPathOnce } from '../../../../utils'
-import { EXTNAME_JS_RE, EXTNAME_VUE_RE } from '../../../../constants'
+import { preCss, preNVueCss } from '../../../../preprocess'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -141,7 +140,7 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
         }
         const resolved = await resolveUrl(url, importer)
         if (resolved) {
-          return fileToUrl(resolved, config, this)
+          return fileToUrl(resolved, config, this, true)
         }
         return url
       }
@@ -176,18 +175,6 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
       }
     },
   }
-}
-
-function normalizeCssChunkFilename(id: string, extname: string = '.css') {
-  return normalizePath(
-    path.relative(
-      process.env.UNI_INPUT_DIR,
-      id
-        .split('?')[0]
-        .replace(EXTNAME_VUE_RE, extname)
-        .replace(EXTNAME_JS_RE, extname)
-    )
-  )
 }
 
 function findCssModuleIds(
@@ -228,7 +215,13 @@ function findCssModuleIds(
  */
 export function cssPostPlugin(
   config: ResolvedConfig,
-  { appCss, extname }: { appCss?: string; extname: string }
+  {
+    chunkCssFilename,
+    chunkCssCode,
+  }: {
+    chunkCssFilename: (id: string) => string | void
+    chunkCssCode: (filename: string, cssCode: string) => string
+  }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
@@ -238,14 +231,18 @@ export function cssPostPlugin(
     buildStart() {
       cssChunks = new Map<string, Set<string>>()
     },
-    async transform(css, id, ssr) {
+    async transform(css, id) {
       if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
         return
       }
+      const modules = cssModulesCache.get(config)!.get(id)
+      const modulesCode =
+        modules && dataToEsm(modules, { namedExports: true, preferConst: true })
+
       // build CSS handling ----------------------------------------------------
       styles.set(id, css)
       return {
-        code: '',
+        code: modulesCode || '',
         map: { mappings: '' },
         // avoid the css module from being tree-shaken so that we can retrieve
         // it in renderChunk()
@@ -255,17 +252,10 @@ export function cssPostPlugin(
 
     async generateBundle() {
       const moduleIds = Array.from(this.getModuleIds())
-      const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
       moduleIds.forEach((id) => {
-        if (id === mainPath) {
-          // 全局样式
-          cssChunks.set('app' + extname, findCssModuleIds.call(this, id))
-        } else if (id.includes('mpType=page')) {
-          // 页面样式
-          cssChunks.set(
-            normalizeCssChunkFilename(id, extname),
-            findCssModuleIds.call(this, id)
-          )
+        const filename = chunkCssFilename(id)
+        if (filename) {
+          cssChunks.set(filename, findCssModuleIds.call(this, id))
         }
       })
       if (!cssChunks.size) {
@@ -276,11 +266,11 @@ export function cssPostPlugin(
       const processChunkCSS = async (
         css: string,
         {
-          dirname,
+          filename,
           inlined,
           minify,
         }: {
-          dirname: string
+          filename: string
           inlined: boolean
           minify: boolean
         }
@@ -288,13 +278,17 @@ export function cssPostPlugin(
         // replace asset url references with resolved url.
         css = css.replace(assetUrlRE, (_, fileHash, postfix = '') => {
           return normalizePath(
-            path.relative(dirname, getAssetFilename(fileHash, config) + postfix)
+            path.relative(
+              path.dirname(filename),
+              getAssetFilename(fileHash, config) + postfix
+            )
           )
         })
         if (minify && config.build.minify) {
           css = await minifyCSS(css, config)
         }
-        return css
+        // 压缩后再处理，小程序平台会补充 @import nvue 代码，esbuild 的压缩会把 `@import "./nvue.css";` 的空格移除，变成 `@import"./nvue.css";` 在支付宝小程序中不支持
+        return chunkCssCode(filename, css)
       }
 
       const genCssCode = (fileName: string) => {
@@ -303,11 +297,12 @@ export function cssPostPlugin(
           .join('\n')
       }
       for (const filename of cssChunks.keys()) {
-        let source = await processChunkCSS(
-          (filename === 'app.css' ? (appCss || '') + '\n' : '') +
-            genCssCode(filename),
-          { dirname: path.dirname(filename), inlined: false, minify: true }
-        )
+        const cssCode = genCssCode(filename)
+        let source = await processChunkCSS(cssCode, {
+          filename: filename,
+          inlined: false,
+          minify: true,
+        })
         this.emitFile({
           fileName: filename,
           type: 'asset',
@@ -377,7 +372,7 @@ function getCssResolversKeys(
 async function compileCSS(
   id: string,
   code: string,
-  config: ResolvedConfig,
+  config: ResolvedConfig & { nvue?: true },
   urlReplacer: CssUrlReplacer,
   atImportResolvers: CSSAtImportResolvers,
   server?: ViteDevServer
@@ -441,7 +436,8 @@ async function compileCSS(
       code,
       config.root,
       opts,
-      atImportResolvers
+      atImportResolvers,
+      !!config.nvue
     )
     if (preprocessResult.errors.length) {
       throw preprocessResult.errors[0]
@@ -711,10 +707,11 @@ async function doUrlReplace(
   return `url(${wrap}${await replacer(rawUrl)}${wrap})`
 }
 
-async function minifyCSS(css: string, config: ResolvedConfig) {
+export async function minifyCSS(css: string, config: ResolvedConfig) {
   const { code, warnings } = await transform(css, {
     loader: 'css',
     minify: true,
+    target: config.build.cssTarget || undefined,
   })
   if (warnings.length) {
     const msgs = await formatMessages(warnings, { kind: 'warning' })
@@ -761,14 +758,16 @@ type StylePreprocessor = (
   source: string,
   root: string,
   options: StylePreprocessorOptions,
-  resolvers: CSSAtImportResolvers
+  resolvers: CSSAtImportResolvers,
+  isNVue: boolean
 ) => StylePreprocessorResults | Promise<StylePreprocessorResults>
 
 type SassStylePreprocessor = (
   source: string,
   root: string,
   options: SassStylePreprocessorOptions,
-  resolvers: CSSAtImportResolvers
+  resolvers: CSSAtImportResolvers,
+  isNVue: boolean
 ) => StylePreprocessorResults | Promise<StylePreprocessorResults>
 
 export interface StylePreprocessorResults {
@@ -809,15 +808,16 @@ const scss: SassStylePreprocessor = async (
   source,
   root,
   options,
-  resolvers
+  resolvers,
+  isNVue
 ) => {
   const render = loadPreprocessor(PreprocessLang.sass, root).render
   const internalImporter: Sass.Importer = (url, importer, done) => {
     resolvers.sass(url, importer).then((resolved) => {
       if (resolved) {
-        rebaseUrls(resolved, options.filename, options.alias).then(done)
+        rebaseUrls(resolved, options.filename, options.alias, isNVue).then(done)
       } else {
-        done(null)
+        done && done(null)
       }
     })
   }
@@ -861,7 +861,13 @@ const scss: SassStylePreprocessor = async (
   }
 }
 
-const sass: SassStylePreprocessor = (source, root, options, aliasResolver) =>
+const sass: SassStylePreprocessor = (
+  source,
+  root,
+  options,
+  aliasResolver,
+  isNVue
+) =>
   scss(
     source,
     root,
@@ -869,9 +875,16 @@ const sass: SassStylePreprocessor = (source, root, options, aliasResolver) =>
       ...options,
       indentedSyntax: true,
     },
-    aliasResolver
+    aliasResolver,
+    isNVue
   )
 
+function preprocessCss(content: string, isNVue: boolean = false) {
+  if (content.includes('#endif')) {
+    return isNVue ? preNVueCss(content) : preCss(content)
+  }
+  return content
+}
 /**
  * relative url() inside \@imported sass and less files must be rebased to use
  * root file as base.
@@ -879,21 +892,26 @@ const sass: SassStylePreprocessor = (source, root, options, aliasResolver) =>
 async function rebaseUrls(
   file: string,
   rootFile: string,
-  alias: Alias[]
+  alias: Alias[],
+  isNVue: boolean = false
 ): Promise<Sass.ImporterReturnType> {
   file = path.resolve(file) // ensure os-specific flashes
+
+  // 条件编译
+  const contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue)
+
   // in the same dir, no need to rebase
   const fileDir = path.dirname(file)
   const rootDir = path.dirname(rootFile)
+
   if (fileDir === rootDir) {
-    return { file }
+    return { file, contents }
   }
   // no url()
-  const content = fs.readFileSync(file, 'utf-8')
-  if (!cssUrlRE.test(content)) {
-    return { file }
+  if (!cssUrlRE.test(contents)) {
+    return { file, contents }
   }
-  const rebased = await rewriteCssUrls(content, (url) => {
+  const rebased = await rewriteCssUrls(contents, (url) => {
     if (url.startsWith('/')) return url
     // match alias, no need to rewrite
     for (const { find } of alias) {
@@ -914,13 +932,20 @@ async function rebaseUrls(
 }
 
 // .less
-const less: StylePreprocessor = async (source, root, options, resolvers) => {
+const less: StylePreprocessor = async (
+  source,
+  root,
+  options,
+  resolvers,
+  isNVue
+) => {
   const nodeLess = loadPreprocessor(PreprocessLang.less, root)
   const viteResolverPlugin = createViteLessPlugin(
     nodeLess,
     options.filename,
     options.alias,
-    resolvers
+    resolvers,
+    isNVue
   )
   source = await getSource(source, options.filename, options.additionalData)
 
@@ -957,7 +982,8 @@ function createViteLessPlugin(
   less: typeof Less,
   rootFile: string,
   alias: Alias[],
-  resolvers: CSSAtImportResolvers
+  resolvers: CSSAtImportResolvers,
+  isNVue: boolean
 ): Less.Plugin {
   if (!ViteLessManager) {
     ViteLessManager = class ViteManager extends less.FileManager {
@@ -991,7 +1017,12 @@ function createViteLessPlugin(
           path.join(dir, '*')
         )
         if (resolved) {
-          const result = await rebaseUrls(resolved, this.rootFile, this.alias)
+          const result = await rebaseUrls(
+            resolved,
+            this.rootFile,
+            this.alias,
+            isNVue
+          )
           let contents: string
           if (result && 'contents' in result) {
             contents = result.contents

@@ -1,12 +1,14 @@
 import path from 'path'
 import { parse as parseUrl } from 'url'
+import mime from 'mime/lite'
 import fs, { promises as fsp } from 'fs'
+import MagicString from 'magic-string'
+import { createHash } from 'crypto'
+import type { OutputOptions, PluginContext, RenderedChunk } from 'rollup'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
-import { PluginContext, RenderedChunk } from 'rollup'
-import MagicString from 'magic-string'
-import { createHash } from 'crypto'
+import { withSourcemap } from '../../../../vite/utils/utils'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -99,7 +101,7 @@ export function assetPlugin(config: ResolvedConfig): Plugin {
       if (s) {
         return {
           code: s.toString(),
-          map: config.build.sourcemap ? s.generateMap({ hires: true }) : null,
+          map: withSourcemap(config) ? s.generateMap({ hires: true }) : null,
         }
       } else {
         return null
@@ -137,9 +139,10 @@ export function checkPublicFile(
 export function fileToUrl(
   id: string,
   config: ResolvedConfig,
-  ctx: PluginContext
+  ctx: PluginContext,
+  canInline: boolean = false
 ): string {
-  return fileToBuiltUrl(id, config, ctx)
+  return fileToBuiltUrl(id, config, ctx, false, canInline)
 }
 
 export function getAssetFilename(
@@ -148,6 +151,83 @@ export function getAssetFilename(
 ): string | undefined {
   return assetHashToFilenameMap.get(config)?.get(hash)
 }
+
+/**
+ * converts the source filepath of the asset to the output filename based on the assetFileNames option. \
+ * this function imitates the behavior of rollup.js. \
+ * https://rollupjs.org/guide/en/#outputassetfilenames
+ *
+ * @example
+ * ```ts
+ * const content = Buffer.from('text');
+ * const fileName = assetFileNamesToFileName(
+ *   'assets/[name].[hash][extname]',
+ *   '/path/to/file.txt',
+ *   getAssetHash(content),
+ *   content
+ * )
+ * // fileName: 'assets/file.982d9e3e.txt'
+ * ```
+ *
+ * @param assetFileNames filename pattern. e.g. `'assets/[name].[hash][extname]'`
+ * @param file filepath of the asset
+ * @param contentHash hash of the asset. used for `'[hash]'` placeholder
+ * @param content content of the asset. passed to `assetFileNames` if `assetFileNames` is a function
+ * @returns output filename
+ */
+export function assetFileNamesToFileName(
+  assetFileNames: Exclude<OutputOptions['assetFileNames'], undefined>,
+  file: string,
+  contentHash: string,
+  content: string | Buffer
+): string {
+  const basename = path.basename(file)
+
+  // placeholders for `assetFileNames`
+  // `hash` is slightly different from the rollup's one
+  const extname = path.extname(basename)
+  const ext = extname.substring(1)
+  const name = basename.slice(0, -extname.length)
+  const hash = contentHash
+
+  if (typeof assetFileNames === 'function') {
+    assetFileNames = assetFileNames({
+      name: file,
+      source: content,
+      type: 'asset',
+    })
+    if (typeof assetFileNames !== 'string') {
+      throw new TypeError('assetFileNames must return a string')
+    }
+  } else if (typeof assetFileNames !== 'string') {
+    throw new TypeError('assetFileNames must be a string or a function')
+  }
+
+  const fileName = assetFileNames.replace(
+    /\[\w+\]/g,
+    (placeholder: string): string => {
+      switch (placeholder) {
+        case '[ext]':
+          return ext
+
+        case '[extname]':
+          return extname
+
+        case '[hash]':
+          return hash
+
+        case '[name]':
+          return name
+      }
+      throw new Error(
+        `invalid placeholder ${placeholder} in assetFileNames "${assetFileNames}"`
+      )
+    }
+  )
+
+  return fileName
+}
+
 /**
  * Register an asset to be emitted as part of the bundle (if necessary)
  * and returns the resolved public URL
@@ -156,7 +236,8 @@ function fileToBuiltUrl(
   id: string,
   config: ResolvedConfig,
   pluginContext: PluginContext,
-  skipPublicCheck = false
+  skipPublicCheck = false,
+  canInline = false
 ): string {
   if (!skipPublicCheck && checkPublicFile(id, config)) {
     return config.base + id.slice(1)
@@ -172,31 +253,44 @@ function fileToBuiltUrl(
 
   let url: string
 
-  const map = assetHashToFilenameMap.get(config)!
-  const contentHash = getAssetHash(content)
-  const { search, hash } = parseUrl(id)
-  const postfix = (search || '') + (hash || '')
-  const fileName = normalizePath(
-    path.posix.relative(process.env.UNI_INPUT_DIR, file)
-  )
-  if (!map.has(contentHash)) {
-    map.set(contentHash, fileName)
-  }
+  if (canInline && content.length < Number(config.build.assetsInlineLimit)) {
+    // base64 inlined as a string
+    url = `data:${mime.getType(file)};base64,${content.toString('base64')}`
+  } else {
+    const map = assetHashToFilenameMap.get(config)!
+    const contentHash = getAssetHash(content)
+    const { search, hash } = parseUrl(id)
+    const postfix = (search || '') + (hash || '')
 
-  if (!fileName.includes('/static/')) {
-    const emittedSet = emittedHashMap.get(config)!
-    if (!emittedSet.has(contentHash)) {
-      pluginContext.emitFile({
-        name: fileName,
-        fileName,
-        type: 'asset',
-        source: content,
-      })
-      emittedSet.add(contentHash)
+    const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+    let fileName = file.startsWith(inputDir)
+      ? path.posix.relative(inputDir, file)
+      : assetFileNamesToFileName(
+          path.posix.join(config.build.assetsDir, '[name].[hash][extname]'),
+          file,
+          contentHash,
+          content
+        )
+
+    if (!map.has(contentHash)) {
+      map.set(contentHash, fileName)
     }
-  }
 
-  url = `__VITE_ASSET__${contentHash}__${postfix ? `$_${postfix}__` : ``}`
+    if (!fileName.includes('/static/')) {
+      const emittedSet = emittedHashMap.get(config)!
+      if (!emittedSet.has(contentHash)) {
+        pluginContext.emitFile({
+          name: fileName,
+          fileName,
+          type: 'asset',
+          source: content,
+        })
+        emittedSet.add(contentHash)
+      }
+    }
+
+    url = `__VITE_ASSET__${contentHash}__${postfix ? `$_${postfix}__` : ``}`
+  }
   cache.set(id, url)
   return url
 }

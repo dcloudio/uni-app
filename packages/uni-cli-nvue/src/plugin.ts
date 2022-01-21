@@ -9,7 +9,8 @@ const UniAppNVuePlugin = (): UniVitePlugin => {
   let lastNVueEntry: string
   let isPagesJsonChanged: boolean = false
   return {
-    name: 'vite:uni-cli-nvue',
+    name: 'uni:cli-nvue',
+    enforce: 'post',
     config() {
       if (process.env.UNI_NVUE_COMPILER === 'vue') {
         return

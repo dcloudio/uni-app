@@ -16,3 +16,7 @@ export function decodeAttr(el: UniCustomElement, value: unknown) {
   }
   return value
 }
+
+export function isCssVar(name: string) {
+  return name.indexOf('--') === 0
+}

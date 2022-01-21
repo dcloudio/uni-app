@@ -45,7 +45,7 @@ function genViewHtml(bundle: OutputBundle) {
 export function uniTemplatePlugin(): Plugin {
   let outputDir: string
   return {
-    name: 'vite:uni-app-template',
+    name: 'uni:app-template',
     enforce: 'post',
     configResolved() {
       outputDir = process.env.UNI_OUTPUT_DIR

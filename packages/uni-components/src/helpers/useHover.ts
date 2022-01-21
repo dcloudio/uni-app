@@ -30,8 +30,8 @@ export const hoverProps = {
 export function useHover(props: UseHoverOptions) {
   const hovering = ref(false)
   let hoverTouch: boolean = false
-  let hoverStartTimer: number
-  let hoverStayTimer: number
+  let hoverStartTimer: ReturnType<typeof setTimeout>
+  let hoverStayTimer: ReturnType<typeof setTimeout>
   function hoverReset() {
     requestAnimationFrame(() => {
       clearTimeout(hoverStayTimer)

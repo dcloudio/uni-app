@@ -1,3 +1,5 @@
+import { isString } from '@vue/shared'
+
 export function cache<T>(fn: (str: string) => T) {
   const cache: Record<string, T> = Object.create(null)
   return (str: string) => {
@@ -14,8 +16,16 @@ export function getLen(str = '') {
   return ('' + str).replace(/[^\x00-\xff]/g, '**').length
 }
 
+function hasLeadingSlash(str: string) {
+  return str.indexOf('/') === 0
+}
+
+export function addLeadingSlash(str: string) {
+  return hasLeadingSlash(str) ? str : '/' + str
+}
+
 export function removeLeadingSlash(str: string) {
-  return str.indexOf('/') === 0 ? str.substr(1) : str
+  return hasLeadingSlash(str) ? str.substr(1) : str
 }
 
 export const invokeArrayFns = (fns: Function[], arg?: any) => {
@@ -105,6 +115,10 @@ export function callOptions(
 }
 
 export function getValueByDataPath(obj: any, path: string): unknown {
+  if (!isString(path)) {
+    return
+  }
+  path = path.replace(/\[(\d+)\]/g, '.$1')
   const parts = path.split('.')
   let key: number | string = parts[0]
   if (!obj) {

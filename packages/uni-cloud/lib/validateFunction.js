@@ -6,7 +6,7 @@ function replaceModuleExports(code) {
 }
 function uniValidateFunctionPlugin() {
     return {
-        name: 'vite:uni-cloud-vf',
+        name: 'uni:cloud-vf',
         enforce: 'pre',
         transform(code, id) {
             if (id.includes('validator/validateFunction')) {

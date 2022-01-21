@@ -2,8 +2,6 @@ import { isString } from '@vue/shared'
 import { parseExpression } from '@babel/parser'
 import {
   identifier,
-  blockStatement,
-  callExpression,
   objectProperty,
   objectExpression,
   spreadElement,
@@ -12,24 +10,27 @@ import {
   Expression,
   SpreadElement,
   ConditionalExpression,
-  arrowFunctionExpression,
   Identifier,
-  returnStatement,
   conditionalExpression,
-  arrayExpression,
   NumericLiteral,
-  numericLiteral,
   isNumericLiteral,
-  Pattern,
-  RestElement,
   ArrowFunctionExpression,
+  stringLiteral,
+  StringLiteral,
+  isIdentifier,
+  isStringLiteral,
+  isBooleanLiteral,
+  isBigIntLiteral,
+  isDecimalLiteral,
+  Literal,
+  isNullLiteral,
 } from '@babel/types'
 import {
   createCompilerError,
   ErrorCodes,
   ExpressionNode,
 } from '@vue/compiler-core'
-import { CodegenScope, CodegenVForScope, CodegenVIfScope } from './options'
+import { CodegenScope, CodegenVIfScope } from './options'
 import { TransformContext } from './transform'
 import { genExpr } from './codegen'
 
@@ -70,26 +71,13 @@ export function createVIfSpreadElement(vIfScope: CodegenVIfScope) {
   return spreadElement(createVIfConditionalExpression(vIfScope))
 }
 
-function numericLiteralToArrayExpr(num: number) {
-  const elements: NumericLiteral[] = []
-  for (let i = 0; i < num; i++) {
-    elements.push(numericLiteral(i + 1))
-  }
-  return arrayExpression(elements)
-}
-
-export function createVForCallExpression(vForScope: CodegenVForScope) {
-  let sourceExpr: Expression = vForScope.sourceExpr!
-  if (isNumericLiteral(sourceExpr)) {
-    sourceExpr = numericLiteralToArrayExpr((sourceExpr as NumericLiteral).value)
-  }
-  return callExpression(identifier('vFor'), [
-    sourceExpr,
-    createVForArrowFunctionExpression(vForScope),
-  ])
-}
-
-type FunctionParam = Identifier | Pattern | RestElement
+// function numericLiteralToArrayExpr(num: number) {
+//   const elements: NumericLiteral[] = []
+//   for (let i = 0; i < num; i++) {
+//     elements.push(numericLiteral(i + 1))
+//   }
+//   return arrayExpression(elements)
+// }
 
 export function parseExpr(
   code: string | ExpressionNode,
@@ -101,14 +89,16 @@ export function parseExpr(
     code = genExpr(code)
   }
   try {
-    return parseExpression(code)
+    return parseExpression(code, {
+      plugins: context.expressionPlugins,
+    })
   } catch (e: any) {
     context.onError(
       createCompilerError(
         ErrorCodes.X_INVALID_EXPRESSION,
         node && node.loc,
         undefined,
-        e.message
+        '\n' + code + '\n' + e.message
       )
     )
   }
@@ -125,28 +115,34 @@ export function parseParam(
   return expr
 }
 
-function createVForArrowFunctionExpression({
-  valueExpr,
-  keyExpr,
-  indexExpr,
-  properties,
-}: CodegenVForScope) {
-  const params: FunctionParam[] = []
-  if (valueExpr) {
-    params.push(valueExpr)
-  } else if (keyExpr || indexExpr) {
-    params.push(identifier('_'))
+export function isUndefined(expr: Expression) {
+  return isIdentifier(expr) && expr.name === 'undefined'
+}
+
+export function isTrueExpr(expr: Literal) {
+  if (isNullLiteral(expr)) {
+    return false
   }
-  if (keyExpr) {
-    params.push(keyExpr)
-  } else if (indexExpr) {
-    params.push(identifier('__'))
+  if (
+    isStringLiteral(expr) ||
+    isNumericLiteral(expr) ||
+    isBooleanLiteral(expr) ||
+    isBigIntLiteral(expr) ||
+    isDecimalLiteral(expr)
+  ) {
+    return !!expr.value
   }
-  if (indexExpr) {
-    params.push(indexExpr)
+  return true
+}
+
+export function parseStringLiteral(
+  expr: Expression | Identifier | StringLiteral | NumericLiteral
+) {
+  if (isIdentifier(expr)) {
+    return stringLiteral(expr.name)
   }
-  return arrowFunctionExpression(
-    params,
-    blockStatement([returnStatement(objectExpression(properties))])
-  )
+  if (isStringLiteral(expr)) {
+    return stringLiteral(expr.value)
+  }
+  return stringLiteral('')
 }

@@ -26,32 +26,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.15.1
+
       - name: Set node version to ${{ matrix.node_version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node_version }}
+          cache: 'pnpm'
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache
-          key: ${{ runner.os }}-node${{ matrix.node_version }}-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node${{ matrix.node_version }}-
-
-      - name: Versions
-        run: yarn versions
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - run: pnpm install
 
       - name: Build
         run: npm run build:h5
 
-      - name: Install ssr and verify Cypress
+      - name: verify Cypress
         working-directory: ./packages/playground/ssr
         run: |
-          yarn install --frozen-lockfile
           npx cypress verify
           npx cypress info
           npx cypress version
@@ -63,7 +56,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2.3.6
         with:
-          install: true
+          install: false
           start: npm run dev:ssr
           working-directory: ./packages/playground/ssr
           wait-on: 'http://localhost:3000'

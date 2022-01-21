@@ -1,30 +1,43 @@
 import fs from 'fs'
 import path from 'path'
-import { Plugin } from 'vite'
-
+import debug from 'debug'
+import { Plugin, ResolvedConfig } from 'vite'
 import {
   AppJson,
   defineUniPagesJsonPlugin,
   getLocaleFiles,
   normalizePagePath,
-  normalizeNodeModules,
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
+  addMiniProgramPageJson,
+  addMiniProgramAppJson,
+  findChangedJsonFiles,
+  mergeMiniProgramAppJson,
 } from '@dcloudio/uni-cli-shared'
-import { virtualPagePath } from './virtual'
+import { virtualPagePath } from './entry'
 import { UniMiniProgramPluginOptions } from '../plugin'
+
+const debugPagesJson = debug('uni:pages-json')
+
+const nvueCssPathsCache = new Map<ResolvedConfig, string[]>()
+export function getNVueCssPaths(config: ResolvedConfig) {
+  return nvueCssPathsCache.get(config)
+}
 
 export function uniPagesJsonPlugin(
   options: UniMiniProgramPluginOptions
 ): Plugin {
-  let appJson: AppJson
+  let resolvedConfig: ResolvedConfig
   return defineUniPagesJsonPlugin((opts) => {
     return {
-      name: 'vite:uni-mp-pages-json',
+      name: 'uni:mp-pages-json',
       enforce: 'pre',
+      configResolved(config) {
+        resolvedConfig = config
+      },
       transform(code, id) {
         if (!opts.filter(id)) {
-          return
+          return null
         }
         const inputDir = process.env.UNI_INPUT_DIR
         this.addWatchFile(path.resolve(inputDir, 'pages.json'))
@@ -32,35 +45,47 @@ export function uniPagesJsonPlugin(
           this.addWatchFile(filepath)
         })
         const manifestJson = parseManifestJsonOnce(inputDir)
-        const res = parseMiniProgramPagesJson(code, process.env.UNI_PLATFORM, {
-          debug: !!manifestJson.debug,
-          darkmode:
-            options.app.darkmode &&
-            fs.existsSync(path.resolve(inputDir, 'theme.json')),
-          networkTimeout: manifestJson.networkTimeout,
-          subpackages: options.app.subpackages,
-        })
-        appJson = res.appJson
-        Object.keys(res.pageJsons).forEach((name) => {
-          this.emitFile({
-            fileName: normalizeNodeModules(name) + '.json',
-            type: 'asset',
-            source: JSON.stringify(res.pageJsons[name], null, 2),
-          })
+        const { appJson, pageJsons, nvuePages } = parseMiniProgramPagesJson(
+          code,
+          process.env.UNI_PLATFORM,
+          {
+            debug: !!manifestJson.debug,
+            darkmode:
+              options.app.darkmode &&
+              fs.existsSync(path.resolve(inputDir, 'theme.json')),
+            networkTimeout: manifestJson.networkTimeout,
+            subpackages: !!options.app.subpackages,
+            ...options.json,
+          }
+        )
+        nvueCssPathsCache.set(
+          resolvedConfig,
+          nvuePages.map((pagePath) => pagePath + options.style.extname)
+        )
+
+        mergeMiniProgramAppJson(appJson, manifestJson[process.env.UNI_PLATFORM])
+
+        if (options.json?.formatAppJson) {
+          options.json.formatAppJson(appJson, manifestJson, pageJsons)
+        }
+        addMiniProgramAppJson(appJson)
+        Object.keys(pageJsons).forEach((name) => {
+          addMiniProgramPageJson(name, pageJsons[name])
         })
         return {
           code: `import './manifest.json.js'\n` + importPagesCode(appJson),
-          map: this.getCombinedSourcemap(),
+          map: { mappings: '' },
         }
       },
       generateBundle() {
-        if (appJson) {
+        findChangedJsonFiles().forEach((value, key) => {
+          debugPagesJson('json.changed', key)
           this.emitFile({
-            fileName: `app.json`,
             type: 'asset',
-            source: JSON.stringify(appJson, null, 2),
+            fileName: key + '.json',
+            source: value,
           })
-        }
+        })
       },
     }
   })
@@ -69,7 +94,10 @@ export function uniPagesJsonPlugin(
 function importPagesCode(pagesJson: AppJson) {
   const importPagesCode: string[] = []
   function importPageCode(pagePath: string) {
-    const pagePathWithExtname = normalizePagePath(pagePath, 'app')
+    const pagePathWithExtname = normalizePagePath(
+      pagePath,
+      process.env.UNI_PLATFORM
+    )
     if (pagePathWithExtname) {
       importPagesCode.push(`import('${virtualPagePath(pagePathWithExtname)}')`)
     }

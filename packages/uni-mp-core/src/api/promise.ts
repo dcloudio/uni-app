@@ -66,13 +66,16 @@ export function promisify(name: string, api: unknown) {
   if (!isFunction(api)) {
     return api
   }
-  return function promiseApi(options: Record<string, any> = {}) {
+  return function promiseApi(
+    options: Record<string, any> = {},
+    ...rest: unknown[]
+  ) {
     if (
       isFunction(options.success) ||
       isFunction(options.fail) ||
       isFunction(options.complete)
     ) {
-      return wrapperReturnValue(name, invokeApi(name, api, options))
+      return wrapperReturnValue(name, invokeApi(name, api, options, rest))
     }
     return wrapperReturnValue(
       name,
@@ -84,7 +87,8 @@ export function promisify(name: string, api: unknown) {
             extend({}, options, {
               success: resolve,
               fail: reject,
-            })
+            }),
+            rest
           )
         })
       )

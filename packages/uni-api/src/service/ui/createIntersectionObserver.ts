@@ -1,5 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend, isFunction } from '@vue/shared'
+import { resolveComponentInstance } from '@dcloudio/uni-shared'
 import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 import {
   addIntersectionObserver,
@@ -96,6 +97,7 @@ class ServiceIntersectionObserver {
 export const createIntersectionObserver = defineSyncApi<
   typeof uni.createIntersectionObserver
 >('createIntersectionObserver', (context?, options?) => {
+  context = resolveComponentInstance(context)
   if (context && !getPageIdByVm(context)) {
     options = context
     context = null

@@ -11,7 +11,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { OutputChunk } from 'rollup'
 
 import { stripOptions } from '@dcloudio/uni-cli-shared'
-import { isCustomElement } from '@dcloudio/uni-shared'
+import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 
 function resolve(file: string) {
@@ -38,8 +38,6 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
     },
-    // 忽略 pako 内部条件编译
-    exclude: [resolve('../../node_modules/pako/**')],
   }),
 ]
 if (FORMAT === 'cjs') {
@@ -100,11 +98,11 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement,
+          isCustomElement: isH5CustomElement,
         },
       },
     }),
-    vueJsx({ optimize: true, isCustomElement }),
+    vueJsx({ optimize: true, isCustomElement: isH5CustomElement }),
   ],
   build: {
     target: 'modules', // keep import.meta...

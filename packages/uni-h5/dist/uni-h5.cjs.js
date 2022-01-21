@@ -6,6 +6,7 @@ var shared = require("@vue/shared");
 var uniShared = require("@dcloudio/uni-shared");
 var uniI18n = require("@dcloudio/uni-i18n");
 var vueRouter = require("vue-router");
+const isEnableLocale = uniShared.once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -60,6 +61,13 @@ function useI18n() {
       }
     }
     i18n = uniI18n.initVueI18n(locale);
+    if (isEnableLocale()) {
+      const localeKeys = Object.keys(__uniConfig.locales || {});
+      if (localeKeys.length) {
+        localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
+      }
+      i18n.setLocale(locale);
+    }
   }
   return i18n;
 }
@@ -132,7 +140,6 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
   }
 });
-const isEnableLocale = uniShared.once(() => __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
@@ -142,7 +149,7 @@ function initNavigationBarI18n(navigationBar) {
   }
 }
 function initTabBarI18n(tabBar2) {
-  if (isEnableLocale()) {
+  if (isEnableLocale() && tabBar2.list) {
     tabBar2.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
@@ -353,7 +360,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
   const { id, route } = meta;
   return {
     id,
-    path: "/" + route,
+    path: uniShared.addLeadingSlash(route),
     route,
     fullPath: url,
     options: pageQuery,
@@ -398,7 +405,7 @@ function getRealRoute(fromRoute, toRoute) {
   toRoute = toRouteArray.join("/");
   const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
-  return "/" + fromRouteArray.concat(toRouteArray).join("/");
+  return uniShared.addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
 }
 function findUniTarget(target) {
   while (target && target.tagName.indexOf("UNI-") !== 0) {
@@ -450,16 +457,6 @@ const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
   invokeViewMethod,
   invokeViewMethodKeepAlive
 });
-function initI18n() {
-  const localeKeys = Object.keys(__uniConfig.locales || {});
-  if (localeKeys.length) {
-    const i18n2 = useI18n();
-    localeKeys.forEach((locale) => i18n2.add(locale, __uniConfig.locales[locale]));
-  }
-}
-function initService() {
-  initI18n();
-}
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
   appVm2.$mpType = "app";
@@ -479,9 +476,21 @@ function initPageVm(pageVm, page) {
   pageVm.$page = page;
   pageVm.$mpType = "page";
   if (page.meta.isTabBar) {
-    pageVm.__isTabBar = true;
+    pageVm.$.__isTabBar = true;
     pageVm.$.__isActive = true;
   }
+}
+function defineGlobalData(app, defaultGlobalData) {
+  const options = app.$options || {};
+  options.globalData = shared.extend(options.globalData || {}, defaultGlobalData);
+  Object.defineProperty(app, "globalData", {
+    get() {
+      return options.globalData;
+    },
+    set(newGlobalData) {
+      options.globalData = newGlobalData;
+    }
+  });
 }
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
@@ -852,6 +861,10 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
     loading: {
       type: [Boolean, String],
       default: false
+    },
+    plain: {
+      type: [Boolean, String],
+      default: false
     }
   },
   setup(props2, {
@@ -892,19 +905,20 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
       const hoverClass = props2.hoverClass;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       const loadingAttrs = useBooleanAttr(props2, "loading");
+      const plainAttrs = useBooleanAttr(props2, "plain");
       const hasHoverClass = hoverClass && hoverClass !== "none";
       return vue.createVNode("uni-button", vue.mergeProps({
         "ref": rootRef,
         "onClick": onClick,
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, booleanAttrs, loadingAttrs), [slots.default && slots.default()], 16, ["onClick"]);
+      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
 });
 const baseUrl = __IMPORT_META_ENV_BASE_URL__;
 function addBase(filePath) {
-  if (("/" + filePath).indexOf(baseUrl) === 0) {
-    return "/" + filePath;
+  if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return uniShared.addLeadingSlash(filePath);
   }
   return baseUrl + filePath;
 }
@@ -936,7 +950,8 @@ const HTTP_METHODS = [
   "PUT",
   "DELETE",
   "TRACE",
-  "CONNECT"
+  "CONNECT",
+  "PATCH"
 ];
 function elemInArray(str, arr) {
   if (!str || arr.indexOf(str) === -1) {
@@ -1222,7 +1237,7 @@ function getApiInterceptorHooks(method) {
   }
   return interceptor;
 }
-function invokeApi(method, api2, options, ...params) {
+function invokeApi(method, api2, options, params) {
   const interceptor = getApiInterceptorHooks(method);
   if (interceptor && Object.keys(interceptor).length) {
     if (shared.isArray(interceptor.invoke)) {
@@ -1243,20 +1258,15 @@ function hasCallback(args) {
   return false;
 }
 function handlePromise(promise) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise.then((data) => {
-      return [null, data];
-    }).catch((err) => [err]);
-  }
   return promise;
 }
 function promisify(name, fn) {
-  return (args = {}) => {
+  return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args));
+      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, shared.extend(args, { success: resolve, fail: reject }));
+      invokeApi(name, fn, shared.extend(args, { success: resolve, fail: reject }), rest);
     })));
   };
 }
@@ -1308,7 +1318,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
+    console.error(errMsg.message + uniShared.LINEFEED + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -1566,6 +1576,10 @@ function getSameOriginUrl(url) {
   }
   return urlToFile(url).then(fileToUrl);
 }
+const inflateRaw = (...args) => {
+};
+const deflateRaw = (...args) => {
+};
 var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
@@ -2048,13 +2062,13 @@ function useMethods(canvasRef, actionsWaiting) {
     compressed
   }, resolve) {
     try {
+      if (false)
+        ;
       if (!height) {
         height = Math.round(data.length / 4 / width);
       }
       const canvas = getTempCanvas(width, height);
       const context = canvas.getContext("2d");
-      if (false)
-        ;
       context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
       canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
       canvas.height = canvas.width = 0;
@@ -2578,7 +2592,7 @@ const props$p = {
   },
   draggable: {
     type: Boolean,
-    default: true
+    default: false
   }
 };
 const FIX_MODES = {
@@ -2652,9 +2666,7 @@ function useImageState(rootRef, props2) {
       opts[0] && (position = opts[0]);
       opts[1] && (size = opts[1]);
     }
-    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};
-            background-position:${position};
-            background-size:${size};`;
+    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};background-position:${position};background-size:${size};`;
   });
   const state = vue.reactive({
     rootEl: rootRef,
@@ -2918,6 +2930,10 @@ const props$o = /* @__PURE__ */ shared.extend({}, {
   confirmType: {
     type: String,
     default: "done"
+  },
+  confirmHold: {
+    type: Boolean,
+    default: false
   }
 }, props$r);
 const emit = [
@@ -3197,10 +3213,12 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       if (event.key !== "Enter") {
         return;
       }
+      const input = event.target;
       event.stopPropagation();
       trigger("confirm", event, {
-        value: event.target.value
+        value: input.value
       });
+      !props2.confirmHold && input.blur();
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
@@ -4259,6 +4277,7 @@ const props$k = {
 };
 var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
+  inheritAttrs: false,
   compatConfig: {
     MODE: 3
   },
@@ -4266,6 +4285,15 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const vm = vue.getCurrentInstance();
+    const __scopeId = vm && vm.root.type.__scopeId || "";
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
     const {
       hovering,
       binding
@@ -4306,14 +4334,21 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const {
-        hoverClass
+        hoverClass,
+        url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      return vue.createVNode("uni-navigator", vue.mergeProps({
+      return vue.createVNode("a", {
+        "class": "navigator-wrap",
+        "href": url,
+        "onClick": onEventPrevent
+      }, [vue.createVNode("uni-navigator", vue.mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, {
+      }, hasHoverClass && binding, $attrs.value, $excludeAttrs.value, $listeners.value, {
+        [__scopeId]: ""
+      }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"]);
+      }), [slots.default && slots.default()], 16, ["onClick"])], 8, ["href", "onClick"]);
     };
   }
 });
@@ -4378,7 +4413,10 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     let ColumnsPreRef = vue.ref([]);
     let columnsRef = vue.ref([]);
     function getItemIndex(vnode) {
-      const columnVNodes = columnsRef.value;
+      let columnVNodes = columnsRef.value;
+      {
+        columnVNodes = columnVNodes.filter((vnode2) => vnode2.type !== vue.Comment);
+      }
       let index2 = columnVNodes.indexOf(vnode);
       return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
@@ -5121,11 +5159,10 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     function _renderNodes(nodes) {
-      var _a;
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), ((_a = vm == null ? void 0 : vm.root) == null ? void 0 : _a.type).__scopeId || "", hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm && vm.root.type).__scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -5917,6 +5954,9 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
         for (; position + length < current; ) {
           position += length;
         }
+        if (position + length - current < current - position) {
+          position += length;
+        }
       } else {
         for (; position + length < current; ) {
           position += length;
@@ -6290,7 +6330,7 @@ const SPACE_UNICODE = {
   nbsp: "\xA0"
 };
 function parseText(text, options) {
-  return text.replace(/\\n/g, "\n").split("\n").map((text2) => {
+  return text.replace(/\\n/g, uniShared.LINEFEED).split(uniShared.LINEFEED).map((text2) => {
     return normalizeText(text2, options);
   });
 }
@@ -6389,7 +6429,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       fixDisabledColor,
       trigger
     } = useField(props2, rootRef, emit2);
-    const valueCompute = vue.computed(() => state.value.split("\n"));
+    const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
     const isDone = vue.computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
     const heightRef = vue.ref(0);
     const lineRef = vue.ref(null);
@@ -6435,7 +6475,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       if (isDone.value) {
         confirm(event);
         const textarea = event.target;
-        textarea.blur();
+        !props2.confirmHold && textarea.blur();
       }
     }
     return () => {
@@ -6532,7 +6572,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
-  options.mpType || publicThis.$mpType;
+  const mpType = options.mpType || publicThis.$mpType;
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hooks = options[name];
@@ -6543,6 +6583,18 @@ function initHooks(options, instance, publicThis) {
       }
     }
   });
+  if (mpType === "page") {
+    instance.__isVisible = true;
+    try {
+      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      delete instance.attrs.__pageQuery;
+    } catch (e2) {
+      console.error(e2.message + uniShared.LINEFEED + e2.stack);
+    }
+    vue.nextTick(() => {
+      invokeHook(publicThis, uniShared.ON_SHOW);
+    });
+  }
 }
 function applyOptions(options, instance, publicThis) {
   initHooks(options, instance, publicThis);
@@ -6673,7 +6725,7 @@ function usePageRoute() {
     query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
   }
   const { meta } = __uniRoutes[0];
-  const path = "/" + meta.route;
+  const path = uniShared.addLeadingSlash(meta.route);
   return {
     meta,
     query,
@@ -6748,7 +6800,7 @@ function getCurrentPages$1() {
   const curPages = [];
   const pages = currentPagesMap.values();
   for (const page of pages) {
-    if (page.__isTabBar) {
+    if (page.$.__isTabBar) {
       if (page.$.__isActive) {
         curPages.push(page);
       }
@@ -6776,7 +6828,7 @@ function normalizeRouteKey(path, id2) {
 }
 function useKeepAliveRoute() {
   const route = vueRouter.useRoute();
-  const routeKey = vue.computed(() => normalizeRouteKey(route.path, getStateId()));
+  const routeKey = vue.computed(() => normalizeRouteKey("/" + route.meta.route, getStateId()));
   const isTabBar = vue.computed(() => route.meta.isTabBar);
   return {
     routeKey,
@@ -6854,11 +6906,30 @@ function initHistory() {
 var index$f = {
   install(app) {
     initApp$1(app);
+    app.config.warnHandler = warnHandler;
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
   }
 };
+function warnHandler(msg, instance, trace) {
+  if (instance) {
+    const name = instance.$.type.name;
+    if (name === "PageMetaHead") {
+      return;
+    }
+    const parent = instance.$.parent;
+    if (parent && parent.type.name === "PageMeta") {
+      return;
+    }
+  }
+  const warnArgs = [`[Vue warn]: ${msg}`];
+  if (trace.length) {
+    warnArgs.push(`
+`, trace);
+  }
+  console.warn(...warnArgs);
+}
 let appVm;
 function getApp$1() {
   return appVm;
@@ -6866,10 +6937,12 @@ function getApp$1() {
 function initApp(vm) {
   appVm = vm;
   initAppVm(appVm);
-  appVm.globalData = appVm.$options.globalData || {};
-  initService();
+  defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { init, setup, before }) {
+function wrapperComponentSetup(comp, { clone, init, setup, before }) {
+  if (clone) {
+    comp = shared.extend({}, comp);
+  }
   before && before(comp);
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
@@ -6880,14 +6953,13 @@ function wrapperComponentSetup(comp, { init, setup, before }) {
       return oldSetup(query || props2, ctx);
     }
   };
+  return comp;
 }
 function setupComponent(comp, options) {
   if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    wrapperComponentSetup(comp.default, options);
-  } else {
-    wrapperComponentSetup(comp, options);
+    return wrapperComponentSetup(comp.default, options);
   }
-  return comp;
+  return wrapperComponentSetup(comp, options);
 }
 function setupWindow(comp, id) {
   return setupComponent(comp, {
@@ -6902,22 +6974,26 @@ function setupWindow(comp, id) {
   });
 }
 function setupPage(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "page";
+  }
   return setupComponent(comp, {
+    clone: true,
     init: initPage,
     setup(instance) {
       instance.root = instance;
       const route = usePageRoute();
+      instance.attrs.__pageQuery = uniShared.decodedQuery(route.query);
       {
-        vue.nextTick(() => {
-          const { onLoad } = instance;
-          onLoad && shared.invokeArrayFns(onLoad, uniShared.decodedQuery(route.query));
-        });
-        return route.query;
+        return instance.attrs.__pageQuery;
       }
     }
   });
 }
 function setupApp(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "app";
+  }
   return setupComponent(comp, {
     init: initApp,
     setup(instance) {
@@ -6928,8 +7004,12 @@ function setupApp(comp) {
     },
     before(comp2) {
       comp2.mpType = "app";
-      comp2.setup = () => () => {
-        return vue.openBlock(), vue.createBlock(LayoutComponent);
+      const { setup } = comp2;
+      comp2.setup = (props2, ctx) => {
+        setup && setup(props2, ctx);
+        return () => {
+          return vue.openBlock(), vue.createBlock(LayoutComponent);
+        };
       };
     }
   });
@@ -8929,7 +9009,7 @@ var index$9 = /* @__PURE__ */ defineBuiltInComponent({
     _createTime();
     _createDate();
     _setValueSync();
-    const popup = usePopupStyle(props2);
+    const popup = usePopupStyle(state);
     vue.watchEffect(() => {
       state.isDesktop = popup.isDesktop.value;
       state.popupStyle = popup.popupStyle.value;
@@ -9196,7 +9276,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
       case mode.MULTISELECTOR:
         {
           if (!Array.isArray(val)) {
-            val = [];
+            val = state.valueArray;
           }
           if (!Array.isArray(state.valueSync)) {
             state.valueSync = [];
@@ -9601,7 +9681,7 @@ class RequestTask {
 }
 function parseHeaders(headers) {
   const headersObject = {};
-  headers.split("\n").forEach((header) => {
+  headers.split(uniShared.LINEFEED).forEach((header) => {
     const find = header.match(/(\S+\s*):\s*(.*)/);
     if (!find || find.length !== 3) {
       return;
@@ -9876,7 +9956,7 @@ function useSwitchTab(route, tabBar2, visibleList) {
         pagePath,
         text
       } = tabBarItem;
-      let url = "/" + pagePath;
+      let url = uniShared.addLeadingSlash(pagePath);
       if (url === __uniRoutes[0].alias) {
         url = "/";
       }
@@ -10679,7 +10759,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
     badgeText: btn.badgeText,
     iconStyle,
     onClick() {
-      invokeHook(pageId, "onNavigationBarButtonTap", shared.extend({
+      invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({
         index: index2
       }, btn));
     }
@@ -10699,7 +10779,7 @@ function usePageHeadSearchInput({
   } = searchInput;
   if (disabled) {
     const onClick = () => {
-      invokeHook(id, "onNavigationBarSearchInputClicked");
+      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
     };
     return {
       focus,
@@ -10710,25 +10790,25 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true;
-    invokeHook(id, "onNavigationBarSearchInputFocusChanged", {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: true
     });
   };
   const onBlur = () => {
     focus.value = false;
-    invokeHook(id, "onNavigationBarSearchInputFocusChanged", {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: false
     });
   };
   const onInput = (evt) => {
     text.value = evt.detail.value;
-    invokeHook(id, "onNavigationBarSearchInputChanged", {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
       text: text.value
     });
   };
   const onKeyup = (evt) => {
     if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id, "onNavigationBarSearchInputConfirmed", {
+      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
         text: text.value
       });
     }
@@ -10744,10 +10824,11 @@ function usePageHeadSearchInput({
   };
 }
 var _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {
-    sfc[key] = val;
+    target[key] = val;
   }
-  return sfc;
+  return target;
 };
 const _sfc_main = {
   name: "PageRefresh",

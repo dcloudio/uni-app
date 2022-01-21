@@ -1,5 +1,6 @@
 import { Ref, ref, computed, watch, onMounted } from 'vue'
 import { extend } from '@vue/shared'
+import { LINEFEED } from '@dcloudio/uni-shared'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
   props as fieldProps,
@@ -43,7 +44,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit)
-    const valueCompute = computed(() => state.value.split('\n'))
+    const valueCompute = computed(() => state.value.split(LINEFEED))
     const isDone = computed(() =>
       ['done', 'go', 'next', 'search', 'send'].includes(props.confirmType)
     )
@@ -96,7 +97,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (isDone.value) {
         confirm(event)
         const textarea = event.target as HTMLTextAreaElement
-        textarea.blur()
+        !props.confirmHold && textarea.blur()
       }
     }
 

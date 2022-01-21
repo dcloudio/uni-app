@@ -1,12 +1,13 @@
 import { extend } from '@vue/shared'
 
 import { ComponentOptions, ComponentPublicInstance } from 'vue'
+// @ts-expect-error
+import { getExposeProxy } from 'vue'
 
-import { initExtraOptions, initWxsCallMethods, initBehavior } from './util'
+import { initExtraOptions, initWxsCallMethods } from './util'
 
 import { initProps } from './componentProps'
-import { applyOptions } from './componentOptions'
-import { handleEvent } from './componentEvents'
+import { applyOptions, initPropsObserver } from './componentOptions'
 import { CreateComponentOptions } from './componentInstance'
 
 import Component = WechatMiniprogram.Component
@@ -15,6 +16,7 @@ export interface CustomComponentInstanceProperty {
   $vm?: ComponentPublicInstance
   _$vueId: string
   _$vuePid?: string
+  _$setRef?: (fn: Function) => void
 }
 
 export type MPComponentOptions = Component.Options<
@@ -80,6 +82,7 @@ export function parseComponent(
   const options: Component.ComponentOptions = {
     multipleSlots: true,
     addGlobalClass: true,
+    pureDataPattern: /^uP$/,
   }
 
   if (vueOptions.options) {
@@ -102,15 +105,16 @@ export function parseComponent(
     },
     methods: {
       __l: handleLink,
-      __e: handleEvent,
     },
   }
 
   if (__VUE_OPTIONS_API__) {
-    applyOptions(mpComponentOptions, vueOptions, initBehavior)
+    applyOptions(mpComponentOptions, vueOptions)
   }
 
-  initProps(mpComponentOptions, vueOptions.props, false)
+  initProps(mpComponentOptions)
+
+  initPropsObserver(mpComponentOptions)
 
   initExtraOptions(mpComponentOptions, vueOptions)
 
@@ -147,7 +151,11 @@ export function $createComponent(
   if (!$createComponentFn) {
     $createComponentFn = getApp().$vm.$createComponent
   }
-  return $createComponentFn(initialVNode, options)
+  const proxy = $createComponentFn(
+    initialVNode,
+    options
+  ) as ComponentPublicInstance
+  return getExposeProxy(proxy.$) || proxy
 }
 
 export function $destroyComponent(instance: ComponentPublicInstance) {

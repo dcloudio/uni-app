@@ -63,6 +63,12 @@ export * from './plugin/requestPayment'
 export * from './plugin/requireNativePlugin'
 export * from './plugin/vuePlugin'
 export * from './plugin/restoreGlobal'
+export {
+  sendHostEvent,
+  navigateToMiniProgram,
+  onHostEventReceive,
+  onNativeEventReceive,
+} from './plugin/sdk'
 
 export * from './ad/rewardedVideoAd'
 export * from './ad/fullScreenVideoAd'
@@ -72,7 +78,7 @@ export * from './ad/interactiveAd'
 export * from './route/navigateBack'
 export { navigateTo } from './route/navigateTo'
 export * from './route/redirectTo'
-export * from './route/reLaunch'
+export { reLaunch } from './route/reLaunch'
 export { switchTab } from './route/switchTab'
 export * from './route/preloadPage'
 
@@ -105,4 +111,7 @@ export {
   $emit,
   onAppLaunch,
   onLocaleChange,
+  setPageMeta,
+  getEnterOptionsSync,
+  getLaunchOptionsSync,
 } from '@dcloudio/uni-api'

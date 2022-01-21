@@ -10,7 +10,7 @@ import { hasOwn, isString, isPlainObject } from '@vue/shared'
 import { parseManifestJsonOnce } from './json'
 import { isInHBuilderX } from './hbx'
 
-const debugCheckUpdate = debug('vite:uni:check-update')
+const debugCheckUpdate = debug('uni:check-update')
 
 interface CheckUpdateOptions {
   inputDir: string
@@ -188,7 +188,7 @@ function writeCheckUpdateCache(
   debugCheckUpdate('write:', filepath, updateCache)
   try {
     fs.outputFileSync(filepath, JSON.stringify(updateCache))
-  } catch (e: any) {
+  } catch (e) {
     debugCheckUpdate('write.error', e)
   }
 }

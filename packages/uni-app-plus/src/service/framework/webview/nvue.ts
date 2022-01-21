@@ -12,7 +12,9 @@ export function createNVueWebview({
   webviewStyle,
 }: CreateWebviewOptions) {
   const curWebviewId = genWebviewId()
-  const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta)
+  const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta, {
+    id: curWebviewId + '',
+  })
   ;(curWebviewStyle as any).uniPageUrl = initUniPageUrl(path, query)
   if (__DEV__) {
     console.log(

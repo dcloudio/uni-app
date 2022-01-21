@@ -1,4 +1,5 @@
 import { Configuration } from 'webpack'
+import { NVueCompilerOptions } from '../../../types'
 
 import { createRules } from './rules'
 

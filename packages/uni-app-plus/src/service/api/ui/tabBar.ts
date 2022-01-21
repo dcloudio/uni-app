@@ -74,9 +74,7 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
   API_SET_TAB_BAR_STYLE,
   (style = {}, { resolve, reject }) => {
     if (!isTabBarPage()) {
-      return {
-        errMsg: 'setTabBarStyle:fail not TabBar page',
-      }
+      return reject('not TabBar page')
     }
     const borderStyles = {
       black: 'rgba(0,0,0,0.4)',

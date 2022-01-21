@@ -2,10 +2,12 @@
 
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
+var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 var description = "项目配置文件。";
 var packOptions = {
@@ -13,8 +15,8 @@ var packOptions = {
 	]
 };
 var setting = {
-	urlCheck: true,
-	es6: false,
+	urlCheck: false,
+	es6: true,
 	postcss: false,
 	minified: false,
 	newFeature: true
@@ -56,25 +58,54 @@ var source = {
 	condition: condition
 };
 
-const uniMiniProgramWeixinPlugin = {
-    name: 'vite:uni-mp-weixin',
-    config() {
-        return {
-            define: {
-                __VUE_CREATED_DEFERRED__: JSON.stringify('false'),
-            },
-        };
+const customElements = [
+    'page-container',
+    'page-meta',
+    'navigation-bar',
+    'match-media',
+];
+const compilerOptions = {
+    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
+};
+const COMPONENTS_DIR = 'wxcomponents';
+const miniProgram = {
+    class: {
+        array: true,
+    },
+    slot: {
+        fallbackContent: false,
+        dynamicSlotNames: true,
+    },
+    event: {
+        key: true,
+    },
+    directive: 'wx:',
+    lazyElement: {
+        canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],
+        editor: [{ name: 'on', arg: ['ready'] }],
+        // iOS 平台需要延迟
+        textarea: [{ name: 'on', arg: ['input'] }],
+    },
+    component: {
+        dir: COMPONENTS_DIR,
+        vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
+        getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
     },
 };
 const projectConfigFilename = 'project.config.json';
 const options = {
+    cdn: 1,
     vite: {
+        inject: {
+            uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
+        },
         alias: {
-            'uni-mp-runtime': uniCliShared.resolveBuiltIn('@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js'),
+            'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: ['wxcomponents'],
+            assets: [COMPONENTS_DIR],
             targets: [
+                ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
                     src: [
                         'theme.json',
@@ -95,27 +126,41 @@ const options = {
     app: {
         darkmode: true,
         subpackages: true,
+        plugins: true,
     },
     project: {
         filename: projectConfigFilename,
         source,
     },
-    template: {
-        extname: '.wxml',
-    },
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
+            extname: '.wxs',
+            lang: 'wxs',
+            generate(filter, filename) {
+                if (filename) {
+                    return `<wxs src="${filename}.wxs" module="${filter.name}"/>`;
+                }
+                return `<wxs module="${filter.name}">
+${filter.code}
+</wxs>`;
+            },
+        }, extname: '.wxml', compilerOptions }),
     style: {
         extname: '.wxss',
-        cssVars: {
-            '--status-bar-height': '25px',
-            '--window-top': '0px',
-            '--window-bottom': '0px',
-            '--window-left': '0px',
-            '--window-right': '0px',
-        },
     },
-    filter: {
-        extname: '.wxs',
-        tag: 'wxs',
+};
+
+const uniMiniProgramWeixinPlugin = {
+    name: 'uni:mp-weixin',
+    config() {
+        return {
+            define: {
+                __VUE_CREATED_DEFERRED__: false,
+            },
+            build: {
+                // css 中不支持引用本地资源
+                assetsInlineLimit: uniCliShared.ASSETS_INLINE_LIMIT,
+            },
+        };
     },
 };
 var index = [uniMiniProgramWeixinPlugin, ...initMiniProgramPlugin__default["default"](options)];

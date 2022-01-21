@@ -1,8 +1,19 @@
-{
-  "input": {
-    "src/index.ts": ["dist/uni-app.es.js", "dist/uni-app.cjs.js"]
+[
+  {
+    "input": {
+      "src/compiler/index.ts": "dist/uni.compiler.js"
+    },
+    "output": {
+      "format": "cjs"
+    },
+    "external": ["@dcloudio/uni-cloud", "@dcloudio/uni-stat"]
   },
-  "compilerOptions": {
-    "declaration": true
+  {
+    "input": {
+      "src/index.ts": ["dist/uni-app.es.js", "dist/uni-app.cjs.js"]
+    },
+    "compilerOptions": {
+      "declaration": true
+    }
   }
-}
+]

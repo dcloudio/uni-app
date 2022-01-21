@@ -115,7 +115,7 @@ export function invokeApi(
   method: string,
   api: Function,
   options: object,
-  ...params: []
+  params: unknown[]
 ) {
   const interceptor = getApiInterceptorHooks(method)
   if (interceptor && Object.keys(interceptor).length) {

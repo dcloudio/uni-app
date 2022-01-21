@@ -1,3 +1,5 @@
+import { LINEFEED } from '@dcloudio/uni-shared'
+
 const SPACE_UNICODE = {
   ensp: '\u2002',
   emsp: '\u2003',
@@ -11,8 +13,8 @@ export interface DecodeOptions {
 
 export function parseText(text: string, options: DecodeOptions) {
   return text
-    .replace(/\\n/g, '\n')
-    .split('\n')
+    .replace(/\\n/g, LINEFEED)
+    .split(LINEFEED)
     .map((text) => {
       return normalizeText(text, options)
     })

@@ -28,7 +28,7 @@ const props = {
   },
   draggable: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 }
 
@@ -109,9 +109,7 @@ function useImageState(rootRef: Ref<HTMLElement | null>, props: ImageProps) {
     }
     return `background-image:${
       imgSrc.value ? 'url("' + imgSrc.value + '")' : 'none'
-    };
-            background-position:${position};
-            background-size:${size};`
+    };background-position:${position};background-size:${size};`
   })
   const state = reactive({
     rootEl: rootRef,

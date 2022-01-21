@@ -1,6 +1,5 @@
-import { invokeArrayFns, isPlainObject } from '@vue/shared'
+import { extend, invokeArrayFns, isPlainObject } from '@vue/shared'
 import {
-  nextTick,
   ComponentInternalInstance,
   ComponentPublicInstance,
   createBlock,
@@ -29,8 +28,10 @@ import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
+import { initLaunchOptions, getEnterOptions } from './utils'
 
 interface SetupComponentOptions {
+  clone?: boolean
   init: (vm: ComponentPublicInstance) => void
   setup: (instance: ComponentInternalInstance) => Record<string, any> | void
   before?: (comp: DefineComponent) => void
@@ -38,8 +39,11 @@ interface SetupComponentOptions {
 
 function wrapperComponentSetup(
   comp: DefineComponent,
-  { init, setup, before }: SetupComponentOptions
+  { clone, init, setup, before }: SetupComponentOptions
 ) {
+  if (clone) {
+    comp = extend({}, comp)
+  }
   before && before(comp)
   const oldSetup = comp.setup
   comp.setup = (props, ctx) => {
@@ -50,15 +54,14 @@ function wrapperComponentSetup(
       return oldSetup(query || props, ctx)
     }
   }
+  return comp
 }
 
 function setupComponent(comp: any, options: SetupComponentOptions) {
   if (comp && (comp.__esModule || comp[Symbol.toStringTag] === 'Module')) {
-    wrapperComponentSetup(comp.default, options)
-  } else {
-    wrapperComponentSetup(comp, options)
+    return wrapperComponentSetup(comp.default, options)
   }
-  return comp
+  return wrapperComponentSetup(comp, options)
 }
 
 export function setupWindow(comp: any, id: number) {
@@ -75,43 +78,28 @@ export function setupWindow(comp: any, id: number) {
 }
 
 export function setupPage(comp: any) {
+  if (__DEV__) {
+    comp.__mpType = 'page'
+  }
   return setupComponent(comp, {
+    clone: true,
     init: initPage,
     setup(instance) {
       instance.root = instance // 组件 root 指向页面
       const route = usePageRoute()
-      // node环境仅触发Page onLoad生命周期
+      // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
+      instance.attrs.__pageQuery = decodedQuery(route.query)
       if (__NODE_JS__) {
-        nextTick(() => {
-          const { onLoad } = instance
-          onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
-        })
-        return route.query
+        return instance.attrs.__pageQuery as Record<string, unknown>
       }
-
       const pageMeta = usePageMeta()
-
       onBeforeMount(() => {
         onPageShow(instance, pageMeta)
-        const { onLoad, onShow } = instance
-        onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
-        instance.__isVisible = true
-        if (onShow) {
-          // 延迟onShow，保证子组件的首次onShow也能生效
-          nextTick(() => {
-            invokeArrayFns(onShow)
-          })
-        }
       })
       onMounted(() => {
         onPageReady(instance)
         const { onReady } = instance
-        if (onReady) {
-          // 因为onShow被延迟，故onReady也延迟，否则会出现onReady比onShow还早
-          nextTick(() => {
-            invokeArrayFns(onReady)
-          })
-        }
+        onReady && invokeArrayFns(onReady)
       })
       onBeforeActivate(() => {
         if (!instance.__isVisible) {
@@ -140,6 +128,9 @@ export function setupPage(comp: any) {
 }
 
 export function setupApp(comp: any) {
+  if (__DEV__) {
+    comp.__mpType = 'app'
+  }
   return setupComponent(comp, {
     init: initApp,
     setup(instance) {
@@ -151,12 +142,15 @@ export function setupApp(comp: any) {
       const onLaunch = () => {
         const { onLaunch, onShow, onPageNotFound } = instance
         const path = route.path.substr(1)
-        const launchOptions = {
-          path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query),
-          scene: 1001,
-          app: instance.proxy,
-        }
+        const launchOptions = extend(
+          {
+            app: { mixin: instance.appContext.app.mixin },
+          },
+          initLaunchOptions({
+            path: path || __uniRoutes[0].meta.route,
+            query: decodedQuery(route.query),
+          })
+        )
         onLaunch && invokeArrayFns(onLaunch, launchOptions)
         onShow && invokeArrayFns(onShow, launchOptions)
         if (__UNI_FEATURE_PAGES__) {
@@ -189,8 +183,12 @@ export function setupApp(comp: any) {
     },
     before(comp) {
       comp.mpType = 'app'
-      comp.setup = () => () => {
-        return openBlock(), createBlock(LayoutComponent)
+      const { setup } = comp
+      comp.setup = (props, ctx) => {
+        setup && setup(props, ctx)
+        return () => {
+          return openBlock(), createBlock(LayoutComponent)
+        }
       }
     },
   })
@@ -223,9 +221,10 @@ function onMessage(evt: {
   }
 }
 function onVisibilityChange() {
-  UniServiceJSBridge.emit(
-    document.visibilityState === 'visible'
-      ? ON_APP_ENTER_FOREGROUND
-      : ON_APP_ENTER_BACKGROUND
-  )
+  const { emit } = UniServiceJSBridge
+  if (document.visibilityState === 'visible') {
+    emit(ON_APP_ENTER_FOREGROUND, getEnterOptions())
+  } else {
+    emit(ON_APP_ENTER_BACKGROUND)
+  }
 }

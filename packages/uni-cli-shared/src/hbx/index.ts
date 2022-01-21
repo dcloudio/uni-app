@@ -1,8 +1,22 @@
 import path from 'path'
-
-process.env.UNI_HBUILDERX_PLUGINS =
-  process.env.UNI_HBUILDERX_PLUGINS ||
-  path.resolve(__dirname, '../../../../../../')
+import { normalizePath } from '../utils'
+import { uniConsolePlugin } from '../vite/plugins/console'
 
 export * from './env'
-export { initModuleAlias } from './alias'
+export {
+  initModuleAlias,
+  installHBuilderXPlugin,
+  formatInstallHBuilderXPluginTips,
+} from './alias'
+
+export function uniHBuilderXConsolePlugin() {
+  return uniConsolePlugin({
+    filename(filename) {
+      filename = path.relative(process.env.UNI_INPUT_DIR, filename)
+      if (filename.startsWith('.') || path.isAbsolute(filename)) {
+        return ''
+      }
+      return normalizePath(filename)
+    },
+  })
+}
