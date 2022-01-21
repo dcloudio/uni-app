@@ -15338,7 +15338,7 @@ var serviceContext = (function (vue) {
       'seeked',
       'pause',
   ];
-  const AUDIO_DEFAULT_SESSION_CATEGORY = 'ambient';
+  const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback';
   const initStateChage = (audioId) => {
       const audio = audios[audioId];
       if (!audio) {
