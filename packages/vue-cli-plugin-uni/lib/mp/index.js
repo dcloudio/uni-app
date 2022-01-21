@@ -202,13 +202,13 @@ module.exports = {
     // 使用外层依赖的版本
     alias['regenerator-runtime'] = require.resolve('regenerator-runtime')
     const output = {
-      pathinfo: process.env.UNI_MINIMIZE !== 'true',
+      pathinfo: true,
       filename: '[name].js',
       chunkFilename: '[id].js',
       globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
       // sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
     }
-    if (process.env.UNI_MINIMIZE === 'true' && process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'production' || process.env.UNI_MINIMIZE === 'true') {
       output.pathinfo = false
     }
     return {
