@@ -264,6 +264,17 @@ zIndex: 4;
 }
 `)
     expect(json).toEqual({
+      '@TRANSITION': {
+        bar: {
+          property: 'height',
+        },
+        foo: {
+          property: 'marginTop',
+        },
+        foobar: {
+          property: 'marginTop,height',
+        },
+      },
       foo: {
         transitionProperty: 'marginTop',
       },
@@ -293,6 +304,15 @@ zIndex: 4;
 }
 `)
     expect(json).toEqual({
+      '@TRANSITION': {
+        bar: {
+          duration: 200,
+        },
+        foo: {
+          delay: 500,
+          duration: 200,
+        },
+      },
       foo: {
         transitionDuration: 200,
         transitionDelay: 500,
@@ -330,6 +350,14 @@ zIndex: 4;
 }
 `)
     expect(json).toEqual({
+      '@TRANSITION': {
+        bar: {
+          timingFunction: 'cubic-bezier(0.88,1,-0.67,1.37)',
+        },
+        foo: {
+          timingFunction: 'ease-in-out',
+        },
+      },
       foo: {
         transitionTimingFunction: 'ease-in-out',
       },
