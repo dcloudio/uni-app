@@ -26,7 +26,10 @@ export function injectCssPostPlugin(
     chunkCssCode,
   }: {
     chunkCssFilename: (id: string) => string | void
-    chunkCssCode: (filename: string, cssCode: string) => string
+    chunkCssCode: (
+      filename: string,
+      cssCode: string
+    ) => string | Promise<string>
   }
 ) {
   const newCssPostPlugin = cssPostPlugin(config, {

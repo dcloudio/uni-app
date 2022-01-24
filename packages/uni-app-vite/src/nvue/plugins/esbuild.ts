@@ -38,13 +38,11 @@ export function uniEsbuildPlugin(): Plugin {
         }
       })
       debugEsbuild('start', entryPoints.length, entryPoints)
-      await Promise.all(
-        entryPoints.map((filename) => {
-          return buildNVuePage(filename, buildOptions).then((code) => {
-            return fs.outputFile(path.resolve(outputDir, filename), code)
-          })
+      for (const filename of entryPoints) {
+        await buildNVuePage(filename, buildOptions).then((code) => {
+          return fs.outputFile(path.resolve(outputDir, filename), code)
         })
-      )
+      }
       debugEsbuild('end')
     },
   }

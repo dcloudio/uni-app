@@ -1,3 +1,5 @@
+import type { PreRenderedChunk } from 'rollup'
+import type { Plugin } from 'vite'
 import path from 'path'
 import {
   createTransformTag,
@@ -8,8 +10,7 @@ import {
   removeExt,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
-import { PreRenderedChunk } from 'rollup'
-import { Plugin } from 'vite'
+import { parse } from '@dcloudio/uni-nvue-styler'
 import { nvueOutDir } from '../../utils'
 import { transformRenderWhole } from './transforms/transformRenderWhole'
 import { transformAppendAsTree } from './transforms/transformAppendAsTree'
@@ -83,8 +84,14 @@ export function uniAppNVuePlugin(): Plugin {
           return normalizeCssChunkFilename(id)
         }
       },
-      chunkCssCode(_, cssCode) {
-        return 'export default {}'
+      async chunkCssCode(filename, cssCode) {
+        const { code, messages } = await parse(cssCode, { filename })
+        messages.forEach((msg) => {
+          if (msg.type === 'warning' || msg.type === 'error') {
+            console.warn(msg.text)
+          }
+        })
+        return `export default ${code}`
       },
     }),
   }

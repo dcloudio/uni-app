@@ -1,9 +1,9 @@
-import { objectifier, parse } from '../src'
+import { parse } from '../src'
 
 async function objectifierRoot(input: string) {
-  const { root, messages } = await parse(input, { logLevel: 'NOTE' })
+  const { code, messages } = await parse(input, { logLevel: 'NOTE' })
   return {
-    json: objectifier(root),
+    json: JSON.parse(code),
     messages,
   }
 }

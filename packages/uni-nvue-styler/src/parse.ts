@@ -1,12 +1,13 @@
-import postcss from 'postcss'
-import { NormalizeOptions } from './normalize'
-import { expand, normalize } from '../src'
+import postcss, { Message } from 'postcss'
+import { objectifier } from '.'
+import { expand } from './expand'
+import { NormalizeOptions, normalize } from './normalize'
 
 interface ParseOpitons extends NormalizeOptions {
   filename?: string
 }
-export function parse(input: string, options: ParseOpitons = {}) {
-  return postcss([expand, normalize(options)])
+export async function parse(input: string, options: ParseOpitons = {}) {
+  const { root, messages } = await postcss([expand, normalize(options)])
     .process(input, {
       from: options.filename || 'foo.css',
     })
@@ -17,8 +18,12 @@ export function parse(input: string, options: ParseOpitons = {}) {
           {
             type: 'warning',
             text: err.message,
-          },
+          } as Message,
         ],
       }
     })
+  if (root) {
+    return { code: JSON.stringify(objectifier(root)), messages }
+  }
+  return { code: JSON.stringify({}), messages }
 }

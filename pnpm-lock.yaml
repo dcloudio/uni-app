@@ -200,6 +200,7 @@ importers:
     specifiers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030820220114006
       '@dcloudio/uni-i18n': 3.0.0-alpha-3030820220114006
+      '@dcloudio/uni-nvue-styler': workspace:*
       '@dcloudio/uni-shared': 3.0.0-alpha-3030820220114006
       '@rollup/pluginutils': ^4.1.2
       '@types/debug': ^4.1.7
@@ -214,6 +215,7 @@ importers:
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-i18n': link:../uni-i18n
+      '@dcloudio/uni-nvue-styler': link:../uni-nvue-styler
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.2
       '@vitejs/plugin-vue': 2.0.1_vite@2.7.13+vue@3.2.27

@@ -220,7 +220,10 @@ export function cssPostPlugin(
     chunkCssCode,
   }: {
     chunkCssFilename: (id: string) => string | void
-    chunkCssCode: (filename: string, cssCode: string) => string
+    chunkCssCode: (
+      filename: string,
+      cssCode: string
+    ) => Promise<string> | string
   }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch

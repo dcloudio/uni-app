@@ -8,7 +8,7 @@ import {
 
 export function createConfigResolved(options: {
   chunkCssFilename: (id: string) => string | void
-  chunkCssCode: (filename: string, cssCode: string) => string
+  chunkCssCode: (filename: string, cssCode: string) => string | Promise<string>
 }): Plugin['configResolved'] {
   return (config) => {
     injectCssPlugin(config)
