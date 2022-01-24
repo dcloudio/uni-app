@@ -11529,6 +11529,51 @@ var serviceContext = (function (vue) {
   };
 
   const API_ADD_PHONE_CONTACT = 'addPhoneContact';
+  const AddPhoneContactOptions = {
+      formatArgs: {
+          firstName(firstName) {
+              if (!firstName)
+                  return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
+          },
+      },
+  };
+  const AddPhoneContactProtocol = {
+      firstName: {
+          type: String,
+          required: true,
+      },
+      photoFilePath: String,
+      nickName: String,
+      lastName: String,
+      middleName: String,
+      remark: String,
+      mobilePhoneNumber: String,
+      weChatNumber: String,
+      addressCountry: String,
+      addressState: String,
+      addressCity: String,
+      addressStreet: String,
+      addressPostalCode: String,
+      organization: String,
+      title: String,
+      workFaxNumber: String,
+      workPhoneNumber: String,
+      hostNumber: String,
+      email: String,
+      url: String,
+      workAddressCountry: String,
+      workAddressState: String,
+      workAddressCity: String,
+      workAddressStreet: String,
+      workAddressPostalCode: String,
+      homeFaxNumber: String,
+      homePhoneNumber: String,
+      homeAddressCountry: String,
+      homeAddressState: String,
+      homeAddressCity: String,
+      homeAddressStreet: String,
+      homeAddressPostalCode: String,
+  };
 
   const API_GET_CLIPBOARD_DATA = 'getClipboardData';
   const API_SET_CLIPBOARD_DATA = 'setClipboardData';
@@ -13686,166 +13731,150 @@ var serviceContext = (function (vue) {
       return resolve();
   }, MakePhoneCallProtocol);
 
-  const addPhoneContact = defineAsyncApi(API_ADD_PHONE_CONTACT, ({ photoFilePath = '', nickName, lastName, middleName, firstName, remark, mobilePhoneNumber, weChatNumber, addressCountry, addressState, addressCity, addressStreet, addressPostalCode, organization, title, workFaxNumber, workPhoneNumber, hostNumber, email, url, workAddressCountry, workAddressState, workAddressCity, workAddressStreet, workAddressPostalCode, homeFaxNumber, homePhoneNumber, homeAddressCountry, homeAddressState, homeAddressCity, homeAddressStreet, homeAddressPostalCode, }, { resolve, reject }) => {
-      plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
-          const contact = addressbook.create();
-          const name = {};
-          if (lastName) {
-              name.familyName = lastName;
-          }
-          if (firstName) {
-              name.givenName = firstName;
-          }
-          if (middleName) {
-              name.middleName = middleName;
-          }
-          contact.name = name;
-          if (nickName) {
-              contact.nickname = nickName;
-          }
-          if (photoFilePath) {
-              contact.photos = [
-                  {
-                      type: 'url',
-                      value: photoFilePath,
-                  },
-              ];
-          }
-          if (remark) {
-              contact.note = remark;
-          }
-          const mobilePhone = {
+  const schema = {
+      name: {
+          givenName: 'firstName',
+          middleName: 'middleName',
+          familyName: 'lastName',
+      },
+      nickname: 'nickName',
+      photos: {
+          type: 'url',
+          value: 'photoFilePath',
+      },
+      note: 'remark',
+      phoneNumbers: [
+          {
               type: 'mobile',
-          };
-          const workPhone = {
+              value: 'mobilePhoneNumber',
+          },
+          {
               type: 'work',
-          };
-          const companyPhone = {
+              value: 'workPhoneNumber',
+          },
+          {
               type: 'company',
-          };
-          const homeFax = {
+              value: 'hostNumber',
+          },
+          {
               type: 'home fax',
-          };
-          const workFax = {
+              value: 'homeFaxNumber',
+          },
+          {
               type: 'work fax',
-          };
-          if (mobilePhoneNumber) {
-              mobilePhone.value = mobilePhoneNumber;
-          }
-          if (workPhoneNumber) {
-              workPhone.value = workPhoneNumber;
-          }
-          if (hostNumber) {
-              companyPhone.value = hostNumber;
-          }
-          if (homeFaxNumber) {
-              homeFax.value = homeFaxNumber;
-          }
-          if (workFaxNumber) {
-              workFax.value = workFaxNumber;
-          }
-          contact.phoneNumbers = [
-              mobilePhone,
-              workPhone,
-              companyPhone,
-              homeFax,
-              workFax,
-          ];
-          if (email) {
-              contact.emails = [
-                  {
-                      type: 'home',
-                      value: email,
-                  },
-              ];
-          }
-          if (url) {
-              contact.urls = [
-                  {
-                      type: 'other',
-                      value: url,
-                  },
-              ];
-          }
-          if (weChatNumber) {
-              contact.ims = [
-                  {
-                      type: 'other',
-                      value: weChatNumber,
-                  },
-              ];
-          }
-          const defaultAddress = {
+              value: 'workFaxNumber',
+          },
+      ],
+      emails: [
+          {
+              type: 'home',
+              value: 'email',
+          },
+      ],
+      urls: [
+          {
+              type: 'other',
+              value: 'url',
+          },
+      ],
+      organizations: [
+          {
+              type: 'company',
+              name: 'organization',
+              title: 'title',
+          },
+      ],
+      ims: [
+          {
+              type: 'other',
+              value: 'weChatNumber',
+          },
+      ],
+      addresses: [
+          {
               type: 'other',
               preferred: true,
-          };
-          const homeAddress = {
+              country: 'addressCountry',
+              region: 'addressState',
+              locality: 'addressCity',
+              streetAddress: 'addressStreet',
+              postalCode: 'addressPostalCode',
+          },
+          {
               type: 'home',
-          };
-          const companyAddress = {
+              country: 'homeAddressCountry',
+              region: 'homeAddressState',
+              locality: 'homeAddressCity',
+              streetAddress: 'homeAddressStreet',
+              postalCode: 'homeAddressPostalCode',
+          },
+          {
               type: 'company',
-          };
-          if (addressCountry) {
-              defaultAddress.country = addressCountry;
+              country: 'workAddressCountry',
+              region: 'workAddressState',
+              locality: 'workAddressCity',
+              streetAddress: 'workAddressStreet',
+              postalCode: 'workAddressPostalCode',
+          },
+      ],
+  };
+  const keepFields = ['type', 'preferred'];
+  function buildContact(contact, data, schema) {
+      let hasValue = 0;
+      Object.keys(schema).forEach((contactKey) => {
+          const dataKey = schema[contactKey];
+          const typed = typeof dataKey;
+          if (typed !== 'object') {
+              if (keepFields.indexOf(contactKey) !== -1) {
+                  contact[contactKey] = schema[contactKey];
+              }
+              else {
+                  if (typeof data[dataKey] !== 'undefined') {
+                      hasValue++;
+                      contact[contactKey] = data[dataKey];
+                  }
+                  else {
+                      delete contact[contactKey];
+                  }
+              }
           }
-          if (addressState) {
-              defaultAddress.region = addressState;
+          else {
+              if (dataKey instanceof Array) {
+                  contact[contactKey] = [];
+                  dataKey.forEach((item) => {
+                      const obj = {};
+                      if (buildContact(obj, data, item)) {
+                          contact[contactKey].push(obj);
+                      }
+                  });
+                  if (!contact[contactKey].length) {
+                      delete contact[contactKey];
+                  }
+                  else {
+                      hasValue++;
+                  }
+              }
+              else {
+                  contact[contactKey] = {};
+                  if (buildContact(contact[contactKey], data, dataKey)) {
+                      hasValue++;
+                  }
+                  else {
+                      delete contact[contactKey];
+                  }
+              }
           }
-          if (addressCity) {
-              defaultAddress.locality = addressCity;
-          }
-          if (addressStreet) {
-              defaultAddress.streetAddress = addressStreet;
-          }
-          if (addressPostalCode) {
-              defaultAddress.postalCode = addressPostalCode;
-          }
-          if (homeAddressCountry) {
-              homeAddress.country = homeAddressCountry;
-          }
-          if (homeAddressState) {
-              homeAddress.region = homeAddressState;
-          }
-          if (homeAddressCity) {
-              homeAddress.locality = homeAddressCity;
-          }
-          if (homeAddressStreet) {
-              homeAddress.streetAddress = homeAddressStreet;
-          }
-          if (homeAddressPostalCode) {
-              homeAddress.postalCode = homeAddressPostalCode;
-          }
-          if (workAddressCountry) {
-              companyAddress.country = workAddressCountry;
-          }
-          if (workAddressState) {
-              companyAddress.region = workAddressState;
-          }
-          if (workAddressCity) {
-              companyAddress.locality = workAddressCity;
-          }
-          if (workAddressStreet) {
-              companyAddress.streetAddress = workAddressStreet;
-          }
-          if (workAddressPostalCode) {
-              companyAddress.postalCode = workAddressPostalCode;
-          }
-          contact.addresses = [
-              defaultAddress,
-              homeAddress,
-              companyAddress,
-          ];
-          contact.save(() => {
-              resolve({
-                  errMsg: 'addPhoneContact:ok',
-              });
-          }, (e) => {
-              reject('addPhoneContact:fail');
-          });
-      }, (e) => {
-          reject('addPhoneContact:fail');
       });
-  }, MakePhoneCallProtocol);
+      return hasValue;
+  }
+  const addPhoneContact = defineAsyncApi(API_ADD_PHONE_CONTACT, (data, { resolve, reject }) => {
+      !data.photoFilePath && (data.photoFilePath = '');
+      plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
+          const contact = addressbook.create();
+          buildContact(contact, data, schema);
+          contact.save(() => resolve(), (e) => reject());
+      }, (e) => reject());
+  }, AddPhoneContactProtocol, AddPhoneContactOptions);
 
   function requireNativePlugin(pluginName) {
       if (typeof weex !== 'undefined') {
