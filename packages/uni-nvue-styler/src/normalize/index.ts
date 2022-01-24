@@ -1,0 +1,131 @@
+import type { Plugin, Declaration, Helpers, Rule } from 'postcss'
+import {
+  camelize,
+  hasOwn,
+  hyphenate,
+  isFunction,
+  isNumber,
+  isString,
+  LENGTH_REGEXP,
+  SUPPORT_CSS_UNIT,
+} from '../utils'
+import { normalizeMap } from './map'
+
+const normalized = Symbol('normalized')
+
+interface NormalizeOptions {
+  descendant?: false
+  logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
+}
+
+export function normalize(opts: NormalizeOptions = {}): Plugin {
+  if (!hasOwn(opts, 'descendant')) {
+    opts.descendant = false
+  }
+  if (!hasOwn(opts, 'logLevel')) {
+    opts.logLevel = 'WARNING'
+  }
+  return {
+    postcssPlugin: 'nvue:normalize',
+    Rule: createRuleProcessor(opts),
+    Declaration: createDeclarationProcessor(opts),
+  }
+}
+
+function createRuleProcessor({ descendant }: NormalizeOptions) {
+  return (rule: Rule, helper: Helpers) => {
+    if ((rule as any)[normalized]) {
+      return
+    }
+    const regx = descendant
+      ? /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
+      : /^(\.)([A-Za-z0-9_\-:]+)$/
+
+    rule.selector = rule.selectors
+      .filter((selector) => {
+        if (regx.test(selector)) {
+          return true
+        }
+        rule.warn(
+          helper.result,
+          'ERROR: Selector `' +
+            selector +
+            '` is not supported. nvue only support classname selector'
+        )
+        return false
+      })
+      .join(', ')
+    if (!rule.selector) {
+      rule.remove()
+    }
+    ;(rule as any)[normalized] = true
+  }
+}
+
+function createDeclarationProcessor({ logLevel }: NormalizeOptions) {
+  return (decl: Declaration, helper: Helpers) => {
+    if ((decl as any)[normalized]) {
+      return
+    }
+    decl.prop = camelize(decl.prop)
+    const { value, log } = normalizeDecl(decl.prop, decl.value)
+    if (isString(value) || isNumber(value)) {
+      decl.value = value
+    }
+    if (log && log.reason) {
+      const { reason } = log
+      let needLog = false
+      if (logLevel === 'NOTE') {
+        needLog = true
+      } else if (logLevel === 'ERROR') {
+        if (reason.startsWith('ERROR:')) {
+          needLog = true
+        }
+      } else {
+        if (!reason.startsWith('NOTE:')) {
+          needLog = true
+        }
+      }
+      needLog && decl.warn(helper.result, reason)
+    }
+    if (value === null) {
+      decl.remove()
+    }
+    ;(decl as any)[normalized] = true
+  }
+}
+
+export function normalizeDecl(name: string, value: string) {
+  let result, log
+  const normalize = normalizeMap[name]
+
+  if (isFunction(normalize)) {
+    if (!isFunction(value)) {
+      result = normalize(value)
+    } else {
+      result = { value: value }
+    }
+    if (result.reason) {
+      log = { reason: result.reason(name, value, result.value) }
+    }
+  } else {
+    // ensure number type, no `px`
+    if (isString(value)) {
+      const match = value.match(LENGTH_REGEXP)
+      if (match && (!match[1] || SUPPORT_CSS_UNIT.indexOf(match[1]) === -1)) {
+        value = parseFloat(value) as unknown as string
+      }
+    }
+    result = { value: value }
+    log = {
+      reason:
+        'WARNING: `' +
+        hyphenate(name) +
+        '` is not a standard property name (may not be supported)',
+    }
+  }
+  return {
+    value: result.value,
+    log,
+  }
+}

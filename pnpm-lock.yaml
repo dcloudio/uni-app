@@ -650,8 +650,11 @@ importers:
 
   packages/uni-nvue-styler:
     specifiers:
+      parse-css-font: ^4.0.0
       postcss: ^8.4.5
     dependencies:
+      parse-css-font: 4.0.0
+    devDependencies:
       postcss: 8.4.5
 
   packages/uni-quickapp-webview:
@@ -3114,6 +3117,30 @@ packages:
       randombytes: 2.1.0
       randomfill: 1.0.4
     dev: true
+
+  /css-font-size-keywords/1.0.0:
+    resolution: {integrity: sha1-hUh1rOmspqjS7g00WkSq6btttss=}
+    dev: false
+
+  /css-font-stretch-keywords/1.0.1:
+    resolution: {integrity: sha1-UM7puboDH7XJUtRyMTnx4Qe1SxA=}
+    dev: false
+
+  /css-font-style-keywords/1.0.1:
+    resolution: {integrity: sha1-XDUygT9jtKHelU0TzqhqtDM0CeQ=}
+    dev: false
+
+  /css-font-weight-keywords/1.0.0:
+    resolution: {integrity: sha1-m8BGcayFvHJLV07106yWsNYE/Zc=}
+    dev: false
+
+  /css-list-helpers/2.0.0:
+    resolution: {integrity: sha512-9Bj8tZ0jWbAM3u/U6m/boAzAwLPwtjzFvwivr2piSvyVa3K3rChJzQy4RIHkNkKiZCHrEMWDJWtTR8UyVhdDnQ==}
+    dev: false
+
+  /css-system-font-keywords/1.0.0:
+    resolution: {integrity: sha1-hcbwhquk6zLFcaMIav/ENLhII+0=}
+    dev: false
 
   /cssesc/3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
@@ -6031,6 +6058,18 @@ packages:
       safe-buffer: 5.2.1
     dev: true
 
+  /parse-css-font/4.0.0:
+    resolution: {integrity: sha512-lnY7dTUfjRXsSo5G5C639L8RaBBaVSgL+5hacIFKsNHzeCJQ5SFSZv1DZmc7+wZv/22PFGOq2YbaEHLdaCS/mQ==}
+    dependencies:
+      css-font-size-keywords: 1.0.0
+      css-font-stretch-keywords: 1.0.1
+      css-font-style-keywords: 1.0.1
+      css-font-weight-keywords: 1.0.0
+      css-list-helpers: 2.0.0
+      css-system-font-keywords: 1.0.0
+      unquote: 1.1.1
+    dev: false
+
   /parse-json/5.2.0:
     resolution: {integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==}
     engines: {node: '>=8'}
@@ -7235,6 +7274,10 @@ packages:
   /unpipe/1.0.0:
     resolution: {integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /unquote/1.1.1:
+    resolution: {integrity: sha1-j97XMk7G6IoP+LkF58CYzcCG1UQ=}
     dev: false
 
   /untildify/4.0.0:
