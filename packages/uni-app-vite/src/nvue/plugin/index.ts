@@ -1,10 +1,13 @@
 import type { PreRenderedChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import path from 'path'
+import colors from 'picocolors'
 import {
+  commonjsProxyRE,
   createTransformTag,
+  cssLangRE,
   dynamicImportPolyfill,
-  isUniPageSfcFile,
+  generateCodeFrame,
   normalizePath,
   parseVueRequest,
   removeExt,
@@ -17,6 +20,7 @@ import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
 import { transformText } from './transforms/transformText'
 import { createConfigResolved } from '../../plugin/configResolved'
+
 const uTags = {
   text: 'u-text',
   image: 'u-image',
@@ -41,9 +45,6 @@ export function initNVueNodeTransforms() {
 export function uniAppNVuePlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const mainPath = resolveMainPathOnce(inputDir)
-  function normalizeCssChunkFilename(id: string) {
-    return removeExt(normalizePath(path.relative(inputDir, id))) + '.css.js'
-  }
   return {
     name: 'uni:app-nvue',
     config() {
@@ -77,21 +78,41 @@ export function uniAppNVuePlugin(): Plugin {
       }
     },
     configResolved: createConfigResolved({
-      chunkCssFilename(id: string) {
-        if (id === mainPath) {
-          return 'app.css.js'
-        } else if (isUniPageSfcFile(id, inputDir)) {
-          return normalizeCssChunkFilename(id)
+      createCssPostPlugin(config) {
+        return {
+          name: 'vite:css-post',
+          buildStart() {
+            // 用于覆盖原始插件方法
+            // noop
+          },
+          async transform(source, filename) {
+            if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
+              return
+            }
+            const { code, messages } = await parse(source, {
+              filename,
+              descendant: false,
+              logLevel: 'WARNING',
+            })
+            messages.forEach((message) => {
+              if (message.type === 'warning') {
+                let msg = `[vite:css] ${message.text}`
+                if (message.line && message.column) {
+                  msg += `\n${generateCodeFrame(source, {
+                    line: message.line,
+                    column: message.column,
+                  })}`
+                }
+                config.logger.warn(colors.yellow(msg))
+              }
+            })
+            return { code: `export default ${code}`, map: { mappings: '' } }
+          },
+          generateBundle() {
+            // 用于覆盖原始插件方法
+            // noop
+          },
         }
-      },
-      async chunkCssCode(filename, cssCode) {
-        const { code, messages } = await parse(cssCode, { filename })
-        messages.forEach((msg) => {
-          if (msg.type === 'warning' || msg.type === 'error') {
-            console.warn(msg.text)
-          }
-        })
-        return `export default ${code}`
       },
     }),
   }

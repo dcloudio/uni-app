@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
+  cssPostPlugin,
   isUniPageSfcFile,
   normalizePath,
   parsePagesJsonOnce,
@@ -42,24 +43,28 @@ export function uniAppVuePlugin(): UniVitePlugin {
       }
     },
     configResolved: createConfigResolved({
-      chunkCssFilename(id: string) {
-        if (id === mainPath) {
-          return 'app.css'
-        } else if (isUniPageSfcFile(id, inputDir)) {
-          return normalizeCssChunkFilename(id)
-        }
-      },
-      chunkCssCode(filename, cssCode) {
-        if (filename === 'app.css') {
-          if (!appCss) {
-            appCss = fs.readFileSync(
-              require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
-              'utf8'
-            )
-          }
-          return appCss + '\n' + cssCode
-        }
-        return cssCode
+      createCssPostPlugin(config) {
+        return cssPostPlugin(config, {
+          chunkCssFilename(id: string) {
+            if (id === mainPath) {
+              return 'app.css'
+            } else if (isUniPageSfcFile(id, inputDir)) {
+              return normalizeCssChunkFilename(id)
+            }
+          },
+          chunkCssCode(filename, cssCode) {
+            if (filename === 'app.css') {
+              if (!appCss) {
+                appCss = fs.readFileSync(
+                  require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
+                  'utf8'
+                )
+              }
+              return appCss + '\n' + cssCode
+            }
+            return cssCode
+          },
+        })
       },
     }),
     generateBundle(_, bundle) {

@@ -1,7 +1,11 @@
 import type { Plugin } from 'vite'
 import type { EmittedAsset } from 'rollup'
 import type { ParserOptions } from '@vue/compiler-core'
-import type { CompilerOptions, TemplateCompiler } from '@vue/compiler-sfc'
+import type {
+  CompilerOptions,
+  SFCStyleCompileOptions,
+  TemplateCompiler,
+} from '@vue/compiler-sfc'
 import { UniViteCopyPluginOptions } from './plugins/copy'
 
 export const cssTarget = 'chrome53'
@@ -15,6 +19,7 @@ export interface CopyOptions {
 
 interface UniVitePluginUniOptions {
   compiler?: TemplateCompiler
+  styleOptions?: Pick<SFCStyleCompileOptions, 'postcssPlugins'>
   compilerOptions?: {
     miniProgram?: {
       emitFile?: (emittedFile: EmittedAsset) => string

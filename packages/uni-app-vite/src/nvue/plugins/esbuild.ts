@@ -38,11 +38,13 @@ export function uniEsbuildPlugin(): Plugin {
         }
       })
       debugEsbuild('start', entryPoints.length, entryPoints)
-      for (const filename of entryPoints) {
-        await buildNVuePage(filename, buildOptions).then((code) => {
-          return fs.outputFile(path.resolve(outputDir, filename), code)
+      await Promise.all(
+        entryPoints.map((filename) => {
+          return buildNVuePage(filename, buildOptions).then((code) => {
+            return fs.outputFile(path.resolve(outputDir, filename), code)
+          })
         })
-      }
+      )
       debugEsbuild('end')
     },
   }
@@ -51,8 +53,6 @@ export function uniEsbuildPlugin(): Plugin {
 function buildNVuePage(filename: string, options: BuildOptions) {
   return transformWithEsbuild(
     `import NVuePageComponent from './${filename}'
-import NVuePageComponentStyle from './${filename.replace('.js', '.css')}'    
-NVuePageComponent.__stylesheet = NVuePageComponentStyle
 Vue.createApp(NVuePageComponent).mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),
     options

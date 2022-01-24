@@ -71,7 +71,7 @@ const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`
 export const cssLangRE = new RegExp(cssLangs)
 const cssModuleRE = new RegExp(`\\.module${cssLangs}`)
 const directRequestRE = /(\?|&)direct\b/
-const commonjsProxyRE = /\?commonjs-proxy/
+export const commonjsProxyRE = /\?commonjs-proxy/
 
 const enum PreprocessLang {
   less = 'less',

@@ -12,4 +12,8 @@ export {
   cssPlugin,
   cssPostPlugin,
   minifyCSS,
+  cssLangRE,
+  commonjsProxyRE,
 } from './vitejs/plugins/css'
+
+export { generateCodeFrame } from './vitejs/utils'

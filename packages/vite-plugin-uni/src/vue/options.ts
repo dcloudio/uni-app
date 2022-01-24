@@ -46,6 +46,7 @@ export function initPluginVueOptions(
 
   const {
     compiler,
+    styleOptions: { postcssPlugins },
     compilerOptions: {
       miniProgram,
       isNativeTag,
@@ -54,6 +55,10 @@ export function initPluginVueOptions(
       directiveTransforms,
     },
   } = uniPluginOptions
+
+  if (postcssPlugins) {
+    styleOptions.postcssPlugins.push(...postcssPlugins)
+  }
 
   if (compiler) {
     templateOptions.compiler = compiler

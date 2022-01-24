@@ -1,4 +1,4 @@
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 
 import {
   injectAssetPlugin,
@@ -6,13 +6,14 @@ import {
   injectCssPostPlugin,
 } from '@dcloudio/uni-cli-shared'
 
-export function createConfigResolved(options: {
-  chunkCssFilename: (id: string) => string | void
-  chunkCssCode: (filename: string, cssCode: string) => string | Promise<string>
+export function createConfigResolved({
+  createCssPostPlugin,
+}: {
+  createCssPostPlugin: (config: ResolvedConfig) => Plugin
 }): Plugin['configResolved'] {
   return (config) => {
     injectCssPlugin(config)
-    injectCssPostPlugin(config, options)
+    injectCssPostPlugin(config, createCssPostPlugin(config))
     // 强制不inline
     config.build.assetsInlineLimit = 0
     injectAssetPlugin(config)
