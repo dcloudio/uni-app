@@ -13,8 +13,8 @@ import { normalizeMap } from './map'
 
 const normalized = Symbol('normalized')
 
-interface NormalizeOptions {
-  descendant?: false
+export interface NormalizeOptions {
+  descendant?: boolean
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
 }
 

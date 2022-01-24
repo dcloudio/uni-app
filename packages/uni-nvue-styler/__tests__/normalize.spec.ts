@@ -1,8 +1,7 @@
-import { objectifier } from '../src'
-import { parseCss } from './utils'
+import { objectifier, parse } from '../src'
 
 async function objectifierRule(input: string) {
-  const { root, messages } = await parseCss(input)
+  const { root, messages } = await parse(input, { logLevel: 'NOTE' })
   return {
     json: objectifier(root),
     messages,

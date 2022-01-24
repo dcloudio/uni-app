@@ -1,9 +1,14 @@
 import postcss from 'postcss'
+import { NormalizeOptions } from './normalize'
 import { expand, normalize } from '../src'
-export function parseCss(input: string, filename: string = 'foo.css') {
-  return postcss([expand, normalize({ descendant: false, logLevel: 'NOTE' })])
+
+interface ParseOpitons extends NormalizeOptions {
+  filename?: string
+}
+export function parse(input: string, options: ParseOpitons = {}) {
+  return postcss([expand, normalize(options)])
     .process(input, {
-      from: filename,
+      from: options.filename || 'foo.css',
     })
     .catch((err: any) => {
       return {
