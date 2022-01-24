@@ -6,6 +6,7 @@ import {
   MiniProgramFilterOptions,
   missingModuleName,
   parseRenderjs,
+  genWxsCallMethodsCode,
 } from '@dcloudio/uni-cli-shared'
 
 const debugRenderjs = debug('uni:mp-renderjs')
@@ -50,7 +51,7 @@ export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
         })
       }
       return {
-        code: 'export default {}',
+        code: genWxsCallMethodsCode(code),
         map: { mappings: '' },
       }
     },

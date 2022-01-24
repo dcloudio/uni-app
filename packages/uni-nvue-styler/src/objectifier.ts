@@ -50,7 +50,7 @@ export function objectifier(
 }
 
 function transition(
-  body: Record<string, string | number>,
+  body: Record<string, unknown>,
   context: ObjectifierContext
 ) {}
 

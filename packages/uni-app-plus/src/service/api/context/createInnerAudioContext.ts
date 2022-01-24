@@ -38,7 +38,7 @@ const evts: AudioEvnets[] = [
   'pause',
 ]
 
-const AUDIO_DEFAULT_SESSION_CATEGORY: string = 'ambient'
+const AUDIO_DEFAULT_SESSION_CATEGORY: string = 'playback'
 
 const initStateChage = (audioId: string) => {
   const audio = audios[audioId]
