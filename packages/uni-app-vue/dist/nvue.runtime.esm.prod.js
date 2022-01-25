@@ -9161,8 +9161,27 @@ export function nvueFactory(exports, document) {
     return val === undefined || val === null;
   }
 
-  function parseStylesheet(instance) {
-    return instance.type.__stylesheet || {};
+  function parseStylesheet(_ref23) {
+    var {
+      type
+    } = _ref23;
+
+    if (!type.__styles) {
+      var {
+        styles
+      } = type;
+      var normalizedStyles = {};
+
+      if (isArray(styles)) {
+        styles.forEach(style => {
+          extend(normalizedStyles, style);
+        });
+      }
+
+      type.__styles = normalizedStyles;
+    }
+
+    return type.__styles;
   }
 
   function patchAttr(el, key, value) {

@@ -8878,9 +8878,18 @@ const nodeOps = {
 function isUndef(val) {
     return val === undefined || val === null;
 }
-function parseStylesheet(instance) {
-    return (instance.type.__stylesheet ||
-        {});
+function parseStylesheet({ type }) {
+    if (!type.__styles) {
+        const { styles } = type;
+        const normalizedStyles = {};
+        if (isArray(styles)) {
+            styles.forEach(style => {
+                extend(normalizedStyles, style);
+            });
+        }
+        type.__styles = normalizedStyles;
+    }
+    return type.__styles;
 }
 
 function patchAttr(el, key, value, instance = null) {
