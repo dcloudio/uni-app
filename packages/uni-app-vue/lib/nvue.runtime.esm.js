@@ -8884,7 +8884,14 @@ function parseStylesheet({ type }) {
         const normalizedStyles = {};
         if (isArray(styles)) {
             styles.forEach(style => {
-                extend(normalizedStyles, style);
+                Object.keys(style).forEach(name => {
+                    if (hasOwn(normalizedStyles, name)) {
+                        extend(normalizedStyles[name], style[name]);
+                    }
+                    else {
+                        normalizedStyles[name] = style[name];
+                    }
+                });
             });
         }
         type.__styles = normalizedStyles;
