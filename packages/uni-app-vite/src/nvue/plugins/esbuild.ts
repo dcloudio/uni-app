@@ -1,12 +1,16 @@
+import type { Plugin } from 'vite'
+import type { BuildOptions, PluginBuild } from 'esbuild'
+
 import path from 'path'
 import fs from 'fs-extra'
 import debug from 'debug'
+
 import { transformWithEsbuild } from '@dcloudio/uni-cli-shared'
-import type { BuildOptions, PluginBuild } from 'esbuild'
-import type { Plugin } from 'vite'
+
 import { nvueOutDir } from '../../utils'
 
 const debugEsbuild = debug('uni:app-nvue-esbuild')
+
 export function uniEsbuildPlugin(): Plugin {
   let buildOptions: BuildOptions
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -50,8 +54,11 @@ export function uniEsbuildPlugin(): Plugin {
 
 function buildNVuePage(filename: string, options: BuildOptions) {
   return transformWithEsbuild(
-    `import NVuePageComponent from './${filename}'
-Vue.createApp(NVuePageComponent).mount('#root')`,
+    `import App from './${filename}'
+import { AppStyles } from './app.css.js'
+const app = Vue.createApp(App)
+app.provide('__appStyles', Vue.useCssStyles(AppStyles))
+app.mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),
     options
   ).then((res) => {

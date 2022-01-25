@@ -1,4 +1,5 @@
 import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
+import { APP_CSS_JS } from './appCss'
 
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {
@@ -17,7 +18,7 @@ export function uniMainJsPlugin() {
             }
           }
           return {
-            code: `import './pages.json.js'`,
+            code: `import './pages.json.js';import('${APP_CSS_JS}').then(()=>{})`,
             map: { mappings: '' },
           }
         }

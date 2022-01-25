@@ -10982,37 +10982,48 @@ export function nvueFactory(exports, document) {
     nextSibling: node => node.nextSibling
   };
 
-  function isUndef(val) {
-    return val === undefined || val === null;
+  function useCssStyles(styles) {
+    var normalized = {};
+
+    if (isArray(styles)) {
+      styles.forEach(style => {
+        Object.keys(style).forEach(name => {
+          if (hasOwn(normalized, name)) {
+            extend(normalized[name], style[name]);
+          } else {
+            normalized[name] = style[name];
+          }
+        });
+      });
+    }
+
+    return normalized;
   }
 
   function parseStylesheet(_ref23) {
     var {
-      type
+      type,
+      vnode: {
+        appContext
+      }
     } = _ref23;
 
     if (!type.__styles) {
-      var {
-        styles
-      } = type;
-      var normalizedStyles = {};
+      var styles = [];
 
-      if (isArray(styles)) {
-        styles.forEach(style => {
-          Object.keys(style).forEach(name => {
-            if (hasOwn(normalizedStyles, name)) {
-              extend(normalizedStyles[name], style[name]);
-            } else {
-              normalizedStyles[name] = style[name];
-            }
-          });
-        });
+      if (appContext) {
+        styles.push(appContext.provides.__appStyles);
       }
 
-      type.__styles = normalizedStyles;
+      type.styles.forEach(style => styles.push(style));
+      type.__styles = useCssStyles(styles);
     }
 
     return type.__styles;
+  }
+
+  function isUndef(val) {
+    return val === undefined || val === null;
   }
 
   function patchAttr(el, key, value) {
@@ -11527,6 +11538,7 @@ export function nvueFactory(exports, document) {
     unref: unref,
     useAttrs: useAttrs,
     useCssModule: useCssModule,
+    useCssStyles: useCssStyles,
     useCssVars: useCssVars,
     useSSRContext: useSSRContext,
     useSlots: useSlots,
