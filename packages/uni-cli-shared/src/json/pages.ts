@@ -199,6 +199,12 @@ function normalizePageStyle(
         pageStyle.enablePullDownRefresh = true
         pageStyle.pullToRefresh = normalizePullToRefresh(pageStyle)
       }
+      if (platform === 'app') {
+        pageStyle.disableSwipeBack === true
+          ? (pageStyle.popGesture = 'none')
+          : delete pageStyle.popGesture
+        delete pageStyle.disableSwipeBack
+      }
     }
     pageStyle.isNVue = isNVue
     removePlatformStyle(pageStyle)
