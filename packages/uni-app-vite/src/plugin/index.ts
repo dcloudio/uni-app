@@ -1,4 +1,8 @@
-import { UniVitePlugin } from '@dcloudio/uni-cli-shared'
+import {
+  initPostcssPlugin,
+  parseRpx2UnitOnce,
+  UniVitePlugin,
+} from '@dcloudio/uni-cli-shared'
 
 import { uniOptions } from './uni'
 import { buildOptions } from './build'
@@ -10,6 +14,16 @@ export function uniAppPlugin(): UniVitePlugin {
     uni: uniOptions(),
     config(config, env) {
       return {
+        css: {
+          postcss: {
+            plugins: initPostcssPlugin({
+              uniApp: parseRpx2UnitOnce(
+                process.env.UNI_INPUT_DIR,
+                process.env.UNI_PLATFORM
+              ),
+            }),
+          },
+        },
         build: buildOptions(config, env),
       }
     },

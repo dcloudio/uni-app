@@ -13231,7 +13231,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
       const children = [];
       if (slots.default) {
         slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8) {
+          if (vnode.shapeFlag & 8 && vnode.type !== Comment) {
             const lines = parseText(vnode.children, {
               space: props2.space,
               decode: props2.decode
