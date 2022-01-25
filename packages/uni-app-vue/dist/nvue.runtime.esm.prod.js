@@ -440,7 +440,7 @@ export function nvueFactory(exports, document) {
         return this.fn();
       }
 
-      if (!effectStack.includes(this)) {
+      if (!effectStack.length || !effectStack.includes(this)) {
         try {
           effectStack.push(activeEffect = this);
           enableTracking();
@@ -806,6 +806,10 @@ export function nvueFactory(exports, document) {
     var shallow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     return function set(target, key, value, receiver) {
       var oldValue = target[key];
+
+      if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
+        return false;
+      }
 
       if (!shallow && !isReadonly(value)) {
         if (!isShallow(value)) {
@@ -1579,15 +1583,16 @@ export function nvueFactory(exports, document) {
     constructor(getter, _setter, isReadonly, isSSR) {
       this._setter = _setter;
       this.dep = undefined;
-      this._dirty = true;
       this.__v_isRef = true;
+      this._dirty = true;
       this.effect = new ReactiveEffect(getter, () => {
         if (!this._dirty) {
           this._dirty = true;
           triggerRefValue(this);
         }
       });
-      this.effect.active = !isSSR;
+      this.effect.computed = this;
+      this.effect.active = this._cacheable = !isSSR;
       this["__v_isReadonly"
       /* IS_READONLY */
       ] = isReadonly;
@@ -1598,7 +1603,7 @@ export function nvueFactory(exports, document) {
       var self = toRaw(this);
       trackRefValue(self);
 
-      if (self._dirty) {
+      if (self._dirty || !self._cacheable) {
         self._dirty = false;
         self._value = self.effect.run();
       }
@@ -3081,7 +3086,7 @@ export function nvueFactory(exports, document) {
     if (instance) {
       // #2400
       // to support `app.use` plugins,
-      // fallback to appContext's `provides` if the intance is at root
+      // fallback to appContext's `provides` if the instance is at root
       var provides = instance.parent == null ? instance.vnode.appContext && instance.vnode.appContext.provides : instance.parent.provides;
 
       if (provides && key in provides) {
@@ -4165,7 +4170,7 @@ export function nvueFactory(exports, document) {
     if (isArray(pattern)) {
       return pattern.some(p => matches(p, name));
     } else if (isString(pattern)) {
-      return pattern.split(',').indexOf(name) > -1;
+      return pattern.split(',').includes(name);
     } else if (pattern.test) {
       return pattern.test(name);
     }
@@ -4443,7 +4448,7 @@ export function nvueFactory(exports, document) {
         var opt = computedOptions[_key7];
         var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
         var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
-        var c = computed({
+        var c = computed$1({
           get,
           set
         });
@@ -4869,7 +4874,7 @@ export function nvueFactory(exports, document) {
 
       if (attrs !== rawCurrentProps) {
         for (var _key10 in attrs) {
-          if (!rawProps || !hasOwn(rawProps, _key10)) {
+          if (!rawProps || !hasOwn(rawProps, _key10) && !false) {
             delete attrs[_key10];
             hasAttrsChanged = true;
           }
@@ -7987,7 +7992,7 @@ export function nvueFactory(exports, document) {
       shapeFlag: vnode.shapeFlag,
       // if the vnode is cloned with extra props, we can no longer assume its
       // existing patch flag to be reliable and need to add the FULL_PROPS flag.
-      // note: perserve flag for fragments since they use the flag for children
+      // note: preserve flag for fragments since they use the flag for children
       // fast paths only.
       patchFlag: extraProps && vnode.type !== Fragment ? patchFlag === -1 // hoisted node
       ? 16
@@ -8173,7 +8178,7 @@ export function nvueFactory(exports, document) {
           var existing = ret[key];
           var incoming = toMerge[key];
 
-          if (existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
+          if (incoming && existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
             ret[key] = existing ? [].concat(existing, incoming) : incoming;
           }
         } else if (key !== '') {
@@ -8890,7 +8895,7 @@ export function nvueFactory(exports, document) {
    * instance properties when it is accessed by a parent component via template
    * refs.
    *
-   * `<script setup>` components are closed by default - i.e. varaibles inside
+   * `<script setup>` components are closed by default - i.e. variables inside
    * the `<script setup>` scope is not exposed to parent unless explicitly exposed
    * via `defineExpose`.
    *
@@ -9111,7 +9116,7 @@ export function nvueFactory(exports, document) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.27";
+  var version = "3.2.29";
   /**
    * @internal only exposed in compat builds
    */

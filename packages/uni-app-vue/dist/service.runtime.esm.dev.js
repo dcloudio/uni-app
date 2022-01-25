@@ -796,7 +796,17 @@ export function vueFactory(exports) {
   var HTML_TAGS = 'html,body,base,head,link,meta,style,title,address,article,aside,footer,' + 'header,h1,h2,h3,h4,h5,h6,nav,section,div,dd,dl,dt,figcaption,' + 'figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,' + 'data,dfn,em,i,kbd,mark,q,rp,rt,ruby,s,samp,small,span,strong,sub,sup,' + 'time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,' + 'canvas,script,noscript,del,ins,caption,col,colgroup,table,thead,tbody,td,' + 'th,tr,button,datalist,fieldset,form,input,label,legend,meter,optgroup,' + 'option,output,progress,select,textarea,details,dialog,menu,' + 'summary,template,blockquote,iframe,tfoot'; // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
 
   var SVG_TAGS = 'svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,' + 'defs,desc,discard,ellipse,feBlend,feColorMatrix,feComponentTransfer,' + 'feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,' + 'feDistanceLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,' + 'feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,' + 'fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,' + 'foreignObject,g,hatch,hatchpath,image,line,linearGradient,marker,mask,' + 'mesh,meshgradient,meshpatch,meshrow,metadata,mpath,path,pattern,' + 'polygon,polyline,radialGradient,rect,set,solidcolor,stop,switch,symbol,' + 'text,textPath,title,tspan,unknown,use,view';
+  /**
+   * Compiler only.
+   * Do NOT use in runtime code paths unless behind `("development" !== 'production')` flag.
+   */
+
   var isHTMLTag = /*#__PURE__*/makeMap(HTML_TAGS);
+  /**
+   * Compiler only.
+   * Do NOT use in runtime code paths unless behind `("development" !== 'production')` flag.
+   */
+
   var isSVGTag = /*#__PURE__*/makeMap(SVG_TAGS);
   /**
    * For converting {{ interpolation }} values to displayed strings.
@@ -1137,7 +1147,7 @@ export function vueFactory(exports) {
         return this.fn();
       }
 
-      if (!effectStack.includes(this)) {
+      if (!effectStack.length || !effectStack.includes(this)) {
         try {
           effectStack.push(activeEffect = this);
           enableTracking();
@@ -1530,6 +1540,10 @@ export function vueFactory(exports) {
     var shallow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     return function set(target, key, value, receiver) {
       var oldValue = target[key];
+
+      if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
+        return false;
+      }
 
       if (!shallow && !isReadonly(value)) {
         if (!isShallow(value)) {
@@ -2348,15 +2362,16 @@ export function vueFactory(exports) {
     constructor(getter, _setter, isReadonly, isSSR) {
       this._setter = _setter;
       this.dep = undefined;
-      this._dirty = true;
       this.__v_isRef = true;
+      this._dirty = true;
       this.effect = new ReactiveEffect(getter, () => {
         if (!this._dirty) {
           this._dirty = true;
           triggerRefValue(this);
         }
       });
-      this.effect.active = !isSSR;
+      this.effect.computed = this;
+      this.effect.active = this._cacheable = !isSSR;
       this["__v_isReadonly"
       /* IS_READONLY */
       ] = isReadonly;
@@ -2367,7 +2382,7 @@ export function vueFactory(exports) {
       var self = toRaw(this);
       trackRefValue(self);
 
-      if (self._dirty) {
+      if (self._dirty || !self._cacheable) {
         self._dirty = false;
         self._value = self.effect.run();
       }
@@ -2629,7 +2644,7 @@ export function vueFactory(exports) {
     ]: 'async component loader',
     [14
     /* SCHEDULER */
-    ]: 'scheduler flush. This is likely a Vue internals bug. ' + 'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/vue-next'
+    ]: 'scheduler flush. This is likely a Vue internals bug. ' + 'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/core'
   };
 
   function callWithErrorHandling(fn, instance, type, args) {
@@ -4430,7 +4445,7 @@ export function vueFactory(exports) {
     if (instance) {
       // #2400
       // to support `app.use` plugins,
-      // fallback to appContext's `provides` if the intance is at root
+      // fallback to appContext's `provides` if the instance is at root
       var provides = instance.parent == null ? instance.vnode.appContext && instance.vnode.appContext.provides : instance.parent.provides;
 
       if (provides && key in provides) {
@@ -5576,7 +5591,7 @@ export function vueFactory(exports) {
     if (isArray(pattern)) {
       return pattern.some(p => matches(p, name));
     } else if (isString(pattern)) {
-      return pattern.split(',').indexOf(name) > -1;
+      return pattern.split(',').includes(name);
     } else if (pattern.test) {
       return pattern.test(name);
     }
@@ -5945,7 +5960,7 @@ export function vueFactory(exports) {
         var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : () => {
           warn$1("Write operation failed: computed property \"".concat(_key12, "\" is readonly."));
         };
-        var c = computed({
+        var c = computed$1({
           get,
           set
         });
@@ -6404,7 +6419,7 @@ export function vueFactory(exports) {
 
       if (attrs !== rawCurrentProps) {
         for (var _key15 in attrs) {
-          if (!rawProps || !hasOwn(rawProps, _key15)) {
+          if (!rawProps || !hasOwn(rawProps, _key15) && !false) {
             delete attrs[_key15];
             hasAttrsChanged = true;
           }
@@ -7687,6 +7702,8 @@ export function vueFactory(exports) {
 
     return [hydrate, hydrateNode];
   }
+  /* eslint-disable no-restricted-globals */
+
 
   var supported;
   var perf;
@@ -7720,8 +7737,6 @@ export function vueFactory(exports) {
     if (supported !== undefined) {
       return supported;
     }
-    /* eslint-disable no-restricted-globals */
-
 
     if (typeof window !== 'undefined' && window.performance) {
       supported = true;
@@ -7729,8 +7744,6 @@ export function vueFactory(exports) {
     } else {
       supported = false;
     }
-    /* eslint-enable no-restricted-globals */
-
 
     return supported;
   }
@@ -10119,7 +10132,7 @@ export function vueFactory(exports) {
       shapeFlag: vnode.shapeFlag,
       // if the vnode is cloned with extra props, we can no longer assume its
       // existing patch flag to be reliable and need to add the FULL_PROPS flag.
-      // note: perserve flag for fragments since they use the flag for children
+      // note: preserve flag for fragments since they use the flag for children
       // fast paths only.
       patchFlag: extraProps && vnode.type !== Fragment ? patchFlag === -1 // hoisted node
       ? 16
@@ -10320,7 +10333,7 @@ export function vueFactory(exports) {
           var existing = ret[key];
           var incoming = toMerge[key];
 
-          if (existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
+          if (incoming && existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
             ret[key] = existing ? [].concat(existing, incoming) : incoming;
           }
         } else if (key !== '') {
@@ -11269,7 +11282,7 @@ export function vueFactory(exports) {
    * instance properties when it is accessed by a parent component via template
    * refs.
    *
-   * `<script setup>` components are closed by default - i.e. varaibles inside
+   * `<script setup>` components are closed by default - i.e. variables inside
    * the `<script setup>` scope is not exposed to parent unless explicitly exposed
    * via `defineExpose`.
    *
@@ -11678,7 +11691,7 @@ export function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.27";
+  var version = "3.2.29";
   var _ssrUtils = {
     createComponentInstance,
     setupComponent,

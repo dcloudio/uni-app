@@ -202,6 +202,8 @@ declare namespace UniApp {
     animationType?: string
     animationDuration?: number
     subNVues?: PagesJsonPageStyleSubNVue[]
+    disableSwipeBack?: Boolean
+    popGesture?: 'close' | 'none'
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number
