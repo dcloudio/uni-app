@@ -128,6 +128,10 @@ export function initPluginVueOptions(
   compilerOptions.hoistStatic = false
   // 小程序使用了
   ;(compilerOptions as any).root = process.env.UNI_INPUT_DIR
+  // app-nvue 需要启用 customElement 机制来内联 styles
+  if (process.env.UNI_COMPILER === 'nvue') {
+    vueOptions.customElement = true
+  }
   return vueOptions
 }
 
