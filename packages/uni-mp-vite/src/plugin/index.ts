@@ -8,6 +8,8 @@ import {
   parseManifestJsonOnce,
   findMiniProgramTemplateFiles,
   MiniProgramCompilerOptions,
+  initPostcssPlugin,
+  parseRpx2UnitOnce,
 } from '@dcloudio/uni-cli-shared'
 import type {
   SFCDescriptor,
@@ -124,6 +126,16 @@ export function uniMiniProgramPlugin(
             ...alias,
           },
           preserveSymlinks: true,
+        },
+        css: {
+          postcss: {
+            plugins: initPostcssPlugin({
+              uniApp: parseRpx2UnitOnce(
+                process.env.UNI_INPUT_DIR,
+                process.env.UNI_PLATFORM
+              ),
+            }),
+          },
         },
         build: buildOptions(),
       }

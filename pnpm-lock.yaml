@@ -287,6 +287,7 @@ importers:
       '@vue/compiler-sfc': 3.2.29
       '@vue/server-renderer': 3.2.29
       '@vue/shared': 3.2.29
+      autoprefixer: ^10.4.2
       base64url: ^3.0.1
       chokidar: ^3.5.2
       compare-versions: ^3.6.0
@@ -323,6 +324,7 @@ importers:
       '@vue/compiler-sfc': 3.2.29
       '@vue/server-renderer': 3.2.29_vue@3.2.29
       '@vue/shared': 3.2.29
+      autoprefixer: 10.4.2_postcss@8.4.5
       base64url: 3.0.1
       chokidar: 3.5.2
       compare-versions: 3.6.0
@@ -3521,6 +3523,22 @@ packages:
       postcss-value-parser: 4.2.0
     dev: true
 
+  /autoprefixer/10.4.2_postcss@8.4.5:
+    resolution: {integrity: sha512-9fOPpHKuDW1w/0EKfRmVnxTDt8166MAnLI3mgZ1JCnhNtYWxcJ6Ud5CO/AVOZi/AvFa8DY9RTy3h3+tFBlrrdQ==}
+    engines: {node: ^10 || ^12 || >=14}
+    hasBin: true
+    peerDependencies:
+      postcss: ^8.1.0
+    dependencies:
+      browserslist: 4.19.1
+      caniuse-lite: 1.0.30001301
+      fraction.js: 4.1.2
+      normalize-range: 0.1.2
+      picocolors: 1.0.0
+      postcss: 8.4.5
+      postcss-value-parser: 4.2.0
+    dev: false
+
   /aws-sign2/0.7.0:
     resolution: {integrity: sha1-tG6JCTSpWR8tL2+G1+ap8bP+dqg=}
     dev: true
@@ -3801,7 +3819,6 @@ packages:
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
-    dev: true
 
   /bs-logger/0.2.6:
     resolution: {integrity: sha512-pd8DCoxmbgc7hyPKOvxtqNcjYoOsABPQdcCUjGp3d42VR2CX1ORhk2A87oqqu5R1kk+76nsxZupkmyd+MVtCog==}
@@ -3883,7 +3900,6 @@ packages:
 
   /caniuse-lite/1.0.30001301:
     resolution: {integrity: sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==}
-    dev: true
 
   /caseless/0.12.0:
     resolution: {integrity: sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=}
@@ -4500,7 +4516,6 @@ packages:
 
   /electron-to-chromium/1.4.52:
     resolution: {integrity: sha512-JGkh8HEh5PnVrhU4HbpyyO0O791dVY6k7AdqfDeqbcRMeoGxtNHWT77deR2nhvbLe4dKpxjlDEvdEwrvRLGu2Q==}
-    dev: true
 
   /elliptic/6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -5310,7 +5325,6 @@ packages:
 
   /fraction.js/4.1.2:
     resolution: {integrity: sha512-o2RiJQ6DZaR/5+Si0qJUIy637QMRudSi9kU/FFzx9EZazrIdnBgpU+3sEWCxAVhH2RtxW2Oz+T4p2o8uOPVcgA==}
-    dev: true
 
   /fresh/0.5.2:
     resolution: {integrity: sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=}
@@ -7051,7 +7065,6 @@ packages:
   /normalize-range/0.1.2:
     resolution: {integrity: sha1-LRDAa9/TEuqXd2laTShDlFa3WUI=}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /npm-run-path/2.0.2:
     resolution: {integrity: sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8=}

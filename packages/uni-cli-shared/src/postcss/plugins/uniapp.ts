@@ -7,10 +7,8 @@ import {
   isBuiltInComponent,
   COMPONENT_SELECTOR_PREFIX,
 } from '@dcloudio/uni-shared'
-import { parseRpx2UnitOnce } from '../../json/manifest'
 
-interface UniAppCssProcessorOptions {
-  page?: string
+export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
   unitRatio?: number // 单位转换比例，默认10/320
   unitPrecision?: number // 单位精度，默认5
@@ -121,14 +119,10 @@ const transforms: Record<string, RewriteTag | undefined> = {
 
 const uniapp = (opts?: UniAppCssProcessorOptions) => {
   const platform = process.env.UNI_PLATFORM
-  if (!opts) {
-    const inputDir = process.env.UNI_INPUT_DIR
-    opts = extend(parseRpx2UnitOnce(inputDir, platform))
-  }
   const { unit, unitRatio, unitPrecision } = extend(
     {},
     defaultUniAppCssProcessorOptions,
-    opts || {}
+    opts
   )
   const rpx2unit = createRpx2Unit(unit, unitRatio, unitPrecision)
   return {

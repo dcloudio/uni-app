@@ -148,6 +148,12 @@ export declare const defaultMiniProgramRpx2Unit: {
     unitPrecision: number;
 };
 
+export declare const defaultNVueRpx2Unit: {
+    unit: string;
+    unitRatio: number;
+    unitPrecision: number;
+};
+
 export declare const defaultRpx2Unit: {
     unit: string;
     unitRatio: number;

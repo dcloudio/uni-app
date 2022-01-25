@@ -29,6 +29,7 @@
     "@vue/compiler-sfc": "3.2.29",
     "@vue/server-renderer": "3.2.29",
     "@vue/shared": "3.2.29",
+    "autoprefixer": "^10.4.2",
     "base64url": "^3.0.1",
     "chokidar": "^3.5.2",
     "compare-versions": "^3.6.0",

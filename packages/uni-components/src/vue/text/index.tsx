@@ -1,4 +1,4 @@
-import { VNode, Component, createTextVNode, createVNode } from 'vue'
+import { VNode, Component, createTextVNode, createVNode, Comment } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { DecodeOptions, parseText } from '../../helpers/text'
 
@@ -23,7 +23,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const children: VNode[] = []
       if (slots.default) {
         slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8 /* TEXT_CHILDREN */) {
+          if (
+            vnode.shapeFlag & 8 /* TEXT_CHILDREN */ &&
+            vnode.type !== Comment
+          ) {
             const lines = parseText(vnode.children as string, {
               space: props.space as DecodeOptions['space'],
               decode: props.decode as boolean,

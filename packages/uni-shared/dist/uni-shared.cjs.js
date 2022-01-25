@@ -344,6 +344,7 @@ const defaultMiniProgramRpx2Unit = {
     unitRatio: 1,
     unitPrecision: 1,
 };
+const defaultNVueRpx2Unit = defaultMiniProgramRpx2Unit;
 function createRpx2Unit(unit, unitRatio, unitPrecision) {
     // ignore: rpxCalcIncludeWidth
     return (val) => val.replace(unitRE, (m, $1) => {
@@ -1415,6 +1416,7 @@ exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
 exports.defaultMiniProgramRpx2Unit = defaultMiniProgramRpx2Unit;
+exports.defaultNVueRpx2Unit = defaultNVueRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.dynamicSlotName = dynamicSlotName;
 exports.forcePatchProp = forcePatchProp;
