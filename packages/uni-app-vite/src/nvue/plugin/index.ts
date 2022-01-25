@@ -8,6 +8,7 @@ import {
   cssLangRE,
   dynamicImportPolyfill,
   generateCodeFrame,
+  initPostcssPlugin,
   normalizePath,
   parseVueRequest,
   removeExt,
@@ -20,6 +21,7 @@ import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
 import { transformText } from './transforms/transformText'
 import { createConfigResolved } from '../../plugin/configResolved'
+import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
 
 const uTags = {
   text: 'u-text',
@@ -54,6 +56,14 @@ export function uniAppNVuePlugin(): Plugin {
           fileName: 'main.js',
           entry: mainPath,
           formats: ['esm'],
+        },
+        css: {
+          postcss: {
+            plugins: initPostcssPlugin({
+              uniApp: defaultNVueRpx2Unit,
+              autoprefixer: false,
+            }),
+          },
         },
         build: {
           outDir: nvueOutDir(),

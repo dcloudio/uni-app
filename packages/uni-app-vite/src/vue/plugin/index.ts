@@ -9,6 +9,8 @@ import {
   removeExt,
   resolveMainPathOnce,
   UniVitePlugin,
+  initPostcssPlugin,
+  parseRpx2UnitOnce,
 } from '@dcloudio/uni-cli-shared'
 import { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
@@ -28,6 +30,13 @@ export function uniAppVuePlugin(): UniVitePlugin {
     name: 'uni:app-vue',
     config() {
       return {
+        css: {
+          postcss: {
+            plugins: initPostcssPlugin({
+              uniApp: parseRpx2UnitOnce(inputDir, process.env.UNI_PLATFORM),
+            }),
+          },
+        },
         build: {
           rollupOptions: {
             output: {
