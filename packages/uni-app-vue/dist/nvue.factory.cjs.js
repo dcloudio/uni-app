@@ -449,7 +449,7 @@ function vueFactory(exports) {
         return this.fn();
       }
 
-      if (!effectStack.includes(this)) {
+      if (!effectStack.length || !effectStack.includes(this)) {
         try {
           effectStack.push(activeEffect = this);
           enableTracking();
@@ -815,6 +815,10 @@ function vueFactory(exports) {
     var shallow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     return function set(target, key, value, receiver) {
       var oldValue = target[key];
+
+      if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
+        return false;
+      }
 
       if (!shallow && !isReadonly(value)) {
         if (!isShallow(value)) {
@@ -1588,15 +1592,16 @@ function vueFactory(exports) {
     constructor(getter, _setter, isReadonly, isSSR) {
       this._setter = _setter;
       this.dep = undefined;
-      this._dirty = true;
       this.__v_isRef = true;
+      this._dirty = true;
       this.effect = new ReactiveEffect(getter, () => {
         if (!this._dirty) {
           this._dirty = true;
           triggerRefValue(this);
         }
       });
-      this.effect.active = !isSSR;
+      this.effect.computed = this;
+      this.effect.active = this._cacheable = !isSSR;
       this["__v_isReadonly"
       /* IS_READONLY */
       ] = isReadonly;
@@ -1607,7 +1612,7 @@ function vueFactory(exports) {
       var self = toRaw(this);
       trackRefValue(self);
 
-      if (self._dirty) {
+      if (self._dirty || !self._cacheable) {
         self._dirty = false;
         self._value = self.effect.run();
       }
@@ -3156,7 +3161,7 @@ function vueFactory(exports) {
     if (instance) {
       // #2400
       // to support `app.use` plugins,
-      // fallback to appContext's `provides` if the intance is at root
+      // fallback to appContext's `provides` if the instance is at root
       var provides = instance.parent == null ? instance.vnode.appContext && instance.vnode.appContext.provides : instance.parent.provides;
 
       if (provides && key in provides) {
@@ -4255,7 +4260,7 @@ function vueFactory(exports) {
     if (isArray(pattern)) {
       return pattern.some(p => matches(p, name));
     } else if (isString(pattern)) {
-      return pattern.split(',').indexOf(name) > -1;
+      return pattern.split(',').includes(name);
     } else if (pattern.test) {
       return pattern.test(name);
     }
@@ -4533,7 +4538,7 @@ function vueFactory(exports) {
         var opt = computedOptions[_key8];
         var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
         var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
-        var c = computed({
+        var c = computed$1({
           get,
           set
         });
@@ -4959,7 +4964,7 @@ function vueFactory(exports) {
 
       if (attrs !== rawCurrentProps) {
         for (var _key11 in attrs) {
-          if (!rawProps || !hasOwn(rawProps, _key11)) {
+          if (!rawProps || !hasOwn(rawProps, _key11) && !false) {
             delete attrs[_key11];
             hasAttrsChanged = true;
           }
@@ -8141,7 +8146,7 @@ function vueFactory(exports) {
       shapeFlag: vnode.shapeFlag,
       // if the vnode is cloned with extra props, we can no longer assume its
       // existing patch flag to be reliable and need to add the FULL_PROPS flag.
-      // note: perserve flag for fragments since they use the flag for children
+      // note: preserve flag for fragments since they use the flag for children
       // fast paths only.
       patchFlag: extraProps && vnode.type !== Fragment ? patchFlag === -1 // hoisted node
       ? 16
@@ -8327,7 +8332,7 @@ function vueFactory(exports) {
           var existing = ret[key];
           var incoming = toMerge[key];
 
-          if (existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
+          if (incoming && existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
             ret[key] = existing ? [].concat(existing, incoming) : incoming;
           }
         } else if (key !== '') {
@@ -9050,7 +9055,7 @@ function vueFactory(exports) {
    * instance properties when it is accessed by a parent component via template
    * refs.
    *
-   * `<script setup>` components are closed by default - i.e. varaibles inside
+   * `<script setup>` components are closed by default - i.e. variables inside
    * the `<script setup>` scope is not exposed to parent unless explicitly exposed
    * via `defineExpose`.
    *
@@ -9271,7 +9276,7 @@ function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.27";
+  var version = "3.2.29";
   /**
    * @internal only exposed in compat builds
    */
@@ -9312,12 +9317,295 @@ function vueFactory(exports) {
     nextSibling: node => node.nextSibling
   };
 
+  function isUndef(val) {
+    return val === undefined || val === null;
+  }
+
+  function parseStylesheet(instance) {
+    return instance.type.__stylesheet || {};
+  }
+
+  function patchAttr(el, key, value) {
+    var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    if (instance) {
+      value = transformAttr(el, key, value, instance);
+    }
+
+    if (value == null) ;else {
+      el.setAttr(key, value);
+    }
+  }
+
+  var ATTR_HOVER_CLASS = 'hoverClass';
+  var ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
+  var ATTR_PLACEHOLDER_STYLE = 'placeholderStyle';
+  var ATTR_INDICATOR_CLASS = 'indicatorClass';
+  var ATTR_INDICATOR_STYLE = 'indicatorStyle';
+  var ATTR_MASK_CLASS = 'maskClass';
+  var ATTR_MASK_STYLE = 'maskStyle';
+  var CLASS_AND_STYLES = {
+    view: {
+      class: [ATTR_HOVER_CLASS],
+      style: []
+    },
+    button: {
+      class: [ATTR_HOVER_CLASS],
+      style: []
+    },
+    navigator: {
+      class: [ATTR_HOVER_CLASS],
+      style: []
+    },
+    'u-input': {
+      class: [ATTR_PLACEHOLDER_CLASS],
+      style: [ATTR_PLACEHOLDER_STYLE]
+    },
+    'u-textarea': {
+      class: [ATTR_PLACEHOLDER_CLASS],
+      style: [ATTR_PLACEHOLDER_STYLE]
+    },
+    'picker-view': {
+      class: [ATTR_INDICATOR_CLASS, ATTR_MASK_CLASS],
+      style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
+    }
+  };
+
+  function transformAttr(el, key, value, instance) {
+    if (!value) {
+      return value;
+    }
+
+    var opts = CLASS_AND_STYLES[el.type];
+
+    if (opts) {
+      if (opts['class'].indexOf(key) !== -1) {
+        return parseStylesheet(instance)[value] || {};
+      }
+
+      if (opts['style'].indexOf(key) !== -1) {
+        if (isString(value)) {
+          return parseStringStyle(value);
+        }
+
+        return normalizeStyle(value);
+      }
+    }
+
+    return value;
+  } // compiler should normalize class + :class bindings on the same element
+  // into a single binding ['staticClass', dynamic]
+
+
+  function patchClass(el, pre, next) {
+    var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    // 移除 class
+    if (next == null) {
+      return;
+    }
+
+    if (!instance) {
+      return;
+    }
+
+    var oldStyle = getStyle(pre, instance);
+    var newStyle = getStyle(next, instance);
+    var cur, name;
+    var batchedStyles = {};
+
+    for (name in oldStyle) {
+      if (isUndef(newStyle[name])) {
+        batchedStyles[name] = '';
+      }
+    }
+
+    for (name in newStyle) {
+      cur = newStyle[name];
+
+      if (cur !== oldStyle[name]) {
+        batchedStyles[name] = cur;
+      }
+    }
+
+    el.setStyles(batchedStyles);
+  }
+
+  function getStyle(clazz, instance) {
+    if (!clazz) {
+      return {};
+    }
+
+    var classList = clazz.split(' ');
+    var stylesheet = parseStylesheet(instance);
+    var result = {};
+    classList.forEach(name => {
+      var style = stylesheet[name];
+      extend(result, style);
+    });
+    return result;
+  }
+
+  function addEventListener(el, event, handler, options) {
+    el.addEvent(event, handler);
+  }
+
+  function removeEventListener(el, event) {
+    el.removeEvent(event);
+  }
+
+  function patchEvent(el, rawName, prevValue, nextValue) {
+    var instance = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
+    // vei = vue event invokers
+    var invokers = el._vei || (el._vei = {});
+    var existingInvoker = invokers[rawName];
+
+    if (nextValue && existingInvoker) {
+      // patch
+      existingInvoker.value = nextValue;
+    } else {
+      var [name, options] = parseName(rawName);
+
+      if (nextValue) {
+        // add
+        var invoker = invokers[rawName] = createInvoker(nextValue, instance);
+        addEventListener(el, name, invoker);
+      } else if (existingInvoker) {
+        // remove
+        removeEventListener(el, name);
+        invokers[rawName] = undefined;
+      }
+    }
+  }
+
+  var optionsModifierRE = /(?:Once|Passive|Capture)$/;
+
+  function parseName(name) {
+    var options;
+
+    if (optionsModifierRE.test(name)) {
+      options = {};
+      var m;
+
+      while (m = name.match(optionsModifierRE)) {
+        name = name.slice(0, name.length - m[0].length);
+        options[m[0].toLowerCase()] = true;
+      }
+    }
+
+    return [hyphenate(name.slice(2)), options];
+  }
+
+  function createInvoker(initialValue, instance) {
+    var invoker = e => {
+      callWithAsyncErrorHandling(invoker.value, instance, 5
+      /* NATIVE_EVENT_HANDLER */
+      , [e]);
+    };
+
+    invoker.value = initialValue;
+    var modifiers = new Set(); // 合并 modifiers
+
+    if (isArray(invoker.value)) {
+      invoker.value.forEach(v => {
+        if (v.modifiers) {
+          v.modifiers.forEach(m => {
+            modifiers.add(m);
+          });
+        }
+      });
+    } else {
+      if (invoker.value.modifiers) {
+        invoker.value.modifiers.forEach(m => {
+          modifiers.add(m);
+        });
+      }
+
+      initWxsEvent(invoker, instance);
+    }
+
+    invoker.modifiers = [...modifiers];
+    return invoker;
+  }
+
+  function initWxsEvent(invoker, instance) {
+    if (!instance) {
+      return;
+    }
+
+    var {
+      $wxsModules
+    } = instance;
+
+    if (!$wxsModules) {
+      return;
+    }
+
+    var invokerSourceCode = invoker.value.toString();
+
+    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
+      return;
+    }
+
+    invoker.wxsEvent = invoker.value();
+  }
+
+  function patchStyle(el, prev, next) {
+    if (!next) {
+      // TODO remove styles
+      // el.setStyles({})
+      return;
+    }
+
+    if (isString(next)) {
+      next = parseStringStyle(next);
+    }
+
+    var batchedStyles = {};
+    var isPrevObj = prev && !isString(prev);
+
+    if (isPrevObj) {
+      for (var key in prev) {
+        if (next[key] == null) {
+          batchedStyles[camelize(key)] = '';
+        }
+      }
+
+      for (var _key15 in next) {
+        var value = next[_key15];
+
+        if (value !== prev[_key15]) {
+          batchedStyles[camelize(_key15)] = value;
+        }
+      }
+    } else {
+      for (var _key16 in next) {
+        batchedStyles[camelize(_key16)] = next[_key16];
+      }
+    }
+
+    el.setStyles(batchedStyles);
+  }
+
   var patchProp = function (el, key, prevValue, nextValue) {
     var isSVG = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     var prevChildren = arguments.length > 5 ? arguments[5] : undefined;
     var parentComponent = arguments.length > 6 ? arguments[6] : undefined;
     var parentSuspense = arguments.length > 7 ? arguments[7] : undefined;
     var unmountChildren = arguments.length > 8 ? arguments[8] : undefined;
+
+    if (key === 'class') {
+      patchClass(el, prevValue, nextValue, parentComponent);
+    } else if (key === 'style') {
+      patchStyle(el, prevValue, nextValue);
+    } else if (isOn(key)) {
+      // ignore v-model listeners
+      if (!isModelListener(key)) {
+        patchEvent(el, key, prevValue, nextValue, parentComponent);
+      }
+    } else {
+      patchAttr(el, key, nextValue, parentComponent);
+    }
   };
 
   function useCssModule() {
@@ -9398,155 +9686,6 @@ function vueFactory(exports) {
     } else if (vnode.type === Fragment) {
       vnode.children.forEach(c => setVarsOnVNode(c, vars));
     }
-  }
-
-  function addEventListener(el, event, handler, options) {
-    el.addEventListener(event, handler, options);
-  }
-
-  var getModelAssigner = vnode => {
-    var fn = vnode.props['onUpdate:modelValue'];
-    return isArray(fn) ? value => invokeArrayFns(fn, value) : fn;
-  }; // We are exporting the v-model runtime directly as vnode hooks so that it can
-  // be tree-shaken in case v-model is never used.
-
-
-  var vModelText = {
-    created(el, _ref23, vnode) {
-      var {
-        value,
-        modifiers: {
-          trim,
-          number
-        }
-      } = _ref23;
-      el.value = value == null ? '' : value;
-      el._assign = getModelAssigner(vnode);
-      addEventListener(el, 'input', e => {
-        var domValue = e.detail.value; // 从 view 层接收到新值后，赋值给 service 层元素，注意，需要临时解除 pageNode，否则赋值 value 会触发向 view 层的再次同步数据
-
-        var pageNode = el.pageNode;
-        el.pageNode = null;
-        el.value = domValue;
-        el.pageNode = pageNode;
-
-        if (trim) {
-          domValue = domValue.trim();
-        } else if (number) {
-          domValue = toNumber(domValue);
-        }
-
-        el._assign(domValue);
-      });
-    },
-
-    beforeUpdate(el, _ref24, vnode) {
-      var {
-        value
-      } = _ref24;
-      el._assign = getModelAssigner(vnode);
-      var newValue = value == null ? '' : value;
-
-      if (el.value !== newValue) {
-        el.value = newValue;
-      }
-    }
-
-  };
-  var systemModifiers = ['ctrl', 'shift', 'alt', 'meta'];
-  var modifierGuards = {
-    stop: e => e.stopPropagation(),
-    prevent: e => e.preventDefault(),
-    self: e => e.target !== e.currentTarget,
-    ctrl: e => !e.ctrlKey,
-    shift: e => !e.shiftKey,
-    alt: e => !e.altKey,
-    meta: e => !e.metaKey,
-    left: e => 'button' in e && e.button !== 0,
-    middle: e => 'button' in e && e.button !== 1,
-    right: e => 'button' in e && e.button !== 2,
-    exact: (e, modifiers) => systemModifiers.some(m => e["".concat(m, "Key")] && !modifiers.includes(m))
-  };
-  /**
-   * @private
-   */
-
-  var withModifiers = (fn, modifiers) => {
-    // fixed by xxxxxx 补充 modifiers 标记，方便同步给 view 层
-    var wrapper = function (event) {
-      for (var i = 0; i < modifiers.length; i++) {
-        var guard = modifierGuards[modifiers[i]];
-        if (guard && guard(event, modifiers)) return;
-      }
-
-      for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key15 = 1; _key15 < _len8; _key15++) {
-        args[_key15 - 1] = arguments[_key15];
-      }
-
-      return fn(event, ...args);
-    };
-
-    wrapper.modifiers = modifiers;
-    return wrapper;
-  }; // Kept for 2.x compat.
-  // Note: IE11 compat for `spacebar` and `del` is removed for now.
-
-
-  var keyNames = {
-    esc: 'escape',
-    space: ' ',
-    up: 'arrow-up',
-    left: 'arrow-left',
-    right: 'arrow-right',
-    down: 'arrow-down',
-    delete: 'backspace'
-  };
-  /**
-   * @private
-   */
-
-  var withKeys = (fn, modifiers) => {
-    return event => {
-      if (!('key' in event)) {
-        return;
-      }
-
-      var eventKey = hyphenate(event.key);
-
-      if (modifiers.some(k => k === eventKey || keyNames[k] === eventKey)) {
-        return fn(event);
-      }
-    };
-  };
-
-  var vShow = {
-    beforeMount(el, _ref25) {
-      var {
-        value
-      } = _ref25;
-      setDisplay(el, value);
-    },
-
-    updated(el, _ref26) {
-      var {
-        value,
-        oldValue
-      } = _ref26;
-      if (!value === !oldValue) return;
-      setDisplay(el, value);
-    },
-
-    beforeUnmount(el, _ref27) {
-      var {
-        value
-      } = _ref27;
-      setDisplay(el, value);
-    }
-
-  };
-
-  function setDisplay(el, value) {
-    el.setAttribute('.vShow', !!value);
   }
 
   var rendererOptions = extend({
@@ -9698,8 +9837,6 @@ function vueFactory(exports) {
     useSSRContext: useSSRContext,
     useSlots: useSlots,
     useTransitionState: useTransitionState,
-    vModelText: vModelText,
-    vShow: vShow,
     version: version,
     warn: warn$1,
     watch: watch,
@@ -9710,9 +9847,7 @@ function vueFactory(exports) {
     withCtx: withCtx,
     withDefaults: withDefaults,
     withDirectives: withDirectives,
-    withKeys: withKeys,
     withMemo: withMemo,
-    withModifiers: withModifiers,
     withScopeId: withScopeId,
     camelize: camelize,
     capitalize: capitalize,

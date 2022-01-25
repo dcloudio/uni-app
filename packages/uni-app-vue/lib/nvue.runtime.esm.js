@@ -1,5 +1,5 @@
 import { NVueTextNode } from '@dcloudio/uni-shared';
-import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isGloballyWhitelisted } from '@vue/shared';
+import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isGloballyWhitelisted, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 function warn(msg, ...args) {
@@ -148,7 +148,7 @@ class ReactiveEffect {
         if (!this.active) {
             return this.fn();
         }
-        if (!effectStack.includes(this)) {
+        if (!effectStack.length || !effectStack.includes(this)) {
             try {
                 effectStack.push((activeEffect = this));
                 enableTracking();
@@ -459,6 +459,9 @@ const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
         let oldValue = target[key];
+        if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
+            return false;
+        }
         if (!shallow && !isReadonly(value)) {
             if (!isShallow(value)) {
                 value = toRaw(value);
@@ -1081,22 +1084,23 @@ class ComputedRefImpl {
     constructor(getter, _setter, isReadonly, isSSR) {
         this._setter = _setter;
         this.dep = undefined;
-        this._dirty = true;
         this.__v_isRef = true;
+        this._dirty = true;
         this.effect = new ReactiveEffect(getter, () => {
             if (!this._dirty) {
                 this._dirty = true;
                 triggerRefValue(this);
             }
         });
-        this.effect.active = !isSSR;
+        this.effect.computed = this;
+        this.effect.active = this._cacheable = !isSSR;
         this["__v_isReadonly" /* IS_READONLY */] = isReadonly;
     }
     get value() {
         // the computed ref may get wrapped by other proxies e.g. readonly() #3376
         const self = toRaw(this);
         trackRefValue(self);
-        if (self._dirty) {
+        if (self._dirty || !self._cacheable) {
             self._dirty = false;
             self._value = self.effect.run();
         }
@@ -1274,7 +1278,7 @@ const ErrorTypeStrings = {
     [12 /* FUNCTION_REF */]: 'ref function',
     [13 /* ASYNC_COMPONENT_LOADER */]: 'async component loader',
     [14 /* SCHEDULER */]: 'scheduler flush. This is likely a Vue internals bug. ' +
-        'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/vue-next'
+        'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/core'
 };
 function callWithErrorHandling(fn, instance, type, args) {
     let res;
@@ -2745,7 +2749,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
     if (instance) {
         // #2400
         // to support `app.use` plugins,
-        // fallback to appContext's `provides` if the intance is at root
+        // fallback to appContext's `provides` if the instance is at root
         const provides = instance.parent == null
             ? instance.vnode.appContext && instance.vnode.appContext.provides
             : instance.parent.provides;
@@ -3706,7 +3710,7 @@ function matches(pattern, name) {
         return pattern.some((p) => matches(p, name));
     }
     else if (isString(pattern)) {
-        return pattern.split(',').indexOf(name) > -1;
+        return pattern.split(',').includes(name);
     }
     else if (pattern.test) {
         return pattern.test(name);
@@ -3964,7 +3968,7 @@ function applyOptions(instance) {
                         warn$1(`Write operation failed: computed property "${key}" is readonly.`);
                     }
                     : NOOP;
-            const c = computed({
+            const c = computed$1({
                 get,
                 set
             });
@@ -4365,7 +4369,9 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         // attrs point to the same object so it should already have been updated.
         if (attrs !== rawCurrentProps) {
             for (const key in attrs) {
-                if (!rawProps || !hasOwn(rawProps, key)) {
+                if (!rawProps ||
+                    (!hasOwn(rawProps, key) &&
+                        (!false ))) {
                     delete attrs[key];
                     hasAttrsChanged = true;
                 }
@@ -5470,6 +5476,7 @@ function createHydrationFunctions(rendererInternals) {
     return [hydrate, hydrateNode];
 }
 
+/* eslint-disable no-restricted-globals */
 let supported;
 let perf;
 function startMeasure(instance, type) {
@@ -5497,7 +5504,6 @@ function isSupported() {
     if (supported !== undefined) {
         return supported;
     }
-    /* eslint-disable no-restricted-globals */
     if (typeof window !== 'undefined' && window.performance) {
         supported = true;
         perf = window.performance;
@@ -5505,7 +5511,6 @@ function isSupported() {
     else {
         supported = false;
     }
-    /* eslint-enable no-restricted-globals */
     return supported;
 }
 
@@ -7435,7 +7440,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
         shapeFlag: vnode.shapeFlag,
         // if the vnode is cloned with extra props, we can no longer assume its
         // existing patch flag to be reliable and need to add the FULL_PROPS flag.
-        // note: perserve flag for fragments since they use the flag for children
+        // note: preserve flag for fragments since they use the flag for children
         // fast paths only.
         patchFlag: extraProps && vnode.type !== Fragment
             ? patchFlag === -1 // hoisted node
@@ -7597,7 +7602,8 @@ function mergeProps(...args) {
             else if (isOn(key)) {
                 const existing = ret[key];
                 const incoming = toMerge[key];
-                if (existing !== incoming &&
+                if (incoming &&
+                    existing !== incoming &&
                     !(isArray(existing) && existing.includes(incoming))) {
                     ret[key] = existing
                         ? [].concat(existing, incoming)
@@ -8445,7 +8451,7 @@ function defineEmits() {
  * instance properties when it is accessed by a parent component via template
  * refs.
  *
- * `<script setup>` components are closed by default - i.e. varaibles inside
+ * `<script setup>` components are closed by default - i.e. variables inside
  * the `<script setup>` scope is not exposed to parent unless explicitly exposed
  * via `defineExpose`.
  *
@@ -8831,7 +8837,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.27";
+const version = "3.2.29";
 /**
  * @internal only exposed in compat builds
  */
@@ -8869,7 +8875,248 @@ const nodeOps = {
     nextSibling: node => node.nextSibling
 };
 
-const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => { };
+function isUndef(val) {
+    return val === undefined || val === null;
+}
+function parseStylesheet(instance) {
+    return (instance.type.__stylesheet ||
+        {});
+}
+
+function patchAttr(el, key, value, instance = null) {
+    if (instance) {
+        value = transformAttr(el, key, value, instance);
+    }
+    if (value == null) ;
+    else {
+        el.setAttr(key, value);
+    }
+}
+const ATTR_HOVER_CLASS = 'hoverClass';
+const ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
+const ATTR_PLACEHOLDER_STYLE = 'placeholderStyle';
+const ATTR_INDICATOR_CLASS = 'indicatorClass';
+const ATTR_INDICATOR_STYLE = 'indicatorStyle';
+const ATTR_MASK_CLASS = 'maskClass';
+const ATTR_MASK_STYLE = 'maskStyle';
+const CLASS_AND_STYLES = {
+    view: {
+        class: [ATTR_HOVER_CLASS],
+        style: []
+    },
+    button: {
+        class: [ATTR_HOVER_CLASS],
+        style: []
+    },
+    navigator: {
+        class: [ATTR_HOVER_CLASS],
+        style: []
+    },
+    'u-input': {
+        class: [ATTR_PLACEHOLDER_CLASS],
+        style: [ATTR_PLACEHOLDER_STYLE]
+    },
+    'u-textarea': {
+        class: [ATTR_PLACEHOLDER_CLASS],
+        style: [ATTR_PLACEHOLDER_STYLE]
+    },
+    'picker-view': {
+        class: [ATTR_INDICATOR_CLASS, ATTR_MASK_CLASS],
+        style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
+    }
+};
+function transformAttr(el, key, value, instance) {
+    if (!value) {
+        return value;
+    }
+    const opts = CLASS_AND_STYLES[el.type];
+    if (opts) {
+        if (opts['class'].indexOf(key) !== -1) {
+            return parseStylesheet(instance)[value] || {};
+        }
+        if (opts['style'].indexOf(key) !== -1) {
+            if (isString(value)) {
+                return parseStringStyle(value);
+            }
+            return normalizeStyle(value);
+        }
+    }
+    return value;
+}
+
+// compiler should normalize class + :class bindings on the same element
+// into a single binding ['staticClass', dynamic]
+function patchClass(el, pre, next, instance = null) {
+    // 移除 class
+    if (next == null) {
+        return;
+    }
+    if (!instance) {
+        return;
+    }
+    const oldStyle = getStyle(pre, instance);
+    const newStyle = getStyle(next, instance);
+    let cur, name;
+    const batchedStyles = {};
+    for (name in oldStyle) {
+        if (isUndef(newStyle[name])) {
+            batchedStyles[name] = '';
+        }
+    }
+    for (name in newStyle) {
+        cur = newStyle[name];
+        if (cur !== oldStyle[name]) {
+            batchedStyles[name] = cur;
+        }
+    }
+    el.setStyles(batchedStyles);
+}
+function getStyle(clazz, instance) {
+    if (!clazz) {
+        return {};
+    }
+    const classList = clazz.split(' ');
+    const stylesheet = parseStylesheet(instance);
+    const result = {};
+    classList.forEach(name => {
+        const style = stylesheet[name];
+        extend(result, style);
+    });
+    return result;
+}
+
+function addEventListener(el, event, handler, options) {
+    el.addEvent(event, handler);
+}
+function removeEventListener(el, event) {
+    el.removeEvent(event);
+}
+function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
+    // vei = vue event invokers
+    const invokers = el._vei || (el._vei = {});
+    const existingInvoker = invokers[rawName];
+    if (nextValue && existingInvoker) {
+        // patch
+        existingInvoker.value = nextValue;
+    }
+    else {
+        const [name, options] = parseName(rawName);
+        if (nextValue) {
+            // add
+            const invoker = (invokers[rawName] = createInvoker(nextValue, instance));
+            addEventListener(el, name, invoker);
+        }
+        else if (existingInvoker) {
+            // remove
+            removeEventListener(el, name);
+            invokers[rawName] = undefined;
+        }
+    }
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function parseName(name) {
+    let options;
+    if (optionsModifierRE.test(name)) {
+        options = {};
+        let m;
+        while ((m = name.match(optionsModifierRE))) {
+            name = name.slice(0, name.length - m[0].length);
+            options[m[0].toLowerCase()] = true;
+        }
+    }
+    return [hyphenate(name.slice(2)), options];
+}
+function createInvoker(initialValue, instance) {
+    const invoker = (e) => {
+        callWithAsyncErrorHandling(invoker.value, instance, 5 /* NATIVE_EVENT_HANDLER */, [e]);
+    };
+    invoker.value = initialValue;
+    const modifiers = new Set();
+    // 合并 modifiers
+    if (isArray(invoker.value)) {
+        invoker.value.forEach(v => {
+            if (v.modifiers) {
+                v.modifiers.forEach((m) => {
+                    modifiers.add(m);
+                });
+            }
+        });
+    }
+    else {
+        if (invoker.value.modifiers) {
+            invoker.value.modifiers.forEach((m) => {
+                modifiers.add(m);
+            });
+        }
+        initWxsEvent(invoker, instance);
+    }
+    invoker.modifiers = [...modifiers];
+    return invoker;
+}
+function initWxsEvent(invoker, instance) {
+    if (!instance) {
+        return;
+    }
+    const { $wxsModules } = instance;
+    if (!$wxsModules) {
+        return;
+    }
+    const invokerSourceCode = invoker.value.toString();
+    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
+        return;
+    }
+    invoker.wxsEvent = invoker.value();
+}
+
+function patchStyle(el, prev, next) {
+    if (!next) {
+        // TODO remove styles
+        // el.setStyles({})
+        return;
+    }
+    if (isString(next)) {
+        next = parseStringStyle(next);
+    }
+    const batchedStyles = {};
+    const isPrevObj = prev && !isString(prev);
+    if (isPrevObj) {
+        for (const key in prev) {
+            if (next[key] == null) {
+                batchedStyles[camelize(key)] = '';
+            }
+        }
+        for (const key in next) {
+            const value = next[key];
+            if (value !== prev[key]) {
+                batchedStyles[camelize(key)] = value;
+            }
+        }
+    }
+    else {
+        for (const key in next) {
+            batchedStyles[camelize(key)] = next[key];
+        }
+    }
+    el.setStyles(batchedStyles);
+}
+
+const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
+    if (key === 'class') {
+        patchClass(el, prevValue, nextValue, parentComponent);
+    }
+    else if (key === 'style') {
+        patchStyle(el, prevValue, nextValue);
+    }
+    else if (isOn(key)) {
+        // ignore v-model listeners
+        if (!isModelListener(key)) {
+            patchEvent(el, key, prevValue, nextValue, parentComponent);
+        }
+    }
+    else {
+        patchAttr(el, key, nextValue, parentComponent);
+    }
+};
 
 function useCssModule(name = '$style') {
     /* istanbul ignore else */
@@ -8935,118 +9182,6 @@ function setVarsOnVNode(vnode, vars) {
     }
 }
 
-function addEventListener(el, event, handler, options) {
-    el.addEventListener(event, handler, options);
-}
-
-const getModelAssigner = (vnode) => {
-    const fn = vnode.props['onUpdate:modelValue'];
-    return isArray(fn) ? value => invokeArrayFns(fn, value) : fn;
-};
-// We are exporting the v-model runtime directly as vnode hooks so that it can
-// be tree-shaken in case v-model is never used.
-const vModelText = {
-    created(el, { value, modifiers: { trim, number } }, vnode) {
-        el.value = value == null ? '' : value;
-        el._assign = getModelAssigner(vnode);
-        addEventListener(el, 'input', e => {
-            let domValue = e.detail.value;
-            // 从 view 层接收到新值后，赋值给 service 层元素，注意，需要临时解除 pageNode，否则赋值 value 会触发向 view 层的再次同步数据
-            const pageNode = el.pageNode;
-            el.pageNode = null;
-            el.value = domValue;
-            el.pageNode = pageNode;
-            if (trim) {
-                domValue = domValue.trim();
-            }
-            else if (number) {
-                domValue = toNumber(domValue);
-            }
-            el._assign(domValue);
-        });
-    },
-    beforeUpdate(el, { value }, vnode) {
-        el._assign = getModelAssigner(vnode);
-        const newValue = value == null ? '' : value;
-        if (el.value !== newValue) {
-            el.value = newValue;
-        }
-    }
-};
-
-const systemModifiers = ['ctrl', 'shift', 'alt', 'meta'];
-const modifierGuards = {
-    stop: e => e.stopPropagation(),
-    prevent: e => e.preventDefault(),
-    self: e => e.target !== e.currentTarget,
-    ctrl: e => !e.ctrlKey,
-    shift: e => !e.shiftKey,
-    alt: e => !e.altKey,
-    meta: e => !e.metaKey,
-    left: e => 'button' in e && e.button !== 0,
-    middle: e => 'button' in e && e.button !== 1,
-    right: e => 'button' in e && e.button !== 2,
-    exact: (e, modifiers) => systemModifiers.some(m => e[`${m}Key`] && !modifiers.includes(m))
-};
-/**
- * @private
- */
-const withModifiers = (fn, modifiers) => {
-    // fixed by xxxxxx 补充 modifiers 标记，方便同步给 view 层
-    const wrapper = (event, ...args) => {
-        for (let i = 0; i < modifiers.length; i++) {
-            const guard = modifierGuards[modifiers[i]];
-            if (guard && guard(event, modifiers))
-                return;
-        }
-        return fn(event, ...args);
-    };
-    wrapper.modifiers = modifiers;
-    return wrapper;
-};
-// Kept for 2.x compat.
-// Note: IE11 compat for `spacebar` and `del` is removed for now.
-const keyNames = {
-    esc: 'escape',
-    space: ' ',
-    up: 'arrow-up',
-    left: 'arrow-left',
-    right: 'arrow-right',
-    down: 'arrow-down',
-    delete: 'backspace'
-};
-/**
- * @private
- */
-const withKeys = (fn, modifiers) => {
-    return (event) => {
-        if (!('key' in event)) {
-            return;
-        }
-        const eventKey = hyphenate(event.key);
-        if (modifiers.some(k => k === eventKey || keyNames[k] === eventKey)) {
-            return fn(event);
-        }
-    };
-};
-
-const vShow = {
-    beforeMount(el, { value }) {
-        setDisplay(el, value);
-    },
-    updated(el, { value, oldValue }) {
-        if (!value === !oldValue)
-            return;
-        setDisplay(el, value);
-    },
-    beforeUnmount(el, { value }) {
-        setDisplay(el, value);
-    }
-};
-function setDisplay(el, value) {
-    el.setAttribute('.vShow', !!value);
-}
-
 const rendererOptions = extend({ patchProp }, nodeOps);
 // lazy create the renderer - this makes core renderer logic tree-shakable
 // in case the user only imports reactivity utilities from Vue.
@@ -9068,4 +9203,4 @@ const createApp = ((...args) => {
     return app;
 });
 
-export { BaseTransition, Comment, EffectScope, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed$1 as computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, stop, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, useTransitionState, vModelText, vShow, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, Comment, EffectScope, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed$1 as computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, stop, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };
