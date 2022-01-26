@@ -40,24 +40,6 @@ export function mergeMiniProgramAppJson(
   })
 }
 
-function normalizeUsingComponentsPath(
-  usingComponents: PageWindowOptions['usingComponents'],
-  platform: UniApp.PLATFORM
-) {
-  if (platform === 'mp-baidu') {
-    const flag = './'
-    const _usingComponents: PageWindowOptions['usingComponents'] = {}
-    for (const key in usingComponents) {
-      const componentPath = usingComponents[key]
-      _usingComponents[key] = componentPath.startsWith(flag)
-        ? componentPath.replace(flag, '/')
-        : componentPath
-    }
-    return _usingComponents
-  }
-  return usingComponents
-}
-
 function parsePagesJson(
   jsonStr: string,
   platform: UniApp.PLATFORM,
@@ -153,10 +135,7 @@ function parsePagesJson(
     const { usingComponents } = windowOptions as PageWindowOptions
     if (usingComponents) {
       delete (windowOptions as PageWindowOptions).usingComponents
-      appJson.usingComponents = normalizeUsingComponentsPath(
-        usingComponents,
-        platform
-      )
+      appJson.usingComponents = usingComponents
     } else {
       delete appJson.usingComponents
     }
