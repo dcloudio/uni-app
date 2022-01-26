@@ -1,4 +1,4 @@
-import { hyphenate, Normalize } from '../utils'
+import { Normalize, supportedValueWithTipsReason } from '../utils'
 
 export const normalizeInteger: Normalize = (v) => {
   v = (v || '').toString()
@@ -8,13 +8,7 @@ export const normalizeInteger: Normalize = (v) => {
   return {
     value: null,
     reason: function reason(k, v, result) {
-      return (
-        'ERROR: property value `' +
-        v +
-        '` is not supported for `' +
-        hyphenate(k) +
-        '` (only integer is supported)'
-      )
+      return supportedValueWithTipsReason(k, v, `(only integer is supported)`)
     },
   }
 }

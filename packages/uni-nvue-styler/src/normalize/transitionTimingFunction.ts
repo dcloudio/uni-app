@@ -1,4 +1,4 @@
-import { hyphenate, NUM_REGEXP, Normalize } from '../utils'
+import { NUM_REGEXP, Normalize, supportedEnumReason } from '../utils'
 
 export const normalizeTransitionTimingFunction: Normalize = (v) => {
   v = (v || '').toString()
@@ -33,13 +33,14 @@ export const normalizeTransitionTimingFunction: Normalize = (v) => {
   return {
     value: null,
     reason(k, v, result) {
-      return (
-        'ERROR: property value `' +
-        v +
-        '` is not supported for `' +
-        hyphenate(k) +
-        '` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)'
-      )
+      return supportedEnumReason(k, v, [
+        'linear',
+        'ease',
+        'ease-in',
+        'ease-out',
+        'ease-in-out',
+        'cubic-bezier(n,n,n,n)',
+      ])
     },
   }
 }

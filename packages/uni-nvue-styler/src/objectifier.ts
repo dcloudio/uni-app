@@ -1,5 +1,5 @@
 import { Container, Root, Document } from 'postcss'
-import { extend } from './utils'
+import { extend } from '@vue/shared'
 
 interface ObjectifierContext {
   'FONT-FACE': Record<string, unknown>[]

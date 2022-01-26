@@ -3,7 +3,6 @@
   "version": "0.0.1-nvue3.3030820220125001",
   "description": "uni-nvue-styler",
   "main": "./dist/uni-nvue-styler.cjs.js",
-  "module": "./dist/uni-nvue-styler.es.js",
   "types": "./dist/uni-nvue-styler.d.ts",
   "files": [
     "dist"

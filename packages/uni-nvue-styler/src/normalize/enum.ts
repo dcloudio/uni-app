@@ -1,4 +1,4 @@
-import { hyphenate, Normalize } from '../utils'
+import { defaultValueReason, Normalize, supportedEnumReason } from '../utils'
 
 export function createEnumNormalize(items: Array<string | number>): Normalize {
   return (v) => {
@@ -10,28 +10,14 @@ export function createEnumNormalize(items: Array<string | number>): Normalize {
       return {
         value: v,
         reason: function reason(k, v, result) {
-          return (
-            'NOTE: property value `' +
-            v +
-            '` is the DEFAULT value for `' +
-            hyphenate(k) +
-            '` (could be removed)'
-          )
+          return defaultValueReason(k, v)
         },
       }
     }
     return {
       value: null,
       reason: function reason(k, v, result) {
-        return (
-          'ERROR: property value `' +
-          v +
-          '` is not supported for `' +
-          hyphenate(k) +
-          '` (supported values are: `' +
-          items.join('`|`') +
-          '`)'
-        )
+        return supportedEnumReason(k, v, items)
       },
     }
   }

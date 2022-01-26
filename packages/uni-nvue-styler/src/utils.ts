@@ -1,5 +1,4 @@
 import type { Declaration, Source } from 'postcss'
-
 export type TransformDecl = (decl: Declaration) => Declaration[]
 
 export type Normalize = (v: string | number) => {
@@ -31,20 +30,9 @@ export const NUM_REGEXP = /^[-]?\d*\.?\d+$/
 export const LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/
 export const SUPPORT_CSS_UNIT = ['px', 'pt', 'wx', 'upx', 'rpx']
 
-export const extend = Object.assign
-export const isArray = Array.isArray
-export const isString = (val: unknown): val is string => typeof val === 'string'
 export const isNumber = (val: unknown): val is string => typeof val === 'number'
-export const isFunction = (val: unknown): val is Function =>
-  typeof val === 'function'
 
 export const serialize = (val: unknown) => JSON.parse(JSON.stringify(val))
-
-const hasOwnProperty = Object.prototype.hasOwnProperty
-export const hasOwn = (
-  val: object,
-  key: string | symbol
-): key is keyof typeof val => hasOwnProperty.call(val, key)
 
 const cacheStringFunction = <T extends (str: string) => string>(fn: T): T => {
   const cache: Record<string, string> = Object.create(null)
@@ -54,13 +42,9 @@ const cacheStringFunction = <T extends (str: string) => string>(fn: T): T => {
   }) as any
 }
 
-const camelizeRE = /-(\w)/g
-export const camelize = cacheStringFunction((str: string): string => {
-  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
-})
-
 const hyphenateRE = /([A-Z])/g
-export const hyphenate = cacheStringFunction((str: string) =>
+
+export const hyphenateStyleProperty = cacheStringFunction((str: string) =>
   str
     .replace(hyphenateRE, (_, m) => {
       if (typeof m === 'string') {
@@ -70,3 +54,85 @@ export const hyphenate = cacheStringFunction((str: string) =>
     })
     .toLowerCase()
 )
+
+export function autofixedReason(
+  v: string | number,
+  result: string | number | null
+) {
+  return 'NOTE: property value `' + v + '` is autofixed to `' + result + '`'
+}
+
+export function validReason(k: string, v: string | number) {
+  return (
+    'ERROR: property value `' +
+    v +
+    '` is not valid for `' +
+    hyphenateStyleProperty(k) +
+    '`'
+  )
+}
+
+export function defaultValueReason(k: string, v: string | number) {
+  return (
+    'NOTE: property value `' +
+    v +
+    '` is the DEFAULT value for `' +
+    hyphenateStyleProperty(k) +
+    '` (could be removed)'
+  )
+}
+
+export function supportedEnumReason(
+  k: string,
+  v: string | number,
+  items: unknown[]
+) {
+  return (
+    'ERROR: property value `' +
+    v +
+    '` is not supported for `' +
+    hyphenateStyleProperty(k) +
+    '` (supported values are: `' +
+    items.join('`|`') +
+    '`)'
+  )
+}
+
+export function supportedValueWithTipsReason(
+  k: string,
+  v: string | number,
+  tips?: string
+) {
+  return (
+    'ERROR: property value `' +
+    v +
+    '` is not supported for `' +
+    hyphenateStyleProperty(k) +
+    '` ' +
+    tips
+  )
+}
+
+export function supportedUnitWithAutofixedReason(
+  unit: string,
+  v: string | number,
+  result: string | number | null
+) {
+  return (
+    'NOTE: unit `' +
+    unit +
+    '` is not supported and property value `' +
+    v +
+    '` is autofixed to `' +
+    result +
+    '`'
+  )
+}
+
+export function compatibilityReason(k: string) {
+  return (
+    'NOTE: the ' +
+    hyphenateStyleProperty(k) +
+    ' property may have compatibility problem on native'
+  )
+}

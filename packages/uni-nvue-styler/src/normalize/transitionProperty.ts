@@ -1,4 +1,5 @@
-import { camelize, hyphenate, Normalize } from '../utils'
+import { camelize } from '@vue/shared'
+import { Normalize, supportedValueWithTipsReason } from '../utils'
 import { normalizeMap } from './map'
 
 export const normalizeTransitionProperty: Normalize = (v) => {
@@ -15,13 +16,7 @@ export const normalizeTransitionProperty: Normalize = (v) => {
   return {
     value: null,
     reason: function reason(k, v, result) {
-      return (
-        'ERROR: property value `' +
-        v +
-        '` is not supported for `' +
-        hyphenate(k) +
-        '` (only css property is valid)'
-      )
+      return supportedValueWithTipsReason(k, v, '(only css property is valid)')
     },
   }
 }

@@ -1,4 +1,8 @@
-import { Normalize, hyphenate, LENGTH_REGEXP } from '../utils'
+import {
+  Normalize,
+  LENGTH_REGEXP,
+  supportedValueWithTipsReason,
+} from '../utils'
 
 export const normalizeNumber: Normalize = (v) => {
   v = (v || '').toString()
@@ -11,13 +15,7 @@ export const normalizeNumber: Normalize = (v) => {
   return {
     value: null,
     reason: function reason(k, v, result) {
-      return (
-        'ERROR: property value `' +
-        v +
-        '` is not supported for `' +
-        hyphenate(k) +
-        '` (only number is supported)'
-      )
+      return supportedValueWithTipsReason(k, v, '(only number is supported)')
     },
   }
 }

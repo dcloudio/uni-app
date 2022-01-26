@@ -1,4 +1,9 @@
-import { hyphenate, Normalize } from '../utils'
+import {
+  Normalize,
+  supportedEnumReason,
+  defaultValueReason,
+  compatibilityReason,
+} from '../utils'
 
 export const normalizeFlexWrap: Normalize = (v) => {
   const values = ['nowrap', 'wrap', 'wrap-reverse']
@@ -7,11 +12,7 @@ export const normalizeFlexWrap: Normalize = (v) => {
     return {
       value: v,
       reason(k, v, result) {
-        return (
-          'NOTE: the ' +
-          hyphenate(k) +
-          ' property may have compatibility problem on native'
-        )
+        return compatibilityReason(k)
       },
     }
   }
@@ -19,28 +20,14 @@ export const normalizeFlexWrap: Normalize = (v) => {
     return {
       value: v,
       reason: function reason(k, v, result) {
-        return (
-          'NOTE: property value `' +
-          v +
-          '` is the DEFAULT value for `' +
-          hyphenate(k) +
-          '` (could be removed)'
-        )
+        return defaultValueReason(k, v)
       },
     }
   }
   return {
     value: null,
     reason(k, v, result) {
-      return (
-        'ERROR: property value `' +
-        v +
-        '` is not supported for `' +
-        hyphenate(k) +
-        '` (supported values are: `' +
-        values.join('`|`') +
-        '`)'
-      )
+      return supportedEnumReason(k, v, values)
     },
   }
 }

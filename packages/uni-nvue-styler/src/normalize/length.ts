@@ -1,4 +1,10 @@
-import { Normalize, hyphenate, LENGTH_REGEXP, SUPPORT_CSS_UNIT } from '../utils'
+import {
+  Normalize,
+  LENGTH_REGEXP,
+  SUPPORT_CSS_UNIT,
+  supportedValueWithTipsReason,
+  supportedUnitWithAutofixedReason,
+} from '../utils'
 
 export const normalizeLength: Normalize = (v: string | number) => {
   v = (v || '').toString()
@@ -14,15 +20,7 @@ export const normalizeLength: Normalize = (v: string | number) => {
       return {
         value: parseFloat(v),
         reason(k, v, result) {
-          return (
-            'NOTE: unit `' +
-            unit +
-            '` is not supported and property value `' +
-            v +
-            '` is autofixed to `' +
-            result +
-            '`'
-          )
+          return supportedUnitWithAutofixedReason(unit, v, result)
         },
       }
     }
@@ -31,12 +29,10 @@ export const normalizeLength: Normalize = (v: string | number) => {
   return {
     value: null,
     reason(k, v, result) {
-      return (
-        'ERROR: property value `' +
-        v +
-        '` is not supported for `' +
-        hyphenate(k) +
-        '` (only number and pixel values are supported)'
+      return supportedValueWithTipsReason(
+        k,
+        v,
+        `(only number and pixel values are supported)`
       )
     },
   }

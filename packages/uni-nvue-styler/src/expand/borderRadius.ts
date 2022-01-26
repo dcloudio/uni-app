@@ -1,5 +1,17 @@
 import { createDecl, TransformDecl } from '../utils'
 
+const borderTopLeftRadius = __NODE_JS__
+  ? 'border-top-left-radius'
+  : 'borderTopLeftRadius'
+const borderTopRightRadius = __NODE_JS__
+  ? 'border-top-right-radius'
+  : 'borderTopRightRadius'
+const borderBottomRightRadius = __NODE_JS__
+  ? 'border-bottom-right-radius'
+  : 'borderBottomRightRadius'
+const borderBottomLeftRadius = __NODE_JS__
+  ? 'border-bottom-left-radius'
+  : 'borderBottomLeftRadius'
 export const transformBorderRadius: TransformDecl = (decl) => {
   const { value, important, raws, source } = decl
   const splitResult = value.split(/\s+/)
@@ -17,33 +29,15 @@ export const transformBorderRadius: TransformDecl = (decl) => {
       break
   }
   return [
+    createDecl(borderTopLeftRadius, splitResult[0], important, raws, source),
+    createDecl(borderTopRightRadius, splitResult[1], important, raws, source),
     createDecl(
-      'border-top-left-radius',
-      splitResult[0],
-      important,
-      raws,
-      source
-    ),
-    createDecl(
-      'border-top-right-radius',
-      splitResult[1],
-      important,
-      raws,
-      source
-    ),
-    createDecl(
-      'border-bottom-right-radius',
+      borderBottomRightRadius,
       splitResult[2],
       important,
       raws,
       source
     ),
-    createDecl(
-      'border-bottom-left-radius',
-      splitResult[3],
-      important,
-      raws,
-      source
-    ),
+    createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source),
   ]
 }

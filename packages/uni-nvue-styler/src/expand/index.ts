@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import type { Plugin } from 'postcss'
 import { TransformDecl } from '../utils'
 import { transformBackground } from './background'
@@ -17,20 +18,35 @@ const DeclTransforms: Record<string, TransformDecl> = {
   margin: transformMargin,
   padding: transformPadding,
   border: transformBorder,
-  'border-top': transformBorder,
-  'border-right': transformBorder,
-  'border-bottom': transformBorder,
-  'border-left': transformBorder,
-  'border-style': transformBorderStyle,
-  'border-width': transformBorderWidth,
-  'border-color': transformBorderColor,
-  'border-radius': transformBorderRadius,
-  'flex-flow': transformFlexFlow,
+
   background: transformBackground,
 }
 
 if (__NODE_JS__) {
-  DeclTransforms.font = transformFont
+  extend(DeclTransforms, {
+    'border-top': transformBorder,
+    'border-right': transformBorder,
+    'border-bottom': transformBorder,
+    'border-left': transformBorder,
+    'border-style': transformBorderStyle,
+    'border-width': transformBorderWidth,
+    'border-color': transformBorderColor,
+    'border-radius': transformBorderRadius,
+    'flex-flow': transformFlexFlow,
+    font: transformFont,
+  })
+} else {
+  extend(DeclTransforms, {
+    borderTop: transformBorder,
+    borderRight: transformBorder,
+    borderBottom: transformBorder,
+    borderLeft: transformBorder,
+    borderStyle: transformBorderStyle,
+    borderWidth: transformBorderWidth,
+    borderColor: transformBorderColor,
+    borderRadius: transformBorderRadius,
+    flexFlow: transformFlexFlow,
+  })
 }
 
 const expanded = Symbol('expanded')

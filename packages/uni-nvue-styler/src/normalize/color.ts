@@ -1,4 +1,4 @@
-import { Normalize, hyphenate } from '../utils'
+import { Normalize, autofixedReason, validReason } from '../utils'
 
 export const normalizeColor: Normalize = (v) => {
   v = (v || '').toString()
@@ -9,9 +9,7 @@ export const normalizeColor: Normalize = (v) => {
     return {
       value: '#' + v[1] + v[1] + v[2] + v[2] + v[3] + v[3],
       reason: function reason(k, v, result) {
-        return (
-          'NOTE: property value `' + v + '` is autofixed to `' + result + '`'
-        )
+        return autofixedReason(v, result)
       },
     }
   }
@@ -19,9 +17,7 @@ export const normalizeColor: Normalize = (v) => {
     return {
       value: EXTENDED_COLOR_KEYWORDS[v],
       reason: function reason(k, v, result) {
-        return (
-          'NOTE: property value `' + v + '` is autofixed to `' + result + '`'
-        )
+        return autofixedReason(v, result)
       },
     }
   }
@@ -63,13 +59,7 @@ export const normalizeColor: Normalize = (v) => {
   return {
     value: null,
     reason(k, v, result) {
-      return (
-        'ERROR: property value `' +
-        v +
-        '` is not valid for `' +
-        hyphenate(k) +
-        '`'
-      )
+      return validReason(k, v)
     },
   }
 }

@@ -1,5 +1,5 @@
 import postcss, { Message } from 'postcss'
-import { objectifier } from '.'
+import { objectifier } from './objectifier'
 import { expand } from './expand'
 import { NormalizeOptions, normalize } from './normalize'
 

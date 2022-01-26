@@ -1,13 +1,10 @@
 import type { Plugin, Declaration, Helpers, Rule } from 'postcss'
+import { camelize, hasOwn, isFunction, isString } from '@vue/shared'
 import {
-  camelize,
-  hasOwn,
-  hyphenate,
-  isFunction,
-  isNumber,
-  isString,
   LENGTH_REGEXP,
   SUPPORT_CSS_UNIT,
+  hyphenateStyleProperty,
+  isNumber,
 } from '../utils'
 import { normalizeMap } from './map'
 
@@ -25,11 +22,14 @@ export function normalize(opts: NormalizeOptions = {}): Plugin {
   if (!hasOwn(opts, 'logLevel')) {
     opts.logLevel = 'WARNING'
   }
-  return {
+  const plugin: Plugin = {
     postcssPlugin: 'nvue:normalize',
-    Rule: createRuleProcessor(opts),
     Declaration: createDeclarationProcessor(opts),
   }
+  if (__NODE_JS__) {
+    plugin.Rule = createRuleProcessor(opts)
+  }
+  return plugin
 }
 
 function createRuleProcessor({ descendant }: NormalizeOptions) {
@@ -72,7 +72,7 @@ function createDeclarationProcessor({ logLevel }: NormalizeOptions) {
     if (isString(value) || isNumber(value)) {
       decl.value = value
     }
-    if (log && log.reason) {
+    if (log && log.reason && helper) {
       const { reason } = log
       let needLog = false
       if (logLevel === 'NOTE') {
@@ -120,7 +120,7 @@ export function normalizeDecl(name: string, value: string) {
     log = {
       reason:
         'WARNING: `' +
-        hyphenate(name) +
+        hyphenateStyleProperty(name) +
         '` is not a standard property name (may not be supported)',
     }
   }

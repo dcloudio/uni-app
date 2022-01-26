@@ -1,5 +1,9 @@
 import { createDecl, TransformDecl } from '../utils'
 
+const borderWidth = __NODE_JS__ ? '-width' : 'Width'
+const borderStyle = __NODE_JS__ ? '-style' : 'Style'
+const borderColor = __NODE_JS__ ? '-color' : 'Color'
+
 export const transformBorder: TransformDecl = (decl) => {
   const { prop, value, important, raws, source } = decl
   const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
@@ -14,21 +18,21 @@ export const transformBorder: TransformDecl = (decl) => {
   }
   return [
     createDecl(
-      prop + '-width',
+      prop + borderWidth,
       (result[0] || '0').trim(),
       important,
       raws,
       source
     ),
     createDecl(
-      prop + '-style',
+      prop + borderStyle,
       (result[1] || 'solid').trim(),
       important,
       raws,
       source
     ),
     createDecl(
-      prop + '-color',
+      prop + borderColor,
       (result[2] || '#000000').trim(),
       important,
       raws,
