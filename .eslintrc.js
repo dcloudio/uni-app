@@ -26,7 +26,7 @@ module.exports = {
   overrides: [
     // tests, no restrictions (runs in Node / jest with jsdom)
     {
-      files: ['**/__tests__/**'],
+      files: ['**/__tests__/**', '**/dist/**'],
       rules: {
         'no-restricted-globals': 'off',
         'no-restricted-syntax': 'off',
@@ -44,10 +44,12 @@ module.exports = {
     // Packages targeting Node
     {
       files: [
+        '.eslintrc.js',
+        'jest.config.js',
+        'rollup.config.js',
+        'scripts/**',
         'packages/{uni-cli-shared,uni-app-vite,uni-h5-vite,uni-mp-vite,uni-mp-compiler,vite-plugin-uni}/**',
         'packages/*/vite.config.ts',
-        '.eslintrc.js',
-        'scripts/**',
       ],
       rules: {
         'no-restricted-globals': ['error', ...DOMGlobals],

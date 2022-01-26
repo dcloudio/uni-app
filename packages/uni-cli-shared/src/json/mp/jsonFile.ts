@@ -64,15 +64,18 @@ export function findChangedJsonFiles() {
     extend(newJson.usingComponents, jsonUsingComponentsCache.get(filename))
     const usingComponents = newJson.usingComponents as Record<string, string>
     // 格式化为相对路径，这样作为分包也可以直接运行
-    Object.keys(usingComponents).forEach((name) => {
-      const componentFilename = usingComponents[name]
-      if (componentFilename.startsWith('/')) {
-        usingComponents[name] = relativeFile(
-          filename,
-          componentFilename.slice(1)
-        )
-      }
-    })
+    // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
+    if (filename !== 'app') {
+      Object.keys(usingComponents).forEach((name) => {
+        const componentFilename = usingComponents[name]
+        if (componentFilename.startsWith('/')) {
+          usingComponents[name] = relativeFile(
+            filename,
+            componentFilename.slice(1)
+          )
+        }
+      })
+    }
 
     const jsonStr = JSON.stringify(newJson, null, 2)
     if (jsonFilesCache.get(filename) !== jsonStr) {

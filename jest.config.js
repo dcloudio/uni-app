@@ -4,6 +4,7 @@ module.exports = {
   globals: {
     __DEV__: true,
     __TEST__: true,
+    __NODE_JS__: true,
     __VERSION__: require('./package.json').version,
     __BROWSER__: false,
     __GLOBAL__: false,
