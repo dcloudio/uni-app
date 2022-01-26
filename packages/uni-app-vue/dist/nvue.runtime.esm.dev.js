@@ -11557,6 +11557,7 @@ export function nvueFactory(exports, document) {
     withScopeId: withScopeId,
     camelize: camelize,
     capitalize: capitalize,
+    hyphenate: hyphenate,
     normalizeClass: normalizeClass,
     normalizeProps: normalizeProps,
     normalizeStyle: normalizeStyle,
