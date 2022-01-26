@@ -1,0 +1,15 @@
+[
+  {
+    "input": {
+      "src/esm.ts": ["dist/uni-nvue-styler.es.js"]
+    }
+  },
+  {
+    "input": {
+      "src/index.ts": ["dist/uni-nvue-styler.cjs.js"]
+    },
+    "compilerOptions": {
+      "declaration": true
+    }
+  }
+]

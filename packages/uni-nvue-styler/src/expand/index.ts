@@ -26,8 +26,11 @@ const DeclTransforms: Record<string, TransformDecl> = {
   'border-color': transformBorderColor,
   'border-radius': transformBorderRadius,
   'flex-flow': transformFlexFlow,
-  font: transformFont,
   background: transformBackground,
+}
+
+if (__NODE_JS__) {
+  DeclTransforms.font = transformFont
 }
 
 const expanded = Symbol('expanded')

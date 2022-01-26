@@ -1,5 +1,5 @@
 import parseCSSFont, { ISystemFont, IFont } from 'parse-css-font'
-import { Declaration } from 'postcss'
+import type { Declaration } from 'postcss'
 import { createDecl, TransformDecl } from '../utils'
 
 export const transformFont: TransformDecl = (decl) => {
