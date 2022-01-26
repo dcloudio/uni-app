@@ -1413,10 +1413,17 @@ function queueJob(job) {
         queueFlush();
     }
 }
+// fixed by xxxxxx
+function sleep(ms) {
+    return () => {
+        return new Promise(resolve => setTimeout(() => resolve(void 0), ms));
+    };
+}
 function queueFlush() {
     if (!isFlushing && !isFlushPending) {
         isFlushPending = true;
-        currentFlushPromise = resolvedPromise.then(flushJobs);
+        // fixed by xxxxxx 延迟执行，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
+        currentFlushPromise = resolvedPromise.then(sleep(0)).then(flushJobs);
     }
 }
 function invalidateJob(job) {
