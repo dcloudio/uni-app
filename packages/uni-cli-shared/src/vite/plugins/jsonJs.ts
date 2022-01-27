@@ -51,7 +51,28 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
       if (!opts.filter(id)) {
         return
       }
-      return fs.readFileSync(jsonPath, 'utf8')
+
+      var pagesJson = fs.readFileSync(jsonPath, 'utf8')
+      const pagesJsonJsFileName = name.split('.')[0] + '.js'
+      const pagesJsonJsPath = path.join(
+        process.env.UNI_INPUT_DIR,
+        pagesJsonJsFileName
+      )
+
+      if (fs.existsSync(pagesJsonJsPath)) {
+        delete require.cache[pagesJsonJsPath]
+        const pagesJsonJsFn = require(pagesJsonJsPath)
+        if (typeof pagesJsonJsFn === 'function') {
+          pagesJson = pagesJsonJsFn(pagesJson)
+          if (!pagesJson) {
+            console.error(`${pagesJsonJsFileName}  必须返回一个 json 对象`)
+          }
+        } else {
+          console.error(`${pagesJsonJsFileName} 必须导出 function`)
+        }
+      }
+
+      return pagesJson
     }
     return plugin
   }
