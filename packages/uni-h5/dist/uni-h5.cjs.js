@@ -413,12 +413,12 @@ function findUniTarget(target) {
   }
   return target;
 }
-function createNativeEvent(evt) {
+function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   const event = {
     type,
     timeStamp,
-    target: uniShared.normalizeTarget(findUniTarget(target)),
+    target: uniShared.normalizeTarget(htmlElement ? target : findUniTarget(target)),
     detail: {},
     currentTarget: uniShared.normalizeTarget(currentTarget)
   };
