@@ -1259,10 +1259,13 @@ function $nne(evt, eventValue, instance2) {
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return [evt];
   }
-  if (currentTarget.tagName.indexOf("UNI-") !== 0) {
-    return [evt];
+  const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
+  {
+    if (isHTMLTarget) {
+      return [evt];
+    }
   }
-  const res = createNativeEvent(evt);
+  const res = createNativeEvent(evt, isHTMLTarget);
   if (isClickEvent(evt)) {
     normalizeClickEvent(res, evt);
   } else if (isMouseEvent(evt)) {
@@ -1283,12 +1286,12 @@ function findUniTarget(target) {
   }
   return target;
 }
-function createNativeEvent(evt) {
+function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(findUniTarget(target)),
+    target: normalizeTarget(htmlElement ? target : findUniTarget(target)),
     detail: {},
     currentTarget: normalizeTarget(currentTarget)
   };
