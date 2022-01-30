@@ -8909,20 +8909,20 @@ function isUndef(val) {
 
 function patchAttr(el, key, value, instance = null) {
     if (instance) {
-        value = transformAttr(el, key, value, instance);
+        [key, value] = transformAttr(el, key, value, instance);
     }
     if (value == null) ;
     else {
         el.setAttr(key, value);
     }
 }
-const ATTR_HOVER_CLASS = 'hoverClass';
-const ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
-const ATTR_PLACEHOLDER_STYLE = 'placeholderStyle';
-const ATTR_INDICATOR_CLASS = 'indicatorClass';
-const ATTR_INDICATOR_STYLE = 'indicatorStyle';
-const ATTR_MASK_CLASS = 'maskClass';
-const ATTR_MASK_STYLE = 'maskStyle';
+const ATTR_HOVER_CLASS = 'hover-class';
+const ATTR_PLACEHOLDER_CLASS = 'placeholder-class';
+const ATTR_PLACEHOLDER_STYLE = 'placeholder-style';
+const ATTR_INDICATOR_CLASS = 'indicator-class';
+const ATTR_INDICATOR_STYLE = 'indicator-style';
+const ATTR_MASK_CLASS = 'mask-class';
+const ATTR_MASK_STYLE = 'mask-style';
 const CLASS_AND_STYLES = {
     view: {
         class: [ATTR_HOVER_CLASS],
@@ -8951,21 +8951,21 @@ const CLASS_AND_STYLES = {
 };
 function transformAttr(el, key, value, instance) {
     if (!value) {
-        return value;
+        return [key, value];
     }
     const opts = CLASS_AND_STYLES[el.type];
     if (opts) {
         if (opts['class'].indexOf(key) !== -1) {
-            return parseStylesheet(instance)[value] || {};
+            return [camelize(key), parseStylesheet(instance)[value] || {}];
         }
         if (opts['style'].indexOf(key) !== -1) {
             if (isString(value)) {
-                return parseStringStyle(value);
+                return [camelize(key), parseStringStyle(value)];
             }
-            return normalizeStyle(value);
+            return [camelize(key), normalizeStyle(value)];
         }
     }
-    return value;
+    return [key, value];
 }
 
 // compiler should normalize class + :class bindings on the same element
