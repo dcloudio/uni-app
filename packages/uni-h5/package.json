@@ -33,8 +33,8 @@
     "@dcloudio/uni-h5-vue": "0.0.1-nvue3.3030820220125001",
     "@dcloudio/uni-i18n": "0.0.1-nvue3.3030820220125001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3030820220125001",
-    "@vue/server-renderer": "3.2.29",
-    "@vue/shared": "3.2.29",
+    "@vue/server-renderer": "3.2.30",
+    "@vue/shared": "3.2.30",
     "localstorage-polyfill": "^1.0.1",
     "safe-area-insets": "^1.4.1",
     "vue-router": "^4.0.12",
@@ -47,6 +47,6 @@
     "@types/google.maps": "^3.45.6",
     "acorn-loose": "^8.2.1",
     "acorn-walk": "^8.2.0",
-    "vue": "3.2.29"
+    "vue": "3.2.30"
   }
 }

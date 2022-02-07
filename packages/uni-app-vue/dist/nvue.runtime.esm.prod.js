@@ -105,7 +105,7 @@ export function nvueFactory(exports, document) {
 
 
   var toDisplayString = val => {
-    return val == null ? '' : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+    return isString(val) ? val : val == null ? '' : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
   };
 
   var replacer = (_key, val) => {
@@ -257,7 +257,6 @@ export function nvueFactory(exports, document) {
   };
 
   var activeEffectScope;
-  var effectScopeStack = [];
 
   class EffectScope {
     constructor() {
@@ -275,35 +274,38 @@ export function nvueFactory(exports, document) {
     run(fn) {
       if (this.active) {
         try {
-          this.on();
+          activeEffectScope = this;
           return fn();
         } finally {
-          this.off();
+          activeEffectScope = this.parent;
         }
       }
     }
 
     on() {
-      if (this.active) {
-        effectScopeStack.push(this);
-        activeEffectScope = this;
-      }
+      activeEffectScope = this;
     }
 
     off() {
-      if (this.active) {
-        effectScopeStack.pop();
-        activeEffectScope = effectScopeStack[effectScopeStack.length - 1];
-      }
+      activeEffectScope = this.parent;
     }
 
     stop(fromParent) {
       if (this.active) {
-        this.effects.forEach(e => e.stop());
-        this.cleanups.forEach(cleanup => cleanup());
+        var i, l;
+
+        for (i = 0, l = this.effects.length; i < l; i++) {
+          this.effects[i].stop();
+        }
+
+        for (i = 0, l = this.cleanups.length; i < l; i++) {
+          this.cleanups[i]();
+        }
 
         if (this.scopes) {
-          this.scopes.forEach(e => e.stop(true));
+          for (i = 0, l = this.scopes.length; i < l; i++) {
+            this.scopes[i].stop(true);
+          }
         } // nested scope, dereference from parent to avoid memory leaks
 
 
@@ -327,8 +329,8 @@ export function nvueFactory(exports, document) {
     return new EffectScope(detached);
   }
 
-  function recordEffectScope(effect, scope) {
-    scope = scope || activeEffectScope;
+  function recordEffectScope(effect) {
+    var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : activeEffectScope;
 
     if (scope && scope.active) {
       scope.effects.push(effect);
@@ -405,7 +407,6 @@ export function nvueFactory(exports, document) {
    */
 
   var maxMarkerBits = 30;
-  var effectStack = [];
   var activeEffect;
   var ITERATE_KEY = Symbol('');
   var MAP_KEY_ITERATE_KEY = Symbol('');
@@ -418,6 +419,7 @@ export function nvueFactory(exports, document) {
       this.scheduler = scheduler;
       this.active = true;
       this.deps = [];
+      this.parent = undefined;
       recordEffectScope(this, scope);
     }
 
@@ -426,30 +428,39 @@ export function nvueFactory(exports, document) {
         return this.fn();
       }
 
-      if (!effectStack.length || !effectStack.includes(this)) {
-        try {
-          effectStack.push(activeEffect = this);
-          enableTracking();
-          trackOpBit = 1 << ++effectTrackDepth;
+      var parent = activeEffect;
+      var lastShouldTrack = shouldTrack;
 
-          if (effectTrackDepth <= maxMarkerBits) {
-            initDepMarkers(this);
-          } else {
-            cleanupEffect(this);
-          }
-
-          return this.fn();
-        } finally {
-          if (effectTrackDepth <= maxMarkerBits) {
-            finalizeDepMarkers(this);
-          }
-
-          trackOpBit = 1 << --effectTrackDepth;
-          resetTracking();
-          effectStack.pop();
-          var n = effectStack.length;
-          activeEffect = n > 0 ? effectStack[n - 1] : undefined;
+      while (parent) {
+        if (parent === this) {
+          return;
         }
+
+        parent = parent.parent;
+      }
+
+      try {
+        this.parent = activeEffect;
+        activeEffect = this;
+        shouldTrack = true;
+        trackOpBit = 1 << ++effectTrackDepth;
+
+        if (effectTrackDepth <= maxMarkerBits) {
+          initDepMarkers(this);
+        } else {
+          cleanupEffect(this);
+        }
+
+        return this.fn();
+      } finally {
+        if (effectTrackDepth <= maxMarkerBits) {
+          finalizeDepMarkers(this);
+        }
+
+        trackOpBit = 1 << --effectTrackDepth;
+        activeEffect = this.parent;
+        shouldTrack = lastShouldTrack;
+        this.parent = undefined;
       }
     }
 
@@ -515,38 +526,27 @@ export function nvueFactory(exports, document) {
     shouldTrack = false;
   }
 
-  function enableTracking() {
-    trackStack.push(shouldTrack);
-    shouldTrack = true;
-  }
-
   function resetTracking() {
     var last = trackStack.pop();
     shouldTrack = last === undefined ? true : last;
   }
 
   function track(target, type, key) {
-    if (!isTracking()) {
-      return;
+    if (shouldTrack && activeEffect) {
+      var depsMap = targetMap.get(target);
+
+      if (!depsMap) {
+        targetMap.set(target, depsMap = new Map());
+      }
+
+      var dep = depsMap.get(key);
+
+      if (!dep) {
+        depsMap.set(key, dep = createDep());
+      }
+
+      trackEffects(dep);
     }
-
-    var depsMap = targetMap.get(target);
-
-    if (!depsMap) {
-      targetMap.set(target, depsMap = new Map());
-    }
-
-    var dep = depsMap.get(key);
-
-    if (!dep) {
-      depsMap.set(key, dep = createDep());
-    }
-
-    trackEffects(dep);
-  }
-
-  function isTracking() {
-    return shouldTrack && activeEffect !== undefined;
   }
 
   function trackEffects(dep, debuggerEventExtraInfo) {
@@ -1410,15 +1410,10 @@ export function nvueFactory(exports, document) {
   var toReadonly = value => isObject(value) ? readonly(value) : value;
 
   function trackRefValue(ref) {
-    if (isTracking()) {
+    if (shouldTrack && activeEffect) {
       ref = toRaw(ref);
-
-      if (!ref.dep) {
-        ref.dep = createDep();
-      }
-
       {
-        trackEffects(ref.dep);
+        trackEffects(ref.dep || (ref.dep = createDep()));
       }
     }
   }
@@ -1434,7 +1429,7 @@ export function nvueFactory(exports, document) {
   }
 
   function isRef(r) {
-    return Boolean(r && r.__v_isRef === true);
+    return !!(r && r.__v_isRef === true);
   }
 
   function ref(value) {
@@ -9102,7 +9097,7 @@ export function nvueFactory(exports, document) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = "3.2.29";
+  var version = "3.2.30";
   /**
    * @internal only exposed in compat builds
    */

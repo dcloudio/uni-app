@@ -29,6 +29,6 @@
     "@dcloudio/uni-i18n": "0.0.1-nvue3.3030820220125001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3030820220125001",
     "@dcloudio/uni-stat": "0.0.1-nvue3.3030820220125001",
-    "@vue/shared": "3.2.29"
+    "@vue/shared": "3.2.30"
   }
 }
