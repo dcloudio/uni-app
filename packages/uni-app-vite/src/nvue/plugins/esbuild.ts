@@ -8,6 +8,7 @@ import debug from 'debug'
 import { transformWithEsbuild } from '@dcloudio/uni-cli-shared'
 
 import { nvueOutDir } from '../../utils'
+import { esbuildGlobals } from '../utils'
 
 const debugEsbuild = debug('uni:app-nvue-esbuild')
 
@@ -26,7 +27,7 @@ export function uniEsbuildPlugin(): Plugin {
         },
         bundle: true,
         write: false,
-        plugins: [esbuildGlobalPlugin({ vue: 'Vue' })],
+        plugins: [esbuildGlobalPlugin(esbuildGlobals)],
       }
     },
     async writeBundle(_, bundle) {

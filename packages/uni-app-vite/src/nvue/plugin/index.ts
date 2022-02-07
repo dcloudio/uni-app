@@ -22,6 +22,7 @@ import { transformVideo } from './transforms/transformVideo'
 import { transformText } from './transforms/transformText'
 import { createConfigResolved } from '../../plugin/configResolved'
 import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
+import { external, globals } from '../utils'
 
 const uTags = {
   text: 'u-text',
@@ -68,6 +69,7 @@ export function uniAppNVuePlugin(): Plugin {
         build: {
           outDir: nvueOutDir(),
           rollupOptions: {
+            external,
             input: {
               main: mainPath,
             },
@@ -82,6 +84,7 @@ export function uniAppNVuePlugin(): Plugin {
               assetFileNames: '[name][extname]',
               chunkFileNames: createChunkFileNames(inputDir),
               plugins: [dynamicImportPolyfill()],
+              globals,
             },
           },
         },

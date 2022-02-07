@@ -33,7 +33,6 @@ export function buildOptions(
     emptyOutDir: false, // 不清空输出目录，否则会影响 webpack 的输出
     assetsInlineLimit: 0,
     rollupOptions: {
-      external: ['vue'],
       input: resolveMainPathOnce(inputDir),
       output: {
         sourcemapPathTransform(relativeSourcePath, sourcemapPath) {
@@ -59,9 +58,6 @@ export function buildOptions(
           return '[name].js'
         },
         assetFileNames: '[name][extname]',
-        globals: {
-          vue: 'Vue',
-        },
       },
     },
   }

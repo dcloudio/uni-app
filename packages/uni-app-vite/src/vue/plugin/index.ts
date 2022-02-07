@@ -39,6 +39,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
         },
         build: {
           rollupOptions: {
+            external: ['vue'],
             output: {
               name: 'AppService',
               format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',
@@ -46,6 +47,9 @@ export function uniAppVuePlugin(): UniVitePlugin {
                 autoId: true,
               },
               entryFileNames: APP_SERVICE_FILENAME,
+              globals: {
+                vue: 'Vue',
+              },
             },
           },
         },
