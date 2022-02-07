@@ -81,21 +81,40 @@ export function initComponents(uni, Vue, weex) {
         }
       };
     }
-    function useHoverClass(hoverClass) {
-      if (hoverClass && hoverClass !== "none") {
-        return {};
+    const hasOwnProperty = Object.prototype.hasOwnProperty;
+    const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+    function useHoverClass(props) {
+      if (props.hoverClass && props.hoverClass !== "none") {
+        const hoverAttrs = { hoverClass: props.hoverClass };
+        if (hasOwn(props, "hoverStartTime")) {
+          hoverAttrs.hoverStartTime = props.hoverStartTime;
+        }
+        if (hasOwn(props, "hoverStayTime")) {
+          hoverAttrs.hoverStayTime = props.hoverStayTime;
+        }
+        if (hasOwn(props, "hoverStopPropagation")) {
+          hoverAttrs.hoverStopPropagation = props.hoverStopPropagation;
+        }
+        return hoverAttrs;
       }
-      return { hoverClass };
+      return {};
     }
+    const navigatorStyles = [{
+      "navigator-hover": {
+        backgroundColor: "rgba(0,0,0,0.1)",
+        opacity: 0.7
+      }
+    }];
     var Navigator = vue.defineComponent({
       name: "Navigator",
       props: navigatorProps,
+      styles: navigatorStyles,
       setup(props, {
         slots
       }) {
         const onClick = createNavigatorOnClick(props);
         return () => {
-          return vue.createVNode("div", vue.mergeProps(useHoverClass(props.hoverClass), {
+          return vue.createVNode("view", vue.mergeProps(useHoverClass(props), {
             "onClick": onClick
           }), [slots.default && slots.default()]);
         };
