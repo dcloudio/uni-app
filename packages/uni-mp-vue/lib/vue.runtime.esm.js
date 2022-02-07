@@ -1,4 +1,4 @@
-import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isSet, isPlainObject, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns } from '@vue/shared';
+import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isSet, isPlainObject, isReservedProp, EMPTY_ARR, isBuiltInDirective, NO, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath } from '@dcloudio/uni-shared';
 
@@ -7,7 +7,6 @@ function warn(msg, ...args) {
 }
 
 let activeEffectScope;
-const effectScopeStack = [];
 class EffectScope {
     constructor(detached = false) {
         this.active = true;
@@ -22,11 +21,11 @@ class EffectScope {
     run(fn) {
         if (this.active) {
             try {
-                this.on();
+                activeEffectScope = this;
                 return fn();
             }
             finally {
-                this.off();
+                activeEffectScope = this.parent;
             }
         }
         else if ((process.env.NODE_ENV !== 'production')) {
@@ -34,23 +33,24 @@ class EffectScope {
         }
     }
     on() {
-        if (this.active) {
-            effectScopeStack.push(this);
-            activeEffectScope = this;
-        }
+        activeEffectScope = this;
     }
     off() {
-        if (this.active) {
-            effectScopeStack.pop();
-            activeEffectScope = effectScopeStack[effectScopeStack.length - 1];
-        }
+        activeEffectScope = this.parent;
     }
     stop(fromParent) {
         if (this.active) {
-            this.effects.forEach(e => e.stop());
-            this.cleanups.forEach(cleanup => cleanup());
+            let i, l;
+            for (i = 0, l = this.effects.length; i < l; i++) {
+                this.effects[i].stop();
+            }
+            for (i = 0, l = this.cleanups.length; i < l; i++) {
+                this.cleanups[i]();
+            }
             if (this.scopes) {
-                this.scopes.forEach(e => e.stop(true));
+                for (i = 0, l = this.scopes.length; i < l; i++) {
+                    this.scopes[i].stop(true);
+                }
             }
             // nested scope, dereference from parent to avoid memory leaks
             if (this.parent && !fromParent) {
@@ -68,8 +68,7 @@ class EffectScope {
 function effectScope(detached) {
     return new EffectScope(detached);
 }
-function recordEffectScope(effect, scope) {
-    scope = scope || activeEffectScope;
+function recordEffectScope(effect, scope = activeEffectScope) {
     if (scope && scope.active) {
         scope.effects.push(effect);
     }
@@ -132,7 +131,6 @@ let trackOpBit = 1;
  * When recursion depth is greater, fall back to using a full cleanup.
  */
 const maxMarkerBits = 30;
-const effectStack = [];
 let activeEffect;
 const ITERATE_KEY = Symbol((process.env.NODE_ENV !== 'production') ? 'iterate' : '');
 const MAP_KEY_ITERATE_KEY = Symbol((process.env.NODE_ENV !== 'production') ? 'Map key iterate' : '');
@@ -142,35 +140,42 @@ class ReactiveEffect {
         this.scheduler = scheduler;
         this.active = true;
         this.deps = [];
+        this.parent = undefined;
         recordEffectScope(this, scope);
     }
     run() {
         if (!this.active) {
             return this.fn();
         }
-        if (!effectStack.length || !effectStack.includes(this)) {
-            try {
-                effectStack.push((activeEffect = this));
-                enableTracking();
-                trackOpBit = 1 << ++effectTrackDepth;
-                if (effectTrackDepth <= maxMarkerBits) {
-                    initDepMarkers(this);
-                }
-                else {
-                    cleanupEffect(this);
-                }
-                return this.fn();
+        let parent = activeEffect;
+        let lastShouldTrack = shouldTrack;
+        while (parent) {
+            if (parent === this) {
+                return;
             }
-            finally {
-                if (effectTrackDepth <= maxMarkerBits) {
-                    finalizeDepMarkers(this);
-                }
-                trackOpBit = 1 << --effectTrackDepth;
-                resetTracking();
-                effectStack.pop();
-                const n = effectStack.length;
-                activeEffect = n > 0 ? effectStack[n - 1] : undefined;
+            parent = parent.parent;
+        }
+        try {
+            this.parent = activeEffect;
+            activeEffect = this;
+            shouldTrack = true;
+            trackOpBit = 1 << ++effectTrackDepth;
+            if (effectTrackDepth <= maxMarkerBits) {
+                initDepMarkers(this);
             }
+            else {
+                cleanupEffect(this);
+            }
+            return this.fn();
+        }
+        finally {
+            if (effectTrackDepth <= maxMarkerBits) {
+                finalizeDepMarkers(this);
+            }
+            trackOpBit = 1 << --effectTrackDepth;
+            activeEffect = this.parent;
+            shouldTrack = lastShouldTrack;
+            this.parent = undefined;
         }
     }
     stop() {
@@ -218,33 +223,25 @@ function pauseTracking() {
     trackStack.push(shouldTrack);
     shouldTrack = false;
 }
-function enableTracking() {
-    trackStack.push(shouldTrack);
-    shouldTrack = true;
-}
 function resetTracking() {
     const last = trackStack.pop();
     shouldTrack = last === undefined ? true : last;
 }
 function track(target, type, key) {
-    if (!isTracking()) {
-        return;
+    if (shouldTrack && activeEffect) {
+        let depsMap = targetMap.get(target);
+        if (!depsMap) {
+            targetMap.set(target, (depsMap = new Map()));
+        }
+        let dep = depsMap.get(key);
+        if (!dep) {
+            depsMap.set(key, (dep = createDep()));
+        }
+        const eventInfo = (process.env.NODE_ENV !== 'production')
+            ? { effect: activeEffect, target, type, key }
+            : undefined;
+        trackEffects(dep, eventInfo);
     }
-    let depsMap = targetMap.get(target);
-    if (!depsMap) {
-        targetMap.set(target, (depsMap = new Map()));
-    }
-    let dep = depsMap.get(key);
-    if (!dep) {
-        depsMap.set(key, (dep = createDep()));
-    }
-    const eventInfo = (process.env.NODE_ENV !== 'production')
-        ? { effect: activeEffect, target, type, key }
-        : undefined;
-    trackEffects(dep, eventInfo);
-}
-function isTracking() {
-    return shouldTrack && activeEffect !== undefined;
 }
 function trackEffects(dep, debuggerEventExtraInfo) {
     let shouldTrack = false;
@@ -937,20 +934,17 @@ const toReactive = (value) => isObject(value) ? reactive(value) : value;
 const toReadonly = (value) => isObject(value) ? readonly(value) : value;
 
 function trackRefValue(ref) {
-    if (isTracking()) {
+    if (shouldTrack && activeEffect) {
         ref = toRaw(ref);
-        if (!ref.dep) {
-            ref.dep = createDep();
-        }
         if ((process.env.NODE_ENV !== 'production')) {
-            trackEffects(ref.dep, {
+            trackEffects(ref.dep || (ref.dep = createDep()), {
                 target: ref,
                 type: "get" /* GET */,
                 key: 'value'
             });
         }
         else {
-            trackEffects(ref.dep);
+            trackEffects(ref.dep || (ref.dep = createDep()));
         }
     }
 }
@@ -971,7 +965,7 @@ function triggerRefValue(ref, newVal) {
     }
 }
 function isRef(r) {
-    return Boolean(r && r.__v_isRef === true);
+    return !!(r && r.__v_isRef === true);
 }
 function ref(value) {
     return createRef(value, false);
@@ -3086,7 +3080,6 @@ return withDirectives(h(comp), [
   [bar, this.y]
 ])
 */
-const isBuiltInDirective = /*#__PURE__*/ makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo');
 function validateDirectiveName(name) {
     if (isBuiltInDirective(name)) {
         warn$1('Do not use built-in directive ids as custom directive id: ' + name);
@@ -4422,7 +4415,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.29";
+const version = "3.2.30";
 /**
  * @internal only exposed in compat builds
  */

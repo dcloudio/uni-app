@@ -23,7 +23,7 @@
     "@babel/preset-env": "^7.16.5",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030820220114006",
     "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114006",
-    "@vue/shared": "3.2.29",
+    "@vue/shared": "3.2.30",
     "acorn": "^5.2.1",
     "babel-loader": "^8.2.2",
     "consolidate": "^0.15.1",
