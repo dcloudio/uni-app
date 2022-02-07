@@ -308,7 +308,6 @@ export default {
       }
     },
     __handleTouchMove: function (event) {
-      event.stopPropagation()
       var self = this
       if (!this._isScaling && !this.disabled && this._isTouching) {
         let x = this._translateX
