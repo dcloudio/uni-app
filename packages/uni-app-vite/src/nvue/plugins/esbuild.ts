@@ -57,7 +57,7 @@ function buildNVuePage(filename: string, options: BuildOptions) {
   return transformWithEsbuild(
     `import App from './${filename}'
 import { AppStyles } from './app.css.js'
-const app = Vue.createApp(App)
+const app = Vue.createApp(App,{$store:getApp().$store})
 App.mpType = 'page'
 app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...App.styles]))
 app.mount('#root')`,
