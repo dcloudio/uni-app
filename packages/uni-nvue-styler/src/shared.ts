@@ -10,9 +10,7 @@ export const hasOwn = (
   key: string | symbol
 ): key is keyof typeof val => hasOwnProperty.call(val, key)
 
-const cacheStringFunction = <T extends (str: string) => string>(
-  fn: T
-): T => {
+const cacheStringFunction = <T extends (str: string) => string>(fn: T): T => {
   const cache: Record<string, string> = Object.create(null)
   return ((str: string) => {
     const hit = cache[str]
