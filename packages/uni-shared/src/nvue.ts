@@ -1,24 +1,5 @@
 import { createApp, ComponentPublicInstance } from 'vue'
 
-let latestNodeId = 1
-
-export class NVueTextNode {
-  instanceId: string
-  nodeId: number
-  parentNode: null | NVueElement
-  nodeType: 3
-  text: string
-  children: unknown[]
-  constructor(text: string) {
-    this.instanceId = ''
-    this.nodeId = latestNodeId++
-    this.parentNode = null
-    this.nodeType = 3
-    this.text = text
-    this.children = []
-  }
-}
-
 export interface Vue {
   createApp: typeof createApp
 }
@@ -91,6 +72,7 @@ export interface NVueDocument {
     tagName: string,
     props?: Record<string, unknown>
   ) => NVueElement
+  createText: (text: string) => Record<string, unknown>
   createComment: (text: string) => Record<string, unknown>
   fireEvent: (type: string) => void
   destroy: () => void

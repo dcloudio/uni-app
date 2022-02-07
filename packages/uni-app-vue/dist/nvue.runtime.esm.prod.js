@@ -256,20 +256,6 @@ export function nvueFactory(exports, document) {
     return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {});
   };
 
-  var latestNodeId = 1;
-
-  class NVueTextNode {
-    constructor(text) {
-      this.instanceId = '';
-      this.nodeId = latestNodeId++;
-      this.parentNode = null;
-      this.nodeType = 3;
-      this.text = text;
-      this.children = [];
-    }
-
-  }
-
   var activeEffectScope;
   var effectScopeStack = [];
 
@@ -9145,7 +9131,7 @@ export function nvueFactory(exports, document) {
     createElement: tag => {
       return document.createElement(tag);
     },
-    createText: text => new NVueTextNode(text),
+    createText: text => document.createText(text),
     createComment: text => document.createComment(text),
     setText: (node, text) => {
       node.setAttr('value', text);

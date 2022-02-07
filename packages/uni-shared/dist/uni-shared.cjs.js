@@ -585,18 +585,6 @@ function formatH5Log(type, filename, ...args) {
     console[type].apply(console, [...args, filename]);
 }
 
-let latestNodeId = 1;
-class NVueTextNode {
-    constructor(text) {
-        this.instanceId = '';
-        this.nodeId = latestNodeId++;
-        this.parentNode = null;
-        this.nodeType = 3;
-        this.text = text;
-        this.children = [];
-    }
-}
-
 function plusReady(callback) {
     if (typeof callback !== 'function') {
         return;
@@ -1345,7 +1333,6 @@ exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
 exports.NVUE_BUILT_IN_TAGS = NVUE_BUILT_IN_TAGS;
 exports.NVUE_U_BUILT_IN_TAGS = NVUE_U_BUILT_IN_TAGS;
-exports.NVueTextNode = NVueTextNode;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;

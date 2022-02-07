@@ -323,6 +323,7 @@ export declare interface NVueDocument {
     open: () => void;
     close: () => void;
     createElement: (tagName: string, props?: Record<string, unknown>) => NVueElement;
+    createText: (text: string) => Record<string, unknown>;
     createComment: (text: string) => Record<string, unknown>;
     fireEvent: (type: string) => void;
     destroy: () => void;
@@ -393,16 +394,6 @@ export declare interface NVueTaskCenter {
     send: (type: string, params: Record<string, unknown>, args: any[], options?: Record<string, unknown>) => void;
     registerHook: (componentId: string, type: string, hook: string, fn: Function) => void;
     updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
-}
-
-export declare class NVueTextNode {
-    instanceId: string;
-    nodeId: number;
-    parentNode: null | NVueElement;
-    nodeType: 3;
-    text: string;
-    children: unknown[];
-    constructor(text: string);
 }
 
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
