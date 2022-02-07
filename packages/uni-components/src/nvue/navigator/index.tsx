@@ -5,16 +5,26 @@ import {
 } from '../../components/navigator'
 import { useHoverClass } from '../utils'
 
+const navigatorStyles: Record<string, Record<string, string | number>>[] = [
+  {
+    'navigator-hover': {
+      backgroundColor: 'rgba(0,0,0,0.1)',
+      opacity: 0.7,
+    },
+  },
+]
+
 export default defineComponent({
   name: 'Navigator',
   props: navigatorProps,
+  styles: navigatorStyles,
   setup(props, { slots }) {
     const onClick = createNavigatorOnClick(props)
     return () => {
       return (
-        <div {...useHoverClass(props.hoverClass)} onClick={onClick}>
+        <view {...useHoverClass(props)} onClick={onClick}>
           {slots.default && slots.default()}
-        </div>
+        </view>
       )
     }
   },
