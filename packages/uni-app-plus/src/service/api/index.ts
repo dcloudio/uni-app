@@ -55,6 +55,8 @@ export * from './ui/navigationBar'
 export * from './ui/tabBar'
 export * from './ui/subNVue'
 
+export * from './internal/global'
+
 export * from './plugin/getProvider'
 export * from './plugin/oauth'
 export * from './plugin/registerRuntime'
@@ -62,7 +64,6 @@ export * from './plugin/share'
 export * from './plugin/requestPayment'
 export * from './plugin/requireNativePlugin'
 export * from './plugin/vuePlugin'
-export * from './plugin/restoreGlobal'
 export {
   sendHostEvent,
   navigateToMiniProgram,

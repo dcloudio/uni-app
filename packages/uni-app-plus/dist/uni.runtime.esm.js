@@ -16612,6 +16612,67 @@ var serviceContext = (function (vue) {
       return new SubNvue(id, isSub);
   };
 
+  let lastStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  function restoreOldSetStatusBarStyle(setStatusBarStyle) {
+      oldSetStatusBarStyle = setStatusBarStyle;
+  }
+  function newSetStatusBarStyle(style) {
+      lastStatusBarStyle = style;
+      oldSetStatusBarStyle(style);
+  }
+  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+  function setStatusBarStyle(statusBarStyle) {
+      if (!statusBarStyle) {
+          const page = getCurrentPage();
+          if (!page) {
+              return;
+          }
+          statusBarStyle = page.$page.statusBarStyle;
+          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+              return;
+          }
+      }
+      if (statusBarStyle === lastStatusBarStyle) {
+          return;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('setStatusBarStyle', statusBarStyle));
+      }
+      lastStatusBarStyle = statusBarStyle;
+      plus.navigator.setStatusBarStyle(statusBarStyle);
+  }
+
+  function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout, newSetInterval, newClearInterval) {
+      // 确保部分全局变量 是 app-service 中的
+      // 若首页 nvue 初始化比 app-service 快，导致框架处于该 nvue 环境下
+      // plus 如果不用 app-service，资源路径会出问题
+      // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
+      // 设置 vue3
+      // @ts-ignore 最终vue会被替换为vue
+      vue = newVue;
+      if (plus !== newPlus) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(`[restoreGlobal][${Date.now()}]`);
+          }
+          weex = newWeex;
+          // @ts-ignore
+          plus = newPlus;
+          restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
+          plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+          /* eslint-disable no-global-assign */
+          // @ts-ignore
+          setTimeout = newSetTimeout;
+          // @ts-ignore
+          clearTimeout = newClearTimeout;
+          // @ts-ignore
+          setInterval = newSetInterval;
+          // @ts-ignore
+          clearInterval = newClearInterval;
+      }
+      __uniConfig.serviceReady = true;
+  }
+
   const providers = {
       oauth(callback) {
           plus.oauth.getServices((services) => {
@@ -17935,37 +17996,6 @@ var serviceContext = (function (vue) {
       });
   }
 
-  let lastStatusBarStyle;
-  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-  function restoreOldSetStatusBarStyle(setStatusBarStyle) {
-      oldSetStatusBarStyle = setStatusBarStyle;
-  }
-  function newSetStatusBarStyle(style) {
-      lastStatusBarStyle = style;
-      oldSetStatusBarStyle(style);
-  }
-  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-  function setStatusBarStyle(statusBarStyle) {
-      if (!statusBarStyle) {
-          const page = getCurrentPage();
-          if (!page) {
-              return;
-          }
-          statusBarStyle = page.$page.statusBarStyle;
-          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-              return;
-          }
-      }
-      if (statusBarStyle === lastStatusBarStyle) {
-          return;
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('setStatusBarStyle', statusBarStyle));
-      }
-      lastStatusBarStyle = statusBarStyle;
-      plus.navigator.setStatusBarStyle(statusBarStyle);
-  }
-
   function onWebviewPopGesture(webview) {
       let popStartStatusBarStyle;
       webview.addEventListener('popGesture', (e) => {
@@ -19226,36 +19256,6 @@ var serviceContext = (function (vue) {
       };
   }
 
-  function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout, newSetInterval, newClearInterval) {
-      // 确保部分全局变量 是 app-service 中的
-      // 若首页 nvue 初始化比 app-service 快，导致框架处于该 nvue 环境下
-      // plus 如果不用 app-service，资源路径会出问题
-      // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
-      // 设置 vue3
-      // @ts-ignore 最终vue会被替换为vue
-      vue = newVue;
-      if (plus !== newPlus) {
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(`[restoreGlobal][${Date.now()}]`);
-          }
-          weex = newWeex;
-          // @ts-ignore
-          plus = newPlus;
-          restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
-          plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-          /* eslint-disable no-global-assign */
-          // @ts-ignore
-          setTimeout = newSetTimeout;
-          // @ts-ignore
-          clearTimeout = newClearTimeout;
-          // @ts-ignore
-          setInterval = newSetInterval;
-          // @ts-ignore
-          clearInterval = newClearInterval;
-      }
-      __uniConfig.serviceReady = true;
-  }
-
   const EventType = {
       load: 'load',
       close: 'close',
@@ -20009,6 +20009,7 @@ var serviceContext = (function (vue) {
     removeTabBarBadge: removeTabBarBadge,
     hideTabBarRedDot: hideTabBarRedDot,
     getSubNVueById: getSubNVueById,
+    restoreGlobal: restoreGlobal,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,
@@ -20024,7 +20025,6 @@ var serviceContext = (function (vue) {
     requireNativePlugin: requireNativePlugin,
     sendNativeEvent: sendNativeEvent,
     __vuePlugin: index$1,
-    restoreGlobal: restoreGlobal,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,

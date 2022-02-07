@@ -1634,10 +1634,10 @@ function useResizeSensorReset(rootRef) {
   };
 }
 const pixelRatio = 1;
-function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio;
-  canvas.height = canvas.offsetHeight * pixelRatio;
-  canvas.getContext("2d").__hidpi__ = true;
+function wrapper(canvas, hidpi = true) {
+  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
+  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  canvas.getContext("2d").__hidpi__ = hidpi;
 }
 const initHidpiOnce = /* @__PURE__ */ uniShared.once(() => {
   return void 0;
@@ -1678,6 +1678,10 @@ const props$t = {
   disableScroll: {
     type: [Boolean, String],
     default: false
+  },
+  hidpi: {
+    type: Boolean,
+    default: true
   }
 };
 var index$B = /* @__PURE__ */ defineBuiltInComponent({
@@ -1714,7 +1718,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
     const {
       _handleSubscribe,
       _resize
-    } = useMethods(canvas, actionsWaiting);
+    } = useMethods(props2, canvas, actionsWaiting);
     useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId));
     return () => {
       const {
@@ -1780,21 +1784,22 @@ function useListeners(props2, Listeners, trigger) {
     _listeners
   };
 }
-function useMethods(canvasRef, actionsWaiting) {
+function useMethods(props2, canvasRef, actionsWaiting) {
   let _actionsDefer = [];
   let _images = {};
+  const _pixelRatio = vue.computed(() => props2.hidpi ? pixelRatio : 1);
   function _resize(size) {
     let canvas = canvasRef.value;
-    var hasChanged = !size || canvas.width !== Math.floor(size.width * pixelRatio) || canvas.height !== Math.floor(size.height * pixelRatio);
+    var hasChanged = !size || canvas.width !== Math.floor(size.width * _pixelRatio.value) || canvas.height !== Math.floor(size.height * _pixelRatio.value);
     if (!hasChanged)
       return;
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext("2d");
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
       context.putImageData(imageData, 0, 0);
     } else {
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
     }
   }
   function actionsChanged({
@@ -2004,8 +2009,8 @@ function useMethods(canvasRef, actionsWaiting) {
     height = height ? Math.min(height, maxHeight) : maxHeight;
     if (!hidpi) {
       if (!destWidth && !destHeight) {
-        destWidth = Math.round(width * pixelRatio);
-        destHeight = Math.round(height * pixelRatio);
+        destWidth = Math.round(width * _pixelRatio.value);
+        destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {

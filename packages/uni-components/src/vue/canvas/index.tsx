@@ -66,6 +66,10 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
+  hidpi: {
+    type: Boolean,
+    default: true,
+  },
 }
 
 type Props = ExtractPropTypes<typeof props>
@@ -98,7 +102,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
     const { _listeners } = useListeners(props, $listeners, trigger)
 
-    const { _handleSubscribe, _resize } = useMethods(canvas, actionsWaiting)
+    const { _handleSubscribe, _resize } = useMethods(
+      props,
+      canvas,
+      actionsWaiting
+    )
 
     useSubscribe(
       _handleSubscribe as (
@@ -205,6 +213,7 @@ function useListeners(
 }
 
 function useMethods(
+  props: Props,
   canvasRef: Ref<HTMLCanvasElement | null>,
   actionsWaiting: Ref<boolean>
 ) {
@@ -213,20 +222,22 @@ function useMethods(
     [key: string]: HTMLImageElement & { ready: boolean }
   } = {}
 
+  const _pixelRatio = computed(() => (props.hidpi ? pixelRatio : 1))
+
   function _resize(size?: { width: number; height: number }) {
     let canvas = canvasRef.value!
     var hasChanged =
       !size ||
-      canvas.width !== Math.floor(size.width * pixelRatio) ||
-      canvas.height !== Math.floor(size.height * pixelRatio)
+      canvas.width !== Math.floor(size.width * _pixelRatio.value) ||
+      canvas.height !== Math.floor(size.height * _pixelRatio.value)
     if (!hasChanged) return
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext('2d')!
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-      wrapper(canvas)
+      wrapper(canvas, props.hidpi)
       context.putImageData(imageData, 0, 0)
     } else {
-      wrapper(canvas)
+      wrapper(canvas, props.hidpi)
     }
   }
   function actionsChanged(
@@ -522,8 +533,8 @@ function useMethods(
     height = height ? Math.min(height, maxHeight) : maxHeight
     if (!hidpi) {
       if (!destWidth && !destHeight) {
-        destWidth = Math.round(width * pixelRatio)
-        destHeight = Math.round(height * pixelRatio)
+        destWidth = Math.round(width * _pixelRatio.value)
+        destHeight = Math.round(height * _pixelRatio.value)
       } else if (!destWidth) {
         destWidth = Math.round((width / height) * destHeight)
       } else if (!destHeight) {
