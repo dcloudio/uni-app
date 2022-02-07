@@ -81,8 +81,8 @@ export default function uniPlugin(
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
   const plugins: Plugin[] = []
-
-  if (options.viteLegacyOptions) {
+  // 仅限 h5
+  if (options.viteLegacyOptions && options.platform === 'h5') {
     plugins.push(
       ...(legacyPlugin(
         initPluginViteLegacyOptions(options)

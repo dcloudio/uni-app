@@ -1,6 +1,5 @@
-import { NVueTextNode } from '@dcloudio/uni-shared';
 import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isGloballyWhitelisted, parseStringStyle } from '@vue/shared';
-export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
+export { camelize, capitalize, hyphenate, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -8863,7 +8862,7 @@ const nodeOps = {
     createElement: (tag) => {
         return document.createElement(tag);
     },
-    createText: text => new NVueTextNode(text),
+    createText: text => document.createText(text),
     createComment: text => document.createComment(text),
     setText: (node, text) => {
         node.setAttr('value', text);
@@ -8875,17 +8874,43 @@ const nodeOps = {
     nextSibling: node => node.nextSibling
 };
 
+function useCssStyles(styles) {
+    const normalized = {};
+    if (isArray(styles)) {
+        styles.forEach(style => {
+            Object.keys(style).forEach(name => {
+                if (hasOwn(normalized, name)) {
+                    extend(normalized[name], style[name]);
+                }
+                else {
+                    normalized[name] = style[name];
+                }
+            });
+        });
+    }
+    return normalized;
+}
+function parseStylesheet({ type, vnode: { appContext } }) {
+    if (!type.__styles) {
+        const styles = [];
+        if (appContext) {
+            styles.push(appContext.provides.__appStyles);
+        }
+        if (isArray(type.styles)) {
+            type.styles.forEach(style => styles.push(style));
+        }
+        type.__styles = useCssStyles(styles);
+    }
+    return type.__styles;
+}
+
 function isUndef(val) {
     return val === undefined || val === null;
-}
-function parseStylesheet(instance) {
-    return (instance.type.__stylesheet ||
-        {});
 }
 
 function patchAttr(el, key, value, instance = null) {
     if (instance) {
-        value = transformAttr(el, key, value, instance);
+        [key, value] = transformAttr(el, key, value, instance);
     }
     if (value == null) ;
     else {
@@ -8927,21 +8952,22 @@ const CLASS_AND_STYLES = {
 };
 function transformAttr(el, key, value, instance) {
     if (!value) {
-        return value;
+        return [key, value];
     }
     const opts = CLASS_AND_STYLES[el.type];
     if (opts) {
-        if (opts['class'].indexOf(key) !== -1) {
-            return parseStylesheet(instance)[value] || {};
+        const camelized = camelize(key);
+        if (opts['class'].indexOf(camelized) > -1) {
+            return [camelized, parseStylesheet(instance)[value] || {}];
         }
-        if (opts['style'].indexOf(key) !== -1) {
+        if (opts['style'].indexOf(key) > -1) {
             if (isString(value)) {
-                return parseStringStyle(value);
+                return [camelized, parseStringStyle(value)];
             }
-            return normalizeStyle(value);
+            return [camelized, normalizeStyle(value)];
         }
     }
-    return value;
+    return [key, value];
 }
 
 // compiler should normalize class + :class bindings on the same element
@@ -9203,4 +9229,4 @@ const createApp = ((...args) => {
     return app;
 });
 
-export { BaseTransition, Comment, EffectScope, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed$1 as computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, stop, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };
+export { BaseTransition, Comment, EffectScope, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed$1 as computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, stop, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };

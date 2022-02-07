@@ -265,20 +265,6 @@ function vueFactory(exports) {
     return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {});
   };
 
-  var latestNodeId = 1;
-
-  class NVueTextNode {
-    constructor(text) {
-      this.instanceId = '';
-      this.nodeId = latestNodeId++;
-      this.parentNode = null;
-      this.nodeType = 3;
-      this.text = text;
-      this.children = [];
-    }
-
-  }
-
   var activeEffectScope;
   var effectScopeStack = [];
 
@@ -9305,7 +9291,7 @@ function vueFactory(exports) {
     createElement: tag => {
       return document.createElement(tag);
     },
-    createText: text => new NVueTextNode(text),
+    createText: text => document.createText(text),
     createComment: text => document.createComment(text),
     setText: (node, text) => {
       node.setAttr('value', text);
@@ -9317,19 +9303,58 @@ function vueFactory(exports) {
     nextSibling: node => node.nextSibling
   };
 
-  function isUndef(val) {
-    return val === undefined || val === null;
+  function useCssStyles(styles) {
+    var normalized = {};
+
+    if (isArray(styles)) {
+      styles.forEach(style => {
+        Object.keys(style).forEach(name => {
+          if (hasOwn(normalized, name)) {
+            extend(normalized[name], style[name]);
+          } else {
+            normalized[name] = style[name];
+          }
+        });
+      });
+    }
+
+    return normalized;
   }
 
-  function parseStylesheet(instance) {
-    return instance.type.__stylesheet || {};
+  function parseStylesheet(_ref23) {
+    var {
+      type,
+      vnode: {
+        appContext
+      }
+    } = _ref23;
+
+    if (!type.__styles) {
+      var styles = [];
+
+      if (appContext) {
+        styles.push(appContext.provides.__appStyles);
+      }
+
+      if (isArray(type.styles)) {
+        type.styles.forEach(style => styles.push(style));
+      }
+
+      type.__styles = useCssStyles(styles);
+    }
+
+    return type.__styles;
+  }
+
+  function isUndef(val) {
+    return val === undefined || val === null;
   }
 
   function patchAttr(el, key, value) {
     var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
     if (instance) {
-      value = transformAttr(el, key, value, instance);
+      [key, value] = transformAttr(el, key, value, instance);
     }
 
     if (value == null) ;else {
@@ -9373,26 +9398,28 @@ function vueFactory(exports) {
 
   function transformAttr(el, key, value, instance) {
     if (!value) {
-      return value;
+      return [key, value];
     }
 
     var opts = CLASS_AND_STYLES[el.type];
 
     if (opts) {
-      if (opts['class'].indexOf(key) !== -1) {
-        return parseStylesheet(instance)[value] || {};
+      var camelized = camelize(key);
+
+      if (opts['class'].indexOf(camelized) > -1) {
+        return [camelized, parseStylesheet(instance)[value] || {}];
       }
 
-      if (opts['style'].indexOf(key) !== -1) {
+      if (opts['style'].indexOf(key) > -1) {
         if (isString(value)) {
-          return parseStringStyle(value);
+          return [camelized, parseStringStyle(value)];
         }
 
-        return normalizeStyle(value);
+        return [camelized, normalizeStyle(value)];
       }
     }
 
-    return value;
+    return [key, value];
   } // compiler should normalize class + :class bindings on the same element
   // into a single binding ['staticClass', dynamic]
 
@@ -9833,6 +9860,7 @@ function vueFactory(exports) {
     unref: unref,
     useAttrs: useAttrs,
     useCssModule: useCssModule,
+    useCssStyles: useCssStyles,
     useCssVars: useCssVars,
     useSSRContext: useSSRContext,
     useSlots: useSlots,
@@ -9851,6 +9879,7 @@ function vueFactory(exports) {
     withScopeId: withScopeId,
     camelize: camelize,
     capitalize: capitalize,
+    hyphenate: hyphenate,
     normalizeClass: normalizeClass,
     normalizeProps: normalizeProps,
     normalizeStyle: normalizeStyle,
