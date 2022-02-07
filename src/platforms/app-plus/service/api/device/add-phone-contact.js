@@ -6,7 +6,7 @@ const schema = {
   name: {
     givenName: 'firstName',
     middleName: 'middleName',
-    familyName: 'lastName',
+    familyName: 'lastName'
   },
   nickname: 'nickName',
   photos: {
@@ -84,7 +84,7 @@ const schema = {
 
 const keepFields = ['type', 'preferred']
 
-function buildContact(contact, data, schema) {
+function buildContact (contact, data, schema) {
   let hasValue = 0
   Object.keys(schema).forEach(contactKey => {
     const dataKey = schema[contactKey]
@@ -127,7 +127,7 @@ function buildContact(contact, data, schema) {
   return hasValue
 }
 
-export function addPhoneContact(data, callbackId) {
+export function addPhoneContact (data, callbackId) {
   plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
     !data.photoFilePath && (data.photoFilePath = '')
     const contact = addressbook.create()

@@ -78,6 +78,10 @@ export default {
     disableScroll: {
       type: [Boolean, String],
       default: false
+    },
+    hidpi: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -110,6 +114,9 @@ export default {
         $listeners[event] = eventHandler
       })
       return $listeners
+    },
+    pixelRatio () {
+      return this.hidpi ? pixelRatio : 1
     }
   },
   created () {
@@ -135,15 +142,15 @@ export default {
     },
     _resize (size) {
       var canvas = this.$refs.canvas
-      var hasChanged = !size || (canvas.width !== Math.floor(size.width * pixelRatio) || canvas.height !== Math.floor(size.height * pixelRatio))
+      var hasChanged = !size || (canvas.width !== Math.floor(size.width * this.pixelRatio) || canvas.height !== Math.floor(size.height * this.pixelRatio))
       if (!hasChanged) return
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext('2d')
         var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-        wrapper(canvas)
+        wrapper(canvas, this.hidpi)
         context.putImageData(imageData, 0, 0)
       } else {
-        wrapper(canvas)
+        wrapper(canvas, this.hidpi)
       }
     },
     _touchmove (event) {
@@ -377,8 +384,8 @@ export default {
       height = height ? Math.min(height, maxHeight) : maxHeight
       if (!hidpi) {
         if (!destWidth && !destHeight) {
-          destWidth = Math.round(width * pixelRatio)
-          destHeight = Math.round(height * pixelRatio)
+          destWidth = Math.round(width * this.pixelRatio)
+          destHeight = Math.round(height * this.pixelRatio)
         } else if (!destWidth) {
           destWidth = Math.round(width / height * destHeight)
         } else if (!destHeight) {
