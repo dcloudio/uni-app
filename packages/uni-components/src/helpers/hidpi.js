@@ -17,10 +17,10 @@ export const pixelRatio = __NODE_JS__
       return (window.devicePixelRatio || 1) / backingStore
     })()
 
-export function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio
-  canvas.height = canvas.offsetHeight * pixelRatio
-  canvas.getContext('2d').__hidpi__ = true
+export function wrapper(canvas, hidpi = true) {
+  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1)
+  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1)
+  canvas.getContext('2d').__hidpi__ = hidpi
 }
 
 let isHidpi = false
@@ -129,6 +129,7 @@ export function initHidpi() {
 
         args[1] *= pixelRatio
         args[2] *= pixelRatio
+        args[3] *= pixelRatio
 
         var font = this.font
         this.font = font.replace(
@@ -153,6 +154,7 @@ export function initHidpi() {
 
         args[1] *= pixelRatio // x
         args[2] *= pixelRatio // y
+        args[3] *= pixelRatio
 
         var font = this.font
         this.font = font.replace(
