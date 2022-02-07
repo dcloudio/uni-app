@@ -57,7 +57,8 @@ function buildNVuePage(filename: string, options: BuildOptions) {
     `import App from './${filename}'
 import { AppStyles } from './app.css.js'
 const app = Vue.createApp(App)
-app.provide('__appStyles', Vue.useCssStyles(AppStyles))
+App.mpType = 'page'
+app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...App.styles]))
 app.mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),
     options

@@ -8891,17 +8891,25 @@ function useCssStyles(styles) {
     return normalized;
 }
 function parseStylesheet({ type, vnode: { appContext } }) {
-    if (!type.__styles) {
-        const styles = [];
-        if (appContext) {
-            styles.push(appContext.provides.__appStyles);
+    const component = type;
+    if (!component.__styles) {
+        if (component.mpType === 'page' && appContext) {
+            // 如果是页面组件，则直接使用全局样式
+            component.__styles = appContext.provides.__globalStyles;
         }
-        if (isArray(type.styles)) {
-            type.styles.forEach(style => styles.push(style));
+        else {
+            const styles = [];
+            if (appContext) {
+                // 全局样式，包括 app.css 以及 page.css
+                styles.push(appContext.provides.__globalStyles);
+            }
+            if (isArray(component.styles)) {
+                component.styles.forEach(style => styles.push(style));
+            }
+            component.__styles = useCssStyles(styles);
         }
-        type.__styles = useCssStyles(styles);
     }
-    return type.__styles;
+    return component.__styles;
 }
 
 function isUndef(val) {

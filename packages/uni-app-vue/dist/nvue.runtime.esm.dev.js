@@ -10993,22 +10993,29 @@ export function nvueFactory(exports, document) {
         appContext
       }
     } = _ref23;
+    var component = type;
 
-    if (!type.__styles) {
-      var styles = [];
+    if (!component.__styles) {
+      if (component.mpType === 'page' && appContext) {
+        // 如果是页面组件，则直接使用全局样式
+        component.__styles = appContext.provides.__globalStyles;
+      } else {
+        var styles = [];
 
-      if (appContext) {
-        styles.push(appContext.provides.__appStyles);
+        if (appContext) {
+          // 全局样式，包括 app.css 以及 page.css
+          styles.push(appContext.provides.__globalStyles);
+        }
+
+        if (isArray(component.styles)) {
+          component.styles.forEach(style => styles.push(style));
+        }
+
+        component.__styles = useCssStyles(styles);
       }
-
-      if (isArray(type.styles)) {
-        type.styles.forEach(style => styles.push(style));
-      }
-
-      type.__styles = useCssStyles(styles);
     }
 
-    return type.__styles;
+    return component.__styles;
   }
 
   function isUndef(val) {
