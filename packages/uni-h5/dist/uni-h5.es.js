@@ -9666,7 +9666,6 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
   }
   function __handleTouchMove(event) {
-    event.stopPropagation();
     if (!_isScaling && !props2.disabled && _isTouching) {
       let x = _translateX;
       let y = _translateY;
