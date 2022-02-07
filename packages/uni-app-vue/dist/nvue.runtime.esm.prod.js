@@ -9190,7 +9190,10 @@ export function nvueFactory(exports, document) {
         styles.push(appContext.provides.__appStyles);
       }
 
-      type.styles.forEach(style => styles.push(style));
+      if (isArray(type.styles)) {
+        type.styles.forEach(style => styles.push(style));
+      }
+
       type.__styles = useCssStyles(styles);
     }
 
@@ -9213,13 +9216,13 @@ export function nvueFactory(exports, document) {
     }
   }
 
-  var ATTR_HOVER_CLASS = 'hover-class';
-  var ATTR_PLACEHOLDER_CLASS = 'placeholder-class';
-  var ATTR_PLACEHOLDER_STYLE = 'placeholder-style';
-  var ATTR_INDICATOR_CLASS = 'indicator-class';
-  var ATTR_INDICATOR_STYLE = 'indicator-style';
-  var ATTR_MASK_CLASS = 'mask-class';
-  var ATTR_MASK_STYLE = 'mask-style';
+  var ATTR_HOVER_CLASS = 'hoverClass';
+  var ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
+  var ATTR_PLACEHOLDER_STYLE = 'placeholderStyle';
+  var ATTR_INDICATOR_CLASS = 'indicatorClass';
+  var ATTR_INDICATOR_STYLE = 'indicatorStyle';
+  var ATTR_MASK_CLASS = 'maskClass';
+  var ATTR_MASK_STYLE = 'maskStyle';
   var CLASS_AND_STYLES = {
     view: {
       class: [ATTR_HOVER_CLASS],
@@ -9255,16 +9258,18 @@ export function nvueFactory(exports, document) {
     var opts = CLASS_AND_STYLES[el.type];
 
     if (opts) {
-      if (opts['class'].indexOf(key) !== -1) {
-        return [camelize(key), parseStylesheet(instance)[value] || {}];
+      var camelized = camelize(key);
+
+      if (opts['class'].indexOf(camelized) > -1) {
+        return [camelized, parseStylesheet(instance)[value] || {}];
       }
 
-      if (opts['style'].indexOf(key) !== -1) {
+      if (opts['style'].indexOf(key) > -1) {
         if (isString(value)) {
-          return [camelize(key), parseStringStyle(value)];
+          return [camelized, parseStringStyle(value)];
         }
 
-        return [camelize(key), normalizeStyle(value)];
+        return [camelized, normalizeStyle(value)];
       }
     }
 

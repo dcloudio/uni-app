@@ -8897,7 +8897,9 @@ function parseStylesheet({ type, vnode: { appContext } }) {
         if (appContext) {
             styles.push(appContext.provides.__appStyles);
         }
-        type.styles.forEach(style => styles.push(style));
+        if (isArray(type.styles)) {
+            type.styles.forEach(style => styles.push(style));
+        }
         type.__styles = useCssStyles(styles);
     }
     return type.__styles;
@@ -8916,13 +8918,13 @@ function patchAttr(el, key, value, instance = null) {
         el.setAttr(key, value);
     }
 }
-const ATTR_HOVER_CLASS = 'hover-class';
-const ATTR_PLACEHOLDER_CLASS = 'placeholder-class';
-const ATTR_PLACEHOLDER_STYLE = 'placeholder-style';
-const ATTR_INDICATOR_CLASS = 'indicator-class';
-const ATTR_INDICATOR_STYLE = 'indicator-style';
-const ATTR_MASK_CLASS = 'mask-class';
-const ATTR_MASK_STYLE = 'mask-style';
+const ATTR_HOVER_CLASS = 'hoverClass';
+const ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
+const ATTR_PLACEHOLDER_STYLE = 'placeholderStyle';
+const ATTR_INDICATOR_CLASS = 'indicatorClass';
+const ATTR_INDICATOR_STYLE = 'indicatorStyle';
+const ATTR_MASK_CLASS = 'maskClass';
+const ATTR_MASK_STYLE = 'maskStyle';
 const CLASS_AND_STYLES = {
     view: {
         class: [ATTR_HOVER_CLASS],
@@ -8955,14 +8957,15 @@ function transformAttr(el, key, value, instance) {
     }
     const opts = CLASS_AND_STYLES[el.type];
     if (opts) {
-        if (opts['class'].indexOf(key) !== -1) {
-            return [camelize(key), parseStylesheet(instance)[value] || {}];
+        const camelized = camelize(key);
+        if (opts['class'].indexOf(camelized) > -1) {
+            return [camelized, parseStylesheet(instance)[value] || {}];
         }
-        if (opts['style'].indexOf(key) !== -1) {
+        if (opts['style'].indexOf(key) > -1) {
             if (isString(value)) {
-                return [camelize(key), parseStringStyle(value)];
+                return [camelized, parseStringStyle(value)];
             }
-            return [camelize(key), normalizeStyle(value)];
+            return [camelized, normalizeStyle(value)];
         }
     }
     return [key, value];
