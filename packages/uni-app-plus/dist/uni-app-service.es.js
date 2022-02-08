@@ -2016,9 +2016,7 @@ var serviceContext = (function (vue) {
   };
   var Emitter = E;
 
-  // TODO 等待 vue3 的兼容模式自带emitter
   function initBridge(subscribeNamespace) {
-      // TODO vue3 compatibility builds
       const emitter = new Emitter();
       return {
           on(event, callback) {
