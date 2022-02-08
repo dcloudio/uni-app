@@ -90,7 +90,7 @@ type ApiCallbacks = {
   [key in CALLBACK_TYPES]?: Function
 }
 
-function getApiCallbacks(args: Record<string, any>) {
+export function getApiCallbacks(args: Record<string, any>) {
   const apiCallbacks: ApiCallbacks = {}
   for (const name in args) {
     const fn = args[name]
@@ -133,11 +133,11 @@ export function createAsyncApiCallback(
     isFunction(beforeAll) && beforeAll(res)
     if (res.errMsg === name + ':ok') {
       isFunction(beforeSuccess) && beforeSuccess(res, args)
-      hasSuccess && success!(res)
+      hasSuccess && success(res)
     } else {
-      hasFail && fail!(res)
+      hasFail && fail(res)
     }
-    hasComplete && complete!(res)
+    hasComplete && complete(res)
   })
   return callbackId
 }

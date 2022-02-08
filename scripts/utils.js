@@ -8,6 +8,8 @@ const priority = {
   'uni-app': 90,
   'uni-cli-shared': 80,
   'uni-stat': 75,
+  'uni-push': 75,
+  'uni-components': 75,
   'uni-mp-vue': 75,
   'uni-mp-alipay': 70,
   'uni-mp-baidu': 70,

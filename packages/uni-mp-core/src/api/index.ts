@@ -12,6 +12,12 @@ import {
   $once,
   $emit,
 } from '@dcloudio/uni-api/src/service/base/eventBus'
+import {
+  getPushCid,
+  onPushMessage,
+  offPushMessage,
+  invokePushCallback,
+} from '@dcloudio/uni-api/src/service/plugin/push'
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'
 
@@ -32,6 +38,10 @@ const baseApis = {
   getLocale,
   setLocale,
   onLocaleChange,
+  getPushCid,
+  onPushMessage,
+  offPushMessage,
+  invokePushCallback,
 }
 
 export function initUni(api: Record<string, any>, protocols: MPProtocols) {

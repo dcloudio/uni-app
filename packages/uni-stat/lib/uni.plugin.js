@@ -15,7 +15,7 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                if (isSsr(env.command, config)) {
+                if (uniCliShared.isSsr(env.command, config)) {
                     return;
                 }
                 isNVue = config.nvue;
@@ -67,14 +67,5 @@ var index = () => [
         };
     }),
 ];
-function isSsr(command, config) {
-    if (command === 'serve') {
-        return !!(config.server && config.server.middlewareMode);
-    }
-    if (command === 'build') {
-        return !!(config.build && config.build.ssr);
-    }
-    return false;
-}
 
 module.exports = index;

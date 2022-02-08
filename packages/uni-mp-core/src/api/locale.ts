@@ -21,8 +21,8 @@ export const setLocale: typeof uni.setLocale = (locale) => {
   return false
 }
 
-type OnLocaleCHangeCallback = Parameters<typeof uni.onLocaleChange>[0]
-const onLocaleChangeCallbacks: OnLocaleCHangeCallback[] = []
+type OnLocaleChangeCallback = Parameters<typeof uni.onLocaleChange>[0]
+const onLocaleChangeCallbacks: OnLocaleChangeCallback[] = []
 export const onLocaleChange: typeof uni.onLocaleChange = (fn) => {
   if (onLocaleChangeCallbacks.indexOf(fn) === -1) {
     onLocaleChangeCallbacks.push(fn)

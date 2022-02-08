@@ -23,19 +23,6 @@ import { transformPageHead } from '../plugin/transforms/transformPageHead'
 export const isSSR = (opt: { ssr?: boolean } | boolean | undefined) =>
   opt === undefined ? false : typeof opt === 'boolean' ? opt : opt?.ssr === true
 
-export function isSsr(
-  command: ConfigEnv['command'],
-  config: UserConfig | ResolvedConfig
-) {
-  if (command === 'serve') {
-    return !!(config.server && config.server.middlewareMode)
-  }
-  if (command === 'build') {
-    return !!(config.build && config.build.ssr)
-  }
-  return false
-}
-
 export function isSsrManifest(
   command: ConfigEnv['command'],
   config: UserConfig | ResolvedConfig

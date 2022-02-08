@@ -27,6 +27,7 @@
     "@dcloudio/uni-cloud": "0.0.1-nvue3.3040020220207001",
     "@dcloudio/uni-components": "0.0.1-nvue3.3040020220207001",
     "@dcloudio/uni-i18n": "0.0.1-nvue3.3040020220207001",
+    "@dcloudio/uni-push": "0.0.1-nvue3.3040020220207001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220207001",
     "@dcloudio/uni-stat": "0.0.1-nvue3.3040020220207001",
     "@vue/shared": "3.2.30"

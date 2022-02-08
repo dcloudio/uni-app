@@ -1,6 +1,10 @@
 import path from 'path'
-import { defineUniMainJsPlugin, normalizePath } from '@dcloudio/uni-cli-shared'
-import { isSSR, isSsr, isSsrManifest } from '../utils'
+import {
+  defineUniMainJsPlugin,
+  isSsr,
+  normalizePath,
+} from '@dcloudio/uni-cli-shared'
+import { isSSR, isSsrManifest } from '../utils'
 
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {

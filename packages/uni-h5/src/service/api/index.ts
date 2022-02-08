@@ -97,5 +97,10 @@ export {
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
+  getPushCid,
+  onPushMessage,
+  offPushMessage,
+  // 内部使用
+  invokePushCallback,
 } from '@dcloudio/uni-api'
 //#endif

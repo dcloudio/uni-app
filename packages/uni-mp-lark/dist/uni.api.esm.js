@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend } from '@vue/shared';
 import { injectHook } from 'vue';
 
 //App
@@ -187,6 +187,30 @@ function isExplicable(type) {
 }
 function isBoolean(...args) {
     return args.some((elem) => elem.toLowerCase() === 'boolean');
+}
+
+function tryCatch(fn) {
+    return function () {
+        try {
+            return fn.apply(fn, arguments);
+        }
+        catch (e) {
+            // TODO
+            console.error(e);
+        }
+    };
+}
+
+function getApiCallbacks(args) {
+    const apiCallbacks = {};
+    for (const name in args) {
+        const fn = args[name];
+        if (isFunction(fn)) {
+            apiCallbacks[name] = tryCatch(fn);
+            delete args[name];
+        }
+    }
+    return apiCallbacks;
 }
 
 const HOOK_SUCCESS = 'success';
@@ -584,6 +608,72 @@ const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     emitter.emit(name, ...args);
 }, EmitProtocol);
 
+let cid = '';
+/**
+ * @private
+ * @param args
+ */
+function invokePushCallback(args) {
+    if (args.type === 'clientId') {
+        cid = args.cid;
+        invokeGetPushCidCallbacks(cid);
+    }
+    else if (args.type === 'pushMsg') {
+        onPushMessageCallbacks.forEach((callback) => {
+            callback({ data: args.message });
+        });
+    }
+}
+const getPushCidCallbacks = [];
+function invokeGetPushCidCallbacks(cid) {
+    getPushCidCallbacks.forEach((callback) => {
+        callback(cid);
+    });
+    getPushCidCallbacks.length = 0;
+}
+function getPushCid(args) {
+    if (!isPlainObject(args)) {
+        args = {};
+    }
+    const { success, fail, complete } = getApiCallbacks(args);
+    const hasSuccess = isFunction(success);
+    const hasFail = isFunction(fail);
+    const hasComplete = isFunction(complete);
+    getPushCidCallbacks.push((cid) => {
+        let res;
+        if (cid) {
+            res = { errMsg: 'getPushCid:ok', cid };
+            hasSuccess && success(res);
+        }
+        else {
+            res = { errMsg: 'getPushCid:fail' };
+            hasFail && fail(res);
+        }
+        hasComplete && complete(res);
+    });
+    if (cid) {
+        Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+    }
+}
+const onPushMessageCallbacks = [];
+// 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
+const onPushMessage = (fn) => {
+    if (onPushMessageCallbacks.indexOf(fn) === -1) {
+        onPushMessageCallbacks.push(fn);
+    }
+};
+const offPushMessage = (fn) => {
+    if (!fn) {
+        onPushMessageCallbacks.length = 0;
+    }
+    else {
+        const index = onPushMessageCallbacks.indexOf(fn);
+        if (index > -1) {
+            onPushMessageCallbacks.splice(index, 1);
+        }
+    }
+};
+
 const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
@@ -772,6 +862,10 @@ const baseApis = {
     getLocale,
     setLocale,
     onLocaleChange,
+    getPushCid,
+    onPushMessage,
+    offPushMessage,
+    invokePushCallback,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
