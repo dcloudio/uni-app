@@ -27,6 +27,7 @@
     "@dcloudio/uni-cloud": "3.0.0-alpha-3030820220114006",
     "@dcloudio/uni-components": "3.0.0-alpha-3030820220114006",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3030820220114006",
+    "@dcloudio/uni-push": "3.0.0-alpha-3030820220114006",
     "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114006",
     "@dcloudio/uni-stat": "3.0.0-alpha-3030820220114006",
     "@vue/shared": "3.2.30"

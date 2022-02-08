@@ -4537,6 +4537,63 @@ const API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
   return getLaunchOptions();
 });
+let cid = "";
+function invokePushCallback(args) {
+  if (args.type === "clientId") {
+    cid = args.cid;
+    invokeGetPushCidCallbacks(cid);
+  } else if (args.type === "pushMsg") {
+    onPushMessageCallbacks.forEach((callback) => {
+      callback({ data: args.message });
+    });
+  }
+}
+const getPushCidCallbacks = [];
+function invokeGetPushCidCallbacks(cid2) {
+  getPushCidCallbacks.forEach((callback) => {
+    callback(cid2);
+  });
+  getPushCidCallbacks.length = 0;
+}
+function getPushCid(args) {
+  if (!isPlainObject(args)) {
+    args = {};
+  }
+  const { success, fail, complete } = getApiCallbacks(args);
+  const hasSuccess = isFunction(success);
+  const hasFail = isFunction(fail);
+  const hasComplete = isFunction(complete);
+  getPushCidCallbacks.push((cid2) => {
+    let res;
+    if (cid2) {
+      res = { errMsg: "getPushCid:ok", cid: cid2 };
+      hasSuccess && success(res);
+    } else {
+      res = { errMsg: "getPushCid:fail" };
+      hasFail && fail(res);
+    }
+    hasComplete && complete(res);
+  });
+  if (cid) {
+    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+  }
+}
+const onPushMessageCallbacks = [];
+const onPushMessage = (fn) => {
+  if (onPushMessageCallbacks.indexOf(fn) === -1) {
+    onPushMessageCallbacks.push(fn);
+  }
+};
+const offPushMessage = (fn) => {
+  if (!fn) {
+    onPushMessageCallbacks.length = 0;
+  } else {
+    const index2 = onPushMessageCallbacks.indexOf(fn);
+    if (index2 > -1) {
+      onPushMessageCallbacks.splice(index2, 1);
+    }
+  }
+};
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
   {
@@ -6245,10 +6302,10 @@ const pixelRatio = /* @__PURE__ */ function() {
   const backingStore = context.backingStorePixelRatio || context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
   return (window.devicePixelRatio || 1) / backingStore;
 }();
-function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio;
-  canvas.height = canvas.offsetHeight * pixelRatio;
-  canvas.getContext("2d").__hidpi__ = true;
+function wrapper(canvas, hidpi = true) {
+  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
+  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  canvas.getContext("2d").__hidpi__ = hidpi;
 }
 let isHidpi = false;
 function initHidpi() {
@@ -6337,6 +6394,7 @@ function initHidpi() {
         const args = Array.prototype.slice.call(arguments);
         args[1] *= pixelRatio;
         args[2] *= pixelRatio;
+        args[3] *= pixelRatio;
         var font2 = this.font;
         this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
           return m * pixelRatio + u;
@@ -6353,6 +6411,7 @@ function initHidpi() {
         var args = Array.prototype.slice.call(arguments);
         args[1] *= pixelRatio;
         args[2] *= pixelRatio;
+        args[3] *= pixelRatio;
         var font2 = this.font;
         this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
           return m * pixelRatio + u;
@@ -6412,6 +6471,10 @@ const props$A = {
   disableScroll: {
     type: [Boolean, String],
     default: false
+  },
+  hidpi: {
+    type: Boolean,
+    default: true
   }
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
@@ -6448,7 +6511,7 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
     const {
       _handleSubscribe,
       _resize
-    } = useMethods(canvas, actionsWaiting);
+    } = useMethods(props2, canvas, actionsWaiting);
     useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
     onMounted(() => {
       _resize();
@@ -6517,21 +6580,22 @@ function useListeners(props2, Listeners, trigger) {
     _listeners
   };
 }
-function useMethods(canvasRef, actionsWaiting) {
+function useMethods(props2, canvasRef, actionsWaiting) {
   let _actionsDefer = [];
   let _images = {};
+  const _pixelRatio = computed(() => props2.hidpi ? pixelRatio : 1);
   function _resize(size) {
     let canvas = canvasRef.value;
-    var hasChanged = !size || canvas.width !== Math.floor(size.width * pixelRatio) || canvas.height !== Math.floor(size.height * pixelRatio);
+    var hasChanged = !size || canvas.width !== Math.floor(size.width * _pixelRatio.value) || canvas.height !== Math.floor(size.height * _pixelRatio.value);
     if (!hasChanged)
       return;
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext("2d");
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
       context.putImageData(imageData, 0, 0);
     } else {
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
     }
   }
   function actionsChanged({
@@ -6741,8 +6805,8 @@ function useMethods(canvasRef, actionsWaiting) {
     height = height ? Math.min(height, maxHeight) : maxHeight;
     if (!hidpi) {
       if (!destWidth && !destHeight) {
-        destWidth = Math.round(width * pixelRatio);
-        destHeight = Math.round(height * pixelRatio);
+        destWidth = Math.round(width * _pixelRatio.value);
+        destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
@@ -19829,6 +19893,10 @@ var api = {
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
+  getPushCid,
+  onPushMessage,
+  offPushMessage,
+  invokePushCallback,
   cssVar,
   cssEnv,
   cssConstant,
@@ -21990,4 +22058,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushCid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offPushMessage, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

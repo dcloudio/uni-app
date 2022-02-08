@@ -11521,6 +11521,72 @@ var serviceContext = (function (vue) {
       return getLaunchOptions();
   });
 
+  let cid = '';
+  /**
+   * @private
+   * @param args
+   */
+  function invokePushCallback(args) {
+      if (args.type === 'clientId') {
+          cid = args.cid;
+          invokeGetPushCidCallbacks(cid);
+      }
+      else if (args.type === 'pushMsg') {
+          onPushMessageCallbacks.forEach((callback) => {
+              callback({ data: args.message });
+          });
+      }
+  }
+  const getPushCidCallbacks = [];
+  function invokeGetPushCidCallbacks(cid) {
+      getPushCidCallbacks.forEach((callback) => {
+          callback(cid);
+      });
+      getPushCidCallbacks.length = 0;
+  }
+  function getPushCid(args) {
+      if (!isPlainObject(args)) {
+          args = {};
+      }
+      const { success, fail, complete } = getApiCallbacks(args);
+      const hasSuccess = isFunction(success);
+      const hasFail = isFunction(fail);
+      const hasComplete = isFunction(complete);
+      getPushCidCallbacks.push((cid) => {
+          let res;
+          if (cid) {
+              res = { errMsg: 'getPushCid:ok', cid };
+              hasSuccess && success(res);
+          }
+          else {
+              res = { errMsg: 'getPushCid:fail' };
+              hasFail && fail(res);
+          }
+          hasComplete && complete(res);
+      });
+      if (cid) {
+          Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+      }
+  }
+  const onPushMessageCallbacks = [];
+  // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
+  const onPushMessage = (fn) => {
+      if (onPushMessageCallbacks.indexOf(fn) === -1) {
+          onPushMessageCallbacks.push(fn);
+      }
+  };
+  const offPushMessage = (fn) => {
+      if (!fn) {
+          onPushMessageCallbacks.length = 0;
+      }
+      else {
+          const index = onPushMessageCallbacks.indexOf(fn);
+          if (index > -1) {
+              onPushMessageCallbacks.splice(index, 1);
+          }
+      }
+  };
+
   const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
 
   const API_MAKE_PHONE_CALL = 'makePhoneCall';
@@ -19889,6 +19955,10 @@ var serviceContext = (function (vue) {
     setPageMeta: setPageMeta,
     getEnterOptionsSync: getEnterOptionsSync,
     getLaunchOptionsSync: getLaunchOptionsSync,
+    getPushCid: getPushCid,
+    onPushMessage: onPushMessage,
+    offPushMessage: offPushMessage,
+    invokePushCallback: invokePushCallback,
     setStorageSync: setStorageSync,
     setStorage: setStorage,
     getStorageSync: getStorageSync,

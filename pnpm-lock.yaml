@@ -154,6 +154,7 @@ importers:
       '@dcloudio/uni-cloud': 3.0.0-alpha-3030820220114006
       '@dcloudio/uni-components': 3.0.0-alpha-3030820220114006
       '@dcloudio/uni-i18n': 3.0.0-alpha-3030820220114006
+      '@dcloudio/uni-push': 3.0.0-alpha-3030820220114006
       '@dcloudio/uni-shared': 3.0.0-alpha-3030820220114006
       '@dcloudio/uni-stat': 3.0.0-alpha-3030820220114006
       '@vue/shared': 3.2.30
@@ -161,6 +162,7 @@ importers:
       '@dcloudio/uni-cloud': link:../uni-cloud
       '@dcloudio/uni-components': link:../uni-components
       '@dcloudio/uni-i18n': link:../uni-i18n
+      '@dcloudio/uni-push': link:../uni-push
       '@dcloudio/uni-shared': link:../uni-shared
       '@dcloudio/uni-stat': link:../uni-stat
       '@vue/shared': 3.2.30
@@ -741,6 +743,17 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
     devDependencies:
       '@vue/compiler-core': 3.2.30
+
+  packages/uni-push:
+    specifiers:
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3030820220114006
+      '@types/debug': ^4.1.7
+      debug: ^4.3.2
+    dependencies:
+      '@dcloudio/uni-cli-shared': link:../uni-cli-shared
+      debug: 4.3.3
+    devDependencies:
+      '@types/debug': 4.1.7
 
   packages/uni-quickapp-webview:
     specifiers:

@@ -66,6 +66,23 @@ export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
   )
 }
 
+export function getUniPush(inputDir: string, platform: UniApp.PLATFORM) {
+  const manifest = parseManifestJsonOnce(inputDir)
+  return extend(
+    {},
+    manifest.unipush,
+    manifest[platform] && manifest[platform].unipush
+  )
+}
+
+export function isUniPushOffline(inputDir: string) {
+  const manifest = parseManifestJsonOnce(inputDir)
+  return (
+    manifest?.['app-plus']?.distribute?.sdkConfigs?.push?.unipush?.enable ===
+    true
+  )
+}
+
 export function getRouterOptions(manifestJson: Record<string, any>): {
   mode?: 'history' | 'hash'
   base?: string

@@ -1,4 +1,3 @@
-import type { ConfigEnv, UserConfig } from 'vite'
 import debug from 'debug'
 import {
   M,
@@ -6,6 +5,7 @@ import {
   getUniStatistics,
   parseManifestJsonOnce,
   parsePagesJson,
+  isSsr,
 } from '@dcloudio/uni-cli-shared'
 
 export default [
@@ -64,13 +64,3 @@ export default [
     }
   }),
 ]
-
-function isSsr(command: ConfigEnv['command'], config: UserConfig) {
-  if (command === 'serve') {
-    return !!(config.server && config.server.middlewareMode)
-  }
-  if (command === 'build') {
-    return !!(config.build && config.build.ssr)
-  }
-  return false
-}
