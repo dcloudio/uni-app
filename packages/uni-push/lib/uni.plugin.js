@@ -12,7 +12,7 @@ var path__default = /*#__PURE__*/ _interopDefaultLegacy(path)
 var debug__default = /*#__PURE__*/ _interopDefaultLegacy(debug)
 
 const debugPush = debug__default['default']('uni:push')
-var index = [
+var index = () => [
   uniCliShared.defineUniMainJsPlugin((opts) => {
     let isEnable = false
     let isOffline = false

@@ -7,6 +7,10 @@ export function withSourcemap(config: ResolvedConfig) {
   return !!config.build.sourcemap
 }
 
+export function isInHybridNVue(config: UserConfig | ResolvedConfig): boolean {
+  return (config as any).nvue && process.env.UNI_RENDERER !== 'native'
+}
+
 export function isSsr(
   command: ConfigEnv['command'],
   config: UserConfig | ResolvedConfig

@@ -9,7 +9,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 const debugPush = debug('uni:push')
-export default [
+export default () => [
   defineUniMainJsPlugin((opts) => {
     let isEnable = false
     let isOffline = false
