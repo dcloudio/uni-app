@@ -5,6 +5,7 @@
   "main": "lib/uni-push.js",
   "module": "lib/uni-push.js",
   "files": [
+    "dist",
     "lib"
   ],
   "sideEffects": false,
