@@ -9,6 +9,7 @@ packages/uni-components/lib
 packages/uni-cloud/lib
 packages/uni-h5/lib
 packages/uni-stat/lib
+packages/uni-push/lib
 packages/uni-mp-alipay/lib
 packages/uni-mp-baidu/lib
 packages/uni-mp-kuaishou/lib
