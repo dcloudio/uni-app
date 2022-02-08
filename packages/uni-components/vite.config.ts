@@ -28,7 +28,7 @@ export default defineConfig({
       external: ['uni', 'vue', 'weex', '@vue/shared'],
       output: {
         banner:
-          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel}) {',
+          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel,UniViewJSBridge,VueShared}) {',
         footer: 'return components\n}',
         entryFileNames: 'components.js',
         globals: {
