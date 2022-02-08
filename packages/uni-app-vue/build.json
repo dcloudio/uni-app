@@ -6,14 +6,19 @@
     "output": {
       "freeze": false,
       "banner": "export function vueFactory (exports) {\n",
-      "footer": "}"
+      "footer": "}",
+      "format": "iife",
+      "globals": {
+        "@vue/shared": "exports.VueShared",
+        "@vue/reactivity": "exports.VueReactivity"
+      }
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity"],
     "babel": true
   },
   {
@@ -23,14 +28,19 @@
     "output": {
       "freeze": false,
       "banner": "export function vueFactory (exports) {\n",
-      "footer": "}"
+      "footer": "}",
+      "format": "iife",
+      "globals": {
+        "@vue/shared": "exports.VueShared",
+        "@vue/reactivity": "exports.VueReactivity"
+      }
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity"],
     "babel": true
   },
   {
@@ -50,14 +60,19 @@
     "output": {
       "freeze": false,
       "banner": "export function nvueFactory (exports, document) {\n",
-      "footer": "}"
+      "footer": "}",
+      "format": "iife",
+      "globals": {
+        "@vue/shared": "exports.VueShared",
+        "@vue/reactivity": "exports.VueReactivity"
+      }
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity"],
     "babel": true
   },
   {
@@ -67,14 +82,19 @@
     "output": {
       "freeze": false,
       "banner": "export function nvueFactory (exports, document) {\n",
-      "footer": "}"
+      "footer": "}",
+      "format": "iife",
+      "globals": {
+        "@vue/shared": "exports.VueShared",
+        "@vue/reactivity": "exports.VueReactivity"
+      }
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity"],
     "babel": true
   }
 ]
