@@ -2,8 +2,21 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+
+function resolve(file: string) {
+  return path.resolve(__dirname, file)
+}
+
 export default defineConfig({
   root: __dirname,
+  resolve: {
+    alias: [
+      {
+        find: '@dcloudio/uni-core',
+        replacement: resolve('../uni-core/src'),
+      },
+    ],
+  },
   build: {
     minify: false,
     lib: {
@@ -12,15 +25,17 @@ export default defineConfig({
       formats: ['iife'],
     },
     rollupOptions: {
-      external: ['uni', 'vue', 'weex'],
+      external: ['uni', 'vue', 'weex', '@vue/shared'],
       output: {
-        banner: 'export function initComponents(uni, Vue, weex) {',
+        banner:
+          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel}) {',
         footer: 'return components\n}',
         entryFileNames: 'components.js',
         globals: {
           uni: 'uni',
           vue: 'Vue',
           weex: 'weex',
+          '@vue/shared': 'VueShared',
         },
       },
     },

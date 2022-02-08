@@ -1,5 +1,5 @@
-export function initComponents(uni, Vue, weex) {
-  var components = function(vue) {
+export function initComponents({ uni, Vue, weex, plus, BroadcastChannel }) {
+  var components = function(vue, shared) {
     "use strict";
     const OPEN_TYPES = [
       "navigate",
@@ -81,18 +81,16 @@ export function initComponents(uni, Vue, weex) {
         }
       };
     }
-    const hasOwnProperty = Object.prototype.hasOwnProperty;
-    const hasOwn = (val, key) => hasOwnProperty.call(val, key);
     function useHoverClass(props) {
       if (props.hoverClass && props.hoverClass !== "none") {
         const hoverAttrs = { hoverClass: props.hoverClass };
-        if (hasOwn(props, "hoverStartTime")) {
+        if (shared.hasOwn(props, "hoverStartTime")) {
           hoverAttrs.hoverStartTime = props.hoverStartTime;
         }
-        if (hasOwn(props, "hoverStayTime")) {
+        if (shared.hasOwn(props, "hoverStayTime")) {
           hoverAttrs.hoverStayTime = props.hoverStayTime;
         }
-        if (hasOwn(props, "hoverStopPropagation")) {
+        if (shared.hasOwn(props, "hoverStopPropagation")) {
           hoverAttrs.hoverStopPropagation = props.hoverStopPropagation;
         }
         return hoverAttrs;
@@ -124,6 +122,6 @@ export function initComponents(uni, Vue, weex) {
       Navigator
     };
     return index;
-  }(Vue);
+  }(Vue, VueShared);
   return components;
 }
