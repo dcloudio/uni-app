@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-3031120220207001",
+  "version": "3.0.0-alpha-3031120220208001",
   "workspaces": [
     "packages/*"
   ],
@@ -42,8 +42,8 @@
   },
   "devDependencies": {
     "@dcloudio/types": "^2.5.16",
-    "@dcloudio/uni-api": "3.0.0-alpha-3031120220207001",
-    "@dcloudio/uni-app": "3.0.0-alpha-3031120220207001",
+    "@dcloudio/uni-api": "3.0.0-alpha-3031120220208001",
+    "@dcloudio/uni-app": "3.0.0-alpha-3031120220208001",
     "@jest/types": "^27.0.2",
     "@microsoft/api-extractor": "^7.19.2",
     "@rollup/plugin-alias": "^3.1.1",
