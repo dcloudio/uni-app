@@ -1,10 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.vueFactory = vueFactory;
-
 function vueFactory(exports) {
   (function (reactivity, shared) {
     'use strict';

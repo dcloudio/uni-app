@@ -5,7 +5,7 @@
     },
     "output": {
       "freeze": false,
-      "banner": "export function vueFactory (exports) {\n",
+      "banner": "function vueFactory (exports) {\n",
       "footer": "}",
       "format": "iife",
       "globals": {
@@ -27,7 +27,7 @@
     },
     "output": {
       "freeze": false,
-      "banner": "export function vueFactory (exports) {\n",
+      "banner": "function vueFactory (exports) {\n",
       "footer": "}",
       "format": "iife",
       "globals": {
@@ -59,7 +59,7 @@
     },
     "output": {
       "freeze": false,
-      "banner": "export function nvueFactory (exports, document) {\n",
+      "banner": "function nvueFactory (exports, document) {\n",
       "footer": "}",
       "format": "iife",
       "globals": {
@@ -81,7 +81,7 @@
     },
     "output": {
       "freeze": false,
-      "banner": "export function nvueFactory (exports, document) {\n",
+      "banner": "function nvueFactory (exports, document) {\n",
       "footer": "}",
       "format": "iife",
       "globals": {

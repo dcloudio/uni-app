@@ -1,10 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.nvueFactory = nvueFactory;
-
 function nvueFactory(exports, document) {
   (function (shared, reactivity) {
     'use strict';
