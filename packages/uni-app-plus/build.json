@@ -16,10 +16,11 @@
       "freeze": false,
       "name": "serviceContext",
       "format": "iife",
-      "banner": "export function createServiceContext(weex, plus, instanceContext){\nconst Vue = instanceContext.Vue;\nlet setTimeout = instanceContext.setTimeout;\nlet clearTimeout = instanceContext.clearTimeout;\nlet setInterval = instanceContext.setInterval;\nlet clearInterval = instanceContext.clearInterval;\nconst __uniConfig = instanceContext.__uniConfig;\nconst __uniRoutes = instanceContext.__uniRoutes;\n",
+      "banner": "export function createServiceContext(weex, plus, instanceContext){\nconst Vue = instanceContext.Vue;\nlet setTimeout = instanceContext.setTimeout;\nlet clearTimeout = instanceContext.clearTimeout;\nlet setInterval = instanceContext.setInterval;\nlet clearInterval = instanceContext.clearInterval;\nconst __uniConfig = instanceContext.__uniConfig;\nconst __uniRoutes = instanceContext.__uniRoutes;\nconst VueShared = instanceContext.VueShared;\n",
       "footer": "const uni = serviceContext.uni;\nconst getApp = serviceContext.getApp;\nconst getCurrentPages = serviceContext.getCurrentPages;\nconst UniServiceJSBridge = serviceContext.UniServiceJSBridge;\nreturn serviceContext;\n}",
       "globals": {
-        "vue": "Vue"
+        "vue": "Vue",
+        "@vue/shared": "VueShared"
       },
       "inlineDynamicImports": true
     },
@@ -36,7 +37,7 @@
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     },
-    "external": ["vue"],
+    "external": ["vue", "@vue/shared"],
     "replaceAfterBundled": {
       "__VUE__": "vue"
     }

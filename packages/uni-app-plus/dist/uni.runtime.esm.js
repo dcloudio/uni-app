@@ -6,8 +6,9 @@ let setInterval = instanceContext.setInterval;
 let clearInterval = instanceContext.clearInterval;
 const __uniConfig = instanceContext.__uniConfig;
 const __uniRoutes = instanceContext.__uniRoutes;
+const VueShared = instanceContext.VueShared;
 
-var serviceContext = (function (vue) {
+var serviceContext = (function (shared, vue) {
   'use strict';
 
   /*
@@ -85,67 +86,6 @@ var serviceContext = (function (vue) {
     return arraybuffer
   }
 
-  /**
-   * Make a map and return a function for checking if a key
-   * is in that map.
-   * IMPORTANT: all calls of this function must be prefixed with
-   * \/\*#\_\_PURE\_\_\*\/
-   * So that rollup can tree-shake them if necessary.
-   */
-  function makeMap(str, expectsLowerCase) {
-      const map = Object.create(null);
-      const list = str.split(',');
-      for (let i = 0; i < list.length; i++) {
-          map[list[i]] = true;
-      }
-      return expectsLowerCase ? val => !!map[val.toLowerCase()] : val => !!map[val];
-  }
-
-  (process.env.NODE_ENV !== 'production')
-      ? Object.freeze({})
-      : {};
-  (process.env.NODE_ENV !== 'production') ? Object.freeze([]) : [];
-  const extend = Object.assign;
-  const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-  const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
-  const isArray$1 = Array.isArray;
-  const isFunction = (val) => typeof val === 'function';
-  const isString = (val) => typeof val === 'string';
-  const isObject$1 = (val) => val !== null && typeof val === 'object';
-  const isPromise = (val) => {
-      return isObject$1(val) && isFunction(val.then) && isFunction(val.catch);
-  };
-  const objectToString = Object.prototype.toString;
-  const toTypeString = (value) => objectToString.call(value);
-  const toRawType = (value) => {
-      // extract "RawType" from strings like "[object RawType]"
-      return toTypeString(value).slice(8, -1);
-  };
-  const isPlainObject = (val) => toTypeString(val) === '[object Object]';
-  const cacheStringFunction$1 = (fn) => {
-      const cache = Object.create(null);
-      return ((str) => {
-          const hit = cache[str];
-          return hit || (cache[str] = fn(str));
-      });
-  };
-  const camelizeRE = /-(\w)/g;
-  /**
-   * @private
-   */
-  const camelize = cacheStringFunction$1((str) => {
-      return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
-  });
-  const hyphenateRE = /\B([A-Z])/g;
-  /**
-   * @private
-   */
-  const hyphenate = cacheStringFunction$1((str) => str.replace(hyphenateRE, '-$1').toLowerCase());
-  /**
-   * @private
-   */
-  const capitalize = cacheStringFunction$1((str) => str.charAt(0).toUpperCase() + str.slice(1));
-
   const LINEFEED = '\n';
   const NAVBAR_HEIGHT = 44;
   const TABBAR_HEIGHT = 50;
@@ -221,7 +161,7 @@ var serviceContext = (function (vue) {
               if (typeof val === undefined || val === null) {
                   val = '';
               }
-              else if (isPlainObject(val)) {
+              else if (shared.isPlainObject(val)) {
                   val = JSON.stringify(val);
               }
               return encodeStr(key) + '=' + encodeStr(val);
@@ -271,7 +211,7 @@ var serviceContext = (function (vue) {
           if (key in query) {
               // an extra variable for ts types
               let currentValue = query[key];
-              if (!isArray$1(currentValue)) {
+              if (!shared.isArray(currentValue)) {
                   currentValue = query[key] = [currentValue];
               }
               currentValue.push(value);
@@ -310,7 +250,7 @@ var serviceContext = (function (vue) {
               type += 'Passive';
           }
       }
-      return `on${capitalize(camelize(type))}`;
+      return `on${shared.capitalize(shared.camelize(type))}`;
   }
   class UniEvent {
       constructor(type, opts) {
@@ -341,7 +281,7 @@ var serviceContext = (function (vue) {
           bubbles: false,
           cancelable: false,
       });
-      extend(uniEvent, evt);
+      shared.extend(uniEvent, evt);
       return uniEvent;
   }
   class UniEventTarget {
@@ -394,7 +334,7 @@ var serviceContext = (function (vue) {
               options[m[0].toLowerCase()] = true;
           }
       }
-      return [hyphenate(name.slice(2)), options];
+      return [shared.hyphenate(name.slice(2)), options];
   }
 
   const NODE_TYPE_PAGE = 0;
@@ -475,10 +415,10 @@ var serviceContext = (function (vue) {
           return this.insertBefore(newChild, null);
       }
       cloneNode(deep) {
-          const cloned = extend(Object.create(Object.getPrototypeOf(this)), this);
+          const cloned = shared.extend(Object.create(Object.getPrototypeOf(this)), this);
           const { attributes } = cloned;
           if (attributes) {
-              cloned.attributes = extend({}, attributes);
+              cloned.attributes = shared.extend({}, attributes);
           }
           if (deep) {
               cloned.childNodes = cloned.childNodes.map((childNode) => childNode.cloneNode(true));
@@ -716,7 +656,7 @@ var serviceContext = (function (vue) {
       return str;
   }
   function elemsInArray(strArr, optionalVal) {
-      if (!isArray$1(strArr) ||
+      if (!shared.isArray(strArr) ||
           strArr.length === 0 ||
           strArr.find((val) => optionalVal.indexOf(val) === -1)) {
           return optionalVal;
@@ -731,8 +671,8 @@ var serviceContext = (function (vue) {
           onFail = validateProtocolFail;
       }
       for (const key in protocol) {
-          const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
-          if (isString(errMsg)) {
+          const errMsg = validateProp(key, data[key], protocol[key], !shared.hasOwn(data, key));
+          if (shared.isString(errMsg)) {
               onFail(name, errMsg);
           }
       }
@@ -741,7 +681,7 @@ var serviceContext = (function (vue) {
       if (!protocol) {
           return;
       }
-      if (!isArray$1(protocol)) {
+      if (!shared.isArray(protocol)) {
           return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
       }
       const len = protocol.length;
@@ -756,7 +696,7 @@ var serviceContext = (function (vue) {
       }
   }
   function validateProp(name, value, prop, isAbsent) {
-      if (!isPlainObject(prop)) {
+      if (!shared.isPlainObject(prop)) {
           prop = { type: prop };
       }
       const { type, required, validator } = prop;
@@ -771,7 +711,7 @@ var serviceContext = (function (vue) {
       // type check
       if (type != null) {
           let isValid = false;
-          const types = isArray$1(type) ? type : [type];
+          const types = shared.isArray(type) ? type : [type];
           const expectedTypes = [];
           // value is valid as long as one of the specified types match
           for (let i = 0; i < types.length && !isValid; i++) {
@@ -788,7 +728,7 @@ var serviceContext = (function (vue) {
           return validator(value);
       }
   }
-  const isSimpleType = /*#__PURE__*/ makeMap('String,Number,Boolean,Function,Symbol');
+  const isSimpleType = /*#__PURE__*/ shared.makeMap('String,Number,Boolean,Function,Symbol');
   function assertType(value, type) {
       let valid;
       const expectedType = getType(type);
@@ -801,15 +741,15 @@ var serviceContext = (function (vue) {
           }
       }
       else if (expectedType === 'Object') {
-          valid = isObject$1(value);
+          valid = shared.isObject(value);
       }
       else if (expectedType === 'Array') {
-          valid = isArray$1(value);
+          valid = shared.isArray(value);
       }
       else {
           {
               // App平台ArrayBuffer等参数跨实例传输，无法通过 instanceof 识别
-              valid = value instanceof type || toRawType(value) === getType(type);
+              valid = value instanceof type || shared.toRawType(value) === getType(type);
           }
       }
       return {
@@ -819,9 +759,9 @@ var serviceContext = (function (vue) {
   }
   function getInvalidTypeMessage(name, value, expectedTypes) {
       let message = `Invalid args: type check failed for args "${name}".` +
-          ` Expected ${expectedTypes.map(capitalize).join(', ')}`;
+          ` Expected ${expectedTypes.map(shared.capitalize).join(', ')}`;
       const expectedType = expectedTypes[0];
-      const receivedType = toRawType(value);
+      const receivedType = shared.toRawType(value);
       const expectedValue = styleValue(value, expectedType);
       const receivedValue = styleValue(value, receivedType);
       // check if we need to specify expected value
@@ -934,7 +874,7 @@ var serviceContext = (function (vue) {
       const apiCallbacks = {};
       for (const name in args) {
           const fn = args[name];
-          if (isFunction(fn)) {
+          if (shared.isFunction(fn)) {
               apiCallbacks[name] = tryCatch(fn);
               delete args[name];
           }
@@ -948,20 +888,20 @@ var serviceContext = (function (vue) {
       return name + errMsg.substring(errMsg.indexOf(':fail'));
   }
   function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-      if (!isPlainObject(args)) {
+      if (!shared.isPlainObject(args)) {
           args = {};
       }
       const { success, fail, complete } = getApiCallbacks(args);
-      const hasSuccess = isFunction(success);
-      const hasFail = isFunction(fail);
-      const hasComplete = isFunction(complete);
+      const hasSuccess = shared.isFunction(success);
+      const hasFail = shared.isFunction(fail);
+      const hasComplete = shared.isFunction(complete);
       const callbackId = invokeCallbackId++;
       addInvokeCallback(callbackId, name, (res) => {
           res = res || {};
           res.errMsg = normalizeErrMsg$1(res.errMsg, name);
-          isFunction(beforeAll) && beforeAll(res);
+          shared.isFunction(beforeAll) && beforeAll(res);
           if (res.errMsg === name + ':ok') {
-              isFunction(beforeSuccess) && beforeSuccess(res, args);
+              shared.isFunction(beforeSuccess) && beforeSuccess(res, args);
               hasSuccess && success(res);
           }
           else {
@@ -991,7 +931,7 @@ var serviceContext = (function (vue) {
           }
           else {
               const res = hook(data);
-              if (isPromise(res)) {
+              if (shared.isPromise(res)) {
                   promise = Promise.resolve(res);
               }
               if (res === false) {
@@ -1012,13 +952,13 @@ var serviceContext = (function (vue) {
   function wrapperOptions(interceptors, options = {}) {
       [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
           const hooks = interceptors[name];
-          if (!isArray$1(hooks)) {
+          if (!shared.isArray(hooks)) {
               return;
           }
           const oldCallback = options[name];
           options[name] = function callbackInterceptor(res) {
               queue(hooks, res).then((res) => {
-                  return (isFunction(oldCallback) && oldCallback(res)) || res;
+                  return (shared.isFunction(oldCallback) && oldCallback(res)) || res;
               });
           };
       });
@@ -1026,11 +966,11 @@ var serviceContext = (function (vue) {
   }
   function wrapperReturnValue(method, returnValue) {
       const returnValueHooks = [];
-      if (isArray$1(globalInterceptors.returnValue)) {
+      if (shared.isArray(globalInterceptors.returnValue)) {
           returnValueHooks.push(...globalInterceptors.returnValue);
       }
       const interceptor = scopedInterceptors[method];
-      if (interceptor && isArray$1(interceptor.returnValue)) {
+      if (interceptor && shared.isArray(interceptor.returnValue)) {
           returnValueHooks.push(...interceptor.returnValue);
       }
       returnValueHooks.forEach((hook) => {
@@ -1058,7 +998,7 @@ var serviceContext = (function (vue) {
   function invokeApi(method, api, options, params) {
       const interceptor = getApiInterceptorHooks(method);
       if (interceptor && Object.keys(interceptor).length) {
-          if (isArray$1(interceptor.invoke)) {
+          if (shared.isArray(interceptor.invoke)) {
               const res = queue(interceptor.invoke, options);
               return res.then((options) => {
                   return api(wrapperOptions(interceptor, options), ...params);
@@ -1072,8 +1012,8 @@ var serviceContext = (function (vue) {
   }
 
   function hasCallback(args) {
-      if (isPlainObject(args) &&
-          [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+      if (shared.isPlainObject(args) &&
+          [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => shared.isFunction(args[cb]))) {
           return true;
       }
       return false;
@@ -1094,7 +1034,7 @@ var serviceContext = (function (vue) {
               return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
           }
           return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-              invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+              invokeApi(name, fn, shared.extend(args, { success: resolve, fail: reject }), rest);
           })));
       };
   }
@@ -1102,7 +1042,7 @@ var serviceContext = (function (vue) {
   function formatApiArgs(args, options) {
       const params = args[0];
       if (!options ||
-          (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
+          (!shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params))) {
           return;
       }
       const formatArgs = options.formatArgs;
@@ -1110,25 +1050,25 @@ var serviceContext = (function (vue) {
       for (let i = 0; i < keys.length; i++) {
           const name = keys[i];
           const formatterOrDefaultValue = formatArgs[name];
-          if (isFunction(formatterOrDefaultValue)) {
+          if (shared.isFunction(formatterOrDefaultValue)) {
               const errMsg = formatterOrDefaultValue(args[0][name], params);
-              if (isString(errMsg)) {
+              if (shared.isString(errMsg)) {
                   return errMsg;
               }
           }
           else {
               // defaultValue
-              if (!hasOwn$1(params, name)) {
+              if (!shared.hasOwn(params, name)) {
                   params[name] = formatterOrDefaultValue;
               }
           }
       }
   }
   function invokeSuccess(id, name, res) {
-      return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+      return invokeCallback(id, shared.extend(res || {}, { errMsg: name + ':ok' }));
   }
   function invokeFail(id, name, errMsg, errRes) {
-      return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
+      return invokeCallback(id, shared.extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
   }
   function beforeInvokeApi(name, args, protocol, options) {
       if ((process.env.NODE_ENV !== 'production')) {
@@ -1136,7 +1076,7 @@ var serviceContext = (function (vue) {
       }
       if (options && options.beforeInvoke) {
           const errMsg = options.beforeInvoke(args);
-          if (isString(errMsg)) {
+          if (shared.isString(errMsg)) {
               return errMsg;
           }
       }
@@ -1146,7 +1086,7 @@ var serviceContext = (function (vue) {
       }
   }
   function checkCallback(callback) {
-      if (!isFunction(callback)) {
+      if (!shared.isFunction(callback)) {
           throw new Error('Invalid args: type check failed for args "callback". Expected Function');
       }
   }
@@ -1184,7 +1124,7 @@ var serviceContext = (function (vue) {
       };
   }
   function normalizeErrMsg(errMsg) {
-      if (!errMsg || isString(errMsg)) {
+      if (!errMsg || shared.isString(errMsg)) {
           return errMsg;
       }
       if (errMsg.stack) {
@@ -1645,7 +1585,7 @@ var serviceContext = (function (vue) {
       if (names.length === 1) {
           if (jsonObj) {
               const value = jsonObj[names[0]];
-              if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+              if (shared.isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
                   return jsonObj;
               }
           }
@@ -2016,9 +1956,7 @@ var serviceContext = (function (vue) {
   };
   var Emitter = E;
 
-  // TODO 等待 vue3 的兼容模式自带emitter
   function initBridge(subscribeNamespace) {
-      // TODO vue3 compatibility builds
       const emitter = new Emitter();
       return {
           on(event, callback) {
@@ -2119,9 +2057,9 @@ var serviceContext = (function (vue) {
   }
   function initRouteMeta(pageMeta, id) {
       const globalStyle = initGlobalStyle();
-      const res = extend({ id }, globalStyle, pageMeta);
+      const res = shared.extend({ id }, globalStyle, pageMeta);
       PAGE_META_KEYS.forEach((name) => {
-          res[name] = extend({}, globalStyle[name], pageMeta[name]);
+          res[name] = shared.extend({}, globalStyle[name], pageMeta[name]);
       });
       const { navigationBar } = res;
       navigationBar.titleText &&
@@ -2157,7 +2095,7 @@ var serviceContext = (function (vue) {
   }
 
   function invokeHook(vm, name, args) {
-      if (isString(vm)) {
+      if (shared.isString(vm)) {
           args = name;
           name = vm;
           vm = getCurrentPageVm();
@@ -2273,7 +2211,7 @@ var serviceContext = (function (vue) {
       }
   }
 
-  const ServiceJSBridge = /*#__PURE__*/ extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
+  const ServiceJSBridge = /*#__PURE__*/ shared.extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
       invokeOnCallback,
       invokeViewMethod,
       invokeViewMethodKeepAlive,
@@ -2390,7 +2328,7 @@ var serviceContext = (function (vue) {
       const globalProperties = appConfig.globalProperties;
       globalProperties.getOpenerEventChannel = getOpenerEventChannel;
       {
-          extend(globalProperties, wxInstance);
+          shared.extend(globalProperties, wxInstance);
       }
   }
 
@@ -2411,7 +2349,7 @@ var serviceContext = (function (vue) {
   }
   function defineGlobalData(app, defaultGlobalData) {
       const options = app.$options || {};
-      options.globalData = extend(options.globalData || {}, defaultGlobalData);
+      options.globalData = shared.extend(options.globalData || {}, defaultGlobalData);
       Object.defineProperty(app, 'globalData', {
           get() {
               return options.globalData;
@@ -2547,7 +2485,7 @@ var serviceContext = (function (vue) {
       const callbacks = Object.create(null);
       const iterator = function iterator(name) {
           const callback = args[name];
-          if (isFunction(callback)) {
+          if (shared.isFunction(callback)) {
               callbacks[name] = callback;
               delete args[name];
           }
@@ -2569,10 +2507,10 @@ var serviceContext = (function (vue) {
           }
           delete ret.code;
           delete ret.msg;
-          isFunction(callback) && callback(ret);
+          shared.isFunction(callback) && callback(ret);
           if (type === SUCCESS || type === FAIL) {
               const complete = callbacks.complete;
-              isFunction(complete) && complete(ret);
+              shared.isFunction(complete) && complete(ret);
           }
       };
   }
@@ -2761,19 +2699,19 @@ var serviceContext = (function (vue) {
       return enterOptions;
   }
   function initEnterOptions({ path, query, referrerInfo, }) {
-      extend(enterOptions, {
+      shared.extend(enterOptions, {
           path,
           query: query ? parseQuery(query) : {},
           referrerInfo: referrerInfo || {},
       });
   }
   function initLaunchOptions({ path, query, referrerInfo, }) {
-      extend(launchOptions, {
+      shared.extend(launchOptions, {
           path,
           query: query ? parseQuery(query) : {},
           referrerInfo: referrerInfo || {},
       });
-      extend(enterOptions, launchOptions);
+      shared.extend(enterOptions, launchOptions);
       return launchOptions;
   }
   function parseRedirectInfo() {
@@ -9701,7 +9639,7 @@ var serviceContext = (function (vue) {
 
   function mergeInterceptorHook(interceptors, interceptor) {
       Object.keys(interceptor).forEach((hook) => {
-          if (isFunction(interceptor[hook])) {
+          if (shared.isFunction(interceptor[hook])) {
               interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
           }
       });
@@ -9711,7 +9649,7 @@ var serviceContext = (function (vue) {
           return;
       }
       Object.keys(interceptor).forEach((hook) => {
-          if (isFunction(interceptor[hook])) {
+          if (shared.isFunction(interceptor[hook])) {
               removeHook(interceptors[hook], interceptor[hook]);
           }
       });
@@ -9720,7 +9658,7 @@ var serviceContext = (function (vue) {
       const res = childVal
           ? parentVal
               ? parentVal.concat(childVal)
-              : isArray$1(childVal)
+              : shared.isArray(childVal)
                   ? childVal
                   : [childVal]
           : parentVal;
@@ -9745,23 +9683,23 @@ var serviceContext = (function (vue) {
       }
   }
   const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-      if (typeof method === 'string' && isPlainObject(interceptor)) {
+      if (typeof method === 'string' && shared.isPlainObject(interceptor)) {
           mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
       }
-      else if (isPlainObject(method)) {
+      else if (shared.isPlainObject(method)) {
           mergeInterceptorHook(globalInterceptors, method);
       }
   }, AddInterceptorProtocol);
   const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
       if (typeof method === 'string') {
-          if (isPlainObject(interceptor)) {
+          if (shared.isPlainObject(interceptor)) {
               removeInterceptorHook(scopedInterceptors[method], interceptor);
           }
           else {
               delete scopedInterceptors[method];
           }
       }
-      else if (isPlainObject(method)) {
+      else if (shared.isPlainObject(method)) {
           removeInterceptorHook(globalInterceptors, method);
       }
   }, RemoveInterceptorProtocol);
@@ -10040,7 +9978,7 @@ var serviceContext = (function (vue) {
   const API_CANVAS_PUT_IMAGE_DATA = 'canvasPutImageData';
   const CanvasPutImageDataOptions = CanvasGetImageDataOptions;
   const CanvasPutImageDataProtocol = 
-  /*#__PURE__*/ extend({
+  /*#__PURE__*/ shared.extend({
       data: {
           type: Uint8ClampedArray,
           required: true,
@@ -10327,7 +10265,7 @@ var serviceContext = (function (vue) {
           });
       }
       var i = e.toLowerCase();
-      if (hasOwn$1(predefinedColor, i)) {
+      if (shared.hasOwn(predefinedColor, i)) {
           t = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
           const n = parseInt(t[1].slice(0, 2), 16);
           const o = parseInt(t[1].slice(2, 4), 16);
@@ -11023,7 +10961,7 @@ var serviceContext = (function (vue) {
       constructor(component, options) {
           this._pageId = getPageIdByVm(component);
           this._component = component;
-          this._options = extend({}, defaultOptions, options);
+          this._options = shared.extend({}, defaultOptions, options);
       }
       relativeTo(selector, margins) {
           this._options.relativeToSelector = selector;
@@ -11036,7 +10974,7 @@ var serviceContext = (function (vue) {
           return this;
       }
       observe(selector, callback) {
-          if (!isFunction(callback)) {
+          if (!shared.isFunction(callback)) {
               return;
           }
           this._options.selector = selector;
@@ -11072,7 +11010,7 @@ var serviceContext = (function (vue) {
           this._component = component;
       }
       observe(options, callback) {
-          if (!isFunction(callback)) {
+          if (!shared.isFunction(callback)) {
               return;
           }
           this._reqId = reqComponentObserverId++;
@@ -11330,11 +11268,11 @@ var serviceContext = (function (vue) {
           this.actions = [];
           this.currentTransform = {};
           this.currentStepAnimates = [];
-          this.option = extend({}, defaultOption, option);
+          this.option = shared.extend({}, defaultOption, option);
       }
       _getOption(option) {
           const _option = {
-              transition: extend({}, this.option, option),
+              transition: shared.extend({}, this.option, option),
               transformOrigin: '',
           };
           _option.transformOrigin = _option.transition.transformOrigin;
@@ -11545,13 +11483,13 @@ var serviceContext = (function (vue) {
       getPushCidCallbacks.length = 0;
   }
   function getPushCid(args) {
-      if (!isPlainObject(args)) {
+      if (!shared.isPlainObject(args)) {
           args = {};
       }
       const { success, fail, complete } = getApiCallbacks(args);
-      const hasSuccess = isFunction(success);
-      const hasFail = isFunction(fail);
-      const hasComplete = isFunction(complete);
+      const hasSuccess = shared.isFunction(success);
+      const hasFail = shared.isFunction(fail);
+      const hasComplete = shared.isFunction(complete);
       getPushCidCallbacks.push((cid) => {
           let res;
           if (cid) {
@@ -12210,12 +12148,12 @@ var serviceContext = (function (vue) {
           params[part[0]] = part[1];
       });
       for (const key in data) {
-          if (hasOwn$1(data, key)) {
+          if (shared.hasOwn(data, key)) {
               let v = data[key];
               if (typeof v === 'undefined' || v === null) {
                   v = '';
               }
-              else if (isPlainObject(v)) {
+              else if (shared.isPlainObject(v)) {
                   v = JSON.stringify(v);
               }
               params[encode$1(key)] = encode$1(v);
@@ -12248,7 +12186,7 @@ var serviceContext = (function (vue) {
           },
           url(value, params) {
               if (params.method === HTTP_METHODS[0] &&
-                  isPlainObject(params.data) &&
+                  shared.isPlainObject(params.data) &&
                   Object.keys(params.data).length) {
                   // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
                   params.url = stringifyQuery(value, params.data);
@@ -12283,7 +12221,7 @@ var serviceContext = (function (vue) {
   const ConfigMTLSOptions = {
       formatArgs: {
           certificates(value) {
-              if (value.some((item) => toRawType(item.host) !== 'String')) {
+              if (value.some((item) => shared.toRawType(item.host) !== 'String')) {
                   return '参数配置错误，请确认后重试';
               }
           },
@@ -12435,9 +12373,9 @@ var serviceContext = (function (vue) {
   const API_PRELOAD_PAGE = 'preloadPage';
   const API_UN_PRELOAD_PAGE = 'unPreloadPage';
   const NavigateToProtocol = 
-  /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+  /*#__PURE__*/ shared.extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
   const NavigateBackProtocol = 
-  /*#__PURE__*/ extend({
+  /*#__PURE__*/ shared.extend({
       delta: {
           type: Number,
       },
@@ -12682,14 +12620,14 @@ var serviceContext = (function (vue) {
           content: '',
           showCancel: true,
           cancelText(_value, params) {
-              if (!hasOwn$1(params, 'cancelText')) {
+              if (!shared.hasOwn(params, 'cancelText')) {
                   const { t } = useI18n();
                   params.cancelText = t('uni.showModal.cancel');
               }
           },
           cancelColor: '#000',
           confirmText(_value, params) {
-              if (!hasOwn$1(params, 'confirmText')) {
+              if (!shared.hasOwn(params, 'confirmText')) {
                   const { t } = useI18n();
                   params.confirmText = t('uni.showModal.confirm');
               }
@@ -12758,7 +12696,7 @@ var serviceContext = (function (vue) {
   };
   const API_SET_TAB_BAR_ITEM = 'setTabBarItem';
   const SetTabBarItemProtocol = 
-  /*#__PURE__*/ extend({
+  /*#__PURE__*/ shared.extend({
       text: String,
       iconPath: String,
       selectedIconPath: String,
@@ -12766,7 +12704,7 @@ var serviceContext = (function (vue) {
   }, IndexProtocol);
   const SetTabBarItemOptions = {
       beforeInvoke: IndexOptions.beforeInvoke,
-      formatArgs: /*#__PURE__*/ extend({
+      formatArgs: /*#__PURE__*/ shared.extend({
           pagePath(value, params) {
               if (value) {
                   params.pagePath = removeLeadingSlash(value);
@@ -12816,7 +12754,7 @@ var serviceContext = (function (vue) {
   const RemoveTabBarBadgeOptions = IndexOptions;
   const API_SET_TAB_BAR_BADGE = 'setTabBarBadge';
   const SetTabBarBadgeProtocol = 
-  /*#__PURE__*/ extend({
+  /*#__PURE__*/ shared.extend({
       text: {
           type: String,
           required: true,
@@ -12824,7 +12762,7 @@ var serviceContext = (function (vue) {
   }, IndexProtocol);
   const SetTabBarBadgeOptions = {
       beforeInvoke: IndexOptions.beforeInvoke,
-      formatArgs: /*#__PURE__*/ extend({
+      formatArgs: /*#__PURE__*/ shared.extend({
           text(value, params) {
               if (getLen(value) >= 4) {
                   params.text = '...';
@@ -13058,7 +12996,7 @@ var serviceContext = (function (vue) {
           // 一键登录errorCallback新增 appid、metadata、uid 参数返回
           errMsg = error.message || errMsg || '';
           delete error.message;
-          reject(errMsg, extend({ code: 0 }, error));
+          reject(errMsg, shared.extend({ code: 0 }, error));
       };
   }
   function warpPlusEvent(plusObject, event) {
@@ -13076,7 +13014,7 @@ var serviceContext = (function (vue) {
   function warpPlusMethod(plusObject, before, after) {
       return function (options, { resolve, reject }) {
           const object = plusObject();
-          object(extend({}, typeof before === 'function' ? before(options) : options, {
+          object(shared.extend({}, typeof before === 'function' ? before(options) : options, {
               success: warpPlusSuccessCallback(resolve, after),
               fail: warpPlusErrorCallback(reject),
           }));
@@ -13279,7 +13217,7 @@ var serviceContext = (function (vue) {
   }));
 
   const getFileInfo$1 = defineAsyncApi(API_GET_FILE_INFO, (options, { resolve, reject }) => {
-      plus.io.getFileInfo(extend(options, {
+      plus.io.getFileInfo(shared.extend(options, {
           success: warpPlusSuccessCallback(resolve),
           fail: warpPlusErrorCallback(reject),
       }));
@@ -14156,19 +14094,19 @@ var serviceContext = (function (vue) {
                   case e.AUTHENTICATE_OVERLIMIT:
                       // 微信小程序在第一次重试次数超限时安卓IOS返回不一致，安卓端会返回次数超过限制（errCode: 90010），IOS端会返回认证失败（errCode: 90009）。APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
                       plus.nativeUI.closeWaiting();
-                      reject('authenticate freeze. please try again later', extend(res, {
+                      reject('authenticate freeze. please try again later', shared.extend(res, {
                           errCode: 90010,
                       }));
                       break;
                   case e.CANCEL:
                       plus.nativeUI.closeWaiting();
-                      reject('cancel', extend(res, {
+                      reject('cancel', shared.extend(res, {
                           errCode: 90008,
                       }));
                       break;
                   default:
                       plus.nativeUI.closeWaiting();
-                      reject('', extend(res, {
+                      reject('', shared.extend(res, {
                           errCode: 90007,
                       }));
                       break;
@@ -14194,22 +14132,22 @@ var serviceContext = (function (vue) {
               else {
                   switch (e.code) {
                       case 4:
-                          reject('', extend(res, {
+                          reject('', shared.extend(res, {
                               errCode: 90009,
                           }));
                           break;
                       case 5:
-                          reject('authenticate freeze. please try again later', extend(res, {
+                          reject('authenticate freeze. please try again later', shared.extend(res, {
                               errCode: 90010,
                           }));
                           break;
                       case 6:
-                          reject('', extend(res, {
+                          reject('', shared.extend(res, {
                               errCode: 90008,
                           }));
                           break;
                       default:
-                          reject('', extend(res, {
+                          reject('', shared.extend(res, {
                               errCode: 90007,
                           }));
                           break;
@@ -14303,9 +14241,9 @@ var serviceContext = (function (vue) {
           titleSize: '17px',
       };
       const pageId = `page${Date.now()}`;
-      style = extend({}, style);
+      style = shared.extend({}, style);
       if (style.titleNView !== false && style.titleNView !== 'none') {
-          style.titleNView = extend(titleNView, style.titleNView);
+          style.titleNView = shared.extend(titleNView, style.titleNView);
       }
       const defaultStyle = {
           top: 0,
@@ -14324,7 +14262,7 @@ var serviceContext = (function (vue) {
               viewport: plus_.screen.resolutionWidth,
           },
       };
-      style = extend(defaultStyle, style);
+      style = shared.extend(defaultStyle, style);
       const page = plus_.webview.create('', pageId, style, {
           extras: {
               from: getPageId(),
@@ -14441,7 +14379,7 @@ var serviceContext = (function (vue) {
 
   const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
       const path = TEMP_PATH + '/download/';
-      plus.io.getImageInfo(extend(options, {
+      plus.io.getImageInfo(shared.extend(options, {
           savePath: path,
           filename: path,
           success: warpPlusSuccessCallback(resolve),
@@ -14487,7 +14425,7 @@ var serviceContext = (function (vue) {
           onLongPress: function (res) {
               let itemList = [];
               let itemColor = '';
-              const hasLongPressActions = longPressActions && isPlainObject(longPressActions);
+              const hasLongPressActions = longPressActions && shared.isPlainObject(longPressActions);
               if (!hasLongPressActions) {
                   itemList = [t('uni.previewImage.button.save')];
                   itemColor = '#000000';
@@ -14549,7 +14487,7 @@ var serviceContext = (function (vue) {
   let recording = false;
   let recordTimeout;
   const publishRecorderStateChange = (state, res = {}) => {
-      onRecorderStateChange(extend({
+      onRecorderStateChange(shared.extend({
           state,
       }, res));
   };
@@ -14659,7 +14597,7 @@ var serviceContext = (function (vue) {
 
   const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
       const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
-      plus.zip.compressImage(extend({}, options, {
+      plus.zip.compressImage(shared.extend({}, options, {
           dst,
       }), () => {
           resolve({
@@ -14670,7 +14608,7 @@ var serviceContext = (function (vue) {
 
   const compressVideo = defineAsyncApi(API_COMPRESS_VIDEO, (options, { resolve, reject }) => {
       const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
-      plus.zip.compressVideo(extend({}, options, {
+      plus.zip.compressVideo(shared.extend({}, options, {
           filename,
       }), () => {
           resolve({
@@ -14932,7 +14870,7 @@ var serviceContext = (function (vue) {
       });
       const downloadTask = new DownloadTask(downloader);
       for (const name in header) {
-          if (hasOwn$1(header, name)) {
+          if (shared.hasOwn(header, name)) {
               downloader.setRequestHeader(name, header[name]);
           }
       }
@@ -14967,7 +14905,7 @@ var serviceContext = (function (vue) {
           res.data = res.data.substr(1);
       }
       res.statusCode = parseInt(String(res.statusCode), 10);
-      if (isPlainObject(res.header)) {
+      if (shared.isPlainObject(res.header)) {
           res.header = Object.keys(res.header).reduce(function (ret, key) {
               const value = res.header[key];
               if (Array.isArray(value)) {
@@ -15013,7 +14951,7 @@ var serviceContext = (function (vue) {
       }
       if (method !== 'GET' &&
           contentType.indexOf('application/json') === 0 &&
-          isPlainObject(data)) {
+          shared.isPlainObject(data)) {
           data = JSON.stringify(data);
       }
       const stream = requireNativePlugin('stream');
@@ -15032,7 +14970,7 @@ var serviceContext = (function (vue) {
                   !(data instanceof ArrayBuffer)) {
                   const bodyArray = [];
                   for (const key in data) {
-                      if (hasOwn$1(data, key)) {
+                      if (shared.hasOwn(data, key)) {
                           bodyArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
                       }
                   }
@@ -15269,7 +15207,7 @@ var serviceContext = (function (vue) {
       close(args, callopt = true) {
           this.readyState = this.CLOSING;
           try {
-              this._socket.close(extend({
+              this._socket.close(shared.extend({
                   id: this.id,
                   args,
               }));
@@ -15334,7 +15272,7 @@ var serviceContext = (function (vue) {
       resolve();
   }, CloseSocketProtocol);
   function on(event) {
-      const api = `onSocket${capitalize(event)}`;
+      const api = `onSocket${shared.capitalize(event)}`;
       return defineOnApi(api, () => {
           globalEvent[event] = api;
       });
@@ -15396,12 +15334,12 @@ var serviceContext = (function (vue) {
           }
       });
       for (const name in header) {
-          if (hasOwn$1(header, name)) {
+          if (shared.hasOwn(header, name)) {
               uploader.setRequestHeader(name, String(header[name]));
           }
       }
       for (const name in formData) {
-          if (hasOwn$1(formData, name)) {
+          if (shared.hasOwn(formData, name)) {
               uploader.addData(name, String(formData[name]));
           }
       }
@@ -15631,7 +15569,7 @@ var serviceContext = (function (vue) {
                       ? undefined
                       : (value) => {
                           this._options[name] = value;
-                          setAudioState(extend({}, this._options, {
+                          setAudioState(shared.extend({}, this._options, {
                               audioId: this.id,
                           }));
                       },
@@ -15662,7 +15600,7 @@ var serviceContext = (function (vue) {
           delete innerAudioContexts[this.id];
       }
       _operate(type, options) {
-          operateAudio(extend({}, options, {
+          operateAudio(shared.extend({}, options, {
               audioId: this.id,
               operationType: type,
           }));
@@ -15689,7 +15627,7 @@ var serviceContext = (function (vue) {
       });
   });
   function emit(audio, state, errMsg, errCode) {
-      const name = `on${capitalize(state)}`;
+      const name = `on${shared.capitalize(state)}`;
       audio._callbacks[name].forEach((callback) => {
           if (typeof callback === 'function') {
               callback(state === 'error'
@@ -15845,7 +15783,7 @@ var serviceContext = (function (vue) {
               webUrl: audio.webUrl,
               startTime: audio.startTime,
           };
-          data = extend(data, newData);
+          data = shared.extend(data, newData);
       }
       return data;
   }
@@ -15915,7 +15853,7 @@ var serviceContext = (function (vue) {
   }
   const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
       eventNames.forEach((item) => {
-          BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
+          BackgroundAudioManager.prototype[`on${shared.capitalize(item)}`] =
               function (callback) {
                   callbacks[item].push(callback);
               };
@@ -16008,7 +15946,7 @@ var serviceContext = (function (vue) {
           });
       }
       _operate(type, options) {
-          operateBackgroundAudio(extend({}, options, {
+          operateBackgroundAudio(shared.extend({}, options, {
               operationType: type,
           }));
       }
@@ -16301,7 +16239,7 @@ var serviceContext = (function (vue) {
       if (title || alertText) {
           options.title = alertText || title;
       }
-      plus.nativeUI.actionSheet(extend(options, {
+      plus.nativeUI.actionSheet(shared.extend(options, {
           popover,
       }), (e) => {
           if (e.index > 0) {
@@ -16319,7 +16257,7 @@ var serviceContext = (function (vue) {
   let isShowToast = false;
   let toastType = '';
   let timeout;
-  const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, callbacks) => _showToast(extend({}, args, {
+  const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, callbacks) => _showToast(shared.extend({}, args, {
       type: 'loading',
       icon: 'loading',
   }), callbacks), ShowLoadingProtocol, ShowLoadingOptions);
@@ -16374,7 +16312,7 @@ var serviceContext = (function (vue) {
               }
           }
           try {
-              toast = plus.nativeUI.showWaiting(title, extend(waitingOptions, style));
+              toast = plus.nativeUI.showWaiting(title, shared.extend(waitingOptions, style));
           }
           catch (error) {
               reject(`${error}`);
@@ -16951,9 +16889,9 @@ var serviceContext = (function (vue) {
    * 一键登录自定义登陆按钮点击处理
    */
   function univerifyButtonsClickHandling(univerifyStyle, errorCallback) {
-      if (isPlainObject(univerifyStyle) &&
-          isPlainObject(univerifyStyle.buttons) &&
-          toTypeString(univerifyStyle.buttons.list) === '[object Array]') {
+      if (shared.isPlainObject(univerifyStyle) &&
+          shared.isPlainObject(univerifyStyle.buttons) &&
+          shared.toTypeString(univerifyStyle.buttons.list) === '[object Array]') {
           univerifyStyle.buttons.list.forEach((button, index) => {
               univerifyStyle.buttons.list[index].onclick = function () {
                   const res = {
@@ -16962,7 +16900,7 @@ var serviceContext = (function (vue) {
                       index,
                       provider: button.provider,
                   };
-                  isPlainObject(univerifyManager)
+                  shared.isPlainObject(univerifyManager)
                       ? univerifyManager._triggerUniverifyButtonsClick(res)
                       : _closeAuthView().then(() => {
                           errorCallback(res);
@@ -16999,7 +16937,7 @@ var serviceContext = (function (vue) {
           UniServiceJSBridge.emit(this.eventName, res);
       }
       _getOptions(options = {}) {
-          return extend({}, options, { provider: this.provider });
+          return shared.extend({}, options, { provider: this.provider });
       }
   }
   const getUniverifyManager = defineSyncApi(API_GET_UNIVERIFY_MANAGER, () => {
@@ -17008,7 +16946,7 @@ var serviceContext = (function (vue) {
 
   const registerRuntime = defineSyncApi('registerRuntime', (runtime) => {
       // @ts-expect-error
-      extend(jsRuntime, runtime);
+      shared.extend(jsRuntime, runtime);
   });
 
   // 0:图文，1:纯文字，2:纯图片，3:音乐，4:视频，5:小程序
@@ -17127,7 +17065,7 @@ var serviceContext = (function (vue) {
   }, RequestPaymentProtocol);
 
   function injectLifecycleHook(name, hook, publicThis, instance) {
-      if (isFunction(hook)) {
+      if (shared.isFunction(hook)) {
           vue.injectHook(name, hook.bind(publicThis), instance);
       }
   }
@@ -17137,7 +17075,7 @@ var serviceContext = (function (vue) {
       Object.keys(options).forEach((name) => {
           if (name.indexOf('on') === 0) {
               const hooks = options[name];
-              if (isArray$1(hooks)) {
+              if (shared.isArray(hooks)) {
                   hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
               }
               else {
@@ -17165,7 +17103,7 @@ var serviceContext = (function (vue) {
       initModules(instance, options.$renderjs, options['$' + RENDERJS_MODULES]);
   }
   function initModules(instance, modules, moduleIds = {}) {
-      if (!isArray$1(modules)) {
+      if (!shared.isArray(modules)) {
           return;
       }
       const ownerId = instance.uid;
@@ -17334,7 +17272,7 @@ var serviceContext = (function (vue) {
 
   function initApp(app) {
       const appConfig = app._context.config;
-      if (isFunction(app._component.onError)) {
+      if (shared.isFunction(app._component.onError)) {
           appConfig.errorHandler = errorHandler;
       }
       initOptionMergeStrategies(appConfig.optionMergeStrategies);
@@ -17524,7 +17462,7 @@ var serviceContext = (function (vue) {
 
   function initAppLaunch(appVm) {
       const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
-      const args = extend({
+      const args = shared.extend({
           // 为了让 uni-stat 在 uni.onLaunch 中可以 mixin
           app: { mixin: appVm.$.appContext.app.mixin },
       }, initLaunchOptions({
@@ -17581,7 +17519,7 @@ var serviceContext = (function (vue) {
   }
   function initVueApp(appVm) {
       const appContext = appVm.$.appContext;
-      vueApp = extend(appContext.app, {
+      vueApp = shared.extend(appContext.app, {
           mountPage(pageComponent, pageProps, pageContainer) {
               const vnode = vue.createVNode(pageComponent, pageProps);
               // store app context on the root VNode.
@@ -17717,7 +17655,7 @@ var serviceContext = (function (vue) {
   function subscribeNavigator() {
       API_ROUTE.forEach((name) => {
           registerServiceMethod(name, (args) => {
-              uni[name](extend(args, {
+              uni[name](shared.extend(args, {
                   fail(res) {
                       console.error(res.errMsg);
                   },
@@ -17772,7 +17710,7 @@ var serviceContext = (function (vue) {
       if (!routeMeta.enablePullDownRefresh) {
           return;
       }
-      const pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
+      const pullToRefresh = normalizePullToRefreshRpx(shared.extend({}, plus.os.name === 'Android'
           ? defaultAndroidPullToRefresh
           : defaultPullToRefresh, routeMeta.pullToRefresh));
       webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
@@ -17856,7 +17794,7 @@ var serviceContext = (function (vue) {
           else if (name === 'titleImage' && value) {
               titleNView.tags = createTitleImageTags(value);
           }
-          else if (name === 'buttons' && isArray$1(value)) {
+          else if (name === 'buttons' && shared.isArray(value)) {
               titleNView.buttons = value.map((button, index) => {
                   button.onclick = createTitleNViewBtnClick(index);
                   return button;
@@ -18002,7 +17940,7 @@ var serviceContext = (function (vue) {
           console.log(formatLog('createNVueWebview', curWebviewId, path, curWebviewStyle));
       }
       curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
+      return plus.webview.create('', String(curWebviewId), curWebviewStyle, shared.extend({
           nvue: true,
       }, webviewStyle));
   }
@@ -18450,7 +18388,7 @@ var serviceContext = (function (vue) {
           setup && this.setup();
       }
       _normalizeDict(value, normalizeValue = true) {
-          if (!isPlainObject(value)) {
+          if (!shared.isPlainObject(value)) {
               return this.addDict(value);
           }
           const dictArray = [];
@@ -18690,7 +18628,7 @@ var serviceContext = (function (vue) {
       pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
   }
   function normalizeAttrValue(pageNode, name, value) {
-      return name === 'style' && isPlainObject(value)
+      return name === 'style' && shared.isPlainObject(value)
           ? pageNode.normalizeDict(value)
           : pageNode.addDict(value);
   }
@@ -18758,7 +18696,7 @@ var serviceContext = (function (vue) {
   }
 
   function isVuePageAsyncComponent(component) {
-      return isFunction(component);
+      return shared.isFunction(component);
   }
   const pagesMap = new Map();
   function definePage(pagePath, asyncComponent) {
@@ -18774,7 +18712,7 @@ var serviceContext = (function (vue) {
           __pageQuery,
           __pageInstance,
       }, pageNode);
-      if (isPromise(component)) {
+      if (shared.isPromise(component)) {
           return component.then((component) => mountPage(component));
       }
       return mountPage(component);
@@ -18928,7 +18866,7 @@ var serviceContext = (function (vue) {
           disableScroll: meta.disableScroll === true,
           onPageScroll: false,
           onPageReachBottom: false,
-          onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
+          onReachBottomDistance: shared.hasOwn(meta, 'onReachBottomDistance')
               ? meta.onReachBottomDistance
               : ON_REACH_BOTTOM_DISTANCE,
           statusbarHeight,
@@ -19183,7 +19121,7 @@ var serviceContext = (function (vue) {
           onMessage(pageIds[0], arg);
       }
       else {
-          uni[name](extend(arg, {
+          uni[name](shared.extend(arg, {
               fail(res) {
                   console.error(res.errMsg);
               },
@@ -19291,7 +19229,7 @@ var serviceContext = (function (vue) {
       initVueApp(appVm);
       appCtx = appVm;
       initAppVm(appCtx);
-      extend(appCtx, defaultApp); // 拷贝默认实现
+      shared.extend(appCtx, defaultApp); // 拷贝默认实现
       defineGlobalData(appCtx, defaultApp.globalData);
       initService();
       initEntry();
@@ -20105,7 +20043,7 @@ var serviceContext = (function (vue) {
     preloadPage: preloadPage
   };
 
-  const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
+  const UniServiceJSBridge$1 = /*#__PURE__*/ shared.extend(ServiceJSBridge, {
       publishHandler,
   });
   function publishHandler(event, args, pageIds) {
@@ -20113,7 +20051,7 @@ var serviceContext = (function (vue) {
       if ((process.env.NODE_ENV !== 'production')) {
           console.log(formatLog('publishHandler', event, args, pageIds));
       }
-      if (!isArray$1(pageIds)) {
+      if (!shared.isArray(pageIds)) {
           pageIds = [pageIds];
       }
       const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
@@ -20139,7 +20077,7 @@ var serviceContext = (function (vue) {
 
   return index;
 
-})(Vue);
+})(VueShared, Vue);
 const uni = serviceContext.uni;
 const getApp = serviceContext.getApp;
 const getCurrentPages = serviceContext.getCurrentPages;

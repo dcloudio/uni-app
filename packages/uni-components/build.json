@@ -1,0 +1,7 @@
+[
+  {
+    "input": {
+      "src/nvue/bridge.ts": ["dist/bridge.js"]
+    }
+  }
+]
