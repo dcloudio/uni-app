@@ -4,7 +4,6 @@
       "src/nvue/index.ts": ["dist/nvue.js"]
     },
     "replacements": {
-      "__NVUE__": "true",
       "__PLATFORM__": "'app'",
       "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",

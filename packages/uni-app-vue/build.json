@@ -4,21 +4,14 @@
       "src/service/index.ts": ["dist/service.runtime.esm.dev.js"]
     },
     "output": {
-      "freeze": false,
-      "banner": "function vueFactory (exports) {\n",
-      "footer": "}",
-      "format": "iife",
-      "globals": {
-        "@vue/shared": "exports.VueShared",
-        "@vue/reactivity": "exports.VueReactivity"
-      }
+      "freeze": false
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": ["@vue/shared", "@vue/reactivity"],
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   },
   {
@@ -26,21 +19,14 @@
       "src/service/index.ts": ["dist/service.runtime.esm.prod.js"]
     },
     "output": {
-      "freeze": false,
-      "banner": "function vueFactory (exports) {\n",
-      "footer": "}",
-      "format": "iife",
-      "globals": {
-        "@vue/shared": "exports.VueShared",
-        "@vue/reactivity": "exports.VueReactivity"
-      }
+      "freeze": false
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": ["@vue/shared", "@vue/reactivity"],
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   },
   {
@@ -58,21 +44,14 @@
       "src/nvue/index.ts": ["dist/nvue.runtime.esm.dev.js"]
     },
     "output": {
-      "freeze": false,
-      "banner": "function nvueFactory (exports, document) {\n",
-      "footer": "}",
-      "format": "iife",
-      "globals": {
-        "@vue/shared": "exports.VueShared",
-        "@vue/reactivity": "exports.VueReactivity"
-      }
+      "freeze": false
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": ["@vue/shared", "@vue/reactivity"],
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   },
   {
@@ -80,21 +59,14 @@
       "src/nvue/index.ts": ["dist/nvue.runtime.esm.prod.js"]
     },
     "output": {
-      "freeze": false,
-      "banner": "function nvueFactory (exports, document) {\n",
-      "footer": "}",
-      "format": "iife",
-      "globals": {
-        "@vue/shared": "exports.VueShared",
-        "@vue/reactivity": "exports.VueReactivity"
-      }
+      "freeze": false
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": ["@vue/shared", "@vue/reactivity"],
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   }
 ]

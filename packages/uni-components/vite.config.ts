@@ -11,7 +11,6 @@ export default defineConfig({
   root: __dirname,
   define: {
     global: 'window',
-    __NVUE__: true,
   },
   resolve: {
     alias: [
