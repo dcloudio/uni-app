@@ -13,5 +13,6 @@ export * from './debounce'
 export * from './constants'
 export * from './EventChannel'
 export * from './lifecycle'
+export { default as Emitter } from './TinyEmitter'
 
 export * from './node/locale'
