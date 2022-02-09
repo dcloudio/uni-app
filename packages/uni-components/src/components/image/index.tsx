@@ -35,10 +35,15 @@ const props = {
 type ImageProps = ExtractPropTypes<typeof props>
 type ImageState = ReturnType<typeof useImageState>
 type FixSize = ReturnType<typeof useImageSize>['fixSize']
+type FixMode = [
+  'offsetWidth' | 'offsetHeight',
+  'height' | 'width',
+  (value: number, ratio: number) => number
+]
 
-const FIX_MODES = {
-  widthFix: ['offsetWidth', 'height'],
-  heightFix: ['offsetHeight', 'width'],
+const FIX_MODES: Record<string, FixMode> = {
+  widthFix: ['offsetWidth', 'height', (value, ratio) => value / ratio],
+  heightFix: ['offsetHeight', 'width', (value, ratio) => value * ratio],
 }
 const IMAGE_MODES = {
   aspectFit: ['center center', 'contain'],
@@ -209,10 +214,9 @@ function useImageSize(
       return
     }
     const rootEl = rootRef.value!
-    const value = rootEl[names[0] as 'offsetWidth' | 'offsetHeight']
+    const value = rootEl[names[0]]
     if (value) {
-      rootEl.style[names[1] as 'height' | 'width'] =
-        fixNumber(value / ratio) + 'px'
+      rootEl.style[names[1]] = fixNumber(names[2](value, ratio)) + 'px'
     }
     if (__PLATFORM__ === 'app') {
       window.dispatchEvent(new CustomEvent('updateview'))
