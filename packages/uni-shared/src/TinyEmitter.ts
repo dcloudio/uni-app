@@ -1,5 +1,5 @@
 interface E {
-  e: Data
+  e: Record<string, unknown>
   on: (name: EventName, callback: EventCallback, ctx?: any) => this
   once: (name: EventName, callback: EventCallback, ctx?: any) => this
   emit: (name: EventName, ...args: any[]) => this

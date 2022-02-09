@@ -1,4 +1,4 @@
-import E from './TinyEmitter'
+import { Emitter } from '@dcloudio/uni-shared'
 
 export function initBridge(
   subscribeNamespace: 'service' | 'view' | 'nvue'
@@ -9,7 +9,7 @@ export function initBridge(
   | 'invokeViewMethodKeepAlive'
   | 'publishHandler'
 > {
-  const emitter = new E()
+  const emitter = new Emitter()
   return {
     on(event: string, callback: UniApp.CallbackFunction) {
       return emitter.on(event, callback)

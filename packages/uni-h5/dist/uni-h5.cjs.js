@@ -156,52 +156,8 @@ function initTabBarI18n(tabBar2) {
   }
   return tabBar2;
 }
-const E = function() {
-};
-E.prototype = {
-  on: function(name, callback, ctx) {
-    var e2 = this.e || (this.e = {});
-    (e2[name] || (e2[name] = [])).push({
-      fn: callback,
-      ctx
-    });
-    return this;
-  },
-  once: function(name, callback, ctx) {
-    var self = this;
-    function listener() {
-      self.off(name, listener);
-      callback.apply(ctx, arguments);
-    }
-    listener._ = callback;
-    return this.on(name, listener, ctx);
-  },
-  emit: function(name) {
-    var data = [].slice.call(arguments, 1);
-    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-    var i = 0;
-    var len = evtArr.length;
-    for (i; i < len; i++) {
-      evtArr[i].fn.apply(evtArr[i].ctx, data);
-    }
-    return this;
-  },
-  off: function(name, callback) {
-    var e2 = this.e || (this.e = {});
-    var evts = e2[name];
-    var liveEvents = [];
-    if (evts && callback) {
-      for (var i = 0, len = evts.length; i < len; i++) {
-        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-          liveEvents.push(evts[i]);
-      }
-    }
-    liveEvents.length ? e2[name] = liveEvents : delete e2[name];
-    return this;
-  }
-};
 function initBridge(subscribeNamespace) {
-  const emitter = new E();
+  const emitter = new uniShared.Emitter();
   return {
     on(event, callback) {
       return emitter.on(event, callback);
@@ -1360,6 +1316,7 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(name, wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
+new uniShared.Emitter();
 const validator = [
   {
     name: "id",

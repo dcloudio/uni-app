@@ -1,3 +1,4 @@
+import { Emitter } from '@dcloudio/uni-shared'
 import { defineSyncApi } from '../../helpers/api'
 import {
   API_ON,
@@ -13,7 +14,6 @@ import {
   EmitProtocol,
   OnceProtocol,
 } from '../../protocols/base/eventBus'
-import { Emitter } from '@dcloudio/uni-core'
 
 type EventStopHandler = () => void
 

@@ -164,6 +164,18 @@ declare type DictArray = [number, number][];
 
 export declare function dynamicSlotName(name: string): string;
 
+export declare interface Emitter {
+    e: Record<string, unknown>;
+    on: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    once: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    emit: (name: EventName, ...args: any[]) => this;
+    off: (name: EventName, callback?: EventCallback) => this;
+}
+
+export declare const Emitter: new () => Emitter;
+
+declare type EventCallback = Function;
+
 export declare class EventChannel {
     id?: number;
     private listener;
@@ -187,6 +199,8 @@ export declare const EventModifierFlags: {
     prevent: number;
     self: number;
 };
+
+declare type EventName = string;
 
 export declare const forcePatchProp: (el: {
     nodeName: string;
