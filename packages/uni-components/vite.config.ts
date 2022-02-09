@@ -28,10 +28,10 @@ export default defineConfig({
       formats: ['iife'],
     },
     rollupOptions: {
-      external: ['uni', 'vue', 'weex', '@vue/shared'],
+      external: ['uni', 'vue', 'weex', '@vue/shared', '@dcloudio/uni-shared'],
       output: {
         banner:
-          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel,UniViewJSBridge,VueShared}) {',
+          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel,UniViewJSBridge,VueShared,UniShared}) {',
         footer: 'return components\n}',
         entryFileNames: 'components.js',
         globals: {
@@ -39,6 +39,7 @@ export default defineConfig({
           vue: 'Vue',
           weex: 'weex',
           '@vue/shared': 'VueShared',
+          '@dcloudio/uni-shared': 'UniShared',
         },
       },
     },

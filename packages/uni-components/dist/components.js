@@ -1,4 +1,4 @@
-export function initComponents({ uni, Vue, weex, plus, BroadcastChannel, UniViewJSBridge, VueShared }) {
+export function initComponents({ uni, Vue, weex, plus, BroadcastChannel, UniViewJSBridge, VueShared, UniShared }) {
   var components = function(vue, shared) {
     "use strict";
     const OPEN_TYPES = [
