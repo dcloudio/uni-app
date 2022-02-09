@@ -118,10 +118,10 @@ export function initComponents({ uni, Vue, weex, plus, BroadcastChannel, UniView
         };
       }
     });
-    var index = {
+    var components2 = {
       Navigator
     };
-    return index;
+    return components2;
   }(Vue, VueShared);
   return components;
 }

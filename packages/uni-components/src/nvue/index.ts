@@ -1,4 +1,2 @@
-import Navigator from './navigator'
-export default {
-  Navigator,
-}
+import { initBridge } from '@dcloudio/uni-core'
+export const UniViewJSBridge = initBridge('nvue')

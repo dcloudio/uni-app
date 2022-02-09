@@ -9,6 +9,10 @@ function resolve(file: string) {
 
 export default defineConfig({
   root: __dirname,
+  define: {
+    global: 'window',
+    __NVUE__: true,
+  },
   resolve: {
     alias: [
       {
@@ -21,7 +25,7 @@ export default defineConfig({
     minify: false,
     lib: {
       name: 'components',
-      entry: path.resolve(__dirname, 'src/nvue/index.ts'),
+      entry: path.resolve(__dirname, 'src/nvue/components.ts'),
       formats: ['iife'],
     },
     rollupOptions: {

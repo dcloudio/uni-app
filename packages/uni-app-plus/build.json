@@ -24,6 +24,7 @@
       "inlineDynamicImports": true
     },
     "replacements": {
+      "__NVUE__": "false",
       "__PLATFORM__": "'app'",
       "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",

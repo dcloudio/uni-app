@@ -5,6 +5,7 @@ declare var qa: any
 declare var swan: any
 declare var qq: any
 declare var ks: any
+declare var __NVUE__: undefined | boolean
 declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__:
   | 'wx'

@@ -57,6 +57,7 @@ export default defineConfig({
   define: {
     global: 'window',
     __DEV__: false,
+    __NVUE__: false,
     __TEST__: false,
     __PLATFORM__: JSON.stringify('app'),
     __NODE_JS__: false,
