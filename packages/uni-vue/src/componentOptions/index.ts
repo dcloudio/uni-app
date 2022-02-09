@@ -14,7 +14,7 @@ export function applyOptions(
   instance: ComponentInternalInstance,
   publicThis: ComponentPublicInstance
 ) {
-  if (__PLATFORM__ === 'app') {
+  if (__PLATFORM__ === 'app' && !__NVUE__) {
     initWxs(options, instance)
     initRenderjs(options, instance)
   }

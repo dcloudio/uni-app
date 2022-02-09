@@ -9,6 +9,10 @@ function resolve(file: string) {
 
 export default defineConfig({
   root: __dirname,
+  define: {
+    global: 'window',
+    __NVUE__: true,
+  },
   resolve: {
     alias: [
       {
@@ -21,14 +25,14 @@ export default defineConfig({
     minify: false,
     lib: {
       name: 'components',
-      entry: path.resolve(__dirname, 'src/nvue/index.ts'),
+      entry: path.resolve(__dirname, 'src/nvue/components.ts'),
       formats: ['iife'],
     },
     rollupOptions: {
       external: ['uni', 'vue', 'weex', '@vue/shared'],
       output: {
         banner:
-          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel}) {',
+          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel,UniViewJSBridge,VueShared}) {',
         footer: 'return components\n}',
         entryFileNames: 'components.js',
         globals: {

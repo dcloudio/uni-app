@@ -1,7 +1,21 @@
 [
   {
     "input": {
-      "src/nvue/bridge.ts": ["dist/bridge.js"]
+      "src/nvue/index.ts": ["dist/nvue.js"]
+    },
+    "replacements": {
+      "__NVUE__": "true",
+      "__PLATFORM__": "'app'",
+      "__APP_VIEW__": "false",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__UNI_FEATURE_WX__": "false",
+      "__UNI_FEATURE_PROMISE__": "false",
+      "__UNI_FEATURE_I18N_EN__": "true",
+      "__UNI_FEATURE_I18N_ES__": "true",
+      "__UNI_FEATURE_I18N_FR__": "true",
+      "__UNI_FEATURE_I18N_ZH_HANS__": "true",
+      "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     }
   }
 ]
