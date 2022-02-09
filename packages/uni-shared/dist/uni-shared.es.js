@@ -697,11 +697,13 @@ function parseEventName(name) {
     return [hyphenate(name.slice(2)), options];
 }
 
-const EventModifierFlags = {
-    stop: 1,
-    prevent: 1 << 1,
-    self: 1 << 2,
-};
+const EventModifierFlags = /*#__PURE__*/ (() => {
+    return {
+        stop: 1,
+        prevent: 1 << 1,
+        self: 1 << 2,
+    };
+})();
 function encodeModifier(modifiers) {
     let flag = 0;
     if (modifiers.includes('stop')) {
@@ -1276,11 +1278,13 @@ const UniLifecycleHooks = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
-const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
-    onPageScroll: 1,
-    onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2,
-};
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
+    return {
+        onPageScroll: 1,
+        onShareAppMessage: 1 << 1,
+        onShareTimeline: 1 << 2,
+    };
+})();
 
 const E = function () {
     // Keep this empty so it's easier to inherit from

@@ -219,11 +219,13 @@ export default function vueFactory(exports) {
     return [hyphenate$1(name.slice(2)), options];
   }
 
-  var EventModifierFlags = {
-    stop: 1,
-    prevent: 1 << 1,
-    self: 1 << 2
-  };
+  var EventModifierFlags = /*#__PURE__*/(() => {
+    return {
+      stop: 1,
+      prevent: 1 << 1,
+      self: 1 << 2
+    };
+  })();
 
   function encodeModifier(modifiers) {
     var flag = 0;
