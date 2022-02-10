@@ -12,7 +12,7 @@ import { initPageInternalInstance, initPageVm } from '@dcloudio/uni-core'
 import { initEntry } from '../app/initEntry'
 import { initRouteOptions } from './routeOptions'
 import { createWebview, initWebview } from '../webview'
-import { createPage } from './define'
+import { createVuePage } from './define'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
 import { addCurrentPage, getAllPages } from './getCurrentPages'
@@ -108,16 +108,9 @@ export function registerPage({
   initNVueEntryPage(webview)
 
   if ((webview as any).nvue) {
-    // nvue 时，先启用一个占位 vm
-    const fakeNVueVm = createNVueVm(
-      parseInt(webview.id!),
-      webview,
-      pageInstance
-    )
-    initPageVm(fakeNVueVm, pageInstance)
-    addCurrentPage(fakeNVueVm)
+    createNVuePage(parseInt(webview.id!), webview, pageInstance)
   } else {
-    createPage(
+    createVuePage(
       parseInt(webview.id!),
       route,
       query,
@@ -170,28 +163,13 @@ function initNVueEntryPage(webview: PlusWebviewWebviewObject) {
   }
 }
 
-function createNVueVm(
+function createNVuePage(
   pageId: number,
   webview: PlusWebviewWebviewObject,
   pageInstance: Page.PageInstance['$page']
 ) {
-  return {
-    $: {}, // navigateBack 时，invokeHook 会调用 $
-    onNVuePageCreated(vm: ComponentPublicInstance, curNVuePage: unknown) {
-      ;(vm as any).$ = {} // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
-      vm.$getAppWebview = () => webview
-      vm.getOpenerEventChannel = (curNVuePage as any).getOpenerEventChannel
-      // 替换真实的 nvue 的 vm
-      initPageVm(vm, pageInstance)
-      const pages = getAllPages()
-      const index = pages.findIndex((p) => p === curNVuePage)
-      if (index > -1) {
-        pages.splice(index, 1, vm)
-      }
-      if ((webview as PreloadWebviewObject).__preload__) {
-        ;(webview as PreloadWebviewObject).__page__ = vm
-      }
-    },
+  const fakeNVueVm = {
+    $: {},
     $getAppWebview() {
       return webview
     },
@@ -201,5 +179,21 @@ function createNVueVm(
       }
       return pageInstance.eventChannel as EventChannel
     },
+    __setup(vm: ComponentPublicInstance, curFakeNVueVm: unknown) {
+      const pages = getAllPages()
+      const index = pages.findIndex((p) => p === curFakeNVueVm)
+      if (index > -1) {
+        vm.$getAppWebview = () => webview
+        vm.getOpenerEventChannel = (curFakeNVueVm as any).getOpenerEventChannel
+        // 替换真实的 nvue 的 vm
+        initPageVm(vm, pageInstance)
+        pages.splice(index, 1, vm)
+        if ((webview as PreloadWebviewObject).__preload__) {
+          ;(webview as PreloadWebviewObject).__page__ = vm
+        }
+      }
+    },
   } as unknown as ComponentPublicInstance
+  initPageVm(fakeNVueVm, pageInstance)
+  addCurrentPage(fakeNVueVm)
 }

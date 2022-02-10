@@ -17159,7 +17159,7 @@ function initDebugRefresh(isTab, path, query) {
     };
 }
 
-function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
+function createNVueWebview({ path, query, routeOptions, webviewExtras, }) {
     const curWebviewId = genWebviewId();
     const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta, {
         id: curWebviewId + '',
@@ -17171,7 +17171,9 @@ function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
     curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
     return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
         nvue: true,
-    }, webviewStyle));
+        __path__: path,
+        __query__: JSON.stringify(query),
+    }, webviewExtras));
 }
 
 let preloadWebview$1;
@@ -18011,7 +18013,7 @@ const pagesMap = new Map();
 function definePage(pagePath, asyncComponent) {
     pagesMap.set(pagePath, once(createFactory(asyncComponent)));
 }
-function createPage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
     const pageNode = createPageNode(__pageId, pageOptions, true);
     const app = getVueApp();
     const component = pagesMap.get(__pagePath)();
@@ -18140,9 +18142,8 @@ function preloadWebview({ url, path, query, }) {
             path,
             routeOptions,
             query,
-            webviewStyle: {
+            webviewExtras: {
                 __preload__: true,
-                __query__: JSON.stringify(query),
             },
         });
     }
@@ -18199,13 +18200,10 @@ function registerPage({ url, path, query, openType, webview, eventChannel, }) {
     const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
     initNVueEntryPage(webview);
     if (webview.nvue) {
-        // nvue 时，先启用一个占位 vm
-        const fakeNVueVm = createNVueVm(parseInt(webview.id), webview, pageInstance);
-        initPageVm(fakeNVueVm, pageInstance);
-        addCurrentPage(fakeNVueVm);
+        createNVuePage(parseInt(webview.id), webview, pageInstance);
     }
     else {
-        createPage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
+        createVuePage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
     }
     return webview;
 }
@@ -18245,24 +18243,9 @@ function initNVueEntryPage(webview) {
         });
     }
 }
-function createNVueVm(pageId, webview, pageInstance) {
-    return {
+function createNVuePage(pageId, webview, pageInstance) {
+    const fakeNVueVm = {
         $: {},
-        onNVuePageCreated(vm, curNVuePage) {
-            vm.$ = {}; // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
-            vm.$getAppWebview = () => webview;
-            vm.getOpenerEventChannel = curNVuePage.getOpenerEventChannel;
-            // 替换真实的 nvue 的 vm
-            initPageVm(vm, pageInstance);
-            const pages = getAllPages();
-            const index = pages.findIndex((p) => p === curNVuePage);
-            if (index > -1) {
-                pages.splice(index, 1, vm);
-            }
-            if (webview.__preload__) {
-                webview.__page__ = vm;
-            }
-        },
         $getAppWebview() {
             return webview;
         },
@@ -18272,7 +18255,23 @@ function createNVueVm(pageId, webview, pageInstance) {
             }
             return pageInstance.eventChannel;
         },
+        __setup(vm, curFakeNVueVm) {
+            const pages = getAllPages();
+            const index = pages.findIndex((p) => p === curFakeNVueVm);
+            if (index > -1) {
+                vm.$getAppWebview = () => webview;
+                vm.getOpenerEventChannel = curFakeNVueVm.getOpenerEventChannel;
+                // 替换真实的 nvue 的 vm
+                initPageVm(vm, pageInstance);
+                pages.splice(index, 1, vm);
+                if (webview.__preload__) {
+                    webview.__page__ = vm;
+                }
+            }
+        },
     };
+    initPageVm(fakeNVueVm, pageInstance);
+    addCurrentPage(fakeNVueVm);
 }
 
 const $navigateTo = (args, { resolve, reject }) => {

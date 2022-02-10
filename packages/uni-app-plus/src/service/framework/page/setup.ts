@@ -12,7 +12,7 @@ import {
   onBeforeUnmount,
   onMounted,
 } from 'vue'
-import { VuePageComponent } from './define'
+import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 
 export function setupPage(component: VuePageComponent) {

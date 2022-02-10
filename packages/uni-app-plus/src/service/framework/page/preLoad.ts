@@ -58,9 +58,8 @@ export function preloadWebview({
       path,
       routeOptions,
       query,
-      webviewStyle: {
+      webviewExtras: {
         __preload__: true,
-        __query__: JSON.stringify(query),
       },
     })
   }

@@ -31,7 +31,7 @@ interface PageProps {
   __pageInstance: Page.PageInstance['$page']
 }
 
-export function createPage(
+export function createVuePage(
   __pageId: number,
   __pagePath: string,
   __pageQuery: Record<string, any>,

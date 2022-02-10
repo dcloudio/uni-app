@@ -57,8 +57,13 @@ function buildNVuePage(filename: string, options: BuildOptions) {
   return transformWithEsbuild(
     `import App from './${filename}'
 import { AppStyles } from './app.css.js'
-const app = Vue.createApp(App,{$store:getApp().$store})
+const webview = plus.webview.currentWebview()
+const __pageId = parseInt(webview.id)
+const __pagePath = webview.__path__
+let __pageQuery = {}
+try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
 App.mpType = 'page'
+const app = Vue.createApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
 app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...App.styles]))
 app.mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),
