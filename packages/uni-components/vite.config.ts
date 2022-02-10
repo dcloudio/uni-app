@@ -11,6 +11,7 @@ export default defineConfig({
   root: __dirname,
   define: {
     global: 'window',
+    __DEV__: `(process.env.NODE_ENV !== 'production')`,
   },
   resolve: {
     alias: [
@@ -25,12 +26,21 @@ export default defineConfig({
     lib: {
       name: 'components',
       entry: path.resolve(__dirname, 'src/nvue/components.ts'),
-      formats: ['es'],
+      formats: ['iife'],
     },
     rollupOptions: {
-      external: ['uni', 'vue', 'weex', '@vue/shared', '@dcloudio/uni-shared'],
+      external: ['uni', 'vue', 'weex', '@vue/shared'],
       output: {
+        banner:
+          'export function initComponents({uni,Vue,weex,plus,BroadcastChannel,UniViewJSBridge,VueShared}) {',
+        footer: 'return components\n}',
         entryFileNames: 'components.js',
+        globals: {
+          uni: 'uni',
+          vue: 'Vue',
+          weex: 'weex',
+          '@vue/shared': 'VueShared',
+        },
       },
     },
   },

@@ -8,8 +8,6 @@ import {
   reactive,
   VNode,
   SetupContext,
-  PropType,
-  ComponentInternalInstance,
   onMounted,
   ComponentPublicInstance,
   nextTick,
@@ -20,39 +18,9 @@ import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
 import ResizeSensor from '../resize-sensor/index'
 import { useCustomEvent } from '../../helpers/useEvent'
-
-const props = {
-  value: {
-    type: Array as PropType<number[]>,
-    default() {
-      return []
-    },
-    validator: function (val: any) {
-      return (
-        Array.isArray(val) &&
-        val.filter((val) => typeof val === 'number').length === val.length
-      )
-    },
-  },
-  indicatorStyle: {
-    type: String,
-    default: '',
-  },
-  indicatorClass: {
-    type: String,
-    default: '',
-  },
-  maskStyle: {
-    type: String,
-    default: '',
-  },
-  maskClass: {
-    type: String,
-    default: '',
-  },
-}
-
-export type Props = Record<keyof typeof props, any>
+import { props } from '../../components/picker-view'
+import type { Props, GetPickerViewColumn } from '../../components/picker-view'
+export { Props, GetPickerViewColumn }
 export interface State {
   value: number[]
   height: number
@@ -83,10 +51,6 @@ function useState(props: Props): State {
   )
   return state
 }
-
-export type GetPickerViewColumn = (
-  columnInstance: ComponentInternalInstance
-) => WritableComputedRef<number>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerView',

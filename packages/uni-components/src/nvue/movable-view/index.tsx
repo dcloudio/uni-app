@@ -1,18 +1,32 @@
-import { ref, Ref, onMounted, inject, computed, watch, onUnmounted } from 'vue'
-import { defineBuiltInComponent } from '../../helpers/component'
-import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
-import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
-import ResizeSensor from '../resize-sensor/index'
 import {
-  useCustomEvent,
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  ref,
+  Ref,
+  computed,
+  inject,
+  watch,
+} from 'vue'
+import {
+  useTouchtrack,
+  touchstart,
+  touchmove,
+  touchend,
+  TouchtrackEvent,
+} from './useTouchtrack'
+import {
   CustomEventTrigger,
   EmitEvent,
-} from '../../helpers/useEvent'
-import type {
+  useCustomEvent,
+} from '../../helpers/useNvueEvent'
+import {
   MovableViewContext,
   AddMovableViewContext,
   RemoveMovableViewContext,
-} from '../movable-area/index'
+  SetTouchMovableViewContext,
+  parentSize,
+} from '../movable-area'
 import {
   Decline,
   Friction,
@@ -23,54 +37,8 @@ import {
   Record,
   v,
 } from '../../components/movable-view'
+import { getComponentSize } from '../helpers'
 
-type RootRef = Ref<HTMLElement | null>
-
-export default /*#__PURE__*/ defineBuiltInComponent({
-  name: 'MovableView',
-  props,
-  emits: ['change', 'scale'],
-  setup(props, { slots, emit }) {
-    const rootRef: RootRef = ref(null)
-    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
-    const { setParent } = useMovableViewState(props, trigger, rootRef)
-
-    return () => {
-      return (
-        <uni-movable-view ref={rootRef}>
-          {/* @ts-ignore */}
-          <ResizeSensor onResize={setParent}></ResizeSensor>
-          {slots.default && slots.default()}
-        </uni-movable-view>
-      )
-    }
-  },
-})
-
-let requesting = false
-function _requestAnimationFrame(e: Function) {
-  if (!requesting) {
-    requesting = true
-    requestAnimationFrame(function () {
-      e()
-      requesting = false
-    })
-  }
-}
-function p(t: HTMLElement, n: HTMLElement): number {
-  if (t === n) {
-    return 0
-  }
-  let i = t.offsetLeft
-  return t.offsetParent ? (i += p(t.offsetParent as HTMLElement, n)) : 0
-}
-function f(t: HTMLElement, n: HTMLElement): number {
-  if (t === n) {
-    return 0
-  }
-  let i = t.offsetTop
-  return t.offsetParent ? (i += f(t.offsetParent as HTMLElement, n)) : 0
-}
 function g(
   friction: Friction | STD,
   execute: FrictionCallback,
@@ -115,11 +83,21 @@ function g(
     model: friction,
   }
 }
-function _getPx(val: Props['x'] | Props['y']) {
-  if (/\d+[ur]px$/i.test(val as string)) {
-    return uni.upx2px(parseFloat(val as string))
+let requesting = false
+function _requestAnimationFrame(e: Function) {
+  if (!requesting) {
+    requesting = true
+    requestAnimationFrame(function () {
+      e()
+      requesting = false
+    })
   }
-  return Number(val) || 0
+}
+function requestAnimationFrame(callback: Function) {
+  return setTimeout(callback, 16)
+}
+function cancelAnimationFrame(id: number) {
+  clearTimeout(id)
 }
 
 type ReturnType_g = ReturnType<typeof g> | null
@@ -128,16 +106,74 @@ type ScaleOffset = {
   y: number
 }
 type MoveDirection = 'htouchmove' | 'vtouchmove'
+type Size = { width: number; height: number; top: number; left: number }
+type RootRef = Ref<HTMLElement | null>
+
+const animation = weex.requireModule('animation')
+
+export default defineComponent({
+  name: 'MovableView',
+  props,
+  emits: ['change', 'scale'],
+  styles: [
+    {
+      'uni-movable-view': {
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        width: '10px',
+        height: '10px',
+      },
+    },
+  ],
+  setup(props, { emit, slots }) {
+    const rootRef: RootRef = ref(null)
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
+    const setTouchMovableViewContext: SetTouchMovableViewContext = inject(
+      'setTouchMovableViewContext',
+      () => {}
+    )
+    useMovableViewState(props, trigger, rootRef)
+
+    const touchStart = () => {
+      setTouchMovableViewContext({
+        touchstart,
+        touchmove,
+        touchend,
+      })
+    }
+
+    return () => {
+      const attrs = {
+        preventGesture: true,
+      }
+      return (
+        <div
+          ref={rootRef}
+          onTouchstart={touchStart}
+          class="uni-movable-view"
+          style="transform-origin: center;"
+          {...attrs}
+        >
+          {slots.default && slots.default()}
+        </div>
+      )
+    }
+  },
+})
 
 function useMovableViewState(
   props: Props,
   trigger: CustomEventTrigger,
   rootRef: RootRef
 ) {
-  const movableAreaWidth: Ref<number> = inject('movableAreaWidth', ref(0))
-  const movableAreaHeight: Ref<number> = inject('movableAreaHeight', ref(0))
   const _isMounted: Ref<boolean> = inject('_isMounted', ref(false))
-  const movableAreaRootRef: RootRef = inject('movableAreaRootRef')!
+  const parentSize: parentSize = inject('parentSize', {
+    width: ref(0),
+    height: ref(0),
+    top: ref(0),
+    left: ref(0),
+  })
   const addMovableViewContext: AddMovableViewContext = inject(
     'addMovableViewContext',
     () => {}
@@ -146,10 +182,19 @@ function useMovableViewState(
     'removeMovableViewContext',
     () => {}
   )
-
+  function _getPx(val: string | number) {
+    // if (/\d+[ur]px$/i.test(val)) {
+    //   return uni.upx2px(parseFloat(val))
+    // }
+    return Number(val) || 0
+  }
+  function _getScaleNumber(val: number) {
+    val = Number(val)
+    return isNaN(val) ? 1 : val
+  }
   const xSync = ref(_getPx(props.x))
   const ySync = ref(_getPx(props.y))
-  const scaleValueSync = ref(Number(props.scaleValue) || 1)
+  const scaleValueSync = ref(_getScaleNumber(Number(props.scaleValue)))
   const width = ref(0)
   const height = ref(0)
   const minX = ref(0)
@@ -177,6 +222,12 @@ function useMovableViewState(
   let __baseY: number
   let _checkCanMove: boolean | null = null
   let _firstMoveDirection: MoveDirection | null = null
+  let _rect: Size = {
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0,
+  }
   const _declineX = new Decline()
   const _declineY = new Decline()
   const __touchInfo = {
@@ -227,27 +278,17 @@ function useMovableViewState(
       ySync.value = _getPx(val)
     }
   )
-  watch(xSync, (val) => {
-    _setX(val)
-  })
-  watch(ySync, (val) => {
-    _setY(val)
-  })
   watch(
     () => props.scaleValue,
     (val) => {
-      scaleValueSync.value = Number(val) || 0
+      scaleValueSync.value = _getScaleNumber(Number(val))
     }
   )
-  watch(scaleValueSync, (val) => {
-    _setScaleValue(val)
-  })
-  watch(scaleMinNumber, () => {
-    _setScaleMinOrMax()
-  })
-  watch(scaleMaxNumber, () => {
-    _setScaleMinOrMax()
-  })
+  watch(xSync, _setX)
+  watch(ySync, _setY)
+  watch(scaleValueSync, _setScaleValue)
+  watch(scaleMinNumber, _setScaleMinOrMax)
+  watch(scaleMaxNumber, _setScaleMinOrMax)
 
   function FAandSFACancel() {
     if (_FA) {
@@ -303,9 +344,6 @@ function useMovableViewState(
   function __handleTouchStart() {
     if (!_isScaling) {
       if (!props.disabled) {
-        disableScrollBounce({
-          disable: true,
-        })
         FAandSFACancel()
         __touchInfo.historyX = [0, 0]
         __touchInfo.historyY = [0, 0]
@@ -316,7 +354,6 @@ function useMovableViewState(
         if (yMove.value) {
           __baseY = _translateY
         }
-        rootRef.value!.style.willChange = 'transform'
         _checkCanMove = null
         _firstMoveDirection = null
         _isTouching = true
@@ -353,7 +390,7 @@ function useMovableViewState(
       __touchInfo.historyT.push(event.detail.timeStamp)
 
       if (!_checkCanMove) {
-        event.preventDefault()
+        // event.preventDefault()
         let source = 'touch'
         if (x < minX.value) {
           if (props.outOfBounds) {
@@ -395,10 +432,6 @@ function useMovableViewState(
   }
   function __handleTouchEnd() {
     if (!_isScaling && !props.disabled && _isTouching) {
-      disableScrollBounce({
-        disable: false,
-      })
-      rootRef.value!.style.willChange = 'auto'
       _isTouching = false
       if (!_checkCanMove && !_revise('out-of-bounds') && props.inertia) {
         const xv =
@@ -446,10 +479,6 @@ function useMovableViewState(
         )
       }
     }
-
-    if (!props.outOfBounds && !props.inertia) {
-      FAandSFACancel()
-    }
   }
   function _getLimitXY(x: number, y: number) {
     let outOfBounds = false
@@ -478,15 +507,14 @@ function useMovableViewState(
     }
   }
   function _updateOffset() {
-    _offset.x = p(rootRef.value!, movableAreaRootRef.value!)
-    _offset.y = f(rootRef.value!, movableAreaRootRef.value!)
+    _offset.x = _rect.left - parentSize.left.value
+    _offset.y = _rect.top - parentSize.top.value
   }
   function _updateWH(scale: number) {
     scale = scale || _scale
     scale = _adjustScale(scale)
-    let rect = rootRef.value!.getBoundingClientRect()
-    height.value = rect.height / _scale
-    width.value = rect.width / _scale
+    height.value = _rect.height / _scale
+    width.value = _rect.width / _scale
     let _height = height.value * scale
     let _width = width.value * scale
     _scaleOffset.x = (_width - width.value) / 2
@@ -495,12 +523,12 @@ function useMovableViewState(
   function _updateBoundary() {
     let x = 0 - _offset.x + _scaleOffset.x
     let _width =
-      movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x
+      parentSize.width.value - width.value - _offset.x - _scaleOffset.x
     minX.value = Math.min(x, _width)
     maxX.value = Math.max(x, _width)
     let y = 0 - _offset.y + _scaleOffset.y
     let _height =
-      movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y
+      parentSize.height.value - height.value - _offset.y - _scaleOffset.y
     minY.value = Math.min(y, _height)
     maxY.value = Math.max(y, _height)
   }
@@ -607,7 +635,7 @@ function useMovableViewState(
     scale = Number(scale.toFixed(1))
     if (!(_translateX === x && _translateY === y)) {
       if (!r) {
-        trigger('change', {} as Event, {
+        trigger('change', {
           x: v(x, _scaleOffset.x),
           y: v(y, _scaleOffset.y),
           source: source,
@@ -620,27 +648,30 @@ function useMovableViewState(
     scale = _adjustScale(scale)
     scale = +scale.toFixed(3)
     if (o && scale !== _scale) {
-      trigger('scale', {} as Event, {
+      trigger('scale', {
         x: x,
         y: y,
         scale: scale,
       })
     }
-    let transform =
-      'translateX(' +
-      x +
-      'px) translateY(' +
-      y +
-      'px) translateZ(0px) scale(' +
-      scale +
-      ')'
-    rootRef.value!.style.transform = transform
-    rootRef.value!.style.webkitTransform = transform
+    const transform = `translate(${x}px, ${y}px) scale(${scale})`
+    animation.transition(rootRef.value, {
+      styles: {
+        transform,
+      },
+      duration: 0,
+      delay: 0,
+    })
     _translateX = x
     _translateY = y
     _scale = scale
   }
 
+  function _updateRect() {
+    return getComponentSize(rootRef.value!).then((rect: Size) => {
+      _rect = rect
+    })
+  }
   function setParent() {
     if (!_isMounted.value) {
       return
@@ -658,20 +689,9 @@ function useMovableViewState(
     _setTransform(x, y, scale, '', true)
     _updateOldScale(scale)
   }
-  function _endScale() {
-    _isScaling = false
-    _updateOldScale(_scale)
-  }
-  function _setScale(scale: number) {
-    if (scale) {
-      scale = _oldScale * scale
-      _beginScale()
-      _updateScale(scale)
-    }
-  }
 
   onMounted(() => {
-    useTouchtrack(rootRef.value!, (event) => {
+    useTouchtrack((event) => {
       switch (event.detail.state) {
         case 'start':
           __handleTouchStart()
@@ -683,21 +703,20 @@ function useMovableViewState(
           __handleTouchEnd()
       }
     })
-    setParent()
+    setTimeout(() => {
+      _updateRect().then(() => {
+        setParent()
+      })
+    }, 100)
     _friction.reconfigure(1, frictionNumber.value)
     _STD.reconfigure(
       1,
       (9 * Math.pow(dampingNumber.value, 2)) / 40,
       dampingNumber.value
     )
-    rootRef.value!.style.transformOrigin = 'center'
-    initScrollBounce()
 
     const context: MovableViewContext = {
-      rootRef,
       setParent,
-      _endScale,
-      _setScale,
     }
     addMovableViewContext(context)
 
@@ -708,8 +727,4 @@ function useMovableViewState(
   onUnmounted(() => {
     FAandSFACancel()
   })
-
-  return {
-    setParent,
-  }
 }
