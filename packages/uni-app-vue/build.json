@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "src/service/index.ts": ["dist/service.runtime.esm.dev.js"]
+      "src/service/index.ts": ["dist/vue.runtime.esm.dev.js"]
     },
     "output": {
       "freeze": false
@@ -16,7 +16,7 @@
   },
   {
     "input": {
-      "src/service/index.ts": ["dist/service.runtime.esm.prod.js"]
+      "src/service/index.ts": ["dist/vue.runtime.esm.prod.js"]
     },
     "output": {
       "freeze": false

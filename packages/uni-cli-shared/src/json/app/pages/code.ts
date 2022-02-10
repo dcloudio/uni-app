@@ -12,9 +12,8 @@ if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
 }
 `
 export const restoreGlobalCode = `
-import * as vue from 'vue'
 if(uni.restoreGlobal){
-  uni.restoreGlobal(vue,weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
+  uni.restoreGlobal(weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
 }
 `
 

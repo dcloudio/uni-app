@@ -4,7 +4,6 @@ import {
 } from '../../statusBar'
 
 export function restoreGlobal(
-  newVue: unknown,
   newWeex: unknown,
   newPlus: unknown,
   newSetTimeout: unknown,
@@ -17,9 +16,6 @@ export function restoreGlobal(
   // plus 如果不用 app-service，资源路径会出问题
   // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
 
-  // 设置 vue3
-  // @ts-ignore 最终__VUE__会被替换为vue
-  __VUE__ = newVue
   if (plus !== newPlus) {
     if (__DEV__) {
       console.log(`[restoreGlobal][${Date.now()}]`)
