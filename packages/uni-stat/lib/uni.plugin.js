@@ -15,40 +15,38 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                if (uniCliShared.isSsr(env.command, config)) {
-                    return;
-                }
                 isNVue = config.nvue;
                 const inputDir = process.env.UNI_INPUT_DIR;
                 const platform = process.env.UNI_PLATFORM;
-                isEnable = uniCliShared.getUniStatistics(inputDir, platform).enable === true;
-                if (process.env.NODE_ENV === 'production') {
-                    const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
-                    if (!manifestJson.appid) {
-                        console.log();
-                        console.warn(uniCliShared.M['stat.warn.appid']);
-                        console.log();
-                        isEnable = false;
-                    }
-                }
                 const titlesJson = Object.create(null);
-                if (isEnable) {
-                    uniCliShared.parsePagesJson(inputDir, platform).pages.forEach((page) => {
-                        var _a;
-                        const style = page.style || {};
-                        const titleText = 
-                        // MP
-                        style.navigationBarTitleText ||
-                            (
-                            // H5 || App
-                            (_a = style.navigationBar) === null || _a === void 0 ? void 0 : _a.titleText) ||
-                            '';
-                        if (titleText) {
-                            titlesJson[page.path] = titleText;
+                uniCliShared.parsePagesJson(inputDir, platform).pages.forEach((page) => {
+                    var _a;
+                    const style = page.style || {};
+                    const titleText = 
+                    // MP
+                    style.navigationBarTitleText ||
+                        (
+                        // H5 || App
+                        (_a = style.navigationBar) === null || _a === void 0 ? void 0 : _a.titleText) ||
+                        '';
+                    if (titleText) {
+                        titlesJson[page.path] = titleText;
+                    }
+                });
+                // ssr 时不开启
+                if (!uniCliShared.isSsr(env.command, config)) {
+                    isEnable = uniCliShared.getUniStatistics(inputDir, platform).enable === true;
+                    if (process.env.NODE_ENV === 'production') {
+                        const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
+                        if (!manifestJson.appid) {
+                            console.log();
+                            console.warn(uniCliShared.M['stat.warn.appid']);
+                            console.log();
+                            isEnable = false;
                         }
-                    });
+                    }
+                    debug__default["default"]('uni:stat')('isEnable', isEnable);
                 }
-                debug__default["default"]('uni:stat')('isEnable', isEnable);
                 process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
                 return {
                     define: {
