@@ -1,6 +1,6 @@
 import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, toTypeString } from '@vue/shared';
-import { LINEFEED, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, ON_LOAD, RENDERJS_MODULES, WXS_PROTOCOL, WXS_MODULES, UniLifecycleHooks, ON_TAB_ITEM_TAP, ACTION_TYPE_EVENT, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_BACK_PRESS } from '@dcloudio/uni-shared';
-import { ref, injectHook, nextTick, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, onBeforeUnmount } from 'vue';
+import { LINEFEED, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_TAB_ITEM_TAP, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -1672,58 +1672,6 @@ function initPageVm(pageVm, page) {
         // TODO preload? 初始化时，状态肯定是激活
         pageVm.$.__isActive = true;
     }
-}
-
-function querySelector(vm, selector) {
-    const el = vm.$el.querySelector(selector);
-    return el && el.__vue__;
-}
-function querySelectorAll(vm, selector) {
-    const nodeList = vm.$el.querySelectorAll(selector);
-    if (nodeList) {
-        return [...nodeList].map((node) => node.__vue__).filter(Boolean);
-    }
-    return [];
-}
-function createSelectorQuery$1() {
-    return uni.createSelectorQuery().in(this);
-}
-function createMediaQueryObserver$1() {
-    return uni.createMediaQueryObserver(this);
-}
-function createIntersectionObserver$1(options) {
-    return uni.createIntersectionObserver(this, options);
-}
-function selectComponent(selector) {
-    return querySelector(this, selector);
-}
-function selectAllComponents(selector) {
-    return querySelectorAll(this, selector);
-}
-
-var wxInstance = {
-  __proto__: null,
-  createSelectorQuery: createSelectorQuery$1,
-  createMediaQueryObserver: createMediaQueryObserver$1,
-  createIntersectionObserver: createIntersectionObserver$1,
-  selectComponent: selectComponent,
-  selectAllComponents: selectAllComponents
-};
-
-function getOpenerEventChannel() {
-    // TODO App
-}
-
-function initAppConfig(appConfig) {
-    const globalProperties = appConfig.globalProperties;
-    globalProperties.getOpenerEventChannel = getOpenerEventChannel;
-    {
-        extend(globalProperties, wxInstance);
-    }
-}
-
-function initServicePlugin(app) {
-    initAppConfig(app._context.config);
 }
 
 function createLaunchOptions() {
@@ -10431,14 +10379,14 @@ const createMediaQueryObserver = defineSyncApi('createMediaQueryObserver', (cont
 });
 
 // let eventReady = false
-let index$3 = 0;
+let index$2 = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
     const data = { options };
     const needCallOptions = options &&
         ('success' in options || 'fail' in options || 'complete' in options);
     if (needCallOptions) {
-        const callbackId = String(index$3++);
+        const callbackId = String(index$2++);
         data.callbackId = callbackId;
         optionsCache[callbackId] = options;
     }
@@ -12627,7 +12575,7 @@ function getExtName(path) {
     return array.length > 1 ? '.' + array[array.length - 1] : '';
 }
 
-let index$2 = 0;
+let index$1 = 0;
 const SAVED_DIR = 'uniapp_save';
 const SAVE_PATH = `_doc/${SAVED_DIR}`;
 function getSavedFileDir(success, fail) {
@@ -12642,7 +12590,7 @@ function getSavedFileDir(success, fail) {
 }
 const saveFile = defineAsyncApi(API_SAVE_FILE, ({ tempFilePath }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject);
-    const fileName = `${Date.now()}${index$2++}${getExtName(tempFilePath)}`;
+    const fileName = `${Date.now()}${index$1++}${getExtName(tempFilePath)}`;
     plus.io.resolveLocalFileSystemURL(tempFilePath, (entry) => {
         // 读取临时文件 FileEntry
         getSavedFileDir((dir) => {
@@ -12753,7 +12701,7 @@ function showTabBar$1(animation) {
         });
 }
 const maskClickCallback = [];
-var tabBar$1 = {
+var tabBarInstance = {
     id: '0',
     init(options, clickCallback) {
         if (options && options.list.length) {
@@ -12960,8 +12908,8 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
         cover: false,
     };
     if (isTabBarPage$1()) {
-        tabBarView.height = tabBar$1.visible ? tabBar$1.height : 0;
-        tabBarView.cover = tabBar$1.cover;
+        tabBarView.height = tabBarInstance.visible ? tabBarInstance.height : 0;
+        tabBarView.cover = tabBarInstance.cover;
     }
     const windowTop = titleNView.cover ? titleNView.height : 0;
     const windowBottom = tabBarView.cover ? tabBarView.height : 0;
@@ -15846,11 +15794,11 @@ const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 
 const setTabBarBadge = defineAsyncApi(API_SET_TAB_BAR_BADGE, ({ index, text }, { resolve, reject }) => {
-    tabBar$1.setTabBarBadge('text', index, text);
+    tabBarInstance.setTabBarBadge('text', index, text);
     resolve();
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath, visible }, { resolve, reject }) => {
-    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
+    tabBarInstance.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
         const meta = route.meta;
@@ -15878,7 +15826,7 @@ const setTabBarStyle = defineAsyncApi(API_SET_TAB_BAR_STYLE, (style = {}, { reso
     if (borderStyle && borderStyle in borderStyles) {
         style.borderStyle = borderStyles[borderStyle];
     }
-    tabBar$1.setTabBarStyle(style);
+    tabBarInstance.setTabBarStyle(style);
     resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
 const hideTabBar = defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve, reject }) => {
@@ -15886,7 +15834,7 @@ const hideTabBar = defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve, reject }) 
     if (!isTabBarPage()) {
         return reject('not TabBar page');
     }
-    tabBar$1.hideTabBar(Boolean(animation));
+    tabBarInstance.hideTabBar(Boolean(animation));
     resolve();
 }, HideTabBarProtocol);
 const showTabBar = defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve, reject }) => {
@@ -15894,14 +15842,14 @@ const showTabBar = defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve, reject }) 
     if (!isTabBarPage()) {
         return reject('not TabBar page');
     }
-    tabBar$1.showTabBar(Boolean(animation));
+    tabBarInstance.showTabBar(Boolean(animation));
     resolve();
 }, ShowTabBarProtocol);
 const showTabBarRedDot = defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, ({ index }, { resolve, reject }) => {
-    tabBar$1.setTabBarBadge('redDot', index);
+    tabBarInstance.setTabBarBadge('redDot', index);
     resolve();
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-const setTabBarBadgeNone = (index) => tabBar$1.setTabBarBadge('none', index);
+const setTabBarBadgeNone = (index) => tabBarInstance.setTabBarBadge('none', index);
 const removeTabBarBadge = defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, ({ index }, { resolve, reject }) => {
     setTabBarBadgeNone(index);
     resolve();
@@ -16451,306 +16399,6 @@ const requestPayment = defineAsyncApi(API_REQUEST_PAYMENT, (params, { resolve, r
     }, errorCallback);
 }, RequestPaymentProtocol);
 
-function injectLifecycleHook(name, hook, publicThis, instance) {
-    if (isFunction(hook)) {
-        injectHook(name, hook.bind(publicThis), instance);
-    }
-}
-function initHooks(options, instance, publicThis) {
-    const mpType = options.mpType || publicThis.$mpType;
-    // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
-    Object.keys(options).forEach((name) => {
-        if (name.indexOf('on') === 0) {
-            const hooks = options[name];
-            if (isArray$1(hooks)) {
-                hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
-            }
-            else {
-                injectLifecycleHook(name, hooks, publicThis, instance);
-            }
-        }
-    });
-    if (mpType === 'page') {
-        instance.__isVisible = true;
-        try {
-            invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
-            delete instance.attrs.__pageQuery;
-        }
-        catch (e) {
-            console.error(e.message + LINEFEED + e.stack);
-        }
-        nextTick(() => {
-            // 延迟onShow，保证组件的onShow也可以监听到
-            invokeHook(publicThis, ON_SHOW);
-        });
-    }
-}
-
-function initRenderjs(options, instance) {
-    initModules(instance, options.$renderjs, options['$' + RENDERJS_MODULES]);
-}
-function initModules(instance, modules, moduleIds = {}) {
-    if (!isArray$1(modules)) {
-        return;
-    }
-    const ownerId = instance.uid;
-    // 在vue的定制内核中，通过$wxsModules来判断事件函数源码中是否包含该模块调用
-    // !$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)
-    const $wxsModules = (instance.$wxsModules ||
-        (instance.$wxsModules = []));
-    const ctx = instance.ctx;
-    modules.forEach((module) => {
-        if (moduleIds[module]) {
-            ctx[module] = proxyModule(ownerId, moduleIds[module], module);
-            $wxsModules.push(module);
-        }
-        else {
-            if ((process.env.NODE_ENV !== 'production')) {
-                console.error(formatLog('initModules', modules, moduleIds));
-            }
-        }
-    });
-}
-function proxyModule(ownerId, moduleId, module) {
-    const target = {};
-    return new Proxy(target, {
-        get(_, p) {
-            return (target[p] ||
-                (target[p] = createModuleFunction(ownerId, moduleId, module, p)));
-        },
-    });
-}
-function createModuleFunction(ownerId, moduleId, module, name) {
-    const target = () => { };
-    const toJSON = () => WXS_PROTOCOL + JSON.stringify([ownerId, moduleId, module + '.' + name]);
-    return new Proxy(target, {
-        get(_, p) {
-            if (p === 'toJSON') {
-                return toJSON;
-            }
-            return (target[p] ||
-                (target[p] = createModuleFunction(ownerId, moduleId, module + '.' + name, p)));
-        },
-        apply(_target, _thisArg, args) {
-            return (WXS_PROTOCOL +
-                JSON.stringify([ownerId, moduleId, module + '.' + name, [...args]]));
-        },
-    });
-}
-
-function initWxs(options, instance) {
-    initModules(instance, options.$wxs, options['$' + WXS_MODULES]);
-}
-
-function applyOptions(options, instance, publicThis) {
-    {
-        initWxs(options, instance);
-        initRenderjs(options, instance);
-    }
-    initHooks(options, instance, publicThis);
-}
-
-function set(target, key, val) {
-    return (target[key] = val);
-}
-
-function errorHandler(err, instance, info) {
-    if (!instance) {
-        throw err;
-    }
-    const app = getApp();
-    if (!app || !app.$vm) {
-        throw err;
-    }
-    {
-        invokeHook(app.$vm, ON_ERROR, err);
-    }
-}
-function mergeAsArray(to, from) {
-    return to ? [...new Set([].concat(to, from))] : from;
-}
-function initOptionMergeStrategies(optionMergeStrategies) {
-    UniLifecycleHooks.forEach((name) => {
-        optionMergeStrategies[name] = mergeAsArray;
-    });
-}
-
-let realAtob;
-const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-if (typeof atob !== 'function') {
-    realAtob = function (str) {
-        str = String(str).replace(/[\t\n\f\r ]+/g, '');
-        if (!b64re.test(str)) {
-            throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
-        }
-        // Adding the padding if missing, for semplicity
-        str += '=='.slice(2 - (str.length & 3));
-        var bitmap;
-        var result = '';
-        var r1;
-        var r2;
-        var i = 0;
-        for (; i < str.length;) {
-            bitmap =
-                (b64.indexOf(str.charAt(i++)) << 18) |
-                    (b64.indexOf(str.charAt(i++)) << 12) |
-                    ((r1 = b64.indexOf(str.charAt(i++))) << 6) |
-                    (r2 = b64.indexOf(str.charAt(i++)));
-            result +=
-                r1 === 64
-                    ? String.fromCharCode((bitmap >> 16) & 255)
-                    : r2 === 64
-                        ? String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255)
-                        : String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255, bitmap & 255);
-        }
-        return result;
-    };
-}
-else {
-    // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
-    realAtob = atob;
-}
-function b64DecodeUnicode(str) {
-    return decodeURIComponent(realAtob(str)
-        .split('')
-        .map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    })
-        .join(''));
-}
-function getCurrentUserInfo() {
-    const token = uni.getStorageSync('uni_id_token') || '';
-    const tokenArr = token.split('.');
-    if (!token || tokenArr.length !== 3) {
-        return {
-            uid: null,
-            role: [],
-            permission: [],
-            tokenExpired: 0,
-        };
-    }
-    let userInfo;
-    try {
-        userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-    }
-    catch (error) {
-        throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
-    }
-    userInfo.tokenExpired = userInfo.exp * 1000;
-    delete userInfo.exp;
-    delete userInfo.iat;
-    return userInfo;
-}
-function uniIdMixin(globalProperties) {
-    globalProperties.uniIDHasRole = function (roleId) {
-        const { role } = getCurrentUserInfo();
-        return role.indexOf(roleId) > -1;
-    };
-    globalProperties.uniIDHasPermission = function (permissionId) {
-        const { permission } = getCurrentUserInfo();
-        return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
-    };
-    globalProperties.uniIDTokenValid = function () {
-        const { tokenExpired } = getCurrentUserInfo();
-        return tokenExpired > Date.now();
-    };
-}
-
-function initApp(app) {
-    const appConfig = app._context.config;
-    if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = errorHandler;
-    }
-    initOptionMergeStrategies(appConfig.optionMergeStrategies);
-    const globalProperties = appConfig.globalProperties;
-    {
-        uniIdMixin(globalProperties);
-    }
-    {
-        globalProperties.$set = set;
-        globalProperties.$applyOptions = applyOptions;
-    }
-}
-
-let isInitEntryPage = false;
-function initEntry() {
-    if (isInitEntryPage) {
-        return;
-    }
-    isInitEntryPage = true;
-    let entryPagePath;
-    let entryPageQuery;
-    const weexPlus = weex.requireModule('plus');
-    if (weexPlus.getRedirectInfo) {
-        const { path, query, referrerInfo } = parseRedirectInfo();
-        if (path) {
-            entryPagePath = path;
-            entryPageQuery = query;
-        }
-        __uniConfig.referrerInfo = referrerInfo;
-    }
-    else {
-        const argsJsonStr = plus.runtime.arguments;
-        if (!argsJsonStr) {
-            return;
-        }
-        try {
-            const args = JSON.parse(argsJsonStr);
-            entryPagePath = args.path || args.pathName;
-            entryPageQuery = args.query ? '?' + args.query : '';
-        }
-        catch (e) { }
-    }
-    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
-        if (entryPageQuery) {
-            __uniConfig.entryPageQuery = entryPageQuery;
-        }
-        return;
-    }
-    const entryRoute = addLeadingSlash(entryPagePath);
-    const routeOptions = getRouteOptions(entryRoute);
-    if (!routeOptions) {
-        return;
-    }
-    if (!routeOptions.meta.isTabBar) {
-        __uniConfig.realEntryPagePath =
-            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-    }
-    __uniConfig.entryPagePath = entryPagePath;
-    __uniConfig.entryPageQuery = entryPageQuery;
-}
-
-function initTabBar() {
-    const { tabBar } = __uniConfig;
-    const len = tabBar && tabBar.list && tabBar.list.length;
-    if (!len) {
-        return;
-    }
-    const { entryPagePath } = __uniConfig;
-    tabBar.selectedIndex = 0;
-    const selected = tabBar.list.findIndex((page) => page.pagePath === entryPagePath);
-    tabBar$1.init(tabBar, (item, index) => {
-        uni.switchTab({
-            url: addLeadingSlash(item.pagePath),
-            openType: 'switchTab',
-            from: 'tabBar',
-            success() {
-                invokeHook(ON_TAB_ITEM_TAP, {
-                    index,
-                    text: item.text,
-                    pagePath: item.pagePath,
-                });
-            },
-        });
-    });
-    if (selected !== -1) {
-        // 取当前 tab 索引值
-        tabBar.selectedIndex = selected;
-        selected !== 0 && tabBar$1.switchTab(entryPagePath);
-    }
-}
-
 const sendHostEvent = sendNativeEvent;
 const API_NAVIGATE_TO_MINI_PROGRAM = 'navigateToMiniProgram';
 const navigateToMiniProgram = defineAsyncApi(API_NAVIGATE_TO_MINI_PROGRAM, (data, { resolve, reject }) => {
@@ -16770,6 +16418,400 @@ function invokeHostEvent(event, data) {
     hostEventCallbacks.forEach((fn) => fn(event, data));
 }
 
+const EventType = {
+    load: 'load',
+    close: 'close',
+    error: 'error',
+    adClicked: 'adClicked',
+};
+class AdEventHandler {
+    constructor() {
+        this._callbacks = {};
+    }
+    onLoad(callback) {
+        this._addEventListener(EventType.load, callback);
+    }
+    onClose(callback) {
+        this._addEventListener(EventType.close, callback);
+    }
+    onError(callback) {
+        this._addEventListener(EventType.error, callback);
+    }
+    offLoad(callback) {
+        this._removeEventListener(EventType.load, callback);
+    }
+    offClose(callback) {
+        this._removeEventListener(EventType.close, callback);
+    }
+    offError(callback) {
+        this._removeEventListener(EventType.error, callback);
+    }
+    _addEventListener(type, callback) {
+        if (typeof callback !== 'function') {
+            return;
+        }
+        if (!this._callbacks[type]) {
+            this._callbacks[type] = [];
+        }
+        this._callbacks[type].push(callback);
+    }
+    _removeEventListener(type, callback) {
+        const arrayFunction = this._callbacks[type];
+        const index = arrayFunction.indexOf(callback);
+        if (index > -1) {
+            arrayFunction.splice(index, 1);
+        }
+    }
+    _dispatchEvent(name, data) {
+        this._callbacks[name].forEach((callback) => {
+            callback(data || {});
+        });
+    }
+}
+class AdBase extends AdEventHandler {
+    constructor(adInstance, options) {
+        super();
+        this.preload = true;
+        this._isLoaded = false;
+        this._isLoading = false;
+        this._loadPromiseResolve = null;
+        this._loadPromiseReject = null;
+        this._showPromiseResolve = null;
+        this._showPromiseReject = null;
+        this.preload = options.preload !== undefined ? options.preload : false;
+        const ad = (this._adInstance = adInstance);
+        ad.onLoad(() => {
+            this._isLoaded = true;
+            this._isLoading = false;
+            if (this._loadPromiseResolve != null) {
+                this._loadPromiseResolve();
+                this._loadPromiseResolve = null;
+            }
+            if (this._showPromiseResolve != null) {
+                this._showPromiseResolve();
+                this._showPromiseResolve = null;
+                this._showAd();
+            }
+            this._dispatchEvent(EventType.load, {});
+        });
+        ad.onClose((e) => {
+            this._isLoaded = false;
+            this._isLoading = false;
+            this._dispatchEvent(EventType.close, e);
+            if (this.preload === true) {
+                this._loadAd();
+            }
+        });
+        ad.onError((e) => {
+            this._isLoading = false;
+            const data = {
+                code: e.code,
+                errMsg: e.message,
+            };
+            this._dispatchEvent(EventType.error, data);
+            const error = new Error(JSON.stringify(data));
+            if (this._loadPromiseReject != null) {
+                this._loadPromiseReject(error);
+                this._loadPromiseReject = null;
+            }
+            if (this._showPromiseReject != null) {
+                this._showPromiseReject(error);
+                this._showPromiseReject = null;
+            }
+        });
+        ad.onAdClicked &&
+            ad.onAdClicked(() => {
+                this._dispatchEvent(EventType.adClicked, {});
+            });
+    }
+    getProvider() {
+        return this._adInstance.getProvider();
+    }
+    load() {
+        return new Promise((resolve, reject) => {
+            this._loadPromiseResolve = resolve;
+            this._loadPromiseReject = reject;
+            if (this._isLoading) {
+                return;
+            }
+            if (this._isLoaded) {
+                resolve('');
+            }
+            else {
+                this._loadAd();
+            }
+        });
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this._showPromiseResolve = resolve;
+            this._showPromiseReject = reject;
+            if (this._isLoading) {
+                return;
+            }
+            if (this._isLoaded) {
+                this._showAd();
+                resolve('');
+            }
+            else {
+                this._loadAd();
+            }
+        });
+    }
+    destroy() {
+        this._adInstance.destroy();
+    }
+    _loadAd() {
+        this._isLoaded = false;
+        this._isLoading = true;
+        this._adInstance.load();
+    }
+    _showAd() {
+        this._adInstance.show();
+    }
+}
+
+class RewardedVideoAd extends AdBase {
+    constructor(options) {
+        super(plus.ad.createRewardedVideoAd(options), options);
+        this._loadAd();
+    }
+}
+const createRewardedVideoAd = (defineSyncApi(API_CREATE_REWARDED_VIDEO_AD, (options) => {
+    return new RewardedVideoAd(options);
+}, CreateRewardedVideoAdProtocol, CreateRewardedVideoAdOptions));
+
+class FullScreenVideoAd extends AdBase {
+    constructor(options) {
+        super(plus.ad.createFullScreenVideoAd(options), options);
+        this.preload = false;
+    }
+}
+const createFullScreenVideoAd = (defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
+    return new FullScreenVideoAd(options);
+}, CreateFullScreenVideoAdProtocol, CreateFullScreenVideoAdOptions));
+
+class InterstitialAd extends AdBase {
+    constructor(options) {
+        super(plus.ad.createInterstitialAd(options), options);
+        this.preload = false;
+        this._loadAd();
+    }
+}
+const createInterstitialAd = (defineSyncApi(API_CREATE_INTERSTITIAL_AD, (options) => {
+    return new InterstitialAd(options);
+}, CreateInterstitialAdProtocol, CreateInterstitialAdOptions));
+
+const sdkCache = {};
+const sdkQueue = {};
+function initSDK(options) {
+    const provider = options.provider;
+    if (!sdkCache[provider]) {
+        sdkCache[provider] = {};
+    }
+    if (typeof sdkCache[provider].plugin === 'object') {
+        options.success(sdkCache[provider].plugin);
+        return;
+    }
+    if (!sdkQueue[provider]) {
+        sdkQueue[provider] = [];
+    }
+    sdkQueue[provider].push(options);
+    if (sdkCache[provider].status === true) {
+        options.__plugin = sdkCache[provider].plugin;
+        return;
+    }
+    sdkCache[provider].status = true;
+    const plugin = requireNativePlugin(provider);
+    if (!plugin || !plugin.initSDK) {
+        sdkQueue[provider].forEach((item) => {
+            item.fail({
+                code: -1,
+                message: 'provider [' + provider + '] invalid',
+            });
+        });
+        sdkQueue[provider].length = 0;
+        sdkCache[provider].status = false;
+        return;
+    }
+    // TODO
+    sdkCache[provider].plugin = plugin;
+    options.__plugin = plugin;
+    plugin.initSDK((res) => {
+        const isSuccess = res.code === 1 || res.code === '1';
+        if (isSuccess) {
+            sdkCache[provider].plugin = plugin;
+        }
+        else {
+            sdkCache[provider].status = false;
+        }
+        sdkQueue[provider].forEach((item) => {
+            if (isSuccess) {
+                item.success(item.__plugin);
+            }
+            else {
+                item.fail(res);
+            }
+        });
+        sdkQueue[provider].length = 0;
+    });
+}
+class InteractiveAd extends AdEventHandler {
+    constructor(options) {
+        super();
+        this._adpid = '';
+        this._provider = '';
+        this._userData = null;
+        this._isLoaded = false;
+        this._isLoading = false;
+        this._loadPromiseResolve = null;
+        this._loadPromiseReject = null;
+        this._showPromiseResolve = null;
+        this._showPromiseReject = null;
+        this._adInstance = null;
+        this._adError = '';
+        this._adpid = options.adpid;
+        this._provider = options.provider;
+        this._userData = options.userData;
+        setTimeout(() => {
+            this._init();
+        });
+    }
+    _init() {
+        this._adError = '';
+        initSDK({
+            provider: this._provider,
+            success: (res) => {
+                this._adInstance = res;
+                if (this._userData) {
+                    this.bindUserData(this._userData);
+                }
+                this._loadAd();
+            },
+            fail: (err) => {
+                this._adError = err;
+                if (this._loadPromiseReject != null) {
+                    this._loadPromiseReject(this._createError(err));
+                    this._loadPromiseReject = null;
+                }
+                this._dispatchEvent(EventType.error, err);
+            },
+        });
+    }
+    getProvider() {
+        return this._provider;
+    }
+    load() {
+        return new Promise((resolve, reject) => {
+            this._loadPromiseResolve = resolve;
+            this._loadPromiseReject = reject;
+            if (this._isLoading) {
+                return;
+            }
+            if (this._adError) {
+                this._init();
+                return;
+            }
+            if (this._isLoaded) {
+                resolve('');
+            }
+            else {
+                this._loadAd();
+            }
+        });
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this._showPromiseResolve = resolve;
+            this._showPromiseReject = reject;
+            if (this._isLoading) {
+                return;
+            }
+            if (this._adError) {
+                this._init();
+                return;
+            }
+            if (this._isLoaded) {
+                this._showAd();
+                resolve('');
+            }
+            else {
+                this._loadAd();
+            }
+        });
+    }
+    reportExposure() {
+        if (this._adInstance !== null) {
+            this._adInstance.reportExposure();
+        }
+    }
+    bindUserData(data) {
+        if (this._adInstance !== null) {
+            this._adInstance.bindUserData(data);
+        }
+    }
+    destroy() {
+        if (this._adInstance !== null && this._adInstance.destroy) {
+            this._adInstance.destroy({
+                adpid: this._adpid,
+            });
+        }
+    }
+    _loadAd() {
+        if (this._adInstance !== null) {
+            if (this._isLoading === true) {
+                return;
+            }
+            this._isLoading = true;
+            this._adInstance.loadData({
+                adpid: this._adpid,
+            }, (res) => {
+                this._isLoaded = true;
+                this._isLoading = false;
+                if (this._loadPromiseResolve != null) {
+                    this._loadPromiseResolve();
+                    this._loadPromiseResolve = null;
+                }
+                if (this._showPromiseResolve != null) {
+                    this._showPromiseResolve();
+                    this._showPromiseResolve = null;
+                    this._showAd();
+                }
+                this._dispatchEvent(EventType.load, res);
+            }, (err) => {
+                this._isLoading = false;
+                if (this._showPromiseReject != null) {
+                    this._showPromiseReject(this._createError(err));
+                    this._showPromiseReject = null;
+                }
+                this._dispatchEvent(EventType.error, err);
+            });
+        }
+    }
+    _showAd() {
+        if (this._adInstance !== null && this._isLoaded === true) {
+            this._adInstance.show({
+                adpid: this._adpid,
+            }, () => {
+                this._isLoaded = false;
+            }, (err) => {
+                this._isLoaded = false;
+                if (this._showPromiseReject != null) {
+                    this._showPromiseReject(this._createError(err));
+                    this._showPromiseReject = null;
+                }
+                this._dispatchEvent(EventType.error, err);
+            });
+        }
+    }
+    _createError(err) {
+        return new Error(JSON.stringify(err));
+    }
+}
+const createInteractiveAd = (defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
+    return new InteractiveAd(options);
+}, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
+
 const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
 const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
 const ANI_DURATION = 300;
@@ -16777,128 +16819,6 @@ const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
 const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
 const WEBVIEW_ID_PREFIX = 'webviewId';
 const SDK_UNI_MP_NATIVE_EVENT = 'uniMPNativeEvent';
-
-function initGlobalEvent() {
-    const plusGlobalEvent = plus.globalEvent;
-    const weexGlobalEvent = weex.requireModule('globalEvent');
-    const emit = UniServiceJSBridge.emit;
-    if (weex.config.preload) {
-        plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
-    }
-    else {
-        plusGlobalEvent.addEventListener('splashclosed', () => {
-            plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
-        });
-    }
-    plusGlobalEvent.addEventListener('pause', () => {
-        emit(ON_APP_ENTER_BACKGROUND);
-    });
-    plusGlobalEvent.addEventListener('resume', () => {
-        const info = parseRedirectInfo();
-        if (info && info.userAction) {
-            initEnterOptions(info);
-        }
-        emit(ON_APP_ENTER_FOREGROUND, getEnterOptions());
-    });
-    weexGlobalEvent.addEventListener('uistylechange', function (event) {
-        const args = {
-            theme: event.uistyle,
-        };
-        emit(ON_THEME_CHANGE, args);
-    });
-    let keyboardHeightChange = 0;
-    plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
-        // 安卓设备首次获取高度为 0
-        if (keyboardHeightChange !== event.height) {
-            keyboardHeightChange = event.height;
-            emit(ON_KEYBOARD_HEIGHT_CHANGE, {
-                height: keyboardHeightChange,
-            });
-        }
-    });
-    weexGlobalEvent.addEventListener(SDK_UNI_MP_NATIVE_EVENT, function (res) {
-        if (res && res.event) {
-            invokeHostEvent(res.event, res.data);
-        }
-    });
-    plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
-    // nvue webview post message
-    plusGlobalEvent.addEventListener('WebviewPostMessage', subscribePlusMessage);
-}
-function subscribePlusMessage({ data, }) {
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('plusMessage', data));
-    }
-    if (data && data.type) {
-        UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
-    }
-}
-function onPlusMessage(type, callback, once = false) {
-    UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
-}
-// function initEnterReLaunch(info: RedirectInfo) {
-//   __uniConfig.realEntryPagePath =
-//     __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
-//   __uniConfig.entryPagePath = info.path
-//   __uniConfig.entryPageQuery = info.query
-//   $reLaunch(
-//     { url: addLeadingSlash(info.path) + info.query },
-//     { resolve() {}, reject() {} }
-//   )
-// }
-
-function initAppLaunch(appVm) {
-    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
-    const args = extend({
-        // 为了让 uni-stat 在 uni.onLaunch 中可以 mixin
-        app: { mixin: appVm.$.appContext.app.mixin },
-    }, initLaunchOptions({
-        path: entryPagePath,
-        query: entryPageQuery,
-        referrerInfo: referrerInfo,
-    }));
-    injectAppLaunchHooks(appVm.$);
-    invokeHook(appVm, ON_LAUNCH, args);
-    invokeHook(appVm, ON_SHOW, args);
-    // https://tower.im/teams/226535/todos/16905/
-    const getAppState = weex.requireModule('plus').getAppState;
-    const appState = getAppState && Number(getAppState());
-    if (appState === 2) {
-        invokeHook(appVm, ON_HIDE, args);
-    }
-}
-
-// 统一处理路径
-function getPath(path) {
-    path = path.replace(/\/$/, '');
-    return path.indexOf('_') === 0
-        ? plus.io.convertLocalFileSystemURL(path)
-        : path;
-}
-function clearTempFile() {
-    const basePath = getPath(TEMP_PATH_BASE);
-    const tempPath = getPath(TEMP_PATH);
-    // 获取父目录
-    const dirParts = tempPath.split('/');
-    dirParts.pop();
-    const dirPath = dirParts.join('/');
-    plus.io.resolveLocalFileSystemURL(plus.io.convertAbsoluteFileSystem(dirPath), (entry) => {
-        const reader = entry.createReader();
-        reader.readEntries(function (entry) {
-            // plus.d.ts 类型不对
-            const entries = entry;
-            if (entries && entries.length) {
-                entries.forEach(function (entry) {
-                    if (entry.isDirectory &&
-                        entry.fullPath.indexOf(basePath) === 0 &&
-                        entry.fullPath.indexOf(tempPath) !== 0) {
-                        entry.removeRecursively();
-                    }
-                });
-            }
-        });
-    });
-}
 
 let vueApp;
 function getVueApp() {
@@ -16971,84 +16891,6 @@ function removePage(curPage) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('removePage', curPage.$page));
     }
-}
-
-function onNodeEvent(nodeId, evt, pageNode) {
-    pageNode.fireEvent(nodeId, evt);
-}
-
-function onVdSync(actions, pageId) {
-    // 从所有pages中获取
-    const page = getPageById(parseInt(pageId));
-    if (!page) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
-        }
-        return;
-    }
-    const pageNode = page.__page_container__;
-    actions.forEach((action) => {
-        switch (action[0]) {
-            case ACTION_TYPE_EVENT:
-                onNodeEvent(action[1], action[2], pageNode);
-                break;
-        }
-    });
-}
-
-const _adDataCache = {};
-function getAdData(data, onsuccess, onerror) {
-    const { adpid, width } = data;
-    const key = adpid + '-' + width;
-    const adDataList = _adDataCache[key];
-    if (adDataList && adDataList.length > 0) {
-        onsuccess(adDataList.splice(0, 1)[0]);
-        return;
-    }
-    plus.ad.getAds(data, (res) => {
-        const list = res.ads;
-        onsuccess(list.splice(0, 1)[0]);
-        _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
-    }, (err) => {
-        onerror({
-            errCode: err.code,
-            errMsg: err.message,
-        });
-    });
-}
-function subscribeAd() {
-    registerServiceMethod('getAdData', (args, resolve) => {
-        getAdData(args, (res) => {
-            resolve({
-                code: 0,
-                data: res,
-            });
-        }, (err) => {
-            resolve({
-                code: 1,
-                message: err,
-            });
-        });
-    });
-}
-
-const API_ROUTE = [
-    'switchTab',
-    'reLaunch',
-    'redirectTo',
-    'navigateTo',
-    'navigateBack',
-];
-function subscribeNavigator() {
-    API_ROUTE.forEach((name) => {
-        registerServiceMethod(name, (args) => {
-            uni[name](extend(args, {
-                fail(res) {
-                    console.error(res.errMsg);
-                },
-            }));
-        });
-    });
 }
 
 function initNVue(webviewStyle, routeMeta, path) {
@@ -17542,7 +17384,7 @@ function initSubNVues(webview, path, routeMeta) {
         else if (isPopup) {
             style.position = 'absolute';
             if (isTabBarPage$1(path)) {
-                maskWebview = tabBar$1;
+                maskWebview = tabBarInstance;
             }
             else {
                 maskWebview = webview;
@@ -17615,65 +17457,6 @@ function createWebview(options) {
 }
 function onWebviewReady(pageId, callback) {
     UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
-}
-
-function closeWebview(webview, animationType, animationDuration) {
-    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
-}
-function showWebview(webview, animationType, animationDuration, showCallback, delay) {
-    if (typeof delay === 'undefined') {
-        delay = webview.nvue ? 0 : 100;
-    }
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('showWebview', 'delay', delay));
-    }
-    const execShowCallback = function () {
-        if (execShowCallback._called) {
-            if ((process.env.NODE_ENV !== 'production')) {
-                console.log(formatLog('execShowCallback', 'prevent'));
-            }
-            return;
-        }
-        execShowCallback._called = true;
-        showCallback && showCallback();
-        navigateFinish();
-    };
-    execShowCallback._called = false;
-    setTimeout(() => {
-        const timer = setTimeout(() => {
-            if ((process.env.NODE_ENV !== 'production')) {
-                console.log(formatLog('showWebview', 'callback', 'timer'));
-            }
-            execShowCallback();
-        }, animationDuration + 150);
-        webview.show(animationType, animationDuration, () => {
-            if ((process.env.NODE_ENV !== 'production')) {
-                console.log(formatLog('showWebview', 'callback'));
-            }
-            if (!execShowCallback._called) {
-                clearTimeout(timer);
-            }
-            execShowCallback();
-        });
-    }, delay);
-}
-function backWebview(webview, callback) {
-    const children = webview.children();
-    if (!children || !children.length) {
-        // 有子 webview
-        return callback();
-    }
-    // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
-    const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
-        children[0];
-    childWebview.canBack(({ canBack }) => {
-        if (canBack) {
-            childWebview.back(); // webview 返回
-        }
-        else {
-            callback();
-        }
-    });
 }
 
 let pendingNavigator = false;
@@ -17752,6 +17535,145 @@ function navigateFinish() {
     preloadWebview.loaded
         ? pendingNavigator.callback()
         : onWebviewReady(preloadWebview.id, pendingNavigate);
+}
+
+function closeWebview(webview, animationType, animationDuration) {
+    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+}
+function showWebview(webview, animationType, animationDuration, showCallback, delay) {
+    if (typeof delay === 'undefined') {
+        delay = webview.nvue ? 0 : 100;
+    }
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('showWebview', 'delay', delay));
+    }
+    const execShowCallback = function () {
+        if (execShowCallback._called) {
+            if ((process.env.NODE_ENV !== 'production')) {
+                console.log(formatLog('execShowCallback', 'prevent'));
+            }
+            return;
+        }
+        execShowCallback._called = true;
+        showCallback && showCallback();
+        navigateFinish();
+    };
+    execShowCallback._called = false;
+    setTimeout(() => {
+        const timer = setTimeout(() => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                console.log(formatLog('showWebview', 'callback', 'timer'));
+            }
+            execShowCallback();
+        }, animationDuration + 150);
+        webview.show(animationType, animationDuration, () => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                console.log(formatLog('showWebview', 'callback'));
+            }
+            if (!execShowCallback._called) {
+                clearTimeout(timer);
+            }
+            execShowCallback();
+        });
+    }, delay);
+}
+function backWebview(webview, callback) {
+    const children = webview.children();
+    if (!children || !children.length) {
+        // 有子 webview
+        return callback();
+    }
+    // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+    const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
+        children[0];
+    childWebview.canBack(({ canBack }) => {
+        if (canBack) {
+            childWebview.back(); // webview 返回
+        }
+        else {
+            callback();
+        }
+    });
+}
+
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+    const page = getCurrentPage();
+    if (!page) {
+        return reject(`getCurrentPages is empty`);
+    }
+    if (invokeHook(page, ON_BACK_PRESS, {
+        from: args.from,
+    })) {
+        return resolve();
+    }
+    uni.hideToast();
+    uni.hideLoading();
+    if (page.$page.meta.isQuit) {
+        quit();
+    }
+    else if (isDirectPage(page)) {
+        reLaunchEntryPage();
+    }
+    else {
+        const { delta, animationType, animationDuration } = args;
+        back(delta, animationType, animationDuration);
+    }
+    return resolve();
+}, NavigateBackProtocol, NavigateBackOptions);
+let firstBackTime = 0;
+function quit() {
+    initI18nAppMsgsOnce();
+    if (!firstBackTime) {
+        firstBackTime = Date.now();
+        plus.nativeUI.toast(useI18n().t('uni.app.quit'));
+        setTimeout(() => {
+            firstBackTime = 0;
+        }, 2000);
+    }
+    else if (Date.now() - firstBackTime < 2000) {
+        plus.runtime.quit();
+    }
+}
+function back(delta, animationType, animationDuration) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    const currentPage = pages[len - 1];
+    if (delta > 1) {
+        // 中间页隐藏
+        pages
+            .slice(len - delta, len - 1)
+            .reverse()
+            .forEach((deltaPage) => {
+            closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
+        });
+    }
+    const backPage = function (webview) {
+        if (animationType) {
+            closeWebview(webview, animationType, animationDuration || ANI_DURATION);
+        }
+        else {
+            if (currentPage.$page.openType === 'redirectTo') {
+                // 如果是 redirectTo 跳转的，需要指定 back 动画
+                closeWebview(webview, ANI_CLOSE, ANI_DURATION);
+            }
+            else {
+                closeWebview(webview, 'auto');
+            }
+        }
+        pages
+            .slice(len - delta, len)
+            .forEach((page) => removePage(page));
+        setStatusBarStyle();
+        // 前一个页面触发 onShow
+        invokeHook(ON_SHOW);
+    };
+    const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
+    if (!currentPage.__uniapp_webview) {
+        return backPage(webview);
+    }
+    backWebview(webview, () => {
+        backPage(webview);
+    });
 }
 
 class UniPageNode extends UniNode {
@@ -18113,6 +18035,54 @@ function createFactory(component) {
     };
 }
 
+let isInitEntryPage = false;
+function initEntry() {
+    if (isInitEntryPage) {
+        return;
+    }
+    isInitEntryPage = true;
+    let entryPagePath;
+    let entryPageQuery;
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, referrerInfo } = parseRedirectInfo();
+        if (path) {
+            entryPagePath = path;
+            entryPageQuery = query;
+        }
+        __uniConfig.referrerInfo = referrerInfo;
+    }
+    else {
+        const argsJsonStr = plus.runtime.arguments;
+        if (!argsJsonStr) {
+            return;
+        }
+        try {
+            const args = JSON.parse(argsJsonStr);
+            entryPagePath = args.path || args.pathName;
+            entryPageQuery = args.query ? '?' + args.query : '';
+        }
+        catch (e) { }
+    }
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+        if (entryPageQuery) {
+            __uniConfig.entryPageQuery = entryPageQuery;
+        }
+        return;
+    }
+    const entryRoute = addLeadingSlash(entryPagePath);
+    const routeOptions = getRouteOptions(entryRoute);
+    if (!routeOptions) {
+        return;
+    }
+    if (!routeOptions.meta.isTabBar) {
+        __uniConfig.realEntryPagePath =
+            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
+}
+
 function initRouteOptions(path, openType) {
     // 需要序列化一遍
     const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
@@ -18218,7 +18188,7 @@ function registerPage({ url, path, query, openType, webview, eventChannel, }) {
     routeOptions.meta.id = parseInt(webview.id);
     const isTabBar = !!routeOptions.meta.isTabBar;
     if (isTabBar) {
-        tabBar$1.append(webview);
+        tabBarInstance.append(webview);
     }
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('registerPage', path, webview.id));
@@ -18258,7 +18228,7 @@ function initPageOptions({ meta }) {
             : ON_REACH_BOTTOM_DISTANCE,
         statusbarHeight,
         windowTop: meta.navigationBar.type === 'float' ? statusbarHeight + NAVBAR_HEIGHT : 0,
-        windowBottom: tabBar$1.indexOf(meta.route) >= 0 && tabBar$1.cover ? tabBar$1.height : 0,
+        windowBottom: tabBarInstance.indexOf(meta.route) >= 0 && tabBarInstance.cover ? tabBarInstance.height : 0,
     };
 }
 function initNVueEntryPage(webview) {
@@ -18349,6 +18319,93 @@ function initAnimation(path, animationType, animationDuration) {
     ];
 }
 
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
+    const { path, query } = parseUrl(url);
+    navigate(path, () => {
+        _redirectTo({
+            url,
+            path,
+            query,
+        })
+            .then(resolve)
+            .catch(reject);
+    });
+}, RedirectToProtocol, RedirectToOptions);
+function _redirectTo({ url, path, query, }) {
+    // TODO exists
+    //   if (exists === 'back') {
+    //     const existsPageIndex = findExistsPageIndex(url)
+    //     if (existsPageIndex !== -1) {
+    //       const delta = len - existsPageIndex
+    //       if (delta > 0) {
+    //         navigateBack({
+    //           delta,
+    //         })
+    //         invoke(callbackId, {
+    //           errMsg: 'redirectTo:ok',
+    //         })
+    //         return
+    //       }
+    //     }
+    //   }
+    const lastPage = getCurrentPage();
+    lastPage && removePage(lastPage);
+    return new Promise((resolve) => {
+        showWebview(registerPage({
+            url,
+            path,
+            query,
+            openType: 'redirectTo',
+        }), 'none', 0, () => {
+            if (lastPage) {
+                const webview = lastPage
+                    .$getAppWebview();
+                if (webview.__preload__) {
+                    removePreloadWebview(webview);
+                }
+                webview.close('none');
+            }
+            resolve(undefined);
+        });
+        setStatusBarStyle();
+    });
+}
+
+const $reLaunch = ({ url }, { resolve, reject }) => {
+    const { path, query } = parseUrl(url);
+    navigate(path, () => {
+        _reLaunch({
+            url,
+            path,
+            query,
+        })
+            .then(resolve)
+            .catch(reject);
+    });
+};
+function _reLaunch({ url, path, query }) {
+    return new Promise((resolve) => {
+        // 获取目前所有页面
+        const pages = getAllPages().slice(0);
+        const routeOptions = __uniRoutes.find((route) => route.path === path);
+        if (routeOptions.meta.isTabBar) {
+            tabBarInstance.switchTab(path.slice(1));
+        }
+        showWebview(registerPage({
+            url,
+            path,
+            query,
+            openType: 'reLaunch',
+        }), 'none', 0, () => {
+            pages.forEach((page) => closePage(page, 'none'));
+            resolve(undefined);
+        });
+        setStatusBarStyle();
+    });
+}
+
+const reLaunch = defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+
 const $switchTab = (args, { resolve, reject }) => {
     const { url } = args;
     const { path, query } = parseUrl(url);
@@ -18364,7 +18421,7 @@ const $switchTab = (args, { resolve, reject }) => {
 };
 const switchTab = defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
 function _switchTab({ url, path, query, }) {
-    tabBar$1.switchTab(path.slice(1));
+    tabBarInstance.switchTab(path.slice(1));
     const pages = getCurrentPages();
     const len = pages.length;
     let callOnHide = false;
@@ -18447,766 +18504,6 @@ function _switchTab({ url, path, query, }) {
         }
     });
 }
-
-let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
-function subscribeWebviewReady(_data, pageId) {
-    const isLaunchWebview = pageId === '1';
-    if (isLaunchWebview && isLaunchWebviewReady) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.log('[uni-app] onLaunchWebviewReady.prevent');
-        }
-        return;
-    }
-    if (isLaunchWebview) {
-        // 首页
-        isLaunchWebviewReady = true;
-        setPreloadWebview(plus.webview.getLaunchWebview());
-    }
-    else if (!preloadWebview$1) {
-        // preloadWebview 不存在，重新加载一下
-        setPreloadWebview(plus.webview.getWebviewById(pageId));
-    }
-    if (preloadWebview$1.id !== pageId) {
-        return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
-    }
-    preloadWebview$1.loaded = true; // 标记已 ready
-    UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
-    isLaunchWebview && onLaunchWebviewReady();
-}
-function onLaunchWebviewReady() {
-    const { autoclose, alwaysShowBeforeRender } = __uniConfig.splashscreen;
-    if (autoclose && !alwaysShowBeforeRender) {
-        plus.navigator.closeSplashscreen();
-    }
-    const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-    const routeOptions = getRouteOptions(entryPagePath);
-    if (!routeOptions.meta.isNVue) {
-        // 非 nvue 首页，需要主动跳转
-        const args = {
-            url: entryPagePath + (__uniConfig.entryPageQuery || ''),
-            openType: 'appLaunch',
-        };
-        const handler = { resolve() { }, reject() { } };
-        if (routeOptions.meta.isTabBar) {
-            return $switchTab(args, handler);
-        }
-        return $navigateTo(args, handler);
-    }
-}
-
-function onWebviewInserted(_, pageId) {
-    const page = getPageById(parseInt(pageId));
-    page && (page.__uniapp_webview = true);
-}
-function onWebviewRemoved(_, pageId) {
-    const page = getPageById(parseInt(pageId));
-    page && delete page.__uniapp_webview;
-}
-
-const onWebInvokeAppService = ({ name, arg }, pageIds) => {
-    if (name === 'postMessage') {
-        onMessage(pageIds[0], arg);
-    }
-    else {
-        uni[name](extend(arg, {
-            fail(res) {
-                console.error(res.errMsg);
-            },
-        }));
-    }
-};
-function onMessage(pageId, arg) {
-    const uniNode = findNodeByTagName('web-view', parseInt(pageId));
-    uniNode &&
-        uniNode.dispatchEvent(createUniEvent({
-            type: 'onMessage',
-            target: Object.create(null),
-            currentTarget: Object.create(null),
-            detail: {
-                data: [arg],
-            },
-        }));
-}
-
-function onWxsInvokeCallMethod({ nodeId, ownerId, method, args, }, pageId) {
-    const node = findNodeById(nodeId, parseInt(pageId));
-    if (!node) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.error(formatLog('Wxs', 'CallMethod', nodeId, 'not found'));
-        }
-        return;
-    }
-    const vm = resolveOwnerVm(ownerId, node.__vueParentComponent);
-    if (!vm) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.error(formatLog('Wxs', 'CallMethod', 'vm not found'));
-        }
-        return;
-    }
-    if (!vm[method]) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.error(formatLog('Wxs', 'CallMethod', method, ' not found'));
-        }
-        return;
-    }
-    vm[method](args);
-}
-function resolveOwnerVm(ownerId, vm) {
-    if (!vm) {
-        return null;
-    }
-    if (vm.uid === ownerId) {
-        return vm.proxy;
-    }
-    let parent = vm.parent;
-    while (parent) {
-        if (parent.uid === ownerId) {
-            return parent.proxy;
-        }
-        parent = parent.parent;
-    }
-    return vm.proxy;
-}
-
-function initSubscribeHandlers() {
-    const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
-    onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
-        subscribeHandler(type, data, pageId);
-    });
-    onPlusMessage(WEB_INVOKE_APPSERVICE, ({ data, webviewIds }) => {
-        onWebInvokeAppService(data, webviewIds);
-    });
-    if (__uniConfig.renderer !== 'native') {
-        // 非纯原生
-        subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
-        subscribe(VD_SYNC, onVdSync);
-        subscribeServiceMethod();
-        subscribeAd();
-        subscribeNavigator();
-        subscribe(WEBVIEW_INSERTED, onWebviewInserted);
-        subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
-        subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod);
-        const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
-        if (routeOptions && !routeOptions.meta.isNVue) {
-            // 防止首页 webview 初始化过早， service 还未开始监听
-            publishHandler(ON_WEBVIEW_READY, {}, 1);
-        }
-    }
-}
-
-let appCtx;
-const defaultApp = {
-    globalData: {},
-};
-function getApp$1({ allowDefault = false } = {}) {
-    if (appCtx) {
-        // 真实的 App 已初始化
-        return appCtx;
-    }
-    if (allowDefault) {
-        // 返回默认实现
-        return defaultApp;
-    }
-    console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
-}
-function registerApp(appVm) {
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('registerApp'));
-    }
-    initVueApp(appVm);
-    appCtx = appVm;
-    initAppVm(appCtx);
-    extend(appCtx, defaultApp); // 拷贝默认实现
-    defineGlobalData(appCtx, defaultApp.globalData);
-    initService();
-    initEntry();
-    initTabBar();
-    initGlobalEvent();
-    initSubscribeHandlers();
-    initAppLaunch(appVm);
-    // 10s后清理临时文件
-    setTimeout(clearTempFile, 10000);
-    __uniConfig.ready = true;
-}
-
-var index$1 = {
-    install(app) {
-        initMount(app);
-        initApp(app);
-        initServicePlugin(app);
-    },
-};
-function initMount(app) {
-    const oldMount = app.mount;
-    app.mount = (rootContainer) => {
-        const instance = oldMount.call(app, rootContainer);
-        if (rootContainer === '#app') {
-            registerApp(instance);
-        }
-        return instance;
-    };
-}
-
-const EventType = {
-    load: 'load',
-    close: 'close',
-    error: 'error',
-    adClicked: 'adClicked',
-};
-class AdEventHandler {
-    constructor() {
-        this._callbacks = {};
-    }
-    onLoad(callback) {
-        this._addEventListener(EventType.load, callback);
-    }
-    onClose(callback) {
-        this._addEventListener(EventType.close, callback);
-    }
-    onError(callback) {
-        this._addEventListener(EventType.error, callback);
-    }
-    offLoad(callback) {
-        this._removeEventListener(EventType.load, callback);
-    }
-    offClose(callback) {
-        this._removeEventListener(EventType.close, callback);
-    }
-    offError(callback) {
-        this._removeEventListener(EventType.error, callback);
-    }
-    _addEventListener(type, callback) {
-        if (typeof callback !== 'function') {
-            return;
-        }
-        if (!this._callbacks[type]) {
-            this._callbacks[type] = [];
-        }
-        this._callbacks[type].push(callback);
-    }
-    _removeEventListener(type, callback) {
-        const arrayFunction = this._callbacks[type];
-        const index = arrayFunction.indexOf(callback);
-        if (index > -1) {
-            arrayFunction.splice(index, 1);
-        }
-    }
-    _dispatchEvent(name, data) {
-        this._callbacks[name].forEach((callback) => {
-            callback(data || {});
-        });
-    }
-}
-class AdBase extends AdEventHandler {
-    constructor(adInstance, options) {
-        super();
-        this.preload = true;
-        this._isLoaded = false;
-        this._isLoading = false;
-        this._loadPromiseResolve = null;
-        this._loadPromiseReject = null;
-        this._showPromiseResolve = null;
-        this._showPromiseReject = null;
-        this.preload = options.preload !== undefined ? options.preload : false;
-        const ad = (this._adInstance = adInstance);
-        ad.onLoad(() => {
-            this._isLoaded = true;
-            this._isLoading = false;
-            if (this._loadPromiseResolve != null) {
-                this._loadPromiseResolve();
-                this._loadPromiseResolve = null;
-            }
-            if (this._showPromiseResolve != null) {
-                this._showPromiseResolve();
-                this._showPromiseResolve = null;
-                this._showAd();
-            }
-            this._dispatchEvent(EventType.load, {});
-        });
-        ad.onClose((e) => {
-            this._isLoaded = false;
-            this._isLoading = false;
-            this._dispatchEvent(EventType.close, e);
-            if (this.preload === true) {
-                this._loadAd();
-            }
-        });
-        ad.onError((e) => {
-            this._isLoading = false;
-            const data = {
-                code: e.code,
-                errMsg: e.message,
-            };
-            this._dispatchEvent(EventType.error, data);
-            const error = new Error(JSON.stringify(data));
-            if (this._loadPromiseReject != null) {
-                this._loadPromiseReject(error);
-                this._loadPromiseReject = null;
-            }
-            if (this._showPromiseReject != null) {
-                this._showPromiseReject(error);
-                this._showPromiseReject = null;
-            }
-        });
-        ad.onAdClicked &&
-            ad.onAdClicked(() => {
-                this._dispatchEvent(EventType.adClicked, {});
-            });
-    }
-    getProvider() {
-        return this._adInstance.getProvider();
-    }
-    load() {
-        return new Promise((resolve, reject) => {
-            this._loadPromiseResolve = resolve;
-            this._loadPromiseReject = reject;
-            if (this._isLoading) {
-                return;
-            }
-            if (this._isLoaded) {
-                resolve('');
-            }
-            else {
-                this._loadAd();
-            }
-        });
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this._showPromiseResolve = resolve;
-            this._showPromiseReject = reject;
-            if (this._isLoading) {
-                return;
-            }
-            if (this._isLoaded) {
-                this._showAd();
-                resolve('');
-            }
-            else {
-                this._loadAd();
-            }
-        });
-    }
-    destroy() {
-        this._adInstance.destroy();
-    }
-    _loadAd() {
-        this._isLoaded = false;
-        this._isLoading = true;
-        this._adInstance.load();
-    }
-    _showAd() {
-        this._adInstance.show();
-    }
-}
-
-class RewardedVideoAd extends AdBase {
-    constructor(options) {
-        super(plus.ad.createRewardedVideoAd(options), options);
-        this._loadAd();
-    }
-}
-const createRewardedVideoAd = (defineSyncApi(API_CREATE_REWARDED_VIDEO_AD, (options) => {
-    return new RewardedVideoAd(options);
-}, CreateRewardedVideoAdProtocol, CreateRewardedVideoAdOptions));
-
-class FullScreenVideoAd extends AdBase {
-    constructor(options) {
-        super(plus.ad.createFullScreenVideoAd(options), options);
-        this.preload = false;
-    }
-}
-const createFullScreenVideoAd = (defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
-    return new FullScreenVideoAd(options);
-}, CreateFullScreenVideoAdProtocol, CreateFullScreenVideoAdOptions));
-
-class InterstitialAd extends AdBase {
-    constructor(options) {
-        super(plus.ad.createInterstitialAd(options), options);
-        this.preload = false;
-        this._loadAd();
-    }
-}
-const createInterstitialAd = (defineSyncApi(API_CREATE_INTERSTITIAL_AD, (options) => {
-    return new InterstitialAd(options);
-}, CreateInterstitialAdProtocol, CreateInterstitialAdOptions));
-
-const sdkCache = {};
-const sdkQueue = {};
-function initSDK(options) {
-    const provider = options.provider;
-    if (!sdkCache[provider]) {
-        sdkCache[provider] = {};
-    }
-    if (typeof sdkCache[provider].plugin === 'object') {
-        options.success(sdkCache[provider].plugin);
-        return;
-    }
-    if (!sdkQueue[provider]) {
-        sdkQueue[provider] = [];
-    }
-    sdkQueue[provider].push(options);
-    if (sdkCache[provider].status === true) {
-        options.__plugin = sdkCache[provider].plugin;
-        return;
-    }
-    sdkCache[provider].status = true;
-    const plugin = requireNativePlugin(provider);
-    if (!plugin || !plugin.initSDK) {
-        sdkQueue[provider].forEach((item) => {
-            item.fail({
-                code: -1,
-                message: 'provider [' + provider + '] invalid',
-            });
-        });
-        sdkQueue[provider].length = 0;
-        sdkCache[provider].status = false;
-        return;
-    }
-    // TODO
-    sdkCache[provider].plugin = plugin;
-    options.__plugin = plugin;
-    plugin.initSDK((res) => {
-        const isSuccess = res.code === 1 || res.code === '1';
-        if (isSuccess) {
-            sdkCache[provider].plugin = plugin;
-        }
-        else {
-            sdkCache[provider].status = false;
-        }
-        sdkQueue[provider].forEach((item) => {
-            if (isSuccess) {
-                item.success(item.__plugin);
-            }
-            else {
-                item.fail(res);
-            }
-        });
-        sdkQueue[provider].length = 0;
-    });
-}
-class InteractiveAd extends AdEventHandler {
-    constructor(options) {
-        super();
-        this._adpid = '';
-        this._provider = '';
-        this._userData = null;
-        this._isLoaded = false;
-        this._isLoading = false;
-        this._loadPromiseResolve = null;
-        this._loadPromiseReject = null;
-        this._showPromiseResolve = null;
-        this._showPromiseReject = null;
-        this._adInstance = null;
-        this._adError = '';
-        this._adpid = options.adpid;
-        this._provider = options.provider;
-        this._userData = options.userData;
-        setTimeout(() => {
-            this._init();
-        });
-    }
-    _init() {
-        this._adError = '';
-        initSDK({
-            provider: this._provider,
-            success: (res) => {
-                this._adInstance = res;
-                if (this._userData) {
-                    this.bindUserData(this._userData);
-                }
-                this._loadAd();
-            },
-            fail: (err) => {
-                this._adError = err;
-                if (this._loadPromiseReject != null) {
-                    this._loadPromiseReject(this._createError(err));
-                    this._loadPromiseReject = null;
-                }
-                this._dispatchEvent(EventType.error, err);
-            },
-        });
-    }
-    getProvider() {
-        return this._provider;
-    }
-    load() {
-        return new Promise((resolve, reject) => {
-            this._loadPromiseResolve = resolve;
-            this._loadPromiseReject = reject;
-            if (this._isLoading) {
-                return;
-            }
-            if (this._adError) {
-                this._init();
-                return;
-            }
-            if (this._isLoaded) {
-                resolve('');
-            }
-            else {
-                this._loadAd();
-            }
-        });
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this._showPromiseResolve = resolve;
-            this._showPromiseReject = reject;
-            if (this._isLoading) {
-                return;
-            }
-            if (this._adError) {
-                this._init();
-                return;
-            }
-            if (this._isLoaded) {
-                this._showAd();
-                resolve('');
-            }
-            else {
-                this._loadAd();
-            }
-        });
-    }
-    reportExposure() {
-        if (this._adInstance !== null) {
-            this._adInstance.reportExposure();
-        }
-    }
-    bindUserData(data) {
-        if (this._adInstance !== null) {
-            this._adInstance.bindUserData(data);
-        }
-    }
-    destroy() {
-        if (this._adInstance !== null && this._adInstance.destroy) {
-            this._adInstance.destroy({
-                adpid: this._adpid,
-            });
-        }
-    }
-    _loadAd() {
-        if (this._adInstance !== null) {
-            if (this._isLoading === true) {
-                return;
-            }
-            this._isLoading = true;
-            this._adInstance.loadData({
-                adpid: this._adpid,
-            }, (res) => {
-                this._isLoaded = true;
-                this._isLoading = false;
-                if (this._loadPromiseResolve != null) {
-                    this._loadPromiseResolve();
-                    this._loadPromiseResolve = null;
-                }
-                if (this._showPromiseResolve != null) {
-                    this._showPromiseResolve();
-                    this._showPromiseResolve = null;
-                    this._showAd();
-                }
-                this._dispatchEvent(EventType.load, res);
-            }, (err) => {
-                this._isLoading = false;
-                if (this._showPromiseReject != null) {
-                    this._showPromiseReject(this._createError(err));
-                    this._showPromiseReject = null;
-                }
-                this._dispatchEvent(EventType.error, err);
-            });
-        }
-    }
-    _showAd() {
-        if (this._adInstance !== null && this._isLoaded === true) {
-            this._adInstance.show({
-                adpid: this._adpid,
-            }, () => {
-                this._isLoaded = false;
-            }, (err) => {
-                this._isLoaded = false;
-                if (this._showPromiseReject != null) {
-                    this._showPromiseReject(this._createError(err));
-                    this._showPromiseReject = null;
-                }
-                this._dispatchEvent(EventType.error, err);
-            });
-        }
-    }
-    _createError(err) {
-        return new Error(JSON.stringify(err));
-    }
-}
-const createInteractiveAd = (defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
-    return new InteractiveAd(options);
-}, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
-
-const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
-    const page = getCurrentPage();
-    if (!page) {
-        return reject(`getCurrentPages is empty`);
-    }
-    if (invokeHook(page, ON_BACK_PRESS, {
-        from: args.from,
-    })) {
-        return resolve();
-    }
-    uni.hideToast();
-    uni.hideLoading();
-    if (page.$page.meta.isQuit) {
-        quit();
-    }
-    else if (isDirectPage(page)) {
-        reLaunchEntryPage();
-    }
-    else {
-        const { delta, animationType, animationDuration } = args;
-        back(delta, animationType, animationDuration);
-    }
-    return resolve();
-}, NavigateBackProtocol, NavigateBackOptions);
-let firstBackTime = 0;
-function quit() {
-    initI18nAppMsgsOnce();
-    if (!firstBackTime) {
-        firstBackTime = Date.now();
-        plus.nativeUI.toast(useI18n().t('uni.app.quit'));
-        setTimeout(() => {
-            firstBackTime = 0;
-        }, 2000);
-    }
-    else if (Date.now() - firstBackTime < 2000) {
-        plus.runtime.quit();
-    }
-}
-function back(delta, animationType, animationDuration) {
-    const pages = getCurrentPages();
-    const len = pages.length;
-    const currentPage = pages[len - 1];
-    if (delta > 1) {
-        // 中间页隐藏
-        pages
-            .slice(len - delta, len - 1)
-            .reverse()
-            .forEach((deltaPage) => {
-            closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
-        });
-    }
-    const backPage = function (webview) {
-        if (animationType) {
-            closeWebview(webview, animationType, animationDuration || ANI_DURATION);
-        }
-        else {
-            if (currentPage.$page.openType === 'redirectTo') {
-                // 如果是 redirectTo 跳转的，需要指定 back 动画
-                closeWebview(webview, ANI_CLOSE, ANI_DURATION);
-            }
-            else {
-                closeWebview(webview, 'auto');
-            }
-        }
-        pages
-            .slice(len - delta, len)
-            .forEach((page) => removePage(page));
-        setStatusBarStyle();
-        // 前一个页面触发 onShow
-        invokeHook(ON_SHOW);
-    };
-    const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
-    if (!currentPage.__uniapp_webview) {
-        return backPage(webview);
-    }
-    backWebview(webview, () => {
-        backPage(webview);
-    });
-}
-
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
-    const { path, query } = parseUrl(url);
-    navigate(path, () => {
-        _redirectTo({
-            url,
-            path,
-            query,
-        })
-            .then(resolve)
-            .catch(reject);
-    });
-}, RedirectToProtocol, RedirectToOptions);
-function _redirectTo({ url, path, query, }) {
-    // TODO exists
-    //   if (exists === 'back') {
-    //     const existsPageIndex = findExistsPageIndex(url)
-    //     if (existsPageIndex !== -1) {
-    //       const delta = len - existsPageIndex
-    //       if (delta > 0) {
-    //         navigateBack({
-    //           delta,
-    //         })
-    //         invoke(callbackId, {
-    //           errMsg: 'redirectTo:ok',
-    //         })
-    //         return
-    //       }
-    //     }
-    //   }
-    const lastPage = getCurrentPage();
-    lastPage && removePage(lastPage);
-    return new Promise((resolve) => {
-        showWebview(registerPage({
-            url,
-            path,
-            query,
-            openType: 'redirectTo',
-        }), 'none', 0, () => {
-            if (lastPage) {
-                const webview = lastPage
-                    .$getAppWebview();
-                if (webview.__preload__) {
-                    removePreloadWebview(webview);
-                }
-                webview.close('none');
-            }
-            resolve(undefined);
-        });
-        setStatusBarStyle();
-    });
-}
-
-const $reLaunch = ({ url }, { resolve, reject }) => {
-    const { path, query } = parseUrl(url);
-    navigate(path, () => {
-        _reLaunch({
-            url,
-            path,
-            query,
-        })
-            .then(resolve)
-            .catch(reject);
-    });
-};
-function _reLaunch({ url, path, query }) {
-    return new Promise((resolve) => {
-        // 获取目前所有页面
-        const pages = getAllPages().slice(0);
-        const routeOptions = __uniRoutes.find((route) => route.path === path);
-        if (routeOptions.meta.isTabBar) {
-            tabBar$1.switchTab(path.slice(1));
-        }
-        showWebview(registerPage({
-            url,
-            path,
-            query,
-            openType: 'reLaunch',
-        }), 'none', 0, () => {
-            pages.forEach((page) => closePage(page, 'none'));
-            resolve(undefined);
-        });
-        setStatusBarStyle();
-    });
-}
-
-const reLaunch = defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 
 const unPreloadPage = defineSyncApi(API_UN_PRELOAD_PAGE, ({ url }) => {
     const webview = closePreloadWebview({
@@ -19419,7 +18716,6 @@ var uni$1 = {
   requestPayment: requestPayment,
   requireNativePlugin: requireNativePlugin,
   sendNativeEvent: sendNativeEvent,
-  __vuePlugin: index$1,
   createRewardedVideoAd: createRewardedVideoAd,
   createFullScreenVideoAd: createFullScreenVideoAd,
   createInterstitialAd: createInterstitialAd,
@@ -19450,6 +18746,417 @@ function publishHandler(event, args, pageIds) {
         const webview = plus.webview.getWebviewById(idStr);
         webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', idStr));
     });
+}
+
+function initTabBar() {
+    const { tabBar } = __uniConfig;
+    const len = tabBar && tabBar.list && tabBar.list.length;
+    if (!len) {
+        return;
+    }
+    const { entryPagePath } = __uniConfig;
+    tabBar.selectedIndex = 0;
+    const selected = tabBar.list.findIndex((page) => page.pagePath === entryPagePath);
+    tabBarInstance.init(tabBar, (item, index) => {
+        uni.switchTab({
+            url: addLeadingSlash(item.pagePath),
+            openType: 'switchTab',
+            from: 'tabBar',
+            success() {
+                invokeHook(ON_TAB_ITEM_TAP, {
+                    index,
+                    text: item.text,
+                    pagePath: item.pagePath,
+                });
+            },
+        });
+    });
+    if (selected !== -1) {
+        // 取当前 tab 索引值
+        tabBar.selectedIndex = selected;
+        selected !== 0 && tabBarInstance.switchTab(entryPagePath);
+    }
+}
+
+function initGlobalEvent() {
+    const plusGlobalEvent = plus.globalEvent;
+    const weexGlobalEvent = weex.requireModule('globalEvent');
+    const emit = UniServiceJSBridge.emit;
+    if (weex.config.preload) {
+        plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
+    }
+    else {
+        plusGlobalEvent.addEventListener('splashclosed', () => {
+            plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
+        });
+    }
+    plusGlobalEvent.addEventListener('pause', () => {
+        emit(ON_APP_ENTER_BACKGROUND);
+    });
+    plusGlobalEvent.addEventListener('resume', () => {
+        const info = parseRedirectInfo();
+        if (info && info.userAction) {
+            initEnterOptions(info);
+        }
+        emit(ON_APP_ENTER_FOREGROUND, getEnterOptions());
+    });
+    weexGlobalEvent.addEventListener('uistylechange', function (event) {
+        const args = {
+            theme: event.uistyle,
+        };
+        emit(ON_THEME_CHANGE, args);
+    });
+    let keyboardHeightChange = 0;
+    plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
+        // 安卓设备首次获取高度为 0
+        if (keyboardHeightChange !== event.height) {
+            keyboardHeightChange = event.height;
+            emit(ON_KEYBOARD_HEIGHT_CHANGE, {
+                height: keyboardHeightChange,
+            });
+        }
+    });
+    weexGlobalEvent.addEventListener(SDK_UNI_MP_NATIVE_EVENT, function (res) {
+        if (res && res.event) {
+            invokeHostEvent(res.event, res.data);
+        }
+    });
+    plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
+    // nvue webview post message
+    plusGlobalEvent.addEventListener('WebviewPostMessage', subscribePlusMessage);
+}
+function subscribePlusMessage({ data, }) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('plusMessage', data));
+    }
+    if (data && data.type) {
+        UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
+    }
+}
+function onPlusMessage(type, callback, once = false) {
+    UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
+}
+// function initEnterReLaunch(info: RedirectInfo) {
+//   __uniConfig.realEntryPagePath =
+//     __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+//   __uniConfig.entryPagePath = info.path
+//   __uniConfig.entryPageQuery = info.query
+//   $reLaunch(
+//     { url: addLeadingSlash(info.path) + info.query },
+//     { resolve() {}, reject() {} }
+//   )
+// }
+
+function initAppLaunch(appVm) {
+    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+    const args = extend({
+        // 为了让 uni-stat 在 uni.onLaunch 中可以 mixin
+        app: { mixin: appVm.$.appContext.app.mixin },
+    }, initLaunchOptions({
+        path: entryPagePath,
+        query: entryPageQuery,
+        referrerInfo: referrerInfo,
+    }));
+    injectAppLaunchHooks(appVm.$);
+    invokeHook(appVm, ON_LAUNCH, args);
+    invokeHook(appVm, ON_SHOW, args);
+    // https://tower.im/teams/226535/todos/16905/
+    const getAppState = weex.requireModule('plus').getAppState;
+    const appState = getAppState && Number(getAppState());
+    if (appState === 2) {
+        invokeHook(appVm, ON_HIDE, args);
+    }
+}
+
+// 统一处理路径
+function getPath(path) {
+    path = path.replace(/\/$/, '');
+    return path.indexOf('_') === 0
+        ? plus.io.convertLocalFileSystemURL(path)
+        : path;
+}
+function clearTempFile() {
+    const basePath = getPath(TEMP_PATH_BASE);
+    const tempPath = getPath(TEMP_PATH);
+    // 获取父目录
+    const dirParts = tempPath.split('/');
+    dirParts.pop();
+    const dirPath = dirParts.join('/');
+    plus.io.resolveLocalFileSystemURL(plus.io.convertAbsoluteFileSystem(dirPath), (entry) => {
+        const reader = entry.createReader();
+        reader.readEntries(function (entry) {
+            // plus.d.ts 类型不对
+            const entries = entry;
+            if (entries && entries.length) {
+                entries.forEach(function (entry) {
+                    if (entry.isDirectory &&
+                        entry.fullPath.indexOf(basePath) === 0 &&
+                        entry.fullPath.indexOf(tempPath) !== 0) {
+                        entry.removeRecursively();
+                    }
+                });
+            }
+        });
+    });
+}
+
+function onNodeEvent(nodeId, evt, pageNode) {
+    pageNode.fireEvent(nodeId, evt);
+}
+
+function onVdSync(actions, pageId) {
+    // 从所有pages中获取
+    const page = getPageById(parseInt(pageId));
+    if (!page) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
+        }
+        return;
+    }
+    const pageNode = page.__page_container__;
+    actions.forEach((action) => {
+        switch (action[0]) {
+            case ACTION_TYPE_EVENT:
+                onNodeEvent(action[1], action[2], pageNode);
+                break;
+        }
+    });
+}
+
+const _adDataCache = {};
+function getAdData(data, onsuccess, onerror) {
+    const { adpid, width } = data;
+    const key = adpid + '-' + width;
+    const adDataList = _adDataCache[key];
+    if (adDataList && adDataList.length > 0) {
+        onsuccess(adDataList.splice(0, 1)[0]);
+        return;
+    }
+    plus.ad.getAds(data, (res) => {
+        const list = res.ads;
+        onsuccess(list.splice(0, 1)[0]);
+        _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
+    }, (err) => {
+        onerror({
+            errCode: err.code,
+            errMsg: err.message,
+        });
+    });
+}
+function subscribeAd() {
+    registerServiceMethod('getAdData', (args, resolve) => {
+        getAdData(args, (res) => {
+            resolve({
+                code: 0,
+                data: res,
+            });
+        }, (err) => {
+            resolve({
+                code: 1,
+                message: err,
+            });
+        });
+    });
+}
+
+const API_ROUTE = [
+    'switchTab',
+    'reLaunch',
+    'redirectTo',
+    'navigateTo',
+    'navigateBack',
+];
+function subscribeNavigator() {
+    API_ROUTE.forEach((name) => {
+        registerServiceMethod(name, (args) => {
+            uni[name](extend(args, {
+                fail(res) {
+                    console.error(res.errMsg);
+                },
+            }));
+        });
+    });
+}
+
+let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
+function subscribeWebviewReady(_data, pageId) {
+    const isLaunchWebview = pageId === '1';
+    if (isLaunchWebview && isLaunchWebviewReady) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.log('[uni-app] onLaunchWebviewReady.prevent');
+        }
+        return;
+    }
+    if (isLaunchWebview) {
+        // 首页
+        isLaunchWebviewReady = true;
+        setPreloadWebview(plus.webview.getLaunchWebview());
+    }
+    else if (!preloadWebview$1) {
+        // preloadWebview 不存在，重新加载一下
+        setPreloadWebview(plus.webview.getWebviewById(pageId));
+    }
+    if (preloadWebview$1.id !== pageId) {
+        return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
+    }
+    preloadWebview$1.loaded = true; // 标记已 ready
+    UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
+    isLaunchWebview && onLaunchWebviewReady();
+}
+function onLaunchWebviewReady() {
+    const { autoclose, alwaysShowBeforeRender } = __uniConfig.splashscreen;
+    if (autoclose && !alwaysShowBeforeRender) {
+        plus.navigator.closeSplashscreen();
+    }
+    const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
+    const routeOptions = getRouteOptions(entryPagePath);
+    if (!routeOptions.meta.isNVue) {
+        // 非 nvue 首页，需要主动跳转
+        const args = {
+            url: entryPagePath + (__uniConfig.entryPageQuery || ''),
+            openType: 'appLaunch',
+        };
+        const handler = { resolve() { }, reject() { } };
+        if (routeOptions.meta.isTabBar) {
+            return $switchTab(args, handler);
+        }
+        return $navigateTo(args, handler);
+    }
+}
+
+function onWebviewInserted(_, pageId) {
+    const page = getPageById(parseInt(pageId));
+    page && (page.__uniapp_webview = true);
+}
+function onWebviewRemoved(_, pageId) {
+    const page = getPageById(parseInt(pageId));
+    page && delete page.__uniapp_webview;
+}
+
+const onWebInvokeAppService = ({ name, arg }, pageIds) => {
+    if (name === 'postMessage') {
+        onMessage(pageIds[0], arg);
+    }
+    else {
+        uni[name](extend(arg, {
+            fail(res) {
+                console.error(res.errMsg);
+            },
+        }));
+    }
+};
+function onMessage(pageId, arg) {
+    const uniNode = findNodeByTagName('web-view', parseInt(pageId));
+    uniNode &&
+        uniNode.dispatchEvent(createUniEvent({
+            type: 'onMessage',
+            target: Object.create(null),
+            currentTarget: Object.create(null),
+            detail: {
+                data: [arg],
+            },
+        }));
+}
+
+function onWxsInvokeCallMethod({ nodeId, ownerId, method, args, }, pageId) {
+    const node = findNodeById(nodeId, parseInt(pageId));
+    if (!node) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', nodeId, 'not found'));
+        }
+        return;
+    }
+    const vm = resolveOwnerVm(ownerId, node.__vueParentComponent);
+    if (!vm) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', 'vm not found'));
+        }
+        return;
+    }
+    if (!vm[method]) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', method, ' not found'));
+        }
+        return;
+    }
+    vm[method](args);
+}
+function resolveOwnerVm(ownerId, vm) {
+    if (!vm) {
+        return null;
+    }
+    if (vm.uid === ownerId) {
+        return vm.proxy;
+    }
+    let parent = vm.parent;
+    while (parent) {
+        if (parent.uid === ownerId) {
+            return parent.proxy;
+        }
+        parent = parent.parent;
+    }
+    return vm.proxy;
+}
+
+function initSubscribeHandlers() {
+    const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
+    onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
+        subscribeHandler(type, data, pageId);
+    });
+    onPlusMessage(WEB_INVOKE_APPSERVICE, ({ data, webviewIds }) => {
+        onWebInvokeAppService(data, webviewIds);
+    });
+    if (__uniConfig.renderer !== 'native') {
+        // 非纯原生
+        subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
+        subscribe(VD_SYNC, onVdSync);
+        subscribeServiceMethod();
+        subscribeAd();
+        subscribeNavigator();
+        subscribe(WEBVIEW_INSERTED, onWebviewInserted);
+        subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+        subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod);
+        const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
+        if (routeOptions && !routeOptions.meta.isNVue) {
+            // 防止首页 webview 初始化过早， service 还未开始监听
+            publishHandler(ON_WEBVIEW_READY, {}, 1);
+        }
+    }
+}
+
+let appCtx;
+const defaultApp = {
+    globalData: {},
+};
+function getApp$1({ allowDefault = false } = {}) {
+    if (appCtx) {
+        // 真实的 App 已初始化
+        return appCtx;
+    }
+    if (allowDefault) {
+        // 返回默认实现
+        return defaultApp;
+    }
+    console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
+}
+function registerApp(appVm) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('registerApp'));
+    }
+    initVueApp(appVm);
+    appCtx = appVm;
+    initAppVm(appCtx);
+    extend(appCtx, defaultApp); // 拷贝默认实现
+    defineGlobalData(appCtx, defaultApp.globalData);
+    initService();
+    initEntry();
+    initTabBar();
+    initGlobalEvent();
+    initSubscribeHandlers();
+    initAppLaunch(appVm);
+    // 10s后清理临时文件
+    setTimeout(clearTempFile, 10000);
+    __uniConfig.ready = true;
 }
 
 var index = {
