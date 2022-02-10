@@ -5,7 +5,6 @@ import {
   getUniStatistics,
   parseManifestJsonOnce,
   parsePagesJson,
-  isSsr,
 } from '@dcloudio/uni-cli-shared'
 
 export default [
@@ -14,12 +13,23 @@ export default [
     return {
       name: 'uni:stat',
       enforce: 'pre',
-      config(config, env) {
-        if (isSsr(env.command, config)) {
-          return
-        }
+      config() {
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_PLATFORM!
+        const titlesJson = Object.create(null)
+        parsePagesJson(inputDir, platform).pages.forEach((page: any) => {
+          const style = page.style || {}
+          const titleText =
+            // MP
+            style.navigationBarTitleText ||
+            // H5 || App
+            style.navigationBar?.titleText ||
+            ''
+          if (titleText) {
+            titlesJson[page.path] = titleText
+          }
+        })
+
         isEnable = getUniStatistics(inputDir, platform).enable === true
         if (process.env.NODE_ENV === 'production') {
           const manifestJson = parseManifestJsonOnce(inputDir)
@@ -30,21 +40,7 @@ export default [
             isEnable = false
           }
         }
-        const titlesJson = Object.create(null)
-        if (isEnable) {
-          parsePagesJson(inputDir, platform).pages.forEach((page: any) => {
-            const style = page.style || {}
-            const titleText =
-              // MP
-              style.navigationBarTitleText ||
-              // H5 || App
-              style.navigationBar?.titleText ||
-              ''
-            if (titleText) {
-              titlesJson[page.path] = titleText
-            }
-          })
-        }
+
         debug('uni:stat')('isEnable', isEnable)
         process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
         return {
