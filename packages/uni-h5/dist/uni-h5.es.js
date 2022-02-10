@@ -7972,8 +7972,8 @@ const props$v = {
   }
 };
 const FIX_MODES = {
-  widthFix: ["offsetWidth", "height"],
-  heightFix: ["offsetHeight", "width"]
+  widthFix: ["offsetWidth", "height", (value, ratio) => value / ratio],
+  heightFix: ["offsetHeight", "width", (value, ratio) => value * ratio]
 };
 const IMAGE_MODES = {
   aspectFit: ["center center", "contain"],
@@ -8138,7 +8138,7 @@ function useImageSize(rootRef, props2, state2) {
     const rootEl = rootRef.value;
     const value = rootEl[names[0]];
     if (value) {
-      rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
+      rootEl.style[names[1]] = fixNumber(names[2](value, ratio)) + "px";
     }
   };
   const resetSize = () => {
