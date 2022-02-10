@@ -41,10 +41,11 @@ const matchCss = /\.css$/i;
 const fs = require('fs')
 const preprocessor = require('../../webpack-preprocess-loader/preprocess/lib/preprocess')
 const {
-  cssPreprocessOptions
+  cssPreprocessOptions,
+  nvueCssPreprocessOptions
 } = require('@dcloudio/uni-cli-shared')
-
-function webpackImporter(resourcePath, resolve, addNormalizedDependency) {
+// fixed by xxxxxx
+function webpackImporter(resourcePath, resolve, addNormalizedDependency, isNVue) {
   function dirContextFrom(fileContext) {
     return _path.default.dirname( // The first file is 'stdin' when we're using the data option
     fileContext === 'stdin' ? resourcePath : fileContext);
@@ -63,7 +64,7 @@ function webpackImporter(resourcePath, resolve, addNormalizedDependency) {
         if (contents.includes('#endif')) {
           return {
             file,
-            contents: preprocessor.preprocess(contents, cssPreprocessOptions.context, {
+            contents: preprocessor.preprocess(contents, isNVue ? nvueCssPreprocessOptions.context : cssPreprocessOptions.context, {
               type: cssPreprocessOptions.type
             })
           }

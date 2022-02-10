@@ -89,7 +89,8 @@ const parseRequirePath = path => path.startsWith('common') ? `./${path}` : path
 function procssJs (name, assets, hasVendor) {
   const dirname = path.dirname(name)
   const runtimeJsCode = `require('${normalizePath(parseRequirePath(path.relative(dirname, 'common/runtime.js')))}');`
-  const vendorJsCode = hasVendor ? `require('${normalizePath(parseRequirePath(path.relative(dirname, 'common/vendor.js')))}');` : ''
+  const vendorJsCode = hasVendor
+    ? `require('${normalizePath(parseRequirePath(path.relative(dirname, 'common/vendor.js')))}');` : ''
   const mainJsCode = `require('${normalizePath(parseRequirePath(path.relative(dirname, 'common/main.js')))}');`
   const code = `${runtimeJsCode}${vendorJsCode}${mainJsCode}` + assets[name].source().toString()
   assets[name] = {
@@ -176,10 +177,13 @@ module.exports = {
     }
 
     {
-      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'
-      ;[].concat(process.env.UNI_MP_PLUGIN ? process.env.UNI_MP_PLUGIN_MAIN : JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT))
-        .forEach(fileName => addToUniEntry(fileName))
-      beforeCode += `${globalEnv}.__webpack_require_${(process.env.UNI_MP_PLUGIN || 'UNI_MP_PLUGIN').replace(/-/g, '_')}__ = __webpack_require__;`
+      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx';
+      [].concat(
+        process.env.UNI_MP_PLUGIN
+          ? process.env.UNI_MP_PLUGIN_MAIN
+          : JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
+      ).forEach(fileName => addToUniEntry(fileName))
+      beforeCode += `${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     }
 
     const alias = { // 仅 mp-weixin
@@ -197,18 +201,23 @@ module.exports = {
 
     // 使用外层依赖的版本
     alias['regenerator-runtime'] = require.resolve('regenerator-runtime')
-
+    const output = {
+      pathinfo: true,
+      filename: '[name].js',
+      chunkFilename: '[id].js',
+      globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
+      // sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
+    }
+    if (process.env.NODE_ENV === 'production' || process.env.UNI_MINIMIZE === 'true') {
+      output.pathinfo = false
+    }
     return {
-      mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+      mode: process.env.NODE_ENV === 'production' ? 'production'
+        : 'development',
       entry () {
         return process.UNI_ENTRY
       },
-      output: {
-        filename: '[name].js',
-        chunkFilename: '[id].js',
-        globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
-        // sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
-      },
+      output,
       performance: {
         hints: false
       },

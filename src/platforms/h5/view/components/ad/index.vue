@@ -254,7 +254,7 @@ class AdScript {
 
   load (provider, script, success, fail) {
     if (this._cache[provider] === undefined) {
-      this.loadScript(script)
+      this.loadScript(provider, script)
     }
 
     if (this._cache[provider] === 1) {
@@ -400,6 +400,9 @@ export default {
   beforeDestroy () {
     this._clearCheckTimer()
     this.$refs.container.innerHTML = ''
+    if (this._shanhuAd) {
+      delete this._shanhuAd
+    }
   },
   methods: {
     _onhandle (e) {
@@ -432,47 +435,90 @@ export default {
 
       const data = this._pl[this._pi]
       const providerConfig = this._b[data.a1][data.t]
+      const script = providerConfig.script
+      this._currentChannel = data.a1
 
-      var randomId = this._randomId()
+      var id = this._randomId()
+      var view = this._createView(id)
 
-      if (data.a1 === '10011') {
+      if (data.a1 === '10010') {
+        AdScript.instance.load(data.t, script, () => {
+          this._renderBaidu(id, data.a2)
+        }, (err) => {
+          this.$trigger('error', {}, err)
+        })
+      } else if (data.a1 === '10011') {
         AdTencent.instance.load(data.a3, data.a2, (res) => {
-          window.TencentGDT.NATIVE.renderAd(res, randomId)
+          window.TencentGDT.NATIVE.renderAd(res, id)
         })
         this._startCheckTimer()
       } else if (data.a1 === '10012') {
-        this._renderAdView(providerConfig, data, randomId)
+        this._renderScript(view, script)
+      } else if (data.a1 === '10014') {
+        AdScript.instance.load(data.t, script, () => {
+          this._renderShanhu(id, data.tt, data.tar)
+        }, (err) => {
+          this.$trigger('error', {}, err)
+        })
       } else {
-        AdScript.instance.load(data.t, providerConfig.script, () => {
-          this._renderAdView(providerConfig, data, randomId)
+        AdScript.instance.load(data.t, script, () => {
+          this._renderAdView(id, script.s, data)
         }, (err) => {
           this.$trigger('error', {}, err)
         })
       }
     },
-    _renderAdView (providerConfig, data, randomId) {
+    _createView (id) {
       var adView = document.createElement('div')
-      adView.setAttribute('class', randomId)
-      adView.setAttribute('id', randomId)
+      adView.setAttribute('id', id)
+      adView.setAttribute('class', id)
       this.$refs.container.innerHTML = ''
       this.$refs.container.append(adView)
-
-      if (data.a1 === '10011') {
-      } else if (data.a1 === '10012') {
-        var adScript = document.createElement('script')
-        const script = providerConfig.script
-        for (const var1 in script) {
-          adScript.setAttribute(var1, script[var1])
-        }
-        adView.appendChild(adScript)
-      } else {
-        let bindThis = window
-        providerConfig.s.split('.').reduce((total, currentValue) => {
-          bindThis = total
-          return total[currentValue]
-        }, window).bind(bindThis)(data.a2, randomId, 2)
+      return adView
+    },
+    _renderScript (view, script) {
+      var adScript = document.createElement('script')
+      for (const var1 in script) {
+        adScript.setAttribute(var1, script[var1])
       }
-
+      view.appendChild(adScript)
+      this._startCheckTimer()
+    },
+    _renderBaidu (id, adid) {
+      (window.slotbydup = window.slotbydup || []).push({
+        id: adid,
+        container: id,
+        async: true
+      })
+      this._startCheckTimer()
+    },
+    _renderAdView (id, script, data) {
+      let bindThis = window
+      script.split('.').reduce((total, currentValue) => {
+        bindThis = total
+        return total[currentValue]
+      }, window).bind(bindThis)(data.a2, id, 2)
+      this._startCheckTimer()
+    },
+    _renderShanhu (id, type, target) {
+      this._shanhuAd = new window.CoralTBSAdv(id, {
+        type: type,
+        target: target,
+        advShowCb: () => {
+          this._report(42)
+          this.$trigger('load', {}, {})
+        },
+        advClickCb: () => {
+          this._report(43)
+          this.$trigger('adclicked', {}, {})
+        },
+        advCloseCb: () => {
+          this.$trigger('close', {}, {})
+        },
+        advErrorCb: (errorno) => {
+          this.$trigger('error', {}, errorno)
+        }
+      })
       this._startCheckTimer()
     },
     _renderNext () {
@@ -486,7 +532,7 @@ export default {
     _checkRender () {
       var hasContent = (this.$refs.container.children.length > 0 && this.$refs.container.clientHeight > 40)
       if (hasContent) {
-        this._report(40)
+        this._report(40, this._currentChannel)
       }
       return hasContent
     },
@@ -512,12 +558,16 @@ export default {
         this._checkTimer = null
       }
     },
-    _report (type) {
-      AdReport.instance.get({
+    _report (type, currentChannel) {
+      const reportData = {
         h: __uniConfig.compilerVersion,
         a: this.adpid,
         at: type
-      })
+      }
+      if (currentChannel) {
+        reportData.t = currentChannel
+      }
+      AdReport.instance.get(reportData)
     },
     _randomId () {
       var result = ''

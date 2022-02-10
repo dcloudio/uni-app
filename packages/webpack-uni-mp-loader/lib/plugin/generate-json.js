@@ -154,6 +154,14 @@ module.exports = function generateJson (compilation) {
         }
       })
     }
+    // fix mp-alipay plugin
+    if (process.env.UNI_PLATFORM === 'mp-alipay') {
+      const usingComponents = jsonObj.usingComponents || {}
+      if (Object.values(usingComponents).find(value => value.startsWith('plugin://'))) {
+        const componentName = 'plugin-wrapper'
+        usingComponents[componentName] = '/' + componentName
+      }
+    }
 
     if (jsonObj.genericComponents && jsonObj.genericComponents.length) { // scoped slots
       // 生成genericComponents json

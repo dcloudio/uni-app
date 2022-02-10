@@ -11,7 +11,8 @@ const {
   METHOD_RESOLVE_SCOPED_SLOTS,
   IDENTIFIER_FILTER,
   IDENTIFIER_METHOD,
-  IDENTIFIER_GLOBAL
+  IDENTIFIER_GLOBAL,
+  IDENTIFIER_TEXT
 } = require('../../constants')
 
 const {
@@ -22,7 +23,8 @@ const {
   hasOwn,
   hyphenate,
   traverseFilter,
-  getComponentName
+  getComponentName,
+  hasEscapeQuote
 } = require('../../util')
 
 const traverseData = require('./data')
@@ -165,7 +167,8 @@ module.exports = {
               tagNode.value = getComponentName(hyphenate(tagName))
 
               // 组件增加 vueId
-              if (this.options.platform.isComponent(tagNode.value)) {
+              // 跳过支付宝插件组件
+              if (this.options.platform.isComponent(tagNode.value) && !tagNode.$mpPlugin) {
                 addVueId(path, this)
               }
 
@@ -186,7 +189,13 @@ module.exports = {
           break
         case METHOD_TO_STRING:
           {
-            const stringNodes = path.node.arguments[0]
+            const stringPath = path.get('arguments.0')
+            if (hasEscapeQuote(stringPath)) {
+              // 属性中包含转义引号时部分小程序平台报错或显示异常
+              // TODO 简单情况翻转外层引号
+              stringPath.replaceWith(getMemberExpr(path, IDENTIFIER_TEXT, stringPath.node, this))
+            }
+            const stringNodes = stringPath.node
             stringNodes.$toString = true
             path.replaceWith(stringNodes)
           }

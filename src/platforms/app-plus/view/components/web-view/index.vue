@@ -12,7 +12,8 @@ import { NAVBAR_HEIGHT } from 'uni-helpers/constants'
 
 let webview = false
 const insertHTMLWebView = ({
-  htmlId
+  htmlId,
+  updateTitle
 }) => {
   const parentWebview = plus.webview.currentWebview()
   // fixed by hxy web-view 组件所在的 webview 不注入 uni-app 框架
@@ -32,6 +33,7 @@ const insertHTMLWebView = ({
   webview = plus.webview.create('', htmlId, styles)
   if (parentTitleNView) {
     webview.addEventListener('titleUpdate', function () {
+      if (!updateTitle) return
       const title = webview.getTitle()
       parentWebview.setStyle({
         titleNView: {
@@ -45,7 +47,6 @@ const insertHTMLWebView = ({
 }
 
 const updateHTMLWebView = ({
-  htmlId,
   src,
   webviewStyles
 }) => {
@@ -77,6 +78,10 @@ export default {
       type: String,
       default: ''
     },
+    updateTitle: {
+      type: Boolean,
+      default: true
+    },
     webviewStyles: {
       type: Object,
       default () {
@@ -95,7 +100,8 @@ export default {
   mounted () {
     this.htmlId = WEBVIEW_ID_PREFIX + this.$page.id
     insertHTMLWebView({
-      htmlId: this.htmlId
+      htmlId: this.htmlId,
+      updateTitle: this.updateTitle
     })
     updateHTMLWebView({
       src: this.$getRealPath(this.src),

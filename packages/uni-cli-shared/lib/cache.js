@@ -87,7 +87,7 @@ function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Com
       const oldJsonObj = JSON.parse(oldJsonStr)
       jsonObj.usingComponents = oldJsonObj.usingComponents || {}
       jsonObj.usingAutoImportComponents = oldJsonObj.usingAutoImportComponents || {}
-      if(oldJsonObj.genericComponents) {
+      if (oldJsonObj.genericComponents) {
         jsonObj.genericComponents = oldJsonObj.genericComponents
       }
       if (oldJsonObj.usingGlobalComponents) { // 复制 global components(针对不支持全局 usingComponents 的平台)

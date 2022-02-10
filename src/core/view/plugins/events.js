@@ -49,6 +49,10 @@ function processTouches (touches) {
   return []
 }
 
+function isMouseEvent (name) {
+  return name.startsWith('mouse') || ['contextmenu'].includes(name)
+}
+
 export function processEvent (name, $event = {}, detail = {}, target = {}, currentTarget = {}) {
   if ($event._processed) {
     $event.type = detail.type || name
@@ -90,7 +94,7 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     stopPropagation () {}
   })
 
-  if (name.startsWith('mouse')) {
+  if (isMouseEvent(name)) {
     const {
       top
     } = getWindowOffset()

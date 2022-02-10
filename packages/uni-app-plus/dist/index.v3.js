@@ -251,6 +251,7 @@ var serviceContext = (function () {
     'getSubNVueById',
     'getCurrentSubNVue',
     'setPageMeta',
+    'onHostEventReceive',
     'onNativeEventReceive',
     'sendNativeEvent',
     'preloadPage',
@@ -828,7 +829,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1539,6 +1540,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Camera",
   	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
+  	"uni.previewImage.cancel": "Cancel",
   	"uni.previewImage.button.save": "Save Image",
   	"uni.previewImage.save.success": "Saved successfully",
   	"uni.previewImage.save.fail": "Save failed",
@@ -2055,18 +2057,15 @@ var serviceContext = (function () {
     chooseLocation: chooseLocation
   });
 
-  const type = {
-    WGS84: 'WGS84',
-    GCJ02: 'GCJ02'
-  };
+  const coordTypes = ['wgs84', 'gcj02'];
+
   const getLocation = {
     type: {
       type: String,
       validator (value, params) {
-        value = (value || '').toUpperCase();
-        params.type = Object.values(type).indexOf(value) < 0 ? type.WGS84 : value;
-      },
-      default: type.WGS84
+        value = (value || '').toLowerCase();
+        params.type = coordTypes.indexOf(value) < 0 ? coordTypes[0] : value;
+      }
     },
     altitude: {
       type: Boolean,
@@ -6760,6 +6759,7 @@ var serviceContext = (function () {
     type = 'wgs84',
     geocode = false,
     altitude = false,
+    isHighAccuracy = false,
     highAccuracyExpireTime
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
@@ -6776,8 +6776,9 @@ var serviceContext = (function () {
         errorCallback(e);
       }, {
         geocode: geocode,
-        enableHighAccuracy: altitude,
-        timeout: highAccuracyExpireTime
+        enableHighAccuracy: isHighAccuracy || altitude,
+        timeout: highAccuracyExpireTime,
+        coordsType: type
       }
     );
   }
@@ -7542,46 +7543,59 @@ var serviceContext = (function () {
       firstIpv4: firstIpv4,
       tls
     };
+    let withArrayBuffer;
     if (method !== 'GET') {
-      options.body = typeof data === 'string' ? data : JSON.stringify(data);
+      if (toString.call(data) === '[object ArrayBuffer]') {
+        withArrayBuffer = true;
+      } else {
+        options.body = typeof data === 'string' ? data : JSON.stringify(data);
+      }
     }
+    const callback = ({
+      ok,
+      status,
+      data,
+      headers,
+      errorMsg
+    }) => {
+      if (aborted) {
+        return
+      }
+      if (abortTimeout) {
+        clearTimeout(abortTimeout);
+      }
+      const statusCode = status;
+      if (statusCode > 0) {
+        publishStateChange$1({
+          requestTaskId,
+          state: 'success',
+          data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
+          statusCode,
+          header: headers,
+          cookies: cookiesParse(headers)
+        });
+      } else {
+        let errMsg = 'abort statusCode:' + statusCode;
+        if (errorMsg) {
+          errMsg = errMsg + ' ' + errorMsg;
+        }
+        publishStateChange$1({
+          requestTaskId,
+          state: 'fail',
+          statusCode,
+          errMsg
+        });
+      }
+    };
     try {
-      stream.fetch(options, ({
-        ok,
-        status,
-        data,
-        headers,
-        errorMsg
-      }) => {
-        if (aborted) {
-          return
-        }
-        if (abortTimeout) {
-          clearTimeout(abortTimeout);
-        }
-        const statusCode = status;
-        if (statusCode > 0) {
-          publishStateChange$1({
-            requestTaskId,
-            state: 'success',
-            data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
-            statusCode,
-            header: headers,
-            cookies: cookiesParse(headers)
-          });
-        } else {
-          let errMsg = 'abort statusCode:' + statusCode;
-          if (errorMsg) {
-            errMsg = errMsg + ' ' + errorMsg;
-          }
-          publishStateChange$1({
-            requestTaskId,
-            state: 'fail',
-            statusCode,
-            errMsg
-          });
-        }
-      });
+      if (withArrayBuffer) {
+        stream.fetchWithArrayBuffer({
+          '@type': 'binary',
+          base64: arrayBufferToBase64$2(data)
+        }, options, callback);
+      } else {
+        stream.fetch(options, callback);
+      }
       requestTasks[requestTaskId] = {
         abort () {
           aborted = true;
@@ -8588,6 +8602,10 @@ var serviceContext = (function () {
     });
   });
 
+  function onHostEventReceive (callbackId) {
+    callbacks$3.push(callbackId);
+  }
+
   function onNativeEventReceive (callbackId) {
     callbacks$3.push(callbackId);
   }
@@ -9230,7 +9248,7 @@ var serviceContext = (function () {
     });
   }
 
-  function onWebviewPopGesture(webview) {
+  function onWebviewPopGesture (webview) {
     let popStartStatusBarStyle;
     webview.addEventListener('popGesture', e => {
       if (e.type === 'start') {
@@ -9259,13 +9277,12 @@ var serviceContext = (function () {
     });
   }
 
-
   /**
    * 是否处于直达页面
    * @param page
    * @returns
    */
-  function isDirectPage(page) {
+  function isDirectPage (page) {
     return (
       __uniConfig.realEntryPagePath &&
       page.$page.route === __uniConfig.entryPagePath
@@ -9274,19 +9291,19 @@ var serviceContext = (function () {
   /**
    * 重新启动到首页
    */
-  function reLaunchEntryPage() {
+  function reLaunchEntryPage () {
     __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
     delete __uniConfig.realEntryPagePath;
     uni.reLaunch({
-      url: addLeadingSlash(__uniConfig.entryPagePath),
+      url: addLeadingSlash(__uniConfig.entryPagePath)
     });
   }
 
-  function hasLeadingSlash(str) {
+  function hasLeadingSlash (str) {
     return str.indexOf('/') === 0
   }
 
-  function addLeadingSlash(str) {
+  function addLeadingSlash (str) {
     return hasLeadingSlash(str) ? str : '/' + str
   }
 
@@ -9807,6 +9824,22 @@ var serviceContext = (function () {
 
   const enterOptions = createLaunchOptions();
   const launchOptions = createLaunchOptions();
+
+  function getEnterOptions () {
+    return enterOptions
+  }
+
+  function initEnterOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(enterOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+  }
 
   function initLaunchOptions ({
     path,
@@ -11004,11 +11037,6 @@ var serviceContext = (function () {
     pagePath,
     visible
   }) {
-    if (!isTabBarPage()) {
-      return {
-        errMsg: 'setTabBarItem:fail not TabBar page'
-      }
-    }
     tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
@@ -11947,6 +11975,7 @@ var serviceContext = (function () {
     restoreGlobal: restoreGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
+    onHostEventReceive: onHostEventReceive,
     onNativeEventReceive: onNativeEventReceive,
     sendNativeEvent: sendNativeEvent,
     loadSubPackage: loadSubPackage$2,
@@ -15778,7 +15807,7 @@ var serviceContext = (function () {
 
   var zstream = ZStream;
 
-  var toString = Object.prototype.toString;
+  var toString$1 = Object.prototype.toString;
 
   /* Public constants ==========================================================*/
   /* ===========================================================================*/
@@ -15942,7 +15971,7 @@ var serviceContext = (function () {
       if (typeof opt.dictionary === 'string') {
         // If we need to compress text, change encoding to utf8.
         dict = strings.string2buf(opt.dictionary);
-      } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
         dict = new Uint8Array(opt.dictionary);
       } else {
         dict = opt.dictionary;
@@ -16000,7 +16029,7 @@ var serviceContext = (function () {
     if (typeof data === 'string') {
       // If we need to compress text, change encoding to utf8.
       strm.input = strings.string2buf(data);
-    } else if (toString.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;
@@ -18552,7 +18581,7 @@ var serviceContext = (function () {
 
   var gzheader = GZheader;
 
-  var toString$1 = Object.prototype.toString;
+  var toString$2 = Object.prototype.toString;
 
   /**
    * class Inflate
@@ -18693,7 +18722,7 @@ var serviceContext = (function () {
       // Convert data if needed
       if (typeof opt.dictionary === 'string') {
         opt.dictionary = strings.string2buf(opt.dictionary);
-      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$2.call(opt.dictionary) === '[object ArrayBuffer]') {
         opt.dictionary = new Uint8Array(opt.dictionary);
       }
       if (opt.raw) { //In raw mode we need to set the dictionary early
@@ -18751,7 +18780,7 @@ var serviceContext = (function () {
     if (typeof data === 'string') {
       // Only binary strings can be decompressed on practice
       strm.input = strings.binstring2buf(data);
-    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$2.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;
@@ -21708,18 +21737,12 @@ var serviceContext = (function () {
       callCurrentPageHook('onHide');
     }
 
-    function onAppEnterForeground () {
+    function onAppEnterForeground (enterOptions) {
+      callAppHook(getApp(), 'onShow', enterOptions);
       const pages = getCurrentPages();
       if (pages.length === 0) {
         return
       }
-      const page = pages[pages.length - 1];
-      const args = {
-        path: page.route,
-        query: page.options
-      };
-
-      callAppHook(getApp(), 'onShow', args);
       callCurrentPageHook('onShow');
     }
 
@@ -22039,7 +22062,11 @@ var serviceContext = (function () {
     });
 
     plus.globalEvent.addEventListener('resume', () => {
-      emit('onAppEnterForeground');
+      const info = parseRedirectInfo();
+      if (info && info.userAction) {
+        initEnterOptions(info);
+      }
+      emit('onAppEnterForeground', getEnterOptions());
     });
 
     plus.globalEvent.addEventListener('netchange', () => {

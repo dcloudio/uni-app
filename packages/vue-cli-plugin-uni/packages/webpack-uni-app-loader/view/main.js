@@ -113,6 +113,7 @@ module.exports = function (source, map) {
     : ''
   this.callback(null,
     `
+// @ts-nocheck
 import 'uni-pages?${JSON.stringify({ type: 'view' })}'
 ${automatorCode}
 function initView(){

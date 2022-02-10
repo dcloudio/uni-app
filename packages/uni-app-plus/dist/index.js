@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -725,15 +725,16 @@ const customize = cached((str) => {
 });
 
 function initTriggerEvent (mpInstance) {
-  {
-    if (!wx.canIUse || !wx.canIUse('nextTick')) {
-      return
-    }
-  }
   const oldTriggerEvent = mpInstance.triggerEvent;
-  mpInstance.triggerEvent = function (event, ...args) {
+  const newTriggerEvent = function (event, ...args) {
     return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
   };
+  try {
+    // 京东小程序 triggerEvent 为只读
+    mpInstance.triggerEvent = newTriggerEvent;
+  } catch (error) {
+    mpInstance._triggerEvent = newTriggerEvent;
+  }
 }
 
 function initHook (name, options, isComponent) {
@@ -1320,6 +1321,7 @@ var en = {
 	"uni.chooseVideo.cancel": "Cancel",
 	"uni.chooseVideo.sourceType.album": "Album",
 	"uni.chooseVideo.sourceType.camera": "Camera",
+	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
 	"uni.previewImage.cancel": "Cancel",
 	"uni.previewImage.button.save": "Save Image",
 	"uni.previewImage.save.success": "Saved successfully",
@@ -1355,6 +1357,7 @@ var es = {
 	"uni.chooseVideo.cancel": "Cancelar",
 	"uni.chooseVideo.sourceType.album": "Álbum",
 	"uni.chooseVideo.sourceType.camera": "Cámara",
+	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
 	"uni.previewImage.cancel": "Cancelar",
 	"uni.previewImage.button.save": "Guardar imagen",
 	"uni.previewImage.save.success": "Guardado exitosamente",
@@ -1390,6 +1393,7 @@ var fr = {
 	"uni.chooseVideo.cancel": "Annuler",
 	"uni.chooseVideo.sourceType.album": "Album",
 	"uni.chooseVideo.sourceType.camera": "Caméra",
+	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
 	"uni.previewImage.cancel": "Annuler",
 	"uni.previewImage.button.save": "Guardar imagen",
 	"uni.previewImage.save.success": "Enregistré avec succès",
@@ -1425,6 +1429,7 @@ var zhHans = {
 	"uni.chooseVideo.cancel": "取消",
 	"uni.chooseVideo.sourceType.album": "从相册选择",
 	"uni.chooseVideo.sourceType.camera": "拍摄",
+	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
 	"uni.previewImage.cancel": "取消",
 	"uni.previewImage.button.save": "保存图像",
 	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1460,6 +1465,7 @@ var zhHant = {
 	"uni.chooseVideo.cancel": "取消",
 	"uni.chooseVideo.sourceType.album": "從相冊選擇",
 	"uni.chooseVideo.sourceType.camera": "拍攝",
+	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
 	"uni.previewImage.cancel": "取消",
 	"uni.previewImage.button.save": "保存圖像",
 	"uni.previewImage.save.success": "保存圖像到相冊成功",
@@ -1481,13 +1487,17 @@ var zhHant = {
 	"uni.chooseLocation.cancel": "取消"
 };
 
-const messages = {
-  en,
-  es,
-  fr,
-  'zh-Hans': zhHans,
-  'zh-Hant': zhHant
-};
+const messages = {};
+
+{
+  Object.assign(messages, {
+    en,
+    es,
+    fr,
+    'zh-Hans': zhHans,
+    'zh-Hant': zhHant
+  });
+}
 
 let locale;
 
@@ -1498,6 +1508,26 @@ let locale;
     locale = '';
   }
 }
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
@@ -1540,6 +1570,19 @@ function initAppLocale (Vue, appVm, locale) {
     }
   });
 }
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
 
 class EventChannel {
   constructor (id, events) {
@@ -2091,17 +2134,17 @@ function createPlugin (vm) {
   const appOptions = parseApp$1(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow((...args) => {
-      appOptions.onShow.apply(vm, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide((...args) => {
-      appOptions.onHide.apply(vm, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }

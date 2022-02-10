@@ -155,6 +155,9 @@ module.exports = {
         }
       },
       plugins,
+      optimization: {
+        moduleIds: 'hashed'
+      },
       devServer: {
         watchOptions: require('../util').getWatchOptions()
       }

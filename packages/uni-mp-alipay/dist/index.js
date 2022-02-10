@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -2051,11 +2051,33 @@ function handleEvent (event) {
   }
 }
 
+const messages = {};
+
 let locale;
 
 {
   locale = my.getSystemInfoSync().language;
 }
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
@@ -2099,6 +2121,19 @@ function initAppLocale (Vue, appVm, locale) {
   });
 }
 
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
 const hooks = [
   'onShow',
   'onHide',
@@ -2137,7 +2172,7 @@ function initScopedSlotsParams () {
     const has = center[vueId];
     if (!has) {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -2151,7 +2186,7 @@ function initScopedSlotsParams () {
       return key ? object[key] : object
     } else {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -2443,11 +2478,12 @@ function handleRef (ref) {
   if (ref.props['data-com-type'] === 'wx') {
     const eventProps = {};
     let refProps = ref.props;
+    const eventList = refProps['data-event-list'].split(',');
     // 初始化支付宝小程序组件事件
     Object.keys(refProps).forEach(key => {
-      const handler = refProps[key];
-      const res = key.match(/^on([A-Z])(\S*)/);
-      if (res && typeof handler === 'function' && handler.name === 'bound handleEvent') {
+      if (eventList.includes(key)) {
+        const handler = refProps[key];
+        const res = key.match(/^on([A-Z])(\S*)/);
         const event = res && (res[1].toLowerCase() + res[2]);
         refProps[key] = eventProps[key] = function () {
           const props = Object.assign({}, refProps);
@@ -2548,6 +2584,22 @@ const handleLink$1 = (function () {
   }
 })();
 
+const handleWrap = function (mp, destory) {
+  const vueId = mp.props.vueId;
+  const list = mp.props['data-event-list'].split(',');
+  list.forEach(eventName => {
+    const key = `${eventName}${vueId}`;
+    if (destory) {
+      delete this[key];
+    } else {
+      // TODO remove handleRef
+      this[key] = function () {
+        mp.props[eventName].apply(this, arguments);
+      };
+    }
+  });
+};
+
 function parseApp (vm) {
   Object.defineProperty(Vue.prototype, '$slots', {
     get () {
@@ -2570,18 +2622,15 @@ function parseApp (vm) {
     my.getPhoneNumber({
       success: (res) => {
         $event.type = 'getphonenumber';
-        const response = JSON.parse(res.response).response;
-        if (response.code === '10000') { // success
-          $event.detail.errMsg = 'getPhoneNumber:ok';
-          $event.detail.encryptedData = res.response;
-        } else {
-          $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + res.response;
-        }
+        const response = JSON.parse(res.response);
+        $event.detail.errMsg = 'getPhoneNumber:ok';
+        $event.detail.encryptedData = response.response;
+        $event.detail.sign = response.sign;
         this[method]($event);
       },
       fail: (res) => {
         $event.type = 'getphonenumber';
-        $event.detail.errMsg = 'getPhoneNumber:fail';
+        $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res);
         this[method]($event);
       }
     });
@@ -2712,6 +2761,7 @@ function parsePage (vuePageOptions) {
     __r: handleRef,
     __e: handleEvent,
     __l: handleLink$1,
+    __w: handleWrap,
     triggerEvent
   };
 
@@ -2828,6 +2878,7 @@ function parseComponent (vueComponentOptions) {
       __r: handleRef,
       __e: handleEvent,
       __l: handleLink$1,
+      __w: handleWrap,
       triggerEvent
     }
   };
@@ -2898,17 +2949,17 @@ function createPlugin (vm) {
   const appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && my.onAppShow) {
     my.onAppShow((...args) => {
-      appOptions.onShow.apply(vm, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && my.onAppHide) {
     my.onAppHide((...args) => {
-      appOptions.onHide.apply(vm, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }
