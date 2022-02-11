@@ -1,4 +1,4 @@
-import { capitalize } from '@vue/shared'
+import { capitalize, hyphenate } from '@vue/shared'
 import { createDecl, TransformDecl } from '../utils'
 
 const borderTop = __NODE_JS__ ? 'border-top-' : 'borderTop'
@@ -8,7 +8,7 @@ const borderLeft = __NODE_JS__ ? 'border-left-' : 'borderLeft'
 
 export const transformBorderColor: TransformDecl = (decl) => {
   const { prop, value, important, raws, source } = decl
-  let property = prop.split('-')[1]
+  let property = hyphenate(prop).split('-')[1]
   if (!__NODE_JS__) {
     property = capitalize(property)
   }
