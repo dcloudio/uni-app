@@ -64,7 +64,7 @@ let __pageQuery = {}
 try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
 App.mpType = 'page'
 const app = Vue.createApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
-app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...App.styles]))
+app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...(App.styles||[])]))
 app.mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),
     options
