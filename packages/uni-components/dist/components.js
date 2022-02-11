@@ -1341,7 +1341,6 @@ function useMovableViewState(props2, trigger, rootRef) {
       return false;
     }
     _updateScale(_scale, true);
-    _updateOldScale(_scale);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
@@ -1349,7 +1348,6 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
     scale = _adjustScale(scale);
     _updateScale(scale, true);
-    _updateOldScale(scale);
     return scale;
   }
   function __handleTouchStart() {
@@ -1545,9 +1543,6 @@ function useMovableViewState(props2, trigger, rootRef) {
       }
     }
   }
-  function _updateOldScale(scale) {
-    _oldScale = scale;
-  }
   function _adjustScale(scale) {
     scale = Math.max(0.5, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
@@ -1661,7 +1656,6 @@ function useMovableViewState(props2, trigger, rootRef) {
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
-    _updateOldScale(scale);
   }
   onMounted(() => {
     useTouchtrack((event) => {

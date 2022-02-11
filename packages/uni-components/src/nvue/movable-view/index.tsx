@@ -213,6 +213,7 @@ function useMovableViewState(
     y: 0,
   }
   let _scale = 1
+  // @ts-expect-error
   let _oldScale = 1
   let _translateX = 0
   let _translateY = 0
@@ -532,6 +533,7 @@ function useMovableViewState(
     minY.value = Math.min(y, _height)
     maxY.value = Math.max(y, _height)
   }
+  // @ts-expect-error
   function _beginScale() {
     _isScaling = true
   }
