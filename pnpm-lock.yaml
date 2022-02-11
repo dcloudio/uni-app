@@ -5343,8 +5343,8 @@ packages:
     engines: {node: '>= 0.6'}
 
   /fs-extra/10.0.0:
-    resolution: {integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==, tarball: fs-extra/-/fs-extra-10.0.0.tgz}
-    engines: {node: '>=10'}
+    resolution: {integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==}
+    engines: {node: '>=12'}
     dependencies:
       at-least-node: 1.0.0
       graceful-fs: 4.2.8

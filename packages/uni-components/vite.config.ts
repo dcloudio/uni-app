@@ -2,6 +2,7 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import { isAppNVueNativeTag } from '@dcloudio/uni-shared'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -47,5 +48,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vue(), vueJsx({})],
+  plugins: [vue(), vueJsx({ isCustomElement: isAppNVueNativeTag })],
 })

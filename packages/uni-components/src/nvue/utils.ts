@@ -1,4 +1,5 @@
-import { hasOwn } from '@vue/shared'
+import { createElementVNode } from 'vue'
+import { extend, hasOwn } from '@vue/shared'
 
 interface HoverProps {
   hoverClass?: string
@@ -21,4 +22,15 @@ export function useHoverClass(props: HoverProps) {
     return hoverAttrs
   }
   return {}
+}
+
+export function createNVueTextVNode(
+  text: string,
+  attrs?: Record<string, unknown>
+) {
+  return createElementVNode(
+    'u-text',
+    extend({ appendAsTree: true }, attrs),
+    text
+  )
 }

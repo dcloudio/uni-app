@@ -1,5 +1,5 @@
-import { defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, ref, inject, onBeforeUnmount, resolveComponent, Text, isVNode, Fragment, onMounted, computed } from "vue";
-import { hasOwn, isPlainObject, extend } from "@vue/shared";
+import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, ref, inject, onBeforeUnmount, Text, isVNode, Fragment, onMounted, computed } from "vue";
+import { hasOwn, extend, isPlainObject } from "@vue/shared";
 import { cacheStringFunction } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
@@ -96,6 +96,9 @@ function useHoverClass(props2) {
     return hoverAttrs;
   }
   return {};
+}
+function createNVueTextVNode(text, attrs) {
+  return createElementVNode("u-text", extend({ appendAsTree: true }, attrs), text);
 }
 const navigatorStyles = [{
   "navigator-hover": {
@@ -506,13 +509,13 @@ var Button = defineComponent({
     const wrapSlots = () => {
       if (!slots.default)
         return [];
-      const _slots = slots.default();
-      return _slots.map((slot) => {
-        if (slot.type === Text) {
-          return createVNode("text", null, [slot]);
-        }
-        return slot;
-      });
+      const vnodes = slots.default();
+      if (vnodes.length === 1 && vnodes[0].type === Text) {
+        return [createNVueTextVNode(vnodes[0].children, {
+          class: "ub-t " + _getClass("-t")
+        })];
+      }
+      return vnodes;
     };
     return () => {
       return createVNode("div", mergeProps({
@@ -522,7 +525,7 @@ var Button = defineComponent({
         hoverClass: _getHoverClass("")
       }), {
         "onClick": onClick
-      }), [props2.loading ? createVNode(resolveComponent("loading-indicator"), mergeProps({
+      }), [props2.loading ? createVNode("loading-indicator", mergeProps({
         "class": ["ub-loading", `ub-${TYPES[type]}-loading`]
       }, {
         arrow: "false",
@@ -1338,6 +1341,7 @@ function useMovableViewState(props2, trigger, rootRef) {
       return false;
     }
     _updateScale(_scale, true);
+    _updateOldScale(_scale);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
@@ -1345,6 +1349,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
     scale = _adjustScale(scale);
     _updateScale(scale, true);
+    _updateOldScale(scale);
     return scale;
   }
   function __handleTouchStart() {
@@ -1540,6 +1545,9 @@ function useMovableViewState(props2, trigger, rootRef) {
       }
     }
   }
+  function _updateOldScale(scale) {
+    _oldScale = scale;
+  }
   function _adjustScale(scale) {
     scale = Math.max(0.5, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
@@ -1653,6 +1661,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
+    _updateOldScale(scale);
   }
   onMounted(() => {
     useTouchtrack((event) => {
