@@ -1,7 +1,7 @@
 import { inject, onBeforeUnmount, ref, defineComponent, Text } from 'vue'
 import { uniLabelKey, UniLabelCtx } from '../label'
 import { useListeners } from '../../helpers/useListeners'
-import { useHoverClass } from '../utils'
+import { createNVueTextVNode, useHoverClass } from '../utils'
 import { buttonProps } from '../../components/button'
 import { extend } from '@vue/shared'
 
@@ -256,13 +256,15 @@ export default defineComponent({
 
     const wrapSlots = () => {
       if (!slots.default) return []
-      const _slots = slots.default()
-      return _slots.map((slot) => {
-        if (slot.type === Text) {
-          return <text>{slot}</text>
-        }
-        return slot
-      })
+      const vnodes = slots.default()
+      if (vnodes.length === 1 && vnodes[0].type === Text) {
+        return [
+          createNVueTextVNode(vnodes[0].children as string, {
+            class: 'ub-t ' + _getClass('-t'),
+          }),
+        ]
+      }
+      return vnodes
     }
 
     return () => {

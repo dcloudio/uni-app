@@ -3,7 +3,7 @@ import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFu
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDataset, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
-const isEnableLocale = once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+const isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -418,12 +418,12 @@ function onInvokeViewMethod({
     publish({});
   }
 }
-const ViewJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
+const ViewJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("service"), {
   invokeServiceMethod
 });
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$2 = passive(true);
+const passiveOptions$2 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -1346,7 +1346,7 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
+const ServiceJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("view"), {
   invokeOnCallback,
   invokeViewMethod,
   invokeViewMethodKeepAlive
@@ -1769,13 +1769,25 @@ function provideForm(trigger) {
   });
   return fields2;
 }
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
 const props$B = {
   for: {
     type: String,
     default: ""
   }
 };
+const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+function useProvideLabel() {
+  const handlers = [];
+  provide(uniLabelKey, {
+    addHandler(handler) {
+      handlers.push(handler);
+    },
+    removeHandler(handler) {
+      handlers.splice(handlers.indexOf(handler), 1);
+    }
+  });
+  return handlers;
+}
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$B,
@@ -1808,18 +1820,6 @@ var index$z = /* @__PURE__ */ defineBuiltInComponent({
     }, [slots.default && slots.default()], 10, ["onClick"]);
   }
 });
-function useProvideLabel() {
-  const handlers = [];
-  provide(uniLabelKey, {
-    addHandler(handler) {
-      handlers.push(handler);
-    },
-    removeHandler(handler) {
-      handlers.splice(handlers.indexOf(handler), 1);
-    }
-  });
-  return handlers;
-}
 function useListeners$1(props2, listeners2) {
   _addListeners(props2.id, listeners2);
   watch(() => props2.id, (newId, oldId) => {
@@ -8195,7 +8195,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const passiveOptions$1 = passive(true);
+const passiveOptions$1 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited;
@@ -9107,7 +9107,7 @@ function Friction$1(e2, t2) {
   this._v = 0;
 }
 Friction$1.prototype.setV = function(x, y) {
-  var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+  const n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
   this._x_a = -this._f * this._x_v / n;
@@ -9128,8 +9128,8 @@ Friction$1.prototype.s = function(t2) {
     t2 = this._t;
     this._lastDt = t2;
   }
-  var x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
-  var y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+  let x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
+  let y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -9163,7 +9163,7 @@ Friction$1.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction$1.prototype.done = function() {
-  var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
@@ -9184,10 +9184,10 @@ function Spring$1(m, k, c) {
   this._startTime = 0;
 }
 Spring$1.prototype._solve = function(e2, t2) {
-  var n = this._c;
-  var i = this._m;
-  var r = this._k;
-  var o2 = n * n - 4 * i * r;
+  const n = this._c;
+  const i = this._m;
+  const r = this._k;
+  const o2 = n * n - 4 * i * r;
   if (o2 === 0) {
     const a2 = -n / (2 * i);
     const s = e2;
@@ -9197,7 +9197,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         return (s + l * e3) * Math.pow(Math.E, a2 * e3);
       },
       dx: function(e3) {
-        var t3 = Math.pow(Math.E, a2 * e3);
+        const t3 = Math.pow(Math.E, a2 * e3);
         return a2 * (s + l * e3) * t3 + l * t3;
       }
     };
@@ -9209,8 +9209,8 @@ Spring$1.prototype._solve = function(e2, t2) {
     const h = e2 - d;
     return {
       x: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -9225,8 +9225,8 @@ Spring$1.prototype._solve = function(e2, t2) {
         return h * t3 + d * n2;
       },
       dx: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -9242,18 +9242,18 @@ Spring$1.prototype._solve = function(e2, t2) {
       }
     };
   }
-  var p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
-  var f2 = -n / 2 * i;
-  var v2 = e2;
-  var g2 = (t2 - f2 * e2) / p2;
+  const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
+  const f2 = -n / 2 * i;
+  const v2 = e2;
+  const g2 = (t2 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      var t3 = Math.pow(Math.E, f2 * e3);
-      var n2 = Math.cos(p2 * e3);
-      var i2 = Math.sin(p2 * e3);
+      const t3 = Math.pow(Math.E, f2 * e3);
+      const n2 = Math.cos(p2 * e3);
+      const i2 = Math.sin(p2 * e3);
       return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
     }
   };
@@ -9276,7 +9276,7 @@ Spring$1.prototype.setEnd = function(e2, n, i) {
   }
   if (e2 !== this._endPosition || !t(n, 0.1)) {
     n = n || 0;
-    var r = this._endPosition;
+    let r = this._endPosition;
     if (this._solution) {
       if (t(n, 0.1)) {
         n = this._solution.dx((i - this._startTime) / 1e3);
@@ -9361,14 +9361,14 @@ function STD(e2, t2, n) {
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i) {
-  var r = new Date().getTime();
+  const r = new Date().getTime();
   this._springX.setEnd(e2, i, r);
   this._springY.setEnd(t2, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
 STD.prototype.x = function() {
-  var e2 = (new Date().getTime() - this._startTime) / 1e3;
+  const e2 = (new Date().getTime() - this._startTime) / 1e3;
   return {
     x: this._springX.x(e2),
     y: this._springY.x(e2),
@@ -9376,7 +9376,7 @@ STD.prototype.x = function() {
   };
 };
 STD.prototype.done = function() {
-  var e2 = new Date().getTime();
+  const e2 = new Date().getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
 STD.prototype.reconfigure = function(e2, t2, n) {
@@ -9438,6 +9438,9 @@ const props$r = {
     default: true
   }
 };
+function v(a2, b) {
+  return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
+}
 var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: props$r,
@@ -9483,9 +9486,6 @@ function f(t2, n) {
   }
   let i = t2.offsetTop;
   return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
-}
-function v(a2, b) {
-  return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -11756,7 +11756,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const passiveOptions = passive(true);
+const passiveOptions = /* @__PURE__ */ passive(true);
 const props$l = {
   scrollX: {
     type: [Boolean, String],
