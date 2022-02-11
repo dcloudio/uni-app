@@ -212,6 +212,67 @@ var serviceContext = (function (vue) {
         .join(' ')}`;
   }
 
+  function cache(fn) {
+      const cache = Object.create(null);
+      return (str) => {
+          const hit = cache[str];
+          return hit || (cache[str] = fn(str));
+      };
+  }
+  function cacheStringFunction(fn) {
+      return cache(fn);
+  }
+  function getLen(str = '') {
+      return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
+  }
+  function hasLeadingSlash(str) {
+      return str.indexOf('/') === 0;
+  }
+  function addLeadingSlash(str) {
+      return hasLeadingSlash(str) ? str : '/' + str;
+  }
+  function removeLeadingSlash(str) {
+      return hasLeadingSlash(str) ? str.substr(1) : str;
+  }
+  const invokeArrayFns = (fns, arg) => {
+      let ret;
+      for (let i = 0; i < fns.length; i++) {
+          ret = fns[i](arg);
+      }
+      return ret;
+  };
+  function once(fn, ctx = null) {
+      let res;
+      return ((...args) => {
+          if (fn) {
+              res = fn.apply(ctx, args);
+              fn = null;
+          }
+          return res;
+      });
+  }
+  function callOptions(options, data) {
+      options = options || {};
+      if (typeof data === 'string') {
+          data = {
+              errMsg: data,
+          };
+      }
+      if (/:ok$/.test(data.errMsg)) {
+          if (typeof options.success === 'function') {
+              options.success(data);
+          }
+      }
+      else {
+          if (typeof options.fail === 'function') {
+              options.fail(data);
+          }
+      }
+      if (typeof options.complete === 'function') {
+          options.complete(data);
+      }
+  }
+
   const encode$2 = encodeURIComponent;
   function stringifyQuery$1(obj, encodeStr = encode$2) {
       const res = obj
@@ -532,67 +593,6 @@ var serviceContext = (function (vue) {
   const ACTION_TYPE_ADD_WXS_EVENT = 12;
   const ACTION_TYPE_PAGE_SCROLL = 15;
   const ACTION_TYPE_EVENT = 20;
-
-  function cache(fn) {
-      const cache = Object.create(null);
-      return (str) => {
-          const hit = cache[str];
-          return hit || (cache[str] = fn(str));
-      };
-  }
-  function cacheStringFunction(fn) {
-      return cache(fn);
-  }
-  function getLen(str = '') {
-      return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
-  }
-  function hasLeadingSlash(str) {
-      return str.indexOf('/') === 0;
-  }
-  function addLeadingSlash(str) {
-      return hasLeadingSlash(str) ? str : '/' + str;
-  }
-  function removeLeadingSlash(str) {
-      return hasLeadingSlash(str) ? str.substr(1) : str;
-  }
-  const invokeArrayFns = (fns, arg) => {
-      let ret;
-      for (let i = 0; i < fns.length; i++) {
-          ret = fns[i](arg);
-      }
-      return ret;
-  };
-  function once(fn, ctx = null) {
-      let res;
-      return ((...args) => {
-          if (fn) {
-              res = fn.apply(ctx, args);
-              fn = null;
-          }
-          return res;
-      });
-  }
-  function callOptions(options, data) {
-      options = options || {};
-      if (typeof data === 'string') {
-          data = {
-              errMsg: data,
-          };
-      }
-      if (/:ok$/.test(data.errMsg)) {
-          if (typeof options.success === 'function') {
-              options.success(data);
-          }
-      }
-      else {
-          if (typeof options.fail === 'function') {
-              options.fail(data);
-          }
-      }
-      if (typeof options.complete === 'function') {
-          options.complete(data);
-      }
-  }
 
   function debounce(fn, delay) {
       let timeout;
