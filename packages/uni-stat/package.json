@@ -21,7 +21,7 @@
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030820220114008",
-    "debug": "^4.3.2"
+    "debug": "^4.3.3"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7"

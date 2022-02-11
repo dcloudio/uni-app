@@ -20,8 +20,8 @@
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
     "@babel/generator": "^7.16.0",
-    "@babel/parser": "^7.16.4",
-    "@babel/types": "^7.16.0",
+    "@babel/parser": "^7.16.12",
+    "@babel/types": "^7.16.8",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030820220114008",
     "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114008",
     "@vue/compiler-core": "3.2.30",

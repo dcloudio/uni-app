@@ -19,7 +19,7 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@babel/core": "^7.16.5",
+    "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.5",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3030820220114008",
     "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114008",
@@ -37,7 +37,7 @@
     "indexes-of": "^1.0.1",
     "less-loader": "^10.0.1",
     "loader-utils": "^1.1.0",
-    "lru-cache": "^4.1.2",
+    "lru-cache": "^5.1.1",
     "merge-source-map": "^1.1.0",
     "module-alias": "^2.2.2",
     "postcss": "^8.4.5",

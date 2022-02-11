@@ -58,7 +58,7 @@
   "dependencies": {
     "consolidate": "^0.15.1",
     "hash-sum": "^1.0.2",
-    "lru-cache": "^4.1.2",
+    "lru-cache": "^5.1.1",
     "merge-source-map": "^1.1.0",
     "postcss": "^7.0.14",
     "postcss-selector-parser": "^5.0.0",
