@@ -5,7 +5,7 @@ import {
   WritableComputedRef,
 } from 'vue'
 
-export const props = {
+export const pickerViewProps = {
   value: {
     type: Array as PropType<number[]>,
     default() {
@@ -36,7 +36,7 @@ export const props = {
   },
 }
 
-export type Props = ExtractPropTypes<typeof props>
+export type Props = ExtractPropTypes<typeof pickerViewProps>
 
 export type GetPickerViewColumn = (
   columnInstance: ComponentInternalInstance

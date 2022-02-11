@@ -18,8 +18,8 @@ import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
 import ResizeSensor from '../resize-sensor/index'
 import { useCustomEvent } from '../../helpers/useEvent'
-import { props } from '../../components/picker-view'
-import type { Props, GetPickerViewColumn } from '../../components/picker-view'
+import { pickerViewProps } from '../../components/pickerView'
+import type { Props, GetPickerViewColumn } from '../../components/pickerView'
 export { Props, GetPickerViewColumn }
 export interface State {
   value: number[]
@@ -54,7 +54,7 @@ function useState(props: Props): State {
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerView',
-  props,
+  props: pickerViewProps,
   emits: ['change', 'pickstart', 'pickend', 'update:value'],
   setup(props, { slots, emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)

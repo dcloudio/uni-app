@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
-import { props, useProvideLabel } from '../../components/label'
+import { labelProps, useProvideLabel } from '../../components/label'
 
 export { UniLabelCtx, uniLabelKey } from '../../components/label'
 
@@ -10,7 +10,7 @@ type LabelTarget = HTMLElement & {
 
 export default /*#__PURE__*/ defineComponent({
   name: 'Label',
-  props,
+  props: labelProps,
   styles: [],
   setup(props, { slots }) {
     const pageId = useCurrentPageId()

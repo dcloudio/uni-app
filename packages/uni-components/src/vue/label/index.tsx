@@ -2,13 +2,13 @@ import { computed } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
 import { withWebEvent } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '../../helpers/component'
-import { props, useProvideLabel } from '../../components/label'
+import { labelProps, useProvideLabel } from '../../components/label'
 
 export { UniLabelCtx, uniLabelKey } from '../../components/label'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Label',
-  props,
+  props: labelProps,
   setup(props, { slots }) {
     const pageId = useCurrentPageId()
     const handlers = useProvideLabel()

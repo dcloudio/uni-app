@@ -45,53 +45,53 @@ const navigatorProps = {
     default: false
   }
 };
-function createNavigatorOnClick(props2) {
+function createNavigatorOnClick(props) {
   return () => {
-    if (props2.openType !== "navigateBack" && !props2.url) {
+    if (props.openType !== "navigateBack" && !props.url) {
       console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
       return;
     }
-    switch (props2.openType) {
+    switch (props.openType) {
       case "navigate":
         uni.navigateTo({
-          url: props2.url
+          url: props.url
         });
         break;
       case "redirect":
         uni.redirectTo({
-          url: props2.url,
-          exists: props2.exists
+          url: props.url,
+          exists: props.exists
         });
         break;
       case "switchTab":
         uni.switchTab({
-          url: props2.url
+          url: props.url
         });
         break;
       case "reLaunch":
         uni.reLaunch({
-          url: props2.url
+          url: props.url
         });
         break;
       case "navigateBack":
         uni.navigateBack({
-          delta: props2.delta
+          delta: props.delta
         });
         break;
     }
   };
 }
-function useHoverClass(props2) {
-  if (props2.hoverClass && props2.hoverClass !== "none") {
-    const hoverAttrs = { hoverClass: props2.hoverClass };
-    if (hasOwn(props2, "hoverStartTime")) {
-      hoverAttrs.hoverStartTime = props2.hoverStartTime;
+function useHoverClass(props) {
+  if (props.hoverClass && props.hoverClass !== "none") {
+    const hoverAttrs = { hoverClass: props.hoverClass };
+    if (hasOwn(props, "hoverStartTime")) {
+      hoverAttrs.hoverStartTime = props.hoverStartTime;
     }
-    if (hasOwn(props2, "hoverStayTime")) {
-      hoverAttrs.hoverStayTime = props2.hoverStayTime;
+    if (hasOwn(props, "hoverStayTime")) {
+      hoverAttrs.hoverStayTime = props.hoverStayTime;
     }
-    if (hasOwn(props2, "hoverStopPropagation")) {
-      hoverAttrs.hoverStopPropagation = props2.hoverStopPropagation;
+    if (hasOwn(props, "hoverStopPropagation")) {
+      hoverAttrs.hoverStopPropagation = props.hoverStopPropagation;
     }
     return hoverAttrs;
   }
@@ -110,12 +110,12 @@ var Navigator = defineComponent({
   name: "Navigator",
   props: navigatorProps,
   styles: navigatorStyles,
-  setup(props2, {
+  setup(props, {
     slots
   }) {
-    const onClick = createNavigatorOnClick(props2);
+    const onClick = createNavigatorOnClick(props);
     return () => {
-      return createVNode("view", mergeProps(useHoverClass(props2), {
+      return createVNode("view", mergeProps(useHoverClass(props), {
         "onClick": onClick
       }), [slots.default && slots.default()]);
     };
@@ -127,7 +127,7 @@ function PolySymbol(name) {
 function useCurrentPageId() {
   return getCurrentInstance().root.proxy.$page.id;
 }
-const props$2 = {
+const labelProps = {
   for: {
     type: String,
     default: ""
@@ -148,9 +148,9 @@ function useProvideLabel() {
 }
 var Label = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$2,
+  props: labelProps,
   styles: [],
-  setup(props2, {
+  setup(props, {
     slots
   }) {
     const pageId = useCurrentPageId();
@@ -165,8 +165,8 @@ var Label = /* @__PURE__ */ defineComponent({
       if (stopPropagation) {
         return;
       }
-      if (props2.for) {
-        UniViewJSBridge.emit(`uni-label-click-${pageId}-${props2.for}`, $event, true);
+      if (props.for) {
+        UniViewJSBridge.emit(`uni-label-click-${pageId}-${props.for}`, $event, true);
       } else {
         handlers.length && handlers[0]($event, true);
       }
@@ -176,14 +176,14 @@ var Label = /* @__PURE__ */ defineComponent({
     }, [slots.default && slots.default()]);
   }
 });
-function useListeners(props2, listeners) {
-  _addListeners(props2.id, listeners);
-  watch(() => props2.id, (newId, oldId) => {
+function useListeners(props, listeners) {
+  _addListeners(props.id, listeners);
+  watch(() => props.id, (newId, oldId) => {
     _removeListeners(oldId, listeners, true);
     _addListeners(newId, listeners, true);
   });
   onUnmounted(() => {
-    _removeListeners(props2.id, listeners);
+    _removeListeners(props.id, listeners);
   });
 }
 function _addListeners(id, listeners, watch2) {
@@ -467,14 +467,14 @@ var Button = defineComponent({
     }
   }),
   styles: buttonStyle,
-  setup(props2, {
+  setup(props, {
     slots,
     attrs
   }) {
-    const type = props2.type;
+    const type = props.type;
     const rootRef = ref(null);
     const onClick = (e2, isLabelClick) => {
-      if (props2.disabled) {
+      if (props.disabled) {
         return;
       }
       if (isLabelClick) {
@@ -483,17 +483,17 @@ var Button = defineComponent({
     };
     const _getClass = (t2) => {
       let cl = "ub-" + TYPES[type] + t2;
-      props2.disabled && (cl += "-d");
-      props2.plain && (cl += "-plain");
-      props2.size === "mini" && t2 === "-t" && (cl += " ub-mini");
+      props.disabled && (cl += "-d");
+      props.plain && (cl += "-plain");
+      props.size === "mini" && t2 === "-t" && (cl += " ub-mini");
       return cl;
     };
     const _getHoverClass = (t2) => {
-      if (props2.disabled) {
+      if (props.disabled) {
         return "";
       }
       let cl = "ub-" + TYPES[type] + t2 + "-hover";
-      props2.plain && (cl += "-plain");
+      props.plain && (cl += "-plain");
       return cl;
     };
     const uniLabel = inject(uniLabelKey, false);
@@ -503,7 +503,7 @@ var Button = defineComponent({
         uniLabel.removeHandler(onClick);
       });
     }
-    useListeners(props2, {
+    useListeners(props, {
       "label-click": onClick
     });
     const wrapSlots = () => {
@@ -521,11 +521,11 @@ var Button = defineComponent({
       return createVNode("div", mergeProps({
         "ref": rootRef,
         "class": ["ub", _getClass("")]
-      }, extend({}, useHoverClass(props2), {
+      }, extend({}, useHoverClass(props), {
         hoverClass: _getHoverClass("")
       }), {
         "onClick": onClick
-      }), [props2.loading ? createVNode("loading-indicator", mergeProps({
+      }), [props.loading ? createVNode("loading-indicator", mergeProps({
         "class": ["ub-loading", `ub-${TYPES[type]}-loading`]
       }, {
         arrow: "false",
@@ -534,7 +534,7 @@ var Button = defineComponent({
     };
   }
 });
-const props$1 = {
+const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -567,14 +567,14 @@ const getComponentSize = (el) => {
 };
 var MovableArea = defineComponent({
   name: "MovableArea",
-  props: props$1,
+  props: movableAreaProps,
   styles: [{
     "uni-movable-area": {
       width: "10px",
       height: "10px"
     }
   }],
-  setup(props2, {
+  setup(props, {
     slots
   }) {
     const width = ref(0);
@@ -1060,7 +1060,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props = {
+const movableViewProps = {
   direction: {
     type: String,
     default: "none"
@@ -1169,7 +1169,7 @@ function cancelAnimationFrame(id) {
 const animation = weex.requireModule("animation");
 var MovableView = defineComponent({
   name: "MovableView",
-  props,
+  props: movableViewProps,
   emits: ["change", "scale"],
   styles: [{
     "uni-movable-view": {
@@ -1180,7 +1180,7 @@ var MovableView = defineComponent({
       height: "10px"
     }
   }],
-  setup(props2, {
+  setup(props, {
     emit,
     slots
   }) {
@@ -1188,7 +1188,7 @@ var MovableView = defineComponent({
     const trigger = useCustomEvent(rootRef, emit);
     const setTouchMovableViewContext = inject("setTouchMovableViewContext", () => {
     });
-    useMovableViewState(props2, trigger, rootRef);
+    useMovableViewState(props, trigger, rootRef);
     const touchStart = () => {
       setTouchMovableViewContext({
         touchstart,
@@ -1209,7 +1209,7 @@ var MovableView = defineComponent({
     };
   }
 });
-function useMovableViewState(props2, trigger, rootRef) {
+function useMovableViewState(props, trigger, rootRef) {
   const _isMounted = inject("_isMounted", ref(false));
   const parentSize = inject("parentSize", {
     width: ref(0),
@@ -1228,9 +1228,9 @@ function useMovableViewState(props2, trigger, rootRef) {
     val = Number(val);
     return isNaN(val) ? 1 : val;
   }
-  const xSync = ref(_getPx(props2.x));
-  const ySync = ref(_getPx(props2.y));
-  const scaleValueSync = ref(_getScaleNumber(Number(props2.scaleValue)));
+  const xSync = ref(_getPx(props.x));
+  const ySync = ref(_getPx(props.y));
+  const scaleValueSync = ref(_getScaleNumber(Number(props.scaleValue)));
   const width = ref(0);
   const height = ref(0);
   const minX = ref(0);
@@ -1269,32 +1269,32 @@ function useMovableViewState(props2, trigger, rootRef) {
     historyT: [0, 0]
   };
   const dampingNumber = computed(() => {
-    let val = Number(props2.damping);
+    let val = Number(props.damping);
     return isNaN(val) ? 20 : val;
   });
   const frictionNumber = computed(() => {
-    let val = Number(props2.friction);
+    let val = Number(props.friction);
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   const scaleMinNumber = computed(() => {
-    let val = Number(props2.scaleMin);
+    let val = Number(props.scaleMin);
     return isNaN(val) ? 0.5 : val;
   });
   const scaleMaxNumber = computed(() => {
-    let val = Number(props2.scaleMax);
+    let val = Number(props.scaleMax);
     return isNaN(val) ? 10 : val;
   });
-  const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const xMove = computed(() => props.direction === "all" || props.direction === "horizontal");
+  const yMove = computed(() => props.direction === "all" || props.direction === "vertical");
   const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
   const _friction = new Friction(1, frictionNumber.value);
-  watch(() => props2.x, (val) => {
+  watch(() => props.x, (val) => {
     xSync.value = _getPx(val);
   });
-  watch(() => props2.y, (val) => {
+  watch(() => props.y, (val) => {
     ySync.value = _getPx(val);
   });
-  watch(() => props2.scaleValue, (val) => {
+  watch(() => props.scaleValue, (val) => {
     scaleValueSync.value = _getScaleNumber(Number(val));
   });
   watch(xSync, _setX);
@@ -1337,13 +1337,13 @@ function useMovableViewState(props2, trigger, rootRef) {
     return val;
   }
   function _setScaleMinOrMax() {
-    if (!props2.scale) {
+    if (!props.scale) {
       return false;
     }
     _updateScale(_scale, true);
   }
   function _setScaleValue(scale) {
-    if (!props2.scale) {
+    if (!props.scale) {
       return false;
     }
     scale = _adjustScale(scale);
@@ -1352,7 +1352,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   }
   function __handleTouchStart() {
     {
-      if (!props2.disabled) {
+      if (!props.disabled) {
         FAandSFACancel();
         __touchInfo.historyX = [0, 0];
         __touchInfo.historyY = [0, 0];
@@ -1370,7 +1370,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
   }
   function __handleTouchMove(event) {
-    if (!props2.disabled && _isTouching) {
+    if (!props.disabled && _isTouching) {
       let x = _translateX;
       let y = _translateY;
       if (_firstMoveDirection === null) {
@@ -1397,14 +1397,14 @@ function useMovableViewState(props2, trigger, rootRef) {
       if (!_checkCanMove) {
         let source = "touch";
         if (x < minX.value) {
-          if (props2.outOfBounds) {
+          if (props.outOfBounds) {
             source = "touch-out-of-bounds";
             x = minX.value - _declineX.x(minX.value - x);
           } else {
             x = minX.value;
           }
         } else if (x > maxX.value) {
-          if (props2.outOfBounds) {
+          if (props.outOfBounds) {
             source = "touch-out-of-bounds";
             x = maxX.value + _declineX.x(x - maxX.value);
           } else {
@@ -1412,7 +1412,7 @@ function useMovableViewState(props2, trigger, rootRef) {
           }
         }
         if (y < minY.value) {
-          if (props2.outOfBounds) {
+          if (props.outOfBounds) {
             source = "touch-out-of-bounds";
             y = minY.value - _declineY.x(minY.value - y);
           } else {
@@ -1420,7 +1420,7 @@ function useMovableViewState(props2, trigger, rootRef) {
           }
         } else {
           if (y > maxY.value) {
-            if (props2.outOfBounds) {
+            if (props.outOfBounds) {
               source = "touch-out-of-bounds";
               y = maxY.value + _declineY.x(y - maxY.value);
             } else {
@@ -1435,9 +1435,9 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
   }
   function __handleTouchEnd() {
-    if (!props2.disabled && _isTouching) {
+    if (!props.disabled && _isTouching) {
       _isTouching = false;
-      if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
+      if (!_checkCanMove && !_revise("out-of-bounds") && props.inertia) {
         const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
         const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
         _friction.setV(xv, yv);
@@ -1527,7 +1527,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     maxY.value = Math.max(y, _height);
   }
   function _updateScale(scale, animat) {
-    if (props2.scale) {
+    if (props.scale) {
       scale = _adjustScale(scale);
       _updateWH(scale);
       _updateBoundary();
@@ -1556,13 +1556,13 @@ function useMovableViewState(props2, trigger, rootRef) {
     if (!yMove.value) {
       y = _translateY;
     }
-    if (!props2.scale) {
+    if (!props.scale) {
       scale = _scale;
     }
     let limitXY = _getLimitXY(x, y);
     x = limitXY.x;
     y = limitXY.y;
-    if (!props2.animation) {
+    if (!props.animation) {
       _setTransform(x, y, scale, source, r, o);
       return;
     }
@@ -1612,7 +1612,7 @@ function useMovableViewState(props2, trigger, rootRef) {
         });
       }
     }
-    if (!props2.scale) {
+    if (!props.scale) {
       scale = _scale;
     }
     scale = _adjustScale(scale);
@@ -1646,7 +1646,7 @@ function useMovableViewState(props2, trigger, rootRef) {
       return;
     }
     FAandSFACancel();
-    let scale = props2.scale ? scaleValueSync.value : 1;
+    let scale = props.scale ? scaleValueSync.value : 1;
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();

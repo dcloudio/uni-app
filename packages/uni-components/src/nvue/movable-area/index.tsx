@@ -1,5 +1,5 @@
 import { defineComponent, Ref, ref, onMounted, provide } from 'vue'
-import { props } from '../../components/movable-area'
+import { movableAreaProps } from '../../components/movableArea'
 import { flatVNode } from '../../helpers/flatVNode'
 import { TouchtrackEvent } from '../movable-view/useTouchtrack'
 import { getComponentSize } from '../helpers'
@@ -28,7 +28,7 @@ export interface parentSize {
 
 export default defineComponent({
   name: 'MovableArea',
-  props,
+  props: movableAreaProps,
   styles: [
     {
       'uni-movable-area': {

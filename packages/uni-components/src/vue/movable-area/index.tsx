@@ -6,7 +6,7 @@ import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
 import ResizeSensor from '../resize-sensor/index'
 import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
-import { props, Props } from '../../components/movable-area'
+import { movableAreaProps, Props } from '../../components/movableArea'
 
 type _TouchEvent = '_onTouchstart' | '_onTouchmove' | '_onTouchend'
 export interface MovableViewContext {
@@ -21,7 +21,7 @@ export type RemoveMovableViewContext = (context: MovableViewContext) => void
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'MovableArea',
-  props,
+  props: movableAreaProps,
   setup(props, { slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const _isMounted = ref(false)
