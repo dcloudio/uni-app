@@ -43,8 +43,6 @@ process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
   : 'r'
 
 export interface VitePluginUniOptions {
-  inputDir?: string
-  outputDir?: string
   vueOptions?: VueOptions
   vueJsxOptions?: (VueJSXPluginOptions & { babelPlugins?: any[] }) | boolean
   viteLegacyOptions?: ViteLegacyOptions | false
