@@ -10,21 +10,24 @@ import {
   ExtractPropTypes,
 } from 'vue'
 import { extend } from '@vue/shared'
-import { props, GetPickerViewColumn } from '../../components/picker-view'
+import {
+  pickerViewProps,
+  GetPickerViewColumn,
+} from '../../components/pickerView'
 import { flatVNode } from '../../helpers/flatVNode'
 import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
 
 export { Props, GetPickerViewColumn }
-const pickerViewProps = extend({}, props, {
+const nvuePickerViewProps = extend({}, pickerViewProps, {
   height: {
     type: [Number, String],
     default: 0,
   },
 })
-type Props = ExtractPropTypes<typeof pickerViewProps>
+type Props = ExtractPropTypes<typeof nvuePickerViewProps>
 export default defineComponent({
   name: 'PickerView',
-  props: pickerViewProps,
+  props: nvuePickerViewProps,
   emits: ['change', 'update:value'],
   setup(props, { slots, emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)

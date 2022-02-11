@@ -17,7 +17,7 @@ import {
   Decline,
   Friction,
   STD,
-  props,
+  movableViewProps,
   Props,
   FrictionCallback,
   Record,
@@ -28,7 +28,7 @@ type RootRef = Ref<HTMLElement | null>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'MovableView',
-  props,
+  props: movableViewProps,
   emits: ['change', 'scale'],
   setup(props, { slots, emit }) {
     const rootRef: RootRef = ref(null)

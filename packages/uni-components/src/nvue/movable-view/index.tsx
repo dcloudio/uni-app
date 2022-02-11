@@ -31,7 +31,7 @@ import {
   Decline,
   Friction,
   STD,
-  props,
+  movableViewProps,
   Props,
   FrictionCallback,
   Record,
@@ -113,7 +113,7 @@ const animation = weex.requireModule('animation')
 
 export default defineComponent({
   name: 'MovableView',
-  props,
+  props: movableViewProps,
   emits: ['change', 'scale'],
   styles: [
     {

@@ -729,7 +729,7 @@ function provideForm(trigger) {
   });
   return fields2;
 }
-const props$u = {
+const labelProps = {
   for: {
     type: String,
     default: ""
@@ -750,7 +750,7 @@ function useProvideLabel() {
 }
 var index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$u,
+  props: labelProps,
   setup(props2, {
     slots
   }) {
@@ -1626,7 +1626,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$t = {
+const props$q = {
   canvasId: {
     type: String,
     default: ""
@@ -1646,7 +1646,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$t,
+  props: props$q,
   computed: {
     id() {
       return this.canvasId;
@@ -2104,7 +2104,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$s = {
+const props$p = {
   name: {
     type: String,
     default: ""
@@ -2112,7 +2112,7 @@ const props$s = {
 };
 var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$s,
+  props: props$p,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2164,7 +2164,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$r = {
+const props$o = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2188,7 +2188,7 @@ const props$r = {
 };
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$r,
+  props: props$o,
   setup(props2, {
     slots
   }) {
@@ -2255,7 +2255,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$q = {
+const props$n = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2427,7 +2427,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$p = /* @__PURE__ */ shared.extend({}, props$q, {
+const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   id: {
     type: String,
     default: ""
@@ -2455,7 +2455,7 @@ const props$p = /* @__PURE__ */ shared.extend({}, props$q, {
 });
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$p,
+  props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2541,7 +2541,7 @@ var index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$o = {
+const props$l = {
   src: {
     type: String,
     default: ""
@@ -2580,7 +2580,7 @@ const IMAGE_MODES = {
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$o,
+  props: props$l,
   setup(props2, {
     emit: emit2
   }) {
@@ -2829,7 +2829,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$n = /* @__PURE__ */ shared.extend({}, {
+const props$k = /* @__PURE__ */ shared.extend({}, {
   name: {
     type: String,
     default: ""
@@ -2898,7 +2898,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, {
     type: Boolean,
     default: false
   }
-}, props$q);
+}, props$n);
 const emit = [
   "input",
   "focus",
@@ -3093,7 +3093,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
+const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3105,7 +3105,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$m,
+  props: props$j,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3283,7 +3283,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$l = {
+const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -3292,7 +3292,7 @@ const props$l = {
 var index$v = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$l,
+  props: movableAreaProps,
   setup(props2, {
     slots
   }) {
@@ -3780,7 +3780,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$k = {
+const movableViewProps = {
   direction: {
     type: String,
     default: "none"
@@ -3839,7 +3839,7 @@ function v(a, b) {
 }
 var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$k,
+  props: movableViewProps,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -4324,7 +4324,7 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$j = {
+const pickerViewProps = {
   value: {
     type: Array,
     default() {
@@ -4371,7 +4371,7 @@ function useState$2(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$j,
+  props: pickerViewProps,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -4464,7 +4464,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const getPickerViewColumn = vue.inject("getPickerViewColumn");
     const instance = vue.getCurrentInstance();
     const currentRef = getPickerViewColumn ? getPickerViewColumn(instance) : vue.ref(0);
-    const pickerViewProps = vue.inject("pickerViewProps");
+    const pickerViewProps2 = vue.inject("pickerViewProps");
     const pickerViewState = vue.inject("pickerViewState");
     const indicatorHeight = vue.ref(34);
     const resizeSensorRef = vue.ref(null);
@@ -4530,11 +4530,11 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": handleTap,
         "class": "uni-picker-view-group"
       }, [vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
-        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        "class": ["uni-picker-view-mask", pickerViewProps2.maskClass],
+        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps2.maskStyle}`
       }), null, 16), vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-        "style": pickerViewProps.indicatorStyle
+        "class": ["uni-picker-view-indicator", pickerViewProps2.indicatorClass],
+        "style": pickerViewProps2.indicatorStyle
       }), [vue.createVNode(ResizeSensor, {
         "ref": resizeSensorRef,
         "onResize": ({
@@ -6370,7 +6370,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$9 = /* @__PURE__ */ shared.extend({}, props$n, {
+const props$9 = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"

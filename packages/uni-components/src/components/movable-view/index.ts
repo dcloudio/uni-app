@@ -1,7 +1,7 @@
 import { ExtractPropTypes } from 'vue'
 import { Decline, Friction, STD } from './utils'
 export { Decline, Friction, STD }
-export const props = {
+export const movableViewProps = {
   direction: {
     type: String,
     default: 'none',
@@ -56,7 +56,7 @@ export const props = {
   },
 }
 
-export type Props = ExtractPropTypes<typeof props>
+export type Props = ExtractPropTypes<typeof movableViewProps>
 export type FrictionCallback = (friction: Friction | STD) => void
 export type Record = {
   id: number

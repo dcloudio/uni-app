@@ -1,6 +1,6 @@
 import { provide } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
-export const props = {
+export const labelProps = {
   for: {
     type: String,
     default: '',
