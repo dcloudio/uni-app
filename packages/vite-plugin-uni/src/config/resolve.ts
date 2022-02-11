@@ -12,7 +12,7 @@ export function customResolver(updatedId: string) {
   if (isWindows) {
     return normalizePath(requireResolve(updatedId, process.env.UNI_INPUT_DIR))
   }
-  return updatedId
+  return requireResolve(updatedId, process.env.UNI_INPUT_DIR)
 }
 
 export function createResolve(

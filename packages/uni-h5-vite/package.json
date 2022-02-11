@@ -26,7 +26,7 @@
     "@vue/compiler-sfc": "3.2.30",
     "@vue/server-renderer": "3.2.30",
     "@vue/shared": "3.2.30",
-    "debug": "^4.3.2",
+    "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "mime": "^3.0.0",
     "module-alias": "^2.2.2"
@@ -37,6 +37,6 @@
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.1",
     "@vue/compiler-core": "3.2.30",
-    "esbuild": "^0.13.2"
+    "esbuild": "^0.14.14"
   }
 }

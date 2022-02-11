@@ -30,14 +30,14 @@
     "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220211001",
     "address": "^1.1.2",
     "cross-env": "^7.0.3",
-    "debug": "^4.3.2",
+    "debug": "^4.3.3",
     "default-gateway": "^6.0.3",
     "fs-extra": "^10.0.0",
     "licia": "^1.29.0",
     "postcss-selector-parser": "^6.0.6",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
-    "ws": "^8.2.0"
+    "ws": "^8.4.2"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

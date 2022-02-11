@@ -24,9 +24,9 @@
     "@dcloudio/uni-nvue-styler": "0.0.1-nvue3.3040020220211001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220211001",
     "@rollup/pluginutils": "^4.1.2",
-    "@vitejs/plugin-vue": "^2.1.0",
+    "@vitejs/plugin-vue": "^2.2.0",
     "@vue/compiler-sfc": "3.2.30",
-    "debug": "^4.3.2",
+    "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "picocolors": "^1.0.0",
     "rollup": "^2.59.0"
@@ -35,7 +35,7 @@
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
     "@vue/compiler-core": "3.2.30",
-    "esbuild": "^0.13.12",
+    "esbuild": "^0.14.14",
     "postcss": "^8.4.5"
   }
 }

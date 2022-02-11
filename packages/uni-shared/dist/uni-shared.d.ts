@@ -231,7 +231,7 @@ declare interface HTMLElementWithDataset extends HTMLElement {
 
 export declare const I18N_JSON_DELIMITERS: [string, string];
 
-export declare function initCustomDataset(): void;
+export declare const initCustomDatasetOnce: () => void;
 
 /**
  * nodeId

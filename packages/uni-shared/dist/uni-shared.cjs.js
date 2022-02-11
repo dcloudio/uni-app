@@ -300,10 +300,106 @@ function formatLog(module, ...args) {
         .join(' ')}`;
 }
 
+function cache(fn) {
+    const cache = Object.create(null);
+    return (str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    };
+}
+function cacheStringFunction(fn) {
+    return cache(fn);
+}
+function getLen(str = '') {
+    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
+}
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
+function removeLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str.substr(1) : str;
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+function updateElementStyle(element, styles) {
+    for (const attrName in styles) {
+        element.style[attrName] = styles[attrName];
+    }
+}
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
+const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
+const _completeValue = (value) => (value > 9 ? value : '0' + value);
+function formatDateTime({ date = new Date(), mode = 'date' }) {
+    if (mode === 'time') {
+        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
+    }
+    else {
+        return (date.getFullYear() +
+            '-' +
+            _completeValue(date.getMonth() + 1) +
+            '-' +
+            _completeValue(date.getDate()));
+    }
+}
+function callOptions(options, data) {
+    options = options || {};
+    if (typeof data === 'string') {
+        data = {
+            errMsg: data,
+        };
+    }
+    if (/:ok$/.test(data.errMsg)) {
+        if (typeof options.success === 'function') {
+            options.success(data);
+        }
+    }
+    else {
+        if (typeof options.fail === 'function') {
+            options.fail(data);
+        }
+    }
+    if (typeof options.complete === 'function') {
+        options.complete(data);
+    }
+}
+function getValueByDataPath(obj, path) {
+    if (!shared.isString(path)) {
+        return;
+    }
+    path = path.replace(/\[(\d+)\]/g, '.$1');
+    const parts = path.split('.');
+    let key = parts[0];
+    if (!obj) {
+        obj = {};
+    }
+    if (parts.length === 1) {
+        return obj[key];
+    }
+    return getValueByDataPath(obj[key], parts.slice(1).join('.'));
+}
+
 function formatKey(key) {
     return shared.camelize(key.substring(5));
 }
-function initCustomDataset() {
+// question/139181，增加副作用，避免 initCustomDataset 在 build 下被 tree-shaking
+const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
     const prototype = HTMLElement.prototype;
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
@@ -323,7 +419,7 @@ function initCustomDataset() {
         }
         removeAttribute.call(this, key);
     };
-}
+});
 function getCustomDataset(el) {
     return shared.extend({}, el.dataset, el.__uniDataset);
 }
@@ -1063,101 +1159,6 @@ const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
-function cache(fn) {
-    const cache = Object.create(null);
-    return (str) => {
-        const hit = cache[str];
-        return hit || (cache[str] = fn(str));
-    };
-}
-function cacheStringFunction(fn) {
-    return cache(fn);
-}
-function getLen(str = '') {
-    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
-}
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-function removeLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str.substr(1) : str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
-function updateElementStyle(element, styles) {
-    for (const attrName in styles) {
-        element.style[attrName] = styles[attrName];
-    }
-}
-function once(fn, ctx = null) {
-    let res;
-    return ((...args) => {
-        if (fn) {
-            res = fn.apply(ctx, args);
-            fn = null;
-        }
-        return res;
-    });
-}
-const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
-const _completeValue = (value) => (value > 9 ? value : '0' + value);
-function formatDateTime({ date = new Date(), mode = 'date' }) {
-    if (mode === 'time') {
-        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
-    }
-    else {
-        return (date.getFullYear() +
-            '-' +
-            _completeValue(date.getMonth() + 1) +
-            '-' +
-            _completeValue(date.getDate()));
-    }
-}
-function callOptions(options, data) {
-    options = options || {};
-    if (typeof data === 'string') {
-        data = {
-            errMsg: data,
-        };
-    }
-    if (/:ok$/.test(data.errMsg)) {
-        if (typeof options.success === 'function') {
-            options.success(data);
-        }
-    }
-    else {
-        if (typeof options.fail === 'function') {
-            options.fail(data);
-        }
-    }
-    if (typeof options.complete === 'function') {
-        options.complete(data);
-    }
-}
-function getValueByDataPath(obj, path) {
-    if (!shared.isString(path)) {
-        return;
-    }
-    path = path.replace(/\[(\d+)\]/g, '.$1');
-    const parts = path.split('.');
-    let key = parts[0];
-    if (!obj) {
-        obj = {};
-    }
-    if (parts.length === 1) {
-        return obj[key];
-    }
-    return getValueByDataPath(obj[key], parts.slice(1).join('.'));
-}
-
 function debounce(fn, delay) {
     let timeout;
     const newFn = function () {
@@ -1471,7 +1472,7 @@ exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
-exports.initCustomDataset = initCustomDataset;
+exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;

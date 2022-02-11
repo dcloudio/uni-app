@@ -93,6 +93,20 @@ function customizeEvent(str) {
     return camelize(str.replace(customizeRE, '-'));
 }
 
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
     const res = obj
@@ -112,20 +126,6 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
-
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
 
 class EventChannel {
     constructor(id, events) {
