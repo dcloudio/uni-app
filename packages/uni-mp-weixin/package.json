@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-weixin",
-  "version": "0.0.1-nvue3.3040020220207001",
+  "version": "0.0.1-nvue3.3040020220211001",
   "description": "uni-app mp-weixin",
   "main": "dist/index.js",
   "files": [
@@ -29,9 +29,9 @@
     "@vue/compiler-core": "3.2.30"
   },
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220207001",
-    "@dcloudio/uni-mp-vite": "0.0.1-nvue3.3040020220207001",
-    "@dcloudio/uni-mp-vue": "0.0.1-nvue3.3040020220207001",
-    "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220207001"
+    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220211001",
+    "@dcloudio/uni-mp-vite": "0.0.1-nvue3.3040020220211001",
+    "@dcloudio/uni-mp-vue": "0.0.1-nvue3.3040020220211001",
+    "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220211001"
   }
 }
