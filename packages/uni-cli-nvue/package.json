@@ -40,7 +40,7 @@
     "lru-cache": "^5.1.1",
     "merge-source-map": "^1.1.0",
     "module-alias": "^2.2.2",
-    "postcss": "^8.4.5",
+    "postcss": "^8.4.6",
     "postcss-comment": "^2.0.0",
     "postcss-import": "^14.0.2",
     "postcss-loader": "^6.1.1",
