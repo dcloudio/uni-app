@@ -18,7 +18,7 @@ export function Friction(e, t) {
   this._v = 0
 }
 Friction.prototype.setV = function (x, y) {
-  var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
+  const n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
   this._x_v = x
   this._y_v = y
   this._x_a = (-this._f * this._x_v) / n
@@ -39,8 +39,8 @@ Friction.prototype.s = function (t) {
     t = this._t
     this._lastDt = t
   }
-  var x = this._x_v * t + 0.5 * this._x_a * Math.pow(t, 2) + this._x_s
-  var y = this._y_v * t + 0.5 * this._y_a * Math.pow(t, 2) + this._y_s
+  let x = this._x_v * t + 0.5 * this._x_a * Math.pow(t, 2) + this._x_s
+  let y = this._y_v * t + 0.5 * this._y_a * Math.pow(t, 2) + this._y_s
   if (
     (this._x_a > 0 && x < this._endPositionX) ||
     (this._x_a < 0 && x > this._endPositionX)
@@ -80,7 +80,7 @@ Friction.prototype.dt = function () {
   return -this._x_v / this._x_a
 }
 Friction.prototype.done = function () {
-  var t =
+  const t =
     e(this.s().x, this._endPositionX) ||
     e(this.s().y, this._endPositionY) ||
     this._lastDt === this._t
@@ -105,10 +105,10 @@ export function Spring(m, k, c) {
   this._startTime = 0
 }
 Spring.prototype._solve = function (e, t) {
-  var n = this._c
-  var i = this._m
-  var r = this._k
-  var o = n * n - 4 * i * r
+  const n = this._c
+  const i = this._m
+  const r = this._k
+  const o = n * n - 4 * i * r
   if (o === 0) {
     const a = -n / (2 * i)
     const s = e
@@ -118,7 +118,7 @@ Spring.prototype._solve = function (e, t) {
         return (s + l * e) * Math.pow(Math.E, a * e)
       },
       dx: function (e) {
-        var t = Math.pow(Math.E, a * e)
+        const t = Math.pow(Math.E, a * e)
         return a * (s + l * e) * t + l * t
       },
     }
@@ -130,8 +130,8 @@ Spring.prototype._solve = function (e, t) {
     const h = e - d
     return {
       x: function (e) {
-        var t
-        var n
+        let t
+        let n
         if (e === this._t) {
           t = this._powER1T
           n = this._powER2T
@@ -146,8 +146,8 @@ Spring.prototype._solve = function (e, t) {
         return h * t + d * n
       },
       dx: function (e) {
-        var t
-        var n
+        let t
+        let n
         if (e === this._t) {
           t = this._powER1T
           n = this._powER2T
@@ -163,10 +163,10 @@ Spring.prototype._solve = function (e, t) {
       },
     }
   }
-  var p = Math.sqrt(4 * i * r - n * n) / (2 * i)
-  var f = (-n / 2) * i
-  var v = e
-  var g = (t - f * e) / p
+  const p = Math.sqrt(4 * i * r - n * n) / (2 * i)
+  const f = (-n / 2) * i
+  const v = e
+  const g = (t - f * e) / p
   return {
     x: function (e) {
       return (
@@ -174,9 +174,9 @@ Spring.prototype._solve = function (e, t) {
       )
     },
     dx: function (e) {
-      var t = Math.pow(Math.E, f * e)
-      var n = Math.cos(p * e)
-      var i = Math.sin(p * e)
+      const t = Math.pow(Math.E, f * e)
+      const n = Math.cos(p * e)
+      const i = Math.sin(p * e)
       return t * (g * p * n - v * p * i) + f * t * (g * i + v * n)
     },
   }
@@ -199,7 +199,7 @@ Spring.prototype.setEnd = function (e, n, i) {
   }
   if (e !== this._endPosition || !t(n, 0.1)) {
     n = n || 0
-    var r = this._endPosition
+    let r = this._endPosition
     if (this._solution) {
       if (t(n, 0.1)) {
         n = this._solution.dx((i - this._startTime) / 1e3)
@@ -286,14 +286,14 @@ export function STD(e, t, n) {
   this._startTime = 0
 }
 STD.prototype.setEnd = function (e, t, n, i) {
-  var r = new Date().getTime()
+  const r = new Date().getTime()
   this._springX.setEnd(e, i, r)
   this._springY.setEnd(t, i, r)
   this._springScale.setEnd(n, i, r)
   this._startTime = r
 }
 STD.prototype.x = function () {
-  var e = (new Date().getTime() - this._startTime) / 1e3
+  const e = (new Date().getTime() - this._startTime) / 1e3
   return {
     x: this._springX.x(e),
     y: this._springY.x(e),
@@ -301,7 +301,7 @@ STD.prototype.x = function () {
   }
 }
 STD.prototype.done = function () {
-  var e = new Date().getTime()
+  const e = new Date().getTime()
   return (
     this._springX.done(e) && this._springY.done(e) && this._springScale.done(e)
   )

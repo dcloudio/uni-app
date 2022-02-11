@@ -1,3 +1,4 @@
+import { cacheStringFunction } from '@dcloudio/uni-shared'
 import { Ref, SetupContext, EmitsOptions } from 'vue'
 
 type EventDetail = Record<string, any>
@@ -31,15 +32,7 @@ function normalizeCustomEvent(
   }
 }
 
-function cached(fn: Function) {
-  const cache = Object.create(null)
-  return function cachedFn(str: string) {
-    const hit = cache[str]
-    return hit || (cache[str] = fn(str))
-  }
-}
-
-const firstLetterToLowerCase = cached((str: string) => {
+const firstLetterToLowerCase = cacheStringFunction((str: string) => {
   return str.charAt(0).toLowerCase() + str.slice(1)
 })
 

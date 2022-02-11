@@ -6,7 +6,7 @@ var shared = require("@vue/shared");
 var uniShared = require("@dcloudio/uni-shared");
 var uniI18n = require("@dcloudio/uni-i18n");
 var vueRouter = require("vue-router");
-const isEnableLocale = uniShared.once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+const isEnableLocale = /* @__PURE__ */ uniShared.once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -201,10 +201,9 @@ function registerViewMethod(pageId, name, fn) {
     viewMethods[name] = fn;
   }
 }
-const ViewJSBridge = /* @__PURE__ */ shared.extend(initBridge("service"), {
+const ViewJSBridge = /* @__PURE__ */ shared.extend(/* @__PURE__ */ initBridge("service"), {
   invokeServiceMethod
 });
-uniShared.passive(true);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ vue.withModifiers(() => {
@@ -408,7 +407,7 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
+const ServiceJSBridge = /* @__PURE__ */ shared.extend(/* @__PURE__ */ initBridge("view"), {
   invokeOnCallback,
   invokeViewMethod,
   invokeViewMethodKeepAlive
@@ -730,13 +729,25 @@ function provideForm(trigger) {
   });
   return fields2;
 }
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
 const props$u = {
   for: {
     type: String,
     default: ""
   }
 };
+const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+function useProvideLabel() {
+  const handlers = [];
+  vue.provide(uniLabelKey, {
+    addHandler(handler) {
+      handlers.push(handler);
+    },
+    removeHandler(handler) {
+      handlers.splice(handlers.indexOf(handler), 1);
+    }
+  });
+  return handlers;
+}
 var index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$u,
@@ -769,18 +780,6 @@ var index$D = /* @__PURE__ */ defineBuiltInComponent({
     }, [slots.default && slots.default()], 10, ["onClick"]);
   }
 });
-function useProvideLabel() {
-  const handlers = [];
-  vue.provide(uniLabelKey, {
-    addHandler(handler) {
-      handlers.push(handler);
-    },
-    removeHandler(handler) {
-      handlers.splice(handlers.indexOf(handler), 1);
-    }
-  });
-  return handlers;
-}
 const buttonProps = {
   id: {
     type: String,
@@ -2772,7 +2771,6 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-uniShared.passive(true);
 function useUserAction() {
   const state = vue.reactive({
     userAction: false
@@ -3505,7 +3503,7 @@ function Friction(e2, t2) {
   this._v = 0;
 }
 Friction.prototype.setV = function(x, y) {
-  var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+  const n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
   this._x_a = -this._f * this._x_v / n;
@@ -3526,8 +3524,8 @@ Friction.prototype.s = function(t2) {
     t2 = this._t;
     this._lastDt = t2;
   }
-  var x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
-  var y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+  let x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
+  let y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -3561,7 +3559,7 @@ Friction.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction.prototype.done = function() {
-  var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
@@ -3582,10 +3580,10 @@ function Spring(m, k, c) {
   this._startTime = 0;
 }
 Spring.prototype._solve = function(e2, t2) {
-  var n = this._c;
-  var i = this._m;
-  var r = this._k;
-  var o = n * n - 4 * i * r;
+  const n = this._c;
+  const i = this._m;
+  const r = this._k;
+  const o = n * n - 4 * i * r;
   if (o === 0) {
     const a = -n / (2 * i);
     const s = e2;
@@ -3595,7 +3593,7 @@ Spring.prototype._solve = function(e2, t2) {
         return (s + l * e3) * Math.pow(Math.E, a * e3);
       },
       dx: function(e3) {
-        var t3 = Math.pow(Math.E, a * e3);
+        const t3 = Math.pow(Math.E, a * e3);
         return a * (s + l * e3) * t3 + l * t3;
       }
     };
@@ -3607,8 +3605,8 @@ Spring.prototype._solve = function(e2, t2) {
     const h = e2 - d;
     return {
       x: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -3623,8 +3621,8 @@ Spring.prototype._solve = function(e2, t2) {
         return h * t3 + d * n2;
       },
       dx: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -3640,18 +3638,18 @@ Spring.prototype._solve = function(e2, t2) {
       }
     };
   }
-  var p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
-  var f2 = -n / 2 * i;
-  var v2 = e2;
-  var g2 = (t2 - f2 * e2) / p2;
+  const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
+  const f2 = -n / 2 * i;
+  const v2 = e2;
+  const g2 = (t2 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      var t3 = Math.pow(Math.E, f2 * e3);
-      var n2 = Math.cos(p2 * e3);
-      var i2 = Math.sin(p2 * e3);
+      const t3 = Math.pow(Math.E, f2 * e3);
+      const n2 = Math.cos(p2 * e3);
+      const i2 = Math.sin(p2 * e3);
       return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
     }
   };
@@ -3674,7 +3672,7 @@ Spring.prototype.setEnd = function(e2, n, i) {
   }
   if (e2 !== this._endPosition || !t(n, 0.1)) {
     n = n || 0;
-    var r = this._endPosition;
+    let r = this._endPosition;
     if (this._solution) {
       if (t(n, 0.1)) {
         n = this._solution.dx((i - this._startTime) / 1e3);
@@ -3759,14 +3757,14 @@ function STD(e2, t2, n) {
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i) {
-  var r = new Date().getTime();
+  const r = new Date().getTime();
   this._springX.setEnd(e2, i, r);
   this._springY.setEnd(t2, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
 STD.prototype.x = function() {
-  var e2 = (new Date().getTime() - this._startTime) / 1e3;
+  const e2 = (new Date().getTime() - this._startTime) / 1e3;
   return {
     x: this._springX.x(e2),
     y: this._springY.x(e2),
@@ -3774,7 +3772,7 @@ STD.prototype.x = function() {
   };
 };
 STD.prototype.done = function() {
-  var e2 = new Date().getTime();
+  const e2 = new Date().getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
 STD.prototype.reconfigure = function(e2, t2, n) {
@@ -3836,6 +3834,9 @@ const props$k = {
     default: true
   }
 };
+function v(a, b) {
+  return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
+}
 var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: props$k,
@@ -3881,9 +3882,6 @@ function f(t2, n) {
   }
   let i = t2.offsetTop;
   return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
-}
-function v(a, b) {
-  return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -5150,7 +5148,6 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-uniShared.passive(true);
 const props$e = {
   scrollX: {
     type: [Boolean, String],

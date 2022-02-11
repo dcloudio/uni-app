@@ -4,7 +4,7 @@ import {
   defineAsyncApi,
   ChooseLocationProtocol,
 } from '@dcloudio/uni-api'
-import { showPage } from '../../../helpers/page'
+import { showPage } from '@dcloudio/uni-core'
 import { getStatusBarStyle } from '../../../helpers/statusBar'
 
 export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(

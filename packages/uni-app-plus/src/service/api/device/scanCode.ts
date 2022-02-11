@@ -1,4 +1,4 @@
-import { showPage } from '../../../helpers/page.js'
+import { showPage } from '@dcloudio/uni-core'
 import {
   defineAsyncApi,
   API_SCAN_CODE,

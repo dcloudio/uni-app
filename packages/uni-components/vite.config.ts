@@ -11,6 +11,19 @@ export default defineConfig({
   root: __dirname,
   define: {
     global: 'window',
+    __PLATFORM__: "'app'",
+    __DEV__: `(process.env.NODE_ENV !== 'production')`,
+    __NODE_JS__: false,
+    __APP_VIEW__: false,
+    __VUE_OPTIONS_API__: true,
+    __VUE_PROD_DEVTOOLS__: false,
+    __UNI_FEATURE_WX__: true,
+    __UNI_FEATURE_PROMISE__: false,
+    __UNI_FEATURE_I18N_EN__: true,
+    __UNI_FEATURE_I18N_ES__: true,
+    __UNI_FEATURE_I18N_FR__: true,
+    __UNI_FEATURE_I18N_ZH_HANS__: true,
+    __UNI_FEATURE_I18N_ZH_HANT__: true,
   },
   resolve: {
     alias: [

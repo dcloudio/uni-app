@@ -1,14 +1,10 @@
-import { provide, computed } from 'vue'
-import { PolySymbol, useCurrentPageId } from '@dcloudio/uni-core'
+import { computed } from 'vue'
+import { useCurrentPageId } from '@dcloudio/uni-core'
 import { withWebEvent } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '../../helpers/component'
-export const uniLabelKey = PolySymbol(__DEV__ ? 'uniLabel' : 'ul')
-const props = {
-  for: {
-    type: String,
-    default: '',
-  },
-}
+import { props, useProvideLabel } from '../../components/label'
+
+export { UniLabelCtx, uniLabelKey } from '../../components/label'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Label',
@@ -55,24 +51,3 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
   },
 })
-
-export interface UniLabelCtx {
-  addHandler: (handler: UniLabelHandlerCtx) => void
-  removeHandler: (handler: UniLabelHandlerCtx) => void
-}
-type UniLabelHandlerCtx = ($event: Event, b: boolean) => void
-
-function useProvideLabel() {
-  const handlers: UniLabelHandlerCtx[] = []
-
-  provide<UniLabelCtx>(uniLabelKey, {
-    addHandler(handler: UniLabelHandlerCtx) {
-      handlers.push(handler)
-    },
-    removeHandler(handler: UniLabelHandlerCtx) {
-      handlers.splice(handlers.indexOf(handler), 1)
-    },
-  })
-
-  return handlers
-}

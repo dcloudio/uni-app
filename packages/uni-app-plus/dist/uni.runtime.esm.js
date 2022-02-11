@@ -1006,7 +1006,7 @@ function isI18nStr(value, delimiters) {
     return value.indexOf(delimiters[0]) > -1;
 }
 
-const isEnableLocale = once(() => typeof __uniConfig !== 'undefined' &&
+const isEnableLocale = /*#__PURE__*/ once(() => typeof __uniConfig !== 'undefined' &&
     __uniConfig.locales &&
     !!Object.keys(__uniConfig.locales).length);
 
@@ -1555,6 +1555,133 @@ function getRouteMeta(path) {
     }
 }
 
+let plus_;
+let weex_;
+let BroadcastChannel_;
+function getRuntime() {
+    return typeof window === 'object' &&
+        typeof navigator === 'object' &&
+        typeof document === 'object'
+        ? 'webview'
+        : 'v8';
+}
+function getPageId() {
+    return plus_.webview.currentWebview().id;
+}
+let channel;
+let globalEvent$1;
+const callbacks$2 = {};
+function onPlusMessage$1(res) {
+    const message = res.data && res.data.__message;
+    if (!message || !message.__page) {
+        return;
+    }
+    const pageId = message.__page;
+    const callback = callbacks$2[pageId];
+    callback && callback(message);
+    if (!message.keep) {
+        delete callbacks$2[pageId];
+    }
+}
+function addEventListener(pageId, callback) {
+    if (getRuntime() === 'v8') {
+        if (BroadcastChannel_) {
+            channel && channel.close();
+            channel = new BroadcastChannel_(getPageId());
+            channel.onmessage = onPlusMessage$1;
+        }
+        else if (!globalEvent$1) {
+            globalEvent$1 = weex_.requireModule('globalEvent');
+            globalEvent$1.addEventListener('plusMessage', onPlusMessage$1);
+        }
+    }
+    else {
+        // @ts-ignore
+        window.__plusMessage = onPlusMessage$1;
+    }
+    callbacks$2[pageId] = callback;
+}
+class Page {
+    constructor(webview) {
+        this.webview = webview;
+    }
+    sendMessage(data) {
+        const message = JSON.parse(JSON.stringify({
+            __message: {
+                data,
+            },
+        }));
+        const id = this.webview.id;
+        if (BroadcastChannel_) {
+            const channel = new BroadcastChannel_(id);
+            channel.postMessage(message);
+        }
+        else {
+            plus_.webview.postMessageToUniNView &&
+                plus_.webview.postMessageToUniNView(message, id);
+        }
+    }
+    close() {
+        this.webview.close();
+    }
+}
+function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
+    // eslint-disable-next-line
+    plus_ = context.plus || plus;
+    // eslint-disable-next-line
+    weex_ = context.weex || (typeof weex === 'object' ? weex : null);
+    // eslint-disable-next-line
+    BroadcastChannel_ =
+        context.BroadcastChannel ||
+            (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
+    const titleNView = {
+        autoBackButton: true,
+        titleSize: '17px',
+    };
+    const pageId = `page${Date.now()}`;
+    style = extend({}, style);
+    if (style.titleNView !== false && style.titleNView !== 'none') {
+        style.titleNView = extend(titleNView, style.titleNView);
+    }
+    const defaultStyle = {
+        top: 0,
+        bottom: 0,
+        usingComponents: {},
+        popGesture: 'close',
+        scrollIndicator: 'none',
+        animationType: 'pop-in',
+        animationDuration: 200,
+        uniNView: {
+            path: `${(typeof process === 'object' &&
+                process.env &&
+                process.env.VUE_APP_TEMPLATE_PATH) ||
+                ''}/${url}.js`,
+            defaultFontSize: 16,
+            viewport: plus_.screen.resolutionWidth,
+        },
+    };
+    style = extend(defaultStyle, style);
+    const page = plus_.webview.create('', pageId, style, {
+        extras: {
+            from: getPageId(),
+            runtime: getRuntime(),
+            data,
+            useGlobalEvent: !BroadcastChannel_,
+        },
+    });
+    page.addEventListener('close', onClose);
+    addEventListener(pageId, (message) => {
+        if (typeof onMessage === 'function') {
+            onMessage(message.data);
+        }
+        if (!message.keep) {
+            page.close('auto');
+        }
+    });
+    page.show(style.animationType, style.animationDuration);
+    return new Page(page);
+}
+
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
 
 let invokeViewMethodId = 1;
@@ -1601,7 +1728,8 @@ function onInvokeServiceMethod({ id, name, args, }, pageId) {
     }
 }
 
-const ServiceJSBridge = /*#__PURE__*/ extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
+const ServiceJSBridge = /*#__PURE__*/ extend(
+/*#__PURE__*/ initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
     invokeOnCallback,
     invokeViewMethod,
     invokeViewMethodKeepAlive,
@@ -13494,133 +13622,6 @@ const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, 
         });
     }
 }, StartSoterAuthenticationProtocols, StartSoterAuthenticationOptions);
-
-let plus_;
-let weex_;
-let BroadcastChannel_;
-function getRuntime() {
-    return typeof window === 'object' &&
-        typeof navigator === 'object' &&
-        typeof document === 'object'
-        ? 'webview'
-        : 'v8';
-}
-function getPageId() {
-    return plus_.webview.currentWebview().id;
-}
-let channel;
-let globalEvent$1;
-const callbacks$2 = {};
-function onPlusMessage$1(res) {
-    const message = res.data && res.data.__message;
-    if (!message || !message.__page) {
-        return;
-    }
-    const pageId = message.__page;
-    const callback = callbacks$2[pageId];
-    callback && callback(message);
-    if (!message.keep) {
-        delete callbacks$2[pageId];
-    }
-}
-function addEventListener(pageId, callback) {
-    if (getRuntime() === 'v8') {
-        if (BroadcastChannel_) {
-            channel && channel.close();
-            channel = new BroadcastChannel_(getPageId());
-            channel.onmessage = onPlusMessage$1;
-        }
-        else if (!globalEvent$1) {
-            globalEvent$1 = weex_.requireModule('globalEvent');
-            globalEvent$1.addEventListener('plusMessage', onPlusMessage$1);
-        }
-    }
-    else {
-        // @ts-ignore
-        window.__plusMessage = onPlusMessage$1;
-    }
-    callbacks$2[pageId] = callback;
-}
-class Page {
-    constructor(webview) {
-        this.webview = webview;
-    }
-    sendMessage(data) {
-        const message = JSON.parse(JSON.stringify({
-            __message: {
-                data,
-            },
-        }));
-        const id = this.webview.id;
-        if (BroadcastChannel_) {
-            const channel = new BroadcastChannel_(id);
-            channel.postMessage(message);
-        }
-        else {
-            plus_.webview.postMessageToUniNView &&
-                plus_.webview.postMessageToUniNView(message, id);
-        }
-    }
-    close() {
-        this.webview.close();
-    }
-}
-function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
-    // eslint-disable-next-line
-    plus_ = context.plus || plus;
-    // eslint-disable-next-line
-    weex_ = context.weex || (typeof weex === 'object' ? weex : null);
-    // eslint-disable-next-line
-    BroadcastChannel_ =
-        context.BroadcastChannel ||
-            (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
-    const titleNView = {
-        autoBackButton: true,
-        titleSize: '17px',
-    };
-    const pageId = `page${Date.now()}`;
-    style = extend({}, style);
-    if (style.titleNView !== false && style.titleNView !== 'none') {
-        style.titleNView = extend(titleNView, style.titleNView);
-    }
-    const defaultStyle = {
-        top: 0,
-        bottom: 0,
-        usingComponents: {},
-        popGesture: 'close',
-        scrollIndicator: 'none',
-        animationType: 'pop-in',
-        animationDuration: 200,
-        uniNView: {
-            path: `${(typeof process === 'object' &&
-                process.env &&
-                process.env.VUE_APP_TEMPLATE_PATH) ||
-                ''}/${url}.js`,
-            defaultFontSize: 16,
-            viewport: plus_.screen.resolutionWidth,
-        },
-    };
-    style = extend(defaultStyle, style);
-    const page = plus_.webview.create('', pageId, style, {
-        extras: {
-            from: getPageId(),
-            runtime: getRuntime(),
-            data,
-            useGlobalEvent: !BroadcastChannel_,
-        },
-    });
-    page.addEventListener('close', onClose);
-    addEventListener(pageId, (message) => {
-        if (typeof onMessage === 'function') {
-            onMessage(message.data);
-        }
-        if (!message.keep) {
-            page.close('auto');
-        }
-    });
-    page.show(style.animationType, style.animationDuration);
-    return new Page(page);
-}
 
 const scanCode = defineAsyncApi(API_SCAN_CODE, (options, { resolve, reject }) => {
     initI18nScanCodeMsgsOnce();
