@@ -347,6 +347,20 @@ describe('mp:compiler-extra', () => {
       '<view><block wx:for="abc" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[\'#s#abc\',\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
     )
     assertCodegen(
+      '<view v-for="(item,index) in list" :key="index" @click.stop="func">{{item}}</view>',
+      '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$event\']]]]]}}" catchtap="__e">{{item}}</view></block>'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in [1,2,3]" :key="index" @click.stop="func">{{item}}</view>',
+      '<block wx:for="{{[1,2,3]}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" catchtap="__e">{{item}}</view></block>',
+      'with(this){if(!_isMounted){e0=function($event){$event.stopPropagation();return func($event)}}}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in array()" :key="index" @click.stop="func">{{item}}</view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" catchtap="__e">{{item}}</view></block>',
+      'with(this){var l0=array();if(!_isMounted){e0=function($event){$event.stopPropagation();return func($event)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
       '<view><view class="item" v-for="i in 5" :key="i" @click="func(i)"></view></view>',
       '<view><block wx:for="{{5}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[5,\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
     )
