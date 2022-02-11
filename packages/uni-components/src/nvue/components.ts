@@ -5,8 +5,8 @@ import MovableArea from './movable-area'
 import MovableView from './movable-view'
 export default {
   Navigator,
-  /* Label,
+  Label,
   Button,
   MovableArea,
-  MovableView */
+  MovableView,
 }

@@ -6,7 +6,7 @@ export interface UserActionState {
   userAction: boolean
 }
 
-const passiveOptions = passive(true)
+const passiveOptions = /*#__PURE__*/ passive(true)
 const states: UserActionState[] = []
 let userInteract: number = 0
 let inited: boolean

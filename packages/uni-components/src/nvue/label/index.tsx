@@ -8,7 +8,7 @@ type LabelTarget = HTMLElement & {
   attr: { dataUncType: string }
 }
 
-export default defineComponent({
+export default /*#__PURE__*/ defineComponent({
   name: 'Label',
   props,
   styles: [],

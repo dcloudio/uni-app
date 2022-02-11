@@ -19,7 +19,7 @@ import {
   CustomEventTrigger,
   EmitEvent,
   useCustomEvent,
-} from '../../helpers/useNvueEvent'
+} from '../../helpers/useNVueEvent'
 import {
   MovableViewContext,
   AddMovableViewContext,

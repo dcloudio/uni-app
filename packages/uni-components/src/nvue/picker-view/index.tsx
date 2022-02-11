@@ -12,7 +12,7 @@ import {
 import { extend } from '@vue/shared'
 import { props, GetPickerViewColumn } from '../../components/picker-view'
 import { flatVNode } from '../../helpers/flatVNode'
-import { useCustomEvent, EmitEvent } from '../../helpers/useNvueEvent'
+import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
 
 export { Props, GetPickerViewColumn }
 const pickerViewProps = extend({}, props, {

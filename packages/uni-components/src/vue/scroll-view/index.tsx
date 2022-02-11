@@ -34,7 +34,7 @@ interface State {
   refreshState: RefreshState
 }
 
-const passiveOptions = passive(true)
+const passiveOptions = /*#__PURE__*/ passive(true)
 
 const props = {
   scrollX: {
