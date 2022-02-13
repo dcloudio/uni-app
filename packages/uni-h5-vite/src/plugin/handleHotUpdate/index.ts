@@ -5,7 +5,9 @@ import { extend } from '@vue/shared'
 import {
   initEasycomsOnce,
   initFeatures,
+  MANIFEST_JSON_JS,
   normalizePath,
+  PAGES_JSON_JS,
   parseManifestJson,
   parsePagesJson,
   resolveComponentsLibPath,
@@ -29,8 +31,8 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
     const platform = process.env.UNI_PLATFORM
     if (!invalidateFiles) {
       invalidateFiles = [
-        path.resolve(inputDir, 'pages.json.js'),
-        path.resolve(inputDir, 'manifest.json.js'),
+        path.resolve(inputDir, PAGES_JSON_JS),
+        path.resolve(inputDir, MANIFEST_JSON_JS),
         require.resolve('@dcloudio/uni-h5/dist/uni-h5.es.js'),
       ]
       try {

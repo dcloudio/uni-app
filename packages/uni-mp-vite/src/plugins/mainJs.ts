@@ -1,5 +1,6 @@
 import {
   defineUniMainJsPlugin,
+  PAGES_JSON_JS,
   parseProgram,
   transformDynamicImports,
   updateMiniProgramGlobalComponents,
@@ -39,7 +40,7 @@ export function uniMainJsPlugin(
           })
           return {
             code:
-              `import 'plugin-vue:export-helper';import 'uni-mp-runtime';import './pages.json.js';` +
+              `import 'plugin-vue:export-helper';import 'uni-mp-runtime';import './${PAGES_JSON_JS}';` +
               code,
             map,
           }

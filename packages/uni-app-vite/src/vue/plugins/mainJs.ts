@@ -1,4 +1,4 @@
-import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
+import { defineUniMainJsPlugin, PAGES_JSON_JS } from '@dcloudio/uni-cli-shared'
 
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {
@@ -11,7 +11,7 @@ export function uniMainJsPlugin() {
             ? createApp(code)
             : createLegacyApp(code)
           return {
-            code: `import './pages.json.js';` + code,
+            code: `import './${PAGES_JSON_JS}';` + code,
             map: { mappings: '' },
           }
         }

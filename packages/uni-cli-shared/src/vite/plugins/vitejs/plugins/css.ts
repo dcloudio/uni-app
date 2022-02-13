@@ -29,6 +29,7 @@ import type Less from 'less'
 import type { Alias } from 'types/alias'
 import { transform, formatMessages } from 'esbuild'
 import { preCss, preNVueCss } from '../../../../preprocess'
+import { PAGES_JSON_JS } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -196,7 +197,7 @@ function findCssModuleIds(
   const moduleInfo = this.getModuleInfo(moduleId)
   if (moduleInfo) {
     moduleInfo.importedIds.forEach((id) => {
-      if (id.includes('pages.json.js')) {
+      if (id.includes(PAGES_JSON_JS)) {
         // 查询main.js时，需要忽略pages.json.js，否则会把所有页面样式加进来
         return
       }

@@ -1,4 +1,3 @@
-import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
   API_DEPS_CSS,
@@ -10,9 +9,9 @@ import {
   defineUniPagesJsonPlugin,
   normalizePagesRoute,
   normalizePagePath,
-  normalizePath,
   isEnableTreeShaking,
   parseManifestJsonOnce,
+  MANIFEST_JSON_JS,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR } from '../utils'
 
@@ -49,15 +48,12 @@ function generatePagesJsonCode(
   const definePagesCode = generatePagesDefineCode(pagesJson, config)
   const uniRoutesCode = generateRoutes(globalName, pagesJson, config)
   const uniConfigCode = generateConfig(globalName, pagesJson, config)
-  const manifestJsonPath = normalizePath(
-    path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json.js')
-  )
   const cssCode = generateCssCode(config)
 
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
-import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from '${manifestJsonPath}'
+import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
 const extend = Object.assign

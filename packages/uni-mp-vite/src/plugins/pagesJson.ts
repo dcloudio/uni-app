@@ -13,6 +13,7 @@ import {
   addMiniProgramAppJson,
   findChangedJsonFiles,
   mergeMiniProgramAppJson,
+  MANIFEST_JSON_JS,
 } from '@dcloudio/uni-cli-shared'
 import { virtualPagePath } from './entry'
 import { UniMiniProgramPluginOptions } from '../plugin'
@@ -73,7 +74,7 @@ export function uniPagesJsonPlugin(
           addMiniProgramPageJson(name, pageJsons[name])
         })
         return {
-          code: `import './manifest.json.js'\n` + importPagesCode(appJson),
+          code: `import './${MANIFEST_JSON_JS}'\n` + importPagesCode(appJson),
           map: { mappings: '' },
         }
       },
