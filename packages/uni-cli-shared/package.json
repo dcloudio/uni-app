@@ -18,8 +18,8 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "@babel/core": "^7.16.12",
-    "@babel/parser": "^7.16.12",
+    "@babel/core": "^7.17.2",
+    "@babel/parser": "^7.16.4",
     "@babel/types": "^7.16.8",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3030820220114011",
     "@dcloudio/uni-shared": "3.0.0-alpha-3030820220114011",
