@@ -5405,7 +5405,8 @@ function createHydrationFunctions(rendererInternals) {
         // e.g. <option :value="obj">, <input type="checkbox" :true-value="1">
         const forcePatchValue = (type === 'input' && dirs) || type === 'option';
         // skip props & children if this is hoisted static nodes
-        if (forcePatchValue || patchFlag !== -1 /* HOISTED */) {
+        // #5405 in dev, always hydrate children for HMR
+        if ((process.env.NODE_ENV !== 'production') || forcePatchValue || patchFlag !== -1 /* HOISTED */) {
             if (dirs) {
                 invokeDirectiveHook(vnode, null, parentComponent, 'created');
             }
@@ -8001,9 +8002,11 @@ const PublicInstanceProxyHandlers = {
         const { data, setupState, ctx } = instance;
         if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
             setupState[key] = value;
+            return true;
         }
         else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
             data[key] = value;
+            return true;
         }
         else if (hasOwn(instance.props, key)) {
             (process.env.NODE_ENV !== 'production') &&
@@ -8039,6 +8042,15 @@ const PublicInstanceProxyHandlers = {
             hasOwn(ctx, key) ||
             hasOwn(publicPropertiesMap, key) ||
             hasOwn(appContext.config.globalProperties, key));
+    },
+    defineProperty(target, key, descriptor) {
+        if (descriptor.get != null) {
+            this.set(target, key, descriptor.get(), null);
+        }
+        else if (descriptor.value != null) {
+            this.set(target, key, descriptor.value, null);
+        }
+        return Reflect.defineProperty(target, key, descriptor);
     }
 };
 if ((process.env.NODE_ENV !== 'production') && !false) {
@@ -8940,7 +8952,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.30";
+const version = "3.2.31";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,

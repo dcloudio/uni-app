@@ -3808,9 +3808,11 @@ const PublicInstanceProxyHandlers = {
         const { data, setupState, ctx } = instance;
         if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
             setupState[key] = value;
+            return true;
         }
         else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
             data[key] = value;
+            return true;
         }
         else if (hasOwn(instance.props, key)) {
             (process.env.NODE_ENV !== 'production') &&
@@ -3846,6 +3848,15 @@ const PublicInstanceProxyHandlers = {
             hasOwn(ctx, key) ||
             hasOwn(publicPropertiesMap, key) ||
             hasOwn(appContext.config.globalProperties, key));
+    },
+    defineProperty(target, key, descriptor) {
+        if (descriptor.get != null) {
+            this.set(target, key, descriptor.get(), null);
+        }
+        else if (descriptor.value != null) {
+            this.set(target, key, descriptor.value, null);
+        }
+        return Reflect.defineProperty(target, key, descriptor);
     }
 };
 if ((process.env.NODE_ENV !== 'production') && !false) {
@@ -4415,7 +4426,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.30";
+const version = "3.2.31";
 /**
  * @internal only exposed in compat builds
  */

@@ -5367,7 +5367,8 @@ function createHydrationFunctions(rendererInternals) {
         // e.g. <option :value="obj">, <input type="checkbox" :true-value="1">
         const forcePatchValue = (type === 'input' && dirs) || type === 'option';
         // skip props & children if this is hoisted static nodes
-        if (forcePatchValue || patchFlag !== -1 /* HOISTED */) {
+        // #5405 in dev, always hydrate children for HMR
+        {
             if (dirs) {
                 invokeDirectiveHook(vnode, null, parentComponent, 'created');
             }
@@ -7912,9 +7913,11 @@ const PublicInstanceProxyHandlers = {
         const { data, setupState, ctx } = instance;
         if (setupState !== shared.EMPTY_OBJ && shared.hasOwn(setupState, key)) {
             setupState[key] = value;
+            return true;
         }
         else if (data !== shared.EMPTY_OBJ && shared.hasOwn(data, key)) {
             data[key] = value;
+            return true;
         }
         else if (shared.hasOwn(instance.props, key)) {
             warn$1(`Attempting to mutate prop "${key}". Props are readonly.`, instance);
@@ -7948,6 +7951,15 @@ const PublicInstanceProxyHandlers = {
             shared.hasOwn(ctx, key) ||
             shared.hasOwn(publicPropertiesMap, key) ||
             shared.hasOwn(appContext.config.globalProperties, key));
+    },
+    defineProperty(target, key, descriptor) {
+        if (descriptor.get != null) {
+            this.set(target, key, descriptor.get(), null);
+        }
+        else if (descriptor.value != null) {
+            this.set(target, key, descriptor.value, null);
+        }
+        return Reflect.defineProperty(target, key, descriptor);
     }
 };
 {
@@ -8829,7 +8841,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.30";
+const version = "3.2.31";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
