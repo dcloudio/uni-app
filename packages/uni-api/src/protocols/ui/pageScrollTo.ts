@@ -5,11 +5,9 @@ export const PageScrollToProtocol: ApiProtocol<API_TYPE_PAGE_SCROLL_TO> = {
   selector: String,
   duration: Number,
 }
-const DEFAULT_DURATION = 300
+
 export const PageScrollToOptions: ApiOptions<API_TYPE_PAGE_SCROLL_TO> = {
   formatArgs: {
-    duration(value, params) {
-      params.duration = Math.max(0, parseInt(value + '') || DEFAULT_DURATION)
-    },
+    duration: 300,
   },
 }

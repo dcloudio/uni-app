@@ -5236,12 +5236,9 @@ const PageScrollToProtocol = {
   selector: String,
   duration: Number
 };
-const DEFAULT_DURATION = 300;
 const PageScrollToOptions = {
   formatArgs: {
-    duration(value, params) {
-      params.duration = Math.max(0, parseInt(value + "") || DEFAULT_DURATION);
-    }
+    duration: 300
   }
 };
 const API_SHOW_ACTION_SHEET = "showActionSheet";
