@@ -20,7 +20,7 @@ importers:
       '@types/jest': ^26.0.23
       '@typescript-eslint/parser': ^5.3.0
       '@vitejs/plugin-vue': ^2.2.0
-      '@vitejs/plugin-vue-jsx': ^1.3.4
+      '@vitejs/plugin-vue-jsx': ^1.3.5
       '@vue/reactivity': 3.2.30
       '@vue/runtime-core': 3.2.30
       '@vue/runtime-dom': 3.2.30
@@ -68,7 +68,7 @@ importers:
       '@types/jest': 26.0.24
       '@typescript-eslint/parser': 5.5.0_eslint@7.32.0+typescript@4.5.3
       '@vitejs/plugin-vue': 2.2.0_vite@2.8.1+vue@3.2.30
-      '@vitejs/plugin-vue-jsx': 1.3.4
+      '@vitejs/plugin-vue-jsx': 1.3.5
       '@vue/reactivity': 3.2.30
       '@vue/runtime-core': 3.2.30
       '@vue/runtime-dom': 3.2.30
@@ -269,8 +269,8 @@ importers:
 
   packages/uni-cli-shared:
     specifiers:
-      '@babel/core': ^7.16.12
-      '@babel/parser': ^7.16.12
+      '@babel/core': ^7.17.2
+      '@babel/parser': ^7.16.4
       '@babel/types': ^7.16.8
       '@dcloudio/uni-i18n': 0.0.1-nvue3.3040020220211001
       '@dcloudio/uni-shared': 0.0.1-nvue3.3040020220211001
@@ -506,7 +506,7 @@ importers:
   packages/uni-mp-compiler:
     specifiers:
       '@babel/generator': ^7.16.0
-      '@babel/parser': ^7.16.12
+      '@babel/parser': ^7.16.4
       '@babel/types': ^7.16.8
       '@dcloudio/uni-cli-shared': 0.0.1-nvue3.3040020220211001
       '@dcloudio/uni-shared': 0.0.1-nvue3.3040020220211001
@@ -724,7 +724,7 @@ importers:
 
   packages/vite-plugin-uni:
     specifiers:
-      '@babel/core': ^7.16.12
+      '@babel/core': ^7.17.2
       '@babel/plugin-syntax-import-meta': ^7.10.4
       '@babel/plugin-transform-typescript': ^7.16.8
       '@dcloudio/uni-cli-shared': 0.0.1-nvue3.3040020220211001
@@ -734,9 +734,9 @@ importers:
       '@types/express': ^4.17.12
       '@types/fs-extra': ^9.0.13
       '@types/sass': ^1.16.0
-      '@vitejs/plugin-legacy': ^1.7.0
+      '@vitejs/plugin-legacy': ^1.7.1
       '@vitejs/plugin-vue': ^2.2.0
-      '@vitejs/plugin-vue-jsx': ^1.3.4
+      '@vitejs/plugin-vue-jsx': ^1.3.5
       '@vue/babel-plugin-jsx': ^1.1.1
       '@vue/compiler-core': 3.2.30
       '@vue/compiler-dom': 3.2.30
@@ -758,9 +758,9 @@ importers:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.2
-      '@vitejs/plugin-legacy': 1.7.0_vite@2.8.1
+      '@vitejs/plugin-legacy': 1.7.1_vite@2.8.1
       '@vitejs/plugin-vue': 2.2.0_vite@2.8.1+vue@3.2.30
-      '@vitejs/plugin-vue-jsx': 1.3.4
+      '@vitejs/plugin-vue-jsx': 1.3.5
       '@vue/compiler-core': 3.2.30
       '@vue/compiler-dom': 3.2.30
       '@vue/compiler-sfc': 3.2.30
@@ -810,11 +810,11 @@ packages:
   /@babel/compat-data/7.16.4:
     resolution: {integrity: sha512-1o/jo7D+kC9ZjHX5v+EHrdjl3PhxMrLSOTGsOdHJ+KL8HCaEK6ehrVL2RS6oHDZp+L7xLirLrPmQtEng769J/Q==}
     engines: {node: '>=6.9.0'}
+    dev: true
 
   /@babel/compat-data/7.17.0:
     resolution: {integrity: sha512-392byTlpGWXMv4FbyWw3sAZ/FrW/DrwqLGXpy0mbyNe9Taqv1mg9yON5/o0cnr8XYCkFTZbC1eV+c+LAROgrng==}
     engines: {node: '>=6.9.0'}
-    dev: true
 
   /@babel/core/7.16.0:
     resolution: {integrity: sha512-mYZEvshBRHGsIAiyH5PzCFTCfbWfoYbO/jcSdXQSUQu1/pW0xDZAUP7KEc32heqWTAfAHhV9j1vH8Sav7l+JNQ==}
@@ -910,7 +910,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
-      '@babel/compat-data': 7.16.4
+      '@babel/compat-data': 7.17.0
       '@babel/helper-validator-option': 7.16.7
       browserslist: 4.19.1
       semver: 6.3.0
@@ -922,7 +922,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
-      '@babel/compat-data': 7.16.4
+      '@babel/compat-data': 7.17.0
       '@babel/core': 7.17.2
       '@babel/helper-validator-option': 7.16.7
       browserslist: 4.19.1
@@ -3127,11 +3127,11 @@ packages:
       eslint-visitor-keys: 3.1.0
     dev: true
 
-  /@vitejs/plugin-legacy/1.7.0_vite@2.8.1:
-    resolution: {integrity: sha512-/aXOuxCqXHQLpCTb/qSdZR6lsFoVNuuw9FhSf1T1Rffya4bnXy7/+bpMmAobqcRUDhqg0hRWc1KiWd3B+pUHQg==}
+  /@vitejs/plugin-legacy/1.7.1_vite@2.8.1:
+    resolution: {integrity: sha512-RqgILXsGpfV7NHodVCdBVau8ss5+ynMXp6JGF/F7nhSy0bnwSQPlMS3KFqh7twfifXK8VuMriqfU4CxOiqmNnA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      vite: ^2.7.8
+      vite: ^2.8.0
     dependencies:
       '@babel/standalone': 7.17.2
       core-js: 3.21.0
@@ -3141,8 +3141,8 @@ packages:
       vite: 2.8.1
     dev: false
 
-  /@vitejs/plugin-vue-jsx/1.3.4:
-    resolution: {integrity: sha512-nBVG+IZ7Gl6kZbv6RSTBu+v5GPE1TWPUcOrdWpGFMThFMlhyGGZMJuB6YCyApyXUdgdzj3RVGqvOdqQNQjaxBg==}
+  /@vitejs/plugin-vue-jsx/1.3.5:
+    resolution: {integrity: sha512-iBxRQS8SOGxI4c8/cucgumD9a1SO4ngn91YbluyWe1L2k0D7+3v64XbjZxXX2O964LubY8Tehl3ihr0W7f3+/g==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/core': 7.17.2
