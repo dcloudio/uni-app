@@ -5093,10 +5093,9 @@ function createHydrationFunctions(rendererInternals) {
     // e.g. <option :value="obj">, <input type="checkbox" :true-value="1">
 
     var forcePatchValue = type === 'input' && dirs || type === 'option'; // skip props & children if this is hoisted static nodes
+    // #5405 in dev, always hydrate children for HMR
 
-    if (forcePatchValue || patchFlag !== -1
-    /* HOISTED */
-    ) {
+    {
       if (dirs) {
         invokeDirectiveHook(vnode, null, parentComponent, 'created');
       } // props
@@ -5169,7 +5168,6 @@ function createHydrationFunctions(rendererInternals) {
         }
       }
     }
-
     return el.nextSibling;
   };
 
@@ -8253,8 +8251,10 @@ var PublicInstanceProxyHandlers = {
 
     if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
       setupState[key] = value;
+      return true;
     } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
       data[key] = value;
+      return true;
     } else if (hasOwn(instance.props, key)) {
       warn("Attempting to mutate prop \"".concat(key, "\". Props are readonly."), instance);
       return false;
@@ -8291,6 +8291,16 @@ var PublicInstanceProxyHandlers = {
     } = _ref20;
     var normalizedProps;
     return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn(data, key) || setupState !== EMPTY_OBJ && hasOwn(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
+  },
+
+  defineProperty(target, key, descriptor) {
+    if (descriptor.get != null) {
+      this.set(target, key, descriptor.get(), null);
+    } else if (descriptor.value != null) {
+      this.set(target, key, descriptor.value, null);
+    }
+
+    return Reflect.defineProperty(target, key, descriptor);
   }
 
 };
@@ -9275,7 +9285,7 @@ function isMemoSame(cached, memo) {
 } // Core API ------------------------------------------------------------------
 
 
-var version = "3.2.30";
+var version = "3.2.31";
 var _ssrUtils = {
   createComponentInstance,
   setupComponent,
