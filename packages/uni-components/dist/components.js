@@ -478,7 +478,7 @@ var Button = defineComponent({
         return;
       }
       if (isLabelClick) {
-        rootRef.value.click();
+        rootRef.value.event.click.handler(e2);
       }
     };
     const _getClass = (t2) => {
@@ -518,7 +518,7 @@ var Button = defineComponent({
       return vnodes;
     };
     return () => {
-      return createVNode("div", mergeProps({
+      return createVNode("view", mergeProps({
         "ref": rootRef,
         "class": ["ub", _getClass("")]
       }, extend({}, useHoverClass(props), {
