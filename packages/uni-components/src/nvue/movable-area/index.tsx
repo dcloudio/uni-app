@@ -120,9 +120,9 @@ export default defineComponent({
       const defaultSlots = slots.default && slots.default()
       const movableViewItems = flatVNode(defaultSlots)
       return (
-        <div class="uni-movable-area" {...listeners}>
+        <view class="uni-movable-area" {...listeners}>
           {movableViewItems}
-        </div>
+        </view>
       )
     }
   },
