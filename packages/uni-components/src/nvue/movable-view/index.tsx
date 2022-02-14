@@ -148,7 +148,7 @@ export default defineComponent({
         preventGesture: true,
       }
       return (
-        <div
+        <view
           ref={rootRef}
           onTouchstart={touchStart}
           class="uni-movable-view"
@@ -156,7 +156,7 @@ export default defineComponent({
           {...attrs}
         >
           {slots.default && slots.default()}
-        </div>
+        </view>
       )
     }
   },

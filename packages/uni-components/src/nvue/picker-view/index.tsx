@@ -70,15 +70,15 @@ export default defineComponent({
       const defaultSlots = slots.default && slots.default()
       columnVNodes = flatVNode(defaultSlots)
       return (
-        <div
+        <view
           ref={rootRef}
           class="uni-picker-view"
           {...{
             preventGesture: true,
           }}
         >
-          <div class="uni-picker-view-wrapper">{defaultSlots}</div>
-        </div>
+          <view class="uni-picker-view-wrapper">{defaultSlots}</view>
+        </view>
       )
     }
   },

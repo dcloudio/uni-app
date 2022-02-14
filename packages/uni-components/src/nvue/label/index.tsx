@@ -39,7 +39,7 @@ export default /*#__PURE__*/ defineComponent({
     }
 
     return () => (
-      <div onClick={_onClick}>{slots.default && slots.default()}</div>
+      <view onClick={_onClick}>{slots.default && slots.default()}</view>
     )
   },
 })

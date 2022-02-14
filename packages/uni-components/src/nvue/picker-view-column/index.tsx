@@ -153,14 +153,14 @@ export default defineComponent({
       }
 
       return (
-        <div ref={rootRef} class="uni-picker-view-column">
+        <view ref={rootRef} class="uni-picker-view-column">
           <scroll-view
             class="uni-picker-view-group"
             style="flex-direction:column;"
             onScrollend={onScrollend}
             {...scrollOptions}
           >
-            <div
+            <view
               ref={contentRef}
               class="uni-picker-view-content"
               style={{
@@ -170,7 +170,7 @@ export default defineComponent({
               }}
             >
               {createScrollViewChild(children)}
-            </div>
+            </view>
           </scroll-view>
           <u-scalable class="uni-picker-view-mask" style={maskStyle}>
             <u-scalable
@@ -193,7 +193,7 @@ export default defineComponent({
               top: `${padding}px`,
             })}
           ></u-scalable>
-        </div>
+        </view>
       )
     }
   },
