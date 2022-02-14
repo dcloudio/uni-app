@@ -18,8 +18,10 @@ const debugEsbuild = debug('uni:app-nvue-esbuild')
 
 export function uniEsbuildPlugin({
   renderer,
+  app,
 }: {
   renderer?: 'native'
+  app: boolean
 }): Plugin {
   let buildOptions: BuildOptions
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -50,7 +52,7 @@ export function uniEsbuildPlugin({
           entryPoints.push(name)
         }
       })
-      if (renderer === 'native') {
+      if (app) {
         debugEsbuild('start', APP_SERVICE_FILENAME)
         await buildNVueAppService(buildOptions).then((code) => {
           return fs.outputFile(

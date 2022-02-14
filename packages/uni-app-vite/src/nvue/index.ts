@@ -18,16 +18,17 @@ export { initNVueNodeTransforms } from './plugin'
 
 export function initNVuePlugins() {
   const renderer = process.env.UNI_RENDERER
+  const app = process.env.UNI_COMPILER_NVUE === 'app'
   return [
     uniAppCssPlugin(),
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniHBuilderXConsolePlugin(),
-    uniMainJsPlugin({ renderer }),
-    ...(process.env.UNI_RENDERER === 'native' ? [uniManifestJsonPlugin()] : []),
-    uniPagesJsonPlugin({ renderer }),
+    uniMainJsPlugin({ app }),
+    ...(app ? [uniManifestJsonPlugin()] : []),
+    uniPagesJsonPlugin({ app }),
     uniViteInjectPlugin('uni:app-inject', initAppProvide()),
     uniStatsPlugin(),
     uniAppNVuePlugin(),
-    uniEsbuildPlugin({ renderer }),
+    uniEsbuildPlugin({ renderer, app }),
   ]
 }

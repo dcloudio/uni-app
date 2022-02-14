@@ -11,11 +11,7 @@ import {
   MANIFEST_JSON_JS,
 } from '@dcloudio/uni-cli-shared'
 
-export function uniPagesJsonPlugin({
-  renderer,
-}: {
-  renderer?: 'native'
-}): Plugin {
+export function uniPagesJsonPlugin({ app }: { app: boolean }): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'uni:app-nvue-pages-json',
@@ -38,7 +34,7 @@ export function uniPagesJsonPlugin({
             )
           }
         })
-        if (renderer === 'native') {
+        if (app) {
           this.emitFile({
             fileName: `app-config-service.js`,
             type: 'asset',
