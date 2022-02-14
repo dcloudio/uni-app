@@ -1,4 +1,4 @@
-import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
+import { defineUniMainJsPlugin, PAGES_JSON_JS } from '@dcloudio/uni-cli-shared'
 import { APP_CSS_JS } from './appCss'
 
 export function uniMainJsPlugin() {
@@ -13,12 +13,12 @@ export function uniMainJsPlugin() {
               ? createApp(code)
               : createLegacyApp(code)
             return {
-              code: `import './pages.json.js';` + code,
+              code: `import './${PAGES_JSON_JS}';` + code,
               map: { mappings: '' },
             }
           }
           return {
-            code: `import './pages.json.js';import('${APP_CSS_JS}').then(()=>{})`,
+            code: `import './${PAGES_JSON_JS}';import('${APP_CSS_JS}').then(()=>{})`,
             map: { mappings: '' },
           }
         }

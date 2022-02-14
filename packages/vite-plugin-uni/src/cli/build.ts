@@ -99,6 +99,7 @@ export async function buildApp(options: CliOptions) {
     return buildManifestJson()
   }
   if (process.env.UNI_RENDERER === 'native') {
+    process.env.UNI_COMPILER = 'nvue'
     return buildByVite(
       addConfigFile(
         extend(
