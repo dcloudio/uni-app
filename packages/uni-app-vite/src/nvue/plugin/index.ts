@@ -52,12 +52,6 @@ export function uniAppNVuePlugin(): Plugin {
     name: 'uni:app-nvue',
     config() {
       return {
-        lib: {
-          // 必须使用 lib 模式，否则会生成 preload 等代码
-          fileName: 'main.js',
-          entry: mainPath,
-          formats: ['esm'],
-        },
         css: {
           postcss: {
             plugins: initPostcssPlugin({
@@ -67,12 +61,15 @@ export function uniAppNVuePlugin(): Plugin {
           },
         },
         build: {
+          lib: {
+            // 必须使用 lib 模式，否则会生成 preload 等代码
+            fileName: 'app',
+            entry: mainPath,
+            formats: ['es'],
+          },
           outDir: nvueOutDir(),
           rollupOptions: {
             external,
-            input: {
-              main: mainPath,
-            },
             output: {
               entryFileNames(chunk) {
                 if (chunk.name === 'main') {
@@ -80,7 +77,6 @@ export function uniAppNVuePlugin(): Plugin {
                 }
                 return chunk.name + '.js'
               },
-              format: 'esm',
               assetFileNames: '[name][extname]',
               chunkFileNames: createChunkFileNames(inputDir),
               plugins: [dynamicImportPolyfill()],

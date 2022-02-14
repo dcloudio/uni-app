@@ -99,8 +99,19 @@ export async function buildApp(options: CliOptions) {
     return buildManifestJson()
   }
   if (process.env.UNI_RENDERER === 'native') {
+    // 纯原生渲染时，main.js + App.vue 需要跟页面分开，独立编译（因为需要包含 Vuex 等共享内容）
     process.env.UNI_COMPILER = 'nvue'
-    return buildByVite(
+    process.env.UNI_COMPILER_NVUE = 'app'
+    const nvueAppBuilder = await buildByVite(
+      addConfigFile(
+        extend(
+          { nvueApp: true, nvue: true },
+          initBuildOptions(options, cleanOptions(options) as BuildOptions)
+        )
+      )
+    )
+    process.env.UNI_COMPILER_NVUE = 'page'
+    const nvueBuilder = await buildByVite(
       addConfigFile(
         extend(
           { nvue: true },
@@ -108,6 +119,12 @@ export async function buildApp(options: CliOptions) {
         )
       )
     )
+    if ((options as ServerOptions).watch) {
+      return initAppWatcher(
+        nvueAppBuilder as RollupWatcher,
+        nvueBuilder as RollupWatcher
+      )
+    }
   }
   // 指定为 vue 方便 App 插件初始化 vue 所需插件列表
   process.env.UNI_COMPILER = 'vue'
@@ -138,56 +155,59 @@ export async function buildApp(options: CliOptions) {
 }
 
 class AppWatcher {
-  private _vueStart: boolean = false
-  private _vueEnd: boolean = false
-  private _nvueStart: boolean = false
-  private _nvueEnd: boolean = false
+  private _firstStart: boolean = false
+  private _firstEnd: boolean = false
+  private _secondStart: boolean = false
+  private _secondEnd: boolean = false
   private _callback!: (event: RollupWatcherEvent) => void
   on(callback: (event: RollupWatcherEvent) => void) {
     this._callback = callback
   }
-  _bundleVueStart(event: RollupWatcherEvent) {
-    this._vueStart = true
+  _bundleFirstStart(event: RollupWatcherEvent) {
+    this._firstStart = true
     this._bundleStart(event)
   }
-  _bundleVueEnd(event: RollupWatcherEvent) {
-    this._vueEnd = true
+  _bundleFirstEnd(event: RollupWatcherEvent) {
+    this._firstEnd = true
     this._bundleEnd(event)
   }
-  _bundleNVueStart(event: RollupWatcherEvent) {
-    this._nvueStart = true
+  _bundleSecondStart(event: RollupWatcherEvent) {
+    this._secondStart = true
     this._bundleStart(event)
   }
-  _bundleNVueEnd(event: RollupWatcherEvent) {
-    this._nvueEnd = true
+  _bundleSecondEnd(event: RollupWatcherEvent) {
+    this._secondEnd = true
     this._bundleEnd(event)
   }
   _bundleStart(event: RollupWatcherEvent) {
-    if (this._vueStart && this._nvueStart) {
+    if (this._firstStart && this._secondStart) {
       this._callback(event)
     }
   }
   _bundleEnd(event: RollupWatcherEvent) {
-    if (this._vueEnd && this._nvueEnd) {
+    if (this._firstEnd && this._secondEnd) {
       this._callback(event)
     }
   }
 }
 
-function initAppWatcher(vueWatcher: RollupWatcher, nvueWatcher: RollupWatcher) {
+function initAppWatcher(
+  firstWatcher: RollupWatcher,
+  secondWatcher: RollupWatcher
+) {
   const appWatcher = new AppWatcher()
-  vueWatcher.on('event', (event) => {
+  firstWatcher.on('event', (event) => {
     if (event.code === 'BUNDLE_START') {
-      appWatcher._bundleVueStart(event)
+      appWatcher._bundleFirstStart(event)
     } else if (event.code === 'BUNDLE_END') {
-      appWatcher._bundleVueEnd(event)
+      appWatcher._bundleFirstEnd(event)
     }
   })
-  nvueWatcher.on('event', (event) => {
+  secondWatcher.on('event', (event) => {
     if (event.code === 'BUNDLE_START') {
-      appWatcher._bundleNVueStart(event)
+      appWatcher._bundleSecondStart(event)
     } else if (event.code === 'BUNDLE_END') {
-      appWatcher._bundleNVueEnd(event)
+      appWatcher._bundleSecondEnd(event)
     }
   })
   return {

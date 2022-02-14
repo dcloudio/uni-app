@@ -5,14 +5,22 @@ import path from 'path'
 import fs from 'fs-extra'
 import debug from 'debug'
 
-import { transformWithEsbuild } from '@dcloudio/uni-cli-shared'
+import {
+  APP_SERVICE_FILENAME,
+  transformWithEsbuild,
+} from '@dcloudio/uni-cli-shared'
 
 import { nvueOutDir } from '../../utils'
 import { esbuildGlobals } from '../utils'
+import { APP_CSS_JS } from './appCss'
 
 const debugEsbuild = debug('uni:app-nvue-esbuild')
 
-export function uniEsbuildPlugin(): Plugin {
+export function uniEsbuildPlugin({
+  renderer,
+}: {
+  renderer?: 'native'
+}): Plugin {
   let buildOptions: BuildOptions
   const outputDir = process.env.UNI_OUTPUT_DIR
   return {
@@ -42,9 +50,18 @@ export function uniEsbuildPlugin(): Plugin {
           entryPoints.push(name)
         }
       })
+      if (renderer === 'native') {
+        debugEsbuild('start', APP_SERVICE_FILENAME)
+        await buildNVueAppService(buildOptions).then((code) => {
+          return fs.outputFile(
+            path.resolve(outputDir, APP_SERVICE_FILENAME),
+            code
+          )
+        })
+      }
       debugEsbuild('start', entryPoints.length, entryPoints)
       for (const filename of entryPoints) {
-        await buildNVuePage(filename, buildOptions).then((code) => {
+        await buildNVuePage(renderer, filename, buildOptions).then((code) => {
           return fs.outputFile(path.resolve(outputDir, filename), code)
         })
       }
@@ -53,10 +70,31 @@ export function uniEsbuildPlugin(): Plugin {
   }
 }
 
-function buildNVuePage(filename: string, options: BuildOptions) {
+function buildNVueAppService(options: BuildOptions) {
+  return transformWithEsbuild(
+    `import './app.js'`,
+    path.join(nvueOutDir(), 'main.js'),
+    options
+  ).then((res) => {
+    if (res.outputFiles) {
+      return res.outputFiles[0].text
+    }
+    return ''
+  })
+}
+
+function buildNVuePage(
+  renderer: 'native' | undefined,
+  filename: string,
+  options: BuildOptions
+) {
   return transformWithEsbuild(
     `import App from './${filename}'
-import { AppStyles } from './app.css.js'
+${
+  renderer === 'native'
+    ? 'const AppStyles = __uniConfig.appStyles || []'
+    : `import { AppStyles } from '${APP_CSS_JS}'`
+}
 const webview = plus.webview.currentWebview()
 const __pageId = parseInt(webview.id)
 const __pagePath = webview.__path__

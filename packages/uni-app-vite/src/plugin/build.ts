@@ -11,20 +11,32 @@ import {
 import { nvueOutDir } from '../utils'
 
 export function buildOptions(
+  renderer: 'native' | undefined,
   userConfig: UserConfig,
   _: ConfigEnv
 ): UserConfig['build'] {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
-  if (isInHybridNVue(userConfig)) {
+  function emptyNVueDir() {
     const nvueOutputDir = nvueOutDir()
     if (fs.existsSync(nvueOutputDir)) {
       emptyDir(nvueOutputDir)
     }
-  } else {
+  }
+  function emptyOutDir() {
     if (fs.existsSync(outputDir)) {
       emptyDir(outputDir)
+    }
+  }
+  if (renderer === 'native') {
+    emptyNVueDir()
+    emptyOutDir()
+  } else {
+    if (isInHybridNVue(userConfig)) {
+      emptyNVueDir()
+    } else {
+      emptyOutDir()
     }
   }
   return {

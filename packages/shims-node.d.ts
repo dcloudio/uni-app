@@ -27,5 +27,6 @@ declare namespace NodeJS {
     UNI_CUSTOM_CONTEXT?: string
     UNI_MINIMIZE?: 'true'
     UNI_COMPILER: 'vue' | 'nvue'
+    UNI_COMPILER_NVUE: 'app' | 'page'
   }
 }

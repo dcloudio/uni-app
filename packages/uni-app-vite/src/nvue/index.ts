@@ -17,16 +17,17 @@ import { uniPagesJsonPlugin } from './plugins/pagesJson'
 export { initNVueNodeTransforms } from './plugin'
 
 export function initNVuePlugins() {
+  const renderer = process.env.UNI_RENDERER
   return [
     uniAppCssPlugin(),
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniHBuilderXConsolePlugin(),
-    uniMainJsPlugin(),
+    uniMainJsPlugin({ renderer }),
     ...(process.env.UNI_RENDERER === 'native' ? [uniManifestJsonPlugin()] : []),
-    uniPagesJsonPlugin(),
+    uniPagesJsonPlugin({ renderer }),
     uniViteInjectPlugin('uni:app-inject', initAppProvide()),
     uniStatsPlugin(),
     uniAppNVuePlugin(),
-    uniEsbuildPlugin(),
+    uniEsbuildPlugin({ renderer }),
   ]
 }

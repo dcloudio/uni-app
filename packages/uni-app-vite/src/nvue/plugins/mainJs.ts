@@ -1,19 +1,21 @@
 import { defineUniMainJsPlugin, PAGES_JSON_JS } from '@dcloudio/uni-cli-shared'
 import { APP_CSS_JS } from './appCss'
 
-export function uniMainJsPlugin() {
+export function uniMainJsPlugin({ renderer }: { renderer?: 'native' }) {
   return defineUniMainJsPlugin((opts) => {
     return {
       name: 'uni:app-nvue-main-js',
       enforce: 'pre',
       transform(code, id) {
         if (opts.filter(id)) {
-          if (process.env.UNI_RENDERER === 'native') {
+          if (renderer === 'native') {
             code = code.includes('createSSRApp')
               ? createApp(code)
               : createLegacyApp(code)
             return {
-              code: `import './${PAGES_JSON_JS}';` + code,
+              code:
+                `import './${PAGES_JSON_JS}';import('${APP_CSS_JS}').then(()=>{});` +
+                code,
               map: { mappings: '' },
             }
           }
