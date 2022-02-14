@@ -18,10 +18,10 @@ const debugEsbuild = debug('uni:app-nvue-esbuild')
 
 export function uniEsbuildPlugin({
   renderer,
-  app,
+  appService,
 }: {
   renderer?: 'native'
-  app: boolean
+  appService: boolean
 }): Plugin {
   let buildOptions: BuildOptions
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -52,7 +52,7 @@ export function uniEsbuildPlugin({
           entryPoints.push(name)
         }
       })
-      if (app) {
+      if (appService) {
         debugEsbuild('start', APP_SERVICE_FILENAME)
         await buildNVueAppService(buildOptions).then((code) => {
           return fs.outputFile(
@@ -75,7 +75,7 @@ export function uniEsbuildPlugin({
 function buildNVueAppService(options: BuildOptions) {
   return transformWithEsbuild(
     `import './app.js'`,
-    path.join(nvueOutDir(), 'main.js'),
+    path.join(nvueOutDir(true), 'main.js'),
     options
   ).then((res) => {
     if (res.outputFiles) {
@@ -106,7 +106,7 @@ App.mpType = 'page'
 const app = Vue.createApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
 app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...(App.styles||[])]))
 app.mount('#root')`,
-    path.join(nvueOutDir(), 'main.js'),
+    path.join(nvueOutDir(false), 'main.js'),
     options
   ).then((res) => {
     if (res.outputFiles) {

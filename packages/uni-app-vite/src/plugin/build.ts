@@ -11,7 +11,10 @@ import {
 import { nvueOutDir } from '../utils'
 
 export function buildOptions(
-  renderer: 'native' | undefined,
+  {
+    appService,
+    renderer,
+  }: { renderer: 'native' | undefined; appService: boolean },
   userConfig: UserConfig,
   _: ConfigEnv
 ): UserConfig['build'] {
@@ -19,7 +22,7 @@ export function buildOptions(
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
   function emptyNVueDir() {
-    const nvueOutputDir = nvueOutDir()
+    const nvueOutputDir = nvueOutDir(false)
     if (fs.existsSync(nvueOutputDir)) {
       emptyDir(nvueOutputDir)
     }
@@ -30,8 +33,11 @@ export function buildOptions(
     }
   }
   if (renderer === 'native') {
-    emptyNVueDir()
-    emptyOutDir()
+    if (appService) {
+      // 仅编译 main.js+App.vue 的时候才清空
+      emptyNVueDir()
+      emptyOutDir()
+    }
   } else {
     if (isInHybridNVue(userConfig)) {
       emptyNVueDir()

@@ -134,10 +134,11 @@ export default function uniPlugin(
     vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))
   )
 
-  // 混合编译时，nvue 下，不需要 copy
+  // 仅在 vue 或 纯原生 App.vue 编译时做 copy
   if (
-    process.env.UNI_RENDERER === 'native' ||
-    process.env.UNI_COMPILER === 'vue'
+    process.env.UNI_COMPILER === 'vue' ||
+    (process.env.UNI_RENDERER === 'native' &&
+      process.env.UNI_COMPILER_NVUE === 'app')
   ) {
     plugins.push(
       uniCopyPlugin({

@@ -101,7 +101,7 @@ export async function buildApp(options: CliOptions) {
   if (process.env.UNI_RENDERER === 'native') {
     // 纯原生渲染时，main.js + App.vue 需要跟页面分开，独立编译（因为需要包含 Vuex 等共享内容）
     process.env.UNI_COMPILER = 'nvue'
-    process.env.UNI_COMPILER_NVUE = 'app'
+    process.env.UNI_RENDERER_NATIVE = 'appService'
     const nvueAppBuilder = await buildByVite(
       addConfigFile(
         extend(
@@ -110,7 +110,7 @@ export async function buildApp(options: CliOptions) {
         )
       )
     )
-    process.env.UNI_COMPILER_NVUE = 'page'
+    process.env.UNI_RENDERER_NATIVE = 'pages'
     const nvueBuilder = await buildByVite(
       addConfigFile(
         extend(

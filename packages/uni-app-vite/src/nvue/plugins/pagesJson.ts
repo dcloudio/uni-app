@@ -11,7 +11,11 @@ import {
   MANIFEST_JSON_JS,
 } from '@dcloudio/uni-cli-shared'
 
-export function uniPagesJsonPlugin({ app }: { app: boolean }): Plugin {
+export function uniPagesJsonPlugin({
+  appService,
+}: {
+  appService: boolean
+}): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'uni:app-nvue-pages-json',
@@ -34,7 +38,7 @@ export function uniPagesJsonPlugin({ app }: { app: boolean }): Plugin {
             )
           }
         })
-        if (app) {
+        if (appService) {
           this.emitFile({
             fileName: `app-config-service.js`,
             type: 'asset',

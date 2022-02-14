@@ -45,7 +45,11 @@ export function initNVueNodeTransforms() {
   ]
 }
 
-export function uniAppNVuePlugin(): Plugin {
+export function uniAppNVuePlugin({
+  appService,
+}: {
+  appService: boolean
+}): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const mainPath = resolveMainPathOnce(inputDir)
   return {
@@ -67,7 +71,7 @@ export function uniAppNVuePlugin(): Plugin {
             entry: mainPath,
             formats: ['es'],
           },
-          outDir: nvueOutDir(),
+          outDir: nvueOutDir(appService),
           rollupOptions: {
             external,
             output: {

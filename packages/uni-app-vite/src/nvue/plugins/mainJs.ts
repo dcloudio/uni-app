@@ -1,14 +1,14 @@
 import { defineUniMainJsPlugin, PAGES_JSON_JS } from '@dcloudio/uni-cli-shared'
 import { APP_CSS_JS } from './appCss'
 
-export function uniMainJsPlugin({ app }: { app: boolean }) {
+export function uniMainJsPlugin({ appService }: { appService: boolean }) {
   return defineUniMainJsPlugin((opts) => {
     return {
       name: 'uni:app-nvue-main-js',
       enforce: 'pre',
       transform(code, id) {
         if (opts.filter(id)) {
-          if (app) {
+          if (appService) {
             code = code.includes('createSSRApp')
               ? createApp(code)
               : createLegacyApp(code)
