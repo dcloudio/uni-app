@@ -1,10 +1,10 @@
 import type { Plugin } from 'vite'
-export function dynamicImportPolyfill(): Plugin {
+export function dynamicImportPolyfill(promise: boolean = false): Plugin {
   return {
     name: 'dynamic-import-polyfill',
     renderDynamicImport() {
       return {
-        left: '(',
+        left: promise ? 'Promise.resolve(' : '(',
         right: ')',
       }
     },

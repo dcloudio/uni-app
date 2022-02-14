@@ -73,7 +73,7 @@ export function uniAppNVuePlugin({
           },
           outDir: nvueOutDir(appService),
           rollupOptions: {
-            external,
+            external: external(appService),
             output: {
               entryFileNames(chunk) {
                 if (chunk.name === 'main') {
@@ -83,8 +83,8 @@ export function uniAppNVuePlugin({
               },
               assetFileNames: '[name][extname]',
               chunkFileNames: createChunkFileNames(inputDir),
-              plugins: [dynamicImportPolyfill()],
-              globals,
+              plugins: [dynamicImportPolyfill(true)],
+              globals: globals(appService),
             },
           },
         },

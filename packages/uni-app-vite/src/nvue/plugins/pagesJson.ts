@@ -12,8 +12,10 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin({
+  renderer,
   appService,
 }: {
+  renderer?: 'native'
   appService: boolean
 }): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
@@ -38,7 +40,7 @@ export function uniPagesJsonPlugin({
             )
           }
         })
-        if (appService) {
+        if (renderer === 'native' && !appService) {
           this.emitFile({
             fileName: `app-config-service.js`,
             type: 'asset',

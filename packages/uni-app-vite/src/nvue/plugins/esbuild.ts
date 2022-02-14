@@ -37,7 +37,7 @@ export function uniEsbuildPlugin({
         },
         bundle: true,
         write: false,
-        plugins: [esbuildGlobalPlugin(esbuildGlobals)],
+        plugins: [esbuildGlobalPlugin(esbuildGlobals(appService))],
       }
     },
     async writeBundle(_, bundle) {

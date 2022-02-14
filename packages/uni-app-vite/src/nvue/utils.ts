@@ -1,11 +1,23 @@
-export const external = ['vue', 'vuex']
-export const globals = {
-  vue: 'Vue',
-  vuex: 'Vuex',
-  pinia: 'Pinia',
+export function external(appService: boolean) {
+  return appService ? ['vue'] : ['vue', 'vuex']
 }
-export const esbuildGlobals = {
-  vue: 'Vue',
-  vuex: 'uni.Vuex',
-  pinia: 'uni.Pinia',
+export function globals(appService: boolean): { [name: string]: string } {
+  return appService
+    ? { vue: 'Vue' }
+    : {
+        vue: 'Vue',
+        vuex: 'Vuex',
+        pinia: 'Pinia',
+      }
+}
+export function esbuildGlobals(appService: boolean): {
+  [name: string]: string
+} {
+  return appService
+    ? { vue: 'Vue' }
+    : {
+        vue: 'Vue',
+        vuex: 'uni.Vuex',
+        pinia: 'uni.Pinia',
+      }
 }
