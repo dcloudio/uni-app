@@ -211,7 +211,7 @@ export default defineComponent({
         return
       }
       if (isLabelClick) {
-        rootRef.value!.click()
+        ;(rootRef.value as any).event.click.handler(e)
       }
       /* const formType = props.formType
       if (formType) {
@@ -269,7 +269,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div
+        <view
           ref={rootRef}
           class="ub"
           // @ts-expect-error
@@ -288,7 +288,7 @@ export default defineComponent({
             ></loading-indicator>
           ) : null}
           {...wrapSlots()}
-        </div>
+        </view>
       )
     }
   },
