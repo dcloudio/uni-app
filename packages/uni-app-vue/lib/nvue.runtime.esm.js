@@ -2915,6 +2915,12 @@ function applyOptions(instance) {
         instance.components = components;
     if (directives)
         instance.directives = directives;
+    // fixed by xxxxxx
+    const customApplyOptions = instance.appContext.config.globalProperties
+        .$applyOptions;
+    if (customApplyOptions) {
+        customApplyOptions(options, instance, publicThis);
+    }
 }
 function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP, unwrapRef = false) {
     if (isArray(injectOptions)) {

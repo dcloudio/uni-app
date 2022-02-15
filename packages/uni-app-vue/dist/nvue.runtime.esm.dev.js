@@ -3602,7 +3602,13 @@ function applyOptions(instance) {
 
 
   if (components) instance.components = components;
-  if (directives) instance.directives = directives;
+  if (directives) instance.directives = directives; // fixed by xxxxxx
+
+  var customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
+
+  if (customApplyOptions) {
+    customApplyOptions(options, instance, publicThis);
+  }
 }
 
 function resolveInjections(injectOptions, ctx) {
