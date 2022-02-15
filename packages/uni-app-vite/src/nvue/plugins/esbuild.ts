@@ -69,7 +69,7 @@ function buildNVuePage(
     `import App from './${filename}'
 ${
   renderer === 'native'
-    ? 'const AppStyles = __uniConfig.appStyles || []'
+    ? 'const AppStyles = __uniConfig.styles || []'
     : `import { AppStyles } from '${APP_CSS_JS}'`
 }
 const webview = plus.webview.currentWebview()
