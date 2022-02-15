@@ -9,7 +9,7 @@ export interface MovableViewContext {
 export type AddMovableViewContext = (context: MovableViewContext) => void
 export type RemoveMovableViewContext = (context: MovableViewContext) => void
 
-interface TouchMovableViewContext {
+export interface TouchMovableViewContext {
   touchstart: (e: TouchtrackEvent) => void
   touchmove: (e: TouchtrackEvent) => void
   touchend: (e: TouchtrackEvent) => void
