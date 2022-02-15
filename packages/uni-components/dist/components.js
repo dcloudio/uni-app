@@ -702,7 +702,8 @@ var MovableArea = defineComponent({
     return () => {
       const defaultSlots = slots.default && slots.default();
       const movableViewItems = flatVNode(defaultSlots);
-      return createVNode("view", mergeProps({
+      return createVNode("div", mergeProps({
+        "ref": rootRef,
         "class": "uni-movable-area"
       }, listeners), [movableViewItems]);
     };
