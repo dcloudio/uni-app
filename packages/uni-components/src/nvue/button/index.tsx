@@ -1,6 +1,14 @@
-import { inject, onBeforeUnmount, ref, defineComponent, Text } from 'vue'
+import {
+  inject,
+  onBeforeUnmount,
+  ref,
+  defineComponent,
+  Text,
+  computed,
+} from 'vue'
 import { uniLabelKey, UniLabelCtx } from '../label'
 import { useListeners } from '../../helpers/useListeners'
+import { useAttrs } from '../../helpers/useAttrs'
 import { createNVueTextVNode, useHoverClass } from '../utils'
 import { buttonProps } from '../../components/button'
 import { extend } from '@vue/shared'
@@ -191,6 +199,7 @@ const TYPES = {
 }
 
 export default defineComponent({
+  inheritAttrs: false,
   name: 'Button',
   props: extend(buttonProps, {
     type: {
@@ -204,15 +213,17 @@ export default defineComponent({
   }),
   styles: buttonStyle,
   setup(props, { slots, attrs }) {
+    const { $attrs, $excludeAttrs, $listeners } = useAttrs({
+      excludeListeners: true,
+    })
     const type = props.type as keyof typeof TYPES
     const rootRef = ref<HTMLElement | null>(null)
     const onClick = (e: Event, isLabelClick?: boolean) => {
+      const _onClick = ($listeners.value as any).onClick || (() => {})
       if (props.disabled) {
         return
       }
-      if (isLabelClick) {
-        ;(rootRef.value as any).event.click.handler(e)
-      }
+      _onClick(e)
       /* const formType = props.formType
       if (formType) {
         if (!uniForm) {
@@ -254,6 +265,15 @@ export default defineComponent({
     }
     useListeners(props, { 'label-click': onClick })
 
+    const _listeners = computed(() => {
+      const obj = {}
+      for (const eventName in $listeners.value) {
+        const event = ($listeners.value as any)[eventName]
+        if (eventName !== 'onClick') (obj as any)[eventName] = event
+      }
+      return obj
+    })
+
     const wrapSlots = () => {
       if (!slots.default) return []
       const vnodes = slots.default()
@@ -268,16 +288,22 @@ export default defineComponent({
     }
 
     return () => {
+      const _attrs = extend(
+        {},
+        useHoverClass(props),
+        { hoverClass: _getHoverClass('') },
+        $attrs.value,
+        $excludeAttrs.value,
+        _listeners.value
+      )
       return (
         <view
           ref={rootRef}
           class="ub"
           // @ts-expect-error
           class={_getClass('')}
-          {...extend({}, useHoverClass(props), {
-            hoverClass: _getHoverClass(''),
-          })}
           onClick={onClick}
+          {..._attrs}
         >
           {props.loading ? (
             <loading-indicator
