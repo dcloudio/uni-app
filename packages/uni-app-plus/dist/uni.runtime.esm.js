@@ -18148,7 +18148,7 @@ function preloadWebview({ url, path, query, }) {
     return preloadWebviews[url];
 }
 
-function registerPage({ url, path, query, openType, webview, eventChannel, }) {
+function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
     // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
     if (webview) {
         initEntry();
@@ -18196,12 +18196,17 @@ function registerPage({ url, path, query, openType, webview, eventChannel, }) {
     const route = path.substr(1);
     webview.__uniapp_route = route;
     const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
-    initNVueEntryPage(webview);
+    const id = parseInt(webview.id);
     if (webview.nvue) {
-        createNVuePage(parseInt(webview.id), webview, pageInstance);
+        if (id === 1 && nvuePageVm) {
+            initNVueEntryPage(webview, nvuePageVm, pageInstance);
+        }
+        else {
+            createNVuePage(id, webview, pageInstance);
+        }
     }
     else {
-        createVuePage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
+        createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
     }
     return webview;
 }
@@ -18227,19 +18232,18 @@ function initPageOptions({ meta }) {
         windowBottom: tabBarInstance.indexOf(meta.route) >= 0 && tabBarInstance.cover ? tabBarInstance.height : 0,
     };
 }
-function initNVueEntryPage(webview) {
-    const isLaunchNVuePage = webview.id === '1' && webview.nvue;
+function initNVueEntryPage(webview, nvuePageVm, pageInstance) {
+    initPageVm(nvuePageVm, pageInstance);
+    addCurrentPage(nvuePageVm);
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-    if (isLaunchNVuePage) {
-        if (__uniConfig.splashscreen &&
-            __uniConfig.splashscreen.autoclose &&
-            !__uniConfig.splashscreen.alwaysShowBeforeRender) {
-            plus.navigator.closeSplashscreen();
-        }
-        __uniConfig.onReady(function () {
-            navigateFinish();
-        });
+    if (__uniConfig.splashscreen &&
+        __uniConfig.splashscreen.autoclose &&
+        !__uniConfig.splashscreen.alwaysShowBeforeRender) {
+        plus.navigator.closeSplashscreen();
     }
+    __uniConfig.onReady(function () {
+        navigateFinish();
+    });
 }
 function createNVuePage(pageId, webview, pageInstance) {
     const fakeNVueVm = {
@@ -19139,6 +19143,16 @@ function getApp$1({ allowDefault = false } = {}) {
 function registerApp(appVm) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('registerApp'));
+    }
+    // 定制 useStore （主要是为了 nvue 共享）
+    if (uni.Vuex && appVm.$store) {
+        const { useStore } = uni.Vuex;
+        uni.Vuex.useStore = (key) => {
+            if (!key) {
+                return appVm.$store;
+            }
+            return useStore(key);
+        };
     }
     initVueApp(appVm);
     appCtx = appVm;

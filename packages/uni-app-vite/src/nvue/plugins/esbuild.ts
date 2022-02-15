@@ -5,7 +5,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import debug from 'debug'
 
-import { transformWithEsbuild } from '@dcloudio/uni-cli-shared'
+import { removeExt, transformWithEsbuild } from '@dcloudio/uni-cli-shared'
 
 import { nvueOutDir } from '../../utils'
 import { esbuildGlobals } from '../utils'
@@ -74,11 +74,11 @@ ${
 }
 const webview = plus.webview.currentWebview()
 const __pageId = parseInt(webview.id)
-const __pagePath = webview.__path__
+const __pagePath = '${removeExt(filename)}'
 let __pageQuery = {}
 try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
 App.mpType = 'page'
-const app = Vue.createApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
+const app = Vue.createPageApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
 app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...(App.styles||[])]))
 app.mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),

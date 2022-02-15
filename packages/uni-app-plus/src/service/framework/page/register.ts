@@ -26,6 +26,7 @@ interface RegisterPageOptions {
   query: Record<string, string>
   openType: UniApp.OpenType
   webview?: PlusWebviewWebviewObject
+  nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
 }
 
@@ -35,6 +36,7 @@ export function registerPage({
   query,
   openType,
   webview,
+  nvuePageVm,
   eventChannel,
 }: RegisterPageOptions) {
   // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
@@ -105,18 +107,16 @@ export function registerPage({
     eventChannel
   )
 
-  initNVueEntryPage(webview)
+  const id = parseInt(webview.id!)
 
   if ((webview as any).nvue) {
-    createNVuePage(parseInt(webview.id!), webview, pageInstance)
+    if (id === 1 && nvuePageVm) {
+      initNVueEntryPage(webview, nvuePageVm, pageInstance)
+    } else {
+      createNVuePage(id, webview, pageInstance)
+    }
   } else {
-    createVuePage(
-      parseInt(webview.id!),
-      route,
-      query,
-      pageInstance,
-      initPageOptions(routeOptions)
-    )
+    createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions))
   }
   return webview
 }
@@ -146,21 +146,24 @@ function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
   }
 }
 
-function initNVueEntryPage(webview: PlusWebviewWebviewObject) {
-  const isLaunchNVuePage = webview.id === '1' && (webview as any).nvue
+function initNVueEntryPage(
+  webview: PlusWebviewWebviewObject,
+  nvuePageVm: ComponentPublicInstance,
+  pageInstance: Page.PageInstance['$page']
+) {
+  initPageVm(nvuePageVm, pageInstance)
+  addCurrentPage(nvuePageVm)
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-  if (isLaunchNVuePage) {
-    if (
-      __uniConfig.splashscreen &&
-      __uniConfig.splashscreen.autoclose &&
-      !__uniConfig.splashscreen.alwaysShowBeforeRender
-    ) {
-      plus.navigator.closeSplashscreen()
-    }
-    __uniConfig.onReady(function () {
-      navigateFinish()
-    })
+  if (
+    __uniConfig.splashscreen &&
+    __uniConfig.splashscreen.autoclose &&
+    !__uniConfig.splashscreen.alwaysShowBeforeRender
+  ) {
+    plus.navigator.closeSplashscreen()
   }
+  __uniConfig.onReady(function () {
+    navigateFinish()
+  })
 }
 
 function createNVuePage(
