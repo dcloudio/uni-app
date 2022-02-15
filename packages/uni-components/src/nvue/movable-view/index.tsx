@@ -8,13 +8,7 @@ import {
   inject,
   watch,
 } from 'vue'
-import {
-  useTouchtrack,
-  touchstart,
-  touchmove,
-  touchend,
-  TouchtrackEvent,
-} from './useTouchtrack'
+import { useTouchtrack, TouchtrackEvent } from './useTouchtrack'
 import {
   CustomEventTrigger,
   EmitEvent,
@@ -25,6 +19,7 @@ import {
   AddMovableViewContext,
   RemoveMovableViewContext,
   SetTouchMovableViewContext,
+  TouchMovableViewContext,
   parentSize,
 } from '../movable-area'
 import {
@@ -133,15 +128,12 @@ export default defineComponent({
       'setTouchMovableViewContext',
       () => {}
     )
-    useMovableViewState(props, trigger, rootRef)
-
-    const touchStart = () => {
-      setTouchMovableViewContext({
-        touchstart,
-        touchmove,
-        touchend,
-      })
-    }
+    const touchStart = useMovableViewState(
+      props,
+      trigger,
+      rootRef,
+      setTouchMovableViewContext
+    )
 
     return () => {
       const attrs = {
@@ -165,7 +157,8 @@ export default defineComponent({
 function useMovableViewState(
   props: Props,
   trigger: CustomEventTrigger,
-  rootRef: RootRef
+  rootRef: RootRef,
+  setTouchMovableViewContext: SetTouchMovableViewContext
 ) {
   const _isMounted: Ref<boolean> = inject('_isMounted', ref(false))
   const parentSize: parentSize = inject('parentSize', {
@@ -182,6 +175,11 @@ function useMovableViewState(
     'removeMovableViewContext',
     () => {}
   )
+  let movableViewContext: TouchMovableViewContext = {
+    touchstart: () => {},
+    touchmove: () => {},
+    touchend: () => {},
+  }
   function _getPx(val: string | number) {
     // if (/\d+[ur]px$/i.test(val)) {
     //   return uni.upx2px(parseFloat(val))
@@ -693,7 +691,7 @@ function useMovableViewState(
   }
 
   onMounted(() => {
-    useTouchtrack((event) => {
+    movableViewContext = useTouchtrack((event) => {
       switch (event.detail.state) {
         case 'start':
           __handleTouchStart()
@@ -729,4 +727,10 @@ function useMovableViewState(
   onUnmounted(() => {
     FAandSFACancel()
   })
+
+  const touchStart = () => {
+    setTouchMovableViewContext(movableViewContext)
+  }
+
+  return touchStart
 }

@@ -21,34 +21,26 @@ export interface TouchtrackEvent {
   detail: Detail
 }
 
-const __event: Record<string, Function> = {}
-function callback(type: CallbackType, $event: TouchtrackEvent) {
-  if (__event[type]) {
-    __event[type]($event)
-  }
-}
-function addListener(type: CallbackType, callback: Function) {
-  __event[type] = function ($event: TouchtrackEvent) {
-    if (typeof callback === 'function') {
-      $event.touches = $event.changedTouches
-      if (callback($event) === false) {
-        $event.stopPropagation()
-      }
-    }
-  }
-}
-export function touchstart($event: TouchtrackEvent) {
-  callback('touchstart', $event)
-}
-export function touchmove($event: TouchtrackEvent) {
-  callback('touchmove', $event)
-}
-export function touchend($event: TouchtrackEvent) {
-  callback('touchend', $event)
-}
 export function useTouchtrack(
   method: (event: TouchtrackEvent) => boolean | void
 ) {
+  const __event: Record<string, Function> = {}
+  function callback(type: CallbackType, $event: TouchtrackEvent) {
+    if (__event[type]) {
+      __event[type]($event)
+    }
+  }
+  function addListener(type: CallbackType, callback: Function) {
+    __event[type] = function ($event: TouchtrackEvent) {
+      if (typeof callback === 'function') {
+        $event.touches = $event.changedTouches
+        if (callback($event) === false) {
+          $event.stopPropagation()
+        }
+      }
+    }
+  }
+
   let x0 = 0
   let y0 = 0
   let x1 = 0
@@ -115,4 +107,16 @@ export function useTouchtrack(
       )
     }
   })
+
+  return {
+    touchstart: function ($event: TouchtrackEvent) {
+      callback('touchstart', $event)
+    },
+    touchmove: function ($event: TouchtrackEvent) {
+      callback('touchmove', $event)
+    },
+    touchend: function ($event: TouchtrackEvent) {
+      callback('touchend', $event)
+    },
+  }
 }

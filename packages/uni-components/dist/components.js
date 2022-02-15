@@ -709,32 +709,23 @@ var MovableArea = defineComponent({
     };
   }
 });
-const __event = {};
-function callback(type, $event) {
-  if (__event[type]) {
-    __event[type]($event);
-  }
-}
-function addListener(type, callback2) {
-  __event[type] = function($event) {
-    if (typeof callback2 === "function") {
-      $event.touches = $event.changedTouches;
-      if (callback2($event) === false) {
-        $event.stopPropagation();
-      }
-    }
-  };
-}
-function touchstart($event) {
-  callback("touchstart", $event);
-}
-function touchmove($event) {
-  callback("touchmove", $event);
-}
-function touchend($event) {
-  callback("touchend", $event);
-}
 function useTouchtrack(method) {
+  const __event = {};
+  function callback(type, $event) {
+    if (__event[type]) {
+      __event[type]($event);
+    }
+  }
+  function addListener(type, callback2) {
+    __event[type] = function($event) {
+      if (typeof callback2 === "function") {
+        $event.touches = $event.changedTouches;
+        if (callback2($event) === false) {
+          $event.stopPropagation();
+        }
+      }
+    };
+  }
   let x0 = 0;
   let y0 = 0;
   let x1 = 0;
@@ -783,6 +774,17 @@ function useTouchtrack(method) {
       return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
     }
   });
+  return {
+    touchstart: function($event) {
+      callback("touchstart", $event);
+    },
+    touchmove: function($event) {
+      callback("touchmove", $event);
+    },
+    touchend: function($event) {
+      callback("touchend", $event);
+    }
+  };
 }
 function useCustomEvent(ref2, emit) {
   return (name, detail) => {
@@ -1215,8 +1217,8 @@ function _requestAnimationFrame(e2) {
     });
   }
 }
-function requestAnimationFrame(callback2) {
-  return setTimeout(callback2, 16);
+function requestAnimationFrame(callback) {
+  return setTimeout(callback, 16);
 }
 function cancelAnimationFrame(id) {
   clearTimeout(id);
@@ -1243,14 +1245,7 @@ var MovableView = defineComponent({
     const trigger = useCustomEvent(rootRef, emit);
     const setTouchMovableViewContext = inject("setTouchMovableViewContext", () => {
     });
-    useMovableViewState(props, trigger, rootRef);
-    const touchStart = () => {
-      setTouchMovableViewContext({
-        touchstart,
-        touchmove,
-        touchend
-      });
-    };
+    const touchStart = useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext);
     return () => {
       const attrs = {
         preventGesture: true
@@ -1264,7 +1259,7 @@ var MovableView = defineComponent({
     };
   }
 });
-function useMovableViewState(props, trigger, rootRef) {
+function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext) {
   const _isMounted = inject("_isMounted", ref(false));
   const parentSize = inject("parentSize", {
     width: ref(0),
@@ -1276,6 +1271,14 @@ function useMovableViewState(props, trigger, rootRef) {
   });
   const removeMovableViewContext = inject("removeMovableViewContext", () => {
   });
+  let movableViewContext = {
+    touchstart: () => {
+    },
+    touchmove: () => {
+    },
+    touchend: () => {
+    }
+  };
   function _getPx(val) {
     return Number(val) || 0;
   }
@@ -1713,7 +1716,7 @@ function useMovableViewState(props, trigger, rootRef) {
     _setTransform(x, y, scale, "", true);
   }
   onMounted(() => {
-    useTouchtrack((event) => {
+    movableViewContext = useTouchtrack((event) => {
       switch (event.detail.state) {
         case "start":
           __handleTouchStart();
@@ -1743,6 +1746,10 @@ function useMovableViewState(props, trigger, rootRef) {
   onUnmounted(() => {
     FAandSFACancel();
   });
+  const touchStart = () => {
+    setTouchMovableViewContext(movableViewContext);
+  };
+  return touchStart;
 }
 var components = {
   Navigator,
