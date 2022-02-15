@@ -22,7 +22,7 @@ export function buildOptions(
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
   function emptyNVueDir() {
-    const nvueOutputDir = nvueOutDir(false)
+    const nvueOutputDir = nvueOutDir()
     if (fs.existsSync(nvueOutputDir)) {
       emptyDir(nvueOutputDir)
     }

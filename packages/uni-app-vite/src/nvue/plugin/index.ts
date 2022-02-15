@@ -3,6 +3,7 @@ import type { Plugin } from 'vite'
 import path from 'path'
 import colors from 'picocolors'
 import {
+  APP_SERVICE_FILENAME,
   commonjsProxyRE,
   createTransformTag,
   cssLangRE,
@@ -66,18 +67,19 @@ export function uniAppNVuePlugin({
         },
         build: {
           lib: {
+            name: 'AppService',
             // 必须使用 lib 模式，否则会生成 preload 等代码
-            fileName: 'app',
+            fileName: appService ? 'app-service' : 'app',
             entry: mainPath,
-            formats: ['es'],
+            formats: [appService ? 'iife' : 'es'],
           },
-          outDir: nvueOutDir(appService),
+          outDir: appService ? process.env.UNI_OUTPUT_DIR : nvueOutDir(),
           rollupOptions: {
             external: external(appService),
             output: {
               entryFileNames(chunk) {
-                if (chunk.name === 'main') {
-                  return 'app.js'
+                if (chunk.name === 'main' && chunk.isEntry) {
+                  return appService ? APP_SERVICE_FILENAME : 'app.js'
                 }
                 return chunk.name + '.js'
               },

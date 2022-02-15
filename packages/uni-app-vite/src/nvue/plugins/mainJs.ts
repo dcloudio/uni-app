@@ -1,4 +1,8 @@
-import { defineUniMainJsPlugin, PAGES_JSON_JS } from '@dcloudio/uni-cli-shared'
+import {
+  defineUniMainJsPlugin,
+  MANIFEST_JSON_JS,
+  PAGES_JSON_JS,
+} from '@dcloudio/uni-cli-shared'
 import { APP_CSS_JS } from './appCss'
 
 export function uniMainJsPlugin({
@@ -14,23 +18,25 @@ export function uniMainJsPlugin({
       enforce: 'pre',
       transform(code, id) {
         if (opts.filter(id)) {
-          if (renderer) {
-            if (appService) {
-              code = code.includes('createSSRApp')
-                ? createApp(code)
-                : createLegacyApp(code)
-              return {
-                code,
-                map: { mappings: '' },
-              }
-            }
+          if (renderer !== 'native') {
             return {
-              code: `import './${PAGES_JSON_JS}';`,
+              code: `import './${PAGES_JSON_JS}';import('${APP_CSS_JS}').then(()=>{})`,
+              map: { mappings: '' },
+            }
+          }
+          if (appService) {
+            code = code.includes('createSSRApp')
+              ? createApp(code)
+              : createLegacyApp(code)
+            return {
+              code:
+                `import './${MANIFEST_JSON_JS}';\nimport './${PAGES_JSON_JS}';\n` +
+                code,
               map: { mappings: '' },
             }
           }
           return {
-            code: `import './${PAGES_JSON_JS}';import('${APP_CSS_JS}').then(()=>{})`,
+            code: `import './${PAGES_JSON_JS}';`,
             map: { mappings: '' },
           }
         }
@@ -43,7 +49,7 @@ function createApp(code: string) {
   return `${code.replace(
     'createSSRApp',
     'createVueApp as createSSRApp'
-  )};const {app:__app__,Vuex:__Vuex__,Pinia:__Pinia__}=createApp();uni.Vuex=__Vuex__;uni.Pinia=__Pinia__;__app__._component.mpType='app';__app__._component.render=()=>{};__app__.mount("#app");`
+  )};const {app:__app__,Vuex:__Vuex__,Pinia:__Pinia__}=createApp();uni.Vuex=__Vuex__;uni.Pinia=__Pinia__;__app__._component.mpType='app';__app__._component.render=()=>{};__app__.mount({appendChild(){}});`
 }
 
 function createLegacyApp(code: string) {

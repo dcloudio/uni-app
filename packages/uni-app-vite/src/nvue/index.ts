@@ -8,6 +8,7 @@ import {
 import { uniEasycomPlugin } from '../plugins/easycom'
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'
 import { uniStatsPlugin } from '../plugins/stats'
+import { uniTemplatePlugin } from '../plugins/template'
 import { uniAppNVuePlugin } from './plugin'
 import { uniAppCssPlugin } from './plugins/appCss'
 import { uniEsbuildPlugin } from './plugins/esbuild'
@@ -30,5 +31,6 @@ export function initNVuePlugins() {
     uniStatsPlugin(),
     uniAppNVuePlugin({ appService }),
     uniEsbuildPlugin({ renderer, appService }),
+    ...(appService ? [uniTemplatePlugin({ renderer })] : []),
   ]
 }

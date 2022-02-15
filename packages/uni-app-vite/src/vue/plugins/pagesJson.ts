@@ -9,6 +9,7 @@ import {
   parseManifestJsonOnce,
   getLocaleFiles,
   MANIFEST_JSON_JS,
+  APP_CONFIG_SERVICE,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin(): Plugin {
@@ -35,7 +36,7 @@ export function uniPagesJsonPlugin(): Plugin {
           }
         })
         this.emitFile({
-          fileName: `app-config-service.js`,
+          fileName: APP_CONFIG_SERVICE,
           type: 'asset',
           source: normalizeAppConfigService(
             pagesJson,

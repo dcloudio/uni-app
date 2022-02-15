@@ -8,7 +8,7 @@ import {
   parseManifestJsonOnce,
   getLocaleFiles,
   normalizeAppNVuePagesJson,
-  MANIFEST_JSON_JS,
+  APP_CONFIG_SERVICE,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin({
@@ -40,9 +40,9 @@ export function uniPagesJsonPlugin({
             )
           }
         })
-        if (renderer === 'native' && !appService) {
+        if (renderer === 'native' && appService) {
           this.emitFile({
-            fileName: `app-config-service.js`,
+            fileName: APP_CONFIG_SERVICE,
             type: 'asset',
             source: normalizeAppConfigService(
               pagesJson,
@@ -50,9 +50,7 @@ export function uniPagesJsonPlugin({
             ),
           })
           return {
-            code:
-              `import './${MANIFEST_JSON_JS}'\n` +
-              normalizeAppNVuePagesJson(pagesJson),
+            code: '',
             map: { mappings: '' },
           }
         }

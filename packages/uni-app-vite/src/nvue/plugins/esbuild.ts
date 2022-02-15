@@ -5,10 +5,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import debug from 'debug'
 
-import {
-  APP_SERVICE_FILENAME,
-  transformWithEsbuild,
-} from '@dcloudio/uni-cli-shared'
+import { transformWithEsbuild } from '@dcloudio/uni-cli-shared'
 
 import { nvueOutDir } from '../../utils'
 import { esbuildGlobals } from '../utils'
@@ -52,15 +49,6 @@ export function uniEsbuildPlugin({
           entryPoints.push(name)
         }
       })
-      if (appService) {
-        debugEsbuild('start', APP_SERVICE_FILENAME)
-        await buildNVueAppService(buildOptions).then((code) => {
-          return fs.outputFile(
-            path.resolve(outputDir, APP_SERVICE_FILENAME),
-            code
-          )
-        })
-      }
       debugEsbuild('start', entryPoints.length, entryPoints)
       for (const filename of entryPoints) {
         await buildNVuePage(renderer, filename, buildOptions).then((code) => {
@@ -70,19 +58,6 @@ export function uniEsbuildPlugin({
       debugEsbuild('end')
     },
   }
-}
-
-function buildNVueAppService(options: BuildOptions) {
-  return transformWithEsbuild(
-    `import './app.js'`,
-    path.join(nvueOutDir(true), 'main.js'),
-    options
-  ).then((res) => {
-    if (res.outputFiles) {
-      return res.outputFiles[0].text
-    }
-    return ''
-  })
 }
 
 function buildNVuePage(
@@ -106,7 +81,7 @@ App.mpType = 'page'
 const app = Vue.createApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
 app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...(App.styles||[])]))
 app.mount('#root')`,
-    path.join(nvueOutDir(false), 'main.js'),
+    path.join(nvueOutDir(), 'main.js'),
     options
   ).then((res) => {
     if (res.outputFiles) {
