@@ -171,7 +171,7 @@ var Label = /* @__PURE__ */ defineComponent({
         handlers.length && handlers[0]($event, true);
       }
     };
-    return () => createVNode("div", {
+    return () => createVNode("view", {
       "onClick": _onClick
     }, [slots.default && slots.default()]);
   }
@@ -478,7 +478,7 @@ var Button = defineComponent({
         return;
       }
       if (isLabelClick) {
-        rootRef.value.event.click.handler();
+        rootRef.value.event.click.handler(e2);
       }
     };
     const _getClass = (t2) => {
@@ -648,7 +648,7 @@ var MovableArea = defineComponent({
     return () => {
       const defaultSlots = slots.default && slots.default();
       const movableViewItems = flatVNode(defaultSlots);
-      return createVNode("div", mergeProps({
+      return createVNode("view", mergeProps({
         "class": "uni-movable-area"
       }, listeners), [movableViewItems]);
     };
@@ -1200,7 +1200,7 @@ var MovableView = defineComponent({
       const attrs = {
         preventGesture: true
       };
-      return createVNode("div", mergeProps({
+      return createVNode("view", mergeProps({
         "ref": rootRef,
         "onTouchstart": touchStart,
         "class": "uni-movable-view",
