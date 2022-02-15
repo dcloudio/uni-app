@@ -1,4 +1,4 @@
-import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, ref, inject, onBeforeUnmount, Text, isVNode, Fragment, onMounted, computed } from "vue";
+import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text, isVNode, Fragment, onMounted } from "vue";
 import { hasOwn, extend, isPlainObject } from "@vue/shared";
 import { cacheStringFunction } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
@@ -230,6 +230,43 @@ function _removeListeners(id, listeners, watch2) {
     }
   });
 }
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const { excludeListeners = false, excludeKeys = [] } = params;
+  const instance = getCurrentInstance();
+  const attrs = shallowRef({});
+  const listeners = shallowRef({});
+  const excludeAttrs = shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance.attrs = reactive(instance.attrs);
+  watchEffect(() => {
+    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return { $attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs };
+};
 const buttonProps = {
   id: {
     type: String,
@@ -455,6 +492,7 @@ const TYPES = {
   warn: "w"
 };
 var Button = defineComponent({
+  inheritAttrs: false,
   name: "Button",
   props: extend(buttonProps, {
     type: {
@@ -471,15 +509,22 @@ var Button = defineComponent({
     slots,
     attrs
   }) {
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
     const type = props.type;
     const rootRef = ref(null);
     const onClick = (e2, isLabelClick) => {
+      const _onClick = $listeners.value.onClick || (() => {
+      });
       if (props.disabled) {
         return;
       }
-      if (isLabelClick) {
-        rootRef.value.event.click.handler(e2);
-      }
+      _onClick(e2);
     };
     const _getClass = (t2) => {
       let cl = "ub-" + TYPES[type] + t2;
@@ -506,6 +551,15 @@ var Button = defineComponent({
     useListeners(props, {
       "label-click": onClick
     });
+    const _listeners = computed(() => {
+      const obj = {};
+      for (const eventName in $listeners.value) {
+        const event = $listeners.value[eventName];
+        if (eventName !== "onClick")
+          obj[eventName] = event;
+      }
+      return obj;
+    });
     const wrapSlots = () => {
       if (!slots.default)
         return [];
@@ -518,14 +572,14 @@ var Button = defineComponent({
       return vnodes;
     };
     return () => {
+      const _attrs = extend({}, useHoverClass(props), {
+        hoverClass: _getHoverClass("")
+      }, $attrs.value, $excludeAttrs.value, _listeners.value);
       return createVNode("view", mergeProps({
         "ref": rootRef,
-        "class": ["ub", _getClass("")]
-      }, extend({}, useHoverClass(props), {
-        hoverClass: _getHoverClass("")
-      }), {
+        "class": ["ub", _getClass("")],
         "onClick": onClick
-      }), [props.loading ? createVNode("loading-indicator", mergeProps({
+      }, _attrs), [props.loading ? createVNode("loading-indicator", mergeProps({
         "class": ["ub-loading", `ub-${TYPES[type]}-loading`]
       }, {
         arrow: "false",
