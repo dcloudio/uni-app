@@ -12,7 +12,7 @@ import {
   useCustomEvent,
   EmitEvent,
   CustomEventTrigger,
-} from '../../helpers/useNvueEvent'
+} from '../../helpers/useNVueEvent'
 import { getComponentSize } from '../helpers'
 import { createNVueTextVNode } from '../utils'
 import { PROGRESS_VALUES, progressProps } from '../../components/progress'
