@@ -107,15 +107,15 @@ const NVUE_BUILT_IN_TAGS = [
     'dc-switch',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
-    'text',
-    'image',
-    'input',
-    'textarea',
-    'video',
-    'web-view',
-    'slider',
-    'ad',
-    'ad-draw',
+    'u-text',
+    'u-image',
+    'u-input',
+    'u-textarea',
+    'u-video',
+    'u-web-view',
+    'u-slider',
+    'u-ad',
+    'u-ad-draw',
 ];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-
@@ -167,7 +167,7 @@ function isAppNVueNativeTag(tag) {
         return true;
     }
     // u-text,u-video...
-    if (NVUE_U_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
+    if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     return false;
