@@ -660,9 +660,11 @@ importers:
 
   packages/uni-nvue-styler:
     specifiers:
+      '@vue/shared': 3.2.30
       parse-css-font: ^4.0.0
       postcss: ^8.4.5
     dependencies:
+      '@vue/shared': 3.2.30
       parse-css-font: 4.0.0
       postcss: 8.4.6
 

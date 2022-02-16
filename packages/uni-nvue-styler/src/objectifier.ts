@@ -1,5 +1,5 @@
 import { Container, Root, Document } from 'postcss'
-import { extend } from '@vue/shared'
+import { extend, hasOwn } from '@vue/shared'
 
 interface ObjectifierContext {
   'FONT-FACE': Record<string, unknown>[]
@@ -43,7 +43,15 @@ function transform(
         transformSelector(selector, body, result, context)
       })
     } else if (child.type === 'decl') {
-      result[child.prop] = child.value
+      if (child.important) {
+        result['!' + child.prop] = child.value
+        // !important的值域优先级高，故删除非!important的值域
+        delete result[child.prop]
+      } else {
+        if (!hasOwn(result, '!' + child.prop)) {
+          result[child.prop] = child.value
+        }
+      }
     }
   })
   return result
@@ -56,10 +64,8 @@ function transformSelector(
   context: ObjectifierContext
 ) {
   let className = selector.slice(1)
-  let isCombinators = false
   const lastDotIndex = className.lastIndexOf('.')
   if (lastDotIndex > 0) {
-    isCombinators = true
     className = className.substring(lastDotIndex + 1)
   }
   const pseudoIndex = className.indexOf(':')
@@ -72,20 +78,33 @@ function transformSelector(
     })
   }
   transition(className, body, context)
-  if (isCombinators) {
+  if (lastDotIndex > 0) {
     className = '.' + className
     result = (result[className] || (result[className] = {})) as Record<
       string,
       unknown
     >
-    className = selector.replace(className, '').trim()
+    className = selector.substring(0, lastDotIndex + 1).trim()
   }
   if (result[className]) {
     // clone
-    result[className] = extend({}, result[className], body)
+    result[className] = processImportant(extend({}, result[className], body))
   } else {
     result[className] = body
   }
+}
+
+/**
+ * 处理 important 属性，如果某个属性是 important，需要将非 important 的该属性移除掉
+ * @param body
+ */
+function processImportant(body: Record<string, unknown>) {
+  Object.keys(body).forEach((name) => {
+    if (name.startsWith('!')) {
+      delete body[name.substring(1)]
+    }
+  })
+  return body
 }
 
 function transition(

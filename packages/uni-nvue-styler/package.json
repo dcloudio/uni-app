@@ -17,6 +17,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@vue/shared": "3.2.30",
     "parse-css-font": "^4.0.0",
     "postcss": "^8.4.5"
   }
