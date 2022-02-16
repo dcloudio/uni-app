@@ -1630,7 +1630,7 @@ function reload(id, newComp) {
     if (typeof window !== 'undefined' &&
         window.__setupPage &&
         record.initialDef.__mpType === 'page') {
-        window.__setupPage(newComp);
+        newComp = window.__setupPage(newComp);
     }
     newComp = normalizeClassComponent(newComp);
     // update initial def (for not-yet-rendered components)
