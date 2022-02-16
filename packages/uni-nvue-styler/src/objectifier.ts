@@ -10,7 +10,10 @@ export function objectifier(node: Root | Document | Container | null) {
   if (!node) {
     return {}
   }
-  const context: ObjectifierContext = { 'FONT-FACE': [], TRANSITION: {} }
+  const context: ObjectifierContext = {
+    'FONT-FACE': [],
+    TRANSITION: {},
+  }
   const result = transform(node, context)
   if (context['FONT-FACE'].length) {
     result['@FONT-FACE'] = context['FONT-FACE']
@@ -37,29 +40,52 @@ function transform(
     } else if (child.type === 'rule') {
       const body = transform(child, context)
       child.selectors.forEach((selector) => {
-        let className = selector.slice(1)
-        const pseudoIndex = className.indexOf(':')
-        if (pseudoIndex > -1) {
-          const pseudoClass = className.slice(pseudoIndex)
-          className = className.slice(0, pseudoIndex)
-          Object.keys(body).forEach(function (name) {
-            body[name + pseudoClass] = body[name]
-            delete body[name]
-          })
-        }
-        transition(className, body, context)
-        if (result[className]) {
-          // clone
-          result[className] = extend({}, result[className], body)
-        } else {
-          result[className] = body
-        }
+        transformSelector(selector, body, result, context)
       })
     } else if (child.type === 'decl') {
       result[child.prop] = child.value
     }
   })
   return result
+}
+
+function transformSelector(
+  selector: string,
+  body: Record<string, unknown>,
+  result: Record<string, unknown | Record<string, unknown>>,
+  context: ObjectifierContext
+) {
+  let className = selector.slice(1)
+  let isCombinators = false
+  const lastDotIndex = className.lastIndexOf('.')
+  if (lastDotIndex > 0) {
+    isCombinators = true
+    className = className.substring(lastDotIndex + 1)
+  }
+  const pseudoIndex = className.indexOf(':')
+  if (pseudoIndex > -1) {
+    const pseudoClass = className.slice(pseudoIndex)
+    className = className.slice(0, pseudoIndex)
+    Object.keys(body).forEach(function (name) {
+      body[name + pseudoClass] = body[name]
+      delete body[name]
+    })
+  }
+  transition(className, body, context)
+  if (isCombinators) {
+    className = '.' + className
+    result = (result[className] || (result[className] = {})) as Record<
+      string,
+      unknown
+    >
+    className = selector.replace(className, '').trim()
+  }
+  if (result[className]) {
+    // clone
+    result[className] = extend({}, result[className], body)
+  } else {
+    result[className] = body
+  }
 }
 
 function transition(

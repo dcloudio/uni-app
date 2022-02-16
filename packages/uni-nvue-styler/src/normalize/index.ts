@@ -11,13 +11,13 @@ import { normalizeMap } from './map'
 const normalized = Symbol('normalized')
 
 export interface NormalizeOptions {
-  descendant?: boolean
+  combinators?: boolean
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
 }
 
 export function normalize(opts: NormalizeOptions = {}): Plugin {
-  if (!hasOwn(opts, 'descendant')) {
-    opts.descendant = false
+  if (!hasOwn(opts, 'combinators')) {
+    opts.combinators = false
   }
   if (!hasOwn(opts, 'logLevel')) {
     opts.logLevel = 'WARNING'
@@ -32,19 +32,22 @@ export function normalize(opts: NormalizeOptions = {}): Plugin {
   return plugin
 }
 
-function createRuleProcessor({ descendant }: NormalizeOptions) {
+function createRuleProcessor({ combinators }: NormalizeOptions) {
   return (rule: Rule, helper: Helpers) => {
     if ((rule as any)[normalized]) {
       return
     }
-    const regx = descendant
+    const regx = combinators
       ? /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
       : /^(\.)([A-Za-z0-9_\-:]+)$/
 
     rule.selector = rule.selectors
-      .filter((selector) => {
+      .map((selector) => {
+        selector = selector
+          .replace(/\s*([\+\~\>])\s*/g, '$1')
+          .replace(/\s+/, ' ')
         if (regx.test(selector)) {
-          return true
+          return selector
         }
         rule.warn(
           helper.result,
@@ -52,8 +55,9 @@ function createRuleProcessor({ descendant }: NormalizeOptions) {
             selector +
             '` is not supported. nvue only support classname selector'
         )
-        return false
+        return ''
       })
+      .filter(Boolean)
       .join(', ')
     if (!rule.selector) {
       rule.remove()

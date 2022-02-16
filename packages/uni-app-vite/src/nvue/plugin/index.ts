@@ -106,8 +106,8 @@ export function uniAppNVuePlugin({
             }
             const { code, messages } = await parse(source, {
               filename,
-              descendant: false,
               logLevel: 'WARNING',
+              combinators: false,
             })
             messages.forEach((message) => {
               if (message.type === 'warning') {
