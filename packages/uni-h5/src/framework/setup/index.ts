@@ -82,7 +82,7 @@ export function setupPage(comp: any) {
     comp.__mpType = 'page'
   }
   return setupComponent(comp, {
-    clone: true,
+    clone: true, // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance) {
       instance.root = instance // 组件 root 指向页面
