@@ -1,6 +1,6 @@
 import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text, isVNode, Fragment, onMounted } from "vue";
-import { hasOwn, extend, isPlainObject } from "@vue/shared";
-import { cacheStringFunction } from "@dcloudio/uni-shared";
+import { extend, hasOwn, isPlainObject } from "@vue/shared";
+import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -1751,11 +1751,189 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
   };
   return touchStart;
 }
+const FONT_SIZE = 16;
+const PROGRESS_VALUES = {
+  activeColor: PRIMARY_COLOR,
+  backgroundColor: "#EBEBEB",
+  activeMode: "backwards"
+};
+const progressProps = {
+  percent: {
+    type: [Number, String],
+    default: 0,
+    validator(value) {
+      return !isNaN(parseFloat(value));
+    }
+  },
+  fontSize: {
+    type: [String, Number],
+    default: FONT_SIZE
+  },
+  showInfo: {
+    type: [Boolean, String],
+    default: false
+  },
+  strokeWidth: {
+    type: [Number, String],
+    default: 6,
+    validator(value) {
+      return !isNaN(parseFloat(value));
+    }
+  },
+  color: {
+    type: String,
+    default: PROGRESS_VALUES.activeColor
+  },
+  activeColor: {
+    type: String,
+    default: PROGRESS_VALUES.activeColor
+  },
+  backgroundColor: {
+    type: String,
+    default: PROGRESS_VALUES.backgroundColor
+  },
+  active: {
+    type: [Boolean, String],
+    default: false
+  },
+  activeMode: {
+    type: String,
+    default: PROGRESS_VALUES.activeMode
+  },
+  duration: {
+    type: [Number, String],
+    default: 30,
+    validator(value) {
+      return !isNaN(parseFloat(value));
+    }
+  }
+};
+const progressStyles = [{
+  "uni-progress": {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  "uni-progress-bar": {
+    flex: 1
+  },
+  "uni-progress-inner-bar": {
+    position: "absolute"
+  },
+  "uni-progress-info": {
+    marginLeft: "15px"
+  }
+}];
+var Progress = defineComponent({
+  name: "Progress",
+  props: progressProps,
+  styles: progressStyles,
+  emits: ["activeend"],
+  setup(props, {
+    emit
+  }) {
+    const progressRef = ref(null);
+    const progressBarRef = ref(null);
+    const trigger = useCustomEvent(progressRef, emit);
+    const state = useProgressState(props);
+    watch(() => state.realPercent, (newValue, oldValue) => {
+      state.lastPercent = oldValue || 0;
+      _activeAnimation(state, props, trigger);
+    });
+    onMounted(() => {
+      setTimeout(() => {
+        getComponentSize(progressBarRef.value).then(({
+          width
+        }) => {
+          state.progressWidth = width || 0;
+          _activeAnimation(state, props, trigger);
+        });
+      }, 50);
+    });
+    return () => {
+      const {
+        showInfo,
+        fontSize
+      } = props;
+      const {
+        outerBarStyle,
+        innerBarStyle,
+        currentPercent
+      } = state;
+      return createVNode("div", {
+        "ref": progressRef,
+        "class": "uni-progress"
+      }, [createVNode("div", {
+        "ref": progressBarRef,
+        "style": outerBarStyle,
+        "class": "uni-progress-bar"
+      }, [createVNode("div", {
+        "style": innerBarStyle,
+        "class": "uni-progress-inner-bar"
+      }, null)]), showInfo ? createNVueTextVNode(currentPercent + "%", {
+        class: "uni-progress-info",
+        style: {
+          fontSize
+        }
+      }) : null]);
+    };
+  }
+});
+function useProgressState(props) {
+  const currentPercent = ref(0);
+  const progressWidth = ref(0);
+  const outerBarStyle = computed(() => ({
+    backgroundColor: props.backgroundColor,
+    height: props.strokeWidth
+  }));
+  const innerBarStyle = computed(() => {
+    const backgroundColor = props.color !== PROGRESS_VALUES.activeColor && props.activeColor === PROGRESS_VALUES.activeColor ? props.color : props.activeColor;
+    return {
+      width: currentPercent.value * progressWidth.value / 100,
+      height: props.strokeWidth,
+      backgroundColor
+    };
+  });
+  const realPercent = computed(() => {
+    let realValue = parseFloat(props.percent);
+    realValue < 0 && (realValue = 0);
+    realValue > 100 && (realValue = 100);
+    return realValue;
+  });
+  const state = reactive({
+    outerBarStyle,
+    innerBarStyle,
+    realPercent,
+    currentPercent,
+    strokeTimer: 0,
+    lastPercent: 0,
+    progressWidth
+  });
+  return state;
+}
+function _activeAnimation(state, props, trigger) {
+  state.strokeTimer && clearInterval(state.strokeTimer);
+  if (props.active) {
+    state.currentPercent = props.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
+    state.strokeTimer = setInterval(() => {
+      if (state.currentPercent + 1 > state.realPercent) {
+        state.currentPercent = state.realPercent;
+        state.strokeTimer && clearInterval(state.strokeTimer);
+        trigger("activeend", {});
+      } else {
+        state.currentPercent += 1;
+      }
+    }, parseFloat(props.duration));
+  } else {
+    state.currentPercent = state.realPercent;
+  }
+}
 var components = {
   Navigator,
   Label,
   Button,
   MovableArea,
-  MovableView
+  MovableView,
+  Progress
 };
 export { components as default };
