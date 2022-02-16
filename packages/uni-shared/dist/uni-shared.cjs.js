@@ -104,6 +104,7 @@ const NVUE_BUILT_IN_TAGS = [
     'timepicker',
     'marquee',
     'countdown',
+    'dc-switch',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'text',
@@ -113,6 +114,8 @@ const NVUE_U_BUILT_IN_TAGS = [
     'video',
     'web-view',
     'slider',
+    'ad',
+    'ad-draw',
 ];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-

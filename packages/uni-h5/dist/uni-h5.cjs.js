@@ -1626,7 +1626,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$q = {
+const props$p = {
   canvasId: {
     type: String,
     default: ""
@@ -1646,7 +1646,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$q,
+  props: props$p,
   computed: {
     id() {
       return this.canvasId;
@@ -2104,7 +2104,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = {
+const props$o = {
   name: {
     type: String,
     default: ""
@@ -2112,7 +2112,7 @@ const props$p = {
 };
 var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$p,
+  props: props$o,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2164,7 +2164,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$o = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2188,7 +2188,7 @@ const props$o = {
 };
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$o,
+  props: props$n,
   setup(props2, {
     slots
   }) {
@@ -2255,7 +2255,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$n = {
+const props$m = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2427,7 +2427,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
+const props$l = /* @__PURE__ */ shared.extend({}, props$m, {
   id: {
     type: String,
     default: ""
@@ -2455,7 +2455,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
 });
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$m,
+  props: props$l,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2541,7 +2541,7 @@ var index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$l = {
+const props$k = {
   src: {
     type: String,
     default: ""
@@ -2580,7 +2580,7 @@ const IMAGE_MODES = {
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$l,
+  props: props$k,
   setup(props2, {
     emit: emit2
   }) {
@@ -2829,7 +2829,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$k = /* @__PURE__ */ shared.extend({}, {
+const props$j = /* @__PURE__ */ shared.extend({}, {
   name: {
     type: String,
     default: ""
@@ -2898,7 +2898,7 @@ const props$k = /* @__PURE__ */ shared.extend({}, {
     type: Boolean,
     default: false
   }
-}, props$n);
+}, props$m);
 const emit = [
   "input",
   "focus",
@@ -3093,7 +3093,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
+const props$i = /* @__PURE__ */ shared.extend({}, props$j, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3105,7 +3105,7 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$j,
+  props: props$i,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -4550,18 +4550,23 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const VALUES = {
+const FONT_SIZE = 16;
+const PROGRESS_VALUES = {
   activeColor: uniShared.PRIMARY_COLOR,
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$i = {
+const progressProps = {
   percent: {
     type: [Number, String],
     default: 0,
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  fontSize: {
+    type: [String, Number],
+    default: FONT_SIZE
   },
   showInfo: {
     type: [Boolean, String],
@@ -4576,15 +4581,15 @@ const props$i = {
   },
   color: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   activeColor: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   backgroundColor: {
     type: String,
-    default: VALUES.backgroundColor
+    default: PROGRESS_VALUES.backgroundColor
   },
   active: {
     type: [Boolean, String],
@@ -4592,7 +4597,7 @@ const props$i = {
   },
   activeMode: {
     type: String,
-    default: VALUES.activeMode
+    default: PROGRESS_VALUES.activeMode
   },
   duration: {
     type: [Number, String],
@@ -4604,7 +4609,7 @@ const props$i = {
 };
 var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$i,
+  props: progressProps,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -4640,7 +4645,7 @@ function useProgressState(props2) {
   const currentPercent = vue.ref(0);
   const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
   const innerBarStyle = vue.computed(() => {
-    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
+    const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = vue.computed(() => {
@@ -4661,7 +4666,7 @@ function useProgressState(props2) {
 }
 function _activeAnimation(state, props2) {
   if (props2.active) {
-    state.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state.lastPercent;
+    state.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
     state.strokeTimer = setInterval(() => {
       if (state.currentPercent + 1 > state.realPercent) {
         state.currentPercent = state.realPercent;
@@ -6370,7 +6375,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$9 = /* @__PURE__ */ shared.extend({}, props$k, {
+const props$9 = /* @__PURE__ */ shared.extend({}, props$j, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"

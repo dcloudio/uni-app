@@ -2135,6 +2135,15 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.unsubscribe(getEventName(reqId));
 }
 
+function getFileName(path) {
+    const array = path.split('/');
+    return array[array.length - 1];
+}
+function getExtName(path) {
+    const array = path.split('.');
+    return array.length > 1 ? '.' + array[array.length - 1] : '';
+}
+
 const DEVICE_FREQUENCY = 200;
 const NETWORK_TYPES = [
     'unknown',
@@ -12690,15 +12699,6 @@ const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath, fileType }, 
     const errorCallback = warpPlusErrorCallback(reject);
     plus.runtime.openDocument(getRealPath(filePath), undefined, resolve, errorCallback);
 }, OpenDocumentProtocol, OpenDocumentOptions);
-
-function getFileName(path) {
-    const array = path.split('/');
-    return array[array.length - 1];
-}
-function getExtName(path) {
-    const array = path.split('.');
-    return array.length > 1 ? '.' + array[array.length - 1] : '';
-}
 
 let index$1 = 0;
 const SAVED_DIR = 'uniapp_save';
