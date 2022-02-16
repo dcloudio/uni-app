@@ -22,7 +22,7 @@ const pkgs = {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.8.2',
+    latest: '2.8.3',
   },
   '@vitejs/plugin-vue': {
     latest: '2.2.0',
@@ -34,7 +34,7 @@ const pkgs = {
     latest: '1.7.1',
   },
   '@dcloudio/types': {
-    latest: '2.5.16',
+    latest: '2.5.17',
   },
   autoprefixer: {
     latest: '10.4.2',
