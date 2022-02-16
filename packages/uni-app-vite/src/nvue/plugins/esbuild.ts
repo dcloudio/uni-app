@@ -5,7 +5,11 @@ import path from 'path'
 import fs from 'fs-extra'
 import debug from 'debug'
 
-import { removeExt, transformWithEsbuild } from '@dcloudio/uni-cli-shared'
+import {
+  APP_CONFIG_SERVICE,
+  removeExt,
+  transformWithEsbuild,
+} from '@dcloudio/uni-cli-shared'
 
 import { nvueOutDir } from '../../utils'
 import { esbuildGlobals } from '../utils'
@@ -14,7 +18,6 @@ import { APP_CSS_JS } from './appCss'
 const debugEsbuild = debug('uni:app-nvue-esbuild')
 
 export function uniEsbuildPlugin({
-  renderer,
   appService,
 }: {
   renderer?: 'native'
@@ -49,9 +52,13 @@ export function uniEsbuildPlugin({
           entryPoints.push(name)
         }
       })
+      if (!entryPoints.length) {
+        return
+      }
+      buildAppCss()
       debugEsbuild('start', entryPoints.length, entryPoints)
       for (const filename of entryPoints) {
-        await buildNVuePage(renderer, filename, buildOptions).then((code) => {
+        await buildNVuePage(filename, buildOptions).then((code) => {
           return fs.outputFile(path.resolve(outputDir, filename), code)
         })
       }
@@ -60,18 +67,42 @@ export function uniEsbuildPlugin({
   }
 }
 
-function buildNVuePage(
-  renderer: 'native' | undefined,
-  filename: string,
-  options: BuildOptions
-) {
+/**
+ * 将 nvue 全局 css 样式注入 app-config-service.js
+ * @returns
+ */
+function buildAppCss() {
+  const appCssJsFilename = path.join(nvueOutDir(), APP_CSS_JS)
+  if (!fs.existsSync(appCssJsFilename)) {
+    return
+  }
+  const appConfigServiceFilename = path.join(
+    process.env.UNI_OUTPUT_DIR,
+    APP_CONFIG_SERVICE
+  )
+  if (!fs.existsSync(appConfigServiceFilename)) {
+    return
+  }
+  const appCssJsCode = fs.readFileSync(appCssJsFilename, 'utf8')
+  const appCssJsFn = new Function('exports', appCssJsCode)
+  const exports = { styles: [] }
+  appCssJsFn(exports)
+  const appCssJsonCode = JSON.stringify(exports.styles)
+
+  if (process.env.UNI_NVUE_APP_STYLES === appCssJsonCode) {
+    return
+  }
+  process.env.UNI_NVUE_APP_STYLES = appCssJsonCode
+  const appConfigServiceCode = fs.readFileSync(appConfigServiceFilename, 'utf8')
+  fs.writeFileSync(
+    appConfigServiceFilename,
+    wrapperNVueAppStyles(appConfigServiceCode)
+  )
+}
+
+function buildNVuePage(filename: string, options: BuildOptions) {
   return transformWithEsbuild(
     `import App from './${filename}'
-${
-  renderer === 'native'
-    ? 'const AppStyles = __uniConfig.styles || []'
-    : `import { AppStyles } from '${APP_CSS_JS}'`
-}
 const webview = plus.webview.currentWebview()
 const __pageId = parseInt(webview.id)
 const __pagePath = '${removeExt(filename)}'
@@ -79,7 +110,7 @@ let __pageQuery = {}
 try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
 App.mpType = 'page'
 const app = Vue.createPageApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
-app.provide('__globalStyles', Vue.useCssStyles([...AppStyles, ...(App.styles||[])]))
+app.provide('__globalStyles', Vue.useCssStyles([...__uniConfig.styles, ...(App.styles||[])]))
 app.mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),
     options
@@ -111,4 +142,11 @@ function esbuildGlobalPlugin(options: Record<string, string>) {
       })
     },
   }
+}
+
+export function wrapperNVueAppStyles(code: string) {
+  return code.replace(
+    /__uniConfig.styles=(.*);\/\/styles/,
+    `__uniConfig.styles=${process.env.UNI_NVUE_APP_STYLES || '[]'};//styles`
+  )
 }

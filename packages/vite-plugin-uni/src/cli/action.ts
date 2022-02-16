@@ -41,12 +41,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
               printStartupDuration(createLogger(options.logLevel), false)
             )
           }
-          if (process.env.UNI_APP_CHANGED_FILES) {
+          const files = process.env.UNI_APP_CHANGED_FILES
+          if (files) {
+            process.env.UNI_APP_CHANGED_FILES = ''
             return console.log(
-              M['dev.watching.end.files'].replace(
-                '{files}',
-                process.env.UNI_APP_CHANGED_FILES
-              )
+              M['dev.watching.end.files'].replace('{files}', files)
             )
           }
           return console.log(M['dev.watching.end'])

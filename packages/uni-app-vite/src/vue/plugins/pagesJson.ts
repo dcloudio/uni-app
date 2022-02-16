@@ -11,6 +11,8 @@ import {
   MANIFEST_JSON_JS,
   APP_CONFIG_SERVICE,
 } from '@dcloudio/uni-cli-shared'
+import { OutputAsset } from 'rollup'
+import { wrapperNVueAppStyles } from '../../nvue/plugins/esbuild'
 
 export function uniPagesJsonPlugin(): Plugin {
   return defineUniPagesJsonPlugin((opts) => {
@@ -48,6 +50,15 @@ export function uniPagesJsonPlugin(): Plugin {
             `import './${MANIFEST_JSON_JS}'\n` +
             normalizeAppPagesJson(pagesJson),
           map: { mappings: '' },
+        }
+      },
+      generateBundle(_, bundle) {
+        const outputFile = bundle[APP_CONFIG_SERVICE]
+        if (outputFile && outputFile.type === 'asset') {
+          // 补充 nvue styles
+          ;(outputFile as OutputAsset).source = wrapperNVueAppStyles(
+            (outputFile as OutputAsset).source as string
+          )
         }
       },
     }

@@ -9,7 +9,13 @@ import {
   SFCBlock,
   SFCDescriptor,
 } from '@vue/compiler-sfc'
-import { hash, preNVueHtml, preNVueJs } from '@dcloudio/uni-cli-shared'
+import {
+  hash,
+  normalizePath,
+  parseVueRequest,
+  preNVueHtml,
+  preNVueJs,
+} from '@dcloudio/uni-cli-shared'
 
 declare module '@vue/compiler-sfc' {
   interface SFCDescriptor {
@@ -20,8 +26,13 @@ declare module '@vue/compiler-sfc' {
 export const APP_CSS_JS = './app.css.js'
 export function uniAppCssPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
+  const appVueFilename = normalizePath(path.resolve(inputDir, 'App.vue'))
   return {
     name: 'uni:app-nvue-app-style',
+    // 提前到 @vite/plugin-vue 之前执行，因为在 nvue 编译时，仅 import 了 App.vue 的 styles，这样导致 descriptor
+    // 一直使用的是上一次的（plugin-vue 会在 transformMain 中生成新的 descriptor），故不再交由 plugin-vue 来 load
+    // 而是当前插件直接处理
+    enforce: 'pre',
     resolveId(id) {
       if (id === APP_CSS_JS) {
         return APP_CSS_JS
@@ -29,19 +40,30 @@ export function uniAppCssPlugin(): Plugin {
     },
     load(id) {
       if (id === APP_CSS_JS) {
-        return genAppStylesCode(inputDir, this)
+        return genAppStylesCode(appVueFilename, this)
+      }
+      const { filename, query } = parseVueRequest(id)
+      if (query.vue && query.type === 'style' && appVueFilename === filename) {
+        const descriptor = createAppDescriptor(filename, this)
+        const block = descriptor.styles[query.index!]
+        if (block) {
+          return {
+            code: block.content,
+            map: '',
+          }
+        }
       }
     },
   }
 }
 
-const defaultAppStylesCode = `export const AppStyles = []`
+const defaultAppStylesCode = `exports.styles = []`
 
 async function genAppStylesCode(
-  inputDir: string,
+  filename: string,
   pluginContext: PluginContext
 ) {
-  const filename = path.resolve(inputDir, 'App.vue')
+  pluginContext.addWatchFile(filename)
   const descriptor = createAppDescriptor(filename, pluginContext)
   if (!descriptor.styles.length) {
     return defaultAppStylesCode
@@ -58,8 +80,9 @@ async function genAppStylesCode(
     stylesCode += `\nimport _style_${i} from ${JSON.stringify(styleRequest)}`
     styleVars.push(`_style_${i}`)
   }
-  return `${stylesCode}
-export const AppStyles = [${styleVars.join(',')}]
+  return `
+${stylesCode}
+exports.styles = [${styleVars.join(',')}]
 `
 }
 
