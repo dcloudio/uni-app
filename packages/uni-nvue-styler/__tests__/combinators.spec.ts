@@ -14,11 +14,11 @@ async function objectifierRule(input: string) {
 describe('nvue-styler: combinators', () => {
   test('descendant', async () => {
     const { json, messages } = await objectifierRule(
-      ` .bar {left:5;}.foo     .bar {left: 0!important;}.foo .bar{left:5;right:5;right:10!important}.bar .bar{left:2}.foo .bar .foobar{left:1}`
+      ` .bar {left:5!important;}.foo     .bar {left: 0!important;}.foo .bar{left:5;right:5;right:10!important}.bar .bar{left:2}.foo .bar .foobar{left:1}`
     )
     expect(json).toEqual({
       bar: {
-        left: 5,
+        '!left': 5,
       },
       '.bar': {
         '.foo': {
