@@ -2,6 +2,7 @@ import { NVUE_U_BUILT_IN_TAGS } from '@dcloudio/uni-shared'
 import {
   DirectiveNode,
   ElementNode,
+  ElementTypes,
   findDir,
   findProp,
   SimpleExpressionNode,
@@ -47,7 +48,7 @@ describe('app-nvue: compiler', () => {
   })
   test('u-tags', () => {
     NVUE_U_BUILT_IN_TAGS.forEach((tag) => {
-      expect(genAst(`<${tag}></${tag}>`).tag).toBe(`u-${tag}`)
+      expect(genAst(`<${tag}></${tag}>`).tagType).toBe(ElementTypes.ELEMENT)
     })
   })
 
