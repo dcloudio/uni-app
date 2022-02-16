@@ -128,8 +128,11 @@ function generateCssCode(config: ResolvedConfig) {
   if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
     cssFiles.push(BASE_COMPONENTS_STYLE_PATH + 'input.css')
   }
-  if (config.command === 'serve') {
-    // 开发模式，自动添加所有API相关css
+  const enableTreeShaking = isEnableTreeShaking(
+    parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+  )
+  if (config.command === 'serve' || !enableTreeShaking) {
+    // 开发模式或禁用摇树优化，自动添加所有API相关css
     Object.keys(API_DEPS_CSS).forEach((name) => {
       const styles = API_DEPS_CSS[name as keyof typeof API_DEPS_CSS]
       styles.forEach((style) => {
