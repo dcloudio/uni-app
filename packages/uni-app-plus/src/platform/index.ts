@@ -16,9 +16,7 @@ export {
 } from '../service/api/ui/mediaQueryObserver'
 
 export { saveImage } from './saveImage'
-export function getSameOriginUrl(url: string): Promise<string> {
-  return Promise.resolve(url)
-}
+export { getSameOriginUrl } from '../helpers/file'
 export { TEMP_PATH } from '../service/api/constants'
 
 export {
