@@ -1,7 +1,7 @@
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
 import { BuildOptions, createLogger, ServerOptions } from 'vite'
-import { M } from '@dcloudio/uni-cli-shared'
+import { M, output } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
@@ -30,25 +30,26 @@ export async function runDev(options: CliOptions & ServerOptions) {
           if (isFirstStart) {
             return (isFirstStart = false)
           }
-          console.log(M['dev.watching.start'])
+          output('log', M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {
           event.result.close()
           if (isFirstEnd) {
             // 首次全量同步
             return (
               (isFirstEnd = false),
-              console.log(M['dev.watching.end']),
+              output('log', M['dev.watching.end']),
               printStartupDuration(createLogger(options.logLevel), false)
             )
           }
           const files = process.env.UNI_APP_CHANGED_FILES
-          if (files) {
+          if (files && !files.includes('app-config-service.js')) {
             process.env.UNI_APP_CHANGED_FILES = ''
-            return console.log(
+            return output(
+              'log',
               M['dev.watching.end.files'].replace('{files}', files)
             )
           }
-          return console.log(M['dev.watching.end'])
+          return output('log', M['dev.watching.end'])
         }
       })
     }
