@@ -103,6 +103,7 @@ export const NVUE_BUILT_IN_TAGS = [
   'timepicker',
   'marquee',
   'countdown',
+  'dc-switch',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
@@ -113,6 +114,8 @@ export const NVUE_U_BUILT_IN_TAGS = [
   'video',
   'web-view',
   'slider',
+  'ad',
+  'ad-draw',
 ]
 
 export function isBuiltInComponent(tag: string) {
