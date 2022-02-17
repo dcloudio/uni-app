@@ -82,11 +82,24 @@ export default defineComponent({
 
     return () => {
       const defaultSlots = slots.default && slots.default()
-      const { indicatorStyle } = state
+      const { indicatorStyle, currentSync } = state
       swiperItems = flatVNode(defaultSlots)
       return (
         <div ref={rootRef} class="uni-swiper">
-          <slider class="uni-swiper-slider" {...listeners}>
+          <slider
+            class="uni-swiper-slider"
+            {...{
+              autoPlay: props.autoplay,
+              interval: props.interval,
+              index: currentSync,
+              keepIndex: true,
+              showIndicators: props.indicatorDots,
+              infinite: props.circular,
+              vertical: props.vertical,
+              scrollable: !props.disableTouch,
+            }}
+            {...listeners}
+          >
             {swiperItems}
             <indicator class="uni-swiper-dots" styles={indicatorStyle} />
           </slider>
@@ -195,9 +208,9 @@ function useSwiperListeners(
   )
 
   const listeners = {
-    scroll: onScroll,
-    scrollend: onScrollEnd,
-    change: onChange,
+    onScroll,
+    onScrollEnd,
+    onChange,
   }
 
   return listeners

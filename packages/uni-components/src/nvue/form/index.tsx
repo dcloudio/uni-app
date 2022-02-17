@@ -15,14 +15,11 @@ export default defineComponent({
     const rootRef = ref<HTMLElement | null>(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
-    let so = slots.default && slots.default()
-
-    console.log(so)
-
-    provideForm(trigger, slots.default && (slots.default() as any))
+    const vnodes = slots.default && slots.default()
+    provideForm(trigger, vnodes)
 
     return () => {
-      return <view ref={rootRef}>{slots.default && slots.default()}</view>
+      return <view ref={rootRef}>{vnodes}</view>
     }
   },
 })
@@ -34,13 +31,13 @@ function provideForm(trigger: CustomEventTrigger, children: any) {
     nodes.forEach(function (node: any) {
       if (
         NATIVE_COMPONENTS.indexOf(node.type) >= 0 &&
-        node.data.attrs &&
-        node.data.attrs.name
+        node.el.attr &&
+        node.el.attr.name
       ) {
         if (outResult) {
-          outResult[node.attrs.name] = modulePlus.getValue(node.elm.nodeId)
+          outResult[node.el.attr.name] = modulePlus.getValue(node.el.nodeId)
         } else {
-          node.elm.setValue('')
+          node.el.setValue('')
         }
       }
       if (

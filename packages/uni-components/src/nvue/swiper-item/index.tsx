@@ -4,7 +4,7 @@ import { swiperItemProps } from '../../components/swiper-item'
 export default defineComponent({
   name: 'SwiperItem',
   props: swiperItemProps,
-  setup(props, { emit }) {
+  setup(props, { slots }) {
     return () => {
       return (
         <div
@@ -17,7 +17,9 @@ export default defineComponent({
             bottom: 0,
             overflow: 'hidden',
           }}
-        ></div>
+        >
+          {slots.default && slots.default()}
+        </div>
       )
     }
   },

@@ -15,6 +15,8 @@ import Radio from './radio'
 import RadioGroup from './radio-group'
 import Form from './form'
 import Icon from './icon'
+import Swiper from './swiper'
+import SwiperItem from './swiper-item'
 export default {
   Navigator,
   Label,
@@ -33,4 +35,6 @@ export default {
   RadioGroup,
   Form,
   Icon,
+  Swiper,
+  SwiperItem,
 }
