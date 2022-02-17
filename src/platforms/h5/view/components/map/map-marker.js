@@ -63,6 +63,11 @@ export default {
       default: ''
     }
   },
+  data () {
+    return {
+      idString: String(isNaN(Number(this.id)) ? '' : this.id)
+    }
+  },
   mounted () {
     const $parent = this.$parent
     $parent.mapReady(() => {
@@ -88,7 +93,7 @@ export default {
         flat: true,
         autoRotation: false
       })
-      this.$parent._markers[this.id] = marker
+      this.$parent._markers[this.idString] = marker
       this.updateMarker(props)
       maps.event.addListener(marker, 'click', () => {
         const callout = marker.callout
@@ -103,9 +108,9 @@ export default {
             parent.appendChild(div)
           }
         }
-        if (this.id) {
+        if (this.idString) {
           this.$parent.$trigger('markertap', {}, {
-            markerId: this.id
+            markerId: Number(this.idString)
           })
         }
       })
@@ -181,7 +186,7 @@ export default {
             })
             marker.label = label
           } else if ('setLabel' in marker) {
-            const className = this.updateMarkerLabelStyle(this.id, labelStyle)
+            const className = this.updateMarkerLabelStyle(this.idString, labelStyle)
             marker.setLabel({
               text: labelOpt.content,
               color: labelStyle.color,
@@ -221,9 +226,9 @@ export default {
           } else {
             callout = marker.callout = new maps.Callout(calloutStyle)
             callout.div.onclick = ($event) => {
-              if (this.id !== '') {
+              if (this.idString) {
                 this.$parent.$trigger('callouttap', $event, {
-                  markerId: this.id
+                  markerId: Number(this.idString)
                 })
               }
               $event.stopPropagation()
@@ -277,7 +282,7 @@ export default {
         }
         marker.setMap(null)
       }
-      delete this.$parent._markers[this.id]
+      delete this.$parent._markers[this.idString]
       this._marker = null
     }
   },
