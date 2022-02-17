@@ -20394,7 +20394,7 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "ref": mapRef,
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => item.id && createVNode(MapMarker, mergeProps({
+      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
