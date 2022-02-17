@@ -1,5 +1,6 @@
 import { Container, Root, Document } from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
+import { COMBINATORS_RE } from './utils'
 
 interface ObjectifierContext {
   'FONT-FACE': Record<string, unknown>[]
@@ -63,34 +64,38 @@ function transformSelector(
   result: Record<string, unknown | Record<string, unknown>>,
   context: ObjectifierContext
 ) {
-  let className = selector.slice(1)
-  const lastDotIndex = className.lastIndexOf('.')
-  if (lastDotIndex > 0) {
-    className = className.substring(lastDotIndex + 1)
+  const res = selector.match(COMBINATORS_RE)
+  if (!res) {
+    return
   }
-  const pseudoIndex = className.indexOf(':')
+  let parentSelector = res[1].trim()
+  let curSelector = res[2].trim().substring(1)
+
+  const pseudoIndex = curSelector.indexOf(':')
   if (pseudoIndex > -1) {
-    const pseudoClass = className.slice(pseudoIndex)
-    className = className.slice(0, pseudoIndex)
+    const pseudoClass = curSelector.slice(pseudoIndex)
+    curSelector = curSelector.slice(0, pseudoIndex)
     Object.keys(body).forEach(function (name) {
       body[name + pseudoClass] = body[name]
       delete body[name]
     })
   }
-  transition(className, body, context)
-  if (lastDotIndex > 0) {
-    className = '.' + className
-    result = (result[className] || (result[className] = {})) as Record<
-      string,
-      unknown
-    >
-    className = selector.substring(0, lastDotIndex + 1).trim()
+  transition(curSelector, body, context)
+  if (!Object.keys(body).length) {
+    return
   }
-  if (result[className]) {
+  result = (result[curSelector] || (result[curSelector] = {})) as Record<
+    string,
+    unknown
+  >
+
+  if (result[parentSelector]) {
     // clone
-    result[className] = processImportant(extend({}, result[className], body))
+    result[parentSelector] = processImportant(
+      extend({}, result[parentSelector], body)
+    )
   } else {
-    result[className] = body
+    result[parentSelector] = body
   }
 }
 

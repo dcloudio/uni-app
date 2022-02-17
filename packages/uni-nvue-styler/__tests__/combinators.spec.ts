@@ -2,7 +2,6 @@ import { parse } from '../src'
 
 async function objectifierRule(input: string) {
   const { code, messages } = await parse(input, {
-    combinators: true,
     logLevel: 'NOTE',
   })
   return {
@@ -18,9 +17,9 @@ describe('nvue-styler: combinators', () => {
     )
     expect(json).toEqual({
       bar: {
-        '!left': 5,
-      },
-      '.bar': {
+        '': {
+          '!left': 5,
+        },
         '.foo': {
           '!left': 0,
           '!right': 10,
@@ -29,7 +28,7 @@ describe('nvue-styler: combinators', () => {
           left: 2,
         },
       },
-      '.foobar': { '.foo .bar': { left: 1 } },
+      foobar: { '.foo .bar': { left: 1 } },
     })
     expect(messages.length).toBe(0)
   })
@@ -41,9 +40,9 @@ describe('nvue-styler: combinators', () => {
       )
       expect(json).toEqual({
         bar: {
-          left: 5,
-        },
-        '.bar': {
+          '': {
+            left: 5,
+          },
           [`.foo${type}`]: {
             left: 5,
             right: 10,
@@ -52,7 +51,7 @@ describe('nvue-styler: combinators', () => {
             left: 2,
           },
         },
-        '.foobar': { [`.foo${type}.bar${type}`]: { left: 1 } },
+        foobar: { [`.foo${type}.bar${type}`]: { left: 1 } },
       })
       expect(messages.length).toBe(0)
     }

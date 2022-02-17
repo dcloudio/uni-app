@@ -5,20 +5,17 @@ import {
   SUPPORT_CSS_UNIT,
   hyphenateStyleProperty,
   isNumber,
+  COMBINATORS_RE,
 } from '../utils'
 import { normalizeMap } from './map'
 
 const normalized = Symbol('normalized')
 
 export interface NormalizeOptions {
-  combinators?: boolean
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
 }
 
 export function normalize(opts: NormalizeOptions = {}): Plugin {
-  if (!hasOwn(opts, 'combinators')) {
-    opts.combinators = false
-  }
   if (!hasOwn(opts, 'logLevel')) {
     opts.logLevel = 'WARNING'
   }
@@ -27,26 +24,22 @@ export function normalize(opts: NormalizeOptions = {}): Plugin {
     Declaration: createDeclarationProcessor(opts),
   }
   if (__NODE_JS__) {
-    plugin.Rule = createRuleProcessor(opts)
+    plugin.Rule = createRuleProcessor()
   }
   return plugin
 }
 
-function createRuleProcessor({ combinators }: NormalizeOptions) {
+function createRuleProcessor() {
   return (rule: Rule, helper: Helpers) => {
     if ((rule as any)[normalized]) {
       return
     }
-    const regx = combinators
-      ? /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
-      : /^(\.)([A-Za-z0-9_\-:]+)$/
-
     rule.selector = rule.selectors
       .map((selector) => {
         selector = selector
           .replace(/\s*([\+\~\>])\s*/g, '$1')
           .replace(/\s+/, ' ')
-        if (regx.test(selector)) {
+        if (COMBINATORS_RE.test(selector)) {
           return selector
         }
         rule.warn(

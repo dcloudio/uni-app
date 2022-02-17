@@ -15,16 +15,18 @@ describe('nvue-styler: parse', () => {
     const { json, messages } = await objectifierRoot(code)
     expect(json).toEqual({
       foo: {
-        color: '#FF0000',
-        backgroundColor: 'rgba(255,255,255,0.6)',
-        WebkitTransform: 'rotate(90deg)',
-        width: '200px',
-        left: 0,
-        right: '0px',
-        borderWidth: '1pt',
-        fontWeight: '100',
+        '': {
+          color: '#FF0000',
+          backgroundColor: 'rgba(255,255,255,0.6)',
+          WebkitTransform: 'rotate(90deg)',
+          width: '200px',
+          left: 0,
+          right: '0px',
+          borderWidth: '1pt',
+          fontWeight: '100',
+        },
       },
-      bar: { backgroundColor: '#FF0000' },
+      bar: { '': { backgroundColor: '#FF0000' } },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
@@ -54,15 +56,15 @@ describe('nvue-styler: parse', () => {
   test('fix prop value', async () => {
     const code = '.foo {font-size: 200px;}'
     const { json, messages } = await objectifierRoot(code)
-    expect(json).toEqual({ foo: { fontSize: '200px' } })
+    expect(json).toEqual({ foo: { '': { fontSize: '200px' } } })
     expect(messages.length).toBe(0)
   })
   test('ensure number type value', async () => {
     const code = '.foo {line-height: 40;}\n\n .bar {line-height: 20px;}'
     const { json, messages } = await objectifierRoot(code)
     expect(json).toEqual({
-      foo: { lineHeight: 40 },
-      bar: { lineHeight: '20px' },
+      foo: { '': { lineHeight: 40 } },
+      bar: { '': { lineHeight: '20px' } },
     })
     expect(messages.length).toBe(0)
   })
@@ -71,8 +73,8 @@ describe('nvue-styler: parse', () => {
       '.foo, .bar {font-size: 20;}\n\n .foo {color: #ff5000;}\n\n .bar {color: #000000;}'
     const { json, messages } = await objectifierRoot(code)
     expect(json).toEqual({
-      foo: { fontSize: 20, color: '#ff5000' },
-      bar: { fontSize: 20, color: '#000000' },
+      foo: { '': { fontSize: 20, color: '#ff5000' } },
+      bar: { '': { fontSize: 20, color: '#000000' } },
     })
     expect(messages.length).toBe(0)
   })
@@ -81,9 +83,9 @@ describe('nvue-styler: parse', () => {
       '.foo, .bar {font-size: 20; color: #000000}\n\n .foo, .bar, .baz {color: #ff5000; height: 30;}'
     const { json, messages } = await objectifierRoot(code)
     expect(json).toEqual({
-      foo: { fontSize: 20, color: '#ff5000', height: 30 },
-      bar: { fontSize: 20, color: '#ff5000', height: 30 },
-      baz: { color: '#ff5000', height: 30 },
+      foo: { '': { fontSize: 20, color: '#ff5000', height: 30 } },
+      bar: { '': { fontSize: 20, color: '#ff5000', height: 30 } },
+      baz: { '': { color: '#ff5000', height: 30 } },
     })
     expect(messages.length).toBe(0)
   })
@@ -101,10 +103,12 @@ describe('nvue-styler: parse', () => {
         },
       },
       foo: {
-        transitionDelay: 200,
-        transitionDuration: 300,
-        transitionProperty: 'marginTop',
-        transitionTimingFunction: 'ease-in',
+        '': {
+          transitionDelay: 200,
+          transitionDuration: 300,
+          transitionProperty: 'marginTop',
+          transitionTimingFunction: 'ease-in',
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -134,10 +138,12 @@ describe('nvue-styler: parse', () => {
         },
       },
       foo: {
-        transitionDelay: 200,
-        transitionDuration: 300,
-        transitionProperty: 'transform',
-        transitionTimingFunction: 'ease-in-out',
+        '': {
+          transitionDelay: 200,
+          transitionDuration: 300,
+          transitionProperty: 'transform',
+          transitionTimingFunction: 'ease-in-out',
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -167,10 +173,12 @@ describe('nvue-styler: parse', () => {
         },
       },
       foo: {
-        transitionDelay: 200,
-        transitionDuration: 300,
-        transitionProperty: 'marginTop,height',
-        transitionTimingFunction: 'ease-in-out',
+        '': {
+          transitionDelay: 200,
+          transitionDuration: 300,
+          transitionProperty: 'marginTop,height',
+          transitionTimingFunction: 'ease-in-out',
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -206,21 +214,25 @@ describe('nvue-styler: parse', () => {
         },
       },
       foo: {
-        fontSize: 20,
-        color: '#ff5000',
-        height: 30,
-        transitionDelay: 200,
-        transitionDuration: 300,
-        transitionProperty: 'marginTop',
-        transitionTimingFunction: 'ease-in',
+        '': {
+          fontSize: 20,
+          color: '#ff5000',
+          height: 30,
+          transitionDelay: 200,
+          transitionDuration: 300,
+          transitionProperty: 'marginTop',
+          transitionTimingFunction: 'ease-in',
+        },
       },
       bar: {
-        color: '#ff5000',
-        height: 30,
-        transitionDelay: 200,
-        transitionDuration: 300,
-        transitionProperty: 'marginTop',
-        transitionTimingFunction: 'ease-in',
+        '': {
+          color: '#ff5000',
+          height: 30,
+          transitionDelay: 200,
+          transitionDuration: 300,
+          transitionProperty: 'marginTop',
+          transitionTimingFunction: 'ease-in',
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -250,11 +262,13 @@ describe('nvue-styler: parse', () => {
         },
       },
       foo: {
-        fontSize: 20,
-        transitionDelay: 1000,
-        transitionDuration: 500,
-        transitionProperty: 'marginTop',
-        transitionTimingFunction: 'ease-in-out',
+        '': {
+          fontSize: 20,
+          transitionDelay: 1000,
+          transitionDuration: 500,
+          transitionProperty: 'marginTop',
+          transitionTimingFunction: 'ease-in-out',
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -276,24 +290,28 @@ describe('nvue-styler: parse', () => {
     const { json } = await objectifierRoot(code)
     expect(json).toEqual({
       foo: {
-        paddingTop: '20px',
-        paddingRight: '20px',
-        paddingBottom: '20px',
-        paddingLeft: '20px',
-        marginTop: '30px',
-        marginRight: 40,
-        marginBottom: '30px',
-        marginLeft: 40,
+        '': {
+          paddingTop: '20px',
+          paddingRight: '20px',
+          paddingBottom: '20px',
+          paddingLeft: '20px',
+          marginTop: '30px',
+          marginRight: 40,
+          marginBottom: '30px',
+          marginLeft: 40,
+        },
       },
       bar: {
-        paddingTop: 10,
-        paddingRight: '20px',
-        paddingBottom: '30px',
-        paddingLeft: 40,
-        marginTop: '10px',
-        marginRight: 20,
-        marginBottom: 30,
-        marginLeft: 20,
+        '': {
+          paddingTop: 10,
+          paddingRight: '20px',
+          paddingBottom: '30px',
+          paddingLeft: 40,
+          marginTop: '10px',
+          marginRight: 20,
+          marginBottom: 30,
+          marginLeft: 20,
+        },
       },
     })
   })
@@ -303,16 +321,20 @@ describe('nvue-styler: parse', () => {
     const { json } = await objectifierRoot(code)
     expect(json).toEqual({
       foo: {
-        paddingTop: '20px',
-        paddingRight: '20px',
-        paddingBottom: '20px',
-        paddingLeft: '30px',
+        '': {
+          paddingTop: '20px',
+          paddingRight: '20px',
+          paddingBottom: '20px',
+          paddingLeft: '30px',
+        },
       },
       bar: {
-        marginTop: '10px',
-        marginRight: 20,
-        marginBottom: '30px',
-        marginLeft: 20,
+        '': {
+          marginTop: '10px',
+          marginRight: 20,
+          marginBottom: '30px',
+          marginLeft: 20,
+        },
       },
     })
   })
@@ -322,8 +344,10 @@ describe('nvue-styler: parse', () => {
     const { json } = await objectifierRoot(code)
     expect(json).toEqual({
       'class-a': {
-        color: '#0000ff',
-        'color:last-child:focus': '#ff0000',
+        '': {
+          color: '#0000ff',
+          'color:last-child:focus': '#ff0000',
+        },
       },
     })
   })

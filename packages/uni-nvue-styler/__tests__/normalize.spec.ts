@@ -18,10 +18,12 @@ zIndex: 4;
 }`)
     expect(json).toEqual({
       foo: {
-        color: '#FF0000',
-        width: 200,
-        position: 'sticky',
-        zIndex: 4,
+        '': {
+          color: '#FF0000',
+          width: 200,
+          position: 'sticky',
+          zIndex: 4,
+        },
       },
     })
     expect(messages.length).toBe(0)
@@ -39,13 +41,15 @@ zIndex: 4;
 }`)
     expect(json).toEqual({
       foo: {
-        width: '200px',
-        paddingLeft: 300,
-        borderWidth: '1pt',
-        left: 0,
-        right: '0px',
-        height: '10rpx',
-        paddingTop: '11upx',
+        '': {
+          width: '200px',
+          paddingLeft: 300,
+          borderWidth: '1pt',
+          left: 0,
+          right: '0px',
+          height: '10rpx',
+          paddingTop: '11upx',
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -75,15 +79,19 @@ zIndex: 4;
 `)
     expect(json).toEqual({
       foo: {
-        opacity: 1,
+        '': {
+          opacity: 1,
+        },
       },
       bar: {
-        opacity: 0.5,
+        '': {
+          opacity: 0.5,
+        },
       },
-      baz: {},
-      boo: {},
       zero: {
-        opacity: 0,
+        '': {
+          opacity: 0,
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -117,13 +125,14 @@ zIndex: 4;
 `)
     expect(json).toEqual({
       foo: {
-        zIndex: 1,
+        '': {
+          zIndex: 1,
+        },
       },
-      bar: {},
-      baz: {},
-      boo: {},
       zero: {
-        zIndex: 0,
+        '': {
+          zIndex: 0,
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -171,25 +180,34 @@ zIndex: 4;
 `)
     expect(json).toEqual({
       foo: {
-        color: '#FF0000',
-        backgroundColor: '#ff0000',
+        '': {
+          color: '#FF0000',
+          backgroundColor: '#ff0000',
+        },
       },
       bar: {
-        color: '#FF0000',
-        backgroundColor: '#ff0000',
+        '': {
+          color: '#FF0000',
+          backgroundColor: '#ff0000',
+        },
       },
       baz: {
-        color: '#FF0000',
-        backgroundColor: '#FFB6C1',
+        '': {
+          color: '#FF0000',
+          backgroundColor: '#FFB6C1',
+        },
       },
       rgba: {
-        color: 'rgb(23,0,255)',
-        backgroundColor: 'rgba(234,45,99,0.4)',
+        '': {
+          color: 'rgb(23,0,255)',
+          backgroundColor: 'rgba(234,45,99,0.4)',
+        },
       },
       transparent: {
-        color: 'rgba(0,0,0,0)',
+        '': {
+          color: 'rgba(0,0,0,0)',
+        },
       },
-      errRgba: {},
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
@@ -233,8 +251,8 @@ zIndex: 4;
 .bar { flex-wrap: wrap }
 `)
     expect(json).toEqual({
-      foo: { flexWrap: 'nowrap' },
-      bar: { flexWrap: 'wrap' },
+      foo: { '': { flexWrap: 'nowrap' } },
+      bar: { '': { flexWrap: 'wrap' } },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
@@ -275,15 +293,20 @@ zIndex: 4;
         },
       },
       foo: {
-        transitionProperty: 'marginTop',
+        '': {
+          transitionProperty: 'marginTop',
+        },
       },
       bar: {
-        transitionProperty: 'height',
+        '': {
+          transitionProperty: 'height',
+        },
       },
       foobar: {
-        transitionProperty: 'marginTop,height',
+        '': {
+          transitionProperty: 'marginTop,height',
+        },
       },
-      baz: {},
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
@@ -313,11 +336,15 @@ zIndex: 4;
         },
       },
       foo: {
-        transitionDuration: 200,
-        transitionDelay: 500,
+        '': {
+          transitionDuration: 200,
+          transitionDelay: 500,
+        },
       },
       bar: {
-        transitionDuration: 200,
+        '': {
+          transitionDuration: 200,
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -358,12 +385,15 @@ zIndex: 4;
         },
       },
       foo: {
-        transitionTimingFunction: 'ease-in-out',
+        '': {
+          transitionTimingFunction: 'ease-in-out',
+        },
       },
       bar: {
-        transitionTimingFunction: 'cubic-bezier(0.88,1,-0.67,1.37)',
+        '': {
+          transitionTimingFunction: 'cubic-bezier(0.88,1,-0.67,1.37)',
+        },
       },
-      baz: {},
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
@@ -384,12 +414,14 @@ zIndex: 4;
 `)
     expect(json).toEqual({
       foo: {
-        backgroundColor: '#ff0000',
-        abc: 123,
-        def: '456px',
-        ghi: '789pt',
-        AbcDef: 456,
-        abcDef: 'abc',
+        '': {
+          backgroundColor: '#ff0000',
+          abc: 123,
+          def: '456px',
+          ghi: '789pt',
+          AbcDef: 456,
+          abcDef: 'abc',
+        },
       },
     })
     expect(messages[0]).toEqual(
@@ -428,9 +460,11 @@ zIndex: 4;
 `)
     expect(json).toEqual({
       foo: {
-        color: '#FF0000',
-        WebkitTransform: 'rotate(90deg)',
-        width: '200px',
+        '': {
+          color: '#FF0000',
+          WebkitTransform: 'rotate(90deg)',
+          width: '200px',
+        },
       },
     })
     expect(messages[0]).toEqual(

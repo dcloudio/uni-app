@@ -1,4 +1,8 @@
 import type { Declaration, Source } from 'postcss'
+
+export const COMBINATORS_RE =
+  /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
+
 export type TransformDecl = (decl: Declaration) => Declaration[]
 
 export type Normalize = (v: string | number) => {
