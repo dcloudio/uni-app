@@ -7543,31 +7543,153 @@ var nodeOps = {
   nextSibling: node => node.nextSibling
 };
 
-function useCssStyles(styles) {
+function each(obj) {
+  return Object.keys(obj);
+}
+
+function useCssStyles(componentStyles) {
   var normalized = {};
 
-  if (isArray(styles)) {
-    styles.forEach(style => {
-      Object.keys(style).forEach(name => {
-        if (hasOwn(normalized, name)) {
-          extend(normalized[name], style[name]);
-        } else {
-          normalized[name] = style[name];
-        }
-      });
-    });
+  if (!isArray(componentStyles)) {
+    return normalized;
   }
 
+  componentStyles.forEach(componentStyle => {
+    each(componentStyle).forEach(className => {
+      var parentStyles = componentStyle[className];
+      var normalizedStyles = normalized[className] || (normalized[className] = {});
+      each(parentStyles).forEach(parentSelector => {
+        var parentStyle = parentStyles[parentSelector];
+        var normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
+        each(parentStyle).forEach(name => {
+          if (name[0] === '!') {
+            // 如果以包含important属性，则移除非important
+            normalizedStyle[name] = parentStyle[name];
+            delete normalizedStyle[name.slice(1)];
+          } else {
+            // 当前属性非important，且不存在同名important属性
+            if (!hasOwn(normalizedStyle, '!' + name)) {
+              normalizedStyle[name] = parentStyle[name];
+            }
+          }
+        });
+      });
+    });
+  });
   return normalized;
 }
 
-function parseStylesheet(_ref21) {
+function hasClass(calssName, el) {
+  var classList = el && el.classList;
+  return classList && classList.includes(calssName);
+}
+
+var TYPE_RE = /[+~> ]$/;
+var PROPERTY_PARENT_NODE = 'parentNode';
+var PROPERTY_PREVIOUS_SIBLING = 'previousSibling';
+
+function isMatchParentSelector(parentSelector, el) {
+  var classArray = parentSelector.split('.');
+
+  for (var i = classArray.length - 1; i > 0; i--) {
+    var item = classArray[i];
+    var type = item[item.length - 1];
+    var className = item.replace(TYPE_RE, '');
+    var property = PROPERTY_PARENT_NODE;
+    var recurse = true;
+
+    if (type === '>') {
+      recurse = false;
+    } else if (type === '+') {
+      property = PROPERTY_PREVIOUS_SIBLING;
+      recurse = false;
+    } else if (type === '~') {
+      property = PROPERTY_PREVIOUS_SIBLING;
+    }
+
+    if (recurse) {
+      while (el) {
+        el = el[property];
+
+        if (hasClass(className, el)) {
+          break;
+        }
+      }
+
+      if (!el) {
+        return false;
+      }
+    } else {
+      el = el && el[property];
+
+      if (!hasClass(className, el)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+var WEIGHT_IMPORTANT = 1000;
+
+function parseClassName(_ref21, parentStyles, el) {
+  var {
+    styles,
+    weights
+  } = _ref21;
+  each(parentStyles).forEach(parentSelector => {
+    if (parentSelector && el) {
+      if (!isMatchParentSelector(parentSelector, el)) {
+        return;
+      }
+    }
+
+    var classWeight = parentSelector.split('.').length;
+    var style = parentStyles[parentSelector];
+    each(style).forEach(name => {
+      var value = style[name];
+      var isImportant = name[0] === '!';
+
+      if (isImportant) {
+        name = name.slice(1);
+      }
+
+      var oldWeight = weights[name] || 0;
+      var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
+
+      if (weight >= oldWeight) {
+        weights[name] = weight;
+        styles[name] = value;
+      }
+    });
+  });
+}
+
+function parseClassList(classList, instance) {
+  var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var context = {
+    styles: {},
+    weights: {}
+  };
+  var styles = parseStylesheet(instance);
+  classList.forEach(className => {
+    var parentStyles = styles[className];
+
+    if (parentStyles) {
+      parseClassName(context, parentStyles, el);
+    }
+  });
+  return context.styles;
+}
+
+function parseStylesheet(_ref22) {
   var {
     type,
     vnode: {
       appContext
     }
-  } = _ref21;
+  } = _ref22;
   var component = type;
 
   if (!component.__styles) {
@@ -7654,7 +7776,7 @@ function transformAttr(el, key, value, instance) {
     var camelized = camelize(key);
 
     if (opts['class'].indexOf(camelized) > -1) {
-      return [camelized, parseStylesheet(instance)[value] || {}];
+      return [camelized, parseClassList([value], instance, el)];
     }
 
     if (opts['style'].indexOf(key) > -1) {
@@ -7676,6 +7798,7 @@ function patchClass(el, pre, next) {
 
   // 移除 class
   if (next == null) {
+    el.setClassList([]);
     return;
   }
 
@@ -7683,8 +7806,10 @@ function patchClass(el, pre, next) {
     return;
   }
 
-  var oldStyle = getStyle(pre, instance);
-  var newStyle = getStyle(next, instance);
+  var preClassList = pre ? pre.split(' ') : [];
+  var classList = next ? next.split(' ') : [];
+  var oldStyle = getStyle(preClassList, el, instance);
+  var newStyle = getStyle(classList, el, instance);
   var cur, name;
   var batchedStyles = {};
 
@@ -7702,22 +7827,12 @@ function patchClass(el, pre, next) {
     }
   }
 
+  el.setClassList(classList);
   el.setStyles(batchedStyles);
 }
 
-function getStyle(clazz, instance) {
-  if (!clazz) {
-    return {};
-  }
-
-  var classList = clazz.split(' ');
-  var stylesheet = parseStylesheet(instance);
-  var result = {};
-  classList.forEach(name => {
-    var style = stylesheet[name];
-    extend(result, style);
-  });
-  return result;
+function getStyle(classList, el, instance) {
+  return parseClassList(classList, instance, el);
 }
 
 function addEventListener(el, event, handler, options) {
@@ -7991,4 +8106,4 @@ var createApp = function () {
   return app;
 };
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };
