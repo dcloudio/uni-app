@@ -27,7 +27,7 @@ export default defineComponent({
       return (
         <u-rich-text
           {...{
-            value: normalizeNodes(nodes || [], instance, {
+            value: normalizeNodes(nodes || [], instance!.root, {
               defaultFontSize,
             }),
           }}
