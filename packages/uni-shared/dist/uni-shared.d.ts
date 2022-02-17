@@ -349,6 +349,7 @@ export declare interface NVueElement {
     type: string;
     ref: string;
     text?: string;
+    classList: string[];
     parentNode: NVueElement | null;
     children: Array<NVueElement>;
     previousSibling: NVueElement | null;
@@ -359,6 +360,7 @@ export declare interface NVueElement {
     insertAfter: (node: NVueElement, after: NVueElement) => void;
     setAttr: (key: string, value: any, silent?: boolean) => void;
     setAttrs: (attrs: Record<string, unknown>, silent?: boolean) => void;
+    setClassList: (classList: string[]) => void;
     setStyle: (key: string, value: any, silent?: boolean) => void;
     setStyles: (attrs: Record<string, unknown>, silent?: boolean) => void;
     addEvent: (type: string, handler: Function, args?: Array<any>) => void;
