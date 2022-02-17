@@ -8633,7 +8633,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "ref": mapRef,
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => item.id && vue.createVNode(MapMarker, vue.mergeProps({
+      }, null, 512), props2.markers.map((item) => vue.createVNode(MapMarker, vue.mergeProps({
         "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, item, null, 16)), props2.showLocation && vue.createVNode(MapLocation, null, null), vue.createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
