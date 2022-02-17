@@ -1,4 +1,6 @@
-export const props = {
+import parseHtml from './html-parser'
+
+const props = {
   nodes: {
     type: [Array, String],
     default: function () {
@@ -6,3 +8,5 @@ export const props = {
     },
   },
 }
+
+export { props, parseHtml }

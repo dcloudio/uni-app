@@ -17,6 +17,7 @@ import Form from './form'
 import Icon from './icon'
 import Swiper from './swiper'
 import SwiperItem from './swiper-item'
+import RichText from './rich-text'
 export default {
   Navigator,
   Label,
@@ -37,4 +38,5 @@ export default {
   Icon,
   Swiper,
   SwiperItem,
+  RichText,
 }

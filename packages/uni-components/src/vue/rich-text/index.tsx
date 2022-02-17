@@ -4,9 +4,8 @@ import {
   useCustomEvent,
   EmitEvent,
 } from '@dcloudio/uni-components'
-import parseHtml from './html-parser'
 import parseNodes from './nodes-parser'
-import { props } from '../../components/rich-text'
+import { props, parseHtml } from '../../components/rich-text'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RichText',
