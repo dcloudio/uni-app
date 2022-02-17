@@ -16,6 +16,7 @@ import {
 } from '../utils'
 import { buttonProps } from '../../components/button'
 import { extend } from '@vue/shared'
+import { uniFormKey, UniFormCtx } from '../../components/form'
 
 const buttonStyle: NVueComponentStyles = [
   {
@@ -306,13 +307,17 @@ export default defineComponent({
     })
     const type = props.type as keyof typeof TYPES
     const rootRef = ref<HTMLElement | null>(null)
+    const uniForm = inject<UniFormCtx>(
+      uniFormKey,
+      false as unknown as UniFormCtx
+    )
     const onClick = (e: Event, isLabelClick?: boolean) => {
       const _onClick = ($listeners.value as any).onClick || (() => {})
       if (props.disabled) {
         return
       }
       _onClick(e)
-      /* const formType = props.formType
+      const formType = props.formType
       if (formType) {
         if (!uniForm) {
           return
@@ -322,7 +327,7 @@ export default defineComponent({
         } else if (formType === 'reset') {
           uniForm.reset(e)
         }
-      } */
+      }
     }
 
     const _getClass = (t: string) => {
