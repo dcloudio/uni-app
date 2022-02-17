@@ -47,18 +47,19 @@ export default defineComponent({
     const indicatorRef: Ref<HTMLElement | null> = ref(null)
 
     const pickerViewProps = inject<Props>('pickerViewProps')!
-    const getPickerViewColumn = inject<GetPickerViewColumn>(
-      'getPickerViewColumn',
-      () => computed({ set: () => {}, get: () => 0 })
-    )
+    const getPickerViewColumn = inject(
+      'getPickerViewColumn'
+    ) as GetPickerViewColumn
 
     const current = getPickerViewColumn(instance)
     const indicatorStyle = computed(() =>
       getStyle(pickerViewProps.indicatorStyle)
     )
     const maskStyle = computed(() => getStyle(pickerViewProps.maskStyle))
-    let indicatorHeight = getHeight(indicatorStyle)
-    let pickerViewHeight = parseFloat(pickerViewProps.height as string)
+    let indicatorHeight = ref(0)
+    indicatorHeight.value = getHeight(indicatorStyle.value)
+    let pickerViewHeight = ref(0)
+    pickerViewHeight.value = parseFloat(pickerViewProps.height as string)
 
     watch(
       () => props.length,
@@ -75,7 +76,7 @@ export default defineComponent({
         return
       }
       dom.scrollToElement(contentRef.value, {
-        offset: _current * indicatorHeight,
+        offset: _current * indicatorHeight.value,
         animated,
       })
       current.value = _current
@@ -83,13 +84,15 @@ export default defineComponent({
         scrollToElementTime = Date.now()
       }
     }
-    const onScrollend = (event: { detail: Record<string, any> }) => {
+    const onScrollend = (event: {
+      contentOffset: { x: number; y: number }
+    }) => {
       if (Date.now() - scrollToElementTime < 340) {
         return
       }
-      const y = event.detail.contentOffset.y
-      const _current = Math.round(y / indicatorHeight)
-      if (y % indicatorHeight) {
+      const y = event.contentOffset.y
+      const _current = Math.round(y / indicatorHeight.value)
+      if (y % indicatorHeight.value) {
         setCurrent(_current, true, true)
       } else {
         current.value = _current
@@ -101,15 +104,15 @@ export default defineComponent({
       setTimeout(() => {
         Promise.all([
           getComponentSize(rootRef.value!).then(({ height }) => {
-            height_ = pickerViewHeight = height
+            height_ = pickerViewHeight.value = height
           }),
           isAndroid && props.length
             ? getComponentSize(scrollViewItemRef.value!).then(({ height }) => {
-                indicatorHeight_ = indicatorHeight =
+                indicatorHeight_ = indicatorHeight.value =
                   height / parseFloat(props.length as string)
               })
             : getComponentSize(indicatorRef.value!).then(({ height }) => {
-                indicatorHeight_ = indicatorHeight = height
+                indicatorHeight_ = indicatorHeight.value = height
               }),
         ]).then(() => {
           if (height_ && indicatorHeight_) {
@@ -140,8 +143,8 @@ export default defineComponent({
 
     return () => {
       const children = slots.default && slots.default()
-      let padding = (pickerViewHeight - indicatorHeight) / 2
-      const maskPosition = `${pickerViewHeight - padding}px`
+      let padding = (pickerViewHeight.value - indicatorHeight.value) / 2
+      const maskPosition = `${pickerViewHeight.value - padding}px`
       const scrollOptions: ScrollOptions = {
         showScrollbar: false,
         scrollToBegin: false,
@@ -149,7 +152,7 @@ export default defineComponent({
         scrollY: true,
       }
       if (!isAndroid) {
-        scrollOptions.scrollTop = current.value * indicatorHeight
+        scrollOptions.scrollTop = current.value * indicatorHeight.value
       }
 
       return (
@@ -172,7 +175,7 @@ export default defineComponent({
               {createScrollViewChild(children)}
             </view>
           </scroll-view>
-          <u-scalable class="uni-picker-view-mask" style={maskStyle}>
+          <u-scalable class="uni-picker-view-mask" style={maskStyle.value}>
             <u-scalable
               class="uni-picker-view-mask uni-picker-view-mask-top"
               style={{
@@ -200,52 +203,60 @@ export default defineComponent({
   styles: [
     {
       'uni-picker-view-column': {
-        flex: 1,
-        position: 'relative',
-        alignItems: 'stretch',
-        overflow: 'hidden',
+        '': {
+          flex: 1,
+          position: 'relative',
+          alignItems: 'stretch',
+          overflow: 'hidden',
+        },
       },
       'uni-picker-view-mask': {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        pointerEvents: 'none',
+        '': {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          pointerEvents: 'none',
+        },
       },
       'uni-picker-view-mask-top': {
-        bottom: 0,
-        backgroundImage:
-          'linear-gradient(to bottom,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))',
+        '': {
+          bottom: 0,
+          backgroundImage:
+            'linear-gradient(to bottom,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))',
+        },
       },
       'uni-picker-view-mask-bottom': {
-        top: 0,
-        backgroundImage:
-          'linear-gradient(to top,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))',
+        '': {
+          top: 0,
+          backgroundImage:
+            'linear-gradient(to top,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))',
+        },
       },
       'uni-picker-view-group': {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        '': { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
       },
       'uni-picker-view-content': {
-        paddingTop: 0,
-        paddingRight: 0,
-        paddingBottom: 0,
-        paddingLeft: 0,
+        '': {
+          paddingTop: 0,
+          paddingRight: 0,
+          paddingBottom: 0,
+          paddingLeft: 0,
+        },
       },
       'uni-picker-view-indicator': {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        height: '34px',
-        pointerEvents: 'none',
-        borderColor: '#e5e5e5',
-        borderTopWidth: '1px',
-        borderBottomWidth: '1px',
+        '': {
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          height: '34px',
+          pointerEvents: 'none',
+          borderColor: '#e5e5e5',
+          borderTopWidth: '1px',
+          borderBottomWidth: '1px',
+        },
       },
     },
   ],

@@ -32,8 +32,7 @@ export default defineComponent({
   styles: [
     {
       'uni-movable-area': {
-        width: '10px',
-        height: '10px',
+        '': { width: '10px', height: '10px' },
       },
     },
   ],

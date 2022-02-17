@@ -34,9 +34,9 @@
     "@dcloudio/uni-i18n": "0.0.1-nvue3.3040020220217001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220217001",
     "@types/pako": "1.0.2",
-    "@vue/compiler-sfc": "3.2.30",
+    "@vue/compiler-sfc": "3.2.31",
     "pako": "^1.0.11",
-    "vue": "3.2.30"
+    "vue": "3.2.31"
   },
   "dependencies": {
     "@dcloudio/uni-app-vite": "0.0.1-nvue3.3040020220217001",

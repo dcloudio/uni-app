@@ -25,7 +25,7 @@
     "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220217001",
     "@dcloudio/uni-mp-vite": "0.0.1-nvue3.3040020220217001",
     "@dcloudio/uni-mp-vue": "0.0.1-nvue3.3040020220217001",
-    "@vue/compiler-core": "3.2.30",
-    "@vue/shared": "3.2.30"
+    "@vue/compiler-core": "3.2.31",
+    "@vue/shared": "3.2.31"
   }
 }

@@ -1,6 +1,6 @@
-import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text, isVNode, Fragment, onMounted } from "vue";
+import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
 import { extend, hasOwn, isPlainObject } from "@vue/shared";
-import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
+import { cacheStringFunction, PRIMARY_COLOR, normalizeTarget } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -45,53 +45,53 @@ const navigatorProps = {
     default: false
   }
 };
-function createNavigatorOnClick(props) {
+function createNavigatorOnClick(props2) {
   return () => {
-    if (props.openType !== "navigateBack" && !props.url) {
+    if (props2.openType !== "navigateBack" && !props2.url) {
       console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
       return;
     }
-    switch (props.openType) {
+    switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
-          url: props.url
+          url: props2.url
         });
         break;
       case "redirect":
         uni.redirectTo({
-          url: props.url,
-          exists: props.exists
+          url: props2.url,
+          exists: props2.exists
         });
         break;
       case "switchTab":
         uni.switchTab({
-          url: props.url
+          url: props2.url
         });
         break;
       case "reLaunch":
         uni.reLaunch({
-          url: props.url
+          url: props2.url
         });
         break;
       case "navigateBack":
         uni.navigateBack({
-          delta: props.delta
+          delta: props2.delta
         });
         break;
     }
   };
 }
-function useHoverClass(props) {
-  if (props.hoverClass && props.hoverClass !== "none") {
-    const hoverAttrs = { hoverClass: props.hoverClass };
-    if (hasOwn(props, "hoverStartTime")) {
-      hoverAttrs.hoverStartTime = props.hoverStartTime;
+function useHoverClass(props2) {
+  if (props2.hoverClass && props2.hoverClass !== "none") {
+    const hoverAttrs = { hoverClass: props2.hoverClass };
+    if (hasOwn(props2, "hoverStartTime")) {
+      hoverAttrs.hoverStartTime = props2.hoverStartTime;
     }
-    if (hasOwn(props, "hoverStayTime")) {
-      hoverAttrs.hoverStayTime = props.hoverStayTime;
+    if (hasOwn(props2, "hoverStayTime")) {
+      hoverAttrs.hoverStayTime = props2.hoverStayTime;
     }
-    if (hasOwn(props, "hoverStopPropagation")) {
-      hoverAttrs.hoverStopPropagation = props.hoverStopPropagation;
+    if (hasOwn(props2, "hoverStopPropagation")) {
+      hoverAttrs.hoverStopPropagation = props2.hoverStopPropagation;
     }
     return hoverAttrs;
   }
@@ -112,12 +112,12 @@ var Navigator = defineComponent({
   name: "Navigator",
   props: navigatorProps,
   styles: navigatorStyles,
-  setup(props, {
+  setup(props2, {
     slots
   }) {
-    const onClick = createNavigatorOnClick(props);
+    const onClick = createNavigatorOnClick(props2);
     return () => {
-      return createVNode("view", mergeProps(useHoverClass(props), {
+      return createVNode("view", mergeProps(useHoverClass(props2), {
         "onClick": onClick
       }), [slots.default && slots.default()]);
     };
@@ -128,6 +128,122 @@ function PolySymbol(name) {
 }
 function useCurrentPageId() {
   return getCurrentInstance().root.proxy.$page.id;
+}
+let plus_;
+let weex_;
+let BroadcastChannel_;
+function getRuntime() {
+  return typeof window === "object" && typeof navigator === "object" && typeof document === "object" ? "webview" : "v8";
+}
+function getPageId() {
+  return plus_.webview.currentWebview().id;
+}
+let channel;
+let globalEvent;
+const callbacks = {};
+function onPlusMessage(res) {
+  const message = res.data && res.data.__message;
+  if (!message || !message.__page) {
+    return;
+  }
+  const pageId = message.__page;
+  const callback = callbacks[pageId];
+  callback && callback(message);
+  if (!message.keep) {
+    delete callbacks[pageId];
+  }
+}
+function addEventListener(pageId, callback) {
+  if (getRuntime() === "v8") {
+    if (BroadcastChannel_) {
+      channel && channel.close();
+      channel = new BroadcastChannel_(getPageId());
+      channel.onmessage = onPlusMessage;
+    } else if (!globalEvent) {
+      globalEvent = weex_.requireModule("globalEvent");
+      globalEvent.addEventListener("plusMessage", onPlusMessage);
+    }
+  } else {
+    window.__plusMessage = onPlusMessage;
+  }
+  callbacks[pageId] = callback;
+}
+class Page {
+  constructor(webview) {
+    this.webview = webview;
+  }
+  sendMessage(data) {
+    const message = JSON.parse(JSON.stringify({
+      __message: {
+        data
+      }
+    }));
+    const id = this.webview.id;
+    if (BroadcastChannel_) {
+      const channel2 = new BroadcastChannel_(id);
+      channel2.postMessage(message);
+    } else {
+      plus_.webview.postMessageToUniNView && plus_.webview.postMessageToUniNView(message, id);
+    }
+  }
+  close() {
+    this.webview.close();
+  }
+}
+function showPage({
+  context = {},
+  url,
+  data = {},
+  style = {},
+  onMessage,
+  onClose
+}) {
+  plus_ = context.plus || plus;
+  weex_ = context.weex || (typeof weex === "object" ? weex : null);
+  BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === "object" ? BroadcastChannel : null);
+  const titleNView = {
+    autoBackButton: true,
+    titleSize: "17px"
+  };
+  const pageId = `page${Date.now()}`;
+  style = extend({}, style);
+  if (style.titleNView !== false && style.titleNView !== "none") {
+    style.titleNView = extend(titleNView, style.titleNView);
+  }
+  const defaultStyle = {
+    top: 0,
+    bottom: 0,
+    usingComponents: {},
+    popGesture: "close",
+    scrollIndicator: "none",
+    animationType: "pop-in",
+    animationDuration: 200,
+    uniNView: {
+      path: `${typeof process === "object" && process.env && {}.VUE_APP_TEMPLATE_PATH || ""}/${url}.js`,
+      defaultFontSize: 16,
+      viewport: plus_.screen.resolutionWidth
+    }
+  };
+  style = extend(defaultStyle, style);
+  const page = plus_.webview.create("", pageId, style, {
+    extras: {
+      from: getPageId(),
+      runtime: getRuntime(),
+      data,
+      useGlobalEvent: !BroadcastChannel_
+    }
+  });
+  page.addEventListener("close", onClose);
+  addEventListener(pageId, (message) => {
+    if (typeof onMessage === "function") {
+      onMessage(message.data);
+    }
+    if (!message.keep) {
+      page.close("auto");
+    }
+  });
+  page.show(style.animationType, style.animationDuration);
+  return new Page(page);
 }
 const labelProps = {
   for: {
@@ -152,7 +268,7 @@ var Label = /* @__PURE__ */ defineComponent({
   name: "Label",
   props: labelProps,
   styles: [],
-  setup(props, {
+  setup(props2, {
     slots
   }) {
     const pageId = useCurrentPageId();
@@ -167,8 +283,8 @@ var Label = /* @__PURE__ */ defineComponent({
       if (stopPropagation) {
         return;
       }
-      if (props.for) {
-        UniViewJSBridge.emit(`uni-label-click-${pageId}-${props.for}`, $event, true);
+      if (props2.for) {
+        UniViewJSBridge.emit(`uni-label-click-${pageId}-${props2.for}`, $event, true);
       } else {
         handlers.length && handlers[0]($event, true);
       }
@@ -178,14 +294,14 @@ var Label = /* @__PURE__ */ defineComponent({
     }, [slots.default && slots.default()]);
   }
 });
-function useListeners(props, listeners) {
-  _addListeners(props.id, listeners);
-  watch(() => props.id, (newId, oldId) => {
+function useListeners(props2, listeners) {
+  _addListeners(props2.id, listeners);
+  watch(() => props2.id, (newId, oldId) => {
     _removeListeners(oldId, listeners, true);
     _addListeners(newId, listeners, true);
   });
   onUnmounted(() => {
-    _removeListeners(props.id, listeners);
+    _removeListeners(props2.id, listeners);
   });
 }
 function _addListeners(id, listeners, watch2) {
@@ -311,6 +427,7 @@ const buttonProps = {
     default: false
   }
 };
+const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const buttonStyle = [{
   ub: {
     "": {
@@ -593,7 +710,7 @@ var Button = defineComponent({
     }
   }),
   styles: buttonStyle,
-  setup(props, {
+  setup(props2, {
     slots,
     attrs
   }) {
@@ -604,29 +721,41 @@ var Button = defineComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    const type = props.type;
+    const type = props2.type;
     const rootRef = ref(null);
+    const uniForm = inject(uniFormKey, false);
     const onClick = (e2, isLabelClick) => {
       const _onClick = $listeners.value.onClick || (() => {
       });
-      if (props.disabled) {
+      if (props2.disabled) {
         return;
       }
       _onClick(e2);
+      const formType = props2.formType;
+      if (formType) {
+        if (!uniForm) {
+          return;
+        }
+        if (formType === "submit") {
+          uniForm.submit(e2);
+        } else if (formType === "reset") {
+          uniForm.reset(e2);
+        }
+      }
     };
     const _getClass = (t2) => {
       let cl = "ub-" + TYPES[type] + t2;
-      props.disabled && (cl += "-d");
-      props.plain && (cl += "-plain");
-      props.size === "mini" && t2 === "-t" && (cl += " ub-mini");
+      props2.disabled && (cl += "-d");
+      props2.plain && (cl += "-plain");
+      props2.size === "mini" && t2 === "-t" && (cl += " ub-mini");
       return cl;
     };
     const _getHoverClass = (t2) => {
-      if (props.disabled) {
+      if (props2.disabled) {
         return "";
       }
       let cl = "ub-" + TYPES[type] + t2 + "-hover";
-      props.plain && (cl += "-plain");
+      props2.plain && (cl += "-plain");
       return cl;
     };
     const uniLabel = inject(uniLabelKey, false);
@@ -636,7 +765,7 @@ var Button = defineComponent({
         uniLabel.removeHandler(onClick);
       });
     }
-    useListeners(props, {
+    useListeners(props2, {
       "label-click": onClick
     });
     const _listeners = computed(() => {
@@ -652,7 +781,7 @@ var Button = defineComponent({
       if (!slots.default)
         return [];
       const vnodes = slots.default();
-      if (vnodes.length === 1 && vnodes[0].type === Text) {
+      if (vnodes.length === 1 && vnodes[0].type === Text$1) {
         return [createNVueTextVNode(vnodes[0].children, {
           class: "ub-t " + _getClass("-t")
         })];
@@ -660,14 +789,14 @@ var Button = defineComponent({
       return vnodes;
     };
     return () => {
-      const _attrs = extend({}, useHoverClass(props), {
+      const _attrs = extend({}, useHoverClass(props2), {
         hoverClass: _getHoverClass("")
       }, $attrs.value, $excludeAttrs.value, _listeners.value);
       return createVNode("view", mergeProps({
         "ref": rootRef,
         "class": ["ub", _getClass("")],
         "onClick": onClick
-      }, _attrs), [props.loading ? createVNode("loading-indicator", mergeProps({
+      }, _attrs), [props2.loading ? createVNode("loading-indicator", mergeProps({
         "class": ["ub-loading", `ub-${TYPES[type]}-loading`]
       }, {
         arrow: "false",
@@ -699,10 +828,29 @@ function flatVNode(nodes) {
   }
   return array;
 }
+function cached(fn) {
+  const cache = /* @__PURE__ */ Object.create(null);
+  return function cachedFn(str) {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+}
+const parseStyleText = cached(function(cssText) {
+  const res = {};
+  const listDelimiter = /;(?![^(]*\))/g;
+  const propertyDelimiter = /:(.+)/;
+  cssText.split(listDelimiter).forEach(function(item) {
+    if (item) {
+      const tmp = item.split(propertyDelimiter);
+      tmp.length > 1 && (res[tmp[0].trim()] = tmp[1].trim());
+    }
+  });
+  return res;
+});
 const getComponentSize = (el) => {
-  const dom = weex.requireModule("dom");
+  const dom2 = weex.requireModule("dom");
   return new Promise((resolve) => {
-    dom.getComponentRect(el, ({ size }) => {
+    dom2.getComponentRect(el, ({ size }) => {
       resolve(size);
     });
   });
@@ -712,11 +860,13 @@ var MovableArea = defineComponent({
   props: movableAreaProps,
   styles: [{
     "uni-movable-area": {
-      width: "10px",
-      height: "10px"
+      "": {
+        width: "10px",
+        height: "10px"
+      }
     }
   }],
-  setup(props, {
+  setup(props2, {
     slots
   }) {
     const width = ref(0);
@@ -874,14 +1024,14 @@ function useTouchtrack(method) {
     }
   };
 }
-function useCustomEvent(ref2, emit) {
+function useCustomEvent$1(ref2, emit) {
   return (name, detail) => {
     if (ref2.value) {
-      emit(name, normalizeCustomEvent(name, ref2.value, detail || {}));
+      emit(name, normalizeCustomEvent$1(name, ref2.value, detail || {}));
     }
   };
 }
-function normalizeCustomEvent(name, target, detail = {}) {
+function normalizeCustomEvent$1(name, target, detail = {}) {
   target = processTarget(target);
   return {
     type: name,
@@ -896,15 +1046,15 @@ const firstLetterToLowerCase = cacheStringFunction((str) => {
 });
 function processTarget(weexTarget) {
   const { offsetLeft, offsetTop } = weexTarget;
-  const attr = weexTarget.attr;
+  const attr2 = weexTarget.attr;
   const dataset = {};
-  Object.keys(attr || {}).forEach((key) => {
+  Object.keys(attr2 || {}).forEach((key) => {
     if (key.indexOf("data") === 0) {
-      dataset[firstLetterToLowerCase(key.replace("data", ""))] = attr[key];
+      dataset[firstLetterToLowerCase(key.replace("data", ""))] = attr2[key];
     }
   });
   return {
-    id: attr && attr.id || "",
+    id: attr2 && attr2.id || "",
     dataset,
     offsetLeft: offsetLeft || 0,
     offsetTop: offsetTop || 0
@@ -1318,22 +1468,24 @@ var MovableView = defineComponent({
   emits: ["change", "scale"],
   styles: [{
     "uni-movable-view": {
-      position: "absolute",
-      top: "0px",
-      left: "0px",
-      width: "10px",
-      height: "10px"
+      "": {
+        position: "absolute",
+        top: "0px",
+        left: "0px",
+        width: "10px",
+        height: "10px"
+      }
     }
   }],
-  setup(props, {
+  setup(props2, {
     emit,
     slots
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit);
+    const trigger = useCustomEvent$1(rootRef, emit);
     const setTouchMovableViewContext = inject("setTouchMovableViewContext", () => {
     });
-    const touchStart = useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext);
+    const touchStart = useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContext);
     return () => {
       const attrs = {
         preventGesture: true
@@ -1347,7 +1499,7 @@ var MovableView = defineComponent({
     };
   }
 });
-function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext) {
+function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContext) {
   const _isMounted = inject("_isMounted", ref(false));
   const parentSize = inject("parentSize", {
     width: ref(0),
@@ -1374,9 +1526,9 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
     val = Number(val);
     return isNaN(val) ? 1 : val;
   }
-  const xSync = ref(_getPx(props.x));
-  const ySync = ref(_getPx(props.y));
-  const scaleValueSync = ref(_getScaleNumber(Number(props.scaleValue)));
+  const xSync = ref(_getPx(props2.x));
+  const ySync = ref(_getPx(props2.y));
+  const scaleValueSync = ref(_getScaleNumber(Number(props2.scaleValue)));
   const width = ref(0);
   const height = ref(0);
   const minX = ref(0);
@@ -1415,32 +1567,32 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
     historyT: [0, 0]
   };
   const dampingNumber = computed(() => {
-    let val = Number(props.damping);
+    let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
   const frictionNumber = computed(() => {
-    let val = Number(props.friction);
+    let val = Number(props2.friction);
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   const scaleMinNumber = computed(() => {
-    let val = Number(props.scaleMin);
+    let val = Number(props2.scaleMin);
     return isNaN(val) ? 0.5 : val;
   });
   const scaleMaxNumber = computed(() => {
-    let val = Number(props.scaleMax);
+    let val = Number(props2.scaleMax);
     return isNaN(val) ? 10 : val;
   });
-  const xMove = computed(() => props.direction === "all" || props.direction === "horizontal");
-  const yMove = computed(() => props.direction === "all" || props.direction === "vertical");
+  const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
+  const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
   const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
   const _friction = new Friction(1, frictionNumber.value);
-  watch(() => props.x, (val) => {
+  watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
-  watch(() => props.y, (val) => {
+  watch(() => props2.y, (val) => {
     ySync.value = _getPx(val);
   });
-  watch(() => props.scaleValue, (val) => {
+  watch(() => props2.scaleValue, (val) => {
     scaleValueSync.value = _getScaleNumber(Number(val));
   });
   watch(xSync, _setX);
@@ -1483,13 +1635,13 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
     return val;
   }
   function _setScaleMinOrMax() {
-    if (!props.scale) {
+    if (!props2.scale) {
       return false;
     }
     _updateScale(_scale, true);
   }
   function _setScaleValue(scale) {
-    if (!props.scale) {
+    if (!props2.scale) {
       return false;
     }
     scale = _adjustScale(scale);
@@ -1498,7 +1650,7 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
   }
   function __handleTouchStart() {
     {
-      if (!props.disabled) {
+      if (!props2.disabled) {
         FAandSFACancel();
         __touchInfo.historyX = [0, 0];
         __touchInfo.historyY = [0, 0];
@@ -1516,7 +1668,7 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
     }
   }
   function __handleTouchMove(event) {
-    if (!props.disabled && _isTouching) {
+    if (!props2.disabled && _isTouching) {
       let x = _translateX;
       let y = _translateY;
       if (_firstMoveDirection === null) {
@@ -1543,14 +1695,14 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
       if (!_checkCanMove) {
         let source = "touch";
         if (x < minX.value) {
-          if (props.outOfBounds) {
+          if (props2.outOfBounds) {
             source = "touch-out-of-bounds";
             x = minX.value - _declineX.x(minX.value - x);
           } else {
             x = minX.value;
           }
         } else if (x > maxX.value) {
-          if (props.outOfBounds) {
+          if (props2.outOfBounds) {
             source = "touch-out-of-bounds";
             x = maxX.value + _declineX.x(x - maxX.value);
           } else {
@@ -1558,7 +1710,7 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
           }
         }
         if (y < minY.value) {
-          if (props.outOfBounds) {
+          if (props2.outOfBounds) {
             source = "touch-out-of-bounds";
             y = minY.value - _declineY.x(minY.value - y);
           } else {
@@ -1566,7 +1718,7 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
           }
         } else {
           if (y > maxY.value) {
-            if (props.outOfBounds) {
+            if (props2.outOfBounds) {
               source = "touch-out-of-bounds";
               y = maxY.value + _declineY.x(y - maxY.value);
             } else {
@@ -1581,9 +1733,9 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
     }
   }
   function __handleTouchEnd() {
-    if (!props.disabled && _isTouching) {
+    if (!props2.disabled && _isTouching) {
       _isTouching = false;
-      if (!_checkCanMove && !_revise("out-of-bounds") && props.inertia) {
+      if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
         const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
         const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
         _friction.setV(xv, yv);
@@ -1673,7 +1825,7 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
     maxY.value = Math.max(y, _height);
   }
   function _updateScale(scale, animat) {
-    if (props.scale) {
+    if (props2.scale) {
       scale = _adjustScale(scale);
       _updateWH(scale);
       _updateBoundary();
@@ -1702,13 +1854,13 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
     if (!yMove.value) {
       y = _translateY;
     }
-    if (!props.scale) {
+    if (!props2.scale) {
       scale = _scale;
     }
     let limitXY = _getLimitXY(x, y);
     x = limitXY.x;
     y = limitXY.y;
-    if (!props.animation) {
+    if (!props2.animation) {
       _setTransform(x, y, scale, source, r, o);
       return;
     }
@@ -1758,7 +1910,7 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
         });
       }
     }
-    if (!props.scale) {
+    if (!props2.scale) {
       scale = _scale;
     }
     scale = _adjustScale(scale);
@@ -1792,7 +1944,7 @@ function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext
       return;
     }
     FAandSFACancel();
-    let scale = props.scale ? scaleValueSync.value : 1;
+    let scale = props2.scale ? scaleValueSync.value : 1;
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
@@ -1898,18 +2050,26 @@ const progressProps = {
 };
 const progressStyles = [{
   "uni-progress": {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center"
+    "": {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center"
+    }
   },
   "uni-progress-bar": {
-    flex: 1
+    "": {
+      flex: 1
+    }
   },
   "uni-progress-inner-bar": {
-    position: "absolute"
+    "": {
+      position: "absolute"
+    }
   },
   "uni-progress-info": {
-    marginLeft: "15px"
+    "": {
+      marginLeft: "15px"
+    }
   }
 }];
 var Progress = defineComponent({
@@ -1917,16 +2077,16 @@ var Progress = defineComponent({
   props: progressProps,
   styles: progressStyles,
   emits: ["activeend"],
-  setup(props, {
+  setup(props2, {
     emit
   }) {
     const progressRef = ref(null);
     const progressBarRef = ref(null);
-    const trigger = useCustomEvent(progressRef, emit);
-    const state = useProgressState(props);
+    const trigger = useCustomEvent$1(progressRef, emit);
+    const state = useProgressState(props2);
     watch(() => state.realPercent, (newValue, oldValue) => {
       state.lastPercent = oldValue || 0;
-      _activeAnimation(state, props, trigger);
+      _activeAnimation(state, props2, trigger);
     });
     onMounted(() => {
       setTimeout(() => {
@@ -1934,7 +2094,7 @@ var Progress = defineComponent({
           width
         }) => {
           state.progressWidth = width || 0;
-          _activeAnimation(state, props, trigger);
+          _activeAnimation(state, props2, trigger);
         });
       }, 50);
     });
@@ -1942,7 +2102,7 @@ var Progress = defineComponent({
       const {
         showInfo,
         fontSize
-      } = props;
+      } = props2;
       const {
         outerBarStyle,
         innerBarStyle,
@@ -1967,23 +2127,23 @@ var Progress = defineComponent({
     };
   }
 });
-function useProgressState(props) {
+function useProgressState(props2) {
   const currentPercent = ref(0);
   const progressWidth = ref(0);
   const outerBarStyle = computed(() => ({
-    backgroundColor: props.backgroundColor,
-    height: props.strokeWidth
+    backgroundColor: props2.backgroundColor,
+    height: props2.strokeWidth
   }));
   const innerBarStyle = computed(() => {
-    const backgroundColor = props.color !== PROGRESS_VALUES.activeColor && props.activeColor === PROGRESS_VALUES.activeColor ? props.color : props.activeColor;
+    const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return {
       width: currentPercent.value * progressWidth.value / 100,
-      height: props.strokeWidth,
+      height: props2.strokeWidth,
       backgroundColor
     };
   });
   const realPercent = computed(() => {
-    let realValue = parseFloat(props.percent);
+    let realValue = parseFloat(props2.percent);
     realValue < 0 && (realValue = 0);
     realValue > 100 && (realValue = 100);
     return realValue;
@@ -1999,10 +2159,10 @@ function useProgressState(props) {
   });
   return state;
 }
-function _activeAnimation(state, props, trigger) {
+function _activeAnimation(state, props2, trigger) {
   state.strokeTimer && clearInterval(state.strokeTimer);
-  if (props.active) {
-    state.currentPercent = props.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
+  if (props2.active) {
+    state.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
     state.strokeTimer = setInterval(() => {
       if (state.currentPercent + 1 > state.realPercent) {
         state.currentPercent = state.realPercent;
@@ -2011,10 +2171,2241 @@ function _activeAnimation(state, props, trigger) {
       } else {
         state.currentPercent += 1;
       }
-    }, parseFloat(props.duration));
+    }, parseFloat(props2.duration));
   } else {
     state.currentPercent = state.realPercent;
   }
+}
+const pickerViewProps = {
+  value: {
+    type: Array,
+    default() {
+      return [];
+    },
+    validator: function(val) {
+      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+    }
+  },
+  indicatorStyle: {
+    type: String,
+    default: ""
+  },
+  indicatorClass: {
+    type: String,
+    default: ""
+  },
+  maskStyle: {
+    type: String,
+    default: ""
+  },
+  maskClass: {
+    type: String,
+    default: ""
+  }
+};
+const nvuePickerViewProps = extend({}, pickerViewProps, {
+  height: {
+    type: [Number, String],
+    default: 0
+  }
+});
+var PickerView = defineComponent({
+  name: "PickerView",
+  props: nvuePickerViewProps,
+  emits: ["change", "update:value"],
+  setup(props2, {
+    slots,
+    emit
+  }) {
+    const rootRef = ref(null);
+    const state = useState(props2);
+    const trigger = useCustomEvent$1(rootRef, emit);
+    let columnVNodes = [];
+    const getItemIndex = (vnode) => Array.prototype.indexOf.call(columnVNodes, vnode);
+    const getPickerViewColumn = (columnInstance) => {
+      return computed({
+        get() {
+          const index = getItemIndex(columnInstance.vnode);
+          return state.value[index] || 0;
+        },
+        set(current) {
+          if (!columnInstance.data._isMounted)
+            return;
+          const index = getItemIndex(columnInstance.vnode);
+          if (index < 0) {
+            return;
+          }
+          const oldCurrent = state.value[index];
+          if (oldCurrent !== current) {
+            state.value[index] = current;
+            const value = state.value.map((val) => val);
+            emit("update:value", value);
+            trigger("change", {
+              value
+            });
+          }
+        }
+      });
+    };
+    provide("getPickerViewColumn", getPickerViewColumn);
+    provide("pickerViewProps", props2);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      columnVNodes = flatVNode(defaultSlots);
+      return createVNode("view", mergeProps({
+        "ref": rootRef,
+        "class": "uni-picker-view"
+      }, {
+        preventGesture: true
+      }), [createVNode("view", {
+        "class": "uni-picker-view-wrapper"
+      }, [defaultSlots])]);
+    };
+  },
+  styles: [{
+    "uni-picker-view": {
+      "": {
+        position: "relative"
+      }
+    },
+    "uni-picker-view-wrapper": {
+      "": {
+        display: "flex",
+        flexDirection: "row",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: "hidden"
+      }
+    }
+  }]
+});
+function useState(props2) {
+  const value = reactive([...props2.value]);
+  const state = reactive({
+    value
+  });
+  watch(() => props2.value, (val) => {
+    state.value.length = val.length;
+    val.forEach((val2, index) => {
+      if (val2 !== state.value[index]) {
+        state.value.splice(index, 1, val2);
+      }
+    });
+  });
+  return state;
+}
+const dom = weex.requireModule("dom");
+const isAndroid = weex.config.env.platform.toLowerCase() === "android";
+function getStyle(val) {
+  return extend({}, typeof val === "string" ? parseStyleText(val) : val);
+}
+var PickerViewColumn = defineComponent({
+  name: "PickerViewColumn",
+  props: {
+    length: {
+      type: [Number, String],
+      default: 0
+    }
+  },
+  data: () => ({
+    _isMounted: false
+  }),
+  setup(props2, {
+    slots
+  }) {
+    const instance = getCurrentInstance();
+    const rootRef = ref(null);
+    const contentRef = ref(null);
+    const scrollViewItemRef = ref(null);
+    const indicatorRef = ref(null);
+    const pickerViewProps2 = inject("pickerViewProps");
+    const getPickerViewColumn = inject("getPickerViewColumn");
+    const current = getPickerViewColumn(instance);
+    const indicatorStyle = computed(() => getStyle(pickerViewProps2.indicatorStyle));
+    const maskStyle = computed(() => getStyle(pickerViewProps2.maskStyle));
+    let indicatorHeight = ref(0);
+    indicatorHeight.value = getHeight(indicatorStyle.value);
+    let pickerViewHeight = ref(0);
+    pickerViewHeight.value = parseFloat(pickerViewProps2.height);
+    watch(() => props2.length, () => {
+      setTimeout(() => {
+        setCurrent(current.value, true, true);
+      }, 150);
+    });
+    let scrollToElementTime;
+    const setCurrent = (_current, animated = true, force) => {
+      if (current.value === _current && !force) {
+        return;
+      }
+      dom.scrollToElement(contentRef.value, {
+        offset: _current * indicatorHeight.value,
+        animated
+      });
+      current.value = _current;
+      if (animated) {
+        scrollToElementTime = Date.now();
+      }
+    };
+    const onScrollend = (event) => {
+      if (Date.now() - scrollToElementTime < 340) {
+        return;
+      }
+      const y = event.contentOffset.y;
+      const _current = Math.round(y / indicatorHeight.value);
+      if (y % indicatorHeight.value) {
+        setCurrent(_current, true, true);
+      } else {
+        current.value = _current;
+      }
+    };
+    const checkMounted = () => {
+      let height_;
+      let indicatorHeight_;
+      setTimeout(() => {
+        Promise.all([getComponentSize(rootRef.value).then(({
+          height
+        }) => {
+          height_ = pickerViewHeight.value = height;
+        }), isAndroid && props2.length ? getComponentSize(scrollViewItemRef.value).then(({
+          height
+        }) => {
+          indicatorHeight_ = indicatorHeight.value = height / parseFloat(props2.length);
+        }) : getComponentSize(indicatorRef.value).then(({
+          height
+        }) => {
+          indicatorHeight_ = indicatorHeight.value = height;
+        })]).then(() => {
+          if (height_ && indicatorHeight_) {
+            setTimeout(() => {
+              setCurrent(current.value, false, true);
+              instance.data._isMounted = true;
+            }, 50);
+          } else {
+            checkMounted();
+          }
+        });
+      }, 50);
+    };
+    onMounted(checkMounted);
+    const createScrollViewChild = (item) => {
+      if (!item)
+        return null;
+      return isAndroid ? createVNode("div", {
+        "ref": scrollViewItemRef,
+        "style": "flex-direction:column;"
+      }, [item]) : item;
+    };
+    return () => {
+      const children = slots.default && slots.default();
+      let padding = (pickerViewHeight.value - indicatorHeight.value) / 2;
+      const maskPosition = `${pickerViewHeight.value - padding}px`;
+      const scrollOptions = {
+        showScrollbar: false,
+        scrollToBegin: false,
+        decelerationRate: 0.3,
+        scrollY: true
+      };
+      if (!isAndroid) {
+        scrollOptions.scrollTop = current.value * indicatorHeight.value;
+      }
+      return createVNode("view", {
+        "ref": rootRef,
+        "class": "uni-picker-view-column"
+      }, [createVNode("scroll-view", mergeProps({
+        "class": "uni-picker-view-group",
+        "style": "flex-direction:column;",
+        "onScrollend": onScrollend
+      }, scrollOptions), [createVNode("view", {
+        "ref": contentRef,
+        "class": "uni-picker-view-content",
+        "style": {
+          flexDirection: "column",
+          paddingTop: `${padding}px`,
+          paddingBottom: `${padding}px`
+        }
+      }, [createScrollViewChild(children)])]), createVNode(resolveComponent("u-scalable"), {
+        "class": "uni-picker-view-mask",
+        "style": maskStyle.value
+      }, {
+        default: () => [createVNode(resolveComponent("u-scalable"), {
+          "class": "uni-picker-view-mask uni-picker-view-mask-top",
+          "style": {
+            bottom: maskPosition
+          }
+        }, null), createVNode(resolveComponent("u-scalable"), {
+          "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
+          "style": {
+            top: maskPosition
+          }
+        }, null)]
+      }), createVNode(resolveComponent("u-scalable"), {
+        "ref": indicatorRef,
+        "class": "uni-picker-view-indicator",
+        "style": extend({}, indicatorStyle.value, {
+          top: `${padding}px`
+        })
+      }, null)]);
+    };
+  },
+  styles: [{
+    "uni-picker-view-column": {
+      "": {
+        flex: 1,
+        position: "relative",
+        alignItems: "stretch",
+        overflow: "hidden"
+      }
+    },
+    "uni-picker-view-mask": {
+      "": {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: "none"
+      }
+    },
+    "uni-picker-view-mask-top": {
+      "": {
+        bottom: 0,
+        backgroundImage: "linear-gradient(to bottom,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))"
+      }
+    },
+    "uni-picker-view-mask-bottom": {
+      "": {
+        top: 0,
+        backgroundImage: "linear-gradient(to top,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))"
+      }
+    },
+    "uni-picker-view-group": {
+      "": {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      }
+    },
+    "uni-picker-view-content": {
+      "": {
+        paddingTop: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
+        paddingLeft: 0
+      }
+    },
+    "uni-picker-view-indicator": {
+      "": {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        height: "34px",
+        pointerEvents: "none",
+        borderColor: "#e5e5e5",
+        borderTopWidth: "1px",
+        borderBottomWidth: "1px"
+      }
+    }
+  }]
+});
+function getHeight(style) {
+  const height = style.height || style.lineHeight || "";
+  const res = height.match(/(-?[\d\.]+)px/);
+  let value = 0;
+  if (res) {
+    value = parseFloat(res[1]);
+  }
+  return value;
+}
+const mode = {
+  SELECTOR: "selector",
+  MULTISELECTOR: "multiSelector",
+  TIME: "time",
+  DATE: "date"
+};
+const fields = {
+  YEAR: "year",
+  MONTH: "month",
+  DAY: "day"
+};
+function padLeft(num) {
+  return num > 9 ? num : `0${num}`;
+}
+function getDate(str, _mode) {
+  str = String(str || "");
+  const date = new Date();
+  if (_mode === mode.TIME) {
+    const strs = str.split(":");
+    if (strs.length === 2) {
+      date.setHours(parseInt(strs[0]), parseInt(strs[1]));
+    }
+  } else {
+    const strs = str.split("-");
+    if (strs.length === 3) {
+      date.setFullYear(parseInt(strs[0]), parseInt(String(parseFloat(strs[1]) - 1)), parseInt(strs[2]));
+    }
+  }
+  return date;
+}
+function getDefaultStartValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "00:00";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = new Date().getFullYear() - 100;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year;
+      case fields.MONTH:
+        return year + "-01";
+      default:
+        return year + "-01-01";
+    }
+  }
+  return "";
+}
+function getDefaultEndValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "23:59";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = new Date().getFullYear() + 100;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year;
+      case fields.MONTH:
+        return year + "-12";
+      default:
+        return year + "-12-31";
+    }
+  }
+  return "";
+}
+const props$3 = {
+  name: {
+    type: String,
+    default: ""
+  },
+  range: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  rangeKey: {
+    type: String,
+    default: ""
+  },
+  value: {
+    type: [Number, String, Array],
+    default: 0
+  },
+  mode: {
+    type: String,
+    default: mode.SELECTOR,
+    validator(val) {
+      return Object.values(mode).indexOf(val) >= 0;
+    }
+  },
+  fields: {
+    type: String,
+    default: ""
+  },
+  start: {
+    type: String,
+    default: getDefaultStartValue
+  },
+  end: {
+    type: String,
+    default: getDefaultEndValue
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var Picker = /* @__PURE__ */ defineComponent({
+  name: "Picker",
+  props: props$3,
+  emits: ["change", "cancel", "columnchange"],
+  setup(props2, {
+    slots,
+    emit
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent$1(rootRef, emit);
+    const valueSync = ref(null);
+    const page = ref(null);
+    const _setValueSync = () => {
+      let val = props2.value;
+      switch (props2.mode) {
+        case mode.MULTISELECTOR:
+          {
+            if (!Array.isArray(val)) {
+              val = [];
+            }
+            if (!Array.isArray(valueSync.value)) {
+              valueSync.value = [];
+            }
+            const length = valueSync.value.length = Math.max(val.length, props2.range.length);
+            for (let index = 0; index < length; index++) {
+              const val0 = Number(val[index]);
+              const val1 = Number(valueSync.value[index]);
+              const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+              valueSync.value.splice(index, 1, val2 < 0 ? 0 : val2);
+            }
+          }
+          break;
+        case mode.TIME:
+        case mode.DATE:
+          valueSync.value = String(val);
+          break;
+        default: {
+          const _valueSync = Number(val);
+          valueSync.value = _valueSync < 0 ? 0 : _valueSync;
+          break;
+        }
+      }
+    };
+    const _updatePicker = (data) => {
+      page.value && page.value.sendMessage(data);
+    };
+    const _showWeexPicker = (data) => {
+      let res = {
+        event: "cancel"
+      };
+      page.value = showPage({
+        url: "__uniapppicker",
+        data,
+        style: {
+          titleNView: false,
+          animationType: "none",
+          animationDuration: 0,
+          background: "rgba(0,0,0,0)",
+          popGesture: "none"
+        },
+        onMessage: (message) => {
+          const event = message.event;
+          if (event === "created") {
+            _updatePicker(data);
+            return;
+          }
+          if (event === "columnchange") {
+            delete message.event;
+            trigger(event, message);
+            return;
+          }
+          res = message;
+        },
+        onClose: () => {
+          page.value = null;
+          const event = res.event;
+          delete res.event;
+          event && trigger(event, res);
+        }
+      });
+    };
+    const _showNativePicker = (data) => {
+      plus.nativeUI[props2.mode === mode.TIME ? "pickTime" : "pickDate"]((res) => {
+        const date = res.date;
+        trigger("change", {
+          value: props2.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getFullYear()}-${padLeft(date.getMonth() + 1)}-${padLeft(date.getDate())}`
+        });
+      }, () => {
+        trigger("cancel", {});
+      }, props2.mode === mode.TIME ? {
+        time: getDate(props2.value, mode.TIME)
+      } : {
+        date: getDate(props2.value, mode.DATE),
+        minDate: getDate(props2.start, mode.DATE),
+        maxDate: getDate(props2.end, mode.DATE)
+      });
+    };
+    const _showPicker = (data) => {
+      if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
+        _showNativePicker();
+      } else {
+        data.fields = Object.values(fields).includes(data.fields) ? data.fields : fields.DAY;
+        _showWeexPicker(data);
+      }
+    };
+    const _show = (event) => {
+      if (props2.disabled) {
+        return;
+      }
+      _showPicker(extend({}, props2, {
+        value: valueSync.value,
+        locale: uni.getLocale()
+      }));
+    };
+    Object.keys(props2).forEach((key) => {
+      watch(() => props2[key], (val) => {
+        const data = {};
+        data[key] = val;
+        _updatePicker(data);
+      }, {
+        deep: true
+      });
+    });
+    watch(() => props2.value, _setValueSync, {
+      deep: true
+    });
+    _setValueSync();
+    return () => {
+      return createVNode(resolveComponent("uni-picker"), {
+        "ref": rootRef,
+        "onClick": _show
+      }, {
+        default: () => [slots.default && slots.default()]
+      });
+    };
+  }
+});
+const sliderProps = {
+  name: {
+    type: String,
+    default: ""
+  },
+  min: {
+    type: [Number, String],
+    default: 0
+  },
+  max: {
+    type: [Number, String],
+    default: 100
+  },
+  value: {
+    type: [Number, String],
+    default: 0
+  },
+  step: {
+    type: [Number, String],
+    default: 1
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#e9e9e9"
+  },
+  backgroundColor: {
+    type: String,
+    default: "#e9e9e9"
+  },
+  activeColor: {
+    type: String,
+    default: "#007aff"
+  },
+  selectedColor: {
+    type: String,
+    default: "#007aff"
+  },
+  blockColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  blockSize: {
+    type: [Number, String],
+    default: 28
+  },
+  showValue: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const slierStyles = [{
+  "uni-slider": {
+    "": {
+      flex: 1,
+      flexDirection: "column",
+      marginTop: "12",
+      marginRight: 0,
+      marginBottom: "12",
+      marginLeft: 0,
+      paddingTop: 0,
+      paddingRight: 0,
+      paddingBottom: 0,
+      paddingLeft: 0
+    }
+  },
+  "uni-slider-wrapper": {
+    "": {
+      flexDirection: "row",
+      alignItems: "center",
+      minHeight: "30"
+    }
+  },
+  "uni-slider-tap-area": {
+    "": {
+      position: "relative",
+      flex: 1,
+      flexDirection: "column",
+      paddingTop: "15",
+      paddingRight: 0,
+      paddingBottom: "15",
+      paddingLeft: 0
+    }
+  },
+  "uni-slider-handle-wrapper": {
+    "": {
+      position: "relative",
+      marginTop: 0,
+      marginRight: "18",
+      marginBottom: 0,
+      marginLeft: "18",
+      height: "2",
+      borderRadius: "5",
+      backgroundColor: "#e9e9e9",
+      transitionProperty: "backgroundColor",
+      transitionDuration: 300,
+      transitionTimingFunction: "ease"
+    }
+  },
+  "uni-slider-track": {
+    "": {
+      height: "2",
+      borderRadius: "6",
+      backgroundColor: "#007aff",
+      transitionProperty: "backgroundColor",
+      transitionDuration: 300,
+      transitionTimingFunction: "ease"
+    }
+  },
+  "uni-slider-thumb": {
+    "": {
+      position: "absolute",
+      width: "28",
+      height: "28",
+      borderRadius: 50,
+      boxShadow: "0 0 4px #ebebeb",
+      transitionProperty: "borderColor",
+      transitionDuration: 300,
+      transitionTimingFunction: "ease"
+    }
+  },
+  "uni-slider-step": {
+    "": {
+      position: "absolute",
+      width: 100,
+      height: "2",
+      background: "transparent",
+      zIndex: 1
+    }
+  },
+  "uni-slider-value": {
+    "": {
+      color: "#888888",
+      fontSize: "14",
+      marginRight: "14"
+    }
+  }
+}];
+var USlider = defineComponent({
+  name: "USlider",
+  props: sliderProps,
+  styles: slierStyles,
+  setup(props2, {
+    emit
+  }) {
+    const sliderRef = ref(null);
+    const sliderTrackRef = ref(null);
+    const trigger = useCustomEvent$1(sliderRef, emit);
+    const state = useSliderState(props2);
+    const listeners = useSliderListeners(props2, state, trigger);
+    watch(() => props2.value, (val) => {
+      state.sliderValue = Number(val);
+    });
+    onMounted(() => {
+      setTimeout(() => {
+        getComponentSize(sliderRef.value).then(({
+          width
+        }) => {
+          state.sliderWidth = width || 0;
+          state.sliderValue = Number(props2.value);
+        });
+      }, 100);
+    });
+    return () => {
+      const {
+        showValue
+      } = props2;
+      const {
+        trackStyle,
+        trackActiveStyle,
+        thumbStyle,
+        sliderValue
+      } = state;
+      return createVNode("div", {
+        "class": "uni-slider",
+        "ref": sliderRef
+      }, [createVNode("div", {
+        "class": "uni-slider-wrapper"
+      }, [createVNode("div", mergeProps({
+        "class": "uni-slider-tap-area"
+      }, listeners), [createVNode("div", {
+        "class": "uni-slider-handle-wrapper",
+        "ref": sliderTrackRef,
+        "style": trackStyle
+      }, [createVNode("div", {
+        "class": "uni-slider-track",
+        "style": trackActiveStyle
+      }, null)]), createVNode("div", {
+        "class": "uni-slider-thumb",
+        "style": thumbStyle
+      }, null)]), showValue ? createNVueTextVNode(sliderValue, {
+        class: "uni-slider-value"
+      }) : null])]);
+    };
+  }
+});
+function useSliderState(props2) {
+  const sliderWidth = ref(0);
+  const sliderValue = ref(0);
+  const _getBgColor = () => {
+    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+  };
+  const _getActiveColor = () => {
+    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+  };
+  const _getValueWidth = () => {
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    return ((sliderValue.value - min) / max - min) * sliderWidth.value;
+  };
+  const state = reactive({
+    sliderWidth,
+    sliderValue,
+    trackStyle: computed(() => ({
+      backgroundColor: _getBgColor()
+    })),
+    trackActiveStyle: computed(() => ({
+      backgroundColor: _getActiveColor(),
+      width: _getValueWidth()
+    })),
+    thumbStyle: computed(() => ({
+      width: props2.blockSize,
+      height: props2.blockSize,
+      marginTop: -props2.blockSize / 2,
+      left: _getValueWidth(),
+      backgroundColor: props2.blockColor
+    }))
+  });
+  return state;
+}
+function useSliderListeners(props2, state, trigger) {
+  let eventOld = null;
+  function onTrack(action, x) {
+    if (!props2.disabled) {
+      if (action === "move") {
+        changedValue(x);
+        trigger("changing", {
+          value: state.sliderValue
+        });
+      } else if (action === "end") {
+        changedValue(x);
+        trigger("change", {
+          value: state.sliderValue
+        });
+      }
+    }
+  }
+  function changedValue(x) {
+    if (x < 0) {
+      x = 0;
+    }
+    if (x > state.sliderWidth) {
+      x = state.sliderWidth;
+    }
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    const step = Number(props2.step);
+    let value = x / state.sliderWidth * max - min;
+    if (step > 0 && value > step && value % step / step !== 0) {
+      value -= value % step;
+    }
+    state.sliderValue = value + min;
+  }
+  const listeners = {
+    onTouchstart(e2) {
+      if (e2.changedTouches.length === 1 && !eventOld) {
+        eventOld = e2;
+        onTrack("start", e2.changedTouches[0].pageX);
+      }
+    },
+    onTouchmove(e2) {
+      if (e2.changedTouches.length === 1 && eventOld) {
+        onTrack("move", e2.changedTouches[0].pageX);
+      }
+    },
+    onTouchend(e2) {
+      if (e2.changedTouches.length === 1 && eventOld) {
+        eventOld = null;
+        onTrack("end", e2.changedTouches[0].pageX);
+      }
+    }
+  };
+  return listeners;
+}
+const switchProps = {
+  name: {
+    type: String,
+    default: ""
+  },
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  type: {
+    type: String,
+    default: "switch"
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  }
+};
+const SwitchType = {
+  switch: "switch",
+  checkbox: "checkbox"
+};
+const DCSwitchSize = {
+  width: 52,
+  height: 32
+};
+var Switch = defineComponent({
+  name: "Switch",
+  props: switchProps,
+  emits: ["change"],
+  setup(props2, {
+    emit
+  }) {
+    const rootRef = ref(null);
+    const switchChecked = ref(props2.checked);
+    const uniLabel = useSwitchInject(props2, switchChecked);
+    const trigger = useCustomEvent$1(rootRef, emit);
+    watch(() => props2.checked, (val) => {
+      switchChecked.value = val;
+    });
+    const listeners = {
+      onChange(e2) {
+        switchChecked.value = e2.detail.value;
+        trigger("change", {
+          value: switchChecked.value
+        });
+      }
+    };
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      switchChecked.value = !switchChecked.value;
+      trigger("change", {
+        value: switchChecked.value
+      });
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
+    useListeners(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        color,
+        type
+      } = props2;
+      return createVNode("div", {
+        "ref": rootRef
+      }, [type === SwitchType.switch ? createVNode("dc-switch", mergeProps({
+        dataUncType: "uni-switch"
+      }, listeners, {
+        checked: switchChecked.value
+      }, {
+        "style": DCSwitchSize
+      }), null) : null, type === SwitchType.checkbox ? createVNode(resolveComponent("checkbox"), mergeProps({
+        "style": {
+          color
+        }
+      }, {
+        checked: switchChecked.value
+      }, listeners), null) : null]);
+    };
+  }
+});
+function useSwitchInject(props2, switchChecked) {
+  const uniForm = inject(uniFormKey, false);
+  const uniLabel = inject(uniLabelKey, false);
+  const formField = {
+    submit: () => {
+      const data = ["", null];
+      if (props2.name) {
+        data[0] = props2.name;
+        data[1] = switchChecked.value;
+      }
+      return data;
+    },
+    reset: () => {
+      switchChecked.value = false;
+    }
+  };
+  if (!!uniForm) {
+    uniForm.addField(formField);
+    onUnmounted(() => {
+      uniForm.removeField(formField);
+    });
+  }
+  return uniLabel;
+}
+const checkboxProps = {
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  value: {
+    type: String,
+    default: ""
+  }
+};
+const checkboxStyles = [{
+  "uni-checkbox": {
+    "": {
+      flexDirection: "row",
+      alignItems: "center"
+    }
+  },
+  "uni-checkbox-input": {
+    "": {
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+      borderWidth: "1",
+      borderColor: "#d1d1d1",
+      borderStyle: "solid",
+      backgroundColor: "#ffffff",
+      borderRadius: "3",
+      width: "22",
+      height: "22"
+    }
+  },
+  "uni-icon": {
+    "": {
+      fontFamily: "unincomponents",
+      fontSize: "16",
+      marginLeft: "2",
+      marginTop: "2",
+      color: "#007aff"
+    }
+  },
+  "uni-checkbox-input-disabled": {
+    "": {
+      backgroundColor: "#e1e1e1"
+    }
+  },
+  "uni-checkbox-input-disabled-before": {
+    "": {
+      color: "#adadad"
+    }
+  },
+  "uni-checkbox-slot": {
+    "": {
+      fontSize: "16",
+      marginLeft: "5"
+    }
+  }
+}];
+var Checkbox = defineComponent({
+  name: "Checkbox",
+  props: checkboxProps,
+  styles: checkboxStyles,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const checkboxChecked = ref(props2.checked);
+    const checkboxValue = ref(props2.value);
+    const onClick = (e2, isLabelClick) => {
+      if (props2.disabled) {
+        return;
+      }
+      if (isLabelClick) {
+        rootRef.value.click();
+      }
+      checkboxChecked.value = !checkboxChecked.value;
+    };
+    const checkboxColor = computed(() => props2.disabled ? "#adadad" : props2.color);
+    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      checkboxChecked.value = newChecked;
+      checkboxValue.value = newModelValue;
+    });
+    const uniLabel = inject(uniLabelKey, false);
+    if (uniLabel) {
+      uniLabel.addHandler(onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(onClick);
+      });
+    }
+    useListeners(props2, {
+      "label-click": onClick
+    });
+    const wrapSlots = () => {
+      if (!slots.default)
+        return [];
+      const vnodes = slots.default();
+      if (vnodes.length === 1 && vnodes[0].type === Text) {
+        return [createNVueTextVNode(vnodes[0].children, {
+          class: "uni-checkbox-slot"
+        })];
+      }
+      return vnodes;
+    };
+    return () => {
+      return createVNode("div", mergeProps({
+        "ref": rootRef
+      }, {
+        dataUncType: "uni-checkbox"
+      }, {
+        "onClick": onClick,
+        "class": "uni-checkbox"
+      }), [createVNode("div", {
+        "class": ["uni-checkbox-input", {
+          "uni-checkbox-input-disabled": props2.disabled
+        }]
+      }, [checkboxChecked.value ? createNVueTextVNode("\uEA08", {
+        class: "uni-icon",
+        style: {
+          color: checkboxColor.value
+        }
+      }) : null]), ...wrapSlots()]);
+    };
+  }
+});
+const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+function useCustomEvent(ref2, emit) {
+  return (name, evt, detail) => {
+    if (ref2.value) {
+      emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    }
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
+const props$2 = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+var CheckboxGroup = defineComponent({
+  name: "CheckboxGroup",
+  props: props$2,
+  emits: ["change"],
+  setup(props2, {
+    slots,
+    emit
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit);
+    useProvideCheckGroup(props2, trigger);
+    return () => {
+      return createVNode("div", {
+        "ref": rootRef,
+        "class": "uni-checkbox-group"
+      }, [slots.default && slots.default()]);
+    };
+  }
+});
+function useProvideCheckGroup(props2, trigger) {
+  const fields2 = [];
+  const getFieldsValue = () => fields2.reduce((res, field) => {
+    if (field.value.checkboxChecked) {
+      res.push(field.value.value);
+    }
+    return res;
+  }, new Array());
+  provide(uniCheckGroupKey, {
+    addField(field) {
+      fields2.push(field);
+    },
+    removeField(field) {
+      fields2.splice(fields2.indexOf(field), 1);
+    },
+    checkboxChange($event) {
+      trigger("change", $event, {
+        value: getFieldsValue()
+      });
+    }
+  });
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    uniForm.addField({
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
+        }
+        return data;
+      }
+    });
+  }
+  return getFieldsValue;
+}
+const radioProps = {
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  value: {
+    type: String,
+    default: ""
+  }
+};
+const radioStyles = [{
+  "uni-radio": {
+    "": {
+      alignItems: "center",
+      flexDirection: "row"
+    }
+  },
+  "uni-radio-input": {
+    "": {
+      position: "relative",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: "5",
+      borderStyle: "solid",
+      borderWidth: "1",
+      borderColor: "#d1d1d1",
+      borderRadius: 50,
+      width: "22",
+      height: "22",
+      outline: 0
+    }
+  },
+  "uni-radio-input-icon": {
+    "": {
+      fontFamily: "unincomponents",
+      fontSize: "14",
+      color: "#ffffff"
+    }
+  },
+  "uni-radio-input-disabled": {
+    "": {
+      backgroundColor: "#e1e1e1",
+      borderColor: "#d1d1d1",
+      color: "#adadad"
+    }
+  },
+  "uni-radio-slot": {
+    "": {
+      fontSize: "16",
+      marginLeft: "5"
+    }
+  }
+}];
+var Radio = defineComponent({
+  name: "Radio",
+  props: radioProps,
+  styles: radioStyles,
+  emits: ["change"],
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const state = useRadioState(props2);
+    const onClick = (e2, isLabelClick) => {
+      if (props2.disabled) {
+        return;
+      }
+      if (isLabelClick) {
+        rootRef.value.click();
+      }
+      state.radioChecked = !state.radioChecked;
+    };
+    const uniLabel = inject(uniLabelKey, false);
+    if (uniLabel) {
+      uniLabel.addHandler(onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(onClick);
+      });
+    }
+    useListeners(props2, {
+      "label-click": onClick
+    });
+    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      state.radioChecked = newChecked;
+      state.radioValue = newModelValue;
+    });
+    const wrapSlots = () => {
+      if (!slots.default)
+        return [];
+      const vnodes = slots.default();
+      if (vnodes.length === 1 && vnodes[0].type === Text) {
+        return [createNVueTextVNode(vnodes[0].children, {
+          class: "uni-radio-slot"
+        })];
+      }
+      return vnodes;
+    };
+    return () => {
+      const {
+        disabled
+      } = props2;
+      const {
+        radioChecked,
+        radioStyle
+      } = state;
+      return createVNode("div", mergeProps({
+        "ref": rootRef
+      }, {
+        dataUncType: "uni-radio"
+      }, {
+        "onClick": onClick,
+        "class": "uni-radio"
+      }), [createVNode("div", {
+        "style": radioStyle,
+        "class": ["uni-radio-input", {
+          "uni-radio-input-disabled": disabled
+        }]
+      }, [radioChecked ? createNVueTextVNode("\uEA08", {
+        class: "uni-radio-input-icon"
+      }) : null]), ...wrapSlots()]);
+    };
+  }
+});
+function useRadioState(props2) {
+  const radioChecked = ref(props2.checked);
+  const radioValue = ref(props2.value);
+  const radioStyle = computed(() => {
+    if (radioChecked.value) {
+      return {
+        backgroundColor: props2.color,
+        borderColor: props2.color
+      };
+    }
+    return {
+      borderColor: "#d1d1d1"
+    };
+  });
+  const radioColor = computed(() => props2.disabled ? "#adadad" : props2.color);
+  const state = reactive({
+    radioStyle,
+    radioColor,
+    radioChecked,
+    radioValue
+  });
+  return state;
+}
+const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniRadioGroup" : "ucg");
+const props$1 = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+var RadioGroup = defineComponent({
+  name: "RadioGroup",
+  props: props$1,
+  emits: ["change"],
+  setup(props2, {
+    slots,
+    emit
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit);
+    useProvideRadioGroup(props2, trigger);
+    return () => {
+      return createVNode("div", {
+        "ref": rootRef
+      }, [slots.default && slots.default()]);
+    };
+  }
+});
+function useProvideRadioGroup(props2, trigger) {
+  const fields2 = [];
+  const getFieldsValue = () => fields2.reduce((res, field) => {
+    if (field.value.radioChecked) {
+      res.push(field.value.value);
+    }
+    return res;
+  }, new Array());
+  provide(uniRadioGroupKey, {
+    addField(field) {
+      fields2.push(field);
+    },
+    removeField(field) {
+      fields2.splice(fields2.indexOf(field), 1);
+    },
+    radioChange($event) {
+      trigger("change", $event, {
+        value: getFieldsValue()
+      });
+    }
+  });
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    uniForm.addField({
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
+        }
+        return data;
+      }
+    });
+  }
+  return getFieldsValue;
+}
+const NATIVE_COMPONENTS = ["u-input", "u-textarea"];
+var Form = defineComponent({
+  name: "Form",
+  emits: ["submit", "reset"],
+  setup({}, {
+    slots,
+    emit
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent$1(rootRef, emit);
+    const vnodes = slots.default && slots.default();
+    provideForm(trigger, vnodes);
+    return () => {
+      return createVNode("view", {
+        "ref": rootRef
+      }, [vnodes]);
+    };
+  }
+});
+function provideForm(trigger, children) {
+  const modulePlus = weex.requireModule("plus");
+  const fields2 = [];
+  const getOrClearNativeValue = (nodes, outResult) => {
+    nodes.forEach(function(node) {
+      if (NATIVE_COMPONENTS.indexOf(node.type) >= 0 && node.el.attr && node.el.attr.name) {
+        if (outResult) {
+          outResult[node.el.attr.name] = modulePlus.getValue(node.el.nodeId);
+        } else {
+          node.el.setValue("");
+        }
+      }
+      if (Array.isArray(node.children) && node.children && node.children.length) {
+        getOrClearNativeValue(node.children, outResult);
+      }
+    });
+  };
+  provide(uniFormKey, {
+    addField(field) {
+      fields2.push(field);
+    },
+    removeField(field) {
+      fields2.splice(fields2.indexOf(field), 1);
+    },
+    submit(evt) {
+      let outFormData = {};
+      getOrClearNativeValue(children, outFormData);
+      let formData = fields2.reduce((res, field) => {
+        if (field.submit) {
+          const [name, value] = field.submit();
+          name && (res[name] = value);
+        }
+        return res;
+      }, /* @__PURE__ */ Object.create(null));
+      Object.assign(outFormData, formData);
+      trigger("submit", {
+        value: outFormData
+      });
+    },
+    reset(evt) {
+      getOrClearNativeValue(children, null);
+      fields2.forEach((field) => field.reset && field.reset());
+      trigger("reset", evt);
+    }
+  });
+  return fields2;
+}
+const iconProps = {
+  type: {
+    type: String,
+    default: ""
+  },
+  size: {
+    type: [String, Number],
+    default: 23
+  },
+  color: {
+    type: String,
+    default: ""
+  }
+};
+const iconColors = {
+  success: "#09bb07",
+  info: "#10aeff",
+  warn: "#f76260",
+  waiting: "#10aeff",
+  safe_success: "#09bb07",
+  safe_warn: "#ffbe00",
+  success_circle: "#09bb07",
+  success_no_circle: "#09bb07",
+  waiting_circle: "#10aeff",
+  circle: "#c9c9c9",
+  download: "#09bb07",
+  info_circle: "#09bb07",
+  cancel: "#f43530",
+  search: "#b2b2b2",
+  clear: "#b2b2b2"
+};
+const iconChars = {
+  success: "\uEA06",
+  info: "\uEA03",
+  warn: "\uEA0B",
+  waiting: "\uEA09",
+  safe_success: "\uEA04",
+  safe_warn: "\uEA05",
+  success_circle: "\uEA07",
+  success_no_circle: "\uEA08",
+  waiting_circle: "\uEA0A",
+  circle: "\uEA01",
+  download: "\uEA02",
+  info_circle: "\uEA0C",
+  cancel: "\uEA0D",
+  search: "\uEA0E",
+  clear: "\uEA0F"
+};
+const iconStyles = [{
+  "uni-icon": {
+    "": {
+      fontFamily: "unincomponents"
+    }
+  }
+}];
+var Icon = defineComponent({
+  name: "Icon",
+  props: iconProps,
+  styles: iconStyles,
+  setup(props2, {}) {
+    return () => {
+      return createNVueTextVNode(iconChars[props2.type], {
+        class: "uni-icon",
+        style: {
+          color: props2.color || iconColors[props2.type],
+          fontSize: props2.size
+        }
+      });
+    };
+  }
+});
+const swiperProps = {
+  indicatorDots: {
+    type: [Boolean, String],
+    default: false
+  },
+  vertical: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  circular: {
+    type: [Boolean, String],
+    default: false
+  },
+  interval: {
+    type: [Number, String],
+    default: 5e3
+  },
+  duration: {
+    type: [Number, String],
+    default: 500
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  },
+  indicatorColor: {
+    type: String,
+    default: "rgba(0,0,0,.3)"
+  },
+  indicatorActiveColor: {
+    type: String,
+    default: "#000000"
+  },
+  previousMargin: {
+    type: String,
+    default: ""
+  },
+  nextMargin: {
+    type: String,
+    default: ""
+  },
+  currentItemId: {
+    type: String,
+    default: ""
+  },
+  skipHiddenItemLayout: {
+    type: [Boolean, String],
+    default: false
+  },
+  displayMultipleItems: {
+    type: [Number, String],
+    default: 1
+  },
+  disableTouch: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const swiperStyles = [{
+  "uni-swiper": {
+    "": {
+      position: "relative",
+      height: "150px"
+    }
+  },
+  "uni-swiper-slider": {
+    "": {
+      position: "absolute",
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0
+    }
+  },
+  "uni-swiper-dots": {
+    "": {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: "10",
+      height: "10"
+    }
+  }
+}];
+var Swiper = defineComponent({
+  name: "Swiper",
+  props: swiperProps,
+  styles: swiperStyles,
+  emits: ["change", "transition", "animationfinish"],
+  setup(props2, {
+    slots,
+    emit
+  }) {
+    const rootRef = ref(null);
+    let swiperItems = [];
+    const trigger = useCustomEvent$1(rootRef, emit);
+    const state = useSwiperState(props2);
+    const listeners = useSwiperListeners(state, props2, swiperItems, trigger);
+    watch([() => props2.current, () => props2.currentItemId], ([newChecked, newModelValue]) => {
+      currentCheck(state, props2, swiperItems);
+    });
+    onMounted(() => {
+      setTimeout(() => {
+        getComponentSize(rootRef.value).then(({
+          width,
+          height
+        }) => {
+          state.swiperWidth = width;
+          state.swiperHeight = height;
+        });
+      }, 50);
+    });
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      const {
+        indicatorStyle,
+        currentSync
+      } = state;
+      swiperItems = flatVNode(defaultSlots);
+      return createVNode("div", {
+        "ref": rootRef,
+        "class": "uni-swiper"
+      }, [createVNode(resolveComponent("slider"), mergeProps({
+        "class": "uni-swiper-slider"
+      }, {
+        autoPlay: props2.autoplay,
+        interval: props2.interval,
+        index: currentSync,
+        keepIndex: true,
+        showIndicators: props2.indicatorDots,
+        infinite: props2.circular,
+        vertical: props2.vertical,
+        scrollable: !props2.disableTouch
+      }, listeners), {
+        default: () => [swiperItems, createVNode("indicator", {
+          "class": "uni-swiper-dots",
+          "styles": indicatorStyle
+        }, null)]
+      })]);
+    };
+  }
+});
+function useSwiperState(props2) {
+  let swiperWidth = ref(0);
+  let swiperHeight = ref(0);
+  const currentSync = ref(props2.current);
+  const currentChangeSource = ref("autoplay");
+  const indicatorStyle = computed(() => ({
+    itemColor: props2.indicatorColor,
+    itemSelectedColor: props2.indicatorActiveColor,
+    itemSize: 8,
+    opacity: props2.indicatorDots ? 1 : 0
+  }));
+  const state = reactive({
+    swiperWidth,
+    swiperHeight,
+    indicatorStyle,
+    currentSync,
+    currentChangeSource
+  });
+  return state;
+}
+function useSwiperListeners(state, props2, swiperItems, trigger) {
+  let lastOffsetRatio = 0;
+  const onScroll = (event) => {
+    let offsetRatio = props2.vertical ? event.detail.offsetYRatio : event.detail.offsetXRatio;
+    if (event.drag || event.detail.drag) {
+      state.currentChangeSource = "touch";
+    }
+    if (offsetRatio === 0) {
+      const lastOffsetRatio2 = Math.abs(lastOffsetRatio);
+      if (lastOffsetRatio2 === 1) {
+        return;
+      } else if (lastOffsetRatio2 > 0.5) {
+        offsetRatio = 1;
+      }
+    }
+    lastOffsetRatio = offsetRatio;
+    trigger("transition", {
+      dx: props2.vertical ? 0 : -state.swiperWidth * offsetRatio,
+      dy: props2.vertical ? -state.swiperHeight * offsetRatio : 0
+    });
+  };
+  const onScrollEnd = (event) => {
+    const end = () => {
+      trigger("animationfinish", getDetail());
+      state.currentChangeSource = "autoplay";
+    };
+    if (weex.config.env.platform === "iOS") {
+      setTimeout(end, 50);
+    } else {
+      end();
+    }
+  };
+  const onChange = (event) => {
+    const detail = event.detail;
+    if (typeof detail.source === "string") {
+      state.currentChangeSource = detail.source;
+    }
+    state.currentSync = detail.index;
+    lastOffsetRatio = 0;
+  };
+  function getDetail() {
+    const current = Number(state.currentSync);
+    const currentItem = swiperItems[current] || {};
+    const currentItemId = currentItem.componentInstance && currentItem.componentInstance.itemId || "";
+    return {
+      current,
+      currentItemId,
+      source: state.currentChangeSource
+    };
+  }
+  watch(() => state.currentSync, (val) => {
+    trigger("change", getDetail());
+  });
+  const listeners = {
+    onScroll,
+    onScrollEnd,
+    onChange
+  };
+  return listeners;
+}
+function currentCheck(state, props2, swiperItems) {
+  let current = -1;
+  if (props2.currentItemId) {
+    for (let i = 0, items = swiperItems; i < items.length; i++) {
+      const componentInstance = items[i].componentInstance;
+      if (componentInstance && componentInstance.itemId === props2.currentItemId) {
+        current = i;
+        break;
+      }
+    }
+  }
+  if (current < 0) {
+    current = Math.round(Number(props2.current)) || 0;
+  }
+  current = current < 0 ? 0 : current;
+  if (state.currentSync !== current) {
+    state.currentChangeSource = "";
+    state.currentSync = current;
+  }
+}
+const swiperItemProps = {
+  itemId: {
+    type: String,
+    default: ""
+  }
+};
+var SwiperItem = defineComponent({
+  name: "SwiperItem",
+  props: swiperItemProps,
+  setup(props2, {
+    slots
+  }) {
+    return () => {
+      return createVNode("div", {
+        "class": "uni-swiper-item",
+        "style": {
+          position: "absolute",
+          left: 0,
+          top: 0,
+          right: 0,
+          bottom: 0,
+          overflow: "hidden"
+        }
+      }, [slots.default && slots.default()]);
+    };
+  }
+});
+var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
+var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
+var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
+var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
+var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
+var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
+var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
+var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var special = /* @__PURE__ */ makeMap("script,style");
+function HTMLParser(html, handler) {
+  var index;
+  var chars;
+  var match;
+  var stack = [];
+  var last = html;
+  stack.last = function() {
+    return this[this.length - 1];
+  };
+  while (html) {
+    chars = true;
+    if (!stack.last() || !special[stack.last()]) {
+      if (html.indexOf("<!--") == 0) {
+        index = html.indexOf("-->");
+        if (index >= 0) {
+          if (handler.comment) {
+            handler.comment(html.substring(4, index));
+          }
+          html = html.substring(index + 3);
+          chars = false;
+        }
+      } else if (html.indexOf("</") == 0) {
+        match = html.match(endTag);
+        if (match) {
+          html = html.substring(match[0].length);
+          match[0].replace(endTag, parseEndTag);
+          chars = false;
+        }
+      } else if (html.indexOf("<") == 0) {
+        match = html.match(startTag);
+        if (match) {
+          html = html.substring(match[0].length);
+          match[0].replace(startTag, parseStartTag);
+          chars = false;
+        }
+      }
+      if (chars) {
+        index = html.indexOf("<");
+        var text = index < 0 ? html : html.substring(0, index);
+        html = index < 0 ? "" : html.substring(index);
+        if (handler.chars) {
+          handler.chars(text);
+        }
+      }
+    } else {
+      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text2) {
+        text2 = text2.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
+        if (handler.chars) {
+          handler.chars(text2);
+        }
+        return "";
+      });
+      parseEndTag("", stack.last());
+    }
+    if (html == last) {
+      throw "Parse Error: " + html;
+    }
+    last = html;
+  }
+  parseEndTag();
+  function parseStartTag(tag, tagName, rest, unary) {
+    tagName = tagName.toLowerCase();
+    if (block[tagName]) {
+      while (stack.last() && inline[stack.last()]) {
+        parseEndTag("", stack.last());
+      }
+    }
+    if (closeSelf[tagName] && stack.last() == tagName) {
+      parseEndTag("", tagName);
+    }
+    unary = empty[tagName] || !!unary;
+    if (!unary) {
+      stack.push(tagName);
+    }
+    if (handler.start) {
+      var attrs = [];
+      rest.replace(attr, function(match2, name) {
+        var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
+        attrs.push({
+          name,
+          value,
+          escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
+        });
+      });
+      if (handler.start) {
+        handler.start(tagName, attrs, unary);
+      }
+    }
+  }
+  function parseEndTag(tag, tagName) {
+    if (!tagName) {
+      var pos = 0;
+    } else {
+      for (var pos = stack.length - 1; pos >= 0; pos--) {
+        if (stack[pos] == tagName) {
+          break;
+        }
+      }
+    }
+    if (pos >= 0) {
+      for (var i = stack.length - 1; i >= pos; i--) {
+        if (handler.end) {
+          handler.end(stack[i]);
+        }
+      }
+      stack.length = pos;
+    }
+  }
+}
+function makeMap(str) {
+  var obj = {};
+  var items = str.split(",");
+  for (var i = 0; i < items.length; i++) {
+    obj[items[i]] = true;
+  }
+  return obj;
+}
+function removeDOCTYPE(html) {
+  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+}
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
+    let value = attr2.value;
+    const name = attr2.name;
+    if (value.match(/ /) && name !== "style") {
+      value = value.split(" ");
+    }
+    if (pre[name]) {
+      if (Array.isArray(pre[name])) {
+        pre[name].push(value);
+      } else {
+        pre[name] = [pre[name], value];
+      }
+    } else {
+      pre[name] = value;
+    }
+    return pre;
+  }, {});
+}
+function parseHtml(html) {
+  html = removeDOCTYPE(html);
+  const stacks = [];
+  const results = {
+    node: "root",
+    children: []
+  };
+  HTMLParser(html, {
+    start: function(tag, attrs, unary) {
+      const node = {
+        name: tag
+      };
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
+      }
+      if (unary) {
+        const parent = stacks[0] || results;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      } else {
+        stacks.unshift(node);
+      }
+    },
+    end: function(tag) {
+      const node = stacks.shift();
+      if (node.name !== tag)
+        console.error("invalid state: mismatch end tag");
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    chars: function(text) {
+      const node = {
+        type: "text",
+        text
+      };
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    comment: function(text) {
+      const node = {
+        node: "comment",
+        text
+      };
+      const parent = stacks[0];
+      if (!parent.children) {
+        parent.children = [];
+      }
+      parent.children.push(node);
+    }
+  });
+  return results.children;
+}
+const props = {
+  nodes: {
+    type: [Array, String],
+    default: function() {
+      return [];
+    }
+  }
+};
+const defaultFontSize = 16;
+var RichText = defineComponent({
+  name: "RichText",
+  props,
+  setup(props2) {
+    const instance = getCurrentInstance();
+    return () => {
+      let nodes = props2.nodes;
+      if (typeof nodes === "string") {
+        nodes = parseHtml(nodes);
+      }
+      return createVNode(resolveComponent("u-rich-text"), {
+        value: normalizeNodes(nodes || [], instance.root, {
+          defaultFontSize
+        })
+      }, null);
+    };
+  }
+});
+function normalizeNodes(nodes, instance, options) {
+  const TAGS = ["span", "a", "image", "img"];
+  const strategies = {
+    blockquote: block2,
+    br,
+    div: block2,
+    dl: block2,
+    h1: createHeading(2),
+    h2: createHeading(1.5),
+    h3: createHeading(1.17),
+    h4: createHeading(1),
+    h5: createHeading(0.83),
+    h6: createHeading(0.67),
+    hr: block2,
+    ol: block2,
+    p: block2,
+    strong: bold,
+    table: block2,
+    tbody: block2,
+    tfoot: block2,
+    thead: block2,
+    ul: block2
+  };
+  const HTML_RE = /&(amp|gt|lt|nbsp|quot|apos);/g;
+  const CHARS = {
+    amp: "&",
+    gt: ">",
+    lt: "<",
+    nbsp: " ",
+    quot: '"',
+    apos: "'"
+  };
+  const breakNode = {
+    type: "span",
+    __type: "break",
+    attr: {
+      value: "\n"
+    }
+  };
+  let lastNode = {
+    __block: true,
+    __break: true,
+    children: []
+  };
+  let breakNodes = null;
+  function parseStyle(node) {
+    const styles = /* @__PURE__ */ Object.create(null);
+    if (node.attrs) {
+      const classList = (node.attrs.class || "").split(" ");
+      Object.assign(styles, parseClassList(classList, instance), parseStyleText(node.attrs.style || ""));
+    }
+    if (node.name === "img" || node.name === "image") {
+      const attrs = node.attrs;
+      styles.width = styles.width || attrs.width;
+      styles.height = styles.height || attrs.height;
+    }
+    return styles;
+  }
+  function block2(node) {
+    node.__block = true;
+    return node;
+  }
+  function heading(node, em) {
+    if (node.style)
+      !node.style.fontSize && (node.style.fontSize = options.defaultFontSize * em);
+    return block2(bold(node));
+  }
+  function createHeading(em) {
+    return function(node) {
+      return heading(node, em);
+    };
+  }
+  function bold(node) {
+    if (node.style)
+      !node.style.fontWeight && (node.style.fontWeight = "bold");
+    return node;
+  }
+  function br(node) {
+    node.__value = " ";
+    return block2(node);
+  }
+  function normalizeText(str) {
+    return str.replace(HTML_RE, function(match, entity) {
+      return CHARS[entity];
+    });
+  }
+  function normalizeNode(node) {
+    let type = (node.name || "").toLowerCase();
+    const __type = type;
+    const strategy = strategies[type];
+    if (TAGS.indexOf(type) === -1) {
+      type = "span";
+    }
+    if (type === "img") {
+      type = "image";
+    }
+    const nvueNode = {
+      type,
+      __type,
+      attr: /* @__PURE__ */ Object.create(null)
+    };
+    if (node.type === "text" || node.text) {
+      nvueNode.__value = nvueNode.attr.value = normalizeText((node.text || "").trim());
+    }
+    if (node.attrs) {
+      Object.keys(node.attrs).forEach((name) => {
+        if (name !== "class" && name !== "style") {
+          nvueNode.attr[name] = node.attrs[name];
+        }
+      });
+    }
+    nvueNode.style = parseStyle(node);
+    if (strategy) {
+      strategy(nvueNode);
+    }
+    if (lastNode.__block || nvueNode.__block) {
+      if (!breakNodes) {
+        lastNode.children.push(breakNode);
+        breakNodes = [lastNode, breakNode];
+      }
+    }
+    lastNode = nvueNode;
+    if (lastNode.__value || lastNode.type === "image" && lastNode.attr.src) {
+      breakNodes = null;
+    }
+    nvueNode.children = normalizeNodes2(node.children);
+    lastNode = nvueNode;
+    if (lastNode.__block && lastNode.style.height && !/^0(px)?$/.test(lastNode.style.height)) {
+      breakNodes = null;
+    }
+    return nvueNode;
+  }
+  function normalizeNodes2(nodes2) {
+    if (Array.isArray(nodes2)) {
+      return nodes2.map((node) => normalizeNode(node));
+    }
+    return [];
+  }
+  const nvueNodes = normalizeNodes2(nodes);
+  if (breakNodes) {
+    const [lastNode2, breakNode2] = breakNodes;
+    const children = lastNode2.children;
+    const index = children.indexOf(breakNode2);
+    children.splice(index, 1);
+  }
+  return nvueNodes;
 }
 var components = {
   Navigator,
@@ -2022,6 +4413,20 @@ var components = {
   Button,
   MovableArea,
   MovableView,
-  Progress
+  Progress,
+  PickerView,
+  PickerViewColumn,
+  Picker,
+  USlider,
+  Switch,
+  Checkbox,
+  CheckboxGroup,
+  Radio,
+  RadioGroup,
+  Form,
+  Icon,
+  Swiper,
+  SwiperItem,
+  RichText
 };
 export { components as default };

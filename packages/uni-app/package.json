@@ -30,6 +30,6 @@
     "@dcloudio/uni-push": "0.0.1-nvue3.3040020220217001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220217001",
     "@dcloudio/uni-stat": "0.0.1-nvue3.3040020220217001",
-    "@vue/shared": "3.2.30"
+    "@vue/shared": "3.2.31"
   }
 }

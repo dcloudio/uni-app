@@ -14,24 +14,32 @@ import {
   CustomEventTrigger,
 } from '../../helpers/useNVueEvent'
 import { getComponentSize } from '../helpers'
-import { createNVueTextVNode } from '../utils'
+import { NVueComponentStyles, createNVueTextVNode } from '../utils'
 import { PROGRESS_VALUES, progressProps } from '../../components/progress'
 
-const progressStyles: Record<string, Record<string, string | number>>[] = [
+const progressStyles: NVueComponentStyles = [
   {
     'uni-progress': {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
+      '': {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
     },
     'uni-progress-bar': {
-      flex: 1,
+      '': {
+        flex: 1,
+      },
     },
     'uni-progress-inner-bar': {
-      position: 'absolute',
+      '': {
+        position: 'absolute',
+      },
     },
     'uni-progress-info': {
-      marginLeft: '15px',
+      '': {
+        marginLeft: '15px',
+      },
     },
   },
 ]
