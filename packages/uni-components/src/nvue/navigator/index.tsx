@@ -3,13 +3,15 @@ import {
   createNavigatorOnClick,
   navigatorProps,
 } from '../../components/navigator'
-import { useHoverClass } from '../utils'
+import { NVueComponentStyles, useHoverClass } from '../utils'
 
-const navigatorStyles: Record<string, Record<string, string | number>>[] = [
+const navigatorStyles: NVueComponentStyles = [
   {
     'navigator-hover': {
-      backgroundColor: 'rgba(0,0,0,0.1)',
-      opacity: 0.7,
+      '': {
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        opacity: 0.7,
+      },
     },
   },
 ]

@@ -9,186 +9,274 @@ import {
 import { uniLabelKey, UniLabelCtx } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { useAttrs } from '../../helpers/useAttrs'
-import { createNVueTextVNode, useHoverClass } from '../utils'
+import {
+  createNVueTextVNode,
+  NVueComponentStyles,
+  useHoverClass,
+} from '../utils'
 import { buttonProps } from '../../components/button'
 import { extend } from '@vue/shared'
 
-const buttonStyle = [
+const buttonStyle: NVueComponentStyles = [
   {
     ub: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-      paddingLeft: '5',
-      paddingRight: '5',
-      overflow: 'hidden',
-      color: '#000000',
-      backgroundColor: '#f8f8f8',
-      borderRadius: '5',
-      borderStyle: 'solid',
-      borderWidth: '1',
-      borderColor: '#dbdbdb',
+      '': {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        paddingLeft: '5',
+        paddingRight: '5',
+        overflow: 'hidden',
+        color: '#000000',
+        backgroundColor: '#f8f8f8',
+        borderRadius: '5',
+        borderStyle: 'solid',
+        borderWidth: '1',
+        borderColor: '#dbdbdb',
+      },
     },
     'ub-t': {
-      color: '#000000',
-      fontSize: '18',
-      textDecoration: 'none',
-      lineHeight: '46',
+      '': {
+        color: '#000000',
+        fontSize: '18',
+        textDecoration: 'none',
+        lineHeight: '46',
+      },
     },
     'ub-d': {
-      backgroundColor: '#f8f8f8',
+      '': {
+        backgroundColor: '#f8f8f8',
+      },
     },
     'ub-p': {
-      backgroundColor: '#007aff',
-      borderColor: '#0062cc',
+      '': {
+        backgroundColor: '#007aff',
+        borderColor: '#0062cc',
+      },
     },
     'ub-w': {
-      backgroundColor: '#e64340',
-      borderColor: '#b83633',
+      '': {
+        backgroundColor: '#e64340',
+        borderColor: '#b83633',
+      },
     },
     'ub-d-t': {
-      color: '#000000',
+      '': {
+        color: '#000000',
+      },
     },
     'ub-p-t': {
-      color: '#ffffff',
+      '': {
+        color: '#ffffff',
+      },
     },
     'ub-w-t': {
-      color: '#ffffff',
+      '': {
+        color: '#ffffff',
+      },
     },
     'ub-d-d': {
-      backgroundColor: '#f7f7f7',
+      '': {
+        backgroundColor: '#f7f7f7',
+      },
     },
     'ub-p-d': {
-      backgroundColor: '#63acfc',
-      borderColor: '#4f8aca',
+      '': {
+        backgroundColor: '#63acfc',
+        borderColor: '#4f8aca',
+      },
     },
     'ub-w-d': {
-      backgroundColor: '#ec8b89',
-      borderColor: '#bd6f6e',
+      '': {
+        backgroundColor: '#ec8b89',
+        borderColor: '#bd6f6e',
+      },
     },
     'ub-d-t-d': {
-      color: '#cccccc',
+      '': {
+        color: '#cccccc',
+      },
     },
     'ub-p-t-d': {
-      color: 'rgba(255,255,255,0.6)',
+      '': {
+        color: 'rgba(255,255,255,0.6)',
+      },
     },
     'ub-w-t-d': {
-      color: 'rgba(255,255,255,0.6)',
+      '': {
+        color: 'rgba(255,255,255,0.6)',
+      },
     },
     'ub-d-plain': {
-      borderColor: '#353535',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        borderColor: '#353535',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-p-plain': {
-      borderColor: '#007aff',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        borderColor: '#007aff',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-w-plain': {
-      borderColor: '#e64340',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        borderColor: '#e64340',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-d-t-plain': {
-      color: '#353535',
+      '': {
+        color: '#353535',
+      },
     },
     'ub-p-t-plain': {
-      color: '#007aff',
+      '': {
+        color: '#007aff',
+      },
     },
     'ub-w-t-plain': {
-      color: '#e64340',
+      '': {
+        color: '#e64340',
+      },
     },
     'ub-d-d-plain': {
-      borderColor: '#c6c6c6',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        borderColor: '#c6c6c6',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-p-d-plain': {
-      borderColor: '#c6c6c6',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        borderColor: '#c6c6c6',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-w-d-plain': {
-      borderColor: '#c6c6c6',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        borderColor: '#c6c6c6',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-d-t-d-plain': {
-      color: 'rgba(0,0,0,0.2)',
+      '': {
+        color: 'rgba(0,0,0,0.2)',
+      },
     },
     'ub-p-t-d-plain': {
-      color: 'rgba(0,0,0,0.2)',
+      '': {
+        color: 'rgba(0,0,0,0.2)',
+      },
     },
     'ub-w-t-d-plain': {
-      color: 'rgba(0,0,0,0.2)',
+      '': {
+        color: 'rgba(0,0,0,0.2)',
+      },
     },
     'ub-mini': {
-      lineHeight: '30',
-      fontSize: '13',
-      paddingTop: 0,
-      paddingRight: '17.5',
-      paddingBottom: 0,
-      paddingLeft: '17.5',
+      '': {
+        lineHeight: '30',
+        fontSize: '13',
+        paddingTop: 0,
+        paddingRight: '17.5',
+        paddingBottom: 0,
+        paddingLeft: '17.5',
+      },
     },
     'ub-loading': {
-      width: '18',
-      height: '18',
-      marginRight: '10',
+      '': {
+        width: '18',
+        height: '18',
+        marginRight: '10',
+      },
     },
     'ub-d-loading': {
-      color: 'rgba(255,255,255,0.6)',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        color: 'rgba(255,255,255,0.6)',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-p-loading': {
-      color: 'rgba(255,255,255,0.6)',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        color: 'rgba(255,255,255,0.6)',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-w-loading': {
-      color: 'rgba(255,255,255,0.6)',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        color: 'rgba(255,255,255,0.6)',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-d-loading-plain': {
-      color: '#353535',
+      '': { color: '#353535' },
     },
     'ub-p-loading-plain': {
-      color: '#007aff',
-      backgroundColor: '#0062cc',
+      '': {
+        color: '#007aff',
+        backgroundColor: '#0062cc',
+      },
     },
     'ub-w-loading-plain': {
-      color: '#e64340',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        color: '#e64340',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-d-hover': {
-      opacity: 0.8,
-      backgroundColor: '#dedede',
+      '': {
+        opacity: 0.8,
+        backgroundColor: '#dedede',
+      },
     },
     'ub-p-hover': {
-      opacity: 0.8,
-      backgroundColor: '#0062cc',
+      '': {
+        opacity: 0.8,
+        backgroundColor: '#0062cc',
+      },
     },
     'ub-w-hover': {
-      opacity: 0.8,
-      backgroundColor: '#ce3c39',
+      '': {
+        opacity: 0.8,
+        backgroundColor: '#ce3c39',
+      },
     },
     'ub-d-t-hover': {
-      color: 'rgba(0,0,0,0.6)',
+      '': {
+        color: 'rgba(0,0,0,0.6)',
+      },
     },
     'ub-p-t-hover': {
-      color: 'rgba(255,255,255,0.6)',
+      '': {
+        color: 'rgba(255,255,255,0.6)',
+      },
     },
     'ub-w-t-hover': {
-      color: 'rgba(255,255,255,0.6)',
+      '': {
+        color: 'rgba(255,255,255,0.6)',
+      },
     },
     'ub-d-hover-plain': {
-      color: 'rgba(53,53,53,0.6)',
-      borderColor: 'rgba(53,53,53,0.6)',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        color: 'rgba(53,53,53,0.6)',
+        borderColor: 'rgba(53,53,53,0.6)',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-p-hover-plain': {
-      color: 'rgba(26,173,25,0.6)',
-      borderColor: 'rgba(0,122,255,0.6)',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        color: 'rgba(26,173,25,0.6)',
+        borderColor: 'rgba(0,122,255,0.6)',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
     'ub-w-hover-plain': {
-      color: 'rgba(230,67,64,0.6)',
-      borderColor: 'rgba(230,67,64,0.6)',
-      backgroundColor: 'rgba(0,0,0,0)',
+      '': {
+        color: 'rgba(230,67,64,0.6)',
+        borderColor: 'rgba(230,67,64,0.6)',
+        backgroundColor: 'rgba(0,0,0,0)',
+      },
     },
   },
 ]
