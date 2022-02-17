@@ -1,15 +1,6 @@
-import {
-  Ref,
-  ref,
-  watch,
-  onBeforeUnmount,
-  ExtractPropTypes,
-  inject,
-  defineComponent,
-} from 'vue'
+import { extend } from '@vue/shared'
+import { Ref, ref, watch, ExtractPropTypes, defineComponent } from 'vue'
 import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
-import { useI18n, initI18nPickerMsgsOnce } from '@dcloudio/uni-core'
-// import { UniFormCtx, uniFormKey } from '../form'
 import { showPage, Page } from '@dcloudio/uni-core'
 
 type Mode = 'selector' | 'multiSelector' | 'time' | 'date'
@@ -136,8 +127,6 @@ export default /*#__PURE__*/ defineComponent({
   props,
   emits: ['change', 'cancel', 'columnchange'],
   setup(props, { slots, emit }) {
-    initI18nPickerMsgsOnce()
-    const { t, getLocale } = useI18n()
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
@@ -146,11 +135,11 @@ export default /*#__PURE__*/ defineComponent({
 
     type ShowPickerData = Props & {
       value: typeof valueSync.value
-      locale: ReturnType<typeof getLocale>
-      messages: {
-        done: string
-        cancel: string
-      }
+      locale: string
+      // messages: {
+      //   done: string
+      //   cancel: string
+      // }
     }
     const _setValueSync = () => {
       let val = props.value
@@ -268,13 +257,9 @@ export default /*#__PURE__*/ defineComponent({
         return
       }
       _showPicker(
-        Object.assign({}, props, {
+        extend({}, props, {
           value: valueSync.value,
-          locale: getLocale(),
-          messages: {
-            done: t('uni.picker.done'),
-            cancel: t('uni.picker.cancel'),
-          },
+          locale: uni.getLocale(),
         })
       )
     }

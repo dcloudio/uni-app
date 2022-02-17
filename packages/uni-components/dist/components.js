@@ -1,6 +1,6 @@
 import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
-import { extend, hasOwn as hasOwn$1, isPlainObject } from "@vue/shared";
-import { once, cacheStringFunction, PRIMARY_COLOR, normalizeTarget } from "@dcloudio/uni-shared";
+import { extend, hasOwn, isPlainObject } from "@vue/shared";
+import { cacheStringFunction, PRIMARY_COLOR, normalizeTarget } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -84,13 +84,13 @@ function createNavigatorOnClick(props2) {
 function useHoverClass(props2) {
   if (props2.hoverClass && props2.hoverClass !== "none") {
     const hoverAttrs = { hoverClass: props2.hoverClass };
-    if (hasOwn$1(props2, "hoverStartTime")) {
+    if (hasOwn(props2, "hoverStartTime")) {
       hoverAttrs.hoverStartTime = props2.hoverStartTime;
     }
-    if (hasOwn$1(props2, "hoverStayTime")) {
+    if (hasOwn(props2, "hoverStayTime")) {
       hoverAttrs.hoverStayTime = props2.hoverStayTime;
     }
-    if (hasOwn$1(props2, "hoverStopPropagation")) {
+    if (hasOwn(props2, "hoverStopPropagation")) {
       hoverAttrs.hoverStopPropagation = props2.hoverStopPropagation;
     }
     return hoverAttrs;
@@ -121,326 +121,6 @@ var Navigator = defineComponent({
         "onClick": onClick
       }), [slots.default && slots.default()]);
     };
-  }
-});
-const isArray = Array.isArray;
-const isObject = (val) => val !== null && typeof val === "object";
-const defaultDelimiters = ["{", "}"];
-class BaseFormatter {
-  constructor() {
-    this._caches = /* @__PURE__ */ Object.create(null);
-  }
-  interpolate(message, values, delimiters = defaultDelimiters) {
-    if (!values) {
-      return [message];
-    }
-    let tokens = this._caches[message];
-    if (!tokens) {
-      tokens = parse(message, delimiters);
-      this._caches[message] = tokens;
-    }
-    return compile(tokens, values);
-  }
-}
-const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
-const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-function parse(format, [startDelimiter, endDelimiter]) {
-  const tokens = [];
-  let position = 0;
-  let text = "";
-  while (position < format.length) {
-    let char = format[position++];
-    if (char === startDelimiter) {
-      if (text) {
-        tokens.push({ type: "text", value: text });
-      }
-      text = "";
-      let sub = "";
-      char = format[position++];
-      while (char !== void 0 && char !== endDelimiter) {
-        sub += char;
-        char = format[position++];
-      }
-      const isClosed = char === endDelimiter;
-      const type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
-      tokens.push({ value: sub, type });
-    } else {
-      text += char;
-    }
-  }
-  text && tokens.push({ type: "text", value: text });
-  return tokens;
-}
-function compile(tokens, values) {
-  const compiled = [];
-  let index = 0;
-  const mode2 = isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
-  if (mode2 === "unknown") {
-    return compiled;
-  }
-  while (index < tokens.length) {
-    const token = tokens[index];
-    switch (token.type) {
-      case "text":
-        compiled.push(token.value);
-        break;
-      case "list":
-        compiled.push(values[parseInt(token.value, 10)]);
-        break;
-      case "named":
-        if (mode2 === "named") {
-          compiled.push(values[token.value]);
-        }
-        break;
-    }
-    index++;
-  }
-  return compiled;
-}
-const LOCALE_ZH_HANS = "zh-Hans";
-const LOCALE_ZH_HANT = "zh-Hant";
-const LOCALE_EN = "en";
-const LOCALE_FR = "fr";
-const LOCALE_ES = "es";
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-const defaultFormatter = new BaseFormatter();
-function include(str, parts) {
-  return !!parts.find((part) => str.indexOf(part) !== -1);
-}
-function startsWith(str, parts) {
-  return parts.find((part) => str.indexOf(part) === 0);
-}
-function normalizeLocale(locale, messages) {
-  if (!locale) {
-    return;
-  }
-  locale = locale.trim().replace(/_/g, "-");
-  if (messages && messages[locale]) {
-    return locale;
-  }
-  locale = locale.toLowerCase();
-  if (locale === "chinese") {
-    return LOCALE_ZH_HANS;
-  }
-  if (locale.indexOf("zh") === 0) {
-    if (locale.indexOf("-hans") > -1) {
-      return LOCALE_ZH_HANS;
-    }
-    if (locale.indexOf("-hant") > -1) {
-      return LOCALE_ZH_HANT;
-    }
-    if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
-      return LOCALE_ZH_HANT;
-    }
-    return LOCALE_ZH_HANS;
-  }
-  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
-  if (lang) {
-    return lang;
-  }
-}
-class I18n {
-  constructor({ locale, fallbackLocale, messages, watcher, formater }) {
-    this.locale = LOCALE_EN;
-    this.fallbackLocale = LOCALE_EN;
-    this.message = {};
-    this.messages = {};
-    this.watchers = [];
-    if (fallbackLocale) {
-      this.fallbackLocale = fallbackLocale;
-    }
-    this.formater = formater || defaultFormatter;
-    this.messages = messages || {};
-    this.setLocale(locale || LOCALE_EN);
-    if (watcher) {
-      this.watchLocale(watcher);
-    }
-  }
-  setLocale(locale) {
-    const oldLocale = this.locale;
-    this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
-    if (!this.messages[this.locale]) {
-      this.messages[this.locale] = {};
-    }
-    this.message = this.messages[this.locale];
-    if (oldLocale !== this.locale) {
-      this.watchers.forEach((watcher) => {
-        watcher(this.locale, oldLocale);
-      });
-    }
-  }
-  getLocale() {
-    return this.locale;
-  }
-  watchLocale(fn) {
-    const index = this.watchers.push(fn) - 1;
-    return () => {
-      this.watchers.splice(index, 1);
-    };
-  }
-  add(locale, message, override = true) {
-    const curMessages = this.messages[locale];
-    if (curMessages) {
-      if (override) {
-        Object.assign(curMessages, message);
-      } else {
-        Object.keys(message).forEach((key) => {
-          if (!hasOwn(curMessages, key)) {
-            curMessages[key] = message[key];
-          }
-        });
-      }
-    } else {
-      this.messages[locale] = message;
-    }
-  }
-  f(message, values, delimiters) {
-    return this.formater.interpolate(message, values, delimiters).join("");
-  }
-  t(key, locale, values) {
-    let message = this.message;
-    if (typeof locale === "string") {
-      locale = normalizeLocale(locale, this.messages);
-      locale && (message = this.messages[locale]);
-    } else {
-      values = locale;
-    }
-    if (!hasOwn(message, key)) {
-      console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
-      return key;
-    }
-    return this.formater.interpolate(message[key], values).join("");
-  }
-}
-function watchAppLocale(appVm, i18n2) {
-  if (appVm.$watchLocale) {
-    appVm.$watchLocale((newLocale) => {
-      i18n2.setLocale(newLocale);
-    });
-  } else {
-    appVm.$watch(() => appVm.$locale, (newLocale) => {
-      i18n2.setLocale(newLocale);
-    });
-  }
-}
-function getDefaultLocale() {
-  if (typeof uni !== "undefined" && uni.getLocale) {
-    return uni.getLocale();
-  }
-  if (typeof window !== "undefined" && window.getLocale) {
-    return window.getLocale();
-  }
-  return LOCALE_EN;
-}
-function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
-  if (typeof locale !== "string") {
-    [locale, messages] = [
-      messages,
-      locale
-    ];
-  }
-  if (typeof locale !== "string") {
-    locale = getDefaultLocale();
-  }
-  if (typeof fallbackLocale !== "string") {
-    fallbackLocale = typeof __uniConfig !== "undefined" && __uniConfig.fallbackLocale || LOCALE_EN;
-  }
-  const i18n2 = new I18n({
-    locale,
-    fallbackLocale,
-    messages,
-    watcher
-  });
-  let t2 = (key, values) => {
-    if (typeof getApp !== "function") {
-      t2 = function(key2, values2) {
-        return i18n2.t(key2, values2);
-      };
-    } else {
-      let isWatchedAppLocale = false;
-      t2 = function(key2, values2) {
-        const appVm = getApp().$vm;
-        if (appVm) {
-          appVm.$locale;
-          if (!isWatchedAppLocale) {
-            isWatchedAppLocale = true;
-            watchAppLocale(appVm, i18n2);
-          }
-        }
-        return i18n2.t(key2, values2);
-      };
-    }
-    return t2(key, values);
-  };
-  return {
-    i18n: i18n2,
-    f(message, values, delimiters) {
-      return i18n2.f(message, values, delimiters);
-    },
-    t(key, values) {
-      return t2(key, values);
-    },
-    add(locale2, message, override = true) {
-      return i18n2.add(locale2, message, override);
-    },
-    watch(fn) {
-      return i18n2.watchLocale(fn);
-    },
-    getLocale() {
-      return i18n2.getLocale();
-    },
-    setLocale(newLocale) {
-      return i18n2.setLocale(newLocale);
-    }
-  };
-}
-const isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
-let i18n;
-function useI18n() {
-  if (!i18n) {
-    let locale;
-    {
-      if (typeof getApp === "function") {
-        locale = weex.requireModule("plus").getLanguage();
-      } else {
-        locale = plus.webview.currentWebview().getStyle().locale;
-      }
-    }
-    i18n = initVueI18n(locale);
-    if (isEnableLocale()) {
-      const localeKeys = Object.keys(__uniConfig.locales || {});
-      if (localeKeys.length) {
-        localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
-      }
-      i18n.setLocale(locale);
-    }
-  }
-  return i18n;
-}
-function normalizeMessages(module, keys, values) {
-  return keys.reduce((res, name, index) => {
-    res[module + name] = values[index];
-    return res;
-  }, {});
-}
-const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.picker.";
-  const keys = ["done", "cancel"];
-  {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
-  }
-  {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["OK", "Cancelar"]), false);
-  }
-  {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["OK", "Annuler"]), false);
-  }
-  {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
-  }
-  {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
   }
 });
 function PolySymbol(name) {
@@ -2957,11 +2637,6 @@ var Picker = /* @__PURE__ */ defineComponent({
     slots,
     emit
   }) {
-    initI18nPickerMsgsOnce();
-    const {
-      t: t2,
-      getLocale
-    } = useI18n();
     const rootRef = ref(null);
     const trigger = useCustomEvent$1(rootRef, emit);
     const valueSync = ref(null);
@@ -3063,13 +2738,9 @@ var Picker = /* @__PURE__ */ defineComponent({
       if (props2.disabled) {
         return;
       }
-      _showPicker(Object.assign({}, props2, {
+      _showPicker(extend({}, props2, {
         value: valueSync.value,
-        locale: getLocale(),
-        messages: {
-          done: t2("uni.picker.done"),
-          cancel: t2("uni.picker.cancel")
-        }
+        locale: uni.getLocale()
       }));
     };
     Object.keys(props2).forEach((key) => {
