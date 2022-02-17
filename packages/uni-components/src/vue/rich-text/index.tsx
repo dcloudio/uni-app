@@ -6,15 +6,7 @@ import {
 } from '@dcloudio/uni-components'
 import parseHtml from './html-parser'
 import parseNodes from './nodes-parser'
-
-const props = {
-  nodes: {
-    type: [Array, String],
-    default: function () {
-      return []
-    },
-  },
-}
+import { props } from '../../components/rich-text'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RichText',
