@@ -422,6 +422,7 @@ export default {
       }
       this.isMapReady = true
       this.$emit('mapready')
+      this.$trigger('updated', {}, {})
     },
     centerChange () {
       const maps = this._maps
