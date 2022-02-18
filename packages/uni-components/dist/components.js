@@ -4407,6 +4407,218 @@ function normalizeNodes(nodes, instance, options) {
   }
   return nvueNodes;
 }
+const _adDataCache$1 = {};
+function getAdData$1(data, onsuccess, onerror) {
+  const { adpid, width } = data;
+  const key = adpid + "-" + width;
+  const adDataList = _adDataCache$1[key];
+  if (adDataList && adDataList.length > 0) {
+    onsuccess(adDataList.splice(0, 1)[0]);
+    return;
+  }
+  plus.ad.getAds(data, (res) => {
+    const list = res.ads;
+    onsuccess(list.splice(0, 1)[0]);
+    _adDataCache$1[key] = adDataList ? adDataList.concat(list) : list;
+  }, (err) => {
+    onerror({
+      errCode: err.code,
+      errMsg: err.message
+    });
+  });
+}
+const adProps = {
+  adpid: {
+    type: [Number, String],
+    default: ""
+  },
+  data: {
+    type: String,
+    default: ""
+  },
+  width: {
+    type: String,
+    default: ""
+  },
+  channel: {
+    type: String,
+    default: ""
+  }
+};
+const AdEventType$1 = {
+  load: "load",
+  close: "close",
+  error: "error",
+  downloadchange: "downloadchange"
+};
+var Ad = defineComponent({
+  name: "Ad",
+  props: adProps,
+  emits: [AdEventType$1.load, AdEventType$1.close, AdEventType$1.error, AdEventType$1.downloadchange],
+  setup(props2, {
+    emit
+  }) {
+    const adRef = ref(null);
+    const trigger = useCustomEvent$1(adRef, emit);
+    const state = useAdState();
+    watch(() => props2.adpid, (value) => {
+      _loadAdData$1(state, props2, trigger);
+    });
+    watch(() => props2.data, (value) => {
+      state.data = value;
+    });
+    onMounted(() => {
+      setTimeout(() => {
+        getComponentSize(adRef.value).then(({
+          width
+        }) => {
+          state.width = width === 0 ? -1 : width;
+          _loadAdData$1(state, props2, trigger);
+        });
+      }, 50);
+    });
+    const listeners = {
+      onDownloadchange(e2) {
+        trigger(AdEventType$1.downloadchange, e2);
+      },
+      onDislike(e2) {
+        trigger(AdEventType$1.close, e2);
+      }
+    };
+    return () => {
+      return createVNode("u-ad", mergeProps({
+        "ref": adRef
+      }, {
+        data: state.data,
+        rendering: true
+      }, listeners), null);
+    };
+  }
+});
+function useAdState(props2) {
+  const data = ref("");
+  const state = reactive({
+    width: 0,
+    data
+  });
+  return state;
+}
+function _loadAdData$1(state, props2, trigger) {
+  getAdData$1({
+    adpid: props2.adpid,
+    width: state.width
+  }, (res) => {
+    state.data = res;
+    trigger(AdEventType$1.load, {});
+  }, (err) => {
+    trigger(AdEventType$1.error, err);
+  });
+}
+const _adDataCache = {};
+function getAdData(adpid, width, height, onsuccess, onerror) {
+  const key = adpid + "-" + width;
+  const adDataList = _adDataCache[key];
+  if (adDataList && adDataList.length > 0) {
+    onsuccess(adDataList.splice(0, 1)[0]);
+    return;
+  }
+  plus.ad.getDrawAds({
+    adpid: String(adpid),
+    count: 3,
+    width
+  }, (res) => {
+    const list = res.ads;
+    onsuccess(list.splice(0, 1)[0]);
+    _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
+  }, (err) => {
+    onerror({
+      errCode: err.code,
+      errMsg: err.message
+    });
+  });
+}
+const adDrawProps = {
+  adpid: {
+    type: [Number, String],
+    default: ""
+  },
+  data: {
+    type: String,
+    default: ""
+  },
+  width: {
+    type: String,
+    default: ""
+  }
+};
+const AdEventType = {
+  load: "load",
+  close: "close",
+  error: "error"
+};
+var AdDraw = defineComponent({
+  name: "AdDraw",
+  props: adDrawProps,
+  emits: [AdEventType.load, AdEventType.close, AdEventType.error],
+  setup(props2, {
+    emit
+  }) {
+    const adRef = ref(null);
+    const trigger = useCustomEvent$1(adRef, emit);
+    const state = useAdDrawState();
+    watch(() => props2.adpid, (value) => {
+      _loadAdData(state, props2, trigger);
+    });
+    watch(() => props2.data, (value) => {
+      state.data = value;
+    });
+    const listeners = {
+      onDislike(e2) {
+        trigger(AdEventType.close, e2);
+      }
+    };
+    onMounted(() => {
+      setTimeout(() => {
+        getComponentSize(adRef.value).then(({
+          width,
+          height
+        }) => {
+          state.width = width === 0 ? -1 : width;
+          state.height = height === 0 ? -1 : height;
+          _loadAdData(state, props2, trigger);
+        });
+      }, 50);
+    });
+    return () => {
+      const {
+        data
+      } = state;
+      return createVNode("u-ad-draw", mergeProps({
+        "ref": adRef
+      }, {
+        data,
+        rendering: true
+      }, listeners), null);
+    };
+  }
+});
+function useAdDrawState(props2) {
+  const data = ref("");
+  const state = reactive({
+    width: 0,
+    height: 0,
+    data
+  });
+  return state;
+}
+function _loadAdData(state, props2, trigger) {
+  getAdData(props2.adpid, state.width, state.height, (res) => {
+    state.data = res;
+    trigger(AdEventType.load, {});
+  }, (err) => {
+    trigger(AdEventType.error, err);
+  });
+}
 var components = {
   Navigator,
   Label,
@@ -4427,6 +4639,8 @@ var components = {
   Icon,
   Swiper,
   SwiperItem,
-  RichText
+  RichText,
+  Ad,
+  AdDraw
 };
 export { components as default };
