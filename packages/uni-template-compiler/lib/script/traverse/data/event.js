@@ -320,19 +320,21 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
           }
         }
 
-        const testCatch = function (path) {
-          // TODO 仅使用 name 容易误判
-          if (path.node.object.name === '$event' && path.node.property.name ===
-            'stopPropagation') {
-            isCatch = true
-            path.stop()
+        const testCatch = function (stop) {
+          return function (path) {
+            // TODO 仅使用 name 容易误判
+            if (path.node.object.name === '$event' && path.node.property.name ===
+              'stopPropagation') {
+              isCatch = true
+              stop && path.stop()
+            }
           }
         }
         // 如果 v-for 遍历的值为 数组、对象、方法 则进入底部匿名表达式处理
         if (anonymous && isSafeScoped(state)) {
           funcPath.traverse({
             noScope: true,
-            MemberExpression: testCatch,
+            MemberExpression: testCatch(),
             AssignmentExpression (path) { // "update:title": function($event) {title = $event}
               const left = path.node.left
               const right = path.node.right
@@ -370,7 +372,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
         if (anonymous) {
           // 处理复杂表达式中使用的局部变量（主要在v-for中定义）
           funcPath.traverse({
-            MemberExpression: testCatch,
+            MemberExpression: testCatch(),
             Identifier (path) {
               const scope = path.scope
               const node = path.node
