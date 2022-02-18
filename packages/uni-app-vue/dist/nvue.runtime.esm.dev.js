@@ -9400,15 +9400,14 @@ function parseClassName(_ref21, parentStyles, el) {
   });
 }
 
-function parseClassList(classList, instance) {
+function parseClassListWithStyleSheet(classList, stylesheet) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   var context = {
     styles: {},
     weights: {}
   };
-  var styles = parseStylesheet(instance);
   classList.forEach(className => {
-    var parentStyles = styles[className];
+    var parentStyles = stylesheet[className];
 
     if (parentStyles) {
       parseClassName(context, parentStyles, el);
@@ -9417,7 +9416,16 @@ function parseClassList(classList, instance) {
   return context.styles;
 }
 
-function parseStylesheet(_ref22) {
+function parseClassStyles(el) {
+  return parseClassListWithStyleSheet(el.classList, el.styleSheet, el);
+}
+
+function parseClassList(classList, instance) {
+  var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), el);
+}
+
+function parseStyleSheet(_ref22) {
   var {
     type,
     appContext
@@ -9445,10 +9453,6 @@ function parseStylesheet(_ref22) {
   }
 
   return component.__styles;
-}
-
-function isUndef(val) {
-  return val === undefined || val === null;
 }
 
 function patchAttr(el, key, value) {
@@ -9521,51 +9525,27 @@ function transformAttr(el, key, value, instance) {
   }
 
   return [key, value];
-} // compiler should normalize class + :class bindings on the same element
-// into a single binding ['staticClass', dynamic]
+}
+/**
+ * 当前仅 patch 到 el 中，真正更新则是在 el 中
+ * @param el
+ * @param pre
+ * @param next
+ * @param instance
+ * @returns
+ */
 
 
 function patchClass(el, pre, next) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
-  // 移除 class
-  if (next == null) {
-    el.setClassList([]);
-    return;
-  }
-
   if (!instance) {
     return;
   }
 
-  var preClassList = pre ? pre.split(' ') : [];
-  var classList = next ? next.split(' ') : []; // 此时 parentNode，previousSibling 等节点信息还未更新
-
-  var oldStyle = getStyle(preClassList, el, instance);
-  var newStyle = getStyle(classList, el, instance);
-  var cur, name;
-  var batchedStyles = {};
-
-  for (name in oldStyle) {
-    if (isUndef(newStyle[name])) {
-      batchedStyles[name] = '';
-    }
-  }
-
-  for (name in newStyle) {
-    cur = newStyle[name];
-
-    if (cur !== oldStyle[name]) {
-      batchedStyles[name] = cur;
-    }
-  }
-
+  var classList = next ? next.split(' ') : [];
   el.setClassList(classList);
-  el.setStyles(batchedStyles);
-}
-
-function getStyle(classList, el, instance) {
-  return parseClassList(classList, instance, el);
+  el.setStyleSheet(parseStyleSheet(instance));
 }
 
 function addEventListener(el, event, handler, options) {
@@ -9843,4 +9823,4 @@ var createApp = function () {
   return app;
 };
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };
