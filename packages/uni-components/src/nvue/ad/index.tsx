@@ -64,17 +64,22 @@ export default defineComponent({
     })
 
     const listeners = {
-      downloadchange(e: Event) {
+      onDownloadchange(e: Event) {
         trigger(AdEventType.downloadchange, e)
       },
-      dislike(e: Event) {
+      onDislike(e: Event) {
         trigger(AdEventType.close, e)
       },
     }
 
     return () => {
-      const { data } = state
-      return <u-ad ref="ad" {...{ data, rendering: true }} {...listeners} />
+      return (
+        <u-ad
+          ref={adRef}
+          {...{ data: state.data, rendering: true }}
+          {...listeners}
+        />
+      )
     }
   },
 })
@@ -99,7 +104,7 @@ function _loadAdData(
       width: state.width,
     },
     (res: any) => {
-      state.data = res.data
+      state.data = res
       trigger(AdEventType.load, {})
     },
     (err: any) => {

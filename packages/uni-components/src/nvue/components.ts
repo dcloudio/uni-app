@@ -18,6 +18,8 @@ import Icon from './icon'
 import Swiper from './swiper'
 import SwiperItem from './swiper-item'
 import RichText from './rich-text'
+import Ad from './ad'
+import AdDraw from './ad-draw'
 export default {
   Navigator,
   Label,
@@ -39,4 +41,6 @@ export default {
   Swiper,
   SwiperItem,
   RichText,
+  Ad,
+  AdDraw,
 }

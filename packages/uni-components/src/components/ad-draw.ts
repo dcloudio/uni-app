@@ -15,7 +15,8 @@ export function getAdData(
   }
 
   // TODO 缺少语法提示 getDrawAds
-  plus.ad.getAds(
+  // @ts-ignore
+  plus.ad.getDrawAds(
     {
       adpid: String(adpid),
       count: 3,

@@ -49,7 +49,7 @@ export default defineComponent({
     )
 
     const listeners = {
-      dislike(e: Event) {
+      onDislike(e: Event) {
         trigger(AdEventType.close, e)
       },
     }
@@ -68,7 +68,7 @@ export default defineComponent({
       const { data } = state
       return (
         <u-ad-draw
-          ref="ad"
+          ref={adRef}
           {...{ data, rendering: true }}
           {...listeners}
         ></u-ad-draw>
@@ -97,7 +97,7 @@ function _loadAdData(
     state.width,
     state.height,
     (res: any) => {
-      state.data = res.data
+      state.data = res
       trigger(AdEventType.load, {})
     },
     (err: any) => {
