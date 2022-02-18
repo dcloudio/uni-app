@@ -96,7 +96,7 @@ export function registerPage({
 
   initWebview(webview, path, query, routeOptions.meta)
 
-  const route = path.substr(1)
+  const route = path.slice(1)
   ;(webview as any).__uniapp_route = route
 
   const pageInstance = initPageInternalInstance(
@@ -110,9 +110,11 @@ export function registerPage({
   const id = parseInt(webview.id!)
 
   if ((webview as any).nvue) {
-    if (id === 1 && nvuePageVm) {
-      initNVueEntryPage(webview, nvuePageVm, pageInstance)
+    if (nvuePageVm) {
+      // 首页或者开发时热刷
+      initNVuePage(id, nvuePageVm, pageInstance)
     } else {
+      // 正常路由跳转
       createNVuePage(id, webview, pageInstance)
     }
   } else {
@@ -146,24 +148,26 @@ function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
   }
 }
 
-function initNVueEntryPage(
-  webview: PlusWebviewWebviewObject,
+function initNVuePage(
+  id: number,
   nvuePageVm: ComponentPublicInstance,
   pageInstance: Page.PageInstance['$page']
 ) {
   initPageVm(nvuePageVm, pageInstance)
   addCurrentPage(nvuePageVm)
-  // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-  if (
-    __uniConfig.splashscreen &&
-    __uniConfig.splashscreen.autoclose &&
-    !__uniConfig.splashscreen.alwaysShowBeforeRender
-  ) {
-    plus.navigator.closeSplashscreen()
+  if (id === 1) {
+    // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+    if (
+      __uniConfig.splashscreen &&
+      __uniConfig.splashscreen.autoclose &&
+      !__uniConfig.splashscreen.alwaysShowBeforeRender
+    ) {
+      plus.navigator.closeSplashscreen()
+    }
+    __uniConfig.onReady(function () {
+      navigateFinish()
+    })
   }
-  __uniConfig.onReady(function () {
-    navigateFinish()
-  })
 }
 
 function createNVuePage(

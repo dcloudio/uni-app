@@ -16848,7 +16848,18 @@ function initVueApp(appVm) {
 
 const pages = [];
 function addCurrentPage(page) {
-    pages.push(page);
+    const $page = page.$page;
+    if (!$page.meta.isNVue) {
+        return pages.push(page);
+    }
+    // 开发阶段热刷新需要移除旧的相同 id 的 page
+    const index = pages.findIndex((page) => page.$page.id === page.$page.id);
+    if (index > -1) {
+        pages.splice(index, 1, page);
+    }
+    else {
+        pages.push(page);
+    }
 }
 function getPageById(id) {
     return pages.find((page) => page.$page.id === id);
@@ -18193,15 +18204,17 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
         console.log(formatLog('registerPage', path, webview.id));
     }
     initWebview(webview, path, query, routeOptions.meta);
-    const route = path.substr(1);
+    const route = path.slice(1);
     webview.__uniapp_route = route;
     const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
     const id = parseInt(webview.id);
     if (webview.nvue) {
-        if (id === 1 && nvuePageVm) {
-            initNVueEntryPage(webview, nvuePageVm, pageInstance);
+        if (nvuePageVm) {
+            // 首页或者开发时热刷
+            initNVuePage(id, nvuePageVm, pageInstance);
         }
         else {
+            // 正常路由跳转
             createNVuePage(id, webview, pageInstance);
         }
     }
@@ -18232,18 +18245,20 @@ function initPageOptions({ meta }) {
         windowBottom: tabBarInstance.indexOf(meta.route) >= 0 && tabBarInstance.cover ? tabBarInstance.height : 0,
     };
 }
-function initNVueEntryPage(webview, nvuePageVm, pageInstance) {
+function initNVuePage(id, nvuePageVm, pageInstance) {
     initPageVm(nvuePageVm, pageInstance);
     addCurrentPage(nvuePageVm);
-    // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-    if (__uniConfig.splashscreen &&
-        __uniConfig.splashscreen.autoclose &&
-        !__uniConfig.splashscreen.alwaysShowBeforeRender) {
-        plus.navigator.closeSplashscreen();
+    if (id === 1) {
+        // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+        if (__uniConfig.splashscreen &&
+            __uniConfig.splashscreen.autoclose &&
+            !__uniConfig.splashscreen.alwaysShowBeforeRender) {
+            plus.navigator.closeSplashscreen();
+        }
+        __uniConfig.onReady(function () {
+            navigateFinish();
+        });
     }
-    __uniConfig.onReady(function () {
-        navigateFinish();
-    });
 }
 function createNVuePage(pageId, webview, pageInstance) {
     const fakeNVueVm = {
