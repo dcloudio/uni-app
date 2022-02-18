@@ -24,6 +24,7 @@ import { transformText } from './transforms/transformText'
 import { createConfigResolved } from '../../plugin/configResolved'
 import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
 import { external, globals } from '../utils'
+import { transformRootNode } from './transforms/transformRootNode'
 
 const uTags = {
   text: 'u-text',
@@ -38,6 +39,7 @@ const uTags = {
 export function initNVueNodeTransforms() {
   // 优先级必须确保 renderWhole > appendAsTree
   return [
+    transformRootNode,
     createTransformTag(uTags),
     transformText,
     transformVideo,

@@ -199,6 +199,7 @@ declare namespace UniApp {
     backgroundColor?: string
     maxWidth?: string | number
     // app-plus
+    scrollIndicator?: 'none'
     animationType?: string
     animationDuration?: number
     subNVues?: PagesJsonPageStyleSubNVue[]

@@ -1,6 +1,6 @@
 import path from 'path'
-import { Plugin } from 'vite'
-
+import type { Plugin } from 'vite'
+import type { CompilerOptions } from '@vue/compiler-sfc'
 import {
   defineUniPagesJsonPlugin,
   normalizeAppConfigService,
@@ -9,7 +9,16 @@ import {
   getLocaleFiles,
   normalizeAppNVuePagesJson,
   APP_CONFIG_SERVICE,
+  resolveBuiltIn,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
+
+interface NVuePages {
+  [filename: string]: {
+    disableScroll?: boolean
+    scrollIndicator?: 'none'
+  }
+}
 
 export function uniPagesJsonPlugin({
   renderer,
@@ -18,6 +27,11 @@ export function uniPagesJsonPlugin({
   renderer?: 'native'
   appService: boolean
 }): Plugin {
+  const nvuePages: NVuePages = {}
+  // 仅编译nvue页面时重写
+  if (!appService) {
+    rewriteBindingMetadata(nvuePages)
+  }
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'uni:app-nvue-pages-json',
@@ -35,9 +49,14 @@ export function uniPagesJsonPlugin({
         const pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
         pagesJson.pages.forEach((page) => {
           if (page.style.isNVue) {
-            this.addWatchFile(
+            const filename = normalizePath(
               path.resolve(process.env.UNI_INPUT_DIR, page.path + '.nvue')
             )
+            nvuePages[filename] = {
+              disableScroll: page.style.disableScroll,
+              scrollIndicator: page.style.scrollIndicator,
+            }
+            this.addWatchFile(filename)
           }
         })
         if (renderer === 'native' && appService) {
@@ -61,4 +80,21 @@ export function uniPagesJsonPlugin({
       },
     }
   })
+}
+
+/**
+ * 在 BindingMetadata 中补充页面标记
+ */
+function rewriteBindingMetadata(nvuePages: NVuePages) {
+  const compilerDom = require(resolveBuiltIn('@vue/compiler-dom'))
+  const { compile } = compilerDom
+  compilerDom.compile = (template: string, options: CompilerOptions = {}) => {
+    if (options.filename && options.bindingMetadata) {
+      if (nvuePages[options.filename]) {
+        ;(options.bindingMetadata as any).__pageOptions =
+          nvuePages[options.filename]
+      }
+    }
+    return compile(template, options)
+  }
 }
