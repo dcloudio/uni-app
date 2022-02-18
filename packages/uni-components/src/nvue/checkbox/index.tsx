@@ -2,14 +2,20 @@ import {
   defineComponent,
   inject,
   onBeforeUnmount,
+  Ref,
   ref,
   computed,
   watch,
 } from 'vue'
-import { uniLabelKey, UniLabelCtx } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { NVueComponentStyles, createNVueTextVNode } from '../utils'
 import { checkboxProps } from '../../components/checkbox'
+import {
+  uniCheckGroupKey,
+  UniCheckGroupCtx,
+} from '../../components/checkbox-group'
+import { UniFormCtx, uniFormKey } from '../../components/form'
+import { uniLabelKey, UniLabelCtx } from '../label'
 
 const checkboxStyles: NVueComponentStyles = [
   {
@@ -69,7 +75,16 @@ export default defineComponent({
     const rootRef = ref<HTMLElement | null>(null)
     const checkboxChecked = ref(props.checked)
     const checkboxValue = ref(props.value)
-    const onClick = (e: Event, isLabelClick?: boolean) => {
+
+    const checkboxColor = computed(() =>
+      props.disabled ? '#adadad' : props.color
+    )
+
+    const reset = () => {
+      checkboxChecked.value = false
+    }
+
+    const _onClick = ($event: Event, isLabelClick?: boolean) => {
       if (props.disabled) {
         return
       }
@@ -77,11 +92,22 @@ export default defineComponent({
         rootRef.value!.click()
       }
       checkboxChecked.value = !checkboxChecked.value
+      uniCheckGroup && uniCheckGroup.checkboxChange($event)
     }
 
-    const checkboxColor = computed(() =>
-      props.disabled ? '#adadad' : props.color
+    const { uniCheckGroup, uniLabel } = useCheckboxInject(
+      checkboxChecked,
+      checkboxValue,
+      reset
     )
+
+    if (uniLabel) {
+      uniLabel.addHandler(_onClick)
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick)
+      })
+    }
+    useListeners(props, { 'label-click': _onClick })
 
     watch(
       [() => props.checked, () => props.value],
@@ -90,18 +116,6 @@ export default defineComponent({
         checkboxValue.value = newModelValue
       }
     )
-
-    const uniLabel = inject<UniLabelCtx>(
-      uniLabelKey,
-      false as unknown as UniLabelCtx
-    )
-    if (uniLabel) {
-      uniLabel.addHandler(onClick)
-      onBeforeUnmount(() => {
-        uniLabel.removeHandler(onClick)
-      })
-    }
-    useListeners(props, { 'label-click': onClick })
 
     const wrapSlots = () => {
       if (!slots.default) return []
@@ -121,7 +135,7 @@ export default defineComponent({
         <div
           ref={rootRef}
           {...{ dataUncType: 'uni-checkbox' }}
-          onClick={onClick}
+          onClick={_onClick}
           class="uni-checkbox"
         >
           <div
@@ -144,3 +158,44 @@ export default defineComponent({
     }
   },
 })
+
+function useCheckboxInject(
+  checkboxChecked: Ref<string | boolean>,
+  checkboxValue: Ref<string>,
+  reset: () => void
+) {
+  const field = computed(() => ({
+    checkboxChecked: Boolean(checkboxChecked.value),
+    value: checkboxValue.value,
+  }))
+  const formField = { reset }
+
+  const uniCheckGroup = inject<UniCheckGroupCtx>(
+    uniCheckGroupKey,
+    false as unknown as UniCheckGroupCtx
+  )
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field)
+  }
+
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
+  if (!!uniForm) {
+    uniForm.addField(formField)
+  }
+
+  const uniLabel = inject<UniLabelCtx>(
+    uniLabelKey,
+    false as unknown as UniLabelCtx
+  )
+
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(field)
+    uniForm && uniForm.removeField(formField)
+  })
+
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel,
+  }
+}

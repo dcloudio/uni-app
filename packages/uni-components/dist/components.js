@@ -2586,7 +2586,7 @@ function getDefaultEndValue(props2) {
   }
   return "";
 }
-const props$3 = {
+const props$2 = {
   name: {
     type: String,
     default: ""
@@ -2631,7 +2631,7 @@ const props$3 = {
 };
 var Picker = /* @__PURE__ */ defineComponent({
   name: "Picker",
-  props: props$3,
+  props: props$2,
   emits: ["change", "cancel", "columnchange"],
   setup(props2, {
     slots,
@@ -3196,6 +3196,13 @@ const checkboxProps = {
     default: ""
   }
 };
+const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+const checkboxGroupProps = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
 const checkboxStyles = [{
   "uni-checkbox": {
     "": {
@@ -3253,7 +3260,11 @@ var Checkbox = defineComponent({
     const rootRef = ref(null);
     const checkboxChecked = ref(props2.checked);
     const checkboxValue = ref(props2.value);
-    const onClick = (e2, isLabelClick) => {
+    const checkboxColor = computed(() => props2.disabled ? "#adadad" : props2.color);
+    const reset = () => {
+      checkboxChecked.value = false;
+    };
+    const _onClick = ($event, isLabelClick) => {
       if (props2.disabled) {
         return;
       }
@@ -3261,21 +3272,24 @@ var Checkbox = defineComponent({
         rootRef.value.click();
       }
       checkboxChecked.value = !checkboxChecked.value;
+      uniCheckGroup && uniCheckGroup.checkboxChange($event);
     };
-    const checkboxColor = computed(() => props2.disabled ? "#adadad" : props2.color);
-    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
-      checkboxChecked.value = newChecked;
-      checkboxValue.value = newModelValue;
-    });
-    const uniLabel = inject(uniLabelKey, false);
+    const {
+      uniCheckGroup,
+      uniLabel
+    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
     if (uniLabel) {
-      uniLabel.addHandler(onClick);
+      uniLabel.addHandler(_onClick);
       onBeforeUnmount(() => {
-        uniLabel.removeHandler(onClick);
+        uniLabel.removeHandler(_onClick);
       });
     }
     useListeners(props2, {
-      "label-click": onClick
+      "label-click": _onClick
+    });
+    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      checkboxChecked.value = newChecked;
+      checkboxValue.value = newModelValue;
     });
     const wrapSlots = () => {
       if (!slots.default)
@@ -3294,7 +3308,7 @@ var Checkbox = defineComponent({
       }, {
         dataUncType: "uni-checkbox"
       }, {
-        "onClick": onClick,
+        "onClick": _onClick,
         "class": "uni-checkbox"
       }), [createVNode("div", {
         "class": ["uni-checkbox-input", {
@@ -3309,40 +3323,43 @@ var Checkbox = defineComponent({
     };
   }
 });
-const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-function useCustomEvent(ref2, emit) {
-  return (name, evt, detail) => {
-    if (ref2.value) {
-      emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-    }
+function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
+  const field = computed(() => ({
+    checkboxChecked: Boolean(checkboxChecked.value),
+    value: checkboxValue.value
+  }));
+  const formField = {
+    reset
   };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
-}
-const props$2 = {
-  name: {
-    type: String,
-    default: ""
+  const uniCheckGroup = inject(uniCheckGroupKey, false);
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field);
   }
-};
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    uniForm.addField(formField);
+  }
+  const uniLabel = inject(uniLabelKey, false);
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(field);
+    uniForm && uniForm.removeField(formField);
+  });
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel
+  };
+}
 var CheckboxGroup = defineComponent({
   name: "CheckboxGroup",
-  props: props$2,
+  props: checkboxGroupProps,
   emits: ["change"],
   setup(props2, {
     slots,
     emit
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit);
+    const trigger = useCustomEvent$1(rootRef, emit);
     useProvideCheckGroup(props2, trigger);
     return () => {
       return createVNode("div", {
@@ -3368,7 +3385,7 @@ function useProvideCheckGroup(props2, trigger) {
       fields2.splice(fields2.indexOf(field), 1);
     },
     checkboxChange($event) {
-      trigger("change", $event, {
+      trigger("change", {
         value: getFieldsValue()
       });
     }
@@ -3547,6 +3564,23 @@ function useRadioState(props2) {
   return state;
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniRadioGroup" : "ucg");
+function useCustomEvent(ref2, emit) {
+  return (name, evt, detail) => {
+    if (ref2.value) {
+      emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    }
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const props$1 = {
   name: {
     type: String,
@@ -4407,6 +4441,218 @@ function normalizeNodes(nodes, instance, options) {
   }
   return nvueNodes;
 }
+const _adDataCache$1 = {};
+function getAdData$1(data, onsuccess, onerror) {
+  const { adpid, width } = data;
+  const key = adpid + "-" + width;
+  const adDataList = _adDataCache$1[key];
+  if (adDataList && adDataList.length > 0) {
+    onsuccess(adDataList.splice(0, 1)[0]);
+    return;
+  }
+  plus.ad.getAds(data, (res) => {
+    const list = res.ads;
+    onsuccess(list.splice(0, 1)[0]);
+    _adDataCache$1[key] = adDataList ? adDataList.concat(list) : list;
+  }, (err) => {
+    onerror({
+      errCode: err.code,
+      errMsg: err.message
+    });
+  });
+}
+const adProps = {
+  adpid: {
+    type: [Number, String],
+    default: ""
+  },
+  data: {
+    type: String,
+    default: ""
+  },
+  width: {
+    type: String,
+    default: ""
+  },
+  channel: {
+    type: String,
+    default: ""
+  }
+};
+const AdEventType$1 = {
+  load: "load",
+  close: "close",
+  error: "error",
+  downloadchange: "downloadchange"
+};
+var Ad = defineComponent({
+  name: "Ad",
+  props: adProps,
+  emits: [AdEventType$1.load, AdEventType$1.close, AdEventType$1.error, AdEventType$1.downloadchange],
+  setup(props2, {
+    emit
+  }) {
+    const adRef = ref(null);
+    const trigger = useCustomEvent$1(adRef, emit);
+    const state = useAdState();
+    watch(() => props2.adpid, (value) => {
+      _loadAdData$1(state, props2, trigger);
+    });
+    watch(() => props2.data, (value) => {
+      state.data = value;
+    });
+    onMounted(() => {
+      setTimeout(() => {
+        getComponentSize(adRef.value).then(({
+          width
+        }) => {
+          state.width = width === 0 ? -1 : width;
+          _loadAdData$1(state, props2, trigger);
+        });
+      }, 50);
+    });
+    const listeners = {
+      onDownloadchange(e2) {
+        trigger(AdEventType$1.downloadchange, e2);
+      },
+      onDislike(e2) {
+        trigger(AdEventType$1.close, e2);
+      }
+    };
+    return () => {
+      return createVNode("u-ad", mergeProps({
+        "ref": adRef
+      }, {
+        data: state.data,
+        rendering: true
+      }, listeners), null);
+    };
+  }
+});
+function useAdState(props2) {
+  const data = ref("");
+  const state = reactive({
+    width: 0,
+    data
+  });
+  return state;
+}
+function _loadAdData$1(state, props2, trigger) {
+  getAdData$1({
+    adpid: props2.adpid,
+    width: state.width
+  }, (res) => {
+    state.data = res;
+    trigger(AdEventType$1.load, {});
+  }, (err) => {
+    trigger(AdEventType$1.error, err);
+  });
+}
+const _adDataCache = {};
+function getAdData(adpid, width, height, onsuccess, onerror) {
+  const key = adpid + "-" + width;
+  const adDataList = _adDataCache[key];
+  if (adDataList && adDataList.length > 0) {
+    onsuccess(adDataList.splice(0, 1)[0]);
+    return;
+  }
+  plus.ad.getDrawAds({
+    adpid: String(adpid),
+    count: 3,
+    width
+  }, (res) => {
+    const list = res.ads;
+    onsuccess(list.splice(0, 1)[0]);
+    _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
+  }, (err) => {
+    onerror({
+      errCode: err.code,
+      errMsg: err.message
+    });
+  });
+}
+const adDrawProps = {
+  adpid: {
+    type: [Number, String],
+    default: ""
+  },
+  data: {
+    type: String,
+    default: ""
+  },
+  width: {
+    type: String,
+    default: ""
+  }
+};
+const AdEventType = {
+  load: "load",
+  close: "close",
+  error: "error"
+};
+var AdDraw = defineComponent({
+  name: "AdDraw",
+  props: adDrawProps,
+  emits: [AdEventType.load, AdEventType.close, AdEventType.error],
+  setup(props2, {
+    emit
+  }) {
+    const adRef = ref(null);
+    const trigger = useCustomEvent$1(adRef, emit);
+    const state = useAdDrawState();
+    watch(() => props2.adpid, (value) => {
+      _loadAdData(state, props2, trigger);
+    });
+    watch(() => props2.data, (value) => {
+      state.data = value;
+    });
+    const listeners = {
+      onDislike(e2) {
+        trigger(AdEventType.close, e2);
+      }
+    };
+    onMounted(() => {
+      setTimeout(() => {
+        getComponentSize(adRef.value).then(({
+          width,
+          height
+        }) => {
+          state.width = width === 0 ? -1 : width;
+          state.height = height === 0 ? -1 : height;
+          _loadAdData(state, props2, trigger);
+        });
+      }, 50);
+    });
+    return () => {
+      const {
+        data
+      } = state;
+      return createVNode("u-ad-draw", mergeProps({
+        "ref": adRef
+      }, {
+        data,
+        rendering: true
+      }, listeners), null);
+    };
+  }
+});
+function useAdDrawState(props2) {
+  const data = ref("");
+  const state = reactive({
+    width: 0,
+    height: 0,
+    data
+  });
+  return state;
+}
+function _loadAdData(state, props2, trigger) {
+  getAdData(props2.adpid, state.width, state.height, (res) => {
+    state.data = res;
+    trigger(AdEventType.load, {});
+  }, (err) => {
+    trigger(AdEventType.error, err);
+  });
+}
 var components = {
   Navigator,
   Label,
@@ -4427,6 +4673,8 @@ var components = {
   Icon,
   Swiper,
   SwiperItem,
-  RichText
+  RichText,
+  Ad,
+  AdDraw
 };
 export { components as default };

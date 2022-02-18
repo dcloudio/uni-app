@@ -1,42 +1,21 @@
-import {
-  defineComponent,
-  inject,
-  provide,
-  ComputedRef,
-  ref,
-  ExtractPropTypes,
-} from 'vue'
-import { uniCheckGroupKey } from '../../components/checkbox-group'
-import { UniFormCtx, uniFormKey } from '../../components/form'
+import { defineComponent, inject, provide, ref } from 'vue'
 import {
   CustomEventTrigger,
   useCustomEvent,
   EmitEvent,
-} from '../../helpers/useEvent'
-
-type UniCheckGroupFieldCtx = ComputedRef<{
-  checkboxChecked: boolean
-  value: string
-}>
-
-const props = {
-  name: {
-    type: String,
-    default: '',
-  },
-}
-
-type CheckBoxGroupProps = ExtractPropTypes<typeof props>
-
-export interface UniCheckGroupCtx {
-  addField: (field: UniCheckGroupFieldCtx) => void
-  removeField: (field: UniCheckGroupFieldCtx) => void
-  checkboxChange: ($event: Event) => void
-}
+} from '../../helpers/useNVueEvent'
+import {
+  uniCheckGroupKey,
+  UniCheckGroupCtx,
+  UniCheckGroupFieldCtx,
+  CheckBoxGroupProps,
+  checkboxGroupProps,
+} from '../../components/checkbox-group'
+import { UniFormCtx, uniFormKey } from '../../components/form'
 
 export default defineComponent({
   name: 'CheckboxGroup',
-  props,
+  props: checkboxGroupProps,
   emits: ['change'],
   setup(props, { slots, emit }) {
     const rootRef = ref<HTMLElement | null>(null)
@@ -76,7 +55,7 @@ function useProvideCheckGroup(
       fields.splice(fields.indexOf(field), 1)
     },
     checkboxChange($event) {
-      trigger('change', $event, {
+      trigger('change', {
         value: getFieldsValue(),
       })
     },
