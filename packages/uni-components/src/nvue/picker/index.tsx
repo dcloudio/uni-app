@@ -1,7 +1,16 @@
 import { extend } from '@vue/shared'
-import { Ref, ref, watch, ExtractPropTypes, defineComponent } from 'vue'
+import {
+  Ref,
+  ref,
+  watch,
+  ExtractPropTypes,
+  defineComponent,
+  onBeforeUnmount,
+  inject,
+} from 'vue'
 import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
 import { showPage, Page } from '@dcloudio/uni-core'
+import { UniFormCtx, uniFormKey } from '../../components/form'
 
 type Mode = 'selector' | 'multiSelector' | 'time' | 'date'
 type Field = 'year' | 'month' | 'day'
@@ -264,7 +273,7 @@ export default /*#__PURE__*/ defineComponent({
       )
     }
 
-    /* const uniForm = inject<UniFormCtx>(
+    const uniForm = inject<UniFormCtx>(
       uniFormKey,
       false as unknown as UniFormCtx
     )
@@ -291,7 +300,7 @@ export default /*#__PURE__*/ defineComponent({
     if (uniForm) {
       uniForm.addField(formField)
       onBeforeUnmount(() => uniForm.removeField(formField))
-    } */
+    }
 
     Object.keys(props).forEach((key) => {
       watch(

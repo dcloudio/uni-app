@@ -85,7 +85,7 @@ export interface NVueElement {
   ref: string
   text?: string
 
-  preClassList: string[]
+  styleSheet: Record<string, Record<string, Record<string, unknown>>>
   classList: string[]
   parentNode: NVueElement | null
   children: Array<NVueElement>
@@ -98,10 +98,12 @@ export interface NVueElement {
   insertAfter: (node: NVueElement, after: NVueElement) => void
   setAttr: (key: string, value: any, silent?: boolean) => void
   setAttrs: (attrs: Record<string, unknown>, silent?: boolean) => void
-  setPreClassList: (preClassList: string[]) => void
   setClassList: (classList: string[]) => void
   setStyle: (key: string, value: any, silent?: boolean) => void
   setStyles: (attrs: Record<string, unknown>, silent?: boolean) => void
+  setStyleSheet: (
+    styleSheet: Record<string, Record<string, Record<string, unknown>>>
+  ) => void
   addEvent: (type: string, handler: Function, args?: Array<any>) => void
   removeEvent: (type: string) => void
   fireEvent: (type: string) => void

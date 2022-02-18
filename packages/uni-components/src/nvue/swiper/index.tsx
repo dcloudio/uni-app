@@ -142,10 +142,8 @@ function useSwiperListeners(
   let lastOffsetRatio: number = 0
 
   const onScroll = (event: any) => {
-    let offsetRatio = props.vertical
-      ? event.detail.offsetYRatio
-      : event.detail.offsetXRatio
-    if (event.drag || event.detail.drag) {
+    let offsetRatio = props.vertical ? event.offsetYRatio : event.offsetXRatio
+    if (event.drag || event.drag) {
       state.currentChangeSource = 'touch'
     }
     // 纠正 offsetRatio 数值
@@ -177,12 +175,11 @@ function useSwiperListeners(
     }
   }
 
-  const onChange = (event: CustomEvent) => {
-    const detail = event.detail
-    if (typeof detail.source === 'string') {
-      state.currentChangeSource = detail.source
+  const onChange = (event: any) => {
+    if (typeof event.source === 'string') {
+      state.currentChangeSource = event.source
     }
-    state.currentSync = detail.index
+    state.currentSync = event.index
     lastOffsetRatio = 0
   }
 

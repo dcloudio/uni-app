@@ -1,6 +1,6 @@
 import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
 import { extend, hasOwn, isPlainObject } from "@vue/shared";
-import { cacheStringFunction, PRIMARY_COLOR, normalizeTarget } from "@dcloudio/uni-shared";
+import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -848,8 +848,10 @@ const parseStyleText = cached(function(cssText) {
   return res;
 });
 const getComponentSize = (el) => {
-  const dom2 = weex.requireModule("dom");
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    if (!el)
+      return resolve({ width: 0, height: 0, top: 0, left: 0 });
+    const dom2 = weex.requireModule("dom");
     dom2.getComponentRect(el, ({ size }) => {
       resolve(size);
     });
@@ -1024,14 +1026,14 @@ function useTouchtrack(method) {
     }
   };
 }
-function useCustomEvent$1(ref2, emit) {
+function useCustomEvent(ref2, emit) {
   return (name, detail) => {
     if (ref2.value) {
-      emit(name, normalizeCustomEvent$1(name, ref2.value, detail || {}));
+      emit(name, normalizeCustomEvent(name, ref2.value, detail || {}));
     }
   };
 }
-function normalizeCustomEvent$1(name, target, detail = {}) {
+function normalizeCustomEvent(name, target, detail = {}) {
   target = processTarget(target);
   return {
     type: name,
@@ -1482,7 +1484,7 @@ var MovableView = defineComponent({
     slots
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent$1(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit);
     const setTouchMovableViewContext = inject("setTouchMovableViewContext", () => {
     });
     const touchStart = useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContext);
@@ -2082,7 +2084,7 @@ var Progress = defineComponent({
   }) {
     const progressRef = ref(null);
     const progressBarRef = ref(null);
-    const trigger = useCustomEvent$1(progressRef, emit);
+    const trigger = useCustomEvent(progressRef, emit);
     const state = useProgressState(props2);
     watch(() => state.realPercent, (newValue, oldValue) => {
       state.lastPercent = oldValue || 0;
@@ -2219,7 +2221,7 @@ var PickerView = defineComponent({
   }) {
     const rootRef = ref(null);
     const state = useState(props2);
-    const trigger = useCustomEvent$1(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit);
     let columnVNodes = [];
     const getItemIndex = (vnode) => Array.prototype.indexOf.call(columnVNodes, vnode);
     const getPickerViewColumn = (columnInstance) => {
@@ -2252,9 +2254,13 @@ var PickerView = defineComponent({
     return () => {
       const defaultSlots = slots.default && slots.default();
       columnVNodes = flatVNode(defaultSlots);
+      const style = props2.height ? {
+        height: `${parseFloat(props2.height)}px`
+      } : {};
       return createVNode("view", mergeProps({
         "ref": rootRef,
-        "class": "uni-picker-view"
+        "class": "uni-picker-view",
+        "style": style
       }, {
         preventGesture: true
       }), [createVNode("view", {
@@ -2380,8 +2386,8 @@ var PickerViewColumn = defineComponent({
         })]).then(() => {
           if (height_ && indicatorHeight_) {
             setTimeout(() => {
-              setCurrent(current.value, false, true);
               instance.data._isMounted = true;
+              setCurrent(current.value, false, true);
             }, 50);
           } else {
             checkMounted();
@@ -2422,7 +2428,6 @@ var PickerViewColumn = defineComponent({
         "ref": contentRef,
         "class": "uni-picker-view-content",
         "style": {
-          flexDirection: "column",
           paddingTop: `${padding}px`,
           paddingBottom: `${padding}px`
         }
@@ -2492,6 +2497,7 @@ var PickerViewColumn = defineComponent({
     },
     "uni-picker-view-content": {
       "": {
+        flexDirection: "column",
         paddingTop: 0,
         paddingRight: 0,
         paddingBottom: 0,
@@ -2586,7 +2592,7 @@ function getDefaultEndValue(props2) {
   }
   return "";
 }
-const props$2 = {
+const props$1 = {
   name: {
     type: String,
     default: ""
@@ -2631,14 +2637,14 @@ const props$2 = {
 };
 var Picker = /* @__PURE__ */ defineComponent({
   name: "Picker",
-  props: props$2,
+  props: props$1,
   emits: ["change", "cancel", "columnchange"],
   setup(props2, {
     slots,
     emit
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent$1(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit);
     const valueSync = ref(null);
     const page = ref(null);
     const _setValueSync = () => {
@@ -2743,6 +2749,28 @@ var Picker = /* @__PURE__ */ defineComponent({
         locale: uni.getLocale()
       }));
     };
+    const uniForm = inject(uniFormKey, false);
+    const formField = {
+      submit: () => [props2.name, valueSync.value],
+      reset: () => {
+        switch (props2.mode) {
+          case mode.SELECTOR:
+            valueSync.value = 0;
+            break;
+          case mode.MULTISELECTOR:
+            Array.isArray(props2.value) && (valueSync.value = props2.value.map((val) => 0));
+            break;
+          case mode.DATE:
+          case mode.TIME:
+            valueSync.value = "";
+            break;
+        }
+      }
+    };
+    if (uniForm) {
+      uniForm.addField(formField);
+      onBeforeUnmount(() => uniForm.removeField(formField));
+    }
     Object.keys(props2).forEach((key) => {
       watch(() => props2[key], (val) => {
         const data = {};
@@ -2916,7 +2944,7 @@ var USlider = defineComponent({
   }) {
     const sliderRef = ref(null);
     const sliderTrackRef = ref(null);
-    const trigger = useCustomEvent$1(sliderRef, emit);
+    const trigger = useCustomEvent(sliderRef, emit);
     const state = useSliderState(props2);
     const listeners = useSliderListeners(props2, state, trigger);
     watch(() => props2.value, (val) => {
@@ -3097,7 +3125,7 @@ var Switch = defineComponent({
     const rootRef = ref(null);
     const switchChecked = ref(props2.checked);
     const uniLabel = useSwitchInject(props2, switchChecked);
-    const trigger = useCustomEvent$1(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit);
     watch(() => props2.checked, (val) => {
       switchChecked.value = val;
     });
@@ -3359,7 +3387,7 @@ var CheckboxGroup = defineComponent({
     emit
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent$1(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit);
     useProvideCheckGroup(props2, trigger);
     return () => {
       return createVNode("div", {
@@ -3427,6 +3455,13 @@ const radioProps = {
     default: ""
   }
 };
+const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniRadioGroup" : "ucg");
+const radioGroupProps = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
 const radioStyles = [{
   "uni-radio": {
     "": {
@@ -3479,29 +3514,50 @@ var Radio = defineComponent({
     slots
   }) {
     const rootRef = ref(null);
-    const state = useRadioState(props2);
-    const onClick = (e2, isLabelClick) => {
+    const radioChecked = ref(props2.checked);
+    const radioValue = ref(props2.value);
+    const radioStyle = computed(() => {
+      const color = props2.disabled ? "#adadad" : props2.color;
+      if (radioChecked.value) {
+        return {
+          backgroundColor: color,
+          borderColor: color
+        };
+      }
+      return {
+        borderColor: "#d1d1d1"
+      };
+    });
+    const reset = () => {
+      radioChecked.value = false;
+    };
+    const {
+      uniCheckGroup,
+      uniLabel,
+      field
+    } = useRadioInject(radioChecked, radioValue, reset);
+    const _onClick = ($event, isLabelClick) => {
       if (props2.disabled) {
         return;
       }
       if (isLabelClick) {
         rootRef.value.click();
       }
-      state.radioChecked = !state.radioChecked;
+      radioChecked.value = !radioChecked.value;
+      uniCheckGroup && uniCheckGroup.radioChange($event, field);
     };
-    const uniLabel = inject(uniLabelKey, false);
     if (uniLabel) {
-      uniLabel.addHandler(onClick);
+      uniLabel.addHandler(_onClick);
       onBeforeUnmount(() => {
-        uniLabel.removeHandler(onClick);
+        uniLabel.removeHandler(_onClick);
       });
     }
     useListeners(props2, {
-      "label-click": onClick
+      "label-click": _onClick
     });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
-      state.radioChecked = newChecked;
-      state.radioValue = newModelValue;
+      radioChecked.value = newChecked;
+      radioValue.value = newModelValue;
     });
     const wrapSlots = () => {
       if (!slots.default)
@@ -3518,78 +3574,62 @@ var Radio = defineComponent({
       const {
         disabled
       } = props2;
-      const {
-        radioChecked,
-        radioStyle
-      } = state;
       return createVNode("div", mergeProps({
         "ref": rootRef
       }, {
         dataUncType: "uni-radio"
       }, {
-        "onClick": onClick,
+        "onClick": _onClick,
         "class": "uni-radio"
       }), [createVNode("div", {
-        "style": radioStyle,
+        "style": radioStyle.value,
         "class": ["uni-radio-input", {
           "uni-radio-input-disabled": disabled
         }]
-      }, [radioChecked ? createNVueTextVNode("\uEA08", {
+      }, [radioChecked.value ? createNVueTextVNode("\uEA08", {
         class: "uni-radio-input-icon"
       }) : null]), ...wrapSlots()]);
     };
   }
 });
-function useRadioState(props2) {
-  const radioChecked = ref(props2.checked);
-  const radioValue = ref(props2.value);
-  const radioStyle = computed(() => {
-    if (radioChecked.value) {
-      return {
-        backgroundColor: props2.color,
-        borderColor: props2.color
-      };
+function useRadioInject(radioChecked, radioValue, reset) {
+  const field = computed({
+    get: () => ({
+      radioChecked: Boolean(radioChecked.value),
+      value: radioValue.value
+    }),
+    set: ({
+      radioChecked: checked
+    }) => {
+      radioChecked.value = checked;
     }
-    return {
-      borderColor: "#d1d1d1"
-    };
   });
-  const radioColor = computed(() => props2.disabled ? "#adadad" : props2.color);
-  const state = reactive({
-    radioStyle,
-    radioColor,
-    radioChecked,
-    radioValue
-  });
-  return state;
-}
-const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniRadioGroup" : "ucg");
-function useCustomEvent(ref2, emit) {
-  return (name, evt, detail) => {
-    if (ref2.value) {
-      emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-    }
+  const formField = {
+    reset
   };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
-}
-const props$1 = {
-  name: {
-    type: String,
-    default: ""
+  const uniCheckGroup = inject(uniRadioGroupKey, false);
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field);
   }
-};
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    uniForm.addField(formField);
+  }
+  const uniLabel = inject(uniLabelKey, false);
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(field);
+    uniForm && uniForm.removeField(formField);
+  });
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel,
+    field
+  };
+}
 var RadioGroup = defineComponent({
   name: "RadioGroup",
-  props: props$1,
+  props: radioGroupProps,
   emits: ["change"],
   setup(props2, {
     slots,
@@ -3607,12 +3647,13 @@ var RadioGroup = defineComponent({
 });
 function useProvideRadioGroup(props2, trigger) {
   const fields2 = [];
-  const getFieldsValue = () => fields2.reduce((res, field) => {
-    if (field.value.radioChecked) {
-      res.push(field.value.value);
-    }
-    return res;
-  }, new Array());
+  onMounted(() => {
+    _resetRadioGroupValue(fields2.length - 1);
+  });
+  const getFieldsValue = () => {
+    var _a;
+    return (_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
+  };
   provide(uniRadioGroupKey, {
     addField(field) {
       fields2.push(field);
@@ -3620,26 +3661,48 @@ function useProvideRadioGroup(props2, trigger) {
     removeField(field) {
       fields2.splice(fields2.indexOf(field), 1);
     },
-    radioChange($event) {
-      trigger("change", $event, {
+    radioChange($event, field) {
+      const index = fields2.indexOf(field);
+      _resetRadioGroupValue(index, true);
+      trigger("change", {
         value: getFieldsValue()
       });
     }
   });
   const uniForm = inject(uniFormKey, false);
+  const formField = {
+    submit: () => {
+      let data = ["", null];
+      if (props2.name !== "") {
+        data[0] = props2.name;
+        data[1] = getFieldsValue();
+      }
+      return data;
+    }
+  };
   if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data = ["", null];
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = getFieldsValue();
-        }
-        return data;
+    uniForm.addField(formField);
+    onBeforeUnmount(() => {
+      uniForm.removeField(formField);
+    });
+  }
+  function setFieldChecked(field, radioChecked) {
+    field.value = {
+      radioChecked,
+      value: field.value.value
+    };
+  }
+  function _resetRadioGroupValue(key, change) {
+    fields2.forEach((value, index) => {
+      if (index === key) {
+        return;
+      }
+      if (change) {
+        setFieldChecked(fields2[index], false);
       }
     });
   }
-  return getFieldsValue;
+  return fields2;
 }
 const NATIVE_COMPONENTS = ["u-input", "u-textarea"];
 var Form = defineComponent({
@@ -3650,22 +3713,51 @@ var Form = defineComponent({
     emit
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent$1(rootRef, emit);
-    const vnodes = slots.default && slots.default();
-    provideForm(trigger, vnodes);
+    const trigger = useCustomEvent(rootRef, emit);
+    const fields2 = [];
+    let resetNative;
+    provide(uniFormKey, {
+      addField(field) {
+        fields2.push(field);
+      },
+      removeField(field) {
+        fields2.splice(fields2.indexOf(field), 1);
+      },
+      submit(evt) {
+        let outFormData = {};
+        resetNative && resetNative(outFormData);
+        let formData = fields2.reduce((res, field) => {
+          if (field.submit) {
+            const [name, value] = field.submit();
+            name && (res[name] = value);
+          }
+          return res;
+        }, /* @__PURE__ */ Object.create(null));
+        Object.assign(outFormData, formData);
+        trigger("submit", {
+          value: outFormData
+        });
+      },
+      reset(evt) {
+        resetNative && resetNative();
+        fields2.forEach((field) => field.reset && field.reset());
+        trigger("reset", evt);
+      }
+    });
     return () => {
+      const vnodes = slots.default && slots.default();
+      resetNative = useResetNative(vnodes);
       return createVNode("view", {
         "ref": rootRef
       }, [vnodes]);
     };
   }
 });
-function provideForm(trigger, children) {
+function useResetNative(children) {
   const modulePlus = weex.requireModule("plus");
-  const fields2 = [];
-  const getOrClearNativeValue = (nodes, outResult) => {
-    nodes.forEach(function(node) {
-      if (NATIVE_COMPONENTS.indexOf(node.type) >= 0 && node.el.attr && node.el.attr.name) {
+  const getOrClearNativeValue = (outResult, nodes) => {
+    (nodes || children || []).forEach(function(node) {
+      if (NATIVE_COMPONENTS.indexOf(String(node.type)) >= 0 && node.el && node.el.attr && node.el.attr.name) {
         if (outResult) {
           outResult[node.el.attr.name] = modulePlus.getValue(node.el.nodeId);
         } else {
@@ -3673,39 +3765,11 @@ function provideForm(trigger, children) {
         }
       }
       if (Array.isArray(node.children) && node.children && node.children.length) {
-        getOrClearNativeValue(node.children, outResult);
+        getOrClearNativeValue(outResult, node.children);
       }
     });
   };
-  provide(uniFormKey, {
-    addField(field) {
-      fields2.push(field);
-    },
-    removeField(field) {
-      fields2.splice(fields2.indexOf(field), 1);
-    },
-    submit(evt) {
-      let outFormData = {};
-      getOrClearNativeValue(children, outFormData);
-      let formData = fields2.reduce((res, field) => {
-        if (field.submit) {
-          const [name, value] = field.submit();
-          name && (res[name] = value);
-        }
-        return res;
-      }, /* @__PURE__ */ Object.create(null));
-      Object.assign(outFormData, formData);
-      trigger("submit", {
-        value: outFormData
-      });
-    },
-    reset(evt) {
-      getOrClearNativeValue(children, null);
-      fields2.forEach((field) => field.reset && field.reset());
-      trigger("reset", evt);
-    }
-  });
-  return fields2;
+  return getOrClearNativeValue;
 }
 const iconProps = {
   type: {
@@ -3877,7 +3941,7 @@ var Swiper = defineComponent({
   }) {
     const rootRef = ref(null);
     let swiperItems = [];
-    const trigger = useCustomEvent$1(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit);
     const state = useSwiperState(props2);
     const listeners = useSwiperListeners(state, props2, swiperItems, trigger);
     watch([() => props2.current, () => props2.currentItemId], ([newChecked, newModelValue]) => {
@@ -3947,8 +4011,8 @@ function useSwiperState(props2) {
 function useSwiperListeners(state, props2, swiperItems, trigger) {
   let lastOffsetRatio = 0;
   const onScroll = (event) => {
-    let offsetRatio = props2.vertical ? event.detail.offsetYRatio : event.detail.offsetXRatio;
-    if (event.drag || event.detail.drag) {
+    let offsetRatio = props2.vertical ? event.offsetYRatio : event.offsetXRatio;
+    if (event.drag || event.drag) {
       state.currentChangeSource = "touch";
     }
     if (offsetRatio === 0) {
@@ -3977,11 +4041,10 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
     }
   };
   const onChange = (event) => {
-    const detail = event.detail;
-    if (typeof detail.source === "string") {
-      state.currentChangeSource = detail.source;
+    if (typeof event.source === "string") {
+      state.currentChangeSource = event.source;
     }
-    state.currentSync = detail.index;
+    state.currentSync = event.index;
     lastOffsetRatio = 0;
   };
   function getDetail() {
@@ -4493,7 +4556,7 @@ var Ad = defineComponent({
     emit
   }) {
     const adRef = ref(null);
-    const trigger = useCustomEvent$1(adRef, emit);
+    const trigger = useCustomEvent(adRef, emit);
     const state = useAdState();
     watch(() => props2.adpid, (value) => {
       _loadAdData$1(state, props2, trigger);
@@ -4598,7 +4661,7 @@ var AdDraw = defineComponent({
     emit
   }) {
     const adRef = ref(null);
-    const trigger = useCustomEvent$1(adRef, emit);
+    const trigger = useCustomEvent(adRef, emit);
     const state = useAdDrawState();
     watch(() => props2.adpid, (value) => {
       _loadAdData(state, props2, trigger);

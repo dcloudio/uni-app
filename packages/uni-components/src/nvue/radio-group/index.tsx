@@ -2,41 +2,27 @@ import {
   defineComponent,
   inject,
   provide,
-  ComputedRef,
   ref,
-  ExtractPropTypes,
+  onBeforeUnmount,
+  onMounted,
 } from 'vue'
-import { uniRadioGroupKey } from '../../components/radio-group'
+import {
+  uniRadioGroupKey,
+  UniRadioGroupFieldCtx,
+  UniRadioGroupCtx,
+  RadioGroupProps,
+  radioGroupProps,
+} from '../../components/radio-group'
 import { UniFormCtx, uniFormKey } from '../../components/form'
 import {
   CustomEventTrigger,
   useCustomEvent,
   EmitEvent,
-} from '../../helpers/useEvent'
-
-type UniRadioGroupFieldCtx = ComputedRef<{
-  radioChecked: boolean
-  value: string
-}>
-
-const props = {
-  name: {
-    type: String,
-    default: '',
-  },
-}
-
-type RadioGroupProps = ExtractPropTypes<typeof props>
-
-export interface UniRadioGroupCtx {
-  addField: (field: UniRadioGroupFieldCtx) => void
-  removeField: (field: UniRadioGroupFieldCtx) => void
-  radioChange: ($event: Event) => void
-}
+} from '../../helpers/useNVueEvent'
 
 export default defineComponent({
   name: 'RadioGroup',
-  props,
+  props: radioGroupProps,
   emits: ['change'],
   setup(props, { slots, emit }) {
     const rootRef = ref<HTMLElement | null>(null)
@@ -56,13 +42,12 @@ function useProvideRadioGroup(
 ) {
   const fields: UniRadioGroupFieldCtx[] = []
 
+  onMounted(() => {
+    _resetRadioGroupValue(fields.length - 1)
+  })
+
   const getFieldsValue = () =>
-    fields.reduce((res, field) => {
-      if (field.value.radioChecked) {
-        res.push(field.value.value)
-      }
-      return res
-    }, new Array())
+    fields.find((field) => field.value.radioChecked)?.value.value
 
   provide<UniRadioGroupCtx>(uniRadioGroupKey, {
     addField(field: UniRadioGroupFieldCtx) {
@@ -71,26 +56,53 @@ function useProvideRadioGroup(
     removeField(field: UniRadioGroupFieldCtx) {
       fields.splice(fields.indexOf(field), 1)
     },
-    radioChange($event) {
-      trigger('change', $event, {
+    radioChange($event: Event, field: UniRadioGroupFieldCtx) {
+      const index = fields.indexOf(field)
+      _resetRadioGroupValue(index, true)
+      trigger('change', {
         value: getFieldsValue(),
       })
     },
   })
 
   const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
+  const formField = {
+    submit: () => {
+      let data: [string, any] = ['', null]
+      if (props.name !== '') {
+        data[0] = props.name
+        data[1] = getFieldsValue()
+      }
+      return data
+    },
+  }
   if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data: [string, any] = ['', null]
-        if (props.name !== '') {
-          data[0] = props.name
-          data[1] = getFieldsValue()
-        }
-        return data
-      },
+    uniForm.addField(formField)
+    onBeforeUnmount(() => {
+      uniForm.removeField(formField)
     })
   }
 
-  return getFieldsValue
+  function setFieldChecked(
+    field: UniRadioGroupFieldCtx,
+    radioChecked: boolean
+  ) {
+    field.value = {
+      radioChecked,
+      value: field.value.value,
+    }
+  }
+
+  function _resetRadioGroupValue(key: number, change?: boolean) {
+    fields.forEach((value, index) => {
+      if (index === key) {
+        return
+      }
+      if (change) {
+        setFieldChecked(fields[index], false)
+      }
+    })
+  }
+
+  return fields
 }

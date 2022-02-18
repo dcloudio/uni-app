@@ -2,16 +2,20 @@ import {
   defineComponent,
   inject,
   onBeforeUnmount,
+  Ref,
   ref,
   computed,
   watch,
-  reactive,
-  ExtractPropTypes,
 } from 'vue'
 import { uniLabelKey, UniLabelCtx } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { NVueComponentStyles, createNVueTextVNode } from '../utils'
 import { radioProps } from '../../components/radio'
+import {
+  uniRadioGroupKey,
+  UniRadioGroupCtx,
+} from '../../components/radio-group'
+import { UniFormCtx, uniFormKey } from '../../components/form'
 
 const radioStyles: NVueComponentStyles = [
   {
@@ -59,8 +63,6 @@ const radioStyles: NVueComponentStyles = [
   },
 ]
 
-type RadioProps = ExtractPropTypes<typeof radioProps>
-
 export default defineComponent({
   name: 'Radio',
   props: radioProps,
@@ -68,47 +70,56 @@ export default defineComponent({
   emits: ['change'],
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
+    const radioChecked = ref(props.checked)
+    const radioValue = ref(props.value)
 
-    const state = useRadioState(props)
+    const radioStyle = computed(() => {
+      const color = props.disabled ? '#adadad' : props.color
+      if (radioChecked.value) {
+        return {
+          backgroundColor: color,
+          borderColor: color,
+        }
+      }
+      return {
+        borderColor: '#d1d1d1',
+      }
+    })
 
-    const onClick = (e: Event, isLabelClick?: boolean) => {
+    const reset = () => {
+      radioChecked.value = false
+    }
+
+    const { uniCheckGroup, uniLabel, field } = useRadioInject(
+      radioChecked,
+      radioValue,
+      reset
+    )
+
+    const _onClick = ($event: Event, isLabelClick?: boolean) => {
       if (props.disabled) {
         return
       }
       if (isLabelClick) {
         rootRef.value!.click()
       }
-      state.radioChecked = !state.radioChecked
-      /* const formType = props.formType
-      if (formType) {
-        if (!uniForm) {
-          return
-        }
-        if (formType === 'submit') {
-          uniForm.submit(e)
-        } else if (formType === 'reset') {
-          uniForm.reset(e)
-        }
-      } */
+      radioChecked.value = !radioChecked.value
+      uniCheckGroup && uniCheckGroup.radioChange($event, field)
     }
 
-    const uniLabel = inject<UniLabelCtx>(
-      uniLabelKey,
-      false as unknown as UniLabelCtx
-    )
     if (uniLabel) {
-      uniLabel.addHandler(onClick)
+      uniLabel.addHandler(_onClick)
       onBeforeUnmount(() => {
-        uniLabel.removeHandler(onClick)
+        uniLabel.removeHandler(_onClick)
       })
     }
-    useListeners(props, { 'label-click': onClick })
+    useListeners(props, { 'label-click': _onClick })
 
     watch(
       [() => props.checked, () => props.value],
       ([newChecked, newModelValue]) => {
-        state.radioChecked = newChecked
-        state.radioValue = newModelValue
+        radioChecked.value = newChecked
+        radioValue.value = newModelValue
       }
     )
 
@@ -127,21 +138,20 @@ export default defineComponent({
 
     return () => {
       const { disabled } = props
-      const { radioChecked, radioStyle } = state
       return (
         <div
           ref={rootRef}
           {...{ dataUncType: 'uni-radio' }}
-          onClick={onClick}
+          onClick={_onClick}
           class="uni-radio"
         >
           <div
-            style={radioStyle}
+            style={radioStyle.value}
             class="uni-radio-input"
             // @ts-expect-error
             class={{ 'uni-radio-input-disabled': disabled }}
           >
-            {radioChecked
+            {radioChecked.value
               ? createNVueTextVNode('\uEA08', {
                   class: 'uni-radio-input-icon',
                 })
@@ -154,29 +164,49 @@ export default defineComponent({
   },
 })
 
-function useRadioState(props: RadioProps) {
-  const radioChecked = ref(props.checked)
-  const radioValue = ref(props.value)
+function useRadioInject(
+  radioChecked: Ref<string | boolean>,
+  radioValue: Ref<string>,
+  reset: () => void
+) {
+  const field = computed({
+    get: () => ({
+      radioChecked: Boolean(radioChecked.value),
+      value: radioValue.value,
+    }),
+    set: ({ radioChecked: checked }) => {
+      radioChecked.value = checked
+    },
+  })
+  const formField = { reset }
 
-  const radioStyle = computed(() => {
-    if (radioChecked.value) {
-      return {
-        backgroundColor: props.color,
-        borderColor: props.color,
-      }
-    }
-    return {
-      borderColor: '#d1d1d1',
-    }
+  const uniCheckGroup = inject<UniRadioGroupCtx>(
+    uniRadioGroupKey,
+    false as unknown as UniRadioGroupCtx
+  )
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field)
+  }
+
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
+  if (!!uniForm) {
+    uniForm.addField(formField)
+  }
+
+  const uniLabel = inject<UniLabelCtx>(
+    uniLabelKey,
+    false as unknown as UniLabelCtx
+  )
+
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(field)
+    uniForm && uniForm.removeField(formField)
   })
 
-  const radioColor = computed(() => (props.disabled ? '#adadad' : props.color))
-
-  const state = reactive({
-    radioStyle,
-    radioColor,
-    radioChecked,
-    radioValue,
-  })
-  return state
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel,
+    field,
+  }
 }
