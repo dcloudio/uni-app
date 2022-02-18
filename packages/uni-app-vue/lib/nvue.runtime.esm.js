@@ -6818,9 +6818,10 @@ const PublicInstanceProxyHandlers = {
     },
     defineProperty(target, key, descriptor) {
         if (descriptor.get != null) {
-            this.set(target, key, descriptor.get(), null);
+            // invalidate key cache of a getter based property #5417
+            target.$.accessCache[key] = 0;
         }
-        else if (descriptor.value != null) {
+        else if (hasOwn(descriptor, 'value')) {
             this.set(target, key, descriptor.value, null);
         }
         return Reflect.defineProperty(target, key, descriptor);
@@ -7883,7 +7884,7 @@ function parseClassList(classList, instance, el = null) {
     });
     return context.styles;
 }
-function parseStylesheet({ type, vnode: { appContext } }) {
+function parseStylesheet({ type, appContext }) {
     const component = type;
     if (!component.__styles) {
         if (component.mpType === 'page' && appContext) {
@@ -7984,6 +7985,7 @@ function patchClass(el, pre, next, instance = null) {
     }
     const preClassList = pre ? pre.split(' ') : [];
     const classList = next ? next.split(' ') : [];
+    // 此时 parentNode，previousSibling 等节点信息还未更新
     const oldStyle = getStyle(preClassList, el, instance);
     const newStyle = getStyle(classList, el, instance);
     let cur, name;

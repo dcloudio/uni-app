@@ -8245,8 +8245,9 @@ var PublicInstanceProxyHandlers = {
 
   defineProperty(target, key, descriptor) {
     if (descriptor.get != null) {
-      this.set(target, key, descriptor.get(), null);
-    } else if (descriptor.value != null) {
+      // invalidate key cache of a getter based property #5417
+      target.$.accessCache[key] = 0;
+    } else if (hasOwn(descriptor, 'value')) {
       this.set(target, key, descriptor.value, null);
     }
 
@@ -9419,9 +9420,7 @@ function parseClassList(classList, instance) {
 function parseStylesheet(_ref22) {
   var {
     type,
-    vnode: {
-      appContext
-    }
+    appContext
   } = _ref22;
   var component = type;
 
@@ -9540,7 +9539,8 @@ function patchClass(el, pre, next) {
   }
 
   var preClassList = pre ? pre.split(' ') : [];
-  var classList = next ? next.split(' ') : [];
+  var classList = next ? next.split(' ') : []; // 此时 parentNode，previousSibling 等节点信息还未更新
+
   var oldStyle = getStyle(preClassList, el, instance);
   var newStyle = getStyle(classList, el, instance);
   var cur, name;
