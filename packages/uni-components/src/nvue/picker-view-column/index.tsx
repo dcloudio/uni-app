@@ -118,8 +118,8 @@ export default defineComponent({
           if (height_ && indicatorHeight_) {
             // 初始化时iOS直接滚动经常出错
             setTimeout(() => {
-              setCurrent(current.value, false, true)
               instance.data._isMounted = true
+              setCurrent(current.value, false, true)
             }, 50)
           } else {
             checkMounted()
@@ -167,7 +167,6 @@ export default defineComponent({
               ref={contentRef}
               class="uni-picker-view-content"
               style={{
-                flexDirection: 'column',
                 paddingTop: `${padding}px`,
                 paddingBottom: `${padding}px`,
               }}
@@ -239,6 +238,7 @@ export default defineComponent({
       },
       'uni-picker-view-content': {
         '': {
+          flexDirection: 'column',
           paddingTop: 0,
           paddingRight: 0,
           paddingBottom: 0,

@@ -1,9 +1,5 @@
-import { defineComponent, provide, ref } from 'vue'
-import {
-  useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
-} from '../../helpers/useNVueEvent'
+import { defineComponent, provide, ref, VNode } from 'vue'
+import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
 import { uniFormKey, UniFormCtx, UniFormFieldCtx } from '../../components/form'
 
 const NATIVE_COMPONENTS = ['u-input', 'u-textarea']
@@ -14,23 +10,60 @@ export default defineComponent({
   setup({}, { slots, emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
+    const fields: UniFormFieldCtx[] = []
 
-    const vnodes = slots.default && slots.default()
-    provideForm(trigger, vnodes)
+    let resetNative: Function
+
+    provide<UniFormCtx>(uniFormKey, {
+      addField(field: UniFormFieldCtx) {
+        fields.push(field)
+      },
+      removeField(field: UniFormFieldCtx) {
+        fields.splice(fields.indexOf(field), 1)
+      },
+      submit(evt: Event) {
+        // 获取原生组件值
+        let outFormData: any = {}
+        resetNative && resetNative(outFormData)
+
+        let formData = fields.reduce((res, field) => {
+          if (field.submit) {
+            const [name, value] = field.submit()
+            name && (res[name] = value)
+          }
+          return res
+        }, Object.create(null))
+
+        Object.assign(outFormData, formData)
+
+        trigger('submit', {
+          value: outFormData,
+        })
+      },
+      reset(evt: Event) {
+        // 清空原生组件值
+        resetNative && resetNative()
+
+        fields.forEach((field) => field.reset && field.reset())
+        trigger('reset', evt)
+      },
+    })
 
     return () => {
+      const vnodes = slots.default && slots.default()
+      resetNative = useResetNative(vnodes)
       return <view ref={rootRef}>{vnodes}</view>
     }
   },
 })
 
-function provideForm(trigger: CustomEventTrigger, children: any) {
+function useResetNative(children?: VNode[]) {
   const modulePlus = weex.requireModule('plus')
-  const fields: UniFormFieldCtx[] = []
-  const getOrClearNativeValue = (nodes: any, outResult: any): void => {
-    nodes.forEach(function (node: any) {
+  const getOrClearNativeValue = (outResult: any, nodes?: VNode[]): void => {
+    ;(nodes || children || []).forEach(function (node: VNode) {
       if (
-        NATIVE_COMPONENTS.indexOf(node.type) >= 0 &&
+        NATIVE_COMPONENTS.indexOf(String(node.type)) >= 0 &&
+        node.el &&
         node.el.attr &&
         node.el.attr.name
       ) {
@@ -45,44 +78,10 @@ function provideForm(trigger: CustomEventTrigger, children: any) {
         node.children &&
         node.children.length
       ) {
-        getOrClearNativeValue(node.children, outResult)
+        getOrClearNativeValue(outResult, node.children as VNode[])
       }
     })
   }
 
-  provide<UniFormCtx>(uniFormKey, {
-    addField(field: UniFormFieldCtx) {
-      fields.push(field)
-    },
-    removeField(field: UniFormFieldCtx) {
-      fields.splice(fields.indexOf(field), 1)
-    },
-    submit(evt: Event) {
-      // 获取原生组件值
-      let outFormData: any = {}
-      getOrClearNativeValue(children, outFormData)
-
-      let formData = fields.reduce((res, field) => {
-        if (field.submit) {
-          const [name, value] = field.submit()
-          name && (res[name] = value)
-        }
-        return res
-      }, Object.create(null))
-
-      Object.assign(outFormData, formData)
-
-      trigger('submit', {
-        value: outFormData,
-      })
-    },
-    reset(evt: Event) {
-      // 清空原生组件值
-      getOrClearNativeValue(children, null)
-
-      fields.forEach((field) => field.reset && field.reset())
-      trigger('reset', evt)
-    },
-  })
-  return fields
+  return getOrClearNativeValue
 }

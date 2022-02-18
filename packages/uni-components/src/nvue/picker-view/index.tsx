@@ -69,10 +69,14 @@ export default defineComponent({
     return () => {
       const defaultSlots = slots.default && slots.default()
       columnVNodes = flatVNode(defaultSlots)
+      const style = props.height
+        ? { height: `${parseFloat(props.height as string)}px` }
+        : {}
       return (
         <view
           ref={rootRef}
           class="uni-picker-view"
+          style={style}
           {...{
             preventGesture: true,
           }}
