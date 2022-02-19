@@ -7,7 +7,8 @@ const {
 const {
   getPageSet,
   getJsonFileMap,
-  getChangedJsonFileMap
+  getChangedJsonFileMap,
+  supportGlobalUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 // 主要解决 extends 且未实际引用的组件
@@ -24,6 +25,8 @@ const mpBaiduDynamicLibs = [
   'dynamicLib://myDynamicLib/spintileviewer',
   'dynamicLib://myDynamicLib/vrvideo'
 ]
+
+const AnalyzeDependency = require('@dcloudio/uni-mp-weixin/lib/independent-plugins/optimize-components-position/index');
 
 function analyzeUsingComponents () {
   if (!process.env.UNI_OPT_SUBPACKAGES) {
@@ -109,6 +112,7 @@ function normalizeUsingComponents (file, usingComponents) {
   return usingComponents
 }
 
+const emitFileMap = new Map();
 module.exports = function generateJson (compilation) {
   analyzeUsingComponents()
 
@@ -124,10 +128,9 @@ module.exports = function generateJson (compilation) {
     }
     delete jsonObj.customUsingComponents
     // usingGlobalComponents
-    if (jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents).length) {
+    if (!supportGlobalUsingComponents && jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents).length) {
       jsonObj.usingComponents = Object.assign(jsonObj.usingGlobalComponents, jsonObj.usingComponents)
     }
-    delete jsonObj.usingGlobalComponents
 
     // usingAutoImportComponents
     if (jsonObj.usingAutoImportComponents && Object.keys(jsonObj.usingAutoImportComponents).length) {
@@ -209,7 +212,31 @@ module.exports = function generateJson (compilation) {
     if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && jsonObj.usingComponents) {
       jsonObj.usingComponents = normalizeUsingComponents(name, jsonObj.usingComponents)
     }
-    const source = JSON.stringify(jsonObj, null, 2)
+
+    emitFileMap.set(name, jsonObj);
+  }
+
+
+  // 组件依赖分析
+  (new AnalyzeDependency()).init(emitFileMap, compilation);
+
+  for (const [name, jsonObj] of emitFileMap) {
+    emit(name, jsonObj, compilation);
+    delete jsonObj.usingGlobalComponents;
+  }
+
+  if (process.env.UNI_USING_CACHE && jsonFileMap.size) {
+    setTimeout(() => {
+      require('@dcloudio/uni-cli-shared/lib/cache').store()
+    }, 50)
+  }
+}
+
+function emit (name, jsonObj, compilation) {
+  if (jsonObj.usingComponents) {
+    jsonObj.usingComponents = Object.assign({}, jsonObj.usingComponents);
+  }
+  const source = JSON.stringify(jsonObj, null, 2)
 
     const jsFile = name.replace('.json', '.js')
     if (
@@ -243,11 +270,6 @@ module.exports = function generateJson (compilation) {
       }
     }
 
-    compilation.assets[name] = jsonAsset
-  }
-  if (process.env.UNI_USING_CACHE && jsonFileMap.size) {
-    setTimeout(() => {
-      require('@dcloudio/uni-cli-shared/lib/cache').store()
-    }, 50)
-  }
+  compilation.assets[name] = jsonAsset
 }
+

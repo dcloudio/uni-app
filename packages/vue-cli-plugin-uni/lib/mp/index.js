@@ -22,6 +22,8 @@ function createUniMPPlugin () {
   return new WebpackUniMPPlugin()
 }
 
+const createWxMpIndependentPlugins = require('@dcloudio/uni-mp-weixin/lib/createIndependentPlugin');
+
 function getProvides () {
   const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
   const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
@@ -169,7 +171,8 @@ module.exports = {
     const plugins = [
       new WebpackUniAppPlugin(),
       createUniMPPlugin(),
-      new webpack.ProvidePlugin(getProvides())
+      new webpack.ProvidePlugin(getProvides()),
+      ...createWxMpIndependentPlugins()
     ]
 
     if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && process.env.UNI_SUBPACKGE !== 'main') {
