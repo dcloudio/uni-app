@@ -15,8 +15,32 @@ function addScoped(code: string) {
   return code.replace(/(<style\b[^><]*)>/gi, '$1 scoped>')
 }
 
+function removeScoped(code: string) {
+  if (!SCOPED_RE.test(code)) {
+    return code
+  }
+  return code.replace(/(<style.*)scoped(.*>)/gi, '$1$2')
+}
+
 interface UniCssScopedPluginOptions {
   filter: (id: string) => boolean
+}
+
+export function uniRemoveCssScopedPlugin(
+  { filter }: UniCssScopedPluginOptions = { filter: () => false }
+): Plugin {
+  return {
+    name: 'uni:css-remove-scoped',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!filter(id)) return null
+      debugScoped(id)
+      return {
+        code: removeScoped(code),
+        map: null,
+      }
+    },
+  }
 }
 
 export function uniCssScopedPlugin(

@@ -1,5 +1,6 @@
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { TemplateCompiler } from '@vue/compiler-sfc'
+import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   EXTNAME_VUE_RE,
   UniVitePlugin,
@@ -7,9 +8,24 @@ import {
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   isExternalUrl,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
+import { createNVueCompiler } from '../utils'
+
+const pluginVuePath = require.resolve('@vitejs/plugin-vue')
+const normalizedPluginVuePath = normalizePath(pluginVuePath)
+/**
+ * 每次创建新的 plugin-vue 实例。因为该插件内部会 cache  descriptor，而相同的vue文件在编译到vue页面和nvue页面时，不能共享缓存（条件编译，css scoped等均不同）
+ * @returns
+ */
+export function createPluginVueInstance(options: VueOptions) {
+  delete require.cache[pluginVuePath]
+  delete require.cache[normalizedPluginVuePath]
+  const vuePlugin = require('@vitejs/plugin-vue')
+  return vuePlugin(options)
+}
 
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
@@ -131,6 +147,10 @@ export function initPluginVueOptions(
   // app-nvue 需要启用 customElement 机制来内联 styles
   if (process.env.UNI_COMPILER === 'nvue') {
     vueOptions.customElement = true
+    if (process.env.UNI_RENDERER_NATIVE !== 'appService') {
+      // nvue 需要使用自己的 compiler，来移除 scoped
+      vueOptions.compiler = createNVueCompiler()
+    }
   }
   return vueOptions
 }

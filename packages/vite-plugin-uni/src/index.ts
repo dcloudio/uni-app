@@ -4,7 +4,6 @@ import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import type { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
 import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
-import vuePlugin from '@vitejs/plugin-vue'
 import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import legacyPlugin from '@vitejs/plugin-legacy'
 
@@ -23,6 +22,7 @@ import {
   rewriteCompilerSfcParse,
 } from './utils'
 import {
+  createPluginVueInstance,
   initPluginViteLegacyOptions,
   initPluginVueJsxOptions,
   initPluginVueOptions,
@@ -131,7 +131,9 @@ export default function uniPlugin(
   }
 
   plugins.unshift(
-    vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))
+    createPluginVueInstance(
+      initPluginVueOptions(options, uniPlugins, uniPluginOptions)
+    )
   )
 
   // 仅在 vue 或 纯原生 App.vue 编译时做 copy

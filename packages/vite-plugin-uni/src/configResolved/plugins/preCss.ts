@@ -1,7 +1,7 @@
 import debug from 'debug'
 import { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
-import { preJs, withSourcemap } from '@dcloudio/uni-cli-shared'
+import { preJs, preNVueJs, withSourcemap } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
 
@@ -18,6 +18,8 @@ export function uniPreCssPlugin(
   options: UniPluginFilterOptions
 ): Plugin {
   const filter = createFilter(options.include, options.exclude)
+  const isNVue = (config as any).nvue
+  const preJsFile = isNVue ? preNVueJs : preJs
   return {
     name: 'uni:pre-css',
     transform(code, id) {
@@ -33,7 +35,7 @@ export function uniPreCssPlugin(
       }
       debugPre(id)
       return {
-        code: preJs(code),
+        code: preJsFile(code),
         map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
       }
     },
