@@ -18247,7 +18247,7 @@ function initPageOptions({ meta }) {
 }
 function initNVuePage(id, nvuePageVm, pageInstance) {
     initPageVm(nvuePageVm, pageInstance);
-    addCurrentPage(nvuePageVm);
+    addCurrentPage(initScope(id, nvuePageVm, pageInstance));
     if (id === 1) {
         // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
         if (__uniConfig.splashscreen &&

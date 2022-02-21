@@ -109,7 +109,7 @@ const __pagePath = '${removeExt(filename)}'
 let __pageQuery = {}
 try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
 App.mpType = 'page'
-const app = Vue.createPageApp(App,{$store:getApp().$store,__pageId,__pagePath,__pageQuery})
+const app = Vue.createPageApp(App,{$store:getApp({allowDefault:true}).$store,__pageId,__pagePath,__pageQuery})
 app.provide('__globalStyles', Vue.useCssStyles([...__uniConfig.styles, ...(App.styles||[])]))
 app.mount('#root')`,
     path.join(nvueOutDir(), 'main.js'),

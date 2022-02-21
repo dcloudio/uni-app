@@ -12,6 +12,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 import { initNVueNodeTransforms } from '../../nvue'
+import { initNVueDirectiveTransforms } from '../../nvue/plugin'
 
 export function uniOptions(): UniVitePlugin['uni'] {
   const isNVueCompiler = process.env.UNI_COMPILER === 'nvue'
@@ -53,6 +54,9 @@ export function uniOptions(): UniVitePlugin['uni'] {
         transformMatchMedia,
         transformPageHead,
       ],
+      directiveTransforms: {
+        ...(isNVueCompiler ? initNVueDirectiveTransforms() : {}),
+      },
     },
   }
 }

@@ -52,7 +52,7 @@ export function setupPage(component: VuePageComponent) {
   return component
 }
 
-function initScope(
+export function initScope(
   pageId: number,
   vm: ComponentPublicInstance,
   pageInstance: Page.PageInstance['$page']

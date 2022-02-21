@@ -19,6 +19,7 @@ import { addCurrentPage, getAllPages } from './getCurrentPages'
 import { getBaseSystemInfo } from '../../api/base/getBaseSystemInfo'
 import { preloadWebviews, PreloadWebviewObject } from './preLoad'
 import { navigateFinish } from '../../api/route/utils'
+import { initScope } from './setup'
 
 interface RegisterPageOptions {
   url: string
@@ -154,7 +155,7 @@ function initNVuePage(
   pageInstance: Page.PageInstance['$page']
 ) {
   initPageVm(nvuePageVm, pageInstance)
-  addCurrentPage(nvuePageVm)
+  addCurrentPage(initScope(id, nvuePageVm, pageInstance))
   if (id === 1) {
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
     if (

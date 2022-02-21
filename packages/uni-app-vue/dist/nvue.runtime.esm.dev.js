@@ -9433,6 +9433,11 @@ function parseStyleSheet(_ref22) {
   var component = type;
 
   if (!component.__styles) {
+    // nvue 和 vue 混合开发时，__globalStyles注入的是未处理过的
+    if (appContext && isArray(appContext.provides.__globalStyles)) {
+      appContext.provides.__globalStyles = useCssStyles(appContext.provides.__globalStyles);
+    }
+
     if (component.mpType === 'page' && appContext) {
       // 如果是页面组件，则直接使用全局样式
       component.__styles = appContext.provides.__globalStyles;

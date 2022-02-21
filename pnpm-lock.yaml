@@ -207,6 +207,7 @@ importers:
       '@types/fs-extra': ^9.0.13
       '@vitejs/plugin-vue': ^2.2.2
       '@vue/compiler-core': 3.2.31
+      '@vue/compiler-dom': 3.2.31
       '@vue/compiler-sfc': 3.2.31
       debug: ^4.3.3
       esbuild: ^0.14.14
@@ -221,6 +222,7 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.1.2
       '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vue/compiler-dom': 3.2.31
       '@vue/compiler-sfc': 3.2.31
       debug: 4.3.3
       fs-extra: 10.0.0

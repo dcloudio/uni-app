@@ -25,6 +25,7 @@ import { createConfigResolved } from '../../plugin/configResolved'
 import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
 import { external, globals } from '../utils'
 import { transformRootNode } from './transforms/transformRootNode'
+import { transformModel } from './transforms/vModel'
 
 const uTags = {
   text: 'u-text',
@@ -46,6 +47,12 @@ export function initNVueNodeTransforms() {
     transformRenderWhole,
     transformAppendAsTree,
   ]
+}
+
+export function initNVueDirectiveTransforms() {
+  return {
+    model: transformModel,
+  }
 }
 
 export function uniAppNVuePlugin({
