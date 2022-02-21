@@ -159,19 +159,19 @@ const NVUE_CUSTOM_COMPONENTS = [
   'swiper-item',
   'swiper',
   'switch',
-  'slider',
+  // 'slider',
   'picker-view',
   'picker-view-column',
 ]
 
 export function isAppNVueNativeTag(tag: string) {
+  if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
   if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
     return false
   }
   if (isBuiltInComponent(tag)) {
-    return true
-  }
-  if (NVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
   }
   // u-text,u-video...

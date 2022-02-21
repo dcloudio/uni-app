@@ -3968,7 +3968,7 @@ var Swiper = defineComponent({
       return createVNode("div", {
         "ref": rootRef,
         "class": "uni-swiper"
-      }, [createVNode(resolveComponent("slider"), mergeProps({
+      }, [createVNode("slider", mergeProps({
         "class": "uni-swiper-slider"
       }, {
         autoPlay: props2.autoplay,
@@ -3979,12 +3979,10 @@ var Swiper = defineComponent({
         infinite: props2.circular,
         vertical: props2.vertical,
         scrollable: !props2.disableTouch
-      }, listeners), {
-        default: () => [swiperItems, createVNode("indicator", {
-          "class": "uni-swiper-dots",
-          "styles": indicatorStyle
-        }, null)]
-      })]);
+      }, listeners), [swiperItems, createVNode("indicator", {
+        "class": "uni-swiper-dots",
+        "styles": indicatorStyle
+      }, null)])]);
     };
   }
 });
