@@ -8107,256 +8107,6 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$5 = {
-  points: {
-    type: Array,
-    require: true
-  },
-  color: {
-    type: String,
-    default: "#000000"
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  dottedLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowIconPath: {
-    type: String,
-    default: ""
-  },
-  borderColor: {
-    type: String,
-    default: "#000000"
-  },
-  borderWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  colorList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-var MapPolyline = /* @__PURE__ */ defineSystemComponent({
-  name: "MapPolyline",
-  props: props$5,
-  setup(props2) {
-    const onMapReady = vue.inject("onMapReady");
-    let polyline;
-    let polylineBorder;
-    function removePolyline() {
-      if (polyline) {
-        polyline.setMap(null);
-      }
-      if (polylineBorder) {
-        polylineBorder.setMap(null);
-      }
-    }
-    onMapReady((map, maps) => {
-      function updatePolyline(option) {
-        removePolyline();
-        addPolyline(option);
-      }
-      function addPolyline(option) {
-        const path = [];
-        option.points.forEach((point) => {
-          path.push(new maps.LatLng(point.latitude, point.longitude));
-        });
-        const strokeWeight = Number(option.width) || 1;
-        polyline = new maps.Polyline({
-          map,
-          clickable: false,
-          path,
-          strokeWeight,
-          strokeColor: option.color || void 0,
-          strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        });
-        const borderWidth = Number(option.borderWidth) || 0;
-        if (borderWidth) {
-          polylineBorder = new maps.Polyline({
-            map,
-            clickable: false,
-            path,
-            strokeWeight: strokeWeight + borderWidth * 2,
-            strokeColor: option.borderColor || void 0,
-            strokeDashStyle: option.dottedLine ? "dash" : "solid"
-          });
-        }
-      }
-      addPolyline(props2);
-      vue.watch(props2, updatePolyline);
-    });
-    return () => {
-      return null;
-    };
-  }
-});
-const props$4 = {
-  latitude: {
-    type: [Number, String],
-    require: true
-  },
-  longitude: {
-    type: [Number, String],
-    require: true
-  },
-  color: {
-    type: String,
-    default: ""
-  },
-  fillColor: {
-    type: String,
-    default: ""
-  },
-  radius: {
-    type: [Number, String],
-    require: true
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-var MapCircle = /* @__PURE__ */ defineSystemComponent({
-  name: "MapCircle",
-  props: props$4,
-  setup(props2) {
-    const onMapReady = vue.inject("onMapReady");
-    let circle;
-    function removeCircle() {
-      if (circle) {
-        circle.setMap(null);
-      }
-    }
-    onMapReady((map, maps) => {
-      function updateCircle(option) {
-        removeCircle();
-        addCircle(option);
-      }
-      function addCircle(option) {
-        const center = new maps.LatLng(option.latitude, option.longitude);
-        function getColor(color) {
-          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
-          if ("Color" in maps) {
-            if (c && c.length) {
-              return maps.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
-            } else {
-              return void 0;
-            }
-          }
-          return color;
-        }
-        circle = new maps.Circle({
-          map,
-          center,
-          clickable: false,
-          radius: option.radius,
-          strokeWeight: Number(option.strokeWidth) || 1,
-          fillColor: getColor(option.fillColor) || getColor("#00000001"),
-          strokeColor: getColor(option.color) || "#000000",
-          strokeDashStyle: "solid"
-        });
-      }
-      addCircle(props2);
-      vue.watch(props2, updateCircle);
-    });
-    return () => {
-      return null;
-    };
-  }
-});
-const props$3 = {
-  id: {
-    type: [Number, String],
-    default: ""
-  },
-  position: {
-    type: Object,
-    require: true
-  },
-  iconPath: {
-    type: String,
-    require: true
-  },
-  clickable: {
-    type: [Boolean, String],
-    default: ""
-  }
-};
-var MapControl = /* @__PURE__ */ defineSystemComponent({
-  name: "MapControl",
-  props: props$3,
-  setup(props2) {
-    const onMapReady = vue.inject("onMapReady");
-    let control;
-    function removeControl() {
-      if (control) {
-        control.remove();
-      }
-    }
-    onMapReady((map, maps, trigger) => {
-      function updateControl(option) {
-        removeControl();
-        addControl(option);
-      }
-      function addControl(option) {
-        const position = option.position || {};
-        control = document.createElement("div");
-        const img = new Image();
-        control.appendChild(img);
-        const style = control.style;
-        style.position = "absolute";
-        style.width = "0";
-        style.height = "0";
-        img.onload = () => {
-          if (option.position.width) {
-            img.width = option.position.width;
-          }
-          if (option.position.height) {
-            img.height = option.position.height;
-          }
-          const style2 = img.style;
-          style2.position = "absolute";
-          style2.left = (position.left || 0) + "px";
-          style2.top = (position.top || 0) + "px";
-          style2.maxWidth = "initial";
-        };
-        img.src = getRealPath(option.iconPath);
-        img.onclick = function($event) {
-          if (option.clickable) {
-            trigger("controltap", $event, {
-              controlId: option.id
-            });
-          }
-        };
-        map.controls[maps.ControlPosition.TOP_LEFT].push(control);
-      }
-      addControl(props2);
-      vue.watch(props2, updateControl);
-    });
-    return () => {
-      return null;
-    };
-  }
-});
 const CONTEXT_ID = "MAP_LOCATION";
 var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
@@ -8379,72 +8129,15 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$2 = {
-  id: {
-    type: String,
-    default: ""
-  },
-  latitude: {
-    type: [String, Number],
-    default: 0
-  },
-  longitude: {
-    type: [String, Number],
-    default: 0
-  },
-  scale: {
-    type: [String, Number],
-    default: 16
-  },
-  markers: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  includePoints: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polyline: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  circles: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  controls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  showLocation: {
-    type: [Boolean, String],
-    default: false
-  },
-  libraries: {
-    type: Array,
-    default() {
-      return [];
-    }
-  }
-};
 function getPoints(points) {
   const newPoints = [];
   if (Array.isArray(points)) {
     points.forEach((point) => {
-      if (point && point.latitude && point.longitude) {
+      const { latitude, longitude } = point || {};
+      if (latitude && longitude) {
         newPoints.push({
-          latitude: point.latitude,
-          longitude: point.longitude
+          latitude,
+          longitude
         });
       }
     });
@@ -8469,6 +8162,7 @@ function useMap(props2, rootRef, emit2) {
   const mapRef = vue.ref(null);
   let maps;
   let map;
+  let _maps = vue.ref(null);
   const state = vue.reactive({
     latitude: Number(props2.latitude),
     longitude: Number(props2.longitude),
@@ -8501,10 +8195,7 @@ function useMap(props2, rootRef, emit2) {
   });
   function updateBounds() {
     const bounds = new maps.LatLngBounds();
-    state.includePoints.forEach(({
-      latitude,
-      longitude
-    }) => {
+    state.includePoints.forEach(({ latitude, longitude }) => {
       const latLng = new maps.LatLng(latitude, longitude);
       bounds.extend(latLng);
     });
@@ -8606,36 +8297,404 @@ function useMap(props2, rootRef, emit2) {
   vue.provide("removeMapChidlContext", removeMapChidlContext);
   return {
     state,
-    mapRef
+    mapRef,
+    _maps
   };
 }
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Map",
-  props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const {
-      mapRef
-    } = useMap(props2);
+var props$5 = {
+  id: {
+    type: String,
+    default: ""
+  },
+  latitude: {
+    type: [String, Number],
+    default: 0
+  },
+  longitude: {
+    type: [String, Number],
+    default: 0
+  },
+  scale: {
+    type: [String, Number],
+    default: 16
+  },
+  markers: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  includePoints: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polyline: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  circles: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  controls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  showLocation: {
+    type: [Boolean, String],
+    default: false
+  },
+  libraries: {
+    type: Array,
+    default() {
+      return [];
+    }
+  }
+};
+const props$4 = {
+  points: {
+    type: Array,
+    require: true
+  },
+  color: {
+    type: String,
+    default: "#000000"
+  },
+  width: {
+    type: [Number, String],
+    default: ""
+  },
+  dottedLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowIconPath: {
+    type: String,
+    default: ""
+  },
+  borderColor: {
+    type: String,
+    default: "#000000"
+  },
+  borderWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  colorList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+var MapPolyline = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolyline",
+  props: props$4,
+  setup(props2) {
+    const onMapReady = vue.inject("onMapReady");
+    let polyline;
+    let polylineBorder;
+    function removePolyline() {
+      if (polyline) {
+        polyline.setMap(null);
+      }
+      if (polylineBorder) {
+        polylineBorder.setMap(null);
+      }
+    }
+    onMapReady((map, maps) => {
+      function updatePolyline(option) {
+        removePolyline();
+        addPolyline(option);
+      }
+      function addPolyline(option) {
+        const path = [];
+        option.points.forEach((point) => {
+          path.push(new maps.LatLng(point.latitude, point.longitude));
+        });
+        const strokeWeight = Number(option.width) || 1;
+        polyline = new maps.Polyline({
+          map,
+          clickable: false,
+          path,
+          strokeWeight,
+          strokeColor: option.color || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        });
+        const borderWidth = Number(option.borderWidth) || 0;
+        if (borderWidth) {
+          polylineBorder = new maps.Polyline({
+            map,
+            clickable: false,
+            path,
+            strokeWeight: strokeWeight + borderWidth * 2,
+            strokeColor: option.borderColor || void 0,
+            strokeDashStyle: option.dottedLine ? "dash" : "solid"
+          });
+        }
+      }
+      addPolyline(props2);
+      vue.watch(props2, updatePolyline);
+    });
     return () => {
-      return vue.createVNode("uni-map", {
-        "ref": rootRef,
-        "id": props2.id
-      }, [vue.createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => item.id && vue.createVNode(MapMarker, vue.mergeProps({
-        "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, item, null, 16)), props2.showLocation && vue.createVNode(MapLocation, null, null), vue.createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
-      }, [slots.default && slots.default()])], 8, ["id"]);
+      return null;
     };
   }
 });
+const props$3 = {
+  latitude: {
+    type: [Number, String],
+    require: true
+  },
+  longitude: {
+    type: [Number, String],
+    require: true
+  },
+  color: {
+    type: String,
+    default: ""
+  },
+  fillColor: {
+    type: String,
+    default: ""
+  },
+  radius: {
+    type: [Number, String],
+    require: true
+  },
+  strokeWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+var MapCircle = /* @__PURE__ */ defineSystemComponent({
+  name: "MapCircle",
+  props: props$3,
+  setup(props2) {
+    const onMapReady = vue.inject("onMapReady");
+    let circle;
+    function removeCircle() {
+      if (circle) {
+        circle.setMap(null);
+      }
+    }
+    onMapReady((map, maps) => {
+      function updateCircle(option) {
+        removeCircle();
+        addCircle(option);
+      }
+      function addCircle(option) {
+        const center = new maps.LatLng(option.latitude, option.longitude);
+        function getColor(color) {
+          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
+          if ("Color" in maps) {
+            if (c && c.length) {
+              return maps.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
+            } else {
+              return void 0;
+            }
+          }
+          return color;
+        }
+        circle = new maps.Circle({
+          map,
+          center,
+          clickable: false,
+          radius: option.radius,
+          strokeWeight: Number(option.strokeWidth) || 1,
+          fillColor: getColor(option.fillColor) || getColor("#00000001"),
+          strokeColor: getColor(option.color) || "#000000",
+          strokeDashStyle: "solid"
+        });
+      }
+      addCircle(props2);
+      vue.watch(props2, updateCircle);
+    });
+    return () => {
+      return null;
+    };
+  }
+});
+const props$2 = {
+  id: {
+    type: [Number, String],
+    default: ""
+  },
+  position: {
+    type: Object,
+    require: true
+  },
+  iconPath: {
+    type: String,
+    require: true
+  },
+  clickable: {
+    type: [Boolean, String],
+    default: ""
+  }
+};
+var MapControl = /* @__PURE__ */ defineSystemComponent({
+  name: "MapControl",
+  props: props$2,
+  setup(props2) {
+    const onMapReady = vue.inject("onMapReady");
+    let control;
+    function removeControl() {
+      if (control) {
+        control.remove();
+      }
+    }
+    onMapReady((map, maps, trigger) => {
+      function updateControl(option) {
+        removeControl();
+        addControl(option);
+      }
+      function addControl(option) {
+        const position = option.position || {};
+        control = document.createElement("div");
+        const img = new Image();
+        control.appendChild(img);
+        const style = control.style;
+        style.position = "absolute";
+        style.width = "0";
+        style.height = "0";
+        img.onload = () => {
+          if (option.position.width) {
+            img.width = option.position.width;
+          }
+          if (option.position.height) {
+            img.height = option.position.height;
+          }
+          const style2 = img.style;
+          style2.position = "absolute";
+          style2.left = (position.left || 0) + "px";
+          style2.top = (position.top || 0) + "px";
+          style2.maxWidth = "initial";
+        };
+        img.src = getRealPath(option.iconPath);
+        img.onclick = function($event) {
+          if (option.clickable) {
+            trigger("controltap", $event, {
+              controlId: option.id
+            });
+          }
+        };
+        map.controls[maps.ControlPosition.TOP_LEFT].push(control);
+      }
+      addControl(props2);
+      vue.watch(props2, updateControl);
+    });
+    return () => {
+      return null;
+    };
+  }
+});
+var _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main$1 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Map",
+  props: props$5,
+  emits: [
+    "markertap",
+    "labeltap",
+    "callouttap",
+    "controltap",
+    "regionchange",
+    "tap",
+    "click",
+    "updated",
+    "update:scale",
+    "update:latitude",
+    "update:longitude"
+  ],
+  components: {
+    MapMarker,
+    MapPolyline,
+    MapCircle,
+    MapControl,
+    MapLocation
+  },
+  setup(props2, { emit: emit2 }) {
+    const rootRef = vue.ref(null);
+    const { mapRef, _maps } = useMap(props2);
+    const validMarkers = vue.computed(() => props2.markers.filter((item) => !!item.id));
+    return {
+      rootRef,
+      mapRef,
+      validMarkers,
+      nativeMapIns: _maps
+    };
+  }
+});
+const _hoisted_1$1 = ["id"];
+const _hoisted_2$1 = {
+  ref: "mapRef",
+  style: { "width": "100%", "height": "100%", "position": "relative", "overflow": "hidden" }
+};
+const _hoisted_3$1 = { style: { "position": "absolute", "top": "0", "width": "100%", "height": "100%", "overflow": "hidden", "pointer-events": "none" } };
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_MapMarker = vue.resolveComponent("MapMarker");
+  const _component_MapPolyline = vue.resolveComponent("MapPolyline");
+  const _component_MapCircle = vue.resolveComponent("MapCircle");
+  const _component_MapControl = vue.resolveComponent("MapControl");
+  const _component_MapLocation = vue.resolveComponent("MapLocation");
+  return vue.openBlock(), vue.createElementBlock("uni-map", {
+    ref: "rootRef",
+    id: _ctx.id
+  }, [
+    vue.createElementVNode("div", _hoisted_2$1, null, 512),
+    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.validMarkers, (item) => {
+      return vue.openBlock(), vue.createBlock(_component_MapMarker, vue.mergeProps({
+        key: item.id
+      }, item), null, 16);
+    }), 128)),
+    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.polyline, (item) => {
+      return vue.openBlock(), vue.createBlock(_component_MapPolyline, vue.mergeProps({
+        key: JSON.stringify(item)
+      }, item), null, 16);
+    }), 128)),
+    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.circles, (item) => {
+      return vue.openBlock(), vue.createBlock(_component_MapCircle, vue.mergeProps({
+        key: JSON.stringify(item)
+      }, item), null, 16);
+    }), 128)),
+    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.controls, (item) => {
+      return vue.openBlock(), vue.createBlock(_component_MapControl, vue.mergeProps({
+        key: JSON.stringify(item)
+      }, item), null, 16);
+    }), 128)),
+    _ctx.showLocation ? (vue.openBlock(), vue.createBlock(_component_MapLocation, { key: 0 })) : vue.createCommentVNode("", true),
+    vue.createElementVNode("div", _hoisted_3$1, [
+      vue.renderSlot(_ctx.$slots, "default")
+    ])
+  ], 8, _hoisted_1$1);
+}
+var index$c = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
 const props$1 = {
   scrollTop: {
     type: [String, Number],
@@ -10788,13 +10847,6 @@ function usePageHeadSearchInput({
     onKeyup
   };
 }
-var _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
 const _sfc_main = {
   name: "PageRefresh",
   setup() {

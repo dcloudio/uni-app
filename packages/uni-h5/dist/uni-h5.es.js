@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, createElementVNode, createCommentVNode, renderSlot, normalizeStyle } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -15319,593 +15319,6 @@ function loadMaps(libraries, callback) {
     document.body.appendChild(script);
   }
 }
-const props$d = {
-  id: {
-    type: [Number, String],
-    default: ""
-  },
-  latitude: {
-    type: [Number, String],
-    require: true
-  },
-  longitude: {
-    type: [Number, String],
-    require: true
-  },
-  title: {
-    type: String,
-    default: ""
-  },
-  iconPath: {
-    type: String,
-    require: true
-  },
-  rotate: {
-    type: [Number, String],
-    default: 0
-  },
-  alpha: {
-    type: [Number, String],
-    default: 1
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  height: {
-    type: [Number, String],
-    default: ""
-  },
-  callout: {
-    type: Object,
-    default: null
-  },
-  label: {
-    type: Object,
-    default: null
-  },
-  anchor: {
-    type: Object,
-    default: null
-  },
-  clusterId: {
-    type: [Number, String],
-    default: ""
-  },
-  customCallout: {
-    type: Object,
-    default: null
-  },
-  ariaLabel: {
-    type: String,
-    default: ""
-  }
-};
-function useMarkerLabelStyle(id2) {
-  const className = "uni-map-marker-label-" + id2;
-  const styleEl = document.createElement("style");
-  styleEl.id = className;
-  document.head.appendChild(styleEl);
-  onUnmounted(() => {
-    styleEl.remove();
-  });
-  return function updateMarkerLabelStyle(style) {
-    const newStyle = Object.assign({}, style, {
-      position: "absolute",
-      top: "70px",
-      borderStyle: "solid"
-    });
-    const div = document.createElement("div");
-    Object.keys(newStyle).forEach((key) => {
-      div.style[key] = newStyle[key] || "";
-    });
-    styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
-    return className;
-  };
-}
-var MapMarker = /* @__PURE__ */ defineSystemComponent({
-  name: "MapMarker",
-  props: props$d,
-  setup(props2) {
-    const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
-    const onMapReady = inject("onMapReady");
-    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
-    let marker;
-    function removeMarker() {
-      if (marker) {
-        if (marker.label && "setMap" in marker.label) {
-          marker.label.setMap(null);
-        }
-        if (marker.callout) {
-          marker.callout.setMap(null);
-        }
-        marker.setMap(null);
-      }
-    }
-    onMapReady((map, maps2, trigger) => {
-      function updateMarker(option) {
-        const title = option.title;
-        const position = new maps2.LatLng(option.latitude, option.longitude);
-        const img = new Image();
-        img.onload = () => {
-          const anchor = option.anchor || {};
-          let icon;
-          let w;
-          let h;
-          let top;
-          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
-          let y = typeof anchor.y === "number" ? anchor.y : 1;
-          if (option.iconPath && (option.width || option.height)) {
-            w = option.width || img.width / img.height * option.height;
-            h = option.height || img.height / img.width * option.width;
-          } else {
-            w = img.width / 2;
-            h = img.height / 2;
-          }
-          top = h - (h - y * h);
-          if ("MarkerImage" in maps2) {
-            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h), new maps2.Size(w, h));
-          } else {
-            icon = {
-              url: img.src,
-              anchor: new maps2.Point(x, y),
-              size: new maps2.Size(w, h)
-            };
-          }
-          marker.setPosition(position);
-          marker.setIcon(icon);
-          if ("setRotation" in marker) {
-            marker.setRotation(option.rotate || 0);
-          }
-          const labelOpt = option.label || {};
-          if ("label" in marker) {
-            marker.label.setMap(null);
-            delete marker.label;
-          }
-          let label;
-          if (labelOpt.content) {
-            const labelStyle = {
-              borderColor: labelOpt.borderColor,
-              borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
-              padding: (Number(labelOpt.padding) || 0) + "px",
-              borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
-              backgroundColor: labelOpt.bgColor,
-              color: labelOpt.color,
-              fontSize: (labelOpt.fontSize || 14) + "px",
-              lineHeight: (labelOpt.fontSize || 14) + "px",
-              marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
-              marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
-            };
-            if ("Label" in maps2) {
-              label = new maps2.Label({
-                position,
-                map,
-                clickable: false,
-                content: labelOpt.content,
-                style: labelStyle
-              });
-              marker.label = label;
-            } else if ("setLabel" in marker) {
-              const className = updateMarkerLabelStyle(labelStyle);
-              marker.setLabel({
-                text: labelOpt.content,
-                color: labelStyle.color,
-                fontSize: labelStyle.fontSize,
-                className
-              });
-            }
-          }
-          const calloutOpt = option.callout || {};
-          let callout = marker.callout;
-          let calloutStyle;
-          if (calloutOpt.content || title) {
-            const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
-            calloutStyle = calloutOpt.content ? {
-              position,
-              map,
-              top,
-              content: calloutOpt.content,
-              color: calloutOpt.color,
-              fontSize: calloutOpt.fontSize,
-              borderRadius: calloutOpt.borderRadius,
-              bgColor: calloutOpt.bgColor,
-              padding: calloutOpt.padding,
-              boxShadow: calloutOpt.boxShadow || boxShadow,
-              display: calloutOpt.display
-            } : {
-              position,
-              map,
-              top,
-              content: title,
-              boxShadow
-            };
-            if (callout) {
-              callout.setOption(calloutStyle);
-            } else {
-              callout = marker.callout = new maps2.Callout(calloutStyle);
-              callout.div.onclick = function($event) {
-                if (id2 !== "") {
-                  trigger("callouttap", $event, {
-                    markerId: Number(id2)
-                  });
-                }
-                $event.stopPropagation();
-                $event.preventDefault();
-              };
-            }
-          } else {
-            if (callout) {
-              callout.setMap(null);
-              delete marker.callout;
-            }
-          }
-        };
-        if (option.iconPath) {
-          img.src = getRealPath(option.iconPath);
-        } else {
-          console.error("Marker.iconPath is required.");
-        }
-      }
-      function addMarker(props3) {
-        marker = new maps2.Marker({
-          map,
-          flat: true,
-          autoRotation: false
-        });
-        updateMarker(props3);
-        maps2.event.addListener(marker, "click", () => {
-          const callout = marker.callout;
-          if (callout) {
-            const div = callout.div;
-            const parent = div.parentNode;
-            if (!callout.alwaysVisible) {
-              callout.set("visible", !callout.visible);
-            }
-            if (callout.visible) {
-              parent.removeChild(div);
-              parent.appendChild(div);
-            }
-          }
-          if (id2) {
-            trigger("markertap", {}, {
-              markerId: Number(id2)
-            });
-          }
-        });
-      }
-      addMarker(props2);
-      watch(props2, updateMarker);
-    });
-    if (id2) {
-      const addMapChidlContext = inject("addMapChidlContext");
-      const removeMapChidlContext = inject("removeMapChidlContext");
-      const context = {
-        id: id2,
-        translate(data) {
-          onMapReady((map, maps2, trigger) => {
-            const destination = data.destination;
-            const duration = data.duration;
-            const autoRotate = !!data.autoRotate;
-            let rotate = Number(data.rotate) || 0;
-            let rotation = 0;
-            if ("getRotation" in marker) {
-              rotation = marker.getRotation();
-            }
-            const a2 = marker.getPosition();
-            const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
-            const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
-            const speed = distance2 / time;
-            const movingEvent = maps2.event.addListener(marker, "moving", (e2) => {
-              const latLng = e2.latLng;
-              const label = marker.label;
-              if (label) {
-                label.setPosition(latLng);
-              }
-              const callout = marker.callout;
-              if (callout) {
-                callout.setPosition(latLng);
-              }
-            });
-            const event = maps2.event.addListener(marker, "moveend", () => {
-              event.remove();
-              movingEvent.remove();
-              marker.lastPosition = a2;
-              marker.setPosition(b);
-              const label = marker.label;
-              if (label) {
-                label.setPosition(b);
-              }
-              const callout = marker.callout;
-              if (callout) {
-                callout.setPosition(b);
-              }
-              const cb = data.animationEnd;
-              if (typeof cb === "function") {
-                cb();
-              }
-            });
-            let lastRtate = 0;
-            if (autoRotate) {
-              if (marker.lastPosition) {
-                lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
-              }
-              rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
-            }
-            if ("setRotation" in marker) {
-              marker.setRotation(rotation + rotate);
-            }
-            if ("moveTo" in marker) {
-              marker.moveTo(b, speed);
-            } else {
-              marker.setPosition(b);
-              maps2.event.trigger(marker, "moveend", {});
-            }
-          });
-        }
-      };
-      addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
-    }
-    onUnmounted(removeMarker);
-    return () => {
-      return null;
-    };
-  }
-});
-const props$c = {
-  points: {
-    type: Array,
-    require: true
-  },
-  color: {
-    type: String,
-    default: "#000000"
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  dottedLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowIconPath: {
-    type: String,
-    default: ""
-  },
-  borderColor: {
-    type: String,
-    default: "#000000"
-  },
-  borderWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  colorList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-var MapPolyline = /* @__PURE__ */ defineSystemComponent({
-  name: "MapPolyline",
-  props: props$c,
-  setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let polyline;
-    let polylineBorder;
-    function removePolyline() {
-      if (polyline) {
-        polyline.setMap(null);
-      }
-      if (polylineBorder) {
-        polylineBorder.setMap(null);
-      }
-    }
-    onMapReady((map, maps2) => {
-      function updatePolyline(option) {
-        removePolyline();
-        addPolyline(option);
-      }
-      function addPolyline(option) {
-        const path = [];
-        option.points.forEach((point) => {
-          path.push(new maps2.LatLng(point.latitude, point.longitude));
-        });
-        const strokeWeight = Number(option.width) || 1;
-        polyline = new maps2.Polyline({
-          map,
-          clickable: false,
-          path,
-          strokeWeight,
-          strokeColor: option.color || void 0,
-          strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        });
-        const borderWidth = Number(option.borderWidth) || 0;
-        if (borderWidth) {
-          polylineBorder = new maps2.Polyline({
-            map,
-            clickable: false,
-            path,
-            strokeWeight: strokeWeight + borderWidth * 2,
-            strokeColor: option.borderColor || void 0,
-            strokeDashStyle: option.dottedLine ? "dash" : "solid"
-          });
-        }
-      }
-      addPolyline(props2);
-      watch(props2, updatePolyline);
-    });
-    onUnmounted(removePolyline);
-    return () => {
-      return null;
-    };
-  }
-});
-const props$b = {
-  latitude: {
-    type: [Number, String],
-    require: true
-  },
-  longitude: {
-    type: [Number, String],
-    require: true
-  },
-  color: {
-    type: String,
-    default: ""
-  },
-  fillColor: {
-    type: String,
-    default: ""
-  },
-  radius: {
-    type: [Number, String],
-    require: true
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-var MapCircle = /* @__PURE__ */ defineSystemComponent({
-  name: "MapCircle",
-  props: props$b,
-  setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let circle;
-    function removeCircle() {
-      if (circle) {
-        circle.setMap(null);
-      }
-    }
-    onMapReady((map, maps2) => {
-      function updateCircle(option) {
-        removeCircle();
-        addCircle(option);
-      }
-      function addCircle(option) {
-        const center = new maps2.LatLng(option.latitude, option.longitude);
-        function getColor(color) {
-          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
-          if ("Color" in maps2) {
-            if (c && c.length) {
-              return maps2.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
-            } else {
-              return void 0;
-            }
-          }
-          return color;
-        }
-        circle = new maps2.Circle({
-          map,
-          center,
-          clickable: false,
-          radius: option.radius,
-          strokeWeight: Number(option.strokeWidth) || 1,
-          fillColor: getColor(option.fillColor) || getColor("#00000001"),
-          strokeColor: getColor(option.color) || "#000000",
-          strokeDashStyle: "solid"
-        });
-      }
-      addCircle(props2);
-      watch(props2, updateCircle);
-    });
-    onUnmounted(removeCircle);
-    return () => {
-      return null;
-    };
-  }
-});
-const props$a = {
-  id: {
-    type: [Number, String],
-    default: ""
-  },
-  position: {
-    type: Object,
-    require: true
-  },
-  iconPath: {
-    type: String,
-    require: true
-  },
-  clickable: {
-    type: [Boolean, String],
-    default: ""
-  }
-};
-var MapControl = /* @__PURE__ */ defineSystemComponent({
-  name: "MapControl",
-  props: props$a,
-  setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let control;
-    function removeControl() {
-      if (control) {
-        control.remove();
-      }
-    }
-    onMapReady((map, maps2, trigger) => {
-      function updateControl(option) {
-        removeControl();
-        addControl(option);
-      }
-      function addControl(option) {
-        const position = option.position || {};
-        control = document.createElement("div");
-        const img = new Image();
-        control.appendChild(img);
-        const style = control.style;
-        style.position = "absolute";
-        style.width = "0";
-        style.height = "0";
-        img.onload = () => {
-          if (option.position.width) {
-            img.width = option.position.width;
-          }
-          if (option.position.height) {
-            img.height = option.position.height;
-          }
-          const style2 = img.style;
-          style2.position = "absolute";
-          style2.left = (position.left || 0) + "px";
-          style2.top = (position.top || 0) + "px";
-          style2.maxWidth = "initial";
-        };
-        img.src = getRealPath(option.iconPath);
-        img.onclick = function($event) {
-          if (option.clickable) {
-            trigger("controltap", $event, {
-              controlId: option.id
-            });
-          }
-        };
-        map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
-      }
-      addControl(props2);
-      watch(props2, updateControl);
-    });
-    onUnmounted(removeControl);
-    return () => {
-      return null;
-    };
-  }
-});
 const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function(callback) {
@@ -16426,7 +15839,7 @@ function usePopup(props2, {
   });
   return visible;
 }
-const props$9 = {
+const props$d = {
   title: {
     type: String,
     default: ""
@@ -16468,7 +15881,7 @@ const props$9 = {
   }
 };
 var modal = /* @__PURE__ */ defineComponent({
-  props: props$9,
+  props: props$d,
   setup(props2, {
     emit: emit2
   }) {
@@ -16976,7 +16389,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$8 = {
+const props$c = {
   src: {
     type: String,
     default: ""
@@ -16984,7 +16397,7 @@ const props$8 = {
 };
 var ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$8,
+  props: props$c,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -17074,7 +16487,7 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$7 = {
+const props$b = {
   urls: {
     type: Array,
     default() {
@@ -17093,7 +16506,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$7,
+  props: props$b,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -17845,7 +17258,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
   });
 }, GetLocationProtocol, GetLocationOptions);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$6 = {
+const props$a = {
   latitude: {
     type: Number
   },
@@ -17902,7 +17315,7 @@ function useState$2(props2) {
 }
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$6,
+  props: props$a,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18010,7 +17423,7 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { 
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$5 = {
+const props$9 = {
   latitude: {
     type: Number
   },
@@ -18156,7 +17569,7 @@ function useList(state2) {
 }
 var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$5,
+  props: props$9,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18441,7 +17854,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, {
     reject(`${url} ${String(err)}`);
   });
 }, PreloadPageProtocol);
-const props$4 = {
+const props$8 = {
   title: {
     type: String,
     default: ""
@@ -18471,7 +17884,7 @@ const props$4 = {
 const ToastIconClassName = "uni-toast__icon";
 var Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$4,
+  props: props$8,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -18691,7 +18104,7 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
-const props$3 = {
+const props$7 = {
   title: {
     type: String,
     default: ""
@@ -18721,7 +18134,7 @@ const props$3 = {
 };
 var actionSheet = /* @__PURE__ */ defineComponent({
   name: "ActionSheet",
-  props: props$3,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -19969,6 +19382,340 @@ var api = {
   login,
   getProvider
 };
+const props$6 = {
+  id: {
+    type: [Number, String],
+    default: ""
+  },
+  latitude: {
+    type: [Number, String],
+    require: true
+  },
+  longitude: {
+    type: [Number, String],
+    require: true
+  },
+  title: {
+    type: String,
+    default: ""
+  },
+  iconPath: {
+    type: String,
+    require: true
+  },
+  rotate: {
+    type: [Number, String],
+    default: 0
+  },
+  alpha: {
+    type: [Number, String],
+    default: 1
+  },
+  width: {
+    type: [Number, String],
+    default: ""
+  },
+  height: {
+    type: [Number, String],
+    default: ""
+  },
+  callout: {
+    type: Object,
+    default: null
+  },
+  label: {
+    type: Object,
+    default: null
+  },
+  anchor: {
+    type: Object,
+    default: null
+  },
+  clusterId: {
+    type: [Number, String],
+    default: ""
+  },
+  customCallout: {
+    type: Object,
+    default: null
+  },
+  ariaLabel: {
+    type: String,
+    default: ""
+  }
+};
+function useMarkerLabelStyle(id2) {
+  const className = "uni-map-marker-label-" + id2;
+  const styleEl = document.createElement("style");
+  styleEl.id = className;
+  document.head.appendChild(styleEl);
+  onUnmounted(() => {
+    styleEl.remove();
+  });
+  return function updateMarkerLabelStyle(style) {
+    const newStyle = Object.assign({}, style, {
+      position: "absolute",
+      top: "70px",
+      borderStyle: "solid"
+    });
+    const div = document.createElement("div");
+    Object.keys(newStyle).forEach((key) => {
+      div.style[key] = newStyle[key] || "";
+    });
+    styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
+    return className;
+  };
+}
+var MapMarker = /* @__PURE__ */ defineSystemComponent({
+  name: "MapMarker",
+  props: props$6,
+  setup(props2) {
+    const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
+    const onMapReady = inject("onMapReady");
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
+    let marker;
+    function removeMarker() {
+      if (marker) {
+        if (marker.label && "setMap" in marker.label) {
+          marker.label.setMap(null);
+        }
+        if (marker.callout) {
+          marker.callout.setMap(null);
+        }
+        marker.setMap(null);
+      }
+    }
+    onMapReady((map, maps2, trigger) => {
+      function updateMarker(option) {
+        const title = option.title;
+        const position = new maps2.LatLng(option.latitude, option.longitude);
+        const img = new Image();
+        img.onload = () => {
+          const anchor = option.anchor || {};
+          let icon;
+          let w;
+          let h;
+          let top;
+          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
+          let y = typeof anchor.y === "number" ? anchor.y : 1;
+          if (option.iconPath && (option.width || option.height)) {
+            w = option.width || img.width / img.height * option.height;
+            h = option.height || img.height / img.width * option.width;
+          } else {
+            w = img.width / 2;
+            h = img.height / 2;
+          }
+          top = h - (h - y * h);
+          if ("MarkerImage" in maps2) {
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h), new maps2.Size(w, h));
+          } else {
+            icon = {
+              url: img.src,
+              anchor: new maps2.Point(x, y),
+              size: new maps2.Size(w, h)
+            };
+          }
+          marker.setPosition(position);
+          marker.setIcon(icon);
+          if ("setRotation" in marker) {
+            marker.setRotation(option.rotate || 0);
+          }
+          const labelOpt = option.label || {};
+          if ("label" in marker) {
+            marker.label.setMap(null);
+            delete marker.label;
+          }
+          let label;
+          if (labelOpt.content) {
+            const labelStyle = {
+              borderColor: labelOpt.borderColor,
+              borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
+              padding: (Number(labelOpt.padding) || 0) + "px",
+              borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
+              backgroundColor: labelOpt.bgColor,
+              color: labelOpt.color,
+              fontSize: (labelOpt.fontSize || 14) + "px",
+              lineHeight: (labelOpt.fontSize || 14) + "px",
+              marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
+              marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
+            };
+            if ("Label" in maps2) {
+              label = new maps2.Label({
+                position,
+                map,
+                clickable: false,
+                content: labelOpt.content,
+                style: labelStyle
+              });
+              marker.label = label;
+            } else if ("setLabel" in marker) {
+              const className = updateMarkerLabelStyle(labelStyle);
+              marker.setLabel({
+                text: labelOpt.content,
+                color: labelStyle.color,
+                fontSize: labelStyle.fontSize,
+                className
+              });
+            }
+          }
+          const calloutOpt = option.callout || {};
+          let callout = marker.callout;
+          let calloutStyle;
+          if (calloutOpt.content || title) {
+            const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
+            calloutStyle = calloutOpt.content ? {
+              position,
+              map,
+              top,
+              content: calloutOpt.content,
+              color: calloutOpt.color,
+              fontSize: calloutOpt.fontSize,
+              borderRadius: calloutOpt.borderRadius,
+              bgColor: calloutOpt.bgColor,
+              padding: calloutOpt.padding,
+              boxShadow: calloutOpt.boxShadow || boxShadow,
+              display: calloutOpt.display
+            } : {
+              position,
+              map,
+              top,
+              content: title,
+              boxShadow
+            };
+            if (callout) {
+              callout.setOption(calloutStyle);
+            } else {
+              callout = marker.callout = new maps2.Callout(calloutStyle);
+              callout.div.onclick = function($event) {
+                if (id2 !== "") {
+                  trigger("callouttap", $event, {
+                    markerId: Number(id2)
+                  });
+                }
+                $event.stopPropagation();
+                $event.preventDefault();
+              };
+            }
+          } else {
+            if (callout) {
+              callout.setMap(null);
+              delete marker.callout;
+            }
+          }
+        };
+        if (option.iconPath) {
+          img.src = getRealPath(option.iconPath);
+        } else {
+          console.error("Marker.iconPath is required.");
+        }
+      }
+      function addMarker(props3) {
+        marker = new maps2.Marker({
+          map,
+          flat: true,
+          autoRotation: false
+        });
+        updateMarker(props3);
+        maps2.event.addListener(marker, "click", () => {
+          const callout = marker.callout;
+          if (callout) {
+            const div = callout.div;
+            const parent = div.parentNode;
+            if (!callout.alwaysVisible) {
+              callout.set("visible", !callout.visible);
+            }
+            if (callout.visible) {
+              parent.removeChild(div);
+              parent.appendChild(div);
+            }
+          }
+          if (id2) {
+            trigger("markertap", {}, {
+              markerId: Number(id2)
+            });
+          }
+        });
+      }
+      addMarker(props2);
+      watch(props2, updateMarker);
+    });
+    if (id2) {
+      const addMapChidlContext = inject("addMapChidlContext");
+      const removeMapChidlContext = inject("removeMapChidlContext");
+      const context = {
+        id: id2,
+        translate(data) {
+          onMapReady((map, maps2, trigger) => {
+            const destination = data.destination;
+            const duration = data.duration;
+            const autoRotate = !!data.autoRotate;
+            let rotate = Number(data.rotate) || 0;
+            let rotation = 0;
+            if ("getRotation" in marker) {
+              rotation = marker.getRotation();
+            }
+            const a2 = marker.getPosition();
+            const b = new maps2.LatLng(destination.latitude, destination.longitude);
+            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
+            const speed = distance2 / time;
+            const movingEvent = maps2.event.addListener(marker, "moving", (e2) => {
+              const latLng = e2.latLng;
+              const label = marker.label;
+              if (label) {
+                label.setPosition(latLng);
+              }
+              const callout = marker.callout;
+              if (callout) {
+                callout.setPosition(latLng);
+              }
+            });
+            const event = maps2.event.addListener(marker, "moveend", () => {
+              event.remove();
+              movingEvent.remove();
+              marker.lastPosition = a2;
+              marker.setPosition(b);
+              const label = marker.label;
+              if (label) {
+                label.setPosition(b);
+              }
+              const callout = marker.callout;
+              if (callout) {
+                callout.setPosition(b);
+              }
+              const cb = data.animationEnd;
+              if (typeof cb === "function") {
+                cb();
+              }
+            });
+            let lastRtate = 0;
+            if (autoRotate) {
+              if (marker.lastPosition) {
+                lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
+              }
+              rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
+            }
+            if ("setRotation" in marker) {
+              marker.setRotation(rotation + rotate);
+            }
+            if ("moveTo" in marker) {
+              marker.moveTo(b, speed);
+            } else {
+              marker.setPosition(b);
+              maps2.event.trigger(marker, "moveend", {});
+            }
+          });
+        }
+      };
+      addMapChidlContext(context);
+      onUnmounted(() => removeMapChidlContext(context));
+    }
+    onUnmounted(removeMarker);
+    return () => {
+      return null;
+    };
+  }
+});
 const CONTEXT_ID = "MAP_LOCATION";
 var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
@@ -20025,72 +19772,15 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$2 = {
-  id: {
-    type: String,
-    default: ""
-  },
-  latitude: {
-    type: [String, Number],
-    default: 0
-  },
-  longitude: {
-    type: [String, Number],
-    default: 0
-  },
-  scale: {
-    type: [String, Number],
-    default: 16
-  },
-  markers: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  includePoints: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polyline: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  circles: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  controls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  showLocation: {
-    type: [Boolean, String],
-    default: false
-  },
-  libraries: {
-    type: Array,
-    default() {
-      return [];
-    }
-  }
-};
 function getPoints(points) {
   const newPoints = [];
   if (Array.isArray(points)) {
     points.forEach((point) => {
-      if (point && point.latitude && point.longitude) {
+      const { latitude, longitude } = point || {};
+      if (latitude && longitude) {
         newPoints.push({
-          latitude: point.latitude,
-          longitude: point.longitude
+          latitude,
+          longitude
         });
       }
     });
@@ -20116,6 +19806,7 @@ function useMap(props2, rootRef, emit2) {
   const mapRef = ref(null);
   let maps2;
   let map;
+  let _maps = ref(null);
   const state2 = reactive({
     latitude: Number(props2.latitude),
     longitude: Number(props2.longitude),
@@ -20190,10 +19881,7 @@ function useMap(props2, rootRef, emit2) {
   }
   function updateBounds() {
     const bounds = new maps2.LatLngBounds();
-    state2.includePoints.forEach(({
-      latitude,
-      longitude
-    }) => {
+    state2.includePoints.forEach(({ latitude, longitude }) => {
       const latLng = new maps2.LatLng(latitude, longitude);
       bounds.extend(latLng);
     });
@@ -20356,7 +20044,7 @@ function useMap(props2, rootRef, emit2) {
   }
   onMounted(() => {
     loadMaps(props2.libraries, (result) => {
-      maps2 = result;
+      _maps.value = maps2 = result;
       map = initMap();
       emitMapReady();
       trigger("updated", {}, {});
@@ -20367,36 +20055,407 @@ function useMap(props2, rootRef, emit2) {
   provide("removeMapChidlContext", removeMapChidlContext);
   return {
     state: state2,
-    mapRef
+    mapRef,
+    _maps
   };
 }
-var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Map",
-  props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const {
-      mapRef
-    } = useMap(props2, rootRef, emit2);
+var props$5 = {
+  id: {
+    type: String,
+    default: ""
+  },
+  latitude: {
+    type: [String, Number],
+    default: 0
+  },
+  longitude: {
+    type: [String, Number],
+    default: 0
+  },
+  scale: {
+    type: [String, Number],
+    default: 16
+  },
+  markers: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  includePoints: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polyline: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  circles: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  controls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  showLocation: {
+    type: [Boolean, String],
+    default: false
+  },
+  libraries: {
+    type: Array,
+    default() {
+      return [];
+    }
+  }
+};
+const props$4 = {
+  points: {
+    type: Array,
+    require: true
+  },
+  color: {
+    type: String,
+    default: "#000000"
+  },
+  width: {
+    type: [Number, String],
+    default: ""
+  },
+  dottedLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowIconPath: {
+    type: String,
+    default: ""
+  },
+  borderColor: {
+    type: String,
+    default: "#000000"
+  },
+  borderWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  colorList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+var MapPolyline = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolyline",
+  props: props$4,
+  setup(props2) {
+    const onMapReady = inject("onMapReady");
+    let polyline;
+    let polylineBorder;
+    function removePolyline() {
+      if (polyline) {
+        polyline.setMap(null);
+      }
+      if (polylineBorder) {
+        polylineBorder.setMap(null);
+      }
+    }
+    onMapReady((map, maps2) => {
+      function updatePolyline(option) {
+        removePolyline();
+        addPolyline(option);
+      }
+      function addPolyline(option) {
+        const path = [];
+        option.points.forEach((point) => {
+          path.push(new maps2.LatLng(point.latitude, point.longitude));
+        });
+        const strokeWeight = Number(option.width) || 1;
+        polyline = new maps2.Polyline({
+          map,
+          clickable: false,
+          path,
+          strokeWeight,
+          strokeColor: option.color || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        });
+        const borderWidth = Number(option.borderWidth) || 0;
+        if (borderWidth) {
+          polylineBorder = new maps2.Polyline({
+            map,
+            clickable: false,
+            path,
+            strokeWeight: strokeWeight + borderWidth * 2,
+            strokeColor: option.borderColor || void 0,
+            strokeDashStyle: option.dottedLine ? "dash" : "solid"
+          });
+        }
+      }
+      addPolyline(props2);
+      watch(props2, updatePolyline);
+    });
+    onUnmounted(removePolyline);
     return () => {
-      return createVNode("uni-map", {
-        "ref": rootRef,
-        "id": props2.id
-      }, [createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => item.id && createVNode(MapMarker, mergeProps({
-        "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
-      }, [slots.default && slots.default()])], 8, ["id"]);
+      return null;
     };
   }
 });
+const props$3 = {
+  latitude: {
+    type: [Number, String],
+    require: true
+  },
+  longitude: {
+    type: [Number, String],
+    require: true
+  },
+  color: {
+    type: String,
+    default: ""
+  },
+  fillColor: {
+    type: String,
+    default: ""
+  },
+  radius: {
+    type: [Number, String],
+    require: true
+  },
+  strokeWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+var MapCircle = /* @__PURE__ */ defineSystemComponent({
+  name: "MapCircle",
+  props: props$3,
+  setup(props2) {
+    const onMapReady = inject("onMapReady");
+    let circle;
+    function removeCircle() {
+      if (circle) {
+        circle.setMap(null);
+      }
+    }
+    onMapReady((map, maps2) => {
+      function updateCircle(option) {
+        removeCircle();
+        addCircle(option);
+      }
+      function addCircle(option) {
+        const center = new maps2.LatLng(option.latitude, option.longitude);
+        function getColor(color) {
+          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
+          if ("Color" in maps2) {
+            if (c && c.length) {
+              return maps2.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
+            } else {
+              return void 0;
+            }
+          }
+          return color;
+        }
+        circle = new maps2.Circle({
+          map,
+          center,
+          clickable: false,
+          radius: option.radius,
+          strokeWeight: Number(option.strokeWidth) || 1,
+          fillColor: getColor(option.fillColor) || getColor("#00000001"),
+          strokeColor: getColor(option.color) || "#000000",
+          strokeDashStyle: "solid"
+        });
+      }
+      addCircle(props2);
+      watch(props2, updateCircle);
+    });
+    onUnmounted(removeCircle);
+    return () => {
+      return null;
+    };
+  }
+});
+const props$2 = {
+  id: {
+    type: [Number, String],
+    default: ""
+  },
+  position: {
+    type: Object,
+    require: true
+  },
+  iconPath: {
+    type: String,
+    require: true
+  },
+  clickable: {
+    type: [Boolean, String],
+    default: ""
+  }
+};
+var MapControl = /* @__PURE__ */ defineSystemComponent({
+  name: "MapControl",
+  props: props$2,
+  setup(props2) {
+    const onMapReady = inject("onMapReady");
+    let control;
+    function removeControl() {
+      if (control) {
+        control.remove();
+      }
+    }
+    onMapReady((map, maps2, trigger) => {
+      function updateControl(option) {
+        removeControl();
+        addControl(option);
+      }
+      function addControl(option) {
+        const position = option.position || {};
+        control = document.createElement("div");
+        const img = new Image();
+        control.appendChild(img);
+        const style = control.style;
+        style.position = "absolute";
+        style.width = "0";
+        style.height = "0";
+        img.onload = () => {
+          if (option.position.width) {
+            img.width = option.position.width;
+          }
+          if (option.position.height) {
+            img.height = option.position.height;
+          }
+          const style2 = img.style;
+          style2.position = "absolute";
+          style2.left = (position.left || 0) + "px";
+          style2.top = (position.top || 0) + "px";
+          style2.maxWidth = "initial";
+        };
+        img.src = getRealPath(option.iconPath);
+        img.onclick = function($event) {
+          if (option.clickable) {
+            trigger("controltap", $event, {
+              controlId: option.id
+            });
+          }
+        };
+        map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
+      }
+      addControl(props2);
+      watch(props2, updateControl);
+    });
+    onUnmounted(removeControl);
+    return () => {
+      return null;
+    };
+  }
+});
+var _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main$1 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Map",
+  props: props$5,
+  emits: [
+    "markertap",
+    "labeltap",
+    "callouttap",
+    "controltap",
+    "regionchange",
+    "tap",
+    "click",
+    "updated",
+    "update:scale",
+    "update:latitude",
+    "update:longitude"
+  ],
+  components: {
+    MapMarker,
+    MapPolyline,
+    MapCircle,
+    MapControl,
+    MapLocation
+  },
+  setup(props2, { emit: emit2 }) {
+    const rootRef = ref(null);
+    const { mapRef, _maps } = useMap(props2, rootRef, emit2);
+    const validMarkers = computed(() => props2.markers.filter((item) => !!item.id));
+    return {
+      rootRef,
+      mapRef,
+      validMarkers,
+      nativeMapIns: _maps
+    };
+  }
+});
+const _hoisted_1$1 = ["id"];
+const _hoisted_2$1 = {
+  ref: "mapRef",
+  style: { "width": "100%", "height": "100%", "position": "relative", "overflow": "hidden" }
+};
+const _hoisted_3$1 = { style: { "position": "absolute", "top": "0", "width": "100%", "height": "100%", "overflow": "hidden", "pointer-events": "none" } };
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_MapMarker = resolveComponent("MapMarker");
+  const _component_MapPolyline = resolveComponent("MapPolyline");
+  const _component_MapCircle = resolveComponent("MapCircle");
+  const _component_MapControl = resolveComponent("MapControl");
+  const _component_MapLocation = resolveComponent("MapLocation");
+  return openBlock(), createElementBlock("uni-map", {
+    ref: "rootRef",
+    id: _ctx.id
+  }, [
+    createElementVNode("div", _hoisted_2$1, null, 512),
+    (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.validMarkers, (item) => {
+      return openBlock(), createBlock(_component_MapMarker, mergeProps({
+        key: item.id
+      }, item), null, 16);
+    }), 128)),
+    (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.polyline, (item) => {
+      return openBlock(), createBlock(_component_MapPolyline, mergeProps({
+        key: JSON.stringify(item)
+      }, item), null, 16);
+    }), 128)),
+    (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.circles, (item) => {
+      return openBlock(), createBlock(_component_MapCircle, mergeProps({
+        key: JSON.stringify(item)
+      }, item), null, 16);
+    }), 128)),
+    (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.controls, (item) => {
+      return openBlock(), createBlock(_component_MapControl, mergeProps({
+        key: JSON.stringify(item)
+      }, item), null, 16);
+    }), 128)),
+    _ctx.showLocation ? (openBlock(), createBlock(_component_MapLocation, { key: 0 })) : createCommentVNode("", true),
+    createElementVNode("div", _hoisted_3$1, [
+      renderSlot(_ctx.$slots, "default")
+    ])
+  ], 8, _hoisted_1$1);
+}
+var Map$1 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
 const props$1 = {
   scrollTop: {
     type: [String, Number],
@@ -21688,13 +21747,6 @@ function usePageHeadSearchInput({
     onKeyup
   };
 }
-var _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
 const _sfc_main = {
   name: "PageRefresh",
   setup() {

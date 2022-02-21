@@ -6,128 +6,27 @@ import {
   ref,
   watch,
   SetupContext,
-  PropType,
   provide,
 } from 'vue'
 import {
-  defineBuiltInComponent,
   useContextInfo,
   useSubscribe,
   useCustomEvent,
 } from '@dcloudio/uni-components'
 import { callOptions } from '@dcloudio/uni-shared'
-import { Point } from '../../../helpers/location'
-import { Maps, Map, loadMaps, LatLng } from './maps'
-import MapMarker, {
-  Props as MapMarkerProps,
-  Context as MapMarkerContext,
-} from './MapMarker'
-import MapPolyline, { Props as MapPolylineProps } from './MapPolyline'
-import MapCircle, { Props as MapCircleProps } from './MapCircle'
-import MapControl, { Props as MapControlProps } from './MapControl'
-import MapLocation, {
+import { Point } from '../../../../helpers/location'
+import { Maps, Map, loadMaps } from '../maps'
+import { Context as MapMarkerContext } from '../MapMarker'
+import {
   Context as MapLocationContext,
   CONTEXT_ID as MAP_LOCATION_CONTEXT_ID,
-} from './MapLocation'
+} from '../MapLocation'
+// 类型声明
+import { Props, MapState } from './interface'
+// 工具方法
+import { getPoints, getLat, getLng } from './utils'
 
-const props = {
-  id: {
-    type: String,
-    default: '',
-  },
-  latitude: {
-    type: [String, Number],
-    default: 0,
-  },
-  longitude: {
-    type: [String, Number],
-    default: 0,
-  },
-  scale: {
-    type: [String, Number],
-    default: 16,
-  },
-  markers: {
-    type: Array as PropType<MapMarkerProps[]>,
-    default() {
-      return []
-    },
-  },
-  includePoints: {
-    type: Array as PropType<Point[]>,
-    default() {
-      return []
-    },
-  },
-  polyline: {
-    type: Array as PropType<MapPolylineProps[]>,
-    default() {
-      return []
-    },
-  },
-  circles: {
-    type: Array as PropType<MapCircleProps[]>,
-    default() {
-      return []
-    },
-  },
-  controls: {
-    type: Array as PropType<MapControlProps[]>,
-    default() {
-      return []
-    },
-  },
-  showLocation: {
-    type: [Boolean, String],
-    default: false,
-  },
-  libraries: {
-    type: Array as PropType<string[]>,
-    default() {
-      return []
-    },
-  },
-}
-
-type Props = Record<keyof typeof props, any>
-interface MapState {
-  latitude: number
-  longitude: number
-  includePoints: Point[]
-}
-
-function getPoints(points: Point[]): Point[] {
-  const newPoints: Point[] = []
-  if (Array.isArray(points)) {
-    points.forEach((point) => {
-      if (point && point.latitude && point.longitude) {
-        newPoints.push({
-          latitude: point.latitude,
-          longitude: point.longitude,
-        })
-      }
-    })
-  }
-  return newPoints
-}
-
-function getLat(latLng: LatLng) {
-  if ('getLat' in latLng) {
-    return latLng.getLat()
-  } else {
-    return latLng.lat()
-  }
-}
-
-function getLng(latLng: LatLng) {
-  if ('getLng' in latLng) {
-    return latLng.getLng()
-  } else {
-    return latLng.lng()
-  }
-}
-
-function useMap(
+export default function useMap(
   props: Props,
   rootRef: Ref<HTMLElement | null>,
   emit: SetupContext['emit']
@@ -136,6 +35,9 @@ function useMap(
   const mapRef: Ref<HTMLDivElement | null> = ref(null)
   let maps: Maps
   let map: Map
+  // 暴露给用户的原生地图实例
+  let _maps = ref<Maps>(null)
+
   const state: MapState = reactive({
     latitude: Number(props.latitude),
     longitude: Number(props.longitude),
@@ -156,14 +58,24 @@ function useMap(
       onMapReadyCallbacks.push(callback)
     }
   }
+
+  // 地图初始化完成后会调用
   function emitMapReady() {
+    // 表示地图已经初始化完成
     isMapReady = true
+    // 执行地图未准备好时在回调队列设置的回调方法
     onMapReadyCallbacks.forEach((callback) => callback(map, maps, trigger))
+    // 清空刚才执行的回调队列
     onMapReadyCallbacks.length = 0
   }
   let isBoundsReady: boolean
   type OnBoundsReadyCallback = () => void
   const onBoundsReadyCallbacks: OnBoundsReadyCallback[] = []
+
+  /**
+   * 地图自适应，当自适应已经准备好，则直接执行回调函数，如果还没准备好，则将回调放到回调队列
+   * 待将来地图初始化完成后执行
+   */
   function onBoundsReady(callback: OnBoundsReadyCallback) {
     if (isBoundsReady) {
       callback()
@@ -180,6 +92,8 @@ function useMap(
   ) {
     delete contexts[context.id]
   }
+
+  // 当坐标改变以后，重新设置地图的中心点
   watch(
     [() => props.latitude, () => props.longitude],
     ([latitudeVlaue, longitudeVlaue]) => {
@@ -194,6 +108,8 @@ function useMap(
       }
     }
   )
+
+  // 地图自适应，保证指定的坐标都在可视范围内
   watch(
     () => props.includePoints,
     (points) => {
@@ -206,11 +122,16 @@ function useMap(
       deep: true,
     }
   )
+
+  // 主要更改 isBoundsReady 为 true，开启地图自适应
   function emitBoundsReady() {
+    // 开启地图自适应
     isBoundsReady = true
     onBoundsReadyCallbacks.forEach((callback) => callback())
     onBoundsReadyCallbacks.length = 0
   }
+
+  // 获取地图当前信息，比如 zoom 层级、中心点
   function getMapInfo() {
     const center = map.getCenter()!
     return {
@@ -221,9 +142,12 @@ function useMap(
       },
     }
   }
+
+  // 更新地图中心点
   function updateCenter() {
     map.setCenter(new maps.LatLng(state.latitude, state.longitude) as any)
   }
+
   function updateBounds() {
     const bounds = new maps.LatLngBounds()
     state.includePoints.forEach(({ latitude, longitude }) => {
@@ -232,6 +156,8 @@ function useMap(
     })
     map.fitBounds(bounds as any)
   }
+
+  // 初始化地图
   function initMap() {
     const mapEl = mapRef.value as HTMLDivElement
     const center = new maps.LatLng(state.latitude, state.longitude)
@@ -251,12 +177,16 @@ function useMap(
       maxZoom: 18,
       draggable: true,
     })
+
+    // 动态设置地图 zoom 层级
     watch(
       () => props.scale,
       (scale) => {
         map.setZoom(Number(scale) || 16)
       }
     )
+
+    // 自适应地图和设置地图中心点
     onBoundsReady(() => {
       if (state.includePoints.length) {
         updateBounds()
@@ -264,6 +194,7 @@ function useMap(
         updateCenter()
       }
     })
+
     // 需在 bounds_changed 后触发 BoundsReady
     const boundsChangedEvent = maps.event.addListener(
       map,
@@ -319,6 +250,7 @@ function useMap(
     })
     return map
   }
+
   try {
     // TODO 支持在页面外使用
     const id = useContextInfo()
@@ -420,10 +352,15 @@ function useMap(
       true
     )
   } catch (error) {}
+
   onMounted(() => {
+    // 地图加载完成后做一些事情
     loadMaps(props.libraries, (result) => {
-      maps = result
+      // 设置地图实例
+      _maps.value = maps = result
+      // 初始化地图
       map = initMap()
+      // 通知，说地图已经加载完毕了
       emitMapReady()
       trigger('updated', {} as Event, {})
     })
@@ -431,56 +368,10 @@ function useMap(
   provide('onMapReady', onMapReady)
   provide('addMapChidlContext', addMapChidlContext)
   provide('removeMapChidlContext', removeMapChidlContext)
+
   return {
     state,
     mapRef,
+    _maps,
   }
 }
-
-export default /*#__PURE__*/ defineBuiltInComponent({
-  name: 'Map',
-  props,
-  emits: [
-    'markertap',
-    'labeltap',
-    'callouttap',
-    'controltap',
-    'regionchange',
-    'tap',
-    'click',
-    'updated',
-    'update:scale',
-    'update:latitude',
-    'update:longitude',
-  ],
-  setup(props, { emit, slots }) {
-    const rootRef: Ref<HTMLElement | null> = ref(null)
-    const { mapRef } = useMap(props, rootRef, emit as SetupContext['emit'])
-    return () => {
-      return (
-        <uni-map ref={rootRef} id={props.id}>
-          <div
-            ref={mapRef}
-            style="width: 100%; height: 100%; position: relative; overflow: hidden"
-          />
-          {props.markers.map(
-            (item) => item.id && <MapMarker key={item.id} {...item} />
-          )}
-          {props.polyline.map((item) => (
-            <MapPolyline {...item} />
-          ))}
-          {props.circles.map((item) => (
-            <MapCircle {...item} />
-          ))}
-          {props.controls.map((item) => (
-            <MapControl {...item} />
-          ))}
-          {props.showLocation && <MapLocation />}
-          <div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;">
-            {slots.default && slots.default()}
-          </div>
-        </uni-map>
-      )
-    }
-  },
-})
