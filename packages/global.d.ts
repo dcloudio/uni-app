@@ -1,3 +1,5 @@
+declare var __VUE__: any
+declare var Vue: any
 declare var weex: any
 
 declare var tt: any

@@ -7,7 +7,7 @@ import {
   hasDynamicKeyVBind,
 } from '@vue/compiler-core'
 import { createDOMCompilerError, DOMErrorCodes } from '@vue/compiler-dom'
-import { V_MODEL_TEXT, V_MODEL_DYNAMIC } from '@vue/compiler-dom'
+import { createNVueCompilerError, NVueErrorCodes } from './errors'
 
 export const transformModel: DirectiveTransform = (dir, node, context) => {
   const baseResult = baseTransform(dir, node, context)
@@ -46,21 +46,27 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
     tag === 'u-textarea' ||
     isCustomElement
   ) {
-    let directiveToUse = V_MODEL_TEXT
-    let isInvalidType = false
     if (tag === 'input' || tag === 'u-input' || isCustomElement) {
       const type = findProp(node, `type`)
       if (type) {
         if (type.type === NodeTypes.DIRECTIVE) {
           // :type="foo"
-          directiveToUse = V_MODEL_DYNAMIC
+          context.onError(
+            createNVueCompilerError(
+              NVueErrorCodes.X_V_MODEL_DYNAMIC_TYPE,
+              dir.loc
+            )
+          )
         } else if (type.value) {
           checkDuplicatedValue()
         }
       } else if (hasDynamicKeyVBind(node)) {
         // element has bindings with dynamic keys, which can possibly contain
         // "type".
-        directiveToUse = V_MODEL_DYNAMIC
+        // directiveToUse = V_MODEL_DYNAMIC
+        context.onError(
+          createNVueCompilerError(NVueErrorCodes.X_V_MODEL_AND_V_BIND, dir.loc)
+        )
       } else {
         // text type
         checkDuplicatedValue()
@@ -68,12 +74,6 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
     } else {
       // textarea
       checkDuplicatedValue()
-    }
-    // inject runtime directive
-    // by returning the helper symbol via needRuntime
-    // the import will replaced a resolveDirective call.
-    if (!isInvalidType) {
-      baseResult.needRuntime = context.helper(directiveToUse)
     }
   } else {
     context.onError(

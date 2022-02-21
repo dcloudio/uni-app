@@ -39,7 +39,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
         },
         build: {
           rollupOptions: {
-            external: ['vue'],
+            external: ['vue', '@vue/shared'],
             output: {
               name: 'AppService',
               format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',
@@ -49,6 +49,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
               entryFileNames: APP_SERVICE_FILENAME,
               globals: {
                 vue: 'Vue',
+                '@vue/shared': 'uni.VueShared',
               },
             },
           },

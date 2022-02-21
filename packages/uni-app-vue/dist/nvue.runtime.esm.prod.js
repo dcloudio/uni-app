@@ -1,4 +1,4 @@
-import { isString, isFunction, isPromise, EMPTY_OBJ, isArray, NOOP, remove, isObject, getGlobalThis, camelize, capitalize, normalizeClass, extend, normalizeStyle, isOn, toHandlerKey, hasOwn, toNumber, hasChanged, isSet, isMap, isPlainObject, invokeArrayFns, NO, isReservedProp, EMPTY_ARR, isModelListener, hyphenate, def, parseStringStyle, isGloballyWhitelisted } from '@vue/shared';
+import { isString, isFunction, isPromise, EMPTY_OBJ, isArray, NOOP, remove, isObject, getGlobalThis, camelize, capitalize, normalizeClass, extend, normalizeStyle, isOn, toHandlerKey, hasOwn, hyphenate, toNumber, hasChanged, isSet, isMap, isPlainObject, invokeArrayFns, NO, isReservedProp, EMPTY_ARR, isModelListener, def, parseStringStyle, isGloballyWhitelisted } from '@vue/shared';
 export { camelize, capitalize, hyphenate, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, ref, isProxy, proxyRefs, markRaw, computed as computed$1, EffectScope, track, reactive, shallowReactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
@@ -8062,6 +8062,57 @@ function setVarsOnVNode(vnode, vars) {
   }
 }
 
+var systemModifiers = ['ctrl', 'shift', 'alt', 'meta'];
+var modifierGuards = {
+  stop: e => e.stopPropagation(),
+  prevent: e => e.preventDefault(),
+  self: e => e.target !== e.currentTarget,
+  ctrl: e => !e.ctrlKey,
+  shift: e => !e.shiftKey,
+  alt: e => !e.altKey,
+  meta: e => !e.metaKey,
+  left: e => 'button' in e && e.button !== 0,
+  middle: e => 'button' in e && e.button !== 1,
+  right: e => 'button' in e && e.button !== 2,
+  exact: (e, modifiers) => systemModifiers.some(m => e["".concat(m, "Key")] && !modifiers.includes(m))
+};
+/**
+ * @private
+ */
+
+var withModifiers = (fn, modifiers) => {
+  return function (event) {
+    for (var i = 0; i < modifiers.length; i++) {
+      var guard = modifierGuards[modifiers[i]];
+      if (guard && guard(event, modifiers)) return;
+    }
+
+    for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key13 = 1; _key13 < _len5; _key13++) {
+      args[_key13 - 1] = arguments[_key13];
+    }
+
+    return fn(event, ...args);
+  };
+};
+/**
+ * @private
+ */
+
+
+var withKeys = (fn, modifiers) => {
+  return event => {
+    if (!('key' in event)) {
+      return;
+    }
+
+    var eventKey = hyphenate(event.key);
+
+    if (modifiers.some(k => k === eventKey)) {
+      return fn(event);
+    }
+  };
+};
+
 var rendererOptions = extend({
   patchProp
 }, nodeOps); // lazy create the renderer - this makes core renderer logic tree-shakable
@@ -8091,4 +8142,4 @@ var createApp = function () {
   return app;
 };
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withMemo, withScopeId };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

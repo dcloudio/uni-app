@@ -26,6 +26,7 @@ import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
 import { external, globals } from '../utils'
 import { transformRootNode } from './transforms/transformRootNode'
 import { transformModel } from './transforms/vModel'
+import { transformShow } from './transforms/vShow'
 
 const uTags = {
   text: 'u-text',
@@ -52,6 +53,7 @@ export function initNVueNodeTransforms() {
 export function initNVueDirectiveTransforms() {
   return {
     model: transformModel,
+    show: transformShow,
   }
 }
 

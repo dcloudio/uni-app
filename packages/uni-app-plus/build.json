@@ -28,10 +28,7 @@
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     },
-    "external": ["vue", "@vue/shared", "@dcloudio/uni-shared"],
-    "replaceAfterBundled": {
-      "__VUE__": "vue"
-    }
+    "external": ["vue", "@vue/shared", "@dcloudio/uni-shared"]
   },
   {
     "input": {

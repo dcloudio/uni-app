@@ -13,7 +13,7 @@ if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
 `
 export const restoreGlobalCode = `
 if(uni.restoreGlobal){
-  uni.restoreGlobal(weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
+  uni.restoreGlobal(Vue,weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
 }
 `
 

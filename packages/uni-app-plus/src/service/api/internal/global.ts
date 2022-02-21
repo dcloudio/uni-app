@@ -4,6 +4,7 @@ import {
 } from '../../statusBar'
 
 export function restoreGlobal(
+  newVue: unknown,
   newWeex: unknown,
   newPlus: unknown,
   newSetTimeout: unknown,
@@ -20,6 +21,8 @@ export function restoreGlobal(
     if (__DEV__) {
       console.log(`[restoreGlobal][${Date.now()}]`)
     }
+    // __VUE__ 在 uni-jsframework-next 编译时会被替换为 vue
+    Vue = __VUE__ = newVue
     weex = newWeex
     // @ts-ignore
     plus = newPlus

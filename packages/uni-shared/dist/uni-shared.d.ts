@@ -387,14 +387,14 @@ export declare interface NVueEnvironment {
 }
 
 export declare interface NVueInstanceContext {
-    Vue: Vue;
+    Vue: Vue_2;
 }
 
 export declare interface NVueInstanceOption {
     instanceId: string;
     config: NVueConfigAPI;
     document?: NVueDocument;
-    Vue?: Vue;
+    Vue?: Vue_2;
     app?: ComponentPublicInstance_2;
     data?: Record<string, unknown>;
 }
@@ -811,9 +811,10 @@ export declare class UniTextNode extends UniBaseNode {
 
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
-export declare interface Vue {
+declare interface Vue_2 {
     createApp: typeof createApp;
 }
+export { Vue_2 as Vue }
 
 export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
 
