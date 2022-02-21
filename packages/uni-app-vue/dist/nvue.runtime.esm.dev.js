@@ -9467,9 +9467,7 @@ function patchAttr(el, key, value) {
     [key, value] = transformAttr(el, key, value, instance);
   }
 
-  if (value == null) ;else {
-    el.setAttr(key, value);
-  }
+  el.setAttr(key, value);
 }
 
 var ATTR_HOVER_CLASS = 'hoverClass';
@@ -9694,6 +9692,8 @@ function patchStyle(el, prev, next) {
   el.setStyles(batchedStyles);
 }
 
+var vModelTags = ['u-input', 'u-textarea'];
+
 var patchProp = function (el, key, prevValue, nextValue) {
   var isSVG = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
   var prevChildren = arguments.length > 5 ? arguments[5] : undefined;
@@ -9710,6 +9710,12 @@ var patchProp = function (el, key, prevValue, nextValue) {
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
     }
+  } else if (key === 'modelValue' && vModelTags.includes(el.type)) {
+    // v-model 时，原生 input 和 textarea 接收的是 value
+    el.setAttrs({
+      modelValue: nextValue,
+      value: nextValue
+    });
   } else {
     patchAttr(el, key, nextValue, parentComponent);
   }

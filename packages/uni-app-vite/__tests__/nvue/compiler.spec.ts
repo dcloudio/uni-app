@@ -38,6 +38,8 @@ const codes = [
   `<view>hello{{a}}<view>aaa{{a}}</view>{{b}}</view>`,
   `<video></video>`,
   `<video><view></view></video>`,
+  `<input v-model="text"/>`,
+  `<textarea v-model="text"/>`,
 ]
 
 describe('app-nvue: compiler', () => {

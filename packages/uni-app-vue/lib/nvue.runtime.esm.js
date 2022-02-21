@@ -7919,10 +7919,7 @@ function patchAttr(el, key, value, instance = null) {
     if (instance) {
         [key, value] = transformAttr(el, key, value, instance);
     }
-    if (value == null) ;
-    else {
-        el.setAttr(key, value);
-    }
+    el.setAttr(key, value);
 }
 const ATTR_HOVER_CLASS = 'hoverClass';
 const ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
@@ -8109,6 +8106,7 @@ function patchStyle(el, prev, next) {
     el.setStyles(batchedStyles);
 }
 
+const vModelTags = ['u-input', 'u-textarea'];
 const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     if (key === 'class') {
         patchClass(el, prevValue, nextValue, parentComponent);
@@ -8121,6 +8119,10 @@ const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, p
         if (!isModelListener(key)) {
             patchEvent(el, key, prevValue, nextValue, parentComponent);
         }
+    }
+    else if (key === 'modelValue' && vModelTags.includes(el.type)) {
+        // v-model 时，原生 input 和 textarea 接收的是 value
+        el.setAttrs({ modelValue: nextValue, value: nextValue });
     }
     else {
         patchAttr(el, key, nextValue, parentComponent);
