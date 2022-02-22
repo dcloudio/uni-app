@@ -6,6 +6,9 @@ import { applyOptions } from './componentOptions'
 import { set } from './componentInstance'
 import { errorHandler, initOptionMergeStrategies } from './appConfig'
 import { uniIdMixin } from './uni-id-mixin'
+import { invokeCreateVueAppHook } from './onCreateVueApp'
+
+export { onCreateVueApp, invokeCreateVueAppHook } from './onCreateVueApp'
 
 export function initApp(app: App) {
   const appConfig = app._context.config
@@ -26,6 +29,11 @@ export function initApp(app: App) {
   if (__VUE_OPTIONS_API__) {
     globalProperties.$set = set
     globalProperties.$applyOptions = applyOptions
+  }
+  if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
+    invokeCreateVueAppHook(app)
+  } else {
+    ;(uni as any).invokeCreateVueAppHook(app)
   }
 }
 

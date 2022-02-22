@@ -1455,6 +1455,151 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+function injectLifecycleHook(name, hook, publicThis, instance) {
+  if (shared.isFunction(hook)) {
+    vue.injectHook(name, hook.bind(publicThis), instance);
+  }
+}
+function initHooks(options, instance, publicThis) {
+  const mpType = options.mpType || publicThis.$mpType;
+  Object.keys(options).forEach((name) => {
+    if (name.indexOf("on") === 0) {
+      const hooks = options[name];
+      if (shared.isArray(hooks)) {
+        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
+      } else {
+        injectLifecycleHook(name, hooks, publicThis, instance);
+      }
+    }
+  });
+  if (mpType === "page") {
+    instance.__isVisible = true;
+    try {
+      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      delete instance.attrs.__pageQuery;
+    } catch (e2) {
+      console.error(e2.message + uniShared.LINEFEED + e2.stack);
+    }
+    vue.nextTick(() => {
+      invokeHook(publicThis, uniShared.ON_SHOW);
+    });
+  }
+}
+function applyOptions(options, instance, publicThis) {
+  initHooks(options, instance, publicThis);
+}
+function set(target, key, val) {
+  return target[key] = val;
+}
+function errorHandler(err, instance, info) {
+  if (!instance) {
+    throw err;
+  }
+  const app = getApp();
+  if (!app || !app.$vm) {
+    throw err;
+  }
+  {
+    invokeHook(app.$vm, uniShared.ON_ERROR, err);
+  }
+}
+function mergeAsArray(to, from) {
+  return to ? [...new Set([].concat(to, from))] : from;
+}
+function initOptionMergeStrategies(optionMergeStrategies) {
+  uniShared.UniLifecycleHooks.forEach((name) => {
+    optionMergeStrategies[name] = mergeAsArray;
+  });
+}
+let realAtob;
+const b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+if (typeof atob !== "function") {
+  realAtob = function(str) {
+    str = String(str).replace(/[\t\n\f\r ]+/g, "");
+    if (!b64re.test(str)) {
+      throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+    }
+    str += "==".slice(2 - (str.length & 3));
+    var bitmap;
+    var result = "";
+    var r1;
+    var r2;
+    var i = 0;
+    for (; i < str.length; ) {
+      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+    }
+    return result;
+  };
+} else {
+  realAtob = atob;
+}
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(realAtob(str).split("").map(function(c) {
+    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(""));
+}
+function getCurrentUserInfo() {
+  const token = uni.getStorageSync("uni_id_token") || "";
+  const tokenArr = token.split(".");
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    };
+  }
+  let userInfo;
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
+  }
+  userInfo.tokenExpired = userInfo.exp * 1e3;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo;
+}
+function uniIdMixin(globalProperties) {
+  globalProperties.uniIDHasRole = function(roleId) {
+    const { role } = getCurrentUserInfo();
+    return role.indexOf(roleId) > -1;
+  };
+  globalProperties.uniIDHasPermission = function(permissionId) {
+    const { permission } = getCurrentUserInfo();
+    return this.uniIDHasRole("admin") || permission.indexOf(permissionId) > -1;
+  };
+  globalProperties.uniIDTokenValid = function() {
+    const { tokenExpired } = getCurrentUserInfo();
+    return tokenExpired > Date.now();
+  };
+}
+const createVueAppHooks = [];
+function invokeCreateVueAppHook(app) {
+  createVueAppHooks.forEach((hook) => hook(app));
+}
+function initApp$1(app) {
+  const appConfig = app._context.config;
+  if (shared.isFunction(app._component.onError)) {
+    appConfig.errorHandler = errorHandler;
+  }
+  initOptionMergeStrategies(appConfig.optionMergeStrategies);
+  const globalProperties = appConfig.globalProperties;
+  {
+    if (__UNI_FEATURE_UNI_CLOUD__) {
+      uniIdMixin(globalProperties);
+    }
+  }
+  {
+    globalProperties.$set = set;
+    globalProperties.$applyOptions = applyOptions;
+  }
+  {
+    invokeCreateVueAppHook(app);
+  }
+}
 function saveImage(base64, dirname, callback) {
   callback(null, base64);
 }
@@ -6541,144 +6686,6 @@ function useContextInfo(_id) {
   const type = vm.$options.name.toLowerCase();
   const id = _id || vm.id || `context${index$g++}`;
   return `${type}.${id}`;
-}
-function injectLifecycleHook(name, hook, publicThis, instance) {
-  if (shared.isFunction(hook)) {
-    vue.injectHook(name, hook.bind(publicThis), instance);
-  }
-}
-function initHooks(options, instance, publicThis) {
-  const mpType = options.mpType || publicThis.$mpType;
-  Object.keys(options).forEach((name) => {
-    if (name.indexOf("on") === 0) {
-      const hooks = options[name];
-      if (shared.isArray(hooks)) {
-        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
-      } else {
-        injectLifecycleHook(name, hooks, publicThis, instance);
-      }
-    }
-  });
-  if (mpType === "page") {
-    instance.__isVisible = true;
-    try {
-      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
-      delete instance.attrs.__pageQuery;
-    } catch (e2) {
-      console.error(e2.message + uniShared.LINEFEED + e2.stack);
-    }
-    vue.nextTick(() => {
-      invokeHook(publicThis, uniShared.ON_SHOW);
-    });
-  }
-}
-function applyOptions(options, instance, publicThis) {
-  initHooks(options, instance, publicThis);
-}
-function set(target, key, val) {
-  return target[key] = val;
-}
-function errorHandler(err, instance, info) {
-  if (!instance) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, uniShared.ON_ERROR, err);
-  }
-}
-function mergeAsArray(to, from) {
-  return to ? [...new Set([].concat(to, from))] : from;
-}
-function initOptionMergeStrategies(optionMergeStrategies) {
-  uniShared.UniLifecycleHooks.forEach((name) => {
-    optionMergeStrategies[name] = mergeAsArray;
-  });
-}
-let realAtob;
-const b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-if (typeof atob !== "function") {
-  realAtob = function(str) {
-    str = String(str).replace(/[\t\n\f\r ]+/g, "");
-    if (!b64re.test(str)) {
-      throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
-    }
-    str += "==".slice(2 - (str.length & 3));
-    var bitmap;
-    var result = "";
-    var r1;
-    var r2;
-    var i = 0;
-    for (; i < str.length; ) {
-      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
-      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
-    }
-    return result;
-  };
-} else {
-  realAtob = atob;
-}
-function b64DecodeUnicode(str) {
-  return decodeURIComponent(realAtob(str).split("").map(function(c) {
-    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(""));
-}
-function getCurrentUserInfo() {
-  const token = uni.getStorageSync("uni_id_token") || "";
-  const tokenArr = token.split(".");
-  if (!token || tokenArr.length !== 3) {
-    return {
-      uid: null,
-      role: [],
-      permission: [],
-      tokenExpired: 0
-    };
-  }
-  let userInfo;
-  try {
-    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-  } catch (error) {
-    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
-  }
-  userInfo.tokenExpired = userInfo.exp * 1e3;
-  delete userInfo.exp;
-  delete userInfo.iat;
-  return userInfo;
-}
-function uniIdMixin(globalProperties) {
-  globalProperties.uniIDHasRole = function(roleId) {
-    const { role } = getCurrentUserInfo();
-    return role.indexOf(roleId) > -1;
-  };
-  globalProperties.uniIDHasPermission = function(permissionId) {
-    const { permission } = getCurrentUserInfo();
-    return this.uniIDHasRole("admin") || permission.indexOf(permissionId) > -1;
-  };
-  globalProperties.uniIDTokenValid = function() {
-    const { tokenExpired } = getCurrentUserInfo();
-    return tokenExpired > Date.now();
-  };
-}
-function initApp$1(app) {
-  const appConfig = app._context.config;
-  if (shared.isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
-  }
-  initOptionMergeStrategies(appConfig.optionMergeStrategies);
-  const globalProperties = appConfig.globalProperties;
-  {
-    if (__UNI_FEATURE_UNI_CLOUD__) {
-      uniIdMixin(globalProperties);
-    }
-  }
-  {
-    globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
-  }
 }
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {

@@ -2890,10 +2890,10 @@ var serviceContext = (function (vue) {
   const enterOptions = createLaunchOptions();
   const launchOptions = createLaunchOptions();
   function getLaunchOptions() {
-      return launchOptions;
+      return extend({}, launchOptions);
   }
   function getEnterOptions() {
-      return enterOptions;
+      return extend({}, enterOptions);
   }
   function initEnterOptions({ path, query, referrerInfo, }) {
       extend(enterOptions, {
@@ -2909,7 +2909,7 @@ var serviceContext = (function (vue) {
           referrerInfo: referrerInfo || {},
       });
       extend(enterOptions, launchOptions);
-      return launchOptions;
+      return extend({}, launchOptions);
   }
   function parseRedirectInfo() {
       const weexPlus = weex.requireModule('plus');
@@ -11634,19 +11634,10 @@ var serviceContext = (function (vue) {
       });
   });
 
-  const appLaunchHooks = [];
-  function onAppLaunch(hook) {
-      const app = getApp({ allowDefault: true });
-      if (app && app.$vm) {
-          return vue.injectHook(ON_LAUNCH, hook, app.$vm.$);
-      }
-      appLaunchHooks.push(hook);
-  }
-  function injectAppLaunchHooks(appInstance) {
-      appLaunchHooks.forEach((hook) => {
-          vue.injectHook(ON_LAUNCH, hook, appInstance);
-      });
-  }
+  ({
+      [ON_SHOW]: [],
+      [ON_HIDE]: [],
+  });
   const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
   const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
       return getEnterOptions();
@@ -13173,6 +13164,249 @@ var serviceContext = (function (vue) {
           required: true,
       },
   };
+
+  function injectLifecycleHook(name, hook, publicThis, instance) {
+      if (isFunction(hook)) {
+          vue.injectHook(name, hook.bind(publicThis), instance);
+      }
+  }
+  function initHooks(options, instance, publicThis) {
+      const mpType = options.mpType || publicThis.$mpType;
+      // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
+      Object.keys(options).forEach((name) => {
+          if (name.indexOf('on') === 0) {
+              const hooks = options[name];
+              if (isArray$1(hooks)) {
+                  hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
+              }
+              else {
+                  injectLifecycleHook(name, hooks, publicThis, instance);
+              }
+          }
+      });
+      if (mpType === 'page') {
+          instance.__isVisible = true;
+          try {
+              invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
+              delete instance.attrs.__pageQuery;
+          }
+          catch (e) {
+              console.error(e.message + LINEFEED + e.stack);
+          }
+          vue.nextTick(() => {
+              // 延迟onShow，保证组件的onShow也可以监听到
+              invokeHook(publicThis, ON_SHOW);
+          });
+      }
+  }
+
+  function initRenderjs(options, instance) {
+      initModules(instance, options.$renderjs, options['$' + RENDERJS_MODULES]);
+  }
+  function initModules(instance, modules, moduleIds = {}) {
+      if (!isArray$1(modules)) {
+          return;
+      }
+      const ownerId = instance.uid;
+      // 在vue的定制内核中，通过$wxsModules来判断事件函数源码中是否包含该模块调用
+      // !$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)
+      const $wxsModules = (instance.$wxsModules ||
+          (instance.$wxsModules = []));
+      const ctx = instance.ctx;
+      modules.forEach((module) => {
+          if (moduleIds[module]) {
+              ctx[module] = proxyModule(ownerId, moduleIds[module], module);
+              $wxsModules.push(module);
+          }
+          else {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.error(formatLog('initModules', modules, moduleIds));
+              }
+          }
+      });
+  }
+  function proxyModule(ownerId, moduleId, module) {
+      const target = {};
+      return new Proxy(target, {
+          get(_, p) {
+              return (target[p] ||
+                  (target[p] = createModuleFunction(ownerId, moduleId, module, p)));
+          },
+      });
+  }
+  function createModuleFunction(ownerId, moduleId, module, name) {
+      const target = () => { };
+      const toJSON = () => WXS_PROTOCOL + JSON.stringify([ownerId, moduleId, module + '.' + name]);
+      return new Proxy(target, {
+          get(_, p) {
+              if (p === 'toJSON') {
+                  return toJSON;
+              }
+              return (target[p] ||
+                  (target[p] = createModuleFunction(ownerId, moduleId, module + '.' + name, p)));
+          },
+          apply(_target, _thisArg, args) {
+              return (WXS_PROTOCOL +
+                  JSON.stringify([ownerId, moduleId, module + '.' + name, [...args]]));
+          },
+      });
+  }
+
+  function initWxs(options, instance) {
+      initModules(instance, options.$wxs, options['$' + WXS_MODULES]);
+  }
+
+  function applyOptions(options, instance, publicThis) {
+      {
+          initWxs(options, instance);
+          initRenderjs(options, instance);
+      }
+      initHooks(options, instance, publicThis);
+  }
+
+  function set(target, key, val) {
+      return (target[key] = val);
+  }
+
+  function errorHandler(err, instance, info) {
+      if (!instance) {
+          throw err;
+      }
+      const app = getApp();
+      if (!app || !app.$vm) {
+          throw err;
+      }
+      {
+          invokeHook(app.$vm, ON_ERROR, err);
+      }
+  }
+  function mergeAsArray(to, from) {
+      return to ? [...new Set([].concat(to, from))] : from;
+  }
+  function initOptionMergeStrategies(optionMergeStrategies) {
+      UniLifecycleHooks.forEach((name) => {
+          optionMergeStrategies[name] = mergeAsArray;
+      });
+  }
+
+  let realAtob;
+  const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+  if (typeof atob !== 'function') {
+      realAtob = function (str) {
+          str = String(str).replace(/[\t\n\f\r ]+/g, '');
+          if (!b64re.test(str)) {
+              throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+          }
+          // Adding the padding if missing, for semplicity
+          str += '=='.slice(2 - (str.length & 3));
+          var bitmap;
+          var result = '';
+          var r1;
+          var r2;
+          var i = 0;
+          for (; i < str.length;) {
+              bitmap =
+                  (b64.indexOf(str.charAt(i++)) << 18) |
+                      (b64.indexOf(str.charAt(i++)) << 12) |
+                      ((r1 = b64.indexOf(str.charAt(i++))) << 6) |
+                      (r2 = b64.indexOf(str.charAt(i++)));
+              result +=
+                  r1 === 64
+                      ? String.fromCharCode((bitmap >> 16) & 255)
+                      : r2 === 64
+                          ? String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255)
+                          : String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255, bitmap & 255);
+          }
+          return result;
+      };
+  }
+  else {
+      // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+      realAtob = atob;
+  }
+  function b64DecodeUnicode(str) {
+      return decodeURIComponent(realAtob(str)
+          .split('')
+          .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+          .join(''));
+  }
+  function getCurrentUserInfo() {
+      const token = uni.getStorageSync('uni_id_token') || '';
+      const tokenArr = token.split('.');
+      if (!token || tokenArr.length !== 3) {
+          return {
+              uid: null,
+              role: [],
+              permission: [],
+              tokenExpired: 0,
+          };
+      }
+      let userInfo;
+      try {
+          userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+      }
+      catch (error) {
+          throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
+      }
+      userInfo.tokenExpired = userInfo.exp * 1000;
+      delete userInfo.exp;
+      delete userInfo.iat;
+      return userInfo;
+  }
+  function uniIdMixin(globalProperties) {
+      globalProperties.uniIDHasRole = function (roleId) {
+          const { role } = getCurrentUserInfo();
+          return role.indexOf(roleId) > -1;
+      };
+      globalProperties.uniIDHasPermission = function (permissionId) {
+          const { permission } = getCurrentUserInfo();
+          return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
+      };
+      globalProperties.uniIDTokenValid = function () {
+          const { tokenExpired } = getCurrentUserInfo();
+          return tokenExpired > Date.now();
+      };
+  }
+
+  let vueApp$1;
+  const createVueAppHooks = [];
+  /**
+   * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+   * @param hook
+   */
+  function onCreateVueApp(hook) {
+      // TODO 每个 nvue 页面都会触发
+      if (vueApp$1) {
+          return hook(vueApp$1);
+      }
+      createVueAppHooks.push(hook);
+  }
+  function invokeCreateVueAppHook(app) {
+      vueApp$1 = app;
+      createVueAppHooks.forEach((hook) => hook(app));
+  }
+
+  function initApp(app) {
+      const appConfig = app._context.config;
+      if (isFunction(app._component.onError)) {
+          appConfig.errorHandler = errorHandler;
+      }
+      initOptionMergeStrategies(appConfig.optionMergeStrategies);
+      const globalProperties = appConfig.globalProperties;
+      {
+          uniIdMixin(globalProperties);
+      }
+      {
+          globalProperties.$set = set;
+          globalProperties.$applyOptions = applyOptions;
+      }
+      {
+          invokeCreateVueAppHook(app);
+      }
+  }
 
   function warpPlusSuccessCallback(resolve, after) {
       return function successCallback(data) {
@@ -17122,228 +17356,6 @@ var serviceContext = (function (vue) {
       }, errorCallback);
   }, RequestPaymentProtocol);
 
-  function injectLifecycleHook(name, hook, publicThis, instance) {
-      if (isFunction(hook)) {
-          vue.injectHook(name, hook.bind(publicThis), instance);
-      }
-  }
-  function initHooks(options, instance, publicThis) {
-      const mpType = options.mpType || publicThis.$mpType;
-      // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
-      Object.keys(options).forEach((name) => {
-          if (name.indexOf('on') === 0) {
-              const hooks = options[name];
-              if (isArray$1(hooks)) {
-                  hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
-              }
-              else {
-                  injectLifecycleHook(name, hooks, publicThis, instance);
-              }
-          }
-      });
-      if (mpType === 'page') {
-          instance.__isVisible = true;
-          try {
-              invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
-              delete instance.attrs.__pageQuery;
-          }
-          catch (e) {
-              console.error(e.message + LINEFEED + e.stack);
-          }
-          vue.nextTick(() => {
-              // 延迟onShow，保证组件的onShow也可以监听到
-              invokeHook(publicThis, ON_SHOW);
-          });
-      }
-  }
-
-  function initRenderjs(options, instance) {
-      initModules(instance, options.$renderjs, options['$' + RENDERJS_MODULES]);
-  }
-  function initModules(instance, modules, moduleIds = {}) {
-      if (!isArray$1(modules)) {
-          return;
-      }
-      const ownerId = instance.uid;
-      // 在vue的定制内核中，通过$wxsModules来判断事件函数源码中是否包含该模块调用
-      // !$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)
-      const $wxsModules = (instance.$wxsModules ||
-          (instance.$wxsModules = []));
-      const ctx = instance.ctx;
-      modules.forEach((module) => {
-          if (moduleIds[module]) {
-              ctx[module] = proxyModule(ownerId, moduleIds[module], module);
-              $wxsModules.push(module);
-          }
-          else {
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.error(formatLog('initModules', modules, moduleIds));
-              }
-          }
-      });
-  }
-  function proxyModule(ownerId, moduleId, module) {
-      const target = {};
-      return new Proxy(target, {
-          get(_, p) {
-              return (target[p] ||
-                  (target[p] = createModuleFunction(ownerId, moduleId, module, p)));
-          },
-      });
-  }
-  function createModuleFunction(ownerId, moduleId, module, name) {
-      const target = () => { };
-      const toJSON = () => WXS_PROTOCOL + JSON.stringify([ownerId, moduleId, module + '.' + name]);
-      return new Proxy(target, {
-          get(_, p) {
-              if (p === 'toJSON') {
-                  return toJSON;
-              }
-              return (target[p] ||
-                  (target[p] = createModuleFunction(ownerId, moduleId, module + '.' + name, p)));
-          },
-          apply(_target, _thisArg, args) {
-              return (WXS_PROTOCOL +
-                  JSON.stringify([ownerId, moduleId, module + '.' + name, [...args]]));
-          },
-      });
-  }
-
-  function initWxs(options, instance) {
-      initModules(instance, options.$wxs, options['$' + WXS_MODULES]);
-  }
-
-  function applyOptions(options, instance, publicThis) {
-      {
-          initWxs(options, instance);
-          initRenderjs(options, instance);
-      }
-      initHooks(options, instance, publicThis);
-  }
-
-  function set(target, key, val) {
-      return (target[key] = val);
-  }
-
-  function errorHandler(err, instance, info) {
-      if (!instance) {
-          throw err;
-      }
-      const app = getApp();
-      if (!app || !app.$vm) {
-          throw err;
-      }
-      {
-          invokeHook(app.$vm, ON_ERROR, err);
-      }
-  }
-  function mergeAsArray(to, from) {
-      return to ? [...new Set([].concat(to, from))] : from;
-  }
-  function initOptionMergeStrategies(optionMergeStrategies) {
-      UniLifecycleHooks.forEach((name) => {
-          optionMergeStrategies[name] = mergeAsArray;
-      });
-  }
-
-  let realAtob;
-  const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-  const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-  if (typeof atob !== 'function') {
-      realAtob = function (str) {
-          str = String(str).replace(/[\t\n\f\r ]+/g, '');
-          if (!b64re.test(str)) {
-              throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
-          }
-          // Adding the padding if missing, for semplicity
-          str += '=='.slice(2 - (str.length & 3));
-          var bitmap;
-          var result = '';
-          var r1;
-          var r2;
-          var i = 0;
-          for (; i < str.length;) {
-              bitmap =
-                  (b64.indexOf(str.charAt(i++)) << 18) |
-                      (b64.indexOf(str.charAt(i++)) << 12) |
-                      ((r1 = b64.indexOf(str.charAt(i++))) << 6) |
-                      (r2 = b64.indexOf(str.charAt(i++)));
-              result +=
-                  r1 === 64
-                      ? String.fromCharCode((bitmap >> 16) & 255)
-                      : r2 === 64
-                          ? String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255)
-                          : String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255, bitmap & 255);
-          }
-          return result;
-      };
-  }
-  else {
-      // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
-      realAtob = atob;
-  }
-  function b64DecodeUnicode(str) {
-      return decodeURIComponent(realAtob(str)
-          .split('')
-          .map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-          .join(''));
-  }
-  function getCurrentUserInfo() {
-      const token = uni.getStorageSync('uni_id_token') || '';
-      const tokenArr = token.split('.');
-      if (!token || tokenArr.length !== 3) {
-          return {
-              uid: null,
-              role: [],
-              permission: [],
-              tokenExpired: 0,
-          };
-      }
-      let userInfo;
-      try {
-          userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-      }
-      catch (error) {
-          throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
-      }
-      userInfo.tokenExpired = userInfo.exp * 1000;
-      delete userInfo.exp;
-      delete userInfo.iat;
-      return userInfo;
-  }
-  function uniIdMixin(globalProperties) {
-      globalProperties.uniIDHasRole = function (roleId) {
-          const { role } = getCurrentUserInfo();
-          return role.indexOf(roleId) > -1;
-      };
-      globalProperties.uniIDHasPermission = function (permissionId) {
-          const { permission } = getCurrentUserInfo();
-          return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
-      };
-      globalProperties.uniIDTokenValid = function () {
-          const { tokenExpired } = getCurrentUserInfo();
-          return tokenExpired > Date.now();
-      };
-  }
-
-  function initApp(app) {
-      const appConfig = app._context.config;
-      if (isFunction(app._component.onError)) {
-          appConfig.errorHandler = errorHandler;
-      }
-      initOptionMergeStrategies(appConfig.optionMergeStrategies);
-      const globalProperties = appConfig.globalProperties;
-      {
-          uniIdMixin(globalProperties);
-      }
-      {
-          globalProperties.$set = set;
-          globalProperties.$applyOptions = applyOptions;
-      }
-  }
-
   let isInitEntryPage = false;
   function initEntry() {
       if (isInitEntryPage) {
@@ -17520,15 +17532,11 @@ var serviceContext = (function (vue) {
 
   function initAppLaunch(appVm) {
       const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
-      const args = extend({
-          // 为了让 uni-stat 在 uni.onLaunch 中可以 mixin
-          app: { mixin: appVm.$.appContext.app.mixin },
-      }, initLaunchOptions({
+      const args = initLaunchOptions({
           path: entryPagePath,
           query: entryPageQuery,
           referrerInfo: referrerInfo,
-      }));
-      injectAppLaunchHooks(appVm.$);
+      });
       invokeHook(appVm, ON_LAUNCH, args);
       invokeHook(appVm, ON_SHOW, args);
       // https://tower.im/teams/226535/todos/16905/
@@ -19946,7 +19954,7 @@ var serviceContext = (function (vue) {
     $off: $off,
     $once: $once,
     $emit: $emit,
-    onAppLaunch: onAppLaunch,
+    onCreateVueApp: onCreateVueApp,
     onLocaleChange: onLocaleChange,
     setPageMeta: setPageMeta,
     getEnterOptionsSync: getEnterOptionsSync,

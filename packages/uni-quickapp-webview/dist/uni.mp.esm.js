@@ -1,5 +1,5 @@
 import { camelize, isPlainObject, isArray, hasOwn, isFunction, extend, isObject } from '@vue/shared';
-import { injectHook, ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
 const ON_READY$1 = 'onReady';
 
@@ -361,13 +361,6 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
     });
 }
 
-qa.appLaunchHooks = [];
-function injectAppLaunchHooks(appInstance) {
-    qa.appLaunchHooks.forEach((hook) => {
-        injectHook(ON_LAUNCH, hook, appInstance);
-    });
-}
-
 const HOOKS = [
     ON_SHOW,
     ON_HIDE,
@@ -392,9 +385,8 @@ function parseApp(instance, parseAppOptions) {
                 mpInstance: this,
                 slots: [],
             });
-            injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
-            instance.$callHook(ON_LAUNCH, extend({ app: { mixin: internalInstance.appContext.app.mixin } }, options));
+            instance.$callHook(ON_LAUNCH, options);
         },
     };
     initLocale(instance);

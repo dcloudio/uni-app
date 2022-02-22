@@ -1,8 +1,4 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend } from '@vue/shared';
-import { injectHook } from 'vue';
-
-//App
-const ON_LAUNCH = 'onLaunch';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -39,15 +35,6 @@ const navigateTo = {
         fromRes.eventChannel = getEventChannel();
     },
 };
-
-qa.appLaunchHooks = [];
-function onAppLaunch(hook) {
-    const app = getApp({ allowDefault: true });
-    if (app && app.$vm) {
-        return injectHook(ON_LAUNCH, hook, app.$vm.$);
-    }
-    qa.appLaunchHooks.push(hook);
-}
 
 function getBaseSystemInfo() {
   return qa.getSystemInfoSync()
@@ -674,6 +661,24 @@ const offPushMessage = (fn) => {
     }
 };
 
+let vueApp;
+const createVueAppHooks = [];
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+function onCreateVueApp(hook) {
+    // TODO 每个 nvue 页面都会触发
+    if (vueApp) {
+        return hook(vueApp);
+    }
+    createVueAppHooks.push(hook);
+}
+function invokeCreateVueAppHook(app) {
+    vueApp = app;
+    createVueAppHooks.forEach((hook) => hook(app));
+}
+
 const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
@@ -858,7 +863,8 @@ const baseApis = {
     interceptors,
     addInterceptor,
     removeInterceptor,
-    onAppLaunch,
+    onCreateVueApp,
+    invokeCreateVueAppHook,
     getLocale,
     setLocale,
     onLocaleChange,

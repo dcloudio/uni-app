@@ -1,22 +1,43 @@
 import { getEnterOptions, getLaunchOptions } from '@dcloudio/uni-platform'
-import { ON_LAUNCH } from '@dcloudio/uni-shared'
+import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { defineSyncApi } from '../../helpers/api'
 
 import { ComponentInternalInstance, injectHook } from 'vue'
 
-type AppLaunchHook = (options: UniApp.LaunchOptionsApp) => void
-const appLaunchHooks: AppLaunchHook[] = []
-export function onAppLaunch(hook: AppLaunchHook) {
-  const app = getApp({ allowDefault: true })
-  if (app && app.$vm) {
-    return injectHook(ON_LAUNCH, hook, app.$vm.$)
-  }
-  appLaunchHooks.push(hook)
+type AppShowHook = (options: UniApp.LaunchOptionsApp) => void
+type AppHideHook = () => void
+interface AppHooks {
+  onShow: AppShowHook[]
+  onHide: AppHideHook[]
 }
 
-export function injectAppLaunchHooks(appInstance: ComponentInternalInstance) {
-  appLaunchHooks.forEach((hook) => {
-    injectHook(ON_LAUNCH, hook, appInstance)
+const appHooks: AppHooks = {
+  [ON_SHOW]: [],
+  [ON_HIDE]: [],
+}
+
+function onAppHook(type: keyof AppHooks, hook: (...args: any[]) => void) {
+  const app = getApp({ allowDefault: true })
+  if (app && app.$vm) {
+    return injectHook(type, hook, app.$vm.$)
+  }
+  appHooks[type].push(hook)
+}
+
+export function onAppShow(hook: AppShowHook) {
+  onAppHook(ON_SHOW, hook)
+}
+
+export function onAppHide(hook: AppHideHook) {
+  onAppHook(ON_HIDE, hook)
+}
+
+export function injectAppHooks(
+  type: keyof AppHooks,
+  appInstance: ComponentInternalInstance
+) {
+  appHooks[type].forEach((hook) => {
+    injectHook(type, hook, appInstance)
   })
 }
 

@@ -103,6 +103,8 @@ export * from './protocols/ad/fullScreenVideoAd'
 export * from './protocols/ad/interstitialAd'
 export * from './protocols/ad/interactiveAd'
 
+export { onCreateVueApp } from '@dcloudio/uni-vue'
+
 // helpers
 export {
   defineOnApi,

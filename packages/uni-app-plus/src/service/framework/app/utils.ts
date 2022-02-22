@@ -11,15 +11,15 @@ export function backbuttonListener() {
   } as UniApp.NavigateBackOptions)
 }
 
-const enterOptions: LaunchOptions = createLaunchOptions()
-const launchOptions: LaunchOptions = createLaunchOptions()
+const enterOptions: LaunchOptions = /*#__PURE__*/ createLaunchOptions()
+const launchOptions: LaunchOptions = /*#__PURE__*/ createLaunchOptions()
 
 export function getLaunchOptions() {
-  return launchOptions
+  return extend({}, launchOptions)
 }
 
 export function getEnterOptions() {
-  return enterOptions
+  return extend({}, enterOptions)
 }
 
 export function initEnterOptions({
@@ -45,7 +45,7 @@ export function initLaunchOptions({
     referrerInfo: referrerInfo || {},
   })
   extend(enterOptions, launchOptions)
-  return launchOptions
+  return extend({}, launchOptions)
 }
 
 export interface RedirectInfo extends Omit<LaunchOptions, 'query' | 'scene'> {
