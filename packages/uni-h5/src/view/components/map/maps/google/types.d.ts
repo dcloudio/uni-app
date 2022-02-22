@@ -8,3 +8,5 @@ export type Marker = google.maps.Marker
 export type Label = google.maps.MarkerLabel
 export type Circle = google.maps.Circle
 export type Icon = google.maps.Icon
+export type Polygon = google.maps.Polygon
+export type Polygon = google.maps.PolygonOptions
