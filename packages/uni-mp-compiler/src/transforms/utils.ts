@@ -173,13 +173,12 @@ export function findReferencedScope(
     return scope
   } else if (isVForScope(scope)) {
     if (!findReferenced) {
-      // 部分情况下（比如包含了自定义组件，组件的 vueId 需要访问 vFor 的 index），只要在 vFor 下，不管有无引用，作用域均绑定在该 vFor 下
       return scope
     }
     if (isReferencedByIds(node, scope.locals)) {
       return scope
     }
-    return findReferencedScope(node, scope.parent!)
+    return findReferencedScope(node, scope.parent!, findReferenced)
   }
   return scope
 }
