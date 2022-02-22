@@ -20,9 +20,9 @@ describe('compiler: scope', () => {
     )
     assert(
       `<view v-for="item in items"><view v-for="item1 in item1" :data-id="item.id" :data-title="item1.title"/></view>`,
-      `<view wx:for="{{a}}" wx:for-item="item"><view wx:for="{{b}}" wx:for-item="item1" data-id="{{item.a}}" data-title="{{item1.a}}"/></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item"><view wx:for="{{item.a}}" wx:for-item="item1" data-id="{{item.b}}" data-title="{{item1.a}}"/></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: item.id }; }), b: _f(_ctx.item1, (item1, k1, i1) => { return { a: item1.title }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _f(_ctx.item1, (item1, k1, i1) => { return { a: item1.title }; }), b: item.id }; }) }
 }`
     )
     assert(
@@ -30,6 +30,13 @@ describe('compiler: scope', () => {
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="b" data-id="{{item.c}}"><view wx:for="{{item.a}}" wx:for-item="weeks" wx:key="a" data-id="{{weeks.b}}"/></view>`,
       `(_ctx, _cache) => {
   return { a: _f(_ctx.weeks, (item, weekIndex, i0) => { return { a: _f(item, (weeks, weeksIndex, i1) => { return { a: weeksIndex, b: weeks.id }; }), b: weekIndex, c: item.id }; }) }
+}`
+    )
+    assert(
+      `<view v-for="x in 2"><view v-for="y in 2">{{x+y}}</view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="x"><view wx:for="{{x.a}}" wx:for-item="y">{{y.a}}</view></view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(2, (x, k0, i0) => { return { a: _f(2, (y, k1, i1) => { return { a: _t(x + y) }; }) }; }) }
 }`
     )
   })
@@ -52,9 +59,9 @@ describe('compiler: scope', () => {
     )
     assert(
       `<view v-for="s in items1"><view v-for="r in items2"><text v-if="a == 2">s</text></view></view>`,
-      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{b}}" wx:for-item="r"><text wx:if="{{c}}">s</text></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{s.a}}" wx:for-item="r"><text wx:if="{{b}}">s</text></view></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items1, (s, k0, i0) => { return {}; }), b: _f(_ctx.items2, (r, k1, i1) => { return _ctx.a == 2 ? {} : {}; }), c: _ctx.a == 2 }
+  return { a: _f(_ctx.items1, (s, k0, i0) => { return { a: _f(_ctx.items2, (r, k1, i1) => { return _ctx.a == 2 ? {} : {}; }) }; }), b: _ctx.a == 2 }
 }`
     )
   })
@@ -68,25 +75,25 @@ describe('compiler: scope', () => {
     )
     assert(
       `<view v-for="s in items1"><view v-for="r in items2"><text v-if="a == 2">a</text><text v-else-if="b == 3">s</text></view></view>`,
-      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{b}}" wx:for-item="r"><text wx:if="{{c}}">a</text><text wx:elif="{{d}}">s</text></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{s.a}}" wx:for-item="r"><text wx:if="{{b}}">a</text><text wx:elif="{{c}}">s</text></view></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items1, (s, k0, i0) => { return {}; }), b: _f(_ctx.items2, (r, k1, i1) => { return _ctx.a == 2 ? {} : _ctx.b == 3 ? {} : {}; }), c: _ctx.a == 2, d: _ctx.b == 3 }
+  return { a: _f(_ctx.items1, (s, k0, i0) => { return { a: _f(_ctx.items2, (r, k1, i1) => { return _ctx.a == 2 ? {} : _ctx.b == 3 ? {} : {}; }) }; }), b: _ctx.a == 2, c: _ctx.b == 3 }
 }`
     )
   })
   test('v-for + v-for + v-for + v-if', () => {
     assert(
       `<view v-for="s in items1"><view v-for="r in items2"><view v-for="t in items3"><text v-if="s == 2">s</text></view></view></view>`,
-      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{b}}" wx:for-item="r"><view wx:for="{{s.a}}" wx:for-item="t"><text wx:if="{{s.b}}">s</text></view></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{s.a}}" wx:for-item="r"><view wx:for="{{r.a}}" wx:for-item="t"><text wx:if="{{s.b}}">s</text></view></view></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items1, (s, k0, i0) => { return { a: _f(_ctx.items3, (t, k2, i2) => { return s == 2 ? {} : {}; }), b: s == 2 }; }), b: _f(_ctx.items2, (r, k1, i1) => { return {}; }) }
+  return { a: _f(_ctx.items1, (s, k0, i0) => { return { a: _f(_ctx.items2, (r, k1, i1) => { return { a: _f(_ctx.items3, (t, k2, i2) => { return s == 2 ? {} : {}; }) }; }), b: s == 2 }; }) }
 }`
     )
     assert(
       `<view v-for="s in items1"><view v-for="r in items2"><view v-for="t in items3"><text v-if="r == 2">s</text></view></view></view>`,
-      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{b}}" wx:for-item="r"><view wx:for="{{r.a}}" wx:for-item="t"><text wx:if="{{r.b}}">s</text></view></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="s"><view wx:for="{{s.a}}" wx:for-item="r"><view wx:for="{{r.a}}" wx:for-item="t"><text wx:if="{{r.b}}">s</text></view></view></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items1, (s, k0, i0) => { return {}; }), b: _f(_ctx.items2, (r, k1, i1) => { return { a: _f(_ctx.items3, (t, k2, i2) => { return r == 2 ? {} : {}; }), b: r == 2 }; }) }
+  return { a: _f(_ctx.items1, (s, k0, i0) => { return { a: _f(_ctx.items2, (r, k1, i1) => { return { a: _f(_ctx.items3, (t, k2, i2) => { return r == 2 ? {} : {}; }), b: r == 2 }; }) }; }) }
 }`
     )
   })
