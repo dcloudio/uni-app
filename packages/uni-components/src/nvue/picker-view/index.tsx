@@ -17,7 +17,7 @@ import {
 import { flatVNode } from '../../helpers/flatVNode'
 import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
 
-export { Props, GetPickerViewColumn }
+export type { Props, GetPickerViewColumn }
 const nvuePickerViewProps = extend({}, pickerViewProps, {
   height: {
     type: [Number, String],
@@ -36,7 +36,7 @@ export default defineComponent({
 
     let columnVNodes: VNode[] = []
     const getItemIndex = (vnode: VNode) =>
-      Array.prototype.indexOf.call(columnVNodes, vnode.el)
+      Array.prototype.indexOf.call(columnVNodes, vnode)
     const getPickerViewColumn: GetPickerViewColumn = (columnInstance) => {
       return computed({
         get() {
@@ -69,10 +69,14 @@ export default defineComponent({
     return () => {
       const defaultSlots = slots.default && slots.default()
       columnVNodes = flatVNode(defaultSlots)
+      const style = props.height
+        ? { height: `${parseFloat(props.height as string)}px` }
+        : {}
       return (
         <view
           ref={rootRef}
           class="uni-picker-view"
+          style={style}
           {...{
             preventGesture: true,
           }}
@@ -85,17 +89,19 @@ export default defineComponent({
   styles: [
     {
       'uni-picker-view': {
-        position: 'relative',
+        '': { position: 'relative' },
       },
       'uni-picker-view-wrapper': {
-        display: 'flex',
-        flexDirection: 'row',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        overflow: 'hidden',
+        '': {
+          display: 'flex',
+          flexDirection: 'row',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          overflow: 'hidden',
+        },
       },
     },
   ],

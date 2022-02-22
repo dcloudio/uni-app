@@ -1,6 +1,6 @@
 'use strict';
 
-var version = "3.0.0-alpha-3030820220114011";
+var version = "3.0.0-alpha-3031120220221001";
 
 const STAT_VERSION = version;
 const STAT_URL = 'https://tongji.dcloud.io/uni/stat';

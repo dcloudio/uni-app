@@ -1,47 +1,56 @@
 let index = 0
 
-type Format = 'jpg' | 'png' | undefined
-
 export function saveImage(
-  base64: string,
+  dataURL: string,
   dirname: string,
-  callback: (error: Error | null, tempFilePath?: string) => void
+  callback: (error: any, tempFilePath?: string) => void
 ) {
   const id = `${Date.now()}${index++}`
-  const bitmap = new plus.nativeObj.Bitmap!(`bitmap${id}`)
-  bitmap.loadBase64Data(
-    base64,
-    function () {
-      const base64Match = base64.match(/data:image\/(\S+?);/) || [null, 'png']
-      let format
-      if (base64Match[1]) {
-        format = base64Match[1].replace('jpeg', 'jpg') as Format
-      }
-      const tempFilePath = `${dirname}/${id}.${format}`
-      bitmap.save(
-        tempFilePath,
+  const array = dataURL.split(',')
+  const scheme = array[0]
+  const base64 = array[1]
+  const format = (scheme.match(/data:image\/(\S+?);/) || [
+    '',
+    'png',
+  ])[1].replace('jpeg', 'jpg')
+  const fileName = `${id}.${format}`
+  const tempFilePath = `${dirname}/${fileName}`
+
+  const i = dirname.indexOf('/')
+  const basePath = dirname.substring(0, i)
+  const dirPath = dirname.substring(i + 1)
+  plus.io.resolveLocalFileSystemURL(
+    basePath,
+    function (entry: PlusIoDirectoryEntry) {
+      entry.getDirectory(
+        dirPath,
         {
-          overwrite: true,
-          quality: 100,
-          format,
+          create: true,
+          exclusive: false,
         },
-        function () {
-          clear()
-          callback(null, tempFilePath)
+        function (entry) {
+          entry.getFile(
+            fileName,
+            {
+              create: true,
+              exclusive: false,
+            },
+            function (entry) {
+              entry.createWriter(function (writer) {
+                writer.onwrite = function () {
+                  callback(null, tempFilePath)
+                }
+                writer.onerror = callback
+                writer.seek(0)
+                writer.writeAsBinary(base64)
+              }, callback)
+            },
+            callback
+          )
         },
-        function (error) {
-          clear()
-          callback(error)
-        }
+        callback
       )
     },
-    function (error) {
-      clear()
-      callback(error)
-    }
+    callback
   )
-
-  function clear() {
-    bitmap.clear()
-  }
 }

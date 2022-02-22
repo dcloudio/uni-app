@@ -1,68 +1,15 @@
-import { PRIMARY_COLOR } from '@dcloudio/uni-shared'
 import { ref, reactive, watch, computed, ExtractPropTypes } from 'vue'
 
 import { defineBuiltInComponent } from '../../helpers/component'
 
-const VALUES = {
-  activeColor: PRIMARY_COLOR,
-  backgroundColor: '#EBEBEB',
-  activeMode: 'backwards',
-}
+import { PROGRESS_VALUES, progressProps } from '../../components/progress'
 
-const props = {
-  percent: {
-    type: [Number, String],
-    default: 0,
-    validator(value: number | string) {
-      return !isNaN(parseFloat(value as string))
-    },
-  },
-  showInfo: {
-    type: [Boolean, String],
-    default: false,
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: 6,
-    validator(value: number | string) {
-      return !isNaN(parseFloat(value as string))
-    },
-  },
-  color: {
-    type: String,
-    default: VALUES.activeColor,
-  },
-  activeColor: {
-    type: String,
-    default: VALUES.activeColor,
-  },
-  backgroundColor: {
-    type: String,
-    default: VALUES.backgroundColor,
-  },
-  active: {
-    type: [Boolean, String],
-    default: false,
-  },
-  activeMode: {
-    type: String,
-    default: VALUES.activeMode,
-  },
-  duration: {
-    type: [Number, String],
-    default: 30,
-    validator(value: number | string) {
-      return !isNaN(parseFloat(value as string))
-    },
-  },
-}
-
-type ProgressProps = ExtractPropTypes<typeof props>
+type ProgressProps = ExtractPropTypes<typeof progressProps>
 type ProgerssState = ReturnType<typeof useProgressState>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Progress',
-  props,
+  props: progressProps,
   setup(props) {
     const state = useProgressState(props)
 
@@ -107,8 +54,8 @@ function useProgressState(props: ProgressProps) {
   const innerBarStyle = computed(() => {
     // 兼容下不推荐的属性，activeColor 优先级高于 color。
     const backgroundColor =
-      props.color !== VALUES.activeColor &&
-      props.activeColor === VALUES.activeColor
+      props.color !== PROGRESS_VALUES.activeColor &&
+      props.activeColor === PROGRESS_VALUES.activeColor
         ? props.color
         : props.activeColor
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`
@@ -136,7 +83,7 @@ function useProgressState(props: ProgressProps) {
 function _activeAnimation(state: ProgerssState, props: ProgressProps) {
   if (props.active) {
     state.currentPercent =
-      props.activeMode === VALUES.activeMode ? 0 : state.lastPercent
+      props.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent
     state.strokeTimer = setInterval(() => {
       if (state.currentPercent + 1 > state.realPercent) {
         state.currentPercent = state.realPercent

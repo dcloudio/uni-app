@@ -1,6 +1,10 @@
 import { createElementVNode } from 'vue'
 import { extend, hasOwn } from '@vue/shared'
 
+export type NVueComponentStyles = Array<
+  Record<string, Record<string, Record<string, unknown>>>
+>
+
 interface HoverProps {
   hoverClass?: string
   hoverStartTime?: number | string

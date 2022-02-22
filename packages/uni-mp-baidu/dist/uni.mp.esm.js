@@ -1067,7 +1067,7 @@ function handleLink(event) {
 
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 function isPage(mpInstance) {
-    return !hasOwn(mpInstance, 'ownerId');
+    return !!mpInstance.methods.onLoad;
 }
 function initRelation(mpInstance, detail) {
     mpInstance.dispatch('__l', detail);

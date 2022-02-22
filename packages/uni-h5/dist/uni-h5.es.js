@@ -6416,7 +6416,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$y = {
+const props$x = {
   canvasId: {
     type: String,
     default: ""
@@ -6436,7 +6436,7 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$y,
+  props: props$x,
   computed: {
     id() {
       return this.canvasId;
@@ -6897,7 +6897,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$x = {
+const props$w = {
   name: {
     type: String,
     default: ""
@@ -6905,7 +6905,7 @@ const props$x = {
 };
 var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$x,
+  props: props$w,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6957,7 +6957,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$w = {
+const props$v = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6981,7 +6981,7 @@ const props$w = {
 };
 var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$w,
+  props: props$v,
   setup(props2, {
     slots
   }) {
@@ -7058,7 +7058,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$v = {
+const props$u = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -7835,7 +7835,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id2, true);
 }
-const props$u = /* @__PURE__ */ extend({}, props$v, {
+const props$t = /* @__PURE__ */ extend({}, props$u, {
   id: {
     type: String,
     default: ""
@@ -7863,7 +7863,7 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
 });
 var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$u,
+  props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -7950,7 +7950,7 @@ var index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$t = {
+const props$s = {
   src: {
     type: String,
     default: ""
@@ -7989,7 +7989,7 @@ const IMAGE_MODES = {
 };
 var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$t,
+  props: props$s,
   setup(props2, {
     emit: emit2
   }) {
@@ -8303,7 +8303,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$s = /* @__PURE__ */ extend({}, {
+const props$r = /* @__PURE__ */ extend({}, {
   name: {
     type: String,
     default: ""
@@ -8372,7 +8372,7 @@ const props$s = /* @__PURE__ */ extend({}, {
     type: Boolean,
     default: false
   }
-}, props$v);
+}, props$u);
 const emit = [
   "input",
   "focus",
@@ -8576,7 +8576,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$r = /* @__PURE__ */ extend({}, props$s, {
+const props$q = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -8588,7 +8588,7 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$r,
+  props: props$q,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -11136,18 +11136,23 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const VALUES = {
+const FONT_SIZE = 16;
+const PROGRESS_VALUES = {
   activeColor: PRIMARY_COLOR,
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$q = {
+const progressProps = {
   percent: {
     type: [Number, String],
     default: 0,
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  fontSize: {
+    type: [String, Number],
+    default: FONT_SIZE
   },
   showInfo: {
     type: [Boolean, String],
@@ -11162,15 +11167,15 @@ const props$q = {
   },
   color: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   activeColor: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   backgroundColor: {
     type: String,
-    default: VALUES.backgroundColor
+    default: PROGRESS_VALUES.backgroundColor
   },
   active: {
     type: [Boolean, String],
@@ -11178,7 +11183,7 @@ const props$q = {
   },
   activeMode: {
     type: String,
-    default: VALUES.activeMode
+    default: PROGRESS_VALUES.activeMode
   },
   duration: {
     type: [Number, String],
@@ -11190,7 +11195,7 @@ const props$q = {
 };
 var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$q,
+  props: progressProps,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -11226,7 +11231,7 @@ function useProgressState(props2) {
   const currentPercent = ref(0);
   const outerBarStyle = computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
   const innerBarStyle = computed(() => {
-    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
+    const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = computed(() => {
@@ -11247,7 +11252,7 @@ function useProgressState(props2) {
 }
 function _activeAnimation(state2, props2) {
   if (props2.active) {
-    state2.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state2.lastPercent;
+    state2.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state2.lastPercent;
     state2.strokeTimer = setInterval(() => {
       if (state2.currentPercent + 1 > state2.realPercent) {
         state2.currentPercent = state2.realPercent;
@@ -11461,96 +11466,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-function removeDOCTYPE(html) {
-  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
-}
-function parseAttrs(attrs2) {
-  return attrs2.reduce(function(pre, attr2) {
-    let value = attr2.value;
-    const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
-      value = value.split(" ");
-    }
-    if (pre[name]) {
-      if (Array.isArray(pre[name])) {
-        pre[name].push(value);
-      } else {
-        pre[name] = [pre[name], value];
-      }
-    } else {
-      pre[name] = value;
-    }
-    return pre;
-  }, {});
-}
-function parseHtml(html) {
-  html = removeDOCTYPE(html);
-  const stacks = [];
-  const results = {
-    node: "root",
-    children: []
-  };
-  HTMLParser(html, {
-    start: function(tag, attrs2, unary) {
-      const node = {
-        name: tag
-      };
-      if (attrs2.length !== 0) {
-        node.attrs = parseAttrs(attrs2);
-      }
-      if (unary) {
-        const parent = stacks[0] || results;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      } else {
-        stacks.unshift(node);
-      }
-    },
-    end: function(tag) {
-      const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    chars: function(text2) {
-      const node = {
-        type: "text",
-        text: text2
-      };
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    comment: function(text2) {
-      const node = {
-        node: "comment",
-        text: text2
-      };
-      const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
-      }
-      parent.children.push(node);
-    }
-  });
-  return results.children;
-}
 const TAGS = {
   a: "",
   abbr: "",
@@ -11705,6 +11620,96 @@ function processClickEvent(node, elem, triggerItemClick) {
       e2.stopPropagation();
     }, true);
   }
+}
+function removeDOCTYPE(html) {
+  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+}
+function parseAttrs(attrs2) {
+  return attrs2.reduce(function(pre, attr2) {
+    let value = attr2.value;
+    const name = attr2.name;
+    if (value.match(/ /) && name !== "style") {
+      value = value.split(" ");
+    }
+    if (pre[name]) {
+      if (Array.isArray(pre[name])) {
+        pre[name].push(value);
+      } else {
+        pre[name] = [pre[name], value];
+      }
+    } else {
+      pre[name] = value;
+    }
+    return pre;
+  }, {});
+}
+function parseHtml(html) {
+  html = removeDOCTYPE(html);
+  const stacks = [];
+  const results = {
+    node: "root",
+    children: []
+  };
+  HTMLParser(html, {
+    start: function(tag, attrs2, unary) {
+      const node = {
+        name: tag
+      };
+      if (attrs2.length !== 0) {
+        node.attrs = parseAttrs(attrs2);
+      }
+      if (unary) {
+        const parent = stacks[0] || results;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      } else {
+        stacks.unshift(node);
+      }
+    },
+    end: function(tag) {
+      const node = stacks.shift();
+      if (node.name !== tag)
+        console.error("invalid state: mismatch end tag");
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    chars: function(text2) {
+      const node = {
+        type: "text",
+        text: text2
+      };
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    comment: function(text2) {
+      const node = {
+        node: "comment",
+        text: text2
+      };
+      const parent = stacks[0];
+      if (!parent.children) {
+        parent.children = [];
+      }
+      parent.children.push(node);
+    }
+  });
+  return results.children;
 }
 const props$n = {
   nodes: {
@@ -13280,7 +13285,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = /* @__PURE__ */ extend({}, props$s, {
+const props$h = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"

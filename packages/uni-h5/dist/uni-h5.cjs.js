@@ -1626,7 +1626,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$r = {
+const props$q = {
   canvasId: {
     type: String,
     default: ""
@@ -1646,7 +1646,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$r,
+  props: props$q,
   computed: {
     id() {
       return this.canvasId;
@@ -2104,7 +2104,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$p = {
   name: {
     type: String,
     default: ""
@@ -2112,7 +2112,7 @@ const props$q = {
 };
 var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$q,
+  props: props$p,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2164,7 +2164,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$p = {
+const props$o = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2188,7 +2188,7 @@ const props$p = {
 };
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$p,
+  props: props$o,
   setup(props2, {
     slots
   }) {
@@ -2255,7 +2255,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$o = {
+const props$n = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2427,7 +2427,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
+const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   id: {
     type: String,
     default: ""
@@ -2455,7 +2455,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
 });
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$n,
+  props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2541,7 +2541,7 @@ var index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$m = {
+const props$l = {
   src: {
     type: String,
     default: ""
@@ -2580,7 +2580,7 @@ const IMAGE_MODES = {
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$m,
+  props: props$l,
   setup(props2, {
     emit: emit2
   }) {
@@ -2829,7 +2829,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$l = /* @__PURE__ */ shared.extend({}, {
+const props$k = /* @__PURE__ */ shared.extend({}, {
   name: {
     type: String,
     default: ""
@@ -2898,7 +2898,7 @@ const props$l = /* @__PURE__ */ shared.extend({}, {
     type: Boolean,
     default: false
   }
-}, props$o);
+}, props$n);
 const emit = [
   "input",
   "focus",
@@ -3093,7 +3093,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
+const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3105,7 +3105,7 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$k,
+  props: props$j,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -4550,18 +4550,23 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const VALUES = {
+const FONT_SIZE = 16;
+const PROGRESS_VALUES = {
   activeColor: uniShared.PRIMARY_COLOR,
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$j = {
+const progressProps = {
   percent: {
     type: [Number, String],
     default: 0,
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  fontSize: {
+    type: [String, Number],
+    default: FONT_SIZE
   },
   showInfo: {
     type: [Boolean, String],
@@ -4576,15 +4581,15 @@ const props$j = {
   },
   color: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   activeColor: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   backgroundColor: {
     type: String,
-    default: VALUES.backgroundColor
+    default: PROGRESS_VALUES.backgroundColor
   },
   active: {
     type: [Boolean, String],
@@ -4592,7 +4597,7 @@ const props$j = {
   },
   activeMode: {
     type: String,
-    default: VALUES.activeMode
+    default: PROGRESS_VALUES.activeMode
   },
   duration: {
     type: [Number, String],
@@ -4604,7 +4609,7 @@ const props$j = {
 };
 var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$j,
+  props: progressProps,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -4640,7 +4645,7 @@ function useProgressState(props2) {
   const currentPercent = vue.ref(0);
   const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
   const innerBarStyle = vue.computed(() => {
-    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
+    const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = vue.computed(() => {
@@ -4661,7 +4666,7 @@ function useProgressState(props2) {
 }
 function _activeAnimation(state, props2) {
   if (props2.active) {
-    state.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state.lastPercent;
+    state.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
     state.strokeTimer = setInterval(() => {
       if (state.currentPercent + 1 > state.realPercent) {
         state.currentPercent = state.realPercent;
@@ -4859,96 +4864,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-function removeDOCTYPE(html) {
-  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
-}
-function parseAttrs(attrs) {
-  return attrs.reduce(function(pre, attr2) {
-    let value = attr2.value;
-    const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
-      value = value.split(" ");
-    }
-    if (pre[name]) {
-      if (Array.isArray(pre[name])) {
-        pre[name].push(value);
-      } else {
-        pre[name] = [pre[name], value];
-      }
-    } else {
-      pre[name] = value;
-    }
-    return pre;
-  }, {});
-}
-function parseHtml(html) {
-  html = removeDOCTYPE(html);
-  const stacks = [];
-  const results = {
-    node: "root",
-    children: []
-  };
-  HTMLParser(html, {
-    start: function(tag, attrs, unary) {
-      const node = {
-        name: tag
-      };
-      if (attrs.length !== 0) {
-        node.attrs = parseAttrs(attrs);
-      }
-      if (unary) {
-        const parent = stacks[0] || results;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      } else {
-        stacks.unshift(node);
-      }
-    },
-    end: function(tag) {
-      const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    chars: function(text) {
-      const node = {
-        type: "text",
-        text
-      };
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    comment: function(text) {
-      const node = {
-        node: "comment",
-        text
-      };
-      const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
-      }
-      parent.children.push(node);
-    }
-  });
-  return results.children;
-}
 const TAGS = {
   a: "",
   abbr: "",
@@ -5103,6 +5018,96 @@ function processClickEvent(node, elem, triggerItemClick) {
       e2.stopPropagation();
     }, true);
   }
+}
+function removeDOCTYPE(html) {
+  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+}
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
+    let value = attr2.value;
+    const name = attr2.name;
+    if (value.match(/ /) && name !== "style") {
+      value = value.split(" ");
+    }
+    if (pre[name]) {
+      if (Array.isArray(pre[name])) {
+        pre[name].push(value);
+      } else {
+        pre[name] = [pre[name], value];
+      }
+    } else {
+      pre[name] = value;
+    }
+    return pre;
+  }, {});
+}
+function parseHtml(html) {
+  html = removeDOCTYPE(html);
+  const stacks = [];
+  const results = {
+    node: "root",
+    children: []
+  };
+  HTMLParser(html, {
+    start: function(tag, attrs, unary) {
+      const node = {
+        name: tag
+      };
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
+      }
+      if (unary) {
+        const parent = stacks[0] || results;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      } else {
+        stacks.unshift(node);
+      }
+    },
+    end: function(tag) {
+      const node = stacks.shift();
+      if (node.name !== tag)
+        console.error("invalid state: mismatch end tag");
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    chars: function(text) {
+      const node = {
+        type: "text",
+        text
+      };
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    comment: function(text) {
+      const node = {
+        node: "comment",
+        text
+      };
+      const parent = stacks[0];
+      if (!parent.children) {
+        parent.children = [];
+      }
+      parent.children.push(node);
+    }
+  });
+  return results.children;
 }
 const props$g = {
   nodes: {
@@ -6370,7 +6375,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$a = /* @__PURE__ */ shared.extend({}, props$l, {
+const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"

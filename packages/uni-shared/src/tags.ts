@@ -103,16 +103,19 @@ export const NVUE_BUILT_IN_TAGS = [
   'timepicker',
   'marquee',
   'countdown',
+  'dc-switch',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
-  'text',
-  'image',
-  'input',
-  'textarea',
-  'video',
-  'web-view',
-  'slider',
+  'u-text',
+  'u-image',
+  'u-input',
+  'u-textarea',
+  'u-video',
+  'u-web-view',
+  'u-slider',
+  'u-ad',
+  'u-ad-draw',
 ]
 
 export function isBuiltInComponent(tag: string) {
@@ -156,23 +159,23 @@ const NVUE_CUSTOM_COMPONENTS = [
   'swiper-item',
   'swiper',
   'switch',
-  'slider',
+  // 'slider',
   'picker-view',
   'picker-view-column',
 ]
 
 export function isAppNVueNativeTag(tag: string) {
+  if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
   if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
     return false
   }
   if (isBuiltInComponent(tag)) {
     return true
   }
-  if (NVUE_BUILT_IN_TAGS.includes(tag)) {
-    return true
-  }
   // u-text,u-video...
-  if (NVUE_U_BUILT_IN_TAGS.includes(tag.replace('u-', ''))) {
+  if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
     return true
   }
   return false
