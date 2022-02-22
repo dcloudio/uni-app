@@ -10,8 +10,9 @@ function isFunction (expr) {
   try {
     const body = parser.parse(`(${expr})`).program.body[0]
     const expression = body.expression
-    return t.isFunctionDeclaration(body) || t.isArrowFunctionExpression(expression) || t.isFunctionExpression(expression)
-  } catch (error) { }
+    return t.isFunctionDeclaration(body) || t.isArrowFunctionExpression(expression) || t.isFunctionExpression(
+      expression)
+  } catch (error) {}
 }
 
 function processEvent (expr, filterModules) {
@@ -80,31 +81,39 @@ module.exports = {
           })
         }
       }
-      if (el.events) {
+      if (el.events || el.nativeEvents) {
         filterModules = filterModules || []
         const {
           events: eventsMap
         } = deprecated
         // const warnLogs = new Set()
-        Object.keys(el.events).forEach(name => {
-          // 过时事件类型转换
-          if (eventsMap[name]) {
-            el.events[eventsMap[name]] = el.events[name]
-            delete el.events[name]
-            // warnLogs.add(`警告：事件${name}已过时，推荐使用${eventsMap[name]}代替`)
-            name = eventsMap[name]
-          }
-
-          const handlers = el.events[name]
-          if (Array.isArray(handlers)) {
-            handlers.forEach(handler => {
-              handler.value = processEvent(handler.value, filterModules)
-            })
-          } else {
-            handlers.value = processEvent(handlers.value, filterModules)
-          }
-        })
+        normalizeEvent(el.events, eventsMap, filterModules)
+        normalizeEvent(el.nativeEvents, eventsMap, filterModules)
       }
     }
   }]
+}
+
+function normalizeEvent (events, eventsMap, filterModules) {
+  if (!events) {
+    return
+  }
+  Object.keys(events).forEach(name => {
+    // 过时事件类型转换
+    if (eventsMap[name]) {
+      events[eventsMap[name]] = events[name]
+      delete events[name]
+      // warnLogs.add(`警告：事件${name}已过时，推荐使用${eventsMap[name]}代替`)
+      name = eventsMap[name]
+    }
+
+    const handlers = events[name]
+    if (Array.isArray(handlers)) {
+      handlers.forEach(handler => {
+        handler.value = processEvent(handler.value, filterModules)
+      })
+    } else {
+      handlers.value = processEvent(handlers.value, filterModules)
+    }
+  })
 }
