@@ -9,6 +9,9 @@ import MapPolyline from './MapPolyline.tsx'
 import MapCircle from './MapCircle.tsx'
 import MapControl from './MapControl.tsx'
 import MapLocation from './MapLocation.tsx'
+import MapPolygon from './map-polygon/index.tsx'
+
+import { eventObj } from './map-polygon/event'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Map',
@@ -25,6 +28,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'update:scale',
     'update:latitude',
     'update:longitude',
+    // MapPolygon 组件对外暴露的事件
+    ...Object.values(eventObj)
   ],
   components: {
     MapMarker,
@@ -32,6 +37,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MapCircle,
     MapControl,
     MapLocation,
+    MapPolygon,
   },
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
@@ -75,6 +81,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       v-bind="item"
     />
     <MapLocation v-if="showLocation" />
+    <MapPolygon v-for="item in polygons" :key="JSON.stringify(item)" v-bind="item" />
     <div
       style="
         position: absolute;

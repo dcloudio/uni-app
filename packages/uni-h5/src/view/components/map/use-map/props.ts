@@ -8,6 +8,7 @@ import { Props as MapCircleProps } from '../MapCircle'
 import { Props as MapControlProps } from '../MapControl'
 import { Props as MapMarkerProps } from '../MapMarker'
 import { Point } from '../../../../helpers/location'
+import { Polygon } from '../map-polygon/interface'
 
 // Map 组件的 props 配置
 export default {
@@ -66,5 +67,9 @@ export default {
     default() {
       return []
     },
+  },
+  polygons: {
+    type: Array as PropType<Polygon[]>,
+    default: () => [],
   },
 }
