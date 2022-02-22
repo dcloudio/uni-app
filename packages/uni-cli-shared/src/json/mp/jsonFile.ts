@@ -127,7 +127,11 @@ export function isMiniProgramUsingComponent(
     componentsDir?: string
   }
 ) {
-  return findMiniProgramUsingComponents(options).includes(name)
+  return !!findMiniProgramUsingComponents(options)[name]
+}
+
+interface MiniProgramComponents {
+  [name: string]: 'plugin' | 'component'
 }
 
 export function findMiniProgramUsingComponents({
@@ -138,15 +142,13 @@ export function findMiniProgramUsingComponents({
   filename: string
   inputDir: string
   componentsDir?: string
-}) {
-  if (!componentsDir) {
-    return []
-  }
+}): MiniProgramComponents {
   const globalUsingComponents = appJsonCache && appJsonCache.usingComponents
-  const miniProgramComponents: string[] = []
+  const miniProgramComponents: MiniProgramComponents = {}
   if (globalUsingComponents) {
-    miniProgramComponents.push(
-      ...findMiniProgramUsingComponent(globalUsingComponents, componentsDir)
+    extend(
+      miniProgramComponents,
+      findMiniProgramUsingComponent(globalUsingComponents, componentsDir)
     )
   }
 
@@ -154,8 +156,9 @@ export function findMiniProgramUsingComponents({
     removeExt(normalizeMiniProgramFilename(filename, inputDir))
   )
   if (jsonFile?.usingComponents) {
-    miniProgramComponents.push(
-      ...findMiniProgramUsingComponent(jsonFile.usingComponents, componentsDir)
+    extend(
+      miniProgramComponents,
+      findMiniProgramUsingComponent(jsonFile.usingComponents, componentsDir)
     )
   }
   return miniProgramComponents
@@ -163,10 +166,18 @@ export function findMiniProgramUsingComponents({
 
 function findMiniProgramUsingComponent(
   usingComponents: Record<string, string>,
-  componentsDir: string
+  componentsDir?: string
 ) {
-  return Object.keys(usingComponents).filter((name) => {
-    const path = usingComponents[name]
-    return path.includes(componentsDir + '/')
-  })
+  return Object.keys(usingComponents).reduce<MiniProgramComponents>(
+    (res, name) => {
+      const path = usingComponents[name]
+      if (componentsDir && path.includes(componentsDir + '/')) {
+        res[name] = 'component'
+      } else if (path.includes('plugin://')) {
+        res[name] = 'plugin'
+      }
+      return res
+    },
+    {}
+  )
 }

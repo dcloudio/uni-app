@@ -17,7 +17,7 @@ export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 export const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix']
 
 export function isPage(mpInstance: MPComponentInstance) {
-  return !hasOwn(mpInstance, 'ownerId')
+  return !!(mpInstance.methods as any).onLoad
 }
 
 export function initRelation(mpInstance: MPComponentInstance, detail: object) {

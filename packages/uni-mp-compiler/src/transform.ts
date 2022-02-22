@@ -123,7 +123,7 @@ export interface TransformContext
   addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
-  isMiniProgramComponent(name: string): boolean
+  isMiniProgramComponent(name: string): 'plugin' | 'component' | undefined
 }
 
 export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
@@ -474,7 +474,7 @@ export function createTransformContext(
       return createCacheExpression(context.cached++, exp, isVNode)
     },
     isMiniProgramComponent(name) {
-      return miniProgramComponents.includes(name)
+      return miniProgramComponents[name]
     },
   }
 

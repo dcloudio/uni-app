@@ -48,7 +48,7 @@ import {
 import { CodegenScope, CodegenVForScope } from '../options'
 import { V_FOR } from '../runtimeHelpers'
 import { createVSlotCallExpression } from './vSlot'
-import { isElementNode } from '@dcloudio/uni-cli-shared'
+import { isElementNode, isUserComponent } from '@dcloudio/uni-cli-shared'
 
 export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   sourceExpr?: Expression
@@ -117,7 +117,9 @@ export const transformFor = createStructuralDirectiveTransform(
 
     const sourceAliasReferencedScope = findReferencedScope(
       cloneSourceExpr,
-      context.currentScope
+      context.currentScope,
+      // issues/3263
+      !hasUserComponent(node, context)
     )
     // 寻找子节点中 if 指令作用域
     const vIfReferencedScope = findVIfReferencedScope(
@@ -216,6 +218,18 @@ export const transformFor = createStructuralDirectiveTransform(
     }
   }
 ) as unknown as NodeTransform
+
+function hasUserComponent(
+  node: ElementNode,
+  context: TransformContext
+): boolean {
+  if (isUserComponent(node, context)) {
+    return true
+  }
+  return node.children.some(
+    (node) => isElementNode(node) && hasUserComponent(node, context)
+  )
+}
 
 function clearExpr(expr: Expression) {
   Object.keys(expr).forEach((key) => {
