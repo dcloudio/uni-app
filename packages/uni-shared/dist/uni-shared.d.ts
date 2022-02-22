@@ -1,3 +1,4 @@
+import type { App } from 'vue';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { ComponentOptionsBase } from '@vue/runtime-core';
 import type { ComponentPublicInstance } from '@vue/runtime-core';
@@ -122,6 +123,8 @@ export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrec
 
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
 
+declare type CreateVueAppHook = (app: App) => void;
+
 export declare function customizeEvent(str: string): string;
 
 export declare const DATA_RE: RegExp;
@@ -241,6 +244,8 @@ export declare const initCustomDatasetOnce: () => void;
 export declare type InsertAction = [typeof ACTION_TYPE_INSERT, number, number, number];
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
+
+export declare function invokeCreateVueAppHook(app: App): void;
 
 export declare function isAppNativeTag(tag: string): boolean;
 
@@ -475,6 +480,12 @@ export declare const ON_WEB_INVOKE_APP_SERVICE = "onWebInvokeAppService";
 export declare const ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
 
 export declare function once<T extends (...args: any[]) => any>(fn: T, ctx?: unknown): T;
+
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+export declare function onCreateVueApp(hook: CreateVueAppHook): void;
 
 declare interface Options {
     success?: (res: any) => void;

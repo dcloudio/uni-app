@@ -1,5 +1,5 @@
 import { isString, isArray, isFunction } from '@vue/shared';
-import { invokeArrayFns, ON_LOAD, LINEFEED, ON_SHOW, RENDERJS_MODULES, WXS_PROTOCOL, formatLog, WXS_MODULES, UniLifecycleHooks, ON_ERROR } from '@dcloudio/uni-shared';
+import { invokeArrayFns, ON_LOAD, LINEFEED, ON_SHOW, RENDERJS_MODULES, WXS_PROTOCOL, formatLog, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { nextTick, injectHook } from 'vue';
 
 function getCurrentPage() {
@@ -248,13 +248,6 @@ function uniIdMixin(globalProperties) {
         const { tokenExpired } = getCurrentUserInfo();
         return tokenExpired > Date.now();
     };
-}
-
-let vueApp;
-const createVueAppHooks = [];
-function invokeCreateVueAppHook(app) {
-    vueApp = app;
-    createVueAppHooks.forEach((hook) => hook(app));
 }
 
 function initApp(app) {
