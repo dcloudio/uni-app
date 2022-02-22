@@ -1,6 +1,7 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, nextTick, injectHook, reactive, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_LOAD, UniLifecycleHooks, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 const isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
@@ -5417,159 +5418,6 @@ const SetTabBarBadgeOptions = {
     }
   }, IndexOptions.formatArgs)
 };
-function injectLifecycleHook(name, hook, publicThis, instance2) {
-  if (isFunction(hook)) {
-    injectHook(name, hook.bind(publicThis), instance2);
-  }
-}
-function initHooks(options, instance2, publicThis) {
-  const mpType = options.mpType || publicThis.$mpType;
-  Object.keys(options).forEach((name) => {
-    if (name.indexOf("on") === 0) {
-      const hooks = options[name];
-      if (isArray(hooks)) {
-        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance2));
-      } else {
-        injectLifecycleHook(name, hooks, publicThis, instance2);
-      }
-    }
-  });
-  if (mpType === "page") {
-    instance2.__isVisible = true;
-    try {
-      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
-      delete instance2.attrs.__pageQuery;
-    } catch (e2) {
-      console.error(e2.message + LINEFEED + e2.stack);
-    }
-    nextTick(() => {
-      invokeHook(publicThis, ON_SHOW);
-    });
-  }
-}
-function applyOptions(options, instance2, publicThis) {
-  initHooks(options, instance2, publicThis);
-}
-function set(target, key, val) {
-  return target[key] = val;
-}
-function errorHandler(err, instance2, info) {
-  if (!instance2) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, ON_ERROR, err);
-  }
-}
-function mergeAsArray(to, from) {
-  return to ? [...new Set([].concat(to, from))] : from;
-}
-function initOptionMergeStrategies(optionMergeStrategies) {
-  UniLifecycleHooks.forEach((name) => {
-    optionMergeStrategies[name] = mergeAsArray;
-  });
-}
-let realAtob;
-const b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-if (typeof atob !== "function") {
-  realAtob = function(str) {
-    str = String(str).replace(/[\t\n\f\r ]+/g, "");
-    if (!b64re.test(str)) {
-      throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
-    }
-    str += "==".slice(2 - (str.length & 3));
-    var bitmap;
-    var result = "";
-    var r1;
-    var r2;
-    var i = 0;
-    for (; i < str.length; ) {
-      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
-      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
-    }
-    return result;
-  };
-} else {
-  realAtob = atob;
-}
-function b64DecodeUnicode(str) {
-  return decodeURIComponent(realAtob(str).split("").map(function(c) {
-    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(""));
-}
-function getCurrentUserInfo() {
-  const token = uni.getStorageSync("uni_id_token") || "";
-  const tokenArr = token.split(".");
-  if (!token || tokenArr.length !== 3) {
-    return {
-      uid: null,
-      role: [],
-      permission: [],
-      tokenExpired: 0
-    };
-  }
-  let userInfo;
-  try {
-    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-  } catch (error) {
-    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
-  }
-  userInfo.tokenExpired = userInfo.exp * 1e3;
-  delete userInfo.exp;
-  delete userInfo.iat;
-  return userInfo;
-}
-function uniIdMixin(globalProperties) {
-  globalProperties.uniIDHasRole = function(roleId) {
-    const { role } = getCurrentUserInfo();
-    return role.indexOf(roleId) > -1;
-  };
-  globalProperties.uniIDHasPermission = function(permissionId) {
-    const { permission } = getCurrentUserInfo();
-    return this.uniIDHasRole("admin") || permission.indexOf(permissionId) > -1;
-  };
-  globalProperties.uniIDTokenValid = function() {
-    const { tokenExpired } = getCurrentUserInfo();
-    return tokenExpired > Date.now();
-  };
-}
-let vueApp;
-const createVueAppHooks = [];
-function onCreateVueApp(hook) {
-  if (vueApp) {
-    return hook(vueApp);
-  }
-  createVueAppHooks.push(hook);
-}
-function invokeCreateVueAppHook(app) {
-  vueApp = app;
-  createVueAppHooks.forEach((hook) => hook(app));
-}
-function initApp$1(app) {
-  const appConfig = app._context.config;
-  if (isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
-  }
-  initOptionMergeStrategies(appConfig.optionMergeStrategies);
-  const globalProperties = appConfig.globalProperties;
-  {
-    if (__UNI_FEATURE_UNI_CLOUD__) {
-      uniIdMixin(globalProperties);
-    }
-  }
-  {
-    globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
-  }
-  {
-    invokeCreateVueAppHook(app);
-  }
-}
 const initIntersectionObserverPolyfill = function() {
   if (typeof window !== "object") {
     return;
@@ -13648,6 +13496,147 @@ function useContextInfo(_id) {
 }
 function getContextInfo(el) {
   return el.__uniContextInfo;
+}
+function injectLifecycleHook(name, hook, publicThis, instance2) {
+  if (isFunction(hook)) {
+    injectHook(name, hook.bind(publicThis), instance2);
+  }
+}
+function initHooks(options, instance2, publicThis) {
+  const mpType = options.mpType || publicThis.$mpType;
+  Object.keys(options).forEach((name) => {
+    if (name.indexOf("on") === 0) {
+      const hooks = options[name];
+      if (isArray(hooks)) {
+        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance2));
+      } else {
+        injectLifecycleHook(name, hooks, publicThis, instance2);
+      }
+    }
+  });
+  if (mpType === "page") {
+    instance2.__isVisible = true;
+    try {
+      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
+      delete instance2.attrs.__pageQuery;
+    } catch (e2) {
+      console.error(e2.message + LINEFEED + e2.stack);
+    }
+    nextTick(() => {
+      invokeHook(publicThis, ON_SHOW);
+    });
+  }
+}
+function applyOptions(options, instance2, publicThis) {
+  initHooks(options, instance2, publicThis);
+}
+function set(target, key, val) {
+  return target[key] = val;
+}
+function errorHandler(err, instance2, info) {
+  if (!instance2) {
+    throw err;
+  }
+  const app = getApp();
+  if (!app || !app.$vm) {
+    throw err;
+  }
+  {
+    invokeHook(app.$vm, ON_ERROR, err);
+  }
+}
+function mergeAsArray(to, from) {
+  return to ? [...new Set([].concat(to, from))] : from;
+}
+function initOptionMergeStrategies(optionMergeStrategies) {
+  UniLifecycleHooks.forEach((name) => {
+    optionMergeStrategies[name] = mergeAsArray;
+  });
+}
+let realAtob;
+const b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+if (typeof atob !== "function") {
+  realAtob = function(str) {
+    str = String(str).replace(/[\t\n\f\r ]+/g, "");
+    if (!b64re.test(str)) {
+      throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+    }
+    str += "==".slice(2 - (str.length & 3));
+    var bitmap;
+    var result = "";
+    var r1;
+    var r2;
+    var i = 0;
+    for (; i < str.length; ) {
+      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+    }
+    return result;
+  };
+} else {
+  realAtob = atob;
+}
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(realAtob(str).split("").map(function(c) {
+    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(""));
+}
+function getCurrentUserInfo() {
+  const token = uni.getStorageSync("uni_id_token") || "";
+  const tokenArr = token.split(".");
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    };
+  }
+  let userInfo;
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
+  }
+  userInfo.tokenExpired = userInfo.exp * 1e3;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo;
+}
+function uniIdMixin(globalProperties) {
+  globalProperties.uniIDHasRole = function(roleId) {
+    const { role } = getCurrentUserInfo();
+    return role.indexOf(roleId) > -1;
+  };
+  globalProperties.uniIDHasPermission = function(permissionId) {
+    const { permission } = getCurrentUserInfo();
+    return this.uniIDHasRole("admin") || permission.indexOf(permissionId) > -1;
+  };
+  globalProperties.uniIDTokenValid = function() {
+    const { tokenExpired } = getCurrentUserInfo();
+    return tokenExpired > Date.now();
+  };
+}
+function initApp$1(app) {
+  const appConfig = app._context.config;
+  if (isFunction(app._component.onError)) {
+    appConfig.errorHandler = errorHandler;
+  }
+  initOptionMergeStrategies(appConfig.optionMergeStrategies);
+  const globalProperties = appConfig.globalProperties;
+  {
+    if (__UNI_FEATURE_UNI_CLOUD__) {
+      uniIdMixin(globalProperties);
+    }
+  }
+  {
+    globalProperties.$set = set;
+    globalProperties.$applyOptions = applyOptions;
+  }
+  {
+    invokeCreateVueAppHook(app);
+  }
 }
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
@@ -22015,4 +22004,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushCid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offPushMessage, offWindowResize, onAccelerometerChange, onCompassChange, onCreateVueApp, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushCid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offPushMessage, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

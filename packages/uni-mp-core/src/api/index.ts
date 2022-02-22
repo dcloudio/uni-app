@@ -18,7 +18,7 @@ import {
   offPushMessage,
   invokePushCallback,
 } from '@dcloudio/uni-api/src/service/plugin/push'
-import { invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-vue'
+import { invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-shared'
 
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'

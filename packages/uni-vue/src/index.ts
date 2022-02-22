@@ -1,14 +1,12 @@
 import { App } from 'vue'
 
 import { isFunction } from '@vue/shared'
+import { invokeCreateVueAppHook } from '@dcloudio/uni-shared'
 
 import { applyOptions } from './componentOptions'
 import { set } from './componentInstance'
 import { errorHandler, initOptionMergeStrategies } from './appConfig'
 import { uniIdMixin } from './uni-id-mixin'
-import { invokeCreateVueAppHook } from './onCreateVueApp'
-
-export { onCreateVueApp, invokeCreateVueAppHook } from './onCreateVueApp'
 
 export function initApp(app: App) {
   const appConfig = app._context.config

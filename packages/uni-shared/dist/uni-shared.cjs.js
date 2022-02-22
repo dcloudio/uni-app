@@ -1294,6 +1294,24 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     };
 })();
 
+let vueApp;
+const createVueAppHooks = [];
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+function onCreateVueApp(hook) {
+    // TODO 每个 nvue 页面都会触发
+    if (vueApp) {
+        return hook(vueApp);
+    }
+    createVueAppHooks.push(hook);
+}
+function invokeCreateVueAppHook(app) {
+    vueApp = app;
+    createVueAppHooks.forEach((hook) => hook(app));
+}
+
 const E = function () {
     // Keep this empty so it's easier to inherit from
     // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
@@ -1477,6 +1495,7 @@ exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
+exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
@@ -1489,6 +1508,7 @@ exports.isRootHook = isRootHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;
+exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;
 exports.parseQuery = parseQuery;

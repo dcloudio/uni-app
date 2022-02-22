@@ -1,4 +1,5 @@
 [
+  "onCreateVueApp",
   "$emit",
   "$off",
   "$on",
@@ -80,7 +81,6 @@
   "offWindowResize",
   "onAccelerometerChange",
   "onCompassChange",
-  "onCreateVueApp",
   "onGyroscopeChange",
   "onLocaleChange",
   "onMemoryWarning",

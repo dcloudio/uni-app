@@ -895,15 +895,12 @@ const stat = Stat$1.getInstance();
 let isHide = false;
 const lifecycle = {
   onLaunch(options) {
-    console.log('onLaunch')
     stat.report(options, this);
   },
   onReady() {
-    console.log('onReady')
     stat.ready(this);
   },
   onLoad(options) {
-    console.log('onLoad')
     stat.load(options, this);
     // 重写分享，获取分享上报事件
     if (this.$scope && this.$scope.onShareAppMessage) {
@@ -915,17 +912,14 @@ const lifecycle = {
     }
   },
   onShow() {
-    console.log('onShow')
     isHide = false;
     stat.show(this);
   },
   onHide() {
-    console.log('onHide')
     isHide = true;
     stat.hide(this);
   },
   onUnload() {
-    console.log('onUnload')
     if (isHide) {
       isHide = false;
       return
@@ -938,17 +932,16 @@ const lifecycle = {
 };
 
 function main() {
-  // if (process.env.NODE_ENV === 'development') {
-  //   uni.report = function (type, options) {};
-  // } else {
+  if (process.env.NODE_ENV === 'development') {
+    uni.report = function (type, options) {};
+  } else {
     uni.onCreateVueApp((app) => {
-      console.log('onCreateVueApp')
       app.mixin(lifecycle);
       uni.report = function (type, options) {
         stat.sendEvent(type, options);
       };
     });
-  // }
+  }
 }
 
 main();
