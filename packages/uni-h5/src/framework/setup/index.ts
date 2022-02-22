@@ -22,7 +22,6 @@ import {
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
 } from '@dcloudio/uni-shared'
-import { injectAppLaunchHooks } from '@dcloudio/uni-api'
 import { subscribeViewMethod, unsubscribeViewMethod } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
@@ -141,16 +140,11 @@ export function setupApp(comp: any) {
       }
       const onLaunch = () => {
         const { onLaunch, onShow, onPageNotFound } = instance
-        const path = route.path.substr(1)
-        const launchOptions = extend(
-          {
-            app: { mixin: instance.appContext.app.mixin },
-          },
-          initLaunchOptions({
-            path: path || __uniRoutes[0].meta.route,
-            query: decodedQuery(route.query),
-          })
-        )
+        const path = route.path.slice(1)
+        const launchOptions = initLaunchOptions({
+          path: path || __uniRoutes[0].meta.route,
+          query: decodedQuery(route.query),
+        })
         onLaunch && invokeArrayFns(onLaunch, launchOptions)
         onShow && invokeArrayFns(onShow, launchOptions)
         if (__UNI_FEATURE_PAGES__) {
@@ -167,7 +161,6 @@ export function setupApp(comp: any) {
           }
         }
       }
-      injectAppLaunchHooks(instance)
       if (__UNI_FEATURE_PAGES__) {
         // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
         useRouter().isReady().then(onLaunch)

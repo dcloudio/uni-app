@@ -250,6 +250,13 @@ function uniIdMixin(globalProperties) {
     };
 }
 
+let vueApp;
+const createVueAppHooks = [];
+function invokeCreateVueAppHook(app) {
+    vueApp = app;
+    createVueAppHooks.forEach((hook) => hook(app));
+}
+
 function initApp(app) {
     const appConfig = app._context.config;
     if (isFunction(app._component.onError)) {
@@ -263,6 +270,9 @@ function initApp(app) {
     {
         globalProperties.$set = set;
         globalProperties.$applyOptions = applyOptions;
+    }
+    {
+        invokeCreateVueAppHook(app);
     }
 }
 

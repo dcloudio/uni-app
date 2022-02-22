@@ -1,5 +1,5 @@
 import { isPlainObject, camelize, isArray, hasOwn, isFunction, extend } from '@vue/shared';
-import { injectHook, ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
 // lifecycle
 // App and Page
@@ -390,13 +390,6 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
     });
 }
 
-swan.appLaunchHooks = [];
-function injectAppLaunchHooks(appInstance) {
-    swan.appLaunchHooks.forEach((hook) => {
-        injectHook(ON_LAUNCH, hook, appInstance);
-    });
-}
-
 const HOOKS = [
     ON_SHOW,
     ON_HIDE,
@@ -421,9 +414,8 @@ function parseApp(instance, parseAppOptions) {
                 mpInstance: this,
                 slots: [],
             });
-            injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
-            instance.$callHook(ON_LAUNCH, extend({ app: { mixin: internalInstance.appContext.app.mixin } }, options));
+            instance.$callHook(ON_LAUNCH, options);
         },
     };
     initLocale(instance);

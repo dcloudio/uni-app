@@ -5251,6 +5251,9 @@ function initApp(app) {
         globalProperties.$set = set;
         globalProperties.$applyOptions = applyOptions;
     }
+    {
+        uni.invokeCreateVueAppHook(app);
+    }
 }
 
 const propsCaches = Object.create(null);

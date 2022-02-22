@@ -92,7 +92,7 @@ export {
   $off,
   $once,
   $emit,
-  onAppLaunch,
+  onCreateVueApp,
   onLocaleChange,
   setPageMeta,
   getEnterOptionsSync,

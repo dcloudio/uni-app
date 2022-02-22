@@ -1,6 +1,6 @@
 import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, toTypeString } from '@vue/shared';
-import { LINEFEED, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_TAB_ITEM_TAP, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
-import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { LINEFEED, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { ref, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -2168,10 +2168,10 @@ function backbuttonListener() {
 const enterOptions = createLaunchOptions();
 const launchOptions = createLaunchOptions();
 function getLaunchOptions() {
-    return launchOptions;
+    return extend({}, launchOptions);
 }
 function getEnterOptions() {
-    return enterOptions;
+    return extend({}, enterOptions);
 }
 function initEnterOptions({ path, query, referrerInfo, }) {
     extend(enterOptions, {
@@ -2187,7 +2187,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         referrerInfo: referrerInfo || {},
     });
     extend(enterOptions, launchOptions);
-    return launchOptions;
+    return extend({}, launchOptions);
 }
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
@@ -10912,19 +10912,6 @@ const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { r
     });
 });
 
-const appLaunchHooks = [];
-function onAppLaunch(hook) {
-    const app = getApp({ allowDefault: true });
-    if (app && app.$vm) {
-        return injectHook(ON_LAUNCH, hook, app.$vm.$);
-    }
-    appLaunchHooks.push(hook);
-}
-function injectAppLaunchHooks(appInstance) {
-    appLaunchHooks.forEach((hook) => {
-        injectHook(ON_LAUNCH, hook, appInstance);
-    });
-}
 const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
 const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
     return getEnterOptions();
@@ -12451,6 +12438,13 @@ const CreateInteractiveAdProtocol = {
         required: true,
     },
 };
+
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+function onCreateVueApp(hook) {
+}
 
 function warpPlusSuccessCallback(resolve, after) {
     return function successCallback(data) {
@@ -18590,7 +18584,7 @@ var uni$1 = {
   $off: $off,
   $once: $once,
   $emit: $emit,
-  onAppLaunch: onAppLaunch,
+  onCreateVueApp: onCreateVueApp,
   onLocaleChange: onLocaleChange,
   setPageMeta: setPageMeta,
   getEnterOptionsSync: getEnterOptionsSync,
@@ -18867,15 +18861,11 @@ function onPlusMessage(type, callback, once = false) {
 
 function initAppLaunch(appVm) {
     const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
-    const args = extend({
-        // 为了让 uni-stat 在 uni.onLaunch 中可以 mixin
-        app: { mixin: appVm.$.appContext.app.mixin },
-    }, initLaunchOptions({
+    const args = initLaunchOptions({
         path: entryPagePath,
         query: entryPageQuery,
         referrerInfo: referrerInfo,
-    }));
-    injectAppLaunchHooks(appVm.$);
+    });
     invokeHook(appVm, ON_LAUNCH, args);
     invokeHook(appVm, ON_SHOW, args);
     // https://tower.im/teams/226535/todos/16905/

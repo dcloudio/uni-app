@@ -18,11 +18,12 @@ import {
   offPushMessage,
   invokePushCallback,
 } from '@dcloudio/uni-api/src/service/plugin/push'
+import { invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-vue'
+
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'
 
 import { MPProtocols } from './protocols'
-import { onAppLaunch } from './hook'
 import { getLocale, setLocale, onLocaleChange } from './locale'
 
 const baseApis = {
@@ -34,7 +35,8 @@ const baseApis = {
   interceptors,
   addInterceptor,
   removeInterceptor,
-  onAppLaunch,
+  onCreateVueApp,
+  invokeCreateVueAppHook,
   getLocale,
   setLocale,
   onLocaleChange,
@@ -43,7 +45,6 @@ const baseApis = {
   offPushMessage,
   invokePushCallback,
 }
-
 export function initUni(api: Record<string, any>, protocols: MPProtocols) {
   const wrapper = initWrapper(protocols)
   const UniProxyHandlers: ProxyHandler<any> = {
