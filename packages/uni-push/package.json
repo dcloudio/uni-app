@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-push",
-  "version": "0.0.1-nvue3.3040020220221002",
+  "version": "0.0.1-nvue3.3040020220223001",
   "description": "@dcloudio/uni-push",
   "main": "lib/uni-push.js",
   "module": "lib/uni-push.js",
@@ -20,7 +20,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220221002",
+    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220223001",
     "debug": "^4.3.3"
   },
   "devDependencies": {

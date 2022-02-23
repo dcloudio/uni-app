@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.0.1-nvue3.3040020220221002",
+  "version": "0.0.1-nvue3.3040020220223001",
   "workspaces": [
     "packages/*"
   ],
@@ -43,8 +43,8 @@
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
     "@dcloudio/types": "^2.5.17",
-    "@dcloudio/uni-api": "0.0.1-nvue3.3040020220221002",
-    "@dcloudio/uni-app": "0.0.1-nvue3.3040020220221002",
+    "@dcloudio/uni-api": "0.0.1-nvue3.3040020220223001",
+    "@dcloudio/uni-app": "0.0.1-nvue3.3040020220223001",
     "@jest/types": "^27.0.2",
     "@microsoft/api-extractor": "^7.19.2",
     "@rollup/plugin-alias": "^3.1.1",
