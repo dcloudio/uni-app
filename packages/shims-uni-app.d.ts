@@ -190,6 +190,7 @@ declare namespace UniApp {
   }
   interface PagesJsonPageStyle extends PagesJsonPagePlatformStyle {
     isNVue?: boolean
+    isSubNVue?: boolean
     disableScroll?: boolean
     enablePullDownRefresh?: boolean
     navigationBar: PageNavigationBar

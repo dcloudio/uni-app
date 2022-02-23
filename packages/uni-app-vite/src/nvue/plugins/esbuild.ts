@@ -129,14 +129,16 @@ function buildNVuePage(filename: string, options: BuildOptions) {
   return transformWithEsbuild(
     `import App from './${filename}'
 const webview = plus.webview.currentWebview()
-const __pageId = parseInt(webview.id)
-const __pagePath = '${removeExt(filename)}'
-let __pageQuery = {}
-try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
-App.mpType = 'page'
-const app = Vue.createPageApp(App,{$store:getApp({allowDefault:true}).$store,__pageId,__pagePath,__pageQuery})
-app.provide('__globalStyles', Vue.useCssStyles([...__uniConfig.styles, ...(App.styles||[])]))
-app.mount('#root')`,
+if(webview){
+  const __pageId = parseInt(webview.id)
+  const __pagePath = '${removeExt(filename)}'
+  let __pageQuery = {}
+  try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
+  App.mpType = 'page'
+  const app = Vue.createPageApp(App,{$store:getApp({allowDefault:true}).$store,__pageId,__pagePath,__pageQuery})
+  app.provide('__globalStyles', Vue.useCssStyles([...__uniConfig.styles, ...(App.styles||[])]))
+  app.mount('#root')
+}`,
     path.join(nvueOutDir(), 'main.js'),
     options
   ).then((res) => {
