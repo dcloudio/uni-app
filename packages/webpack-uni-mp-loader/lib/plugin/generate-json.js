@@ -112,10 +112,11 @@ function normalizeUsingComponents (file, usingComponents) {
   return usingComponents
 }
 
-const emitFileMap = new Map();
+const cacheFileMap = new Map();
 module.exports = function generateJson (compilation) {
   analyzeUsingComponents()
 
+  const emitFileMap = new Map([...cacheFileMap]);
   const jsonFileMap = getChangedJsonFileMap()
   for (const name of jsonFileMap.keys()) {
     const jsonObj = JSON.parse(jsonFileMap.get(name))
@@ -214,6 +215,7 @@ module.exports = function generateJson (compilation) {
     }
 
     emitFileMap.set(name, jsonObj);
+    cacheFileMap.set(name, JSON.parse(JSON.stringify(jsonObj))); // 做一次拷贝，emitFileMap中内容在后面会被修改
   }
 
 
@@ -221,8 +223,8 @@ module.exports = function generateJson (compilation) {
   (new AnalyzeDependency()).init(emitFileMap, compilation);
 
   for (const [name, jsonObj] of emitFileMap) {
-    emit(name, jsonObj, compilation);
     delete jsonObj.usingGlobalComponents;
+    emit(name, jsonObj, compilation);
   }
 
   if (process.env.UNI_USING_CACHE && jsonFileMap.size) {
