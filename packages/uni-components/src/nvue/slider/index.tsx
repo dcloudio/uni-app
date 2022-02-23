@@ -5,6 +5,8 @@ import {
   computed,
   watch,
   onMounted,
+  onUnmounted,
+  inject,
   reactive,
   ExtractPropTypes,
 } from 'vue'
@@ -15,6 +17,7 @@ import {
 } from '../../helpers/useNVueEvent'
 import { getComponentSize } from '../helpers'
 import { NVueComponentStyles, createNVueTextVNode } from '../utils'
+import { uniFormKey, UniFormCtx } from '../../components/form'
 import { sliderProps } from '../../components/slider'
 
 const slierStyles: NVueComponentStyles = [
@@ -121,6 +124,7 @@ export default defineComponent({
 
     const state = useSliderState(props)
     const listeners = useSliderListeners(props, state, trigger)
+    useSliderInject(props, state)
 
     watch(
       () => props.value,
@@ -187,7 +191,7 @@ function useSliderState(props: SliderProps) {
   const _getValueWidth = () => {
     const max = Number(props.max)
     const min = Number(props.min)
-    return ((sliderValue.value - min) / max - min) * sliderWidth.value
+    return ((sliderValue.value - min) / (max - min)) * sliderWidth.value
   }
 
   const state = reactive({
@@ -273,4 +277,29 @@ function useSliderListeners(
   }
 
   return listeners
+}
+
+function useSliderInject(props: SliderProps, state: SliderState) {
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
+
+  const formField = {
+    submit: () => {
+      const data: [string, any] = ['', null]
+      if (props.name) {
+        data[0] = props.name
+        data[1] = state.sliderValue
+      }
+      return data
+    },
+    reset: () => {
+      state.sliderValue = Number(props.value)
+    },
+  }
+
+  if (!!uniForm) {
+    uniForm.addField(formField)
+    onUnmounted(() => {
+      uniForm.removeField(formField)
+    })
+  }
 }
