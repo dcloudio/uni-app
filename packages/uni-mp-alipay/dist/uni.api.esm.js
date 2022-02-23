@@ -920,6 +920,22 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 
+const UUID_KEY = '__DC_STAT_UUID';
+let deviceId;
+function useDeviceId(global = my) {
+    return function addDeviceId(_, toRes) {
+        deviceId = deviceId || global.getStorageSync(UUID_KEY);
+        if (!deviceId) {
+            deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
+            my.setStorage({
+                key: UUID_KEY,
+                data: deviceId,
+            });
+        }
+        toRes.deviceId = deviceId;
+    };
+}
+
 const redirectTo = {};
 
 const getProvider = initGetProvider({
@@ -1052,6 +1068,9 @@ function handleNetworkInfo(fromRes, toRes) {
 }
 function handleSystemInfo(fromRes, toRes) {
     addSafeAreaInsets(fromRes, toRes);
+    useDeviceId({
+        getStorageSync,
+    })(fromRes, toRes);
     let platform = fromRes.platform ? fromRes.platform.toLowerCase() : 'devtools';
     if (!~['android', 'ios'].indexOf(platform)) {
         platform = 'devtools';
