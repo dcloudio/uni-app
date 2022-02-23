@@ -920,8 +920,27 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 
+const UUID_KEY = '__DC_STAT_UUID';
+let deviceId;
+function useDeviceId(global = qq) {
+    return function addDeviceId(_, toRes) {
+        deviceId = deviceId || global.getStorageSync(UUID_KEY);
+        if (!deviceId) {
+            deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
+            qq.setStorage({
+                key: UUID_KEY,
+                data: deviceId,
+            });
+        }
+        toRes.deviceId = deviceId;
+    };
+}
+
 const getSystemInfo = {
-    returnValue: addSafeAreaInsets,
+    returnValue: (fromRes, toRes) => {
+        addSafeAreaInsets(fromRes, toRes);
+        useDeviceId()(fromRes, toRes);
+    },
 };
 
 const getSystemInfoSync = getSystemInfo;

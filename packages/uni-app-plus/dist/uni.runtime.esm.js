@@ -9071,6 +9071,8 @@ const BASE_DEVICE_WIDTH = 750;
 let isIOS$1 = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
+let maxWidth = 960;
+let baseWidth = 375;
 function checkDeviceWidth() {
     const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
     deviceWidth = windowWidth;
@@ -9081,9 +9083,18 @@ function checkValue(value, defaultValue) {
     const newValue = Number(value);
     return isNaN(newValue) ? defaultValue : newValue;
 }
+function checkMaxWidth() {
+    const config = __uniConfig.globalStyle || {};
+    // ignore rpxCalcIncludeWidth
+    maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+    baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+}
 const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
         checkDeviceWidth();
+        {
+            checkMaxWidth();
+        }
     }
     number = Number(number);
     if (number === 0) {
@@ -9091,10 +9102,6 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     let width = newDeviceWidth || deviceWidth;
     {
-        const config = __uniConfig.globalStyle || {};
-        // ignore rpxCalcIncludeWidth
-        const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
-        const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
         width = width <= maxWidth ? width : baseWidth;
     }
     let result = (number / BASE_DEVICE_WIDTH) * width;
