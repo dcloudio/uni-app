@@ -484,12 +484,12 @@ function getWindowWidth$1() {
   return windowWidth;
 }
 function useRem() {
+  const config = __uniConfig.globalStyle || {};
+  const maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+  const baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
   function updateRem() {
-    const config = __uniConfig.globalStyle || {};
-    const maxWidth = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
-    const baseWidth = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
     let width = getWindowWidth$1();
-    width = width <= maxWidth ? width : baseWidth;
+    width = width <= maxWidth2 ? width : baseWidth2;
     document.documentElement.style.fontSize = width / 23.4375 + "px";
   }
   updateRem();
@@ -2792,6 +2792,8 @@ const BASE_DEVICE_WIDTH = 750;
 let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
+let maxWidth = 960;
+let baseWidth = 375;
 function checkDeviceWidth() {
   const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
   deviceWidth = windowWidth;
@@ -2802,9 +2804,17 @@ function checkValue(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
+function checkMaxWidth() {
+  const config = __uniConfig.globalStyle || {};
+  maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+  baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+}
 const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
+    {
+      checkMaxWidth();
+    }
   }
   number = Number(number);
   if (number === 0) {
@@ -2812,9 +2822,6 @@ const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth
   }
   let width = newDeviceWidth || deviceWidth;
   {
-    const config = __uniConfig.globalStyle || {};
-    const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
-    const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
     width = width <= maxWidth ? width : baseWidth;
   }
   let result = number / BASE_DEVICE_WIDTH * width;
@@ -3797,10 +3804,10 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           };
         case "fillText":
         case "strokeText":
-          return function(text2, x, y, maxWidth) {
+          return function(text2, x, y, maxWidth2) {
             var data = [text2.toString(), x, y];
-            if (typeof maxWidth === "number") {
-              data.push(maxWidth);
+            if (typeof maxWidth2 === "number") {
+              data.push(maxWidth2);
             }
             this.actions.push({
               method: method2,
@@ -6800,8 +6807,8 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   }, resolve) {
     const canvas = canvasRef.value;
     let data;
-    const maxWidth = canvas.offsetWidth - x;
-    width = width ? Math.min(width, maxWidth) : maxWidth;
+    const maxWidth2 = canvas.offsetWidth - x;
+    width = width ? Math.min(width, maxWidth2) : maxWidth2;
     const maxHeight = canvas.offsetHeight - y;
     height = height ? Math.min(height, maxHeight) : maxHeight;
     if (!hidpi) {
@@ -19467,21 +19474,21 @@ function initMediaQuery(minWidth, callback) {
 }
 function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
-  function checkMaxWidth() {
+  function checkMaxWidth2() {
     const windowWidth = document.body.clientWidth;
-    const maxWidth = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
+    const maxWidth2 = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
     let showMaxWidth = false;
-    if (windowWidth > maxWidth) {
+    if (windowWidth > maxWidth2) {
       showMaxWidth = true;
     } else {
       showMaxWidth = false;
     }
-    if (showMaxWidth && maxWidth) {
-      layoutState.marginWidth = (windowWidth - maxWidth) / 2;
+    if (showMaxWidth && maxWidth2) {
+      layoutState.marginWidth = (windowWidth - maxWidth2) / 2;
       nextTick(() => {
         const rootEl = rootRef.value;
         if (rootEl) {
-          rootEl.setAttribute("style", "max-width:" + maxWidth + "px;margin:0 auto;");
+          rootEl.setAttribute("style", "max-width:" + maxWidth2 + "px;margin:0 auto;");
         }
       });
     } else {
@@ -19494,10 +19501,10 @@ function useMaxWidth(layoutState, rootRef) {
       });
     }
   }
-  watch([() => route.path], checkMaxWidth);
+  watch([() => route.path], checkMaxWidth2);
   onMounted(() => {
-    checkMaxWidth();
-    window.addEventListener("resize", checkMaxWidth);
+    checkMaxWidth2();
+    window.addEventListener("resize", checkMaxWidth2);
   });
 }
 function useState() {
