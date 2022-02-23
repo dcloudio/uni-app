@@ -48,5 +48,15 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vue(), vueJsx({ isCustomElement: isAppNVueNativeTag })],
+  plugins: [
+    vue(),
+    vueJsx({
+      isCustomElement: (tag) => {
+        if (tag === 'slider') {
+          return true
+        }
+        return isAppNVueNativeTag(tag)
+      },
+    }),
+  ],
 })
