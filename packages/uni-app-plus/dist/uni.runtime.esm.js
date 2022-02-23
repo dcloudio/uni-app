@@ -1,6 +1,6 @@
-import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, toTypeString } from '@vue/shared';
-import { LINEFEED, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
-import { ref, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
+import { LINEFEED, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -1484,6 +1484,13 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
     };
 }
 
+function removeHook(vm, name, hook) {
+    const hooks = vm.$[name];
+    if (!isArray$1(hooks)) {
+        return;
+    }
+    remove(hooks, hook);
+}
 function invokeHook(vm, name, args) {
     if (isString(vm)) {
         args = name;
@@ -9123,9 +9130,11 @@ function removeInterceptorHook(interceptors, interceptor) {
     if (!interceptors || !interceptor) {
         return;
     }
-    Object.keys(interceptor).forEach((hook) => {
-        if (isFunction(interceptor[hook])) {
-            removeHook(interceptors[hook], interceptor[hook]);
+    Object.keys(interceptor).forEach((name) => {
+        const hooks = interceptors[name];
+        const hook = interceptor[name];
+        if (isArray$1(hooks) && isFunction(hook)) {
+            remove(hooks, hook);
         }
     });
 }
@@ -9147,15 +9156,6 @@ function dedupeHooks(hooks) {
         }
     }
     return res;
-}
-function removeHook(hooks, hook) {
-    if (!hooks) {
-        return;
-    }
-    const index = hooks.indexOf(hook);
-    if (index !== -1) {
-        hooks.splice(index, 1);
-    }
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
@@ -10912,6 +10912,64 @@ const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { r
     });
 });
 
+const appHooks = {
+    [ON_UNHANDLE_REJECTION]: [],
+    [ON_PAGE_NOT_FOUND]: [],
+    [ON_ERROR]: [],
+    [ON_SHOW]: [],
+    [ON_HIDE]: [],
+};
+function onAppHook(type, hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return injectHook(type, hook, app.$vm.$);
+    }
+    appHooks[type].push(hook);
+}
+function injectAppHooks(appInstance) {
+    Object.keys(appHooks).forEach((type) => {
+        appHooks[type].forEach((hook) => {
+            injectHook(type, hook, appInstance);
+        });
+    });
+}
+function offAppHook(type, hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return removeHook(app.$vm, type, hook);
+    }
+    remove(appHooks[type], hook);
+}
+function onUnhandledRejection(hook) {
+    onAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function offUnhandledRejection(hook) {
+    offAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function onPageNotFound(hook) {
+    onAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function offPageNotFound(hook) {
+    offAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function onError(hook) {
+    onAppHook(ON_ERROR, hook);
+}
+function offError(hook) {
+    offAppHook(ON_ERROR, hook);
+}
+function onAppShow(hook) {
+    onAppHook(ON_SHOW, hook);
+}
+function offAppShow(hook) {
+    offAppHook(ON_SHOW, hook);
+}
+function onAppHide(hook) {
+    onAppHook(ON_HIDE, hook);
+}
+function offAppHide(hook) {
+    offAppHook(ON_HIDE, hook);
+}
 const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
 const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
     return getEnterOptions();
@@ -18585,6 +18643,16 @@ var uni$1 = {
   getPushCid: getPushCid,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
+  onAppHide: onAppHide,
+  onAppShow: onAppShow,
+  onError: onError,
+  onPageNotFound: onPageNotFound,
+  onUnhandledRejection: onUnhandledRejection,
+  offAppHide: offAppHide,
+  offAppShow: offAppShow,
+  offError: offError,
+  offPageNotFound: offPageNotFound,
+  offUnhandledRejection: offUnhandledRejection,
   invokePushCallback: invokePushCallback,
   setStorageSync: setStorageSync,
   setStorage: setStorage,
@@ -18853,6 +18921,7 @@ function onPlusMessage(type, callback, once = false) {
 // }
 
 function initAppLaunch(appVm) {
+    injectAppHooks(appVm.$);
     const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
     const args = initLaunchOptions({
         path: entryPagePath,

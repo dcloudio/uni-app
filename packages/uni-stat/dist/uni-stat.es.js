@@ -932,16 +932,16 @@ const lifecycle = {
 };
 
 function main() {
-  // if (process.env.NODE_ENV === 'development') {
-  //   uni.report = function (type, options) {};
-  // } else {
+  if (process.env.NODE_ENV === 'development') {
+    uni.report = function (type, options) {};
+  } else {
     uni.onCreateVueApp((app) => {
       app.mixin(lifecycle);
       uni.report = function (type, options) {
         stat.sendEvent(type, options);
       };
     });
-  // }
+  }
 }
 
 main();
