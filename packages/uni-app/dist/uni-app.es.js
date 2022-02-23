@@ -41,6 +41,11 @@ function getSsrGlobalData() {
     return sanitise(globalData);
 }
 
+function getCurrentSubNVue() {
+    // @ts-ignore
+    return uni.getSubNVueById(plus.webview.currentWebview().id);
+}
+
 function resolveEasycom(component, easycom) {
     return isString(component) ? easycom : component;
 }
@@ -88,4 +93,4 @@ const onNavigationBarSearchInputConfirmed =
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
-export { getSsrGlobalData, onAddToFavorites, onBackPress, onError, onHide, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, resolveEasycom, shallowSsrRef, ssrRef };
+export { getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onHide, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, resolveEasycom, shallowSsrRef, ssrRef };

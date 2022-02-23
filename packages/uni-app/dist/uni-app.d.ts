@@ -28,6 +28,8 @@ declare interface CustomShareTimeline {
     imageUrl?: string;
 }
 
+export declare function getCurrentSubNVue(): any;
+
 export declare function getSsrGlobalData(): any;
 
 declare type LaunchOption = LaunchShowOption;

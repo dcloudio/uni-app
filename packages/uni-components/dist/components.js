@@ -2947,6 +2947,7 @@ var USlider = defineComponent({
     const trigger = useCustomEvent(sliderRef, emit);
     const state = useSliderState(props2);
     const listeners = useSliderListeners(props2, state, trigger);
+    useSliderInject(props2, state);
     watch(() => props2.value, (val) => {
       state.sliderValue = Number(val);
     });
@@ -3005,7 +3006,7 @@ function useSliderState(props2) {
   const _getValueWidth = () => {
     const max = Number(props2.max);
     const min = Number(props2.min);
-    return ((sliderValue.value - min) / max - min) * sliderWidth.value;
+    return (sliderValue.value - min) / (max - min) * sliderWidth.value;
   };
   const state = reactive({
     sliderWidth,
@@ -3080,6 +3081,28 @@ function useSliderListeners(props2, state, trigger) {
     }
   };
   return listeners;
+}
+function useSliderInject(props2, state) {
+  const uniForm = inject(uniFormKey, false);
+  const formField = {
+    submit: () => {
+      const data = ["", null];
+      if (props2.name) {
+        data[0] = props2.name;
+        data[1] = state.sliderValue;
+      }
+      return data;
+    },
+    reset: () => {
+      state.sliderValue = Number(props2.value);
+    }
+  };
+  if (!!uniForm) {
+    uniForm.addField(formField);
+    onUnmounted(() => {
+      uniForm.removeField(formField);
+    });
+  }
 }
 const switchProps = {
   name: {
