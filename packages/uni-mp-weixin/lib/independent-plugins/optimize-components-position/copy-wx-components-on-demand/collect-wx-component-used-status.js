@@ -14,7 +14,7 @@ function collectWxComponentUsedStatus (emitFileMap) {
     }
 
     const explicitComponents = jsonFileInfo.usingComponents || {}; // 非全局组件
-    const usingGlobalWxComponents = jsonFileInfo.globalComponentsForOnDemand || {};
+    const usingGlobalWxComponents = jsonFileInfo.usingGlobalComponents || {};
     // FIX 全局组件和直接引用的组件名称相同的情况
     const currentAllComponents = Object.assign({}, usingGlobalWxComponents, explicitComponents);
 

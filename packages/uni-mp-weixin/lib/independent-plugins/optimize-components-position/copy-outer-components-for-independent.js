@@ -64,8 +64,8 @@ class Index extends Analyze {
             let cacheSet = new Set();
             let cacheGlobalUsageMap = new Map();
             // 收集包外组件
-            const colletOuterCompos = independentPage => collectAllOutSideComponentsMap(independentRoot, emitFileMap, independentPage, cacheSet, cacheGlobalUsageMap);
-            independentPages.forEach(colletOuterCompos);
+            const collectOuterCompos = independentPage => collectAllOutSideComponentsMap(independentRoot, emitFileMap, independentPage, cacheSet, cacheGlobalUsageMap);
+            independentPages.forEach(collectOuterCompos);
 
             // 如果是原生组件，则忽略wxComponents以外的组件
             cacheSet = [...cacheSet].filter(componentPath => {
@@ -162,6 +162,7 @@ class Index extends Analyze {
                 // emitFileMap 后面会统一挂到assets上
                 if (!fromAssetsFlag) return;
 
+                delete pageObj.usingGlobalComponents
                 compilationAssets[`${componentWhoUsedGlobalCompo}.json`] = generateAsset(JSON.stringify(pageObj));
             });
         }

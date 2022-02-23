@@ -1,8 +1,5 @@
 const CopyOuterComponentsForIndependent = require('./copy-outer-components-for-independent');
 const CopyWxComponentOnDemand = require('./copy-wx-components-on-demand');
-const { getJsonFileMap } = require('@dcloudio/uni-cli-shared/lib/cache');
-const { generateAsset } = require('./util');
-const { SyncBailHook } = require('tapable');
 
 // @dcloudio/webpack-uni-mp-loader/lib/plugin/index-new.js
 // 需要在在上述插件之后执行（获取处理过的json
@@ -14,8 +11,6 @@ class DependencyAnalyze {
     }
 
     init (emitFileMap, compilation) {
-        const thisCompilationAssets = compilation.assets;
-
         const manifestConfig = process.UNI_MANIFEST;
         const weixinConfig = manifestConfig['mp-weixin'] || {};
         const independentSwitch = !!weixinConfig.independentSwitch;
@@ -28,8 +23,6 @@ class DependencyAnalyze {
         if (independentSwitch) {
             new CopyOuterComponentsForIndependent(emitFileMap, this.AnalyzeWxcomponentDependency, compilation).init();
         }
-
-        // TODO 开关控制 按需复制wxcomponents
     }
 }
 

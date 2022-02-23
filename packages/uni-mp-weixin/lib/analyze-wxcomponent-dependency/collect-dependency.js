@@ -70,8 +70,15 @@ class CollectDependency {
     getJsonDeps (file) {
         const deps = [];
         const dirName = path.dirname(file);
-        const fileContent = this.readFileSync(file);
-        const { usingComponents } = JSON.parse(fileContent);
+        let fileContent = this.readFileSync(file);
+        if (fileContent && fileContent instanceof Buffer) {
+            fileContent = fileContent.toString('utf-8');
+        }
+        if (!fileContent || !(fileContent.trim())) {
+            return [];
+        }
+        fileContent = JSON.parse(fileContent);
+        const usingComponents = fileContent.usingComponents;
         if (usingComponents && typeof usingComponents === 'object') {
             Object.values(usingComponents).forEach((component) => {
                 component = resolveToContext(dirName, component, this.context);
