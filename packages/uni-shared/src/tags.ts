@@ -82,7 +82,8 @@ export const NVUE_BUILT_IN_TAGS = [
   'textarea',
   'spinner',
   'select',
-  'slider',
+  // slider 被自定义 u-slider 替代
+  // 'slider',
   'slider-neighbor',
   'indicator',
   'canvas',
@@ -159,7 +160,7 @@ const NVUE_CUSTOM_COMPONENTS = [
   'swiper-item',
   'swiper',
   'switch',
-  // 'slider',
+  'slider',
   'picker-view',
   'picker-view-column',
 ]

@@ -13,6 +13,16 @@ export function render(_ctx, _cache) {
 }"
 `;
 
+exports[`app-nvue: compiler <slider/> 1`] = `
+"import { resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \\"vue\\"
+
+export function render(_ctx, _cache) {
+  const _component_u_slider = _resolveComponent(\\"u-slider\\")
+
+  return (_openBlock(), _createBlock(_component_u_slider))
+}"
+`;
+
 exports[`app-nvue: compiler <textarea v-model="text"/> 1`] = `
 "import { openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
 

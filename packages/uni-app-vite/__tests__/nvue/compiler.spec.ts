@@ -40,6 +40,7 @@ const codes = [
   `<video><view></view></video>`,
   `<input v-model="text"/>`,
   `<textarea v-model="text"/>`,
+  `<slider/>`,
 ]
 
 describe('app-nvue: compiler', () => {
