@@ -10,6 +10,22 @@ const SIGNAL_H5_NETWORK = ' > Network:'
 
 const networkLogs: string[] = []
 
+export function formatAtFilename(
+  filename: string,
+  line?: number,
+  column?: number
+) {
+  return `at ${colors.cyan(
+    normalizePath(
+      path.relative(process.env.UNI_INPUT_DIR, filename.split('?')[0])
+    ) +
+      ':' +
+      (line || 1) +
+      ':' +
+      (column || 0)
+  )}`
+}
+
 export const h5ServeFormatter: Formatter = {
   test(msg) {
     return msg.includes(SIGNAL_H5_LOCAL) || msg.includes(SIGNAL_H5_NETWORK)
@@ -83,17 +99,7 @@ function buildErrorMessage(
     args.push(colors.red(err.message))
   }
   if (err.id) {
-    args.push(
-      `at ${colors.cyan(
-        normalizePath(
-          path.relative(process.env.UNI_INPUT_DIR, err.id.split('?')[0])
-        ) +
-          ':' +
-          (err.loc?.line || 1) +
-          ':' +
-          (err.loc?.column || 0)
-      )}`
-    )
+    args.push(formatAtFilename(err.id, err.loc?.line, err.loc?.column))
   }
   if (err.frame) {
     args.push(colors.yellow(pad(err.frame)))

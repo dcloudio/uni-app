@@ -2,6 +2,8 @@ import path from 'path'
 import { normalizePath } from '../utils'
 import { uniConsolePlugin } from '../vite/plugins/console'
 
+export { formatAtFilename } from './log'
+
 export * from './env'
 export {
   initModuleAlias,

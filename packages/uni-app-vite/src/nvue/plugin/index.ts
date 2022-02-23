@@ -14,6 +14,7 @@ import {
   parseVueRequest,
   removeExt,
   resolveMainPathOnce,
+  formatAtFilename,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 import { nvueOutDir } from '../../utils'
@@ -121,13 +122,14 @@ export function uniAppNVuePlugin({
             })
             messages.forEach((message) => {
               if (message.type === 'warning') {
-                let msg = `[vite:css] ${message.text}`
+                let msg = `[plugin:vite:css] ${message.text}`
                 if (message.line && message.column) {
                   msg += `\n${generateCodeFrame(source, {
                     line: message.line,
                     column: message.column,
                   })}`
                 }
+                msg += `\n${formatAtFilename(filename)}`
                 config.logger.warn(colors.yellow(msg))
               }
             })
