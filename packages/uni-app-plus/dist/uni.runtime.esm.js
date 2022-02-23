@@ -1460,6 +1460,9 @@ function initRouteMeta(pageMeta, id) {
         (navigationBar.titleText = '');
     return res;
 }
+function normalizeSubNVueStyle(style) {
+    return JSON.parse(rpx2px(JSON.stringify(style), true));
+}
 function normalizePullToRefreshRpx(pullToRefresh) {
     if (pullToRefresh.offset) {
         pullToRefresh.offset = rpx2px(pullToRefresh.offset);
@@ -17429,7 +17432,7 @@ function initSubNVues(webview, path, routeMeta) {
         if (!subNVue.path) {
             return;
         }
-        const style = subNVue.style || {};
+        const style = normalizeSubNVueStyle((subNVue.style || {}));
         const isNavigationBar = subNVue.type === 'navigationBar';
         const isPopup = subNVue.type === 'popup';
         style.uniNView = {

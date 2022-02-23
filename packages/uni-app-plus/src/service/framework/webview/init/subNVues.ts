@@ -3,6 +3,7 @@ import { getStatusbarHeight } from '../../../../helpers/statusBar'
 import { isTabBarPage } from '../../../../helpers/plus'
 import tabBar from '../../app/tabBar'
 import { backbuttonListener } from '../../app/utils'
+import { normalizeSubNVueStyle } from '@dcloudio/uni-core'
 
 interface Extras {
   __uniapp_host: string
@@ -34,7 +35,9 @@ export function initSubNVues(
         viewport?: number
       }
     }
-    const style: StyleExt = (subNVue.style as StyleExt) || {}
+    const style: StyleExt = normalizeSubNVueStyle(
+      (subNVue.style || {}) as Record<string, unknown>
+    )
     const isNavigationBar = subNVue.type === 'navigationBar'
     const isPopup = subNVue.type === 'popup'
 
