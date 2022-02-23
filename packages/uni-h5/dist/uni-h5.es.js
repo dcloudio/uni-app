@@ -892,7 +892,9 @@ function removeHook(vm, name, hook) {
   if (!isArray(hooks)) {
     return;
   }
-  remove(hooks, hook);
+  if (hook.__weh) {
+    remove(hooks, hook.__weh);
+  }
 }
 function invokeHook(vm, name, args) {
   if (isString(vm)) {

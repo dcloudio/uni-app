@@ -2183,7 +2183,9 @@ var serviceContext = (function (vue) {
       if (!isArray$1(hooks)) {
           return;
       }
-      remove(hooks, hook);
+      if (hook.__weh) {
+          remove(hooks, hook.__weh);
+      }
   }
   function invokeHook(vm, name, args) {
       if (isString(vm)) {
