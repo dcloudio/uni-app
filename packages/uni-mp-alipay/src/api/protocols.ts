@@ -1,6 +1,8 @@
 import { isPlainObject, isArray, hasOwn } from '@vue/shared'
 
-import { addSafeAreaInsets } from '@dcloudio/uni-mp-core'
+import { addSafeAreaInsets, useDeviceId } from '@dcloudio/uni-mp-core'
+
+import { getStorageSync } from './shims'
 
 export { redirectTo, navigateTo } from '@dcloudio/uni-mp-core'
 
@@ -28,6 +30,9 @@ function handleSystemInfo(
   toRes: UniApp.GetSystemInfoResult
 ) {
   addSafeAreaInsets(fromRes, toRes)
+  useDeviceId({
+    getStorageSync,
+  })(fromRes, toRes)
 
   let platform = fromRes.platform ? fromRes.platform.toLowerCase() : 'devtools'
   if (!~['android', 'ios'].indexOf(platform)) {

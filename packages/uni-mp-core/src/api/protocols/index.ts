@@ -1,4 +1,5 @@
 export { addSafeAreaInsets } from './addSafeAreaInsets'
+export { useDeviceId } from './useDeviceId'
 export { getSystemInfo } from './getSystemInfo'
 export { getSystemInfoSync } from './getSystemInfoSync'
 export { redirectTo } from './redirectTo'
