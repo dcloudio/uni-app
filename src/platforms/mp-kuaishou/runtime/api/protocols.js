@@ -10,7 +10,10 @@ export const protocols = {
   previewImage,
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
-  getUserProfile
+  getUserProfile,
+  requestPayment: {
+    name: ks.pay ? 'pay' : 'requestPayment'
+  }
 }
 export const todos = [
   'vibrate'
