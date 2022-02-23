@@ -106,6 +106,12 @@ var serviceContext = (function (vue) {
       : {};
   (process.env.NODE_ENV !== 'production') ? Object.freeze([]) : [];
   const extend = Object.assign;
+  const remove = (arr, el) => {
+      const i = arr.indexOf(el);
+      if (i > -1) {
+          arr.splice(i, 1);
+      }
+  };
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
   const isArray$1 = Array.isArray;
@@ -2172,6 +2178,13 @@ var serviceContext = (function (vue) {
       };
   }
 
+  function removeHook(vm, name, hook) {
+      const hooks = vm.$[name];
+      if (!isArray$1(hooks)) {
+          return;
+      }
+      remove(hooks, hook);
+  }
   function invokeHook(vm, name, args) {
       if (isString(vm)) {
           args = name;
@@ -9863,9 +9876,11 @@ var serviceContext = (function (vue) {
       if (!interceptors || !interceptor) {
           return;
       }
-      Object.keys(interceptor).forEach((hook) => {
-          if (isFunction(interceptor[hook])) {
-              removeHook(interceptors[hook], interceptor[hook]);
+      Object.keys(interceptor).forEach((name) => {
+          const hooks = interceptors[name];
+          const hook = interceptor[name];
+          if (isArray$1(hooks) && isFunction(hook)) {
+              remove(hooks, hook);
           }
       });
   }
@@ -9887,15 +9902,6 @@ var serviceContext = (function (vue) {
           }
       }
       return res;
-  }
-  function removeHook(hooks, hook) {
-      if (!hooks) {
-          return;
-      }
-      const index = hooks.indexOf(hook);
-      if (index !== -1) {
-          hooks.splice(index, 1);
-      }
   }
   const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
       if (typeof method === 'string' && isPlainObject(interceptor)) {
@@ -11652,6 +11658,64 @@ var serviceContext = (function (vue) {
       });
   });
 
+  const appHooks = {
+      [ON_UNHANDLE_REJECTION]: [],
+      [ON_PAGE_NOT_FOUND]: [],
+      [ON_ERROR]: [],
+      [ON_SHOW]: [],
+      [ON_HIDE]: [],
+  };
+  function onAppHook(type, hook) {
+      const app = getApp({ allowDefault: true });
+      if (app && app.$vm) {
+          return vue.injectHook(type, hook, app.$vm.$);
+      }
+      appHooks[type].push(hook);
+  }
+  function injectAppHooks(appInstance) {
+      Object.keys(appHooks).forEach((type) => {
+          appHooks[type].forEach((hook) => {
+              vue.injectHook(type, hook, appInstance);
+          });
+      });
+  }
+  function offAppHook(type, hook) {
+      const app = getApp({ allowDefault: true });
+      if (app && app.$vm) {
+          return removeHook(app.$vm, type, hook);
+      }
+      remove(appHooks[type], hook);
+  }
+  function onUnhandledRejection(hook) {
+      onAppHook(ON_UNHANDLE_REJECTION, hook);
+  }
+  function offUnhandledRejection(hook) {
+      offAppHook(ON_UNHANDLE_REJECTION, hook);
+  }
+  function onPageNotFound(hook) {
+      onAppHook(ON_PAGE_NOT_FOUND, hook);
+  }
+  function offPageNotFound(hook) {
+      offAppHook(ON_PAGE_NOT_FOUND, hook);
+  }
+  function onError(hook) {
+      onAppHook(ON_ERROR, hook);
+  }
+  function offError(hook) {
+      offAppHook(ON_ERROR, hook);
+  }
+  function onAppShow(hook) {
+      onAppHook(ON_SHOW, hook);
+  }
+  function offAppShow(hook) {
+      offAppHook(ON_SHOW, hook);
+  }
+  function onAppHide(hook) {
+      onAppHook(ON_HIDE, hook);
+  }
+  function offAppHide(hook) {
+      offAppHook(ON_HIDE, hook);
+  }
   const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
   const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
       return getEnterOptions();
@@ -17527,6 +17591,7 @@ var serviceContext = (function (vue) {
   // }
 
   function initAppLaunch(appVm) {
+      injectAppHooks(appVm.$);
       const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
       const args = initLaunchOptions({
           path: entryPagePath,
@@ -19958,6 +20023,16 @@ var serviceContext = (function (vue) {
     getPushCid: getPushCid,
     onPushMessage: onPushMessage,
     offPushMessage: offPushMessage,
+    onAppHide: onAppHide,
+    onAppShow: onAppShow,
+    onError: onError,
+    onPageNotFound: onPageNotFound,
+    onUnhandledRejection: onUnhandledRejection,
+    offAppHide: offAppHide,
+    offAppShow: offAppShow,
+    offError: offError,
+    offPageNotFound: offPageNotFound,
+    offUnhandledRejection: offUnhandledRejection,
     invokePushCallback: invokePushCallback,
     setStorageSync: setStorageSync,
     setStorage: setStorage,

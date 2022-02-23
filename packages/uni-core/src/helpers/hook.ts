@@ -1,7 +1,21 @@
 import { ComponentPublicInstance } from 'vue'
-import { isString } from '@vue/shared'
+import { isString, isArray, remove } from '@vue/shared'
 import { invokeArrayFns } from '@dcloudio/uni-shared'
 import { getCurrentPageVm } from './page'
+
+export function removeHook(
+  vm: ComponentPublicInstance,
+  name: string,
+  hook: Function
+) {
+  const hooks = (vm.$ as unknown as { [name: string]: Function[] })[
+    name as string
+  ]
+  if (!isArray(hooks)) {
+    return
+  }
+  remove(hooks, hook)
+}
 
 export function invokeHook(name: string, args?: unknown): unknown
 export function invokeHook(id: number, name: string, args?: unknown): unknown

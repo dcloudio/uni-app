@@ -22,6 +22,7 @@ import {
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
 } from '@dcloudio/uni-shared'
+import { injectAppHooks } from '@dcloudio/uni-api'
 import { subscribeViewMethod, unsubscribeViewMethod } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
@@ -139,6 +140,7 @@ export function setupApp(comp: any) {
         return route.query
       }
       const onLaunch = () => {
+        injectAppHooks(instance)
         const { onLaunch, onShow, onPageNotFound } = instance
         const path = route.path.slice(1)
         const launchOptions = initLaunchOptions({

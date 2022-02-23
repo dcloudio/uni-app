@@ -118,6 +118,16 @@ export {
   getPushCid,
   onPushMessage,
   offPushMessage,
+  onAppHide,
+  onAppShow,
+  onError,
+  onPageNotFound,
+  onUnhandledRejection,
+  offAppHide,
+  offAppShow,
+  offError,
+  offPageNotFound,
+  offUnhandledRejection,
   // 内部使用
   invokePushCallback,
 } from '@dcloudio/uni-api'

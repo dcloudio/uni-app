@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
 
 let vueApp;
 const createVueAppHooks = [];
@@ -463,9 +463,11 @@ function removeInterceptorHook(interceptors, interceptor) {
     if (!interceptors || !interceptor) {
         return;
     }
-    Object.keys(interceptor).forEach((hook) => {
-        if (isFunction(interceptor[hook])) {
-            removeHook(interceptors[hook], interceptor[hook]);
+    Object.keys(interceptor).forEach((name) => {
+        const hooks = interceptors[name];
+        const hook = interceptor[name];
+        if (isArray(hooks) && isFunction(hook)) {
+            remove(hooks, hook);
         }
     });
 }
@@ -487,15 +489,6 @@ function dedupeHooks(hooks) {
         }
     }
     return res;
-}
-function removeHook(hooks, hook) {
-    if (!hooks) {
-        return;
-    }
-    const index = hooks.indexOf(hook);
-    if (index !== -1) {
-        hooks.splice(index, 1);
-    }
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
