@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-mp-core",
-  "version": "0.0.1-nvue3.3040020220223002",
+  "version": "0.0.1-nvue3.3040020220223003",
   "description": "@dcloudio/uni-mp-core",
   "sideEffects": false,
   "repository": {
