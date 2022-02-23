@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { BuildOptions, PluginBuild } from 'esbuild'
 
 import path from 'path'
@@ -7,6 +7,7 @@ import debug from 'debug'
 
 import {
   APP_CONFIG_SERVICE,
+  hash,
   removeExt,
   transformWithEsbuild,
 } from '@dcloudio/uni-cli-shared'
@@ -17,14 +18,18 @@ import { APP_CSS_JS } from './appCss'
 
 const debugEsbuild = debug('uni:app-nvue-esbuild')
 
+const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()
+
 export function uniEsbuildPlugin({
   appService,
 }: {
   renderer?: 'native'
   appService: boolean
 }): Plugin {
+  let resolvedConfig: ResolvedConfig
   let buildOptions: BuildOptions
   const outputDir = process.env.UNI_OUTPUT_DIR
+  let isFirst = true
   return {
     name: 'uni:app-nvue-esbuild',
     enforce: 'post',
@@ -39,6 +44,8 @@ export function uniEsbuildPlugin({
         write: false,
         plugins: [esbuildGlobalPlugin(esbuildGlobals(appService))],
       }
+      resolvedConfig = config
+      emittedHashMap.set(resolvedConfig, new Map<string, string>())
     },
     async writeBundle(_, bundle) {
       const entryPoints: string[] = []
@@ -55,14 +62,31 @@ export function uniEsbuildPlugin({
       if (!entryPoints.length) {
         return
       }
-      buildAppCss()
+      const emittedHash = emittedHashMap.get(resolvedConfig)!
+      const changedFiles: string[] = []
+      if (buildAppCss()) {
+        changedFiles.push(APP_CONFIG_SERVICE)
+      }
       debugEsbuild('start', entryPoints.length, entryPoints)
       for (const filename of entryPoints) {
         await buildNVuePage(filename, buildOptions).then((code) => {
-          return fs.outputFile(path.resolve(outputDir, filename), code)
+          const outputFileHash = hash(code)
+          if (emittedHash.get(filename) !== outputFileHash) {
+            changedFiles.push(filename)
+            emittedHash.set(filename, outputFileHash)
+            return fs.outputFile(path.resolve(outputDir, filename), code)
+          }
         })
       }
+      if (!isFirst && changedFiles.length) {
+        process.env[
+          changedFiles.includes(APP_CONFIG_SERVICE)
+            ? 'UNI_APP_CHANGED_FILES'
+            : 'UNI_APP_CHANGED_PAGES'
+        ] = JSON.stringify(changedFiles)
+      }
       debugEsbuild('end')
+      isFirst = false
     },
   }
 }
@@ -76,6 +100,16 @@ function buildAppCss() {
   if (!fs.existsSync(appCssJsFilename)) {
     return
   }
+  const appCssJsCode = fs.readFileSync(appCssJsFilename, 'utf8')
+  const appCssJsFn = new Function('exports', appCssJsCode)
+  const exports = { styles: [] }
+  appCssJsFn(exports)
+  const appCssJsonCode = JSON.stringify(exports.styles)
+  if (process.env.UNI_NVUE_APP_STYLES === appCssJsonCode) {
+    return
+  }
+  process.env.UNI_NVUE_APP_STYLES = appCssJsonCode
+  // 首次 build 时，可能还没生成 app-config-service 的文件，故仅写入环境变量
   const appConfigServiceFilename = path.join(
     process.env.UNI_OUTPUT_DIR,
     APP_CONFIG_SERVICE
@@ -83,21 +117,12 @@ function buildAppCss() {
   if (!fs.existsSync(appConfigServiceFilename)) {
     return
   }
-  const appCssJsCode = fs.readFileSync(appCssJsFilename, 'utf8')
-  const appCssJsFn = new Function('exports', appCssJsCode)
-  const exports = { styles: [] }
-  appCssJsFn(exports)
-  const appCssJsonCode = JSON.stringify(exports.styles)
-
-  if (process.env.UNI_NVUE_APP_STYLES === appCssJsonCode) {
-    return
-  }
-  process.env.UNI_NVUE_APP_STYLES = appCssJsonCode
   const appConfigServiceCode = fs.readFileSync(appConfigServiceFilename, 'utf8')
   fs.writeFileSync(
     appConfigServiceFilename,
     wrapperNVueAppStyles(appConfigServiceCode)
   )
+  return true
 }
 
 function buildNVuePage(filename: string, options: BuildOptions) {

@@ -98,6 +98,10 @@ export async function buildApp(options: CliOptions) {
   if ((options as BuildOptions).manifest) {
     return buildManifestJson()
   }
+  let appWatcher: AppWatcher | undefined
+  if ((options as ServerOptions).watch) {
+    appWatcher = new AppWatcher()
+  }
   if (process.env.UNI_RENDERER === 'native') {
     // 纯原生渲染时，main.js + App.vue 需要跟页面分开，独立编译（因为需要包含 Vuex 等共享内容）
     process.env.UNI_COMPILER = 'nvue'
@@ -105,11 +109,15 @@ export async function buildApp(options: CliOptions) {
     const nvueAppBuilder = await buildByVite(
       addConfigFile(
         extend(
-          { nvueApp: true, nvue: true },
+          { nvueAppService: true, nvue: true },
           initBuildOptions(options, cleanOptions(options) as BuildOptions)
         )
       )
     )
+    if (appWatcher) {
+      appWatcher.setFirstWatcher(nvueAppBuilder as RollupWatcher)
+    }
+
     process.env.UNI_RENDERER_NATIVE = 'pages'
     const nvueBuilder = await buildByVite(
       addConfigFile(
@@ -119,12 +127,11 @@ export async function buildApp(options: CliOptions) {
         )
       )
     )
-    if ((options as ServerOptions).watch) {
-      return initAppWatcher(
-        nvueAppBuilder as RollupWatcher,
-        nvueBuilder as RollupWatcher
-      )
+    if (appWatcher) {
+      appWatcher.setSecondWatcher(nvueBuilder as RollupWatcher)
+      return appWatcher
     }
+    return
   }
   // 指定为 vue 方便 App 插件初始化 vue 所需插件列表
   process.env.UNI_COMPILER = 'vue'
@@ -133,6 +140,9 @@ export async function buildApp(options: CliOptions) {
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
     )
   )
+  if (appWatcher) {
+    appWatcher.setFirstWatcher(vueBuilder as RollupWatcher)
+  }
   // 临时指定为 nvue 方便 App 插件初始化 nvue 所需插件列表
   process.env.UNI_COMPILER = 'nvue'
   const nvueBuilder = await buildByVite(
@@ -146,11 +156,9 @@ export async function buildApp(options: CliOptions) {
   // 还原为 vue
   process.env.UNI_COMPILER = 'vue'
 
-  if ((options as ServerOptions).watch) {
-    return initAppWatcher(
-      vueBuilder as RollupWatcher,
-      nvueBuilder as RollupWatcher
-    )
+  if (appWatcher) {
+    appWatcher.setSecondWatcher(nvueBuilder as RollupWatcher)
+    return appWatcher
   }
 }
 
@@ -160,8 +168,26 @@ class AppWatcher {
   private _secondStart: boolean = false
   private _secondEnd: boolean = false
   private _callback!: (event: RollupWatcherEvent) => void
-  on(callback: (event: RollupWatcherEvent) => void) {
+  on(_event: string, callback: (event: RollupWatcherEvent) => void) {
     this._callback = callback
+  }
+  setFirstWatcher(firstWatcher: RollupWatcher) {
+    firstWatcher.on('event', (event) => {
+      if (event.code === 'BUNDLE_START') {
+        this._bundleFirstStart(event)
+      } else if (event.code === 'BUNDLE_END') {
+        this._bundleFirstEnd(event)
+      }
+    })
+  }
+  setSecondWatcher(secondWatcher: RollupWatcher) {
+    secondWatcher.on('event', (event) => {
+      if (event.code === 'BUNDLE_START') {
+        this._bundleSecondStart(event)
+      } else if (event.code === 'BUNDLE_END') {
+        this._bundleSecondEnd(event)
+      }
+    })
   }
   _bundleFirstStart(event: RollupWatcherEvent) {
     this._firstStart = true
@@ -189,30 +215,4 @@ class AppWatcher {
       this._callback(event)
     }
   }
-}
-
-function initAppWatcher(
-  firstWatcher: RollupWatcher,
-  secondWatcher: RollupWatcher
-) {
-  const appWatcher = new AppWatcher()
-  firstWatcher.on('event', (event) => {
-    if (event.code === 'BUNDLE_START') {
-      appWatcher._bundleFirstStart(event)
-    } else if (event.code === 'BUNDLE_END') {
-      appWatcher._bundleFirstEnd(event)
-    }
-  })
-  secondWatcher.on('event', (event) => {
-    if (event.code === 'BUNDLE_START') {
-      appWatcher._bundleSecondStart(event)
-    } else if (event.code === 'BUNDLE_END') {
-      appWatcher._bundleSecondEnd(event)
-    }
-  })
-  return {
-    on(_, fn) {
-      appWatcher.on(fn as (event: RollupWatcherEvent) => void)
-    },
-  } as RollupWatcher
 }

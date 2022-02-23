@@ -29,5 +29,7 @@ declare namespace NodeJS {
     UNI_COMPILER: 'vue' | 'nvue'
     UNI_RENDERER_NATIVE: 'appService' | 'pages'
     UNI_NVUE_APP_STYLES: string
+    UNI_APP_CHANGED_FILES: string
+    UNI_APP_CHANGED_PAGES: string
   }
 }

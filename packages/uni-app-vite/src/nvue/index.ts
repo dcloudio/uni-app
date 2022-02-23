@@ -28,9 +28,8 @@ export function initNVuePlugins() {
     uniManifestJsonPlugin(),
     uniPagesJsonPlugin({ renderer, appService }),
     uniViteInjectPlugin('uni:app-inject', initAppProvide()),
-    uniStatsPlugin(),
     uniAppNVuePlugin({ appService }),
     uniEsbuildPlugin({ renderer, appService }),
-    ...(appService ? [uniTemplatePlugin({ renderer })] : []),
+    ...(appService ? [uniStatsPlugin(), uniTemplatePlugin({ renderer })] : []),
   ]
 }

@@ -1,7 +1,7 @@
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
 import { BuildOptions, createLogger, ServerOptions } from 'vite'
-import { M, output } from '@dcloudio/uni-cli-shared'
+import { APP_CONFIG_SERVICE, M, output } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
@@ -42,11 +42,20 @@ export async function runDev(options: CliOptions & ServerOptions) {
             )
           }
           const files = process.env.UNI_APP_CHANGED_FILES
-          if (files && !files.includes('app-config-service.js')) {
-            process.env.UNI_APP_CHANGED_FILES = ''
+          const pages = process.env.UNI_APP_CHANGED_PAGES
+          const changedFiles = pages || files
+          process.env.UNI_APP_CHANGED_PAGES = ''
+          process.env.UNI_APP_CHANGED_FILES = ''
+          if (changedFiles && !changedFiles.includes(APP_CONFIG_SERVICE)) {
+            if (pages) {
+              return output(
+                'log',
+                M['dev.watching.end.pages'].replace('{pages}', changedFiles)
+              )
+            }
             return output(
               'log',
-              M['dev.watching.end.files'].replace('{files}', files)
+              M['dev.watching.end.files'].replace('{files}', changedFiles)
             )
           }
           return output('log', M['dev.watching.end'])

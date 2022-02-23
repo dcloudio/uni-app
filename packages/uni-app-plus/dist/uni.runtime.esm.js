@@ -649,7 +649,10 @@ function getBaseSystemInfo() {
     if (typeof __SYSTEM_INFO__ !== 'undefined') {
         return window.__SYSTEM_INFO__;
     }
-    const { resolutionWidth } = plus.screen.getCurrentSize();
+    // 好像开发时刷新，偶发的 plus.screen.getCurrentSize 为 undefined
+    const { resolutionWidth } = plus.screen.getCurrentSize() || {
+        resolutionWidth: 0,
+    };
     return {
         platform: (plus.os.name || '').toLowerCase(),
         pixelRatio: plus.screen.scale,
@@ -13043,7 +13046,11 @@ function deviceId$1 () {
 }
 
 function getScreenInfo() {
-    const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize();
+    // 好像开发时刷新，偶发的 plus.screen.getCurrentSize 为 undefined
+    const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize() || {
+        resolutionWidth: 0,
+        resolutionHeight: 0,
+    };
     return {
         screenWidth: Math.round(resolutionWidth),
         screenHeight: Math.round(resolutionHeight),
