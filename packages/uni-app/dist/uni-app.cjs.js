@@ -73,6 +73,11 @@ function getSsrGlobalData() {
     return uniShared.sanitise(globalData);
 }
 
+function getCurrentSubNVue() {
+    // @ts-ignore
+    return uni.getSubNVueById(plus.webview.currentWebview().id);
+}
+
 function resolveEasycom(component, easycom) {
     return shared.isString(component) ? easycom : component;
 }
@@ -120,6 +125,7 @@ const onNavigationBarSearchInputConfirmed =
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
+exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;
 exports.onBackPress = onBackPress;
