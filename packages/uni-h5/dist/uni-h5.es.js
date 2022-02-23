@@ -893,7 +893,7 @@ function removeHook(vm, name, hook) {
     return;
   }
   if (hook.__weh) {
-    remove(hooks, hook.__weh)
+    remove(hooks, hook.__weh);
   }
 }
 function invokeHook(vm, name, args) {

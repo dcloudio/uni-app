@@ -6,7 +6,7 @@ import { getCurrentPageVm } from './page'
 export function removeHook(
   vm: ComponentPublicInstance,
   name: string,
-  hook: Function
+  hook: Function & { __weh?: Function }
 ) {
   const hooks = (vm.$ as unknown as { [name: string]: Function[] })[
     name as string
@@ -14,7 +14,9 @@ export function removeHook(
   if (!isArray(hooks)) {
     return
   }
-  remove(hooks, hook)
+  if (hook.__weh) {
+    remove(hooks, hook.__weh)
+  }
 }
 
 export function invokeHook(name: string, args?: unknown): unknown
