@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import { isAppNativeTag, isAppNVueNativeTag } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
@@ -36,9 +36,11 @@ export function uniOptions(): UniVitePlugin['uni'] {
           },
         })
         const debugFilename = '__nvue_debug__'
-        const debugFilepath = path.resolve(inputDir, debugFilename)
-        if (fs.existsSync(debugFilepath)) {
-          fs.copyFileSync(debugFilepath, path.resolve(outputDir, debugFilename))
+        if (fs.existsSync(path.resolve(inputDir, debugFilename))) {
+          targets.push({
+            src: debugFilename,
+            dest: outputDir,
+          })
         }
       }
       return {

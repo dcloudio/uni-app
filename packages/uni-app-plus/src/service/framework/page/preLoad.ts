@@ -1,5 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
 import { createWebview } from '../webview'
+import { initRouteOptions } from './routeOptions'
 
 export interface PreloadWebviewObject extends PlusWebviewWebviewObject {
   __preload__?: boolean
@@ -51,9 +52,7 @@ export function preloadWebview({
   query: Record<string, string>
 }) {
   if (!preloadWebviews[url]) {
-    const routeOptions: UniApp.UniRoute = JSON.parse(
-      JSON.stringify(__uniRoutes.find((route) => route.path === path))
-    )
+    const routeOptions: UniApp.UniRoute = initRouteOptions(path, 'preloadPage')
     preloadWebviews[url] = createWebview({
       path,
       routeOptions,

@@ -188,20 +188,24 @@ function createNVuePage(
       return pageInstance.eventChannel as EventChannel
     },
     __setup(vm: ComponentPublicInstance, curFakeNVueVm: unknown) {
+      vm.$getAppWebview = () => webview
+      vm.getOpenerEventChannel = (curFakeNVueVm as any).getOpenerEventChannel
+      // 替换真实的 nvue 的 vm
+      initPageVm(vm, pageInstance)
+      if ((webview as PreloadWebviewObject).__preload__) {
+        ;(webview as PreloadWebviewObject).__page__ = vm
+      }
       const pages = getAllPages()
       const index = pages.findIndex((p) => p === curFakeNVueVm)
       if (index > -1) {
-        vm.$getAppWebview = () => webview
-        vm.getOpenerEventChannel = (curFakeNVueVm as any).getOpenerEventChannel
-        // 替换真实的 nvue 的 vm
-        initPageVm(vm, pageInstance)
         pages.splice(index, 1, vm)
-        if ((webview as PreloadWebviewObject).__preload__) {
-          ;(webview as PreloadWebviewObject).__page__ = vm
-        }
       }
     },
   } as unknown as ComponentPublicInstance
   initPageVm(fakeNVueVm, pageInstance)
-  addCurrentPage(fakeNVueVm)
+  if ((webview as PreloadWebviewObject).__preload__) {
+    ;(webview as PreloadWebviewObject).__page__ = fakeNVueVm
+  } else {
+    addCurrentPage(fakeNVueVm)
+  }
 }

@@ -18154,7 +18154,8 @@ function initRouteOptions(path, openType) {
     // 需要序列化一遍
     const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
     routeOptions.meta = initRouteMeta(routeOptions.meta);
-    if (!__uniConfig.realEntryPagePath &&
+    if (openType !== 'preloadPage' &&
+        !__uniConfig.realEntryPagePath &&
         (openType === 'reLaunch' || getCurrentPages().length === 0) // redirectTo
     ) {
         routeOptions.meta.isQuit = true;
@@ -18202,7 +18203,7 @@ function closePreloadWebview({ url }) {
 }
 function preloadWebview({ url, path, query, }) {
     if (!preloadWebviews[url]) {
-        const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find((route) => route.path === path)));
+        const routeOptions = initRouteOptions(path, 'preloadPage');
         preloadWebviews[url] = createWebview({
             path,
             routeOptions,
@@ -18329,22 +18330,27 @@ function createNVuePage(pageId, webview, pageInstance) {
             return pageInstance.eventChannel;
         },
         __setup(vm, curFakeNVueVm) {
+            vm.$getAppWebview = () => webview;
+            vm.getOpenerEventChannel = curFakeNVueVm.getOpenerEventChannel;
+            // 替换真实的 nvue 的 vm
+            initPageVm(vm, pageInstance);
+            if (webview.__preload__) {
+                webview.__page__ = vm;
+            }
             const pages = getAllPages();
             const index = pages.findIndex((p) => p === curFakeNVueVm);
             if (index > -1) {
-                vm.$getAppWebview = () => webview;
-                vm.getOpenerEventChannel = curFakeNVueVm.getOpenerEventChannel;
-                // 替换真实的 nvue 的 vm
-                initPageVm(vm, pageInstance);
                 pages.splice(index, 1, vm);
-                if (webview.__preload__) {
-                    webview.__page__ = vm;
-                }
             }
         },
     };
     initPageVm(fakeNVueVm, pageInstance);
-    addCurrentPage(fakeNVueVm);
+    if (webview.__preload__) {
+        webview.__page__ = fakeNVueVm;
+    }
+    else {
+        addCurrentPage(fakeNVueVm);
+    }
 }
 
 const $navigateTo = (args, { resolve, reject }) => {
