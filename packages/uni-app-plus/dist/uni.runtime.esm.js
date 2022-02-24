@@ -1,5 +1,5 @@
 import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
@@ -660,7 +660,15 @@ function getBaseSystemInfo() {
     };
 }
 
-function requestComponentInfo(page, reqs, callback) {
+function requestComponentInfo(pageVm, reqs, callback) {
+    if (pageVm.$page.meta.isNVue) {
+        requestNVueComponentInfo(pageVm, reqs, callback);
+    }
+    else {
+        requestVueComponentInfo(pageVm, reqs, callback);
+    }
+}
+function requestVueComponentInfo(pageVm, reqs, callback) {
     UniServiceJSBridge.invokeViewMethod('requestComponentInfo', {
         reqs: reqs.map((req) => {
             if (req.component) {
@@ -668,7 +676,65 @@ function requestComponentInfo(page, reqs, callback) {
             }
             return req;
         }),
-    }, page.$page.id, callback);
+    }, pageVm.$page.id, callback);
+}
+function requestNVueComponentInfo(pageVm, reqs, callback) {
+    const ids = findNVueElementIds(reqs);
+    const nvueElementInfos = new Array(ids.length);
+    findNVueElementInfos(ids, pageVm.$el, nvueElementInfos);
+    findComponentRectAll(pageVm.$requireNativePlugin('dom'), nvueElementInfos, 0, [], (result) => {
+        callback(result);
+    });
+}
+function findNVueElementIds(reqs) {
+    const ids = [];
+    for (let i = 0; i < reqs.length; i++) {
+        const selector = reqs[i].selector;
+        if (selector.indexOf('#') === 0) {
+            ids.push(selector.substring(1));
+        }
+    }
+    return ids;
+}
+function findNVueElementInfos(ids, elm, infos) {
+    const nodes = elm.children;
+    if (!isArray$1(nodes)) {
+        return false;
+    }
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (node.attr) {
+            const index = ids.indexOf(node.attr.id);
+            if (index >= 0) {
+                infos[index] = {
+                    id: ids[index],
+                    ref: node.ref,
+                    dataset: parseNVueDataset(node.attr),
+                };
+                if (ids.length === 1) {
+                    break;
+                }
+            }
+        }
+        if (node.children) {
+            findNVueElementInfos(ids, node, infos);
+        }
+    }
+}
+function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
+    const attr = nvueElementInfos[index];
+    dom.getComponentRect(attr.ref, (option) => {
+        option.size.id = attr.id;
+        option.size.dataset = attr.dataset;
+        result.push(option.size);
+        index += 1;
+        if (index < nvueElementInfos.length) {
+            findComponentRectAll(dom, nvueElementInfos, index, result, callback);
+        }
+        else {
+            callback(result);
+        }
+    });
 }
 
 function setCurrentPageMeta(page, options) {

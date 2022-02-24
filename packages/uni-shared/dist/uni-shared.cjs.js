@@ -685,6 +685,18 @@ function formatH5Log(type, filename, ...args) {
     console[type].apply(console, [...args, filename]);
 }
 
+function parseNVueDataset(attr) {
+    const dataset = {};
+    if (attr) {
+        Object.keys(attr).forEach((key) => {
+            if (key.indexOf('data-') === 0) {
+                dataset[key.replace('data-', '')] = attr[key];
+            }
+        });
+    }
+    return dataset;
+}
+
 function plusReady(callback) {
     if (typeof callback !== 'function') {
         return;
@@ -1512,6 +1524,7 @@ exports.normalizeTarget = normalizeTarget;
 exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;
+exports.parseNVueDataset = parseNVueDataset;
 exports.parseQuery = parseQuery;
 exports.parseUrl = parseUrl;
 exports.passive = passive;
