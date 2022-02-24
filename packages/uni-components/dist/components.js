@@ -4052,7 +4052,7 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
       dy: props2.vertical ? -state.swiperHeight * offsetRatio : 0
     });
   };
-  const onScrollEnd = (event) => {
+  const onScrollend = (event) => {
     const end = () => {
       trigger("animationfinish", getDetail());
       state.currentChangeSource = "autoplay";
@@ -4085,7 +4085,7 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
   });
   const listeners = {
     onScroll,
-    onScrollEnd,
+    onScrollend,
     onChange
   };
   return listeners;
