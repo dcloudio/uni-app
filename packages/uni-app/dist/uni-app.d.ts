@@ -28,6 +28,9 @@ declare interface CustomShareTimeline {
     imageUrl?: string;
 }
 
+/**
+ * uni 对象是跨实例的，而此处列的 API 均是需要跟当前实例关联的，比如 requireNativePlugin 获取 dom 时，依赖当前 weex 实例
+ */
 export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
@@ -156,6 +159,8 @@ declare interface ReferrerInfo {
     appId: string;
     extraData?: any;
 }
+
+export declare function requireNativePlugin(name: string): any;
 
 declare interface ResizeOption {
     size: {

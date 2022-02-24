@@ -10,6 +10,7 @@ export function initAppProvide() {
     'window.crypto': cryptoDefine,
     'global.crypto': cryptoDefine,
     'uni.getCurrentSubNVue': ['@dcloudio/uni-app', 'getCurrentSubNVue'],
+    'uni.requireNativePlugin': ['@dcloudio/uni-app', 'requireNativePlugin'],
   }
 }
 
