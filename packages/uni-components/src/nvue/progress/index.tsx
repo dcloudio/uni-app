@@ -108,6 +108,7 @@ function useProgressState(props: ProgressProps) {
 
   const outerBarStyle = computed(() => ({
     backgroundColor: props.backgroundColor,
+    borderRadius: props.borderRadius,
     height: props.strokeWidth,
   }))
   const innerBarStyle = computed(() => {
@@ -122,6 +123,7 @@ function useProgressState(props: ProgressProps) {
       width: (currentPercent.value * progressWidth.value) / 100,
       height: props.strokeWidth,
       backgroundColor: backgroundColor,
+      borderRadius: props.borderRadius,
     }
   })
   const realPercent = computed(() => {

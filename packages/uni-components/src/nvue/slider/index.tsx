@@ -97,14 +97,13 @@ const slierStyles: NVueComponentStyles = [
         width: 100,
         height: '2',
         background: 'transparent',
-        zIndex: 1,
       },
     },
     'uni-slider-value': {
       '': {
         color: '#888888',
         fontSize: '14',
-        marginRight: '14',
+        marginLeft: '14',
       },
     },
   },
@@ -159,7 +158,7 @@ export default defineComponent({
               <div class="uni-slider-thumb" style={thumbStyle}></div>
             </div>
             {showValue
-              ? createNVueTextVNode(sliderValue as unknown as string, {
+              ? createNVueTextVNode(sliderValue + '', {
                   class: 'uni-slider-value',
                 })
               : null}
