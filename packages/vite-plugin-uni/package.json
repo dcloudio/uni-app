@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "0.0.1-nvue3.3040020220224002",
+  "version": "0.0.1-nvue3.3040020220224003",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -25,8 +25,8 @@
     "@babel/core": "^7.17.2",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/plugin-transform-typescript": "^7.16.8",
-    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220224002",
-    "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220224002",
+    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220224003",
+    "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220224003",
     "@rollup/pluginutils": "^4.1.2",
     "@vitejs/plugin-legacy": "^1.7.1",
     "@vitejs/plugin-vue": "^2.2.2",
