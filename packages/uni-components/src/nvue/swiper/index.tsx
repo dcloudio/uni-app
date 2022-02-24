@@ -142,7 +142,10 @@ function useSwiperListeners(
   let lastOffsetRatio: number = 0
 
   const onScroll = (event: any) => {
-    let offsetRatio = props.vertical ? event.offsetYRatio : event.offsetXRatio
+    const detail = event.detail
+    const isVertical = props.vertical
+    let offsetRatio =
+      (isVertical ? detail.offsetYRatio : detail.offsetXRatio) || 0
     if (event.drag || event.drag) {
       state.currentChangeSource = 'touch'
     }
@@ -157,8 +160,8 @@ function useSwiperListeners(
     }
     lastOffsetRatio = offsetRatio
     trigger('transition', {
-      dx: props.vertical ? 0 : -state.swiperWidth * offsetRatio,
-      dy: props.vertical ? -state.swiperHeight * offsetRatio : 0,
+      dx: isVertical ? 0 : -state.swiperWidth * offsetRatio,
+      dy: isVertical ? -state.swiperHeight * offsetRatio : 0,
     })
   }
 
@@ -176,10 +179,10 @@ function useSwiperListeners(
   }
 
   const onChange = (event: any) => {
-    if (typeof event.source === 'string') {
-      state.currentChangeSource = event.source
+    if (typeof event.detail.source === 'string') {
+      state.currentChangeSource = event.detail.source
     }
-    state.currentSync = event.index
+    state.currentSync = event.detail.index
     lastOffsetRatio = 0
   }
 

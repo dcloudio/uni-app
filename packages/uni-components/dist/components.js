@@ -3160,10 +3160,6 @@ var Switch = defineComponent({
       if (props2.disabled) {
         return;
       }
-      if (isLabelClick) {
-        rootRef.value.click();
-        return;
-      }
       switchChecked.value = !switchChecked.value;
       trigger("change", {
         value: switchChecked.value
@@ -3317,10 +3313,6 @@ var Checkbox = defineComponent({
     };
     const _onClick = ($event, isLabelClick) => {
       if (props2.disabled) {
-        return;
-      }
-      if (isLabelClick) {
-        rootRef.value.click();
         return;
       }
       checkboxChecked.value = !checkboxChecked.value;
@@ -3562,10 +3554,6 @@ var Radio = defineComponent({
     } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event, isLabelClick) => {
       if (props2.disabled) {
-        return;
-      }
-      if (isLabelClick) {
-        rootRef.value.click();
         return;
       }
       radioChecked.value = !radioChecked.value;
@@ -4034,7 +4022,9 @@ function useSwiperState(props2) {
 function useSwiperListeners(state, props2, swiperItems, trigger) {
   let lastOffsetRatio = 0;
   const onScroll = (event) => {
-    let offsetRatio = props2.vertical ? event.offsetYRatio : event.offsetXRatio;
+    const detail = event.detail;
+    const isVertical = props2.vertical;
+    let offsetRatio = (isVertical ? detail.offsetYRatio : detail.offsetXRatio) || 0;
     if (event.drag || event.drag) {
       state.currentChangeSource = "touch";
     }
@@ -4048,8 +4038,8 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
     }
     lastOffsetRatio = offsetRatio;
     trigger("transition", {
-      dx: props2.vertical ? 0 : -state.swiperWidth * offsetRatio,
-      dy: props2.vertical ? -state.swiperHeight * offsetRatio : 0
+      dx: isVertical ? 0 : -state.swiperWidth * offsetRatio,
+      dy: isVertical ? -state.swiperHeight * offsetRatio : 0
     });
   };
   const onScrollend = (event) => {
@@ -4064,10 +4054,10 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
     }
   };
   const onChange = (event) => {
-    if (typeof event.source === "string") {
-      state.currentChangeSource = event.source;
+    if (typeof event.detail.source === "string") {
+      state.currentChangeSource = event.detail.source;
     }
-    state.currentSync = event.index;
+    state.currentSync = event.detail.index;
     lastOffsetRatio = 0;
   };
   function getDetail() {
