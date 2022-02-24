@@ -58,4 +58,8 @@ export const progressProps = {
       return !isNaN(parseFloat(value as string))
     },
   },
+  borderRadius: {
+    type: [Number, String],
+    default: 0,
+  },
 }

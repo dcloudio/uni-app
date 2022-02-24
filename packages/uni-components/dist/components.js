@@ -274,15 +274,6 @@ var Label = /* @__PURE__ */ defineComponent({
     const pageId = useCurrentPageId();
     const handlers = useProvideLabel();
     const _onClick = ($event) => {
-      const EventTarget = $event.target;
-      const dataType = EventTarget.attr.dataUncType || "";
-      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(dataType);
-      if (!stopPropagation) {
-        stopPropagation = /^uni-(checkbox|radio|switch|button)$/i.test(dataType);
-      }
-      if (stopPropagation) {
-        return;
-      }
       if (props2.for) {
         UniViewJSBridge.emit(`uni-label-click-${pageId}-${props2.for}`, $event, true);
       } else {
@@ -2048,6 +2039,10 @@ const progressProps = {
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  borderRadius: {
+    type: [Number, String],
+    default: 0
   }
 };
 const progressStyles = [{
@@ -2134,6 +2129,7 @@ function useProgressState(props2) {
   const progressWidth = ref(0);
   const outerBarStyle = computed(() => ({
     backgroundColor: props2.backgroundColor,
+    borderRadius: props2.borderRadius,
     height: props2.strokeWidth
   }));
   const innerBarStyle = computed(() => {
@@ -2141,7 +2137,8 @@ function useProgressState(props2) {
     return {
       width: currentPercent.value * progressWidth.value / 100,
       height: props2.strokeWidth,
-      backgroundColor
+      backgroundColor,
+      borderRadius: props2.borderRadius
     };
   });
   const realPercent = computed(() => {
@@ -2923,15 +2920,14 @@ const slierStyles = [{
       position: "absolute",
       width: 100,
       height: "2",
-      background: "transparent",
-      zIndex: 1
+      background: "transparent"
     }
   },
   "uni-slider-value": {
     "": {
       color: "#888888",
       fontSize: "14",
-      marginRight: "14"
+      marginLeft: "14"
     }
   }
 }];
@@ -2988,7 +2984,7 @@ var USlider = defineComponent({
       }, null)]), createVNode("div", {
         "class": "uni-slider-thumb",
         "style": thumbStyle
-      }, null)]), showValue ? createNVueTextVNode(sliderValue, {
+      }, null)]), showValue ? createNVueTextVNode(sliderValue + "", {
         class: "uni-slider-value"
       }) : null])]);
     };
@@ -3160,8 +3156,12 @@ var Switch = defineComponent({
         });
       }
     };
-    const _onClick = ($event) => {
+    const _onClick = ($event, isLabelClick) => {
       if (props2.disabled) {
+        return;
+      }
+      if (isLabelClick) {
+        rootRef.value.click();
         return;
       }
       switchChecked.value = !switchChecked.value;
@@ -3321,6 +3321,7 @@ var Checkbox = defineComponent({
       }
       if (isLabelClick) {
         rootRef.value.click();
+        return;
       }
       checkboxChecked.value = !checkboxChecked.value;
       uniCheckGroup && uniCheckGroup.checkboxChange($event);
@@ -3565,6 +3566,7 @@ var Radio = defineComponent({
       }
       if (isLabelClick) {
         rootRef.value.click();
+        return;
       }
       radioChecked.value = !radioChecked.value;
       uniCheckGroup && uniCheckGroup.radioChange($event, field);

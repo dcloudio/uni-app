@@ -52,8 +52,12 @@ export default defineComponent({
       },
     }
 
-    const _onClick = ($event: Event) => {
+    const _onClick = ($event: Event, isLabelClick?: boolean) => {
       if (props.disabled) {
+        return
+      }
+      if (isLabelClick) {
+        rootRef.value!.click()
         return
       }
       switchChecked.value = !switchChecked.value

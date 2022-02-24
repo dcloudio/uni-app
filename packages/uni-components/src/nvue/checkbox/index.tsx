@@ -90,6 +90,7 @@ export default defineComponent({
       }
       if (isLabelClick) {
         rootRef.value!.click()
+        return
       }
       checkboxChecked.value = !checkboxChecked.value
       uniCheckGroup && uniCheckGroup.checkboxChange($event)

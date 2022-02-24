@@ -11246,6 +11246,10 @@ const progressProps = {
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  borderRadius: {
+    type: [Number, String],
+    default: 0
   }
 };
 var index$p = /* @__PURE__ */ defineBuiltInComponent({
