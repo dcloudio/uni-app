@@ -50,7 +50,7 @@ export function initPreContext(
   defaultContext[normalizeKey(platform)] = true
 
   vueContext.VUE3 = true
-  nvueContext.VUE2 = true
+  nvueContext.VUE3 = true
 
   if (platform === 'app' || platform === 'app-plus') {
     defaultContext.APP = true
