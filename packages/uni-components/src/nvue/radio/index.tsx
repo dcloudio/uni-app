@@ -101,8 +101,7 @@ export default defineComponent({
         return
       }
       if (isLabelClick) {
-        rootRef.value!.click()
-        return
+        // TODO
       }
       radioChecked.value = !radioChecked.value
       uniCheckGroup && uniCheckGroup.radioChange($event, field)

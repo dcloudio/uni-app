@@ -57,8 +57,7 @@ export default defineComponent({
         return
       }
       if (isLabelClick) {
-        rootRef.value!.click()
-        return
+        // TODO
       }
       switchChecked.value = !switchChecked.value
       trigger('change', {
