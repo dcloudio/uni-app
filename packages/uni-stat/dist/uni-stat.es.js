@@ -1,4 +1,4 @@
-var version = "0.0.1-nvue3.3040020220224003";
+var version = "0.0.1-nvue3.3040020220224004";
 
 const STAT_VERSION = version;
 const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
