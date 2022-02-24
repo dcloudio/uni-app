@@ -162,7 +162,7 @@ function useSwiperListeners(
     })
   }
 
-  const onScrollEnd = (event: CustomEvent) => {
+  const onScrollend = (event: CustomEvent) => {
     const end = () => {
       trigger('animationfinish', getDetail())
       state.currentChangeSource = 'autoplay'
@@ -206,7 +206,7 @@ function useSwiperListeners(
 
   const listeners = {
     onScroll,
-    onScrollEnd,
+    onScrollend,
     onChange,
   }
 
