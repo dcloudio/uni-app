@@ -354,6 +354,7 @@ export declare interface NVueElement {
     type: string;
     ref: string;
     text?: string;
+    attr: Record<string, unknown>;
     styleSheet: Record<string, Record<string, Record<string, unknown>>>;
     classList: string[];
     parentNode: NVueElement | null;
@@ -527,6 +528,8 @@ export declare type PageScrollAction = [typeof ACTION_TYPE_PAGE_SCROLL, number];
 export declare type PageUpdateAction = CreateAction | InsertAction | RemoveAction | AddEventAction | AddWxsEventAction | RemoveEventAction | SetAttributeAction | RemoveAttributeAction | SetTextAction;
 
 export declare function parseEventName(name: string): [string, EventListenerOptions | undefined];
+
+export declare function parseNVueDataset(attr?: Record<string, unknown>): Record<string, unknown>;
 
 /**
  * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts

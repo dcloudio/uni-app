@@ -1,5 +1,17 @@
 import { createApp, ComponentPublicInstance } from 'vue'
 
+export function parseNVueDataset(attr?: Record<string, unknown>) {
+  const dataset: Record<string, unknown> = {}
+  if (attr) {
+    Object.keys(attr).forEach((key) => {
+      if (key.indexOf('data-') === 0) {
+        dataset[key.replace('data-', '')] = attr[key]
+      }
+    })
+  }
+  return dataset
+}
+
 export interface Vue {
   createApp: typeof createApp
 }
@@ -85,6 +97,7 @@ export interface NVueElement {
   ref: string
   text?: string
 
+  attr: Record<string, unknown>
   styleSheet: Record<string, Record<string, Record<string, unknown>>>
   classList: string[]
   parentNode: NVueElement | null

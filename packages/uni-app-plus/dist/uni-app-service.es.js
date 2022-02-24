@@ -358,6 +358,18 @@ var serviceContext = (function (vue) {
       };
   }
 
+  function parseNVueDataset(attr) {
+      const dataset = {};
+      if (attr) {
+          Object.keys(attr).forEach((key) => {
+              if (key.indexOf('data-') === 0) {
+                  dataset[key.replace('data-', '')] = attr[key];
+              }
+          });
+      }
+      return dataset;
+  }
+
   class DOMException extends Error {
       constructor(message) {
           super(message);
@@ -1351,7 +1363,15 @@ var serviceContext = (function (vue) {
       };
   }
 
-  function requestComponentInfo(page, reqs, callback) {
+  function requestComponentInfo(pageVm, reqs, callback) {
+      if (pageVm.$page.meta.isNVue) {
+          requestNVueComponentInfo(pageVm, reqs, callback);
+      }
+      else {
+          requestVueComponentInfo(pageVm, reqs, callback);
+      }
+  }
+  function requestVueComponentInfo(pageVm, reqs, callback) {
       UniServiceJSBridge.invokeViewMethod('requestComponentInfo', {
           reqs: reqs.map((req) => {
               if (req.component) {
@@ -1359,7 +1379,65 @@ var serviceContext = (function (vue) {
               }
               return req;
           }),
-      }, page.$page.id, callback);
+      }, pageVm.$page.id, callback);
+  }
+  function requestNVueComponentInfo(pageVm, reqs, callback) {
+      const ids = findNVueElementIds(reqs);
+      const nvueElementInfos = new Array(ids.length);
+      findNVueElementInfos(ids, pageVm.$el, nvueElementInfos);
+      findComponentRectAll(pageVm.$requireNativePlugin('dom'), nvueElementInfos, 0, [], (result) => {
+          callback(result);
+      });
+  }
+  function findNVueElementIds(reqs) {
+      const ids = [];
+      for (let i = 0; i < reqs.length; i++) {
+          const selector = reqs[i].selector;
+          if (selector.indexOf('#') === 0) {
+              ids.push(selector.substring(1));
+          }
+      }
+      return ids;
+  }
+  function findNVueElementInfos(ids, elm, infos) {
+      const nodes = elm.children;
+      if (!isArray$1(nodes)) {
+          return false;
+      }
+      for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          if (node.attr) {
+              const index = ids.indexOf(node.attr.id);
+              if (index >= 0) {
+                  infos[index] = {
+                      id: ids[index],
+                      ref: node.ref,
+                      dataset: parseNVueDataset(node.attr),
+                  };
+                  if (ids.length === 1) {
+                      break;
+                  }
+              }
+          }
+          if (node.children) {
+              findNVueElementInfos(ids, node, infos);
+          }
+      }
+  }
+  function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
+      const attr = nvueElementInfos[index];
+      dom.getComponentRect(attr.ref, (option) => {
+          option.size.id = attr.id;
+          option.size.dataset = attr.dataset;
+          result.push(option.size);
+          index += 1;
+          if (index < nvueElementInfos.length) {
+              findComponentRectAll(dom, nvueElementInfos, index, result, callback);
+          }
+          else {
+              callback(result);
+          }
+      });
   }
 
   function setCurrentPageMeta(page, options) {
