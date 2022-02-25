@@ -441,7 +441,13 @@ export default {
       var id = this._randomId()
       var view = this._createView(id)
 
-      if (data.a1 === '10011') {
+      if (data.a1 === '10010') {
+        AdScript.instance.load(data.t, script, () => {
+          this._renderBaidu(id, data.a2)
+        }, (err) => {
+          this.$trigger('error', {}, err)
+        })
+      } else if (data.a1 === '10011') {
         AdTencent.instance.load(data.a3, data.a2, (res) => {
           window.TencentGDT.NATIVE.renderAd(res, id)
         })
@@ -456,7 +462,7 @@ export default {
         })
       } else {
         AdScript.instance.load(data.t, script, () => {
-          this._renderAdView(id, view, script, data)
+          this._renderAdView(id, script.s, data)
         }, (err) => {
           this.$trigger('error', {}, err)
         })
@@ -478,9 +484,17 @@ export default {
       view.appendChild(adScript)
       this._startCheckTimer()
     },
-    _renderAdView (id, view, script, data) {
+    _renderBaidu (id, adid) {
+      (window.slotbydup = window.slotbydup || []).push({
+        id: adid,
+        container: id,
+        async: true
+      })
+      this._startCheckTimer()
+    },
+    _renderAdView (id, script, data) {
       let bindThis = window
-      script.s.split('.').reduce((total, currentValue) => {
+      script.split('.').reduce((total, currentValue) => {
         bindThis = total
         return total[currentValue]
       }, window).bind(bindThis)(data.a2, id, 2)

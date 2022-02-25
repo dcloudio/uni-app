@@ -8,7 +8,8 @@ export function chooseLocation (options, callbackId) {
   } = UniServiceJSBridge
   getApp().$router.push({
     type: 'navigateTo',
-    path: '/choose-location'
+    path: '/choose-location',
+    query: options
   }, function () {
     var fn = data => {
       UniServiceJSBridge.unsubscribe('onChooseLocation', fn)
