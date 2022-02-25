@@ -240,8 +240,15 @@ export declare const initCustomDatasetOnce: () => void;
  * nodeId
  * parentNodeId
  * refNodeId
+ * nodeJson
  */
-export declare type InsertAction = [typeof ACTION_TYPE_INSERT, number, number, number];
+export declare type InsertAction = [
+typeof ACTION_TYPE_INSERT,
+number,
+number,
+number,
+Partial<UniNodeJSON | UniNodeJSONMinify>?
+];
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 

@@ -71,7 +71,7 @@ export class UniComponent extends UniNode {
     // 延迟到insert之后，再flush，确保mounted等生命周期触发正常
     flushPostFlushCbs()
   }
-  init(nodeJson: Partial<UniNodeJSON>) {
+  init(nodeJson: Partial<UniNodeJSON>, isCreate: boolean = true) {
     const { a, e, w } = nodeJson
     if (a) {
       // 初始化时，先提取 wxsProps，再 setAttr

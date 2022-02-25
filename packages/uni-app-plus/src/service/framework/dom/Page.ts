@@ -213,6 +213,9 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
           }
         } else {
           // 部分手机上，create 和 insert 可能不在同一批次，被分批发送
+          if (extras) {
+            action[4] = extras as UniNodeJSON
+          }
           this.updateActions.push(action)
           // if (__DEV__) {
           //   console.error(formatLog(`Insert`, action, 'not found createAction'))

@@ -18708,9 +18708,14 @@ var serviceContext = (function (vue) {
                       }
                   }
                   else {
-                      if ((process.env.NODE_ENV !== 'production')) {
-                          console.error(formatLog(`Insert`, action, 'not found createAction'));
+                      // 部分手机上，create 和 insert 可能不在同一批次，被分批发送
+                      if (extras) {
+                          action[4] = extras;
                       }
+                      this.updateActions.push(action);
+                      // if ((process.env.NODE_ENV !== 'production')) {
+                      //   console.error(formatLog(`Insert`, action, 'not found createAction'))
+                      // }
                   }
                   break;
           }
