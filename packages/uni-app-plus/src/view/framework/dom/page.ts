@@ -82,7 +82,13 @@ function setPageReady() {
     console.log(formatLog('setPageReady', pageReadyCallbacks.length))
   }
   isPageReady = true
-  pageReadyCallbacks.forEach((fn) => fn())
+  pageReadyCallbacks.forEach((fn) => {
+    try {
+      fn()
+    } catch (e: unknown) {
+      console.error(e)
+    }
+  })
   pageReadyCallbacks.length = 0
 }
 
