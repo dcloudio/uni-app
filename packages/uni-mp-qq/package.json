@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-qq",
-  "version": "0.0.1-nvue3.3040020220225001",
+  "version": "0.0.1-nvue3.3040020220225002",
   "description": "uni-app mp-qq",
   "main": "dist/index.js",
   "repository": {
@@ -22,15 +22,15 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-mp-weixin": "0.0.1-nvue3.3040020220225001",
+    "@dcloudio/uni-mp-weixin": "0.0.1-nvue3.3040020220225002",
     "@types/fs-extra": "^9.0.13",
     "@vue/compiler-core": "3.2.31"
   },
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220225001",
-    "@dcloudio/uni-mp-vite": "0.0.1-nvue3.3040020220225001",
-    "@dcloudio/uni-mp-vue": "0.0.1-nvue3.3040020220225001",
-    "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220225001",
+    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220225002",
+    "@dcloudio/uni-mp-vite": "0.0.1-nvue3.3040020220225002",
+    "@dcloudio/uni-mp-vue": "0.0.1-nvue3.3040020220225002",
+    "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220225002",
     "fs-extra": "^10.0.0"
   }
 }
