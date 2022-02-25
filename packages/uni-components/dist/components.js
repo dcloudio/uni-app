@@ -2782,12 +2782,10 @@ var Picker = /* @__PURE__ */ defineComponent({
     });
     _setValueSync();
     return () => {
-      return createVNode(resolveComponent("uni-picker"), {
+      return createVNode("view", {
         "ref": rootRef,
         "onClick": _show
-      }, {
-        default: () => [slots.default && slots.default()]
-      });
+      }, [slots.default && slots.default()]);
     };
   }
 });

@@ -318,9 +318,9 @@ export default /*#__PURE__*/ defineComponent({
 
     return () => {
       return (
-        <uni-picker ref={rootRef} onClick={_show}>
+        <view ref={rootRef} onClick={_show}>
           {slots.default && slots.default()}
-        </uni-picker>
+        </view>
       )
     }
   },
