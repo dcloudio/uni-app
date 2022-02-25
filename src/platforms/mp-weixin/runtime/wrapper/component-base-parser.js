@@ -98,8 +98,19 @@ export default function parseBaseComponent (vueComponentOptions, {
     }
   }
   // externalClasses
-  if (vueOptions.externalClasses) {
-    componentOptions.externalClasses = vueOptions.externalClasses
+  const externalClasses = new Set()
+  let p = VueComponent
+  do {
+    const ex = p.options.externalClasses
+    if (Array.isArray(ex)) {
+      ex.forEach(c => externalClasses.add(c))
+    } else if (typeof cs === 'string') {
+      externalClasses.add(ex)
+    }
+    p = p.super
+  } while (p)
+  if (externalClasses.size > 0) {
+    componentOptions.externalClasses = Array.from(externalClasses)
   }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {

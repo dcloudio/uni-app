@@ -93,6 +93,10 @@ function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Com
       if (oldJsonObj.usingGlobalComponents) { // 复制 global components(针对不支持全局 usingComponents 的平台)
         jsonObj.usingGlobalComponents = oldJsonObj.usingGlobalComponents
       }
+      // componentPlaceholder
+      if (oldJsonObj.componentPlaceholder) {
+        jsonObj.componentPlaceholder = oldJsonObj.componentPlaceholder
+      }
     }
     const newJsonStr = JSON.stringify(jsonObj, null, 2)
     if (newJsonStr !== oldJsonStr) {
@@ -191,6 +195,23 @@ function updateComponentGenerics (name, componentGenerics) {
   } else { // add
     const jsonObj = {
       componentGenerics
+    }
+    updateJsonFile(name, jsonObj)
+  }
+}
+
+function updateComponentPlaceholder (name, componentPlaceholder) {
+  const oldJsonStr = getJsonFile(name)
+  if (oldJsonStr) { // update
+    const jsonObj = JSON.parse(oldJsonStr)
+    jsonObj.componentPlaceholder = componentPlaceholder
+    const newJsonStr = JSON.stringify(jsonObj, null, 2)
+    if (newJsonStr !== oldJsonStr) {
+      updateJsonFile(name, newJsonStr)
+    }
+  } else { // add
+    const jsonObj = {
+      componentPlaceholder
     }
     updateJsonFile(name, jsonObj)
   }
@@ -347,6 +368,7 @@ module.exports = {
   updateComponentJson,
   updateSpecialMethods,
   updateUsingComponents,
+  updateComponentPlaceholder,
   updateUsingGlobalComponents,
   updateAppJsonUsingComponents,
   updateUsingAutoImportComponents,
