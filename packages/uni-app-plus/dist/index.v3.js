@@ -1159,6 +1159,23 @@ var serviceContext = (function () {
     createCanvasContext: createCanvasContext
   });
 
+  const addPhoneContact = {
+    firstName: {
+      type: String,
+      required: true,
+      validator (firstName) {
+        if (!firstName) {
+          return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty String;'
+        }
+      }
+    }
+  };
+
+  var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    addPhoneContact: addPhoneContact
+  });
+
   const makePhoneCall = {
     phoneNumber: {
       type: String,
@@ -1171,7 +1188,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     makePhoneCall: makePhoneCall
   });
@@ -1188,7 +1205,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     scanCode: scanCode
   });
@@ -1888,7 +1905,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setClipboardData: setClipboardData
   });
@@ -2023,7 +2040,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveFile: saveFile,
     getFileInfo: getFileInfo,
@@ -2041,7 +2058,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     openDocument: openDocument
   });
@@ -2052,7 +2069,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseLocation: chooseLocation
   });
@@ -2073,7 +2090,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getLocation: getLocation
   });
@@ -2103,7 +2120,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     openLocation: openLocation
   });
@@ -2149,7 +2166,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseFile: chooseFile
   });
@@ -2196,7 +2213,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseImage: chooseImage
   });
@@ -2234,7 +2251,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseVideo: chooseVideo
   });
@@ -2249,7 +2266,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     compressImage: compressImage
   });
@@ -2276,7 +2293,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     compressVideo: compressVideo
   });
@@ -2291,7 +2308,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getImageInfo: getImageInfo
   });
@@ -2306,7 +2323,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getVideoInfo: getVideoInfo
   });
@@ -2342,7 +2359,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage
   });
@@ -2357,7 +2374,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum
   });
@@ -2375,7 +2392,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -2499,7 +2516,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request,
     configMTLS: configMTLS
@@ -2558,7 +2575,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -2600,7 +2617,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -2625,7 +2642,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -2646,7 +2663,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadSubPackage: loadSubPackage
   });
@@ -2668,7 +2685,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     preLogin: preLogin
   });
@@ -2869,7 +2886,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -2915,7 +2932,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -2952,7 +2969,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -2995,7 +3012,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -3015,7 +3032,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_36 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -3140,7 +3157,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_36 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_37 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -3239,7 +3256,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_37 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_38 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -3262,37 +3279,38 @@ var serviceContext = (function () {
   './base/upx2px.js': require_context_module_0_4,
   './context/canvas.js': require_context_module_0_5,
   './context/context.js': require_context_module_0_6,
-  './device/make-phone-call.js': require_context_module_0_7,
-  './device/scan-code.js': require_context_module_0_8,
-  './device/set-clipboard-data.js': require_context_module_0_9,
-  './file/file.js': require_context_module_0_10,
-  './file/open-document.js': require_context_module_0_11,
-  './location/choose-location.js': require_context_module_0_12,
-  './location/get-location.js': require_context_module_0_13,
-  './location/open-location.js': require_context_module_0_14,
-  './media/choose-file.js': require_context_module_0_15,
-  './media/choose-image.js': require_context_module_0_16,
-  './media/choose-video.js': require_context_module_0_17,
-  './media/compress-image.js': require_context_module_0_18,
-  './media/compress-video.js': require_context_module_0_19,
-  './media/get-image-info.js': require_context_module_0_20,
-  './media/get-video-info.js': require_context_module_0_21,
-  './media/preview-image.js': require_context_module_0_22,
-  './media/save-image-to-photos-album.js': require_context_module_0_23,
-  './network/download-file.js': require_context_module_0_24,
-  './network/request.js': require_context_module_0_25,
-  './network/socket.js': require_context_module_0_26,
-  './network/upload-file.js': require_context_module_0_27,
-  './plugin/get-provider.js': require_context_module_0_28,
-  './plugin/load-sub-package.js': require_context_module_0_29,
-  './plugin/pre-login.js': require_context_module_0_30,
-  './route/route.js': require_context_module_0_31,
-  './storage/storage.js': require_context_module_0_32,
-  './ui/load-font-face.js': require_context_module_0_33,
-  './ui/navigation-bar.js': require_context_module_0_34,
-  './ui/page-scroll-to.js': require_context_module_0_35,
-  './ui/popup.js': require_context_module_0_36,
-  './ui/tab-bar.js': require_context_module_0_37,
+  './device/add-phone-contact.js': require_context_module_0_7,
+  './device/make-phone-call.js': require_context_module_0_8,
+  './device/scan-code.js': require_context_module_0_9,
+  './device/set-clipboard-data.js': require_context_module_0_10,
+  './file/file.js': require_context_module_0_11,
+  './file/open-document.js': require_context_module_0_12,
+  './location/choose-location.js': require_context_module_0_13,
+  './location/get-location.js': require_context_module_0_14,
+  './location/open-location.js': require_context_module_0_15,
+  './media/choose-file.js': require_context_module_0_16,
+  './media/choose-image.js': require_context_module_0_17,
+  './media/choose-video.js': require_context_module_0_18,
+  './media/compress-image.js': require_context_module_0_19,
+  './media/compress-video.js': require_context_module_0_20,
+  './media/get-image-info.js': require_context_module_0_21,
+  './media/get-video-info.js': require_context_module_0_22,
+  './media/preview-image.js': require_context_module_0_23,
+  './media/save-image-to-photos-album.js': require_context_module_0_24,
+  './network/download-file.js': require_context_module_0_25,
+  './network/request.js': require_context_module_0_26,
+  './network/socket.js': require_context_module_0_27,
+  './network/upload-file.js': require_context_module_0_28,
+  './plugin/get-provider.js': require_context_module_0_29,
+  './plugin/load-sub-package.js': require_context_module_0_30,
+  './plugin/pre-login.js': require_context_module_0_31,
+  './route/route.js': require_context_module_0_32,
+  './storage/storage.js': require_context_module_0_33,
+  './ui/load-font-face.js': require_context_module_0_34,
+  './ui/navigation-bar.js': require_context_module_0_35,
+  './ui/page-scroll-to.js': require_context_module_0_36,
+  './ui/popup.js': require_context_module_0_37,
+  './ui/tab-bar.js': require_context_module_0_38,
 
       };
       var req = function req(key) {
@@ -4366,7 +4384,7 @@ var serviceContext = (function () {
     return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
-  const AUDIO_DEFAULT_SESSION_CATEGORY = 'ambient';
+  const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback';
 
   const audios = {};
 
@@ -4949,82 +4967,53 @@ var serviceContext = (function () {
       : operateVideoPlayer(videoId, pageVm, type, data);
   }
 
+  function operateLivePusher (livePusherId, pageVm, type, data) {
+    const pageId = pageVm.$page.id;
+    UniServiceJSBridge.publishHandler(pageId + '-live-pusher-' + livePusherId, {
+      livePusherId,
+      type,
+      data
+    }, pageId);
+  }
+
+  UniServiceJSBridge.subscribe('onLivePusherMethodCallback', ({
+    callbackId,
+    data
+  }) => {
+    callback.invoke(callbackId, data);
+  });
+
+  const methods = ['preview',
+    'start',
+    'stop',
+    'pause',
+    'resume',
+    'switchCamera',
+    'snapshot'];
+
   class LivePusherContext {
-    constructor (id, ctx) {
+    constructor (id, pageVm) {
       this.id = id;
-      this.ctx = ctx;
+      this.pageVm = pageVm;
     }
 
-    start (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
-    }
-
-    stop (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
-    }
-
-    pause (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
-    }
-
-    resume (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
-    }
-
-    switchCamera (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
-    }
-
-    snapshot (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
-    }
-
-    toggleTorch (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
-    }
-
-    playBGM (args) {
-      return invokeVmMethod(this.ctx, 'playBGM', args)
-    }
-
-    stopBGM (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
-    }
-
-    pauseBGM (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
-    }
-
-    resumeBGM (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
-    }
-
-    setBGMVolume (cbs) {
-      return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
-    }
-
-    startPreview (cbs) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
-    }
-
-    stopPreview (args) {
-      return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+    on (name, callback) {
+      operateLivePusher(this.id, this.pageVm, 'on', {
+        name,
+        callback
+      });
     }
   }
 
-  function createLivePusherContext (id, vm) {
-    if (!vm) {
-      return console.warn('uni.createLivePusherContext: 2 arguments required, but only 1 present')
-    }
-    const elm = findElmById(id, vm);
-    if (!elm) {
-      return console.warn('Can not find `' + id + '`')
-    }
-    return new LivePusherContext(id, elm)
-  }
+  methods.forEach(function (method) {
+    LivePusherContext.prototype[method] = callback.warp(function (options, callbackId) {
+      options.callbackId = callbackId;
+      operateLivePusher(this.id, this.pageVm, method, options);
+    });
+  });
 
-  function createLivePusherContext$1 (id, vm) {
-    return createLivePusherContext(id, vm)
+  function createLivePusherContext (id, context) {
+    return new LivePusherContext(id, context)
   }
 
   const DEVICE_FREQUENCY = 200;
@@ -5091,206 +5080,136 @@ var serviceContext = (function () {
     }
   }
 
-  function addPhoneContact ({
-    photoFilePath = '',
-    nickName,
-    lastName,
-    middleName,
-    firstName,
-    remark,
-    mobilePhoneNumber,
-    weChatNumber,
-    addressCountry,
-    addressState,
-    addressCity,
-    addressStreet,
-    addressPostalCode,
-    organization,
-    title,
-    workFaxNumber,
-    workPhoneNumber,
-    hostNumber,
-    email,
-    url,
-    workAddressCountry,
-    workAddressState,
-    workAddressCity,
-    workAddressStreet,
-    workAddressPostalCode,
-    homeFaxNumber,
-    homePhoneNumber,
-    homeAddressCountry,
-    homeAddressState,
-    homeAddressCity,
-    homeAddressStreet,
-    homeAddressPostalCode
-  } = {}, callbackId) {
-    plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
-      const contact = addressbook.create();
-      const name = {};
-      if (lastName) {
-        name.familyName = lastName;
+  const schema = {
+    name: {
+      givenName: 'firstName',
+      middleName: 'middleName',
+      familyName: 'lastName'
+    },
+    nickname: 'nickName',
+    photos: {
+      type: 'url',
+      value: 'photoFilePath'
+    },
+    note: 'remark',
+    phoneNumbers: [
+      {
+        type: 'mobile',
+        value: 'mobilePhoneNumber'
+      },
+      {
+        type: 'work',
+        value: 'workPhoneNumber'
+      },
+      {
+        type: 'company',
+        value: 'hostNumber'
+      },
+      {
+        type: 'home fax',
+        value: 'homeFaxNumber'
+      },
+      {
+        type: 'work fax',
+        value: 'workFaxNumber'
       }
-      if (firstName) {
-        name.givenName = firstName;
-      }
-      if (middleName) {
-        name.middleName = middleName;
-      }
-      contact.name = name;
-
-      if (nickName) {
-        contact.nickname = nickName;
-      }
-
-      if (photoFilePath) {
-        contact.photos = [{
-          type: 'url',
-          value: photoFilePath
-        }];
-      }
-
-      if (remark) {
-        contact.note = remark;
-      }
-
-      const mobilePhone = {
-        type: 'mobile'
-      };
-
-      const workPhone = {
-        type: 'work'
-      };
-
-      const companyPhone = {
-        type: 'company'
-      };
-
-      const homeFax = {
-        type: 'home fax'
-      };
-
-      const workFax = {
-        type: 'work fax'
-      };
-
-      if (mobilePhoneNumber) {
-        mobilePhone.value = mobilePhoneNumber;
-      }
-
-      if (workPhoneNumber) {
-        workPhone.value = workPhoneNumber;
-      }
-
-      if (hostNumber) {
-        companyPhone.value = hostNumber;
-      }
-
-      if (homeFaxNumber) {
-        homeFax.value = homeFaxNumber;
-      }
-
-      if (workFaxNumber) {
-        workFax.value = workFaxNumber;
-      }
-
-      contact.phoneNumbers = [mobilePhone, workPhone, companyPhone, homeFax, workFax];
-
-      if (email) {
-        contact.emails = [{
-          type: 'home',
-          value: email
-        }];
-      }
-
-      if (url) {
-        contact.urls = [{
-          type: 'other',
-          value: url
-        }];
-      }
-
-      if (weChatNumber) {
-        contact.ims = [{
-          type: 'other',
-          value: weChatNumber
-        }];
-      }
-
-      const defaultAddress = {
+    ],
+    emails: [{
+      type: 'home',
+      value: 'email'
+    }],
+    urls: [{
+      type: 'other',
+      value: 'url'
+    }],
+    organizations: [{
+      type: 'company',
+      name: 'organization',
+      title: 'title'
+    }],
+    ims: [{
+      type: 'other',
+      value: 'weChatNumber'
+    }],
+    addresses: [
+      {
         type: 'other',
-        preferred: true
-      };
-
-      const homeAddress = {
-        type: 'home'
-      };
-      const companyAddress = {
-        type: 'company'
-      };
-
-      if (addressCountry) {
-        defaultAddress.country = addressCountry;
+        preferred: true,
+        country: 'addressCountry',
+        region: 'addressState',
+        locality: 'addressCity',
+        streetAddress: 'addressStreet',
+        postalCode: 'addressPostalCode'
+      },
+      {
+        type: 'home',
+        country: 'homeAddressCountry',
+        region: 'homeAddressState',
+        locality: 'homeAddressCity',
+        streetAddress: 'homeAddressStreet',
+        postalCode: 'homeAddressPostalCode'
+      },
+      {
+        type: 'company',
+        country: 'workAddressCountry',
+        region: 'workAddressState',
+        locality: 'workAddressCity',
+        streetAddress: 'workAddressStreet',
+        postalCode: 'workAddressPostalCode'
       }
+    ]
+  };
 
-      if (addressState) {
-        defaultAddress.region = addressState;
+  const keepFields = ['type', 'preferred'];
+
+  function buildContact (contact, data, schema) {
+    let hasValue = 0;
+    Object.keys(schema).forEach(contactKey => {
+      const dataKey = schema[contactKey];
+      const typed = typeof dataKey;
+      if (typed !== 'object') {
+        if (keepFields.indexOf(contactKey) !== -1) {
+          contact[contactKey] = schema[contactKey];
+        } else {
+          if (typeof data[dataKey] !== 'undefined') {
+            hasValue++;
+            contact[contactKey] = data[dataKey];
+          } else {
+            delete contact[contactKey];
+          }
+        }
+      } else {
+        if (dataKey instanceof Array) {
+          contact[contactKey] = [];
+          dataKey.forEach(item => {
+            const obj = {};
+            if (buildContact(obj, data, item)) {
+              contact[contactKey].push(obj);
+            }
+          });
+          if (!contact[contactKey].length) {
+            delete contact[contactKey];
+          } else {
+            hasValue++;
+          }
+        } else {
+          contact[contactKey] = {};
+          if (buildContact(contact[contactKey], data, dataKey)) {
+            hasValue++;
+          } else {
+            delete contact[contactKey];
+          }
+        }
       }
+    });
+    return hasValue
+  }
 
-      if (addressCity) {
-        defaultAddress.locality = addressCity;
-      }
-
-      if (addressStreet) {
-        defaultAddress.streetAddress = addressStreet;
-      }
-
-      if (addressPostalCode) {
-        defaultAddress.postalCode = addressPostalCode;
-      }
-
-      if (homeAddressCountry) {
-        homeAddress.country = homeAddressCountry;
-      }
-
-      if (homeAddressState) {
-        homeAddress.region = homeAddressState;
-      }
-
-      if (homeAddressCity) {
-        homeAddress.locality = homeAddressCity;
-      }
-
-      if (homeAddressStreet) {
-        homeAddress.streetAddress = homeAddressStreet;
-      }
-
-      if (homeAddressPostalCode) {
-        homeAddress.postalCode = homeAddressPostalCode;
-      }
-
-      if (workAddressCountry) {
-        companyAddress.country = workAddressCountry;
-      }
-
-      if (workAddressState) {
-        companyAddress.region = workAddressState;
-      }
-
-      if (workAddressCity) {
-        companyAddress.locality = workAddressCity;
-      }
-
-      if (workAddressStreet) {
-        companyAddress.streetAddress = workAddressStreet;
-      }
-
-      if (workAddressPostalCode) {
-        companyAddress.postalCode = workAddressPostalCode;
-      }
-
-      contact.addresses = [defaultAddress, homeAddress, companyAddress];
-
+  function addPhoneContact$1 (data, callbackId) {
+    plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
+      !data.photoFilePath && (data.photoFilePath = '');
+      const contact = addressbook.create();
+      buildContact(contact, data, schema);
       contact.save(() => {
         invoke$1(callbackId, {
           errMsg: 'addPhoneContact:ok'
@@ -11867,12 +11786,13 @@ var serviceContext = (function () {
     getBackgroundAudioState: getBackgroundAudioState,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
-    createLivePusherContext: createLivePusherContext$1,
+    LivePusherContext: LivePusherContext,
+    createLivePusherContext: createLivePusherContext,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer,
     onAccelerometerChange: onAccelerometerChange,
     offAccelerometerChange: offAccelerometerChange,
-    addPhoneContact: addPhoneContact,
+    addPhoneContact: addPhoneContact$1,
     onBluetoothDeviceFound: onBluetoothDeviceFound,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange,
     onBLEConnectionStateChange: onBLEConnectionStateChange,
@@ -19918,7 +19838,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation',
+  const methods$1 = ['getCenterLocation',
     'moveToLocation',
     'getScale',
     'getRegion',
@@ -19955,7 +19875,7 @@ var serviceContext = (function () {
     }
   };
 
-  methods.forEach(function (method) {
+  methods$1.forEach(function (method) {
     MapContext.prototype[method] = callback.warp(function (options, callbackId) {
       options.callbackId = callbackId;
       operateMapPlayer$3(this.id, this.pageVm, method, options);
@@ -20063,7 +19983,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods$1 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView'];
+  const methods$2 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView'];
 
   class EditorContext {
     constructor (id, pageId) {
@@ -20081,7 +20001,7 @@ var serviceContext = (function () {
     }
   }
 
-  methods$1.forEach(function (method) {
+  methods$2.forEach(function (method) {
     EditorContext.prototype[method] = callback.warp(function (options, callbackId) {
       operateEditor(this.id, this.pageId, method, {
         options,
