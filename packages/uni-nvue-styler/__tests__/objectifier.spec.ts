@@ -8,7 +8,7 @@ async function objectifierRoot(input: string) {
   }
 }
 
-describe('nvue-styler: parse', () => {
+describe('nvue-styler: objectifier', () => {
   test('basic', async () => {
     const code =
       'html {color: #000000;}\n\n.foo {color: red; background-color: rgba(255,255,255,0.6); -webkit-transform: rotate(90deg); width: 200px; left: 0; right: 0px; border-width: 1pt; font-weight: 100}\n\n.bar {background: red}'
@@ -19,9 +19,9 @@ describe('nvue-styler: parse', () => {
           color: '#FF0000',
           backgroundColor: 'rgba(255,255,255,0.6)',
           WebkitTransform: 'rotate(90deg)',
-          width: '200px',
+          width: 200,
           left: 0,
-          right: '0px',
+          right: 0,
           borderWidth: '1pt',
           fontWeight: '100',
         },
@@ -56,7 +56,7 @@ describe('nvue-styler: parse', () => {
   test('fix prop value', async () => {
     const code = '.foo {font-size: 200px;}'
     const { json, messages } = await objectifierRoot(code)
-    expect(json).toEqual({ foo: { '': { fontSize: '200px' } } })
+    expect(json).toEqual({ foo: { '': { fontSize: 200 } } })
     expect(messages.length).toBe(0)
   })
   test('ensure number type value', async () => {
@@ -64,7 +64,7 @@ describe('nvue-styler: parse', () => {
     const { json, messages } = await objectifierRoot(code)
     expect(json).toEqual({
       foo: { '': { lineHeight: 40 } },
-      bar: { '': { lineHeight: '20px' } },
+      bar: { '': { lineHeight: 20 } },
     })
     expect(messages.length).toBe(0)
   })
@@ -291,23 +291,23 @@ describe('nvue-styler: parse', () => {
     expect(json).toEqual({
       foo: {
         '': {
-          paddingTop: '20px',
-          paddingRight: '20px',
-          paddingBottom: '20px',
-          paddingLeft: '20px',
-          marginTop: '30px',
+          paddingTop: 20,
+          paddingRight: 20,
+          paddingBottom: 20,
+          paddingLeft: 20,
+          marginTop: 30,
           marginRight: 40,
-          marginBottom: '30px',
+          marginBottom: 30,
           marginLeft: 40,
         },
       },
       bar: {
         '': {
           paddingTop: 10,
-          paddingRight: '20px',
-          paddingBottom: '30px',
+          paddingRight: 20,
+          paddingBottom: 30,
           paddingLeft: 40,
-          marginTop: '10px',
+          marginTop: 10,
           marginRight: 20,
           marginBottom: 30,
           marginLeft: 20,
@@ -322,17 +322,17 @@ describe('nvue-styler: parse', () => {
     expect(json).toEqual({
       foo: {
         '': {
-          paddingTop: '20px',
-          paddingRight: '20px',
-          paddingBottom: '20px',
-          paddingLeft: '30px',
+          paddingTop: 20,
+          paddingRight: 20,
+          paddingBottom: 20,
+          paddingLeft: 30,
         },
       },
       bar: {
         '': {
-          marginTop: '10px',
+          marginTop: 10,
           marginRight: 20,
-          marginBottom: '30px',
+          marginBottom: 30,
           marginLeft: 20,
         },
       },

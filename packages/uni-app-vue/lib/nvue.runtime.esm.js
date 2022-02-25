@@ -4622,7 +4622,8 @@ function baseCreateRenderer(options, createHydrationFns) {
                  * affect non-DOM renderers)
                  */
                 if ('value' in props) {
-                    hostPatchProp(el, 'value', null, props.value);
+                    // fixed by xxxxxx
+                    hostPatchProp(el, 'value', null, props.value, false, [], parentComponent);
                 }
                 if ((vnodeHook = props.onVnodeBeforeMount)) {
                     invokeVNodeHook(vnodeHook, parentComponent, vnode);
@@ -4743,13 +4744,15 @@ function baseCreateRenderer(options, createHydrationFns) {
                 // this flag is matched when the element has dynamic class bindings.
                 if (patchFlag & 2 /* CLASS */) {
                     if (oldProps.class !== newProps.class) {
-                        hostPatchProp(el, 'class', null, newProps.class, isSVG);
+                        // fixed by xxxxxx
+                        hostPatchProp(el, 'class', null, newProps.class, isSVG, [], parentComponent);
                     }
                 }
                 // style
                 // this flag is matched when the element has dynamic style bindings
                 if (patchFlag & 4 /* STYLE */) {
-                    hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG);
+                    // fixed by xxxxxx
+                    hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG, [], parentComponent);
                 }
                 // props
                 // This flag is matched when the element has dynamic prop/attr bindings
@@ -4841,7 +4844,8 @@ function baseCreateRenderer(options, createHydrationFns) {
                 }
             }
             if ('value' in newProps) {
-                hostPatchProp(el, 'value', oldProps.value, newProps.value);
+                // fixed by xxxxxx
+                hostPatchProp(el, 'value', oldProps.value, newProps.value, false, [], parentComponent);
             }
         }
     };
@@ -7813,19 +7817,8 @@ function isMatchParentSelector(parentSelector, el) {
         const item = classArray[i];
         const type = item[item.length - 1];
         const className = item.replace(TYPE_RE, '');
-        let property = PROPERTY_PARENT_NODE;
-        let recurse = true;
-        if (type === '>') {
-            recurse = false;
-        }
-        else if (type === '+') {
-            property = PROPERTY_PREVIOUS_SIBLING;
-            recurse = false;
-        }
-        else if (type === '~') {
-            property = PROPERTY_PREVIOUS_SIBLING;
-        }
-        if (recurse) {
+        if (type === '~' || type === ' ') {
+            const property = type === '~' ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
             while (el) {
                 el = el[property];
                 if (hasClass(className, el)) {
@@ -7837,7 +7830,12 @@ function isMatchParentSelector(parentSelector, el) {
             }
         }
         else {
-            el = el && el[property];
+            if (type === '>') {
+                el = el && el[PROPERTY_PARENT_NODE];
+            }
+            else if (type === '+') {
+                el = el && el[PROPERTY_PREVIOUS_SIBLING];
+            }
             if (!hasClass(className, el)) {
                 return false;
             }

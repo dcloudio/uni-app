@@ -2,6 +2,7 @@ import type { PreRenderedChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import path from 'path'
 import colors from 'picocolors'
+import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
 import {
   APP_SERVICE_FILENAME,
   commonjsProxyRE,
@@ -18,16 +19,16 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 import { nvueOutDir } from '../../utils'
-import { transformRenderWhole } from './transforms/transformRenderWhole'
-import { transformAppendAsTree } from './transforms/transformAppendAsTree'
+// import { transformRenderWhole } from './transforms/transformRenderWhole'
+// import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
 import { transformText } from './transforms/transformText'
 import { createConfigResolved } from '../../plugin/configResolved'
-import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
 import { external, globals } from '../utils'
 import { transformRootNode } from './transforms/transformRootNode'
 import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
+import { transformAttrs } from './transforms/transformAttrs'
 
 const uTags = {
   text: 'u-text',
@@ -44,10 +45,11 @@ export function initNVueNodeTransforms() {
   return [
     transformRootNode,
     createTransformTag(uTags),
+    transformAttrs,
     transformText,
     transformVideo,
-    transformRenderWhole,
-    transformAppendAsTree,
+    // transformRenderWhole,
+    // transformAppendAsTree,
   ]
 }
 

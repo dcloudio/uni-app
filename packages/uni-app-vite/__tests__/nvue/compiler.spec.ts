@@ -1,10 +1,8 @@
 import { NVUE_U_BUILT_IN_TAGS } from '@dcloudio/uni-shared'
 import {
-  DirectiveNode,
   ElementNode,
   ElementTypes,
   findDir,
-  findProp,
   SimpleExpressionNode,
 } from '@vue/compiler-core'
 import { compileTemplate } from '@vue/compiler-sfc'
@@ -41,6 +39,7 @@ const codes = [
   `<input v-model="text"/>`,
   `<textarea v-model="text"/>`,
   `<slider/>`,
+  `<scroll-view data-id="id" scroll-x="true" :show-scrollbar="true"/>`,
 ]
 
 describe('app-nvue: compiler', () => {
@@ -58,25 +57,25 @@ describe('app-nvue: compiler', () => {
   test('scroll-view', () => {
     genAst(`<view></view>`)
   })
-  test('render-whole', () => {
-    expect(
-      (
-        (
-          findProp(
-            genAst(`<view :render-whole="true">hello</view>`),
-            'appendAsTree',
-            true,
-            false
-          ) as DirectiveNode
-        ).arg as SimpleExpressionNode
-      ).content
-    ).toBe('appendAsTree')
-  })
-  test('unitary tag', () => {
-    expect(
-      findProp(genAst(`<text>hello</text>`), 'appendAsTree', true, false)
-    ).toBeTruthy()
-  })
+  // test('render-whole', () => {
+  //   expect(
+  //     (
+  //       (
+  //         findProp(
+  //           genAst(`<view :render-whole="true">hello</view>`),
+  //           'appendAsTree',
+  //           true,
+  //           false
+  //         ) as DirectiveNode
+  //       ).arg as SimpleExpressionNode
+  //     ).content
+  //   ).toBe('appendAsTree')
+  // })
+  // test('unitary tag', () => {
+  //   expect(
+  //     findProp(genAst(`<text>hello</text>`), 'appendAsTree', true, false)
+  //   ).toBeTruthy()
+  // })
   test('tap=>click', () => {
     expect(
       (

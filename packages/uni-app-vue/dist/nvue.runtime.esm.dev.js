@@ -5587,7 +5587,8 @@ function baseCreateRenderer(options, createHydrationFns) {
 
 
         if ('value' in props) {
-          hostPatchProp(el, 'value', null, props.value);
+          // fixed by xxxxxx
+          hostPatchProp(el, 'value', null, props.value, false, [], parentComponent);
         }
 
         if (vnodeHook = props.onVnodeBeforeMount) {
@@ -5733,7 +5734,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         /* CLASS */
         ) {
           if (oldProps.class !== newProps.class) {
-            hostPatchProp(el, 'class', null, newProps.class, isSVG);
+            // fixed by xxxxxx
+            hostPatchProp(el, 'class', null, newProps.class, isSVG, [], parentComponent);
           }
         } // style
         // this flag is matched when the element has dynamic style bindings
@@ -5742,7 +5744,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         if (patchFlag & 4
         /* STYLE */
         ) {
-          hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG);
+          // fixed by xxxxxx
+          hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG, [], parentComponent);
         } // props
         // This flag is matched when the element has dynamic prop/attr bindings
         // other than class and style. The keys of dynamic prop/attrs are saved for
@@ -5839,7 +5842,8 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
 
       if ('value' in newProps) {
-        hostPatchProp(el, 'value', oldProps.value, newProps.value);
+        // fixed by xxxxxx
+        hostPatchProp(el, 'value', oldProps.value, newProps.value, false, [], parentComponent);
       }
     }
   };
@@ -9329,19 +9333,10 @@ function isMatchParentSelector(parentSelector, el) {
     var item = classArray[i];
     var type = item[item.length - 1];
     var className = item.replace(TYPE_RE, '');
-    var property = PROPERTY_PARENT_NODE;
-    var recurse = true;
 
-    if (type === '>') {
-      recurse = false;
-    } else if (type === '+') {
-      property = PROPERTY_PREVIOUS_SIBLING;
-      recurse = false;
-    } else if (type === '~') {
-      property = PROPERTY_PREVIOUS_SIBLING;
-    }
+    if (type === '~' || type === ' ') {
+      var property = type === '~' ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
 
-    if (recurse) {
       while (el) {
         el = el[property];
 
@@ -9354,7 +9349,11 @@ function isMatchParentSelector(parentSelector, el) {
         return false;
       }
     } else {
-      el = el && el[property];
+      if (type === '>') {
+        el = el && el[PROPERTY_PARENT_NODE];
+      } else if (type === '+') {
+        el = el && el[PROPERTY_PREVIOUS_SIBLING];
+      }
 
       if (!hasClass(className, el)) {
         return false;

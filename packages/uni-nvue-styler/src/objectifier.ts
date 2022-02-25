@@ -68,8 +68,14 @@ function transformSelector(
   if (!res) {
     return
   }
-  let parentSelector = res[1].trim()
-  let curSelector = res[2].trim().substring(1)
+  let parentSelector = res[1]
+  let curSelector = res[2].substring(1)
+  // .a.b => a.b
+  const dotIndex = curSelector.indexOf('.')
+  if (dotIndex > -1) {
+    parentSelector += curSelector.substring(dotIndex)
+    curSelector = curSelector.substring(0, dotIndex)
+  }
 
   const pseudoIndex = curSelector.indexOf(':')
   if (pseudoIndex > -1) {

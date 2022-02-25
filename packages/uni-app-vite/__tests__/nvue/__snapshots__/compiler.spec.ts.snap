@@ -13,6 +13,20 @@ export function render(_ctx, _cache) {
 }"
 `;
 
+exports[`app-nvue: compiler <scroll-view data-id="id" scroll-x="true" :show-scrollbar="true"/> 1`] = `
+"import { openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = {
+  \\"data-id\\": \\"id\\",
+  scrollX: \\"true\\",
+  showScrollbar: true
+}
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"scroll-view\\", _hoisted_1))
+}"
+`;
+
 exports[`app-nvue: compiler <slider/> 1`] = `
 "import { resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \\"vue\\"
 
@@ -62,45 +76,44 @@ export function render(_ctx, _cache) {
 exports[`app-nvue: compiler <view><text>hello</text></view> 1`] = `
 "import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
 
-const _hoisted_1 = [\\"appendAsTree\\"]
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"hello\\", -1 /* HOISTED */)
+const _hoisted_2 = [
+  _hoisted_1
+]
 
 export function render(_ctx, _cache) {
-  return (_openBlock(), _createElementBlock(\\"view\\", null, [
-    _createElementVNode(\\"u-text\\", { appendAsTree: true }, \\"hello\\", 8 /* PROPS */, _hoisted_1)
-  ]))
+  return (_openBlock(), _createElementBlock(\\"view\\", null, _hoisted_2))
 }"
 `;
 
 exports[`app-nvue: compiler <view>hello</view> 1`] = `
 "import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
 
-const _hoisted_1 = [\\"appendAsTree\\"]
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"hello\\", -1 /* HOISTED */)
+const _hoisted_2 = [
+  _hoisted_1
+]
 
 export function render(_ctx, _cache) {
-  return (_openBlock(), _createElementBlock(\\"view\\", null, [
-    _createElementVNode(\\"u-text\\", { appendAsTree: true }, \\"hello\\", 8 /* PROPS */, _hoisted_1)
-  ]))
+  return (_openBlock(), _createElementBlock(\\"view\\", null, _hoisted_2))
 }"
 `;
 
 exports[`app-nvue: compiler <view>hello{{a}}<view>aaa{{a}}</view>{{b}}</view> 1`] = `
 "import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
 
-const _hoisted_1 = [\\"appendAsTree\\"]
-const _hoisted_2 = [\\"appendAsTree\\"]
-const _hoisted_3 = [\\"appendAsTree\\"]
-const _hoisted_4 = [\\"appendAsTree\\"]
-const _hoisted_5 = [\\"appendAsTree\\"]
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"hello\\", -1 /* HOISTED */)
+const _hoisted_2 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"aaa\\", -1 /* HOISTED */)
 
 export function render(_ctx, _cache) {
   return (_openBlock(), _createElementBlock(\\"view\\", null, [
-    _createElementVNode(\\"u-text\\", { appendAsTree: true }, \\"hello\\", 8 /* PROPS */, _hoisted_1),
-    _createElementVNode(\\"u-text\\", { appendAsTree: true }, _toDisplayString(_ctx.a), 9 /* TEXT, PROPS */, _hoisted_2),
+    _hoisted_1,
+    _createElementVNode(\\"u-text\\", null, _toDisplayString(_ctx.a), 1 /* TEXT */),
     _createElementVNode(\\"view\\", null, [
-      _createElementVNode(\\"u-text\\", { appendAsTree: true }, \\"aaa\\", 8 /* PROPS */, _hoisted_3),
-      _createElementVNode(\\"u-text\\", { appendAsTree: true }, _toDisplayString(_ctx.a), 9 /* TEXT, PROPS */, _hoisted_4)
+      _hoisted_2,
+      _createElementVNode(\\"u-text\\", null, _toDisplayString(_ctx.a), 1 /* TEXT */)
     ]),
-    _createElementVNode(\\"u-text\\", { appendAsTree: true }, _toDisplayString(_ctx.b), 9 /* TEXT, PROPS */, _hoisted_5)
+    _createElementVNode(\\"u-text\\", null, _toDisplayString(_ctx.b), 1 /* TEXT */)
   ]))
 }"
 `;

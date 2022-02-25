@@ -12,7 +12,7 @@ export const normalizeLength: Normalize = (v: string | number) => {
 
   if (match) {
     var unit = match[1]
-    if (!unit) {
+    if (!unit || unit === 'px') {
       return { value: parseFloat(v) }
     } else if (SUPPORT_CSS_UNIT.indexOf(unit) > -1) {
       return { value: v }

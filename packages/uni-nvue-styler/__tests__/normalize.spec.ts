@@ -8,7 +8,7 @@ async function objectifierRule(input: string) {
   }
 }
 
-describe('nvue-styler: parse', () => {
+describe('nvue-styler: normalize', () => {
   test('basic', async () => {
     const { json, messages } = await objectifierRule(`.foo{
 color: #FF0000;
@@ -42,11 +42,11 @@ zIndex: 4;
     expect(json).toEqual({
       foo: {
         '': {
-          width: '200px',
+          width: 200,
           paddingLeft: 300,
           borderWidth: '1pt',
           left: 0,
-          right: '0px',
+          right: 0,
           height: '10rpx',
           paddingTop: '11upx',
         },
@@ -463,7 +463,7 @@ zIndex: 4;
         '': {
           color: '#FF0000',
           WebkitTransform: 'rotate(90deg)',
-          width: '200px',
+          width: 200,
         },
       },
     })
