@@ -22776,7 +22776,13 @@
   }
   function setPageReady() {
     isPageReady = true;
-    pageReadyCallbacks.forEach((fn) => fn());
+    pageReadyCallbacks.forEach((fn) => {
+      try {
+        fn();
+      } catch (e2) {
+        console.error(e2);
+      }
+    });
     pageReadyCallbacks.length = 0;
   }
   function onPageCreated() {
@@ -22892,9 +22898,9 @@
         case ACTION_TYPE_PAGE_CREATED:
           return onPageCreated();
         case ACTION_TYPE_CREATE:
-          return createElement(action[1], getDict(action[2]), action[3], action[4], decodeNodeJson(getDict, action[5]));
+          var parentNodeId = action[3];
+          return createElement(action[1], getDict(action[2]), parentNodeId === -1 ? 0 : parentNodeId, action[4], decodeNodeJson(getDict, action[5]));
         case ACTION_TYPE_INSERT:
-          console.log('ACTION_TYPE_INSERT',ACTION_TYPE_INSERT,JSON.stringify(action))
           return $(action[1]).insert(action[2], action[3]);
         case ACTION_TYPE_REMOVE:
           return $(action[1]).remove();
