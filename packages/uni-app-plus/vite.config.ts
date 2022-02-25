@@ -122,7 +122,7 @@ export default defineConfig({
   build: {
     target: 'es2015',
     cssTarget,
-    minify: true,
+    minify: false,
     lib: {
       name: 'uni-app-view',
       fileName: 'uni-app-view',
