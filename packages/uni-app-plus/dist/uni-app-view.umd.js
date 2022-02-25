@@ -12201,7 +12201,10 @@
     setText(text2) {
       this.$.textContent = text2;
     }
-    insert(parentNodeId, refNodeId) {
+    insert(parentNodeId, refNodeId, nodeJson) {
+      if (nodeJson) {
+        this.init(nodeJson, false);
+      }
       var node = this.$;
       var parentNode = $(parentNodeId);
       if (refNodeId === -1) {
@@ -12450,6 +12453,7 @@
       this.insert(parentNodeId, refNodeId);
     }
     init(nodeJson) {
+      var isCreate = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : true;
       if (hasOwn$1(nodeJson, "a")) {
         this.setAttrs(nodeJson.a);
       }
@@ -12463,12 +12467,14 @@
         this.addWxsEvents(nodeJson.w);
       }
       super.init(nodeJson);
-      watch(this.$props, () => {
-        queuePostActionJob(this._update, JOB_PRIORITY_UPDATE);
-      }, {
-        flush: "sync"
-      });
-      this.update(true);
+      if (isCreate) {
+        watch(this.$props, () => {
+          queuePostActionJob(this._update, JOB_PRIORITY_UPDATE);
+        }, {
+          flush: "sync"
+        });
+        this.update(true);
+      }
     }
     setAttrs(attrs2) {
       this.setWxsProps(attrs2);
@@ -22901,7 +22907,7 @@
           var parentNodeId = action[3];
           return createElement(action[1], getDict(action[2]), parentNodeId === -1 ? 0 : parentNodeId, action[4], decodeNodeJson(getDict, action[5]));
         case ACTION_TYPE_INSERT:
-          return $(action[1]).insert(action[2], action[3]);
+          return $(action[1]).insert(action[2], action[3], decodeNodeJson(getDict, action[4]));
         case ACTION_TYPE_REMOVE:
           return $(action[1]).remove();
         case ACTION_TYPE_SET_ATTRIBUTE:

@@ -68,7 +68,11 @@ function onPageUpdateSync(actions: (PageAction | DictAction)[]) {
           decodeNodeJson(getDict, action[5] as UniNodeJSONMinify)
         )
       case ACTION_TYPE_INSERT:
-        return $(action[1]).insert(action[2], action[3])
+        return $(action[1]).insert(
+          action[2],
+          action[3],
+          decodeNodeJson(getDict, action[4] as UniNodeJSONMinify)
+        )
       case ACTION_TYPE_REMOVE:
         return $(action[1]).remove()
       case ACTION_TYPE_SET_ATTRIBUTE:
