@@ -129,7 +129,12 @@ export function initHidpi() {
 
         args[1] *= pixelRatio
         args[2] *= pixelRatio
-        args[3] *= pixelRatio
+        // 因为 canvasCtx.fillText 的第 4 个参数为可选参数，用户可能不传，
+        // 所以在处理时需要判断一下，否则 undefined * pixelRatio => NaN，
+        // 会导致 canvas 无法绘制。
+        if (args.length === 4) {
+          args[3] *= pixelRatio
+        } 
 
         var font = this.font
         this.font = font.replace(
