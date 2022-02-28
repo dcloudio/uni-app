@@ -136,12 +136,20 @@ export default function uniPlugin(
     )
   )
 
-  // 仅在 vue 或 纯原生 App.vue 编译时做 copy
-  if (
-    process.env.UNI_COMPILER === 'vue' ||
-    (process.env.UNI_RENDERER === 'native' &&
-      process.env.UNI_COMPILER_NVUE === 'app')
-  ) {
+  let addCopyPlugin = false
+  if (options.platform !== 'app') {
+    addCopyPlugin = true
+  } else {
+    // 仅在 vue 或 纯原生 App.vue 编译时做 copy
+    if (
+      process.env.UNI_COMPILER === 'vue' ||
+      (process.env.UNI_RENDERER === 'native' &&
+        process.env.UNI_RENDERER_NATIVE === 'appService')
+    ) {
+      addCopyPlugin = true
+    }
+  }
+  if (addCopyPlugin) {
     plugins.push(
       uniCopyPlugin({
         outputDir: process.env.UNI_OUTPUT_DIR,
