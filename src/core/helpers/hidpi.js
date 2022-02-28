@@ -106,6 +106,7 @@ if (pixelRatio !== 1) {
       args[1] *= pixelRatio
       args[2] *= pixelRatio
       args[3] *= pixelRatio
+      typeof args[3] !== 'number' && (args.length = 3)
 
       // Safari 重新设置部分属性会导致其他值恢复默认，需获取原始值
       var font = this.__font__ || this.font
@@ -132,6 +133,7 @@ if (pixelRatio !== 1) {
       args[1] *= pixelRatio // x
       args[2] *= pixelRatio // y
       args[3] *= pixelRatio // y
+      typeof args[3] !== 'number' && (args.length = 3)
 
       // Safari 重新设置部分属性会导致其他值恢复默认，需获取原始值
       var font = this.__font__ || this.font
