@@ -102,6 +102,9 @@ const NVUE_BUILT_IN_TAGS = [
     'marquee',
     'countdown',
     'dc-switch',
+    'waterfall',
+    'richtext',
+    'recycle-list',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
