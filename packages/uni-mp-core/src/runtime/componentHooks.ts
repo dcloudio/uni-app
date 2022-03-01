@@ -1,5 +1,6 @@
 import {
   MINI_PROGRAM_PAGE_RUNTIME_HOOKS,
+  once,
   ON_ADD_TO_FAVORITES,
   ON_HIDE,
   ON_LOAD,
@@ -11,7 +12,7 @@ import {
   ON_TAB_ITEM_TAP,
   ON_UNLOAD,
 } from '@dcloudio/uni-shared'
-import { hasOwn, isFunction } from '@vue/shared'
+import { hasOwn, isArray, isFunction } from '@vue/shared'
 
 import { ComponentOptions } from 'vue'
 
@@ -112,4 +113,29 @@ export function initRuntimeHooks(
       initHook(mpOptions, hook, [])
     }
   })
+}
+
+const findMixinRuntimeHooks = /*#__PURE__*/ once(() => {
+  const runtimeHooks: string[] = []
+  const app = getApp({ allowDefault: true })
+  if (app && app.$vm && app.$vm.$) {
+    const mixins = app.$vm.$.appContext.mixins as ComponentOptions[]
+    if (isArray(mixins)) {
+      const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS)
+      mixins.forEach((mixin) => {
+        hooks.forEach((hook) => {
+          if (hasOwn(mixin, hook) && !runtimeHooks.includes(hook)) {
+            runtimeHooks.push(hook)
+          }
+        })
+      })
+    }
+  }
+  return runtimeHooks
+})
+
+export function initMixinRuntimeHooks(
+  mpOptions: MiniProgramAppOptions | WechatMiniprogram.Component.MethodOption
+) {
+  initHooks(mpOptions, findMixinRuntimeHooks())
 }
