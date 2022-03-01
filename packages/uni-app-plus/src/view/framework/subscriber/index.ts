@@ -11,5 +11,5 @@ export function initSubscribeHandlers() {
 
 // service 主动会发起检测
 function onWebviewReady() {
-  UniViewJSBridge.publishHandler('webviewReady')
+  UniViewJSBridge.publishHandler(ON_WEBVIEW_READY)
 }
