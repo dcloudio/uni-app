@@ -15,16 +15,6 @@ import {
 } from 'uni-mixins'
 import native from '../../mixins/native'
 
-const methods = [
-  'preview',
-  'start',
-  'stop',
-  'pause',
-  'resume',
-  'switchCamera',
-  'snapshot'
-]
-
 const events = [
   'statechange',
   'netstatus',
@@ -34,17 +24,19 @@ const events = [
 const attrs = [
   'url',
   'mode',
-  'muted'
+  'muted',
+  'enableCamera',
+  'autoFocus',
+  'beauty',
+  'whiteness',
+  'aspect',
+  'minBitrate'
 ]
 
 export default {
   name: 'LivePusher',
   mixins: [subscriber, native],
   props: {
-    id: {
-      type: String,
-      default: ''
-    },
     url: {
       type: String,
       default: ''
@@ -56,6 +48,30 @@ export default {
     muted: {
       type: [Boolean, String],
       default: false
+    },
+    enableCamera: {
+      type: [Boolean, String],
+      default: true
+    },
+    autoFocus: {
+      type: [Boolean, String],
+      default: true
+    },
+    beauty: {
+      type: [Number, String],
+      default: 0
+    },
+    whiteness: {
+      type: [Number, String],
+      default: 0
+    },
+    aspect: {
+      type: [String],
+      default: '3:2'
+    },
+    minBitrate: {
+      type: [Number],
+      default: 200
     }
   },
   computed: {
@@ -105,10 +121,7 @@ export default {
       type,
       data = {}
     }) {
-      console.log('_handleSubscribe type::' + type)
-      if (methods.includes(type)) {
-        this.livePusher && this.livePusher[type](data)
-      }
+      this.livePusher && this.livePusher[type](data)
     }
   }
 }
