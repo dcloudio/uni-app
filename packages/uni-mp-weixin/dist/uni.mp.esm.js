@@ -41,6 +41,16 @@ const invokeArrayFns = (fns, arg) => {
     }
     return ret;
 };
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -231,6 +241,27 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
             initHook$1(mpOptions, hook, []);
         }
     });
+}
+const findMixinRuntimeHooks = /*#__PURE__*/ once(() => {
+    const runtimeHooks = [];
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm && app.$vm.$) {
+        const mixins = app.$vm.$.appContext.mixins;
+        if (isArray(mixins)) {
+            const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
+            mixins.forEach((mixin) => {
+                hooks.forEach((hook) => {
+                    if (hasOwn(mixin, hook) && !runtimeHooks.includes(hook)) {
+                        runtimeHooks.push(hook);
+                    }
+                });
+            });
+        }
+    }
+    return runtimeHooks;
+});
+function initMixinRuntimeHooks(mpOptions) {
+    initHooks(mpOptions, findMixinRuntimeHooks());
 }
 
 const HOOKS = [
@@ -703,6 +734,7 @@ function parsePage(vueOptions, parseOptions) {
     initHooks(methods, PAGE_INIT_HOOKS);
     initUnknownHooks(methods, vueOptions);
     initRuntimeHooks(methods, vueOptions.__runtimeHooks);
+    initMixinRuntimeHooks(methods);
     parse && parse(miniProgramPageOptions, { handleLink });
     return miniProgramPageOptions;
 }
