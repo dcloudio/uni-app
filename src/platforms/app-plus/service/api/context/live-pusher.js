@@ -4,7 +4,7 @@ import {
 
 function operateLivePusher (livePusherId, pageVm, type, data) {
   const pageId = pageVm.$page.id
-  UniServiceJSBridge.publishHandler(pageId + '-live-pusher-' + livePusherId, {
+  UniServiceJSBridge.publishHandler(pageId + '-livepusher-' + livePusherId, {
     livePusherId,
     type,
     data
@@ -18,13 +18,21 @@ UniServiceJSBridge.subscribe('onLivePusherMethodCallback', ({
   callback.invoke(callbackId, data)
 })
 
-const methods = ['preview',
+const methods = [
   'start',
   'stop',
   'pause',
   'resume',
   'switchCamera',
-  'snapshot']
+  'startPreview',
+  'stopPreview',
+  'snapshot'
+]
+
+const methodMapping = {
+  startPreview: 'preview',
+  stopPreview: 'stop'
+}
 
 export class LivePusherContext {
   constructor (id, pageVm) {
@@ -43,7 +51,8 @@ export class LivePusherContext {
 methods.forEach(function (method) {
   LivePusherContext.prototype[method] = callback.warp(function (options, callbackId) {
     options.callbackId = callbackId
-    operateLivePusher(this.id, this.pageVm, method, options)
+    const methodName = methodMapping[method] ? methodMapping[method] : method
+    operateLivePusher(this.id, this.pageVm, methodName, options)
   })
 })
 
