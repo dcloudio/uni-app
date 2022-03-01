@@ -22941,7 +22941,7 @@
     subscribe(ON_WEBVIEW_READY, onWebviewReady$1);
   }
   function onWebviewReady$1() {
-    UniViewJSBridge.publishHandler("webviewReady");
+    UniViewJSBridge.publishHandler(ON_WEBVIEW_READY);
   }
   function findElem(vm) {
     {
