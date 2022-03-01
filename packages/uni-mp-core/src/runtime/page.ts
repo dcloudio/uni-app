@@ -12,6 +12,7 @@ import {
   initHooks,
   initUnknownHooks,
   initRuntimeHooks,
+  initMixinRuntimeHooks,
 } from './componentHooks'
 import { initPageProps } from './componentProps'
 
@@ -51,6 +52,7 @@ function parsePage(
   initHooks(methods, PAGE_INIT_HOOKS)
   initUnknownHooks(methods, vueOptions)
   initRuntimeHooks(methods, vueOptions.__runtimeHooks)
+  initMixinRuntimeHooks(methods)
   parse && parse(miniProgramPageOptions, { handleLink })
 
   return miniProgramPageOptions

@@ -13212,7 +13212,9 @@
           var args = Array.prototype.slice.call(arguments);
           args[1] *= pixelRatio;
           args[2] *= pixelRatio;
-          args[3] *= pixelRatio;
+          if (args[3] && typeof args[3] === "number") {
+            args[3] *= pixelRatio;
+          }
           var font2 = this.font;
           this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
@@ -13229,7 +13231,9 @@
           var args = Array.prototype.slice.call(arguments);
           args[1] *= pixelRatio;
           args[2] *= pixelRatio;
-          args[3] *= pixelRatio;
+          if (args[3] && typeof args[3] === "number") {
+            args[3] *= pixelRatio;
+          }
           var font2 = this.font;
           this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
