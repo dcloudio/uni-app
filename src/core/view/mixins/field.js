@@ -71,7 +71,7 @@ export default {
   data () {
     return {
       composing: false,
-      valueSync: this._getValueString(this.value),
+      valueSync: this._getValueString(this.value, this.type),
       focusSync: this.focus,
       // Safari 14 以上修正禁用状态颜色
       fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
@@ -117,7 +117,7 @@ export default {
   },
   created () {
     const valueChange = this.__valueChange = debounce((val) => {
-      this.valueSync = this._getValueString(val)
+      this.valueSync = this._getValueString(val, this.type)
     }, 100)
     this.$watch('value', valueChange)
     this.__triggerInput = throttle(($event, detail) => {
@@ -145,7 +145,10 @@ export default {
     }
   },
   methods: {
-    _getValueString (value) {
+    _getValueString (value, type) {
+      if (type === 'number' && isNaN(Number(value))) {
+        value = ''
+      }
       return value === null ? '' : String(value)
     },
     _initField (el) {
