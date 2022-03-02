@@ -73,6 +73,8 @@ const props = [
   }
 ]
 
+const backgroundEvents = ['prev', 'next']
+
 class BackgroundAudioManager {
   constructor () {
     this._options = {}
@@ -88,6 +90,15 @@ class BackgroundAudioManager {
             errCode
           } : {})
         }
+      })
+    })
+    backgroundEvents.forEach((name) => {
+      onMethod(`onBackgroundAudio${name[0].toUpperCase() + name.substr(1)}`, () => {
+        callbacks[name].forEach(callback => {
+          if (typeof callback === 'function') {
+            callback({})
+          }
+        })
       })
     })
     props.forEach(item => {
