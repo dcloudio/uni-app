@@ -158,9 +158,13 @@ function initMusic() {
     })
   })
   // @ts-ignore
-  audio.addEventListener('prev', () => publish('onBackgroundAudioPrev'))
+  audio.addEventListener('prev', () => {
+    onBackgroundAudioPrev()
+  })
   // @ts-ignore
-  audio.addEventListener('next', () => publish('onBackgroundAudioNext'))
+  audio.addEventListener('next', () => {
+    onBackgroundAudioNext()
+  })
 }
 
 function getBackgroundAudioState() {
@@ -295,6 +299,22 @@ function onBackgroundAudioStateChange({
             }
           : {}
       )
+    }
+  })
+}
+
+function onBackgroundAudioPrev() {
+  callbacks['prev'].forEach((callback) => {
+    if (typeof callback === 'function') {
+      callback({})
+    }
+  })
+}
+
+function onBackgroundAudioNext() {
+  callbacks['next'].forEach((callback) => {
+    if (typeof callback === 'function') {
+      callback({})
     }
   })
 }
