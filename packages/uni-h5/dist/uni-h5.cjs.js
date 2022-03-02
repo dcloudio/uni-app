@@ -2826,7 +2826,10 @@ function getSelectedTextRange(_, resolve) {
 const UniViewJSBridgeSubscribe = function() {
   registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
 };
-function getValueString(value) {
+function getValueString(value, type) {
+  if (type === "number" && isNaN(Number(value))) {
+    value = "";
+  }
   return value === null ? "" : String(value);
 }
 const props$j = /* @__PURE__ */ shared.extend({}, {
@@ -2927,7 +2930,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.modelValue) || getValueString(props2.value);
+  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -2948,7 +2951,7 @@ function useBase(props2, rootRef, emit2) {
 }
 function useValueSync(props2, state, emit2, trigger) {
   const valueChangeFn = uniShared.debounce((val) => {
-    state.value = getValueString(val);
+    state.value = getValueString(val, props2.type);
   }, 100);
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
@@ -3175,6 +3178,11 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
           state2.value = input.value;
           return false;
         }
+      }
+    });
+    vue.watch(() => state.value, (value) => {
+      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
+        cache.value = value;
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
