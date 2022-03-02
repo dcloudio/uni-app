@@ -148,6 +148,11 @@ export default {
     maxlength (value) {
       const realValue = this.valueSync.slice(0, parseInt(value, 10))
       realValue !== this.valueSync && (this.valueSync = realValue)
+    },
+    valueSync (value) {
+      if (this.type === 'number' && !(this.cachedValue === '-' && value === '')) {
+        this.cachedValue = value
+      }
     }
   },
   created () {
