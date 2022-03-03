@@ -15963,10 +15963,14 @@ var serviceContext = (function (vue) {
               errCode: err.code,
           });
       });
-      // @ts-ignore
-      audio.addEventListener('prev', () => publish('onBackgroundAudioPrev'));
-      // @ts-ignore
-      audio.addEventListener('next', () => publish('onBackgroundAudioNext'));
+      // @ts-expect-error
+      audio.addEventListener('prev', () => {
+          onBackgroundAudioStateChange({ state: 'prev' });
+      });
+      // @ts-expect-error
+      audio.addEventListener('next', () => {
+          onBackgroundAudioStateChange({ state: 'next' });
+      });
   }
   function getBackgroundAudioState() {
       let data = {
@@ -16055,7 +16059,7 @@ var serviceContext = (function (vue) {
   }
   function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
       callbacks[state].forEach((callback) => {
-          if (typeof callback === 'function') {
+          if (isFunction(callback)) {
               callback(state === 'error'
                   ? {
                       errMsg,
@@ -17285,7 +17289,10 @@ var serviceContext = (function (vue) {
   }
   function initHooks(options, instance, publicThis) {
       const mpType = options.mpType || publicThis.$mpType;
-      // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
+      if (!mpType) {
+          // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
+          return;
+      }
       Object.keys(options).forEach((name) => {
           if (name.indexOf('on') === 0) {
               const hooks = options[name];
