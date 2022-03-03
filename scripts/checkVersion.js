@@ -13,7 +13,7 @@ const pkgs = {
     latest: '3.2.31',
   },
   'vue-router': {
-    latest: '4.0.12',
+    latest: '4.0.13',
   },
   vuex: {
     latest: '4.0.2',
@@ -22,13 +22,13 @@ const pkgs = {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.8.4',
+    latest: '2.8.6',
   },
   '@vitejs/plugin-vue': {
-    latest: '2.2.2',
+    latest: '2.2.4',
   },
   '@vitejs/plugin-vue-jsx': {
-    latest: '1.3.7',
+    latest: '1.3.8',
   },
   '@vitejs/plugin-legacy': {
     latest: '1.7.1',
