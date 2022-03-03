@@ -1,4 +1,4 @@
-import { extend, capitalize } from '@vue/shared'
+import { extend, capitalize, isFunction } from '@vue/shared'
 import {
   defineSyncApi,
   API_GET_BACKGROUND_AUDIO_MANAGER,
@@ -157,13 +157,13 @@ function initMusic() {
       errCode: err.code,
     })
   })
-  // @ts-ignore
+  // @ts-expect-error
   audio.addEventListener('prev', () => {
-    onBackgroundAudioPrev()
+    onBackgroundAudioStateChange({ state: 'prev' })
   })
-  // @ts-ignore
+  // @ts-expect-error
   audio.addEventListener('next', () => {
-    onBackgroundAudioNext()
+    onBackgroundAudioStateChange({ state: 'next' })
   })
 }
 
@@ -290,7 +290,7 @@ function onBackgroundAudioStateChange({
   dataUrl?: string
 }) {
   callbacks[state].forEach((callback) => {
-    if (typeof callback === 'function') {
+    if (isFunction(callback)) {
       callback(
         state === 'error'
           ? {
@@ -299,22 +299,6 @@ function onBackgroundAudioStateChange({
             }
           : {}
       )
-    }
-  })
-}
-
-function onBackgroundAudioPrev() {
-  callbacks['prev'].forEach((callback) => {
-    if (typeof callback === 'function') {
-      callback({})
-    }
-  })
-}
-
-function onBackgroundAudioNext() {
-  callbacks['next'].forEach((callback) => {
-    if (typeof callback === 'function') {
-      callback({})
     }
   })
 }
