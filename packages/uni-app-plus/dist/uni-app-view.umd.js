@@ -15332,7 +15332,10 @@
   };
   var FOCUS_DELAY = 200;
   var startTime;
-  function getValueString(value) {
+  function getValueString(value, type) {
+    if (type === "number" && isNaN(Number(value))) {
+      value = "";
+    }
     return value === null ? "" : String(value);
   }
   var props$f = /* @__PURE__ */ extend({}, {
@@ -15425,7 +15428,7 @@
       var maxlength2 = Number(props2.maxlength);
       return isNaN(maxlength2) ? 140 : maxlength2;
     });
-    var value = getValueString(props2.modelValue) || getValueString(props2.value);
+    var value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
     var state = reactive({
       value,
       valueOrigin: value,
@@ -15446,7 +15449,7 @@
   }
   function useValueSync(props2, state, emit2, trigger2) {
     var valueChangeFn = debounce((val) => {
-      state.value = getValueString(val);
+      state.value = getValueString(val, props2.type);
     }, 100);
     watch(() => props2.modelValue, valueChangeFn);
     watch(() => props2.value, valueChangeFn);
@@ -15702,6 +15705,11 @@
             state2.value = input2.value;
             return false;
           }
+        }
+      });
+      watch(() => state.value, (value) => {
+        if (props2.type === "number" && !(cache2.value === "-" && value === "")) {
+          cache2.value = value;
         }
       });
       var NUMBER_TYPES = ["number", "digit"];

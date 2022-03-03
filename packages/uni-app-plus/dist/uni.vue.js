@@ -51,7 +51,10 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
     const mpType = options.mpType || publicThis.$mpType;
-    // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
+    if (!mpType) {
+        // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
+        return;
+    }
     Object.keys(options).forEach((name) => {
         if (name.indexOf('on') === 0) {
             const hooks = options[name];
