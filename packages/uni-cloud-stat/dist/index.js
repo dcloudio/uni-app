@@ -8,12 +8,9 @@ const sys = uni.getSystemInfoSync();
 
 // 访问开始即启动小程序，访问结束结分为：进入后台超过5min、在前台无任何操作超过30min、在新的来源打开小程序；
 const STAT_VERSION = '0.0.1';
-const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
-const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif';
 const PAGE_PVER_TIME = 1800;  // 页面在前台无操作结束访问时间 单位s
 const APP_PVER_TIME = 300; // 应用在后台结束访问时间 单位s
 const OPERATING_TIME = 10; // 数据上报时间 单位s
-const DIFF_TIME = 60 * 1000 * 60 * 24;
 
 let pagesData = pagesTitle.pages;
 let titleJsons = {};
@@ -55,30 +52,6 @@ function getUuid() {
 const get_uuid = (statData) => {
   // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
   return sys.deviceId || getUuid()
-};
-
-const get_sgin = (statData) => {
-  let arr = Object.keys(statData);
-  let sortArr = arr.sort();
-  let sgin = {};
-  let sginStr = '';
-  for (var i in sortArr) {
-    sgin[sortArr[i]] = statData[sortArr[i]];
-    sginStr += sortArr[i] + '=' + statData[sortArr[i]] + '&';
-  }
-
-  return {
-    sign: '',
-    options: sginStr.substr(0, sginStr.length - 1),
-  }
-};
-
-const get_encodeURIComponent_options = (statData) => {
-  let data = {};
-  for (let prop in statData) {
-    data[prop] = encodeURIComponent(statData[prop]);
-  }
-  return data
 };
 
 /**
@@ -304,91 +277,6 @@ const calibration = (eventName, options) => {
 
 const get_page_name = (routepath) => {
   return (titleJsons && titleJsons[routepath]) || ''
-};
-
-
-const Report_Data_Time = 'Report_Data_Time';
-const Report_Status = 'Report_Status';
-const is_report_data = () => {
-  return new Promise((resolve, reject) => {
-    let start_time = '';
-    let end_time = new Date().getTime();
-    let diff_time = DIFF_TIME;
-    let report_status = 1;
-    try {
-      start_time = uni.getStorageSync(Report_Data_Time);
-      report_status = uni.getStorageSync(Report_Status);
-    } catch (e) {
-      start_time = '';
-      report_status = 1;
-    }
-
-    if (report_status === '') {
-      requestData(({ enable }) => {
-        uni.setStorageSync(Report_Data_Time, end_time);
-        uni.setStorageSync(Report_Status, enable);
-        if (enable === 1) {
-          resolve();
-        }
-      });
-      return
-    }
-
-    if (report_status === 1) {
-      resolve();
-    }
-
-    if (!start_time) {
-      uni.setStorageSync(Report_Data_Time, end_time);
-      start_time = end_time;
-    }
-
-    if (end_time - start_time > diff_time) {
-      requestData(({ enable }) => {
-        uni.setStorageSync(Report_Data_Time, end_time);
-        uni.setStorageSync(Report_Status, enable);
-      });
-    }
-  })
-};
-
-const requestData = (done) => {
-  const appid = process.env.UNI_APP_ID;
-  let formData = {
-    usv: STAT_VERSION,
-    conf: JSON.stringify({
-      ak: appid,
-    }),
-  };
-  uni.request({
-    url: STAT_URL,
-    method: 'GET',
-    data: formData,
-    success: (res) => {
-      const { data } = res;
-      if (data.ret === 0) {
-        typeof done === 'function' &&
-          done({
-            enable: data.enable,
-          });
-      }
-    },
-    fail: (e) => {
-      let report_status_code = 1;
-      try {
-        report_status_code = uni.getStorageSync(Report_Status);
-      } catch (e) {
-        report_status_code = 1;
-      }
-      if (report_status_code === '') {
-        report_status_code = 1;
-      }
-      typeof done === 'function' &&
-        done({
-          enable: report_status_code,
-        });
-    },
-  });
 };
 
 const dbSet = (name, value) => {
@@ -982,11 +870,6 @@ class Report {
     // 重置队列
     dbRemove('__UNI__STAT__DATA');
 
-    if (data.ut === 'h5') {
-      this.imageRequest(optionsData);
-      return
-    }
-
     // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
     if (get_platform_name() === 'n' && this.statData.p === 'a') {
       setTimeout(() => {
@@ -997,43 +880,25 @@ class Report {
 
     this.sendRequest(optionsData);
   }
-  getIsReportData(){
-  	return is_report_data()
-  }
+
 
   /**
    * 数据上报
    * @param {Object} optionsData 需要上报的数据
    */
   sendRequest(optionsData) {
-    this.getIsReportData().then(() => {
-    	uni.request({
-    		url: STAT_URL,
-    		method: 'POST',
-    		// header: {
-    		//   'content-type': 'application/json' // 默认值
-    		// },
-    		data: optionsData,
-    		success: () => {},
-    		fail: (e) => {
-    			if (++this._retry < 3) {
-    				setTimeout(() => {
-    					this.sendRequest(optionsData);
-    				}, 1000);
-    			}
-    		},
-    	});
-    });
-  }
 
-  /**
-   * h5 请求
-   */
-  imageRequest(data) {
-    this.getIsReportData().then(() => {
-      let image = new Image();
-      let options = get_sgin(get_encodeURIComponent_options(data)).options;
-      image.src = STAT_H5_URL + '?' + options;
+    if (!uniCloud.config) {
+      console.error('当前尚未绑定服务空间.');
+      return
+    }
+    uniCloud.callFunction({
+      name: 'uni-stat-report',
+      data: optionsData,
+      success: (res) => {},
+      fail: (err) => {
+        console.log(err);
+      }
     });
   }
 
@@ -1190,8 +1055,8 @@ function main() {
 	if (process.env.NODE_ENV === 'development') {
 	  uni.report = function(type, options) {};
 	} else {
-    console.log('统计已开启');
-	  const Vue = require('vue'); 
+    console.log('uniCloud统计已开启');
+	  const Vue = require('vue');
 	  (Vue.default || Vue).mixin(lifecycle);
 	  uni.report = function(type, options) {
 	    stat.sendEvent(type, options);
