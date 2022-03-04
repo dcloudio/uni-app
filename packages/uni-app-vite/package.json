@@ -24,7 +24,7 @@
     "@dcloudio/uni-nvue-styler": "0.0.1-nvue3.3040020220301001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220301001",
     "@rollup/pluginutils": "^4.1.2",
-    "@vitejs/plugin-vue": "^2.2.2",
+    "@vitejs/plugin-vue": "^2.2.4",
     "@vue/compiler-dom": "3.2.31",
     "@vue/compiler-sfc": "3.2.31",
     "debug": "^4.3.3",
