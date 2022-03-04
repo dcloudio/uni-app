@@ -49,8 +49,8 @@ function main() {
 	if (process.env.NODE_ENV === 'development') {
 	  uni.report = function(type, options) {};
 	} else {
-    console.log('统计已开启');
-	  const Vue = require('vue'); 
+    console.log('uniCloud统计已开启');
+	  const Vue = require('vue');
 	  (Vue.default || Vue).mixin(lifecycle);
 	  uni.report = function(type, options) {
 	    stat.sendEvent(type, options);
