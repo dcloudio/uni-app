@@ -1,6 +1,9 @@
+const path = require('path')
 const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
-
+const {
+  normalizePath
+} = require('@dcloudio/uni-cli-shared')
 const {
   parseComponents
 } = require('./util')
@@ -107,77 +110,85 @@ module.exports = function (ast, state = {
   components: [],
   options: {}
 }) {
-  babelTraverse(ast, {
-    CallExpression (path) {
-      const callee = path.node.callee
-      const args = path.node.arguments
-      const objExpr = args[0]
-      if (
-        t.isIdentifier(callee) &&
-        callee.name === 'defineComponent' &&
-        args.length === 1 &&
-        t.isObjectExpression(objExpr)
-      ) {
-        handleObjectExpression(objExpr, path, state)
-      }
-    },
-    AssignmentExpression (path) {
-      const leftExpression = path.node.left
-      const rightExpression = path.node.right
+  try {
+    babelTraverse(ast, {
+      CallExpression (path) {
+        const callee = path.node.callee
+        const args = path.node.arguments
+        const objExpr = args[0]
+        if (
+          t.isIdentifier(callee) &&
+          callee.name === 'defineComponent' &&
+          args.length === 1 &&
+          t.isObjectExpression(objExpr)
+        ) {
+          handleObjectExpression(objExpr, path, state)
+        }
+      },
+      AssignmentExpression (path) {
+        const leftExpression = path.node.left
+        const rightExpression = path.node.right
 
-      if ( // global['__wxVueOptions'] = {'van-button':VanButton}
-        t.isMemberExpression(leftExpression) &&
-        t.isObjectExpression(rightExpression) &&
-        leftExpression.object.name === 'global' &&
-        leftExpression.property.value === '__wxVueOptions'
-      ) {
-        handleObjectExpression(rightExpression, path, state)
-      }
+        if ( // global['__wxVueOptions'] = {'van-button':VanButton}
+          t.isMemberExpression(leftExpression) &&
+          t.isObjectExpression(rightExpression) &&
+          leftExpression.object.name === 'global' &&
+          leftExpression.property.value === '__wxVueOptions'
+        ) {
+          handleObjectExpression(rightExpression, path, state)
+        }
 
-      if ( // exports.default.components = Object.assign({'van-button': VanButton}, exports.default.components || {})
-        t.isMemberExpression(leftExpression) &&
-        t.isCallExpression(rightExpression) &&
-        leftExpression.property.name === 'components' &&
-        t.isMemberExpression(leftExpression.object) &&
-        leftExpression.object.object.name === 'exports' &&
-        leftExpression.object.property.name === 'default' &&
-        rightExpression.arguments.length === 2 &&
-        t.isObjectExpression(rightExpression.arguments[0])
-      ) {
-        handleComponentsObjectExpression(rightExpression.arguments[0], path, state, true)
-      }
-    },
-    ExportDefaultDeclaration (path) {
-      const declaration = path.node.declaration
-      if (t.isObjectExpression(declaration)) { // export default {components:{}}
-        handleObjectExpression(declaration, path, state)
-      } else if (t.isIdentifier(declaration)) {
-        handleIdentifier(declaration, path, state)
-      } else if (t.isCallExpression(declaration) &&
-        t.isMemberExpression(declaration.callee) &&
-        declaration.arguments.length === 1) { // export default Vue.extend({components:{}})
-        if (declaration.callee.object.name === 'Vue' && declaration.callee.property.name ===
-          'extend') {
-          const argument = declaration.arguments[0]
-          if (t.isObjectExpression(argument)) {
-            handleObjectExpression(argument, path, state)
-          } else if (t.isIdentifier(argument)) {
-            handleIdentifier(argument, path, state)
+        if ( // exports.default.components = Object.assign({'van-button': VanButton}, exports.default.components || {})
+          t.isMemberExpression(leftExpression) &&
+          t.isCallExpression(rightExpression) &&
+          leftExpression.property.name === 'components' &&
+          t.isMemberExpression(leftExpression.object) &&
+          leftExpression.object.object.name === 'exports' &&
+          leftExpression.object.property.name === 'default' &&
+          rightExpression.arguments.length === 2 &&
+          t.isObjectExpression(rightExpression.arguments[0])
+        ) {
+          handleComponentsObjectExpression(rightExpression.arguments[0], path, state, true)
+        }
+      },
+      ExportDefaultDeclaration (path) {
+        const declaration = path.node.declaration
+        if (t.isObjectExpression(declaration)) { // export default {components:{}}
+          handleObjectExpression(declaration, path, state)
+        } else if (t.isIdentifier(declaration)) {
+          handleIdentifier(declaration, path, state)
+        } else if (t.isCallExpression(declaration) &&
+          t.isMemberExpression(declaration.callee) &&
+          declaration.arguments.length === 1) { // export default Vue.extend({components:{}})
+          if (declaration.callee.object.name === 'Vue' && declaration.callee.property.name ===
+            'extend') {
+            const argument = declaration.arguments[0]
+            if (t.isObjectExpression(argument)) {
+              handleObjectExpression(argument, path, state)
+            } else if (t.isIdentifier(argument)) {
+              handleIdentifier(argument, path, state)
+            }
+          }
+        } else if (t.isClassDeclaration(declaration) &&
+          declaration.decorators &&
+          declaration.decorators.length
+        ) { // export default @Component({components:{}}) class MyComponent extend Vue
+          const componentDecorator = declaration.decorators[0]
+          if (t.isCallExpression(componentDecorator.expression)) {
+            const args = componentDecorator.expression.arguments
+            if (args && args.length && t.isObjectExpression(args[0])) {
+              handleObjectExpression(args[0], path, state)
+            }
           }
         }
-      } else if (t.isClassDeclaration(declaration) &&
-        declaration.decorators &&
-        declaration.decorators.length) { // export default @Component({components:{}}) class MyComponent extend Vue
-        const componentDecorator = declaration.decorators[0]
-        if (t.isCallExpression(componentDecorator.expression)) {
-          const args = componentDecorator.expression.arguments
-          if (args && args.length && t.isObjectExpression(args[0])) {
-            handleObjectExpression(args[0], path, state)
-          }
-        }
       }
+    })
+  } catch (e) {
+    if (state.filename) {
+      console.error('at ' + normalizePath(path.relative(process.env.UNI_INPUT_DIR, state.filename)) + ':1')
     }
-  })
+    throw e
+  }
   return {
     ast,
     state
