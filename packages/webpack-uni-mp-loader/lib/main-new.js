@@ -92,12 +92,15 @@ createPage(Page)
         components
       }
     } = traverse(parser.parse(content, getBabelParserOptions()), {
+      filename: this.resourcePath,
       components: []
     })
 
     const babelLoader = findBabelLoader(this.loaders)
     if (!babelLoader) {
-      throw new Error(uniI18n.__('mpLoader.findFail', { 0: 'babel-loader' }))
+      throw new Error(uniI18n.__('mpLoader.findFail', {
+        0: 'babel-loader'
+      }))
     } else {
       addCreateApp(babelLoader)
     }

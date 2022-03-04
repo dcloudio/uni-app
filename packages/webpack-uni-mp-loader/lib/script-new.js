@@ -83,7 +83,8 @@ module.exports = function (content, map) {
     }
   } = traverse(parser.parse(content, getBabelParserOptions()), {
     type,
-    components: []
+    components: [],
+    filename: this.resourcePath
   })
 
   const callback = this.async()
@@ -126,7 +127,9 @@ module.exports = function (content, map) {
 
     const babelLoader = findBabelLoader(this.loaders)
     if (!babelLoader) {
-      callback(new Error(uniI18n.__('mpLoader.findFail', { 0: 'babel-loader' })), content)
+      callback(new Error(uniI18n.__('mpLoader.findFail', {
+        0: 'babel-loader'
+      })), content)
     } else {
       addDynamicImport(babelLoader, resourcePath, dynamicImports)
 
