@@ -4967,9 +4967,83 @@ var serviceContext = (function () {
       : operateVideoPlayer(videoId, pageVm, type, data);
   }
 
+  class LivePusherContext {
+    constructor (id, ctx) {
+      this.id = id;
+      this.ctx = ctx;
+    }
+
+    start (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
+    }
+
+    stop (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
+    }
+
+    pause (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
+    }
+
+    resume (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
+    }
+
+    switchCamera (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
+    }
+
+    snapshot (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
+    }
+
+    toggleTorch (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
+    }
+
+    playBGM (args) {
+      return invokeVmMethod(this.ctx, 'playBGM', args)
+    }
+
+    stopBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
+    }
+
+    pauseBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
+    }
+
+    resumeBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
+    }
+
+    setBGMVolume (cbs) {
+      return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
+    }
+
+    startPreview (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
+    }
+
+    stopPreview (args) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+    }
+  }
+
+  function createLivePusherContext (id, vm) {
+    if (!vm) {
+      return console.warn('uni.createLivePusherContext: 2 arguments required, but only 1 present')
+    }
+    const elm = findElmById(id, vm);
+    if (!elm) {
+      return console.warn('Can not find `' + id + '`')
+    }
+    return new LivePusherContext(id, elm)
+  }
+
   function operateLivePusher (livePusherId, pageVm, type, data) {
     const pageId = pageVm.$page.id;
-    UniServiceJSBridge.publishHandler(pageId + '-live-pusher-' + livePusherId, {
+    UniServiceJSBridge.publishHandler(pageId + '-livepusher-' + livePusherId, {
       livePusherId,
       type,
       data
@@ -4983,15 +5057,23 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['preview',
+  const methods = [
     'start',
     'stop',
     'pause',
     'resume',
     'switchCamera',
-    'snapshot'];
+    'startPreview',
+    'stopPreview',
+    'snapshot'
+  ];
 
-  class LivePusherContext {
+  const methodMapping = {
+    startPreview: 'preview',
+    stopPreview: 'stop'
+  };
+
+  class LivePusherContext$1 {
     constructor (id, pageVm) {
       this.id = id;
       this.pageVm = pageVm;
@@ -5006,14 +5088,18 @@ var serviceContext = (function () {
   }
 
   methods.forEach(function (method) {
-    LivePusherContext.prototype[method] = callback.warp(function (options, callbackId) {
+    LivePusherContext$1.prototype[method] = callback.warp(function (options, callbackId) {
       options.callbackId = callbackId;
-      operateLivePusher(this.id, this.pageVm, method, options);
+      const methodName = methodMapping[method] ? methodMapping[method] : method;
+      operateLivePusher(this.id, this.pageVm, methodName, options);
     });
   });
 
-  function createLivePusherContext (id, context) {
-    return new LivePusherContext(id, context)
+  function createLivePusherContext$1 (id, context) {
+    if (context.$page.meta.isNVue) {
+      return createLivePusherContext(id, context)
+    }
+    return new LivePusherContext$1(id, context)
   }
 
   const DEVICE_FREQUENCY = 200;
@@ -11786,8 +11872,8 @@ var serviceContext = (function () {
     getBackgroundAudioState: getBackgroundAudioState,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
-    LivePusherContext: LivePusherContext,
-    createLivePusherContext: createLivePusherContext,
+    LivePusherContext: LivePusherContext$1,
+    createLivePusherContext: createLivePusherContext$1,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer,
     onAccelerometerChange: onAccelerometerChange,
@@ -12044,6 +12130,8 @@ var serviceContext = (function () {
     }
   ];
 
+  const backgroundEvents = ['prev', 'next'];
+
   class BackgroundAudioManager {
     constructor () {
       this._options = {};
@@ -12059,6 +12147,15 @@ var serviceContext = (function () {
               errCode
             } : {});
           }
+        });
+      });
+      backgroundEvents.forEach((name) => {
+        onMethod(`onBackgroundAudio${name[0].toUpperCase() + name.substr(1)}`, () => {
+          callbacks$5[name].forEach(callback => {
+            if (typeof callback === 'function') {
+              callback({});
+            }
+          });
         });
       });
       props.forEach(item => {
