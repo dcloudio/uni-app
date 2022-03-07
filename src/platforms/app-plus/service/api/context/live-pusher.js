@@ -1,4 +1,7 @@
 import {
+  createLivePusherContext as createNVueLivePusherContext
+} from 'uni-platforms/app-plus-nvue/service/api/context/live-pusher'
+import {
   callback
 } from 'uni-shared'
 
@@ -57,5 +60,8 @@ methods.forEach(function (method) {
 })
 
 export function createLivePusherContext (id, context) {
+  if (context.$page.meta.isNVue) {
+    return createNVueLivePusherContext(id, context)
+  }
   return new LivePusherContext(id, context)
 }
