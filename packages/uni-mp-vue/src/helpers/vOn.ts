@@ -12,8 +12,6 @@ import {
   ErrorCodes,
   getCurrentInstance,
 } from 'vue'
-// @ts-expect-error
-import { setDelayFlushJobs } from 'vue'
 
 type EventValue = Function | Function[]
 
@@ -77,12 +75,21 @@ function createInvoker(
     if ((e as MPEvent).detail && (e as MPEvent).detail.__args__) {
       args = (e as MPEvent).detail.__args__!
     }
-    callWithAsyncErrorHandling(
-      patchStopImmediatePropagation(e, invoker.value),
-      instance,
-      ErrorCodes.NATIVE_EVENT_HANDLER,
-      args
-    )
+    const eventValue = invoker.value
+    const invoke = () => {
+      callWithAsyncErrorHandling(
+        patchStopImmediatePropagation(e, eventValue),
+        instance,
+        ErrorCodes.NATIVE_EVENT_HANDLER,
+        args
+      )
+    }
+    // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
+    if (bubbles.includes(e.type)) {
+      setTimeout(invoke)
+    } else {
+      invoke()
+    }
   }
   invoker.value = initialValue
   return invoker
@@ -104,10 +111,6 @@ const bubbles = [
 ]
 function patchMPEvent(event: MPEvent) {
   if (event.type && event.target) {
-    // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
-    if (bubbles.includes(event.type)) {
-      setDelayFlushJobs(true)
-    }
     event.preventDefault = NOOP
     event.stopPropagation = NOOP
     event.stopImmediatePropagation = NOOP
