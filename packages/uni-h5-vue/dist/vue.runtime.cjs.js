@@ -3844,7 +3844,14 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
             if (target.type.__reserved) {
                 return;
             }
-            target = target.root;
+            if (target !== target.root) {
+                target = target.root;
+                if (uniShared.isRootImmediateHook(type)) {
+                    // 作用域应该是组件还是页面？目前绑定的是页面
+                    const proxy = target.proxy;
+                    callWithAsyncErrorHandling(hook.bind(proxy), target, type, uniShared.ON_LOAD === type ? [proxy.$page.options] : []);
+                }
+            }
         }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook

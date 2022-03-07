@@ -12,6 +12,8 @@ import {
   ErrorCodes,
   getCurrentInstance,
 } from 'vue'
+// @ts-expect-error
+import { setDelayFlushJobs } from 'vue'
 
 type EventValue = Function | Function[]
 
@@ -85,9 +87,27 @@ function createInvoker(
   invoker.value = initialValue
   return invoker
 }
-
+// 冒泡事件列表
+const bubbles = [
+  'touchstart',
+  'touchmove',
+  'touchcancel',
+  'touchend',
+  'tap',
+  'longpress',
+  'longtap',
+  'transitionend',
+  'animationstart',
+  'animationiteration',
+  'animationend',
+  'touchforcechange',
+]
 function patchMPEvent(event: MPEvent) {
   if (event.type && event.target) {
+    // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
+    if (bubbles.includes(event.type)) {
+      setDelayFlushJobs(true)
+    }
     event.preventDefault = NOOP
     event.stopPropagation = NOOP
     event.stopImmediatePropagation = NOOP

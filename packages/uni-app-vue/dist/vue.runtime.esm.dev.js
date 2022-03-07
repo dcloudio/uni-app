@@ -1,4 +1,4 @@
-import { isRootHook, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, JSON_PROTOCOL } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, JSON_PROTOCOL } from '@dcloudio/uni-shared';
 import { isString, isFunction, isPromise, getGlobalThis, extend, EMPTY_OBJ, isArray, NOOP, remove, isObject, toHandlerKey, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NO, toNumber, invokeArrayFns, hyphenate, isHTMLTag, isSVGTag, hasChanged, isSet, isMap, isPlainObject, isBuiltInDirective, isReservedProp, EMPTY_ARR, makeMap, isModelListener, def, hasOwn, toRawType, isGloballyWhitelisted } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, isProxy, shallowReadonly, proxyRefs, markRaw, computed as computed$1, EffectScope, track, isReadonly, reactive, shallowReactive, trigger } from '@vue/reactivity';
@@ -3278,8 +3278,14 @@ function injectHook(type, hook) {
 
   if (target) {
     // fixed by xxxxxx
-    if (isRootHook(type)) {
+    if (isRootHook(type) && target !== target.root) {
       target = target.root;
+
+      if (isRootImmediateHook(type)) {
+        // 作用域应该是组件还是页面？目前绑定的是页面
+        var proxy = target.proxy;
+        callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
+      }
     }
 
     var {

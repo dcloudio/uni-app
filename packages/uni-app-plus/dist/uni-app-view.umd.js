@@ -17219,7 +17219,7 @@
         slots
       } = _ref;
       var vm = getCurrentInstance();
-      var __scopeId = vm && vm.root.type.__scopeId || "";
+      var __scopeId = vm && vm.vnode.scopeId || "";
       var {
         hovering,
         binding
@@ -18867,7 +18867,7 @@
         if (typeof nodes === "string") {
           nodes = parseHtml(nodes);
         }
-        var nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm && vm.root.type).__scopeId || "", hasItemClick && triggerItemClick);
+        var nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
         rootRef.value.firstElementChild.innerHTML = "";
         rootRef.value.firstElementChild.appendChild(nodeList);
       }

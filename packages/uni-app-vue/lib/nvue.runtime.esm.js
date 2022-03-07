@@ -2,6 +2,7 @@ import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend, 
 export { camelize, capitalize, hyphenate, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, reactive, shallowReactive, trigger, isProxy, shallowReadonly, track, EffectScope, markRaw, proxyRefs, computed as computed$1, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
+import { isRootHook, isRootImmediateHook, ON_LOAD } from '@dcloudio/uni-shared';
 
 const stack = [];
 function pushWarningContext(vnode) {
@@ -2649,6 +2650,15 @@ function getInnerChild(vnode) {
 
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
+        // fixed by xxxxxx
+        if (isRootHook(type) && target !== target.root) {
+            target = target.root;
+            if (isRootImmediateHook(type)) {
+                // 作用域应该是组件还是页面？目前绑定的是页面
+                const proxy = target.proxy;
+                callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
+            }
+        }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook
         // can be properly deduped by the scheduler. "__weh" stands for "with error

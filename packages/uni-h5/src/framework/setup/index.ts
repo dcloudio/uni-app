@@ -88,9 +88,11 @@ export function setupPage(comp: any) {
       instance.root = instance // 组件 root 指向页面
       const route = usePageRoute()
       // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
-      instance.attrs.__pageQuery = decodedQuery(route.query)
+      const query = decodedQuery(route.query)
+      instance.attrs.__pageQuery = query
+      instance.proxy!.$page.options = query
       if (__NODE_JS__) {
-        return instance.attrs.__pageQuery as Record<string, unknown>
+        return query
       }
       const pageMeta = usePageMeta()
       onBeforeMount(() => {
@@ -122,7 +124,7 @@ export function setupPage(comp: any) {
         unsubscribeViewMethod(pageMeta.id!)
       })
 
-      return route.query
+      return query
     },
   })
 }

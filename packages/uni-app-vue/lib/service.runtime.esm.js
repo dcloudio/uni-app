@@ -1,4 +1,4 @@
-import { isRootHook, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL, forcePatchProp } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL, forcePatchProp } from '@dcloudio/uni-shared';
 import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, hasOwn, isModelListener, hasChanged, remove, isObject, isSet, isMap, isPlainObject, invokeArrayFns, def, isReservedProp, EMPTY_ARR, capitalize, toRawType, makeMap, isBuiltInDirective, NO, normalizeClass, normalizeStyle, isGloballyWhitelisted, isHTMLTag, isSVGTag } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, reactive, shallowReactive, trigger, isProxy, shallowReadonly, track, EffectScope, markRaw, proxyRefs, computed as computed$1, isReadonly } from '@vue/reactivity';
@@ -2663,8 +2663,13 @@ function getInnerChild(vnode) {
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
         // fixed by xxxxxx
-        if (isRootHook(type)) {
+        if (isRootHook(type) && target !== target.root) {
             target = target.root;
+            if (isRootImmediateHook(type)) {
+                // 作用域应该是组件还是页面？目前绑定的是页面
+                const proxy = target.proxy;
+                callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
+            }
         }
         const { __page_container__ } = target.root.vnode;
         // 仅限 App 端
