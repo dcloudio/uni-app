@@ -12,7 +12,7 @@
     "@dcloudio/uni-app": "../../uni-app",
     "@dcloudio/uni-components": "../../uni-components",
     "@dcloudio/uni-h5": "../../uni-h5",
-    "vue": "3.2.26",
+    "vue": "3.2.31",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   },
@@ -21,6 +21,6 @@
     "compression": "^1.7.4",
     "cypress": "^7.3.0",
     "serve-static": "^1.14.1",
-    "vite": "^2.7.10"
+    "vite": "^2.8.4"
   }
 }

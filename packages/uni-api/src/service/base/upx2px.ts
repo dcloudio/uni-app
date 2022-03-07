@@ -11,6 +11,8 @@ const BASE_DEVICE_WIDTH = 750
 let isIOS = false
 let deviceWidth = 0
 let deviceDPR = 0
+let maxWidth = 960
+let baseWidth = 375
 
 function checkDeviceWidth() {
   const { platform, pixelRatio, windowWidth } = getBaseSystemInfo()
@@ -24,6 +26,13 @@ function checkValue(value: unknown, defaultValue: number) {
   return isNaN(newValue) ? defaultValue : newValue
 }
 
+function checkMaxWidth() {
+  const config = __uniConfig.globalStyle || {}
+  // ignore rpxCalcIncludeWidth
+  maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960)
+  baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375)
+}
+
 export const upx2px = defineSyncApi<API_TYPE_UPX2PX>(
   API_UPX2PX,
   (number, newDeviceWidth?: number) => {
@@ -33,6 +42,9 @@ export const upx2px = defineSyncApi<API_TYPE_UPX2PX>(
     }
     if (deviceWidth === 0) {
       checkDeviceWidth()
+      if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
+        checkMaxWidth()
+      }
     }
 
     number = Number(number)
@@ -41,10 +53,6 @@ export const upx2px = defineSyncApi<API_TYPE_UPX2PX>(
     }
     let width = newDeviceWidth || deviceWidth
     if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
-      const config = __uniConfig.globalStyle || {}
-      // ignore rpxCalcIncludeWidth
-      const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960)
-      const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375)
       width = width <= maxWidth ? width : baseWidth
     }
     let result = (number / BASE_DEVICE_WIDTH) * width

@@ -106,6 +106,12 @@ var serviceContext = (function (vue) {
       : {};
   (process.env.NODE_ENV !== 'production') ? Object.freeze([]) : [];
   const extend = Object.assign;
+  const remove = (arr, el) => {
+      const i = arr.indexOf(el);
+      if (i > -1) {
+          arr.splice(i, 1);
+      }
+  };
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
   const isArray$1 = Array.isArray;
@@ -212,6 +218,67 @@ var serviceContext = (function (vue) {
         .join(' ')}`;
   }
 
+  function cache(fn) {
+      const cache = Object.create(null);
+      return (str) => {
+          const hit = cache[str];
+          return hit || (cache[str] = fn(str));
+      };
+  }
+  function cacheStringFunction(fn) {
+      return cache(fn);
+  }
+  function getLen(str = '') {
+      return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
+  }
+  function hasLeadingSlash(str) {
+      return str.indexOf('/') === 0;
+  }
+  function addLeadingSlash(str) {
+      return hasLeadingSlash(str) ? str : '/' + str;
+  }
+  function removeLeadingSlash(str) {
+      return hasLeadingSlash(str) ? str.substr(1) : str;
+  }
+  const invokeArrayFns = (fns, arg) => {
+      let ret;
+      for (let i = 0; i < fns.length; i++) {
+          ret = fns[i](arg);
+      }
+      return ret;
+  };
+  function once(fn, ctx = null) {
+      let res;
+      return ((...args) => {
+          if (fn) {
+              res = fn.apply(ctx, args);
+              fn = null;
+          }
+          return res;
+      });
+  }
+  function callOptions(options, data) {
+      options = options || {};
+      if (typeof data === 'string') {
+          data = {
+              errMsg: data,
+          };
+      }
+      if (/:ok$/.test(data.errMsg)) {
+          if (typeof options.success === 'function') {
+              options.success(data);
+          }
+      }
+      else {
+          if (typeof options.fail === 'function') {
+              options.fail(data);
+          }
+      }
+      if (typeof options.complete === 'function') {
+          options.complete(data);
+      }
+  }
+
   const encode$2 = encodeURIComponent;
   function stringifyQuery$1(obj, encodeStr = encode$2) {
       const res = obj
@@ -289,6 +356,18 @@ var serviceContext = (function (vue) {
           path,
           query: parseQuery(querystring || ''),
       };
+  }
+
+  function parseNVueDataset(attr) {
+      const dataset = {};
+      if (attr) {
+          Object.keys(attr).forEach((key) => {
+              if (key.indexOf('data-') === 0) {
+                  dataset[key.replace('data-', '')] = attr[key];
+              }
+          });
+      }
+      return dataset;
   }
 
   class DOMException extends Error {
@@ -533,67 +612,6 @@ var serviceContext = (function (vue) {
   const ACTION_TYPE_PAGE_SCROLL = 15;
   const ACTION_TYPE_EVENT = 20;
 
-  function cache(fn) {
-      const cache = Object.create(null);
-      return (str) => {
-          const hit = cache[str];
-          return hit || (cache[str] = fn(str));
-      };
-  }
-  function cacheStringFunction(fn) {
-      return cache(fn);
-  }
-  function getLen(str = '') {
-      return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
-  }
-  function hasLeadingSlash(str) {
-      return str.indexOf('/') === 0;
-  }
-  function addLeadingSlash(str) {
-      return hasLeadingSlash(str) ? str : '/' + str;
-  }
-  function removeLeadingSlash(str) {
-      return hasLeadingSlash(str) ? str.substr(1) : str;
-  }
-  const invokeArrayFns = (fns, arg) => {
-      let ret;
-      for (let i = 0; i < fns.length; i++) {
-          ret = fns[i](arg);
-      }
-      return ret;
-  };
-  function once(fn, ctx = null) {
-      let res;
-      return ((...args) => {
-          if (fn) {
-              res = fn.apply(ctx, args);
-              fn = null;
-          }
-          return res;
-      });
-  }
-  function callOptions(options, data) {
-      options = options || {};
-      if (typeof data === 'string') {
-          data = {
-              errMsg: data,
-          };
-      }
-      if (/:ok$/.test(data.errMsg)) {
-          if (typeof options.success === 'function') {
-              options.success(data);
-          }
-      }
-      else {
-          if (typeof options.fail === 'function') {
-              options.fail(data);
-          }
-      }
-      if (typeof options.complete === 'function') {
-          options.complete(data);
-      }
-  }
-
   function debounce(fn, delay) {
       let timeout;
       const newFn = function () {
@@ -695,6 +713,75 @@ var serviceContext = (function (vue) {
       ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
       ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
   ];
+
+  let vueApp$1;
+  const createVueAppHooks = [];
+  /**
+   * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+   * @param hook
+   */
+  function onCreateVueApp(hook) {
+      // TODO 每个 nvue 页面都会触发
+      if (vueApp$1) {
+          return hook(vueApp$1);
+      }
+      createVueAppHooks.push(hook);
+  }
+  function invokeCreateVueAppHook(app) {
+      vueApp$1 = app;
+      createVueAppHooks.forEach((hook) => hook(app));
+  }
+
+  const E = function () {
+      // Keep this empty so it's easier to inherit from
+      // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+  };
+  E.prototype = {
+      on: function (name, callback, ctx) {
+          var e = this.e || (this.e = {});
+          (e[name] || (e[name] = [])).push({
+              fn: callback,
+              ctx: ctx,
+          });
+          return this;
+      },
+      once: function (name, callback, ctx) {
+          var self = this;
+          function listener() {
+              self.off(name, listener);
+              callback.apply(ctx, arguments);
+          }
+          listener._ = callback;
+          return this.on(name, listener, ctx);
+      },
+      emit: function (name) {
+          var data = [].slice.call(arguments, 1);
+          var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+          var i = 0;
+          var len = evtArr.length;
+          for (i; i < len; i++) {
+              evtArr[i].fn.apply(evtArr[i].ctx, data);
+          }
+          return this;
+      },
+      off: function (name, callback) {
+          var e = this.e || (this.e = {});
+          var evts = e[name];
+          var liveEvents = [];
+          if (evts && callback) {
+              for (var i = 0, len = evts.length; i < len; i++) {
+                  if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+                      liveEvents.push(evts[i]);
+              }
+          }
+          // Remove event from queue to prevent memory leak
+          // Suggested by https://github.com/lazd
+          // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+          liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+          return this;
+      },
+  };
+  var E$1 = E;
 
   const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
   const CHOOSE_SOURCE_TYPES = ['album', 'camera'];
@@ -1276,7 +1363,15 @@ var serviceContext = (function (vue) {
       };
   }
 
-  function requestComponentInfo(page, reqs, callback) {
+  function requestComponentInfo(pageVm, reqs, callback) {
+      if (pageVm.$page.meta.isNVue) {
+          requestNVueComponentInfo(pageVm, reqs, callback);
+      }
+      else {
+          requestVueComponentInfo(pageVm, reqs, callback);
+      }
+  }
+  function requestVueComponentInfo(pageVm, reqs, callback) {
       UniServiceJSBridge.invokeViewMethod('requestComponentInfo', {
           reqs: reqs.map((req) => {
               if (req.component) {
@@ -1284,7 +1379,65 @@ var serviceContext = (function (vue) {
               }
               return req;
           }),
-      }, page.$page.id, callback);
+      }, pageVm.$page.id, callback);
+  }
+  function requestNVueComponentInfo(pageVm, reqs, callback) {
+      const ids = findNVueElementIds(reqs);
+      const nvueElementInfos = new Array(ids.length);
+      findNVueElementInfos(ids, pageVm.$el, nvueElementInfos);
+      findComponentRectAll(pageVm.$requireNativePlugin('dom'), nvueElementInfos, 0, [], (result) => {
+          callback(result);
+      });
+  }
+  function findNVueElementIds(reqs) {
+      const ids = [];
+      for (let i = 0; i < reqs.length; i++) {
+          const selector = reqs[i].selector;
+          if (selector.indexOf('#') === 0) {
+              ids.push(selector.substring(1));
+          }
+      }
+      return ids;
+  }
+  function findNVueElementInfos(ids, elm, infos) {
+      const nodes = elm.children;
+      if (!isArray$1(nodes)) {
+          return false;
+      }
+      for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          if (node.attr) {
+              const index = ids.indexOf(node.attr.id);
+              if (index >= 0) {
+                  infos[index] = {
+                      id: ids[index],
+                      ref: node.ref,
+                      dataset: parseNVueDataset(node.attr),
+                  };
+                  if (ids.length === 1) {
+                      break;
+                  }
+              }
+          }
+          if (node.children) {
+              findNVueElementInfos(ids, node, infos);
+          }
+      }
+  }
+  function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
+      const attr = nvueElementInfos[index];
+      dom.getComponentRect(attr.ref, (option) => {
+          option.size.id = attr.id;
+          option.size.dataset = attr.dataset;
+          result.push(option.size);
+          index += 1;
+          if (index < nvueElementInfos.length) {
+              findComponentRectAll(dom, nvueElementInfos, index, result, callback);
+          }
+          else {
+              callback(result);
+          }
+      });
   }
 
   function setCurrentPageMeta(page, options) {
@@ -1625,7 +1778,7 @@ var serviceContext = (function (vue) {
       return value.indexOf(delimiters[0]) > -1;
   }
 
-  const isEnableLocale = once(() => typeof __uniConfig !== 'undefined' &&
+  const isEnableLocale = /*#__PURE__*/ once(() => typeof __uniConfig !== 'undefined' &&
       __uniConfig.locales &&
       !!Object.keys(__uniConfig.locales).length);
 
@@ -1965,61 +2118,8 @@ var serviceContext = (function (vue) {
       }
   }
 
-  const E = function () {
-      // Keep this empty so it's easier to inherit from
-      // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-  };
-  E.prototype = {
-      on: function (name, callback, ctx) {
-          var e = this.e || (this.e = {});
-          (e[name] || (e[name] = [])).push({
-              fn: callback,
-              ctx: ctx,
-          });
-          return this;
-      },
-      once: function (name, callback, ctx) {
-          var self = this;
-          function listener() {
-              self.off(name, listener);
-              callback.apply(ctx, arguments);
-          }
-          listener._ = callback;
-          return this.on(name, listener, ctx);
-      },
-      emit: function (name) {
-          var data = [].slice.call(arguments, 1);
-          var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-          var i = 0;
-          var len = evtArr.length;
-          for (i; i < len; i++) {
-              evtArr[i].fn.apply(evtArr[i].ctx, data);
-          }
-          return this;
-      },
-      off: function (name, callback) {
-          var e = this.e || (this.e = {});
-          var evts = e[name];
-          var liveEvents = [];
-          if (evts && callback) {
-              for (var i = 0, len = evts.length; i < len; i++) {
-                  if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-                      liveEvents.push(evts[i]);
-              }
-          }
-          // Remove event from queue to prevent memory leak
-          // Suggested by https://github.com/lazd
-          // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-          liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-          return this;
-      },
-  };
-  var Emitter = E;
-
-  // TODO 等待 vue3 的兼容模式自带emitter
   function initBridge(subscribeNamespace) {
-      // TODO vue3 compatibility builds
-      const emitter = new Emitter();
+      const emitter = new E$1();
       return {
           on(event, callback) {
               return emitter.on(event, callback);
@@ -2156,6 +2256,15 @@ var serviceContext = (function (vue) {
       };
   }
 
+  function removeHook(vm, name, hook) {
+      const hooks = vm.$[name];
+      if (!isArray$1(hooks)) {
+          return;
+      }
+      if (hook.__weh) {
+          remove(hooks, hook.__weh);
+      }
+  }
   function invokeHook(vm, name, args) {
       if (isString(vm)) {
           args = name;
@@ -2227,6 +2336,133 @@ var serviceContext = (function (vue) {
       }
   }
 
+  let plus_;
+  let weex_;
+  let BroadcastChannel_;
+  function getRuntime() {
+      return typeof window === 'object' &&
+          typeof navigator === 'object' &&
+          typeof document === 'object'
+          ? 'webview'
+          : 'v8';
+  }
+  function getPageId() {
+      return plus_.webview.currentWebview().id;
+  }
+  let channel;
+  let globalEvent$1;
+  const callbacks$2 = {};
+  function onPlusMessage$1(res) {
+      const message = res.data && res.data.__message;
+      if (!message || !message.__page) {
+          return;
+      }
+      const pageId = message.__page;
+      const callback = callbacks$2[pageId];
+      callback && callback(message);
+      if (!message.keep) {
+          delete callbacks$2[pageId];
+      }
+  }
+  function addEventListener(pageId, callback) {
+      if (getRuntime() === 'v8') {
+          if (BroadcastChannel_) {
+              channel && channel.close();
+              channel = new BroadcastChannel_(getPageId());
+              channel.onmessage = onPlusMessage$1;
+          }
+          else if (!globalEvent$1) {
+              globalEvent$1 = weex_.requireModule('globalEvent');
+              globalEvent$1.addEventListener('plusMessage', onPlusMessage$1);
+          }
+      }
+      else {
+          // @ts-ignore
+          window.__plusMessage = onPlusMessage$1;
+      }
+      callbacks$2[pageId] = callback;
+  }
+  class Page {
+      constructor(webview) {
+          this.webview = webview;
+      }
+      sendMessage(data) {
+          const message = JSON.parse(JSON.stringify({
+              __message: {
+                  data,
+              },
+          }));
+          const id = this.webview.id;
+          if (BroadcastChannel_) {
+              const channel = new BroadcastChannel_(id);
+              channel.postMessage(message);
+          }
+          else {
+              plus_.webview.postMessageToUniNView &&
+                  plus_.webview.postMessageToUniNView(message, id);
+          }
+      }
+      close() {
+          this.webview.close();
+      }
+  }
+  function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
+      // eslint-disable-next-line
+      plus_ = context.plus || plus;
+      // eslint-disable-next-line
+      weex_ = context.weex || (typeof weex === 'object' ? weex : null);
+      // eslint-disable-next-line
+      BroadcastChannel_ =
+          context.BroadcastChannel ||
+              (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
+      const titleNView = {
+          autoBackButton: true,
+          titleSize: '17px',
+      };
+      const pageId = `page${Date.now()}`;
+      style = extend({}, style);
+      if (style.titleNView !== false && style.titleNView !== 'none') {
+          style.titleNView = extend(titleNView, style.titleNView);
+      }
+      const defaultStyle = {
+          top: 0,
+          bottom: 0,
+          usingComponents: {},
+          popGesture: 'close',
+          scrollIndicator: 'none',
+          animationType: 'pop-in',
+          animationDuration: 200,
+          uniNView: {
+              path: `${(typeof process === 'object' &&
+                process.env &&
+                process.env.VUE_APP_TEMPLATE_PATH) ||
+                ''}/${url}.js`,
+              defaultFontSize: 16,
+              viewport: plus_.screen.resolutionWidth,
+          },
+      };
+      style = extend(defaultStyle, style);
+      const page = plus_.webview.create('', pageId, style, {
+          extras: {
+              from: getPageId(),
+              runtime: getRuntime(),
+              data,
+              useGlobalEvent: !BroadcastChannel_,
+          },
+      });
+      page.addEventListener('close', onClose);
+      addEventListener(pageId, (message) => {
+          if (typeof onMessage === 'function') {
+              onMessage(message.data);
+          }
+          if (!message.keep) {
+              page.close('auto');
+          }
+      });
+      page.show(style.animationType, style.animationDuration);
+      return new Page(page);
+  }
+
   const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
 
   let invokeViewMethodId = 1;
@@ -2273,7 +2509,8 @@ var serviceContext = (function (vue) {
       }
   }
 
-  const ServiceJSBridge = /*#__PURE__*/ extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
+  const ServiceJSBridge = /*#__PURE__*/ extend(
+  /*#__PURE__*/ initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
       invokeOnCallback,
       invokeViewMethod,
       invokeViewMethodKeepAlive,
@@ -2671,6 +2908,9 @@ var serviceContext = (function (vue) {
       openMapApp(ctx, args) {
           return invokeVmMethod(ctx, 'openMapApp', args);
       },
+      on(ctx, args) {
+          return ctx.on(args.name, args.callback);
+      },
   };
   function operateMap(id, pageId, type, data, operateMapCallback) {
       const page = getCurrentPages().find((page) => page.$page.id === pageId);
@@ -2761,10 +3001,10 @@ var serviceContext = (function (vue) {
   const enterOptions = createLaunchOptions();
   const launchOptions = createLaunchOptions();
   function getLaunchOptions() {
-      return launchOptions;
+      return extend({}, launchOptions);
   }
   function getEnterOptions() {
-      return enterOptions;
+      return extend({}, enterOptions);
   }
   function initEnterOptions({ path, query, referrerInfo, }) {
       extend(enterOptions, {
@@ -2780,7 +3020,7 @@ var serviceContext = (function (vue) {
           referrerInfo: referrerInfo || {},
       });
       extend(enterOptions, launchOptions);
-      return launchOptions;
+      return extend({}, launchOptions);
   }
   function parseRedirectInfo() {
       const weexPlus = weex.requireModule('plus');
@@ -9652,6 +9892,8 @@ var serviceContext = (function (vue) {
   let isIOS$1 = false;
   let deviceWidth = 0;
   let deviceDPR = 0;
+  let maxWidth = 960;
+  let baseWidth = 375;
   function checkDeviceWidth() {
       const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
       deviceWidth = windowWidth;
@@ -9662,9 +9904,18 @@ var serviceContext = (function (vue) {
       const newValue = Number(value);
       return isNaN(newValue) ? defaultValue : newValue;
   }
+  function checkMaxWidth() {
+      const config = __uniConfig.globalStyle || {};
+      // ignore rpxCalcIncludeWidth
+      maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+      baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+  }
   const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
       if (deviceWidth === 0) {
           checkDeviceWidth();
+          {
+              checkMaxWidth();
+          }
       }
       number = Number(number);
       if (number === 0) {
@@ -9672,10 +9923,6 @@ var serviceContext = (function (vue) {
       }
       let width = newDeviceWidth || deviceWidth;
       {
-          const config = __uniConfig.globalStyle || {};
-          // ignore rpxCalcIncludeWidth
-          const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
-          const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
           width = width <= maxWidth ? width : baseWidth;
       }
       let result = (number / BASE_DEVICE_WIDTH) * width;
@@ -9716,9 +9963,11 @@ var serviceContext = (function (vue) {
       if (!interceptors || !interceptor) {
           return;
       }
-      Object.keys(interceptor).forEach((hook) => {
-          if (isFunction(interceptor[hook])) {
-              removeHook(interceptors[hook], interceptor[hook]);
+      Object.keys(interceptor).forEach((name) => {
+          const hooks = interceptors[name];
+          const hook = interceptor[name];
+          if (isArray$1(hooks) && isFunction(hook)) {
+              remove(hooks, hook);
           }
       });
   }
@@ -9740,15 +9989,6 @@ var serviceContext = (function (vue) {
           }
       }
       return res;
-  }
-  function removeHook(hooks, hook) {
-      if (!hooks) {
-          return;
-      }
-      const index = hooks.indexOf(hook);
-      if (index !== -1) {
-          hooks.splice(index, 1);
-      }
   }
   const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
       if (typeof method === 'string' && isPlainObject(interceptor)) {
@@ -9808,7 +10048,7 @@ var serviceContext = (function (vue) {
       },
   ];
 
-  const emitter = new Emitter();
+  const emitter = new E$1();
   const $on = defineSyncApi(API_ON, (name, callback) => {
       emitter.on(name, callback);
       return () => emitter.off(name, callback);
@@ -9956,16 +10196,39 @@ var serviceContext = (function (vue) {
               return plus.maps.getMapById(this.pageId + '-map-' + this.id);
           }
       }
-      addCustomLayer() { }
-      removeCustomLayer() { }
-      addGroundOverlay() { }
-      removeGroundOverlay() { }
-      updateGroundOverlay() { }
-      initMarkerCluster() { }
-      addMarkers() { }
-      removeMarkers() { }
-      moveAlong() { }
-      openMapApp() { }
+      addCustomLayer(options) {
+          operateMapWrap(this.id, this.pageId, 'addCustomLayer', options);
+      }
+      removeCustomLayer(options) {
+          operateMapWrap(this.id, this.pageId, 'removeCustomLayer', options);
+      }
+      addGroundOverlay(options) {
+          operateMapWrap(this.id, this.pageId, 'addGroundOverlay', options);
+      }
+      removeGroundOverlay(options) {
+          operateMapWrap(this.id, this.pageId, 'removeGroundOverlay', options);
+      }
+      updateGroundOverlay(options) {
+          operateMapWrap(this.id, this.pageId, 'updateGroundOverlay', options);
+      }
+      initMarkerCluster(options) {
+          operateMapWrap(this.id, this.pageId, 'initMarkerCluster', options);
+      }
+      addMarkers(options) {
+          operateMapWrap(this.id, this.pageId, 'addMarkers', options);
+      }
+      removeMarkers(options) {
+          operateMapWrap(this.id, this.pageId, 'removeMarkers', options);
+      }
+      moveAlong(options) {
+          operateMapWrap(this.id, this.pageId, 'moveAlong', options);
+      }
+      openMapApp(options) {
+          operateMapWrap(this.id, this.pageId, 'openMapApp', options);
+      }
+      on(options) {
+          operateMapWrap(this.id, this.pageId, 'on', options);
+      }
   }
   const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
       if (context) {
@@ -11482,18 +11745,63 @@ var serviceContext = (function (vue) {
       });
   });
 
-  const appLaunchHooks = [];
-  function onAppLaunch(hook) {
+  const appHooks = {
+      [ON_UNHANDLE_REJECTION]: [],
+      [ON_PAGE_NOT_FOUND]: [],
+      [ON_ERROR]: [],
+      [ON_SHOW]: [],
+      [ON_HIDE]: [],
+  };
+  function onAppHook(type, hook) {
       const app = getApp({ allowDefault: true });
       if (app && app.$vm) {
-          return vue.injectHook(ON_LAUNCH, hook, app.$vm.$);
+          return vue.injectHook(type, hook, app.$vm.$);
       }
-      appLaunchHooks.push(hook);
+      appHooks[type].push(hook);
   }
-  function injectAppLaunchHooks(appInstance) {
-      appLaunchHooks.forEach((hook) => {
-          vue.injectHook(ON_LAUNCH, hook, appInstance);
+  function injectAppHooks(appInstance) {
+      Object.keys(appHooks).forEach((type) => {
+          appHooks[type].forEach((hook) => {
+              vue.injectHook(type, hook, appInstance);
+          });
       });
+  }
+  function offAppHook(type, hook) {
+      const app = getApp({ allowDefault: true });
+      if (app && app.$vm) {
+          return removeHook(app.$vm, type, hook);
+      }
+      remove(appHooks[type], hook);
+  }
+  function onUnhandledRejection(hook) {
+      onAppHook(ON_UNHANDLE_REJECTION, hook);
+  }
+  function offUnhandledRejection(hook) {
+      offAppHook(ON_UNHANDLE_REJECTION, hook);
+  }
+  function onPageNotFound(hook) {
+      onAppHook(ON_PAGE_NOT_FOUND, hook);
+  }
+  function offPageNotFound(hook) {
+      offAppHook(ON_PAGE_NOT_FOUND, hook);
+  }
+  function onError(hook) {
+      onAppHook(ON_ERROR, hook);
+  }
+  function offError(hook) {
+      offAppHook(ON_ERROR, hook);
+  }
+  function onAppShow(hook) {
+      onAppHook(ON_SHOW, hook);
+  }
+  function offAppShow(hook) {
+      offAppHook(ON_SHOW, hook);
+  }
+  function onAppHide(hook) {
+      onAppHook(ON_HIDE, hook);
+  }
+  function offAppHide(hook) {
+      offAppHook(ON_HIDE, hook);
   }
   const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
   const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
@@ -11504,6 +11812,72 @@ var serviceContext = (function (vue) {
       return getLaunchOptions();
   });
 
+  let cid = '';
+  /**
+   * @private
+   * @param args
+   */
+  function invokePushCallback(args) {
+      if (args.type === 'clientId') {
+          cid = args.cid;
+          invokeGetPushCidCallbacks(cid);
+      }
+      else if (args.type === 'pushMsg') {
+          onPushMessageCallbacks.forEach((callback) => {
+              callback({ data: args.message });
+          });
+      }
+  }
+  const getPushCidCallbacks = [];
+  function invokeGetPushCidCallbacks(cid) {
+      getPushCidCallbacks.forEach((callback) => {
+          callback(cid);
+      });
+      getPushCidCallbacks.length = 0;
+  }
+  function getPushCid(args) {
+      if (!isPlainObject(args)) {
+          args = {};
+      }
+      const { success, fail, complete } = getApiCallbacks(args);
+      const hasSuccess = isFunction(success);
+      const hasFail = isFunction(fail);
+      const hasComplete = isFunction(complete);
+      getPushCidCallbacks.push((cid) => {
+          let res;
+          if (cid) {
+              res = { errMsg: 'getPushCid:ok', cid };
+              hasSuccess && success(res);
+          }
+          else {
+              res = { errMsg: 'getPushCid:fail' };
+              hasFail && fail(res);
+          }
+          hasComplete && complete(res);
+      });
+      if (cid) {
+          Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+      }
+  }
+  const onPushMessageCallbacks = [];
+  // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
+  const onPushMessage = (fn) => {
+      if (onPushMessageCallbacks.indexOf(fn) === -1) {
+          onPushMessageCallbacks.push(fn);
+      }
+  };
+  const offPushMessage = (fn) => {
+      if (!fn) {
+          onPushMessageCallbacks.length = 0;
+      }
+      else {
+          const index = onPushMessageCallbacks.indexOf(fn);
+          if (index > -1) {
+              onPushMessageCallbacks.splice(index, 1);
+          }
+      }
+  };
+
   const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
 
   const API_MAKE_PHONE_CALL = 'makePhoneCall';
@@ -11512,6 +11886,51 @@ var serviceContext = (function (vue) {
   };
 
   const API_ADD_PHONE_CONTACT = 'addPhoneContact';
+  const AddPhoneContactOptions = {
+      formatArgs: {
+          firstName(firstName) {
+              if (!firstName)
+                  return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
+          },
+      },
+  };
+  const AddPhoneContactProtocol = {
+      firstName: {
+          type: String,
+          required: true,
+      },
+      photoFilePath: String,
+      nickName: String,
+      lastName: String,
+      middleName: String,
+      remark: String,
+      mobilePhoneNumber: String,
+      weChatNumber: String,
+      addressCountry: String,
+      addressState: String,
+      addressCity: String,
+      addressStreet: String,
+      addressPostalCode: String,
+      organization: String,
+      title: String,
+      workFaxNumber: String,
+      workPhoneNumber: String,
+      hostNumber: String,
+      email: String,
+      url: String,
+      workAddressCountry: String,
+      workAddressState: String,
+      workAddressCity: String,
+      workAddressStreet: String,
+      workAddressPostalCode: String,
+      homeFaxNumber: String,
+      homePhoneNumber: String,
+      homeAddressCountry: String,
+      homeAddressState: String,
+      homeAddressCity: String,
+      homeAddressStreet: String,
+      homeAddressPostalCode: String,
+  };
 
   const API_GET_CLIPBOARD_DATA = 'getClipboardData';
   const API_SET_CLIPBOARD_DATA = 'setClipboardData';
@@ -12496,12 +12915,9 @@ var serviceContext = (function (vue) {
       selector: String,
       duration: Number,
   };
-  const DEFAULT_DURATION = 300;
   const PageScrollToOptions = {
       formatArgs: {
-          duration(value, params) {
-              params.duration = Math.max(0, parseInt(value + '') || DEFAULT_DURATION);
-          },
+          duration: 300,
       },
   };
 
@@ -13660,166 +14076,150 @@ var serviceContext = (function (vue) {
       return resolve();
   }, MakePhoneCallProtocol);
 
-  const addPhoneContact = defineAsyncApi(API_ADD_PHONE_CONTACT, ({ photoFilePath = '', nickName, lastName, middleName, firstName, remark, mobilePhoneNumber, weChatNumber, addressCountry, addressState, addressCity, addressStreet, addressPostalCode, organization, title, workFaxNumber, workPhoneNumber, hostNumber, email, url, workAddressCountry, workAddressState, workAddressCity, workAddressStreet, workAddressPostalCode, homeFaxNumber, homePhoneNumber, homeAddressCountry, homeAddressState, homeAddressCity, homeAddressStreet, homeAddressPostalCode, }, { resolve, reject }) => {
-      plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
-          const contact = addressbook.create();
-          const name = {};
-          if (lastName) {
-              name.familyName = lastName;
-          }
-          if (firstName) {
-              name.givenName = firstName;
-          }
-          if (middleName) {
-              name.middleName = middleName;
-          }
-          contact.name = name;
-          if (nickName) {
-              contact.nickname = nickName;
-          }
-          if (photoFilePath) {
-              contact.photos = [
-                  {
-                      type: 'url',
-                      value: photoFilePath,
-                  },
-              ];
-          }
-          if (remark) {
-              contact.note = remark;
-          }
-          const mobilePhone = {
+  const schema = {
+      name: {
+          givenName: 'firstName',
+          middleName: 'middleName',
+          familyName: 'lastName',
+      },
+      nickname: 'nickName',
+      photos: {
+          type: 'url',
+          value: 'photoFilePath',
+      },
+      note: 'remark',
+      phoneNumbers: [
+          {
               type: 'mobile',
-          };
-          const workPhone = {
+              value: 'mobilePhoneNumber',
+          },
+          {
               type: 'work',
-          };
-          const companyPhone = {
+              value: 'workPhoneNumber',
+          },
+          {
               type: 'company',
-          };
-          const homeFax = {
+              value: 'hostNumber',
+          },
+          {
               type: 'home fax',
-          };
-          const workFax = {
+              value: 'homeFaxNumber',
+          },
+          {
               type: 'work fax',
-          };
-          if (mobilePhoneNumber) {
-              mobilePhone.value = mobilePhoneNumber;
-          }
-          if (workPhoneNumber) {
-              workPhone.value = workPhoneNumber;
-          }
-          if (hostNumber) {
-              companyPhone.value = hostNumber;
-          }
-          if (homeFaxNumber) {
-              homeFax.value = homeFaxNumber;
-          }
-          if (workFaxNumber) {
-              workFax.value = workFaxNumber;
-          }
-          contact.phoneNumbers = [
-              mobilePhone,
-              workPhone,
-              companyPhone,
-              homeFax,
-              workFax,
-          ];
-          if (email) {
-              contact.emails = [
-                  {
-                      type: 'home',
-                      value: email,
-                  },
-              ];
-          }
-          if (url) {
-              contact.urls = [
-                  {
-                      type: 'other',
-                      value: url,
-                  },
-              ];
-          }
-          if (weChatNumber) {
-              contact.ims = [
-                  {
-                      type: 'other',
-                      value: weChatNumber,
-                  },
-              ];
-          }
-          const defaultAddress = {
+              value: 'workFaxNumber',
+          },
+      ],
+      emails: [
+          {
+              type: 'home',
+              value: 'email',
+          },
+      ],
+      urls: [
+          {
+              type: 'other',
+              value: 'url',
+          },
+      ],
+      organizations: [
+          {
+              type: 'company',
+              name: 'organization',
+              title: 'title',
+          },
+      ],
+      ims: [
+          {
+              type: 'other',
+              value: 'weChatNumber',
+          },
+      ],
+      addresses: [
+          {
               type: 'other',
               preferred: true,
-          };
-          const homeAddress = {
+              country: 'addressCountry',
+              region: 'addressState',
+              locality: 'addressCity',
+              streetAddress: 'addressStreet',
+              postalCode: 'addressPostalCode',
+          },
+          {
               type: 'home',
-          };
-          const companyAddress = {
+              country: 'homeAddressCountry',
+              region: 'homeAddressState',
+              locality: 'homeAddressCity',
+              streetAddress: 'homeAddressStreet',
+              postalCode: 'homeAddressPostalCode',
+          },
+          {
               type: 'company',
-          };
-          if (addressCountry) {
-              defaultAddress.country = addressCountry;
+              country: 'workAddressCountry',
+              region: 'workAddressState',
+              locality: 'workAddressCity',
+              streetAddress: 'workAddressStreet',
+              postalCode: 'workAddressPostalCode',
+          },
+      ],
+  };
+  const keepFields = ['type', 'preferred'];
+  function buildContact(contact, data, schema) {
+      let hasValue = 0;
+      Object.keys(schema).forEach((contactKey) => {
+          const dataKey = schema[contactKey];
+          const typed = typeof dataKey;
+          if (typed !== 'object') {
+              if (keepFields.indexOf(contactKey) !== -1) {
+                  contact[contactKey] = schema[contactKey];
+              }
+              else {
+                  if (typeof data[dataKey] !== 'undefined') {
+                      hasValue++;
+                      contact[contactKey] = data[dataKey];
+                  }
+                  else {
+                      delete contact[contactKey];
+                  }
+              }
           }
-          if (addressState) {
-              defaultAddress.region = addressState;
+          else {
+              if (dataKey instanceof Array) {
+                  contact[contactKey] = [];
+                  dataKey.forEach((item) => {
+                      const obj = {};
+                      if (buildContact(obj, data, item)) {
+                          contact[contactKey].push(obj);
+                      }
+                  });
+                  if (!contact[contactKey].length) {
+                      delete contact[contactKey];
+                  }
+                  else {
+                      hasValue++;
+                  }
+              }
+              else {
+                  contact[contactKey] = {};
+                  if (buildContact(contact[contactKey], data, dataKey)) {
+                      hasValue++;
+                  }
+                  else {
+                      delete contact[contactKey];
+                  }
+              }
           }
-          if (addressCity) {
-              defaultAddress.locality = addressCity;
-          }
-          if (addressStreet) {
-              defaultAddress.streetAddress = addressStreet;
-          }
-          if (addressPostalCode) {
-              defaultAddress.postalCode = addressPostalCode;
-          }
-          if (homeAddressCountry) {
-              homeAddress.country = homeAddressCountry;
-          }
-          if (homeAddressState) {
-              homeAddress.region = homeAddressState;
-          }
-          if (homeAddressCity) {
-              homeAddress.locality = homeAddressCity;
-          }
-          if (homeAddressStreet) {
-              homeAddress.streetAddress = homeAddressStreet;
-          }
-          if (homeAddressPostalCode) {
-              homeAddress.postalCode = homeAddressPostalCode;
-          }
-          if (workAddressCountry) {
-              companyAddress.country = workAddressCountry;
-          }
-          if (workAddressState) {
-              companyAddress.region = workAddressState;
-          }
-          if (workAddressCity) {
-              companyAddress.locality = workAddressCity;
-          }
-          if (workAddressStreet) {
-              companyAddress.streetAddress = workAddressStreet;
-          }
-          if (workAddressPostalCode) {
-              companyAddress.postalCode = workAddressPostalCode;
-          }
-          contact.addresses = [
-              defaultAddress,
-              homeAddress,
-              companyAddress,
-          ];
-          contact.save(() => {
-              resolve({
-                  errMsg: 'addPhoneContact:ok',
-              });
-          }, (e) => {
-              reject('addPhoneContact:fail');
-          });
-      }, (e) => {
-          reject('addPhoneContact:fail');
       });
-  }, MakePhoneCallProtocol);
+      return hasValue;
+  }
+  const addPhoneContact = defineAsyncApi(API_ADD_PHONE_CONTACT, (data, { resolve, reject }) => {
+      !data.photoFilePath && (data.photoFilePath = '');
+      plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
+          const contact = addressbook.create();
+          buildContact(contact, data, schema);
+          contact.save(() => resolve(), (e) => reject());
+      }, (e) => reject());
+  }, AddPhoneContactProtocol, AddPhoneContactOptions);
 
   function requireNativePlugin(pluginName) {
       if (typeof weex !== 'undefined') {
@@ -14097,133 +14497,6 @@ var serviceContext = (function (vue) {
           });
       }
   }, StartSoterAuthenticationProtocols, StartSoterAuthenticationOptions);
-
-  let plus_;
-  let weex_;
-  let BroadcastChannel_;
-  function getRuntime() {
-      return typeof window === 'object' &&
-          typeof navigator === 'object' &&
-          typeof document === 'object'
-          ? 'webview'
-          : 'v8';
-  }
-  function getPageId() {
-      return plus_.webview.currentWebview().id;
-  }
-  let channel;
-  let globalEvent$1;
-  const callbacks$2 = {};
-  function onPlusMessage$1(res) {
-      const message = res.data && res.data.__message;
-      if (!message || !message.__page) {
-          return;
-      }
-      const pageId = message.__page;
-      const callback = callbacks$2[pageId];
-      callback && callback(message);
-      if (!message.keep) {
-          delete callbacks$2[pageId];
-      }
-  }
-  function addEventListener(pageId, callback) {
-      if (getRuntime() === 'v8') {
-          if (BroadcastChannel_) {
-              channel && channel.close();
-              channel = new BroadcastChannel_(getPageId());
-              channel.onmessage = onPlusMessage$1;
-          }
-          else if (!globalEvent$1) {
-              globalEvent$1 = weex_.requireModule('globalEvent');
-              globalEvent$1.addEventListener('plusMessage', onPlusMessage$1);
-          }
-      }
-      else {
-          // @ts-ignore
-          window.__plusMessage = onPlusMessage$1;
-      }
-      callbacks$2[pageId] = callback;
-  }
-  class Page {
-      constructor(webview) {
-          this.webview = webview;
-      }
-      sendMessage(data) {
-          const message = JSON.parse(JSON.stringify({
-              __message: {
-                  data,
-              },
-          }));
-          const id = this.webview.id;
-          if (BroadcastChannel_) {
-              const channel = new BroadcastChannel_(id);
-              channel.postMessage(message);
-          }
-          else {
-              plus_.webview.postMessageToUniNView &&
-                  plus_.webview.postMessageToUniNView(message, id);
-          }
-      }
-      close() {
-          this.webview.close();
-      }
-  }
-  function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
-      // eslint-disable-next-line
-      plus_ = context.plus || plus;
-      // eslint-disable-next-line
-      weex_ = context.weex || (typeof weex === 'object' ? weex : null);
-      // eslint-disable-next-line
-      BroadcastChannel_ =
-          context.BroadcastChannel ||
-              (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
-      const titleNView = {
-          autoBackButton: true,
-          titleSize: '17px',
-      };
-      const pageId = `page${Date.now()}`;
-      style = extend({}, style);
-      if (style.titleNView !== false && style.titleNView !== 'none') {
-          style.titleNView = extend(titleNView, style.titleNView);
-      }
-      const defaultStyle = {
-          top: 0,
-          bottom: 0,
-          usingComponents: {},
-          popGesture: 'close',
-          scrollIndicator: 'none',
-          animationType: 'pop-in',
-          animationDuration: 200,
-          uniNView: {
-              path: `${(typeof process === 'object' &&
-                process.env &&
-                process.env.VUE_APP_TEMPLATE_PATH) ||
-                ''}/${url}.js`,
-              defaultFontSize: 16,
-              viewport: plus_.screen.resolutionWidth,
-          },
-      };
-      style = extend(defaultStyle, style);
-      const page = plus_.webview.create('', pageId, style, {
-          extras: {
-              from: getPageId(),
-              runtime: getRuntime(),
-              data,
-              useGlobalEvent: !BroadcastChannel_,
-          },
-      });
-      page.addEventListener('close', onClose);
-      addEventListener(pageId, (message) => {
-          if (typeof onMessage === 'function') {
-              onMessage(message.data);
-          }
-          if (!message.keep) {
-              page.close('auto');
-          }
-      });
-      page.show(style.animationType, style.animationDuration);
-      return new Page(page);
-  }
 
   const scanCode = defineAsyncApi(API_SCAN_CODE, (options, { resolve, reject }) => {
       initI18nScanCodeMsgsOnce();
@@ -16557,6 +16830,67 @@ var serviceContext = (function (vue) {
       return new SubNvue(id, isSub);
   };
 
+  let lastStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  function restoreOldSetStatusBarStyle(setStatusBarStyle) {
+      oldSetStatusBarStyle = setStatusBarStyle;
+  }
+  function newSetStatusBarStyle(style) {
+      lastStatusBarStyle = style;
+      oldSetStatusBarStyle(style);
+  }
+  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+  function setStatusBarStyle(statusBarStyle) {
+      if (!statusBarStyle) {
+          const page = getCurrentPage();
+          if (!page) {
+              return;
+          }
+          statusBarStyle = page.$page.statusBarStyle;
+          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+              return;
+          }
+      }
+      if (statusBarStyle === lastStatusBarStyle) {
+          return;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('setStatusBarStyle', statusBarStyle));
+      }
+      lastStatusBarStyle = statusBarStyle;
+      plus.navigator.setStatusBarStyle(statusBarStyle);
+  }
+
+  function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout, newSetInterval, newClearInterval) {
+      // 确保部分全局变量 是 app-service 中的
+      // 若首页 nvue 初始化比 app-service 快，导致框架处于该 nvue 环境下
+      // plus 如果不用 app-service，资源路径会出问题
+      // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
+      // 设置 vue3
+      // @ts-ignore 最终vue会被替换为vue
+      vue = newVue;
+      if (plus !== newPlus) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(`[restoreGlobal][${Date.now()}]`);
+          }
+          weex = newWeex;
+          // @ts-ignore
+          plus = newPlus;
+          restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
+          plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+          /* eslint-disable no-global-assign */
+          // @ts-ignore
+          setTimeout = newSetTimeout;
+          // @ts-ignore
+          clearTimeout = newClearTimeout;
+          // @ts-ignore
+          setInterval = newSetInterval;
+          // @ts-ignore
+          clearInterval = newClearInterval;
+      }
+      __uniConfig.serviceReady = true;
+  }
+
   const providers = {
       oauth(callback) {
           plus.oauth.getServices((services) => {
@@ -17164,6 +17498,9 @@ var serviceContext = (function (vue) {
           globalProperties.$set = set;
           globalProperties.$applyOptions = applyOptions;
       }
+      {
+          invokeCreateVueAppHook(app);
+      }
   }
 
   let isInitEntryPage = false;
@@ -17341,16 +17678,13 @@ var serviceContext = (function (vue) {
   // }
 
   function initAppLaunch(appVm) {
+      injectAppHooks(appVm.$);
       const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
-      const args = extend({
-          // 为了让 uni-stat 在 uni.onLaunch 中可以 mixin
-          app: { mixin: appVm.$.appContext.app.mixin },
-      }, initLaunchOptions({
+      const args = initLaunchOptions({
           path: entryPagePath,
           query: entryPageQuery,
           referrerInfo: referrerInfo,
-      }));
-      injectAppLaunchHooks(appVm.$);
+      });
       invokeHook(appVm, ON_LAUNCH, args);
       invokeHook(appVm, ON_SHOW, args);
       // https://tower.im/teams/226535/todos/16905/
@@ -17880,37 +18214,6 @@ var serviceContext = (function (vue) {
       });
   }
 
-  let lastStatusBarStyle;
-  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-  function restoreOldSetStatusBarStyle(setStatusBarStyle) {
-      oldSetStatusBarStyle = setStatusBarStyle;
-  }
-  function newSetStatusBarStyle(style) {
-      lastStatusBarStyle = style;
-      oldSetStatusBarStyle(style);
-  }
-  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-  function setStatusBarStyle(statusBarStyle) {
-      if (!statusBarStyle) {
-          const page = getCurrentPage();
-          if (!page) {
-              return;
-          }
-          statusBarStyle = page.$page.statusBarStyle;
-          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-              return;
-          }
-      }
-      if (statusBarStyle === lastStatusBarStyle) {
-          return;
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('setStatusBarStyle', statusBarStyle));
-      }
-      lastStatusBarStyle = statusBarStyle;
-      plus.navigator.setStatusBarStyle(statusBarStyle);
-  }
-
   function onWebviewPopGesture(webview) {
       let popStartStatusBarStyle;
       webview.addEventListener('popGesture', (e) => {
@@ -18405,9 +18708,14 @@ var serviceContext = (function (vue) {
                       }
                   }
                   else {
-                      if ((process.env.NODE_ENV !== 'production')) {
-                          console.error(formatLog(`Insert`, action, 'not found createAction'));
+                      // 部分手机上，create 和 insert 可能不在同一批次，被分批发送
+                      if (extras) {
+                          action[4] = extras;
                       }
+                      this.updateActions.push(action);
+                      // if ((process.env.NODE_ENV !== 'production')) {
+                      //   console.error(formatLog(`Insert`, action, 'not found createAction'))
+                      // }
                   }
                   break;
           }
@@ -19171,36 +19479,6 @@ var serviceContext = (function (vue) {
       };
   }
 
-  function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout, newSetInterval, newClearInterval) {
-      // 确保部分全局变量 是 app-service 中的
-      // 若首页 nvue 初始化比 app-service 快，导致框架处于该 nvue 环境下
-      // plus 如果不用 app-service，资源路径会出问题
-      // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
-      // 设置 vue3
-      // @ts-ignore 最终vue会被替换为vue
-      vue = newVue;
-      if (plus !== newPlus) {
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(`[restoreGlobal][${Date.now()}]`);
-          }
-          weex = newWeex;
-          // @ts-ignore
-          plus = newPlus;
-          restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
-          plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-          /* eslint-disable no-global-assign */
-          // @ts-ignore
-          setTimeout = newSetTimeout;
-          // @ts-ignore
-          clearTimeout = newClearTimeout;
-          // @ts-ignore
-          setInterval = newSetInterval;
-          // @ts-ignore
-          clearInterval = newClearInterval;
-      }
-      __uniConfig.serviceReady = true;
-  }
-
   const EventType = {
       load: 'load',
       close: 'close',
@@ -19829,11 +20107,25 @@ var serviceContext = (function (vue) {
     $off: $off,
     $once: $once,
     $emit: $emit,
-    onAppLaunch: onAppLaunch,
+    onCreateVueApp: onCreateVueApp,
     onLocaleChange: onLocaleChange,
     setPageMeta: setPageMeta,
     getEnterOptionsSync: getEnterOptionsSync,
     getLaunchOptionsSync: getLaunchOptionsSync,
+    getPushCid: getPushCid,
+    onPushMessage: onPushMessage,
+    offPushMessage: offPushMessage,
+    onAppHide: onAppHide,
+    onAppShow: onAppShow,
+    onError: onError,
+    onPageNotFound: onPageNotFound,
+    onUnhandledRejection: onUnhandledRejection,
+    offAppHide: offAppHide,
+    offAppShow: offAppShow,
+    offError: offError,
+    offPageNotFound: offPageNotFound,
+    offUnhandledRejection: offUnhandledRejection,
+    invokePushCallback: invokePushCallback,
     setStorageSync: setStorageSync,
     setStorage: setStorage,
     getStorageSync: getStorageSync,
@@ -19954,6 +20246,7 @@ var serviceContext = (function (vue) {
     removeTabBarBadge: removeTabBarBadge,
     hideTabBarRedDot: hideTabBarRedDot,
     getSubNVueById: getSubNVueById,
+    restoreGlobal: restoreGlobal,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,
@@ -19969,7 +20262,6 @@ var serviceContext = (function (vue) {
     requireNativePlugin: requireNativePlugin,
     sendNativeEvent: sendNativeEvent,
     __vuePlugin: index$1,
-    restoreGlobal: restoreGlobal,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,

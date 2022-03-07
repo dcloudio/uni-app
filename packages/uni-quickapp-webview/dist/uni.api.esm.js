@@ -1,8 +1,22 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
-import { injectHook } from 'vue';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
 
-//App
-const ON_LAUNCH = 'onLaunch';
+let vueApp;
+const createVueAppHooks = [];
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+function onCreateVueApp(hook) {
+    // TODO 每个 nvue 页面都会触发
+    if (vueApp) {
+        return hook(vueApp);
+    }
+    createVueAppHooks.push(hook);
+}
+function invokeCreateVueAppHook(app) {
+    vueApp = app;
+    createVueAppHooks.forEach((hook) => hook(app));
+}
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -40,18 +54,60 @@ const navigateTo = {
     },
 };
 
-qa.appLaunchHooks = [];
-function onAppLaunch(hook) {
-    const app = getApp({ allowDefault: true });
-    if (app && app.$vm) {
-        return injectHook(ON_LAUNCH, hook, app.$vm.$);
-    }
-    qa.appLaunchHooks.push(hook);
-}
-
 function getBaseSystemInfo() {
   return qa.getSystemInfoSync()
 }
+
+const E = function () {
+    // Keep this empty so it's easier to inherit from
+    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+};
+E.prototype = {
+    on: function (name, callback, ctx) {
+        var e = this.e || (this.e = {});
+        (e[name] || (e[name] = [])).push({
+            fn: callback,
+            ctx: ctx,
+        });
+        return this;
+    },
+    once: function (name, callback, ctx) {
+        var self = this;
+        function listener() {
+            self.off(name, listener);
+            callback.apply(ctx, arguments);
+        }
+        listener._ = callback;
+        return this.on(name, listener, ctx);
+    },
+    emit: function (name) {
+        var data = [].slice.call(arguments, 1);
+        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+        var i = 0;
+        var len = evtArr.length;
+        for (i; i < len; i++) {
+            evtArr[i].fn.apply(evtArr[i].ctx, data);
+        }
+        return this;
+    },
+    off: function (name, callback) {
+        var e = this.e || (this.e = {});
+        var evts = e[name];
+        var liveEvents = [];
+        if (evts && callback) {
+            for (var i = 0, len = evts.length; i < len; i++) {
+                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+                    liveEvents.push(evts[i]);
+            }
+        }
+        // Remove event from queue to prevent memory leak
+        // Suggested by https://github.com/lazd
+        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+        return this;
+    },
+};
+var E$1 = E;
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -187,6 +243,30 @@ function isExplicable(type) {
 }
 function isBoolean(...args) {
     return args.some((elem) => elem.toLowerCase() === 'boolean');
+}
+
+function tryCatch(fn) {
+    return function () {
+        try {
+            return fn.apply(fn, arguments);
+        }
+        catch (e) {
+            // TODO
+            console.error(e);
+        }
+    };
+}
+
+function getApiCallbacks(args) {
+    const apiCallbacks = {};
+    for (const name in args) {
+        const fn = args[name];
+        if (isFunction(fn)) {
+            apiCallbacks[name] = tryCatch(fn);
+            delete args[name];
+        }
+    }
+    return apiCallbacks;
 }
 
 const HOOK_SUCCESS = 'success';
@@ -419,9 +499,11 @@ function removeInterceptorHook(interceptors, interceptor) {
     if (!interceptors || !interceptor) {
         return;
     }
-    Object.keys(interceptor).forEach((hook) => {
-        if (isFunction(interceptor[hook])) {
-            removeHook(interceptors[hook], interceptor[hook]);
+    Object.keys(interceptor).forEach((name) => {
+        const hooks = interceptors[name];
+        const hook = interceptor[name];
+        if (isArray(hooks) && isFunction(hook)) {
+            remove(hooks, hook);
         }
     });
 }
@@ -443,15 +525,6 @@ function dedupeHooks(hooks) {
         }
     }
     return res;
-}
-function removeHook(hooks, hook) {
-    if (!hooks) {
-        return;
-    }
-    const index = hooks.indexOf(hook);
-    if (index !== -1) {
-        hooks.splice(index, 1);
-    }
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
@@ -511,58 +584,7 @@ const EmitProtocol = [
     },
 ];
 
-const E = function () {
-    // Keep this empty so it's easier to inherit from
-    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-};
-E.prototype = {
-    on: function (name, callback, ctx) {
-        var e = this.e || (this.e = {});
-        (e[name] || (e[name] = [])).push({
-            fn: callback,
-            ctx: ctx,
-        });
-        return this;
-    },
-    once: function (name, callback, ctx) {
-        var self = this;
-        function listener() {
-            self.off(name, listener);
-            callback.apply(ctx, arguments);
-        }
-        listener._ = callback;
-        return this.on(name, listener, ctx);
-    },
-    emit: function (name) {
-        var data = [].slice.call(arguments, 1);
-        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-        var i = 0;
-        var len = evtArr.length;
-        for (i; i < len; i++) {
-            evtArr[i].fn.apply(evtArr[i].ctx, data);
-        }
-        return this;
-    },
-    off: function (name, callback) {
-        var e = this.e || (this.e = {});
-        var evts = e[name];
-        var liveEvents = [];
-        if (evts && callback) {
-            for (var i = 0, len = evts.length; i < len; i++) {
-                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-                    liveEvents.push(evts[i]);
-            }
-        }
-        // Remove event from queue to prevent memory leak
-        // Suggested by https://github.com/lazd
-        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-        return this;
-    },
-};
-var Emitter = E;
-
-const emitter = new Emitter();
+const emitter = new E$1();
 const $on = defineSyncApi(API_ON, (name, callback) => {
     emitter.on(name, callback);
     return () => emitter.off(name, callback);
@@ -583,6 +605,72 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     emitter.emit(name, ...args);
 }, EmitProtocol);
+
+let cid = '';
+/**
+ * @private
+ * @param args
+ */
+function invokePushCallback(args) {
+    if (args.type === 'clientId') {
+        cid = args.cid;
+        invokeGetPushCidCallbacks(cid);
+    }
+    else if (args.type === 'pushMsg') {
+        onPushMessageCallbacks.forEach((callback) => {
+            callback({ data: args.message });
+        });
+    }
+}
+const getPushCidCallbacks = [];
+function invokeGetPushCidCallbacks(cid) {
+    getPushCidCallbacks.forEach((callback) => {
+        callback(cid);
+    });
+    getPushCidCallbacks.length = 0;
+}
+function getPushCid(args) {
+    if (!isPlainObject(args)) {
+        args = {};
+    }
+    const { success, fail, complete } = getApiCallbacks(args);
+    const hasSuccess = isFunction(success);
+    const hasFail = isFunction(fail);
+    const hasComplete = isFunction(complete);
+    getPushCidCallbacks.push((cid) => {
+        let res;
+        if (cid) {
+            res = { errMsg: 'getPushCid:ok', cid };
+            hasSuccess && success(res);
+        }
+        else {
+            res = { errMsg: 'getPushCid:fail' };
+            hasFail && fail(res);
+        }
+        hasComplete && complete(res);
+    });
+    if (cid) {
+        Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+    }
+}
+const onPushMessageCallbacks = [];
+// 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
+const onPushMessage = (fn) => {
+    if (onPushMessageCallbacks.indexOf(fn) === -1) {
+        onPushMessageCallbacks.push(fn);
+    }
+};
+const offPushMessage = (fn) => {
+    if (!fn) {
+        onPushMessageCallbacks.length = 0;
+    }
+    else {
+        const index = onPushMessageCallbacks.indexOf(fn);
+        if (index > -1) {
+            onPushMessageCallbacks.splice(index, 1);
+        }
+    }
+};
 
 const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 const CONTEXT_API_RE = /^create|Manager$/;
@@ -768,10 +856,15 @@ const baseApis = {
     interceptors,
     addInterceptor,
     removeInterceptor,
-    onAppLaunch,
+    onCreateVueApp,
+    invokeCreateVueAppHook,
     getLocale,
     setLocale,
     onLocaleChange,
+    getPushCid,
+    onPushMessage,
+    offPushMessage,
+    invokePushCallback,
 };
 function initUni(api, protocols) {
     const wrapper = initWrapper(protocols);
@@ -827,8 +920,27 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 
+const UUID_KEY = '__DC_STAT_UUID';
+let deviceId;
+function useDeviceId(global = qa) {
+    return function addDeviceId(_, toRes) {
+        deviceId = deviceId || global.getStorageSync(UUID_KEY);
+        if (!deviceId) {
+            deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
+            qa.setStorage({
+                key: UUID_KEY,
+                data: deviceId,
+            });
+        }
+        toRes.deviceId = deviceId;
+    };
+}
+
 const getSystemInfo = {
-    returnValue: addSafeAreaInsets,
+    returnValue: (fromRes, toRes) => {
+        addSafeAreaInsets(fromRes, toRes);
+        useDeviceId()(fromRes, toRes);
+    },
 };
 
 const getSystemInfoSync = getSystemInfo;

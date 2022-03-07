@@ -314,7 +314,8 @@ function useEvent(
       field &&
       state.focus &&
       state.selectionStart > -1 &&
-      state.selectionEnd > -1
+      state.selectionEnd > -1 &&
+      field.type !== 'number'
     ) {
       field.selectionStart = state.selectionStart
       field.selectionEnd = state.selectionEnd
@@ -327,9 +328,17 @@ function useEvent(
       state.focus &&
       state.selectionStart < 0 &&
       state.selectionEnd < 0 &&
-      state.cursor > -1
+      state.cursor > -1 &&
+      field.type !== 'number'
     ) {
       field.selectionEnd = field.selectionStart = state.cursor
+    }
+  }
+  function getFieldSelectionEnd(field: HTMLInputElement) {
+    if (field.type === 'number') {
+      return null
+    } else {
+      return field.selectionEnd
     }
   }
   function initField() {
@@ -357,7 +366,7 @@ function useEvent(
           event,
           {
             value: field.value,
-            cursor: field.selectionEnd,
+            cursor: getFieldSelectionEnd(field as HTMLInputElement),
           },
           force
         )
@@ -372,7 +381,7 @@ function useEvent(
       state.focus = false
       trigger('blur', event, {
         value: state.value,
-        cursor: (event.target as HTMLFieldElement).selectionEnd,
+        cursor: getFieldSelectionEnd(event.target as HTMLInputElement),
       })
     }
     // 避免触发父组件 change 事件

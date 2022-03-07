@@ -3,7 +3,7 @@ import type {
   ComponentPublicInstance,
   VNode,
 } from '@vue/runtime-core'
-import { hyphenate } from '@vue/shared'
+import { camelize, hyphenate } from '@vue/shared'
 
 import { isBuiltInComponent } from './tags'
 import { SLOT_DEFAULT_NAME } from './constants'
@@ -61,4 +61,10 @@ export function resolveOwnerEl(instance: ComponentInternalInstance) {
 
 export function dynamicSlotName(name: string) {
   return name === 'default' ? SLOT_DEFAULT_NAME : name
+}
+
+const customizeRE = /:/g
+
+export function customizeEvent(str: string) {
+  return camelize(str.replace(customizeRE, '-'))
 }

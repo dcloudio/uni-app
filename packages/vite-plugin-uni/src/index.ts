@@ -43,8 +43,6 @@ process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
   : 'r'
 
 export interface VitePluginUniOptions {
-  inputDir?: string
-  outputDir?: string
   vueOptions?: VueOptions
   vueJsxOptions?: (VueJSXPluginOptions & { babelPlugins?: any[] }) | boolean
   viteLegacyOptions?: ViteLegacyOptions | false
@@ -81,8 +79,8 @@ export default function uniPlugin(
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
   const plugins: Plugin[] = []
-
-  if (options.viteLegacyOptions) {
+  // 仅限 h5
+  if (options.viteLegacyOptions && options.platform === 'h5') {
     plugins.push(
       ...(legacyPlugin(
         initPluginViteLegacyOptions(options)

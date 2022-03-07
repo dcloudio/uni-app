@@ -110,6 +110,34 @@ describe('mp-weixin: transform component', () => {
 }`
     )
     assert(
+      `<canvas @touchstart="touchstart"/>`,
+      `<block wx:if="{{r0}}"><canvas bindtouchstart="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.touchstart) }
+}`
+    )
+    assert(
+      `<canvas @touchmove="touchmove"/>`,
+      `<block wx:if="{{r0}}"><canvas bindtouchmove="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.touchmove) }
+}`
+    )
+    assert(
+      `<canvas @touchcancel="touchcancel"/>`,
+      `<block wx:if="{{r0}}"><canvas bindtouchcancel="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.touchcancel) }
+}`
+    )
+    assert(
+      `<canvas @touchend="touchend"/>`,
+      `<block wx:if="{{r0}}"><canvas bindtouchend="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.touchend) }
+}`
+    )
+    assert(
       `<canvas :canvas-id="id" :id="id"/>`,
       `<block wx:if="{{r0}}"><canvas canvas-id="{{a}}" id="{{b}}"/></block>`,
       `(_ctx, _cache) => {

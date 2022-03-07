@@ -8,7 +8,7 @@ function removeDOCTYPE(html) {
 }
 
 function parseAttrs(attrs) {
-  return attrs.reduce(function(pre, attr) {
+  return attrs.reduce(function (pre, attr) {
     let value = attr.value
     const name = attr.name
 
@@ -36,13 +36,13 @@ export default function parseHtml(html) {
 
   const results = {
     node: 'root',
-    children: []
+    children: [],
   }
 
   HTMLParser(html, {
-    start: function(tag, attrs, unary) {
+    start: function (tag, attrs, unary) {
       const node = {
-        name: tag
+        name: tag,
       }
       if (attrs.length !== 0) {
         node.attrs = parseAttrs(attrs)
@@ -57,7 +57,7 @@ export default function parseHtml(html) {
         stacks.unshift(node)
       }
     },
-    end: function(tag) {
+    end: function (tag) {
       const node = stacks.shift()
       if (node.name !== tag) console.error('invalid state: mismatch end tag')
 
@@ -71,10 +71,10 @@ export default function parseHtml(html) {
         parent.children.push(node)
       }
     },
-    chars: function(text) {
+    chars: function (text) {
       const node = {
         type: 'text',
-        text: text
+        text: text,
       }
       if (stacks.length === 0) {
         results.children.push(node)
@@ -86,17 +86,17 @@ export default function parseHtml(html) {
         parent.children.push(node)
       }
     },
-    comment: function(text) {
+    comment: function (text) {
       const node = {
         node: 'comment',
-        text: text
+        text: text,
       }
       const parent = stacks[0]
       if (!parent.children) {
         parent.children = []
       }
       parent.children.push(node)
-    }
+    },
   })
   return results.children
 }

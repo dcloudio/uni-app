@@ -1,3 +1,4 @@
+import type { App } from 'vue';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { ComponentOptionsBase } from '@vue/runtime-core';
 import type { ComponentPublicInstance } from '@vue/runtime-core';
@@ -122,6 +123,10 @@ export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrec
 
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
 
+declare type CreateVueAppHook = (app: App) => void;
+
+export declare function customizeEvent(str: string): string;
+
 export declare const DATA_RE: RegExp;
 
 export declare function debounce(fn: Function, delay: number): {
@@ -146,6 +151,12 @@ export declare const defaultMiniProgramRpx2Unit: {
     unitPrecision: number;
 };
 
+export declare const defaultNVueRpx2Unit: {
+    unit: string;
+    unitRatio: number;
+    unitPrecision: number;
+};
+
 export declare const defaultRpx2Unit: {
     unit: string;
     unitRatio: number;
@@ -155,6 +166,18 @@ export declare const defaultRpx2Unit: {
 declare type DictArray = [number, number][];
 
 export declare function dynamicSlotName(name: string): string;
+
+export declare interface Emitter {
+    e: Record<string, unknown>;
+    on: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    once: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    emit: (name: EventName, ...args: any[]) => this;
+    off: (name: EventName, callback?: EventCallback) => this;
+}
+
+export declare const Emitter: new () => Emitter;
+
+declare type EventCallback = Function;
 
 export declare class EventChannel {
     id?: number;
@@ -179,6 +202,8 @@ export declare const EventModifierFlags: {
     prevent: number;
     self: number;
 };
+
+declare type EventName = string;
 
 export declare const forcePatchProp: (el: {
     nodeName: string;
@@ -209,18 +234,29 @@ declare interface HTMLElementWithDataset extends HTMLElement {
 
 export declare const I18N_JSON_DELIMITERS: [string, string];
 
-export declare function initCustomDataset(): void;
+export declare const initCustomDatasetOnce: () => void;
 
 /**
  * nodeId
  * parentNodeId
  * refNodeId
+ * nodeJson
  */
-export declare type InsertAction = [typeof ACTION_TYPE_INSERT, number, number, number];
+export declare type InsertAction = [
+typeof ACTION_TYPE_INSERT,
+number,
+number,
+number,
+Partial<UniNodeJSON | UniNodeJSONMinify>?
+];
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
+export declare function invokeCreateVueAppHook(app: App): void;
+
 export declare function isAppNativeTag(tag: string): boolean;
+
+export declare function isAppNVueNativeTag(tag: string): boolean;
 
 export declare function isBuiltInComponent(tag: string): boolean;
 
@@ -296,6 +332,10 @@ export declare interface NVue {
     isRegisteredComponent: (name: string) => boolean;
 }
 
+export declare const NVUE_BUILT_IN_TAGS: string[];
+
+export declare const NVUE_U_BUILT_IN_TAGS: string[];
+
 export declare interface NVueConfigAPI {
     bundleUrl: string;
     bundleType: string;
@@ -309,6 +349,7 @@ export declare interface NVueDocument {
     open: () => void;
     close: () => void;
     createElement: (tagName: string, props?: Record<string, unknown>) => NVueElement;
+    createText: (text: string) => Record<string, unknown>;
     createComment: (text: string) => Record<string, unknown>;
     fireEvent: (type: string) => void;
     destroy: () => void;
@@ -320,6 +361,9 @@ export declare interface NVueElement {
     type: string;
     ref: string;
     text?: string;
+    attr: Record<string, unknown>;
+    styleSheet: Record<string, Record<string, Record<string, unknown>>>;
+    classList: string[];
     parentNode: NVueElement | null;
     children: Array<NVueElement>;
     previousSibling: NVueElement | null;
@@ -330,8 +374,10 @@ export declare interface NVueElement {
     insertAfter: (node: NVueElement, after: NVueElement) => void;
     setAttr: (key: string, value: any, silent?: boolean) => void;
     setAttrs: (attrs: Record<string, unknown>, silent?: boolean) => void;
+    setClassList: (classList: string[]) => void;
     setStyle: (key: string, value: any, silent?: boolean) => void;
     setStyles: (attrs: Record<string, unknown>, silent?: boolean) => void;
+    setStyleSheet: (styleSheet: Record<string, Record<string, Record<string, unknown>>>) => void;
     addEvent: (type: string, handler: Function, args?: Array<any>) => void;
     removeEvent: (type: string) => void;
     fireEvent: (type: string) => void;
@@ -379,15 +425,6 @@ export declare interface NVueTaskCenter {
     send: (type: string, params: Record<string, unknown>, args: any[], options?: Record<string, unknown>) => void;
     registerHook: (componentId: string, type: string, hook: string, fn: Function) => void;
     updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
-}
-
-export declare class NVueTextNode {
-    instanceId: string;
-    nodeId: number;
-    parentNode: null | NVueElement;
-    nodeType: 3;
-    text: string;
-    constructor(text: string);
 }
 
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
@@ -452,6 +489,12 @@ export declare const ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
 
 export declare function once<T extends (...args: any[]) => any>(fn: T, ctx?: unknown): T;
 
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+export declare function onCreateVueApp(hook: CreateVueAppHook): void;
+
 declare interface Options {
     success?: (res: any) => void;
     fail?: (res: any) => void;
@@ -492,6 +535,8 @@ export declare type PageScrollAction = [typeof ACTION_TYPE_PAGE_SCROLL, number];
 export declare type PageUpdateAction = CreateAction | InsertAction | RemoveAction | AddEventAction | AddWxsEventAction | RemoveEventAction | SetAttributeAction | RemoveAttributeAction | SetTextAction;
 
 export declare function parseEventName(name: string): [string, EventListenerOptions | undefined];
+
+export declare function parseNVueDataset(attr?: Record<string, unknown>): Record<string, unknown>;
 
 /**
  * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts

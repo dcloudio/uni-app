@@ -36,7 +36,7 @@ export class UniNode {
       parent.appendUniChild(this)
     }
   }
-  init(nodeJson: Partial<UniNodeJSON>) {
+  init(nodeJson: Partial<UniNodeJSON>, isCreate: boolean = true) {
     if (hasOwn(nodeJson, 't')) {
       this.$.textContent = nodeJson.t as string
     }
@@ -44,7 +44,15 @@ export class UniNode {
   setText(text: string) {
     this.$.textContent = text
   }
-  insert(parentNodeId: number, refNodeId: number) {
+  insert(
+    parentNodeId: number,
+    refNodeId: number,
+    nodeJson?: Partial<UniNodeJSON>
+  ) {
+    // 部分性能低的手机，create 和 insert 是分开的，而 nodeJson 可能随着 insert
+    if (nodeJson) {
+      this.init(nodeJson, false)
+    }
     const node = this.$
     const parentNode = $(parentNodeId)
     if (refNodeId === -1) {

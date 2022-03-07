@@ -1,18 +1,17 @@
-import path from 'path'
-import { defineUniMainJsPlugin, normalizePath } from '@dcloudio/uni-cli-shared'
-import { isSSR, isSsr, isSsrManifest } from '../utils'
+import {
+  defineUniMainJsPlugin,
+  isSsr,
+  PAGES_JSON_JS,
+} from '@dcloudio/uni-cli-shared'
+import { isSSR, isSsrManifest } from '../utils'
 
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {
-    let pagesJsonJsPath = ''
     let runSSR = false
     return {
       name: 'uni:h5-main-js',
       enforce: 'pre',
       configResolved(config) {
-        pagesJsonJsPath = normalizePath(
-          path.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js')
-        )
         runSSR =
           isSsr(config.command, config) || isSsrManifest(config.command, config)
       },
@@ -27,7 +26,7 @@ export function uniMainJsPlugin() {
               ? createSSRServerApp(code)
               : createSSRClientApp(code)
           }
-          code = `import '${pagesJsonJsPath}';${code}`
+          code = `import './${PAGES_JSON_JS}';${code}`
           return {
             code,
             map: this.getCombinedSourcemap(),

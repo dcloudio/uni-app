@@ -21,6 +21,8 @@ export * from './service/keyboard/getSelectedTextRange'
 
 export * from './service/lifecycle/app'
 
+export * from './service/plugin/push'
+
 // protocols
 export * from './protocols/base/canIUse'
 
@@ -100,6 +102,8 @@ export * from './protocols/ad/rewardedVideoAd'
 export * from './protocols/ad/fullScreenVideoAd'
 export * from './protocols/ad/interstitialAd'
 export * from './protocols/ad/interactiveAd'
+
+export { onCreateVueApp } from '@dcloudio/uni-shared'
 
 // helpers
 export {

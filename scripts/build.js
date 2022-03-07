@@ -1,6 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
-const chalk = require('chalk')
+const colors = require('picocolors')
 const execa = require('execa')
 const { spawn } = require('child_process')
 
@@ -88,7 +88,7 @@ async function buildAll(targets) {
 }
 
 async function build(target) {
-  console.log(`\n${chalk.blueBright(chalk.bold(target))}:`)
+  console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
 

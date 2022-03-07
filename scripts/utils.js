@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
+const colors = require('picocolors')
 
 const priority = {
   'uni-shared': 100,
@@ -8,6 +8,8 @@ const priority = {
   'uni-app': 90,
   'uni-cli-shared': 80,
   'uni-stat': 75,
+  'uni-push': 75,
+  'uni-components': 75,
   'uni-mp-vue': 75,
   'uni-mp-alipay': 70,
   'uni-mp-baidu': 70,
@@ -65,8 +67,8 @@ exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
   } else {
     console.log()
     console.error(
-      `  ${chalk.bgRed.white(' ERROR ')} ${chalk.red(
-        `Target ${chalk.underline(partialTargets)} not found!`
+      `  ${colors.bgRed.white(' ERROR ')} ${colors.red(
+        `Target ${colors.underline(partialTargets)} not found!`
       )}`
     )
     console.log()

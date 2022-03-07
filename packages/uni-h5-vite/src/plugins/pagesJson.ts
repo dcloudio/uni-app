@@ -1,4 +1,3 @@
-import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
   API_DEPS_CSS,
@@ -10,9 +9,9 @@ import {
   defineUniPagesJsonPlugin,
   normalizePagesRoute,
   normalizePagePath,
-  normalizePath,
   isEnableTreeShaking,
   parseManifestJsonOnce,
+  MANIFEST_JSON_JS,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR } from '../utils'
 
@@ -49,15 +48,12 @@ function generatePagesJsonCode(
   const definePagesCode = generatePagesDefineCode(pagesJson, config)
   const uniRoutesCode = generateRoutes(globalName, pagesJson, config)
   const uniConfigCode = generateConfig(globalName, pagesJson, config)
-  const manifestJsonPath = normalizePath(
-    path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json.js')
-  )
   const cssCode = generateCssCode(config)
 
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
-import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from '${manifestJsonPath}'
+import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
 const extend = Object.assign
@@ -132,8 +128,11 @@ function generateCssCode(config: ResolvedConfig) {
   if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
     cssFiles.push(BASE_COMPONENTS_STYLE_PATH + 'input.css')
   }
-  if (config.command === 'serve') {
-    // 开发模式，自动添加所有API相关css
+  const enableTreeShaking = isEnableTreeShaking(
+    parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+  )
+  if (config.command === 'serve' || !enableTreeShaking) {
+    // 开发模式或禁用摇树优化，自动添加所有API相关css
     Object.keys(API_DEPS_CSS).forEach((name) => {
       const styles = API_DEPS_CSS[name as keyof typeof API_DEPS_CSS]
       styles.forEach((style) => {

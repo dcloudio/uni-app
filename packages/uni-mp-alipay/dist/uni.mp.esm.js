@@ -1,5 +1,5 @@
-import { isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, isString, camelize } from '@vue/shared';
-import { injectHook, ref, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
+import { camelize, isPlainObject, hasOwn, isArray, capitalize, isFunction, extend, isString } from '@vue/shared';
+import { ref, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -25,6 +25,25 @@ const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
+
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
     const res = obj
@@ -44,20 +63,6 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
-
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
 
 class EventChannel {
     constructor(id, events) {
@@ -122,11 +127,13 @@ class EventChannel {
     }
 }
 
-const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
-    onPageScroll: 1,
-    onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2,
-};
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
+    return {
+        onPageScroll: 1,
+        onShareAppMessage: 1 << 1,
+        onShareTimeline: 1 << 2,
+    };
+})();
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -300,13 +307,6 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
     });
 }
 
-my.appLaunchHooks = [];
-function injectAppLaunchHooks(appInstance) {
-    my.appLaunchHooks.forEach((hook) => {
-        injectHook(ON_LAUNCH, hook, appInstance);
-    });
-}
-
 const HOOKS = [
     ON_SHOW,
     ON_HIDE,
@@ -334,9 +334,8 @@ function parseApp(instance, parseAppOptions) {
                 mpInstance: this,
                 slots: [],
             });
-            injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
-            instance.$callHook(ON_LAUNCH, extend({ app: { mixin: internalInstance.appContext.app.mixin } }, options));
+            instance.$callHook(ON_LAUNCH, options);
         },
     };
     initLocale(instance);
@@ -663,10 +662,6 @@ function handleLink$1(event) {
 
 const isComponent2 = my.canIUse('component2');
 const mocks = ['$id'];
-const customizeRE = /:/g;
-function customize(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
 function initRelation(mpInstance, detail) {
     // onVueInit
     mpInstance.props.onVI(detail);
@@ -771,7 +766,7 @@ function setRef(ref, refValue, refs, setupState) {
     }
 }
 function triggerEvent(type, detail) {
-    const handler = this.props[customize('on-' + type)];
+    const handler = this.props[customizeEvent('on-' + type)];
     if (!handler) {
         return;
     }
@@ -779,7 +774,7 @@ function triggerEvent(type, detail) {
         dataset: {},
     };
     handler({
-        type: customize(type),
+        type: customizeEvent(type),
         target,
         currentTarget: target,
         detail,

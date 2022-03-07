@@ -1,16 +1,16 @@
 import { extend } from '@vue/shared'
 import { createLaunchOptions, LaunchOptions } from '@dcloudio/uni-core'
 
-const launchOptions: LaunchOptions = createLaunchOptions()
+const launchOptions: LaunchOptions = /*#__PURE__*/ createLaunchOptions()
 
-const enterOptions: LaunchOptions = createLaunchOptions()
+const enterOptions: LaunchOptions = /*#__PURE__*/ createLaunchOptions()
 
 export function getEnterOptions() {
-  return enterOptions
+  return extend({}, enterOptions)
 }
 
 export function getLaunchOptions() {
-  return launchOptions
+  return extend({}, launchOptions)
 }
 
 export function initLaunchOptions({
@@ -25,5 +25,5 @@ export function initLaunchOptions({
     query,
   })
   extend(enterOptions, launchOptions)
-  return launchOptions
+  return extend({}, launchOptions)
 }

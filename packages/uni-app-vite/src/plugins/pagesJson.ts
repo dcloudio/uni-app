@@ -8,6 +8,7 @@ import {
   normalizePagesJson,
   parseManifestJsonOnce,
   getLocaleFiles,
+  MANIFEST_JSON_JS,
 } from '@dcloudio/uni-cli-shared'
 import { initWebpackNVueEntry } from '@dcloudio/uni-cli-nvue'
 
@@ -48,7 +49,8 @@ export function uniPagesJsonPlugin(): Plugin {
         })
         return {
           code:
-            `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson),
+            `import './${MANIFEST_JSON_JS}'\n` +
+            normalizeAppPagesJson(pagesJson),
           map: this.getCombinedSourcemap(),
         }
       },

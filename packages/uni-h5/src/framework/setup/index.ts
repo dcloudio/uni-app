@@ -22,7 +22,7 @@ import {
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
 } from '@dcloudio/uni-shared'
-import { injectAppLaunchHooks } from '@dcloudio/uni-api'
+import { injectAppHooks } from '@dcloudio/uni-api'
 import { subscribeViewMethod, unsubscribeViewMethod } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
@@ -82,7 +82,7 @@ export function setupPage(comp: any) {
     comp.__mpType = 'page'
   }
   return setupComponent(comp, {
-    clone: true,
+    clone: true, // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance) {
       instance.root = instance // 组件 root 指向页面
@@ -140,17 +140,13 @@ export function setupApp(comp: any) {
         return route.query
       }
       const onLaunch = () => {
+        injectAppHooks(instance)
         const { onLaunch, onShow, onPageNotFound } = instance
-        const path = route.path.substr(1)
-        const launchOptions = extend(
-          {
-            app: { mixin: instance.appContext.app.mixin },
-          },
-          initLaunchOptions({
-            path: path || __uniRoutes[0].meta.route,
-            query: decodedQuery(route.query),
-          })
-        )
+        const path = route.path.slice(1)
+        const launchOptions = initLaunchOptions({
+          path: path || __uniRoutes[0].meta.route,
+          query: decodedQuery(route.query),
+        })
         onLaunch && invokeArrayFns(onLaunch, launchOptions)
         onShow && invokeArrayFns(onShow, launchOptions)
         if (__UNI_FEATURE_PAGES__) {
@@ -167,7 +163,6 @@ export function setupApp(comp: any) {
           }
         }
       }
-      injectAppLaunchHooks(instance)
       if (__UNI_FEATURE_PAGES__) {
         // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
         useRouter().isReady().then(onLaunch)

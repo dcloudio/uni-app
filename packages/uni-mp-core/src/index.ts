@@ -50,6 +50,7 @@ export {
   getSystemInfo,
   getSystemInfoSync,
   addSafeAreaInsets,
+  useDeviceId,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'

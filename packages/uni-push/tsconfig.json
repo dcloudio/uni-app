@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": false,
+    "target": "es2015",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowJs": false,
+    "strict": true,
+    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "removeComments": false,
+    "lib": ["ESNext", "DOM"],
+    "types": ["@dcloudio/types"]
+  },
+  "include": ["src"]
+}

@@ -73,6 +73,17 @@ function getSsrGlobalData() {
     return uniShared.sanitise(globalData);
 }
 
+/**
+ * uni 对象是跨实例的，而此处列的 API 均是需要跟当前实例关联的，比如 requireNativePlugin 获取 dom 时，依赖当前 weex 实例
+ */
+function getCurrentSubNVue() {
+    // @ts-ignore
+    return uni.getSubNVueById(plus.webview.currentWebview().id);
+}
+function requireNativePlugin(name) {
+    return weex.requireModule(name);
+}
+
 function resolveEasycom(component, easycom) {
     return shared.isString(component) ? easycom : component;
 }
@@ -120,6 +131,7 @@ const onNavigationBarSearchInputConfirmed =
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
+exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;
 exports.onBackPress = onBackPress;
@@ -145,6 +157,7 @@ exports.onTabItemTap = onTabItemTap;
 exports.onThemeChange = onThemeChange;
 exports.onUnhandledRejection = onUnhandledRejection;
 exports.onUnload = onUnload;
+exports.requireNativePlugin = requireNativePlugin;
 exports.resolveEasycom = resolveEasycom;
 exports.shallowSsrRef = shallowSsrRef;
 exports.ssrRef = ssrRef;

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
-import chalk from 'chalk'
+import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
 import { PluginContext, RollupError, SourceMap } from 'rollup'
@@ -29,6 +29,7 @@ import type Less from 'less'
 import type { Alias } from 'types/alias'
 import { transform, formatMessages } from 'esbuild'
 import { preCss, preNVueCss } from '../../../../preprocess'
+import { PAGES_JSON_JS } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -196,7 +197,7 @@ function findCssModuleIds(
   const moduleInfo = this.getModuleInfo(moduleId)
   if (moduleInfo) {
     moduleInfo.importedIds.forEach((id) => {
-      if (id.includes('pages.json.js')) {
+      if (id.includes(PAGES_JSON_JS)) {
         // 查询main.js时，需要忽略pages.json.js，否则会把所有页面样式加进来
         return
       }
@@ -567,7 +568,7 @@ async function compileCSS(
           column: message.column,
         })}`
       }
-      config.logger.warn(chalk.yellow(msg))
+      config.logger.warn(colors.yellow(msg))
     }
   }
 
@@ -716,7 +717,7 @@ export async function minifyCSS(css: string, config: ResolvedConfig) {
   if (warnings.length) {
     const msgs = await formatMessages(warnings, { kind: 'warning' })
     config.logger.warn(
-      chalk.yellow(`warnings when minifying css:\n${msgs.join('\n')}`)
+      colors.yellow(`warnings when minifying css:\n${msgs.join('\n')}`)
     )
   }
   return code

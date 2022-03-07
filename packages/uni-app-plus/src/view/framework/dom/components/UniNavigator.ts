@@ -10,6 +10,14 @@ export class UniNavigator extends UniComponent {
     refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-navigator', Navigator, parentNodeId, refNodeId, nodeJson)
+    super(
+      id,
+      'uni-navigator',
+      Navigator,
+      parentNodeId,
+      refNodeId,
+      nodeJson,
+      'uni-navigator'
+    )
   }
 }

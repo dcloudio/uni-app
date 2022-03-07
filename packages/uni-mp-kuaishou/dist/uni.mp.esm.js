@@ -1,5 +1,5 @@
-import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
-import { injectHook, ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { camelize, isPlainObject, isArray, hasOwn, isFunction, extend } from '@vue/shared';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
 const ON_READY$1 = 'onReady';
 
@@ -88,6 +88,35 @@ const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
+
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
+
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
     const res = obj
@@ -107,20 +136,6 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
-
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
 
 class EventChannel {
     constructor(id, events) {
@@ -185,11 +200,13 @@ class EventChannel {
     }
 }
 
-const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
-    onPageScroll: 1,
-    onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2,
-};
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
+    return {
+        onPageScroll: 1,
+        onShareAppMessage: 1 << 1,
+        onShareTimeline: 1 << 2,
+    };
+})();
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -357,12 +374,26 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
         }
     });
 }
-
-ks.appLaunchHooks = [];
-function injectAppLaunchHooks(appInstance) {
-    ks.appLaunchHooks.forEach((hook) => {
-        injectHook(ON_LAUNCH, hook, appInstance);
-    });
+const findMixinRuntimeHooks = /*#__PURE__*/ once(() => {
+    const runtimeHooks = [];
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm && app.$vm.$) {
+        const mixins = app.$vm.$.appContext.mixins;
+        if (isArray(mixins)) {
+            const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
+            mixins.forEach((mixin) => {
+                hooks.forEach((hook) => {
+                    if (hasOwn(mixin, hook) && !runtimeHooks.includes(hook)) {
+                        runtimeHooks.push(hook);
+                    }
+                });
+            });
+        }
+    }
+    return runtimeHooks;
+});
+function initMixinRuntimeHooks(mpOptions) {
+    initHooks(mpOptions, findMixinRuntimeHooks());
 }
 
 const HOOKS = [
@@ -389,9 +420,8 @@ function parseApp(instance, parseAppOptions) {
                 mpInstance: this,
                 slots: [],
             });
-            injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
-            instance.$callHook(ON_LAUNCH, extend({ app: { mixin: internalInstance.appContext.app.mixin } }, options));
+            instance.$callHook(ON_LAUNCH, options);
         },
     };
     initLocale(instance);
@@ -870,6 +900,7 @@ function parsePage(vueOptions, parseOptions) {
     initHooks(methods, PAGE_INIT_HOOKS);
     initUnknownHooks(methods, vueOptions);
     initRuntimeHooks(methods, vueOptions.__runtimeHooks);
+    initMixinRuntimeHooks(methods);
     parse && parse(miniProgramPageOptions, { handleLink });
     return miniProgramPageOptions;
 }
@@ -881,14 +912,10 @@ function initCreatePage(parseOptions) {
 
 const MPPage = Page;
 const MPComponent = Component;
-const customizeRE = /:/g;
-function customize(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     mpInstance.triggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
+        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
     };
 }
 function initHook(name, options, isComponent) {

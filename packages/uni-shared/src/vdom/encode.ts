@@ -1,8 +1,10 @@
-export const EventOptionFlags = {
-  capture: 1,
-  once: 1 << 1,
-  passive: 1 << 2,
-}
+export const EventOptionFlags = /*#__PURE__*/ (() => {
+  return {
+    capture: 1,
+    once: 1 << 1,
+    passive: 1 << 2,
+  }
+})()
 
 export function encodeOptions(options?: AddEventListenerOptions) {
   let flag = 0
@@ -20,11 +22,13 @@ export function encodeOptions(options?: AddEventListenerOptions) {
   return flag
 }
 
-export const EventModifierFlags = {
-  stop: 1,
-  prevent: 1 << 1,
-  self: 1 << 2,
-}
+export const EventModifierFlags = /*#__PURE__*/ (() => {
+  return {
+    stop: 1,
+    prevent: 1 << 1,
+    self: 1 << 2,
+  }
+})()
 
 export function encodeModifier(modifiers: string[]) {
   let flag = 0

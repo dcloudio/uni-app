@@ -7,8 +7,11 @@ import {
   getDevServerOptions,
   resolveMainPathOnce,
   parseManifestJsonOnce,
+  initPostcssPlugin,
+  parseRpx2UnitOnce,
+  isSsr,
 } from '@dcloudio/uni-cli-shared'
-import { createDefine, isSsr } from '../utils'
+import { createDefine } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
 import { external } from './configureServer/ssr'
 import { extend, hasOwn } from '@vue/shared'
@@ -47,6 +50,13 @@ export function createConfig(options: {
     }
 
     return {
+      css: {
+        postcss: {
+          plugins: initPostcssPlugin({
+            uniApp: parseRpx2UnitOnce(inputDir, process.env.UNI_PLATFORM),
+          }),
+        },
+      },
       optimizeDeps: {
         entries: resolveMainPathOnce(inputDir),
         exclude: external,

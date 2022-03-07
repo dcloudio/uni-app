@@ -6,7 +6,7 @@ import {
 } from '@dcloudio/uni-components'
 import { useI18n, initI18nPickerMsgsOnce } from '@dcloudio/uni-core'
 import { UniFormCtx, uniFormKey } from '@dcloudio/uni-components'
-import { showPage, Page } from '../../../helpers/page'
+import { showPage, Page } from '@dcloudio/uni-core'
 import { getNavigationBarHeight } from '../../../helpers/navigationBar'
 
 type Mode = 'selector' | 'multiSelector' | 'time' | 'date'

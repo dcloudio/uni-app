@@ -6,7 +6,7 @@ var shared = require("@vue/shared");
 var uniShared = require("@dcloudio/uni-shared");
 var uniI18n = require("@dcloudio/uni-i18n");
 var vueRouter = require("vue-router");
-const isEnableLocale = uniShared.once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+const isEnableLocale = /* @__PURE__ */ uniShared.once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -156,52 +156,8 @@ function initTabBarI18n(tabBar2) {
   }
   return tabBar2;
 }
-const E = function() {
-};
-E.prototype = {
-  on: function(name, callback, ctx) {
-    var e2 = this.e || (this.e = {});
-    (e2[name] || (e2[name] = [])).push({
-      fn: callback,
-      ctx
-    });
-    return this;
-  },
-  once: function(name, callback, ctx) {
-    var self = this;
-    function listener() {
-      self.off(name, listener);
-      callback.apply(ctx, arguments);
-    }
-    listener._ = callback;
-    return this.on(name, listener, ctx);
-  },
-  emit: function(name) {
-    var data = [].slice.call(arguments, 1);
-    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-    var i = 0;
-    var len = evtArr.length;
-    for (i; i < len; i++) {
-      evtArr[i].fn.apply(evtArr[i].ctx, data);
-    }
-    return this;
-  },
-  off: function(name, callback) {
-    var e2 = this.e || (this.e = {});
-    var evts = e2[name];
-    var liveEvents = [];
-    if (evts && callback) {
-      for (var i = 0, len = evts.length; i < len; i++) {
-        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-          liveEvents.push(evts[i]);
-      }
-    }
-    liveEvents.length ? e2[name] = liveEvents : delete e2[name];
-    return this;
-  }
-};
 function initBridge(subscribeNamespace) {
-  const emitter = new E();
+  const emitter = new uniShared.Emitter();
   return {
     on(event, callback) {
       return emitter.on(event, callback);
@@ -235,7 +191,7 @@ const invokeServiceMethod = (name, args, callback) => {
   callback && subscribe(INVOKE_SERVICE_API + "." + id, callback, true);
   publishHandler(INVOKE_SERVICE_API, { id, name, args });
 };
-const viewMethods = Object.create(null);
+const viewMethods = /* @__PURE__ */ Object.create(null);
 function normalizeViewMethodName(pageId, name) {
   return pageId + "." + name;
 }
@@ -245,10 +201,9 @@ function registerViewMethod(pageId, name, fn) {
     viewMethods[name] = fn;
   }
 }
-const ViewJSBridge = /* @__PURE__ */ shared.extend(initBridge("service"), {
+const ViewJSBridge = /* @__PURE__ */ shared.extend(/* @__PURE__ */ initBridge("service"), {
   invokeServiceMethod
 });
-uniShared.passive(true);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ vue.withModifiers(() => {
@@ -413,12 +368,12 @@ function findUniTarget(target) {
   }
   return target;
 }
-function createNativeEvent(evt) {
+function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   const event = {
     type,
     timeStamp,
-    target: uniShared.normalizeTarget(findUniTarget(target)),
+    target: uniShared.normalizeTarget(htmlElement ? target : findUniTarget(target)),
     detail: {},
     currentTarget: uniShared.normalizeTarget(currentTarget)
   };
@@ -452,7 +407,7 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
+const ServiceJSBridge = /* @__PURE__ */ shared.extend(/* @__PURE__ */ initBridge("view"), {
   invokeOnCallback,
   invokeViewMethod,
   invokeViewMethodKeepAlive
@@ -602,6 +557,7 @@ var animation = {
   }
 };
 const defineBuiltInComponent = (options) => {
+  options.__reserved = true;
   const { props: props2, mixins } = options;
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
@@ -609,6 +565,7 @@ const defineBuiltInComponent = (options) => {
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
+  options.__reserved = true;
   options.compatConfig = {
     MODE: 3
   };
@@ -703,7 +660,7 @@ function useBooleanAttr(props2, keys) {
       res[key] = true;
     }
     return res;
-  }, Object.create(null));
+  }, /* @__PURE__ */ Object.create(null));
 }
 function withWebEvent(fn) {
   return fn.__wwe = true, fn;
@@ -762,7 +719,7 @@ function provideForm(trigger) {
             name && (res[name] = value);
           }
           return res;
-        }, Object.create(null))
+        }, /* @__PURE__ */ Object.create(null))
       });
     },
     reset(evt) {
@@ -772,16 +729,28 @@ function provideForm(trigger) {
   });
   return fields2;
 }
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$v = {
+const labelProps = {
   for: {
     type: String,
     default: ""
   }
 };
+const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+function useProvideLabel() {
+  const handlers = [];
+  vue.provide(uniLabelKey, {
+    addHandler(handler) {
+      handlers.push(handler);
+    },
+    removeHandler(handler) {
+      handlers.splice(handlers.indexOf(handler), 1);
+    }
+  });
+  return handlers;
+}
 var index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$v,
+  props: labelProps,
   setup(props2, {
     slots
   }) {
@@ -811,62 +780,51 @@ var index$D = /* @__PURE__ */ defineBuiltInComponent({
     }, [slots.default && slots.default()], 10, ["onClick"]);
   }
 });
-function useProvideLabel() {
-  const handlers = [];
-  vue.provide(uniLabelKey, {
-    addHandler(handler) {
-      handlers.push(handler);
-    },
-    removeHandler(handler) {
-      handlers.splice(handlers.indexOf(handler), 1);
-    }
-  });
-  return handlers;
-}
+const buttonProps = {
+  id: {
+    type: String,
+    default: ""
+  },
+  hoverClass: {
+    type: String,
+    default: "button-hover"
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 20
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 70
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  formType: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: ""
+  },
+  loading: {
+    type: [Boolean, String],
+    default: false
+  },
+  plain: {
+    type: [Boolean, String],
+    default: false
+  }
+};
 var index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    hoverClass: {
-      type: String,
-      default: "button-hover"
-    },
-    hoverStartTime: {
-      type: [Number, String],
-      default: 20
-    },
-    hoverStayTime: {
-      type: [Number, String],
-      default: 70
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    formType: {
-      type: String,
-      default: ""
-    },
-    openType: {
-      type: String,
-      default: ""
-    },
-    loading: {
-      type: [Boolean, String],
-      default: false
-    },
-    plain: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
+  props: buttonProps,
   setup(props2, {
     slots
   }) {
@@ -978,13 +936,13 @@ function validateProtocols(name, args, protocol, onFail) {
     return;
   }
   if (!shared.isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+    return validateProtocol(name, args[0] || /* @__PURE__ */ Object.create(null), protocol, onFail);
   }
   const len = protocol.length;
   const argsLen = args.length;
   for (let i = 0; i < len; i++) {
     const opts = protocol[i];
-    const data = Object.create(null);
+    const data = /* @__PURE__ */ Object.create(null);
     if (argsLen > i) {
       data[opts.name] = args[i];
     }
@@ -1221,7 +1179,7 @@ function wrapperReturnValue(method, returnValue) {
   return returnValue;
 }
 function getApiInterceptorHooks(method) {
-  const interceptor = Object.create(null);
+  const interceptor = /* @__PURE__ */ Object.create(null);
   Object.keys(globalInterceptors).forEach((hook) => {
     if (hook !== "returnValue") {
       interceptor[hook] = globalInterceptors[hook].slice();
@@ -1357,6 +1315,7 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(name, wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
+new uniShared.Emitter();
 const validator = [
   {
     name: "id",
@@ -1631,10 +1590,10 @@ function useResizeSensorReset(rootRef) {
   };
 }
 const pixelRatio = 1;
-function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio;
-  canvas.height = canvas.offsetHeight * pixelRatio;
-  canvas.getContext("2d").__hidpi__ = true;
+function wrapper(canvas, hidpi = true) {
+  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
+  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  canvas.getContext("2d").__hidpi__ = hidpi;
 }
 const initHidpiOnce = /* @__PURE__ */ uniShared.once(() => {
   return void 0;
@@ -1667,7 +1626,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$u = {
+const props$p = {
   canvasId: {
     type: String,
     default: ""
@@ -1675,6 +1634,10 @@ const props$u = {
   disableScroll: {
     type: [Boolean, String],
     default: false
+  },
+  hidpi: {
+    type: Boolean,
+    default: true
   }
 };
 var index$B = /* @__PURE__ */ defineBuiltInComponent({
@@ -1683,7 +1646,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$u,
+  props: props$p,
   computed: {
     id() {
       return this.canvasId;
@@ -1711,7 +1674,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
     const {
       _handleSubscribe,
       _resize
-    } = useMethods(canvas, actionsWaiting);
+    } = useMethods(props2, canvas, actionsWaiting);
     useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId));
     return () => {
       const {
@@ -1777,21 +1740,22 @@ function useListeners(props2, Listeners, trigger) {
     _listeners
   };
 }
-function useMethods(canvasRef, actionsWaiting) {
+function useMethods(props2, canvasRef, actionsWaiting) {
   let _actionsDefer = [];
   let _images = {};
+  const _pixelRatio = vue.computed(() => props2.hidpi ? pixelRatio : 1);
   function _resize(size) {
     let canvas = canvasRef.value;
-    var hasChanged = !size || canvas.width !== Math.floor(size.width * pixelRatio) || canvas.height !== Math.floor(size.height * pixelRatio);
+    var hasChanged = !size || canvas.width !== Math.floor(size.width * _pixelRatio.value) || canvas.height !== Math.floor(size.height * _pixelRatio.value);
     if (!hasChanged)
       return;
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext("2d");
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
       context.putImageData(imageData, 0, 0);
     } else {
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
     }
   }
   function actionsChanged({
@@ -2001,8 +1965,8 @@ function useMethods(canvasRef, actionsWaiting) {
     height = height ? Math.min(height, maxHeight) : maxHeight;
     if (!hidpi) {
       if (!destWidth && !destHeight) {
-        destWidth = Math.round(width * pixelRatio);
-        destHeight = Math.round(height * pixelRatio);
+        destWidth = Math.round(width * _pixelRatio.value);
+        destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
@@ -2140,7 +2104,7 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$t = {
+const props$o = {
   name: {
     type: String,
     default: ""
@@ -2148,7 +2112,7 @@ const props$t = {
 };
 var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$t,
+  props: props$o,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2200,7 +2164,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$s = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2224,7 +2188,7 @@ const props$s = {
 };
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$s,
+  props: props$n,
   setup(props2, {
     slots
   }) {
@@ -2291,7 +2255,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$r = {
+const props$m = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2463,7 +2427,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$q = /* @__PURE__ */ shared.extend({}, props$r, {
+const props$l = /* @__PURE__ */ shared.extend({}, props$m, {
   id: {
     type: String,
     default: ""
@@ -2491,7 +2455,7 @@ const props$q = /* @__PURE__ */ shared.extend({}, props$r, {
 });
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$q,
+  props: props$l,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2577,7 +2541,7 @@ var index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$p = {
+const props$k = {
   src: {
     type: String,
     default: ""
@@ -2616,7 +2580,7 @@ const IMAGE_MODES = {
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$p,
+  props: props$k,
   setup(props2, {
     emit: emit2
   }) {
@@ -2807,7 +2771,6 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-uniShared.passive(true);
 function useUserAction() {
   const state = vue.reactive({
     userAction: false
@@ -2866,7 +2829,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$o = /* @__PURE__ */ shared.extend({}, {
+const props$j = /* @__PURE__ */ shared.extend({}, {
   name: {
     type: String,
     default: ""
@@ -2935,7 +2898,7 @@ const props$o = /* @__PURE__ */ shared.extend({}, {
     type: Boolean,
     default: false
   }
-}, props$r);
+}, props$m);
 const emit = [
   "input",
   "focus",
@@ -3040,15 +3003,22 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1) {
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
       field.selectionStart = state.selectionStart;
       field.selectionEnd = state.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1) {
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && field.type !== "number") {
       field.selectionEnd = field.selectionStart = state.cursor;
+    }
+  }
+  function getFieldSelectionEnd(field) {
+    if (field.type === "number") {
+      return null;
+    } else {
+      return field.selectionEnd;
     }
   }
   function initField() {
@@ -3070,7 +3040,7 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
       if (!state.composing) {
         triggerInput(event, {
           value: field.value,
-          cursor: field.selectionEnd
+          cursor: getFieldSelectionEnd(field)
         }, force);
       }
     };
@@ -3082,7 +3052,7 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
       state.focus = false;
       trigger("blur", event, {
         value: state.value,
-        cursor: event.target.selectionEnd
+        cursor: getFieldSelectionEnd(event.target)
       });
     };
     field.addEventListener("change", (event) => event.stopPropagation());
@@ -3123,7 +3093,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
+const props$i = /* @__PURE__ */ shared.extend({}, props$j, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3135,7 +3105,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$n,
+  props: props$i,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3313,7 +3283,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$m = {
+const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -3322,7 +3292,7 @@ const props$m = {
 var index$v = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$m,
+  props: movableAreaProps,
   setup(props2, {
     slots
   }) {
@@ -3533,7 +3503,7 @@ function Friction(e2, t2) {
   this._v = 0;
 }
 Friction.prototype.setV = function(x, y) {
-  var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+  const n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
   this._x_a = -this._f * this._x_v / n;
@@ -3554,8 +3524,8 @@ Friction.prototype.s = function(t2) {
     t2 = this._t;
     this._lastDt = t2;
   }
-  var x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
-  var y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+  let x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
+  let y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -3589,7 +3559,7 @@ Friction.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction.prototype.done = function() {
-  var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
@@ -3610,10 +3580,10 @@ function Spring(m, k, c) {
   this._startTime = 0;
 }
 Spring.prototype._solve = function(e2, t2) {
-  var n = this._c;
-  var i = this._m;
-  var r = this._k;
-  var o = n * n - 4 * i * r;
+  const n = this._c;
+  const i = this._m;
+  const r = this._k;
+  const o = n * n - 4 * i * r;
   if (o === 0) {
     const a = -n / (2 * i);
     const s = e2;
@@ -3623,7 +3593,7 @@ Spring.prototype._solve = function(e2, t2) {
         return (s + l * e3) * Math.pow(Math.E, a * e3);
       },
       dx: function(e3) {
-        var t3 = Math.pow(Math.E, a * e3);
+        const t3 = Math.pow(Math.E, a * e3);
         return a * (s + l * e3) * t3 + l * t3;
       }
     };
@@ -3635,8 +3605,8 @@ Spring.prototype._solve = function(e2, t2) {
     const h = e2 - d;
     return {
       x: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -3651,8 +3621,8 @@ Spring.prototype._solve = function(e2, t2) {
         return h * t3 + d * n2;
       },
       dx: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -3668,18 +3638,18 @@ Spring.prototype._solve = function(e2, t2) {
       }
     };
   }
-  var p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
-  var f2 = -n / 2 * i;
-  var v2 = e2;
-  var g2 = (t2 - f2 * e2) / p2;
+  const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
+  const f2 = -n / 2 * i;
+  const v2 = e2;
+  const g2 = (t2 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      var t3 = Math.pow(Math.E, f2 * e3);
-      var n2 = Math.cos(p2 * e3);
-      var i2 = Math.sin(p2 * e3);
+      const t3 = Math.pow(Math.E, f2 * e3);
+      const n2 = Math.cos(p2 * e3);
+      const i2 = Math.sin(p2 * e3);
       return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
     }
   };
@@ -3702,7 +3672,7 @@ Spring.prototype.setEnd = function(e2, n, i) {
   }
   if (e2 !== this._endPosition || !t(n, 0.1)) {
     n = n || 0;
-    var r = this._endPosition;
+    let r = this._endPosition;
     if (this._solution) {
       if (t(n, 0.1)) {
         n = this._solution.dx((i - this._startTime) / 1e3);
@@ -3787,14 +3757,14 @@ function STD(e2, t2, n) {
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i) {
-  var r = new Date().getTime();
+  const r = new Date().getTime();
   this._springX.setEnd(e2, i, r);
   this._springY.setEnd(t2, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
 STD.prototype.x = function() {
-  var e2 = (new Date().getTime() - this._startTime) / 1e3;
+  const e2 = (new Date().getTime() - this._startTime) / 1e3;
   return {
     x: this._springX.x(e2),
     y: this._springY.x(e2),
@@ -3802,7 +3772,7 @@ STD.prototype.x = function() {
   };
 };
 STD.prototype.done = function() {
-  var e2 = new Date().getTime();
+  const e2 = new Date().getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
 STD.prototype.reconfigure = function(e2, t2, n) {
@@ -3810,7 +3780,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$l = {
+const movableViewProps = {
   direction: {
     type: String,
     default: "none"
@@ -3864,9 +3834,12 @@ const props$l = {
     default: true
   }
 };
+function v(a, b) {
+  return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
+}
 var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$l,
+  props: movableViewProps,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -3909,9 +3882,6 @@ function f(t2, n) {
   }
   let i = t2.offsetTop;
   return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
-}
-function v(a, b) {
-  return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -4237,8 +4207,14 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$k = {
+const OPEN_TYPES = [
+  "navigate",
+  "redirect",
+  "switchTab",
+  "reLaunch",
+  "navigateBack"
+];
+const navigatorProps = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -4275,63 +4251,59 @@ const props$k = {
     default: false
   }
 };
+function createNavigatorOnClick(props2) {
+  return () => {
+    if (props2.openType !== "navigateBack" && !props2.url) {
+      console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+      return;
+    }
+    switch (props2.openType) {
+      case "navigate":
+        uni.navigateTo({
+          url: props2.url
+        });
+        break;
+      case "redirect":
+        uni.redirectTo({
+          url: props2.url,
+          exists: props2.exists
+        });
+        break;
+      case "switchTab":
+        uni.switchTab({
+          url: props2.url
+        });
+        break;
+      case "reLaunch":
+        uni.reLaunch({
+          url: props2.url
+        });
+        break;
+      case "navigateBack":
+        uni.navigateBack({
+          delta: props2.delta
+        });
+        break;
+    }
+  };
+}
 var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
     MODE: 3
   },
-  props: props$k,
+  props: navigatorProps,
   setup(props2, {
     slots
   }) {
     const vm = vue.getCurrentInstance();
     const __scopeId = vm && vm.root.type.__scopeId || "";
     const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const {
       hovering,
       binding
     } = useHover(props2);
-    function onClick($event) {
-      if (props2.openType !== "navigateBack" && !props2.url) {
-        console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
-        return;
-      }
-      switch (props2.openType) {
-        case "navigate":
-          uni.navigateTo({
-            url: props2.url
-          });
-          break;
-        case "redirect":
-          uni.redirectTo({
-            url: props2.url,
-            exists: props2.exists
-          });
-          break;
-        case "switchTab":
-          uni.switchTab({
-            url: props2.url
-          });
-          break;
-        case "reLaunch":
-          uni.reLaunch({
-            url: props2.url
-          });
-          break;
-        case "navigateBack":
-          uni.navigateBack({
-            delta: props2.delta
-          });
-          break;
-      }
-    }
+    const onClick = createNavigatorOnClick(props2);
     return () => {
       const {
         hoverClass,
@@ -4344,7 +4316,7 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": onEventPrevent
       }, [vue.createVNode("uni-navigator", vue.mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, $attrs.value, $excludeAttrs.value, $listeners.value, {
+      }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
@@ -4352,7 +4324,7 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$j = {
+const pickerViewProps = {
   value: {
     type: Array,
     default() {
@@ -4399,7 +4371,7 @@ function useState$2(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$j,
+  props: pickerViewProps,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -4492,7 +4464,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const getPickerViewColumn = vue.inject("getPickerViewColumn");
     const instance = vue.getCurrentInstance();
     const currentRef = getPickerViewColumn ? getPickerViewColumn(instance) : vue.ref(0);
-    const pickerViewProps = vue.inject("pickerViewProps");
+    const pickerViewProps2 = vue.inject("pickerViewProps");
     const pickerViewState = vue.inject("pickerViewState");
     const indicatorHeight = vue.ref(34);
     const resizeSensorRef = vue.ref(null);
@@ -4558,11 +4530,11 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": handleTap,
         "class": "uni-picker-view-group"
       }, [vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
-        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        "class": ["uni-picker-view-mask", pickerViewProps2.maskClass],
+        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps2.maskStyle}`
       }), null, 16), vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-        "style": pickerViewProps.indicatorStyle
+        "class": ["uni-picker-view-indicator", pickerViewProps2.indicatorClass],
+        "style": pickerViewProps2.indicatorStyle
       }), [vue.createVNode(ResizeSensor, {
         "ref": resizeSensorRef,
         "onResize": ({
@@ -4578,18 +4550,23 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const VALUES = {
+const FONT_SIZE = 16;
+const PROGRESS_VALUES = {
   activeColor: uniShared.PRIMARY_COLOR,
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$i = {
+const progressProps = {
   percent: {
     type: [Number, String],
     default: 0,
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  fontSize: {
+    type: [String, Number],
+    default: FONT_SIZE
   },
   showInfo: {
     type: [Boolean, String],
@@ -4604,15 +4581,15 @@ const props$i = {
   },
   color: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   activeColor: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   backgroundColor: {
     type: String,
-    default: VALUES.backgroundColor
+    default: PROGRESS_VALUES.backgroundColor
   },
   active: {
     type: [Boolean, String],
@@ -4620,7 +4597,7 @@ const props$i = {
   },
   activeMode: {
     type: String,
-    default: VALUES.activeMode
+    default: PROGRESS_VALUES.activeMode
   },
   duration: {
     type: [Number, String],
@@ -4628,11 +4605,15 @@ const props$i = {
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  borderRadius: {
+    type: [Number, String],
+    default: 0
   }
 };
 var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$i,
+  props: progressProps,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -4668,7 +4649,7 @@ function useProgressState(props2) {
   const currentPercent = vue.ref(0);
   const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
   const innerBarStyle = vue.computed(() => {
-    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
+    const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = vue.computed(() => {
@@ -4689,7 +4670,7 @@ function useProgressState(props2) {
 }
 function _activeAnimation(state, props2) {
   if (props2.active) {
-    state.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state.lastPercent;
+    state.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
     state.strokeTimer = setInterval(() => {
       if (state.currentPercent + 1 > state.realPercent) {
         state.currentPercent = state.realPercent;
@@ -4887,96 +4868,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-function removeDOCTYPE(html) {
-  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
-}
-function parseAttrs(attrs) {
-  return attrs.reduce(function(pre, attr2) {
-    let value = attr2.value;
-    const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
-      value = value.split(" ");
-    }
-    if (pre[name]) {
-      if (Array.isArray(pre[name])) {
-        pre[name].push(value);
-      } else {
-        pre[name] = [pre[name], value];
-      }
-    } else {
-      pre[name] = value;
-    }
-    return pre;
-  }, {});
-}
-function parseHtml(html) {
-  html = removeDOCTYPE(html);
-  const stacks = [];
-  const results = {
-    node: "root",
-    children: []
-  };
-  HTMLParser(html, {
-    start: function(tag, attrs, unary) {
-      const node = {
-        name: tag
-      };
-      if (attrs.length !== 0) {
-        node.attrs = parseAttrs(attrs);
-      }
-      if (unary) {
-        const parent = stacks[0] || results;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      } else {
-        stacks.unshift(node);
-      }
-    },
-    end: function(tag) {
-      const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    chars: function(text) {
-      const node = {
-        type: "text",
-        text
-      };
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    comment: function(text) {
-      const node = {
-        node: "comment",
-        text
-      };
-      const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
-      }
-      parent.children.push(node);
-    }
-  });
-  return results.children;
-}
 const TAGS = {
   a: "",
   abbr: "",
@@ -5132,6 +5023,96 @@ function processClickEvent(node, elem, triggerItemClick) {
     }, true);
   }
 }
+function removeDOCTYPE(html) {
+  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+}
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
+    let value = attr2.value;
+    const name = attr2.name;
+    if (value.match(/ /) && name !== "style") {
+      value = value.split(" ");
+    }
+    if (pre[name]) {
+      if (Array.isArray(pre[name])) {
+        pre[name].push(value);
+      } else {
+        pre[name] = [pre[name], value];
+      }
+    } else {
+      pre[name] = value;
+    }
+    return pre;
+  }, {});
+}
+function parseHtml(html) {
+  html = removeDOCTYPE(html);
+  const stacks = [];
+  const results = {
+    node: "root",
+    children: []
+  };
+  HTMLParser(html, {
+    start: function(tag, attrs, unary) {
+      const node = {
+        name: tag
+      };
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
+      }
+      if (unary) {
+        const parent = stacks[0] || results;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      } else {
+        stacks.unshift(node);
+      }
+    },
+    end: function(tag) {
+      const node = stacks.shift();
+      if (node.name !== tag)
+        console.error("invalid state: mismatch end tag");
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    chars: function(text) {
+      const node = {
+        type: "text",
+        text
+      };
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    comment: function(text) {
+      const node = {
+        node: "comment",
+        text
+      };
+      const parent = stacks[0];
+      if (!parent.children) {
+        parent.children = [];
+      }
+      parent.children.push(node);
+    }
+  });
+  return results.children;
+}
 const props$f = {
   nodes: {
     type: [Array, String],
@@ -5176,7 +5157,6 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-uniShared.passive(true);
 const props$e = {
   scrollX: {
     type: [Boolean, String],
@@ -6369,7 +6349,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
       const children = [];
       if (slots.default) {
         slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8) {
+          if (vnode.shapeFlag & 8 && vnode.type !== vue.Comment) {
             const lines = parseText(vnode.children, {
               space: props2.space,
               decode: props2.decode
@@ -6399,7 +6379,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$9 = /* @__PURE__ */ shared.extend({}, props$o, {
+const props$9 = /* @__PURE__ */ shared.extend({}, props$j, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -6703,6 +6683,9 @@ function initApp$1(app) {
     globalProperties.$set = set;
     globalProperties.$applyOptions = applyOptions;
   }
+  {
+    uniShared.invokeCreateVueAppHook(app);
+  }
 }
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
@@ -6788,7 +6771,7 @@ function normalizeWindowBottom(windowBottom) {
   return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
 }
 const SEP = "$$";
-const currentPagesMap = new Map();
+const currentPagesMap = /* @__PURE__ */ new Map();
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
@@ -6836,7 +6819,7 @@ function useKeepAliveRoute() {
     routeCache
   };
 }
-const pageCacheMap = new Map();
+const pageCacheMap = /* @__PURE__ */ new Map();
 const routeCache = {
   get(key) {
     return pageCacheMap.get(key);
@@ -7818,12 +7801,6 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
-var MapType;
-(function(MapType2) {
-  MapType2["QQ"] = "qq";
-  MapType2["GOOGLE"] = "google";
-  MapType2["UNKNOWN"] = "";
-})(MapType || (MapType = {}));
 const props$6 = {
   id: {
     type: [Number, String],
@@ -8663,7 +8640,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "ref": mapRef,
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => item.id && vue.createVNode(MapMarker, vue.mergeProps({
+      }, null, 512), props2.markers.map((item) => vue.createVNode(MapMarker, vue.mergeProps({
         "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, item, null, 16)), props2.showLocation && vue.createVNode(MapLocation, null, null), vue.createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
@@ -10711,7 +10688,7 @@ function usePageHeadButtons({
       type
     } = navigationBar;
     const isTransparent = type === "transparent";
-    const fonts = Object.create(null);
+    const fonts = /* @__PURE__ */ Object.create(null);
     buttons.forEach((btn, index2) => {
       if (btn.fontSrc && !btn.fontFamily) {
         const fontSrc = getRealPath(btn.fontSrc);

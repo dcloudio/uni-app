@@ -3,8 +3,9 @@ import {
   parsePagesJsonOnce,
   parseManifestJsonOnce,
   initFeatures,
+  isSsr,
 } from '@dcloudio/uni-cli-shared'
-import { isSsr, isSsrManifest } from './ssr'
+import { isSsrManifest } from './ssr'
 
 export function createDefine(
   command: ConfigEnv['command'],

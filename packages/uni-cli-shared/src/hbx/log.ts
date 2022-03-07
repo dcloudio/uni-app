@@ -1,5 +1,5 @@
 import path from 'path'
-import chalk from 'chalk'
+import colors from 'picocolors'
 import { LogErrorOptions } from 'vite'
 import { normalizePath } from '../utils'
 import { Formatter } from '../logs/format'
@@ -9,6 +9,22 @@ const SIGNAL_H5_LOCAL = ' > Local:'
 const SIGNAL_H5_NETWORK = ' > Network:'
 
 const networkLogs: string[] = []
+
+export function formatAtFilename(
+  filename: string,
+  line?: number,
+  column?: number
+) {
+  return `at ${colors.cyan(
+    normalizePath(
+      path.relative(process.env.UNI_INPUT_DIR, filename.split('?')[0])
+    ) +
+      ':' +
+      (line || 1) +
+      ':' +
+      (column || 0)
+  )}`
+}
 
 export const h5ServeFormatter: Formatter = {
   test(msg) {
@@ -75,28 +91,18 @@ function buildErrorMessage(
 ): string {
   if (err.plugin) {
     args.push(
-      `${chalk.magenta('[plugin:' + err.plugin + ']')} ${chalk.red(
+      `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(
         err.message
       )}`
     )
   } else {
-    args.push(chalk.red(err.message))
+    args.push(colors.red(err.message))
   }
   if (err.id) {
-    args.push(
-      `at ${chalk.cyan(
-        normalizePath(
-          path.relative(process.env.UNI_INPUT_DIR, err.id.split('?')[0])
-        ) +
-          ':' +
-          (err.loc?.line || 1) +
-          ':' +
-          (err.loc?.column || 0)
-      )}`
-    )
+    args.push(formatAtFilename(err.id, err.loc?.line, err.loc?.column))
   }
   if (err.frame) {
-    args.push(chalk.yellow(pad(err.frame)))
+    args.push(colors.yellow(pad(err.frame)))
   }
   if (includeStack && err.stack) {
     args.push(pad(cleanStack(err.stack)))

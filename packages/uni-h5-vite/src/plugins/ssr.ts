@@ -3,10 +3,9 @@ import type { Plugin, ResolvedConfig } from 'vite'
 
 import { OutputChunk } from 'rollup'
 
-import { parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
+import { isSsr, parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
 
 import {
-  isSsr,
   initSsrDefine,
   rewriteSsrVue,
   rewriteSsrResolve,

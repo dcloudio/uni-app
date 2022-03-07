@@ -120,13 +120,14 @@ describe('compiler: transform component', () => {
     addMiniProgramPageJson(filename, {
       usingComponents: {
         'van-button': 'wxcomponents/button/index',
+        wxparser: 'plugin://wxparserPlugin/wxparser',
       },
     })
     assert(
-      `<van-button custom-style="background-color: unset;" :close-on-click-overlay="true"><template #default><view/></template><template #head><view/></template></van-button>`,
-      `<van-button u-t="m" u-i="dc555fe4-0" bind:__l="__l" u-p="{{a}}"><view/><view slot="head"/></van-button>`,
+      `<wxparser :rich-text="richText" /><van-button custom-style="background-color: unset;" :close-on-click-overlay="true"><template #default><view/></template><template #head><view/></template></van-button>`,
+      `<wxparser rich-text="{{a}}" u-t="m" u-i="dc555fe4-0" bind:__l="__l"/><van-button u-t="m" u-i="dc555fe4-1" bind:__l="__l" u-p="{{b}}"><view/><view slot="head"/></van-button>`,
       `(_ctx, _cache) => {
-  return { a: _p({ customStyle: 'background-color: unset;', closeOnClickOverlay: true }) }
+  return { a: _ctx.richText, b: _p({ customStyle: 'background-color: unset;', closeOnClickOverlay: true }) }
 }`,
       {
         filename,

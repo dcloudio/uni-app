@@ -16,7 +16,6 @@ import {
   ON_SHARE_APP_MESSAGE,
 } from '@dcloudio/uni-shared'
 
-import { injectAppLaunchHooks } from '../api/hook'
 export interface CustomAppInstanceProperty extends Record<string, any> {
   globalData: Record<string, any>
   $vm?: ComponentPublicInstance
@@ -61,15 +60,8 @@ export function parseApp(
         mpInstance: this,
         slots: [],
       })
-      injectAppLaunchHooks(internalInstance)
       ctx.globalData = this.globalData
-      instance.$callHook(
-        ON_LAUNCH,
-        extend(
-          { app: { mixin: internalInstance.appContext.app.mixin } },
-          options
-        )
-      )
+      instance.$callHook(ON_LAUNCH, options)
     },
   }
 

@@ -3,7 +3,7 @@ import { passive } from '@dcloudio/uni-shared'
 const LONGPRESS_TIMEOUT = 350
 const LONGPRESS_THRESHOLD = 10
 
-const passiveOptions = passive(true)
+const passiveOptions = /*#__PURE__*/ passive(true)
 
 let longPressTimer: ReturnType<typeof setTimeout> | null
 

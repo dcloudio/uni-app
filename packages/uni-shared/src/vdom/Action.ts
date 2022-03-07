@@ -58,8 +58,15 @@ export type CreateAction = [
  * nodeId
  * parentNodeId
  * refNodeId
+ * nodeJson
  */
-export type InsertAction = [typeof ACTION_TYPE_INSERT, number, number, number]
+export type InsertAction = [
+  typeof ACTION_TYPE_INSERT,
+  number,
+  number,
+  number,
+  Partial<UniNodeJSON | UniNodeJSONMinify>?
+]
 
 /**
  * nodeId

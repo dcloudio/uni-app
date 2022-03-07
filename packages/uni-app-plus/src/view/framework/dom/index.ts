@@ -14,6 +14,7 @@ import {
   formatLog,
   ACTION_TYPE_PAGE_SCROLL,
   ACTION_TYPE_ADD_WXS_EVENT,
+  ACTION_TYPE_INSERT,
 } from '@dcloudio/uni-shared'
 import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
 import { ACTION_TYPE_DICT, DictAction, Dictionary } from '../../../constants'
@@ -57,15 +58,21 @@ function onPageUpdateSync(actions: (PageAction | DictAction)[]) {
       case ACTION_TYPE_PAGE_CREATED:
         return onPageCreated()
       case ACTION_TYPE_CREATE:
+        const parentNodeId = action[3]
         return createElement(
           action[1],
           getDict(action[2] as number),
-          action[3],
+          // 部分性能低的手机，createAction 与 insertAction 是分开的，导致根节点 parentNodeId 为 -1
+          parentNodeId === -1 ? 0 : parentNodeId,
           action[4],
           decodeNodeJson(getDict, action[5] as UniNodeJSONMinify)
         )
-      // case ACTION_TYPE_INSERT:
-      //   return $(action[1]).insert(action[2], action[3])
+      case ACTION_TYPE_INSERT:
+        return $(action[1]).insert(
+          action[2],
+          action[3],
+          decodeNodeJson(getDict, action[4] as UniNodeJSONMinify)
+        )
       case ACTION_TYPE_REMOVE:
         return $(action[1]).remove()
       case ACTION_TYPE_SET_ATTRIBUTE:

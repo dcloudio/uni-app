@@ -186,8 +186,8 @@ function initManifestFeature({
 
   if (command === 'build') {
     // TODO 需要预编译一遍？
-    features.wxs = false
-    features.longpress = false
+    // features.wxs = false
+    // features.longpress = false
   }
   if (
     manifestJson.h5 &&

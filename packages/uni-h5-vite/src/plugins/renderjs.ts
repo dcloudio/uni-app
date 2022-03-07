@@ -32,7 +32,7 @@ function genRenderjsCode(name: string) {
   if(!Comp.$renderjs){Comp.$renderjs = []}
   Comp.$renderjs.push('${name}')
   if(!Comp.mixins){Comp.mixins = []}
-  Comp.mixins.push({beforeCreate(){ this['${name}'] = this }})
+  Comp.mixins.push({beforeCreate(){ this['${name}'] = this },mounted(){ this.$ownerInstance = this.$gcd(this, true) }})
   Comp.mixins.push(_sfc_renderjs)
 }`
 }

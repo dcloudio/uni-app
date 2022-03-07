@@ -16,6 +16,12 @@ export const extensions = [
   '.json',
 ].concat(EXTNAME_VUE)
 
+export const PAGES_JSON_JS = 'pages-json-js'
+export const MANIFEST_JSON_JS = 'manifest-json-js'
+export const JSON_JS_MAP = {
+  'pages.json': PAGES_JSON_JS,
+  'manifest.json': MANIFEST_JSON_JS,
+} as const
 export const ASSETS_INLINE_LIMIT = 40 * 1024
 
 export const APP_SERVICE_FILENAME = 'app-service.js'

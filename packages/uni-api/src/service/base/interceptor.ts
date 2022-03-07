@@ -1,4 +1,4 @@
-import { isArray, isFunction, isPlainObject } from '@vue/shared'
+import { isArray, isFunction, isPlainObject, remove } from '@vue/shared'
 
 import {
   HOOKS,
@@ -38,12 +38,11 @@ function removeInterceptorHook(
   if (!interceptors || !interceptor) {
     return
   }
-  Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook as HOOKS])) {
-      removeHook(
-        interceptors[hook as HOOKS],
-        interceptor[hook as HOOKS] as Function
-      )
+  Object.keys(interceptor).forEach((name) => {
+    const hooks = interceptors[name as HOOKS]
+    const hook = interceptor[name as HOOKS]
+    if (isArray(hooks) && isFunction(hook)) {
+      remove(hooks, hook)
     }
   })
 }
@@ -70,16 +69,6 @@ function dedupeHooks(hooks: Function[]) {
     }
   }
   return res
-}
-
-function removeHook(hooks: Function[] | undefined, hook: Function) {
-  if (!hooks) {
-    return
-  }
-  const index = hooks.indexOf(hook)
-  if (index !== -1) {
-    hooks.splice(index, 1)
-  }
 }
 
 export const addInterceptor = defineSyncApi(

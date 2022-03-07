@@ -21,6 +21,8 @@ export const defaultMiniProgramRpx2Unit = {
   unitPrecision: 1,
 }
 
+export const defaultNVueRpx2Unit = defaultMiniProgramRpx2Unit
+
 export type Rpx2UnitOptions = typeof defaultRpx2Unit
 
 export function createRpx2Unit(

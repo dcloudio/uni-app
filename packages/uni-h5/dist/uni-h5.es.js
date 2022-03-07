@@ -1,9 +1,10 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isString, extend, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, isArray, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, passive, initCustomDataset, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_LAUNCH, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
-const isEnableLocale = once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+const isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -342,52 +343,8 @@ function initTabBarI18n(tabBar2) {
   }
   return tabBar2;
 }
-const E = function() {
-};
-E.prototype = {
-  on: function(name, callback, ctx) {
-    var e2 = this.e || (this.e = {});
-    (e2[name] || (e2[name] = [])).push({
-      fn: callback,
-      ctx
-    });
-    return this;
-  },
-  once: function(name, callback, ctx) {
-    var self = this;
-    function listener2() {
-      self.off(name, listener2);
-      callback.apply(ctx, arguments);
-    }
-    listener2._ = callback;
-    return this.on(name, listener2, ctx);
-  },
-  emit: function(name) {
-    var data = [].slice.call(arguments, 1);
-    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-    var i = 0;
-    var len = evtArr.length;
-    for (i; i < len; i++) {
-      evtArr[i].fn.apply(evtArr[i].ctx, data);
-    }
-    return this;
-  },
-  off: function(name, callback) {
-    var e2 = this.e || (this.e = {});
-    var evts = e2[name];
-    var liveEvents = [];
-    if (evts && callback) {
-      for (var i = 0, len = evts.length; i < len; i++) {
-        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-          liveEvents.push(evts[i]);
-      }
-    }
-    liveEvents.length ? e2[name] = liveEvents : delete e2[name];
-    return this;
-  }
-};
 function initBridge(subscribeNamespace) {
-  const emitter2 = new E();
+  const emitter2 = new Emitter();
   return {
     on(event, callback) {
       return emitter2.on(event, callback);
@@ -421,7 +378,7 @@ const invokeServiceMethod = (name, args, callback) => {
   callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
   publishHandler(INVOKE_SERVICE_API, { id: id2, name, args });
 };
-const viewMethods = Object.create(null);
+const viewMethods = /* @__PURE__ */ Object.create(null);
 function normalizeViewMethodName(pageId, name) {
   return pageId + "." + name;
 }
@@ -462,12 +419,12 @@ function onInvokeViewMethod({
     publish({});
   }
 }
-const ViewJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
+const ViewJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("service"), {
   invokeServiceMethod
 });
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$2 = passive(true);
+const passiveOptions$2 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -527,12 +484,12 @@ function getWindowWidth$1() {
   return windowWidth;
 }
 function useRem() {
+  const config = __uniConfig.globalStyle || {};
+  const maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+  const baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
   function updateRem() {
-    const config = __uniConfig.globalStyle || {};
-    const maxWidth = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
-    const baseWidth = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
     let width = getWindowWidth$1();
-    width = width <= maxWidth ? width : baseWidth;
+    width = width <= maxWidth2 ? width : baseWidth2;
     document.documentElement.style.fontSize = width / 23.4375 + "px";
   }
   updateRem();
@@ -542,7 +499,7 @@ function useRem() {
 }
 function initView() {
   useRem();
-  initCustomDataset();
+  initCustomDatasetOnce();
   if (__UNI_FEATURE_LONGPRESS__) {
     initLongPress();
   }
@@ -737,17 +694,20 @@ const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
 }, ["stop"]);
+function getWindowOffsetCssVar(style, name) {
+  return parseInt((style.getPropertyValue(name).match(/\d+/) || ["0"])[0]);
+}
 function getWindowTop() {
   const style = document.documentElement.style;
-  const top = parseInt(style.getPropertyValue("--window-top"));
+  const top = getWindowOffsetCssVar(style, "--window-top");
   return top ? top + out.top : 0;
 }
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = getWindowTop();
-  const bottom = parseInt(style.getPropertyValue("--window-bottom"));
-  const left = parseInt(style.getPropertyValue("--window-left"));
-  const right = parseInt(style.getPropertyValue("--window-right"));
+  const bottom = getWindowOffsetCssVar(style, "--window-bottom");
+  const left = getWindowOffsetCssVar(style, "--window-left");
+  const right = getWindowOffsetCssVar(style, "--window-right");
   return {
     top,
     bottom: bottom ? bottom + out.bottom : 0,
@@ -764,7 +724,7 @@ function updateCssVar(cssVars) {
 function updatePageCssVar(cssVars) {
   return updateCssVar(cssVars);
 }
-const sheetsMap = new Map();
+const sheetsMap = /* @__PURE__ */ new Map();
 function updateStyle(id2, content) {
   let style = sheetsMap.get(id2);
   if (style && !(style instanceof HTMLStyleElement)) {
@@ -926,6 +886,15 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
     eventChannel,
     statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
   };
+}
+function removeHook(vm, name, hook) {
+  const hooks = vm.$[name];
+  if (!isArray(hooks)) {
+    return;
+  }
+  if (hook.__weh) {
+    remove(hooks, hook.__weh);
+  }
 }
 function invokeHook(vm, name, args) {
   if (isString(vm)) {
@@ -1199,8 +1168,8 @@ class ComponentDescriptor {
   }
 }
 function createComponentDescriptor(vm, isOwnerInstance = true) {
-  if (isOwnerInstance && vm) {
-    {
+  {
+    if (isOwnerInstance && vm) {
       vm = resolveOwnerVm(vm.$);
     }
   }
@@ -1256,10 +1225,13 @@ function $nne(evt, eventValue, instance2) {
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return [evt];
   }
-  if (currentTarget.tagName.indexOf("UNI-") !== 0) {
-    return [evt];
+  const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
+  {
+    if (isHTMLTarget) {
+      return [evt];
+    }
   }
-  const res = createNativeEvent(evt);
+  const res = createNativeEvent(evt, isHTMLTarget);
   if (isClickEvent(evt)) {
     normalizeClickEvent(res, evt);
   } else if (isMouseEvent(evt)) {
@@ -1280,12 +1252,12 @@ function findUniTarget(target) {
   }
   return target;
 }
-function createNativeEvent(evt) {
+function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(findUniTarget(target)),
+    target: normalizeTarget(htmlElement ? target : findUniTarget(target)),
     detail: {},
     currentTarget: normalizeTarget(currentTarget)
   };
@@ -1312,7 +1284,7 @@ function normalizeClickEvent(evt, mouseEvt) {
   const { x, y } = mouseEvt;
   const top = getWindowTop();
   evt.detail = { x, y: y - top };
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)];
 }
 function normalizeMouseEvent(evt, mouseEvt) {
   const top = getWindowTop();
@@ -1320,15 +1292,16 @@ function normalizeMouseEvent(evt, mouseEvt) {
   evt.pageY = mouseEvt.pageY - top;
   evt.clientX = mouseEvt.clientX;
   evt.clientY = mouseEvt.clientY - top;
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)];
 }
-function createTouchEvent(evt) {
+function createTouchEvent(evt, top) {
   return {
     force: 1,
     identifier: 0,
     clientX: evt.clientX,
-    clientY: evt.clientY,
+    clientY: evt.clientY - top,
     pageX: evt.pageX,
-    pageY: evt.pageY
+    pageY: evt.pageY - top
   };
 }
 function normalizeTouchEvent(touches, top) {
@@ -1383,7 +1356,7 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
+const ServiceJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("view"), {
   invokeOnCallback,
   invokeViewMethod,
   invokeViewMethodKeepAlive
@@ -1634,6 +1607,7 @@ var animation = {
   }
 };
 const defineBuiltInComponent = (options) => {
+  options.__reserved = true;
   const { props: props2, mixins } = options;
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
@@ -1641,6 +1615,7 @@ const defineBuiltInComponent = (options) => {
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
+  options.__reserved = true;
   options.compatConfig = {
     MODE: 3
   };
@@ -1735,7 +1710,7 @@ function useBooleanAttr(props2, keys) {
       res[key] = true;
     }
     return res;
-  }, Object.create(null));
+  }, /* @__PURE__ */ Object.create(null));
 }
 function withWebEvent(fn) {
   return fn.__wwe = true, fn;
@@ -1794,7 +1769,7 @@ function provideForm(trigger) {
             name && (res[name] = value);
           }
           return res;
-        }, Object.create(null))
+        }, /* @__PURE__ */ Object.create(null))
       });
     },
     reset(evt) {
@@ -1804,16 +1779,28 @@ function provideForm(trigger) {
   });
   return fields2;
 }
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$C = {
+const labelProps = {
   for: {
     type: String,
     default: ""
   }
 };
+const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+function useProvideLabel() {
+  const handlers = [];
+  provide(uniLabelKey, {
+    addHandler(handler) {
+      handlers.push(handler);
+    },
+    removeHandler(handler) {
+      handlers.splice(handlers.indexOf(handler), 1);
+    }
+  });
+  return handlers;
+}
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$C,
+  props: labelProps,
   setup(props2, {
     slots
   }) {
@@ -1843,18 +1830,6 @@ var index$z = /* @__PURE__ */ defineBuiltInComponent({
     }, [slots.default && slots.default()], 10, ["onClick"]);
   }
 });
-function useProvideLabel() {
-  const handlers = [];
-  provide(uniLabelKey, {
-    addHandler(handler) {
-      handlers.push(handler);
-    },
-    removeHandler(handler) {
-      handlers.splice(handlers.indexOf(handler), 1);
-    }
-  });
-  return handlers;
-}
 function useListeners$1(props2, listeners2) {
   _addListeners(props2.id, listeners2);
   watch(() => props2.id, (newId, oldId) => {
@@ -1909,50 +1884,51 @@ function _removeListeners(id2, listeners2, watch2) {
     }
   });
 }
+const buttonProps = {
+  id: {
+    type: String,
+    default: ""
+  },
+  hoverClass: {
+    type: String,
+    default: "button-hover"
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 20
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 70
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  formType: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: ""
+  },
+  loading: {
+    type: [Boolean, String],
+    default: false
+  },
+  plain: {
+    type: [Boolean, String],
+    default: false
+  }
+};
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    hoverClass: {
-      type: String,
-      default: "button-hover"
-    },
-    hoverStartTime: {
-      type: [Number, String],
-      default: 20
-    },
-    hoverStayTime: {
-      type: [Number, String],
-      default: 70
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    formType: {
-      type: String,
-      default: ""
-    },
-    openType: {
-      type: String,
-      default: ""
-    },
-    loading: {
-      type: [Boolean, String],
-      default: false
-    },
-    plain: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
+  props: buttonProps,
   setup(props2, {
     slots
   }) {
@@ -2314,13 +2290,13 @@ function validateProtocols(name, args, protocol, onFail) {
     return;
   }
   if (!isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+    return validateProtocol(name, args[0] || /* @__PURE__ */ Object.create(null), protocol, onFail);
   }
   const len = protocol.length;
   const argsLen = args.length;
   for (let i = 0; i < len; i++) {
     const opts = protocol[i];
-    const data = Object.create(null);
+    const data = /* @__PURE__ */ Object.create(null);
     if (argsLen > i) {
       data[opts.name] = args[i];
     }
@@ -2589,7 +2565,7 @@ function wrapperReturnValue(method, returnValue) {
   return returnValue;
 }
 function getApiInterceptorHooks(method) {
-  const interceptor = Object.create(null);
+  const interceptor = /* @__PURE__ */ Object.create(null);
   Object.keys(globalInterceptors).forEach((hook) => {
     if (hook !== "returnValue") {
       interceptor[hook] = globalInterceptors[hook].slice();
@@ -2816,6 +2792,8 @@ const BASE_DEVICE_WIDTH = 750;
 let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
+let maxWidth = 960;
+let baseWidth = 375;
 function checkDeviceWidth() {
   const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
   deviceWidth = windowWidth;
@@ -2826,9 +2804,17 @@ function checkValue(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
+function checkMaxWidth() {
+  const config = __uniConfig.globalStyle || {};
+  maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+  baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+}
 const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
+    {
+      checkMaxWidth();
+    }
   }
   number = Number(number);
   if (number === 0) {
@@ -2836,9 +2822,6 @@ const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth
   }
   let width = newDeviceWidth || deviceWidth;
   {
-    const config = __uniConfig.globalStyle || {};
-    const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
-    const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
     width = width <= maxWidth ? width : baseWidth;
   }
   let result = number / BASE_DEVICE_WIDTH * width;
@@ -2876,9 +2859,11 @@ function removeInterceptorHook(interceptors2, interceptor) {
   if (!interceptors2 || !interceptor) {
     return;
   }
-  Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook])) {
-      removeHook(interceptors2[hook], interceptor[hook]);
+  Object.keys(interceptor).forEach((name) => {
+    const hooks = interceptors2[name];
+    const hook = interceptor[name];
+    if (isArray(hooks) && isFunction(hook)) {
+      remove(hooks, hook);
     }
   });
 }
@@ -2894,15 +2879,6 @@ function dedupeHooks(hooks) {
     }
   }
   return res;
-}
-function removeHook(hooks, hook) {
-  if (!hooks) {
-    return;
-  }
-  const index2 = hooks.indexOf(hook);
-  if (index2 !== -1) {
-    hooks.splice(index2, 1);
-  }
 }
 const addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
   if (typeof method === "string" && isPlainObject(interceptor)) {
@@ -2957,7 +2933,7 @@ const EmitProtocol = [
     required: true
   }
 ];
-const emitter = new E();
+const emitter = new Emitter();
 const $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
   emitter.on(name, callback);
   return () => emitter.off(name, callback);
@@ -3094,25 +3070,38 @@ class MapContext {
   }
   $getAppMap() {
   }
-  addCustomLayer() {
+  addCustomLayer(options) {
+    operateMapWrap(this.id, this.pageId, "addCustomLayer", options);
   }
-  removeCustomLayer() {
+  removeCustomLayer(options) {
+    operateMapWrap(this.id, this.pageId, "removeCustomLayer", options);
   }
-  addGroundOverlay() {
+  addGroundOverlay(options) {
+    operateMapWrap(this.id, this.pageId, "addGroundOverlay", options);
   }
-  removeGroundOverlay() {
+  removeGroundOverlay(options) {
+    operateMapWrap(this.id, this.pageId, "removeGroundOverlay", options);
   }
-  updateGroundOverlay() {
+  updateGroundOverlay(options) {
+    operateMapWrap(this.id, this.pageId, "updateGroundOverlay", options);
   }
-  initMarkerCluster() {
+  initMarkerCluster(options) {
+    operateMapWrap(this.id, this.pageId, "initMarkerCluster", options);
   }
-  addMarkers() {
+  addMarkers(options) {
+    operateMapWrap(this.id, this.pageId, "addMarkers", options);
   }
-  removeMarkers() {
+  removeMarkers(options) {
+    operateMapWrap(this.id, this.pageId, "removeMarkers", options);
   }
-  moveAlong() {
+  moveAlong(options) {
+    operateMapWrap(this.id, this.pageId, "moveAlong", options);
   }
-  openMapApp() {
+  openMapApp(options) {
+    operateMapWrap(this.id, this.pageId, "openMapApp", options);
+  }
+  on(options) {
+    operateMapWrap(this.id, this.pageId, "on", options);
   }
 }
 const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {
@@ -3815,10 +3804,10 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           };
         case "fillText":
         case "strokeText":
-          return function(text2, x, y, maxWidth) {
+          return function(text2, x, y, maxWidth2) {
             var data = [text2.toString(), x, y];
-            if (typeof maxWidth === "number") {
-              data.push(maxWidth);
+            if (typeof maxWidth2 === "number") {
+              data.push(maxWidth2);
             }
             this.actions.push({
               method: method2,
@@ -4493,18 +4482,63 @@ const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_T
     }
   });
 });
-const appLaunchHooks = [];
-function onAppLaunch(hook) {
+const appHooks = {
+  [ON_UNHANDLE_REJECTION]: [],
+  [ON_PAGE_NOT_FOUND]: [],
+  [ON_ERROR]: [],
+  [ON_SHOW]: [],
+  [ON_HIDE]: []
+};
+function onAppHook(type, hook) {
   const app = getApp({ allowDefault: true });
   if (app && app.$vm) {
-    return injectHook(ON_LAUNCH, hook, app.$vm.$);
+    return injectHook(type, hook, app.$vm.$);
   }
-  appLaunchHooks.push(hook);
+  appHooks[type].push(hook);
 }
-function injectAppLaunchHooks(appInstance) {
-  appLaunchHooks.forEach((hook) => {
-    injectHook(ON_LAUNCH, hook, appInstance);
+function injectAppHooks(appInstance) {
+  Object.keys(appHooks).forEach((type) => {
+    appHooks[type].forEach((hook) => {
+      injectHook(type, hook, appInstance);
+    });
   });
+}
+function offAppHook(type, hook) {
+  const app = getApp({ allowDefault: true });
+  if (app && app.$vm) {
+    return removeHook(app.$vm, type, hook);
+  }
+  remove(appHooks[type], hook);
+}
+function onUnhandledRejection(hook) {
+  onAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function offUnhandledRejection(hook) {
+  offAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function onPageNotFound(hook) {
+  onAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function offPageNotFound(hook) {
+  offAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function onError(hook) {
+  onAppHook(ON_ERROR, hook);
+}
+function offError(hook) {
+  offAppHook(ON_ERROR, hook);
+}
+function onAppShow(hook) {
+  onAppHook(ON_SHOW, hook);
+}
+function offAppShow(hook) {
+  offAppHook(ON_SHOW, hook);
+}
+function onAppHide(hook) {
+  onAppHook(ON_HIDE, hook);
+}
+function offAppHide(hook) {
+  offAppHook(ON_HIDE, hook);
 }
 const API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
 const getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
@@ -4514,6 +4548,63 @@ const API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
   return getLaunchOptions();
 });
+let cid = "";
+function invokePushCallback(args) {
+  if (args.type === "clientId") {
+    cid = args.cid;
+    invokeGetPushCidCallbacks(cid);
+  } else if (args.type === "pushMsg") {
+    onPushMessageCallbacks.forEach((callback) => {
+      callback({ data: args.message });
+    });
+  }
+}
+const getPushCidCallbacks = [];
+function invokeGetPushCidCallbacks(cid2) {
+  getPushCidCallbacks.forEach((callback) => {
+    callback(cid2);
+  });
+  getPushCidCallbacks.length = 0;
+}
+function getPushCid(args) {
+  if (!isPlainObject(args)) {
+    args = {};
+  }
+  const { success, fail, complete } = getApiCallbacks(args);
+  const hasSuccess = isFunction(success);
+  const hasFail = isFunction(fail);
+  const hasComplete = isFunction(complete);
+  getPushCidCallbacks.push((cid2) => {
+    let res;
+    if (cid2) {
+      res = { errMsg: "getPushCid:ok", cid: cid2 };
+      hasSuccess && success(res);
+    } else {
+      res = { errMsg: "getPushCid:fail" };
+      hasFail && fail(res);
+    }
+    hasComplete && complete(res);
+  });
+  if (cid) {
+    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+  }
+}
+const onPushMessageCallbacks = [];
+const onPushMessage = (fn) => {
+  if (onPushMessageCallbacks.indexOf(fn) === -1) {
+    onPushMessageCallbacks.push(fn);
+  }
+};
+const offPushMessage = (fn) => {
+  if (!fn) {
+    onPushMessageCallbacks.length = 0;
+  } else {
+    const index2 = onPushMessageCallbacks.indexOf(fn);
+    if (index2 > -1) {
+      onPushMessageCallbacks.splice(index2, 1);
+    }
+  }
+};
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
   {
@@ -5200,12 +5291,9 @@ const PageScrollToProtocol = {
   selector: String,
   duration: Number
 };
-const DEFAULT_DURATION = 300;
 const PageScrollToOptions = {
   formatArgs: {
-    duration(value, params) {
-      params.duration = Math.max(0, parseInt(value + "") || DEFAULT_DURATION);
-    }
+    duration: 300
   }
 };
 const API_SHOW_ACTION_SHEET = "showActionSheet";
@@ -6126,13 +6214,13 @@ function revokeObjectURL(url) {
   URL.revokeObjectURL(url);
   delete files[url];
 }
-const launchOptions = createLaunchOptions();
-const enterOptions = createLaunchOptions();
+const launchOptions = /* @__PURE__ */ createLaunchOptions();
+const enterOptions = /* @__PURE__ */ createLaunchOptions();
 function getEnterOptions() {
-  return enterOptions;
+  return extend({}, enterOptions);
 }
 function getLaunchOptions() {
-  return launchOptions;
+  return extend({}, launchOptions);
 }
 function initLaunchOptions({
   path,
@@ -6143,7 +6231,7 @@ function initLaunchOptions({
     query
   });
   extend(enterOptions, launchOptions);
-  return launchOptions;
+  return extend({}, launchOptions);
 }
 const inflateRaw = (...args) => {
 };
@@ -6222,10 +6310,10 @@ const pixelRatio = /* @__PURE__ */ function() {
   const backingStore = context.backingStorePixelRatio || context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
   return (window.devicePixelRatio || 1) / backingStore;
 }();
-function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio;
-  canvas.height = canvas.offsetHeight * pixelRatio;
-  canvas.getContext("2d").__hidpi__ = true;
+function wrapper(canvas, hidpi = true) {
+  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
+  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  canvas.getContext("2d").__hidpi__ = hidpi;
 }
 let isHidpi = false;
 function initHidpi() {
@@ -6314,6 +6402,9 @@ function initHidpi() {
         const args = Array.prototype.slice.call(arguments);
         args[1] *= pixelRatio;
         args[2] *= pixelRatio;
+        if (args[3] && typeof args[3] === "number") {
+          args[3] *= pixelRatio;
+        }
         var font2 = this.font;
         this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
           return m * pixelRatio + u;
@@ -6330,6 +6421,9 @@ function initHidpi() {
         var args = Array.prototype.slice.call(arguments);
         args[1] *= pixelRatio;
         args[2] *= pixelRatio;
+        if (args[3] && typeof args[3] === "number") {
+          args[3] *= pixelRatio;
+        }
         var font2 = this.font;
         this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
           return m * pixelRatio + u;
@@ -6381,7 +6475,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$B = {
+const props$w = {
   canvasId: {
     type: String,
     default: ""
@@ -6389,6 +6483,10 @@ const props$B = {
   disableScroll: {
     type: [Boolean, String],
     default: false
+  },
+  hidpi: {
+    type: Boolean,
+    default: true
   }
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
@@ -6397,7 +6495,7 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$B,
+  props: props$w,
   computed: {
     id() {
       return this.canvasId;
@@ -6425,7 +6523,7 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
     const {
       _handleSubscribe,
       _resize
-    } = useMethods(canvas, actionsWaiting);
+    } = useMethods(props2, canvas, actionsWaiting);
     useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
     onMounted(() => {
       _resize();
@@ -6494,21 +6592,22 @@ function useListeners(props2, Listeners, trigger) {
     _listeners
   };
 }
-function useMethods(canvasRef, actionsWaiting) {
+function useMethods(props2, canvasRef, actionsWaiting) {
   let _actionsDefer = [];
   let _images = {};
+  const _pixelRatio = computed(() => props2.hidpi ? pixelRatio : 1);
   function _resize(size) {
     let canvas = canvasRef.value;
-    var hasChanged = !size || canvas.width !== Math.floor(size.width * pixelRatio) || canvas.height !== Math.floor(size.height * pixelRatio);
+    var hasChanged = !size || canvas.width !== Math.floor(size.width * _pixelRatio.value) || canvas.height !== Math.floor(size.height * _pixelRatio.value);
     if (!hasChanged)
       return;
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext("2d");
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
       context.putImageData(imageData, 0, 0);
     } else {
-      wrapper(canvas);
+      wrapper(canvas, props2.hidpi);
     }
   }
   function actionsChanged({
@@ -6712,14 +6811,14 @@ function useMethods(canvasRef, actionsWaiting) {
   }, resolve) {
     const canvas = canvasRef.value;
     let data;
-    const maxWidth = canvas.offsetWidth - x;
-    width = width ? Math.min(width, maxWidth) : maxWidth;
+    const maxWidth2 = canvas.offsetWidth - x;
+    width = width ? Math.min(width, maxWidth2) : maxWidth2;
     const maxHeight = canvas.offsetHeight - y;
     height = height ? Math.min(height, maxHeight) : maxHeight;
     if (!hidpi) {
       if (!destWidth && !destHeight) {
-        destWidth = Math.round(width * pixelRatio);
-        destHeight = Math.round(height * pixelRatio);
+        destWidth = Math.round(width * _pixelRatio.value);
+        destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
@@ -6857,7 +6956,7 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$A = {
+const props$v = {
   name: {
     type: String,
     default: ""
@@ -6865,7 +6964,7 @@ const props$A = {
 };
 var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$A,
+  props: props$v,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6917,7 +7016,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$z = {
+const props$u = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6941,7 +7040,7 @@ const props$z = {
 };
 var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$z,
+  props: props$u,
   setup(props2, {
     slots
   }) {
@@ -7018,7 +7117,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$y = {
+const props$t = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -7795,7 +7894,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id2, true);
 }
-const props$x = /* @__PURE__ */ extend({}, props$y, {
+const props$s = /* @__PURE__ */ extend({}, props$t, {
   id: {
     type: String,
     default: ""
@@ -7823,7 +7922,7 @@ const props$x = /* @__PURE__ */ extend({}, props$y, {
 });
 var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$x,
+  props: props$s,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -7910,7 +8009,7 @@ var index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$w = {
+const props$r = {
   src: {
     type: String,
     default: ""
@@ -7949,7 +8048,7 @@ const IMAGE_MODES = {
 };
 var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$w,
+  props: props$r,
   setup(props2, {
     emit: emit2
   }) {
@@ -8152,7 +8251,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const passiveOptions$1 = passive(true);
+const passiveOptions$1 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited;
@@ -8263,7 +8362,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$v = /* @__PURE__ */ extend({}, {
+const props$q = /* @__PURE__ */ extend({}, {
   name: {
     type: String,
     default: ""
@@ -8332,7 +8431,7 @@ const props$v = /* @__PURE__ */ extend({}, {
     type: Boolean,
     default: false
   }
-}, props$y);
+}, props$t);
 const emit = [
   "input",
   "focus",
@@ -8446,15 +8545,22 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1) {
+    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && field.type !== "number") {
       field.selectionStart = state2.selectionStart;
       field.selectionEnd = state2.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1) {
+    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && field.type !== "number") {
       field.selectionEnd = field.selectionStart = state2.cursor;
+    }
+  }
+  function getFieldSelectionEnd(field) {
+    if (field.type === "number") {
+      return null;
+    } else {
+      return field.selectionEnd;
     }
   }
   function initField() {
@@ -8476,7 +8582,7 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
       if (!state2.composing) {
         triggerInput(event, {
           value: field.value,
-          cursor: field.selectionEnd
+          cursor: getFieldSelectionEnd(field)
         }, force);
       }
     };
@@ -8488,7 +8594,7 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
       state2.focus = false;
       trigger("blur", event, {
         value: state2.value,
-        cursor: event.target.selectionEnd
+        cursor: getFieldSelectionEnd(event.target)
       });
     };
     field.addEventListener("change", (event) => event.stopPropagation());
@@ -8529,7 +8635,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$u = /* @__PURE__ */ extend({}, props$v, {
+const props$p = /* @__PURE__ */ extend({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -8541,7 +8647,7 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$u,
+  props: props$p,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -8719,7 +8825,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$t = {
+const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -8728,7 +8834,7 @@ const props$t = {
 var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$t,
+  props: movableAreaProps,
   setup(props2, {
     slots
   }) {
@@ -9057,7 +9163,7 @@ function Friction$1(e2, t2) {
   this._v = 0;
 }
 Friction$1.prototype.setV = function(x, y) {
-  var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+  const n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
   this._x_a = -this._f * this._x_v / n;
@@ -9078,8 +9184,8 @@ Friction$1.prototype.s = function(t2) {
     t2 = this._t;
     this._lastDt = t2;
   }
-  var x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
-  var y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+  let x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
+  let y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -9113,7 +9219,7 @@ Friction$1.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction$1.prototype.done = function() {
-  var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
@@ -9134,10 +9240,10 @@ function Spring$1(m, k, c) {
   this._startTime = 0;
 }
 Spring$1.prototype._solve = function(e2, t2) {
-  var n = this._c;
-  var i = this._m;
-  var r = this._k;
-  var o2 = n * n - 4 * i * r;
+  const n = this._c;
+  const i = this._m;
+  const r = this._k;
+  const o2 = n * n - 4 * i * r;
   if (o2 === 0) {
     const a2 = -n / (2 * i);
     const s = e2;
@@ -9147,7 +9253,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         return (s + l * e3) * Math.pow(Math.E, a2 * e3);
       },
       dx: function(e3) {
-        var t3 = Math.pow(Math.E, a2 * e3);
+        const t3 = Math.pow(Math.E, a2 * e3);
         return a2 * (s + l * e3) * t3 + l * t3;
       }
     };
@@ -9159,8 +9265,8 @@ Spring$1.prototype._solve = function(e2, t2) {
     const h = e2 - d;
     return {
       x: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -9175,8 +9281,8 @@ Spring$1.prototype._solve = function(e2, t2) {
         return h * t3 + d * n2;
       },
       dx: function(e3) {
-        var t3;
-        var n2;
+        let t3;
+        let n2;
         if (e3 === this._t) {
           t3 = this._powER1T;
           n2 = this._powER2T;
@@ -9192,18 +9298,18 @@ Spring$1.prototype._solve = function(e2, t2) {
       }
     };
   }
-  var p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
-  var f2 = -n / 2 * i;
-  var v2 = e2;
-  var g2 = (t2 - f2 * e2) / p2;
+  const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
+  const f2 = -n / 2 * i;
+  const v2 = e2;
+  const g2 = (t2 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      var t3 = Math.pow(Math.E, f2 * e3);
-      var n2 = Math.cos(p2 * e3);
-      var i2 = Math.sin(p2 * e3);
+      const t3 = Math.pow(Math.E, f2 * e3);
+      const n2 = Math.cos(p2 * e3);
+      const i2 = Math.sin(p2 * e3);
       return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
     }
   };
@@ -9226,7 +9332,7 @@ Spring$1.prototype.setEnd = function(e2, n, i) {
   }
   if (e2 !== this._endPosition || !t(n, 0.1)) {
     n = n || 0;
-    var r = this._endPosition;
+    let r = this._endPosition;
     if (this._solution) {
       if (t(n, 0.1)) {
         n = this._solution.dx((i - this._startTime) / 1e3);
@@ -9311,14 +9417,14 @@ function STD(e2, t2, n) {
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i) {
-  var r = new Date().getTime();
+  const r = new Date().getTime();
   this._springX.setEnd(e2, i, r);
   this._springY.setEnd(t2, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
 STD.prototype.x = function() {
-  var e2 = (new Date().getTime() - this._startTime) / 1e3;
+  const e2 = (new Date().getTime() - this._startTime) / 1e3;
   return {
     x: this._springX.x(e2),
     y: this._springY.x(e2),
@@ -9326,7 +9432,7 @@ STD.prototype.x = function() {
   };
 };
 STD.prototype.done = function() {
-  var e2 = new Date().getTime();
+  const e2 = new Date().getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
 STD.prototype.reconfigure = function(e2, t2, n) {
@@ -9334,7 +9440,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$s = {
+const movableViewProps = {
   direction: {
     type: String,
     default: "none"
@@ -9388,9 +9494,12 @@ const props$s = {
     default: true
   }
 };
+function v(a2, b) {
+  return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
+}
 var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$s,
+  props: movableViewProps,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -9433,9 +9542,6 @@ function f(t2, n) {
   }
   let i = t2.offsetTop;
   return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
-}
-function v(a2, b) {
-  return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -9972,8 +10078,14 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$r = {
+const OPEN_TYPES = [
+  "navigate",
+  "redirect",
+  "switchTab",
+  "reLaunch",
+  "navigateBack"
+];
+const navigatorProps = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -10010,63 +10122,59 @@ const props$r = {
     default: false
   }
 };
+function createNavigatorOnClick(props2) {
+  return () => {
+    if (props2.openType !== "navigateBack" && !props2.url) {
+      console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+      return;
+    }
+    switch (props2.openType) {
+      case "navigate":
+        uni.navigateTo({
+          url: props2.url
+        });
+        break;
+      case "redirect":
+        uni.redirectTo({
+          url: props2.url,
+          exists: props2.exists
+        });
+        break;
+      case "switchTab":
+        uni.switchTab({
+          url: props2.url
+        });
+        break;
+      case "reLaunch":
+        uni.reLaunch({
+          url: props2.url
+        });
+        break;
+      case "navigateBack":
+        uni.navigateBack({
+          delta: props2.delta
+        });
+        break;
+    }
+  };
+}
 var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
     MODE: 3
   },
-  props: props$r,
+  props: navigatorProps,
   setup(props2, {
     slots
   }) {
     const vm = getCurrentInstance();
     const __scopeId = vm && vm.root.type.__scopeId || "";
     const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const {
       hovering,
       binding
     } = useHover(props2);
-    function onClick($event) {
-      if (props2.openType !== "navigateBack" && !props2.url) {
-        console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
-        return;
-      }
-      switch (props2.openType) {
-        case "navigate":
-          uni.navigateTo({
-            url: props2.url
-          });
-          break;
-        case "redirect":
-          uni.redirectTo({
-            url: props2.url,
-            exists: props2.exists
-          });
-          break;
-        case "switchTab":
-          uni.switchTab({
-            url: props2.url
-          });
-          break;
-        case "reLaunch":
-          uni.reLaunch({
-            url: props2.url
-          });
-          break;
-        case "navigateBack":
-          uni.navigateBack({
-            delta: props2.delta
-          });
-          break;
-      }
-    }
+    const onClick = createNavigatorOnClick(props2);
     return () => {
       const {
         hoverClass,
@@ -10079,7 +10187,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": onEventPrevent
       }, [createVNode("uni-navigator", mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, $attrs.value, $excludeAttrs.value, $listeners.value, {
+      }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
@@ -10087,7 +10195,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$q = {
+const pickerViewProps = {
   value: {
     type: Array,
     default() {
@@ -10134,7 +10242,7 @@ function useState$4(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$q,
+  props: pickerViewProps,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -10941,7 +11049,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const getPickerViewColumn = inject("getPickerViewColumn");
     const instance2 = getCurrentInstance();
     const currentRef = getPickerViewColumn ? getPickerViewColumn(instance2) : ref(0);
-    const pickerViewProps = inject("pickerViewProps");
+    const pickerViewProps2 = inject("pickerViewProps");
     const pickerViewState = inject("pickerViewState");
     const indicatorHeight = ref(34);
     const resizeSensorRef = ref(null);
@@ -11067,11 +11175,11 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": handleTap,
         "class": "uni-picker-view-group"
       }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
-        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        "class": ["uni-picker-view-mask", pickerViewProps2.maskClass],
+        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps2.maskStyle}`
       }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-        "style": pickerViewProps.indicatorStyle
+        "class": ["uni-picker-view-indicator", pickerViewProps2.indicatorClass],
+        "style": pickerViewProps2.indicatorStyle
       }), [createVNode(ResizeSensor, {
         "ref": resizeSensorRef,
         "onResize": ({
@@ -11087,18 +11195,23 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const VALUES = {
+const FONT_SIZE = 16;
+const PROGRESS_VALUES = {
   activeColor: PRIMARY_COLOR,
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$p = {
+const progressProps = {
   percent: {
     type: [Number, String],
     default: 0,
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  fontSize: {
+    type: [String, Number],
+    default: FONT_SIZE
   },
   showInfo: {
     type: [Boolean, String],
@@ -11113,15 +11226,15 @@ const props$p = {
   },
   color: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   activeColor: {
     type: String,
-    default: VALUES.activeColor
+    default: PROGRESS_VALUES.activeColor
   },
   backgroundColor: {
     type: String,
-    default: VALUES.backgroundColor
+    default: PROGRESS_VALUES.backgroundColor
   },
   active: {
     type: [Boolean, String],
@@ -11129,7 +11242,7 @@ const props$p = {
   },
   activeMode: {
     type: String,
-    default: VALUES.activeMode
+    default: PROGRESS_VALUES.activeMode
   },
   duration: {
     type: [Number, String],
@@ -11137,11 +11250,15 @@ const props$p = {
     validator(value) {
       return !isNaN(parseFloat(value));
     }
+  },
+  borderRadius: {
+    type: [Number, String],
+    default: 0
   }
 };
 var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$p,
+  props: progressProps,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -11177,7 +11294,7 @@ function useProgressState(props2) {
   const currentPercent = ref(0);
   const outerBarStyle = computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
   const innerBarStyle = computed(() => {
-    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
+    const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = computed(() => {
@@ -11198,7 +11315,7 @@ function useProgressState(props2) {
 }
 function _activeAnimation(state2, props2) {
   if (props2.active) {
-    state2.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state2.lastPercent;
+    state2.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state2.lastPercent;
     state2.strokeTimer = setInterval(() => {
       if (state2.currentPercent + 1 > state2.realPercent) {
         state2.currentPercent = state2.realPercent;
@@ -11412,96 +11529,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-function removeDOCTYPE(html) {
-  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
-}
-function parseAttrs(attrs2) {
-  return attrs2.reduce(function(pre, attr2) {
-    let value = attr2.value;
-    const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
-      value = value.split(" ");
-    }
-    if (pre[name]) {
-      if (Array.isArray(pre[name])) {
-        pre[name].push(value);
-      } else {
-        pre[name] = [pre[name], value];
-      }
-    } else {
-      pre[name] = value;
-    }
-    return pre;
-  }, {});
-}
-function parseHtml(html) {
-  html = removeDOCTYPE(html);
-  const stacks = [];
-  const results = {
-    node: "root",
-    children: []
-  };
-  HTMLParser(html, {
-    start: function(tag, attrs2, unary) {
-      const node = {
-        name: tag
-      };
-      if (attrs2.length !== 0) {
-        node.attrs = parseAttrs(attrs2);
-      }
-      if (unary) {
-        const parent = stacks[0] || results;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      } else {
-        stacks.unshift(node);
-      }
-    },
-    end: function(tag) {
-      const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    chars: function(text2) {
-      const node = {
-        type: "text",
-        text: text2
-      };
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    comment: function(text2) {
-      const node = {
-        node: "comment",
-        text: text2
-      };
-      const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
-      }
-      parent.children.push(node);
-    }
-  });
-  return results.children;
-}
 const TAGS = {
   a: "",
   abbr: "",
@@ -11657,6 +11684,96 @@ function processClickEvent(node, elem, triggerItemClick) {
     }, true);
   }
 }
+function removeDOCTYPE(html) {
+  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+}
+function parseAttrs(attrs2) {
+  return attrs2.reduce(function(pre, attr2) {
+    let value = attr2.value;
+    const name = attr2.name;
+    if (value.match(/ /) && name !== "style") {
+      value = value.split(" ");
+    }
+    if (pre[name]) {
+      if (Array.isArray(pre[name])) {
+        pre[name].push(value);
+      } else {
+        pre[name] = [pre[name], value];
+      }
+    } else {
+      pre[name] = value;
+    }
+    return pre;
+  }, {});
+}
+function parseHtml(html) {
+  html = removeDOCTYPE(html);
+  const stacks = [];
+  const results = {
+    node: "root",
+    children: []
+  };
+  HTMLParser(html, {
+    start: function(tag, attrs2, unary) {
+      const node = {
+        name: tag
+      };
+      if (attrs2.length !== 0) {
+        node.attrs = parseAttrs(attrs2);
+      }
+      if (unary) {
+        const parent = stacks[0] || results;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      } else {
+        stacks.unshift(node);
+      }
+    },
+    end: function(tag) {
+      const node = stacks.shift();
+      if (node.name !== tag)
+        console.error("invalid state: mismatch end tag");
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    chars: function(text2) {
+      const node = {
+        type: "text",
+        text: text2
+      };
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    comment: function(text2) {
+      const node = {
+        node: "comment",
+        text: text2
+      };
+      const parent = stacks[0];
+      if (!parent.children) {
+        parent.children = [];
+      }
+      parent.children.push(node);
+    }
+  });
+  return results.children;
+}
 const props$m = {
   nodes: {
     type: [Array, String],
@@ -11704,7 +11821,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const passiveOptions = passive(true);
+const passiveOptions = /* @__PURE__ */ passive(true);
 const props$l = {
   scrollX: {
     type: [Boolean, String],
@@ -13201,7 +13318,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
       const children = [];
       if (slots.default) {
         slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8) {
+          if (vnode.shapeFlag & 8 && vnode.type !== Comment) {
             const lines = parseText(vnode.children, {
               space: props2.space,
               decode: props2.decode
@@ -13231,7 +13348,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = /* @__PURE__ */ extend({}, props$v, {
+const props$g = /* @__PURE__ */ extend({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -13409,11 +13526,11 @@ function addSubscribe(name, callback, pageId) {
     callback(type, data, resolve);
   });
 }
-function removeSubscribe(name) {
+function removeSubscribe(name, pageId) {
   if (!name) {
     return;
   }
-  unregisterViewMethod(getCurrentPageId(), name);
+  unregisterViewMethod(pageId || getCurrentPageId(), name);
 }
 function useSubscribe(callback, name, multiple, pageId) {
   const instance2 = getCurrentInstance();
@@ -13428,7 +13545,7 @@ function useSubscribe(callback, name, multiple, pageId) {
     }
   });
   onBeforeUnmount(() => {
-    removeSubscribe(name || normalizeEvent(vm));
+    removeSubscribe(name || normalizeEvent(vm), pageId);
   });
 }
 function useOn(name, callback) {
@@ -13592,6 +13709,9 @@ function initApp$1(app) {
     globalProperties.$set = set;
     globalProperties.$applyOptions = applyOptions;
   }
+  {
+    invokeCreateVueAppHook(app);
+  }
 }
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
@@ -13730,7 +13850,7 @@ function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
 const SEP = "$$";
-const currentPagesMap = new Map();
+const currentPagesMap = /* @__PURE__ */ new Map();
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
@@ -13802,7 +13922,7 @@ function useKeepAliveRoute() {
     routeCache
   };
 }
-const pageCacheMap = new Map();
+const pageCacheMap = /* @__PURE__ */ new Map();
 const routeCache = {
   get(key) {
     return pageCacheMap.get(key);
@@ -14085,14 +14205,13 @@ function setupApp(comp) {
     setup(instance2) {
       const route = usePageRoute();
       const onLaunch = () => {
-        const { onLaunch: onLaunch2, onShow, onPageNotFound } = instance2;
-        const path = route.path.substr(1);
-        const launchOptions2 = extend({
-          app: { mixin: instance2.appContext.app.mixin }
-        }, initLaunchOptions({
+        injectAppHooks(instance2);
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
+        const path = route.path.slice(1);
+        const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
           query: decodedQuery(route.query)
-        }));
+        });
         onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
         onShow && invokeArrayFns$1(onShow, launchOptions2);
         if (__UNI_FEATURE_PAGES__) {
@@ -14104,11 +14223,10 @@ function setupApp(comp) {
               query: {},
               scene: 1001
             };
-            onPageNotFound && invokeArrayFns$1(onPageNotFound, pageNotFoundOptions);
+            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
           }
         }
       };
-      injectAppLaunchHooks(instance2);
       if (__UNI_FEATURE_PAGES__) {
         useRouter().isReady().then(onLaunch);
       } else {
@@ -15100,20 +15218,20 @@ function useWebViewSize(rootRef, iframeRef) {
 const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
 const ICON_PATH_TARGET = "data:image/png;base64,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";
-var MapType;
-(function(MapType2) {
+var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
   MapType2["UNKNOWN"] = "";
-})(MapType || (MapType = {}));
+  return MapType2;
+})(MapType || {});
 function getMapInfo() {
-  let type = MapType.UNKNOWN;
+  let type = "";
   let key = "";
   if (__uniConfig.qqMapKey) {
-    type = MapType.QQ;
+    type = "qq";
     key = __uniConfig.qqMapKey;
   } else if (__uniConfig.googleMapKey) {
-    type = MapType.GOOGLE;
+    type = "google";
     key = __uniConfig.googleMapKey;
   }
   return {
@@ -19364,21 +19482,21 @@ function initMediaQuery(minWidth, callback) {
 }
 function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
-  function checkMaxWidth() {
+  function checkMaxWidth2() {
     const windowWidth = document.body.clientWidth;
-    const maxWidth = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
+    const maxWidth2 = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
     let showMaxWidth = false;
-    if (windowWidth > maxWidth) {
+    if (windowWidth > maxWidth2) {
       showMaxWidth = true;
     } else {
       showMaxWidth = false;
     }
-    if (showMaxWidth && maxWidth) {
-      layoutState.marginWidth = (windowWidth - maxWidth) / 2;
+    if (showMaxWidth && maxWidth2) {
+      layoutState.marginWidth = (windowWidth - maxWidth2) / 2;
       nextTick(() => {
         const rootEl = rootRef.value;
         if (rootEl) {
-          rootEl.setAttribute("style", "max-width:" + maxWidth + "px;margin:0 auto;");
+          rootEl.setAttribute("style", "max-width:" + maxWidth2 + "px;margin:0 auto;");
         }
       });
     } else {
@@ -19391,10 +19509,10 @@ function useMaxWidth(layoutState, rootRef) {
       });
     }
   }
-  watch([() => route.path], checkMaxWidth);
+  watch([() => route.path], checkMaxWidth2);
   onMounted(() => {
-    checkMaxWidth();
-    window.addEventListener("resize", checkMaxWidth);
+    checkMaxWidth2();
+    window.addEventListener("resize", checkMaxWidth2);
   });
 }
 function useState() {
@@ -19792,11 +19910,25 @@ var api = {
   $off,
   $once,
   $emit,
-  onAppLaunch,
+  onCreateVueApp,
   onLocaleChange,
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
+  getPushCid,
+  onPushMessage,
+  offPushMessage,
+  onAppHide,
+  onAppShow,
+  onError,
+  onPageNotFound,
+  onUnhandledRejection,
+  offAppHide,
+  offAppShow,
+  offError,
+  offPageNotFound,
+  offUnhandledRejection,
+  invokePushCallback,
   cssVar,
   cssEnv,
   cssConstant,
@@ -20336,7 +20468,7 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "ref": mapRef,
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => item.id && createVNode(MapMarker, mergeProps({
+      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
@@ -21522,7 +21654,7 @@ function usePageHeadButtons({
       type
     } = navigationBar;
     const isTransparent = type === "transparent";
-    const fonts = Object.create(null);
+    const fonts = /* @__PURE__ */ Object.create(null);
     buttons.forEach((btn, index2) => {
       if (btn.fontSrc && !btn.fontFamily) {
         const fontSrc = getRealPath(btn.fontSrc);
@@ -21958,4 +22090,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onAppLaunch, onCompassChange, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushCid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

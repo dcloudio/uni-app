@@ -1,8 +1,7 @@
-// TODO 等待 vue3 的兼容模式自带emitter
-import E from './TinyEmitter'
+import { Emitter } from '@dcloudio/uni-shared'
 
 export function initBridge(
-  subscribeNamespace: 'service' | 'view'
+  subscribeNamespace: 'service' | 'view' | 'nvue'
 ): Omit<
   UniApp.UniServiceJSBridge,
   | 'invokeOnCallback'
@@ -10,8 +9,7 @@ export function initBridge(
   | 'invokeViewMethodKeepAlive'
   | 'publishHandler'
 > {
-  // TODO vue3 compatibility builds
-  const emitter = new E()
+  const emitter = new Emitter()
   return {
     on(event: string, callback: UniApp.CallbackFunction) {
       return emitter.on(event, callback)

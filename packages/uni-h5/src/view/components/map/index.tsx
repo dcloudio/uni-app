@@ -463,9 +463,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ref={mapRef}
             style="width: 100%; height: 100%; position: relative; overflow: hidden"
           />
-          {props.markers.map(
-            (item) => item.id && <MapMarker key={item.id} {...item} />
-          )}
+          {props.markers.map((item) => (
+            <MapMarker key={item.id} {...item} />
+          ))}
           {props.polyline.map((item) => (
             <MapPolyline {...item} />
           ))}

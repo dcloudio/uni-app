@@ -1,6 +1,6 @@
 'use strict';
 
-var version = "3.0.0-alpha-3031220220222001";
+var version = "3.0.0-alpha-3040020220301002";
 
 const STAT_VERSION = version;
 const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
@@ -937,10 +937,8 @@ function main() {
   if (process.env.NODE_ENV === 'development') {
     uni.report = function (type, options) {};
   } else {
-    uni.onAppLaunch((options) => {
-      stat.report(options);
-      // 小程序平台此时也无法获取getApp，统一在options中传递一个app对象
-      options.app.$vm.$.appContext.app.mixin(lifecycle);
+    uni.onCreateVueApp((app) => {
+      app.mixin(lifecycle);
       uni.report = function (type, options) {
         stat.sendEvent(type, options);
       };

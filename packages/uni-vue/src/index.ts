@@ -1,6 +1,7 @@
 import { App } from 'vue'
 
 import { isFunction } from '@vue/shared'
+import { invokeCreateVueAppHook } from '@dcloudio/uni-shared'
 
 import { applyOptions } from './componentOptions'
 import { set } from './componentInstance'
@@ -26,6 +27,11 @@ export function initApp(app: App) {
   if (__VUE_OPTIONS_API__) {
     globalProperties.$set = set
     globalProperties.$applyOptions = applyOptions
+  }
+  if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
+    invokeCreateVueAppHook(app)
+  } else {
+    ;(uni as any).invokeCreateVueAppHook(app)
   }
 }
 

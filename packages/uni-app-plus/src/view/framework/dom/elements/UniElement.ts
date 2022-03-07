@@ -45,7 +45,7 @@ export class UniElement<T extends object> extends UniNode {
     this.init(nodeJson)
     this.insert(parentNodeId, refNodeId)
   }
-  init(nodeJson: Partial<UniNodeJSON>) {
+  init(nodeJson: Partial<UniNodeJSON>, isCreate: boolean = true) {
     if (hasOwn(nodeJson, 'a')) {
       this.setAttrs(nodeJson.a!)
     }
@@ -59,14 +59,17 @@ export class UniElement<T extends object> extends UniNode {
       this.addWxsEvents(nodeJson.w!)
     }
     super.init(nodeJson)
-    watch(
-      this.$props,
-      () => {
-        queuePostActionJob(this._update!, JOB_PRIORITY_UPDATE)
-      },
-      { flush: 'sync' }
-    )
-    this.update(true)
+    // insert 的时候可能也会调用该 init
+    if (isCreate) {
+      watch(
+        this.$props,
+        () => {
+          queuePostActionJob(this._update!, JOB_PRIORITY_UPDATE)
+        },
+        { flush: 'sync' }
+      )
+      this.update(true)
+    }
   }
   setAttrs(attrs: Record<string, any>) {
     // 初始化时，先提取 wxsProps，再 setAttr

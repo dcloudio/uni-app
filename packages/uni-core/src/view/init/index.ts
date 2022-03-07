@@ -1,4 +1,4 @@
-import { initCustomDataset } from '@dcloudio/uni-shared'
+import { initCustomDatasetOnce } from '@dcloudio/uni-shared'
 import { initLongPress } from './longPress'
 import { useRem } from './rem'
 
@@ -7,7 +7,7 @@ export function initView() {
     return
   }
   useRem()
-  initCustomDataset()
+  initCustomDatasetOnce()
   if (__UNI_FEATURE_LONGPRESS__) {
     initLongPress()
   }

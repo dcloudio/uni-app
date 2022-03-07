@@ -17,10 +17,10 @@ export const pixelRatio = __NODE_JS__
       return (window.devicePixelRatio || 1) / backingStore
     })()
 
-export function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio
-  canvas.height = canvas.offsetHeight * pixelRatio
-  canvas.getContext('2d').__hidpi__ = true
+export function wrapper(canvas, hidpi = true) {
+  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1)
+  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1)
+  canvas.getContext('2d').__hidpi__ = hidpi
 }
 
 let isHidpi = false
@@ -129,6 +129,12 @@ export function initHidpi() {
 
         args[1] *= pixelRatio
         args[2] *= pixelRatio
+        // 因为 canvasCtx.fillText 的第 4 个参数为可选参数，用户可能不传，
+        // 所以在处理时需要判断一下，否则 undefined * pixelRatio => NaN，
+        // 会导致 canvas 无法绘制。
+        if (args[3] && typeof args[3] === 'number') {
+          args[3] *= pixelRatio
+        }
 
         var font = this.font
         this.font = font.replace(
@@ -153,6 +159,12 @@ export function initHidpi() {
 
         args[1] *= pixelRatio // x
         args[2] *= pixelRatio // y
+        // 因为 canvasCtx.strokeText 的第 4 个参数为可选参数，用户可能不传，
+        // 所以在处理时需要判断一下，否则 undefined * pixelRatio => NaN，
+        // 会导致 canvas 无法绘制。
+        if (args[3] && typeof args[3] === 'number') {
+          args[3] *= pixelRatio
+        }
 
         var font = this.font
         this.font = font.replace(

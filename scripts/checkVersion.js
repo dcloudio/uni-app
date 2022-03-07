@@ -10,31 +10,31 @@ async function getVersion(name, tag = 'latest') {
 
 const pkgs = {
   vue: {
-    next: '3.2.26',
+    latest: '3.2.31',
   },
   'vue-router': {
-    next: '4.0.12',
+    latest: '4.0.12',
   },
   vuex: {
-    next: '4.0.2',
+    latest: '4.0.2',
   },
   'vue-i18n': {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.7.10',
+    latest: '2.8.4',
   },
   '@vitejs/plugin-vue': {
-    latest: '2.0.1',
+    latest: '2.2.2',
   },
   '@vitejs/plugin-vue-jsx': {
-    latest: '1.3.3',
+    latest: '1.3.7',
   },
   '@vitejs/plugin-legacy': {
-    latest: '1.6.4',
+    latest: '1.7.1',
   },
   '@dcloudio/types': {
-    latest: '2.5.16',
+    latest: '2.5.17',
   },
   autoprefixer: {
     latest: '10.4.2',

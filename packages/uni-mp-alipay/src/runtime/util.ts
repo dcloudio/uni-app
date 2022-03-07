@@ -1,4 +1,4 @@
-import { hasOwn, isFunction, camelize, isString } from '@vue/shared'
+import { hasOwn, isFunction, isString } from '@vue/shared'
 
 import {
   ComponentPublicInstance,
@@ -22,7 +22,7 @@ import {
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
 
-import { ON_READY } from '@dcloudio/uni-shared'
+import { customizeEvent, ON_READY } from '@dcloudio/uni-shared'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
 export type MPComponentInstance = tinyapp.IComponentInstance<
@@ -33,12 +33,6 @@ export type MPComponentInstance = tinyapp.IComponentInstance<
 export const isComponent2 = my.canIUse('component2')
 
 export const mocks = ['$id']
-
-const customizeRE = /:/g
-
-function customize(str: string) {
-  return camelize(str.replace(customizeRE, '-'))
-}
 
 export function initRelation(
   mpInstance: MPComponentInstance,
@@ -189,7 +183,7 @@ export function triggerEvent(
   type: string,
   detail: object
 ) {
-  const handler = this.props[customize('on-' + type)]
+  const handler = this.props[customizeEvent('on-' + type)]
   if (!handler) {
     return
   }
@@ -199,7 +193,7 @@ export function triggerEvent(
   }
 
   handler({
-    type: customize(type),
+    type: customizeEvent(type),
     target,
     currentTarget: target,
     detail,

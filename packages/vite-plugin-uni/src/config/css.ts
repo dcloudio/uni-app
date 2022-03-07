@@ -13,19 +13,11 @@ function resolveAdditionalData(inputDir: string, config: UserConfig) {
   return fs.readFileSync(uniScssFile, 'utf8') + '\n' + userAdditionalData
 }
 
-function resolvePostcssConfig(inputDir: string) {
-  return [
-    path.resolve(inputDir, 'postcss.config.js'),
-    path.resolve(process.cwd(), 'postcss.config.js'),
-  ].find((file) => fs.existsSync(file))
-}
-
 export function createCss(
   options: VitePluginUniResolvedOptions,
   config: UserConfig
 ): UserConfig['css'] {
   return {
-    postcss: resolvePostcssConfig(options.inputDir),
     preprocessorOptions: {
       scss: {
         charset: false,

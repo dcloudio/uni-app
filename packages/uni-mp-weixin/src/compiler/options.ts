@@ -37,8 +37,19 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'wx:',
   lazyElement: {
-    canvas: [{ name: 'bind', arg: ['canvas-id', 'id'] }],
-    editor: [{ name: 'on', arg: ['ready'] }],
+    canvas: [
+      { name: 'bind', arg: ['canvas-id', 'id'] },
+      {
+        name: 'on',
+        arg: ['touchstart', 'touchmove', 'touchcancel', 'touchend'],
+      },
+    ],
+    editor: [
+      {
+        name: 'on',
+        arg: ['ready'],
+      },
+    ],
     // iOS 平台需要延迟
     textarea: [{ name: 'on', arg: ['input'] }],
   },

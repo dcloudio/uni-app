@@ -1,5 +1,5 @@
-import { isPlainObject, isArray, hasOwn, isFunction, extend, camelize } from '@vue/shared';
-import { injectHook, ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { isPlainObject, camelize, isArray, hasOwn, isFunction, extend } from '@vue/shared';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
 // lifecycle
 // App and Page
@@ -7,6 +7,26 @@ const ON_SHOW$1 = 'onShow';
 //Page
 const ON_LOAD$1 = 'onLoad';
 const ON_READY$1 = 'onReady';
+
+const encode$1 = encodeURIComponent;
+function stringifyQuery$1(obj, encodeStr = encode$1) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
 
 class EventChannel$1 {
     constructor(id, events) {
@@ -93,6 +113,35 @@ const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
+
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
+
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
     const res = obj
@@ -112,20 +161,6 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
-
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
 
 class EventChannel {
     constructor(id, events) {
@@ -190,11 +225,13 @@ class EventChannel {
     }
 }
 
-const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
-    onPageScroll: 1,
-    onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2,
-};
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
+    return {
+        onPageScroll: 1,
+        onShareAppMessage: 1 << 1,
+        onShareTimeline: 1 << 2,
+    };
+})();
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -362,12 +399,26 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
         }
     });
 }
-
-swan.appLaunchHooks = [];
-function injectAppLaunchHooks(appInstance) {
-    swan.appLaunchHooks.forEach((hook) => {
-        injectHook(ON_LAUNCH, hook, appInstance);
-    });
+const findMixinRuntimeHooks = /*#__PURE__*/ once(() => {
+    const runtimeHooks = [];
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm && app.$vm.$) {
+        const mixins = app.$vm.$.appContext.mixins;
+        if (isArray(mixins)) {
+            const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
+            mixins.forEach((mixin) => {
+                hooks.forEach((hook) => {
+                    if (hasOwn(mixin, hook) && !runtimeHooks.includes(hook)) {
+                        runtimeHooks.push(hook);
+                    }
+                });
+            });
+        }
+    }
+    return runtimeHooks;
+});
+function initMixinRuntimeHooks(mpOptions) {
+    initHooks(mpOptions, findMixinRuntimeHooks());
 }
 
 const HOOKS = [
@@ -394,9 +445,8 @@ function parseApp(instance, parseAppOptions) {
                 mpInstance: this,
                 slots: [],
             });
-            injectAppLaunchHooks(internalInstance);
             ctx.globalData = this.globalData;
-            instance.$callHook(ON_LAUNCH, extend({ app: { mixin: internalInstance.appContext.app.mixin } }, options));
+            instance.$callHook(ON_LAUNCH, options);
         },
     };
     initLocale(instance);
@@ -886,6 +936,7 @@ function parsePage(vueOptions, parseOptions) {
     initHooks(methods, PAGE_INIT_HOOKS);
     initUnknownHooks(methods, vueOptions);
     initRuntimeHooks(methods, vueOptions.__runtimeHooks);
+    initMixinRuntimeHooks(methods);
     parse && parse(miniProgramPageOptions, { handleLink });
     return miniProgramPageOptions;
 }
@@ -897,14 +948,10 @@ function initCreatePage(parseOptions) {
 
 const MPPage = Page;
 const MPComponent = Component;
-const customizeRE = /:/g;
-function customize(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     mpInstance.triggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
+        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
     };
 }
 function initHook(name, options, isComponent) {
@@ -1064,7 +1111,7 @@ function handleLink(event) {
 
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 function isPage(mpInstance) {
-    return !hasOwn(mpInstance, 'ownerId');
+    return !!mpInstance.methods.onLoad;
 }
 function initRelation(mpInstance, detail) {
     mpInstance.dispatch('__l', detail);
@@ -1149,15 +1196,21 @@ function parse(pageOptions) {
             this.$vm.$callHook(ON_SHOW$1);
         }
     };
-    methods.onLoad = function onLoad(args) {
+    methods.onLoad = function onLoad(query) {
         // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
         if (this.$vm) {
             this._$loaded = true;
-            this.$vm.$callHook(ON_LOAD$1, args);
+            const copyQuery = extend({}, query);
+            delete copyQuery.__id__;
+            this.options = copyQuery;
+            this.pageinstance.$page = this.$page = {
+                fullPath: '/' + this.pageinstance.route + stringifyQuery$1(copyQuery),
+            };
+            this.$vm.$callHook(ON_LOAD$1, query);
             this.$vm.$callHook(ON_SHOW$1);
         }
         else {
-            this.pageinstance._$args = args;
+            this.pageinstance._$args = query;
         }
     };
 }

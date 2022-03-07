@@ -125,7 +125,6 @@ function genVFor(
 ) {
   const { sourceCode, valueAlias, indexAlias } = node.vFor
   push(` ${directive}for="${sourceCode}"`)
-  debugger
   if (valueAlias) {
     push(` ${directive}for-item="${valueAlias}"`)
   }

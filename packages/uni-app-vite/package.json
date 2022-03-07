@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-vite",
-  "version": "3.0.0-alpha-3031220220222001",
+  "version": "3.0.0-alpha-3040020220301002",
   "description": "uni-app-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,20 +19,20 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-nvue": "3.0.0-alpha-3031220220222001",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3031220220222001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3031220220222001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3031220220222001",
+    "@dcloudio/uni-cli-nvue": "3.0.0-alpha-3040020220301002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040020220301002",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3040020220301002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3040020220301002",
     "@rollup/pluginutils": "^4.1.2",
-    "@vitejs/plugin-vue": "^2.0.1",
-    "@vue/compiler-sfc": "3.2.26",
-    "debug": "^4.3.2",
+    "@vitejs/plugin-vue": "^2.2.2",
+    "@vue/compiler-sfc": "3.2.31",
+    "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "rollup": "^2.59.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "@vue/compiler-core": "3.2.26"
+    "@vue/compiler-core": "3.2.31"
   }
 }

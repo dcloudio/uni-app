@@ -70,6 +70,57 @@ const TAGS = [
     'resize-sensor',
     'shadow-root',
 ].map((tag) => 'uni-' + tag);
+const NVUE_BUILT_IN_TAGS = [
+    'svg',
+    'view',
+    'a',
+    'div',
+    'img',
+    'image',
+    'text',
+    'span',
+    'input',
+    'textarea',
+    'spinner',
+    'select',
+    // slider 被自定义 u-slider 替代
+    // 'slider',
+    'slider-neighbor',
+    'indicator',
+    'canvas',
+    'list',
+    'cell',
+    'header',
+    'loading',
+    'loading-indicator',
+    'refresh',
+    'scrollable',
+    'scroller',
+    'video',
+    'web',
+    'embed',
+    'tabbar',
+    'tabheader',
+    'datepicker',
+    'timepicker',
+    'marquee',
+    'countdown',
+    'dc-switch',
+    'waterfall',
+    'richtext',
+    'recycle-list',
+];
+const NVUE_U_BUILT_IN_TAGS = [
+    'u-text',
+    'u-image',
+    'u-input',
+    'u-textarea',
+    'u-video',
+    'u-web-view',
+    'u-slider',
+    'u-ad',
+    'u-ad-draw',
+];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-
     return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1;
@@ -84,6 +135,46 @@ function isH5NativeTag(tag) {
 }
 function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
+}
+const NVUE_CUSTOM_COMPONENTS = [
+    'ad',
+    'ad-draw',
+    'button',
+    'checkbox-group',
+    'checkbox',
+    'form',
+    'icon',
+    'label',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'picker',
+    'progress',
+    'radio-group',
+    'radio',
+    'rich-text',
+    'swiper-item',
+    'swiper',
+    'switch',
+    'slider',
+    'picker-view',
+    'picker-view-column',
+];
+function isAppNVueNativeTag(tag) {
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+        return false;
+    }
+    if (isBuiltInComponent(tag)) {
+        return true;
+    }
+    // u-text,u-video...
+    if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
 }
 function isMiniProgramNativeTag(tag) {
     return isBuiltInComponent(tag);
@@ -201,6 +292,10 @@ function resolveOwnerEl(instance) {
 function dynamicSlotName(name) {
     return name === 'default' ? SLOT_DEFAULT_NAME : name;
 }
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return shared.camelize(str.replace(customizeRE, '-'));
+}
 
 let lastLogTime = 0;
 function formatLog(module, ...args) {
@@ -212,10 +307,106 @@ function formatLog(module, ...args) {
         .join(' ')}`;
 }
 
+function cache(fn) {
+    const cache = Object.create(null);
+    return (str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    };
+}
+function cacheStringFunction(fn) {
+    return cache(fn);
+}
+function getLen(str = '') {
+    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
+}
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
+function removeLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str.substr(1) : str;
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+function updateElementStyle(element, styles) {
+    for (const attrName in styles) {
+        element.style[attrName] = styles[attrName];
+    }
+}
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
+const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
+const _completeValue = (value) => (value > 9 ? value : '0' + value);
+function formatDateTime({ date = new Date(), mode = 'date' }) {
+    if (mode === 'time') {
+        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
+    }
+    else {
+        return (date.getFullYear() +
+            '-' +
+            _completeValue(date.getMonth() + 1) +
+            '-' +
+            _completeValue(date.getDate()));
+    }
+}
+function callOptions(options, data) {
+    options = options || {};
+    if (typeof data === 'string') {
+        data = {
+            errMsg: data,
+        };
+    }
+    if (/:ok$/.test(data.errMsg)) {
+        if (typeof options.success === 'function') {
+            options.success(data);
+        }
+    }
+    else {
+        if (typeof options.fail === 'function') {
+            options.fail(data);
+        }
+    }
+    if (typeof options.complete === 'function') {
+        options.complete(data);
+    }
+}
+function getValueByDataPath(obj, path) {
+    if (!shared.isString(path)) {
+        return;
+    }
+    path = path.replace(/\[(\d+)\]/g, '.$1');
+    const parts = path.split('.');
+    let key = parts[0];
+    if (!obj) {
+        obj = {};
+    }
+    if (parts.length === 1) {
+        return obj[key];
+    }
+    return getValueByDataPath(obj[key], parts.slice(1).join('.'));
+}
+
 function formatKey(key) {
     return shared.camelize(key.substring(5));
 }
-function initCustomDataset() {
+// question/139181，增加副作用，避免 initCustomDataset 在 build 下被 tree-shaking
+const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
     const prototype = HTMLElement.prototype;
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
@@ -235,7 +426,7 @@ function initCustomDataset() {
         }
         removeAttribute.call(this, key);
     };
-}
+});
 function getCustomDataset(el) {
     return shared.extend({}, el.dataset, el.__uniDataset);
 }
@@ -256,6 +447,7 @@ const defaultMiniProgramRpx2Unit = {
     unitRatio: 1,
     unitPrecision: 1,
 };
+const defaultNVueRpx2Unit = defaultMiniProgramRpx2Unit;
 function createRpx2Unit(unit, unitRatio, unitPrecision) {
     // ignore: rpxCalcIncludeWidth
     return (val) => val.replace(unitRE, (m, $1) => {
@@ -496,15 +688,16 @@ function formatH5Log(type, filename, ...args) {
     console[type].apply(console, [...args, filename]);
 }
 
-let latestNodeId = 1;
-class NVueTextNode {
-    constructor(text) {
-        this.instanceId = '';
-        this.nodeId = latestNodeId++;
-        this.parentNode = null;
-        this.nodeType = 3;
-        this.text = text;
+function parseNVueDataset(attr) {
+    const dataset = {};
+    if (attr) {
+        Object.keys(attr).forEach((key) => {
+            if (key.indexOf('data-') === 0) {
+                dataset[key.replace('data-', '')] = attr[key];
+            }
+        });
     }
+    return dataset;
 }
 
 function plusReady(callback) {
@@ -623,11 +816,13 @@ function parseEventName(name) {
     return [shared.hyphenate(name.slice(2)), options];
 }
 
-const EventModifierFlags = {
-    stop: 1,
-    prevent: 1 << 1,
-    self: 1 << 2,
-};
+const EventModifierFlags = /*#__PURE__*/ (() => {
+    return {
+        stop: 1,
+        prevent: 1 << 1,
+        self: 1 << 2,
+    };
+})();
 function encodeModifier(modifiers) {
     let flag = 0;
     if (modifiers.includes('stop')) {
@@ -983,101 +1178,6 @@ const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
-function cache(fn) {
-    const cache = Object.create(null);
-    return (str) => {
-        const hit = cache[str];
-        return hit || (cache[str] = fn(str));
-    };
-}
-function cacheStringFunction(fn) {
-    return cache(fn);
-}
-function getLen(str = '') {
-    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
-}
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-function removeLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str.substr(1) : str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
-function updateElementStyle(element, styles) {
-    for (const attrName in styles) {
-        element.style[attrName] = styles[attrName];
-    }
-}
-function once(fn, ctx = null) {
-    let res;
-    return ((...args) => {
-        if (fn) {
-            res = fn.apply(ctx, args);
-            fn = null;
-        }
-        return res;
-    });
-}
-const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
-const _completeValue = (value) => (value > 9 ? value : '0' + value);
-function formatDateTime({ date = new Date(), mode = 'date' }) {
-    if (mode === 'time') {
-        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
-    }
-    else {
-        return (date.getFullYear() +
-            '-' +
-            _completeValue(date.getMonth() + 1) +
-            '-' +
-            _completeValue(date.getDate()));
-    }
-}
-function callOptions(options, data) {
-    options = options || {};
-    if (typeof data === 'string') {
-        data = {
-            errMsg: data,
-        };
-    }
-    if (/:ok$/.test(data.errMsg)) {
-        if (typeof options.success === 'function') {
-            options.success(data);
-        }
-    }
-    else {
-        if (typeof options.fail === 'function') {
-            options.fail(data);
-        }
-    }
-    if (typeof options.complete === 'function') {
-        options.complete(data);
-    }
-}
-function getValueByDataPath(obj, path) {
-    if (!shared.isString(path)) {
-        return;
-    }
-    path = path.replace(/\[(\d+)\]/g, '.$1');
-    const parts = path.split('.');
-    let key = parts[0];
-    if (!obj) {
-        obj = {};
-    }
-    if (parts.length === 1) {
-        return obj[key];
-    }
-    return getValueByDataPath(obj[key], parts.slice(1).join('.'));
-}
-
 function debounce(fn, delay) {
     let timeout;
     const newFn = function () {
@@ -1202,11 +1302,82 @@ const UniLifecycleHooks = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
-const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
-    onPageScroll: 1,
-    onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2,
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
+    return {
+        onPageScroll: 1,
+        onShareAppMessage: 1 << 1,
+        onShareTimeline: 1 << 2,
+    };
+})();
+
+let vueApp;
+const createVueAppHooks = [];
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+function onCreateVueApp(hook) {
+    // TODO 每个 nvue 页面都会触发
+    if (vueApp) {
+        return hook(vueApp);
+    }
+    createVueAppHooks.push(hook);
+}
+function invokeCreateVueAppHook(app) {
+    vueApp = app;
+    createVueAppHooks.forEach((hook) => hook(app));
+}
+
+const E = function () {
+    // Keep this empty so it's easier to inherit from
+    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
 };
+E.prototype = {
+    on: function (name, callback, ctx) {
+        var e = this.e || (this.e = {});
+        (e[name] || (e[name] = [])).push({
+            fn: callback,
+            ctx: ctx,
+        });
+        return this;
+    },
+    once: function (name, callback, ctx) {
+        var self = this;
+        function listener() {
+            self.off(name, listener);
+            callback.apply(ctx, arguments);
+        }
+        listener._ = callback;
+        return this.on(name, listener, ctx);
+    },
+    emit: function (name) {
+        var data = [].slice.call(arguments, 1);
+        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+        var i = 0;
+        var len = evtArr.length;
+        for (i; i < len; i++) {
+            evtArr[i].fn.apply(evtArr[i].ctx, data);
+        }
+        return this;
+    },
+    off: function (name, callback) {
+        var e = this.e || (this.e = {});
+        var evts = e[name];
+        var liveEvents = [];
+        if (evts && callback) {
+            for (var i = 0, len = evts.length; i < len; i++) {
+                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+                    liveEvents.push(evts[i]);
+            }
+        }
+        // Remove event from queue to prevent memory leak
+        // Suggested by https://github.com/lazd
+        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+        return this;
+    },
+};
+var E$1 = E;
 
 function getEnvLocale() {
     const { env } = process;
@@ -1242,6 +1413,7 @@ exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
 exports.DATA_RE = DATA_RE;
+exports.Emitter = E$1;
 exports.EventChannel = EventChannel;
 exports.EventModifierFlags = EventModifierFlags;
 exports.I18N_JSON_DELIMITERS = I18N_JSON_DELIMITERS;
@@ -1253,7 +1425,8 @@ exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
 exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
-exports.NVueTextNode = NVueTextNode;
+exports.NVUE_BUILT_IN_TAGS = NVUE_BUILT_IN_TAGS;
+exports.NVUE_U_BUILT_IN_TAGS = NVUE_U_BUILT_IN_TAGS;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
@@ -1319,10 +1492,12 @@ exports.callOptions = callOptions;
 exports.createIsCustomElement = createIsCustomElement;
 exports.createRpx2Unit = createRpx2Unit;
 exports.createUniEvent = createUniEvent;
+exports.customizeEvent = customizeEvent;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
 exports.defaultMiniProgramRpx2Unit = defaultMiniProgramRpx2Unit;
+exports.defaultNVueRpx2Unit = defaultNVueRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.dynamicSlotName = dynamicSlotName;
 exports.forcePatchProp = forcePatchProp;
@@ -1334,8 +1509,10 @@ exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
-exports.initCustomDataset = initCustomDataset;
+exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
+exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
+exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
@@ -1347,8 +1524,10 @@ exports.isRootHook = isRootHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;
+exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;
+exports.parseNVueDataset = parseNVueDataset;
 exports.parseQuery = parseQuery;
 exports.parseUrl = parseUrl;
 exports.passive = passive;

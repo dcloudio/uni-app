@@ -52,8 +52,9 @@ export function uniCopyPlugin({
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
           if (platformStaticDirs.find((dir) => normalizedPath.includes(dir))) {
-            return fs.statSync(normalizedPath).isDirectory
+            return fs.statSync(normalizedPath).isDirectory()
           }
+          return false
         },
       },
     },

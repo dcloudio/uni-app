@@ -166,15 +166,19 @@ export function rewriteExpression(
 
 export function findReferencedScope(
   node: Expression,
-  scope: CodegenScope
+  scope: CodegenScope,
+  findReferenced: boolean = true
 ): CodegenScope {
   if (isVIfScope(scope)) {
     return scope
   } else if (isVForScope(scope)) {
+    if (!findReferenced) {
+      return scope
+    }
     if (isReferencedByIds(node, scope.locals)) {
       return scope
     }
-    return findReferencedScope(node, scope.parent!)
+    return findReferencedScope(node, scope.parent!, findReferenced)
   }
   return scope
 }

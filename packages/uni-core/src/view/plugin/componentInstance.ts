@@ -19,11 +19,15 @@ export function $nne(
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return [evt]
   }
-  if (currentTarget.tagName.indexOf('UNI-') !== 0) {
-    return [evt]
+  const isHTMLTarget = currentTarget.tagName.indexOf('UNI-') !== 0
+  // App 平台时不返回原始事件对象 https://github.com/dcloudio/uni-app/issues/3240
+  if (__PLATFORM__ === 'h5') {
+    if (isHTMLTarget) {
+      return [evt]
+    }
   }
 
-  const res = createNativeEvent(evt)
+  const res = createNativeEvent(evt, isHTMLTarget)
 
   if (isClickEvent(evt)) {
     normalizeClickEvent(res as unknown as WechatMiniprogram.Touch, evt)
@@ -54,12 +58,19 @@ function findUniTarget(target: HTMLElement): HTMLElement {
   return target
 }
 
-export function createNativeEvent(evt: Event | TouchEvent) {
+export function createNativeEvent(
+  evt: Event | TouchEvent,
+  htmlElement: boolean = false
+) {
   const { type, timeStamp, target, currentTarget } = evt
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(findUniTarget(target as HTMLElement)),
+    target: normalizeTarget(
+      htmlElement
+        ? (target as HTMLElement)
+        : findUniTarget(target as HTMLElement)
+    ),
     detail: {},
     currentTarget: normalizeTarget(currentTarget as HTMLElement),
   }
@@ -92,7 +103,7 @@ function normalizeClickEvent(
   const { x, y } = mouseEvt
   const top = getWindowTop()
   evt.detail = { x, y: y - top }
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)]
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)]
 }
 
 function normalizeMouseEvent(evt: Record<string, any>, mouseEvt: MouseEvent) {
@@ -101,16 +112,17 @@ function normalizeMouseEvent(evt: Record<string, any>, mouseEvt: MouseEvent) {
   evt.pageY = mouseEvt.pageY - top
   evt.clientX = mouseEvt.clientX
   evt.clientY = mouseEvt.clientY - top
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)]
 }
 
-function createTouchEvent(evt: MouseEvent) {
+function createTouchEvent(evt: MouseEvent, top: number) {
   return {
     force: 1,
     identifier: 0,
     clientX: evt.clientX,
-    clientY: evt.clientY,
+    clientY: evt.clientY - top,
     pageX: evt.pageX,
-    pageY: evt.pageY,
+    pageY: evt.pageY - top,
   }
 }
 

@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, extend, isString, isPlainObject, isArray, toTypeString, toRawType, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, hyphenate, camelize, isString, extend, isPlainObject, isArray, toTypeString, toRawType, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -66,6 +66,57 @@ const TAGS = [
     'resize-sensor',
     'shadow-root',
 ].map((tag) => 'uni-' + tag);
+const NVUE_BUILT_IN_TAGS = [
+    'svg',
+    'view',
+    'a',
+    'div',
+    'img',
+    'image',
+    'text',
+    'span',
+    'input',
+    'textarea',
+    'spinner',
+    'select',
+    // slider 被自定义 u-slider 替代
+    // 'slider',
+    'slider-neighbor',
+    'indicator',
+    'canvas',
+    'list',
+    'cell',
+    'header',
+    'loading',
+    'loading-indicator',
+    'refresh',
+    'scrollable',
+    'scroller',
+    'video',
+    'web',
+    'embed',
+    'tabbar',
+    'tabheader',
+    'datepicker',
+    'timepicker',
+    'marquee',
+    'countdown',
+    'dc-switch',
+    'waterfall',
+    'richtext',
+    'recycle-list',
+];
+const NVUE_U_BUILT_IN_TAGS = [
+    'u-text',
+    'u-image',
+    'u-input',
+    'u-textarea',
+    'u-video',
+    'u-web-view',
+    'u-slider',
+    'u-ad',
+    'u-ad-draw',
+];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-
     return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1;
@@ -80,6 +131,46 @@ function isH5NativeTag(tag) {
 }
 function isAppNativeTag(tag) {
     return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag);
+}
+const NVUE_CUSTOM_COMPONENTS = [
+    'ad',
+    'ad-draw',
+    'button',
+    'checkbox-group',
+    'checkbox',
+    'form',
+    'icon',
+    'label',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'picker',
+    'progress',
+    'radio-group',
+    'radio',
+    'rich-text',
+    'swiper-item',
+    'swiper',
+    'switch',
+    'slider',
+    'picker-view',
+    'picker-view-column',
+];
+function isAppNVueNativeTag(tag) {
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+        return false;
+    }
+    if (isBuiltInComponent(tag)) {
+        return true;
+    }
+    // u-text,u-video...
+    if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
 }
 function isMiniProgramNativeTag(tag) {
     return isBuiltInComponent(tag);
@@ -197,6 +288,10 @@ function resolveOwnerEl(instance) {
 function dynamicSlotName(name) {
     return name === 'default' ? SLOT_DEFAULT_NAME : name;
 }
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
 
 let lastLogTime = 0;
 function formatLog(module, ...args) {
@@ -208,10 +303,106 @@ function formatLog(module, ...args) {
         .join(' ')}`;
 }
 
+function cache(fn) {
+    const cache = Object.create(null);
+    return (str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    };
+}
+function cacheStringFunction(fn) {
+    return cache(fn);
+}
+function getLen(str = '') {
+    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
+}
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
+function removeLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str.substr(1) : str;
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+function updateElementStyle(element, styles) {
+    for (const attrName in styles) {
+        element.style[attrName] = styles[attrName];
+    }
+}
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
+const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
+const _completeValue = (value) => (value > 9 ? value : '0' + value);
+function formatDateTime({ date = new Date(), mode = 'date' }) {
+    if (mode === 'time') {
+        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
+    }
+    else {
+        return (date.getFullYear() +
+            '-' +
+            _completeValue(date.getMonth() + 1) +
+            '-' +
+            _completeValue(date.getDate()));
+    }
+}
+function callOptions(options, data) {
+    options = options || {};
+    if (typeof data === 'string') {
+        data = {
+            errMsg: data,
+        };
+    }
+    if (/:ok$/.test(data.errMsg)) {
+        if (typeof options.success === 'function') {
+            options.success(data);
+        }
+    }
+    else {
+        if (typeof options.fail === 'function') {
+            options.fail(data);
+        }
+    }
+    if (typeof options.complete === 'function') {
+        options.complete(data);
+    }
+}
+function getValueByDataPath(obj, path) {
+    if (!isString(path)) {
+        return;
+    }
+    path = path.replace(/\[(\d+)\]/g, '.$1');
+    const parts = path.split('.');
+    let key = parts[0];
+    if (!obj) {
+        obj = {};
+    }
+    if (parts.length === 1) {
+        return obj[key];
+    }
+    return getValueByDataPath(obj[key], parts.slice(1).join('.'));
+}
+
 function formatKey(key) {
     return camelize(key.substring(5));
 }
-function initCustomDataset() {
+// question/139181，增加副作用，避免 initCustomDataset 在 build 下被 tree-shaking
+const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
     const prototype = HTMLElement.prototype;
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
@@ -231,7 +422,7 @@ function initCustomDataset() {
         }
         removeAttribute.call(this, key);
     };
-}
+});
 function getCustomDataset(el) {
     return extend({}, el.dataset, el.__uniDataset);
 }
@@ -252,6 +443,7 @@ const defaultMiniProgramRpx2Unit = {
     unitRatio: 1,
     unitPrecision: 1,
 };
+const defaultNVueRpx2Unit = defaultMiniProgramRpx2Unit;
 function createRpx2Unit(unit, unitRatio, unitPrecision) {
     // ignore: rpxCalcIncludeWidth
     return (val) => val.replace(unitRE, (m, $1) => {
@@ -492,15 +684,16 @@ function formatH5Log(type, filename, ...args) {
     console[type].apply(console, [...args, filename]);
 }
 
-let latestNodeId = 1;
-class NVueTextNode {
-    constructor(text) {
-        this.instanceId = '';
-        this.nodeId = latestNodeId++;
-        this.parentNode = null;
-        this.nodeType = 3;
-        this.text = text;
+function parseNVueDataset(attr) {
+    const dataset = {};
+    if (attr) {
+        Object.keys(attr).forEach((key) => {
+            if (key.indexOf('data-') === 0) {
+                dataset[key.replace('data-', '')] = attr[key];
+            }
+        });
     }
+    return dataset;
 }
 
 function plusReady(callback) {
@@ -619,11 +812,13 @@ function parseEventName(name) {
     return [hyphenate(name.slice(2)), options];
 }
 
-const EventModifierFlags = {
-    stop: 1,
-    prevent: 1 << 1,
-    self: 1 << 2,
-};
+const EventModifierFlags = /*#__PURE__*/ (() => {
+    return {
+        stop: 1,
+        prevent: 1 << 1,
+        self: 1 << 2,
+    };
+})();
 function encodeModifier(modifiers) {
     let flag = 0;
     if (modifiers.includes('stop')) {
@@ -979,101 +1174,6 @@ const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
-function cache(fn) {
-    const cache = Object.create(null);
-    return (str) => {
-        const hit = cache[str];
-        return hit || (cache[str] = fn(str));
-    };
-}
-function cacheStringFunction(fn) {
-    return cache(fn);
-}
-function getLen(str = '') {
-    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
-}
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-function removeLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str.substr(1) : str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
-function updateElementStyle(element, styles) {
-    for (const attrName in styles) {
-        element.style[attrName] = styles[attrName];
-    }
-}
-function once(fn, ctx = null) {
-    let res;
-    return ((...args) => {
-        if (fn) {
-            res = fn.apply(ctx, args);
-            fn = null;
-        }
-        return res;
-    });
-}
-const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
-const _completeValue = (value) => (value > 9 ? value : '0' + value);
-function formatDateTime({ date = new Date(), mode = 'date' }) {
-    if (mode === 'time') {
-        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
-    }
-    else {
-        return (date.getFullYear() +
-            '-' +
-            _completeValue(date.getMonth() + 1) +
-            '-' +
-            _completeValue(date.getDate()));
-    }
-}
-function callOptions(options, data) {
-    options = options || {};
-    if (typeof data === 'string') {
-        data = {
-            errMsg: data,
-        };
-    }
-    if (/:ok$/.test(data.errMsg)) {
-        if (typeof options.success === 'function') {
-            options.success(data);
-        }
-    }
-    else {
-        if (typeof options.fail === 'function') {
-            options.fail(data);
-        }
-    }
-    if (typeof options.complete === 'function') {
-        options.complete(data);
-    }
-}
-function getValueByDataPath(obj, path) {
-    if (!isString(path)) {
-        return;
-    }
-    path = path.replace(/\[(\d+)\]/g, '.$1');
-    const parts = path.split('.');
-    let key = parts[0];
-    if (!obj) {
-        obj = {};
-    }
-    if (parts.length === 1) {
-        return obj[key];
-    }
-    return getValueByDataPath(obj[key], parts.slice(1).join('.'));
-}
-
 function debounce(fn, delay) {
     let timeout;
     const newFn = function () {
@@ -1198,11 +1298,82 @@ const UniLifecycleHooks = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
-const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = {
-    onPageScroll: 1,
-    onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2,
+const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
+    return {
+        onPageScroll: 1,
+        onShareAppMessage: 1 << 1,
+        onShareTimeline: 1 << 2,
+    };
+})();
+
+let vueApp;
+const createVueAppHooks = [];
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ * @param hook
+ */
+function onCreateVueApp(hook) {
+    // TODO 每个 nvue 页面都会触发
+    if (vueApp) {
+        return hook(vueApp);
+    }
+    createVueAppHooks.push(hook);
+}
+function invokeCreateVueAppHook(app) {
+    vueApp = app;
+    createVueAppHooks.forEach((hook) => hook(app));
+}
+
+const E = function () {
+    // Keep this empty so it's easier to inherit from
+    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
 };
+E.prototype = {
+    on: function (name, callback, ctx) {
+        var e = this.e || (this.e = {});
+        (e[name] || (e[name] = [])).push({
+            fn: callback,
+            ctx: ctx,
+        });
+        return this;
+    },
+    once: function (name, callback, ctx) {
+        var self = this;
+        function listener() {
+            self.off(name, listener);
+            callback.apply(ctx, arguments);
+        }
+        listener._ = callback;
+        return this.on(name, listener, ctx);
+    },
+    emit: function (name) {
+        var data = [].slice.call(arguments, 1);
+        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+        var i = 0;
+        var len = evtArr.length;
+        for (i; i < len; i++) {
+            evtArr[i].fn.apply(evtArr[i].ctx, data);
+        }
+        return this;
+    },
+    off: function (name, callback) {
+        var e = this.e || (this.e = {});
+        var evts = e[name];
+        var liveEvents = [];
+        if (evts && callback) {
+            for (var i = 0, len = evts.length; i < len; i++) {
+                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+                    liveEvents.push(evts[i]);
+            }
+        }
+        // Remove event from queue to prevent memory leak
+        // Suggested by https://github.com/lazd
+        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+        return this;
+    },
+};
+var E$1 = E;
 
 function getEnvLocale() {
     const { env } = process;
@@ -1210,4 +1381,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVueTextNode, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_HIDE, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatAppLog, formatDateTime, formatH5Log, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDataset, invokeArrayFns, isAppNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isMiniProgramNativeTag, isRootHook, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_HIDE, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatAppLog, formatDateTime, formatH5Log, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeCreateVueAppHook, isAppNVueNativeTag, isAppNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isMiniProgramNativeTag, isRootHook, normalizeDataset, normalizeEventType, normalizeTarget, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, stringifyQuery, updateElementStyle };
