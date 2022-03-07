@@ -1407,27 +1407,10 @@ function queueJob(job) {
         queueFlush();
     }
 }
-// fixed by xxxxxx
-let delayFlushJobs = false;
-function setDelayFlushJobs(isDelay) {
-    delayFlushJobs = isDelay;
-}
-// fixed by xxxxxx
-function sleep(ms) {
-    return () => {
-        return new Promise(resolve => setTimeout(() => resolve(void 0), ms));
-    };
-}
 function queueFlush() {
     if (!isFlushing && !isFlushPending) {
         isFlushPending = true;
-        if (delayFlushJobs) {
-            // fixed by xxxxxx 延迟执行，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
-            currentFlushPromise = resolvedPromise.then(sleep(0)).then(flushJobs);
-        }
-        else {
-            currentFlushPromise = resolvedPromise.then(flushJobs);
-        }
+        currentFlushPromise = resolvedPromise.then(flushJobs);
     }
 }
 function invalidateJob(job) {
@@ -1506,8 +1489,6 @@ function flushPostFlushCbs(seen) {
 }
 const getId = (job) => job.id == null ? Infinity : job.id;
 function flushJobs(seen) {
-    // fixed by xxxxxx
-    delayFlushJobs = false;
     isFlushPending = false;
     isFlushing = true;
     if ((process.env.NODE_ENV !== 'production')) {
@@ -5364,7 +5345,17 @@ function createInvoker(initialValue, instance) {
         if (e.detail && e.detail.__args__) {
             args = e.detail.__args__;
         }
-        callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, args);
+        const eventValue = invoker.value;
+        const invoke = () => {
+            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, eventValue), instance, 5 /* NATIVE_EVENT_HANDLER */, args);
+        };
+        // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
+        if (bubbles.includes(e.type)) {
+            setTimeout(invoke);
+        }
+        else {
+            invoke();
+        }
     };
     invoker.value = initialValue;
     return invoker;
@@ -5386,10 +5377,6 @@ const bubbles = [
 ];
 function patchMPEvent(event) {
     if (event.type && event.target) {
-        // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
-        if (bubbles.includes(event.type)) {
-            setDelayFlushJobs(true);
-        }
         event.preventDefault = NOOP;
         event.stopPropagation = NOOP;
         event.stopImmediatePropagation = NOOP;
@@ -5583,4 +5570,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setDelayFlushJobs, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
