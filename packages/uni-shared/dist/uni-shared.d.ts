@@ -272,6 +272,8 @@ export declare function isMiniProgramNativeTag(tag: string): boolean;
 
 export declare function isRootHook(name: string): boolean;
 
+export declare function isRootImmediateHook(name: string): boolean;
+
 export declare interface IUniPageNode {
     pageId: number;
     pageNode: IUniPageNode | null;

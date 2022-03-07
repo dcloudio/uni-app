@@ -1273,6 +1273,10 @@ const PAGE_HOOKS = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
+const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
+function isRootImmediateHook(name) {
+    return PAGE_SYNC_HOOKS.indexOf(name) > -1;
+}
 function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
 }
@@ -1520,6 +1524,7 @@ exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
+exports.isRootImmediateHook = isRootImmediateHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;

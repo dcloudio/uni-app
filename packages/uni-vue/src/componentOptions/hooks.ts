@@ -3,7 +3,6 @@ import { LINEFEED, ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
 
 import {
-  nextTick,
   ComponentOptions,
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -46,15 +45,13 @@ export function initHooks(
   })
   if ((__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') && mpType === 'page') {
     instance.__isVisible = true
+    // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
     try {
       invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
       delete instance.attrs.__pageQuery
+      invokeHook(publicThis, ON_SHOW)
     } catch (e: any) {
       console.error(e.message + LINEFEED + e.stack)
     }
-    nextTick(() => {
-      // 延迟onShow，保证组件的onShow也可以监听到
-      invokeHook(publicThis, ON_SHOW)
-    })
   }
 }

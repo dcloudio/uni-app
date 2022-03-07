@@ -45,6 +45,12 @@ const PAGE_HOOKS = [
   ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ]
 
+const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW]
+
+export function isRootImmediateHook(name: string) {
+  return PAGE_SYNC_HOOKS.indexOf(name) > -1
+}
+
 export function isRootHook(name: string) {
   return PAGE_HOOKS.indexOf(name) > -1
 }

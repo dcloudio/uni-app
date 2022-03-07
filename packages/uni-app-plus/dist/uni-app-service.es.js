@@ -17305,17 +17305,15 @@ var serviceContext = (function (vue) {
       });
       if (mpType === 'page') {
           instance.__isVisible = true;
+          // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
           try {
               invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
               delete instance.attrs.__pageQuery;
+              invokeHook(publicThis, ON_SHOW);
           }
           catch (e) {
               console.error(e.message + LINEFEED + e.stack);
           }
-          vue.nextTick(() => {
-              // 延迟onShow，保证组件的onShow也可以监听到
-              invokeHook(publicThis, ON_SHOW);
-          });
       }
   }
 

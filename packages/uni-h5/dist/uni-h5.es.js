@@ -10177,7 +10177,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     const vm = getCurrentInstance();
-    const __scopeId = vm && vm.root.type.__scopeId || "";
+    const __scopeId = vm && vm.vnode.scopeId || "";
     const {
       hovering,
       binding
@@ -11812,7 +11812,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm && vm.root.type).__scopeId || "", hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -13605,12 +13605,10 @@ function initHooks(options, instance2, publicThis) {
     try {
       invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
       delete instance2.attrs.__pageQuery;
+      invokeHook(publicThis, ON_SHOW);
     } catch (e2) {
       console.error(e2.message + LINEFEED + e2.stack);
     }
-    nextTick(() => {
-      invokeHook(publicThis, ON_SHOW);
-    });
   }
 }
 function applyOptions(options, instance2, publicThis) {
@@ -14174,7 +14172,9 @@ function setupPage(comp) {
     setup(instance2) {
       instance2.root = instance2;
       const route = usePageRoute();
-      instance2.attrs.__pageQuery = decodedQuery(route.query);
+      const query = decodedQuery(route.query);
+      instance2.attrs.__pageQuery = query;
+      instance2.proxy.$page.options = query;
       const pageMeta = usePageMeta();
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
@@ -14203,7 +14203,7 @@ function setupPage(comp) {
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageMeta.id);
       });
-      return route.query;
+      return query;
     }
   });
 }
