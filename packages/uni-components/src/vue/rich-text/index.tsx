@@ -38,7 +38,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const nodeList = parseNodes(
         nodes,
         document.createDocumentFragment(),
-        (vm && (vm.root.type as any)).__scopeId || '',
+        (vm && vm.vnode.scopeId) || '',
         hasItemClick && triggerItemClick
       )
       rootRef.value!.firstElementChild!.innerHTML = ''
