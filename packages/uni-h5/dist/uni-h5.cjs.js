@@ -2826,7 +2826,10 @@ function getSelectedTextRange(_, resolve) {
 const UniViewJSBridgeSubscribe = function() {
   registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
 };
-function getValueString(value) {
+function getValueString(value, type) {
+  if (type === "number" && isNaN(Number(value))) {
+    value = "";
+  }
   return value === null ? "" : String(value);
 }
 const props$j = /* @__PURE__ */ shared.extend({}, {
@@ -2927,7 +2930,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.modelValue) || getValueString(props2.value);
+  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -2948,7 +2951,7 @@ function useBase(props2, rootRef, emit2) {
 }
 function useValueSync(props2, state, emit2, trigger) {
   const valueChangeFn = uniShared.debounce((val) => {
-    state.value = getValueString(val);
+    state.value = getValueString(val, props2.type);
   }, 100);
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
@@ -3175,6 +3178,11 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
           state2.value = input.value;
           return false;
         }
+      }
+    });
+    vue.watch(() => state.value, (value) => {
+      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
+        cache.value = value;
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
@@ -4298,7 +4306,7 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     const vm = vue.getCurrentInstance();
-    const __scopeId = vm && vm.root.type.__scopeId || "";
+    const __scopeId = vm && vm.vnode.scopeId || "";
     const {
       hovering,
       binding
@@ -5143,7 +5151,7 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm && vm.root.type).__scopeId || "", hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -6553,6 +6561,9 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
+  if (!mpType) {
+    return;
+  }
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hooks = options[name];
@@ -6568,12 +6579,10 @@ function initHooks(options, instance, publicThis) {
     try {
       invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
       delete instance.attrs.__pageQuery;
+      invokeHook(publicThis, uniShared.ON_SHOW);
     } catch (e2) {
       console.error(e2.message + uniShared.LINEFEED + e2.stack);
     }
-    vue.nextTick(() => {
-      invokeHook(publicThis, uniShared.ON_SHOW);
-    });
   }
 }
 function applyOptions(options, instance, publicThis) {
@@ -6966,9 +6975,11 @@ function setupPage(comp) {
     setup(instance) {
       instance.root = instance;
       const route = usePageRoute();
-      instance.attrs.__pageQuery = uniShared.decodedQuery(route.query);
+      const query = uniShared.decodedQuery(route.query);
+      instance.attrs.__pageQuery = query;
+      instance.proxy.$page.options = query;
       {
-        return instance.attrs.__pageQuery;
+        return query;
       }
     }
   });

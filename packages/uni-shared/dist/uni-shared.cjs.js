@@ -1273,6 +1273,10 @@ const PAGE_HOOKS = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
+const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
+function isRootImmediateHook(name) {
+    return PAGE_SYNC_HOOKS.indexOf(name) > -1;
+}
 function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
 }
@@ -1314,7 +1318,6 @@ let vueApp;
 const createVueAppHooks = [];
 /**
  * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
- * @param hook
  */
 function onCreateVueApp(hook) {
     // TODO 每个 nvue 页面都会触发
@@ -1521,6 +1524,7 @@ exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
+exports.isRootImmediateHook = isRootImmediateHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;

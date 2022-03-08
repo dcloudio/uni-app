@@ -1,5 +1,5 @@
 import { extend, hyphenate } from '@vue/shared'
-import { Ref, ref, computed } from 'vue'
+import { Ref, ref, computed, watch } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
   props as fieldProps,
@@ -107,6 +107,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           }
         }
       })
+    watch(
+      () => state.value,
+      (value) => {
+        if (props.type === 'number' && !(cache.value === '-' && value === '')) {
+          cache.value = value
+        }
+      }
+    )
     const NUMBER_TYPES = ['number', 'digit']
     const step = computed(() =>
       NUMBER_TYPES.includes(props.type) ? '0.000000000000000001' : ''

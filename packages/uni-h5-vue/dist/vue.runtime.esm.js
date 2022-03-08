@@ -1,6 +1,6 @@
 import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, isBuiltInDirective, NO, normalizeClass, normalizeStyle, isGloballyWhitelisted, isSpecialBooleanAttr, includeBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -3869,7 +3869,14 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
             if (target.type.__reserved) {
                 return;
             }
-            target = target.root;
+            if (target !== target.root) {
+                target = target.root;
+                if (isRootImmediateHook(type)) {
+                    // 作用域应该是组件还是页面？目前绑定的是页面
+                    const proxy = target.proxy;
+                    callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
+                }
+            }
         }
         const hooks = target[type] || (target[type] = []);
         // cache the error handling wrapper for injected hooks so the same hook

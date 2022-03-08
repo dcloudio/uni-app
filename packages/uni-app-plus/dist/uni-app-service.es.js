@@ -718,7 +718,6 @@ var serviceContext = (function (vue) {
   const createVueAppHooks = [];
   /**
    * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
-   * @param hook
    */
   function onCreateVueApp(hook) {
       // TODO 每个 nvue 页面都会触发
@@ -15963,10 +15962,14 @@ var serviceContext = (function (vue) {
               errCode: err.code,
           });
       });
-      // @ts-ignore
-      audio.addEventListener('prev', () => publish('onBackgroundAudioPrev'));
-      // @ts-ignore
-      audio.addEventListener('next', () => publish('onBackgroundAudioNext'));
+      // @ts-expect-error
+      audio.addEventListener('prev', () => {
+          onBackgroundAudioStateChange({ state: 'prev' });
+      });
+      // @ts-expect-error
+      audio.addEventListener('next', () => {
+          onBackgroundAudioStateChange({ state: 'next' });
+      });
   }
   function getBackgroundAudioState() {
       let data = {
@@ -16055,7 +16058,7 @@ var serviceContext = (function (vue) {
   }
   function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
       callbacks[state].forEach((callback) => {
-          if (typeof callback === 'function') {
+          if (isFunction(callback)) {
               callback(state === 'error'
                   ? {
                       errMsg,
@@ -17285,7 +17288,10 @@ var serviceContext = (function (vue) {
   }
   function initHooks(options, instance, publicThis) {
       const mpType = options.mpType || publicThis.$mpType;
-      // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
+      if (!mpType) {
+          // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
+          return;
+      }
       Object.keys(options).forEach((name) => {
           if (name.indexOf('on') === 0) {
               const hooks = options[name];
@@ -17299,17 +17305,15 @@ var serviceContext = (function (vue) {
       });
       if (mpType === 'page') {
           instance.__isVisible = true;
+          // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
           try {
               invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
               delete instance.attrs.__pageQuery;
+              invokeHook(publicThis, ON_SHOW);
           }
           catch (e) {
               console.error(e.message + LINEFEED + e.stack);
           }
-          vue.nextTick(() => {
-              // 延迟onShow，保证组件的onShow也可以监听到
-              invokeHook(publicThis, ON_SHOW);
-          });
       }
   }
 

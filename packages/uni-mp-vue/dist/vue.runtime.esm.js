@@ -1407,17 +1407,10 @@ function queueJob(job) {
         queueFlush();
     }
 }
-// fixed by xxxxxx
-function sleep(ms) {
-    return () => {
-        return new Promise(resolve => setTimeout(() => resolve(void 0), ms));
-    };
-}
 function queueFlush() {
     if (!isFlushing && !isFlushPending) {
         isFlushPending = true;
-        // fixed by xxxxxx 延迟执行，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
-        currentFlushPromise = resolvedPromise.then(sleep(0)).then(flushJobs);
+        currentFlushPromise = resolvedPromise.then(flushJobs);
     }
 }
 function invalidateJob(job) {
@@ -5111,8 +5104,11 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
     }
 }
 function initHooks(options, instance, publicThis) {
-    options.mpType || publicThis.$mpType;
-    // 为了组件也可以监听部分生命周期，故不再判断mpType，统一添加on开头的生命周期
+    const mpType = options.mpType || publicThis.$mpType;
+    if (!mpType) {
+        // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
+        return;
+    }
     Object.keys(options).forEach((name) => {
         if (name.indexOf('on') === 0) {
             const hooks = options[name];
@@ -5349,11 +5345,36 @@ function createInvoker(initialValue, instance) {
         if (e.detail && e.detail.__args__) {
             args = e.detail.__args__;
         }
-        callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, args);
+        const eventValue = invoker.value;
+        const invoke = () => {
+            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, eventValue), instance, 5 /* NATIVE_EVENT_HANDLER */, args);
+        };
+        // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
+        if (bubbles.includes(e.type)) {
+            setTimeout(invoke);
+        }
+        else {
+            invoke();
+        }
     };
     invoker.value = initialValue;
     return invoker;
 }
+// 冒泡事件列表
+const bubbles = [
+    'touchstart',
+    'touchmove',
+    'touchcancel',
+    'touchend',
+    'tap',
+    'longpress',
+    'longtap',
+    'transitionend',
+    'animationstart',
+    'animationiteration',
+    'animationend',
+    'touchforcechange',
+];
 function patchMPEvent(event) {
     if (event.type && event.target) {
         event.preventDefault = NOOP;

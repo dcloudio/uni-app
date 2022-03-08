@@ -8359,7 +8359,10 @@ function getSelectedTextRange(_, resolve) {
 const UniViewJSBridgeSubscribe = function() {
   registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
 };
-function getValueString(value) {
+function getValueString(value, type) {
+  if (type === "number" && isNaN(Number(value))) {
+    value = "";
+  }
   return value === null ? "" : String(value);
 }
 const props$q = /* @__PURE__ */ extend({}, {
@@ -8460,7 +8463,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.modelValue) || getValueString(props2.value);
+  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state2 = reactive({
     value,
     valueOrigin: value,
@@ -8481,7 +8484,7 @@ function useBase(props2, rootRef, emit2) {
 }
 function useValueSync(props2, state2, emit2, trigger) {
   const valueChangeFn = debounce((val) => {
-    state2.value = getValueString(val);
+    state2.value = getValueString(val, props2.type);
   }, 100);
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
@@ -8717,6 +8720,11 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
           state3.value = input.value;
           return false;
         }
+      }
+    });
+    watch(() => state2.value, (value) => {
+      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
+        cache.value = value;
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
@@ -10169,7 +10177,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     const vm = getCurrentInstance();
-    const __scopeId = vm && vm.root.type.__scopeId || "";
+    const __scopeId = vm && vm.vnode.scopeId || "";
     const {
       hovering,
       binding
@@ -11804,7 +11812,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), (vm && vm.root.type).__scopeId || "", hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -13579,6 +13587,9 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
 }
 function initHooks(options, instance2, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
+  if (!mpType) {
+    return;
+  }
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hooks = options[name];
@@ -13594,12 +13605,10 @@ function initHooks(options, instance2, publicThis) {
     try {
       invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
       delete instance2.attrs.__pageQuery;
+      invokeHook(publicThis, ON_SHOW);
     } catch (e2) {
       console.error(e2.message + LINEFEED + e2.stack);
     }
-    nextTick(() => {
-      invokeHook(publicThis, ON_SHOW);
-    });
   }
 }
 function applyOptions(options, instance2, publicThis) {
@@ -14163,7 +14172,9 @@ function setupPage(comp) {
     setup(instance2) {
       instance2.root = instance2;
       const route = usePageRoute();
-      instance2.attrs.__pageQuery = decodedQuery(route.query);
+      const query = decodedQuery(route.query);
+      instance2.attrs.__pageQuery = query;
+      instance2.proxy.$page.options = query;
       const pageMeta = usePageMeta();
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
@@ -14192,7 +14203,7 @@ function setupPage(comp) {
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageMeta.id);
       });
-      return route.query;
+      return query;
     }
   });
 }

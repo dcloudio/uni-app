@@ -17,7 +17,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props: navigatorProps,
   setup(props, { slots }) {
     const vm = getCurrentInstance()
-    const __scopeId = (vm && (vm.root.type as any).__scopeId) || ''
+    const __scopeId = (vm && vm.vnode.scopeId) || ''
     const { hovering, binding } = useHover(props)
 
     const onClick = createNavigatorOnClick(props)
