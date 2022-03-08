@@ -17,6 +17,7 @@ import {
   ElementNode,
   DirectiveNode,
   SimpleExpressionNode,
+  AttributeNode,
 } from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
 
@@ -96,6 +97,10 @@ export function parseVue(code: string, errors: SyntaxError[]) {
 
 export function isElementNode(node: Node): node is ElementNode {
   return node.type === NodeTypes.ELEMENT
+}
+
+export function isAttributeNode(node: Node): node is AttributeNode {
+  return node.type === NodeTypes.ATTRIBUTE
 }
 
 export function isDirectiveNode(node: Node): node is DirectiveNode {

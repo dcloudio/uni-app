@@ -18,6 +18,7 @@ import { transformSlot } from './transforms/vSlot'
 import { transformRoot } from './transforms/transformRoot'
 import { transformTag } from './transforms/transformTag'
 import { transformHtml } from './transforms/vHtml'
+import { transformAttr } from './transforms/transformAttr'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -34,6 +35,7 @@ export function getBaseTransformPreset({
   // order is important
   const nodeTransforms = [
     transformRoot,
+    transformAttr,
     transformTag,
     transformHtml,
     transformIf,
