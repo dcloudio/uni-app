@@ -105,6 +105,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: projectConfigFilename,
+    config: ['mini.project.json', 'project.my.json'],
     source,
   },
   template: {

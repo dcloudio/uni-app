@@ -137,6 +137,7 @@ const options = {
     },
     project: {
         filename: 'project.config.json',
+        config: ['project.qq.json', 'project.config.json'],
         source,
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: {

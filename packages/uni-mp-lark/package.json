@@ -21,12 +21,10 @@
     "main": "dist/uni.compiler.js"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
-  "devDependencies": {
-    "@dcloudio/uni-mp-toutiao": "0.0.1-nvue3.3040020220301001"
-  },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220301001",
     "@dcloudio/uni-mp-compiler": "0.0.1-nvue3.3040020220301001",
+    "@dcloudio/uni-mp-toutiao": "0.0.1-nvue3.3040020220301001",
     "@dcloudio/uni-mp-vite": "0.0.1-nvue3.3040020220301001",
     "@dcloudio/uni-mp-vue": "0.0.1-nvue3.3040020220301001",
     "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220301001",

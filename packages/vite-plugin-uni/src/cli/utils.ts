@@ -184,6 +184,7 @@ export function cleanOptions(options: CliOptions) {
   delete ret.p
   delete ret.ssr
 
+  delete ret.base
   delete ret.debug
   delete ret.d
   delete ret.filter

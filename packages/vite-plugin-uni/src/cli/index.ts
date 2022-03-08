@@ -14,6 +14,7 @@ export interface CliOptions {
   p?: string
   ssr?: boolean
 
+  base?: string
   debug?: boolean | string
   d?: boolean | string
   filter?: string
@@ -33,6 +34,7 @@ cli
   .option('-p, --platform [platform]', '[string] ' + PLATFORMS.join(' | '), {
     default: 'h5',
   })
+  .option('--base <path>', `[string] public base path (default: /)`)
   .option('-ssr', '[boolean] server-side rendering', {
     default: false,
   })

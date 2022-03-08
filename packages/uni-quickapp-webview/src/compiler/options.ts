@@ -69,6 +69,7 @@ ${filter.code}
   },
   project: {
     filename: projectConfigFilename,
+    config: [],
     source,
   },
 }

@@ -98,6 +98,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: projectConfigFilename,
+    config: ['project.wx.json', 'project.config.json'],
     source,
   },
   template: {
