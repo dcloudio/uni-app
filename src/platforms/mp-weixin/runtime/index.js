@@ -13,14 +13,15 @@ const customize = cached((str) => {
 })
 
 function initTriggerEvent (mpInstance) {
-  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'app-plus') {
-    if (!wx.canIUse || !wx.canIUse('nextTick')) {
-      return
-    }
-  }
   const oldTriggerEvent = mpInstance.triggerEvent
-  mpInstance.triggerEvent = function (event, ...args) {
+  const newTriggerEvent = function (event, ...args) {
     return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+  }
+  try {
+    // 京东小程序 triggerEvent 为只读
+    mpInstance.triggerEvent = newTriggerEvent
+  } catch (error) {
+    mpInstance._triggerEvent = newTriggerEvent
   }
 }
 

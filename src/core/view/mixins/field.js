@@ -62,6 +62,10 @@ export default {
     selectionEnd: {
       type: [Number, String],
       default: -1
+    },
+    confirmHold: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

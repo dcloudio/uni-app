@@ -1,7 +1,7 @@
 import {
   uni
 } from 'uni-core/service/uni'
-
+import EventChannel from 'uni-helpers/EventChannel'
 import {
   invokeCallbackHandler,
   removeCallbackHandler
@@ -45,5 +45,6 @@ export default {
   __registerPage: registerPage,
   uni,
   getApp,
-  getCurrentPages
+  getCurrentPages,
+  EventChannel
 }

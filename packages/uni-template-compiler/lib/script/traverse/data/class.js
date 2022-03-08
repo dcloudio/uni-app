@@ -1,4 +1,5 @@
 const t = require('@babel/types')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   getCode
@@ -37,10 +38,9 @@ function processStaticClass (classArrayExpression, staticClassPath, state) {
     }
     staticClassPath.remove()
   }
-  if (
-    state.options.platform.name === 'mp-toutiao' ||
-        state.options.platform.name === 'mp-alipay'
-  ) {
+
+  const transPlatform = ['mp-toutiao', 'mp-alipay', 'mp-lark']
+  if (transPlatform.includes(state.options.platform.name)) {
     // classArrayExpression => binaryExpression
     return processClassArrayExpressionElements(classArrayExpression)
   }
@@ -132,7 +132,7 @@ module.exports = function processClass (paths, path, state) {
       //         )
       //       )
     } else {
-      state.errors.add(`:class 不支持 ${getCode(classValuePath.node)} 语法`)
+      state.errors.add(':class' + uniI18n.__('templateCompiler.noSupportSyntax', { 0: getCode(classValuePath.node) }))
     }
   }
   return []

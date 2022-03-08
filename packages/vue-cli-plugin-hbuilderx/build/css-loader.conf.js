@@ -56,15 +56,17 @@ if (isSass) {
 }
 
 const scssLoader = {
-  loader: 'sass-loader',
+  loader: '@dcloudio/vue-cli-plugin-uni/packages/sass-loader',
   options: {
+    nvue: true,
     sourceMap: false
   }
 }
 
 const sassLoader = {
-  loader: 'sass-loader',
+  loader: '@dcloudio/vue-cli-plugin-uni/packages/sass-loader',
   options: {
+    nvue: true,
     sourceMap: false
   }
 }

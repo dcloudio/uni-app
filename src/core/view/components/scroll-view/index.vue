@@ -86,11 +86,13 @@ import {
   disableScrollBounce
 } from 'uni-platform/helpers/scroll'
 
-const passiveOptions = supportsPassive
-  ? {
-    passive: true
-  }
-  : false
+const passive = (passive = true) =>
+  supportsPassive
+    ? {
+      passive
+    }
+    : false
+const passiveOptions = passive()
 
 // const PULLING = 'pulling'
 // const REFRESHING = 'refreshing'
@@ -222,6 +224,8 @@ export default {
     }
 
     this.__handleTouchMove = function (event) {
+      if (touchStart === null) return
+
       var x = event.touches[0].pageX
       var y = event.touches[0].pageY
       var main = self.$refs.main
@@ -322,26 +326,10 @@ export default {
         self._setRefreshState('refresherabort')
       }
     }
-    this.$refs.main.addEventListener(
-      'touchstart',
-      this.__handleTouchStart,
-      passiveOptions
-    )
-    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove)
-    this.$refs.main.addEventListener(
-      'scroll',
-      this.__handleScroll,
-      supportsPassive
-        ? {
-          passive: false
-        }
-        : false
-    )
-    this.$refs.main.addEventListener(
-      'touchend',
-      this.__handleTouchEnd,
-      passiveOptions
-    )
+    this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions)
+    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove, passive(false))
+    this.$refs.main.addEventListener('scroll', this.__handleScroll, passive(false))
+    this.$refs.main.addEventListener('touchend', this.__handleTouchEnd, passiveOptions)
     initScrollBounce()
   },
   activated () {
@@ -363,11 +351,7 @@ export default {
     this.$refs.main.removeEventListener(
       'scroll',
       this.__handleScroll,
-      supportsPassive
-        ? {
-          passive: false
-        }
-        : false
+      passive(false)
     )
     this.$refs.main.removeEventListener(
       'touchend',

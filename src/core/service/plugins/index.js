@@ -147,7 +147,7 @@ export default {
               keepAliveInclude
             }
           }
-          const appMixin = createAppMixin(routes, entryRoute)
+          const appMixin = createAppMixin(Vue, routes, entryRoute)
           // mixin app hooks
           Object.keys(appMixin).forEach(hook => {
             options[hook] = options[hook] ? [].concat(appMixin[hook], options[hook]) : [

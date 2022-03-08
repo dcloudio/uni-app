@@ -1,0 +1,144 @@
+{
+  "_from": "sass-loader@^8.0.2",
+  "_id": "sass-loader@8.0.2",
+  "_inBundle": false,
+  "_integrity": "sha512-7o4dbSK8/Ol2KflEmSco4jTjQoV988bM82P9CZdmo9hR3RLnvNc0ufMNdMrB0caq38JQ/FgF4/7RcbcfKzxoFQ==",
+  "_location": "/sass-loader",
+  "_phantomChildren": {
+    "@types/json-schema": "7.0.5",
+    "ajv": "6.12.2",
+    "ajv-keywords": "3.4.1"
+  },
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "sass-loader@^8.0.2",
+    "name": "sass-loader",
+    "escapedName": "sass-loader",
+    "rawSpec": "^8.0.2",
+    "saveSpec": null,
+    "fetchSpec": "^8.0.2"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/sass-loader/-/sass-loader-8.0.2.tgz",
+  "_shasum": "debecd8c3ce243c76454f2e8290482150380090d",
+  "_spec": "sass-loader@^8.0.2",
+  "_where": "/Users/fxy/Documents/DCloud/HbuilderX-plugins/alpha/uniapp-cli",
+  "author": {
+    "name": "J. Tangelder"
+  },
+  "bugs": {
+    "url": "https://github.com/webpack-contrib/sass-loader/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "clone-deep": "^4.0.1",
+    "loader-utils": "^1.2.3",
+    "neo-async": "^2.6.1",
+    "schema-utils": "^2.6.1",
+    "semver": "^6.3.0"
+  },
+  "deprecated": false,
+  "description": "Sass loader for webpack",
+  "devDependencies": {
+    "@babel/cli": "^7.8.0",
+    "@babel/core": "^7.8.0",
+    "@babel/preset-env": "^7.8.2",
+    "@commitlint/cli": "^8.3.4",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@webpack-contrib/defaults": "^6.3.0",
+    "@webpack-contrib/eslint-config-webpack": "^3.0.0",
+    "babel-jest": "^24.9.0",
+    "bootstrap": "^4.4.1",
+    "bootstrap-sass": "^3.4.1",
+    "commitlint-azure-pipelines-cli": "^1.0.3",
+    "cross-env": "^6.0.3",
+    "css-loader": "^3.4.2",
+    "del": "^5.1.0",
+    "del-cli": "^3.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.20.0",
+    "fibers": "^4.0.2",
+    "file-loader": "^5.0.2",
+    "husky": "^4.0.7",
+    "jest": "^24.9.0",
+    "jest-junit": "^10.0.0",
+    "jquery": "^3.4.1",
+    "lint-staged": "^9.5.0",
+    "memfs": "^3.0.3",
+    "node-sass": "^4.13.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "sass": "^1.24.4",
+    "standard-version": "^7.0.1",
+    "style-loader": "^1.1.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  },
+  "engines": {
+    "node": ">= 8.9.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/webpack"
+  },
+  "homepage": "https://github.com/webpack-contrib/sass-loader",
+  "keywords": [
+    "sass",
+    "libsass",
+    "webpack",
+    "loader"
+  ],
+  "license": "MIT",
+  "main": "dist/cjs.js",
+  "name": "sass-loader",
+  "peerDependencies": {
+    "webpack": "^4.36.0 || ^5.0.0",
+    "node-sass": "^4.0.0",
+    "sass": "^1.3.0",
+    "fibers": ">= 3.1.0"
+  },
+  "peerDependenciesMeta": {
+    "node-sass": {
+      "optional": true
+    },
+    "sass": {
+      "optional": true
+    },
+    "fibers": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webpack-contrib/sass-loader.git"
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV=production babel src -d dist --copy-files",
+    "clean": "del-cli dist",
+    "commitlint": "commitlint --from=master",
+    "defaults": "webpack-defaults",
+    "lint": "npm-run-all -l -p \"lint:**\"",
+    "lint:js": "eslint --cache .",
+    "lint:prettier": "prettier \"{**/*,*}.{js,json,md,yml,css,ts}\" --list-different",
+    "prebuild": "npm run clean",
+    "prepare": "npm run build",
+    "pretest": "npm run lint",
+    "release": "standard-version",
+    "security": "npm audit",
+    "start": "npm run build -- -w",
+    "test": "npm run test:coverage",
+    "test:coverage": "npm run test:only -- --collectCoverageFrom=\"src/**/*.js\" --coverage",
+    "test:manual": "npm run build && webpack-dev-server test/manual/src/index.js --open --config test/manual/webpack.config.js",
+    "test:only": "cross-env NODE_ENV=test jest",
+    "test:watch": "npm run test:only -- --watch"
+  },
+  "version": "8.0.2"
+}

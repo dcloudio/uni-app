@@ -52,18 +52,12 @@ export default function initOn (on, {
     callCurrentPageHook('onHide')
   }
 
-  function onAppEnterForeground () {
+  function onAppEnterForeground (enterOptions) {
+    callAppHook(getApp(), 'onShow', enterOptions)
     const pages = getCurrentPages()
     if (pages.length === 0) {
       return
     }
-    const page = pages[pages.length - 1]
-    const args = {
-      path: page.route,
-      query: page.options
-    }
-
-    callAppHook(getApp(), 'onShow', args)
     callCurrentPageHook('onShow')
   }
 

@@ -145,13 +145,13 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
           }
         }
       }
-      // 处理字节跳动小程序作用域插槽
+      // 处理字节跳动|飞书小程序作用域插槽
       const fixExtname = '.fix'
       if (name.endsWith(fixExtname)) {
         const source = assets[name].source()
         const [ownerName, parentName, componentName, slotName] = source.split(',')
         const json = assets[ownerName + '.json']
-        const jsonSource = json.source()
+        const jsonSource = json && json.source()
         if (jsonSource) {
           const data = JSON.parse(jsonSource)
           const usingComponents = data.usingComponents || {}

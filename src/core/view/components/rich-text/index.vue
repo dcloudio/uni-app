@@ -32,13 +32,22 @@ export default {
   },
   methods: {
     _renderNodes (nodes) {
+      let scopeId = ''
+      let $vm = this
+      while ($vm) {
+        !scopeId && (scopeId = $vm.$options._scopeId)
+        $vm = $vm.$parent
+      }
+
+      const hasItemClick = !!this.$listeners.itemclick
+
       if (!this._isMounted) {
         return
       }
       if (typeof nodes === 'string') {
         nodes = parseHtml(nodes)
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment())
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), scopeId, hasItemClick && this.triggerItemClick)
       nodeList.appendChild(this.$refs.sensor.$el)
       const content = this.$refs.content
       content.innerHTML = ''
@@ -46,6 +55,9 @@ export default {
     },
     _updateView () {
       window.dispatchEvent(new CustomEvent('updateview'))
+    },
+    triggerItemClick (e, detail = {}) {
+      this.$trigger('itemclick', e, detail)
     }
   }
 }

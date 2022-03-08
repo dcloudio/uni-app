@@ -6,6 +6,7 @@ const {
   SELF_CLOSING_TAGS,
   INTERNAL_EVENT_LINK
 } = require('../constants')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 function processElement (ast, state, isRoot) {
   const platformName = state.options.platform.name
@@ -70,8 +71,8 @@ function processElement (ast, state, isRoot) {
       Object.keys(ast.attr.generic).forEach(scopedSlotName => {
         slots.push(scopedSlotName)
       })
-      if (platformName === 'mp-toutiao') {
-        // 用于字节跳动小程序模拟抽象节点
+      if (platformName === 'mp-toutiao' || platformName === 'mp-lark') {
+        // 用于字节跳动|飞书小程序模拟抽象节点
         ast.attr.generic = `{{${JSON.stringify(ast.attr.generic)}}}`.replace(/"/g, '\'')
       } else {
         delete ast.attr.generic
@@ -81,7 +82,7 @@ function processElement (ast, state, isRoot) {
       ast.attr['vue-slots'] = '{{[' + slots.reverse().map(slotName => `'${slotName}'`).join(',') + ']}}'
     }
     if (ast.attr.id && ast.attr.id.indexOf('{{') === 0) {
-      state.tips.add(`id 作为属性保留名,不允许在自定义组件 ${ast.type} 中定义为 props`)
+      state.tips.add(uniI18n.__('templateCompiler.idAttribNotAllowInCustomComponentProps', { 0: ast.type }))
     }
     if (hasOwn(ast.attr, 'data') && platformName !== 'mp-toutiao') { // 百度中会出现异常情况
       // TODO 暂不输出

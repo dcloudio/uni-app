@@ -12,6 +12,7 @@
   "uni.chooseVideo.cancel": "取消",
   "uni.chooseVideo.sourceType.album": "从相册选择",
   "uni.chooseVideo.sourceType.camera": "拍摄",
+  "uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
   "uni.previewImage.cancel": "取消",
   "uni.previewImage.button.save": "保存图像",
   "uni.previewImage.save.success": "保存图像到相册成功",
@@ -28,5 +29,7 @@
   "uni.video.danmu": "弹幕",
   "uni.video.volume": "音量",
   "uni.button.feedback.title": "问题反馈",
-  "uni.button.feedback.send": "发送"
+  "uni.button.feedback.send": "发送",
+  "uni.chooseLocation.search": "搜索地点",
+  "uni.chooseLocation.cancel": "取消"
 }

@@ -1,5 +1,7 @@
 import { fileToUrl } from 'uni-platform/helpers/file'
+import { t } from 'uni-core/helpers/i18n'
 import _createInput from './create_input'
+import { interact } from 'uni-mixins'
 
 const {
   invokeCallbackHandler: invoke
@@ -27,7 +29,6 @@ export function chooseImage ({
     type: 'image'
   })
   document.body.appendChild(imageInput)
-
   imageInput.addEventListener('change', function (event) {
     const tempFiles = []
     const fileCount = event.target.files.length
@@ -55,4 +56,8 @@ export function chooseImage ({
   })
 
   imageInput.click()
+
+  if (!interact.getStatus()) {
+    console.warn(`${t('uni.chooseFile.notUserActivation')}`)
+  }
 }

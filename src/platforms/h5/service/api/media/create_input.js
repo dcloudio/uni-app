@@ -1,5 +1,9 @@
 import { updateElementStyle } from 'uni-shared'
 import MIMEType from './MIMEType'
+import { interact } from 'uni-mixins'
+
+interact.addInteractListener()
+
 const ALL = '*'
 
 function isWXEnv () {

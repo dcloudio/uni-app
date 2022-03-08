@@ -5,8 +5,13 @@ import {
 import {
   publish,
   requireNativePlugin,
-  base64ToArrayBuffer
+  base64ToArrayBuffer,
+  arrayBufferToBase64
 } from '../../bridge'
+
+import {
+  invoke
+} from 'uni-core/service/bridge'
 
 let requestTaskId = 0
 const requestTasks = {}
@@ -103,46 +108,59 @@ export function createRequestTaskById (requestTaskId, {
     firstIpv4: firstIpv4,
     tls
   }
+  let withArrayBuffer
   if (method !== 'GET') {
-    options.body = typeof data === 'string' ? data : JSON.stringify(data)
+    if (toString.call(data) === '[object ArrayBuffer]') {
+      withArrayBuffer = true
+    } else {
+      options.body = typeof data === 'string' ? data : JSON.stringify(data)
+    }
+  }
+  const callback = ({
+    ok,
+    status,
+    data,
+    headers,
+    errorMsg
+  }) => {
+    if (aborted) {
+      return
+    }
+    if (abortTimeout) {
+      clearTimeout(abortTimeout)
+    }
+    const statusCode = status
+    if (statusCode > 0) {
+      publishStateChange({
+        requestTaskId,
+        state: 'success',
+        data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer(data) : data,
+        statusCode,
+        header: headers,
+        cookies: cookiesParse(headers)
+      })
+    } else {
+      let errMsg = 'abort statusCode:' + statusCode
+      if (errorMsg) {
+        errMsg = errMsg + ' ' + errorMsg
+      }
+      publishStateChange({
+        requestTaskId,
+        state: 'fail',
+        statusCode,
+        errMsg
+      })
+    }
   }
   try {
-    stream.fetch(options, ({
-      ok,
-      status,
-      data,
-      headers,
-      errorMsg
-    }) => {
-      if (aborted) {
-        return
-      }
-      if (abortTimeout) {
-        clearTimeout(abortTimeout)
-      }
-      const statusCode = status
-      if (statusCode > 0) {
-        publishStateChange({
-          requestTaskId,
-          state: 'success',
-          data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer(data) : data,
-          statusCode,
-          header: headers,
-          cookies: cookiesParse(headers)
-        })
-      } else {
-        let errMsg = 'abort statusCode:' + statusCode
-        if (errorMsg) {
-          errMsg = errMsg + ' ' + errorMsg
-        }
-        publishStateChange({
-          requestTaskId,
-          state: 'fail',
-          statusCode,
-          errMsg
-        })
-      }
-    })
+    if (withArrayBuffer) {
+      stream.fetchWithArrayBuffer({
+        '@type': 'binary',
+        base64: arrayBufferToBase64(data)
+      }, options, callback)
+    } else {
+      stream.fetch(options, callback)
+    }
     requestTasks[requestTaskId] = {
       abort () {
         aborted = true
@@ -187,4 +205,24 @@ export function operateRequestTask ({
   return {
     errMsg: 'operateRequestTask:fail'
   }
+}
+
+export function configMTLS ({ certificates }, callbackId) {
+  const stream = requireNativePlugin('stream')
+  stream.configMTLS(certificates, ({ type, code, message }) => {
+    switch (type) {
+      case 'success':
+        invoke(callbackId, {
+          errMsg: 'configMTLS:ok',
+          code
+        })
+        break
+      case 'fail':
+        invoke(callbackId, {
+          errMsg: 'configMTLS:fail ' + message,
+          code
+        })
+        break
+    }
+  })
 }

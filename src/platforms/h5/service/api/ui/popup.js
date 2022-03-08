@@ -4,10 +4,8 @@ const {
 } = UniServiceJSBridge
 
 export function showModal (args, callbackId) {
-  emit('onShowModal', args, function (type) {
-    invoke(callbackId, {
-      [type]: true
-    })
+  emit('onShowModal', args, function (res) {
+    invoke(callbackId, res)
   })
 }
 

@@ -1,14 +1,8 @@
-import {
-  parseTitleNView
-} from './title-nview-parser'
+import { parseTitleNView } from './title-nview-parser'
 
-import {
-  parsePullToRefresh
-} from './pull-to-refresh-parser'
+import { parsePullToRefresh } from './pull-to-refresh-parser'
 
-import {
-  parseStyleUnit
-} from './style-unit-parser'
+import { parseStyleUnit } from './style-unit-parser'
 
 const WEBVIEW_STYLE_BLACKLIST = [
   'navigationBarBackgroundColor',
@@ -33,10 +27,12 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
   }
 
   // 合并
-  routeOptions.window = parseStyleUnit(Object.assign(
-    JSON.parse(JSON.stringify(__uniConfig.window || {})),
-    routeOptions.window || {}
-  ))
+  routeOptions.window = parseStyleUnit(
+    Object.assign(
+      JSON.parse(JSON.stringify(__uniConfig.window || {})),
+      routeOptions.window || {}
+    )
+  )
 
   Object.keys(routeOptions.window).forEach(name => {
     if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
@@ -45,7 +41,10 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
   })
 
   const backgroundColor = routeOptions.window.backgroundColor
-  if (/^#[a-z0-9]{6}$/i.test(backgroundColor) || backgroundColor === 'transparent') {
+  if (
+    /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
+    backgroundColor === 'transparent'
+  ) {
     if (!webviewStyle.background) {
       webviewStyle.background = backgroundColor
     }
@@ -54,7 +53,7 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
     }
   }
 
-  const titleNView = parseTitleNView(routeOptions)
+  const titleNView = parseTitleNView(id, routeOptions)
   if (titleNView) {
     if (
       id === 1 &&
@@ -79,7 +78,8 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
     delete webviewStyle.popGesture
   }
 
-  if (routeOptions.meta.isQuit) { // 退出
+  if (routeOptions.meta.isQuit) {
+    // 退出
     webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none'
   }
 

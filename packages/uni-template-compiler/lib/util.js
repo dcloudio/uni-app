@@ -1,6 +1,7 @@
 const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 const babelGenerate = require('@babel/generator').default
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   METHOD_RENDER_LIST
@@ -106,6 +107,7 @@ function getForKey (forKey, forIndex, state) {
   if (forKey) {
     if (t.isIdentifier(forKey)) {
       if (forIndex !== forKey.name) { // 非 forIndex
+        if (state.options.platform.name === 'mp-baidu') return getCode(forKey)
         return '*this'
       } else {
         // TODO
@@ -113,9 +115,10 @@ function getForKey (forKey, forIndex, state) {
         return forKey.name
       }
     } else if (t.isMemberExpression(forKey)) {
+      if (state.options.platform.name === 'mp-baidu') return getCode(forKey)
       return forKey.property.name || forKey.property.value
     } else {
-      state.tips.add(`非 h5 平台 :key 不支持表达式 ${getCode(forKey)},详情参考:https://uniapp.dcloud.io/use?id=key`)
+      state.tips.add(uniI18n.__('templateCompiler.noH5KeyNoSupportExpression', { 0: getCode(forKey), 1: 'https://uniapp.dcloud.io/use?id=key' }))
     }
   }
   return ''
@@ -229,6 +232,40 @@ function isSimpleObjectExpression (node) {
   }) => !t.isIdentifier(key) || !(t.isIdentifier(value) || t.isStringLiteral(value) || t.isBooleanLiteral(value) ||
     t.isNumericLiteral(value) || t.isNullLiteral(value)))
 }
+/**
+ * 是否包含转义引号
+ * @param {*} path
+ * @returns {boolean}
+ */
+function hasEscapeQuote (path) {
+  let has = false
+  function hasEscapeQuote (node) {
+    const quote = node.extra ? node.extra.raw[0] : '"'
+    if (node.value.includes(quote)) {
+      return true
+    }
+  }
+  if (path.isStringLiteral()) {
+    return hasEscapeQuote(path.node)
+  } else {
+    path.traverse({
+      noScope: true,
+      StringLiteral (path) {
+        if (hasEscapeQuote(path.node)) {
+          has = true
+          path.stop()
+        }
+      },
+      TemplateElement (path) {
+        if (path.node.value.cooked.includes('\'')) {
+          has = true
+          path.stop()
+        }
+      }
+    })
+  }
+  return has
+}
 
 module.exports = {
   hasOwn,
@@ -260,5 +297,6 @@ module.exports = {
   }),
   processMemberExpression,
   getForIndexIdentifier,
-  isSimpleObjectExpression
+  isSimpleObjectExpression,
+  hasEscapeQuote
 }

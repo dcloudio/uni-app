@@ -4,6 +4,7 @@ const {
 const {
   initUniModules
 } = require('@dcloudio/uni-cli-shared/lib/uni_modules')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 let compiling = false
 
@@ -34,7 +35,7 @@ class WebpackUniAppPlugin {
       if (!process.env.UNI_USING_V3) {
         if (!compiling) {
           compiling = true
-          console.log('开始差量编译...')
+          console.log(uniI18n.__('performingHotReload'))
         }
       }
       if (fileName && typeof fileName === 'string') {

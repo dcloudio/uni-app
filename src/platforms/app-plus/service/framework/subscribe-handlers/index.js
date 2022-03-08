@@ -7,8 +7,7 @@ import {
   WEBVIEW_READY,
   WEB_INVOKE_APPSERVICE,
   WEBVIEW_INSERTED,
-  WEBVIEW_REMOVED,
-  SET_LOCALE
+  WEBVIEW_REMOVED
 } from '../../../constants'
 
 import {
@@ -27,10 +26,6 @@ import {
   onWebviewInserted,
   onWebviewRemoved
 } from './on-webview-lifecycle'
-
-import {
-  i18n
-} from 'uni-core/helpers/i18n'
 
 export function initSubscribeHandlers () {
   const {
@@ -75,12 +70,4 @@ export function initSubscribeHandlers () {
 
   subscribe(WEBVIEW_INSERTED, onWebviewInserted)
   subscribe(WEBVIEW_REMOVED, onWebviewRemoved)
-
-  i18n.i18n.watchLocale(locale => {
-    const pages = getCurrentPages()
-    pages.forEach(page => {
-      publishHandler(SET_LOCALE, locale, page.$page.id)
-    })
-    weex.requireModule('plus').setLanguage(locale)
-  })
 }

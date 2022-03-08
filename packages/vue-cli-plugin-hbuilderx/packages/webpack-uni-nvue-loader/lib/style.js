@@ -7,6 +7,8 @@ module.exports = function (content, map) {
   this.cacheable && this.cacheable()
   this.callback(null, 'module.exports = ' + genStyleString(content, this), map)
 }
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+const print = require('../../../util/console')
 
 // @todo:
 // font-relative lengths: em, ex, ch, ic
@@ -52,12 +54,22 @@ function genStyleString (input, loader) {
         })
         if (msgs.length) {
           if (isFirst) {
-            msgs.unshift(
-              'nvue中不支持如下css。如全局或公共样式受影响，建议将告警样式写在ifndef APP-PLUS-NVUE的条件编译中，详情如下：'
-            )
+            msgs.unshift(uniI18n.__('pluginHbuilderx.nvueCssWarning'))
             isFirst = false
           }
-          msgs.forEach(msg => console.warn(msg))
+          msgs.forEach(msg => {
+            switch (msg.split(':')[0]) {
+              case 'ERROR':
+                print.error(msg)
+                break
+              case 'WARNING' :
+                print.warn(msg)
+                break
+              default:
+                print.log(msg)
+                break
+            }
+          })
         }
       }
       try {

@@ -1,4 +1,8 @@
 import {
+  initAppLocale
+} from 'uni-helpers/i18n'
+
+import {
   callAppHook
 } from 'uni-core/service/plugins/util'
 
@@ -41,6 +45,13 @@ import {
   backbuttonListener
 } from './backbutton'
 
+import {
+  getEnterOptions,
+  initEnterOptions,
+  initLaunchOptions,
+  parseRedirectInfo
+} from './utils'
+
 let appCtx
 
 const defaultApp = {
@@ -82,7 +93,11 @@ function initGlobalListeners () {
   })
 
   plus.globalEvent.addEventListener('resume', () => {
-    emit('onAppEnterForeground')
+    const info = parseRedirectInfo()
+    if (info && info.userAction) {
+      initEnterOptions(info)
+    }
+    emit('onAppEnterForeground', getEnterOptions())
   })
 
   plus.globalEvent.addEventListener('netchange', () => {
@@ -139,14 +154,20 @@ function onPlusMessage (e) {
 }
 
 function initAppLaunch (appVm) {
-  const args = {
+  const args = initLaunchOptions({
     path: __uniConfig.entryPagePath,
-    query: {},
-    scene: 1001
-  }
+    query: __uniConfig.entryPageQuery,
+    referrerInfo: __uniConfig.referrerInfo
+  })
 
   callAppHook(appVm, 'onLaunch', args)
   callAppHook(appVm, 'onShow', args)
+  // https://tower.im/teams/226535/todos/16905/
+  const getAppState = weex.requireModule('plus').getAppState
+  const appState = getAppState && Number(getAppState())
+  if (appState === 2) {
+    callAppHook(appVm, 'onHide', args)
+  }
 }
 
 function initTabBar () {
@@ -207,12 +228,13 @@ export function clearTempFile () {
   })
 }
 
-export function registerApp (appVm) {
+export function registerApp (appVm, Vue) {
   if (process.env.NODE_ENV !== 'production') {
     console.log('[uni-app] registerApp')
   }
   appCtx = appVm
   appCtx.$vm = appVm
+  initAppLocale(Vue, appVm)
 
   Object.assign(appCtx, defaultApp) // 拷贝默认实现
 

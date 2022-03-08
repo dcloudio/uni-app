@@ -21,19 +21,16 @@ export function setClipboardData ({
   pasteText && pasteText.remove()
   const textarea = document.createElement('textarea')
   textarea.id = '#clipboard'
-  textarea.style.position = 'absolute'
-  textarea.style.top = '0'
+  textarea.style.position = 'fixed'
+  textarea.style.top = '-9999px'
   textarea.style.zIndex = '-9999'
   document.body.appendChild(textarea)
   textarea.value = data
   textarea.focus()
   textarea.select()
   const result = document.execCommand('Copy', false, null)
+  textarea.blur()
   if (result) {
-    uni.showToast({
-      title: '复制成功',
-      icon: 'none'
-    })
     return {
       errMsg: 'setClipboardData:ok'
     }

@@ -15,6 +15,12 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', opt
 }
 
 describe('mp:compiler-mp-baidu', () => {
+  it('generate component', () => {
+    assertCodegen(
+      '<login @getphonenumber="getphonenumbers" @loaderror="loaderrors"></login>',
+      '<login data-event-opts="{{[[\'getphonenumber\',[[\'getphonenumbers\',[\'$event\']]]],[\'loaderror\',[[\'loaderrors\',[\'$event\']]]]]}}" bindgetphonenumber="__e" bindloaderror="__e"></login>'
+    )
+  })
   it('generate class', () => {
     assertCodegen(
       '<view class="a external-class c" :class="class1">hello world</view>',
@@ -23,8 +29,8 @@ describe('mp:compiler-mp-baidu', () => {
   })
   it('generate v-for directive', () => {
     assertCodegen(
-      '<view><view v-for="(item,index) in items" :key="index"></view></view>',
-      '<view><block s-for="{{items}}" s-for-item="item" s-for-index="index" s-key="index"><view></view></block></view>'
+      '<view><view v-for="(item,index) in items" :key="item.id"></view></view>',
+      '<view><block s-for="items trackBy item.id" s-for-item="item" s-for-index="index"><view></view></block></view>'
     )
   })
   it('generate scoped slot', () => {
@@ -75,40 +81,35 @@ describe('mp:compiler-mp-baidu', () => {
     assertCodegen(
       '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
       '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{item}}</view></my-component>',
-      'with(this){}',
-      {
+      'with(this){}', {
         scopedSlotsCompiler: 'auto'
       }
     )
     assertCodegen(
       '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
       '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block><block s-if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
-      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
-      {
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}', {
         scopedSlotsCompiler: 'auto'
       }
     )
     assertCodegen(
       '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
       '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block><block s-if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
-      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
-      {
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}', {
         scopedSlotsCompiler: 'auto'
       }
     )
     assertCodegen(
       '<view><slot :item="item"><slot></view>',
       '<view><block s-if="{{$slots.default}}"><slot var-item="item"></slot></block><block s-else><slot></slot></block></view>',
-      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":item})}}',
-      {
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":item})}}', {
         scopedSlotsCompiler: 'auto'
       }
     )
     assertCodegen(
       '<view><slot v-bind="object"><slot></view>',
       '<view><block s-if="{{$slots.default}}"><slot></slot></block><block s-else><slot></slot></block></view>',
-      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",object)}}',
-      {
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",object)}}', {
         scopedSlotsCompiler: 'auto'
       }
     )
@@ -125,15 +126,15 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<view><Test v-for="item in items" :key="item"/></view>',
-      '<view><block s-for="{{items}}" s-for-item="item" s-for-index="__i0__" s-key="*this"><test vue-id="{{\'551070e6-1-\'+__i0__}}"></test></block></view>'
+      '<view><block s-for="items trackBy item" s-for-item="item" s-for-index="__i0__"><test vue-id="{{\'551070e6-1-\'+__i0__}}"></test></block></view>'
     )
     assertCodegen(
       '<view><Test v-for="item in items" :key="item"><Test v-for="item in item.items" :key="item"></Test></Test></view>',
-      '<view><block s-for="{{items}}" s-for-item="item" s-for-index="__i0__" s-key="*this"><test vue-id="{{\'551070e6-1-\'+__i0__}}" vue-slots="{{[\'default\']}}"><block s-for="{{item.items}}" s-for-item="item" s-for-index="__i1__" s-key="*this"><test vue-id="{{(\'551070e6-2-\'+__i0__+\'-\'+__i1__)+\',\'+(\'551070e6-1-\'+__i0__)}}"></test></block></test></block></view>'
+      '<view><block s-for="items trackBy item" s-for-item="item" s-for-index="__i0__"><test vue-id="{{\'551070e6-1-\'+__i0__}}" vue-slots="{{[\'default\']}}"><block s-for="item.items trackBy item" s-for-item="item" s-for-index="__i1__"><test vue-id="{{(\'551070e6-2-\'+__i0__+\'-\'+__i1__)+\',\'+(\'551070e6-1-\'+__i0__)}}"></test></block></test></block></view>'
     )
     assertCodegen(
       '<view><Test v-for="(item,index) in items" :key="item"><Test v-for="(item,index1) in item.items" :key="item"></Test></Test></view>',
-      '<view><block s-for="{{items}}" s-for-item="item" s-for-index="index" s-key="*this"><test vue-id="{{\'551070e6-1-\'+index}}" vue-slots="{{[\'default\']}}"><block s-for="{{item.items}}" s-for-item="item" s-for-index="index1" s-key="*this"><test vue-id="{{(\'551070e6-2-\'+index+\'-\'+index1)+\',\'+(\'551070e6-1-\'+index)}}"></test></block></test></block></view>'
+      '<view><block s-for="items trackBy item" s-for-item="item" s-for-index="index"><test vue-id="{{\'551070e6-1-\'+index}}" vue-slots="{{[\'default\']}}"><block s-for="item.items trackBy item" s-for-item="item" s-for-index="index1"><test vue-id="{{(\'551070e6-2-\'+index+\'-\'+index1)+\',\'+(\'551070e6-1-\'+index)}}"></test></block></test></block></view>'
     )
   })
 

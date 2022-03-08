@@ -185,9 +185,13 @@ export default {
   },
   methods: {
     _onKeyup ($event) {
+      const input = $event.target
       this.$trigger('confirm', $event, {
-        value: $event.target.value
+        value: input.value
       })
+      if (!this.confirmHold) {
+        input.blur()
+      }
     },
     _onInput ($event, force) {
       let outOfMaxlength = false
@@ -326,7 +330,8 @@ uni-input[hidden] {
   text-shadow: inherit;
 }
 
-.uni-input-input[type="search"]::-webkit-search-cancel-button {
+.uni-input-input[type="search"]::-webkit-search-cancel-button,
+.uni-input-input[type="search"]::-webkit-search-decoration {
   display: none;
 }
 

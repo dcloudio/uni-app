@@ -1,6 +1,7 @@
 import {
   hasOwn,
-  isPlainObject
+  isPlainObject,
+  toRawType
 } from 'uni-shared'
 
 const method = {
@@ -11,7 +12,8 @@ const method = {
   PUT: 'PUT',
   DELETE: 'DELETE',
   TRACE: 'TRACE',
-  CONNECT: 'CONNECT'
+  CONNECT: 'CONNECT',
+  PATCH: 'PATCH'
 }
 const dataType = {
   JSON: 'json'
@@ -106,5 +108,17 @@ export const request = {
   },
   timeout: {
     type: Number
+  }
+}
+
+export const configMTLS = {
+  certificates: {
+    type: Array,
+    required: true,
+    validator (value) {
+      if (value.some(item => toRawType(item.host) !== 'String')) {
+        return '参数配置错误，请确认后重试'
+      }
+    }
   }
 }

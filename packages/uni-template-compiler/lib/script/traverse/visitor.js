@@ -1,4 +1,5 @@
 const t = require('@babel/types')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   METHOD_CREATE_ELEMENT,
@@ -10,7 +11,8 @@ const {
   METHOD_RESOLVE_SCOPED_SLOTS,
   IDENTIFIER_FILTER,
   IDENTIFIER_METHOD,
-  IDENTIFIER_GLOBAL
+  IDENTIFIER_GLOBAL,
+  IDENTIFIER_TEXT
 } = require('../../constants')
 
 const {
@@ -21,7 +23,8 @@ const {
   hasOwn,
   hyphenate,
   traverseFilter,
-  getComponentName
+  getComponentName,
+  hasEscapeQuote
 } = require('../../util')
 
 const traverseData = require('./data')
@@ -77,7 +80,7 @@ function addVueId (path, state) {
         const scoped = scopeds[i]
         forIndexSet.add(scoped.forIndex)
         if (forIndexSet.size !== i + 1) {
-          state.errors.add(`v-for 嵌套时,索引名称 ${scoped.forIndex} 不允许重复`)
+          state.errors.add(uniI18n.__('templateCompiler.forNestedIndexNameNoArrowRepeat', { 0: 'v-for', 1: scoped.forIndex }))
           break
         }
       }
@@ -185,7 +188,13 @@ module.exports = {
           break
         case METHOD_TO_STRING:
           {
-            const stringNodes = path.node.arguments[0]
+            const stringPath = path.get('arguments.0')
+            if (hasEscapeQuote(stringPath)) {
+              // 属性中包含转义引号时部分小程序平台报错或显示异常
+              // TODO 简单情况翻转外层引号
+              stringPath.replaceWith(getMemberExpr(path, IDENTIFIER_TEXT, stringPath.node, this))
+            }
+            const stringNodes = stringPath.node
             stringNodes.$toString = true
             path.replaceWith(stringNodes)
           }

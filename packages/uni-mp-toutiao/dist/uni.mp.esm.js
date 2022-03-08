@@ -1,5 +1,5 @@
 import { isPlainObject, hasOwn, isArray, extend, hyphenate, isObject, toNumber, isFunction, NOOP, camelize } from '@vue/shared';
-import { onUnmounted, injectHook } from 'vue';
+import { onUnmounted, injectHook, ref } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -606,6 +606,7 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, extend({ app: this }, options));
         },
     };
+    initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
     initUnknownHooks(appOptions, vueOptions);
@@ -622,6 +623,17 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
+}
+function initLocale(appVm) {
+    const locale = ref(tt.getSystemInfoSync().language || 'zh-Hans');
+    Object.defineProperty(appVm, '$locale', {
+        get() {
+            return locale.value;
+        },
+        set(v) {
+            locale.value = v;
+        },
+    });
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
@@ -1321,7 +1333,7 @@ function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
         initInjections(vm);
         initProvide(vm);
     }
-    vm.$callSyncHook('created');
+    vm.$callCreatedHook();
     vm.$callHook('mounted');
     vm.$callHook(ON_READY);
 }
@@ -1344,7 +1356,7 @@ function initLifetimes(lifetimesOptions) {
     return extend(initLifetimes$1(lifetimesOptions), {
         ready() {
             if (this.$vm && lifetimesOptions.isPage(this)) {
-                this.$vm.$callSyncHook('created');
+                this.$vm.$callCreatedHook();
                 this.$vm.$callHook('mounted');
                 this.$vm.$callHook(ON_READY);
             }

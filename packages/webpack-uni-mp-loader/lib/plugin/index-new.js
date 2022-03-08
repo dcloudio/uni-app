@@ -47,9 +47,11 @@ function addSubPackagesRequire (compilation) {
           name.indexOf(root + '/') === 0 &&
           name !== subPackageVendorPath
         ) {
-          const source =
-            `require('${normalizePath(path.relative(path.dirname(name), subPackageVendorPath))}');` +
-            compilation.assets[name].source()
+          let relativePath = normalizePath(path.relative(path.dirname(name), subPackageVendorPath))
+          if (!relativePath.startsWith('.')) {
+            relativePath = './' + relativePath
+          }
+          const source = `require('${relativePath}');` + compilation.assets[name].source()
 
           compilation.assets[name] = {
             size () {
@@ -67,33 +69,34 @@ function addSubPackagesRequire (compilation) {
 
 function addMPPluginRequire (compilation) {
   // 编译到小程序插件 特殊处理入口文件
-  if (process.env.UNI_MP_PLUGIN) {
-    const assetsKeys = Object.keys(compilation.assets)
-    assetsKeys.forEach(name => {
-      if (name === process.env.UNI_MP_PLUGIN_MAIN) {
-        const modules = compilation.modules
+  const assetsKeys = Object.keys(compilation.assets)
+  const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
+  const UNI_MP_PLUGIN_EXPORT = JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
+  assetsKeys.forEach(name => {
+    const needProcess = process.env.UNI_MP_PLUGIN ? name === UNI_MP_PLUGIN_MAIN : UNI_MP_PLUGIN_EXPORT.includes(name)
+    if (needProcess) {
+      const modules = compilation.modules
+      const orignalSource = compilation.assets[name].source()
+      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'
+      const filePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, name))
+      const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === filePath).id
+      const newlineIndex = orignalSource.lastIndexOf('\n')
 
-        const mainFilePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, process.env.UNI_MP_PLUGIN_MAIN))
+      const source =
+        orignalSource.substring(0, newlineIndex) +
+        `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n` +
+        orignalSource.substring(newlineIndex + 1)
 
-        const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === mainFilePath).id
-
-        const newlineIndex = compilation.assets[name].source().lastIndexOf('\n')
-
-        const source = compilation.assets[name].source().substring(0, newlineIndex) +
-        `\nmodule.exports = wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace(/-/g, '_')}__('${uniModuleId}');\n` +
-        compilation.assets[name].source().substring(newlineIndex + 1)
-
-        compilation.assets[name] = {
-          size () {
-            return Buffer.byteLength(source, 'utf8')
-          },
-          source () {
-            return source
-          }
+      compilation.assets[name] = {
+        size () {
+          return Buffer.byteLength(source, 'utf8')
+        },
+        source () {
+          return source
         }
       }
-    })
-  }
+    }
+  })
 }
 
 class WebpackUniMPPlugin {

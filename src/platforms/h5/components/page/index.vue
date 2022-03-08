@@ -35,7 +35,9 @@
 import {
   upx2px
 } from 'uni-helpers/index'
-
+import {
+  initNavigationBarI18n
+} from 'uni-helpers/i18n'
 import {
   NAVBAR_HEIGHT
 } from 'uni-helpers/constants'
@@ -216,7 +218,7 @@ export default {
       titlePenetrate: yesNoParseList[this.titlePenetrate]
     }, titleNView)
     navigationBar.shadow = this.navigationBarShadow
-
+    initNavigationBarI18n(navigationBar)
     const refreshOptions = Object.assign({
       support: true,
       color: '#2BD009',

@@ -427,16 +427,10 @@ module.exports = function (pagesJson, manifestJson, loader) {
 
   const networkTimeoutConfig = getNetworkTimeout(manifestJson)
 
-  let qqMapKey = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2'
-
   const sdkConfigs = h5.sdkConfigs || {}
-  if (
-    sdkConfigs.maps &&
-    sdkConfigs.maps.qqmap &&
-    sdkConfigs.maps.qqmap.key
-  ) {
-    qqMapKey = sdkConfigs.maps.qqmap.key
-  }
+
+  const qqMapKey = sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
+  const googleMapKey = sdkConfigs.maps && sdkConfigs.maps.google && sdkConfigs.maps.google.key
 
   let locale = manifestJson.locale
   locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
@@ -444,6 +438,7 @@ module.exports = function (pagesJson, manifestJson, loader) {
   return `
 import Vue from 'vue'
 ${genLayoutComponentsCode(pagesJson)}
+const locales = ${fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'locale')) ? 'require.context(\'./locale\', false, /.json$/)' : '{keys(){return []}}'}
 global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
@@ -455,7 +450,10 @@ global.__uniConfig.debug = ${manifestJson.debug === true};
 global.__uniConfig.networkTimeout = ${JSON.stringify(networkTimeoutConfig)};
 global.__uniConfig.sdkConfigs = ${JSON.stringify(sdkConfigs)};
 global.__uniConfig.qqMapKey = ${JSON.stringify(qqMapKey)};
+global.__uniConfig.googleMapKey = ${JSON.stringify(googleMapKey)};
 global.__uniConfig.locale = ${JSON.stringify(locale)};
+global.__uniConfig.fallbackLocale = ${JSON.stringify(manifestJson.fallbackLocale)};
+global.__uniConfig.locales = locales.keys().reduce((res,key)=>{const locale=key.replace(/\\.\\/(uni-app.)?(.*).json/,'$2');const messages = locales(key);Object.assign(res[locale]||(res[locale]={}),messages.common||messages);return res},{});
 global.__uniConfig.nvue = ${JSON.stringify({ 'flex-direction': getFlexDirection(manifestJson['app-plus']) })}
 global.__uniConfig.__webpack_chunk_load__ = __webpack_chunk_load__
 ${genRegisterPageVueComponentsCode(pageComponents)}

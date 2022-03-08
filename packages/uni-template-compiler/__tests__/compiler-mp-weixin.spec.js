@@ -54,6 +54,43 @@ describe('mp:compiler-mp-weixin', () => {
     )
   })
 
+  it('generate string express with escape quote', () => {
+    assertCodegen(
+      '<view :data-text="text+\'\\\'\'"></view>',
+      '<view data-text="{{$root.a0}}"></view>',
+      'with(this){var a0=text+"\'";$mp.data=Object.assign({},{$root:{a0:a0}})}'
+    )
+    assertCodegen(
+      /* eslint-disable no-template-curly-in-string */
+      '<view :data-text="`${text}\'`"></view>',
+      '<view data-text="{{$root.a0}}"></view>',
+      /* eslint-disable no-template-curly-in-string */
+      'with(this){var a0=`${text}\'`;$mp.data=Object.assign({},{$root:{a0:a0}})}'
+    )
+    assertCodegen(
+      '<view>{{text+\'\\\'\'}}</view>',
+      '<view>{{$root.t0}}</view>',
+      'with(this){var t0=text+"\'";$mp.data=Object.assign({},{$root:{t0:t0}})}'
+    )
+    assertCodegen(
+      /* eslint-disable no-template-curly-in-string */
+      '<view>{{`${text}\'`}}</view>',
+      '<view>{{$root.t0}}</view>',
+      /* eslint-disable no-template-curly-in-string */
+      'with(this){var t0=`${text}\'`;$mp.data=Object.assign({},{$root:{t0:t0}})}'
+    )
+    assertCodegen(
+      /* eslint-disable no-template-curly-in-string */
+      '<view>{{`${text}"`}}</view>',
+      '<view>{{text+\'"\'}}</view>'
+    )
+    assertCodegen(
+      '<view>{{text+"\\""}}</view>',
+      '<view>{{$root.t0}}</view>',
+      'with(this){var t0=text+"\\"";$mp.data=Object.assign({},{$root:{t0:t0}})}'
+    )
+  })
+
   it('generate named scoped slot', () => {
     assertCodegen(
       '<foo><template slot="foo" slot-scope="{bar}">{{ bar.foo }}</template></foo>',
@@ -272,7 +309,7 @@ describe('mp:compiler-mp-weixin', () => {
   it('generate page-meta', () => {
     assertCodegen( // TODO vue-id
       '<view><page-meta/><view><button></button></view></view>',
-      '<page-meta vue-id="551070e6-1" bind:__l="__l"></page-meta><view><button></button></view>'
+      '<page-meta></page-meta><view><button></button></view>'
     )
   })
 

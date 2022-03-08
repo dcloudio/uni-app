@@ -1,11 +1,17 @@
+const {
+  initI18nOptions
+} = require('@dcloudio/uni-cli-shared/lib/i18n')
+
 function parseRoutes (config) {
   const __uniRoutes = []
   /* eslint-disable no-mixed-operators */
-  const tabBarList = (config.tabBar && config.tabBar.list || []).map(item => item.pagePath)
+  const tabBarList = ((config.tabBar && config.tabBar.list) || []).map(
+    item => item.pagePath
+  )
 
   Object.keys(config.page).forEach(function (pagePath) {
     const isTabBar = tabBarList.indexOf(pagePath) !== -1
-    const isQuit = isTabBar || (config.pages[0] === pagePath)
+    const isQuit = isTabBar || config.pages[0] === pagePath
     const isNVue = !!config.page[pagePath].nvue
     const route = {
       path: '/' + pagePath,
@@ -63,6 +69,17 @@ module.exports = function definePages (appJson) {
 
   if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
     appJson.automator = true
+  }
+  const i18nOptions = initI18nOptions(
+    process.env.UNI_PLATFORM,
+    process.env.UNI_INPUT_DIR,
+    false,
+    true
+  )
+  if (i18nOptions) {
+    appJson.locale = ''
+    appJson.fallbackLocale = i18nOptions.locale
+    appJson.locales = i18nOptions.locales
   }
   return {
     name: 'app-config-service.js',

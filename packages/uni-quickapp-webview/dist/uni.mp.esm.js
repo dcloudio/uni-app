@@ -1,5 +1,5 @@
 import { isPlainObject, hasOwn, isArray, extend, hyphenate, isObject, toNumber, isFunction, NOOP, camelize } from '@vue/shared';
-import { injectHook } from 'vue';
+import { injectHook, ref } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -534,6 +534,7 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, extend({ app: this }, options));
         },
     };
+    initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
     initUnknownHooks(appOptions, vueOptions);
@@ -550,6 +551,17 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
+}
+function initLocale(appVm) {
+    const locale = ref(qa.getSystemInfoSync().language || 'zh-Hans');
+    Object.defineProperty(appVm, '$locale', {
+        get() {
+            return locale.value;
+        },
+        set(v) {
+            locale.value = v;
+        },
+    });
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
@@ -1210,7 +1222,7 @@ function initLifetimes(lifetimesOptions) {
                 if (this.pageinstance) {
                     this.__webviewId__ = this.pageinstance.__pageId__;
                 }
-                this.$vm.$callSyncHook('created');
+                this.$vm.$callCreatedHook();
                 this.$vm.$callHook('mounted');
                 this.$vm.$callHook(ON_READY);
             }
@@ -1267,7 +1279,7 @@ function handleLink({ detail: { nodeId, webviewId }, }) {
             initInjections(vm);
             initProvide(vm);
         }
-        vm.$callSyncHook('created');
+        vm.$callCreatedHook();
     };
     const mountedVm = function () {
         // 处理当前 vm 子

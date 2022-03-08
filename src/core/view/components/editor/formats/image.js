@@ -1,3 +1,5 @@
+import getRealPath from 'uni-platform/helpers/get-real-path'
+
 export default function (Quill) {
   const Image = Quill.import('formats/image')
   const ATTRIBUTES = [
@@ -8,7 +10,7 @@ export default function (Quill) {
     'class',
     'data-local'
   ]
-  Image.sanitize = url => url
+  Image.sanitize = url => url ? getRealPath(url) : url
   Image.formats = function formats (domNode) {
     return ATTRIBUTES.reduce(function (formats, attribute) {
       if (domNode.hasAttribute(attribute)) {

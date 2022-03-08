@@ -52,6 +52,9 @@ const METHODS = {
   },
   openMapApp (ctx, args) {
     return invokeVmMethod(ctx, 'openMapApp', args)
+  },
+  on (ctx, args) {
+    return ctx.on(args.name, args.callback)
   }
 }
 

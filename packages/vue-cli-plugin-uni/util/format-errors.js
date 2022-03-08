@@ -78,9 +78,12 @@ function ModuleBuildError (err) {
       builtinCompile = 'pug/jade'
     }
     if (builtinCompile) {
+      installHBuilderXPlugin(name)
       return {
         message: '预编译器错误：代码使用了' + builtinCompile +
-          '语言，但未安装相应的编译器插件，请前往插件市场安装该插件:\nhttps://ext.dcloud.net.cn/plugin?name=' + name
+          '语言，但未安装相应的编译器插件，' + (supportAutoInstallPlugin() ? '正在从' : '请前往') +
+          '插件市场安装该插件:\nhttps://ext.dcloud.net.cn/plugin?name=' +
+          name
       }
     }
   } else if (~firstLineMessage.indexOf('Module parse failed')) {
@@ -92,6 +95,19 @@ function ModuleBuildError (err) {
     }
   }
   return formatMessage(err.message)
+}
+
+function supportAutoInstallPlugin () {
+  // 只要有 HBuilderX 版本号，就一定支持自动安装
+  return !!process.env.HX_Version
+}
+
+function installHBuilderXPlugin (lang) {
+  if (supportAutoInstallPlugin()) {
+    return console.error(
+      `%HXRunUniAPPPluginName%${lang}%HXRunUniAPPPluginName%`
+    )
+  }
 }
 
 function ModuleNotFoundError (err) {

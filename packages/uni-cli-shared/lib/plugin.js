@@ -1,6 +1,6 @@
 const path = require('path')
-
 const initPreprocessContext = require('./preprocess')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const Plugin = {
   options: {},
@@ -25,7 +25,7 @@ function initPlugin (plugin) {
   try {
     pluginApi = require(path.join(plugin.id, (plugin.config.main || '/lib/uni.config.js')))
   } catch (e) {
-    console.warn(`${plugin.id} 缺少 uni.config.js `)
+    console.warn(uniI18n.__('cliShared.missingUniConfig', { 0: plugin.id }))
   }
 
   pluginApi && PLUGIN_KEYS.forEach(name => {
@@ -56,7 +56,7 @@ function resolvePlugins () {
           return
         }
         if (!config.name) {
-          return console.warn(`${id}/package.json->uni-app 缺少 name 属性`)
+          return console.warn(uniI18n.__('cliShared.missingNameAttribute', { 0: `${id}/package.json->uni-app` }))
         }
         return {
           id,
@@ -71,11 +71,11 @@ function initExtends (name, plugin, plugins) {
   const extendsPlatform = plugin.config.extends
   if (extendsPlatform) {
     if (extendsPlatform !== 'h5') {
-      console.error('目前仅支持基于 h5 平台做扩展')
+      console.error(uniI18n.__('cliShared.extendOnlySupportH5'))
       process.exit(0)
     }
     if (!plugin) {
-      console.error(`缺少平台 ${extendsPlatform} 插件`)
+      console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { 0: extendsPlatform }))
       process.exit(0)
     }
     const extendsPlugin = plugins.find(plugin => plugin.name === extendsPlatform)
@@ -102,7 +102,7 @@ module.exports = {
     const plugins = resolvePlugins()
     const plugin = plugins.find(plugin => plugin.name === process.env.UNI_PLATFORM)
     if (!plugin) {
-      console.error(`缺少平台 ${process.env.UNI_PLATFORM} 插件`)
+      console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { 0: process.env.UNI_PLATFORM }))
       process.exit(0)
     }
     const name = plugin.name

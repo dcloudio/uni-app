@@ -462,7 +462,7 @@ export default {
         case mode.MULTISELECTOR:
           {
             if (!Array.isArray(val)) {
-              val = []
+              val = this.valueArray
             }
             if (!Array.isArray(this.valueSync)) {
               this.valueSync = []

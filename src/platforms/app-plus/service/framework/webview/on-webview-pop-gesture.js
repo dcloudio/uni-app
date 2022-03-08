@@ -19,12 +19,44 @@ export function onWebviewPopGesture (webview) {
       const pages = getCurrentPages()
       const page = pages[pages.length - 1]
       page && page.$remove()
-
       setStatusBarStyle()
-
-      UniServiceJSBridge.emit('onAppRoute', {
-        type: 'navigateBack'
-      })
+      if (page && isDirectPage(page)) {
+        reLaunchEntryPage()
+      } else {
+        UniServiceJSBridge.emit('onAppRoute', {
+          type: 'navigateBack'
+        })
+      }
     }
   })
+}
+
+/**
+ * 是否处于直达页面
+ * @param page
+ * @returns
+ */
+function isDirectPage (page) {
+  return (
+    __uniConfig.realEntryPagePath &&
+    page.$page.route === __uniConfig.entryPagePath
+  )
+}
+/**
+ * 重新启动到首页
+ */
+function reLaunchEntryPage () {
+  __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
+  delete __uniConfig.realEntryPagePath
+  uni.reLaunch({
+    url: addLeadingSlash(__uniConfig.entryPagePath)
+  })
+}
+
+function hasLeadingSlash (str) {
+  return str.indexOf('/') === 0
+}
+
+function addLeadingSlash (str) {
+  return hasLeadingSlash(str) ? str : '/' + str
 }

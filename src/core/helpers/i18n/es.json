@@ -12,6 +12,7 @@
   "uni.chooseVideo.cancel": "Cancelar",
   "uni.chooseVideo.sourceType.album": "Álbum",
   "uni.chooseVideo.sourceType.camera": "Cámara",
+  "uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
   "uni.previewImage.cancel": "Cancelar",
   "uni.previewImage.button.save": "Guardar imagen",
   "uni.previewImage.save.success": "Guardado exitosamente",
@@ -28,5 +29,7 @@
   "uni.video.danmu": "Danmu",
   "uni.video.volume": "Volumen",
   "uni.button.feedback.title": "realimentación",
-  "uni.button.feedback.send": "enviar"
+  "uni.button.feedback.send": "enviar",
+  "uni.chooseLocation.search": "Encontrar",
+  "uni.chooseLocation.cancel": "Cancelar"
 }

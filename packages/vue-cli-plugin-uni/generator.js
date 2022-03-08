@@ -17,6 +17,8 @@ module.exports = (api, options, rootOptions) => {
         'dev:mp-alipay': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-alipay vue-cli-service uni-build --watch',
         'dev:mp-toutiao': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-toutiao vue-cli-service uni-build --watch',
         'dev:mp-kuaishou': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-kuaishou vue-cli-service uni-build --watch',
+        'dev:mp-lark': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-lark vue-cli-service uni-build --watch',
+        'dev:mp-jd': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-jd vue-cli-service uni-build --watch',
         'dev:quickapp-native': 'cross-env NODE_ENV=development UNI_PLATFORM=quickapp-native vue-cli-service uni-build --watch',
         'dev:quickapp-webview': 'cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview vue-cli-service uni-build --watch',
         'dev:quickapp-webview-huawei': 'cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview-huawei vue-cli-service uni-build --watch',
@@ -28,6 +30,8 @@ module.exports = (api, options, rootOptions) => {
         'build:mp-alipay': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-alipay vue-cli-service uni-build',
         'build:mp-toutiao': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-toutiao vue-cli-service uni-build',
         'build:mp-kuaishou': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-kuaishou vue-cli-service uni-build',
+        'build:mp-lark': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-lark vue-cli-service uni-build',
+        'build:mp-jd': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-jd vue-cli-service uni-build',
         'build:quickapp-native': 'cross-env NODE_ENV=production UNI_PLATFORM=quickapp-native vue-cli-service uni-build',
         'build:quickapp-webview': 'cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview vue-cli-service uni-build',
         'build:quickapp-webview-huawei': 'cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview-huawei vue-cli-service uni-build',
@@ -54,6 +58,8 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/uni-mp-baidu': version,
         '@dcloudio/uni-mp-alipay': version,
         '@dcloudio/uni-mp-toutiao': version,
+        '@dcloudio/uni-mp-lark': version,
+        '@dcloudio/uni-mp-jd': version,
         '@dcloudio/uni-mp-360': version,
         '@dcloudio/uni-mp-kuaishou': version,
         '@dcloudio/uni-quickapp-native': version,
@@ -66,6 +72,7 @@ module.exports = (api, options, rootOptions) => {
       },
       devDependencies: {
         '@dcloudio/uni-automator': version,
+        '@dcloudio/uni-cli-i18n': version,
         '@dcloudio/uni-cli-shared': version,
         '@dcloudio/uni-migration': version,
         '@dcloudio/uni-template-compiler': version,
@@ -79,8 +86,8 @@ module.exports = (api, options, rootOptions) => {
         jest: '^25.4.0'
       },
       browserslist: [
-        'Android >= 4',
-        'ios >= 8'
+        'Android >= 4.4',
+        'ios >= 9'
       ]
     }
   })

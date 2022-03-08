@@ -1,7 +1,36 @@
 import Vue from 'vue';
+import { initVueI18n } from '@dcloudio/uni-i18n';
+
+let realAtob;
+
+const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+
+if (typeof atob !== 'function') {
+  realAtob = function (str) {
+    str = String(str).replace(/[\t\n\f\r ]+/g, '');
+    if (!b64re.test(str)) { throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.") }
+
+    // Adding the padding if missing, for semplicity
+    str += '=='.slice(2 - (str.length & 3));
+    var bitmap; var result = ''; var r1; var r2; var i = 0;
+    for (; i < str.length;) {
+      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 |
+                    (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255)
+        : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255)
+          : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+    }
+    return result
+  };
+} else {
+  // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+  realAtob = atob;
+}
 
 function b64DecodeUnicode (str) {
-  return decodeURIComponent(atob(str).split('').map(function (c) {
+  return decodeURIComponent(realAtob(str).split('').map(function (c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
   }).join(''))
 }
@@ -285,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -398,6 +427,44 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
+function getLocale () {
+  // 优先使用 $locale
+  const app = getApp({
+    allowDefault: true
+  });
+  if (app && app.$vm) {
+    return app.$vm.$locale
+  }
+  return wx.getSystemInfoSync().language || 'zh-Hans'
+}
+
+function setLocale (locale) {
+  const app = getApp();
+  if (!app) {
+    return false
+  }
+  const oldLocale = app.$vm.$locale;
+  if (oldLocale !== locale) {
+    app.$vm.$locale = locale;
+    onLocaleChangeCallbacks.forEach((fn) => fn({
+      locale
+    }));
+    return true
+  }
+  return false
+}
+
+const onLocaleChangeCallbacks = [];
+function onLocaleChange (fn) {
+  if (onLocaleChangeCallbacks.indexOf(fn) === -1) {
+    onLocaleChangeCallbacks.push(fn);
+  }
+}
+
+if (typeof global !== 'undefined') {
+  global.getLocale = getLocale;
+}
+
 const interceptors = {
   promiseInterceptor
 };
@@ -405,6 +472,9 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
+  getLocale: getLocale,
+  setLocale: setLocale,
+  onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
   interceptors: interceptors
@@ -994,9 +1064,15 @@ const customize = cached((str) => {
 
 function initTriggerEvent (mpInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent;
-  mpInstance.triggerEvent = function (event, ...args) {
+  const newTriggerEvent = function (event, ...args) {
     return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
   };
+  try {
+    // 京东小程序 triggerEvent 为只读
+    mpInstance.triggerEvent = newTriggerEvent;
+  } catch (error) {
+    mpInstance._triggerEvent = newTriggerEvent;
+  }
 }
 
 function initHook (name, options, isComponent) {
@@ -1569,6 +1645,89 @@ function handleEvent (event) {
   }
 }
 
+const messages = {};
+
+let locale;
+
+{
+  locale = wx.getSystemInfoSync().language;
+}
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
+
+const i18n = initVueI18n(
+  locale,
+   {}
+);
+const t = i18n.t;
+const i18nMixin = (i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+});
+const setLocale$1 = i18n.setLocale;
+const getLocale$1 = i18n.getLocale;
+
+function initAppLocale (Vue, appVm, locale) {
+  const state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  const localeWatchers = [];
+  appVm.$watchLocale = fn => {
+    localeWatchers.push(fn);
+  };
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return state.locale
+    },
+    set (v) {
+      state.locale = v;
+      localeWatchers.forEach(watch => watch(v));
+    }
+  });
+}
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
 const hooks = [
   'onShow',
   'onHide',
@@ -1603,7 +1762,7 @@ function initScopedSlotsParams () {
     const has = center[vueId];
     if (!has) {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -1617,7 +1776,7 @@ function initScopedSlotsParams () {
       return key ? object[key] : object
     } else {
       parents[vueId] = this;
-      this.$on('hook:destory', () => {
+      this.$on('hook:destroyed', () => {
         delete parents[vueId];
       });
     }
@@ -1729,6 +1888,8 @@ function parseBaseApp (vm, {
       appOptions[name] = methods[name];
     });
   }
+
+  initAppLocale(Vue, vm, wx.getSystemInfoSync().language || 'zh-Hans');
 
   initHooks(appOptions, hooks);
 
@@ -2077,17 +2238,17 @@ function createPlugin (vm) {
   const appOptions = parseApp$1(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow((...args) => {
-      appOptions.onShow.apply(vm, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide((...args) => {
-      appOptions.onHide.apply(vm, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }

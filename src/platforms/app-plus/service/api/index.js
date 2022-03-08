@@ -54,6 +54,7 @@ export * from './plugin/sub-nvue'
 export * from './plugin/on-native-event-receive'
 export * from './plugin/send-native-event'
 export * from './plugin/load-sub-package'
+export * from './plugin/sdk'
 
 export * from './route/navigate-back'
 export * from './route/navigate-to'

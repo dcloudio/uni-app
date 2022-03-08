@@ -1,5 +1,5 @@
 import { isPlainObject, isArray, extend, hyphenate, isObject, hasOwn, toNumber, capitalize, isFunction, NOOP, EMPTY_OBJ, camelize } from '@vue/shared';
-import { onUnmounted, injectHook } from 'vue';
+import { onUnmounted, injectHook, ref } from 'vue';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -55,6 +55,7 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 
 class EventChannel {
     constructor(id, events) {
@@ -557,6 +558,9 @@ const HOOKS = [
     ON_PAGE_NOT_FOUND,
     ON_UNHANDLE_REJECTION,
 ];
+{
+    HOOKS.push(ON_SHARE_APP_MESSAGE);
+}
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
     const appOptions = {
@@ -578,6 +582,7 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, extend({ app: this }, options));
         },
     };
+    initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
     initUnknownHooks(appOptions, vueOptions);
@@ -594,6 +599,17 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
+}
+function initLocale(appVm) {
+    const locale = ref(my.getSystemInfoSync().language || 'zh-Hans');
+    Object.defineProperty(appVm, '$locale', {
+        get() {
+            return locale.value;
+        },
+        set(v) {
+            locale.value = v;
+        },
+    });
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];

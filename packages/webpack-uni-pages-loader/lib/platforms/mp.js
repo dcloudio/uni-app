@@ -23,6 +23,8 @@ const {
   trimMPJson
 } = require('../util')
 
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 function defaultCopy (name, value, json) {
   json[name] = value
 }
@@ -40,7 +42,11 @@ const pagesJson2AppJson = {
   tabBar: function (name, value, json, fromJson) {
     if (value && value.list && value.list.length) {
       if (value.list.length < 2) {
-        console.error('tabBar.list 需至少包含2项')
+        console.error(
+          uniI18n.__('pagesLoader.pagesTabbarMinItem2', {
+            0: 'tabBar.list'
+          })
+        )
       }
       const pages = json.pages
       value.list.forEach((page, index) => {
@@ -50,13 +56,17 @@ const pagesJson2AppJson = {
               fromJson &&
               fromJson.nvue &&
               fromJson.nvue.pages &&
-              fromJson.nvue.pages.find(({
-                path
-              }) => path === (page.pagePath + '.html'))
+              fromJson.nvue.pages.find(
+                ({
+                  path
+                }) => path === page.pagePath + '.html'
+              )
             )
           ) {
             console.error(
-              `pages.json tabBar['list'][${index}]['pagePath'] "${page.pagePath}" 需在 pages 数组中`
+              uniI18n.__('pagesLoader.needInPagesNode', {
+                0: `pages.json tabBar['list'][${index}]['pagePath'] "${page.pagePath}"`
+              })
             )
           }
         }
@@ -65,7 +75,8 @@ const pagesJson2AppJson = {
     json[name] = value
   },
   preloadRule: defaultCopy,
-  workers: defaultCopy
+  workers: defaultCopy,
+  plugins: defaultCopy
 }
 
 const manifestJson2AppJson = {
@@ -74,7 +85,8 @@ const manifestJson2AppJson = {
 }
 
 function parseCondition (projectJson, pagesJson) {
-  if (process.env.NODE_ENV === 'development') { // 仅开发期间 condition 生效
+  if (process.env.NODE_ENV === 'development') {
+    // 仅开发期间 condition 生效
     // 启动Condition
     const condition = getCondition(pagesJson)
     if (condition) {
@@ -89,7 +101,6 @@ function parseCondition (projectJson, pagesJson) {
 const pagesJson2ProjectJson = {}
 
 const manifestJson2ProjectJson = {
-
   name: function (name, value, json) {
     if (!value) {
       value = path.basename(process.env.UNI_INPUT_DIR)
@@ -146,18 +157,26 @@ function getCondition (pagesJson) {
           delete item.path
         }
         if (launchPagePath) {
-          if (item.pathName === launchPagePath && item.query === launchPageQuery) { // 指定了入口页
+          if (
+            item.pathName === launchPagePath &&
+            item.query === launchPageQuery
+          ) {
+            // 指定了入口页
             current = index
           }
         }
       })
       if (launchPagePath) {
-        if (current !== -1) { // 已存在
+        if (current !== -1) {
+          // 已存在
           condition.current = current
-        } else { // 不存在
-          condition.list.push(Object.assign(launchPageOptions, {
-            id: condition.list.length
-          }))
+        } else {
+          // 不存在
+          condition.list.push(
+            Object.assign(launchPageOptions, {
+              id: condition.list.length
+            })
+          )
           condition.current = condition.list.length - 1
         }
       }
@@ -182,26 +201,31 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
   const subPackages = {}
 
-  parsePages(pagesJson, function (page) {
-    app.pages.push(page.path)
-  }, function (root, page, subPackage) {
-    if (!isSupportSubPackages()) { // 不支持分包
-      app.pages.push(normalizePath(path.join(root, page.path)))
-    } else {
-      if (!subPackages[root]) {
-        subPackages[root] = {
-          root,
-          pages: []
-        }
-        Object.keys(subPackage).forEach(name => {
-          if (['root', 'pages'].indexOf(name) === -1) {
-            subPackages[root][name] = subPackage[name]
+  parsePages(
+    pagesJson,
+    function (page) {
+      app.pages.push(page.path)
+    },
+    function (root, page, subPackage) {
+      if (!isSupportSubPackages()) {
+        // 不支持分包
+        app.pages.push(normalizePath(path.join(root, page.path)))
+      } else {
+        if (!subPackages[root]) {
+          subPackages[root] = {
+            root,
+            pages: []
           }
-        })
+          Object.keys(subPackage).forEach(name => {
+            if (['root', 'pages'].indexOf(name) === -1) {
+              subPackages[root][name] = subPackage[name]
+            }
+          })
+        }
+        subPackages[root].pages.push(page.path)
       }
-      subPackages[root].pages.push(page.path)
     }
-  })
+  )
 
   Object.keys(subPackages).forEach(root => {
     app.subPackages.push(subPackages[root])
@@ -222,9 +246,12 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
   const projectName = getPlatformProject()
 
-  const projectPath = projectName && path.resolve(process.env.VUE_CLI_CONTEXT || process.cwd(), projectName)
+  const projectPath =
+    projectName &&
+    path.resolve(process.env.VUE_CLI_CONTEXT || process.cwd(), projectName)
 
-  if (projectPath && fs.existsSync(projectPath)) { // 自定义 project.config.json
+  if (projectPath && fs.existsSync(projectPath)) {
+    // 自定义 project.config.json
     const platform = process.env.UNI_PLATFORM
 
     // app-plus时不需要处理平台配置到 app 中
@@ -243,7 +270,11 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       })
     }
 
-    if (process.env.UNI_PLATFORM === 'mp-weixin' || process.env.UNI_PLATFORM === 'mp-qq') { // 微信不需要生成，其他平台做拷贝
+    if (
+      process.env.UNI_PLATFORM === 'mp-weixin' ||
+      process.env.UNI_PLATFORM === 'mp-qq'
+    ) {
+      // 微信不需要生成，其他平台做拷贝
       return {
         app: {
           name: 'app',
@@ -279,7 +310,9 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       const projectKeys = Object.keys(platformJson2ProjectJson)
 
       Object.keys(platformJson).forEach(key => {
-        if (!projectKeys.includes(key) && ['usingComponents', 'optimization'].indexOf(key) === -1) {
+        if (
+          !projectKeys.includes(key) && ['usingComponents', 'optimization'].indexOf(key) === -1
+        ) {
           // usingComponents 是编译模式开关，需要过滤，不能拷贝到 app
           app[key] = platformJson[key]
         }
@@ -287,7 +320,10 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
     }
 
     // 引用了原生小程序组件，自动开启 ES6=>ES5
-    const wxcomponentsPath = path.resolve(process.env.UNI_INPUT_DIR, './wxcomponents')
+    const wxcomponentsPath = path.resolve(
+      process.env.UNI_INPUT_DIR,
+      './wxcomponents'
+    )
     if (fs.existsSync(wxcomponentsPath)) {
       const wxcomponentsFiles = fs.readdirSync(wxcomponentsPath)
       if (wxcomponentsFiles.length) {

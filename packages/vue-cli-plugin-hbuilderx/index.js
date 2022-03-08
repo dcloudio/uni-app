@@ -1,7 +1,8 @@
 const fs = require('fs')
 const path = require('path')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
-process.env.UNI_CLI_CONTEXT = path.resolve(__dirname, '../../../')
+process.env.UNI_CLI_CONTEXT = require('@dcloudio/uni-cli-shared/lib/util').getCLIContext()
 
 process.env.UNI_HBUILDERX_PLUGINS = process.env.UNI_HBUILDERX_PLUGINS || path.resolve(__dirname, '../../../../')
 
@@ -18,7 +19,7 @@ module.exports = (api, options) => { // 仅处理 app-plus 相关逻辑
     !process.env.UNI_USING_V3_NATIVE
   ) {
     if (!fs.existsSync(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'weapp-tools/lib/index.js'))) {
-      console.error('请使用 HBuilderX 编译运行至 app-plus 平台')
+      console.error(uniI18n.__('pluginHbuilderx.plaseHXCompileAppPlatform'))
       process.exit(0)
     }
   }

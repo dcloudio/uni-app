@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties": {
+    "implementation": {
+      "description": "The implementation of the sass to be used (https://github.com/webpack-contrib/sass-loader#implementation).",
+      "type": "object"
+    },
+    "sassOptions": {
+      "description": "Options for `node-sass` or `sass` (`Dart Sass`) implementation. (https://github.com/webpack-contrib/sass-loader#implementation).",
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": true
+        },
+        {
+          "instanceof": "Function"
+        }
+      ]
+    },
+    "prependData": {
+      "description": "Prepends `Sass`/`SCSS` code before the actual entry file (https://github.com/webpack-contrib/sass-loader#prependdata).",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "instanceof": "Function"
+        }
+      ]
+    },
+    "sourceMap": {
+      "description": "Enables/Disables generation of source maps (https://github.com/webpack-contrib/sass-loader#sourcemap).",
+      "type": "boolean"
+    },
+    "webpackImporter": {
+      "description": "Enables/Disables default `webpack` importer (https://github.com/webpack-contrib/sass-loader#webpackimporter).",
+      "type": "boolean"
+    },
+    "nvue": {
+      "description": "nvue",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

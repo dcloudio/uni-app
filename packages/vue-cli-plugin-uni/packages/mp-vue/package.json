@@ -2,6 +2,7 @@
   "name": "uni-mp-vue",
   "version": "2.6.10",
   "description": "Reactive, component-oriented view layer for modern web interfaces.",
+  "main": "dist/mp.runtime.esm.js",
   "module": "dist/mp.runtime.esm.js",
   "typings": "types/index.d.ts",
   "repository": {

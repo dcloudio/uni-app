@@ -11,7 +11,7 @@ const {
   nvueHtmlPreprocessOptions,
   getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
-
+const fileLoader = require('@dcloudio/uni-cli-shared/lib/file-loader')
 const WebpackAppPlusNVuePlugin = process.env.UNI_USING_V3
   ? require('../packages/webpack-app-plus-plugin')
   : require('../packages/webpack-app-plus-nvue-plugin')
@@ -84,7 +84,8 @@ const plugins = [
       UNI_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       VUE_APP_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
-      HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || ''),
+      UNICLOUD_DEBUG: process.env.UNICLOUD_DEBUG,
+      RUN_BY_HBUILDERX: process.env.RUN_BY_HBUILDERX,
       UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT)
     }
   }),
@@ -109,13 +110,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const rules = [{
   test: /\.(png|jpg|gif|ttf|eot|woff|woff2)$/i,
-  use: [{
-    loader: 'file-loader',
-    options: {
-      publicPath: 'assets',
-      outputPath: 'assets'
-    }
-  }]
+  use: [fileLoader]
 }, {
   test: path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
   use: [{
@@ -218,15 +213,16 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
     to: 'static'
   }]
-
-  const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
-  if (fs.existsSync(androidPrivacyPath)) {
-    array.push({
-      from: androidPrivacyPath,
-      to: 'androidPrivacy.json'
-    })
+  // 自动化测试时，不启用androidPrivacy.json
+  if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+    const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
+    if (fs.existsSync(androidPrivacyPath)) {
+      array.push({
+        from: androidPrivacyPath,
+        to: 'androidPrivacy.json'
+      })
+    }
   }
-
   const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, 'hybrid/html')
   if (fs.existsSync(hybridHtmlPath)) {
     array.push({
@@ -272,6 +268,18 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   }
   plugins.push(new CopyWebpackPlugin(array))
 }
+
+try {
+  if (process.env.UNI_HBUILDERX_PLUGINS) {
+    require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers/lib/bytenode'))
+    const {
+      W
+    } = require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+    plugins.push(new W({
+      dir: process.env.UNI_INPUT_DIR
+    }))
+  }
+} catch (e) {}
 
 module.exports = function () {
   return {

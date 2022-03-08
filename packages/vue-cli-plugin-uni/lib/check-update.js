@@ -13,6 +13,9 @@ class Upate {
     this._isAlpha = false
     this._uniId = ''
     this._appId = ''
+    this._wt = 0
+    this._lc = ''
+    this._lcin = []
   }
 
   get uniId () {
@@ -45,6 +48,30 @@ class Upate {
 
   set isAlpha (value) {
     this._isAlpha = value
+  }
+
+  get wt () {
+    return this._wt
+  }
+
+  set wt (value) {
+    this._wt = value
+  }
+
+  get lc () {
+    return this._lc
+  }
+
+  set lc (value) {
+    this._lc = value
+  }
+
+  get lcin () {
+    return this._lcin
+  }
+
+  set lcin (value) {
+    this._lcin = value
   }
 
   get versionType () {
@@ -156,6 +183,9 @@ class Upate {
     data.appid = this.uniId
     data.vtype = this.versionType
     data.vcode = this.compilerVersion
+    data.wt = this._wt
+    data.lc = this._lc
+    data.in = this._lcin
 
     delete data.lastCheck
 
@@ -234,6 +264,28 @@ Object.assign(Upate.prototype, {
   DEFAULT_INTERVAL: 1000 * 60 * 60 * 24
 })
 
+function getLc () {
+  const result = []
+  const localeDir = path.join(process.env.UNI_CLI_CONTEXT, 'src/locale')
+  if (!fs.existsSync(localeDir)) {
+    return result
+  }
+
+  const files = fs.readdirSync(localeDir)
+  for (let i = files.length - 1; i >= 0; i--) {
+    const filePath = files[i]
+    const extName = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase()
+    if (extName !== 'json') {
+      continue
+    }
+
+    if (files[i].indexOf('uni-app.') < 0) {
+      result.push(filePath.substring(0, filePath.lastIndexOf('.')))
+    }
+  }
+  return result
+}
+
 module.exports = async function checkUpdate () {
   const {
     isInHBuilderX,
@@ -255,6 +307,10 @@ module.exports = async function checkUpdate () {
     update.uniId = manifest.appid
     const appIdKey = process.env.UNI_PLATFORM.includes('quickapp') ? 'package' : 'appid'
     update.appId = manifest[process.env.UNI_PLATFORM] ? (manifest[process.env.UNI_PLATFORM][appIdKey] || '') : ''
+    const cf = manifest['mp-weixin'] ? manifest['mp-weixin'].cloudfunctionRoot : ''
+    update.wt = (cf && cf.length) ? 1 : 0
+    update.lc = manifest.locale ? manifest.locale : ''
+    update.lcin = getLc().join(',')
     update.check()
   } catch (e) {
   }

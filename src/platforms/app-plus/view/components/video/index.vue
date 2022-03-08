@@ -197,30 +197,32 @@ export default {
     }
   },
   mounted () {
-    const video = this.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, this.attrs, this.position))
-    plus.webview.currentWebview().append(video)
-    if (this.hidden) {
-      video.hide()
-    }
-    this.$watch('attrs', () => {
-      this.video && this.video.setStyles(this.attrs)
-    }, { deep: true })
-    this.$watch('position', () => {
-      this.video && this.video.setStyles(this.position)
-    }, { deep: true })
-    this.$watch('hidden', (val) => {
-      const video = this.video
-      if (video) {
-        video[val ? 'hide' : 'show']()
-        // iOS 隐藏状态设置 setStyles 不生效
-        if (!val) {
-          video.setStyles(this.position)
-        }
+    this._onParentReady(() => {
+      const video = this.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, this.attrs, this.position))
+      plus.webview.currentWebview().append(video)
+      if (this.hidden) {
+        video.hide()
       }
-    })
-    events.forEach(key => {
-      video.addEventListener(key, (e) => {
-        this.$trigger(key, {}, { ...e.detail })
+      this.$watch('attrs', () => {
+        this.video && this.video.setStyles(this.attrs)
+      }, { deep: true })
+      this.$watch('position', () => {
+        this.video && this.video.setStyles(this.position)
+      }, { deep: true })
+      this.$watch('hidden', (val) => {
+        const video = this.video
+        if (video) {
+          video[val ? 'hide' : 'show']()
+          // iOS 隐藏状态设置 setStyles 不生效
+          if (!val) {
+            video.setStyles(this.position)
+          }
+        }
+      })
+      events.forEach(key => {
+        video.addEventListener(key, (e) => {
+          this.$trigger(key, {}, { ...e.detail })
+        })
       })
     })
   },

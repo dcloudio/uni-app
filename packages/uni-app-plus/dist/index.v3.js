@@ -28,7 +28,8 @@ var serviceContext = (function () {
     'onSocketMessage',
     'closeSocket',
     'onSocketClose',
-    'getUpdateManager'
+    'getUpdateManager',
+    'configMTLS'
   ];
 
   const route = [
@@ -63,6 +64,7 @@ var serviceContext = (function () {
     'chooseImage',
     'chooseFile',
     'previewImage',
+    'closePreviewImage',
     'getImageInfo',
     'getVideoInfo',
     'saveImageToPhotosAlbum',
@@ -195,7 +197,8 @@ var serviceContext = (function () {
     'setLeftWindowStyle',
     'setRightWindowStyle',
     'getLocale',
-    'setLocale'
+    'setLocale',
+    'onLocaleChange'
   ];
 
   const event = [
@@ -232,6 +235,7 @@ var serviceContext = (function () {
     'preLogin',
     'closeAuthView',
     'getCheckBoxState',
+    'getUniverifyManager',
     'share',
     'shareWithSystem',
     'showShareMenu',
@@ -247,11 +251,14 @@ var serviceContext = (function () {
     'getSubNVueById',
     'getCurrentSubNVue',
     'setPageMeta',
+    'onHostEventReceive',
     'onNativeEventReceive',
     'sendNativeEvent',
     'preloadPage',
     'unPreloadPage',
-    'loadSubPackage'
+    'loadSubPackage',
+    'sendHostEvent',
+    'navigateToMiniProgram'
   ];
 
   const ad = [
@@ -292,8 +299,36 @@ var serviceContext = (function () {
     window.addEventListener('test-passive', null, opts);
   } catch (e) {}
 
+  let realAtob;
+
+  const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+
+  if (typeof atob !== 'function') {
+    realAtob = function (str) {
+      str = String(str).replace(/[\t\n\f\r ]+/g, '');
+      if (!b64re.test(str)) { throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.") }
+
+      // Adding the padding if missing, for semplicity
+      str += '=='.slice(2 - (str.length & 3));
+      var bitmap; var result = ''; var r1; var r2; var i = 0;
+      for (; i < str.length;) {
+        bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 |
+                      (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+
+        result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255)
+          : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255)
+            : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+      }
+      return result
+    };
+  } else {
+    // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+    realAtob = atob;
+  }
+
   function b64DecodeUnicode (str) {
-    return decodeURIComponent(atob(str).split('').map(function (c) {
+    return decodeURIComponent(realAtob(str).split('').map(function (c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
     }).join(''))
   }
@@ -347,6 +382,10 @@ var serviceContext = (function () {
 
   function isFn (fn) {
     return typeof fn === 'function'
+  }
+
+  function isStr (str) {
+    return typeof str === 'string'
   }
 
   function isObject (obj) {
@@ -790,7 +829,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1154,18 +1193,20 @@ var serviceContext = (function () {
     scanCode: scanCode
   });
 
+  const isArray = Array.isArray;
   const isObject$1 = (val) => val !== null && typeof val === 'object';
+  const defaultDelimiters = ['{', '}'];
   class BaseFormatter {
       constructor() {
           this._caches = Object.create(null);
       }
-      interpolate(message, values) {
+      interpolate(message, values, delimiters = defaultDelimiters) {
           if (!values) {
               return [message];
           }
           let tokens = this._caches[message];
           if (!tokens) {
-              tokens = parse(message);
+              tokens = parse(message, delimiters);
               this._caches[message] = tokens;
           }
           return compile(tokens, values);
@@ -1173,24 +1214,24 @@ var serviceContext = (function () {
   }
   const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
   const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-  function parse(format) {
+  function parse(format, [startDelimiter, endDelimiter]) {
       const tokens = [];
       let position = 0;
       let text = '';
       while (position < format.length) {
           let char = format[position++];
-          if (char === '{') {
+          if (char === startDelimiter) {
               if (text) {
                   tokens.push({ type: 'text', value: text });
               }
               text = '';
               let sub = '';
               char = format[position++];
-              while (char !== undefined && char !== '}') {
+              while (char !== undefined && char !== endDelimiter) {
                   sub += char;
                   char = format[position++];
               }
-              const isClosed = char === '}';
+              const isClosed = char === endDelimiter;
               const type = RE_TOKEN_LIST_VALUE.test(sub)
                   ? 'list'
                   : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
@@ -1198,12 +1239,12 @@ var serviceContext = (function () {
                       : 'unknown';
               tokens.push({ value: sub, type });
           }
-          else if (char === '%') {
-              // when found rails i18n syntax, skip text capture
-              if (format[position] !== '{') {
-                  text += char;
-              }
-          }
+          //  else if (char === '%') {
+          //   // when found rails i18n syntax, skip text capture
+          //   if (format[position] !== '{') {
+          //     text += char
+          //   }
+          // }
           else {
               text += char;
           }
@@ -1214,7 +1255,7 @@ var serviceContext = (function () {
   function compile(tokens, values) {
       const compiled = [];
       let index = 0;
-      const mode = Array.isArray(values)
+      const mode = isArray(values)
           ? 'list'
           : isObject$1(values)
               ? 'named'
@@ -1271,15 +1312,15 @@ var serviceContext = (function () {
           return;
       }
       locale = locale.trim().replace(/_/g, '-');
-      if (messages[locale]) {
+      if (messages && messages[locale]) {
           return locale;
       }
       locale = locale.toLowerCase();
       if (locale.indexOf('zh') === 0) {
-          if (locale.indexOf('-hans') !== -1) {
+          if (locale.indexOf('-hans') > -1) {
               return LOCALE_ZH_HANS;
           }
-          if (locale.indexOf('-hant') !== -1) {
+          if (locale.indexOf('-hant') > -1) {
               return LOCALE_ZH_HANT;
           }
           if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
@@ -1304,7 +1345,7 @@ var serviceContext = (function () {
           }
           this.formater = formater || defaultFormatter;
           this.messages = messages || {};
-          this.setLocale(locale);
+          this.setLocale(locale || LOCALE_EN);
           if (watcher) {
               this.watchLocale(watcher);
           }
@@ -1317,9 +1358,12 @@ var serviceContext = (function () {
               this.messages[this.locale] = {};
           }
           this.message = this.messages[this.locale];
-          this.watchers.forEach((watcher) => {
-              watcher(this.locale, oldLocale);
-          });
+          // 仅发生变化时，通知
+          if (oldLocale !== this.locale) {
+              this.watchers.forEach((watcher) => {
+                  watcher(this.locale, oldLocale);
+              });
+          }
       }
       getLocale() {
           return this.locale;
@@ -1330,13 +1374,26 @@ var serviceContext = (function () {
               this.watchers.splice(index, 1);
           };
       }
-      add(locale, message) {
-          if (this.messages[locale]) {
-              Object.assign(this.messages[locale], message);
+      add(locale, message, override = true) {
+          const curMessages = this.messages[locale];
+          if (curMessages) {
+              if (override) {
+                  Object.assign(curMessages, message);
+              }
+              else {
+                  Object.keys(message).forEach((key) => {
+                      if (!hasOwn$1(curMessages, key)) {
+                          curMessages[key] = message[key];
+                      }
+                  });
+              }
           }
           else {
               this.messages[locale] = message;
           }
+      }
+      f(message, values, delimiters) {
+          return this.formater.interpolate(message, values, delimiters).join('');
       }
       t(key, locale, values) {
           let message = this.message;
@@ -1355,37 +1412,49 @@ var serviceContext = (function () {
       }
   }
 
-  const ignoreVueI18n = true;
-  function initLocaleWatcher(appVm, i18n) {
-      if (appVm.$i18n) {
-          const vm = appVm.$i18n.vm ? appVm.$i18n.vm : appVm;
-          vm.$watch(appVm.$i18n.vm ? 'locale' : () => appVm.$i18n.locale, (newLocale) => {
+  function watchAppLocale(appVm, i18n) {
+      // 需要保证 watch 的触发在组件渲染之前
+      if (appVm.$watchLocale) {
+          // vue2
+          appVm.$watchLocale((newLocale) => {
               i18n.setLocale(newLocale);
-          }, {
-              immediate: true,
+          });
+      }
+      else {
+          appVm.$watch(() => appVm.$locale, (newLocale) => {
+              i18n.setLocale(newLocale);
           });
       }
   }
-  // function getDefaultLocale() {
-  //   if (typeof navigator !== 'undefined') {
-  //     return (navigator as any).userLanguage || navigator.language
-  //   }
-  //   if (typeof plus !== 'undefined') {
-  //     // TODO 待调整为最新的获取语言代码
-  //     return plus.os.language
-  //   }
-  //   return uni.getSystemInfoSync().language
-  // }
-  function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN, watcher) {
+  function getDefaultLocale() {
+      if (typeof uni !== 'undefined' && uni.getLocale) {
+          return uni.getLocale();
+      }
+      // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+      if (typeof global !== 'undefined' && global.getLocale) {
+          return global.getLocale();
+      }
+      return LOCALE_EN;
+  }
+  function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
       // 兼容旧版本入参
       if (typeof locale !== 'string') {
-          [locale, messages] = [messages, locale];
+          [locale, messages] = [
+              messages,
+              locale,
+          ];
       }
       if (typeof locale !== 'string') {
-          locale = fallbackLocale;
+          // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
+          locale = getDefaultLocale();
+      }
+      if (typeof fallbackLocale !== 'string') {
+          fallbackLocale =
+              (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+                  LOCALE_EN;
       }
       const i18n = new I18n({
-          locale: locale || fallbackLocale,
+          locale,
           fallbackLocale,
           messages,
           watcher,
@@ -1399,41 +1468,48 @@ var serviceContext = (function () {
               };
           }
           else {
-              const appVm = getApp().$vm;
-              if (!appVm.$t || !appVm.$i18n || ignoreVueI18n) {
-                  // if (!locale) {
-                  //   i18n.setLocale(getDefaultLocale())
-                  // }
-                  /* eslint-disable no-func-assign */
-                  t = function (key, values) {
-                      return i18n.t(key, values);
-                  };
-              }
-              else {
-                  initLocaleWatcher(appVm, i18n);
-                  /* eslint-disable no-func-assign */
-                  t = function (key, values) {
-                      const $i18n = appVm.$i18n;
-                      const silentTranslationWarn = $i18n.silentTranslationWarn;
-                      $i18n.silentTranslationWarn = true;
-                      const msg = appVm.$t(key, values);
-                      $i18n.silentTranslationWarn = silentTranslationWarn;
-                      if (msg !== key) {
-                          return msg;
+              let isWatchedAppLocale = false;
+              t = function (key, values) {
+                  const appVm = getApp().$vm;
+                  // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
+                  // options: {
+                  // 	type: Array,
+                  // 	default () {
+                  // 		return [{
+                  // 			icon: 'shop',
+                  // 			text: t("uni-goods-nav.options.shop"),
+                  // 		}, {
+                  // 			icon: 'cart',
+                  // 			text: t("uni-goods-nav.options.cart")
+                  // 		}]
+                  // 	}
+                  // },
+                  if (appVm) {
+                      // 触发响应式
+                      appVm.$locale;
+                      if (!isWatchedAppLocale) {
+                          isWatchedAppLocale = true;
+                          watchAppLocale(appVm, i18n);
                       }
-                      return i18n.t(key, $i18n.locale, values);
-                  };
-              }
+                  }
+                  return i18n.t(key, values);
+              };
           }
           return t(key, values);
       };
       return {
           i18n,
+          f(message, values, delimiters) {
+              return i18n.f(message, values, delimiters);
+          },
           t(key, values) {
               return t(key, values);
           },
-          add(locale, message) {
-              return i18n.add(locale, message);
+          add(locale, message, override = true) {
+              return i18n.add(locale, message, override);
+          },
+          watch(fn) {
+              return i18n.watchLocale(fn);
           },
           getLocale() {
               return i18n.getLocale();
@@ -1443,6 +1519,11 @@ var serviceContext = (function () {
           },
       };
   }
+  function isI18nStr(value, delimiters) {
+      return value.indexOf(delimiters[0]) > -1;
+  }
+
+  const NAVBAR_HEIGHT = 44;
 
   var en = {
   	"uni.app.quit": "Press back button again to exit",
@@ -1458,6 +1539,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Cancel",
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Camera",
+  	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
   	"uni.previewImage.cancel": "Cancel",
   	"uni.previewImage.button.save": "Save Image",
   	"uni.previewImage.save.success": "Saved successfully",
@@ -1474,7 +1556,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "Danmu",
   	"uni.video.volume": "Volume",
   	"uni.button.feedback.title": "feedback",
-  	"uni.button.feedback.send": "send"
+  	"uni.button.feedback.send": "send",
+  	"uni.chooseLocation.search": "Find Place",
+  	"uni.chooseLocation.cancel": "Cancel"
   };
 
   var es = {
@@ -1491,6 +1575,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Cancelar",
   	"uni.chooseVideo.sourceType.album": "Álbum",
   	"uni.chooseVideo.sourceType.camera": "Cámara",
+  	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
   	"uni.previewImage.cancel": "Cancelar",
   	"uni.previewImage.button.save": "Guardar imagen",
   	"uni.previewImage.save.success": "Guardado exitosamente",
@@ -1507,7 +1592,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "Danmu",
   	"uni.video.volume": "Volumen",
   	"uni.button.feedback.title": "realimentación",
-  	"uni.button.feedback.send": "enviar"
+  	"uni.button.feedback.send": "enviar",
+  	"uni.chooseLocation.search": "Encontrar",
+  	"uni.chooseLocation.cancel": "Cancelar"
   };
 
   var fr = {
@@ -1524,6 +1611,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "Annuler",
   	"uni.chooseVideo.sourceType.album": "Album",
   	"uni.chooseVideo.sourceType.camera": "Caméra",
+  	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
   	"uni.previewImage.cancel": "Annuler",
   	"uni.previewImage.button.save": "Guardar imagen",
   	"uni.previewImage.save.success": "Enregistré avec succès",
@@ -1540,7 +1628,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "Danmu",
   	"uni.video.volume": "Le Volume",
   	"uni.button.feedback.title": "retour d'information",
-  	"uni.button.feedback.send": "envoyer"
+  	"uni.button.feedback.send": "envoyer",
+  	"uni.chooseLocation.search": "Trouve",
+  	"uni.chooseLocation.cancel": "Annuler"
   };
 
   var zhHans = {
@@ -1557,6 +1647,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "从相册选择",
   	"uni.chooseVideo.sourceType.camera": "拍摄",
+  	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存图像",
   	"uni.previewImage.save.success": "保存图像到相册成功",
@@ -1573,7 +1664,9 @@ var serviceContext = (function () {
   	"uni.video.danmu": "弹幕",
   	"uni.video.volume": "音量",
   	"uni.button.feedback.title": "问题反馈",
-  	"uni.button.feedback.send": "发送"
+  	"uni.button.feedback.send": "发送",
+  	"uni.chooseLocation.search": "搜索地点",
+  	"uni.chooseLocation.cancel": "取消"
   };
 
   var zhHant = {
@@ -1590,6 +1683,7 @@ var serviceContext = (function () {
   	"uni.chooseVideo.cancel": "取消",
   	"uni.chooseVideo.sourceType.album": "從相冊選擇",
   	"uni.chooseVideo.sourceType.camera": "拍攝",
+  	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
   	"uni.previewImage.cancel": "取消",
   	"uni.previewImage.button.save": "保存圖像",
   	"uni.previewImage.save.success": "保存圖像到相冊成功",
@@ -1606,28 +1700,59 @@ var serviceContext = (function () {
   	"uni.video.danmu": "彈幕",
   	"uni.video.volume": "音量",
   	"uni.button.feedback.title": "問題反饋",
-  	"uni.button.feedback.send": "發送"
+  	"uni.button.feedback.send": "發送",
+  	"uni.chooseLocation.search": "搜索地點",
+  	"uni.chooseLocation.cancel": "取消"
   };
 
-  const messages = {
-    en,
-    es,
-    fr,
-    'zh-Hans': zhHans,
-    'zh-Hant': zhHant
-  };
+  const messages = {};
+
+  {
+    Object.assign(messages, {
+      en,
+      es,
+      fr,
+      'zh-Hans': zhHans,
+      'zh-Hant': zhHant
+    });
+  }
 
   let locale;
 
   {
     if (typeof weex === 'object') {
       locale = weex.requireModule('plus').getLanguage();
+    } else {
+      locale = '';
     }
   }
 
-  const i18n = initVueI18n(locale,  messages );
+  function initI18nMessages () {
+    if (!isEnableLocale()) {
+      return
+    }
+    const localeKeys = Object.keys(__uniConfig.locales);
+    if (localeKeys.length) {
+      localeKeys.forEach((locale) => {
+        const curMessages = messages[locale];
+        const userMessages = __uniConfig.locales[locale];
+        if (curMessages) {
+          Object.assign(curMessages, userMessages);
+        } else {
+          messages[locale] = userMessages;
+        }
+      });
+    }
+  }
+
+  initI18nMessages();
+
+  const i18n = initVueI18n(
+    locale,
+     messages 
+  );
   const t = i18n.t;
-  const i18nMixin = i18n.mixin = {
+  const i18nMixin = (i18n.mixin = {
     beforeCreate () {
       const unwatch = i18n.i18n.watchLocale(() => {
         this.$forceUpdate();
@@ -1641,16 +1766,118 @@ var serviceContext = (function () {
         return t(key, values)
       }
     }
-  };
-  const setLocale = i18n.setLocale;
+  });
   const getLocale = i18n.getLocale;
 
+  function initAppLocale (Vue, appVm, locale) {
+    const state = Vue.observable({
+      locale: locale || i18n.getLocale()
+    });
+    const localeWatchers = [];
+    appVm.$watchLocale = fn => {
+      localeWatchers.push(fn);
+    };
+    Object.defineProperty(appVm, '$locale', {
+      get () {
+        return state.locale
+      },
+      set (v) {
+        state.locale = v;
+        localeWatchers.forEach(watch => watch(v));
+      }
+    });
+  }
+
+  const I18N_JSON_DELIMITERS = ['%', '%'];
+
+  function getLocaleMessage () {
+    const locale = uni.getLocale();
+    const locales = __uniConfig.locales;
+    return (
+      locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+    )
+  }
+
+  function formatI18n (message) {
+    if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+      return i18n.f(message, getLocaleMessage(), I18N_JSON_DELIMITERS)
+    }
+    return message
+  }
+
+  function resolveJsonObj (jsonObj, names) {
+    if (names.length === 1) {
+      if (jsonObj) {
+        const value = jsonObj[names[0]];
+        if (isStr(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+          return jsonObj
+        }
+      }
+      return
+    }
+    const name = names.shift();
+    return resolveJsonObj(jsonObj && jsonObj[name], names)
+  }
+
+  function defineI18nProperties (obj, names) {
+    return names.map(name => defineI18nProperty(obj, name))
+  }
+
+  function defineI18nProperty (obj, names) {
+    const jsonObj = resolveJsonObj(obj, names);
+    if (!jsonObj) {
+      return false
+    }
+    const prop = names[names.length - 1];
+    let value = jsonObj[prop];
+    Object.defineProperty(jsonObj, prop, {
+      get () {
+        return formatI18n(value)
+      },
+      set (v) {
+        value = v;
+      }
+    });
+    return true
+  }
+
+  function isEnableLocale () {
+    return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+  }
+
+  function initNavigationBarI18n (navigationBar) {
+    if (isEnableLocale()) {
+      return defineI18nProperties(navigationBar, [
+        ['titleText'],
+        ['searchInput', 'placeholder']
+      ])
+    }
+  }
+
+  // export function initI18n() {
+  //   const localeKeys = Object.keys(__uniConfig.locales || {})
+  //   if (localeKeys.length) {
+  //     localeKeys.forEach((locale) =>
+  //       i18n.add(locale, __uniConfig.locales[locale])
+  //     )
+  //   }
+  // }
+
   const setClipboardData = {
-    beforeSuccess () {
+    data: {
+      type: String,
+      required: true
+    },
+    showToast: {
+      type: Boolean,
+      default: true
+    },
+    beforeSuccess (res, params) {
+      if (!params.showToast) return
       const title = t('uni.setClipboardData.success');
       if (title) {
         uni.showToast({
-          title: t('uni.setClipboardData.success'),
+          title,
           icon: 'success',
           mask: false,
           style: {
@@ -1724,7 +1951,7 @@ var serviceContext = (function () {
         return 'https:' + filePath
       }
       // 平台绝对路径 安卓、iOS
-      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
         return 'file://' + filePath
       }
       return addBase(filePath.substr(1))
@@ -1830,18 +2057,15 @@ var serviceContext = (function () {
     chooseLocation: chooseLocation
   });
 
-  const type = {
-    WGS84: 'WGS84',
-    GCJ02: 'GCJ02'
-  };
+  const coordTypes = ['wgs84', 'gcj02'];
+
   const getLocation = {
     type: {
       type: String,
       validator (value, params) {
-        value = (value || '').toUpperCase();
-        params.type = Object.values(type).indexOf(value) < 0 ? type.WGS84 : value;
-      },
-      default: type.WGS84
+        value = (value || '').toLowerCase();
+        params.type = coordTypes.indexOf(value) < 0 ? coordTypes[0] : value;
+      }
     },
     altitude: {
       type: Boolean,
@@ -2164,7 +2388,8 @@ var serviceContext = (function () {
     PUT: 'PUT',
     DELETE: 'DELETE',
     TRACE: 'TRACE',
-    CONNECT: 'CONNECT'
+    CONNECT: 'CONNECT',
+    PATCH: 'PATCH'
   };
   const dataType = {
     JSON: 'json'
@@ -2262,9 +2487,22 @@ var serviceContext = (function () {
     }
   };
 
+  const configMTLS = {
+    certificates: {
+      type: Array,
+      required: true,
+      validator (value) {
+        if (value.some(item => toRawType(item.host) !== 'String')) {
+          return '参数配置错误，请确认后重试'
+        }
+      }
+    }
+  };
+
   var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    request: request
+    request: request,
+    configMTLS: configMTLS
   });
 
   const method$1 = {
@@ -3407,7 +3645,7 @@ var serviceContext = (function () {
       const errMsg = res.errMsg;
 
       if (errMsg.indexOf(apiName + ':ok') === 0) {
-        isFn(beforeSuccess) && beforeSuccess(res);
+        isFn(beforeSuccess) && beforeSuccess(res, params);
 
         hasSuccess && success(res);
 
@@ -3961,7 +4199,7 @@ var serviceContext = (function () {
     // 绝对路径转换为本地文件系统路径
     if (filePath.indexOf('/') === 0) {
       // 平台绝对路径 安卓、iOS
-      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
         return 'file://' + filePath
       }
       return wwwPath + filePath
@@ -4128,6 +4366,8 @@ var serviceContext = (function () {
     return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
+  const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback';
+
   const audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
@@ -4174,6 +4414,7 @@ var serviceContext = (function () {
     audio.src = '';
     audio.volume = 1;
     audio.startTime = 0;
+    audio.setSessionCategory(AUDIO_DEFAULT_SESSION_CATEGORY);
     return {
       errMsg: 'createAudioInstance:ok',
       audioId
@@ -4200,7 +4441,8 @@ var serviceContext = (function () {
     autoplay = false,
     loop = false,
     obeyMuteSwitch,
-    volume
+    volume,
+    sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY
   }) {
     const audio = audios[audioId];
     if (audio) {
@@ -4218,6 +4460,9 @@ var serviceContext = (function () {
         audio.volume = style.volume = volume;
       }
       audio.setStyles(style);
+      if (sessionCategory) {
+        audio.setSessionCategory(sessionCategory);
+      }
       initStateChage(audioId);
     }
     return {
@@ -4636,6 +4881,9 @@ var serviceContext = (function () {
     },
     openMapApp (ctx, args) {
       return invokeVmMethod(ctx, 'openMapApp', args)
+    },
+    on (ctx, args) {
+      return ctx.on(args.name, args.callback)
     }
   };
 
@@ -5558,7 +5806,7 @@ var serviceContext = (function () {
       animationDuration: 200,
       uniNView: {
         path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
-        defaultFontSize: plus_.screen.resolutionWidth / 20,
+        defaultFontSize: 16,
         viewport: plus_.screen.resolutionWidth
       }
     };
@@ -5899,8 +6147,6 @@ var serviceContext = (function () {
     }
   }
 
-  const NAVBAR_HEIGHT = 44;
-
   const TABBAR_HEIGHT = 50;
   const isIOS$1 = plus.os.name === 'iOS';
   let config;
@@ -5943,7 +6189,7 @@ var serviceContext = (function () {
   /**
    * 动态设置 tabBar 某一项的内容
    */
-  function setTabBarItem$1 (index, text, iconPath, selectedIconPath) {
+  function setTabBarItem$1 (index, text, iconPath, selectedIconPath, visible) {
     const item = {
       index
     };
@@ -5956,7 +6202,17 @@ var serviceContext = (function () {
     if (selectedIconPath) {
       item.selectedIconPath = getRealPath$1(selectedIconPath);
     }
-    tabBar && tabBar.setTabBarItem(item);
+    if (visible !== undefined) {
+      item.visible = config.list[index].visible = visible;
+      delete item.index;
+
+      const tabbarItems = config.list.map(item => ({ visible: item.visible }));
+      tabbarItems[index] = item;
+
+      tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+    } else {
+      tabBar && tabBar.setTabBarItem(item);
+    }
   }
   /**
    * 动态设置 tabBar 的整体样式
@@ -6085,7 +6341,7 @@ var serviceContext = (function () {
   let deviceId;
 
   function deviceId$1 () {
-    deviceId = deviceId || plus.runtime.getDCloudId();
+    deviceId = deviceId || plus.device.uuid;
     return deviceId
   }
 
@@ -6502,7 +6758,9 @@ var serviceContext = (function () {
   function getLocation$1 ({
     type = 'wgs84',
     geocode = false,
-    altitude = false
+    altitude = false,
+    isHighAccuracy = false,
+    highAccuracyExpireTime
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
     plus.geolocation.getCurrentPosition(
@@ -6518,7 +6776,9 @@ var serviceContext = (function () {
         errorCallback(e);
       }, {
         geocode: geocode,
-        enableHighAccuracy: altitude
+        enableHighAccuracy: isHighAccuracy || altitude,
+        timeout: highAccuracyExpireTime,
+        coordsType: type
       }
     );
   }
@@ -6728,7 +6988,6 @@ var serviceContext = (function () {
     function successCallback (paths) {
       const tempFiles = [];
       const tempFilePaths = [];
-      // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
       Promise.all(paths.map((path) => getFileInfo$2(path)))
         .then((filesInfo) => {
           filesInfo.forEach((file, index) => {
@@ -6752,7 +7011,8 @@ var serviceContext = (function () {
         errorCallback, {
           filename: TEMP_PATH + '/camera/',
           resolution: 'high',
-          crop
+          crop,
+          sizeType
         });
     }
 
@@ -6808,39 +7068,20 @@ var serviceContext = (function () {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-      const compressVideo = compressed ? new Promise((resolve) => {
-        plus.zip.compressVideo({
-          src: tempFilePath,
-          filename
-        }, ({ tempFilePath }) => {
-          resolve(tempFilePath);
-        }, () => {
-          resolve(tempFilePath);
-        });
-      }) : Promise.resolve(tempFilePath);
-      if (compressed) {
-        plus.nativeUI.showWaiting();
-      }
-      compressVideo.then(tempFilePath => {
-        if (compressed) {
-          plus.nativeUI.closeWaiting();
-        }
-        plus.io.getVideoInfo({
-          filePath: tempFilePath,
-          success (videoInfo) {
-            const result = {
-              errMsg: 'chooseVideo:ok',
-              tempFilePath: tempFilePath
-            };
-            result.size = videoInfo.size;
-            result.duration = videoInfo.duration;
-            result.width = videoInfo.width;
-            result.height = videoInfo.height;
-            invoke$1(callbackId, result);
-          },
-          fail: errorCallback
-        });
+      plus.io.getVideoInfo({
+        filePath: tempFilePath,
+        success (videoInfo) {
+          const result = {
+            errMsg: 'chooseVideo:ok',
+            tempFilePath: tempFilePath
+          };
+          result.size = videoInfo.size;
+          result.duration = videoInfo.duration;
+          result.width = videoInfo.width;
+          result.height = videoInfo.height;
+          invoke$1(callbackId, result);
+        },
+        fail: errorCallback
       });
     }
 
@@ -6852,7 +7093,8 @@ var serviceContext = (function () {
         multiple: true,
         maximum: 1,
         filename: TEMP_PATH + '/gallery/',
-        permissionAlert: true
+        permissionAlert: true,
+        videoCompress: compressed
       });
     }
 
@@ -6861,7 +7103,8 @@ var serviceContext = (function () {
       plusCamera.startVideoCapture(successCallback, errorCallback, {
         index: camera === 'front' ? 2 : 1,
         videoMaximumDuration: maxDuration,
-        filename: TEMP_PATH + '/camera/'
+        filename: TEMP_PATH + '/camera/',
+        videoCompress: compressed
       });
     }
 
@@ -6931,7 +7174,7 @@ var serviceContext = (function () {
       orientation: data.orientation,
       type: data.type,
       duration: data.duration,
-      size: data.size,
+      size: data.size / 1024,
       height: data.height,
       width: data.width,
       fps: data.fps || 30,
@@ -7012,6 +7255,19 @@ var serviceContext = (function () {
     });
     return {
       errMsg: 'previewImage:ok'
+    }
+  }
+
+  function closePreviewImagePlus () {
+    try {
+      plus.nativeUI.closePreviewImage();
+      return {
+        errMsg: 'closePreviewImagePlus:ok'
+      }
+    } catch (error) {
+      return {
+        errMsg: 'closePreviewImagePlus:fail'
+      }
     }
   }
 
@@ -7287,46 +7543,59 @@ var serviceContext = (function () {
       firstIpv4: firstIpv4,
       tls
     };
+    let withArrayBuffer;
     if (method !== 'GET') {
-      options.body = typeof data === 'string' ? data : JSON.stringify(data);
+      if (toString.call(data) === '[object ArrayBuffer]') {
+        withArrayBuffer = true;
+      } else {
+        options.body = typeof data === 'string' ? data : JSON.stringify(data);
+      }
     }
+    const callback = ({
+      ok,
+      status,
+      data,
+      headers,
+      errorMsg
+    }) => {
+      if (aborted) {
+        return
+      }
+      if (abortTimeout) {
+        clearTimeout(abortTimeout);
+      }
+      const statusCode = status;
+      if (statusCode > 0) {
+        publishStateChange$1({
+          requestTaskId,
+          state: 'success',
+          data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
+          statusCode,
+          header: headers,
+          cookies: cookiesParse(headers)
+        });
+      } else {
+        let errMsg = 'abort statusCode:' + statusCode;
+        if (errorMsg) {
+          errMsg = errMsg + ' ' + errorMsg;
+        }
+        publishStateChange$1({
+          requestTaskId,
+          state: 'fail',
+          statusCode,
+          errMsg
+        });
+      }
+    };
     try {
-      stream.fetch(options, ({
-        ok,
-        status,
-        data,
-        headers,
-        errorMsg
-      }) => {
-        if (aborted) {
-          return
-        }
-        if (abortTimeout) {
-          clearTimeout(abortTimeout);
-        }
-        const statusCode = status;
-        if (statusCode > 0) {
-          publishStateChange$1({
-            requestTaskId,
-            state: 'success',
-            data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
-            statusCode,
-            header: headers,
-            cookies: cookiesParse(headers)
-          });
-        } else {
-          let errMsg = 'abort statusCode:' + statusCode;
-          if (errorMsg) {
-            errMsg = errMsg + ' ' + errorMsg;
-          }
-          publishStateChange$1({
-            requestTaskId,
-            state: 'fail',
-            statusCode,
-            errMsg
-          });
-        }
-      });
+      if (withArrayBuffer) {
+        stream.fetchWithArrayBuffer({
+          '@type': 'binary',
+          base64: arrayBufferToBase64$2(data)
+        }, options, callback);
+      } else {
+        stream.fetch(options, callback);
+      }
       requestTasks[requestTaskId] = {
         abort () {
           aborted = true;
@@ -7371,6 +7640,26 @@ var serviceContext = (function () {
     return {
       errMsg: 'operateRequestTask:fail'
     }
+  }
+
+  function configMTLS$1 ({ certificates }, callbackId) {
+    const stream = requireNativePlugin('stream');
+    stream.configMTLS(certificates, ({ type, code, message }) => {
+      switch (type) {
+        case 'success':
+          invoke$1(callbackId, {
+            errMsg: 'configMTLS:ok',
+            code
+          });
+          break
+        case 'fail':
+          invoke$1(callbackId, {
+            errMsg: 'configMTLS:fail ' + message,
+            code
+          });
+          break
+      }
+    });
   }
 
   const socketTasks = {};
@@ -7665,6 +7954,8 @@ var serviceContext = (function () {
     }
   }
 
+  let univerifyManager;
+
   function getService (provider) {
     return new Promise((resolve, reject) => {
       plus.oauth.getServices(services => {
@@ -7677,20 +7968,21 @@ var serviceContext = (function () {
   /**
    * 微信登录
    */
-  function login (params, callbackId) {
+  function login (params, callbackId, plus = true) {
     const provider = params.provider || 'weixin';
-    const errorCallback = warpPlusErrorCallback(callbackId, 'login');
+    const errorCallback = warpErrorCallback(callbackId, 'login', plus);
     const authOptions = provider === 'apple'
       ? { scope: 'email' }
       : params.univerifyStyle
         ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
         : {};
+    const _invoke = plus ? invoke$1 : callback.invoke;
 
     getService(provider).then(service => {
       function login () {
         if (params.onlyAuthorize && provider === 'weixin') {
           service.authorize(({ code }) => {
-            invoke$1(callbackId, {
+            _invoke(callbackId, {
               code,
               authResult: '',
               errMsg: 'login:ok'
@@ -7700,7 +7992,7 @@ var serviceContext = (function () {
         }
         service.login(res => {
           const authResult = res.target.authResult;
-          invoke$1(callbackId, {
+          _invoke(callbackId, {
             code: authResult.code,
             authResult: authResult,
             errMsg: 'login:ok'
@@ -7795,9 +8087,9 @@ var serviceContext = (function () {
     }
   }
 
-  function preLogin$1 (params, callbackId) {
-    const successCallback = warpPlusSuccessCallback(callbackId, 'preLogin');
-    const errorCallback = warpPlusErrorCallback(callbackId, 'preLogin');
+  function preLogin$1 (params, callbackId, plus) {
+    const successCallback = warpSuccessCallback(callbackId, 'preLogin', plus);
+    const errorCallback = warpErrorCallback(callbackId, 'preLogin', plus);
     getService(params.provider).then(service => service.preLogin(successCallback, errorCallback)).catch(errorCallback);
   }
 
@@ -7805,9 +8097,9 @@ var serviceContext = (function () {
     return getService('univerify').then(service => service.closeAuthView())
   }
 
-  function getCheckBoxState (params, callbackId) {
-    const successCallback = warpPlusSuccessCallback(callbackId, 'getCheckBoxState');
-    const errorCallback = warpPlusErrorCallback(callbackId, 'getCheckBoxState');
+  function getCheckBoxState (params, callbackId, plus) {
+    const successCallback = warpSuccessCallback(callbackId, 'getCheckBoxState', plus);
+    const errorCallback = warpErrorCallback(callbackId, 'getCheckBoxState', plus);
     try {
       getService('univerify').then(service => {
         const state = service.getCheckBoxState();
@@ -7822,24 +8114,94 @@ var serviceContext = (function () {
    * 一键登录自定义登陆按钮点击处理
    */
   function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
-    if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
-      Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
-      univerifyStyle.buttons.list.length > 0
-    ) {
+    if (isPlainObject(univerifyStyle) && isPlainObject(univerifyStyle.buttons) && toRawType(univerifyStyle.buttons.list) === 'Array') {
       univerifyStyle.buttons.list.forEach((button, index) => {
         univerifyStyle.buttons.list[index].onclick = function () {
-          closeAuthView().then(() => {
-            errorCallback({
-              code: '30008',
-              message: '用户点击了自定义按钮',
-              index,
-              provider: button.provider
+          const res = {
+            code: '30008',
+            message: '用户点击了自定义按钮',
+            index,
+            provider: button.provider
+          };
+          isPlainObject(univerifyManager)
+            ? univerifyManager._triggerUniverifyButtonsClick(res)
+            : closeAuthView().then(() => {
+              errorCallback(res);
             });
-          });
         };
       });
     }
     return univerifyStyle
+  }
+
+  class UniverifyManager {
+    constructor () {
+      this.provider = 'univerify';
+      this.eventName = 'api.univerifyButtonsClick';
+    }
+
+    close () {
+      closeAuthView();
+    }
+
+    login (options) {
+      this._warp((data, callbackId) => login(data, callbackId, false), options);
+    }
+
+    getCheckBoxState (options) {
+      this._warp((_, callbackId) => getCheckBoxState(_, callbackId, false), options);
+    }
+
+    preLogin (options) {
+      this._warp((data, callbackId) => preLogin$1(data, callbackId, false), options);
+    }
+
+    onButtonsClick (callback) {
+      UniServiceJSBridge.on(this.eventName, callback);
+    }
+
+    offButtonsClick (callback) {
+      UniServiceJSBridge.off(this.eventName, callback);
+    }
+
+    _triggerUniverifyButtonsClick (res) {
+      UniServiceJSBridge.emit(this.eventName, res);
+    }
+
+    _warp (fn, options) {
+      return callback.warp(fn)(this._getOptions(options))
+    }
+
+    _getOptions (options = {}) {
+      return Object.assign({}, options, { provider: this.provider })
+    }
+  }
+
+  function getUniverifyManager () {
+    return univerifyManager || (univerifyManager = new UniverifyManager())
+  }
+
+  function warpSuccessCallback (callbackId, name, plus = true) {
+    return plus
+      ? warpPlusSuccessCallback(callbackId, name)
+      : (options) => {
+        callback.invoke(callbackId, Object.assign({}, options, {
+          errMsg: `${name}:ok`
+        }));
+      }
+  }
+
+  function warpErrorCallback (callbackId, name, plus = true) {
+    return plus
+      ? warpPlusErrorCallback(callbackId, name)
+      : (error) => {
+        const { code = 0, message: errorMessage } = error;
+        callback.invoke(callbackId, {
+          errMsg: `${name}:fail ${errorMessage || ''}`,
+          errCode: code,
+          code
+        });
+      }
   }
 
   function requestPayment (params, callbackId) {
@@ -8240,6 +8602,10 @@ var serviceContext = (function () {
     });
   });
 
+  function onHostEventReceive (callbackId) {
+    callbacks$3.push(callbackId);
+  }
+
   function onNativeEventReceive (callbackId) {
     callbacks$3.push(callbackId);
   }
@@ -8368,6 +8734,25 @@ var serviceContext = (function () {
     });
   }
 
+  const sendHostEvent = sendNativeEvent;
+
+  function navigateToMiniProgram (data, callbackId) {
+    sendHostEvent(
+      'navigateToUniMP',
+      data,
+      (res) => {
+        if (res.errMsg && res.errMsg.indexOf(':ok') === -1) {
+          return invoke$1(callbackId, {
+            errMsg: res.errMsg
+          })
+        }
+        invoke$1(callbackId, {
+          errMsg: 'navigateToMiniProgram:ok'
+        });
+      }
+    );
+  }
+
   const VD_SYNC_VERSION = 2;
 
   const PAGE_CREATE = 2;
@@ -8386,7 +8771,6 @@ var serviceContext = (function () {
   const WEBVIEW_INSERTED = 'webviewInserted';
   const WEBVIEW_REMOVED = 'webviewRemoved';
   const WEBVIEW_ID_PREFIX = 'webviewId';
-  const SET_LOCALE = 'i18n.setLocale';
 
   function createButtonOnClick (index) {
     return function onClick (btn) {
@@ -8413,20 +8797,18 @@ var serviceContext = (function () {
     return titleNView
   }
 
-  function parseTitleNView (routeOptions) {
+  function parseTitleNView (id, routeOptions) {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
-    routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
-    if ( // 无头
+    routeOptions.meta.statusBarStyle =
+      windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
+    if (
+      // 无头
       titleNView === false ||
       titleNView === 'false' ||
-      (
-        windowOptions.navigationStyle === 'custom' &&
-        !isPlainObject(titleNView)
-      ) || (
-        windowOptions.transparentTitle === 'always' &&
-        !isPlainObject(titleNView)
-      )
+      (windowOptions.navigationStyle === 'custom' &&
+        !isPlainObject(titleNView)) ||
+      (windowOptions.transparentTitle === 'always' && !isPlainObject(titleNView))
     ) {
       return false
     }
@@ -8439,30 +8821,76 @@ var serviceContext = (function () {
       always: 'float'
     };
 
-    const navigationBarBackgroundColor = windowOptions.navigationBarBackgroundColor;
+    const navigationBarBackgroundColor =
+      windowOptions.navigationBarBackgroundColor;
     const ret = {
       autoBackButton: !routeOptions.meta.isQuit,
-      titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
-      titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
+      titleText:
+        titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
+      titleColor:
+        windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
       type: titleNViewTypeList[transparentTitle],
-      backgroundColor: (/^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) || navigationBarBackgroundColor === 'transparent') ? navigationBarBackgroundColor : '#f7f7f7',
-      tags: titleImage === '' ? [] : [{
-        tag: 'img',
-        src: titleImage,
-        position: {
-          left: 'auto',
-          top: 'auto',
-          width: 'auto',
-          height: '26px'
-        }
-      }]
+      backgroundColor:
+        /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
+        navigationBarBackgroundColor === 'transparent'
+          ? navigationBarBackgroundColor
+          : '#f7f7f7',
+      tags:
+        titleImage === ''
+          ? []
+          : [
+            {
+              tag: 'img',
+              src: titleImage,
+              position: {
+                left: 'auto',
+                top: 'auto',
+                width: 'auto',
+                height: '26px'
+              }
+            }
+          ]
     };
 
     if (isPlainObject(titleNView)) {
-      return Object.assign(ret, parseTitleNViewButtons(titleNView))
+      return initTitleNViewI18n(
+        id,
+        Object.assign(ret, parseTitleNViewButtons(titleNView))
+      )
     }
+    return initTitleNViewI18n(id, ret)
+  }
 
-    return ret
+  function initTitleNViewI18n (id, titleNView) {
+    const i18nResult = initNavigationBarI18n(titleNView);
+    if (!i18nResult) {
+      return titleNView
+    }
+    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    if (titleTextI18n || searchInputPlaceholderI18n) {
+      uni.onLocaleChange(() => {
+        const webview = plus.webview.getWebviewById(id + '');
+        if (!webview) {
+          return
+        }
+        const newTitleNView = {};
+        if (titleTextI18n) {
+          newTitleNView.titleText = titleNView.titleText;
+        }
+        if (searchInputPlaceholderI18n) {
+          newTitleNView.searchInput = {
+            placeholder: titleNView.searchInput.placeholder
+          };
+        }
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('[uni-app] updateWebview', webview.id, newTitleNView);
+        }
+        webview.setStyle({
+          titleNView: newTitleNView
+        });
+      });
+    }
+    return titleNView
   }
 
   function parsePullToRefresh (routeOptions) {
@@ -8553,10 +8981,12 @@ var serviceContext = (function () {
     };
 
     // 合并
-    routeOptions.window = parseStyleUnit(Object.assign(
-      JSON.parse(JSON.stringify(__uniConfig.window || {})),
-      routeOptions.window || {}
-    ));
+    routeOptions.window = parseStyleUnit(
+      Object.assign(
+        JSON.parse(JSON.stringify(__uniConfig.window || {})),
+        routeOptions.window || {}
+      )
+    );
 
     Object.keys(routeOptions.window).forEach(name => {
       if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
@@ -8565,7 +8995,10 @@ var serviceContext = (function () {
     });
 
     const backgroundColor = routeOptions.window.backgroundColor;
-    if (/^#[a-z0-9]{6}$/i.test(backgroundColor) || backgroundColor === 'transparent') {
+    if (
+      /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
+      backgroundColor === 'transparent'
+    ) {
       if (!webviewStyle.background) {
         webviewStyle.background = backgroundColor;
       }
@@ -8574,7 +9007,7 @@ var serviceContext = (function () {
       }
     }
 
-    const titleNView = parseTitleNView(routeOptions);
+    const titleNView = parseTitleNView(id, routeOptions);
     if (titleNView) {
       if (
         id === 1 &&
@@ -8599,7 +9032,8 @@ var serviceContext = (function () {
       delete webviewStyle.popGesture;
     }
 
-    if (routeOptions.meta.isQuit) { // 退出
+    if (routeOptions.meta.isQuit) {
+      // 退出
       webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
     }
 
@@ -8831,14 +9265,46 @@ var serviceContext = (function () {
         const pages = getCurrentPages();
         const page = pages[pages.length - 1];
         page && page.$remove();
-
         setStatusBarStyle();
-
-        UniServiceJSBridge.emit('onAppRoute', {
-          type: 'navigateBack'
-        });
+        if (page && isDirectPage(page)) {
+          reLaunchEntryPage();
+        } else {
+          UniServiceJSBridge.emit('onAppRoute', {
+            type: 'navigateBack'
+          });
+        }
       }
     });
+  }
+
+  /**
+   * 是否处于直达页面
+   * @param page
+   * @returns
+   */
+  function isDirectPage (page) {
+    return (
+      __uniConfig.realEntryPagePath &&
+      page.$page.route === __uniConfig.entryPagePath
+    )
+  }
+  /**
+   * 重新启动到首页
+   */
+  function reLaunchEntryPage () {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+      url: addLeadingSlash(__uniConfig.entryPagePath)
+    });
+  }
+
+  function hasLeadingSlash (str) {
+    return str.indexOf('/') === 0
+  }
+
+  function addLeadingSlash (str) {
+    return hasLeadingSlash(str) ? str : '/' + str
   }
 
   let preloadWebview;
@@ -9342,6 +9808,80 @@ var serviceContext = (function () {
     return pageVm
   }
 
+  const extend = Object.assign;
+
+  function createLaunchOptions () {
+    return {
+      path: '',
+      query: {},
+      scene: 1001,
+      referrerInfo: {
+        appId: '',
+        extraData: {}
+      }
+    }
+  }
+
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+
+  function getEnterOptions () {
+    return enterOptions
+  }
+
+  function initEnterOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(enterOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+  }
+
+  function initLaunchOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(launchOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+    extend(enterOptions, launchOptions);
+    return launchOptions
+  }
+
+  function parseRedirectInfo () {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        extraData,
+        userAction,
+        fromAppid
+      } =
+      weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+        appId: fromAppid,
+        extraData: {}
+      };
+      if (extraData) {
+        referrerInfo.extraData = extraData;
+      }
+      return {
+        path: path || '',
+        query: query ? '?' + query : '',
+        referrerInfo,
+        userAction
+      }
+    }
+  }
+
   let isInitEntryPage = false;
 
   function initEntryPage () {
@@ -9356,9 +9896,16 @@ var serviceContext = (function () {
     const weexPlus = weex.requireModule('plus');
 
     if (weexPlus.getRedirectInfo) {
-      const info = weexPlus.getRedirectInfo() || {};
-      entryPagePath = info.path;
-      entryPageQuery = info.query ? ('?' + info.query) : '';
+      const {
+        path,
+        query,
+        referrerInfo
+      } = parseRedirectInfo();
+      if (path) {
+        entryPagePath = path;
+        entryPageQuery = query;
+      }
+      __uniConfig.referrerInfo = referrerInfo;
     } else {
       const argsJsonStr = plus.runtime.arguments;
       if (!argsJsonStr) {
@@ -10366,24 +10913,34 @@ var serviceContext = (function () {
     cancelText,
     cancelColor,
     confirmText,
-    confirmColor
+    confirmColor,
+    editable = false,
+    placeholderText	= ''
   } = {}, callbackId) {
+    const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
+    const tip = editable ? placeholderText : buttons;
+
     content = content || ' ';
-    plus.nativeUI.confirm(content, (e) => {
+    plus.nativeUI[editable ? 'prompt' : 'confirm'](content, (e) => {
       if (showCancel) {
-        invoke$1(callbackId, {
+        const isConfirm = e.index === 1;
+        const res = {
           errMsg: 'showModal:ok',
-          confirm: e.index === 1,
+          confirm: isConfirm,
           cancel: e.index === 0 || e.index === -1
-        });
+        };
+        isConfirm && editable && (res.content = e.value);
+        invoke$1(callbackId, res);
       } else {
-        invoke$1(callbackId, {
+        const res = {
           errMsg: 'showModal:ok',
           confirm: e.index === 0,
           cancel: false
-        });
+        };
+        editable && (res.content = e.value);
+        invoke$1(callbackId, res);
       }
-    }, title, showCancel ? [cancelText, confirmText] : [confirmText]);
+    }, title, tip, buttons);
   }
   function showActionSheet$1 ({
     itemList = [],
@@ -10477,9 +11034,10 @@ var serviceContext = (function () {
     text,
     iconPath,
     selectedIconPath,
-    pagePath
+    pagePath,
+    visible
   }) {
-    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
+    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
       const meta = route.meta;
@@ -10791,9 +11349,7 @@ var serviceContext = (function () {
         this._dispatchEvent('adClicked', {});
       });
 
-      if (this._preload) {
-        this._loadAd();
-      }
+      this._loadAd();
     }
 
     get isExpired () {
@@ -11050,8 +11606,8 @@ var serviceContext = (function () {
     if (!sdkCache[provider]) {
       sdkCache[provider] = {};
     }
-    if (typeof sdkCache[provider].plugin === 'object') {
-      options.success(sdkCache[provider].plugin);
+    if (typeof sdkCache[provider].instance === 'object') {
+      options.success(sdkCache[provider].instance);
       return
     }
 
@@ -11060,14 +11616,14 @@ var serviceContext = (function () {
     }
     sdkQueue[provider].push(options);
 
-    if (sdkCache[provider].status === true) {
+    if (sdkCache[provider].loading === true) {
       options.__plugin = sdkCache[provider].plugin;
       return
     }
-    sdkCache[provider].status = true;
-
-    const plugin = requireNativePlugin(provider);
-    if (!plugin || !plugin.initSDK) {
+    sdkCache[provider].loading = true;
+    const plugin = requireNativePlugin(provider) || {};
+    const initFunction = plugin.init || plugin.initSDK;
+    if (!initFunction) {
       sdkQueue[provider].forEach((item) => {
         item.fail({
           code: -1,
@@ -11075,19 +11631,18 @@ var serviceContext = (function () {
         });
       });
       sdkQueue[provider].length = 0;
-      sdkCache[provider].status = false;
+      sdkCache[provider].loading = false;
       return
     }
-
-    // TODO
     sdkCache[provider].plugin = plugin;
     options.__plugin = plugin;
-    plugin.initSDK((res) => {
-      const isSuccess = (res.code === 1 || res.code === '1');
+    initFunction((res) => {
+      const code = res.code;
+      const isSuccess = (provider === 'BXM-AD') ? (code === 0 || code === 1) : (code === 0);
       if (isSuccess) {
-        sdkCache[provider].plugin = plugin;
+        sdkCache[provider].instance = plugin;
       } else {
-        sdkCache[provider].status = false;
+        sdkCache[provider].loading = false;
       }
 
       sdkQueue[provider].forEach((item) => {
@@ -11116,7 +11671,7 @@ var serviceContext = (function () {
       this._adError = '';
       this._adpid = options.adpid;
       this._provider = options.provider;
-      this._userData = options.userData;
+      this._userData = options.userData || {};
       this._isLoaded = false;
       this._isLoading = false;
       this._loadPromiseResolve = null;
@@ -11204,7 +11759,7 @@ var serviceContext = (function () {
     }
 
     bindUserData (data) {
-      if (this._ad !== null) {
+      if (this._ad !== null && this._ad.bindUserData) {
         this._ad.bindUserData(data);
       }
     }
@@ -11217,7 +11772,8 @@ var serviceContext = (function () {
         this._isLoading = true;
 
         this._ad.loadData({
-          adpid: this._adpid
+          adpid: this._adpid,
+          ...this._userData
         }, (res) => {
           this._isLoaded = true;
           this._isLoading = false;
@@ -11382,6 +11938,7 @@ var serviceContext = (function () {
     getImageInfo: getImageInfo$1,
     getVideoInfo: getVideoInfo$1,
     previewImagePlus: previewImagePlus,
+    closePreviewImagePlus: closePreviewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -11390,6 +11947,7 @@ var serviceContext = (function () {
     createRequestTaskById: createRequestTaskById,
     createRequestTask: createRequestTask,
     operateRequestTask: operateRequestTask,
+    configMTLS: configMTLS$1,
     createSocketTask: createSocketTask,
     operateSocketTask: operateSocketTask,
     operateUploadTask: operateUploadTask,
@@ -11402,6 +11960,7 @@ var serviceContext = (function () {
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
     getCheckBoxState: getCheckBoxState,
+    getUniverifyManager: getUniverifyManager,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
     unsubscribePush: unsubscribePush,
@@ -11414,9 +11973,12 @@ var serviceContext = (function () {
     restoreGlobal: restoreGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
+    onHostEventReceive: onHostEventReceive,
     onNativeEventReceive: onNativeEventReceive,
     sendNativeEvent: sendNativeEvent,
     loadSubPackage: loadSubPackage$2,
+    sendHostEvent: sendHostEvent,
+    navigateToMiniProgram: navigateToMiniProgram,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
@@ -15243,7 +15805,7 @@ var serviceContext = (function () {
 
   var zstream = ZStream;
 
-  var toString = Object.prototype.toString;
+  var toString$1 = Object.prototype.toString;
 
   /* Public constants ==========================================================*/
   /* ===========================================================================*/
@@ -15407,7 +15969,7 @@ var serviceContext = (function () {
       if (typeof opt.dictionary === 'string') {
         // If we need to compress text, change encoding to utf8.
         dict = strings.string2buf(opt.dictionary);
-      } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
         dict = new Uint8Array(opt.dictionary);
       } else {
         dict = opt.dictionary;
@@ -15465,7 +16027,7 @@ var serviceContext = (function () {
     if (typeof data === 'string') {
       // If we need to compress text, change encoding to utf8.
       strm.input = strings.string2buf(data);
-    } else if (toString.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;
@@ -18017,7 +18579,7 @@ var serviceContext = (function () {
 
   var gzheader = GZheader;
 
-  var toString$1 = Object.prototype.toString;
+  var toString$2 = Object.prototype.toString;
 
   /**
    * class Inflate
@@ -18158,7 +18720,7 @@ var serviceContext = (function () {
       // Convert data if needed
       if (typeof opt.dictionary === 'string') {
         opt.dictionary = strings.string2buf(opt.dictionary);
-      } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
+      } else if (toString$2.call(opt.dictionary) === '[object ArrayBuffer]') {
         opt.dictionary = new Uint8Array(opt.dictionary);
       }
       if (opt.raw) { //In raw mode we need to set the dictionary early
@@ -18216,7 +18778,7 @@ var serviceContext = (function () {
     if (typeof data === 'string') {
       // Only binary strings can be decompressed on practice
       strm.input = strings.binstring2buf(data);
-    } else if (toString$1.call(data) === '[object ArrayBuffer]') {
+    } else if (toString$2.call(data) === '[object ArrayBuffer]') {
       strm.input = new Uint8Array(data);
     } else {
       strm.input = data;
@@ -19378,6 +19940,13 @@ var serviceContext = (function () {
       this.id = id;
       this.pageVm = pageVm;
     }
+
+    on (name, callback) {
+      operateMapPlayer$3(this.id, this.pageVm, 'on', {
+        name,
+        callback
+      });
+    }
   }
 
   MapContext.prototype.$getAppMap = function () {
@@ -19583,6 +20152,9 @@ var serviceContext = (function () {
     },
     {
       name: 'volume'
+    },
+    {
+      name: 'sessionCategory'
     }
   ];
 
@@ -19850,9 +20422,14 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
+  function closePreviewImage (args = {}) {
+    return invokeMethod('closePreviewImagePlus', args)
+  }
+
   var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    previewImage: previewImage$1
+    previewImage: previewImage$1,
+    closePreviewImage: closePreviewImage
   });
 
   const callbacks$8 = {
@@ -20838,10 +21415,49 @@ var serviceContext = (function () {
     loadFontFace: loadFontFace$1
   });
 
+  function getLocale$1 () {
+    // 优先使用 $locale
+    const app = getApp({
+      allowDefault: true
+    });
+    if (app && app.$vm) {
+      return app.$vm.$locale
+    }
+    return i18n.getLocale()
+  }
+
+  function setLocale (locale) {
+    const oldLocale = getApp().$vm.$locale;
+    if (oldLocale !== locale) {
+      getApp().$vm.$locale = locale;
+      {
+        const pages = getCurrentPages();
+        pages.forEach((page) => {
+          UniServiceJSBridge.publishHandler(
+            'setLocale',
+            locale,
+            page.$page.id
+          );
+        });
+        weex.requireModule('plus').setLanguage(locale);
+      }
+      callbacks$a.forEach(callbackId => {
+        invoke$1(callbackId, { locale });
+      });
+      return true
+    }
+    return false
+  }
+  const callbacks$a = [];
+  function onLocaleChange (callbackId) {
+    callbacks$a.push(callbackId);
+  }
+
   var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    getLocale: getLocale,
-    setLocale: setLocale
+    getLocale: getLocale$1,
+    setLocale: setLocale,
+    onLocaleChange: onLocaleChange
   });
 
   function pageScrollTo$1 (args) {
@@ -20890,16 +21506,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$a = [];
+  const callbacks$b = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$a.forEach(callbackId => {
+    callbacks$b.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
   var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
@@ -20910,20 +21526,20 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$b = [];
+  const callbacks$c = [];
   onMethod('onViewDidResize', res => {
-    callbacks$b.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
+    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
@@ -21122,18 +21738,12 @@ var serviceContext = (function () {
       callCurrentPageHook('onHide');
     }
 
-    function onAppEnterForeground () {
+    function onAppEnterForeground (enterOptions) {
+      callAppHook(getApp(), 'onShow', enterOptions);
       const pages = getCurrentPages();
       if (pages.length === 0) {
         return
       }
-      const page = pages[pages.length - 1];
-      const args = {
-        path: page.route,
-        query: page.options
-      };
-
-      callAppHook(getApp(), 'onShow', args);
       callCurrentPageHook('onShow');
     }
 
@@ -21410,14 +22020,6 @@ var serviceContext = (function () {
 
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
-
-    i18n.i18n.watchLocale(locale => {
-      const pages = getCurrentPages();
-      pages.forEach(page => {
-        publishHandler(SET_LOCALE, locale, page.$page.id);
-      });
-      weex.requireModule('plus').setLanguage(locale);
-    });
   }
 
   let appCtx;
@@ -21461,7 +22063,11 @@ var serviceContext = (function () {
     });
 
     plus.globalEvent.addEventListener('resume', () => {
-      emit('onAppEnterForeground');
+      const info = parseRedirectInfo();
+      if (info && info.userAction) {
+        initEnterOptions(info);
+      }
+      emit('onAppEnterForeground', getEnterOptions());
     });
 
     plus.globalEvent.addEventListener('netchange', () => {
@@ -21518,14 +22124,20 @@ var serviceContext = (function () {
   }
 
   function initAppLaunch (appVm) {
-    const args = {
+    const args = initLaunchOptions({
       path: __uniConfig.entryPagePath,
-      query: {},
-      scene: 1001
-    };
+      query: __uniConfig.entryPageQuery,
+      referrerInfo: __uniConfig.referrerInfo
+    });
 
     callAppHook(appVm, 'onLaunch', args);
     callAppHook(appVm, 'onShow', args);
+    // https://tower.im/teams/226535/todos/16905/
+    const getAppState = weex.requireModule('plus').getAppState;
+    const appState = getAppState && Number(getAppState());
+    if (appState === 2) {
+      callAppHook(appVm, 'onHide', args);
+    }
   }
 
   function initTabBar () {
@@ -21586,12 +22198,13 @@ var serviceContext = (function () {
     });
   }
 
-  function registerApp (appVm) {
+  function registerApp (appVm, Vue) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] registerApp');
     }
     appCtx = appVm;
     appCtx.$vm = appVm;
+    initAppLocale(Vue, appVm);
 
     Object.assign(appCtx, defaultApp); // 拷贝默认实现
 
@@ -22532,12 +23145,12 @@ var serviceContext = (function () {
                 console.log('[uni-app] launchApp');
               }
               plus.updateConfigInfo && plus.updateConfigInfo();
-              registerApp(this);
+              registerApp(this, Vue);
               oldMount.call(this, el, hydrating);
             });
             return
           }
-          registerApp(this);
+          registerApp(this, Vue);
         }
         return oldMount.call(this, el, hydrating)
       };
@@ -22576,7 +23189,8 @@ var serviceContext = (function () {
     __registerPage: registerPage,
     uni: uni$1,
     getApp: getApp$1,
-    getCurrentPages: getCurrentPages$1
+    getCurrentPages: getCurrentPages$1,
+    EventChannel
   };
 
   return index$1;

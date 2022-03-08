@@ -1,3 +1,5 @@
+const uniI18n = require('@dcloudio/uni-cli-i18n')
+
 const hyphenateRE = /\B([A-Z])/g
 
 function cached (fn) {
@@ -63,7 +65,7 @@ module.exports = function ({
         const value = prop.value.name
         const source = findSource(value, path.scope.bindings)
         if (!source) {
-          throw new Error(`组件 ${key} 引用错误`)
+          throw new Error(uniI18n.__('mpLoader.componentReferenceError', { 0: key }))
         }
         if (process.UNI_LIBRARIES.includes(source)) {
           const componentName = hyphenate(key)
