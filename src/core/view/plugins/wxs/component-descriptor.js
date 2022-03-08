@@ -44,7 +44,11 @@ function parseStyleText (cssText) {
 class ComponentDescriptor {
   constructor (vm) {
     this.$vm = vm
-    this.$el = vm.$el
+    Object.defineProperty(this, '$el', {
+      get () {
+        return vm.$el
+      }
+    })
   }
 
   selectComponent (selector) {
