@@ -69,6 +69,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: 'project.config.json',
+    config: ['project.qq.json', 'project.config.json'],
     source,
   },
   template: {

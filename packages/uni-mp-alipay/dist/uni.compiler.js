@@ -13,9 +13,11 @@ var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 var component2 = true;
 var enableAppxNg = true;
+var enableNodeModuleBabelTransform = true;
 var source = {
 	component2: component2,
-	enableAppxNg: enableAppxNg
+	enableAppxNg: enableAppxNg,
+	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform
 };
 
 function transformRef(node, context) {
@@ -222,6 +224,7 @@ const options = {
     },
     project: {
         filename: projectConfigFilename,
+        config: ['mini.project.json', 'project.my.json'],
         source,
     },
     template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {

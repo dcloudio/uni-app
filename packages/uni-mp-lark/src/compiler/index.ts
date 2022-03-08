@@ -25,4 +25,5 @@ options.template.slot.fallbackContent = false
 // 飞书不支持：
 // <view tt:for="{{items}}" tt:for-item="item" tt:key="id" slot="{{item.slot}}">{{item.text}}</view>
 options.template.slot.dynamicSlotNames = false
+options.project!.config = ['project.lark.json']
 export default [uniMiniProgramToutiaoPlugin, ...initMiniProgramPlugin(options)]

@@ -175,6 +175,7 @@ const options = {
     },
     project: {
         filename: projectConfigFilename,
+        config: ['project.ks.json'],
         source,
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: undefined, extname: '.ksml', compilerOptions }),

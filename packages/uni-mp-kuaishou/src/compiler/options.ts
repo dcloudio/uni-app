@@ -60,6 +60,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: projectConfigFilename,
+    config: ['project.ks.json'],
     source,
   },
   template: {

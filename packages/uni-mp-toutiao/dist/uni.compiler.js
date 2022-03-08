@@ -107,6 +107,7 @@ const options = {
     },
     project: {
         filename: projectConfigFilename,
+        config: ['project.tt.json'],
         source,
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: {
