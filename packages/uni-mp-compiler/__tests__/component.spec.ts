@@ -100,8 +100,8 @@ describe('compiler: transform component', () => {
   })
   test(`component with props`, () => {
     assert(
-      `<uni-collapse id="id" ref="a" :ref="b" slot="c" :slot="d" class="e" :class="f" style="g" :style="h" @click="i" v-model:first="j" v-model:last="k" prop-a="l" :prop-b="m" data-a="n" :data-b="o" key="p" :key="r" is="s" :is="t"/>`,
-      `<uni-collapse id="id" ref="a" ref="{{a}}" slot="c" slot="{{b}}" class="{{['e', c]}}" style="{{'g' + ';' + d}}" bindclick="{{e}}" data-a="n" data-b="{{f}}" key="p" key="{{g}}" is="s" is="{{h}}" u-i="2a9ec0b0-0" bindupdateFirst="{{i}}" bindupdateLast="{{j}}" u-p="{{k}}"/>`,
+      `<uni-collapse id="id" ref="a" :ref="b" slot="c" :slot="d" class="e" :class="f" style="g:g;" :style="h" @click="i" v-model:first="j" v-model:last="k" prop-a="l" :prop-b="m" data-a="n" :data-b="o" key="p" :key="r" is="s" :is="t"/>`,
+      `<uni-collapse id="id" ref="a" ref="{{a}}" slot="c" slot="{{b}}" class="{{['e', c]}}" style="{{'g:g' + ';' + d}}" bindclick="{{e}}" data-a="n" data-b="{{f}}" key="p" key="{{g}}" is="s" is="{{h}}" u-i="2a9ec0b0-0" bindupdateFirst="{{i}}" bindupdateLast="{{j}}" u-p="{{k}}"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.b, b: _ctx.d, c: _n(_ctx.f), d: _s(_ctx.h), e: _o(_ctx.i), f: _ctx.o, g: _ctx.r, h: _ctx.t, i: _o($event => _ctx.j = $event), j: _o($event => _ctx.k = $event), k: _p({ ['prop-a']: 'l', ['prop-b']: _ctx.m, first: _ctx.j, last: _ctx.k }) }
 }`
