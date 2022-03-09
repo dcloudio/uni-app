@@ -32,15 +32,14 @@ function removeNonTabBarPages() {
   }
 }
 
+/**
+ * 判断 url 和 page 是否为同一个页面
+ * @param url 目标页
+ * @param $page 页面栈中的某个页面
+ * @returns boolean
+ */
 function isSamePage(url: string, $page: Page.PageInstance['$page']) {
-  if (url === $page.path) {
-    return true
-  }
-  // 首页
-  if (url === '/' && $page.meta.isEntry) {
-    return true
-  }
-  return false
+  return url === $page.fullPath
 }
 
 function getTabBarPageId(url: string) {
