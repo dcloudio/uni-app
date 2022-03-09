@@ -11,8 +11,12 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPreVuePlugin(): Plugin {
+  let isNVue = false
   return {
     name: 'uni:pre-vue',
+    config(config) {
+      isNVue = (config as any).nvue
+    },
     async transform(code, id) {
       const { filename, query } = parseVueRequest(id)
       if (query.vue) {
@@ -26,7 +30,7 @@ export function uniPreVuePlugin(): Plugin {
         removeExt(normalizeMiniProgramFilename(id, process.env.UNI_INPUT_DIR))
       )
       return {
-        code: parseVueCode(code).code, // 暂不提供sourcemap,意义不大
+        code: parseVueCode(code, isNVue).code, // 暂不提供sourcemap,意义不大
         map: null,
       }
     },
