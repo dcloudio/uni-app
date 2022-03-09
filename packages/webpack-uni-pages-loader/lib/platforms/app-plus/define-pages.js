@@ -26,6 +26,9 @@ if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
     )
   }
 }
+if(uni.base64ToArrayBuffer){
+  ArrayBuffer = uni.base64ToArrayBuffer('').constructor
+}
 ${generateUniConfig(appJson, isAppView)}
 if(uni.restoreGlobal){
   uni.restoreGlobal(weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)

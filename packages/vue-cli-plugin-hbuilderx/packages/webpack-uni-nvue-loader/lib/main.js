@@ -73,6 +73,7 @@ module.exports = function (content, map) {
             })
           }
         }
+        ArrayBuffer = uni.base64ToArrayBuffer('').constructor
         App.mpType = 'page'
         App.route = '${params.page}'
         App.el = '#root'
