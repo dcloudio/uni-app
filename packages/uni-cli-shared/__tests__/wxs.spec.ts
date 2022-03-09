@@ -1,8 +1,5 @@
-import { parseVue } from '@dcloudio/uni-cli-shared'
-import {
-  parseWxsCode,
-  parseWxsNodes,
-} from '../src/configResolved/plugins/preVue'
+import { parseVue } from '../src/vite'
+import { parseWxsCode, parseWxsNodes } from '../src/vue'
 
 describe('wxs', () => {
   test('parseWxsCode', () => {

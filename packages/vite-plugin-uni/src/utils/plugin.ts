@@ -20,7 +20,17 @@ interface PluginConfig {
   }
 }
 
-export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
+export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
+  compiler?: TemplateCompiler
+  copyOptions: {
+    assets: string[]
+    targets: UniViteCopyPluginTarget[]
+  }
+  transformEvent: Record<string, string>
+  compilerOptions: Required<Required<UniVitePlugin>['uni']>['compilerOptions']
+  jsxOptions: Required<Required<UniVitePlugin>['uni']>['jsxOptions']
+  styleOptions: Required<Required<UniVitePlugin>['uni']>['styleOptions']
+} {
   const assets: string[] = []
   const targets: UniViteCopyPluginTarget[] = []
   const transformEvent: Record<string, string> = Object.create(null)

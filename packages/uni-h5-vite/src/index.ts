@@ -13,6 +13,7 @@ import { uniInjectPlugin } from './plugins/inject'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
+import { uniPostVuePlugin } from './plugins/postVue'
 import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniSetupPlugin } from './plugins/setup'
@@ -39,4 +40,5 @@ export default [
   uniSetupPlugin(),
   uniRenderjsPlugin(),
   uniH5Plugin(),
+  uniPostVuePlugin(),
 ]

@@ -3,6 +3,7 @@ import debug from 'debug'
 import type { Plugin } from 'vite'
 import { EXTNAME_VUE } from '../../constants'
 import { preHtml, preJs } from '../../preprocess'
+import { parseVueCode } from '../../vue/parse'
 
 const debugScoped = debug('uni:scoped')
 
@@ -74,7 +75,8 @@ export function uniCssScopedPlugin(
         if (scoped) {
           code = addScoped(code)
         }
-        return code
+        // 处理 block, wxs 等
+        return parseVueCode(code).code
       }
     },
   }
