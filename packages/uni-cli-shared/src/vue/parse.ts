@@ -13,7 +13,7 @@ const BLOCK_RE = /<\/block>/
 const WXS_LANG_RE = /lang=["|'](renderjs|wxs)["|']/
 const WXS_ATTRS = ['wxs', 'renderjs']
 
-export function parseVueCode(code: string) {
+export function parseVueCode(code: string, isNVue = false) {
   const hasBlock = BLOCK_RE.test(code)
   const hasWxs = WXS_LANG_RE.test(code)
   if (!hasBlock && !hasWxs) {
@@ -27,7 +27,7 @@ export function parseVueCode(code: string) {
     // 重新解析新的 code
     ast = parseVue(code, errors)
   }
-  if (hasWxs) {
+  if (!isNVue && hasWxs) {
     const wxsNodes = parseWxsNodes(ast)
     code = parseWxsCode(wxsNodes, code)
     // add watch
