@@ -12357,6 +12357,24 @@
     }
     return rawName;
   }
+  var JSON_PROTOCOL_LEN = JSON_PROTOCOL.length;
+  function decodeAttr(el, value) {
+    if (!isString(value)) {
+      return value;
+    }
+    if (value.indexOf(JSON_PROTOCOL) === 0) {
+      value = JSON.parse(value.substr(JSON_PROTOCOL_LEN));
+    } else if (value.indexOf(WXS_PROTOCOL) === 0) {
+      value = invokeWxs(el, value);
+    }
+    return value;
+  }
+  function isCssVar(name) {
+    return name.indexOf("--") === 0;
+  }
+  function isUniComponent(el) {
+    return !!el.addWxsEvent;
+  }
   function removeEventListener(el, type) {
     var listener = el.__listeners[type];
     if (listener) {
@@ -12414,27 +12432,12 @@
   }
   function createWxsEventInvoker(el, wxsEvent, flag) {
     var invoker = (evt) => {
-      invokeWxsEvent(el, wxsEvent, $nne(evt)[0]);
+      invokeWxsEvent(isUniComponent(el) ? el.$ : el, wxsEvent, $nne(evt)[0]);
     };
     if (!flag) {
       return invoker;
     }
     return withModifiers(invoker, resolveModifier(flag));
-  }
-  var JSON_PROTOCOL_LEN = JSON_PROTOCOL.length;
-  function decodeAttr(el, value) {
-    if (!isString(value)) {
-      return value;
-    }
-    if (value.indexOf(JSON_PROTOCOL) === 0) {
-      value = JSON.parse(value.substr(JSON_PROTOCOL_LEN));
-    } else if (value.indexOf(WXS_PROTOCOL) === 0) {
-      value = invokeWxs(el, value);
-    }
-    return value;
-  }
-  function isCssVar(name) {
-    return name.indexOf("--") === 0;
   }
   function patchVShow(el, value) {
     el._vod = el.style.display === "none" ? "" : el.style.display;
@@ -21076,7 +21079,7 @@
       (this.$holder || this.$).textContent = text2;
     }
     addWxsEvent(name, wxsEvent, flag) {
-      this.$props[name] = createWxsEventInvoker(this.$, wxsEvent, flag);
+      this.$props[name] = createWxsEventInvoker(this, wxsEvent, flag);
     }
     addEvent(name, value) {
       this.$props[name] = createInvoker(this.id, value, parseEventName(name)[1]);

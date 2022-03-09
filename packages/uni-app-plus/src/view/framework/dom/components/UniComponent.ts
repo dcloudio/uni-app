@@ -96,7 +96,8 @@ export class UniComponent extends UniNode {
     ;(this.$holder || this.$).textContent = text
   }
   addWxsEvent(name: string, wxsEvent: string, flag: number) {
-    this.$props[name] = createWxsEventInvoker(this.$, wxsEvent, flag)
+    // 此时 $ 还不存在，故传入 this，等事件触发时，再获取 $
+    this.$props[name] = createWxsEventInvoker(this, wxsEvent, flag)
   }
   addEvent(name: string, value: number) {
     this.$props[name] = createInvoker(this.id, value, parseEventName(name)[1])
