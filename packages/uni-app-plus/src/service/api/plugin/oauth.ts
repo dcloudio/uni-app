@@ -49,17 +49,17 @@ export const login = defineAsyncApi<API_TYPE_LOGIN>(
   (params, { resolve, reject }) => {
     const provider = params.provider || 'weixin'
     const errorCallback = warpPlusErrorCallback(reject)
-    const authOptions =
-      provider === 'apple'
-        ? { scope: 'email' }
-        : params.univerifyStyle
-        ? {
-            univerifyStyle: univerifyButtonsClickHandling(
-              params.univerifyStyle,
-              errorCallback
-            ),
-          }
-        : {}
+    const isAppleLogin = provider === 'apple'
+    const authOptions = isAppleLogin
+      ? { scope: 'email' }
+      : params.univerifyStyle
+      ? {
+          univerifyStyle: univerifyButtonsClickHandling(
+            params.univerifyStyle,
+            errorCallback
+          ),
+        }
+      : {}
 
     getService(provider)
       .then((service) => {
@@ -76,9 +76,11 @@ export const login = defineAsyncApi<API_TYPE_LOGIN>(
           service.login(
             (res) => {
               const authResult = res.target.authResult
+              const appleInfo = res.target.appleInfo
               resolve({
                 code: authResult.code,
                 authResult: authResult,
+                appleInfo,
               })
             },
             errorCallback,
@@ -87,7 +89,7 @@ export const login = defineAsyncApi<API_TYPE_LOGIN>(
         }
         // 先注销再登录
         // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
-        if (provider === 'apple' || provider === 'univerify') {
+        if (isAppleLogin || provider === 'univerify') {
           login()
         } else {
           service.logout(login, login)
@@ -261,19 +263,19 @@ class UniverifyManager implements UniApp.UniverifyManager {
   eventName: string = 'api.univerifyButtonsClick'
 
   close() {
-    closeAuthView()
+    return closeAuthView()
   }
 
   login(options: UniApp.UniverifyLoginOptions) {
-    login(this._getOptions(options))
+    return login(this._getOptions(options))
   }
 
   getCheckBoxState(options: UniApp.GetCheckBoxStateOptions) {
-    getCheckBoxState(options)
+    return getCheckBoxState(options)
   }
 
   preLogin(options?: UniApp.CallBackOptions) {
-    preLogin(this._getOptions(options))
+    return preLogin(this._getOptions(options))
   }
 
   onButtonsClick(callback: UniApp.CallbackFunction) {
