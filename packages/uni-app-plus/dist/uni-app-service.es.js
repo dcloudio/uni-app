@@ -16220,15 +16220,56 @@ var serviceContext = (function (vue) {
           return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args);
       }
   }
+  // TODO
+  function publishToView(livePusherId, pageId, type, data) {
+      UniServiceJSBridge.invokeViewMethod('livepusher.' + livePusherId, {
+          livePusherId,
+          type,
+          data,
+      }, pageId);
+  }
+  class LivePusherContextVue {
+      constructor(id, pageId) {
+          this.id = id;
+          this.pageId = pageId;
+      }
+      start() {
+          publishToView(this.id, this.pageId, 'start');
+      }
+      stop() {
+          publishToView(this.id, this.pageId, 'stop');
+      }
+      pause() {
+          publishToView(this.id, this.pageId, 'pause');
+      }
+      resume() {
+          publishToView(this.id, this.pageId, 'resume');
+      }
+      switchCamera() {
+          publishToView(this.id, this.pageId, 'switchCamera');
+      }
+      startPreview() {
+          publishToView(this.id, this.pageId, 'preview');
+      }
+      stopPreview() {
+          publishToView(this.id, this.pageId, 'stop');
+      }
+      snapshot() {
+          publishToView(this.id, this.pageId, 'snapshot');
+      }
+  }
   const createLivePusherContext = defineSyncApi(API_CREATE_LIVE_PUSHER_CONTEXT, (id, vm) => {
-      if (!vm) {
-          return console.warn('uni.createLivePusherContext: 2 arguments required, but only 1 present');
+      if (vm.$page.meta.isNVue) {
+          if (!vm) {
+              return console.warn('uni.createLivePusherContext: 2 arguments required, but only 1 present');
+          }
+          const elm = findElmById(id, vm);
+          if (!elm) {
+              return console.warn('Can not find `' + id + '`');
+          }
+          return new LivePusherContext(id, elm);
       }
-      const elm = findElmById(id, vm);
-      if (!elm) {
-          return console.warn('Can not find `' + id + '`');
-      }
-      return new LivePusherContext(id, elm);
+      return new LivePusherContextVue(id, vm.$page.id);
   }, CreateLivePusherContextProtocol);
 
   const PI = 3.1415926535897932384626;
