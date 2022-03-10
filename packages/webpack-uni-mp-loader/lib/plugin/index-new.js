@@ -85,7 +85,7 @@ function addMPPluginRequire (compilation) {
       const source =
         orignalSource.substring(0, newlineIndex) +
         orignalSource.substring(newlineIndex + 1) +
-          `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n`
+        `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n`
 
       compilation.assets[name] = {
         size () {
