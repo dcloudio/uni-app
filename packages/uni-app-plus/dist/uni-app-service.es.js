@@ -13182,7 +13182,10 @@ var serviceContext = (function (vue) {
   const SahreOptions = {
       formatArgs: {
           scene(value, params) {
-              if (params.provider === 'weixin' && (!value || !SCENE.includes(value))) {
+              const { provider, openCustomerServiceChat } = params;
+              if (provider === 'weixin' &&
+                  !openCustomerServiceChat &&
+                  (!value || !SCENE.includes(value))) {
                   return `分享到微信时，scene必须为以下其中一个：${SCENE.join('、')}`;
               }
           },
@@ -13209,6 +13212,16 @@ var serviceContext = (function (vue) {
           miniProgram(value, params) {
               if (params.type === 5 && !value) {
                   return '分享小程序时，miniProgram必填';
+              }
+          },
+          corpid(value, params) {
+              if (params.openCustomerServiceChat && !value) {
+                  return `使用打开客服功能时 corpid 必填`;
+              }
+          },
+          customerUrl(value, params) {
+              if (params.openCustomerServiceChat && !value) {
+                  return `使用打开客服功能时 customerUrl 必填`;
               }
           },
       },
@@ -17012,7 +17025,8 @@ var serviceContext = (function (vue) {
   const login = defineAsyncApi(API_LOGIN, (params, { resolve, reject }) => {
       const provider = params.provider || 'weixin';
       const errorCallback = warpPlusErrorCallback(reject);
-      const authOptions = provider === 'apple'
+      const isAppleLogin = provider === 'apple';
+      const authOptions = isAppleLogin
           ? { scope: 'email' }
           : params.univerifyStyle
               ? {
@@ -17033,15 +17047,17 @@ var serviceContext = (function (vue) {
               }
               service.login((res) => {
                   const authResult = res.target.authResult;
+                  const appleInfo = res.target.appleInfo;
                   resolve({
                       code: authResult.code,
                       authResult: authResult,
+                      appleInfo,
                   });
               }, errorCallback, authOptions);
           }
           // 先注销再登录
           // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
-          if (provider === 'apple' || provider === 'univerify') {
+          if (isAppleLogin || provider === 'univerify') {
               login();
           }
           else {
@@ -17174,16 +17190,16 @@ var serviceContext = (function (vue) {
           this.eventName = 'api.univerifyButtonsClick';
       }
       close() {
-          closeAuthView();
+          return closeAuthView();
       }
       login(options) {
-          login(this._getOptions(options));
+          return login(this._getOptions(options));
       }
       getCheckBoxState(options) {
-          getCheckBoxState(options);
+          return getCheckBoxState(options);
       }
       preLogin(options) {
-          preLogin(this._getOptions(options));
+          return preLogin(this._getOptions(options));
       }
       onButtonsClick(callback) {
           UniServiceJSBridge.on(this.eventName, callback);
@@ -17236,7 +17252,7 @@ var serviceContext = (function (vue) {
   };
   const parseParams = (args) => {
       args.type = args.type || 0;
-      let { provider, type, title, summary: content, href, imageUrl, mediaUrl: media, scene, miniProgram, } = args;
+      let { provider, type, title, summary: content, href, imageUrl, mediaUrl: media, scene, miniProgram, openCustomerServiceChat, corpid, customerUrl: url, } = args;
       if (typeof imageUrl === 'string' && imageUrl) {
           imageUrl = getRealPath(imageUrl);
       }
@@ -17255,6 +17271,9 @@ var serviceContext = (function (vue) {
               extra: {
                   scene,
               },
+              openCustomerServiceChat,
+              corpid,
+              url,
           };
           if (provider === 'weixin' && (type === 1 || type === 2)) {
               delete sendMsg.thumbs;
@@ -17265,30 +17284,38 @@ var serviceContext = (function (vue) {
   };
   const sendShareMsg = function (service, params, resolve, reject, method = 'share') {
       const errorCallback = warpPlusErrorCallback(reject);
-      service.send(params, () => {
-          resolve();
-      }, errorCallback);
+      const serviceMethod = params.openCustomerServiceChat
+          ? 'openCustomerServiceChat'
+          : 'send';
+      try {
+          // @ts-expect-error openCustomerServiceChat
+          service[serviceMethod](params, () => {
+              resolve();
+          }, errorCallback);
+      }
+      catch (error) {
+          errorCallback({
+              message: `${params.provider} ${serviceMethod} 方法调用失败`,
+          });
+      }
   };
   const share = defineAsyncApi(API_SHREA, (params, { resolve, reject }) => {
-      const res = parseParams(params);
+      const parsedParams = parseParams(params);
       const errorCallback = warpPlusErrorCallback(reject);
-      if (typeof res === 'string') {
-          return reject(res);
-      }
-      else {
-          params = res;
+      if (typeof parsedParams === 'string') {
+          return reject(parsedParams);
       }
       plus.share.getServices((services) => {
-          const service = services.find(({ id }) => id === params.provider);
+          const service = services.find(({ id }) => id === parsedParams.provider);
           if (!service) {
               reject('service not found');
           }
           else {
               if (service.authenticated) {
-                  sendShareMsg(service, params, resolve, reject);
+                  sendShareMsg(service, parsedParams, resolve, reject);
               }
               else {
-                  service.authorize(() => sendShareMsg(service, params, resolve, reject), errorCallback);
+                  service.authorize(() => sendShareMsg(service, parsedParams, resolve, reject), errorCallback);
               }
           }
       }, errorCallback);
