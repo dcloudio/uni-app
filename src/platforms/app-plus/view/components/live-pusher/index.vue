@@ -37,6 +37,10 @@ export default {
   name: 'LivePusher',
   mixins: [subscriber, native],
   props: {
+    id: {
+      type: String,
+      default: ''
+    },
     url: {
       type: String,
       default: ''
