@@ -13290,7 +13290,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$l = {
+  var props$m = {
     canvasId: {
       type: String,
       default: ""
@@ -13310,7 +13310,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$l,
+    props: props$m,
     computed: {
       id() {
         return this.canvasId;
@@ -13792,7 +13792,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$k = {
+  var props$l = {
     name: {
       type: String,
       default: ""
@@ -13800,7 +13800,7 @@
   };
   var CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$k,
+    props: props$l,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -13853,7 +13853,7 @@
     }
     return getFieldsValue;
   }
-  var props$j = {
+  var props$k = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -13877,7 +13877,7 @@
   };
   var Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$j,
+    props: props$k,
     setup(props2, _ref) {
       var {
         slots
@@ -14025,7 +14025,7 @@
       });
     }
   }
-  var props$i = {
+  var props$j = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -14864,7 +14864,7 @@
       }
     }, id2, true);
   }
-  var props$h = /* @__PURE__ */ extend({}, props$i, {
+  var props$i = /* @__PURE__ */ extend({}, props$j, {
     id: {
       type: String,
       default: ""
@@ -14892,7 +14892,7 @@
   });
   var Editor = /* @__PURE__ */ defineBuiltInComponent({
     name: "Editor",
-    props: props$h,
+    props: props$i,
     emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
     setup(props2, _ref) {
       var {
@@ -14980,7 +14980,7 @@
       };
     }
   });
-  var props$g = {
+  var props$h = {
     src: {
       type: String,
       default: ""
@@ -15019,7 +15019,7 @@
   };
   var Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$g,
+    props: props$h,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -15341,7 +15341,7 @@
     }
     return value === null ? "" : String(value);
   }
-  var props$f = /* @__PURE__ */ extend({}, {
+  var props$g = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -15410,7 +15410,7 @@
       type: Boolean,
       default: false
     }
-  }, props$i);
+  }, props$j);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -15625,7 +15625,7 @@
       trigger: trigger2
     };
   }
-  var props$e = /* @__PURE__ */ extend({}, props$f, {
+  var props$f = /* @__PURE__ */ extend({}, props$g, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -15637,7 +15637,7 @@
   });
   var Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$e,
+    props: props$f,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -16113,6 +16113,7 @@
     var y1 = 0;
     var fn = function($event, state, x, y) {
       if (method({
+        cancelable: $event.cancelable,
         target: $event.target,
         currentTarget: $event.currentTarget,
         preventDefault: $event.preventDefault.bind($event),
@@ -17987,13 +17988,15 @@
       if (scroller.onTouchStart) {
         scroller.onTouchStart();
       }
-      event.preventDefault();
+      if (typeof event.cancelable !== "boolean" || event.cancelable)
+        event.preventDefault();
     }
     function handleTouchMove(event) {
       var touchtrackEvent = event;
       var mouseEvent = event;
       if (touchInfo.trackingID !== -1) {
-        event.preventDefault();
+        if (typeof event.cancelable !== "boolean" || event.cancelable)
+          event.preventDefault();
         var delta = findDelta(event);
         if (delta) {
           for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
@@ -18387,7 +18390,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$d = {
+  var props$e = {
     name: {
       type: String,
       default: ""
@@ -18395,7 +18398,7 @@
   };
   var RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$d,
+    props: props$e,
     setup(props2, _ref) {
       var {
         emit: emit2,
@@ -18479,7 +18482,7 @@
     }
     return fields2;
   }
-  var props$c = {
+  var props$d = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -18503,7 +18506,7 @@
   };
   var Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$c,
+    props: props$d,
     setup(props2, _ref) {
       var {
         slots
@@ -18838,7 +18841,7 @@
     });
     return results.children;
   }
-  var props$b = {
+  var props$c = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -18851,7 +18854,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$b,
+    props: props$c,
     emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress"],
     setup(props2, _ref) {
       var {
@@ -18888,7 +18891,7 @@
     }
   });
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$a = {
+  var props$b = {
     scrollX: {
       type: [Boolean, String],
       default: false
@@ -18951,7 +18954,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$a,
+    props: props$b,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
@@ -19378,7 +19381,7 @@
       }
     });
   }
-  var props$9 = {
+  var props$a = {
     name: {
       type: String,
       default: ""
@@ -19434,7 +19437,7 @@
   };
   var Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$9,
+    props: props$a,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -19603,7 +19606,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  var props$8 = {
+  var props$9 = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -20087,7 +20090,7 @@
   }
   var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$8,
+    props: props$9,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -20195,7 +20198,7 @@
       };
     }
   });
-  var props$7 = {
+  var props$8 = {
     itemId: {
       type: String,
       default: ""
@@ -20203,7 +20206,7 @@
   };
   var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$7,
+    props: props$8,
     setup(props2, _ref) {
       var {
         slots
@@ -20253,7 +20256,7 @@
       };
     }
   });
-  var props$6 = {
+  var props$7 = {
     name: {
       type: String,
       default: ""
@@ -20281,7 +20284,7 @@
   };
   var Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$6,
+    props: props$7,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -20386,7 +20389,7 @@
     }
     return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   }
-  var props$5 = /* @__PURE__ */ extend({}, props$f, {
+  var props$6 = /* @__PURE__ */ extend({}, props$g, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -20407,7 +20410,7 @@
   }
   var Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$5,
+    props: props$6,
     emit: ["confirm", "linechange", ...emit],
     setup(props2, _ref) {
       var {
@@ -21397,7 +21400,7 @@
     });
   }
   var TEMP_PATH = "_doc/uniapp_temp/";
-  var props$4 = {
+  var props$5 = {
     src: {
       type: String,
       default: ""
@@ -21469,7 +21472,7 @@
   }
   var CoverImage = /* @__PURE__ */ defineBuiltInComponent({
     name: "CoverImage",
-    props: props$4,
+    props: props$5,
     emits: ["click", "load", "error"],
     setup(props2, _ref2) {
       var {
@@ -21582,9 +21585,113 @@
       super(id2, "uni-live-player", parentNodeId, refNodeId);
     }
   }
-  class UniLivePusher extends UniTodoNode {
-    constructor(id2, parentNodeId, refNodeId) {
-      super(id2, "uni-live-pusher", parentNodeId, refNodeId);
+  var livePusher = "";
+  var props$4 = {
+    id: {
+      type: String,
+      default: ""
+    },
+    url: {
+      type: String,
+      default: ""
+    },
+    mode: {
+      type: String,
+      default: "SD"
+    },
+    muted: {
+      type: [Boolean, String],
+      default: false
+    },
+    enableCamera: {
+      type: [Boolean, String],
+      default: true
+    },
+    autoFocus: {
+      type: [Boolean, String],
+      default: true
+    },
+    beauty: {
+      type: [Number, String],
+      default: 0
+    },
+    whiteness: {
+      type: [Number, String],
+      default: 0
+    },
+    aspect: {
+      type: [String],
+      default: "3:2"
+    },
+    minBitrate: {
+      type: [Number],
+      default: 200
+    }
+  };
+  var emits$1 = ["statechange", "netstatus", "error"];
+  var LivePusher = /* @__PURE__ */ defineBuiltInComponent({
+    name: "LivePusher",
+    props: props$4,
+    emits: emits$1,
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var containerRef = ref(null);
+      var attrs2 = useNativeAttrs(props2, ["id"]);
+      var {
+        position,
+        hidden,
+        onParentReady
+      } = useNative(containerRef);
+      var livePusher2;
+      onParentReady(() => {
+        livePusher2 = new plus.video.LivePusher("livePusher" + Date.now(), Object.assign({}, attrs2.value, position));
+        plus.webview.currentWebview().append(livePusher2);
+        emits$1.forEach((key2) => {
+          livePusher2.addEventListener(key2, (event) => {
+            trigger2(key2, {}, event.detail);
+          });
+        });
+        watch(() => attrs2.value, (attrs3) => livePusher2.setStyles(attrs3), {
+          deep: true
+        });
+        watch(() => position, (position2) => livePusher2.setStyles(position2), {
+          deep: true
+        });
+        watch(() => hidden.value, (val) => {
+          if (!val) {
+            livePusher2.setStyles(position);
+          }
+        });
+      });
+      var id2 = useContextInfo();
+      useSubscribe((type, data) => {
+        if (livePusher2) {
+          livePusher2[type](data);
+        }
+      }, id2, true);
+      onBeforeUnmount(() => {
+        if (livePusher2) {
+          livePusher2.close();
+        }
+      });
+      return () => {
+        return createVNode("uni-live-pusher", {
+          "ref": rootRef,
+          "id": props2.id
+        }, [createVNode("div", {
+          "ref": containerRef,
+          "class": "uni-live-pusher-container"
+        }, null, 512)], 8, ["id"]);
+      };
+    }
+  });
+  class UniLivePusher extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-live-pusher", LivePusher, parentNodeId, refNodeId, nodeJson, ".uni-live-pusher-slot");
     }
   }
   var map = "";
