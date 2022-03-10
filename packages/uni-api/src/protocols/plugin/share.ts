@@ -10,7 +10,12 @@ const SCENE: Parameters<API_TYPE_SHARE>[0]['scene'][] = [
 export const SahreOptions: ApiOptions<API_TYPE_SHARE> = {
   formatArgs: {
     scene(value, params) {
-      if (params.provider === 'weixin' && (!value || !SCENE.includes(value))) {
+      const { provider, openCustomerServiceChat } = params
+      if (
+        provider === 'weixin' &&
+        !openCustomerServiceChat &&
+        (!value || !SCENE.includes(value))
+      ) {
         return `分享到微信时，scene必须为以下其中一个：${SCENE.join('、')}`
       }
     },
@@ -37,6 +42,16 @@ export const SahreOptions: ApiOptions<API_TYPE_SHARE> = {
     miniProgram(value, params) {
       if (params.type === 5 && !value) {
         return '分享小程序时，miniProgram必填'
+      }
+    },
+    corpid(value, params) {
+      if (params.openCustomerServiceChat && !value) {
+        return `使用打开客服功能时 corpid 必填`
+      }
+    },
+    customerUrl(value, params) {
+      if (params.openCustomerServiceChat && !value) {
+        return `使用打开客服功能时 customerUrl 必填`
       }
     },
   },
