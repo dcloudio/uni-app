@@ -4,7 +4,7 @@ importers:
 
   .:
     specifiers:
-      '@dcloudio/types': ^2.5.17
+      '@dcloudio/types': 2.5.18
       '@dcloudio/uni-api': 3.0.0-alpha-3040120220308001
       '@dcloudio/uni-app': 3.0.0-alpha-3040120220308001
       '@jest/types': ^27.0.2
@@ -51,7 +51,7 @@ importers:
       vue-router: ^4.0.13
       yorkie: ^2.0.0
     devDependencies:
-      '@dcloudio/types': 2.5.17
+      '@dcloudio/types': 2.5.18
       '@dcloudio/uni-api': link:packages/uni-api
       '@dcloudio/uni-app': link:packages/uni-app
       '@jest/types': 27.4.2
@@ -2480,8 +2480,8 @@ packages:
       lodash.once: 4.1.1
     dev: true
 
-  /@dcloudio/types/2.5.17:
-    resolution: {integrity: sha512-PMxXWdFOAmDQUo7BNx19O4htfaztdOT7RuD5jTVm8/jFcUd/hkNJJXLcSLePqXZwyTjjirstLBhC3FU709Y+8Q==}
+  /@dcloudio/types/2.5.18:
+    resolution: {integrity: sha512-1EMwZsi5j9KHI5wdLwZJmUyo5b8HnG60CRqsqW5kcd3cgSrKtgL3EKCYUjmJw+3gd9G/4NeEkSx5pT5l+4rNXg==}
     dev: true
 
   /@dcloudio/uni-cli-i18n/2.0.0-alpha-33020211130001:

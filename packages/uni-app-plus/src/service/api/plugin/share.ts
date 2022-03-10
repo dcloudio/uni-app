@@ -40,7 +40,7 @@ const TYPES = {
   },
 }
 
-const parseParams = <T extends Data>(args: UniApp.ShareOptions): T | string => {
+const parseParams = (args: UniApp.ShareOptions) => {
   args.type = args.type || 0
 
   let {
@@ -53,6 +53,9 @@ const parseParams = <T extends Data>(args: UniApp.ShareOptions): T | string => {
     mediaUrl: media,
     scene,
     miniProgram,
+    openCustomerServiceChat,
+    corpid,
+    customerUrl: url,
   } = args
 
   if (typeof imageUrl === 'string' && imageUrl) {
@@ -74,55 +77,66 @@ const parseParams = <T extends Data>(args: UniApp.ShareOptions): T | string => {
       extra: {
         scene,
       },
+      openCustomerServiceChat,
+      corpid,
+      url,
     }
     if (provider === 'weixin' && (type === 1 || type === 2)) {
       delete sendMsg.thumbs
     }
-    return sendMsg as unknown as T
+    return sendMsg
   }
   return '分享参数 type 不正确'
 }
+type ParseParams = ReturnType<typeof parseParams>
 
 const sendShareMsg = function (
   service: PlusShareShareService,
-  params: Data,
+  params: Exclude<ParseParams, string>,
   resolve: (args?: any) => void,
   reject: (errMsg: string, errRes?: any) => void,
   method = 'share'
 ) {
   const errorCallback = warpPlusErrorCallback(reject)
-
-  service.send(
-    params,
-    () => {
-      resolve()
-    },
-    errorCallback
-  )
+  const serviceMethod = params.openCustomerServiceChat
+    ? 'openCustomerServiceChat'
+    : 'send'
+  try {
+    // @ts-expect-error openCustomerServiceChat
+    service[serviceMethod](
+      params,
+      () => {
+        resolve()
+      },
+      errorCallback
+    )
+  } catch (error) {
+    errorCallback({
+      message: `${params.provider} ${serviceMethod} 方法调用失败`,
+    })
+  }
 }
 
 export const share = defineAsyncApi<API_TYPE_SHARE>(
   API_SHREA,
   (params, { resolve, reject }) => {
-    const res = parseParams<typeof params>(params)
+    const parsedParams = parseParams(params)
     const errorCallback = warpPlusErrorCallback(reject)
 
-    if (typeof res === 'string') {
-      return reject(res)
-    } else {
-      params = res
+    if (typeof parsedParams === 'string') {
+      return reject(parsedParams)
     }
 
     plus.share.getServices((services) => {
-      const service = services.find(({ id }) => id === params.provider)
+      const service = services.find(({ id }) => id === parsedParams.provider)
       if (!service) {
         reject('service not found')
       } else {
         if (service.authenticated) {
-          sendShareMsg(service, params, resolve, reject)
+          sendShareMsg(service, parsedParams, resolve, reject)
         } else {
           service.authorize(
-            () => sendShareMsg(service, params, resolve, reject),
+            () => sendShareMsg(service, parsedParams, resolve, reject),
             errorCallback
           )
         }
