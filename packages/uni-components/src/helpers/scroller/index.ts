@@ -56,13 +56,17 @@ export function useScroller(element: HTMLElement, options: Options) {
     if (scroller.onTouchStart) {
       scroller.onTouchStart()
     }
-    event.preventDefault()
+    // @ts-expect-error
+    if (typeof event.cancelable !== 'boolean' || event.cancelable)
+      event.preventDefault()
   }
   function handleTouchMove(event: TouchtrackEvent | MouseEvent) {
     const touchtrackEvent: TouchtrackEvent = event as TouchtrackEvent
     const mouseEvent: MouseEvent = event as MouseEvent
     if (touchInfo.trackingID !== -1) {
-      event.preventDefault()
+      // @ts-expect-error
+      if (typeof event.cancelable !== 'boolean' || event.cancelable)
+        event.preventDefault()
       const delta = findDelta(event)
       if (delta) {
         for (
