@@ -11,6 +11,8 @@ import {
 import {
   createAttributeNode,
   createBindDirectiveNode,
+  isAttributeNode,
+  isDirectiveNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import { isVForScope, NodeTransform, TransformContext } from '../transform'
@@ -31,6 +33,8 @@ import {
   objectExpression,
   objectProperty,
   ObjectProperty,
+  spreadElement,
+  SpreadElement,
   stringLiteral,
 } from '@babel/types'
 import { RENDER_PROPS } from '../runtimeHelpers'
@@ -165,11 +169,10 @@ export function rewriteBinding(
           computed
         )
       }
-
-  const properties: ObjectProperty[] = []
+  const properties: (ObjectProperty | SpreadElement)[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
-    if (prop.type === NodeTypes.ATTRIBUTE) {
+    if (isAttributeNode(prop)) {
       const { name } = prop
       if (!isComponentProp(name)) {
         continue
@@ -177,15 +180,20 @@ export function rewriteBinding(
       properties.push(
         createObjectProperty(name, stringLiteral(prop.value?.content || ''))
       )
-    } else if (prop.type === NodeTypes.DIRECTIVE) {
+    } else if (isDirectiveNode(prop)) {
       if (prop.name !== 'bind') {
         continue
       }
       const { arg, exp } = prop
-      if (!arg || !exp) {
+      if (!exp) {
         continue
       }
-      if (isStaticExp(arg)) {
+      if (!arg) {
+        const spreadElement = createVBindSpreadElement(prop, context)
+        if (spreadElement) {
+          properties.push(spreadElement)
+        }
+      } else if (isStaticExp(arg)) {
         if (!isComponentProp(arg.content)) {
           continue
         }
@@ -217,6 +225,7 @@ export function rewriteBinding(
     props.splice(i, 1)
     i--
   }
+
   if (properties.length) {
     props.push(
       createBindDirectiveNode(
@@ -226,6 +235,24 @@ export function rewriteBinding(
     )
   }
 }
+
+function createVBindSpreadElement(
+  prop: DirectiveNode,
+  context: TransformContext
+) {
+  const { arg, exp } = prop
+  if (!exp) {
+    return
+  }
+  if (!arg) {
+    const argument = parseExpr(genExpr(exp), context, exp)
+    if (!argument) {
+      return
+    }
+    return spreadElement(argument)
+  }
+}
+
 export function isPropsBinding({ arg }: DirectiveNode) {
   return (
     arg &&
