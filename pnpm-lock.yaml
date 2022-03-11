@@ -49,7 +49,7 @@ importers:
       typescript: 4.6.2
       vite: ^2.8.6
       vue: 3.2.31
-      vue-router: ^4.0.13
+      vue-router: ^4.0.14
       yorkie: ^2.0.0
     devDependencies:
       '@babel/preset-env': 7.16.11
@@ -97,7 +97,7 @@ importers:
       typescript: 4.6.2
       vite: 2.8.6
       vue: 3.2.31
-      vue-router: 4.0.13_vue@3.2.31
+      vue-router: 4.0.14_vue@3.2.31
       yorkie: 2.0.0
 
   packages/playground/ssr:
@@ -111,14 +111,14 @@ importers:
       serve-static: ^1.14.1
       vite: ^2.8.6
       vue: 3.2.31
-      vue-router: ^4.0.13
+      vue-router: ^4.0.14
       vuex: ^4.0.2
     dependencies:
       '@dcloudio/uni-app': link:../../uni-app
       '@dcloudio/uni-components': link:../../uni-components
       '@dcloudio/uni-h5': link:../../uni-h5
       vue: 3.2.31
-      vue-router: 4.0.13_vue@3.2.31
+      vue-router: 4.0.14_vue@3.2.31
       vuex: 4.0.2_vue@3.2.31
     devDependencies:
       '@dcloudio/vite-plugin-uni': link:../../vite-plugin-uni
@@ -495,7 +495,7 @@ importers:
       localstorage-polyfill: ^1.0.1
       safe-area-insets: ^1.4.1
       vue: 3.2.31
-      vue-router: ^4.0.13
+      vue-router: ^4.0.14
       xmlhttprequest: ^1.8.0
     dependencies:
       '@dcloudio/uni-h5-vite': link:../uni-h5-vite
@@ -506,7 +506,7 @@ importers:
       '@vue/shared': 3.2.31
       localstorage-polyfill: 1.0.1
       safe-area-insets: 1.4.1
-      vue-router: 4.0.13_vue@3.2.31
+      vue-router: 4.0.14_vue@3.2.31
       xmlhttprequest: 1.8.0
     devDependencies:
       '@dcloudio/uni-cli-i18n': 2.0.0-alpha-33020211130001
@@ -3502,7 +3502,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       callsites: 3.1.0
-      graceful-fs: 4.2.8
+      graceful-fs: 4.2.9
       source-map: 0.6.1
     dev: true
 
@@ -3521,7 +3521,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/test-result': 27.4.2
-      graceful-fs: 4.2.8
+      graceful-fs: 4.2.9
       jest-haste-map: 27.4.2
       jest-runtime: 27.4.2
     transitivePeerDependencies:
@@ -4689,7 +4689,7 @@ packages:
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 27.4.0_@babel+core@7.16.0
       chalk: 4.1.2
-      graceful-fs: 4.2.8
+      graceful-fs: 4.2.9
       slash: 3.0.0
     transitivePeerDependencies:
       - supports-color
@@ -6769,7 +6769,6 @@ packages:
 
   /graceful-fs/4.2.9:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==}
-    dev: false
 
   /has-flag/3.0.0:
     resolution: {integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0=}
@@ -7597,7 +7596,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@types/node': 16.11.11
-      graceful-fs: 4.2.8
+      graceful-fs: 4.2.9
     dev: true
 
   /jest-snapshot/27.4.2:
@@ -7844,7 +7843,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.8
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonfile/6.1.0:
@@ -7852,7 +7851,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.8
+      graceful-fs: 4.2.9
 
   /jsprim/2.0.2:
     resolution: {integrity: sha512-gqXddjPqQ6G40VdnI6T6yObEC+pDNvyP95wdQhkWkg7crHH3km5qP1FsOXEkzEQwnz6gz5qGTn1c2Y52wP3OyQ==}
@@ -10128,8 +10127,8 @@ packages:
     resolution: {integrity: sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==}
     dev: false
 
-  /vue-router/4.0.13_vue@3.2.31:
-    resolution: {integrity: sha512-LmXrC+BkDRLak+d5xTMgUYraT3Nj0H/vCbP+7usGvIl9Viqd1UP6AsP0i69pSbn9O0dXK/xCdp4yPw21HqV9Jw==}
+  /vue-router/4.0.14_vue@3.2.31:
+    resolution: {integrity: sha512-wAO6zF9zxA3u+7AkMPqw9LjoUCjSxfFvINQj3E/DceTt6uEz1XZLraDhdg2EYmvVwTBSGlLYsUw8bDmx0754Mw==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:

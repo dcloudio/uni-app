@@ -13,7 +13,7 @@ const pkgs = {
     latest: '3.2.31',
   },
   'vue-router': {
-    latest: '4.0.13',
+    latest: '4.0.14',
   },
   vuex: {
     latest: '4.0.2',
@@ -34,7 +34,7 @@ const pkgs = {
     latest: '1.7.1',
   },
   '@dcloudio/types': {
-    latest: '2.5.17',
+    latest: '2.5.18',
   },
   autoprefixer: {
     latest: '10.4.2',
