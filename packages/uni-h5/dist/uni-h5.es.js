@@ -9071,6 +9071,7 @@ function useTouchtrack(element, method, useCancel) {
   let y1 = 0;
   const fn = function($event, state2, x, y) {
     if (method({
+      cancelable: $event.cancelable,
       target: $event.target,
       currentTarget: $event.currentTarget,
       preventDefault: $event.preventDefault.bind($event),
@@ -10947,13 +10948,15 @@ function useScroller(element, options) {
     if (scroller.onTouchStart) {
       scroller.onTouchStart();
     }
-    event.preventDefault();
+    if (typeof event.cancelable !== "boolean" || event.cancelable)
+      event.preventDefault();
   }
   function handleTouchMove(event) {
     const touchtrackEvent = event;
     const mouseEvent = event;
     if (touchInfo.trackingID !== -1) {
-      event.preventDefault();
+      if (typeof event.cancelable !== "boolean" || event.cancelable)
+        event.preventDefault();
       const delta = findDelta(event);
       if (delta) {
         for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {

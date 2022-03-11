@@ -448,6 +448,8 @@ function genDirectiveNode(
     const exp = (prop.exp as SimpleExpressionNode).content
     push(` ${arg}="{{${exp}}}"`)
   } else {
-    throw new Error(`unknown directive` + JSON.stringify(prop))
+    if (prop.name !== 'bind') {
+      throw new Error(`unknown directive ` + JSON.stringify(prop))
+    }
   }
 }

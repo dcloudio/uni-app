@@ -3,6 +3,7 @@ import {
   COMPONENT_BIND_LINK,
   createTransformComponentLink,
 } from '@dcloudio/uni-cli-shared'
+import { MPErrorCodes } from '../src/errors'
 import { assert } from './testUtils'
 
 const nodeTransforms = [createTransformComponentLink(COMPONENT_BIND_LINK)]
@@ -116,6 +117,7 @@ describe('compiler: transform component', () => {
   })
 
   test(`mini program component`, () => {
+    const onError = jest.fn()
     const filename = 'pages/vant/vant'
     addMiniProgramPageJson(filename, {
       usingComponents: {
@@ -124,15 +126,29 @@ describe('compiler: transform component', () => {
       },
     })
     assert(
-      `<wxparser :rich-text="richText" /><van-button custom-style="background-color: unset;" :close-on-click-overlay="true"><template #default><view/></template><template #head><view/></template></van-button>`,
+      `<wxparser :rich-text="richText" v-bind="props"/><van-button custom-style="background-color: unset;" :close-on-click-overlay="true" v-bind="props"><template #default><view/></template><template #head><view/></template></van-button>`,
       `<wxparser rich-text="{{a}}" u-t="m" u-i="dc555fe4-0" bind:__l="__l"/><van-button u-t="m" u-i="dc555fe4-1" bind:__l="__l" u-p="{{b}}"><view/><view slot="head"/></van-button>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.richText, b: _p({ customStyle: 'background-color: unset;', closeOnClickOverlay: true }) }
+  return { a: _ctx.richText, b: _p({ customStyle: 'background-color: unset;', closeOnClickOverlay: true, ..._ctx.props }) }
 }`,
       {
+        onError,
         filename,
         nodeTransforms,
       }
     )
+    expect(onError.mock.calls[0][0]).toMatchObject({
+      code: MPErrorCodes.X_V_BIND_NO_ARGUMENT,
+      loc: {
+        start: {
+          line: 1,
+          column: 33,
+        },
+        end: {
+          line: 1,
+          column: 47,
+        },
+      },
+    })
   })
 })

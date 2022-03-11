@@ -171,10 +171,10 @@ function findMiniProgramUsingComponent(
   return Object.keys(usingComponents).reduce<MiniProgramComponents>(
     (res, name) => {
       const path = usingComponents[name]
-      if (componentsDir && path.includes(componentsDir + '/')) {
-        res[name] = 'component'
-      } else if (path.includes('plugin://')) {
+      if (path.includes('plugin://')) {
         res[name] = 'plugin'
+      } else if (componentsDir && path.includes(componentsDir + '/')) {
+        res[name] = 'component'
       }
       return res
     },
