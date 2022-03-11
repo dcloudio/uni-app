@@ -1,4 +1,4 @@
-import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, toNumber, EMPTY_ARR, stringifyStyle as stringifyStyle$1, toDisplayString } from '@vue/shared';
+import { extend, isSymbol, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, toNumber, EMPTY_ARR, isModelListener, stringifyStyle as stringifyStyle$1, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, dynamicSlotName } from '@dcloudio/uni-shared';
 
@@ -4857,7 +4857,7 @@ const getFunctionalFallthrough = (attrs) => {
     return res;
 };
 function renderComponentRoot(instance) {
-    const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx, uid, appContext: { app: { config: { globalProperties: { pruneComponentPropsCache } } } } } = instance;
+    const { type: Component, vnode, proxy, withProxy, props, propsOptions: [propsOptions], slots, attrs, emit, render, renderCache, data, setupState, ctx, uid, appContext: { app: { config: { globalProperties: { pruneComponentPropsCache } } } }, inheritAttrs } = instance;
     instance.$templateRefs = [];
     instance.$ei = 0;
     // props
@@ -4868,20 +4868,20 @@ function renderComponentRoot(instance) {
     const prev = setCurrentRenderingInstance(instance);
     try {
         if (vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */) {
+            fallthroughAttrs(inheritAttrs, props, propsOptions, attrs);
             // withProxy is a proxy with a different `has` trap only for
             // runtime-compiled render functions using `with` block.
             const proxyToUse = withProxy || proxy;
             result = render.call(proxyToUse, proxyToUse, renderCache, props, setupState, data, ctx);
         }
         else {
+            fallthroughAttrs(inheritAttrs, props, propsOptions, Component.props ? attrs : getFunctionalFallthrough(attrs));
             // functional
             const render = Component;
             result =
                 render.length > 1
                     ? render(props, { attrs, slots, emit })
-                    : render(props, null /* we know it doesn't need it */)
-                        ? attrs
-                        : getFunctionalFallthrough(attrs);
+                    : render(props, null /* we know it doesn't need it */);
         }
     }
     catch (err) {
@@ -4891,6 +4891,24 @@ function renderComponentRoot(instance) {
     setRef$1(instance);
     setCurrentRenderingInstance(prev);
     return result;
+}
+function fallthroughAttrs(inheritAttrs, props, propsOptions, fallthroughAttrs) {
+    if (props && fallthroughAttrs && inheritAttrs !== false) {
+        const keys = Object.keys(fallthroughAttrs).filter(key => key !== 'class' && key !== 'style');
+        if (!keys.length) {
+            return;
+        }
+        if (propsOptions && keys.some(isModelListener)) {
+            keys.forEach(key => {
+                if (!isModelListener(key) || !(key.slice(9) in propsOptions)) {
+                    props[key] = fallthroughAttrs[key];
+                }
+            });
+        }
+        else {
+            keys.forEach(key => (props[key] = fallthroughAttrs[key]));
+        }
+    }
 }
 const updateComponentPreRender = (instance) => {
     pauseTracking();
