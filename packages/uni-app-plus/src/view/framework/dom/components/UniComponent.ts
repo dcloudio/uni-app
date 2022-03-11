@@ -192,6 +192,10 @@ export class UniContainerComponent extends UniComponent {
     queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD)
     return super.insertBefore(newChild, refChild)
   }
+  removeUniChild(node: UniNode) {
+    queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD)
+    return super.removeUniChild(node)
+  }
   rebuild() {
     // 刷新容器组件状态
     if (__DEV__) {
