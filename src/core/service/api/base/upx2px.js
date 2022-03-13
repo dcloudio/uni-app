@@ -36,7 +36,7 @@ export function upx2px (number, newDeviceWidth) {
   const includeWidth = checkValue(config.rpxCalcIncludeWidth, 750)
   let width = newDeviceWidth || deviceWidth
   width = number === includeWidth || width <= maxWidth ? width : baseWidth
-  let result = (number / BASE_DEVICE_WIDTH) * width
+  let result = (number / includeWidth) * width
   if (result < 0) {
     result = -result
   }
