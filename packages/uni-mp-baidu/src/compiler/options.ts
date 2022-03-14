@@ -61,6 +61,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: projectConfigFilename,
+    config: ['project.swan.json'],
     source,
   },
   template: {

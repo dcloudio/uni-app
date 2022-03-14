@@ -1,5 +1,5 @@
-import { parseVue } from '@dcloudio/uni-cli-shared'
-import { parseBlockCode } from '../src/configResolved/plugins/preVue'
+import { parseVue } from '../src/vite'
+import { parseBlockCode } from '../src/vue'
 
 describe('block', () => {
   test('parseBlockCode', () => {

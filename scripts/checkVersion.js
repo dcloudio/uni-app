@@ -42,6 +42,9 @@ const pkgs = {
   'rollup-plugin-copy': {
     latest: '3.4.0',
   },
+  typescript: {
+    latest: '4.6.2',
+  },
 }
 
 async function checkVersions() {

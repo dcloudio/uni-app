@@ -4,14 +4,24 @@ describe('compiler: transform style', () => {
   test(`static style`, () => {
     assert(
       `<view style="color: green"/>`,
-      `<view style="color: green"/>`,
+      `<view style="color:green"/>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<view style="color: green;font-size:  15px"/>`,
-      `<view style="color: green;font-size:  15px"/>`,
+      `<view style="color:green;font-size:15px"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<view style="
+color: green;
+font-size:  15px;
+"/>`,
+      `<view style="color:green;font-size:15px"/>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -36,14 +46,14 @@ describe('compiler: transform style', () => {
   test('v-bind:style basic + style ', () => {
     assert(
       `<view :style="foo" style="color:green;"/>`,
-      `<view style="{{a + ';' + 'color:green;'}}"/>`,
+      `<view style="{{a + ';' + 'color:green'}}"/>`,
       `(_ctx, _cache) => {
   return { a: _s(_ctx.foo) }
 }`
     )
     assert(
       `<view style="color:green;" :style="foo"/>`,
-      `<view style="{{'color:green;' + ';' + a}}"/>`,
+      `<view style="{{'color:green' + ';' + a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _s(_ctx.foo) }
 }`

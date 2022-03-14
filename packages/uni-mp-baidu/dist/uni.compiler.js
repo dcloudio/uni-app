@@ -110,6 +110,7 @@ const options = {
     },
     project: {
         filename: projectConfigFilename,
+        config: ['project.swan.json'],
         source,
     },
     template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {

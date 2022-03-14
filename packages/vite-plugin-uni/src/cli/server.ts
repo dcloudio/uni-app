@@ -17,6 +17,7 @@ export async function createServer(options: CliOptions & ServerOptions) {
   const server = await createViteServer(
     addConfigFile({
       root: process.env.VITE_ROOT_DIR,
+      base: options.base,
       mode: options.mode,
       logLevel: options.logLevel,
       clearScreen: options.clearScreen,
@@ -52,6 +53,7 @@ export async function createSSRServer(
   const vite = await createViteServer(
     addConfigFile({
       root: process.env.VITE_ROOT_DIR,
+      base: options.base,
       mode: options.mode,
       logLevel: options.logLevel,
       clearScreen: options.clearScreen,

@@ -61,6 +61,7 @@ export interface UniMiniProgramPluginOptions {
   }
   project?: {
     filename: string
+    config: string[]
     source: Record<string, any>
   }
   template: {

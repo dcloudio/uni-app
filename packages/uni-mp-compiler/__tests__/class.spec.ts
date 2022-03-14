@@ -23,6 +23,15 @@ describe('compiler: transform class', () => {
   return {}
 }`
     )
+    assert(
+      `<view class="foo
+bar
+"/>`,
+      `<view class="foo bar"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
   })
   test('v-bind:class basic', () => {
     assert(

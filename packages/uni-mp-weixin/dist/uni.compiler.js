@@ -141,6 +141,7 @@ const options = {
     },
     project: {
         filename: projectConfigFilename,
+        config: ['project.wx.json', 'project.config.json'],
         source,
     },
     template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {

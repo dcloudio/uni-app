@@ -60,6 +60,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: projectConfigFilename,
+    config: ['project.tt.json'],
     source,
   },
   template: {

@@ -10,6 +10,9 @@ if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
     )
   }
 }
+if(uni&&uni.base64ToArrayBuffer){
+  ArrayBuffer = uni.base64ToArrayBuffer('').constructor
+}
 `
 export const restoreGlobalCode = `
 import * as vue from 'vue'

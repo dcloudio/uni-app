@@ -1,7 +1,24 @@
-import { UniTodoNode } from '../elements/UniTodoNode'
+import { UniNodeJSON } from '@dcloudio/uni-shared'
+import '../../../../../style/live-pusher.css'
+import LivePusher from '../../../components/live-pusher'
 
-export class UniLivePusher extends UniTodoNode {
-  constructor(id: number, parentNodeId: number, refNodeId: number) {
-    super(id, 'uni-live-pusher', parentNodeId, refNodeId)
+import { UniComponent } from './UniComponent'
+
+export class UniLivePusher extends UniComponent {
+  constructor(
+    id: number,
+    parentNodeId: number,
+    refNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
+    super(
+      id,
+      'uni-live-pusher',
+      LivePusher,
+      parentNodeId,
+      refNodeId,
+      nodeJson,
+      '.uni-live-pusher-slot'
+    )
   }
 }
