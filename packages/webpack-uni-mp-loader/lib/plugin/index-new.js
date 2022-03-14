@@ -81,7 +81,7 @@ function addMPPluginRequire (compilation) {
       const filePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, name))
       const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === filePath).id
 
-      const source = orignalSource + `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n`
+      const source = orignalSource + `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n`;
 
       compilation.assets[name] = {
         size () {
