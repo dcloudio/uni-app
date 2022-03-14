@@ -36,6 +36,10 @@ const PLATFORMS = {
     prefix: 'jd',
     title: '京东小程序'
   },
+  'mp-xhs': {
+    prefix: 'xhs',
+    title: '小红书小程序'
+  },
   'quickapp-webview': {
     prefix: 'qa',
     title: '快应用(Webview)版'

@@ -16,7 +16,10 @@
   "dependencies": {
     "acorn": "^5.2.1",
     "css": "~2.2.1",
-    "escodegen": "^1.8.1"
+    "escodegen": "^1.8.1",
+    "@dcloudio/uni-cli-i18n": "^2.0.1-33920220121003",
+    "@dcloudio/uni-cli-shared": "^2.0.1-33920220121003",
+    "module-alias": "^2.2.2"
   },
   "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8"
 }
