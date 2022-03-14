@@ -63,6 +63,9 @@ export interface UniMiniProgramPluginOptions {
     filename: string
     config: string[]
     source: Record<string, any>
+    normalize?: (
+      projectJson: Record<string, unknown>
+    ) => Record<string, unknown>
   }
   template: {
     extname: string

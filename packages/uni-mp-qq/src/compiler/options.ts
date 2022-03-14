@@ -71,6 +71,13 @@ export const options: UniMiniProgramPluginOptions = {
     filename: 'project.config.json',
     config: ['project.qq.json', 'project.config.json'],
     source,
+    normalize(projectJson) {
+      projectJson.qqappid = projectJson.appid
+      projectJson.qqLibVersion = projectJson.libVersion
+      delete projectJson.appid
+      delete projectJson.libVersion
+      return projectJson
+    },
   },
   template: {
     /* eslint-disable no-restricted-syntax */
