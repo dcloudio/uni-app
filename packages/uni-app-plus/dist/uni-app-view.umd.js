@@ -18217,10 +18217,14 @@
         updatesScroller();
       };
       {
+        var isMounted = false;
         useRebuild(() => {
           state.length = contentRef.value.children.length;
-          initIndicatorHeight();
-          initScroller();
+          if (!isMounted) {
+            isMounted = true;
+            initIndicatorHeight();
+            initScroller();
+          }
         });
       }
       return () => {
@@ -21160,6 +21164,10 @@
     insertBefore(newChild, refChild) {
       queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
       return super.insertBefore(newChild, refChild);
+    }
+    removeUniChild(node) {
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
+      return super.removeUniChild(node);
     }
     rebuild() {
       var vm = this.$.__vueParentComponent;

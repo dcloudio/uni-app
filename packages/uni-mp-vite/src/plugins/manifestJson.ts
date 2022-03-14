@@ -86,10 +86,15 @@ export function uniManifestJsonPlugin(
       },
       generateBundle() {
         if (projectJson && options.project) {
+          const { filename, normalize } = options.project
           this.emitFile({
-            fileName: options.project.filename,
+            fileName: filename,
             type: 'asset',
-            source: JSON.stringify(projectJson, null, 2),
+            source: JSON.stringify(
+              normalize ? normalize(projectJson) : projectJson,
+              null,
+              2
+            ),
           })
         }
       },
