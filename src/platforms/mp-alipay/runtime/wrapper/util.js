@@ -109,7 +109,7 @@ export function initChildVues (mpInstance) {
 }
 
 export function handleRef (ref) {
-  if (!ref) {
+  if (!(ref && this.$vm)) {
     return
   }
   if (ref.props['data-com-type'] === 'wx') {
