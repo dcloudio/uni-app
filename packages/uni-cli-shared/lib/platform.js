@@ -30,6 +30,8 @@ const cdns = {
   'mp-dingtalk': 8,
   'mp-kuaishou': 9,
   'mp-lark': 10,
+  'mp-jd': 11,
+  'mp-xhs': 12,
   'quickapp-webview-huawei': 200,
   'quickapp-webview-union': 201
 }
