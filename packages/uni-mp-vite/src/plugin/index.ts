@@ -10,6 +10,7 @@ import {
   MiniProgramCompilerOptions,
   initPostcssPlugin,
   parseRpx2UnitOnce,
+  AppJson,
 } from '@dcloudio/uni-cli-shared'
 import type {
   SFCDescriptor,
@@ -58,6 +59,7 @@ export interface UniMiniProgramPluginOptions {
      * 是否支持发行插件
      */
     plugins?: boolean
+    normalize?: (appJson: AppJson) => AppJson
   }
   project?: {
     filename: string
