@@ -96,10 +96,11 @@ function createInvoker(
 }
 // 冒泡事件列表
 const bubbles = [
-  'touchstart',
-  'touchmove',
-  'touchcancel',
-  'touchend',
+  // touch事件暂不做延迟，否则在 Android 上会影响性能，比如一些拖拽跟手手势等
+  // 'touchstart',
+  // 'touchmove',
+  // 'touchcancel',
+  // 'touchend',
   'tap',
   'longpress',
   'longtap',
