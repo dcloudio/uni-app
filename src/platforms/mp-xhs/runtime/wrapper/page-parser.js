@@ -75,8 +75,8 @@ export default function parsePage (vuePageOptions) {
     // __r: handleRef,
     __e: handleEvent,
     __l: handleLink,
-    __w: handleWrap
-    // triggerEvent
+    __w: handleWrap,
+    triggerEvent: function noop () {}
   }
 
   initHooks(pageOptions, hooks, vuePageOptions)
