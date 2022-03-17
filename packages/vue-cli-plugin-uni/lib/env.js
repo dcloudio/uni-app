@@ -293,8 +293,8 @@ const modes = ['legacy', 'auto', 'augmented']
 const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOptions.betterScopedSlots ? modes[2]
   : platformOptions.scopedSlotsCompiler
 process.env.SCOPED_SLOTS_COMPILER = modes.includes(scopedSlotsCompiler) ? scopedSlotsCompiler : modes[1]
-// 快手小程序抽象组件编译报错，如未指定 legacy 固定为 augmented 模式
-if (process.env.UNI_PLATFORM === 'mp-kuaishou' && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
+// 快手小程序、小红书小程序 抽象组件编译报错，如未指定 legacy 固定为 augmented 模式
+if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 'mp-xhs') && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
 
