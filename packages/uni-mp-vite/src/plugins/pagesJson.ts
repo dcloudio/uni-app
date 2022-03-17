@@ -69,7 +69,8 @@ export function uniPagesJsonPlugin(
         if (options.json?.formatAppJson) {
           options.json.formatAppJson(appJson, manifestJson, pageJsons)
         }
-        addMiniProgramAppJson(appJson)
+        const { normalize } = options.app
+        addMiniProgramAppJson(normalize ? normalize(appJson) : appJson)
         Object.keys(pageJsons).forEach((name) => {
           addMiniProgramPageJson(name, pageJsons[name])
         })
