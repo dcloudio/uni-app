@@ -9,7 +9,7 @@
 
 <script>
 import { emitter } from 'uni-mixins'
-import { showPage } from './page'
+import { showPage } from '../../../helpers/page'
 import * as webview from './webview'
 import { getNavigationBarHeight } from '../../utils'
 import {
