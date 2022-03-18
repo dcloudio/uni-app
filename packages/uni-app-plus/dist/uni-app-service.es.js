@@ -2432,10 +2432,7 @@ var serviceContext = (function (vue) {
           animationType: 'pop-in',
           animationDuration: 200,
           uniNView: {
-              path: `${(typeof process === 'object' &&
-                process.env &&
-                process.env.VUE_APP_TEMPLATE_PATH) ||
-                ''}/${url}.js`,
+              path: `/${url}.js`,
               defaultFontSize: 16,
               viewport: plus_.screen.resolutionWidth,
           },
