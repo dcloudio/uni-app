@@ -6676,7 +6676,7 @@
       animationType: "pop-in",
       animationDuration: 200,
       uniNView: {
-        path: "".concat(typeof process === "object" && process.env && {}.VUE_APP_TEMPLATE_PATH || "", "/").concat(url, ".js"),
+        path: "/".concat(url, ".js"),
         defaultFontSize: 16,
         viewport: plus_.screen.resolutionWidth
       }

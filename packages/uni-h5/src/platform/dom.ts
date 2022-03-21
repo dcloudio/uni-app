@@ -28,14 +28,20 @@ function addBase(filePath: string) {
 
 export function getRealPath(filePath: string) {
   // 相对路径模式对静态资源路径特殊处理
-  if (__uniConfig.router!.base === './') {
-    filePath = filePath.replace(/^\.\/static\//, '/static/')
+  const { base, assets } = __uniConfig.router!
+  if (base === './') {
+    if (
+      filePath.indexOf('./static/') === 0 ||
+      (assets && filePath.indexOf('./' + assets + '/') === 0)
+    ) {
+      filePath = filePath.slice(1)
+    }
   }
   if (filePath.indexOf('/') === 0) {
     if (filePath.indexOf('//') === 0) {
       filePath = 'https:' + filePath
     } else {
-      return addBase(filePath.substr(1))
+      return addBase(filePath.slice(1))
     }
   }
   // 网络资源或base64
