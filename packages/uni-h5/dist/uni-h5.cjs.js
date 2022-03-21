@@ -881,14 +881,17 @@ function addBase(filePath) {
   return baseUrl + filePath;
 }
 function getRealPath(filePath) {
-  if (__uniConfig.router.base === "./") {
-    filePath = filePath.replace(/^\.\/static\//, "/static/");
+  const { base, assets } = __uniConfig.router;
+  if (base === "./") {
+    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+      filePath = filePath.slice(1);
+    }
   }
   if (filePath.indexOf("/") === 0) {
     if (filePath.indexOf("//") === 0) {
       filePath = "https:" + filePath;
     } else {
-      return addBase(filePath.substr(1));
+      return addBase(filePath.slice(1));
     }
   }
   if (uniShared.SCHEME_RE.test(filePath) || uniShared.DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {

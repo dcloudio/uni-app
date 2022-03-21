@@ -38,6 +38,7 @@ declare namespace UniApp {
     router?: {
       strict: boolean
       base: string
+      assets: string
     }
     nvue?: {
       'flex-direction': 'column' | 'row'
