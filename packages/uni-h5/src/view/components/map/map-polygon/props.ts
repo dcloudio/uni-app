@@ -3,63 +3,34 @@ import { Point } from './interface'
 
 // MapPolygon 组件的 props 属性配置
 export default {
+  // 边框虚线，腾讯地图支持，google 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
+  dashArray: {
+    type: Array as PropType<number[]>,
+    default: () => [0, 0]
+  },
   // 经纬度数组，[{latitude: 0, longitude: 0}]
   points: {
     type: Array as PropType<Point[]>,
     required: true,
-    // validator: (points: Point[]) => {
-    // 	points.forEach(item => {
-    // 		const { longitude, latitude } = item
-    // 		return latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180
-    // 	})
-    // }
-  },
-  // 多边形是否可点击。
-  clickable: {
-    type: Boolean,
-  },
-  // 鼠标在多边形内的光标样式。
-  cursor: {
-    type: String,
-  },
-  // 区域是否可编辑
-  editable: {
-    type: Boolean,
-    default: false,
-  },
-  // 多边形是否可见。
-  visible: {
-    type: Boolean,
-    default: true,
   },
   // 描边的宽度
   strokeWidth: {
     type: Number,
+    default: 1
   },
   // 描边的颜色，十六进制
   strokeColor: {
     type: String,
-  },
-  // 描边的透明度，[0-1]
-  strokeColorAlpha: {
-    type: Number,
-    default: 1,
-  },
-  // 多边形的边框样式。实线是solid，虚线是dash。
-  strokeDashStyle: {
-    type: String,
+    default: '#000000'
   },
   // 填充颜色，十六进制
   fillColor: {
     type: String,
-  },
-  // 设置填充色的透明度，[0-1]
-  fillColorAlpha: {
-    type: Number,
-    default: 1,
+    default: '#00000000'
   },
   // 设置多边形 Z 轴数值
   zIndex: {
     type: Number,
+    default: 0
   },
 }

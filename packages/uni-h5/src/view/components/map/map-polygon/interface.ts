@@ -1,5 +1,5 @@
 import { Maps, Map } from '../maps'
-import { Polygon as QQPolygon } from '../maps/qq/types'
+import { Polygon as QQPolygon, PolygonOptions as QQPolygonOptions } from '../maps/qq/types'
 import { Polygon as GPolygon } from '../maps/google/types'
 import { useCustomEvent } from '@dcloudio/uni-components'
 import props from './props'
@@ -20,6 +20,8 @@ type OnMapReadyCallback = (
 export type OnMapReady = (callback: OnMapReadyCallback) => void
 
 export type Polygon = QQPolygon | GPolygon
+
+export type PolygonOptions = QQPolygonOptions & google.maps.PolygonOptions
 
 export type Props = Record<keyof typeof props, any>
 

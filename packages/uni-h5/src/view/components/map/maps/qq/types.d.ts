@@ -1344,12 +1344,16 @@ export interface PolygonOptions {
   editable?: boolean
   // 多边形的填充色，可通过Color对象的alpha属性设置透明度
   fillColor: Color | string
+  // google map 支持，fillColor 的透明度
+  fillOpacity?: number
   // 要显示多边形的地图。
   map: Map
   // 多边形轮廓的坐标数组。若为环多边形，设置为二维数组，第一个元素为外多边形，其他元素为内部“孤岛”轮廓
   path: Array<LatLng> | Array<Array<LatLng>>
   // 多边形的线条颜色，可通过Color对象的alpha属性设置透明度
   strokeColor: Color | string
+  // google map 支持，strokeColor 的透明度
+  strokeOpacity?: number
   // 多边形的边框样式。实线是solid，虚线是dash
   strokeDashStyle: string
   // 多边形的边框线宽

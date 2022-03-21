@@ -1,34 +1,51 @@
-export function hexToRgba(hex: string) {
-  let r
-  let g
-  let b
-  hex = hex.replace('#', '')
-  if (hex.length === 6) {
-    r = hex.substring(0, 2)
-    g = hex.substring(2, 4)
-    b = hex.substring(4, 6)
-  } else if (hex.length === 3) {
-    r = hex.substring(0, 1)
-    g = hex.substring(1, 2)
-    b = hex.substring(2, 3)
-  } else {
-    return { r: 0, g: 0, b: 0 }
+/**
+ * 从 16 进制的色值解析成 rgba 格式的色值
+ * @param { string } hex, #000、#000A、#000000、#000000AA，参数只能是这四种格式
+ */
+export function hexToRgba(hex: string): RGBA {
+  // 异常情况
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0,
+    }
   }
-  if (r.length === 1) {
-    r += r
+  // 去掉 #
+  let tmpHex = hex.slice(1)
+  const tmpHexLen = tmpHex.length
+  // 处理 16 进制色值位数异常的情况
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0,
+    }
   }
-  if (g.length === 1) {
-    g += g
+  // 格式化 tmpHex，使其变成 rrggbb 或 rrggbbaa
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    // rgb => rrggbb || rgba => rrggbbaa
+    tmpHex = tmpHex.replace(/(\w{1})/g, 'r1r1')
   }
-  if (b.length === 1) {
-    b += b
+  // r1 ~ a2
+  const [ r1, r2, g1, g2, b1, b2, a1, a2 ] = tmpHex.match(/(\w{1})/g) as string[]
+  // rgb
+  const r = parseInt(r1) * 16 + parseInt(r2), g = parseInt(g1) * 16 + parseInt(g2), b = parseInt(b1) * 16 + parseInt(b2)
+
+  if (!a1) {
+    return { r, g, b, a: 1 }
   }
-  r = parseInt(r, 16)
-  g = parseInt(g, 16)
-  b = parseInt(b, 16)
+
   return {
-    r,
-    g,
-    b,
+    r, g, b, a: (`0x100${a1}${a2}` as unknown as number - 0x10000) / 255
   }
 }
+
+export interface RGBA {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+} 
