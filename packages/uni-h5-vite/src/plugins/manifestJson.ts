@@ -10,6 +10,7 @@ import {
 const defaultRouter = {
   mode: 'hash',
   base: '/',
+  assets: 'assets',
 }
 
 const defaultAsync = {
@@ -25,6 +26,9 @@ export function uniManifestJsonPlugin(): Plugin {
     return {
       name: 'uni:h5-manifest-json',
       enforce: 'pre',
+      configResolved(config) {
+        defaultRouter.assets = config.build.assetsDir
+      },
       transform(code, id) {
         if (!opts.filter(id)) {
           return
