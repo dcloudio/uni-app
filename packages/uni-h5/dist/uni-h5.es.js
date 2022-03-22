@@ -20178,7 +20178,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-var MapPolygon = defineSystemComponent({
+var MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
   props: props$3,
   setup(props2) {

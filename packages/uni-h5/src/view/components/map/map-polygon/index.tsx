@@ -13,7 +13,7 @@ import { Map, Maps } from '../maps'
 import { QQMaps } from '../maps/qq/types'
 import { hexToRgba } from '../../../../helpers/hexToRgba'
 
-export default defineSystemComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapPolygon',
   props,
   setup(props: Props) {
