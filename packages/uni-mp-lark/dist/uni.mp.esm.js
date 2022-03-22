@@ -1098,6 +1098,12 @@ function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
         initProvide(vm);
     }
     vm.$callCreatedHook();
+    // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢
+    // 由此引发在 setup 中暂不可用，只能通过 options 方式配置
+    // 初始化完 inject 后，再次调用 update，触发一次更新
+    if (vm.$options.inject) {
+        vm.$.update();
+    }
     nextSetDataTick(this, () => {
         vm.$callHook('mounted');
         vm.$callHook(ON_READY$1);
