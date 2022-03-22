@@ -8,14 +8,14 @@
   a: number;
 }
  */
-export function hexToRgba(hex) {
+export function hexToRgba (hex) {
   // 异常情况
   if (!hex) {
     return {
       r: 0,
       g: 0,
       b: 0,
-      a: 0,
+      a: 0
     }
   }
   // 去掉 #
@@ -27,7 +27,7 @@ export function hexToRgba(hex) {
       r: 0,
       g: 0,
       b: 0,
-      a: 0,
+      a: 0
     }
   }
   // 格式化 tmpHex，使其变成 rrggbb 或 rrggbbaa
@@ -36,9 +36,9 @@ export function hexToRgba(hex) {
     tmpHex = tmpHex.replace(/(\w{1})/g, '$1$1')
   }
   // rgba
-  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g)
+  const [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g)
   // rgb
-  const r = parseInt(sr, 16), g = parseInt(sg, 16), b = parseInt(sb, 16)
+  const r = parseInt(sr, 16); const g = parseInt(sg, 16); const b = parseInt(sb, 16)
 
   if (!sa) {
     return { r, g, b, a: 1 }
