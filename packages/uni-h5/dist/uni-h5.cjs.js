@@ -1629,7 +1629,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$p = {
+const props$q = {
   canvasId: {
     type: String,
     default: ""
@@ -1649,7 +1649,7 @@ var index$B = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$p,
+  props: props$q,
   computed: {
     id() {
       return this.canvasId;
@@ -2107,7 +2107,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$o = {
+const props$p = {
   name: {
     type: String,
     default: ""
@@ -2115,7 +2115,7 @@ const props$o = {
 };
 var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$o,
+  props: props$p,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2167,7 +2167,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$n = {
+const props$o = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2191,7 +2191,7 @@ const props$n = {
 };
 var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$n,
+  props: props$o,
   setup(props2, {
     slots
   }) {
@@ -2258,7 +2258,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$m = {
+const props$n = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2430,7 +2430,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$l = /* @__PURE__ */ shared.extend({}, props$m, {
+const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   id: {
     type: String,
     default: ""
@@ -2458,7 +2458,7 @@ const props$l = /* @__PURE__ */ shared.extend({}, props$m, {
 });
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$l,
+  props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2544,7 +2544,7 @@ var index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$k = {
+const props$l = {
   src: {
     type: String,
     default: ""
@@ -2583,7 +2583,7 @@ const IMAGE_MODES = {
 };
 var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$k,
+  props: props$l,
   setup(props2, {
     emit: emit2
   }) {
@@ -2835,7 +2835,7 @@ function getValueString(value, type) {
   }
   return value === null ? "" : String(value);
 }
-const props$j = /* @__PURE__ */ shared.extend({}, {
+const props$k = /* @__PURE__ */ shared.extend({}, {
   name: {
     type: String,
     default: ""
@@ -2904,7 +2904,7 @@ const props$j = /* @__PURE__ */ shared.extend({}, {
     type: Boolean,
     default: false
   }
-}, props$m);
+}, props$n);
 const emit = [
   "input",
   "focus",
@@ -3099,7 +3099,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$i = /* @__PURE__ */ shared.extend({}, props$j, {
+const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3111,7 +3111,7 @@ const props$i = /* @__PURE__ */ shared.extend({}, props$j, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$i,
+  props: props$j,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -4695,7 +4695,7 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$h = {
+const props$i = {
   name: {
     type: String,
     default: ""
@@ -4703,7 +4703,7 @@ const props$h = {
 };
 var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$h,
+  props: props$i,
   setup(props2, {
     emit: emit2,
     slots
@@ -4780,7 +4780,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$g = {
+const props$h = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -4804,7 +4804,7 @@ const props$g = {
 };
 var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$g,
+  props: props$h,
   setup(props2, {
     slots
   }) {
@@ -5124,7 +5124,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$f = {
+const props$g = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -5137,7 +5137,7 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$f,
+  props: props$g,
   emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress"],
   setup(props2, {
     emit: emit2,
@@ -5168,7 +5168,7 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$e = {
+const props$f = {
   scrollX: {
     type: [Boolean, String],
     default: false
@@ -5231,7 +5231,7 @@ var index$o = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$e,
+  props: props$f,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
@@ -5499,7 +5499,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     }
   });
 }
-const props$d = {
+const props$e = {
   name: {
     type: String,
     default: ""
@@ -5555,7 +5555,7 @@ const props$d = {
 };
 var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$d,
+  props: props$e,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -5717,7 +5717,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$c = {
+const props$d = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -6095,7 +6095,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
 }
 var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$c,
+  props: props$d,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -6193,7 +6193,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$b = {
+const props$c = {
   itemId: {
     type: String,
     default: ""
@@ -6201,7 +6201,7 @@ const props$b = {
 };
 var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$b,
+  props: props$c,
   setup(props2, {
     slots
   }) {
@@ -6218,7 +6218,7 @@ var index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$a = {
+const props$b = {
   name: {
     type: String,
     default: ""
@@ -6246,7 +6246,7 @@ const props$a = {
 };
 var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$a,
+  props: props$b,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -6390,7 +6390,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$9 = /* @__PURE__ */ shared.extend({}, props$j, {
+const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -6407,7 +6407,7 @@ const props$9 = /* @__PURE__ */ shared.extend({}, props$j, {
 let fixMargin = false;
 var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$9,
+  props: props$a,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -7476,7 +7476,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
   useContextInfo();
   useSubscribe();
 }
-const props$8 = {
+const props$9 = {
   id: {
     type: String,
     default: ""
@@ -7562,7 +7562,7 @@ const props$8 = {
 };
 var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$8,
+  props: props$9,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -7783,7 +7783,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$7 = {
+const props$8 = {
   src: {
     type: String,
     default: ""
@@ -7792,7 +7792,7 @@ const props$7 = {
 var index$d = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$7,
+  props: props$8,
   setup(props2) {
     Invoke();
     const rootRef = vue.ref(null);
@@ -7815,7 +7815,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
-const props$6 = {
+const props$7 = {
   id: {
     type: [Number, String],
     default: ""
@@ -7898,7 +7898,7 @@ function useMarkerLabelStyle(id) {
 }
 var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$6,
+  props: props$7,
   setup(props2) {
     const id = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
@@ -8133,7 +8133,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$5 = {
+const props$6 = {
   points: {
     type: Array,
     require: true
@@ -8179,7 +8179,7 @@ const props$5 = {
 };
 var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$5,
+  props: props$6,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let polyline;
@@ -8231,7 +8231,7 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$4 = {
+const props$5 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -8263,7 +8263,7 @@ const props$4 = {
 };
 var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$4,
+  props: props$5,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let circle;
@@ -8309,7 +8309,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$3 = {
+const props$4 = {
   id: {
     type: [Number, String],
     default: ""
@@ -8329,7 +8329,7 @@ const props$3 = {
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$3,
+  props: props$4,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let control;
@@ -8405,6 +8405,135 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
+var props$3 = {
+  dashArray: {
+    type: Array,
+    default: () => [0, 0]
+  },
+  points: {
+    type: Array,
+    required: true
+  },
+  strokeWidth: {
+    type: Number,
+    default: 1
+  },
+  strokeColor: {
+    type: String,
+    default: "#000000"
+  },
+  fillColor: {
+    type: String,
+    default: "#00000000"
+  },
+  zIndex: {
+    type: Number,
+    default: 0
+  }
+};
+function hexToRgba(hex) {
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  let tmpHex = hex.slice(1);
+  const tmpHexLen = tmpHex.length;
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+  }
+  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+  if (!sa) {
+    return { r, g: g2, b, a: 1 };
+  }
+  return {
+    r,
+    g: g2,
+    b,
+    a: (`0x100${sa}` - 65536) / 255
+  };
+}
+var MapPolygon = defineSystemComponent({
+  name: "MapPolygon",
+  props: props$3,
+  setup(props2) {
+    let polygonIns;
+    const onMapReady = vue.inject("onMapReady");
+    onMapReady((map, maps, trigger) => {
+      function drawPolygon() {
+        const {
+          points,
+          strokeWidth,
+          strokeColor,
+          dashArray,
+          fillColor,
+          zIndex
+        } = props2;
+        const path = points.map((item) => {
+          const {
+            latitude,
+            longitude
+          } = item;
+          return new maps.LatLng(latitude, longitude);
+        });
+        const {
+          r: fcR,
+          g: fcG,
+          b: fcB,
+          a: fcA
+        } = hexToRgba(fillColor);
+        const {
+          r: scR,
+          g: scG,
+          b: scB,
+          a: scA
+        } = hexToRgba(strokeColor);
+        const polygonOptions = {
+          clickable: true,
+          cursor: "crosshair",
+          editable: false,
+          map,
+          fillColor: "",
+          path,
+          strokeColor: "",
+          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          strokeWeight: strokeWidth,
+          visible: true,
+          zIndex
+        };
+        if (maps.Color) {
+          polygonOptions.fillColor = new maps.Color(fcR, fcG, fcB, fcA);
+          polygonOptions.strokeColor = new maps.Color(scR, scG, scB, scA);
+        } else {
+          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
+          polygonOptions.fillOpacity = fcA;
+          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
+          polygonOptions.strokeOpacity = scA;
+        }
+        if (polygonIns) {
+          polygonIns.setOptions(polygonOptions);
+          return;
+        }
+        polygonIns = new maps.Polygon(polygonOptions);
+      }
+      drawPolygon();
+      vue.watch(props2, drawPolygon);
+    });
+    return () => null;
+  }
+});
 const props$2 = {
   id: {
     type: String,
@@ -8461,6 +8590,10 @@ const props$2 = {
     default() {
       return [];
     }
+  },
+  polygons: {
+    type: Array,
+    default: () => []
   }
 };
 function getPoints(points) {
@@ -8656,7 +8789,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => vue.createVNode(MapMarker, vue.mergeProps({
         "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, item, null, 16)), props2.showLocation && vue.createVNode(MapLocation, null, null), vue.createVNode("div", {
+      }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, item, null, 16)), props2.showLocation && vue.createVNode(MapLocation, null, null), props2.polygons.map((item) => vue.createVNode(MapPolygon, item, null, 16)), vue.createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
@@ -10429,40 +10562,6 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
       "ref": windowRef
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
-}
-function hexToRgba(hex) {
-  let r;
-  let g2;
-  let b;
-  hex = hex.replace("#", "");
-  if (hex.length === 6) {
-    r = hex.substring(0, 2);
-    g2 = hex.substring(2, 4);
-    b = hex.substring(4, 6);
-  } else if (hex.length === 3) {
-    r = hex.substring(0, 1);
-    g2 = hex.substring(1, 2);
-    b = hex.substring(2, 3);
-  } else {
-    return { r: 0, g: 0, b: 0 };
-  }
-  if (r.length === 1) {
-    r += r;
-  }
-  if (g2.length === 1) {
-    g2 += g2;
-  }
-  if (b.length === 1) {
-    b += b;
-  }
-  r = parseInt(r, 16);
-  g2 = parseInt(g2, 16);
-  b = parseInt(b, 16);
-  return {
-    r,
-    g: g2,
-    b
-  };
 }
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const { r, g: g2, b } = hexToRgba(backgroundColor);

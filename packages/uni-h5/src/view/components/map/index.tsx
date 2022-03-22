@@ -29,6 +29,8 @@ import MapLocation, {
   Context as MapLocationContext,
   CONTEXT_ID as MAP_LOCATION_CONTEXT_ID,
 } from './MapLocation'
+import MapPolygon from './map-polygon/index'
+import { Polygon } from './map-polygon/interface'
 
 const props = {
   id: {
@@ -86,6 +88,10 @@ const props = {
     default() {
       return []
     },
+  },
+  polygons: {
+    type: Array as PropType<Polygon[]>,
+    default: () => [],
   },
 }
 
@@ -476,6 +482,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <MapControl {...item} />
           ))}
           {props.showLocation && <MapLocation />}
+          {props.polygons.map((item) => (
+            <MapPolygon {...item} />
+          ))}
           <div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;">
             {slots.default && slots.default()}
           </div>
