@@ -1,5 +1,4 @@
 import { hexToRgba } from 'uni-shared'
-import { listenEvent } from './event'
 
 export default {
   props: {
@@ -130,9 +129,6 @@ export default {
 
       // 说明是新增区域
       this.polygonIns = new _maps.Polygon(polygonOptions)
-
-      // 监听事件，当对应事件发生时，将事件暴露给用户
-      listenEvent(_maps, this.polygonIns, this.$parent.$trigger)
     }
   },
   // 卸载时清除地图上绘制的 polygon

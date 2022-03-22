@@ -42,7 +42,7 @@ import {
 } from './maps'
 
 import mapMarker from './map-marker'
-import mapPolygon from './map-polygon/index'
+import mapPolygon from './map-polygon'
 
 import { ICON_PATH_ORIGIN } from '../../../helpers/location'
 
