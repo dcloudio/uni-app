@@ -30,7 +30,6 @@ import MapLocation, {
   CONTEXT_ID as MAP_LOCATION_CONTEXT_ID,
 } from './MapLocation'
 import MapPolygon from './map-polygon/index'
-import { eventObj } from './map-polygon/event'
 import { Polygon } from './map-polygon/interface'
 
 const props = {
@@ -459,8 +458,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'update:scale',
     'update:latitude',
     'update:longitude',
-    // MapPolygon 组件对外暴露的事件
-    ...Object.values(eventObj),
   ],
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)

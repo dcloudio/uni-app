@@ -11,14 +11,11 @@ import {
 } from './interface'
 import { Map, Maps } from '../maps'
 import { QQMaps } from '../maps/qq/types'
-import { eventObj, listenEvent } from './event'
 import { hexToRgba } from '../../../../helpers/hexToRgba'
 
 export default defineSystemComponent({
   name: 'MapPolygon',
   props,
-  // https://lbs.qq.com/javascript_v2/doc/polygon.html
-  emits: Object.values(eventObj),
   setup(props: Props) {
     // polygon 实例
     let polygonIns: Polygon
@@ -104,9 +101,6 @@ export default defineSystemComponent({
 
         // 说明是新增区域
         polygonIns = new maps.Polygon(polygonOptions)
-
-        // 监听事件，当对应事件发生时，将事件暴露给用户
-        listenEvent(maps, polygonIns as unknown as HTMLElement, trigger)
       }
 
       // 给地图添加区域
