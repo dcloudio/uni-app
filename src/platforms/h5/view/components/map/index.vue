@@ -10,7 +10,7 @@
     />
     <map-polygon
       v-for="item in polygons"
-      :key="JSON.stringify(item)"
+      :key="JSON.stringify(item.points)"
       v-bind="item"
     />
     <div

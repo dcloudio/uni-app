@@ -1,7 +1,7 @@
 import {
   noop
 }
-  from 'uni-shared'
+from 'uni-shared'
 
 const sharedPropertyDefinition = {
   enumerable: true,
