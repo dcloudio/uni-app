@@ -27,19 +27,19 @@ export function hexToRgba(hex: string): RGBA {
   // 格式化 tmpHex，使其变成 rrggbb 或 rrggbbaa
   if (tmpHexLen === 3 || tmpHexLen === 4) {
     // rgb => rrggbb || rgba => rrggbbaa
-    tmpHex = tmpHex.replace(/(\w{1})/g, 'r1r1')
+    tmpHex = tmpHex.replace(/(\w{1})/g, '$1$1')
   }
-  // r1 ~ a2
-  const [ r1, r2, g1, g2, b1, b2, a1, a2 ] = tmpHex.match(/(\w{1})/g) as string[]
+  // rgba
+  let [ sr, sg, sb, sa ] = tmpHex.match(/(\w{2})/g) as string[]
   // rgb
-  const r = parseInt(r1) * 16 + parseInt(r2), g = parseInt(g1) * 16 + parseInt(g2), b = parseInt(b1) * 16 + parseInt(b2)
+  const r = parseInt(sr, 16), g = parseInt(sg, 16), b = parseInt(sb, 16)
 
-  if (!a1) {
+  if (!sa) {
     return { r, g, b, a: 1 }
   }
 
   return {
-    r, g, b, a: (`0x100${a1}${a2}` as unknown as number - 0x10000) / 255
+    r, g, b, a: (`0x100${sa}` as unknown as number - 0x10000) / 255
   }
 }
 
