@@ -66,19 +66,21 @@ export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
   )
 }
 
-export function getUniPush(inputDir: string, platform: UniApp.PLATFORM) {
+export function isEnableUniPushV2(inputDir: string, platform: UniApp.PLATFORM) {
   const manifest = parseManifestJsonOnce(inputDir)
-  return extend(
-    {},
-    manifest.unipush,
-    manifest[platform] && manifest[platform].unipush
-  )
+  if (platform === 'app') {
+    return (
+      manifest['app-plus']?.distribute?.sdkConfigs?.push?.unipush?.version ==
+      '2'
+    )
+  }
+  return manifest[platform]?.unipush?.enable === true
 }
 
 export function isUniPushOffline(inputDir: string) {
   const manifest = parseManifestJsonOnce(inputDir)
   return (
-    manifest?.['app-plus']?.distribute?.sdkConfigs?.push?.unipush?.enable ===
+    manifest['app-plus']?.distribute?.sdkConfigs?.push?.unipush?.offline ===
     true
   )
 }
