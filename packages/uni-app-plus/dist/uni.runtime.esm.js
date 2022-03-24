@@ -11057,7 +11057,15 @@ const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
     return getLaunchOptions();
 });
 
-let cid = '';
+let cid;
+let cidErrMsg;
+function normalizePushMessage(message) {
+    try {
+        return JSON.parse(message);
+    }
+    catch (e) { }
+    return message;
+}
 /**
  * @private
  * @param args
@@ -11065,18 +11073,24 @@ let cid = '';
 function invokePushCallback(args) {
     if (args.type === 'clientId') {
         cid = args.cid;
-        invokeGetPushCidCallbacks(cid);
+        cidErrMsg = args.errMsg;
+        invokeGetPushCidCallbacks(cid, args.errMsg);
     }
     else if (args.type === 'pushMsg') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ data: args.message });
+            callback({ type: 'receive', data: normalizePushMessage(args.message) });
+        });
+    }
+    else if (args.type === 'click') {
+        onPushMessageCallbacks.forEach((callback) => {
+            callback({ type: 'click', data: normalizePushMessage(args.message) });
         });
     }
 }
 const getPushCidCallbacks = [];
-function invokeGetPushCidCallbacks(cid) {
+function invokeGetPushCidCallbacks(cid, errMsg) {
     getPushCidCallbacks.forEach((callback) => {
-        callback(cid);
+        callback(cid, errMsg);
     });
     getPushCidCallbacks.length = 0;
 }
@@ -11088,20 +11102,20 @@ function getPushCid(args) {
     const hasSuccess = isFunction(success);
     const hasFail = isFunction(fail);
     const hasComplete = isFunction(complete);
-    getPushCidCallbacks.push((cid) => {
+    getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
             res = { errMsg: 'getPushCid:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushCid:fail' };
+            res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
     });
-    if (cid) {
-        Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+    if (typeof cid !== 'undefined') {
+        Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
     }
 }
 const onPushMessageCallbacks = [];

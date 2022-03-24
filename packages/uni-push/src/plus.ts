@@ -7,6 +7,13 @@ Promise.resolve().then(() => {
       cid: info.clientid,
     })
   }
+  plus.push.addEventListener('click', (result) => {
+    // @ts-expect-error
+    uni.invokePushCallback({
+      type: 'click',
+      message: result,
+    })
+  })
   plus.push.addEventListener('receive', (result) => {
     // @ts-expect-error
     uni.invokePushCallback({

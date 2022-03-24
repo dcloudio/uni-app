@@ -3,7 +3,7 @@ import debug from 'debug'
 import {
   defineUniMainJsPlugin,
   isSsr,
-  getUniPush,
+  isEnableUniPushV2,
   isUniPushOffline,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
@@ -22,20 +22,17 @@ export default () => [
         }
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_PLATFORM!
-        isOffline = platform === 'app' && isUniPushOffline(inputDir)
-        if (isOffline) {
-          isEnable = true
-          return
-        }
-        const { appid, enable, debug } = getUniPush(inputDir, platform)
-        isEnable = appid && enable === true
+        isEnable = isEnableUniPushV2(inputDir, platform)
         if (!isEnable) {
           return
         }
-        debugPush('appid', appid, 'deubg', debug)
+        isOffline = platform === 'app' && isUniPushOffline(inputDir)
+        if (isOffline) {
+          return
+        }
+        debugPush('deubg', debug)
         return {
           define: {
-            'process.env.UNI_PUSH_APP_ID': JSON.stringify(appid),
             'process.env.UNI_PUSH_DEBUG': !!debug,
           },
         }
