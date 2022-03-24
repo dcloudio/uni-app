@@ -4,7 +4,7 @@ import {
 
 import {
   showPage
-} from '../page.js'
+} from '../../../helpers/page.js'
 
 import {
   t

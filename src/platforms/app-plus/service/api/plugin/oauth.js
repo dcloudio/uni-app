@@ -24,7 +24,8 @@ function getService (provider) {
 export function login (params, callbackId, plus = true) {
   const provider = params.provider || 'weixin'
   const errorCallback = warpErrorCallback(callbackId, 'login', plus)
-  const authOptions = provider === 'apple'
+  const isAppleLogin = provider === 'apple'
+  const authOptions = isAppleLogin
     ? { scope: 'email' }
     : params.univerifyStyle
       ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
@@ -45,16 +46,18 @@ export function login (params, callbackId, plus = true) {
       }
       service.login(res => {
         const authResult = res.target.authResult
+        const appleInfo = res.target.appleInfo
         _invoke(callbackId, {
           code: authResult.code,
           authResult: authResult,
+          appleInfo,
           errMsg: 'login:ok'
         })
       }, errorCallback, authOptions)
     }
     // 先注销再登录
     // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
-    if (provider === 'apple' || provider === 'univerify') {
+    if (isAppleLogin || provider === 'univerify') {
       login()
     } else {
       service.logout(login, login)

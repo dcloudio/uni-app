@@ -51,7 +51,10 @@ const parseParams = (args, callbackId, method) => {
     imageUrl,
     mediaUrl: media,
     scene,
-    miniProgram
+    miniProgram,
+    openCustomerServiceChat,
+    corpid,
+    customerUrl: url
   } = args
 
   if (typeof imageUrl === 'string' && imageUrl) {
@@ -72,7 +75,10 @@ const parseParams = (args, callbackId, method) => {
       miniProgram,
       extra: {
         scene
-      }
+      },
+      openCustomerServiceChat,
+      corpid,
+      url
     }
     if (provider === 'weixin' && (type === 1 || type === 2)) {
       delete sendMsg.thumbs
@@ -84,12 +90,18 @@ const parseParams = (args, callbackId, method) => {
 
 const sendShareMsg = function (service, params, callbackId, method = 'share') {
   const errorCallback = warpPlusErrorCallback(callbackId, method)
-
-  service.send(params, () => {
-    invoke(callbackId, {
-      errMsg: method + ':ok'
+  const serviceMethod = params.openCustomerServiceChat ? 'openCustomerServiceChat' : 'send'
+  try {
+    service[serviceMethod](params, () => {
+      invoke(callbackId, {
+        errMsg: method + ':ok'
+      })
+    }, errorCallback)
+  } catch (error) {
+    errorCallback({
+      message: `${params.provider} ${serviceMethod} 方法调用失败`
     })
-  }, errorCallback)
+  }
 }
 
 export function shareAppMessageDirectly ({

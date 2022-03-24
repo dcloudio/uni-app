@@ -4,7 +4,7 @@ import {
 
 import {
   showPage
-} from '../page.js'
+} from '../../../helpers/page.js'
 
 export function openLocation (data, callbackId) {
   showPage({
