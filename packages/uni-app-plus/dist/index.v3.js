@@ -5759,11 +5759,11 @@ var serviceContext = (function () {
     }
 
     sendMessage (data) {
-      const message = {
+      const message = JSON.parse(JSON.stringify(({
         __message: {
           data
         }
-      };
+      })));
       const id = this.webview.id;
       if (BroadcastChannel_) {
         const channel = new BroadcastChannel_(id);
@@ -5810,7 +5810,8 @@ var serviceContext = (function () {
       animationType: 'pop-in',
       animationDuration: 200,
       uniNView: {
-        path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
+        // eslint-disable-next-line
+        path: `${typeof VUE_APP_TEMPLATE_PATH === 'string' ? VUE_APP_TEMPLATE_PATH : ''}/${url}.js`,
         defaultFontSize: 16,
         viewport: plus_.screen.resolutionWidth
       }
@@ -7976,7 +7977,8 @@ var serviceContext = (function () {
   function login (params, callbackId, plus = true) {
     const provider = params.provider || 'weixin';
     const errorCallback = warpErrorCallback(callbackId, 'login', plus);
-    const authOptions = provider === 'apple'
+    const isAppleLogin = provider === 'apple';
+    const authOptions = isAppleLogin
       ? { scope: 'email' }
       : params.univerifyStyle
         ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
@@ -7997,16 +7999,18 @@ var serviceContext = (function () {
         }
         service.login(res => {
           const authResult = res.target.authResult;
+          const appleInfo = res.target.appleInfo;
           _invoke(callbackId, {
             code: authResult.code,
             authResult: authResult,
+            appleInfo,
             errMsg: 'login:ok'
           });
         }, errorCallback, authOptions);
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
-      if (provider === 'apple' || provider === 'univerify') {
+      if (isAppleLogin || provider === 'univerify') {
         login();
       } else {
         service.logout(login, login);
@@ -8336,7 +8340,10 @@ var serviceContext = (function () {
       imageUrl,
       mediaUrl: media,
       scene,
-      miniProgram
+      miniProgram,
+      openCustomerServiceChat,
+      corpid,
+      customerUrl: url
     } = args;
 
     if (typeof imageUrl === 'string' && imageUrl) {
@@ -8357,7 +8364,10 @@ var serviceContext = (function () {
         miniProgram,
         extra: {
           scene
-        }
+        },
+        openCustomerServiceChat,
+        corpid,
+        url
       };
       if (provider === 'weixin' && (type === 1 || type === 2)) {
         delete sendMsg.thumbs;
@@ -8369,12 +8379,18 @@ var serviceContext = (function () {
 
   const sendShareMsg = function (service, params, callbackId, method = 'share') {
     const errorCallback = warpPlusErrorCallback(callbackId, method);
-
-    service.send(params, () => {
-      invoke$1(callbackId, {
-        errMsg: method + ':ok'
+    const serviceMethod = params.openCustomerServiceChat ? 'openCustomerServiceChat' : 'send';
+    try {
+      service[serviceMethod](params, () => {
+        invoke$1(callbackId, {
+          errMsg: method + ':ok'
+        });
+      }, errorCallback);
+    } catch (error) {
+      errorCallback({
+        message: `${params.provider} ${serviceMethod} 方法调用失败`
       });
-    }, errorCallback);
+    }
   };
 
   function shareAppMessageDirectly ({
