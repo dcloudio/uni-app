@@ -73,9 +73,16 @@ interface Circle extends PlusMapsCircle, Coordinate {
   fillColor?: string
   strokeWidth?: number
 }
+interface Polygon extends PlusMapsPolygon, Coordinate {
+  points: Array<Coordinate>
+  fillColor?: string
+  strokeColor?: string
+  strokeWidth?: number
+}
 type Markers = Array<Marker>
 type Lines = Array<Line>
 type Circles = Array<Circle>
+type Polygons = Array<Polygon>
 type Control = {
   id?: number
   position: Data
@@ -86,6 +93,7 @@ interface Map extends PlusMapsMap {
   __markers__: Markers
   __lines__: Lines
   __circles__: Circles
+  __polygons__: Polygons
 }
 
 const props = {
@@ -123,6 +131,12 @@ const props = {
       return []
     },
   },
+  polygons: {
+    type: Array,
+    default() {
+      return []
+    },
+  },
   controls: {
     type: Array,
     default() {
@@ -145,8 +159,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     let map: Map | undefined
 
-    const { _addMarkers, _addMapLines, _addMapCircles, _setMap } =
-      useMapMethods(props, trigger)
+    const {
+      _addMarkers,
+      _addMapLines,
+      _addMapCircles,
+      _addMapPolygons,
+      _setMap,
+    } = useMapMethods(props, trigger)
 
     onParentReady(() => {
       map = extend(
@@ -172,6 +191,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           __markers__: [],
           __lines__: [],
           __circles__: [],
+          __polygons__: [],
         }
       )
       map.setZoom(parseInt(String(props.scale)))
@@ -189,6 +209,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _addMarkers(props.markers as Markers)
       _addMapLines(props.polyline as Lines)
       _addMapCircles(props.circles as Circles)
+      _addMapPolygons(props.polygons as Polygons)
 
       watch(
         () => attrs.value,
@@ -236,6 +257,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         () => props.circles,
         (val) => {
           _addMapCircles(val as Circles)
+        },
+        { deep: true }
+      )
+      watch(
+        () => props.polygons,
+        (val) => {
+          _addMapPolygons(val as Polygons)
         },
         { deep: true }
       )
@@ -475,6 +503,43 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
       map.__circles__.push(nativeCircle)
     })
   }
+  function _addMapPolygons(polygons: Polygons) {
+    if (!map) return
+
+    const nativeMapPolygons = map.__polygons__
+    nativeMapPolygons.forEach((polygon) => {
+      map?.removeOverlay(polygon as unknown as PlusMapsOverlay)
+    })
+    nativeMapPolygons.length = 0
+
+    polygons.forEach((polygon) => {
+      const { points, strokeWidth, strokeColor, fillColor } = polygon
+      const plusPoints: Array<PlusMapsPoint> = []
+      if (points) {
+        points.forEach((coordinate: Coordinate) => {
+          plusPoints.push(
+            new plus.maps.Point!(coordinate.longitude, coordinate.latitude)
+          )
+        })
+      }
+      const nativePolygon = new plus.maps.Polygon!(plusPoints)
+      if (strokeColor) {
+        const strokeStyle = parseHex(strokeColor)
+        nativePolygon.setStrokeColor(strokeStyle.color)
+        nativePolygon.setStrokeOpacity(strokeStyle.opacity)
+      }
+      if (fillColor) {
+        const fillStyle = parseHex(fillColor)
+        nativePolygon.setFillColor(fillStyle.color)
+        nativePolygon.setFillOpacity(fillStyle.opacity)
+      }
+      if (strokeWidth) {
+        nativePolygon.setLineWidth(strokeWidth)
+      }
+      map?.addOverlay(nativePolygon as unknown as PlusMapsOverlay)
+      nativeMapPolygons.push(nativePolygon as unknown as Polygon)
+    })
+  }
 
   const methods = {
     moveToLocation,
@@ -496,6 +561,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
     _addMarkers,
     _addMapLines,
     _addMapCircles,
+    _addMapPolygons,
     _setMap(_map: Map | null) {
       map = _map
     },
