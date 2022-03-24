@@ -440,7 +440,7 @@ export default {
       const nativeMap = this.map
 
       const nativeMapPolygons = nativeMap.__polygons__
-      polygons.forEach(polygon => {
+      nativeMapPolygons.forEach(polygon => {
         nativeMap.removeOverlay(polygon)
       })
       nativeMapPolygons.length = 0
@@ -450,9 +450,7 @@ export default {
           points,
           strokeWidth,
           strokeColor,
-          fillColor,
-          zIndex,
-          level
+          fillColor
         } = polygon
         const plusPoints = []
         if (points) {
