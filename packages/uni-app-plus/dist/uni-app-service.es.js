@@ -11824,6 +11824,7 @@ var serviceContext = (function (vue) {
   function invokePushCallback(args) {
       if (args.type === 'clientId') {
           cid = args.cid;
+          cidErrMsg = args.errMsg;
           invokeGetPushCidCallbacks(cid, args.errMsg);
       }
       else if (args.type === 'pushMsg') {
@@ -11859,7 +11860,6 @@ var serviceContext = (function (vue) {
               hasSuccess && success(res);
           }
           else {
-              cidErrMsg = errMsg;
               res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') };
               hasFail && fail(res);
           }

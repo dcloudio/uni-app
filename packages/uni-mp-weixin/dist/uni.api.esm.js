@@ -585,6 +585,7 @@ function normalizePushMessage(message) {
 function invokePushCallback(args) {
     if (args.type === 'clientId') {
         cid = args.cid;
+        cidErrMsg = args.errMsg;
         invokeGetPushCidCallbacks(cid, args.errMsg);
     }
     else if (args.type === 'pushMsg') {
@@ -620,7 +621,6 @@ function getPushCid(args) {
             hasSuccess && success(res);
         }
         else {
-            cidErrMsg = errMsg;
             res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
