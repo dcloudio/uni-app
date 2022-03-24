@@ -160,7 +160,7 @@ async function publishPackage(pkgName, version, runIfNotDry) {
     return
   }
 
-  const releaseTag = 'nvue3'
+  const releaseTag = 'vue3'
 
   step(`Publishing ${pkgName}...`)
   try {
