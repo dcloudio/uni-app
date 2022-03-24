@@ -14,6 +14,7 @@ export function uniAppPlugin(): UniVitePlugin {
     uni: uniOptions(),
     config(config, env) {
       return {
+        base: '/', // app 平台强制 base
         css: {
           postcss: {
             plugins: initPostcssPlugin({
