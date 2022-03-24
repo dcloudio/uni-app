@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-vite",
-  "version": "0.0.1-nvue3.3040020220301001",
+  "version": "3.0.0-alpha-3040220220310008",
   "description": "uni-app-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,10 +19,10 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "0.0.1-nvue3.3040020220301001",
-    "@dcloudio/uni-i18n": "0.0.1-nvue3.3040020220301001",
-    "@dcloudio/uni-nvue-styler": "0.0.1-nvue3.3040020220301001",
-    "@dcloudio/uni-shared": "0.0.1-nvue3.3040020220301001",
+    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3040220220310008",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040220220310008",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3040220220310008",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3040220220310008",
     "@rollup/pluginutils": "^4.1.2",
     "@vitejs/plugin-vue": "^2.2.4",
     "@vue/compiler-dom": "3.2.31",

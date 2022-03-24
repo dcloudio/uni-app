@@ -19,6 +19,7 @@ export function uniAppPlugin(
     uni: uniOptions(),
     config(config, env) {
       return {
+        base: '/', // app 平台强制 base
         build: buildOptions({ renderer, appService }, config, env),
       }
     },

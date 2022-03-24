@@ -124,6 +124,7 @@ export function uniMiniProgramPlugin(
     }),
     config() {
       return {
+        base: '/', // 小程序平台强制 base
         resolve: {
           alias: {
             vue: resolveBuiltIn('@dcloudio/uni-mp-vue'),
