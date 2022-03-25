@@ -8996,7 +8996,9 @@ function patchStyle(el, prev, next) {
         const currentDisplay = style.display;
         if (isCssString) {
             if (prev !== next) {
-                style.cssText = next;
+                // fixed by xxxxxx
+                // @ts-ignore
+                style.cssText = normalizeStyleValue(next);
             }
         }
         else if (prev) {
@@ -9016,13 +9018,17 @@ function setStyle(style, name, val) {
         val.forEach(v => setStyle(style, name, v));
     }
     else {
-        val = normalizeRpx(val); // fixed by xxxxxx
+        // fixed by xxxxxx
+        // @ts-ignore
+        val = normalizeStyleValue(val);
         if (name.startsWith('--')) {
             // custom property definition
             style.setProperty(name, val);
         }
         else {
-            const prefixed = autoPrefix(style, name);
+            // fixed by xxxxxx
+            // @ts-ignore
+            const prefixed = normalizeStyleName(style, name);
             if (importantRE.test(val)) {
                 // !important
                 style.setProperty(hyphenate(prefixed), val.replace(importantRE, ''), 'important');
@@ -9033,42 +9039,6 @@ function setStyle(style, name, val) {
         }
     }
 }
-const prefixes = ['Webkit', 'Moz', 'ms'];
-const prefixCache = {};
-function autoPrefix(style, rawName) {
-    const cached = prefixCache[rawName];
-    if (cached) {
-        return cached;
-    }
-    let name = camelize(rawName);
-    if (name !== 'filter' && name in style) {
-        return (prefixCache[rawName] = name);
-    }
-    name = capitalize(name);
-    for (let i = 0; i < prefixes.length; i++) {
-        const prefixed = prefixes[i] + name;
-        if (prefixed in style) {
-            return (prefixCache[rawName] = prefixed);
-        }
-    }
-    return rawName;
-}
-// fixed by xxxxxx
-// upx,rpx
-const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
-const normalizeRpx = (val) => {
-    // @ts-ignore
-    if (typeof rpx2px !== 'function') {
-        return val;
-    }
-    if (isString(val)) {
-        return val.replace(rpxRE, (a, b) => {
-            // @ts-ignore
-            return rpx2px(b) + 'px';
-        });
-    }
-    return val;
-};
 
 const xlinkNS = 'http://www.w3.org/1999/xlink';
 function patchAttr(el, key, value, isSVG, instance) {

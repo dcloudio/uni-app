@@ -5851,7 +5851,7 @@
       var currentDisplay = style.display;
       if (isCssString) {
         if (prev !== next) {
-          style.cssText = next;
+          style.cssText = normalizeStyleValue(next);
         }
       } else if (prev) {
         el.removeAttribute("style");
@@ -5866,11 +5866,11 @@
     if (isArray$1(val)) {
       val.forEach((v2) => setStyle$1(style, name, v2));
     } else {
-      val = normalizeRpx(val);
+      val = normalizeStyleValue(val);
       if (name.startsWith("--")) {
         style.setProperty(name, val);
       } else {
-        var prefixed = autoPrefix$1(style, name);
+        var prefixed = normalizeStyleName(style, name);
         if (importantRE$1.test(val)) {
           style.setProperty(hyphenate(prefixed), val.replace(importantRE$1, ""), "important");
         } else {
@@ -5879,38 +5879,6 @@
       }
     }
   }
-  var prefixes$1 = ["Webkit", "Moz", "ms"];
-  var prefixCache$1 = {};
-  function autoPrefix$1(style, rawName) {
-    var cached = prefixCache$1[rawName];
-    if (cached) {
-      return cached;
-    }
-    var name = camelize(rawName);
-    if (name !== "filter" && name in style) {
-      return prefixCache$1[rawName] = name;
-    }
-    name = capitalize(name);
-    for (var i2 = 0; i2 < prefixes$1.length; i2++) {
-      var prefixed = prefixes$1[i2] + name;
-      if (prefixed in style) {
-        return prefixCache$1[rawName] = prefixed;
-      }
-    }
-    return rawName;
-  }
-  var rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
-  var normalizeRpx = (val) => {
-    if (typeof rpx2px !== "function") {
-      return val;
-    }
-    if (isString(val)) {
-      return val.replace(rpxRE, (a2, b) => {
-        return rpx2px(b) + "px";
-      });
-    }
-    return val;
-  };
   var xlinkNS = "http://www.w3.org/1999/xlink";
   function patchAttr(el, key2, value, isSVG, instance) {
     if (isSVG && key2.startsWith("xlink:")) {
@@ -6445,7 +6413,7 @@
     str = str + "";
     return str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1;
   }
-  function rpx2px$1(str) {
+  function rpx2px(str) {
     var replace = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
     if (replace) {
       return rpx2pxWithReplace(str);
@@ -12297,13 +12265,46 @@
     }
     el.className = clazz;
   }
+  function normalizeStyleValue$1(val) {
+    return normalizeUrl(rpx2px(val, true));
+  }
+  var urlRE = /url\(\s*'?"?([a-zA-Z0-9\.\-\_\/]+\.(jpg|gif|png))"?'?\s*\)/;
+  var normalizeUrl = (val) => {
+    if (isString(val) && val.indexOf("url(") !== -1) {
+      var matches2 = val.match(urlRE);
+      if (matches2 && matches2.length === 3) {
+        val = val.replace(matches2[1], getRealPath(matches2[1]));
+      }
+    }
+    return val;
+  };
+  var prefixes = ["Webkit"];
+  var prefixCache = {};
+  function normalizeStyleName$1(style, rawName) {
+    var cached = prefixCache[rawName];
+    if (cached) {
+      return cached;
+    }
+    var name = camelize(rawName);
+    if (name !== "filter" && name in style) {
+      return prefixCache[rawName] = name;
+    }
+    name = capitalize(name);
+    for (var i2 = 0; i2 < prefixes.length; i2++) {
+      var prefixed = prefixes[i2] + name;
+      if (prefixed in style) {
+        return prefixCache[rawName] = prefixed;
+      }
+    }
+    return rawName;
+  }
   function patchStyle(el, value) {
     var style = el.style;
     if (isString(value)) {
       if (value === "") {
         el.removeAttribute("style");
       } else {
-        style.cssText = rpx2px$1(value, true);
+        style.cssText = normalizeStyleValue$1(value);
       }
     } else {
       for (var key2 in value) {
@@ -12324,11 +12325,11 @@
     if (isArray$1(val)) {
       val.forEach((v2) => setStyle(style, name, v2));
     } else {
-      val = rpx2px$1(val, true);
+      val = normalizeStyleValue$1(val);
       if (name.startsWith("--")) {
         style.setProperty(name, val);
       } else {
-        var prefixed = autoPrefix(style, name);
+        var prefixed = normalizeStyleName$1(style, name);
         if (importantRE.test(val)) {
           style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
         } else {
@@ -12336,26 +12337,6 @@
         }
       }
     }
-  }
-  var prefixes = ["Webkit"];
-  var prefixCache = {};
-  function autoPrefix(style, rawName) {
-    var cached = prefixCache[rawName];
-    if (cached) {
-      return cached;
-    }
-    var name = camelize(rawName);
-    if (name !== "filter" && name in style) {
-      return prefixCache[rawName] = name;
-    }
-    name = capitalize(name);
-    for (var i2 = 0; i2 < prefixes.length; i2++) {
-      var prefixed = prefixes[i2] + name;
-      if (prefixed in style) {
-        return prefixCache[rawName] = prefixed;
-      }
-    }
-    return rawName;
   }
   var JSON_PROTOCOL_LEN = JSON_PROTOCOL.length;
   function decodeAttr(el, value) {
@@ -14976,7 +14957,7 @@
         var {
           value
         } = path;
-        return createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px$1(props2.size))]);
+        return createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]);
       };
     }
   });
@@ -20112,13 +20093,13 @@
           style = props2.vertical ? {
             left: 0,
             right: 0,
-            top: rpx2px$1(props2.previousMargin, true),
-            bottom: rpx2px$1(props2.nextMargin, true)
+            top: rpx2px(props2.previousMargin, true),
+            bottom: rpx2px(props2.nextMargin, true)
           } : {
             top: 0,
             bottom: 0,
-            left: rpx2px$1(props2.previousMargin, true),
-            right: rpx2px$1(props2.nextMargin, true)
+            left: rpx2px(props2.previousMargin, true),
+            right: rpx2px(props2.nextMargin, true)
           };
         }
         return style;
@@ -23417,6 +23398,8 @@
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;
   window.rpx2px = upx2px;
+  window.normalizeStyleName = normalizeStyleName$1;
+  window.normalizeStyleValue = normalizeStyleValue$1;
   window.__$__ = $;
   window.__f__ = formatAppLog;
   function onWebviewReady() {
