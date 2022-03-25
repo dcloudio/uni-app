@@ -108,6 +108,7 @@ export const NVUE_BUILT_IN_TAGS = [
   'waterfall',
   'richtext',
   'recycle-list',
+  'u-scalable',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [

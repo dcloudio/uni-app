@@ -105,6 +105,7 @@ const NVUE_BUILT_IN_TAGS = [
     'waterfall',
     'richtext',
     'recycle-list',
+    'u-scalable',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',

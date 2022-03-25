@@ -2428,22 +2428,20 @@ var PickerViewColumn = defineComponent({
           paddingTop: `${padding}px`,
           paddingBottom: `${padding}px`
         }
-      }, [createScrollViewChild(children)])]), createVNode(resolveComponent("u-scalable"), {
+      }, [createScrollViewChild(children)])]), createVNode("u-scalable", {
         "class": "uni-picker-view-mask",
         "style": maskStyle.value
-      }, {
-        default: () => [createVNode(resolveComponent("u-scalable"), {
-          "class": "uni-picker-view-mask uni-picker-view-mask-top",
-          "style": {
-            bottom: maskPosition
-          }
-        }, null), createVNode(resolveComponent("u-scalable"), {
-          "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
-          "style": {
-            top: maskPosition
-          }
-        }, null)]
-      }), createVNode(resolveComponent("u-scalable"), {
+      }, [createVNode("u-scalable", {
+        "class": "uni-picker-view-mask uni-picker-view-mask-top",
+        "style": {
+          bottom: maskPosition
+        }
+      }, null), createVNode("u-scalable", {
+        "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
+        "style": {
+          top: maskPosition
+        }
+      }, null)]), createVNode("u-scalable", {
         "ref": indicatorRef,
         "class": "uni-picker-view-indicator",
         "style": extend({}, indicatorStyle.value, {
