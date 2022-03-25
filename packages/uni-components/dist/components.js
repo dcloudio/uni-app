@@ -2356,7 +2356,7 @@ var PickerViewColumn = defineComponent({
       if (Date.now() - scrollToElementTime < 340) {
         return;
       }
-      const y = event.contentOffset.y;
+      const y = event.detail.contentOffset.y;
       const _current = Math.round(y / indicatorHeight.value);
       if (y % indicatorHeight.value) {
         setCurrent(_current, true, true);
