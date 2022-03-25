@@ -21759,6 +21759,12 @@
         return [];
       }
     },
+    polygons: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
     controls: {
       type: Array,
       default() {
@@ -21788,6 +21794,7 @@
         _addMarkers,
         _addMapLines,
         _addMapCircles,
+        _addMapPolygons,
         _setMap
       } = useMapMethods(props2, trigger2);
       onParentReady(() => {
@@ -21800,7 +21807,8 @@
         })())), {
           __markers__: [],
           __lines__: [],
-          __circles__: []
+          __circles__: [],
+          __polygons__: []
         });
         map2.setZoom(parseInt(String(props2.scale)));
         plus.webview.currentWebview().append(map2);
@@ -21817,6 +21825,7 @@
         _addMarkers(props2.markers);
         _addMapLines(props2.polyline);
         _addMapCircles(props2.circles);
+        _addMapPolygons(props2.polygons);
         watch(() => attrs2.value, (attrs3) => map2 && map2.setStyles(attrs3), {
           deep: true
         });
@@ -21847,6 +21856,11 @@
         });
         watch(() => props2.circles, (val) => {
           _addMapCircles(val);
+        }, {
+          deep: true
+        });
+        watch(() => props2.polygons, (val) => {
+          _addMapPolygons(val);
         }, {
           deep: true
         });
@@ -22072,6 +22086,47 @@
         map2.__circles__.push(nativeCircle);
       });
     }
+    function _addMapPolygons(polygons) {
+      if (!map2)
+        return;
+      var nativeMapPolygons = map2.__polygons__;
+      nativeMapPolygons.forEach((polygon) => {
+        var _map8;
+        (_map8 = map2) === null || _map8 === void 0 ? void 0 : _map8.removeOverlay(polygon);
+      });
+      nativeMapPolygons.length = 0;
+      polygons.forEach((polygon) => {
+        var _map9;
+        var {
+          points,
+          strokeWidth,
+          strokeColor,
+          fillColor
+        } = polygon;
+        var plusPoints = [];
+        if (points) {
+          points.forEach((coordinate) => {
+            plusPoints.push(new plus.maps.Point(coordinate.longitude, coordinate.latitude));
+          });
+        }
+        var nativePolygon = new plus.maps.Polygon(plusPoints);
+        if (strokeColor) {
+          var strokeStyle = parseHex(strokeColor);
+          nativePolygon.setStrokeColor(strokeStyle.color);
+          nativePolygon.setStrokeOpacity(strokeStyle.opacity);
+        }
+        if (fillColor) {
+          var fillStyle = parseHex(fillColor);
+          nativePolygon.setFillColor(fillStyle.color);
+          nativePolygon.setFillOpacity(fillStyle.opacity);
+        }
+        if (strokeWidth) {
+          nativePolygon.setLineWidth(strokeWidth);
+        }
+        (_map9 = map2) === null || _map9 === void 0 ? void 0 : _map9.addOverlay(nativePolygon);
+        nativeMapPolygons.push(nativePolygon);
+      });
+    }
     var methods2 = {
       moveToLocation,
       getCenterLocation,
@@ -22085,6 +22140,7 @@
       _addMarkers,
       _addMapLines,
       _addMapCircles,
+      _addMapPolygons,
       _setMap(_map) {
         map2 = _map;
       }
