@@ -56,11 +56,19 @@ export function addFont(
   })
 }
 
-export function scrollTo(scrollTop: number | string, duration: number) {
+export function scrollTo(
+  scrollTop: number | string,
+  duration: number,
+  isH5?: boolean
+) {
   if (isString(scrollTop)) {
     const el = document.querySelector(scrollTop)
     if (el) {
-      scrollTop = el.getBoundingClientRect().top + window.pageYOffset
+      const { height, top } = el.getBoundingClientRect()
+      scrollTop = top + window.pageYOffset
+      if (isH5) {
+        scrollTop -= height
+      }
     }
   }
   if (scrollTop < 0) {

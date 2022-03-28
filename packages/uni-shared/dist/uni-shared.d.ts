@@ -606,7 +606,7 @@ export declare const sanitise: (val: unknown) => any;
 
 export declare const SCHEME_RE: RegExp;
 
-declare function scrollTo_2(scrollTop: number | string, duration: number): void;
+declare function scrollTo_2(scrollTop: number | string, duration: number, isH5?: boolean): void;
 export { scrollTo_2 as scrollTo }
 
 export declare const SELECTED_COLOR = "#0062cc";

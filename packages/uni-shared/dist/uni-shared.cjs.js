@@ -504,11 +504,15 @@ function addFont(family, source, desc) {
         resolve();
     });
 }
-function scrollTo(scrollTop, duration) {
+function scrollTo(scrollTop, duration, isH5) {
     if (shared.isString(scrollTop)) {
         const el = document.querySelector(scrollTop);
         if (el) {
-            scrollTop = el.getBoundingClientRect().top + window.pageYOffset;
+            const { height, top } = el.getBoundingClientRect();
+            scrollTop = top + window.pageYOffset;
+            if (isH5) {
+                scrollTop -= height;
+            }
         }
     }
     if (scrollTop < 0) {
