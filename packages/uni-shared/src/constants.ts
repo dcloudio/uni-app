@@ -50,6 +50,8 @@ export const ON_UNHANDLE_REJECTION = 'onUnhandledRejection'
 export const ON_LOAD = 'onLoad'
 export const ON_READY = 'onReady'
 export const ON_UNLOAD = 'onUnload'
+// 百度特有
+export const ON_INIT = 'onInit'
 
 export const ON_RESIZE = 'onResize'
 export const ON_BACK_PRESS = 'onBackPress'
