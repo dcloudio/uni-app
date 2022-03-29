@@ -341,7 +341,9 @@ function parseApp(instance, parseAppOptions) {
     initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
-    initUnknownHooks(appOptions, vueOptions);
+    {
+        initUnknownHooks(appOptions, vueOptions);
+    }
     if (__VUE_OPTIONS_API__) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);

@@ -5,12 +5,10 @@ import {
   initMocks,
   handleEvent,
   nextSetDataTick,
-} from '@dcloudio/uni-mp-core'
-import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
-import {
-  fixSetDataStart,
   fixSetDataEnd,
-} from '@dcloudio/uni-mp-weixin/src/runtime/fixSetData'
+  fixSetDataStart,
+} from '@dcloudio/uni-mp-core'
+import { ON_INIT, ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 
 export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 
@@ -49,7 +47,7 @@ export function parse(componentOptions: MPComponentOptions) {
     fixSetDataStart(this as MPComponentInstance)
     oldAttached.call(this)
     this.pageinstance.$vm = this.$vm
-    this.$vm.$callHook('onInit', query)
+    this.$vm.$callHook(ON_INIT, query)
   }
   lifetimes.attached = function attached(this: MPComponentInstance) {
     if (!this.$vm) {

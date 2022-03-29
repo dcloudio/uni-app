@@ -15,7 +15,7 @@ const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 //Page
 const ON_LOAD = 'onLoad';
-const ON_READY$1 = 'onReady';
+const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
 const ON_RESIZE = 'onResize';
 const ON_TAB_ITEM_TAP = 'onTabItemTap';
@@ -224,7 +224,7 @@ function initHook$1(mpOptions, hook, excludes) {
         };
     }
 }
-const EXCLUDE_HOOKS = [ON_READY$1];
+const EXCLUDE_HOOKS = [ON_READY];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
     hooks.forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
@@ -295,7 +295,9 @@ function parseApp(instance, parseAppOptions) {
     initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
-    initUnknownHooks(appOptions, vueOptions);
+    {
+        initUnknownHooks(appOptions, vueOptions);
+    }
     if (__VUE_OPTIONS_API__) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
@@ -749,8 +751,6 @@ function initCreatePluginApp(parseAppOptions) {
         initAppLifecycle(parseApp(vm, parseAppOptions), vm);
     };
 }
-
-const ON_READY = 'onReady';
 
 const MPPage = Page;
 const MPComponent = Component;

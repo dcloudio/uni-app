@@ -1,4 +1,5 @@
-import { MPComponentInstance } from '@dcloudio/uni-mp-core'
+import { MPComponentInstance } from './component'
+
 /**
  * 用于延迟调用 setData
  * 在 setData 真实调用的时机需执行 fixSetDataEnd

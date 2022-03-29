@@ -441,6 +441,8 @@ export declare const ON_ERROR = "onError";
 
 export declare const ON_HIDE = "onHide";
 
+export declare const ON_INIT = "onInit";
+
 export declare const ON_KEYBOARD_HEIGHT_CHANGE = "onKeyboardHeightChange";
 
 export declare const ON_LAUNCH = "onLaunch";

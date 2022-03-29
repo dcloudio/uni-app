@@ -423,7 +423,9 @@ function parseApp(instance, parseAppOptions) {
     initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
-    initUnknownHooks(appOptions, vueOptions);
+    {
+        initUnknownHooks(appOptions, vueOptions);
+    }
     if (__VUE_OPTIONS_API__) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
@@ -1041,7 +1043,7 @@ function initLifetimes(lifetimesOptions) {
                 this.$vm.$callCreatedHook();
                 nextSetDataTick(this, () => {
                     this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY$1);
+                    this.$vm.$callHook(ON_READY);
                 });
             }
             else {

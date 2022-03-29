@@ -1,14 +1,12 @@
 import { extend } from '@vue/shared'
 import {
+  fixSetDataEnd,
+  fixSetDataStart,
   handleEvent,
   MPComponentInstance,
   MPComponentOptions,
 } from '@dcloudio/uni-mp-core'
 import * as baseParseOptions from '@dcloudio/uni-mp-weixin/src/runtime/parseOptions'
-import {
-  fixSetDataStart,
-  fixSetDataEnd,
-} from '@dcloudio/uni-mp-weixin/src/runtime/fixSetData'
 
 export function parse(componentOptions: MPComponentOptions) {
   const oldAttached = componentOptions.lifetimes!.attached

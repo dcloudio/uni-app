@@ -231,6 +231,8 @@ const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_LOAD = 'onLoad';
 const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
+// 百度特有
+const ON_INIT = 'onInit';
 const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
@@ -1441,6 +1443,7 @@ exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
 exports.ON_BACK_PRESS = ON_BACK_PRESS;
 exports.ON_ERROR = ON_ERROR;
 exports.ON_HIDE = ON_HIDE;
+exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAUNCH = ON_LAUNCH;
 exports.ON_LOAD = ON_LOAD;

@@ -1,95 +1,5 @@
-import { isPlainObject, camelize, isArray, hasOwn, isFunction, extend } from '@vue/shared';
+import { camelize, isPlainObject, isArray, hasOwn, isFunction, extend } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
-
-// lifecycle
-// App and Page
-const ON_SHOW$1 = 'onShow';
-//Page
-const ON_LOAD$1 = 'onLoad';
-const ON_READY$1 = 'onReady';
-
-const encode$1 = encodeURIComponent;
-function stringifyQuery$1(obj, encodeStr = encode$1) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
-}
-
-class EventChannel$1 {
-    constructor(id, events) {
-        this.id = id;
-        this.listener = {};
-        this.emitCache = {};
-        if (events) {
-            Object.keys(events).forEach((name) => {
-                this.on(name, events[name]);
-            });
-        }
-    }
-    emit(eventName, ...args) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
-        }
-        fns.forEach((opt) => {
-            opt.fn.apply(opt.fn, args);
-        });
-        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
-    }
-    on(eventName, fn) {
-        this._addListener(eventName, 'on', fn);
-        this._clearCache(eventName);
-    }
-    once(eventName, fn) {
-        this._addListener(eventName, 'once', fn);
-        this._clearCache(eventName);
-    }
-    off(eventName, fn) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return;
-        }
-        if (fn) {
-            for (let i = 0; i < fns.length;) {
-                if (fns[i].fn === fn) {
-                    fns.splice(i, 1);
-                    i--;
-                }
-                i++;
-            }
-        }
-        else {
-            delete this.listener[eventName];
-        }
-    }
-    _clearCache(eventName) {
-        const cacheArgs = this.emitCache[eventName];
-        if (cacheArgs) {
-            for (; cacheArgs.length > 0;) {
-                this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
-            }
-        }
-    }
-    _addListener(eventName, type, fn) {
-        (this.listener[eventName] || (this.listener[eventName] = [])).push({
-            fn,
-            type,
-        });
-    }
-}
 
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
@@ -107,6 +17,8 @@ const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_LOAD = 'onLoad';
 const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
+// 百度特有
+const ON_INIT = 'onInit';
 const ON_RESIZE = 'onResize';
 const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
@@ -452,7 +364,9 @@ function parseApp(instance, parseAppOptions) {
     initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
-    initUnknownHooks(appOptions, vueOptions);
+    {
+        initUnknownHooks(appOptions, vueOptions, [ON_INIT, ON_READY]);
+    }
     if (__VUE_OPTIONS_API__) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
@@ -946,6 +860,45 @@ function initCreatePage(parseOptions) {
     };
 }
 
+/**
+ * 用于延迟调用 setData
+ * 在 setData 真实调用的时机需执行 fixSetDataEnd
+ * @param {*} mpInstance
+ */
+function fixSetDataStart(mpInstance) {
+    const setData = mpInstance.setData;
+    const setDataArgs = [];
+    mpInstance.setData = function () {
+        setDataArgs.push(arguments);
+    };
+    mpInstance.__fixInitData = function () {
+        this.setData = setData;
+        const fn = () => {
+            setDataArgs.forEach((args) => {
+                setData.apply(this, args);
+            });
+        };
+        if (setDataArgs.length) {
+            if (this.groupSetData) {
+                this.groupSetData(fn);
+            }
+            else {
+                fn();
+            }
+        }
+    };
+}
+/**
+ * 恢复真实的 setData 方法
+ * @param {*} mpInstance
+ */
+function fixSetDataEnd(mpInstance) {
+    if (mpInstance.__fixInitData) {
+        mpInstance.__fixInitData();
+        delete mpInstance.__fixInitData;
+    }
+}
+
 const MPPage = Page;
 const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
@@ -992,53 +945,14 @@ function parse$2(appOptions) {
         if (!this.$vm) {
             this.onLaunch(args);
         }
-        this.$vm.$callHook(ON_SHOW$1, args);
+        this.$vm.$callHook(ON_SHOW, args);
     };
 }
 
 var parseAppOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    parse: parse$2
+  __proto__: null,
+  parse: parse$2
 });
-
-/**
- * 用于延迟调用 setData
- * 在 setData 真实调用的时机需执行 fixSetDataEnd
- * @param {*} mpInstance
- */
-function fixSetDataStart(mpInstance) {
-    const setData = mpInstance.setData;
-    const setDataArgs = [];
-    mpInstance.setData = function () {
-        setDataArgs.push(arguments);
-    };
-    mpInstance.__fixInitData = function () {
-        this.setData = setData;
-        const fn = () => {
-            setDataArgs.forEach((args) => {
-                setData.apply(this, args);
-            });
-        };
-        if (setDataArgs.length) {
-            if (this.groupSetData) {
-                this.groupSetData(fn);
-            }
-            else {
-                fn();
-            }
-        }
-    };
-}
-/**
- * 恢复真实的 setData 方法
- * @param {*} mpInstance
- */
-function fixSetDataEnd(mpInstance) {
-    if (mpInstance.__fixInitData) {
-        mpInstance.__fixInitData();
-        delete mpInstance.__fixInitData;
-    }
-}
 
 // @ts-ignore
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
@@ -1080,7 +994,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                 {
                     nextSetDataTick(this, () => {
                         this.$vm.$callHook('mounted');
-                        this.$vm.$callHook(ON_READY$1);
+                        this.$vm.$callHook(ON_READY);
                     });
                 }
             }
@@ -1135,7 +1049,7 @@ function parse$1(componentOptions) {
         fixSetDataStart(this);
         oldAttached.call(this);
         this.pageinstance.$vm = this.$vm;
-        this.$vm.$callHook('onInit', query);
+        this.$vm.$callHook(ON_INIT, query);
     };
     lifetimes.attached = function attached() {
         if (!this.$vm) {
@@ -1151,8 +1065,8 @@ function parse$1(componentOptions) {
             const pageInstance = this.pageinstance;
             pageInstance.$vm = this.$vm;
             if (hasOwn(pageInstance, '_$args')) {
-                this.$vm.$callHook(ON_LOAD$1, pageInstance._$args);
-                this.$vm.$callHook(ON_SHOW$1);
+                this.$vm.$callHook(ON_LOAD, pageInstance._$args);
+                this.$vm.$callHook(ON_SHOW);
                 delete pageInstance._$args;
             }
         }
@@ -1178,13 +1092,13 @@ function parse$1(componentOptions) {
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation,
-    parse: parse$1,
-    handleLink: handleLink,
-    initLifetimes: initLifetimes
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation,
+  parse: parse$1,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes
 });
 
 function parse(pageOptions) {
@@ -1193,7 +1107,7 @@ function parse(pageOptions) {
     // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
     methods.onShow = function onShow() {
         if (this.$vm && this._$loaded) {
-            this.$vm.$callHook(ON_SHOW$1);
+            this.$vm.$callHook(ON_SHOW);
         }
     };
     methods.onLoad = function onLoad(query) {
@@ -1204,10 +1118,10 @@ function parse(pageOptions) {
             delete copyQuery.__id__;
             this.options = copyQuery;
             this.pageinstance.$page = this.$page = {
-                fullPath: '/' + this.pageinstance.route + stringifyQuery$1(copyQuery),
+                fullPath: '/' + this.pageinstance.route + stringifyQuery(copyQuery),
             };
-            this.$vm.$callHook(ON_LOAD$1, query);
-            this.$vm.$callHook(ON_SHOW$1);
+            this.$vm.$callHook(ON_LOAD, query);
+            this.$vm.$callHook(ON_SHOW);
         }
         else {
             this.pageinstance._$args = query;
@@ -1216,20 +1130,20 @@ function parse(pageOptions) {
 }
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    parse: parse,
-    handleLink: handleLink,
-    initLifetimes: initLifetimes,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation
+  __proto__: null,
+  parse: parse,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation
 });
 
 const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 const createSubpackageApp = initCreateSubpackageApp(parseAppOptions);
-swan.EventChannel = EventChannel$1;
+swan.EventChannel = EventChannel;
 swan.createApp = global.createApp = createApp;
 swan.createPage = createPage;
 swan.createComponent = createComponent;
