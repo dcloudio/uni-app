@@ -46,6 +46,15 @@ describe('mp:compiler-mp-alipay', () => {
       '<component1 vue-id="{{\'551070e6-1-\'+__i0__}}" ref="__r" data-ref-in-for="{{c4}}" a:for="{{items}}" a:for-item="item" a:for-index="__i0__" onVueInit="__l"></component1>'
     )
     assertCodegen(
+      '<component1>text</component1>',
+      '<component1 vue-id="551070e6-1" data-com-type="wx" ref="__r" onVueInit="__l">text</component1>',
+      undefined,
+      undefined,
+      {
+        wxComponents: { component1: '/mycomponents/component1' }
+      }
+    )
+    assertCodegen(
       '<component1 @change="onChange" @cancle="onCancle">text</component1>',
       '<component1 onChange="__e" onCancle="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" ref="__r" data-event-list="onChange,onCancle" onVueInit="__l">text</component1>',
       undefined,

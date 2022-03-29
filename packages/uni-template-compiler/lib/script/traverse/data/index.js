@@ -58,20 +58,25 @@ module.exports = function traverseData (path, state, tagName) {
           t.stringLiteral('__r')
         )
       )
-      const properties = path.node.properties.find(prop => prop.key.name === 'on').value.properties
-      const list = []
-      for (let index = 0; index < properties.length; index++) {
-        const element = properties[index]
-        if (element.value.value === '__e') {
-          list.push(element.key.value)
+      const on = path.node.properties.find(prop => prop.key.name === 'on')
+      if (on) {
+        const properties = on.value.properties
+        const list = []
+        for (let index = 0; index < properties.length; index++) {
+          const element = properties[index]
+          if (element.value.value === '__e') {
+            list.push(element.key.value)
+          }
+        }
+        if (list.length) {
+          addAttrProperties.push(
+            t.objectProperty(
+              t.stringLiteral(ATTR_DATA_EVENT_LIST),
+              t.stringLiteral(list.join(','))
+            )
+          )
         }
       }
-      addAttrProperties.push(
-        t.objectProperty(
-          t.stringLiteral(ATTR_DATA_EVENT_LIST),
-          t.stringLiteral(list.join(','))
-        )
-      )
       if (wxComponent.startsWith('plugin://')) {
         const wrapperTag = 'plugin-wrapper'
         const orgPath = path.parentPath
