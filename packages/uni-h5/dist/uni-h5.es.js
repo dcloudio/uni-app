@@ -19083,7 +19083,7 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
 const pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({ scrollTop, selector, duration }, { resolve }) => {
-  scrollTo(selector || scrollTop || 0, duration);
+  scrollTo(selector || scrollTop || 0, duration, true);
   resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
 const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve }) => {
