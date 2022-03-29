@@ -13,6 +13,7 @@ export const WITH_SCOPED_SLOT = Symbol(`withScopedSlot`)
 export const STRINGIFY_STYLE = Symbol(`stringifyStyle`)
 export const NORMALIZE_CLASS = Symbol(`normalizeClass`)
 export const TO_DISPLAY_STRING = Symbol(`toDisplayString`)
+export const WITH_MODEL_MODIFIERS = Symbol(`withModelModifiers`)
 registerRuntimeHelpers({
   [V_ON]: 'o',
   [V_FOR]: 'f',
@@ -26,5 +27,6 @@ registerRuntimeHelpers({
   [WITH_SCOPED_SLOT]: 'w',
   [STRINGIFY_STYLE]: 's',
   [NORMALIZE_CLASS]: 'n',
-  [TO_DISPLAY_STRING]: `t`,
+  [TO_DISPLAY_STRING]: 't',
+  [WITH_MODEL_MODIFIERS]: 'm',
 })

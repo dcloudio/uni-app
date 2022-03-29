@@ -12,6 +12,11 @@ import {
   createCompoundExpression,
   DirectiveTransform,
   TransformContext as VueTransformContext,
+  isSimpleIdentifier,
+  isStaticExp,
+  createObjectProperty,
+  createSimpleExpression,
+  ConstantTypes,
 } from '@vue/compiler-core'
 import { DOMErrorCodes, createDOMCompilerError } from '@vue/compiler-dom'
 
@@ -19,8 +24,9 @@ import {
   createBindDirectiveNode,
   createOnDirectiveNode,
   ATTR_DATASET_EVENT_OPTS,
+  isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
-import { V_ON } from '../runtimeHelpers'
+import { V_ON, WITH_MODEL_MODIFIERS } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
 import { TransformContext } from '../transform'
 import { DirectiveTransformResult } from './transformElement'
@@ -75,6 +81,29 @@ export const transformModel: DirectiveTransform = (
     )
   }
 
+  if (dir.modifiers.length) {
+    const arg = dir.arg
+    const modifiers = dir.modifiers
+      .map((m) => (isSimpleIdentifier(m) ? m : JSON.stringify(m)) + `: true`)
+      .join(`, `)
+    const modifiersKey = arg
+      ? isStaticExp(arg)
+        ? `${arg.content}Modifiers`
+        : createCompoundExpression([arg, ' + "Modifiers"'])
+      : `modelModifiers`
+    baseResult.props.push(
+      createObjectProperty(
+        modifiersKey,
+        createSimpleExpression(
+          `{ ${modifiers} }`,
+          false,
+          dir.loc,
+          ConstantTypes.CAN_HOIST
+        )
+      )
+    )
+  }
+
   return transformElementVModel(
     baseResult.props,
     node,
@@ -98,6 +127,7 @@ function transformElementVModel(
   context: TransformContext
 ) {
   const dirs = transformVModel(props, node, context, {
+    isComponent: false,
     binding: 'value',
     event: 'input',
     formatEventCode(code) {
@@ -230,6 +260,7 @@ function transformComponentVModel(
 ) {
   return {
     props: transformVModel(props, node, context, {
+      isComponent: true,
       formatEventCode(code) {
         return code
       },
@@ -242,16 +273,18 @@ function transformVModel(
   node: ElementNode,
   context: TransformContext,
   {
+    isComponent,
     binding,
     event,
     formatEventCode,
   }: {
+    isComponent: boolean
     binding?: string
     event?: string
     formatEventCode: (code: string) => string
   }
 ) {
-  if (props.length !== 2) {
+  if (props.length < 2) {
     return []
   }
   const { key: modelValueArg, value: modelValeExpr } = props[0]
@@ -270,15 +303,22 @@ function transformVModel(
     binding || modelValueArg.content,
     genExpr(modelValeExpr as ExpressionNode)
   )
+  const modifiers = parseVModelModifiers(props[2])
+  // onUpdateExpr 通常是 ExpressionNode 或者被 cache 的 ExpressionNode
+  const vOnValue = (
+    onUpdateExpr.type === NodeTypes.JS_CACHE_EXPRESSION
+      ? onUpdateExpr.value
+      : onUpdateExpr
+  ) as ExpressionNode
+
   const vOnUpdate = createOnDirectiveNode(
     event || camelize(onUpdateArg.content.replace('onUpdate:', 'update-')),
     formatEventCode(
       genExpr(
         wrapperVOn(
-          // onUpdateExpr 通常是 ExpressionNode 或者被 cache 的 ExpressionNode
-          (onUpdateExpr.type === NodeTypes.JS_CACHE_EXPRESSION
-            ? onUpdateExpr.value
-            : onUpdateExpr) as ExpressionNode,
+          modifiers
+            ? wrapperVModelModifiers(vOnValue, modifiers, context, isComponent)
+            : vOnValue,
           node,
           context
         )
@@ -286,4 +326,30 @@ function transformVModel(
     )
   )
   return [vBindModelValue, vOnUpdate]
+}
+
+function parseVModelModifiers(property?: Property) {
+  if (
+    property &&
+    isSimpleExpressionNode(property.key) &&
+    property.key.content.endsWith('Modifiers') &&
+    isSimpleExpressionNode(property.value)
+  ) {
+    return property.value.content
+  }
+}
+function wrapperVModelModifiers(
+  exp: ExpressionNode,
+  modifiers: string,
+  context: TransformContext,
+  isComponent = false
+) {
+  return createCompoundExpression([
+    `${context.helperString(WITH_MODEL_MODIFIERS)}(`,
+    exp,
+    ',',
+    modifiers,
+    `${isComponent ? `, true` : ``}`,
+    `)`,
+  ])
 }

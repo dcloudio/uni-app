@@ -5563,6 +5563,30 @@ function setRef(ref, id, opts = {}) {
     $templateRefs.push({ i: id, r: ref, k: opts.k, f: opts.f });
 }
 
+function withModelModifiers(fn, { number, trim }, isComponent = false) {
+    if (isComponent) {
+        return (...args) => {
+            if (trim) {
+                args = args.map((a) => a.trim());
+            }
+            else if (number) {
+                args = args.map(toNumber);
+            }
+            return fn(...args);
+        };
+    }
+    return (event) => {
+        const value = event.detail.value;
+        if (trim) {
+            event.detail.value = value.trim();
+        }
+        else if (number) {
+            event.detail.value = toNumber(value);
+        }
+        return fn(event);
+    };
+}
+
 function setupDevtoolsPlugin() {
     // noop
 }
@@ -5580,6 +5604,7 @@ const n = (value) => normalizeClass(value);
 const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
 const sr = (ref, id, opts) => setRef(ref, id, opts);
+const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifiers, isComponent);
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -5587,4 +5612,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, m, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

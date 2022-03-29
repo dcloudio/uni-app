@@ -56,7 +56,7 @@ export function vOn(value: EventValue | undefined, key?: number | string) {
   return name
 }
 
-interface MPEvent extends WechatMiniprogram.BaseEvent {
+export interface MPEvent extends WechatMiniprogram.BaseEvent {
   detail: Record<string, any> & {
     __args__?: unknown[]
   }
