@@ -39,7 +39,7 @@ function setFixMargin() {
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Textarea',
   props,
-  emit: ['confirm', 'linechange', ...fieldEmit],
+  emits: ['confirm', 'linechange', ...fieldEmit],
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =

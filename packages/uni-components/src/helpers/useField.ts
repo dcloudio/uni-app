@@ -139,6 +139,10 @@ export const props = /*#__PURE__*/ extend(
       type: Boolean,
       default: false,
     },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true,
+    },
   },
   keyboardProps
 )
@@ -150,6 +154,9 @@ export const emit = [
   'update:value',
   'update:modelValue',
   'update:focus',
+  'compositionstart',
+  'compositionupdate',
+  'compositionend',
   ...keyboardEmit,
 ]
 
@@ -309,6 +316,7 @@ function useAutoFocus(props: Props, fieldRef: Ref<HTMLFieldElement | null>) {
 function useEvent(
   fieldRef: Ref<HTMLFieldElement | null>,
   state: State,
+  props: Props,
   trigger: CustomEventTrigger,
   triggerInput: Function,
   beforeInput?: (event: Event, state: State) => any
@@ -366,7 +374,7 @@ function useEvent(
         return
       }
       state.value = field.value
-      if (!state.composing) {
+      if (!state.composing || !props.ignoreCompositionEvent) {
         triggerInput(
           event,
           {
@@ -397,6 +405,7 @@ function useEvent(
     field.addEventListener('compositionstart', (event) => {
       event.stopPropagation()
       state.composing = true
+      _onComposition(event)
     })
     field.addEventListener('compositionend', (event) => {
       event.stopPropagation()
@@ -405,7 +414,16 @@ function useEvent(
         // 部分输入法 compositionend 事件可能晚于 input
         onInput(event)
       }
+      _onComposition(event)
     })
+    field.addEventListener('compositionupdate', _onComposition)
+    function _onComposition(event: Event) {
+      if (!props.ignoreCompositionEvent) {
+        trigger((event as InputEvent).type, event, {
+          value: (event as InputEvent).data,
+        })
+      }
+    }
   }
   watch([() => state.selectionStart, () => state.selectionEnd], checkSelection)
   watch(() => state.cursor, checkCursor)
@@ -425,7 +443,7 @@ export function useField(
   useKeyboard(props, fieldRef, trigger)
   const { state: scopedAttrsState } = useScopedAttrs()
   useFormField('name', state)
-  useEvent(fieldRef, state, trigger, triggerInput, beforeInput)
+  useEvent(fieldRef, state, props, trigger, triggerInput, beforeInput)
 
   // Safari 14 以上修正禁用状态颜色
   // TODO fixDisabledColor 可以调整到beforeMount或mounted做修正，确保不影响SSR
