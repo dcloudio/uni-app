@@ -364,9 +364,7 @@ function parseApp(instance, parseAppOptions) {
     initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
-    {
-        initUnknownHooks(appOptions, vueOptions, [ON_INIT, ON_READY]);
-    }
+    initUnknownHooks(appOptions, vueOptions);
     if (__VUE_OPTIONS_API__) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
@@ -848,7 +846,9 @@ function parsePage(vueOptions, parseOptions) {
         return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };
     initHooks(methods, PAGE_INIT_HOOKS);
-    initUnknownHooks(methods, vueOptions);
+    {
+        initUnknownHooks(methods, vueOptions, [ON_INIT, ON_READY]);
+    }
     initRuntimeHooks(methods, vueOptions.__runtimeHooks);
     initMixinRuntimeHooks(methods);
     parse && parse(miniProgramPageOptions, { handleLink });
