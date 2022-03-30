@@ -14,8 +14,6 @@ import {
   ON_THEME_CHANGE,
   ON_UNHANDLE_REJECTION,
   ON_SHARE_APP_MESSAGE,
-  ON_INIT,
-  ON_READY,
 } from '@dcloudio/uni-shared'
 
 export interface CustomAppInstanceProperty extends Record<string, any> {
@@ -72,11 +70,7 @@ export function parseApp(
   const vueOptions = instance.$.type as ComponentOptions
 
   initHooks(appOptions, HOOKS)
-  if (__PLATFORM__ === 'mp-baidu') {
-    initUnknownHooks(appOptions, vueOptions, [ON_INIT, ON_READY])
-  } else {
-    initUnknownHooks(appOptions, vueOptions)
-  }
+  initUnknownHooks(appOptions, vueOptions)
   if (__VUE_OPTIONS_API__) {
     const methods = vueOptions.methods
     methods && extend(appOptions, methods)
