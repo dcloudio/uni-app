@@ -52,12 +52,14 @@ module.exports = function traverseData (path, state, tagName) {
       )
     )
     if (state.options.platform.name === 'mp-alipay') {
-      addAttrProperties.push(
-        t.objectProperty(
-          t.stringLiteral('ref'),
-          t.stringLiteral('__r')
+      if (!wxComponent.startsWith('plugin://')) {
+        addAttrProperties.push(
+          t.objectProperty(
+            t.stringLiteral('ref'),
+            t.stringLiteral('__r')
+          )
         )
-      )
+      }
       const on = path.node.properties.find(prop => prop.key.name === 'on')
       if (on) {
         const properties = on.value.properties
