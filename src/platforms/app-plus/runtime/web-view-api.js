@@ -3,7 +3,7 @@ const webviewIds = []
 const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service'
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'
 
-function isNvue() {
+function isNvue () {
   return (window.__dcloud_weex_postMessage || window.__dcloud_weex_)
 }
 

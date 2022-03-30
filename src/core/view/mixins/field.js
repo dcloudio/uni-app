@@ -66,6 +66,10 @@ export default {
     confirmHold: {
       type: Boolean,
       default: false
+    },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
