@@ -1,6 +1,5 @@
 import Report from './report.js'
-import Vue from 'vue'
-let vue =  (Vue.default || Vue)
+
 import {
 	set_page_residence_time
 } from '../utils/pageTime.js'
@@ -11,14 +10,13 @@ import {
 
 class Stat extends Report {
 	static getInstance() {
-		if (!vue.instance) {
-			vue.instance = new Stat()
+		if (!uni.__stat_instance) {
+			uni.__stat_instance = new Stat()
 		}
-		return vue.instance
+		return uni.__stat_instance
 	}
 	constructor() {
 		super()
-		this.instance = null
 	}
 
 	/**

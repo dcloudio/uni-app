@@ -1,11 +1,5 @@
 'use strict';
 
-var Vue = require('vue');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
-
 /**
  * 获取系统信息
  */
@@ -1078,18 +1072,15 @@ class Report {
 	}
 }
 
-let vue =  (Vue__default["default"].default || Vue__default["default"]);
-
 class Stat extends Report {
 	static getInstance() {
-		if (!vue.instance) {
-			vue.instance = new Stat();
+		if (!uni.__stat_instance) {
+			uni.__stat_instance = new Stat();
 		}
-		return vue.instance
+		return uni.__stat_instance
 	}
 	constructor() {
 		super();
-		this.instance = null;
 	}
 
 	/**
@@ -1246,14 +1237,6 @@ function main() {
 			uni.report = function(type, options) {
 				stat.sendEvent(type, options);
 			};
-		});
-		uni.onAppLaunch((options) => {
-		  stat.launch(options);
-		  // 小程序平台此时也无法获取getApp，统一在options中传递一个app mixin对象
-		  options.app.mixin(lifecycle);
-		  uni.report = function (type, options) {
-			stat.sendEvent(type, options);
-		  };
 		});
 		
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {

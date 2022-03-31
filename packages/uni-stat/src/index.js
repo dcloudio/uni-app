@@ -57,14 +57,6 @@ function main() {
 				stat.sendEvent(type, options)
 			}
 		})
-		uni.onAppLaunch((options) => {
-		  stat.launch(options)
-		  // 小程序平台此时也无法获取getApp，统一在options中传递一个app mixin对象
-		  options.app.mixin(lifecycle)
-		  uni.report = function (type, options) {
-			stat.sendEvent(type, options)
-		  }
-		})
 		
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			uni.onAppHide(() => {
