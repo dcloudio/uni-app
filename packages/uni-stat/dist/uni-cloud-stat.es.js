@@ -13,7 +13,6 @@ const PAGE_PVER_TIME = 1800; // 页面在前台无操作结束访问时间 单�
 const APP_PVER_TIME = 300; // 应用在后台结束访问时间 单位s
 const OPERATING_TIME = 10; // 数据上报时间 单位s
 const DIFF_TIME = 60 * 1000 * 60 * 24;
-const DEBUG = true;
 
 let statConfig = {
 	appid: ''
@@ -1031,14 +1030,7 @@ class Report {
 	 * @param {Object} optionsData 需要上报的数据
 	 */
 	sendRequest(optionsData) {
-		if (DEBUG) {
-			console.log('----- 数据上报开始 -----');
-			console.log('上报数据：', optionsData);
-			console.log('----- 数据上报结束 -----');
-		}
-		
 		{
-			console.log('-- callFunction 上报');
 			if (!uniCloud.config) {
 				console.error('当前尚未绑定服务空间.');
 				return
@@ -1046,12 +1038,8 @@ class Report {
 			uniCloud.callFunction({
 				name: 'uni-stat-report',
 				data: optionsData,
-				success: (res) => {
-					console.log(res);
-				},
-				fail: (err) => {
-					console.log(err);
-				}
+				success: (res) => {},
+				fail: (err) => {}
 			});
 		}
 	}
@@ -1242,17 +1230,17 @@ const lifecycle = {
 
 
 function main() {
-	console.log('--- 统计开启');
-	// if (process.env.NODE_ENV === 'development') {
-	// 	uni.report = function(type, options) {}
-	// } else {
+	// console.log('--- 统计开启')
+	if (process.env.NODE_ENV === 'development') {
+		uni.report = function(type, options) {};
+	} else {
 		// #ifdef VUE3
-		// uni.onCreateVueApp((app) => {
-		// 	app.mixin(lifecycle)
-		// 	uni.report = function(type, options) {
-		// 		stat.sendEvent(type, options)
-		// 	}
-		// })
+		uni.onCreateVueApp((app) => {
+			app.mixin(lifecycle);
+			uni.report = function(type, options) {
+				stat.sendEvent(type, options);
+			};
+		});
 		uni.onAppLaunch((options) => {
 		  stat.launch(options);
 		  // 小程序平台此时也无法获取getApp，统一在options中传递一个app mixin对象
@@ -1261,7 +1249,7 @@ function main() {
 			stat.sendEvent(type, options);
 		  };
 		});
-
+		
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			uni.onAppHide(() => {
 				stat.appHide(get_page_vm());
@@ -1279,6 +1267,7 @@ function main() {
 		  stat.sendEvent(type, options);
 		};
 		// #endif
+	}
 }
 
 main();
