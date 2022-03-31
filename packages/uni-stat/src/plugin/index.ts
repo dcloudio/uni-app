@@ -8,15 +8,13 @@ import {
   isSsr,
 } from '@dcloudio/uni-cli-shared'
 
-export default () => [
+export default [
   defineUniMainJsPlugin((opts) => {
     let isEnable = false
-    let isNVue = false
     return {
       name: 'uni:stat',
       enforce: 'pre',
       config(config, env) {
-        isNVue = (config as any).nvue
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_PLATFORM!
         const titlesJson = Object.create(null)
@@ -44,8 +42,10 @@ export default () => [
               isEnable = false
             }
           }
+
           debug('uni:stat')('isEnable', isEnable)
         }
+
         process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
         return {
           define: {
@@ -54,7 +54,7 @@ export default () => [
         }
       },
       transform(code, id) {
-        if (isEnable && !isNVue && opts.filter(id)) {
+        if (isEnable && opts.filter(id)) {
           return {
             code: code + `;import '@dcloudio/uni-stat';`,
             map: null,
