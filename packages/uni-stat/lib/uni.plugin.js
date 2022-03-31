@@ -7,9 +7,14 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var debug__default = /*#__PURE__*/_interopDefaultLegacy(debug);
 
-var index = [
+var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
+        let statVersion = '1';
         let isEnable = false;
+        const stats = {
+            '@dcloudio/uni-stat': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-stat.es.js'),
+            '@dcloudio/uni-cloud-stat': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'),
+        };
         return {
             name: 'uni:stat',
             enforce: 'pre',
@@ -33,7 +38,9 @@ var index = [
                 });
                 // ssr 时不开启
                 if (!uniCliShared.isSsr(env.command, config)) {
-                    isEnable = uniCliShared.getUniStatistics(inputDir, platform).enable === true;
+                    const statConfig = uniCliShared.getUniStatistics(inputDir, platform);
+                    statVersion = statConfig.version === '2' ? '2' : '1';
+                    isEnable = statConfig.enable === true;
                     if (process.env.NODE_ENV === 'production') {
                         const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
                         if (!manifestJson.appid) {
@@ -52,10 +59,14 @@ var index = [
                     },
                 };
             },
+            resolveId(id) {
+                return stats[id] || null;
+            },
             transform(code, id) {
                 if (isEnable && opts.filter(id)) {
                     return {
-                        code: code + `;import '@dcloudio/uni-stat';`,
+                        code: code +
+                            `;import '@dcloudio/uni${statVersion === '2' ? '-cloud' : ''}-stat';`,
                         map: null,
                     };
                 }

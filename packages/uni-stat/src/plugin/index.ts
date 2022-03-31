@@ -6,11 +6,21 @@ import {
   parseManifestJsonOnce,
   parsePagesJson,
   isSsr,
+  resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
 
-export default [
+export default () => [
   defineUniMainJsPlugin((opts) => {
+    let statVersion: '1' | '2' = '1'
     let isEnable = false
+    const stats: Record<string, string> = {
+      '@dcloudio/uni-stat': resolveBuiltIn(
+        '@dcloudio/uni-stat/dist/uni-stat.es.js'
+      ),
+      '@dcloudio/uni-cloud-stat': resolveBuiltIn(
+        '@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'
+      ),
+    }
     return {
       name: 'uni:stat',
       enforce: 'pre',
@@ -32,7 +42,9 @@ export default [
         })
         // ssr 时不开启
         if (!isSsr(env.command, config)) {
-          isEnable = getUniStatistics(inputDir, platform).enable === true
+          const statConfig = getUniStatistics(inputDir, platform)
+          statVersion = statConfig.version === '2' ? '2' : '1'
+          isEnable = statConfig.enable === true
           if (process.env.NODE_ENV === 'production') {
             const manifestJson = parseManifestJsonOnce(inputDir)
             if (!manifestJson.appid) {
@@ -53,10 +65,17 @@ export default [
           },
         }
       },
+      resolveId(id) {
+        return stats[id] || null
+      },
       transform(code, id) {
         if (isEnable && opts.filter(id)) {
           return {
-            code: code + `;import '@dcloudio/uni-stat';`,
+            code:
+              code +
+              `;import '@dcloudio/uni${
+                statVersion === '2' ? '-cloud' : ''
+              }-stat';`,
             map: null,
           }
         }
