@@ -49,7 +49,7 @@ function setTabBarBadge (type, index, text) {
 /**
  * 动态设置 tabBar 某一项的内容
  */
-function setTabBarItem (index, text, iconPath, selectedIconPath, visible) {
+function setTabBarItem (index, text, iconPath, selectedIconPath, visible, iconfont) {
   const item = {
     index
   }
@@ -61,6 +61,9 @@ function setTabBarItem (index, text, iconPath, selectedIconPath, visible) {
   }
   if (selectedIconPath) {
     item.selectedIconPath = getRealPath(selectedIconPath)
+  }
+  if (iconfont !== undefined) {
+    item.iconfont = iconfont
   }
   if (visible !== undefined) {
     item.visible = config.list[index].visible = visible
