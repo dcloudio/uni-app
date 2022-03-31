@@ -2903,6 +2903,10 @@ const props$k = /* @__PURE__ */ shared.extend({}, {
   confirmHold: {
     type: Boolean,
     default: false
+  },
+  ignoreCompositionEvent: {
+    type: Boolean,
+    default: true
   }
 }, props$n);
 const emit = [
@@ -2912,6 +2916,9 @@ const emit = [
   "update:value",
   "update:modelValue",
   "update:focus",
+  "compositionstart",
+  "compositionupdate",
+  "compositionend",
   ...emit$1
 ];
 function useBase(props2, rootRef, emit2) {
@@ -3006,7 +3013,7 @@ function useAutoFocus(props2, fieldRef) {
     }
   });
 }
-function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
+function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
     if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
@@ -3043,7 +3050,7 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
         return;
       }
       state.value = field.value;
-      if (!state.composing) {
+      if (!state.composing || !props2.ignoreCompositionEvent) {
         triggerInput(event, {
           value: field.value,
           cursor: getFieldSelectionEnd(field)
@@ -3068,6 +3075,7 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
     field.addEventListener("compositionstart", (event) => {
       event.stopPropagation();
       state.composing = true;
+      _onComposition(event);
     });
     field.addEventListener("compositionend", (event) => {
       event.stopPropagation();
@@ -3075,7 +3083,16 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
         state.composing = false;
         onInput(event);
       }
+      _onComposition(event);
     });
+    field.addEventListener("compositionupdate", _onComposition);
+    function _onComposition(event) {
+      if (!props2.ignoreCompositionEvent) {
+        trigger(event.type, event, {
+          value: event.data
+        });
+      }
+    }
   }
   vue.watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
   vue.watch(() => state.cursor, checkCursor);
@@ -3089,7 +3106,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
   useKeyboard$1(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();
   useFormField("name", state);
-  useEvent(fieldRef, state, trigger, triggerInput, beforeInput);
+  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput);
   const fixDisabledColor = false;
   return {
     fieldRef,
@@ -6408,7 +6425,7 @@ let fixMargin = false;
 var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
-  emit: ["confirm", "linechange", ...emit],
+  emits: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
   }) {

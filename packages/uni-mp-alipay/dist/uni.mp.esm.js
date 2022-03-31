@@ -23,7 +23,6 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 
 const customizeRE = /:/g;
 function customizeEvent(str) {
@@ -315,9 +314,6 @@ const HOOKS = [
     ON_PAGE_NOT_FOUND,
     ON_UNHANDLE_REJECTION,
 ];
-{
-    HOOKS.push(ON_SHARE_APP_MESSAGE);
-}
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
     const appOptions = {
