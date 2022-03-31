@@ -21,7 +21,7 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040320220325005",
     "@dcloudio/uni-shared": "3.0.0-alpha-3040320220325005",
-    "@rollup/pluginutils": "^4.1.2",
+    "@rollup/pluginutils": "^4.2.0",
     "@vue/compiler-dom": "3.2.31",
     "@vue/compiler-sfc": "3.2.31",
     "@vue/server-renderer": "3.2.31",
@@ -37,6 +37,6 @@
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.1",
     "@vue/compiler-core": "3.2.31",
-    "esbuild": "^0.14.14"
+    "esbuild": "^0.14.27"
   }
 }
