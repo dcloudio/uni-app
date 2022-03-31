@@ -6,7 +6,8 @@ const {
   getMainEntry,
   normalizePath,
   getPlatformExts,
-  getPlatformCssnano
+  getPlatformCssnano,
+  getPlatformStat
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
@@ -162,7 +163,7 @@ module.exports = {
 
     parseEntry()
 
-    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
+    const statCode = getPlatformStat()
 
     let beforeCode = 'import \'uni-pages\';'
 

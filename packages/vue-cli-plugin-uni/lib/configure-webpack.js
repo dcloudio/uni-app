@@ -323,9 +323,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             .UNI_INPUT_DIR), // css中的'@/static/logo.png'会被转换成'./@/static/logo.png'加载
           vue$: getPlatformVue(vueOptions),
           'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
-          '@dcloudio/uni-stat': process.env.UNI_USING_VUE3 ? require.resolve(
-            '@dcloudio/vue-cli-plugin-uni/packages/uni-stat') : require
-            .resolve('@dcloudio/uni-stat'),
           'uni-stat-config': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') +
             '?' +
             JSON.stringify({

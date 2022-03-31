@@ -159,6 +159,13 @@ module.exports = {
   getPlatformSass () {
     return SASS
   },
+  getPlatformStat () {
+    if (!process.env.UNI_USING_STAT) {
+      return ''
+    }
+    return process.env.UNI_USING_STAT === '2' ? 'import \'@dcloudio/uni-stat/dist/uni-cloud-stat.es.js\';'
+      : 'import \'@dcloudio/uni-stat/dist/uni-stat.es.js\';'
+  },
   getBabelParserOptions () {
     return {
       sourceType: 'module',
