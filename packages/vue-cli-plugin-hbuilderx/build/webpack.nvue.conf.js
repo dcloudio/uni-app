@@ -317,7 +317,6 @@ module.exports = function () {
       alias: {
         '@': process.env.UNI_INPUT_DIR,
         'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
-        '@dcloudio/uni-stat': require.resolve('@dcloudio/uni-stat'),
         'uni-app-style': path.resolve(process.env.UNI_INPUT_DIR, getNVueMainEntry()) + '?' + JSON.stringify({
           type: 'appStyle'
         }),
