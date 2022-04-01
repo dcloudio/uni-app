@@ -1248,9 +1248,9 @@ function main() {
 	{
 		console.log('uni统计开启,version:1');
 	}
-	// if (process.env.NODE_ENV === 'development') {
-	// 	uni.report = function(type, options) {}
-	// } else {
+	if (process.env.NODE_ENV === 'development') {
+		uni.report = function(type, options) {};
+	} else {
 		// #ifdef VUE3
 		uni.onCreateVueApp((app) => {
 			app.mixin(lifecycle);
@@ -1276,7 +1276,7 @@ function main() {
 			stat.sendEvent(type, options);
 		};
 		// #endif
-	// }
+	}
 }
 
 main();

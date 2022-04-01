@@ -12920,7 +12920,7 @@ function setTabBarBadge$1(type, index, text) {
 /**
  * 动态设置 tabBar 某一项的内容
  */
-function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible) {
+function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible, iconfont) {
     const item = {
         index,
     };
@@ -12932,6 +12932,9 @@ function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible) {
     }
     if (selectedIconPath) {
         item.selectedIconPath = getRealPath(selectedIconPath);
+    }
+    if (iconfont !== undefined) {
+        item.iconfont = iconfont;
     }
     if (visible !== undefined) {
         item.visible = config.list[index].visible = visible;
@@ -15994,8 +15997,8 @@ const setTabBarBadge = defineAsyncApi(API_SET_TAB_BAR_BADGE, ({ index, text }, {
     tabBarInstance.setTabBarBadge('text', index, text);
     resolve();
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
-const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath, visible }, { resolve, reject }) => {
-    tabBarInstance.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
+const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath, visible, iconfont }, { resolve, reject }) => {
+    tabBarInstance.setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
         const meta = route.meta;

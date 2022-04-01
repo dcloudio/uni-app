@@ -655,7 +655,8 @@ function normalizeLog(type, filename, args) {
     }
     const msgs = args.map(function (v) {
         const type = shared.toTypeString(v).toLowerCase();
-        if (type === '[object object]' || type === '[object array]') {
+        if (['[object object]', '[object array]', '[object module]'].indexOf(type) !==
+            -1) {
             try {
                 v =
                     '---BEGIN:JSON---' +
