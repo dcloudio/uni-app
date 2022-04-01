@@ -166,7 +166,7 @@ importers:
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-push': link:../uni-push
       '@dcloudio/uni-shared': link:../uni-shared
-      '@dcloudio/uni-stat': 3.0.0-alpha-3040320220325006_vue@3.2.31
+      '@dcloudio/uni-stat': link:../uni-stat
       '@vue/shared': 3.2.31
 
   packages/uni-app-plus:
@@ -697,11 +697,11 @@ importers:
 
   packages/uni-stat:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040020220301001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040320220325006
       '@types/debug': ^4.1.7
       debug: ^4.3.3
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040020220301001_vue@3.2.31
+      '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       debug: 4.3.3
     devDependencies:
       '@types/debug': 4.1.7
@@ -2337,128 +2337,6 @@ packages:
       - supports-color
     dev: true
 
-  /@dcloudio/uni-cli-shared/3.0.0-alpha-3040020220301001_vue@3.2.31:
-    resolution: {integrity: sha512-uWNJxtNVqut41ELOCEzbE6zhGdp7S1PpcaTRfsd0DXu+UU2+9KJX+vluTWNIxLyOcIjduUaVIMlnC4QP5fgh1Q==}
-    dependencies:
-      '@babel/core': 7.17.8
-      '@babel/parser': 7.17.8
-      '@babel/types': 7.17.0
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3040020220301001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3040020220301001
-      '@rollup/pluginutils': 4.2.0
-      '@vue/compiler-core': 3.2.31
-      '@vue/compiler-dom': 3.2.31
-      '@vue/compiler-sfc': 3.2.31
-      '@vue/server-renderer': 3.2.31_vue@3.2.31
-      '@vue/shared': 3.2.31
-      autoprefixer: 10.4.4
-      base64url: 3.0.1
-      chokidar: 3.5.3
-      compare-versions: 3.6.0
-      debug: 4.3.3
-      es-module-lexer: 0.9.3
-      esbuild: 0.14.29
-      estree-walker: 2.0.2
-      fast-glob: 3.2.11
-      fs-extra: 10.0.0
-      hash-sum: 2.0.0
-      jsonc-parser: 3.0.0
-      magic-string: 0.25.7
-      merge: 2.1.1
-      mime: 3.0.0
-      module-alias: 2.2.2
-      picocolors: 1.0.0
-      postcss-import: 14.0.2
-      postcss-load-config: 3.1.2
-      postcss-modules: 4.3.0
-      postcss-selector-parser: 6.0.6
-      resolve: 1.22.0
-      tapable: 2.2.1
-      xregexp: 3.1.0
-    transitivePeerDependencies:
-      - postcss
-      - supports-color
-      - ts-node
-      - vue
-    dev: false
-
-  /@dcloudio/uni-cli-shared/3.0.0-alpha-3040320220325006_vue@3.2.31:
-    resolution: {integrity: sha512-2Sp08jS0Ou3EXHhvbZCscZgfFh/1LJN33CAebQEgODhHAdR+Ih8cxyuvQGc0hZBLJky3PojCgtkV+Q2kvupkEw==}
-    dependencies:
-      '@babel/core': 7.17.8
-      '@babel/parser': 7.17.8
-      '@babel/types': 7.17.0
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3040320220325006
-      '@dcloudio/uni-shared': 3.0.0-alpha-3040320220325006
-      '@rollup/pluginutils': 4.2.0
-      '@vue/compiler-core': 3.2.31
-      '@vue/compiler-dom': 3.2.31
-      '@vue/compiler-sfc': 3.2.31
-      '@vue/server-renderer': 3.2.31_vue@3.2.31
-      '@vue/shared': 3.2.31
-      autoprefixer: 10.4.4
-      base64url: 3.0.1
-      chokidar: 3.5.3
-      compare-versions: 3.6.0
-      debug: 4.3.3
-      es-module-lexer: 0.9.3
-      esbuild: 0.14.29
-      estree-walker: 2.0.2
-      fast-glob: 3.2.11
-      fs-extra: 10.0.0
-      hash-sum: 2.0.0
-      jsonc-parser: 3.0.0
-      magic-string: 0.26.1
-      merge: 2.1.1
-      mime: 3.0.0
-      module-alias: 2.2.2
-      picocolors: 1.0.0
-      postcss-import: 14.0.2
-      postcss-load-config: 3.1.2
-      postcss-modules: 4.3.0
-      postcss-selector-parser: 6.0.6
-      resolve: 1.22.0
-      tapable: 2.2.1
-      xregexp: 3.1.0
-    transitivePeerDependencies:
-      - postcss
-      - supports-color
-      - ts-node
-      - vue
-    dev: false
-
-  /@dcloudio/uni-i18n/3.0.0-alpha-3040020220301001:
-    resolution: {integrity: sha512-6MRSIp/7qeV+mIw8i9qhkEUFpdka8csCDAAXqx6p1nAAuQfNP8oNvexM/7BiGmUtlOUwot1NaJ7T9o7Xnreq6g==}
-    dev: false
-
-  /@dcloudio/uni-i18n/3.0.0-alpha-3040320220325006:
-    resolution: {integrity: sha512-HhKqA1Bq8hfberGIUgtfvkBSbhLIr+2d3SYxm+TpBOhgnHx10yMXt+CVqK01KEZzIZmz+4NAHj6J7LsviDbWwA==}
-    dev: false
-
-  /@dcloudio/uni-shared/3.0.0-alpha-3040020220301001:
-    resolution: {integrity: sha512-R5by/qrW6jE8t2EX6E1sBnmG4Ox32Ab7MQKo54oq3w1dNBITtEHwHkAyIK7PHD0Z5OAMiu2gpIfmYiGIDbt3vw==}
-    dependencies:
-      '@vue/shared': 3.2.31
-    dev: false
-
-  /@dcloudio/uni-shared/3.0.0-alpha-3040320220325006:
-    resolution: {integrity: sha512-cRZPDPm4IiuPHTKod21zY2Ol9dWYp8DSEq3/v9yAmDOgm2MxSR15gKzTjY4oAOW6+ti5HvAGKwihOmkd2xW+MA==}
-    dependencies:
-      '@vue/shared': 3.2.31
-    dev: false
-
-  /@dcloudio/uni-stat/3.0.0-alpha-3040320220325006_vue@3.2.31:
-    resolution: {integrity: sha512-sMT3jFQLwaI4pnC+dJhCM6lihqASr0feIN1mOH55lmFWk3qdR6uulERcQrbOg2ph6Xftttykfy7EarqXXQMa4Q==}
-    dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040320220325006_vue@3.2.31
-      debug: 4.3.3
-    transitivePeerDependencies:
-      - postcss
-      - supports-color
-      - ts-node
-      - vue
-    dev: false
-
   /@eslint/eslintrc/0.4.3:
     resolution: {integrity: sha512-J6KFFz5QCYUJq3pf0mjEcCJVERbzv71PUIDczuh9JkwGEzced6CO5ADLHB1rbf/+oPBtoPfMYNOpGDzCANlbXw==}
     engines: {node: ^10.12.0 || >=12.0.0}
@@ -3639,21 +3517,6 @@ packages:
   /at-least-node/1.0.0:
     resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
     engines: {node: '>= 4.0.0'}
-
-  /autoprefixer/10.4.4:
-    resolution: {integrity: sha512-Tm8JxsB286VweiZ5F0anmbyGiNI3v3wGv3mz9W+cxEDYB/6jbnj6GM9H9mK3wIL8ftgl+C07Lcwb8PG5PCCPzA==}
-    engines: {node: ^10 || ^12 || >=14}
-    hasBin: true
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      browserslist: 4.20.2
-      caniuse-lite: 1.0.30001317
-      fraction.js: 4.2.0
-      normalize-range: 0.1.2
-      picocolors: 1.0.0
-      postcss-value-parser: 4.2.0
-    dev: false
 
   /autoprefixer/10.4.4_postcss@8.4.12:
     resolution: {integrity: sha512-Tm8JxsB286VweiZ5F0anmbyGiNI3v3wGv3mz9W+cxEDYB/6jbnj6GM9H9mK3wIL8ftgl+C07Lcwb8PG5PCCPzA==}
@@ -5843,13 +5706,6 @@ packages:
     resolution: {integrity: sha1-Bupvg2ead0njhs/h/oEq5dsiPe0=}
     dev: false
 
-  /icss-utils/5.1.0:
-    resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
-    engines: {node: ^10 || ^12 || >= 14}
-    peerDependencies:
-      postcss: ^8.1.0
-    dev: false
-
   /icss-utils/5.1.0_postcss@8.4.12:
     resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
     engines: {node: ^10 || ^12 || >= 14}
@@ -7547,17 +7403,6 @@ packages:
       semver-compare: 1.0.0
     dev: true
 
-  /postcss-import/14.0.2:
-    resolution: {integrity: sha512-BJ2pVK4KhUyMcqjuKs9RijV5tatNzNa73e/32aBVE/ejYPe37iH+6vAu9WvqUkB5OAYgLHzbSvzHnorybJCm9g==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      postcss: ^8.0.0
-    dependencies:
-      postcss-value-parser: 4.2.0
-      read-cache: 1.0.0
-      resolve: 1.22.0
-    dev: false
-
   /postcss-import/14.0.2_postcss@8.4.12:
     resolution: {integrity: sha512-BJ2pVK4KhUyMcqjuKs9RijV5tatNzNa73e/32aBVE/ejYPe37iH+6vAu9WvqUkB5OAYgLHzbSvzHnorybJCm9g==}
     engines: {node: '>=10.0.0'}
@@ -7583,13 +7428,6 @@ packages:
       yaml: 1.10.2
     dev: false
 
-  /postcss-modules-extract-imports/3.0.0:
-    resolution: {integrity: sha512-bdHleFnP3kZ4NYDhuGlVK+CMrQ/pqUm8bx/oGL93K6gVwiclvX5x0n76fYMKuIGKzlABOy13zsvqjb0f92TEXw==}
-    engines: {node: ^10 || ^12 || >= 14}
-    peerDependencies:
-      postcss: ^8.1.0
-    dev: false
-
   /postcss-modules-extract-imports/3.0.0_postcss@8.4.12:
     resolution: {integrity: sha512-bdHleFnP3kZ4NYDhuGlVK+CMrQ/pqUm8bx/oGL93K6gVwiclvX5x0n76fYMKuIGKzlABOy13zsvqjb0f92TEXw==}
     engines: {node: ^10 || ^12 || >= 14}
@@ -7597,17 +7435,6 @@ packages:
       postcss: ^8.1.0
     dependencies:
       postcss: 8.4.12
-    dev: false
-
-  /postcss-modules-local-by-default/4.0.0:
-    resolution: {integrity: sha512-sT7ihtmGSF9yhm6ggikHdV0hlziDTX7oFoXtuVWeDd3hHObNkcHRo9V3yg7vCAY7cONyxJC/XXCmmiHHcvX7bQ==}
-    engines: {node: ^10 || ^12 || >= 14}
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      icss-utils: 5.1.0
-      postcss-selector-parser: 6.0.6
-      postcss-value-parser: 4.2.0
     dev: false
 
   /postcss-modules-local-by-default/4.0.0_postcss@8.4.12:
@@ -7622,15 +7449,6 @@ packages:
       postcss-value-parser: 4.2.0
     dev: false
 
-  /postcss-modules-scope/3.0.0:
-    resolution: {integrity: sha512-hncihwFA2yPath8oZ15PZqvWGkWf+XUfQgUGamS4LqoP1anQLOsOJw0vr7J7IwLpoY9fatA2qiGUGmuZL0Iqlg==}
-    engines: {node: ^10 || ^12 || >= 14}
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      postcss-selector-parser: 6.0.6
-    dev: false
-
   /postcss-modules-scope/3.0.0_postcss@8.4.12:
     resolution: {integrity: sha512-hncihwFA2yPath8oZ15PZqvWGkWf+XUfQgUGamS4LqoP1anQLOsOJw0vr7J7IwLpoY9fatA2qiGUGmuZL0Iqlg==}
     engines: {node: ^10 || ^12 || >= 14}
@@ -7641,15 +7459,6 @@ packages:
       postcss-selector-parser: 6.0.6
     dev: false
 
-  /postcss-modules-values/4.0.0:
-    resolution: {integrity: sha512-RDxHkAiEGI78gS2ofyvCsu7iycRv7oqw5xMWn9iMoR0N/7mf9D50ecQqUo5BZ9Zh2vH4bCUR/ktCqbB9m8vJjQ==}
-    engines: {node: ^10 || ^12 || >= 14}
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      icss-utils: 5.1.0
-    dev: false
-
   /postcss-modules-values/4.0.0_postcss@8.4.12:
     resolution: {integrity: sha512-RDxHkAiEGI78gS2ofyvCsu7iycRv7oqw5xMWn9iMoR0N/7mf9D50ecQqUo5BZ9Zh2vH4bCUR/ktCqbB9m8vJjQ==}
     engines: {node: ^10 || ^12 || >= 14}
@@ -7658,21 +7467,6 @@ packages:
     dependencies:
       icss-utils: 5.1.0_postcss@8.4.12
       postcss: 8.4.12
-    dev: false
-
-  /postcss-modules/4.3.0:
-    resolution: {integrity: sha512-zoUttLDSsbWDinJM9jH37o7hulLRyEgH6fZm2PchxN7AZ8rkdWiALyNhnQ7+jg7cX9f10m6y5VhHsrjO0Mf/DA==}
-    peerDependencies:
-      postcss: ^8.0.0
-    dependencies:
-      generic-names: 4.0.0
-      icss-replace-symbols: 1.1.0
-      lodash.camelcase: 4.3.0
-      postcss-modules-extract-imports: 3.0.0
-      postcss-modules-local-by-default: 4.0.0
-      postcss-modules-scope: 3.0.0
-      postcss-modules-values: 4.0.0
-      string-hash: 1.1.3
     dev: false
 
   /postcss-modules/4.3.0_postcss@8.4.12:
