@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const initPreprocessContext = require('./preprocess')
 const uniI18n = require('@dcloudio/uni-cli-i18n')
@@ -85,6 +86,30 @@ function initExtends (name, plugin, plugins) {
   }
 }
 
+function getPreprocessDefines() {
+  try {
+    let preprocessDefines
+    const preprocessDefinesJsFileName = 'preprocess.defines.js'
+    const preprocessDefinesJsPath = path.resolve(process.env.UNI_INPUT_DIR, preprocessDefinesJsFileName)
+    if (fs.existsSync(preprocessDefinesJsPath)) {
+      delete require.cache[preprocessDefinesJsPath]
+      const preprocessDefinesFn = require(preprocessDefinesJsPath)
+      if (typeof preprocessDefinesFn === 'function') {
+          preprocessDefines = preprocessDefinesFn()
+        if (!preprocessDefines) {
+          console.error(`${preprocessDefinesJsFileName}  ${uniI18n.__('cliShared.requireReturnJsonObject')}`)
+        }
+      } else {
+        console.error(`${preprocessDefinesJsFileName} ${uniI18n.__('cliShared.requireExportFunction')}`)
+      }
+    }
+    return preprocessDefines || {};
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
+}
+
 module.exports = {
   init () {
     // compatible with vue-cli-service lint
@@ -115,7 +140,7 @@ module.exports = {
     Plugin.id = plugin.id
     Plugin.config = plugin.config
     Plugin.platforms = plugins.map(plugin => plugin.name)
-    Plugin.preprocess = initPreprocessContext(name, Plugin.platforms, process.UNI_SCRIPT_DEFINE)
+    Plugin.preprocess = initPreprocessContext(name, Plugin.platforms, Object.assign(getPreprocessDefines(), process.UNI_SCRIPT_DEFINE))
 
     return Plugin
   }
