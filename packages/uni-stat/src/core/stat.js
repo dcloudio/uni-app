@@ -52,14 +52,14 @@ class Stat extends Report {
 		// #ifdef VUE3
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			if (get_page_types(self) === 'app') {
-				this.appShow(self)
+				this.appShow()
 			}
 		}
 		// #endif
 		
 		// #ifndef VUE3
 		if (get_page_types(self) === 'app') {
-			this.appShow(self)
+			this.appShow()
 		}
 		// #endif
 		
@@ -74,14 +74,14 @@ class Stat extends Report {
 		// #ifdef VUE3
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			if (get_page_types(self) === 'app') {
-				this.appHide(self)
+				this.appHide()
 			}
 		}
 		// #endif
 		
 		// #ifndef VUE3
 		if (get_page_types(self) === 'app') {
-			this.appHide(self)
+			this.appHide()
 		}
 		// #endif
 		

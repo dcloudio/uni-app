@@ -26,7 +26,8 @@ import {
 	get_page_name,
 	is_report_data,
 	get_sgin,
-	get_encodeURIComponent_options
+	get_encodeURIComponent_options,
+	get_page_vm
 } from '../utils/pageInfo.js'
 
 import {
@@ -200,12 +201,15 @@ export default class Report {
 	 * @param {Object} type
 	 */
 	applicationHide(self, type) {
+		if(!self){
+			// 表示应用切换到后台 ，此时需要从页面栈获取页面实例
+			self = get_page_vm()
+		}
 		// 进入应用后台保存状态，方便进入前台后判断是否上报应用数据
 		this.__licationHide = true
 		get_last_time()
 		const time = get_residence_time()
 		const route = get_page_route(self)
-		// this._lastPageRoute = route
 		uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route)
 		this.sendHideRequest({
 				urlref: route,

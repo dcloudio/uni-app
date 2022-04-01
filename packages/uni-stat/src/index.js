@@ -46,7 +46,12 @@ const lifecycle = {
 
 
 function main() {
-	// console.log('--- 统计开启')
+	if (__STAT_VERSION__ === '1') {
+		console.log('uni统计开启,version:1')
+	}
+	if (__STAT_VERSION__ === '2') {
+		console.log('uni统计开启,version:2')
+	}
 	if (process.env.NODE_ENV === 'development') {
 		uni.report = function(type, options) {}
 	} else {
@@ -57,7 +62,7 @@ function main() {
 				stat.sendEvent(type, options)
 			}
 		})
-		
+
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			uni.onAppHide(() => {
 				stat.appHide(get_page_vm());
@@ -67,12 +72,12 @@ function main() {
 			})
 		}
 		// #endif
-		
+
 		// #ifndef VUE3
 		const Vue = require('vue');
 		(Vue.default || Vue).mixin(lifecycle);
 		uni.report = function(type, options) {
-		  stat.sendEvent(type, options);
+			stat.sendEvent(type, options);
 		};
 		// #endif
 	}

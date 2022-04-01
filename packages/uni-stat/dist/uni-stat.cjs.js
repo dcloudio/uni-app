@@ -737,12 +737,15 @@ class Report {
 	 * @param {Object} type
 	 */
 	applicationHide(self, type) {
+		if(!self){
+			// 表示应用切换到后台 ，此时需要从页面栈获取页面实例
+			self = get_page_vm();
+		}
 		// 进入应用后台保存状态，方便进入前台后判断是否上报应用数据
 		this.__licationHide = true;
 		get_last_time();
 		const time = get_residence_time();
 		const route = get_page_route(self);
-		// this._lastPageRoute = route
 		uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route);
 		this.sendHideRequest({
 				urlref: route,
@@ -1131,14 +1134,14 @@ class Stat extends Report {
 		// #ifdef VUE3
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			if (get_page_types(self) === 'app') {
-				this.appShow(self);
+				this.appShow();
 			}
 		}
 		// #endif
 		
 		// #ifndef VUE3
 		if (get_page_types(self) === 'app') {
-			this.appShow(self);
+			this.appShow();
 		}
 		// #endif
 		
@@ -1153,14 +1156,14 @@ class Stat extends Report {
 		// #ifdef VUE3
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			if (get_page_types(self) === 'app') {
-				this.appHide(self);
+				this.appHide();
 			}
 		}
 		// #endif
 		
 		// #ifndef VUE3
 		if (get_page_types(self) === 'app') {
-			this.appHide(self);
+			this.appHide();
 		}
 		// #endif
 		
@@ -1242,10 +1245,12 @@ const lifecycle = {
 
 
 function main() {
-	// console.log('--- 统计开启')
-	if (process.env.NODE_ENV === 'development') {
-		uni.report = function(type, options) {};
-	} else {
+	{
+		console.log('uni统计开启,version:1');
+	}
+	// if (process.env.NODE_ENV === 'development') {
+	// 	uni.report = function(type, options) {}
+	// } else {
 		// #ifdef VUE3
 		uni.onCreateVueApp((app) => {
 			app.mixin(lifecycle);
@@ -1253,7 +1258,7 @@ function main() {
 				stat.sendEvent(type, options);
 			};
 		});
-		
+
 		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
 			uni.onAppHide(() => {
 				stat.appHide(get_page_vm());
@@ -1263,15 +1268,15 @@ function main() {
 			});
 		}
 		// #endif
-		
+
 		// #ifndef VUE3
 		const Vue = require('vue');
 		(Vue.default || Vue).mixin(lifecycle);
 		uni.report = function(type, options) {
-		  stat.sendEvent(type, options);
+			stat.sendEvent(type, options);
 		};
 		// #endif
-	}
+	// }
 }
 
 main();
