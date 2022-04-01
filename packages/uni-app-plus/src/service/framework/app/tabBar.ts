@@ -58,9 +58,13 @@ function setTabBarItem(
   text?: string,
   iconPath?: string,
   selectedIconPath?: string,
-  visible?: boolean
+  visible?: boolean,
+  iconfont?: UniApp.SetTabBarItemIconFontOptions
 ) {
-  type TabBarItem = Record<string, string | number | boolean | undefined>
+  type TabBarItem = Record<
+    string,
+    string | number | boolean | undefined | UniApp.SetTabBarItemIconFontOptions
+  >
   const item: TabBarItem = {
     index,
   }
@@ -72,6 +76,9 @@ function setTabBarItem(
   }
   if (selectedIconPath) {
     item.selectedIconPath = getRealPath(selectedIconPath)
+  }
+  if (iconfont !== undefined) {
+    item.iconfont = iconfont
   }
   if (visible !== undefined) {
     item.visible = config.list[index].visible = visible
