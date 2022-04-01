@@ -110,6 +110,7 @@ const get_platform_name = () => {
     'mp-qq': 'qq',
     'quickapp-native': 'qn',
     'mp-kuaishou': 'ks',
+    'mp-xhs': 'xhs',
     'mp-lark': 'lark',
     'quickapp-webview': 'qw'
   };

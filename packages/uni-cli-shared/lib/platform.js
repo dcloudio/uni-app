@@ -148,7 +148,7 @@ module.exports = {
   getShadowCss,
   getShadowTemplate (colorType = 'grey') {
     let tagName = 'cover-image'
-    if (process.env.UNI_PLATFORM === 'mp-toutiao' || process.env.UNI_PLATFORM === 'mp-lark') {
+    if (process.env.UNI_PLATFORM === 'mp-toutiao' || process.env.UNI_PLATFORM === 'mp-lark' || process.env.UNI_PLATFORM === 'mp-xhs') {
       tagName = 'image'
     }
     return `<${tagName} src="${getShadowCdn()}/img/shadow-${colorType}.png" style="z-index:998;position:fixed;left:0;top:0;width:100%;height:3px;"/>`
