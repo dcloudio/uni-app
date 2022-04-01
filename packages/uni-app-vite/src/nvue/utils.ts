@@ -1,5 +1,5 @@
 export function external(appService: boolean) {
-  return appService ? ['vue'] : ['vue', 'vuex']
+  return appService ? ['vue'] : ['vue', 'vuex', 'pinia']
 }
 export function globals(appService: boolean): { [name: string]: string } {
   return appService

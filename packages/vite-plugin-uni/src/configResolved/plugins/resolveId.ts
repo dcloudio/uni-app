@@ -15,6 +15,7 @@ const BUILT_IN_MODULES = {
   '@dcloudio/uni-cloud': 'dist/uni-cloud.es.js',
   '@dcloudio/uni-i18n': 'dist/uni-i18n.es.js',
   '@dcloudio/uni-shared': 'dist/uni-shared.es.js',
+  pinia: 'dist/pinia.mjs',
 }
 
 export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES
