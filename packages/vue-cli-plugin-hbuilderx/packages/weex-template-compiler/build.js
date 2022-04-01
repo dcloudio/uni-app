@@ -1648,6 +1648,7 @@ function parse (
           // condense consecutive whitespaces into single space
           text = text.replace(whitespaceRE, ' ');
         }
+        text = text.trim();
         var res;
         var child;
         if (!inVPre && text !== ' ' && (res = parseText(text, delimiters))) {

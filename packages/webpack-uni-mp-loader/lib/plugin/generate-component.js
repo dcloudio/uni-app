@@ -253,7 +253,7 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
         },
         {
           ext: 'js',
-          source: 'Component({onInit(){this.props.onPluginWrap(this)},didUnmount(){this.props.onPluginWrap(this,false)}})'
+          source: 'Component({onInit(){this.props.onPluginWrap(this)},didUnmount(){this.props.onPluginWrap(this,true)}})'
         },
         {
           ext: 'json',

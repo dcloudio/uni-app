@@ -21,9 +21,10 @@ export function setTabBarItem ({
   iconPath,
   selectedIconPath,
   pagePath,
-  visible
+  visible,
+  iconfont
 }) {
-  tabBar.setTabBarItem(index, text, iconPath, selectedIconPath, visible)
+  tabBar.setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont)
   const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
   if (route) {
     const meta = route.meta

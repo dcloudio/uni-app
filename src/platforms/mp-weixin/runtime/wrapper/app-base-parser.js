@@ -28,10 +28,6 @@ const hooks = [
   'onUnhandledRejection'
 ]
 
-if (__PLATFORM__ === 'mp-alipay') {
-  hooks.push('onShareAppMessage')
-}
-
 function initEventChannel () {
   Vue.prototype.getOpenerEventChannel = function () {
     // 微信小程序使用自身getOpenerEventChannel
@@ -110,7 +106,7 @@ export default function parseBaseApp (vm, {
   initRefs
 }) {
   initEventChannel()
-  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq' || __PLATFORM__ === 'mp-jd' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ ===
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq' || __PLATFORM__ === 'mp-jd' || __PLATFORM__ === 'mp-xhs' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ ===
     'mp-kuaishou' || __PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-lark') {
     initScopedSlotsParams()
   }

@@ -3,6 +3,10 @@ const webviewIds = []
 const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service'
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'
 
+function isNvue () {
+  return (window.__dcloud_weex_postMessage || window.__dcloud_weex_)
+}
+
 const publish = function (method, params) {
   const paramsObj = {
     options: {
@@ -12,8 +16,7 @@ const publish = function (method, params) {
     arg: params
   }
 
-  const isNvue = window.__dcloud_weex_postMessage || window.__dcloud_weex_
-  if (isNvue) { // nvue web-view
+  if (isNvue()) { // nvue web-view
     if (method === 'postMessage') {
       const message = {
         data: [params]
@@ -117,7 +120,11 @@ export default {
   },
   getEnv (callback) {
     /* eslint-disable standard/no-callback-literal */
-    if (window.plus) {
+    if (isNvue()) {
+      callback({
+        nvue: true
+      })
+    } else if (window.plus) {
       callback({
         plus: true
       })

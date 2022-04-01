@@ -108,40 +108,44 @@ export function initChildVues (mpInstance) {
   delete mpInstance._$childVues
 }
 
+function handleProps (ref) {
+  const eventProps = {}
+  let refProps = ref.props
+  const eventList = refProps['data-event-list'].split(',')
+  // 初始化支付宝小程序组件事件
+  Object.keys(refProps).forEach(key => {
+    if (eventList.includes(key)) {
+      const handler = refProps[key]
+      const res = key.match(/^on([A-Z])(\S*)/)
+      const event = res && (res[1].toLowerCase() + res[2])
+      refProps[key] = eventProps[key] = function () {
+        const props = Object.assign({}, refProps)
+        props[key] = handler
+        // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
+        delete props['data-com-type']
+        triggerEvent.bind({ props })(event, {
+          __args__: [...arguments]
+        })
+      }
+    }
+  })
+  // 处理 props 重写
+  Object.defineProperty(ref, 'props', {
+    get () {
+      return refProps
+    },
+    set (value) {
+      refProps = Object.assign(value, eventProps)
+    }
+  })
+}
+
 export function handleRef (ref) {
   if (!ref) {
     return
   }
   if (ref.props['data-com-type'] === 'wx') {
-    const eventProps = {}
-    let refProps = ref.props
-    const eventList = refProps['data-event-list'].split(',')
-    // 初始化支付宝小程序组件事件
-    Object.keys(refProps).forEach(key => {
-      if (eventList.includes(key)) {
-        const handler = refProps[key]
-        const res = key.match(/^on([A-Z])(\S*)/)
-        const event = res && (res[1].toLowerCase() + res[2])
-        refProps[key] = eventProps[key] = function () {
-          const props = Object.assign({}, refProps)
-          props[key] = handler
-          // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
-          delete props['data-com-type']
-          triggerEvent.bind({ props })(event, {
-            __args__: [...arguments]
-          })
-        }
-      }
-    })
-    // 处理 props 重写
-    Object.defineProperty(ref, 'props', {
-      get () {
-        return refProps
-      },
-      set (value) {
-        refProps = Object.assign(value, eventProps)
-      }
-    })
+    handleProps(ref)
   }
   const refName = ref.props['data-ref']
   const refInForName = ref.props['data-ref-in-for']
@@ -229,10 +233,12 @@ export const handleWrap = function (mp, destory) {
     if (destory) {
       delete this[key]
     } else {
-      // TODO remove handleRef
       this[key] = function () {
         mp.props[eventName].apply(this, arguments)
       }
     }
   })
+  if (!destory) {
+    handleProps(mp)
+  }
 }
