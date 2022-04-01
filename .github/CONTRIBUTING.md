@@ -24,7 +24,7 @@
   ```
   vue create -p dcloudio/uni-preset-vue#alpha uniapp-test
   ```
-* 从本地安装改动过的依赖。
+* 从本地安装改动过的依赖，由于部分包对软链兼容不佳，暂不推荐使用 ```npm link``` 方式。
 
   ```
   yarn add @dcloudio/%包名%@%uni-app本地仓库路径%/packages/%包名%
