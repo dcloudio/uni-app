@@ -26,7 +26,10 @@ export function normalizeLog(
 
   const msgs = args.map(function (v) {
     const type = toTypeString(v).toLowerCase()
-    if (type === '[object object]' || type === '[object array]') {
+    if (
+      ['[object object]', '[object array]', '[object module]'].indexOf(type) !==
+      -1
+    ) {
       try {
         v =
           '---BEGIN:JSON---' +
