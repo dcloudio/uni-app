@@ -11473,6 +11473,23 @@ const SaveFileProtocol = {
     },
 };
 
+const API_GET_SAVED_LIST = 'getSavedFileList';
+
+const API_REMOVE_SAVED_FILE = 'removeSavedFile';
+const RemoveSavedFileOptions = {
+    formatArgs: {
+        filePath(filePath, params) {
+            params.filePath = getRealPath(filePath);
+        },
+    },
+};
+const RemoveSavedFileProtocol = {
+    filePath: {
+        type: String,
+        required: true,
+    },
+};
+
 const API_GET_FILE_INFO = 'getFileInfo';
 const GetFileInfoOptions = {
     formatArgs: {
@@ -11482,6 +11499,21 @@ const GetFileInfoOptions = {
     },
 };
 const GetFileInfoProtocol = {
+    filePath: {
+        type: String,
+        required: true,
+    },
+};
+
+const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo';
+const GetSavedFileInfoOptions = {
+    formatArgs: {
+        filePath(filePath, params) {
+            params.filePath = getRealPath(filePath);
+        },
+    },
+};
+const GetSavedFileInfoProtocol = {
     filePath: {
         type: String,
         required: true,
@@ -12845,19 +12877,14 @@ const getFileInfo$1 = defineAsyncApi(API_GET_FILE_INFO, (options, { resolve, rej
     }));
 }, GetFileInfoProtocol, GetFileInfoOptions);
 
-const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath, fileType }, { resolve, reject }) => {
-    const errorCallback = warpPlusErrorCallback(reject);
-    plus.runtime.openDocument(getRealPath(filePath), undefined, resolve, errorCallback);
-}, OpenDocumentProtocol, OpenDocumentOptions);
-
 let index$1 = 0;
-const SAVED_DIR = 'uniapp_save';
-const SAVE_PATH = `_doc/${SAVED_DIR}`;
-function getSavedFileDir(success, fail) {
+const SAVED_DIR$1 = 'uniapp_save';
+const SAVE_PATH = `_doc/${SAVED_DIR$1}`;
+function getSavedFileDir$1(success, fail) {
     fail = fail || function () { };
     plus.io.requestFileSystem(plus.io.PRIVATE_DOC, (fs) => {
         // 请求_doc fs
-        fs.root.getDirectory(SAVED_DIR, {
+        fs.root.getDirectory(SAVED_DIR$1, {
             // 获取文件保存目录对象
             create: true,
         }, success, fail);
@@ -12868,7 +12895,7 @@ const saveFile = defineAsyncApi(API_SAVE_FILE, ({ tempFilePath }, { resolve, rej
     const fileName = `${Date.now()}${index$1++}${getExtName(tempFilePath)}`;
     plus.io.resolveLocalFileSystemURL(tempFilePath, (entry) => {
         // 读取临时文件 FileEntry
-        getSavedFileDir((dir) => {
+        getSavedFileDir$1((dir) => {
             entry.copyTo(dir, fileName, () => {
                 // 复制临时文件 FileEntry，为了避免把相册里的文件删除，使用 copy，微信中是要删除临时文件的
                 const savedFilePath = SAVE_PATH + '/' + fileName;
@@ -12879,6 +12906,74 @@ const saveFile = defineAsyncApi(API_SAVE_FILE, ({ tempFilePath }, { resolve, rej
         }, errorCallback);
     }, errorCallback);
 }, SaveFileProtocol, SaveFileOptions);
+
+const SAVED_DIR = 'uniapp_save';
+function getSavedFileDir(success, fail) {
+    fail = fail || function () { };
+    plus.io.requestFileSystem(plus.io.PRIVATE_DOC, (fs) => {
+        // 请求_doc fs
+        fs.root.getDirectory(SAVED_DIR, {
+            // 获取文件保存目录对象
+            create: true,
+        }, success, fail);
+    }, fail);
+}
+const getSavedFileList = (defineAsyncApi(API_GET_SAVED_LIST, (_, { resolve, reject }) => {
+    const errorCallback = warpPlusErrorCallback(reject);
+    getSavedFileDir((entry) => {
+        var reader = entry.createReader();
+        var fileList = [];
+        reader.readEntries((entries) => {
+            if (entries && entries.length) {
+                entries.forEach((entry) => {
+                    entry.getMetadata((meta) => {
+                        fileList.push({
+                            filePath: plus.io.convertAbsoluteFileSystem(entry.fullPath),
+                            createTime: meta.modificationTime.getTime(),
+                            size: meta.size,
+                        });
+                        if (fileList.length === entries.length) {
+                            resolve({
+                                fileList,
+                            });
+                        }
+                    }, errorCallback, false);
+                });
+            }
+            else {
+                resolve({
+                    fileList,
+                });
+            }
+        }, errorCallback);
+    }, errorCallback);
+}));
+
+const getSavedFileInfo = defineAsyncApi(API_GET_SAVED_FILE_INFO, ({ filePath }, { resolve, reject }) => {
+    const errorCallback = warpPlusErrorCallback(reject);
+    plus.io.resolveLocalFileSystemURL(filePath, (entry) => {
+        entry.getMetadata((meta) => {
+            resolve({
+                createTime: meta.modificationTime.getTime(),
+                size: meta.size,
+            });
+        }, errorCallback, false);
+    }, errorCallback);
+}, GetSavedFileInfoProtocol, GetSavedFileInfoOptions);
+
+const removeSavedFile = defineAsyncApi(API_REMOVE_SAVED_FILE, ({ filePath }, { resolve, reject }) => {
+    const errorCallback = warpPlusErrorCallback(reject);
+    plus.io.resolveLocalFileSystemURL(filePath, (entry) => {
+        entry.remove(() => {
+            resolve();
+        }, errorCallback);
+    }, errorCallback);
+}, RemoveSavedFileProtocol, RemoveSavedFileOptions);
+
+const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath, fileType }, { resolve, reject }) => {
+    const errorCallback = warpPlusErrorCallback(reject);
+    plus.runtime.openDocument(getRealPath(filePath), undefined, resolve, errorCallback);
+}, OpenDocumentProtocol, OpenDocumentOptions);
 
 const isIOS = plus.os.name === 'iOS';
 let config;
@@ -18847,8 +18942,11 @@ var uni$1 = {
   getStorageInfoSync: getStorageInfoSync,
   getStorageInfo: getStorageInfo,
   getFileInfo: getFileInfo$1,
-  openDocument: openDocument,
   saveFile: saveFile,
+  getSavedFileList: getSavedFileList,
+  getSavedFileInfo: getSavedFileInfo,
+  removeSavedFile: removeSavedFile,
+  openDocument: openDocument,
   getSystemInfoSync: getSystemInfoSync,
   getSystemInfo: getSystemInfo,
   onCompassChange: onCompassChange,
