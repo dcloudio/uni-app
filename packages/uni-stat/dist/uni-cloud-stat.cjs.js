@@ -236,7 +236,8 @@ const get_page_route = (pageVm) => {
   let page = pageVm.$page || (pageVm.$scope && pageVm.$scope.$page);
   let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE');
   if (!page) return lastPageRoute || ''
-  return page.fullPath === '/' ? page.route : page.fullPath
+  // 如果找不到 fullPath 就取 route 的值
+  return page.fullPath === '/' ? page.route : (page.fullPath||page.route)
 };
 
 /**
