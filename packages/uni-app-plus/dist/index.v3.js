@@ -3020,8 +3020,7 @@ var serviceContext = (function () {
 
   const pageScrollTo = {
     scrollTop: {
-      type: Number,
-      required: true
+      type: Number
     },
     duration: {
       type: Number,
@@ -6195,7 +6194,7 @@ var serviceContext = (function () {
   /**
    * 动态设置 tabBar 某一项的内容
    */
-  function setTabBarItem$1 (index, text, iconPath, selectedIconPath, visible) {
+  function setTabBarItem$1 (index, text, iconPath, selectedIconPath, visible, iconfont) {
     const item = {
       index
     };
@@ -6207,6 +6206,9 @@ var serviceContext = (function () {
     }
     if (selectedIconPath) {
       item.selectedIconPath = getRealPath$1(selectedIconPath);
+    }
+    if (iconfont !== undefined) {
+      item.iconfont = iconfont;
     }
     if (visible !== undefined) {
       item.visible = config.list[index].visible = visible;
@@ -11056,9 +11058,10 @@ var serviceContext = (function () {
     iconPath,
     selectedIconPath,
     pagePath,
-    visible
+    visible,
+    iconfont
   }) {
-    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
+    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
       const meta = route.meta;
