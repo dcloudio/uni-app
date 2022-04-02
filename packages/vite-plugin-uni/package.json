@@ -56,7 +56,7 @@
     "vite": "^2.9.1"
   },
   "uni-app": {
-    "compilerVersion": "3.4.3"
+    "compilerVersion": "3.4.4"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
 }
