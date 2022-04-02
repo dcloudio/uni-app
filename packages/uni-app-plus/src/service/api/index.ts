@@ -1,7 +1,11 @@
 export * from './storage/storage'
 export * from './file/getFileInfo'
-export * from './file/openDocument'
 export * from './file/saveFile'
+export * from './file/getSavedFileList'
+export * from './file/getSavedFileInfo'
+export * from './file/removeSavedFile'
+export * from './file/getFileInfo'
+export * from './file/openDocument'
 
 export * from './device/systemInfo'
 export * from './device/compass'
