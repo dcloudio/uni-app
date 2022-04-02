@@ -5366,7 +5366,13 @@ function createInvoker(initialValue, instance) {
         const eventValue = invoker.value;
         const invoke = () => callWithAsyncErrorHandling(patchStopImmediatePropagation(e, eventValue), instance, 5 /* NATIVE_EVENT_HANDLER */, args);
         // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
-        if (bubbles.includes(e.type)) {
+        const eventTarget = e.target;
+        const eventSync = eventTarget
+            ? eventTarget.dataset
+                ? eventTarget.dataset.eventsync === 'true'
+                : false
+            : false;
+        if (bubbles.includes(e.type) && !eventSync) {
             setTimeout(invoke);
         }
         else {
