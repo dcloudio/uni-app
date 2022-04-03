@@ -7,12 +7,12 @@ function removeDOCTYPE (html) {
     .replace(/<!DOCTYPE.*>\n/, '')
 }
 
-function parseAttrs (attrs) {
+function parseAttrs (attrs, tag) {
   return attrs.reduce(function (pre, attr) {
     let value = attr.value
     const name = attr.name
 
-    if (value.match(/ /) && name !== 'style') {
+    if (tag !== 'img' && name !== 'src' && value.match(/ /) && name !== 'style') {
       value = value.split(' ')
     }
 
@@ -45,7 +45,7 @@ export default function parseHtml (html) {
         name: tag
       }
       if (attrs.length !== 0) {
-        node.attrs = parseAttrs(attrs)
+        node.attrs = parseAttrs(attrs, tag)
       }
       if (unary) {
         const parent = stacks[0] || results
