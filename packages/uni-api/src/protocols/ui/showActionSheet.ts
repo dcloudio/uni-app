@@ -7,7 +7,6 @@ export const ShowActionSheetProtocol: ApiProtocol<API_TYPE_SHOW_ACTION_SHEET> =
       required: true,
     },
     title: String,
-    alertText: String,
     itemColor: String,
     popover: Object,
   }
