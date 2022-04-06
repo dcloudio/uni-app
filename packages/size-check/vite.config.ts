@@ -1,4 +1,3 @@
-import './env'
 import path from 'path'
 import { terser } from 'rollup-plugin-terser'
 import uniH5VitePlugins from '@dcloudio/uni-h5-vite'

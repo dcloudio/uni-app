@@ -27,7 +27,7 @@ import {
   initPluginVueJsxOptions,
   initPluginVueOptions,
 } from './vue'
-// import { createResolveId } from './resolveId'
+import { initEnv } from './cli/utils'
 
 const debugUni = debug('uni:plugin')
 
@@ -63,6 +63,9 @@ export { runDev, runBuild } from './cli/action'
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin[] {
+  // 三方插件（如vitest）可能提供了自己的入口命令，需要补充 env 初始化逻辑
+  initEnv('unknown', { platform: process.env.UNI_PLATFORM || 'h5' })
+
   const options: VitePluginUniResolvedOptions = {
     ...rawOptions,
     base: '/',

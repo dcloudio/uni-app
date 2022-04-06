@@ -49,7 +49,15 @@ export function addConfigFile(inlineConfig: InlineConfig) {
   return inlineConfig
 }
 
-export function initEnv(type: 'dev' | 'build', options: CliOptions) {
+let initliazed = false
+export function initEnv(
+  type: 'unknown' | 'dev' | 'build',
+  options: CliOptions
+) {
+  if (initliazed) {
+    return
+  }
+  initliazed = true
   if (options.platform === 'mp-360') {
     console.error(M['mp.360.unsupported'])
     process.exit(0)
@@ -87,7 +95,8 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     process.env.UNI_SUB_PLATFORM = options.platform
     options.platform = 'quickapp-webview'
   }
-  process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()
+  process.env.VITE_ROOT_DIR =
+    process.env.VITE_ROOT_DIR || process.env.UNI_INPUT_DIR || process.cwd()
 
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')

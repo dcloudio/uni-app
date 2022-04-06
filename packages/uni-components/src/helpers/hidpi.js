@@ -3,6 +3,9 @@ import { hasOwn } from '@vue/shared'
 export const pixelRatio = __NODE_JS__
   ? 1
   : /*#__PURE__*/ (function () {
+      if (__PLATFORM__ === 'h5' && navigator.userAgent.includes('jsdom')) {
+        return 1
+      }
       const canvas = document.createElement('canvas')
       canvas.height = canvas.width = 0
       const context = canvas.getContext('2d')
@@ -134,7 +137,7 @@ export function initHidpi() {
         // 会导致 canvas 无法绘制。
         if (args[3] && typeof args[3] === 'number') {
           args[3] *= pixelRatio
-        } 
+        }
 
         var font = this.font
         this.font = font.replace(
@@ -164,7 +167,7 @@ export function initHidpi() {
         // 会导致 canvas 无法绘制。
         if (args[3] && typeof args[3] === 'number') {
           args[3] *= pixelRatio
-        } 
+        }
 
         var font = this.font
         this.font = font.replace(

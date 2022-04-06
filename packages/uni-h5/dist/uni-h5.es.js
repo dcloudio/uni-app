@@ -6320,6 +6320,9 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
   });
 }
 const pixelRatio = /* @__PURE__ */ function() {
+  if (navigator.userAgent.includes("jsdom")) {
+    return 1;
+  }
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
   const context = canvas.getContext("2d");

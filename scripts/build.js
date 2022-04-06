@@ -127,6 +127,7 @@ async function build(target) {
       {
         stdio: 'inherit',
         env: Object.assign({ FORMAT: 'es' }, process.env),
+        cwd: pkgDir,
       }
     )
     if (target === 'uni-h5') {

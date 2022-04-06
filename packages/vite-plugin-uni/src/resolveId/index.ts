@@ -8,9 +8,9 @@ export function createResolveId(
   const inputDir = normalizePath(options.inputDir)
   return function (id) {
     if (id.startsWith('@/')) {
-      return inputDir + id.substr(1)
+      return inputDir + id.slice(1)
     } else if (id.startsWith('~@/')) {
-      return inputDir + id.substr(2)
+      return inputDir + id.slice(2)
     }
   }
 }

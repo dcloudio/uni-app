@@ -22,6 +22,11 @@ export function initModuleAlias() {
     'vue/compiler-sfc': compilerSfcPath,
     'vue/server-renderer': serverRendererPath,
   })
+  if (process.env.VITEST) {
+    moduleAlias.addAliases({
+      vue: '@dcloudio/uni-h5-vue',
+    })
+  }
   if (isInHBuilderX()) {
     Object.keys(hbxPlugins).forEach((name) => {
       moduleAlias.addAlias(
