@@ -46,11 +46,19 @@ export function initLifetimes({
       // 初始化 vue 实例
       const mpInstance = this
       const isMiniProgramPage = isPage(mpInstance)
-
+      let propsData: Record<string, any> = {}
+      if (__PLATFORM__ === 'mp-baidu' && isMiniProgramPage) {
+        // 百度小程序在 onInit 时就可以临时存储下页面参数
+        const { _$props } = (this as any).pageinstance
+        delete (this as any).pageinstance._$props
+        propsData = findPropsData(_$props, true)
+      } else {
+        propsData = findPropsData(properties, isMiniProgramPage)
+      }
       this.$vm = $createComponent(
         {
           type: vueOptions,
-          props: findPropsData(properties, isMiniProgramPage),
+          props: propsData,
         },
         {
           mpType: isMiniProgramPage ? 'page' : 'component',

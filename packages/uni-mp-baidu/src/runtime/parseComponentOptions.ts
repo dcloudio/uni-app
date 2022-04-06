@@ -42,7 +42,7 @@ export function parse(componentOptions: MPComponentOptions) {
       const pages = getCurrentPages()
       this.pageinstance = pages[pages.length - 1]
     }
-
+    this.pageinstance._$props = query
     // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
     fixSetDataStart(this as MPComponentInstance)
     oldAttached.call(this)
