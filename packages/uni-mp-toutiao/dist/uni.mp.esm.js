@@ -344,6 +344,7 @@ function parseApp(instance, parseAppOptions) {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
         onLaunch(options) {
+            this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前

@@ -347,6 +347,7 @@ function parseApp(instance, parseAppOptions) {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
         onLaunch(options) {
+            this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -962,7 +963,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             {
                 initSetRef(this);
             }
-            const properties = this.properties;
+            let properties = this.properties;
             initVueIds(properties.uI, this);
             const relationOptions = {
                 vuePid: this._$vuePid,
@@ -972,19 +973,16 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 初始化 vue 实例
             const mpInstance = this;
             const isMiniProgramPage = isPage(mpInstance);
-            let propsData = {};
+            let propsData = properties;
             if (isMiniProgramPage) {
-                // 百度小程序在 onInit 时就可以临时存储下页面参数
-                const { _$props } = this.pageinstance;
-                delete this.pageinstance._$props;
-                propsData = findPropsData(_$props, true);
-            }
-            else {
-                propsData = findPropsData(properties, isMiniProgramPage);
+                {
+                    propsData = this.pageinstance._$props;
+                    delete this.pageinstance._$props;
+                }
             }
             this.$vm = $createComponent({
                 type: vueOptions,
-                props: propsData,
+                props: findPropsData(propsData, isMiniProgramPage),
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
