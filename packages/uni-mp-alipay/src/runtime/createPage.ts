@@ -39,6 +39,7 @@ export function initCreatePage() {
           fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         }
         // 初始化 vue 实例
+        this.props = query
         this.$vm = createVueComponent('page', this, vueOptions)
         initSpecialMethods(this)
         this.$vm.$callHook(ON_LOAD, query)
