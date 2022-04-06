@@ -972,9 +972,19 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 初始化 vue 实例
             const mpInstance = this;
             const isMiniProgramPage = isPage(mpInstance);
+            let propsData = {};
+            if (isMiniProgramPage) {
+                // 百度小程序在 onInit 时就可以临时存储下页面参数
+                const { _$props } = this.pageinstance;
+                delete this.pageinstance._$props;
+                propsData = findPropsData(_$props, true);
+            }
+            else {
+                propsData = findPropsData(properties, isMiniProgramPage);
+            }
             this.$vm = $createComponent({
                 type: vueOptions,
-                props: findPropsData(properties, isMiniProgramPage),
+                props: propsData,
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
@@ -1045,6 +1055,7 @@ function parse$1(componentOptions) {
             const pages = getCurrentPages();
             this.pageinstance = pages[pages.length - 1];
         }
+        this.pageinstance._$props = query;
         // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
         fixSetDataStart(this);
         oldAttached.call(this);

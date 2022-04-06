@@ -803,9 +803,13 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 初始化 vue 实例
             const mpInstance = this;
             const isMiniProgramPage = isPage(mpInstance);
+            let propsData = {};
+            {
+                propsData = findPropsData(properties, isMiniProgramPage);
+            }
             this.$vm = $createComponent({
                 type: vueOptions,
-                props: findPropsData(properties, isMiniProgramPage),
+                props: propsData,
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
