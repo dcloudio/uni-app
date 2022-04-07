@@ -33,7 +33,12 @@ export function mergeMiniProgramAppJson(
   Object.keys(platformJson).forEach((name) => {
     if (
       !isMiniProgramProjectJsonKey(name) &&
-      !['usingComponents', 'optimization', 'scopedSlotsCompiler'].includes(name)
+      ![
+        'unipush',
+        'usingComponents',
+        'optimization',
+        'scopedSlotsCompiler',
+      ].includes(name)
     ) {
       appJson[name] = platformJson[name]
     }
