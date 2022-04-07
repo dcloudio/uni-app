@@ -214,7 +214,7 @@ function setMusicState(args: Partial<Audio>, name?: string) {
     'title',
   ]
 
-  if (name && name === 'playbackRate') {
+  if (name === 'playbackRate') {
     let val = (args as any)[name]
     audio.playbackRate && audio.playbackRate(parseFloat(val as string))
     return

@@ -15003,7 +15003,7 @@ function createAudioInstance() {
         audioId,
     };
 }
-function setAudioState({ audioId, src, startTime, autoplay = false, loop = false, obeyMuteSwitch, volume, sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY, }) {
+function setAudioState({ audioId, src, startTime, autoplay = false, loop = false, obeyMuteSwitch, volume, sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY, playbackRate, }) {
     const audio = audios[audioId];
     if (audio) {
         const style = {
@@ -15011,7 +15011,10 @@ function setAudioState({ audioId, src, startTime, autoplay = false, loop = false
             autoplay,
         };
         if (src) {
-            audio.src = style.src = getRealPath(src);
+            // iOS 设置 src 会重新播放
+            const realSrc = getRealPath(src);
+            if (audio.src !== realSrc)
+                audio.src = style.src = realSrc;
         }
         if (startTime) {
             audio.startTime = style.startTime = startTime;
@@ -15022,6 +15025,10 @@ function setAudioState({ audioId, src, startTime, autoplay = false, loop = false
         audio.setStyles(style);
         if (sessionCategory) {
             audio.setSessionCategory(sessionCategory);
+        }
+        if (playbackRate && audio.playbackRate) {
+            // @ts-ignore
+            audio.playbackRate(playbackRate);
         }
         initStateChage(audioId);
     }
@@ -15127,6 +15134,10 @@ const props$1 = [
     },
     {
         name: 'volume',
+    },
+    {
+        name: 'playbackRate',
+        cache: true,
     },
 ];
 class InnerAudioContext {
@@ -15378,7 +15389,7 @@ function getBackgroundAudioState() {
     }
     return data;
 }
-function setMusicState(args) {
+function setMusicState(args, name) {
     initMusic();
     const props = [
         'src',
@@ -15389,6 +15400,11 @@ function setMusicState(args) {
         'epname',
         'title',
     ];
+    if (name === 'playbackRate') {
+        let val = args[name];
+        audio.playbackRate && audio.playbackRate(parseFloat(val));
+        return;
+    }
     const style = {};
     Object.keys(args).forEach((key) => {
         if (props.indexOf(key) >= 0) {
@@ -15501,6 +15517,11 @@ const props = [
         readonly: true,
         default: 'http',
     },
+    {
+        name: 'playbackRate',
+        default: 1,
+        cache: true,
+    },
 ];
 class BackgroundAudioManager {
     constructor() {
@@ -15516,7 +15537,7 @@ class BackgroundAudioManager {
                     ? undefined
                     : (value) => {
                         this._options[name] = value;
-                        setMusicState(this._options);
+                        setMusicState(this._options, name);
                     },
             });
         });
