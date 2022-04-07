@@ -14,6 +14,7 @@ import {
   isCSSRequest,
   parseManifestJsonOnce,
   M,
+  isMiniProgramAssetFile,
   dynamicImportPolyfill,
 } from '@dcloudio/uni-cli-shared'
 import { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
@@ -41,6 +42,7 @@ export function createBuildOptions(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): BuildOptions {
+  const { renderDynamicImport } = dynamicImportPolyfill()
   return {
     // sourcemap: 'inline', // TODO
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
@@ -64,7 +66,21 @@ export function createBuildOptions(
         manualChunks: createMoveToVendorChunkFn(),
         chunkFileNames: createChunkFileNames(inputDir),
         assetFileNames: '[name][extname]',
-        plugins: [dynamicImportPolyfill()],
+        plugins: [
+          {
+            name: 'dynamic-import-polyfill',
+            renderDynamicImport(options) {
+              const { targetModuleId } = options
+              if (targetModuleId && isMiniProgramAssetFile(targetModuleId)) {
+                return {
+                  left: 'Promise.resolve(require(',
+                  right: '))',
+                }
+              }
+              return renderDynamicImport!.call(this, options)
+            },
+          },
+        ],
       },
     },
   }
