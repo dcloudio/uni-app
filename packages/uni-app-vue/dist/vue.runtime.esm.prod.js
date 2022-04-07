@@ -1452,7 +1452,11 @@ function provide(key, value) {
     } // TS doesn't allow symbol as index type
 
 
-    provides[key] = value;
+    provides[key] = value; // 当实例为 App 时，同步到全局 provide
+
+    if (currentInstance.type.mpType === 'app') {
+      currentInstance.appContext.app.provide(key, value);
+    }
   }
 }
 
