@@ -118,7 +118,7 @@ class Index extends Analyze {
     addGlobalComponentReference (independentRoot, globalComponentsMap) {
         const globalComponentInfoMap = getGlobalComponentKeyByGlobalComponentPath();
         for (let [globalComponentPath, componentSetWhoUsedGlobalCompo] of globalComponentsMap) {
-            // weui暂时先不处理
+            // weui 暂时先不处理
             if (globalComponentPath.indexOf(weuiComponentStr) >= 0) {
                 continue;
             }

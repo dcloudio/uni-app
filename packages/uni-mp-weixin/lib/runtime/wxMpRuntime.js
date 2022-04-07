@@ -1,11 +1,13 @@
-if (!global.wpRuntimeInited) {
-  global.wpRuntimeInited = true;
+
+const logicGlobal = Function("return this")();
+if (!logicGlobal.wpRuntimeInited) {
+  logicGlobal.wpRuntimeInited = true;
   // https://developers.weixin.qq.com/miniprogram/dev/reference/api/App.html
   // 注册小程序。接受一个 Object 参数，其指定小程序的生命周期回调等。
   // App() 必须在 app.js 中调用，必须调用且只能调用一次。不然会出现无法预期的后果。
   const independentRoots = []; // 变量名不能更改，插件通过该名来静态替换值
 
-  Object.assign(global, {
+  Object.assign(logicGlobal, {
     getApp: function () {
       return getApp() || getApp({ allowDefault: true });
     },

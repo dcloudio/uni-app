@@ -222,10 +222,16 @@ module.exports = function generateJson (compilation) {
   // 组件依赖分析
   (new AnalyzeDependency()).init(emitFileMap, compilation);
 
-  for (const [name, jsonObj] of emitFileMap) {
-    delete jsonObj.usingGlobalComponents;
-    emit(name, jsonObj, compilation);
-  }
+    for (const [name, jsonObj] of emitFileMap) {      
+      if (name === 'app.json') { // 删除manifest.json携带的配置项
+        delete jsonObj.insertAppCssToIndependentSwitch;
+        delete jsonObj.independentSwitch;
+        delete jsonObj.copyWxComponentsOnDemandSwitch;
+      } else { // 删除用于临时记录的属性
+        delete jsonObj.usingGlobalComponents;
+      }
+      emit(name, jsonObj, compilation);      
+    }
 
   if (process.env.UNI_USING_CACHE && jsonFileMap.size) {
     setTimeout(() => {

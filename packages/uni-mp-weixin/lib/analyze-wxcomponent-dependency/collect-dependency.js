@@ -72,10 +72,10 @@ class CollectDependency {
         const dirName = path.dirname(file);
         let fileContent = this.readFileSync(file);
         if (fileContent && fileContent instanceof Buffer) {
-            fileContent = fileContent.toString('utf-8');
+          fileContent = fileContent.toString('utf-8');
         }
         if (!fileContent || !(fileContent.trim())) {
-            return [];
+          return [];
         }
         fileContent = JSON.parse(fileContent);
         const usingComponents = fileContent.usingComponents;

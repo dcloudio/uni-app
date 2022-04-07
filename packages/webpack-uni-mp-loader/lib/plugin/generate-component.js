@@ -315,7 +315,7 @@ function addComponent (name) {
 
 function removeUnusedComponent (name) {
   try {
-    // fs.renameSync(path.join(process.env.UNI_OUTPUT_DIR, name + '.json'), path.join(process.env.UNI_OUTPUT_DIR, name +
-    //   '.bak.json'))
+    fs.renameSync(path.join(process.env.UNI_OUTPUT_DIR, name + '.json'), path.join(process.env.UNI_OUTPUT_DIR, name +
+      '.bak.json'))
   } catch (e) { }
 }
