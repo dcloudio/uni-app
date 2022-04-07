@@ -1,5 +1,5 @@
 import path from 'path'
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { CompilerOptions } from '@vue/compiler-sfc'
 import {
   defineUniPagesJsonPlugin,
@@ -20,6 +20,8 @@ interface NVuePages {
   }
 }
 
+export const nvuePagesCache = new Map<ResolvedConfig, NVuePages>()
+
 export function uniPagesJsonPlugin({
   renderer,
   appService,
@@ -36,6 +38,9 @@ export function uniPagesJsonPlugin({
     return {
       name: 'uni:app-nvue-pages-json',
       enforce: 'pre',
+      configResolved(config) {
+        nvuePagesCache.set(config, nvuePages)
+      },
       transform(code, id) {
         if (!opts.filter(id)) {
           return
@@ -47,6 +52,9 @@ export function uniPagesJsonPlugin({
           this.addWatchFile(filepath)
         })
         const pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
+        Object.keys(nvuePages).forEach((name) => {
+          delete nvuePages[name]
+        })
         pagesJson.pages.forEach((page) => {
           if (page.style.isNVue) {
             const filename = normalizePath(

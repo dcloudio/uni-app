@@ -29,6 +29,7 @@ import { transformRootNode } from './transforms/transformRootNode'
 import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
 import { transformAttrs } from './transforms/transformAttrs'
+import { nvuePagesCache } from '../plugins/pagesJson'
 
 const uTags = {
   text: 'u-text',
@@ -118,13 +119,18 @@ export function uniAppNVuePlugin({
             if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
               return
             }
+            const nvuePages = nvuePagesCache.get(config)
+            if (!nvuePages || !Object.keys(nvuePages).length) {
+              // 当前项目没有 nvue 文件
+              return { code: `export default {}`, map: { mappings: '' } }
+            }
             const { code, messages } = await parse(source, {
               filename,
               logLevel: 'WARNING',
             })
             messages.forEach((message) => {
               if (message.type === 'warning') {
-                let msg = `[plugin:vite:css] ${message.text}`
+                let msg = `[plugin:vite:nvue-css] ${message.text}`
                 if (message.line && message.column) {
                   msg += `\n${generateCodeFrame(source, {
                     line: message.line,
