@@ -13,10 +13,11 @@ const visitor = {
     // 增减判断是否有该参数逻辑
 
     if (t.isIdentifier(path.node.callee)) {
+      const logicGlobal = '(Function("return this")())'
       if (funNode.callee.name === 'getApp' && funNode.arguments.length === 0) {
-        funNode.callee = t.MemberExpression(t.Identifier('(global.global || global)'), t.Identifier('getApp'));
+        funNode.callee = t.MemberExpression(t.Identifier(logicGlobal), t.Identifier('getApp'));
       } else if (funNode.callee.name === 'App') {
-        funNode.callee = t.MemberExpression(t.Identifier('(global.global || global)'), t.Identifier('App'));
+        funNode.callee = t.MemberExpression(t.Identifier(logicGlobal), t.Identifier('App'));
       }
     }
   },

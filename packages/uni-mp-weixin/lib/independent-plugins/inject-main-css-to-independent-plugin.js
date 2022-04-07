@@ -2,26 +2,25 @@ const fs = require('fs-extra');
 const path = require('path');
 const { generateAsset } = require('./utils');
 const {
-    getNewComponentPathInIndependentPkg,
-    getJsonByPageOrComponentPath
-} = require('./optimize-components-position/util');
-const {
     getIndependentPkgRoots,
     getIndependentEntryPages
 } = require('@dcloudio/uni-mp-weixin/lib/independent-plugins/optimize-components-position/util');
+const { wxComponentsStr } = require('./optimize-components-position/constant');
+const weuiMiniprogramDir = 'weui-mp';
 
 function generateCssSource (pkgMainCssPath, pkgLibraryCssPath, wxssSourceInfo) {
     const platforms = ['mp-weixin', 'mp-qq', 'mp-toutiao'];
     const presetStyle = platforms.includes(process.env.UNI_PLATFORM) ? '[data-custom-hidden="true"],[bind-data-custom-hidden="true"]{display: none !important;}' : '';
 
-    return `@import '/${pkgMainCssPath}';
-    @import '/${pkgLibraryCssPath}';
+    const mainCssImport = pkgMainCssPath ? `@import '/${pkgMainCssPath}';` : '';
+    const libraryCssImport = pkgLibraryCssPath ? `@import '/${pkgLibraryCssPath}';` : '';
+    return `${mainCssImport}${libraryCssImport}
     ${wxssSourceInfo.source()}
     ${presetStyle}`;
 }
 
 function copyWeuiCssToIndependent (independentRoot) {
-    const weuiCssRelativePath = 'wxcomponents/weui-miniprogram/weui-wxss/dist/style/weui.wxss';
+    const weuiCssRelativePath = `wxcomponents/${weuiMiniprogramDir}/weui-wxss/dist/style/weui.wxss`;
     const fromPath = path.resolve(process.env.UNI_INPUT_DIR, weuiCssRelativePath);
     const toPath = path.resolve(process.env.UNI_OUTPUT_DIR, `${independentRoot}/${weuiCssRelativePath}`);
     if (fs.existsSync(fromPath)) {
@@ -43,7 +42,7 @@ function tryInsertWeuiCss (independentRoot, originalWxssStr) {
     // 复制
     const successOrNot = copyWeuiCssToIndependent(independentRoot);
 
-    const insertStr = `@import '/${independentRoot}/wxcomponents/weui-miniprogram/weui-wxss/dist/style/weui.wxss'`;
+    const insertStr = `@import '/${independentRoot}/wxcomponents/${weuiMiniprogramDir}/weui-wxss/dist/style/weui.wxss'`;
     return (successOrNot && useExtendedWeUi) ? `${insertStr};${originalWxssStr}` : originalWxssStr;
 }
 
@@ -54,14 +53,21 @@ class InjectMainCssToIndependentCssPlugin {
         compiler.hooks.emit.tapPromise('InjectMainCssToIndependentCssPlugin', compilation => {
             return new Promise((resolve, reject) => {
                 try {
-
-                    // TODO 判断主包中 common/main.wxss是否存在，不存在直接return
                     const thisCompilationAssets = compilation.assets;
 
                     const indendentRoots = getIndependentPkgRoots();
                     indendentRoots.forEach(indendentRoot => {
-                        const pkgMainCssPath = `${indendentRoot}/common/main.wxss`;
-                        const pkgLibraryCssPath = `${indendentRoot}/common/library.wxss`;
+                        
+                        let pkgMainCssPath = `${indendentRoot}/common/main.wxss`;
+                        let pkgLibraryCssPath = `${indendentRoot}/common/library.wxss`;
+
+                        if(!thisCompilationAssets[pkgMainCssPath]){
+                            pkgMainCssPath = '';
+                        }
+
+                        if(!thisCompilationAssets[pkgLibraryCssPath]){
+                            pkgLibraryCssPath = '';
+                        }
 
                         const pkgPagesPath = getIndependentEntryPages(indendentRoot);
                         // const cacheSet = new Set();
@@ -77,7 +83,7 @@ class InjectMainCssToIndependentCssPlugin {
                                 pageAndComponentPath = pageAndComponentPath.substring(1);
                             }
 
-                            if (pageAndComponentPath.indexOf('weui-miniprogra') >= 0) {
+                            if (pageAndComponentPath.indexOf(wxComponentsStr) >= 0) {
                                 return;
                             }
                             const pageWxssPath = `${pageAndComponentPath}.wxss`;

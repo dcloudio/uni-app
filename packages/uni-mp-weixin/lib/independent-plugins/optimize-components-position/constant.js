@@ -1,7 +1,7 @@
 module.exports = {
   appJsonFileName: 'app.json',
   wxComponentsStr: 'wxcomponents',
-  weuiComponentStr: 'weui-miniprogram' + 'dd',
+  weuiComponentStr: 'weui-miniprogram',
   mainPkgName: 'mainPkg',
   outerComponents: 'vueOuterComponents',
   componentType: {
