@@ -5,7 +5,7 @@ importers:
   .:
     specifiers:
       '@babel/preset-env': ^7.16.11
-      '@dcloudio/types': ^2.5.19
+      '@dcloudio/types': ^2.6.2
       '@dcloudio/uni-api': 3.0.0-alpha-3040420220402005
       '@dcloudio/uni-app': 3.0.0-alpha-3040420220402005
       '@jest/types': ^27.0.2
@@ -53,7 +53,7 @@ importers:
       yorkie: ^2.0.0
     devDependencies:
       '@babel/preset-env': 7.16.11
-      '@dcloudio/types': 2.5.19
+      '@dcloudio/types': 2.6.2
       '@dcloudio/uni-api': link:packages/uni-api
       '@dcloudio/uni-app': link:packages/uni-app
       '@jest/types': 27.4.2
@@ -2324,8 +2324,8 @@ packages:
       lodash.once: 4.1.1
     dev: true
 
-  /@dcloudio/types/2.5.19:
-    resolution: {integrity: sha512-wwUKwS9LD0tvHytNZde6Dm2w2JAlPZcbf+DkxW2aQOgYaC0kqblgHKRQP6N7/4yhuV04XxpfpKhSZYSPCazBjQ==}
+  /@dcloudio/types/2.6.2:
+    resolution: {integrity: sha512-i2N9LZs5NZ/ixLYylwqS4gu18VRb6alLanbdamLh4q0Zj6nPxWkDN5SZnR0qq26QamiEErjzqGMpalX4g6BPnQ==}
     dev: true
 
   /@dcloudio/uni-cli-i18n/2.0.0-alpha-33020211130001:

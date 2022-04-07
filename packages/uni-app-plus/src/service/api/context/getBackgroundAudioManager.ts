@@ -49,6 +49,7 @@ type Audio = PlusAudioAudioPlayer & {
   webUrl?: string
   startTime?: number
   isStopped?: boolean
+  playbackRate?: (rate: number) => void
 }
 
 const eventNames: eventNames[] = [
@@ -201,7 +202,7 @@ function getBackgroundAudioState() {
   return data
 }
 
-function setMusicState(args: Partial<Audio>) {
+function setMusicState(args: Partial<Audio>, name?: string) {
   initMusic()
   const props = [
     'src',
@@ -212,7 +213,14 @@ function setMusicState(args: Partial<Audio>) {
     'epname',
     'title',
   ]
-  const style = {}
+
+  if (name && name === 'playbackRate') {
+    let val = (args as any)[name]
+    audio.playbackRate && audio.playbackRate(parseFloat(val as string))
+    return
+  }
+
+  const style: PlusAudioAudioPlayerStyles = {}
   Object.keys(args).forEach((key) => {
     if (props.indexOf(key) >= 0) {
       let val = (args as any)[key]
@@ -363,6 +371,11 @@ const props = [
     readonly: true,
     default: 'http',
   },
+  {
+    name: 'playbackRate',
+    default: 1,
+    cache: true,
+  },
 ]
 
 class BackgroundAudioManager implements UniApp.BackgroundAudioManager {
@@ -378,6 +391,7 @@ class BackgroundAudioManager implements UniApp.BackgroundAudioManager {
   'coverImgUrl': UniApp.BackgroundAudioManager['coverImgUrl']
   'webUrl': UniApp.BackgroundAudioManager['webUrl']
   'protocol': UniApp.BackgroundAudioManager['protocol']
+  'playbackRate': UniApp.BackgroundAudioManager['playbackRate']
 
   _options: Data
   constructor() {
@@ -394,7 +408,7 @@ class BackgroundAudioManager implements UniApp.BackgroundAudioManager {
           ? undefined
           : (value) => {
               this._options[name] = value
-              setMusicState(this._options as any)
+              setMusicState(this._options as any, name)
             },
       })
     })
