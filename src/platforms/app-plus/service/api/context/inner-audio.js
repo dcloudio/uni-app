@@ -48,7 +48,7 @@ const initStateChage = audioId => {
   }
 }
 
-export function createAudioInstance () {
+export function createAudioInstance() {
   const audioId = `${Date.now()}${Math.random()}`
   const audio = audios[audioId] = plus.audio.createPlayer('')
   audio.src = ''
@@ -61,7 +61,7 @@ export function createAudioInstance () {
   }
 }
 
-export function destroyAudioInstance ({
+export function destroyAudioInstance({
   audioId
 }) {
   if (audios[audioId]) {
@@ -74,7 +74,7 @@ export function destroyAudioInstance ({
   }
 }
 
-export function setAudioState ({
+export function setAudioState({
   audioId,
   src,
   startTime,
@@ -82,7 +82,8 @@ export function setAudioState ({
   loop = false,
   obeyMuteSwitch,
   volume,
-  sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY
+  sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY,
+  playbackRate
 }) {
   const audio = audios[audioId]
   if (audio) {
@@ -91,7 +92,9 @@ export function setAudioState ({
       autoplay
     }
     if (src) {
-      audio.src = style.src = getRealPath(src)
+      // iOS 设置 src 会重新播放
+      const realSrc = getRealPath(src)
+      if (audio.src !== realSrc) audio.src = style.src = realSrc
     }
     if (startTime) {
       audio.startTime = style.startTime = startTime
@@ -103,6 +106,9 @@ export function setAudioState ({
     if (sessionCategory) {
       audio.setSessionCategory(sessionCategory)
     }
+    if (playbackRate && audio.playbackRate) {
+      audio.playbackRate(playbackRate)
+    }
     initStateChage(audioId)
   }
   return {
@@ -110,7 +116,7 @@ export function setAudioState ({
   }
 }
 
-export function getAudioState ({
+export function getAudioState({
   audioId
 }) {
   const audio = audios[audioId]
@@ -137,7 +143,7 @@ export function getAudioState ({
   }
 }
 
-export function operateAudio ({
+export function operateAudio({
   operationType,
   audioId,
   currentTime

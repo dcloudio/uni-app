@@ -70,6 +70,11 @@ const props = [
     name: 'protocol',
     readonly: true,
     default: 'http'
+  },
+  {
+    name: 'playbackRate',
+    default: 1,
+    cache: true,
   }
 ]
 
@@ -114,7 +119,7 @@ class BackgroundAudioManager {
           this._options[name] = value
           invokeMethod('setBackgroundAudioState', Object.assign({}, this._options, {
             audioId: this.id
-          }))
+          }), name)
         }
       }
       Object.defineProperty(this, name, data)
