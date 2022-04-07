@@ -52,6 +52,7 @@ export {
   getSystemInfoSync,
   addSafeAreaInsets,
   useDeviceId,
+  showActionSheet,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'

@@ -22,12 +22,10 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-
 const customizeRE = /:/g;
 function customizeEvent(str) {
     return camelize(str.replace(customizeRE, '-'));
 }
-
 function hasLeadingSlash(str) {
     return str.indexOf('/') === 0;
 }
@@ -71,7 +69,6 @@ function stringifyQuery(obj, encodeStr = encode) {
         : null;
     return res ? `?${res}` : '';
 }
-
 const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     return {
         onPageScroll: 1,
@@ -862,12 +859,12 @@ function handleLink(event) {
 }
 
 var parseOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes
+    __proto__: null,
+    mocks: mocks,
+    isPage: isPage,
+    initRelation: initRelation,
+    handleLink: handleLink,
+    initLifetimes: initLifetimes
 });
 
 const createApp = initCreateApp();

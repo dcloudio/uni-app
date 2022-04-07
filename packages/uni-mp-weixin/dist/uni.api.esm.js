@@ -17,10 +17,6 @@ function invokeCreateVueAppHook(app) {
     createVueAppHooks.forEach((hook) => hook(app));
 }
 
-function getBaseSystemInfo() {
-  return wx.getSystemInfoSync()
-}
-
 const E = function () {
     // Keep this empty so it's easier to inherit from
     // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
@@ -71,6 +67,10 @@ E.prototype = {
     },
 };
 var E$1 = E;
+
+function getBaseSystemInfo() {
+  return wx.getSystemInfoSync()
+}
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -958,6 +958,12 @@ const previewImage = {
     },
 };
 
+const showActionSheet = {
+    args(fromArgs, toArgs) {
+        toArgs.alertText = fromArgs.title;
+    },
+};
+
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
 const getProvider = initGetProvider({
@@ -988,17 +994,18 @@ function createSelectorQuery() {
 }
 
 var shims = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getProvider: getProvider,
-  createSelectorQuery: createSelectorQuery
+    __proto__: null,
+    getProvider: getProvider,
+    createSelectorQuery: createSelectorQuery
 });
 
 var protocols = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  redirectTo: redirectTo,
-  previewImage: previewImage,
-  getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+    __proto__: null,
+    redirectTo: redirectTo,
+    previewImage: previewImage,
+    getSystemInfo: getSystemInfo,
+    getSystemInfoSync: getSystemInfoSync,
+    showActionSheet: showActionSheet
 });
 
 var index = initUni(shims, protocols);
