@@ -5319,7 +5319,6 @@ const ShowActionSheetProtocol = {
     required: true
   },
   title: String,
-  alertText: String,
   itemColor: String,
   popover: Object
 };
@@ -18809,10 +18808,6 @@ const props$4 = {
     type: String,
     default: ""
   },
-  alertText: {
-    type: String,
-    default: ""
-  },
   itemList: {
     type: Array,
     default() {
@@ -18899,10 +18894,9 @@ var actionSheet = /* @__PURE__ */ defineComponent({
       }
       $event.preventDefault();
     }
-    const fixTitle = computed(() => props2.title || props2.alertText);
     watch(() => props2.visible, () => {
       nextTick(() => {
-        if (fixTitle.value) {
+        if (props2.title) {
           titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
         }
         scroller.update();
@@ -18932,14 +18926,14 @@ var actionSheet = /* @__PURE__ */ defineComponent({
         "ref": main,
         "class": "uni-actionsheet__menu",
         "onWheel": _handleWheel
-      }, [fixTitle.value ? createVNode(Fragment, null, [createVNode("div", {
+      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
         "class": "uni-actionsheet__cell",
         "style": {
           height: `${titleHeight.value}px`
         }
       }, null), createVNode("div", {
         "class": "uni-actionsheet__title"
-      }, [fixTitle.value])]) : "", createVNode("div", {
+      }, [props2.title])]) : "", createVNode("div", {
         "style": {
           maxHeight: `${HEIGHT.value}px`,
           overflow: "hidden"

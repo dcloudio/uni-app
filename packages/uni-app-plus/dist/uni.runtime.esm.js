@@ -12219,7 +12219,6 @@ const ShowActionSheetProtocol = {
         required: true,
     },
     title: String,
-    alertText: String,
     itemColor: String,
     popover: Object,
 };
@@ -15858,7 +15857,7 @@ const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', sh
     }, title, tip, buttons);
 }, ShowModalProtocol, ShowModalOptions);
 
-const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], itemColor = '#000000', title = '', alertText = '', popover, }, { resolve, reject }) => {
+const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], itemColor = '#000000', title = '', popover }, { resolve, reject }) => {
     initI18nShowActionSheetMsgsOnce();
     const { t } = useI18n();
     const options = {
@@ -15869,9 +15868,6 @@ const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], 
             color: itemColor,
         })),
     };
-    if (title || alertText) {
-        options.title = alertText || title;
-    }
     plus.nativeUI.actionSheet(extend(options, {
         popover,
     }), (e) => {
