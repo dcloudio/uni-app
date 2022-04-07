@@ -57,6 +57,10 @@ function createScopedSlotInvoker(instance: ComponentInternalInstance) {
     index?: number
   ) => {
     const slot = invoker.slots[slotName]
+    if (!slot) {
+      // slot 可能不存在 https://github.com/dcloudio/uni-app/issues/3346
+      return
+    }
     const hasIndex = typeof index !== 'undefined'
     index = index || 0
     // 确保当前 slot 的上下文，类似 withCtx
