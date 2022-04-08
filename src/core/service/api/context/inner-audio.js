@@ -63,6 +63,10 @@ const props = [
   },
   {
     name: 'sessionCategory'
+  },
+  {
+    name: 'playbackRate',
+    cache: true
   }
 ]
 

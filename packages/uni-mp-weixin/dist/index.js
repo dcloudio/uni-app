@@ -579,6 +579,14 @@ var getSystemInfo = {
   }
 };
 
+var showActionSheet = {
+  args (fromArgs) {
+    if (typeof fromArgs === 'object') {
+      fromArgs.alertText = fromArgs.title;
+    }
+  }
+};
+
 // import navigateTo from 'uni-helpers/navigate-to'
 
 const protocols = {
@@ -586,7 +594,8 @@ const protocols = {
   // navigateTo,  // 由于在微信开发者工具的页面参数，会显示__id__参数，因此暂时关闭mp-weixin对于navigateTo的AOP
   previewImage,
   getSystemInfo,
-  getSystemInfoSync: getSystemInfo
+  getSystemInfoSync: getSystemInfo,
+  showActionSheet
 };
 const todos = [
   'vibrate',

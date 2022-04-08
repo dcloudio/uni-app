@@ -798,6 +798,16 @@ describe('mp:compiler-extra', () => {
       'with(this){var m0=test1(key)&&test2(key);var m1=m0?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}'
     )
     assertCodegen(
+      '<view v-if="test.test(key)&&test2(key)">{{getValue(key)}}</view>',
+      '<block wx:if="{{$root.g0}}"><view>{{$root.m0}}</view></block>',
+      'with(this){var g0=test.test(key)&&test2(key);var m0=g0?getValue(key):null;$mp.data=Object.assign({},{$root:{g0:g0,m0:m0}})}'
+    )
+    assertCodegen(
+      '<view v-if="show"><view v-if="test.test(key)&&test2(key)">{{getValue(key)}}</view></view>',
+      '<block wx:if="{{show}}"><view><block wx:if="{{$root.g0}}"><view>{{$root.m0}}</view></block></view></block>',
+      'with(this){var g0=show?test.test(key)&&test2(key):null;var m0=show&&g0?getValue(key):null;$mp.data=Object.assign({},{$root:{g0:g0,m0:m0}})}'
+    )
+    assertCodegen(
       '<view v-for="(item,index) in list" :key="index"><view v-if="item">{{getValue(item)}}</view></view>',
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig}}"><view>{{item.m0}}</view></block></view></block>',
       'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item?getValue(item):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'

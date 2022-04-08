@@ -251,6 +251,11 @@ module.exports = {
       t.isMemberExpression(callee) // message.split('').reverse().join('')
     ) {
       // Object.assign...
+      path = path.findParent((path) => path.isLogicalExpression()) || path
+      path.skip()
+      if (path.findParent((path) => path.shouldSkip)) {
+        return
+      }
       path.replaceWith(getMemberExpr(path, IDENTIFIER_GLOBAL, path.node, this))
     }
   },

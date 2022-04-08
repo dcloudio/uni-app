@@ -2,9 +2,6 @@ const path = require('path')
 const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 const {
-  normalizePath
-} = require('@dcloudio/uni-cli-shared')
-const {
   parseComponents
 } = require('./util')
 
@@ -58,7 +55,7 @@ module.exports = function (ast, state = {}) {
     }
   } catch (e) {
     if (state.filename) {
-      console.error('at ' + normalizePath(path.relative(process.env.UNI_INPUT_DIR, state.filename)) + ':1')
+      console.error('at ' + require('@dcloudio/uni-cli-shared').normalizePath(path.relative(process.env.UNI_INPUT_DIR, state.filename)) + ':1')
     }
     throw e
   }
