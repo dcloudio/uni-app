@@ -89,9 +89,9 @@ function stopTimeUpdateTimer () {
 function setMusicState (args, name) {
   initMusic()
   const props = ['src', 'startTime', 'coverImgUrl', 'webUrl', 'singer', 'epname', 'title']
-  
+
   if (name && name === 'playbackRate') {
-    let val = args[name]
+    const val = args[name]
     audio.playbackRate && audio.playbackRate(parseFloat(val))
     return
   }

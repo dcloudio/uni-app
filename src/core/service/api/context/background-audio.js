@@ -74,7 +74,7 @@ const props = [
   {
     name: 'playbackRate',
     default: 1,
-    cache: true,
+    cache: true
   }
 ]
 
