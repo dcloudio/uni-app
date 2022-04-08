@@ -206,9 +206,12 @@ function generatePageRoute(
 ) {
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
+  // 目前单页面未处理 query=>props
   return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{setup(){return ()=>renderPage(${normalizeIdentifier(path)})}},
+  component:{setup(){ const app = getApp(); const query = app && app.$route && app.$route.query || {}; return ()=>renderPage(${normalizeIdentifier(
+    path
+  )},query)}},
   loader: ${normalizeIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`
@@ -229,8 +232,8 @@ function generateRoutes(
   config: ResolvedConfig
 ) {
   return `
-function renderPage(component){
-  return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, { ref: "page" }, null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
+function renderPage(component,props){
+  return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, extend({},props,{ref: "page"}), null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
 }
 ${globalName}.__uniRoutes=[${[
     ...generatePagesRoute(normalizePagesRoute(pagesJson), config),
