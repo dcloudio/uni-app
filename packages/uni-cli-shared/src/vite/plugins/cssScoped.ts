@@ -9,11 +9,13 @@ const debugScoped = debug('uni:scoped')
 
 const SCOPED_RE = /<style\s[^>]*scoped[^>]*>/i
 
-function addScoped(code: string) {
-  if (SCOPED_RE.test(code)) {
-    return code
-  }
-  return code.replace(/(<style\b[^><]*)>/gi, '$1 scoped>')
+export function addScoped(code: string) {
+  return code.replace(/(<style\b[^><]*)>/gi, (str, $1) => {
+    if ($1.includes('scoped')) {
+      return str
+    }
+    return `${$1} scoped>`
+  })
 }
 
 function removeScoped(code: string) {
