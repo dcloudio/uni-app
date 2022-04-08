@@ -675,8 +675,11 @@ function updateComponentProps(up, instance) {
     const nextProps = findComponentPropsData(up) || {};
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
-        invalidateJob(instance.update);
-        instance.update();
+        const index = invalidateJob(instance.update);
+        {
+            // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+            index === -1 && instance.update();
+        }
     }
 }
 function hasPropsChanged(prevProps, nextProps, checkLen = true) {

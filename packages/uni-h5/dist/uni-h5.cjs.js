@@ -5058,7 +5058,7 @@ function parseAttrs(attrs) {
   return attrs.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
+    if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
       value = value.split(" ");
     }
     if (pre[name]) {

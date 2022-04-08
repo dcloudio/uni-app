@@ -676,7 +676,9 @@ function updateComponentProps(up, instance) {
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
         invalidateJob(instance.update);
-        instance.update();
+        {
+            instance.update();
+        }
     }
 }
 function hasPropsChanged(prevProps, nextProps, checkLen = true) {
