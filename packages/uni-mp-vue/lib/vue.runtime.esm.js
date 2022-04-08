@@ -1413,6 +1413,14 @@ function queueFlush() {
         currentFlushPromise = resolvedPromise.then(flushJobs);
     }
 }
+function invalidateJob(job) {
+    const i = queue.indexOf(job);
+    if (i > flushIndex) {
+        queue.splice(i, 1);
+    }
+    // fixed by xxxxxx
+    return i;
+}
 function queueCb(cb, activeQueue, pendingQueue, index) {
     if (!isArray(cb)) {
         if (!activeQueue ||
@@ -4428,12 +4436,6 @@ function unwrapper(target) {
 }
 function defineAsyncComponent(source) {
     console.error('defineAsyncComponent is unsupported');
-}
-function invalidateJob(job) {
-    const i = queue.indexOf(job);
-    if (i > -1) {
-        queue.splice(i, 1);
-    }
 }
 
 // import deepCopy from './deepCopy'
