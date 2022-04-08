@@ -9586,8 +9586,6 @@ const CanvasToTempFilePathProtocol = {
 };
 
 //#region import
-//#endregion
-//#region UniServiceJSBridge
 function operateCanvas(canvasId, pageId, type, data, callback) {
     UniServiceJSBridge.invokeViewMethod(`canvas.${canvasId}`, {
         type,

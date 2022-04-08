@@ -1866,7 +1866,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
           let url = dataArray[0];
           let otherData = dataArray.slice(1);
           _images = _images || {};
-          if (checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image) {
+          if (!checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image) {
             if (image) {
               c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
             }
