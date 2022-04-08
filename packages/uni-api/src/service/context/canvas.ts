@@ -36,10 +36,16 @@ import { TEMP_PATH, inflateRaw, deflateRaw } from '@dcloudio/uni-platform'
 //#endregion
 
 //#region UniServiceJSBridge
+export type OperateCanvasType =
+  | 'actionsChanged'
+  | 'getImageData'
+  | 'putImageData'
+  | 'toTempFilePath'
+
 function operateCanvas(
   canvasId: string,
   pageId: number,
-  type: unknown,
+  type: OperateCanvasType,
   data: any,
   callback?: Callback
 ) {

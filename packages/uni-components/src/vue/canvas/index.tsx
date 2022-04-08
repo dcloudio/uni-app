@@ -1,6 +1,6 @@
 import { ref, computed, ExtractPropTypes, Ref, onMounted } from 'vue'
 import { extend } from '@vue/shared'
-import type { Actions } from '@dcloudio/uni-api'
+import type { Actions, OperateCanvasType } from '@dcloudio/uni-api'
 import {
   useAttrs,
   useContextInfo,
@@ -73,11 +73,8 @@ const props = {
 }
 
 type Props = ExtractPropTypes<typeof props>
-type triggerMethodsName =
-  | 'actionsChanged'
-  | 'getImageData'
-  | 'putImageData'
-  | 'toTempFilePath'
+type MultipleArray = Array<Array<number | string | number[]>>
+type LinearGradient = Parameters<CanvasFillStrokeStyles['createLinearGradient']>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
@@ -271,10 +268,6 @@ function useMethods(
     }
     preloadImage(actions)
     for (let index = 0; index < actions.length; index++) {
-      type MultipleArray = Array<Array<number | string | number[]>>
-      type LinearGradient = Parameters<
-        CanvasFillStrokeStyles['createLinearGradient']
-      >
       const action = actions[index]
       let method = action.method
       const data = action.data
@@ -377,7 +370,7 @@ function useMethods(
           let otherData = dataArray.slice(1)
           _images = _images || {}
           if (
-            checkImageLoaded(
+            !checkImageLoaded(
               url,
               actions.slice(index + 1),
               resolve,
@@ -700,7 +693,7 @@ function useMethods(
   }
 
   function _handleSubscribe(
-    type: triggerMethodsName,
+    type: OperateCanvasType,
     data: any,
     resolve: (res: { callbackId: number; data: any }) => void
   ) {
