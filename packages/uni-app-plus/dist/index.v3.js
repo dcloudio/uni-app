@@ -4459,7 +4459,8 @@ var serviceContext = (function () {
     loop = false,
     obeyMuteSwitch,
     volume,
-    sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY
+    sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY,
+    playbackRate
   }) {
     const audio = audios[audioId];
     if (audio) {
@@ -4468,7 +4469,9 @@ var serviceContext = (function () {
         autoplay
       };
       if (src) {
-        audio.src = style.src = getRealPath$1(src);
+        // iOS 设置 src 会重新播放
+        const realSrc = getRealPath$1(src);
+        if (audio.src !== realSrc) audio.src = style.src = realSrc;
       }
       if (startTime) {
         audio.startTime = style.startTime = startTime;
@@ -4479,6 +4482,9 @@ var serviceContext = (function () {
       audio.setStyles(style);
       if (sessionCategory) {
         audio.setSessionCategory(sessionCategory);
+      }
+      if (playbackRate && audio.playbackRate) {
+        audio.playbackRate(playbackRate);
       }
       initStateChage(audioId);
     }
@@ -4611,9 +4617,16 @@ var serviceContext = (function () {
     }
   }
 
-  function setMusicState (args) {
+  function setMusicState (args, name) {
     initMusic();
     const props = ['src', 'startTime', 'coverImgUrl', 'webUrl', 'singer', 'epname', 'title'];
+
+    if (name && name === 'playbackRate') {
+      const val = args[name];
+      audio.playbackRate && audio.playbackRate(parseFloat(val));
+      return
+    }
+
     const style = {};
     Object.keys(args).forEach(key => {
       if (props.indexOf(key) >= 0) {
@@ -4675,8 +4688,8 @@ var serviceContext = (function () {
       errMsg: `${api}:ok`
     }
   }
-  function setBackgroundAudioState (args) {
-    setMusicState(args);
+  function setBackgroundAudioState (args, name) {
+    setMusicState(args, name);
     return {
       errMsg: 'setBackgroundAudioState:ok'
     }
@@ -12146,6 +12159,11 @@ var serviceContext = (function () {
       name: 'protocol',
       readonly: true,
       default: 'http'
+    },
+    {
+      name: 'playbackRate',
+      default: 1,
+      cache: true
     }
   ];
 
@@ -12190,7 +12208,7 @@ var serviceContext = (function () {
             this._options[name] = value;
             invokeMethod('setBackgroundAudioState', Object.assign({}, this._options, {
               audioId: this.id
-            }));
+            }), name);
           };
         }
         Object.defineProperty(this, name, data);
@@ -20191,6 +20209,10 @@ var serviceContext = (function () {
     },
     {
       name: 'sessionCategory'
+    },
+    {
+      name: 'playbackRate',
+      cache: true
     }
   ];
 
