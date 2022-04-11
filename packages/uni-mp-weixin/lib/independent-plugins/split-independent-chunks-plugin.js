@@ -136,9 +136,6 @@ class SplitHandler {
             const newChunk = this.compilation.addChunk(chunkName);
             newChunk.chunkReason = 'split chunk for independent';
             for (const module of newChunkInfo.modules) {
-                if (module.rawRequest && module.rawRequest.indexOf('wx-recorder-manager') >= 0) {
-                    // console.log('sunqing');
-                }
                 GraphHelpers.connectChunkAndModule(newChunk, module);
                 [...newChunkInfo.chunks].forEach(chunk => {
                     if (this.removeModuleFromChunkFilter(chunk)) {

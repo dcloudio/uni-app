@@ -1,5 +1,5 @@
 const collectWxComponentUsedStatus = require('./collect-wx-component-used-status');
-const processNormalPkg = require('./analyze-go-direction');
+const analyzeGoDirection = require('./analyze-go-direction');
 const { collectPkgCopyFiles, copyAllWxComponentsFiles } = require('../util');
 const { wxComponentsStr, appJsonFileName, mainPkgName } = require('../constant');
 const Analyze = require('../analyze');
@@ -18,10 +18,10 @@ class Index extends Analyze {
     const {
       copyForNormal,
       copyForMain,
-    } = processNormalPkg(usageByPkgMap, appJson, emitFileMap);
+    } = analyzeGoDirection(usageByPkgMap, appJson, emitFileMap);
 
     // 提示app.json中声明的未被使用的全局原生组件（wxcomponents)
-    const rootToWxComponents = Object.assign({}, copyForNormal, copyForMain);
+    // const rootToWxComponents = Object.assign({}, copyForNormal, copyForMain);
     const globalWxComponents = appJson.usingComponents || {};
     const wxComponentPaths = [...copyForMain.mainPkg]
 
