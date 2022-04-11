@@ -460,9 +460,18 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (qa.$subpackages || (qa.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
     };
 }
 function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
     if (isFunction(appOptions.onShow) && qa.onAppShow) {
         qa.onAppShow((args) => {
             vm.$callHook('onShow', args);
@@ -472,10 +481,6 @@ function initAppLifecycle(appOptions, vm) {
         qa.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
-    }
-    if (isFunction(appOptions.onLaunch)) {
-        const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
-        vm.$callHook('onLaunch', args || {});
     }
 }
 function initLocale(appVm) {
@@ -819,9 +824,18 @@ function initCreateComponent(parseOptions) {
 }
 let $createComponentFn;
 let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return qa.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return qa.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
 function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
-        $createComponentFn = getApp().$vm.$createComponent;
+        $createComponentFn = getAppVm().$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
     return getExposeProxy(proxy.$) || proxy;
@@ -1155,6 +1169,7 @@ qa.EventChannel = EventChannel$1;
 qa.createApp = global.createApp = createApp;
 qa.createPage = createPage;
 qa.createComponent = createComponent;
-qa.createSubpackageApp = createSubpackageApp;
+qa.createSubpackageApp = global.createSubpackageApp =
+    createSubpackageApp;
 
 export { createApp, createComponent, createPage, createSubpackageApp };

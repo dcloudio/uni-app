@@ -401,9 +401,18 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (swan.$subpackages || (swan.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
     };
 }
 function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
     if (isFunction(appOptions.onShow) && swan.onAppShow) {
         swan.onAppShow((args) => {
             vm.$callHook('onShow', args);
@@ -413,10 +422,6 @@ function initAppLifecycle(appOptions, vm) {
         swan.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
-    }
-    if (isFunction(appOptions.onLaunch)) {
-        const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
-        vm.$callHook('onLaunch', args || {});
     }
 }
 function initLocale(appVm) {
@@ -816,9 +821,18 @@ function initCreateComponent(parseOptions) {
 }
 let $createComponentFn;
 let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return swan.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return swan.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
 function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
-        $createComponentFn = getApp().$vm.$createComponent;
+        $createComponentFn = getAppVm().$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
     return getExposeProxy(proxy.$) || proxy;
@@ -1158,6 +1172,7 @@ swan.EventChannel = EventChannel;
 swan.createApp = global.createApp = createApp;
 swan.createPage = createPage;
 swan.createComponent = createComponent;
-swan.createSubpackageApp = createSubpackageApp;
+swan.createSubpackageApp = global.createSubpackageApp =
+    createSubpackageApp;
 
 export { createApp, createComponent, createPage, createSubpackageApp };

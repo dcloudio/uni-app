@@ -395,9 +395,18 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (qq.$subpackages || (qq.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
     };
 }
 function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = qq.getLaunchOptionsSync && qq.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
     if (isFunction(appOptions.onShow) && qq.onAppShow) {
         qq.onAppShow((args) => {
             vm.$callHook('onShow', args);
@@ -407,10 +416,6 @@ function initAppLifecycle(appOptions, vm) {
         qq.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
-    }
-    if (isFunction(appOptions.onLaunch)) {
-        const args = qq.getLaunchOptionsSync && qq.getLaunchOptionsSync();
-        vm.$callHook('onLaunch', args || {});
     }
 }
 function initLocale(appVm) {
@@ -765,9 +770,18 @@ function initCreateComponent(parseOptions) {
 }
 let $createComponentFn;
 let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return qq.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return qq.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
 function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
-        $createComponentFn = getApp().$vm.$createComponent;
+        $createComponentFn = getAppVm().$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
     return getExposeProxy(proxy.$) || proxy;
@@ -815,6 +829,9 @@ function initCreatePage(parseOptions) {
 function initCreatePluginApp(parseAppOptions) {
     return function createApp(vm) {
         initAppLifecycle(parseApp(vm, parseAppOptions), vm);
+        if (process.env.UNI_MP_PLUGIN) {
+            qq.$vm = vm;
+        }
     };
 }
 
@@ -945,6 +962,7 @@ qq.EventChannel = EventChannel;
 qq.createApp = global.createApp = createApp;
 qq.createPage = createPage;
 qq.createComponent = createComponent;
-qq.createSubpackageApp = createSubpackageApp;
+qq.createSubpackageApp = global.createSubpackageApp =
+    createSubpackageApp;
 
 export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };
