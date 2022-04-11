@@ -4,12 +4,12 @@ const {
   normalizePath
 } = require('@dcloudio/uni-cli-shared')
 
-const subPkgsInfo = Object.values(process.UNI_SUBPACKAGES);
-const normalFilter = ({ independent }) => !independent;
-const independentFilter = ({ independent }) => independent;
-const map2Root = ({ root }) => root + '/';
-const normalSubPackageRoots = subPkgsInfo.filter(normalFilter).map(map2Root);
-const independentSubpackageRoots = subPkgsInfo.filter(independentFilter).map(map2Root);
+const subPkgsInfo = Object.values(process.UNI_SUBPACKAGES)
+const normalFilter = ({ independent }) => !independent
+const independentFilter = ({ independent }) => independent
+const map2Root = ({ root }) => root + '/'
+const normalSubPackageRoots = subPkgsInfo.filter(normalFilter).map(map2Root)
+const independentSubpackageRoots = subPkgsInfo.filter(independentFilter).map(map2Root)
 
 function createCacheGroups () {
   const cacheGroups = {}
@@ -187,9 +187,9 @@ module.exports = function getSplitChunks () {
               }
 
               // 独立分包除外
-              const independentRoot = independentSubpackageRoots.find(root => resource.indexOf(root) >= 0);
+              const independentRoot = independentSubpackageRoots.find(root => resource.indexOf(root) >= 0)
               if (!independentRoot) {
-                return true;
+                return true
               }
             }
           } else {
