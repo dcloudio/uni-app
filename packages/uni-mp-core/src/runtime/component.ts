@@ -144,12 +144,22 @@ interface InitialVNode {
   props: Record<string, any>
 }
 
+function getAppVm() {
+  if (process.env.UNI_MP_PLUGIN) {
+    return __GLOBAL__.$vm
+  }
+  if (process.env.UNI_SUBPACKAGE) {
+    return __GLOBAL__.$subpackages[process.env.UNI_SUBPACKAGE].$vm
+  }
+  return getApp().$vm
+}
+
 export function $createComponent(
   initialVNode: InitialVNode,
   options: CreateComponentOptions
 ) {
   if (!$createComponentFn) {
-    $createComponentFn = getApp().$vm.$createComponent
+    $createComponentFn = getAppVm().$createComponent
   }
   const proxy = $createComponentFn(
     initialVNode,

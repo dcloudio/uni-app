@@ -20,4 +20,5 @@ export const createSubpackageApp = initCreateSubpackageApp(parseAppOptions)
 ;(swan as any).createApp = (global as any).createApp = createApp
 ;(swan as any).createPage = createPage
 ;(swan as any).createComponent = createComponent
-;(swan as any).createSubpackageApp = createSubpackageApp
+;(swan as any).createSubpackageApp = (global as any).createSubpackageApp =
+  createSubpackageApp

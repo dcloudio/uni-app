@@ -11,4 +11,5 @@ export * from '@dcloudio/uni-mp-weixin/src/runtime'
 ;(qq as any).createApp = (global as any).createApp = createApp
 ;(qq as any).createPage = createPage
 ;(qq as any).createComponent = createComponent
-;(qq as any).createSubpackageApp = createSubpackageApp
+;(qq as any).createSubpackageApp = (global as any).createSubpackageApp =
+  createSubpackageApp

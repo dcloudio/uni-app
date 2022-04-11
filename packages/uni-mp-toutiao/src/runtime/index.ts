@@ -19,4 +19,5 @@ export const createSubpackageApp = initCreateSubpackageApp()
 ;(tt as any).createApp = (global as any).createApp = createApp
 ;(tt as any).createPage = createPage
 ;(tt as any).createComponent = createComponent
-;(tt as any).createSubpackageApp = createSubpackageApp
+;(tt as any).createSubpackageApp = (global as any).createSubpackageApp =
+  createSubpackageApp

@@ -106,6 +106,13 @@ export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
       }
     })
     initAppLifecycle(appOptions, vm)
+    if (process.env.UNI_SUBPACKAGE) {
+      ;(__GLOBAL__.$subpackages || (__GLOBAL__.$subpackages = {}))[
+        process.env.UNI_SUBPACKAGE
+      ] = {
+        $vm: vm,
+      }
+    }
   }
 }
 
@@ -113,6 +120,11 @@ export function initAppLifecycle(
   appOptions: MiniProgramAppOptions,
   vm: ComponentPublicInstance
 ) {
+  if (isFunction(appOptions.onLaunch)) {
+    const args =
+      __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
+    appOptions.onLaunch(args)
+  }
   if (isFunction(appOptions.onShow) && __GLOBAL__.onAppShow) {
     __GLOBAL__.onAppShow((args: unknown) => {
       vm.$callHook('onShow', args)
@@ -122,11 +134,6 @@ export function initAppLifecycle(
     __GLOBAL__.onAppHide((args: unknown) => {
       vm.$callHook('onHide', args)
     })
-  }
-  if (isFunction(appOptions.onLaunch)) {
-    const args =
-      __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
-    vm.$callHook('onLaunch', args || {})
   }
 }
 

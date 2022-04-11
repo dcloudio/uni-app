@@ -19,6 +19,8 @@ if (__PLATFORM__ === 'mp-weixin') {
   ;(wx as any).createApp = (global as any).createApp = createApp
   ;(wx as any).createPage = createPage
   ;(wx as any).createComponent = createComponent
-  ;(wx as any).createPluginApp = createPluginApp
-  ;(wx as any).createSubpackageApp = createSubpackageApp
+  ;(wx as any).createPluginApp = (global as any).createPluginApp =
+    createPluginApp
+  ;(wx as any).createSubpackageApp = (global as any).createSubpackageApp =
+    createSubpackageApp
 }
