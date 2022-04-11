@@ -105,11 +105,11 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
         }
 
         const origSource = assets[name].source()
-      
+
         if (isVueComponent) {
           componentChunkNameMap[name] = moduleId
         } else if (isVueOuterComponent) {
-          const startIndex = name.indexOf(vueOuterComponentSting) + vueOuterComponentSting.length + 1;
+          const startIndex = name.indexOf(vueOuterComponentSting) + vueOuterComponentSting.length + 1
           const rightOriginalComponentName = name.substring(startIndex)
           moduleId = componentChunkNameMap[rightOriginalComponentName]
         }

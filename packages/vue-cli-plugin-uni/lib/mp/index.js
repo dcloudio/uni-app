@@ -22,7 +22,7 @@ function createUniMPPlugin () {
   return new WebpackUniMPPlugin()
 }
 
-const createWxMpIndependentPlugins = require('@dcloudio/uni-mp-weixin/lib/createIndependentPlugin');
+const createWxMpIndependentPlugins = require('@dcloudio/uni-mp-weixin/lib/createIndependentPlugin')
 
 function getProvides () {
   const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
