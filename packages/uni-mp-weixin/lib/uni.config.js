@@ -44,7 +44,7 @@ module.exports = {
 
     const manifestConfig = process.UNI_MANIFEST;
     const weixinConfig = manifestConfig['mp-weixin'] || {};
-    const copyWxComponentsOnDemandSwitch = !!weixinConfig.copyWxComponentsOnDemandSwitch; // 默认值false
+    const copyWxComponentsOnDemandSwitch = !!weixinConfig.copyWxComponentsOnDemand; // 默认值false
 
     if (!copyWxComponentsOnDemandSwitch) {
       const wxcomponentsDir = path.resolve(process.env.UNI_INPUT_DIR, COMPONENTS_DIR_NAME);

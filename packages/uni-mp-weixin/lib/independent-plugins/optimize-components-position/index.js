@@ -13,8 +13,8 @@ class DependencyAnalyze {
     init (emitFileMap, compilation) {
         const manifestConfig = process.UNI_MANIFEST;
         const weixinConfig = manifestConfig['mp-weixin'] || {};
-        const independentSwitch = !!weixinConfig.independentSwitch;
-        const copyWxComponentsOnDemandSwitch = !!weixinConfig.copyWxComponentsOnDemandSwitch; // 默认值false
+        const independentSwitch = !!weixinConfig.independent;
+        const copyWxComponentsOnDemandSwitch = !!weixinConfig.copyWxComponentsOnDemand; // 默认值false
 
         if (copyWxComponentsOnDemandSwitch) { // 开启按需复制
             new CopyWxComponentOnDemand(emitFileMap, this.AnalyzeWxcomponentDependency, compilation).init();

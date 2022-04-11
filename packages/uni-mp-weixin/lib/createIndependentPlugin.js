@@ -11,7 +11,7 @@ const AppInterceptorPlugin = require('./independent-plugins/app-interceptor-plug
 module.exports = function createIndependentPlugins () {
     const manifestConfig = process.UNI_MANIFEST;
     const weixinConfig = manifestConfig['mp-weixin'];
-    const independentSwitch = !!weixinConfig.independentSwitch;
+    const independentSwitch = !!weixinConfig.independent;
     if (!independentSwitch) return [];
 
     // 支持构造微信小程序的独立分包
@@ -27,7 +27,7 @@ module.exports = function createIndependentPlugins () {
         new AppInterceptorPlugin()
     ];
 
-    const insertAppCssToIndependentSwitch = !!weixinConfig.insertAppCssToIndependentSwitch;
+    const insertAppCssToIndependentSwitch = !!weixinConfig.insertAppCssToIndependent;
     if (insertAppCssToIndependentSwitch) {
         // 需要在 cacheSet 后面
         independentPlugins.push(new InjectMainCssToIndependentCssPlugin()); // 目前只对页面注入了，组件未注入

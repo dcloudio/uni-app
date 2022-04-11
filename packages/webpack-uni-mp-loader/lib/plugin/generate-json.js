@@ -224,9 +224,9 @@ module.exports = function generateJson (compilation) {
 
     for (const [name, jsonObj] of emitFileMap) {      
       if (name === 'app.json') { // 删除manifest.json携带的配置项
-        delete jsonObj.insertAppCssToIndependentSwitch;
-        delete jsonObj.independentSwitch;
-        delete jsonObj.copyWxComponentsOnDemandSwitch;
+        delete jsonObj.insertAppCssToIndependent;
+        delete jsonObj.independent;
+        delete jsonObj.copyWxComponentsOnDemand;
       } else { // 删除用于临时记录的属性
         delete jsonObj.usingGlobalComponents;
       }

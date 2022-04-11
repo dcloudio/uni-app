@@ -211,7 +211,7 @@ function parseEntry (pagesJson) {
   }
   const manifestConfig = process.UNI_MANIFEST;
   const weixinConfig = manifestConfig['mp-weixin'] || {};
-  const independentSwitch = !!weixinConfig.independentSwitch;
+  const independentSwitch = !!weixinConfig.independent;
   if (independentSwitch) {
     Object.values(process.UNI_SUBPACKAGES).forEach(({ root, independent = false }) => {
       if (root && independent) {
