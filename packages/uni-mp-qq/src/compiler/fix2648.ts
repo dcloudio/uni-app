@@ -16,7 +16,7 @@ export function fix2648(bundle: OutputBundle) {
     const { usingComponents } = JSON.parse(appJsonAsset.source.toString()) as {
       usingComponents?: Record<string, string>
     }
-    if (usingComponents && !Object.keys(usingComponents).length) {
+    if (usingComponents && usingComponents['fix-2648']) {
       fs.outputFileSync(
         path.resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'),
         `{"component":true}`

@@ -66,6 +66,17 @@ export const options: UniMiniProgramPluginOptions = {
   app: {
     darkmode: false,
     subpackages: true,
+    normalize(appJson) {
+      const hasUsingComponents =
+        appJson.usingComponents && Object.keys(appJson.usingComponents).length
+      if (!hasUsingComponents) {
+        // fix https://github.com/dcloudio/uni-app/issues/2648
+        appJson.usingComponents = {
+          'fix-2648': '/fix-2648',
+        }
+      }
+      return appJson
+    },
   },
   project: {
     filename: 'project.config.json',
