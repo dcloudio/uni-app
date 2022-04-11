@@ -31,7 +31,7 @@ function recurIndependentJson (independentRoot, independentPages, sourceRepo, ha
             content: jsonObj, fromAssetsFlag
         } = getJsonByPageOrComponentPath(newComponentPath, sourceRepo);
         if (!jsonObj) {
-            console.error('independent.error.recurIndependentJson', newComponentPath);
+            // console.log('independent.recurIndependentJson', newComponentPath);
             return;
         }
 
