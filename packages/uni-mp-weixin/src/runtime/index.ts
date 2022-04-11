@@ -15,8 +15,10 @@ export const createPage = initCreatePage(parseOptions)
 export const createComponent = initCreateComponent(parseOptions)
 export const createPluginApp = initCreatePluginApp()
 export const createSubpackageApp = initCreateSubpackageApp()
-;(wx as any).createApp = (global as any).createApp = createApp
-;(wx as any).createPage = createPage
-;(wx as any).createComponent = createComponent
-;(wx as any).createPluginApp = createPluginApp
-;(wx as any).createSubpackageApp = createSubpackageApp
+if (__PLATFORM__ === 'mp-weixin') {
+  ;(wx as any).createApp = (global as any).createApp = createApp
+  ;(wx as any).createPage = createPage
+  ;(wx as any).createComponent = createComponent
+  ;(wx as any).createPluginApp = createPluginApp
+  ;(wx as any).createSubpackageApp = createSubpackageApp
+}

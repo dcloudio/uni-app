@@ -877,10 +877,12 @@ const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
-wx.createApp = global.createApp = createApp;
-wx.createPage = createPage;
-wx.createComponent = createComponent;
-wx.createPluginApp = createPluginApp;
-wx.createSubpackageApp = createSubpackageApp;
+{
+    wx.createApp = global.createApp = createApp;
+    wx.createPage = createPage;
+    wx.createComponent = createComponent;
+    wx.createPluginApp = createPluginApp;
+    wx.createSubpackageApp = createSubpackageApp;
+}
 
 export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };
