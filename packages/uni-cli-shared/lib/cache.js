@@ -106,7 +106,7 @@ function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Com
 function updateUsingGlobalComponents (name, usingGlobalComponents) {
   const manifestConfig = process.UNI_MANIFEST;
   const weixinConfig = manifestConfig['mp-weixin'];
-  const independentSwitch = !!weixinConfig.independentSwitch;
+  const independentSwitch = !!weixinConfig.independent;
 
   if (!independentSwitch && supportGlobalUsingComponents) {
     return;
