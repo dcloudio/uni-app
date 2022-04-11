@@ -35,7 +35,6 @@ function copyWeuiCssToIndependent (independentRoot) {
 function tryInsertWeuiCss (independentRoot, originalWxssStr) {
     const manifestConfig = process.UNI_MANIFEST;
     const weixinConfig = manifestConfig['mp-weixin'] || {};
-    const independentSwitch = !!weixinConfig.independent;
     // 如果使用了weui，则需要注入weui样式
     const useExtendedWeUi = !!(weixinConfig.useExtendedLib || {}).weui;
 

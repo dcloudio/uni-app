@@ -1,5 +1,4 @@
 const fs = require('fs-extra');
-const path = require('path');
 const { generateAsset } = require('./utils');
 const t = require('@babel/types');
 const babelGenerator = require('@babel/generator');
