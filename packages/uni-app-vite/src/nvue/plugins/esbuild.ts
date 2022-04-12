@@ -36,6 +36,7 @@ export function uniEsbuildPlugin({
     configResolved(config) {
       buildOptions = {
         format: 'iife',
+        target: 'es6',
         minify: config.build.minify ? true : false,
         banner: {
           js: `"use weex:vue";`,

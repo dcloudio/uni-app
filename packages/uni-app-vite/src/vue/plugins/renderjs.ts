@@ -131,6 +131,7 @@ function transformWxs(
   return transformWithEsbuild(code, filename, {
     format: 'iife',
     globalName,
+    target: 'es6',
     minify: isProduction ? true : false,
     bundle: true,
     write: false,
@@ -151,6 +152,7 @@ function transformRenderjs(
   return transformWithEsbuild(code, filename, {
     format: 'iife',
     globalName,
+    target: 'es6',
     minify: isProduction ? true : false,
     bundle: true,
     write: false,
