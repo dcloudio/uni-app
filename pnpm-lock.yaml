@@ -609,6 +609,7 @@ importers:
   packages/uni-mp-vite:
     specifiers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040520220408002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3040520220408002
       '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3040520220408002
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040520220408002
       '@dcloudio/uni-shared': 3.0.0-alpha-3040520220408002
@@ -619,6 +620,7 @@ importers:
       magic-string: ^0.26.1
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
+      '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-mp-compiler': link:../uni-mp-compiler
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
@@ -5557,7 +5559,7 @@ packages:
     resolution: {integrity: sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==}
 
   /graceful-fs/4.2.9:
-    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.9.tgz}
     requiresBuild: true
 
   /has-flag/3.0.0:

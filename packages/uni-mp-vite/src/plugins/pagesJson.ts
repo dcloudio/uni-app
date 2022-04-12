@@ -14,9 +14,11 @@ import {
   findChangedJsonFiles,
   mergeMiniProgramAppJson,
   MANIFEST_JSON_JS,
+  initI18nOptionsOnce,
 } from '@dcloudio/uni-cli-shared'
 import { virtualPagePath } from './entry'
 import { UniMiniProgramPluginOptions } from '../plugin'
+import { parseI18nJson } from '@dcloudio/uni-i18n'
 
 const debugPagesJson = debug('uni:pages-json')
 
@@ -29,6 +31,8 @@ export function uniPagesJsonPlugin(
   options: UniMiniProgramPluginOptions
 ): Plugin {
   let resolvedConfig: ResolvedConfig
+  const platform = process.env.UNI_PLATFORM
+  const inputDir = process.env.UNI_INPUT_DIR
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'uni:mp-pages-json',
@@ -40,7 +44,6 @@ export function uniPagesJsonPlugin(
         if (!opts.filter(id)) {
           return null
         }
-        const inputDir = process.env.UNI_INPUT_DIR
         this.addWatchFile(path.resolve(inputDir, 'pages.json'))
         getLocaleFiles(path.resolve(inputDir, 'locale')).forEach((filepath) => {
           this.addWatchFile(filepath)
@@ -48,7 +51,7 @@ export function uniPagesJsonPlugin(
         const manifestJson = parseManifestJsonOnce(inputDir)
         const { appJson, pageJsons, nvuePages } = parseMiniProgramPagesJson(
           code,
-          process.env.UNI_PLATFORM,
+          platform,
           {
             debug: !!manifestJson.debug,
             darkmode:
@@ -64,11 +67,19 @@ export function uniPagesJsonPlugin(
           nvuePages.map((pagePath) => pagePath + options.style.extname)
         )
 
-        mergeMiniProgramAppJson(appJson, manifestJson[process.env.UNI_PLATFORM])
+        mergeMiniProgramAppJson(appJson, manifestJson[platform])
 
         if (options.json?.formatAppJson) {
           options.json.formatAppJson(appJson, manifestJson, pageJsons)
         }
+        // 使用 once 获取的话，可以节省编译时间，但 i18n 内容发生变化时，pages.json 不会自动更新
+        const i18nOptions = initI18nOptionsOnce(platform, inputDir, false, true)
+        if (i18nOptions) {
+          const { locale, locales, delimiters } = i18nOptions
+          parseI18nJson(appJson, locales[locale], delimiters)
+          parseI18nJson(pageJsons, locales[locale], delimiters)
+        }
+
         const { normalize } = options.app
         addMiniProgramAppJson(normalize ? normalize(appJson) : appJson)
         Object.keys(pageJsons).forEach((name) => {
