@@ -18,6 +18,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040520220408002",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3040520220408002",
     "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3040520220408002",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3040520220408002",
     "@dcloudio/uni-shared": "3.0.0-alpha-3040520220408002",
