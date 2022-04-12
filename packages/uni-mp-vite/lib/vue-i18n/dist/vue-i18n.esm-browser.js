@@ -1522,7 +1522,7 @@ function initDev() {
 }
 
 /**
- * 目前暂不支持任何语法
+ * fixed by xxxxxx 目前暂不支持任何语法
  * @param source
  * @param _
  * @returns
