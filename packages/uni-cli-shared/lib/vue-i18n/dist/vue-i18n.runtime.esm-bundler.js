@@ -1,1503 +1,13 @@
 /*!
   * vue-i18n v9.1.9
-  * (c) 2021 kazuya kawaguchi
+  * (c) 2022 kazuya kawaguchi
   * Released under the MIT License.
   */
+import { getGlobalThis, format, makeSymbol, isPlainObject, isArray, hasOwn, isObject, isBoolean, isString, isRegExp, isFunction, assign, isNumber, warn, createEmitter, isEmptyObject } from '@intlify/shared';
+import { createCompileError, handleFlatJson, createCoreContext, updateFallbackLocale, resolveValue, clearDateTimeFormat, clearNumberFormat, setAdditionalMeta, NOT_REOSLVED, isTranslateFallbackWarn, isTranslateMissingWarn, parseTranslateArgs, translate, MISSING_RESOLVE_VALUE, parseDateTimeArgs, datetime, parseNumberArgs, number, getLocaleChain, setDevToolsHook } from '@intlify/core-base';
 import { ref, getCurrentInstance, computed, watch, createVNode, Text, h, Fragment, inject, onMounted, onUnmounted, isRef } from 'vue';
-
-/**
- * Original Utilities
- * written by kazuya kawaguchi
- */
-const inBrowser = typeof window !== 'undefined';
-let mark;
-let measure;
-{
-    const perf = inBrowser && window.performance;
-    if (perf &&
-        perf.mark &&
-        perf.measure &&
-        perf.clearMarks &&
-        perf.clearMeasures) {
-        mark = (tag) => perf.mark(tag);
-        measure = (name, startTag, endTag) => {
-            perf.measure(name, startTag, endTag);
-            perf.clearMarks(startTag);
-            perf.clearMarks(endTag);
-        };
-    }
-}
-const RE_ARGS = /\{([0-9a-zA-Z]+)\}/g;
-/* eslint-disable */
-function format(message, ...args) {
-    if (args.length === 1 && isObject(args[0])) {
-        args = args[0];
-    }
-    if (!args || !args.hasOwnProperty) {
-        args = {};
-    }
-    return message.replace(RE_ARGS, (match, identifier) => {
-        return args.hasOwnProperty(identifier) ? args[identifier] : '';
-    });
-}
-const hasSymbol = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
-const makeSymbol = (name) => hasSymbol ? Symbol(name) : name;
-const generateFormatCacheKey = (locale, key, source) => friendlyJSONstringify({ l: locale, k: key, s: source });
-const friendlyJSONstringify = (json) => JSON.stringify(json)
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029')
-    .replace(/\u0027/g, '\\u0027');
-const isNumber = (val) => typeof val === 'number' && isFinite(val);
-const isDate = (val) => toTypeString(val) === '[object Date]';
-const isRegExp = (val) => toTypeString(val) === '[object RegExp]';
-const isEmptyObject = (val) => isPlainObject(val) && Object.keys(val).length === 0;
-function warn(msg, err) {
-    if (typeof console !== 'undefined') {
-        console.warn(`[intlify] ` + msg);
-        /* istanbul ignore if */
-        if (err) {
-            console.warn(err.stack);
-        }
-    }
-}
-const assign = Object.assign;
-let _globalThis;
-const getGlobalThis = () => {
-    // prettier-ignore
-    return (_globalThis ||
-        (_globalThis =
-            typeof globalThis !== 'undefined'
-                ? globalThis
-                : typeof self !== 'undefined'
-                    ? self
-                    : typeof window !== 'undefined'
-                        ? window
-                        : typeof global !== 'undefined'
-                            ? global
-                            : {}));
-};
-function escapeHtml(rawText) {
-    return rawText
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
-}
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-function hasOwn(obj, key) {
-    return hasOwnProperty.call(obj, key);
-}
-/* eslint-enable */
-/**
- * Useful Utilities By Evan you
- * Modified by kazuya kawaguchi
- * MIT License
- * https://github.com/vuejs/vue-next/blob/master/packages/shared/src/index.ts
- * https://github.com/vuejs/vue-next/blob/master/packages/shared/src/codeframe.ts
- */
-const isArray = Array.isArray;
-const isFunction = (val) => typeof val === 'function';
-const isString = (val) => typeof val === 'string';
-const isBoolean = (val) => typeof val === 'boolean';
-const isObject = (val) => // eslint-disable-line
- val !== null && typeof val === 'object';
-const objectToString = Object.prototype.toString;
-const toTypeString = (value) => objectToString.call(value);
-const isPlainObject = (val) => toTypeString(val) === '[object Object]';
-// for converting list and named values to displayed strings.
-const toDisplayString = (val) => {
-    return val == null
-        ? ''
-        : isArray(val) || (isPlainObject(val) && val.toString === objectToString)
-            ? JSON.stringify(val, null, 2)
-            : String(val);
-};
-const RANGE = 2;
-function generateCodeFrame(source, start = 0, end = source.length) {
-    const lines = source.split(/\r?\n/);
-    let count = 0;
-    const res = [];
-    for (let i = 0; i < lines.length; i++) {
-        count += lines[i].length + 1;
-        if (count >= start) {
-            for (let j = i - RANGE; j <= i + RANGE || end > count; j++) {
-                if (j < 0 || j >= lines.length)
-                    continue;
-                const line = j + 1;
-                res.push(`${line}${' '.repeat(3 - String(line).length)}|  ${lines[j]}`);
-                const lineLength = lines[j].length;
-                if (j === i) {
-                    // push underline
-                    const pad = start - (count - lineLength) + 1;
-                    const length = Math.max(1, end > count ? lineLength - pad : end - start);
-                    res.push(`   |  ` + ' '.repeat(pad) + '^'.repeat(length));
-                }
-                else if (j > i) {
-                    if (end > count) {
-                        const length = Math.max(Math.min(end - count, lineLength), 1);
-                        res.push(`   |  ` + '^'.repeat(length));
-                    }
-                    count += lineLength + 1;
-                }
-            }
-            break;
-        }
-    }
-    return res.join('\n');
-}
-
-/**
- * Event emitter, forked from the below:
- * - original repository url: https://github.com/developit/mitt
- * - code url: https://github.com/developit/mitt/blob/master/src/index.ts
- * - author: Jason Miller (https://github.com/developit)
- * - license: MIT
- */
-/**
- * Create a event emitter
- *
- * @returns An event emitter
- */
-function createEmitter() {
-    const events = new Map();
-    const emitter = {
-        events,
-        on(event, handler) {
-            const handlers = events.get(event);
-            const added = handlers && handlers.push(handler);
-            if (!added) {
-                events.set(event, [handler]);
-            }
-        },
-        off(event, handler) {
-            const handlers = events.get(event);
-            if (handlers) {
-                handlers.splice(handlers.indexOf(handler) >>> 0, 1);
-            }
-        },
-        emit(event, payload) {
-            (events.get(event) || [])
-                .slice()
-                .map(handler => handler(payload));
-            (events.get('*') || [])
-                .slice()
-                .map(handler => handler(event, payload));
-        }
-    };
-    return emitter;
-}
-
-const pathStateMachine = [];
-pathStateMachine[0 /* BEFORE_PATH */] = {
-    ["w" /* WORKSPACE */]: [0 /* BEFORE_PATH */],
-    ["i" /* IDENT */]: [3 /* IN_IDENT */, 0 /* APPEND */],
-    ["[" /* LEFT_BRACKET */]: [4 /* IN_SUB_PATH */],
-    ["o" /* END_OF_FAIL */]: [7 /* AFTER_PATH */]
-};
-pathStateMachine[1 /* IN_PATH */] = {
-    ["w" /* WORKSPACE */]: [1 /* IN_PATH */],
-    ["." /* DOT */]: [2 /* BEFORE_IDENT */],
-    ["[" /* LEFT_BRACKET */]: [4 /* IN_SUB_PATH */],
-    ["o" /* END_OF_FAIL */]: [7 /* AFTER_PATH */]
-};
-pathStateMachine[2 /* BEFORE_IDENT */] = {
-    ["w" /* WORKSPACE */]: [2 /* BEFORE_IDENT */],
-    ["i" /* IDENT */]: [3 /* IN_IDENT */, 0 /* APPEND */],
-    ["0" /* ZERO */]: [3 /* IN_IDENT */, 0 /* APPEND */]
-};
-pathStateMachine[3 /* IN_IDENT */] = {
-    ["i" /* IDENT */]: [3 /* IN_IDENT */, 0 /* APPEND */],
-    ["0" /* ZERO */]: [3 /* IN_IDENT */, 0 /* APPEND */],
-    ["w" /* WORKSPACE */]: [1 /* IN_PATH */, 1 /* PUSH */],
-    ["." /* DOT */]: [2 /* BEFORE_IDENT */, 1 /* PUSH */],
-    ["[" /* LEFT_BRACKET */]: [4 /* IN_SUB_PATH */, 1 /* PUSH */],
-    ["o" /* END_OF_FAIL */]: [7 /* AFTER_PATH */, 1 /* PUSH */]
-};
-pathStateMachine[4 /* IN_SUB_PATH */] = {
-    ["'" /* SINGLE_QUOTE */]: [5 /* IN_SINGLE_QUOTE */, 0 /* APPEND */],
-    ["\"" /* DOUBLE_QUOTE */]: [6 /* IN_DOUBLE_QUOTE */, 0 /* APPEND */],
-    ["[" /* LEFT_BRACKET */]: [
-        4 /* IN_SUB_PATH */,
-        2 /* INC_SUB_PATH_DEPTH */
-    ],
-    ["]" /* RIGHT_BRACKET */]: [1 /* IN_PATH */, 3 /* PUSH_SUB_PATH */],
-    ["o" /* END_OF_FAIL */]: 8 /* ERROR */,
-    ["l" /* ELSE */]: [4 /* IN_SUB_PATH */, 0 /* APPEND */]
-};
-pathStateMachine[5 /* IN_SINGLE_QUOTE */] = {
-    ["'" /* SINGLE_QUOTE */]: [4 /* IN_SUB_PATH */, 0 /* APPEND */],
-    ["o" /* END_OF_FAIL */]: 8 /* ERROR */,
-    ["l" /* ELSE */]: [5 /* IN_SINGLE_QUOTE */, 0 /* APPEND */]
-};
-pathStateMachine[6 /* IN_DOUBLE_QUOTE */] = {
-    ["\"" /* DOUBLE_QUOTE */]: [4 /* IN_SUB_PATH */, 0 /* APPEND */],
-    ["o" /* END_OF_FAIL */]: 8 /* ERROR */,
-    ["l" /* ELSE */]: [6 /* IN_DOUBLE_QUOTE */, 0 /* APPEND */]
-};
-/**
- * Check if an expression is a literal value.
- */
-const literalValueRE = /^\s?(?:true|false|-?[\d.]+|'[^']*'|"[^"]*")\s?$/;
-function isLiteral(exp) {
-    return literalValueRE.test(exp);
-}
-/**
- * Strip quotes from a string
- */
-function stripQuotes(str) {
-    const a = str.charCodeAt(0);
-    const b = str.charCodeAt(str.length - 1);
-    return a === b && (a === 0x22 || a === 0x27) ? str.slice(1, -1) : str;
-}
-/**
- * Determine the type of a character in a keypath.
- */
-function getPathCharType(ch) {
-    if (ch === undefined || ch === null) {
-        return "o" /* END_OF_FAIL */;
-    }
-    const code = ch.charCodeAt(0);
-    switch (code) {
-        case 0x5b: // [
-        case 0x5d: // ]
-        case 0x2e: // .
-        case 0x22: // "
-        case 0x27: // '
-            return ch;
-        case 0x5f: // _
-        case 0x24: // $
-        case 0x2d: // -
-            return "i" /* IDENT */;
-        case 0x09: // Tab (HT)
-        case 0x0a: // Newline (LF)
-        case 0x0d: // Return (CR)
-        case 0xa0: // No-break space (NBSP)
-        case 0xfeff: // Byte Order Mark (BOM)
-        case 0x2028: // Line Separator (LS)
-        case 0x2029: // Paragraph Separator (PS)
-            return "w" /* WORKSPACE */;
-    }
-    return "i" /* IDENT */;
-}
-/**
- * Format a subPath, return its plain form if it is
- * a literal string or number. Otherwise prepend the
- * dynamic indicator (*).
- */
-function formatSubPath(path) {
-    const trimmed = path.trim();
-    // invalid leading 0
-    if (path.charAt(0) === '0' && isNaN(parseInt(path))) {
-        return false;
-    }
-    return isLiteral(trimmed)
-        ? stripQuotes(trimmed)
-        : "*" /* ASTARISK */ + trimmed;
-}
-/**
- * Parse a string path into an array of segments
- */
-function parse(path) {
-    const keys = [];
-    let index = -1;
-    let mode = 0 /* BEFORE_PATH */;
-    let subPathDepth = 0;
-    let c;
-    let key; // eslint-disable-line
-    let newChar;
-    let type;
-    let transition;
-    let action;
-    let typeMap;
-    const actions = [];
-    actions[0 /* APPEND */] = () => {
-        if (key === undefined) {
-            key = newChar;
-        }
-        else {
-            key += newChar;
-        }
-    };
-    actions[1 /* PUSH */] = () => {
-        if (key !== undefined) {
-            keys.push(key);
-            key = undefined;
-        }
-    };
-    actions[2 /* INC_SUB_PATH_DEPTH */] = () => {
-        actions[0 /* APPEND */]();
-        subPathDepth++;
-    };
-    actions[3 /* PUSH_SUB_PATH */] = () => {
-        if (subPathDepth > 0) {
-            subPathDepth--;
-            mode = 4 /* IN_SUB_PATH */;
-            actions[0 /* APPEND */]();
-        }
-        else {
-            subPathDepth = 0;
-            if (key === undefined) {
-                return false;
-            }
-            key = formatSubPath(key);
-            if (key === false) {
-                return false;
-            }
-            else {
-                actions[1 /* PUSH */]();
-            }
-        }
-    };
-    function maybeUnescapeQuote() {
-        const nextChar = path[index + 1];
-        if ((mode === 5 /* IN_SINGLE_QUOTE */ &&
-            nextChar === "'" /* SINGLE_QUOTE */) ||
-            (mode === 6 /* IN_DOUBLE_QUOTE */ &&
-                nextChar === "\"" /* DOUBLE_QUOTE */)) {
-            index++;
-            newChar = '\\' + nextChar;
-            actions[0 /* APPEND */]();
-            return true;
-        }
-    }
-    while (mode !== null) {
-        index++;
-        c = path[index];
-        if (c === '\\' && maybeUnescapeQuote()) {
-            continue;
-        }
-        type = getPathCharType(c);
-        typeMap = pathStateMachine[mode];
-        transition = typeMap[type] || typeMap["l" /* ELSE */] || 8 /* ERROR */;
-        // check parse error
-        if (transition === 8 /* ERROR */) {
-            return;
-        }
-        mode = transition[0];
-        if (transition[1] !== undefined) {
-            action = actions[transition[1]];
-            if (action) {
-                newChar = c;
-                if (action() === false) {
-                    return;
-                }
-            }
-        }
-        // check parse finish
-        if (mode === 7 /* AFTER_PATH */) {
-            return keys;
-        }
-    }
-}
-// path token cache
-const cache = new Map();
-function resolveValue(obj, path) {
-    // check object
-    if (!isObject(obj)) {
-        return null;
-    }
-    // parse path
-    let hit = cache.get(path);
-    if (!hit) {
-        hit = parse(path);
-        if (hit) {
-            cache.set(path, hit);
-        }
-    }
-    // check hit
-    if (!hit) {
-        return null;
-    }
-    // resolve path value
-    const len = hit.length;
-    let last = obj;
-    let i = 0;
-    while (i < len) {
-        const val = last[hit[i]];
-        if (val === undefined) {
-            return null;
-        }
-        last = val;
-        i++;
-    }
-    return last;
-}
-/**
- * Transform flat json in obj to normal json in obj
- */
-function handleFlatJson(obj) {
-    // check obj
-    if (!isObject(obj)) {
-        return obj;
-    }
-    for (const key in obj) {
-        // check key
-        if (!hasOwn(obj, key)) {
-            continue;
-        }
-        // handle for normal json
-        if (!key.includes("." /* DOT */)) {
-            // recursive process value if value is also a object
-            if (isObject(obj[key])) {
-                handleFlatJson(obj[key]);
-            }
-        }
-        // handle for flat json, transform to normal json
-        else {
-            // go to the last object
-            const subKeys = key.split("." /* DOT */);
-            const lastIndex = subKeys.length - 1;
-            let currentObj = obj;
-            for (let i = 0; i < lastIndex; i++) {
-                if (!(subKeys[i] in currentObj)) {
-                    currentObj[subKeys[i]] = {};
-                }
-                currentObj = currentObj[subKeys[i]];
-            }
-            // update last object value, delete old property
-            currentObj[subKeys[lastIndex]] = obj[key];
-            delete obj[key];
-            // recursive process value if value is also a object
-            if (isObject(currentObj[subKeys[lastIndex]])) {
-                handleFlatJson(currentObj[subKeys[lastIndex]]);
-            }
-        }
-    }
-    return obj;
-}
-
-const DEFAULT_MODIFIER = (str) => str;
-const DEFAULT_MESSAGE = (ctx) => ''; // eslint-disable-line
-const DEFAULT_MESSAGE_DATA_TYPE = 'text';
-const DEFAULT_NORMALIZE = (values) => values.length === 0 ? '' : values.join('');
-const DEFAULT_INTERPOLATE = toDisplayString;
-function pluralDefault(choice, choicesLength) {
-    choice = Math.abs(choice);
-    if (choicesLength === 2) {
-        // prettier-ignore
-        return choice
-            ? choice > 1
-                ? 1
-                : 0
-            : 1;
-    }
-    return choice ? Math.min(choice, 2) : 0;
-}
-function getPluralIndex(options) {
-    // prettier-ignore
-    const index = isNumber(options.pluralIndex)
-        ? options.pluralIndex
-        : -1;
-    // prettier-ignore
-    return options.named && (isNumber(options.named.count) || isNumber(options.named.n))
-        ? isNumber(options.named.count)
-            ? options.named.count
-            : isNumber(options.named.n)
-                ? options.named.n
-                : index
-        : index;
-}
-function normalizeNamed(pluralIndex, props) {
-    if (!props.count) {
-        props.count = pluralIndex;
-    }
-    if (!props.n) {
-        props.n = pluralIndex;
-    }
-}
-function createMessageContext(options = {}) {
-    const locale = options.locale;
-    const pluralIndex = getPluralIndex(options);
-    const pluralRule = isObject(options.pluralRules) &&
-        isString(locale) &&
-        isFunction(options.pluralRules[locale])
-        ? options.pluralRules[locale]
-        : pluralDefault;
-    const orgPluralRule = isObject(options.pluralRules) &&
-        isString(locale) &&
-        isFunction(options.pluralRules[locale])
-        ? pluralDefault
-        : undefined;
-    const plural = (messages) => messages[pluralRule(pluralIndex, messages.length, orgPluralRule)];
-    const _list = options.list || [];
-    const list = (index) => _list[index];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const _named = options.named || {};
-    isNumber(options.pluralIndex) && normalizeNamed(pluralIndex, _named);
-    const named = (key) => _named[key];
-    // TODO: need to design resolve message function?
-    function message(key) {
-        // prettier-ignore
-        const msg = isFunction(options.messages)
-            ? options.messages(key)
-            : isObject(options.messages)
-                ? options.messages[key]
-                : false;
-        return !msg
-            ? options.parent
-                ? options.parent.message(key) // resolve from parent messages
-                : DEFAULT_MESSAGE
-            : msg;
-    }
-    const _modifier = (name) => options.modifiers
-        ? options.modifiers[name]
-        : DEFAULT_MODIFIER;
-    const normalize = isPlainObject(options.processor) && isFunction(options.processor.normalize)
-        ? options.processor.normalize
-        : DEFAULT_NORMALIZE;
-    const interpolate = isPlainObject(options.processor) &&
-        isFunction(options.processor.interpolate)
-        ? options.processor.interpolate
-        : DEFAULT_INTERPOLATE;
-    const type = isPlainObject(options.processor) && isString(options.processor.type)
-        ? options.processor.type
-        : DEFAULT_MESSAGE_DATA_TYPE;
-    const ctx = {
-        ["list" /* LIST */]: list,
-        ["named" /* NAMED */]: named,
-        ["plural" /* PLURAL */]: plural,
-        ["linked" /* LINKED */]: (key, modifier) => {
-            // TODO: should check `key`
-            const msg = message(key)(ctx);
-            return isString(modifier) ? _modifier(modifier)(msg) : msg;
-        },
-        ["message" /* MESSAGE */]: message,
-        ["type" /* TYPE */]: type,
-        ["interpolate" /* INTERPOLATE */]: interpolate,
-        ["normalize" /* NORMALIZE */]: normalize
-    };
-    return ctx;
-}
-
-/** @internal */
-const errorMessages$2 = {
-    // tokenizer error messages
-    [0 /* EXPECTED_TOKEN */]: `Expected token: '{0}'`,
-    [1 /* INVALID_TOKEN_IN_PLACEHOLDER */]: `Invalid token in placeholder: '{0}'`,
-    [2 /* UNTERMINATED_SINGLE_QUOTE_IN_PLACEHOLDER */]: `Unterminated single quote in placeholder`,
-    [3 /* UNKNOWN_ESCAPE_SEQUENCE */]: `Unknown escape sequence: \\{0}`,
-    [4 /* INVALID_UNICODE_ESCAPE_SEQUENCE */]: `Invalid unicode escape sequence: {0}`,
-    [5 /* UNBALANCED_CLOSING_BRACE */]: `Unbalanced closing brace`,
-    [6 /* UNTERMINATED_CLOSING_BRACE */]: `Unterminated closing brace`,
-    [7 /* EMPTY_PLACEHOLDER */]: `Empty placeholder`,
-    [8 /* NOT_ALLOW_NEST_PLACEHOLDER */]: `Not allowed nest placeholder`,
-    [9 /* INVALID_LINKED_FORMAT */]: `Invalid linked format`,
-    // parser error messages
-    [10 /* MUST_HAVE_MESSAGES_IN_PLURAL */]: `Plural must have messages`,
-    [11 /* UNEXPECTED_EMPTY_LINKED_MODIFIER */]: `Unexpected empty linked modifier`,
-    [12 /* UNEXPECTED_EMPTY_LINKED_KEY */]: `Unexpected empty linked key`,
-    [13 /* UNEXPECTED_LEXICAL_ANALYSIS */]: `Unexpected lexical analysis in token: '{0}'`
-};
-function createCompileError(code, loc, options = {}) {
-    const { domain, messages, args } = options;
-    const msg = format((messages || errorMessages$2)[code] || '', ...(args || []))
-        ;
-    const error = new SyntaxError(String(msg));
-    error.code = code;
-    if (loc) {
-        error.location = loc;
-    }
-    error.domain = domain;
-    return error;
-}
-
-const IntlifyDevToolsHooks = {
-    I18nInit: 'i18n:init',
-    FunctionTranslate: 'function:translate'
-};
-
-let devtools = null;
-function setDevToolsHook(hook) {
-    devtools = hook;
-}
-function initI18nDevTools(i18n, version, meta) {
-    // TODO: queue if devtools is undefined
-    devtools &&
-        devtools.emit(IntlifyDevToolsHooks.I18nInit, {
-            timestamp: Date.now(),
-            i18n,
-            version,
-            meta
-        });
-}
-const translateDevTools = /* #__PURE__*/ createDevToolsHook(IntlifyDevToolsHooks.FunctionTranslate);
-function createDevToolsHook(hook) {
-    return (payloads) => devtools && devtools.emit(hook, payloads);
-}
-
-/** @internal */
-const warnMessages$1 = {
-    [0 /* NOT_FOUND_KEY */]: `Not found '{key}' key in '{locale}' locale messages.`,
-    [1 /* FALLBACK_TO_TRANSLATE */]: `Fall back to translate '{key}' key with '{target}' locale.`,
-    [2 /* CANNOT_FORMAT_NUMBER */]: `Cannot format a number value due to not supported Intl.NumberFormat.`,
-    [3 /* FALLBACK_TO_NUMBER_FORMAT */]: `Fall back to number format '{key}' key with '{target}' locale.`,
-    [4 /* CANNOT_FORMAT_DATE */]: `Cannot format a date value due to not supported Intl.DateTimeFormat.`,
-    [5 /* FALLBACK_TO_DATE_FORMAT */]: `Fall back to datetime format '{key}' key with '{target}' locale.`
-};
-function getWarnMessage$1(code, ...args) {
-    return format(warnMessages$1[code], ...args);
-}
-
-/**
- * Intlify core-base version
- * @internal
- */
-const VERSION$1 = '9.1.9';
-const NOT_REOSLVED = -1;
-const MISSING_RESOLVE_VALUE = '';
-function getDefaultLinkedModifiers() {
-    return {
-        upper: (val) => (isString(val) ? val.toUpperCase() : val),
-        lower: (val) => (isString(val) ? val.toLowerCase() : val),
-        // prettier-ignore
-        capitalize: (val) => (isString(val)
-            ? `${val.charAt(0).toLocaleUpperCase()}${val.substr(1)}`
-            : val)
-    };
-}
-let _compiler;
-function registerMessageCompiler(compiler) {
-    _compiler = compiler;
-}
-// Additional Meta for Intlify DevTools
-let _additionalMeta = null;
-const setAdditionalMeta = /* #__PURE__*/ (meta) => {
-    _additionalMeta = meta;
-};
-const getAdditionalMeta = /* #__PURE__*/ () => _additionalMeta;
-// ID for CoreContext
-let _cid = 0;
-function createCoreContext(options = {}) {
-    // setup options
-    const version = isString(options.version) ? options.version : VERSION$1;
-    const locale = isString(options.locale) ? options.locale : 'en-US';
-    const fallbackLocale = isArray(options.fallbackLocale) ||
-        isPlainObject(options.fallbackLocale) ||
-        isString(options.fallbackLocale) ||
-        options.fallbackLocale === false
-        ? options.fallbackLocale
-        : locale;
-    const messages = isPlainObject(options.messages)
-        ? options.messages
-        : { [locale]: {} };
-    const datetimeFormats = isPlainObject(options.datetimeFormats)
-        ? options.datetimeFormats
-        : { [locale]: {} };
-    const numberFormats = isPlainObject(options.numberFormats)
-        ? options.numberFormats
-        : { [locale]: {} };
-    const modifiers = assign({}, options.modifiers || {}, getDefaultLinkedModifiers());
-    const pluralRules = options.pluralRules || {};
-    const missing = isFunction(options.missing) ? options.missing : null;
-    const missingWarn = isBoolean(options.missingWarn) || isRegExp(options.missingWarn)
-        ? options.missingWarn
-        : true;
-    const fallbackWarn = isBoolean(options.fallbackWarn) || isRegExp(options.fallbackWarn)
-        ? options.fallbackWarn
-        : true;
-    const fallbackFormat = !!options.fallbackFormat;
-    const unresolving = !!options.unresolving;
-    const postTranslation = isFunction(options.postTranslation)
-        ? options.postTranslation
-        : null;
-    const processor = isPlainObject(options.processor) ? options.processor : null;
-    const warnHtmlMessage = isBoolean(options.warnHtmlMessage)
-        ? options.warnHtmlMessage
-        : true;
-    const escapeParameter = !!options.escapeParameter;
-    const messageCompiler = isFunction(options.messageCompiler)
-        ? options.messageCompiler
-        : _compiler;
-    const onWarn = isFunction(options.onWarn) ? options.onWarn : warn;
-    // setup internal options
-    const internalOptions = options;
-    const __datetimeFormatters = isObject(internalOptions.__datetimeFormatters)
-        ? internalOptions.__datetimeFormatters
-        : new Map();
-    const __numberFormatters = isObject(internalOptions.__numberFormatters)
-        ? internalOptions.__numberFormatters
-        : new Map();
-    const __meta = isObject(internalOptions.__meta) ? internalOptions.__meta : {};
-    _cid++;
-    const context = {
-        version,
-        cid: _cid,
-        locale,
-        fallbackLocale,
-        messages,
-        datetimeFormats,
-        numberFormats,
-        modifiers,
-        pluralRules,
-        missing,
-        missingWarn,
-        fallbackWarn,
-        fallbackFormat,
-        unresolving,
-        postTranslation,
-        processor,
-        warnHtmlMessage,
-        escapeParameter,
-        messageCompiler,
-        onWarn,
-        __datetimeFormatters,
-        __numberFormatters,
-        __meta
-    };
-    // for vue-devtools timeline event
-    {
-        context.__v_emitter =
-            internalOptions.__v_emitter != null
-                ? internalOptions.__v_emitter
-                : undefined;
-    }
-    // NOTE: experimental !!
-    {
-        initI18nDevTools(context, version, __meta);
-    }
-    return context;
-}
-/** @internal */
-function isTranslateFallbackWarn(fallback, key) {
-    return fallback instanceof RegExp ? fallback.test(key) : fallback;
-}
-/** @internal */
-function isTranslateMissingWarn(missing, key) {
-    return missing instanceof RegExp ? missing.test(key) : missing;
-}
-/** @internal */
-function handleMissing(context, key, locale, missingWarn, type) {
-    const { missing, onWarn } = context;
-    // for vue-devtools timeline event
-    {
-        const emitter = context.__v_emitter;
-        if (emitter) {
-            emitter.emit("missing" /* MISSING */, {
-                locale,
-                key,
-                type,
-                groupId: `${type}:${key}`
-            });
-        }
-    }
-    if (missing !== null) {
-        const ret = missing(context, locale, key, type);
-        return isString(ret) ? ret : key;
-    }
-    else {
-        if (isTranslateMissingWarn(missingWarn, key)) {
-            onWarn(getWarnMessage$1(0 /* NOT_FOUND_KEY */, { key, locale }));
-        }
-        return key;
-    }
-}
-/** @internal */
-function getLocaleChain(ctx, fallback, start) {
-    const context = ctx;
-    if (!context.__localeChainCache) {
-        context.__localeChainCache = new Map();
-    }
-    let chain = context.__localeChainCache.get(start);
-    if (!chain) {
-        chain = [];
-        // first block defined by start
-        let block = [start];
-        // while any intervening block found
-        while (isArray(block)) {
-            block = appendBlockToChain(chain, block, fallback);
-        }
-        // prettier-ignore
-        // last block defined by default
-        const defaults = isArray(fallback)
-            ? fallback
-            : isPlainObject(fallback)
-                ? fallback['default']
-                    ? fallback['default']
-                    : null
-                : fallback;
-        // convert defaults to array
-        block = isString(defaults) ? [defaults] : defaults;
-        if (isArray(block)) {
-            appendBlockToChain(chain, block, false);
-        }
-        context.__localeChainCache.set(start, chain);
-    }
-    return chain;
-}
-function appendBlockToChain(chain, block, blocks) {
-    let follow = true;
-    for (let i = 0; i < block.length && isBoolean(follow); i++) {
-        const locale = block[i];
-        if (isString(locale)) {
-            follow = appendLocaleToChain(chain, block[i], blocks);
-        }
-    }
-    return follow;
-}
-function appendLocaleToChain(chain, locale, blocks) {
-    let follow;
-    const tokens = locale.split('-');
-    do {
-        const target = tokens.join('-');
-        follow = appendItemToChain(chain, target, blocks);
-        tokens.splice(-1, 1);
-    } while (tokens.length && follow === true);
-    return follow;
-}
-function appendItemToChain(chain, target, blocks) {
-    let follow = false;
-    if (!chain.includes(target)) {
-        follow = true;
-        if (target) {
-            follow = target[target.length - 1] !== '!';
-            const locale = target.replace(/!/g, '');
-            chain.push(locale);
-            if ((isArray(blocks) || isPlainObject(blocks)) &&
-                blocks[locale] // eslint-disable-line @typescript-eslint/no-explicit-any
-            ) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                follow = blocks[locale];
-            }
-        }
-    }
-    return follow;
-}
-/** @internal */
-function updateFallbackLocale(ctx, locale, fallback) {
-    const context = ctx;
-    context.__localeChainCache = new Map();
-    getLocaleChain(ctx, fallback, locale);
-}
-
-function createCoreError(code) {
-    return createCompileError(code, null, { messages: errorMessages$1 } );
-}
-/** @internal */
-const errorMessages$1 = {
-    [14 /* INVALID_ARGUMENT */]: 'Invalid arguments',
-    [15 /* INVALID_DATE_ARGUMENT */]: 'The date provided is an invalid Date object.' +
-        'Make sure your Date represents a valid date.',
-    [16 /* INVALID_ISO_DATE_ARGUMENT */]: 'The argument provided is not a valid ISO date string'
-};
-
-const NOOP_MESSAGE_FUNCTION = () => '';
-const isMessageFunction = (val) => isFunction(val);
-// implementation of `translate` function
-function translate(context, ...args) {
-    const { fallbackFormat, postTranslation, unresolving, fallbackLocale, messages } = context;
-    const [key, options] = parseTranslateArgs(...args);
-    const missingWarn = isBoolean(options.missingWarn)
-        ? options.missingWarn
-        : context.missingWarn;
-    const fallbackWarn = isBoolean(options.fallbackWarn)
-        ? options.fallbackWarn
-        : context.fallbackWarn;
-    const escapeParameter = isBoolean(options.escapeParameter)
-        ? options.escapeParameter
-        : context.escapeParameter;
-    const resolvedMessage = !!options.resolvedMessage;
-    // prettier-ignore
-    const defaultMsgOrKey = isString(options.default) || isBoolean(options.default) // default by function option
-        ? !isBoolean(options.default)
-            ? options.default
-            : key
-        : fallbackFormat // default by `fallbackFormat` option
-            ? key
-            : '';
-    const enableDefaultMsg = fallbackFormat || defaultMsgOrKey !== '';
-    const locale = isString(options.locale) ? options.locale : context.locale;
-    // escape params
-    escapeParameter && escapeParams(options);
-    // resolve message format
-    // eslint-disable-next-line prefer-const
-    let [format, targetLocale, message] = !resolvedMessage
-        ? resolveMessageFormat(context, key, locale, fallbackLocale, fallbackWarn, missingWarn)
-        : [
-            key,
-            locale,
-            messages[locale] || {}
-        ];
-    // if you use default message, set it as message format!
-    let cacheBaseKey = key;
-    if (!resolvedMessage &&
-        !(isString(format) || isMessageFunction(format))) {
-        if (enableDefaultMsg) {
-            format = defaultMsgOrKey;
-            cacheBaseKey = format;
-        }
-    }
-    // checking message format and target locale
-    if (!resolvedMessage &&
-        (!(isString(format) || isMessageFunction(format)) ||
-            !isString(targetLocale))) {
-        return unresolving ? NOT_REOSLVED : key;
-    }
-    if (isString(format) && context.messageCompiler == null) {
-        warn(`The message format compilation is not supported in this build. ` +
-            `Because message compiler isn't included. ` +
-            `You need to pre-compilation all message format. ` +
-            `So translate function return '${key}'.`);
-        return key;
-    }
-    // setup compile error detecting
-    let occurred = false;
-    const errorDetector = () => {
-        occurred = true;
-    };
-    // compile message format
-    const msg = !isMessageFunction(format)
-        ? compileMessageFormat(context, key, targetLocale, format, cacheBaseKey, errorDetector)
-        : format;
-    // if occurred compile error, return the message format
-    if (occurred) {
-        return format;
-    }
-    // evaluate message with context
-    const ctxOptions = getMessageContextOptions(context, targetLocale, message, options);
-    const msgContext = createMessageContext(ctxOptions);
-    const messaged = evaluateMessage(context, msg, msgContext);
-    // if use post translation option, proceed it with handler
-    const ret = postTranslation ? postTranslation(messaged) : messaged;
-    // NOTE: experimental !!
-    {
-        // prettier-ignore
-        const payloads = {
-            timestamp: Date.now(),
-            key: isString(key)
-                ? key
-                : isMessageFunction(format)
-                    ? format.key
-                    : '',
-            locale: targetLocale || (isMessageFunction(format)
-                ? format.locale
-                : ''),
-            format: isString(format)
-                ? format
-                : isMessageFunction(format)
-                    ? format.source
-                    : '',
-            message: ret
-        };
-        payloads.meta = assign({}, context.__meta, getAdditionalMeta() || {});
-        translateDevTools(payloads);
-    }
-    return ret;
-}
-function escapeParams(options) {
-    if (isArray(options.list)) {
-        options.list = options.list.map(item => isString(item) ? escapeHtml(item) : item);
-    }
-    else if (isObject(options.named)) {
-        Object.keys(options.named).forEach(key => {
-            if (isString(options.named[key])) {
-                options.named[key] = escapeHtml(options.named[key]);
-            }
-        });
-    }
-}
-function resolveMessageFormat(context, key, locale, fallbackLocale, fallbackWarn, missingWarn) {
-    const { messages, onWarn } = context;
-    const locales = getLocaleChain(context, fallbackLocale, locale);
-    let message = {};
-    let targetLocale;
-    let format = null;
-    let from = locale;
-    let to = null;
-    const type = 'translate';
-    for (let i = 0; i < locales.length; i++) {
-        targetLocale = to = locales[i];
-        if (locale !== targetLocale &&
-            isTranslateFallbackWarn(fallbackWarn, key)) {
-            onWarn(getWarnMessage$1(1 /* FALLBACK_TO_TRANSLATE */, {
-                key,
-                target: targetLocale
-            }));
-        }
-        // for vue-devtools timeline event
-        if (locale !== targetLocale) {
-            const emitter = context.__v_emitter;
-            if (emitter) {
-                emitter.emit("fallback" /* FALBACK */, {
-                    type,
-                    key,
-                    from,
-                    to,
-                    groupId: `${type}:${key}`
-                });
-            }
-        }
-        message =
-            messages[targetLocale] || {};
-        // for vue-devtools timeline event
-        let start = null;
-        let startTag;
-        let endTag;
-        if (inBrowser) {
-            start = window.performance.now();
-            startTag = 'intlify-message-resolve-start';
-            endTag = 'intlify-message-resolve-end';
-            mark && mark(startTag);
-        }
-        if ((format = resolveValue(message, key)) === null) {
-            // if null, resolve with object key path
-            format = message[key]; // eslint-disable-line @typescript-eslint/no-explicit-any
-        }
-        // for vue-devtools timeline event
-        if (inBrowser) {
-            const end = window.performance.now();
-            const emitter = context.__v_emitter;
-            if (emitter && start && format) {
-                emitter.emit("message-resolve" /* MESSAGE_RESOLVE */, {
-                    type: "message-resolve" /* MESSAGE_RESOLVE */,
-                    key,
-                    message: format,
-                    time: end - start,
-                    groupId: `${type}:${key}`
-                });
-            }
-            if (startTag && endTag && mark && measure) {
-                mark(endTag);
-                measure('intlify message resolve', startTag, endTag);
-            }
-        }
-        if (isString(format) || isFunction(format))
-            break;
-        const missingRet = handleMissing(context, key, targetLocale, missingWarn, type);
-        if (missingRet !== key) {
-            format = missingRet;
-        }
-        from = to;
-    }
-    return [format, targetLocale, message];
-}
-function compileMessageFormat(context, key, targetLocale, format, cacheBaseKey, errorDetector) {
-    const { messageCompiler, warnHtmlMessage } = context;
-    if (isMessageFunction(format)) {
-        const msg = format;
-        msg.locale = msg.locale || targetLocale;
-        msg.key = msg.key || key;
-        return msg;
-    }
-    // for vue-devtools timeline event
-    let start = null;
-    let startTag;
-    let endTag;
-    if (inBrowser) {
-        start = window.performance.now();
-        startTag = 'intlify-message-compilation-start';
-        endTag = 'intlify-message-compilation-end';
-        mark && mark(startTag);
-    }
-    const msg = messageCompiler(format, getCompileOptions(context, targetLocale, cacheBaseKey, format, warnHtmlMessage, errorDetector));
-    // for vue-devtools timeline event
-    if (inBrowser) {
-        const end = window.performance.now();
-        const emitter = context.__v_emitter;
-        if (emitter && start) {
-            emitter.emit("message-compilation" /* MESSAGE_COMPILATION */, {
-                type: "message-compilation" /* MESSAGE_COMPILATION */,
-                message: format,
-                time: end - start,
-                groupId: `${'translate'}:${key}`
-            });
-        }
-        if (startTag && endTag && mark && measure) {
-            mark(endTag);
-            measure('intlify message compilation', startTag, endTag);
-        }
-    }
-    msg.locale = targetLocale;
-    msg.key = key;
-    msg.source = format;
-    return msg;
-}
-function evaluateMessage(context, msg, msgCtx) {
-    // for vue-devtools timeline event
-    let start = null;
-    let startTag;
-    let endTag;
-    if (inBrowser) {
-        start = window.performance.now();
-        startTag = 'intlify-message-evaluation-start';
-        endTag = 'intlify-message-evaluation-end';
-        mark && mark(startTag);
-    }
-    const messaged = msg(msgCtx);
-    // for vue-devtools timeline event
-    if (inBrowser) {
-        const end = window.performance.now();
-        const emitter = context.__v_emitter;
-        if (emitter && start) {
-            emitter.emit("message-evaluation" /* MESSAGE_EVALUATION */, {
-                type: "message-evaluation" /* MESSAGE_EVALUATION */,
-                value: messaged,
-                time: end - start,
-                groupId: `${'translate'}:${msg.key}`
-            });
-        }
-        if (startTag && endTag && mark && measure) {
-            mark(endTag);
-            measure('intlify message evaluation', startTag, endTag);
-        }
-    }
-    return messaged;
-}
-/** @internal */
-function parseTranslateArgs(...args) {
-    const [arg1, arg2, arg3] = args;
-    const options = {};
-    if (!isString(arg1) && !isNumber(arg1) && !isMessageFunction(arg1)) {
-        throw createCoreError(14 /* INVALID_ARGUMENT */);
-    }
-    // prettier-ignore
-    const key = isNumber(arg1)
-        ? String(arg1)
-        : isMessageFunction(arg1)
-            ? arg1
-            : arg1;
-    if (isNumber(arg2)) {
-        options.plural = arg2;
-    }
-    else if (isString(arg2)) {
-        options.default = arg2;
-    }
-    else if (isPlainObject(arg2) && !isEmptyObject(arg2)) {
-        options.named = arg2;
-    }
-    else if (isArray(arg2)) {
-        options.list = arg2;
-    }
-    if (isNumber(arg3)) {
-        options.plural = arg3;
-    }
-    else if (isString(arg3)) {
-        options.default = arg3;
-    }
-    else if (isPlainObject(arg3)) {
-        assign(options, arg3);
-    }
-    return [key, options];
-}
-function getCompileOptions(context, locale, key, source, warnHtmlMessage, errorDetector) {
-    return {
-        warnHtmlMessage,
-        onError: (err) => {
-            errorDetector && errorDetector(err);
-            {
-                const message = `Message compilation error: ${err.message}`;
-                const codeFrame = err.location &&
-                    generateCodeFrame(source, err.location.start.offset, err.location.end.offset);
-                const emitter = context
-                    .__v_emitter;
-                if (emitter) {
-                    emitter.emit("compile-error" /* COMPILE_ERROR */, {
-                        message: source,
-                        error: err.message,
-                        start: err.location && err.location.start.offset,
-                        end: err.location && err.location.end.offset,
-                        groupId: `${'translate'}:${key}`
-                    });
-                }
-                console.error(codeFrame ? `${message}\n${codeFrame}` : message);
-            }
-        },
-        onCacheKey: (source) => generateFormatCacheKey(locale, key, source)
-    };
-}
-function getMessageContextOptions(context, locale, message, options) {
-    const { modifiers, pluralRules } = context;
-    const resolveMessage = (key) => {
-        const val = resolveValue(message, key);
-        if (isString(val)) {
-            let occurred = false;
-            const errorDetector = () => {
-                occurred = true;
-            };
-            const msg = compileMessageFormat(context, key, locale, val, key, errorDetector);
-            return !occurred
-                ? msg
-                : NOOP_MESSAGE_FUNCTION;
-        }
-        else if (isMessageFunction(val)) {
-            return val;
-        }
-        else {
-            // TODO: should be implemented warning message
-            return NOOP_MESSAGE_FUNCTION;
-        }
-    };
-    const ctxOptions = {
-        locale,
-        modifiers,
-        pluralRules,
-        messages: resolveMessage
-    };
-    if (context.processor) {
-        ctxOptions.processor = context.processor;
-    }
-    if (options.list) {
-        ctxOptions.list = options.list;
-    }
-    if (options.named) {
-        ctxOptions.named = options.named;
-    }
-    if (isNumber(options.plural)) {
-        ctxOptions.pluralIndex = options.plural;
-    }
-    return ctxOptions;
-}
-
-const intlDefined = typeof Intl !== 'undefined';
-const Availabilities = {
-    dateTimeFormat: intlDefined && typeof Intl.DateTimeFormat !== 'undefined',
-    numberFormat: intlDefined && typeof Intl.NumberFormat !== 'undefined'
-};
-
-// implementation of `datetime` function
-function datetime(context, ...args) {
-    const { datetimeFormats, unresolving, fallbackLocale, onWarn } = context;
-    const { __datetimeFormatters } = context;
-    if (!Availabilities.dateTimeFormat) {
-        onWarn(getWarnMessage$1(4 /* CANNOT_FORMAT_DATE */));
-        return MISSING_RESOLVE_VALUE;
-    }
-    const [key, value, options, overrides] = parseDateTimeArgs(...args);
-    const missingWarn = isBoolean(options.missingWarn)
-        ? options.missingWarn
-        : context.missingWarn;
-    const fallbackWarn = isBoolean(options.fallbackWarn)
-        ? options.fallbackWarn
-        : context.fallbackWarn;
-    const part = !!options.part;
-    const locale = isString(options.locale) ? options.locale : context.locale;
-    const locales = getLocaleChain(context, fallbackLocale, locale);
-    if (!isString(key) || key === '') {
-        return new Intl.DateTimeFormat(locale).format(value);
-    }
-    // resolve format
-    let datetimeFormat = {};
-    let targetLocale;
-    let format = null;
-    let from = locale;
-    let to = null;
-    const type = 'datetime format';
-    for (let i = 0; i < locales.length; i++) {
-        targetLocale = to = locales[i];
-        if (locale !== targetLocale &&
-            isTranslateFallbackWarn(fallbackWarn, key)) {
-            onWarn(getWarnMessage$1(5 /* FALLBACK_TO_DATE_FORMAT */, {
-                key,
-                target: targetLocale
-            }));
-        }
-        // for vue-devtools timeline event
-        if (locale !== targetLocale) {
-            const emitter = context.__v_emitter;
-            if (emitter) {
-                emitter.emit("fallback" /* FALBACK */, {
-                    type,
-                    key,
-                    from,
-                    to,
-                    groupId: `${type}:${key}`
-                });
-            }
-        }
-        datetimeFormat =
-            datetimeFormats[targetLocale] || {};
-        format = datetimeFormat[key];
-        if (isPlainObject(format))
-            break;
-        handleMissing(context, key, targetLocale, missingWarn, type);
-        from = to;
-    }
-    // checking format and target locale
-    if (!isPlainObject(format) || !isString(targetLocale)) {
-        return unresolving ? NOT_REOSLVED : key;
-    }
-    let id = `${targetLocale}__${key}`;
-    if (!isEmptyObject(overrides)) {
-        id = `${id}__${JSON.stringify(overrides)}`;
-    }
-    let formatter = __datetimeFormatters.get(id);
-    if (!formatter) {
-        formatter = new Intl.DateTimeFormat(targetLocale, assign({}, format, overrides));
-        __datetimeFormatters.set(id, formatter);
-    }
-    return !part ? formatter.format(value) : formatter.formatToParts(value);
-}
-/** @internal */
-function parseDateTimeArgs(...args) {
-    const [arg1, arg2, arg3, arg4] = args;
-    let options = {};
-    let overrides = {};
-    let value;
-    if (isString(arg1)) {
-        // Only allow ISO strings - other date formats are often supported,
-        // but may cause different results in different browsers.
-        if (!/\d{4}-\d{2}-\d{2}(T.*)?/.test(arg1)) {
-            throw createCoreError(16 /* INVALID_ISO_DATE_ARGUMENT */);
-        }
-        value = new Date(arg1);
-        try {
-            // This will fail if the date is not valid
-            value.toISOString();
-        }
-        catch (e) {
-            throw createCoreError(16 /* INVALID_ISO_DATE_ARGUMENT */);
-        }
-    }
-    else if (isDate(arg1)) {
-        if (isNaN(arg1.getTime())) {
-            throw createCoreError(15 /* INVALID_DATE_ARGUMENT */);
-        }
-        value = arg1;
-    }
-    else if (isNumber(arg1)) {
-        value = arg1;
-    }
-    else {
-        throw createCoreError(14 /* INVALID_ARGUMENT */);
-    }
-    if (isString(arg2)) {
-        options.key = arg2;
-    }
-    else if (isPlainObject(arg2)) {
-        options = arg2;
-    }
-    if (isString(arg3)) {
-        options.locale = arg3;
-    }
-    else if (isPlainObject(arg3)) {
-        overrides = arg3;
-    }
-    if (isPlainObject(arg4)) {
-        overrides = arg4;
-    }
-    return [options.key || '', value, options, overrides];
-}
-/** @internal */
-function clearDateTimeFormat(ctx, locale, format) {
-    const context = ctx;
-    for (const key in format) {
-        const id = `${locale}__${key}`;
-        if (!context.__datetimeFormatters.has(id)) {
-            continue;
-        }
-        context.__datetimeFormatters.delete(id);
-    }
-}
-
-// implementation of `number` function
-function number(context, ...args) {
-    const { numberFormats, unresolving, fallbackLocale, onWarn } = context;
-    const { __numberFormatters } = context;
-    if (!Availabilities.numberFormat) {
-        onWarn(getWarnMessage$1(2 /* CANNOT_FORMAT_NUMBER */));
-        return MISSING_RESOLVE_VALUE;
-    }
-    const [key, value, options, overrides] = parseNumberArgs(...args);
-    const missingWarn = isBoolean(options.missingWarn)
-        ? options.missingWarn
-        : context.missingWarn;
-    const fallbackWarn = isBoolean(options.fallbackWarn)
-        ? options.fallbackWarn
-        : context.fallbackWarn;
-    const part = !!options.part;
-    const locale = isString(options.locale) ? options.locale : context.locale;
-    const locales = getLocaleChain(context, fallbackLocale, locale);
-    if (!isString(key) || key === '') {
-        return new Intl.NumberFormat(locale).format(value);
-    }
-    // resolve format
-    let numberFormat = {};
-    let targetLocale;
-    let format = null;
-    let from = locale;
-    let to = null;
-    const type = 'number format';
-    for (let i = 0; i < locales.length; i++) {
-        targetLocale = to = locales[i];
-        if (locale !== targetLocale &&
-            isTranslateFallbackWarn(fallbackWarn, key)) {
-            onWarn(getWarnMessage$1(3 /* FALLBACK_TO_NUMBER_FORMAT */, {
-                key,
-                target: targetLocale
-            }));
-        }
-        // for vue-devtools timeline event
-        if (locale !== targetLocale) {
-            const emitter = context.__v_emitter;
-            if (emitter) {
-                emitter.emit("fallback" /* FALBACK */, {
-                    type,
-                    key,
-                    from,
-                    to,
-                    groupId: `${type}:${key}`
-                });
-            }
-        }
-        numberFormat =
-            numberFormats[targetLocale] || {};
-        format = numberFormat[key];
-        if (isPlainObject(format))
-            break;
-        handleMissing(context, key, targetLocale, missingWarn, type);
-        from = to;
-    }
-    // checking format and target locale
-    if (!isPlainObject(format) || !isString(targetLocale)) {
-        return unresolving ? NOT_REOSLVED : key;
-    }
-    let id = `${targetLocale}__${key}`;
-    if (!isEmptyObject(overrides)) {
-        id = `${id}__${JSON.stringify(overrides)}`;
-    }
-    let formatter = __numberFormatters.get(id);
-    if (!formatter) {
-        formatter = new Intl.NumberFormat(targetLocale, assign({}, format, overrides));
-        __numberFormatters.set(id, formatter);
-    }
-    return !part ? formatter.format(value) : formatter.formatToParts(value);
-}
-/** @internal */
-function parseNumberArgs(...args) {
-    const [arg1, arg2, arg3, arg4] = args;
-    let options = {};
-    let overrides = {};
-    if (!isNumber(arg1)) {
-        throw createCoreError(14 /* INVALID_ARGUMENT */);
-    }
-    const value = arg1;
-    if (isString(arg2)) {
-        options.key = arg2;
-    }
-    else if (isPlainObject(arg2)) {
-        options = arg2;
-    }
-    if (isString(arg3)) {
-        options.locale = arg3;
-    }
-    else if (isPlainObject(arg3)) {
-        overrides = arg3;
-    }
-    if (isPlainObject(arg4)) {
-        overrides = arg4;
-    }
-    return [options.key || '', value, options, overrides];
-}
-/** @internal */
-function clearNumberFormat(ctx, locale, format) {
-    const context = ctx;
-    for (const key in format) {
-        const id = `${locale}__${key}`;
-        if (!context.__numberFormatters.has(id)) {
-            continue;
-        }
-        context.__numberFormatters.delete(id);
-    }
-}
+import { setupDevtoolsPlugin } from '@vue/devtools-api';
+import { VueDevToolsLabels, VueDevToolsPlaceholders, VueDevToolsTimelineColors } from '@intlify/vue-devtools';
 
 /**
  * Vue I18n Version
@@ -1509,28 +19,34 @@ function clearNumberFormat(ctx, locale, format) {
  */
 const VERSION = '9.1.9';
 /**
- * This is only called development env
+ * This is only called in esm-bundler builds.
  * istanbul-ignore-next
  */
-function initDev() {
-    {
-        {
-            console.info(`You are running a development build of vue-i18n.\n` +
-                `Make sure to use the production build (*.prod.js) when deploying for production.`);
-        }
+function initFeatureFlags() {
+    let needWarn = false;
+    if (typeof __VUE_I18N_FULL_INSTALL__ !== 'boolean') {
+        needWarn = true;
+        getGlobalThis().__VUE_I18N_FULL_INSTALL__ = true;
     }
-}
-
-/**
- * fixed by xxxxxx 目前暂不支持任何语法
- * @param source
- * @param _
- * @returns
- */
-function compileToFunction(source, _ = {}) {
-    return ((ctx) => {
-        return ctx.normalize([source]);
-    });
+    if (typeof __VUE_I18N_LEGACY_API__ !== 'boolean') {
+        needWarn = true;
+        getGlobalThis().__VUE_I18N_LEGACY_API__ = true;
+    }
+    if (typeof __VUE_I18N_PROD_DEVTOOLS__ !== 'boolean') {
+        needWarn = true;
+        getGlobalThis().__VUE_I18N_PROD_DEVTOOLS__ = false;
+    }
+    if (typeof __INTLIFY_PROD_DEVTOOLS__ !== 'boolean') {
+        getGlobalThis().__INTLIFY_PROD_DEVTOOLS__ = false;
+    }
+    if ((process.env.NODE_ENV !== 'production') && typeof true === 'boolean') {
+        needWarn = true;
+    }
+    if ((process.env.NODE_ENV !== 'production') && needWarn) {
+        console.warn(`You are running the esm-bundler build of vue-i18n. It is recommended to ` +
+            `configure your bundler to explicitly replace feature flag globals ` +
+            `with boolean literals to get proper tree-shaking in the final bundle.`);
+    }
 }
 
 const warnMessages = {
@@ -1547,7 +63,7 @@ function getWarnMessage(code, ...args) {
 }
 
 function createI18nError(code, ...args) {
-    return createCompileError(code, null, { messages: errorMessages, args } );
+    return createCompileError(code, null, (process.env.NODE_ENV !== 'production') ? { messages: errorMessages, args } : undefined);
 }
 const errorMessages = {
     [14 /* UNEXPECTED_RETURN_TYPE */]: 'Unexpected return type in composer',
@@ -1568,6 +84,7 @@ const NumberPartsSymbol = makeSymbol('__numberParts');
 const EnableEmitter = makeSymbol('__enableEmitter');
 const DisableEmitter = makeSymbol('__disableEmitter');
 const SetPluralRulesSymbol = makeSymbol('__setPluralRules');
+makeSymbol('__intlifyMeta');
 const InejctWithOption = makeSymbol('__injectWithOption');
 let composerID = 0;
 function defineCoreMissingHandler(missing) {
@@ -1721,6 +238,12 @@ function createComposer(options = {}) {
             locale: _locale.value,
             fallbackLocale: _fallbackLocale.value,
             messages: _messages.value,
+            messageCompiler: function compileToFunction(source) {
+                    return (ctx) => {
+                        return ctx.normalize([source]);
+                    };
+                }
+                ,
             datetimeFormats: _datetimeFormats.value,
             numberFormats: _numberFormats.value,
             modifiers: _modifiers,
@@ -1809,7 +332,7 @@ function createComposer(options = {}) {
         trackReactivityValues(); // track reactive dependency
         // NOTE: experimental !!
         let ret;
-        {
+        if ((process.env.NODE_ENV !== 'production') || __INTLIFY_PROD_DEVTOOLS__) {
             try {
                 setAdditionalMeta(getMetaInfo());
                 ret = fn(_context);
@@ -1818,9 +341,13 @@ function createComposer(options = {}) {
                 setAdditionalMeta(null);
             }
         }
+        else {
+            ret = fn(_context);
+        }
         if (isNumber(ret) && ret === NOT_REOSLVED) {
             const [key, arg2] = argumentParser();
-            if (__root &&
+            if ((process.env.NODE_ENV !== 'production') &&
+                __root &&
                 isString(key) &&
                 isResolvedTranslateMessage(warnType, arg2)) {
                 if (_fallbackRoot &&
@@ -1832,7 +359,7 @@ function createComposer(options = {}) {
                     }));
                 }
                 // for vue-devtools timeline event
-                {
+                if ((process.env.NODE_ENV !== 'production')) {
                     const { __v_emitter: emitter } = _context;
                     if (emitter && _fallbackRoot) {
                         emitter.emit("fallback" /* FALBACK */, {
@@ -2112,7 +639,7 @@ function createComposer(options = {}) {
         [InejctWithOption]: options.__injectWithOption // eslint-disable-line @typescript-eslint/no-explicit-any
     };
     // for vue-devtools timeline event
-    {
+    if ((process.env.NODE_ENV !== 'production')) {
         composer[EnableEmitter] = (emitter) => {
             _context.__v_emitter = emitter;
         };
@@ -2159,10 +686,10 @@ function convertComposerOptions(options) {
         : true;
     const escapeParameter = !!options.escapeParameterHtml;
     const inheritLocale = isBoolean(options.sync) ? options.sync : true;
-    if (options.formatter) {
+    if ((process.env.NODE_ENV !== 'production') && options.formatter) {
         warn(getWarnMessage(8 /* NOT_SUPPORTED_FORMATTER */));
     }
-    if (options.preserveDirectiveContent) {
+    if ((process.env.NODE_ENV !== 'production') && options.preserveDirectiveContent) {
         warn(getWarnMessage(9 /* NOT_SUPPORTED_PRESERVE_DIRECTIVE */));
     }
     let messages = options.messages;
@@ -2245,7 +772,7 @@ function createVueI18n(options = {}) {
         },
         // formatter
         get formatter() {
-            warn(getWarnMessage(8 /* NOT_SUPPORTED_FORMATTER */));
+            (process.env.NODE_ENV !== 'production') && warn(getWarnMessage(8 /* NOT_SUPPORTED_FORMATTER */));
             // dummy
             return {
                 interpolate() {
@@ -2254,7 +781,7 @@ function createVueI18n(options = {}) {
             };
         },
         set formatter(val) {
-            warn(getWarnMessage(8 /* NOT_SUPPORTED_FORMATTER */));
+            (process.env.NODE_ENV !== 'production') && warn(getWarnMessage(8 /* NOT_SUPPORTED_FORMATTER */));
         },
         // missing
         get missing() {
@@ -2322,11 +849,13 @@ function createVueI18n(options = {}) {
         },
         // preserveDirectiveContent
         get preserveDirectiveContent() {
-            warn(getWarnMessage(9 /* NOT_SUPPORTED_PRESERVE_DIRECTIVE */));
+            (process.env.NODE_ENV !== 'production') &&
+                warn(getWarnMessage(9 /* NOT_SUPPORTED_PRESERVE_DIRECTIVE */));
             return true;
         },
         set preserveDirectiveContent(val) {
-            warn(getWarnMessage(9 /* NOT_SUPPORTED_PRESERVE_DIRECTIVE */));
+            (process.env.NODE_ENV !== 'production') &&
+                warn(getWarnMessage(9 /* NOT_SUPPORTED_PRESERVE_DIRECTIVE */));
         },
         // pluralizationRules
         get pluralizationRules() {
@@ -2452,7 +981,8 @@ function createVueI18n(options = {}) {
         // getChoiceIndex
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         getChoiceIndex(choice, choicesLength) {
-            warn(getWarnMessage(10 /* NOT_SUPPORTED_GET_CHOICE_INDEX */));
+            (process.env.NODE_ENV !== 'production') &&
+                warn(getWarnMessage(10 /* NOT_SUPPORTED_GET_CHOICE_INDEX */));
             return -1;
         },
         // for internal
@@ -2464,7 +994,7 @@ function createVueI18n(options = {}) {
         }
     };
     // for vue-devtools timeline event
-    {
+    if ((process.env.NODE_ENV !== 'production')) {
         vueI18n.__enableEmitter = (emitter) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const __composer = composer;
@@ -2789,7 +1319,7 @@ function vTDirective(i18n) {
             throw createI18nError(22 /* UNEXPECTED_ERROR */);
         }
         const composer = getComposer$2(i18n, instance.$);
-        if (modifiers.preserve) {
+        if ((process.env.NODE_ENV !== 'production') && modifiers.preserve) {
             warn(getWarnMessage(7 /* NOT_SUPPORTED_PRESERVE */));
         }
         const parsedValue = parseValue(value);
@@ -2838,7 +1368,7 @@ function apply(app, i18n, ...options) {
     const globalInstall = isBoolean(pluginOptions.globalInstall)
         ? pluginOptions.globalInstall
         : true;
-    if (globalInstall && useI18nComponentName) {
+    if ((process.env.NODE_ENV !== 'production') && globalInstall && useI18nComponentName) {
         warn(getWarnMessage(11 /* COMPONENT_NAME_LEGACY_COMPATIBLE */, {
             name: Translation.name
         }));
@@ -2852,51 +1382,6 @@ function apply(app, i18n, ...options) {
     // install directive
     app.directive('t', vTDirective(i18n));
 }
-
-var global$1 = (typeof global !== "undefined" ? global :
-            typeof self !== "undefined" ? self :
-            typeof window !== "undefined" ? window : {});
-
-function getDevtoolsGlobalHook() {
-    return getTarget().__VUE_DEVTOOLS_GLOBAL_HOOK__;
-}
-function getTarget() {
-    // @ts-ignore
-    return typeof navigator !== 'undefined'
-        ? window
-        : typeof global$1 !== 'undefined'
-            ? global$1
-            : {};
-}
-
-const HOOK_SETUP = 'devtools-plugin:setup';
-
-function setupDevtoolsPlugin(pluginDescriptor, setupFn) {
-    const hook = getDevtoolsGlobalHook();
-    if (hook) {
-        hook.emit(HOOK_SETUP, pluginDescriptor, setupFn);
-    }
-    else {
-        const target = getTarget();
-        const list = target.__VUE_DEVTOOLS_PLUGINS__ = target.__VUE_DEVTOOLS_PLUGINS__ || [];
-        list.push({
-            pluginDescriptor,
-            setupFn
-        });
-    }
-}
-
-const VueDevToolsLabels = {
-    ["vue-devtools-plugin-vue-i18n" /* PLUGIN */]: 'Vue I18n devtools',
-    ["vue-i18n-resource-inspector" /* CUSTOM_INSPECTOR */]: 'I18n Resources',
-    ["vue-i18n-timeline" /* TIMELINE */]: 'Vue I18n'
-};
-const VueDevToolsPlaceholders = {
-    ["vue-i18n-resource-inspector" /* CUSTOM_INSPECTOR */]: 'Search for scopes ...'
-};
-const VueDevToolsTimelineColors = {
-    ["vue-i18n-timeline" /* TIMELINE */]: 0xffcd19
-};
 
 const VUE_I18N_COMPONENT_TYPES = 'vue-i18n: composer properties';
 let devtoolsApi;
@@ -3280,7 +1765,7 @@ function defineMixin(vuei18n, composer, i18n) {
         },
         mounted() {
             /* istanbul ignore if */
-            {
+            if (((process.env.NODE_ENV !== 'production') || __VUE_I18N_PROD_DEVTOOLS__) && !false) {
                 this.$el.__VUE_I18N__ = this.$i18n.__composer;
                 const emitter = (this.__v_emitter = createEmitter());
                 const _vueI18n = this.$i18n;
@@ -3295,7 +1780,7 @@ function defineMixin(vuei18n, composer, i18n) {
                 throw createI18nError(22 /* UNEXPECTED_ERROR */);
             }
             /* istanbul ignore if */
-            {
+            if (((process.env.NODE_ENV !== 'production') || __VUE_I18N_PROD_DEVTOOLS__) && !false) {
                 if (this.__v_emitter) {
                     this.__v_emitter.off('*', addTimelineEvent);
                     delete this.__v_emitter;
@@ -3422,28 +1907,29 @@ function mergeToRoot(root, options) {
  */
 function createI18n(options = {}) {
     // prettier-ignore
-    const __legacyMode = isBoolean(options.legacy)
+    const __legacyMode = __VUE_I18N_LEGACY_API__ && isBoolean(options.legacy)
         ? options.legacy
-        : true;
+        : __VUE_I18N_LEGACY_API__;
     const __globalInjection = !!options.globalInjection;
     const __instances = new Map();
     // prettier-ignore
-    const __global = __legacyMode
+    const __global = __VUE_I18N_LEGACY_API__ && __legacyMode
         ? createVueI18n(options)
         : createComposer(options);
-    const symbol = makeSymbol('vue-i18n' );
+    const symbol = makeSymbol((process.env.NODE_ENV !== 'production') ? 'vue-i18n' : '');
     const i18n = {
         // mode
         get mode() {
             // prettier-ignore
-            return __legacyMode
+            return __VUE_I18N_LEGACY_API__
+                ? __legacyMode
                     ? 'legacy'
                     : 'composition'
-                ;
+                : 'composition';
         },
         // install plugin
         async install(app, ...options) {
-            {
+            if (((process.env.NODE_ENV !== 'production') || __VUE_I18N_PROD_DEVTOOLS__) && !false) {
                 app.__VUE_I18N__ = i18n;
             }
             // setup global provider
@@ -3454,15 +1940,15 @@ function createI18n(options = {}) {
                 injectGlobalFields(app, i18n.global);
             }
             // install built-in components and directive
-            {
+            if (__VUE_I18N_FULL_INSTALL__) {
                 apply(app, i18n, ...options);
             }
             // setup mixin for Legacy API
-            if (__legacyMode) {
+            if (__VUE_I18N_LEGACY_API__ && __legacyMode) {
                 app.mixin(defineMixin(__global, __global.__composer, i18n));
             }
             // setup vue-devtools plugin
-            {
+            if (((process.env.NODE_ENV !== 'production') || __VUE_I18N_PROD_DEVTOOLS__) && !false) {
                 const ret = await enableDevTools(app, i18n);
                 if (!ret) {
                     throw createI18nError(21 /* CANNOT_SETUP_VUE_DEVTOOLS_PLUGIN */);
@@ -3615,7 +2101,7 @@ function useI18n(options = {}) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let composer = getComposer(i18n, instance, options.__useComponent);
         if (composer == null) {
-            {
+            if ((process.env.NODE_ENV !== 'production')) {
                 warn(getWarnMessage(12 /* NOT_FOUND_PARENT_SCOPE */));
             }
             composer = global;
@@ -3677,7 +2163,9 @@ function setupLifeCycle(i18n, target, composer) {
     let emitter = null;
     onMounted(() => {
         // inject composer instance to DOM for intlify-devtools
-        if (target.vnode.el) {
+        if (((process.env.NODE_ENV !== 'production') || __VUE_I18N_PROD_DEVTOOLS__) &&
+            !false &&
+            target.vnode.el) {
             target.vnode.el.__VUE_I18N__ = composer;
             emitter = createEmitter();
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -3688,7 +2176,9 @@ function setupLifeCycle(i18n, target, composer) {
     }, target);
     onUnmounted(() => {
         // remove composer instance from DOM for intlify-devtools
-        if (target.vnode.el &&
+        if (((process.env.NODE_ENV !== 'production') || __VUE_I18N_PROD_DEVTOOLS__) &&
+            !false &&
+            target.vnode.el &&
             target.vnode.el.__VUE_I18N__) {
             emitter && emitter.off('*', addTimelineEvent);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -3739,16 +2229,15 @@ function injectGlobalFields(app, composer) {
     });
 }
 
-// register message compiler at vue-i18n
-registerMessageCompiler(compileToFunction);
-// NOTE: experimental !!
 {
+    initFeatureFlags();
+}
+// NOTE: experimental !!
+if ((process.env.NODE_ENV !== 'production') || __INTLIFY_PROD_DEVTOOLS__) {
     const target = getGlobalThis();
     target.__INTLIFY__ = true;
     setDevToolsHook(target.__INTLIFY_DEVTOOLS_GLOBAL_HOOK__);
 }
-{
-    initDev();
-}
+if ((process.env.NODE_ENV !== 'production')) ;
 
 export { DatetimeFormat, NumberFormat, Translation, VERSION, createI18n, useI18n, vTDirective };

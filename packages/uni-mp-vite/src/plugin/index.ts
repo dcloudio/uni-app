@@ -1,4 +1,3 @@
-import path from 'path'
 import { AliasOptions, ResolvedConfig } from 'vite'
 import {
   CopyOptions,
@@ -11,6 +10,7 @@ import {
   initPostcssPlugin,
   parseRpx2UnitOnce,
   AppJson,
+  resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
 import type {
   SFCDescriptor,
@@ -129,7 +129,7 @@ export function uniMiniProgramPlugin(
           alias: {
             vue: resolveBuiltIn('@dcloudio/uni-mp-vue'),
             '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),
-            'vue-i18n': path.resolve(__dirname, '../../lib/vue-i18n'),
+            'vue-i18n': resolveVueI18nRuntime(),
             ...alias,
           },
           preserveSymlinks: true,
