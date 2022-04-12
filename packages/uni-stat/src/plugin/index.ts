@@ -53,12 +53,12 @@ export default () => [
               console.log()
               isEnable = false
             } else {
-				if (!statConfig.version){
-					console.log()
-					console.warn(M['stat.warn.version'])
-					console.log()
-				}
-			}
+              if (!statConfig.version) {
+                console.log()
+                console.warn(M['stat.warn.version'])
+                console.log()
+              }
+            }
           }
 
           debug('uni:stat')('isEnable', isEnable)
