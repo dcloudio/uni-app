@@ -310,12 +310,22 @@ if (
 
   if (uniStatistics.enable === true) {
     process.env.UNI_USING_STAT = uniStatistics.version === '2' ? '2' : '1'
-    if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
-      console.log()
-      console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
-        0: 'https://ask.dcloud.net.cn/article/36303'
-      }))
-      console.log()
+    if (process.env.NODE_ENV === 'production') {
+      if (!process.UNI_STAT_CONFIG.appid) {
+        console.log()
+        console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
+          0: 'https://ask.dcloud.net.cn/article/36303'
+        }))
+        console.log()
+      } else {
+        if(!uniStatistics.version) {
+          console.log()
+          console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
+            0: 'https://uniapp.dcloud.io/uni-stat'
+          }))
+          console.log()
+        }
+      }
     }
   }
 }

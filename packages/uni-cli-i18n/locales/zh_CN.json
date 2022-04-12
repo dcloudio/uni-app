@@ -54,6 +54,7 @@
   "pluginUni.pluginNameNotExist": "插件名称不存在",
   "pluginUni.pluginIllegal": "插件不合法",
   "pluginUni.uniStatisticsNoAppid": "当前应用未配置Appid，无法使用uni统计，详情参考 {{0}}",
+  "pluginUni.uniStatisticsNoVersion": "当前应用未配置uni统计版本，默认使用1.0版本；建议使用uni统计2.0版本 ，私有部署数据更安全，代码开源可定制。详情 {{0}}",
   "pluginUni.pleaseConfigScriptName": "请指定 package.json->uni-app->scripts 下的 script 名称",
   "pluginUni.mpBrowserKernelDifference": "小程序各家浏览器内核及自定义组件实现机制存在差异，可能存在样式布局兼容问题，参考：{{0}}",
   "mpLoader.firstParameterNeedStaticString": "{{0}}的第一个参数必须为静态字符串",
