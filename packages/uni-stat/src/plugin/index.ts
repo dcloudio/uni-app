@@ -52,7 +52,13 @@ export default () => [
               console.warn(M['stat.warn.appid'])
               console.log()
               isEnable = false
-            }
+            } else {
+				if (!statConfig.version){
+					console.log()
+					console.warn(M['stat.warn.version'])
+					console.log()
+				}
+			}
           }
 
           debug('uni:stat')('isEnable', isEnable)

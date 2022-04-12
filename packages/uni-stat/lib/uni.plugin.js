@@ -49,6 +49,13 @@ var index = () => [
                             console.log();
                             isEnable = false;
                         }
+                        else {
+                            if (!statConfig.version) {
+                                console.log();
+                                console.warn(uniCliShared.M['stat.warn.version']);
+                                console.log();
+                            }
+                        }
                     }
                     debug__default["default"]('uni:stat')('isEnable', isEnable);
                 }

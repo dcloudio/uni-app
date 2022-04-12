@@ -13,6 +13,8 @@ export const M = {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'stat.warn.appid':
     '当前应用未配置 appid，无法使用 uni 统计，详情参考：https://ask.dcloud.net.cn/article/36303',
+  'stat.warn.version':
+    '当前应用未配置uni统计版本，默认使用1.0版本；建议使用uni统计2.0版本 ，私有部署数据更安全，代码开源可定制。详情：https://uniapp.dcloud.io/uni-stat',
   'i18n.fallbackLocale.default':
     '当前应用未在 manifest.json 配置 fallbackLocale，默认使用：{locale}',
   'i18n.fallbackLocale.missing':
