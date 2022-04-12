@@ -5,8 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -22,9 +21,6 @@
     "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3040520220408002",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3040520220408002",
     "@dcloudio/uni-shared": "3.0.0-alpha-3040520220408002",
-    "@intlify/core-base": "9.1.9",
-    "@intlify/shared": "9.1.9",
-    "@intlify/vue-devtools": "9.1.9",
     "@vue/compiler-sfc": "3.2.31",
     "@vue/shared": "3.2.31",
     "debug": "^4.3.3",

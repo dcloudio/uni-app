@@ -94,6 +94,13 @@ export function resolveBuiltIn(path: string) {
   return require.resolve(path, { paths: getBuiltInPaths() })
 }
 
+export function resolveVueI18nRuntime() {
+  return path.resolve(
+    __dirname,
+    '../lib/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
+  )
+}
+
 let componentsLibPath: string = ''
 export function resolveComponentsLibPath() {
   if (!componentsLibPath) {
