@@ -9,7 +9,7 @@ require('./error-reporting')
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
-function hasOwn (obj, key) {
+function hasOwn(obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
@@ -291,11 +291,12 @@ if (platformOptions.usingComponents === true) {
 
 // 兼容历史配置 betterScopedSlots
 const modes = ['legacy', 'auto', 'augmented']
-const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOptions.betterScopedSlots ? modes[2]
-  : platformOptions.scopedSlotsCompiler
+const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOptions.betterScopedSlots ? modes[2] :
+  platformOptions.scopedSlotsCompiler
 process.env.SCOPED_SLOTS_COMPILER = modes.includes(scopedSlotsCompiler) ? scopedSlotsCompiler : modes[1]
 // 快手小程序、小红书小程序 抽象组件编译报错，如未指定 legacy 固定为 augmented 模式
-if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 'mp-xhs') && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
+if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 'mp-xhs') && process.env
+  .SCOPED_SLOTS_COMPILER !== modes[0]) {
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
 
@@ -318,7 +319,7 @@ if (
         }))
         console.log()
       } else {
-        if(!uniStatistics.version) {
+        if (!uniStatistics.version) {
           console.log()
           console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
             0: 'https://uniapp.dcloud.io/uni-stat'
@@ -343,9 +344,9 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
 }
 
 const warningMsg =
-  usingComponentsAbsent
-    ? '该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件已于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385'
-    : 'uni-app已于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)'
+  usingComponentsAbsent ?
+  '该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件已于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385' :
+  'uni-app已于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)'
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
@@ -434,9 +435,9 @@ if (process.env.UNI_PLATFORM === 'mp-toutiao' || process.env.UNI_PLATFORM === 'm
 
 if (runByHBuilderX) {
   const oldError = console.error
-  console.error = function (msg) {
+  console.error = function(msg) {
     if (typeof msg === 'string' && msg.includes(
-      '[BABEL] Note: The code generator has deoptimised the styling of')) {
+        '[BABEL] Note: The code generator has deoptimised the styling of')) {
       const filePath = msg.replace('[BABEL] Note: The code generator has deoptimised the styling of ', '').split(
         ' as ')[0]
       console.log('[' + uniI18n.__('warning') + '] `' + path.relative(process.env.UNI_INPUT_DIR, filePath) +
