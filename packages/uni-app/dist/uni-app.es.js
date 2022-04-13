@@ -58,6 +58,7 @@ function resolveEasycom(component, easycom) {
 
 // @ts-ignore
 const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
+    // post-create lifecycle registrations are noops during SSR
     !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
 const onShow = /*#__PURE__*/ createHook(ON_SHOW);
