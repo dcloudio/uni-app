@@ -31,6 +31,6 @@
     "@dcloudio/uni-mp-vite": "3.0.0-alpha-3040520220413001",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3040520220413001",
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3040520220413001",
-    "@vue/compiler-core": "3.2.31"
+    "@vue/compiler-core": "3.2.32"
   }
 }

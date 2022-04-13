@@ -25,8 +25,8 @@
     "@dcloudio/uni-shared": "3.0.0-alpha-3040520220413001",
     "@rollup/pluginutils": "^4.2.0",
     "@vitejs/plugin-vue": "^2.3.1",
-    "@vue/compiler-dom": "3.2.31",
-    "@vue/compiler-sfc": "3.2.31",
+    "@vue/compiler-dom": "3.2.32",
+    "@vue/compiler-sfc": "3.2.32",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "picocolors": "^1.0.0",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "@vue/compiler-core": "3.2.31",
+    "@vue/compiler-core": "3.2.32",
     "esbuild": "^0.14.27",
     "postcss": "^8.4.12"
   }
