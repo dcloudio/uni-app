@@ -19,18 +19,18 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@babel/generator": "^7.16.0",
-    "@babel/parser": "^7.16.4",
-    "@babel/types": "^7.16.8",
+    "@babel/generator": "^7.17.8",
+    "@babel/parser": "^7.17.8",
+    "@babel/types": "^7.17.0",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040520220413001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3040520220413001",
-    "@vue/compiler-core": "3.2.31",
-    "@vue/compiler-dom": "3.2.31",
-    "@vue/shared": "3.2.31",
+    "@vue/compiler-core": "3.2.32",
+    "@vue/compiler-dom": "3.2.32",
+    "@vue/shared": "3.2.32",
     "estree-walker": "^2.0.2"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "3.2.31",
+    "@vue/compiler-sfc": "3.2.32",
     "source-map": "^0.6.1"
   }
 }
