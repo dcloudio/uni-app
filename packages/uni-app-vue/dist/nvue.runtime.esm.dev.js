@@ -2039,13 +2039,13 @@ function watchEffect(effect, options) {
 }
 
 function watchPostEffect(effect, options) {
-  return doWatch(effect, null, Object.assign(options || {}, {
+  return doWatch(effect, null, Object.assign(Object.assign({}, options), {
     flush: 'post'
   }));
 }
 
 function watchSyncEffect(effect, options) {
-  return doWatch(effect, null, Object.assign(options || {}, {
+  return doWatch(effect, null, Object.assign(Object.assign({}, options), {
     flush: 'sync'
   }));
 } // initial value for watchers to trigger on undefined initial values
@@ -2679,20 +2679,25 @@ function setTransitionHooks(vnode, hooks) {
 
 function getTransitionRawChildren(children) {
   var keepComment = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var parentKey = arguments.length > 2 ? arguments[2] : undefined;
   var ret = [];
   var keyedFragmentCount = 0;
 
   for (var i = 0; i < children.length; i++) {
-    var child = children[i]; // handle fragment children case, e.g. v-for
+    var child = children[i]; // #5360 inherit parent key in case of <template v-for>
+
+    var key = parentKey == null ? child.key : String(parentKey) + String(child.key != null ? child.key : i); // handle fragment children case, e.g. v-for
 
     if (child.type === Fragment) {
       if (child.patchFlag & 128
       /* KEYED_FRAGMENT */
       ) keyedFragmentCount++;
-      ret = ret.concat(getTransitionRawChildren(child.children, keepComment));
+      ret = ret.concat(getTransitionRawChildren(child.children, keepComment, key));
     } // comment placeholders should be skipped, e.g. v-if
     else if (keepComment || child.type !== Comment) {
-      ret.push(child);
+      ret.push(key != null ? cloneVNode(child, {
+        key
+      }) : child);
     }
   } // #1126 if a transition children list contains multiple sub fragments, these
   // fragments will be merged into a flat children array. Since each v-for
@@ -3930,7 +3935,12 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
       var propsToUpdate = instance.vnode.dynamicProps;
 
       for (var i = 0; i < propsToUpdate.length; i++) {
-        var key = propsToUpdate[i]; // PROPS flag guarantees rawProps to be non-null
+        var key = propsToUpdate[i]; // skip if the prop key is a declared emit event listener
+
+        if (isEmitListener(instance.emitsOptions, key)) {
+          continue;
+        } // PROPS flag guarantees rawProps to be non-null
+
 
         var value = rawProps[key];
 
@@ -4540,7 +4550,7 @@ function withDirectives(vnode, directives) {
     return vnode;
   }
 
-  var instance = internalInstance.proxy;
+  var instance = getExposeProxy(internalInstance) || internalInstance.proxy;
   var bindings = vnode.dirs || (vnode.dirs = []);
 
   for (var i = 0; i < directives.length; i++) {
@@ -4622,6 +4632,10 @@ var uid = 0;
 function createAppAPI(render, hydrate) {
   return function createApp(rootComponent) {
     var rootProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    if (!isFunction(rootComponent)) {
+      rootComponent = Object.assign({}, rootComponent);
+    }
 
     if (rootProps != null && !isObject(rootProps)) {
       warn("root props passed to app.mount() must be an object.");
@@ -4844,6 +4858,10 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode) {
             if (!isArray(existing)) {
               if (_isString) {
                 refs[ref] = [refValue];
+
+                if (hasOwn(setupState, ref)) {
+                  setupState[ref] = refs[ref];
+                }
               } else {
                 ref.value = [refValue];
                 if (rawRef.k) refs[rawRef.k] = ref.value;
@@ -5279,7 +5297,7 @@ function startMeasure(instance, type) {
   }
 
   {
-    devtoolsPerfStart(instance, type, supported ? perf.now() : Date.now());
+    devtoolsPerfStart(instance, type, isSupported() ? perf.now() : Date.now());
   }
 }
 
@@ -5294,7 +5312,7 @@ function endMeasure(instance, type) {
   }
 
   {
-    devtoolsPerfEnd(instance, type, supported ? perf.now() : Date.now());
+    devtoolsPerfEnd(instance, type, isSupported() ? perf.now() : Date.now());
   }
 }
 
@@ -9256,7 +9274,7 @@ function isMemoSame(cached, memo) {
 } // Core API ------------------------------------------------------------------
 
 
-var version = "3.2.31";
+var version = "3.2.32";
 /**
  * @internal only exposed in compat builds
  */
