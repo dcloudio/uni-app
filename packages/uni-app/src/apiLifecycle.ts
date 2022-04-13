@@ -174,9 +174,10 @@ const createHook =
   (
     hook: T,
     target: ComponentInternalInstance | null = getCurrentInstance()
-  ): void =>
+  ): void => {
     // post-create lifecycle registrations are noops during SSR
     !isInSSRComponentSetup && injectHook(lifecycle as any, hook, target)
+  }
 
 export const onShow = /*#__PURE__*/ createHook<onAppShowHook | onPageShowHook>(
   ON_SHOW
