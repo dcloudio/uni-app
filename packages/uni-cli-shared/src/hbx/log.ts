@@ -1,9 +1,15 @@
+import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
-import { LogErrorOptions } from 'vite'
+import type { RollupError } from 'rollup'
+import type { LogErrorOptions } from 'vite'
+import { NodeTypes } from '@vue/compiler-core'
 import { normalizePath } from '../utils'
 import { Formatter } from '../logs/format'
-import { RollupError } from 'rollup'
+
+import { EXTNAME_VUE_RE } from '../constants'
+import { parseVue } from '../vite/utils/ast'
+import { generateCodeFrame } from '../vite/plugins/vitejs/utils'
 
 const SIGNAL_H5_LOCAL = ' > Local:'
 const SIGNAL_H5_NETWORK = ' > Network:'
@@ -95,6 +101,27 @@ function buildErrorMessage(
         err.message
       )}`
     )
+    if (
+      err.loc &&
+      err.hook === 'transform' &&
+      err.plugin === 'rollup-plugin-dynamic-import-variables' &&
+      err.id &&
+      EXTNAME_VUE_RE.test(err.id)
+    ) {
+      try {
+        const ast = parseVue(fs.readFileSync(err.id, 'utf8'), [])
+        const scriptNode = ast.children.find(
+          (node) => node.type === NodeTypes.ELEMENT && node.tag === 'script'
+        )
+        if (scriptNode) {
+          const scriptLoc = scriptNode.loc
+          args.push(
+            colors.yellow(pad(generateCodeFrame(scriptLoc.source, err.loc)))
+          )
+          err.loc.line = scriptLoc.start.line + err.loc.line - 1
+        }
+      } catch (e: any) {}
+    }
   } else {
     args.push(colors.red(err.message))
   }
