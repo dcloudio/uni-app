@@ -118,6 +118,7 @@ function buildErrorMessage(
           args.push(
             colors.yellow(pad(generateCodeFrame(scriptLoc.source, err.loc)))
           )
+          // correct error location
           err.loc.line = scriptLoc.start.line + err.loc.line - 1
         }
       } catch (e: any) {}
