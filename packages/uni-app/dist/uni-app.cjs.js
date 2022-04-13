@@ -102,6 +102,7 @@ const onPageNotFound =
 /*#__PURE__*/ createHook(uniShared.ON_PAGE_NOT_FOUND);
 const onUnhandledRejection = 
 /*#__PURE__*/ createHook(uniShared.ON_UNHANDLE_REJECTION);
+const onInit = /*#__PURE__*/ createHook(uniShared.ON_INIT);
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
 const onLoad = /*#__PURE__*/ createHook(uniShared.ON_LOAD);
 const onReady = /*#__PURE__*/ createHook(uniShared.ON_READY);
@@ -115,6 +116,8 @@ const onTabItemTap =
 /*#__PURE__*/ createHook(uniShared.ON_TAB_ITEM_TAP);
 const onReachBottom = /*#__PURE__*/ createHook(uniShared.ON_REACH_BOTTOM);
 const onPullDownRefresh = /*#__PURE__*/ createHook(uniShared.ON_PULL_DOWN_REFRESH);
+const onSaveExitState = 
+/*#__PURE__*/ createHook(uniShared.ON_SAVE_EXIT_STATE);
 const onShareTimeline = 
 /*#__PURE__*/ createHook(uniShared.ON_SHARE_TIMELINE);
 const onAddToFavorites = 
@@ -137,6 +140,7 @@ exports.onAddToFavorites = onAddToFavorites;
 exports.onBackPress = onBackPress;
 exports.onError = onError;
 exports.onHide = onHide;
+exports.onInit = onInit;
 exports.onLaunch = onLaunch;
 exports.onLoad = onLoad;
 exports.onNavigationBarButtonTap = onNavigationBarButtonTap;
@@ -150,6 +154,7 @@ exports.onPullDownRefresh = onPullDownRefresh;
 exports.onReachBottom = onReachBottom;
 exports.onReady = onReady;
 exports.onResize = onResize;
+exports.onSaveExitState = onSaveExitState;
 exports.onShareAppMessage = onShareAppMessage;
 exports.onShareTimeline = onShareTimeline;
 exports.onShow = onShow;
