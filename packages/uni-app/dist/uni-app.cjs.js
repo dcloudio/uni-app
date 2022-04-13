@@ -90,6 +90,7 @@ function resolveEasycom(component, easycom) {
 
 // @ts-ignore
 const createHook = (lifecycle) => (hook, target = vue.getCurrentInstance()) => {
+    // post-create lifecycle registrations are noops during SSR
     !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
 };
 const onShow = /*#__PURE__*/ createHook(uniShared.ON_SHOW);
