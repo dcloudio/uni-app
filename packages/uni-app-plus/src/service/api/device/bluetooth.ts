@@ -96,7 +96,9 @@ export const getBluetoothAdapterState = defineAsyncApi<
   typeof uni.getBluetoothAdapterState
 >(
   'getBluetoothAdapterState',
-  warpPlusMethod(() => plus.bluetooth.getBluetoothAdapterState)
+  warpPlusMethod(() =>
+    plus.bluetooth.getBluetoothAdapterState.bind(plus.bluetooth)
+  )
 )
 export const startBluetoothDevicesDiscovery =
   defineAsyncApi<API_TYPE_START_BLUETOOTH_DEVICES_DISCOVERY>(
@@ -123,7 +125,9 @@ export const getBluetoothDevices = defineAsyncApi<
 export const getConnectedBluetoothDevices =
   defineAsyncApi<API_TYPE_GET_CONNECTED_BLUETOOTH_DEVICES>(
     API_GET_CONNECTED_BLUETOOTH_DEVICES,
-    warpPlusMethod(() => plus.bluetooth.getConnectedBluetoothDevices),
+    warpPlusMethod(() =>
+      plus.bluetooth.getConnectedBluetoothDevices.bind(plus.bluetooth)
+    ),
     GetConnectedBluetoothDevicesProtocol
   )
 export const createBLEConnection =
