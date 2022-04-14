@@ -16,15 +16,9 @@ export function initAppVm(appVm: ComponentPublicInstance) {
   const locale = ref<string>(useI18n().getLocale())
   Object.defineProperty(appVm, '$locale', {
     get() {
-      if (__PLATFORM__ === 'app') {
-        ;(uni as any).$nvueState && (uni as any).$nvueState.locale
-      }
       return locale.value
     },
     set(v) {
-      if (__PLATFORM__ === 'app') {
-        ;(uni as any).$nvueState && ((uni as any).$nvueState.locale = v)
-      }
       locale.value = v
     },
   })
