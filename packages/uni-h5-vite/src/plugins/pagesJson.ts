@@ -85,7 +85,7 @@ function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
 
   if (enableTreeShaking && config.command === 'build' && !ssr) {
     // 非 SSR 的发行模式，补充全局 uni 对象
-    return `import { upx2px } from '@dcloudio/uni-h5';${name}.uni = {};${name}.wx = {};${name}.rpx2px = upx2px`
+    return `import { upx2px, getApp } from '@dcloudio/uni-h5';${name}.uni = {};${name}.wx = {};${name}.rpx2px = upx2px`
   }
 
   return `
