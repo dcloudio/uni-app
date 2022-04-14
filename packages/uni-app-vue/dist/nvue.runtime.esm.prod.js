@@ -221,7 +221,7 @@ var preFlushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var resolvedPromise = Promise.resolve();
+var resolvedPromise = /*#__PURE__*/Promise.resolve();
 var currentFlushPromise = null;
 var currentPreFlushParentJob = null;
 
@@ -436,6 +436,7 @@ function setDevtoolsHook(hook, target) {
 }
 
 function emit$1(instance, event) {
+  if (instance.isUnmounted) return;
   var props = instance.vnode.props || EMPTY_OBJ;
 
   for (var _len2 = arguments.length, rawArgs = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
@@ -6686,7 +6687,7 @@ function renderSlot(slots, name) {
   fallback = arguments.length > 3 ? arguments[3] : undefined;
   var noSlotted = arguments.length > 4 ? arguments[4] : undefined;
 
-  if (currentRenderingInstance.isCE) {
+  if (currentRenderingInstance.isCE || currentRenderingInstance.parent && isAsyncWrapper(currentRenderingInstance.parent) && currentRenderingInstance.parent.isCE) {
     return createVNode('slot', name === 'default' ? null : {
       name
     }, fallback && fallback());
@@ -6760,7 +6761,11 @@ var getPublicInstance = i => {
   return getPublicInstance(i.parent);
 };
 
-var publicPropertiesMap = extend(Object.create(null), {
+var publicPropertiesMap = // Move PURE marker to new line to workaround compiler discarding it
+// due to type annotation
+
+/*#__PURE__*/
+extend(Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -6930,7 +6935,7 @@ var PublicInstanceProxyHandlers = {
   defineProperty(target, key, descriptor) {
     if (descriptor.get != null) {
       // invalidate key cache of a getter based property #5417
-      target.$.accessCache[key] = 0;
+      target._.accessCache[key] = 0;
     } else if (hasOwn(descriptor, 'value')) {
       this.set(target, key, descriptor.value, null);
     }

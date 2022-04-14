@@ -1,7 +1,7 @@
 import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, JSON_PROTOCOL } from '@dcloudio/uni-shared';
 import { isString, isFunction, isPromise, getGlobalThis, extend, EMPTY_OBJ, isArray, NOOP, remove, isObject, toHandlerKey, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NO, toNumber, invokeArrayFns, hyphenate, isHTMLTag, isSVGTag, hasChanged, isSet, isMap, isPlainObject, isBuiltInDirective, isReservedProp, EMPTY_ARR, makeMap, isModelListener, def, hasOwn, toRawType, isGloballyWhitelisted } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { pauseTracking, resetTracking, isRef, toRaw, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, isProxy, shallowReadonly, proxyRefs, markRaw, computed as computed$1, EffectScope, track, isReadonly, reactive, shallowReactive, trigger } from '@vue/reactivity';
+import { pauseTracking, resetTracking, isRef, toRaw, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, isProxy, proxyRefs, markRaw, computed as computed$1, shallowReadonly, EffectScope, track, isReadonly, reactive, shallowReactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
 var stack = [];
 
@@ -824,6 +824,7 @@ function devtoolsComponentEmit(component, event, params) {
 }
 
 function emit$1(instance, event) {
+  if (instance.isUnmounted) return;
   var props = instance.vnode.props || EMPTY_OBJ;
 
   for (var _len3 = arguments.length, rawArgs = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
@@ -8038,7 +8039,7 @@ function renderSlot(slots, name) {
   fallback = arguments.length > 3 ? arguments[3] : undefined;
   var noSlotted = arguments.length > 4 ? arguments[4] : undefined;
 
-  if (currentRenderingInstance.isCE) {
+  if (currentRenderingInstance.isCE || currentRenderingInstance.parent && isAsyncWrapper(currentRenderingInstance.parent) && currentRenderingInstance.parent.isCE) {
     return createVNode('slot', name === 'default' ? null : {
       name
     }, fallback && fallback());
@@ -8124,7 +8125,11 @@ var getPublicInstance = i => {
   return getPublicInstance(i.parent);
 };
 
-var publicPropertiesMap = extend(Object.create(null), {
+var publicPropertiesMap = // Move PURE marker to new line to workaround compiler discarding it
+// due to type annotation
+
+/*#__PURE__*/
+extend(Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -8324,7 +8329,7 @@ var PublicInstanceProxyHandlers = {
   defineProperty(target, key, descriptor) {
     if (descriptor.get != null) {
       // invalidate key cache of a getter based property #5417
-      target.$.accessCache[key] = 0;
+      target._.accessCache[key] = 0;
     } else if (hasOwn(descriptor, 'value')) {
       this.set(target, key, descriptor.value, null);
     }
@@ -8565,6 +8570,8 @@ function setupComponent(instance) {
 }
 
 function setupStatefulComponent(instance, isSSR) {
+  var _a;
+
   var Component = instance.type;
   {
     if (Component.name) {
@@ -8630,6 +8637,11 @@ function setupStatefulComponent(instance, isSSR) {
         // async setup returned Promise.
         // bail here and wait for re-entry.
         instance.asyncDep = setupResult;
+
+        if (!instance.suspense) {
+          var name = (_a = Component.name) !== null && _a !== void 0 ? _a : 'Anonymous';
+          warn("Component <".concat(name, ">: setup function returned a promise, but no ") + "<Suspense> boundary was found in the parent component tree. " + "A component with async setup() must be nested in a <Suspense> " + "in order to be rendered.");
+        }
       }
     } else {
       handleSetupResult(instance, setupResult, isSSR);

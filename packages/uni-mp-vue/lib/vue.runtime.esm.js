@@ -1,4 +1,4 @@
-import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isSet, isPlainObject, isReservedProp, EMPTY_ARR, isBuiltInDirective, NO, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns, isModelListener } from '@vue/shared';
+import { extend, isArray, isMap, isIntegerKey, hasOwn, isSymbol, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isSet, isPlainObject, isReservedProp, EMPTY_ARR, isBuiltInDirective, NO, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns, isModelListener } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath } from '@dcloudio/uni-shared';
 
@@ -194,10 +194,17 @@ class ReactiveEffect {
             activeEffect = this.parent;
             shouldTrack = lastShouldTrack;
             this.parent = undefined;
+            if (this.deferStop) {
+                this.stop();
+            }
         }
     }
     stop() {
-        if (this.active) {
+        // stopped while running itself - defer the cleanup
+        if (activeEffect === this) {
+            this.deferStop = true;
+        }
+        else if (this.active) {
             cleanupEffect(this);
             if (this.onStop) {
                 this.onStop();
@@ -380,7 +387,9 @@ function triggerEffects(dep, debuggerEventExtraInfo) {
 }
 
 const isNonTrackableKeys = /*#__PURE__*/ makeMap(`__proto__,__v_isRef,__isVue`);
-const builtInSymbols = new Set(Object.getOwnPropertyNames(Symbol)
+const builtInSymbols = new Set(
+/*#__PURE__*/
+Object.getOwnPropertyNames(Symbol)
     .map(key => Symbol[key])
     .filter(isSymbol));
 const get = /*#__PURE__*/ createGetter();
@@ -532,13 +541,13 @@ const readonlyHandlers = {
     get: readonlyGet,
     set(target, key) {
         if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`Set operation on key "${String(key)}" failed: target is readonly.`, target);
+            warn(`Set operation on key "${String(key)}" failed: target is readonly.`, target);
         }
         return true;
     },
     deleteProperty(target, key) {
         if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`Delete operation on key "${String(key)}" failed: target is readonly.`, target);
+            warn(`Delete operation on key "${String(key)}" failed: target is readonly.`, target);
         }
         return true;
     }
@@ -1381,7 +1390,7 @@ let preFlushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const resolvedPromise = Promise.resolve();
+const resolvedPromise = /*#__PURE__*/ Promise.resolve();
 let currentFlushPromise = null;
 let currentPreFlushParentJob = null;
 const RECURSION_LIMIT = 100;
@@ -1592,6 +1601,8 @@ function devtoolsComponentEmit(component, event, params) {
 }
 
 function emit$1(instance, event, ...rawArgs) {
+    if (instance.isUnmounted)
+        return;
     const props = instance.vnode.props || EMPTY_OBJ;
     if ((process.env.NODE_ENV !== 'production')) {
         const { emitsOptions, propsOptions: [propsOptions] } = instance;
@@ -3697,7 +3708,10 @@ const getPublicInstance = (i) => {
         return getExposeProxy(i) || i.proxy;
     return getPublicInstance(i.parent);
 };
-const publicPropertiesMap = extend(Object.create(null), {
+const publicPropertiesMap = 
+// Move PURE marker to new line to workaround compiler discarding it
+// due to type annotation
+/*#__PURE__*/ extend(Object.create(null), {
     $: i => i,
     // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
     // $el: i => i.vnode.el,
@@ -3873,7 +3887,7 @@ const PublicInstanceProxyHandlers = {
     defineProperty(target, key, descriptor) {
         if (descriptor.get != null) {
             // invalidate key cache of a getter based property #5417
-            target.$.accessCache[key] = 0;
+            target._.accessCache[key] = 0;
         }
         else if (hasOwn(descriptor, 'value')) {
             this.set(target, key, descriptor.value, null);
@@ -4057,6 +4071,7 @@ function isStatefulComponent(instance) {
 let isInSSRComponentSetup = false;
 function setupComponent(instance, isSSR = false) {
     isInSSRComponentSetup = isSSR;
+    // fixed by xxxxxx
     const { props /*, children*/ } = instance.vnode;
     const isStateful = isStatefulComponent(instance);
     initProps(instance, props, isStateful, isSSR);
