@@ -12,7 +12,7 @@
     "@dcloudio/uni-app": "../../uni-app",
     "@dcloudio/uni-components": "../../uni-components",
     "@dcloudio/uni-h5": "../../uni-h5",
-    "vue": "3.2.32",
+    "vue": "3.2.33",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2"
   },

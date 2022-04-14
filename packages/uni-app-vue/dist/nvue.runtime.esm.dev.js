@@ -2378,11 +2378,25 @@ var BaseTransitionImpl = {
 
       if (!children || !children.length) {
         return;
-      } // warn multiple elements
+      }
 
+      var child = children[0];
 
       if (children.length > 1) {
-        warn('<transition> can only be used on a single element or component. Use ' + '<transition-group> for lists.');
+        var hasFound = false; // locate first non-comment child
+
+        for (var c of children) {
+          if (c.type !== Comment) {
+            if (hasFound) {
+              // warn more than one non-comment child
+              warn('<transition> can only be used on a single element or component. ' + 'Use <transition-group> for lists.');
+              break;
+            }
+
+            child = c;
+            hasFound = true;
+          }
+        }
       } // there's no need to track reactivity for these props so use the raw
       // props for a bit better perf
 
@@ -2394,10 +2408,7 @@ var BaseTransitionImpl = {
 
       if (mode && mode !== 'in-out' && mode !== 'out-in' && mode !== 'default') {
         warn("invalid <transition> mode: ".concat(mode));
-      } // at this point children has a guaranteed length of 1.
-
-
-      var child = children[0];
+      }
 
       if (state.isLeaving) {
         return emptyPlaceholder(child);
@@ -6714,7 +6725,20 @@ function baseCreateRenderer(options, createHydrationFns) {
     } = vnode;
 
     if (type === Fragment) {
-      removeFragment(el, anchor);
+      if (vnode.patchFlag > 0 && vnode.patchFlag & 2048
+      /* DEV_ROOT_FRAGMENT */
+      && transition && !transition.persisted) {
+        vnode.children.forEach(child => {
+          if (child.type === Comment) {
+            hostRemove(child.el);
+          } else {
+            remove(child);
+          }
+        });
+      } else {
+        removeFragment(el, anchor);
+      }
+
       return;
     }
 
@@ -9286,7 +9310,7 @@ function isMemoSame(cached, memo) {
 } // Core API ------------------------------------------------------------------
 
 
-var version = "3.2.32";
+var version = "3.2.33";
 /**
  * @internal only exposed in compat builds
  */

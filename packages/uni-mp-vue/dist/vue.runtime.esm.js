@@ -4463,7 +4463,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.32";
+const version = "3.2.33";
 /**
  * @internal only exposed in compat builds
  */
