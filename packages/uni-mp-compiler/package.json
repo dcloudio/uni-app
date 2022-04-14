@@ -24,13 +24,13 @@
     "@babel/types": "^7.17.0",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040520220413002",
     "@dcloudio/uni-shared": "3.0.0-alpha-3040520220413002",
-    "@vue/compiler-core": "3.2.32",
-    "@vue/compiler-dom": "3.2.32",
-    "@vue/shared": "3.2.32",
+    "@vue/compiler-core": "3.2.33",
+    "@vue/compiler-dom": "3.2.33",
+    "@vue/shared": "3.2.33",
     "estree-walker": "^2.0.2"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "3.2.32",
+    "@vue/compiler-sfc": "3.2.33",
     "source-map": "^0.6.1"
   }
 }

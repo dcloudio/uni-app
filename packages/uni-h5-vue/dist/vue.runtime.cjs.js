@@ -3097,10 +3097,22 @@ const BaseTransitionImpl = {
             if (!children || !children.length) {
                 return;
             }
-            // warn multiple elements
+            let child = children[0];
             if (children.length > 1) {
-                warn$1('<transition> can only be used on a single element or component. Use ' +
-                    '<transition-group> for lists.');
+                let hasFound = false;
+                // locate first non-comment child
+                for (const c of children) {
+                    if (c.type !== Comment) {
+                        if (hasFound) {
+                            // warn more than one non-comment child
+                            warn$1('<transition> can only be used on a single element or component. ' +
+                                'Use <transition-group> for lists.');
+                            break;
+                        }
+                        child = c;
+                        hasFound = true;
+                    }
+                }
             }
             // there's no need to track reactivity for these props so use the raw
             // props for a bit better perf
@@ -3113,8 +3125,6 @@ const BaseTransitionImpl = {
                 mode !== 'default') {
                 warn$1(`invalid <transition> mode: ${mode}`);
             }
-            // at this point children has a guaranteed length of 1.
-            const child = children[0];
             if (state.isLeaving) {
                 return emptyPlaceholder(child);
             }
@@ -6744,7 +6754,22 @@ function baseCreateRenderer(options, createHydrationFns) {
     const remove = vnode => {
         const { type, el, anchor, transition } = vnode;
         if (type === Fragment) {
-            removeFragment(el, anchor);
+            if (vnode.patchFlag > 0 &&
+                vnode.patchFlag & 2048 /* DEV_ROOT_FRAGMENT */ &&
+                transition &&
+                !transition.persisted) {
+                vnode.children.forEach(child => {
+                    if (child.type === Comment) {
+                        hostRemove(child.el);
+                    }
+                    else {
+                        remove(child);
+                    }
+                });
+            }
+            else {
+                removeFragment(el, anchor);
+            }
             return;
         }
         if (type === Static) {
@@ -8907,7 +8932,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.32";
+const version = "3.2.33";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,

@@ -1800,6 +1800,18 @@ var BaseTransitionImpl = {
 
       if (!children || !children.length) {
         return;
+      }
+
+      var child = children[0];
+
+      if (children.length > 1) {
+        // locate first non-comment child
+        for (var c of children) {
+          if (c.type !== Comment) {
+            child = c;
+            break;
+          }
+        }
       } // there's no need to track reactivity for these props so use the raw
       // props for a bit better perf
 
@@ -1807,9 +1819,7 @@ var BaseTransitionImpl = {
       var rawProps = toRaw(props);
       var {
         mode
-      } = rawProps; // at this point children has a guaranteed length of 1.
-
-      var child = children[0];
+      } = rawProps;
 
       if (state.isLeaving) {
         return emptyPlaceholder(child);
@@ -5539,7 +5549,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     } = vnode;
 
     if (type === Fragment) {
-      removeFragment(el, anchor);
+      {
+        removeFragment(el, anchor);
+      }
       return;
     }
 
@@ -7587,7 +7599,7 @@ function isMemoSame(cached, memo) {
 } // Core API ------------------------------------------------------------------
 
 
-var version = "3.2.32";
+var version = "3.2.33";
 var _ssrUtils = {
   createComponentInstance,
   setupComponent,
