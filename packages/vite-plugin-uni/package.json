@@ -22,15 +22,15 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/core": "^7.17.8",
+    "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/plugin-transform-typescript": "^7.16.8",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040520220413001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3040520220413001",
     "@rollup/pluginutils": "^4.2.0",
-    "@vitejs/plugin-legacy": "^1.8.0",
+    "@vitejs/plugin-legacy": "^1.8.1",
     "@vitejs/plugin-vue": "^2.3.1",
-    "@vitejs/plugin-vue-jsx": "^1.3.9",
+    "@vitejs/plugin-vue-jsx": "^1.3.10",
     "@vue/compiler-core": "3.2.32",
     "@vue/compiler-dom": "3.2.32",
     "@vue/compiler-sfc": "3.2.32",
@@ -53,7 +53,7 @@
     "chokidar": "^3.5.3"
   },
   "peerDependencies": {
-    "vite": "^2.9.1"
+    "vite": "^2.9.4"
   },
   "uni-app": {
     "compilerVersion": "3.4.5"
