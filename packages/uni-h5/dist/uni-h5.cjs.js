@@ -2279,18 +2279,21 @@ const props$n = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
+    const isApple = vue.computed(() => String(navigator.vendor).indexOf("Apple") === 0);
     el.addEventListener("focus", () => {
       clearTimeout(resetTimer);
       document.addEventListener("click", iosHideKeyboard, false);
     });
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
-      if (String(navigator.vendor).indexOf("Apple") === 0) {
+      if (isApple.value) {
         document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
       }
     };
     el.addEventListener("blur", () => {
-      el.blur();
+      if (isApple.value) {
+        el.blur();
+      }
       onKeyboardHide();
     });
   }
