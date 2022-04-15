@@ -43,6 +43,7 @@ export class UniNode {
   }
   setText(text: string) {
     this.$.textContent = text
+    this.updateView()
   }
   insert(
     parentNodeId: number,
@@ -70,12 +71,17 @@ export class UniNode {
     removeElement(this.id)
     destroyRenderjs(this)
     this.removeUniChildren()
+    this.updateView()
   }
   appendChild(node: Node) {
-    return this.$.appendChild(node)
+    const ref = this.$.appendChild(node)
+    this.updateView(true)
+    return ref
   }
   insertBefore(newChild: Node, refChild: Node) {
-    return this.$.insertBefore(newChild, refChild)
+    const ref = this.$.insertBefore(newChild, refChild)
+    this.updateView(true)
+    return ref
   }
   appendUniChild(node: UniNode) {
     this.$children.push(node)
@@ -135,6 +141,12 @@ export class UniNode {
         ),
         true
       )
+    }
+  }
+  updateView(isMounted?: boolean) {
+    // 通知原生组件更新位置
+    if (this.isMounted || isMounted) {
+      window.dispatchEvent(new CustomEvent('updateview'))
     }
   }
 }

@@ -37,6 +37,7 @@ export class UniTextElement extends UniAnimationElement<TextProps> {
   setText(text: string) {
     this._text = text
     this.update()
+    this.updateView()
   }
 
   update(isMounted: boolean = false) {
