@@ -1,4 +1,4 @@
-import { Ref, watch } from 'vue'
+import { Ref, watch, computed } from 'vue'
 import { CustomEventTrigger } from './useEvent'
 import { plusReady } from '@dcloudio/uni-shared'
 
@@ -136,6 +136,9 @@ export function useKeyboard(
   const state = {}
   function initKeyboard(el: HTMLElement) {
     let focus: boolean
+    const isApple = computed(
+      () => String(navigator.vendor).indexOf('Apple') === 0
+    )
 
     const keyboardChange = () => {
       trigger('keyboardheightchange', {} as Event, {
@@ -229,7 +232,7 @@ export function useKeyboard(
       }
 
       // 修复ios端显示与点击位置错位的Bug by:wyq
-      if (String(navigator.vendor).indexOf('Apple') === 0) {
+      if (isApple.value) {
         document.documentElement.scrollTo(
           document.documentElement.scrollLeft,
           document.documentElement.scrollTop
@@ -240,7 +243,9 @@ export function useKeyboard(
     el.addEventListener('blur', () => {
       // 在iOS设备上，手动调用uni.hideKeyboard()，键盘收起并且触发blur，但实际并没有blur。
       // 此时如果再点击页面其他地方会重新聚焦，此处做处理
-      el.blur()
+      if (isApple.value) {
+        el.blur()
+      }
       focus = false
       onKeyboardHide()
     })
