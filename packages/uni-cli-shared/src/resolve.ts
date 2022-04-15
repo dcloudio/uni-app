@@ -47,9 +47,7 @@ function resolveNodeModulePath(modulePath: string) {
   }
   const index = modulePath.lastIndexOf('node_modules')
   if (index > -1) {
-    nodeModulesPaths.push(
-      path.join(modulePath.substr(0, index), 'node_modules')
-    )
+    nodeModulesPaths.push(path.join(modulePath.slice(0, index), 'node_modules'))
   }
   return nodeModulesPaths
 }

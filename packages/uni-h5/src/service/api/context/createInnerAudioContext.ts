@@ -189,8 +189,8 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
             return
           }
           const EventName = `on${eventName
-            .substr(0, 1)
-            .toUpperCase()}${eventName.substr(1)}` as InnerAudioContextEvent
+            .slice(0, 1)
+            .toUpperCase()}${eventName.slice(1)}` as InnerAudioContextEvent
           this._events[EventName]!.forEach((callback) => {
             callback()
           })

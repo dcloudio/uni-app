@@ -349,7 +349,7 @@ function getRealRoute(fromRoute, toRoute) {
     return toRoute;
   }
   if (toRoute.indexOf("./") === 0) {
-    return getRealRoute(fromRoute, toRoute.substr(2));
+    return getRealRoute(fromRoute, toRoute.slice(2));
   }
   const toRouteArray = toRoute.split("/");
   const toRouteLength = toRouteArray.length;
@@ -899,7 +899,7 @@ function getRealPath(filePath) {
   }
   const pages = getCurrentPages();
   if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1));
   }
   return filePath;
 }

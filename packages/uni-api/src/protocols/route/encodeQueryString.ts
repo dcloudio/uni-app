@@ -7,13 +7,13 @@ export function encodeQueryString(url: string) {
     return url
   }
   const query = url
-    .substr(index + 1)
+    .slice(index + 1)
     .trim()
     .replace(/^(\?|#|&)/, '')
   if (!query) {
     return url
   }
-  url = url.substr(0, index)
+  url = url.slice(0, index)
   const params: string[] = []
   query.split('&').forEach((param) => {
     const parts = param.replace(/\+/g, ' ').split('=')

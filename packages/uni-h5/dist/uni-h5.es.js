@@ -989,7 +989,7 @@ function getRealRoute(fromRoute, toRoute) {
     return toRoute;
   }
   if (toRoute.indexOf("./") === 0) {
-    return getRealRoute(fromRoute, toRoute.substr(2));
+    return getRealRoute(fromRoute, toRoute.slice(2));
   }
   const toRouteArray = toRoute.split("/");
   const toRouteLength = toRouteArray.length;
@@ -2012,7 +2012,7 @@ function getRealPath(filePath) {
   }
   const pages = getCurrentPages();
   if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1));
   }
   return filePath;
 }
@@ -5102,11 +5102,11 @@ function encodeQueryString(url) {
   if (index2 === -1) {
     return url;
   }
-  const query = url.substr(index2 + 1).trim().replace(/^(\?|#|&)/, "");
+  const query = url.slice(index2 + 1).trim().replace(/^(\?|#|&)/, "");
   if (!query) {
     return url;
   }
-  url = url.substr(0, index2);
+  url = url.slice(0, index2);
   const params = [];
   query.split("&").forEach((param) => {
     const parts = param.replace(/\+/g, " ").split("=");
@@ -5232,7 +5232,7 @@ function createNormalizeUrl(type) {
     } else if (type === API_PRELOAD_PAGE) {
       if (routeOptions.meta.isTabBar) {
         const pages = getCurrentPages();
-        const tabBarPagePath = routeOptions.path.substr(1);
+        const tabBarPagePath = routeOptions.path.slice(1);
         if (pages.find((page) => page.route === tabBarPagePath)) {
           return "tabBar page `" + tabBarPagePath + "` already exists";
         }
@@ -16110,7 +16110,7 @@ class InnerAudioContext {
         if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
           return;
         }
-        const EventName = `on${eventName.substr(0, 1).toUpperCase()}${eventName.substr(1)}`;
+        const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
         this._events[EventName].forEach((callback) => {
           callback();
         });

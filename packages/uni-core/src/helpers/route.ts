@@ -17,7 +17,7 @@ export function getRealRoute(fromRoute: string, toRoute: string): string {
     return toRoute
   }
   if (toRoute.indexOf('./') === 0) {
-    return getRealRoute(fromRoute, toRoute.substr(2))
+    return getRealRoute(fromRoute, toRoute.slice(2))
   }
   const toRouteArray = toRoute.split('/')
   const toRouteLength = toRouteArray.length

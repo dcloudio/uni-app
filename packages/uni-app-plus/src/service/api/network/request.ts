@@ -54,7 +54,7 @@ const cookiesParse = (header: Record<string, string>) => {
 
 function formatResponse(res: RequestTaskState, args: UniApp.RequestOptions) {
   if (typeof res.data === 'string' && res.data.charCodeAt(0) === 65279) {
-    res.data = res.data.substr(1)
+    res.data = res.data.slice(1)
   }
 
   res.statusCode = parseInt(String(res.statusCode), 10)

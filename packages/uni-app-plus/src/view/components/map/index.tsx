@@ -47,9 +47,9 @@ function parseHex(color: string) {
       opacity: 1,
     }
   }
-  const opacity = color.substr(7, 2)
+  const opacity = color.slice(7, 9)
   return {
-    color: color.substr(0, 7),
+    color: color.slice(0, 7),
     opacity: opacity ? Number('0x' + opacity) / 255 : 1,
   }
 }

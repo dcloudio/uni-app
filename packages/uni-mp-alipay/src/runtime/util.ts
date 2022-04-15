@@ -53,7 +53,7 @@ export function initSpecialMethods(
     return
   }
   if (path.indexOf('/') === 0) {
-    path = path.substr(1)
+    path = path.slice(1)
   }
   const specialMethods =
     (my as any).specialMethods && (my as any).specialMethods[path]

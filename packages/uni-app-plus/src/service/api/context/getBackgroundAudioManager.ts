@@ -127,7 +127,7 @@ function initMusic() {
         stopTimeUpdateTimer()
       }
 
-      const eventName = `onMusic${event[0].toUpperCase() + event.substr(1)}`
+      const eventName = `onMusic${event[0].toUpperCase() + event.slice(1)}`
       publish(eventName, {
         dataUrl: audio.src,
         errMsg: `${eventName}:ok`,
