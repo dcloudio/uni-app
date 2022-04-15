@@ -20,8 +20,8 @@ export type DebugRefresh = ReturnType<typeof initDebugRefresh>
 export function initUniPageUrl(path: string, query: Record<string, any>) {
   const queryString = query ? stringifyQuery(query, encode) : ''
   return {
-    path: path.substr(1),
-    query: queryString ? queryString.substr(1) : queryString,
+    path: path.slice(1),
+    query: queryString ? queryString.slice(1) : queryString,
   }
 }
 
@@ -34,8 +34,8 @@ export function initDebugRefresh(
   return {
     isTab,
     arguments: JSON.stringify({
-      path: path.substr(1),
-      query: queryString ? queryString.substr(1) : queryString,
+      path: path.slice(1),
+      query: queryString ? queryString.slice(1) : queryString,
     }),
   }
 }

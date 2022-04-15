@@ -86,7 +86,7 @@ function resolveOwnerEl(el: UniCustomElement, ownerId: number) {
 }
 
 function parseWxs(wxsStr: string) {
-  return JSON.parse(wxsStr.substr(WXS_PROTOCOL_LEN)) as [
+  return JSON.parse(wxsStr.slice(WXS_PROTOCOL_LEN)) as [
     number,
     string,
     string,
@@ -140,7 +140,7 @@ function getWxsProp(
   if (!module) {
     return console.error(formatLog('wxs', 'module ' + dataPath + ' not found'))
   }
-  return getValueByDataPath(module, dataPath.substr(dataPath.indexOf('.') + 1))
+  return getValueByDataPath(module, dataPath.slice(dataPath.indexOf('.') + 1))
 }
 
 export type WxsPropsInvoker = (newValue: unknown) => void

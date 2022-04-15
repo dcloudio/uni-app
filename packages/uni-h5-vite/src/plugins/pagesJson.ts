@@ -239,7 +239,7 @@ ${globalName}.__uniRoutes=[${[
     ...generatePagesRoute(normalizePagesRoute(pagesJson), config),
   ].join(
     ','
-  )}].map(uniRoute=>(uniRoute.meta.route = (uniRoute.alias || uniRoute.path).substr(1),uniRoute))`
+  )}].map(uniRoute=>(uniRoute.meta.route = (uniRoute.alias || uniRoute.path).slice(1),uniRoute))`
 }
 
 function generateConfig(

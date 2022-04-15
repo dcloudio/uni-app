@@ -328,7 +328,7 @@ function addLeadingSlash(str) {
     return hasLeadingSlash(str) ? str : '/' + str;
 }
 function removeLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str.substr(1) : str;
+    return hasLeadingSlash(str) ? str.slice(1) : str;
 }
 const invokeArrayFns = (fns, arg) => {
     let ret;

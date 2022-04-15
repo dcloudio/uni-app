@@ -1609,7 +1609,7 @@ function getRealRoute(fromRoute, toRoute) {
         return toRoute;
     }
     if (toRoute.indexOf('./') === 0) {
-        return getRealRoute(fromRoute, toRoute.substr(2));
+        return getRealRoute(fromRoute, toRoute.slice(2));
     }
     const toRouteArray = toRoute.split('/');
     const toRouteLength = toRouteArray.length;
@@ -11956,13 +11956,13 @@ function encodeQueryString(url) {
         return url;
     }
     const query = url
-        .substr(index + 1)
+        .slice(index + 1)
         .trim()
         .replace(/^(\?|#|&)/, '');
     if (!query) {
         return url;
     }
-    url = url.substr(0, index);
+    url = url.slice(0, index);
     const params = [];
     query.split('&').forEach((param) => {
         const parts = param.replace(/\+/g, ' ').split('=');
@@ -12115,7 +12115,7 @@ function createNormalizeUrl(type) {
             }
             if (routeOptions.meta.isTabBar) {
                 const pages = getCurrentPages();
-                const tabBarPagePath = routeOptions.path.substr(1);
+                const tabBarPagePath = routeOptions.path.slice(1);
                 if (pages.find((page) => page.route === tabBarPagePath)) {
                     return 'tabBar page `' + tabBarPagePath + '` already exists';
                 }
@@ -14481,7 +14481,7 @@ const cookiesParse = (header) => {
 };
 function formatResponse(res, args) {
     if (typeof res.data === 'string' && res.data.charCodeAt(0) === 65279) {
-        res.data = res.data.substr(1);
+        res.data = res.data.slice(1);
     }
     res.statusCode = parseInt(String(res.statusCode), 10);
     if (isPlainObject(res.header)) {
@@ -15308,7 +15308,7 @@ function initMusic() {
             if (event === 'pause' || event === 'ended' || event === 'stop') {
                 stopTimeUpdateTimer();
             }
-            const eventName = `onMusic${event[0].toUpperCase() + event.substr(1)}`;
+            const eventName = `onMusic${event[0].toUpperCase() + event.slice(1)}`;
             publish(eventName, {
                 dataUrl: audio.src,
                 errMsg: `${eventName}:ok`,
@@ -17475,8 +17475,8 @@ function encode(val) {
 function initUniPageUrl(path, query) {
     const queryString = query ? stringifyQuery$1(query, encode) : '';
     return {
-        path: path.substr(1),
-        query: queryString ? queryString.substr(1) : queryString,
+        path: path.slice(1),
+        query: queryString ? queryString.slice(1) : queryString,
     };
 }
 function initDebugRefresh(isTab, path, query) {
@@ -17484,8 +17484,8 @@ function initDebugRefresh(isTab, path, query) {
     return {
         isTab,
         arguments: JSON.stringify({
-            path: path.substr(1),
-            query: queryString ? queryString.substr(1) : queryString,
+            path: path.slice(1),
+            query: queryString ? queryString.slice(1) : queryString,
         }),
     };
 }

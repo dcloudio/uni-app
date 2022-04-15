@@ -11,7 +11,7 @@ export function decodeAttr(el: UniCustomElement, value: unknown) {
     return value
   }
   if (value.indexOf(JSON_PROTOCOL) === 0) {
-    value = JSON.parse(value.substr(JSON_PROTOCOL_LEN))
+    value = JSON.parse(value.slice(JSON_PROTOCOL_LEN))
   } else if (value.indexOf(WXS_PROTOCOL) === 0) {
     value = invokeWxs(el, value)
   }

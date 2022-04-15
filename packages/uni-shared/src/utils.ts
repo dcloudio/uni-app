@@ -25,7 +25,7 @@ export function addLeadingSlash(str: string) {
 }
 
 export function removeLeadingSlash(str: string) {
-  return hasLeadingSlash(str) ? str.substr(1) : str
+  return hasLeadingSlash(str) ? str.slice(1) : str
 }
 
 export const invokeArrayFns = (fns: Function[], arg?: any) => {

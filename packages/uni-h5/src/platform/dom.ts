@@ -56,7 +56,7 @@ export function getRealPath(filePath: string) {
   const pages = getCurrentPages()
   if (pages.length) {
     return addBase(
-      getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1)
+      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
     )
   }
 
