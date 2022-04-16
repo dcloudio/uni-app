@@ -1880,7 +1880,9 @@ function emit$1(instance, event, ...rawArgs) {
         handler = props[(handlerName = toHandlerKey(hyphenate(event)))];
     }
     if (handler) {
-        callWithAsyncErrorHandling(handler, instance, 6 /* COMPONENT_EVENT_HANDLER */, args);
+        callWithAsyncErrorHandling(handler, instance, 6 /* COMPONENT_EVENT_HANDLER */, 
+        // fixed by xxxxxx
+        normalizeWxsEventArgs(instance, handler, args));
     }
     const onceHandler = props[handlerName + `Once`];
     if (onceHandler) {
@@ -1891,8 +1893,51 @@ function emit$1(instance, event, ...rawArgs) {
             return;
         }
         instance.emitted[handlerName] = true;
-        callWithAsyncErrorHandling(onceHandler, instance, 6 /* COMPONENT_EVENT_HANDLER */, args);
+        callWithAsyncErrorHandling(onceHandler, instance, 6 /* COMPONENT_EVENT_HANDLER */, 
+        // fixed by xxxxxx
+        normalizeWxsEventArgs(instance, onceHandler, args));
     }
+}
+/**
+ * 补充 wxs 事件参数
+ * @param instance
+ * @param handler
+ * @param args
+ * @returns
+ */
+function normalizeWxsEventArgs(instance, handler, args) {
+    // 系统组件事件参数长度一定是 1
+    if (args.length !== 1) {
+        return args;
+    }
+    // 判断是否可能需要补充 ownerInstance 参数
+    if (isFunction(handler)) {
+        // 单函数，且参数小于 2 的直接返回
+        if (handler.length < 2) {
+            return args;
+        }
+    }
+    else {
+        // 多函数，且参数没有大于等于 2 的直接返回
+        if (!handler.find(item => item.length >= 2)) {
+            return args;
+        }
+    }
+    // 系统组件事件对象
+    const $sysEvent = args[0];
+    if ($sysEvent &&
+        hasOwn($sysEvent, 'type') &&
+        hasOwn($sysEvent, 'timeStamp') &&
+        hasOwn($sysEvent, 'target') &&
+        hasOwn($sysEvent, 'currentTarget') &&
+        hasOwn($sysEvent, 'detail')) {
+        const proxy = instance.proxy;
+        const $ownerInstance = proxy.$gcd(proxy, true);
+        if ($ownerInstance) {
+            args.push($ownerInstance);
+        }
+    }
+    return args;
 }
 function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     const cache = appContext.emitsCache;
