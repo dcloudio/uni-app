@@ -29,6 +29,14 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dynamicSlotNames: false,
   },
   directive: 's-',
+  lazyElement: {
+    editor: [
+      {
+        name: 'on',
+        arg: ['ready'],
+      },
+    ],
+  },
   component: {
     dir: COMPONENTS_DIR,
   },
