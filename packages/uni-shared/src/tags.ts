@@ -109,6 +109,7 @@ export const NVUE_BUILT_IN_TAGS = [
   'richtext',
   'recycle-list',
   'u-scalable',
+  'barcode',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
