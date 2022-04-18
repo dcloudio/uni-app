@@ -441,14 +441,14 @@ export default {
 
       db = db.collection(...this.collectionArgs)
 
+      if (this.foreignKey) {
+        db = db.foreignKey(this.foreignKey)
+      }
       if (!(!this.where || !Object.keys(this.where).length)) {
         db = db.where(this.where)
       }
       if (this.field) {
         db = db.field(this.field)
-      }
-      if (this.foreignKey) {
-        db = db.foreignKey(this.foreignKey)
       }
       if (this.groupby) {
         db = db.groupBy(this.groupby)
