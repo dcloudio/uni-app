@@ -17,7 +17,6 @@ type EventValue = Function | Function[]
 
 interface Invoker {
   (evt: MPEvent): unknown
-  id: string
   value: EventValue
 }
 
@@ -50,10 +49,8 @@ export function vOn(value: EventValue | undefined, key?: number | string) {
   } else {
     // add
     mpInstance[name] = createInvoker(
-      name,
       value,
-      instance as unknown as ComponentInternalInstance,
-      mpInstance
+      instance as unknown as ComponentInternalInstance
     )
   }
   return name
@@ -68,26 +65,15 @@ export interface MPEvent extends WechatMiniprogram.BaseEvent {
   stopImmediatePropagation: () => void
 }
 
-const editorReady = 'eReady'
-
 function createInvoker(
-  name: string,
   initialValue: EventValue,
-  instance: ComponentInternalInstance | null,
-  mpInstance: Record<string, any>
+  instance: ComponentInternalInstance | null
 ) {
   const invoker: Invoker = (e: MPEvent) => {
-    const dataset = e.target && e.target.dataset
-    // TODO 临时解决 editor ready 事件可能错乱的问题 https://github.com/dcloudio/uni-app/issues/3406
-    if (mpInstance && dataset && dataset[editorReady]) {
-      if (invoker.id !== dataset[editorReady]) {
-        return mpInstance[dataset[editorReady]](e)
-      }
-    }
     patchMPEvent(e)
     let args: unknown[] = [e]
-    if (e.detail && e.detail.__args__) {
-      args = e.detail.__args__!
+    if ((e as MPEvent).detail && (e as MPEvent).detail.__args__) {
+      args = (e as MPEvent).detail.__args__!
     }
     const eventValue = invoker.value
     const invoke = () =>
@@ -99,14 +85,18 @@ function createInvoker(
       )
 
     // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
-    const eventSync = dataset && dataset.eventsync
+    const eventTarget = (e as MPEvent).target
+    const eventSync = eventTarget
+      ? eventTarget.dataset
+        ? eventTarget.dataset.eventsync === 'true'
+        : false
+      : false
     if (bubbles.includes(e.type) && !eventSync) {
       setTimeout(invoke)
     } else {
       return invoke()
     }
   }
-  invoker.id = name
   invoker.value = initialValue
   return invoker
 }

@@ -1,11 +1,8 @@
 import { hyphenate } from '@vue/shared'
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
-  createBindDirectiveNode,
   formatMiniProgramEvent,
-  isDirectiveNode,
   isElementNode,
-  isSimpleExpressionNode,
   isUserComponent,
   MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
@@ -254,29 +251,6 @@ function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
   return genElement(node, context)
 }
 
-function genEventHandlerAttr(type: string) {
-  return `data-e-` + type
-}
-
-function addEventHandlers({ props }: ElementNode) {
-  props.forEach((prop) => {
-    if (!isDirectiveNode(prop)) {
-      return
-    }
-    const { name, arg, exp } = prop
-    if (name !== 'on' || !arg || !exp) {
-      return
-    }
-    if (!isSimpleExpressionNode(arg) || !isSimpleExpressionNode(exp)) {
-      return
-    }
-    // TODO 目前硬编码，仅限ready
-    if (arg.content === 'ready') {
-      props.push(createBindDirectiveNode(genEventHandlerAttr(arg.content), exp))
-    }
-  })
-}
-
 function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   if (!context.lazyElement) {
     return false
@@ -304,10 +278,6 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
  */
 function genLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   const { push } = context
-  // TODO 目前硬编码，仅限 editor 的 ready
-  if (node.tag === 'editor') {
-    addEventHandlers(node)
-  }
   if (!isIfElementNode(node)) {
     push(`<block`)
     // r0 => ready 首次渲染
