@@ -5396,20 +5396,12 @@ function vOn(value, key) {
     }
     else {
         // add
-        mpInstance[name] = createInvoker(name, value, instance, mpInstance);
+        mpInstance[name] = createInvoker(value, instance);
     }
     return name;
 }
-const editorReady = 'eReady';
-function createInvoker(name, initialValue, instance, mpInstance) {
+function createInvoker(initialValue, instance) {
     const invoker = (e) => {
-        const dataset = e.target && e.target.dataset;
-        // TODO 临时解决 editor ready 事件可能错乱的问题 https://github.com/dcloudio/uni-app/issues/3406
-        if (mpInstance && dataset && dataset[editorReady]) {
-            if (invoker.id !== dataset[editorReady]) {
-                return mpInstance[dataset[editorReady]](e);
-            }
-        }
         patchMPEvent(e);
         let args = [e];
         if (e.detail && e.detail.__args__) {
@@ -5418,7 +5410,12 @@ function createInvoker(name, initialValue, instance, mpInstance) {
         const eventValue = invoker.value;
         const invoke = () => callWithAsyncErrorHandling(patchStopImmediatePropagation(e, eventValue), instance, 5 /* NATIVE_EVENT_HANDLER */, args);
         // 冒泡事件触发时，启用延迟策略，避免同一批次的事件执行时机不正确，对性能可能有略微影响 https://github.com/dcloudio/uni-app/issues/3228
-        const eventSync = dataset && dataset.eventsync;
+        const eventTarget = e.target;
+        const eventSync = eventTarget
+            ? eventTarget.dataset
+                ? eventTarget.dataset.eventsync === 'true'
+                : false
+            : false;
         if (bubbles.includes(e.type) && !eventSync) {
             setTimeout(invoke);
         }
@@ -5426,7 +5423,6 @@ function createInvoker(name, initialValue, instance, mpInstance) {
             return invoke();
         }
     };
-    invoker.id = name;
     invoker.value = initialValue;
     return invoker;
 }
