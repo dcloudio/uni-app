@@ -60,21 +60,21 @@ describe('mp-weixin: transform component', () => {
     )
     assert(
       `<editor @ready="ready"/>`,
-      `<block wx:if="{{r0}}"><editor bindready="{{a}}" data-e-ready="{{a}}"/></block>`,
+      `<block wx:if="{{r0}}"><editor bindready="{{a}}"/></block>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.ready) }
 }`
     )
     assert(
       `<editor v-if="ok1" @ready="ready"/><editor v-else-if="ok2"/><editor v-else/>`,
-      `<editor wx:if="{{a}}" bindready="{{b}}" data-e-ready="{{b}}"/><editor wx:elif="{{c}}"/><editor wx:else/>`,
+      `<editor wx:if="{{a}}" bindready="{{b}}"/><editor wx:elif="{{c}}"/><editor wx:else/>`,
       `(_ctx, _cache) => {
   return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.ready) } : _ctx.ok2 ? {} : {}, { c: _ctx.ok2 })
 }`
     )
     assert(
       `<editor v-if="ok1" @ready="ready"/><editor v-else-if="ok2"/><editor v-else @ready="ready"/>`,
-      `<editor wx:if="{{a}}" bindready="{{b}}" data-e-ready="{{b}}"/><editor wx:elif="{{c}}"/><block wx:else><editor wx:if="{{r0}}" bindready="{{d}}" data-e-ready="{{d}}"/></block>`,
+      `<editor wx:if="{{a}}" bindready="{{b}}"/><editor wx:elif="{{c}}"/><block wx:else><editor wx:if="{{r0}}" bindready="{{d}}"/></block>`,
       `(_ctx, _cache) => {
   return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.ready) } : _ctx.ok2 ? {} : { d: _o(_ctx.ready) }, { c: _ctx.ok2 })
 }`
