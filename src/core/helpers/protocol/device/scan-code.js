@@ -7,5 +7,9 @@ export const scanCode = {
   },
   autoDecodeCharSet: {
     type: Boolean
+  },
+  sound: {
+    type: String,
+    default: 'none'
   }
 }
