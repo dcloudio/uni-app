@@ -8,8 +8,8 @@ const ANIMATION_IN = [
   'slide-in-top',
   'slide-in-bottom',
   'fade-in',
-  'zoom-out',
-  'zoom-fade-out',
+  'zoom-in',
+  'zoom-fade-in',
   'pop-in',
   'none',
 ]
@@ -20,8 +20,8 @@ const ANIMATION_OUT = [
   'slide-out-top',
   'slide-out-bottom',
   'fade-out',
-  'zoom-in',
-  'zoom-fade-in',
+  'zoom-out',
+  'zoom-fade-out',
   'pop-out',
   'none',
 ]
