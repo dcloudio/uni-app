@@ -149,8 +149,8 @@ export const navigateTo = createProtocol('navigateTo', createAnimationProtocol(
     'slide-in-top',
     'slide-in-bottom',
     'fade-in',
-    'zoom-in',
-    'zoom-fade-in',
+    'zoom-out',
+    'zoom-fade-out',
     'pop-in',
     'none'
   ]
@@ -173,8 +173,8 @@ export const navigateBack = Object.assign({
     'slide-out-top',
     'slide-out-bottom',
     'fade-out',
-    'zoom-out',
-    'zoom-fade-out',
+    'zoom-in',
+    'zoom-fade-in',
     'pop-out',
     'none'
   ]
