@@ -11407,6 +11407,16 @@ const ScanCodeProtocol = {
     onlyFromCamera: Boolean,
     scanType: Array,
     autoDecodeCharSet: Boolean,
+    sound: String,
+};
+const SOUND = ['default', 'none'];
+const ScanCodeOptions = {
+    formatArgs: {
+        sound(value, params) {
+            if (!SOUND.includes(value))
+                params.sound = 'none';
+        },
+    },
 };
 
 const API_GET_STORAGE = 'getStorage';
@@ -13935,7 +13945,7 @@ const scanCode = defineAsyncApi(API_SCAN_CODE, (options, { resolve, reject }) =>
             }
         });
     }
-}, ScanCodeProtocol);
+}, ScanCodeProtocol, ScanCodeOptions);
 
 const onThemeChange = defineOnApi(ON_THEME_CHANGE, () => {
     UniServiceJSBridge.on(ON_THEME_CHANGE, (res) => {
@@ -17634,7 +17644,7 @@ function onWebviewResize(webview) {
         };
         emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
     };
-    webview.addEventListener('resize', debounce(onResize, 50));
+    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
 }
 
 const WEBVIEW_LISTENERS = {

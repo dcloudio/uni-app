@@ -5116,7 +5116,7 @@ function encodeQueryString(url) {
   });
   return params.length ? url + "?" + params.join("&") : url;
 }
-const ANIMATION_IN = [
+const ANIMATION_IN$1 = [
   "slide-in-right",
   "slide-in-left",
   "slide-in-top",
@@ -5127,7 +5127,7 @@ const ANIMATION_IN = [
   "pop-in",
   "none"
 ];
-const ANIMATION_OUT = [
+const ANIMATION_OUT$1 = [
   "slide-out-right",
   "slide-out-left",
   "slide-out-top",
@@ -5151,12 +5151,12 @@ const API_SWITCH_TAB = "switchTab";
 const API_NAVIGATE_BACK = "navigateBack";
 const API_PRELOAD_PAGE = "preloadPage";
 const API_UN_PRELOAD_PAGE = "unPreloadPage";
-const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN$1));
 const NavigateBackProtocol = /* @__PURE__ */ extend({
   delta: {
     type: Number
   }
-}, createAnimationProtocol(ANIMATION_OUT));
+}, createAnimationProtocol(ANIMATION_OUT$1));
 const RedirectToProtocol = BaseRouteProtocol;
 const ReLaunchProtocol = BaseRouteProtocol;
 const SwitchTabProtocol = BaseRouteProtocol;
@@ -8513,7 +8513,7 @@ function useBase(props2, rootRef, emit2) {
 function useValueSync(props2, state2, emit2, trigger) {
   const valueChangeFn = debounce((val) => {
     state2.value = getValueString(val, props2.type);
-  }, 100);
+  }, 100, { setTimeout, clearTimeout });
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -10132,6 +10132,28 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
+const ANIMATION_IN = [
+  "slide-in-right",
+  "slide-in-left",
+  "slide-in-top",
+  "slide-in-bottom",
+  "fade-in",
+  "zoom-out",
+  "zoom-fade-out",
+  "pop-in",
+  "none"
+];
+const ANIMATION_OUT = [
+  "slide-out-right",
+  "slide-out-left",
+  "slide-out-top",
+  "slide-out-bottom",
+  "fade-out",
+  "zoom-in",
+  "zoom-fade-in",
+  "pop-out",
+  "none"
+];
 const navigatorProps = {
   hoverClass: {
     type: String,
@@ -10167,6 +10189,16 @@ const navigatorProps = {
   hoverStopPropagation: {
     type: Boolean,
     default: false
+  },
+  animationType: {
+    type: String,
+    validator(value) {
+      return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
+    }
+  },
+  animationDuration: {
+    type: [String, Number],
+    default: 300
   }
 };
 function createNavigatorOnClick(props2) {
@@ -10175,10 +10207,13 @@ function createNavigatorOnClick(props2) {
       console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
       return;
     }
+    const animationDuration = parseInt(props2.animationDuration);
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
-          url: props2.url
+          url: props2.url,
+          animationType: props2.animationType || "pop-in",
+          animationDuration
         });
         break;
       case "redirect":
@@ -10199,7 +10234,9 @@ function createNavigatorOnClick(props2) {
         break;
       case "navigateBack":
         uni.navigateBack({
-          delta: props2.delta
+          delta: props2.delta,
+          animationType: props2.animationType || "pop-out",
+          animationDuration
         });
         break;
     }
@@ -14285,7 +14322,7 @@ function setupApp(comp) {
         onBeforeMount(onLaunch);
       }
       onMounted(() => {
-        window.addEventListener("resize", debounce(onResize, 50));
+        window.addEventListener("resize", debounce(onResize, 50, { setTimeout, clearTimeout }));
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
       });
@@ -18300,7 +18337,10 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
       if (state2.keyword) {
         getList();
       }
-    }, 1e3);
+    }, 1e3, {
+      setTimeout,
+      clearTimeout
+    });
     watch(() => state2.searching, (val) => {
       reset();
       if (!val) {

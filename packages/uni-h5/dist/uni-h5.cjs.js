@@ -2965,7 +2965,7 @@ function useBase(props2, rootRef, emit2) {
 function useValueSync(props2, state, emit2, trigger) {
   const valueChangeFn = uniShared.debounce((val) => {
     state.value = getValueString(val, props2.type);
-  }, 100);
+  }, 100, { setTimeout, clearTimeout });
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -4245,6 +4245,28 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
+const ANIMATION_IN = [
+  "slide-in-right",
+  "slide-in-left",
+  "slide-in-top",
+  "slide-in-bottom",
+  "fade-in",
+  "zoom-out",
+  "zoom-fade-out",
+  "pop-in",
+  "none"
+];
+const ANIMATION_OUT = [
+  "slide-out-right",
+  "slide-out-left",
+  "slide-out-top",
+  "slide-out-bottom",
+  "fade-out",
+  "zoom-in",
+  "zoom-fade-in",
+  "pop-out",
+  "none"
+];
 const navigatorProps = {
   hoverClass: {
     type: String,
@@ -4280,6 +4302,16 @@ const navigatorProps = {
   hoverStopPropagation: {
     type: Boolean,
     default: false
+  },
+  animationType: {
+    type: String,
+    validator(value) {
+      return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
+    }
+  },
+  animationDuration: {
+    type: [String, Number],
+    default: 300
   }
 };
 function createNavigatorOnClick(props2) {
@@ -4288,10 +4320,13 @@ function createNavigatorOnClick(props2) {
       console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
       return;
     }
+    const animationDuration = parseInt(props2.animationDuration);
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
-          url: props2.url
+          url: props2.url,
+          animationType: props2.animationType || "pop-in",
+          animationDuration
         });
         break;
       case "redirect":
@@ -4312,7 +4347,9 @@ function createNavigatorOnClick(props2) {
         break;
       case "navigateBack":
         uni.navigateBack({
-          delta: props2.delta
+          delta: props2.delta,
+          animationType: props2.animationType || "pop-out",
+          animationDuration
         });
         break;
     }

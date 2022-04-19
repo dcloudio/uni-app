@@ -129,7 +129,14 @@ export declare function customizeEvent(str: string): string;
 
 export declare const DATA_RE: RegExp;
 
-export declare function debounce(fn: Function, delay: number): {
+/**
+ * 需要手动传入 timer,主要是解决 App 平台的定制 timer
+ * @param fn
+ * @param delay
+ * @param timer
+ * @returns
+ */
+export declare function debounce(fn: Function, delay: number, timer: Timer): {
     (this: any): void;
     cancel(): void;
 };
@@ -644,6 +651,11 @@ export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: ty
 export declare const TABBAR_HEIGHT = 50;
 
 export declare const TAGS: string[];
+
+declare interface Timer {
+    setTimeout: Function;
+    clearTimeout: Function;
+}
 
 export declare const UNI_SSR = "__uniSSR";
 
