@@ -4,6 +4,7 @@ import {
   API_SCAN_CODE,
   API_TYPE_SCAN_CODE,
   ScanCodeProtocol,
+  ScanCodeOptions,
 } from '@dcloudio/uni-api'
 import { useI18n, initI18nScanCodeMsgsOnce } from '@dcloudio/uni-core'
 import { getStatusBarStyle } from '../../../helpers/statusBar'
@@ -92,5 +93,6 @@ export const scanCode = defineAsyncApi<API_TYPE_SCAN_CODE>(
       })
     }
   },
-  ScanCodeProtocol
+  ScanCodeProtocol,
+  ScanCodeOptions
 )
