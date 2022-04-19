@@ -8,6 +8,33 @@ const OPEN_TYPES = [
   'navigateBack',
 ]
 
+const ANIMATION_IN = [
+  'slide-in-right',
+  'slide-in-left',
+  'slide-in-top',
+  'slide-in-bottom',
+  'fade-in',
+  'zoom-out',
+  'zoom-fade-out',
+  'pop-in',
+  'none',
+]
+
+const ANIMATION_OUT = [
+  'slide-out-right',
+  'slide-out-left',
+  'slide-out-top',
+  'slide-out-bottom',
+  'fade-out',
+  'zoom-in',
+  'zoom-fade-in',
+  'pop-out',
+  'none',
+]
+
+type AnimationToType = Parameters<typeof uni.navigateTo>[0]['animationType']
+type AnimationBackType = Parameters<typeof uni.navigateBack>[0]['animationType']
+
 export const navigatorProps = {
   hoverClass: {
     type: String,
@@ -44,6 +71,16 @@ export const navigatorProps = {
     type: Boolean,
     default: false,
   },
+  animationType: {
+    type: String,
+    validator(value?: string) {
+      return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value)
+    },
+  },
+  animationDuration: {
+    type: [String, Number],
+    default: 300,
+  },
 }
 
 export function createNavigatorOnClick(
@@ -56,10 +93,15 @@ export function createNavigatorOnClick(
       )
       return
     }
+
+    const animationDuration = parseInt(props.animationDuration as string)
+
     switch (props.openType) {
       case 'navigate':
         uni.navigateTo({
           url: props.url,
+          animationType: (props.animationType as AnimationToType) || 'pop-in',
+          animationDuration,
         })
         break
       case 'redirect':
@@ -82,6 +124,9 @@ export function createNavigatorOnClick(
       case 'navigateBack':
         uni.navigateBack({
           delta: props.delta,
+          animationType:
+            (props.animationType as AnimationBackType) || 'pop-out',
+          animationDuration,
         })
         break
       default:
