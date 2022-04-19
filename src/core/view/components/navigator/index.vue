@@ -23,7 +23,35 @@ import {
   hover
 } from 'uni-mixins'
 
-const OPEN_TYPES = ['navigate', 'redirect', 'switchTab', 'reLaunch', 'navigateBack']
+const OPEN_TYPES = [
+  'navigate',
+  'redirect',
+  'switchTab',
+  'reLaunch',
+  'navigateBack'
+]
+const ANIMATION_TYPE_IN = [
+  'slide-in-right',
+  'slide-in-left',
+  'slide-in-top',
+  'slide-in-bottom',
+  'fade-in',
+  'zoom-out',
+  'zoom-fade-out',
+  'pop-in',
+  'none'
+]
+const ANIMATION_TYPE_OUT = [
+  'slide-out-right',
+  'slide-out-left',
+  'slide-out-top',
+  'slide-out-bottom',
+  'fade-out',
+  'zoom-in',
+  'zoom-fade-in',
+  'pop-out',
+  'none'
+]
 
 export default {
   name: 'Navigator',
@@ -50,7 +78,7 @@ export default {
     },
     hoverStartTime: {
       type: [Number, String],
-      default: 20
+      default: 50
     },
     hoverStayTime: {
       type: [Number, String],
@@ -59,6 +87,16 @@ export default {
     exists: {
       type: String,
       default: ''
+    },
+    animationType: {
+      type: String,
+      validator (value) {
+        return !value || ~ANIMATION_TYPE_IN.concat(ANIMATION_TYPE_OUT).indexOf(value)
+      }
+    },
+    animationDuration: {
+      type: [String, Number],
+      default: 300
     }
   },
 
@@ -70,10 +108,14 @@ export default {
         return
       }
 
+      const animationDuration = parseInt(this.animationDuration)
+
       switch (this.openType) {
         case 'navigate':
           uni.navigateTo({
-            url: this.url
+            url: this.url,
+            animationType: this.animationType || 'pop-in',
+            animationDuration
           })
           break
         case 'redirect':
@@ -94,7 +136,9 @@ export default {
           break
         case 'navigateBack':
           uni.navigateBack({
-            delta: this.delta
+            delta: this.delta,
+            animationType: this.animationType || 'pop-out',
+            animationDuration
           })
           break
         default:
