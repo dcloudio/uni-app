@@ -172,7 +172,10 @@ export function setupApp(comp: any) {
         onBeforeMount(onLaunch)
       }
       onMounted(() => {
-        window.addEventListener('resize', debounce(onResize, 50))
+        window.addEventListener(
+          'resize',
+          debounce(onResize, 50, { setTimeout, clearTimeout })
+        )
         window.addEventListener('message', onMessage)
         document.addEventListener('visibilitychange', onVisibilityChange)
       })

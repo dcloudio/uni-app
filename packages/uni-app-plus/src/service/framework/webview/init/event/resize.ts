@@ -19,5 +19,8 @@ export function onWebviewResize(webview: PlusWebviewWebviewObject) {
     }
     emit(ON_RESIZE, res, parseInt(webview.id!)) // Page lifecycle
   }
-  webview.addEventListener('resize' as any, debounce(onResize, 50))
+  webview.addEventListener(
+    'resize' as any,
+    debounce(onResize, 50, { setTimeout, clearTimeout })
+  )
 }

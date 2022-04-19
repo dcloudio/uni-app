@@ -26,7 +26,7 @@ export const initEasycom = (watcher?: FSWatcher) => {
       disableGlobbing: true,
     })
   }
-  const refreshEasycom = debounce(refresh, 100)
+  const refreshEasycom = debounce(refresh, 100, { setTimeout, clearTimeout })
   watcher.on('all', (eventName, path) => {
     if (!['add', 'unlink'].includes(eventName)) {
       return
