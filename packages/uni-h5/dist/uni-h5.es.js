@@ -8513,7 +8513,7 @@ function useBase(props2, rootRef, emit2) {
 function useValueSync(props2, state2, emit2, trigger) {
   const valueChangeFn = debounce((val) => {
     state2.value = getValueString(val, props2.type);
-  }, 100);
+  }, 100, { setTimeout, clearTimeout });
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -14285,7 +14285,7 @@ function setupApp(comp) {
         onBeforeMount(onLaunch);
       }
       onMounted(() => {
-        window.addEventListener("resize", debounce(onResize, 50));
+        window.addEventListener("resize", debounce(onResize, 50, { setTimeout, clearTimeout }));
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
       });
@@ -18300,7 +18300,10 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
       if (state2.keyword) {
         getList();
       }
-    }, 1e3);
+    }, 1e3, {
+      setTimeout,
+      clearTimeout
+    });
     watch(() => state2.searching, (val) => {
       reset();
       if (!val) {

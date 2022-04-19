@@ -1189,15 +1189,22 @@ const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
-function debounce(fn, delay) {
+/**
+ * 需要手动传入 timer,主要是解决 App 平台的定制 timer
+ * @param fn
+ * @param delay
+ * @param timer
+ * @returns
+ */
+function debounce(fn, delay, timer) {
     let timeout;
     const newFn = function () {
-        clearTimeout(timeout);
+        timer.clearTimeout(timeout);
         const timerFn = () => fn.apply(this, arguments);
-        timeout = setTimeout(timerFn, delay);
+        timeout = timer.setTimeout(timerFn, delay);
     };
     newFn.cancel = function () {
-        clearTimeout(timeout);
+        timer.clearTimeout(timeout);
     };
     return newFn;
 }

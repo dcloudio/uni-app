@@ -2965,7 +2965,7 @@ function useBase(props2, rootRef, emit2) {
 function useValueSync(props2, state, emit2, trigger) {
   const valueChangeFn = uniShared.debounce((val) => {
     state.value = getValueString(val, props2.type);
-  }, 100);
+  }, 100, { setTimeout, clearTimeout });
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {

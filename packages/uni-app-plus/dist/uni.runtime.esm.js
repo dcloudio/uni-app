@@ -17634,7 +17634,7 @@ function onWebviewResize(webview) {
         };
         emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
     };
-    webview.addEventListener('resize', debounce(onResize, 50));
+    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
 }
 
 const WEBVIEW_LISTENERS = {
