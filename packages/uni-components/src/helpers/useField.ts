@@ -229,9 +229,13 @@ function useValueSync(
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
-  const valueChangeFn = debounce((val: any) => {
-    state.value = getValueString(val, props.type)
-  }, 100)
+  const valueChangeFn = debounce(
+    (val: any) => {
+      state.value = getValueString(val, props.type)
+    },
+    100,
+    { setTimeout, clearTimeout }
+  )
   watch(() => props.modelValue, valueChangeFn)
   watch(() => props.value, valueChangeFn)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {

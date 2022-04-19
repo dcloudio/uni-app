@@ -220,12 +220,16 @@ export default /*#__PURE__*/ defineSystemComponent({
     const { t } = useI18n()
     const state = useState(props)
     const { list, listState, loadMore, reset, getList } = useList(state)
-    const search = debounce(() => {
-      reset()
-      if (state.keyword) {
-        getList()
-      }
-    }, 1000)
+    const search = debounce(
+      () => {
+        reset()
+        if (state.keyword) {
+          getList()
+        }
+      },
+      1000,
+      { setTimeout, clearTimeout }
+    )
     watch(
       () => state.searching,
       (val) => {
