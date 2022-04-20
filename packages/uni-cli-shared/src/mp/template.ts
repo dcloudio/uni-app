@@ -53,6 +53,10 @@ export interface MiniProgramCompilerOptions {
      * 父组件 setData 后，子组件的 properties 是否可以同步获取，目前仅 mp-weixin，mp-qq，mp-alipay 支持
      */
     getPropertySync?: boolean
+    /**
+     * 格式化组件名称，比如 wx-btn => weixin-btn (微信不允许以 wx 命名自定义组件)
+     */
+    normalizeName?: (name: string) => string
   }
   directive: string
   emitFile?: (emittedFile: EmittedAsset) => string

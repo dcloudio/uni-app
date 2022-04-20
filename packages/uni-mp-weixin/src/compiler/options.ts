@@ -57,6 +57,8 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN,
     getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
+    normalizeName: (name) =>
+      name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
   },
 }
 const projectConfigFilename = 'project.config.json'

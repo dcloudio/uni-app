@@ -10,6 +10,9 @@ import {
 } from '../src/mp/usingComponents'
 const inputDir = '/usr/xxx/projects/test/src'
 
+function normalizeComponentName(name: string) {
+  return name
+}
 async function resolve(id: string, importer?: string) {
   return {
     id: importer ? path.resolve(path.dirname(importer), id) : id,
@@ -44,6 +47,7 @@ export function createApp() {
         {
           inputDir,
           resolve,
+          normalizeComponentName,
         }
       )
 
@@ -88,6 +92,7 @@ export function createApp() {
         {
           inputDir,
           resolve,
+          normalizeComponentName,
         }
       )
 
@@ -118,7 +123,11 @@ export function createApp() {
     ) {
       const ast = parseProgram(source, filename, {})
       const { imports } = await parseMainDescriptor(filename, ast, resolve)
-      updateMiniProgramComponentsByMainFilename(filename, inputDir)
+      updateMiniProgramComponentsByMainFilename(
+        filename,
+        inputDir,
+        normalizeComponentName
+      )
       expect(findUsingComponents('pages/index/index')).toMatchObject(
         usingComponents
       )

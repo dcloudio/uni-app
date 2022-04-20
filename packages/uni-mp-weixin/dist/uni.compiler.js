@@ -100,7 +100,8 @@ const miniProgram = {
     component: {
         dir: COMPONENTS_DIR,
         vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
-        getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
+        getPropertySync: false,
+        normalizeName: (name) => name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
     },
 };
 const projectConfigFilename = 'project.config.json';
