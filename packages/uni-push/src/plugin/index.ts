@@ -1,5 +1,4 @@
 import path from 'path'
-import debug from 'debug'
 import {
   defineUniMainJsPlugin,
   isSsr,
@@ -8,7 +7,6 @@ import {
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
 
-const debugPush = debug('uni:push')
 export default () => [
   defineUniMainJsPlugin((opts) => {
     let isEnable = false
@@ -30,10 +28,9 @@ export default () => [
         if (isOffline) {
           return
         }
-        debugPush('deubg', debug)
         return {
           define: {
-            'process.env.UNI_PUSH_DEBUG': !!debug,
+            'process.env.UNI_PUSH_DEBUG': false,
           },
         }
       },

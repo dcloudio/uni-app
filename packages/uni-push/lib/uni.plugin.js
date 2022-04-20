@@ -1,15 +1,12 @@
 'use strict';
 
 var path = require('path');
-var debug = require('debug');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var debug__default = /*#__PURE__*/_interopDefaultLegacy(debug);
 
-const debugPush = debug__default["default"]('uni:push');
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
         let isEnable = false;
@@ -31,10 +28,9 @@ var index = () => [
                 if (isOffline) {
                     return;
                 }
-                debugPush('deubg', debug__default["default"]);
                 return {
                     define: {
-                        'process.env.UNI_PUSH_DEBUG': !!debug__default["default"],
+                        'process.env.UNI_PUSH_DEBUG': false,
                     },
                 };
             },
