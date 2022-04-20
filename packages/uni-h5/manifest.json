@@ -998,5 +998,21 @@
                 "preloadPage"
             ]
         ]
+    ],
+    "invokePushCallback": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "getPushCid": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "onPushMessage": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "offPushMessage": [
+        "/core/service/api/plugin/push.js",
+        []
     ]
 }

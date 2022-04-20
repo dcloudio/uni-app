@@ -7,7 +7,8 @@ const {
   normalizePath,
   getPlatformExts,
   getPlatformCssnano,
-  getPlatformStat
+  getPlatformStat,
+  getPlatformPush
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
@@ -166,6 +167,7 @@ module.exports = {
     parseEntry()
 
     const statCode = getPlatformStat()
+    const pushCode = getPlatformPush()
 
     let beforeCode = 'import \'uni-pages\';'
 
@@ -236,7 +238,7 @@ module.exports = {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + require('../util').getAutomatorCode() + statCode
+                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode
               ]
             }
           }, {

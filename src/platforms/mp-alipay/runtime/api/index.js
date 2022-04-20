@@ -8,8 +8,15 @@ export {
   setStorageSync,
   getStorageSync,
   removeStorageSync
-} from '../../helpers/storage'
-
+}
+  from '../../helpers/storage'
+export {
+  getPushCid,
+  onPushMessage,
+  offPushMessage,
+  invokePushCallback
+}
+  from 'uni-core/service/api/plugin/push'
 export function startGyroscope (params) {
   if (hasOwn(params, 'interval')) {
     console.warn('支付宝小程序 startGyroscope暂不支持interval')
@@ -65,7 +72,11 @@ export function createSelectorQuery () {
   }
 
   if (!query.fields) {
-    query.fields = function ({ rect, size, scrollOffset } = {}, callback) {
+    query.fields = function ({
+      rect,
+      size,
+      scrollOffset
+    } = {}, callback) {
       if (rect || size) {
         this.boundingClientRect()
       }
@@ -93,4 +104,6 @@ export function createIntersectionObserver (component, options) {
   return my.createIntersectionObserver(options)
 }
 
-export { createMediaQueryObserver }
+export {
+  createMediaQueryObserver
+}

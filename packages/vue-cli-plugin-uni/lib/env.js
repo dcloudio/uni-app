@@ -19,7 +19,13 @@ if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) 
 }
 process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), defaultInputDir)
 
-const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
+const {
+  getManifestJson,
+  isEnableUniPushV2,
+  isUniPushOffline
+} = require('@dcloudio/uni-cli-shared/lib/manifest')
+
+const manifestJsonObj = getManifestJson()
 
 process.env.UNI_APP_ID = manifestJsonObj.appid || ''
 process.env.UNI_APP_NAME = manifestJsonObj.name || ''
@@ -30,6 +36,13 @@ if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
   if (manifestJsonObj.vueVersion === '3' || manifestJsonObj.vueVersion === 3) {
     process.env.UNI_USING_VUE3 = true
     process.env.UNI_USING_VUE3_OPTIONS_API = true
+  }
+}
+// v2 uni-push
+if (isEnableUniPushV2(manifestJsonObj, process.env.UNI_PLATFORM)) {
+  process.env.UNI_PUSH_V2 = true
+  if (process.env.UNI_PLATFORM === 'app-plus' && isUniPushOffline(manifestJsonObj)) {
+    process.env.UNI_PUSH_V2_OFFLINE = true
   }
 }
 

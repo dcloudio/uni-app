@@ -20,6 +20,7 @@ packages/*/packages/mpvue-page-factory
 packages/*/packages/mpvue-template-compiler
 packages/*/packages/postcss-normalize-whitespace
 packages/*/packages/uni-app
+packages/*/packages/uni-push
 packages/*/packages/uni-stat
 packages/*/packages/uni-cloud
 packages/*/packages/vue-loader
