@@ -9,15 +9,19 @@ interface Timer {
  * @param timer
  * @returns
  */
-export function debounce(fn: Function, delay: number, timer: Timer) {
+export function debounce(
+  fn: Function,
+  delay: number,
+  { clearTimeout, setTimeout }: Timer
+) {
   let timeout: any
   const newFn = function (this: any) {
-    timer.clearTimeout(timeout)
+    clearTimeout(timeout)
     const timerFn = () => fn.apply(this, arguments)
-    timeout = timer.setTimeout(timerFn, delay)
+    timeout = setTimeout(timerFn, delay)
   }
   newFn.cancel = function () {
-    timer.clearTimeout(timeout)
+    clearTimeout(timeout)
   }
   return newFn
 }
