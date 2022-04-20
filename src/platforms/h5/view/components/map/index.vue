@@ -37,6 +37,8 @@ import {
   subscriber
 } from 'uni-mixins'
 
+import { hexToRgba } from 'uni-shared'
+
 import {
   loadMaps
 } from './maps'
@@ -459,27 +461,36 @@ export default {
         option.points.forEach(point => {
           path.push(new maps.LatLng(point.latitude, point.longitude))
         })
-
-        if (option.borderWidth) {
-          var border = new maps.Polyline({
-            map,
-            clickable: false,
-            path,
-            strokeWeight: option.width + option.borderWidth,
-            strokeColor: option.borderColor,
-            strokeDashStyle: option.dottedLine ? 'dash' : 'solid'
-          })
-          polyline.push(border)
+        const borderWidth = Number(option.borderWidth) || 0
+        const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color)
+        const { r: br, g: bg, b: bb, a: ba } = hexToRgba(option.borderColor)
+        const polylineOptions = {
+          map,
+          clickable: false,
+          path,
+          strokeWeight: option.width + borderWidth,
+          strokeDashStyle: option.dottedLine ? 'dash' : 'solid'
         }
-        var line = new maps.Polyline({
+        const polylineBorderOptions = {
           map,
           clickable: false,
           path,
           strokeWeight: option.width,
-          strokeColor: option.color,
           strokeDashStyle: option.dottedLine ? 'dash' : 'solid'
-        })
-        polyline.push(line)
+        }
+        if ('Color' in maps) {
+          polylineOptions.strokeColor = new maps.Color(sr, sg, sb, sa)
+          polylineBorderOptions.strokeColor = new maps.Color(br, bg, bb, ba)
+        } else {
+          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
+          polylineOptions.strokeOpacity = sa
+          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`
+          polylineBorderOptions.strokeOpacity = ba
+        }
+        if (borderWidth) {
+          polyline.push(new maps.Polyline(polylineBorderOptions))
+        }
+        polyline.push(new maps.Polyline(polylineOptions))
       })
     },
     removePolyline () {
@@ -497,27 +508,26 @@ export default {
       this.circles.forEach(option => {
         var center = new maps.LatLng(option.latitude, option.longitude)
 
-        function getColor (color) {
-          var c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/)
-          if ('Color' in maps) {
-            if (c && c.length) {
-              return maps.Color.fromHex(c[0], Number('0x' + c[1] || 255) / 255)
-            } else {
-              return undefined
-            }
-          }
-          return color
-        }
-        var circle = new maps.Circle({
+        const circleOptions = {
           map,
           center,
           clickable: false,
           radius: option.radius,
           strokeWeight: Number(option.strokeWidth) || 1,
-          fillColor: getColor(option.fillColor) || getColor('#00000001'),
-          strokeColor: getColor(option.color) || '#000000',
           strokeDashStyle: 'solid'
-        })
+        }
+        const { r: fr, g: fg, b: fb, a: fa } = hexToRgba(option.fillColor || '#00000000')
+        const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color || '#000000')
+        if ('Color' in maps) {
+          circleOptions.fillColor = new maps.Color(fr, fg, fb, fa)
+          circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa)
+        } else {
+          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`
+          circleOptions.fillOpacity = fa
+          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
+          circleOptions.strokeOpacity = sa
+        }
+        var circle = new maps.Circle(circleOptions)
         circles.push(circle)
       })
     },
