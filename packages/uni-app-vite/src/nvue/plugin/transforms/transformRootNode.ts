@@ -1,4 +1,7 @@
-import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
+import {
+  createAttributeNode,
+  createBindDirectiveNode,
+} from '@dcloudio/uni-cli-shared'
 import {
   AttributeNode,
   createSimpleExpression,
@@ -69,7 +72,7 @@ function createScrollViewProps({
       scrollIndicator === 'none' ? falseExpr : trueExpr
     ),
     createBindDirectiveNode('enableBackToTop', trueExpr),
-    createBindDirectiveNode('bubble', trueExpr),
+    createAttributeNode('bubble', 'true'),
     createBindDirectiveNode('style', `{flexDirection:'column'}`),
   ]
 }
