@@ -65,6 +65,7 @@ export function initEnv(
   if (options.plugin) {
     process.env.UNI_MP_PLUGIN = 'true'
   }
+  // TODO 需要识别 mode
   if (type === 'dev') {
     process.env.NODE_ENV = 'development'
   } else if (type === 'build') {

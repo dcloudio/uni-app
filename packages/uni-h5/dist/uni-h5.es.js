@@ -1183,8 +1183,11 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
 function getComponentDescriptor(instance2, isOwnerInstance) {
   return createComponentDescriptor(instance2, isOwnerInstance);
 }
-function resolveOwnerComponentPublicInstance(eventValue, instance2) {
-  if (!instance2 || eventValue.length < 2) {
+function resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength = true) {
+  if (!instance2) {
+    return false;
+  }
+  if (checkArgsLength && eventValue.length < 2) {
     return false;
   }
   const ownerVm = resolveOwnerVm(instance2);
@@ -1197,14 +1200,14 @@ function resolveOwnerComponentPublicInstance(eventValue, instance2) {
   }
   return ownerVm;
 }
-function wrapperH5WxsEvent(event, eventValue, instance2) {
+function wrapperH5WxsEvent(event, eventValue, instance2, checkArgsLength = true) {
   if (eventValue) {
     Object.defineProperty(event, "instance", {
       get() {
         return getComponentDescriptor(instance2.proxy, false);
       }
     });
-    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2);
+    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength);
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)];
     }
@@ -1228,7 +1231,7 @@ function $nne(evt, eventValue, instance2) {
   const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
   {
     if (isHTMLTarget) {
-      return [evt];
+      return wrapperH5WxsEvent(evt, eventValue, instance2, false) || [evt];
     }
   }
   const res = createNativeEvent(evt, isHTMLTarget);
