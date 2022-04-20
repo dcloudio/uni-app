@@ -84,9 +84,9 @@ e.send({data:t,success:function(t){},fail:function(t){}});
 
 var GtPush = /*@__PURE__*/getDefaultExportFromCjs(gtpushMin);
 
-if (process.env.UNI_PUSH_DEBUG) {
-    GtPush.setDebugMode(true);
-}
+// if (process.env.UNI_PUSH_DEBUG) {
+//   GtPush.setDebugMode(true)
+// }
 const appid = process.env.UNI_APP_ID;
 if (!appid) {
     Promise.resolve().then(() => {

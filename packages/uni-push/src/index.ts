@@ -1,8 +1,8 @@
 import GtPush from '../lib/gtpush-min'
 
-if (process.env.UNI_PUSH_DEBUG) {
-  GtPush.setDebugMode(true)
-}
+// if (process.env.UNI_PUSH_DEBUG) {
+//   GtPush.setDebugMode(true)
+// }
 
 const appid = process.env.UNI_APP_ID!
 if (!appid) {
