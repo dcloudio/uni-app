@@ -243,9 +243,13 @@ export function getComponentDescriptor(
 
 function resolveOwnerComponentPublicInstance(
   eventValue: Function,
-  instance: ComponentInternalInstance | null
+  instance: ComponentInternalInstance | null,
+  checkArgsLength = true
 ) {
-  if (!instance || eventValue.length < 2) {
+  if (!instance) {
+    return false
+  }
+  if (checkArgsLength && eventValue.length < 2) {
     return false
   }
   const ownerVm = resolveOwnerVm(instance)
@@ -262,7 +266,8 @@ function resolveOwnerComponentPublicInstance(
 export function wrapperH5WxsEvent(
   event: Record<string, any>,
   eventValue?: Function,
-  instance?: ComponentInternalInstance | null
+  instance?: ComponentInternalInstance | null,
+  checkArgsLength = true
 ) {
   if (eventValue) {
     Object.defineProperty(event, 'instance', {
@@ -270,7 +275,11 @@ export function wrapperH5WxsEvent(
         return getComponentDescriptor(instance!.proxy!, false)
       },
     })
-    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance!)
+    const ownerVm = resolveOwnerComponentPublicInstance(
+      eventValue,
+      instance!,
+      checkArgsLength
+    )
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)]
     }

@@ -23,7 +23,14 @@ export function $nne(
   // App 平台时不返回原始事件对象 https://github.com/dcloudio/uni-app/issues/3240
   if (__PLATFORM__ === 'h5') {
     if (isHTMLTarget) {
-      return [evt]
+      return (
+        wrapperH5WxsEvent(
+          evt,
+          eventValue,
+          instance as ComponentInternalInstance,
+          false // 原生标签事件可能被cache，参数长度不准确，故默认不校验
+        ) || [evt]
+      )
     }
   }
 
