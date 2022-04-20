@@ -1,12 +1,13 @@
 import { inject, onUnmounted, watch } from 'vue'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Maps, Map, Circle } from './maps'
+import { Maps, Map, Circle, CircleOptions } from './maps'
+import { hexToRgba } from '../../../helpers/hexToRgba'
 
 const props = {
   latitude: { type: [Number, String], require: true },
   longitude: { type: [Number, String], require: true },
-  color: { type: String, default: '' },
-  fillColor: { type: String, default: '' },
+  color: { type: String, default: '#000000' },
+  fillColor: { type: String, default: '#00000000' },
   radius: { type: [Number, String], require: true },
   strokeWidth: { type: [Number, String], default: '' },
   level: { type: String, default: '' },
@@ -39,30 +40,26 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
       function addCircle(option: Props) {
         const center = new maps.LatLng(option.latitude, option.longitude)
-        function getColor(color: string) {
-          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/)
-          if ('Color' in maps) {
-            if (c && c.length) {
-              return maps.Color.fromHex(
-                c[0],
-                Number('0x' + c[1] || 255) / 255
-              ).toRGBA()
-            } else {
-              return undefined
-            }
-          }
-          return color
-        }
-        circle = new maps.Circle({
+        const circleOptions: CircleOptions = {
           map: map as any,
           center: center as any,
           clickable: false,
           radius: option.radius,
           strokeWeight: Number(option.strokeWidth) || 1,
-          fillColor: getColor(option.fillColor) || getColor('#00000001'),
-          strokeColor: getColor(option.color) || '#000000',
           strokeDashStyle: 'solid',
-        })
+        }
+        const { r: fr, g: fg, b: fb, a: fa } = hexToRgba(option.fillColor)
+        const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color)
+        if ('Color' in maps) {
+          circleOptions.fillColor = new maps.Color(fr, fg, fb, fa) as any
+          circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa) as any
+        } else {
+          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`
+          circleOptions.fillOpacity = fa
+          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
+          circleOptions.strokeOpacity = sa
+        }
+        circle = new maps.Circle(circleOptions)
       }
       addCircle(props as Props)
       watch(props, updateCircle)
