@@ -136,7 +136,7 @@ export declare const DATA_RE: RegExp;
  * @param timer
  * @returns
  */
-export declare function debounce(fn: Function, delay: number, timer: Timer): {
+export declare function debounce(fn: Function, delay: number, { clearTimeout, setTimeout }: Timer): {
     (this: any): void;
     cancel(): void;
 };

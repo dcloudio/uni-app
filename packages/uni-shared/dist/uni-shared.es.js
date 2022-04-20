@@ -1192,15 +1192,15 @@ const ACTION_TYPE_EVENT = 20;
  * @param timer
  * @returns
  */
-function debounce(fn, delay, timer) {
+function debounce(fn, delay, { clearTimeout, setTimeout }) {
     let timeout;
     const newFn = function () {
-        timer.clearTimeout(timeout);
+        clearTimeout(timeout);
         const timerFn = () => fn.apply(this, arguments);
-        timeout = timer.setTimeout(timerFn, delay);
+        timeout = setTimeout(timerFn, delay);
     };
     newFn.cancel = function () {
-        timer.clearTimeout(timeout);
+        clearTimeout(timeout);
     };
     return newFn;
 }
