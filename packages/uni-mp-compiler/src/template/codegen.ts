@@ -335,6 +335,9 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
   }
   if (isUserComponent(node, context)) {
     tag = hyphenate(tag)
+    if (context.component?.normalizeName) {
+      tag = context.component?.normalizeName(tag)
+    }
   }
   const { push } = context
 
