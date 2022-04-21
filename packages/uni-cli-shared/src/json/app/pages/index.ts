@@ -1,10 +1,10 @@
-import { globalCode, polyfillCode, restoreGlobalCode } from './code'
+import { globalCode } from './code'
 import { definePageCode, defineNVuePageCode } from './definePage'
 import { normalizeAppUniConfig } from './uniConfig'
 import { normalizeAppUniRoutes } from './uniRoutes'
 
 export function normalizeAppPagesJson(pagesJson: Record<string, any>) {
-  return polyfillCode + restoreGlobalCode + definePageCode(pagesJson)
+  return definePageCode(pagesJson)
 }
 
 export function normalizeAppNVuePagesJson(pagesJson: Record<string, any>) {

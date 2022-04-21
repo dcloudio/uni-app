@@ -11,12 +11,14 @@ import {
   UniVitePlugin,
   initPostcssPlugin,
   parseRpx2UnitOnce,
+  polyfillCode,
 } from '@dcloudio/uni-cli-shared'
 import { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
 import { createConfigResolved } from '../../plugin/configResolved'
 import { templateDir } from '../../utils'
+import { restoreGlobalCode } from '@dcloudio/uni-cli-shared/dist/json/app/pages/code'
 
 export function uniAppVuePlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -42,6 +44,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
             external: ['vue', '@vue/shared'],
             output: {
               name: 'AppService',
+              banner: polyfillCode + restoreGlobalCode,
               format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',
               amd: {
                 autoId: true,
