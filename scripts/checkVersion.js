@@ -18,6 +18,9 @@ const pkgs = {
   vuex: {
     latest: '4.0.2',
   },
+  pinia: {
+    latest: '2.0.13',
+  },
   'vue-i18n': {
     next: '9.1.9',
   },
