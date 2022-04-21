@@ -1,4 +1,4 @@
-import { extend, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, isSymbol, toNumber, EMPTY_ARR, isModelListener, stringifyStyle as stringifyStyle$1, toDisplayString } from '@vue/shared';
+import { extend, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, isSymbol, toNumber, EMPTY_ARR, isModelListener, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, dynamicSlotName } from '@dcloudio/uni-shared';
 
@@ -5597,7 +5597,17 @@ function stringifyStyle(value) {
     if (isString(value)) {
         return value;
     }
-    return stringifyStyle$1(normalizeStyle(value));
+    return stringify(normalizeStyle(value));
+}
+function stringify(styles) {
+    let ret = '';
+    if (!styles || isString(styles)) {
+        return ret;
+    }
+    for (const key in styles) {
+        ret += `${key.startsWith(`--`) ? key : hyphenate(key)}:${styles[key]};`;
+    }
+    return ret;
 }
 
 /**
