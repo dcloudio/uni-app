@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 function generatePageCode (pages, pageOptions) {
   return pages.map(pagePath => {
     if (pageOptions[pagePath].nvue) {
@@ -11,24 +13,15 @@ function generateUniConfig (appJson, isAppView) {
   return isAppView ? `window.__uniConfig = ${JSON.stringify({ window: appJson.window }, null)};` : ''
 }
 
+function generatePolyfill () {
+  return fs.readFileSync(require.resolve('@dcloudio/uni-cli-shared/lib/uni-polyfill.js'), { encoding: 'utf8' })
+}
+
 module.exports = function definePages (appJson, isAppView) {
   return {
     name: 'define-pages.js',
     content: `
-if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
-  Promise.prototype.finally = function(callback) {
-    const promise = this.constructor
-    return this.then(
-      value => promise.resolve(callback()).then(() => value),
-      reason => promise.resolve(callback()).then(() => {
-        throw reason
-      })
-    )
-  }
-}
-if(uni.base64ToArrayBuffer){
-  ArrayBuffer = uni.base64ToArrayBuffer('').constructor
-}
+${generatePolyfill()}
 ${generateUniConfig(appJson, isAppView)}
 if(uni.restoreGlobal){
   uni.restoreGlobal(weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
