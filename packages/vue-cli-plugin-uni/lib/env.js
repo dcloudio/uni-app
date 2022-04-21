@@ -6,6 +6,7 @@ const uniI18n = require('@dcloudio/uni-cli-i18n')
 const moduleAlias = require('module-alias')
 
 require('./error-reporting')
+require('../util/console')
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
