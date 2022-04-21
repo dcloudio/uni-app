@@ -1,3 +1,4 @@
+import { recursive } from 'merge'
 const wxPageOrientationMapping = {
   auto: [
     'portrait-primary',
@@ -13,6 +14,15 @@ export function initPlus(
   manifestJson: Record<string, any>,
   pagesJson: UniApp.PagesJson
 ) {
+  // 根节点配置了统计
+  if (manifestJson.uniStatistics) {
+    manifestJson.plus.uniStatistics = recursive(
+      true,
+      manifestJson.uniStatistics,
+      manifestJson.plus.uniStatistics
+    )
+    delete manifestJson.uniStatistics
+  }
   // 转换为老版本配置
   if (manifestJson.plus.modules) {
     manifestJson.permissions = manifestJson.plus.modules
