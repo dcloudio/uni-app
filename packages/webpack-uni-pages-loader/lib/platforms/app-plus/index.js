@@ -143,11 +143,22 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         name: userManifestJson.versionName,
         code: userManifestJson.versionCode
       },
-      locale: userManifestJson.locale
+      locale: userManifestJson.locale,
+      uniStatistics: userManifestJson.uniStatistics
     }, {
       plus: userManifestJson['app-plus']
     }
   )
+
+  // 根节点配置了统计
+  if (manifestJson.uniStatistics) {
+    manifestJson.plus.uniStatistics = merge.recursive(
+      true,
+      manifestJson.uniStatistics,
+      manifestJson.plus.uniStatistics
+    )
+    delete manifestJson.uniStatistics
+  }
 
   const splashscreenOptions =
     userManifestJson['app-plus'] && userManifestJson['app-plus'].splashscreen
