@@ -131,7 +131,7 @@ function transformElementVModel(
     binding: 'value',
     event: 'input',
     formatEventCode(code) {
-      return code.replace(`= $event`, `= $event.detail.value`)
+      return code.replace(/=\s\$event/g, `= $event.detail.value`)
     },
   })
   if (dirs.length === 2) {
