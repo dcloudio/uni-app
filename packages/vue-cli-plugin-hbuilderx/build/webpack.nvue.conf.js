@@ -316,6 +316,7 @@ module.exports = function () {
       extensions: ['.js', '.nvue', '.vue', '.json'],
       alias: {
         '@': process.env.UNI_INPUT_DIR,
+        'uni-polyfill': require.resolve('@dcloudio/uni-cli-shared/lib/uni-polyfill.js'),
         'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
         'uni-app-style': path.resolve(process.env.UNI_INPUT_DIR, getNVueMainEntry()) + '?' + JSON.stringify({
           type: 'appStyle'

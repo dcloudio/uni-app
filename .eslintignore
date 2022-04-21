@@ -35,3 +35,4 @@ packages/uni-stat
 node_modules
 automator.js
 uni.automator.js
+uni-polyfill.js
