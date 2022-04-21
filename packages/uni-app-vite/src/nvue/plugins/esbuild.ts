@@ -28,6 +28,7 @@ export function uniEsbuildPlugin({
 }): Plugin {
   let resolvedConfig: ResolvedConfig
   let buildOptions: BuildOptions
+  const nvueOutputDir = nvueOutDir()
   const outputDir = process.env.UNI_OUTPUT_DIR
   let isFirst = true
   return {
@@ -50,6 +51,7 @@ export function uniEsbuildPlugin({
     },
     async writeBundle(_, bundle) {
       const entryPoints: string[] = []
+      const assets: string[] = []
       Object.keys(bundle).forEach((name) => {
         const chunk = bundle[name]
         if (
@@ -58,8 +60,19 @@ export function uniEsbuildPlugin({
           chunk.facadeModuleId.endsWith('.nvue')
         ) {
           entryPoints.push(name)
+        } else if (chunk.type === 'asset') {
+          assets.push(name)
         }
       })
+
+      assets.forEach((name) => {
+        fs.copySync(
+          path.resolve(nvueOutputDir, name),
+          path.resolve(outputDir, name),
+          { overwrite: false }
+        )
+      })
+
       if (!entryPoints.length) {
         return
       }
