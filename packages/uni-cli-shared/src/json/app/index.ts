@@ -1,3 +1,3 @@
 export * from './pages'
 export * from './manifest'
-export { polyfillCode } from './pages/code'
+export { polyfillCode, arrayBufferCode, restoreGlobalCode } from './pages/code'

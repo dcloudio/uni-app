@@ -1,3 +1,8 @@
+export const arrayBufferCode = `
+if(typeof uni !== 'undefined' && uni.base64ToArrayBuffer){
+  ArrayBuffer = uni.base64ToArrayBuffer('').constructor
+};
+`
 export const polyfillCode = `
 if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
   Promise.prototype.finally = function(callback) {
@@ -9,10 +14,8 @@ if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
       })
     )
   }
-}
-if(uni&&uni.base64ToArrayBuffer){
-  ArrayBuffer = uni.base64ToArrayBuffer('').constructor
-}
+};
+${arrayBufferCode}
 `
 export const restoreGlobalCode = `
 if(uni.restoreGlobal){

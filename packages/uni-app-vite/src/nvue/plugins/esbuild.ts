@@ -8,6 +8,7 @@ import debug from 'debug'
 import {
   APP_CONFIG_SERVICE,
   hash,
+  polyfillCode,
   removeExt,
   transformWithEsbuild,
 } from '@dcloudio/uni-cli-shared'
@@ -40,7 +41,8 @@ export function uniEsbuildPlugin({
         target: 'es6',
         minify: config.build.minify ? true : false,
         banner: {
-          js: `"use weex:vue";`,
+          js: `"use weex:vue";
+${polyfillCode}`,
         },
         bundle: true,
         write: false,
@@ -148,9 +150,6 @@ if(webview){
   const __pagePath = '${removeExt(filename)}'
   let __pageQuery = {}
   try{ __pageQuery = JSON.parse(webview.__query__) }catch(e){}
-  if(uni.base64ToArrayBuffer){
-    ArrayBuffer = uni.base64ToArrayBuffer('').constructor
-  }
   App.mpType = 'page'
   const app = Vue.createPageApp(App,{$store:getApp({allowDefault:true}).$store,__pageId,__pagePath,__pageQuery})
   app.provide('__globalStyles', Vue.useCssStyles([...__uniConfig.styles, ...(App.styles||[])]))
