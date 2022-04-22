@@ -1183,8 +1183,11 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
 function getComponentDescriptor(instance2, isOwnerInstance) {
   return createComponentDescriptor(instance2, isOwnerInstance);
 }
-function resolveOwnerComponentPublicInstance(eventValue, instance2) {
-  if (!instance2 || eventValue.length < 2) {
+function resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength = true) {
+  if (!instance2) {
+    return false;
+  }
+  if (checkArgsLength && eventValue.length < 2) {
     return false;
   }
   const ownerVm = resolveOwnerVm(instance2);
@@ -1197,14 +1200,14 @@ function resolveOwnerComponentPublicInstance(eventValue, instance2) {
   }
   return ownerVm;
 }
-function wrapperH5WxsEvent(event, eventValue, instance2) {
+function wrapperH5WxsEvent(event, eventValue, instance2, checkArgsLength = true) {
   if (eventValue) {
     Object.defineProperty(event, "instance", {
       get() {
         return getComponentDescriptor(instance2.proxy, false);
       }
     });
-    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2);
+    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength);
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)];
     }
@@ -1228,7 +1231,7 @@ function $nne(evt, eventValue, instance2) {
   const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
   {
     if (isHTMLTarget) {
-      return [evt];
+      return wrapperH5WxsEvent(evt, eventValue, instance2, false) || [evt];
     }
   }
   const res = createNativeEvent(evt, isHTMLTarget);
@@ -15774,6 +15777,40 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
+function hexToRgba(hex) {
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  let tmpHex = hex.slice(1);
+  const tmpHexLen = tmpHex.length;
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+  }
+  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+  if (!sa) {
+    return { r, g: g2, b, a: 1 };
+  }
+  return {
+    r,
+    g: g2,
+    b,
+    a: (`0x100${sa}` - 65536) / 255
+  };
+}
 const props$d = {
   points: {
     type: Array,
@@ -15844,25 +15881,48 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
           path.push(new maps2.LatLng(point.latitude, point.longitude));
         });
         const strokeWeight = Number(option.width) || 1;
-        polyline = new maps2.Polyline({
+        const {
+          r: sr,
+          g: sg,
+          b: sb,
+          a: sa
+        } = hexToRgba(option.color);
+        const {
+          r: br,
+          g: bg,
+          b: bb,
+          a: ba
+        } = hexToRgba(option.borderColor);
+        const polylineOptions = {
           map,
           clickable: false,
           path,
           strokeWeight,
           strokeColor: option.color || void 0,
           strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        });
+        };
         const borderWidth = Number(option.borderWidth) || 0;
-        if (borderWidth) {
-          polylineBorder = new maps2.Polyline({
-            map,
-            clickable: false,
-            path,
-            strokeWeight: strokeWeight + borderWidth * 2,
-            strokeColor: option.borderColor || void 0,
-            strokeDashStyle: option.dottedLine ? "dash" : "solid"
-          });
+        const polylineBorderOptions = {
+          map,
+          clickable: false,
+          path,
+          strokeWeight: strokeWeight + borderWidth * 2,
+          strokeColor: option.borderColor || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        };
+        if ("Color" in maps2) {
+          polylineOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          polylineBorderOptions.strokeColor = new maps2.Color(br, bg, bb, ba);
+        } else {
+          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+          polylineOptions.strokeOpacity = sa;
+          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`;
+          polylineBorderOptions.strokeOpacity = ba;
         }
+        if (borderWidth) {
+          polylineBorder = new maps2.Polyline(polylineBorderOptions);
+        }
+        polyline = new maps2.Polyline(polylineOptions);
       }
       addPolyline(props2);
       watch(props2, updatePolyline);
@@ -15884,11 +15944,11 @@ const props$c = {
   },
   color: {
     type: String,
-    default: ""
+    default: "#000000"
   },
   fillColor: {
     type: String,
-    default: ""
+    default: "#00000000"
   },
   radius: {
     type: [Number, String],
@@ -15921,27 +15981,36 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
       }
       function addCircle(option) {
         const center = new maps2.LatLng(option.latitude, option.longitude);
-        function getColor(color) {
-          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
-          if ("Color" in maps2) {
-            if (c && c.length) {
-              return maps2.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
-            } else {
-              return void 0;
-            }
-          }
-          return color;
-        }
-        circle = new maps2.Circle({
+        const circleOptions = {
           map,
           center,
           clickable: false,
           radius: option.radius,
           strokeWeight: Number(option.strokeWidth) || 1,
-          fillColor: getColor(option.fillColor) || getColor("#00000001"),
-          strokeColor: getColor(option.color) || "#000000",
           strokeDashStyle: "solid"
-        });
+        };
+        const {
+          r: fr,
+          g: fg,
+          b: fb,
+          a: fa
+        } = hexToRgba(option.fillColor);
+        const {
+          r: sr,
+          g: sg,
+          b: sb,
+          a: sa
+        } = hexToRgba(option.color);
+        if ("Color" in maps2) {
+          circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+          circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+        } else {
+          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+          circleOptions.fillOpacity = fa;
+          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+          circleOptions.strokeOpacity = sa;
+        }
+        circle = new maps2.Circle(circleOptions);
       }
       addCircle(props2);
       watch(props2, updateCircle);
@@ -20174,40 +20243,6 @@ var props$3 = {
     default: 0
   }
 };
-function hexToRgba(hex) {
-  if (!hex) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  let tmpHex = hex.slice(1);
-  const tmpHexLen = tmpHex.length;
-  if (![3, 4, 6, 8].includes(tmpHexLen)) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  if (tmpHexLen === 3 || tmpHexLen === 4) {
-    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
-  }
-  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
-  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
-  if (!sa) {
-    return { r, g: g2, b, a: 1 };
-  }
-  return {
-    r,
-    g: g2,
-    b,
-    a: (`0x100${sa}` - 65536) / 255
-  };
-}
 var MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
   props: props$3,
