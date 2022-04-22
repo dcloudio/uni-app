@@ -5420,7 +5420,11 @@ function createInvoker(initialValue, instance) {
             setTimeout(invoke);
         }
         else {
-            return invoke();
+            const res = invoke();
+            if (e.type === 'input' && isPromise(res)) {
+                return;
+            }
+            return res;
         }
     };
     invoker.value = initialValue;
