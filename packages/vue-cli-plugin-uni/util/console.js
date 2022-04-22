@@ -8,21 +8,21 @@ const ZERO_WIDTH_CHAR = {
   backup3: '\uFEFF'
 }
 
-if (console) {
-  function overridedConsole(name, oldFn, char) {
-    console[name] = function (...args) {
-      oldFn.apply(this, args.map(arg => {
-        let item
-        if (typeof arg !== 'object') {
-          item = `${char}${arg}${char}`
-        } else {
-          item = `${char}${JSON.stringify(arg)}${char}`
-        }
+function overridedConsole (name, oldFn, char) {
+  console[name] = function (...args) {
+    oldFn.apply(this, args.map(arg => {
+      let item
+      if (typeof arg !== 'object') {
+        item = `${char}${arg}${char}`
+      } else {
+        item = `${char}${JSON.stringify(arg)}${char}`
+      }
 
-        return item
-      }))
-    }
+      return item
+    }))
   }
+}
+if (typeof console !== 'undefined') {
   overridedConsole('warn', console.warn, ZERO_WIDTH_CHAR.WARNING)
   // overridedConsole('error', console.error, ZERO_WIDTH_CHAR.ERROR)
 }
