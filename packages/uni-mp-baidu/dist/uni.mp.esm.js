@@ -286,7 +286,7 @@ function findHooks(vueOptions, hooks = new Set()) {
     }
     return hooks;
 }
-function initHook$1(mpOptions, hook, excludes) {
+function initHook(mpOptions, hook, excludes) {
     if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
         mpOptions[hook] = function (args) {
             return this.$vm && this.$vm.$callHook(hook, args);
@@ -295,10 +295,10 @@ function initHook$1(mpOptions, hook, excludes) {
 }
 const EXCLUDE_HOOKS = [ON_READY];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
-    hooks.forEach((hook) => initHook$1(mpOptions, hook, excludes));
+    hooks.forEach((hook) => initHook(mpOptions, hook, excludes));
 }
 function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
-    findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+    findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
 }
 function initRuntimeHooks(mpOptions, runtimeHooks) {
     if (!runtimeHooks) {
@@ -307,7 +307,7 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
     const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
     hooks.forEach((hook) => {
         if (runtimeHooks & MINI_PROGRAM_PAGE_RUNTIME_HOOKS[hook]) {
-            initHook$1(mpOptions, hook, []);
+            initHook(mpOptions, hook, []);
         }
     });
 }
@@ -924,7 +924,7 @@ function initTriggerEvent(mpInstance) {
         return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
     };
 }
-function initHook(name, options, isComponent) {
+function initMiniProgramHook(name, options, isComponent) {
     const oldHook = options[name];
     if (!oldHook) {
         options[name] = function () {
@@ -939,14 +939,14 @@ function initHook(name, options, isComponent) {
     }
 }
 Page = function (options) {
-    initHook(ON_LOAD, options);
+    initMiniProgramHook(ON_LOAD, options);
     return MPPage(options);
 };
 {
     Page.after = MPPage.after;
 }
 Component = function (options) {
-    initHook('created', options);
+    initMiniProgramHook('created', options);
     // 小程序组件
     const isVueComponent = options.properties && options.properties.uP;
     if (!isVueComponent) {
