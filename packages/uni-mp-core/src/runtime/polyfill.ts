@@ -13,7 +13,7 @@ function initTriggerEvent(mpInstance: MPComponentInstance) {
   }
 }
 
-function initHook(
+function initMiniProgramHook(
   name: 'onLoad' | 'created',
   options: Record<string, any>,
   isComponent?: boolean
@@ -39,7 +39,7 @@ function initHook(
 }
 
 Page = function (options) {
-  initHook(ON_LOAD, options)
+  initMiniProgramHook(ON_LOAD, options)
   return MPPage(options)
 }
 if (__PLATFORM__ === 'mp-baidu') {
@@ -48,7 +48,7 @@ if (__PLATFORM__ === 'mp-baidu') {
   ;(Page as any).after = (MPPage as any).after
 }
 Component = function (options) {
-  initHook('created', options, true)
+  initMiniProgramHook('created', options, true)
   // 小程序组件
   const isVueComponent = options.properties && options.properties.uP
   if (!isVueComponent) {

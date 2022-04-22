@@ -14,6 +14,7 @@ import { uniAppCssPlugin } from './plugins/appCss'
 import { uniEsbuildPlugin } from './plugins/esbuild'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
+import { uniRenderjsPlugin } from './plugins/renderjs'
 
 export { initNVueNodeTransforms } from './plugin'
 
@@ -28,6 +29,7 @@ export function initNVuePlugins() {
     uniManifestJsonPlugin(),
     uniPagesJsonPlugin({ renderer, appService }),
     uniViteInjectPlugin('uni:app-inject', initAppProvide()),
+    uniRenderjsPlugin(),
     uniAppNVuePlugin({ appService }),
     uniEsbuildPlugin({ renderer, appService }),
     ...(appService ? [uniStatsPlugin(), uniTemplatePlugin({ renderer })] : []),

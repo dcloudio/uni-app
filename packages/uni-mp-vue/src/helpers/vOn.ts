@@ -5,6 +5,7 @@ import {
   hasOwn,
   NOOP,
   isString,
+  isPromise,
 } from '@vue/shared'
 import {
   callWithAsyncErrorHandling,
@@ -94,7 +95,11 @@ function createInvoker(
     if (bubbles.includes(e.type) && !eventSync) {
       setTimeout(invoke)
     } else {
-      return invoke()
+      const res = invoke()
+      if (e.type === 'input' && isPromise(res)) {
+        return
+      }
+      return res
     }
   }
   invoker.value = initialValue

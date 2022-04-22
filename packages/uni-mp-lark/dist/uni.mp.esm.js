@@ -1,147 +1,6 @@
-import { camelize, isPlainObject, isArray, hasOwn, isFunction, extend, isObject } from '@vue/shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
-
-// quickapp-webview 不能使用 default 作为插槽名称
-const SLOT_DEFAULT_NAME = 'd';
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-
-const customizeRE = /:/g;
-function customizeEvent(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
-
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
-function once(fn, ctx = null) {
-    let res;
-    return ((...args) => {
-        if (fn) {
-            res = fn.apply(ctx, args);
-            fn = null;
-        }
-        return res;
-    });
-}
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
-}
-
-class EventChannel {
-    constructor(id, events) {
-        this.id = id;
-        this.listener = {};
-        this.emitCache = {};
-        if (events) {
-            Object.keys(events).forEach((name) => {
-                this.on(name, events[name]);
-            });
-        }
-    }
-    emit(eventName, ...args) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
-        }
-        fns.forEach((opt) => {
-            opt.fn.apply(opt.fn, args);
-        });
-        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
-    }
-    on(eventName, fn) {
-        this._addListener(eventName, 'on', fn);
-        this._clearCache(eventName);
-    }
-    once(eventName, fn) {
-        this._addListener(eventName, 'once', fn);
-        this._clearCache(eventName);
-    }
-    off(eventName, fn) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return;
-        }
-        if (fn) {
-            for (let i = 0; i < fns.length;) {
-                if (fns[i].fn === fn) {
-                    fns.splice(i, 1);
-                    i--;
-                }
-                i++;
-            }
-        }
-        else {
-            delete this.listener[eventName];
-        }
-    }
-    _clearCache(eventName) {
-        const cacheArgs = this.emitCache[eventName];
-        if (cacheArgs) {
-            for (; cacheArgs.length > 0;) {
-                this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
-            }
-        }
-    }
-    _addListener(eventName, type, fn) {
-        (this.listener[eventName] || (this.listener[eventName] = [])).push({
-            fn,
-            type,
-        });
-    }
-}
-
-const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
-    return {
-        onPageScroll: 1,
-        onShareAppMessage: 1 << 1,
-        onShareTimeline: 1 << 2,
-    };
-})();
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -280,7 +139,7 @@ function findHooks(vueOptions, hooks = new Set()) {
     }
     return hooks;
 }
-function initHook$1(mpOptions, hook, excludes) {
+function initHook(mpOptions, hook, excludes) {
     if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
         mpOptions[hook] = function (args) {
             if (hook === 'onError') {
@@ -292,10 +151,10 @@ function initHook$1(mpOptions, hook, excludes) {
 }
 const EXCLUDE_HOOKS = [ON_READY];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
-    hooks.forEach((hook) => initHook$1(mpOptions, hook, excludes));
+    hooks.forEach((hook) => initHook(mpOptions, hook, excludes));
 }
 function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
-    findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+    findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
 }
 function initRuntimeHooks(mpOptions, runtimeHooks) {
     if (!runtimeHooks) {
@@ -304,7 +163,7 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
     const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
     hooks.forEach((hook) => {
         if (runtimeHooks & MINI_PROGRAM_PAGE_RUNTIME_HOOKS[hook]) {
-            initHook$1(mpOptions, hook, []);
+            initHook(mpOptions, hook, []);
         }
     });
 }
@@ -845,7 +704,7 @@ function initTriggerEvent(mpInstance) {
         return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
     };
 }
-function initHook(name, options, isComponent) {
+function initMiniProgramHook(name, options, isComponent) {
     if (isComponent) {
         // fix by Lxh 字节自定义组件Component构造器文档上写有created，但是实测只触发了lifetimes上的created
         options = options.lifetimes;
@@ -864,11 +723,11 @@ function initHook(name, options, isComponent) {
     }
 }
 Page = function (options) {
-    initHook(ON_LOAD, options);
+    initMiniProgramHook(ON_LOAD, options);
     return MPPage(options);
 };
 Component = function (options) {
-    initHook('created', options, true);
+    initMiniProgramHook('created', options, true);
     // 小程序组件
     const isVueComponent = options.properties && options.properties.uP;
     if (!isVueComponent) {
