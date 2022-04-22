@@ -36,6 +36,10 @@ export function createConfig(options: {
       ...getDevServerOptions(parseManifestJsonOnce(inputDir)),
     }
 
+    if ((server.port as unknown as string) === '') {
+      delete server.port
+    }
+
     const { server: userServer } = config
     if (userServer) {
       if (hasOwn(userServer, 'host')) {
