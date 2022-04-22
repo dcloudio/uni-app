@@ -1,6 +1,9 @@
-import { Plugin } from 'vite'
+import fs from 'fs'
+import path from 'path'
+import { Plugin, PluginOption } from 'vite'
 
 import {
+  isInHBuilderX,
   // initPreContext,
   // normalizePath,
   parseManifestJsonOnce,
@@ -40,6 +43,37 @@ export function createConfig(
       optimizeDeps: createOptimizeDeps(options),
       build: createBuild(options, config),
       css: createCss(options, config),
+      worker: {
+        plugins: initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR),
+      },
     }
   }
+}
+/**
+ * 解决 HBuilderX 项目未包含 package.json 时，initTSConfck 可能导致查找过慢，或递归目录时权限不足报错
+ * 即：未包含 package.json 时，直接移除 initTSConfck 相关逻辑
+ * @param inputDir
+ * @returns
+ */
+function initFixedEsbuildInitTSConfck(inputDir: string): PluginOption[] {
+  if (!isInHBuilderX()) {
+    return []
+  }
+  if (fs.existsSync(path.resolve(inputDir, 'package.json'))) {
+    return []
+  }
+  return [
+    {
+      name: 'fixed-esbuild-initTSConfck',
+      enforce: 'pre',
+      configResolved(config) {
+        const plugin = config.worker.plugins.find(
+          (p) => p.name === 'vite:esbuild'
+        )
+        if (plugin) {
+          delete plugin.configResolved
+        }
+      },
+    },
+  ]
 }
