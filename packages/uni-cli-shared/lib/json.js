@@ -14,12 +14,7 @@ function parseJson (content, preprocess = false) {
         type: jsPreprocessOptions.type
       })
     }
-
-    try {
-      content = JSON.parse(stripJsonComments(content))
-    } catch (e) {
-      throw new Error('uni-app-compiler: ' + e.message)
-    }
+    content = JSON.parse(stripJsonComments(content))
   }
 
   content = JSON.stringify(content)
@@ -37,7 +32,7 @@ function getJson (jsonFileName, preprocess = false) {
   try {
     return parseJson(fs.readFileSync(jsonFilePath, 'utf8'), preprocess)
   } catch (e) {
-    console.error(jsonFileName + uniI18n.__('cliShared.parsingFailed'))
+    throw new Error(jsonFileName + uniI18n.__('cliShared.parseJsonFailed') + '\n' + e.message)
   }
 }
 

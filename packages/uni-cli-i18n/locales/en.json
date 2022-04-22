@@ -7,7 +7,7 @@
   "platform": "platform",
   "plugin": "plugin",
   "performingHotReload": "Performing hot reload...",
-  "cliShared.parsingFailed": "Parsing failed",
+  "cliShared.parseJsonFailed": "Parsing failed",
   "cliShared.doesNotExist": "does not exist",
   "cliShared.pagesJsonError": "pages.json page configuration error, has been ignored, see {{0}}",
   "cliShared.requireReturnJsonObject": "require return a json object",

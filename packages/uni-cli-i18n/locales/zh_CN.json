@@ -7,7 +7,7 @@
   "platform": "平台",
   "plugin": "插件",
   "performingHotReload": "正在差量编译...",
-  "cliShared.parsingFailed": "解析失败",
+  "cliShared.parseJsonFailed": "解析失败，不符合 json 规范",
   "cliShared.doesNotExist": "不存在",
   "cliShared.pagesJsonError": "pages.json 页面配置错误，已被忽略，查看文档: {{0}}",
   "cliShared.requireReturnJsonObject": "必须返回一个 json 对象",
