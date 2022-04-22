@@ -1,7 +1,4 @@
-import {
-	get_platform_name,
-	get_page_vm
-} from './utils/pageInfo.js'
+import { get_platform_name, get_page_vm, is_debug } from './utils/pageInfo.js'
 import Stat from './core/stat.js'
 const stat = Stat.getInstance()
 
@@ -9,78 +6,91 @@ const stat = Stat.getInstance()
 let isHide = false
 
 const lifecycle = {
-	onLaunch(options) {
-		// 进入应用上报数据
-		stat.launch(options, this);
-	},
-	onLoad(options) {
-		stat.load(options, this);
-		// 重写分享，获取分享上报事件
-		if (this.$scope && this.$scope.onShareAppMessage) {
-			let oldShareAppMessage = this.$scope.onShareAppMessage;
-			this.$scope.onShareAppMessage = function(options) {
-				stat.interceptShare(false);
-				return oldShareAppMessage.call(this, options)
-			}
-		}
-	},
-	onShow() {
-		isHide = false
-		stat.show(this);
-	},
-	onHide() {
-		isHide = true
-		stat.hide(this);
-	},
-	onUnload() {
-		if (isHide) {
-			isHide = false
-			return
-		}
-		stat.hide(this);
-	},
-	onError(e) {
-		stat.error(e)
-	}
+  onLaunch(options) {
+    // 进入应用上报数据
+    stat.launch(options, this)
+  },
+  onLoad(options) {
+    stat.load(options, this)
+    // 重写分享，获取分享上报事件
+    if (this.$scope && this.$scope.onShareAppMessage) {
+      let oldShareAppMessage = this.$scope.onShareAppMessage
+      this.$scope.onShareAppMessage = function (options) {
+        stat.interceptShare(false)
+        return oldShareAppMessage.call(this, options)
+      }
+    }
+  },
+  onShow() {
+    isHide = false
+    stat.show(this)
+  },
+  onHide() {
+    isHide = true
+    stat.hide(this)
+  },
+  onUnload() {
+    if (isHide) {
+      isHide = false
+      return
+    }
+    stat.hide(this)
+  },
+  onError(e) {
+    stat.error(e)
+  },
 }
 
+// 加载统计代码
+function load_stat() {
+  // #ifdef VUE3
+  uni.onCreateVueApp((app) => {
+    app.mixin(lifecycle)
+    uni.report = function (type, options) {
+      stat.sendEvent(type, options)
+    }
+  })
+
+  if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
+    uni.onAppHide(() => {
+      stat.appHide(get_page_vm())
+    })
+    uni.onAppShow(() => {
+      stat.appShow(get_page_vm())
+    })
+  }
+  // #endif
+
+  // #ifndef VUE3
+  // eslint-disable-next-line no-restricted-globals
+  const Vue = require('vue')
+  ;(Vue.default || Vue).mixin(lifecycle)
+  uni.report = function (type, options) {
+    stat.sendEvent(type, options)
+  }
+  // #endif
+}
 
 function main() {
-	if (__STAT_VERSION__ === '1') {
-		console.log('uni统计开启,version:1')
-	}
-	if (__STAT_VERSION__ === '2') {
-		console.log('uni统计开启,version:2')
-	}
-	if (process.env.NODE_ENV === 'development') {
-		uni.report = function(type, options) {}
-	} else {
-		// #ifdef VUE3
-		uni.onCreateVueApp((app) => {
-			app.mixin(lifecycle)
-			uni.report = function(type, options) {
-				stat.sendEvent(type, options)
-			}
-		})
-
-		if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
-			uni.onAppHide(() => {
-				stat.appHide(get_page_vm());
-			})
-			uni.onAppShow(() => {
-				stat.appShow(get_page_vm());
-			})
-		}
-		// #endif
-
-		// #ifndef VUE3
-		const Vue = require('vue');
-		(Vue.default || Vue).mixin(lifecycle);
-		uni.report = function(type, options) {
-			stat.sendEvent(type, options);
-		};
-		// #endif
-	}
+  if (is_debug) {
+    if (__STAT_VERSION__ === '1') {
+      // #ifndef APP-NVUE
+      console.log('=== uni统计开启,version:1.0')
+      // #endif
+    }
+    if (__STAT_VERSION__ === '2') {
+      // #ifndef APP-NVUE
+      console.log('=== uni统计开启,version:2.0')
+      // #endif
+    }
+    load_stat()
+  } else {
+    if (process.env.NODE_ENV === 'development') {
+      uni.report = function (type, options) {}
+    } else {
+      load_stat()
+    }
+  }
 }
 
 main()

@@ -7,6 +7,22 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var debug__default = /*#__PURE__*/_interopDefaultLegacy(debug);
 
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
+
+const uniStatLog = once((text) => {
+    console.log();
+    console.warn(text);
+    console.log();
+});
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
         let statVersion = '1';
@@ -39,22 +55,32 @@ var index = () => [
                 // ssr 时不开启
                 if (!uniCliShared.isSsr(env.command, config)) {
                     const statConfig = uniCliShared.getUniStatistics(inputDir, platform);
+                    const uniCloudConfig = statConfig.uniCloud || {};
                     statVersion = statConfig.version === '2' ? '2' : '1';
                     isEnable = statConfig.enable === true;
+                    process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
+                    process.env.UNI_STAT_DEBUG =
+                        statConfig.debug && typeof statConfig.debug === 'boolean'
+                            ? 'true'
+                            : 'false';
                     if (process.env.NODE_ENV === 'production') {
                         const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
                         if (!manifestJson.appid) {
-                            console.log();
-                            console.warn(uniCliShared.M['stat.warn.appid']);
-                            console.log();
+                            uniStatLog(uniCliShared.M['stat.warn.appid']);
                             isEnable = false;
                         }
                         else {
                             if (!statConfig.version) {
-                                console.log();
-                                console.warn(uniCliShared.M['stat.warn.version']);
-                                console.log();
+                                uniStatLog(uniCliShared.M['stat.warn.version']);
                             }
+                            if (isEnable) {
+                                uniStatLog(`已开启 uni统计${statConfig.version}.0 版本`);
+                            }
+                        }
+                    }
+                    else {
+                        if (isEnable) {
+                            uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', '1.0'));
                         }
                     }
                     debug__default["default"]('uni:stat')('isEnable', isEnable);
@@ -63,6 +89,8 @@ var index = () => [
                 return {
                     define: {
                         'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
+                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD || {},
+                        'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG || 'false',
                     },
                 };
             },

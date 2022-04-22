@@ -7,5 +7,3 @@ export const PAGE_PVER_TIME = 1800 // 页面在前台无操作结束访问时间
 export const APP_PVER_TIME = 300 // 应用在后台结束访问时间 单位s
 export const OPERATING_TIME = 10 // 数据上报时间 单位s
 export const DIFF_TIME = 60 * 1000 * 60 * 24
-
-export const DEBUG = true

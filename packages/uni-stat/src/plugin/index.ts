@@ -1,4 +1,6 @@
 import debug from 'debug'
+import { once } from '@dcloudio/uni-shared'
+
 import {
   M,
   defineUniMainJsPlugin,
@@ -8,6 +10,11 @@ import {
   isSsr,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
+const uniStatLog = once((text: string) => {
+  console.log()
+  console.warn(text)
+  console.log()
+})
 
 export default () => [
   defineUniMainJsPlugin((opts) => {
@@ -21,6 +28,7 @@ export default () => [
         '@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'
       ),
     }
+    
     return {
       name: 'uni:stat',
       enforce: 'pre',
@@ -43,21 +51,31 @@ export default () => [
         // ssr 时不开启
         if (!isSsr(env.command, config)) {
           const statConfig = getUniStatistics(inputDir, platform)
+          const uniCloudConfig = statConfig.uniCloud || {}
           statVersion = statConfig.version === '2' ? '2' : '1'
           isEnable = statConfig.enable === true
+
+          process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
+          process.env.UNI_STAT_DEBUG =
+            statConfig.debug && typeof statConfig.debug === 'boolean'
+              ? 'true'
+              : 'false'
           if (process.env.NODE_ENV === 'production') {
             const manifestJson = parseManifestJsonOnce(inputDir)
             if (!manifestJson.appid) {
-              console.log()
-              console.warn(M['stat.warn.appid'])
-              console.log()
+              uniStatLog(M['stat.warn.appid'])
               isEnable = false
             } else {
               if (!statConfig.version) {
-                console.log()
-                console.warn(M['stat.warn.version'])
-                console.log()
+                uniStatLog(M['stat.warn.version'])
               }
+              if (isEnable) {
+                uniStatLog(`已开启 uni统计${statConfig.version}.0 版本`)
+              }
+            }
+          } else {
+            if (isEnable) {
+              uniStatLog(M['stat.warn.tip'].replace('{version}', '1.0'))
             }
           }
 
@@ -68,6 +86,9 @@ export default () => [
         return {
           define: {
             'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
+            'process.env.UNI_STAT_UNI_CLOUD':
+              process.env.UNI_STAT_UNI_CLOUD || {},
+            'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG || 'false',
           },
         }
       },

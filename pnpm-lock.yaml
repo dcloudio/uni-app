@@ -695,10 +695,12 @@ importers:
   packages/uni-stat:
     specifiers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@types/debug': ^4.1.7
       debug: ^4.3.3
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
+      '@dcloudio/uni-shared': link:../uni-shared
       debug: 4.3.3
     devDependencies:
       '@types/debug': 4.1.7
