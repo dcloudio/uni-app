@@ -57,6 +57,8 @@ const attrs = [
   'enableProgressGesture',
   'showPlayBtn',
   'enablePlayGesture',
+  'vslideGesture',
+  'vslideGestureInFullscreen',
   'showCenterPlayBtn',
   'showLoading',
   'codec',
@@ -143,6 +145,14 @@ export default {
     enableProgressGesture: {
       type: [Boolean, String],
       default: true
+    },
+    vslideGesture: {
+      type: [Boolean, String],
+      default: false
+    },
+    vslideGestureInFullscreen: {
+      type: [Boolean, String],
+      default: false
     },
     showPlayBtn: {
       type: [Boolean, String],

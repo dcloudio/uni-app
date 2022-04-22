@@ -6208,6 +6208,7 @@ function updateWxsProps(oldVnode, vnode) {
     vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(watchProp, function() {
       this.$forceUpdate();
     }, {
+      immediate: true, // 当 prop 的值被设置 WXS 函数就会触发，而不只是值发生改变，所以在页面初始化的时候会调用一次 WxsPropObserver 的函数
       deep: true
     });
   });

@@ -30,6 +30,8 @@ const cdns = {
   'mp-dingtalk': 8,
   'mp-kuaishou': 9,
   'mp-lark': 10,
+  'mp-jd': 11,
+  'mp-xhs': 12,
   'quickapp-webview-huawei': 200,
   'quickapp-webview-union': 201
 }
@@ -146,7 +148,7 @@ module.exports = {
   getShadowCss,
   getShadowTemplate (colorType = 'grey') {
     let tagName = 'cover-image'
-    if (process.env.UNI_PLATFORM === 'mp-toutiao' || process.env.UNI_PLATFORM === 'mp-lark') {
+    if (process.env.UNI_PLATFORM === 'mp-toutiao' || process.env.UNI_PLATFORM === 'mp-lark' || process.env.UNI_PLATFORM === 'mp-xhs') {
       tagName = 'image'
     }
     return `<${tagName} src="${getShadowCdn()}/img/shadow-${colorType}.png" style="z-index:998;position:fixed;left:0;top:0;width:100%;height:3px;"/>`
@@ -156,6 +158,13 @@ module.exports = {
   },
   getPlatformSass () {
     return SASS
+  },
+  getPlatformStat () {
+    if (!process.env.UNI_USING_STAT) {
+      return ''
+    }
+    return process.env.UNI_USING_STAT === '2' ? 'import \'@dcloudio/uni-stat/dist/uni-cloud-stat.es.js\';'
+      : 'import \'@dcloudio/uni-stat/dist/uni-stat.es.js\';'
   },
   getBabelParserOptions () {
     return {

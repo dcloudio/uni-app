@@ -32,6 +32,7 @@
         @input.stop="_onInput"
         @compositionstart.stop="_onComposition"
         @compositionend.stop="_onComposition"
+        @compositionupdate.stop="_onComposition"
         @keyup.enter.stop="_onKeyup"
       >
       <!-- fix: 禁止 readonly 状态获取焦点 -->
@@ -148,6 +149,11 @@ export default {
     maxlength (value) {
       const realValue = this.valueSync.slice(0, parseInt(value, 10))
       realValue !== this.valueSync && (this.valueSync = realValue)
+    },
+    valueSync (value) {
+      if (this.type === 'number' && !(this.cachedValue === '-' && value === '')) {
+        this.cachedValue = value
+      }
     }
   },
   created () {
@@ -196,7 +202,7 @@ export default {
     _onInput ($event, force) {
       let outOfMaxlength = false
 
-      if (this.composing) {
+      if (this.composing && this.ignoreCompositionEvent) {
         return
       }
 
@@ -236,18 +242,28 @@ export default {
 
       if (outOfMaxlength) return
 
+      if (!this.ignoreCompositionEvent) this.valueSync = this.$refs.input.value
+
       this.$triggerInput($event, {
         value: this.valueSync
       }, force)
     },
     _onComposition ($event) {
-      if ($event.type === 'compositionstart') {
-        this.composing = true
-      } else if (this.composing) {
-        this.composing = false
-        // 部分输入法 compositionend 事件可能晚于 input
-        this._onInput($event)
+      switch ($event.type) {
+        case 'compositionstart':
+          this.composing = true
+          break
+        case 'compositionend':
+          if (this.composing) {
+            this.composing = false
+            // 部分输入法 compositionend 事件可能晚于 input
+            this._onInput($event)
+          }
+          break
       }
+
+      !this.ignoreCompositionEvent &&
+        this.$trigger($event.type, $event, { data: $event.data })
     },
     _resetFormData () {
       this.valueSync = ''

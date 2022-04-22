@@ -105,6 +105,8 @@ if (pixelRatio !== 1) {
 
       args[1] *= pixelRatio
       args[2] *= pixelRatio
+      args[3] *= pixelRatio
+      isNaN(args[3]) && (args.length = 3)
 
       // Safari 重新设置部分属性会导致其他值恢复默认，需获取原始值
       var font = this.__font__ || this.font
@@ -126,10 +128,12 @@ if (pixelRatio !== 1) {
       if (!this.__hidpi__) {
         return _super.apply(this, arguments)
       }
-      var args = Array.prototype.slice.call(arguments)
+      const args = Array.prototype.slice.call(arguments)
 
       args[1] *= pixelRatio // x
       args[2] *= pixelRatio // y
+      args[3] *= pixelRatio // maxWidth
+      isNaN(args[3]) && (args.length = 3)
 
       // Safari 重新设置部分属性会导致其他值恢复默认，需获取原始值
       var font = this.__font__ || this.font
@@ -157,11 +161,11 @@ if (pixelRatio !== 1) {
   })(proto.drawImage)
 }
 
-export function wrapper (canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio
-  canvas.height = canvas.offsetHeight * pixelRatio
-  canvas.__hidpi__ = true
+export function wrapper (canvas, hidpi = true) {
+  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1)
+  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1)
+  canvas.__hidpi__ = hidpi
   // 避免低版本安卓上 context 实例被回收
   canvas.__context2d__ = canvas.getContext('2d')
-  canvas.__context2d__.__hidpi__ = true
+  canvas.__context2d__.__hidpi__ = hidpi
 }

@@ -49,11 +49,11 @@ class Page {
   }
 
   sendMessage (data) {
-    const message = {
+    const message = JSON.parse(JSON.stringify(({
       __message: {
         data
       }
-    }
+    })))
     const id = this.webview.id
     if (BroadcastChannel_) {
       const channel = new BroadcastChannel_(id)
@@ -100,7 +100,8 @@ export function showPage ({
     animationType: 'pop-in',
     animationDuration: 200,
     uniNView: {
-      path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
+      // eslint-disable-next-line
+      path: `${typeof VUE_APP_TEMPLATE_PATH === 'string' ? VUE_APP_TEMPLATE_PATH : ''}/${url}.js`,
       defaultFontSize: 16,
       viewport: plus_.screen.resolutionWidth
     }

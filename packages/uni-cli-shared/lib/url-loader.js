@@ -12,6 +12,7 @@ const inlineLimit =
   process.env.UNI_PLATFORM === 'mp-kuaishou' ||
   process.env.UNI_PLATFORM === 'mp-lark' ||
   process.env.UNI_PLATFORM === 'mp-jd' ||
+  process.env.UNI_PLATFORM === 'mp-xhs' ||
   process.env.UNI_PLATFORM === 'app-plus' // v2需要base64,v3需要rewriteUrl
 
 // mp-weixin,mp-qq,app-plus 非v3(即：需要base64的平台)

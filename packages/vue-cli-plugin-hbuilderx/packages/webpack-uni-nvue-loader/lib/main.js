@@ -12,7 +12,8 @@ const {
 } = require('vue-loader/lib/codegen/utils')
 
 const {
-  normalizePath
+  normalizePath,
+  getPlatformStat
 } = require('@dcloudio/uni-cli-shared')
 
 const appVuePath = path.resolve(process.env.UNI_INPUT_DIR, 'App.vue')
@@ -47,7 +48,7 @@ module.exports = function (content, map) {
 
   const loaderContext = this
 
-  const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
+  const statCode = getPlatformStat()
 
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
@@ -73,6 +74,7 @@ module.exports = function (content, map) {
             })
           }
         }
+        ArrayBuffer = uni.base64ToArrayBuffer('').constructor
         App.mpType = 'page'
         App.route = '${params.page}'
         App.el = '#root'

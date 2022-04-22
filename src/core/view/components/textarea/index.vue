@@ -41,8 +41,9 @@
         :enterkeyhint="confirmType"
         class="uni-textarea-textarea"
         @change.stop
-        @compositionstart.stop="_onCompositionstart"
-        @compositionend.stop="_onCompositionend"
+        @compositionstart.stop="_onComposition"
+        @compositionend.stop="_onComposition"
+        @compositionupdate.stop="_onComposition"
         @input.stop="_onInput"
         @focus="_onFocus"
         @blur="_onBlur"
@@ -190,15 +191,22 @@ export default {
         !this.confirmHold && this.$refs.textarea.blur()
       }
     },
-    _onCompositionstart ($event) {
-      this.composing = true
-    },
-    _onCompositionend ($event) {
-      if (this.composing) {
-        this.composing = false
-        // 部分输入法 compositionend 事件可能晚于 input
-        this._onInput($event)
+    _onComposition ($event) {
+      switch ($event.type) {
+        case 'compositionstart':
+          this.composing = true
+          break
+        case 'compositionend':
+          if (this.composing) {
+            this.composing = false
+            // 部分输入法 compositionend 事件可能晚于 input
+            this._onInput($event)
+          }
+          break
       }
+
+      !this.ignoreCompositionEvent &&
+        this.$trigger($event.type, $event, { data: $event.data })
     },
     // 暂无完成按钮，此功能未实现
     _confirm ($event) {
@@ -218,10 +226,13 @@ export default {
       this.height = height
     },
     _onInput ($event, force) {
-      if (this.composing) {
+      if (this.composing && this.ignoreCompositionEvent) {
         this.valueComposition = $event.target.value
         return
       }
+
+      if (!this.ignoreCompositionEvent) this.valueSync = this.$refs.textarea.value
+
       this.$triggerInput($event, {
         value: this.valueSync,
         cursor: this.$refs.textarea.selectionEnd

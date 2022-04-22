@@ -4,7 +4,8 @@ const webpack = require('webpack')
 
 const {
   getMainEntry,
-  getH5Options
+  getH5Options,
+  getPlatformStat
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -91,7 +92,7 @@ module.exports = {
   webpackConfig (webpackConfig) {
     let useBuiltIns = 'usage'
 
-    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
+    const statCode = getPlatformStat()
 
     try {
       const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))

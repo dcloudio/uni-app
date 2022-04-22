@@ -8,8 +8,19 @@ export function disableScroll (evt) {
 
 export function pageScrollTo ({
   scrollTop,
+  selector,
   duration
 }) {
+  if (typeof scrollTop === 'undefined') {
+    const el = document.querySelector(selector)
+    if (el) {
+      const { top, height } = el.getBoundingClientRect()
+      scrollTop = top + window.pageYOffset
+      if (__PLATFORM__ === 'h5') {
+        scrollTop -= height
+      }
+    }
+  }
   const documentElement = document.documentElement
 
   const {

@@ -1,7 +1,6 @@
 export const pageScrollTo = {
   scrollTop: {
-    type: Number,
-    required: true
+    type: Number
   },
   duration: {
     type: Number,

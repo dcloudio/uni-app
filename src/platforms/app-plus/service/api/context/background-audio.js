@@ -86,9 +86,16 @@ function stopTimeUpdateTimer () {
   }
 }
 
-function setMusicState (args) {
+function setMusicState (args, name) {
   initMusic()
   const props = ['src', 'startTime', 'coverImgUrl', 'webUrl', 'singer', 'epname', 'title']
+
+  if (name && name === 'playbackRate') {
+    const val = args[name]
+    audio.playbackRate && audio.playbackRate(parseFloat(val))
+    return
+  }
+
   const style = {}
   Object.keys(args).forEach(key => {
     if (props.indexOf(key) >= 0) {
@@ -150,8 +157,8 @@ export function operateMusicPlayer ({
     errMsg: `${api}:ok`
   }
 }
-export function setBackgroundAudioState (args) {
-  setMusicState(args)
+export function setBackgroundAudioState (args, name) {
+  setMusicState(args, name)
   return {
     errMsg: 'setBackgroundAudioState:ok'
   }

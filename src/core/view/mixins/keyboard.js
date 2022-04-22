@@ -102,6 +102,11 @@ export default {
       default: false
     }
   },
+  computed: {
+    isApple () {
+      return String(navigator.vendor).indexOf('Apple') === 0
+    }
+  },
   directives: {
     keyboard: {
       inserted (el, binding, vnode) {
@@ -195,7 +200,7 @@ export default {
         }
 
         // 修复ios端显示与点击位置错位的Bug by:wyq
-        if (String(navigator.vendor).indexOf('Apple') === 0) {
+        if (this.isApple) {
           document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop)
         }
       }
@@ -203,7 +208,9 @@ export default {
       el.addEventListener('blur', () => {
         // 在iOS设备上，手动调用uni.hideKeyboard()，键盘收起并且触发blur，但实际并没有blur。
         // 此时如果再点击页面其他地方会重新聚焦，此处做处理
-        el.blur()
+        if (this.isApple) {
+          el.blur()
+        }
         focus = false
         onKeyboardHide()
       })

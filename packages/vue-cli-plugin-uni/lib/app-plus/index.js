@@ -2,7 +2,8 @@ const path = require('path')
 const webpack = require('webpack')
 
 const {
-  getMainEntry
+  getMainEntry,
+  getPlatformStat
 } = require('@dcloudio/uni-cli-shared')
 
 const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
@@ -58,7 +59,7 @@ const v3 = {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus'].view
 
-    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
+    const statCode = getPlatformStat()
 
     const beforeCode = 'import \'uni-pages\';'
 

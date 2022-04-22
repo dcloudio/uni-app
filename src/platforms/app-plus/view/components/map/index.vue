@@ -46,6 +46,7 @@ const attrs = [
   'scale',
   'markers',
   'polyline',
+  'polygons',
   'circles',
   'controls',
   'show-location'
@@ -110,6 +111,12 @@ export default {
       }
     },
     circles: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    polygons: {
       type: Array,
       default () {
         return []
@@ -186,6 +193,9 @@ export default {
     },
     circles (val) {
       this.map && this._addMapCircles(val)
+    },
+    polygons (val) {
+      this.map && this._addMapPolygons(val)
     }
   },
   mounted () {
@@ -199,6 +209,7 @@ export default {
       map.__markers_map__ = {}
       map.__lines__ = []
       map.__circles__ = []
+      map.__polygons__ = []
       map.setZoom(parseInt(this.scale))
       plus.webview.currentWebview().append(map)
       if (this.hidden) {
@@ -218,6 +229,7 @@ export default {
       this._addMarkers(this.markers)
       this._addMapLines(this.polyline)
       this._addMapCircles(this.circles)
+      this._addMapPolygons(this.polygons)
     })
   },
   beforeDestroy () {
@@ -422,6 +434,46 @@ export default {
         }
         nativeMap.addOverlay(nativeCircle)
         nativeMap.__circles__.push(nativeCircle)
+      })
+    },
+    _addMapPolygons (polygons) {
+      const nativeMap = this.map
+
+      const nativeMapPolygons = nativeMap.__polygons__
+      nativeMapPolygons.forEach(polygon => {
+        nativeMap.removeOverlay(polygon)
+      })
+      nativeMapPolygons.length = 0
+
+      polygons.forEach(polygon => {
+        const {
+          points,
+          strokeWidth,
+          strokeColor,
+          fillColor
+        } = polygon
+        const plusPoints = []
+        if (points) {
+          points.forEach(({ latitude, longitude }) => {
+            plusPoints.push(new plus.maps.Point(longitude, latitude))
+          })
+        }
+        const nativePolygon = new plus.maps.Polygon(plusPoints)
+        if (strokeColor) {
+          const strokeStyle = parseHex(strokeColor)
+          nativePolygon.setStrokeColor(strokeStyle.color)
+          nativePolygon.setStrokeOpacity(strokeStyle.opacity)
+        }
+        if (fillColor) {
+          const fillStyle = parseHex(fillColor)
+          nativePolygon.setFillColor(fillStyle.color)
+          nativePolygon.setFillOpacity(fillStyle.opacity)
+        }
+        if (strokeWidth) {
+          nativePolygon.setLineWidth(strokeWidth)
+        }
+        nativeMap.addOverlay(nativePolygon)
+        nativeMapPolygons.push(nativePolygon)
       })
     }
   }

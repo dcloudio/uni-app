@@ -8,6 +8,11 @@
       :key="item.id"
       v-bind="item"
     />
+    <map-polygon
+      v-for="item in polygons"
+      :key="JSON.stringify(item.points)"
+      v-bind="item"
+    />
     <div
       ref="map"
       style="width: 100%; height: 100%; position: relative; overflow: hidden"
@@ -37,6 +42,7 @@ import {
 } from './maps'
 
 import mapMarker from './map-marker'
+import mapPolygon from './map-polygon'
 
 import { ICON_PATH_ORIGIN } from '../../../helpers/location'
 
@@ -59,7 +65,8 @@ function getLng (latLng) {
 export default {
   name: 'Map',
   components: {
-    mapMarker
+    mapMarker,
+    mapPolygon
   },
   mixins: [subscriber],
   props: {
@@ -124,6 +131,10 @@ export default {
       default () {
         return []
       }
+    },
+    polygons: {
+      type: Array,
+      default: () => []
     }
   },
   data () {

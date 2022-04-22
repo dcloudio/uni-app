@@ -167,7 +167,8 @@ module.exports = {
               tagNode.value = getComponentName(hyphenate(tagName))
 
               // 组件增加 vueId
-              if (this.options.platform.isComponent(tagNode.value)) {
+              // 跳过支付宝插件组件
+              if (this.options.platform.isComponent(tagNode.value) && !tagNode.$mpPlugin) {
                 addVueId(path, this)
               }
 
@@ -250,6 +251,11 @@ module.exports = {
       t.isMemberExpression(callee) // message.split('').reverse().join('')
     ) {
       // Object.assign...
+      path = path.findParent((path) => path.isLogicalExpression()) || path
+      path.skip()
+      if (path.findParent((path) => path.shouldSkip)) {
+        return
+      }
       path.replaceWith(getMemberExpr(path, IDENTIFIER_GLOBAL, path.node, this))
     }
   },

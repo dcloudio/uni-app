@@ -50,7 +50,8 @@ process.env.UNI_USING_V3_SCOPED = true
 process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
 
 // 导出到小程序插件
-process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.plugins || {}).map(pluginName => platformOptions.plugins[pluginName].export))
+process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.plugins || {}).map(pluginName =>
+  platformOptions.plugins[pluginName].export))
 
 const isH5 = !process.env.UNI_SUB_PLATFORM && process.env.UNI_PLATFORM === 'h5'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -293,8 +294,8 @@ const modes = ['legacy', 'auto', 'augmented']
 const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOptions.betterScopedSlots ? modes[2]
   : platformOptions.scopedSlotsCompiler
 process.env.SCOPED_SLOTS_COMPILER = modes.includes(scopedSlotsCompiler) ? scopedSlotsCompiler : modes[1]
-// 快手小程序抽象组件编译报错，如未指定 legacy 固定为 augmented 模式
-if (process.env.UNI_PLATFORM === 'mp-kuaishou' && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
+// 快手小程序、小红书小程序 抽象组件编译报错，如未指定 legacy 固定为 augmented 模式
+if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 'mp-xhs') && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
 
@@ -308,7 +309,7 @@ if (
   )
 
   if (uniStatistics.enable === true) {
-    process.env.UNI_USING_STAT = true
+    process.env.UNI_USING_STAT = uniStatistics.version === '2' ? '2' : '1'
     if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
       console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', {

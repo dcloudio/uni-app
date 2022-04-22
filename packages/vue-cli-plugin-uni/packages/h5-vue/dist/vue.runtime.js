@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2021 Evan You
+ * (c) 2014-2022 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -6778,6 +6778,7 @@
           vnode.elm.__vue__.$getComponentDescriptor(vnode.elm.__vue__, false)
         );
       }, {
+        immediate: true, // 当 prop 的值被设置 WXS 函数就会触发，而不只是值发生改变，所以在页面初始化的时候会调用一次 WxsPropObserver 的函数
         deep: true
       });
     });

@@ -46,8 +46,8 @@ describe('mp:compiler-mp-alipay', () => {
       '<component1 vue-id="{{\'551070e6-1-\'+__i0__}}" ref="__r" data-ref-in-for="{{c4}}" a:for="{{items}}" a:for-item="item" a:for-index="__i0__" onVueInit="__l"></component1>'
     )
     assertCodegen(
-      '<component1 @change="onChange">text</component1>',
-      '<component1 onChange="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]]]}}" data-com-type="wx" ref="__r" onVueInit="__l">text</component1>',
+      '<component1>text</component1>',
+      '<component1 vue-id="551070e6-1" data-com-type="wx" ref="__r" onVueInit="__l">text</component1>',
       undefined,
       undefined,
       {
@@ -55,8 +55,17 @@ describe('mp:compiler-mp-alipay', () => {
       }
     )
     assertCodegen(
-      '<credit-pay @change="onChange">text</credit-pay>',
-      '<credit-pay onChange="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]]]}}" data-com-type="wx" ref="__r" onVueInit="__l">text</credit-pay>',
+      '<component1 @change="onChange" @cancle="onCancle">text</component1>',
+      '<component1 onChange="__e" onCancle="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" ref="__r" data-event-list="onChange,onCancle" onVueInit="__l">text</component1>',
+      undefined,
+      undefined,
+      {
+        wxComponents: { component1: '/mycomponents/component1' }
+      }
+    )
+    assertCodegen(
+      '<credit-pay @change="onChange" @cancle="onCancle">text</credit-pay>',
+      '<plugin-wrapper onChange="__e" onCancle="__e" vue-id="551070e6-1" onPluginWrap="__w" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" data-event-list="onChange,onCancle" onVueInit="__l"><credit-pay onChange="{{\'onChange\'+\'551070e6-1\'}}" onCancle="{{\'onCancle\'+\'551070e6-1\'}}" onVueInit="__l">text</credit-pay></plugin-wrapper>',
       undefined,
       undefined,
       {

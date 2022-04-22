@@ -2143,10 +2143,6 @@ const hooks = [
   'onUnhandledRejection'
 ];
 
-{
-  hooks.push('onShareAppMessage');
-}
-
 function initEventChannel$1 () {
   Vue.prototype.getOpenerEventChannel = function () {
     if (!this.__eventChannel__) {
@@ -2471,39 +2467,44 @@ function initChildVues (mpInstance) {
   delete mpInstance._$childVues;
 }
 
+function handleProps (ref) {
+  const eventProps = {};
+  let refProps = ref.props;
+  const eventList = refProps['data-event-list'].split(',');
+  // 初始化支付宝小程序组件事件
+  Object.keys(refProps).forEach(key => {
+    if (eventList.includes(key)) {
+      const handler = refProps[key];
+      const res = key.match(/^on([A-Z])(\S*)/);
+      const event = res && (res[1].toLowerCase() + res[2]);
+      refProps[key] = eventProps[key] = function () {
+        const props = Object.assign({}, refProps);
+        props[key] = handler;
+        // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
+        delete props['data-com-type'];
+        triggerEvent.bind({ props })(event, {
+          __args__: [...arguments]
+        });
+      };
+    }
+  });
+  // 处理 props 重写
+  Object.defineProperty(ref, 'props', {
+    get () {
+      return refProps
+    },
+    set (value) {
+      refProps = Object.assign(value, eventProps);
+    }
+  });
+}
+
 function handleRef (ref) {
   if (!ref) {
     return
   }
   if (ref.props['data-com-type'] === 'wx') {
-    const eventProps = {};
-    let refProps = ref.props;
-    // 初始化支付宝小程序组件事件
-    Object.keys(refProps).forEach(key => {
-      const handler = refProps[key];
-      const res = key.match(/^on([A-Z])(\S*)/);
-      if (res && typeof handler === 'function' && handler.name === 'bound handleEvent') {
-        const event = res && (res[1].toLowerCase() + res[2]);
-        refProps[key] = eventProps[key] = function () {
-          const props = Object.assign({}, refProps);
-          props[key] = handler;
-          // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
-          delete props['data-com-type'];
-          triggerEvent.bind({ props })(event, {
-            __args__: [...arguments]
-          });
-        };
-      }
-    });
-    // 处理 props 重写
-    Object.defineProperty(ref, 'props', {
-      get () {
-        return refProps
-      },
-      set (value) {
-        refProps = Object.assign(value, eventProps);
-      }
-    });
+    handleProps(ref);
   }
   const refName = ref.props['data-ref'];
   const refInForName = ref.props['data-ref-in-for'];
@@ -2582,6 +2583,24 @@ const handleLink$1 = (function () {
     (this._$childVues || (this._$childVues = [])).unshift(detail);
   }
 })();
+
+const handleWrap = function (mp, destory) {
+  const vueId = mp.props.vueId;
+  const list = mp.props['data-event-list'].split(',');
+  list.forEach(eventName => {
+    const key = `${eventName}${vueId}`;
+    if (destory) {
+      delete this[key];
+    } else {
+      this[key] = function () {
+        mp.props[eventName].apply(this, arguments);
+      };
+    }
+  });
+  if (!destory) {
+    handleProps(mp);
+  }
+};
 
 function parseApp (vm) {
   Object.defineProperty(Vue.prototype, '$slots', {
@@ -2744,6 +2763,7 @@ function parsePage (vuePageOptions) {
     __r: handleRef,
     __e: handleEvent,
     __l: handleLink$1,
+    __w: handleWrap,
     triggerEvent
   };
 
@@ -2860,6 +2880,7 @@ function parseComponent (vueComponentOptions) {
       __r: handleRef,
       __e: handleEvent,
       __l: handleLink$1,
+      __w: handleWrap,
       triggerEvent
     }
   };

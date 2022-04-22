@@ -1159,6 +1159,23 @@ var serviceContext = (function () {
     createCanvasContext: createCanvasContext
   });
 
+  const addPhoneContact = {
+    firstName: {
+      type: String,
+      required: true,
+      validator (firstName) {
+        if (!firstName) {
+          return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty String;'
+        }
+      }
+    }
+  };
+
+  var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    addPhoneContact: addPhoneContact
+  });
+
   const makePhoneCall = {
     phoneNumber: {
       type: String,
@@ -1171,7 +1188,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     makePhoneCall: makePhoneCall
   });
@@ -1188,7 +1205,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     scanCode: scanCode
   });
@@ -1888,7 +1905,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setClipboardData: setClipboardData
   });
@@ -2023,7 +2040,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveFile: saveFile,
     getFileInfo: getFileInfo,
@@ -2041,7 +2058,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     openDocument: openDocument
   });
@@ -2052,7 +2069,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseLocation: chooseLocation
   });
@@ -2073,7 +2090,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getLocation: getLocation
   });
@@ -2103,7 +2120,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     openLocation: openLocation
   });
@@ -2149,7 +2166,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseFile: chooseFile
   });
@@ -2196,7 +2213,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseImage: chooseImage
   });
@@ -2234,7 +2251,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseVideo: chooseVideo
   });
@@ -2249,7 +2266,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     compressImage: compressImage
   });
@@ -2276,7 +2293,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     compressVideo: compressVideo
   });
@@ -2291,7 +2308,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getImageInfo: getImageInfo
   });
@@ -2306,7 +2323,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getVideoInfo: getVideoInfo
   });
@@ -2342,7 +2359,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage
   });
@@ -2357,7 +2374,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum
   });
@@ -2375,7 +2392,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -2499,7 +2516,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request,
     configMTLS: configMTLS
@@ -2558,7 +2575,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -2600,7 +2617,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -2625,7 +2642,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -2646,7 +2663,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadSubPackage: loadSubPackage
   });
@@ -2668,7 +2685,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     preLogin: preLogin
   });
@@ -2869,7 +2886,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -2915,7 +2932,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -2952,7 +2969,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -2995,7 +3012,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -3003,8 +3020,7 @@ var serviceContext = (function () {
 
   const pageScrollTo = {
     scrollTop: {
-      type: Number,
-      required: true
+      type: Number
     },
     duration: {
       type: Number,
@@ -3015,7 +3031,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_36 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -3140,7 +3156,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_36 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_37 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -3239,7 +3255,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_37 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_38 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -3262,37 +3278,38 @@ var serviceContext = (function () {
   './base/upx2px.js': require_context_module_0_4,
   './context/canvas.js': require_context_module_0_5,
   './context/context.js': require_context_module_0_6,
-  './device/make-phone-call.js': require_context_module_0_7,
-  './device/scan-code.js': require_context_module_0_8,
-  './device/set-clipboard-data.js': require_context_module_0_9,
-  './file/file.js': require_context_module_0_10,
-  './file/open-document.js': require_context_module_0_11,
-  './location/choose-location.js': require_context_module_0_12,
-  './location/get-location.js': require_context_module_0_13,
-  './location/open-location.js': require_context_module_0_14,
-  './media/choose-file.js': require_context_module_0_15,
-  './media/choose-image.js': require_context_module_0_16,
-  './media/choose-video.js': require_context_module_0_17,
-  './media/compress-image.js': require_context_module_0_18,
-  './media/compress-video.js': require_context_module_0_19,
-  './media/get-image-info.js': require_context_module_0_20,
-  './media/get-video-info.js': require_context_module_0_21,
-  './media/preview-image.js': require_context_module_0_22,
-  './media/save-image-to-photos-album.js': require_context_module_0_23,
-  './network/download-file.js': require_context_module_0_24,
-  './network/request.js': require_context_module_0_25,
-  './network/socket.js': require_context_module_0_26,
-  './network/upload-file.js': require_context_module_0_27,
-  './plugin/get-provider.js': require_context_module_0_28,
-  './plugin/load-sub-package.js': require_context_module_0_29,
-  './plugin/pre-login.js': require_context_module_0_30,
-  './route/route.js': require_context_module_0_31,
-  './storage/storage.js': require_context_module_0_32,
-  './ui/load-font-face.js': require_context_module_0_33,
-  './ui/navigation-bar.js': require_context_module_0_34,
-  './ui/page-scroll-to.js': require_context_module_0_35,
-  './ui/popup.js': require_context_module_0_36,
-  './ui/tab-bar.js': require_context_module_0_37,
+  './device/add-phone-contact.js': require_context_module_0_7,
+  './device/make-phone-call.js': require_context_module_0_8,
+  './device/scan-code.js': require_context_module_0_9,
+  './device/set-clipboard-data.js': require_context_module_0_10,
+  './file/file.js': require_context_module_0_11,
+  './file/open-document.js': require_context_module_0_12,
+  './location/choose-location.js': require_context_module_0_13,
+  './location/get-location.js': require_context_module_0_14,
+  './location/open-location.js': require_context_module_0_15,
+  './media/choose-file.js': require_context_module_0_16,
+  './media/choose-image.js': require_context_module_0_17,
+  './media/choose-video.js': require_context_module_0_18,
+  './media/compress-image.js': require_context_module_0_19,
+  './media/compress-video.js': require_context_module_0_20,
+  './media/get-image-info.js': require_context_module_0_21,
+  './media/get-video-info.js': require_context_module_0_22,
+  './media/preview-image.js': require_context_module_0_23,
+  './media/save-image-to-photos-album.js': require_context_module_0_24,
+  './network/download-file.js': require_context_module_0_25,
+  './network/request.js': require_context_module_0_26,
+  './network/socket.js': require_context_module_0_27,
+  './network/upload-file.js': require_context_module_0_28,
+  './plugin/get-provider.js': require_context_module_0_29,
+  './plugin/load-sub-package.js': require_context_module_0_30,
+  './plugin/pre-login.js': require_context_module_0_31,
+  './route/route.js': require_context_module_0_32,
+  './storage/storage.js': require_context_module_0_33,
+  './ui/load-font-face.js': require_context_module_0_34,
+  './ui/navigation-bar.js': require_context_module_0_35,
+  './ui/page-scroll-to.js': require_context_module_0_36,
+  './ui/popup.js': require_context_module_0_37,
+  './ui/tab-bar.js': require_context_module_0_38,
 
       };
       var req = function req(key) {
@@ -4442,7 +4459,8 @@ var serviceContext = (function () {
     loop = false,
     obeyMuteSwitch,
     volume,
-    sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY
+    sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY,
+    playbackRate
   }) {
     const audio = audios[audioId];
     if (audio) {
@@ -4451,7 +4469,9 @@ var serviceContext = (function () {
         autoplay
       };
       if (src) {
-        audio.src = style.src = getRealPath$1(src);
+        // iOS 设置 src 会重新播放
+        const realSrc = getRealPath$1(src);
+        if (audio.src !== realSrc) audio.src = style.src = realSrc;
       }
       if (startTime) {
         audio.startTime = style.startTime = startTime;
@@ -4462,6 +4482,9 @@ var serviceContext = (function () {
       audio.setStyles(style);
       if (sessionCategory) {
         audio.setSessionCategory(sessionCategory);
+      }
+      if (playbackRate && audio.playbackRate) {
+        audio.playbackRate(playbackRate);
       }
       initStateChage(audioId);
     }
@@ -4594,9 +4617,16 @@ var serviceContext = (function () {
     }
   }
 
-  function setMusicState (args) {
+  function setMusicState (args, name) {
     initMusic();
     const props = ['src', 'startTime', 'coverImgUrl', 'webUrl', 'singer', 'epname', 'title'];
+
+    if (name && name === 'playbackRate') {
+      const val = args[name];
+      audio.playbackRate && audio.playbackRate(parseFloat(val));
+      return
+    }
+
     const style = {};
     Object.keys(args).forEach(key => {
       if (props.indexOf(key) >= 0) {
@@ -4658,8 +4688,8 @@ var serviceContext = (function () {
       errMsg: `${api}:ok`
     }
   }
-  function setBackgroundAudioState (args) {
-    setMusicState(args);
+  function setBackgroundAudioState (args, name) {
+    setMusicState(args, name);
     return {
       errMsg: 'setBackgroundAudioState:ok'
     }
@@ -5023,8 +5053,65 @@ var serviceContext = (function () {
     return new LivePusherContext(id, elm)
   }
 
-  function createLivePusherContext$1 (id, vm) {
-    return createLivePusherContext(id, vm)
+  function operateLivePusher (livePusherId, pageVm, type, data) {
+    const pageId = pageVm.$page.id;
+    UniServiceJSBridge.publishHandler(pageId + '-livepusher-' + livePusherId, {
+      livePusherId,
+      type,
+      data
+    }, pageId);
+  }
+
+  UniServiceJSBridge.subscribe('onLivePusherMethodCallback', ({
+    callbackId,
+    data
+  }) => {
+    callback.invoke(callbackId, data);
+  });
+
+  const methods = [
+    'start',
+    'stop',
+    'pause',
+    'resume',
+    'switchCamera',
+    'startPreview',
+    'stopPreview',
+    'snapshot'
+  ];
+
+  const methodMapping = {
+    startPreview: 'preview',
+    stopPreview: 'stop'
+  };
+
+  class LivePusherContext$1 {
+    constructor (id, pageVm) {
+      this.id = id;
+      this.pageVm = pageVm;
+    }
+
+    on (name, callback) {
+      operateLivePusher(this.id, this.pageVm, 'on', {
+        name,
+        callback
+      });
+    }
+  }
+
+  methods.forEach(function (method) {
+    LivePusherContext$1.prototype[method] = callback.warp(function (options, callbackId) {
+      options.callbackId = callbackId;
+      const methodName = methodMapping[method] ? methodMapping[method] : method;
+      operateLivePusher(this.id, this.pageVm, methodName, options);
+    });
+  });
+
+  function createLivePusherContext$1 (id, context) {
+    if (context.$page.meta.isNVue) {
+      return createLivePusherContext(id, context)
+    }
+    return new LivePusherContext$1(id, context)
   }
 
   const DEVICE_FREQUENCY = 200;
@@ -5091,206 +5178,136 @@ var serviceContext = (function () {
     }
   }
 
-  function addPhoneContact ({
-    photoFilePath = '',
-    nickName,
-    lastName,
-    middleName,
-    firstName,
-    remark,
-    mobilePhoneNumber,
-    weChatNumber,
-    addressCountry,
-    addressState,
-    addressCity,
-    addressStreet,
-    addressPostalCode,
-    organization,
-    title,
-    workFaxNumber,
-    workPhoneNumber,
-    hostNumber,
-    email,
-    url,
-    workAddressCountry,
-    workAddressState,
-    workAddressCity,
-    workAddressStreet,
-    workAddressPostalCode,
-    homeFaxNumber,
-    homePhoneNumber,
-    homeAddressCountry,
-    homeAddressState,
-    homeAddressCity,
-    homeAddressStreet,
-    homeAddressPostalCode
-  } = {}, callbackId) {
-    plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
-      const contact = addressbook.create();
-      const name = {};
-      if (lastName) {
-        name.familyName = lastName;
+  const schema = {
+    name: {
+      givenName: 'firstName',
+      middleName: 'middleName',
+      familyName: 'lastName'
+    },
+    nickname: 'nickName',
+    photos: {
+      type: 'url',
+      value: 'photoFilePath'
+    },
+    note: 'remark',
+    phoneNumbers: [
+      {
+        type: 'mobile',
+        value: 'mobilePhoneNumber'
+      },
+      {
+        type: 'work',
+        value: 'workPhoneNumber'
+      },
+      {
+        type: 'company',
+        value: 'hostNumber'
+      },
+      {
+        type: 'home fax',
+        value: 'homeFaxNumber'
+      },
+      {
+        type: 'work fax',
+        value: 'workFaxNumber'
       }
-      if (firstName) {
-        name.givenName = firstName;
-      }
-      if (middleName) {
-        name.middleName = middleName;
-      }
-      contact.name = name;
-
-      if (nickName) {
-        contact.nickname = nickName;
-      }
-
-      if (photoFilePath) {
-        contact.photos = [{
-          type: 'url',
-          value: photoFilePath
-        }];
-      }
-
-      if (remark) {
-        contact.note = remark;
-      }
-
-      const mobilePhone = {
-        type: 'mobile'
-      };
-
-      const workPhone = {
-        type: 'work'
-      };
-
-      const companyPhone = {
-        type: 'company'
-      };
-
-      const homeFax = {
-        type: 'home fax'
-      };
-
-      const workFax = {
-        type: 'work fax'
-      };
-
-      if (mobilePhoneNumber) {
-        mobilePhone.value = mobilePhoneNumber;
-      }
-
-      if (workPhoneNumber) {
-        workPhone.value = workPhoneNumber;
-      }
-
-      if (hostNumber) {
-        companyPhone.value = hostNumber;
-      }
-
-      if (homeFaxNumber) {
-        homeFax.value = homeFaxNumber;
-      }
-
-      if (workFaxNumber) {
-        workFax.value = workFaxNumber;
-      }
-
-      contact.phoneNumbers = [mobilePhone, workPhone, companyPhone, homeFax, workFax];
-
-      if (email) {
-        contact.emails = [{
-          type: 'home',
-          value: email
-        }];
-      }
-
-      if (url) {
-        contact.urls = [{
-          type: 'other',
-          value: url
-        }];
-      }
-
-      if (weChatNumber) {
-        contact.ims = [{
-          type: 'other',
-          value: weChatNumber
-        }];
-      }
-
-      const defaultAddress = {
+    ],
+    emails: [{
+      type: 'home',
+      value: 'email'
+    }],
+    urls: [{
+      type: 'other',
+      value: 'url'
+    }],
+    organizations: [{
+      type: 'company',
+      name: 'organization',
+      title: 'title'
+    }],
+    ims: [{
+      type: 'other',
+      value: 'weChatNumber'
+    }],
+    addresses: [
+      {
         type: 'other',
-        preferred: true
-      };
-
-      const homeAddress = {
-        type: 'home'
-      };
-      const companyAddress = {
-        type: 'company'
-      };
-
-      if (addressCountry) {
-        defaultAddress.country = addressCountry;
+        preferred: true,
+        country: 'addressCountry',
+        region: 'addressState',
+        locality: 'addressCity',
+        streetAddress: 'addressStreet',
+        postalCode: 'addressPostalCode'
+      },
+      {
+        type: 'home',
+        country: 'homeAddressCountry',
+        region: 'homeAddressState',
+        locality: 'homeAddressCity',
+        streetAddress: 'homeAddressStreet',
+        postalCode: 'homeAddressPostalCode'
+      },
+      {
+        type: 'company',
+        country: 'workAddressCountry',
+        region: 'workAddressState',
+        locality: 'workAddressCity',
+        streetAddress: 'workAddressStreet',
+        postalCode: 'workAddressPostalCode'
       }
+    ]
+  };
 
-      if (addressState) {
-        defaultAddress.region = addressState;
+  const keepFields = ['type', 'preferred'];
+
+  function buildContact (contact, data, schema) {
+    let hasValue = 0;
+    Object.keys(schema).forEach(contactKey => {
+      const dataKey = schema[contactKey];
+      const typed = typeof dataKey;
+      if (typed !== 'object') {
+        if (keepFields.indexOf(contactKey) !== -1) {
+          contact[contactKey] = schema[contactKey];
+        } else {
+          if (typeof data[dataKey] !== 'undefined') {
+            hasValue++;
+            contact[contactKey] = data[dataKey];
+          } else {
+            delete contact[contactKey];
+          }
+        }
+      } else {
+        if (dataKey instanceof Array) {
+          contact[contactKey] = [];
+          dataKey.forEach(item => {
+            const obj = {};
+            if (buildContact(obj, data, item)) {
+              contact[contactKey].push(obj);
+            }
+          });
+          if (!contact[contactKey].length) {
+            delete contact[contactKey];
+          } else {
+            hasValue++;
+          }
+        } else {
+          contact[contactKey] = {};
+          if (buildContact(contact[contactKey], data, dataKey)) {
+            hasValue++;
+          } else {
+            delete contact[contactKey];
+          }
+        }
       }
+    });
+    return hasValue
+  }
 
-      if (addressCity) {
-        defaultAddress.locality = addressCity;
-      }
-
-      if (addressStreet) {
-        defaultAddress.streetAddress = addressStreet;
-      }
-
-      if (addressPostalCode) {
-        defaultAddress.postalCode = addressPostalCode;
-      }
-
-      if (homeAddressCountry) {
-        homeAddress.country = homeAddressCountry;
-      }
-
-      if (homeAddressState) {
-        homeAddress.region = homeAddressState;
-      }
-
-      if (homeAddressCity) {
-        homeAddress.locality = homeAddressCity;
-      }
-
-      if (homeAddressStreet) {
-        homeAddress.streetAddress = homeAddressStreet;
-      }
-
-      if (homeAddressPostalCode) {
-        homeAddress.postalCode = homeAddressPostalCode;
-      }
-
-      if (workAddressCountry) {
-        companyAddress.country = workAddressCountry;
-      }
-
-      if (workAddressState) {
-        companyAddress.region = workAddressState;
-      }
-
-      if (workAddressCity) {
-        companyAddress.locality = workAddressCity;
-      }
-
-      if (workAddressStreet) {
-        companyAddress.streetAddress = workAddressStreet;
-      }
-
-      if (workAddressPostalCode) {
-        companyAddress.postalCode = workAddressPostalCode;
-      }
-
-      contact.addresses = [defaultAddress, homeAddress, companyAddress];
-
+  function addPhoneContact$1 (data, callbackId) {
+    plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
+      !data.photoFilePath && (data.photoFilePath = '');
+      const contact = addressbook.create();
+      buildContact(contact, data, schema);
       contact.save(() => {
         invoke$1(callbackId, {
           errMsg: 'addPhoneContact:ok'
@@ -5754,11 +5771,11 @@ var serviceContext = (function () {
     }
 
     sendMessage (data) {
-      const message = {
+      const message = JSON.parse(JSON.stringify(({
         __message: {
           data
         }
-      };
+      })));
       const id = this.webview.id;
       if (BroadcastChannel_) {
         const channel = new BroadcastChannel_(id);
@@ -5805,7 +5822,8 @@ var serviceContext = (function () {
       animationType: 'pop-in',
       animationDuration: 200,
       uniNView: {
-        path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
+        // eslint-disable-next-line
+        path: `${typeof VUE_APP_TEMPLATE_PATH === 'string' ? VUE_APP_TEMPLATE_PATH : ''}/${url}.js`,
         defaultFontSize: 16,
         viewport: plus_.screen.resolutionWidth
       }
@@ -6189,7 +6207,7 @@ var serviceContext = (function () {
   /**
    * 动态设置 tabBar 某一项的内容
    */
-  function setTabBarItem$1 (index, text, iconPath, selectedIconPath, visible) {
+  function setTabBarItem$1 (index, text, iconPath, selectedIconPath, visible, iconfont) {
     const item = {
       index
     };
@@ -6201,6 +6219,9 @@ var serviceContext = (function () {
     }
     if (selectedIconPath) {
       item.selectedIconPath = getRealPath$1(selectedIconPath);
+    }
+    if (iconfont !== undefined) {
+      item.iconfont = iconfont;
     }
     if (visible !== undefined) {
       item.visible = config.list[index].visible = visible;
@@ -7971,7 +7992,8 @@ var serviceContext = (function () {
   function login (params, callbackId, plus = true) {
     const provider = params.provider || 'weixin';
     const errorCallback = warpErrorCallback(callbackId, 'login', plus);
-    const authOptions = provider === 'apple'
+    const isAppleLogin = provider === 'apple';
+    const authOptions = isAppleLogin
       ? { scope: 'email' }
       : params.univerifyStyle
         ? { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) }
@@ -7992,16 +8014,18 @@ var serviceContext = (function () {
         }
         service.login(res => {
           const authResult = res.target.authResult;
+          const appleInfo = res.target.appleInfo;
           _invoke(callbackId, {
             code: authResult.code,
             authResult: authResult,
+            appleInfo,
             errMsg: 'login:ok'
           });
         }, errorCallback, authOptions);
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
-      if (provider === 'apple' || provider === 'univerify') {
+      if (isAppleLogin || provider === 'univerify') {
         login();
       } else {
         service.logout(login, login);
@@ -8331,7 +8355,10 @@ var serviceContext = (function () {
       imageUrl,
       mediaUrl: media,
       scene,
-      miniProgram
+      miniProgram,
+      openCustomerServiceChat,
+      corpid,
+      customerUrl: url
     } = args;
 
     if (typeof imageUrl === 'string' && imageUrl) {
@@ -8352,7 +8379,10 @@ var serviceContext = (function () {
         miniProgram,
         extra: {
           scene
-        }
+        },
+        openCustomerServiceChat,
+        corpid,
+        url
       };
       if (provider === 'weixin' && (type === 1 || type === 2)) {
         delete sendMsg.thumbs;
@@ -8364,12 +8394,18 @@ var serviceContext = (function () {
 
   const sendShareMsg = function (service, params, callbackId, method = 'share') {
     const errorCallback = warpPlusErrorCallback(callbackId, method);
-
-    service.send(params, () => {
-      invoke$1(callbackId, {
-        errMsg: method + ':ok'
+    const serviceMethod = params.openCustomerServiceChat ? 'openCustomerServiceChat' : 'send';
+    try {
+      service[serviceMethod](params, () => {
+        invoke$1(callbackId, {
+          errMsg: method + ':ok'
+        });
+      }, errorCallback);
+    } catch (error) {
+      errorCallback({
+        message: `${params.provider} ${serviceMethod} 方法调用失败`
       });
-    }, errorCallback);
+    }
   };
 
   function shareAppMessageDirectly ({
@@ -11035,9 +11071,10 @@ var serviceContext = (function () {
     iconPath,
     selectedIconPath,
     pagePath,
-    visible
+    visible,
+    iconfont
   }) {
-    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible);
+    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont);
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
     if (route) {
       const meta = route.meta;
@@ -11867,12 +11904,13 @@ var serviceContext = (function () {
     getBackgroundAudioState: getBackgroundAudioState,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
+    LivePusherContext: LivePusherContext$1,
     createLivePusherContext: createLivePusherContext$1,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer,
     onAccelerometerChange: onAccelerometerChange,
     offAccelerometerChange: offAccelerometerChange,
-    addPhoneContact: addPhoneContact,
+    addPhoneContact: addPhoneContact$1,
     onBluetoothDeviceFound: onBluetoothDeviceFound,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange,
     onBLEConnectionStateChange: onBLEConnectionStateChange,
@@ -12121,8 +12159,15 @@ var serviceContext = (function () {
       name: 'protocol',
       readonly: true,
       default: 'http'
+    },
+    {
+      name: 'playbackRate',
+      default: 1,
+      cache: true
     }
   ];
+
+  const backgroundEvents = ['prev', 'next'];
 
   class BackgroundAudioManager {
     constructor () {
@@ -12141,6 +12186,15 @@ var serviceContext = (function () {
           }
         });
       });
+      backgroundEvents.forEach((name) => {
+        onMethod(`onBackgroundAudio${name[0].toUpperCase() + name.substr(1)}`, () => {
+          callbacks$5[name].forEach(callback => {
+            if (typeof callback === 'function') {
+              callback({});
+            }
+          });
+        });
+      });
       props.forEach(item => {
         const name = item.name;
         const data = {
@@ -12154,7 +12208,7 @@ var serviceContext = (function () {
             this._options[name] = value;
             invokeMethod('setBackgroundAudioState', Object.assign({}, this._options, {
               audioId: this.id
-            }));
+            }), name);
           };
         }
         Object.defineProperty(this, name, data);
@@ -19918,7 +19972,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation',
+  const methods$1 = ['getCenterLocation',
     'moveToLocation',
     'getScale',
     'getRegion',
@@ -19955,7 +20009,7 @@ var serviceContext = (function () {
     }
   };
 
-  methods.forEach(function (method) {
+  methods$1.forEach(function (method) {
     MapContext.prototype[method] = callback.warp(function (options, callbackId) {
       options.callbackId = callbackId;
       operateMapPlayer$3(this.id, this.pageVm, method, options);
@@ -20063,7 +20117,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods$1 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView'];
+  const methods$2 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView'];
 
   class EditorContext {
     constructor (id, pageId) {
@@ -20081,7 +20135,7 @@ var serviceContext = (function () {
     }
   }
 
-  methods$1.forEach(function (method) {
+  methods$2.forEach(function (method) {
     EditorContext.prototype[method] = callback.warp(function (options, callbackId) {
       operateEditor(this.id, this.pageId, method, {
         options,
@@ -20155,6 +20209,10 @@ var serviceContext = (function () {
     },
     {
       name: 'sessionCategory'
+    },
+    {
+      name: 'playbackRate',
+      cache: true
     }
   ];
 
