@@ -486,12 +486,14 @@ importers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
+      '@dcloudio/uni-shared': link:../uni-shared
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
 
@@ -502,6 +504,7 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
     dependencies:
@@ -510,6 +513,7 @@ importers:
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-mp-weixin': link:../uni-mp-weixin
+      '@dcloudio/uni-shared': link:../uni-shared
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
 
@@ -550,6 +554,7 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
     dependencies:
@@ -558,6 +563,7 @@ importers:
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-mp-weixin': link:../uni-mp-weixin
+      '@dcloudio/uni-shared': link:../uni-shared
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
 
@@ -568,6 +574,7 @@ importers:
       '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
     dependencies:
@@ -576,6 +583,7 @@ importers:
       '@dcloudio/uni-mp-toutiao': link:../uni-mp-toutiao
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
+      '@dcloudio/uni-shared': link:../uni-shared
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
 
@@ -585,6 +593,7 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@types/fs-extra': ^9.0.13
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
@@ -593,6 +602,7 @@ importers:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
+      '@dcloudio/uni-shared': link:../uni-shared
       '@vue/shared': 3.2.33
       fs-extra: 10.0.0
     devDependencies:
@@ -606,6 +616,7 @@ importers:
       '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
     dependencies:
@@ -613,6 +624,7 @@ importers:
       '@dcloudio/uni-mp-compiler': link:../uni-mp-compiler
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
+      '@dcloudio/uni-shared': link:../uni-shared
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
 
@@ -657,12 +669,14 @@ importers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3040620220415003
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3040620220415003
+      '@dcloudio/uni-shared': 3.0.0-alpha-3040620220415003
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
+      '@dcloudio/uni-shared': link:../uni-shared
       '@vue/shared': 3.2.33
     devDependencies:
       '@vue/compiler-core': 3.2.33
