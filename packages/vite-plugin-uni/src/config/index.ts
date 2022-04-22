@@ -46,6 +46,7 @@ export function createConfig(
       worker: {
         plugins: initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR),
       },
+      plugins: initFixedEsbuildInitTSConfck(process.env.UNI_NODE_ENV),
     }
   }
 }
@@ -62,17 +63,18 @@ function initFixedEsbuildInitTSConfck(inputDir: string): PluginOption[] {
   if (fs.existsSync(path.resolve(inputDir, 'package.json'))) {
     return []
   }
+  const initTSConfckPlugins = ['vite:esbuild', 'vite:esbuild-transpile']
   return [
     {
       name: 'fixed-esbuild-initTSConfck',
       enforce: 'pre',
       configResolved(config) {
-        const plugin = config.worker.plugins.find(
-          (p) => p.name === 'vite:esbuild'
-        )
-        if (plugin) {
-          delete plugin.configResolved
-        }
+        initTSConfckPlugins.forEach((name) => {
+          const plugin = config.worker.plugins.find((p) => p.name === name)
+          if (plugin) {
+            delete plugin.configResolved
+          }
+        })
       },
     },
   ]
