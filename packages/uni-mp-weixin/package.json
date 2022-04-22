@@ -31,6 +31,8 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040620220415003",
     "@dcloudio/uni-mp-vite": "3.0.0-alpha-3040620220415003",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3040620220415003"
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3040620220415003",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3040620220415003",
+    "@vue/shared": "3.2.33"
   }
 }

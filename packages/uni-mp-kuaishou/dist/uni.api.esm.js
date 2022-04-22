@@ -1,21 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
-
-let vueApp;
-const createVueAppHooks = [];
-/**
- * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
- */
-function onCreateVueApp(hook) {
-    // TODO 每个 nvue 页面都会触发
-    if (vueApp) {
-        return hook(vueApp);
-    }
-    createVueAppHooks.push(hook);
-}
-function invokeCreateVueAppHook(app) {
-    vueApp = app;
-    createVueAppHooks.forEach((hook) => hook(app));
-}
+import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -56,57 +40,6 @@ const navigateTo = {
 function getBaseSystemInfo() {
   return ks.getSystemInfoSync()
 }
-
-const E = function () {
-    // Keep this empty so it's easier to inherit from
-    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-};
-E.prototype = {
-    on: function (name, callback, ctx) {
-        var e = this.e || (this.e = {});
-        (e[name] || (e[name] = [])).push({
-            fn: callback,
-            ctx: ctx,
-        });
-        return this;
-    },
-    once: function (name, callback, ctx) {
-        var self = this;
-        function listener() {
-            self.off(name, listener);
-            callback.apply(ctx, arguments);
-        }
-        listener._ = callback;
-        return this.on(name, listener, ctx);
-    },
-    emit: function (name) {
-        var data = [].slice.call(arguments, 1);
-        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-        var i = 0;
-        var len = evtArr.length;
-        for (i; i < len; i++) {
-            evtArr[i].fn.apply(evtArr[i].ctx, data);
-        }
-        return this;
-    },
-    off: function (name, callback) {
-        var e = this.e || (this.e = {});
-        var evts = e[name];
-        var liveEvents = [];
-        if (evts && callback) {
-            for (var i = 0, len = evts.length; i < len; i++) {
-                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-                    liveEvents.push(evts[i]);
-            }
-        }
-        // Remove event from queue to prevent memory leak
-        // Suggested by https://github.com/lazd
-        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-        return this;
-    },
-};
-var E$1 = E;
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -583,7 +516,7 @@ const EmitProtocol = [
     },
 ];
 
-const emitter = new E$1();
+const emitter = new Emitter();
 const $on = defineSyncApi(API_ON, (name, callback) => {
     emitter.on(name, callback);
     return () => emitter.off(name, callback);
