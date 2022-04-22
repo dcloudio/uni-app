@@ -314,6 +314,8 @@ if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
 
+process.env.UNI_STAT_UNI_CLOUD = ''
+process.env.UNI_STAT_DEBUG = ''
 if (
   process.env.UNI_USING_COMPONENTS ||
   process.env.UNI_PLATFORM === 'h5'
@@ -325,6 +327,11 @@ if (
 
   if (uniStatistics.enable === true) {
     process.env.UNI_USING_STAT = uniStatistics.version === '2' ? '2' : '1'
+    // 获取服务空间配置信息
+    const uniCloudConfig = uniStatistics.uniCloud || {}
+    process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
+    process.env.UNI_STAT_DEBUG = uniStatistics.debug === true ? 'true' : 'false'
+
     if (process.env.NODE_ENV === 'production') {
       if (!process.UNI_STAT_CONFIG.appid) {
         console.log()
@@ -336,11 +343,17 @@ if (
         if (!uniStatistics.version) {
           console.log()
           console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
-            0: 'https://uniapp.dcloud.io/uni-stat'
+            0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
           }))
-          console.log()
         }
+        console.log()
+        console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
+        console.log()
       }
+    } else {
+      console.log()
+      console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
+      console.log()
     }
   }
 }
