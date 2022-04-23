@@ -28,7 +28,7 @@ export default () => [
         '@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'
       ),
     }
-    
+
     return {
       name: 'uni:stat',
       enforce: 'pre',
