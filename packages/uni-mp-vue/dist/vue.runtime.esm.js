@@ -5421,7 +5421,7 @@ function createInvoker(initialValue, instance) {
         }
         else {
             const res = invoke();
-            if (e.type === 'input' && isPromise(res)) {
+            if (e.type === 'input' && (isArray(res) || isPromise(res))) {
                 return;
             }
             return res;
