@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-jd",
-  "version": "2.0.1-34720220422001",
+  "version": "2.0.1-alpha-34820220424001",
   "description": "uni-app mp-jd",
   "main": "dist/index.js",
   "repository": {
