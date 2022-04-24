@@ -317,7 +317,6 @@ class AdHelper {
       adpid,
       urlCallback
     } = options
-    const ads = []
     for (let i = 0; i < step; i++) {
       if (index < adpid.length) {
         const options2 = {
@@ -516,7 +515,7 @@ export default {
       this.errorMessage = null
     },
 
-    _onLoad (err) {
+    _onLoad () {
       this.loading = false
       this._dispatchEvent(EventType.Load, {})
     },

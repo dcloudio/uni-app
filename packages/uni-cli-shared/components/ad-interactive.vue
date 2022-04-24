@@ -48,13 +48,13 @@ export default {
   created () {
     this._uniAdPlugin = null
     this._interactiveUrl = null
-    if (this.openType == OpenTypes.Interactive) {
+    if (this.openType === OpenTypes.Interactive) {
       this.getAdData()
     }
   },
   methods: {
     show () {
-      if (this._uniAdPlugin == null) {
+      if (this._uniAdPlugin === null) {
         this._uniAdPlugin = this.selectComponent('.uni-ad-plugin')
       }
       this._uniAdPlugin.show()
@@ -88,7 +88,7 @@ export default {
           }
 
           const responseData = res.data
-          if (responseData.ret == 0) {
+          if (responseData.ret === 0) {
             this._interactiveUrl = responseData.data.adp_url
             this.adData.imgUrl = responseData.data.icon_url
             this.adData.openUrl = this.openUrl + '?url=' + encodeURIComponent(this._interactiveUrl)
@@ -109,7 +109,7 @@ export default {
       })
     },
     onclick () {
-      if (this.openType != OpenTypes.Interactive || !this._interactiveUrl) {
+      if (this.openType !== OpenTypes.Interactive || !this._interactiveUrl) {
         return
       }
 
@@ -127,11 +127,7 @@ export default {
           t: '10019'
         },
         timeout: 5000,
-        dataType: 'json',
-        success: (res) => {
-        },
-        fail: (err) => {
-        }
+        dataType: 'json'
       })
     }
   }

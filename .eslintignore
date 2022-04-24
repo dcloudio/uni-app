@@ -36,3 +36,7 @@ node_modules
 automator.js
 uni.automator.js
 uni-polyfill.js
+packages/uni-cli-shared/components/ad-full-screen-video.vue
+packages/uni-cli-shared/components/ad-interactive.vue
+packages/uni-cli-shared/components/ad-interstitial.vue
+packages/uni-cli-shared/components/ad-rewarded-video.vue
