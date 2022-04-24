@@ -23,7 +23,7 @@ export const compilerOptions: CompilerOptions = {
 export function createUni(): UniVitePlugin['uni'] {
   return {
     copyOptions: {
-      assets: ['hybrid/html'],
+      assets: ['hybrid/html/**/*', 'uni_modules/*/hybrid/html/**/*'],
     },
     compilerOptions,
     jsxOptions: {
