@@ -59,10 +59,7 @@ var index = () => [
                     statVersion = statConfig.version === '2' ? '2' : '1';
                     isEnable = statConfig.enable === true;
                     process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
-                    process.env.UNI_STAT_DEBUG =
-                        statConfig.debug && typeof statConfig.debug === 'boolean'
-                            ? 'true'
-                            : 'false';
+                    process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                     if (process.env.NODE_ENV === 'production') {
                         const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
                         if (!manifestJson.appid) {
@@ -89,7 +86,7 @@ var index = () => [
                 return {
                     define: {
                         'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
-                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD || {},
+                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD || JSON.stringify({}),
                         'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG || 'false',
                     },
                 };
