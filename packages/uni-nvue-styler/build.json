@@ -1,0 +1,25 @@
+[
+  {
+    "input": {
+      "src/esm.ts": ["dist/uni-nvue-styler.es.js"]
+    },
+    "external": ["@vue/shared"]
+  },
+  {
+    "input": {
+      "src/index.ts": ["dist/uni-nvue-styler.cjs.js"]
+    },
+    "external": ["postcss", "parse-css-font"],
+    "alias": {
+      "entries": [
+        {
+          "find": "shared",
+          "replacement": "@vue/shared"
+        }
+      ]
+    },
+    "compilerOptions": {
+      "declaration": true
+    }
+  }
+]

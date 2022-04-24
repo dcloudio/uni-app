@@ -52,11 +52,43 @@ export function formatErrMsg(msg: string, options?: LogErrorOptions) {
   return msg
 }
 
-export function formatInfoMsg(msg: string, options?: LogOptions) {
+const REMOVED_NVUE_MSGS = [
+  (msg: string) => {
+    // vite v2.7.10 building for development... (x2)
+    return msg.includes('vite v') && msg.includes('building ')
+  },
+]
+
+export const removeNVueInfoFormatter: Formatter = {
+  test(msg) {
+    return !!REMOVED_NVUE_MSGS.find((m) =>
+      typeof m === 'string' ? msg.includes(m) : m(msg)
+    )
+  },
+  format() {
+    return ''
+  },
+}
+const nvueInfoFormatters: Formatter[] = []
+const initNVueInfoFormattersOnce = once(() => {
+  nvueInfoFormatters.push(removeNVueInfoFormatter)
+})
+
+export function formatInfoMsg(
+  msg: string,
+  options?: LogOptions & { nvue?: boolean }
+) {
   initInfoFormattersOnce()
   const formatter = infoFormatters.find(({ test }) => test(msg, options))
   if (formatter) {
     return formatter.format(msg, options)
+  }
+  if (options?.nvue) {
+    initNVueInfoFormattersOnce()
+    const formatter = nvueInfoFormatters.find(({ test }) => test(msg, options))
+    if (formatter) {
+      return formatter.format(msg, options)
+    }
   }
   return msg
 }

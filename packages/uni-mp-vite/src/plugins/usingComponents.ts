@@ -18,8 +18,13 @@ import {
 import { virtualComponentPath, virtualPagePath } from './entry'
 
 export function uniUsingComponentsPlugin(
-  options: Partial<SFCScriptCompileOptions> = {}
+  options: {
+    normalizeComponentName?: (name: string) => string
+    babelParserPlugins?: SFCScriptCompileOptions['babelParserPlugins']
+  } = {}
 ): Plugin {
+  const normalizeComponentName =
+    options.normalizeComponentName || ((name: string) => name)
   const parseAst = (source: string, id: string) => {
     return parseProgram(source, id, {
       babelParserPlugins: options.babelParserPlugins,
@@ -56,7 +61,11 @@ export function uniUsingComponentsPlugin(
               isExternal: true,
             }
           )
-          updateMiniProgramComponentsByScriptFilename(filename, inputDir)
+          updateMiniProgramComponentsByScriptFilename(
+            filename,
+            inputDir,
+            normalizeComponentName
+          )
           return transformDynamicImports(
             source,
             descriptor.imports,
@@ -73,7 +82,11 @@ export function uniUsingComponentsPlugin(
               isExternal: true,
             }
           )
-          updateMiniProgramComponentsByTemplateFilename(filename, inputDir)
+          updateMiniProgramComponentsByTemplateFilename(
+            filename,
+            inputDir,
+            normalizeComponentName
+          )
           return transformDynamicImports(
             source,
             descriptor.imports,
@@ -90,7 +103,11 @@ export function uniUsingComponentsPlugin(
 
       const descriptor = await parseMainDescriptor(filename, ast, this.resolve)
 
-      updateMiniProgramComponentsByMainFilename(filename, inputDir)
+      updateMiniProgramComponentsByMainFilename(
+        filename,
+        inputDir,
+        normalizeComponentName
+      )
 
       return transformDynamicImports(
         source,

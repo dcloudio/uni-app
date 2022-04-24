@@ -406,6 +406,7 @@ function parseApp(instance, parseAppOptions) {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
         onLaunch(options) {
+            this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -459,9 +460,18 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (qa.$subpackages || (qa.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
     };
 }
 function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
     if (isFunction(appOptions.onShow) && qa.onAppShow) {
         qa.onAppShow((args) => {
             vm.$callHook('onShow', args);
@@ -471,10 +481,6 @@ function initAppLifecycle(appOptions, vm) {
         qa.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
-    }
-    if (isFunction(appOptions.onLaunch)) {
-        const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
-        vm.$callHook('onLaunch', args || {});
     }
 }
 function initLocale(appVm) {
@@ -718,7 +724,9 @@ function updateComponentProps(up, instance) {
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
         invalidateJob(instance.update);
-        instance.update();
+        {
+            instance.update();
+        }
     }
 }
 function hasPropsChanged(prevProps, nextProps, checkLen = true) {
@@ -816,9 +824,18 @@ function initCreateComponent(parseOptions) {
 }
 let $createComponentFn;
 let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return qa.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return qa.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
 function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
-        $createComponentFn = getApp().$vm.$createComponent;
+        $createComponentFn = getAppVm().$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
     return getExposeProxy(proxy.$) || proxy;
@@ -849,7 +866,9 @@ function parsePage(vueOptions, parseOptions) {
         return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };
     initHooks(methods, PAGE_INIT_HOOKS);
-    initUnknownHooks(methods, vueOptions);
+    {
+        initUnknownHooks(methods, vueOptions);
+    }
     initRuntimeHooks(methods, vueOptions.__runtimeHooks);
     initMixinRuntimeHooks(methods);
     parse && parse(miniProgramPageOptions, { handleLink });
@@ -1041,7 +1060,7 @@ function initLifetimes(lifetimesOptions) {
                 this.$vm.$callCreatedHook();
                 nextSetDataTick(this, () => {
                     this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY$1);
+                    this.$vm.$callHook(ON_READY);
                 });
             }
             else {
@@ -1150,6 +1169,7 @@ qa.EventChannel = EventChannel$1;
 qa.createApp = global.createApp = createApp;
 qa.createPage = createPage;
 qa.createComponent = createComponent;
-qa.createSubpackageApp = createSubpackageApp;
+qa.createSubpackageApp = global.createSubpackageApp =
+    createSubpackageApp;
 
 export { createApp, createComponent, createPage, createSubpackageApp };

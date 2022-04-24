@@ -11,13 +11,7 @@ import { initI18nShowActionSheetMsgsOnce, useI18n } from '@dcloudio/uni-core'
 export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
   API_SHOW_ACTION_SHEET,
   (
-    {
-      itemList = [],
-      itemColor = '#000000',
-      title = '',
-      alertText = '',
-      popover,
-    },
+    { itemList = [], itemColor = '#000000', title = '', popover },
     { resolve, reject }
   ) => {
     initI18nShowActionSheetMsgsOnce()
@@ -29,9 +23,6 @@ export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
         title: item,
         color: itemColor,
       })),
-    }
-    if (title || alertText) {
-      options.title = alertText || title
     }
     plus.nativeUI.actionSheet(
       extend(options, {

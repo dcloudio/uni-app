@@ -9,7 +9,7 @@ export function createNVueWebview({
   path,
   query,
   routeOptions,
-  webviewStyle,
+  webviewExtras,
 }: CreateWebviewOptions) {
   const curWebviewId = genWebviewId()
   const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta, {
@@ -30,8 +30,10 @@ export function createNVueWebview({
     extend(
       {
         nvue: true,
+        __path__: path,
+        __query__: JSON.stringify(query),
       },
-      webviewStyle
+      webviewExtras
     )
   )
 }

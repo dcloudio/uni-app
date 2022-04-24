@@ -117,21 +117,31 @@ export async function parseMainDescriptor(
 
 export function updateMiniProgramComponentsByScriptFilename(
   scriptFilename: string,
-  inputDir: string
+  inputDir: string,
+  normalizeComponentName: (name: string) => string
 ) {
   const mainFilename = findMainFilenameByScriptFilename(scriptFilename)
   if (mainFilename) {
-    updateMiniProgramComponentsByMainFilename(mainFilename, inputDir)
+    updateMiniProgramComponentsByMainFilename(
+      mainFilename,
+      inputDir,
+      normalizeComponentName
+    )
   }
 }
 
 export function updateMiniProgramComponentsByTemplateFilename(
   templateFilename: string,
-  inputDir: string
+  inputDir: string,
+  normalizeComponentName: (name: string) => string
 ) {
   const mainFilename = findMainFilenameByTemplateFilename(templateFilename)
   if (mainFilename) {
-    updateMiniProgramComponentsByMainFilename(mainFilename, inputDir)
+    updateMiniProgramComponentsByMainFilename(
+      mainFilename,
+      inputDir,
+      normalizeComponentName
+    )
   }
 }
 
@@ -153,9 +163,11 @@ export async function updateMiniProgramGlobalComponents(
   {
     inputDir,
     resolve,
+    normalizeComponentName,
   }: {
     inputDir: string
     resolve: ParseDescriptor['resolve']
+    normalizeComponentName: (name: string) => string
   }
 ) {
   const { bindingComponents, imports } = await parseGlobalDescriptor(
@@ -165,7 +177,12 @@ export async function updateMiniProgramGlobalComponents(
   )
   addMiniProgramUsingComponents(
     'app',
-    createUsingComponents(bindingComponents, imports, inputDir)
+    createUsingComponents(
+      bindingComponents,
+      imports,
+      inputDir,
+      normalizeComponentName
+    )
   )
   return {
     imports,
@@ -175,7 +192,8 @@ export async function updateMiniProgramGlobalComponents(
 function createUsingComponents(
   bindingComponents: BindingComponents,
   imports: ImportDeclaration[],
-  inputDir: string
+  inputDir: string,
+  normalizeComponentName: (name: string) => string
 ) {
   const usingComponents: Record<string, string> = {}
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
@@ -183,7 +201,9 @@ function createUsingComponents(
     if (!bindingComponents[name]) {
       return
     }
-    const componentName = hyphenate(bindingComponents[name].tag)
+    const componentName = normalizeComponentName(
+      hyphenate(bindingComponents[name].tag)
+    )
     if (!usingComponents[componentName]) {
       usingComponents[componentName] = addLeadingSlash(
         removeExt(normalizeMiniProgramFilename(value, inputDir))
@@ -195,7 +215,8 @@ function createUsingComponents(
 
 export function updateMiniProgramComponentsByMainFilename(
   mainFilename: string,
-  inputDir: string
+  inputDir: string,
+  normalizeComponentName: (name: string) => string
 ) {
   const mainDescriptor = mainDescriptors.get(mainFilename)
   if (!mainDescriptor) {
@@ -221,7 +242,12 @@ export function updateMiniProgramComponentsByMainFilename(
 
   addMiniProgramUsingComponents(
     removeExt(normalizeMiniProgramFilename(mainFilename, inputDir)),
-    createUsingComponents(bindingComponents, imports, inputDir)
+    createUsingComponents(
+      bindingComponents,
+      imports,
+      inputDir,
+      normalizeComponentName
+    )
   )
 }
 

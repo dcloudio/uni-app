@@ -34,7 +34,7 @@ const rollupPlugins = [
       _NODE_JS_: 0,
     },
     // 忽略 pako 内部条件编译
-    exclude: ['**/pako/**/*.js'],
+    exclude: [/pako/ as unknown as string],
   }),
   babel({
     babelHelpers: 'bundled',

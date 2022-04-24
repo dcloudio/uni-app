@@ -108,6 +108,10 @@ export function initRouteMeta(
   return res
 }
 
+export function normalizeSubNVueStyle(style: Record<string, unknown>) {
+  return JSON.parse(rpx2px(JSON.stringify(style), true))
+}
+
 export function normalizePullToRefreshRpx(
   pullToRefresh: UniApp.PageRefreshOptions
 ) {

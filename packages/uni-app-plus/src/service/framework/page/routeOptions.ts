@@ -9,6 +9,7 @@ export function initRouteOptions(path: string, openType: UniApp.OpenType) {
   routeOptions.meta = initRouteMeta(routeOptions.meta)
 
   if (
+    openType !== 'preloadPage' &&
     !__uniConfig.realEntryPagePath &&
     (openType === 'reLaunch' || getCurrentPages().length === 0) // redirectTo
   ) {

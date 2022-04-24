@@ -23,7 +23,6 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 
 const customizeRE = /:/g;
 function customizeEvent(str) {
@@ -315,15 +314,13 @@ const HOOKS = [
     ON_PAGE_NOT_FOUND,
     ON_UNHANDLE_REJECTION,
 ];
-{
-    HOOKS.push(ON_SHARE_APP_MESSAGE);
-}
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
     const appOptions = {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
         onLaunch(options) {
+            this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -377,9 +374,18 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (my.$subpackages || (my.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
     };
 }
 function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
     if (isFunction(appOptions.onShow) && my.onAppShow) {
         my.onAppShow((args) => {
             vm.$callHook('onShow', args);
@@ -389,10 +395,6 @@ function initAppLifecycle(appOptions, vm) {
         my.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
-    }
-    if (isFunction(appOptions.onLaunch)) {
-        const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
-        vm.$callHook('onLaunch', args || {});
     }
 }
 function initLocale(appVm) {
@@ -533,7 +535,9 @@ function updateComponentProps(up, instance) {
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
         invalidateJob(instance.update);
-        instance.update();
+        {
+            instance.update();
+        }
     }
 }
 function hasPropsChanged(prevProps, nextProps, checkLen = true) {
@@ -582,9 +586,18 @@ function initBehaviors(vueOptions) {
 
 let $createComponentFn;
 let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return my.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return my.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
 function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
-        $createComponentFn = getApp().$vm.$createComponent;
+        $createComponentFn = getAppVm().$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
     return getExposeProxy(proxy.$) || proxy;
@@ -599,6 +612,9 @@ function $destroyComponent(instance) {
 function initCreatePluginApp(parseAppOptions) {
     return function createApp(vm) {
         initAppLifecycle(parseApp(vm, parseAppOptions), vm);
+        if (process.env.UNI_MP_PLUGIN) {
+            my.$vm = vm;
+        }
     };
 }
 
@@ -675,7 +691,7 @@ function initSpecialMethods(mpInstance) {
         return;
     }
     if (path.indexOf('/') === 0) {
-        path = path.substr(1);
+        path = path.slice(1);
     }
     const specialMethods = my.specialMethods && my.specialMethods[path];
     if (specialMethods) {
@@ -832,6 +848,7 @@ function initCreatePage() {
                     fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
                 };
                 // 初始化 vue 实例
+                this.props = query;
                 this.$vm = createVueComponent('page', this, vueOptions);
                 initSpecialMethods(this);
                 this.$vm.$callHook(ON_LOAD, query);

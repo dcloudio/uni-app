@@ -29,12 +29,14 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
   transformEvent: Record<string, string>
   compilerOptions: Required<Required<UniVitePlugin>['uni']>['compilerOptions']
   jsxOptions: Required<Required<UniVitePlugin>['uni']>['jsxOptions']
+  styleOptions: Required<Required<UniVitePlugin>['uni']>['styleOptions']
 } {
   const assets: string[] = []
   const targets: UniViteCopyPluginTarget[] = []
   const transformEvent: Record<string, string> = Object.create(null)
   const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {}
   const jsxOptions: Required<UniVitePlugin>['uni']['jsxOptions'] = {}
+  const styleOptions: Required<UniVitePlugin>['uni']['styleOptions'] = {}
   let compiler: TemplateCompiler | undefined
   UniVitePlugins.forEach((plugin) => {
     const {
@@ -42,6 +44,7 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
       copyOptions: pluginCopyOptions,
       compilerOptions: pluginCompilerOptions,
       jsxOptions: pluginJsxOptions,
+      styleOptions: pluginStyleOpitons,
     } = plugin.uni || {}
     if (pluginTemplateCompiler) {
       compiler = pluginTemplateCompiler
@@ -51,6 +54,9 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
     }
     if (pluginJsxOptions) {
       extend(jsxOptions, pluginJsxOptions)
+    }
+    if (pluginStyleOpitons) {
+      extend(styleOptions, pluginStyleOpitons)
     }
     if (pluginCopyOptions) {
       let copyOptions = pluginCopyOptions as CopyOptions
@@ -74,6 +80,7 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
     transformEvent,
     compilerOptions,
     jsxOptions,
+    styleOptions,
   }
 }
 

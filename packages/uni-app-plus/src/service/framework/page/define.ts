@@ -3,7 +3,6 @@ import { once, PageNodeOptions } from '@dcloudio/uni-shared'
 import { DefineComponent } from 'vue'
 import { createPageNode } from '../dom/Page'
 import { setupPage } from './setup'
-import __vuePlugin from '../plugin'
 import { getVueApp } from '../app/vueApp'
 
 export type VuePageComponent = DefineComponent<PageProps>
@@ -32,7 +31,7 @@ interface PageProps {
   __pageInstance: Page.PageInstance['$page']
 }
 
-export function createPage(
+export function createVuePage(
   __pageId: number,
   __pagePath: string,
   __pageQuery: Record<string, any>,

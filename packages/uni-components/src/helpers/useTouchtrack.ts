@@ -73,6 +73,8 @@ export function useTouchtrack(
   ) {
     if (
       method({
+        // @ts-expect-error
+        cancelable: $event.cancelable,
         target: $event.target,
         currentTarget: $event.currentTarget,
         preventDefault: $event.preventDefault.bind($event),

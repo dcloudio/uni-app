@@ -47,10 +47,17 @@ export const setTabBarBadge = defineAsyncApi<API_TYPE_SET_TAB_BAR_BADGE>(
 export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(
   API_SET_TAB_BAR_ITEM,
   (
-    { index, text, iconPath, selectedIconPath, pagePath, visible },
+    { index, text, iconPath, selectedIconPath, pagePath, visible, iconfont },
     { resolve, reject }
   ) => {
-    tabBar.setTabBarItem(index, text, iconPath, selectedIconPath, visible)
+    tabBar.setTabBarItem(
+      index,
+      text,
+      iconPath,
+      selectedIconPath,
+      visible,
+      iconfont
+    )
     const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
     if (route) {
       const meta = route.meta

@@ -68,6 +68,7 @@ export function uniInjectPlugin(): Plugin {
         delete uniInjectPluginOptions['uni.']
       }
       injectPlugin = uniViteInjectPlugin(
+        'uni:h5-inject',
         extend(uniInjectPluginOptions, {
           callback,
         })

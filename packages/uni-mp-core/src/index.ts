@@ -12,6 +12,7 @@ export { initCreatePage } from './runtime/page'
 export { initCreateComponent } from './runtime/component'
 export { initCreatePluginApp } from './runtime/plugin'
 export { findPropsData } from './runtime/componentProps'
+export { fixSetDataEnd, fixSetDataStart } from './runtime/fixSetData'
 
 export { initUni } from './api/index'
 export { initGetProvider } from './api/shims'
@@ -51,6 +52,7 @@ export {
   getSystemInfoSync,
   addSafeAreaInsets,
   useDeviceId,
+  showActionSheet,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'

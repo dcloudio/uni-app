@@ -1,6 +1,15 @@
 import { assert } from './testUtils'
 import { customElements } from '../src/compiler/options'
 describe('mp-weixin: transform component', () => {
+  test(`Components start with wx`, () => {
+    assert(
+      `<WxBtn/>`,
+      `<weixin-btn u-i="2a9ec0b0-0" bind:__l="__l"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
   test(`component with v-show`, () => {
     assert(
       `<custom v-show="ok"/>`,

@@ -11,7 +11,7 @@ export interface CreateWebviewOptions {
   path: string
   query: Record<string, string>
   routeOptions: UniApp.UniRoute
-  webviewStyle?: Record<string, any>
+  webviewExtras?: Record<string, any>
 }
 
 export function createWebview(options: CreateWebviewOptions) {

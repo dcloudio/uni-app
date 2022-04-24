@@ -9,7 +9,12 @@ import deviceId from '../../../helpers/uuid'
 type SafeAreaInsets = Required<PlusNavigatorSafeAreaInsets>
 
 function getScreenInfo() {
-  const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize()
+  // 好像开发时刷新，偶发的 plus.screen.getCurrentSize 为 undefined
+  const { resolutionWidth, resolutionHeight } =
+    plus.screen.getCurrentSize() || {
+      resolutionWidth: 0,
+      resolutionHeight: 0,
+    }
   return {
     screenWidth: Math.round(resolutionWidth),
     screenHeight: Math.round(resolutionHeight),

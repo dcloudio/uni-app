@@ -14,8 +14,10 @@ import {
   isCSSRequest,
   parseManifestJsonOnce,
   M,
+  isMiniProgramAssetFile,
+  dynamicImportPolyfill,
 } from '@dcloudio/uni-cli-shared'
-import { GetManualChunk, GetModuleInfo, Plugin, PreRenderedChunk } from 'rollup'
+import { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
   isUniComponentUrl,
   isUniPageUrl,
@@ -40,6 +42,7 @@ export function createBuildOptions(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): BuildOptions {
+  const { renderDynamicImport } = dynamicImportPolyfill()
   return {
     // sourcemap: 'inline', // TODO
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
@@ -63,7 +66,21 @@ export function createBuildOptions(
         manualChunks: createMoveToVendorChunkFn(),
         chunkFileNames: createChunkFileNames(inputDir),
         assetFileNames: '[name][extname]',
-        plugins: [dynamicImportPolyfill()],
+        plugins: [
+          {
+            name: 'dynamic-import-polyfill',
+            renderDynamicImport(options) {
+              const { targetModuleId } = options
+              if (targetModuleId && isMiniProgramAssetFile(targetModuleId)) {
+                return {
+                  left: 'Promise.resolve(require(',
+                  right: '))',
+                }
+              }
+              return renderDynamicImport!.call(this, options)
+            },
+          },
+        ],
       },
     },
   }
@@ -102,8 +119,8 @@ function createMoveToVendorChunkFn(): GetManualChunk {
   const cache = new Map<string, boolean>()
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   return (id, { getModuleInfo }) => {
-    id = normalizePath(id)
-    const filename = id.split('?')[0]
+    const normalizedId = normalizePath(id)
+    const filename = normalizedId.split('?')[0]
     // 处理项目内的js,ts文件
     if (EXTNAME_JS_RE.test(filename)) {
       if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
@@ -114,19 +131,20 @@ function createMoveToVendorChunkFn(): GetManualChunk {
           !chunkFileNameBlackList.includes(chunkFileName) &&
           !hasJsonFile(chunkFileName) // 无同名的page,component
         ) {
-          debugChunk(chunkFileName, id)
+          debugChunk(chunkFileName, normalizedId)
           return chunkFileName
         }
         return
       }
       // 非项目内的 js 资源，均打包到 vendor
-      debugChunk('common/vendor', id)
+      debugChunk('common/vendor', normalizedId)
       return 'common/vendor'
     }
     if (
-      isVueJs(id) ||
-      (id.includes('node_modules') &&
-        !isCSSRequest(id) &&
+      isVueJs(normalizedId) ||
+      (normalizedId.includes('node_modules') &&
+        !isCSSRequest(normalizedId) &&
+        // 使用原始路径，格式化的可能找不到模块信息 https://github.com/dcloudio/uni-app/issues/3425
         staticImportedByEntry(id, getModuleInfo, cache))
     ) {
       debugChunk('common/vendor', id)
@@ -188,18 +206,6 @@ function createChunkFileNames(
       return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
     }
     return '[name].js'
-  }
-}
-
-function dynamicImportPolyfill(): Plugin {
-  return {
-    name: 'dynamic-import-polyfill',
-    renderDynamicImport() {
-      return {
-        left: '(',
-        right: ')',
-      }
-    },
   }
 }
 

@@ -94,6 +94,7 @@ export class UniComponent extends UniNode {
   }
   setText(text: string) {
     ;(this.$holder || this.$).textContent = text
+    this.updateView()
   }
   addWxsEvent(name: string, wxsEvent: string, flag: number) {
     // 此时 $ 还不存在，故传入 this，等事件触发时，再获取 $
@@ -137,6 +138,7 @@ export class UniComponent extends UniNode {
         this.$props[name] = value
       }
     }
+    this.updateView()
   }
   removeAttr(name: string) {
     if (isCssVar(name)) {
@@ -144,6 +146,7 @@ export class UniComponent extends UniNode {
     } else {
       this.$props[name] = null
     }
+    this.updateView()
   }
 
   remove() {
@@ -152,12 +155,17 @@ export class UniComponent extends UniNode {
     this.$app.unmount()
     removeElement(this.id)
     this.removeUniChildren()
+    this.updateView()
   }
   appendChild(node: Element) {
-    return (this.$holder || this.$).appendChild(node)
+    const res = (this.$holder || this.$).appendChild(node)
+    this.updateView(true)
+    return res
   }
   insertBefore(newChild: Node, refChild: Node) {
-    return (this.$holder || this.$).insertBefore(newChild, refChild)
+    const res = (this.$holder || this.$).insertBefore(newChild, refChild)
+    this.updateView(true)
+    return res
   }
 }
 
@@ -191,6 +199,10 @@ export class UniContainerComponent extends UniComponent {
   insertBefore(newChild: Node, refChild: Node) {
     queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD)
     return super.insertBefore(newChild, refChild)
+  }
+  removeUniChild(node: UniNode) {
+    queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD)
+    return super.removeUniChild(node)
   }
   rebuild() {
     // 刷新容器组件状态

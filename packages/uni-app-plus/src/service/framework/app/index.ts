@@ -35,6 +35,17 @@ export function registerApp(appVm: ComponentPublicInstance) {
     console.log(formatLog('registerApp'))
   }
 
+  // 定制 useStore （主要是为了 nvue 共享）
+  if ((uni as any).Vuex && (appVm as any).$store) {
+    const { useStore } = (uni as any).Vuex
+    ;(uni as any).Vuex.useStore = (key: string) => {
+      if (!key) {
+        return (appVm as any).$store
+      }
+      return useStore(key)
+    }
+  }
+
   initVueApp(appVm)
 
   appCtx = appVm

@@ -1,12 +1,14 @@
-import Stat from './stat.js'
+import { get_platform_name, get_page_vm } from './utils/pageInfo.js'
+import Stat from './core/stat.js'
 const stat = Stat.getInstance()
+
+// 用于判断是隐藏页面还是卸载页面
 let isHide = false
+
 const lifecycle = {
   onLaunch(options) {
-    stat.report(options, this)
-  },
-  onReady() {
-    stat.ready(this)
+    // 进入应用上报数据
+    stat.launch(options, this)
   },
   onLoad(options) {
     stat.load(options, this)
@@ -40,15 +42,40 @@ const lifecycle = {
 }
 
 function main() {
+  if (__STAT_VERSION__ === '1') {
+    console.log('uni统计开启,version:1')
+  }
+  if (__STAT_VERSION__ === '2') {
+    console.log('uni统计开启,version:2')
+  }
   if (process.env.NODE_ENV === 'development') {
     uni.report = function (type, options) {}
   } else {
+    // #ifdef VUE3
     uni.onCreateVueApp((app) => {
       app.mixin(lifecycle)
       uni.report = function (type, options) {
         stat.sendEvent(type, options)
       }
     })
+
+    if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
+      uni.onAppHide(() => {
+        stat.appHide(get_page_vm())
+      })
+      uni.onAppShow(() => {
+        stat.appShow(get_page_vm())
+      })
+    }
+    // #endif
+
+    // #ifndef VUE3
+    const Vue = require('vue')
+    ;(Vue.default || Vue).mixin(lifecycle)
+    uni.report = function (type, options) {
+      stat.sendEvent(type, options)
+    }
+    // #endif
   }
 }
 

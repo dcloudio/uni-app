@@ -22,23 +22,30 @@ export default (options: UniMiniProgramPluginOptions) => {
   if (!options.app.plugins) {
     delete process.env.UNI_MP_PLUGIN
   }
+  const normalizeComponentName = options.template.component?.normalizeName
   return [
     (options: {
       vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
     }) => {
-      return uniMainJsPlugin(options.vueOptions?.script)
+      return uniMainJsPlugin({
+        normalizeComponentName,
+        babelParserPlugins: options.vueOptions?.script?.babelParserPlugins,
+      })
     },
     uniManifestJsonPlugin(options),
     uniPagesJsonPlugin(options),
     uniEntryPlugin(options),
-    uniViteInjectPlugin(extend({}, options.vite.inject)),
+    uniViteInjectPlugin('uni:mp-inject', extend({}, options.vite.inject)),
     uniRenderjsPlugin({ lang: options.template.filter?.lang }),
     uniRuntimeHooksPlugin(),
     uniMiniProgramPlugin(options),
     (options: {
       vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
     }) => {
-      return uniUsingComponentsPlugin(options.vueOptions?.script)
+      return uniUsingComponentsPlugin({
+        normalizeComponentName,
+        babelParserPlugins: options.vueOptions?.script?.babelParserPlugins,
+      })
     },
     ...(process.env.UNI_SUBPACKAGE ? [uniSubpackagePlugin(options)] : []),
     ...(process.env.UNI_MP_PLUGIN ? [uniMiniProgramPluginPlugin(options)] : []),

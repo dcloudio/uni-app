@@ -1,7 +1,7 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import { extend } from '@vue/shared'
 import { assetPlugin } from '../plugins/vitejs/plugins/asset'
-import { cssPlugin, cssPostPlugin } from '../plugins/vitejs/plugins/css'
+import { cssPlugin } from '../plugins/vitejs/plugins/css'
 
 export type CreateUniViteFilterPlugin = (
   opts: UniViteFilterPluginOptions
@@ -21,18 +21,8 @@ export function injectCssPlugin(config: ResolvedConfig) {
 
 export function injectCssPostPlugin(
   config: ResolvedConfig,
-  {
-    chunkCssFilename,
-    chunkCssCode,
-  }: {
-    chunkCssFilename: (id: string) => string | void
-    chunkCssCode: (filename: string, cssCode: string) => string
-  }
+  newCssPostPlugin: Plugin
 ) {
-  const newCssPostPlugin = cssPostPlugin(config, {
-    chunkCssFilename,
-    chunkCssCode,
-  })
   const oldCssPostPlugin = config.plugins.find(
     (p) => p.name === newCssPostPlugin.name
   )

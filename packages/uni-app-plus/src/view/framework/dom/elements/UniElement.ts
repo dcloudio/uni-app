@@ -120,6 +120,7 @@ export class UniElement<T extends object> extends UniNode {
     else {
       this.setAttribute(name, value as string)
     }
+    this.updateView()
   }
   removeAttr(name: string) {
     if (name === ATTR_CLASS) {
@@ -129,6 +130,7 @@ export class UniElement<T extends object> extends UniNode {
     } else {
       this.removeAttribute(name)
     }
+    this.updateView()
   }
   setAttribute(name: string, value: unknown) {
     value = decodeAttr(this.$, value)

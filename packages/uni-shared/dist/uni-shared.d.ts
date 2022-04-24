@@ -129,7 +129,14 @@ export declare function customizeEvent(str: string): string;
 
 export declare const DATA_RE: RegExp;
 
-export declare function debounce(fn: Function, delay: number): {
+/**
+ * 需要手动传入 timer,主要是解决 App 平台的定制 timer
+ * @param fn
+ * @param delay
+ * @param timer
+ * @returns
+ */
+export declare function debounce(fn: Function, delay: number, { clearTimeout, setTimeout }: Timer): {
     (this: any): void;
     cancel(): void;
 };
@@ -402,14 +409,14 @@ export declare interface NVueEnvironment {
 }
 
 export declare interface NVueInstanceContext {
-    Vue: Vue;
+    Vue: Vue_2;
 }
 
 export declare interface NVueInstanceOption {
     instanceId: string;
     config: NVueConfigAPI;
     document?: NVueDocument;
-    Vue?: Vue;
+    Vue?: Vue_2;
     app?: ComponentPublicInstance_2;
     data?: Record<string, unknown>;
 }
@@ -441,6 +448,8 @@ export declare const ON_ERROR = "onError";
 
 export declare const ON_HIDE = "onHide";
 
+export declare const ON_INIT = "onInit";
+
 export declare const ON_KEYBOARD_HEIGHT_CHANGE = "onKeyboardHeightChange";
 
 export declare const ON_LAUNCH = "onLaunch";
@@ -470,6 +479,8 @@ export declare const ON_REACH_BOTTOM_DISTANCE = 50;
 export declare const ON_READY = "onReady";
 
 export declare const ON_RESIZE = "onResize";
+
+export declare const ON_SAVE_EXIT_STATE = "onSaveExitState";
 
 export declare const ON_SHARE_APP_MESSAGE = "onShareAppMessage";
 
@@ -606,7 +617,7 @@ export declare const sanitise: (val: unknown) => any;
 
 export declare const SCHEME_RE: RegExp;
 
-declare function scrollTo_2(scrollTop: number | string, duration: number): void;
+declare function scrollTo_2(scrollTop: number | string, duration: number, isH5?: boolean): void;
 export { scrollTo_2 as scrollTo }
 
 export declare const SELECTED_COLOR = "#0062cc";
@@ -640,6 +651,11 @@ export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: ty
 export declare const TABBAR_HEIGHT = 50;
 
 export declare const TAGS: string[];
+
+declare interface Timer {
+    setTimeout: Function;
+    clearTimeout: Function;
+}
 
 export declare const UNI_SSR = "__uniSSR";
 
@@ -731,7 +747,7 @@ export declare class UniInputElement extends UniElement {
     set value(val: string | number);
 }
 
-export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
+export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
 
 export declare class UniNode extends UniEventTarget {
     nodeId?: number;
@@ -833,9 +849,10 @@ export declare class UniTextNode extends UniBaseNode {
 
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
-export declare interface Vue {
+declare interface Vue_2 {
     createApp: typeof createApp;
 }
+export { Vue_2 as Vue }
 
 export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
 

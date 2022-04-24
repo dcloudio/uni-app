@@ -4,7 +4,6 @@ import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import type { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
 import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
-import vuePlugin from '@vitejs/plugin-vue'
 import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import legacyPlugin from '@vitejs/plugin-legacy'
 
@@ -23,11 +22,12 @@ import {
   rewriteCompilerSfcParse,
 } from './utils'
 import {
+  createPluginVueInstance,
   initPluginViteLegacyOptions,
   initPluginVueJsxOptions,
   initPluginVueOptions,
 } from './vue'
-// import { createResolveId } from './resolveId'
+import { initEnv } from './cli/utils'
 
 const debugUni = debug('uni:plugin')
 
@@ -63,6 +63,9 @@ export { runDev, runBuild } from './cli/action'
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin[] {
+  // 三方插件（如vitest）可能提供了自己的入口命令，需要补充 env 初始化逻辑
+  initEnv('unknown', { platform: process.env.UNI_PLATFORM || 'h5' })
+
   const options: VitePluginUniResolvedOptions = {
     ...rawOptions,
     base: '/',
@@ -131,15 +134,32 @@ export default function uniPlugin(
   }
 
   plugins.unshift(
-    vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))
+    createPluginVueInstance(
+      initPluginVueOptions(options, uniPlugins, uniPluginOptions)
+    )
   )
 
-  plugins.push(
-    uniCopyPlugin({
-      outputDir: process.env.UNI_OUTPUT_DIR,
-      copyOptions: options.copyOptions,
-    })
-  )
+  let addCopyPlugin = false
+  if (options.platform !== 'app') {
+    addCopyPlugin = true
+  } else {
+    // 仅在 vue 或 纯原生 App.vue 编译时做 copy
+    if (
+      process.env.UNI_COMPILER === 'vue' ||
+      (process.env.UNI_RENDERER === 'native' &&
+        process.env.UNI_RENDERER_NATIVE === 'appService')
+    ) {
+      addCopyPlugin = true
+    }
+  }
+  if (addCopyPlugin) {
+    plugins.push(
+      uniCopyPlugin({
+        outputDir: process.env.UNI_OUTPUT_DIR,
+        copyOptions: options.copyOptions,
+      })
+    )
+  }
 
   return plugins
 }

@@ -130,9 +130,30 @@ function normalizePages(
   pages: UniApp.PagesJsonPageOptions[],
   platform: UniApp.PLATFORM
 ) {
-  return pages.forEach((page) => {
+  pages.forEach((page) => {
     page.style = normalizePageStyle(page.path, page.style!, platform)
   })
+  if (platform !== 'app') {
+    return
+  }
+  const subNVuePages: UniApp.PagesJsonPageOptions[] = []
+  // subNVues
+  pages.forEach(({ style: { subNVues } }) => {
+    if (!isArray(subNVues)) {
+      return
+    }
+    subNVues.forEach((subNVue) => {
+      if (subNVue && subNVue.path) {
+        subNVuePages.push({
+          path: subNVue.path,
+          style: { isSubNVue: true, isNVue: true, navigationBar: {} },
+        })
+      }
+    })
+  })
+  if (subNVuePages.length) {
+    pages.push(...subNVuePages)
+  }
 }
 
 function normalizeSubpackages(
@@ -161,7 +182,7 @@ function normalizeSubpackageSubNVues(
   if (!platformStyle) {
     return style
   }
-  if (Array.isArray(platformStyle.subNVues)) {
+  if (isArray(platformStyle.subNVues)) {
     platformStyle.subNVues.forEach((subNVue) => {
       if (subNVue.path) {
         subNVue.path = normalizePath(path.join(root, subNVue.path))

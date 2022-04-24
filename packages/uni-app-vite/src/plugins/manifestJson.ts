@@ -2,6 +2,7 @@ import path from 'path'
 import { Plugin } from 'vite'
 
 import {
+  APP_CONFIG,
   defineUniManifestJsonPlugin,
   getLocaleFiles,
   normalizeAppManifestJson,
@@ -30,7 +31,7 @@ export function uniManifestJsonPlugin(): Plugin {
 
         // 生成一个空的 app-config.js，兼容基座已有规范
         this.emitFile({
-          fileName: `app-config.js`,
+          fileName: APP_CONFIG,
           type: 'asset',
           source: '(function(){})();',
         })
@@ -41,7 +42,7 @@ export function uniManifestJsonPlugin(): Plugin {
         })
         return {
           code: '',
-          map: this.getCombinedSourcemap(),
+          map: null,
         }
       },
     }

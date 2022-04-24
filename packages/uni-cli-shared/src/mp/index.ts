@@ -3,6 +3,7 @@ export * from './wxs'
 export * from './nvue'
 export * from './event'
 export * from './style'
+export * from './assets'
 export * from './template'
 export * from './constants'
 

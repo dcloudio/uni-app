@@ -9,6 +9,8 @@ import {
   EXTNAME_VUE,
   parseVueRequest,
   withSourcemap,
+  preNVueJs,
+  preNVueHtml,
 } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 
@@ -18,12 +20,15 @@ const debugPreJsTry = debug('uni:pre-js-try')
 
 const PRE_JS_EXTNAME = ['.json', '.css'].concat(EXTNAME_VUE).concat(EXTNAME_JS)
 const PRE_HTML_EXTNAME = EXTNAME_VUE
+
 export function uniPrePlugin(
   config: ResolvedConfig,
   options: UniPluginFilterOptions
 ): Plugin {
   const filter = createFilter(options.include, options.exclude)
-
+  const isNVue = (config as any).nvue
+  const preJsFile = isNVue ? preNVueJs : preJs
+  const preHtmlFile = isNVue ? preNVueHtml : preHtml
   return {
     name: 'uni:pre',
     transform(code, id) {
@@ -44,11 +49,11 @@ export function uniPrePlugin(
         return
       }
       if (isHtml) {
-        code = preHtml(code)
+        code = preHtmlFile(code)
         debugPreHtml(id)
       }
       if (isJs) {
-        code = preJs(code)
+        code = preJsFile(code)
         debugPreJs(id)
       }
       return {

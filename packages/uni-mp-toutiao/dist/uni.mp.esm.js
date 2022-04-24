@@ -1,71 +1,6 @@
 import { camelize, isPlainObject, isArray, hasOwn, isFunction, extend, isObject } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
-const ON_READY$1 = 'onReady';
-
-class EventChannel$1 {
-    constructor(id, events) {
-        this.id = id;
-        this.listener = {};
-        this.emitCache = {};
-        if (events) {
-            Object.keys(events).forEach((name) => {
-                this.on(name, events[name]);
-            });
-        }
-    }
-    emit(eventName, ...args) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
-        }
-        fns.forEach((opt) => {
-            opt.fn.apply(opt.fn, args);
-        });
-        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
-    }
-    on(eventName, fn) {
-        this._addListener(eventName, 'on', fn);
-        this._clearCache(eventName);
-    }
-    once(eventName, fn) {
-        this._addListener(eventName, 'once', fn);
-        this._clearCache(eventName);
-    }
-    off(eventName, fn) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return;
-        }
-        if (fn) {
-            for (let i = 0; i < fns.length;) {
-                if (fns[i].fn === fn) {
-                    fns.splice(i, 1);
-                    i--;
-                }
-                i++;
-            }
-        }
-        else {
-            delete this.listener[eventName];
-        }
-    }
-    _clearCache(eventName) {
-        const cacheArgs = this.emitCache[eventName];
-        if (cacheArgs) {
-            for (; cacheArgs.length > 0;) {
-                this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
-            }
-        }
-    }
-    _addListener(eventName, type, fn) {
-        (this.listener[eventName] || (this.listener[eventName] = [])).push({
-            fn,
-            type,
-        });
-    }
-}
-
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
 // lifecycle
@@ -409,6 +344,7 @@ function parseApp(instance, parseAppOptions) {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
         onLaunch(options) {
+            this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -462,9 +398,18 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (tt.$subpackages || (tt.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
     };
 }
 function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = tt.getLaunchOptionsSync && tt.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
     if (isFunction(appOptions.onShow) && tt.onAppShow) {
         tt.onAppShow((args) => {
             vm.$callHook('onShow', args);
@@ -474,10 +419,6 @@ function initAppLifecycle(appOptions, vm) {
         tt.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
-    }
-    if (isFunction(appOptions.onLaunch)) {
-        const args = tt.getLaunchOptionsSync && tt.getLaunchOptionsSync();
-        vm.$callHook('onLaunch', args || {});
     }
 }
 function initLocale(appVm) {
@@ -739,8 +680,11 @@ function updateComponentProps(up, instance) {
     const nextProps = findComponentPropsData(up) || {};
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
-        invalidateJob(instance.update);
-        instance.update();
+        const index = invalidateJob(instance.update);
+        {
+            // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+            index === -1 && instance.update();
+        }
     }
 }
 function hasPropsChanged(prevProps, nextProps, checkLen = true) {
@@ -838,9 +782,18 @@ function initCreateComponent(parseOptions) {
 }
 let $createComponentFn;
 let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return tt.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return tt.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
 function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
-        $createComponentFn = getApp().$vm.$createComponent;
+        $createComponentFn = getAppVm().$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
     return getExposeProxy(proxy.$) || proxy;
@@ -871,7 +824,9 @@ function parsePage(vueOptions, parseOptions) {
         return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };
     initHooks(methods, PAGE_INIT_HOOKS);
-    initUnknownHooks(methods, vueOptions);
+    {
+        initUnknownHooks(methods, vueOptions);
+    }
     initRuntimeHooks(methods, vueOptions.__runtimeHooks);
     initMixinRuntimeHooks(methods);
     parse && parse(miniProgramPageOptions, { handleLink });
@@ -1119,9 +1074,15 @@ function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
         initProvide(vm);
     }
     vm.$callCreatedHook();
+    // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢
+    // 由此引发在 setup 中暂不可用，只能通过 options 方式配置
+    // 初始化完 inject 后，再次调用 update，触发一次更新
+    if (vm.$options.inject) {
+        vm.$.update();
+    }
     nextSetDataTick(this, () => {
         vm.$callHook('mounted');
-        vm.$callHook(ON_READY$1);
+        vm.$callHook(ON_READY);
     });
 }
 function parse(componentOptions, { handleLink }) {
@@ -1129,14 +1090,14 @@ function parse(componentOptions, { handleLink }) {
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    instances: instances,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    parse: parse,
-    initLifetimes: initLifetimes$1
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  instances: instances,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  parse: parse,
+  initLifetimes: initLifetimes$1
 });
 
 function initLifetimes(lifetimesOptions) {
@@ -1149,7 +1110,7 @@ function initLifetimes(lifetimesOptions) {
                 this.$vm.$callCreatedHook();
                 nextSetDataTick(this, () => {
                     this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY$1);
+                    this.$vm.$callHook(ON_READY);
                 });
             }
             else {
@@ -1171,23 +1132,24 @@ function initLifetimes(lifetimesOptions) {
 }
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    parse: parse,
-    initLifetimes: initLifetimes
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  parse: parse,
+  initLifetimes: initLifetimes
 });
 
 const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 const createSubpackageApp = initCreateSubpackageApp();
-tt.EventChannel = EventChannel$1;
+tt.EventChannel = EventChannel;
 tt.createApp = global.createApp = createApp;
 tt.createPage = createPage;
 tt.createComponent = createComponent;
-tt.createSubpackageApp = createSubpackageApp;
+tt.createSubpackageApp = global.createSubpackageApp =
+    createSubpackageApp;
 
 export { createApp, createComponent, createPage, createSubpackageApp };

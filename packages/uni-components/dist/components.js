@@ -219,7 +219,7 @@ function showPage({
     animationType: "pop-in",
     animationDuration: 200,
     uniNView: {
-      path: `${typeof process === "object" && process.env && {}.VUE_APP_TEMPLATE_PATH || ""}/${url}.js`,
+      path: `/${url}.js`,
       defaultFontSize: 16,
       viewport: plus_.screen.resolutionWidth
     }
@@ -2356,7 +2356,7 @@ var PickerViewColumn = defineComponent({
       if (Date.now() - scrollToElementTime < 340) {
         return;
       }
-      const y = event.contentOffset.y;
+      const y = event.detail.contentOffset.y;
       const _current = Math.round(y / indicatorHeight.value);
       if (y % indicatorHeight.value) {
         setCurrent(_current, true, true);
@@ -2428,22 +2428,20 @@ var PickerViewColumn = defineComponent({
           paddingTop: `${padding}px`,
           paddingBottom: `${padding}px`
         }
-      }, [createScrollViewChild(children)])]), createVNode(resolveComponent("u-scalable"), {
+      }, [createScrollViewChild(children)])]), createVNode("u-scalable", {
         "class": "uni-picker-view-mask",
         "style": maskStyle.value
-      }, {
-        default: () => [createVNode(resolveComponent("u-scalable"), {
-          "class": "uni-picker-view-mask uni-picker-view-mask-top",
-          "style": {
-            bottom: maskPosition
-          }
-        }, null), createVNode(resolveComponent("u-scalable"), {
-          "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
-          "style": {
-            top: maskPosition
-          }
-        }, null)]
-      }), createVNode(resolveComponent("u-scalable"), {
+      }, [createVNode("u-scalable", {
+        "class": "uni-picker-view-mask uni-picker-view-mask-top",
+        "style": {
+          bottom: maskPosition
+        }
+      }, null), createVNode("u-scalable", {
+        "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
+        "style": {
+          top: maskPosition
+        }
+      }, null)]), createVNode("u-scalable", {
         "ref": indicatorRef,
         "class": "uni-picker-view-indicator",
         "style": extend({}, indicatorStyle.value, {
@@ -4258,7 +4256,7 @@ function parseAttrs(attrs) {
   return attrs.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
+    if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
       value = value.split(" ");
     }
     if (pre[name]) {

@@ -10,9 +10,12 @@ import { preventDoubleTap } from './framework/gesture'
 import { initSubscribeHandlers } from './framework/subscriber'
 import { $ } from './framework/dom/page'
 import { initViewMethods } from './framework/viewMethods'
+import { normalizeStyleName, normalizeStyleValue } from './utils'
 ;(window as any).uni = uni
 ;(window as any).UniViewJSBridge = UniViewJSBridge
 ;(window as any).rpx2px = uni.upx2px
+;(window as any).normalizeStyleName = normalizeStyleName
+;(window as any).normalizeStyleValue = normalizeStyleValue
 ;(window as any).__$__ = $
 ;(window as any).__f__ = formatAppLog
 

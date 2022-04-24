@@ -1,4 +1,4 @@
-import { extend, isArray, isMap, isIntegerKey, isSymbol, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isSet, isPlainObject, isReservedProp, EMPTY_ARR, isBuiltInDirective, NO, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns } from '@vue/shared';
+import { extend, isArray, isMap, isIntegerKey, hasOwn, isSymbol, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, toNumber, camelize, remove, isSet, isPlainObject, isReservedProp, EMPTY_ARR, isBuiltInDirective, NO, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns, isModelListener } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath } from '@dcloudio/uni-shared';
 
@@ -9,8 +9,17 @@ function warn(msg, ...args) {
 let activeEffectScope;
 class EffectScope {
     constructor(detached = false) {
+        /**
+         * @internal
+         */
         this.active = true;
+        /**
+         * @internal
+         */
         this.effects = [];
+        /**
+         * @internal
+         */
         this.cleanups = [];
         if (!detached && activeEffectScope) {
             this.parent = activeEffectScope;
@@ -20,21 +29,30 @@ class EffectScope {
     }
     run(fn) {
         if (this.active) {
+            const currentEffectScope = activeEffectScope;
             try {
                 activeEffectScope = this;
                 return fn();
             }
             finally {
-                activeEffectScope = this.parent;
+                activeEffectScope = currentEffectScope;
             }
         }
         else if ((process.env.NODE_ENV !== 'production')) {
             warn(`cannot run an inactive effect scope.`);
         }
     }
+    /**
+     * This should only be called on non-detached scopes
+     * @internal
+     */
     on() {
         activeEffectScope = this;
     }
+    /**
+     * This should only be called on non-detached scopes
+     * @internal
+     */
     off() {
         activeEffectScope = this.parent;
     }
@@ -176,10 +194,17 @@ class ReactiveEffect {
             activeEffect = this.parent;
             shouldTrack = lastShouldTrack;
             this.parent = undefined;
+            if (this.deferStop) {
+                this.stop();
+            }
         }
     }
     stop() {
-        if (this.active) {
+        // stopped while running itself - defer the cleanup
+        if (activeEffect === this) {
+            this.deferStop = true;
+        }
+        else if (this.active) {
             cleanupEffect(this);
             if (this.onStop) {
                 this.onStop();
@@ -259,9 +284,7 @@ function trackEffects(dep, debuggerEventExtraInfo) {
         dep.add(activeEffect);
         activeEffect.deps.push(dep);
         if ((process.env.NODE_ENV !== 'production') && activeEffect.onTrack) {
-            activeEffect.onTrack(Object.assign({
-                effect: activeEffect
-            }, debuggerEventExtraInfo));
+            activeEffect.onTrack(Object.assign({ effect: activeEffect }, debuggerEventExtraInfo));
         }
     }
 }
@@ -364,7 +387,9 @@ function triggerEffects(dep, debuggerEventExtraInfo) {
 }
 
 const isNonTrackableKeys = /*#__PURE__*/ makeMap(`__proto__,__v_isRef,__isVue`);
-const builtInSymbols = new Set(Object.getOwnPropertyNames(Symbol)
+const builtInSymbols = new Set(
+/*#__PURE__*/
+Object.getOwnPropertyNames(Symbol)
     .map(key => Symbol[key])
     .filter(isSymbol));
 const get = /*#__PURE__*/ createGetter();
@@ -516,13 +541,13 @@ const readonlyHandlers = {
     get: readonlyGet,
     set(target, key) {
         if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`Set operation on key "${String(key)}" failed: target is readonly.`, target);
+            warn(`Set operation on key "${String(key)}" failed: target is readonly.`, target);
         }
         return true;
     },
     deleteProperty(target, key) {
         if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`Delete operation on key "${String(key)}" failed: target is readonly.`, target);
+            warn(`Delete operation on key "${String(key)}" failed: target is readonly.`, target);
         }
         return true;
     }
@@ -1365,7 +1390,7 @@ let preFlushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const resolvedPromise = Promise.resolve();
+const resolvedPromise = /*#__PURE__*/ Promise.resolve();
 let currentFlushPromise = null;
 let currentPreFlushParentJob = null;
 const RECURSION_LIMIT = 100;
@@ -1418,6 +1443,8 @@ function invalidateJob(job) {
     if (i > flushIndex) {
         queue.splice(i, 1);
     }
+    // fixed by xxxxxx
+    return i;
 }
 function queueCb(cb, activeQueue, pendingQueue, index) {
     if (!isArray(cb)) {
@@ -1574,6 +1601,8 @@ function devtoolsComponentEmit(component, event, params) {
 }
 
 function emit$1(instance, event, ...rawArgs) {
+    if (instance.isUnmounted)
+        return;
     const props = instance.vnode.props || EMPTY_OBJ;
     if ((process.env.NODE_ENV !== 'production')) {
         const { emitsOptions, propsOptions: [propsOptions] } = instance;
@@ -1793,6 +1822,10 @@ function provide(key, value) {
         }
         // TS doesn't allow symbol as index type
         provides[key] = value;
+        // 当实例为 App 时，同步到全局 provide
+        if (currentInstance.type.mpType === 'app') {
+            currentInstance.appContext.app.provide(key, value);
+        }
     }
 }
 function inject(key, defaultValue, treatDefaultAsFactory = false) {
@@ -1830,13 +1863,11 @@ function watchEffect(effect, options) {
 }
 function watchPostEffect(effect, options) {
     return doWatch(effect, null, ((process.env.NODE_ENV !== 'production')
-        ? Object.assign(options || {}, { flush: 'post' })
-        : { flush: 'post' }));
+        ? Object.assign(Object.assign({}, options), { flush: 'post' }) : { flush: 'post' }));
 }
 function watchSyncEffect(effect, options) {
     return doWatch(effect, null, ((process.env.NODE_ENV !== 'production')
-        ? Object.assign(options || {}, { flush: 'sync' })
-        : { flush: 'sync' }));
+        ? Object.assign(Object.assign({}, options), { flush: 'sync' }) : { flush: 'sync' }));
 }
 // initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {};
@@ -2681,6 +2712,10 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
             const propsToUpdate = instance.vnode.dynamicProps;
             for (let i = 0; i < propsToUpdate.length; i++) {
                 let key = propsToUpdate[i];
+                // skip if the prop key is a declared emit event listener
+                if (isEmitListener(instance.emitsOptions, key)) {
+                    continue;
+                }
                 // PROPS flag guarantees rawProps to be non-null
                 const value = rawProps[key];
                 if (options) {
@@ -3087,7 +3122,8 @@ function withDirectives(vnode, directives) {
         (process.env.NODE_ENV !== 'production') && warn$1(`withDirectives can only be used inside render functions.`);
         return vnode;
     }
-    const instance = internalInstance.proxy;
+    const instance = getExposeProxy(internalInstance) ||
+        internalInstance.proxy;
     const bindings = vnode.dirs || (vnode.dirs = []);
     for (let i = 0; i < directives.length; i++) {
         let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
@@ -3137,6 +3173,9 @@ let uid = 0;
 function createAppAPI(render, // fixed by xxxxxx
 hydrate) {
     return function createApp(rootComponent, rootProps = null) {
+        if (!isFunction(rootComponent)) {
+            rootComponent = Object.assign({}, rootComponent);
+        }
         if (rootProps != null && !isObject(rootProps)) {
             (process.env.NODE_ENV !== 'production') && warn$1(`root props passed to app.mount() must be an object.`);
             rootProps = null;
@@ -3669,7 +3708,10 @@ const getPublicInstance = (i) => {
         return getExposeProxy(i) || i.proxy;
     return getPublicInstance(i.parent);
 };
-const publicPropertiesMap = extend(Object.create(null), {
+const publicPropertiesMap = 
+// Move PURE marker to new line to workaround compiler discarding it
+// due to type annotation
+/*#__PURE__*/ extend(Object.create(null), {
     $: i => i,
     // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
     // $el: i => i.vnode.el,
@@ -3844,9 +3886,10 @@ const PublicInstanceProxyHandlers = {
     },
     defineProperty(target, key, descriptor) {
         if (descriptor.get != null) {
-            this.set(target, key, descriptor.get(), null);
+            // invalidate key cache of a getter based property #5417
+            target._.accessCache[key] = 0;
         }
-        else if (descriptor.value != null) {
+        else if (hasOwn(descriptor, 'value')) {
             this.set(target, key, descriptor.value, null);
         }
         return Reflect.defineProperty(target, key, descriptor);
@@ -4028,6 +4071,7 @@ function isStatefulComponent(instance) {
 let isInSSRComponentSetup = false;
 function setupComponent(instance, isSSR = false) {
     isInSSRComponentSetup = isSSR;
+    // fixed by xxxxxx
     const { props /*, children*/ } = instance.vnode;
     const isStateful = isStatefulComponent(instance);
     initProps(instance, props, isStateful, isSSR);
@@ -4419,7 +4463,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.31";
+const version = "3.2.33";
 /**
  * @internal only exposed in compat builds
  */
@@ -4857,7 +4901,7 @@ const getFunctionalFallthrough = (attrs) => {
     return res;
 };
 function renderComponentRoot(instance) {
-    const { type: Component, vnode, proxy, withProxy, props, slots, attrs, emit, render, renderCache, data, setupState, ctx, uid, appContext: { app: { config: { globalProperties: { pruneComponentPropsCache } } } } } = instance;
+    const { type: Component, vnode, proxy, withProxy, props, propsOptions: [propsOptions], slots, attrs, emit, render, renderCache, data, setupState, ctx, uid, appContext: { app: { config: { globalProperties: { pruneComponentPropsCache } } } }, inheritAttrs } = instance;
     instance.$templateRefs = [];
     instance.$ei = 0;
     // props
@@ -4868,20 +4912,20 @@ function renderComponentRoot(instance) {
     const prev = setCurrentRenderingInstance(instance);
     try {
         if (vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */) {
+            fallthroughAttrs(inheritAttrs, props, propsOptions, attrs);
             // withProxy is a proxy with a different `has` trap only for
             // runtime-compiled render functions using `with` block.
             const proxyToUse = withProxy || proxy;
             result = render.call(proxyToUse, proxyToUse, renderCache, props, setupState, data, ctx);
         }
         else {
+            fallthroughAttrs(inheritAttrs, props, propsOptions, Component.props ? attrs : getFunctionalFallthrough(attrs));
             // functional
             const render = Component;
             result =
                 render.length > 1
                     ? render(props, { attrs, slots, emit })
-                    : render(props, null /* we know it doesn't need it */)
-                        ? attrs
-                        : getFunctionalFallthrough(attrs);
+                    : render(props, null /* we know it doesn't need it */);
         }
     }
     catch (err) {
@@ -4891,6 +4935,24 @@ function renderComponentRoot(instance) {
     setRef(instance);
     setCurrentRenderingInstance(prev);
     return result;
+}
+function fallthroughAttrs(inheritAttrs, props, propsOptions, fallthroughAttrs) {
+    if (props && fallthroughAttrs && inheritAttrs !== false) {
+        const keys = Object.keys(fallthroughAttrs).filter(key => key !== 'class' && key !== 'style');
+        if (!keys.length) {
+            return;
+        }
+        if (propsOptions && keys.some(isModelListener)) {
+            keys.forEach(key => {
+                if (!isModelListener(key) || !(key.slice(9) in propsOptions)) {
+                    props[key] = fallthroughAttrs[key];
+                }
+            });
+        }
+        else {
+            keys.forEach(key => (props[key] = fallthroughAttrs[key]));
+        }
+    }
 }
 const updateComponentPreRender = (instance) => {
     pauseTracking();

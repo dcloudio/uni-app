@@ -14,9 +14,11 @@ import {
   ExpressionNode,
   TemplateChildNode,
   TransformContext,
+  isStaticExp,
 } from '@vue/compiler-core'
 import { createAssetUrlTransformWithOptions } from './transforms/templateTransformAssetUrl'
 import { createSrcsetTransformWithOptions } from './transforms/templateTransformSrcset'
+import { isDirectiveNode } from '../vite/utils/ast'
 import { parseVueRequest } from '../vite/utils/url'
 import { EXTNAME_VUE_RE } from '../constants'
 
@@ -136,4 +138,17 @@ export function getBaseNodeTransforms(base: string) {
     createAssetUrlTransformWithOptions(transformAssetUrls),
     createSrcsetTransformWithOptions(transformAssetUrls),
   ]
+}
+
+export function renameProp(name: string, prop?: DirectiveNode | AttributeNode) {
+  if (!prop) {
+    return
+  }
+  if (isDirectiveNode(prop)) {
+    if (prop.arg && isStaticExp(prop.arg)) {
+      prop.arg.content = name
+    }
+  } else {
+    prop.name = name
+  }
 }

@@ -12,7 +12,7 @@ import {
   onBeforeUnmount,
   onMounted,
 } from 'vue'
-import { VuePageComponent } from './define'
+import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 
 export function setupPage(component: VuePageComponent) {
@@ -52,7 +52,7 @@ export function setupPage(component: VuePageComponent) {
   return component
 }
 
-function initScope(
+export function initScope(
   pageId: number,
   vm: ComponentPublicInstance,
   pageInstance: Page.PageInstance['$page']

@@ -66,11 +66,29 @@ export const options: UniMiniProgramPluginOptions = {
   app: {
     darkmode: false,
     subpackages: true,
+    normalize(appJson) {
+      const hasUsingComponents =
+        appJson.usingComponents && Object.keys(appJson.usingComponents).length
+      if (!hasUsingComponents) {
+        // fix https://github.com/dcloudio/uni-app/issues/2648
+        appJson.usingComponents = {
+          'fix-2648': '/fix-2648',
+        }
+      }
+      return appJson
+    },
   },
   project: {
     filename: 'project.config.json',
     config: ['project.qq.json', 'project.config.json'],
     source,
+    normalize(projectJson) {
+      projectJson.qqappid = projectJson.appid
+      projectJson.qqLibVersion = projectJson.libVersion
+      delete projectJson.appid
+      delete projectJson.libVersion
+      return projectJson
+    },
   },
   template: {
     /* eslint-disable no-restricted-syntax */

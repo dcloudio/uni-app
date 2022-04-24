@@ -1,5 +1,5 @@
-import { rpx2px } from '@dcloudio/uni-core'
-import { camelize, capitalize, hyphenate, isArray, isString } from '@vue/shared'
+import { hyphenate, isArray, isString } from '@vue/shared'
+import { normalizeStyleName, normalizeStyleValue } from '../../../utils'
 import { UniCustomElement } from '../components'
 
 export function patchStyle(
@@ -12,7 +12,7 @@ export function patchStyle(
       el.removeAttribute('style')
     } else {
       // TODO display
-      style.cssText = rpx2px(value, true)
+      style.cssText = normalizeStyleValue(value)
     }
   } else {
     for (const key in value) {
@@ -38,12 +38,12 @@ function setStyle(
   if (isArray(val)) {
     val.forEach((v) => setStyle(style, name, v))
   } else {
-    val = rpx2px(val, true)
+    val = normalizeStyleValue(val)
     if (name.startsWith('--')) {
       // custom property definition
       style.setProperty(name, val)
     } else {
-      const prefixed = autoPrefix(style, name)
+      const prefixed = normalizeStyleName(style, name)
       if (importantRE.test(val)) {
         // !important
         style.setProperty(
@@ -56,27 +56,4 @@ function setStyle(
       }
     }
   }
-}
-
-// 移动端，仅处理 Webkit
-const prefixes = ['Webkit' /*, 'Moz', 'ms'*/]
-const prefixCache: Record<string, string> = {}
-
-function autoPrefix(style: CSSStyleDeclaration, rawName: string): string {
-  const cached = prefixCache[rawName]
-  if (cached) {
-    return cached
-  }
-  let name = camelize(rawName)
-  if (name !== 'filter' && name in style) {
-    return (prefixCache[rawName] = name)
-  }
-  name = capitalize(name)
-  for (let i = 0; i < prefixes.length; i++) {
-    const prefixed = prefixes[i] + name
-    if (prefixed in style) {
-      return (prefixCache[rawName] = prefixed)
-    }
-  }
-  return rawName
 }

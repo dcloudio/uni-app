@@ -124,7 +124,7 @@ function initEasycom({
     Object.keys(custom).forEach((name) => {
       const componentPath = custom[name]
       easycomsObj[name] = componentPath.startsWith('@/')
-        ? normalizePath(path.join(rootDir!, componentPath.substr(2)))
+        ? normalizePath(path.join(rootDir!, componentPath.slice(2)))
         : componentPath
     })
   }

@@ -4,20 +4,46 @@ import { ConfigEnv, UserConfig } from 'vite'
 
 import {
   emptyDir,
+  isInHybridNVue,
   normalizePath,
   resolveMainPathOnce,
-  APP_SERVICE_FILENAME,
 } from '@dcloudio/uni-cli-shared'
+import { nvueOutDir } from '../utils'
 
 export function buildOptions(
+  {
+    appService,
+    renderer,
+  }: { renderer: 'native' | undefined; appService: boolean },
   userConfig: UserConfig,
   _: ConfigEnv
 ): UserConfig['build'] {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
-  if (fs.existsSync(outputDir)) {
-    emptyDir(outputDir)
+  function emptyNVueDir() {
+    const nvueOutputDir = nvueOutDir()
+    if (fs.existsSync(nvueOutputDir)) {
+      emptyDir(nvueOutputDir)
+    }
+  }
+  function emptyOutDir() {
+    if (fs.existsSync(outputDir)) {
+      emptyDir(outputDir)
+    }
+  }
+  if (renderer === 'native') {
+    if (appService) {
+      // 仅编译 main.js+App.vue 的时候才清空
+      emptyNVueDir()
+      emptyOutDir()
+    }
+  } else {
+    if (isInHybridNVue(userConfig)) {
+      emptyNVueDir()
+    } else {
+      emptyOutDir()
+    }
   }
   return {
     // App 端目前仅提供 inline
@@ -26,14 +52,7 @@ export function buildOptions(
     assetsInlineLimit: 0,
     rollupOptions: {
       input: resolveMainPathOnce(inputDir),
-      external: ['vue'],
       output: {
-        name: 'AppService',
-        format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',
-        amd: {
-          autoId: true,
-        },
-        entryFileNames: APP_SERVICE_FILENAME,
         sourcemapPathTransform(relativeSourcePath, sourcemapPath) {
           const sourcePath = normalizePath(
             path.relative(
@@ -57,9 +76,6 @@ export function buildOptions(
           return '[name].js'
         },
         assetFileNames: '[name][extname]',
-        globals: {
-          vue: 'Vue',
-        },
       },
     },
   }

@@ -7,6 +7,7 @@ import {
   ON_BACK_PRESS,
   ON_ERROR,
   ON_HIDE,
+  ON_INIT,
   ON_LAUNCH,
   ON_LOAD,
   ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -20,6 +21,7 @@ import {
   ON_REACH_BOTTOM,
   ON_READY,
   ON_RESIZE,
+  ON_SAVE_EXIT_STATE,
   ON_SHARE_APP_MESSAGE,
   ON_SHARE_TIMELINE,
   ON_SHOW,
@@ -50,6 +52,7 @@ type onPageShowHook = () => void
 
 type onLaunchHook = (options: LaunchOption) => void
 type onLoadHook = (query: Record<string, string | undefined>) => void
+type onInitHook = onLoadHook
 type onErrorHook = (error: string) => void
 interface ThemeChangeOption {
   theme: 'dark' | 'light'
@@ -130,6 +133,12 @@ type onShareAppMessageHook = (
   options: ShareAppMessageOption
 ) => CustomShareAppMessage | void
 
+interface SaveExitState {
+  data: any
+  expireTimeStamp: number
+}
+type onSaveExitStateHook = () => SaveExitState
+
 interface NavigationBarButtonTapOption {
   index: number
 }
@@ -162,9 +171,13 @@ const createHook =
   <T extends Function = () => any>(
     lifecycle: typeof UniLifecycleHooks[number]
   ) =>
-  (hook: T, target: ComponentInternalInstance | null = getCurrentInstance()) =>
+  (
+    hook: T,
+    target: ComponentInternalInstance | null = getCurrentInstance()
+  ): void => {
     // post-create lifecycle registrations are noops during SSR
     !isInSSRComponentSetup && injectHook(lifecycle as any, hook, target)
+  }
 
 export const onShow = /*#__PURE__*/ createHook<onAppShowHook | onPageShowHook>(
   ON_SHOW
@@ -179,6 +192,7 @@ export const onPageNotFound =
   /*#__PURE__*/ createHook<onPageNotFoundHook>(ON_PAGE_NOT_FOUND)
 export const onUnhandledRejection =
   /*#__PURE__*/ createHook<onUnhandledRejectionHook>(ON_UNHANDLE_REJECTION)
+export const onInit = /*#__PURE__*/ createHook<onInitHook>(ON_INIT)
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
 export const onLoad = /*#__PURE__*/ createHook<onLoadHook>(ON_LOAD)
 export const onReady = /*#__PURE__*/ createHook(ON_READY)
@@ -193,6 +207,9 @@ export const onTabItemTap =
   /*#__PURE__*/ createHook<onTabItemTapHook>(ON_TAB_ITEM_TAP)
 export const onReachBottom = /*#__PURE__*/ createHook(ON_REACH_BOTTOM)
 export const onPullDownRefresh = /*#__PURE__*/ createHook(ON_PULL_DOWN_REFRESH)
+
+export const onSaveExitState =
+  /*#__PURE__*/ createHook<onSaveExitStateHook>(ON_SAVE_EXIT_STATE)
 
 export const onShareTimeline =
   /*#__PURE__*/ createHook<onShareTimelineHook>(ON_SHARE_TIMELINE)

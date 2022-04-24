@@ -17,7 +17,10 @@ export function uniResolveIdPlugin(): Plugin {
         path.join(ownerModuleName, 'dist/uni-h5.es.js')
       )
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
-        path.join('@dcloudio/uni-h5-vue', `dist/vue.runtime.esm.js`)
+        path.join(
+          '@dcloudio/uni-h5-vue',
+          `dist/vue.runtime.${process.env.VITEST ? 'cjs' : 'esm'}.js`
+        )
       )
     },
     resolveId(id) {

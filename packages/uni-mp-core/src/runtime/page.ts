@@ -1,6 +1,12 @@
 import { ComponentOptions } from 'vue'
 
-import { addLeadingSlash, ON_LOAD, stringifyQuery } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  ON_INIT,
+  ON_LOAD,
+  ON_READY,
+  stringifyQuery,
+} from '@dcloudio/uni-shared'
 
 import {
   ParseComponentOptions,
@@ -50,7 +56,11 @@ function parsePage(
   }
 
   initHooks(methods, PAGE_INIT_HOOKS)
-  initUnknownHooks(methods, vueOptions)
+  if (__PLATFORM__ === 'mp-baidu') {
+    initUnknownHooks(methods, vueOptions, [ON_INIT, ON_READY])
+  } else {
+    initUnknownHooks(methods, vueOptions)
+  }
   initRuntimeHooks(methods, vueOptions.__runtimeHooks)
   initMixinRuntimeHooks(methods)
   parse && parse(miniProgramPageOptions, { handleLink })

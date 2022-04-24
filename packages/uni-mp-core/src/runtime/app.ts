@@ -13,7 +13,6 @@ import {
   ON_SHOW,
   ON_THEME_CHANGE,
   ON_UNHANDLE_REJECTION,
-  ON_SHARE_APP_MESSAGE,
 } from '@dcloudio/uni-shared'
 
 export interface CustomAppInstanceProperty extends Record<string, any> {
@@ -33,10 +32,6 @@ const HOOKS = [
   ON_UNHANDLE_REJECTION,
 ]
 
-if (__PLATFORM__ === 'mp-alipay') {
-  HOOKS.push(ON_SHARE_APP_MESSAGE)
-}
-
 export interface ParseAppOptions {
   parse: (appOptions: MiniProgramAppOptions) => void
 }
@@ -50,6 +45,7 @@ export function parseApp(
     globalData: (instance.$options && instance.$options.globalData) || {},
     $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
     onLaunch(options: App.LaunchShowOption) {
+      this.$vm = instance // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
       const ctx = (internalInstance as any).ctx as Record<string, any>
       if (this.$vm && ctx.$scope) {
         // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -71,7 +67,6 @@ export function parseApp(
 
   initHooks(appOptions, HOOKS)
   initUnknownHooks(appOptions, vueOptions)
-
   if (__VUE_OPTIONS_API__) {
     const methods = vueOptions.methods
     methods && extend(appOptions, methods)
@@ -111,6 +106,13 @@ export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
       }
     })
     initAppLifecycle(appOptions, vm)
+    if (process.env.UNI_SUBPACKAGE) {
+      ;(__GLOBAL__.$subpackages || (__GLOBAL__.$subpackages = {}))[
+        process.env.UNI_SUBPACKAGE
+      ] = {
+        $vm: vm,
+      }
+    }
   }
 }
 
@@ -118,6 +120,11 @@ export function initAppLifecycle(
   appOptions: MiniProgramAppOptions,
   vm: ComponentPublicInstance
 ) {
+  if (isFunction(appOptions.onLaunch)) {
+    const args =
+      __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
+    appOptions.onLaunch(args)
+  }
   if (isFunction(appOptions.onShow) && __GLOBAL__.onAppShow) {
     __GLOBAL__.onAppShow((args: unknown) => {
       vm.$callHook('onShow', args)
@@ -127,11 +134,6 @@ export function initAppLifecycle(
     __GLOBAL__.onAppHide((args: unknown) => {
       vm.$callHook('onHide', args)
     })
-  }
-  if (isFunction(appOptions.onLaunch)) {
-    const args =
-      __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
-    vm.$callHook('onLaunch', args || {})
   }
 }
 

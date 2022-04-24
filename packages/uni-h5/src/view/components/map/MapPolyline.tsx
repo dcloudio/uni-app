@@ -1,6 +1,7 @@
 import { inject, PropType, onUnmounted, watch } from 'vue'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Maps, Map, LatLng, Polyline } from './maps'
+import { Maps, Map, LatLng, Polyline, PolylineOptions } from './maps'
+import { hexToRgba } from '../../../helpers/hexToRgba'
 
 interface Point {
   latitude: number
@@ -60,25 +61,43 @@ export default /*#__PURE__*/ defineSystemComponent({
           path.push(new maps.LatLng(point.latitude, point.longitude))
         })
         const strokeWeight = Number(option.width) || 1
-        polyline = new maps.Polyline({
+        const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color)
+        const { r: br, g: bg, b: bb, a: ba } = hexToRgba(option.borderColor)
+        const polylineOptions: PolylineOptions = {
           map: map as any,
           clickable: false,
           path: path as any,
           strokeWeight,
           strokeColor: option.color || undefined,
           strokeDashStyle: option.dottedLine ? 'dash' : 'solid',
-        })
-        const borderWidth = Number(option.borderWidth) || 0
-        if (borderWidth) {
-          polylineBorder = new maps.Polyline({
-            map: map as any,
-            clickable: false,
-            path: path as any,
-            strokeWeight: strokeWeight + borderWidth * 2,
-            strokeColor: option.borderColor || undefined,
-            strokeDashStyle: option.dottedLine ? 'dash' : 'solid',
-          })
         }
+        const borderWidth = Number(option.borderWidth) || 0
+        const polylineBorderOptions: PolylineOptions = {
+          map: map as any,
+          clickable: false,
+          path: path as any,
+          strokeWeight: strokeWeight + borderWidth * 2,
+          strokeColor: option.borderColor || undefined,
+          strokeDashStyle: option.dottedLine ? 'dash' : 'solid',
+        }
+        if ('Color' in maps) {
+          polylineOptions.strokeColor = new maps.Color(sr, sg, sb, sa) as any
+          polylineBorderOptions.strokeColor = new maps.Color(
+            br,
+            bg,
+            bb,
+            ba
+          ) as any
+        } else {
+          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
+          polylineOptions.strokeOpacity = sa
+          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`
+          polylineBorderOptions.strokeOpacity = ba
+        }
+        if (borderWidth) {
+          polylineBorder = new maps.Polyline(polylineBorderOptions)
+        }
+        polyline = new maps.Polyline(polylineOptions)
       }
       addPolyline(props as Props)
       watch(props, updatePolyline)

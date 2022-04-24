@@ -1330,4 +1330,60 @@ export interface QQMaps {
   Color: typeof Color
   Circle: typeof Circle
   geometry: Geometry
+  Polygon: typeof Polygon
+}
+
+export interface PolygonOptions {
+  // 多边形是否可点击
+  clickable: boolean
+  // 鼠标在多边形内的光标样式
+  cursor: string
+  // true - 启动编辑功能，
+  // false - 默认，不启动编辑功能，
+  // 启动编辑功能后，可拖动端点对形状进行调整，双击节点可删除
+  editable?: boolean
+  // 多边形的填充色，可通过Color对象的alpha属性设置透明度
+  fillColor: Color | string
+  // google map 支持，fillColor 的透明度
+  fillOpacity?: number
+  // 要显示多边形的地图。
+  map: Map
+  // 多边形轮廓的坐标数组。若为环多边形，设置为二维数组，第一个元素为外多边形，其他元素为内部“孤岛”轮廓
+  path: Array<LatLng> | Array<Array<LatLng>>
+  // 多边形的线条颜色，可通过Color对象的alpha属性设置透明度
+  strokeColor: Color | string
+  // google map 支持，strokeColor 的透明度
+  strokeOpacity?: number
+  // 多边形的边框样式。实线是solid，虚线是dash
+  strokeDashStyle: string
+  // 多边形的边框线宽
+  strokeWeight: number
+  // 多边形是否可见
+  visible: boolean
+  // 多边形的zIndex值
+  zIndex: number
+}
+
+export class Polygon {
+  constructor(options: PolygonOptions)
+  // 返回多边形的地理区域范围
+  getBounds(): LatLngBounds
+  // 返回多边形所在的map对象
+  getMap(): Map
+  // 获取多边形的经纬度坐标数组。
+  getPath(): MVCArray<LatLng>
+  // 获取多边形覆盖物的可见性
+  getVisible(): boolean
+  // 获取多边形覆盖物的zIndex值
+  getZIndex(): number
+  // 设置多边形所在的map对象
+  setMap(map: Map | null): void
+  // 设置多边形轮廓的经纬度坐标数组，若为二维数组则表现为环多边形
+  setPath(path: Array<LatLng> | Array<Array<LatLng>>): void
+  // 设置多边形的可见性
+  setVisible(visible: boolean): void
+  // 设置多变心覆盖物的zIndex
+  setZIndex(zIndex: number): void
+  // 设置多边形参数
+  setOptions(options: PolygonOptions): void
 }

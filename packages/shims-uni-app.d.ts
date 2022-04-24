@@ -38,6 +38,7 @@ declare namespace UniApp {
     router?: {
       strict: boolean
       base: string
+      assets: string
     }
     nvue?: {
       'flex-direction': 'column' | 'row'
@@ -190,6 +191,7 @@ declare namespace UniApp {
   }
   interface PagesJsonPageStyle extends PagesJsonPagePlatformStyle {
     isNVue?: boolean
+    isSubNVue?: boolean
     disableScroll?: boolean
     enablePullDownRefresh?: boolean
     navigationBar: PageNavigationBar
@@ -199,6 +201,7 @@ declare namespace UniApp {
     backgroundColor?: string
     maxWidth?: string | number
     // app-plus
+    scrollIndicator?: 'none'
     animationType?: string
     animationDuration?: number
     subNVues?: PagesJsonPageStyleSubNVue[]

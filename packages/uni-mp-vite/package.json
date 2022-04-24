@@ -1,12 +1,11 @@
 {
   "name": "@dcloudio/uni-mp-vite",
-  "version": "3.0.0-alpha-3031320220314002",
+  "version": "3.0.0-alpha-3040720220422002",
   "description": "uni-mp-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -18,17 +17,15 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3031320220314002",
-    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3031320220314002",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3031320220314002",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3031320220314002",
-    "@intlify/core-base": "9.1.9",
-    "@intlify/shared": "9.1.9",
-    "@intlify/vue-devtools": "9.1.9",
-    "@vue/compiler-sfc": "3.2.31",
-    "@vue/shared": "3.2.31",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040720220422002",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3040720220422002",
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3040720220422002",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3040720220422002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3040720220422002",
+    "@vue/compiler-sfc": "3.2.33",
+    "@vue/shared": "3.2.33",
     "debug": "^4.3.3",
-    "magic-string": "^0.25.7"
+    "magic-string": "^0.26.1"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {

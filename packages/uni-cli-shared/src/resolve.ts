@@ -47,9 +47,7 @@ function resolveNodeModulePath(modulePath: string) {
   }
   const index = modulePath.lastIndexOf('node_modules')
   if (index > -1) {
-    nodeModulesPaths.push(
-      path.join(modulePath.substr(0, index), 'node_modules')
-    )
+    nodeModulesPaths.push(path.join(modulePath.slice(0, index), 'node_modules'))
   }
   return nodeModulesPaths
 }
@@ -92,6 +90,13 @@ export function getBuiltInPaths() {
 
 export function resolveBuiltIn(path: string) {
   return require.resolve(path, { paths: getBuiltInPaths() })
+}
+
+export function resolveVueI18nRuntime() {
+  return path.resolve(
+    __dirname,
+    '../lib/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
+  )
 }
 
 let componentsLibPath: string = ''

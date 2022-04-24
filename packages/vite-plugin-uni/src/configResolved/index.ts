@@ -1,10 +1,12 @@
 import { Plugin, ResolvedConfig } from 'vite'
+import { extend } from '@vue/shared'
 import {
   checkUpdate,
   isWindows,
   formatErrMsg,
   formatInfoMsg,
   formatWarnMsg,
+  isInHybridNVue,
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
@@ -15,11 +17,16 @@ import { customResolver } from '../config/resolve'
 
 export function createConfigResolved(options: VitePluginUniResolvedOptions) {
   return ((config) => {
-    initEnv(config)
+    // 如果是混合编译且是 nvue 时，部分逻辑无需执行
+    if (!isInHybridNVue(config)) {
+      initEnv(config)
+    }
     initLogger(config)
     initOptions(options, config)
     initPlugins(config, options)
-    initCheckUpdate()
+    if (!isInHybridNVue(config)) {
+      initCheckUpdate()
+    }
     if (isWindows) {
       // TODO 等 https://github.com/vitejs/vite/issues/3331 修复后，可以移除下列代码
       // 2.8.0 已修复，但为了兼容旧版本，先不移除
@@ -41,10 +48,10 @@ function initCheckUpdate() {
   })
 }
 
-function initLogger({ logger }: ResolvedConfig) {
+function initLogger({ logger, nvue }: ResolvedConfig & { nvue?: boolean }) {
   const { info, warn, error } = logger
   logger.info = (msg, opts) => {
-    msg = formatInfoMsg(msg, opts)
+    msg = formatInfoMsg(msg, extend({ nvue }, opts))
     if (msg) {
       return info(msg, opts)
     }

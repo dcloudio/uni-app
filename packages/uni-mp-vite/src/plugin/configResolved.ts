@@ -11,6 +11,7 @@ import {
   transformScopedCss,
   normalizeMiniProgramFilename,
   relativeFile,
+  cssPostPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '.'
 import { getNVueCssPaths } from '../plugins/pagesJson'
@@ -52,54 +53,60 @@ export function createConfigResolved({
     const hasUnocssGlobalBuildGenerate = unocssGlobalBuildGenerateIndex > -1
     // unocss 是根据 .css 后缀来编译文件，需要先保持 css 文件后缀为 .css，等 unocss 处理完后，再重置回正确的文件后缀
     const cssExtname = hasUnocssGlobalBuildGenerate ? '.css' : extname
-    injectCssPostPlugin(config, {
-      chunkCssFilename(id: string) {
-        if (id === mainPath) {
-          return 'app' + cssExtname
-        } else if (isUniPageUrl(id)) {
-          return normalizeCssChunkFilename(parseVirtualPagePath(id), cssExtname)
-        } else if (isUniComponentUrl(id)) {
-          return normalizeCssChunkFilename(
-            parseVirtualComponentPath(id),
-            cssExtname
-          )
-        }
-      },
-      chunkCssCode(filename, cssCode) {
-        cssCode = transformScopedCss(cssCode)
-        if (filename === 'app' + cssExtname) {
-          const componentCustomHiddenCss =
-            (component &&
-              component.vShow &&
-              genComponentCustomHiddenCss(component.vShow)) ||
-            ''
-          if (config.isProduction) {
-            return (
-              cssCode +
-              genShadowCss(`https://cdn${cdn || ''}.dcloud.net.cn`) +
-              cssVars +
-              componentCustomHiddenCss
+    injectCssPostPlugin(
+      config,
+      cssPostPlugin(config, {
+        chunkCssFilename(id: string) {
+          if (id === mainPath) {
+            return 'app' + cssExtname
+          } else if (isUniPageUrl(id)) {
+            return normalizeCssChunkFilename(
+              parseVirtualPagePath(id),
+              cssExtname
             )
-          } else {
-            return cssCode + cssVars + componentCustomHiddenCss
+          } else if (isUniComponentUrl(id)) {
+            return normalizeCssChunkFilename(
+              parseVirtualComponentPath(id),
+              cssExtname
+            )
           }
-        }
+        },
+        chunkCssCode(filename, cssCode) {
+          cssCode = transformScopedCss(cssCode)
+          if (filename === 'app' + cssExtname) {
+            const componentCustomHiddenCss =
+              (component &&
+                component.vShow &&
+                genComponentCustomHiddenCss(component.vShow)) ||
+              ''
+            if (config.isProduction) {
+              return (
+                cssCode +
+                genShadowCss(`https://cdn${cdn || ''}.dcloud.net.cn`) +
+                cssVars +
+                componentCustomHiddenCss
+              )
+            } else {
+              return cssCode + cssVars + componentCustomHiddenCss
+            }
+          }
 
-        const nvueCssPaths = getNVueCssPaths(config)
-        if (!nvueCssPaths || !nvueCssPaths.length) {
+          const nvueCssPaths = getNVueCssPaths(config)
+          if (!nvueCssPaths || !nvueCssPaths.length) {
+            return cssCode
+          }
+          const normalized = normalizePath(filename)
+          if (nvueCssPaths.find((pageCssPath) => pageCssPath === normalized)) {
+            debugNVueCss(normalized)
+            return (
+              `@import "${relativeFile(normalized, 'nvue' + extname)}";\n` +
+              cssCode
+            )
+          }
           return cssCode
-        }
-        const normalized = normalizePath(filename)
-        if (nvueCssPaths.find((pageCssPath) => pageCssPath === normalized)) {
-          debugNVueCss(normalized)
-          return (
-            `@import "${relativeFile(normalized, 'nvue' + extname)}";\n` +
-            cssCode
-          )
-        }
-        return cssCode
-      },
-    })
+        },
+      })
+    )
     injectAssetPlugin(config)
 
     if (hasUnocssGlobalBuildGenerate && extname !== '.css') {

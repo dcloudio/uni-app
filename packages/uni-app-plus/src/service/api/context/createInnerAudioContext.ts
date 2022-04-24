@@ -19,12 +19,24 @@ type ExtendAudio = {
   startTime?: number
   isStopped?: boolean
   initStateChage?: boolean
+  playbackRate?: (rate: number) => void
 }
 type Audio = PlusAudioAudioPlayer & ExtendAudio
 type AudioEvnets = NonNullable<
   Parameters<PlusAudioAudioPlayer['addEventListener']>[0]
 >
 type OperationType = 'play' | 'pause' | 'stop' | 'seek'
+type AudioState = {
+  audioId: string
+  autoplay?: boolean
+  loop?: boolean
+  obeyMuteSwitch?: boolean
+  src?: string
+  startTime?: number
+  volume?: number
+  sessionCategory?: string
+  playbackRate?: number
+}
 
 const audios: Record<string, Audio> = {}
 const evts: AudioEvnets[] = [
@@ -96,16 +108,8 @@ function setAudioState({
   obeyMuteSwitch,
   volume,
   sessionCategory = AUDIO_DEFAULT_SESSION_CATEGORY,
-}: {
-  audioId: string
-  autoplay?: boolean
-  loop?: boolean
-  obeyMuteSwitch?: boolean
-  src?: string
-  startTime?: number
-  volume?: number
-  sessionCategory?: string
-}) {
+  playbackRate,
+}: AudioState) {
   const audio = audios[audioId]
   if (audio) {
     const style: { loop: boolean; autoplay: boolean } & ExtendAudio = {
@@ -113,7 +117,9 @@ function setAudioState({
       autoplay,
     }
     if (src) {
-      audio.src = style.src = getRealPath(src)
+      // iOS 设置 src 会重新播放
+      const realSrc = getRealPath(src)
+      if (audio.src !== realSrc) audio.src = style.src = realSrc
     }
     if (startTime) {
       audio.startTime = style.startTime = startTime
@@ -124,6 +130,10 @@ function setAudioState({
     audio.setStyles(style)
     if (sessionCategory) {
       audio.setSessionCategory(sessionCategory)
+    }
+    if (playbackRate && audio.playbackRate) {
+      // @ts-ignore
+      audio.playbackRate(playbackRate)
     }
     initStateChage(audioId)
   }
@@ -256,6 +266,10 @@ const props = [
   {
     name: 'volume',
   },
+  {
+    name: 'playbackRate',
+    cache: true,
+  },
 ]
 
 class InnerAudioContext implements UniApp.InnerAudioContext {
@@ -299,6 +313,10 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
    * 音量。范围 0~1。
    */
   'volume': UniApp.InnerAudioContext['volume']
+  /**
+   * 播放的倍率。可取值： 0.5/0.8/1.0/1.25/1.5/2.0，默认值为1.0。（仅 App 支持）。
+   */
+  'playbackRate': UniApp.InnerAudioContext['playbackRate']
   /**
    * 事件监听
    */

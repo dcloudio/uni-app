@@ -109,6 +109,8 @@ const NVUE_BUILT_IN_TAGS = [
     'waterfall',
     'richtext',
     'recycle-list',
+    'u-scalable',
+    'barcode',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -230,6 +232,10 @@ const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_LOAD = 'onLoad';
 const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
+// 百度特有
+const ON_INIT = 'onInit';
+// 微信特有
+const ON_SAVE_EXIT_STATE = 'onSaveExitState';
 const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
@@ -327,7 +333,7 @@ function addLeadingSlash(str) {
     return hasLeadingSlash(str) ? str : '/' + str;
 }
 function removeLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str.substr(1) : str;
+    return hasLeadingSlash(str) ? str.slice(1) : str;
 }
 const invokeArrayFns = (fns, arg) => {
     let ret;
@@ -503,11 +509,15 @@ function addFont(family, source, desc) {
         resolve();
     });
 }
-function scrollTo(scrollTop, duration) {
+function scrollTo(scrollTop, duration, isH5) {
     if (shared.isString(scrollTop)) {
         const el = document.querySelector(scrollTop);
         if (el) {
-            scrollTop = el.getBoundingClientRect().top + window.pageYOffset;
+            const { height, top } = el.getBoundingClientRect();
+            scrollTop = top + window.pageYOffset;
+            if (isH5) {
+                scrollTop -= height;
+            }
         }
     }
     if (scrollTop < 0) {
@@ -648,7 +658,8 @@ function normalizeLog(type, filename, args) {
     }
     const msgs = args.map(function (v) {
         const type = shared.toTypeString(v).toLowerCase();
-        if (type === '[object object]' || type === '[object array]') {
+        if (['[object object]', '[object array]', '[object module]'].indexOf(type) !==
+            -1) {
             try {
                 v =
                     '---BEGIN:JSON---' +
@@ -1178,7 +1189,14 @@ const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
-function debounce(fn, delay) {
+/**
+ * 需要手动传入 timer,主要是解决 App 平台的定制 timer
+ * @param fn
+ * @param delay
+ * @param timer
+ * @returns
+ */
+function debounce(fn, delay, { clearTimeout, setTimeout }) {
     let timeout;
     const newFn = function () {
         clearTimeout(timeout);
@@ -1255,6 +1273,7 @@ class EventChannel {
 }
 
 const PAGE_HOOKS = [
+    ON_INIT,
     ON_LOAD,
     ON_SHOW,
     ON_HIDE,
@@ -1267,6 +1286,7 @@ const PAGE_HOOKS = [
     ON_SHARE_TIMELINE,
     ON_SHARE_APP_MESSAGE,
     ON_ADD_TO_FAVORITES,
+    ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
@@ -1288,6 +1308,7 @@ const UniLifecycleHooks = [
     ON_THEME_CHANGE,
     ON_PAGE_NOT_FOUND,
     ON_UNHANDLE_REJECTION,
+    ON_INIT,
     ON_LOAD,
     ON_READY,
     ON_UNLOAD,
@@ -1300,6 +1321,7 @@ const UniLifecycleHooks = [
     ON_SHARE_TIMELINE,
     ON_ADD_TO_FAVORITES,
     ON_SHARE_APP_MESSAGE,
+    ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
@@ -1436,6 +1458,7 @@ exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
 exports.ON_BACK_PRESS = ON_BACK_PRESS;
 exports.ON_ERROR = ON_ERROR;
 exports.ON_HIDE = ON_HIDE;
+exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAUNCH = ON_LAUNCH;
 exports.ON_LOAD = ON_LOAD;
@@ -1451,6 +1474,7 @@ exports.ON_REACH_BOTTOM = ON_REACH_BOTTOM;
 exports.ON_REACH_BOTTOM_DISTANCE = ON_REACH_BOTTOM_DISTANCE;
 exports.ON_READY = ON_READY;
 exports.ON_RESIZE = ON_RESIZE;
+exports.ON_SAVE_EXIT_STATE = ON_SAVE_EXIT_STATE;
 exports.ON_SHARE_APP_MESSAGE = ON_SHARE_APP_MESSAGE;
 exports.ON_SHARE_TIMELINE = ON_SHARE_TIMELINE;
 exports.ON_SHOW = ON_SHOW;

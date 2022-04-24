@@ -17,13 +17,12 @@ export function restoreGlobal(
   // plus 如果不用 app-service，资源路径会出问题
   // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
 
-  // 设置 vue3
-  // @ts-ignore 最终__VUE__会被替换为vue
-  __VUE__ = newVue
   if (plus !== newPlus) {
     if (__DEV__) {
       console.log(`[restoreGlobal][${Date.now()}]`)
     }
+    // __VUE__ 在 uni-jsframework-next 编译时会被替换为 vue
+    Vue = __VUE__ = newVue
     weex = newWeex
     // @ts-ignore
     plus = newPlus
@@ -40,4 +39,27 @@ export function restoreGlobal(
     clearInterval = newClearInterval
   }
   __uniConfig.serviceReady = true
+}
+
+export function requireGlobal() {
+  const list = [
+    'ArrayBuffer',
+    'Int8Array',
+    'Uint8Array',
+    'Uint8ClampedArray',
+    'Int16Array',
+    'Uint16Array',
+    'Int32Array',
+    'Uint32Array',
+    'Float32Array',
+    'Float64Array',
+    'BigInt64Array',
+    'BigUint64Array',
+  ]
+  const object: Record<string, any> = {}
+  for (let i = 0; i < list.length; i++) {
+    const key = list[i]
+    object[key] = (global as any)[key]
+  }
+  return object
 }

@@ -22,7 +22,7 @@ function fix2648(bundle) {
     }
     try {
         const { usingComponents } = JSON.parse(appJsonAsset.source.toString());
-        if (usingComponents && !Object.keys(usingComponents).length) {
+        if (usingComponents && usingComponents['fix-2648']) {
             fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'), `{"component":true}`);
             fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.qml'), `<!-- https://github.com/dcloudio/uni-app/issues/2648 -->`);
             fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.js'), `Component({})`);
@@ -134,11 +134,28 @@ const options = {
     app: {
         darkmode: false,
         subpackages: true,
+        normalize(appJson) {
+            const hasUsingComponents = appJson.usingComponents && Object.keys(appJson.usingComponents).length;
+            if (!hasUsingComponents) {
+                // fix https://github.com/dcloudio/uni-app/issues/2648
+                appJson.usingComponents = {
+                    'fix-2648': '/fix-2648',
+                };
+            }
+            return appJson;
+        },
     },
     project: {
         filename: 'project.config.json',
         config: ['project.qq.json', 'project.config.json'],
         source,
+        normalize(projectJson) {
+            projectJson.qqappid = projectJson.appid;
+            projectJson.qqLibVersion = projectJson.libVersion;
+            delete projectJson.appid;
+            delete projectJson.libVersion;
+            return projectJson;
+        },
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.qs',

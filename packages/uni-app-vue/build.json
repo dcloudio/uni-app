@@ -1,34 +1,32 @@
 [
   {
     "input": {
-      "src/service/index.ts": ["dist/service.runtime.esm.dev.js"]
+      "src/service/index.ts": ["dist/vue.runtime.esm.dev.js"]
     },
     "output": {
-      "banner": "export default function vueFactory (exports) {\n",
-      "footer": "}"
+      "freeze": false
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   },
   {
     "input": {
-      "src/service/index.ts": ["dist/service.runtime.esm.prod.js"]
+      "src/service/index.ts": ["dist/vue.runtime.esm.prod.js"]
     },
     "output": {
-      "banner": "export default function vueFactory (exports) {\n",
-      "footer": "}"
+      "freeze": false
     },
     "replacements": {
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   },
   {
@@ -43,26 +41,32 @@
   },
   {
     "input": {
-      "src/nvue/factory.ts": ["dist/nvue.factory.cjs.js"]
+      "src/nvue/index.ts": ["dist/nvue.runtime.esm.dev.js"]
     },
     "output": {
-      "banner": "export default function vueFactory (exports) {\n",
-      "footer": "}"
+      "freeze": false
     },
     "replacements": {
-      "process.env.NODE_ENV": "\"production\""
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "process.env.NODE_ENV": "\"development\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   },
   {
     "input": {
-      "src/nvue/index.ts": ["dist/nvue.service.cjs.js"]
+      "src/nvue/index.ts": ["dist/nvue.runtime.esm.prod.js"]
+    },
+    "output": {
+      "freeze": false
     },
     "replacements": {
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": false,
+    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
     "babel": true
   }
 ]

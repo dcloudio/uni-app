@@ -4,6 +4,7 @@ import { getApiCallbacks } from '../../helpers/api/callback'
 interface OnPushCidCallback {
   type: 'clientId'
   cid: string
+  errMsg?: string
 }
 
 interface OnPushLineStateCallback {
@@ -16,20 +17,41 @@ interface OnPushMsgCallback {
   message: unknown
 }
 
-let cid: string = ''
+interface OnPushClickCallback {
+  type: 'click'
+  message: unknown
+}
+
+let cid: string | undefined
+let cidErrMsg: string | undefined
+function normalizePushMessage(message: unknown) {
+  try {
+    return JSON.parse(message as string)
+  } catch (e: any) {}
+  return message
+}
 /**
  * @private
  * @param args
  */
 export function invokePushCallback(
-  args: OnPushCidCallback | OnPushLineStateCallback | OnPushMsgCallback
+  args:
+    | OnPushCidCallback
+    | OnPushLineStateCallback
+    | OnPushMsgCallback
+    | OnPushClickCallback
 ) {
   if (args.type === 'clientId') {
     cid = args.cid
-    invokeGetPushCidCallbacks(cid)
+    cidErrMsg = args.errMsg
+    invokeGetPushCidCallbacks(cid, args.errMsg)
   } else if (args.type === 'pushMsg') {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ data: args.message })
+      callback({ type: 'receive', data: normalizePushMessage(args.message) })
+    })
+  } else if (args.type === 'click') {
+    onPushMessageCallbacks.forEach((callback) => {
+      callback({ type: 'click', data: normalizePushMessage(args.message) })
     })
   }
 }
@@ -38,11 +60,11 @@ interface GetPushCidOptions {
   success?: OnPushMessageSuccess
 }
 
-const getPushCidCallbacks: ((cid?: string) => void)[] = []
+const getPushCidCallbacks: ((cid?: string, errMsg?: string) => void)[] = []
 
-function invokeGetPushCidCallbacks(cid?: string) {
+function invokeGetPushCidCallbacks(cid?: string, errMsg?: string) {
   getPushCidCallbacks.forEach((callback) => {
-    callback(cid)
+    callback(cid, errMsg)
   })
   getPushCidCallbacks.length = 0
 }
@@ -55,23 +77,24 @@ export function getPushCid(args: GetPushCidOptions) {
   const hasSuccess = isFunction(success)
   const hasFail = isFunction(fail)
   const hasComplete = isFunction(complete)
-  getPushCidCallbacks.push((cid?: string) => {
+  getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
     let res: Record<string, unknown>
     if (cid) {
       res = { errMsg: 'getPushCid:ok', cid }
       hasSuccess && success(res)
     } else {
-      res = { errMsg: 'getPushCid:fail' }
+      res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') }
       hasFail && fail(res)
     }
     hasComplete && complete(res)
   })
-  if (cid) {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid))
+  if (typeof cid !== 'undefined') {
+    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg))
   }
 }
 
 interface OnPushMessageSuccess {
+  type: 'click' | 'receive'
   data: unknown
 }
 

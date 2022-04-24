@@ -26,5 +26,10 @@ declare namespace NodeJS {
     UNI_CUSTOM_DEFINE?: string
     UNI_CUSTOM_CONTEXT?: string
     UNI_MINIMIZE?: 'true'
+    UNI_COMPILER: 'vue' | 'nvue'
+    UNI_RENDERER_NATIVE: 'appService' | 'pages'
+    UNI_NVUE_APP_STYLES: string
+    UNI_APP_CHANGED_FILES: string
+    UNI_APP_CHANGED_PAGES: string
   }
 }

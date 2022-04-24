@@ -1,0 +1,24 @@
+{
+  "name": "@dcloudio/uni-nvue-styler",
+  "version": "3.0.0-alpha-3040720220422002",
+  "description": "uni-nvue-styler",
+  "main": "./dist/uni-nvue-styler.cjs.js",
+  "types": "./dist/uni-nvue-styler.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-nvue-styler"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@vue/shared": "3.2.33",
+    "parse-css-font": "^4.0.0",
+    "postcss": "^8.4.12"
+  }
+}

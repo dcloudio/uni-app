@@ -1,4 +1,3 @@
-import path from 'path'
 import { AliasOptions, ResolvedConfig } from 'vite'
 import {
   CopyOptions,
@@ -10,6 +9,8 @@ import {
   MiniProgramCompilerOptions,
   initPostcssPlugin,
   parseRpx2UnitOnce,
+  AppJson,
+  resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
 import type {
   SFCDescriptor,
@@ -58,11 +59,15 @@ export interface UniMiniProgramPluginOptions {
      * 是否支持发行插件
      */
     plugins?: boolean
+    normalize?: (appJson: AppJson) => AppJson
   }
   project?: {
     filename: string
     config: string[]
     source: Record<string, any>
+    normalize?: (
+      projectJson: Record<string, unknown>
+    ) => Record<string, unknown>
   }
   template: {
     extname: string
@@ -119,11 +124,12 @@ export function uniMiniProgramPlugin(
     }),
     config() {
       return {
+        base: '/', // 小程序平台强制 base
         resolve: {
           alias: {
             vue: resolveBuiltIn('@dcloudio/uni-mp-vue'),
             '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),
-            'vue-i18n': path.resolve(__dirname, '../../lib/vue-i18n'),
+            'vue-i18n': resolveVueI18nRuntime(),
             ...alias,
           },
           preserveSymlinks: true,

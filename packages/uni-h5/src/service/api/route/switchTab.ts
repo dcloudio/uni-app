@@ -39,10 +39,7 @@ function removeNonTabBarPages() {
  * @returns boolean
  */
 function isSamePage(url: string, $page: Page.PageInstance['$page']) {
-  if (url === $page.fullPath) {
-    return true
-  }
-  return false
+  return url === $page.fullPath
 }
 
 function getTabBarPageId(url: string) {

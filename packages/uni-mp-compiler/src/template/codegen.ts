@@ -335,6 +335,9 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
   }
   if (isUserComponent(node, context)) {
     tag = hyphenate(tag)
+    if (context.component?.normalizeName) {
+      tag = context.component?.normalizeName(tag)
+    }
   }
   const { push } = context
 
@@ -448,6 +451,8 @@ function genDirectiveNode(
     const exp = (prop.exp as SimpleExpressionNode).content
     push(` ${arg}="{{${exp}}}"`)
   } else {
-    throw new Error(`unknown directive` + JSON.stringify(prop))
+    if (prop.name !== 'bind') {
+      throw new Error(`unknown directive ` + JSON.stringify(prop))
+    }
   }
 }

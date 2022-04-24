@@ -989,7 +989,7 @@ function getRealRoute(fromRoute, toRoute) {
     return toRoute;
   }
   if (toRoute.indexOf("./") === 0) {
-    return getRealRoute(fromRoute, toRoute.substr(2));
+    return getRealRoute(fromRoute, toRoute.slice(2));
   }
   const toRouteArray = toRoute.split("/");
   const toRouteLength = toRouteArray.length;
@@ -1183,8 +1183,11 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
 function getComponentDescriptor(instance2, isOwnerInstance) {
   return createComponentDescriptor(instance2, isOwnerInstance);
 }
-function resolveOwnerComponentPublicInstance(eventValue, instance2) {
-  if (!instance2 || eventValue.length < 2) {
+function resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength = true) {
+  if (!instance2) {
+    return false;
+  }
+  if (checkArgsLength && eventValue.length < 2) {
     return false;
   }
   const ownerVm = resolveOwnerVm(instance2);
@@ -1197,14 +1200,14 @@ function resolveOwnerComponentPublicInstance(eventValue, instance2) {
   }
   return ownerVm;
 }
-function wrapperH5WxsEvent(event, eventValue, instance2) {
+function wrapperH5WxsEvent(event, eventValue, instance2, checkArgsLength = true) {
   if (eventValue) {
     Object.defineProperty(event, "instance", {
       get() {
         return getComponentDescriptor(instance2.proxy, false);
       }
     });
-    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2);
+    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength);
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)];
     }
@@ -1228,7 +1231,7 @@ function $nne(evt, eventValue, instance2) {
   const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
   {
     if (isHTMLTarget) {
-      return [evt];
+      return wrapperH5WxsEvent(evt, eventValue, instance2, false) || [evt];
     }
   }
   const res = createNativeEvent(evt, isHTMLTarget);
@@ -1994,14 +1997,17 @@ function addBase(filePath) {
   return baseUrl + filePath;
 }
 function getRealPath(filePath) {
-  if (__uniConfig.router.base === "./") {
-    filePath = filePath.replace(/^\.\/static\//, "/static/");
+  const { base, assets } = __uniConfig.router;
+  if (base === "./") {
+    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+      filePath = filePath.slice(1);
+    }
   }
   if (filePath.indexOf("/") === 0) {
     if (filePath.indexOf("//") === 0) {
       filePath = "https:" + filePath;
     } else {
-      return addBase(filePath.substr(1));
+      return addBase(filePath.slice(1));
     }
   }
   if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
@@ -2009,7 +2015,7 @@ function getRealPath(filePath) {
   }
   const pages = getCurrentPages();
   if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1));
   }
   return filePath;
 }
@@ -4548,21 +4554,34 @@ const API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
   return getLaunchOptions();
 });
-let cid = "";
+let cid;
+let cidErrMsg;
+function normalizePushMessage(message) {
+  try {
+    return JSON.parse(message);
+  } catch (e2) {
+  }
+  return message;
+}
 function invokePushCallback(args) {
   if (args.type === "clientId") {
     cid = args.cid;
-    invokeGetPushCidCallbacks(cid);
+    cidErrMsg = args.errMsg;
+    invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === "pushMsg") {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ data: args.message });
+      callback({ type: "receive", data: normalizePushMessage(args.message) });
+    });
+  } else if (args.type === "click") {
+    onPushMessageCallbacks.forEach((callback) => {
+      callback({ type: "click", data: normalizePushMessage(args.message) });
     });
   }
 }
 const getPushCidCallbacks = [];
-function invokeGetPushCidCallbacks(cid2) {
+function invokeGetPushCidCallbacks(cid2, errMsg) {
   getPushCidCallbacks.forEach((callback) => {
-    callback(cid2);
+    callback(cid2, errMsg);
   });
   getPushCidCallbacks.length = 0;
 }
@@ -4574,19 +4593,19 @@ function getPushCid(args) {
   const hasSuccess = isFunction(success);
   const hasFail = isFunction(fail);
   const hasComplete = isFunction(complete);
-  getPushCidCallbacks.push((cid2) => {
+  getPushCidCallbacks.push((cid2, errMsg) => {
     let res;
     if (cid2) {
       res = { errMsg: "getPushCid:ok", cid: cid2 };
       hasSuccess && success(res);
     } else {
-      res = { errMsg: "getPushCid:fail" };
+      res = { errMsg: "getPushCid:fail" + (errMsg ? " " + errMsg : "") };
       hasFail && fail(res);
     }
     hasComplete && complete(res);
   });
-  if (cid) {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid));
+  if (typeof cid !== "undefined") {
+    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
   }
 }
 const onPushMessageCallbacks = [];
@@ -5086,11 +5105,11 @@ function encodeQueryString(url) {
   if (index2 === -1) {
     return url;
   }
-  const query = url.substr(index2 + 1).trim().replace(/^(\?|#|&)/, "");
+  const query = url.slice(index2 + 1).trim().replace(/^(\?|#|&)/, "");
   if (!query) {
     return url;
   }
-  url = url.substr(0, index2);
+  url = url.slice(0, index2);
   const params = [];
   query.split("&").forEach((param) => {
     const parts = param.replace(/\+/g, " ").split("=");
@@ -5216,7 +5235,7 @@ function createNormalizeUrl(type) {
     } else if (type === API_PRELOAD_PAGE) {
       if (routeOptions.meta.isTabBar) {
         const pages = getCurrentPages();
-        const tabBarPagePath = routeOptions.path.substr(1);
+        const tabBarPagePath = routeOptions.path.slice(1);
         if (pages.find((page) => page.route === tabBarPagePath)) {
           return "tabBar page `" + tabBarPagePath + "` already exists";
         }
@@ -5303,7 +5322,6 @@ const ShowActionSheetProtocol = {
     required: true
   },
   title: String,
-  alertText: String,
   itemColor: String,
   popover: Object
 };
@@ -6304,6 +6322,9 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
   });
 }
 const pixelRatio = /* @__PURE__ */ function() {
+  if (navigator.userAgent.includes("jsdom")) {
+    return 1;
+  }
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
   const context = canvas.getContext("2d");
@@ -6475,7 +6496,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$w = {
+const props$x = {
   canvasId: {
     type: String,
     default: ""
@@ -6495,7 +6516,7 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$w,
+  props: props$x,
   computed: {
     id() {
       return this.canvasId;
@@ -6715,7 +6736,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
           let url = dataArray[0];
           let otherData = dataArray.slice(1);
           _images = _images || {};
-          if (checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image2) {
+          if (!checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image2) {
             if (image2) {
               c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
             }
@@ -6956,7 +6977,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$v = {
+const props$w = {
   name: {
     type: String,
     default: ""
@@ -6964,7 +6985,7 @@ const props$v = {
 };
 var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$v,
+  props: props$w,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -7016,7 +7037,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$u = {
+const props$v = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7040,7 +7061,7 @@ const props$u = {
 };
 var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$u,
+  props: props$v,
   setup(props2, {
     slots
   }) {
@@ -7117,7 +7138,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$t = {
+const props$u = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -7138,18 +7159,21 @@ const props$t = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
+    const isApple = computed(() => String(navigator.vendor).indexOf("Apple") === 0);
     el.addEventListener("focus", () => {
       clearTimeout(resetTimer);
       document.addEventListener("click", iosHideKeyboard, false);
     });
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
-      if (String(navigator.vendor).indexOf("Apple") === 0) {
+      if (isApple.value) {
         document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
       }
     };
     el.addEventListener("blur", () => {
-      el.blur();
+      if (isApple.value) {
+        el.blur();
+      }
       onKeyboardHide();
     });
   }
@@ -7894,7 +7918,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id2, true);
 }
-const props$s = /* @__PURE__ */ extend({}, props$t, {
+const props$t = /* @__PURE__ */ extend({}, props$u, {
   id: {
     type: String,
     default: ""
@@ -7922,7 +7946,7 @@ const props$s = /* @__PURE__ */ extend({}, props$t, {
 });
 var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$s,
+  props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -8009,7 +8033,7 @@ var index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$r = {
+const props$s = {
   src: {
     type: String,
     default: ""
@@ -8048,7 +8072,7 @@ const IMAGE_MODES = {
 };
 var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$r,
+  props: props$s,
   setup(props2, {
     emit: emit2
   }) {
@@ -8365,7 +8389,7 @@ function getValueString(value, type) {
   }
   return value === null ? "" : String(value);
 }
-const props$q = /* @__PURE__ */ extend({}, {
+const props$r = /* @__PURE__ */ extend({}, {
   name: {
     type: String,
     default: ""
@@ -8433,8 +8457,12 @@ const props$q = /* @__PURE__ */ extend({}, {
   confirmHold: {
     type: Boolean,
     default: false
+  },
+  ignoreCompositionEvent: {
+    type: Boolean,
+    default: true
   }
-}, props$t);
+}, props$u);
 const emit = [
   "input",
   "focus",
@@ -8442,6 +8470,9 @@ const emit = [
   "update:value",
   "update:modelValue",
   "update:focus",
+  "compositionstart",
+  "compositionupdate",
+  "compositionend",
   ...emit$1
 ];
 function useBase(props2, rootRef, emit2) {
@@ -8485,7 +8516,7 @@ function useBase(props2, rootRef, emit2) {
 function useValueSync(props2, state2, emit2, trigger) {
   const valueChangeFn = debounce((val) => {
     state2.value = getValueString(val, props2.type);
-  }, 100);
+  }, 100, { setTimeout, clearTimeout });
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -8545,7 +8576,7 @@ function useAutoFocus(props2, fieldRef) {
     }
   });
 }
-function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
+function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
     if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && field.type !== "number") {
@@ -8582,7 +8613,7 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
         return;
       }
       state2.value = field.value;
-      if (!state2.composing) {
+      if (!state2.composing || !props2.ignoreCompositionEvent) {
         triggerInput(event, {
           value: field.value,
           cursor: getFieldSelectionEnd(field)
@@ -8607,6 +8638,7 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
     field.addEventListener("compositionstart", (event) => {
       event.stopPropagation();
       state2.composing = true;
+      _onComposition(event);
     });
     field.addEventListener("compositionend", (event) => {
       event.stopPropagation();
@@ -8614,7 +8646,16 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
         state2.composing = false;
         onInput(event);
       }
+      _onComposition(event);
     });
+    field.addEventListener("compositionupdate", _onComposition);
+    function _onComposition(event) {
+      if (!props2.ignoreCompositionEvent) {
+        trigger(event.type, event, {
+          value: event.data
+        });
+      }
+    }
   }
   watch([() => state2.selectionStart, () => state2.selectionEnd], checkSelection);
   watch(() => state2.cursor, checkCursor);
@@ -8628,7 +8669,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
   useKeyboard$1(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();
   useFormField("name", state2);
-  useEvent(fieldRef, state2, trigger, triggerInput, beforeInput);
+  useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput);
   const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
   return {
     fieldRef,
@@ -8638,7 +8679,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$p = /* @__PURE__ */ extend({}, props$q, {
+const props$q = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -8650,7 +8691,7 @@ const props$p = /* @__PURE__ */ extend({}, props$q, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$p,
+  props: props$q,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -9071,6 +9112,7 @@ function useTouchtrack(element, method, useCancel) {
   let y1 = 0;
   const fn = function($event, state2, x, y) {
     if (method({
+      cancelable: $event.cancelable,
       target: $event.target,
       currentTarget: $event.currentTarget,
       preventDefault: $event.preventDefault.bind($event),
@@ -10947,13 +10989,15 @@ function useScroller(element, options) {
     if (scroller.onTouchStart) {
       scroller.onTouchStart();
     }
-    event.preventDefault();
+    if (typeof event.cancelable !== "boolean" || event.cancelable)
+      event.preventDefault();
   }
   function handleTouchMove(event) {
     const touchtrackEvent = event;
     const mouseEvent = event;
     if (touchInfo.trackingID !== -1) {
-      event.preventDefault();
+      if (typeof event.cancelable !== "boolean" || event.cancelable)
+        event.preventDefault();
       const delta = findDelta(event);
       if (delta) {
         for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
@@ -11337,7 +11381,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$o = {
+const props$p = {
   name: {
     type: String,
     default: ""
@@ -11345,7 +11389,7 @@ const props$o = {
 };
 var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$o,
+  props: props$p,
   setup(props2, {
     emit: emit2,
     slots
@@ -11428,7 +11472,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$n = {
+const props$o = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -11452,7 +11496,7 @@ const props$n = {
 };
 var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$n,
+  props: props$o,
   setup(props2, {
     slots
   }) {
@@ -11699,7 +11743,7 @@ function parseAttrs(attrs2) {
   return attrs2.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
+    if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
       value = value.split(" ");
     }
     if (pre[name]) {
@@ -11782,7 +11826,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$m = {
+const props$n = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -11795,7 +11839,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$m,
+  props: props$n,
   emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress"],
   setup(props2, {
     emit: emit2,
@@ -11830,7 +11874,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$l = {
+const props$m = {
   scrollX: {
     type: [Boolean, String],
     default: false
@@ -11893,7 +11937,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$l,
+  props: props$m,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
@@ -12312,7 +12356,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     }
   });
 }
-const props$k = {
+const props$l = {
   name: {
     type: String,
     default: ""
@@ -12368,7 +12412,7 @@ const props$k = {
 };
 var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$k,
+  props: props$l,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -12536,7 +12580,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$j = {
+const props$k = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -13020,7 +13064,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 var Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$j,
+  props: props$k,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -13118,7 +13162,7 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$i = {
+const props$j = {
   itemId: {
     type: String,
     default: ""
@@ -13126,7 +13170,7 @@ const props$i = {
 };
 var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$i,
+  props: props$j,
   setup(props2, {
     slots
   }) {
@@ -13175,7 +13219,7 @@ var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = {
+const props$i = {
   name: {
     type: String,
     default: ""
@@ -13203,7 +13247,7 @@ const props$h = {
 };
 var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$h,
+  props: props$i,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -13356,7 +13400,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = /* @__PURE__ */ extend({}, props$q, {
+const props$h = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -13377,8 +13421,8 @@ function setFixMargin() {
 }
 var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$g,
-  emit: ["confirm", "linechange", ...emit],
+  props: props$h,
+  emits: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
   }) {
@@ -14244,7 +14288,7 @@ function setupApp(comp) {
         onBeforeMount(onLaunch);
       }
       onMounted(() => {
-        window.addEventListener("resize", debounce(onResize, 50));
+        window.addEventListener("resize", debounce(onResize, 50, { setTimeout, clearTimeout }));
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
       });
@@ -14838,7 +14882,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   }, id2, true);
 }
-const props$f = {
+const props$g = {
   id: {
     type: String,
     default: ""
@@ -14924,7 +14968,7 @@ const props$f = {
 };
 var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$f,
+  props: props$g,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -15145,7 +15189,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$e = {
+const props$f = {
   src: {
     type: String,
     default: ""
@@ -15154,7 +15198,7 @@ const props$e = {
 var index$d = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$e,
+  props: props$f,
   setup(props2) {
     Invoke();
     const rootRef = ref(null);
@@ -15399,7 +15443,7 @@ function loadMaps(libraries, callback) {
     document.body.appendChild(script);
   }
 }
-const props$d = {
+const props$e = {
   id: {
     type: [Number, String],
     default: ""
@@ -15485,7 +15529,7 @@ function useMarkerLabelStyle(id2) {
 }
 var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$d,
+  props: props$e,
   setup(props2) {
     const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -15733,7 +15777,41 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$c = {
+function hexToRgba(hex) {
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  let tmpHex = hex.slice(1);
+  const tmpHexLen = tmpHex.length;
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+  }
+  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+  if (!sa) {
+    return { r, g: g2, b, a: 1 };
+  }
+  return {
+    r,
+    g: g2,
+    b,
+    a: (`0x100${sa}` - 65536) / 255
+  };
+}
+const props$d = {
   points: {
     type: Array,
     require: true
@@ -15779,7 +15857,7 @@ const props$c = {
 };
 var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$c,
+  props: props$d,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -15803,25 +15881,48 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
           path.push(new maps2.LatLng(point.latitude, point.longitude));
         });
         const strokeWeight = Number(option.width) || 1;
-        polyline = new maps2.Polyline({
+        const {
+          r: sr,
+          g: sg,
+          b: sb,
+          a: sa
+        } = hexToRgba(option.color);
+        const {
+          r: br,
+          g: bg,
+          b: bb,
+          a: ba
+        } = hexToRgba(option.borderColor);
+        const polylineOptions = {
           map,
           clickable: false,
           path,
           strokeWeight,
           strokeColor: option.color || void 0,
           strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        });
+        };
         const borderWidth = Number(option.borderWidth) || 0;
-        if (borderWidth) {
-          polylineBorder = new maps2.Polyline({
-            map,
-            clickable: false,
-            path,
-            strokeWeight: strokeWeight + borderWidth * 2,
-            strokeColor: option.borderColor || void 0,
-            strokeDashStyle: option.dottedLine ? "dash" : "solid"
-          });
+        const polylineBorderOptions = {
+          map,
+          clickable: false,
+          path,
+          strokeWeight: strokeWeight + borderWidth * 2,
+          strokeColor: option.borderColor || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        };
+        if ("Color" in maps2) {
+          polylineOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          polylineBorderOptions.strokeColor = new maps2.Color(br, bg, bb, ba);
+        } else {
+          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+          polylineOptions.strokeOpacity = sa;
+          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`;
+          polylineBorderOptions.strokeOpacity = ba;
         }
+        if (borderWidth) {
+          polylineBorder = new maps2.Polyline(polylineBorderOptions);
+        }
+        polyline = new maps2.Polyline(polylineOptions);
       }
       addPolyline(props2);
       watch(props2, updatePolyline);
@@ -15832,7 +15933,7 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$b = {
+const props$c = {
   latitude: {
     type: [Number, String],
     require: true
@@ -15843,11 +15944,11 @@ const props$b = {
   },
   color: {
     type: String,
-    default: ""
+    default: "#000000"
   },
   fillColor: {
     type: String,
-    default: ""
+    default: "#00000000"
   },
   radius: {
     type: [Number, String],
@@ -15864,7 +15965,7 @@ const props$b = {
 };
 var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$b,
+  props: props$c,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -15880,27 +15981,36 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
       }
       function addCircle(option) {
         const center = new maps2.LatLng(option.latitude, option.longitude);
-        function getColor(color) {
-          const c = color && color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
-          if ("Color" in maps2) {
-            if (c && c.length) {
-              return maps2.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255).toRGBA();
-            } else {
-              return void 0;
-            }
-          }
-          return color;
-        }
-        circle = new maps2.Circle({
+        const circleOptions = {
           map,
           center,
           clickable: false,
           radius: option.radius,
           strokeWeight: Number(option.strokeWidth) || 1,
-          fillColor: getColor(option.fillColor) || getColor("#00000001"),
-          strokeColor: getColor(option.color) || "#000000",
           strokeDashStyle: "solid"
-        });
+        };
+        const {
+          r: fr,
+          g: fg,
+          b: fb,
+          a: fa
+        } = hexToRgba(option.fillColor);
+        const {
+          r: sr,
+          g: sg,
+          b: sb,
+          a: sa
+        } = hexToRgba(option.color);
+        if ("Color" in maps2) {
+          circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+          circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+        } else {
+          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+          circleOptions.fillOpacity = fa;
+          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+          circleOptions.strokeOpacity = sa;
+        }
+        circle = new maps2.Circle(circleOptions);
       }
       addCircle(props2);
       watch(props2, updateCircle);
@@ -15911,7 +16021,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$a = {
+const props$b = {
   id: {
     type: [Number, String],
     default: ""
@@ -15931,7 +16041,7 @@ const props$a = {
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$a,
+  props: props$b,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let control;
@@ -16072,7 +16182,7 @@ class InnerAudioContext {
         if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
           return;
         }
-        const EventName = `on${eventName.substr(0, 1).toUpperCase()}${eventName.substr(1)}`;
+        const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
         this._events[EventName].forEach((callback) => {
           callback();
         });
@@ -16506,7 +16616,7 @@ function usePopup(props2, {
   });
   return visible;
 }
-const props$9 = {
+const props$a = {
   title: {
     type: String,
     default: ""
@@ -16548,7 +16658,7 @@ const props$9 = {
   }
 };
 var modal = /* @__PURE__ */ defineComponent({
-  props: props$9,
+  props: props$a,
   setup(props2, {
     emit: emit2
   }) {
@@ -17056,7 +17166,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$8 = {
+const props$9 = {
   src: {
     type: String,
     default: ""
@@ -17064,7 +17174,7 @@ const props$8 = {
 };
 var ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$8,
+  props: props$9,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -17154,7 +17264,7 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$7 = {
+const props$8 = {
   urls: {
     type: Array,
     default() {
@@ -17173,7 +17283,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$7,
+  props: props$8,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -17925,7 +18035,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
   });
 }, GetLocationProtocol, GetLocationOptions);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$6 = {
+const props$7 = {
   latitude: {
     type: Number
   },
@@ -17982,7 +18092,7 @@ function useState$2(props2) {
 }
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$6,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18090,7 +18200,7 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { 
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$5 = {
+const props$6 = {
   latitude: {
     type: Number
   },
@@ -18236,7 +18346,7 @@ function useList(state2) {
 }
 var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$5,
+  props: props$6,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18259,7 +18369,10 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
       if (state2.keyword) {
         getList();
       }
-    }, 1e3);
+    }, 1e3, {
+      setTimeout,
+      clearTimeout
+    });
     watch(() => state2.searching, (val) => {
       reset();
       if (!val) {
@@ -18484,10 +18597,7 @@ function removeNonTabBarPages() {
   }
 }
 function isSamePage(url, $page) {
-  if (url === $page.fullPath) {
-    return true;
-  }
-  return false;
+  return url === $page.fullPath;
 }
 function getTabBarPageId(url) {
   const pages = getCurrentPagesMap().values();
@@ -18518,7 +18628,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, {
     reject(`${url} ${String(err)}`);
   });
 }, PreloadPageProtocol);
-const props$4 = {
+const props$5 = {
   title: {
     type: String,
     default: ""
@@ -18548,7 +18658,7 @@ const props$4 = {
 const ToastIconClassName = "uni-toast__icon";
 var Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$4,
+  props: props$5,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -18768,12 +18878,8 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
-const props$3 = {
+const props$4 = {
   title: {
-    type: String,
-    default: ""
-  },
-  alertText: {
     type: String,
     default: ""
   },
@@ -18798,7 +18904,7 @@ const props$3 = {
 };
 var actionSheet = /* @__PURE__ */ defineComponent({
   name: "ActionSheet",
-  props: props$3,
+  props: props$4,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18863,10 +18969,9 @@ var actionSheet = /* @__PURE__ */ defineComponent({
       }
       $event.preventDefault();
     }
-    const fixTitle = computed(() => props2.title || props2.alertText);
     watch(() => props2.visible, () => {
       nextTick(() => {
-        if (fixTitle.value) {
+        if (props2.title) {
           titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
         }
         scroller.update();
@@ -18896,14 +19001,14 @@ var actionSheet = /* @__PURE__ */ defineComponent({
         "ref": main,
         "class": "uni-actionsheet__menu",
         "onWheel": _handleWheel
-      }, [fixTitle.value ? createVNode(Fragment, null, [createVNode("div", {
+      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
         "class": "uni-actionsheet__cell",
         "style": {
           height: `${titleHeight.value}px`
         }
       }, null), createVNode("div", {
         "class": "uni-actionsheet__title"
-      }, [fixTitle.value])]) : "", createVNode("div", {
+      }, [props2.title])]) : "", createVNode("div", {
         "style": {
           maxHeight: `${HEIGHT.value}px`,
           overflow: "hidden"
@@ -19067,7 +19172,7 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
 const pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({ scrollTop, selector, duration }, { resolve }) => {
-  scrollTo(selector || scrollTop || 0, duration);
+  scrollTo(selector || scrollTop || 0, duration, true);
   resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
 const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve }) => {
@@ -20112,6 +20217,104 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
+var props$3 = {
+  dashArray: {
+    type: Array,
+    default: () => [0, 0]
+  },
+  points: {
+    type: Array,
+    required: true
+  },
+  strokeWidth: {
+    type: Number,
+    default: 1
+  },
+  strokeColor: {
+    type: String,
+    default: "#000000"
+  },
+  fillColor: {
+    type: String,
+    default: "#00000000"
+  },
+  zIndex: {
+    type: Number,
+    default: 0
+  }
+};
+var MapPolygon = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolygon",
+  props: props$3,
+  setup(props2) {
+    let polygonIns;
+    const onMapReady = inject("onMapReady");
+    onMapReady((map, maps2, trigger) => {
+      function drawPolygon() {
+        const {
+          points,
+          strokeWidth,
+          strokeColor,
+          dashArray,
+          fillColor,
+          zIndex
+        } = props2;
+        const path = points.map((item) => {
+          const {
+            latitude,
+            longitude
+          } = item;
+          return new maps2.LatLng(latitude, longitude);
+        });
+        const {
+          r: fcR,
+          g: fcG,
+          b: fcB,
+          a: fcA
+        } = hexToRgba(fillColor);
+        const {
+          r: scR,
+          g: scG,
+          b: scB,
+          a: scA
+        } = hexToRgba(strokeColor);
+        const polygonOptions = {
+          clickable: true,
+          cursor: "crosshair",
+          editable: false,
+          map,
+          fillColor: "",
+          path,
+          strokeColor: "",
+          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          strokeWeight: strokeWidth,
+          visible: true,
+          zIndex
+        };
+        if (maps2.Color) {
+          polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
+          polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
+        } else {
+          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
+          polygonOptions.fillOpacity = fcA;
+          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
+          polygonOptions.strokeOpacity = scA;
+        }
+        if (polygonIns) {
+          polygonIns.setOptions(polygonOptions);
+          return;
+        }
+        polygonIns = new maps2.Polygon(polygonOptions);
+      }
+      drawPolygon();
+      watch(props2, drawPolygon);
+    });
+    onUnmounted(() => {
+      polygonIns.setMap(null);
+    });
+    return () => null;
+  }
+});
 const props$2 = {
   id: {
     type: String,
@@ -20168,6 +20371,10 @@ const props$2 = {
     default() {
       return [];
     }
+  },
+  polygons: {
+    type: Array,
+    default: () => []
   }
 };
 function getPoints(points) {
@@ -20478,7 +20685,7 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
+      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
@@ -21341,40 +21548,6 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-function hexToRgba(hex) {
-  let r;
-  let g2;
-  let b;
-  hex = hex.replace("#", "");
-  if (hex.length === 6) {
-    r = hex.substring(0, 2);
-    g2 = hex.substring(2, 4);
-    b = hex.substring(4, 6);
-  } else if (hex.length === 3) {
-    r = hex.substring(0, 1);
-    g2 = hex.substring(1, 2);
-    b = hex.substring(2, 3);
-  } else {
-    return { r: 0, g: 0, b: 0 };
-  }
-  if (r.length === 1) {
-    r += r;
-  }
-  if (g2.length === 1) {
-    g2 += g2;
-  }
-  if (b.length === 1) {
-    b += b;
-  }
-  r = parseInt(r, 16);
-  g2 = parseInt(g2, 16);
-  b = parseInt(b, 16);
-  return {
-    r,
-    g: g2,
-    b
-  };
-}
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const { r, g: g2, b } = hexToRgba(backgroundColor);
   return `rgba(${r},${g2},${b},0)`;

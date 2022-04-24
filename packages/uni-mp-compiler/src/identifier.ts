@@ -3,13 +3,17 @@ export default class IdentifierGenerator {
   private _chars: string = 'abcdefghijklmnopqrstvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
   private _nextIds: number[] = [0]
 
-  next() {
+  next(): string {
     const r = []
     for (const char of this._nextIds) {
       r.unshift(this._chars[char])
     }
     this._increment()
-    return r.join('')
+    const id = r.join('')
+    if (keywords.includes(id)) {
+      return this.next()
+    }
+    return id
   }
 
   _increment() {
@@ -30,3 +34,69 @@ export default class IdentifierGenerator {
     }
   }
 }
+const keywords = [
+  'abstract',
+  'arguments',
+  'await',
+  'boolean',
+  'break',
+  'byte',
+  'case',
+  'catch',
+  'char',
+  'class',
+  'const',
+  'continue',
+  'debugger',
+  'default',
+  'delete',
+  'do',
+  'double',
+  'else',
+  'enum',
+  'eval',
+  'export',
+  'extends',
+  'false',
+  'final',
+  'finally',
+  'float',
+  'for',
+  'function',
+  'goto',
+  'if',
+  'implements',
+  'import',
+  'in',
+  'instanceof',
+  'int',
+  'interface',
+  'let',
+  'long',
+  'native',
+  'new',
+  'null',
+  'package',
+  'private',
+  'protected',
+  'public',
+  'return',
+  'short',
+  'static',
+  'super',
+  'switch',
+  'synchronized',
+  'this',
+  'throw',
+  'throws',
+  'transient',
+  'true',
+  'try',
+  'typeof',
+  'var',
+  'void',
+  'volatile',
+  'while',
+  'with',
+  'yield',
+]

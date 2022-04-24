@@ -122,7 +122,7 @@ export function assetFileNamesToFileName(
   // placeholders for `assetFileNames`
   // `hash` is slightly different from the rollup's one
   const extname = path.extname(basename)
-  const ext = extname.substr(1)
+  const ext = extname.slice(1)
   const name = basename.slice(0, -extname.length)
   const hash = contentHash
 

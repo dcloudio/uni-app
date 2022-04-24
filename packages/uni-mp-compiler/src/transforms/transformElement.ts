@@ -176,7 +176,8 @@ export function processProps(
 ) {
   const { tag } = node
   const isComponent = node.tagType === ElementTypes.COMPONENT
-
+  const isPluginComponent =
+    isComponent && context.isMiniProgramComponent(node.tag) === 'plugin'
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
     if (prop.type === NodeTypes.DIRECTIVE) {
@@ -209,14 +210,16 @@ export function processProps(
         // v-on=""
         // v-bind=""
         if (!arg) {
-          context.onError(
-            createMPCompilerError(
-              isVBind
-                ? MPErrorCodes.X_V_BIND_NO_ARGUMENT
-                : MPErrorCodes.X_V_ON_NO_ARGUMENT,
-              loc
+          if (isVOn) {
+            context.onError(
+              createMPCompilerError(MPErrorCodes.X_V_ON_NO_ARGUMENT, loc)
             )
-          )
+          }
+          if (isVBind && (!isComponent || isPluginComponent)) {
+            context.onError(
+              createMPCompilerError(MPErrorCodes.X_V_BIND_NO_ARGUMENT, loc)
+            )
+          }
           continue
         }
         // v-on:[a]=""
@@ -224,14 +227,16 @@ export function processProps(
         // v-bind:[a]=""
         // v-bind:[a.b]=""
         if (!(arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic)) {
-          context.onError(
-            createMPCompilerError(
-              isVBind
-                ? MPErrorCodes.X_V_BIND_DYNAMIC_ARGUMENT
-                : MPErrorCodes.X_V_ON_DYNAMIC_EVENT,
-              loc
+          if (isVOn) {
+            context.onError(
+              createMPCompilerError(MPErrorCodes.X_V_ON_DYNAMIC_EVENT, loc)
             )
-          )
+          }
+          if (isVBind && (!isComponent || isPluginComponent)) {
+            context.onError(
+              createMPCompilerError(MPErrorCodes.X_V_BIND_DYNAMIC_ARGUMENT, loc)
+            )
+          }
           continue
         }
       }

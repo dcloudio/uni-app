@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app-nvue: compiler <input v-model="text"/> 1`] = `
+"import { openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = [\\"modelValue\\"]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"u-input\\", {
+    modelValue: _ctx.text,
+    onInput: _cache[0] || (_cache[0] = $event => ((_ctx.text) = $event.detail.value))
+  }, null, 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_1))
+}"
+`;
+
+exports[`app-nvue: compiler <scroll-view data-id="id" scroll-x="true" :show-scrollbar="true"/> 1`] = `
+"import { openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = {
+  \\"data-id\\": \\"id\\",
+  scrollX: \\"true\\",
+  showScrollbar: true
+}
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"scroll-view\\", _hoisted_1))
+}"
+`;
+
+exports[`app-nvue: compiler <slider/> 1`] = `
+"import { resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \\"vue\\"
+
+export function render(_ctx, _cache) {
+  const _component_u_slider = _resolveComponent(\\"u-slider\\")
+
+  return (_openBlock(), _createBlock(_component_u_slider))
+}"
+`;
+
+exports[`app-nvue: compiler <textarea v-model="text"/> 1`] = `
+"import { openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = [\\"modelValue\\"]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"u-textarea\\", {
+    modelValue: _ctx.text,
+    onInput: _cache[0] || (_cache[0] = $event => ((_ctx.text) = $event.detail.value))
+  }, null, 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_1))
+}"
+`;
+
+exports[`app-nvue: compiler <video></video> 1`] = `
+"import { openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"u-video\\"))
+}"
+`;
+
+exports[`app-nvue: compiler <video><view></view></video> 1`] = `
+"import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-scalable\\", { style: {position:\\"absolute\\",left:\\"0\\",right:\\"0\\",top:\\"0\\",bottom:\\"0\\"} }, [
+  /*#__PURE__*/_createElementVNode(\\"view\\")
+], -1 /* HOISTED */)
+const _hoisted_2 = [
+  _hoisted_1
+]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"u-video\\", null, _hoisted_2))
+}"
+`;
+
+exports[`app-nvue: compiler <view><text>hello</text></view> 1`] = `
+"import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"hello\\", -1 /* HOISTED */)
+const _hoisted_2 = [
+  _hoisted_1
+]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"view\\", null, _hoisted_2))
+}"
+`;
+
+exports[`app-nvue: compiler <view>hello</view> 1`] = `
+"import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"hello\\", -1 /* HOISTED */)
+const _hoisted_2 = [
+  _hoisted_1
+]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"view\\", null, _hoisted_2))
+}"
+`;
+
+exports[`app-nvue: compiler <view>hello{{a}}<view>aaa{{a}}</view>{{b}}</view> 1`] = `
+"import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock } from \\"vue\\"
+
+const _hoisted_1 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"hello\\", -1 /* HOISTED */)
+const _hoisted_2 = /*#__PURE__*/_createElementVNode(\\"u-text\\", null, \\"aaa\\", -1 /* HOISTED */)
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock(\\"view\\", null, [
+    _hoisted_1,
+    _createElementVNode(\\"u-text\\", null, _toDisplayString(_ctx.a), 1 /* TEXT */),
+    _createElementVNode(\\"view\\", null, [
+      _hoisted_2,
+      _createElementVNode(\\"u-text\\", null, _toDisplayString(_ctx.a), 1 /* TEXT */)
+    ]),
+    _createElementVNode(\\"u-text\\", null, _toDisplayString(_ctx.b), 1 /* TEXT */)
+  ]))
+}"
+`;

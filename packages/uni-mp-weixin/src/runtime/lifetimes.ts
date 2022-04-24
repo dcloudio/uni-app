@@ -36,7 +36,7 @@ export function initLifetimes({
       if (waitingSetData) {
         initSetRef(this)
       }
-      const properties = this.properties
+      let properties = this.properties
       initVueIds(properties.uI, this)
       const relationOptions: RelationOptions = {
         vuePid: this._$vuePid,
@@ -46,11 +46,19 @@ export function initLifetimes({
       // 初始化 vue 实例
       const mpInstance = this
       const isMiniProgramPage = isPage(mpInstance)
-
+      let propsData: Record<string, any> = properties
+      if (isMiniProgramPage) {
+        if (__PLATFORM__ === 'mp-baidu') {
+          propsData = (this as any).pageinstance._$props
+          delete (this as any).pageinstance._$props
+        } else if (__PLATFORM__ === 'mp-kuaishou') {
+          propsData = this.options as Record<string, any>
+        }
+      }
       this.$vm = $createComponent(
         {
           type: vueOptions,
-          props: findPropsData(properties, isMiniProgramPage),
+          props: findPropsData(propsData, isMiniProgramPage),
         },
         {
           mpType: isMiniProgramPage ? 'page' : 'component',

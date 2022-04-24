@@ -13,6 +13,7 @@ import { stringifyStyle } from './style'
 import { dynamicSlot } from './dynamicSlot'
 import { setRef } from './ref'
 import { renderProps } from './renderProps'
+import { withModelModifiers } from './withModelModifiers'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -38,3 +39,8 @@ export const n: typeof normalizeClass = (value) => normalizeClass(value)
 export const t: typeof toDisplayString = (val) => toDisplayString(val)
 export const p: typeof renderProps = (props) => renderProps(props)
 export const sr: typeof setRef = (ref, id, opts) => setRef(ref, id, opts)
+export const m: typeof withModelModifiers = (
+  fn,
+  modifiers,
+  isComponent = false
+) => withModelModifiers(fn, modifiers, isComponent)

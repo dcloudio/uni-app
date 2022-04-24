@@ -10,18 +10,10 @@
   },
   {
     "input": {
-      "src/service/index.ts": "dist/uni-app-service.es.js"
+      "src/service/index.ts": "dist/uni.runtime.esm.js"
     },
     "output": {
-      "freeze": false,
-      "name": "serviceContext",
-      "format": "iife",
-      "banner": "export function createServiceContext(weex, plus, instanceContext){\nconst Vue = instanceContext.Vue;\nlet setTimeout = instanceContext.setTimeout;\nlet clearTimeout = instanceContext.clearTimeout;\nlet setInterval = instanceContext.setInterval;\nlet clearInterval = instanceContext.clearInterval;\nconst __uniConfig = instanceContext.__uniConfig;\nconst __uniRoutes = instanceContext.__uniRoutes;\n",
-      "footer": "const uni = serviceContext.uni;\nconst getApp = serviceContext.getApp;\nconst getCurrentPages = serviceContext.getCurrentPages;\nconst UniServiceJSBridge = serviceContext.UniServiceJSBridge;\nreturn serviceContext;\n}",
-      "globals": {
-        "vue": "Vue"
-      },
-      "inlineDynamicImports": true
+      "freeze": false
     },
     "replacements": {
       "__PLATFORM__": "'app'",
@@ -36,10 +28,7 @@
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     },
-    "external": ["vue"],
-    "replaceAfterBundled": {
-      "__VUE__": "vue"
-    }
+    "external": ["vue", "@vue/shared", "@dcloudio/uni-shared"]
   },
   {
     "input": {
@@ -50,5 +39,25 @@
       "format": "umd"
     },
     "external": false
+  },
+  {
+    "input": {
+      "src/service/vue.ts": "dist/uni.vue.js"
+    },
+    "output": {},
+    "replacements": {
+      "__PLATFORM__": "'app'",
+      "__APP_VIEW__": "false",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__UNI_FEATURE_WX__": "true",
+      "__UNI_FEATURE_PROMISE__": "false",
+      "__UNI_FEATURE_I18N_EN__": "true",
+      "__UNI_FEATURE_I18N_ES__": "true",
+      "__UNI_FEATURE_I18N_FR__": "true",
+      "__UNI_FEATURE_I18N_ZH_HANS__": "true",
+      "__UNI_FEATURE_I18N_ZH_HANT__": "true"
+    },
+    "external": ["@dcloudio/uni-shared", "@vue/shared", "vue"]
   }
 ]

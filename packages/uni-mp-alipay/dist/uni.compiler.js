@@ -1,10 +1,10 @@
 'use strict';
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
+var shared = require('@vue/shared');
 var path = require('path');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var compilerCore = require('@vue/compiler-core');
-var shared = require('@vue/shared');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -221,6 +221,11 @@ const options = {
         darkmode: false,
         subpackages: true,
         plugins: true,
+        normalize(appJson) {
+            // 支付宝小程序默认主包，分包 js 模块不共享，会导致 getCurrentInstance，setCurrentInstance 不一致
+            appJson.subPackageBuildType = 'shared';
+            return appJson;
+        },
     },
     project: {
         filename: projectConfigFilename,
@@ -244,17 +249,20 @@ const options = {
 const uniMiniProgramAlipayPlugin = {
     name: 'uni:mp-alipay',
     config() {
+        const buildOptions = {};
+        if (process.env.NODE_ENV === 'production') {
+            buildOptions.terserOptions = {
+                compress: false,
+                mangle: false,
+            };
+        }
         return {
             define: {
                 __VUE_CREATED_DEFERRED__: false,
             },
-            build: {
+            build: shared.extend({
                 assetsInlineLimit: 0,
-                terserOptions: {
-                    compress: false,
-                    mangle: false,
-                },
-            },
+            }, buildOptions),
         };
     },
 };

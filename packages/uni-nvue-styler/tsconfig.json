@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": false,
+    "declaration": true,
+    "declarationDir": "./dist/packages/uni-nvue-styler/src",
+    "target": "es2015",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowJs": false,
+    "strict": true,
+    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "removeComments": false,
+    "lib": ["ESNext", "DOM"],
+    "paths": {
+      "shared": ["./src/shared.ts"]
+    }
+  },
+  "include": [
+    "src",
+    "../global.d.ts",
+    "../shims-node.d.ts",
+    "../shims-uni-app.d.ts"
+  ]
+}

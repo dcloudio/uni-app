@@ -1,71 +1,6 @@
 import { camelize, isPlainObject, isArray, hasOwn, isFunction, extend } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 
-const ON_READY$1 = 'onReady';
-
-class EventChannel$1 {
-    constructor(id, events) {
-        this.id = id;
-        this.listener = {};
-        this.emitCache = {};
-        if (events) {
-            Object.keys(events).forEach((name) => {
-                this.on(name, events[name]);
-            });
-        }
-    }
-    emit(eventName, ...args) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
-        }
-        fns.forEach((opt) => {
-            opt.fn.apply(opt.fn, args);
-        });
-        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
-    }
-    on(eventName, fn) {
-        this._addListener(eventName, 'on', fn);
-        this._clearCache(eventName);
-    }
-    once(eventName, fn) {
-        this._addListener(eventName, 'once', fn);
-        this._clearCache(eventName);
-    }
-    off(eventName, fn) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return;
-        }
-        if (fn) {
-            for (let i = 0; i < fns.length;) {
-                if (fns[i].fn === fn) {
-                    fns.splice(i, 1);
-                    i--;
-                }
-                i++;
-            }
-        }
-        else {
-            delete this.listener[eventName];
-        }
-    }
-    _clearCache(eventName) {
-        const cacheArgs = this.emitCache[eventName];
-        if (cacheArgs) {
-            for (; cacheArgs.length > 0;) {
-                this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
-            }
-        }
-    }
-    _addListener(eventName, type, fn) {
-        (this.listener[eventName] || (this.listener[eventName] = [])).push({
-            fn,
-            type,
-        });
-    }
-}
-
 // quickapp-webview 不能使用 default 作为插槽名称
 const SLOT_DEFAULT_NAME = 'd';
 // lifecycle
@@ -410,6 +345,7 @@ function parseApp(instance, parseAppOptions) {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
         onLaunch(options) {
+            this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -463,9 +399,18 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (ks.$subpackages || (ks.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
     };
 }
 function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = ks.getLaunchOptionsSync && ks.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
     if (isFunction(appOptions.onShow) && ks.onAppShow) {
         ks.onAppShow((args) => {
             vm.$callHook('onShow', args);
@@ -475,10 +420,6 @@ function initAppLifecycle(appOptions, vm) {
         ks.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
-    }
-    if (isFunction(appOptions.onLaunch)) {
-        const args = ks.getLaunchOptionsSync && ks.getLaunchOptionsSync();
-        vm.$callHook('onLaunch', args || {});
     }
 }
 function initLocale(appVm) {
@@ -767,7 +708,9 @@ function updateComponentProps(up, instance) {
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
         invalidateJob(instance.update);
-        instance.update();
+        {
+            instance.update();
+        }
     }
 }
 function hasPropsChanged(prevProps, nextProps, checkLen = true) {
@@ -865,9 +808,18 @@ function initCreateComponent(parseOptions) {
 }
 let $createComponentFn;
 let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return ks.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return ks.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
 function $createComponent(initialVNode, options) {
     if (!$createComponentFn) {
-        $createComponentFn = getApp().$vm.$createComponent;
+        $createComponentFn = getAppVm().$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
     return getExposeProxy(proxy.$) || proxy;
@@ -898,7 +850,9 @@ function parsePage(vueOptions, parseOptions) {
         return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };
     initHooks(methods, PAGE_INIT_HOOKS);
-    initUnknownHooks(methods, vueOptions);
+    {
+        initUnknownHooks(methods, vueOptions);
+    }
     initRuntimeHooks(methods, vueOptions.__runtimeHooks);
     initMixinRuntimeHooks(methods);
     parse && parse(miniProgramPageOptions, { handleLink });
@@ -908,6 +862,45 @@ function initCreatePage(parseOptions) {
     return function createPage(vuePageOptions) {
         return Component(parsePage(vuePageOptions, parseOptions));
     };
+}
+
+/**
+ * 用于延迟调用 setData
+ * 在 setData 真实调用的时机需执行 fixSetDataEnd
+ * @param {*} mpInstance
+ */
+function fixSetDataStart(mpInstance) {
+    const setData = mpInstance.setData;
+    const setDataArgs = [];
+    mpInstance.setData = function () {
+        setDataArgs.push(arguments);
+    };
+    mpInstance.__fixInitData = function () {
+        this.setData = setData;
+        const fn = () => {
+            setDataArgs.forEach((args) => {
+                setData.apply(this, args);
+            });
+        };
+        if (setDataArgs.length) {
+            if (this.groupSetData) {
+                this.groupSetData(fn);
+            }
+            else {
+                fn();
+            }
+        }
+    };
+}
+/**
+ * 恢复真实的 setData 方法
+ * @param {*} mpInstance
+ */
+function fixSetDataEnd(mpInstance) {
+    if (mpInstance.__fixInitData) {
+        mpInstance.__fixInitData();
+        delete mpInstance.__fixInitData;
+    }
 }
 
 const MPPage = Page;
@@ -955,7 +948,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             {
                 initSetRef(this);
             }
-            const properties = this.properties;
+            let properties = this.properties;
             initVueIds(properties.uI, this);
             const relationOptions = {
                 vuePid: this._$vuePid,
@@ -965,9 +958,15 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // 初始化 vue 实例
             const mpInstance = this;
             const isMiniProgramPage = isPage(mpInstance);
+            let propsData = properties;
+            if (isMiniProgramPage) {
+                {
+                    propsData = this.options;
+                }
+            }
             this.$vm = $createComponent({
                 type: vueOptions,
-                props: findPropsData(properties, isMiniProgramPage),
+                props: findPropsData(propsData, isMiniProgramPage),
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
@@ -987,7 +986,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                 {
                     nextSetDataTick(this, () => {
                         this.$vm.$callHook('mounted');
-                        this.$vm.$callHook(ON_READY$1);
+                        this.$vm.$callHook(ON_READY);
                     });
                 }
             }
@@ -1024,12 +1023,12 @@ function handleLink(event) {
 }
 
 var baseParseOptions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    mocks: mocks,
-    isPage: isPage,
-    initRelation: initRelation,
-    handleLink: handleLink,
-    initLifetimes: initLifetimes
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes
 });
 
 function parse$1(pageOptions) {
@@ -1039,45 +1038,6 @@ function parse$1(pageOptions) {
 var parsePageOptions = extend({}, baseParseOptions, {
     parse: parse$1,
 });
-
-/**
- * 用于延迟调用 setData
- * 在 setData 真实调用的时机需执行 fixSetDataEnd
- * @param {*} mpInstance
- */
-function fixSetDataStart(mpInstance) {
-    const setData = mpInstance.setData;
-    const setDataArgs = [];
-    mpInstance.setData = function () {
-        setDataArgs.push(arguments);
-    };
-    mpInstance.__fixInitData = function () {
-        this.setData = setData;
-        const fn = () => {
-            setDataArgs.forEach((args) => {
-                setData.apply(this, args);
-            });
-        };
-        if (setDataArgs.length) {
-            if (this.groupSetData) {
-                this.groupSetData(fn);
-            }
-            else {
-                fn();
-            }
-        }
-    };
-}
-/**
- * 恢复真实的 setData 方法
- * @param {*} mpInstance
- */
-function fixSetDataEnd(mpInstance) {
-    if (mpInstance.__fixInitData) {
-        mpInstance.__fixInitData();
-        delete mpInstance.__fixInitData;
-    }
-}
 
 function parse(componentOptions) {
     const oldAttached = componentOptions.lifetimes.attached;
@@ -1103,10 +1063,11 @@ const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 const createSubpackageApp = initCreateSubpackageApp();
-ks.EventChannel = EventChannel$1;
+ks.EventChannel = EventChannel;
 ks.createApp = global.createApp = createApp;
 ks.createPage = createPage;
 ks.createComponent = createComponent;
-ks.createSubpackageApp = createSubpackageApp;
+ks.createSubpackageApp = global.createSubpackageApp =
+    createSubpackageApp;
 
 export { createApp, createComponent, createPage, createSubpackageApp };

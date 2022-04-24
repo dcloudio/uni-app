@@ -9,10 +9,11 @@ describe('identifier', () => {
     }
     expect(ids.next()).toBe('ab')
     expect(ids.next()).toBe('ac')
+    // do if in 已被忽略
     for (let i = 0; i < 52 * 52 - 2; i++) {
       ids.next()
     }
-    expect(ids.next()).toBe('acc')
-    expect(ids.next()).toBe('acd')
+    expect(ids.next()).toBe('acf')
+    expect(ids.next()).toBe('acg')
   })
 })

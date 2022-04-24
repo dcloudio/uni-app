@@ -6,7 +6,17 @@ import { getVueApp } from '../app/vueApp'
 const pages: ComponentPublicInstance[] = []
 
 export function addCurrentPage(page: ComponentPublicInstance) {
-  pages.push(page)
+  const $page = page.$page
+  if (!$page.meta.isNVue) {
+    return pages.push(page)
+  }
+  // 开发阶段热刷新需要移除旧的相同 id 的 page
+  const index = pages.findIndex((p) => p.$page.id === page.$page.id)
+  if (index > -1) {
+    pages.splice(index, 1, page)
+  } else {
+    pages.push(page)
+  }
 }
 
 export function getPageById(id: number) {

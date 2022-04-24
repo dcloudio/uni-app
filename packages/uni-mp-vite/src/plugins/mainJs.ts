@@ -10,8 +10,13 @@ import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import { dynamicImport } from './usingComponents'
 
 export function uniMainJsPlugin(
-  options: Partial<SFCScriptCompileOptions> = {}
+  options: {
+    normalizeComponentName?: (name: string) => string
+    babelParserPlugins?: SFCScriptCompileOptions['babelParserPlugins']
+  } = {}
 ) {
+  const normalizeComponentName =
+    options.normalizeComponentName || ((name: string) => name)
   return defineUniMainJsPlugin((opts) => {
     return {
       name: 'uni:mp-main-js',
@@ -31,6 +36,7 @@ export function uniMainJsPlugin(
             {
               inputDir,
               resolve: this.resolve,
+              normalizeComponentName,
             }
           )
           const { code, map } = await transformDynamicImports(source, imports, {

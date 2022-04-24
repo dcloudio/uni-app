@@ -125,4 +125,5 @@ export interface AppJson {
   lazyCodeLoading?: 'requiredComponents' | string
   singlePage?: SinglePage
   restartStrategy?: RestartStrategy
+  [name: string]: unknown
 }
