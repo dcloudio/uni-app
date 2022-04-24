@@ -4,6 +4,13 @@ const {
   normalizePath
 } = require('@dcloudio/uni-cli-shared')
 
+const subPkgsInfo = Object.values(process.UNI_SUBPACKAGES)
+const normalFilter = ({ independent }) => !independent
+const independentFilter = ({ independent }) => independent
+const map2Root = ({ root }) => root + '/'
+const normalSubPackageRoots = subPkgsInfo.filter(normalFilter).map(map2Root)
+const independentSubpackageRoots = subPkgsInfo.filter(independentFilter).map(map2Root)
+
 function createCacheGroups () {
   const cacheGroups = {}
   if (process.UNI_CONFUSION) { // 加密
@@ -152,7 +159,7 @@ module.exports = function getSplitChunks () {
   const findSubPackages = function (chunks) {
     return chunks.reduce((pkgs, item) => {
       const name = normalizePath(item.name)
-      const pkgRoot = subPackageRoots.find(root => name.indexOf(root) === 0)
+      const pkgRoot = normalSubPackageRoots.find(root => name.indexOf(root) === 0)
       pkgRoot && pkgs.add(pkgRoot)
       return pkgs
     }, new Set())
@@ -178,7 +185,12 @@ module.exports = function getSplitChunks () {
                 console.log('move module to main chunk:', module.resource,
                   'from', subPackageRoot, 'for component in main package:', resource)
               }
-              return true
+
+              // 独立分包除外
+              const independentRoot = independentSubpackageRoots.find(root => resource.indexOf(root) >= 0)
+              if (!independentRoot) {
+                return true
+              }
             }
           } else {
             return hasMainPackageComponent(m.module, subPackageRoot)

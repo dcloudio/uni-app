@@ -4,7 +4,8 @@ const babelGenerate = require('@babel/generator').default
 const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
-  METHOD_RENDER_LIST
+  METHOD_RENDER_LIST,
+  METHOD_RESOLVE_SCOPED_SLOTS
 } = require('./constants')
 
 function cached (fn) {
@@ -48,6 +49,8 @@ function traverseKey (ast, state) {
     CallExpression (path) {
       if (path.node.callee.name === METHOD_RENDER_LIST) {
         path.stop()
+      } else if (path.node.callee.name === METHOD_RESOLVE_SCOPED_SLOTS) {
+        path.skip()
       }
     }
   })

@@ -4,7 +4,6 @@ import {
 } from 'uni-shared'
 
 import {
-  tryCatch,
   tryCatchFramework
 } from './catch'
 
@@ -13,6 +12,9 @@ import {
   isSyncApi,
   isCallbackApi
 } from './promise'
+import {
+  getApiCallbacks
+} from './utils'
 
 import protocol from 'uni-api-protocol'
 
@@ -133,21 +135,12 @@ function createApiCallback (apiName, params = {}, extras = {}) {
   }
   params = Object.assign({}, params)
 
-  const apiCallbacks = {}
-  for (const name in params) {
-    const param = params[name]
-    if (isFn(param)) {
-      apiCallbacks[name] = tryCatch(param)
-      delete params[name]
-    }
-  }
-
   const {
     success,
     fail,
     cancel,
     complete
-  } = apiCallbacks
+  } = getApiCallbacks(params)
 
   const hasSuccess = isFn(success)
   const hasFail = isFn(fail)
@@ -292,9 +285,11 @@ function wrapperExtras (name, extras) {
     isFn(protocolOptions.beforeSuccess) && (extras.beforeSuccess = protocolOptions.beforeSuccess)
   }
 }
+// 部分 API 直接实现
+const unwrappers = ['getPushCid', 'onPushMessage', 'offPushMessage']
 
 export function wrapper (name, invokeMethod, extras = {}) {
-  if (!isFn(invokeMethod)) {
+  if (unwrappers.indexOf(name) > -1 || !isFn(invokeMethod)) {
     return invokeMethod
   }
   wrapperExtras(name, extras)
@@ -305,7 +300,8 @@ export function wrapper (name, invokeMethod, extras = {}) {
       }
     } else if (isCallbackApi(name)) {
       if (validateParams(name, args, -1)) {
-        return invokeMethod((name.startsWith('off') ? getKeepAliveApiCallback : createKeepAliveApiCallback)(name, args[0]))
+        return invokeMethod((name.startsWith('off') ? getKeepAliveApiCallback : createKeepAliveApiCallback)(name,
+          args[0]))
       }
     } else {
       let argsObj = {}

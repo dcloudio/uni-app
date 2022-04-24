@@ -248,7 +248,6 @@ var serviceContext = (function () {
     'requireNativePlugin',
     'upx2px',
     'restoreGlobal',
-    'requireGlobal',
     'getSubNVueById',
     'getCurrentSubNVue',
     'setPageMeta',
@@ -269,6 +268,13 @@ var serviceContext = (function () {
     'createInteractiveAd'
   ];
 
+  const plugin = [
+    'invokePushCallback',
+    'getPushCid',
+    'onPushMessage',
+    'offPushMessage',
+  ];
+
   const apis = [
     ...base,
     ...network,
@@ -283,7 +289,8 @@ var serviceContext = (function () {
     ...file,
     ...canvas,
     ...third,
-    ...ad
+    ...ad,
+    ...plugin
   ];
 
   var apis_1 = apis;
@@ -830,7 +837,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -905,6 +912,18 @@ var serviceContext = (function () {
         }), ...params);
       })))
     }
+  }
+
+  function getApiCallbacks (params) {
+    const apiCallbacks = {};
+    for (const name in params) {
+      const param = params[name];
+      if (isFn(param)) {
+        apiCallbacks[name] = tryCatch(param);
+        delete params[name];
+      }
+    }
+    return apiCallbacks
   }
 
   const base64ToArrayBuffer = [{
@@ -1203,6 +1222,10 @@ var serviceContext = (function () {
     },
     autoDecodeCharSet: {
       type: Boolean
+    },
+    sound: {
+      type: String,
+      default: 'none'
     }
   };
 
@@ -3592,21 +3615,12 @@ var serviceContext = (function () {
     }
     params = Object.assign({}, params);
 
-    const apiCallbacks = {};
-    for (const name in params) {
-      const param = params[name];
-      if (isFn(param)) {
-        apiCallbacks[name] = tryCatch(param);
-        delete params[name];
-      }
-    }
-
     const {
       success,
       fail,
       cancel,
       complete
-    } = apiCallbacks;
+    } = getApiCallbacks(params);
 
     const hasSuccess = isFn(success);
     const hasFail = isFn(fail);
@@ -3751,9 +3765,11 @@ var serviceContext = (function () {
       isFn(protocolOptions.beforeSuccess) && (extras.beforeSuccess = protocolOptions.beforeSuccess);
     }
   }
+  // 部分 API 直接实现
+  const unwrappers = ['getPushCid', 'onPushMessage', 'offPushMessage'];
 
   function wrapper (name, invokeMethod, extras = {}) {
-    if (!isFn(invokeMethod)) {
+    if (unwrappers.indexOf(name) > -1 || !isFn(invokeMethod)) {
       return invokeMethod
     }
     wrapperExtras(name, extras);
@@ -3764,7 +3780,8 @@ var serviceContext = (function () {
         }
       } else if (isCallbackApi(name)) {
         if (validateParams(name, args, -1)) {
-          return invokeMethod((name.startsWith('off') ? getKeepAliveApiCallback : createKeepAliveApiCallback)(name, args[0]))
+          return invokeMethod((name.startsWith('off') ? getKeepAliveApiCallback : createKeepAliveApiCallback)(name,
+            args[0]))
         }
       } else {
         let argsObj = {};
@@ -8546,29 +8563,6 @@ var serviceContext = (function () {
     __uniConfig.serviceReady = true;
   }
 
-  function requireGlobal () {
-    const list = [
-      'ArrayBuffer',
-      'Int8Array',
-      'Uint8Array',
-      'Uint8ClampedArray',
-      'Int16Array',
-      'Uint16Array',
-      'Int32Array',
-      'Uint32Array',
-      'Float32Array',
-      'Float64Array',
-      'BigInt64Array',
-      'BigUint64Array'
-    ];
-    const object = {};
-    for (let i = 0; i < list.length; i++) {
-      const key = list[i];
-      object[key] = global[key];
-    }
-    return object
-  }
-
   function wrapper$1 (webview) {
     webview.$processed = true;
 
@@ -12033,7 +12027,6 @@ var serviceContext = (function () {
     share: share,
     shareWithSystem: shareWithSystem,
     restoreGlobal: restoreGlobal,
-    requireGlobal: requireGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
     onHostEventReceive: onHostEventReceive,
@@ -21126,6 +21119,109 @@ var serviceContext = (function () {
     uploadFile: uploadFile$1
   });
 
+  let cid;
+  let cidErrMsg;
+
+  function normalizePushMessage (message) {
+    try {
+      return JSON.parse(message)
+    } catch (e) {}
+    return message
+  }
+
+  function invokePushCallback (
+    args
+  ) {
+    if (args.type === 'clientId') {
+      cid = args.cid;
+      cidErrMsg = args.errMsg;
+      invokeGetPushCidCallbacks(cid, args.errMsg);
+    } else if (args.type === 'pushMsg') {
+      onPushMessageCallbacks.forEach((callback) => {
+        callback({
+          type: 'receive',
+          data: normalizePushMessage(args.message)
+        });
+      });
+    } else if (args.type === 'click') {
+      onPushMessageCallbacks.forEach((callback) => {
+        callback({
+          type: 'click',
+          data: normalizePushMessage(args.message)
+        });
+      });
+    }
+  }
+
+  const getPushCidCallbacks = [];
+
+  function invokeGetPushCidCallbacks (cid, errMsg) {
+    getPushCidCallbacks.forEach((callback) => {
+      callback(cid, errMsg);
+    });
+    getPushCidCallbacks.length = 0;
+  }
+
+  function getPushCid (args) {
+    if (!isPlainObject(args)) {
+      args = {};
+    }
+    const {
+      success,
+      fail,
+      complete
+    } = getApiCallbacks(args);
+    const hasSuccess = isFn(success);
+    const hasFail = isFn(fail);
+    const hasComplete = isFn(complete);
+    getPushCidCallbacks.push((cid, errMsg) => {
+      let res;
+      if (cid) {
+        res = {
+          errMsg: 'getPushCid:ok',
+          cid
+        };
+        hasSuccess && success(res);
+      } else {
+        res = {
+          errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '')
+        };
+        hasFail && fail(res);
+      }
+      hasComplete && complete(res);
+    });
+    if (typeof cid !== 'undefined') {
+      Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
+    }
+  }
+
+  const onPushMessageCallbacks = [];
+  // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
+  const onPushMessage = (fn) => {
+    if (onPushMessageCallbacks.indexOf(fn) === -1) {
+      onPushMessageCallbacks.push(fn);
+    }
+  };
+
+  const offPushMessage = (fn) => {
+    if (!fn) {
+      onPushMessageCallbacks.length = 0;
+    } else {
+      const index = onPushMessageCallbacks.indexOf(fn);
+      if (index > -1) {
+        onPushMessageCallbacks.splice(index, 1);
+      }
+    }
+  };
+
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    invokePushCallback: invokePushCallback,
+    getPushCid: getPushCid,
+    onPushMessage: onPushMessage,
+    offPushMessage: offPushMessage
+  });
+
   const defaultOption = {
     duration: 400,
     timingFunction: 'linear',
@@ -21210,7 +21306,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -21280,7 +21376,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -21327,7 +21423,7 @@ var serviceContext = (function () {
     return new ServiceMediaQueryObserver(getCurrentPageVm('createMediaQueryObserver'), options)
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createMediaQueryObserver: createMediaQueryObserver
   });
@@ -21468,7 +21564,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -21493,7 +21589,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -21536,7 +21632,7 @@ var serviceContext = (function () {
     callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getLocale: getLocale$1,
     setLocale: setLocale,
@@ -21551,7 +21647,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -21564,7 +21660,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta$1
   });
@@ -21601,7 +21697,7 @@ var serviceContext = (function () {
     callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -21625,7 +21721,7 @@ var serviceContext = (function () {
     callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -21658,16 +21754,17 @@ var serviceContext = (function () {
   './network/socket.js': require_context_module_1_19,
   './network/update.js': require_context_module_1_20,
   './network/upload-file.js': require_context_module_1_21,
-  './ui/create-animation.js': require_context_module_1_22,
-  './ui/create-intersection-observer.js': require_context_module_1_23,
-  './ui/create-media-query-observer.js': require_context_module_1_24,
-  './ui/create-selector-query.js': require_context_module_1_25,
-  './ui/load-font-face.js': require_context_module_1_26,
-  './ui/locale.js': require_context_module_1_27,
-  './ui/page-scroll-to.js': require_context_module_1_28,
-  './ui/set-page-meta.js': require_context_module_1_29,
-  './ui/tab-bar.js': require_context_module_1_30,
-  './ui/window.js': require_context_module_1_31,
+  './plugin/push.js': require_context_module_1_22,
+  './ui/create-animation.js': require_context_module_1_23,
+  './ui/create-intersection-observer.js': require_context_module_1_24,
+  './ui/create-media-query-observer.js': require_context_module_1_25,
+  './ui/create-selector-query.js': require_context_module_1_26,
+  './ui/load-font-face.js': require_context_module_1_27,
+  './ui/locale.js': require_context_module_1_28,
+  './ui/page-scroll-to.js': require_context_module_1_29,
+  './ui/set-page-meta.js': require_context_module_1_30,
+  './ui/tab-bar.js': require_context_module_1_31,
+  './ui/window.js': require_context_module_1_32,
 
       };
       var req = function req(key) {

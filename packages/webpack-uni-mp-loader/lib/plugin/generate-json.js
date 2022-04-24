@@ -7,7 +7,8 @@ const {
 const {
   getPageSet,
   getJsonFileMap,
-  getChangedJsonFileMap
+  getChangedJsonFileMap,
+  supportGlobalUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 // 主要解决 extends 且未实际引用的组件
@@ -24,6 +25,8 @@ const mpBaiduDynamicLibs = [
   'dynamicLib://myDynamicLib/spintileviewer',
   'dynamicLib://myDynamicLib/vrvideo'
 ]
+
+const AnalyzeDependency = require('@dcloudio/uni-mp-weixin/lib/independent-plugins/optimize-components-position/index')
 
 function analyzeUsingComponents () {
   if (!process.env.UNI_OPT_SUBPACKAGES) {
@@ -109,9 +112,11 @@ function normalizeUsingComponents (file, usingComponents) {
   return usingComponents
 }
 
+const cacheFileMap = new Map()
 module.exports = function generateJson (compilation) {
   analyzeUsingComponents()
 
+  const emitFileMap = new Map([...cacheFileMap])
   const jsonFileMap = getChangedJsonFileMap()
   for (const name of jsonFileMap.keys()) {
     const jsonObj = JSON.parse(jsonFileMap.get(name))
@@ -124,10 +129,9 @@ module.exports = function generateJson (compilation) {
     }
     delete jsonObj.customUsingComponents
     // usingGlobalComponents
-    if (jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents).length) {
+    if (!supportGlobalUsingComponents && jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents).length) {
       jsonObj.usingComponents = Object.assign(jsonObj.usingGlobalComponents, jsonObj.usingComponents)
     }
-    delete jsonObj.usingGlobalComponents
 
     // usingAutoImportComponents
     if (jsonObj.usingAutoImportComponents && Object.keys(jsonObj.usingAutoImportComponents).length) {
@@ -209,45 +213,69 @@ module.exports = function generateJson (compilation) {
     if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && jsonObj.usingComponents) {
       jsonObj.usingComponents = normalizeUsingComponents(name, jsonObj.usingComponents)
     }
-    const source = JSON.stringify(jsonObj, null, 2)
 
-    const jsFile = name.replace('.json', '.js')
-    if (
-      ![
-        'app.js',
-        'manifest.js',
-        'mini.project.js',
-        'quickapp.config.js',
-        'project.config.js',
-        'project.swan.js'
-      ].includes(
-        jsFile) &&
-      !compilation.assets[jsFile]
-    ) {
-      const jsFileAsset = {
-        size () {
-          return Buffer.byteLength(EMPTY_COMPONENT, 'utf8')
-        },
-        source () {
-          return EMPTY_COMPONENT
-        }
-      }
-      compilation.assets[jsFile] = jsFileAsset
-    }
-    const jsonAsset = {
-      size () {
-        return Buffer.byteLength(source, 'utf8')
-      },
-      source () {
-        return source
-      }
-    }
-
-    compilation.assets[name] = jsonAsset
+    emitFileMap.set(name, jsonObj)
+    cacheFileMap.set(name, JSON.parse(JSON.stringify(jsonObj))) // 做一次拷贝，emitFileMap中内容在后面会被修改
   }
+
+  // 组件依赖分析
+  (new AnalyzeDependency()).init(emitFileMap, compilation)
+
+  for (const [name, jsonObj] of emitFileMap) {
+    if (name === 'app.json') { // 删除manifest.json携带的配置项
+      delete jsonObj.insertAppCssToIndependent
+      delete jsonObj.independent
+      delete jsonObj.copyWxComponentsOnDemand
+    } else { // 删除用于临时记录的属性
+      delete jsonObj.usingGlobalComponents
+    }
+    emit(name, jsonObj, compilation)
+  }
+
   if (process.env.UNI_USING_CACHE && jsonFileMap.size) {
     setTimeout(() => {
       require('@dcloudio/uni-cli-shared/lib/cache').store()
     }, 50)
   }
+}
+
+function emit (name, jsonObj, compilation) {
+  if (jsonObj.usingComponents) {
+    jsonObj.usingComponents = Object.assign({}, jsonObj.usingComponents)
+  }
+  const source = JSON.stringify(jsonObj, null, 2)
+
+  const jsFile = name.replace('.json', '.js')
+  if (
+    ![
+      'app.js',
+      'manifest.js',
+      'mini.project.js',
+      'quickapp.config.js',
+      'project.config.js',
+      'project.swan.js'
+    ].includes(
+      jsFile) &&
+      !compilation.assets[jsFile]
+  ) {
+    const jsFileAsset = {
+      size () {
+        return Buffer.byteLength(EMPTY_COMPONENT, 'utf8')
+      },
+      source () {
+        return EMPTY_COMPONENT
+      }
+    }
+    compilation.assets[jsFile] = jsFileAsset
+  }
+  const jsonAsset = {
+    size () {
+      return Buffer.byteLength(source, 'utf8')
+    },
+    source () {
+      return source
+    }
+  }
+
+  compilation.assets[name] = jsonAsset
 }

@@ -3,7 +3,8 @@ const webpack = require('webpack')
 
 const {
   getMainEntry,
-  getPlatformStat
+  getPlatformStat,
+  getPlatformPush
 } = require('@dcloudio/uni-cli-shared')
 
 const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
@@ -60,6 +61,7 @@ const v3 = {
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus'].view
 
     const statCode = getPlatformStat()
+    const pushCode = getPlatformPush()
 
     const beforeCode = 'import \'uni-pages\';'
 
@@ -154,7 +156,7 @@ const v3 = {
             options: {
               compiler: vueLoader.compiler,
               before: [
-                beforeCode + require('../util').getAutomatorCode() + statCode +
+                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode +
                   getGlobalUsingComponentsCode()
               ]
             }

@@ -205,8 +205,21 @@ function parsePages (pagesJson, pageCallback, subPageCallback) {
 }
 
 function parseEntry (pagesJson) {
+  const mainJsPath = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
   process.UNI_ENTRY = {
-    'common/main': path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
+    'common/main': mainJsPath
+  }
+  const manifestConfig = process.UNI_MANIFEST
+  const weixinConfig = manifestConfig['mp-weixin'] || {}
+  const independentSwitch = !!weixinConfig.independent
+  if (independentSwitch) {
+    Object.values(process.UNI_SUBPACKAGES).forEach(({ root, independent = false }) => {
+      if (root && independent) {
+        const pkgRootMainJsKey = `${root}/common/main`
+        // const pkgRootMainJsPath = `${process.env.UNI_INPUT_DIR}/${root}/main.js`;
+        process.UNI_ENTRY[pkgRootMainJsKey] = mainJsPath
+      }
+    })
   }
 
   process.UNI_SUB_PACKAGES_ROOT = {}
@@ -506,7 +519,7 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
 
 const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media']
 
-const BUILT_IN_EASYCOMS = ['unicloud-db']
+const BUILT_IN_EASYCOMS = ['unicloud-db', 'ad-rewarded-video', 'ad-full-screen-video', 'ad-interstitial']
 
 function isBuiltInComponent (name) { // uni-template-compiler/lib/util.js 识别微信内置组件
   return BUILT_IN_COMPONENTS.includes(name)
