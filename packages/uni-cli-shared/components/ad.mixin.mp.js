@@ -29,56 +29,56 @@ export default {
       default: false
     }
   },
-  data() {
+  data () {
     return {
       loading: false,
       errorMessage: null
     }
   },
-  created() {
+  created () {
     this._ad = null
     setTimeout(() => {
       if (this.preload && this._canCreateAd()) {
-        this.load();
+        this.load()
       }
     }, 100)
   },
   methods: {
-    load() {
+    load () {
       this.errorMessage = null
     },
 
-    show() {
+    show () {
       this.errorMessage = null
-      this._ad = this.selectComponent('.uni-ad');
-      this._ad.show();
+      this._ad = this.selectComponent('.uni-ad')
+      this._ad.show()
     },
 
-    _onclick() {
+    _onclick () {
       this.show()
     },
 
-    _startLoading() {
+    _startLoading () {
       this.loading = true
       this.errorMessage = null
     },
 
-    _onmpload(e) {
+    _onmpload (e) {
       this.loading = false
       this._dispatchEvent(EventType.Load, {})
     },
 
-    _onmpclose(e) {
+    _onmpclose (e) {
       this._dispatchEvent(EventType.Close, e.detail)
     },
 
-    _onmperror(e) {
+    _onmperror (e) {
       this.loading = false
       this.errorMessage = JSON.stringify(e.detail)
       this._dispatchEvent(EventType.Error, e.detail)
     },
 
-    _dispatchEvent(type, data) {
+    _dispatchEvent (type, data) {
       this.$emit(type, {
         detail: data
       })

@@ -1,7 +1,7 @@
 const ADType = {
-  RewardedVideo: "RewardedVideo",
-  FullScreenVideo: "FullScreenVideo",
-  Interstitial: "Interstitial"
+  RewardedVideo: 'RewardedVideo',
+  FullScreenVideo: 'FullScreenVideo',
+  Interstitial: 'Interstitial'
 }
 
 const EventType = {
@@ -19,8 +19,7 @@ const ProviderType = {
 const RETRY_COUNT = 1
 
 class AdBase {
-
-  constructor(adInstance, options = {}, interstitial) {
+  constructor (adInstance, options = {}, interstitial) {
     this._isLoad = false
     this._isLoading = false
     this._isPlaying = false
@@ -80,23 +79,23 @@ class AdBase {
     })
   }
 
-  get isExpired() {
+  get isExpired () {
     return (this._lastLoadTime !== 0 && (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME))
   }
 
-  get isLoad() {
+  get isLoad () {
     return this._isLoad
   }
 
-  get isLoading() {
+  get isLoading () {
     return this._isLoading
   }
 
-  getProvider() {
+  getProvider () {
     return this._ad.getProvider()
   }
 
-  load(onload, onerror) {
+  load (onload, onerror) {
     this._loadCallback = onload
     this._errorCallback = onerror
 
@@ -119,7 +118,7 @@ class AdBase {
     this._loadAd()
   }
 
-  show(onclose, onshow) {
+  show (onclose, onshow) {
     this._closeCallback = onclose
 
     if (this._isLoading || this._isPlaying || !this._isLoad) {
@@ -155,13 +154,13 @@ class AdBase {
     }
   }
 
-  onLoad(e) {
+  onLoad (e) {
     if (this._loadCallback != null) {
       this._loadCallback()
     }
   }
 
-  onClose(e) {
+  onClose (e) {
     if (this._closeCallback != null) {
       this._closeCallback({
         isEnded: e.isEnded
@@ -169,17 +168,17 @@ class AdBase {
     }
   }
 
-  onError(e) {
+  onError (e) {
     if (this._errorCallback != null) {
       this._errorCallback(e)
     }
   }
 
-  destroy() {
+  destroy () {
     this._ad.destroy()
   }
 
-  _loadAd() {
+  _loadAd () {
     this._isLoad = false
     this._isLoading = true
     this._lastError = null
@@ -188,31 +187,30 @@ class AdBase {
 }
 
 class RewardedVideo extends AdBase {
-  constructor(options = {}) {
+  constructor (options = {}) {
     super(plus.ad.createRewardedVideoAd(options), options)
   }
 }
 
 class FullScreenVideo extends AdBase {
-  constructor(options = {}) {
+  constructor (options = {}) {
     super(plus.ad.createFullScreenVideoAd(options), options)
   }
 }
 
 class Interstitial extends AdBase {
-  constructor(options = {}, interstitial) {
+  constructor (options = {}, interstitial) {
     super(plus.ad.createInterstitialAd(options), options, interstitial)
   }
 }
 
 class AdHelper {
-
-  constructor(adType) {
+  constructor (adType) {
     this._ads = {}
     this._adType = adType
   }
 
-  load(options, onload, onerror) {
+  load (options, onload, onerror) {
     if (!options.adpid || this.isBusy(options.adpid)) {
       return
     }
@@ -220,8 +218,8 @@ class AdHelper {
     this.get(options).load(onload, onerror)
   }
 
-  show(options, onload, onerror, onclose, onshow) {
-    let ad = this.get(options)
+  show (options, onload, onerror, onclose, onshow) {
+    const ad = this.get(options)
 
     if (ad.isLoad) {
       ad.show((e) => {
@@ -244,8 +242,8 @@ class AdHelper {
   }
 
   // 底价预载逻辑
-  loadWaterfall(options, onload, onfail, index = 0) {
-    let {
+  loadWaterfall (options, onload, onfail, index = 0) {
+    const {
       adpid,
       urlCallback
     } = options
@@ -253,28 +251,28 @@ class AdHelper {
       return
     }
 
-    let options2 = {
+    const options2 = {
       adpid: adpid[index],
       urlCallback,
       retry: false
-    };
+    }
 
     this.load(options2, (res) => {
-      onload(options2);
+      onload(options2)
     }, (err) => {
-      index++;
+      index++
       if (index >= adpid.length) {
-        onfail(err);
+        onfail(err)
       } else {
-        console.log('loadWaterfall::index=' + index);
-        this.loadWaterfall(options, onload, onfail, index);
+        console.log('loadWaterfall::index=' + index)
+        this.loadWaterfall(options, onload, onfail, index)
       }
-    });
+    })
   }
 
   // 底价逻辑，失败后下一个，无重试机制
-  showWaterfall(options, onload, onfail, onclose, onshow, index = 0) {
-    let {
+  showWaterfall (options, onload, onfail, onclose, onshow, index = 0) {
+    const {
       adpid,
       urlCallback
     } = options
@@ -282,70 +280,70 @@ class AdHelper {
       return
     }
 
-    let options2 = {
+    const options2 = {
       adpid: adpid[index],
       urlCallback,
       retry: false
-    };
+    }
 
     this.show(options2, () => {
-      onload();
+      onload()
     }, (err) => {
-      index++;
+      index++
       if (index >= adpid.length) {
-        onfail(err);
+        onfail(err)
       } else {
-        this.showWaterfall(options, onload, onfail, onclose, onshow, index);
+        this.showWaterfall(options, onload, onfail, onclose, onshow, index)
       }
     }, (res) => {
-      onclose(res);
+      onclose(res)
     }, () => {
-      onshow();
-    });
+      onshow()
+    })
   }
 
   // 预载底价瀑布流
-  preloadWaterfall(options, index = 0, step = 1) {
+  preloadWaterfall (options, index = 0, step = 1) {
     if (step === 1) {
       this.loadWaterfall(options, (res) => {
-        console.log("preloadWaterfall.success::", res);
+        console.log('preloadWaterfall.success::', res)
       }, (err) => {
-        console.log("loadWaterfall.fail", err);
+        console.log('loadWaterfall.fail', err)
       })
-      return;
+      return
     }
 
-    let {
+    const {
       adpid,
       urlCallback
     } = options
-    let ads = [];
+    const ads = []
     for (let i = 0; i < step; i++) {
       if (index < adpid.length) {
-        let options2 = {
+        const options2 = {
           adpid: adpid[index],
           urlCallback
-        };
+        }
         this.loadWaterfall(options2, (res) => {
-          console.log("preloadWaterfall.success::", res);
+          console.log('preloadWaterfall.success::', res)
         }, (err) => {
-          console.log("loadWaterfall.fail", err);
-          this.preloadWaterfall(options, index, step);
+          console.log('loadWaterfall.fail', err)
+          this.preloadWaterfall(options, index, step)
         })
-        index++;
+        index++
       } else {
-        break;
+        break
       }
     }
   }
 
-  isBusy(adpid) {
+  isBusy (adpid) {
     return (this._ads[adpid] && this._ads[adpid].isLoading)
   }
 
-  get(options) {
+  get (options) {
     const {
-      adpid,
+      adpid
     } = options
 
     if (!this._ads[adpid]) {
@@ -355,18 +353,18 @@ class AdHelper {
     return this._ads[adpid]
   }
 
-  remove(adpid) {
+  remove (adpid) {
     if (this._ads[adpid]) {
       this._ads[adpid].destroy()
       delete this._ads[adpid]
     }
   }
 
-  _createInstance(options) {
+  _createInstance (options) {
     const adType = options.adType || this._adType
     delete options.adType
 
-    let ad = null;
+    let ad = null
     if (adType === ADType.RewardedVideo) {
       ad = new RewardedVideo(options)
     } else if (adType === ADType.FullScreenVideo) {
@@ -410,25 +408,25 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       loading: false,
       errorMessage: null
     }
   },
   watch: {
-    adpid(newValue, oldValue) {
+    adpid (newValue, oldValue) {
       this._removeInstance(oldValue)
       if (this.preload) {
         this._loadAd()
       }
     },
     // 服务器回调透传参数，仅在创建广告实例时可传递参数，如果发生变化需要重新创建广告实例
-    urlCallback() {
+    urlCallback () {
       this._removeInstance()
     }
   },
-  created() {
+  created () {
     this._adHelper = new AdHelper(this.adType)
 
     setTimeout(() => {
@@ -438,9 +436,9 @@ export default {
     }, 100)
   },
   methods: {
-    load() {
+    load () {
       this._startLoading()
-      const invoke = this._isWaterfall() ? "loadWaterfall" : "load"
+      const invoke = this._isWaterfall() ? 'loadWaterfall' : 'load'
       this._adHelper[invoke](this._getAdOptions(), () => {
         this._onLoad()
       }, (err) => {
@@ -448,9 +446,9 @@ export default {
       })
     },
 
-    show() {
+    show () {
       this._startLoading()
-      const invoke = this._isWaterfall() ? "showWaterfall" : "show"
+      const invoke = this._isWaterfall() ? 'showWaterfall' : 'show'
       this._adHelper[invoke](this._getAdOptions(), () => {
         this._onLoad()
       }, (err) => {
@@ -467,30 +465,30 @@ export default {
       })
     },
 
-    _loadAd() {
+    _loadAd () {
       if (this._canCreateAd()) {
         this.load()
       }
     },
 
-    _onclick() {
+    _onclick () {
       if (!this.disabled) {
         this.show()
       }
     },
 
-    _getAdOptions() {
+    _getAdOptions () {
       return {
         adpid: this.adpid,
         urlCallback: this.urlCallback
       }
     },
 
-    _isWaterfall() {
+    _isWaterfall () {
       return (Array.isArray(this.adpid) && this.adpid.length > 0)
     },
 
-    _canCreateAd() {
+    _canCreateAd () {
       let result = false
       if (Array.isArray(this.adpid) && this.adpid.length > 0) {
         result = true
@@ -502,8 +500,8 @@ export default {
       return result
     },
 
-    _removeInstance(adpid) {
-      let id = adpid || this.adpid
+    _removeInstance (adpid) {
+      const id = adpid || this.adpid
       if (Array.isArray(id)) {
         id.forEach((item) => {
           this._adHelper.remove(item)
@@ -513,23 +511,23 @@ export default {
       }
     },
 
-    _startLoading() {
+    _startLoading () {
       this.loading = true
       this.errorMessage = null
     },
 
-    _onLoad(err) {
+    _onLoad (err) {
       this.loading = false
       this._dispatchEvent(EventType.Load, {})
     },
 
-    _onLoadFail(err) {
+    _onLoadFail (err) {
       this.loading = false
       this.errorMessage = JSON.stringify(err)
       this._dispatchEvent(EventType.Error, err)
     },
 
-    _dispatchEvent(type, data) {
+    _dispatchEvent (type, data) {
       this.$emit(type, {
         detail: data
       })
