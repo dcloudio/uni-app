@@ -248,6 +248,7 @@ var serviceContext = (function () {
     'requireNativePlugin',
     'upx2px',
     'restoreGlobal',
+    'requireGlobal',
     'getSubNVueById',
     'getCurrentSubNVue',
     'setPageMeta',
@@ -829,7 +830,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -8545,6 +8546,29 @@ var serviceContext = (function () {
     __uniConfig.serviceReady = true;
   }
 
+  function requireGlobal () {
+    const list = [
+      'ArrayBuffer',
+      'Int8Array',
+      'Uint8Array',
+      'Uint8ClampedArray',
+      'Int16Array',
+      'Uint16Array',
+      'Int32Array',
+      'Uint32Array',
+      'Float32Array',
+      'Float64Array',
+      'BigInt64Array',
+      'BigUint64Array'
+    ];
+    const object = {};
+    for (let i = 0; i < list.length; i++) {
+      const key = list[i];
+      object[key] = global[key];
+    }
+    return object
+  }
+
   function wrapper$1 (webview) {
     webview.$processed = true;
 
@@ -12009,6 +12033,7 @@ var serviceContext = (function () {
     share: share,
     shareWithSystem: shareWithSystem,
     restoreGlobal: restoreGlobal,
+    requireGlobal: requireGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
     onHostEventReceive: onHostEventReceive,

@@ -59,22 +59,8 @@ module.exports = function (content, map) {
         return `
         ${statCode}
         import 'uni-app-style'
+        import 'uni-polyfill'
         import App from './${normalizePath(params.page)}.nvue?mpType=page'
-        if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
-          Promise.prototype.finally = function(callback) {
-            var promise = this.constructor
-            return this.then(function(value) {
-              return promise.resolve(callback()).then(function() {
-                return value
-              })
-            }, function(reason) {
-              return promise.resolve(callback()).then(function() {
-                throw reason
-              })
-            })
-          }
-        }
-        ArrayBuffer = uni.base64ToArrayBuffer('').constructor
         App.mpType = 'page'
         App.route = '${params.page}'
         App.el = '#root'
