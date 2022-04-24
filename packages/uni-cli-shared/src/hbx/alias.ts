@@ -16,6 +16,9 @@ export function initModuleAlias() {
   const serverRendererPath = require.resolve('@vue/server-renderer')
   moduleAlias.addAliases({
     '@vue/shared': require.resolve('@vue/shared'),
+    '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
+      '@vue/shared/dist/shared.esm-bundler.js'
+    ),
     '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
     '@vue/compiler-sfc': compilerSfcPath,
     '@vue/server-renderer': serverRendererPath,
