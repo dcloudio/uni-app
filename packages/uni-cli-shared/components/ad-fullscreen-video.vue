@@ -16,7 +16,7 @@
   // #endif
 
   export default {
-    name: 'AdFullScreenVideo',
+    name: 'AdFullscreenVideo',
     mixins: [adMixin],
     props: {
       adType: {
