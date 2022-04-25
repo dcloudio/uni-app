@@ -491,6 +491,10 @@ export class CanvasContext implements UniApp.CanvasContext {
   beginPath() {
     this.path = []
     this.subpath = []
+    this.path.push({
+      method: 'beginPath',
+      data: [],
+    })
   }
 
   moveTo(x: number, y: number) {
