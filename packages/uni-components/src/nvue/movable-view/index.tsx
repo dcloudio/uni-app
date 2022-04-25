@@ -213,7 +213,7 @@ function useMovableViewState(
     y: 0,
   }
   let _scale = 1
-  // @ts-expect-error
+  // @ts-ignore
   let _oldScale = 1
   let _translateX = 0
   let _translateY = 0

@@ -32,7 +32,11 @@ export default defineComponent({
   styles: [
     {
       'uni-movable-area': {
-        '': { width: '10px', height: '10px' },
+        '': {
+          overflow: 'hidden',
+          width: '10px',
+          height: '10px',
+        },
       },
     },
   ],
@@ -89,6 +93,7 @@ export default defineComponent({
       },
       onPanend(e: TouchtrackEvent) {
         touchMovableView && touchMovableView.touchend(e)
+        touchMovableView = null
       },
     }
     const addMovableViewContext: AddMovableViewContext = (
@@ -119,9 +124,9 @@ export default defineComponent({
       const defaultSlots = slots.default && slots.default()
       const movableViewItems = flatVNode(defaultSlots)
       return (
-        <div ref={rootRef} class="uni-movable-area" {...listeners}>
+        <view ref={rootRef} class="uni-movable-area" {...listeners}>
           {movableViewItems}
-        </div>
+        </view>
       )
     }
   },
