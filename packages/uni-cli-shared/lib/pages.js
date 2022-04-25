@@ -519,7 +519,7 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
 
 const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media']
 
-const BUILT_IN_EASYCOMS = ['unicloud-db', 'ad-rewarded-video', 'ad-full-screen-video', 'ad-interstitial']
+const BUILT_IN_EASYCOMS = ['unicloud-db', 'ad-rewarded-video', 'ad-fullscreen-video', 'ad-interstitial', 'ad-interactive']
 
 function isBuiltInComponent (name) { // uni-template-compiler/lib/util.js 识别微信内置组件
   return BUILT_IN_COMPONENTS.includes(name)
