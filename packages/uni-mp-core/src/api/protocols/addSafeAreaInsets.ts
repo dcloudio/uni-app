@@ -8,7 +8,7 @@ export function addSafeAreaInsets(
       top: safeArea.top,
       left: safeArea.left,
       right: fromRes.windowWidth - safeArea.right,
-      bottom: fromRes.windowHeight - safeArea.bottom,
+      bottom: Math.abs(fromRes.screenHeight - safeArea.bottom),
     }
   }
 }
