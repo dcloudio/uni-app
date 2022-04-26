@@ -45,7 +45,14 @@ export default {
   },
   methods: {
     load () {
-      this.errorMessage = null
+      if (this.loading) {
+        return
+      }
+      this._startLoading()
+
+      setTimeout(() => {
+        this.loading = false
+      }, 3000)
     },
 
     show () {
