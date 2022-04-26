@@ -16,7 +16,7 @@ const traverseTemplate = require('./template/traverse')
 const generateTemplate = require('./template/generate')
 
 const compilerModule = require('./module')
-// const compilerModuleUniad = require('./module.uniad')
+const compilerModuleUniad = require('./module.uniad')
 
 const compilerAlipayModule = require('./module-alipay')
 const compilerToutiaoModule = require('./module-toutiao')
@@ -92,7 +92,7 @@ module.exports = {
     }
 
     options.modules.push(compilerModule)
-    // options.modules.push(compilerModuleUniad)
+    options.modules.push(compilerModuleUniad)
 
     if (options.mp.platform === 'mp-alipay') {
       options.modules.push(compilerAlipayModule)

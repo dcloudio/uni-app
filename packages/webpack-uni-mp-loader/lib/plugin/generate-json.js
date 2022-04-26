@@ -226,6 +226,9 @@ module.exports = function generateJson (compilation) {
       delete jsonObj.insertAppCssToIndependent
       delete jsonObj.independent
       delete jsonObj.copyWxComponentsOnDemand
+      if (process.env.UNI_PLATFORM === 'mp-weixin' && process.env.USE_UNI_AD) {
+        require('./mp-weixin-uniad-app.json')(jsonObj)
+      }
     } else { // 删除用于临时记录的属性
       delete jsonObj.usingGlobalComponents
     }
