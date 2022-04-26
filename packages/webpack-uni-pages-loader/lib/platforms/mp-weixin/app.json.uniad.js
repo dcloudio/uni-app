@@ -4,7 +4,7 @@ module.exports = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.0.2',
+      version: '1.0.3',
       provider: 'wx999bf02c8e05dfc9'
     }
   }
@@ -18,7 +18,7 @@ module.exports = function (appJson) {
   if (!appJson.usingComponents) {
     appJson.usingComponents = {}
   }
-  if (!appJson.usingComponents['uni-ad-plugin']) {
-    appJson.usingComponents['uni-ad-plugin'] = 'plugin://uni-ad/ad'
+  if (!appJson.usingComponents['uniad-plugin']) {
+    appJson.usingComponents['uniad-plugin'] = 'plugin://uni-ad/ad'
   }
 }

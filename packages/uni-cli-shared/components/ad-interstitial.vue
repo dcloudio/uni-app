@@ -2,7 +2,7 @@
   <view @click="_onclick">
     <slot :options="options" :loading="loading" :error="errorMessage" />
     <!-- #ifdef MP-WEIXIN -->
-    <uni-ad-plugin class="uni-ad-plugin" :adpid="adpid" :unit-id="unitId" @load="_onmpload" @close="_onmpclose" @error="_onmperror"></uni-ad-plugin>
+    <uniad-plugin class="uni-ad-plugin" :adpid="adpid" :unit-id="unitId" @load="_onmpload" @close="_onmpclose" @error="_onmperror"></uniad-plugin>
     <!-- #endif -->
   </view>
 </template>
