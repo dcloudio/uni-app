@@ -19462,6 +19462,10 @@ var serviceContext = (function () {
     beginPath () {
       this.path = [];
       this.subpath = [];
+      this.path.push({
+        method: "beginPath",
+        data: []
+      });
     }
 
     moveTo (x, y) {

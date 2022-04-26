@@ -567,7 +567,7 @@ function addSafeAreaInsets (result) {
       top: safeArea.top,
       left: safeArea.left,
       right: result.windowWidth - safeArea.right,
-      bottom: result.windowHeight - safeArea.bottom
+      bottom: Math.abs(result.screenHeight - safeArea.bottom)
     };
   }
 }
