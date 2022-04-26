@@ -71,13 +71,16 @@ var index = () => [
                                 uniStatLog(uniCliShared.M['stat.warn.version']);
                             }
                             if (isEnable) {
-                                uniStatLog(`已开启 uni统计${statConfig.version}.0 版本`);
+                                uniStatLog(`已开启 uni统计${statVersion}.0 版本`);
                             }
                         }
                     }
                     else {
+                        if (!statConfig.version) {
+                            uniStatLog(uniCliShared.M['stat.warn.version']);
+                        }
                         if (isEnable) {
-                            uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', '1.0'));
+                            uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', `${statVersion}.0`));
                         }
                     }
                     debug__default["default"]('uni:stat')('isEnable', isEnable);
