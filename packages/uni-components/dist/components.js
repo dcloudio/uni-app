@@ -891,6 +891,7 @@ var MovableArea = defineComponent({
   styles: [{
     "uni-movable-area": {
       "": {
+        overflow: "hidden",
         width: "10px",
         height: "10px"
       }
@@ -946,6 +947,7 @@ var MovableArea = defineComponent({
       },
       onPanend(e2) {
         touchMovableView && touchMovableView.touchend(e2);
+        touchMovableView = null;
       }
     };
     const addMovableViewContext = (movableViewContext) => {
@@ -970,7 +972,7 @@ var MovableArea = defineComponent({
     return () => {
       const defaultSlots = slots.default && slots.default();
       const movableViewItems = flatVNode(defaultSlots);
-      return createVNode("div", mergeProps({
+      return createVNode("view", mergeProps({
         "ref": rootRef,
         "class": "uni-movable-area"
       }, listeners), [movableViewItems]);
