@@ -39,6 +39,8 @@ const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
 
 module.exports = {
   compile (source, options = {}) {
+    options.modules.push(compilerModuleUniad)
+
     if ( // 启用摇树优化后,需要过滤内置组件
       !options.autoComponentResourcePath ||
       options.autoComponentResourcePath.indexOf('@dcloudio/uni-h5/src') === -1
@@ -92,7 +94,6 @@ module.exports = {
     }
 
     options.modules.push(compilerModule)
-    options.modules.push(compilerModuleUniad)
 
     if (options.mp.platform === 'mp-alipay') {
       options.modules.push(compilerAlipayModule)
