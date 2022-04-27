@@ -19463,7 +19463,7 @@ var serviceContext = (function () {
       this.path = [];
       this.subpath = [];
       this.path.push({
-        method: "beginPath",
+        method: 'beginPath',
         data: []
       });
     }
