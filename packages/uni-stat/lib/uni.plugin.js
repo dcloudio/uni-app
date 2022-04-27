@@ -76,10 +76,10 @@ var index = () => [
                         }
                     }
                     else {
-                        if (!statConfig.version) {
-                            uniStatLog(uniCliShared.M['stat.warn.version']);
-                        }
                         if (isEnable) {
+                            if (!statConfig.version) {
+                                uniStatLog(uniCliShared.M['stat.warn.version']);
+                            }
                             uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', `${statVersion}.0`));
                         }
                     }

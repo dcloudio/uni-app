@@ -71,10 +71,10 @@ export default () => [
               }
             }
           } else {
-            if (!statConfig.version) {
-              uniStatLog(M['stat.warn.version'])
-            }
             if (isEnable) {
+              if (!statConfig.version) {
+                uniStatLog(M['stat.warn.version'])
+              }
               uniStatLog(
                 M['stat.warn.tip'].replace('{version}', `${statVersion}.0`)
               )
