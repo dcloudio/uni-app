@@ -9938,6 +9938,10 @@ class CanvasContext {
     beginPath() {
         this.path = [];
         this.subpath = [];
+        this.path.push({
+            method: 'beginPath',
+            data: [],
+        });
     }
     moveTo(x, y) {
         this.path.push({

@@ -207,8 +207,20 @@ export function getMac() {
       if (!item.family || (item.mac && item.mac === '00:00:00:00:00:00')) {
         continue
       }
-      if (item.family === 'IPv4' || item.family === 'IPv6') {
+
+      if (
+        // Node < v18
+        typeof item.family === 'string' &&
+        (item.family === 'IPv4' || item.family === 'IPv6')
+      ) {
         mac = item.mac
+        break
+      } else if (
+        // Node >= v18
+        typeof item.family === 'number' &&
+        (item.family === 4 || item.family === 6)
+      ) {
+        mac = (item as any).mac
         break
       }
     }

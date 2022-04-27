@@ -178,7 +178,11 @@ function resolveHostname() {
       continue
     }
     for (const info of interfaceInfos) {
-      if (info.family === 'IPv4' && !info.address.includes('127.0.0.1')) {
+      if (
+        (info.family === 'IPv4' ||
+          /* Node >= v18 */ (info as any).family === 4) &&
+        !info.address.includes('127.0.0.1')
+      ) {
         return info.address
       }
     }
