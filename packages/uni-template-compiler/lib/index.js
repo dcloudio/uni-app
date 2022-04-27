@@ -121,6 +121,9 @@ module.exports = {
 
     // (可用的原生微信小程序组件，global+scoped)
     options.mp.wxComponents = options.wxComponents || Object.create(null)
+    Object.assign(options.mp.wxComponents, {
+      'uniad-plugin': 'plugin://uni-ad/ad'
+    })
 
     const state = {
       ast: {},

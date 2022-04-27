@@ -19,14 +19,13 @@ const ProviderType = {
 const RETRY_COUNT = 1
 
 class AdBase {
-  constructor (adInstance, options = {}, interstitial) {
+  constructor (adInstance, options = {}) {
     this._isLoad = false
     this._isLoading = false
     this._isPlaying = false
     this._lastLoadTime = 0
     this._lastError = null
     this._retryCount = 0
-    this._isInterstitial = interstitial || false
     if (options.retry !== undefined) {
       this._retry = options.retry
     } else {
@@ -140,18 +139,9 @@ class AdBase {
       return
     }
 
-    // TODO
-    if (this._isInterstitial && provider === ProviderType.GDT) {
-      setTimeout(() => {
-        this._isPlaying = true
-        this._ad.show()
-        onshow && onshow()
-      }, 1000)
-    } else {
-      this._isPlaying = true
-      this._ad.show()
-      onshow && onshow()
-    }
+    this._isPlaying = true
+    this._ad.show()
+    onshow && onshow()
   }
 
   onLoad (e) {
@@ -199,8 +189,8 @@ class FullScreenVideo extends AdBase {
 }
 
 class Interstitial extends AdBase {
-  constructor (options = {}, interstitial) {
-    super(plus.ad.createInterstitialAd(options), options, interstitial)
+  constructor (options = {}) {
+    super(plus.ad.createInterstitialAd(options), options)
   }
 }
 
@@ -208,6 +198,7 @@ class AdHelper {
   constructor (adType) {
     this._ads = {}
     this._adType = adType
+    this._lastWaterfallIndex = -1
   }
 
   load (options, onload, onerror) {
@@ -251,6 +242,10 @@ class AdHelper {
       return
     }
 
+    if (index === 0) {
+      this._lastWaterfallIndex = -1
+    }
+
     const options2 = {
       adpid: adpid[index],
       urlCallback,
@@ -258,6 +253,7 @@ class AdHelper {
     }
 
     this.load(options2, (res) => {
+      this._lastWaterfallIndex = index
       onload(options2)
     }, (err) => {
       index++
@@ -280,8 +276,13 @@ class AdHelper {
       return
     }
 
+    let idx = index
+    if (this._lastWaterfallIndex > -1) {
+      idx = this._lastWaterfallIndex
+    }
+
     const options2 = {
-      adpid: adpid[index],
+      adpid: adpid[idx],
       urlCallback,
       retry: false
     }
@@ -350,6 +351,13 @@ class AdHelper {
     }
 
     return this._ads[adpid]
+  }
+
+  getProvider (adpid) {
+    if (this._ads[adpid]) {
+      return this._ads[adpid].getProvider()
+    }
+    return null
   }
 
   remove (adpid) {
@@ -462,6 +470,13 @@ export default {
         // show
         this.loading = false
       })
+    },
+
+    getProvider () {
+      if (Array.isArray(this.adpid)) {
+        return null
+      }
+      return this._adHelper.getProvider(this.adpid)
     },
 
     _loadAd () {
