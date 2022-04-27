@@ -1,7 +1,7 @@
 <template>
   <view @click="onclick">
-    <uni-ad-plugin
-      class="uni-ad-plugin"
+    <uniad-plugin
+      class="uniad-plugin"
       :adpid="adpid"
       :unit-id="unitId"
       @load="_onmpload"
@@ -14,7 +14,7 @@
 <script>
 import adMixin from './ad.mixin.mp.js'
 export default {
-  name: 'UniAd',
+  name: 'Uniad',
   mixins: [adMixin],
   props: {
   },

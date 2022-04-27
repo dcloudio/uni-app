@@ -57,7 +57,7 @@ export default {
 
     show () {
       this.errorMessage = null
-      this._ad = this.selectComponent('.uni-ad')
+      this._ad = this.selectComponent('.uniad-plugin')
       this._ad.show()
     },
 
@@ -68,6 +68,16 @@ export default {
     _startLoading () {
       this.loading = true
       this.errorMessage = null
+    },
+
+    _canCreateAd () {
+      let result = false
+      if (typeof this.adpid === 'string' && this.adpid.length > 0) {
+        result = true
+      } else if (typeof this.adpid === 'number') {
+        result = true
+      }
+      return result
     },
 
     _onmpload (e) {
