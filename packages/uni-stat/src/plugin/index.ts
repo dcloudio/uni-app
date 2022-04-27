@@ -51,33 +51,34 @@ export default () => [
         // ssr 时不开启
         if (!isSsr(env.command, config)) {
           const statConfig = getUniStatistics(inputDir, platform)
-          const uniCloudConfig = statConfig.uniCloud || {}
-          statVersion = statConfig.version === '2' ? '2' : '1'
           isEnable = statConfig.enable === true
 
-          process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
-          process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false'
-          if (process.env.NODE_ENV === 'production') {
-            const manifestJson = parseManifestJsonOnce(inputDir)
-            if (!manifestJson.appid) {
-              uniStatLog(M['stat.warn.appid'])
-              isEnable = false
+          if (isEnable) {
+            const uniCloudConfig = statConfig.uniCloud || {}
+
+            statVersion = statConfig.version === '2' ? '2' : '1'
+            process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
+            process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false'
+            if (process.env.NODE_ENV === 'production') {
+              const manifestJson = parseManifestJsonOnce(inputDir)
+              if (!manifestJson.appid) {
+                uniStatLog(M['stat.warn.appid'])
+                isEnable = false
+              } else {
+                if (!statConfig.version) {
+                  uniStatLog(M['stat.warn.version'])
+                } else {
+                  uniStatLog(`已开启 uni统计${statVersion}.0 版本`)
+                }
+              }
             } else {
               if (!statConfig.version) {
                 uniStatLog(M['stat.warn.version'])
+              } else {
+                uniStatLog(
+                  M['stat.warn.tip'].replace('{version}', `${statVersion}.0`)
+                )
               }
-              if (isEnable) {
-                uniStatLog(`已开启 uni统计${statVersion}.0 版本`)
-              }
-            }
-          } else {
-            if (isEnable) {
-              if (!statConfig.version) {
-                uniStatLog(M['stat.warn.version'])
-              }
-              uniStatLog(
-                M['stat.warn.tip'].replace('{version}', `${statVersion}.0`)
-              )
             }
           }
 
