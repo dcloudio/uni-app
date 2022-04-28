@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-weixin",
-  "version": "2.0.1-alpha-34820220427003",
+  "version": "2.0.1-alpha-34820220428001",
   "description": "uni-app mp-weixin",
   "main": "dist/index.js",
   "repository": {
