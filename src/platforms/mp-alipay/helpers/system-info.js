@@ -1,4 +1,5 @@
 import { getStorageSync } from './storage'
+import { addSafeAreaInsets, populateParameters } from '../../mp-weixin/helpers/enhance-system-info'
 
 const UUID_KEY = '__DC_STAT_UUID'
 let deviceId
@@ -14,18 +15,6 @@ function addUuid (result) {
   result.deviceId = deviceId
 }
 
-function addSafeAreaInsets (result) {
-  if (result.safeArea) {
-    const safeArea = result.safeArea
-    result.safeAreaInsets = {
-      top: safeArea.top,
-      left: safeArea.left,
-      right: result.windowWidth - safeArea.right,
-      bottom: result.windowHeight - safeArea.bottom
-    }
-  }
-}
-
 function normalizePlatform (result) {
   let platform = result.platform ? result.platform.toLowerCase() : 'devtools'
   if (!~['android', 'ios'].indexOf(platform)) {
@@ -39,5 +28,6 @@ export default {
     addUuid(result)
     addSafeAreaInsets(result)
     normalizePlatform(result)
+    populateParameters(result)
   }
 }

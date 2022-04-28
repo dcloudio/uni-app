@@ -1,6 +1,7 @@
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
 import deviceId from 'uni-platform/helpers/uuid'
 import safeAreaInsets from 'safe-area-insets'
+import { IEVersion, getDeviceBrand } from 'uni-shared'
 
 const ua = navigator.userAgent
 /**
@@ -45,6 +46,7 @@ export function getSystemInfoSync () {
   var osname
   var osversion
   var model
+  let deviceType = 'phone'
 
   if (isIOS) {
     osname = 'iOS'
@@ -89,8 +91,11 @@ export function getSystemInfoSync () {
     model = 'iPad'
     osname = 'iOS'
     osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0'
+    deviceType = 'pad'
   } else if (isWindows || isMac || isLinux) {
     model = 'PC'
+    osname = 'PC'
+    deviceType = 'pc'
     const osversionFind = ua.match(/\((.+?)\)/)[1]
 
     if (isWindows) {
@@ -147,6 +152,7 @@ export function getSystemInfoSync () {
   } else {
     osname = 'Other'
     osversion = '0'
+    deviceType = 'other'
   }
 
   var system = `${osname} ${osversion}`
@@ -168,6 +174,30 @@ export function getSystemInfoSync () {
   windowHeight -= windowTop
   windowHeight -= windowBottom
 
+  let browserName
+  let browseVersion = String(IEVersion())
+  if (browseVersion !== '-1') { browserName = 'IE' } else {
+    const browseVendors = ['Version', 'Firefox', 'Chrome', 'Edge{0,1}']
+    const vendors = ['Safari', 'Firefox', 'Chrome', 'Edge']
+    for (let index = 0; index < browseVendors.length; index++) {
+      const vendor = browseVendors[index]
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`)
+      if (reg.test(ua)) {
+        browserName = vendors[index]
+        browseVersion = ua.match(reg)[2]
+      }
+    }
+  }
+
+  // deviceBrand
+  let deviceBrand = ''
+  if (model) {
+    const _model = model.toLocaleLowerCase()
+    deviceBrand = getDeviceBrand(_model) ||
+      getDeviceBrand(osname.toLocaleLowerCase()) ||
+      _model.split(' ')[0]
+  }
+
   return {
     windowTop,
     windowBottom,
@@ -180,7 +210,10 @@ export function getSystemInfoSync () {
     statusBarHeight,
     system,
     platform,
+    deviceBrand,
+    deviceType,
     model,
+    deviceModel: model,
     safeArea,
     safeAreaInsets: {
       top: safeAreaInsets.top,
@@ -188,7 +221,25 @@ export function getSystemInfoSync () {
       bottom: safeAreaInsets.bottom,
       left: safeAreaInsets.left
     },
-    deviceId: deviceId()
+    deviceId: deviceId(),
+    SDKVersion: '',
+    ua,
+    uniPlatform: 'web',
+    browserName,
+    browseVersion,
+    osLanguage: language,
+    osName: osname,
+    osVersion: osversion,
+    hostLanguage: language,
+    version: __uniConfig.appVersion,
+    uniCompileVersion: __uniConfig.compilerVersion,
+    uniRuntimeVersion: __uniConfig.compilerVersion,
+    appId: __uniConfig.appId,
+    appName: __uniConfig.appName,
+    appVersion: __uniConfig.appVersion,
+    appVersionCode: __uniConfig.appVersionCode,
+    osTheme: '',
+    hostTheme: ''
   }
 }
 /**

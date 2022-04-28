@@ -31,6 +31,8 @@ const manifestJsonObj = getManifestJson()
 process.env.UNI_APP_ID = manifestJsonObj.appid || ''
 process.env.UNI_APP_NAME = manifestJsonObj.name || ''
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
+process.env.UNI_APP_VERSION_NAME = manifestJsonObj.versionName
+process.env.UNI_APP_VERSION_CODE = manifestJsonObj.versionCode
 
 // 小程序 vue3 标记
 if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
@@ -388,6 +390,11 @@ const warningMsg =
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
 // 输出编译器版本等信息
+const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
+process.env.UNI_COMPILER_VERSION = ''
+if (pagesPkg) {
+  process.env.UNI_COMPILER_VERSION =  pagesPkg['uni-app'].compilerVersion
+}
 const compileModeUrl = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   const compileMode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')
@@ -397,12 +404,8 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   }))
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
   try {
-    let info = ''
+    let info = process.env.UNI_COMPILER_VERSION
     if (process.env.UNI_PLATFORM === 'app-plus') {
-      const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
-      if (pagesPkg) {
-        info = uniI18n.__('compilerVersion') + '：' + pagesPkg['uni-app'].compilerVersion
-      }
       if (process.env.UNI_USING_V3) {
         console.log(info)
       } else {
