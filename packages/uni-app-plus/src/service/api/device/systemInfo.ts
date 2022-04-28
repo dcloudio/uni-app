@@ -5,6 +5,7 @@ import { getCurrentWebview } from '../../utils'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import { isTabBarPage } from '../../../helpers/plus'
 import deviceId from '../../../helpers/uuid'
+import { extend } from '@vue/shared'
 
 type SafeAreaInsets = Required<PlusNavigatorSafeAreaInsets>
 
@@ -24,9 +25,13 @@ function getScreenInfo() {
 export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
   'getSystemInfoSync',
   () => {
-    const platform = plus.os.name!.toLowerCase()
-    const ios = platform === 'ios'
-    const isAndroid = platform === 'android'
+    const { getSystemInfoSync } = weex.requireModule('plus')
+    const info = getSystemInfoSync()
+    const { deviceBrand, deviceModel, osName, osVersion, osLanguage } = info
+    const brand = deviceBrand.toLowerCase()
+    const _osName = osName.toLowerCase()
+    const ios = _osName === 'ios'
+
     const { screenWidth, screenHeight } = getScreenInfo()
     const statusBarHeight = getStatusbarHeight()
 
@@ -90,31 +95,38 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom,
     }
 
-    return {
-      brand: plus.device.vendor!,
-      model: plus.device.model!,
-      pixelRatio: plus.screen.scale!,
-      screenWidth,
-      screenHeight,
-      windowWidth,
-      windowHeight,
-      statusBarHeight,
-      language: plus.os.language!,
-      system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version!}`,
-      version: plus.runtime.innerVersion!,
-      platform,
-      SDKVersion: '',
-      windowTop,
-      windowBottom,
-      safeArea,
-      safeAreaInsets: {
-        top: safeAreaInsets.top,
-        right: safeAreaInsets.right,
-        bottom: safeAreaInsets.bottom,
-        left: safeAreaInsets.left,
+    return extend(
+      {
+        brand: brand,
+        model: deviceModel,
+        pixelRatio: plus.screen.scale!,
+        screenWidth,
+        screenHeight,
+        windowWidth,
+        windowHeight,
+        statusBarHeight,
+        language: osLanguage,
+        system: `${osName} ${osVersion}`,
+        version: plus.runtime.innerVersion!,
+        platform: _osName,
+        SDKVersion: '',
+        windowTop,
+        windowBottom,
+        safeArea,
+        safeAreaInsets: {
+          top: safeAreaInsets.top,
+          right: safeAreaInsets.right,
+          bottom: safeAreaInsets.bottom,
+          left: safeAreaInsets.left,
+        },
+        deviceId: deviceId(),
       },
-      deviceId: deviceId(),
-    }
+      info,
+      {
+        deviceBrand: brand,
+        osName: _osName,
+      }
+    )
   }
 )
 

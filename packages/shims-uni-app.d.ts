@@ -79,6 +79,11 @@ declare namespace UniApp {
     locale: string
     fallbackLocale: string
     locales: Record<string, Record<string, string>>
+    compilerVersion: string
+    appId: string
+    appName: string
+    appVersion: string
+    appVersionCode: string
   }
 
   interface UniRoute {

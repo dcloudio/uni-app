@@ -52,6 +52,7 @@ export {
   getSystemInfoSync,
   addSafeAreaInsets,
   useDeviceId,
+  populateParameters,
   showActionSheet,
 } from './api/protocols'
 // types

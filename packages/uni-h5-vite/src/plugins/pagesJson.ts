@@ -247,6 +247,13 @@ function generateConfig(
   pagesJson: Record<string, any>,
   config: ResolvedConfig
 ) {
+  const extraParameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+  }
+
   delete pagesJson.pages
   delete pagesJson.subPackages
   delete pagesJson.subpackages
@@ -257,7 +264,9 @@ function generateConfig(
       : `${globalName}['____'+appid+'____']=true
 delete ${globalName}['____'+appid+'____']
 `) +
-    `${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
+    `${globalName}.__uniConfig=extend(
+      ${JSON.stringify(extraParameters)}, 
+      ${JSON.stringify(pagesJson)},{
   async,
   debug,
   networkTimeout,
