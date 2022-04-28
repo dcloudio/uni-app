@@ -20,11 +20,15 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   },
   confirmType: {
     type: String,
-    default: '',
+    default: 'return',
+    validator(val: string) {
+      return ConfirmTypes.concat('return').includes(val)
+    },
   },
 })
 
 let fixMargin: Boolean = false
+const ConfirmTypes = ['done', 'go', 'next', 'search', 'send'] // 'return'
 
 function setFixMargin() {
   // iOS 13 以下版本需要修正边距
@@ -45,9 +49,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit)
     const valueCompute = computed(() => state.value.split(LINEFEED))
-    const isDone = computed(() =>
-      ['done', 'go', 'next', 'search', 'send'].includes(props.confirmType)
-    )
+    const isDone = computed(() => ConfirmTypes.includes(props.confirmType))
     const heightRef = ref(0)
     const lineRef: Ref<HTMLElement | null> = ref(null)
     watch(
