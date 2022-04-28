@@ -226,6 +226,8 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       statusBarHeight,
       system,
       platform,
+      deviceBrand,
+      deviceType,
       model,
       safeArea,
       safeAreaInsets: {
