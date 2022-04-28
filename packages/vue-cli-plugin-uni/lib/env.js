@@ -341,10 +341,11 @@ if (
         console.log()
       } else {
         if (!uniStatistics.version) {
-          console.log()
-          console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
-            0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
-          }))
+          // console.log()
+          // console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
+          //   0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
+          // }))
+          // console.log()
         } else {
           console.log()
           console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
@@ -353,10 +354,11 @@ if (
       }
     } else {
       if (!uniStatistics.version) {
-        console.log()
-        console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
-          0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
-        }))
+        // console.log()
+        // console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
+        //   0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
+        // }))
+        // console.log()
       } else {
         console.log()
         console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
