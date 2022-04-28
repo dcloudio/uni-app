@@ -120,6 +120,7 @@ export default function parseNodes (nodes, parentNode, scopeId, triggerItemClick
         return
       }
       const attrs = node.attrs
+      scopeId && elem.setAttribute(scopeId, '')
       if (isPlainObject(attrs)) {
         const tagAttrs = TAGS[tagName] || []
         Object.keys(attrs).forEach(function (name) {
@@ -130,7 +131,6 @@ export default function parseNodes (nodes, parentNode, scopeId, triggerItemClick
               Array.isArray(value) && (value = value.join(' '))
             case 'style':
               elem.setAttribute(name, value)
-              scopeId && elem.setAttribute(scopeId, '')
               break
             default:
               if (tagAttrs.indexOf(name) !== -1) {
