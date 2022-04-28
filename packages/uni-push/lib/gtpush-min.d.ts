@@ -13,6 +13,10 @@ declare namespace GtPush {
      */
     appid: string
     /**
+     * 错误回调
+     */
+    onError?: (res: {error: any}) => void
+    /**
      * 个推终端ID回调，标识当前终端和应用
      */
     onClientId?: (res: { cid: string }) => void

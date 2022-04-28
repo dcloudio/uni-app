@@ -17,6 +17,15 @@ if (!appid) {
 } else {
   GtPush.init({
     appid,
+    onError: (res) => {
+      console.error(res.error)
+      // @ts-expect-error
+      uni.invokePushCallback({
+        type: 'clientId',
+        cid: '',
+        errMsg: res.error,
+      })
+    },
     onClientId: (res) => {
       // @ts-expect-error
       uni.invokePushCallback({
