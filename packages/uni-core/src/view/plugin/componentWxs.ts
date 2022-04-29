@@ -4,7 +4,6 @@ import {
   isPlainObject,
   parseStringStyle,
   stringifyStyle,
-  hasOwn,
 } from '@vue/shared'
 import {
   ON_WXS_INVOKE_CALL_METHOD,
