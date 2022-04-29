@@ -51,7 +51,7 @@ function getStyle (action) {
   return style
 }
 
-function startAnimation (context) {
+export function startAnimation (context) {
   const animation = context.animation
   if (!animation || !animation.actions || !animation.actions.length) {
     return
