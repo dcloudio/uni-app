@@ -372,7 +372,7 @@ export class CanvasContext {
     this.path = []
     this.subpath = []
     this.path.push({
-      method: "beginPath",
+      method: 'beginPath',
       data: []
     })
   }
