@@ -238,8 +238,11 @@ export function getSystemInfoSync () {
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
+    hostName: browserName,
+    hostVersion: browseVersion,
     osTheme: '',
-    hostTheme: ''
+    hostTheme: '',
+    hostPackageName: ''
   }
 }
 /**
