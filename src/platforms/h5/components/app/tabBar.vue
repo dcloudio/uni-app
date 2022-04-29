@@ -45,7 +45,7 @@
               v-if="item.iconfont"
               :style="{
                 color:selectedIndex === index ? selectedColor : color,
-                fontSize: item.iconfont.fontSize || fontSize
+                fontSize: item.iconfont.fontSize || iconWidth
               }"
               class="uni-tabbar__iconfont"
             >
@@ -360,12 +360,15 @@ export default {
         this.$set(item, 'visible', true)
       }
     })
-    loadFontFace({
-      options: {
-        family: UNI_TABBAR_ICON_FONT,
-        source: `url("${this.iconfontSrc}")`
-      }
-    })
+
+    if (this.iconfontSrc) {
+      loadFontFace({
+        options: {
+          family: UNI_TABBAR_ICON_FONT,
+          source: `url("${this.iconfontSrc}")`
+        }
+      })
+    }
   },
   beforeCreate () {
     this.__path__ = this.$route.path
