@@ -2,7 +2,7 @@ import { getDeviceBrand } from 'uni-shared'
 
 const UUID_KEY = '__DC_STAT_UUID'
 let deviceId
-export function useDeviceId(result) {
+export function useDeviceId (result) {
   deviceId = deviceId || __GLOBAL__.getStorageSync(UUID_KEY)
   if (!deviceId) {
     deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7)
@@ -14,7 +14,7 @@ export function useDeviceId(result) {
   result.deviceId = deviceId
 }
 
-export function addSafeAreaInsets(result) {
+export function addSafeAreaInsets (result) {
   if (result.safeArea) {
     const safeArea = result.safeArea
     result.safeAreaInsets = {
@@ -26,7 +26,7 @@ export function addSafeAreaInsets(result) {
   }
 }
 
-export function populateParameters(result) {
+export function populateParameters (result) {
   const { brand, model, system, language, theme, version, hostName, platform } = result
 
   // osName osVersion
@@ -75,11 +75,9 @@ export function populateParameters(result) {
   // hostName
   let _hostName = hostName // mp-jd
   if (__PLATFORM__ === 'mp-weixin') _hostName = (result.host || {}).env
-  if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou')
-    _hostName = result.host
+  if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') { _hostName = result.host }
   if (__PLATFORM__ === 'mp-qq') _hostName = result.AppPlatform
-  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark')
-    _hostName = result.appName
+  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') { _hostName = result.appName }
   if (__PLATFORM__ === 'mp-alipay') _hostName = result.app
 
   // wx.getAccountInfoSync

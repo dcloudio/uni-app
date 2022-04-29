@@ -46,7 +46,9 @@ export function initLaunchOptions ({
   extend(launchOptions, {
     path,
     query: query ? parseQuery(query) : {},
-    referrerInfo: referrerInfo || {}
+    referrerInfo: referrerInfo || {},
+    channel: plus.runtime.channel,
+    launcher: plus.runtime.launcher
   })
   extend(enterOptions, launchOptions)
   return launchOptions
@@ -62,7 +64,7 @@ export function parseRedirectInfo () {
       userAction,
       fromAppid
     } =
-    weexPlus.getRedirectInfo() || {}
+      weexPlus.getRedirectInfo() || {}
     const referrerInfo = {
       appId: fromAppid,
       extraData: {}
