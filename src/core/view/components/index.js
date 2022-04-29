@@ -29,13 +29,11 @@ requireComponents.forEach((components, index) => {
 
     const componentConfig = componentModule.default || componentModule
 
-    if (__PLATFORM__ === 'app-plus' && componentConfig.name in elements) {
-      return
-    }
-
     componentConfig.mixins = componentConfig.mixins ? [].concat(baseMixin, componentConfig.mixins) : [baseMixin]
 
-    componentConfig.mixins.push(animation)
+    if (!componentConfig.functional) {
+      componentConfig.mixins.push(animation)
+    }
 
     componentConfig.name = 'VUni' + componentConfig.name
 
