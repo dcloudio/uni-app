@@ -253,8 +253,11 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       appName: __uniConfig.appName,
       appVersion: __uniConfig.appVersion,
       appVersionCode: __uniConfig.appVersionCode,
+      hostName: browserName,
+      hostVersion: browseVersion,
       osTheme: '',
       hostTheme: '',
-    }
+      hostPackageName: '',
+    } as UniApp.GetSystemInfoResult
   }
 )

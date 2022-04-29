@@ -114,11 +114,12 @@ export function populateParameters(
     osVersion,
     osLanguage: language,
     osTheme: theme,
+    hostTheme: theme,
     hostVersion,
     hostLanguage: language,
     hostName: _hostName,
     // TODO
-    hostTheme: '',
+    ua: '',
     hostPackageName: '',
     browserName: '',
     browseVersion: '',
