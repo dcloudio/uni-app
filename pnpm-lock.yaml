@@ -5,7 +5,7 @@ importers:
   .:
     specifiers:
       '@babel/preset-env': ^7.16.11
-      '@dcloudio/types': ^2.6.4
+      '@dcloudio/types': ^2.6.6
       '@dcloudio/uni-api': 3.0.0-alpha-3040820220424001
       '@dcloudio/uni-app': 3.0.0-alpha-3040820220424001
       '@jest/types': ^27.0.2
@@ -53,7 +53,7 @@ importers:
       yorkie: ^2.0.0
     devDependencies:
       '@babel/preset-env': 7.16.11
-      '@dcloudio/types': 2.6.4
+      '@dcloudio/types': 2.6.6
       '@dcloudio/uni-api': link:packages/uni-api
       '@dcloudio/uni-app': link:packages/uni-app
       '@jest/types': 27.4.2
