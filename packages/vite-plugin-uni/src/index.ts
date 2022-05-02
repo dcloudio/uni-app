@@ -11,7 +11,6 @@ import {
   CopyOptions,
   initModuleAlias,
   initPreContext,
-  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -34,8 +33,6 @@ const debugUni = debug('uni:plugin')
 
 const pkg = require(path.resolve(__dirname, '../package.json'))
 
-const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-
 initModuleAlias()
 
 rewriteCompilerSfcParse()
@@ -45,10 +42,6 @@ process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
   ? 'a'
   : 'r'
 
-process.env.UNI_APP_ID = manifestJson.appid || ''
-process.env.UNI_APP_NAME = manifestJson.name || ''
-process.env.UNI_APP_VERSION = manifestJson.versionName || ''
-process.env.UNI_APP_VERSION_CODE = manifestJson.versionCode || ''
 export interface VitePluginUniOptions {
   vueOptions?: VueOptions
   vueJsxOptions?: (VueJSXPluginOptions & { babelPlugins?: any[] }) | boolean

@@ -35,7 +35,6 @@ export function uniManifestJsonPlugin(): Plugin {
         }
         const manifest = parseJson(code)
         const { debug, h5 } = manifest
-        const appid = (manifest.appid || '').replace('__UNI__', '')
         const router = { ...defaultRouter, ...((h5 && h5.router) || {}) }
         if (!router.base) {
           router.base = '/'
@@ -72,7 +71,11 @@ export function uniManifestJsonPlugin(): Plugin {
           'column'
 
         return {
-          code: `export const appid = '${appid || ''}'    
+          code: `export const appId = ${JSON.stringify(manifest.appid || '')}
+  export const appName = ${JSON.stringify(manifest.name || '')}
+  export const appVersion = ${JSON.stringify(manifest.versionName || '')}
+  export const appVersionCode = ${JSON.stringify(manifest.versionCode || '')}
+
   export const debug = ${!!debug}
   export const nvue = ${JSON.stringify({
     'flex-direction': flexDirection,

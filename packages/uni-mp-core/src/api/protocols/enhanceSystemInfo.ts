@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { getDeviceBrand } from '@dcloudio/uni-shared'
 
 const UUID_KEY = '__DC_STAT_UUID'
@@ -125,5 +126,5 @@ export function populateParameters(
     browseVersion: '',
   }
 
-  Object.assign(toRes, parameters)
+  extend(toRes, parameters)
 }
