@@ -407,6 +407,40 @@ function getValueByDataPath(obj, path) {
     }
     return getValueByDataPath(obj[key], parts.slice(1).join('.'));
 }
+function IEVersion() {
+    const userAgent = navigator.userAgent;
+    const isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1;
+    const isEdge = userAgent.indexOf('Edge') > -1 && !isIE;
+    const isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1;
+    if (isIE) {
+        const reIE = new RegExp('MSIE (\\d+\\.\\d+);');
+        reIE.test(userAgent);
+        const fIEVersion = parseFloat(RegExp.$1);
+        if (fIEVersion > 6) {
+            return fIEVersion;
+        }
+        else {
+            return 6;
+        }
+    }
+    else if (isEdge) {
+        return -1;
+    }
+    else if (isIE11) {
+        return 11;
+    }
+    else {
+        return -1;
+    }
+}
+function getDeviceBrand(model) {
+    if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
+        return 'apple';
+    }
+    if (/windows/gi.test(model)) {
+        return 'microsoft';
+    }
+}
 
 function formatKey(key) {
     return shared.camelize(key.substring(5));
@@ -1442,6 +1476,7 @@ exports.Emitter = E$1;
 exports.EventChannel = EventChannel;
 exports.EventModifierFlags = EventModifierFlags;
 exports.I18N_JSON_DELIMITERS = I18N_JSON_DELIMITERS;
+exports.IEVersion = IEVersion;
 exports.JSON_PROTOCOL = JSON_PROTOCOL;
 exports.LINEFEED = LINEFEED;
 exports.MINI_PROGRAM_PAGE_RUNTIME_HOOKS = MINI_PROGRAM_PAGE_RUNTIME_HOOKS;
@@ -1533,6 +1568,7 @@ exports.formatDateTime = formatDateTime;
 exports.formatH5Log = formatH5Log;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
+exports.getDeviceBrand = getDeviceBrand;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;

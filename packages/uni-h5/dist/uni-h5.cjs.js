@@ -5049,6 +5049,7 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
       if (!elem) {
         return;
       }
+      scopeId && elem.setAttribute(scopeId, "");
       const attrs = node.attrs;
       if (shared.isPlainObject(attrs)) {
         const tagAttrs = TAGS[tagName] || [];
@@ -5059,7 +5060,6 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
               Array.isArray(value) && (value = value.join(" "));
             case "style":
               elem.setAttribute(name, value);
-              scopeId && elem.setAttribute(scopeId, "");
               break;
             default:
               if (tagAttrs.indexOf(name) !== -1) {
@@ -6458,10 +6458,14 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
   },
   confirmType: {
     type: String,
-    default: ""
+    default: "return",
+    validator(val) {
+      return ConfirmTypes.concat("return").includes(val);
+    }
   }
 });
 let fixMargin = false;
+const ConfirmTypes = ["done", "go", "next", "search", "send"];
 var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
@@ -6478,7 +6482,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       trigger
     } = useField(props2, rootRef, emit2);
     const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
-    const isDone = vue.computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
+    const isDone = vue.computed(() => ConfirmTypes.includes(props2.confirmType));
     const heightRef = vue.ref(0);
     const lineRef = vue.ref(null);
     vue.watch(() => heightRef.value, (height) => {

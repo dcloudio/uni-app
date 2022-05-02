@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, IEVersion, getDeviceBrand, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -1202,11 +1202,14 @@ function resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLen
 }
 function wrapperH5WxsEvent(event, eventValue, instance2, checkArgsLength = true) {
   if (eventValue) {
-    Object.defineProperty(event, "instance", {
-      get() {
-        return getComponentDescriptor(instance2.proxy, false);
-      }
-    });
+    if (!event.__instance) {
+      event.__instance = true;
+      Object.defineProperty(event, "instance", {
+        get() {
+          return getComponentDescriptor(instance2.proxy, false);
+        }
+      });
+    }
     const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength);
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)];
@@ -11735,6 +11738,7 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
       if (!elem) {
         return;
       }
+      scopeId && elem.setAttribute(scopeId, "");
       const attrs2 = node.attrs;
       if (isPlainObject(attrs2)) {
         const tagAttrs = TAGS[tagName] || [];
@@ -11745,7 +11749,6 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
               Array.isArray(value) && (value = value.join(" "));
             case "style":
               elem.setAttribute(name, value);
-              scopeId && elem.setAttribute(scopeId, "");
               break;
             default:
               if (tagAttrs.indexOf(name) !== -1) {
@@ -13452,10 +13455,14 @@ const props$h = /* @__PURE__ */ extend({}, props$r, {
   },
   confirmType: {
     type: String,
-    default: ""
+    default: "return",
+    validator(val) {
+      return ConfirmTypes.concat("return").includes(val);
+    }
   }
 });
 let fixMargin = false;
+const ConfirmTypes = ["done", "go", "next", "search", "send"];
 function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
@@ -13476,7 +13483,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       trigger
     } = useField(props2, rootRef, emit2);
     const valueCompute = computed(() => state2.value.split(LINEFEED));
-    const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
+    const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
     const heightRef = ref(0);
     const lineRef = ref(null);
     watch(() => heightRef.value, (height) => {
@@ -16291,6 +16298,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   let osname;
   let osversion;
   let model = "";
+  let deviceType = "phone";
   if (isIOS$1) {
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
@@ -16342,10 +16350,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   } else if (isIPadOS) {
     model = "iPad";
     osname = "iOS";
+    deviceType = "pad";
     osversion = typeof window.BigInt === "function" ? "14.0" : "13.0";
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";
+    deviceType = "pc";
     osversion = "0";
     let osversionFind = ua.match(/\((.+?)\)/)[1];
     if (isWindows) {
@@ -16396,6 +16406,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   } else {
     osname = "Other";
     osversion = "0";
+    deviceType = "other";
   }
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
@@ -16410,6 +16421,27 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const { top: windowTop, bottom: windowBottom } = getWindowOffset();
   windowHeight -= windowTop;
   windowHeight -= windowBottom;
+  let browserName = "";
+  let browseVersion = String(IEVersion());
+  if (browseVersion !== "-1") {
+    browserName = "IE";
+  } else {
+    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
+    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
+    for (let index2 = 0; index2 < browseVendors.length; index2++) {
+      const vendor = browseVendors[index2];
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
+      if (reg.test(ua)) {
+        browserName = vendors[index2];
+        browseVersion = ua.match(reg)[2];
+      }
+    }
+  }
+  let deviceBrand = "";
+  if (model) {
+    const _model = model.toLocaleLowerCase();
+    deviceBrand = getDeviceBrand(_model) || getDeviceBrand(osname.toLocaleLowerCase()) || _model.split(" ")[0];
+  }
   return {
     windowTop,
     windowBottom,
@@ -16422,6 +16454,8 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     statusBarHeight,
     system,
     platform,
+    deviceBrand,
+    deviceType,
     model,
     safeArea,
     safeAreaInsets: {
@@ -16430,9 +16464,28 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
       bottom: out.bottom,
       left: out.left
     },
-    version: "",
+    version: __uniConfig.appVersion,
     SDKVersion: "",
-    deviceId: deviceId$1()
+    deviceId: deviceId$1(),
+    ua,
+    uniPlatform: "web",
+    browserName,
+    browseVersion,
+    osLanguage: language,
+    osName: osname,
+    osVersion: osversion,
+    hostLanguage: language,
+    uniCompileVersion: __uniConfig.compilerVersion,
+    uniRuntimeVersion: __uniConfig.compilerVersion,
+    appId: __uniConfig.appId,
+    appName: __uniConfig.appName,
+    appVersion: __uniConfig.appVersion,
+    appVersionCode: __uniConfig.appVersionCode,
+    hostName: browserName,
+    hostVersion: browseVersion,
+    osTheme: "",
+    hostTheme: "",
+    hostPackageName: ""
   };
 });
 const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {

@@ -1,5 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, onCreateVueApp, invokeCreateVueAppHook, getDeviceBrand } from '@dcloudio/uni-shared';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -854,18 +854,6 @@ function initGetProvider(providers) {
     };
 }
 
-function addSafeAreaInsets(fromRes, toRes) {
-    if (fromRes.safeArea) {
-        const safeArea = fromRes.safeArea;
-        toRes.safeAreaInsets = {
-            top: safeArea.top,
-            left: safeArea.left,
-            right: fromRes.windowWidth - safeArea.right,
-            bottom: Math.abs(fromRes.screenHeight - safeArea.bottom),
-        };
-    }
-}
-
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function useDeviceId(global = ks) {
@@ -881,11 +869,87 @@ function useDeviceId(global = ks) {
         toRes.deviceId = deviceId;
     };
 }
+function addSafeAreaInsets(fromRes, toRes) {
+    if (fromRes.safeArea) {
+        const safeArea = fromRes.safeArea;
+        toRes.safeAreaInsets = {
+            top: safeArea.top,
+            left: safeArea.left,
+            right: fromRes.windowWidth - safeArea.right,
+            bottom: fromRes.screenHeight - safeArea.bottom,
+        };
+    }
+}
+function populateParameters(fromRes, toRes) {
+    const { brand, model, system, language, theme, version, hostName, platform } = fromRes;
+    // osName osVersion
+    let osName = '';
+    let osVersion = '';
+    {
+        osName = system.split(' ')[0] || '';
+        osVersion = system.split(' ')[1] || '';
+    }
+    let hostVersion = version;
+    // deviceType
+    let deviceType = fromRes.deviceType || 'phone';
+    {
+        const deviceTypeMaps = {
+            ipad: 'pad',
+            windows: 'pc',
+            mac: 'pc',
+        };
+        const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+        const _model = model.toLocaleLowerCase();
+        for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+            const _m = deviceTypeMapsKeys[index];
+            if (_model.indexOf(_m) !== -1) {
+                deviceType = deviceTypeMaps[_m];
+                break;
+            }
+        }
+    }
+    // deviceModel
+    let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+    {
+        deviceBrand = getDeviceBrand(deviceBrand);
+    }
+    // hostName
+    let _hostName = hostName; // mp-jd
+    _hostName = fromRes.host;
+    // wx.getAccountInfoSync
+    const parameters = {
+        appId: process.env.UNI_APP_ID,
+        appName: process.env.UNI_APP_NAME,
+        appVersion: process.env.UNI_APP_VERSION_NAME,
+        appVersionCode: process.env.UNI_APP_VERSION_CODE,
+        uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+        uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+        uniPlatform: process.env.UNI_PLATFORM,
+        deviceBrand,
+        deviceModel: model,
+        deviceType,
+        osName,
+        osVersion,
+        osLanguage: language,
+        osTheme: theme,
+        hostTheme: theme,
+        hostVersion,
+        hostLanguage: language,
+        hostName: _hostName,
+        // TODO
+        ua: '',
+        hostPackageName: '',
+        browserName: '',
+        browseVersion: '',
+    };
+    extend(toRes, parameters);
+}
 
 const getSystemInfo = {
     returnValue: (fromRes, toRes) => {
         addSafeAreaInsets(fromRes, toRes);
         useDeviceId()(fromRes, toRes);
+        populateParameters(fromRes, toRes);
     },
 };
 

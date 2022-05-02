@@ -2257,6 +2257,8 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
+        channel: plus.runtime.channel,
+        launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
     return extend({}, launchOptions);
@@ -13260,9 +13262,12 @@ function getScreenInfo() {
     };
 }
 const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
-    const platform = plus.os.name.toLowerCase();
-    const ios = platform === 'ios';
-    const isAndroid = platform === 'android';
+    const { getSystemInfoSync } = weex.requireModule('plus');
+    const info = getSystemInfoSync();
+    const { deviceBrand, deviceModel, osName, osVersion, osLanguage } = info;
+    const brand = deviceBrand.toLowerCase();
+    const _osName = osName.toLowerCase();
+    const ios = _osName === 'ios';
     const { screenWidth, screenHeight } = getScreenInfo();
     const statusBarHeight = getStatusbarHeight();
     let safeAreaInsets;
@@ -13322,19 +13327,19 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
         width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
         height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom,
     };
-    return {
-        brand: plus.device.vendor,
-        model: plus.device.model,
+    return extend({
+        brand: brand,
+        model: deviceModel,
         pixelRatio: plus.screen.scale,
         screenWidth,
         screenHeight,
         windowWidth,
         windowHeight,
         statusBarHeight,
-        language: plus.os.language,
-        system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
+        language: osLanguage,
+        system: `${osName} ${osVersion}`,
         version: plus.runtime.innerVersion,
-        platform,
+        platform: _osName,
         SDKVersion: '',
         windowTop,
         windowBottom,
@@ -13346,7 +13351,10 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
             left: safeAreaInsets.left,
         },
         deviceId: deviceId$1(),
-    };
+    }, info, {
+        deviceBrand: brand,
+        osName: _osName,
+    });
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
     return resolve(getSystemInfoSync());

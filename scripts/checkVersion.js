@@ -37,16 +37,16 @@ const pkgs = {
     latest: '1.8.1',
   },
   '@dcloudio/types': {
-    latest: '2.6.4',
+    latest: '2.6.6',
   },
   autoprefixer: {
-    latest: '10.4.5',
+    latest: '10.4.6',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',
   },
   typescript: {
-    latest: '4.6.3',
+    latest: '4.6.4',
   },
 }
 

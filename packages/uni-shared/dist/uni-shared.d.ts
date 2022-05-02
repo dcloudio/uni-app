@@ -229,6 +229,8 @@ export declare function formatLog(module: string, ...args: any[]): string;
 
 export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDataset): DOMStringMap & Record<string, any>;
 
+export declare function getDeviceBrand(model: string): "apple" | "microsoft" | undefined;
+
 export declare function getEnvLocale(): string;
 
 export declare function getLen(str?: string): number;
@@ -240,6 +242,8 @@ declare interface HTMLElementWithDataset extends HTMLElement {
 }
 
 export declare const I18N_JSON_DELIMITERS: [string, string];
+
+export declare function IEVersion(): number;
 
 export declare const initCustomDatasetOnce: () => void;
 
