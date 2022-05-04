@@ -37,6 +37,6 @@
     "@types/fs-extra": "^9.0.13",
     "@vue/compiler-core": "3.2.33",
     "esbuild": "^0.14.27",
-    "postcss": "^8.4.12"
+    "postcss": "^8.4.13"
   }
 }

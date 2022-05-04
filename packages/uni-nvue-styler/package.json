@@ -19,6 +19,6 @@
   "dependencies": {
     "@vue/shared": "3.2.33",
     "parse-css-font": "^4.0.0",
-    "postcss": "^8.4.12"
+    "postcss": "^8.4.13"
   }
 }

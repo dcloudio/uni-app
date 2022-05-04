@@ -18,6 +18,7 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
+    "@ampproject/remapping": "^2.1.2",
     "@babel/core": "^7.17.9",
     "@babel/parser": "^7.17.9",
     "@babel/types": "^7.17.0",
@@ -32,7 +33,7 @@
     "@vue/compiler-sfc": "3.2.33",
     "@vue/server-renderer": "3.2.33",
     "@vue/shared": "3.2.33",
-    "autoprefixer": "^10.4.6",
+    "autoprefixer": "^10.4.7",
     "base64url": "^3.0.1",
     "chokidar": "^3.5.3",
     "compare-versions": "^3.6.0",
@@ -66,6 +67,6 @@
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.1",
     "@types/stylus": "^0.48.36",
-    "postcss": "^8.4.12"
+    "postcss": "^8.4.13"
   }
 }
