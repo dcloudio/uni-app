@@ -1,6 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports[Symbol.toStringTag] = "Module";
+Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
 var vue = require("vue");
 var shared = require("@vue/shared");
 var uniShared = require("@dcloudio/uni-shared");
@@ -10078,9 +10077,8 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_
 }, SetNavigationBarTitleProtocol);
 require("localstorage-polyfill");
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var api = {
+var api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   setNavigationBarTitle,
   request,
   setStorageSync,
@@ -10094,7 +10092,7 @@ var api = {
   getStorageInfoSync,
   getStorageInfo,
   getSystemInfoSync
-};
+}, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {

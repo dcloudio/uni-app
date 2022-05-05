@@ -2,9 +2,13 @@
   "name": "@dcloudio/uni-app-vite",
   "version": "3.0.0-alpha-3040820220424001",
   "description": "uni-app-vite",
+  "bin": {
+    "uts": "bin/uts.js"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
+    "bin",
     "dist",
     "lib"
   ],
@@ -23,11 +27,15 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040820220424001",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3040820220424001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3040820220424001",
+    "@dcloudio/uts": "3.0.0-alpha-3040820220424001",
     "@rollup/pluginutils": "^4.2.0",
     "@vitejs/plugin-vue": "^2.3.1",
     "@vue/compiler-dom": "3.2.33",
     "@vue/compiler-sfc": "3.2.33",
+    "cac": "6.7.9",
+    "chokidar": "^3.5.3",
     "debug": "^4.3.3",
+    "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "picocolors": "^1.0.0",
     "rollup": "^2.59.0"
@@ -38,5 +46,8 @@
     "@vue/compiler-core": "3.2.33",
     "esbuild": "^0.14.27",
     "postcss": "^8.4.13"
+  },
+  "optionalDependencies": {
+    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3040820220424001"
   }
 }

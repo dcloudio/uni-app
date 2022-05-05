@@ -1,0 +1,15 @@
+{
+  "name": "@dcloudio/uts",
+  "version": "3.0.0-alpha-3040820220424001",
+  "description": "uts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uts"
+  }
+}

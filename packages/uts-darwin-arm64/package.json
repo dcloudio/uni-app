@@ -1,0 +1,22 @@
+{
+  "name": "@dcloudio/uts-darwin-arm64",
+  "version": "3.0.0-alpha-3040820220424001",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "uts.darwin-arm64.node",
+  "files": [
+    "uts.darwin-arm64.node"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uts-darwin-arm64"
+  }
+}

@@ -1325,12 +1325,11 @@ function normalizeTouchEvent(touches, top) {
   }
   return res;
 }
-var instance = {
+var instance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   $nne,
   createNativeEvent
-};
+}, Symbol.toStringTag, { value: "Module" });
 function initAppConfig$1(appConfig) {
   const globalProperties = appConfig.globalProperties;
   extend(globalProperties, instance);
@@ -1450,15 +1449,14 @@ function selectComponent(selector) {
 function selectAllComponents(selector) {
   return querySelectorAll(this, selector);
 }
-var wxInstance = {
+var wxInstance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   createSelectorQuery: createSelectorQuery$1,
   createMediaQueryObserver: createMediaQueryObserver$1,
   createIntersectionObserver: createIntersectionObserver$1,
   selectComponent,
   selectAllComponents
-};
+}, Symbol.toStringTag, { value: "Module" });
 function getOpenerEventChannel() {
   {
     if (this.$route) {
@@ -20088,9 +20086,8 @@ const API_LOGIN = "login";
 const login = /* @__PURE__ */ defineAsyncApi(API_LOGIN, createUnsupportedAsyncApi(API_LOGIN));
 const API_GET_PROVIDER = "getProvider";
 const getProvider = /* @__PURE__ */ defineAsyncApi(API_GET_PROVIDER, createUnsupportedAsyncApi(API_GET_PROVIDER));
-var api = {
+var api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   upx2px,
   addInterceptor,
   removeInterceptor,
@@ -20254,7 +20251,7 @@ var api = {
   addPhoneContact,
   login,
   getProvider
-};
+}, Symbol.toStringTag, { value: "Module" });
 const CONTEXT_ID = "MAP_LOCATION";
 var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
