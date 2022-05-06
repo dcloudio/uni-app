@@ -1,9 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
+import { watch } from 'chokidar'
 
 import { InputKotlinOptions, toKotlin } from '../index'
-import { OutputKotlinOptions } from '../types'
+import { OutputKotlinOptions, UtsKotlinOptions } from '../types'
 
 export interface ToOptions {
   watch?: boolean
@@ -44,17 +45,46 @@ function parseOptions(opts: Partial<ToKotlinOptions>) {
   return opts as ToKotlinOptions
 }
 
+const EXTNAME = '.uts'
+
 function watchSwift(_: ToSwiftOptions) {}
 function buildSwift(_: ToSwiftOptions) {}
-function watchKotlin(_: ToKotlinOptions) {}
+function watchKotlin({
+  input: { dir: inputDir, extname },
+  output: { dir: outputDir, sourceMap },
+}: ToKotlinOptions) {
+  const input: InputKotlinOptions = {
+    root: inputDir,
+    filename: '',
+  }
+  const output: OutputKotlinOptions = {
+    outDir: outputDir,
+    sourceMap,
+  }
+  watch('**/*' + (extname || EXTNAME), {
+    cwd: inputDir,
+    ignored: ['**/*.d' + (extname || EXTNAME)],
+  })
+    .on('add', (filename) =>
+      buildKotlinFile(path.resolve(inputDir, filename), input, output)
+    )
+    .on('change', (filename) =>
+      buildKotlinFile(path.resolve(inputDir, filename), input, output)
+    )
+    .on('unlink', (filename) => {
+      try {
+        fs.unlinkSync(path.resolve(outputDir, filename))
+      } catch (e) {}
+    })
+}
 function buildKotlin({
   input: { dir: inputDir, extname },
   output: { dir: outputDir, sourceMap },
 }: ToKotlinOptions) {
-  const files = glob.sync('**/*' + (extname || '.uts'), {
+  const files = glob.sync('**/*' + (extname || EXTNAME), {
     absolute: true,
     cwd: inputDir,
-    ignore: ['**/*.d' + (extname || '.uts')],
+    ignore: ['**/*.d' + (extname || EXTNAME)],
   })
   const input: InputKotlinOptions = {
     root: inputDir,
@@ -75,8 +105,7 @@ function buildKotlinFile(
   output: OutputKotlinOptions
 ) {
   const label = path.posix.relative(input.root, filename)
-  console.time(label)
-  return toKotlin({
+  const toKotlinOptions: UtsKotlinOptions = {
     input: {
       ...input,
       filename,
@@ -85,7 +114,9 @@ function buildKotlinFile(
     output: {
       ...output,
     },
-  }).then(() => {
+  }
+  console.time(label)
+  return toKotlin(toKotlinOptions).then(() => {
     console.timeEnd(label)
   })
 }
