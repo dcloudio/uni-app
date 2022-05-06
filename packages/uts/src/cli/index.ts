@@ -45,7 +45,6 @@ cli
         inlineSourcesContent: opts.inlineSourcesContent,
       },
     }
-    console.log(opts, toOptions)
     return opts.watch
       ? runDev(opts.target, toOptions)
       : runBuild(opts.target, toOptions)
