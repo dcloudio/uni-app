@@ -44,7 +44,7 @@ describe('codegen', () => {
   it('generate text with multiple statements', () => {
     assertCodegen(
       `<view>{{obj.param1}}123123{{obj.param1}}123123{{obj.param1}}<text> -{{obj.param3}}---{{obj.param3}} </text>{{obj.param2}}aaaa{{obj.param2}}aaaa{{obj.param2}}</view>`,
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+"123123"+(_$g(0,'t0-1'))+"123123"+(_$g(0,'t0-2'))),_c('v-uni-text',{attrs:{"_i":1}},[_v("-"+(_$g(1,'t0-0'))+"---"+(_$g(1,'t0-1')))]),_v((_$g(0,'t2-0'))+"aaaa"+(_$g(0,'t2-1'))+"aaaa"+(_$g(0,'t2-2')))],1)}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+"123123"+(_$g(0,'t0-1'))+"123123"+(_$g(0,'t0-2'))),_c('v-uni-text',{attrs:{"_i":1}},[_v("-"+(_$g(1,'t0-0'))+"---"+(_$g(1,'t0-1')))]),_v((_$g(0,'t2-0'))+"aaaa"+(_$g(0,'t2-1'))+"aaaa"+(_$g(0,'t2-2')))],1)}`
     )
   })
   it('generate v-slot', () => {
@@ -91,7 +91,7 @@ describe('codegen', () => {
   it('generate dataset', () => {
     assertCodegen(
       '<view data-a="1" :data-b="b"></view>',
-      `with(this){return _c('v-uni-view',{attrs:{"data-a":"1","data-b":_$g(0,'a-data-b'),"_i":0}})}`
+      `with(this){return _c('uni-view',{attrs:{"data-a":"1","data-b":_$g(0,'a-data-b'),"_i":0}})}`
     )
     assertCodegen(
       '<custom data-a="1" :data-b="b"></custom>',
@@ -141,12 +141,12 @@ describe('codegen', () => {
   it('generate text trim', () => {
     assertCodegen(
       '<view>text</view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v("text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text")])}`
     )
 
     assertCodegen(
       '<view> text </view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v("text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text")])}`
     )
 
     assertCodegen(
@@ -179,31 +179,31 @@ describe('codegen', () => {
 
     assertCodegen(
       '<view> text text </view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v("text text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text text")])}`
     )
     assertCodegen(
       '<view>text {{text}} text</view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v("text "+(_$g(0,'t0-0'))+" text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text "+(_$g(0,'t0-0'))+" text")])}`
     )
     assertCodegen(
       '<view> text {{text}} 文本 </view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v("text "+(_$g(0,'t0-0'))+" 文本")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text "+(_$g(0,'t0-0'))+" 文本")])}`
     )
     assertCodegen(
       '<view>{{text}} text  text </view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text")])}`
     )
     assertCodegen(
       '<view>  {{text}} text  text </view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text")])}`
     )
     assertCodegen(
       '<view>{{text}} text  text {{text}}</view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text "+(_$g(0,'t0-1')))])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text "+(_$g(0,'t0-1')))])}`
     )
     assertCodegen(
       '<view>  {{text}} text  text {{text}}  </view>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text "+(_$g(0,'t0-1')))])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text "+(_$g(0,'t0-1')))])}`
     )
   })
   it('generate bool attr', () => {
