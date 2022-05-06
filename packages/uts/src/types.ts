@@ -43,6 +43,7 @@ export type InputKotlinOptions = UtsParseOptions & {
 export type OutputKotlinOptions = {
   outDir: string
   sourceMap: boolean | string
+  inlineSourcesContent?: boolean
 }
 export interface UtsKotlinOptions {
   input: InputKotlinOptions

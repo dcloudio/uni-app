@@ -1,46 +1,112 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toSwift = exports.toKotlin = void 0;
-const path_1 = require("path");
-__exportStar(require("./types"), exports);
-// Allow overrides to the location of the .node binding file
-const bindingsOverride = process.env['UTS_BINARY_PATH'];
-const bindings = !!bindingsOverride
-    ? require((0, path_1.resolve)(bindingsOverride))
-    : require('./binding').default;
-function toKotlin(options) {
-    const result = Promise.resolve({});
-    const { input, output } = options;
-    if (!(input === null || input === void 0 ? void 0 : input.root)) {
-        return result;
-    }
-    if (!(input === null || input === void 0 ? void 0 : input.filename)) {
-        return result;
-    }
-    if (!(output === null || output === void 0 ? void 0 : output.outDir)) {
-        return result;
-    }
-    return bindings.toKotlin(toBuffer(options));
+exports.runBuild = exports.runDev = void 0;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const fast_glob_1 = __importDefault(require("fast-glob"));
+const chokidar_1 = require("chokidar");
+const api_1 = require("./api");
+function resolveDefaultOutputDir(mode, inputDir) {
+    return path_1.default.resolve(inputDir, '../dist/' + mode + '/kotlin');
 }
-exports.toKotlin = toKotlin;
-function toSwift(options) {
-    return bindings.toSwift(toBuffer(options));
+function parseOptions(mode, opts) {
+    const { input } = opts;
+    if (!(input === null || input === void 0 ? void 0 : input.dir)) {
+        throw new Error(`input.dir is required`);
+    }
+    if (!fs_1.default.existsSync(input.dir)) {
+        throw new Error(`${input} is not found`);
+    }
+    if (!opts.output) {
+        opts.output = {
+            dir: '',
+            sourceMap: '',
+        };
+    }
+    if (!opts.output.dir) {
+        opts.output.dir = resolveDefaultOutputDir(mode, input.dir);
+    }
+    return opts;
 }
-exports.toSwift = toSwift;
-function toBuffer(t) {
-    return Buffer.from(JSON.stringify(t));
+const EXTNAME = '.uts';
+function watchSwift(_) { }
+function buildSwift(_) { }
+function watchKotlin({ input: { dir: inputDir, extname }, output: { dir: outputDir, sourceMap }, }) {
+    const input = {
+        root: inputDir,
+        filename: '',
+    };
+    const output = {
+        outDir: outputDir,
+        sourceMap,
+    };
+    (0, chokidar_1.watch)('**/*' + (extname || EXTNAME), {
+        cwd: inputDir,
+        ignored: ['**/*.d' + (extname || EXTNAME)],
+    })
+        .on('add', (filename) => buildKotlinFile(path_1.default.resolve(inputDir, filename), input, output))
+        .on('change', (filename) => buildKotlinFile(path_1.default.resolve(inputDir, filename), input, output))
+        .on('unlink', (filename) => {
+        try {
+            fs_1.default.unlinkSync(path_1.default.resolve(outputDir, filename));
+        }
+        catch (e) { }
+    });
 }
+function buildKotlin({ input: { dir: inputDir, extname }, output: { dir: outputDir, sourceMap, inlineSourcesContent }, }) {
+    const files = fast_glob_1.default.sync('**/*' + (extname || EXTNAME), {
+        absolute: true,
+        cwd: inputDir,
+        ignore: ['**/*.d' + (extname || EXTNAME)],
+    });
+    const input = {
+        root: inputDir,
+        filename: '',
+    };
+    const output = {
+        outDir: outputDir,
+        sourceMap,
+        inlineSourcesContent: !!inlineSourcesContent,
+    };
+    return Promise.all(files.map((filename) => buildKotlinFile(filename, input, output)));
+}
+function buildKotlinFile(filename, input, output) {
+    const label = path_1.default.posix.relative(input.root, filename);
+    const toKotlinOptions = {
+        input: {
+            ...input,
+            filename,
+            namespace: '',
+        },
+        output: {
+            ...output,
+        },
+    };
+    console.time(label);
+    return (0, api_1.toKotlin)(toKotlinOptions).then(() => {
+        console.timeEnd(label);
+    });
+}
+function runDev(target, opts) {
+    opts = parseOptions('dev', opts);
+    switch (target) {
+        case 'kotlin':
+            return watchKotlin(opts);
+        case 'swift':
+            return watchSwift(opts);
+    }
+}
+exports.runDev = runDev;
+function runBuild(target, opts) {
+    opts = parseOptions('build', opts);
+    switch (target) {
+        case 'kotlin':
+            return buildKotlin(opts);
+        case 'swift':
+            return buildSwift(opts);
+    }
+}
+exports.runBuild = runBuild;

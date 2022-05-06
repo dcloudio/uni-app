@@ -1,43 +1,51 @@
 import { cac } from 'cac'
-import { runBuild, runDev, ToOptions } from './action'
+import { runBuild, runDev, ToOptions } from '..'
 
 const cli = cac('uts')
 
 export interface CliOptions {
   target: 'kotlin' | 'swift'
-  output: string
-  sourcemap: boolean
+  sourceMap: boolean
+  inlineSourcesContent: boolean
   watch: boolean
   extname: string
 }
 
 cli
-  .command('<root>')
+  .command('<input> [output]')
   .option('-t, --target <target>', '[string] kotlin | swift', {
     default: 'kotlin',
   })
-  .option('-o, --output <output>', `[string] output dir path`)
-  .option('-s, --sourcemap', `[boolean] output sourcemap`, {
+  .option('-s, --sourceMap [sourceMap]', `[boolean] output sourceMap`, {
     default: false,
   })
+  .option(
+    '-i, --inlineSourcesContent [inlineSourcesContent]',
+    `[boolean] inline sources content`,
+    {
+      default: false,
+    }
+  )
   .option('-w, --watch', `[boolean] rebuilds when uts have changed on disk`, {
     default: false,
   })
   .option('-e, --extname [extname]', `[string] extname`, {
     default: '.uts',
   })
-  .action((root, opts: CliOptions) => {
+  .action((input, output, opts: CliOptions) => {
     const toOptions: ToOptions = {
       watch: opts.watch,
       input: {
-        dir: root,
+        dir: input,
         extname: opts.extname,
       },
       output: {
-        dir: opts.output,
-        sourceMap: opts.sourcemap,
+        dir: output,
+        sourceMap: opts.sourceMap,
+        inlineSourcesContent: opts.inlineSourcesContent,
       },
     }
+    console.log(opts, toOptions)
     return opts.watch
       ? runDev(opts.target, toOptions)
       : runBuild(opts.target, toOptions)
