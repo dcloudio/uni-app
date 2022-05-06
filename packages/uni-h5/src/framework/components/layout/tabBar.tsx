@@ -1,4 +1,4 @@
-import { watch, watchEffect, computed, ref, Ref } from 'vue'
+import { watch, watchEffect, computed, ref, Ref, onMounted } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
 import {
@@ -10,7 +10,10 @@ import { defineSystemComponent } from '@dcloudio/uni-components'
 import { getRealPath } from '../../../platform'
 import { useTabBar } from '../../setup/state'
 import { cssBackdropFilter } from '../../../service/api/base/canIUse'
+import { loadFontFace } from '../../../service/api/ui/loadFontFace'
 import { normalizeWindowBottom } from '../../../helpers/cssVar'
+
+const UNI_TABBAR_ICON_FONT = 'UniTabbarIconFont'
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'TabBar',
@@ -21,6 +24,16 @@ export default /*#__PURE__*/ defineSystemComponent({
     useTabBarCssVar(tabBar)
     const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList)
     const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
+
+    onMounted(() => {
+      if (tabBar.iconfontSrc) {
+        loadFontFace({
+          family: UNI_TABBAR_ICON_FONT,
+          source: `url("${tabBar.iconfontSrc}")`,
+        })
+      }
+    })
+
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(
         tabBar,
@@ -183,10 +196,22 @@ function createTabBarItemsTsx(
     const textColor = selected ? selectedColor : color
     const iconPath =
       (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || ''
+    const iconfontText = item.iconfont
+      ? selected
+        ? item.iconfont.selectedText || item.iconfont.text
+        : item.iconfont.text
+      : undefined
+    const iconfontColor = item.iconfont
+      ? selected
+        ? item.iconfont.selectedColor || item.iconfont.color
+        : item.iconfont.color
+      : undefined
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
       return createTabBarItemTsx(
         textColor,
         iconPath,
+        iconfontText,
+        iconfontColor,
         item,
         tabBar,
         index,
@@ -197,6 +222,8 @@ function createTabBarItemsTsx(
       ? createTabBarMidButtonTsx(
           textColor,
           iconPath,
+          iconfontText,
+          iconfontColor,
           item,
           tabBar,
           index,
@@ -205,6 +232,8 @@ function createTabBarItemsTsx(
       : createTabBarItemTsx(
           textColor,
           iconPath,
+          iconfontText,
+          iconfontColor,
           item,
           tabBar,
           index,
@@ -216,6 +245,8 @@ function createTabBarItemsTsx(
 function createTabBarItemTsx(
   color: string,
   iconPath: string,
+  iconfontText: string | undefined,
+  iconfontColor: string | undefined,
   tabBarItem: UniApp.TabBarItemOptions,
   tabBar: UniApp.TabBarOptions,
   index: number,
@@ -227,7 +258,14 @@ function createTabBarItemTsx(
       class="uni-tabbar__item"
       onClick={onSwitchTab(tabBarItem, index)}
     >
-      {createTabBarItemBdTsx(color, iconPath || '', tabBarItem, tabBar)}
+      {createTabBarItemBdTsx(
+        color,
+        iconPath || '',
+        iconfontText,
+        iconfontColor,
+        tabBarItem,
+        tabBar
+      )}
     </div>
   )
 }
@@ -235,13 +273,22 @@ function createTabBarItemTsx(
 function createTabBarItemBdTsx(
   color: string,
   iconPath: string,
+  iconfontText: string | undefined,
+  iconfontColor: string | undefined,
   tabBarItem: UniApp.TabBarItemOptions,
   tabBar: UniApp.TabBarOptions
 ) {
   const { height } = tabBar
   return (
     <div class="uni-tabbar__bd" style={{ height: height }}>
-      {iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar)}
+      {iconfontText
+        ? createTabBarItemIconfontTsx(
+            iconfontText,
+            iconfontColor || BLUR_EFFECT_COLOR_DARK,
+            tabBarItem,
+            tabBar
+          )
+        : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar)}
       {tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar)}
     </div>
   )
@@ -259,6 +306,32 @@ function createTabBarItemIconTsx(
   return (
     <div class={clazz} style={style}>
       {type !== 'midButton' && <img src={getRealPath(iconPath)} />}
+      {redDot && createTabBarItemRedDotTsx(tabBarItem.badge)}
+    </div>
+  )
+}
+
+function createTabBarItemIconfontTsx(
+  iconfontText: string,
+  iconfontColor: string,
+  tabBarItem: UniApp.TabBarItemOptions,
+  tabBar: UniApp.TabBarOptions
+) {
+  const { type, text, redDot } = tabBarItem
+  const { iconWidth } = tabBar
+  const clazz = 'uni-tabbar__icon' + (text ? ' uni-tabbar__icon__diff' : '')
+  const style = { width: iconWidth, height: iconWidth }
+  const iconfontStyle = {
+    fontSize: tabBarItem.iconfont?.fontSize || iconWidth,
+    color: iconfontColor,
+  }
+  return (
+    <div class={clazz} style={style}>
+      {type !== 'midButton' && (
+        <div class="uni-tabbar__iconfont" style={iconfontStyle}>
+          {iconfontText}
+        </div>
+      )}
       {redDot && createTabBarItemRedDotTsx(tabBarItem.badge)}
     </div>
   )
@@ -293,6 +366,8 @@ function createTabBarItemRedDotTsx(badge?: string) {
 function createTabBarMidButtonTsx(
   color: string,
   iconPath: string,
+  iconfontText: string | undefined,
+  iconfontColor: string | undefined,
   midButton: UniApp.TabBarMidButtonOptions,
   tabBar: UniApp.TabBarOptions,
   index: number,
@@ -323,7 +398,14 @@ function createTabBarMidButtonTsx(
           />
         )}
       </div>
-      {createTabBarItemBdTsx(color, iconPath, midButton, tabBar)}
+      {createTabBarItemBdTsx(
+        color,
+        iconPath,
+        iconfontText,
+        iconfontColor,
+        midButton,
+        tabBar
+      )}
     </div>
   )
 }

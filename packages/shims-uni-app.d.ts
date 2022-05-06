@@ -284,6 +284,15 @@ declare namespace UniApp {
     redDot?: boolean
     badge?: string
     visible?: boolean
+    iconfont?: TabBarItemIconfontOptions
+  }
+
+  interface TabBarItemIconfontOptions {
+    text: string
+    selectedText: string
+    fontSize?: string
+    color?: string
+    selectedColor?: string
   }
 
   interface TabBarNormalItemOptions extends TabBarItemBaseOptions {
@@ -307,6 +316,7 @@ declare namespace UniApp {
     selectedColor: string
     backgroundColor: string
     borderStyle?: 'black' | 'white'
+    iconfontSrc?: string
     list: TabBarItemOptions[]
     blurEffect?: 'none' | 'dark' | 'extralight' | 'light'
     fontSize?: string
