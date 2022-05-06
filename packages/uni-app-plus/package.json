@@ -2,7 +2,11 @@
   "name": "@dcloudio/uni-app-plus",
   "version": "3.0.0-alpha-3040820220424001",
   "description": "@dcloudio/uni-app-plus",
+  "bin": {
+    "uts": "bin/uts.js"
+  },
   "files": [
+    "bin",
     "dist",
     "lib",
     "style"
@@ -40,6 +44,7 @@
   },
   "dependencies": {
     "@dcloudio/uni-app-vite": "3.0.0-alpha-3040820220424001",
-    "@dcloudio/uni-app-vue": "3.0.0-alpha-3040820220424001"
+    "@dcloudio/uni-app-vue": "3.0.0-alpha-3040820220424001",
+    "@dcloudio/uts": "3.0.0-alpha-3040820220424001"
   }
 }

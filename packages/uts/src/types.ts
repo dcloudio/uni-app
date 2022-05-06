@@ -57,4 +57,6 @@ export interface UtsSwiftOptions {
   output: OutputSwiftOptions
 }
 
-export interface UtsResult {}
+export interface UtsResult {
+  filename?: string
+}

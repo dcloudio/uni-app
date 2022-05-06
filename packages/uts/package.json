@@ -11,5 +11,13 @@
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
     "directory": "packages/uts"
+  },
+  "dependencies": {
+    "cac": "6.7.9",
+    "chokidar": "^3.5.3",
+    "fast-glob": "^3.2.11"
+  },
+  "optionalDependencies": {
+    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3040820220424001"
   }
 }

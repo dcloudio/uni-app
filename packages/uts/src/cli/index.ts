@@ -1,5 +1,5 @@
 import { cac } from 'cac'
-import { toKotlin } from '.'
+import { runBuild, runDev, ToOptions } from './action'
 
 const cli = cac('uts')
 
@@ -8,6 +8,7 @@ export interface CliOptions {
   output: string
   sourcemap: boolean
   watch: boolean
+  extname: string
 }
 
 cli
@@ -22,20 +23,24 @@ cli
   .option('-w, --watch', `[boolean] rebuilds when uts have changed on disk`, {
     default: false,
   })
+  .option('-e, --extname [extname]', `[string] extname`, {
+    default: '.uts',
+  })
   .action((root, opts: CliOptions) => {
-    console.log('opts', root, opts)
-    if (opts.target === 'kotlin') {
-      toKotlin({
-        watch: opts.watch,
-        input: {
-          dir: root,
-        },
-        output: {
-          dir: opts.output,
-          sourceMap: opts.sourcemap,
-        },
-      })
+    const toOptions: ToOptions = {
+      watch: opts.watch,
+      input: {
+        dir: root,
+        extname: opts.extname,
+      },
+      output: {
+        dir: opts.output,
+        sourceMap: opts.sourcemap,
+      },
     }
+    return opts.watch
+      ? runDev(opts.target, toOptions)
+      : runBuild(opts.target, toOptions)
   })
 
 cli.help()

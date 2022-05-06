@@ -41,4 +41,5 @@ export interface UtsSwiftOptions {
     output: OutputSwiftOptions;
 }
 export interface UtsResult {
+    filename?: string;
 }
