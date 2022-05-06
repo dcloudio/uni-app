@@ -85,7 +85,7 @@ function buildKotlinFile(
     output: {
       ...output,
     },
-  }).then((res) => {
+  }).then(() => {
     console.timeEnd(label)
   })
 }
