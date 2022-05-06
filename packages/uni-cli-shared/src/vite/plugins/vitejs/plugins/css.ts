@@ -83,6 +83,7 @@ export const cssLangRE = new RegExp(cssLangs)
 const cssModuleRE = new RegExp(`\\.module${cssLangs}`)
 const directRequestRE = /(\?|&)direct\b/
 export const commonjsProxyRE = /\?commonjs-proxy/
+const varRE = /^var\(/i
 
 const enum PreprocessLang {
   less = 'less',
@@ -558,8 +559,8 @@ async function compileCSS(
     .default(postcssPlugins)
     .process(code, {
       ...postcssOptions,
-      to: cleanUrl(id),
-      from: cleanUrl(id),
+      to: id,
+      from: id,
       map: {
         inline: false,
         annotation: false,
@@ -737,7 +738,7 @@ type CssUrlReplacer = (
 // https://drafts.csswg.org/css-syntax-3/#identifier-code-point
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\(\s*('[^']+'|"[^"]+"|[^'")]+)\s*\)/
-const cssImageSetRE = /image-set\(([^)]+)\)/
+const cssImageSetRE = /(?<=image-set\()((?:[\w\-]+\([^\)]*\)|[^)])*)(?=\))/
 
 const UrlRewritePostcssPlugin: Postcss.PluginCreator<{
   replacer: CssUrlReplacer
@@ -758,7 +759,9 @@ const UrlRewritePostcssPlugin: Postcss.PluginCreator<{
             const importer = declaration.source?.input.file
             return opts.replacer(rawUrl, importer)
           }
-          const rewriterToUse = isCssUrl ? rewriteCssUrls : rewriteCssImageSet
+          const rewriterToUse = isCssImageSet
+            ? rewriteCssImageSet
+            : rewriteCssUrls
           promises.push(
             rewriterToUse(declaration.value, replacerForDeclaration).then(
               (url) => {
@@ -780,9 +783,16 @@ function rewriteCssUrls(
   css: string,
   replacer: CssUrlReplacer
 ): Promise<string> {
-  return asyncReplace(css, cssUrlRE, async (match) => {
-    const [matched, rawUrl] = match
-    return await doUrlReplace(rawUrl, matched, replacer)
+  return asyncReplace(css, cssImageSetRE, async (match) => {
+    const [, rawUrl] = match
+    const url = await processSrcSet(rawUrl, async ({ url }) => {
+      // the url maybe url(...)
+      if (cssUrlRE.test(url)) {
+        return await rewriteCssUrls(url, replacer)
+      }
+      return await doUrlReplace(url, url, replacer)
+    })
+    return url
   })
 }
 
@@ -809,7 +819,12 @@ async function doUrlReplace(
     wrap = first
     rawUrl = rawUrl.slice(1, -1)
   }
-  if (isExternalUrl(rawUrl) || isDataUrl(rawUrl) || rawUrl.startsWith('#')) {
+  if (
+    isExternalUrl(rawUrl) ||
+    isDataUrl(rawUrl) ||
+    rawUrl.startsWith('#') ||
+    varRE.test(rawUrl)
+  ) {
     return matched
   }
 

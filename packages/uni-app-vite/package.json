@@ -29,7 +29,7 @@
     "@dcloudio/uni-shared": "3.0.0-alpha-3040820220424001",
     "@dcloudio/uts": "3.0.0-alpha-3040820220424001",
     "@rollup/pluginutils": "^4.2.0",
-    "@vitejs/plugin-vue": "^2.3.1",
+    "@vitejs/plugin-vue": "^2.3.2",
     "@vue/compiler-dom": "3.2.33",
     "@vue/compiler-sfc": "3.2.33",
     "cac": "6.7.9",

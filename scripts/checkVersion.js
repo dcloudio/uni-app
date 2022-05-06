@@ -13,22 +13,22 @@ const pkgs = {
     latest: '3.2.33',
   },
   'vue-router': {
-    latest: '4.0.14',
+    latest: '4.0.15',
   },
   vuex: {
     latest: '4.0.2',
   },
   pinia: {
-    latest: '2.0.13',
+    latest: '2.0.14',
   },
   'vue-i18n': {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.9.7',
+    latest: '2.9.8',
   },
   '@vitejs/plugin-vue': {
-    latest: '2.3.1',
+    latest: '2.3.2',
   },
   '@vitejs/plugin-vue-jsx': {
     latest: '1.3.10',
