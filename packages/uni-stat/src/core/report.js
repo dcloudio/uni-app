@@ -12,7 +12,7 @@ import {
 
 import {
   stat_config,
-  // get_uuid,
+  get_uuid,
   get_platform_name,
   get_pack_name,
   get_scene,
@@ -45,9 +45,9 @@ import { dbSet, dbGet, dbRemove } from '../utils/db.js'
 
 // 统计数据默认值
 let statData = {
-  // uuid: get_uuid(), // 设备标识
-  // ak: stat_config.appid, // uni-app 应用 Appid
-  // p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
+  uuid: get_uuid(), // 设备标识
+  ak: stat_config.appid, // uni-app 应用 Appid
+  p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
   ut: get_platform_name(), // 平台类型
   mpn: get_pack_name(), // 原生平台包名、小程序 appid
   usv: STAT_VERSION, // 统计 sdk 版本
@@ -320,9 +320,9 @@ export default class Report {
     let { url, urlref, urlref_ts } = opt
     this._navigationBarTitle.lt = '11'
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '11',
       ut: this.statData.ut,
       url,
@@ -344,9 +344,9 @@ export default class Report {
   sendHideRequest(opt, type) {
     let { urlref, urlref_ts } = opt
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '3',
       ut: this.statData.ut,
       urlref,
@@ -367,9 +367,9 @@ export default class Report {
     this._navigationBarTitle.config = get_page_name(routepath)
     this._navigationBarTitle.lt = '21'
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '21',
       ut: this.statData.ut,
       url: routepath,

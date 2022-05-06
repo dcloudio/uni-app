@@ -126,9 +126,9 @@ class Stat extends Report {
       emVal = em.stack
     }
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '31',
       ut: this.statData.ut,
       ch: this.statData.ch,

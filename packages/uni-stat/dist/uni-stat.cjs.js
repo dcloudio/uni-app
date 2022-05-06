@@ -21,9 +21,10 @@ let titleJsons = {};
 let debug = !!process.env.UNI_STAT_DEBUG || false;
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON;
-
 // #endif
+
 // #ifndef VUE3
+
 // eslint-disable-next-line no-restricted-globals
 const pagesTitle = require('uni-pages?{"type":"style"}').default;
 let pagesData = pagesTitle.pages;
@@ -44,39 +45,40 @@ for (let i in pagesData) {
 // #endif
 
 // TODO 在云函数中获取，暂时注释
-// const UUID_KEY = '__DC_STAT_UUID'
-// const UUID_VALUE = '__DC_UUID_VALUE'
-// function getUuid() {
-//   let uuid = ''
-//   if (get_platform_name() === 'n') {
-//     try {
-//       uuid = plus.runtime.getDCloudId()
-//     } catch (e) {
-//       uuid = ''
-//     }
-//     return uuid
-//   }
+const UUID_KEY = '__DC_STAT_UUID';
+const UUID_VALUE = '__DC_UUID_VALUE';
+function getUuid() {
+  let uuid = '';
+  if (get_platform_name() === 'n') {
+    try {
+      uuid = plus.runtime.getDCloudId();
+    } catch (e) {
+      uuid = '';
+    }
+    return uuid
+  }
 
-//   try {
-//     uuid = uni.getStorageSync(UUID_KEY)
-//   } catch (e) {
-//     uuid = UUID_VALUE
-//   }
+  try {
+    uuid = uni.getStorageSync(UUID_KEY);
+  } catch (e) {
+    uuid = UUID_VALUE;
+  }
 
-//   if (!uuid) {
-//     uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
-//     try {
-//       uni.setStorageSync(UUID_KEY, uuid)
-//     } catch (e) {
-//       uni.setStorageSync(UUID_KEY, UUID_VALUE)
-//     }
-//   }
-//   return uuid
-// }
-// export const get_uuid = (statData) => {
-//   // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
-//   return sys.deviceId || getUuid()
-// }
+  if (!uuid) {
+    uuid = Date.now() + '' + Math.floor(Math.random() * 1e7);
+    try {
+      uni.setStorageSync(UUID_KEY, uuid);
+    } catch (e) {
+      uni.setStorageSync(UUID_KEY, UUID_VALUE);
+    }
+  }
+  return uuid
+}
+
+const get_uuid = (statData) => {
+  // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
+  return sys.deviceId || getUuid()
+};
 
 /**
  * 获取配置信息 如 appid
@@ -641,9 +643,9 @@ const get_residence_time = (type) => {
 
 // 统计数据默认值
 let statData = {
-  // uuid: get_uuid(), // 设备标识
-  // ak: stat_config.appid, // uni-app 应用 Appid
-  // p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
+  uuid: get_uuid(), // 设备标识
+  ak: stat_config.appid, // uni-app 应用 Appid
+  p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
   ut: get_platform_name(), // 平台类型
   mpn: get_pack_name(), // 原生平台包名、小程序 appid
   usv: STAT_VERSION, // 统计 sdk 版本
@@ -916,9 +918,9 @@ class Report {
     let { url, urlref, urlref_ts } = opt;
     this._navigationBarTitle.lt = '11';
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '11',
       ut: this.statData.ut,
       url,
@@ -940,9 +942,9 @@ class Report {
   sendHideRequest(opt, type) {
     let { urlref, urlref_ts } = opt;
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '3',
       ut: this.statData.ut,
       urlref,
@@ -963,9 +965,9 @@ class Report {
     this._navigationBarTitle.config = get_page_name(routepath);
     this._navigationBarTitle.lt = '21';
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '21',
       ut: this.statData.ut,
       url: routepath,
@@ -1253,9 +1255,9 @@ class Stat extends Report {
       emVal = em.stack;
     }
     let options = {
-      // ak: this.statData.ak,
-      // uuid: this.statData.uuid,
-      // p: this.statData.p,
+      ak: this.statData.ak,
+      uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '31',
       ut: this.statData.ut,
       ch: this.statData.ch,
