@@ -8,6 +8,9 @@ import {
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import { transformAd } from './transforms/transformAd'
+
+import uniadAppJson from './uniad.app.json'
 
 import source from './project.config.json'
 
@@ -19,7 +22,7 @@ export const customElements = [
 ]
 
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [transformRef, transformComponentLink],
+  nodeTransforms: [transformRef, transformComponentLink, transformAd],
 }
 
 const COMPONENTS_DIR = 'wxcomponents'
@@ -97,6 +100,12 @@ export const options: UniMiniProgramPluginOptions = {
     darkmode: true,
     subpackages: true,
     plugins: true,
+    normalize(appJson) {
+      if ((process.env.UNI_MP_UNIAD = true)) {
+        uniadAppJson(appJson)
+      }
+      return appJson
+    },
   },
   project: {
     filename: projectConfigFilename,
