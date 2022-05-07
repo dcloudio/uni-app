@@ -10,26 +10,6 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-const AD_COMPONENTS = [
-    'uniad',
-    'ad-rewarded-video',
-    'ad-fullscreen-video',
-    'ad-interstitial',
-];
-function transformAd(node, context) {
-    if (!uniCliShared.isElementNode(node)) {
-        return;
-    }
-    const adpidProp = compilerCore.findProp(node, 'adpid');
-    if (node.tag === 'ad' && adpidProp) {
-        node.tag = 'uniad';
-        node.tagType = 1 /* COMPONENT */;
-    }
-    if (AD_COMPONENTS.indexOf(node.tag) > -1) {
-        process.env.UNI_MP_UNIAD = true;
-    }
-}
-
 var uniad_app_json = function (appJson) {
   if (!appJson.plugins) {
     appJson.plugins = {};
@@ -56,6 +36,31 @@ var uniad_app_json = function (appJson) {
 };
 
 var uniadAppJson = uniad_app_json;
+
+const AD_COMPONENTS = [
+    'uniad',
+    'ad-rewarded-video',
+    'ad-fullscreen-video',
+    'ad-interstitial',
+];
+let appJsonUniadFlag = false;
+function transformAd(node, context) {
+    if (!uniCliShared.isElementNode(node)) {
+        return;
+    }
+    const adpidProp = compilerCore.findProp(node, 'adpid');
+    if (node.tag === 'ad' && adpidProp) {
+        node.tag = 'uniad';
+        node.tagType = 1 /* COMPONENT */;
+    }
+    if (appJsonUniadFlag) {
+        return;
+    }
+    if (AD_COMPONENTS.indexOf(node.tag) > -1) {
+        appJsonUniadFlag = true;
+        uniadAppJson(uniCliShared.findJsonFile('app'));
+    }
+}
 
 var description = "项目配置文件。";
 var packOptions = {
@@ -187,12 +192,6 @@ const options = {
         darkmode: true,
         subpackages: true,
         plugins: true,
-        normalize(appJson) {
-            if (process.env.UNI_MP_UNIAD == true) {
-                uniadAppJson(appJson);
-            }
-            return appJson;
-        },
     },
     project: {
         filename: projectConfigFilename,
