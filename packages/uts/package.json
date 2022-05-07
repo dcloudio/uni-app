@@ -27,6 +27,7 @@
     "@types/fs-extra": "^9.0.13"
   },
   "optionalDependencies": {
-    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3040820220424001"
+    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3040820220424001",
+    "@dcloudio/uts-win32-x64-msvc": "3.0.0-alpha-3040820220424001"
   }
 }
