@@ -1,5 +1,5 @@
 import { cac } from 'cac'
-import { runBuild, runDev, ToOptions } from '..'
+import { runBuild, runDev, ToOptions } from '.'
 
 const cli = cac('uts')
 
@@ -34,7 +34,6 @@ cli
   })
   .action((input, output, opts: CliOptions) => {
     const toOptions: ToOptions = {
-      watch: opts.watch,
       input: {
         dir: input,
         extname: opts.extname,
@@ -51,5 +50,5 @@ cli
   })
 
 cli.help()
-cli.version(require('../../package.json').version)
+cli.version(require('../package.json').version)
 cli.parse()

@@ -10248,20 +10248,22 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
     const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
+    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab);
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
     }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab);
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
   });
 }
-function createTabBarItemTsx(color, iconPath, tabBarItem, tabBar2, index2, onSwitchTab) {
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
   return vue.createVNode("div", {
     "key": index2,
     "class": "uni-tabbar__item",
     "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", tabBarItem, tabBar2)], 8, ["onClick"]);
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
 }
-function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
   const {
     height
   } = tabBar2;
@@ -10270,7 +10272,7 @@ function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
     "style": {
       height
     }
-  }, [iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
@@ -10292,6 +10294,33 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   }, [type !== "midButton" && vue.createVNode("img", {
     "src": getRealPath(iconPath)
   }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+}
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+  var _a;
+  const {
+    type,
+    text,
+    redDot
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar2;
+  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  const iconfontStyle = {
+    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
+    color: iconfontColor
+  };
+  return vue.createVNode("div", {
+    "class": clazz2,
+    "style": style
+  }, [type !== "midButton" && vue.createVNode("div", {
+    "class": "uni-tabbar__iconfont",
+    "style": iconfontStyle
+  }, [iconfontText], 4), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
@@ -10320,7 +10349,7 @@ function createTabBarItemRedDotTsx(badge) {
     "class": clazz2
   }, [badge], 2);
 }
-function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, onSwitchTab) {
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
   const {
     width,
     height,
@@ -10348,7 +10377,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
       height: iconWidth
     },
     "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
 }
 var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
