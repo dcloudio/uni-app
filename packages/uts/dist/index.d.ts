@@ -25,4 +25,4 @@ export interface ToOptions {
     };
 }
 export declare function runDev(target: 'kotlin' | 'swift', opts: ToOptions): void;
-export declare function runBuild(target: 'kotlin' | 'swift', opts: ToOptions): void | Promise<void[]>;
+export declare function runBuild(target: 'kotlin' | 'swift', opts: ToOptions): void | Promise<void>;

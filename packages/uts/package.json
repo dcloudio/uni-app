@@ -19,7 +19,11 @@
   "dependencies": {
     "cac": "6.7.9",
     "chokidar": "^3.5.3",
-    "fast-glob": "^3.2.11"
+    "fast-glob": "^3.2.11",
+    "fs-extra": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13"
   },
   "optionalDependencies": {
     "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3040820220424001"

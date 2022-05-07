@@ -1,10 +1,12 @@
-import fs from 'fs'
 import path from 'path'
+import fs from 'fs-extra'
 import glob from 'fast-glob'
+
 import { watch } from 'chokidar'
 
 import { InputKotlinOptions, toKotlin } from './api'
 import { OutputKotlinOptions, UtsKotlinOptions } from './types'
+import { normalizePath } from './utils'
 
 export interface ToOptions {
   input: {
@@ -76,9 +78,10 @@ function watchKotlin({
     outDir: outputDir,
     sourceMap,
   }
-  watch('**/*' + (extname || EXTNAME), {
+  extname = extname || EXTNAME
+  watch('**/*' + extname, {
     cwd: inputDir,
-    ignored: ['**/*.d' + (extname || EXTNAME)],
+    ignored: ['**/*.d' + extname],
   })
     .on('add', (filename) =>
       buildKotlinFile(path.resolve(inputDir, filename), input, output)
@@ -91,15 +94,19 @@ function watchKotlin({
         fs.unlinkSync(path.resolve(outputDir, filename))
       } catch (e) {}
     })
+    .on('ready', () => {
+      copyAssets(inputDir, outputDir, extname!)
+    })
 }
 function buildKotlin({
   input: { dir: inputDir, extname },
   output: { dir: outputDir, sourceMap, inlineSourcesContent },
 }: ToKotlinOptions) {
-  const files = glob.sync('**/*' + (extname || EXTNAME), {
+  extname = extname || EXTNAME
+  const files = glob.sync('**/*' + extname, {
     absolute: true,
     cwd: inputDir,
-    ignore: ['**/*.d' + (extname || EXTNAME)],
+    ignore: ['**/*.d' + extname],
   })
   const input: InputKotlinOptions = {
     root: inputDir,
@@ -112,7 +119,17 @@ function buildKotlin({
   }
   return Promise.all(
     files.map((filename) => buildKotlinFile(filename, input, output))
-  )
+  ).then(() => {
+    return copyAssets(inputDir, outputDir, extname!)
+  })
+}
+
+function copyAssets(inputDir: string, outputDir: string, extname: string) {
+  return fs.copy(inputDir, outputDir, {
+    filter(src) {
+      return path.extname(src) !== extname
+    },
+  })
 }
 
 function buildKotlinFile(
@@ -120,7 +137,7 @@ function buildKotlinFile(
   input: InputKotlinOptions,
   output: OutputKotlinOptions
 ) {
-  const label = path.posix.relative(input.root, filename)
+  const label = normalizePath(path.relative(input.root, filename))
   const toKotlinOptions: UtsKotlinOptions = {
     input: {
       ...input,

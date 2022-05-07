@@ -183,7 +183,6 @@ importers:
       '@dcloudio/uni-h5': 3.0.0-alpha-3040820220424001
       '@dcloudio/uni-i18n': 3.0.0-alpha-3040820220424001
       '@dcloudio/uni-shared': 3.0.0-alpha-3040820220424001
-      '@dcloudio/uts': 3.0.0-alpha-3040820220424001
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.33
       pako: ^1.0.11
@@ -191,7 +190,6 @@ importers:
     dependencies:
       '@dcloudio/uni-app-vite': link:../uni-app-vite
       '@dcloudio/uni-app-vue': link:../uni-app-vue
-      '@dcloudio/uts': link:../uts
     devDependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components
@@ -770,15 +768,20 @@ importers:
   packages/uts:
     specifiers:
       '@dcloudio/uts-darwin-arm64': 3.0.0-alpha-3040820220424001
+      '@types/fs-extra': ^9.0.13
       cac: 6.7.9
       chokidar: ^3.5.3
       fast-glob: ^3.2.11
+      fs-extra: ^10.0.0
     dependencies:
       cac: 6.7.9
       chokidar: 3.5.3
       fast-glob: 3.2.11
+      fs-extra: 10.1.0
     optionalDependencies:
       '@dcloudio/uts-darwin-arm64': link:../uts-darwin-arm64
+    devDependencies:
+      '@types/fs-extra': 9.0.13
 
   packages/uts-darwin-arm64:
     specifiers: {}
