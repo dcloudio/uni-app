@@ -20,7 +20,8 @@
     "cac": "6.7.9",
     "chokidar": "^3.5.3",
     "fast-glob": "^3.2.11",
-    "fs-extra": "^10.0.0"
+    "fs-extra": "^10.0.0",
+    "picocolors": "^1.0.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13"

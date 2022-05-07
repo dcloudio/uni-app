@@ -773,17 +773,22 @@ importers:
       chokidar: ^3.5.3
       fast-glob: ^3.2.11
       fs-extra: ^10.0.0
+      picocolors: ^1.0.0
     dependencies:
       cac: 6.7.9
       chokidar: 3.5.3
       fast-glob: 3.2.11
       fs-extra: 10.1.0
+      picocolors: 1.0.0
     optionalDependencies:
       '@dcloudio/uts-darwin-arm64': link:../uts-darwin-arm64
     devDependencies:
       '@types/fs-extra': 9.0.13
 
   packages/uts-darwin-arm64:
+    specifiers: {}
+
+  packages/uts-win32-x64-msvc:
     specifiers: {}
 
   packages/vite-plugin-uni:

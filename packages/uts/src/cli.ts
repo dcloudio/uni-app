@@ -1,10 +1,11 @@
 import { cac } from 'cac'
-import { runBuild, runDev, ToOptions } from '.'
+import { runBuild, runDev, ToOptions, UtsTarget } from '.'
 
 const cli = cac('uts')
 
 export interface CliOptions {
-  target: 'kotlin' | 'swift'
+  target: UtsTarget
+  silent: boolean
   sourceMap: boolean
   inlineSourcesContent: boolean
   watch: boolean
@@ -14,9 +15,9 @@ export interface CliOptions {
 cli
   .command('<input> [output]')
   .option('-t, --target <target>', '[string] kotlin | swift', {
-    default: 'kotlin',
+    default: UtsTarget.KOTLIN,
   })
-  .option('-s, --sourceMap [sourceMap]', `[boolean] output sourceMap`, {
+  .option('-s, --sourceMap [sourceMap]', `[boolean|string] output sourceMap`, {
     default: false,
   })
   .option(
@@ -32,8 +33,12 @@ cli
   .option('-e, --extname [extname]', `[string] extname`, {
     default: '.uts',
   })
+  .option('--silent', `[boolean] disable log`, {
+    default: false,
+  })
   .action((input, output, opts: CliOptions) => {
     const toOptions: ToOptions = {
+      silent: opts.silent,
       input: {
         dir: input,
         extname: opts.extname,

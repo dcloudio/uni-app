@@ -25,11 +25,15 @@ export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
   } else if (output.sourceMap === false) {
     output.sourceMap = ''
   }
-  return bindings.toKotlin(toBuffer(options))
+  return bindings
+    .toKotlin(toBuffer(options))
+    .then((res: string) => JSON.parse(res))
 }
 
 export function toSwift(options: UtsSwiftOptions): Promise<UtsResult> {
-  return bindings.toSwift(toBuffer(options))
+  return bindings
+    .toSwift(toBuffer(options))
+    .then((res: string) => JSON.parse(res))
 }
 
 function toBuffer(t: any): Buffer {
