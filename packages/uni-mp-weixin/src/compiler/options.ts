@@ -101,7 +101,7 @@ export const options: UniMiniProgramPluginOptions = {
     subpackages: true,
     plugins: true,
     normalize(appJson) {
-      if ((process.env.UNI_MP_UNIAD = true)) {
+      if (process.env.UNI_MP_UNIAD == true) {
         uniadAppJson(appJson)
       }
       return appJson
