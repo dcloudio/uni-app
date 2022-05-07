@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import { UtsKotlinOptions, UtsResult, UtsSwiftOptions } from './types'
+import { normalizePath } from './utils'
 
 export * from './types'
 
@@ -25,6 +26,12 @@ export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
   } else if (output.sourceMap === false) {
     output.sourceMap = ''
   }
+
+  input.root = normalizePath(input.root)
+  input.filename = normalizePath(input.filename)
+  output.outDir = normalizePath(output.outDir)
+  output.sourceMap = normalizePath(output.sourceMap)
+
   return bindings
     .toKotlin(toBuffer(options))
     .then((res: string) => JSON.parse(res))

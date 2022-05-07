@@ -8,7 +8,7 @@ import { InputKotlinOptions, toKotlin } from './api'
 import { OutputKotlinOptions, UtsKotlinOptions } from './types'
 import { printStartup, printUtsResult, printUtsResults, timeEnd } from './utils'
 
-export const enum UtsTarget {
+export enum UtsTarget {
   KOTLIN = 'kotlin',
   SWIFT = 'swift',
 }
