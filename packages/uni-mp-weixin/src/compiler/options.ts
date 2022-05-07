@@ -10,8 +10,6 @@ import {
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 
-import uniadAppJson from './uniad.app.json'
-
 import source from './project.config.json'
 
 export const customElements = [
@@ -100,12 +98,6 @@ export const options: UniMiniProgramPluginOptions = {
     darkmode: true,
     subpackages: true,
     plugins: true,
-    normalize(appJson) {
-      if (process.env.UNI_MP_UNIAD == true) {
-        uniadAppJson(appJson)
-      }
-      return appJson
-    },
   },
   project: {
     filename: projectConfigFilename,

@@ -1,4 +1,4 @@
-import { isElementNode } from '@dcloudio/uni-cli-shared'
+import { isElementNode, findJsonFile } from '@dcloudio/uni-cli-shared'
 import {
   findProp,
   RootNode,
@@ -14,6 +14,10 @@ const AD_COMPONENTS: Array<string> = [
   'ad-interstitial',
 ]
 
+import uniadAppJson from '../uniad.app.json'
+
+let appJsonUniadFlag = false
+
 export function transformAd(
   node: RootNode | TemplateChildNode,
   context: TransformContext
@@ -21,12 +25,18 @@ export function transformAd(
   if (!isElementNode(node)) {
     return
   }
+
   const adpidProp = findProp(node, 'adpid')
   if (node.tag === 'ad' && adpidProp) {
     node.tag = 'uniad'
     node.tagType = ElementTypes.COMPONENT
   }
+
+  if (appJsonUniadFlag) {
+    return
+  }
   if (AD_COMPONENTS.indexOf(node.tag) > -1) {
-    process.env.UNI_MP_UNIAD = true
+    appJsonUniadFlag = true
+    uniadAppJson(findJsonFile('app'))
   }
 }
