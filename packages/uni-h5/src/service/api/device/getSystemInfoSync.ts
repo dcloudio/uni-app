@@ -244,7 +244,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       browserName,
       browseVersion,
       osLanguage: language,
-      osName: osname,
+      osName: osname.toLocaleLowerCase(),
       osVersion: osversion,
       hostLanguage: language,
       uniCompileVersion: __uniConfig.compilerVersion,
