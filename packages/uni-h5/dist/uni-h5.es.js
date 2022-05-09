@@ -6370,6 +6370,7 @@ function initHidpi() {
     translate: "all",
     createRadialGradient: "all",
     createLinearGradient: "all",
+    transform: [4, 5],
     setTransform: [4, 5]
   };
   const proto = CanvasRenderingContext2D.prototype;

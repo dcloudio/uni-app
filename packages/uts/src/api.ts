@@ -1,8 +1,6 @@
 import { resolve } from 'path'
-import { UtsKotlinOptions, UtsResult, UtsSwiftOptions } from './types'
+import type { UtsKotlinOptions, UtsResult, UtsSwiftOptions } from './types'
 import { normalizePath } from './utils'
-
-export * from './types'
 
 const bindingsOverride = process.env['UTS_BINARY_PATH']
 const bindings = !!bindingsOverride
@@ -25,6 +23,10 @@ export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
     output.sourceMap = output.outDir
   } else if (output.sourceMap === false) {
     output.sourceMap = ''
+  }
+  if (!output.imports) {
+    // TODO
+    output.imports = []
   }
 
   input.root = normalizePath(input.root)

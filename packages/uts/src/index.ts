@@ -4,8 +4,12 @@ import glob from 'fast-glob'
 
 import { watch } from 'chokidar'
 
-import { InputKotlinOptions, toKotlin } from './api'
-import { OutputKotlinOptions, UtsKotlinOptions } from './types'
+import { toKotlin } from './api'
+import type {
+  InputKotlinOptions,
+  OutputKotlinOptions,
+  UtsKotlinOptions,
+} from './types'
 import { printStartup, printUtsResult, printUtsResults, timeEnd } from './utils'
 
 export enum UtsTarget {

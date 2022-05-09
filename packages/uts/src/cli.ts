@@ -1,5 +1,5 @@
 import { cac } from 'cac'
-import { runBuild, runDev, ToOptions, UtsTarget } from '.'
+import { runBuild, runDev, ToOptions, UtsTarget } from './index'
 
 const cli = cac('uts')
 
@@ -15,7 +15,7 @@ export interface CliOptions {
 cli
   .command('<input> [output]')
   .option('-t, --target <target>', '[string] kotlin | swift', {
-    default: UtsTarget.KOTLIN,
+    default: 'kotlin',
   })
   .option('-s, --sourceMap [sourceMap]', `[boolean|string] output sourceMap`, {
     default: false,
