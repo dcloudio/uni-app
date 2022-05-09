@@ -881,7 +881,8 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function populateParameters(fromRes, toRes) {
-    const { brand, model, system, language, theme, version, hostName, platform } = fromRes;
+    const { brand, model, system, language, theme, version, hostName = '', platform, } = fromRes;
+    const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1;
     // osName osVersion
     let osName = '';
     let osVersion = '';
@@ -910,7 +911,10 @@ function populateParameters(fromRes, toRes) {
     }
     // deviceModel
     let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-    {
+    if (isQuickApp) {
+        deviceBrand = brand.toLocaleLowerCase();
+    }
+    else {
         deviceBrand = getDeviceBrand(deviceBrand);
     }
     // hostName
@@ -924,7 +928,7 @@ function populateParameters(fromRes, toRes) {
         appVersionCode: process.env.UNI_APP_VERSION_CODE,
         uniCompileVersion: process.env.UNI_COMPILER_VERSION,
         uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
-        uniPlatform: process.env.UNI_PLATFORM,
+        uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
         deviceBrand,
         deviceModel: model,
         deviceType,
