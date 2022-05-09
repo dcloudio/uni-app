@@ -34,7 +34,7 @@ export function populateParameters (result) {
   let osName = ''
   let osVersion = ''
   if (__PLATFORM__ === 'mp-alipay') {
-    osName = platform.toLocaleLowerCase()
+    osName = platform
     osVersion = system
   } else {
     osName = system.split(' ')[0] || ''
@@ -94,7 +94,7 @@ export function populateParameters (result) {
     deviceBrand,
     deviceModel: model,
     deviceType,
-    osName,
+    osName: osName.toLocaleLowerCase(),
     osVersion,
     osLanguage: language,
     osTheme: theme,

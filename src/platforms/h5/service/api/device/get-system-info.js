@@ -228,7 +228,7 @@ export function getSystemInfoSync () {
     browserName,
     browseVersion,
     osLanguage: language,
-    osName: osname,
+    osName: osname.toLocaleLowerCase(),
     osVersion: osversion,
     hostLanguage: language,
     version: __uniConfig.appVersion,
