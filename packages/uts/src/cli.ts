@@ -15,7 +15,7 @@ export interface CliOptions {
 cli
   .command('<input> [output]')
   .option('-t, --target <target>', '[string] kotlin | swift', {
-    default: 'kotlin',
+    default: UtsTarget.KOTLIN,
   })
   .option('-s, --sourceMap [sourceMap]', `[boolean|string] output sourceMap`, {
     default: false,
