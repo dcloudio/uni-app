@@ -21,6 +21,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
       manifestJson.versionCode || ''
     ),
     'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
+    'process.env.UNI_SUB_PLATFORM': JSON.stringify(
+      process.env.UNI_SUB_PLATFORM
+    ),
     'process.env.UNI_MP_PLUGIN': JSON.stringify(process.env.UNI_MP_PLUGIN),
     'process.env.UNI_SUBPACKAGE': JSON.stringify(process.env.UNI_SUBPACKAGE),
     'process.env.UNI_COMPILER_VERSION': JSON.stringify(
