@@ -274,7 +274,11 @@ export default {
             break
           }
         } else {
-          if (method === 'clip') {
+          if(method === 'setTransform' || method === 'transform'){
+            data[4] && (data[4] *= this.pixelRatio)
+            data[5] && (data[5] *= this.pixelRatio)
+            c2d[method].apply(c2d, data)
+          } else if (method === 'clip') {
             data.forEach(function (data_) {
               c2d[data_.method].apply(c2d, data_.data)
             })
