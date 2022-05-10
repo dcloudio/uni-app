@@ -928,7 +928,7 @@ function populateParameters(fromRes, toRes) {
         deviceBrand,
         deviceModel: model,
         deviceType,
-        osName,
+        osName: osName.toLocaleLowerCase(),
         osVersion,
         osLanguage: language,
         osTheme: theme,

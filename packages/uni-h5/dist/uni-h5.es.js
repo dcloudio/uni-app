@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, IEVersion, getDeviceBrand, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -806,7 +806,10 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
   ], 8, ["width", "height"]);
 }
 function useCurrentPageId() {
-  return getCurrentInstance().root.proxy.$page.id;
+  {
+    const { $pageInstance } = getCurrentInstance();
+    return $pageInstance && $pageInstance.proxy.$page.id;
+  }
 }
 function getPageIdByVm(instance2) {
   const vm = resolveComponentInstance(instance2);
@@ -816,9 +819,9 @@ function getPageIdByVm(instance2) {
   if (!vm.$) {
     return;
   }
-  const rootProxy = vm.$.root.proxy;
-  if (rootProxy && rootProxy.$page) {
-    return rootProxy.$page.id;
+  {
+    const { $pageInstance } = vm.$;
+    return $pageInstance && $pageInstance.proxy.$page.id;
   }
 }
 function getCurrentPage() {
@@ -14261,7 +14264,7 @@ function setupPage(comp) {
     clone: true,
     init: initPage,
     setup(instance2) {
-      instance2.root = instance2;
+      instance2.$pageInstance = instance2;
       const route = usePageRoute();
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
@@ -16284,6 +16287,36 @@ function deviceId$1() {
   }
   return deviceId;
 }
+function IEVersion() {
+  const userAgent = navigator.userAgent;
+  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    reIE.test(userAgent);
+    const fIEVersion = parseFloat(RegExp.$1);
+    if (fIEVersion > 6) {
+      return fIEVersion;
+    } else {
+      return 6;
+    }
+  } else if (isEdge) {
+    return -1;
+  } else if (isIE11) {
+    return 11;
+  } else {
+    return -1;
+  }
+}
+function getDeviceBrand(model) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
+    return "apple";
+  }
+  if (/windows/gi.test(model)) {
+    return "microsoft";
+  }
+}
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
   const pixelRatio2 = window.devicePixelRatio;
   const screenFix = getScreenFix();
@@ -16471,7 +16504,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     browserName,
     browseVersion,
     osLanguage: language,
-    osName: osname,
+    osName: osname.toLocaleLowerCase(),
     osVersion: osversion,
     hostLanguage: language,
     uniCompileVersion: __uniConfig.compilerVersion,

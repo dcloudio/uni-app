@@ -1,5 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook, getDeviceBrand } from '@dcloudio/uni-shared';
+import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
   return wx.getSystemInfoSync()
@@ -818,6 +818,14 @@ function initGetProvider(providers) {
     };
 }
 
+function getDeviceBrand(model) {
+    if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
+        return 'apple';
+    }
+    if (/windows/gi.test(model)) {
+        return 'microsoft';
+    }
+}
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function useDeviceId(global = wx) {
@@ -896,7 +904,7 @@ function populateParameters(fromRes, toRes) {
         deviceBrand,
         deviceModel: model,
         deviceType,
-        osName,
+        osName: osName.toLocaleLowerCase(),
         osVersion,
         osLanguage: language,
         osTheme: theme,

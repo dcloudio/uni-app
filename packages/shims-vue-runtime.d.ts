@@ -30,6 +30,8 @@ declare module '@vue/runtime-core' {
     $scopedSlotsData?: { path: string; index: number; data: Data }[]
     // h5 | app
     $wxsModules?: string[]
+    // 暂定 h5
+    $pageInstance: ComponentInternalInstance
   }
 
   export const onBeforeActivate: (fn: () => void) => void

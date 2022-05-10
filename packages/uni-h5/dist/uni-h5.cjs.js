@@ -256,7 +256,10 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
   ], 8, ["width", "height"]);
 }
 function useCurrentPageId() {
-  return vue.getCurrentInstance().root.proxy.$page.id;
+  {
+    const { $pageInstance } = vue.getCurrentInstance();
+    return $pageInstance && $pageInstance.proxy.$page.id;
+  }
 }
 function getCurrentPage() {
   const pages = getCurrentPages();
@@ -7036,7 +7039,7 @@ function setupPage(comp) {
     clone: true,
     init: initPage,
     setup(instance) {
-      instance.root = instance;
+      instance.$pageInstance = instance;
       const route = usePageRoute();
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
