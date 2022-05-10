@@ -1,5 +1,5 @@
 import path from 'path'
-import { UserConfig } from 'vite'
+import { UserConfig, ResolverFunction } from 'vite'
 import {
   isWindows,
   extensions,
@@ -8,11 +8,13 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
-export function customResolver(updatedId: string) {
+export const customResolver: ResolverFunction = (updatedId, importer) => {
   if (isWindows) {
-    return normalizePath(requireResolve(updatedId, process.env.UNI_INPUT_DIR))
+    return normalizePath(
+      requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
+    )
   }
-  return requireResolve(updatedId, process.env.UNI_INPUT_DIR)
+  return requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
 }
 
 export function createResolve(
