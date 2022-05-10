@@ -1,5 +1,13 @@
 import { extend } from '@vue/shared'
-import { getDeviceBrand } from '@dcloudio/uni-shared'
+
+function getDeviceBrand(model: string) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
+    return 'apple'
+  }
+  if (/windows/gi.test(model)) {
+    return 'microsoft'
+  }
+}
 
 const UUID_KEY = '__DC_STAT_UUID'
 let deviceId: string

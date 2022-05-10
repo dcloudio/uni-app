@@ -129,37 +129,3 @@ export function getValueByDataPath(obj: any, path: string): unknown {
   }
   return getValueByDataPath(obj[key], parts.slice(1).join('.'))
 }
-
-export function IEVersion() {
-  const userAgent = navigator.userAgent
-  const isIE =
-    userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1
-  const isEdge = userAgent.indexOf('Edge') > -1 && !isIE
-  const isIE11 =
-    userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1
-  if (isIE) {
-    const reIE = new RegExp('MSIE (\\d+\\.\\d+);')
-    reIE.test(userAgent)
-    const fIEVersion = parseFloat(RegExp.$1)
-    if (fIEVersion > 6) {
-      return fIEVersion
-    } else {
-      return 6
-    }
-  } else if (isEdge) {
-    return -1
-  } else if (isIE11) {
-    return 11
-  } else {
-    return -1
-  }
-}
-
-export function getDeviceBrand(model: string) {
-  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
-    return 'apple'
-  }
-  if (/windows/gi.test(model)) {
-    return 'microsoft'
-  }
-}
