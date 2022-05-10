@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { Plugin } from 'vite'
 import { templateDir } from '../utils'
+import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 
 export function uniTemplatePlugin({
   renderer,
@@ -16,7 +17,7 @@ export function uniTemplatePlugin({
       outputDir = process.env.UNI_OUTPUT_DIR
       if (renderer !== 'native') {
         fs.copySync(
-          require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js'),
+          resolveBuiltIn('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js'),
           path.resolve(outputDir, 'uni-app-view.umd.js'),
           {
             overwrite: true,
