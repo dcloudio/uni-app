@@ -197,13 +197,28 @@ function normalizePageStyle(
   pageStyle: UniApp.PagesJsonPageStyle | undefined,
   platform: UniApp.PLATFORM
 ) {
-  const isNVue =
+  const hasNVue =
     pagePath &&
     process.env.UNI_INPUT_DIR &&
-    process.env.UNI_NVUE_COMPILER !== 'vue' &&
     fs.existsSync(path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'))
       ? true
       : undefined
+
+  let isNVue = false
+  if (hasNVue) {
+    const hasVue = fs.existsSync(
+      path.join(process.env.UNI_INPUT_DIR, pagePath + '.vue')
+    )
+    if (hasVue) {
+      if (platform === 'app') {
+        if (process.env.UNI_NVUE_COMPILER !== 'vue') {
+          isNVue = true
+        }
+      }
+    } else {
+      isNVue = true
+    }
+  }
 
   if (pageStyle) {
     if (platform === 'h5') {
