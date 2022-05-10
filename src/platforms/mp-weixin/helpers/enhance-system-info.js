@@ -1,4 +1,7 @@
-import { getDeviceBrand } from 'uni-shared'
+function getDeviceBrand (model) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
+  if (/windows/gi.test(model)) { return 'microsoft' }
+}
 
 const UUID_KEY = '__DC_STAT_UUID'
 let deviceId
@@ -28,7 +31,7 @@ export function addSafeAreaInsets (result) {
 
 export function populateParameters (result) {
   const { brand, model, system, language, theme, version, hostName = '', platform } = result
-  const isQuickApp =  __PLATFORM__.indexOf('quickapp-webview') !== -1
+  const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
   // osName osVersion
   let osName = ''

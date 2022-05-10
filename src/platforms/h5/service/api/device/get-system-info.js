@@ -1,7 +1,34 @@
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
 import deviceId from 'uni-platform/helpers/uuid'
 import safeAreaInsets from 'safe-area-insets'
-import { IEVersion, getDeviceBrand } from 'uni-shared'
+
+function IEVersion () {
+  const userAgent = navigator.userAgent
+  const isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1
+  const isEdge = userAgent.indexOf('Edge') > -1 && !isIE
+  const isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1
+  if (isIE) {
+    const reIE = new RegExp('MSIE (\\d+\\.\\d+);')
+    reIE.test(userAgent)
+    const fIEVersion = parseFloat(RegExp.$1)
+    if (fIEVersion > 6) {
+      return fIEVersion
+    } else {
+      return 6
+    }
+  } else if (isEdge) {
+    return -1
+  } else if (isIE11) {
+    return 11
+  } else {
+    return -1
+  }
+}
+
+function getDeviceBrand (model) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
+  if (/windows/gi.test(model)) { return 'microsoft' }
+}
 
 const ua = navigator.userAgent
 /**

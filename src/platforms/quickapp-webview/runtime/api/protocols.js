@@ -8,7 +8,7 @@ export const protocols = {
   redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync: getSystemInfo,
+  getSystemInfoSync: getSystemInfo
 }
 export const todos = [
   'preloadPage',
