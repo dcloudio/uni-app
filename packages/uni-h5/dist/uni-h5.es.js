@@ -14348,10 +14348,10 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       comp2.setup = (props2, ctx) => {
-        setup && setup(props2, ctx);
-        return () => {
-          return openBlock(), createBlock(LayoutComponent);
-        };
+        return setup && setup(props2, ctx);
+      };
+      comp2.render = () => {
+        return openBlock(), createBlock(LayoutComponent);
       };
     }
   });

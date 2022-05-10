@@ -188,10 +188,10 @@ export function setupApp(comp: any) {
       comp.mpType = 'app'
       const { setup } = comp
       comp.setup = (props, ctx) => {
-        setup && setup(props, ctx)
-        return () => {
-          return openBlock(), createBlock(LayoutComponent)
-        }
+        return setup && setup(props, ctx)
+      }
+      comp.render = () => {
+        return openBlock(), createBlock(LayoutComponent)
       }
     },
   })
