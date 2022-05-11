@@ -14095,7 +14095,7 @@ const publishRecorderStateChange = (state, res = {}) => {
 const Recorder = {
     start({ duration = 60000, sampleRate, numberOfChannels, encodeBitRate, format = 'mp3', frameSize,
     // audioSource = 'auto',
-     }) {
+     } = {}) {
         if (recording) {
             return publishRecorderStateChange('start');
         }
@@ -14178,7 +14178,7 @@ class RecorderManager {
     resume() {
         Recorder.resume();
     }
-    start(options) {
+    start(options = {}) {
         Recorder.start(options);
     }
     stop() {
