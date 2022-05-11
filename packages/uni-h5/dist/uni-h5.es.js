@@ -8091,28 +8091,13 @@ var index$r = /* @__PURE__ */ defineBuiltInComponent({
     const {
       fixSize
     } = useImageSize(rootRef, props2, state2);
-    useImageLoader(state2, fixSize, trigger);
+    useImageLoader(state2, props2, rootRef, fixSize, trigger);
     return () => {
-      const {
-        mode: mode2
-      } = props2;
-      const {
-        imgSrc,
-        modeStyle,
-        src
-      } = state2;
-      let imgTsx;
-      {
-        imgTsx = imgSrc ? createVNode("img", {
-          "src": imgSrc,
-          "draggable": props2.draggable
-        }, null, 8, ["src", "draggable"]) : createVNode("img", null, null);
-      }
       return createVNode("uni-image", {
         "ref": rootRef
       }, [createVNode("div", {
-        "style": modeStyle
-      }, null, 4), imgTsx, FIX_MODES[mode2] ? createVNode(ResizeSensor, {
+        "style": state2.modeStyle
+      }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
         "onResize": fixSize
       }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
@@ -8153,8 +8138,9 @@ function useImageState(rootRef, props2) {
   });
   return state2;
 }
-function useImageLoader(state2, fixSize, trigger) {
+function useImageLoader(state2, props2, rootRef, fixSize, trigger) {
   let img;
+  let draggableImg;
   const setState = (width = 0, height = 0, imgSrc = "") => {
     state2.origWidth = width;
     state2.origHeight = height;
@@ -8174,6 +8160,12 @@ function useImageLoader(state2, fixSize, trigger) {
       } = img;
       setState(width, height, src);
       fixSize();
+      img.draggable = props2.draggable;
+      if (draggableImg) {
+        draggableImg.remove();
+      }
+      draggableImg = img;
+      rootRef.value.appendChild(img);
       resetImage();
       trigger("load", evt, {
         width,
@@ -8197,6 +8189,12 @@ function useImageLoader(state2, fixSize, trigger) {
     }
   };
   watch(() => state2.src, (value) => loadImage(value));
+  watch(() => state2.imgSrc, (value) => {
+    if (!value && draggableImg) {
+      draggableImg.remove();
+      draggableImg = null;
+    }
+  });
   onMounted(() => loadImage(state2.src));
   onBeforeUnmount(() => resetImage());
 }

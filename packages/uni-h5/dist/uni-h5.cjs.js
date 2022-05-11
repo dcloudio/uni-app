@@ -2598,28 +2598,13 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
     const {
       fixSize
     } = useImageSize(rootRef, props2, state);
-    useImageLoader(state, fixSize, trigger);
+    useImageLoader(state, props2, rootRef, fixSize, trigger);
     return () => {
-      const {
-        mode: mode2
-      } = props2;
-      const {
-        imgSrc,
-        modeStyle,
-        src
-      } = state;
-      let imgTsx;
-      {
-        imgTsx = vue.createVNode("img", {
-          "src": src,
-          "draggable": props2.draggable
-        }, null, 8, ["src", "draggable"]);
-      }
       return vue.createVNode("uni-image", {
         "ref": rootRef
       }, [vue.createVNode("div", {
-        "style": modeStyle
-      }, null, 4), imgTsx, FIX_MODES[mode2] ? vue.createVNode(ResizeSensor, {
+        "style": state.modeStyle
+      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
         "onResize": fixSize
       }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
@@ -2654,8 +2639,9 @@ function useImageState(rootRef, props2) {
   });
   return state;
 }
-function useImageLoader(state, fixSize, trigger) {
+function useImageLoader(state, props2, rootRef, fixSize, trigger) {
   let img;
+  let draggableImg;
   const setState = (width = 0, height = 0, imgSrc = "") => {
     state.origWidth = width;
     state.origHeight = height;
@@ -2675,6 +2661,12 @@ function useImageLoader(state, fixSize, trigger) {
       } = img;
       setState(width, height, src);
       fixSize();
+      img.draggable = props2.draggable;
+      if (draggableImg) {
+        draggableImg.remove();
+      }
+      draggableImg = img;
+      rootRef.value.appendChild(img);
       resetImage();
       trigger("load", evt, {
         width,
@@ -2698,6 +2690,12 @@ function useImageLoader(state, fixSize, trigger) {
     }
   };
   vue.watch(() => state.src, (value) => loadImage(value));
+  vue.watch(() => state.imgSrc, (value) => {
+    if (!value && draggableImg) {
+      draggableImg.remove();
+      draggableImg = null;
+    }
+  });
 }
 function fixNumber(num) {
   return num;
