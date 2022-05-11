@@ -26,7 +26,7 @@
     "@dcloudio/uni-shared": "3.0.0-alpha-3040820220424005",
     "@dcloudio/uts": "3.0.0-alpha-3040820220424005",
     "@rollup/pluginutils": "^4.2.0",
-    "@vitejs/plugin-vue": "^2.3.2",
+    "@vitejs/plugin-vue": "^2.3.3",
     "@vue/compiler-dom": "3.2.33",
     "@vue/compiler-sfc": "3.2.33",
     "debug": "^4.3.3",
@@ -40,7 +40,7 @@
     "@vue/compiler-core": "3.2.33",
     "esbuild": "^0.14.27",
     "postcss": "^8.4.13",
-    "vite": "^2.9.8",
+    "vite": "^2.9.9",
     "vue": "3.2.33"
   }
 }

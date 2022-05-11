@@ -1,5 +1,4 @@
 import path from 'path'
-import qs from 'querystring'
 import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
 
 export interface VueQuery {
@@ -13,7 +12,7 @@ export interface VueQuery {
 
 export function parseVueRequest(id: string) {
   const [filename, rawQuery] = id.split(`?`, 2)
-  const query = qs.parse(rawQuery) as VueQuery
+  const query = Object.fromEntries(new URLSearchParams(rawQuery)) as VueQuery
   if (query.vue != null) {
     query.vue = true
   }

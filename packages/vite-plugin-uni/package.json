@@ -29,7 +29,7 @@
     "@dcloudio/uni-shared": "3.0.0-alpha-3040820220424005",
     "@rollup/pluginutils": "^4.2.0",
     "@vitejs/plugin-legacy": "^1.8.2",
-    "@vitejs/plugin-vue": "^2.3.2",
+    "@vitejs/plugin-vue": "^2.3.3",
     "@vitejs/plugin-vue-jsx": "^1.3.10",
     "@vue/compiler-core": "3.2.33",
     "@vue/compiler-dom": "3.2.33",
@@ -52,11 +52,11 @@
     "@types/sass": "^1.16.0",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "chokidar": "^3.5.3",
-    "vite": "^2.9.8",
+    "vite": "^2.9.9",
     "vue": "3.2.33"
   },
   "peerDependencies": {
-    "vite": "^2.9.8"
+    "vite": "^2.9.9"
   },
   "uni-app": {
     "compilerVersion": "3.4.8"
