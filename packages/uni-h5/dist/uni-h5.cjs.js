@@ -6474,6 +6474,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     emit: emit2
   }) {
     const rootRef = vue.ref(null);
+    const wrapperRef = vue.ref(null);
     const {
       fieldRef,
       state,
@@ -6488,6 +6489,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     vue.watch(() => heightRef.value, (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
+      const wrapper2 = wrapperRef.value;
       let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
       if (isNaN(lineHeight)) {
         lineHeight = lineEl.offsetHeight;
@@ -6499,7 +6501,8 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = height + "px";
+        el.style.height = "auto";
+        wrapper2.style.height = height + "px";
       }
     });
     function onResize({
@@ -6564,6 +6567,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       return vue.createVNode("uni-textarea", {
         "ref": rootRef
       }, [vue.createVNode("div", {
+        "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
       }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
@@ -6580,7 +6584,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
     };
   }
 });

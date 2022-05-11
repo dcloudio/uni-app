@@ -13475,6 +13475,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     emit: emit2
   }) {
     const rootRef = ref(null);
+    const wrapperRef = ref(null);
     const {
       fieldRef,
       state: state2,
@@ -13489,6 +13490,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     watch(() => heightRef.value, (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
+      const wrapper2 = wrapperRef.value;
       let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
       if (isNaN(lineHeight)) {
         lineHeight = lineEl.offsetHeight;
@@ -13500,7 +13502,8 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = height + "px";
+        el.style.height = "auto";
+        wrapper2.style.height = height + "px";
       }
     });
     function onResize2({
@@ -13568,6 +13571,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-textarea", {
         "ref": rootRef
       }, [createVNode("div", {
+        "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
       }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
@@ -13584,7 +13588,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
     };
   }
 });
