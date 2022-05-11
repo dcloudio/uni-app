@@ -46,4 +46,5 @@ export interface UtsSwiftOptions {
 export interface UtsResult {
   filename?: string
   time?: number
+  error?: Error
 }

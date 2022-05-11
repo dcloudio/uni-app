@@ -9,6 +9,7 @@ import type {
   InputKotlinOptions,
   OutputKotlinOptions,
   UtsKotlinOptions,
+  UtsResult,
 } from './types'
 import { printStartup, printUtsResult, printUtsResults, timeEnd } from './utils'
 
@@ -194,7 +195,13 @@ function buildKotlin({
   })
 
   return Promise.all(
-    files.map((filename) => buildKotlinFile(filename, input, output))
+    files.map((filename) =>
+      buildKotlinFile(filename, input, output).catch((error) => {
+        return {
+          error,
+        } as UtsResult
+      })
+    )
   )
     .then((res) => {
       return copyAssets(UtsTarget.KOTLIN, inputDir, outputDir, extname!).then(

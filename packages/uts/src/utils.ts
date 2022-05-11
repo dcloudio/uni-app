@@ -30,16 +30,37 @@ export function printStartup(target: UtsTarget, mode: string) {
 
 export function printUtsResults(results: UtsResult[]) {
   let longest = 0
-  for (const result of results) {
-    const l = result.filename!.length
-    if (l > longest) longest = l
-  }
-  console.log(
-    colors.dim(`${colors.green(`✓`)} ${results.length} files transformed.`)
-  )
+  let failed: UtsResult[] = []
+  let transformed: UtsResult[] = []
   results.forEach((result) => {
-    printUtsResult(result, longest)
+    if (result.error) {
+      failed.push(result)
+    } else {
+      transformed.push(result)
+    }
   })
+  if (failed.length) {
+    console.log(colors.dim(`${colors.red(`✗`)} ${failed.length} files failed.`))
+    failed.forEach((result) => {
+      console.error(result.error!.message.split(`Caused by:`)[0])
+    })
+  }
+  if (transformed.length) {
+    for (const result of transformed) {
+      const l = result.filename!.length
+      if (l > longest) longest = l
+    }
+    console.log(
+      colors.dim(
+        `${colors.green(`✓`)} ${transformed.length} files transformed.`
+      )
+    )
+    transformed.forEach((result) => {
+      if (result.filename) {
+        printUtsResult(result, longest)
+      }
+    })
+  }
 }
 
 export function printUtsResult(result: UtsResult, maxLength = 0) {
