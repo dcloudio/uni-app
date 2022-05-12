@@ -213,6 +213,7 @@ class AdHelper {
     const ad = this.get(options)
 
     if (ad.isLoad) {
+      this._lastWaterfallIndex = -1
       ad.show((e) => {
         onclose && onclose(e)
       }, () => {
@@ -220,6 +221,7 @@ class AdHelper {
       })
     } else {
       ad.load(() => {
+        this._lastWaterfallIndex = -1
         onload && onload()
         ad.show((e) => {
           onclose && onclose(e)
@@ -242,15 +244,13 @@ class AdHelper {
       return
     }
 
-    if (index === 0) {
-      this._lastWaterfallIndex = -1
-    }
-
     const options2 = {
       adpid: adpid[index],
       urlCallback,
       retry: false
     }
+
+    console.log('ad.loadWaterfall::index=' + index)
 
     this.load(options2, (res) => {
       this._lastWaterfallIndex = index
@@ -260,7 +260,6 @@ class AdHelper {
       if (index >= adpid.length) {
         onfail(err)
       } else {
-        console.log('loadWaterfall::index=' + index)
         this.loadWaterfall(options, onload, onfail, index)
       }
     })
@@ -276,16 +275,17 @@ class AdHelper {
       return
     }
 
-    let idx = index
     if (this._lastWaterfallIndex > -1) {
-      idx = this._lastWaterfallIndex
+      index = this._lastWaterfallIndex
     }
 
     const options2 = {
-      adpid: adpid[idx],
+      adpid: adpid[index],
       urlCallback,
       retry: false
     }
+
+    console.log('ad.showWaterfall::index=' + index)
 
     this.show(options2, () => {
       onload()
@@ -444,6 +444,9 @@ export default {
   },
   methods: {
     load () {
+      if (this.isLoading) {
+        return
+      }
       this._startLoading()
       const invoke = this._isWaterfall() ? 'loadWaterfall' : 'load'
       this._adHelper[invoke](this._getAdOptions(), () => {
@@ -454,6 +457,9 @@ export default {
     },
 
     show () {
+      if (this.isLoading) {
+        return
+      }
       this._startLoading()
       const invoke = this._isWaterfall() ? 'showWaterfall' : 'show'
       this._adHelper[invoke](this._getAdOptions(), () => {

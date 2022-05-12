@@ -18,9 +18,12 @@ export function getSystemInfoSync () {
 }
 
 export function getSystemInfo () {
-  const platform = plus.os.name.toLowerCase()
-  const ios = platform === 'ios'
-  const isAndroid = platform === 'android'
+  const { getSystemInfoSync } = weex.requireModule('plus')
+  const info = getSystemInfoSync()
+  const { deviceBrand, deviceModel, osName, osVersion, osLanguage } = info
+  const brand = deviceBrand.toLowerCase()
+  const _osName = osName.toLowerCase()
+  const ios = _osName === 'ios'
   const {
     screenWidth,
     screenHeight
@@ -76,21 +79,21 @@ export function getSystemInfo () {
     height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom
   }
 
-  return {
+  return Object.assign({
     errMsg: 'getSystemInfo:ok',
-    brand: plus.device.vendor,
-    model: plus.device.model,
+    brand: brand,
+    model: deviceModel,
     pixelRatio: plus.screen.scale,
     screenWidth,
     screenHeight,
     windowWidth,
     windowHeight,
     statusBarHeight,
-    language: plus.os.language,
-    system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
+    language: osLanguage,
+    system: `${osName} ${osVersion}`,
     version: plus.runtime.innerVersion,
     fontSizeSetting: '',
-    platform,
+    platform: _osName,
     SDKVersion: '',
     windowTop,
     windowBottom,
@@ -102,5 +105,8 @@ export function getSystemInfo () {
       left: safeAreaInsets.left
     },
     deviceId: deviceId()
-  }
+  }, info, {
+    deviceBrand: brand,
+    osName: _osName
+  })
 }

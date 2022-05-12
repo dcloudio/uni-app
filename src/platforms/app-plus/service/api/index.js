@@ -56,6 +56,7 @@ export * from './plugin/on-native-event-receive'
 export * from './plugin/send-native-event'
 export * from './plugin/load-sub-package'
 export * from './plugin/sdk'
+export * from './plugin/get-launch-options-sync'
 
 export * from './route/navigate-back'
 export * from './route/navigate-to'

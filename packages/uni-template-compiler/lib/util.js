@@ -210,7 +210,7 @@ function isComponent (tagName) {
       return false
     }
   }
-  return !hasOwn(tags, getTagName(tagName.replace('v-uni-', '')))
+  return !hasOwn(tags, getTagName(tagName.replace(/^(v-)?uni-/, '')))
 }
 
 function makeMap (str, expectsLowerCase) {

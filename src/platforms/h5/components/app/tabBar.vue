@@ -36,13 +36,23 @@
           :style="{height:height}"
         >
           <div
-            v-if="getIconPath(item,index) || item.iconPath || item.isMidButton"
+            v-if="getIconPath(item,index) || item.iconfont || item.iconPath || item.isMidButton"
             :class="{'uni-tabbar__icon__diff':!item.text}"
             class="uni-tabbar__icon"
             :style="{width: iconWidth,height:iconWidth}"
           >
+            <div
+              v-if="item.iconfont"
+              :style="{
+                color:selectedIndex === index ? item.iconfont.selectedColor : item.iconfont.color,
+                fontSize: item.iconfont.fontSize || iconWidth
+              }"
+              class="uni-tabbar__iconfont"
+            >
+              {{ selectedIndex === index ? item.iconfont.selectedText : item.iconfont.text }}
+            </div>
             <img
-              v-if="!item.isMidButton"
+              v-else-if="!item.isMidButton"
               :src="_getRealPath(getIconPath(item,index))"
             >
             <div
@@ -168,6 +178,10 @@
     height: 100%;
   }
 
+  uni-tabbar .uni-tabbar__iconfont {
+    font-family: 'UniTabbarIconFont';
+  }
+
   uni-tabbar .uni-tabbar__label {
     position: relative;
     text-align: center;
@@ -220,9 +234,11 @@
 import getRealPath from 'uni-platform/helpers/get-real-path'
 import { isPlainObject } from 'uni-shared'
 import { publish } from 'uni-platform/service/bridge'
+import { loadFontFace } from 'uni-core/view/bridge/subscribe/font'
 function cssSupports (css) {
   return window.CSS && CSS.supports && (CSS.supports(css) || CSS.supports.apply(CSS, css.split(':')))
 }
+const UNI_TABBAR_ICON_FONT = 'UniTabbarIconFont'
 export default {
   name: 'TabBar',
   props: {
@@ -247,6 +263,10 @@ export default {
     borderStyle: {
       type: String,
       default: 'black'
+    },
+    iconfontSrc: {
+      type: String,
+      default: ''
     },
     list: {
       type: Array,
@@ -340,6 +360,15 @@ export default {
         this.$set(item, 'visible', true)
       }
     })
+
+    if (this.iconfontSrc) {
+      loadFontFace({
+        options: {
+          family: UNI_TABBAR_ICON_FONT,
+          source: `url("${this.iconfontSrc}")`
+        }
+      })
+    }
   },
   beforeCreate () {
     this.__path__ = this.$route.path
