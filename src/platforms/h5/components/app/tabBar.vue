@@ -44,7 +44,7 @@
             <div
               v-if="item.iconfont"
               :style="{
-                color:selectedIndex === index ? selectedColor : color,
+                color:selectedIndex === index ? item.iconfont.selectedColor : item.iconfont.color,
                 fontSize: item.iconfont.fontSize || iconWidth
               }"
               class="uni-tabbar__iconfont"

@@ -8,6 +8,8 @@ const setTabBarStyleProps = ['color', 'selectedColor', 'backgroundColor', 'borde
 
 const setTabBarBadgeProps = ['badge', 'redDot']
 
+const setTabBarIconfontStyles = ['text', 'selectedText', 'fontSize', 'color', 'selectedColor']
+
 function setTabBar (type, args = {}) {
   const app = getApp()
 
@@ -44,6 +46,10 @@ function setTabBar (type, args = {}) {
         app.$children[0].hideTabBar = true
         break
       case 'setTabBarItem': {
+        if (args.iconfont) {
+          setProperties(tabBar.list[index].iconfont, setTabBarIconfontStyles, args.iconfont)
+          args.iconfont = tabBar.list[index].iconfont
+        }
         setProperties(tabBar.list[index], setTabBarItemProps, args)
         const pagePath = args.pagePath
         const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
