@@ -93,5 +93,5 @@
     "yorkie": "^2.0.0"
   },
   "name": "uni-app-next",
-  "packageManager": "pnpm@7.0.0"
+  "packageManager": "pnpm@7.0.1"
 }

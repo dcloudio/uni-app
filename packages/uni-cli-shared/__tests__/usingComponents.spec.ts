@@ -1,5 +1,6 @@
 import path from 'path'
 import { ResolvedId } from 'rollup'
+import { normalizePath } from '../src/utils'
 import { findUsingComponents } from '../src/json/mp/jsonFile'
 import { parseProgram } from '../src/mp/ast'
 import {
@@ -15,7 +16,7 @@ function normalizeComponentName(name: string) {
 }
 async function resolve(id: string, importer?: string) {
   return {
-    id: importer ? path.resolve(path.dirname(importer), id) : id,
+    id: normalizePath(importer ? path.resolve(path.dirname(importer), id) : id),
   } as ResolvedId
 }
 
