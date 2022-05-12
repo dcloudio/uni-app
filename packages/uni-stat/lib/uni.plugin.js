@@ -68,14 +68,18 @@ var index = () => [
                                 isEnable = false;
                             }
                             else {
-                                if (!statConfig.version) ;
+                                if (!statConfig.version) {
+                                    uniStatLog(uniCliShared.M['stat.warn.version']);
+                                }
                                 else {
                                     uniStatLog(`已开启 uni统计${statVersion}.0 版本`);
                                 }
                             }
                         }
                         else {
-                            if (!statConfig.version) ;
+                            if (!statConfig.version) {
+                                uniStatLog(uniCliShared.M['stat.warn.version']);
+                            }
                             else {
                                 uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', `${statVersion}.0`));
                             }

@@ -5,8 +5,7 @@ import {
   get_last_visit_time,
   get_total_visit_count,
   get_page_residence_time,
-  get_first_time,
-  get_last_time,
+  set_first_time,
   get_residence_time,
 } from '../utils/pageTime.js'
 
@@ -181,7 +180,6 @@ export default class Report {
   applicationShow() {
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
-      get_last_time()
       const time = get_residence_time('app')
       // 需要判断进入后台是否超过时限 ，默认是 30min ，是的话需要执行进入应用的上报
       if (time.overtime) {
@@ -209,7 +207,6 @@ export default class Report {
     }
     // 进入应用后台保存状态，方便进入前台后判断是否上报应用数据
     this.__licationHide = true
-    get_last_time()
     const time = get_residence_time()
     const route = get_page_route(self)
     uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route)
@@ -220,8 +217,8 @@ export default class Report {
       },
       type
     )
-    // 重置时间
-    get_first_time()
+    // 更新页面首次访问时间
+    set_first_time()
   }
 
   /**
@@ -242,14 +239,13 @@ export default class Report {
     this._navigationBarTitle.config = get_page_name(routepath)
     // 表示应用触发 ，页面切换不触发之后的逻辑
     if (this.__licationShow) {
-      get_first_time()
+      // 更新页面首次访问时间
+      set_first_time()
       // this._lastPageRoute = route
       uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route)
       this.__licationShow = false
       return
     }
-
-    get_last_time()
 
     const time = get_residence_time('page')
     // 停留时间
@@ -260,8 +256,8 @@ export default class Report {
       }
       this.sendReportRequest(options)
     }
-    // 重置时间
-    get_first_time()
+    // 更新页面首次访问时间
+    set_first_time()
   }
 
   /**
@@ -269,7 +265,6 @@ export default class Report {
    */
   pageHide(self) {
     if (!this.__licationHide) {
-      get_last_time()
       const time = get_residence_time('page')
       let route = get_page_route(self)
       let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
@@ -362,8 +357,16 @@ export default class Report {
    * 自定义事件上报
    */
   sendEventRequest({ key = '', value = '' } = {}) {
-    // const route = this._lastPageRoute
-    const routepath = get_route()
+
+    let routepath = ''
+
+    try {
+      routepath = get_route()
+    } catch (error) {
+      const launch_options = dbGet('__launch_options')
+       routepath = launch_options.path
+    }
+   
     this._navigationBarTitle.config = get_page_name(routepath)
     this._navigationBarTitle.lt = '21'
     let options = {
