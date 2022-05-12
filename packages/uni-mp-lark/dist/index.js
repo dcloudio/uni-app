@@ -653,7 +653,7 @@ var previewImage = {
 
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
-function addUuid (result) {
+function useDeviceId (result) {
   deviceId = deviceId || tt.getStorageSync(UUID_KEY);
   if (!deviceId) {
     deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
@@ -672,15 +672,88 @@ function addSafeAreaInsets (result) {
       top: safeArea.top,
       left: safeArea.left,
       right: result.windowWidth - safeArea.right,
-      bottom: Math.abs(result.screenHeight - safeArea.bottom)
+      bottom: result.screenHeight - safeArea.bottom
     };
   }
 }
 
+function populateParameters (result) {
+  const { brand, model, system, language, theme, version, hostName = '', platform } = result;
+
+  // osName osVersion
+  let osName = '';
+  let osVersion = '';
+  {
+    osName = system.split(' ')[0] || '';
+    osVersion = system.split(' ')[1] || '';
+  }
+  let hostVersion = version;
+
+  // deviceType
+  let deviceType = result.deviceType || 'phone';
+  {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    };
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+    const _model = model.toLocaleLowerCase();
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index];
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m];
+        break
+      }
+    }
+  }
+
+  // deviceModel
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  {
+    deviceBrand = brand.toLocaleLowerCase();
+  }
+
+  // hostName
+  let _hostName = hostName; // mp-jd
+  { _hostName = result.appName; }
+
+  // wx.getAccountInfoSync
+
+  const parameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION_NAME,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+    deviceBrand,
+    deviceModel: model,
+    deviceType,
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+    osLanguage: language,
+    osTheme: theme,
+    hostTheme: theme,
+    hostVersion,
+    hostLanguage: language,
+    hostName: _hostName,
+    // TODO
+    ua: '',
+    hostPackageName: '',
+    browserName: '',
+    browseVersion: ''
+  };
+
+  Object.assign(result, parameters);
+}
+
 var getSystemInfo = {
   returnValue: function (result) {
-    addUuid(result);
+    useDeviceId(result);
     addSafeAreaInsets(result);
+    populateParameters(result);
   }
 };
 

@@ -651,9 +651,14 @@ var previewImage = {
   }
 };
 
+function getDeviceBrand (model) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
+  if (/windows/gi.test(model)) { return 'microsoft' }
+}
+
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
-function addUuid (result) {
+function useDeviceId (result) {
   deviceId = deviceId || swan.getStorageSync(UUID_KEY);
   if (!deviceId) {
     deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
@@ -672,15 +677,79 @@ function addSafeAreaInsets (result) {
       top: safeArea.top,
       left: safeArea.left,
       right: result.windowWidth - safeArea.right,
-      bottom: Math.abs(result.screenHeight - safeArea.bottom)
+      bottom: result.screenHeight - safeArea.bottom
     };
   }
 }
 
+function populateParameters (result) {
+  const { brand, model, system, language, theme, version, hostName = '', platform } = result;
+  const isQuickApp = "mp-baidu".indexOf('quickapp-webview') !== -1;
+
+  // osName osVersion
+  let osName = '';
+  let osVersion = '';
+  {
+    osName = system.split(' ')[0] || '';
+    osVersion = system.split(' ')[1] || '';
+  }
+  let hostVersion = version;
+  // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
+  {
+    hostVersion = result.swanNativeVersion || version;
+  }
+
+  // deviceType
+  let deviceType = result.deviceType || 'phone';
+
+  // deviceModel
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  if ( isQuickApp) {
+    deviceBrand = brand.toLocaleLowerCase();
+  } else {
+    deviceBrand = getDeviceBrand(deviceBrand);
+  }
+
+  // hostName
+  let _hostName = hostName; // mp-jd
+  { _hostName = result.host; }
+
+  // wx.getAccountInfoSync
+
+  const parameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION_NAME,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+    deviceBrand,
+    deviceModel: model,
+    deviceType,
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+    osLanguage: language,
+    osTheme: theme,
+    hostTheme: theme,
+    hostVersion,
+    hostLanguage: language,
+    hostName: _hostName,
+    // TODO
+    ua: '',
+    hostPackageName: '',
+    browserName: '',
+    browseVersion: ''
+  };
+
+  Object.assign(result, parameters);
+}
+
 var getSystemInfo = {
   returnValue: function (result) {
-    addUuid(result);
+    useDeviceId(result);
     addSafeAreaInsets(result);
+    populateParameters(result);
   }
 };
 

@@ -259,7 +259,9 @@ var serviceContext = (function () {
     'unPreloadPage',
     'loadSubPackage',
     'sendHostEvent',
-    'navigateToMiniProgram'
+    'navigateToMiniProgram',
+    'getLaunchOptionsSync',
+    'getEnterOptionsSync'
   ];
 
   const ad = [
@@ -6390,9 +6392,12 @@ var serviceContext = (function () {
   }
 
   function getSystemInfo () {
-    const platform = plus.os.name.toLowerCase();
-    const ios = platform === 'ios';
-    const isAndroid = platform === 'android';
+    const { getSystemInfoSync } = weex.requireModule('plus');
+    const info = getSystemInfoSync();
+    const { deviceBrand, deviceModel, osName, osVersion, osLanguage } = info;
+    const brand = deviceBrand.toLowerCase();
+    const _osName = osName.toLowerCase();
+    const ios = _osName === 'ios';
     const {
       screenWidth,
       screenHeight
@@ -6448,21 +6453,21 @@ var serviceContext = (function () {
       height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom
     };
 
-    return {
+    return Object.assign({
       errMsg: 'getSystemInfo:ok',
-      brand: plus.device.vendor,
-      model: plus.device.model,
+      brand: brand,
+      model: deviceModel,
       pixelRatio: plus.screen.scale,
       screenWidth,
       screenHeight,
       windowWidth,
       windowHeight,
       statusBarHeight,
-      language: plus.os.language,
-      system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
+      language: osLanguage,
+      system: `${osName} ${osVersion}`,
       version: plus.runtime.innerVersion,
       fontSizeSetting: '',
-      platform,
+      platform: _osName,
       SDKVersion: '',
       windowTop,
       windowBottom,
@@ -6474,7 +6479,10 @@ var serviceContext = (function () {
         left: safeAreaInsets.left
       },
       deviceId: deviceId$1()
-    }
+    }, info, {
+      deviceBrand: brand,
+      osName: _osName
+    })
   }
 
   function vibrateLong () {
@@ -8831,6 +8839,93 @@ var serviceContext = (function () {
     );
   }
 
+  const extend = Object.assign;
+
+  function createLaunchOptions () {
+    return {
+      path: '',
+      query: {},
+      scene: 1001,
+      referrerInfo: {
+        appId: '',
+        extraData: {}
+      }
+    }
+  }
+
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+
+  function getLaunchOptions () {
+    return launchOptions
+  }
+
+  function getEnterOptions () {
+    return enterOptions
+  }
+
+  function initEnterOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(enterOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+  }
+
+  function initLaunchOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(launchOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {},
+      channel: plus.runtime.channel,
+      launcher: plus.runtime.launcher
+    });
+    extend(enterOptions, launchOptions);
+    return launchOptions
+  }
+
+  function parseRedirectInfo () {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        extraData,
+        userAction,
+        fromAppid
+      } =
+        weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+        appId: fromAppid,
+        extraData: {}
+      };
+      if (extraData) {
+        referrerInfo.extraData = extraData;
+      }
+      return {
+        path: path || '',
+        query: query ? '?' + query : '',
+        referrerInfo,
+        userAction
+      }
+    }
+  }
+
+  function getLaunchOptionsSync () {
+    return getLaunchOptions()
+  }
+  function getEnterOptionsSync () {
+    return getEnterOptions()
+  }
+
   const VD_SYNC_VERSION = 2;
 
   const PAGE_CREATE = 2;
@@ -9884,80 +9979,6 @@ var serviceContext = (function () {
       console.log(`new ${pagePath}[${pageId}]:time(${Date.now() - startTime})`);
     }
     return pageVm
-  }
-
-  const extend = Object.assign;
-
-  function createLaunchOptions () {
-    return {
-      path: '',
-      query: {},
-      scene: 1001,
-      referrerInfo: {
-        appId: '',
-        extraData: {}
-      }
-    }
-  }
-
-  const enterOptions = createLaunchOptions();
-  const launchOptions = createLaunchOptions();
-
-  function getEnterOptions () {
-    return enterOptions
-  }
-
-  function initEnterOptions ({
-    path,
-    query,
-    referrerInfo
-  }) {
-    extend(enterOptions, {
-      path,
-      query: query ? parseQuery(query) : {},
-      referrerInfo: referrerInfo || {}
-    });
-  }
-
-  function initLaunchOptions ({
-    path,
-    query,
-    referrerInfo
-  }) {
-    extend(launchOptions, {
-      path,
-      query: query ? parseQuery(query) : {},
-      referrerInfo: referrerInfo || {}
-    });
-    extend(enterOptions, launchOptions);
-    return launchOptions
-  }
-
-  function parseRedirectInfo () {
-    const weexPlus = weex.requireModule('plus');
-    if (weexPlus.getRedirectInfo) {
-      const {
-        path,
-        query,
-        extraData,
-        userAction,
-        fromAppid
-      } =
-      weexPlus.getRedirectInfo() || {};
-      const referrerInfo = {
-        appId: fromAppid,
-        extraData: {}
-      };
-      if (extraData) {
-        referrerInfo.extraData = extraData;
-      }
-      return {
-        path: path || '',
-        query: query ? '?' + query : '',
-        referrerInfo,
-        userAction
-      }
-    }
   }
 
   let isInitEntryPage = false;
@@ -12060,6 +12081,8 @@ var serviceContext = (function () {
     loadSubPackage: loadSubPackage$2,
     sendHostEvent: sendHostEvent,
     navigateToMiniProgram: navigateToMiniProgram,
+    getLaunchOptionsSync: getLaunchOptionsSync,
+    getEnterOptionsSync: getEnterOptionsSync,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,

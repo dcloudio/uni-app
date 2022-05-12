@@ -480,10 +480,120 @@ var baseApi = /*#__PURE__*/Object.freeze({
   interceptors: interceptors
 });
 
+function getDeviceBrand (model) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
+  if (/windows/gi.test(model)) { return 'microsoft' }
+}
+
+const UUID_KEY = '__DC_STAT_UUID';
+let deviceId;
+function useDeviceId (result) {
+  deviceId = deviceId || jd.getStorageSync(UUID_KEY);
+  if (!deviceId) {
+    deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
+    jd.setStorage({
+      key: UUID_KEY,
+      data: deviceId
+    });
+  }
+  result.deviceId = deviceId;
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.screenHeight - safeArea.bottom
+    };
+  }
+}
+
+function populateParameters (result) {
+  const { brand, model, system, language, theme, version, hostName = '', platform } = result;
+  const isQuickApp = "mp-jd".indexOf('quickapp-webview') !== -1;
+
+  // osName osVersion
+  let osName = '';
+  let osVersion = '';
+  {
+    osName = system.split(' ')[0] || '';
+    osVersion = system.split(' ')[1] || '';
+  }
+  let hostVersion = version;
+
+  // deviceType
+  let deviceType = result.deviceType || 'phone';
+  {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    };
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+    const _model = model.toLocaleLowerCase();
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index];
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m];
+        break
+      }
+    }
+  }
+
+  // deviceModel
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  if ( isQuickApp) {
+    deviceBrand = brand.toLocaleLowerCase();
+  } else {
+    deviceBrand = getDeviceBrand(deviceBrand);
+  }
+
+  // hostName
+  let _hostName = hostName; // mp-jd
+
+  // wx.getAccountInfoSync
+
+  const parameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION_NAME,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+    deviceBrand,
+    deviceModel: model,
+    deviceType,
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+    osLanguage: language,
+    osTheme: theme,
+    hostTheme: theme,
+    hostVersion,
+    hostLanguage: language,
+    hostName: _hostName,
+    // TODO
+    ua: '',
+    hostPackageName: '',
+    browserName: '',
+    browseVersion: ''
+  };
+
+  Object.assign(result, parameters);
+}
+
+var getSystemInfo = {
+  returnValue: function (result) {
+    useDeviceId(result);
+    addSafeAreaInsets(result);
+    populateParameters(result);
+  }
+};
+
 // import navigateTo from 'uni-helpers/navigate-to'
-// import redirectTo from '../../../mp-weixin/helpers/redirect-to'
-// import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
-// import getSystemInfo from '../../../mp-weixin/helpers/system-info'
 // import getUserProfile from '../../../mp-weixin/helpers/get-user-profile'
 
 // 需要做转换的 API 列表
@@ -491,8 +601,8 @@ const protocols = {
   // navigateTo,
   // redirectTo,
   // previewImage,
-  // getSystemInfo,
-  // getSystemInfoSync: getSystemInfo,
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo
   // getUserProfile
 };
 

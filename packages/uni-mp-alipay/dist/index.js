@@ -636,6 +636,98 @@ function removeStorageSync (key) {
   })
 }
 
+function getDeviceBrand (model) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
+  if (/windows/gi.test(model)) { return 'microsoft' }
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.screenHeight - safeArea.bottom
+    };
+  }
+}
+
+function populateParameters (result) {
+  const { brand, model, system, language, theme, version, hostName = '', platform } = result;
+  const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1;
+
+  // osName osVersion
+  let osName = '';
+  let osVersion = '';
+  {
+    osName = platform;
+    osVersion = system;
+  }
+  let hostVersion = version;
+
+  // deviceType
+  let deviceType = result.deviceType || 'phone';
+  {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    };
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+    const _model = model.toLocaleLowerCase();
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index];
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m];
+        break
+      }
+    }
+  }
+
+  // deviceModel
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  if ( isQuickApp) {
+    deviceBrand = brand.toLocaleLowerCase();
+  } else {
+    deviceBrand = getDeviceBrand(deviceBrand);
+  }
+
+  // hostName
+  let _hostName = hostName; // mp-jd
+  _hostName = result.app;
+
+  // wx.getAccountInfoSync
+
+  const parameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION_NAME,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+    deviceBrand,
+    deviceModel: model,
+    deviceType,
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+    osLanguage: language,
+    osTheme: theme,
+    hostTheme: theme,
+    hostVersion,
+    hostLanguage: language,
+    hostName: _hostName,
+    // TODO
+    ua: '',
+    hostPackageName: '',
+    browserName: '',
+    browseVersion: ''
+  };
+
+  Object.assign(result, parameters);
+}
+
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function addUuid (result) {
@@ -648,18 +740,6 @@ function addUuid (result) {
     });
   }
   result.deviceId = deviceId;
-}
-
-function addSafeAreaInsets (result) {
-  if (result.safeArea) {
-    const safeArea = result.safeArea;
-    result.safeAreaInsets = {
-      top: safeArea.top,
-      left: safeArea.left,
-      right: result.windowWidth - safeArea.right,
-      bottom: result.windowHeight - safeArea.bottom
-    };
-  }
 }
 
 function normalizePlatform (result) {
@@ -675,6 +755,7 @@ var getSystemInfo = {
     addUuid(result);
     addSafeAreaInsets(result);
     normalizePlatform(result);
+    populateParameters(result);
   }
 };
 
