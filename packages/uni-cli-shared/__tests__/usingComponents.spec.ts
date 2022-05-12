@@ -9,7 +9,7 @@ import {
   updateMiniProgramComponentsByMainFilename,
   updateMiniProgramGlobalComponents,
 } from '../src/mp/usingComponents'
-const inputDir = '/usr/xxx/projects/test/src'
+const inputDir = normalizePath(path.resolve('/usr/xxx/projects/test/src'))
 
 function normalizeComponentName(name: string) {
   return name
