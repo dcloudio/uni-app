@@ -39,6 +39,10 @@ const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
 
 module.exports = {
   compile (source, options = {}) {
+    if (Array.isArray(options.modules)) {
+      options.modules.push(compilerModuleUniad)
+    }
+
     if ( // 启用摇树优化后,需要过滤内置组件
       !options.autoComponentResourcePath ||
       options.autoComponentResourcePath.indexOf('@dcloudio/uni-h5/src') === -1
@@ -48,8 +52,6 @@ module.exports = {
     if (!options.modules) {
       options.modules = []
     }
-
-    options.modules.push(compilerModuleUniad)
 
     // transformAssetUrls
     options.modules.push(require('./asset-url'))
