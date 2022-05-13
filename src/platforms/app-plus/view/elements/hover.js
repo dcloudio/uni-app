@@ -2,7 +2,6 @@ import UniAnimationElement from './animation'
 
 export default class UniHoverElement extends UniAnimationElement {
   setAttribute (key, value) {
-    console.log('setAttribute:', key, value)
     if (key === 'hover-class') {
       this._updateHoverClass(value)
     }
