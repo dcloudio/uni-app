@@ -738,6 +738,9 @@ type CssUrlReplacer = (
 // https://drafts.csswg.org/css-syntax-3/#identifier-code-point
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\(\s*('[^']+'|"[^"]+"|[^'")]+)\s*\)/
+export const cssDataUriRE =
+  /(?<=^|[^\w\-\u0080-\uffff])data-uri\(\s*('[^']+'|"[^"]+"|[^'")]+)\s*\)/
+export const importCssRE = /@import ('[^']+\.css'|"[^"]+\.css"|[^'")]+\.css)/
 const cssImageSetRE = /(?<=image-set\()((?:[\w\-]+\([^\)]*\)|[^)])*)(?=\))/
 
 const UrlRewritePostcssPlugin: Postcss.PluginCreator<{
@@ -783,32 +786,87 @@ function rewriteCssUrls(
   css: string,
   replacer: CssUrlReplacer
 ): Promise<string> {
-  return asyncReplace(css, cssImageSetRE, async (match) => {
+  return asyncReplace(css, cssUrlRE, async (match) => {
+    const [matched, rawUrl] = match
+    return await doUrlReplace(rawUrl, matched, replacer)
+  })
+}
+
+function rewriteCssDataUris(
+  css: string,
+  replacer: CssUrlReplacer
+): Promise<string> {
+  return asyncReplace(css, cssDataUriRE, async (match) => {
+    const [matched, rawUrl] = match
+    return await doUrlReplace(rawUrl, matched, replacer, 'data-uri')
+  })
+}
+
+function rewriteImportCss(
+  css: string,
+  replacer: CssUrlReplacer
+): Promise<string> {
+  return asyncReplace(css, importCssRE, async (match) => {
+    const [matched, rawUrl] = match
+    return await doImportCSSReplace(rawUrl, matched, replacer)
+  })
+}
+
+// TODO: image and cross-fade could contain a "url" that needs to be processed
+// https://drafts.csswg.org/css-images-4/#image-notation
+// https://drafts.csswg.org/css-images-4/#cross-fade-function
+const cssNotProcessedRE = /(gradient|element|cross-fade|image)\(/
+
+async function rewriteCssImageSet(
+  css: string,
+  replacer: CssUrlReplacer
+): Promise<string> {
+  return await asyncReplace(css, cssImageSetRE, async (match) => {
     const [, rawUrl] = match
     const url = await processSrcSet(rawUrl, async ({ url }) => {
       // the url maybe url(...)
       if (cssUrlRE.test(url)) {
         return await rewriteCssUrls(url, replacer)
       }
-      return await doUrlReplace(url, url, replacer)
+      if (!cssNotProcessedRE.test(url)) {
+        return await doUrlReplace(url, url, replacer)
+      }
+      return url
     })
     return url
   })
 }
-
-function rewriteCssImageSet(
-  css: string,
-  replacer: CssUrlReplacer
-): Promise<string> {
-  return asyncReplace(css, cssImageSetRE, async (match) => {
-    const [matched, rawUrl] = match
-    const url = await processSrcSet(rawUrl, ({ url }) =>
-      doUrlReplace(url, matched, replacer)
-    )
-    return `image-set(${url})`
-  })
-}
 async function doUrlReplace(
+  rawUrl: string,
+  matched: string,
+  replacer: CssUrlReplacer,
+  funcName: string = 'url'
+) {
+  let wrap = ''
+  const first = rawUrl[0]
+  if (first === `"` || first === `'`) {
+    wrap = first
+    rawUrl = rawUrl.slice(1, -1)
+  }
+
+  if (
+    isExternalUrl(rawUrl) ||
+    isDataUrl(rawUrl) ||
+    rawUrl.startsWith('#') ||
+    varRE.test(rawUrl)
+  ) {
+    return matched
+  }
+
+  const newUrl = await replacer(rawUrl)
+  if (wrap === '' && newUrl !== encodeURI(newUrl)) {
+    // The new url might need wrapping even if the original did not have it, e.g. if a space was added during replacement
+    wrap = "'"
+  }
+  return `${funcName}(${wrap}${newUrl}${wrap})`
+}
+
+async function doImportCSSReplace(
   rawUrl: string,
   matched: string,
   replacer: CssUrlReplacer
@@ -819,16 +877,11 @@ async function doUrlReplace(
     wrap = first
     rawUrl = rawUrl.slice(1, -1)
   }
-  if (
-    isExternalUrl(rawUrl) ||
-    isDataUrl(rawUrl) ||
-    rawUrl.startsWith('#') ||
-    varRE.test(rawUrl)
-  ) {
+  if (isExternalUrl(rawUrl) || isDataUrl(rawUrl) || rawUrl.startsWith('#')) {
     return matched
   }
 
-  return `url(${wrap}${await replacer(rawUrl)}${wrap})`
+  return `@import ${wrap}${await replacer(rawUrl)}${wrap}`
 }
 
 export async function minifyCSS(css: string, config: ResolvedConfig) {
@@ -1055,6 +1108,7 @@ function preprocessCss(content: string, isNVue: boolean = false) {
   }
   return content
 }
+
 /**
  * relative url() inside \@imported sass and less files must be rebased to use
  * root file as base.
@@ -1067,21 +1121,29 @@ async function rebaseUrls(
 ): Promise<Sass.ImporterReturnType> {
   file = path.resolve(file) // ensure os-specific flashes
 
-  // 条件编译
-  const contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue)
+  // fixed by xxxxxx 条件编译
+  let contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue)
 
   // in the same dir, no need to rebase
   const fileDir = path.dirname(file)
   const rootDir = path.dirname(rootFile)
-
   if (fileDir === rootDir) {
     return { file, contents }
   }
+
   // no url()
-  if (!cssUrlRE.test(contents)) {
+  const hasUrls = cssUrlRE.test(contents)
+  // data-uri() calls
+  const hasDataUris = cssDataUriRE.test(contents)
+  // no @import xxx.css
+  const hasImportCss = importCssRE.test(contents)
+
+  if (!hasUrls && !hasDataUris && !hasImportCss) {
     return { file, contents }
   }
-  const rebased = await rewriteCssUrls(contents, (url) => {
+
+  let rebased
+  const rebaseFn = (url: string) => {
     if (url.startsWith('/')) return url
     // match alias, no need to rewrite
     for (const { find } of alias) {
@@ -1094,10 +1156,24 @@ async function rebaseUrls(
     const absolute = path.resolve(fileDir, url)
     const relative = path.relative(rootDir, absolute)
     return normalizePath(relative)
-  })
+  }
+
+  // fix css imports in less such as `@import "foo.css"`
+  if (hasImportCss) {
+    contents = await rewriteImportCss(contents, rebaseFn)
+  }
+
+  if (hasUrls) {
+    contents = await rewriteCssUrls(rebased || contents, rebaseFn)
+  }
+
+  if (hasDataUris) {
+    contents = await rewriteCssDataUris(rebased || contents, rebaseFn)
+  }
+
   return {
     file,
-    contents: rebased,
+    contents,
   }
 }
 
