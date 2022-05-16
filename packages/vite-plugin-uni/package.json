@@ -39,6 +39,7 @@
     "debug": "^4.3.3",
     "estree-walker": "^2.0.2",
     "express": "^4.17.1",
+    "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
     "jsonc-parser": "^3.0.0",
