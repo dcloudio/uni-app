@@ -39,7 +39,9 @@ function transition (declaration) {
       map['transition-delay'].push((match[4] || '0s').trim())
     }
     for (var key in map) {
-      result.push(generateDeclaration(key, map[key].join(', '), important, position))
+      var value = map[key]
+      value = value.find(item => item !== value[0]) ? value.join(', ') : value[0]
+      result.push(generateDeclaration(key, value, important, position))
     }
   }
   return result

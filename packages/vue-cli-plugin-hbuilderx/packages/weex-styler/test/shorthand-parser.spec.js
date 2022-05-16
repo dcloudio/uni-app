@@ -73,6 +73,36 @@ describe('shorthand-parser', function () {
       value: '0s, 1s, 0s',
       position: {}
     }])
+
+    expect(shorthandParser([{
+      type: 'declaration',
+      property: 'transition',
+      value: 'width 2s, height 2s',
+      position: {}
+    }])).eql([{
+      type: 'declaration',
+      property: 'transition-property',
+      value: 'width, height',
+      position: {}
+    },
+    {
+      type: 'declaration',
+      property: 'transition-duration',
+      value: '2s',
+      position: {}
+    },
+    {
+      type: 'declaration',
+      property: 'transition-timing-function',
+      value: 'ease',
+      position: {}
+    },
+    {
+      type: 'declaration',
+      property: 'transition-delay',
+      value: '0s',
+      position: {}
+    }])
   })
 
   it('parse margin', function () {
