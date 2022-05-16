@@ -393,7 +393,7 @@ let hasNVue = false
 const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
 process.env.UNI_COMPILER_VERSION = ''
 if (pagesPkg) {
-  process.env.UNI_COMPILER_VERSION =  pagesPkg['uni-app'].compilerVersion
+  process.env.UNI_COMPILER_VERSION = pagesPkg['uni-app'].compilerVersion
 }
 const compileModeUrl = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
@@ -404,7 +404,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   }))
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
   try {
-    let info = process.env.UNI_COMPILER_VERSION
+    const info = process.env.UNI_COMPILER_VERSION
     if (process.env.UNI_PLATFORM === 'app-plus') {
       if (process.env.UNI_USING_V3) {
         console.log(info)
