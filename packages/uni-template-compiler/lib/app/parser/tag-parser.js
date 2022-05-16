@@ -1,11 +1,9 @@
 const {
-  hasOwn
+  hasOwn,
+  elements
 } = require('../util')
 
 const tags = require('@dcloudio/uni-cli-shared/lib/tags')
-
-// web components
-const elements = ['uni-view']
 
 // 仅限 view 层
 module.exports = function parseTag (el) {
