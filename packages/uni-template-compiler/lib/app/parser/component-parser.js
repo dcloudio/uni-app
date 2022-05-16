@@ -1,5 +1,6 @@
 const {
-  ID
+  ID,
+  elements
 } = require('../util')
 
 const {
@@ -9,7 +10,7 @@ const {
 // 仅限 view 层
 module.exports = function parseComponent (el) {
   // 需要把自定义组件的 attrs, props 全干掉
-  if (el.tag && isComponent(el.tag)) {
+  if (el.tag && !elements.includes(el.tag) && isComponent(el.tag)) {
     // 仅保留 id、ID、data
     el.attrs && (el.attrs = el.attrs.filter(attr => {
       const name = attr.name

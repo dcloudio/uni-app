@@ -20,6 +20,9 @@ const V_FOR = 'f'
 const V_IF = 'i'
 const V_ELSE_IF = 'e'
 
+// web components
+const elements = ['uni-view']
+
 function isVar (str) {
   if (!str) {
     return false
@@ -273,6 +276,7 @@ module.exports = {
   GET_DATA,
   SET_MP_CLASS,
   GET_CHANGE_DATA,
+  elements,
   isVar,
   hasOwn,
   addAttr,
