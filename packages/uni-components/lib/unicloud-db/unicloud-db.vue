@@ -52,7 +52,7 @@ export default {
   // #ifdef VUE3
   setup(props) {
     // 单条记录时，使用shallowRef（仅支持赋值修改），列表时，采用ref（支持push等修改）
-    const dataListRef = props.getone ? shallowSsrRef(undefined) : ssrRef([])
+    const dataListRef = props.ssrKey ? (props.getone ? shallowSsrRef(undefined, props.ssrKey) : ssrRef([], props.ssrKey)) : (props.getone ? shallowSsrRef(undefined) : ssrRef([]))
     const instance = getCurrentInstance()
     onMounted(() => {
       // client端判断是否需要再次请求数据（正常情况下，SSR返回的html中已包含此数据状态，无需再次额外请求）
@@ -165,6 +165,10 @@ export default {
     manual: {
       type: Boolean,
       default: false
+    },
+    ssrKey: {
+      type: [String, Number],
+      default: ""
     }
   },
   data() {
