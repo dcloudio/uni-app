@@ -758,11 +758,14 @@ importers:
 
   packages/uni-stacktracey:
     specifiers:
+      '@dcloudio/types': ^2.6.6
       source-map: ^0.7.3
       stacktracey: ^2.1.8
     dependencies:
       source-map: 0.7.3
       stacktracey: 2.1.8
+    devDependencies:
+      '@dcloudio/types': 2.6.6
 
   packages/uni-stat:
     specifiers:
