@@ -54,7 +54,9 @@ export function normalizeJsonFilename(filename: string) {
   return normalizeNodeModules(filename)
 }
 
-export function findChangedJsonFiles() {
+export function findChangedJsonFiles(
+  supportGlobalUsingComponents: boolean = true
+) {
   const changedJsonFiles = new Map<string, string>()
   function findChangedFile(filename: string, json: Record<string, any>) {
     const newJson = JSON.parse(JSON.stringify(json))
@@ -66,6 +68,9 @@ export function findChangedJsonFiles() {
     // 格式化为相对路径，这样作为分包也可以直接运行
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
     if (filename !== 'app') {
+      if (!supportGlobalUsingComponents) {
+        // TODO 从 appJsonCache 中读取 usingComponents 并 补充到 usingComponents 中
+      }
       Object.keys(usingComponents).forEach((name) => {
         const componentFilename = usingComponents[name]
         if (componentFilename.startsWith('/')) {
