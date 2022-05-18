@@ -5,55 +5,43 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var fs = require('fs');
 var StackTracey = require('stacktracey');
 var sourceMap = require('source-map');
-var axios = require('axios');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var StackTracey__default = /*#__PURE__*/_interopDefaultLegacy(StackTracey);
-var axios__default = /*#__PURE__*/_interopDefaultLegacy(axios);
 
-const isBrowser = typeof globalThis !== 'undefined' && globalThis.window === globalThis && globalThis.navigator;
 const nixSlashes = (x) => x.replace(/\\/g, '/');
 const sourcemapCatch = {};
-if (isBrowser) {
-    // @ts-ignore
-    sourceMap.SourceMapConsumer.initialize({
-        'lib/mappings.wasm': 'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
-    });
-}
 function stacktracey(stacktrace, opts) {
     const parseStack = [];
     const stack = opts.preset.parseStacktrace(stacktrace);
     stack.items.forEach((item, index) => {
         const fn = () => {
             const { line = 0, column = 0, file, fileName } = item;
-            let sourceMapUrl;
             try {
-                sourceMapUrl = opts.preset.parseSourceMapUrl(file, fileName);
-                if (sourceMapUrl) {
-                    return Promise.resolve(getSourceMapContent(sourceMapUrl)).then((content) => {
-                        if (content)
-                            return sourceMap.SourceMapConsumer.with(content, null, (consumer) => {
-                                const sourceMapContent = parseSourceMapContent(consumer, {
-                                    line,
-                                    column,
-                                });
-                                if (sourceMapContent) {
-                                    const { source, sourcePath, sourceLine, sourceColumn, fileName = '', } = sourceMapContent;
-                                    stack.items[index] = Object.assign({}, item, {
-                                        file: source,
-                                        line: sourceLine,
-                                        column: sourceColumn,
-                                        fileShort: sourcePath,
-                                        fileRelative: sourcePath,
-                                        fileName,
-                                    });
-                                }
+                return opts.preset
+                    .getSourceMapContent(file, fileName)
+                    .then((content) => {
+                    if (content)
+                        return sourceMap.SourceMapConsumer.with(content, null, (consumer) => {
+                            const sourceMapContent = parseSourceMapContent(consumer, {
+                                line,
+                                column,
                             });
-                    });
-                }
-                return Promise.resolve();
+                            if (sourceMapContent) {
+                                const { source, sourcePath, sourceLine, sourceColumn, fileName = '', } = sourceMapContent;
+                                stack.items[index] = Object.assign({}, item, {
+                                    file: source,
+                                    line: sourceLine,
+                                    column: sourceColumn,
+                                    fileShort: sourcePath,
+                                    fileRelative: sourcePath,
+                                    fileName,
+                                });
+                            }
+                        });
+                });
             }
             catch (error) {
                 return Promise.resolve();
@@ -85,16 +73,16 @@ function getSourceMapContent(sourcemapUrl) {
             (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
                 try {
                     if (/^[a-z]+:/i.test(sourcemapUrl)) {
-                        axios__default["default"]
-                            .get(sourcemapUrl)
-                            .then((res) => {
-                            console.log('sourcemapUrl :>> ', sourcemapUrl);
-                            sourcemapCatch[sourcemapUrl] = res.data;
-                            resolve(sourcemapCatch[sourcemapUrl]);
-                        })
-                            .catch((_) => {
-                            resolve('');
-                        });
+                        /* uni
+                          .request(sourcemapUrl)
+                          .then((res) => {
+                            console.log('sourcemapUrl :>> ', sourcemapUrl)
+                            sourcemapCatch[sourcemapUrl] = res.data
+                            resolve(sourcemapCatch[sourcemapUrl])
+                          })
+                          .catch((_) => {
+                            resolve('')
+                          }) */
                     }
                     else {
                         sourcemapCatch[sourcemapUrl] = fs__default["default"].readFileSync(sourcemapUrl, 'utf-8');
@@ -136,6 +124,9 @@ function uniStracktraceyPreset(opts) {
             // 根据 base,platform,version,filename 组合 sourceMapUrl
             return `${base}/${version}/.sourcemap/${platform}/${file.split('.')[0]}.js.map`;
         },
+        getSourceMapContent(file, fileName) {
+            return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName)));
+        },
         parseStacktrace(stacktrace) {
             return (stack = new StackTracey__default["default"](stacktrace));
         },
@@ -153,6 +144,10 @@ function utsStracktraceyPreset(opts) {
         parseSourceMapUrl(file, fileName) {
             // 根据 base,filename 组合 sourceMapUrl
             return `${opts.base}/${fileName}.map`;
+        },
+        getSourceMapContent(file, fileName) {
+            // 根据 base,filename 组合 sourceMapUrl
+            return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName)));
         },
         parseStacktrace(str) {
             const lines = (str || '').split('\n');

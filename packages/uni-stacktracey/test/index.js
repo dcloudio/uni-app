@@ -13,7 +13,7 @@ e: [PackagePath]/wgtRoot/__UNI__E070870/nativeplugins/DCloud-UTSPlugin/android/s
 
 FAILURE: Build failed with an exception.`
 
-/* stacktracey(
+stacktracey(
   `ReferenceError: Sentry is not defined
   at Proxy.throwError(/vue3/assets/pages-index-index.4077a069.js:1:295)
   at e(/vue3/assets/index.2be9343a.js:1:52317)
@@ -28,11 +28,11 @@ FAILURE: Build failed with an exception.`
       version: '1.0.0',
     }),
   }
-).then((res) => console.log(res)) */
+).then((res) => console.log(res))
 
-stacktracey(utsErrorMsg, {
+/* stacktracey(utsErrorMsg, {
   preset: utsStracktraceyPreset({
     base: '/wgtRoot/__UNI__E070870/nativeplugins/DCloud-UTSPlugin/android/src/io/dcloud/uniplugin',
     sourceRoot: '',
   }),
-}).then((res) => console.log(res))
+}).then((res) => console.log(res)) */

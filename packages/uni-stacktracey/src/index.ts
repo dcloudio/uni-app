@@ -6,7 +6,6 @@ import {
   IndexedSourceMapConsumer,
   Position,
 } from 'source-map'
-import axios from 'axios'
 
 const nixSlashes = (x: string) => x.replace(/\\/g, '/')
 const sourcemapCatch: Record<string, string | Promise<string>> = {}
@@ -39,6 +38,7 @@ interface StacktraceyPreset {
    * @param filename
    */
   parseSourceMapUrl(file: string, fileName: string): string
+  getSourceMapContent(file: string, fileName: string): Promise<string>
 }
 
 interface StacktraceyOptions {
@@ -56,42 +56,37 @@ export function stacktracey(
   stack.items.forEach((item, index) => {
     const fn = () => {
       const { line = 0, column = 0, file, fileName } = item
-      let sourceMapUrl
       try {
-        sourceMapUrl = opts.preset.parseSourceMapUrl(file, fileName)
-        if (sourceMapUrl) {
-          return Promise.resolve(getSourceMapContent(sourceMapUrl)).then(
-            (content) => {
-              if (content)
-                return SourceMapConsumer.with(content, null, (consumer) => {
-                  const sourceMapContent = parseSourceMapContent(consumer, {
-                    line,
-                    column,
-                  })
-
-                  if (sourceMapContent) {
-                    const {
-                      source,
-                      sourcePath,
-                      sourceLine,
-                      sourceColumn,
-                      fileName = '',
-                    } = sourceMapContent
-
-                    stack.items[index] = Object.assign({}, item, {
-                      file: source,
-                      line: sourceLine,
-                      column: sourceColumn,
-                      fileShort: sourcePath,
-                      fileRelative: sourcePath,
-                      fileName,
-                    })
-                  }
+        return opts.preset
+          .getSourceMapContent(file, fileName)
+          .then((content) => {
+            if (content)
+              return SourceMapConsumer.with(content, null, (consumer) => {
+                const sourceMapContent = parseSourceMapContent(consumer, {
+                  line,
+                  column,
                 })
-            }
-          )
-        }
-        return Promise.resolve()
+
+                if (sourceMapContent) {
+                  const {
+                    source,
+                    sourcePath,
+                    sourceLine,
+                    sourceColumn,
+                    fileName = '',
+                  } = sourceMapContent
+
+                  stack.items[index] = Object.assign({}, item, {
+                    file: source,
+                    line: sourceLine,
+                    column: sourceColumn,
+                    fileShort: sourcePath,
+                    fileRelative: sourcePath,
+                    fileName,
+                  })
+                }
+              })
+          })
       } catch (error) {
         return Promise.resolve()
       }
@@ -125,8 +120,8 @@ function getSourceMapContent(sourcemapUrl: string) {
       (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
         try {
           if (/^[a-z]+:/i.test(sourcemapUrl)) {
-            axios
-              .get(sourcemapUrl)
+            /* uni
+              .request(sourcemapUrl)
               .then((res) => {
                 console.log('sourcemapUrl :>> ', sourcemapUrl)
                 sourcemapCatch[sourcemapUrl] = res.data
@@ -134,7 +129,7 @@ function getSourceMapContent(sourcemapUrl: string) {
               })
               .catch((_) => {
                 resolve('')
-              })
+              }) */
           } else {
             sourcemapCatch[sourcemapUrl] = fs.readFileSync(
               sourcemapUrl,
@@ -207,6 +202,11 @@ export function uniStracktraceyPreset(
         file.split('.')[0]
       }.js.map`
     },
+    getSourceMapContent(file, fileName) {
+      return Promise.resolve(
+        getSourceMapContent(this.parseSourceMapUrl(file, fileName))
+      )
+    },
     parseStacktrace(stacktrace) {
       return (stack = new StackTracey(stacktrace))
     },
@@ -237,6 +237,12 @@ export function utsStracktraceyPreset(
     parseSourceMapUrl(file, fileName) {
       // 根据 base,filename 组合 sourceMapUrl
       return `${opts.base}/${fileName}.map`
+    },
+    getSourceMapContent(file, fileName) {
+      // 根据 base,filename 组合 sourceMapUrl
+      return Promise.resolve(
+        getSourceMapContent(this.parseSourceMapUrl(file, fileName))
+      )
     },
     parseStacktrace(str) {
       const lines = (str || '').split('\n')
