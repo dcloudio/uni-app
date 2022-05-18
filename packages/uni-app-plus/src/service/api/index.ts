@@ -7,6 +7,8 @@ export * from './file/removeSavedFile'
 export * from './file/getFileInfo'
 export * from './file/openDocument'
 
+export * from './base/canIUse'
+
 export * from './device/systemInfo'
 export * from './device/compass'
 export * from './device/vibrate'
