@@ -192,6 +192,7 @@ const options = {
         darkmode: true,
         subpackages: true,
         plugins: true,
+        usingComponents: true,
     },
     project: {
         filename: projectConfigFilename,
