@@ -98,6 +98,7 @@ export const options: UniMiniProgramPluginOptions = {
     darkmode: true,
     subpackages: true,
     plugins: true,
+    usingComponents: true,
   },
   project: {
     filename: projectConfigFilename,

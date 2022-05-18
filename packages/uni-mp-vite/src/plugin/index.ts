@@ -59,6 +59,10 @@ export interface UniMiniProgramPluginOptions {
      * 是否支持发行插件
      */
     plugins?: boolean
+    /**
+     * 是否支持全局组件
+     */
+    usingComponents: boolean
     normalize?: (appJson: AppJson) => AppJson
   }
   project?: {

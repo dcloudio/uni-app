@@ -91,14 +91,16 @@ export function uniPagesJsonPlugin(
         }
       },
       generateBundle() {
-        findChangedJsonFiles().forEach((value, key) => {
-          debugPagesJson('json.changed', key)
-          this.emitFile({
-            type: 'asset',
-            fileName: key + '.json',
-            source: value,
-          })
-        })
+        findChangedJsonFiles(options.app.usingComponents).forEach(
+          (value, key) => {
+            debugPagesJson('json.changed', key)
+            this.emitFile({
+              type: 'asset',
+              fileName: key + '.json',
+              source: value,
+            })
+          }
+        )
       },
     }
   })

@@ -66,6 +66,7 @@ export const options: UniMiniProgramPluginOptions = {
   app: {
     darkmode: false,
     subpackages: true,
+    usingComponents: true,
     normalize(appJson) {
       const hasUsingComponents =
         appJson.usingComponents && Object.keys(appJson.usingComponents).length
