@@ -120,16 +120,14 @@ function getSourceMapContent(sourcemapUrl: string) {
       (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
         try {
           if (/^[a-z]+:/i.test(sourcemapUrl)) {
-            /* uni
-              .request(sourcemapUrl)
-              .then((res) => {
+            uni.request({
+              url: sourcemapUrl,
+              success: (res) => {
                 console.log('sourcemapUrl :>> ', sourcemapUrl)
-                sourcemapCatch[sourcemapUrl] = res.data
+                sourcemapCatch[sourcemapUrl] = res.data as string
                 resolve(sourcemapCatch[sourcemapUrl])
-              })
-              .catch((_) => {
-                resolve('')
-              }) */
+              },
+            })
           } else {
             sourcemapCatch[sourcemapUrl] = fs.readFileSync(
               sourcemapUrl,
@@ -212,9 +210,10 @@ export function uniStracktraceyPreset(
     },
     asTableStacktrace({ maxColumnWidths, stacktrace } = { stacktrace: '' }) {
       const errorName = stacktrace.split('\n')[0]
-      return errorName.indexOf('at') === -1
-        ? `${errorName}\n`
-        : '' + (stack.asTable ? stack.asTable({ maxColumnWidths }) : '')
+      return (
+        (errorName.indexOf('at') === -1 ? `${errorName}\n` : '') +
+        (stack.asTable ? stack.asTable({ maxColumnWidths }) : '')
+      )
     },
   }
 }
@@ -233,10 +232,11 @@ export function utsStracktraceyPreset(
   opts: UtsStracktraceyPreset
 ): StacktraceyPreset {
   let stack: Stacktracey
+  let errStack: string[] = []
   return {
     parseSourceMapUrl(file, fileName) {
       // 根据 base,filename 组合 sourceMapUrl
-      return `${opts.base}/${fileName}.map`
+      return `${opts.base}${file.replace(opts.sourceRoot, '')}.map`
     },
     getSourceMapContent(file, fileName) {
       // 根据 base,filename 组合 sourceMapUrl
@@ -248,7 +248,7 @@ export function utsStracktraceyPreset(
       const lines = (str || '').split('\n')
 
       const entries = lines
-        .map((line) => {
+        .map((line, index) => {
           line = line.trim()
 
           let callee,
@@ -256,17 +256,19 @@ export function utsStracktraceyPreset(
             planA,
             planB
 
-          if ((planA = line.match(/e: \[(.+)\](.+): (.+)/))) {
-            callee = planA[1]
+          if ((planA = line.match(/e: (.+\.kt)(.+\))*:\s*(.+)*/))) {
+            errStack.push('%StacktraceyItem%')
+            callee = 'e: '
             fileLineColumn = (
-              planA[2].match(/(.+):.*\((\d+).+?(\d+)\)/) || []
+              planA[2].match(/.*:.*\((\d+).+?(\d+)\)/) || []
             ).slice(1)
           } else {
+            errStack.push(line)
             return undefined
           }
 
-          const fileName = fileLineColumn[0]
-            ? (planB = fileLineColumn[0].match(/(\/.*)*\/(.+)/) || [])[2] || ''
+          const fileName = planA[1]
+            ? (planB = planA[1].match(/(.*)*\/(.+)/) || [])[2] || ''
             : ''
 
           return {
@@ -274,9 +276,9 @@ export function utsStracktraceyPreset(
             callee: callee || '',
             index: false,
             native: false,
-            file: nixSlashes(fileLineColumn[0] || ''),
-            line: parseInt(fileLineColumn[1] || '', 10) || undefined,
-            column: parseInt(fileLineColumn[2] || '', 10) || undefined,
+            file: nixSlashes(planA[1] || ''),
+            line: parseInt(fileLineColumn[0] || '', 10) || undefined,
+            column: parseInt(fileLineColumn[1] || '', 10) || undefined,
             fileName,
             fileShort: planB ? planB[1] : '',
             errMsg: planA[3] || '',
@@ -292,19 +294,16 @@ export function utsStracktraceyPreset(
       })
     },
     asTableStacktrace({ stacktrace } = { stacktrace: '' }) {
-      const stacktraceSplit = stacktrace.split('\n')
-      const errorName = stacktraceSplit[0]
-      const errorMsg = stacktraceSplit.pop()
-      return (
-        (errorName.indexOf('e:') === -1 ? `${errorName}\n` : '') +
-        (stack.items
-          .map(
-            (item) =>
-              `e: [${item.callee}]${item.fileShort}/${item.fileName}: (${item.line}, ${item.column}): ${item.errMsg}`
-          )
-          .join('\n') +
-          (errorMsg ? `\n\n${errorMsg}` : ''))
-      )
+      return errStack
+        .map((item) => {
+          if (item === '%StacktraceyItem%') {
+            const _stack = stack.items.shift()
+            if (_stack)
+              return `${_stack.callee}${_stack.fileShort}/${_stack.fileName}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`
+          }
+          return item
+        })
+        .join('\n')
     },
   }
 }

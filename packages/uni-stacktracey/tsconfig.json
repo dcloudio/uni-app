@@ -15,6 +15,10 @@
     "lib": [
       "ESNext",
       "DOM"
+    ],
+    "types": [
+      "node",
+      "@dcloudio/types"
     ]
   },
   "include": [

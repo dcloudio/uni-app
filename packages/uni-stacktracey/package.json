@@ -23,5 +23,7 @@
     "stacktracey": "^2.1.8",
     "source-map": "^0.7.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@dcloudio/types": "^2.6.6"
+  }
 }
