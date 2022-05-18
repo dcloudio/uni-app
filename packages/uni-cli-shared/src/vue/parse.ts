@@ -10,8 +10,8 @@ import MagicString from 'magic-string'
 import { isElementNode, parseVue } from '../vite/utils/ast'
 
 const BLOCK_RE = /<\/block>/
-const WXS_LANG_RE = /lang=["|'](renderjs|wxs)["|']/
-const WXS_ATTRS = ['wxs', 'renderjs']
+const WXS_LANG_RE = /lang=["|'](renderjs|wxs|sjs)["|']/
+const WXS_ATTRS = ['wxs', 'renderjs', 'sjs']
 
 export function parseVueCode(code: string, isNVue = false) {
   const hasBlock = BLOCK_RE.test(code)
