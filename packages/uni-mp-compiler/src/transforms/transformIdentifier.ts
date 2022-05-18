@@ -27,18 +27,31 @@ import {
   rewritePropsBinding,
 } from './transformComponent'
 import { isUserComponent } from '@dcloudio/uni-cli-shared'
+import { isString, isSymbol } from '@vue/shared'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
     if (node.type === NodeTypes.INTERPOLATION) {
-      node.content = rewriteExpression(
-        createCompoundExpression([
-          `${context.helperString(TO_DISPLAY_STRING)}(`,
-          node.content,
-          `)`,
-        ]),
-        context
-      )
+      const content = node.content
+      let isFilter = false
+      if (content.type === NodeTypes.COMPOUND_EXPRESSION) {
+        const firstChild = content.children[0]
+        isFilter =
+          !isString(firstChild) &&
+          !isSymbol(firstChild) &&
+          firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
+          context.filters.includes(firstChild.content)
+      }
+      if (!isFilter) {
+        node.content = rewriteExpression(
+          createCompoundExpression([
+            `${context.helperString(TO_DISPLAY_STRING)}(`,
+            content,
+            `)`,
+          ]),
+          context
+        )
+      }
     } else if (isSlotOutlet(node)) {
       rewriteSlot(node, context)
     } else if (node.type === NodeTypes.ELEMENT) {
