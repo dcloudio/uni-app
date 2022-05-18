@@ -11135,6 +11135,15 @@ const offPushMessage = (fn) => {
     }
 };
 
+const API_CAN_I_USE = 'canIUse';
+const CanIUseProtocol = [
+    {
+        name: 'schema',
+        type: String,
+        required: true,
+    },
+];
+
 const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
 
 const API_MAKE_PHONE_CALL = 'makePhoneCall';
@@ -12981,6 +12990,13 @@ const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath, fileType }, 
     const errorCallback = warpPlusErrorCallback(reject);
     plus.runtime.openDocument(getRealPath(filePath), undefined, resolve, errorCallback);
 }, OpenDocumentProtocol, OpenDocumentOptions);
+
+const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
+    if (hasOwn$1(uni, schema)) {
+        return true;
+    }
+    return false;
+}, CanIUseProtocol);
 
 const isIOS = plus.os.name === 'iOS';
 let config;
@@ -19000,6 +19016,7 @@ var uni$1 = {
   getSavedFileInfo: getSavedFileInfo,
   removeSavedFile: removeSavedFile,
   openDocument: openDocument,
+  canIUse: canIUse,
   getSystemInfoSync: getSystemInfoSync,
   getSystemInfo: getSystemInfo,
   onCompassChange: onCompassChange,
