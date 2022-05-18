@@ -32,6 +32,8 @@ const SCHEMA_CSS = {
   'css.env': cssEnv,
   'css.constant': cssConstant,
   'css.backdrop-filter': cssBackdropFilter,
+  getLaunchOptionsSync: false,
+  getEnterOptionsSync: false,
 }
 
 export const canIUse = defineSyncApi<API_TYPE_CAN_I_USE>(
