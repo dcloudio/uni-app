@@ -5,7 +5,5 @@ function cssSupports (css) {
 export default {
   'css.var': cssSupports('--a:0'),
   'css.env': cssSupports('top:env(a)'),
-  'css.constant': cssSupports('top:constant(a)'),
-  getLaunchOptionsSync: false,
-  getEnterOptionsSync: false
+  'css.constant': cssSupports('top:constant(a)')
 }
