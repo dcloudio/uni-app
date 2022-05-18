@@ -1,0 +1,9 @@
+[
+	{
+		"input": {
+			"src/index.ts": [
+				"dist/uni-stacktracey.cjs.js"
+			]
+		}
+	}
+]
