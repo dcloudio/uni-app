@@ -189,7 +189,9 @@ importers:
       '@dcloudio/uni-shared': 3.0.0-alpha-3041020220516002
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.33
+      autoprefixer: ^10.4.7
       pako: ^1.0.11
+      postcss: ^8.4.13
       vue: 3.2.33
     dependencies:
       '@dcloudio/uni-app-vite': link:../uni-app-vite
@@ -202,7 +204,9 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.33
+      autoprefixer: 10.4.7_postcss@8.4.13
       pako: 1.0.11
+      postcss: 8.4.13
       vue: 3.2.33
 
   packages/uni-app-vite:
@@ -3274,7 +3278,6 @@ packages:
       picocolors: 1.0.0
       postcss: 8.4.13
       postcss-value-parser: 4.2.0
-    dev: false
 
   /aws-sign2/0.7.0:
     resolution: {integrity: sha1-tG6JCTSpWR8tL2+G1+ap8bP+dqg=}
@@ -4753,7 +4756,6 @@ packages:
 
   /fraction.js/4.2.0:
     resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}
-    dev: false
 
   /fresh/0.5.2:
     resolution: {integrity: sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=}
@@ -6419,7 +6421,6 @@ packages:
   /normalize-range/0.1.2:
     resolution: {integrity: sha1-LRDAa9/TEuqXd2laTShDlFa3WUI=}
     engines: {node: '>=0.10.0'}
-    dev: false
 
   /npm-run-path/2.0.2:
     resolution: {integrity: sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8=}
@@ -6798,7 +6799,6 @@ packages:
 
   /postcss-value-parser/4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
-    dev: false
 
   /postcss/8.4.13:
     resolution: {integrity: sha512-jtL6eTBrza5MPzy8oJLFuUscHDXTV5KcLlqAWHl5q5WYRfnNRGSmOZmOZ1T6Gy7A99mOZfqungmZMpMmCVJ8ZA==}
