@@ -181,24 +181,25 @@ function parseSourceMapContent(
 
 interface UniStracktraceyPresetOptions {
   base: string
-  appId: string
-  platform: string
-  version: string
+  sourceRoot: string
 }
 export function uniStracktraceyPreset(
   opts: UniStracktraceyPresetOptions
 ): StacktraceyPreset {
-  const { base, platform, version, appId } = opts
+  const { base, sourceRoot } = opts
 
   let stack: Stacktracey
 
   return {
     parseSourceMapUrl(file, fileName) {
-      if (!platform || !version || !appId) return ''
-      // 根据 base,platform,version,filename 组合 sourceMapUrl
-      return `${base}/${appId}/${version}/${platform}/.sourcemap/${
-        fileName.split('.')[0]
-      }.js.map`
+      // 组合 sourceMapUrl
+      if (!base) return ''
+      file = (file.match(/(\/.*)/) || [])[1]
+      if (!file) return ''
+      if (sourceRoot) {
+        return `${file.replace(sourceRoot, base)}.map`
+      }
+      return `${base}/${file}.map`
     },
     getSourceMapContent(file, fileName) {
       return Promise.resolve(
@@ -231,12 +232,18 @@ interface UtsStracktraceyPreset {
 export function utsStracktraceyPreset(
   opts: UtsStracktraceyPreset
 ): StacktraceyPreset {
+  const { base, sourceRoot } = opts
+
   let stack: Stacktracey
   let errStack: string[] = []
+
   return {
     parseSourceMapUrl(file, fileName) {
-      // 根据 base,filename 组合 sourceMapUrl
-      return `${opts.base}${file.replace(opts.sourceRoot, '')}.map`
+      // 组合 sourceMapUrl
+      if (sourceRoot) {
+        return `${file.replace(sourceRoot, base)}.map`
+      }
+      return `${base}/${file}.map`
     },
     getSourceMapContent(file, fileName) {
       // 根据 base,filename 组合 sourceMapUrl

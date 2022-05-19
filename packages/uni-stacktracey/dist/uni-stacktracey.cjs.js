@@ -113,14 +113,20 @@ function parseSourceMapContent(consumer, obj) {
     }
 }
 function uniStracktraceyPreset(opts) {
-    const { base, platform, version, appId } = opts;
+    const { base, sourceRoot } = opts;
     let stack;
     return {
         parseSourceMapUrl(file, fileName) {
-            if (!platform || !version || !appId)
+            // 组合 sourceMapUrl
+            if (!base)
                 return '';
-            // 根据 base,platform,version,filename 组合 sourceMapUrl
-            return `${base}/${appId}/${version}/${platform}/.sourcemap/${fileName.split('.')[0]}.js.map`;
+            file = (file.match(/(\/.*)/) || [])[1];
+            if (!file)
+                return '';
+            if (sourceRoot) {
+                return `${file.replace(sourceRoot, base)}.map`;
+            }
+            return `${base}/${file}.map`;
         },
         getSourceMapContent(file, fileName) {
             return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName)));
@@ -141,7 +147,7 @@ function utsStracktraceyPreset(opts) {
     return {
         parseSourceMapUrl(file, fileName) {
             // 根据 base,filename 组合 sourceMapUrl
-            return `${opts.base}${file.replace(opts.sourceRoot, '')}.map`;
+            return `${file.replace(opts.sourceRoot, opts.base)}.map`;
         },
         getSourceMapContent(file, fileName) {
             // 根据 base,filename 组合 sourceMapUrl

@@ -33,10 +33,8 @@ at HTMLElement.i(/static/js/chunk-vendors.75525bd5.js:7:609894)`
 
 stacktracey(uniErrorMsg, {
   preset: uniStracktraceyPreset({
-    base: 'D:/DCloud_local_git/uni-app-next/packages/uni-stacktracey/test',
-    platform: 'h5',
-    version: '1.0.0',
-    appId: '__UNI__APPID__',
+    base: 'D:/DCloud_local_git/uni-app-next/packages/uni-stacktracey/test/__UNI__APPID__/1.0.0/.sourcemap/h5/',
+    sourceRoot: '',
   }),
 }).then((res) => {
   console.log('res :>> ', res)
