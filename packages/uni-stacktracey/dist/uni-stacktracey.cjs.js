@@ -72,7 +72,7 @@ function getSourceMapContent(sourcemapUrl) {
         return (sourcemapCatch[sourcemapUrl] ||
             (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
                 try {
-                    if (/^[a-z]+:/i.test(sourcemapUrl)) {
+                    if (/^[http|https]+:/i.test(sourcemapUrl)) {
                         uni.request({
                             url: sourcemapUrl,
                             success: (res) => {
@@ -113,14 +113,14 @@ function parseSourceMapContent(consumer, obj) {
     }
 }
 function uniStracktraceyPreset(opts) {
-    const { base, platform, version } = opts;
+    const { base, platform, version, appId } = opts;
     let stack;
     return {
         parseSourceMapUrl(file, fileName) {
-            if (!platform || !version)
+            if (!platform || !version || !appId)
                 return '';
             // 根据 base,platform,version,filename 组合 sourceMapUrl
-            return `${base}/${version}/.sourcemap/${platform}/${file.split('.')[0]}.js.map`;
+            return `${base}/${appId}/${version}/${platform}/.sourcemap/${fileName.split('.')[0]}.js.map`;
         },
         getSourceMapContent(file, fileName) {
             return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName)));

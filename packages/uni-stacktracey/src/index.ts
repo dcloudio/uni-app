@@ -119,7 +119,7 @@ function getSourceMapContent(sourcemapUrl: string) {
       sourcemapCatch[sourcemapUrl] ||
       (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
         try {
-          if (/^[a-z]+:/i.test(sourcemapUrl)) {
+          if (/^[http|https]+:/i.test(sourcemapUrl)) {
             uni.request({
               url: sourcemapUrl,
               success: (res) => {
@@ -188,16 +188,16 @@ interface UniStracktraceyPresetOptions {
 export function uniStracktraceyPreset(
   opts: UniStracktraceyPresetOptions
 ): StacktraceyPreset {
-  const { base, platform, version } = opts
+  const { base, platform, version, appId } = opts
 
   let stack: Stacktracey
 
   return {
     parseSourceMapUrl(file, fileName) {
-      if (!platform || !version) return ''
+      if (!platform || !version || !appId) return ''
       // 根据 base,platform,version,filename 组合 sourceMapUrl
-      return `${base}/${version}/.sourcemap/${platform}/${
-        file.split('.')[0]
+      return `${base}/${appId}/${version}/${platform}/.sourcemap/${
+        fileName.split('.')[0]
       }.js.map`
     },
     getSourceMapContent(file, fileName) {
