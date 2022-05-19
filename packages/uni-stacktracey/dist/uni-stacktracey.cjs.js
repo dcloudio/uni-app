@@ -76,7 +76,6 @@ function getSourceMapContent(sourcemapUrl) {
                         uni.request({
                             url: sourcemapUrl,
                             success: (res) => {
-                                console.log('sourcemapUrl :>> ', sourcemapUrl);
                                 sourcemapCatch[sourcemapUrl] = res.data;
                                 resolve(sourcemapCatch[sourcemapUrl]);
                             },
