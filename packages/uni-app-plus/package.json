@@ -35,7 +35,9 @@
     "@dcloudio/uni-shared": "3.0.0-alpha-3041020220516003",
     "@types/pako": "1.0.2",
     "@vue/compiler-sfc": "3.2.33",
+    "autoprefixer": "^10.4.7",
     "pako": "^1.0.11",
+    "postcss": "^8.4.13",
     "vue": "3.2.33"
   },
   "dependencies": {
