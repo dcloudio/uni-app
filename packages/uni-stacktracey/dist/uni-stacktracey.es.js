@@ -51,6 +51,7 @@ function stacktracey(stacktrace, opts) {
         Promise.all(parseStack)
             .then(() => {
             const parseError = opts.preset.asTableStacktrace({
+                stack,
                 maxColumnWidths: {
                     callee: 999,
                     file: 999,
@@ -111,7 +112,6 @@ function parseSourceMapContent(consumer, obj) {
 }
 function uniStracktraceyPreset(opts) {
     const { base, sourceRoot } = opts;
-    let stack;
     return {
         parseSourceMapUrl(file, fileName) {
             // 组合 sourceMapUrl
@@ -129,9 +129,9 @@ function uniStracktraceyPreset(opts) {
             return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName)));
         },
         parseStacktrace(stacktrace) {
-            return (stack = new StackTracey(stacktrace));
+            return new StackTracey(stacktrace);
         },
-        asTableStacktrace({ maxColumnWidths, stacktrace } = { stacktrace: '' }) {
+        asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
             const errorName = stacktrace.split('\n')[0];
             return ((errorName.indexOf('at') === -1 ? `${errorName}\n` : '') +
                 (stack.asTable ? stack.asTable({ maxColumnWidths }) : ''));
@@ -140,7 +140,6 @@ function uniStracktraceyPreset(opts) {
 }
 function utsStracktraceyPreset(opts) {
     const { base, sourceRoot } = opts;
-    let stack;
     let errStack = [];
     return {
         parseSourceMapUrl(file, fileName) {
@@ -189,11 +188,11 @@ function utsStracktraceyPreset(opts) {
                 };
             })
                 .filter((x) => x !== undefined);
-            return (stack = {
+            return {
                 items: entries,
-            });
+            };
         },
-        asTableStacktrace({ stacktrace } = { stacktrace: '' }) {
+        asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
             return errStack
                 .map((item) => {
                 if (item === '%StacktraceyItem%') {

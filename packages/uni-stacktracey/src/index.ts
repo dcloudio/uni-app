@@ -28,22 +28,23 @@ type Stacktracey = {
 interface StacktraceyPreset {
   /**
    * 解析错误栈信息
-   * @param filename
+   * @param stacktrace
    */
   parseStacktrace(stacktrace: string): Stacktracey
   /**
-   * 根据错误信息重新赋值为错误栈信息
-   * @param filename
+   * 根据解析后的错误信息重新整合为错误栈信息
+   * @param opts
    */
-  asTableStacktrace(opts?: {
+  asTableStacktrace(opts: {
+    stack: Stacktracey
     maxColumnWidths?: StackTracey.MaxColumnWidths
     stacktrace: string
   }): string
   /**
-   * 根据编译后的文件名地址
+   * 编译后的文件名地址
    * @param file
-   * 根据编译后的文件名
-   * @param filename
+   * 编译后的文件名
+   * @param fileName
    */
   parseSourceMapUrl(file: string, fileName: string): string
   getSourceMapContent(file: string, fileName: string): Promise<string>
@@ -106,6 +107,7 @@ export function stacktracey(
     Promise.all(parseStack)
       .then(() => {
         const parseError = opts.preset.asTableStacktrace({
+          stack,
           maxColumnWidths: {
             callee: 999,
             file: 999,
@@ -195,8 +197,6 @@ export function uniStracktraceyPreset(
 ): StacktraceyPreset {
   const { base, sourceRoot } = opts
 
-  let stack: Stacktracey
-
   return {
     parseSourceMapUrl(file, fileName) {
       // 组合 sourceMapUrl
@@ -214,9 +214,9 @@ export function uniStracktraceyPreset(
       )
     },
     parseStacktrace(stacktrace) {
-      return (stack = new StackTracey(stacktrace))
+      return new StackTracey(stacktrace)
     },
-    asTableStacktrace({ maxColumnWidths, stacktrace } = { stacktrace: '' }) {
+    asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
       const errorName = stacktrace.split('\n')[0]
       return (
         (errorName.indexOf('at') === -1 ? `${errorName}\n` : '') +
@@ -241,7 +241,6 @@ export function utsStracktraceyPreset(
 ): StacktraceyPreset {
   const { base, sourceRoot } = opts
 
-  let stack: Stacktracey
   let errStack: string[] = []
 
   return {
@@ -303,11 +302,11 @@ export function utsStracktraceyPreset(
         })
         .filter((x) => x !== undefined)
 
-      return (stack = {
+      return {
         items: entries as StackTracey.Entry[],
-      })
+      }
     },
-    asTableStacktrace({ stacktrace } = { stacktrace: '' }) {
+    asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
       return errStack
         .map((item) => {
           if (item === '%StacktraceyItem%') {
