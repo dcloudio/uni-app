@@ -197,7 +197,7 @@ export function uniStracktraceyPreset(
       file = (file.match(/(\/.*)/) || [])[1]
       if (!file) return ''
       if (sourceRoot) {
-        return `${file.replace(sourceRoot, base)}.map`
+        return `${file.replace(sourceRoot, base + '/')}.map`
       }
       return `${base}/${file}.map`
     },
@@ -241,7 +241,7 @@ export function utsStracktraceyPreset(
     parseSourceMapUrl(file, fileName) {
       // 组合 sourceMapUrl
       if (sourceRoot) {
-        return `${file.replace(sourceRoot, base)}.map`
+        return `${file.replace(sourceRoot, base + '/')}.map`
       }
       return `${base}/${file}.map`
     },
@@ -306,7 +306,7 @@ export function utsStracktraceyPreset(
           if (item === '%StacktraceyItem%') {
             const _stack = stack.items.shift()
             if (_stack)
-              return `${_stack.callee}${_stack.fileShort}/${_stack.fileName}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`
+              return `${_stack.callee}${_stack.file}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`
           }
           return item
         })

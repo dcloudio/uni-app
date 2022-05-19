@@ -124,7 +124,7 @@ function uniStracktraceyPreset(opts) {
             if (!file)
                 return '';
             if (sourceRoot) {
-                return `${file.replace(sourceRoot, base)}.map`;
+                return `${file.replace(sourceRoot, base + '/')}.map`;
             }
             return `${base}/${file}.map`;
         },
@@ -142,12 +142,16 @@ function uniStracktraceyPreset(opts) {
     };
 }
 function utsStracktraceyPreset(opts) {
+    const { base, sourceRoot } = opts;
     let stack;
     let errStack = [];
     return {
         parseSourceMapUrl(file, fileName) {
-            // 根据 base,filename 组合 sourceMapUrl
-            return `${file.replace(opts.sourceRoot, opts.base)}.map`;
+            // 组合 sourceMapUrl
+            if (sourceRoot) {
+                return `${file.replace(sourceRoot, base + '/')}.map`;
+            }
+            return `${base}/${file}.map`;
         },
         getSourceMapContent(file, fileName) {
             // 根据 base,filename 组合 sourceMapUrl
@@ -198,7 +202,7 @@ function utsStracktraceyPreset(opts) {
                 if (item === '%StacktraceyItem%') {
                     const _stack = stack.items.shift();
                     if (_stack)
-                        return `${_stack.callee}${_stack.fileShort}/${_stack.fileName}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`;
+                        return `${_stack.callee}${_stack.file}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`;
                 }
                 return item;
             })

@@ -1,12 +1,11 @@
+const path = require('path')
 const {
   stacktracey,
   uniStracktraceyPreset,
   utsStracktraceyPreset,
 } = require('../dist/uni-stacktracey.cjs.js')
 
-const utsErrorMsg = `Appid: __UNI__E070870
-e: DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestComponent.kt: (68, 9): Unresolved reference: hello
-e: DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.kt: (30, 9): Unresolved reference: hello
+const utsErrorMsg = `e: DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.kt: (9, 5): Unresolved reference: logxxxxxxx
 
 FAILURE: Build failed with an exception.
 
@@ -19,7 +18,7 @@ Run with --stacktrace option to get the stack trace. Run with --info or --debug 
 
 * Get more help at https://help.gradle.org
 
-BUILD FAILED in 3s`
+BUILD FAILED in 2s`
 
 const uniErrorMsg = `Error: Sentry Error
 at a.throwError(/static/js/pages-index-index.3ab0d0e5.js:1:567)
@@ -35,7 +34,10 @@ describe('uni-stacktracey', () => {
   test('uniStracktraceyPreset local', () => {
     stacktracey(uniErrorMsg, {
       preset: uniStracktraceyPreset({
-        base: 'D:/DCloud_local_git/uni-app-next/packages/uni-stacktracey/test/__UNI__APPID__/1.0.0/.sourcemap/h5/',
+        base: path.resolve(
+          __dirname,
+          '../test/__UNI__APPID__/1.0.0/.sourcemap/h5/'
+        ),
         sourceRoot: '',
       }),
     }).then((res: string) => {
@@ -51,17 +53,18 @@ at   node_modules/@sentry/browser/esm/helpers.js:74                             
     })
   })
 
-  test('uniStracktraceyPreset', () => {
+  test('uniStracktraceyPreset local', () => {
     stacktracey(utsErrorMsg, {
       preset: utsStracktraceyPreset({
-        base: '/usr/fxy/poroject/test/.sourcemap/src/',
-        sourceRoot:
-          '/wgtRoot/__UNI__E070870/nativeplugins/DCloud-UTSPlugin/android/src/',
+        base: path.resolve(
+          __dirname,
+          '../test/nativeplugins-sourceMap/DCloud-UTSPlugin/'
+        ),
+        sourceRoot: 'DCloud-UTSPlugin/android/src/',
       }),
     }).then((res: string) => {
-      expect(res).toEqual(`Appid: __UNI__E070870
-e: DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestComponent.kt: (68, 9): Unresolved reference: hello
-e: DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.kt: (30, 9): Unresolved reference: hello
+      expect(res)
+        .toEqual(`e: C:/Users/xianyang/Documents/HBuilderProjects/test-uni2/nativeplugins/DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.uts: (7, 0): Unresolved reference: logxxxxxxx
 
 FAILURE: Build failed with an exception.
 
@@ -74,7 +77,7 @@ Run with --stacktrace option to get the stack trace. Run with --info or --debug 
 
 * Get more help at https://help.gradle.org
 
-BUILD FAILED in 3s`)
+BUILD FAILED in 2s`)
     })
   })
 })
