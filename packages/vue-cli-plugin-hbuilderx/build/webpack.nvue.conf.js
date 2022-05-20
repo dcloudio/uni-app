@@ -211,9 +211,11 @@ if (process.env.UNI_USING_V3_NATIVE) {
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
+  const assetsDir = 'static'
+  const hybridDir = 'hybrid/html'
   const array = [{
-    from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
-    to: 'static'
+    from: path.resolve(process.env.UNI_INPUT_DIR, assetsDir),
+    to: assetsDir
   }]
   // 自动化测试时，不启用androidPrivacy.json
   if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
@@ -225,13 +227,26 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       })
     }
   }
-  const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, 'hybrid/html')
+  const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, hybridDir)
   if (fs.existsSync(hybridHtmlPath)) {
     array.push({
       from: hybridHtmlPath,
-      to: 'hybrid/html'
+      to: hybridDir
     })
   }
+
+  global.uniModules.forEach(module => {
+    const modules = 'uni_modules/'
+    const assets = modules + module + '/' + assetsDir
+    const hybrid = modules + module + hybridDir
+    array.push({
+      from: path.resolve(process.env.UNI_INPUT_DIR, assets),
+      to: assets
+    }, {
+      from: path.resolve(process.env.UNI_INPUT_DIR, hybrid),
+      to: hybrid
+    })
+  })
 
   if (process.env.UNI_USING_NVUE_COMPILER) {
     array.push({
