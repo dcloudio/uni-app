@@ -238,14 +238,21 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   global.uniModules.forEach(module => {
     const modules = 'uni_modules/'
     const assets = modules + module + '/' + assetsDir
-    const hybrid = modules + module + hybridDir
-    array.push({
-      from: path.resolve(process.env.UNI_INPUT_DIR, assets),
-      to: assets
-    }, {
-      from: path.resolve(process.env.UNI_INPUT_DIR, hybrid),
-      to: hybrid
-    })
+    const assetsPath = path.resolve(process.env.UNI_INPUT_DIR, assets)
+    if (fs.existsSync(assetsPath)) {
+      array.push({
+        from: assetsPath,
+        to: assets
+      })
+    }
+    const hybridHtml = modules + module + '/' + hybridDir
+    const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, hybridHtml)
+    if (fs.existsSync(hybridHtmlPath)) {
+      array.push({
+        from: hybridHtmlPath,
+        to: hybridHtml
+      })
+    }
   })
 
   if (process.env.UNI_USING_NVUE_COMPILER) {
