@@ -2340,7 +2340,7 @@ function useState(props2) {
   return state;
 }
 const dom = weex.requireModule("dom");
-const isAndroid = weex.config.env.platform.toLowerCase() === "android";
+const isAndroid$1 = weex.config.env.platform.toLowerCase() === "android";
 function getStyle(val) {
   return extend({}, typeof val === "string" ? parseStyleText(val) : val);
 }
@@ -2411,7 +2411,7 @@ var PickerViewColumn = defineComponent({
           height
         }) => {
           height_ = pickerViewHeight.value = height;
-        }), isAndroid && props2.length ? getComponentSize(scrollViewItemRef.value).then(({
+        }), isAndroid$1 && props2.length ? getComponentSize(scrollViewItemRef.value).then(({
           height
         }) => {
           indicatorHeight_ = indicatorHeight.value = height / parseFloat(props2.length);
@@ -2435,7 +2435,7 @@ var PickerViewColumn = defineComponent({
     const createScrollViewChild = (item) => {
       if (!item)
         return null;
-      return isAndroid ? createVNode("div", {
+      return isAndroid$1 ? createVNode("div", {
         "ref": scrollViewItemRef,
         "style": "flex-direction:column;"
       }, [item]) : item;
@@ -2450,7 +2450,7 @@ var PickerViewColumn = defineComponent({
         decelerationRate: 0.3,
         scrollY: true
       };
-      if (!isAndroid) {
+      if (!isAndroid$1) {
         scrollOptions.scrollTop = current.value * indicatorHeight.value;
       }
       return createVNode("view", {
@@ -3952,6 +3952,7 @@ const swiperProps = {
     default: false
   }
 };
+const isAndroid = weex.config.env.platform.toLowerCase() === "android";
 const swiperStyles = [{
   "uni-swiper": {
     "": {
@@ -4029,7 +4030,7 @@ var Swiper = defineComponent({
         scrollable: !props2.disableTouch
       }, listeners), [swiperItems, createVNode("indicator", {
         "class": "uni-swiper-dots",
-        "styles": indicatorStyle
+        "style": indicatorStyle
       }, null)])]);
     };
   }
@@ -4082,10 +4083,10 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
       trigger("animationfinish", getDetail());
       state.currentChangeSource = "autoplay";
     };
-    if (weex.config.env.platform === "iOS") {
-      setTimeout(end, 50);
-    } else {
+    if (isAndroid) {
       end();
+    } else {
+      setTimeout(end, 50);
     }
   };
   const onChange = (event) => {

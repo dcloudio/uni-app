@@ -104,6 +104,7 @@ const options = {
     app: {
         darkmode: false,
         subpackages: true,
+        usingComponents: true,
     },
     project: {
         filename: projectConfigFilename,
