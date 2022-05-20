@@ -53,7 +53,7 @@ function generatePagesJsonCode(
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
-import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from './${MANIFEST_JSON_JS}'
+import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
 const extend = Object.assign
@@ -251,13 +251,11 @@ function generateConfig(
   delete pagesJson.subPackages
   delete pagesJson.subpackages
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
-  return (
-    (config.command === 'serve'
-      ? ''
-      : `${globalName}['____'+appid+'____']=true
-delete ${globalName}['____'+appid+'____']
-`) +
-    `${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
+  return `${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
+  appId,
+  appName,
+  appVersion,
+  appVersionCode,    
   async,
   debug,
   networkTimeout,
@@ -271,5 +269,4 @@ delete ${globalName}['____'+appid+'____']
   router,
 })
 `
-  )
 }

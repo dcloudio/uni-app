@@ -8,6 +8,7 @@ import {
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import { transformAd } from './transforms/transformAd'
 
 import source from './project.config.json'
 
@@ -19,7 +20,7 @@ export const customElements = [
 ]
 
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [transformRef, transformComponentLink],
+  nodeTransforms: [transformRef, transformComponentLink, transformAd],
 }
 
 const COMPONENTS_DIR = 'wxcomponents'

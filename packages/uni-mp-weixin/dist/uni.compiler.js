@@ -3,11 +3,64 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
+var compilerCore = require('@vue/compiler-core');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+
+var uniad_app_json = function (appJson) {
+  if (!appJson.plugins) {
+    appJson.plugins = {};
+  }
+  if (!appJson.plugins['uni-ad']) {
+    appJson.plugins['uni-ad'] = {
+      version: '1.0.3',
+      provider: 'wx999bf02c8e05dfc9',
+    };
+  }
+  if (!appJson.plugins['coral-adv']) {
+    appJson.plugins['coral-adv'] = {
+      version: '1.0.7',
+      provider: 'wx0e203209e27b1e66',
+    };
+  }
+
+  if (!appJson.usingComponents) {
+    appJson.usingComponents = {};
+  }
+  if (!appJson.usingComponents['uniad-plugin']) {
+    appJson.usingComponents['uniad-plugin'] = 'plugin://uni-ad/ad';
+  }
+};
+
+var uniadAppJson = uniad_app_json;
+
+const AD_COMPONENTS = [
+    'uniad',
+    'ad-rewarded-video',
+    'ad-fullscreen-video',
+    'ad-interstitial',
+];
+let appJsonUniadFlag = false;
+function transformAd(node, context) {
+    if (!uniCliShared.isElementNode(node)) {
+        return;
+    }
+    const adpidProp = compilerCore.findProp(node, 'adpid');
+    if (node.tag === 'ad' && adpidProp) {
+        node.tag = 'uniad';
+        node.tagType = 1 /* COMPONENT */;
+    }
+    if (appJsonUniadFlag) {
+        return;
+    }
+    if (AD_COMPONENTS.indexOf(node.tag) > -1) {
+        appJsonUniadFlag = true;
+        uniadAppJson(uniCliShared.findJsonFile('app'));
+    }
+}
 
 var description = "项目配置文件。";
 var packOptions = {
@@ -65,7 +118,7 @@ const customElements = [
     'match-media',
 ];
 const compilerOptions = {
-    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
+    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, transformAd],
 };
 const COMPONENTS_DIR = 'wxcomponents';
 const miniProgram = {

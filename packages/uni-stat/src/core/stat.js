@@ -7,7 +7,7 @@ import {
   get_space,
   is_debug,
 } from '../utils/pageInfo.js'
-
+import { dbSet } from '../utils/db.js'
 class Stat extends Report {
   static getInstance() {
     if (!uni.__stat_instance) {
@@ -23,9 +23,9 @@ class Stat extends Report {
           let spaceData = {
             provider: space.provider,
             spaceId: space.spaceId,
-            clientSecret: space.clientSecret
+            clientSecret: space.clientSecret,
           }
-          if(space.endpoint){
+          if (space.endpoint) {
             spaceData.endpoint = space.endpoint
           }
           uni.__stat_uniCloud_space = uniCloud.init(spaceData)
@@ -34,7 +34,9 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          console.error('当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！')
+          console.error(
+            '当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！'
+          )
         }
       }
     }
@@ -54,6 +56,7 @@ class Stat extends Report {
     // 初始化页面停留时间  start
     let residence_time = set_page_residence_time()
     this.__licationShow = true
+    dbSet('__launch_options', options)
     this.sendReportRequest(options, true)
   }
   load(options, self) {
@@ -76,7 +79,7 @@ class Stat extends Report {
     }
 
     // #ifdef VUE3
-    if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
+    if (get_platform_name() === 'h5' || get_platform_name() === 'n') {
       if (get_page_types(self) === 'app') {
         this.appShow()
       }
@@ -97,7 +100,7 @@ class Stat extends Report {
     }
 
     // #ifdef VUE3
-    if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
+    if (get_platform_name() === 'h5' || get_platform_name() === 'n') {
       if (get_page_types(self) === 'app') {
         this.appHide()
       }
@@ -113,23 +116,33 @@ class Stat extends Report {
 
   error(em) {
     // 开发工具内不上报错误
-    if (this._platform === 'devtools') {
-      if (process.env.NODE_ENV === 'development') {
-        console.info('当前运行环境为开发者工具，不上报数据。')
-        return
-      }
-    }
+    // if (this._platform === 'devtools') {
+    //   if (process.env.NODE_ENV === 'development') {
+    //     console.info('当前运行环境为开发者工具，不上报数据。')
+    //     return
+    //   }
+    // }
     let emVal = ''
     if (!em.message) {
       emVal = JSON.stringify(em)
     } else {
       emVal = em.stack
     }
+
+    let route = ''
+    try {
+      route = get_route()
+    } catch (e) {
+      // 未获取到页面路径
+      route = ''
+    }
+
     let options = {
       ak: this.statData.ak,
       uuid: this.statData.uuid,
       p: this.statData.p,
       lt: '31',
+      url: route,
       ut: this.statData.ut,
       ch: this.statData.ch,
       mpsdk: this.statData.mpsdk,

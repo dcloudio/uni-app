@@ -1,5 +1,5 @@
 // 访问开始即启动小程序，访问结束结分为：进入后台超过5min、在前台无任何操作超过30min、在新的来源打开小程序；
-export const STAT_VERSION = '0.0.1'
+export const STAT_VERSION = process.env.UNI_COMPILER_VERSION
 export const STAT_URL = 'https://tongji.dcloud.io/uni/stat'
 export const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif'
 export const STAT_KEY = 'qkTHEIegZGcL5iy3'

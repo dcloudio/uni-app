@@ -3927,13 +3927,13 @@ function resetHookState(hooks) {
 function injectHook(type, hook, target = currentInstance, prepend = false) {
     if (target) {
         // fixed by xxxxxx
-        if (uniShared.isRootHook(type)) {
+        if (uniShared.isRootHook(type) && target.$pageInstance) {
             // 系统保留组件，如 view,app 等
             if (target.type.__reserved) {
                 return;
             }
-            if (target !== target.root) {
-                target = target.root;
+            if (target !== target.$pageInstance) {
+                target = target.$pageInstance;
                 if (uniShared.isRootImmediateHook(type)) {
                     // 作用域应该是组件还是页面？目前绑定的是页面
                     const proxy = target.proxy;
@@ -8252,6 +8252,7 @@ function createComponentInstance(vnode, parent, suspense) {
     }
     instance.root = parent ? parent.root : instance;
     instance.emit = emit$1.bind(null, instance);
+    instance.$pageInstance = parent && parent.$pageInstance;
     // apply custom element special handling
     if (vnode.ce) {
         vnode.ce(instance);

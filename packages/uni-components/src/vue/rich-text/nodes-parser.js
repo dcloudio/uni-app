@@ -124,6 +124,7 @@ export default function parseNodes(
       if (!elem) {
         return
       }
+      scopeId && elem.setAttribute(scopeId, '')
       const attrs = node.attrs
       if (isPlainObject(attrs)) {
         const tagAttrs = TAGS[tagName] || []
@@ -135,7 +136,6 @@ export default function parseNodes(
               Array.isArray(value) && (value = value.join(' '))
             case 'style':
               elem.setAttribute(name, value)
-              scopeId && elem.setAttribute(scopeId, '')
               break
             default:
               if (tagAttrs.indexOf(name) !== -1) {

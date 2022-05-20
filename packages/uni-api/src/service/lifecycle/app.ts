@@ -12,7 +12,7 @@ import { remove } from '@vue/shared'
 
 import { defineSyncApi } from '../../helpers/api'
 
-type AppShowHook = (options: UniApp.LaunchOptionsApp) => void
+type AppShowHook = (options: UniApp.GetLaunchOptionsSyncOptions) => void
 type AppHideHook = () => void
 interface AppHooks {
   onUnhandledRejection: UniApp.OnUnhandledRejectionCallback[]

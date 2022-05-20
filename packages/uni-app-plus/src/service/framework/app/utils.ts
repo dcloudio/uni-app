@@ -43,6 +43,8 @@ export function initLaunchOptions({
     path,
     query: query ? parseQuery(query) : {},
     referrerInfo: referrerInfo || {},
+    channel: plus.runtime.channel,
+    launcher: plus.runtime.launcher,
   })
   extend(enterOptions, launchOptions)
   return extend({}, launchOptions)

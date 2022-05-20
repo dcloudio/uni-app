@@ -1,6 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports[Symbol.toStringTag] = "Module";
+Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
 var vue = require("vue");
 var shared = require("@vue/shared");
 var uniShared = require("@dcloudio/uni-shared");
@@ -257,7 +256,10 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
   ], 8, ["width", "height"]);
 }
 function useCurrentPageId() {
-  return vue.getCurrentInstance().root.proxy.$page.id;
+  {
+    const { $pageInstance } = vue.getCurrentInstance();
+    return $pageInstance && $pageInstance.proxy.$page.id;
+  }
 }
 function getCurrentPage() {
   const pages = getCurrentPages();
@@ -2596,28 +2598,13 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
     const {
       fixSize
     } = useImageSize(rootRef, props2, state);
-    useImageLoader(state, fixSize, trigger);
+    useImageLoader(state, props2, rootRef, fixSize, trigger);
     return () => {
-      const {
-        mode: mode2
-      } = props2;
-      const {
-        imgSrc,
-        modeStyle,
-        src
-      } = state;
-      let imgTsx;
-      {
-        imgTsx = vue.createVNode("img", {
-          "src": src,
-          "draggable": props2.draggable
-        }, null, 8, ["src", "draggable"]);
-      }
       return vue.createVNode("uni-image", {
         "ref": rootRef
       }, [vue.createVNode("div", {
-        "style": modeStyle
-      }, null, 4), imgTsx, FIX_MODES[mode2] ? vue.createVNode(ResizeSensor, {
+        "style": state.modeStyle
+      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
         "onResize": fixSize
       }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
@@ -2652,8 +2639,9 @@ function useImageState(rootRef, props2) {
   });
   return state;
 }
-function useImageLoader(state, fixSize, trigger) {
+function useImageLoader(state, props2, rootRef, fixSize, trigger) {
   let img;
+  let draggableImg;
   const setState = (width = 0, height = 0, imgSrc = "") => {
     state.origWidth = width;
     state.origHeight = height;
@@ -2673,6 +2661,12 @@ function useImageLoader(state, fixSize, trigger) {
       } = img;
       setState(width, height, src);
       fixSize();
+      img.draggable = props2.draggable;
+      if (draggableImg) {
+        draggableImg.remove();
+      }
+      draggableImg = img;
+      rootRef.value.appendChild(img);
       resetImage();
       trigger("load", evt, {
         width,
@@ -2696,6 +2690,12 @@ function useImageLoader(state, fixSize, trigger) {
     }
   };
   vue.watch(() => state.src, (value) => loadImage(value));
+  vue.watch(() => state.imgSrc, (value) => {
+    if (!value && draggableImg) {
+      draggableImg.remove();
+      draggableImg = null;
+    }
+  });
 }
 function fixNumber(num) {
   return num;
@@ -5049,6 +5049,7 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
       if (!elem) {
         return;
       }
+      scopeId && elem.setAttribute(scopeId, "");
       const attrs = node.attrs;
       if (shared.isPlainObject(attrs)) {
         const tagAttrs = TAGS[tagName] || [];
@@ -5059,7 +5060,6 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
               Array.isArray(value) && (value = value.join(" "));
             case "style":
               elem.setAttribute(name, value);
-              scopeId && elem.setAttribute(scopeId, "");
               break;
             default:
               if (tagAttrs.indexOf(name) !== -1) {
@@ -6458,10 +6458,14 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
   },
   confirmType: {
     type: String,
-    default: ""
+    default: "return",
+    validator(val) {
+      return ConfirmTypes.concat("return").includes(val);
+    }
   }
 });
 let fixMargin = false;
+const ConfirmTypes = ["done", "go", "next", "search", "send"];
 var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
@@ -6470,6 +6474,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     emit: emit2
   }) {
     const rootRef = vue.ref(null);
+    const wrapperRef = vue.ref(null);
     const {
       fieldRef,
       state,
@@ -6478,12 +6483,13 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       trigger
     } = useField(props2, rootRef, emit2);
     const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
-    const isDone = vue.computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
+    const isDone = vue.computed(() => ConfirmTypes.includes(props2.confirmType));
     const heightRef = vue.ref(0);
     const lineRef = vue.ref(null);
     vue.watch(() => heightRef.value, (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
+      const wrapper2 = wrapperRef.value;
       let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
       if (isNaN(lineHeight)) {
         lineHeight = lineEl.offsetHeight;
@@ -6495,7 +6501,8 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = height + "px";
+        el.style.height = "auto";
+        wrapper2.style.height = height + "px";
       }
     });
     function onResize({
@@ -6560,6 +6567,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       return vue.createVNode("uni-textarea", {
         "ref": rootRef
       }, [vue.createVNode("div", {
+        "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
       }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
@@ -6576,7 +6584,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
     };
   }
 });
@@ -7033,7 +7041,7 @@ function setupPage(comp) {
     clone: true,
     init: initPage,
     setup(instance) {
-      instance.root = instance;
+      instance.$pageInstance = instance;
       const route = usePageRoute();
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
@@ -7060,10 +7068,10 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       comp2.setup = (props2, ctx) => {
-        setup && setup(props2, ctx);
-        return () => {
-          return vue.openBlock(), vue.createBlock(LayoutComponent);
-        };
+        return setup && setup(props2, ctx);
+      };
+      comp2.render = () => {
+        return vue.openBlock(), vue.createBlock(LayoutComponent);
       };
     }
   });
@@ -10074,9 +10082,8 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_
 }, SetNavigationBarTitleProtocol);
 require("localstorage-polyfill");
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var api = {
+var api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   setNavigationBarTitle,
   request,
   setStorageSync,
@@ -10090,7 +10097,7 @@ var api = {
   getStorageInfoSync,
   getStorageInfo,
   getSystemInfoSync
-};
+}, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {
@@ -10246,20 +10253,22 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
     const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
+    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab);
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
     }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab);
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
   });
 }
-function createTabBarItemTsx(color, iconPath, tabBarItem, tabBar2, index2, onSwitchTab) {
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
   return vue.createVNode("div", {
     "key": index2,
     "class": "uni-tabbar__item",
     "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", tabBarItem, tabBar2)], 8, ["onClick"]);
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
 }
-function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
   const {
     height
   } = tabBar2;
@@ -10268,7 +10277,7 @@ function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
     "style": {
       height
     }
-  }, [iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
@@ -10290,6 +10299,33 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   }, [type !== "midButton" && vue.createVNode("img", {
     "src": getRealPath(iconPath)
   }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+}
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+  var _a;
+  const {
+    type,
+    text,
+    redDot
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar2;
+  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  const iconfontStyle = {
+    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
+    color: iconfontColor
+  };
+  return vue.createVNode("div", {
+    "class": clazz2,
+    "style": style
+  }, [type !== "midButton" && vue.createVNode("div", {
+    "class": "uni-tabbar__iconfont",
+    "style": iconfontStyle
+  }, [iconfontText], 4), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
@@ -10318,7 +10354,7 @@ function createTabBarItemRedDotTsx(badge) {
     "class": clazz2
   }, [badge], 2);
 }
-function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, onSwitchTab) {
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
   const {
     width,
     height,
@@ -10346,7 +10382,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
       height: iconWidth
     },
     "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
 }
 var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",

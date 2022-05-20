@@ -1,10 +1,11 @@
 {
   "name": "@dcloudio/uni-app-vite",
-  "version": "3.0.0-alpha-3040920220508001",
+  "version": "3.0.0-alpha-3041020220516002",
   "description": "uni-app-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
+    "bin",
     "dist",
     "lib"
   ],
@@ -19,12 +20,13 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3040920220508001",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040920220508001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3040920220508001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3040920220508001",
+    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3041020220516002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3041020220516002",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3041020220516002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3041020220516002",
+    "@dcloudio/uts": "3.0.0-alpha-3041020220516002",
     "@rollup/pluginutils": "^4.2.0",
-    "@vitejs/plugin-vue": "^2.3.1",
+    "@vitejs/plugin-vue": "^2.3.3",
     "@vue/compiler-dom": "3.2.33",
     "@vue/compiler-sfc": "3.2.33",
     "debug": "^4.3.3",
@@ -37,6 +39,8 @@
     "@types/fs-extra": "^9.0.13",
     "@vue/compiler-core": "3.2.33",
     "esbuild": "^0.14.27",
-    "postcss": "^8.4.12"
+    "postcss": "^8.4.13",
+    "vite": "^2.9.9",
+    "vue": "3.2.33"
   }
 }

@@ -12,6 +12,7 @@ import {
   initPostcssPlugin,
   parseRpx2UnitOnce,
   polyfillCode,
+  resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
 import { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
@@ -73,7 +74,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
             if (filename === 'app.css') {
               if (!appCss) {
                 appCss = fs.readFileSync(
-                  require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
+                  resolveBuiltIn('@dcloudio/uni-app-plus/dist/style.css'),
                   'utf8'
                 )
               }

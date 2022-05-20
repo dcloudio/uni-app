@@ -1,6 +1,10 @@
 import { isPlainObject, isArray, hasOwn } from '@vue/shared'
 
-import { addSafeAreaInsets, useDeviceId } from '@dcloudio/uni-mp-core'
+import {
+  addSafeAreaInsets,
+  useDeviceId,
+  populateParameters,
+} from '@dcloudio/uni-mp-core'
 
 import { getStorageSync } from './shims'
 
@@ -33,6 +37,7 @@ function handleSystemInfo(
   useDeviceId({
     getStorageSync,
   })(fromRes, toRes)
+  populateParameters(fromRes, toRes)
 
   let platform = fromRes.platform ? fromRes.platform.toLowerCase() : 'devtools'
   if (!~['android', 'ios'].indexOf(platform)) {

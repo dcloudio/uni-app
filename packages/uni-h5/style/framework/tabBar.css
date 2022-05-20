@@ -83,6 +83,10 @@ uni-tabbar {
   height: 100%;
 }
 
+.uni-tabbar__iconfont {
+  font-family: 'UniTabbarIconFont';
+}
+
 .uni-tabbar__label {
   position: relative;
   text-align: center;

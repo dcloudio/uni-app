@@ -20,11 +20,15 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   },
   confirmType: {
     type: String,
-    default: '',
+    default: 'return',
+    validator(val: string) {
+      return ConfirmTypes.concat('return').includes(val)
+    },
   },
 })
 
 let fixMargin: Boolean = false
+const ConfirmTypes = ['done', 'go', 'next', 'search', 'send'] // 'return'
 
 function setFixMargin() {
   // iOS 13 以下版本需要修正边距
@@ -42,12 +46,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   emits: ['confirm', 'linechange', ...fieldEmit],
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
+    const wrapperRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit)
     const valueCompute = computed(() => state.value.split(LINEFEED))
-    const isDone = computed(() =>
-      ['done', 'go', 'next', 'search', 'send'].includes(props.confirmType)
-    )
+    const isDone = computed(() => ConfirmTypes.includes(props.confirmType))
     const heightRef = ref(0)
     const lineRef: Ref<HTMLElement | null> = ref(null)
     watch(
@@ -55,6 +58,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       (height) => {
         const el = rootRef.value as HTMLElement
         const lineEl = lineRef.value as HTMLElement
+        const wrapper = wrapperRef.value as HTMLElement
         let lineHeight = parseFloat(getComputedStyle(el).lineHeight)
         if (isNaN(lineHeight)) {
           lineHeight = lineEl.offsetHeight
@@ -66,7 +70,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           lineCount,
         })
         if (props.autoHeight) {
-          el.style.height = height + 'px'
+          el.style.height = 'auto'
+          wrapper.style.height = height + 'px'
         }
       }
     )
@@ -145,7 +150,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         )
       return (
         <uni-textarea ref={rootRef}>
-          <div class="uni-textarea-wrapper">
+          <div ref={wrapperRef} class="uni-textarea-wrapper">
             <div
               v-show={!state.value.length}
               {...scopedAttrsState.attrs}

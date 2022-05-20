@@ -4,7 +4,7 @@
 const sys = uni.getSystemInfoSync();
 
 // 访问开始即启动小程序，访问结束结分为：进入后台超过5min、在前台无任何操作超过30min、在新的来源打开小程序；
-const STAT_VERSION = '0.0.1';
+const STAT_VERSION = process.env.UNI_COMPILER_VERSION;
 const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
 const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif';
 const PAGE_PVER_TIME = 1800; // 页面在前台无操作结束访问时间 单位s
@@ -201,20 +201,9 @@ const get_scene = (options) => {
 };
 
 /**
- * 获取拼接参数
- */
-const get_splicing = (data) => {
-  let str = '';
-  for (var i in data) {
-    str += i + '=' + data[i] + '&';
-  }
-  return str.substr(0, str.length - 1)
-};
-
-/**
  * 获取页面url，不包含参数
  */
-const get_route = (pageVm) => {
+const get_route$1 = (pageVm) => {
   let _self = pageVm || get_page_vm();
   if (get_platform_name() === 'bd') {
     let mp_route = _self.$mp && _self.$mp.page && _self.$mp.page.is;
@@ -288,7 +277,10 @@ const handle_data = (statData) => {
   for (let i in statData) {
     const rd = statData[i];
     rd.forEach((elm) => {
-      const newData = get_splicing(elm);
+      let newData = '';
+      {
+        newData = elm;
+      }
       if (i === 0) {
         firstArr.push(newData);
       } else if (i === 3) {
@@ -504,18 +496,21 @@ const log = (data) => {
   }
 };
 
-let data = uni.getStorageSync('$$STAT__DBDATA') || {};
+const appid = process.env.UNI_APP_ID; // 做应用隔离
 const dbSet = (name, value) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+
   if (!data) {
     data = {};
   }
   data[name] = value;
-  uni.setStorageSync('$$STAT__DBDATA', data);
+  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
 };
 
 const dbGet = (name) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
   if (!data[name]) {
-    let dbdata = uni.getStorageSync('$$STAT__DBDATA');
+    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
     if (!dbdata) {
       dbdata = {};
     }
@@ -528,14 +523,15 @@ const dbGet = (name) => {
 };
 
 const dbRemove = (name) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
   if (data[name]) {
     delete data[name];
-    uni.setStorageSync('$$STAT__DBDATA', data);
+    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
   } else {
-    data = uni.getStorageSync('$$STAT__DBDATA');
+    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
     if (data[name]) {
       delete data[name];
-      uni.setStorageSync('$$STAT__DBDATA', data);
+      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
     }
   }
 };
@@ -619,35 +615,35 @@ const get_total_visit_count = () => {
 	return count
 };
 
-let Set__First__Time = 0;
-let Set__Last__Time = 0;
 
+const FIRST_TIME = '__first_time';
 /**
- * 获取第一次时间
+ * 设置页面首次访问时间，用户获取页面/应用停留时常
  */
-const get_first_time = () => {
-	let time = new Date().getTime();
-	Set__First__Time = time;
-	Set__Last__Time = 0;
-	return time
+const set_first_time = () => {
+	const time = new Date().getTime();
+	const timeStorge = dbSet(FIRST_TIME,time);
+	return timeStorge
 };
 
 /**
- * 获取最后一次时间
+ * 获取最后一次时间 ，暂时用不到，直接获取当前时间即可
  */
-const get_last_time = () => {
-	let time = new Date().getTime();
-	Set__Last__Time = time;
-	return time
-};
+// export const get_last_time = () => {
+// 	let time = new Date().getTime()
+// 	Set__Last__Time = time
+// 	return time
+// }
 
 /**
  * 获取页面 \ 应用停留时间
  */
 const get_residence_time = (type) => {
 	let residenceTime = 0;
-	if (Set__First__Time !== 0) {
-		residenceTime = Set__Last__Time - Set__First__Time;
+	const first_time = dbGet(FIRST_TIME);
+	const last_time = get_time();
+	if (first_time !== 0) {
+		residenceTime = last_time - first_time;
 	}
 
 	residenceTime = parseInt(residenceTime / 1000);
@@ -809,7 +805,6 @@ class Report {
   applicationShow() {
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
-      get_last_time();
       const time = get_residence_time('app');
       // 需要判断进入后台是否超过时限 ，默认是 30min ，是的话需要执行进入应用的上报
       if (time.overtime) {
@@ -837,7 +832,6 @@ class Report {
     }
     // 进入应用后台保存状态，方便进入前台后判断是否上报应用数据
     this.__licationHide = true;
-    get_last_time();
     const time = get_residence_time();
     const route = get_page_route(self);
     uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route);
@@ -848,8 +842,8 @@ class Report {
       },
       type
     );
-    // 重置时间
-    get_first_time();
+    // 更新页面首次访问时间
+    set_first_time();
   }
 
   /**
@@ -865,19 +859,18 @@ class Report {
     };
 
     const route = get_page_route(self);
-    const routepath = get_route(self);
+    const routepath = get_route$1(self);
 
     this._navigationBarTitle.config = get_page_name(routepath);
     // 表示应用触发 ，页面切换不触发之后的逻辑
     if (this.__licationShow) {
-      get_first_time();
+      // 更新页面首次访问时间
+      set_first_time();
       // this._lastPageRoute = route
       uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route);
       this.__licationShow = false;
       return
     }
-
-    get_last_time();
 
     const time = get_residence_time('page');
     // 停留时间
@@ -888,8 +881,8 @@ class Report {
       };
       this.sendReportRequest(options);
     }
-    // 重置时间
-    get_first_time();
+    // 更新页面首次访问时间
+    set_first_time();
   }
 
   /**
@@ -897,7 +890,6 @@ class Report {
    */
   pageHide(self) {
     if (!this.__licationHide) {
-      get_last_time();
       const time = get_residence_time('page');
       let route = get_page_route(self);
       let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE');
@@ -990,8 +982,16 @@ class Report {
    * 自定义事件上报
    */
   sendEventRequest({ key = '', value = '' } = {}) {
-    // const route = this._lastPageRoute
-    const routepath = get_route();
+
+    let routepath = '';
+
+    try {
+      routepath = get_route$1();
+    } catch (error) {
+      const launch_options = dbGet('__launch_options');
+       routepath = launch_options.path;
+    }
+   
     this._navigationBarTitle.config = get_page_name(routepath);
     this._navigationBarTitle.lt = '21';
     let options = {
@@ -1225,6 +1225,7 @@ class Stat extends Report {
     // 初始化页面停留时间  start
     set_page_residence_time();
     this.__licationShow = true;
+    dbSet('__launch_options', options);
     this.sendReportRequest(options, true);
   }
   load(options, self) {
@@ -1247,7 +1248,7 @@ class Stat extends Report {
     }
 
     // #ifdef VUE3
-    if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
+    if (get_platform_name() === 'h5' || get_platform_name() === 'n') {
       if (get_page_types(self) === 'app') {
         this.appShow();
       }
@@ -1268,7 +1269,7 @@ class Stat extends Report {
     }
 
     // #ifdef VUE3
-    if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
+    if (get_platform_name() === 'h5' || get_platform_name() === 'n') {
       if (get_page_types(self) === 'app') {
         this.appHide();
       }
@@ -1284,23 +1285,33 @@ class Stat extends Report {
 
   error(em) {
     // 开发工具内不上报错误
-    if (this._platform === 'devtools') {
-      if (process.env.NODE_ENV === 'development') {
-        console.info('当前运行环境为开发者工具，不上报数据。');
-        return
-      }
-    }
+    // if (this._platform === 'devtools') {
+    //   if (process.env.NODE_ENV === 'development') {
+    //     console.info('当前运行环境为开发者工具，不上报数据。')
+    //     return
+    //   }
+    // }
     let emVal = '';
     if (!em.message) {
       emVal = JSON.stringify(em);
     } else {
       emVal = em.stack;
     }
+
+    let route = '';
+    try {
+      route =  get_route(); 
+    }catch(e){
+      // 未获取到页面路径
+      route = '';
+    }
+
     let options = {
       ak: this.statData.ak,
       uuid: this.statData.uuid,
       p: this.statData.p,
       lt: '31',
+      url:route,
       ut: this.statData.ut,
       ch: this.statData.ch,
       mpsdk: this.statData.mpsdk,

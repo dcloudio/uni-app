@@ -2,7 +2,7 @@ import { sep } from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
 
-import { BaseNode, Program, Identifier } from 'estree'
+import type { BaseNode, Program, Identifier } from 'estree'
 
 import {
   attachScopes,

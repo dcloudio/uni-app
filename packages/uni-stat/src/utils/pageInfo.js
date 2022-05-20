@@ -283,7 +283,13 @@ export const handle_data = (statData) => {
   for (let i in statData) {
     const rd = statData[i]
     rd.forEach((elm) => {
-      const newData = get_splicing(elm)
+      let newData = ''
+      if (__STAT_VERSION__ === '1') {
+        newData = get_splicing(elm)
+      }
+      if (__STAT_VERSION__ === '2') {
+        newData = elm
+      }
       if (i === 0) {
         firstArr.push(newData)
       } else if (i === 3) {

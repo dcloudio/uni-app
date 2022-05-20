@@ -1,0 +1,22 @@
+{
+  "name": "@dcloudio/uts-win32-ia32-msvc",
+  "version": "3.0.0-alpha-3041020220516002",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "ia32"
+  ],
+  "main": "uts.win32-ia32-msvc.node",
+  "files": [
+    "uts.win32-ia32-msvc.node"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uts.win32-ia32-msvc"
+  }
+}

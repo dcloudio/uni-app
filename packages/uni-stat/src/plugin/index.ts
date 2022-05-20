@@ -66,14 +66,14 @@ export default () => [
                 isEnable = false
               } else {
                 if (!statConfig.version) {
-                  // uniStatLog(M['stat.warn.version'])
+                  uniStatLog(M['stat.warn.version'])
                 } else {
                   uniStatLog(`已开启 uni统计${statVersion}.0 版本`)
                 }
               }
             } else {
               if (!statConfig.version) {
-                // uniStatLog(M['stat.warn.version'])
+                uniStatLog(M['stat.warn.version'])
               } else {
                 uniStatLog(
                   M['stat.warn.tip'].replace('{version}', `${statVersion}.0`)
