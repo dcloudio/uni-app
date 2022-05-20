@@ -3911,7 +3911,10 @@ var serviceContext = (function () {
     if (hasOwn(platformSchema, schema)) {
       return platformSchema[schema]
     }
-    return true
+    if (hasOwn(api$2, schema)) {
+      return true
+    }
+    return false
   }
 
   var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
