@@ -51,7 +51,7 @@ export default {
       this._startLoading()
 
       setTimeout(() => {
-        this.loading = false
+        this._onmpload()
       }, 3000)
     },
 
