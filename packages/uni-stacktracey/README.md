@@ -96,7 +96,9 @@ stacktracey(utsErrorMsg, {
 
 **预设方案的参数说明**
 
-1. `base`：当前项目 `sourcemap` 文件路径。如果由 `http:、https:` 开头，则会发送网络请求获取
+> 需要使用 base 和 sourceRoot 从错误信息中生成 sourcemap 路径。sourceRoot 即为需要将 错误信息路径替换为 base 的部分。
+
+1. `base`：当前项目 `sourcemap` 文件绝对路径。如果由 `http:、https:` 开头，则会发送网络请求获取
 2. `sourceRoot`：当前项目资源路径
 
 3. 详细说明
