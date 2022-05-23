@@ -504,9 +504,25 @@ const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
 
 let cid;
 let cidErrMsg;
-function normalizePushMessage(message) {
+function normalizePushMessage(type, message) {
     try {
-        return JSON.parse(message);
+        const res = JSON.parse(message);
+        if (type === 'receive') {
+            if (res.payload) {
+                if (res.aps) {
+                    res.payload.aps = res.aps;
+                }
+                return res.payload;
+            }
+        }
+        else if (type === 'click') {
+            delete res.type;
+            delete res.__UUID__;
+            delete res.appid;
+            if (res.aps && res.aps.alert) {
+                res.title = res.aps.alert.title;
+            }
+        }
     }
     catch (e) { }
     return message;
@@ -523,12 +539,18 @@ function invokePushCallback(args) {
     }
     else if (args.type === 'pushMsg') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'receive', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'receive',
+                data: normalizePushMessage('receive', args.message),
+            });
         });
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'click', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'click',
+                data: normalizePushMessage('click', args.message),
+            });
         });
     }
 }

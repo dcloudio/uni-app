@@ -24,9 +24,24 @@ interface OnPushClickCallback {
 
 let cid: string | undefined
 let cidErrMsg: string | undefined
-function normalizePushMessage(message: unknown) {
+function normalizePushMessage(type: 'receive' | 'click', message: unknown) {
   try {
-    return JSON.parse(message as string)
+    const res = JSON.parse(message as string) as Record<string, any>
+    if (type === 'receive') {
+      if (res.payload) {
+        if (res.aps) {
+          res.payload.aps = res.aps
+        }
+        return res.payload
+      }
+    } else if (type === 'click') {
+      delete res.type
+      delete res.__UUID__
+      delete res.appid
+      if (res.aps && res.aps.alert) {
+        res.title = res.aps.alert.title
+      }
+    }
   } catch (e: any) {}
   return message
 }
@@ -47,11 +62,17 @@ export function invokePushCallback(
     invokeGetPushCidCallbacks(cid, args.errMsg)
   } else if (args.type === 'pushMsg') {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: 'receive', data: normalizePushMessage(args.message) })
+      callback({
+        type: 'receive',
+        data: normalizePushMessage('receive', args.message),
+      })
     })
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: 'click', data: normalizePushMessage(args.message) })
+      callback({
+        type: 'click',
+        data: normalizePushMessage('click', args.message),
+      })
     })
   }
 }
