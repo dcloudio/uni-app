@@ -187,6 +187,7 @@ export default class Report {
         let options = {
           path: lastPageRoute,
           scene: this.statData.sc,
+          cst: 2,
         }
         this.sendReportRequest(options)
       }
@@ -253,6 +254,7 @@ export default class Report {
       let options = {
         path: route,
         scene: this.statData.sc,
+        cst: 3,
       }
       this.sendReportRequest(options)
     }
@@ -299,6 +301,8 @@ export default class Report {
       fvts: get_first_visit_time(),
       lvts: get_last_visit_time(),
       tvc: get_total_visit_count(),
+      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      cst: options.cst || 1,
     })
     if (get_platform_name() === 'n') {
       this.getProperty()
@@ -357,16 +361,15 @@ export default class Report {
    * 自定义事件上报
    */
   sendEventRequest({ key = '', value = '' } = {}) {
-
     let routepath = ''
 
     try {
       routepath = get_route()
     } catch (error) {
       const launch_options = dbGet('__launch_options')
-       routepath = launch_options.path
+      routepath = launch_options.path
     }
-   
+
     this._navigationBarTitle.config = get_page_name(routepath)
     this._navigationBarTitle.lt = '21'
     let options = {
@@ -509,21 +512,27 @@ export default class Report {
         return
       }
 
-      const uniCloudObj = uni.__stat_uniCloud_space.importObject('uni-stat-receiver', {
-				customUI: true
-			})
-			uniCloudObj.report(optionsData).then(() => {
-				if (is_debug) {
-					console.log(`=== 统计队列数据上报 ===`);
-					console.log(optionsData);
-					console.log(`=== 上报结束 ===`);
-				}
-			}).catch((err) => {
-				if (is_debug) {
-					console.warn('=== 统计上报错误');
-					console.error(err);
-				}
-			})
+      const uniCloudObj = uni.__stat_uniCloud_space.importObject(
+        'uni-stat-receiver',
+        {
+          customUI: true,
+        }
+      )
+      uniCloudObj
+        .report(optionsData)
+        .then(() => {
+          if (is_debug) {
+            console.log(`=== 统计队列数据上报 ===`)
+            console.log(optionsData)
+            console.log(`=== 上报结束 ===`)
+          }
+        })
+        .catch((err) => {
+          if (is_debug) {
+            console.warn('=== 统计上报错误')
+            console.error(err)
+          }
+        })
     }
 
     if (__STAT_VERSION__ === '1') {
@@ -534,16 +543,16 @@ export default class Report {
           data: optionsData,
           success: () => {
             if (is_debug) {
-              console.log(`=== 统计队列数据上报 ===`);
-              console.log(optionsData);
-              console.log(`=== 上报结束 ===`);
+              console.log(`=== 统计队列数据上报 ===`)
+              console.log(optionsData)
+              console.log(`=== 上报结束 ===`)
             }
           },
           fail: (e) => {
             if (++this._retry < 3) {
               if (is_debug) {
-                console.warn('=== 统计上报错误，尝试重新上报！');
-                console.error(e);
+                console.warn('=== 统计上报错误，尝试重新上报！')
+                console.error(e)
               }
               setTimeout(() => {
                 this.sendRequest(optionsData)
@@ -564,9 +573,9 @@ export default class Report {
       let options = get_sgin(get_encodeURIComponent_options(data)).options
       image.src = STAT_H5_URL + '?' + options
       if (is_debug) {
-        console.log(`=== 统计队列数据上报 ===`);
-        console.log(data);
-        console.log(`=== 上报结束 ===`);
+        console.log(`=== 统计队列数据上报 ===`)
+        console.log(data)
+        console.log(`=== 上报结束 ===`)
       }
     })
   }

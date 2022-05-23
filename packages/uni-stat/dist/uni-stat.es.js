@@ -791,6 +791,7 @@ class Report {
         let options = {
           path: lastPageRoute,
           scene: this.statData.sc,
+          cst: 2,
         };
         this.sendReportRequest(options);
       }
@@ -857,6 +858,7 @@ class Report {
       let options = {
         path: route,
         scene: this.statData.sc,
+        cst: 3,
       };
       this.sendReportRequest(options);
     }
@@ -903,6 +905,8 @@ class Report {
       fvts: get_first_visit_time(),
       lvts: get_last_visit_time(),
       tvc: get_total_visit_count(),
+      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      cst: options.cst || 1,
     });
     if (get_platform_name() === 'n') {
       this.getProperty();
@@ -961,16 +965,15 @@ class Report {
    * 自定义事件上报
    */
   sendEventRequest({ key = '', value = '' } = {}) {
-
     let routepath = '';
 
     try {
       routepath = get_route$1();
     } catch (error) {
       const launch_options = dbGet('__launch_options');
-       routepath = launch_options.path;
+      routepath = launch_options.path;
     }
-   
+
     this._navigationBarTitle.config = get_page_name(routepath);
     this._navigationBarTitle.lt = '21';
     let options = {
@@ -1193,6 +1196,8 @@ class Stat extends Report {
     set_page_residence_time();
     this.__licationShow = true;
     dbSet('__launch_options', options);
+    // 应用初始上报参数为1 
+    options.cst = 1;
     this.sendReportRequest(options, true);
   }
   load(options, self) {
