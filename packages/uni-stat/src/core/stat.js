@@ -57,6 +57,8 @@ class Stat extends Report {
     let residence_time = set_page_residence_time()
     this.__licationShow = true
     dbSet('__launch_options', options)
+    // 应用初始上报参数为1
+    options.cst = 1
     this.sendReportRequest(options, true)
   }
   load(options, self) {

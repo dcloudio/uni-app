@@ -187,6 +187,7 @@ export default class Report {
         let options = {
           path: lastPageRoute,
           scene: this.statData.sc,
+          cst: 2,
         }
         this.sendReportRequest(options)
       }
@@ -253,6 +254,7 @@ export default class Report {
       let options = {
         path: route,
         scene: this.statData.sc,
+        cst: 3,
       }
       this.sendReportRequest(options)
     }
@@ -299,6 +301,8 @@ export default class Report {
       fvts: get_first_visit_time(),
       lvts: get_last_visit_time(),
       tvc: get_total_visit_count(),
+      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      cst: options.cst || 1,
     })
     if (get_platform_name() === 'n') {
       this.getProperty()
