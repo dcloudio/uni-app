@@ -18,6 +18,7 @@ export * from './device/scan-code'
 export * from './device/soter-authentication'
 export * from './device/system'
 export * from './device/vibrate'
+export * from './device/get-window-info'
 
 export * from './file/file'
 export * from './file/open-document'

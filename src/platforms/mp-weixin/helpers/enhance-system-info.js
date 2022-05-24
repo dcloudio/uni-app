@@ -30,7 +30,13 @@ export function addSafeAreaInsets (result) {
 }
 
 export function populateParameters (result) {
-  const { brand, model, system, language, theme, version, hostName = '', platform } = result
+  const {
+    brand, model, system,
+    language, theme, version,
+    hostName, platform, fontSizeSetting,
+    SDKVersion, pixelRatio, deviceOrientation,
+    environment
+  } = result
   const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
   // osName osVersion
@@ -46,7 +52,10 @@ export function populateParameters (result) {
   let hostVersion = version
   // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
   if (__PLATFORM__ === 'mp-baidu') {
-    hostVersion = result.swanNativeVersion || version
+    hostVersion = result.swanNativeVersion
+  }
+  if (__PLATFORM__ === 'mp-jd') {
+    hostVersion = result.hostVersionName
   }
 
   // deviceType
@@ -77,12 +86,30 @@ export function populateParameters (result) {
   }
 
   // hostName
-  let _hostName = hostName // mp-jd
-  if (__PLATFORM__ === 'mp-weixin') _hostName = (result.host || {}).env
+  let _hostName = hostName || __PLATFORM__.split('-')[1] // mp-jd
+  if (__PLATFORM__ === 'mp-weixin') {
+    if (environment) {
+      _hostName = environment
+    } else if (result.host) {
+      _hostName = result.host.env
+    }
+  }
   if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') { _hostName = result.host }
   if (__PLATFORM__ === 'mp-qq') _hostName = result.AppPlatform
   if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') { _hostName = result.appName }
   if (__PLATFORM__ === 'mp-alipay') _hostName = result.app
+
+  // deviceOrientation
+  let _deviceOrientation = deviceOrientation // 仅 微信 百度 支持
+  if (__PLATFORM__ === 'mp-baidu') { _deviceOrientation = result.orientation }
+
+  // devicePixelRatio
+  let _devicePixelRatio = pixelRatio
+  if (__PLATFORM__ === 'mp-baidu') { _devicePixelRatio = result.devicePixelRatio }
+
+  // SDKVersion
+  let _SDKVersion = SDKVersion
+  if (__PLATFORM__ === 'mp-alipay') { _SDKVersion = my.SDKVersion }
 
   // wx.getAccountInfoSync
 
@@ -97,19 +124,25 @@ export function populateParameters (result) {
     deviceBrand,
     deviceModel: model,
     deviceType,
+    devicePixelRatio: _devicePixelRatio,
+    deviceOrientation: _deviceOrientation,
     osName: osName.toLocaleLowerCase(),
     osVersion,
-    osLanguage: language,
-    osTheme: theme,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language,
+    hostLanguage: language.split('_', '-'),
     hostName: _hostName,
+    hostSDKVersion: _SDKVersion,
+    hostFontSizeSetting: fontSizeSetting,
+    windowTop: 0,
+    windowBottom: 0,
     // TODO
-    ua: '',
-    hostPackageName: '',
-    browserName: '',
-    browseVersion: ''
+    osLanguage: undefined,
+    osTheme: undefined,
+    ua: undefined,
+    hostPackageName: undefined,
+    browserName: undefined,
+    browseVersion: undefined
   }
 
   Object.assign(result, parameters)
