@@ -6782,11 +6782,13 @@
       }
 
       vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(watchProp, function(newVal, oldVal) {
+        // vue component / web component
+        var component = vnode.elm.__vue__ || vnode.elm;
         wxsProps[prop](
           newVal,
           oldVal,
           context.$getComponentDescriptor(context, true),
-          vnode.elm.__vue__.$getComponentDescriptor(vnode.elm.__vue__, false)
+          component.$getComponentDescriptor && component.$getComponentDescriptor(component, false)
         );
       }, {
         immediate: true, // 当 prop 的值被设置 WXS 函数就会触发，而不只是值发生改变，所以在页面初始化的时候会调用一次 WxsPropObserver 的函数
