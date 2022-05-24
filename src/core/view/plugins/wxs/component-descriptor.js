@@ -28,7 +28,7 @@ function getWxsClsArr (clsArr, classList, isAdd) {
   return wxsClsArr
 }
 
-function parseStyleText (cssText) {
+export function parseStyleText (cssText) {
   const res = {}
   const listDelimiter = /;(?![^(]*\))/g
   const propertyDelimiter = /:(.+)/
@@ -41,7 +41,7 @@ function parseStyleText (cssText) {
   return res
 }
 
-class ComponentDescriptor {
+export class ComponentDescriptor {
   constructor (vm) {
     this.$vm = vm
     Object.defineProperty(this, '$el', {
@@ -56,7 +56,9 @@ class ComponentDescriptor {
       return
     }
     const el = this.$el.querySelector(selector)
-    return el && el.__vue__ && createComponentDescriptor(el.__vue__, false)
+    // vue component / web component
+    const component = el.__vue__ || el
+    return component.$getComponentDescriptor && component.$getComponentDescriptor(component, false)
   }
 
   selectAllComponents (selector) {
@@ -67,7 +69,9 @@ class ComponentDescriptor {
     const els = this.$el.querySelectorAll(selector)
     for (let i = 0; i < els.length; i++) {
       const el = els[i]
-      el.__vue__ && descriptors.push(createComponentDescriptor(el.__vue__, false))
+      // vue component / web component
+      const component = el.__vue__ || el
+      component.$getComponentDescriptor && descriptors.push(component.$getComponentDescriptor(component, false))
     }
     return descriptors
   }
