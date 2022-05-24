@@ -1,132 +1,122 @@
-import { NAVBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { defineAsyncApi, defineSyncApi } from '@dcloudio/uni-api'
-import tabBar from '../../framework/app/tabBar'
-import { getCurrentWebview } from '../../utils'
-import { getStatusbarHeight } from '../../../helpers/statusBar'
-import { isTabBarPage } from '../../../helpers/plus'
 import deviceId from '../../../helpers/uuid'
 import { extend } from '@vue/shared'
+import { getWindowInfo } from './getWindowInfo'
 
-type SafeAreaInsets = Required<PlusNavigatorSafeAreaInsets>
+let systemInfo: any
+let _initSystemInfo = true
 
-function getScreenInfo() {
-  // 好像开发时刷新，偶发的 plus.screen.getCurrentSize 为 undefined
-  const { resolutionWidth, resolutionHeight } =
-    plus.screen.getCurrentSize() || {
-      resolutionWidth: 0,
-      resolutionHeight: 0,
-    }
-  return {
-    screenWidth: Math.round(resolutionWidth),
-    screenHeight: Math.round(resolutionHeight),
-  }
+function weexGetSystemInfoSync() {
+  if (!_initSystemInfo) return
+  const { getSystemInfoSync } = weex.requireModule('plus')
+  systemInfo = getSystemInfoSync()
 }
+
+export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
+  'getDeviceInfo',
+  () => {
+    weexGetSystemInfoSync()
+    const { deviceBrand, deviceModel, osName, osVersion } = systemInfo
+
+    const brand = deviceBrand.toLowerCase()
+
+    return {
+      deviceBrand: brand,
+      deviceModel,
+      brand,
+      model: deviceModel,
+      system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+      platform: osName,
+    }
+  }
+)
+
+export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
+  'getAppBaseInfo',
+  () => {
+    weexGetSystemInfoSync()
+    const {
+      hostPackageName,
+      hostName,
+      osLanguage,
+      hostVersion,
+      hostLanguage,
+      hostTheme,
+      appId,
+      appName,
+      appVersion,
+      appVersionCode,
+    } = systemInfo
+
+    return {
+      SDKVersion: '',
+      hostSDKVersion: '',
+      enableDebug: false,
+      appId,
+      appName,
+      appVersion,
+      appVersionCode,
+      appLanguage: uni.getLocale(),
+      version: plus.runtime.innerVersion!,
+      language: osLanguage,
+      theme: '',
+      hostPackageName,
+      hostName,
+      hostVersion,
+      hostLanguage,
+      hostTheme,
+      hostFontSizeSetting: undefined,
+    }
+  }
+)
 
 export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
   'getSystemInfoSync',
   () => {
-    const { getSystemInfoSync } = weex.requireModule('plus')
-    const info = getSystemInfoSync()
-    const { deviceBrand, deviceModel, osName, osVersion, osLanguage } = info
-    const brand = deviceBrand.toLowerCase()
-    const _osName = osName.toLowerCase()
-    const ios = _osName === 'ios'
+    _initSystemInfo = true
+    weexGetSystemInfoSync()
+    _initSystemInfo = false
+    const windowInfo = getWindowInfo()
+    const deviceInfo = getDeviceInfo()
+    const appBaseInfo = getAppBaseInfo()
+    _initSystemInfo = true
 
-    const { screenWidth, screenHeight } = getScreenInfo()
-    const statusBarHeight = getStatusbarHeight()
+    const { osName, osLanguage, osVersion } = systemInfo
+    const { pixelRatio } = windowInfo
+    const osLanguageSplit = osLanguage.split('-')
+    const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1]
+    let _osLanguage = `${osLanguageSplit[0]}${
+      osLanguageSplitLast ? '-' + osLanguageSplitLast : ''
+    }`
 
-    let safeAreaInsets: SafeAreaInsets
-    const titleNView = {
-      height: 0,
-      cover: false,
-    }
-    const webview = getCurrentWebview()
-    if (webview) {
-      const webStyle = webview.getStyle()
-      const style = webStyle && webStyle.titleNView
-      if (style && style.type && (style as any).type !== 'none') {
-        titleNView.height =
-          style.type === 'transparent' ? 0 : statusBarHeight + NAVBAR_HEIGHT
-        titleNView.cover =
-          style.type === 'transparent' || style.type === 'float'
-      }
-      safeAreaInsets = webview.getSafeAreaInsets() as SafeAreaInsets
-    } else {
-      safeAreaInsets = plus.navigator.getSafeAreaInsets() as SafeAreaInsets
-    }
-    const tabBarView = {
-      height: 0,
-      cover: false,
-    }
-    if (isTabBarPage()) {
-      tabBarView.height = tabBar.visible ? tabBar.height : 0
-      tabBarView.cover = tabBar.cover
-    }
-    const windowTop = titleNView.cover ? titleNView.height : 0
-    const windowBottom = tabBarView.cover ? tabBarView.height : 0
-    let windowHeight = screenHeight - titleNView.height - tabBarView.height
-    let windowHeightReal =
-      screenHeight -
-      (titleNView.cover ? 0 : titleNView.height) -
-      (tabBarView.cover ? 0 : tabBarView.height)
-    const windowWidth = screenWidth
-    if (
-      (!tabBarView.height || tabBarView.cover) &&
-      !safeAreaInsets.bottom &&
-      safeAreaInsets.deviceBottom
-    ) {
-      windowHeight -= safeAreaInsets.deviceBottom
-      windowHeightReal -= safeAreaInsets.deviceBottom
-    }
-    safeAreaInsets = ios
-      ? safeAreaInsets
-      : ({
-          left: 0,
-          right: 0,
-          top: titleNView.height && !titleNView.cover ? 0 : statusBarHeight,
-          bottom: 0,
-        } as SafeAreaInsets)
-    const safeArea = {
-      left: safeAreaInsets.left,
-      right: windowWidth - safeAreaInsets.right,
-      top: safeAreaInsets.top,
-      bottom: windowHeightReal - safeAreaInsets.bottom,
-      width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
-      height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom,
+    let extraData = {
+      errMsg: 'getSystemInfo:ok',
+      fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+      devicePixelRatio: pixelRatio,
+      deviceId: deviceId(),
+      uniCompileVersion: __uniConfig.compilerVersion,
+      uniRuntimeVersion: __uniConfig.compilerVersion,
+      osLanguage: _osLanguage,
     }
 
-    return extend(
-      {
-        brand: brand,
-        model: deviceModel,
-        pixelRatio: plus.screen.scale!,
-        screenWidth,
-        screenHeight,
-        windowWidth,
-        windowHeight,
-        statusBarHeight,
-        language: osLanguage,
-        system: `${osName} ${osVersion}`,
-        version: plus.runtime.innerVersion!,
-        platform: _osName,
-        SDKVersion: '',
-        windowTop,
-        windowBottom,
-        safeArea,
-        safeAreaInsets: {
-          top: safeAreaInsets.top,
-          right: safeAreaInsets.right,
-          bottom: safeAreaInsets.bottom,
-          left: safeAreaInsets.left,
-        },
-        deviceId: deviceId(),
-      },
-      info,
-      {
-        deviceBrand: brand,
-        osName: _osName,
-      }
+    if (osName === 'ios') {
+      ;(extraData as any).romName = osName
+      ;(extraData as any).romVersion = osVersion
+    }
+
+    const _systemInfo: UniApp.GetSystemInfoResult = extend(
+      windowInfo,
+      systemInfo,
+      deviceInfo,
+      appBaseInfo,
+      extraData
     )
+
+    delete (_systemInfo as any).screenTop
+    delete (_systemInfo as any).enableDebug
+    delete (_systemInfo as any).theme
+
+    return _systemInfo
   }
 )
 

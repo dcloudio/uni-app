@@ -21,6 +21,7 @@ export * from './device/accelerometer'
 export * from './device/compass'
 export * from './device/vibrate'
 export * from './device/clipboard'
+export * from './device/getWindowInfo'
 
 export * from './storage/storage'
 
