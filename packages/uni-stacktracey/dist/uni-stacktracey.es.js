@@ -8,7 +8,7 @@ import { SourceMapConsumer } from 'source-map';
     if (SourceMapConsumer.initialize) {
         // @ts-ignore
         SourceMapConsumer.initialize({
-            'lib/mappings.wasm': 'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
+            'lib/mappings.wasm': '../lib/mappings.wasm',
         });
     }
 }

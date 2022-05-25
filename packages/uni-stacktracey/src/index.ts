@@ -13,8 +13,7 @@ if (__PLATFORM_WEB__) {
   if (SourceMapConsumer.initialize) {
     // @ts-ignore
     SourceMapConsumer.initialize({
-      'lib/mappings.wasm':
-        'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
+      'lib/mappings.wasm': '../lib/mappings.wasm',
     })
   }
 }
