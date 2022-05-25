@@ -2,13 +2,6 @@ import fs from 'fs';
 import StackTracey from 'stacktracey';
 import { SourceMapConsumer } from 'source-map';
 
-// @ts-ignore
-{
-    // @ts-ignore
-    SourceMapConsumer.initialize({
-        'lib/mappings.wasm': 'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
-    });
-}
 const nixSlashes = (x) => x.replace(/\\/g, '/');
 const sourcemapCatch = {};
 function stacktracey(stacktrace, opts) {
@@ -16,13 +9,13 @@ function stacktracey(stacktrace, opts) {
     const stack = opts.preset.parseStacktrace(stacktrace);
     stack.items.forEach((item, index) => {
         const fn = () => {
-            const { line = 0, column = 0, file, fileName } = item;
+            const { line = 0, column = 0, file, fileName, fileRelative } = item;
             try {
                 return opts.preset
-                    .getSourceMapContent(file, fileName)
+                    .getSourceMapContent(file, fileName, fileRelative)
                     .then((content) => {
-                    if (content)
-                        return SourceMapConsumer.with(content, null, (consumer) => {
+                    if (content) {
+                        return getConsumer(content).then((consumer) => {
                             const sourceMapContent = parseSourceMapContent(consumer, {
                                 line,
                                 column,
@@ -39,6 +32,7 @@ function stacktracey(stacktrace, opts) {
                                 });
                             }
                         });
+                    }
                 });
             }
             catch (error) {
@@ -64,6 +58,19 @@ function stacktracey(stacktrace, opts) {
             .catch(() => {
             resolve(stacktrace);
         });
+    });
+}
+function getConsumer(content) {
+    return new Promise((resolve, reject) => {
+        if (SourceMapConsumer.with) {
+            SourceMapConsumer.with(content, null, (consumer) => {
+                resolve(consumer);
+            });
+        }
+        else {
+            // @ts-ignore
+            resolve(SourceMapConsumer(content));
+        }
     });
 }
 function getSourceMapContent(sourcemapUrl) {
@@ -113,20 +120,19 @@ function parseSourceMapContent(consumer, obj) {
 function uniStracktraceyPreset(opts) {
     const { base, sourceRoot } = opts;
     return {
-        parseSourceMapUrl(file, fileName) {
+        parseSourceMapUrl(file, fileName, fileRelative) {
             // 组合 sourceMapUrl
-            if (!base)
-                return '';
-            file = (file.match(/(\/.*)/) || [])[1];
-            if (!file)
+            if (fileRelative.indexOf('(') !== -1)
+                fileRelative = fileRelative.match(/\((.*)/)[1];
+            if (!base || !fileRelative)
                 return '';
             if (sourceRoot) {
-                return `${file.replace(sourceRoot, base + '/')}.map`;
+                return `${fileRelative.replace(sourceRoot, base + '/')}.map`;
             }
-            return `${base}/${file}.map`;
+            return `${base}/${fileRelative}.map`;
         },
-        getSourceMapContent(file, fileName) {
-            return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName)));
+        getSourceMapContent(file, fileName, fileRelative) {
+            return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName, fileRelative)));
         },
         parseStacktrace(stacktrace) {
             return new StackTracey(stacktrace);
@@ -142,16 +148,16 @@ function utsStracktraceyPreset(opts) {
     const { base, sourceRoot } = opts;
     let errStack = [];
     return {
-        parseSourceMapUrl(file, fileName) {
+        parseSourceMapUrl(file, fileName, fileRelative) {
             // 组合 sourceMapUrl
             if (sourceRoot) {
                 return `${file.replace(sourceRoot, base + '/')}.map`;
             }
             return `${base}/${file}.map`;
         },
-        getSourceMapContent(file, fileName) {
+        getSourceMapContent(file, fileName, fileRelative) {
             // 根据 base,filename 组合 sourceMapUrl
-            return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName)));
+            return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName, fileRelative)));
         },
         parseStacktrace(str) {
             const lines = (str || '').split('\n');

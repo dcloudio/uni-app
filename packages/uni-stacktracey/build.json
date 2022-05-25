@@ -15,9 +15,6 @@
 				"dist/uni-stacktracey.es.js"
 			]
 		},
-		"output": {
-			"format": "es"
-		},
 		"replacements": {
 			"__PLATFORM_WEB__": "true"
 		}

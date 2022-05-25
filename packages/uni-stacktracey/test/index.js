@@ -31,19 +31,15 @@ at HTMLElement.n(/static/js/chunk-vendors.75525bd5.js:34:13824)
 at HTMLElement.o._wrapper(/static/js/chunk-vendors.75525bd5.js:34:53966)
 at HTMLElement.i(/static/js/chunk-vendors.75525bd5.js:7:609894)`
 
-/* stacktracey(uniErrorMsg, {
+stacktracey(uniErrorMsg, {
   preset: uniStracktraceyPreset({
     base: path.resolve(__dirname, './__UNI__APPID__/1.0.0/.sourcemap/h5/'),
     sourceRoot: '',
   }),
 }).then((res) => {
   console.log('res :>> ', res)
-}) */
-console.log(
-  'path.resolve(__dirname, "./nativeplugins-sourceMap/DCloud-UTSPlugin/"), :>> ',
-  path.resolve(__dirname, './nativeplugins-sourceMap/DCloud-UTSPlugin/')
-)
-stacktracey(utsErrorMsg, {
+})
+/* stacktracey(utsErrorMsg, {
   preset: utsStracktraceyPreset({
     base: path.resolve(
       __dirname,
@@ -54,3 +50,4 @@ stacktracey(utsErrorMsg, {
 }).then((res) => {
   console.log('res :>> ', res)
 })
+ */

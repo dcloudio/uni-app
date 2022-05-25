@@ -7,14 +7,6 @@ import {
   Position,
 } from 'source-map'
 
-// @ts-ignore
-if (__PLATFORM_WEB__) {
-  // @ts-ignore
-  SourceMapConsumer.initialize({
-    'lib/mappings.wasm': 'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
-  })
-}
-
 const nixSlashes = (x: string) => x.replace(/\\/g, '/')
 const sourcemapCatch: Record<string, string | Promise<string>> = {}
 
@@ -46,8 +38,16 @@ interface StacktraceyPreset {
    * 编译后的文件名
    * @param fileName
    */
-  parseSourceMapUrl(file: string, fileName: string): string
-  getSourceMapContent(file: string, fileName: string): Promise<string>
+  parseSourceMapUrl(
+    file: string,
+    fileName: string,
+    fileRelative: string
+  ): string
+  getSourceMapContent(
+    file: string,
+    fileName: string,
+    fileRelative: string
+  ): Promise<string>
 }
 
 interface StacktraceyOptions {
@@ -64,13 +64,13 @@ export function stacktracey(
 
   stack.items.forEach((item, index) => {
     const fn = () => {
-      const { line = 0, column = 0, file, fileName } = item
+      const { line = 0, column = 0, file, fileName, fileRelative } = item
       try {
         return opts.preset
-          .getSourceMapContent(file, fileName)
+          .getSourceMapContent(file, fileName, fileRelative)
           .then((content) => {
-            if (content)
-              return SourceMapConsumer.with(content, null, (consumer) => {
+            if (content) {
+              return getConsumer(content).then((consumer) => {
                 const sourceMapContent = parseSourceMapContent(consumer, {
                   line,
                   column,
@@ -95,6 +95,7 @@ export function stacktracey(
                   })
                 }
               })
+            }
           })
       } catch (error) {
         return Promise.resolve()
@@ -120,6 +121,21 @@ export function stacktracey(
       .catch(() => {
         resolve(stacktrace)
       })
+  })
+}
+
+function getConsumer(
+  content: string
+): Promise<BasicSourceMapConsumer | IndexedSourceMapConsumer> {
+  return new Promise((resolve, reject) => {
+    if (SourceMapConsumer.with) {
+      SourceMapConsumer.with(content, null, (consumer) => {
+        resolve(consumer)
+      })
+    } else {
+      // @ts-ignore
+      resolve(SourceMapConsumer(content))
+    }
   })
 }
 
@@ -198,19 +214,21 @@ export function uniStracktraceyPreset(
   const { base, sourceRoot } = opts
 
   return {
-    parseSourceMapUrl(file, fileName) {
+    parseSourceMapUrl(file, fileName, fileRelative) {
       // 组合 sourceMapUrl
-      if (!base) return ''
-      file = (file.match(/(\/.*)/) || [])[1]
-      if (!file) return ''
+      if (fileRelative.indexOf('(') !== -1)
+        fileRelative = fileRelative.match(/\((.*)/)![1]
+      if (!base || !fileRelative) return ''
       if (sourceRoot) {
-        return `${file.replace(sourceRoot, base + '/')}.map`
+        return `${fileRelative.replace(sourceRoot, base + '/')}.map`
       }
-      return `${base}/${file}.map`
+      return `${base}/${fileRelative}.map`
     },
-    getSourceMapContent(file, fileName) {
+    getSourceMapContent(file, fileName, fileRelative) {
       return Promise.resolve(
-        getSourceMapContent(this.parseSourceMapUrl(file, fileName))
+        getSourceMapContent(
+          this.parseSourceMapUrl(file, fileName, fileRelative)
+        )
       )
     },
     parseStacktrace(stacktrace) {
@@ -244,17 +262,19 @@ export function utsStracktraceyPreset(
   let errStack: string[] = []
 
   return {
-    parseSourceMapUrl(file, fileName) {
+    parseSourceMapUrl(file, fileName, fileRelative) {
       // 组合 sourceMapUrl
       if (sourceRoot) {
         return `${file.replace(sourceRoot, base + '/')}.map`
       }
       return `${base}/${file}.map`
     },
-    getSourceMapContent(file, fileName) {
+    getSourceMapContent(file, fileName, fileRelative) {
       // 根据 base,filename 组合 sourceMapUrl
       return Promise.resolve(
-        getSourceMapContent(this.parseSourceMapUrl(file, fileName))
+        getSourceMapContent(
+          this.parseSourceMapUrl(file, fileName, fileRelative)
+        )
       )
     },
     parseStacktrace(str) {
