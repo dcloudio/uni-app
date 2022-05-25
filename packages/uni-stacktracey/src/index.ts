@@ -7,6 +7,18 @@ import {
   Position,
 } from 'source-map'
 
+// @ts-ignore
+if (__PLATFORM_WEB__) {
+  // @ts-ignore
+  if (SourceMapConsumer.initialize) {
+    // @ts-ignore
+    SourceMapConsumer.initialize({
+      'lib/mappings.wasm':
+        'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
+    })
+  }
+}
+
 const nixSlashes = (x: string) => x.replace(/\\/g, '/')
 const sourcemapCatch: Record<string, string | Promise<string>> = {}
 

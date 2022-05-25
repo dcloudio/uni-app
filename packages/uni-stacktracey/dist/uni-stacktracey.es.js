@@ -2,6 +2,16 @@ import fs from 'fs';
 import StackTracey from 'stacktracey';
 import { SourceMapConsumer } from 'source-map';
 
+// @ts-ignore
+{
+    // @ts-ignore
+    if (SourceMapConsumer.initialize) {
+        // @ts-ignore
+        SourceMapConsumer.initialize({
+            'lib/mappings.wasm': 'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
+        });
+    }
+}
 const nixSlashes = (x) => x.replace(/\\/g, '/');
 const sourcemapCatch = {};
 function stacktracey(stacktrace, opts) {
