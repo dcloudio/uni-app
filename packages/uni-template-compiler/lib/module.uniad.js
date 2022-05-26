@@ -5,7 +5,7 @@ module.exports = {
     warn
   }) {
     if (process.env.UNI_PLATFORM === 'mp-weixin') {
-      if (el.tag === 'ad' && el.attrsMap.adpid) {
+      if (el.tag === 'ad' && (el.attrsMap.adpid || el.attrsMap[':adpid'])) {
         el.tag = 'uniad'
       }
       if (AD_COMPONENTS.indexOf(el.tag) > -1) {
