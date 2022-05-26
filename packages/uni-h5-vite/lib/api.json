@@ -44,7 +44,7 @@
   "getLocation",
   "getNetworkType",
   "getProvider",
-  "getPushCid",
+  "getPushClientid",
   "getRealPath",
   "getRecorderManager",
   "getRightWindowStyle",
