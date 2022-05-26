@@ -286,7 +286,7 @@ function wrapperExtras (name, extras) {
   }
 }
 // 部分 API 直接实现
-const unwrappers = ['getPushCid', 'onPushMessage', 'offPushMessage']
+const unwrappers = ['getPushClientid', 'onPushMessage', 'offPushMessage']
 
 export function wrapper (name, invokeMethod, extras = {}) {
   if (unwrappers.indexOf(name) > -1 || !isFn(invokeMethod)) {
