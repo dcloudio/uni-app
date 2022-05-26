@@ -4,10 +4,16 @@ import { getBrowserInfo } from '../base/getBrowserInfo'
 import { getWindowInfo } from './getWindowInfo'
 import { extend } from '@vue/shared'
 
-let browserInfo: ReturnType<typeof getBrowserInfo>
+type BrowserInfo = ReturnType<typeof getBrowserInfo>
+
+let browserInfo: BrowserInfo
 let _initBrowserInfo = true
 
 function initBrowserInfo() {
+  if (__NODE_JS__) {
+    //TODO 临时搞一下配合 uniCloud 测试
+    return (browserInfo = {} as BrowserInfo)
+  }
   if (!_initBrowserInfo) return
   browserInfo = getBrowserInfo()
 }
@@ -67,7 +73,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       return {
         deviceId: Date.now() + '' + Math.floor(Math.random() * 1e7),
         platform: 'nodejs',
-      } as unknown as UniApp.GetSystemInfoResult
+      } as UniApp.GetSystemInfoResult
     }
 
     _initBrowserInfo = true
