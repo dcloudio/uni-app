@@ -11,7 +11,7 @@ export {
 }
   from '../../helpers/storage'
 export {
-  getPushCid,
+  getPushClientid,
   onPushMessage,
   offPushMessage,
   invokePushCallback
