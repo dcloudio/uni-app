@@ -11057,25 +11057,9 @@ const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
 
 let cid;
 let cidErrMsg;
-function normalizePushMessage(type, message) {
+function normalizePushMessage(message) {
     try {
-        const res = JSON.parse(message);
-        if (type === 'receive') {
-            if (res.payload) {
-                if (res.aps) {
-                    res.payload.aps = res.aps;
-                }
-                return res.payload;
-            }
-        }
-        else if (type === 'click') {
-            delete res.type;
-            delete res.__UUID__;
-            delete res.appid;
-            if (res.aps && res.aps.alert) {
-                res.title = res.aps.alert.title;
-            }
-        }
+        return JSON.parse(message);
     }
     catch (e) { }
     return message;
@@ -11094,7 +11078,7 @@ function invokePushCallback(args) {
         onPushMessageCallbacks.forEach((callback) => {
             callback({
                 type: 'receive',
-                data: normalizePushMessage('receive', args.message),
+                data: normalizePushMessage(args.message),
             });
         });
     }
@@ -11102,7 +11086,7 @@ function invokePushCallback(args) {
         onPushMessageCallbacks.forEach((callback) => {
             callback({
                 type: 'click',
-                data: normalizePushMessage('click', args.message),
+                data: normalizePushMessage(args.message),
             });
         });
     }
@@ -13020,6 +13004,12 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     return false;
 }, CanIUseProtocol);
 
+let deviceId;
+function deviceId$1 () {
+    deviceId = deviceId || plus.device.uuid;
+    return deviceId;
+}
+
 const isIOS = plus.os.name === 'iOS';
 let config;
 /**
@@ -13282,12 +13272,6 @@ function getStatusBarStyle() {
     return style;
 }
 
-let deviceId;
-function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId;
-}
-
 function getScreenInfo() {
     // 好像开发时刷新，偶发的 plus.screen.getCurrentSize 为 undefined
     const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize() || {
@@ -13299,13 +13283,8 @@ function getScreenInfo() {
         screenHeight: Math.round(resolutionHeight),
     };
 }
-const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
-    const { getSystemInfoSync } = weex.requireModule('plus');
-    const info = getSystemInfoSync();
-    const { deviceBrand, deviceModel, osName, osVersion, osLanguage } = info;
-    const brand = deviceBrand.toLowerCase();
-    const _osName = osName.toLowerCase();
-    const ios = _osName === 'ios';
+const getWindowInfo = defineSyncApi('getWindowInfo', () => {
+    const ios = plus.os.name.toLowerCase() === 'ios';
     const { screenWidth, screenHeight } = getScreenInfo();
     const statusBarHeight = getStatusbarHeight();
     let safeAreaInsets;
@@ -13365,22 +13344,13 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
         width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
         height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom,
     };
-    return extend({
-        brand: brand,
-        model: deviceModel,
+    return {
         pixelRatio: plus.screen.scale,
         screenWidth,
         screenHeight,
         windowWidth,
         windowHeight,
         statusBarHeight,
-        language: osLanguage,
-        system: `${osName} ${osVersion}`,
-        version: plus.runtime.innerVersion,
-        platform: _osName,
-        SDKVersion: '',
-        windowTop,
-        windowBottom,
         safeArea,
         safeAreaInsets: {
             top: safeAreaInsets.top,
@@ -13388,11 +13358,87 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
             bottom: safeAreaInsets.bottom,
             left: safeAreaInsets.left,
         },
-        deviceId: deviceId$1(),
-    }, info, {
+        windowTop,
+        windowBottom,
+        screenTop: screenHeight - windowHeight,
+    };
+});
+
+let systemInfo;
+let _initSystemInfo = true;
+function weexGetSystemInfoSync() {
+    if (!_initSystemInfo)
+        return;
+    const { getSystemInfoSync } = weex.requireModule('plus');
+    systemInfo = getSystemInfoSync();
+}
+const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
+    weexGetSystemInfoSync();
+    const { deviceBrand, deviceModel, osName, osVersion } = systemInfo;
+    const brand = deviceBrand.toLowerCase();
+    return {
         deviceBrand: brand,
-        osName: _osName,
-    });
+        deviceModel,
+        brand,
+        model: deviceModel,
+        system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+        platform: osName,
+    };
+});
+const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
+    weexGetSystemInfoSync();
+    const { hostPackageName, hostName, osLanguage, hostVersion, hostLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
+    return {
+        SDKVersion: '',
+        hostSDKVersion: '',
+        enableDebug: false,
+        appId,
+        appName,
+        appVersion,
+        appVersionCode,
+        appLanguage: uni.getLocale(),
+        version: plus.runtime.innerVersion,
+        language: osLanguage,
+        theme: '',
+        hostPackageName,
+        hostName,
+        hostVersion,
+        hostLanguage,
+        hostTheme,
+        hostFontSizeSetting: undefined,
+    };
+});
+const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
+    _initSystemInfo = true;
+    weexGetSystemInfoSync();
+    _initSystemInfo = false;
+    const windowInfo = getWindowInfo();
+    const deviceInfo = getDeviceInfo();
+    const appBaseInfo = getAppBaseInfo();
+    _initSystemInfo = true;
+    const { osName, osLanguage, osVersion } = systemInfo;
+    const { pixelRatio } = windowInfo;
+    const osLanguageSplit = osLanguage.split('-');
+    const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1];
+    let _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`;
+    let extraData = {
+        errMsg: 'getSystemInfo:ok',
+        fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+        devicePixelRatio: pixelRatio,
+        deviceId: deviceId$1(),
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        osLanguage: _osLanguage,
+    };
+    if (osName === 'ios') {
+        extraData.romName = osName;
+        extraData.romVersion = osVersion;
+    }
+    const _systemInfo = extend(windowInfo, systemInfo, deviceInfo, appBaseInfo, extraData);
+    delete _systemInfo.screenTop;
+    delete _systemInfo.enableDebug;
+    delete _systemInfo.theme;
+    return _systemInfo;
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
     return resolve(getSystemInfoSync());
@@ -19039,6 +19085,8 @@ var uni$1 = {
   removeSavedFile: removeSavedFile,
   openDocument: openDocument,
   canIUse: canIUse,
+  getDeviceInfo: getDeviceInfo,
+  getAppBaseInfo: getAppBaseInfo,
   getSystemInfoSync: getSystemInfoSync,
   getSystemInfo: getSystemInfo,
   onCompassChange: onCompassChange,
@@ -19091,6 +19139,7 @@ var uni$1 = {
   getScreenBrightness: getScreenBrightness,
   setScreenBrightness: setScreenBrightness,
   setKeepScreenOn: setKeepScreenOn,
+  getWindowInfo: getWindowInfo,
   getImageInfo: getImageInfo,
   getVideoInfo: getVideoInfo,
   previewImage: previewImage,

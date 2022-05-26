@@ -22,7 +22,7 @@ open class TestModule : UniModule() {
         data["code"] = "success456";
         return data;
     }
-    override open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == TestModule.REQUEST_CODE && data.hasExtra("respond")) {
             log(this.TAG, "原生页面返回----" + data.getStringExtra("respond"));
         }

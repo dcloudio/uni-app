@@ -511,7 +511,10 @@ importers:
       vue: 3.2.33
 
   packages/uni-h5-vue:
-    specifiers: {}
+    specifiers:
+      '@dcloudio/uni-shared': 3.0.0-alpha-3041020220516004
+    dependencies:
+      '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-i18n:
     specifiers: {}
@@ -8224,7 +8227,6 @@ packages:
       rollup: 2.72.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /vlq/0.2.3:
     resolution: {integrity: sha512-DRibZL6DsNhIgYQ+wNdWDL2SL3bKPlVrRiBqV5yuMm++op8W4kGFtaQfCs4KEJn0wBZcHVHJ3eoywX8983k1ow==}

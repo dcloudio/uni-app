@@ -1,4 +1,5 @@
 Promise.resolve().then(() => {
+    plus.push.setAutoNotification && plus.push.setAutoNotification(false);
     const info = plus.push.getClientInfo();
     if (info.clientid) {
         // @ts-expect-error

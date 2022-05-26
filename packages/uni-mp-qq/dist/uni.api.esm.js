@@ -540,25 +540,9 @@ const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
 
 let cid;
 let cidErrMsg;
-function normalizePushMessage(type, message) {
+function normalizePushMessage(message) {
     try {
-        const res = JSON.parse(message);
-        if (type === 'receive') {
-            if (res.payload) {
-                if (res.aps) {
-                    res.payload.aps = res.aps;
-                }
-                return res.payload;
-            }
-        }
-        else if (type === 'click') {
-            delete res.type;
-            delete res.__UUID__;
-            delete res.appid;
-            if (res.aps && res.aps.alert) {
-                res.title = res.aps.alert.title;
-            }
-        }
+        return JSON.parse(message);
     }
     catch (e) { }
     return message;
@@ -577,7 +561,7 @@ function invokePushCallback(args) {
         onPushMessageCallbacks.forEach((callback) => {
             callback({
                 type: 'receive',
-                data: normalizePushMessage('receive', args.message),
+                data: normalizePushMessage(args.message),
             });
         });
     }
@@ -585,7 +569,7 @@ function invokePushCallback(args) {
         onPushMessageCallbacks.forEach((callback) => {
             callback({
                 type: 'click',
-                data: normalizePushMessage('click', args.message),
+                data: normalizePushMessage(args.message),
             });
         });
     }
@@ -911,7 +895,7 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function populateParameters(fromRes, toRes) {
-    const { brand, model, system, language, theme, version, hostName = '', platform, } = fromRes;
+    const { brand, model, system, language, theme, version, hostName, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, environment, } = fromRes;
     const isQuickApp = "mp-qq".indexOf('quickapp-webview') !== -1;
     // osName osVersion
     let osName = '';
@@ -948,8 +932,14 @@ function populateParameters(fromRes, toRes) {
         deviceBrand = getDeviceBrand(deviceBrand);
     }
     // hostName
-    let _hostName = hostName; // mp-jd
+    let _hostName = hostName || "mp-qq".split('-')[1]; // mp-jd
     _hostName = fromRes.AppPlatform;
+    // deviceOrientation
+    let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
+    // devicePixelRatio
+    let _devicePixelRatio = pixelRatio;
+    // SDKVersion
+    let _SDKVersion = SDKVersion;
     // wx.getAccountInfoSync
     const parameters = {
         appId: process.env.UNI_APP_ID,
@@ -962,19 +952,25 @@ function populateParameters(fromRes, toRes) {
         deviceBrand,
         deviceModel: model,
         deviceType,
+        devicePixelRatio: _devicePixelRatio,
+        deviceOrientation: _deviceOrientation,
         osName: osName.toLocaleLowerCase(),
         osVersion,
-        osLanguage: language,
-        osTheme: theme,
         hostTheme: theme,
         hostVersion,
-        hostLanguage: language,
+        hostLanguage: language.split('_', '-'),
         hostName: _hostName,
+        hostSDKVersion: _SDKVersion,
+        hostFontSizeSetting: fontSizeSetting,
+        windowTop: 0,
+        windowBottom: 0,
         // TODO
-        ua: '',
-        hostPackageName: '',
-        browserName: '',
-        browseVersion: '',
+        osLanguage: undefined,
+        osTheme: undefined,
+        ua: undefined,
+        hostPackageName: undefined,
+        browserName: undefined,
+        browseVersion: undefined,
     };
     extend(toRes, parameters);
 }
