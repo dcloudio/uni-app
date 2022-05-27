@@ -480,9 +480,10 @@ var baseApi = /*#__PURE__*/Object.freeze({
   interceptors: interceptors
 });
 
-function getDeviceBrand (model) {
+function _getDeviceBrand (model) {
   if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
   if (/windows/gi.test(model)) { return 'microsoft' }
+  return ''
 }
 
 const UUID_KEY = '__DC_STAT_UUID';
@@ -513,8 +514,8 @@ function addSafeAreaInsets (result) {
 
 function populateParameters (result) {
   const {
-    brand, model, system,
-    language, theme, version,
+    brand = '', model = '', system = '',
+    language = '', theme, version,
     hostName, platform, fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation,
     environment
@@ -531,31 +532,10 @@ function populateParameters (result) {
   let hostVersion = version;
 
   // deviceType
-  let deviceType = result.deviceType || 'phone';
-  {
-    const deviceTypeMaps = {
-      ipad: 'pad',
-      windows: 'pc',
-      mac: 'pc'
-    };
-    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
-    const _model = model.toLocaleLowerCase();
-    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
-      const _m = deviceTypeMapsKeys[index];
-      if (_model.indexOf(_m) !== -1) {
-        deviceType = deviceTypeMaps[_m];
-        break
-      }
-    }
-  }
+  const deviceType = getGetDeviceType(result, model);
 
   // deviceModel
-  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-  if ( isQuickApp) {
-    deviceBrand = brand.toLocaleLowerCase();
-  } else {
-    deviceBrand = getDeviceBrand(deviceBrand);
-  }
+  const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
 
   // hostName
   let _hostName = hostName || "mp-xhs".split('-')[1]; // mp-jd
@@ -588,7 +568,7 @@ function populateParameters (result) {
     osVersion,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language.split('_', '-'),
+    hostLanguage: language.replace('_', '-'),
     hostName: _hostName,
     hostSDKVersion: _SDKVersion,
     hostFontSizeSetting: fontSizeSetting,
@@ -604,6 +584,44 @@ function populateParameters (result) {
   };
 
   Object.assign(result, parameters);
+}
+
+function getGetDeviceType (result, model) {
+  let deviceType = result.deviceType || 'phone';
+  {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    };
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+    const _model = model.toLocaleLowerCase();
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index];
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m];
+        break
+      }
+    }
+  }
+  return deviceType
+}
+
+function getDeviceBrand (
+  brand,
+  model,
+  isQuickApp = false
+) {
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  if (
+    
+    isQuickApp
+  ) {
+    deviceBrand = brand.toLocaleLowerCase();
+  } else {
+    deviceBrand = _getDeviceBrand(deviceBrand);
+  }
+  return deviceBrand
 }
 
 var getSystemInfo = {

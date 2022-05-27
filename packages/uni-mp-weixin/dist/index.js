@@ -546,9 +546,10 @@ var previewImage = {
   }
 };
 
-function getDeviceBrand (model) {
+function _getDeviceBrand (model) {
   if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
   if (/windows/gi.test(model)) { return 'microsoft' }
+  return ''
 }
 
 const UUID_KEY = '__DC_STAT_UUID';
@@ -579,8 +580,8 @@ function addSafeAreaInsets (result) {
 
 function populateParameters (result) {
   const {
-    brand, model, system,
-    language, theme, version,
+    brand = '', model = '', system = '',
+    language = '', theme, version,
     hostName, platform, fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation,
     environment
@@ -597,38 +598,17 @@ function populateParameters (result) {
   let hostVersion = version;
 
   // deviceType
-  let deviceType = result.deviceType || 'phone';
-  {
-    const deviceTypeMaps = {
-      ipad: 'pad',
-      windows: 'pc',
-      mac: 'pc'
-    };
-    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
-    const _model = model.toLocaleLowerCase();
-    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
-      const _m = deviceTypeMapsKeys[index];
-      if (_model.indexOf(_m) !== -1) {
-        deviceType = deviceTypeMaps[_m];
-        break
-      }
-    }
-  }
+  const deviceType = getGetDeviceType(result, model);
 
   // deviceModel
-  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-  if ( isQuickApp) {
-    deviceBrand = brand.toLocaleLowerCase();
-  } else {
-    deviceBrand = getDeviceBrand(deviceBrand);
-  }
+  const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
 
   // hostName
   let _hostName = hostName || "mp-weixin".split('-')[1]; // mp-jd
   {
     if (environment) {
       _hostName = environment;
-    } else if (result.host) {
+    } else if (result.host && result.host.env) {
       _hostName = result.host.env;
     }
   }
@@ -661,7 +641,7 @@ function populateParameters (result) {
     osVersion,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language.split('_', '-'),
+    hostLanguage: language.replace('_', '-'),
     hostName: _hostName,
     hostSDKVersion: _SDKVersion,
     hostFontSizeSetting: fontSizeSetting,
@@ -677,6 +657,44 @@ function populateParameters (result) {
   };
 
   Object.assign(result, parameters);
+}
+
+function getGetDeviceType (result, model) {
+  let deviceType = result.deviceType || 'phone';
+  {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    };
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+    const _model = model.toLocaleLowerCase();
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index];
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m];
+        break
+      }
+    }
+  }
+  return deviceType
+}
+
+function getDeviceBrand (
+  brand,
+  model,
+  isQuickApp = false
+) {
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  if (
+    
+    isQuickApp
+  ) {
+    deviceBrand = brand.toLocaleLowerCase();
+  } else {
+    deviceBrand = _getDeviceBrand(deviceBrand);
+  }
+  return deviceBrand
 }
 
 var getSystemInfo = {
@@ -695,6 +713,57 @@ var showActionSheet = {
   }
 };
 
+var getAppBaseInfo = {
+  returnValue: function (result) {
+    const { version, language, SDKVersion, theme } = result;
+
+    let _hostName = "mp-weixin".split('-')[1]; // mp-jd
+    {
+      if (result.host && result.host.env) {
+        _hostName = result.host.env;
+      }
+    }
+
+    Object.assign(result, {
+      hostVersion: version,
+      hostLanguage: language.replace('_', '-'),
+      hostName: _hostName,
+      hostSDKVersion: SDKVersion,
+      hostTheme: theme,
+      appId: process.env.UNI_APP_ID,
+      appName: process.env.UNI_APP_NAME,
+      appVersion: process.env.UNI_APP_VERSION_NAME,
+      appVersionCode: process.env.UNI_APP_VERSION_CODE
+    });
+  }
+};
+
+var getDeviceInfo = {
+  returnValue: function (result) {
+    const { brand, model } = result;
+    const deviceType = getGetDeviceType(result, model);
+    const deviceBrand = getDeviceBrand(brand, model);
+    useDeviceId(result);
+
+    Object.assign(result, {
+      deviceType,
+      deviceBrand,
+      deviceModel: model
+    });
+  }
+};
+
+var getWindowInfo = {
+  returnValue: function (result) {
+    addSafeAreaInsets(result);
+
+    Object.assign(result, {
+      windowTop: 0,
+      windowBottom: 0
+    });
+  }
+};
+
 // import navigateTo from 'uni-helpers/navigate-to'
 
 const protocols = {
@@ -703,7 +772,10 @@ const protocols = {
   previewImage,
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
-  showActionSheet
+  showActionSheet,
+  getAppBaseInfo,
+  getDeviceInfo,
+  getWindowInfo
 };
 const todos = [
   'vibrate',

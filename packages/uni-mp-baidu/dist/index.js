@@ -651,9 +651,10 @@ var previewImage = {
   }
 };
 
-function getDeviceBrand (model) {
+function _getDeviceBrand (model) {
   if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
   if (/windows/gi.test(model)) { return 'microsoft' }
+  return ''
 }
 
 const UUID_KEY = '__DC_STAT_UUID';
@@ -684,8 +685,8 @@ function addSafeAreaInsets (result) {
 
 function populateParameters (result) {
   const {
-    brand, model, system,
-    language, theme, version,
+    brand = '', model = '', system = '',
+    language = '', theme, version,
     hostName, platform, fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation,
     environment
@@ -706,15 +707,10 @@ function populateParameters (result) {
   }
 
   // deviceType
-  let deviceType = result.deviceType || 'phone';
+  const deviceType = getGetDeviceType(result);
 
   // deviceModel
-  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-  if ( isQuickApp) {
-    deviceBrand = brand.toLocaleLowerCase();
-  } else {
-    deviceBrand = getDeviceBrand(deviceBrand);
-  }
+  const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
 
   // hostName
   let _hostName = hostName || "mp-baidu".split('-')[1]; // mp-jd
@@ -750,7 +746,7 @@ function populateParameters (result) {
     osVersion,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language.split('_', '-'),
+    hostLanguage: language.replace('_', '-'),
     hostName: _hostName,
     hostSDKVersion: _SDKVersion,
     hostFontSizeSetting: fontSizeSetting,
@@ -766,6 +762,28 @@ function populateParameters (result) {
   };
 
   Object.assign(result, parameters);
+}
+
+function getGetDeviceType (result, model) {
+  let deviceType = result.deviceType || 'phone';
+  return deviceType
+}
+
+function getDeviceBrand (
+  brand,
+  model,
+  isQuickApp = false
+) {
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  if (
+    
+    isQuickApp
+  ) {
+    deviceBrand = brand.toLocaleLowerCase();
+  } else {
+    deviceBrand = _getDeviceBrand(deviceBrand);
+  }
+  return deviceBrand
 }
 
 var getSystemInfo = {

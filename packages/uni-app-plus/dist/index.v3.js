@@ -6484,7 +6484,7 @@ var serviceContext = (function () {
     weexGetSystemInfoSync();
     const {
       deviceBrand, deviceModel, osName,
-      osVersion
+      osVersion, deviceOrientation, deviceType
     } = systemInfo;
 
     const brand = deviceBrand.toLowerCase();
@@ -6492,6 +6492,10 @@ var serviceContext = (function () {
     return {
       deviceBrand: brand,
       deviceModel,
+      devicePixelRatio: plus.screen.scale,
+      deviceId: deviceId$1(),
+      deviceOrientation,
+      deviceType,
       brand,
       model: deviceModel,
       system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
@@ -6502,7 +6506,7 @@ var serviceContext = (function () {
   function getAppBaseInfo () {
     weexGetSystemInfoSync();
     const {
-      hostPackageName, hostName, osLanguage,
+      hostPackageName, hostName,
       hostVersion, hostLanguage, hostTheme,
       appId, appName, appVersion, appVersionCode
     } = systemInfo;
@@ -6517,7 +6521,7 @@ var serviceContext = (function () {
       appVersionCode,
       appLanguage: uni.getLocale(),
       version: plus.runtime.innerVersion,
-      language: osLanguage,
+      language: hostLanguage,
       theme: '',
       hostPackageName,
       hostName,
@@ -6536,11 +6540,12 @@ var serviceContext = (function () {
     _initSystemInfo = true;
     weexGetSystemInfoSync();
     _initSystemInfo = false;
+    const windowInfo = getWindowInfo();
     const deviceInfo = getDeviceInfo();
     const appBaseInfo = getAppBaseInfo();
     _initSystemInfo = true;
 
-    const { osName, osLanguage, osVersion, pixelRatio } = systemInfo;
+    const { osName, osLanguage, osVersion } = systemInfo;
     const osLanguageSplit = osLanguage.split('-');
     const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1];
     const _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`;
@@ -6548,8 +6553,6 @@ var serviceContext = (function () {
     const extraData = {
       errMsg: 'getSystemInfo:ok',
       fontSizeSetting: appBaseInfo.hostFontSizeSetting,
-      devicePixelRatio: pixelRatio,
-      deviceId: deviceId$1(),
       uniCompileVersion: __uniConfig.compilerVersion,
       uniRuntimeVersion: __uniConfig.compilerVersion,
       osLanguage: _osLanguage
@@ -6563,7 +6566,7 @@ var serviceContext = (function () {
     const _systemInfo = Object.assign(
       {},
       systemInfo,
-      getWindowInfo(),
+      windowInfo,
       deviceInfo,
       appBaseInfo,
       extraData
