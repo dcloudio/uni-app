@@ -47,6 +47,12 @@ export function getAppBaseInfo () {
     appId, appName, appVersion, appVersionCode
   } = systemInfo
 
+  const appLanguage = uni
+    ? uni.getLocale
+      ? uni.getLocale()
+      : hostLanguage
+    : hostLanguage
+
   return {
     SDKVersion: '',
     hostSDKVersion: '',
@@ -55,7 +61,7 @@ export function getAppBaseInfo () {
     appName,
     appVersion,
     appVersionCode,
-    appLanguage: uni.getLocale ? uni.getLocale() : hostLanguage,
+    appLanguage,
     version: plus.runtime.innerVersion,
     language: hostLanguage,
     theme: '',
