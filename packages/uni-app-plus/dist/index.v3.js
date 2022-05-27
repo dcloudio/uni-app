@@ -85,6 +85,9 @@ var serviceContext = (function () {
   const device = [
     'getSystemInfo',
     'getSystemInfoSync',
+    'getWindowInfo',
+    'getDeviceInfo',
+    'getAppBaseInfo',
     'canIUse',
     'onMemoryWarning',
     'getNetworkType',
@@ -840,7 +843,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -3769,7 +3772,7 @@ var serviceContext = (function () {
     }
   }
   // 部分 API 直接实现
-  const unwrappers = ['getPushCid', 'onPushMessage', 'offPushMessage'];
+  const unwrappers = ['getPushClientid', 'onPushMessage', 'offPushMessage'];
 
   function wrapper (name, invokeMethod, extras = {}) {
     if (unwrappers.indexOf(name) > -1 || !isFn(invokeMethod)) {
@@ -6383,24 +6386,9 @@ var serviceContext = (function () {
     return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
   }
 
-  let deviceId;
+  function getWindowInfo () {
+    const ios = plus.os.name.toLowerCase() === 'ios';
 
-  function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId
-  }
-
-  function getSystemInfoSync () {
-    return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
-  }
-
-  function getSystemInfo () {
-    const { getSystemInfoSync } = weex.requireModule('plus');
-    const info = getSystemInfoSync();
-    const { deviceBrand, deviceModel, osName, osVersion, osLanguage } = info;
-    const brand = deviceBrand.toLowerCase();
-    const _osName = osName.toLowerCase();
-    const ios = _osName === 'ios';
     const {
       screenWidth,
       screenHeight
@@ -6456,24 +6444,13 @@ var serviceContext = (function () {
       height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom
     };
 
-    return Object.assign({
-      errMsg: 'getSystemInfo:ok',
-      brand: brand,
-      model: deviceModel,
+    return {
       pixelRatio: plus.screen.scale,
       screenWidth,
       screenHeight,
       windowWidth,
       windowHeight,
       statusBarHeight,
-      language: osLanguage,
-      system: `${osName} ${osVersion}`,
-      version: plus.runtime.innerVersion,
-      fontSizeSetting: '',
-      platform: _osName,
-      SDKVersion: '',
-      windowTop,
-      windowBottom,
       safeArea,
       safeAreaInsets: {
         top: safeAreaInsets.top,
@@ -6481,11 +6458,122 @@ var serviceContext = (function () {
         bottom: safeAreaInsets.bottom,
         left: safeAreaInsets.left
       },
-      deviceId: deviceId$1()
-    }, info, {
+      windowTop,
+      windowBottom,
+      screenTop: screenHeight - windowHeight
+    }
+  }
+
+  let deviceId;
+
+  function deviceId$1 () {
+    deviceId = deviceId || plus.device.uuid;
+    return deviceId
+  }
+
+  let systemInfo = {};
+  let _initSystemInfo = true;
+
+  function weexGetSystemInfoSync () {
+    if (!_initSystemInfo) return
+    const { getSystemInfoSync } = weex.requireModule('plus');
+    systemInfo = getSystemInfoSync();
+  }
+
+  function getDeviceInfo () {
+    weexGetSystemInfoSync();
+    const {
+      deviceBrand, deviceModel, osName,
+      osVersion
+    } = systemInfo;
+
+    const brand = deviceBrand.toLowerCase();
+
+    return {
       deviceBrand: brand,
-      osName: _osName
-    })
+      deviceModel,
+      brand,
+      model: deviceModel,
+      system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+      platform: osName
+    }
+  }
+
+  function getAppBaseInfo () {
+    weexGetSystemInfoSync();
+    const {
+      hostPackageName, hostName, osLanguage,
+      hostVersion, hostLanguage, hostTheme,
+      appId, appName, appVersion, appVersionCode
+    } = systemInfo;
+
+    return {
+      SDKVersion: '',
+      hostSDKVersion: '',
+      enableDebug: false,
+      appId,
+      appName,
+      appVersion,
+      appVersionCode,
+      appLanguage: uni.getLocale(),
+      version: plus.runtime.innerVersion,
+      language: osLanguage,
+      theme: '',
+      hostPackageName,
+      hostName,
+      hostVersion,
+      hostLanguage,
+      hostTheme,
+      hostFontSizeSetting: undefined
+    }
+  }
+
+  function getSystemInfoSync () {
+    return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
+  }
+
+  function getSystemInfo () {
+    _initSystemInfo = true;
+    weexGetSystemInfoSync();
+    _initSystemInfo = false;
+    const deviceInfo = getDeviceInfo();
+    const appBaseInfo = getAppBaseInfo();
+    _initSystemInfo = true;
+
+    const { osName, osLanguage, osVersion, pixelRatio } = systemInfo;
+    const osLanguageSplit = osLanguage.split('-');
+    const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1];
+    const _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`;
+
+    const extraData = {
+      errMsg: 'getSystemInfo:ok',
+      fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+      devicePixelRatio: pixelRatio,
+      deviceId: deviceId$1(),
+      uniCompileVersion: __uniConfig.compilerVersion,
+      uniRuntimeVersion: __uniConfig.compilerVersion,
+      osLanguage: _osLanguage
+    };
+
+    if (osName === 'ios') {
+      extraData.romName = osName;
+      extraData.romVersion = osVersion;
+    }
+
+    const _systemInfo = Object.assign(
+      {},
+      systemInfo,
+      getWindowInfo(),
+      deviceInfo,
+      appBaseInfo,
+      extraData
+    );
+
+    delete _systemInfo.screenTop;
+    delete _systemInfo.enableDebug;
+    delete _systemInfo.theme;
+
+    return _systemInfo
   }
 
   function vibrateLong () {
@@ -12017,10 +12105,13 @@ var serviceContext = (function () {
     checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
     checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
     startSoterAuthentication: startSoterAuthentication,
+    getDeviceInfo: getDeviceInfo,
+    getAppBaseInfo: getAppBaseInfo,
     getSystemInfoSync: getSystemInfoSync,
     getSystemInfo: getSystemInfo,
     vibrateLong: vibrateLong,
     vibrateShort: vibrateShort,
+    getWindowInfo: getWindowInfo,
     saveFile: saveFile$1,
     getSavedFileList: getSavedFileList,
     getFileInfo: getFileInfo$1,
@@ -21217,7 +21308,7 @@ var serviceContext = (function () {
     getPushCidCallbacks.length = 0;
   }
 
-  function getPushCid (args) {
+  function getPushClientid (args) {
     if (!isPlainObject(args)) {
       args = {};
     }
@@ -21233,13 +21324,13 @@ var serviceContext = (function () {
       let res;
       if (cid) {
         res = {
-          errMsg: 'getPushCid:ok',
+          errMsg: 'getPushClientid:ok',
           cid
         };
         hasSuccess && success(res);
       } else {
         res = {
-          errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '')
+          errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
         };
         hasFail && fail(res);
       }
@@ -21272,7 +21363,7 @@ var serviceContext = (function () {
   var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     invokePushCallback: invokePushCallback,
-    getPushCid: getPushCid,
+    getPushClientid: getPushClientid,
     onPushMessage: onPushMessage,
     offPushMessage: offPushMessage
   });

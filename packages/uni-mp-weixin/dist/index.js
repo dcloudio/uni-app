@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -578,7 +578,13 @@ function addSafeAreaInsets (result) {
 }
 
 function populateParameters (result) {
-  const { brand, model, system, language, theme, version, hostName = '', platform } = result;
+  const {
+    brand, model, system,
+    language, theme, version,
+    hostName, platform, fontSizeSetting,
+    SDKVersion, pixelRatio, deviceOrientation,
+    environment
+  } = result;
   const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1;
 
   // osName osVersion
@@ -618,8 +624,23 @@ function populateParameters (result) {
   }
 
   // hostName
-  let _hostName = hostName; // mp-jd
-  _hostName = (result.host || {}).env;
+  let _hostName = hostName || "mp-weixin".split('-')[1]; // mp-jd
+  {
+    if (environment) {
+      _hostName = environment;
+    } else if (result.host) {
+      _hostName = result.host.env;
+    }
+  }
+
+  // deviceOrientation
+  let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
+
+  // devicePixelRatio
+  let _devicePixelRatio = pixelRatio;
+
+  // SDKVersion
+  let _SDKVersion = SDKVersion;
 
   // wx.getAccountInfoSync
 
@@ -634,19 +655,25 @@ function populateParameters (result) {
     deviceBrand,
     deviceModel: model,
     deviceType,
+    devicePixelRatio: _devicePixelRatio,
+    deviceOrientation: _deviceOrientation,
     osName: osName.toLocaleLowerCase(),
     osVersion,
-    osLanguage: language,
-    osTheme: theme,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language,
+    hostLanguage: language.split('_', '-'),
     hostName: _hostName,
+    hostSDKVersion: _SDKVersion,
+    hostFontSizeSetting: fontSizeSetting,
+    windowTop: 0,
+    windowBottom: 0,
     // TODO
-    ua: '',
-    hostPackageName: '',
-    browserName: '',
-    browseVersion: ''
+    osLanguage: undefined,
+    osTheme: undefined,
+    ua: undefined,
+    hostPackageName: undefined,
+    browserName: undefined,
+    browseVersion: undefined
   };
 
   Object.assign(result, parameters);
@@ -942,7 +969,7 @@ function invokeGetPushCidCallbacks (cid, errMsg) {
   getPushCidCallbacks.length = 0;
 }
 
-function getPushCid (args) {
+function getPushClientid (args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -958,13 +985,13 @@ function getPushCid (args) {
     let res;
     if (cid) {
       res = {
-        errMsg: 'getPushCid:ok',
+        errMsg: 'getPushClientid:ok',
         cid
       };
       hasSuccess && success(res);
     } else {
       res = {
-        errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '')
+        errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
       };
       hasFail && fail(res);
     }
@@ -996,7 +1023,7 @@ const offPushMessage = (fn) => {
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getPushCid: getPushCid,
+  getPushClientid: getPushClientid,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   invokePushCallback: invokePushCallback

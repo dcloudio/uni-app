@@ -78,9 +78,9 @@ export function getSystemInfo () {
   const { osName, osLanguage, osVersion, pixelRatio } = systemInfo
   const osLanguageSplit = osLanguage.split('-')
   const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1]
-  let _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-'+ osLanguageSplitLast : ''}`
+  const _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`
 
-  let extraData = {
+  const extraData = {
     errMsg: 'getSystemInfo:ok',
     fontSizeSetting: appBaseInfo.hostFontSizeSetting,
     devicePixelRatio: pixelRatio,
