@@ -6488,6 +6488,7 @@ var serviceContext = (function () {
     } = systemInfo;
 
     const brand = deviceBrand.toLowerCase();
+    const _osName = osName.toLowerCase();
 
     return {
       deviceBrand: brand,
@@ -6498,8 +6499,8 @@ var serviceContext = (function () {
       deviceType,
       brand,
       model: deviceModel,
-      system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
-      platform: osName
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+      platform: _osName
     }
   }
 
@@ -6546,6 +6547,7 @@ var serviceContext = (function () {
     _initSystemInfo = true;
 
     const { osName, osLanguage, osVersion } = systemInfo;
+    const _osName = osName.toLowerCase();
     const osLanguageSplit = osLanguage.split('-');
     const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1];
     const _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`;
@@ -6555,11 +6557,12 @@ var serviceContext = (function () {
       fontSizeSetting: appBaseInfo.hostFontSizeSetting,
       uniCompileVersion: __uniConfig.compilerVersion,
       uniRuntimeVersion: __uniConfig.compilerVersion,
-      osLanguage: _osLanguage
+      osLanguage: _osLanguage,
+      osName: _osName
     };
 
-    if (osName === 'ios') {
-      extraData.romName = osName;
+    if (_osName === 'ios') {
+      extraData.romName = _osName;
       extraData.romVersion = osVersion;
     }
 
