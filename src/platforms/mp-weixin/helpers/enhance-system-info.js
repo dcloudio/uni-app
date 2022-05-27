@@ -70,7 +70,7 @@ export function populateParameters(result) {
   if (__PLATFORM__ === 'mp-weixin') {
     if (environment) {
       _hostName = environment
-    } else if (result.host && fromRes.host.env) {
+    } else if (result.host && result.host.env) {
       _hostName = result.host.env
     }
   }
