@@ -6512,6 +6512,12 @@ var serviceContext = (function () {
       appId, appName, appVersion, appVersionCode
     } = systemInfo;
 
+    const appLanguage = uni
+      ? uni.getLocale
+        ? uni.getLocale()
+        : hostLanguage
+      : hostLanguage;
+
     return {
       SDKVersion: '',
       hostSDKVersion: '',
@@ -6520,7 +6526,7 @@ var serviceContext = (function () {
       appName,
       appVersion,
       appVersionCode,
-      appLanguage: uni.getLocale(),
+      appLanguage,
       version: plus.runtime.innerVersion,
       language: hostLanguage,
       theme: '',
