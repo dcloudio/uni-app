@@ -46,6 +46,12 @@ export function getAppBaseInfo () {
     language
   } = browserInfo
 
+  const appLanguage = uni
+    ? uni.getLocale
+      ? uni.getLocale()
+      : language
+    : language
+
   return {
     SDKVersion: '',
     hostSDKVersion: '',
@@ -62,7 +68,7 @@ export function getAppBaseInfo () {
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
-    appLanguage: uni.getLocale(),
+    appLanguage,
     version: __uniConfig.appVersion
   }
 }
