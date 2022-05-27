@@ -32,8 +32,8 @@ export function addSafeAreaInsets(result) {
 
 export function populateParameters(result) {
   const {
-    brand, model, system,
-    language, theme, version,
+    brand = '', model = '', system = '',
+    language = '', theme, version,
     hostName, platform, fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation,
     environment
