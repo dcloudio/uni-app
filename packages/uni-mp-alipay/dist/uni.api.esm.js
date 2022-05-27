@@ -624,7 +624,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -860,13 +860,14 @@ function initGetProvider(providers) {
     };
 }
 
-function getDeviceBrand(model) {
+function _getDeviceBrand(model) {
     if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
         return 'apple';
     }
     if (/windows/gi.test(model)) {
         return 'microsoft';
     }
+    return '';
 }
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
@@ -895,7 +896,7 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function populateParameters(fromRes, toRes) {
-    const { brand, model, system, language, theme, version, hostName, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, environment, } = fromRes;
+    const { brand = '', model = '', system = '', language = '', theme, version, hostName, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, environment, } = fromRes;
     const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1;
     // osName osVersion
     let osName = '';
@@ -906,31 +907,9 @@ function populateParameters(fromRes, toRes) {
     }
     let hostVersion = version;
     // deviceType
-    let deviceType = fromRes.deviceType || 'phone';
-    {
-        const deviceTypeMaps = {
-            ipad: 'pad',
-            windows: 'pc',
-            mac: 'pc',
-        };
-        const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
-        const _model = model.toLocaleLowerCase();
-        for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
-            const _m = deviceTypeMapsKeys[index];
-            if (_model.indexOf(_m) !== -1) {
-                deviceType = deviceTypeMaps[_m];
-                break;
-            }
-        }
-    }
+    let deviceType = getGetDeviceType(fromRes, model);
     // deviceModel
-    let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-    if (isQuickApp) {
-        deviceBrand = brand.toLocaleLowerCase();
-    }
-    else {
-        deviceBrand = getDeviceBrand(deviceBrand);
-    }
+    let deviceBrand = getDeviceBrand(brand, model, isQuickApp);
     // hostName
     let _hostName = hostName || "mp-alipay".split('-')[1]; // mp-jd
     _hostName = fromRes.app;
@@ -976,6 +955,38 @@ function populateParameters(fromRes, toRes) {
         browseVersion: undefined,
     };
     extend(toRes, parameters);
+}
+function getGetDeviceType(fromRes, model) {
+    // deviceType
+    let deviceType = fromRes.deviceType || 'phone';
+    {
+        const deviceTypeMaps = {
+            ipad: 'pad',
+            windows: 'pc',
+            mac: 'pc',
+        };
+        const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+        const _model = model.toLocaleLowerCase();
+        for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+            const _m = deviceTypeMapsKeys[index];
+            if (_model.indexOf(_m) !== -1) {
+                deviceType = deviceTypeMaps[_m];
+                break;
+            }
+        }
+    }
+    return deviceType;
+}
+function getDeviceBrand(brand, model, isQuickApp = false) {
+    // deviceModel
+    let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+    if (isQuickApp) {
+        deviceBrand = brand.toLocaleLowerCase();
+    }
+    else {
+        deviceBrand = _getDeviceBrand(deviceBrand);
+    }
+    return deviceBrand;
 }
 
 const redirectTo = {};

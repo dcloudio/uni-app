@@ -10021,20 +10021,6 @@ const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", (
 const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
   resolve(getStorageInfoSync());
 });
-const UUID_KEY = "__DC_STAT_UUID";
-const storage = window.localStorage || window.sessionStorage || {};
-let deviceId;
-function deviceId$1() {
-  deviceId = deviceId || storage[UUID_KEY];
-  if (!deviceId) {
-    deviceId = Date.now() + "" + Math.floor(Math.random() * 1e7);
-    try {
-      storage[UUID_KEY] = deviceId;
-    } catch (error) {
-    }
-  }
-  return deviceId;
-}
 let browserInfo;
 function initBrowserInfo() {
   {
@@ -10056,8 +10042,8 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
   return {
     deviceBrand,
     deviceModel,
-    devicePixelRatio: window.devicePixelRatio,
-    deviceId: deviceId$1(),
+    devicePixelRatio: 1,
+    deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
     deviceOrientation,
     deviceType,
     brand,

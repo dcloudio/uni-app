@@ -624,7 +624,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -860,13 +860,14 @@ function initGetProvider(providers) {
     };
 }
 
-function getDeviceBrand(model) {
+function _getDeviceBrand(model) {
     if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
         return 'apple';
     }
     if (/windows/gi.test(model)) {
         return 'microsoft';
     }
+    return '';
 }
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
@@ -895,7 +896,7 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function populateParameters(fromRes, toRes) {
-    const { brand, model, system, language, theme, version, hostName, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, environment, } = fromRes;
+    const { brand = '', model = '', system = '', language = '', theme, version, hostName, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, environment, } = fromRes;
     const isQuickApp = "mp-baidu".indexOf('quickapp-webview') !== -1;
     // osName osVersion
     let osName = '';
@@ -910,15 +911,9 @@ function populateParameters(fromRes, toRes) {
         hostVersion = fromRes.swanNativeVersion;
     }
     // deviceType
-    let deviceType = fromRes.deviceType || 'phone';
+    let deviceType = getGetDeviceType(fromRes);
     // deviceModel
-    let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-    if (isQuickApp) {
-        deviceBrand = brand.toLocaleLowerCase();
-    }
-    else {
-        deviceBrand = getDeviceBrand(deviceBrand);
-    }
+    let deviceBrand = getDeviceBrand(brand, model, isQuickApp);
     // hostName
     let _hostName = hostName || "mp-baidu".split('-')[1]; // mp-jd
     {
@@ -969,6 +964,22 @@ function populateParameters(fromRes, toRes) {
         browseVersion: undefined,
     };
     extend(toRes, parameters);
+}
+function getGetDeviceType(fromRes, model) {
+    // deviceType
+    let deviceType = fromRes.deviceType || 'phone';
+    return deviceType;
+}
+function getDeviceBrand(brand, model, isQuickApp = false) {
+    // deviceModel
+    let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+    if (isQuickApp) {
+        deviceBrand = brand.toLocaleLowerCase();
+    }
+    else {
+        deviceBrand = _getDeviceBrand(deviceBrand);
+    }
+    return deviceBrand;
 }
 
 const getSystemInfo = {

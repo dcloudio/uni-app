@@ -13376,6 +13376,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
     const { deviceBrand, deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
+    const _osName = osName.toLowerCase();
     return {
         deviceBrand: brand,
         deviceModel,
@@ -13385,13 +13386,13 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         deviceType,
         brand,
         model: deviceModel,
-        system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
-        platform: osName,
+        system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+        platform: _osName,
     };
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, osLanguage, hostVersion, hostLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
     return {
         SDKVersion: '',
         hostSDKVersion: '',
@@ -13402,7 +13403,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         appVersionCode,
         appLanguage: uni.getLocale(),
         version: plus.runtime.innerVersion,
-        language: osLanguage,
+        language: hostLanguage,
         theme: '',
         hostPackageName,
         hostName,
@@ -13421,6 +13422,7 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const appBaseInfo = getAppBaseInfo();
     _initSystemInfo = true;
     const { osName, osLanguage, osVersion } = systemInfo;
+    const _osName = osName.toLowerCase();
     const osLanguageSplit = osLanguage.split('-');
     const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1];
     let _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`;
@@ -13430,9 +13432,10 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
         uniCompileVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,
         osLanguage: _osLanguage,
+        osName: _osName,
     };
-    if (osName === 'ios') {
-        extraData.romName = osName;
+    if (_osName === 'ios') {
+        extraData.romName = _osName;
         extraData.romVersion = osVersion;
     }
     const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
