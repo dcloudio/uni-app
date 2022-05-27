@@ -13392,7 +13392,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
     return {
         SDKVersion: '',
         hostSDKVersion: '',
@@ -13401,9 +13401,9 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         appName,
         appVersion,
         appVersionCode,
-        appLanguage: uni.getLocale(),
+        appLanguage: getLocale ? getLocale() : osLanguage,
         version: plus.runtime.innerVersion,
-        language: hostLanguage,
+        language: osLanguage,
         theme: '',
         hostPackageName,
         hostName,

@@ -1333,6 +1333,14 @@ validator.concat({
   type: Object
 });
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const API_GET_LOCALE = "getLocale";
+const getLocale = /* @__PURE__ */ defineSyncApi(API_GET_LOCALE, () => {
+  const app = getApp({ allowDefault: true });
+  if (app && app.$vm) {
+    return app.$vm.$locale;
+  }
+  return useI18n().getLocale();
+});
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -9622,10 +9630,10 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
   }
   function _l10nColumn(array, normalize) {
     const {
-      getLocale
+      getLocale: getLocale2
     } = useI18n();
     if (props2.mode === mode.DATE) {
-      const locale = getLocale();
+      const locale = getLocale2();
       if (!locale.startsWith("zh")) {
         switch (props2.fields) {
           case fields.YEAR:
@@ -9647,10 +9655,10 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
   }
   function _l10nItem(item, index2) {
     const {
-      getLocale
+      getLocale: getLocale2
     } = useI18n();
     if (props2.mode === mode.DATE) {
-      const locale = getLocale();
+      const locale = getLocale2();
       if (locale.startsWith("zh")) {
         const array = ["\u5E74", "\u6708", "\u65E5"];
         return item + array[index2];
@@ -10071,7 +10079,7 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
-    appLanguage: uni.getLocale(),
+    appLanguage: getLocale ? getLocale() : language,
     version: __uniConfig.appVersion
   };
 });

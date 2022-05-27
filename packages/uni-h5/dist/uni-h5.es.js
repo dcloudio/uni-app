@@ -16574,7 +16574,7 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
-    appLanguage: uni.getLocale(),
+    appLanguage: getLocale ? getLocale() : language,
     version: __uniConfig.appVersion
   };
 });
