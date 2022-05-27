@@ -3,6 +3,9 @@ import redirectTo from '../../helpers/redirect-to'
 import previewImage from '../../helpers/normalize-preview-image'
 import getSystemInfo from '../../helpers/system-info'
 import showActionSheet from '../../helpers/show-action-sheet'
+import getAppBaseInfo from '../../helpers/get-app-base-info'
+import getDeviceInfo from '../../helpers/get-device-info'
+import getWindowInfo from '../../helpers/get-window-info'
 
 export const protocols = {
   redirectTo,
@@ -10,7 +13,10 @@ export const protocols = {
   previewImage,
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
-  showActionSheet
+  showActionSheet,
+  getAppBaseInfo,
+  getDeviceInfo,
+  getWindowInfo
 }
 export const todos = [
   'vibrate',
