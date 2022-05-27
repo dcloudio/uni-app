@@ -19,7 +19,7 @@ export function getDeviceInfo () {
   weexGetSystemInfoSync()
   const {
     deviceBrand, deviceModel, osName,
-    osVersion
+    osVersion, deviceOrientation, deviceType
   } = systemInfo
 
   const brand = deviceBrand.toLowerCase()
@@ -27,6 +27,10 @@ export function getDeviceInfo () {
   return {
     deviceBrand: brand,
     deviceModel,
+    devicePixelRatio: plus.screen.scale,
+    deviceId: deviceId(),
+    deviceOrientation,
+    deviceType,
     brand,
     model: deviceModel,
     system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
@@ -71,20 +75,19 @@ export function getSystemInfo () {
   _initSystemInfo = true
   weexGetSystemInfoSync()
   _initSystemInfo = false
+  const windowInfo = getWindowInfo()
   const deviceInfo = getDeviceInfo()
   const appBaseInfo = getAppBaseInfo()
   _initSystemInfo = true
 
-  const { osName, osLanguage, osVersion, pixelRatio } = systemInfo
+  const { osName, osLanguage, osVersion } = systemInfo
   const osLanguageSplit = osLanguage.split('-')
   const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1]
-  let _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-'+ osLanguageSplitLast : ''}`
+  const _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`
 
-  let extraData = {
+  const extraData = {
     errMsg: 'getSystemInfo:ok',
     fontSizeSetting: appBaseInfo.hostFontSizeSetting,
-    devicePixelRatio: pixelRatio,
-    deviceId: deviceId(),
     uniCompileVersion: __uniConfig.compilerVersion,
     uniRuntimeVersion: __uniConfig.compilerVersion,
     osLanguage: _osLanguage
@@ -98,7 +101,7 @@ export function getSystemInfo () {
   const _systemInfo = Object.assign(
     {},
     systemInfo,
-    getWindowInfo(),
+    windowInfo,
     deviceInfo,
     appBaseInfo,
     extraData
