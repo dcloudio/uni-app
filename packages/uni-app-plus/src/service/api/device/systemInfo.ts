@@ -26,6 +26,7 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
     } = systemInfo
 
     const brand = deviceBrand.toLowerCase()
+    const _osName = osName.toLowerCase()
 
     return {
       deviceBrand: brand,
@@ -36,8 +37,8 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       deviceType,
       brand,
       model: deviceModel,
-      system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
-      platform: osName,
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+      platform: _osName,
     }
   }
 )
@@ -92,6 +93,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     _initSystemInfo = true
 
     const { osName, osLanguage, osVersion } = systemInfo
+    const _osName = osName.toLowerCase()
     const osLanguageSplit = osLanguage.split('-')
     const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1]
     let _osLanguage = `${osLanguageSplit[0]}${
@@ -104,10 +106,11 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       uniCompileVersion: __uniConfig.compilerVersion,
       uniRuntimeVersion: __uniConfig.compilerVersion,
       osLanguage: _osLanguage,
+      osName: _osName,
     }
 
-    if (osName === 'ios') {
-      ;(extraData as any).romName = osName
+    if (_osName === 'ios') {
+      ;(extraData as any).romName = _osName
       ;(extraData as any).romVersion = osVersion
     }
 
