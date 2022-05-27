@@ -13374,11 +13374,15 @@ function weexGetSystemInfoSync() {
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand, deviceModel, osName, osVersion } = systemInfo;
+    const { deviceBrand, deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     return {
         deviceBrand: brand,
         deviceModel,
+        devicePixelRatio: plus.screen.scale,
+        deviceId: deviceId$1(),
+        deviceOrientation,
+        deviceType,
         brand,
         model: deviceModel,
         system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
@@ -13417,15 +13421,12 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const appBaseInfo = getAppBaseInfo();
     _initSystemInfo = true;
     const { osName, osLanguage, osVersion } = systemInfo;
-    const { pixelRatio } = windowInfo;
     const osLanguageSplit = osLanguage.split('-');
     const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1];
     let _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`;
     let extraData = {
         errMsg: 'getSystemInfo:ok',
         fontSizeSetting: appBaseInfo.hostFontSizeSetting,
-        devicePixelRatio: pixelRatio,
-        deviceId: deviceId$1(),
         uniCompileVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,
         osLanguage: _osLanguage,
@@ -13434,7 +13435,7 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
         extraData.romName = osName;
         extraData.romVersion = osVersion;
     }
-    const _systemInfo = extend(windowInfo, systemInfo, deviceInfo, appBaseInfo, extraData);
+    const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
     delete _systemInfo.theme;

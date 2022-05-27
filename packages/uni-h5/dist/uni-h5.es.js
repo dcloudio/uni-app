@@ -16417,7 +16417,7 @@ function getBrowserInfo() {
         osversion += ` x${framework[1]}`;
       }
     } else if (isMac) {
-      osname = "Mac";
+      osname = "macOS";
       const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
       if (osversion) {
         osversion = _osversion[1].replace(/_/g, ".");
@@ -16532,10 +16532,23 @@ function initBrowserInfo() {
 }
 const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
   initBrowserInfo();
-  const { deviceBrand, deviceModel, brand, model, platform, system } = browserInfo;
+  const {
+    deviceBrand,
+    deviceModel,
+    brand,
+    model,
+    platform,
+    system,
+    deviceOrientation,
+    deviceType
+  } = browserInfo;
   return {
     deviceBrand,
     deviceModel,
+    devicePixelRatio: window.devicePixelRatio,
+    deviceId: deviceId$1(),
+    deviceOrientation,
+    deviceType,
     brand,
     model,
     system,
@@ -16573,24 +16586,11 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const deviceInfo = getDeviceInfo();
   const appBaseInfo = getAppBaseInfo();
   _initBrowserInfo = true;
-  const {
-    ua: ua2,
-    deviceType,
-    browserName,
-    browseVersion,
-    osname,
-    osversion,
-    deviceOrientation
-  } = browserInfo;
-  const { pixelRatio: pixelRatio2 } = windowInfo;
+  const { ua: ua2, browserName, browseVersion, osname, osversion } = browserInfo;
   const systemInfo = extend(windowInfo, deviceInfo, appBaseInfo, {
     ua: ua2,
-    deviceType,
     browserName,
     browseVersion,
-    deviceId: deviceId$1(),
-    devicePixelRatio: pixelRatio2,
-    deviceOrientation,
     uniPlatform: "web",
     uniCompileVersion: __uniConfig.compilerVersion,
     uniRuntimeVersion: __uniConfig.compilerVersion,

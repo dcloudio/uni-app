@@ -948,7 +948,7 @@ function populateParameters(fromRes, toRes) {
         osVersion,
         hostTheme: theme,
         hostVersion,
-        hostLanguage: language.split('_', '-'),
+        hostLanguage: language.replace('_', '-'),
         hostName: _hostName,
         hostSDKVersion: _SDKVersion,
         hostFontSizeSetting: fontSizeSetting,
