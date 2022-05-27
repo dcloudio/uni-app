@@ -1,12 +1,13 @@
 import { extend } from '@vue/shared'
 
-function getDeviceBrand(model: string) {
+function _getDeviceBrand(model: string) {
   if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
     return 'apple'
   }
   if (/windows/gi.test(model)) {
     return 'microsoft'
   }
+  return ''
 }
 
 const UUID_KEY = '__DC_STAT_UUID'
@@ -84,45 +85,17 @@ export function populateParameters(
   }
 
   // deviceType
-  let deviceType = fromRes.deviceType || 'phone'
-  if (__PLATFORM__ !== 'mp-baidu') {
-    type DeviceTypeMapsKeys = keyof typeof deviceTypeMaps
-    const deviceTypeMaps = {
-      ipad: 'pad',
-      windows: 'pc',
-      mac: 'pc',
-    }
-    const deviceTypeMapsKeys = Object.keys(
-      deviceTypeMaps
-    ) as DeviceTypeMapsKeys[]
-    const _model = model.toLocaleLowerCase()
-    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
-      const _m = deviceTypeMapsKeys[index]
-      if (_model.indexOf(_m) !== -1) {
-        deviceType = deviceTypeMaps[_m]
-        break
-      }
-    }
-  }
+  let deviceType = getGetDeviceType(fromRes, model)
 
   // deviceModel
-  let deviceBrand = model.split(' ')[0].toLocaleLowerCase()
-  if (
-    __PLATFORM__ === 'mp-toutiao' ||
-    __PLATFORM__ === 'mp-lark' ||
-    isQuickApp
-  ) {
-    deviceBrand = brand.toLocaleLowerCase()
-  } else {
-    deviceBrand = getDeviceBrand(deviceBrand)
-  }
+  let deviceBrand = getDeviceBrand(brand, model, isQuickApp)
 
   // hostName
   let _hostName = hostName || __PLATFORM__.split('-')[1] // mp-jd
   if (__PLATFORM__ === 'mp-weixin') {
     if (environment) {
       _hostName = environment
-    } else if (fromRes.host) {
+    } else if (fromRes.host && fromRes.host.env) {
       _hostName = fromRes.host.env
     }
   }
@@ -188,4 +161,48 @@ export function populateParameters(
   }
 
   extend(toRes, parameters)
+}
+
+export function getGetDeviceType(fromRes: any, model: string) {
+  // deviceType
+  let deviceType = fromRes.deviceType || 'phone'
+  if (__PLATFORM__ !== 'mp-baidu') {
+    type DeviceTypeMapsKeys = keyof typeof deviceTypeMaps
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc',
+    }
+    const deviceTypeMapsKeys = Object.keys(
+      deviceTypeMaps
+    ) as DeviceTypeMapsKeys[]
+    const _model = model.toLocaleLowerCase()
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index]
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m]
+        break
+      }
+    }
+  }
+  return deviceType
+}
+
+export function getDeviceBrand(
+  brand: string,
+  model: string,
+  isQuickApp: boolean = false
+) {
+  // deviceModel
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase()
+  if (
+    __PLATFORM__ === 'mp-toutiao' ||
+    __PLATFORM__ === 'mp-lark' ||
+    isQuickApp
+  ) {
+    deviceBrand = brand.toLocaleLowerCase()
+  } else {
+    deviceBrand = _getDeviceBrand(deviceBrand)
+  }
+  return deviceBrand
 }

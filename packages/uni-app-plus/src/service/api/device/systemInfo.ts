@@ -49,7 +49,6 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
     const {
       hostPackageName,
       hostName,
-      osLanguage,
       hostVersion,
       hostLanguage,
       hostTheme,
@@ -69,7 +68,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       appVersionCode,
       appLanguage: uni.getLocale(),
       version: plus.runtime.innerVersion!,
-      language: osLanguage,
+      language: hostLanguage,
       theme: '',
       hostPackageName,
       hostName,
