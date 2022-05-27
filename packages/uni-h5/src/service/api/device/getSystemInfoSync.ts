@@ -1,4 +1,4 @@
-import { defineSyncApi } from '@dcloudio/uni-api'
+import { defineSyncApi, getLocale } from '@dcloudio/uni-api'
 import deviceId from '../../../helpers/uuid'
 import { getBrowserInfo } from '../base/getBrowserInfo'
 import { getWindowInfo } from './getWindowInfo'
@@ -70,7 +70,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       appName: __uniConfig.appName,
       appVersion: __uniConfig.appVersion,
       appVersionCode: __uniConfig.appVersionCode,
-      appLanguage: uni.getLocale(),
+      appLanguage: getLocale ? getLocale() : language,
       version: __uniConfig.appVersion,
     }
   }

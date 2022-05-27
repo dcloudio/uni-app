@@ -1,4 +1,4 @@
-import { defineAsyncApi, defineSyncApi } from '@dcloudio/uni-api'
+import { defineAsyncApi, defineSyncApi, getLocale } from '@dcloudio/uni-api'
 import deviceId from '../../../helpers/uuid'
 import { extend } from '@vue/shared'
 import { getWindowInfo } from './getWindowInfo'
@@ -52,6 +52,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       hostName,
       hostVersion,
       hostLanguage,
+      osLanguage,
       hostTheme,
       appId,
       appName,
@@ -67,9 +68,9 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       appName,
       appVersion,
       appVersionCode,
-      appLanguage: uni.getLocale(),
+      appLanguage: getLocale ? getLocale() : osLanguage,
       version: plus.runtime.innerVersion!,
-      language: hostLanguage,
+      language: osLanguage,
       theme: '',
       hostPackageName,
       hostName,
