@@ -55,7 +55,7 @@ export function getAppBaseInfo () {
     appName,
     appVersion,
     appVersionCode,
-    appLanguage: uni.getLocale(),
+    appLanguage: uni.getLocale ? uni.getLocale() : hostLanguage,
     version: plus.runtime.innerVersion,
     language: hostLanguage,
     theme: '',

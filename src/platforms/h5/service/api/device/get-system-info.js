@@ -62,7 +62,7 @@ export function getAppBaseInfo () {
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
-    appLanguage: uni.getLocale(),
+    appLanguage: uni.getLocale ? uni.getLocale() : language,
     version: __uniConfig.appVersion
   }
 }
