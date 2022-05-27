@@ -6507,7 +6507,7 @@ var serviceContext = (function () {
   function getAppBaseInfo () {
     weexGetSystemInfoSync();
     const {
-      hostPackageName, hostName,
+      hostPackageName, hostName, osLanguage,
       hostVersion, hostLanguage, hostTheme,
       appId, appName, appVersion, appVersionCode
     } = systemInfo;
@@ -6528,7 +6528,7 @@ var serviceContext = (function () {
       appVersionCode,
       appLanguage,
       version: plus.runtime.innerVersion,
-      language: hostLanguage,
+      language: osLanguage,
       theme: '',
       hostPackageName,
       hostName,
