@@ -35,7 +35,7 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
     return {
       deviceBrand,
       deviceModel,
-      devicePixelRatio: window.devicePixelRatio,
+      devicePixelRatio: __NODE_JS__ ? 1 : window.devicePixelRatio,
       deviceId: deviceId(),
       deviceOrientation,
       deviceType,
