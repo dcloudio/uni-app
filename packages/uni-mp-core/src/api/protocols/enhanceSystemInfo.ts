@@ -49,10 +49,10 @@ export function populateParameters(
   toRes: UniApp.GetSystemInfoResult
 ) {
   const {
-    brand,
-    model,
-    system,
-    language,
+    brand = '',
+    model = '',
+    system = '',
+    language = '',
     theme,
     version,
     hostName,
