@@ -17,6 +17,7 @@ export const customElements = [
   'page-meta',
   'navigation-bar',
   'match-media',
+  'ad-custom',
 ]
 
 export const compilerOptions: CompilerOptions = {
