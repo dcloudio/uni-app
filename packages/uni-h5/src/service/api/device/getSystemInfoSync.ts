@@ -21,12 +21,24 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
   'getDeviceInfo',
   () => {
     initBrowserInfo()
-    const { deviceBrand, deviceModel, brand, model, platform, system } =
-      browserInfo
+    const {
+      deviceBrand,
+      deviceModel,
+      brand,
+      model,
+      platform,
+      system,
+      deviceOrientation,
+      deviceType,
+    } = browserInfo
 
     return {
       deviceBrand,
       deviceModel,
+      devicePixelRatio: window.devicePixelRatio,
+      deviceId: deviceId(),
+      deviceOrientation,
+      deviceType,
       brand,
       model,
       system,
@@ -84,16 +96,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     const appBaseInfo = getAppBaseInfo()
     _initBrowserInfo = true
 
-    const {
-      ua,
-      deviceType,
-      browserName,
-      browseVersion,
-      osname,
-      osversion,
-      deviceOrientation,
-    } = browserInfo
-    const { pixelRatio } = windowInfo
+    const { ua, browserName, browseVersion, osname, osversion } = browserInfo
 
     const systemInfo: UniApp.GetSystemInfoResult = extend(
       windowInfo,
@@ -101,12 +104,8 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       appBaseInfo,
       {
         ua,
-        deviceType,
         browserName,
         browseVersion,
-        deviceId: deviceId(),
-        devicePixelRatio: pixelRatio,
-        deviceOrientation,
         uniPlatform: 'web',
         uniCompileVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,

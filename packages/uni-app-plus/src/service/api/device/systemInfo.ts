@@ -16,13 +16,24 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
   'getDeviceInfo',
   () => {
     weexGetSystemInfoSync()
-    const { deviceBrand, deviceModel, osName, osVersion } = systemInfo
+    const {
+      deviceBrand,
+      deviceModel,
+      osName,
+      osVersion,
+      deviceOrientation,
+      deviceType,
+    } = systemInfo
 
     const brand = deviceBrand.toLowerCase()
 
     return {
       deviceBrand: brand,
       deviceModel,
+      devicePixelRatio: plus.screen.scale!,
+      deviceId: deviceId(),
+      deviceOrientation,
+      deviceType,
       brand,
       model: deviceModel,
       system: `${osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
@@ -82,7 +93,6 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     _initSystemInfo = true
 
     const { osName, osLanguage, osVersion } = systemInfo
-    const { pixelRatio } = windowInfo
     const osLanguageSplit = osLanguage.split('-')
     const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1]
     let _osLanguage = `${osLanguageSplit[0]}${
@@ -92,8 +102,6 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     let extraData = {
       errMsg: 'getSystemInfo:ok',
       fontSizeSetting: appBaseInfo.hostFontSizeSetting,
-      devicePixelRatio: pixelRatio,
-      deviceId: deviceId(),
       uniCompileVersion: __uniConfig.compilerVersion,
       uniRuntimeVersion: __uniConfig.compilerVersion,
       osLanguage: _osLanguage,
@@ -105,8 +113,8 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     }
 
     const _systemInfo: UniApp.GetSystemInfoResult = extend(
-      windowInfo,
       systemInfo,
+      windowInfo,
       deviceInfo,
       appBaseInfo,
       extraData

@@ -6,7 +6,7 @@ importers:
     specifiers:
       '@babel/core': ^7.17.10
       '@babel/preset-env': ^7.16.11
-      '@dcloudio/types': ^2.6.9
+      '@dcloudio/types': ^2.6.10
       '@dcloudio/uni-api': 3.0.0-alpha-3041020220516004
       '@dcloudio/uni-app': 3.0.0-alpha-3041020220516004
       '@jest/types': ^27.0.2
@@ -57,7 +57,7 @@ importers:
     devDependencies:
       '@babel/core': 7.17.10
       '@babel/preset-env': 7.17.10_@babel+core@7.17.10
-      '@dcloudio/types': 2.6.9
+      '@dcloudio/types': 2.6.10
       '@dcloudio/uni-api': link:packages/uni-api
       '@dcloudio/uni-app': link:packages/uni-app
       '@jest/types': 27.5.1
@@ -2105,12 +2105,12 @@ packages:
       - supports-color
     dev: true
 
-  /@dcloudio/types/2.6.6:
-    resolution: {integrity: sha512-ChLbkLuXfWxaj6VcsCcspIyC9+xIYKAJX++f50oCzUWbApslGwRpJ12wqS9k5Eg5euaHSzmyE0JfpZlNFpBk6w==}
+  /@dcloudio/types/2.6.10:
+    resolution: {integrity: sha512-KBMMb+vDw7XeobwKsBh9RY+yLuL9ZKaWWgRFctd62b1zMrsWhweIyyvigvqutgaE3wCwj7T71HoA7SHxC+SYnw==}
     dev: true
 
-  /@dcloudio/types/2.6.9:
-    resolution: {integrity: sha512-fCOrtCpuVX5v3mceoNkOnBwGnrUyQo9oOqF/4d78RKRxpcPSdky65vfCi/WBq6L6uPyeyQEgFeOR9InINViMow==}
+  /@dcloudio/types/2.6.6:
+    resolution: {integrity: sha512-ChLbkLuXfWxaj6VcsCcspIyC9+xIYKAJX++f50oCzUWbApslGwRpJ12wqS9k5Eg5euaHSzmyE0JfpZlNFpBk6w==}
     dev: true
 
   /@dcloudio/uni-cli-i18n/2.0.0-alpha-33020211130001:
@@ -8227,6 +8227,7 @@ packages:
       rollup: 2.72.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
 
   /vlq/0.2.3:
     resolution: {integrity: sha512-DRibZL6DsNhIgYQ+wNdWDL2SL3bKPlVrRiBqV5yuMm++op8W4kGFtaQfCs4KEJn0wBZcHVHJ3eoywX8983k1ow==}
