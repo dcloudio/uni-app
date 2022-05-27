@@ -1,6 +1,7 @@
-function getDeviceBrand (model) {
+function _getDeviceBrand (model) {
   if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
   if (/windows/gi.test(model)) { return 'microsoft' }
+  return ''
 }
 
 const UUID_KEY = '__DC_STAT_UUID'
@@ -31,8 +32,8 @@ export function addSafeAreaInsets (result) {
 
 export function populateParameters (result) {
   const {
-    brand, model, system,
-    language, theme, version,
+    brand = '', model = '', system = '',
+    language = '', theme, version,
     hostName, platform, fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation,
     environment
@@ -59,38 +60,17 @@ export function populateParameters (result) {
   }
 
   // deviceType
-  let deviceType = result.deviceType || 'phone'
-  if (__PLATFORM__ !== 'mp-baidu') {
-    const deviceTypeMaps = {
-      ipad: 'pad',
-      windows: 'pc',
-      mac: 'pc'
-    }
-    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps)
-    const _model = model.toLocaleLowerCase()
-    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
-      const _m = deviceTypeMapsKeys[index]
-      if (_model.indexOf(_m) !== -1) {
-        deviceType = deviceTypeMaps[_m]
-        break
-      }
-    }
-  }
+  const deviceType = getGetDeviceType(result, model)
 
   // deviceModel
-  let deviceBrand = model.split(' ')[0].toLocaleLowerCase()
-  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark' || isQuickApp) {
-    deviceBrand = brand.toLocaleLowerCase()
-  } else {
-    deviceBrand = getDeviceBrand(deviceBrand)
-  }
+  const deviceBrand = getDeviceBrand(brand, model, isQuickApp)
 
   // hostName
   let _hostName = hostName || __PLATFORM__.split('-')[1] // mp-jd
   if (__PLATFORM__ === 'mp-weixin') {
     if (environment) {
       _hostName = environment
-    } else if (result.host) {
+    } else if (result.host && result.host.env) {
       _hostName = result.host.env
     }
   }
@@ -130,7 +110,7 @@ export function populateParameters (result) {
     osVersion,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language.split('_', '-'),
+    hostLanguage: language.replace('_', '-'),
     hostName: _hostName,
     hostSDKVersion: _SDKVersion,
     hostFontSizeSetting: fontSizeSetting,
@@ -146,4 +126,43 @@ export function populateParameters (result) {
   }
 
   Object.assign(result, parameters)
+}
+
+export function getGetDeviceType (result, model) {
+  let deviceType = result.deviceType || 'phone'
+  if (__PLATFORM__ !== 'mp-baidu') {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    }
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps)
+    const _model = model.toLocaleLowerCase()
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index]
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m]
+        break
+      }
+    }
+  }
+  return deviceType
+}
+
+export function getDeviceBrand (
+  brand,
+  model,
+  isQuickApp = false
+) {
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase()
+  if (
+    __PLATFORM__ === 'mp-toutiao' ||
+    __PLATFORM__ === 'mp-lark' ||
+    isQuickApp
+  ) {
+    deviceBrand = brand.toLocaleLowerCase()
+  } else {
+    deviceBrand = _getDeviceBrand(deviceBrand)
+  }
+  return deviceBrand
 }

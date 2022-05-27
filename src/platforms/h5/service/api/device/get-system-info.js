@@ -18,12 +18,18 @@ export function getDeviceInfo () {
     brand,
     model,
     platform,
-    system
+    system,
+    deviceOrientation,
+    deviceType
   } = browserInfo
 
   return {
     deviceBrand,
     deviceModel,
+    devicePixelRatio: window.devicePixelRatio,
+    deviceId: deviceId(),
+    deviceOrientation,
+    deviceType,
     brand,
     model,
     system,
@@ -73,8 +79,7 @@ export function getSystemInfoSync () {
   const appBaseInfo = getAppBaseInfo()
   _initBrowserInfo = true
 
-  const { ua, deviceType, browserName, browseVersion, osname, osversion, deviceOrientation } = browserInfo
-  const { pixelRatio } = windowInfo
+  const { ua, browserName, browseVersion, osname, osversion } = browserInfo
 
   const systemInfo = Object.assign(
     {},
@@ -83,12 +88,8 @@ export function getSystemInfoSync () {
     appBaseInfo,
     {
       ua,
-      deviceType,
       browserName,
       browseVersion,
-      deviceId: deviceId(),
-      devicePixelRatio: pixelRatio,
-      deviceOrientation,
       uniPlatform: 'web',
       uniCompileVersion: __uniConfig.compilerVersion,
       uniRuntimeVersion: __uniConfig.compilerVersion,
