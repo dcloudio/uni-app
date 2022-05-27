@@ -42,7 +42,7 @@ export function getDeviceInfo () {
 export function getAppBaseInfo () {
   weexGetSystemInfoSync()
   const {
-    hostPackageName, hostName,
+    hostPackageName, hostName, osLanguage,
     hostVersion, hostLanguage, hostTheme,
     appId, appName, appVersion, appVersionCode
   } = systemInfo
@@ -63,7 +63,7 @@ export function getAppBaseInfo () {
     appVersionCode,
     appLanguage,
     version: plus.runtime.innerVersion,
-    language: hostLanguage,
+    language: osLanguage,
     theme: '',
     hostPackageName,
     hostName,
