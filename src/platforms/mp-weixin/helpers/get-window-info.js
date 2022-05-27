@@ -1,4 +1,4 @@
-import { addSafeAreaInsets } from './enhance-system-info';
+import { addSafeAreaInsets } from './enhance-system-info'
 
 export default {
   returnValue: function (result) {
@@ -6,7 +6,7 @@ export default {
 
     Object.assign(result, {
       windowTop: 0,
-      windowBottom: 0,
+      windowBottom: 0
     })
   }
 }

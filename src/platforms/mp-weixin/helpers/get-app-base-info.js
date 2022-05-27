@@ -18,7 +18,7 @@ export default {
       appId: process.env.UNI_APP_ID,
       appName: process.env.UNI_APP_NAME,
       appVersion: process.env.UNI_APP_VERSION_NAME,
-      appVersionCode: process.env.UNI_APP_VERSION_CODE,
+      appVersionCode: process.env.UNI_APP_VERSION_CODE
     })
   }
 }

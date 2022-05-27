@@ -1,4 +1,4 @@
-function _getDeviceBrand(model) {
+function _getDeviceBrand (model) {
   if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
   if (/windows/gi.test(model)) { return 'microsoft' }
   return ''
@@ -6,7 +6,7 @@ function _getDeviceBrand(model) {
 
 const UUID_KEY = '__DC_STAT_UUID'
 let deviceId
-export function useDeviceId(result) {
+export function useDeviceId (result) {
   deviceId = deviceId || __GLOBAL__.getStorageSync(UUID_KEY)
   if (!deviceId) {
     deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7)
@@ -18,7 +18,7 @@ export function useDeviceId(result) {
   result.deviceId = deviceId
 }
 
-export function addSafeAreaInsets(result) {
+export function addSafeAreaInsets (result) {
   if (result.safeArea) {
     const safeArea = result.safeArea
     result.safeAreaInsets = {
@@ -30,7 +30,7 @@ export function addSafeAreaInsets(result) {
   }
 }
 
-export function populateParameters(result) {
+export function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
     language = '', theme, version,
@@ -60,10 +60,10 @@ export function populateParameters(result) {
   }
 
   // deviceType
-  let deviceType = getGetDeviceType(result, model)
+  const deviceType = getGetDeviceType(result, model)
 
   // deviceModel
-  let deviceBrand = getDeviceBrand(brand, model, isQuickApp)
+  const deviceBrand = getDeviceBrand(brand, model, isQuickApp)
 
   // hostName
   let _hostName = hostName || __PLATFORM__.split('-')[1] // mp-jd
@@ -128,7 +128,7 @@ export function populateParameters(result) {
   Object.assign(result, parameters)
 }
 
-export function getGetDeviceType(result, model) {
+export function getGetDeviceType (result, model) {
   let deviceType = result.deviceType || 'phone'
   if (__PLATFORM__ !== 'mp-baidu') {
     const deviceTypeMaps = {
@@ -149,7 +149,7 @@ export function getGetDeviceType(result, model) {
   return deviceType
 }
 
-export function getDeviceBrand(
+export function getDeviceBrand (
   brand,
   model,
   isQuickApp = false
