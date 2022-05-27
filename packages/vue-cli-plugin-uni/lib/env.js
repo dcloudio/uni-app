@@ -103,6 +103,9 @@ if (process.env.UNI_CLOUD_SPACES) {
       }
 
       process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
+        if (space.provider === 'tcb') {
+          space.provider = 'tencent'
+        }
         if (space.clientSecret) {
           return {
             provider: space.provider || 'aliyun',
