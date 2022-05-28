@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -546,9 +546,15 @@ var previewImage = {
   }
 };
 
+function _getDeviceBrand (model) {
+  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
+  if (/windows/gi.test(model)) { return 'microsoft' }
+  return ''
+}
+
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
-function addUuid (result) {
+function useDeviceId (result) {
   deviceId = deviceId || wx.getStorageSync(UUID_KEY);
   if (!deviceId) {
     deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
@@ -567,15 +573,136 @@ function addSafeAreaInsets (result) {
       top: safeArea.top,
       left: safeArea.left,
       right: result.windowWidth - safeArea.right,
-      bottom: result.windowHeight - safeArea.bottom
+      bottom: result.screenHeight - safeArea.bottom
     };
   }
 }
 
+function populateParameters (result) {
+  const {
+    brand = '', model = '', system = '',
+    language = '', theme, version,
+    hostName, platform, fontSizeSetting,
+    SDKVersion, pixelRatio, deviceOrientation,
+    environment
+  } = result;
+  const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1;
+
+  // osName osVersion
+  let osName = '';
+  let osVersion = '';
+  {
+    osName = system.split(' ')[0] || '';
+    osVersion = system.split(' ')[1] || '';
+  }
+  let hostVersion = version;
+
+  // deviceType
+  const deviceType = getGetDeviceType(result, model);
+
+  // deviceModel
+  const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
+
+  // hostName
+  const _platform =  'WeChat' ;
+  let _hostName = hostName || _platform; // mp-jd
+  {
+    if (environment) {
+      _hostName = environment;
+    } else if (result.host && result.host.env) {
+      _hostName = result.host.env;
+    }
+  }
+
+  // deviceOrientation
+  let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
+
+  // devicePixelRatio
+  let _devicePixelRatio = pixelRatio;
+
+  // SDKVersion
+  let _SDKVersion = SDKVersion;
+
+  // wx.getAccountInfoSync
+
+  const parameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION_NAME,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+    deviceBrand,
+    deviceModel: model,
+    deviceType,
+    devicePixelRatio: _devicePixelRatio,
+    deviceOrientation: _deviceOrientation,
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+    hostTheme: theme,
+    hostVersion,
+    hostLanguage: language.replace('_', '-'),
+    hostName: _hostName,
+    hostSDKVersion: _SDKVersion,
+    hostFontSizeSetting: fontSizeSetting,
+    windowTop: 0,
+    windowBottom: 0,
+    // TODO
+    osLanguage: undefined,
+    osTheme: undefined,
+    ua: undefined,
+    hostPackageName: undefined,
+    browserName: undefined,
+    browseVersion: undefined
+  };
+
+  Object.assign(result, parameters);
+}
+
+function getGetDeviceType (result, model) {
+  let deviceType = result.deviceType || 'phone';
+  {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    };
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+    const _model = model.toLocaleLowerCase();
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index];
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m];
+        break
+      }
+    }
+  }
+  return deviceType
+}
+
+function getDeviceBrand (
+  brand,
+  model,
+  isQuickApp = false
+) {
+  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
+  if (
+    
+    isQuickApp
+  ) {
+    deviceBrand = brand.toLocaleLowerCase();
+  } else {
+    deviceBrand = _getDeviceBrand(deviceBrand);
+  }
+  return deviceBrand
+}
+
 var getSystemInfo = {
   returnValue: function (result) {
-    addUuid(result);
+    useDeviceId(result);
     addSafeAreaInsets(result);
+    populateParameters(result);
   }
 };
 
@@ -587,6 +714,57 @@ var showActionSheet = {
   }
 };
 
+var getAppBaseInfo = {
+  returnValue: function (result) {
+    const { version, language, SDKVersion, theme } = result;
+
+    let _hostName = "mp-weixin".split('-')[1]; // mp-jd
+    {
+      if (result.host && result.host.env) {
+        _hostName = result.host.env;
+      }
+    }
+
+    Object.assign(result, {
+      hostVersion: version,
+      hostLanguage: language.replace('_', '-'),
+      hostName: _hostName,
+      hostSDKVersion: SDKVersion,
+      hostTheme: theme,
+      appId: process.env.UNI_APP_ID,
+      appName: process.env.UNI_APP_NAME,
+      appVersion: process.env.UNI_APP_VERSION_NAME,
+      appVersionCode: process.env.UNI_APP_VERSION_CODE
+    });
+  }
+};
+
+var getDeviceInfo = {
+  returnValue: function (result) {
+    const { brand, model } = result;
+    const deviceType = getGetDeviceType(result, model);
+    const deviceBrand = getDeviceBrand(brand, model);
+    useDeviceId(result);
+
+    Object.assign(result, {
+      deviceType,
+      deviceBrand,
+      deviceModel: model
+    });
+  }
+};
+
+var getWindowInfo = {
+  returnValue: function (result) {
+    addSafeAreaInsets(result);
+
+    Object.assign(result, {
+      windowTop: 0,
+      windowBottom: 0
+    });
+  }
+};
+
 // import navigateTo from 'uni-helpers/navigate-to'
 
 const protocols = {
@@ -595,7 +773,10 @@ const protocols = {
   previewImage,
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
-  showActionSheet
+  showActionSheet,
+  getAppBaseInfo,
+  getDeviceInfo,
+  getWindowInfo
 };
 const todos = [
   'vibrate',
@@ -861,7 +1042,7 @@ function invokeGetPushCidCallbacks (cid, errMsg) {
   getPushCidCallbacks.length = 0;
 }
 
-function getPushCid (args) {
+function getPushClientid (args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -877,13 +1058,13 @@ function getPushCid (args) {
     let res;
     if (cid) {
       res = {
-        errMsg: 'getPushCid:ok',
+        errMsg: 'getPushClientid:ok',
         cid
       };
       hasSuccess && success(res);
     } else {
       res = {
-        errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '')
+        errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
       };
       hasFail && fail(res);
     }
@@ -915,7 +1096,7 @@ const offPushMessage = (fn) => {
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getPushCid: getPushCid,
+  getPushClientid: getPushClientid,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   invokePushCallback: invokePushCallback
