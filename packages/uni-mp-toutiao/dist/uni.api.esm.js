@@ -902,7 +902,8 @@ function populateParameters(fromRes, toRes) {
     // deviceModel
     let deviceBrand = getDeviceBrand(brand, model, isQuickApp);
     // hostName
-    let _hostName = hostName || "mp-toutiao".split('-')[1]; // mp-jd
+    const _platform = "mp-toutiao".split('-')[1];
+    let _hostName = hostName || _platform; // mp-jd
     {
         _hostName = fromRes.appName;
     }

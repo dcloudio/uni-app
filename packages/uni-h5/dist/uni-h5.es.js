@@ -14355,12 +14355,14 @@ function setupApp(comp) {
     before(comp2) {
       comp2.mpType = "app";
       const { setup } = comp2;
-      comp2.setup = (props2, ctx) => {
-        return setup && setup(props2, ctx);
-      };
-      comp2.render = () => {
+      const render = () => {
         return openBlock(), createBlock(LayoutComponent);
       };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return isFunction(res) ? render : res;
+      };
+      comp2.render = render;
     }
   });
 }

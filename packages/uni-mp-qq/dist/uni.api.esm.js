@@ -911,7 +911,8 @@ function populateParameters(fromRes, toRes) {
     // deviceModel
     let deviceBrand = getDeviceBrand(brand, model, isQuickApp);
     // hostName
-    let _hostName = hostName || "mp-qq".split('-')[1]; // mp-jd
+    const _platform = "mp-qq".split('-')[1];
+    let _hostName = hostName || _platform; // mp-jd
     _hostName = fromRes.AppPlatform;
     // deviceOrientation
     let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
