@@ -1,4 +1,4 @@
-import { extend, invokeArrayFns, isPlainObject } from '@vue/shared'
+import { extend, invokeArrayFns, isPlainObject, isFunction } from '@vue/shared'
 import {
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -187,12 +187,14 @@ export function setupApp(comp: any) {
     before(comp) {
       comp.mpType = 'app'
       const { setup } = comp
-      comp.setup = (props, ctx) => {
-        return setup && setup(props, ctx)
-      }
-      comp.render = () => {
+      const render = () => {
         return openBlock(), createBlock(LayoutComponent)
       }
+      comp.setup = (props, ctx) => {
+        const res = setup && setup(props, ctx)
+        return isFunction(res) ? render : res
+      }
+      comp.render = render
     },
   })
 }
