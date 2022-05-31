@@ -95,7 +95,6 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     _initSystemInfo = true
 
     const extraData = {
-      errMsg: 'getSystemInfo:ok',
       fontSizeSetting: appBaseInfo.hostFontSizeSetting,
       osName: systemInfo.osName.toLowerCase(),
     }
