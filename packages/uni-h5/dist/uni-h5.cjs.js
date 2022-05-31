@@ -5030,9 +5030,9 @@ function decodeEntities(htmlString) {
     if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
       return String.fromCharCode("0" + stage.slice(1));
     }
-    {
-      return match;
-    }
+    const wrap = document.createElement("div");
+    wrap.innerHTML = match;
+    return wrap.innerText || wrap.textContent;
   });
 }
 function normlizeValue(tagName, name, value) {
@@ -5197,50 +5197,6 @@ const props$g = {
     }
   }
 };
-function getSSRDataType() {
-  return vue.getCurrentInstance() ? uniShared.UNI_SSR_DATA : uniShared.UNI_SSR_GLOBAL_DATA;
-}
-function assertKey(key, shallow = false) {
-  if (!key) {
-    throw new Error(`${shallow ? "shallowSsrRef" : "ssrRef"}: You must provide a key.`);
-  }
-}
-const ssrClientRef = (value, key, shallow = false) => {
-  const valRef = shallow ? vue.shallowRef(value) : vue.ref(value);
-  if (typeof window === "undefined") {
-    return valRef;
-  }
-  const __uniSSR = window[uniShared.UNI_SSR];
-  if (!__uniSSR) {
-    return valRef;
-  }
-  const type = getSSRDataType();
-  assertKey(key, shallow);
-  if (shared.hasOwn(__uniSSR[type], key)) {
-    valRef.value = __uniSSR[type][key];
-    if (type === uniShared.UNI_SSR_DATA) {
-      delete __uniSSR[type][key];
-    }
-  }
-  return valRef;
-};
-const ssrRef = (value, key) => {
-  return ssrClientRef(value, key);
-};
-function _createVNode(nodeList) {
-  if (!nodeList)
-    return [];
-  return nodeList.map((node) => {
-    if (node.name) {
-      const tagName = node.name.toLowerCase();
-      if (!shared.hasOwn(TAGS, tagName)) {
-        return;
-      }
-    }
-    const isNode = !shared.hasOwn(node, "type") || node.type === "node";
-    return vue.h(isNode ? node.name : "span", node.attrs, isNode ? _createVNode(node.children) : decodeEntities(node.text));
-  });
-}
 var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
@@ -5253,33 +5209,28 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     attrs
   }) {
     const vm = vue.getCurrentInstance();
-    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = vue.ref(null);
-    const nodelist = ssrRef(props2.nodes, "nodelist");
     const trigger = useCustomEvent(rootRef, emit2);
     const hasItemClick = !!attrs.onItemclick;
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    {
-      if (typeof props2.nodes === "string") {
-        nodelist.value = parseHtml(props2.nodes);
-      }
-    }
     function _renderNodes(nodes) {
       if (typeof nodes === "string") {
-        nodelist.value = parseHtml(nodes);
+        nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodelist.value, document.createDocumentFragment(), scopeId, hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
     vue.watch(() => props2.nodes, (value) => {
       _renderNodes(value);
     });
-    return () => vue.h("uni-rich-text", {
-      ref: rootRef
-    }, [vue.h("div", {}, _createVNode(nodelist.value))]);
+    return () => {
+      return vue.createVNode("uni-rich-text", {
+        "ref": rootRef
+      }, [vue.createVNode("div", null, null)], 512);
+    };
   }
 });
 const props$f = {

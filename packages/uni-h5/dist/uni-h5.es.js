@@ -1,6 +1,6 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -9325,7 +9325,7 @@ Spring$1.prototype._solve = function(e2, t2) {
     const c = (-n - Math.sqrt(o2)) / (2 * i);
     const u = (-n + Math.sqrt(o2)) / (2 * i);
     const d = (t2 - c * e2) / (u - c);
-    const h2 = e2 - d;
+    const h = e2 - d;
     return {
       x: function(e3) {
         let t3;
@@ -9341,7 +9341,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * t3 + d * n2;
+        return h * t3 + d * n2;
       },
       dx: function(e3) {
         let t3;
@@ -9357,7 +9357,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * c * t3 + d * u * n2;
+        return h * c * t3 + d * u * n2;
       }
     };
   }
@@ -11717,11 +11717,9 @@ function decodeEntities(htmlString) {
     if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
       return String.fromCharCode("0" + stage.slice(1));
     }
-    {
-      const wrap = document.createElement("div");
-      wrap.innerHTML = match;
-      return wrap.innerText || wrap.textContent;
-    }
+    const wrap = document.createElement("div");
+    wrap.innerHTML = match;
+    return wrap.innerText || wrap.textContent;
   });
 }
 function normlizeValue(tagName, name, value) {
@@ -11886,36 +11884,6 @@ const props$n = {
     }
   }
 };
-function getSSRDataType() {
-  return getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
-}
-function assertKey(key, shallow = false) {
-  if (!key) {
-    throw new Error(`${shallow ? "shallowSsrRef" : "ssrRef"}: You must provide a key.`);
-  }
-}
-const ssrClientRef = (value, key, shallow = false) => {
-  const valRef = shallow ? shallowRef(value) : ref(value);
-  if (typeof window === "undefined") {
-    return valRef;
-  }
-  const __uniSSR = window[UNI_SSR];
-  if (!__uniSSR) {
-    return valRef;
-  }
-  const type = getSSRDataType();
-  assertKey(key, shallow);
-  if (hasOwn(__uniSSR[type], key)) {
-    valRef.value = __uniSSR[type][key];
-    if (type === UNI_SSR_DATA) {
-      delete __uniSSR[type][key];
-    }
-  }
-  return valRef;
-};
-const ssrRef = (value, key) => {
-  return ssrClientRef(value, key);
-};
 var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
@@ -11928,9 +11896,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     attrs: attrs2
   }) {
     const vm = getCurrentInstance();
-    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
-    const nodelist = ssrRef(props2.nodes, "nodelist");
     const trigger = useCustomEvent(rootRef, emit2);
     const hasItemClick = !!attrs2.onItemclick;
     function triggerItemClick(e2, detail = {}) {
@@ -11938,9 +11904,9 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     }
     function _renderNodes(nodes) {
       if (typeof nodes === "string") {
-        nodelist.value = parseHtml(nodes);
+        nodes = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodelist.value, document.createDocumentFragment(), scopeId, hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -11948,11 +11914,13 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
       _renderNodes(value);
     });
     onMounted(() => {
-      _renderNodes(nodelist.value);
+      _renderNodes(props2.nodes);
     });
-    return () => h("uni-rich-text", {
-      ref: rootRef
-    }, [h("div", {}, [])]);
+    return () => {
+      return createVNode("uni-rich-text", {
+        "ref": rootRef
+      }, [createVNode("div", null, null)], 512);
+    };
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
@@ -12774,9 +12742,9 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
         const c = s - n;
         const u = Math.max(index2 - (s + 1), s - i, 0);
         const d = Math.max(index2 - (l + 1), l - i, 0);
-        const h2 = Math.max(index2 - (c + 1), c - i, 0);
-        const p2 = Math.min(u, d, h2);
-        const position = [s, l, c][[u, d, h2].indexOf(p2)];
+        const h = Math.max(index2 - (c + 1), c - i, 0);
+        const p2 = Math.min(u, d, h);
+        const position = [s, l, c][[u, d, h].indexOf(p2)];
         item.updatePosition(position, props2.vertical);
       }
     }
@@ -14427,10 +14395,10 @@ function onVisibilityChange() {
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
-  const h2 = Math.floor(val / 3600);
+  const h = Math.floor(val / 3600);
   const m = Math.floor(val % 3600 / 60);
   const s = Math.floor(val % 3600 % 60);
-  const hStr = (h2 < 10 ? "0" : "") + h2;
+  const hStr = (h < 10 ? "0" : "") + h;
   const mStr = (m < 10 ? "0" : "") + m;
   const sStr = (s < 10 ? "0" : "") + s;
   let str = mStr + ":" + sStr;
@@ -15647,25 +15615,25 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           const anchor = option.anchor || {};
           let icon;
           let w;
-          let h2;
+          let h;
           let top;
           let x = typeof anchor.x === "number" ? anchor.x : 0.5;
           let y = typeof anchor.y === "number" ? anchor.y : 1;
           if (option.iconPath && (option.width || option.height)) {
             w = option.width || img.width / img.height * option.height;
-            h2 = option.height || img.height / img.width * option.width;
+            h = option.height || img.height / img.width * option.width;
           } else {
             w = img.width / 2;
-            h2 = img.height / 2;
+            h = img.height / 2;
           }
-          top = h2 - (h2 - y * h2);
+          top = h - (h - y * h);
           if ("MarkerImage" in maps2) {
-            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h), new maps2.Size(w, h));
           } else {
             icon = {
               url: img.src,
               anchor: new maps2.Point(x, y),
-              size: new maps2.Size(w, h2)
+              size: new maps2.Size(w, h)
             };
           }
           marker.setPosition(position);

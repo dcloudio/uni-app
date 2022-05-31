@@ -1,6 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -888,8 +888,8 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function populateParameters(fromRes, toRes) {
-    const { brand = '', model = '', system = '', language = '', theme, version, hostName, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, environment, } = fromRes;
-    const isQuickApp = "mp-toutiao".indexOf('quickapp-webview') !== -1;
+    const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
+    // const isQuickApp = "mp-toutiao".indexOf('quickapp-webview') !== -1
     // osName osVersion
     let osName = '';
     let osVersion = '';
@@ -901,25 +901,24 @@ function populateParameters(fromRes, toRes) {
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
     // deviceModel
-    let deviceBrand = getDeviceBrand(brand, model, isQuickApp);
+    let deviceBrand = getDeviceBrand(brand);
     // hostName
-    const _platform = "mp-toutiao".split('-')[1];
-    let _hostName = hostName || _platform; // mp-jd
-    {
-        _hostName = fromRes.appName;
-    }
+    let _hostName = getHostName(fromRes);
     // deviceOrientation
     let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
     // devicePixelRatio
     let _devicePixelRatio = pixelRatio;
     // SDKVersion
     let _SDKVersion = SDKVersion;
+    // hostLanguage
+    const hostLanguage = language.replace(/_/g, '-');
     // wx.getAccountInfoSync
     const parameters = {
         appId: process.env.UNI_APP_ID,
         appName: process.env.UNI_APP_NAME,
         appVersion: process.env.UNI_APP_VERSION_NAME,
         appVersionCode: process.env.UNI_APP_VERSION_CODE,
+        appLanguage: getAppLanguage(hostLanguage),
         uniCompileVersion: process.env.UNI_COMPILER_VERSION,
         uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
         uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
@@ -932,7 +931,7 @@ function populateParameters(fromRes, toRes) {
         osVersion,
         hostTheme: theme,
         hostVersion,
-        hostLanguage: language.replace('_', '-'),
+        hostLanguage,
         hostName: _hostName,
         hostSDKVersion: _SDKVersion,
         hostFontSizeSetting: fontSizeSetting,
@@ -944,7 +943,7 @@ function populateParameters(fromRes, toRes) {
         ua: undefined,
         hostPackageName: undefined,
         browserName: undefined,
-        browseVersion: undefined,
+        browserVersion: undefined,
     };
     extend(toRes, parameters);
 }
@@ -969,13 +968,24 @@ function getGetDeviceType(fromRes, model) {
     }
     return deviceType;
 }
-function getDeviceBrand(brand, model, isQuickApp = false) {
+function getDeviceBrand(brand) {
     // deviceModel
-    let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-    {
-        deviceBrand = brand.toLocaleLowerCase();
+    let deviceBrand = brand;
+    if (deviceBrand) {
+        deviceBrand = deviceBrand.toLocaleLowerCase();
     }
     return deviceBrand;
+}
+function getAppLanguage(defaultLanguage) {
+    return getLocale ? getLocale() : defaultLanguage;
+}
+function getHostName(fromRes) {
+    const _platform = "mp-toutiao".split('-')[1];
+    let _hostName = fromRes.hostName || _platform; // mp-jd
+    {
+        _hostName = fromRes.appName;
+    }
+    return _hostName;
 }
 
 const getSystemInfo = {

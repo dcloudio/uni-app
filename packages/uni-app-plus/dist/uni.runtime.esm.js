@@ -1,5 +1,5 @@
 import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
@@ -13378,39 +13378,39 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
+        brand,
         deviceBrand: brand,
         deviceModel,
         devicePixelRatio: plus.screen.scale,
         deviceId: deviceId$1(),
         deviceOrientation,
         deviceType,
-        brand,
         model: deviceModel,
-        system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
         platform: _osName,
+        system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
     };
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
     const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
     return {
-        SDKVersion: '',
-        hostSDKVersion: '',
-        enableDebug: false,
         appId,
         appName,
         appVersion,
         appVersionCode,
         appLanguage: getLocale ? getLocale() : osLanguage,
-        version: plus.runtime.innerVersion,
-        language: osLanguage,
-        theme: '',
+        enableDebug: false,
         hostPackageName,
         hostName,
         hostVersion,
         hostLanguage,
         hostTheme,
         hostFontSizeSetting: undefined,
+        hostSDKVersion: undefined,
+        language: osLanguage,
+        SDKVersion: '',
+        theme: undefined,
+        version: plus.runtime.innerVersion,
     };
 });
 const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
@@ -13421,28 +13421,19 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const deviceInfo = getDeviceInfo();
     const appBaseInfo = getAppBaseInfo();
     _initSystemInfo = true;
-    const { osName, osLanguage, osVersion } = systemInfo;
-    const _osName = osName.toLowerCase();
-    const osLanguageSplit = osLanguage.split('-');
-    const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1];
-    let _osLanguage = `${osLanguageSplit[0]}${osLanguageSplitLast ? '-' + osLanguageSplitLast : ''}`;
-    let extraData = {
+    const extraData = {
         errMsg: 'getSystemInfo:ok',
         fontSizeSetting: appBaseInfo.hostFontSizeSetting,
-        uniCompileVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
-        osLanguage: _osLanguage,
-        osName: _osName,
+        osName: systemInfo.osName.toLowerCase(),
     };
-    if (_osName === 'ios') {
-        extraData.romName = _osName;
-        extraData.romVersion = osVersion;
+    if (systemInfo.hostName) {
+        extraData.hostSDKVersion = systemInfo.uniRuntimeVersion;
     }
     const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
     delete _systemInfo.theme;
-    return _systemInfo;
+    return sortObject(_systemInfo);
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
     return resolve(getSystemInfoSync());
