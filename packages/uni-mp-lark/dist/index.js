@@ -98,7 +98,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function noop () {}
+function noop () { }
 
 /**
  * Create a cached version of a pure function.
@@ -808,11 +808,10 @@ function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
     language = '', theme, version,
-    hostName, platform, fontSizeSetting,
-    SDKVersion, pixelRatio, deviceOrientation,
-    environment
+    platform, fontSizeSetting,
+    SDKVersion, pixelRatio, deviceOrientation
   } = result;
-  const isQuickApp = "mp-lark".indexOf('quickapp-webview') !== -1;
+  // const isQuickApp = "mp-lark".indexOf('quickapp-webview') !== -1
 
   // osName osVersion
   let osName = '';
@@ -827,12 +826,10 @@ function populateParameters (result) {
   const deviceType = getGetDeviceType(result, model);
 
   // deviceModel
-  const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
+  const deviceBrand = getDeviceBrand(brand);
 
   // hostName
-  const _platform =  "mp-lark".split('-')[1];
-  let _hostName = hostName || _platform; // mp-jd
-  { _hostName = result.appName; }
+  const _hostName = getHostName(result);
 
   // deviceOrientation
   let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
@@ -843,6 +840,9 @@ function populateParameters (result) {
   // SDKVersion
   let _SDKVersion = SDKVersion;
 
+  // hostLanguage
+  const hostLanguage = language.replace(/_/g, '-');
+
   // wx.getAccountInfoSync
 
   const parameters = {
@@ -850,6 +850,7 @@ function populateParameters (result) {
     appName: process.env.UNI_APP_NAME,
     appVersion: process.env.UNI_APP_VERSION_NAME,
     appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    appLanguage: getAppLanguage(hostLanguage),
     uniCompileVersion: process.env.UNI_COMPILER_VERSION,
     uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
     uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
@@ -862,7 +863,7 @@ function populateParameters (result) {
     osVersion,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language.replace('_', '-'),
+    hostLanguage,
     hostName: _hostName,
     hostSDKVersion: _SDKVersion,
     hostFontSizeSetting: fontSizeSetting,
@@ -874,7 +875,7 @@ function populateParameters (result) {
     ua: undefined,
     hostPackageName: undefined,
     browserName: undefined,
-    browseVersion: undefined
+    browserVersion: undefined
   };
 
   Object.assign(result, parameters);
@@ -901,16 +902,26 @@ function getGetDeviceType (result, model) {
   return deviceType
 }
 
-function getDeviceBrand (
-  brand,
-  model,
-  isQuickApp = false
-) {
-  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-  {
+function getDeviceBrand (brand) {
+  let deviceBrand = brand;
+  if (deviceBrand) {
     deviceBrand = brand.toLocaleLowerCase();
   }
   return deviceBrand
+}
+
+function getAppLanguage (defaultLanguage) {
+  return getLocale$1
+    ? getLocale$1()
+    : defaultLanguage
+}
+
+function getHostName (result) {
+  const _platform =  "mp-lark".split('-')[1];
+  let _hostName = result.hostName || _platform; // mp-jd
+  { _hostName = result.appName; }
+
+  return _hostName
 }
 
 var getSystemInfo = {

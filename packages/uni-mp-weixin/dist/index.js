@@ -98,7 +98,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function noop () {}
+function noop () { }
 
 /**
  * Create a cached version of a pure function.
@@ -118,6 +118,16 @@ const camelizeRE = /-(\w)/g;
 const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
+
+function sortObject (obj) {
+  const sortObj = {};
+  if (isPlainObject(obj)) {
+    Object.keys(obj).sort().forEach(key => {
+      sortObj[key] = obj[key];
+    });
+  }
+  return !Object.keys(sortObj) ? obj : sortObj
+}
 
 const HOOKS = [
   'invoke',
@@ -673,12 +683,6 @@ var previewImage = {
   }
 };
 
-function _getDeviceBrand (model) {
-  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) { return 'apple' }
-  if (/windows/gi.test(model)) { return 'microsoft' }
-  return ''
-}
-
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function useDeviceId (result) {
@@ -709,11 +713,10 @@ function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
     language = '', theme, version,
-    hostName, platform, fontSizeSetting,
-    SDKVersion, pixelRatio, deviceOrientation,
-    environment
+    platform, fontSizeSetting,
+    SDKVersion, pixelRatio, deviceOrientation
   } = result;
-  const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1;
+  // const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1
 
   // osName osVersion
   let osName = '';
@@ -728,18 +731,10 @@ function populateParameters (result) {
   const deviceType = getGetDeviceType(result, model);
 
   // deviceModel
-  const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
+  const deviceBrand = getDeviceBrand(brand);
 
   // hostName
-  const _platform =  'WeChat' ;
-  let _hostName = hostName || _platform; // mp-jd
-  {
-    if (environment) {
-      _hostName = environment;
-    } else if (result.host && result.host.env) {
-      _hostName = result.host.env;
-    }
-  }
+  const _hostName = getHostName(result);
 
   // deviceOrientation
   let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
@@ -750,6 +745,9 @@ function populateParameters (result) {
   // SDKVersion
   let _SDKVersion = SDKVersion;
 
+  // hostLanguage
+  const hostLanguage = language.replace(/_/g, '-');
+
   // wx.getAccountInfoSync
 
   const parameters = {
@@ -757,6 +755,7 @@ function populateParameters (result) {
     appName: process.env.UNI_APP_NAME,
     appVersion: process.env.UNI_APP_VERSION_NAME,
     appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    appLanguage: getAppLanguage(hostLanguage),
     uniCompileVersion: process.env.UNI_COMPILER_VERSION,
     uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
     uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
@@ -769,7 +768,7 @@ function populateParameters (result) {
     osVersion,
     hostTheme: theme,
     hostVersion,
-    hostLanguage: language.replace('_', '-'),
+    hostLanguage,
     hostName: _hostName,
     hostSDKVersion: _SDKVersion,
     hostFontSizeSetting: fontSizeSetting,
@@ -781,7 +780,7 @@ function populateParameters (result) {
     ua: undefined,
     hostPackageName: undefined,
     browserName: undefined,
-    browseVersion: undefined
+    browserVersion: undefined
   };
 
   Object.assign(result, parameters);
@@ -808,21 +807,32 @@ function getGetDeviceType (result, model) {
   return deviceType
 }
 
-function getDeviceBrand (
-  brand,
-  model,
-  isQuickApp = false
-) {
-  let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
-  if (
-    
-    isQuickApp
-  ) {
+function getDeviceBrand (brand) {
+  let deviceBrand = brand;
+  if (deviceBrand) {
     deviceBrand = brand.toLocaleLowerCase();
-  } else {
-    deviceBrand = _getDeviceBrand(deviceBrand);
   }
   return deviceBrand
+}
+
+function getAppLanguage (defaultLanguage) {
+  return getLocale$1
+    ? getLocale$1()
+    : defaultLanguage
+}
+
+function getHostName (result) {
+  const _platform =  'WeChat' ;
+  let _hostName = result.hostName || _platform; // mp-jd
+  {
+    if (result.environment) {
+      _hostName = result.environment;
+    } else if (result.host && result.host.env) {
+      _hostName = result.host.env;
+    }
+  }
+
+  return _hostName
 }
 
 var getSystemInfo = {
@@ -845,24 +855,22 @@ var getAppBaseInfo = {
   returnValue: function (result) {
     const { version, language, SDKVersion, theme } = result;
 
-    let _hostName = "mp-weixin".split('-')[1]; // mp-jd
-    {
-      if (result.host && result.host.env) {
-        _hostName = result.host.env;
-      }
-    }
+    const _hostName = getHostName(result);
 
-    Object.assign(result, {
-      hostVersion: version,
-      hostLanguage: language.replace('_', '-'),
-      hostName: _hostName,
-      hostSDKVersion: SDKVersion,
-      hostTheme: theme,
+    const hostLanguage = language.replace('_', '-');
+
+    result = sortObject(Object.assign(result, {
       appId: process.env.UNI_APP_ID,
       appName: process.env.UNI_APP_NAME,
       appVersion: process.env.UNI_APP_VERSION_NAME,
-      appVersionCode: process.env.UNI_APP_VERSION_CODE
-    });
+      appVersionCode: process.env.UNI_APP_VERSION_CODE,
+      appLanguage: getAppLanguage(hostLanguage),
+      hostVersion: version,
+      hostLanguage,
+      hostName: _hostName,
+      hostSDKVersion: SDKVersion,
+      hostTheme: theme
+    }));
   }
 };
 
@@ -870,14 +878,14 @@ var getDeviceInfo = {
   returnValue: function (result) {
     const { brand, model } = result;
     const deviceType = getGetDeviceType(result, model);
-    const deviceBrand = getDeviceBrand(brand, model);
+    const deviceBrand = getDeviceBrand(brand);
     useDeviceId(result);
 
-    Object.assign(result, {
+    result = sortObject(Object.assign(result, {
       deviceType,
       deviceBrand,
       deviceModel: model
-    });
+    }));
   }
 };
 
@@ -885,10 +893,10 @@ var getWindowInfo = {
   returnValue: function (result) {
     addSafeAreaInsets(result);
 
-    Object.assign(result, {
+    result = sortObject(Object.assign(result, {
       windowTop: 0,
       windowBottom: 0
-    });
+    }));
   }
 };
 
