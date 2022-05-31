@@ -2,6 +2,7 @@ import { defineAsyncApi, defineSyncApi, getLocale } from '@dcloudio/uni-api'
 import deviceId from '../../../helpers/uuid'
 import { extend } from '@vue/shared'
 import { getWindowInfo } from './getWindowInfo'
+import { sortObject } from '@dcloudio/uni-shared'
 
 let systemInfo: any
 let _initSystemInfo = true
@@ -29,16 +30,16 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
     const _osName = osName.toLowerCase()
 
     return {
+      brand,
       deviceBrand: brand,
       deviceModel,
       devicePixelRatio: plus.screen.scale!,
       deviceId: deviceId(),
       deviceOrientation,
       deviceType,
-      brand,
       model: deviceModel,
-      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
       platform: _osName,
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
     }
   }
 )
@@ -61,23 +62,23 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
     } = systemInfo
 
     return {
-      SDKVersion: '',
-      hostSDKVersion: '',
-      enableDebug: false,
       appId,
       appName,
       appVersion,
       appVersionCode,
       appLanguage: getLocale ? getLocale() : osLanguage,
-      version: plus.runtime.innerVersion!,
-      language: osLanguage,
-      theme: '',
+      enableDebug: false,
       hostPackageName,
       hostName,
       hostVersion,
       hostLanguage,
       hostTheme,
       hostFontSizeSetting: undefined,
+      hostSDKVersion: undefined,
+      language: osLanguage,
+      SDKVersion: '',
+      theme: undefined,
+      version: plus.runtime.innerVersion!,
     }
   }
 )
@@ -93,26 +94,14 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     const appBaseInfo = getAppBaseInfo()
     _initSystemInfo = true
 
-    const { osName, osLanguage, osVersion } = systemInfo
-    const _osName = osName.toLowerCase()
-    const osLanguageSplit = osLanguage.split('-')
-    const osLanguageSplitLast = osLanguageSplit[osLanguageSplit.length - 1]
-    let _osLanguage = `${osLanguageSplit[0]}${
-      osLanguageSplitLast ? '-' + osLanguageSplitLast : ''
-    }`
-
-    let extraData = {
+    const extraData = {
       errMsg: 'getSystemInfo:ok',
       fontSizeSetting: appBaseInfo.hostFontSizeSetting,
-      uniCompileVersion: __uniConfig.compilerVersion,
-      uniRuntimeVersion: __uniConfig.compilerVersion,
-      osLanguage: _osLanguage,
-      osName: _osName,
+      osName: systemInfo.osName.toLowerCase(),
     }
 
-    if (_osName === 'ios') {
-      ;(extraData as any).romName = _osName
-      ;(extraData as any).romVersion = osVersion
+    if (systemInfo.hostName) {
+      ;(extraData as any).hostSDKVersion = systemInfo.uniRuntimeVersion
     }
 
     const _systemInfo: UniApp.GetSystemInfoResult = extend(
@@ -127,7 +116,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     delete (_systemInfo as any).enableDebug
     delete (_systemInfo as any).theme
 
-    return _systemInfo
+    return sortObject(_systemInfo)
   }
 )
 

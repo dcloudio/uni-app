@@ -3,6 +3,7 @@ import deviceId from '../../../helpers/uuid'
 import { getBrowserInfo } from '../base/getBrowserInfo'
 import { getWindowInfo } from './getWindowInfo'
 import { extend } from '@vue/shared'
+import { sortObject } from '@dcloudio/uni-shared'
 
 type BrowserInfo = ReturnType<typeof getBrowserInfo>
 
@@ -33,6 +34,7 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
     } = browserInfo
 
     return {
+      brand,
       deviceBrand,
       deviceModel,
       devicePixelRatio: __NODE_JS__ ? 1 : window.devicePixelRatio,
@@ -41,10 +43,9 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
         : deviceId(),
       deviceOrientation,
       deviceType,
-      brand,
       model,
-      system,
       platform,
+      system,
     }
   }
 )
@@ -52,26 +53,26 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
   'getAppBaseInfo',
   () => {
     initBrowserInfo()
-    const { theme, browserName, browseVersion, language } = browserInfo
+    const { theme, language } = browserInfo
 
     return {
-      SDKVersion: '',
-      hostSDKVersion: '',
-      enableDebug: false,
-      hostPackageName: '',
-      hostFontSizeSetting: undefined,
-      language,
-      hostName: browserName,
-      hostVersion: browseVersion,
-      hostTheme: theme,
-      hostLanguage: language,
-      theme,
       appId: __uniConfig.appId,
       appName: __uniConfig.appName,
       appVersion: __uniConfig.appVersion,
       appVersionCode: __uniConfig.appVersionCode,
       appLanguage: getLocale ? getLocale() : language,
-      version: __uniConfig.appVersion,
+      enableDebug: false,
+      hostSDKVersion: undefined,
+      hostPackageName: undefined,
+      hostFontSizeSetting: undefined,
+      hostName: undefined,
+      hostVersion: undefined,
+      hostTheme: undefined,
+      hostLanguage: undefined,
+      language,
+      SDKVersion: '',
+      theme,
+      version: '',
     }
   }
 )
@@ -98,7 +99,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     const appBaseInfo = getAppBaseInfo()
     _initBrowserInfo = true
 
-    const { ua, browserName, browseVersion, osname, osversion } = browserInfo
+    const { ua, browserName, browserVersion, osname, osversion } = browserInfo
 
     const systemInfo: UniApp.GetSystemInfoResult = extend(
       windowInfo,
@@ -107,11 +108,11 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       {
         ua,
         browserName,
-        browseVersion,
+        browserVersion,
         uniPlatform: 'web',
         uniCompileVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,
-        fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+        fontSizeSetting: undefined,
         osName: osname!.toLocaleLowerCase(),
         osVersion: osversion,
         osLanguage: undefined,
@@ -123,6 +124,6 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     delete (systemInfo as any).enableDebug
     delete (systemInfo as any).theme
 
-    return systemInfo
+    return sortObject(systemInfo)
   }
 )
