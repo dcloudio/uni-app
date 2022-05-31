@@ -1752,15 +1752,21 @@ var serviceContext = (function () {
   	"uni.chooseLocation.cancel": "取消"
   };
 
+  const LOCALE_ZH_HANS$1 = 'zh-Hans';
+  const LOCALE_ZH_HANT$1 = 'zh-Hant';
+  const LOCALE_EN$1 = 'en';
+  const LOCALE_FR$1 = 'fr';
+  const LOCALE_ES$1 = 'es';
+
   const messages = {};
 
   {
     Object.assign(messages, {
-      en,
-      es,
-      fr,
-      'zh-Hans': zhHans,
-      'zh-Hant': zhHant
+      [LOCALE_EN$1]: en,
+      [LOCALE_ES$1]: es,
+      [LOCALE_FR$1]: fr,
+      [LOCALE_ZH_HANS$1]: zhHans,
+      [LOCALE_ZH_HANT$1]: zhHant
     });
   }
 
@@ -1826,7 +1832,7 @@ var serviceContext = (function () {
     };
     Object.defineProperty(appVm, '$locale', {
       get () {
-        return state.locale
+        return normalizeLocale$1(state.locale)
       },
       set (v) {
         state.locale = v;
@@ -1841,7 +1847,7 @@ var serviceContext = (function () {
     const locale = uni.getLocale();
     const locales = __uniConfig.locales;
     return (
-      locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+      locales[locale] || locales[__uniConfig.fallbackLocale] || locales[LOCALE_EN$1] || {}
     )
   }
 
@@ -1901,6 +1907,44 @@ var serviceContext = (function () {
     }
   }
 
+  function include$1 (str, parts) {
+    return !!parts.find((part) => str.indexOf(part) !== -1)
+  }
+
+  function startsWith$1 (str, parts) {
+    return parts.find((part) => str.indexOf(part) === 0)
+  }
+
+  function normalizeLocale$1 (locale, messages) {
+    if (!locale) {
+      return
+    }
+    locale = locale.trim().replace(/_/g, '-');
+    if (messages && messages[locale]) {
+      return locale
+    }
+    locale = locale.toLowerCase();
+    if (locale === 'chinese') {
+      // 支付宝
+      return LOCALE_ZH_HANS$1
+    }
+    if (locale.indexOf('zh') === 0) {
+      if (locale.indexOf('-hans') > -1) {
+        return LOCALE_ZH_HANS$1
+      }
+      if (locale.indexOf('-hant') > -1) {
+        return LOCALE_ZH_HANT$1
+      }
+      if (include$1(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+        return LOCALE_ZH_HANT$1
+      }
+      return LOCALE_ZH_HANS$1
+    }
+    const lang = startsWith$1(locale, [LOCALE_EN$1, LOCALE_FR$1, LOCALE_ES$1]);
+    if (lang) {
+      return lang
+    }
+  }
   // export function initI18n() {
   //   const localeKeys = Object.keys(__uniConfig.locales || {})
   //   if (localeKeys.length) {

@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { initVueI18n } from '@dcloudio/uni-i18n';
+import Vue from 'vue';
 
 let realAtob;
 
@@ -427,7 +427,134 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-function getLocale () {
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
+
+const messages = {};
+
+let locale;
+
+{
+  locale = normalizeLocale(jd.getSystemInfoSync().language) || LOCALE_EN;
+}
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
+
+const i18n = initVueI18n(
+  locale,
+   {}
+);
+const t = i18n.t;
+const i18nMixin = (i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+});
+const setLocale = i18n.setLocale;
+const getLocale = i18n.getLocale;
+
+function initAppLocale (Vue, appVm, locale) {
+  const state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  const localeWatchers = [];
+  appVm.$watchLocale = fn => {
+    localeWatchers.push(fn);
+  };
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return normalizeLocale(state.locale)
+    },
+    set (v) {
+      state.locale = v;
+      localeWatchers.forEach(watch => watch(v));
+    }
+  });
+}
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+function include (str, parts) {
+  return !!parts.find((part) => str.indexOf(part) !== -1)
+}
+
+function startsWith (str, parts) {
+  return parts.find((part) => str.indexOf(part) === 0)
+}
+
+function normalizeLocale (locale, messages) {
+  if (!locale) {
+    return
+  }
+  locale = locale.trim().replace(/_/g, '-');
+  if (messages && messages[locale]) {
+    return locale
+  }
+  locale = locale.toLowerCase();
+  if (locale === 'chinese') {
+    // 支付宝
+    return LOCALE_ZH_HANS
+  }
+  if (locale.indexOf('zh') === 0) {
+    if (locale.indexOf('-hans') > -1) {
+      return LOCALE_ZH_HANS
+    }
+    if (locale.indexOf('-hant') > -1) {
+      return LOCALE_ZH_HANT
+    }
+    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+      return LOCALE_ZH_HANT
+    }
+    return LOCALE_ZH_HANS
+  }
+  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+  if (lang) {
+    return lang
+  }
+}
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
+function getLocale$1 () {
   // 优先使用 $locale
   const app = getApp({
     allowDefault: true
@@ -435,10 +562,10 @@ function getLocale () {
   if (app && app.$vm) {
     return app.$vm.$locale
   }
-  return jd.getSystemInfoSync().language || 'zh-Hans'
+  return normalizeLocale(jd.getSystemInfoSync().language) || LOCALE_EN
 }
 
-function setLocale (locale) {
+function setLocale$1 (locale) {
   const app = getApp();
   if (!app) {
     return false
@@ -462,7 +589,7 @@ function onLocaleChange (fn) {
 }
 
 if (typeof global !== 'undefined') {
-  global.getLocale = getLocale;
+  global.getLocale = getLocale$1;
 }
 
 const interceptors = {
@@ -472,8 +599,8 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
-  getLocale: getLocale,
-  setLocale: setLocale,
+  getLocale: getLocale$1,
+  setLocale: setLocale$1,
   onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
@@ -541,7 +668,8 @@ function populateParameters (result) {
   const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
 
   // hostName
-  let _hostName = hostName || "mp-jd".split('-')[1]; // mp-jd
+  const _platform =  "mp-jd".split('-')[1];
+  let _hostName = hostName || _platform; // mp-jd
 
   // deviceOrientation
   let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
@@ -1564,89 +1692,6 @@ function handleEvent (event) {
   }
 }
 
-const messages = {};
-
-let locale;
-
-{
-  locale = jd.getSystemInfoSync().language;
-}
-
-function initI18nMessages () {
-  if (!isEnableLocale()) {
-    return
-  }
-  const localeKeys = Object.keys(__uniConfig.locales);
-  if (localeKeys.length) {
-    localeKeys.forEach((locale) => {
-      const curMessages = messages[locale];
-      const userMessages = __uniConfig.locales[locale];
-      if (curMessages) {
-        Object.assign(curMessages, userMessages);
-      } else {
-        messages[locale] = userMessages;
-      }
-    });
-  }
-}
-
-initI18nMessages();
-
-const i18n = initVueI18n(
-  locale,
-   {}
-);
-const t = i18n.t;
-const i18nMixin = (i18n.mixin = {
-  beforeCreate () {
-    const unwatch = i18n.i18n.watchLocale(() => {
-      this.$forceUpdate();
-    });
-    this.$once('hook:beforeDestroy', function () {
-      unwatch();
-    });
-  },
-  methods: {
-    $$t (key, values) {
-      return t(key, values)
-    }
-  }
-});
-const setLocale$1 = i18n.setLocale;
-const getLocale$1 = i18n.getLocale;
-
-function initAppLocale (Vue, appVm, locale) {
-  const state = Vue.observable({
-    locale: locale || i18n.getLocale()
-  });
-  const localeWatchers = [];
-  appVm.$watchLocale = fn => {
-    localeWatchers.push(fn);
-  };
-  Object.defineProperty(appVm, '$locale', {
-    get () {
-      return state.locale
-    },
-    set (v) {
-      state.locale = v;
-      localeWatchers.forEach(watch => watch(v));
-    }
-  });
-}
-
-function isEnableLocale () {
-  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
-}
-
-// export function initI18n() {
-//   const localeKeys = Object.keys(__uniConfig.locales || {})
-//   if (localeKeys.length) {
-//     localeKeys.forEach((locale) =>
-//       i18n.add(locale, __uniConfig.locales[locale])
-//     )
-//   }
-// }
-
 class EventChannel {
   constructor (id, events) {
     this.id = id;
@@ -1884,7 +1929,7 @@ function parseBaseApp (vm, {
     });
   }
 
-  initAppLocale(Vue, vm, jd.getSystemInfoSync().language || 'zh-Hans');
+  initAppLocale(Vue, vm, normalizeLocale(jd.getSystemInfoSync().language) || LOCALE_EN);
 
   initHooks(appOptions, hooks);
 

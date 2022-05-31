@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { initVueI18n } from '@dcloudio/uni-i18n';
+import Vue from 'vue';
 
 let realAtob;
 
@@ -427,7 +427,328 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-function getLocale () {
+var en = {
+	"uni.app.quit": "Press back button again to exit",
+	"uni.async.error": "The connection timed out, click the screen to try again.",
+	"uni.showActionSheet.cancel": "Cancel",
+	"uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
+	"uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
+	"uni.showModal.cancel": "Cancel",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Cancel",
+	"uni.chooseImage.sourceType.album": "Album",
+	"uni.chooseImage.sourceType.camera": "Camera",
+	"uni.chooseVideo.cancel": "Cancel",
+	"uni.chooseVideo.sourceType.album": "Album",
+	"uni.chooseVideo.sourceType.camera": "Camera",
+	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
+	"uni.previewImage.cancel": "Cancel",
+	"uni.previewImage.button.save": "Save Image",
+	"uni.previewImage.save.success": "Saved successfully",
+	"uni.previewImage.save.fail": "Save failed",
+	"uni.setClipboardData.success": "Content copied",
+	"uni.scanCode.title": "Scan code",
+	"uni.scanCode.album": "Album",
+	"uni.scanCode.fail": "Recognition failure",
+	"uni.scanCode.flash.on": "Tap to turn light on",
+	"uni.scanCode.flash.off": "Tap to turn light off",
+	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+	"uni.picker.done": "Done",
+	"uni.picker.cancel": "Cancel",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Volume",
+	"uni.button.feedback.title": "feedback",
+	"uni.button.feedback.send": "send",
+	"uni.chooseLocation.search": "Find Place",
+	"uni.chooseLocation.cancel": "Cancel"
+};
+
+var es = {
+	"uni.app.quit": "Pulse otra vez para salir",
+	"uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
+	"uni.showActionSheet.cancel": "Cancelar",
+	"uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
+	"uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
+	"uni.showModal.cancel": "Cancelar",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Cancelar",
+	"uni.chooseImage.sourceType.album": "Álbum",
+	"uni.chooseImage.sourceType.camera": "Cámara",
+	"uni.chooseVideo.cancel": "Cancelar",
+	"uni.chooseVideo.sourceType.album": "Álbum",
+	"uni.chooseVideo.sourceType.camera": "Cámara",
+	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
+	"uni.previewImage.cancel": "Cancelar",
+	"uni.previewImage.button.save": "Guardar imagen",
+	"uni.previewImage.save.success": "Guardado exitosamente",
+	"uni.previewImage.save.fail": "Error al guardar",
+	"uni.setClipboardData.success": "Contenido copiado",
+	"uni.scanCode.title": "Código de escaneo",
+	"uni.scanCode.album": "Álbum",
+	"uni.scanCode.fail": "Échec de la reconnaissance",
+	"uni.scanCode.flash.on": "Toque para encender la luz",
+	"uni.scanCode.flash.off": "Toque para apagar la luz",
+	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+	"uni.picker.done": "OK",
+	"uni.picker.cancel": "Cancelar",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Volumen",
+	"uni.button.feedback.title": "realimentación",
+	"uni.button.feedback.send": "enviar",
+	"uni.chooseLocation.search": "Encontrar",
+	"uni.chooseLocation.cancel": "Cancelar"
+};
+
+var fr = {
+	"uni.app.quit": "Appuyez à nouveau pour quitter l'application",
+	"uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
+	"uni.showActionSheet.cancel": "Annuler",
+	"uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
+	"uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
+	"uni.showModal.cancel": "Annuler",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Annuler",
+	"uni.chooseImage.sourceType.album": "Album",
+	"uni.chooseImage.sourceType.camera": "Caméra",
+	"uni.chooseVideo.cancel": "Annuler",
+	"uni.chooseVideo.sourceType.album": "Album",
+	"uni.chooseVideo.sourceType.camera": "Caméra",
+	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
+	"uni.previewImage.cancel": "Annuler",
+	"uni.previewImage.button.save": "Guardar imagen",
+	"uni.previewImage.save.success": "Enregistré avec succès",
+	"uni.previewImage.save.fail": "Échec de la sauvegarde",
+	"uni.setClipboardData.success": "Contenu copié",
+	"uni.scanCode.title": "Code d’analyse",
+	"uni.scanCode.album": "Album",
+	"uni.scanCode.fail": "Fallo de reconocimiento",
+	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
+	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
+	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+	"uni.picker.done": "OK",
+	"uni.picker.cancel": "Annuler",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Le Volume",
+	"uni.button.feedback.title": "retour d'information",
+	"uni.button.feedback.send": "envoyer",
+	"uni.chooseLocation.search": "Trouve",
+	"uni.chooseLocation.cancel": "Annuler"
+};
+
+var zhHans = {
+	"uni.app.quit": "再按一次退出应用",
+	"uni.async.error": "连接服务器超时，点击屏幕重试",
+	"uni.showActionSheet.cancel": "取消",
+	"uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
+	"uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
+	"uni.showModal.cancel": "取消",
+	"uni.showModal.confirm": "确定",
+	"uni.chooseImage.cancel": "取消",
+	"uni.chooseImage.sourceType.album": "从相册选择",
+	"uni.chooseImage.sourceType.camera": "拍摄",
+	"uni.chooseVideo.cancel": "取消",
+	"uni.chooseVideo.sourceType.album": "从相册选择",
+	"uni.chooseVideo.sourceType.camera": "拍摄",
+	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
+	"uni.previewImage.cancel": "取消",
+	"uni.previewImage.button.save": "保存图像",
+	"uni.previewImage.save.success": "保存图像到相册成功",
+	"uni.previewImage.save.fail": "保存图像到相册失败",
+	"uni.setClipboardData.success": "内容已复制",
+	"uni.scanCode.title": "扫码",
+	"uni.scanCode.album": "相册",
+	"uni.scanCode.fail": "识别失败",
+	"uni.scanCode.flash.on": "轻触照亮",
+	"uni.scanCode.flash.off": "轻触关闭",
+	"uni.startSoterAuthentication.authContent": "指纹识别中...",
+	"uni.picker.done": "完成",
+	"uni.picker.cancel": "取消",
+	"uni.video.danmu": "弹幕",
+	"uni.video.volume": "音量",
+	"uni.button.feedback.title": "问题反馈",
+	"uni.button.feedback.send": "发送",
+	"uni.chooseLocation.search": "搜索地点",
+	"uni.chooseLocation.cancel": "取消"
+};
+
+var zhHant = {
+	"uni.app.quit": "再按一次退出應用",
+	"uni.async.error": "連接服務器超時，點擊屏幕重試",
+	"uni.showActionSheet.cancel": "取消",
+	"uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
+	"uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
+	"uni.showModal.cancel": "取消",
+	"uni.showModal.confirm": "確定",
+	"uni.chooseImage.cancel": "取消",
+	"uni.chooseImage.sourceType.album": "從相冊選擇",
+	"uni.chooseImage.sourceType.camera": "拍攝",
+	"uni.chooseVideo.cancel": "取消",
+	"uni.chooseVideo.sourceType.album": "從相冊選擇",
+	"uni.chooseVideo.sourceType.camera": "拍攝",
+	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
+	"uni.previewImage.cancel": "取消",
+	"uni.previewImage.button.save": "保存圖像",
+	"uni.previewImage.save.success": "保存圖像到相冊成功",
+	"uni.previewImage.save.fail": "保存圖像到相冊失敗",
+	"uni.setClipboardData.success": "內容已復制",
+	"uni.scanCode.title": "掃碼",
+	"uni.scanCode.album": "相冊",
+	"uni.scanCode.fail": "識別失敗",
+	"uni.scanCode.flash.on": "輕觸照亮",
+	"uni.scanCode.flash.off": "輕觸關閉",
+	"uni.startSoterAuthentication.authContent": "指紋識別中...",
+	"uni.picker.done": "完成",
+	"uni.picker.cancel": "取消",
+	"uni.video.danmu": "彈幕",
+	"uni.video.volume": "音量",
+	"uni.button.feedback.title": "問題反饋",
+	"uni.button.feedback.send": "發送",
+	"uni.chooseLocation.search": "搜索地點",
+	"uni.chooseLocation.cancel": "取消"
+};
+
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
+
+const messages = {};
+
+{
+  Object.assign(messages, {
+    [LOCALE_EN]: en,
+    [LOCALE_ES]: es,
+    [LOCALE_FR]: fr,
+    [LOCALE_ZH_HANS]: zhHans,
+    [LOCALE_ZH_HANT]: zhHant
+  });
+}
+
+let locale;
+
+{
+  if (typeof weex === 'object') {
+    locale = weex.requireModule('plus').getLanguage();
+  } else {
+    locale = '';
+  }
+}
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
+
+const i18n = initVueI18n(
+  locale,
+   messages 
+);
+const t = i18n.t;
+const i18nMixin = (i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+});
+const setLocale = i18n.setLocale;
+const getLocale = i18n.getLocale;
+
+function initAppLocale (Vue, appVm, locale) {
+  const state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  const localeWatchers = [];
+  appVm.$watchLocale = fn => {
+    localeWatchers.push(fn);
+  };
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return normalizeLocale(state.locale)
+    },
+    set (v) {
+      state.locale = v;
+      localeWatchers.forEach(watch => watch(v));
+    }
+  });
+}
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+function include (str, parts) {
+  return !!parts.find((part) => str.indexOf(part) !== -1)
+}
+
+function startsWith (str, parts) {
+  return parts.find((part) => str.indexOf(part) === 0)
+}
+
+function normalizeLocale (locale, messages) {
+  if (!locale) {
+    return
+  }
+  locale = locale.trim().replace(/_/g, '-');
+  if (messages && messages[locale]) {
+    return locale
+  }
+  locale = locale.toLowerCase();
+  if (locale === 'chinese') {
+    // 支付宝
+    return LOCALE_ZH_HANS
+  }
+  if (locale.indexOf('zh') === 0) {
+    if (locale.indexOf('-hans') > -1) {
+      return LOCALE_ZH_HANS
+    }
+    if (locale.indexOf('-hant') > -1) {
+      return LOCALE_ZH_HANT
+    }
+    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+      return LOCALE_ZH_HANT
+    }
+    return LOCALE_ZH_HANS
+  }
+  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+  if (lang) {
+    return lang
+  }
+}
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
+function getLocale$1 () {
   // 优先使用 $locale
   const app = getApp({
     allowDefault: true
@@ -435,10 +756,10 @@ function getLocale () {
   if (app && app.$vm) {
     return app.$vm.$locale
   }
-  return wx.getSystemInfoSync().language || 'zh-Hans'
+  return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN
 }
 
-function setLocale (locale) {
+function setLocale$1 (locale) {
   const app = getApp();
   if (!app) {
     return false
@@ -462,7 +783,7 @@ function onLocaleChange (fn) {
 }
 
 if (typeof global !== 'undefined') {
-  global.getLocale = getLocale;
+  global.getLocale = getLocale$1;
 }
 
 const interceptors = {
@@ -472,8 +793,8 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
-  getLocale: getLocale,
-  setLocale: setLocale,
+  getLocale: getLocale$1,
+  setLocale: setLocale$1,
   onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
@@ -1307,283 +1628,6 @@ function handleEvent (event) {
   }
 }
 
-var en = {
-	"uni.app.quit": "Press back button again to exit",
-	"uni.async.error": "The connection timed out, click the screen to try again.",
-	"uni.showActionSheet.cancel": "Cancel",
-	"uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
-	"uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
-	"uni.showModal.cancel": "Cancel",
-	"uni.showModal.confirm": "OK",
-	"uni.chooseImage.cancel": "Cancel",
-	"uni.chooseImage.sourceType.album": "Album",
-	"uni.chooseImage.sourceType.camera": "Camera",
-	"uni.chooseVideo.cancel": "Cancel",
-	"uni.chooseVideo.sourceType.album": "Album",
-	"uni.chooseVideo.sourceType.camera": "Camera",
-	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
-	"uni.previewImage.cancel": "Cancel",
-	"uni.previewImage.button.save": "Save Image",
-	"uni.previewImage.save.success": "Saved successfully",
-	"uni.previewImage.save.fail": "Save failed",
-	"uni.setClipboardData.success": "Content copied",
-	"uni.scanCode.title": "Scan code",
-	"uni.scanCode.album": "Album",
-	"uni.scanCode.fail": "Recognition failure",
-	"uni.scanCode.flash.on": "Tap to turn light on",
-	"uni.scanCode.flash.off": "Tap to turn light off",
-	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
-	"uni.picker.done": "Done",
-	"uni.picker.cancel": "Cancel",
-	"uni.video.danmu": "Danmu",
-	"uni.video.volume": "Volume",
-	"uni.button.feedback.title": "feedback",
-	"uni.button.feedback.send": "send",
-	"uni.chooseLocation.search": "Find Place",
-	"uni.chooseLocation.cancel": "Cancel"
-};
-
-var es = {
-	"uni.app.quit": "Pulse otra vez para salir",
-	"uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
-	"uni.showActionSheet.cancel": "Cancelar",
-	"uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
-	"uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
-	"uni.showModal.cancel": "Cancelar",
-	"uni.showModal.confirm": "OK",
-	"uni.chooseImage.cancel": "Cancelar",
-	"uni.chooseImage.sourceType.album": "Álbum",
-	"uni.chooseImage.sourceType.camera": "Cámara",
-	"uni.chooseVideo.cancel": "Cancelar",
-	"uni.chooseVideo.sourceType.album": "Álbum",
-	"uni.chooseVideo.sourceType.camera": "Cámara",
-	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
-	"uni.previewImage.cancel": "Cancelar",
-	"uni.previewImage.button.save": "Guardar imagen",
-	"uni.previewImage.save.success": "Guardado exitosamente",
-	"uni.previewImage.save.fail": "Error al guardar",
-	"uni.setClipboardData.success": "Contenido copiado",
-	"uni.scanCode.title": "Código de escaneo",
-	"uni.scanCode.album": "Álbum",
-	"uni.scanCode.fail": "Échec de la reconnaissance",
-	"uni.scanCode.flash.on": "Toque para encender la luz",
-	"uni.scanCode.flash.off": "Toque para apagar la luz",
-	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
-	"uni.picker.done": "OK",
-	"uni.picker.cancel": "Cancelar",
-	"uni.video.danmu": "Danmu",
-	"uni.video.volume": "Volumen",
-	"uni.button.feedback.title": "realimentación",
-	"uni.button.feedback.send": "enviar",
-	"uni.chooseLocation.search": "Encontrar",
-	"uni.chooseLocation.cancel": "Cancelar"
-};
-
-var fr = {
-	"uni.app.quit": "Appuyez à nouveau pour quitter l'application",
-	"uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
-	"uni.showActionSheet.cancel": "Annuler",
-	"uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
-	"uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
-	"uni.showModal.cancel": "Annuler",
-	"uni.showModal.confirm": "OK",
-	"uni.chooseImage.cancel": "Annuler",
-	"uni.chooseImage.sourceType.album": "Album",
-	"uni.chooseImage.sourceType.camera": "Caméra",
-	"uni.chooseVideo.cancel": "Annuler",
-	"uni.chooseVideo.sourceType.album": "Album",
-	"uni.chooseVideo.sourceType.camera": "Caméra",
-	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
-	"uni.previewImage.cancel": "Annuler",
-	"uni.previewImage.button.save": "Guardar imagen",
-	"uni.previewImage.save.success": "Enregistré avec succès",
-	"uni.previewImage.save.fail": "Échec de la sauvegarde",
-	"uni.setClipboardData.success": "Contenu copié",
-	"uni.scanCode.title": "Code d’analyse",
-	"uni.scanCode.album": "Album",
-	"uni.scanCode.fail": "Fallo de reconocimiento",
-	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
-	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
-	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
-	"uni.picker.done": "OK",
-	"uni.picker.cancel": "Annuler",
-	"uni.video.danmu": "Danmu",
-	"uni.video.volume": "Le Volume",
-	"uni.button.feedback.title": "retour d'information",
-	"uni.button.feedback.send": "envoyer",
-	"uni.chooseLocation.search": "Trouve",
-	"uni.chooseLocation.cancel": "Annuler"
-};
-
-var zhHans = {
-	"uni.app.quit": "再按一次退出应用",
-	"uni.async.error": "连接服务器超时，点击屏幕重试",
-	"uni.showActionSheet.cancel": "取消",
-	"uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
-	"uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
-	"uni.showModal.cancel": "取消",
-	"uni.showModal.confirm": "确定",
-	"uni.chooseImage.cancel": "取消",
-	"uni.chooseImage.sourceType.album": "从相册选择",
-	"uni.chooseImage.sourceType.camera": "拍摄",
-	"uni.chooseVideo.cancel": "取消",
-	"uni.chooseVideo.sourceType.album": "从相册选择",
-	"uni.chooseVideo.sourceType.camera": "拍摄",
-	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
-	"uni.previewImage.cancel": "取消",
-	"uni.previewImage.button.save": "保存图像",
-	"uni.previewImage.save.success": "保存图像到相册成功",
-	"uni.previewImage.save.fail": "保存图像到相册失败",
-	"uni.setClipboardData.success": "内容已复制",
-	"uni.scanCode.title": "扫码",
-	"uni.scanCode.album": "相册",
-	"uni.scanCode.fail": "识别失败",
-	"uni.scanCode.flash.on": "轻触照亮",
-	"uni.scanCode.flash.off": "轻触关闭",
-	"uni.startSoterAuthentication.authContent": "指纹识别中...",
-	"uni.picker.done": "完成",
-	"uni.picker.cancel": "取消",
-	"uni.video.danmu": "弹幕",
-	"uni.video.volume": "音量",
-	"uni.button.feedback.title": "问题反馈",
-	"uni.button.feedback.send": "发送",
-	"uni.chooseLocation.search": "搜索地点",
-	"uni.chooseLocation.cancel": "取消"
-};
-
-var zhHant = {
-	"uni.app.quit": "再按一次退出應用",
-	"uni.async.error": "連接服務器超時，點擊屏幕重試",
-	"uni.showActionSheet.cancel": "取消",
-	"uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
-	"uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
-	"uni.showModal.cancel": "取消",
-	"uni.showModal.confirm": "確定",
-	"uni.chooseImage.cancel": "取消",
-	"uni.chooseImage.sourceType.album": "從相冊選擇",
-	"uni.chooseImage.sourceType.camera": "拍攝",
-	"uni.chooseVideo.cancel": "取消",
-	"uni.chooseVideo.sourceType.album": "從相冊選擇",
-	"uni.chooseVideo.sourceType.camera": "拍攝",
-	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
-	"uni.previewImage.cancel": "取消",
-	"uni.previewImage.button.save": "保存圖像",
-	"uni.previewImage.save.success": "保存圖像到相冊成功",
-	"uni.previewImage.save.fail": "保存圖像到相冊失敗",
-	"uni.setClipboardData.success": "內容已復制",
-	"uni.scanCode.title": "掃碼",
-	"uni.scanCode.album": "相冊",
-	"uni.scanCode.fail": "識別失敗",
-	"uni.scanCode.flash.on": "輕觸照亮",
-	"uni.scanCode.flash.off": "輕觸關閉",
-	"uni.startSoterAuthentication.authContent": "指紋識別中...",
-	"uni.picker.done": "完成",
-	"uni.picker.cancel": "取消",
-	"uni.video.danmu": "彈幕",
-	"uni.video.volume": "音量",
-	"uni.button.feedback.title": "問題反饋",
-	"uni.button.feedback.send": "發送",
-	"uni.chooseLocation.search": "搜索地點",
-	"uni.chooseLocation.cancel": "取消"
-};
-
-const messages = {};
-
-{
-  Object.assign(messages, {
-    en,
-    es,
-    fr,
-    'zh-Hans': zhHans,
-    'zh-Hant': zhHant
-  });
-}
-
-let locale;
-
-{
-  if (typeof weex === 'object') {
-    locale = weex.requireModule('plus').getLanguage();
-  } else {
-    locale = '';
-  }
-}
-
-function initI18nMessages () {
-  if (!isEnableLocale()) {
-    return
-  }
-  const localeKeys = Object.keys(__uniConfig.locales);
-  if (localeKeys.length) {
-    localeKeys.forEach((locale) => {
-      const curMessages = messages[locale];
-      const userMessages = __uniConfig.locales[locale];
-      if (curMessages) {
-        Object.assign(curMessages, userMessages);
-      } else {
-        messages[locale] = userMessages;
-      }
-    });
-  }
-}
-
-initI18nMessages();
-
-const i18n = initVueI18n(
-  locale,
-   messages 
-);
-const t = i18n.t;
-const i18nMixin = (i18n.mixin = {
-  beforeCreate () {
-    const unwatch = i18n.i18n.watchLocale(() => {
-      this.$forceUpdate();
-    });
-    this.$once('hook:beforeDestroy', function () {
-      unwatch();
-    });
-  },
-  methods: {
-    $$t (key, values) {
-      return t(key, values)
-    }
-  }
-});
-const setLocale$1 = i18n.setLocale;
-const getLocale$1 = i18n.getLocale;
-
-function initAppLocale (Vue, appVm, locale) {
-  const state = Vue.observable({
-    locale: locale || i18n.getLocale()
-  });
-  const localeWatchers = [];
-  appVm.$watchLocale = fn => {
-    localeWatchers.push(fn);
-  };
-  Object.defineProperty(appVm, '$locale', {
-    get () {
-      return state.locale
-    },
-    set (v) {
-      state.locale = v;
-      localeWatchers.forEach(watch => watch(v));
-    }
-  });
-}
-
-function isEnableLocale () {
-  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
-}
-
-// export function initI18n() {
-//   const localeKeys = Object.keys(__uniConfig.locales || {})
-//   if (localeKeys.length) {
-//     localeKeys.forEach((locale) =>
-//       i18n.add(locale, __uniConfig.locales[locale])
-//     )
-//   }
-// }
-
 class EventChannel {
   constructor (id, events) {
     this.id = id;
@@ -1766,7 +1810,7 @@ function parseBaseApp (vm, {
     });
   }
 
-  initAppLocale(Vue, vm, wx.getSystemInfoSync().language || 'zh-Hans');
+  initAppLocale(Vue, vm, normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
 
   initHooks(appOptions, hooks);
 
