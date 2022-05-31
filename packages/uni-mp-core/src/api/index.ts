@@ -13,7 +13,7 @@ import {
   $emit,
 } from '@dcloudio/uni-api/src/service/base/eventBus'
 import {
-  getPushCid,
+  getPushClientid,
   onPushMessage,
   offPushMessage,
   invokePushCallback,
@@ -40,7 +40,7 @@ const baseApis = {
   getLocale,
   setLocale,
   onLocaleChange,
-  getPushCid,
+  getPushClientid,
   onPushMessage,
   offPushMessage,
   invokePushCallback,

@@ -23,6 +23,7 @@ export * from './device/soterAuthentication'
 export * from './device/scanCode'
 export * from './device/theme'
 export * from './device/brightness'
+export * from './device/getWindowInfo'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
@@ -120,7 +121,7 @@ export {
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
-  getPushCid,
+  getPushClientid,
   onPushMessage,
   offPushMessage,
   onAppHide,

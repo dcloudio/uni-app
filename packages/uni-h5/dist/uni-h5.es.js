@@ -4578,11 +4578,17 @@ function invokePushCallback(args) {
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === "pushMsg") {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: "receive", data: normalizePushMessage(args.message) });
+      callback({
+        type: "receive",
+        data: normalizePushMessage(args.message)
+      });
     });
   } else if (args.type === "click") {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: "click", data: normalizePushMessage(args.message) });
+      callback({
+        type: "click",
+        data: normalizePushMessage(args.message)
+      });
     });
   }
 }
@@ -4593,7 +4599,7 @@ function invokeGetPushCidCallbacks(cid2, errMsg) {
   });
   getPushCidCallbacks.length = 0;
 }
-function getPushCid(args) {
+function getPushClientid(args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -4604,10 +4610,10 @@ function getPushCid(args) {
   getPushCidCallbacks.push((cid2, errMsg) => {
     let res;
     if (cid2) {
-      res = { errMsg: "getPushCid:ok", cid: cid2 };
+      res = { errMsg: "getPushClientid:ok", cid: cid2 };
       hasSuccess && success(res);
     } else {
-      res = { errMsg: "getPushCid:fail" + (errMsg ? " " + errMsg : "") };
+      res = { errMsg: "getPushClientid:fail" + (errMsg ? " " + errMsg : "") };
       hasFail && fail(res);
     }
     hasComplete && complete(res);
@@ -14254,7 +14260,7 @@ function setupWindow(comp, id2) {
       };
     },
     setup(instance2) {
-      instance2.root = instance2;
+      instance2.$pageInstance = instance2;
     }
   });
 }
@@ -14349,12 +14355,14 @@ function setupApp(comp) {
     before(comp2) {
       comp2.mpType = "app";
       const { setup } = comp2;
-      comp2.setup = (props2, ctx) => {
-        return setup && setup(props2, ctx);
-      };
-      comp2.render = () => {
+      const render = () => {
         return openBlock(), createBlock(LayoutComponent);
       };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return isFunction(res) ? render : res;
+      };
+      comp2.render = render;
     }
   });
 }
@@ -16319,20 +16327,12 @@ function getDeviceBrand(model) {
     return "microsoft";
   }
 }
-const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
-  const pixelRatio2 = window.devicePixelRatio;
-  const screenFix = getScreenFix();
-  const landscape = isLandscape(screenFix);
-  const screenWidth = getScreenWidth(screenFix, landscape);
-  const screenHeight = getScreenHeight(screenFix, landscape);
-  const windowWidth = getWindowWidth(screenWidth);
-  let windowHeight = window.innerHeight;
-  const language = navigator.language;
-  const statusBarHeight = out.top;
+function getBrowserInfo() {
   let osname;
-  let osversion;
+  let osversion = "0";
   let model = "";
   let deviceType = "phone";
+  const language = navigator.language;
   if (isIOS$1) {
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
@@ -16419,19 +16419,19 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
         osversion += ` x${framework[1]}`;
       }
     } else if (isMac) {
-      osname = "Mac";
-      osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      osname = "macOS";
+      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
       if (osversion) {
-        osversion = osversion[1].replace(/_/g, ".");
+        osversion = _osversion[1].replace(/_/g, ".");
         if (osversion.indexOf(";") !== -1) {
           osversion = osversion.split(";")[0];
         }
       }
     } else if (isLinux) {
       osname = "Linux";
-      osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
-      if (osversion) {
-        osversion = osversion[1];
+      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (_osversion) {
+        osversion = _osversion[1];
         if (osversion.indexOf(";") !== -1) {
           osversion = osversion.split(";")[0];
         }
@@ -16444,17 +16444,6 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   }
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
-  const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
-  };
-  const { top: windowTop, bottom: windowBottom } = getWindowOffset();
-  windowHeight -= windowTop;
-  windowHeight -= windowBottom;
   let browserName = "";
   let browseVersion = String(IEVersion());
   if (browseVersion !== "-1") {
@@ -16476,6 +16465,47 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     const _model = model.toLocaleLowerCase();
     deviceBrand = getDeviceBrand(_model) || getDeviceBrand(osname.toLocaleLowerCase()) || _model.split(" ")[0];
   }
+  let deviceOrientation = "portrait";
+  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
+  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+  return {
+    deviceBrand,
+    deviceModel: model,
+    deviceOrientation,
+    brand: deviceBrand,
+    model,
+    system,
+    platform,
+    browserName: browserName.toLocaleLowerCase(),
+    browseVersion,
+    language,
+    deviceType,
+    ua,
+    osname,
+    osversion,
+    theme: ""
+  };
+}
+const getWindowInfo = /* @__PURE__ */ defineSyncApi("getWindowInfo", () => {
+  const pixelRatio2 = window.devicePixelRatio;
+  const screenFix = getScreenFix();
+  const landscape = isLandscape(screenFix);
+  const screenWidth = getScreenWidth(screenFix, landscape);
+  const screenHeight = getScreenHeight(screenFix, landscape);
+  const windowWidth = getWindowWidth(screenWidth);
+  let windowHeight = window.innerHeight;
+  const statusBarHeight = out.top;
+  const safeArea = {
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
+  };
+  const { top: windowTop, bottom: windowBottom } = getWindowOffset();
+  windowHeight -= windowTop;
+  windowHeight -= windowBottom;
   return {
     windowTop,
     windowBottom,
@@ -16484,13 +16514,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     pixelRatio: pixelRatio2,
     screenWidth,
     screenHeight,
-    language,
     statusBarHeight,
-    system,
-    platform,
-    deviceBrand,
-    deviceType,
-    model,
     safeArea,
     safeAreaInsets: {
       top: out.top,
@@ -16498,29 +16522,90 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
       bottom: out.bottom,
       left: out.left
     },
-    version: __uniConfig.appVersion,
-    SDKVersion: "",
+    screenTop: screenHeight - windowHeight
+  };
+});
+let browserInfo;
+let _initBrowserInfo = true;
+function initBrowserInfo() {
+  if (!_initBrowserInfo)
+    return;
+  browserInfo = getBrowserInfo();
+}
+const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
+  initBrowserInfo();
+  const {
+    deviceBrand,
+    deviceModel,
+    brand,
+    model,
+    platform,
+    system,
+    deviceOrientation,
+    deviceType
+  } = browserInfo;
+  return {
+    deviceBrand,
+    deviceModel,
+    devicePixelRatio: window.devicePixelRatio,
     deviceId: deviceId$1(),
-    ua,
-    uniPlatform: "web",
-    browserName,
-    browseVersion,
-    osLanguage: language,
-    osName: osname.toLocaleLowerCase(),
-    osVersion: osversion,
+    deviceOrientation,
+    deviceType,
+    brand,
+    model,
+    system,
+    platform
+  };
+});
+const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
+  initBrowserInfo();
+  const { theme, browserName, browseVersion, language } = browserInfo;
+  return {
+    SDKVersion: "",
+    hostSDKVersion: "",
+    enableDebug: false,
+    hostPackageName: "",
+    hostFontSizeSetting: void 0,
+    language,
+    hostName: browserName,
+    hostVersion: browseVersion,
+    hostTheme: theme,
     hostLanguage: language,
-    uniCompileVersion: __uniConfig.compilerVersion,
-    uniRuntimeVersion: __uniConfig.compilerVersion,
+    theme,
     appId: __uniConfig.appId,
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
-    hostName: browserName,
-    hostVersion: browseVersion,
-    osTheme: "",
-    hostTheme: "",
-    hostPackageName: ""
+    appLanguage: getLocale ? getLocale() : language,
+    version: __uniConfig.appVersion
   };
+});
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
+  _initBrowserInfo = true;
+  initBrowserInfo();
+  _initBrowserInfo = false;
+  const windowInfo = getWindowInfo();
+  const deviceInfo = getDeviceInfo();
+  const appBaseInfo = getAppBaseInfo();
+  _initBrowserInfo = true;
+  const { ua: ua2, browserName, browseVersion, osname, osversion } = browserInfo;
+  const systemInfo = extend(windowInfo, deviceInfo, appBaseInfo, {
+    ua: ua2,
+    browserName,
+    browseVersion,
+    uniPlatform: "web",
+    uniCompileVersion: __uniConfig.compilerVersion,
+    uniRuntimeVersion: __uniConfig.compilerVersion,
+    fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+    osName: osname.toLocaleLowerCase(),
+    osVersion: osversion,
+    osLanguage: void 0,
+    osTheme: void 0
+  });
+  delete systemInfo.screenTop;
+  delete systemInfo.enableDebug;
+  delete systemInfo.theme;
+  return systemInfo;
 });
 const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
   return resolve(getSystemInfoSync());
@@ -20199,7 +20284,7 @@ var api = /* @__PURE__ */ Object.defineProperty({
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
-  getPushCid,
+  getPushClientid,
   onPushMessage,
   offPushMessage,
   onAppHide,
@@ -20221,6 +20306,8 @@ var api = /* @__PURE__ */ Object.defineProperty({
   createInnerAudioContext,
   makePhoneCall,
   getSystemInfo,
+  getDeviceInfo,
+  getAppBaseInfo,
   getSystemInfoSync,
   onNetworkStatusChange,
   offNetworkStatusChange,
@@ -20237,6 +20324,7 @@ var api = /* @__PURE__ */ Object.defineProperty({
   vibrateLong,
   getClipboardData,
   setClipboardData,
+  getWindowInfo,
   setStorageSync,
   setStorage,
   getStorageSync,
@@ -22442,4 +22530,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushCid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

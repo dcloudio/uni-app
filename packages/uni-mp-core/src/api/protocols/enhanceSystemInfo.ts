@@ -1,12 +1,13 @@
 import { extend } from '@vue/shared'
 
-function getDeviceBrand(model: string) {
+function _getDeviceBrand(model: string) {
   if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
     return 'apple'
   }
   if (/windows/gi.test(model)) {
     return 'microsoft'
   }
+  return ''
 }
 
 const UUID_KEY = '__DC_STAT_UUID'
@@ -48,14 +49,19 @@ export function populateParameters(
   toRes: UniApp.GetSystemInfoResult
 ) {
   const {
-    brand,
-    model,
-    system,
-    language,
+    brand = '',
+    model = '',
+    system = '',
+    language = '',
     theme,
     version,
-    hostName = '',
+    hostName,
     platform,
+    fontSizeSetting,
+    SDKVersion,
+    pixelRatio,
+    deviceOrientation,
+    environment,
   } = fromRes
   const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
@@ -72,9 +78,94 @@ export function populateParameters(
   let hostVersion = version
   // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
   if (__PLATFORM__ === 'mp-baidu') {
-    hostVersion = fromRes.swanNativeVersion || version
+    hostVersion = fromRes.swanNativeVersion
+  }
+  if (__PLATFORM__ === 'mp-jd') {
+    hostVersion = fromRes.hostVersionName
   }
 
+  // deviceType
+  let deviceType = getGetDeviceType(fromRes, model)
+
+  // deviceModel
+  let deviceBrand = getDeviceBrand(brand, model, isQuickApp)
+
+  // hostName
+  const _platform =
+    __PLATFORM__ === 'mp-weixin' ? 'WeChat' : __PLATFORM__.split('-')[1]
+  let _hostName = hostName || _platform // mp-jd
+  if (__PLATFORM__ === 'mp-weixin') {
+    if (environment) {
+      _hostName = environment
+    } else if (fromRes.host && fromRes.host.env) {
+      _hostName = fromRes.host.env
+    }
+  }
+  if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') {
+    _hostName = fromRes.host
+  }
+  if (__PLATFORM__ === 'mp-qq') _hostName = fromRes.AppPlatform
+  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') {
+    _hostName = fromRes.appName
+  }
+  if (__PLATFORM__ === 'mp-alipay') _hostName = fromRes.app
+
+  // deviceOrientation
+  let _deviceOrientation = deviceOrientation // 仅 微信 百度 支持
+  if (__PLATFORM__ === 'mp-baidu') {
+    _deviceOrientation = fromRes.orientation
+  }
+
+  // devicePixelRatio
+  let _devicePixelRatio = pixelRatio
+  if (__PLATFORM__ === 'mp-baidu') {
+    _devicePixelRatio = fromRes.devicePixelRatio
+  }
+
+  // SDKVersion
+  let _SDKVersion = SDKVersion
+  if (__PLATFORM__ === 'mp-alipay') {
+    _SDKVersion = my.SDKVersion
+  }
+
+  // wx.getAccountInfoSync
+
+  const parameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION_NAME,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+    deviceBrand,
+    deviceModel: model,
+    deviceType,
+    devicePixelRatio: _devicePixelRatio,
+    deviceOrientation: _deviceOrientation,
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+    hostTheme: theme,
+    hostVersion,
+    hostLanguage: language.replace('_', '-'),
+    hostName: _hostName,
+    hostSDKVersion: _SDKVersion,
+    hostFontSizeSetting: fontSizeSetting,
+    windowTop: 0,
+    windowBottom: 0,
+    // TODO
+    osLanguage: undefined,
+    osTheme: undefined,
+    ua: undefined,
+    hostPackageName: undefined,
+    browserName: undefined,
+    browseVersion: undefined,
+  }
+
+  extend(toRes, parameters)
+}
+
+export function getGetDeviceType(fromRes: any, model: string) {
   // deviceType
   let deviceType = fromRes.deviceType || 'phone'
   if (__PLATFORM__ !== 'mp-baidu') {
@@ -96,7 +187,14 @@ export function populateParameters(
       }
     }
   }
+  return deviceType
+}
 
+export function getDeviceBrand(
+  brand: string,
+  model: string,
+  isQuickApp: boolean = false
+) {
   // deviceModel
   let deviceBrand = model.split(' ')[0].toLocaleLowerCase()
   if (
@@ -106,46 +204,7 @@ export function populateParameters(
   ) {
     deviceBrand = brand.toLocaleLowerCase()
   } else {
-    deviceBrand = getDeviceBrand(deviceBrand)
+    deviceBrand = _getDeviceBrand(deviceBrand)
   }
-
-  // hostName
-  let _hostName = hostName // mp-jd
-  if (__PLATFORM__ === 'mp-weixin') _hostName = (fromRes.host || {}).env
-  if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou')
-    _hostName = fromRes.host
-  if (__PLATFORM__ === 'mp-qq') _hostName = fromRes.AppPlatform
-  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark')
-    _hostName = fromRes.appName
-  if (__PLATFORM__ === 'mp-alipay') _hostName = fromRes.app
-
-  // wx.getAccountInfoSync
-
-  const parameters = {
-    appId: process.env.UNI_APP_ID,
-    appName: process.env.UNI_APP_NAME,
-    appVersion: process.env.UNI_APP_VERSION_NAME,
-    appVersionCode: process.env.UNI_APP_VERSION_CODE,
-    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
-    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
-    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
-    deviceBrand,
-    deviceModel: model,
-    deviceType,
-    osName: osName.toLocaleLowerCase(),
-    osVersion,
-    osLanguage: language,
-    osTheme: theme,
-    hostTheme: theme,
-    hostVersion,
-    hostLanguage: language,
-    hostName: _hostName,
-    // TODO
-    ua: '',
-    hostPackageName: '',
-    browserName: '',
-    browseVersion: '',
-  }
-
-  extend(toRes, parameters)
+  return deviceBrand
 }

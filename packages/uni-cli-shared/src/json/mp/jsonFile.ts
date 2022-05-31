@@ -73,7 +73,10 @@ export function findChangedJsonFiles(
       // 如果小程序不支持 global 的 usingComponents
       if (!supportGlobalUsingComponents) {
         // 从 appJsonCache 中读取全局的 usingComponents 并补充到子组件 usingComponents 中
-        usingComponents = { ...globalUsingComponents, ...newJson.usingComponents}
+        usingComponents = {
+          ...globalUsingComponents,
+          ...newJson.usingComponents,
+        }
       }
       Object.keys(usingComponents).forEach((name) => {
         const componentFilename = usingComponents[name]

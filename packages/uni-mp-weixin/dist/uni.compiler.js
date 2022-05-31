@@ -116,6 +116,7 @@ const customElements = [
     'page-meta',
     'navigation-bar',
     'match-media',
+    'ad-custom',
 ];
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, transformAd],

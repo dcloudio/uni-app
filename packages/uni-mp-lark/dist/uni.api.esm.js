@@ -1,5 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
 import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -559,12 +560,18 @@ function invokePushCallback(args) {
     }
     else if (args.type === 'pushMsg') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'receive', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'receive',
+                data: normalizePushMessage(args.message),
+            });
         });
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'click', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'click',
+                data: normalizePushMessage(args.message),
+            });
         });
     }
 }
@@ -575,7 +582,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushCid(args) {
+function getPushClientid(args) {
     if (!isPlainObject(args)) {
         args = {};
     }
@@ -586,11 +593,11 @@ function getPushCid(args) {
     getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
-            res = { errMsg: 'getPushCid:ok', cid };
+            res = { errMsg: 'getPushClientid:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') };
+            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
@@ -618,7 +625,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -768,7 +775,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return tt.getSystemInfoSync().language || 'zh-Hans';
+    return normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
     const app = getApp();
@@ -807,7 +814,7 @@ const baseApis = {
     getLocale,
     setLocale,
     onLocaleChange,
-    getPushCid,
+    getPushClientid,
     onPushMessage,
     offPushMessage,
     invokePushCallback,
@@ -881,7 +888,8 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function populateParameters(fromRes, toRes) {
-    const { brand, model, system, language, theme, version, hostName = '', platform, } = fromRes;
+    const { brand = '', model = '', system = '', language = '', theme, version, hostName, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, environment, } = fromRes;
+    const isQuickApp = "mp-lark".indexOf('quickapp-webview') !== -1;
     // osName osVersion
     let osName = '';
     let osVersion = '';
@@ -890,6 +898,57 @@ function populateParameters(fromRes, toRes) {
         osVersion = system.split(' ')[1] || '';
     }
     let hostVersion = version;
+    // deviceType
+    let deviceType = getGetDeviceType(fromRes, model);
+    // deviceModel
+    let deviceBrand = getDeviceBrand(brand, model, isQuickApp);
+    // hostName
+    const _platform = "mp-lark".split('-')[1];
+    let _hostName = hostName || _platform; // mp-jd
+    {
+        _hostName = fromRes.appName;
+    }
+    // deviceOrientation
+    let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
+    // devicePixelRatio
+    let _devicePixelRatio = pixelRatio;
+    // SDKVersion
+    let _SDKVersion = SDKVersion;
+    // wx.getAccountInfoSync
+    const parameters = {
+        appId: process.env.UNI_APP_ID,
+        appName: process.env.UNI_APP_NAME,
+        appVersion: process.env.UNI_APP_VERSION_NAME,
+        appVersionCode: process.env.UNI_APP_VERSION_CODE,
+        uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+        uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+        uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+        deviceBrand,
+        deviceModel: model,
+        deviceType,
+        devicePixelRatio: _devicePixelRatio,
+        deviceOrientation: _deviceOrientation,
+        osName: osName.toLocaleLowerCase(),
+        osVersion,
+        hostTheme: theme,
+        hostVersion,
+        hostLanguage: language.replace('_', '-'),
+        hostName: _hostName,
+        hostSDKVersion: _SDKVersion,
+        hostFontSizeSetting: fontSizeSetting,
+        windowTop: 0,
+        windowBottom: 0,
+        // TODO
+        osLanguage: undefined,
+        osTheme: undefined,
+        ua: undefined,
+        hostPackageName: undefined,
+        browserName: undefined,
+        browseVersion: undefined,
+    };
+    extend(toRes, parameters);
+}
+function getGetDeviceType(fromRes, model) {
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
     {
@@ -908,41 +967,15 @@ function populateParameters(fromRes, toRes) {
             }
         }
     }
+    return deviceType;
+}
+function getDeviceBrand(brand, model, isQuickApp = false) {
     // deviceModel
     let deviceBrand = model.split(' ')[0].toLocaleLowerCase();
     {
         deviceBrand = brand.toLocaleLowerCase();
     }
-    // hostName
-    let _hostName = hostName; // mp-jd
-    _hostName = fromRes.appName;
-    // wx.getAccountInfoSync
-    const parameters = {
-        appId: process.env.UNI_APP_ID,
-        appName: process.env.UNI_APP_NAME,
-        appVersion: process.env.UNI_APP_VERSION_NAME,
-        appVersionCode: process.env.UNI_APP_VERSION_CODE,
-        uniCompileVersion: process.env.UNI_COMPILER_VERSION,
-        uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
-        uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
-        deviceBrand,
-        deviceModel: model,
-        deviceType,
-        osName: osName.toLocaleLowerCase(),
-        osVersion,
-        osLanguage: language,
-        osTheme: theme,
-        hostTheme: theme,
-        hostVersion,
-        hostLanguage: language,
-        hostName: _hostName,
-        // TODO
-        ua: '',
-        hostPackageName: '',
-        browserName: '',
-        browseVersion: '',
-    };
-    extend(toRes, parameters);
+    return deviceBrand;
 }
 
 const getSystemInfo = {

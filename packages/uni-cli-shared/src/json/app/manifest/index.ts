@@ -9,6 +9,7 @@ import { initSplashscreen } from './splashscreen'
 import { initConfusion } from './confusion'
 import { initUniApp } from './uniApp'
 import { initLaunchwebview } from './launchwebview'
+import { initCheckSystemWebview } from './checksystemwebview'
 import { initTabBar } from './tabBar'
 import { initI18n } from './i18n'
 
@@ -33,6 +34,8 @@ export function normalizeAppManifestJson(
     manifestJson,
     pagesJson
   )
+  // 依赖 initUniApp 先执行
+  initCheckSystemWebview(manifestJson)
 
   return initI18n(manifestJson)
 }

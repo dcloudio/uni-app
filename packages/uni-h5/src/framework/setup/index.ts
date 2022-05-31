@@ -1,4 +1,4 @@
-import { extend, invokeArrayFns, isPlainObject } from '@vue/shared'
+import { extend, invokeArrayFns, isPlainObject, isFunction } from '@vue/shared'
 import {
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -72,7 +72,7 @@ export function setupWindow(comp: any, id: number) {
       } as Page.PageInstance['$page']
     },
     setup(instance) {
-      instance.root = instance // windows 中组件 root 指向 window
+      instance.$pageInstance = instance // window 的页面实例 $pageInstance 指向自己
     },
   })
 }
@@ -187,12 +187,14 @@ export function setupApp(comp: any) {
     before(comp) {
       comp.mpType = 'app'
       const { setup } = comp
-      comp.setup = (props, ctx) => {
-        return setup && setup(props, ctx)
-      }
-      comp.render = () => {
+      const render = () => {
         return openBlock(), createBlock(LayoutComponent)
       }
+      comp.setup = (props, ctx) => {
+        const res = setup && setup(props, ctx)
+        return isFunction(res) ? render : res
+      }
+      comp.render = render
     },
   })
 }

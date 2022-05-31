@@ -26,7 +26,7 @@ let cid: string | undefined
 let cidErrMsg: string | undefined
 function normalizePushMessage(message: unknown) {
   try {
-    return JSON.parse(message as string)
+    return JSON.parse(message as string) as Record<string, any>
   } catch (e: any) {}
   return message
 }
@@ -47,11 +47,17 @@ export function invokePushCallback(
     invokeGetPushCidCallbacks(cid, args.errMsg)
   } else if (args.type === 'pushMsg') {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: 'receive', data: normalizePushMessage(args.message) })
+      callback({
+        type: 'receive',
+        data: normalizePushMessage(args.message),
+      })
     })
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: 'click', data: normalizePushMessage(args.message) })
+      callback({
+        type: 'click',
+        data: normalizePushMessage(args.message),
+      })
     })
   }
 }
@@ -69,7 +75,7 @@ function invokeGetPushCidCallbacks(cid?: string, errMsg?: string) {
   getPushCidCallbacks.length = 0
 }
 
-export function getPushCid(args: GetPushCidOptions) {
+export function getPushClientid(args: GetPushCidOptions) {
   if (!isPlainObject(args)) {
     args = {}
   }
@@ -80,10 +86,10 @@ export function getPushCid(args: GetPushCidOptions) {
   getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
     let res: Record<string, unknown>
     if (cid) {
-      res = { errMsg: 'getPushCid:ok', cid }
+      res = { errMsg: 'getPushClientid:ok', cid }
       hasSuccess && success(res)
     } else {
-      res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') }
+      res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') }
       hasFail && fail(res)
     }
     hasComplete && complete(res)

@@ -1333,6 +1333,14 @@ validator.concat({
   type: Object
 });
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const API_GET_LOCALE = "getLocale";
+const getLocale = /* @__PURE__ */ defineSyncApi(API_GET_LOCALE, () => {
+  const app = getApp({ allowDefault: true });
+  if (app && app.$vm) {
+    return app.$vm.$locale;
+  }
+  return useI18n().getLocale();
+});
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -7029,7 +7037,7 @@ function setupWindow(comp, id) {
       };
     },
     setup(instance) {
-      instance.root = instance;
+      instance.$pageInstance = instance;
     }
   });
 }
@@ -7067,12 +7075,14 @@ function setupApp(comp) {
     before(comp2) {
       comp2.mpType = "app";
       const { setup } = comp2;
-      comp2.setup = (props2, ctx) => {
-        return setup && setup(props2, ctx);
-      };
-      comp2.render = () => {
+      const render = () => {
         return vue.openBlock(), vue.createBlock(LayoutComponent);
       };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return shared.isFunction(res) ? render : res;
+      };
+      comp2.render = render;
     }
   });
 }
@@ -9622,10 +9632,10 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
   }
   function _l10nColumn(array, normalize) {
     const {
-      getLocale
+      getLocale: getLocale2
     } = useI18n();
     if (props2.mode === mode.DATE) {
-      const locale = getLocale();
+      const locale = getLocale2();
       if (!locale.startsWith("zh")) {
         switch (props2.fields) {
           case fields.YEAR:
@@ -9647,10 +9657,10 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
   }
   function _l10nItem(item, index2) {
     const {
-      getLocale
+      getLocale: getLocale2
     } = useI18n();
     if (props2.mode === mode.DATE) {
-      const locale = getLocale();
+      const locale = getLocale2();
       if (locale.startsWith("zh")) {
         const array = ["\u5E74", "\u6708", "\u65E5"];
         return item + array[index2];
@@ -10021,6 +10031,60 @@ const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", (
 const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
   resolve(getStorageInfoSync());
 });
+let browserInfo;
+function initBrowserInfo() {
+  {
+    return browserInfo = {};
+  }
+}
+const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
+  initBrowserInfo();
+  const {
+    deviceBrand,
+    deviceModel,
+    brand,
+    model,
+    platform,
+    system,
+    deviceOrientation,
+    deviceType
+  } = browserInfo;
+  return {
+    deviceBrand,
+    deviceModel,
+    devicePixelRatio: 1,
+    deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+    deviceOrientation,
+    deviceType,
+    brand,
+    model,
+    system,
+    platform
+  };
+});
+const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
+  initBrowserInfo();
+  const { theme, browserName, browseVersion, language } = browserInfo;
+  return {
+    SDKVersion: "",
+    hostSDKVersion: "",
+    enableDebug: false,
+    hostPackageName: "",
+    hostFontSizeSetting: void 0,
+    language,
+    hostName: browserName,
+    hostVersion: browseVersion,
+    hostTheme: theme,
+    hostLanguage: language,
+    theme,
+    appId: __uniConfig.appId,
+    appName: __uniConfig.appName,
+    appVersion: __uniConfig.appVersion,
+    appVersionCode: __uniConfig.appVersionCode,
+    appLanguage: getLocale ? getLocale() : language,
+    version: __uniConfig.appVersion
+  };
+});
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
   {
     return {
@@ -10096,6 +10160,8 @@ var api = /* @__PURE__ */ Object.defineProperty({
   clearStorage,
   getStorageInfoSync,
   getStorageInfo,
+  getDeviceInfo,
+  getAppBaseInfo,
   getSystemInfoSync
 }, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
@@ -11212,7 +11278,9 @@ exports.WebView = index$d;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.getApp = getApp$1;
+exports.getAppBaseInfo = getAppBaseInfo;
 exports.getCurrentPages = getCurrentPages$1;
+exports.getDeviceInfo = getDeviceInfo;
 exports.getRealPath = getRealPath;
 exports.getStorage = getStorage;
 exports.getStorageInfo = getStorageInfo;
