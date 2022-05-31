@@ -1,3 +1,5 @@
+import { normalizeLocale, LOCALE_EN } from '../helpers/i18n/index'
+
 export function getLocale () {
   // 优先使用 $locale
   const app = getApp({
@@ -6,7 +8,7 @@ export function getLocale () {
   if (app && app.$vm) {
     return app.$vm.$locale
   }
-  return __GLOBAL__.getSystemInfoSync().language || 'zh-Hans'
+  return normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
 }
 
 export function setLocale (locale) {
