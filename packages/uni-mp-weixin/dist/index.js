@@ -604,7 +604,8 @@ function populateParameters (result) {
   const deviceBrand = getDeviceBrand(brand, model, isQuickApp);
 
   // hostName
-  let _hostName = hostName || "mp-weixin".split('-')[1]; // mp-jd
+  const _platform =  'WeChat' ;
+  let _hostName = hostName || _platform; // mp-jd
   {
     if (environment) {
       _hostName = environment;

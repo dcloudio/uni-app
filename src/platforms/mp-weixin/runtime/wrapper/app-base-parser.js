@@ -6,7 +6,9 @@ import {
 } from 'uni-wrapper/util'
 
 import {
-  initAppLocale
+  initAppLocale,
+  normalizeLocale,
+  LOCALE_EN
 } from 'uni-helpers/i18n/index'
 
 import EventChannel from 'uni-helpers/EventChannel'
@@ -185,7 +187,7 @@ export default function parseBaseApp (vm, {
     })
   }
 
-  initAppLocale(Vue, vm, __GLOBAL__.getSystemInfoSync().language || 'zh-Hans')
+  initAppLocale(Vue, vm, normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN)
 
   initHooks(appOptions, hooks)
 

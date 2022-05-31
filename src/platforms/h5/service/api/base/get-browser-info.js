@@ -171,7 +171,7 @@ export function getBrowserInfo () {
   var system = `${osname} ${osversion}`
   var platform = osname.toLocaleLowerCase()
 
-  let browserName
+  let browserName = ''
   let browseVersion = String(IEVersion())
   if (browseVersion !== '-1') { browserName = 'IE' } else {
     const browseVendors = ['Version', 'Firefox', 'Chrome', 'Edge{0,1}']

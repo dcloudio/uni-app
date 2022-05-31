@@ -66,7 +66,8 @@ export function populateParameters (result) {
   const deviceBrand = getDeviceBrand(brand, model, isQuickApp)
 
   // hostName
-  let _hostName = hostName || __PLATFORM__.split('-')[1] // mp-jd
+  const _platform = __PLATFORM__ === 'mp-weixin' ? 'WeChat' : __PLATFORM__.split('-')[1]
+  let _hostName = hostName || _platform // mp-jd
   if (__PLATFORM__ === 'mp-weixin') {
     if (environment) {
       _hostName = environment
