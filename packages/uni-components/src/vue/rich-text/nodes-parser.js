@@ -1,7 +1,7 @@
 import { hasOwn, isPlainObject } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 
-const TAGS = {
+export const TAGS = {
   a: '',
   abbr: '',
   address: '',
@@ -77,7 +77,7 @@ const CHARS = {
   apos: "'",
 }
 
-function decodeEntities(htmlString) {
+export function decodeEntities(htmlString) {
   return htmlString.replace(
     /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
     function (match, stage) {
@@ -90,9 +90,13 @@ function decodeEntities(htmlString) {
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
         return String.fromCharCode('0' + stage.slice(1))
       }
-      const wrap = document.createElement('div')
-      wrap.innerHTML = match
-      return wrap.innerText || wrap.textContent
+      if (!__NODE_JS__) {
+        const wrap = document.createElement('div')
+        wrap.innerHTML = match
+        return wrap.innerText || wrap.textContent
+      } else {
+        return match
+      }
     }
   )
 }

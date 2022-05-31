@@ -1,11 +1,40 @@
-import { onMounted, ref, watch, getCurrentInstance } from 'vue'
+import { onMounted, ref, watch, getCurrentInstance, h, VNode } from 'vue'
+import { hasOwn } from '@vue/shared'
 import {
   defineBuiltInComponent,
   useCustomEvent,
   EmitEvent,
 } from '@dcloudio/uni-components'
-import parseNodes from './nodes-parser'
+import parseNodes, { TAGS, decodeEntities } from './nodes-parser'
 import { props, parseHtml } from '../../components/rich-text'
+import { ssrRef } from '@dcloudio/uni-app'
+
+interface Node {
+  type: string
+  text?: string
+  name: string
+  attrs: Object
+  children: Node[]
+}
+
+function _createVNode(nodeList: Node[]): Array<VNode | undefined> {
+  if (!nodeList) return []
+
+  return nodeList.map((node) => {
+    if (node.name) {
+      const tagName = node.name.toLowerCase()
+      if (!hasOwn(TAGS, tagName)) {
+        return
+      }
+    }
+    const isNode = !hasOwn(node, 'type') || node.type === 'node'
+    return h(
+      isNode ? node.name : 'span',
+      node.attrs,
+      isNode ? _createVNode(node.children) : decodeEntities(node.text)
+    )
+  })
+}
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RichText',
@@ -23,7 +52,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   ],
   setup(props, { emit, attrs }) {
     const vm = getCurrentInstance()
+    const scopeId = (vm && vm.vnode.scopeId) || ''
     const rootRef = ref<HTMLElement | null>(null)
+    const nodelist = ssrRef(props.nodes, 'nodelist')
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const hasItemClick = !!attrs.onItemclick
 
@@ -31,14 +62,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       trigger('itemclick', e, detail)
     }
 
+    // ssr 处理
+    if (__NODE_JS__) {
+      if (typeof props.nodes === 'string') {
+        nodelist.value = parseHtml(props.nodes)
+      }
+    }
+
     function _renderNodes(nodes: string | unknown[]) {
       if (typeof nodes === 'string') {
-        nodes = parseHtml(nodes)
+        nodelist.value = parseHtml(nodes)
       }
       const nodeList = parseNodes(
-        nodes,
+        nodelist.value,
         document.createDocumentFragment(),
-        (vm && vm.vnode.scopeId) || '',
+        scopeId,
         hasItemClick && triggerItemClick
       )
       rootRef.value!.firstElementChild!.innerHTML = ''
@@ -53,15 +91,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     onMounted(() => {
-      _renderNodes(props.nodes)
+      _renderNodes(nodelist.value as [])
     })
 
-    return () => {
-      return (
-        <uni-rich-text ref={rootRef}>
-          <div />
-        </uni-rich-text>
+    return () =>
+      h(
+        'uni-rich-text',
+        {
+          ref: rootRef,
+        },
+        [
+          h(
+            'div',
+            {},
+            __NODE_JS__ ? _createVNode(nodelist.value as Node[]) : []
+          ),
+        ]
       )
-    }
   },
 })
