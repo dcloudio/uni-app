@@ -14260,7 +14260,7 @@ function setupWindow(comp, id2) {
       };
     },
     setup(instance2) {
-      instance2.root = instance2;
+      instance2.$pageInstance = instance2;
     }
   });
 }

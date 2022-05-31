@@ -7037,7 +7037,7 @@ function setupWindow(comp, id) {
       };
     },
     setup(instance) {
-      instance.root = instance;
+      instance.$pageInstance = instance;
     }
   });
 }
