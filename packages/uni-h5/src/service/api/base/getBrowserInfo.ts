@@ -33,15 +33,6 @@ function IEVersion() {
   }
 }
 
-function getDeviceBrand(model: string) {
-  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
-    return 'apple'
-  }
-  if (/windows/gi.test(model)) {
-    return 'microsoft'
-  }
-}
-
 export function getBrowserInfo() {
   let osname
   let osversion = '0'
@@ -167,15 +158,15 @@ export function getBrowserInfo() {
   } else {
     osname = 'Other'
     osversion = '0'
-    deviceType = 'other'
+    deviceType = 'unknown'
   }
 
   const system = `${osname} ${osversion}`
   const platform = osname.toLocaleLowerCase()
 
   let browserName = ''
-  let browseVersion = String(IEVersion())
-  if (browseVersion !== '-1') {
+  let browserVersion = String(IEVersion())
+  if (browserVersion !== '-1') {
     browserName = 'IE'
   } else {
     const browseVendors = ['Version', 'Firefox', 'Chrome', 'Edge{0,1}']
@@ -185,19 +176,9 @@ export function getBrowserInfo() {
       const reg = new RegExp(`(${vendor})/(\\S*)\\b`)
       if (reg.test(ua)) {
         browserName = vendors[index]
-        browseVersion = ua.match(reg)![2]
+        browserVersion = ua.match(reg)![2]
       }
     }
-  }
-
-  // deviceBrand
-  let deviceBrand = ''
-  if (model) {
-    const _model = model.toLocaleLowerCase()
-    deviceBrand =
-      getDeviceBrand(_model) ||
-      getDeviceBrand(osname.toLocaleLowerCase()) ||
-      _model.split(' ')[0]
   }
 
   // deviceOrientation
@@ -207,22 +188,22 @@ export function getBrowserInfo() {
       ? window.orientation
       : window.screen.orientation.angle
   deviceOrientation = Math.abs(orientation) === 90 ? 'landscape' : 'portrait'
-
+  //TODO deviceBrand brand 要是 undeinfed
   return {
-    deviceBrand,
+    deviceBrand: undefined,
+    brand: undefined,
     deviceModel: model,
     deviceOrientation,
-    brand: deviceBrand,
     model,
     system,
     platform,
     browserName: browserName.toLocaleLowerCase(),
-    browseVersion,
+    browserVersion,
     language,
     deviceType,
     ua,
     osname,
     osversion,
-    theme: '',
+    theme: undefined,
   }
 }

@@ -1,6 +1,6 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -9325,7 +9325,7 @@ Spring$1.prototype._solve = function(e2, t2) {
     const c = (-n - Math.sqrt(o2)) / (2 * i);
     const u = (-n + Math.sqrt(o2)) / (2 * i);
     const d = (t2 - c * e2) / (u - c);
-    const h = e2 - d;
+    const h2 = e2 - d;
     return {
       x: function(e3) {
         let t3;
@@ -9341,7 +9341,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * t3 + d * n2;
+        return h2 * t3 + d * n2;
       },
       dx: function(e3) {
         let t3;
@@ -9357,7 +9357,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * c * t3 + d * u * n2;
+        return h2 * c * t3 + d * u * n2;
       }
     };
   }
@@ -11717,9 +11717,11 @@ function decodeEntities(htmlString) {
     if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
       return String.fromCharCode("0" + stage.slice(1));
     }
-    const wrap = document.createElement("div");
-    wrap.innerHTML = match;
-    return wrap.innerText || wrap.textContent;
+    {
+      const wrap = document.createElement("div");
+      wrap.innerHTML = match;
+      return wrap.innerText || wrap.textContent;
+    }
   });
 }
 function normlizeValue(tagName, name, value) {
@@ -11884,6 +11886,36 @@ const props$n = {
     }
   }
 };
+function getSSRDataType() {
+  return getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
+}
+function assertKey(key, shallow = false) {
+  if (!key) {
+    throw new Error(`${shallow ? "shallowSsrRef" : "ssrRef"}: You must provide a key.`);
+  }
+}
+const ssrClientRef = (value, key, shallow = false) => {
+  const valRef = shallow ? shallowRef(value) : ref(value);
+  if (typeof window === "undefined") {
+    return valRef;
+  }
+  const __uniSSR = window[UNI_SSR];
+  if (!__uniSSR) {
+    return valRef;
+  }
+  const type = getSSRDataType();
+  assertKey(key, shallow);
+  if (hasOwn(__uniSSR[type], key)) {
+    valRef.value = __uniSSR[type][key];
+    if (type === UNI_SSR_DATA) {
+      delete __uniSSR[type][key];
+    }
+  }
+  return valRef;
+};
+const ssrRef = (value, key) => {
+  return ssrClientRef(value, key);
+};
 var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
@@ -11896,7 +11928,9 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     attrs: attrs2
   }) {
     const vm = getCurrentInstance();
+    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
+    const nodelist = ssrRef(props2.nodes, "nodelist");
     const trigger = useCustomEvent(rootRef, emit2);
     const hasItemClick = !!attrs2.onItemclick;
     function triggerItemClick(e2, detail = {}) {
@@ -11904,9 +11938,9 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     }
     function _renderNodes(nodes) {
       if (typeof nodes === "string") {
-        nodes = parseHtml(nodes);
+        nodelist.value = parseHtml(nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
+      const nodeList = parseNodes(nodelist.value, document.createDocumentFragment(), scopeId, hasItemClick && triggerItemClick);
       rootRef.value.firstElementChild.innerHTML = "";
       rootRef.value.firstElementChild.appendChild(nodeList);
     }
@@ -11914,13 +11948,11 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
       _renderNodes(value);
     });
     onMounted(() => {
-      _renderNodes(props2.nodes);
+      _renderNodes(nodelist.value);
     });
-    return () => {
-      return createVNode("uni-rich-text", {
-        "ref": rootRef
-      }, [createVNode("div", null, null)], 512);
-    };
+    return () => h("uni-rich-text", {
+      ref: rootRef
+    }, [h("div", {}, [])]);
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
@@ -12742,9 +12774,9 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
         const c = s - n;
         const u = Math.max(index2 - (s + 1), s - i, 0);
         const d = Math.max(index2 - (l + 1), l - i, 0);
-        const h = Math.max(index2 - (c + 1), c - i, 0);
-        const p2 = Math.min(u, d, h);
-        const position = [s, l, c][[u, d, h].indexOf(p2)];
+        const h2 = Math.max(index2 - (c + 1), c - i, 0);
+        const p2 = Math.min(u, d, h2);
+        const position = [s, l, c][[u, d, h2].indexOf(p2)];
         item.updatePosition(position, props2.vertical);
       }
     }
@@ -14395,10 +14427,10 @@ function onVisibilityChange() {
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
-  const h = Math.floor(val / 3600);
+  const h2 = Math.floor(val / 3600);
   const m = Math.floor(val % 3600 / 60);
   const s = Math.floor(val % 3600 % 60);
-  const hStr = (h < 10 ? "0" : "") + h;
+  const hStr = (h2 < 10 ? "0" : "") + h2;
   const mStr = (m < 10 ? "0" : "") + m;
   const sStr = (s < 10 ? "0" : "") + s;
   let str = mStr + ":" + sStr;
@@ -15615,25 +15647,25 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           const anchor = option.anchor || {};
           let icon;
           let w;
-          let h;
+          let h2;
           let top;
           let x = typeof anchor.x === "number" ? anchor.x : 0.5;
           let y = typeof anchor.y === "number" ? anchor.y : 1;
           if (option.iconPath && (option.width || option.height)) {
             w = option.width || img.width / img.height * option.height;
-            h = option.height || img.height / img.width * option.width;
+            h2 = option.height || img.height / img.width * option.width;
           } else {
             w = img.width / 2;
-            h = img.height / 2;
+            h2 = img.height / 2;
           }
-          top = h - (h - y * h);
+          top = h2 - (h2 - y * h2);
           if ("MarkerImage" in maps2) {
-            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h), new maps2.Size(w, h));
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
           } else {
             icon = {
               url: img.src,
               anchor: new maps2.Point(x, y),
-              size: new maps2.Size(w, h)
+              size: new maps2.Size(w, h2)
             };
           }
           marker.setPosition(position);
@@ -16319,14 +16351,6 @@ function IEVersion() {
     return -1;
   }
 }
-function getDeviceBrand(model) {
-  if (/iphone/gi.test(model) || /ipad/gi.test(model) || /mac/gi.test(model)) {
-    return "apple";
-  }
-  if (/windows/gi.test(model)) {
-    return "microsoft";
-  }
-}
 function getBrowserInfo() {
   let osname;
   let osversion = "0";
@@ -16440,13 +16464,13 @@ function getBrowserInfo() {
   } else {
     osname = "Other";
     osversion = "0";
-    deviceType = "other";
+    deviceType = "unknown";
   }
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   let browserName = "";
-  let browseVersion = String(IEVersion());
-  if (browseVersion !== "-1") {
+  let browserVersion = String(IEVersion());
+  if (browserVersion !== "-1") {
     browserName = "IE";
   } else {
     const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
@@ -16456,34 +16480,29 @@ function getBrowserInfo() {
       const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
       if (reg.test(ua)) {
         browserName = vendors[index2];
-        browseVersion = ua.match(reg)[2];
+        browserVersion = ua.match(reg)[2];
       }
     }
-  }
-  let deviceBrand = "";
-  if (model) {
-    const _model = model.toLocaleLowerCase();
-    deviceBrand = getDeviceBrand(_model) || getDeviceBrand(osname.toLocaleLowerCase()) || _model.split(" ")[0];
   }
   let deviceOrientation = "portrait";
   const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
   deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
   return {
-    deviceBrand,
+    deviceBrand: void 0,
+    brand: void 0,
     deviceModel: model,
     deviceOrientation,
-    brand: deviceBrand,
     model,
     system,
     platform,
     browserName: browserName.toLocaleLowerCase(),
-    browseVersion,
+    browserVersion,
     language,
     deviceType,
     ua,
     osname,
     osversion,
-    theme: ""
+    theme: void 0
   };
 }
 const getWindowInfo = /* @__PURE__ */ defineSyncApi("getWindowInfo", () => {
@@ -16545,39 +16564,39 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
     deviceType
   } = browserInfo;
   return {
+    brand,
     deviceBrand,
     deviceModel,
     devicePixelRatio: window.devicePixelRatio,
     deviceId: deviceId$1(),
     deviceOrientation,
     deviceType,
-    brand,
     model,
-    system,
-    platform
+    platform,
+    system
   };
 });
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
   initBrowserInfo();
-  const { theme, browserName, browseVersion, language } = browserInfo;
+  const { theme, language } = browserInfo;
   return {
-    SDKVersion: "",
-    hostSDKVersion: "",
-    enableDebug: false,
-    hostPackageName: "",
-    hostFontSizeSetting: void 0,
-    language,
-    hostName: browserName,
-    hostVersion: browseVersion,
-    hostTheme: theme,
-    hostLanguage: language,
-    theme,
     appId: __uniConfig.appId,
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
     appLanguage: getLocale ? getLocale() : language,
-    version: __uniConfig.appVersion
+    enableDebug: false,
+    hostSDKVersion: void 0,
+    hostPackageName: void 0,
+    hostFontSizeSetting: void 0,
+    hostName: void 0,
+    hostVersion: void 0,
+    hostTheme: void 0,
+    hostLanguage: void 0,
+    language,
+    SDKVersion: "",
+    theme,
+    version: ""
   };
 });
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
@@ -16588,15 +16607,15 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const deviceInfo = getDeviceInfo();
   const appBaseInfo = getAppBaseInfo();
   _initBrowserInfo = true;
-  const { ua: ua2, browserName, browseVersion, osname, osversion } = browserInfo;
+  const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
   const systemInfo = extend(windowInfo, deviceInfo, appBaseInfo, {
     ua: ua2,
     browserName,
-    browseVersion,
+    browserVersion,
     uniPlatform: "web",
     uniCompileVersion: __uniConfig.compilerVersion,
     uniRuntimeVersion: __uniConfig.compilerVersion,
-    fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+    fontSizeSetting: void 0,
     osName: osname.toLocaleLowerCase(),
     osVersion: osversion,
     osLanguage: void 0,
@@ -16605,7 +16624,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   delete systemInfo.screenTop;
   delete systemInfo.enableDebug;
   delete systemInfo.theme;
-  return systemInfo;
+  return sortObject(systemInfo);
 });
 const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
   return resolve(getSystemInfoSync());
