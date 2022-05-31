@@ -1,6 +1,7 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, isPlainObject } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -282,7 +283,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(ks.getSystemInfoSync().language || 'zh-Hans');
+    const locale = ref(normalizeLocale(ks.getSystemInfoSync().language) || LOCALE_EN);
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;

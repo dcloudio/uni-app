@@ -1,5 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
 import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -774,7 +775,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return swan.getSystemInfoSync().language || 'zh-Hans';
+    return normalizeLocale(swan.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
     const app = getApp();
