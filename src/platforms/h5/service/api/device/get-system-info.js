@@ -1,6 +1,7 @@
 import { getWindowInfo } from './get-window-info'
 import deviceId from 'uni-platform/helpers/uuid'
 import { getBrowserInfo } from '../base/get-browser-info'
+import { sortObject } from 'uni-shared'
 
 let browserInfo = {}
 let _initBrowserInfo = true
@@ -24,27 +25,22 @@ export function getDeviceInfo () {
   } = browserInfo
 
   return {
+    brand,
     deviceBrand,
     deviceModel,
     devicePixelRatio: window.devicePixelRatio,
     deviceId: deviceId(),
     deviceOrientation,
     deviceType,
-    brand,
     model,
-    system,
-    platform
+    platform,
+    system
   }
 }
 
 export function getAppBaseInfo () {
   initBrowserInfo()
-  const {
-    theme,
-    browserName,
-    browseVersion,
-    language
-  } = browserInfo
+  const { theme, language } = browserInfo
 
   const appLanguage = uni
     ? uni.getLocale
@@ -53,23 +49,23 @@ export function getAppBaseInfo () {
     : language
 
   return {
-    SDKVersion: '',
-    hostSDKVersion: '',
-    enableDebug: false,
-    hostPackageName: '',
-    hostFontSizeSetting: undefined,
-    language,
-    hostName: browserName,
-    hostVersion: browseVersion,
-    hostTheme: theme,
-    hostLanguage: language,
-    theme,
     appId: __uniConfig.appId,
     appName: __uniConfig.appName,
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
     appLanguage,
-    version: __uniConfig.appVersion
+    enableDebug: false,
+    hostSDKVersion: undefined,
+    hostPackageName: undefined,
+    hostFontSizeSetting: undefined,
+    hostName: undefined,
+    hostVersion: undefined,
+    hostTheme: undefined,
+    hostLanguage: undefined,
+    language,
+    SDKVersion: '',
+    theme,
+    version: ''
   }
 }
 
@@ -85,7 +81,7 @@ export function getSystemInfoSync () {
   const appBaseInfo = getAppBaseInfo()
   _initBrowserInfo = true
 
-  const { ua, browserName, browseVersion, osname, osversion } = browserInfo
+  const { ua, browserName, browserVersion, osname, osversion } = browserInfo
 
   const systemInfo = Object.assign(
     {},
@@ -93,17 +89,17 @@ export function getSystemInfoSync () {
     deviceInfo,
     appBaseInfo,
     {
-      ua,
       browserName,
-      browseVersion,
-      uniPlatform: 'web',
-      uniCompileVersion: __uniConfig.compilerVersion,
-      uniRuntimeVersion: __uniConfig.compilerVersion,
+      browserVersion,
       fontSizeSetting: appBaseInfo.hostFontSizeSetting,
       osName: osname.toLocaleLowerCase(),
       osVersion: osversion,
       osLanguage: undefined,
-      osTheme: undefined
+      osTheme: undefined,
+      uniPlatform: 'web',
+      uniCompileVersion: __uniConfig.compilerVersion,
+      uniRuntimeVersion: __uniConfig.compilerVersion,
+      ua
     }
   )
 
@@ -111,7 +107,7 @@ export function getSystemInfoSync () {
   delete systemInfo.enableDebug
   delete systemInfo.theme
 
-  return systemInfo
+  return sortObject(systemInfo)
 }
 /**
  * 获取系统信息-异步
