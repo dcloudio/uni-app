@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -11704,7 +11704,16 @@ const CHARS = {
   lt: "<",
   nbsp: " ",
   quot: '"',
-  apos: "'"
+  apos: "'",
+  ldquo: "\u201C",
+  rdquo: "\u201D",
+  yen: "\uFFE5",
+  radic: "\u221A",
+  lceil: "\u2308",
+  rceil: "\u2309",
+  lfloor: "\u230A",
+  rfloor: "\u230B",
+  hellip: "\u2026"
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
@@ -11715,79 +11724,55 @@ function decodeEntities(htmlString) {
       return String.fromCharCode(stage.slice(1));
     }
     if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-      return String.fromCharCode("0" + stage.slice(1));
+      return String.fromCharCode(0 + stage.slice(1));
     }
-    {
-      const wrap = document.createElement("div");
-      wrap.innerHTML = match;
-      return wrap.innerText || wrap.textContent;
-    }
+    return match;
   });
 }
-function normlizeValue(tagName, name, value) {
-  if (tagName === "img" && name === "src")
-    return getRealPath(value);
-  return value;
+function processClickEvent(node, triggerItemClick) {
+  if (["a", "img"].includes(node.name) && triggerItemClick) {
+    return {
+      onClick: (e2) => {
+        triggerItemClick(e2, { node });
+        e2.stopPropagation();
+        e2.preventDefault();
+        e2.returnValue = false;
+      }
+    };
+  }
 }
-function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
-  nodes.forEach(function(node) {
+function normalizeAttrs(tagName, attrs2) {
+  if (!isPlainObject(attrs2))
+    return;
+  for (const key in attrs2) {
+    if (Object.prototype.hasOwnProperty.call(attrs2, key)) {
+      const value = attrs2[key];
+      if (tagName === "img" && key === "src")
+        attrs2[key] = getRealPath(value);
+    }
+  }
+}
+const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
+    return [];
+  return nodeList.map((node) => {
     if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
-      if (!(typeof node.name === "string" && node.name)) {
-        return;
-      }
+      let nodeProps = {};
       const tagName = node.name.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
       }
-      const elem = document.createElement(tagName);
-      if (!elem) {
-        return;
-      }
-      scopeId && elem.setAttribute(scopeId, "");
-      const attrs2 = node.attrs;
-      if (isPlainObject(attrs2)) {
-        const tagAttrs = TAGS[tagName] || [];
-        Object.keys(attrs2).forEach(function(name) {
-          let value = attrs2[name];
-          switch (name) {
-            case "class":
-              Array.isArray(value) && (value = value.join(" "));
-            case "style":
-              elem.setAttribute(name, value);
-              break;
-            default:
-              if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, normlizeValue(tagName, name, value));
-              }
-          }
-        });
-      }
-      processClickEvent(node, elem, triggerItemClick);
-      const children = node.children;
-      if (Array.isArray(children) && children.length) {
-        parseNodes(node.children, elem, scopeId, triggerItemClick);
-      }
-      parentNode.appendChild(elem);
-    } else {
-      if (node.type === "text" && typeof node.text === "string" && node.text !== "") {
-        parentNode.appendChild(document.createTextNode(decodeEntities(node.text)));
-      }
+      normalizeAttrs(tagName, node.attrs);
+      nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
+      return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
     }
+    if (node.type === "text" && typeof node.text === "string" && node.text !== "")
+      return createTextVNode(decodeEntities(node.text || ""));
   });
-  return parentNode;
-}
-function processClickEvent(node, elem, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
-    elem.setAttribute("onClick", "return false;");
-    elem.addEventListener("click", (e2) => {
-      triggerItemClick(e2, { node });
-      e2.stopPropagation();
-    }, true);
-  }
-}
+};
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -11886,73 +11871,37 @@ const props$n = {
     }
   }
 };
-function getSSRDataType() {
-  return getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
-}
-function assertKey(key, shallow = false) {
-  if (!key) {
-    throw new Error(`${shallow ? "shallowSsrRef" : "ssrRef"}: You must provide a key.`);
-  }
-}
-const ssrClientRef = (value, key, shallow = false) => {
-  const valRef = shallow ? shallowRef(value) : ref(value);
-  if (typeof window === "undefined") {
-    return valRef;
-  }
-  const __uniSSR = window[UNI_SSR];
-  if (!__uniSSR) {
-    return valRef;
-  }
-  const type = getSSRDataType();
-  assertKey(key, shallow);
-  if (hasOwn(__uniSSR[type], key)) {
-    valRef.value = __uniSSR[type][key];
-    if (type === UNI_SSR_DATA) {
-      delete __uniSSR[type][key];
-    }
-  }
-  return valRef;
-};
-const ssrRef = (value, key) => {
-  return ssrClientRef(value, key);
-};
 var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
   props: props$n,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress"],
+  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
   setup(props2, {
-    emit: emit2,
-    attrs: attrs2
+    emit: emit2
   }) {
     const vm = getCurrentInstance();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
-    const nodelist = ssrRef(props2.nodes, "nodelist");
+    const _vnode = ref([]);
     const trigger = useCustomEvent(rootRef, emit2);
-    const hasItemClick = !!attrs2.onItemclick;
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    function _renderNodes(nodes) {
+    function renderVNode() {
+      let nodes = props2.nodes;
       if (typeof nodes === "string") {
-        nodelist.value = parseHtml(nodes);
+        nodes = parseHtml(props2.nodes);
       }
-      const nodeList = parseNodes(nodelist.value, document.createDocumentFragment(), scopeId, hasItemClick && triggerItemClick);
-      rootRef.value.firstElementChild.innerHTML = "";
-      rootRef.value.firstElementChild.appendChild(nodeList);
+      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodes);
     }
-    watch(() => props2.nodes, (value) => {
-      _renderNodes(value);
-    });
-    onMounted(() => {
-      _renderNodes(nodelist.value);
+    watch(() => props2.nodes, renderVNode, {
+      immediate: true
     });
     return () => h("uni-rich-text", {
       ref: rootRef
-    }, [h("div", {}, [])]);
+    }, h("div", {}, _vnode.value));
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
