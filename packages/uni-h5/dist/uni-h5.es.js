@@ -11760,7 +11760,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
-      let nodeProps = {};
+      let nodeProps = { [scopeId]: "" };
       const tagName = node.name.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
@@ -11890,11 +11890,11 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     function renderVNode() {
-      let nodes = props2.nodes;
-      if (typeof nodes === "string") {
-        nodes = parseHtml(props2.nodes);
+      let nodeList = props2.nodes;
+      if (typeof nodeList === "string") {
+        nodeList = parseHtml(props2.nodes);
       }
-      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodes);
+      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
     watch(() => props2.nodes, renderVNode, {
       immediate: true
