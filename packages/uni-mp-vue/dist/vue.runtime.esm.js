@@ -1,4 +1,4 @@
-import { extend, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, hasOwn, camelize, hyphenate, isReservedProp, capitalize, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, isSymbol, toNumber, EMPTY_ARR, isModelListener, toDisplayString } from '@vue/shared';
+import { extend, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, camelize, capitalize, hasOwn, hyphenate, isReservedProp, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, isSymbol, toNumber, EMPTY_ARR, isModelListener, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, dynamicSlotName } from '@dcloudio/uni-shared';
 
@@ -371,17 +371,28 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
 }
 function triggerEffects(dep, debuggerEventExtraInfo) {
     // spread into array for stabilization
-    for (const effect of isArray(dep) ? dep : [...dep]) {
-        if (effect !== activeEffect || effect.allowRecurse) {
-            if ((process.env.NODE_ENV !== 'production') && effect.onTrigger) {
-                effect.onTrigger(extend({ effect }, debuggerEventExtraInfo));
-            }
-            if (effect.scheduler) {
-                effect.scheduler();
-            }
-            else {
-                effect.run();
-            }
+    const effects = isArray(dep) ? dep : [...dep];
+    for (const effect of effects) {
+        if (effect.computed) {
+            triggerEffect(effect, debuggerEventExtraInfo);
+        }
+    }
+    for (const effect of effects) {
+        if (!effect.computed) {
+            triggerEffect(effect, debuggerEventExtraInfo);
+        }
+    }
+}
+function triggerEffect(effect, debuggerEventExtraInfo) {
+    if (effect !== activeEffect || effect.allowRecurse) {
+        if ((process.env.NODE_ENV !== 'production') && effect.onTrigger) {
+            effect.onTrigger(extend({ effect }, debuggerEventExtraInfo));
+        }
+        if (effect.scheduler) {
+            effect.scheduler();
+        }
+        else {
+            effect.run();
         }
     }
 }
@@ -390,6 +401,10 @@ const isNonTrackableKeys = /*#__PURE__*/ makeMap(`__proto__,__v_isRef,__isVue`);
 const builtInSymbols = new Set(
 /*#__PURE__*/
 Object.getOwnPropertyNames(Symbol)
+    // ios10.x Object.getOwnPropertyNames(Symbol) can enumerate 'arguments' and 'caller'
+    // but accessing them on Symbol leads to TypeError because Symbol is a strict mode
+    // function
+    .filter(key => key !== 'arguments' && key !== 'caller')
     .map(key => Symbol[key])
     .filter(isSymbol));
 const get = /*#__PURE__*/ createGetter();
@@ -463,9 +478,8 @@ function createGetter(isReadonly = false, shallow = false) {
             return res;
         }
         if (isRef(res)) {
-            // ref unwrapping - does not apply for Array + integer key.
-            const shouldUnwrap = !targetIsArray || !isIntegerKey(key);
-            return shouldUnwrap ? res.value : res;
+            // ref unwrapping - skip unwrap for Array + integer key.
+            return targetIsArray && isIntegerKey(key) ? res : res.value;
         }
         if (isObject(res)) {
             // Convert returned value into a proxy as well. we do the isObject check
@@ -571,10 +585,12 @@ function get$1(target, key, isReadonly = false, isShallow = false) {
     target = target["__v_raw" /* RAW */];
     const rawTarget = toRaw(target);
     const rawKey = toRaw(key);
-    if (key !== rawKey) {
-        !isReadonly && track(rawTarget, "get" /* GET */, key);
+    if (!isReadonly) {
+        if (key !== rawKey) {
+            track(rawTarget, "get" /* GET */, key);
+        }
+        track(rawTarget, "get" /* GET */, rawKey);
     }
-    !isReadonly && track(rawTarget, "get" /* GET */, rawKey);
     const { has } = getProto(rawTarget);
     const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
     if (has.call(rawTarget, key)) {
@@ -593,10 +609,12 @@ function has$1(key, isReadonly = false) {
     const target = this["__v_raw" /* RAW */];
     const rawTarget = toRaw(target);
     const rawKey = toRaw(key);
-    if (key !== rawKey) {
-        !isReadonly && track(rawTarget, "has" /* HAS */, key);
+    if (!isReadonly) {
+        if (key !== rawKey) {
+            track(rawTarget, "has" /* HAS */, key);
+        }
+        track(rawTarget, "has" /* HAS */, rawKey);
     }
-    !isReadonly && track(rawTarget, "has" /* HAS */, rawKey);
     return key === rawKey
         ? target.has(key)
         : target.has(key) || target.has(rawKey);
@@ -923,7 +941,7 @@ function createReactiveObject(target, isReadonly, baseHandlers, collectionHandle
     if (existingProxy) {
         return existingProxy;
     }
-    // only a whitelist of value types can be observed.
+    // only specific value types can be observed.
     const targetType = getTargetType(target);
     if (targetType === 0 /* INVALID */) {
         return target;
@@ -1490,6 +1508,8 @@ function flushPreFlushCbs(seen, parentJob = null) {
     }
 }
 function flushPostFlushCbs(seen) {
+    // flush any pre cbs queued during the flush (e.g. pre watchers)
+    flushPreFlushCbs();
     if (pendingPostFlushCbs.length) {
         const deduped = [...new Set(pendingPostFlushCbs)];
         pendingPostFlushCbs.length = 0;
@@ -1635,7 +1655,7 @@ function emit$1(instance, event, ...rawArgs) {
         if (trim) {
             args = rawArgs.map(a => a.trim());
         }
-        else if (number) {
+        if (number) {
             args = rawArgs.map(toNumber);
         }
     }
@@ -1909,7 +1929,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     }
     else if (isArray(source)) {
         isMultiSource = true;
-        forceTrigger = source.some(isReactive);
+        forceTrigger = source.some(s => isReactive(s) || isShallow(s));
         getter = () => source.map(s => {
             if (isRef(s)) {
                 return s.value;
@@ -2001,16 +2021,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     }
     else {
         // default: 'pre'
-        scheduler = () => {
-            if (!instance || instance.isMounted) {
-                queuePreFlushCb(job);
-            }
-            else {
-                // with 'pre' option, the first call must happen before
-                // the component is mounted so it is called synchronously.
-                job();
-            }
-        };
+        scheduler = () => queuePreFlushCb(job);
     }
     const effect = new ReactiveEffect(getter, scheduler);
     if ((process.env.NODE_ENV !== 'production')) {
@@ -2220,6 +2231,399 @@ function onErrorCaptured(hook, target = currentInstance) {
     injectHook("ec" /* ERROR_CAPTURED */, hook, target);
 }
 
+/**
+Runtime helper for applying directives to a vnode. Example usage:
+
+const comp = resolveComponent('comp')
+const foo = resolveDirective('foo')
+const bar = resolveDirective('bar')
+
+return withDirectives(h(comp), [
+  [foo, this.x],
+  [bar, this.y]
+])
+*/
+function validateDirectiveName(name) {
+    if (isBuiltInDirective(name)) {
+        warn$1('Do not use built-in directive ids as custom directive id: ' + name);
+    }
+}
+/**
+ * Adds directives to a VNode.
+ */
+function withDirectives(vnode, directives) {
+    const internalInstance = currentRenderingInstance;
+    if (internalInstance === null) {
+        (process.env.NODE_ENV !== 'production') && warn$1(`withDirectives can only be used inside render functions.`);
+        return vnode;
+    }
+    const instance = getExposeProxy(internalInstance) ||
+        internalInstance.proxy;
+    const bindings = vnode.dirs || (vnode.dirs = []);
+    for (let i = 0; i < directives.length; i++) {
+        let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
+        if (isFunction(dir)) {
+            dir = {
+                mounted: dir,
+                updated: dir
+            };
+        }
+        if (dir.deep) {
+            traverse(value);
+        }
+        bindings.push({
+            dir,
+            instance,
+            value,
+            oldValue: void 0,
+            arg,
+            modifiers
+        });
+    }
+    return vnode;
+}
+
+const COMPONENTS = 'components';
+const DIRECTIVES = 'directives';
+/**
+ * @private
+ */
+function resolveComponent(name, maybeSelfReference) {
+    return resolveAsset(COMPONENTS, name, true, maybeSelfReference) || name;
+}
+const NULL_DYNAMIC_COMPONENT = Symbol();
+/**
+ * @private
+ */
+function resolveDirective(name) {
+    return resolveAsset(DIRECTIVES, name);
+}
+// implementation
+function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
+    const instance = currentRenderingInstance || currentInstance;
+    if (instance) {
+        const Component = instance.type;
+        // explicit self name has highest priority
+        if (type === COMPONENTS) {
+            const selfName = getComponentName(Component);
+            if (selfName &&
+                (selfName === name ||
+                    selfName === camelize(name) ||
+                    selfName === capitalize(camelize(name)))) {
+                return Component;
+            }
+        }
+        const res = 
+        // local registration
+        // check instance[type] first which is resolved for options API
+        resolve(instance[type] || Component[type], name) ||
+            // global registration
+            resolve(instance.appContext[type], name);
+        if (!res && maybeSelfReference) {
+            // fallback to implicit self-reference
+            return Component;
+        }
+        if ((process.env.NODE_ENV !== 'production') && warnMissing && !res) {
+            const extra = type === COMPONENTS
+                ? `\nIf this is a native custom element, make sure to exclude it from ` +
+                    `component resolution via compilerOptions.isCustomElement.`
+                : ``;
+            warn$1(`Failed to resolve ${type.slice(0, -1)}: ${name}${extra}`);
+        }
+        return res;
+    }
+    else if ((process.env.NODE_ENV !== 'production')) {
+        warn$1(`resolve${capitalize(type.slice(0, -1))} ` +
+            `can only be used in render() or setup().`);
+    }
+}
+function resolve(registry, name) {
+    return (registry &&
+        (registry[name] ||
+            registry[camelize(name)] ||
+            registry[capitalize(camelize(name))]));
+}
+
+/**
+ * For prefixing keys in v-on="obj" with "on"
+ * @private
+ */
+function toHandlers(obj) {
+    const ret = {};
+    if ((process.env.NODE_ENV !== 'production') && !isObject(obj)) {
+        warn$1(`v-on with no argument expects an object value.`);
+        return ret;
+    }
+    for (const key in obj) {
+        ret[toHandlerKey(key)] = obj[key];
+    }
+    return ret;
+}
+
+/**
+ * #2437 In Vue 3, functional components do not have a public instance proxy but
+ * they exist in the internal parent chain. For code that relies on traversing
+ * public $parent chains, skip functional ones and go to the parent instead.
+ */
+const getPublicInstance = (i) => {
+    if (!i)
+        return null;
+    if (isStatefulComponent(i))
+        return getExposeProxy(i) || i.proxy;
+    return getPublicInstance(i.parent);
+};
+const publicPropertiesMap = 
+// Move PURE marker to new line to workaround compiler discarding it
+// due to type annotation
+/*#__PURE__*/ extend(Object.create(null), {
+    $: i => i,
+    // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
+    // $el: i => i.vnode.el,
+    $el: i => i.__$el || (i.__$el = {}),
+    $data: i => i.data,
+    $props: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.props) : i.props),
+    $attrs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.attrs) : i.attrs),
+    $slots: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.slots) : i.slots),
+    $refs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.refs) : i.refs),
+    $parent: i => getPublicInstance(i.parent),
+    $root: i => getPublicInstance(i.root),
+    $emit: i => i.emit,
+    $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
+    $forceUpdate: i => i.f || (i.f = () => queueJob(i.update)),
+    // $nextTick: i => i.n || (i.n = nextTick.bind(i.proxy!)),// fixed by xxxxxx
+    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
+});
+const isReservedPrefix = (key) => key === '_' || key === '$';
+const PublicInstanceProxyHandlers = {
+    get({ _: instance }, key) {
+        const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
+        // for internal formatters to know that this is a Vue instance
+        if ((process.env.NODE_ENV !== 'production') && key === '__isVue') {
+            return true;
+        }
+        // prioritize <script setup> bindings during dev.
+        // this allows even properties that start with _ or $ to be used - so that
+        // it aligns with the production behavior where the render fn is inlined and
+        // indeed has access to all declared variables.
+        if ((process.env.NODE_ENV !== 'production') &&
+            setupState !== EMPTY_OBJ &&
+            setupState.__isScriptSetup &&
+            hasOwn(setupState, key)) {
+            return setupState[key];
+        }
+        // data / props / ctx
+        // This getter gets called for every property access on the render context
+        // during render and is a major hotspot. The most expensive part of this
+        // is the multiple hasOwn() calls. It's much faster to do a simple property
+        // access on a plain object, so we use an accessCache object (with null
+        // prototype) to memoize what access type a key corresponds to.
+        let normalizedProps;
+        if (key[0] !== '$') {
+            const n = accessCache[key];
+            if (n !== undefined) {
+                switch (n) {
+                    case 1 /* SETUP */:
+                        return setupState[key];
+                    case 2 /* DATA */:
+                        return data[key];
+                    case 4 /* CONTEXT */:
+                        return ctx[key];
+                    case 3 /* PROPS */:
+                        return props[key];
+                    // default: just fallthrough
+                }
+            }
+            else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
+                accessCache[key] = 1 /* SETUP */;
+                return setupState[key];
+            }
+            else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+                accessCache[key] = 2 /* DATA */;
+                return data[key];
+            }
+            else if (
+            // only cache other properties when instance has declared (thus stable)
+            // props
+            (normalizedProps = instance.propsOptions[0]) &&
+                hasOwn(normalizedProps, key)) {
+                accessCache[key] = 3 /* PROPS */;
+                return props[key];
+            }
+            else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+                accessCache[key] = 4 /* CONTEXT */;
+                return ctx[key];
+            }
+            else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
+                accessCache[key] = 0 /* OTHER */;
+            }
+        }
+        const publicGetter = publicPropertiesMap[key];
+        let cssModule, globalProperties;
+        // public $xxx properties
+        if (publicGetter) {
+            if (key === '$attrs') {
+                track(instance, "get" /* GET */, key);
+                (process.env.NODE_ENV !== 'production') && markAttrsAccessed();
+            }
+            return publicGetter(instance);
+        }
+        else if (
+        // css module (injected by vue-loader)
+        (cssModule = type.__cssModules) &&
+            (cssModule = cssModule[key])) {
+            return cssModule;
+        }
+        else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+            // user may set custom properties to `this` that start with `$`
+            accessCache[key] = 4 /* CONTEXT */;
+            return ctx[key];
+        }
+        else if (
+        // global properties
+        ((globalProperties = appContext.config.globalProperties),
+            hasOwn(globalProperties, key))) {
+            {
+                return globalProperties[key];
+            }
+        }
+        else if ((process.env.NODE_ENV !== 'production') &&
+            currentRenderingInstance &&
+            (!isString(key) ||
+                // #1091 avoid internal isRef/isVNode checks on component instance leading
+                // to infinite warning loop
+                key.indexOf('__v') !== 0)) {
+            if (data !== EMPTY_OBJ && isReservedPrefix(key[0]) && hasOwn(data, key)) {
+                warn$1(`Property ${JSON.stringify(key)} must be accessed via $data because it starts with a reserved ` +
+                    `character ("$" or "_") and is not proxied on the render context.`);
+            }
+            else if (instance === currentRenderingInstance) {
+                warn$1(`Property ${JSON.stringify(key)} was accessed during render ` +
+                    `but is not defined on instance.`);
+            }
+        }
+    },
+    set({ _: instance }, key, value) {
+        const { data, setupState, ctx } = instance;
+        if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
+            setupState[key] = value;
+            return true;
+        }
+        else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+            data[key] = value;
+            return true;
+        }
+        else if (hasOwn(instance.props, key)) {
+            (process.env.NODE_ENV !== 'production') &&
+                warn$1(`Attempting to mutate prop "${key}". Props are readonly.`, instance);
+            return false;
+        }
+        if (key[0] === '$' && key.slice(1) in instance) {
+            (process.env.NODE_ENV !== 'production') &&
+                warn$1(`Attempting to mutate public property "${key}". ` +
+                    `Properties starting with $ are reserved and readonly.`, instance);
+            return false;
+        }
+        else {
+            if ((process.env.NODE_ENV !== 'production') && key in instance.appContext.config.globalProperties) {
+                Object.defineProperty(ctx, key, {
+                    enumerable: true,
+                    configurable: true,
+                    value
+                });
+            }
+            else {
+                ctx[key] = value;
+            }
+        }
+        return true;
+    },
+    has({ _: { data, setupState, accessCache, ctx, appContext, propsOptions } }, key) {
+        let normalizedProps;
+        return (!!accessCache[key] ||
+            (data !== EMPTY_OBJ && hasOwn(data, key)) ||
+            (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) ||
+            ((normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key)) ||
+            hasOwn(ctx, key) ||
+            hasOwn(publicPropertiesMap, key) ||
+            hasOwn(appContext.config.globalProperties, key));
+    },
+    defineProperty(target, key, descriptor) {
+        if (descriptor.get != null) {
+            // invalidate key cache of a getter based property #5417
+            target._.accessCache[key] = 0;
+        }
+        else if (hasOwn(descriptor, 'value')) {
+            this.set(target, key, descriptor.value, null);
+        }
+        return Reflect.defineProperty(target, key, descriptor);
+    }
+};
+if ((process.env.NODE_ENV !== 'production') && !false) {
+    PublicInstanceProxyHandlers.ownKeys = (target) => {
+        warn$1(`Avoid app logic that relies on enumerating keys on a component instance. ` +
+            `The keys will be empty in production mode to avoid performance overhead.`);
+        return Reflect.ownKeys(target);
+    };
+}
+// dev only
+// In dev mode, the proxy target exposes the same properties as seen on `this`
+// for easier console inspection. In prod mode it will be an empty object so
+// these properties definitions can be skipped.
+function createDevRenderContext(instance) {
+    const target = {};
+    // expose internal instance for proxy handlers
+    Object.defineProperty(target, `_`, {
+        configurable: true,
+        enumerable: false,
+        get: () => instance
+    });
+    // expose public properties
+    Object.keys(publicPropertiesMap).forEach(key => {
+        Object.defineProperty(target, key, {
+            configurable: true,
+            enumerable: false,
+            get: () => publicPropertiesMap[key](instance),
+            // intercepted by the proxy so no need for implementation,
+            // but needed to prevent set errors
+            set: NOOP
+        });
+    });
+    return target;
+}
+// dev only
+function exposePropsOnRenderContext(instance) {
+    const { ctx, propsOptions: [propsOptions] } = instance;
+    if (propsOptions) {
+        Object.keys(propsOptions).forEach(key => {
+            Object.defineProperty(ctx, key, {
+                enumerable: true,
+                configurable: true,
+                get: () => instance.props[key],
+                set: NOOP
+            });
+        });
+    }
+}
+// dev only
+function exposeSetupStateOnRenderContext(instance) {
+    const { ctx, setupState } = instance;
+    Object.keys(toRaw(setupState)).forEach(key => {
+        if (!setupState.__isScriptSetup) {
+            if (isReservedPrefix(key[0])) {
+                warn$1(`setup() return property ${JSON.stringify(key)} should not start with "$" or "_" ` +
+                    `which are reserved prefixes for Vue internals.`);
+                return;
+            }
+            Object.defineProperty(ctx, key, {
+                enumerable: true,
+                configurable: true,
+                get: () => setupState[key],
+                set: NOOP
+            });
+        }
+    });
+}
+
 function createDuplicateChecker() {
     const cache = Object.create(null);
     return (type, key) => {
@@ -2320,7 +2724,7 @@ function applyOptions$1(instance) {
                 for (const key in data) {
                     checkDuplicateProperties("Data" /* DATA */, key);
                     // expose data on ctx during dev
-                    if (key[0] !== '$' && key[0] !== '_') {
+                    if (!isReservedPrefix(key[0])) {
                         Object.defineProperty(ctx, key, {
                             configurable: true,
                             enumerable: true,
@@ -3096,58 +3500,6 @@ function isBoolean(...args) {
     return args.some(elem => elem.toLowerCase() === 'boolean');
 }
 
-/**
-Runtime helper for applying directives to a vnode. Example usage:
-
-const comp = resolveComponent('comp')
-const foo = resolveDirective('foo')
-const bar = resolveDirective('bar')
-
-return withDirectives(h(comp), [
-  [foo, this.x],
-  [bar, this.y]
-])
-*/
-function validateDirectiveName(name) {
-    if (isBuiltInDirective(name)) {
-        warn$1('Do not use built-in directive ids as custom directive id: ' + name);
-    }
-}
-/**
- * Adds directives to a VNode.
- */
-function withDirectives(vnode, directives) {
-    const internalInstance = currentRenderingInstance;
-    if (internalInstance === null) {
-        (process.env.NODE_ENV !== 'production') && warn$1(`withDirectives can only be used inside render functions.`);
-        return vnode;
-    }
-    const instance = getExposeProxy(internalInstance) ||
-        internalInstance.proxy;
-    const bindings = vnode.dirs || (vnode.dirs = []);
-    for (let i = 0; i < directives.length; i++) {
-        let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
-        if (isFunction(dir)) {
-            dir = {
-                mounted: dir,
-                updated: dir
-            };
-        }
-        if (dir.deep) {
-            traverse(value);
-        }
-        bindings.push({
-            dir,
-            instance,
-            value,
-            oldValue: void 0,
-            arg,
-            modifiers
-        });
-    }
-    return vnode;
-}
-
 function createAppContext() {
     return {
         app: null,
@@ -3268,8 +3620,6 @@ hydrate) {
                     warn$1(`App already provides property with key "${String(key)}". ` +
                         `It will be overwritten with the new value.`);
                 }
-                // TypeScript doesn't allow symbols as index type
-                // https://github.com/Microsoft/TypeScript/issues/24587
                 context.provides[key] = value;
                 return app;
             }
@@ -3285,67 +3635,6 @@ hydrate) {
 const queuePostRenderEffect = queuePostFlushCb;
 
 const isTeleport = (type) => type.__isTeleport;
-
-const COMPONENTS = 'components';
-const DIRECTIVES = 'directives';
-/**
- * @private
- */
-function resolveComponent(name, maybeSelfReference) {
-    return resolveAsset(COMPONENTS, name, true, maybeSelfReference) || name;
-}
-const NULL_DYNAMIC_COMPONENT = Symbol();
-/**
- * @private
- */
-function resolveDirective(name) {
-    return resolveAsset(DIRECTIVES, name);
-}
-// implementation
-function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
-    const instance = currentRenderingInstance || currentInstance;
-    if (instance) {
-        const Component = instance.type;
-        // explicit self name has highest priority
-        if (type === COMPONENTS) {
-            const selfName = getComponentName(Component);
-            if (selfName &&
-                (selfName === name ||
-                    selfName === camelize(name) ||
-                    selfName === capitalize(camelize(name)))) {
-                return Component;
-            }
-        }
-        const res = 
-        // local registration
-        // check instance[type] first which is resolved for options API
-        resolve(instance[type] || Component[type], name) ||
-            // global registration
-            resolve(instance.appContext[type], name);
-        if (!res && maybeSelfReference) {
-            // fallback to implicit self-reference
-            return Component;
-        }
-        if ((process.env.NODE_ENV !== 'production') && warnMissing && !res) {
-            const extra = type === COMPONENTS
-                ? `\nIf this is a native custom element, make sure to exclude it from ` +
-                    `component resolution via compilerOptions.isCustomElement.`
-                : ``;
-            warn$1(`Failed to resolve ${type.slice(0, -1)}: ${name}${extra}`);
-        }
-        return res;
-    }
-    else if ((process.env.NODE_ENV !== 'production')) {
-        warn$1(`resolve${capitalize(type.slice(0, -1))} ` +
-            `can only be used in render() or setup().`);
-    }
-}
-function resolve(registry, name) {
-    return (registry &&
-        (registry[name] ||
-            registry[camelize(name)] ||
-            registry[capitalize(camelize(name))]));
-}
 
 const Fragment = Symbol((process.env.NODE_ENV !== 'production') ? 'Fragment' : undefined);
 const Text = Symbol((process.env.NODE_ENV !== 'production') ? 'Text' : undefined);
@@ -3467,6 +3756,15 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
         if (children) {
             normalizeChildren(cloned, children);
         }
+        if (isBlockTreeEnabled > 0 && !isBlockNode && currentBlock) {
+            if (cloned.shapeFlag & 6 /* COMPONENT */) {
+                currentBlock[currentBlock.indexOf(type)] = cloned;
+            }
+            else {
+                currentBlock.push(cloned);
+            }
+        }
+        cloned.patchFlag |= -2 /* BAIL */;
         return cloned;
     }
     // class component normalization.
@@ -3680,287 +3978,6 @@ function mergeProps(...args) {
     return ret;
 }
 
-/**
- * For prefixing keys in v-on="obj" with "on"
- * @private
- */
-function toHandlers(obj) {
-    const ret = {};
-    if ((process.env.NODE_ENV !== 'production') && !isObject(obj)) {
-        warn$1(`v-on with no argument expects an object value.`);
-        return ret;
-    }
-    for (const key in obj) {
-        ret[toHandlerKey(key)] = obj[key];
-    }
-    return ret;
-}
-
-/**
- * #2437 In Vue 3, functional components do not have a public instance proxy but
- * they exist in the internal parent chain. For code that relies on traversing
- * public $parent chains, skip functional ones and go to the parent instead.
- */
-const getPublicInstance = (i) => {
-    if (!i)
-        return null;
-    if (isStatefulComponent(i))
-        return getExposeProxy(i) || i.proxy;
-    return getPublicInstance(i.parent);
-};
-const publicPropertiesMap = 
-// Move PURE marker to new line to workaround compiler discarding it
-// due to type annotation
-/*#__PURE__*/ extend(Object.create(null), {
-    $: i => i,
-    // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
-    // $el: i => i.vnode.el,
-    $el: i => i.__$el || (i.__$el = {}),
-    $data: i => i.data,
-    $props: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.props) : i.props),
-    $attrs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.attrs) : i.attrs),
-    $slots: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.slots) : i.slots),
-    $refs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.refs) : i.refs),
-    $parent: i => getPublicInstance(i.parent),
-    $root: i => getPublicInstance(i.root),
-    $emit: i => i.emit,
-    $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
-    $forceUpdate: i => () => queueJob(i.update),
-    // $nextTick: i => nextTick.bind(i.proxy!), // fixed by xxxxxx
-    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
-});
-const PublicInstanceProxyHandlers = {
-    get({ _: instance }, key) {
-        const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
-        // for internal formatters to know that this is a Vue instance
-        if ((process.env.NODE_ENV !== 'production') && key === '__isVue') {
-            return true;
-        }
-        // prioritize <script setup> bindings during dev.
-        // this allows even properties that start with _ or $ to be used - so that
-        // it aligns with the production behavior where the render fn is inlined and
-        // indeed has access to all declared variables.
-        if ((process.env.NODE_ENV !== 'production') &&
-            setupState !== EMPTY_OBJ &&
-            setupState.__isScriptSetup &&
-            hasOwn(setupState, key)) {
-            return setupState[key];
-        }
-        // data / props / ctx
-        // This getter gets called for every property access on the render context
-        // during render and is a major hotspot. The most expensive part of this
-        // is the multiple hasOwn() calls. It's much faster to do a simple property
-        // access on a plain object, so we use an accessCache object (with null
-        // prototype) to memoize what access type a key corresponds to.
-        let normalizedProps;
-        if (key[0] !== '$') {
-            const n = accessCache[key];
-            if (n !== undefined) {
-                switch (n) {
-                    case 1 /* SETUP */:
-                        return setupState[key];
-                    case 2 /* DATA */:
-                        return data[key];
-                    case 4 /* CONTEXT */:
-                        return ctx[key];
-                    case 3 /* PROPS */:
-                        return props[key];
-                    // default: just fallthrough
-                }
-            }
-            else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
-                accessCache[key] = 1 /* SETUP */;
-                return setupState[key];
-            }
-            else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-                accessCache[key] = 2 /* DATA */;
-                return data[key];
-            }
-            else if (
-            // only cache other properties when instance has declared (thus stable)
-            // props
-            (normalizedProps = instance.propsOptions[0]) &&
-                hasOwn(normalizedProps, key)) {
-                accessCache[key] = 3 /* PROPS */;
-                return props[key];
-            }
-            else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-                accessCache[key] = 4 /* CONTEXT */;
-                return ctx[key];
-            }
-            else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
-                accessCache[key] = 0 /* OTHER */;
-            }
-        }
-        const publicGetter = publicPropertiesMap[key];
-        let cssModule, globalProperties;
-        // public $xxx properties
-        if (publicGetter) {
-            if (key === '$attrs') {
-                track(instance, "get" /* GET */, key);
-                (process.env.NODE_ENV !== 'production') && markAttrsAccessed();
-            }
-            return publicGetter(instance);
-        }
-        else if (
-        // css module (injected by vue-loader)
-        (cssModule = type.__cssModules) &&
-            (cssModule = cssModule[key])) {
-            return cssModule;
-        }
-        else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-            // user may set custom properties to `this` that start with `$`
-            accessCache[key] = 4 /* CONTEXT */;
-            return ctx[key];
-        }
-        else if (
-        // global properties
-        ((globalProperties = appContext.config.globalProperties),
-            hasOwn(globalProperties, key))) {
-            {
-                return globalProperties[key];
-            }
-        }
-        else if ((process.env.NODE_ENV !== 'production') &&
-            currentRenderingInstance &&
-            (!isString(key) ||
-                // #1091 avoid internal isRef/isVNode checks on component instance leading
-                // to infinite warning loop
-                key.indexOf('__v') !== 0)) {
-            if (data !== EMPTY_OBJ &&
-                (key[0] === '$' || key[0] === '_') &&
-                hasOwn(data, key)) {
-                warn$1(`Property ${JSON.stringify(key)} must be accessed via $data because it starts with a reserved ` +
-                    `character ("$" or "_") and is not proxied on the render context.`);
-            }
-            else if (instance === currentRenderingInstance) {
-                warn$1(`Property ${JSON.stringify(key)} was accessed during render ` +
-                    `but is not defined on instance.`);
-            }
-        }
-    },
-    set({ _: instance }, key, value) {
-        const { data, setupState, ctx } = instance;
-        if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
-            setupState[key] = value;
-            return true;
-        }
-        else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-            data[key] = value;
-            return true;
-        }
-        else if (hasOwn(instance.props, key)) {
-            (process.env.NODE_ENV !== 'production') &&
-                warn$1(`Attempting to mutate prop "${key}". Props are readonly.`, instance);
-            return false;
-        }
-        if (key[0] === '$' && key.slice(1) in instance) {
-            (process.env.NODE_ENV !== 'production') &&
-                warn$1(`Attempting to mutate public property "${key}". ` +
-                    `Properties starting with $ are reserved and readonly.`, instance);
-            return false;
-        }
-        else {
-            if ((process.env.NODE_ENV !== 'production') && key in instance.appContext.config.globalProperties) {
-                Object.defineProperty(ctx, key, {
-                    enumerable: true,
-                    configurable: true,
-                    value
-                });
-            }
-            else {
-                ctx[key] = value;
-            }
-        }
-        return true;
-    },
-    has({ _: { data, setupState, accessCache, ctx, appContext, propsOptions } }, key) {
-        let normalizedProps;
-        return (!!accessCache[key] ||
-            (data !== EMPTY_OBJ && hasOwn(data, key)) ||
-            (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) ||
-            ((normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key)) ||
-            hasOwn(ctx, key) ||
-            hasOwn(publicPropertiesMap, key) ||
-            hasOwn(appContext.config.globalProperties, key));
-    },
-    defineProperty(target, key, descriptor) {
-        if (descriptor.get != null) {
-            // invalidate key cache of a getter based property #5417
-            target._.accessCache[key] = 0;
-        }
-        else if (hasOwn(descriptor, 'value')) {
-            this.set(target, key, descriptor.value, null);
-        }
-        return Reflect.defineProperty(target, key, descriptor);
-    }
-};
-if ((process.env.NODE_ENV !== 'production') && !false) {
-    PublicInstanceProxyHandlers.ownKeys = (target) => {
-        warn$1(`Avoid app logic that relies on enumerating keys on a component instance. ` +
-            `The keys will be empty in production mode to avoid performance overhead.`);
-        return Reflect.ownKeys(target);
-    };
-}
-// dev only
-// In dev mode, the proxy target exposes the same properties as seen on `this`
-// for easier console inspection. In prod mode it will be an empty object so
-// these properties definitions can be skipped.
-function createDevRenderContext(instance) {
-    const target = {};
-    // expose internal instance for proxy handlers
-    Object.defineProperty(target, `_`, {
-        configurable: true,
-        enumerable: false,
-        get: () => instance
-    });
-    // expose public properties
-    Object.keys(publicPropertiesMap).forEach(key => {
-        Object.defineProperty(target, key, {
-            configurable: true,
-            enumerable: false,
-            get: () => publicPropertiesMap[key](instance),
-            // intercepted by the proxy so no need for implementation,
-            // but needed to prevent set errors
-            set: NOOP
-        });
-    });
-    return target;
-}
-// dev only
-function exposePropsOnRenderContext(instance) {
-    const { ctx, propsOptions: [propsOptions] } = instance;
-    if (propsOptions) {
-        Object.keys(propsOptions).forEach(key => {
-            Object.defineProperty(ctx, key, {
-                enumerable: true,
-                configurable: true,
-                get: () => instance.props[key],
-                set: NOOP
-            });
-        });
-    }
-}
-// dev only
-function exposeSetupStateOnRenderContext(instance) {
-    const { ctx, setupState } = instance;
-    Object.keys(toRaw(setupState)).forEach(key => {
-        if (!setupState.__isScriptSetup) {
-            if (key[0] === '$' || key[0] === '_') {
-                warn$1(`setup() return property ${JSON.stringify(key)} should not start with "$" or "_" ` +
-                    `which are reserved prefixes for Vue internals.`);
-                return;
-            }
-            Object.defineProperty(ctx, key, {
-                enumerable: true,
-                configurable: true,
-                get: () => setupState[key],
-                set: NOOP
-            });
-        }
-    });
-}
-
 const emptyAppContext = createAppContext();
 let uid$1 = 0;
 function createComponentInstance(vnode, parent, suspense) {
@@ -3987,7 +4004,7 @@ function createComponentInstance(vnode, parent, suspense) {
         provides: parent ? parent.provides : Object.create(appContext.provides),
         accessCache: null,
         renderCache: [],
-        // local resovled assets
+        // local resolved assets
         components: null,
         directives: null,
         // resolved props and emits options
@@ -4463,7 +4480,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.33";
+const version = "3.2.36";
 /**
  * @internal only exposed in compat builds
  */
