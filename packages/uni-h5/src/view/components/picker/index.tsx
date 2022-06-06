@@ -12,6 +12,7 @@ import {
   Ref,
   ExtractPropTypes,
   onMounted,
+  StyleValue,
 } from 'vue'
 import {
   useBooleanAttr,
@@ -198,8 +199,8 @@ type State = {
   oldValueArray: number[]
   isDesktop: boolean
   popupStyle: {
-    content: Data
-    triangle: Data
+    content: StyleValue
+    triangle: StyleValue
   }
 }
 

@@ -30,6 +30,6 @@
     "@dcloudio/uni-push": "3.0.0-alpha-3041320220531001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3041320220531001",
     "@dcloudio/uni-stat": "3.0.0-alpha-3041320220531001",
-    "@vue/shared": "3.2.33"
+    "@vue/shared": "3.2.36"
   }
 }

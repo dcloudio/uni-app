@@ -32,7 +32,7 @@
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3041320220531001",
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3041320220531001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3041320220531001",
-    "@vue/compiler-core": "3.2.33",
-    "@vue/shared": "3.2.33"
+    "@vue/compiler-core": "3.2.36",
+    "@vue/shared": "3.2.36"
   }
 }

@@ -31,10 +31,10 @@
     "@vitejs/plugin-legacy": "^1.8.2",
     "@vitejs/plugin-vue": "^2.3.3",
     "@vitejs/plugin-vue-jsx": "^1.3.10",
-    "@vue/compiler-core": "3.2.33",
-    "@vue/compiler-dom": "3.2.33",
-    "@vue/compiler-sfc": "3.2.33",
-    "@vue/shared": "3.2.33",
+    "@vue/compiler-core": "3.2.36",
+    "@vue/compiler-dom": "3.2.36",
+    "@vue/compiler-sfc": "3.2.36",
+    "@vue/shared": "3.2.36",
     "cac": "6.7.9",
     "debug": "^4.3.3",
     "estree-walker": "^2.0.2",
@@ -54,7 +54,7 @@
     "@vue/babel-plugin-jsx": "^1.1.1",
     "chokidar": "^3.5.3",
     "vite": "^2.9.9",
-    "vue": "3.2.33"
+    "vue": "3.2.36"
   },
   "peerDependencies": {
     "vite": "^2.9.9"
