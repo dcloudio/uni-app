@@ -40,7 +40,7 @@ export function getDeviceInfo () {
 
 export function getAppBaseInfo () {
   initBrowserInfo()
-  const { theme, language } = browserInfo
+  const { theme, language, browserName, browserVersion } = browserInfo
 
   const appLanguage = uni
     ? uni.getLocale
@@ -58,10 +58,10 @@ export function getAppBaseInfo () {
     hostSDKVersion: undefined,
     hostPackageName: undefined,
     hostFontSizeSetting: undefined,
-    hostName: undefined,
-    hostVersion: undefined,
-    hostTheme: undefined,
-    hostLanguage: undefined,
+    hostName: browserName,
+    hostVersion: browserVersion,
+    hostTheme: theme,
+    hostLanguage: language,
     language,
     SDKVersion: '',
     theme,
