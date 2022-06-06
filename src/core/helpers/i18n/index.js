@@ -101,7 +101,7 @@ export function initAppLocale (Vue, appVm, locale) {
   }
   Object.defineProperty(appVm, '$locale', {
     get () {
-      return normalizeLocale(state.locale)
+      return state.locale
     },
     set (v) {
       state.locale = v
