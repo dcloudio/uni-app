@@ -53,7 +53,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
   'getAppBaseInfo',
   () => {
     initBrowserInfo()
-    const { theme, language } = browserInfo
+    const { theme, language, browserName, browserVersion } = browserInfo
 
     return {
       appId: __uniConfig.appId,
@@ -65,10 +65,10 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       hostSDKVersion: undefined,
       hostPackageName: undefined,
       hostFontSizeSetting: undefined,
-      hostName: undefined,
-      hostVersion: undefined,
-      hostTheme: undefined,
-      hostLanguage: undefined,
+      hostName: browserName,
+      hostVersion: browserVersion,
+      hostTheme: theme,
+      hostLanguage: language,
       language,
       SDKVersion: '',
       theme,
