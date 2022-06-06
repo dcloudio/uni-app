@@ -765,14 +765,14 @@ importers:
 
   packages/uni-stacktracey:
     specifiers:
-      '@dcloudio/types': ^2.6.6
+      '@dcloudio/types': ^2.6.11
       source-map: ^0.7.3
       stacktracey: ^2.1.8
     dependencies:
       source-map: 0.7.3
       stacktracey: 2.1.8
     devDependencies:
-      '@dcloudio/types': 2.6.6
+      '@dcloudio/types': 2.6.11
 
   packages/uni-stat:
     specifiers:
@@ -2096,21 +2096,15 @@ packages:
       uuid: 8.3.2
     dev: true
 
-  /@cypress/xvfb/1.2.4_supports-color@8.1.1:
+  /@cypress/xvfb/1.2.4:
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
     dependencies:
-      debug: 3.2.7_supports-color@8.1.1
+      debug: 3.2.7
       lodash.once: 4.1.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@dcloudio/types/2.6.11:
     resolution: {integrity: sha512-nTlGWxGAI0Xq7twTThdRJTJa0kBtNDyWACO2xYJyhVQXNKKIci1PwDuQmpvZCD1apbwWWVi+jm9RBMNsjAtxZw==}
-    dev: true
-
-  /@dcloudio/types/2.6.6:
-    resolution: {integrity: sha512-ChLbkLuXfWxaj6VcsCcspIyC9+xIYKAJX++f50oCzUWbApslGwRpJ12wqS9k5Eg5euaHSzmyE0JfpZlNFpBk6w==}
     dev: true
 
   /@dcloudio/uni-cli-i18n/2.0.0-alpha-33020211130001:
@@ -3500,8 +3494,6 @@ packages:
       raw-body: 2.5.1
       type-is: 1.6.18
       unpipe: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /brace-expansion/1.1.11:
@@ -3863,8 +3855,6 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /concat-map/0.0.1:
@@ -4067,7 +4057,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@cypress/request': 2.88.10
-      '@cypress/xvfb': 1.2.4_supports-color@8.1.1
+      '@cypress/xvfb': 1.2.4
       '@types/node': 14.18.16
       '@types/sinonjs__fake-timers': 6.0.4
       '@types/sizzle': 2.3.3
@@ -4135,24 +4125,13 @@ packages:
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
     dependencies:
       ms: 2.0.0
 
-  /debug/3.2.7_supports-color@8.1.1:
+  /debug/3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
     dependencies:
       ms: 2.1.3
-      supports-color: 8.1.1
     dev: true
 
   /debug/4.3.4:
@@ -4817,8 +4796,6 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /extend/3.0.2:
@@ -4914,8 +4891,6 @@ packages:
       parseurl: 1.3.3
       statuses: 2.0.1
       unpipe: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /find-cache-dir/3.3.2:
@@ -7563,8 +7538,6 @@ packages:
       on-finished: 2.4.1
       range-parser: 1.2.1
       statuses: 2.0.1
-    transitivePeerDependencies:
-      - supports-color
 
   /serialize-javascript/4.0.0:
     resolution: {integrity: sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==}
@@ -7580,8 +7553,6 @@ packages:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.18.0
-    transitivePeerDependencies:
-      - supports-color
 
   /setprototypeof/1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
@@ -8227,6 +8198,7 @@ packages:
       rollup: 2.72.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
 
   /vlq/0.2.3:
     resolution: {integrity: sha512-DRibZL6DsNhIgYQ+wNdWDL2SL3bKPlVrRiBqV5yuMm++op8W4kGFtaQfCs4KEJn0wBZcHVHJ3eoywX8983k1ow==}
