@@ -3516,7 +3516,9 @@ function resolveAsset(type, name) {
     var Component = instance.type; // explicit self name has highest priority
 
     if (type === COMPONENTS) {
-      var selfName = getComponentName(Component);
+      var selfName = getComponentName(Component, false
+      /* do not include inferred name to avoid breaking existing code */
+      );
 
       if (selfName && (selfName === name || selfName === camelize(name) || selfName === capitalize(camelize(name)))) {
         return Component;
@@ -5585,6 +5587,8 @@ function createHydrationFunctions(rendererInternals) {
       case Static:
         if (domType !== 1
         /* ELEMENT */
+        && domType !== 3
+        /* TEXT */
         ) {
           nextNode = onMismatch();
         } else {
@@ -5595,7 +5599,9 @@ function createHydrationFunctions(rendererInternals) {
           var needToAdoptContent = !vnode.children.length;
 
           for (var i = 0; i < vnode.staticCount; i++) {
-            if (needToAdoptContent) vnode.children += nextNode.outerHTML;
+            if (needToAdoptContent) vnode.children += nextNode.nodeType === 1
+            /* ELEMENT */
+            ? nextNode.outerHTML : nextNode.data;
 
             if (i === vnode.staticCount - 1) {
               vnode.anchor = nextNode;
@@ -8901,7 +8907,8 @@ var classifyRE = /(?:^|[-_])(\w)/g;
 var classify = str => str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, '');
 
 function getComponentName(Component) {
-  return isFunction(Component) ? Component.displayName || Component.name : Component.name;
+  var includeInferred = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  return isFunction(Component) ? Component.displayName || Component.name : Component.name || includeInferred && Component.__name;
 }
 /* istanbul ignore next */
 
@@ -9381,7 +9388,7 @@ function isMemoSame(cached, memo) {
 } // Core API ------------------------------------------------------------------
 
 
-var version = "3.2.36";
+var version = "3.2.37";
 /**
  * @internal only exposed in compat builds
  */

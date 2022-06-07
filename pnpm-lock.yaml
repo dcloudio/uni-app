@@ -23,11 +23,11 @@ importers:
       '@typescript-eslint/parser': ^5.14.0
       '@vitejs/plugin-vue': ^2.3.3
       '@vitejs/plugin-vue-jsx': ^1.3.10
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/reactivity': 3.2.36
-      '@vue/runtime-core': 3.2.36
-      '@vue/runtime-dom': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/reactivity': 3.2.37
+      '@vue/runtime-core': 3.2.37
+      '@vue/runtime-dom': 3.2.37
+      '@vue/shared': 3.2.37
       core-js: ^2.6.12
       enquirer: ^2.3.6
       eslint: ^7.17.0
@@ -51,7 +51,7 @@ importers:
       ts-jest: ^27.0.3
       typescript: 4.6.4
       vite: ^2.9.9
-      vue: 3.2.36
+      vue: 3.2.37
       vue-router: ^4.0.15
       yorkie: ^2.0.0
     devDependencies:
@@ -72,13 +72,13 @@ importers:
       '@types/jest': 27.5.0
       '@types/node': 17.0.31
       '@typescript-eslint/parser': 5.22.0_e4zyhrvfnqudwdx5bevnvkluy4
-      '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.36
+      '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.37
       '@vitejs/plugin-vue-jsx': 1.3.10
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/reactivity': 3.2.36
-      '@vue/runtime-core': 3.2.36
-      '@vue/runtime-dom': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/reactivity': 3.2.37
+      '@vue/runtime-core': 3.2.37
+      '@vue/runtime-dom': 3.2.37
+      '@vue/shared': 3.2.37
       core-js: 2.6.12
       enquirer: 2.3.6
       eslint: 7.32.0
@@ -97,13 +97,13 @@ importers:
       rollup-plugin-node-globals: 1.4.0
       rollup-plugin-terser: 7.0.2_rollup@2.72.0
       rollup-plugin-typescript2: 0.29.0_s6zbpzdkhlvcqzhawas6jkergu
-      rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.36
+      rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.37
       semver: 7.3.7
       ts-jest: 27.1.4_nnrehbtdwi4vovimszixfn4hgm
       typescript: 4.6.4
       vite: 2.9.9
-      vue: 3.2.36
-      vue-router: 4.0.15_vue@3.2.36
+      vue: 3.2.37
+      vue-router: 4.0.15_vue@3.2.37
       yorkie: 2.0.0
 
   packages/playground/ssr:
@@ -116,16 +116,16 @@ importers:
       cypress: ^7.3.0
       serve-static: ^1.14.1
       vite: ^2.9.9
-      vue: 3.2.36
+      vue: 3.2.37
       vue-router: ^4.0.15
       vuex: ^4.0.2
     dependencies:
       '@dcloudio/uni-app': link:../../uni-app
       '@dcloudio/uni-components': link:../../uni-components
       '@dcloudio/uni-h5': link:../../uni-h5
-      vue: 3.2.36
-      vue-router: 4.0.15_vue@3.2.36
-      vuex: 4.0.2_vue@3.2.36
+      vue: 3.2.37
+      vue-router: 4.0.15_vue@3.2.37
+      vuex: 4.0.2_vue@3.2.37
     devDependencies:
       '@dcloudio/vite-plugin-uni': link:../../vite-plugin-uni
       compression: 1.7.4
@@ -168,7 +168,7 @@ importers:
       '@dcloudio/uni-push': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-stat': 3.0.0-alpha-3041320220531001
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cloud': link:../uni-cloud
       '@dcloudio/uni-components': link:../uni-components
@@ -176,7 +176,7 @@ importers:
       '@dcloudio/uni-push': link:../uni-push
       '@dcloudio/uni-shared': link:../uni-shared
       '@dcloudio/uni-stat': link:../uni-stat
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
 
   packages/uni-app-plus:
     specifiers:
@@ -188,11 +188,11 @@ importers:
       '@dcloudio/uni-i18n': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
       '@types/pako': 1.0.2
-      '@vue/compiler-sfc': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
       autoprefixer: ^10.4.7
       pako: ^1.0.11
       postcss: ^8.4.13
-      vue: 3.2.36
+      vue: 3.2.37
     dependencies:
       '@dcloudio/uni-app-vite': link:../uni-app-vite
       '@dcloudio/uni-app-vue': link:../uni-app-vue
@@ -203,11 +203,11 @@ importers:
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
       '@types/pako': 1.0.2
-      '@vue/compiler-sfc': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
       autoprefixer: 10.4.7_postcss@8.4.13
       pako: 1.0.11
       postcss: 8.4.13
-      vue: 3.2.36
+      vue: 3.2.37
 
   packages/uni-app-vite:
     specifiers:
@@ -220,9 +220,9 @@ importers:
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
       '@vitejs/plugin-vue': ^2.3.3
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
       debug: ^4.3.3
       esbuild: ^0.14.27
       fs-extra: ^10.0.0
@@ -230,7 +230,7 @@ importers:
       postcss: ^8.4.13
       rollup: ^2.59.0
       vite: ^2.9.9
-      vue: 3.2.36
+      vue: 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -238,9 +238,9 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
       '@dcloudio/uts': link:../uts
       '@rollup/pluginutils': 4.2.1
-      '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
+      '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
       debug: 4.3.4
       fs-extra: 10.1.0
       picocolors: 1.0.0
@@ -248,11 +248,11 @@ importers:
     devDependencies:
       '@types/debug': 4.1.7
       '@types/fs-extra': 9.0.13
-      '@vue/compiler-core': 3.2.36
+      '@vue/compiler-core': 3.2.37
       esbuild: 0.14.38
       postcss: 8.4.13
       vite: 2.9.9
-      vue: 3.2.36
+      vue: 3.2.37
 
   packages/uni-app-vue:
     specifiers:
@@ -314,11 +314,11 @@ importers:
       '@types/resolve': ^1.20.2
       '@types/sass': ^1.43.1
       '@types/stylus': ^0.48.36
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/server-renderer': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/server-renderer': 3.2.37
+      '@vue/shared': 3.2.37
       autoprefixer: ^10.4.7
       base64url: ^3.0.1
       chokidar: ^3.5.3
@@ -343,7 +343,7 @@ importers:
       postcss-selector-parser: ^6.0.6
       resolve: ^1.22.0
       tapable: ^2.2.0
-      vue: 3.2.36
+      vue: 3.2.37
       xregexp: 3.1.0
     dependencies:
       '@ampproject/remapping': 2.2.0
@@ -356,11 +356,11 @@ importers:
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
       '@rollup/pluginutils': 4.2.1
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/server-renderer': 3.2.36_vue@3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/server-renderer': 3.2.37_vue@3.2.37
+      '@vue/shared': 3.2.37
       autoprefixer: 10.4.7_postcss@8.4.13
       base64url: 3.0.1
       chokidar: 3.5.3
@@ -398,7 +398,7 @@ importers:
       '@types/sass': 1.43.1
       '@types/stylus': 0.48.37
       postcss: 8.4.13
-      vue: 3.2.36
+      vue: 3.2.37
 
   packages/uni-cloud:
     specifiers:
@@ -439,13 +439,13 @@ importers:
       '@dcloudio/uni-i18n': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
       '@types/google.maps': ^3.45.6
-      '@vue/server-renderer': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/server-renderer': 3.2.37
+      '@vue/shared': 3.2.37
       acorn-loose: ^8.2.1
       acorn-walk: ^8.2.0
       localstorage-polyfill: ^1.0.1
       safe-area-insets: ^1.4.1
-      vue: 3.2.36
+      vue: 3.2.37
       vue-router: ^4.0.15
       xmlhttprequest: ^1.8.0
     dependencies:
@@ -453,11 +453,11 @@ importers:
       '@dcloudio/uni-h5-vue': link:../uni-h5-vue
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/server-renderer': 3.2.36_vue@3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/server-renderer': 3.2.37_vue@3.2.37
+      '@vue/shared': 3.2.37
       localstorage-polyfill: 1.0.1
       safe-area-insets: 1.4.1
-      vue-router: 4.0.15_vue@3.2.36
+      vue-router: 4.0.15_vue@3.2.37
       xmlhttprequest: 1.8.0
     devDependencies:
       '@dcloudio/uni-cli-i18n': 2.0.0-alpha-33020211130001
@@ -465,7 +465,7 @@ importers:
       '@types/google.maps': 3.48.7
       acorn-loose: 8.3.0
       acorn-walk: 8.2.0
-      vue: 3.2.36
+      vue: 3.2.37
 
   packages/uni-h5-vite:
     specifiers:
@@ -477,25 +477,25 @@ importers:
       '@types/mime': ^2.0.3
       '@types/module-alias': ^2.0.1
       '@types/resolve': ^1.20.2
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/server-renderer': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/server-renderer': 3.2.37
+      '@vue/shared': 3.2.37
       debug: ^4.3.3
       esbuild: ^0.14.27
       fs-extra: ^10.0.0
       mime: ^3.0.0
       module-alias: ^2.2.2
-      vue: 3.2.36
+      vue: 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.2.1
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/server-renderer': 3.2.36_vue@3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/server-renderer': 3.2.37_vue@3.2.37
+      '@vue/shared': 3.2.37
       debug: 4.3.4
       fs-extra: 10.1.0
       mime: 3.0.0
@@ -506,9 +506,9 @@ importers:
       '@types/mime': 2.0.3
       '@types/module-alias': 2.0.1
       '@types/resolve': 1.20.2
-      '@vue/compiler-core': 3.2.36
+      '@vue/compiler-core': 3.2.37
       esbuild: 0.14.38
-      vue: 3.2.36
+      vue: 3.2.37
 
   packages/uni-h5-vue:
     specifiers:
@@ -525,15 +525,15 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
 
   packages/uni-mp-baidu:
     specifiers:
@@ -543,8 +543,8 @@ importers:
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-compiler': link:../uni-mp-compiler
@@ -552,8 +552,8 @@ importers:
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-mp-weixin': link:../uni-mp-weixin
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
 
   packages/uni-mp-compiler:
     specifiers:
@@ -563,10 +563,10 @@ importers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
       '@types/babel__generator': ^7.6.4
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/shared': 3.2.37
       estree-walker: ^2.0.2
       source-map: ^0.6.1
     dependencies:
@@ -575,13 +575,13 @@ importers:
       '@babel/types': 7.17.10
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/shared': 3.2.37
       estree-walker: 2.0.2
     devDependencies:
       '@types/babel__generator': 7.6.4
-      '@vue/compiler-sfc': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
       source-map: 0.6.1
 
   packages/uni-mp-core:
@@ -595,8 +595,8 @@ importers:
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-compiler': link:../uni-mp-compiler
@@ -604,8 +604,8 @@ importers:
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-mp-weixin': link:../uni-mp-weixin
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
 
   packages/uni-mp-lark:
     specifiers:
@@ -615,8 +615,8 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-compiler': link:../uni-mp-compiler
@@ -624,8 +624,8 @@ importers:
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
 
   packages/uni-mp-qq:
     specifiers:
@@ -635,20 +635,20 @@ importers:
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
       '@types/fs-extra': ^9.0.13
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
       fs-extra: ^10.0.0
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
       fs-extra: 10.1.0
     devDependencies:
       '@dcloudio/uni-mp-weixin': link:../uni-mp-weixin
       '@types/fs-extra': 9.0.13
-      '@vue/compiler-core': 3.2.36
+      '@vue/compiler-core': 3.2.37
 
   packages/uni-mp-toutiao:
     specifiers:
@@ -657,16 +657,16 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-compiler': link:../uni-mp-compiler
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
 
   packages/uni-mp-vite:
     specifiers:
@@ -676,8 +676,8 @@ importers:
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
       '@types/debug': ^4.1.7
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/shared': 3.2.37
       debug: ^4.3.3
       magic-string: ^0.26.1
     dependencies:
@@ -686,8 +686,8 @@ importers:
       '@dcloudio/uni-mp-compiler': link:../uni-mp-compiler
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/shared': 3.2.37
       debug: 4.3.4
       magic-string: 0.26.1
     devDependencies:
@@ -697,10 +697,10 @@ importers:
     specifiers:
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
     devDependencies:
       '@dcloudio/uni-mp-vue': 'link:'
 
@@ -710,24 +710,24 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
     devDependencies:
-      '@vue/compiler-core': 3.2.36
+      '@vue/compiler-core': 3.2.37
 
   packages/uni-nvue-styler:
     specifiers:
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
       parse-css-font: ^4.0.0
       postcss: ^8.4.13
     dependencies:
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
       parse-css-font: 4.0.0
       postcss: 8.4.13
 
@@ -743,25 +743,25 @@ importers:
       '@dcloudio/uni-mp-vite': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-mp-vue': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-mp-vite': link:../uni-mp-vite
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
     devDependencies:
-      '@vue/compiler-core': 3.2.36
+      '@vue/compiler-core': 3.2.37
 
   packages/uni-shared:
     specifiers:
-      '@vue/runtime-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/runtime-core': 3.2.37
+      '@vue/shared': 3.2.37
     dependencies:
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
     devDependencies:
-      '@vue/runtime-core': 3.2.36
+      '@vue/runtime-core': 3.2.37
 
   packages/uni-stacktracey:
     specifiers:
@@ -850,10 +850,10 @@ importers:
       '@vitejs/plugin-vue': ^2.3.3
       '@vitejs/plugin-vue-jsx': ^1.3.10
       '@vue/babel-plugin-jsx': ^1.1.1
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/shared': 3.2.37
       cac: 6.7.9
       chokidar: ^3.5.3
       debug: ^4.3.3
@@ -865,7 +865,7 @@ importers:
       jsonc-parser: ^3.0.0
       picocolors: ^1.0.0
       vite: ^2.9.9
-      vue: 3.2.36
+      vue: 3.2.37
     dependencies:
       '@babel/core': 7.17.10
       '@babel/plugin-syntax-import-meta': 7.10.4_@babel+core@7.17.10
@@ -874,12 +874,12 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.2.1
       '@vitejs/plugin-legacy': 1.8.2_vite@2.9.9
-      '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.36
+      '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.37
       '@vitejs/plugin-vue-jsx': 1.3.10
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/shared': 3.2.37
       cac: 6.7.9
       debug: 4.3.4
       estree-walker: 2.0.2
@@ -898,7 +898,7 @@ importers:
       '@vue/babel-plugin-jsx': 1.1.1_@babel+core@7.17.10
       chokidar: 3.5.3
       vite: 2.9.9
-      vue: 3.2.36
+      vue: 3.2.37
 
 packages:
 
@@ -2984,7 +2984,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@vitejs/plugin-vue/2.3.3_vite@2.9.9+vue@3.2.36:
+  /@vitejs/plugin-vue/2.3.3_vite@2.9.9+vue@3.2.37:
     resolution: {integrity: sha512-SmQLDyhz+6lGJhPELsBdzXGc+AcaT8stgkbiTFGpXPe8Tl1tJaBw1A6pxDqDuRsVkD8uscrkx3hA7QDOoKYtyw==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2992,7 +2992,7 @@ packages:
       vue: ^3.2.25
     dependencies:
       vite: 2.9.9
-      vue: 3.2.36
+      vue: 3.2.37
 
   /@vue/babel-helper-vue-transform-on/1.0.2:
     resolution: {integrity: sha512-hz4R8tS5jMn8lDq6iD+yWL6XNB699pGIVLk7WSJnn1dbpjaazsjZQkieJoRX6gW5zpYSCFqQ7jUquPNY65tQYA==}
@@ -3022,11 +3022,11 @@ packages:
       source-map: 0.6.1
     dev: false
 
-  /@vue/compiler-core/3.2.36:
-    resolution: {integrity: sha512-bbyZM5hvBicv0PW3KUfVi+x3ylHnfKG7DOn5wM+f2OztTzTjLEyBb/5yrarIYpmnGitVGbjZqDbODyW4iK8hqw==}
+  /@vue/compiler-core/3.2.37:
+    resolution: {integrity: sha512-81KhEjo7YAOh0vQJoSmAD68wLfYqJvoiD4ulyedzF+OEk/bk6/hx3fTNVfuzugIIaTrOx4PGx6pAiBRe5e9Zmg==}
     dependencies:
       '@babel/parser': 7.17.10
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
       estree-walker: 2.0.2
       source-map: 0.6.1
 
@@ -3037,11 +3037,11 @@ packages:
       '@vue/shared': 3.2.33
     dev: false
 
-  /@vue/compiler-dom/3.2.36:
-    resolution: {integrity: sha512-tcOTAOiW4s24QLnq+ON6J+GRONXJ+A/mqKCORi0LSlIh8XQlNnlm24y8xIL8la+ZDgkdbjarQ9ZqYSvEja6gVA==}
+  /@vue/compiler-dom/3.2.37:
+    resolution: {integrity: sha512-yxJLH167fucHKxaqXpYk7x8z7mMEnXOw3G2q62FTkmsvNxu4FQSu5+3UMb+L7fjKa26DEzhrmCxAgFLLIzVfqQ==}
     dependencies:
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
 
   /@vue/compiler-sfc/3.2.33:
     resolution: {integrity: sha512-H8D0WqagCr295pQjUYyO8P3IejM3vEzeCO1apzByAEaAR/WimhMYczHfZVvlCE/9yBaEu/eu9RdiWr0kF8b71Q==}
@@ -3058,15 +3058,15 @@ packages:
       source-map: 0.6.1
     dev: false
 
-  /@vue/compiler-sfc/3.2.36:
-    resolution: {integrity: sha512-AvGb4bTj4W8uQ4BqaSxo7UwTEqX5utdRSMyHy58OragWlt8nEACQ9mIeQh3K4di4/SX+41+pJrLIY01lHAOFOA==}
+  /@vue/compiler-sfc/3.2.37:
+    resolution: {integrity: sha512-+7i/2+9LYlpqDv+KTtWhOZH+pa8/HnX/905MdVmAcI/mPQOBwkHHIzrsEsucyOIZQYMkXUiTkmZq5am/NyXKkg==}
     dependencies:
       '@babel/parser': 7.17.10
-      '@vue/compiler-core': 3.2.36
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-ssr': 3.2.36
-      '@vue/reactivity-transform': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-ssr': 3.2.37
+      '@vue/reactivity-transform': 3.2.37
+      '@vue/shared': 3.2.37
       estree-walker: 2.0.2
       magic-string: 0.25.9
       postcss: 8.4.13
@@ -3079,11 +3079,11 @@ packages:
       '@vue/shared': 3.2.33
     dev: false
 
-  /@vue/compiler-ssr/3.2.36:
-    resolution: {integrity: sha512-+KugInUFRvOxEdLkZwE+W43BqHyhBh0jpYXhmqw1xGq2dmE6J9eZ8UUSOKNhdHtQ/iNLWWeK/wPZkVLUf3YGaw==}
+  /@vue/compiler-ssr/3.2.37:
+    resolution: {integrity: sha512-7mQJD7HdXxQjktmsWp/J67lThEIcxLemz1Vb5I6rYJHR5vI+lON3nPGOH3ubmbvYGt8xEUaAr1j7/tIFWiEOqw==}
     dependencies:
-      '@vue/compiler-dom': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-dom': 3.2.37
+      '@vue/shared': 3.2.37
 
   /@vue/devtools-api/6.1.4:
     resolution: {integrity: sha512-IiA0SvDrJEgXvVxjNkHPFfDx6SXw0b/TUkqMcDZWNg9fnCAHbTpoo59YfJ9QLFkwa3raau5vSlRVzMSLDnfdtQ==}
@@ -3098,12 +3098,12 @@ packages:
       magic-string: 0.25.9
     dev: false
 
-  /@vue/reactivity-transform/3.2.36:
-    resolution: {integrity: sha512-Jk5o2BhpODC9XTA7o4EL8hSJ4JyrFWErLtClG3NH8wDS7ri9jBDWxI7/549T7JY9uilKsaNM+4pJASLj5dtRwA==}
+  /@vue/reactivity-transform/3.2.37:
+    resolution: {integrity: sha512-IWopkKEb+8qpu/1eMKVeXrK0NLw9HicGviJzhJDEyfxTR9e1WtpnnbYkJWurX6WwoFP0sz10xQg8yL8lgskAZg==}
     dependencies:
       '@babel/parser': 7.17.10
-      '@vue/compiler-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-core': 3.2.37
+      '@vue/shared': 3.2.37
       estree-walker: 2.0.2
       magic-string: 0.25.9
 
@@ -3113,10 +3113,10 @@ packages:
       '@vue/shared': 3.2.33
     dev: false
 
-  /@vue/reactivity/3.2.36:
-    resolution: {integrity: sha512-c2qvopo0crh9A4GXi2/2kfGYMxsJW4tVILrqRPydVGZHhq0fnzy6qmclWOhBFckEhmyxmpHpdJtIRYGeKcuhnA==}
+  /@vue/reactivity/3.2.37:
+    resolution: {integrity: sha512-/7WRafBOshOc6m3F7plwzPeCu/RCVv9uMpOwa/5PiY1Zz+WLVRWiy0MYKwmg19KBdGtFWsmZ4cD+LOdVPcs52A==}
     dependencies:
-      '@vue/shared': 3.2.36
+      '@vue/shared': 3.2.37
 
   /@vue/runtime-core/3.2.33:
     resolution: {integrity: sha512-N2D2vfaXsBPhzCV3JsXQa2NECjxP3eXgZlFqKh4tgakp3iX6LCGv76DLlc+IfFZq+TW10Y8QUfeihXOupJ1dGw==}
@@ -3125,11 +3125,11 @@ packages:
       '@vue/shared': 3.2.33
     dev: false
 
-  /@vue/runtime-core/3.2.36:
-    resolution: {integrity: sha512-PTWBD+Lub+1U3/KhbCExrfxyS14hstLX+cBboxVHaz+kXoiDLNDEYAovPtxeTutbqtClIXtft+wcGdC+FUQ9qQ==}
+  /@vue/runtime-core/3.2.37:
+    resolution: {integrity: sha512-JPcd9kFyEdXLl/i0ClS7lwgcs0QpUAWj+SKX2ZC3ANKi1U4DOtiEr6cRqFXsPwY5u1L9fAjkinIdB8Rz3FoYNQ==}
     dependencies:
-      '@vue/reactivity': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/reactivity': 3.2.37
+      '@vue/shared': 3.2.37
 
   /@vue/runtime-dom/3.2.33:
     resolution: {integrity: sha512-LSrJ6W7CZTSUygX5s8aFkraDWlO6K4geOwA3quFF2O+hC3QuAMZt/0Xb7JKE3C4JD4pFwCSO7oCrZmZ0BIJUnw==}
@@ -3139,11 +3139,11 @@ packages:
       csstype: 2.6.20
     dev: false
 
-  /@vue/runtime-dom/3.2.36:
-    resolution: {integrity: sha512-gYPYblm7QXHVuBohqNRRT7Wez0f2Mx2D40rb4fleehrJU9CnkjG0phhcGEZFfGwCmHZRqBCRgbFWE98bPULqkg==}
+  /@vue/runtime-dom/3.2.37:
+    resolution: {integrity: sha512-HimKdh9BepShW6YozwRKAYjYQWg9mQn63RGEiSswMbW+ssIht1MILYlVGkAGGQbkhSh31PCdoUcfiu4apXJoPw==}
     dependencies:
-      '@vue/runtime-core': 3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/runtime-core': 3.2.37
+      '@vue/shared': 3.2.37
       csstype: 2.6.20
 
   /@vue/server-renderer/3.2.33_vue@3.2.33:
@@ -3156,21 +3156,21 @@ packages:
       vue: 3.2.33
     dev: false
 
-  /@vue/server-renderer/3.2.36_vue@3.2.36:
-    resolution: {integrity: sha512-uZE0+jfye6yYXWvAQYeHZv+f50sRryvy16uiqzk3jn8hEY8zTjI+rzlmZSGoE915k+W/Ol9XSw6vxOUD8dGkUg==}
+  /@vue/server-renderer/3.2.37_vue@3.2.37:
+    resolution: {integrity: sha512-kLITEJvaYgZQ2h47hIzPh2K3jG8c1zCVbp/o/bzQOyvzaKiCquKS7AaioPI28GNxIsE/zSx+EwWYsNxDCX95MA==}
     peerDependencies:
-      vue: 3.2.36
+      vue: 3.2.37
     dependencies:
-      '@vue/compiler-ssr': 3.2.36
-      '@vue/shared': 3.2.36
-      vue: 3.2.36
+      '@vue/compiler-ssr': 3.2.37
+      '@vue/shared': 3.2.37
+      vue: 3.2.37
 
   /@vue/shared/3.2.33:
     resolution: {integrity: sha512-UBc1Pg1T3yZ97vsA2ueER0F6GbJebLHYlEi4ou1H5YL4KWvMOOWwpYo9/QpWq93wxKG6Wo13IY74Hcn/f7c7Bg==}
     dev: false
 
-  /@vue/shared/3.2.36:
-    resolution: {integrity: sha512-JtB41wXl7Au3+Nl3gD16Cfpj7k/6aCroZ6BbOiCMFCMvrOpkg/qQUXTso2XowaNqBbnkuGHurLAqkLBxNGc1hQ==}
+  /@vue/shared/3.2.37:
+    resolution: {integrity: sha512-4rSJemR2NQIo9Klm1vabqWjD8rs/ZaJSzMxkMNeJS6lHiUjjUeYFbooN19NgFjztubEKh3WlZUeOLVdbbUWHsw==}
 
   /abab/2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
@@ -7543,12 +7543,12 @@ packages:
       typescript: 4.6.4
     dev: true
 
-  /rollup-plugin-vue/6.0.0_@vue+compiler-sfc@3.2.36:
+  /rollup-plugin-vue/6.0.0_@vue+compiler-sfc@3.2.37:
     resolution: {integrity: sha512-oVvUd84d5u73M2HYM3XsMDLtZRIA/tw2U0dmHlXU2UWP5JARYHzh/U9vcxaN/x/9MrepY7VH3pHFeOhrWpxs/Q==}
     peerDependencies:
       '@vue/compiler-sfc': '*'
     dependencies:
-      '@vue/compiler-sfc': 3.2.36
+      '@vue/compiler-sfc': 3.2.37
       debug: 4.3.4
       hash-sum: 2.0.0
       rollup-pluginutils: 2.8.2
@@ -8324,13 +8324,13 @@ packages:
       vue: 3.2.33
     dev: false
 
-  /vue-router/4.0.15_vue@3.2.36:
+  /vue-router/4.0.15_vue@3.2.37:
     resolution: {integrity: sha512-xa+pIN9ZqORdIW1MkN2+d9Ui2pCM1b/UMgwYUCZOiFYHAvz/slKKBDha8DLrh5aCG/RibtrpyhKjKOZ85tYyWg==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
       '@vue/devtools-api': 6.1.4
-      vue: 3.2.36
+      vue: 3.2.37
 
   /vue/3.2.33:
     resolution: {integrity: sha512-si1ExAlDUrLSIg/V7D/GgA4twJwfsfgG+t9w10z38HhL/HA07132pUQ2KuwAo8qbCyMJ9e6OqrmWrOCr+jW7ZQ==}
@@ -8342,14 +8342,14 @@ packages:
       '@vue/shared': 3.2.33
     dev: false
 
-  /vue/3.2.36:
-    resolution: {integrity: sha512-5yTXmrE6gW8IQgttzHW5bfBiFA6mx35ZXHjGLDmKYzW6MMmYvCwuKybANRepwkMYeXw2v1buGg3/lPICY5YlZw==}
+  /vue/3.2.37:
+    resolution: {integrity: sha512-bOKEZxrm8Eh+fveCqS1/NkG/n6aMidsI6hahas7pa0w/l7jkbssJVsRhVDs07IdDq7h9KHswZOgItnwJAgtVtQ==}
     dependencies:
-      '@vue/compiler-dom': 3.2.36
-      '@vue/compiler-sfc': 3.2.36
-      '@vue/runtime-dom': 3.2.36
-      '@vue/server-renderer': 3.2.36_vue@3.2.36
-      '@vue/shared': 3.2.36
+      '@vue/compiler-dom': 3.2.37
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/runtime-dom': 3.2.37
+      '@vue/server-renderer': 3.2.37_vue@3.2.37
+      '@vue/shared': 3.2.37
 
   /vuex/4.0.2_vue@3.2.33:
     resolution: {integrity: sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==}
@@ -8360,13 +8360,13 @@ packages:
       vue: 3.2.33
     dev: false
 
-  /vuex/4.0.2_vue@3.2.36:
+  /vuex/4.0.2_vue@3.2.37:
     resolution: {integrity: sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==}
     peerDependencies:
       vue: ^3.0.2
     dependencies:
       '@vue/devtools-api': 6.1.4
-      vue: 3.2.36
+      vue: 3.2.37
     dev: false
 
   /w3c-hr-time/1.0.2:
