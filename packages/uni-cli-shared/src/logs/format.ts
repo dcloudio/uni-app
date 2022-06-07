@@ -78,6 +78,9 @@ export function formatInfoMsg(
   msg: string,
   options?: LogOptions & { nvue?: boolean }
 ) {
+  if (options && isInHBuilderX()) {
+    options.timestamp = false
+  }
   initInfoFormattersOnce()
   const formatter = infoFormatters.find(({ test }) => test(msg, options))
   if (formatter) {
