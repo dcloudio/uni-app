@@ -159,10 +159,10 @@ export default {
       type: [Boolean, String],
       default: true
     },
-	showMuteBtn: {
-	  type: [Boolean, String],
-	  default: true
-	},
+    showMuteBtn: {
+      type: [Boolean, String],
+      default: true
+    },
     enablePlayGesture: {
       type: [Boolean, String],
       default: true
