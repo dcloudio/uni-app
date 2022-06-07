@@ -1842,7 +1842,7 @@ var serviceContext = (function () {
     };
     Object.defineProperty(appVm, '$locale', {
       get () {
-        return normalizeLocale$1(state.locale)
+        return state.locale
       },
       set (v) {
         state.locale = v;
@@ -1914,45 +1914,6 @@ var serviceContext = (function () {
         ['titleText'],
         ['searchInput', 'placeholder']
       ])
-    }
-  }
-
-  function include$1 (str, parts) {
-    return !!parts.find((part) => str.indexOf(part) !== -1)
-  }
-
-  function startsWith$1 (str, parts) {
-    return parts.find((part) => str.indexOf(part) === 0)
-  }
-
-  function normalizeLocale$1 (locale, messages) {
-    if (!locale) {
-      return
-    }
-    locale = locale.trim().replace(/_/g, '-');
-    if (messages && messages[locale]) {
-      return locale
-    }
-    locale = locale.toLowerCase();
-    if (locale === 'chinese') {
-      // 支付宝
-      return LOCALE_ZH_HANS$1
-    }
-    if (locale.indexOf('zh') === 0) {
-      if (locale.indexOf('-hans') > -1) {
-        return LOCALE_ZH_HANS$1
-      }
-      if (locale.indexOf('-hant') > -1) {
-        return LOCALE_ZH_HANT$1
-      }
-      if (include$1(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-        return LOCALE_ZH_HANT$1
-      }
-      return LOCALE_ZH_HANS$1
-    }
-    const lang = startsWith$1(locale, [LOCALE_EN$1, LOCALE_FR$1, LOCALE_ES$1]);
-    if (lang) {
-      return lang
     }
   }
   // export function initI18n() {
