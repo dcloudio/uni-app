@@ -9,7 +9,8 @@ const {
 const {
   hasOwn,
   parseStyle,
-  parseTabBar
+  parseTabBar,
+  NON_APP_JSON_KEYS
 } = require('../util')
 
 function defaultCopy (name, value, json) {
@@ -37,6 +38,8 @@ function copyToJson (json, fromJson, options) {
     }
   })
 }
+
+const projectKeys = ['component2', 'enableAppxNg']
 
 module.exports = function (pagesJson, manifestJson) {
   const app = {
@@ -72,9 +75,7 @@ module.exports = function (pagesJson, manifestJson) {
   const platformJson = manifestJson['mp-alipay'] || {}
 
   Object.keys(platformJson).forEach(key => {
-    if (
-      ['usingComponents', 'optimization', 'uniStatistics', 'appid'].indexOf(key) === -1
-    ) {
+    if (!projectKeys.includes(key) && !NON_APP_JSON_KEYS.includes(key)) {
       // usingComponents 是编译模式开关，需要过滤，不能拷贝到 app
       app[key] = platformJson[key]
     }
@@ -84,16 +85,12 @@ module.exports = function (pagesJson, manifestJson) {
     updateAppJsonUsingComponents(app.usingComponents)
   }
 
-  const project = Object.assign({}, manifestJson['mp-alipay'] || {})
-  delete project.usingComponents
-  delete project.plugins
-  delete project.useDynamicPlugins
-  if (!hasOwn(project, 'component2')) {
-    project.component2 = true
-  }
-  if (!hasOwn(project, 'enableAppxNg')) {
-    project.enableAppxNg = true
-  }
+  const project = Object.assign({
+    appid: platformJson.appid
+  })
+
+  project.component2 = hasOwn(platformJson, 'component2') ? platformJson.component2 : true
+  project.enableAppxNg = hasOwn(platformJson, 'enableAppxNg') ? platformJson.enableAppxNg : true
 
   return [{
     name: 'app',
