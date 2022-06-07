@@ -13422,7 +13422,6 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const appBaseInfo = getAppBaseInfo();
     _initSystemInfo = true;
     const extraData = {
-        errMsg: 'getSystemInfo:ok',
         fontSizeSetting: appBaseInfo.hostFontSizeSetting,
         osName: systemInfo.osName.toLowerCase(),
     };

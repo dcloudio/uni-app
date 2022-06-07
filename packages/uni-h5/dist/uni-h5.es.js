@@ -16546,7 +16546,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
 });
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
   initBrowserInfo();
-  const { theme, language } = browserInfo;
+  const { theme, language, browserName, browserVersion } = browserInfo;
   return {
     appId: __uniConfig.appId,
     appName: __uniConfig.appName,
@@ -16557,10 +16557,10 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
     hostSDKVersion: void 0,
     hostPackageName: void 0,
     hostFontSizeSetting: void 0,
-    hostName: void 0,
-    hostVersion: void 0,
-    hostTheme: void 0,
-    hostLanguage: void 0,
+    hostName: browserName,
+    hostVersion: browserVersion,
+    hostTheme: theme,
+    hostLanguage: language,
     language,
     SDKVersion: "",
     theme,
