@@ -70,13 +70,15 @@ module.exports = function (pagesJson, manifestJson) {
   copyToJson(app, pagesJson, pagesJson2AppJson)
 
   const platformJson = manifestJson['mp-alipay'] || {}
-  if (hasOwn(platformJson, 'plugins')) {
-    app.plugins = platformJson.plugins
-  }
 
-  if (platformJson.useDynamicPlugins) {
-    app.useDynamicPlugins = true
-  }
+  Object.keys(platformJson).forEach(key => {
+    if (
+      ['usingComponents', 'optimization', 'uniStatistics', 'appid'].indexOf(key) === -1
+    ) {
+      // usingComponents 是编译模式开关，需要过滤，不能拷贝到 app
+      app[key] = platformJson[key]
+    }
+  })
 
   if (app.usingComponents) {
     updateAppJsonUsingComponents(app.usingComponents)
@@ -86,8 +88,12 @@ module.exports = function (pagesJson, manifestJson) {
   delete project.usingComponents
   delete project.plugins
   delete project.useDynamicPlugins
-  !('component2' in project) && (project.component2 = true)
-  !('enableAppxNg' in project) && (project.enableAppxNg = true)
+  if (!hasOwn(project, 'component2')) {
+    project.component2 = true
+  }
+  if (!hasOwn(project, 'enableAppxNg')) {
+    project.enableAppxNg = true
+  }
 
   return [{
     name: 'app',
