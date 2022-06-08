@@ -12,17 +12,17 @@ export const getVideoInfo = <API_TYPE_GET_VIDEO_INFO>defineAsyncApi(
   (options, { resolve, reject }) => {
     plus.io.getVideoInfo({
       filePath: options.src,
-      success: (data: any) => {
-        return {
-          orientation: data.orientation,
-          type: data.type,
-          duration: data.duration,
-          size: data.size,
-          height: data.height,
-          width: data.width,
-          fps: data.fps || 30,
-          bitrate: data.bitrate,
-        }
+      success: (videoInfo) => {
+        resolve({
+          orientation: videoInfo.orientation,
+          type: videoInfo.type,
+          duration: videoInfo.duration,
+          size: videoInfo.size,
+          height: videoInfo.height,
+          width: videoInfo.width,
+          fps: videoInfo.fps || 30,
+          bitrate: videoInfo.bitrate,
+        })
       },
       fail: warpPlusErrorCallback(reject),
     })
