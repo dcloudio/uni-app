@@ -18,7 +18,7 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
   () => {
     weexGetSystemInfoSync()
     const {
-      deviceBrand,
+      deviceBrand = '',
       deviceModel,
       osName,
       osVersion,
