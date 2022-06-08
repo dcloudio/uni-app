@@ -15,7 +15,7 @@ function weexGetSystemInfoSync () {
 export function getDeviceInfo () {
   weexGetSystemInfoSync()
   const {
-    deviceBrand, deviceModel, osName,
+    deviceBrand = '', deviceModel, osName,
     osVersion, deviceOrientation, deviceType
   } = systemInfo
 
