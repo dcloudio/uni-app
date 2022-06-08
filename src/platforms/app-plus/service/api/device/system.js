@@ -10,6 +10,11 @@ function weexGetSystemInfoSync () {
   if (!_initSystemInfo) return
   const { getSystemInfoSync } = weex.requireModule('plus')
   systemInfo = getSystemInfoSync()
+  if (typeof systemInfo === 'string') {
+    try {
+      systemInfo = JSON.parse(systemInfo)
+    } catch (error) {}
+  }
 }
 
 export function getDeviceInfo () {
