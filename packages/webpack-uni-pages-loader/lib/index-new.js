@@ -84,6 +84,15 @@ module.exports = function (content, map) {
     process.exit(0)
   }
 
+  if (this.resourceQuery) {
+    const queryParam = loaderUtils.parseQuery(this.resourceQuery)
+    if (queryParam) {
+      if (queryParam.type === 'origin-pages-json') {
+        return `export default ${JSON.stringify(pagesJson)}`
+      }
+    }
+  }
+
   if (global.uniPlugin.defaultTheme) {
     pagesJson = parseTheme(pagesJson)
     this.addDependency(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
