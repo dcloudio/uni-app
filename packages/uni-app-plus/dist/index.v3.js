@@ -6493,12 +6493,17 @@ var serviceContext = (function () {
     if (!_initSystemInfo) return
     const { getSystemInfoSync } = weex.requireModule('plus');
     systemInfo = getSystemInfoSync();
+    if (typeof systemInfo === 'string') {
+      try {
+        systemInfo = JSON.parse(systemInfo);
+      } catch (error) {}
+    }
   }
 
   function getDeviceInfo () {
     weexGetSystemInfoSync();
     const {
-      deviceBrand, deviceModel, osName,
+      deviceBrand = '', deviceModel, osName,
       osVersion, deviceOrientation, deviceType
     } = systemInfo;
 
