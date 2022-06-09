@@ -1,5 +1,5 @@
 import { isString, isArray, isFunction } from '@vue/shared';
-import { invokeArrayFns, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, WXS_PROTOCOL, formatLog, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { invokeArrayFns, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, WXS_PROTOCOL, formatLog, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { injectHook } from 'vue';
 
 function getCurrentPage() {
@@ -148,17 +148,19 @@ function set(target, key, val) {
     return (target[key] = val);
 }
 
-function errorHandler(err, instance, info) {
-    if (!instance) {
-        throw err;
-    }
-    const app = getApp();
-    if (!app || !app.$vm) {
-        throw err;
-    }
-    {
-        invokeHook(app.$vm, ON_ERROR, err);
-    }
+function createErrorHandler(app) {
+    return function errorHandler(err, instance, _info) {
+        if (!instance) {
+            throw err;
+        }
+        const appInstance = app._instance;
+        if (!appInstance || !appInstance.proxy) {
+            throw err;
+        }
+        {
+            invokeHook(appInstance.proxy.$vm, ON_ERROR, err);
+        }
+    };
 }
 function mergeAsArray(to, from) {
     return to ? [...new Set([].concat(to, from))] : from;
@@ -254,7 +256,7 @@ function uniIdMixin(globalProperties) {
 function initApp(app) {
     const appConfig = app._context.config;
     if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = errorHandler;
+        appConfig.errorHandler = createErrorHandler(app);
     }
     initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;
