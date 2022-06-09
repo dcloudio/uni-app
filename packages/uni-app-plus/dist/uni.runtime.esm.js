@@ -9130,7 +9130,7 @@ const Upx2pxProtocol = [
 
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
-let isIOS$1 = false;
+let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
@@ -9139,7 +9139,7 @@ function checkDeviceWidth() {
     const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
-    isIOS$1 = platform === 'ios';
+    isIOS = platform === 'ios';
 }
 function checkValue(value, defaultValue) {
     const newValue = Number(value);
@@ -9172,7 +9172,7 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     result = Math.floor(result + EPS);
     if (result === 0) {
-        if (deviceDPR === 1 || !isIOS$1) {
+        if (deviceDPR === 1 || !isIOS) {
             result = 1;
         }
         else {
@@ -13010,7 +13010,6 @@ function deviceId$1 () {
     return deviceId;
 }
 
-const isIOS = plus.os.name === 'iOS';
 let config;
 /**
  * tabbar显示状态
@@ -13185,7 +13184,7 @@ var tabBarInstance = {
     // tabBar是否遮挡内容区域
     get cover() {
         const array = ['extralight', 'light', 'dark'];
-        return isIOS && array.indexOf(config.blurEffect) >= 0;
+        return array.indexOf(config.blurEffect) >= 0;
     },
     setStyle({ mask }) {
         tabBar.setMask({
