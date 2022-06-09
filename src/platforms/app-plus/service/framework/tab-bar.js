@@ -8,7 +8,6 @@ import {
 } from '../bridge'
 
 const TABBAR_HEIGHT = 50
-const isIOS = plus.os.name === 'iOS'
 let config
 
 /**
