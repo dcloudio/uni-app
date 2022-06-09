@@ -13371,10 +13371,16 @@ function weexGetSystemInfoSync() {
         return;
     const { getSystemInfoSync } = weex.requireModule('plus');
     systemInfo = getSystemInfoSync();
+    if (typeof systemInfo === 'string') {
+        try {
+            systemInfo = JSON.parse(systemInfo);
+        }
+        catch (error) { }
+    }
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand, deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -14069,17 +14075,17 @@ const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, rej
 const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, (options, { resolve, reject }) => {
     plus.io.getVideoInfo({
         filePath: options.src,
-        success: (data) => {
-            return {
-                orientation: data.orientation,
-                type: data.type,
-                duration: data.duration,
-                size: data.size,
-                height: data.height,
-                width: data.width,
-                fps: data.fps || 30,
-                bitrate: data.bitrate,
-            };
+        success: (videoInfo) => {
+            resolve({
+                orientation: videoInfo.orientation,
+                type: videoInfo.type,
+                duration: videoInfo.duration,
+                size: videoInfo.size,
+                height: videoInfo.height,
+                width: videoInfo.width,
+                fps: videoInfo.fps || 30,
+                bitrate: videoInfo.bitrate,
+            });
         },
         fail: warpPlusErrorCallback(reject),
     });
