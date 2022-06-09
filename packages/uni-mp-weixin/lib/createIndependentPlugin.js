@@ -10,7 +10,7 @@ const AppInterceptorPlugin = require('./independent-plugins/app-interceptor-plug
 
 module.exports = function createIndependentPlugins () {
   const manifestConfig = process.UNI_MANIFEST
-  const weixinConfig = manifestConfig['mp-weixin']
+  const weixinConfig = manifestConfig['mp-weixin'] || {}
   const independentSwitch = !!weixinConfig.independent
   if (!independentSwitch) return []
 
