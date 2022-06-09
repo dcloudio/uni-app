@@ -6208,7 +6208,6 @@ var serviceContext = (function () {
   }
 
   const TABBAR_HEIGHT = 50;
-  const isIOS$1 = plus.os.name === 'iOS';
   let config;
 
   /**
@@ -6380,7 +6379,7 @@ var serviceContext = (function () {
     // tabBar是否遮挡内容区域
     get cover () {
       const array = ['extralight', 'light', 'dark'];
-      return isIOS$1 && array.indexOf(config.blurEffect) >= 0
+      return array.indexOf(config.blurEffect) >= 0
     },
     setStyle ({ mask }) {
       tabBar.setMask({
