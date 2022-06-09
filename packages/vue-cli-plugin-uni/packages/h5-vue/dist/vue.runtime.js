@@ -6132,10 +6132,13 @@
         }
       }
       // for slot content they should also get the scopeId from the host instance.
+      // ignore uni-app web components
       if (isDef(i = activeInstance) &&
         i !== vnode.context &&
         i !== vnode.fnContext &&
-        isDef(i = i.$options._scopeId)
+        isDef(i = i.$options._scopeId) &&
+        // TODO use other flag
+        !activeInstance._vnode.elm.__uniDataset
       ) {
         nodeOps.setStyleScope(vnode.elm, i);
       }
