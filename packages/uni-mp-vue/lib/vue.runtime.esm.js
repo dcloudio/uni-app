@@ -4989,7 +4989,7 @@ function componentUpdateScopedSlotsFn() {
     const diffData = Object.create(null);
     scopedSlotsData.forEach(({ path, index, data }) => {
         const oldScopedSlotData = getValueByDataPath(oldData, path);
-        const diffPath = `${path}[${index}]`;
+        const diffPath = isString(index) ? `${path}.${index}` : `${path}[${index}]`;
         if (typeof oldScopedSlotData === 'undefined' ||
             typeof oldScopedSlotData[index] === 'undefined') {
             diffData[diffPath] = data;
