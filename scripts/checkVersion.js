@@ -13,7 +13,7 @@ const pkgs = {
     latest: '3.2.37',
   },
   'vue-router': {
-    latest: '4.0.15',
+    latest: '4.0.16',
   },
   vuex: {
     latest: '4.0.2',

@@ -89,7 +89,7 @@
     "typescript": "4.6.4",
     "vite": "2.9.9",
     "vue": "3.2.37",
-    "vue-router": "^4.0.15",
+    "vue-router": "^4.0.16",
     "yorkie": "^2.0.0"
   },
   "name": "uni-app-next"
