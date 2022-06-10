@@ -4989,7 +4989,7 @@ function componentUpdateScopedSlotsFn() {
     const diffData = Object.create(null);
     scopedSlotsData.forEach(({ path, index, data }) => {
         const oldScopedSlotData = getValueByDataPath(oldData, path);
-        const diffPath = `${path}[${index}]`;
+        const diffPath = isString(index) ? `${path}.${index}` : `${path}[${index}]`;
         if (typeof oldScopedSlotData === 'undefined' ||
             typeof oldScopedSlotData[index] === 'undefined') {
             diffData[diffPath] = data;
@@ -5209,17 +5209,19 @@ function set(target, key, val) {
     return (target[key] = val);
 }
 
-function errorHandler(err, instance, info) {
-    if (!instance) {
-        throw err;
-    }
-    const app = getApp();
-    if (!app || !app.$vm) {
-        throw err;
-    }
-    {
-        app.$vm.$callHook(ON_ERROR, err, info);
-    }
+function createErrorHandler(app) {
+    return function errorHandler(err, instance, _info) {
+        if (!instance) {
+            throw err;
+        }
+        const appInstance = app._instance;
+        if (!appInstance || !appInstance.proxy) {
+            throw err;
+        }
+        {
+            appInstance.proxy.$vm.$callHook(ON_ERROR, err);
+        }
+    };
 }
 function mergeAsArray(to, from) {
     return to ? [...new Set([].concat(to, from))] : from;
@@ -5315,7 +5317,7 @@ function uniIdMixin(globalProperties) {
 function initApp(app) {
     const appConfig = app._context.config;
     if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = errorHandler;
+        appConfig.errorHandler = createErrorHandler(app);
     }
     initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;

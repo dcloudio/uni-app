@@ -708,11 +708,13 @@ function getWindowOffset() {
   const bottom = getWindowOffsetCssVar(style, "--window-bottom");
   const left = getWindowOffsetCssVar(style, "--window-left");
   const right = getWindowOffsetCssVar(style, "--window-right");
+  const topWindowHeight = getWindowOffsetCssVar(style, "--top-window-height");
   return {
     top,
     bottom: bottom ? bottom + out.bottom : 0,
     left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    right: right ? right + out.right : 0,
+    topWindowHeight: topWindowHeight || 0
   };
 }
 function updateCssVar(cssVars) {
@@ -2097,7 +2099,7 @@ function getRootInfo(fields2) {
 }
 function getNodeInfo(el, fields2) {
   const info = {};
-  const { top } = getWindowOffset();
+  const { top, topWindowHeight } = getWindowOffset();
   if (fields2.id) {
     info.id = el.id;
   }
@@ -2109,8 +2111,8 @@ function getNodeInfo(el, fields2) {
     if (fields2.rect) {
       info.left = rect.left;
       info.right = rect.right;
-      info.top = rect.top - top;
-      info.bottom = rect.bottom - top;
+      info.top = rect.top - top - topWindowHeight;
+      info.bottom = rect.bottom - top - topWindowHeight;
     }
     if (fields2.size) {
       info.width = rect.width;
@@ -13700,17 +13702,19 @@ function applyOptions(options, instance2, publicThis) {
 function set(target, key, val) {
   return target[key] = val;
 }
-function errorHandler(err, instance2, info) {
-  if (!instance2) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, ON_ERROR, err);
-  }
+function createErrorHandler(app) {
+  return function errorHandler(err, instance2, _info) {
+    if (!instance2) {
+      throw err;
+    }
+    const appInstance = app._instance;
+    if (!appInstance || !appInstance.proxy) {
+      throw err;
+    }
+    {
+      invokeHook(appInstance.proxy.$vm, ON_ERROR, err);
+    }
+  };
 }
 function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
@@ -13788,7 +13792,7 @@ function uniIdMixin(globalProperties) {
 function initApp$1(app) {
   const appConfig = app._context.config;
   if (isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
+    appConfig.errorHandler = createErrorHandler(app);
   }
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;

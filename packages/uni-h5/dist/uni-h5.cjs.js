@@ -6651,17 +6651,19 @@ function applyOptions(options, instance, publicThis) {
 function set(target, key, val) {
   return target[key] = val;
 }
-function errorHandler(err, instance, info) {
-  if (!instance) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, uniShared.ON_ERROR, err);
-  }
+function createErrorHandler(app) {
+  return function errorHandler(err, instance, _info) {
+    if (!instance) {
+      throw err;
+    }
+    const appInstance = app._instance;
+    if (!appInstance || !appInstance.proxy) {
+      throw err;
+    }
+    {
+      invokeHook(appInstance.proxy.$vm, uniShared.ON_ERROR, err);
+    }
+  };
 }
 function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
@@ -6739,7 +6741,7 @@ function uniIdMixin(globalProperties) {
 function initApp$1(app) {
   const appConfig = app._context.config;
   if (shared.isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
+    appConfig.errorHandler = createErrorHandler(app);
   }
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
