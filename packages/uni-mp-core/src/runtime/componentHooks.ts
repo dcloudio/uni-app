@@ -117,7 +117,7 @@ export function initRuntimeHooks(
 
 const findMixinRuntimeHooks = /*#__PURE__*/ once(() => {
   const runtimeHooks: string[] = []
-  const app = getApp({ allowDefault: true })
+  const app = process.env.UNI_MP_PLUGIN ? __GLOBAL__ : getApp({ allowDefault: true })
   if (app && app.$vm && app.$vm.$) {
     const mixins = app.$vm.$.appContext.mixins as ComponentOptions[]
     if (isArray(mixins)) {

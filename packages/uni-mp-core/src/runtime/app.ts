@@ -89,7 +89,7 @@ export function initCreateApp(parseAppOptions?: ParseAppOptions) {
 export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
   return function createApp(vm: ComponentPublicInstance) {
     const appOptions = parseApp(vm, parseAppOptions)
-    const app = getApp({
+    const app = process.env.UNI_MP_PLUGIN ? __GLOBAL__ : getApp({
       allowDefault: true,
     })
     ;(vm.$ as any).ctx.$scope = app

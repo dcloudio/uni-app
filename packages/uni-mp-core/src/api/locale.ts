@@ -2,7 +2,7 @@ import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n'
 
 export const getLocale: typeof uni.getLocale = () => {
   // 优先使用 $locale
-  const app = getApp({ allowDefault: true })
+  const app = process.env.UNI_MP_PLUGIN ? __GLOBAL__ : getApp({ allowDefault: true })
   if (app && app.$vm) {
     return app.$vm.$locale
   }
@@ -10,7 +10,7 @@ export const getLocale: typeof uni.getLocale = () => {
 }
 
 export const setLocale: typeof uni.setLocale = (locale) => {
-  const app = getApp()
+  const app = process.env.UNI_MP_PLUGIN ? __GLOBAL__ : getApp()
   if (!app) {
     return false
   }
