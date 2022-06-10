@@ -180,7 +180,7 @@ export default {
   // tabBar是否遮挡内容区域
   get cover () {
     const array = ['extralight', 'light', 'dark']
-    return array.indexOf(config.blurEffect) >= 0
+    return isIOS && array.indexOf(config.blurEffect) >= 0
   },
   setStyle ({ mask }) {
     tabBar.setMask({
