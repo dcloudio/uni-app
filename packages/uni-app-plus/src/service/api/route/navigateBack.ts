@@ -29,7 +29,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     }
     if (
       invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
-        from: (args as any).from,
+        from: (args as any).from || 'navigateBack',
       })
     ) {
       return resolve()
