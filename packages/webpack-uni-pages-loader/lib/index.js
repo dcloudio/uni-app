@@ -31,12 +31,13 @@ function checkEmitFile (filePath, jsonObj, changedEmitFiles) {
 
 module.exports = function (content, map) {
   // content = JSON.stringify(require('@dcloudio/uni-cli-shared/lib/uni_modules').getPagesJson(content))
+  let queryParam
   if (this.resourceQuery) {
-    const params = loaderUtils.parseQuery(this.resourceQuery)
-    if (params) {
-      if (params.type === 'style') {
+    queryParam = loaderUtils.parseQuery(this.resourceQuery)
+    if (queryParam) {
+      if (queryParam.type === 'style') {
         return `export default ${JSON.stringify(getPagesJson())}`
-      } else if (params.type === 'stat') {
+      } else if (queryParam.type === 'stat') {
         return `export default ${JSON.stringify(process.UNI_STAT_CONFIG || {})}`
       }
     }
@@ -72,6 +73,14 @@ module.exports = function (content, map) {
       this.addDependency(file)
     }
   })
+
+  if (this.resourceQuery && queryParam) {
+    if (queryParam) {
+      if (queryParam.type === 'origin-pages-json') {
+        return `export default ${JSON.stringify(pagesJson)}`
+      }
+    }
+  }
 
   if (manifestJson.transformPx === false) {
     process.UNI_TRANSFORM_PX = false

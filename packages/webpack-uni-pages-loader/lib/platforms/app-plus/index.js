@@ -452,10 +452,10 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
   }
 
   // 检查 webview 版本 || 下载 X5 后启动
-  let plusWebview = manifestJson['plus'].webView
+  const plusWebview = manifestJson.plus.webView
   if (plusWebview) {
     manifestJson.plus['uni-app'].webView = plusWebview
-    delete manifestJson['plus'].webView
+    delete manifestJson.plus.webView
   }
 
   // 记录编译器版本号

@@ -129,10 +129,19 @@ function parseTabBar (style = {}) {
 
   return style
 }
-
+const NON_APP_JSON_KEYS = [
+  'appid',
+  'unipush',
+  'usingComponents',
+  'optimization',
+  'scopedSlotsCompiler',
+  'usingComponents',
+  'uniStatistics'
+]
 module.exports = {
   hasOwn,
   parseStyle,
   parseTabBar,
-  trimMPJson
+  trimMPJson,
+  NON_APP_JSON_KEYS
 }

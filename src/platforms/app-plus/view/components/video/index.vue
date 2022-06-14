@@ -56,6 +56,7 @@ const attrs = [
   'pageGesture',
   'enableProgressGesture',
   'showPlayBtn',
+  'showMuteBtn',
   'enablePlayGesture',
   'vslideGesture',
   'vslideGestureInFullscreen',
@@ -157,6 +158,10 @@ export default {
     showPlayBtn: {
       type: [Boolean, String],
       default: true
+    },
+    showMuteBtn: {
+      type: [Boolean, String],
+      default: false
     },
     enablePlayGesture: {
       type: [Boolean, String],

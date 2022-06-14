@@ -8,11 +8,11 @@ const {
   getPartialIdentifier
 } = require('./util')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.resolve(__dirname, '..', dir)
 }
 
-module.exports = function chainWebpack (platformOptions, vueOptions, api) {
+module.exports = function chainWebpack(platformOptions, vueOptions, api) {
   const {
     runByHBuilderX, // 使用 HBuilderX 运行
     cssPreprocessOptions
@@ -150,5 +150,15 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     if (process.env.BUILD_ENV === 'ali-ide') {
       webpackConfig.plugins.delete('progress')
     }
+    webpackConfig.resolve.alias
+      .delete('@')
+      .set(
+        '@/pages.json',
+        path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
+        + '?' + JSON.stringify({
+          type: 'origin-pages-json'
+        })
+      )
+      .set('@', path.resolve(process.env.UNI_INPUT_DIR))
   }
 }
