@@ -17,6 +17,8 @@ moduleAlias.addAlias('@vue/component-compiler-utils/package.json', require.resol
   '@dcloudio/vue-cli-plugin-uni/packages/@vue/component-compiler-utils/package.json'))
 
 if (isInHBuilderX) {
+  moduleAlias.addAlias('typescript', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
+    'compile-typescript/node_modules/typescript'))
   moduleAlias.addAlias('less', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
     'compile-less/node_modules/less'))
   moduleAlias.addAlias('node-sass', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
