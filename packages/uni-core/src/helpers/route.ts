@@ -1,4 +1,4 @@
-import { addLeadingSlash } from '@dcloudio/uni-shared'
+import { addLeadingSlash, removeLeadingSlash } from '@dcloudio/uni-shared'
 
 export function normalizeRoute(toRoute: string) {
   if (toRoute.indexOf('/') === 0) {
@@ -45,5 +45,28 @@ export function getRouteMeta(path: string) {
   const routeOptions = getRouteOptions(path)
   if (routeOptions) {
     return routeOptions.meta
+  }
+}
+
+export function normalizeTabBarRoute(
+  index: number,
+  oldPagePath: string,
+  newPagePath: string
+) {
+  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath))
+  if (oldTabBarRoute) {
+    const { meta } = oldTabBarRoute
+    delete meta.tabBarIndex
+    meta.isQuit = meta.isTabBar = false
+  }
+  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath))
+  if (newTabBarRoute) {
+    const { meta } = newTabBarRoute
+    meta.tabBarIndex = index
+    meta.isQuit = meta.isTabBar = true
+    const tabBar = __uniConfig.tabBar
+    if (tabBar && tabBar.list && tabBar.list[index]) {
+      tabBar.list[index].pagePath = removeLeadingSlash(newPagePath)
+    }
   }
 }

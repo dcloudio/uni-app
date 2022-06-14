@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -1012,6 +1012,24 @@ function getRouteOptions(path, alias = false) {
     return __uniRoutes.find((route) => route.path === path || route.alias === path);
   }
   return __uniRoutes.find((route) => route.path === path);
+}
+function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
+  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
+  if (oldTabBarRoute) {
+    const { meta } = oldTabBarRoute;
+    delete meta.tabBarIndex;
+    meta.isQuit = meta.isTabBar = false;
+  }
+  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
+  if (newTabBarRoute) {
+    const { meta } = newTabBarRoute;
+    meta.tabBarIndex = index2;
+    meta.isQuit = meta.isTabBar = true;
+    const tabBar2 = __uniConfig.tabBar;
+    if (tabBar2 && tabBar2.list && tabBar2.list[index2]) {
+      tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
+    }
+  }
 }
 class ComponentDescriptor {
   constructor(vm) {
@@ -18706,7 +18724,9 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args
 }, ChooseLocationProtocol);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
   let canBack = true;
-  if (invokeHook(ON_BACK_PRESS, { from: args.from }) === true) {
+  if (invokeHook(ON_BACK_PRESS, {
+    from: args.from || "navigateBack"
+  }) === true) {
     canBack = false;
   }
   if (!canBack) {
@@ -19389,20 +19409,6 @@ function setProperties(item, props2, propsData) {
     }
   });
 }
-function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
-  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
-  if (oldTabBarRoute) {
-    const { meta } = oldTabBarRoute;
-    delete meta.tabBarIndex;
-    meta.isQuit = meta.isTabBar = false;
-  }
-  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
-  if (newTabBarRoute) {
-    const { meta } = newTabBarRoute;
-    meta.tabBarIndex = index2;
-    meta.isQuit = meta.isTabBar = false;
-  }
-}
 function setTabBar(type, args, resolve) {
   const tabBar2 = useTabBar();
   switch (type) {
@@ -19418,8 +19424,11 @@ function setTabBar(type, args, resolve) {
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
       const { pagePath } = args;
-      if (pagePath && pagePath !== oldPagePath) {
-        normalizeTabBarRoute(index2, oldPagePath, pagePath);
+      if (pagePath) {
+        const newPagePath = addLeadingSlash(pagePath);
+        if (newPagePath !== oldPagePath) {
+          normalizeTabBarRoute(index2, oldPagePath, newPagePath);
+        }
       }
       break;
     case API_SET_TAB_BAR_STYLE:
