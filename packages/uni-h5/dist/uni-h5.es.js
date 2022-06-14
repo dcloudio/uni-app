@@ -13730,7 +13730,7 @@ function createErrorHandler(app) {
       throw err;
     }
     {
-      invokeHook(appInstance.proxy.$vm, ON_ERROR, err);
+      invokeHook(appInstance.proxy, ON_ERROR, err);
     }
   };
 }

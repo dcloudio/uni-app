@@ -6661,7 +6661,7 @@ function createErrorHandler(app) {
       throw err;
     }
     {
-      invokeHook(appInstance.proxy.$vm, uniShared.ON_ERROR, err);
+      invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
     }
   };
 }

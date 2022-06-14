@@ -5114,6 +5114,7 @@ function createVueApp(rootComponent, rootProps = null) {
             slots: [],
             props: null
         });
+        app._instance = instance.$;
         instance.$app = app;
         instance.$createComponent = createComponent;
         instance.$destroyComponent = destroyComponent;
@@ -5219,7 +5220,7 @@ function createErrorHandler(app) {
             throw err;
         }
         {
-            appInstance.proxy.$vm.$callHook(ON_ERROR, err);
+            appInstance.proxy.$callHook(ON_ERROR, err);
         }
     };
 }

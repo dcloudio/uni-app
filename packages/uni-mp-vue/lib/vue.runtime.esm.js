@@ -5114,6 +5114,7 @@ function createVueApp(rootComponent, rootProps = null) {
             slots: [],
             props: null
         });
+        app._instance = instance.$;
         instance.$app = app;
         instance.$createComponent = createComponent;
         instance.$destroyComponent = destroyComponent;

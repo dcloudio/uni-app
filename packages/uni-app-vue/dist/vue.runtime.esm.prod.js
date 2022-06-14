@@ -4247,7 +4247,9 @@ function createAppAPI(render, hydrate) {
 
           isMounted = true;
           app._container = rootContainer;
-          rootContainer.__vue_app__ = app;
+          rootContainer.__vue_app__ = app; // fixed by xxxxxx (始终暴露，因为 onError 要访问)
+
+          app._instance = vnode.component;
           return getExposeProxy(vnode.component) || vnode.component.proxy;
         }
       },
