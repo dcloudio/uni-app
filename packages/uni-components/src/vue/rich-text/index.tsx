@@ -1,10 +1,10 @@
-import { onMounted, ref, watch, getCurrentInstance } from 'vue'
+import { ref, watch, getCurrentInstance, h, VNode } from 'vue'
 import {
   defineBuiltInComponent,
   useCustomEvent,
   EmitEvent,
 } from '@dcloudio/uni-components'
-import parseNodes from './nodes-parser'
+import { nodeList2VNode } from './nodes-parser'
 import { props, parseHtml } from '../../components/rich-text'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -20,48 +20,36 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'touchcancel',
     'touchend',
     'longpress',
+    'itemclick',
   ],
-  setup(props, { emit, attrs }) {
+  setup(props, { emit }) {
     const vm = getCurrentInstance()
+    const scopeId = (vm && vm.vnode.scopeId) || ''
     const rootRef = ref<HTMLElement | null>(null)
+    const _vnode = ref<Array<VNode | undefined>>([])
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
-    const hasItemClick = !!attrs.onItemclick
 
     function triggerItemClick(e: Event, detail = {}) {
       trigger('itemclick', e, detail)
     }
 
-    function _renderNodes(nodes: string | unknown[]) {
-      if (typeof nodes === 'string') {
-        nodes = parseHtml(nodes)
+    function renderVNode() {
+      let nodeList = props.nodes
+      if (typeof nodeList === 'string') {
+        nodeList = parseHtml(props.nodes)
       }
-      const nodeList = parseNodes(
-        nodes,
-        document.createDocumentFragment(),
-        (vm && vm.vnode.scopeId) || '',
-        hasItemClick && triggerItemClick
-      )
-      rootRef.value!.firstElementChild!.innerHTML = ''
-      rootRef.value!.firstElementChild!.appendChild(nodeList)
+      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList as [])
     }
 
-    watch(
-      () => props.nodes,
-      (value) => {
-        _renderNodes(value)
-      }
-    )
+    watch(() => props.nodes, renderVNode, { immediate: true })
 
-    onMounted(() => {
-      _renderNodes(props.nodes)
-    })
-
-    return () => {
-      return (
-        <uni-rich-text ref={rootRef}>
-          <div />
-        </uni-rich-text>
+    return () =>
+      h(
+        'uni-rich-text',
+        {
+          ref: rootRef,
+        },
+        h('div', {}, _vnode.value)
       )
-    }
   },
 })

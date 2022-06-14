@@ -123,6 +123,7 @@ export default defineConfig({
     target: 'es2015',
     cssTarget,
     minify: true,
+    cssCodeSplit: false,
     lib: {
       name: 'uni-app-view',
       fileName: 'uni-app-view',

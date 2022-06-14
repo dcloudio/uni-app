@@ -1,4 +1,4 @@
 import Log from "android.util.Log";
 export default function log(tag: string, msg: string) {
-  Log.e(tag, msg);
+  Log!.e(tag, msg);
 }

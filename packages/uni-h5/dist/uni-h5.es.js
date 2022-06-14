@@ -1,6 +1,6 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -708,11 +708,13 @@ function getWindowOffset() {
   const bottom = getWindowOffsetCssVar(style, "--window-bottom");
   const left = getWindowOffsetCssVar(style, "--window-left");
   const right = getWindowOffsetCssVar(style, "--window-right");
+  const topWindowHeight = getWindowOffsetCssVar(style, "--top-window-height");
   return {
     top,
     bottom: bottom ? bottom + out.bottom : 0,
     left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    right: right ? right + out.right : 0,
+    topWindowHeight: topWindowHeight || 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1010,6 +1012,24 @@ function getRouteOptions(path, alias = false) {
     return __uniRoutes.find((route) => route.path === path || route.alias === path);
   }
   return __uniRoutes.find((route) => route.path === path);
+}
+function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
+  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
+  if (oldTabBarRoute) {
+    const { meta } = oldTabBarRoute;
+    delete meta.tabBarIndex;
+    meta.isQuit = meta.isTabBar = false;
+  }
+  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
+  if (newTabBarRoute) {
+    const { meta } = newTabBarRoute;
+    meta.tabBarIndex = index2;
+    meta.isQuit = meta.isTabBar = true;
+    const tabBar2 = __uniConfig.tabBar;
+    if (tabBar2 && tabBar2.list && tabBar2.list[index2]) {
+      tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
+    }
+  }
 }
 class ComponentDescriptor {
   constructor(vm) {
@@ -2097,7 +2117,7 @@ function getRootInfo(fields2) {
 }
 function getNodeInfo(el, fields2) {
   const info = {};
-  const { top } = getWindowOffset();
+  const { top, topWindowHeight } = getWindowOffset();
   if (fields2.id) {
     info.id = el.id;
   }
@@ -2109,8 +2129,8 @@ function getNodeInfo(el, fields2) {
     if (fields2.rect) {
       info.left = rect.left;
       info.right = rect.right;
-      info.top = rect.top - top;
-      info.bottom = rect.bottom - top;
+      info.top = rect.top - top - topWindowHeight;
+      info.bottom = rect.bottom - top - topWindowHeight;
     }
     if (fields2.size) {
       info.width = rect.width;
@@ -9325,7 +9345,7 @@ Spring$1.prototype._solve = function(e2, t2) {
     const c = (-n - Math.sqrt(o2)) / (2 * i);
     const u = (-n + Math.sqrt(o2)) / (2 * i);
     const d = (t2 - c * e2) / (u - c);
-    const h = e2 - d;
+    const h2 = e2 - d;
     return {
       x: function(e3) {
         let t3;
@@ -9341,7 +9361,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * t3 + d * n2;
+        return h2 * t3 + d * n2;
       },
       dx: function(e3) {
         let t3;
@@ -9357,7 +9377,7 @@ Spring$1.prototype._solve = function(e2, t2) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * c * t3 + d * u * n2;
+        return h2 * c * t3 + d * u * n2;
       }
     };
   }
@@ -11704,7 +11724,16 @@ const CHARS = {
   lt: "<",
   nbsp: " ",
   quot: '"',
-  apos: "'"
+  apos: "'",
+  ldquo: "\u201C",
+  rdquo: "\u201D",
+  yen: "\uFFE5",
+  radic: "\u221A",
+  lceil: "\u2308",
+  rceil: "\u2309",
+  lfloor: "\u230A",
+  rfloor: "\u230B",
+  hellip: "\u2026"
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
@@ -11715,77 +11744,55 @@ function decodeEntities(htmlString) {
       return String.fromCharCode(stage.slice(1));
     }
     if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-      return String.fromCharCode("0" + stage.slice(1));
+      return String.fromCharCode(0 + stage.slice(1));
     }
-    const wrap = document.createElement("div");
-    wrap.innerHTML = match;
-    return wrap.innerText || wrap.textContent;
+    return match;
   });
 }
-function normlizeValue(tagName, name, value) {
-  if (tagName === "img" && name === "src")
-    return getRealPath(value);
-  return value;
+function processClickEvent(node, triggerItemClick) {
+  if (["a", "img"].includes(node.name) && triggerItemClick) {
+    return {
+      onClick: (e2) => {
+        triggerItemClick(e2, { node });
+        e2.stopPropagation();
+        e2.preventDefault();
+        e2.returnValue = false;
+      }
+    };
+  }
 }
-function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
-  nodes.forEach(function(node) {
+function normalizeAttrs(tagName, attrs2) {
+  if (!isPlainObject(attrs2))
+    return;
+  for (const key in attrs2) {
+    if (Object.prototype.hasOwnProperty.call(attrs2, key)) {
+      const value = attrs2[key];
+      if (tagName === "img" && key === "src")
+        attrs2[key] = getRealPath(value);
+    }
+  }
+}
+const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
+    return [];
+  return nodeList.map((node) => {
     if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
-      if (!(typeof node.name === "string" && node.name)) {
-        return;
-      }
+      let nodeProps = { [scopeId]: "" };
       const tagName = node.name.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
       }
-      const elem = document.createElement(tagName);
-      if (!elem) {
-        return;
-      }
-      scopeId && elem.setAttribute(scopeId, "");
-      const attrs2 = node.attrs;
-      if (isPlainObject(attrs2)) {
-        const tagAttrs = TAGS[tagName] || [];
-        Object.keys(attrs2).forEach(function(name) {
-          let value = attrs2[name];
-          switch (name) {
-            case "class":
-              Array.isArray(value) && (value = value.join(" "));
-            case "style":
-              elem.setAttribute(name, value);
-              break;
-            default:
-              if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, normlizeValue(tagName, name, value));
-              }
-          }
-        });
-      }
-      processClickEvent(node, elem, triggerItemClick);
-      const children = node.children;
-      if (Array.isArray(children) && children.length) {
-        parseNodes(node.children, elem, scopeId, triggerItemClick);
-      }
-      parentNode.appendChild(elem);
-    } else {
-      if (node.type === "text" && typeof node.text === "string" && node.text !== "") {
-        parentNode.appendChild(document.createTextNode(decodeEntities(node.text)));
-      }
+      normalizeAttrs(tagName, node.attrs);
+      nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
+      return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
     }
+    if (node.type === "text" && typeof node.text === "string" && node.text !== "")
+      return createTextVNode(decodeEntities(node.text || ""));
   });
-  return parentNode;
-}
-function processClickEvent(node, elem, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
-    elem.setAttribute("onClick", "return false;");
-    elem.addEventListener("click", (e2) => {
-      triggerItemClick(e2, { node });
-      e2.stopPropagation();
-    }, true);
-  }
-}
+};
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -11890,37 +11897,31 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$n,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress"],
+  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
   setup(props2, {
-    emit: emit2,
-    attrs: attrs2
+    emit: emit2
   }) {
     const vm = getCurrentInstance();
+    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
+    const _vnode = ref([]);
     const trigger = useCustomEvent(rootRef, emit2);
-    const hasItemClick = !!attrs2.onItemclick;
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    function _renderNodes(nodes) {
-      if (typeof nodes === "string") {
-        nodes = parseHtml(nodes);
+    function renderVNode() {
+      let nodeList = props2.nodes;
+      if (typeof nodeList === "string") {
+        nodeList = parseHtml(props2.nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
-      rootRef.value.firstElementChild.innerHTML = "";
-      rootRef.value.firstElementChild.appendChild(nodeList);
+      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
-    watch(() => props2.nodes, (value) => {
-      _renderNodes(value);
+    watch(() => props2.nodes, renderVNode, {
+      immediate: true
     });
-    onMounted(() => {
-      _renderNodes(props2.nodes);
-    });
-    return () => {
-      return createVNode("uni-rich-text", {
-        "ref": rootRef
-      }, [createVNode("div", null, null)], 512);
-    };
+    return () => h("uni-rich-text", {
+      ref: rootRef
+    }, h("div", {}, _vnode.value));
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
@@ -12742,9 +12743,9 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
         const c = s - n;
         const u = Math.max(index2 - (s + 1), s - i, 0);
         const d = Math.max(index2 - (l + 1), l - i, 0);
-        const h = Math.max(index2 - (c + 1), c - i, 0);
-        const p2 = Math.min(u, d, h);
-        const position = [s, l, c][[u, d, h].indexOf(p2)];
+        const h2 = Math.max(index2 - (c + 1), c - i, 0);
+        const p2 = Math.min(u, d, h2);
+        const position = [s, l, c][[u, d, h2].indexOf(p2)];
         item.updatePosition(position, props2.vertical);
       }
     }
@@ -13719,17 +13720,19 @@ function applyOptions(options, instance2, publicThis) {
 function set(target, key, val) {
   return target[key] = val;
 }
-function errorHandler(err, instance2, info) {
-  if (!instance2) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, ON_ERROR, err);
-  }
+function createErrorHandler(app) {
+  return function errorHandler(err, instance2, _info) {
+    if (!instance2) {
+      throw err;
+    }
+    const appInstance = app._instance;
+    if (!appInstance || !appInstance.proxy) {
+      throw err;
+    }
+    {
+      invokeHook(appInstance.proxy, ON_ERROR, err);
+    }
+  };
 }
 function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
@@ -13807,7 +13810,7 @@ function uniIdMixin(globalProperties) {
 function initApp$1(app) {
   const appConfig = app._context.config;
   if (isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
+    appConfig.errorHandler = createErrorHandler(app);
   }
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
@@ -14395,10 +14398,10 @@ function onVisibilityChange() {
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
-  const h = Math.floor(val / 3600);
+  const h2 = Math.floor(val / 3600);
   const m = Math.floor(val % 3600 / 60);
   const s = Math.floor(val % 3600 % 60);
-  const hStr = (h < 10 ? "0" : "") + h;
+  const hStr = (h2 < 10 ? "0" : "") + h2;
   const mStr = (m < 10 ? "0" : "") + m;
   const sStr = (s < 10 ? "0" : "") + s;
   let str = mStr + ":" + sStr;
@@ -15615,25 +15618,25 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           const anchor = option.anchor || {};
           let icon;
           let w;
-          let h;
+          let h2;
           let top;
           let x = typeof anchor.x === "number" ? anchor.x : 0.5;
           let y = typeof anchor.y === "number" ? anchor.y : 1;
           if (option.iconPath && (option.width || option.height)) {
             w = option.width || img.width / img.height * option.height;
-            h = option.height || img.height / img.width * option.width;
+            h2 = option.height || img.height / img.width * option.width;
           } else {
             w = img.width / 2;
-            h = img.height / 2;
+            h2 = img.height / 2;
           }
-          top = h - (h - y * h);
+          top = h2 - (h2 - y * h2);
           if ("MarkerImage" in maps2) {
-            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h), new maps2.Size(w, h));
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
           } else {
             icon = {
               url: img.src,
               anchor: new maps2.Point(x, y),
-              size: new maps2.Size(w, h)
+              size: new maps2.Size(w, h2)
             };
           }
           marker.setPosition(position);
@@ -18721,7 +18724,9 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args
 }, ChooseLocationProtocol);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
   let canBack = true;
-  if (invokeHook(ON_BACK_PRESS, { from: args.from }) === true) {
+  if (invokeHook(ON_BACK_PRESS, {
+    from: args.from || "navigateBack"
+  }) === true) {
     canBack = false;
   }
   if (!canBack) {
@@ -19404,20 +19409,6 @@ function setProperties(item, props2, propsData) {
     }
   });
 }
-function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
-  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
-  if (oldTabBarRoute) {
-    const { meta } = oldTabBarRoute;
-    delete meta.tabBarIndex;
-    meta.isQuit = meta.isTabBar = false;
-  }
-  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
-  if (newTabBarRoute) {
-    const { meta } = newTabBarRoute;
-    meta.tabBarIndex = index2;
-    meta.isQuit = meta.isTabBar = false;
-  }
-}
 function setTabBar(type, args, resolve) {
   const tabBar2 = useTabBar();
   switch (type) {
@@ -19433,8 +19424,11 @@ function setTabBar(type, args, resolve) {
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
       const { pagePath } = args;
-      if (pagePath && pagePath !== oldPagePath) {
-        normalizeTabBarRoute(index2, oldPagePath, pagePath);
+      if (pagePath) {
+        const newPagePath = addLeadingSlash(pagePath);
+        if (newPagePath !== oldPagePath) {
+          normalizeTabBarRoute(index2, oldPagePath, newPagePath);
+        }
       }
       break;
     case API_SET_TAB_BAR_STYLE:

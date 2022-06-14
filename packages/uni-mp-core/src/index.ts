@@ -2,7 +2,7 @@ declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $vm: ComponentPublicInstance
     globalData: Record<string, any>
-    $callHook: (hook: string, args?: unknown) => unknown
+    $callHook: (hook: string, args?: unknown, extras?: unknown) => unknown
     $callCreatedHook: () => void
   }
 }

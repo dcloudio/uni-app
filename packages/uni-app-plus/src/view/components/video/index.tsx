@@ -95,6 +95,10 @@ const props = {
     type: [Boolean, String],
     default: true,
   },
+  showMuteBtn: {
+    type: [Boolean, String],
+    default: false,
+  },
   enablePlayGesture: {
     type: [Boolean, String],
     default: true,

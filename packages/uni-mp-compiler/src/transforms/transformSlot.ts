@@ -97,7 +97,7 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
           slotName,
           ',',
           `{${properties.join(',')}}`,
-          `${vForIndexAlias ? ',' + vForIndexAlias : ''}`,
+          `${vForIndexAlias ? ',' + parseScopedSlotKey(context) : ''}`,
           ')',
         ]),
         context

@@ -26,6 +26,15 @@ export function parseMiniProgramPagesJson(
   return parsePagesJson(jsonStr, platform, options)
 }
 
+const NON_APP_JSON_KEYS = [
+  'unipush',
+  'usingComponents',
+  'optimization',
+  'scopedSlotsCompiler',
+  'usingComponents',
+  'uniStatistics',
+]
+
 export function mergeMiniProgramAppJson(
   appJson: Record<string, any>,
   platformJson: Record<string, any> = {}
@@ -33,12 +42,7 @@ export function mergeMiniProgramAppJson(
   Object.keys(platformJson).forEach((name) => {
     if (
       !isMiniProgramProjectJsonKey(name) &&
-      ![
-        'unipush',
-        'usingComponents',
-        'optimization',
-        'scopedSlotsCompiler',
-      ].includes(name)
+      !NON_APP_JSON_KEYS.includes(name)
     ) {
       appJson[name] = platformJson[name]
     }

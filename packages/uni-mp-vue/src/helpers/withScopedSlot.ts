@@ -79,10 +79,10 @@ function createScopedSlotInvoker(instance: ComponentInternalInstance) {
   return invoker
 }
 
-const nubmerRE = /^\d+$/
+const numberRE = /^\d+$/
 
 function isInteger(str: unknown): str is number {
-  return nubmerRE.test(str as string)
+  return numberRE.test(str as string)
 }
 
 /**
