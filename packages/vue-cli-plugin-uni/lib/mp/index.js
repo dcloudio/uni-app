@@ -189,7 +189,9 @@ module.exports = {
           ? process.env.UNI_MP_PLUGIN_MAIN
           : JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
       ).forEach(fileName => addToUniEntry(fileName))
-      beforeCode += `${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
+      beforeCode += `
+// @ts-ignore
+${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     }
 
     const alias = { // 仅 mp-weixin
@@ -218,8 +220,7 @@ module.exports = {
       output.pathinfo = false
     }
     return {
-      mode: process.env.NODE_ENV === 'production' ? 'production'
-        : 'development',
+      mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
         return process.UNI_ENTRY
       },
