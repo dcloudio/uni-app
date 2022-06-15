@@ -38,7 +38,7 @@ export default function parseBaseComponent (vueComponentOptions, {
     options,
     data: initData(vueOptions, Vue.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
-    properties: initProperties(vueOptions.props, false, vueOptions.__file),
+    properties: initProperties(vueOptions.props, false, vueOptions.__file, options),
     lifetimes: {
       attached () {
         const properties = this.properties

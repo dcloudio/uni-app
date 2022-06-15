@@ -4,12 +4,16 @@ const {
 
 const {
   SELF_CLOSING_TAGS,
-  INTERNAL_EVENT_LINK
+  INTERNAL_EVENT_LINK,
+  VIRTUAL_HOST_STYLE,
+  VIRTUAL_HOST_CLASS
 } = require('../constants')
 const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 function processElement (ast, state, isRoot) {
-  const platformName = state.options.platform.name
+  const platform = state.options.platform
+  const platformName = platform.name
+  const virtualHost = platformName === 'mp-weixin' || platformName === 'mp-alipay'
   // <template slot="f"></template>
   if (ast.type === 'template' && hasOwn(ast.attr, 'slot')) {
     ast.type = 'view'
@@ -36,11 +40,24 @@ function processElement (ast, state, isRoot) {
     }]
     delete ast.attr.innerHTML
   }
-  if (state.options.platform.isComponent(ast.type)) {
+  if (platform.isComponent(ast.type)) {
     if (platformName === 'mp-alipay') {
       ast.attr.onVueInit = INTERNAL_EVENT_LINK
     } else if (platformName !== 'mp-baidu') {
       ast.attr['bind:' + INTERNAL_EVENT_LINK] = INTERNAL_EVENT_LINK
+    }
+
+    if (virtualHost && platform.isComponent(ast.type)) {
+      const obj = {
+        style: VIRTUAL_HOST_STYLE,
+        class: VIRTUAL_HOST_CLASS
+      }
+      Object.keys(obj).forEach(key => {
+        ast.attr[obj[key]] = ast.attr[key]
+        if (platformName === 'mp-alipay') {
+          delete ast.attr[key]
+        }
+      })
     }
 
     const children = ast.children
