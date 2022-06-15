@@ -501,7 +501,7 @@ export default {
     top: 0;
     left: 0;
     overflow: hidden;
-    background-color: black;
+    background-color: transparent;
   }
 
   .uni-map-slot {
