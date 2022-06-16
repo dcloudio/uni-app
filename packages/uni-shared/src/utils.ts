@@ -1,4 +1,4 @@
-import { isPlainObject, isString } from '@vue/shared'
+import { isFunction, isPlainObject, isString } from '@vue/shared'
 
 export function cache<T>(fn: (str: string) => T) {
   const cache: Record<string, T> = Object.create(null)
@@ -101,15 +101,15 @@ export function callOptions(
     }
   }
   if (/:ok$/.test(data.errMsg)) {
-    if (typeof options.success === 'function') {
+    if (isFunction(options.success)) {
       options.success(data)
     }
   } else {
-    if (typeof options.fail === 'function') {
+    if (isFunction(options.fail)) {
       options.fail(data)
     }
   }
-  if (typeof options.complete === 'function') {
+  if (isFunction(options.complete)) {
     options.complete(data)
   }
 }

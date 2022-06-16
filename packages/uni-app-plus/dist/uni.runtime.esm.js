@@ -1766,7 +1766,7 @@ function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose
     });
     page.addEventListener('close', onClose);
     addEventListener(pageId, (message) => {
-        if (typeof onMessage === 'function') {
+        if (isFunction(onMessage)) {
             onMessage(message.data);
         }
         if (!message.keep) {
@@ -10753,12 +10753,12 @@ class SelectorQuery {
                     convertContext(result);
                 }
                 const queueCb = queueCbs[index];
-                if (typeof queueCb === 'function') {
+                if (isFunction(queueCb)) {
                     queueCb.call(this, result);
                 }
             });
             // isFn(callback) &&
-            if (typeof callback === 'function') {
+            if (isFunction(callback)) {
                 callback.call(this, res);
             }
         });
@@ -12677,7 +12677,7 @@ function warpPlusSuccessCallback(resolve, after) {
     return function successCallback(data) {
         delete data.code;
         delete data.message;
-        if (typeof after === 'function') {
+        if (isFunction(after)) {
             data = after(data);
         }
         resolve(data);
@@ -12707,7 +12707,7 @@ function warpPlusEvent(plusObject, event) {
 function warpPlusMethod(plusObject, before, after) {
     return function (options, { resolve, reject }) {
         const object = plusObject();
-        object(extend({}, typeof before === 'function' ? before(options) : options, {
+        object(extend({}, isFunction(before) ? before(options) : options, {
             success: warpPlusSuccessCallback(resolve, after),
             fail: warpPlusErrorCallback(reject),
         }));
@@ -14120,7 +14120,7 @@ const previewImage = defineAsyncApi(API_PREVIEW_IMAGE, ({ current = 0, indicator
             plus.nativeUI.actionSheet(options, (e) => {
                 if (e.index > 0) {
                     if (hasLongPressActions) {
-                        typeof longPressActions.success === 'function' &&
+                        isFunction(longPressActions.success) &&
                             longPressActions.success({
                                 tapIndex: e.index - 1,
                                 index: res.index,
@@ -14134,7 +14134,7 @@ const previewImage = defineAsyncApi(API_PREVIEW_IMAGE, ({ current = 0, indicator
                     });
                 }
                 else if (hasLongPressActions) {
-                    typeof longPressActions.fail === 'function' &&
+                    isFunction(longPressActions.fail) &&
                         longPressActions.fail({
                             errMsg: 'showActionSheet:fail cancel',
                         });
@@ -14219,7 +14219,7 @@ function onRecorderStateChange(res) {
     const state = res.state;
     delete res.state;
     delete res.errMsg;
-    if (state && typeof callbacks$1[state] === 'function') {
+    if (state && isFunction(callbacks$1[state])) {
         callbacks$1[state](res);
     }
 }
@@ -14500,7 +14500,7 @@ class DownloadTask {
         this._downloader.abort();
     }
     onProgressUpdate(callback) {
-        if (typeof callback !== 'function') {
+        if (!isFunction(callback)) {
             return;
         }
         this._callbacks.push(callback);
@@ -14851,7 +14851,7 @@ class SocketTask {
         }
         // WYQ fix: App平台修复websocket onOpen时发送数据报错的Bug
         this._callbacks[name].forEach((callback) => {
-            if (typeof callback === 'function') {
+            if (isFunction(callback)) {
                 callback(data);
             }
         });
@@ -14974,7 +14974,7 @@ class UploadTask {
         this._uploader.abort();
     }
     onProgressUpdate(callback) {
-        if (typeof callback !== 'function') {
+        if (!isFunction(callback)) {
             return;
         }
         this._callbacks.push(callback);
@@ -15293,7 +15293,7 @@ const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
     // 批量设置音频上下文事件监听方法
     innerAudioContextEventNames.forEach((eventName) => {
         InnerAudioContext.prototype[eventName] = function (callback) {
-            if (typeof callback === 'function') {
+            if (isFunction(callback)) {
                 this._callbacks[eventName].push(callback);
             }
         };
@@ -15312,7 +15312,7 @@ const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
 function emit(audio, state, errMsg, errCode) {
     const name = `on${capitalize(state)}`;
     audio._callbacks[name].forEach((callback) => {
-        if (typeof callback === 'function') {
+        if (isFunction(callback)) {
             callback(state === 'error'
                 ? {
                     errMsg,
@@ -16879,7 +16879,7 @@ class AdEventHandler {
         this._removeEventListener(EventType.error, callback);
     }
     _addEventListener(type, callback) {
-        if (typeof callback !== 'function') {
+        if (!isFunction(callback)) {
             return;
         }
         if (!this._callbacks[type]) {

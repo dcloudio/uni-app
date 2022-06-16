@@ -1,5 +1,6 @@
+import { isFunction } from '@vue/shared'
 export function plusReady(callback: () => void) {
-  if (typeof callback !== 'function') {
+  if (!isFunction(callback)) {
     return
   }
   if ((window as any).plus) {

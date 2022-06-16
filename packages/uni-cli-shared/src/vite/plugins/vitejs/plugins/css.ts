@@ -40,7 +40,7 @@ import { transform, formatMessages } from 'esbuild'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { PAGES_JSON_JS } from '../../../../constants'
 import { emptyCssComments } from '../cleanString'
-import { isArray } from '@vue/shared'
+import { isArray, isFunction } from '@vue/shared'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -530,7 +530,7 @@ async function compileCSS(
           outputFileName: string
         ) {
           modules = _modules
-          if (modulesOptions && typeof modulesOptions.getJSON === 'function') {
+          if (modulesOptions && isFunction(modulesOptions.getJSON)) {
             modulesOptions.getJSON(cssFileName, _modules, outputFileName)
           }
         },
@@ -1395,7 +1395,7 @@ async function getSource(
 ): Promise<{ content: string; map?: ExistingRawSourceMap }> {
   if (!additionalData) return { content: source }
 
-  if (typeof additionalData === 'function') {
+  if (isFunction(additionalData)) {
     const newContent = await additionalData(source, filename)
     if (typeof newContent === 'string') {
       return { content: newContent }

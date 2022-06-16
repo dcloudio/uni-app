@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 
 declare interface BroadcastChannel {
   new (id: string): BroadcastChannel
@@ -157,7 +157,7 @@ export function showPage({
   })
   page.addEventListener('close', onClose)
   addEventListener(pageId, (message) => {
-    if (typeof onMessage === 'function') {
+    if (isFunction(onMessage)) {
       onMessage(message.data)
     }
     if (!message.keep) {

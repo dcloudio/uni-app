@@ -11,6 +11,7 @@ import {
   isExternalUrl,
 } from '@dcloudio/uni-cli-shared'
 import { OutputOptions } from 'rollup'
+import { isFunction } from '@vue/shared'
 
 function isCombineBuiltInCss(config: ResolvedConfig) {
   return config.command === 'build' && config.build.cssCodeSplit
@@ -126,7 +127,7 @@ export function assetFileNamesToFileName(
   const name = basename.slice(0, -extname.length)
   const hash = contentHash
 
-  if (typeof assetFileNames === 'function') {
+  if (isFunction(assetFileNames)) {
     assetFileNames = assetFileNames({
       name: file,
       source: content,

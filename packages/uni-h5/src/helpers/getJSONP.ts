@@ -1,3 +1,4 @@
+import { isFunction } from '@vue/shared'
 interface Options {
   callback?: string
   timeout?: number
@@ -20,19 +21,19 @@ export function getJSONP(
     js.remove()
   }
   ;(window as any)[callbackName] = (res: any) => {
-    if (typeof success === 'function') {
+    if (isFunction(success)) {
       success(res)
     }
     end()
   }
   js.onerror = () => {
-    if (typeof error === 'function') {
+    if (isFunction(error)) {
       error()
     }
     end()
   }
   timing = setTimeout(function () {
-    if (typeof error === 'function') {
+    if (isFunction(error)) {
       error()
     }
     end()

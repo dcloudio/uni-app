@@ -1,3 +1,4 @@
+import { isFunction } from '@vue/shared'
 type State = 'start' | 'move' | 'end' | 'cancel'
 type TouchOrMouseEvent = TouchEvent | MouseEvent
 type Detail = {
@@ -32,7 +33,7 @@ export function useTouchtrack(
   }
   function addListener(type: CallbackType, callback: Function) {
     __event[type] = function ($event: TouchtrackEvent) {
-      if (typeof callback === 'function') {
+      if (isFunction(callback)) {
         $event.touches = $event.changedTouches
         if (callback($event) === false) {
           $event.stopPropagation()

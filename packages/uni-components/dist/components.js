@@ -1,5 +1,5 @@
 import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
-import { extend, hasOwn, isPlainObject, isArray } from "@vue/shared";
+import { extend, hasOwn, isFunction, isPlainObject, isArray } from "@vue/shared";
 import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
@@ -272,7 +272,7 @@ function showPage({
   });
   page.addEventListener("close", onClose);
   addEventListener(pageId, (message) => {
-    if (typeof onMessage === "function") {
+    if (isFunction(onMessage)) {
       onMessage(message.data);
     }
     if (!message.keep) {
@@ -988,7 +988,7 @@ function useTouchtrack(method) {
   }
   function addListener(type, callback2) {
     __event[type] = function($event) {
-      if (typeof callback2 === "function") {
+      if (isFunction(callback2)) {
         $event.touches = $event.changedTouches;
         if (callback2($event) === false) {
           $event.stopPropagation();

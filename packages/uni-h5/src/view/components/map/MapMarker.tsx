@@ -1,4 +1,5 @@
 import { onUnmounted, inject, watch } from 'vue'
+import { isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, LatLng, Callout, CalloutOptions } from './maps'
@@ -400,7 +401,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                 callout.setPosition(b)
               }
               const cb = data.animationEnd
-              if (typeof cb === 'function') {
+              if (isFunction(cb)) {
                 cb()
               }
             })

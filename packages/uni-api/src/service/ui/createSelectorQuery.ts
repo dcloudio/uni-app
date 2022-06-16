@@ -1,5 +1,5 @@
 import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
-import { isArray } from '@vue/shared'
+import { isArray, isFunction } from '@vue/shared'
 import { resolveComponentInstance } from '@dcloudio/uni-shared'
 import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 import { requestComponentInfo } from '@dcloudio/uni-platform'
@@ -146,12 +146,12 @@ class SelectorQuery implements UniApp.SelectorQuery {
             convertContext(result)
           }
           const queueCb = queueCbs[index]
-          if (typeof queueCb === 'function') {
+          if (isFunction(queueCb)) {
             queueCb.call(this, result)
           }
         })
         // isFn(callback) &&
-        if (typeof callback === 'function') {
+        if (isFunction(callback)) {
           callback.call(this, res)
         }
       }

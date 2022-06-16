@@ -1,5 +1,5 @@
 import { ref, computed, ExtractPropTypes, Ref, onMounted } from 'vue'
-import { extend } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 import type { Actions, OperateCanvasType } from '@dcloudio/uni-api'
 import {
   useAttrs,
@@ -698,7 +698,7 @@ function useMethods(
     resolve: (res: { callbackId: number; data: any }) => void
   ) {
     let method = methods[type]
-    if (type.indexOf('_') !== 0 && typeof method === 'function') {
+    if (type.indexOf('_') !== 0 && isFunction(method)) {
       method(data as any, resolve)
     }
   }

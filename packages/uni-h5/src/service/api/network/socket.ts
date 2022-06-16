@@ -1,4 +1,4 @@
-import { extend, capitalize } from '@vue/shared'
+import { extend, capitalize, isFunction } from '@vue/shared'
 import {
   defineTaskApi,
   defineAsyncApi,
@@ -185,7 +185,7 @@ function callSocketTask(
   reject: Function
 ) {
   const fn = socketTask[method]
-  if (typeof fn === 'function') {
+  if (isFunction(fn)) {
     fn.call(
       socketTask,
       extend({}, option, {

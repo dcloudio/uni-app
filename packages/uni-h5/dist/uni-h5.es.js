@@ -4313,11 +4313,11 @@ class SelectorQuery {
           convertContext(result);
         }
         const queueCb = queueCbs[index2];
-        if (typeof queueCb === "function") {
+        if (isFunction(queueCb)) {
           queueCb.call(this, result);
         }
       });
-      if (typeof callback === "function") {
+      if (isFunction(callback)) {
         callback.call(this, res);
       }
     });
@@ -7002,7 +7002,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   };
   function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
-    if (type.indexOf("_") !== 0 && typeof method === "function") {
+    if (type.indexOf("_") !== 0 && isFunction(method)) {
       method(data, resolve);
     }
   }
@@ -8642,7 +8642,7 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
+      if (isFunction(beforeInput) && beforeInput(event, state2) === false) {
         return;
       }
       state2.value = field.value;
@@ -9120,7 +9120,7 @@ function useMovableAreaState(props2, rootRef) {
 }
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
-    if (typeof callback === "function") {
+    if (isFunction(callback)) {
       if (callback($event) === false) {
         if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
           $event.preventDefault();
@@ -10903,7 +10903,7 @@ class Scroller {
           this._position = c;
           this.updatePosition();
         }
-        if (typeof this._options.onSnap === "function") {
+        if (isFunction(this._options.onSnap)) {
           this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
         }
       }
@@ -10929,7 +10929,7 @@ class Scroller {
     if (this._position !== i) {
       this._snapping = true;
       this.scrollTo(-i);
-      if (typeof this._options.onSnap === "function") {
+      if (isFunction(this._options.onSnap)) {
         this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
       }
     }
@@ -10956,7 +10956,7 @@ class Scroller {
     this._element.addEventListener("transitionend", this._onTransitionEnd);
   }
   dispatchScroll() {
-    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
+    if (isFunction(this._options.onScroll) && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
       this._lastPos = this._position;
       const event = {
         target: {
@@ -10995,7 +10995,7 @@ class Scroller {
     this.updatePosition();
     if (position !== this._position) {
       this.dispatchScroll();
-      if (typeof this._options.onSnap === "function") {
+      if (isFunction(this._options.onSnap)) {
         this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
       }
     }
@@ -15808,7 +15808,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(b);
               }
               const cb = data.animationEnd;
-              if (typeof cb === "function") {
+              if (isFunction(cb)) {
                 cb();
               }
             });
@@ -16162,7 +16162,7 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
 const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function(callback) {
-      if (typeof callback === "function") {
+      if (isFunction(callback)) {
         this._events[eventName].push(callback);
       }
     };
@@ -16380,7 +16380,7 @@ function getBrowserInfo() {
     model = "iPad";
     osname = "iOS";
     deviceType = "pad";
-    osversion = typeof window.BigInt === "function" ? "14.0" : "13.0";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";
@@ -17773,7 +17773,7 @@ class DownloadTask {
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
-    if (typeof callback !== "function") {
+    if (!isFunction(callback)) {
       return;
     }
     this._callbacks.push(callback);
@@ -17858,7 +17858,7 @@ class UploadTask {
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
-    if (typeof callback !== "function") {
+    if (!isFunction(callback)) {
       return;
     }
     this._callbacks.push(callback);
@@ -18083,7 +18083,7 @@ const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({ url, 
 }, ConnectSocketProtocol, ConnectSocketOptions);
 function callSocketTask(socketTask, method, option, resolve, reject) {
   const fn = socketTask[method];
-  if (typeof fn === "function") {
+  if (isFunction(fn)) {
     fn.call(socketTask, extend({}, option, {
       success() {
         resolve();
@@ -18133,19 +18133,19 @@ function getJSONP(url, options, success, error) {
     js.remove();
   }
   window[callbackName] = (res) => {
-    if (typeof success === "function") {
+    if (isFunction(success)) {
       success(res);
     }
     end();
   };
   js.onerror = () => {
-    if (typeof error === "function") {
+    if (isFunction(error)) {
       error();
     }
     end();
   };
   timing = setTimeout(function() {
-    if (typeof error === "function") {
+    if (isFunction(error)) {
       error();
     }
     end();

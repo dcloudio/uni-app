@@ -2107,7 +2107,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   };
   function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
-    if (type.indexOf("_") !== 0 && typeof method === "function") {
+    if (type.indexOf("_") !== 0 && shared.isFunction(method)) {
       method(data, resolve);
     }
   }
@@ -3057,7 +3057,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state) === false) {
+      if (shared.isFunction(beforeInput) && beforeInput(event, state) === false) {
         return;
       }
       state.value = field.value;
@@ -8164,7 +8164,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(b);
               }
               const cb = data.animationEnd;
-              if (typeof cb === "function") {
+              if (shared.isFunction(cb)) {
                 cb();
               }
             });

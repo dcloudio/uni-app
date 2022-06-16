@@ -1,4 +1,4 @@
-import { isArray } from '@vue/shared'
+import { isArray, isFunction } from '@vue/shared'
 
 import {
   defineTaskApi,
@@ -24,7 +24,7 @@ class UploadTask implements UniApp.UploadTask {
    * @param callback 回调
    */
   onProgressUpdate(callback: (result: any) => void) {
-    if (typeof callback !== 'function') {
+    if (!isFunction(callback)) {
       return
     }
     this._callbacks.push(callback)
