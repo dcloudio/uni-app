@@ -161,7 +161,7 @@ export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapMarker',
   props,
   setup(props) {
-    const id = String(Number(props.id) !== NaN ? props.id : '')
+    const id = String(!isNaN(Number(props.id)) ? props.id : '')
     const onMapReady: OnMapReady = inject('onMapReady') as OnMapReady
     const updateMarkerLabelStyle = useMarkerLabelStyle(id)
     let marker: Marker
