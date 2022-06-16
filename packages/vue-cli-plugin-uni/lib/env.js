@@ -319,6 +319,8 @@ if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
 
+process.env.MERGE_VIRTUAL_HOST_ATTRIBUTES = (!!platformOptions.mergeVirtualHostAttributes).toString()
+
 process.env.UNI_STAT_UNI_CLOUD = ''
 process.env.UNI_STAT_DEBUG = ''
 if (

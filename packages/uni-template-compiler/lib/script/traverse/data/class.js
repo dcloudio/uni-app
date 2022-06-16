@@ -6,12 +6,9 @@ const {
 } = require('../../../constants')
 
 const {
-  getCode
-} = require('../../../util')
-
-const {
+  getCode,
   isRootElement
-} = require('./util')
+} = require('../../../util')
 
 function processClassArrayExpressionElements (classArrayExpression) {
   let binaryExpression
@@ -84,8 +81,7 @@ function processClassArrayExpression (classValuePath) {
 module.exports = function processClass (paths, path, state) {
   const classPath = paths.class
   const staticClassPath = paths.staticClass
-  const platformName = state.options.platform.name
-  const virtualHost = platformName === 'mp-weixin' || platformName === 'mp-alipay'
+  const mergeVirtualHostAttributes = state.options.mergeVirtualHostAttributes
   let classArrayExpression
   if (classPath) {
     const classValuePath = classPath.get('value')
@@ -128,7 +124,7 @@ module.exports = function processClass (paths, path, state) {
       state.errors.add(':class' + uniI18n.__('templateCompiler.noSupportSyntax', { 0: getCode(classValuePath.node) }))
     }
   }
-  if (virtualHost && isRootElement(path.parentPath)) {
+  if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
     const virtualHostClass = t.identifier(VIRTUAL_HOST_CLASS)
     if (classArrayExpression) {
       classArrayExpression.elements.push(virtualHostClass)

@@ -13,7 +13,7 @@ const uniI18n = require('@dcloudio/uni-cli-i18n')
 function processElement (ast, state, isRoot) {
   const platform = state.options.platform
   const platformName = platform.name
-  const virtualHost = platformName === 'mp-weixin' || platformName === 'mp-alipay'
+  const mergeVirtualHostAttributes = state.options.mergeVirtualHostAttributes
   // <template slot="f"></template>
   if (ast.type === 'template' && hasOwn(ast.attr, 'slot')) {
     ast.type = 'view'
@@ -47,13 +47,16 @@ function processElement (ast, state, isRoot) {
       ast.attr['bind:' + INTERNAL_EVENT_LINK] = INTERNAL_EVENT_LINK
     }
 
-    if (virtualHost && platform.isComponent(ast.type)) {
+    if (mergeVirtualHostAttributes && platform.isComponent(ast.type)) {
       const obj = {
         style: VIRTUAL_HOST_STYLE,
         class: VIRTUAL_HOST_CLASS
       }
       Object.keys(obj).forEach(key => {
-        ast.attr[obj[key]] = ast.attr[key]
+        if (key in ast.attr) {
+          ast.attr[obj[key]] = ast.attr[key]
+        }
+        // 支付宝小程序自定义组件外部属性始终无效
         if (platformName === 'mp-alipay') {
           delete ast.attr[key]
         }

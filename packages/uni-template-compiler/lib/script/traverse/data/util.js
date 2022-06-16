@@ -2,8 +2,7 @@ const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 
 const {
-  INTERNAL_SET_MODEL,
-  METHOD_CREATE_ELEMENT
+  INTERNAL_SET_MODEL
 } = require('../../../constants')
 
 module.exports = {
@@ -44,9 +43,5 @@ module.exports = {
         ]
       )
     )
-  },
-  isRootElement (path) {
-    const result = path.findParent(path => (path.isCallExpression() && path.get('callee').isIdentifier({ name: METHOD_CREATE_ELEMENT })) || path.isReturnStatement())
-    return result.isReturnStatement()
   }
 }

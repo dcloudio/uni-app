@@ -8,12 +8,9 @@ const {
 
 const {
   getCode,
-  hyphenate
-} = require('../../../util')
-
-const {
+  hyphenate,
   isRootElement
-} = require('./util')
+} = require('../../../util')
 
 const getMemberExpr = require('../member-expr')
 
@@ -125,8 +122,7 @@ function generateGetStyle (stylePath, styleValuePath, staticStylePath, state) {
 module.exports = function processStyle (paths, path, state) {
   const stylePath = paths.style
   const staticStylePath = paths.staticStyle
-  const platformName = state.options.platform.name
-  const virtualHost = platformName === 'mp-weixin' || platformName === 'mp-alipay'
+  const mergeVirtualHostAttributes = state.options.mergeVirtualHostAttributes
   if (stylePath) {
     const styleValuePath = stylePath.get('value')
     if (styleValuePath.isObjectExpression()) {
@@ -177,18 +173,22 @@ module.exports = function processStyle (paths, path, state) {
     } else {
       state.errors.add(`:style 不支持 ${getCode(styleValuePath.node)} 语法`)
     }
-    if (virtualHost && isRootElement(path.parentPath)) {
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
       styleValuePath.replaceWith(t.binaryExpression('+', styleValuePath.node, t.identifier(VIRTUAL_HOST_STYLE)))
     }
   } else if (staticStylePath) {
-    if (virtualHost && isRootElement(path.parentPath)) {
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
       const styleNode = processStaticStyle([t.identifier(VIRTUAL_HOST_STYLE)], staticStylePath, state)
-
       const property = t.objectProperty(t.identifier('style'), styleNode)
       path.node.properties.push(property)
       return []
     }
     staticStylePath.get('value').replaceWith(getStaticStyleStringLiteral(staticStylePath, state))
+  } else {
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
+      const property = t.objectProperty(t.identifier('style'), t.identifier(VIRTUAL_HOST_STYLE))
+      path.node.properties.push(property)
+    }
   }
   return []
 }
