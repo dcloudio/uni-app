@@ -8,6 +8,7 @@ import {
   ExtractPropTypes,
   VNode,
 } from 'vue'
+import { isString } from '@vue/shared'
 import {
   useCustomEvent,
   EmitEvent,
@@ -181,7 +182,7 @@ function useSwiperListeners(
   }
 
   const onChange = (event: any) => {
-    if (typeof event.detail.source === 'string') {
+    if (isString(event.detail.source)) {
       state.currentChangeSource = event.detail.source
     }
     state.currentSync = event.detail.index

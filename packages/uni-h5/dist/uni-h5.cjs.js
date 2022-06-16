@@ -2812,11 +2812,11 @@ function useFormField(nameKey, value) {
       const proxy = instance.proxy;
       return [
         proxy[nameKey],
-        typeof value === "string" ? proxy[value] : value.value
+        shared.isString(value) ? proxy[value] : value.value
       ];
     },
     reset() {
-      if (typeof value === "string") {
+      if (shared.isString(value)) {
         instance.proxy[value] = "";
       } else {
         value.value = "";
@@ -5082,7 +5082,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
       nodeProps = shared.extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
       return vue.h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
     }
-    if (node.type === "text" && typeof node.text === "string" && node.text !== "")
+    if (node.type === "text" && shared.isString(node.text) && node.text !== "")
       return vue.createTextVNode(decodeEntities(node.text || ""));
   });
 };
@@ -5204,7 +5204,7 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     }
     function renderVNode() {
       let nodeList = props2.nodes;
-      if (typeof nodeList === "string") {
+      if (shared.isString(nodeList)) {
         nodeList = parseHtml(props2.nodes);
       }
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
@@ -9797,7 +9797,7 @@ const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   let body = null;
   const contentType = normalizeContentType(header);
   if (method !== "GET") {
-    if (typeof data === "string" || data instanceof ArrayBuffer) {
+    if (shared.isString(data) || data instanceof ArrayBuffer) {
       body = data;
     } else {
       if (contentType === "json") {
@@ -9911,7 +9911,7 @@ const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
-    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const object = shared.isString(value) ? JSON.parse(value) : value;
     const type = object.type;
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object);
@@ -9947,7 +9947,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data 
 }, SetStorageProtocol);
 function getStorageOrigin(key) {
   const value = localStorage && localStorage.getItem(key);
-  if (typeof value !== "string") {
+  if (!shared.isString(value)) {
     throw new Error("data not found");
   }
   let data = value;

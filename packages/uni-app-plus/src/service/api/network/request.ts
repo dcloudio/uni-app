@@ -1,4 +1,4 @@
-import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { hasOwn, isArray, isPlainObject, isString } from '@vue/shared'
 import {
   API_REQUEST,
   API_TYPE_REQUEST,
@@ -53,7 +53,7 @@ const cookiesParse = (header: Record<string, string>) => {
 }
 
 function formatResponse(res: RequestTaskState, args: UniApp.RequestOptions) {
-  if (typeof res.data === 'string' && res.data.charCodeAt(0) === 65279) {
+  if (isString(res.data) && res.data.charCodeAt(0) === 65279) {
     res.data = res.data.slice(1)
   }
 
@@ -64,7 +64,7 @@ function formatResponse(res: RequestTaskState, args: UniApp.RequestOptions) {
       const value = res.header[key]
       if (isArray(value)) {
         ;(ret as any)[key] = value.join(',')
-      } else if (typeof value === 'string') {
+      } else if (isString(value)) {
         ;(ret as any)[key] = value
       }
       return ret
@@ -145,7 +145,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
         if (
           method !== 'GET' &&
           header[name].indexOf('application/x-www-form-urlencoded') === 0 &&
-          typeof data !== 'string' &&
+          !isString(data) &&
           !(data instanceof ArrayBuffer)
         ) {
           const bodyArray = []
@@ -191,7 +191,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       if (toString.call(data) === '[object ArrayBuffer]') {
         withArrayBuffer = true
       } else {
-        options.body = typeof data === 'string' ? data : JSON.stringify(data)
+        options.body = isString(data) ? data : JSON.stringify(data)
       }
     }
     const callback: FetchCallback = ({

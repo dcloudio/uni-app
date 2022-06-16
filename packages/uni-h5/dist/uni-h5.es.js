@@ -766,7 +766,7 @@ function rpx2px(str, replace = false) {
   if (replace) {
     return rpx2pxWithReplace(str);
   }
-  if (typeof str === "string") {
+  if (isString(str)) {
     const res = parseInt(str) || 0;
     if (hasRpx(str)) {
       return uni.upx2px(res);
@@ -1101,7 +1101,7 @@ class ComponentDescriptor {
     if (!this.$el || !style) {
       return this;
     }
-    if (typeof style === "string") {
+    if (isString(style)) {
       style = parseStringStyle(style);
     }
     if (isPlainObject(style)) {
@@ -2911,14 +2911,14 @@ function dedupeHooks(hooks) {
   return res;
 }
 const addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string" && isPlainObject(interceptor)) {
+  if (isString(method) && isPlainObject(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
 const removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string") {
+  if (isString(method)) {
     if (isPlainObject(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor);
     } else {
@@ -4937,12 +4937,12 @@ const API_PREVIEW_IMAGE = "previewImage";
 const PreviewImageOptions = {
   formatArgs: {
     urls(urls, params) {
-      params.urls = urls.map((url) => typeof url === "string" && url ? getRealPath(url) : "");
+      params.urls = urls.map((url) => isString(url) && url ? getRealPath(url) : "");
     },
     current(current, params) {
       if (typeof current === "number") {
         params.current = current > 0 && current < params.urls.length ? current : 0;
-      } else if (typeof current === "string" && current) {
+      } else if (isString(current) && current) {
         params.current = getRealPath(current);
       }
     }
@@ -5105,7 +5105,7 @@ const ConnectSocketOptions = {
       params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
     },
     protocols(protocols, params) {
-      if (typeof protocols === "string") {
+      if (isString(protocols)) {
         params.protocols = [protocols];
       }
     }
@@ -5132,7 +5132,7 @@ const CloseSocketProtocol = {
   reason: String
 };
 function encodeQueryString(url) {
-  if (typeof url !== "string") {
+  if (!isString(url)) {
     return url;
   }
   const index2 = url.indexOf("?");
@@ -7342,7 +7342,7 @@ function makeMap(str) {
 }
 const scripts = {};
 function loadScript(globalName, src, callback) {
-  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
+  const globalObject = isString(globalName) ? window[globalName] : globalName;
   if (globalObject) {
     callback();
     return;
@@ -7776,7 +7776,7 @@ function useQuill(props2, rootRef, trigger) {
         return delta;
       }
       if (delta.ops) {
-        delta.ops = delta.ops.filter(({ insert }) => typeof insert === "string").map(({ insert }) => ({ insert }));
+        delta.ops = delta.ops.filter(({ insert }) => isString(insert)).map(({ insert }) => ({ insert }));
       }
       return delta;
     });
@@ -7891,7 +7891,7 @@ function useQuill(props2, rootRef, trigger) {
             const { delta, html } = options;
             if (typeof delta === "object") {
               quill.setContents(delta, "silent");
-            } else if (typeof html === "string") {
+            } else if (isString(html)) {
               quill.setContents(html2delta(html), "silent");
             } else {
               errMsg = "contents is missing";
@@ -8385,11 +8385,11 @@ function useFormField(nameKey, value) {
       const proxy = instance2.proxy;
       return [
         proxy[nameKey],
-        typeof value === "string" ? proxy[value] : value.value
+        isString(value) ? proxy[value] : value.value
       ];
     },
     reset() {
-      if (typeof value === "string") {
+      if (isString(value)) {
         instance2.proxy[value] = "";
       } else {
         value.value = "";
@@ -11789,7 +11789,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
       nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
       return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
     }
-    if (node.type === "text" && typeof node.text === "string" && node.text !== "")
+    if (node.type === "text" && isString(node.text) && node.text !== "")
       return createTextVNode(decodeEntities(node.text || ""));
   });
 };
@@ -11911,7 +11911,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     }
     function renderVNode() {
       let nodeList = props2.nodes;
-      if (typeof nodeList === "string") {
+      if (isString(nodeList)) {
         nodeList = parseHtml(props2.nodes);
       }
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
@@ -16981,7 +16981,7 @@ const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
-    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const object = isString(value) ? JSON.parse(value) : value;
     const type = object.type;
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object);
@@ -17017,7 +17017,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data 
 }, SetStorageProtocol);
 function getStorageOrigin(key) {
   const value = localStorage && localStorage.getItem(key);
-  if (typeof value !== "string") {
+  if (!isString(value)) {
     throw new Error("data not found");
   }
   let data = value;
@@ -17661,7 +17661,7 @@ const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   let body = null;
   const contentType = normalizeContentType(header);
   if (method !== "GET") {
-    if (typeof data === "string" || data instanceof ArrayBuffer) {
+    if (isString(data) || data instanceof ArrayBuffer) {
       body = data;
     } else {
       if (contentType === "json") {
@@ -18048,7 +18048,7 @@ ${e2};at socketTask.on${capitalize(name)} callback function
     try {
       const code = options.code || 1e3;
       const reason = options.reason;
-      if (typeof reason === "string") {
+      if (isString(reason)) {
         ws.close(code, reason);
       } else {
         ws.close(code);

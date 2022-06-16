@@ -460,7 +460,7 @@ function dedupeHooks(hooks) {
     return res;
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string' && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
     else if (isPlainObject(method)) {
@@ -468,7 +468,7 @@ const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) 
     }
 }, AddInterceptorProtocol);
 const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string') {
+    if (isString(method)) {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);
         }
@@ -1036,7 +1036,7 @@ const getProvider = initGetProvider({
 });
 function requestPayment(params) {
     let parseError = false;
-    if (typeof params.orderInfo === 'string') {
+    if (isString(params.orderInfo)) {
         try {
             params.orderInfo = JSON.parse(params.orderInfo);
         }

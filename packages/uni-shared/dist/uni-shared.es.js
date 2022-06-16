@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, isFunction, isString, isPlainObject, extend, isArray, toTypeString, toRawType, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, hyphenate, camelize, isString, isFunction, isPlainObject, extend, isArray, toTypeString, toRawType, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -369,7 +369,7 @@ function formatDateTime({ date = new Date(), mode = 'date' }) {
 }
 function callOptions(options, data) {
     options = options || {};
-    if (typeof data === 'string') {
+    if (isString(data)) {
         data = {
             errMsg: data,
         };

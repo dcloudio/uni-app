@@ -373,7 +373,7 @@ function formatDateTime({ date = new Date(), mode = 'date' }) {
 }
 function callOptions(options, data) {
     options = options || {};
-    if (typeof data === 'string') {
+    if (shared.isString(data)) {
         data = {
             errMsg: data,
         };

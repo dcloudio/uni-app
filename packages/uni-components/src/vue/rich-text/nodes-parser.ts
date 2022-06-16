@@ -1,4 +1,4 @@
-import { hasOwn, extend, isPlainObject, isArray } from '@vue/shared'
+import { hasOwn, extend, isPlainObject, isArray, isString } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { createTextVNode, h, VNode } from 'vue'
 
@@ -166,11 +166,7 @@ export const nodeList2VNode = /*#__PURE__*/ (
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       )
     }
-    if (
-      node.type === 'text' &&
-      typeof node.text === 'string' &&
-      node.text !== ''
-    )
+    if (node.type === 'text' && isString(node.text) && node.text !== '')
       return createTextVNode(decodeEntities(node.text || ''))
   })
 }

@@ -95,7 +95,7 @@ export function callOptions(
   data: { [key: string]: any; errMsg: string } | string
 ): void {
   options = options || {}
-  if (typeof data === 'string') {
+  if (isString(data)) {
     data = {
       errMsg: data,
     }

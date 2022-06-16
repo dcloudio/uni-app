@@ -1,4 +1,5 @@
 import { once } from '@dcloudio/uni-shared'
+import { isString } from '@vue/shared'
 
 import { isInHBuilderX, runByHBuilderX } from '../hbx/env'
 import { moduleAliasFormatter } from '../hbx/alias'
@@ -62,7 +63,7 @@ const REMOVED_NVUE_MSGS = [
 export const removeNVueInfoFormatter: Formatter = {
   test(msg) {
     return !!REMOVED_NVUE_MSGS.find((m) =>
-      typeof m === 'string' ? msg.includes(m) : m(msg)
+      isString(m) ? msg.includes(m) : m(msg)
     )
   },
   format() {

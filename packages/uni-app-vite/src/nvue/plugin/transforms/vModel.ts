@@ -4,6 +4,7 @@ import {
   isStaticExp,
   NodeTypes,
 } from '@vue/compiler-core'
+import { isString } from '@vue/shared'
 const tags = ['u-input', 'u-textarea']
 export const transformModel: DirectiveTransform = (dir, node, context) => {
   const result = baseTransform(dir, node, context)
@@ -22,7 +23,7 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
       key.content = 'onInput'
       // 替换 $event 为 $event.detail.value
       value.children = value.children.map((child) => {
-        if (typeof child === 'string') {
+        if (isString(child)) {
           return child.replace(/=\s\$event/g, `= $event.detail.value`)
         }
         return child

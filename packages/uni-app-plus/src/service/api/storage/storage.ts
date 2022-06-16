@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import {
   defineSyncApi,
   defineAsyncApi,
@@ -28,7 +29,7 @@ const STORAGE_KEYS = 'uni-storage-keys'
 function parseValue(value: any) {
   const types = ['object', 'string', 'number', 'boolean', 'undefined']
   try {
-    const object = typeof value === 'string' ? JSON.parse(value) : value
+    const object = isString(value) ? JSON.parse(value) : value
     const type = object.type
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object)
@@ -116,7 +117,7 @@ function parseGetStorage(type: string, value: string) {
       } else if (type) {
         // 兼容App端历史格式
         data = object
-        if (typeof object === 'string') {
+        if (isString(object)) {
           object = JSON.parse(object)
           const objectType = typeof object
           if (objectType === 'number' && type === 'date') {
@@ -140,7 +141,7 @@ export const getStorageSync = <API_TYPE_GET_STORAGE_SYNC>defineSyncApi(
     const value = plus.storage.getItem(key)
     const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || ''
     const type = typeOrigin.toLowerCase()
-    if (typeof value !== 'string') {
+    if (!isString(value)) {
       return ''
     }
     return parseGetStorage(type, value)

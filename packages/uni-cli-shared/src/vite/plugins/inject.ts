@@ -13,7 +13,7 @@ import {
 import { AcornNode } from 'rollup'
 
 import { walk } from 'estree-walker'
-import { extend, isArray } from '@vue/shared'
+import { extend, isArray, isString } from '@vue/shared'
 import MagicString from 'magic-string'
 
 import {
@@ -133,7 +133,7 @@ export function uniViteInjectPlugin(
           }
         }
         if (mod && !imports.has(name) && !scope.contains(name)) {
-          if (typeof mod === 'string') mod = [mod, 'default']
+          if (isString(mod)) mod = [mod, 'default']
           if (mod[0] === id) return false
           const hash = `${keypath}:${mod[0]}:${mod[1]}`
           // 当 API 被覆盖定义后，不再摇树

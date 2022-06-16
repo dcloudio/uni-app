@@ -1,4 +1,5 @@
 import { ref, watch, getCurrentInstance, h, VNode } from 'vue'
+import { isString } from '@vue/shared'
 import {
   defineBuiltInComponent,
   useCustomEvent,
@@ -35,7 +36,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     function renderVNode() {
       let nodeList = props.nodes
-      if (typeof nodeList === 'string') {
+      if (isString(nodeList)) {
         nodeList = parseHtml(props.nodes)
       }
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList as [])

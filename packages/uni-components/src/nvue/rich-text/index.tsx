@@ -6,7 +6,7 @@ import {
   // @ts-ignore
   parseClassList,
 } from 'vue'
-import { isArray } from '@vue/shared'
+import { isArray, isString } from '@vue/shared'
 import { props, parseHtml } from '../../components/rich-text'
 import { parseStyleText } from '../helpers'
 
@@ -21,7 +21,7 @@ export default defineComponent({
 
     return () => {
       let nodes = props.nodes
-      if (typeof nodes === 'string') {
+      if (isString(nodes)) {
         nodes = parseHtml(nodes)
       }
 

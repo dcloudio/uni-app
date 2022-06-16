@@ -4,6 +4,7 @@ import colors from 'picocolors'
 import type { RollupError } from 'rollup'
 import type { LogErrorOptions } from 'vite'
 import { NodeTypes } from '@vue/compiler-core'
+import { isString } from '@vue/shared'
 import { normalizePath } from '../utils'
 import { Formatter } from '../logs/format'
 
@@ -63,9 +64,7 @@ const REMOVED_MSGS = [
 ]
 export const removeInfoFormatter: Formatter = {
   test(msg) {
-    return !!REMOVED_MSGS.find((m) =>
-      typeof m === 'string' ? msg.includes(m) : m(msg)
-    )
+    return !!REMOVED_MSGS.find((m) => (isString(m) ? msg.includes(m) : m(msg)))
   },
   format() {
     return ''

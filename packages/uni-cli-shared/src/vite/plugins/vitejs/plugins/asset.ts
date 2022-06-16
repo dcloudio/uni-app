@@ -9,7 +9,7 @@ import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
-import { isFunction } from '@vue/shared'
+import { isFunction, isString } from '@vue/shared'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -197,10 +197,10 @@ export function assetFileNamesToFileName(
       source: content,
       type: 'asset',
     })
-    if (typeof assetFileNames !== 'string') {
+    if (!isString(assetFileNames)) {
       throw new TypeError('assetFileNames must return a string')
     }
-  } else if (typeof assetFileNames !== 'string') {
+  } else if (!isString(assetFileNames)) {
     throw new TypeError('assetFileNames must be a string or a function')
   }
 

@@ -1452,7 +1452,7 @@ function rpx2px(str, replace = false) {
     if (replace) {
         return rpx2pxWithReplace(str);
     }
-    if (typeof str === 'string') {
+    if (isString(str)) {
         const res = parseInt(str) || 0;
         if (hasRpx(str)) {
             return uni.upx2px(res);
@@ -9249,7 +9249,7 @@ function dedupeHooks(hooks) {
     return res;
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string' && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
     else if (isPlainObject(method)) {
@@ -9257,7 +9257,7 @@ const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) 
     }
 }, AddInterceptorProtocol);
 const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string') {
+    if (isString(method)) {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);
         }
@@ -11707,14 +11707,14 @@ const API_PREVIEW_IMAGE = 'previewImage';
 const PreviewImageOptions = {
     formatArgs: {
         urls(urls, params) {
-            params.urls = urls.map((url) => typeof url === 'string' && url ? getRealPath(url) : '');
+            params.urls = urls.map((url) => isString(url) && url ? getRealPath(url) : '');
         },
         current(current, params) {
             if (typeof current === 'number') {
                 params.current =
                     current > 0 && current < params.urls.length ? current : 0;
             }
-            else if (typeof current === 'string' && current) {
+            else if (isString(current) && current) {
                 params.current = getRealPath(current);
             }
         },
@@ -11968,7 +11968,7 @@ const ConnectSocketOptions = {
             params.method = elemInArray((value || '').toUpperCase(), HTTP_METHODS);
         },
         protocols(protocols, params) {
-            if (typeof protocols === 'string') {
+            if (isString(protocols)) {
                 params.protocols = [protocols];
             }
         },
@@ -11996,7 +11996,7 @@ const CloseSocketProtocol = {
 };
 
 function encodeQueryString(url) {
-    if (typeof url !== 'string') {
+    if (!isString(url)) {
         return url;
     }
     const index = url.indexOf('?');
@@ -12748,7 +12748,7 @@ const STORAGE_KEYS = 'uni-storage-keys';
 function parseValue(value) {
     const types = ['object', 'string', 'number', 'boolean', 'undefined'];
     try {
-        const object = typeof value === 'string' ? JSON.parse(value) : value;
+        const object = isString(value) ? JSON.parse(value) : value;
         const type = object.type;
         if (types.indexOf(type) >= 0) {
             const keys = Object.keys(object);
@@ -12826,7 +12826,7 @@ function parseGetStorage(type, value) {
             else if (type) {
                 // 兼容App端历史格式
                 data = object;
-                if (typeof object === 'string') {
+                if (isString(object)) {
                     object = JSON.parse(object);
                     const objectType = typeof object;
                     if (objectType === 'number' && type === 'date') {
@@ -12847,7 +12847,7 @@ const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key, t) => {
     const value = plus.storage.getItem(key);
     const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || '';
     const type = typeOrigin.toLowerCase();
-    if (typeof value !== 'string') {
+    if (!isString(value)) {
         return '';
     }
     return parseGetStorage(type, value);
@@ -13358,7 +13358,7 @@ function weexGetSystemInfoSync() {
         return;
     const { getSystemInfoSync } = weex.requireModule('plus');
     systemInfo = getSystemInfoSync();
-    if (typeof systemInfo === 'string') {
+    if (isString(systemInfo)) {
         try {
             systemInfo = JSON.parse(systemInfo);
         }
@@ -14573,7 +14573,7 @@ const cookiesParse = (header) => {
     return cookiesArr;
 };
 function formatResponse(res, args) {
-    if (typeof res.data === 'string' && res.data.charCodeAt(0) === 65279) {
+    if (isString(res.data) && res.data.charCodeAt(0) === 65279) {
         res.data = res.data.slice(1);
     }
     res.statusCode = parseInt(String(res.statusCode), 10);
@@ -14583,7 +14583,7 @@ function formatResponse(res, args) {
             if (isArray(value)) {
                 ret[key] = value.join(',');
             }
-            else if (typeof value === 'string') {
+            else if (isString(value)) {
                 ret[key] = value;
             }
             return ret;
@@ -14638,7 +14638,7 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
             // TODO 需要重构
             if (method !== 'GET' &&
                 header[name].indexOf('application/x-www-form-urlencoded') === 0 &&
-                typeof data !== 'string' &&
+                !isString(data) &&
                 !(data instanceof ArrayBuffer)) {
                 const bodyArray = [];
                 for (const key in data) {
@@ -14680,7 +14680,7 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
             withArrayBuffer = true;
         }
         else {
-            options.body = typeof data === 'string' ? data : JSON.stringify(data);
+            options.body = isString(data) ? data : JSON.stringify(data);
         }
     }
     const callback = ({ ok, status, data, headers, errorMsg, }) => {
@@ -16735,7 +16735,7 @@ const TYPES = {
 const parseParams = (args) => {
     args.type = args.type || 0;
     let { provider, type, title, summary: content, href, imageUrl, mediaUrl: media, scene, miniProgram, openCustomerServiceChat, corpid, customerUrl: url, } = args;
-    if (typeof imageUrl === 'string' && imageUrl) {
+    if (isString(imageUrl) && imageUrl) {
         imageUrl = getRealPath(imageUrl);
     }
     const shareType = TYPES[type];
@@ -16784,7 +16784,7 @@ const sendShareMsg = function (service, params, resolve, reject, method = 'share
 const share = defineAsyncApi(API_SHREA, (params, { resolve, reject }) => {
     const parsedParams = parseParams(params);
     const errorCallback = warpPlusErrorCallback(reject);
-    if (typeof parsedParams === 'string') {
+    if (isString(parsedParams)) {
         return reject(parsedParams);
     }
     plus.share.getServices((services) => {
@@ -16804,7 +16804,7 @@ const share = defineAsyncApi(API_SHREA, (params, { resolve, reject }) => {
 }, ShareProtocols, SahreOptions);
 const shareWithSystem = defineAsyncApi(API_SHARE_WITH_SYSTEM, ({ type, imageUrl, summary, href }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject);
-    if (typeof imageUrl === 'string' && imageUrl) {
+    if (isString(imageUrl) && imageUrl) {
         imageUrl = getRealPath(imageUrl);
     }
     plus.share.sendWithSystem({

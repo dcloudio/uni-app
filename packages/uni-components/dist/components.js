@@ -1,5 +1,5 @@
 import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
-import { extend, hasOwn, isFunction, isPlainObject, isArray } from "@vue/shared";
+import { extend, hasOwn, isFunction, isPlainObject, isArray, isString } from "@vue/shared";
 import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
@@ -2342,7 +2342,7 @@ function useState(props2) {
 const dom = weex.requireModule("dom");
 const isAndroid$1 = weex.config.env.platform.toLowerCase() === "android";
 function getStyle(val) {
-  return extend({}, typeof val === "string" ? parseStyleText(val) : val);
+  return extend({}, isString(val) ? parseStyleText(val) : val);
 }
 var PickerViewColumn = defineComponent({
   name: "PickerViewColumn",
@@ -4090,7 +4090,7 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
     }
   };
   const onChange = (event) => {
-    if (typeof event.detail.source === "string") {
+    if (isString(event.detail.source)) {
       state.currentChangeSource = event.detail.source;
     }
     state.currentSync = event.detail.index;
@@ -4395,7 +4395,7 @@ var RichText = defineComponent({
     const instance = getCurrentInstance();
     return () => {
       let nodes = props2.nodes;
-      if (typeof nodes === "string") {
+      if (isString(nodes)) {
         nodes = parseHtml(nodes);
       }
       return createVNode(resolveComponent("u-rich-text"), {
