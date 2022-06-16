@@ -875,8 +875,8 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const baseUrl = __IMPORT_META_ENV_BASE_URL__;
 function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
   if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
     return uniShared.addLeadingSlash(filePath);
   }

@@ -2013,8 +2013,8 @@ var index$y = /* @__PURE__ */ defineBuiltInComponent({
 function findElem(vm) {
   return vm.$el;
 }
-const baseUrl = import.meta.env.BASE_URL;
 function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
   if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
     return addLeadingSlash(filePath);
   }

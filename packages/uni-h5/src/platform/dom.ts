@@ -17,8 +17,9 @@ export function findElem(vm: ComponentPublicInstance) {
   return vm.$el
 }
 
-const baseUrl = __IMPORT_META_ENV_BASE_URL__
+// const baseUrl = __IMPORT_META_ENV_BASE_URL__
 function addBase(filePath: string) {
+  const { base: baseUrl } = __uniConfig.router!
   // filepath可能已经被补充了baseUrl
   if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
     return addLeadingSlash(filePath)
