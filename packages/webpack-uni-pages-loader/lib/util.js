@@ -136,7 +136,8 @@ const NON_APP_JSON_KEYS = [
   'optimization',
   'scopedSlotsCompiler',
   'usingComponents',
-  'uniStatistics'
+  'uniStatistics',
+  'mergeVirtualHostAttributes'
 ]
 module.exports = {
   hasOwn,

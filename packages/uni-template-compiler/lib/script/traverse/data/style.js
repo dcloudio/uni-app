@@ -2,12 +2,14 @@ const t = require('@babel/types')
 
 const {
   IDENTIFIER_STYLE,
-  INTERNAL_GET_STYLE
+  INTERNAL_GET_STYLE,
+  VIRTUAL_HOST_STYLE
 } = require('../../../constants')
 
 const {
   getCode,
-  hyphenate
+  hyphenate,
+  isRootElement
 } = require('../../../util')
 
 const getMemberExpr = require('../member-expr')
@@ -120,6 +122,7 @@ function generateGetStyle (stylePath, styleValuePath, staticStylePath, state) {
 module.exports = function processStyle (paths, path, state) {
   const stylePath = paths.style
   const staticStylePath = paths.staticStyle
+  const mergeVirtualHostAttributes = state.options.mergeVirtualHostAttributes
   if (stylePath) {
     const styleValuePath = stylePath.get('value')
     if (styleValuePath.isObjectExpression()) {
@@ -146,11 +149,11 @@ module.exports = function processStyle (paths, path, state) {
       }
     } else if (
       styleValuePath.isStringLiteral() || // :style="'background:red'"
-            styleValuePath.isIdentifier() || // TODO 需要优化到下一个条件，:style="styleObject"
-            styleValuePath.isMemberExpression() || // TODO 需要优化到下一个条件，:style="item.styleObject"
-            styleValuePath.isConditionalExpression() ||
-            styleValuePath.isLogicalExpression() ||
-            styleValuePath.isBinaryExpression()
+      styleValuePath.isIdentifier() || // TODO 需要优化到下一个条件，:style="styleObject"
+      styleValuePath.isMemberExpression() || // TODO 需要优化到下一个条件，:style="item.styleObject"
+      styleValuePath.isConditionalExpression() ||
+      styleValuePath.isLogicalExpression() ||
+      styleValuePath.isBinaryExpression()
     ) {
       // 理论上 ConditionalExpression,LogicalExpression 可能存在 styleObject，应该__get_style，还是先不考虑这种情况吧
       // ConditionalExpression :style="index === currentIndex ? activeStyle : itemStyle"
@@ -164,14 +167,28 @@ module.exports = function processStyle (paths, path, state) {
       )
     } else if (
       styleValuePath.isIdentifier() ||
-            styleValuePath.isMemberExpression()
+      styleValuePath.isMemberExpression()
     ) { // TODO 目前先不考虑 classObject,styleObject
       // generateGetStyle(stylePath, styleValuePath, staticStylePath, state)
     } else {
       state.errors.add(`:style 不支持 ${getCode(styleValuePath.node)} 语法`)
     }
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
+      styleValuePath.replaceWith(t.binaryExpression('+', styleValuePath.node, t.identifier(VIRTUAL_HOST_STYLE)))
+    }
   } else if (staticStylePath) {
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
+      const styleNode = processStaticStyle([t.identifier(VIRTUAL_HOST_STYLE)], staticStylePath, state)
+      const property = t.objectProperty(t.identifier('style'), styleNode)
+      path.node.properties.push(property)
+      return []
+    }
     staticStylePath.get('value').replaceWith(getStaticStyleStringLiteral(staticStylePath, state))
+  } else {
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
+      const property = t.objectProperty(t.identifier('style'), t.identifier(VIRTUAL_HOST_STYLE))
+      path.node.properties.push(property)
+    }
   }
   return []
 }

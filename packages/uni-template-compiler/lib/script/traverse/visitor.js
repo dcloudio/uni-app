@@ -24,7 +24,8 @@ const {
   hyphenate,
   traverseFilter,
   getComponentName,
-  hasEscapeQuote
+  hasEscapeQuote,
+  isRootElement
 } = require('../../util')
 
 const traverseData = require('./data')
@@ -182,7 +183,10 @@ module.exports = {
             if (this.options.scopeId) {
               addStaticClass(path, this.options.scopeId)
             }
-
+            // 根节点无 attrs 时添加空对象，方便后续合并外层 attrs
+            if (this.options.mergeVirtualHostAttributes && !t.isObjectExpression(path.node.arguments[1]) && isRootElement(path)) {
+              path.node.arguments.splice(1, 0, t.objectExpression([]))
+            }
             const dataPath = path.get('arguments.1')
             dataPath && dataPath.isObjectExpression() && traverseData(dataPath, this, tagNode.value)
           }

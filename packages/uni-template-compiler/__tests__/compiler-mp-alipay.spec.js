@@ -204,6 +204,41 @@ describe('mp:compiler-mp-alipay', () => {
     )
   })
 
+  it('generate attrs with mergeVirtualHostAttributes', () => {
+    assertCodegen(
+      '<custom-view>hello world</custom-view>',
+      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{virtualHostStyle}}" virtualHostClass="{{(virtualHostClass)}}">hello world</custom-view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<custom-view :class="class1" :style="style">hello world</custom-view>',
+      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)+virtualHostStyle}}" virtualHostClass="{{((class1)+\' \'+virtualHostClass)}}">hello world</custom-view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view><custom-view>hello world</custom-view></view>',
+      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l">hello world</custom-view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view><custom-view :class="class1" :style="style">hello world</custom-view></view>',
+      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)}}" virtualHostClass="{{(class1)}}">hello world</custom-view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+  })
+
   it('generate getPhoneNumber', () => {
     assertCodegen(
       '<button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">获取手机号</button>',

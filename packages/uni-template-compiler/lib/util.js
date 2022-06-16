@@ -5,7 +5,8 @@ const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
   METHOD_RENDER_LIST,
-  METHOD_RESOLVE_SCOPED_SLOTS
+  METHOD_RESOLVE_SCOPED_SLOTS,
+  METHOD_CREATE_ELEMENT
 } = require('./constants')
 
 function cached (fn) {
@@ -270,6 +271,11 @@ function hasEscapeQuote (path) {
   return has
 }
 
+function isRootElement (path) {
+  const result = path.findParent(path => (path.isCallExpression() && path.get('callee').isIdentifier({ name: METHOD_CREATE_ELEMENT })) || path.isReturnStatement())
+  return result.isReturnStatement()
+}
+
 module.exports = {
   hasOwn,
   isUnaryTag: makeMap(
@@ -301,5 +307,6 @@ module.exports = {
   processMemberExpression,
   getForIndexIdentifier,
   isSimpleObjectExpression,
-  hasEscapeQuote
+  hasEscapeQuote,
+  isRootElement
 }
