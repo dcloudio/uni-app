@@ -49,7 +49,7 @@ function invokeGetPushCidCallbacks (cid, errMsg) {
   getPushCidCallbacks.length = 0
 }
 
-export function getPushClientid (args) {
+export function getPushClientId (args) {
   if (!isPlainObject(args)) {
     args = {}
   }
@@ -65,13 +65,13 @@ export function getPushClientid (args) {
     let res
     if (cid) {
       res = {
-        errMsg: 'getPushClientid:ok',
+        errMsg: 'getPushClientId:ok',
         cid
       }
       hasSuccess && success(res)
     } else {
       res = {
-        errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
+        errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '')
       }
       hasFail && fail(res)
     }

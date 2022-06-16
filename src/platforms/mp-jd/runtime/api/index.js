@@ -1,5 +1,5 @@
 export {
-  getPushClientid,
+  getPushClientId,
   onPushMessage,
   offPushMessage,
   invokePushCallback
