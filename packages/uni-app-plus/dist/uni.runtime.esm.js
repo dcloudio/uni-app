@@ -11115,7 +11115,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushClientid(args) {
+function getPushClientId(args) {
     if (!isPlainObject(args)) {
         args = {};
     }
@@ -11126,11 +11126,11 @@ function getPushClientid(args) {
     getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
-            res = { errMsg: 'getPushClientid:ok', cid };
+            res = { errMsg: 'getPushClientId:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
+            res = { errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
@@ -19038,7 +19038,7 @@ var uni$1 = {
   setPageMeta: setPageMeta,
   getEnterOptionsSync: getEnterOptionsSync,
   getLaunchOptionsSync: getLaunchOptionsSync,
-  getPushClientid: getPushClientid,
+  getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   onAppHide: onAppHide,

@@ -546,7 +546,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushClientid(args) {
+function getPushClientId(args) {
     if (!isPlainObject(args)) {
         args = {};
     }
@@ -557,11 +557,11 @@ function getPushClientid(args) {
     getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
-            res = { errMsg: 'getPushClientid:ok', cid };
+            res = { errMsg: 'getPushClientId:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
+            res = { errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
@@ -778,7 +778,7 @@ const baseApis = {
     getLocale,
     setLocale,
     onLocaleChange,
-    getPushClientid,
+    getPushClientId,
     onPushMessage,
     offPushMessage,
     invokePushCallback,
