@@ -24,6 +24,6 @@
     "source-map": "^0.7.3"
   },
   "devDependencies": {
-    "@dcloudio/types": "^2.6.11"
+    "@dcloudio/types": "^2.6.12"
   }
 }
