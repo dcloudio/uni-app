@@ -3307,7 +3307,7 @@ const useAttrs = (params = {}) => {
 };
 function flatVNode(nodes) {
   const array = [];
-  if (Array.isArray(nodes)) {
+  if (shared.isArray(nodes)) {
     nodes.forEach((vnode) => {
       if (vue.isVNode(vnode)) {
         if (vnode.type === vue.Fragment) {
@@ -3315,7 +3315,7 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
-      } else if (Array.isArray(vnode)) {
+      } else if (shared.isArray(vnode)) {
         array.push(...flatVNode(vnode));
       }
     });
@@ -4407,7 +4407,7 @@ const pickerViewProps = {
       return [];
     },
     validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      return shared.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
     }
   },
   indicatorStyle: {
@@ -5066,7 +5066,7 @@ function normalizeAttrs(tagName, attrs) {
   }
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
+  if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
     if (!shared.isPlainObject(node)) {
@@ -7463,7 +7463,7 @@ function useDanmu(props2, videoState) {
     time: 0,
     index: -1
   };
-  const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  const danmuList = shared.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
   danmuList.sort(function(a, b) {
     return (a.time || 0) - (b.time || 0);
   });
@@ -7961,7 +7961,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$7,
   setup(props2) {
-    const id = String(Number(props2.id) !== NaN ? props2.id : "");
+    const id = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
     const updateMarkerLabelStyle = useMarkerLabelStyle(id);
     let marker;
@@ -8691,7 +8691,7 @@ const props$2 = {
 };
 function getPoints(points) {
   const newPoints = [];
-  if (Array.isArray(points)) {
+  if (shared.isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({
@@ -9492,10 +9492,10 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     switch (props2.mode) {
       case mode.MULTISELECTOR:
         {
-          if (!Array.isArray(val)) {
+          if (!shared.isArray(val)) {
             val = state.valueArray;
           }
-          if (!Array.isArray(state.valueSync)) {
+          if (!shared.isArray(state.valueSync)) {
             state.valueSync = [];
           }
           const length = state.valueSync.length = Math.max(val.length, props2.range.length);
@@ -9560,7 +9560,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     _close();
     state.valueChangeSource = "click";
     const value = _getValue();
-    state.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+    state.valueSync = shared.isArray(value) ? value.map((val) => val) : value;
     trigger("change", {}, {
       value
     });

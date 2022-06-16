@@ -1,4 +1,4 @@
-import { hasOwn, extend, isPlainObject } from '@vue/shared'
+import { hasOwn, extend, isPlainObject, isArray } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { createTextVNode, h, VNode } from 'vue'
 
@@ -142,7 +142,7 @@ export const nodeList2VNode = /*#__PURE__*/ (
   triggerItemClick: Function,
   nodeList?: Node[]
 ): Array<VNode | undefined> => {
-  if (!nodeList || (Array.isArray(nodeList) && !nodeList.length)) return []
+  if (!nodeList || (isArray(nodeList) && !nodeList.length)) return []
 
   return nodeList.map((node) => {
     if (!isPlainObject(node)) {

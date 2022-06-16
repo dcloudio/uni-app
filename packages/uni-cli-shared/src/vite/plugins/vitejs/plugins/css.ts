@@ -40,6 +40,7 @@ import { transform, formatMessages } from 'esbuild'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { PAGES_JSON_JS } from '../../../../constants'
 import { emptyCssComments } from '../cleanString'
+import { isArray } from '@vue/shared'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -1032,7 +1033,7 @@ const scss: SassStylePreprocessor = async (
   }
   const importer = [internalImporter]
   if (options.importer) {
-    Array.isArray(options.importer)
+    isArray(options.importer)
       ? importer.push(...options.importer)
       : importer.push(options.importer)
   }

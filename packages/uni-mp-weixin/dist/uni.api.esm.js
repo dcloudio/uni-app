@@ -495,7 +495,7 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
         emitter.e = {};
         return;
     }
-    if (!Array.isArray(name))
+    if (!isArray(name))
         name = [name];
     name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);

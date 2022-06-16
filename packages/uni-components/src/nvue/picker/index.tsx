@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import {
   Ref,
   ref,
@@ -155,10 +155,10 @@ export default /*#__PURE__*/ defineComponent({
       switch (props.mode) {
         case mode.MULTISELECTOR:
           {
-            if (!Array.isArray(val)) {
+            if (!isArray(val)) {
               val = []
             }
-            if (!Array.isArray(valueSync.value)) {
+            if (!isArray(valueSync.value)) {
               valueSync.value = []
             }
             const length = (valueSync.value.length = Math.max(
@@ -285,7 +285,7 @@ export default /*#__PURE__*/ defineComponent({
             valueSync.value = 0
             break
           case mode.MULTISELECTOR:
-            Array.isArray(props.value) &&
+            isArray(props.value) &&
               (valueSync.value = props.value.map((val) => 0))
             break
           case mode.DATE:

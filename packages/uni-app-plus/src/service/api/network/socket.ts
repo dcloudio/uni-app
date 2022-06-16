@@ -15,7 +15,7 @@ import {
 } from '@dcloudio/uni-api'
 import { requireNativePlugin } from '../plugin/requireNativePlugin'
 import { base64ToArrayBuffer, arrayBufferToBase64 } from '@dcloudio/uni-api'
-import { extend, capitalize } from '@vue/shared'
+import { extend, capitalize, isArray } from '@vue/shared'
 import { callOptions } from '@dcloudio/uni-shared'
 
 type Socket = {
@@ -73,7 +73,7 @@ function createSocketTask(args: UniApp.ConnectSocketOption) {
     socket.WebSocket({
       id: socketId,
       url: args.url,
-      protocol: Array.isArray(args.protocols)
+      protocol: isArray(args.protocols)
         ? args.protocols.join(',')
         : args.protocols,
       header: args.header,

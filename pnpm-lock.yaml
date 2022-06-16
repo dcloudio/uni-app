@@ -157,6 +157,9 @@ importers:
   packages/uni-api:
     specifiers:
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
+      '@vue/shared': 3.2.37
+    dependencies:
+      '@vue/shared': 3.2.37
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
@@ -405,10 +408,12 @@ importers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-i18n': 3.0.0-alpha-3041320220531001
       '@dcloudio/uni-shared': 3.0.0-alpha-3041320220531001
+      '@vue/shared': 3.2.37
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-i18n': link:../uni-i18n
       '@dcloudio/uni-shared': link:../uni-shared
+      '@vue/shared': 3.2.37
 
   packages/uni-components:
     specifiers:

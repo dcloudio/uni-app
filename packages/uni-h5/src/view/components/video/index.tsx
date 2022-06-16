@@ -9,6 +9,7 @@ import {
   renderList,
   onBeforeUnmount,
 } from 'vue'
+import { isArray } from '@vue/shared'
 import { passive } from '@dcloudio/uni-shared'
 import { useI18n, initI18nVideoMsgsOnce } from '@dcloudio/uni-core'
 import { getRealPath } from '@dcloudio/uni-platform'
@@ -588,7 +589,7 @@ function useDanmu(
     color?: string
     time?: number
   }
-  const danmuList: Danmu[] = Array.isArray(props.danmuList)
+  const danmuList: Danmu[] = isArray(props.danmuList)
     ? JSON.parse(JSON.stringify(props.danmuList))
     : []
   danmuList.sort(function (a: Danmu, b: Danmu) {

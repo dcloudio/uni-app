@@ -6,6 +6,7 @@ import {
   // @ts-ignore
   parseClassList,
 } from 'vue'
+import { isArray } from '@vue/shared'
 import { props, parseHtml } from '../../components/rich-text'
 import { parseStyleText } from '../helpers'
 
@@ -238,7 +239,7 @@ function normalizeNodes(
   }
 
   function normalizeNodes(nodes?: NvueNode[]) {
-    if (Array.isArray(nodes)) {
+    if (isArray(nodes)) {
       return nodes.map((node) => normalizeNode(node))
     }
     return []

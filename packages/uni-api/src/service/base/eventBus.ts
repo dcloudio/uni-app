@@ -1,3 +1,4 @@
+import { isArray } from '@vue/shared'
 import { Emitter } from '@dcloudio/uni-shared'
 import { defineSyncApi } from '../../helpers/api'
 import {
@@ -44,7 +45,7 @@ export const $off = defineSyncApi<API_TYPE_OFF>(
       emitter.e = {}
       return
     }
-    if (!Array.isArray(name)) name = [name]
+    if (!isArray(name)) name = [name]
     name.forEach((n) => emitter.off(n, callback))
   },
   OffProtocol

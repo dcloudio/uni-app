@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import { addLeadingSlash, formatLog } from '@dcloudio/uni-shared'
 import { getRouteOptions } from '@dcloudio/uni-core'
 interface PlusResult extends Record<string, any> {
@@ -67,7 +67,7 @@ export function warpPlusMethod(
 }
 
 export function isTabBarPage(path = '') {
-  if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+  if (!(__uniConfig.tabBar && isArray(__uniConfig.tabBar.list))) {
     return false
   }
   try {

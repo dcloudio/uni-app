@@ -1,4 +1,5 @@
 import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import { isArray } from '@vue/shared'
 import { resolveComponentInstance } from '@dcloudio/uni-shared'
 import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 import { requestComponentInfo } from '@dcloudio/uni-platform'
@@ -139,7 +140,7 @@ class SelectorQuery implements UniApp.SelectorQuery {
       (res: Array<SelectorQueryNodeInfo | null>) => {
         const queueCbs = this._queueCb
         res.forEach((result, index) => {
-          if (Array.isArray(result)) {
+          if (isArray(result)) {
             result.forEach(convertContext)
           } else {
             convertContext(result)

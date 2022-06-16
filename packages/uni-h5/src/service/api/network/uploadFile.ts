@@ -1,4 +1,5 @@
-import { urlToFile, blobToFile } from '../../../helpers/file'
+import { isArray } from '@vue/shared'
+
 import {
   defineTaskApi,
   API_UPLOAD_FILE,
@@ -6,6 +7,7 @@ import {
   UploadFileProtocol,
   UploadFileOptions,
 } from '@dcloudio/uni-api'
+import { urlToFile, blobToFile } from '../../../helpers/file'
 /**
  * 上传任务
  */
@@ -69,7 +71,7 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
     { resolve, reject }
   ) => {
     var uploadTask = new UploadTask()
-    if (!Array.isArray(files) || !files.length) {
+    if (!isArray(files) || !files.length) {
       files = [
         {
           name,

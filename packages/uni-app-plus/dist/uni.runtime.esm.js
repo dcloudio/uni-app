@@ -1,4 +1,4 @@
-import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
+import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
 import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
@@ -97,7 +97,7 @@ function elemInArray(str, arr) {
     return str;
 }
 function elemsInArray(strArr, optionalVal) {
-    if (!isArray$1(strArr) ||
+    if (!isArray(strArr) ||
         strArr.length === 0 ||
         strArr.find((val) => optionalVal.indexOf(val) === -1)) {
         return optionalVal;
@@ -122,7 +122,7 @@ function validateProtocols(name, args, protocol, onFail) {
     if (!protocol) {
         return;
     }
-    if (!isArray$1(protocol)) {
+    if (!isArray(protocol)) {
         return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
     }
     const len = protocol.length;
@@ -152,7 +152,7 @@ function validateProp(name, value, prop, isAbsent) {
     // type check
     if (type != null) {
         let isValid = false;
-        const types = isArray$1(type) ? type : [type];
+        const types = isArray(type) ? type : [type];
         const expectedTypes = [];
         // value is valid as long as one of the specified types match
         for (let i = 0; i < types.length && !isValid; i++) {
@@ -185,7 +185,7 @@ function assertType(value, type) {
         valid = isObject$1(value);
     }
     else if (expectedType === 'Array') {
-        valid = isArray$1(value);
+        valid = isArray(value);
     }
     else {
         {
@@ -393,7 +393,7 @@ function queue(hooks, data) {
 function wrapperOptions(interceptors, options = {}) {
     [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
         const hooks = interceptors[name];
-        if (!isArray$1(hooks)) {
+        if (!isArray(hooks)) {
             return;
         }
         const oldCallback = options[name];
@@ -407,11 +407,11 @@ function wrapperOptions(interceptors, options = {}) {
 }
 function wrapperReturnValue(method, returnValue) {
     const returnValueHooks = [];
-    if (isArray$1(globalInterceptors.returnValue)) {
+    if (isArray(globalInterceptors.returnValue)) {
         returnValueHooks.push(...globalInterceptors.returnValue);
     }
     const interceptor = scopedInterceptors[method];
-    if (interceptor && isArray$1(interceptor.returnValue)) {
+    if (interceptor && isArray(interceptor.returnValue)) {
         returnValueHooks.push(...interceptor.returnValue);
     }
     returnValueHooks.forEach((hook) => {
@@ -439,7 +439,7 @@ function getApiInterceptorHooks(method) {
 function invokeApi(method, api, options, params) {
     const interceptor = getApiInterceptorHooks(method);
     if (interceptor && Object.keys(interceptor).length) {
-        if (isArray$1(interceptor.invoke)) {
+        if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
             return res.then((options) => {
                 return api(wrapperOptions(interceptor, options), ...params);
@@ -698,7 +698,7 @@ function findNVueElementIds(reqs) {
 }
 function findNVueElementInfos(ids, elm, infos) {
     const nodes = elm.children;
-    if (!isArray$1(nodes)) {
+    if (!isArray(nodes)) {
         return false;
     }
     for (let i = 0; i < nodes.length; i++) {
@@ -741,7 +741,6 @@ function setCurrentPageMeta(page, options) {
     UniServiceJSBridge.invokeViewMethod('setPageMeta', options, page.$page.id);
 }
 
-const isArray = Array.isArray;
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
 class BaseFormatter {
@@ -803,7 +802,7 @@ function parse(format, [startDelimiter, endDelimiter]) {
 function compile(tokens, values) {
     const compiled = [];
     let index = 0;
-    const mode = isArray(values)
+    const mode = Array.isArray(values)
         ? 'list'
         : isObject(values)
             ? 'named'
@@ -1558,7 +1557,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
 
 function removeHook(vm, name, hook) {
     const hooks = vm.$[name];
-    if (!isArray$1(hooks)) {
+    if (!isArray(hooks)) {
         return;
     }
     if (hook.__weh) {
@@ -9225,7 +9224,7 @@ function removeInterceptorHook(interceptors, interceptor) {
     Object.keys(interceptor).forEach((name) => {
         const hooks = interceptors[name];
         const hook = interceptor[name];
-        if (isArray$1(hooks) && isFunction(hook)) {
+        if (isArray(hooks) && isFunction(hook)) {
             remove(hooks, hook);
         }
     });
@@ -9234,7 +9233,7 @@ function mergeHook(parentVal, childVal) {
     const res = childVal
         ? parentVal
             ? parentVal.concat(childVal)
-            : isArray$1(childVal)
+            : isArray(childVal)
                 ? childVal
                 : [childVal]
         : parentVal;
@@ -9321,7 +9320,7 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
         emitter.e = {};
         return;
     }
-    if (!Array.isArray(name))
+    if (!isArray(name))
         name = [name];
     name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);
@@ -10747,7 +10746,7 @@ class SelectorQuery {
         requestComponentInfo(this._page, this._queue, (res) => {
             const queueCbs = this._queueCb;
             res.forEach((result, index) => {
-                if (Array.isArray(result)) {
+                if (isArray(result)) {
                     result.forEach(convertContext);
                 }
                 else {
@@ -12714,8 +12713,8 @@ function warpPlusMethod(plusObject, before, after) {
         }));
     };
 }
-function isTabBarPage$1(path = '') {
-    if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+function isTabBarPage(path = '') {
+    if (!(__uniConfig.tabBar && isArray(__uniConfig.tabBar.list))) {
         return false;
     }
     try {
@@ -13238,35 +13237,6 @@ function getPullDownRefreshWebview() {
 function setPullDownRefreshWebview(webview) {
     pullDownRefreshWebview = webview;
 }
-function isTabBarPage(path = '') {
-    if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
-        return false;
-    }
-    try {
-        if (!path) {
-            const pages = getCurrentPages();
-            if (!pages.length) {
-                return false;
-            }
-            const page = pages[pages.length - 1];
-            if (!page) {
-                return false;
-            }
-            return page.$page.meta.isTabBar;
-        }
-        if (!/^\//.test(path)) {
-            path = addLeadingSlash(path);
-        }
-        const route = __uniRoutes.find((route) => route.path === path);
-        return route && route.meta.isTabBar;
-    }
-    catch (e) {
-        if (process.env.NODE_ENV !== 'production') {
-            console.log('getCurrentPages is not ready');
-        }
-    }
-    return false;
-}
 
 function getStatusbarHeight() {
     // 横屏时 iOS 获取的状态栏高度错误，进行纠正
@@ -13328,7 +13298,7 @@ const getWindowInfo = defineSyncApi('getWindowInfo', () => {
         height: 0,
         cover: false,
     };
-    if (isTabBarPage$1()) {
+    if (isTabBarPage()) {
         tabBarView.height = tabBarInstance.visible ? tabBarInstance.height : 0;
         tabBarView.cover = tabBarInstance.cover;
     }
@@ -14610,7 +14580,7 @@ function formatResponse(res, args) {
     if (isPlainObject(res.header)) {
         res.header = Object.keys(res.header).reduce(function (ret, key) {
             const value = res.header[key];
-            if (Array.isArray(value)) {
+            if (isArray(value)) {
                 ret[key] = value.join(',');
             }
             else if (typeof value === 'string') {
@@ -14792,7 +14762,7 @@ function createSocketTask(args) {
         socket.WebSocket({
             id: socketId,
             url: args.url,
-            protocol: Array.isArray(args.protocols)
+            protocol: isArray(args.protocols)
                 ? args.protocols.join(',')
                 : args.protocols,
             header: args.header,
@@ -17496,7 +17466,7 @@ function initTitleNView(webviewStyle, routeMeta) {
         else if (name === 'titleImage' && value) {
             titleNView.tags = createTitleImageTags(value);
         }
-        else if (name === 'buttons' && isArray$1(value)) {
+        else if (name === 'buttons' && isArray(value)) {
             titleNView.buttons = value.map((button, index) => {
                 button.onclick = createTitleNViewBtnClick(index);
                 return button;
@@ -17858,7 +17828,7 @@ function initSubNVues(webview, path, routeMeta) {
         }
         else if (isPopup) {
             style.position = 'absolute';
-            if (isTabBarPage$1(path)) {
+            if (isTabBarPage(path)) {
                 maskWebview = tabBarInstance;
             }
             else {
@@ -19243,7 +19213,7 @@ function publishHandler(event, args, pageIds) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('publishHandler', event, args, pageIds));
     }
-    if (!isArray$1(pageIds)) {
+    if (!isArray(pageIds)) {
         pageIds = [pageIds];
     }
     const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;

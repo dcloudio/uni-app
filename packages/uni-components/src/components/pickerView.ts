@@ -4,6 +4,7 @@ import {
   ComponentInternalInstance,
   WritableComputedRef,
 } from 'vue'
+import { isArray } from '@vue/shared'
 
 export const pickerViewProps = {
   value: {
@@ -13,7 +14,7 @@ export const pickerViewProps = {
     },
     validator: function (val: any) {
       return (
-        Array.isArray(val) &&
+        isArray(val) &&
         val.filter((val) => typeof val === 'number').length === val.length
       )
     },

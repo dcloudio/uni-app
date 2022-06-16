@@ -1,3 +1,4 @@
+import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
   COMMON_EXCLUDE,
@@ -92,7 +93,7 @@ function initUniCloudEnv() {
   }
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
-    if (!Array.isArray(spaces)) {
+    if (!isArray(spaces)) {
       return
     }
     spaces.forEach((s) => uniCloudSpaces.push(s))

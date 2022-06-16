@@ -1,4 +1,4 @@
-import { hasOwn, isPlainObject } from '@vue/shared'
+import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import {
   API_REQUEST,
   API_TYPE_REQUEST,
@@ -62,7 +62,7 @@ function formatResponse(res: RequestTaskState, args: UniApp.RequestOptions) {
   if (isPlainObject(res.header)) {
     res.header = Object.keys(res.header).reduce(function (ret, key) {
       const value = res.header[key]
-      if (Array.isArray(value)) {
+      if (isArray(value)) {
         ;(ret as any)[key] = value.join(',')
       } else if (typeof value === 'string') {
         ;(ret as any)[key] = value

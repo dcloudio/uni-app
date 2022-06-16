@@ -31,10 +31,10 @@ import {
   ShowTabBarRedDotOptions,
   ShowTabBarRedDotProtocol,
 } from '@dcloudio/uni-api'
-import { isTabBarPage } from '../../utils'
 import tabBar from '../../framework/app/tabBar'
 import { removeLeadingSlash } from '@dcloudio/uni-shared'
 import { normalizeTabBarRoute } from '@dcloudio/uni-core'
+import { isTabBarPage } from '../../../helpers/plus'
 
 export const setTabBarBadge = defineAsyncApi<API_TYPE_SET_TAB_BAR_BADGE>(
   API_SET_TAB_BAR_BADGE,

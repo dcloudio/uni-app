@@ -2137,7 +2137,7 @@ function getNodeInfo(el, fields2) {
       info.height = rect.height;
     }
   }
-  if (Array.isArray(fields2.properties)) {
+  if (isArray(fields2.properties)) {
     fields2.properties.forEach((prop) => {
       prop = prop.replace(/-([a-z])/g, function(e2, t2) {
         return t2.toUpperCase();
@@ -2158,7 +2158,7 @@ function getNodeInfo(el, fields2) {
       info.scrollWidth = 0;
     }
   }
-  if (Array.isArray(fields2.computedStyle)) {
+  if (isArray(fields2.computedStyle)) {
     const sytle = getComputedStyle(el);
     fields2.computedStyle.forEach((name) => {
       info[name] = sytle[name];
@@ -2977,7 +2977,7 @@ const $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
     emitter.e = {};
     return;
   }
-  if (!Array.isArray(name))
+  if (!isArray(name))
     name = [name];
   name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);
@@ -4307,7 +4307,7 @@ class SelectorQuery {
     requestComponentInfo(this._page, this._queue, (res) => {
       const queueCbs = this._queueCb;
       res.forEach((result, index2) => {
-        if (Array.isArray(result)) {
+        if (isArray(result)) {
           result.forEach(convertContext);
         } else {
           convertContext(result);
@@ -8892,7 +8892,7 @@ const useAttrs = (params = {}) => {
 };
 function flatVNode(nodes) {
   const array = [];
-  if (Array.isArray(nodes)) {
+  if (isArray(nodes)) {
     nodes.forEach((vnode) => {
       if (isVNode(vnode)) {
         if (vnode.type === Fragment) {
@@ -8900,7 +8900,7 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
-      } else if (Array.isArray(vnode)) {
+      } else if (isArray(vnode)) {
         array.push(...flatVNode(vnode));
       }
     });
@@ -10322,7 +10322,7 @@ const pickerViewProps = {
       return [];
     },
     validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      return isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
     }
   },
   indicatorStyle: {
@@ -11773,7 +11773,7 @@ function normalizeAttrs(tagName, attrs2) {
   }
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
+  if (!nodeList || isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
     if (!isPlainObject(node)) {
@@ -14846,7 +14846,7 @@ function useDanmu(props2, videoState) {
     time: 0,
     index: -1
   };
-  const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  const danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
   danmuList.sort(function(a2, b) {
     return (a2.time || 0) - (b.time || 0);
   });
@@ -15594,7 +15594,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$e,
   setup(props2) {
-    const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
+    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
     const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
     let marker;
@@ -17894,7 +17894,7 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
   timeout = __uniConfig.networkTimeout.uploadFile
 }, { resolve, reject }) => {
   var uploadTask = new UploadTask();
-  if (!Array.isArray(files2) || !files2.length) {
+  if (!isArray(files2) || !files2.length) {
     files2 = [
       {
         name,
@@ -20619,7 +20619,7 @@ const props$2 = {
 };
 function getPoints(points) {
   const newPoints = [];
-  if (Array.isArray(points)) {
+  if (isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({
@@ -21487,10 +21487,10 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     switch (props2.mode) {
       case mode.MULTISELECTOR:
         {
-          if (!Array.isArray(val)) {
+          if (!isArray(val)) {
             val = state2.valueArray;
           }
-          if (!Array.isArray(state2.valueSync)) {
+          if (!isArray(state2.valueSync)) {
             state2.valueSync = [];
           }
           const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
@@ -21555,7 +21555,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     _close();
     state2.valueChangeSource = "click";
     const value = _getValue();
-    state2.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
     trigger("change", {}, {
       value
     });

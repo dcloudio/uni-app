@@ -2,7 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const isArray = Array.isArray;
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
 class BaseFormatter {
@@ -64,7 +63,7 @@ function parse(format, [startDelimiter, endDelimiter]) {
 function compile(tokens, values) {
     const compiled = [];
     let index = 0;
-    const mode = isArray(values)
+    const mode = Array.isArray(values)
         ? 'list'
         : isObject(values)
             ? 'named'
@@ -423,7 +422,7 @@ function compileJsonObj(jsonObj, localeValues, delimiters) {
     return jsonObj;
 }
 function walkJsonObj(jsonObj, walk) {
-    if (isArray(jsonObj)) {
+    if (Array.isArray(jsonObj)) {
         for (let i = 0; i < jsonObj.length; i++) {
             if (walk(jsonObj, i)) {
                 return true;
