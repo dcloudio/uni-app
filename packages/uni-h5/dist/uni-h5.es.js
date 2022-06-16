@@ -10228,6 +10228,7 @@ const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: "",
     validator(value) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
     }
