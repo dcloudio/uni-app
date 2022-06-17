@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
 
@@ -89,7 +89,7 @@ function addPlugin(
   index: string | number,
   type: 'pre' | 'post' = 'post'
 ) {
-  if (typeof index === 'string') {
+  if (isString(index)) {
     index = plugins.findIndex((plugin) => (plugin as Plugin).name === index)
   }
   return plugins.splice(index + (type === 'pre' ? 0 : 1), 0, plugin)

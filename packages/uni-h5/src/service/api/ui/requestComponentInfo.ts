@@ -1,4 +1,5 @@
 import { ComponentPublicInstance } from 'vue'
+import { isArray } from '@vue/shared'
 import { getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
 import { getContextInfo } from '@dcloudio/uni-components'
@@ -61,7 +62,7 @@ function getNodeInfo(
     }
   }
   // TODO 组件 props
-  if (Array.isArray(fields.properties)) {
+  if (isArray(fields.properties)) {
     fields.properties.forEach((prop) => {
       prop = prop.replace(/-([a-z])/g, function (e, t) {
         return t.toUpperCase()
@@ -83,7 +84,7 @@ function getNodeInfo(
       info.scrollWidth = 0
     }
   }
-  if (Array.isArray(fields.computedStyle)) {
+  if (isArray(fields.computedStyle)) {
     const sytle = getComputedStyle(el)
     fields.computedStyle.forEach((name) => {
       info[name as keyof CSSStyleDeclaration] =

@@ -766,7 +766,7 @@ function rpx2px(str, replace = false) {
   if (replace) {
     return rpx2pxWithReplace(str);
   }
-  if (typeof str === "string") {
+  if (isString(str)) {
     const res = parseInt(str) || 0;
     if (hasRpx(str)) {
       return uni.upx2px(res);
@@ -1101,7 +1101,7 @@ class ComponentDescriptor {
     if (!this.$el || !style) {
       return this;
     }
-    if (typeof style === "string") {
+    if (isString(style)) {
       style = parseStringStyle(style);
     }
     if (isPlainObject(style)) {
@@ -2013,8 +2013,8 @@ var index$y = /* @__PURE__ */ defineBuiltInComponent({
 function findElem(vm) {
   return vm.$el;
 }
-const baseUrl = import.meta.env.BASE_URL;
 function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
   if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
     return addLeadingSlash(filePath);
   }
@@ -2137,7 +2137,7 @@ function getNodeInfo(el, fields2) {
       info.height = rect.height;
     }
   }
-  if (Array.isArray(fields2.properties)) {
+  if (isArray(fields2.properties)) {
     fields2.properties.forEach((prop) => {
       prop = prop.replace(/-([a-z])/g, function(e2, t2) {
         return t2.toUpperCase();
@@ -2158,7 +2158,7 @@ function getNodeInfo(el, fields2) {
       info.scrollWidth = 0;
     }
   }
-  if (Array.isArray(fields2.computedStyle)) {
+  if (isArray(fields2.computedStyle)) {
     const sytle = getComputedStyle(el);
     fields2.computedStyle.forEach((name) => {
       info[name] = sytle[name];
@@ -2911,14 +2911,14 @@ function dedupeHooks(hooks) {
   return res;
 }
 const addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string" && isPlainObject(interceptor)) {
+  if (isString(method) && isPlainObject(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
 const removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string") {
+  if (isString(method)) {
     if (isPlainObject(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor);
     } else {
@@ -2977,7 +2977,7 @@ const $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
     emitter.e = {};
     return;
   }
-  if (!Array.isArray(name))
+  if (!isArray(name))
     name = [name];
   name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);
@@ -4307,17 +4307,17 @@ class SelectorQuery {
     requestComponentInfo(this._page, this._queue, (res) => {
       const queueCbs = this._queueCb;
       res.forEach((result, index2) => {
-        if (Array.isArray(result)) {
+        if (isArray(result)) {
           result.forEach(convertContext);
         } else {
           convertContext(result);
         }
         const queueCb = queueCbs[index2];
-        if (typeof queueCb === "function") {
+        if (isFunction(queueCb)) {
           queueCb.call(this, result);
         }
       });
-      if (typeof callback === "function") {
+      if (isFunction(callback)) {
         callback.call(this, res);
       }
     });
@@ -4619,7 +4619,7 @@ function invokeGetPushCidCallbacks(cid2, errMsg) {
   });
   getPushCidCallbacks.length = 0;
 }
-function getPushClientid(args) {
+function getPushClientId(args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -4630,10 +4630,10 @@ function getPushClientid(args) {
   getPushCidCallbacks.push((cid2, errMsg) => {
     let res;
     if (cid2) {
-      res = { errMsg: "getPushClientid:ok", cid: cid2 };
+      res = { errMsg: "getPushClientId:ok", cid: cid2 };
       hasSuccess && success(res);
     } else {
-      res = { errMsg: "getPushClientid:fail" + (errMsg ? " " + errMsg : "") };
+      res = { errMsg: "getPushClientId:fail" + (errMsg ? " " + errMsg : "") };
       hasFail && fail(res);
     }
     hasComplete && complete(res);
@@ -4937,12 +4937,12 @@ const API_PREVIEW_IMAGE = "previewImage";
 const PreviewImageOptions = {
   formatArgs: {
     urls(urls, params) {
-      params.urls = urls.map((url) => typeof url === "string" && url ? getRealPath(url) : "");
+      params.urls = urls.map((url) => isString(url) && url ? getRealPath(url) : "");
     },
     current(current, params) {
       if (typeof current === "number") {
         params.current = current > 0 && current < params.urls.length ? current : 0;
-      } else if (typeof current === "string" && current) {
+      } else if (isString(current) && current) {
         params.current = getRealPath(current);
       }
     }
@@ -5105,7 +5105,7 @@ const ConnectSocketOptions = {
       params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
     },
     protocols(protocols, params) {
-      if (typeof protocols === "string") {
+      if (isString(protocols)) {
         params.protocols = [protocols];
       }
     }
@@ -5132,7 +5132,7 @@ const CloseSocketProtocol = {
   reason: String
 };
 function encodeQueryString(url) {
-  if (typeof url !== "string") {
+  if (!isString(url)) {
     return url;
   }
   const index2 = url.indexOf("?");
@@ -7002,7 +7002,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   };
   function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
-    if (type.indexOf("_") !== 0 && typeof method === "function") {
+    if (type.indexOf("_") !== 0 && isFunction(method)) {
       method(data, resolve);
     }
   }
@@ -7342,7 +7342,7 @@ function makeMap(str) {
 }
 const scripts = {};
 function loadScript(globalName, src, callback) {
-  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
+  const globalObject = isString(globalName) ? window[globalName] : globalName;
   if (globalObject) {
     callback();
     return;
@@ -7776,7 +7776,7 @@ function useQuill(props2, rootRef, trigger) {
         return delta;
       }
       if (delta.ops) {
-        delta.ops = delta.ops.filter(({ insert }) => typeof insert === "string").map(({ insert }) => ({ insert }));
+        delta.ops = delta.ops.filter(({ insert }) => isString(insert)).map(({ insert }) => ({ insert }));
       }
       return delta;
     });
@@ -7891,7 +7891,7 @@ function useQuill(props2, rootRef, trigger) {
             const { delta, html } = options;
             if (typeof delta === "object") {
               quill.setContents(delta, "silent");
-            } else if (typeof html === "string") {
+            } else if (isString(html)) {
               quill.setContents(html2delta(html), "silent");
             } else {
               errMsg = "contents is missing";
@@ -8385,11 +8385,11 @@ function useFormField(nameKey, value) {
       const proxy = instance2.proxy;
       return [
         proxy[nameKey],
-        typeof value === "string" ? proxy[value] : value.value
+        isString(value) ? proxy[value] : value.value
       ];
     },
     reset() {
-      if (typeof value === "string") {
+      if (isString(value)) {
         instance2.proxy[value] = "";
       } else {
         value.value = "";
@@ -8642,7 +8642,7 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
+      if (isFunction(beforeInput) && beforeInput(event, state2) === false) {
         return;
       }
       state2.value = field.value;
@@ -8892,7 +8892,7 @@ const useAttrs = (params = {}) => {
 };
 function flatVNode(nodes) {
   const array = [];
-  if (Array.isArray(nodes)) {
+  if (isArray(nodes)) {
     nodes.forEach((vnode) => {
       if (isVNode(vnode)) {
         if (vnode.type === Fragment) {
@@ -8900,7 +8900,7 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
-      } else if (Array.isArray(vnode)) {
+      } else if (isArray(vnode)) {
         array.push(...flatVNode(vnode));
       }
     });
@@ -9120,7 +9120,7 @@ function useMovableAreaState(props2, rootRef) {
 }
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
-    if (typeof callback === "function") {
+    if (isFunction(callback)) {
       if (callback($event) === false) {
         if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
           $event.preventDefault();
@@ -10228,6 +10228,7 @@ const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: "",
     validator(value) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
     }
@@ -10322,7 +10323,7 @@ const pickerViewProps = {
       return [];
     },
     validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      return isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
     }
   },
   indicatorStyle: {
@@ -10903,7 +10904,7 @@ class Scroller {
           this._position = c;
           this.updatePosition();
         }
-        if (typeof this._options.onSnap === "function") {
+        if (isFunction(this._options.onSnap)) {
           this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
         }
       }
@@ -10929,7 +10930,7 @@ class Scroller {
     if (this._position !== i) {
       this._snapping = true;
       this.scrollTo(-i);
-      if (typeof this._options.onSnap === "function") {
+      if (isFunction(this._options.onSnap)) {
         this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
       }
     }
@@ -10956,7 +10957,7 @@ class Scroller {
     this._element.addEventListener("transitionend", this._onTransitionEnd);
   }
   dispatchScroll() {
-    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
+    if (isFunction(this._options.onScroll) && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
       this._lastPos = this._position;
       const event = {
         target: {
@@ -10995,7 +10996,7 @@ class Scroller {
     this.updatePosition();
     if (position !== this._position) {
       this.dispatchScroll();
-      if (typeof this._options.onSnap === "function") {
+      if (isFunction(this._options.onSnap)) {
         this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
       }
     }
@@ -11773,7 +11774,7 @@ function normalizeAttrs(tagName, attrs2) {
   }
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
+  if (!nodeList || isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
     if (!isPlainObject(node)) {
@@ -11789,7 +11790,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
       nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
       return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
     }
-    if (node.type === "text" && typeof node.text === "string" && node.text !== "")
+    if (node.type === "text" && isString(node.text) && node.text !== "")
       return createTextVNode(decodeEntities(node.text || ""));
   });
 };
@@ -11911,7 +11912,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     }
     function renderVNode() {
       let nodeList = props2.nodes;
-      if (typeof nodeList === "string") {
+      if (isString(nodeList)) {
         nodeList = parseHtml(props2.nodes);
       }
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
@@ -14846,7 +14847,7 @@ function useDanmu(props2, videoState) {
     time: 0,
     index: -1
   };
-  const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  const danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
   danmuList.sort(function(a2, b) {
     return (a2.time || 0) - (b.time || 0);
   });
@@ -15594,7 +15595,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$e,
   setup(props2) {
-    const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
+    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
     const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
     let marker;
@@ -15808,7 +15809,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(b);
               }
               const cb = data.animationEnd;
-              if (typeof cb === "function") {
+              if (isFunction(cb)) {
                 cb();
               }
             });
@@ -16162,7 +16163,7 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
 const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function(callback) {
-      if (typeof callback === "function") {
+      if (isFunction(callback)) {
         this._events[eventName].push(callback);
       }
     };
@@ -16380,7 +16381,7 @@ function getBrowserInfo() {
     model = "iPad";
     osname = "iOS";
     deviceType = "pad";
-    osversion = typeof window.BigInt === "function" ? "14.0" : "13.0";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";
@@ -16981,7 +16982,7 @@ const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
-    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const object = isString(value) ? JSON.parse(value) : value;
     const type = object.type;
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object);
@@ -17017,7 +17018,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data 
 }, SetStorageProtocol);
 function getStorageOrigin(key) {
   const value = localStorage && localStorage.getItem(key);
-  if (typeof value !== "string") {
+  if (!isString(value)) {
     throw new Error("data not found");
   }
   let data = value;
@@ -17661,7 +17662,7 @@ const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   let body = null;
   const contentType = normalizeContentType(header);
   if (method !== "GET") {
-    if (typeof data === "string" || data instanceof ArrayBuffer) {
+    if (isString(data) || data instanceof ArrayBuffer) {
       body = data;
     } else {
       if (contentType === "json") {
@@ -17773,7 +17774,7 @@ class DownloadTask {
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
-    if (typeof callback !== "function") {
+    if (!isFunction(callback)) {
       return;
     }
     this._callbacks.push(callback);
@@ -17858,7 +17859,7 @@ class UploadTask {
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
-    if (typeof callback !== "function") {
+    if (!isFunction(callback)) {
       return;
     }
     this._callbacks.push(callback);
@@ -17894,7 +17895,7 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
   timeout = __uniConfig.networkTimeout.uploadFile
 }, { resolve, reject }) => {
   var uploadTask = new UploadTask();
-  if (!Array.isArray(files2) || !files2.length) {
+  if (!isArray(files2) || !files2.length) {
     files2 = [
       {
         name,
@@ -18048,7 +18049,7 @@ ${e2};at socketTask.on${capitalize(name)} callback function
     try {
       const code = options.code || 1e3;
       const reason = options.reason;
-      if (typeof reason === "string") {
+      if (isString(reason)) {
         ws.close(code, reason);
       } else {
         ws.close(code);
@@ -18083,7 +18084,7 @@ const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({ url, 
 }, ConnectSocketProtocol, ConnectSocketOptions);
 function callSocketTask(socketTask, method, option, resolve, reject) {
   const fn = socketTask[method];
-  if (typeof fn === "function") {
+  if (isFunction(fn)) {
     fn.call(socketTask, extend({}, option, {
       success() {
         resolve();
@@ -18133,19 +18134,19 @@ function getJSONP(url, options, success, error) {
     js.remove();
   }
   window[callbackName] = (res) => {
-    if (typeof success === "function") {
+    if (isFunction(success)) {
       success(res);
     }
     end();
   };
   js.onerror = () => {
-    if (typeof error === "function") {
+    if (isFunction(error)) {
       error();
     }
     end();
   };
   timing = setTimeout(function() {
-    if (typeof error === "function") {
+    if (isFunction(error)) {
       error();
     }
     end();
@@ -20265,7 +20266,7 @@ var api = /* @__PURE__ */ Object.defineProperty({
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
-  getPushClientid,
+  getPushClientId,
   onPushMessage,
   offPushMessage,
   onAppHide,
@@ -20619,7 +20620,7 @@ const props$2 = {
 };
 function getPoints(points) {
   const newPoints = [];
-  if (Array.isArray(points)) {
+  if (isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({
@@ -21487,10 +21488,10 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     switch (props2.mode) {
       case mode.MULTISELECTOR:
         {
-          if (!Array.isArray(val)) {
+          if (!isArray(val)) {
             val = state2.valueArray;
           }
-          if (!Array.isArray(state2.valueSync)) {
+          if (!isArray(state2.valueSync)) {
             state2.valueSync = [];
           }
           const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
@@ -21555,7 +21556,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     _close();
     state2.valueChangeSource = "click";
     const value = _getValue();
-    state2.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
     trigger("change", {}, {
       value
     });
@@ -22511,4 +22512,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientId, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

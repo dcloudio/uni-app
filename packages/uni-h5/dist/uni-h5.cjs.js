@@ -875,8 +875,8 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const baseUrl = __IMPORT_META_ENV_BASE_URL__;
 function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
   if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
     return uniShared.addLeadingSlash(filePath);
   }
@@ -2107,7 +2107,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   };
   function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
-    if (type.indexOf("_") !== 0 && typeof method === "function") {
+    if (type.indexOf("_") !== 0 && shared.isFunction(method)) {
       method(data, resolve);
     }
   }
@@ -2812,11 +2812,11 @@ function useFormField(nameKey, value) {
       const proxy = instance.proxy;
       return [
         proxy[nameKey],
-        typeof value === "string" ? proxy[value] : value.value
+        shared.isString(value) ? proxy[value] : value.value
       ];
     },
     reset() {
-      if (typeof value === "string") {
+      if (shared.isString(value)) {
         instance.proxy[value] = "";
       } else {
         value.value = "";
@@ -3057,7 +3057,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state) === false) {
+      if (shared.isFunction(beforeInput) && beforeInput(event, state) === false) {
         return;
       }
       state.value = field.value;
@@ -3307,7 +3307,7 @@ const useAttrs = (params = {}) => {
 };
 function flatVNode(nodes) {
   const array = [];
-  if (Array.isArray(nodes)) {
+  if (shared.isArray(nodes)) {
     nodes.forEach((vnode) => {
       if (vue.isVNode(vnode)) {
         if (vnode.type === vue.Fragment) {
@@ -3315,7 +3315,7 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
-      } else if (Array.isArray(vnode)) {
+      } else if (shared.isArray(vnode)) {
         array.push(...flatVNode(vnode));
       }
     });
@@ -4313,6 +4313,7 @@ const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: "",
     validator(value) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
     }
@@ -4407,7 +4408,7 @@ const pickerViewProps = {
       return [];
     },
     validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      return shared.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
     }
   },
   indicatorStyle: {
@@ -5066,7 +5067,7 @@ function normalizeAttrs(tagName, attrs) {
   }
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
+  if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
     if (!shared.isPlainObject(node)) {
@@ -5082,7 +5083,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
       nodeProps = shared.extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
       return vue.h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
     }
-    if (node.type === "text" && typeof node.text === "string" && node.text !== "")
+    if (node.type === "text" && shared.isString(node.text) && node.text !== "")
       return vue.createTextVNode(decodeEntities(node.text || ""));
   });
 };
@@ -5204,7 +5205,7 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     }
     function renderVNode() {
       let nodeList = props2.nodes;
-      if (typeof nodeList === "string") {
+      if (shared.isString(nodeList)) {
         nodeList = parseHtml(props2.nodes);
       }
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
@@ -7463,7 +7464,7 @@ function useDanmu(props2, videoState) {
     time: 0,
     index: -1
   };
-  const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  const danmuList = shared.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
   danmuList.sort(function(a, b) {
     return (a.time || 0) - (b.time || 0);
   });
@@ -7961,7 +7962,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$7,
   setup(props2) {
-    const id = String(Number(props2.id) !== NaN ? props2.id : "");
+    const id = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
     const updateMarkerLabelStyle = useMarkerLabelStyle(id);
     let marker;
@@ -8164,7 +8165,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(b);
               }
               const cb = data.animationEnd;
-              if (typeof cb === "function") {
+              if (shared.isFunction(cb)) {
                 cb();
               }
             });
@@ -8691,7 +8692,7 @@ const props$2 = {
 };
 function getPoints(points) {
   const newPoints = [];
-  if (Array.isArray(points)) {
+  if (shared.isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({
@@ -9492,10 +9493,10 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     switch (props2.mode) {
       case mode.MULTISELECTOR:
         {
-          if (!Array.isArray(val)) {
+          if (!shared.isArray(val)) {
             val = state.valueArray;
           }
-          if (!Array.isArray(state.valueSync)) {
+          if (!shared.isArray(state.valueSync)) {
             state.valueSync = [];
           }
           const length = state.valueSync.length = Math.max(val.length, props2.range.length);
@@ -9560,7 +9561,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     _close();
     state.valueChangeSource = "click";
     const value = _getValue();
-    state.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+    state.valueSync = shared.isArray(value) ? value.map((val) => val) : value;
     trigger("change", {}, {
       value
     });
@@ -9797,7 +9798,7 @@ const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   let body = null;
   const contentType = normalizeContentType(header);
   if (method !== "GET") {
-    if (typeof data === "string" || data instanceof ArrayBuffer) {
+    if (shared.isString(data) || data instanceof ArrayBuffer) {
       body = data;
     } else {
       if (contentType === "json") {
@@ -9911,7 +9912,7 @@ const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
-    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const object = shared.isString(value) ? JSON.parse(value) : value;
     const type = object.type;
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object);
@@ -9947,7 +9948,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data 
 }, SetStorageProtocol);
 function getStorageOrigin(key) {
   const value = localStorage && localStorage.getItem(key);
-  if (typeof value !== "string") {
+  if (!shared.isString(value)) {
     throw new Error("data not found");
   }
   let data = value;

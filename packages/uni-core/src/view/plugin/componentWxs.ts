@@ -2,6 +2,7 @@ import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import {
   isFunction,
   isPlainObject,
+  isString,
   parseStringStyle,
   stringifyStyle,
 } from '@vue/shared'
@@ -112,7 +113,7 @@ export class ComponentDescriptor {
     if (!this.$el || !style) {
       return this
     }
-    if (typeof style === 'string') {
+    if (isString(style)) {
       style = parseStringStyle(style)
     }
     if (isPlainObject(style)) {

@@ -1,4 +1,4 @@
-import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
+import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
 import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
@@ -97,7 +97,7 @@ function elemInArray(str, arr) {
     return str;
 }
 function elemsInArray(strArr, optionalVal) {
-    if (!isArray$1(strArr) ||
+    if (!isArray(strArr) ||
         strArr.length === 0 ||
         strArr.find((val) => optionalVal.indexOf(val) === -1)) {
         return optionalVal;
@@ -122,7 +122,7 @@ function validateProtocols(name, args, protocol, onFail) {
     if (!protocol) {
         return;
     }
-    if (!isArray$1(protocol)) {
+    if (!isArray(protocol)) {
         return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
     }
     const len = protocol.length;
@@ -152,7 +152,7 @@ function validateProp(name, value, prop, isAbsent) {
     // type check
     if (type != null) {
         let isValid = false;
-        const types = isArray$1(type) ? type : [type];
+        const types = isArray(type) ? type : [type];
         const expectedTypes = [];
         // value is valid as long as one of the specified types match
         for (let i = 0; i < types.length && !isValid; i++) {
@@ -185,7 +185,7 @@ function assertType(value, type) {
         valid = isObject$1(value);
     }
     else if (expectedType === 'Array') {
-        valid = isArray$1(value);
+        valid = isArray(value);
     }
     else {
         {
@@ -393,7 +393,7 @@ function queue(hooks, data) {
 function wrapperOptions(interceptors, options = {}) {
     [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
         const hooks = interceptors[name];
-        if (!isArray$1(hooks)) {
+        if (!isArray(hooks)) {
             return;
         }
         const oldCallback = options[name];
@@ -407,11 +407,11 @@ function wrapperOptions(interceptors, options = {}) {
 }
 function wrapperReturnValue(method, returnValue) {
     const returnValueHooks = [];
-    if (isArray$1(globalInterceptors.returnValue)) {
+    if (isArray(globalInterceptors.returnValue)) {
         returnValueHooks.push(...globalInterceptors.returnValue);
     }
     const interceptor = scopedInterceptors[method];
-    if (interceptor && isArray$1(interceptor.returnValue)) {
+    if (interceptor && isArray(interceptor.returnValue)) {
         returnValueHooks.push(...interceptor.returnValue);
     }
     returnValueHooks.forEach((hook) => {
@@ -439,7 +439,7 @@ function getApiInterceptorHooks(method) {
 function invokeApi(method, api, options, params) {
     const interceptor = getApiInterceptorHooks(method);
     if (interceptor && Object.keys(interceptor).length) {
-        if (isArray$1(interceptor.invoke)) {
+        if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
             return res.then((options) => {
                 return api(wrapperOptions(interceptor, options), ...params);
@@ -698,7 +698,7 @@ function findNVueElementIds(reqs) {
 }
 function findNVueElementInfos(ids, elm, infos) {
     const nodes = elm.children;
-    if (!isArray$1(nodes)) {
+    if (!isArray(nodes)) {
         return false;
     }
     for (let i = 0; i < nodes.length; i++) {
@@ -741,7 +741,6 @@ function setCurrentPageMeta(page, options) {
     UniServiceJSBridge.invokeViewMethod('setPageMeta', options, page.$page.id);
 }
 
-const isArray = Array.isArray;
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
 class BaseFormatter {
@@ -803,7 +802,7 @@ function parse(format, [startDelimiter, endDelimiter]) {
 function compile(tokens, values) {
     const compiled = [];
     let index = 0;
-    const mode = isArray(values)
+    const mode = Array.isArray(values)
         ? 'list'
         : isObject(values)
             ? 'named'
@@ -1453,7 +1452,7 @@ function rpx2px(str, replace = false) {
     if (replace) {
         return rpx2pxWithReplace(str);
     }
-    if (typeof str === 'string') {
+    if (isString(str)) {
         const res = parseInt(str) || 0;
         if (hasRpx(str)) {
             return uni.upx2px(res);
@@ -1558,7 +1557,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
 
 function removeHook(vm, name, hook) {
     const hooks = vm.$[name];
-    if (!isArray$1(hooks)) {
+    if (!isArray(hooks)) {
         return;
     }
     if (hook.__weh) {
@@ -1767,7 +1766,7 @@ function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose
     });
     page.addEventListener('close', onClose);
     addEventListener(pageId, (message) => {
-        if (typeof onMessage === 'function') {
+        if (isFunction(onMessage)) {
             onMessage(message.data);
         }
         if (!message.keep) {
@@ -9225,7 +9224,7 @@ function removeInterceptorHook(interceptors, interceptor) {
     Object.keys(interceptor).forEach((name) => {
         const hooks = interceptors[name];
         const hook = interceptor[name];
-        if (isArray$1(hooks) && isFunction(hook)) {
+        if (isArray(hooks) && isFunction(hook)) {
             remove(hooks, hook);
         }
     });
@@ -9234,7 +9233,7 @@ function mergeHook(parentVal, childVal) {
     const res = childVal
         ? parentVal
             ? parentVal.concat(childVal)
-            : isArray$1(childVal)
+            : isArray(childVal)
                 ? childVal
                 : [childVal]
         : parentVal;
@@ -9250,7 +9249,7 @@ function dedupeHooks(hooks) {
     return res;
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string' && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
     else if (isPlainObject(method)) {
@@ -9258,7 +9257,7 @@ const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) 
     }
 }, AddInterceptorProtocol);
 const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string') {
+    if (isString(method)) {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);
         }
@@ -9321,7 +9320,7 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
         emitter.e = {};
         return;
     }
-    if (!Array.isArray(name))
+    if (!isArray(name))
         name = [name];
     name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);
@@ -10747,19 +10746,19 @@ class SelectorQuery {
         requestComponentInfo(this._page, this._queue, (res) => {
             const queueCbs = this._queueCb;
             res.forEach((result, index) => {
-                if (Array.isArray(result)) {
+                if (isArray(result)) {
                     result.forEach(convertContext);
                 }
                 else {
                     convertContext(result);
                 }
                 const queueCb = queueCbs[index];
-                if (typeof queueCb === 'function') {
+                if (isFunction(queueCb)) {
                     queueCb.call(this, result);
                 }
             });
             // isFn(callback) &&
-            if (typeof callback === 'function') {
+            if (isFunction(callback)) {
                 callback.call(this, res);
             }
         });
@@ -11116,7 +11115,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushClientid(args) {
+function getPushClientId(args) {
     if (!isPlainObject(args)) {
         args = {};
     }
@@ -11127,11 +11126,11 @@ function getPushClientid(args) {
     getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
-            res = { errMsg: 'getPushClientid:ok', cid };
+            res = { errMsg: 'getPushClientId:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
+            res = { errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
@@ -11708,14 +11707,14 @@ const API_PREVIEW_IMAGE = 'previewImage';
 const PreviewImageOptions = {
     formatArgs: {
         urls(urls, params) {
-            params.urls = urls.map((url) => typeof url === 'string' && url ? getRealPath(url) : '');
+            params.urls = urls.map((url) => isString(url) && url ? getRealPath(url) : '');
         },
         current(current, params) {
             if (typeof current === 'number') {
                 params.current =
                     current > 0 && current < params.urls.length ? current : 0;
             }
-            else if (typeof current === 'string' && current) {
+            else if (isString(current) && current) {
                 params.current = getRealPath(current);
             }
         },
@@ -11969,7 +11968,7 @@ const ConnectSocketOptions = {
             params.method = elemInArray((value || '').toUpperCase(), HTTP_METHODS);
         },
         protocols(protocols, params) {
-            if (typeof protocols === 'string') {
+            if (isString(protocols)) {
                 params.protocols = [protocols];
             }
         },
@@ -11997,7 +11996,7 @@ const CloseSocketProtocol = {
 };
 
 function encodeQueryString(url) {
-    if (typeof url !== 'string') {
+    if (!isString(url)) {
         return url;
     }
     const index = url.indexOf('?');
@@ -12678,7 +12677,7 @@ function warpPlusSuccessCallback(resolve, after) {
     return function successCallback(data) {
         delete data.code;
         delete data.message;
-        if (typeof after === 'function') {
+        if (isFunction(after)) {
             data = after(data);
         }
         resolve(data);
@@ -12708,14 +12707,14 @@ function warpPlusEvent(plusObject, event) {
 function warpPlusMethod(plusObject, before, after) {
     return function (options, { resolve, reject }) {
         const object = plusObject();
-        object(extend({}, typeof before === 'function' ? before(options) : options, {
+        object(extend({}, isFunction(before) ? before(options) : options, {
             success: warpPlusSuccessCallback(resolve, after),
             fail: warpPlusErrorCallback(reject),
         }));
     };
 }
-function isTabBarPage$1(path = '') {
-    if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+function isTabBarPage(path = '') {
+    if (!(__uniConfig.tabBar && isArray(__uniConfig.tabBar.list))) {
         return false;
     }
     try {
@@ -12749,7 +12748,7 @@ const STORAGE_KEYS = 'uni-storage-keys';
 function parseValue(value) {
     const types = ['object', 'string', 'number', 'boolean', 'undefined'];
     try {
-        const object = typeof value === 'string' ? JSON.parse(value) : value;
+        const object = isString(value) ? JSON.parse(value) : value;
         const type = object.type;
         if (types.indexOf(type) >= 0) {
             const keys = Object.keys(object);
@@ -12827,7 +12826,7 @@ function parseGetStorage(type, value) {
             else if (type) {
                 // 兼容App端历史格式
                 data = object;
-                if (typeof object === 'string') {
+                if (isString(object)) {
                     object = JSON.parse(object);
                     const objectType = typeof object;
                     if (objectType === 'number' && type === 'date') {
@@ -12848,7 +12847,7 @@ const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key, t) => {
     const value = plus.storage.getItem(key);
     const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || '';
     const type = typeOrigin.toLowerCase();
-    if (typeof value !== 'string') {
+    if (!isString(value)) {
         return '';
     }
     return parseGetStorage(type, value);
@@ -13239,35 +13238,6 @@ function getPullDownRefreshWebview() {
 function setPullDownRefreshWebview(webview) {
     pullDownRefreshWebview = webview;
 }
-function isTabBarPage(path = '') {
-    if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
-        return false;
-    }
-    try {
-        if (!path) {
-            const pages = getCurrentPages();
-            if (!pages.length) {
-                return false;
-            }
-            const page = pages[pages.length - 1];
-            if (!page) {
-                return false;
-            }
-            return page.$page.meta.isTabBar;
-        }
-        if (!/^\//.test(path)) {
-            path = addLeadingSlash(path);
-        }
-        const route = __uniRoutes.find((route) => route.path === path);
-        return route && route.meta.isTabBar;
-    }
-    catch (e) {
-        if (process.env.NODE_ENV !== 'production') {
-            console.log('getCurrentPages is not ready');
-        }
-    }
-    return false;
-}
 
 function getStatusbarHeight() {
     // 横屏时 iOS 获取的状态栏高度错误，进行纠正
@@ -13329,7 +13299,7 @@ const getWindowInfo = defineSyncApi('getWindowInfo', () => {
         height: 0,
         cover: false,
     };
-    if (isTabBarPage$1()) {
+    if (isTabBarPage()) {
         tabBarView.height = tabBarInstance.visible ? tabBarInstance.height : 0;
         tabBarView.cover = tabBarInstance.cover;
     }
@@ -13389,7 +13359,7 @@ function weexGetSystemInfoSync() {
         return;
     const { getSystemInfoSync } = weex.requireModule('plus');
     systemInfo = getSystemInfoSync();
-    if (typeof systemInfo === 'string') {
+    if (isString(systemInfo)) {
         try {
             systemInfo = JSON.parse(systemInfo);
         }
@@ -14151,7 +14121,7 @@ const previewImage = defineAsyncApi(API_PREVIEW_IMAGE, ({ current = 0, indicator
             plus.nativeUI.actionSheet(options, (e) => {
                 if (e.index > 0) {
                     if (hasLongPressActions) {
-                        typeof longPressActions.success === 'function' &&
+                        isFunction(longPressActions.success) &&
                             longPressActions.success({
                                 tapIndex: e.index - 1,
                                 index: res.index,
@@ -14165,7 +14135,7 @@ const previewImage = defineAsyncApi(API_PREVIEW_IMAGE, ({ current = 0, indicator
                     });
                 }
                 else if (hasLongPressActions) {
-                    typeof longPressActions.fail === 'function' &&
+                    isFunction(longPressActions.fail) &&
                         longPressActions.fail({
                             errMsg: 'showActionSheet:fail cancel',
                         });
@@ -14250,7 +14220,7 @@ function onRecorderStateChange(res) {
     const state = res.state;
     delete res.state;
     delete res.errMsg;
-    if (state && typeof callbacks$1[state] === 'function') {
+    if (state && isFunction(callbacks$1[state])) {
         callbacks$1[state](res);
     }
 }
@@ -14531,7 +14501,7 @@ class DownloadTask {
         this._downloader.abort();
     }
     onProgressUpdate(callback) {
-        if (typeof callback !== 'function') {
+        if (!isFunction(callback)) {
             return;
         }
         this._callbacks.push(callback);
@@ -14604,17 +14574,17 @@ const cookiesParse = (header) => {
     return cookiesArr;
 };
 function formatResponse(res, args) {
-    if (typeof res.data === 'string' && res.data.charCodeAt(0) === 65279) {
+    if (isString(res.data) && res.data.charCodeAt(0) === 65279) {
         res.data = res.data.slice(1);
     }
     res.statusCode = parseInt(String(res.statusCode), 10);
     if (isPlainObject(res.header)) {
         res.header = Object.keys(res.header).reduce(function (ret, key) {
             const value = res.header[key];
-            if (Array.isArray(value)) {
+            if (isArray(value)) {
                 ret[key] = value.join(',');
             }
-            else if (typeof value === 'string') {
+            else if (isString(value)) {
                 ret[key] = value;
             }
             return ret;
@@ -14669,7 +14639,7 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
             // TODO 需要重构
             if (method !== 'GET' &&
                 header[name].indexOf('application/x-www-form-urlencoded') === 0 &&
-                typeof data !== 'string' &&
+                !isString(data) &&
                 !(data instanceof ArrayBuffer)) {
                 const bodyArray = [];
                 for (const key in data) {
@@ -14711,7 +14681,7 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
             withArrayBuffer = true;
         }
         else {
-            options.body = typeof data === 'string' ? data : JSON.stringify(data);
+            options.body = isString(data) ? data : JSON.stringify(data);
         }
     }
     const callback = ({ ok, status, data, headers, errorMsg, }) => {
@@ -14793,7 +14763,7 @@ function createSocketTask(args) {
         socket.WebSocket({
             id: socketId,
             url: args.url,
-            protocol: Array.isArray(args.protocols)
+            protocol: isArray(args.protocols)
                 ? args.protocols.join(',')
                 : args.protocols,
             header: args.header,
@@ -14882,7 +14852,7 @@ class SocketTask {
         }
         // WYQ fix: App平台修复websocket onOpen时发送数据报错的Bug
         this._callbacks[name].forEach((callback) => {
-            if (typeof callback === 'function') {
+            if (isFunction(callback)) {
                 callback(data);
             }
         });
@@ -15005,7 +14975,7 @@ class UploadTask {
         this._uploader.abort();
     }
     onProgressUpdate(callback) {
-        if (typeof callback !== 'function') {
+        if (!isFunction(callback)) {
             return;
         }
         this._callbacks.push(callback);
@@ -15324,7 +15294,7 @@ const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
     // 批量设置音频上下文事件监听方法
     innerAudioContextEventNames.forEach((eventName) => {
         InnerAudioContext.prototype[eventName] = function (callback) {
-            if (typeof callback === 'function') {
+            if (isFunction(callback)) {
                 this._callbacks[eventName].push(callback);
             }
         };
@@ -15343,7 +15313,7 @@ const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
 function emit(audio, state, errMsg, errCode) {
     const name = `on${capitalize(state)}`;
     audio._callbacks[name].forEach((callback) => {
-        if (typeof callback === 'function') {
+        if (isFunction(callback)) {
             callback(state === 'error'
                 ? {
                     errMsg,
@@ -16766,7 +16736,7 @@ const TYPES = {
 const parseParams = (args) => {
     args.type = args.type || 0;
     let { provider, type, title, summary: content, href, imageUrl, mediaUrl: media, scene, miniProgram, openCustomerServiceChat, corpid, customerUrl: url, } = args;
-    if (typeof imageUrl === 'string' && imageUrl) {
+    if (isString(imageUrl) && imageUrl) {
         imageUrl = getRealPath(imageUrl);
     }
     const shareType = TYPES[type];
@@ -16815,7 +16785,7 @@ const sendShareMsg = function (service, params, resolve, reject, method = 'share
 const share = defineAsyncApi(API_SHREA, (params, { resolve, reject }) => {
     const parsedParams = parseParams(params);
     const errorCallback = warpPlusErrorCallback(reject);
-    if (typeof parsedParams === 'string') {
+    if (isString(parsedParams)) {
         return reject(parsedParams);
     }
     plus.share.getServices((services) => {
@@ -16835,7 +16805,7 @@ const share = defineAsyncApi(API_SHREA, (params, { resolve, reject }) => {
 }, ShareProtocols, SahreOptions);
 const shareWithSystem = defineAsyncApi(API_SHARE_WITH_SYSTEM, ({ type, imageUrl, summary, href }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject);
-    if (typeof imageUrl === 'string' && imageUrl) {
+    if (isString(imageUrl) && imageUrl) {
         imageUrl = getRealPath(imageUrl);
     }
     plus.share.sendWithSystem({
@@ -16910,7 +16880,7 @@ class AdEventHandler {
         this._removeEventListener(EventType.error, callback);
     }
     _addEventListener(type, callback) {
-        if (typeof callback !== 'function') {
+        if (!isFunction(callback)) {
             return;
         }
         if (!this._callbacks[type]) {
@@ -17497,7 +17467,7 @@ function initTitleNView(webviewStyle, routeMeta) {
         else if (name === 'titleImage' && value) {
             titleNView.tags = createTitleImageTags(value);
         }
-        else if (name === 'buttons' && isArray$1(value)) {
+        else if (name === 'buttons' && isArray(value)) {
             titleNView.buttons = value.map((button, index) => {
                 button.onclick = createTitleNViewBtnClick(index);
                 return button;
@@ -17859,7 +17829,7 @@ function initSubNVues(webview, path, routeMeta) {
         }
         else if (isPopup) {
             style.position = 'absolute';
-            if (isTabBarPage$1(path)) {
+            if (isTabBarPage(path)) {
                 maskWebview = tabBarInstance;
             }
             else {
@@ -19069,7 +19039,7 @@ var uni$1 = {
   setPageMeta: setPageMeta,
   getEnterOptionsSync: getEnterOptionsSync,
   getLaunchOptionsSync: getLaunchOptionsSync,
-  getPushClientid: getPushClientid,
+  getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   onAppHide: onAppHide,
@@ -19244,7 +19214,7 @@ function publishHandler(event, args, pageIds) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('publishHandler', event, args, pageIds));
     }
-    if (!isArray$1(pageIds)) {
+    if (!isArray(pageIds)) {
         pageIds = [pageIds];
     }
     const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;

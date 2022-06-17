@@ -1,4 +1,5 @@
 import { defineComponent, provide, ref, VNode } from 'vue'
+import { isArray } from '@vue/shared'
 import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
 import { uniFormKey, UniFormCtx, UniFormFieldCtx } from '../../components/form'
 
@@ -73,11 +74,7 @@ function useResetNative(children?: VNode[]) {
           node.el.setValue('')
         }
       }
-      if (
-        Array.isArray(node.children) &&
-        node.children &&
-        node.children.length
-      ) {
+      if (isArray(node.children) && node.children && node.children.length) {
         getOrClearNativeValue(outResult, node.children as VNode[])
       }
     })

@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 
 import {
   defineUniManifestJsonPlugin,
@@ -23,11 +23,13 @@ const defaultAsync = {
 
 export function uniManifestJsonPlugin(): Plugin {
   return defineUniManifestJsonPlugin((opts) => {
+    let resolvedConfig: ResolvedConfig
     return {
       name: 'uni:h5-manifest-json',
       enforce: 'pre',
       configResolved(config) {
         defaultRouter.assets = config.build.assetsDir
+        resolvedConfig = config
       },
       transform(code, id) {
         if (!opts.filter(id)) {
@@ -35,7 +37,11 @@ export function uniManifestJsonPlugin(): Plugin {
         }
         const manifest = parseJson(code)
         const { debug, h5 } = manifest
-        const router = { ...defaultRouter, ...((h5 && h5.router) || {}) }
+        const router = {
+          ...defaultRouter,
+          ...{ base: resolvedConfig.base },
+          ...((h5 && h5.router) || {}),
+        }
         if (!router.base) {
           router.base = '/'
         }

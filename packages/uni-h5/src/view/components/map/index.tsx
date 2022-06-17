@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import {
   onMounted,
   reactive,
@@ -104,7 +104,7 @@ interface MapState {
 
 function getPoints(points: Point[]): Point[] {
   const newPoints: Point[] = []
-  if (Array.isArray(points)) {
+  if (isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({

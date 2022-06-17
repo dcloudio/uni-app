@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import { initGetProvider } from '@dcloudio/uni-mp-core'
 
 export const getProvider = initGetProvider({
@@ -9,7 +10,7 @@ export const getProvider = initGetProvider({
 
 export function requestPayment(params: UniApp.RequestPaymentOptions) {
   let parseError = false
-  if (typeof params.orderInfo === 'string') {
+  if (isString(params.orderInfo)) {
     try {
       params.orderInfo = JSON.parse(params.orderInfo)
     } catch (e) {

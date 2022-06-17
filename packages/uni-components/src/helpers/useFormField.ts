@@ -1,4 +1,5 @@
 import { getCurrentInstance, inject, onBeforeUnmount } from 'vue'
+import { isString } from '@vue/shared'
 import { UniFormCtx, uniFormKey } from '../vue/form'
 
 interface ValueState {
@@ -24,11 +25,11 @@ export function useFormField(
       const proxy = instance.proxy
       return [
         (proxy as any)[nameKey],
-        typeof value === 'string' ? (proxy as any)[value] : value.value,
+        isString(value) ? (proxy as any)[value] : value.value,
       ]
     },
     reset() {
-      if (typeof value === 'string') {
+      if (isString(value)) {
         ;(instance.proxy as any)[value] = ''
       } else {
         value.value = ''

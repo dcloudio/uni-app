@@ -1,5 +1,5 @@
 import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
-import { extend, hasOwn, isPlainObject } from "@vue/shared";
+import { extend, hasOwn, isFunction, isPlainObject, isArray, isString } from "@vue/shared";
 import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
@@ -68,6 +68,7 @@ const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: "",
     validator(value) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
     }
@@ -272,7 +273,7 @@ function showPage({
   });
   page.addEventListener("close", onClose);
   addEventListener(pageId, (message) => {
-    if (typeof onMessage === "function") {
+    if (isFunction(onMessage)) {
       onMessage(message.data);
     }
     if (!message.keep) {
@@ -841,7 +842,7 @@ const movableAreaProps = {
 };
 function flatVNode(nodes) {
   const array = [];
-  if (Array.isArray(nodes)) {
+  if (isArray(nodes)) {
     nodes.forEach((vnode) => {
       if (isVNode(vnode)) {
         if (vnode.type === Fragment) {
@@ -849,7 +850,7 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
-      } else if (Array.isArray(vnode)) {
+      } else if (isArray(vnode)) {
         array.push(...flatVNode(vnode));
       }
     });
@@ -988,7 +989,7 @@ function useTouchtrack(method) {
   }
   function addListener(type, callback2) {
     __event[type] = function($event) {
-      if (typeof callback2 === "function") {
+      if (isFunction(callback2)) {
         $event.touches = $event.changedTouches;
         if (callback2($event) === false) {
           $event.stopPropagation();
@@ -2221,7 +2222,7 @@ const pickerViewProps = {
       return [];
     },
     validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      return isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
     }
   },
   indicatorStyle: {
@@ -2342,7 +2343,7 @@ function useState(props2) {
 const dom = weex.requireModule("dom");
 const isAndroid$1 = weex.config.env.platform.toLowerCase() === "android";
 function getStyle(val) {
-  return extend({}, typeof val === "string" ? parseStyleText(val) : val);
+  return extend({}, isString(val) ? parseStyleText(val) : val);
 }
 var PickerViewColumn = defineComponent({
   name: "PickerViewColumn",
@@ -2686,10 +2687,10 @@ var Picker = /* @__PURE__ */ defineComponent({
       switch (props2.mode) {
         case mode.MULTISELECTOR:
           {
-            if (!Array.isArray(val)) {
+            if (!isArray(val)) {
               val = [];
             }
-            if (!Array.isArray(valueSync.value)) {
+            if (!isArray(valueSync.value)) {
               valueSync.value = [];
             }
             const length = valueSync.value.length = Math.max(val.length, props2.range.length);
@@ -2792,7 +2793,7 @@ var Picker = /* @__PURE__ */ defineComponent({
             valueSync.value = 0;
             break;
           case mode.MULTISELECTOR:
-            Array.isArray(props2.value) && (valueSync.value = props2.value.map((val) => 0));
+            isArray(props2.value) && (valueSync.value = props2.value.map((val) => 0));
             break;
           case mode.DATE:
           case mode.TIME:
@@ -3812,7 +3813,7 @@ function useResetNative(children) {
           node.el.setValue("");
         }
       }
-      if (Array.isArray(node.children) && node.children && node.children.length) {
+      if (isArray(node.children) && node.children && node.children.length) {
         getOrClearNativeValue(outResult, node.children);
       }
     });
@@ -4090,7 +4091,7 @@ function useSwiperListeners(state, props2, swiperItems, trigger) {
     }
   };
   const onChange = (event) => {
-    if (typeof event.detail.source === "string") {
+    if (isString(event.detail.source)) {
       state.currentChangeSource = event.detail.source;
     }
     state.currentSync = event.detail.index;
@@ -4395,7 +4396,7 @@ var RichText = defineComponent({
     const instance = getCurrentInstance();
     return () => {
       let nodes = props2.nodes;
-      if (typeof nodes === "string") {
+      if (isString(nodes)) {
         nodes = parseHtml(nodes);
       }
       return createVNode(resolveComponent("u-rich-text"), {
@@ -4539,7 +4540,7 @@ function normalizeNodes(nodes, instance, options) {
     return nvueNode;
   }
   function normalizeNodes2(nodes2) {
-    if (Array.isArray(nodes2)) {
+    if (isArray(nodes2)) {
       return nodes2.map((node) => normalizeNode(node));
     }
     return [];

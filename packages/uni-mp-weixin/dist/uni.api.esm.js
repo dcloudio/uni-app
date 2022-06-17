@@ -424,7 +424,7 @@ function dedupeHooks(hooks) {
     return res;
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string' && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
     else if (isPlainObject(method)) {
@@ -432,7 +432,7 @@ const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) 
     }
 }, AddInterceptorProtocol);
 const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string') {
+    if (isString(method)) {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);
         }
@@ -495,7 +495,7 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
         emitter.e = {};
         return;
     }
-    if (!Array.isArray(name))
+    if (!isArray(name))
         name = [name];
     name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);
@@ -546,7 +546,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushClientid(args) {
+function getPushClientId(args) {
     if (!isPlainObject(args)) {
         args = {};
     }
@@ -557,11 +557,11 @@ function getPushClientid(args) {
     getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
-            res = { errMsg: 'getPushClientid:ok', cid };
+            res = { errMsg: 'getPushClientId:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
+            res = { errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
@@ -778,7 +778,7 @@ const baseApis = {
     getLocale,
     setLocale,
     onLocaleChange,
-    getPushClientid,
+    getPushClientId,
     onPushMessage,
     offPushMessage,
     invokePushCallback,

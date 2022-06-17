@@ -40,6 +40,7 @@ import { transform, formatMessages } from 'esbuild'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { PAGES_JSON_JS } from '../../../../constants'
 import { emptyCssComments } from '../cleanString'
+import { isArray, isFunction, isString } from '@vue/shared'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -529,7 +530,7 @@ async function compileCSS(
           outputFileName: string
         ) {
           modules = _modules
-          if (modulesOptions && typeof modulesOptions.getJSON === 'function') {
+          if (modulesOptions && isFunction(modulesOptions.getJSON)) {
             modulesOptions.getJSON(cssFileName, _modules, outputFileName)
           }
         },
@@ -710,8 +711,7 @@ async function resolvePostcssConfig(
       plugins: inlineOptions.plugins || [],
     }
   } else {
-    const searchPath =
-      typeof inlineOptions === 'string' ? inlineOptions : config.root
+    const searchPath = isString(inlineOptions) ? inlineOptions : config.root
     try {
       // @ts-ignore
       result = await postcssrc({}, searchPath)
@@ -1032,7 +1032,7 @@ const scss: SassStylePreprocessor = async (
   }
   const importer = [internalImporter]
   if (options.importer) {
-    Array.isArray(options.importer)
+    isArray(options.importer)
       ? importer.push(...options.importer)
       : importer.push(options.importer)
   }
@@ -1151,8 +1151,7 @@ async function rebaseUrls(
     if (url.startsWith('/')) return url
     // match alias, no need to rewrite
     for (const { find } of alias) {
-      const matches =
-        typeof find === 'string' ? url.startsWith(find) : find.test(url)
+      const matches = isString(find) ? url.startsWith(find) : find.test(url)
       if (matches) {
         return url
       }
@@ -1394,9 +1393,9 @@ async function getSource(
 ): Promise<{ content: string; map?: ExistingRawSourceMap }> {
   if (!additionalData) return { content: source }
 
-  if (typeof additionalData === 'function') {
+  if (isFunction(additionalData)) {
     const newContent = await additionalData(source, filename)
-    if (typeof newContent === 'string') {
+    if (isString(newContent)) {
       return { content: newContent }
     }
     return newContent

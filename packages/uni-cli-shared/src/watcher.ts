@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { FSWatcher, watch, WatchOptions } from 'chokidar'
+import { isArray } from '@vue/shared'
 type FileTransform = (source: Buffer, filename: string) => void | string
 export interface FileWatcherOptions {
   src: string | string[]
@@ -16,7 +17,7 @@ export class FileWatcher {
   private watcher!: FSWatcher
   private onChange?: () => void
   constructor({ src, dest, transform, verbose }: FileWatcherOptions) {
-    this.src = !Array.isArray(src) ? [src] : src
+    this.src = !isArray(src) ? [src] : src
     this.dest = dest
     this.transform = transform
     this.verbose = verbose

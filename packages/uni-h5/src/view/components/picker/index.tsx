@@ -14,6 +14,7 @@ import {
   onMounted,
   StyleValue,
 } from 'vue'
+import { isArray } from '@vue/shared'
 import {
   useBooleanAttr,
   useCustomEvent,
@@ -619,10 +620,10 @@ function usePickerMethods(
     switch (props.mode) {
       case mode.MULTISELECTOR:
         {
-          if (!Array.isArray(val)) {
+          if (!isArray(val)) {
             val = state.valueArray
           }
-          if (!Array.isArray(state.valueSync)) {
+          if (!isArray(state.valueSync)) {
             state.valueSync = []
           }
           const length = (state.valueSync.length = Math.max(
@@ -710,7 +711,7 @@ function usePickerMethods(
     _close()
     state.valueChangeSource = 'click'
     const value = _getValue()
-    state.valueSync = Array.isArray(value) ? value.map((val) => val) : value
+    state.valueSync = isArray(value) ? value.map((val) => val) : value
     trigger('change', {} as Event, {
       value,
     })

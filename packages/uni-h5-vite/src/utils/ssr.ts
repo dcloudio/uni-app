@@ -44,7 +44,7 @@ function serializeDefine(define: Record<string, any>): string {
   for (const key in define) {
     const val = define[key]
     res += `${JSON.stringify(key)}: ${
-      typeof val === 'string' ? `(${val})` : JSON.stringify(val)
+      isString(val) ? `(${val})` : JSON.stringify(val)
     }, `
   }
   return res + `}`

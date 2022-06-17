@@ -210,7 +210,7 @@ export function getMac() {
 
       if (
         // Node < v18
-        typeof item.family === 'string' &&
+        isString(item.family) &&
         (item.family === 'IPv4' || item.family === 'IPv6')
       ) {
         mac = item.mac

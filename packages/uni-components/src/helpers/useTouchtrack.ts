@@ -1,4 +1,5 @@
 import { onBeforeUnmount } from 'vue'
+import { isFunction } from '@vue/shared'
 
 const addListenerToElement = function (
   element: HTMLElement,
@@ -10,7 +11,7 @@ const addListenerToElement = function (
   element.addEventListener(
     type,
     ($event: Event) => {
-      if (typeof callback === 'function') {
+      if (isFunction(callback)) {
         if (callback($event) === false) {
           if (
             typeof $event.cancelable !== 'undefined' ? $event.cancelable : true

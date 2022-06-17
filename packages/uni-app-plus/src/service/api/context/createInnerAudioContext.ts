@@ -1,4 +1,4 @@
-import { extend, capitalize } from '@vue/shared'
+import { extend, capitalize, isFunction } from '@vue/shared'
 import {
   API_CREATE_INNER_AUDIO_CONTEXT,
   defineSyncApi,
@@ -436,7 +436,7 @@ const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
   // 批量设置音频上下文事件监听方法
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function (callback: Function) {
-      if (typeof callback === 'function') {
+      if (isFunction(callback)) {
         this._callbacks[eventName]!.push(callback)
       }
     }
@@ -462,7 +462,7 @@ function emit(
 ) {
   const name = `on${capitalize(state)}` as InnerAudioContextEvent
   audio._callbacks[name]!.forEach((callback) => {
-    if (typeof callback === 'function') {
+    if (isFunction(callback)) {
       callback(
         state === 'error'
           ? {

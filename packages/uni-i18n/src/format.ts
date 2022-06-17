@@ -1,4 +1,3 @@
-export const isArray = Array.isArray
 export const isObject = (val: unknown): val is Record<any, any> =>
   val !== null && typeof val === 'object'
 
@@ -89,7 +88,7 @@ export function compile(
   const compiled: Array<unknown> = []
   let index: number = 0
 
-  const mode: string = isArray(values)
+  const mode: string = Array.isArray(values)
     ? 'list'
     : isObject(values)
     ? 'named'

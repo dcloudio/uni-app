@@ -1,4 +1,4 @@
-import { isArray, isObject, default as BaseFormatter } from './format'
+import { isObject, default as BaseFormatter } from './format'
 import { Formatter } from './I18n'
 
 export const isString = (val: unknown): val is string => typeof val === 'string'
@@ -157,7 +157,7 @@ type WalkJson = (
 ) => void | boolean
 
 function walkJsonObj(jsonObj: unknown, walk: WalkJson) {
-  if (isArray(jsonObj)) {
+  if (Array.isArray(jsonObj)) {
     for (let i = 0; i < jsonObj.length; i++) {
       if (walk(jsonObj, i)) {
         return true

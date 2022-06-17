@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-api",
-  "version": "3.0.0-alpha-3041720220614001",
+  "version": "3.0.0-alpha-3041720220614002",
   "description": "@dcloudio/uni-api",
   "sideEffects": false,
   "repository": {
@@ -13,7 +13,10 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
+  "dependencies": {
+    "@vue/shared": "3.2.37"
+  },
   "devDependencies": {
-    "@dcloudio/uni-shared": "3.0.0-alpha-3041720220614001"
+    "@dcloudio/uni-shared": "3.0.0-alpha-3041720220614002"
   }
 }

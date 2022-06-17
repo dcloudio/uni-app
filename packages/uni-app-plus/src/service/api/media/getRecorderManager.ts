@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 import {
   API_GET_RECORDER_MANAGER,
   API_TYPE_GET_RECORDER_MANAGER,
@@ -98,7 +98,7 @@ function onRecorderStateChange(res: { state?: string; errMsg?: string }) {
   const state = res.state
   delete res.state
   delete res.errMsg
-  if (state && typeof callbacks[state] === 'function') {
+  if (state && isFunction(callbacks[state])) {
     callbacks[state]!(res)
   }
 }
