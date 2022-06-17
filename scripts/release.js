@@ -130,6 +130,7 @@ function updatePackage(pkgRoot, version) {
   updateDeps(pkg, 'dependencies', version)
   updateDeps(pkg, 'devDependencies', version)
   updateDeps(pkg, 'peerDependencies', version)
+  updateDeps(pkg, 'optionalDependencies', version)
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 }
 

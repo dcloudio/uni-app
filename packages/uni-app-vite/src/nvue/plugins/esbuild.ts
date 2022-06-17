@@ -66,14 +66,16 @@ ${polyfillCode}`,
           assets.push(name)
         }
       })
-
-      assets.forEach((name) => {
-        fs.copySync(
-          path.resolve(nvueOutputDir, name),
-          path.resolve(outputDir, name),
-          { overwrite: false }
-        )
-      })
+      // 仅 nvueOutputDir 时 copy
+      if (!appService) {
+        assets.forEach((name) => {
+          fs.copySync(
+            path.resolve(nvueOutputDir, name),
+            path.resolve(outputDir, name),
+            { overwrite: false }
+          )
+        })
+      }
 
       if (!entryPoints.length) {
         return

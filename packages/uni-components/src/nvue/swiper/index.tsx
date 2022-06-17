@@ -18,6 +18,8 @@ import { NVueComponentStyles } from '../utils'
 import { flatVNode } from '../../helpers/flatVNode'
 import { swiperProps } from '../../components/swiper'
 
+const isAndroid = weex.config.env.platform.toLowerCase() === 'android'
+
 const swiperStyles: NVueComponentStyles = [
   {
     'uni-swiper': {
@@ -101,7 +103,7 @@ export default defineComponent({
             {...listeners}
           >
             {swiperItems}
-            <indicator class="uni-swiper-dots" styles={indicatorStyle} />
+            <indicator class="uni-swiper-dots" style={indicatorStyle} />
           </slider>
         </div>
       )
@@ -171,10 +173,10 @@ function useSwiperListeners(
       state.currentChangeSource = 'autoplay'
     }
     // 解决 iOS change 事件早于 scrollend 的问题
-    if (weex.config.env.platform === 'iOS') {
-      setTimeout(end, 50)
-    } else {
+    if (isAndroid) {
       end()
+    } else {
+      setTimeout(end, 50)
     }
   }
 

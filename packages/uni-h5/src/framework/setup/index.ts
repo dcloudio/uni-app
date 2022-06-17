@@ -1,4 +1,4 @@
-import { extend, invokeArrayFns, isPlainObject } from '@vue/shared'
+import { extend, invokeArrayFns, isPlainObject, isFunction } from '@vue/shared'
 import {
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -72,7 +72,7 @@ export function setupWindow(comp: any, id: number) {
       } as Page.PageInstance['$page']
     },
     setup(instance) {
-      instance.root = instance // windows 中组件 root 指向 window
+      instance.$pageInstance = instance // window 的页面实例 $pageInstance 指向自己
     },
   })
 }
@@ -85,7 +85,10 @@ export function setupPage(comp: any) {
     clone: true, // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance) {
-      instance.root = instance // 组件 root 指向页面
+      // instance.root = instance // 组件 root 指向页面
+      // 修改 root 会影响 vue devtools
+      instance.$pageInstance = instance // 组件 $pageInstance 指向页面
+      // 组件的 $pageInstance 赋值，是在 vue 内核 createComponentInstance 中 root 赋值的地方实现
       const route = usePageRoute()
       // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
       const query = decodedQuery(route.query)
@@ -184,12 +187,14 @@ export function setupApp(comp: any) {
     before(comp) {
       comp.mpType = 'app'
       const { setup } = comp
-      comp.setup = (props, ctx) => {
-        setup && setup(props, ctx)
-        return () => {
-          return openBlock(), createBlock(LayoutComponent)
-        }
+      const render = () => {
+        return openBlock(), createBlock(LayoutComponent)
       }
+      comp.setup = (props, ctx) => {
+        const res = setup && setup(props, ctx)
+        return isFunction(res) ? render : res
+      }
+      comp.render = render
     },
   })
 }

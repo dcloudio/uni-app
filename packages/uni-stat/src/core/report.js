@@ -5,8 +5,7 @@ import {
   get_last_visit_time,
   get_total_visit_count,
   get_page_residence_time,
-  get_first_time,
-  get_last_time,
+  set_first_time,
   get_residence_time,
 } from '../utils/pageTime.js'
 
@@ -28,6 +27,8 @@ import {
   get_sgin,
   get_encodeURIComponent_options,
   get_page_vm,
+  is_debug,
+  log,
 } from '../utils/pageInfo.js'
 
 import { sys } from '../utils/util.js'
@@ -37,7 +38,6 @@ import {
   OPERATING_TIME,
   STAT_URL,
   STAT_H5_URL,
-  DEBUG,
 } from '../config.ts'
 
 import { dbSet, dbGet, dbRemove } from '../utils/db.js'
@@ -45,9 +45,10 @@ import { dbSet, dbGet, dbRemove } from '../utils/db.js'
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
+  ak: stat_config.appid, // uni-app 应用 Appid
+  p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
   ut: get_platform_name(), // 平台类型
   mpn: get_pack_name(), // 原生平台包名、小程序 appid
-  ak: stat_config.appid, // uni-app 应用 Appid
   usv: STAT_VERSION, // 统计 sdk 版本
   v: get_version(), // 应用版本，仅app
   ch: get_channel(), // 渠道信息
@@ -56,7 +57,6 @@ let statData = {
   ct: '', // 城市
   t: get_time(), // 上报数据时的时间戳
   tt: '',
-  p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
   brand: sys.brand || '', // 手机品牌
   md: sys.model, // 手机型号
   sv: sys.system.replace(/(Android|iOS)\s/, ''), // 手机系统版本
@@ -180,7 +180,6 @@ export default class Report {
   applicationShow() {
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
-      get_last_time()
       const time = get_residence_time('app')
       // 需要判断进入后台是否超过时限 ，默认是 30min ，是的话需要执行进入应用的上报
       if (time.overtime) {
@@ -188,6 +187,7 @@ export default class Report {
         let options = {
           path: lastPageRoute,
           scene: this.statData.sc,
+          cst: 2,
         }
         this.sendReportRequest(options)
       }
@@ -208,7 +208,6 @@ export default class Report {
     }
     // 进入应用后台保存状态，方便进入前台后判断是否上报应用数据
     this.__licationHide = true
-    get_last_time()
     const time = get_residence_time()
     const route = get_page_route(self)
     uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route)
@@ -219,8 +218,8 @@ export default class Report {
       },
       type
     )
-    // 重置时间
-    get_first_time()
+    // 更新页面首次访问时间
+    set_first_time()
   }
 
   /**
@@ -241,14 +240,13 @@ export default class Report {
     this._navigationBarTitle.config = get_page_name(routepath)
     // 表示应用触发 ，页面切换不触发之后的逻辑
     if (this.__licationShow) {
-      get_first_time()
+      // 更新页面首次访问时间
+      set_first_time()
       // this._lastPageRoute = route
       uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route)
       this.__licationShow = false
       return
     }
-
-    get_last_time()
 
     const time = get_residence_time('page')
     // 停留时间
@@ -256,11 +254,12 @@ export default class Report {
       let options = {
         path: route,
         scene: this.statData.sc,
+        cst: 3,
       }
       this.sendReportRequest(options)
     }
-    // 重置时间
-    get_first_time()
+    // 更新页面首次访问时间
+    set_first_time()
   }
 
   /**
@@ -268,7 +267,6 @@ export default class Report {
    */
   pageHide(self) {
     if (!this.__licationHide) {
-      get_last_time()
       const time = get_residence_time('page')
       let route = get_page_route(self)
       let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
@@ -303,6 +301,8 @@ export default class Report {
       fvts: get_first_visit_time(),
       lvts: get_last_visit_time(),
       tvc: get_total_visit_count(),
+      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      cst: options.cst || 1,
     })
     if (get_platform_name() === 'n') {
       this.getProperty()
@@ -321,6 +321,7 @@ export default class Report {
     let options = {
       ak: this.statData.ak,
       uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '11',
       ut: this.statData.ut,
       url,
@@ -330,7 +331,6 @@ export default class Report {
       ch: this.statData.ch,
       usv: this.statData.usv,
       t: get_time(),
-      p: this.statData.p,
     }
     this.request(options)
   }
@@ -345,6 +345,7 @@ export default class Report {
     let options = {
       ak: this.statData.ak,
       uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '3',
       ut: this.statData.ut,
       urlref,
@@ -352,7 +353,6 @@ export default class Report {
       ch: this.statData.ch,
       usv: this.statData.usv,
       t: get_time(),
-      p: this.statData.p,
     }
     this.request(options, type)
   }
@@ -361,13 +361,21 @@ export default class Report {
    * 自定义事件上报
    */
   sendEventRequest({ key = '', value = '' } = {}) {
-    // const route = this._lastPageRoute
-    const routepath = get_route()
+    let routepath = ''
+
+    try {
+      routepath = get_route()
+    } catch (error) {
+      const launch_options = dbGet('__launch_options')
+      routepath = launch_options.path
+    }
+
     this._navigationBarTitle.config = get_page_name(routepath)
     this._navigationBarTitle.lt = '21'
     let options = {
       ak: this.statData.ak,
       uuid: this.statData.uuid,
+      p: this.statData.p,
       lt: '21',
       ut: this.statData.ut,
       url: routepath,
@@ -376,7 +384,6 @@ export default class Report {
       e_v: typeof value === 'object' ? JSON.stringify(value) : value.toString(),
       usv: this.statData.usv,
       t: get_time(),
-      p: this.statData.p,
     }
     this.request(options)
   }
@@ -453,6 +460,10 @@ export default class Report {
     dbSet('__UNI__STAT__DATA', uniStatData)
 
     let page_residence_time = get_page_residence_time()
+    // debug 打印打点信息
+    if (is_debug) {
+      log(data)
+    }
     // 判断时候到达上报时间 ，默认 10 秒上报
     if (page_residence_time < OPERATING_TIME && !type) return
 
@@ -496,16 +507,32 @@ export default class Report {
    */
   sendRequest(optionsData) {
     if (__STAT_VERSION__ === '2') {
-      if (!uniCloud.config) {
-        console.error('当前尚未绑定服务空间.')
+      if (!uni.__stat_uniCloud_space) {
+        console.error('当前尚未关联服务空间.')
         return
       }
-      uniCloud.callFunction({
-        name: 'uni-stat-report',
-        data: optionsData,
-        success: (res) => {},
-        fail: (err) => {},
-      })
+
+      const uniCloudObj = uni.__stat_uniCloud_space.importObject(
+        'uni-stat-receiver',
+        {
+          customUI: true,
+        }
+      )
+      uniCloudObj
+        .report(optionsData)
+        .then(() => {
+          if (is_debug) {
+            console.log(`=== 统计队列数据上报 ===`)
+            console.log(optionsData)
+            console.log(`=== 上报结束 ===`)
+          }
+        })
+        .catch((err) => {
+          if (is_debug) {
+            console.warn('=== 统计上报错误')
+            console.error(err)
+          }
+        })
     }
 
     if (__STAT_VERSION__ === '1') {
@@ -514,9 +541,19 @@ export default class Report {
           url: STAT_URL,
           method: 'POST',
           data: optionsData,
-          success: () => {},
+          success: () => {
+            if (is_debug) {
+              console.log(`=== 统计队列数据上报 ===`)
+              console.log(optionsData)
+              console.log(`=== 上报结束 ===`)
+            }
+          },
           fail: (e) => {
             if (++this._retry < 3) {
+              if (is_debug) {
+                console.warn('=== 统计上报错误，尝试重新上报！')
+                console.error(e)
+              }
               setTimeout(() => {
                 this.sendRequest(optionsData)
               }, 1000)
@@ -535,6 +572,11 @@ export default class Report {
       let image = new Image()
       let options = get_sgin(get_encodeURIComponent_options(data)).options
       image.src = STAT_H5_URL + '?' + options
+      if (is_debug) {
+        console.log(`=== 统计队列数据上报 ===`)
+        console.log(data)
+        console.log(`=== 上报结束 ===`)
+      }
     })
   }
 

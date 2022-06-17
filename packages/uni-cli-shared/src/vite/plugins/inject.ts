@@ -2,7 +2,7 @@ import { sep } from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
 
-import { BaseNode, Program, Identifier } from 'estree'
+import type { BaseNode, Program, Identifier } from 'estree'
 
 import {
   attachScopes,
@@ -88,18 +88,8 @@ export function uniViteInjectPlugin(
       debugInjectTry(id)
       if (code.search(firstpass) === -1) return null
       if (sep !== '/') id = id.split(sep).join('/')
-      let ast = null
-      try {
-        ast = this.parse(code)
-      } catch (err) {
-        this.warn({
-          code: 'PARSE_ERROR',
-          message: `plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include`,
-        })
-      }
-      if (!ast) {
-        return null
-      }
+
+      const ast = this.parse(code)
 
       const imports = new Set()
       ;(ast as unknown as Program).body.forEach((node) => {

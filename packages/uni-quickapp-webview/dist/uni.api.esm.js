@@ -1,21 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
-
-let vueApp;
-const createVueAppHooks = [];
-/**
- * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
- */
-function onCreateVueApp(hook) {
-    // TODO 每个 nvue 页面都会触发
-    if (vueApp) {
-        return hook(vueApp);
-    }
-    createVueAppHooks.push(hook);
-}
-function invokeCreateVueAppHook(app) {
-    vueApp = app;
-    createVueAppHooks.forEach((hook) => hook(app));
-}
+import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -56,57 +41,6 @@ const navigateTo = {
 function getBaseSystemInfo() {
   return qa.getSystemInfoSync()
 }
-
-const E = function () {
-    // Keep this empty so it's easier to inherit from
-    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-};
-E.prototype = {
-    on: function (name, callback, ctx) {
-        var e = this.e || (this.e = {});
-        (e[name] || (e[name] = [])).push({
-            fn: callback,
-            ctx: ctx,
-        });
-        return this;
-    },
-    once: function (name, callback, ctx) {
-        var self = this;
-        function listener() {
-            self.off(name, listener);
-            callback.apply(ctx, arguments);
-        }
-        listener._ = callback;
-        return this.on(name, listener, ctx);
-    },
-    emit: function (name) {
-        var data = [].slice.call(arguments, 1);
-        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-        var i = 0;
-        var len = evtArr.length;
-        for (i; i < len; i++) {
-            evtArr[i].fn.apply(evtArr[i].ctx, data);
-        }
-        return this;
-    },
-    off: function (name, callback) {
-        var e = this.e || (this.e = {});
-        var evts = e[name];
-        var liveEvents = [];
-        if (evts && callback) {
-            for (var i = 0, len = evts.length; i < len; i++) {
-                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-                    liveEvents.push(evts[i]);
-            }
-        }
-        // Remove event from queue to prevent memory leak
-        // Suggested by https://github.com/lazd
-        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-        return this;
-    },
-};
-var E$1 = E;
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -583,7 +517,7 @@ const EmitProtocol = [
     },
 ];
 
-const emitter = new E$1();
+const emitter = new Emitter();
 const $on = defineSyncApi(API_ON, (name, callback) => {
     emitter.on(name, callback);
     return () => emitter.off(name, callback);
@@ -626,12 +560,18 @@ function invokePushCallback(args) {
     }
     else if (args.type === 'pushMsg') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'receive', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'receive',
+                data: normalizePushMessage(args.message),
+            });
         });
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'click', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'click',
+                data: normalizePushMessage(args.message),
+            });
         });
     }
 }
@@ -642,7 +582,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushCid(args) {
+function getPushClientid(args) {
     if (!isPlainObject(args)) {
         args = {};
     }
@@ -653,11 +593,11 @@ function getPushCid(args) {
     getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
-            res = { errMsg: 'getPushCid:ok', cid };
+            res = { errMsg: 'getPushClientid:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') };
+            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
@@ -685,7 +625,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -835,7 +775,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return qa.getSystemInfoSync().language || 'zh-Hans';
+    return normalizeLocale(qa.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
     const app = getApp();
@@ -874,7 +814,7 @@ const baseApis = {
     getLocale,
     setLocale,
     onLocaleChange,
-    getPushCid,
+    getPushClientid,
     onPushMessage,
     offPushMessage,
     invokePushCallback,
@@ -921,18 +861,6 @@ function initGetProvider(providers) {
     };
 }
 
-function addSafeAreaInsets(fromRes, toRes) {
-    if (fromRes.safeArea) {
-        const safeArea = fromRes.safeArea;
-        toRes.safeAreaInsets = {
-            top: safeArea.top,
-            left: safeArea.left,
-            right: fromRes.windowWidth - safeArea.right,
-            bottom: fromRes.windowHeight - safeArea.bottom,
-        };
-    }
-}
-
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function useDeviceId(global = qa) {
@@ -948,11 +876,120 @@ function useDeviceId(global = qa) {
         toRes.deviceId = deviceId;
     };
 }
+function addSafeAreaInsets(fromRes, toRes) {
+    if (fromRes.safeArea) {
+        const safeArea = fromRes.safeArea;
+        toRes.safeAreaInsets = {
+            top: safeArea.top,
+            left: safeArea.left,
+            right: fromRes.windowWidth - safeArea.right,
+            bottom: fromRes.screenHeight - safeArea.bottom,
+        };
+    }
+}
+function populateParameters(fromRes, toRes) {
+    const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
+    // const isQuickApp = "quickapp-webview".indexOf('quickapp-webview') !== -1
+    // osName osVersion
+    let osName = '';
+    let osVersion = '';
+    {
+        osName = system.split(' ')[0] || '';
+        osVersion = system.split(' ')[1] || '';
+    }
+    let hostVersion = version;
+    // deviceType
+    let deviceType = getGetDeviceType(fromRes, model);
+    // deviceModel
+    let deviceBrand = getDeviceBrand(brand);
+    // hostName
+    let _hostName = getHostName(fromRes);
+    // deviceOrientation
+    let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
+    // devicePixelRatio
+    let _devicePixelRatio = pixelRatio;
+    // SDKVersion
+    let _SDKVersion = SDKVersion;
+    // hostLanguage
+    const hostLanguage = language.replace(/_/g, '-');
+    // wx.getAccountInfoSync
+    const parameters = {
+        appId: process.env.UNI_APP_ID,
+        appName: process.env.UNI_APP_NAME,
+        appVersion: process.env.UNI_APP_VERSION_NAME,
+        appVersionCode: process.env.UNI_APP_VERSION_CODE,
+        appLanguage: getAppLanguage(hostLanguage),
+        uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+        uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+        uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+        deviceBrand,
+        deviceModel: model,
+        deviceType,
+        devicePixelRatio: _devicePixelRatio,
+        deviceOrientation: _deviceOrientation,
+        osName: osName.toLocaleLowerCase(),
+        osVersion,
+        hostTheme: theme,
+        hostVersion,
+        hostLanguage,
+        hostName: _hostName,
+        hostSDKVersion: _SDKVersion,
+        hostFontSizeSetting: fontSizeSetting,
+        windowTop: 0,
+        windowBottom: 0,
+        // TODO
+        osLanguage: undefined,
+        osTheme: undefined,
+        ua: undefined,
+        hostPackageName: undefined,
+        browserName: undefined,
+        browserVersion: undefined,
+    };
+    extend(toRes, parameters);
+}
+function getGetDeviceType(fromRes, model) {
+    // deviceType
+    let deviceType = fromRes.deviceType || 'phone';
+    {
+        const deviceTypeMaps = {
+            ipad: 'pad',
+            windows: 'pc',
+            mac: 'pc',
+        };
+        const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+        const _model = model.toLocaleLowerCase();
+        for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+            const _m = deviceTypeMapsKeys[index];
+            if (_model.indexOf(_m) !== -1) {
+                deviceType = deviceTypeMaps[_m];
+                break;
+            }
+        }
+    }
+    return deviceType;
+}
+function getDeviceBrand(brand) {
+    // deviceModel
+    let deviceBrand = brand;
+    if (deviceBrand) {
+        deviceBrand = deviceBrand.toLocaleLowerCase();
+    }
+    return deviceBrand;
+}
+function getAppLanguage(defaultLanguage) {
+    return getLocale ? getLocale() : defaultLanguage;
+}
+function getHostName(fromRes) {
+    const _platform = "quickapp-webview".split('-')[1];
+    let _hostName = fromRes.hostName || _platform; // mp-jd
+    return _hostName;
+}
 
 const getSystemInfo = {
     returnValue: (fromRes, toRes) => {
         addSafeAreaInsets(fromRes, toRes);
         useDeviceId()(fromRes, toRes);
+        populateParameters(fromRes, toRes);
     },
 };
 

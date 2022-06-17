@@ -13,40 +13,40 @@ const pkgs = {
     latest: '3.2.33',
   },
   'vue-router': {
-    latest: '4.0.14',
+    latest: '4.0.15',
   },
   vuex: {
     latest: '4.0.2',
   },
   pinia: {
-    latest: '2.0.13',
+    latest: '2.0.14',
   },
   'vue-i18n': {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.9.5',
+    latest: '2.9.9',
   },
   '@vitejs/plugin-vue': {
-    latest: '2.3.1',
+    latest: '2.3.3',
   },
   '@vitejs/plugin-vue-jsx': {
     latest: '1.3.10',
   },
   '@vitejs/plugin-legacy': {
-    latest: '1.8.1',
+    latest: '1.8.2',
   },
   '@dcloudio/types': {
-    latest: '2.6.4',
+    latest: '2.6.6',
   },
   autoprefixer: {
-    latest: '10.4.4',
+    latest: '10.4.7',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',
   },
   typescript: {
-    latest: '4.6.3',
+    latest: '4.6.4',
   },
 }
 

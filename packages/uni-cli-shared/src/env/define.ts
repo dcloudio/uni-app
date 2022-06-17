@@ -14,7 +14,16 @@ export function initDefine(stringifyBoolean: boolean = false) {
       : isDebug,
     'process.env.UNI_APP_ID': JSON.stringify(manifestJson.appid || ''),
     'process.env.UNI_APP_NAME': JSON.stringify(manifestJson.name || ''),
+    'process.env.UNI_APP_VERSION_NAME': JSON.stringify(
+      manifestJson.versionName || ''
+    ),
+    'process.env.UNI_APP_VERSION_CODE': JSON.stringify(
+      manifestJson.versionCode || ''
+    ),
     'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
+    'process.env.UNI_SUB_PLATFORM': JSON.stringify(
+      process.env.UNI_SUB_PLATFORM
+    ),
     'process.env.UNI_MP_PLUGIN': JSON.stringify(process.env.UNI_MP_PLUGIN),
     'process.env.UNI_SUBPACKAGE': JSON.stringify(process.env.UNI_SUBPACKAGE),
     'process.env.UNI_COMPILER_VERSION': JSON.stringify(

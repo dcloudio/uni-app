@@ -69,25 +69,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const state = useImageState(rootRef, props)
     const trigger = useCustomEvent(rootRef, emit)
     const { fixSize } = useImageSize(rootRef, props, state)
-    useImageLoader(state, fixSize, trigger)
+    useImageLoader(state, props, rootRef, fixSize, trigger)
     return () => {
-      const { mode } = props
-      const { imgSrc, modeStyle, src } = state
-      let imgTsx
-      if (__NODE_JS__) {
-        imgTsx = <img src={src} draggable={props.draggable} />
-      } else {
-        imgTsx = imgSrc ? (
-          <img src={imgSrc} draggable={props.draggable} />
-        ) : (
-          <img />
-        )
-      }
       return (
         <uni-image ref={rootRef}>
-          <div style={modeStyle} />
-          {imgTsx}
-          {FIX_MODES[mode as keyof typeof FIX_MODES] ? (
+          <div style={state.modeStyle} />
+          {FIX_MODES[props.mode as keyof typeof FIX_MODES] ? (
             // @ts-ignore
             <ResizeSensor onResize={fixSize} />
           ) : (
@@ -136,10 +123,13 @@ function useImageState(rootRef: Ref<HTMLElement | null>, props: ImageProps) {
 
 function useImageLoader(
   state: ImageState,
+  props: ImageProps,
+  rootRef: Ref<HTMLElement | null>,
   fixSize: FixSize,
   trigger: CustomEventTrigger
 ) {
   let img: HTMLImageElement | null
+  let draggableImg: HTMLImageElement | null
   const setState = (width = 0, height = 0, imgSrc = '') => {
     state.origWidth = width
     state.origHeight = height
@@ -158,6 +148,14 @@ function useImageLoader(
       const { width, height } = img!
       setState(width, height, src)
       fixSize()
+
+      img!.draggable = props.draggable
+      if (draggableImg) {
+        draggableImg.remove()
+      }
+      draggableImg = img
+      rootRef.value!.appendChild(img!)
+
       resetImage()
       trigger('load', evt, {
         width,
@@ -183,6 +181,15 @@ function useImageLoader(
   watch(
     () => state.src,
     (value) => loadImage(value)
+  )
+  watch(
+    () => state.imgSrc,
+    (value) => {
+      if (!value && draggableImg) {
+        draggableImg.remove()
+        draggableImg = null
+      }
+    }
   )
   onMounted(() => loadImage(state.src))
   onBeforeUnmount(() => resetImage())

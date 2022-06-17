@@ -89,14 +89,18 @@ export function initExtraPlugins(
   platform: UniApp.PLATFORM,
   options: VitePluginUniResolvedOptions
 ) {
-  return initPlugins(resolvePlugins(cliRoot, platform), options)
+  return initPlugins(cliRoot, resolvePlugins(cliRoot, platform), options)
 }
 
 function initPlugin(
+  cliRoot: string,
   { id, config: { main } }: PluginConfig,
   options: VitePluginUniResolvedOptions
 ): Plugin | void {
-  let plugin = require(path.join(id, main || '/lib/uni.plugin.js'))
+  let plugin = require(require.resolve(
+    path.join(id, main || '/lib/uni.plugin.js'),
+    { paths: [cliRoot] }
+  ))
   plugin = plugin.default || plugin
   if (isFunction(plugin)) {
     plugin = plugin(options)
@@ -105,11 +109,12 @@ function initPlugin(
 }
 
 function initPlugins(
+  cliRoot: string,
   plugins: PluginConfig[],
   options: VitePluginUniResolvedOptions
 ): Plugin[] {
   return plugins
-    .map((plugin) => initPlugin(plugin, options))
+    .map((plugin) => initPlugin(cliRoot, plugin, options))
     .flat()
     .filter<Plugin>(Boolean as any)
     .map((plugin) => {
@@ -126,7 +131,9 @@ function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
     .concat(Object.keys(pkg.dependencies || {}))
     .map<PluginConfig | void>((id) => {
       try {
-        const pluginPkg = require(id + '/package.json')
+        const pluginPkg = require(require.resolve(id + '/package.json', {
+          paths: [cliRoot],
+        }))
         const config = pluginPkg['uni-app'] as PluginConfig
         if (!config || !config.name) {
           return

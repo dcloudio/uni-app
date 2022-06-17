@@ -36,6 +36,11 @@
       "__PLATFORM__": "\"mp-baidu\"",
       "__PLATFORM_TITLE__": "百度小程序"
     },
-    "external": ["@dcloudio/uni-i18n", "@vue/shared", "vue"]
+    "external": [
+      "@dcloudio/uni-i18n",
+      "@dcloudio/uni-shared",
+      "@vue/shared",
+      "vue"
+    ]
   }
 ]

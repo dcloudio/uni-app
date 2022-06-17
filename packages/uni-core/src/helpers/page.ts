@@ -16,6 +16,11 @@ export function useCurrentPageId() {
     // view 层
     return getCurrentPageId()
   }
+  // 暂时仅在 h5 平台实现 $pageInstance，避免影响过大
+  if (__PLATFORM__ === 'h5') {
+    const { $pageInstance } = getCurrentInstance()!
+    return $pageInstance && $pageInstance.proxy!.$page.id
+  }
   return getCurrentInstance()!.root.proxy!.$page.id
 }
 
@@ -28,6 +33,11 @@ export function getPageIdByVm(
   }
   if (!vm.$) {
     return
+  }
+  // 暂时仅在 h5 平台实现 $pageInstance，避免影响过大
+  if (__PLATFORM__ === 'h5') {
+    const { $pageInstance } = vm.$
+    return $pageInstance && $pageInstance.proxy!.$page.id
   }
   const rootProxy = vm.$.root.proxy
   if (rootProxy && rootProxy.$page) {

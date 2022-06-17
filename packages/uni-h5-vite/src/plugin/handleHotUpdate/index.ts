@@ -10,6 +10,7 @@ import {
   PAGES_JSON_JS,
   parseManifestJson,
   parsePagesJson,
+  resolveBuiltIn,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 
@@ -33,10 +34,10 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
       invalidateFiles = [
         path.resolve(inputDir, PAGES_JSON_JS),
         path.resolve(inputDir, MANIFEST_JSON_JS),
-        require.resolve('@dcloudio/uni-h5/dist/uni-h5.es.js'),
+        resolveBuiltIn('@dcloudio/uni-h5/dist/uni-h5.es.js'),
       ]
       try {
-        invalidateFiles.push(require.resolve('vite/dist/client/env.mjs'))
+        invalidateFiles.push(resolveBuiltIn('vite/dist/client/env.mjs'))
       } catch (e) {}
     }
     // TODO 目前简单处理，当pages.json,manifest.json发生变化，就直接刷新，理想情况下，应该区分变化的内容，仅必要时做整页面刷新

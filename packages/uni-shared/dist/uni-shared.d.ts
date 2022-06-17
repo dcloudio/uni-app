@@ -646,6 +646,8 @@ string | number
 
 export declare const SLOT_DEFAULT_NAME = "d";
 
+export declare function sortObject<T>(obj: T): T;
+
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
 export declare const TABBAR_HEIGHT = 50;

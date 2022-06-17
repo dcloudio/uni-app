@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -806,7 +806,10 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
   ], 8, ["width", "height"]);
 }
 function useCurrentPageId() {
-  return getCurrentInstance().root.proxy.$page.id;
+  {
+    const { $pageInstance } = getCurrentInstance();
+    return $pageInstance && $pageInstance.proxy.$page.id;
+  }
 }
 function getPageIdByVm(instance2) {
   const vm = resolveComponentInstance(instance2);
@@ -816,9 +819,9 @@ function getPageIdByVm(instance2) {
   if (!vm.$) {
     return;
   }
-  const rootProxy = vm.$.root.proxy;
-  if (rootProxy && rootProxy.$page) {
-    return rootProxy.$page.id;
+  {
+    const { $pageInstance } = vm.$;
+    return $pageInstance && $pageInstance.proxy.$page.id;
   }
 }
 function getCurrentPage() {
@@ -1202,11 +1205,14 @@ function resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLen
 }
 function wrapperH5WxsEvent(event, eventValue, instance2, checkArgsLength = true) {
   if (eventValue) {
-    Object.defineProperty(event, "instance", {
-      get() {
-        return getComponentDescriptor(instance2.proxy, false);
-      }
-    });
+    if (!event.__instance) {
+      event.__instance = true;
+      Object.defineProperty(event, "instance", {
+        get() {
+          return getComponentDescriptor(instance2.proxy, false);
+        }
+      });
+    }
     const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength);
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)];
@@ -1322,12 +1328,11 @@ function normalizeTouchEvent(touches, top) {
   }
   return res;
 }
-var instance = {
+var instance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   $nne,
   createNativeEvent
-};
+}, Symbol.toStringTag, { value: "Module" });
 function initAppConfig$1(appConfig) {
   const globalProperties = appConfig.globalProperties;
   extend(globalProperties, instance);
@@ -1447,15 +1452,14 @@ function selectComponent(selector) {
 function selectAllComponents(selector) {
   return querySelectorAll(this, selector);
 }
-var wxInstance = {
+var wxInstance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   createSelectorQuery: createSelectorQuery$1,
   createMediaQueryObserver: createMediaQueryObserver$1,
   createIntersectionObserver: createIntersectionObserver$1,
   selectComponent,
   selectAllComponents
-};
+}, Symbol.toStringTag, { value: "Module" });
 function getOpenerEventChannel() {
   {
     if (this.$route) {
@@ -3546,6 +3550,10 @@ class CanvasContext {
   beginPath() {
     this.path = [];
     this.subpath = [];
+    this.path.push({
+      method: "beginPath",
+      data: []
+    });
   }
   moveTo(x, y) {
     this.path.push({
@@ -4570,11 +4578,17 @@ function invokePushCallback(args) {
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === "pushMsg") {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: "receive", data: normalizePushMessage(args.message) });
+      callback({
+        type: "receive",
+        data: normalizePushMessage(args.message)
+      });
     });
   } else if (args.type === "click") {
     onPushMessageCallbacks.forEach((callback) => {
-      callback({ type: "click", data: normalizePushMessage(args.message) });
+      callback({
+        type: "click",
+        data: normalizePushMessage(args.message)
+      });
     });
   }
 }
@@ -4585,7 +4599,7 @@ function invokeGetPushCidCallbacks(cid2, errMsg) {
   });
   getPushCidCallbacks.length = 0;
 }
-function getPushCid(args) {
+function getPushClientid(args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -4596,10 +4610,10 @@ function getPushCid(args) {
   getPushCidCallbacks.push((cid2, errMsg) => {
     let res;
     if (cid2) {
-      res = { errMsg: "getPushCid:ok", cid: cid2 };
+      res = { errMsg: "getPushClientid:ok", cid: cid2 };
       hasSuccess && success(res);
     } else {
-      res = { errMsg: "getPushCid:fail" + (errMsg ? " " + errMsg : "") };
+      res = { errMsg: "getPushClientid:fail" + (errMsg ? " " + errMsg : "") };
       hasFail && fail(res);
     }
     hasComplete && complete(res);
@@ -5119,7 +5133,7 @@ function encodeQueryString(url) {
   });
   return params.length ? url + "?" + params.join("&") : url;
 }
-const ANIMATION_IN = [
+const ANIMATION_IN$1 = [
   "slide-in-right",
   "slide-in-left",
   "slide-in-top",
@@ -5130,7 +5144,7 @@ const ANIMATION_IN = [
   "pop-in",
   "none"
 ];
-const ANIMATION_OUT = [
+const ANIMATION_OUT$1 = [
   "slide-out-right",
   "slide-out-left",
   "slide-out-top",
@@ -5154,12 +5168,12 @@ const API_SWITCH_TAB = "switchTab";
 const API_NAVIGATE_BACK = "navigateBack";
 const API_PRELOAD_PAGE = "preloadPage";
 const API_UN_PRELOAD_PAGE = "unPreloadPage";
-const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN$1));
 const NavigateBackProtocol = /* @__PURE__ */ extend({
   delta: {
     type: Number
   }
-}, createAnimationProtocol(ANIMATION_OUT));
+}, createAnimationProtocol(ANIMATION_OUT$1));
 const RedirectToProtocol = BaseRouteProtocol;
 const ReLaunchProtocol = BaseRouteProtocol;
 const SwitchTabProtocol = BaseRouteProtocol;
@@ -6365,6 +6379,7 @@ function initHidpi() {
     translate: "all",
     createRadialGradient: "all",
     createLinearGradient: "all",
+    transform: [4, 5],
     setTransform: [4, 5]
   };
   const proto = CanvasRenderingContext2D.prototype;
@@ -8082,28 +8097,13 @@ var index$r = /* @__PURE__ */ defineBuiltInComponent({
     const {
       fixSize
     } = useImageSize(rootRef, props2, state2);
-    useImageLoader(state2, fixSize, trigger);
+    useImageLoader(state2, props2, rootRef, fixSize, trigger);
     return () => {
-      const {
-        mode: mode2
-      } = props2;
-      const {
-        imgSrc,
-        modeStyle,
-        src
-      } = state2;
-      let imgTsx;
-      {
-        imgTsx = imgSrc ? createVNode("img", {
-          "src": imgSrc,
-          "draggable": props2.draggable
-        }, null, 8, ["src", "draggable"]) : createVNode("img", null, null);
-      }
       return createVNode("uni-image", {
         "ref": rootRef
       }, [createVNode("div", {
-        "style": modeStyle
-      }, null, 4), imgTsx, FIX_MODES[mode2] ? createVNode(ResizeSensor, {
+        "style": state2.modeStyle
+      }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
         "onResize": fixSize
       }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
@@ -8144,8 +8144,9 @@ function useImageState(rootRef, props2) {
   });
   return state2;
 }
-function useImageLoader(state2, fixSize, trigger) {
+function useImageLoader(state2, props2, rootRef, fixSize, trigger) {
   let img;
+  let draggableImg;
   const setState = (width = 0, height = 0, imgSrc = "") => {
     state2.origWidth = width;
     state2.origHeight = height;
@@ -8165,6 +8166,12 @@ function useImageLoader(state2, fixSize, trigger) {
       } = img;
       setState(width, height, src);
       fixSize();
+      img.draggable = props2.draggable;
+      if (draggableImg) {
+        draggableImg.remove();
+      }
+      draggableImg = img;
+      rootRef.value.appendChild(img);
       resetImage();
       trigger("load", evt, {
         width,
@@ -8188,6 +8195,12 @@ function useImageLoader(state2, fixSize, trigger) {
     }
   };
   watch(() => state2.src, (value) => loadImage(value));
+  watch(() => state2.imgSrc, (value) => {
+    if (!value && draggableImg) {
+      draggableImg.remove();
+      draggableImg = null;
+    }
+  });
   onMounted(() => loadImage(state2.src));
   onBeforeUnmount(() => resetImage());
 }
@@ -10135,6 +10148,28 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
+const ANIMATION_IN = [
+  "slide-in-right",
+  "slide-in-left",
+  "slide-in-top",
+  "slide-in-bottom",
+  "fade-in",
+  "zoom-out",
+  "zoom-fade-out",
+  "pop-in",
+  "none"
+];
+const ANIMATION_OUT = [
+  "slide-out-right",
+  "slide-out-left",
+  "slide-out-top",
+  "slide-out-bottom",
+  "fade-out",
+  "zoom-in",
+  "zoom-fade-in",
+  "pop-out",
+  "none"
+];
 const navigatorProps = {
   hoverClass: {
     type: String,
@@ -10170,6 +10205,16 @@ const navigatorProps = {
   hoverStopPropagation: {
     type: Boolean,
     default: false
+  },
+  animationType: {
+    type: String,
+    validator(value) {
+      return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
+    }
+  },
+  animationDuration: {
+    type: [String, Number],
+    default: 300
   }
 };
 function createNavigatorOnClick(props2) {
@@ -10178,10 +10223,13 @@ function createNavigatorOnClick(props2) {
       console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
       return;
     }
+    const animationDuration = parseInt(props2.animationDuration);
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
-          url: props2.url
+          url: props2.url,
+          animationType: props2.animationType || "pop-in",
+          animationDuration
         });
         break;
       case "redirect":
@@ -10202,7 +10250,9 @@ function createNavigatorOnClick(props2) {
         break;
       case "navigateBack":
         uni.navigateBack({
-          delta: props2.delta
+          delta: props2.delta,
+          animationType: props2.animationType || "pop-out",
+          animationDuration
         });
         break;
     }
@@ -11694,6 +11744,7 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
       if (!elem) {
         return;
       }
+      scopeId && elem.setAttribute(scopeId, "");
       const attrs2 = node.attrs;
       if (isPlainObject(attrs2)) {
         const tagAttrs = TAGS[tagName] || [];
@@ -11704,7 +11755,6 @@ function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
               Array.isArray(value) && (value = value.join(" "));
             case "style":
               elem.setAttribute(name, value);
-              scopeId && elem.setAttribute(scopeId, "");
               break;
             default:
               if (tagAttrs.indexOf(name) !== -1) {
@@ -13411,10 +13461,14 @@ const props$h = /* @__PURE__ */ extend({}, props$r, {
   },
   confirmType: {
     type: String,
-    default: ""
+    default: "return",
+    validator(val) {
+      return ConfirmTypes.concat("return").includes(val);
+    }
   }
 });
 let fixMargin = false;
+const ConfirmTypes = ["done", "go", "next", "search", "send"];
 function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
@@ -13427,6 +13481,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     emit: emit2
   }) {
     const rootRef = ref(null);
+    const wrapperRef = ref(null);
     const {
       fieldRef,
       state: state2,
@@ -13435,12 +13490,13 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       trigger
     } = useField(props2, rootRef, emit2);
     const valueCompute = computed(() => state2.value.split(LINEFEED));
-    const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
+    const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
     const heightRef = ref(0);
     const lineRef = ref(null);
     watch(() => heightRef.value, (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
+      const wrapper2 = wrapperRef.value;
       let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
       if (isNaN(lineHeight)) {
         lineHeight = lineEl.offsetHeight;
@@ -13452,7 +13508,8 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = height + "px";
+        el.style.height = "auto";
+        wrapper2.style.height = height + "px";
       }
     });
     function onResize2({
@@ -13520,6 +13577,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-textarea", {
         "ref": rootRef
       }, [createVNode("div", {
+        "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
       }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
@@ -13536,7 +13594,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
     };
   }
 });
@@ -14202,7 +14260,7 @@ function setupWindow(comp, id2) {
       };
     },
     setup(instance2) {
-      instance2.root = instance2;
+      instance2.$pageInstance = instance2;
     }
   });
 }
@@ -14214,7 +14272,7 @@ function setupPage(comp) {
     clone: true,
     init: initPage,
     setup(instance2) {
-      instance2.root = instance2;
+      instance2.$pageInstance = instance2;
       const route = usePageRoute();
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
@@ -14297,12 +14355,14 @@ function setupApp(comp) {
     before(comp2) {
       comp2.mpType = "app";
       const { setup } = comp2;
-      comp2.setup = (props2, ctx) => {
-        setup && setup(props2, ctx);
-        return () => {
-          return openBlock(), createBlock(LayoutComponent);
-        };
+      const render = () => {
+        return openBlock(), createBlock(LayoutComponent);
       };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return isFunction(res) ? render : res;
+      };
+      comp2.render = render;
     }
   });
 }
@@ -16237,19 +16297,34 @@ function deviceId$1() {
   }
   return deviceId;
 }
-const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
-  const pixelRatio2 = window.devicePixelRatio;
-  const screenFix = getScreenFix();
-  const landscape = isLandscape(screenFix);
-  const screenWidth = getScreenWidth(screenFix, landscape);
-  const screenHeight = getScreenHeight(screenFix, landscape);
-  const windowWidth = getWindowWidth(screenWidth);
-  let windowHeight = window.innerHeight;
-  const language = navigator.language;
-  const statusBarHeight = out.top;
+function IEVersion() {
+  const userAgent = navigator.userAgent;
+  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    reIE.test(userAgent);
+    const fIEVersion = parseFloat(RegExp.$1);
+    if (fIEVersion > 6) {
+      return fIEVersion;
+    } else {
+      return 6;
+    }
+  } else if (isEdge) {
+    return -1;
+  } else if (isIE11) {
+    return 11;
+  } else {
+    return -1;
+  }
+}
+function getBrowserInfo() {
   let osname;
-  let osversion;
+  let osversion = "0";
   let model = "";
+  let deviceType = "phone";
+  const language = navigator.language;
   if (isIOS$1) {
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
@@ -16301,10 +16376,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   } else if (isIPadOS) {
     model = "iPad";
     osname = "iOS";
+    deviceType = "pad";
     osversion = typeof window.BigInt === "function" ? "14.0" : "13.0";
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";
+    deviceType = "pc";
     osversion = "0";
     let osversionFind = ua.match(/\((.+?)\)/)[1];
     if (isWindows) {
@@ -16334,19 +16411,19 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
         osversion += ` x${framework[1]}`;
       }
     } else if (isMac) {
-      osname = "Mac";
-      osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      osname = "macOS";
+      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
       if (osversion) {
-        osversion = osversion[1].replace(/_/g, ".");
+        osversion = _osversion[1].replace(/_/g, ".");
         if (osversion.indexOf(";") !== -1) {
           osversion = osversion.split(";")[0];
         }
       }
     } else if (isLinux) {
       osname = "Linux";
-      osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
-      if (osversion) {
-        osversion = osversion[1];
+      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (_osversion) {
+        osversion = _osversion[1];
         if (osversion.indexOf(";") !== -1) {
           osversion = osversion.split(";")[0];
         }
@@ -16355,9 +16432,56 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   } else {
     osname = "Other";
     osversion = "0";
+    deviceType = "unknown";
   }
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
+  let browserName = "";
+  let browserVersion = String(IEVersion());
+  if (browserVersion !== "-1") {
+    browserName = "IE";
+  } else {
+    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
+    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
+    for (let index2 = 0; index2 < browseVendors.length; index2++) {
+      const vendor = browseVendors[index2];
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
+      if (reg.test(ua)) {
+        browserName = vendors[index2];
+        browserVersion = ua.match(reg)[2];
+      }
+    }
+  }
+  let deviceOrientation = "portrait";
+  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
+  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+  return {
+    deviceBrand: void 0,
+    brand: void 0,
+    deviceModel: model,
+    deviceOrientation,
+    model,
+    system,
+    platform,
+    browserName: browserName.toLocaleLowerCase(),
+    browserVersion,
+    language,
+    deviceType,
+    ua,
+    osname,
+    osversion,
+    theme: void 0
+  };
+}
+const getWindowInfo = /* @__PURE__ */ defineSyncApi("getWindowInfo", () => {
+  const pixelRatio2 = window.devicePixelRatio;
+  const screenFix = getScreenFix();
+  const landscape = isLandscape(screenFix);
+  const screenWidth = getScreenWidth(screenFix, landscape);
+  const screenHeight = getScreenHeight(screenFix, landscape);
+  const windowWidth = getWindowWidth(screenWidth);
+  let windowHeight = window.innerHeight;
+  const statusBarHeight = out.top;
   const safeArea = {
     left: out.left,
     right: windowWidth - out.right,
@@ -16377,11 +16501,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     pixelRatio: pixelRatio2,
     screenWidth,
     screenHeight,
-    language,
     statusBarHeight,
-    system,
-    platform,
-    model,
     safeArea,
     safeAreaInsets: {
       top: out.top,
@@ -16389,10 +16509,90 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
       bottom: out.bottom,
       left: out.left
     },
-    version: "",
-    SDKVersion: "",
-    deviceId: deviceId$1()
+    screenTop: screenHeight - windowHeight
   };
+});
+let browserInfo;
+let _initBrowserInfo = true;
+function initBrowserInfo() {
+  if (!_initBrowserInfo)
+    return;
+  browserInfo = getBrowserInfo();
+}
+const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
+  initBrowserInfo();
+  const {
+    deviceBrand,
+    deviceModel,
+    brand,
+    model,
+    platform,
+    system,
+    deviceOrientation,
+    deviceType
+  } = browserInfo;
+  return {
+    brand,
+    deviceBrand,
+    deviceModel,
+    devicePixelRatio: window.devicePixelRatio,
+    deviceId: deviceId$1(),
+    deviceOrientation,
+    deviceType,
+    model,
+    platform,
+    system
+  };
+});
+const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
+  initBrowserInfo();
+  const { theme, language, browserName, browserVersion } = browserInfo;
+  return {
+    appId: __uniConfig.appId,
+    appName: __uniConfig.appName,
+    appVersion: __uniConfig.appVersion,
+    appVersionCode: __uniConfig.appVersionCode,
+    appLanguage: getLocale ? getLocale() : language,
+    enableDebug: false,
+    hostSDKVersion: void 0,
+    hostPackageName: void 0,
+    hostFontSizeSetting: void 0,
+    hostName: browserName,
+    hostVersion: browserVersion,
+    hostTheme: theme,
+    hostLanguage: language,
+    language,
+    SDKVersion: "",
+    theme,
+    version: ""
+  };
+});
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
+  _initBrowserInfo = true;
+  initBrowserInfo();
+  _initBrowserInfo = false;
+  const windowInfo = getWindowInfo();
+  const deviceInfo = getDeviceInfo();
+  const appBaseInfo = getAppBaseInfo();
+  _initBrowserInfo = true;
+  const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
+  const systemInfo = extend(windowInfo, deviceInfo, appBaseInfo, {
+    ua: ua2,
+    browserName,
+    browserVersion,
+    uniPlatform: "web",
+    uniCompileVersion: __uniConfig.compilerVersion,
+    uniRuntimeVersion: __uniConfig.compilerVersion,
+    fontSizeSetting: void 0,
+    osName: osname.toLocaleLowerCase(),
+    osVersion: osversion,
+    osLanguage: void 0,
+    osTheme: void 0
+  });
+  delete systemInfo.screenTop;
+  delete systemInfo.enableDebug;
+  delete systemInfo.theme;
+  return sortObject(systemInfo);
 });
 const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
   return resolve(getSystemInfoSync());
@@ -19183,7 +19383,13 @@ const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_RE
   UniServiceJSBridge.invokeViewMethod(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
-const setTabBarItemProps = ["text", "iconPath", "selectedIconPath", "visible"];
+const setTabBarItemProps = [
+  "text",
+  "iconPath",
+  "iconfont",
+  "selectedIconPath",
+  "visible"
+];
 const setTabBarStyleProps = [
   "color",
   "selectedColor",
@@ -19280,6 +19486,7 @@ const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADG
 const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, { resolve }) => {
   setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
+const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 var TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
@@ -19293,6 +19500,14 @@ var TabBar = /* @__PURE__ */ defineSystemComponent({
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
+    onMounted(() => {
+      if (tabBar2.iconfontSrc) {
+        loadFontFace({
+          family: UNI_TABBAR_ICON_FONT,
+          source: `url("${tabBar2.iconfontSrc}")`
+        });
+      }
+    });
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
       return createVNode("uni-tabbar", {
@@ -19429,20 +19644,22 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
     const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
+    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab);
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
     }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, item, tabBar2, index2, onSwitchTab);
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
   });
 }
-function createTabBarItemTsx(color, iconPath, tabBarItem, tabBar2, index2, onSwitchTab) {
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
   return createVNode("div", {
     "key": index2,
     "class": "uni-tabbar__item",
     "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", tabBarItem, tabBar2)], 8, ["onClick"]);
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
 }
-function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
   const {
     height
   } = tabBar2;
@@ -19451,7 +19668,7 @@ function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
     "style": {
       height
     }
-  }, [iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
@@ -19473,6 +19690,33 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   }, [type !== "midButton" && createVNode("img", {
     "src": getRealPath(iconPath)
   }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+}
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+  var _a;
+  const {
+    type,
+    text: text2,
+    redDot
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar2;
+  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  const iconfontStyle = {
+    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
+    color: iconfontColor
+  };
+  return createVNode("div", {
+    "class": clazz2,
+    "style": style
+  }, [type !== "midButton" && createVNode("div", {
+    "class": "uni-tabbar__iconfont",
+    "style": iconfontStyle
+  }, [iconfontText], 4), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
@@ -19501,7 +19745,7 @@ function createTabBarItemRedDotTsx(badge) {
     "class": clazz2
   }, [badge], 2);
 }
-function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, onSwitchTab) {
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
   const {
     width,
     height,
@@ -19529,7 +19773,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
       height: iconWidth
     },
     "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
 let globalLayoutState = void 0;
@@ -19994,9 +20238,8 @@ const API_LOGIN = "login";
 const login = /* @__PURE__ */ defineAsyncApi(API_LOGIN, createUnsupportedAsyncApi(API_LOGIN));
 const API_GET_PROVIDER = "getProvider";
 const getProvider = /* @__PURE__ */ defineAsyncApi(API_GET_PROVIDER, createUnsupportedAsyncApi(API_GET_PROVIDER));
-var api = {
+var api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  [Symbol.toStringTag]: "Module",
   upx2px,
   addInterceptor,
   removeInterceptor,
@@ -20028,7 +20271,7 @@ var api = {
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
-  getPushCid,
+  getPushClientid,
   onPushMessage,
   offPushMessage,
   onAppHide,
@@ -20050,6 +20293,8 @@ var api = {
   createInnerAudioContext,
   makePhoneCall,
   getSystemInfo,
+  getDeviceInfo,
+  getAppBaseInfo,
   getSystemInfoSync,
   onNetworkStatusChange,
   offNetworkStatusChange,
@@ -20066,6 +20311,7 @@ var api = {
   vibrateLong,
   getClipboardData,
   setClipboardData,
+  getWindowInfo,
   setStorageSync,
   setStorage,
   getStorageSync,
@@ -20160,7 +20406,7 @@ var api = {
   addPhoneContact,
   login,
   getProvider
-};
+}, Symbol.toStringTag, { value: "Module" });
 const CONTEXT_ID = "MAP_LOCATION";
 var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
@@ -22271,4 +22517,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getClipboardData, getCurrentPages$1 as getCurrentPages, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushCid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

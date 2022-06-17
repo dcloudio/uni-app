@@ -84,6 +84,7 @@ const options = {
     app: {
         darkmode: false,
         subpackages: true,
+        usingComponents: true,
     },
     json: {
         formatAppJson,

@@ -88,35 +88,34 @@ export const GetEncodeURIComponentOptions = (statData) => {
   return data
 }
 
-let Set__First__Time = 0
-let Set__Last__Time = 0
-
+const FIRST_TIME = '__first_time'
 /**
- * 获取第一次时间
+ * 设置页面首次访问时间，用户获取页面/应用停留时常
  */
-export const get_first_time = () => {
-  let time = new Date().getTime()
-  Set__First__Time = time
-  Set__Last__Time = 0
-  return time
+export const set_first_time = () => {
+  const time = new Date().getTime()
+  const timeStorge = dbSet(FIRST_TIME, time)
+  return timeStorge
 }
 
 /**
- * 获取最后一次时间
+ * 获取最后一次时间 ，暂时用不到，直接获取当前时间即可
  */
-export const get_last_time = () => {
-  let time = new Date().getTime()
-  Set__Last__Time = time
-  return time
-}
+// export const get_last_time = () => {
+// 	let time = new Date().getTime()
+// 	Set__Last__Time = time
+// 	return time
+// }
 
 /**
  * 获取页面 \ 应用停留时间
  */
 export const get_residence_time = (type) => {
   let residenceTime = 0
-  if (Set__First__Time !== 0) {
-    residenceTime = Set__Last__Time - Set__First__Time
+  const first_time = dbGet(FIRST_TIME)
+  const last_time = get_time()
+  if (first_time !== 0) {
+    residenceTime = last_time - first_time
   }
 
   residenceTime = parseInt(residenceTime / 1000)

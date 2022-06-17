@@ -1,5 +1,5 @@
 import { isArray as isArray$1, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
@@ -2257,6 +2257,8 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
+        channel: plus.runtime.channel,
+        launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
     return extend({}, launchOptions);
@@ -9938,6 +9940,10 @@ class CanvasContext {
     beginPath() {
         this.path = [];
         this.subpath = [];
+        this.path.push({
+            method: 'beginPath',
+            data: [],
+        });
     }
     moveTo(x, y) {
         this.path.push({
@@ -11070,12 +11076,18 @@ function invokePushCallback(args) {
     }
     else if (args.type === 'pushMsg') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'receive', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'receive',
+                data: normalizePushMessage(args.message),
+            });
         });
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
-            callback({ type: 'click', data: normalizePushMessage(args.message) });
+            callback({
+                type: 'click',
+                data: normalizePushMessage(args.message),
+            });
         });
     }
 }
@@ -11086,7 +11098,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushCid(args) {
+function getPushClientid(args) {
     if (!isPlainObject(args)) {
         args = {};
     }
@@ -11097,11 +11109,11 @@ function getPushCid(args) {
     getPushCidCallbacks.push((cid, errMsg) => {
         let res;
         if (cid) {
-            res = { errMsg: 'getPushCid:ok', cid };
+            res = { errMsg: 'getPushClientid:ok', cid };
             hasSuccess && success(res);
         }
         else {
-            res = { errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '') };
+            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
             hasFail && fail(res);
         }
         hasComplete && complete(res);
@@ -11128,6 +11140,15 @@ const offPushMessage = (fn) => {
         }
     }
 };
+
+const API_CAN_I_USE = 'canIUse';
+const CanIUseProtocol = [
+    {
+        name: 'schema',
+        type: String,
+        required: true,
+    },
+];
 
 const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
 
@@ -11407,6 +11428,16 @@ const ScanCodeProtocol = {
     onlyFromCamera: Boolean,
     scanType: Array,
     autoDecodeCharSet: Boolean,
+    sound: String,
+};
+const SOUND = ['default', 'none'];
+const ScanCodeOptions = {
+    formatArgs: {
+        sound(value, params) {
+            if (!SOUND.includes(value))
+                params.sound = 'none';
+        },
+    },
 };
 
 const API_GET_STORAGE = 'getStorage';
@@ -12966,6 +12997,19 @@ const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath, fileType }, 
     plus.runtime.openDocument(getRealPath(filePath), undefined, resolve, errorCallback);
 }, OpenDocumentProtocol, OpenDocumentOptions);
 
+const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
+    if (hasOwn$1(uni, schema)) {
+        return true;
+    }
+    return false;
+}, CanIUseProtocol);
+
+let deviceId;
+function deviceId$1 () {
+    deviceId = deviceId || plus.device.uuid;
+    return deviceId;
+}
+
 const isIOS = plus.os.name === 'iOS';
 let config;
 /**
@@ -13228,12 +13272,6 @@ function getStatusBarStyle() {
     return style;
 }
 
-let deviceId;
-function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId;
-}
-
 function getScreenInfo() {
     // 好像开发时刷新，偶发的 plus.screen.getCurrentSize 为 undefined
     const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize() || {
@@ -13245,10 +13283,8 @@ function getScreenInfo() {
         screenHeight: Math.round(resolutionHeight),
     };
 }
-const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
-    const platform = plus.os.name.toLowerCase();
-    const ios = platform === 'ios';
-    const isAndroid = platform === 'android';
+const getWindowInfo = defineSyncApi('getWindowInfo', () => {
+    const ios = plus.os.name.toLowerCase() === 'ios';
     const { screenWidth, screenHeight } = getScreenInfo();
     const statusBarHeight = getStatusbarHeight();
     let safeAreaInsets;
@@ -13309,21 +13345,12 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
         height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom,
     };
     return {
-        brand: plus.device.vendor,
-        model: plus.device.model,
         pixelRatio: plus.screen.scale,
         screenWidth,
         screenHeight,
         windowWidth,
         windowHeight,
         statusBarHeight,
-        language: plus.os.language,
-        system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
-        version: plus.runtime.innerVersion,
-        platform,
-        SDKVersion: '',
-        windowTop,
-        windowBottom,
         safeArea,
         safeAreaInsets: {
             top: safeAreaInsets.top,
@@ -13331,8 +13358,87 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
             bottom: safeAreaInsets.bottom,
             left: safeAreaInsets.left,
         },
-        deviceId: deviceId$1(),
+        windowTop,
+        windowBottom,
+        screenTop: screenHeight - windowHeight,
     };
+});
+
+let systemInfo;
+let _initSystemInfo = true;
+function weexGetSystemInfoSync() {
+    if (!_initSystemInfo)
+        return;
+    const { getSystemInfoSync } = weex.requireModule('plus');
+    systemInfo = getSystemInfoSync();
+    if (typeof systemInfo === 'string') {
+        try {
+            systemInfo = JSON.parse(systemInfo);
+        }
+        catch (error) { }
+    }
+}
+const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
+    weexGetSystemInfoSync();
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
+    const brand = deviceBrand.toLowerCase();
+    const _osName = osName.toLowerCase();
+    return {
+        brand,
+        deviceBrand: brand,
+        deviceModel,
+        devicePixelRatio: plus.screen.scale,
+        deviceId: deviceId$1(),
+        deviceOrientation,
+        deviceType,
+        model: deviceModel,
+        platform: _osName,
+        system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+    };
+});
+const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
+    weexGetSystemInfoSync();
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
+    return {
+        appId,
+        appName,
+        appVersion,
+        appVersionCode,
+        appLanguage: getLocale ? getLocale() : osLanguage,
+        enableDebug: false,
+        hostPackageName,
+        hostName,
+        hostVersion,
+        hostLanguage,
+        hostTheme,
+        hostFontSizeSetting: undefined,
+        hostSDKVersion: undefined,
+        language: osLanguage,
+        SDKVersion: '',
+        theme: undefined,
+        version: plus.runtime.innerVersion,
+    };
+});
+const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
+    _initSystemInfo = true;
+    weexGetSystemInfoSync();
+    _initSystemInfo = false;
+    const windowInfo = getWindowInfo();
+    const deviceInfo = getDeviceInfo();
+    const appBaseInfo = getAppBaseInfo();
+    _initSystemInfo = true;
+    const extraData = {
+        fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+        osName: systemInfo.osName.toLowerCase(),
+    };
+    if (systemInfo.hostName) {
+        extraData.hostSDKVersion = systemInfo.uniRuntimeVersion;
+    }
+    const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
+    delete _systemInfo.screenTop;
+    delete _systemInfo.enableDebug;
+    delete _systemInfo.theme;
+    return sortObject(_systemInfo);
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
     return resolve(getSystemInfoSync());
@@ -13935,7 +14041,7 @@ const scanCode = defineAsyncApi(API_SCAN_CODE, (options, { resolve, reject }) =>
             }
         });
     }
-}, ScanCodeProtocol);
+}, ScanCodeProtocol, ScanCodeOptions);
 
 const onThemeChange = defineOnApi(ON_THEME_CHANGE, () => {
     UniServiceJSBridge.on(ON_THEME_CHANGE, (res) => {
@@ -13969,17 +14075,17 @@ const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, rej
 const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, (options, { resolve, reject }) => {
     plus.io.getVideoInfo({
         filePath: options.src,
-        success: (data) => {
-            return {
-                orientation: data.orientation,
-                type: data.type,
-                duration: data.duration,
-                size: data.size,
-                height: data.height,
-                width: data.width,
-                fps: data.fps || 30,
-                bitrate: data.bitrate,
-            };
+        success: (videoInfo) => {
+            resolve({
+                orientation: videoInfo.orientation,
+                type: videoInfo.type,
+                duration: videoInfo.duration,
+                size: videoInfo.size,
+                height: videoInfo.height,
+                width: videoInfo.width,
+                fps: videoInfo.fps || 30,
+                bitrate: videoInfo.bitrate,
+            });
         },
         fail: warpPlusErrorCallback(reject),
     });
@@ -14073,7 +14179,7 @@ const publishRecorderStateChange = (state, res = {}) => {
 const Recorder = {
     start({ duration = 60000, sampleRate, numberOfChannels, encodeBitRate, format = 'mp3', frameSize,
     // audioSource = 'auto',
-     }) {
+     } = {}) {
         if (recording) {
             return publishRecorderStateChange('start');
         }
@@ -14156,7 +14262,7 @@ class RecorderManager {
     resume() {
         Recorder.resume();
     }
-    start(options) {
+    start(options = {}) {
         Recorder.start(options);
     }
     stop() {
@@ -18948,7 +19054,7 @@ var uni$1 = {
   setPageMeta: setPageMeta,
   getEnterOptionsSync: getEnterOptionsSync,
   getLaunchOptionsSync: getLaunchOptionsSync,
-  getPushCid: getPushCid,
+  getPushClientid: getPushClientid,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   onAppHide: onAppHide,
@@ -18978,6 +19084,9 @@ var uni$1 = {
   getSavedFileInfo: getSavedFileInfo,
   removeSavedFile: removeSavedFile,
   openDocument: openDocument,
+  canIUse: canIUse,
+  getDeviceInfo: getDeviceInfo,
+  getAppBaseInfo: getAppBaseInfo,
   getSystemInfoSync: getSystemInfoSync,
   getSystemInfo: getSystemInfo,
   onCompassChange: onCompassChange,
@@ -19030,6 +19139,7 @@ var uni$1 = {
   getScreenBrightness: getScreenBrightness,
   setScreenBrightness: setScreenBrightness,
   setKeepScreenOn: setKeepScreenOn,
+  getWindowInfo: getWindowInfo,
   getImageInfo: getImageInfo,
   getVideoInfo: getVideoInfo,
   previewImage: previewImage,

@@ -407,6 +407,18 @@ function getValueByDataPath(obj, path) {
     }
     return getValueByDataPath(obj[key], parts.slice(1).join('.'));
 }
+function sortObject(obj) {
+    let sortObj = {};
+    if (shared.isPlainObject(obj)) {
+        Object.keys(obj)
+            .sort()
+            .forEach((key) => {
+            const _key = key;
+            sortObj[_key] = obj[_key];
+        });
+    }
+    return !Object.keys(sortObj) ? obj : sortObj;
+}
 
 function formatKey(key) {
     return shared.camelize(key.substring(5));
@@ -1566,5 +1578,6 @@ exports.resolveOwnerEl = resolveOwnerEl;
 exports.resolveOwnerVm = resolveOwnerVm;
 exports.sanitise = sanitise;
 exports.scrollTo = scrollTo;
+exports.sortObject = sortObject;
 exports.stringifyQuery = stringifyQuery;
 exports.updateElementStyle = updateElementStyle;

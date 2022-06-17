@@ -36,7 +36,13 @@ import { getRouteOptions } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { useTabBar } from '../../../framework/setup/state'
 
-const setTabBarItemProps = ['text', 'iconPath', 'selectedIconPath', 'visible']
+const setTabBarItemProps = [
+  'text',
+  'iconPath',
+  'iconfont',
+  'selectedIconPath',
+  'visible',
+]
 const setTabBarStyleProps = [
   'color',
   'selectedColor',

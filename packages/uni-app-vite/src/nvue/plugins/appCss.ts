@@ -2,7 +2,6 @@ import type { Plugin } from 'vite'
 import type { PluginContext, RollupError } from 'rollup'
 import path from 'path'
 import fs from 'fs-extra'
-import qs from 'querystring'
 import {
   CompilerError,
   parse,
@@ -156,8 +155,8 @@ function attrsToQuery(
   for (const name in attrs) {
     const value = attrs[name]
     if (!ignoreList.includes(name)) {
-      query += `&${qs.escape(name)}${
-        value ? `=${qs.escape(String(value))}` : ``
+      query += `&${encodeURIComponent(name)}${
+        value ? `=${encodeURIComponent(value)}` : ``
       }`
     }
   }

@@ -37,7 +37,7 @@ const Recorder: Recorder = {
     format = 'mp3',
     frameSize,
     // audioSource = 'auto',
-  }) {
+  } = {}) {
     if (recording) {
       return publishRecorderStateChange('start')
     }
@@ -140,7 +140,7 @@ class RecorderManager implements UniApp.RecorderManager {
     Recorder.resume()
   }
 
-  start(options: UniApp.RecorderManagerStartOptions) {
+  start(options: UniApp.RecorderManagerStartOptions = {}) {
     Recorder.start(options)
   }
 

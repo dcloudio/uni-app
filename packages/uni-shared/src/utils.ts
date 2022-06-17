@@ -1,4 +1,4 @@
-import { isString } from '@vue/shared'
+import { isPlainObject, isString } from '@vue/shared'
 
 export function cache<T>(fn: (str: string) => T) {
   const cache: Record<string, T> = Object.create(null)
@@ -128,4 +128,17 @@ export function getValueByDataPath(obj: any, path: string): unknown {
     return obj[key]
   }
   return getValueByDataPath(obj[key], parts.slice(1).join('.'))
+}
+
+export function sortObject<T>(obj: T) {
+  let sortObj: T = {} as T
+  if (isPlainObject(obj)) {
+    Object.keys(obj)
+      .sort()
+      .forEach((key) => {
+        const _key = key as keyof T
+        sortObj[_key] = obj[_key]
+      })
+  }
+  return !Object.keys(sortObj) ? obj : sortObj
 }

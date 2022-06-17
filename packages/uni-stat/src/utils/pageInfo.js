@@ -3,16 +3,17 @@ import { sys } from './util.js'
 import { STAT_URL, STAT_VERSION, DIFF_TIME } from '../config.ts'
 
 let statConfig = {
-  appid: '',
+  appid: process.env.UNI_APP_ID,
 }
 let titleJsons = {}
-
+let debug = !!process.env.UNI_STAT_DEBUG || false
 // #ifdef VUE3
-statConfig.appid = process.env.UNI_APP_ID
 titleJsons = process.env.UNI_STAT_TITLE_JSON
 // #endif
+
 // #ifndef VUE3
-statConfig = require('uni-stat-config').default || require('uni-stat-config')
+
+// eslint-disable-next-line no-restricted-globals
 const pagesTitle = require('uni-pages?{"type":"style"}').default
 let pagesData = pagesTitle.pages
 for (let i in pagesData) {
@@ -31,9 +32,9 @@ for (let i in pagesData) {
 }
 // #endif
 
+// TODO 在云函数中获取，暂时注释
 const UUID_KEY = '__DC_STAT_UUID'
 const UUID_VALUE = '__DC_UUID_VALUE'
-
 function getUuid() {
   let uuid = ''
   if (get_platform_name() === 'n') {
@@ -61,15 +62,16 @@ function getUuid() {
   }
   return uuid
 }
-/**
- * 获取配置信息 如 appid
- */
-export const stat_config = statConfig
 
 export const get_uuid = (statData) => {
   // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
   return sys.deviceId || getUuid()
 }
+
+/**
+ * 获取配置信息 如 appid
+ */
+export const stat_config = statConfig
 
 export const get_sgin = (statData) => {
   let arr = Object.keys(statData)
@@ -229,7 +231,7 @@ export const get_page_route = (pageVm) => {
   // 从 app 进入应用 ，没有 $page ,获取不到路由 ，需要获取页面 尝试从 getCurrentPages 获取也页面实例
   // FIXME 尽量不使用 getCurrentPages ，大部分获取路由是从 onHide 获取 ，这时可以获取到，如果是 onload ,则可能获取不到，比如 百度
 
-  let page = pageVm.$page || (pageVm.$scope && pageVm.$scope.$page)
+  let page = pageVm && (pageVm.$page || (pageVm.$scope && pageVm.$scope.$page))
   let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
   if (!page) return lastPageRoute || ''
   // 如果找不到 fullPath 就取 route 的值
@@ -281,7 +283,13 @@ export const handle_data = (statData) => {
   for (let i in statData) {
     const rd = statData[i]
     rd.forEach((elm) => {
-      const newData = get_splicing(elm)
+      let newData = ''
+      if (__STAT_VERSION__ === '1') {
+        newData = get_splicing(elm)
+      }
+      if (__STAT_VERSION__ === '2') {
+        newData = elm
+      }
       if (i === 0) {
         firstArr.push(newData)
       } else if (i === 3) {
@@ -427,4 +435,72 @@ const requestData = (done) => {
         })
     },
   })
+}
+
+/**
+ * 获取uniCloud服务空间配置
+ * @returns {Object}
+ */
+export const uni_cloud_config = () => {
+  return process.env.UNI_STAT_UNI_CLOUD || {}
+}
+
+/**
+ * 获取服务空间
+ * @param {*} config
+ * @returns
+ */
+export const get_space = (config) => {
+  const uniCloudConfig = uni_cloud_config()
+  const { spaceId, provider, clientSecret } = uniCloudConfig
+  const space_type = ['tcb', 'aliyun']
+  const is_provider = space_type.indexOf(provider) !== -1
+  const is_aliyun = provider === 'aliyun' && spaceId && clientSecret
+  const is_tcb = provider === 'tcb' && spaceId
+
+  if (is_provider && (is_aliyun || is_tcb)) {
+    return uniCloudConfig
+  } else {
+    if (config && config.spaceId) {
+      return config
+    }
+  }
+
+  return null
+}
+
+/**
+ * 是否开启 debug 模式
+ */
+export const is_debug = debug
+
+/**
+ * 日志输出
+ * @param {*} data
+ */
+export const log = (data) => {
+  let msg_type = ''
+  switch (data.lt) {
+    case '1':
+      msg_type = '应用启动'
+      break
+    case '3':
+      msg_type = '应用进入后台'
+      break
+
+    case '11':
+      msg_type = '页面切换'
+      break
+    case '21':
+      msg_type = '事件触发'
+      break
+    case '31':
+      msg_type = '应用错误'
+      break
+  }
+  if (msg_type) {
+    console.log(`=== 统计数据采集：${msg_type} ===`)
+    console.log(data)
+    console.log(`=== 采集结束 ===`)
+  }
 }

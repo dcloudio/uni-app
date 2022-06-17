@@ -1,10 +1,12 @@
+import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n'
+
 export const getLocale: typeof uni.getLocale = () => {
   // 优先使用 $locale
   const app = getApp({ allowDefault: true })
   if (app && app.$vm) {
     return app.$vm.$locale
   }
-  return __GLOBAL__.getSystemInfoSync().language || 'zh-Hans'
+  return normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
 }
 
 export const setLocale: typeof uni.setLocale = (locale) => {

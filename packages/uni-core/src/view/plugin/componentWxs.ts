@@ -270,11 +270,14 @@ export function wrapperH5WxsEvent(
   checkArgsLength = true
 ) {
   if (eventValue) {
-    Object.defineProperty(event, 'instance', {
-      get() {
-        return getComponentDescriptor(instance!.proxy!, false)
-      },
-    })
+    if (!event.__instance) {
+      event.__instance = true
+      Object.defineProperty(event, 'instance', {
+        get() {
+          return getComponentDescriptor(instance!.proxy!, false)
+        },
+      })
+    }
     const ownerVm = resolveOwnerComponentPublicInstance(
       eventValue,
       instance!,

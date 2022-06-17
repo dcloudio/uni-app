@@ -54,7 +54,9 @@ export function normalizeJsonFilename(filename: string) {
   return normalizeNodeModules(filename)
 }
 
-export function findChangedJsonFiles() {
+export function findChangedJsonFiles(
+  supportGlobalUsingComponents: boolean = true
+) {
   const changedJsonFiles = new Map<string, string>()
   function findChangedFile(filename: string, json: Record<string, any>) {
     const newJson = JSON.parse(JSON.stringify(json))
@@ -62,10 +64,20 @@ export function findChangedJsonFiles() {
       newJson.usingComponents = {}
     }
     extend(newJson.usingComponents, jsonUsingComponentsCache.get(filename))
-    const usingComponents = newJson.usingComponents as Record<string, string>
     // 格式化为相对路径，这样作为分包也可以直接运行
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
     if (filename !== 'app') {
+      let usingComponents = newJson.usingComponents as Record<string, string>
+
+      const globalUsingComponents = appJsonCache?.usingComponents ?? {}
+      // 如果小程序不支持 global 的 usingComponents
+      if (!supportGlobalUsingComponents) {
+        // 从 appJsonCache 中读取全局的 usingComponents 并补充到子组件 usingComponents 中
+        usingComponents = {
+          ...globalUsingComponents,
+          ...newJson.usingComponents,
+        }
+      }
       Object.keys(usingComponents).forEach((name) => {
         const componentFilename = usingComponents[name]
         if (componentFilename.startsWith('/')) {
@@ -75,6 +87,7 @@ export function findChangedJsonFiles() {
           )
         }
       })
+      newJson.usingComponents = usingComponents
     }
 
     const jsonStr = JSON.stringify(newJson, null, 2)
