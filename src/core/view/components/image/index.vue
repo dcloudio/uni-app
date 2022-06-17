@@ -172,8 +172,8 @@ export default {
         const img = this._img = this._img || new Image()
         img.onload = $event => {
           this._img = null
-          this.originalWidth = img.width
-          this.originalHeight = img.height
+          const width = this.originalWidth = img.width
+          const height = this.originalHeight = img.height
 
           this._fixSize()
 
@@ -186,8 +186,8 @@ export default {
           this.$el.appendChild(img)
 
           this.$trigger('load', $event, {
-            width: img.width,
-            height: img.height
+            width,
+            height
           })
         }
         img.onerror = $event => {
