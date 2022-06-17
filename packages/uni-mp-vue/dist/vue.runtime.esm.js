@@ -4805,11 +4805,28 @@ function setRef$1(instance, isUnmount = false) {
     if (isUnmount) {
         return $templateRefs.forEach(templateRef => setTemplateRef(templateRef, null, setupState));
     }
-    const doSet = () => {
+    const check = $mpPlatform === 'mp-baidu' || $mpPlatform === 'mp-toutiao';
+    const doSetByRefs = (refs) => {
         const mpComponents = $scope
             .selectAllComponents('.r')
             .concat($scope.selectAllComponents('.r-i-f'));
-        $templateRefs.forEach(templateRef => setTemplateRef(templateRef, findComponentPublicInstance(mpComponents, templateRef.i), setupState));
+        return refs.filter(templateRef => {
+            const refValue = findComponentPublicInstance(mpComponents, templateRef.i);
+            // 部分平台，在一些 if 条件下，部分 slot 组件初始化会被延迟到下一次渲染，需要二次检测
+            if (check && refValue === null) {
+                return true;
+            }
+            setTemplateRef(templateRef, refValue, setupState);
+            return false;
+        });
+    };
+    const doSet = () => {
+        const refs = doSetByRefs($templateRefs);
+        if (refs.length) {
+            setTimeout(() => {
+                doSetByRefs(refs);
+            }, 10);
+        }
     };
     if ($scope._$setRef) {
         $scope._$setRef(doSet);
