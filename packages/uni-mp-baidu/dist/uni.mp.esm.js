@@ -578,9 +578,11 @@ function updateComponentProps(up, instance) {
     const nextProps = findComponentPropsData(up) || {};
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
-        invalidateJob(instance.update);
+        const index = invalidateJob(instance.update);
         {
-            instance.update();
+            // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+            // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
+            index === -1 && instance.update();
         }
     }
 }
