@@ -20,6 +20,7 @@ import {
   StringLiteral,
   parenthesizedExpression,
   binaryExpression,
+  isPrivateName,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -230,7 +231,7 @@ function createClassBindingByObjectExpression(expr: ObjectExpression) {
   expr.properties.forEach((prop) => {
     if (isObjectProperty(prop)) {
       const { value } = prop
-      if (isUndefined(value as Expression)) {
+      if (isUndefined(value as Expression) || isPrivateName(prop.key)) {
         // remove {a:undefined}
         return
       }

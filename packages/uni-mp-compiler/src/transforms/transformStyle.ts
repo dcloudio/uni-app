@@ -12,6 +12,7 @@ import {
   isObjectProperty,
   binaryExpression,
   isIdentifier,
+  isPrivateName,
 } from '@babel/types'
 import {
   DirectiveNode,
@@ -147,29 +148,31 @@ function rewriteStyleObjectExpression(
       }
     } else if (isObjectProperty(prop)) {
       const { key, value, computed } = prop
-      if (computed) {
-        // {[handle(computedKey)]:1} => {[a]:1}
-        const newExpr = rewirteWithHelper(HYPHENATE, key, loc, context)
-        if (newExpr) {
-          prop.key = newExpr
+      if (!isPrivateName(key)) {
+        if (computed) {
+          // {[handle(computedKey)]:1} => {[a]:1}
+          const newExpr = rewirteWithHelper(HYPHENATE, key, loc, context)
+          if (newExpr) {
+            prop.key = newExpr
+          }
+        } else {
+          // {fontSize:'15px'} => {'font-size':'15px'}
+          prop.key = parseStringLiteral(key)
+          prop.key.value = hyphenate(prop.key.value) + ':'
         }
-      } else {
-        // {fontSize:'15px'} => {'font-size':'15px'}
-        prop.key = parseStringLiteral(prop.key)
-        prop.key.value = hyphenate(prop.key.value) + ':'
-      }
-      // {fontSize:`${fontSize}px`} => {'font-size':a}
-      if (isStaticLiteral(value)) {
-        return
-      } else {
-        const newExpr = parseExprWithRewrite(
-          genBabelExpr(value as Expression),
-          loc,
-          context,
-          value as Expression
-        )
-        if (newExpr) {
-          prop.value = newExpr
+        // {fontSize:`${fontSize}px`} => {'font-size':a}
+        if (isStaticLiteral(value)) {
+          return
+        } else {
+          const newExpr = parseExprWithRewrite(
+            genBabelExpr(value as Expression),
+            loc,
+            context,
+            value as Expression
+          )
+          if (newExpr) {
+            prop.value = newExpr
+          }
         }
       }
     }
@@ -216,13 +219,15 @@ function createStyleBindingByObjectExpression(expr: ObjectExpression) {
       concat(prop.argument)
     } else if (isObjectProperty(prop)) {
       const { key, value } = prop
-      const expr = createBinaryExpression(
-        isStringLiteral(key)
-          ? key // 之前已经补充了:
-          : createBinaryExpression(key, stringLiteral(':')),
-        value as Expression
-      )
-      concat(expr)
+      if (!isPrivateName(key)) {
+        const expr = createBinaryExpression(
+          isStringLiteral(key)
+            ? key // 之前已经补充了:
+            : createBinaryExpression(key, stringLiteral(':')),
+          value as Expression
+        )
+        concat(expr)
+      }
     }
   })
   return result
