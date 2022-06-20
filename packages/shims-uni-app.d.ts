@@ -13,7 +13,7 @@ declare namespace Page {
     }
   }
 }
-declare namespace UniApp {
+declare namespace UniNamespace {
   type ClassObj = Record<string, boolean>
   type StyleObj = Record<string, any>
   type PLATFORM = keyof PagesJsonPagePlatformStyle
@@ -496,3 +496,5 @@ declare namespace UniApp {
     ): void
   }
 }
+
+import UniApp = UniNamespace
