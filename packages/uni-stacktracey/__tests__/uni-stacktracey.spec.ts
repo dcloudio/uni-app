@@ -34,26 +34,23 @@ describe('uni-stacktracey', () => {
   test('uniStracktraceyPreset local', () => {
     stacktracey(uniErrorMsg, {
       preset: uniStracktraceyPreset({
-        base: path.resolve(
-          __dirname,
-          '../test/__UNI__APPID__/1.0.0/.sourcemap/h5/'
-        ),
+        base: path.resolve(__dirname, '../test/__UNI_APPID__/h5/1.0.0/'),
         sourceRoot: '',
       }),
     }).then((res: string) => {
       expect(res).toEqual(`Error: Sentry Error
-at   src/pages/index/index.vue:44                                                            
-at   src/pages/index/index.vue?be58:12                                                       
-at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:1864  
-at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:2189  
-at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:1864  
-at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:2185  
-at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:7076  
-at   node_modules/@sentry/browser/esm/helpers.js:74                                          `)
+at   src/pages/index/index.vue:44
+at   src/pages/index/index.vue?be58:12:17
+at   node_modules/@sentry/browser/esm/helpers.js:74:22
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:1864:25
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:2189:13
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:1864:25
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:2185:8
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:7076:24`)
     })
   })
 
-  test('uniStracktraceyPreset local', () => {
+  test('utsStracktraceyPreset local', () => {
     stacktracey(utsErrorMsg, {
       preset: utsStracktraceyPreset({
         base: path.resolve(
