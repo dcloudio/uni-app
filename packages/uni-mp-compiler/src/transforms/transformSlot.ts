@@ -143,15 +143,28 @@ function transformScopedSlotName(
     props.splice(
       props.indexOf(nameProps),
       1,
-      createBindDirectiveNode(
-        'name',
-        rewriteExpression(
-          createSimpleExpression(`"${nameProps.value.content}-"+` + slotKey),
-          context
-        ).content
-      )
+      createScopedSlotDirectiveNode(nameProps.value.content, slotKey, context)
     )
   }
+}
+
+export interface NameScopedSlotDirectiveNode extends DirectiveNode {
+  slotName: string
+}
+
+function createScopedSlotDirectiveNode(
+  name: string,
+  slotKey: string,
+  context: TransformContext
+): NameScopedSlotDirectiveNode {
+  const dir = createBindDirectiveNode(
+    'name',
+    rewriteExpression(createSimpleExpression(`"${name}-"+` + slotKey), context)
+      .content
+  ) as NameScopedSlotDirectiveNode
+  // 存储原始的 slot 名称
+  dir.slotName = name
+  return dir
 }
 
 function parseScopedSlotKey(context: TransformContext) {

@@ -2,6 +2,7 @@ import { hyphenate } from '@vue/shared'
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   formatMiniProgramEvent,
+  isAttributeNode,
   isElementNode,
   isUserComponent,
   MiniProgramCompilerOptions,
@@ -22,13 +23,15 @@ import {
   TemplateNode,
   TextNode,
 } from '@vue/compiler-core'
-import { TemplateCodegenOptions } from '../options'
+import type { TemplateCodegenOptions } from '../options'
+import type { NameScopedSlotDirectiveNode } from '../transforms/transformSlot'
 import { genExpr } from '../codegen'
 import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import { TransformContext } from '../transform'
 import { ATTR_VUE_PROPS } from '../transforms/utils'
+
 interface TemplateCodegenContext {
   code: string
   directive: string
@@ -165,13 +168,19 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
 
   push(`<block`)
   const nameProp = findProp(node, 'name')
-  genVIf(
-    `$slots.` +
-      (nameProp?.type === NodeTypes.ATTRIBUTE && nameProp.value?.content
-        ? nameProp.value.content
-        : SLOT_DEFAULT_NAME),
-    context
-  )
+  let name = SLOT_DEFAULT_NAME
+  if (nameProp) {
+    if (isAttributeNode(nameProp)) {
+      if (nameProp.value?.content) {
+        name = nameProp.value.content
+      }
+    } else {
+      if ((nameProp as NameScopedSlotDirectiveNode).slotName) {
+        name = (nameProp as NameScopedSlotDirectiveNode).slotName
+      }
+    }
+  }
+  genVIf(`$slots.${name}`, context)
   push(`>`)
   genElement(node, context)
   push(`</block>`)
