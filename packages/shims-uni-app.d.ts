@@ -1,3 +1,8 @@
+// 临时覆盖 HBuilderX.PageURIString , HBuilderX.ColorString
+declare namespace HBuilderX {
+  type PageURIString = string
+  type ColorString = string
+}
 declare namespace Page {
   interface PageInstance {
     $page: {
