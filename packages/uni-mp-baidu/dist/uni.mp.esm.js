@@ -1,5 +1,5 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, ON_INIT, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, hasOwn, isFunction, extend, isPlainObject } from '@vue/shared';
+import { isArray, hasOwn, isFunction, extend, hyphenate, isPlainObject } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -387,16 +387,19 @@ function handleEvent(event) {
     // 快手小程序的 __l 方法也会走此处逻辑，但没有 __ins__
     if (__ins__) {
         // 自定义事件，通过 triggerEvent 传递 __ins__
-        methodName = (__ins__.properties[EVENT_OPTS] || {})[type];
+        methodName = resolveMethodName(type, __ins__.properties[EVENT_OPTS] || {});
     }
     else if (dataset && dataset[EVENT_OPTS]) {
         // 快手小程序 input 等内置组件的 input 事件也会走此逻辑，所以从 dataset 中读取
-        methodName = dataset[EVENT_OPTS][type];
+        methodName = resolveMethodName(type, dataset[EVENT_OPTS]);
     }
     if (!this[methodName]) {
         return console.warn(type + ' not found');
     }
     this[methodName](event);
+}
+function resolveMethodName(name, obj) {
+    return obj[name] || obj[hyphenate(name)];
 }
 function nextSetDataTick(mpInstance, fn) {
     // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
