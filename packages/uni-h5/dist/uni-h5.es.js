@@ -4508,7 +4508,7 @@ const setPageMeta = /* @__PURE__ */ defineAsyncApi(API_SET_PAGE_META, (options, 
 });
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
 const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
-  UniServiceJSBridge.invokeViewMethod("getSelectedTextRange", {}, getCurrentPageId(), (res) => {
+  UniServiceJSBridge.invokeViewMethod(API_GET_SELECTED_TEXT_RANGE, {}, getCurrentPageId(), (res) => {
     if (typeof res.end === "undefined" && typeof res.start === "undefined") {
       reject("no focused");
     } else {
@@ -4619,29 +4619,19 @@ function invokeGetPushCidCallbacks(cid2, errMsg) {
   });
   getPushCidCallbacks.length = 0;
 }
-function getPushClientId(args) {
-  if (!isPlainObject(args)) {
-    args = {};
-  }
-  const { success, fail, complete } = getApiCallbacks(args);
-  const hasSuccess = isFunction(success);
-  const hasFail = isFunction(fail);
-  const hasComplete = isFunction(complete);
+const API_GET_PUSH_CLIENT_ID = "getPushClientId";
+const getPushClientId = /* @__PURE__ */ defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
   getPushCidCallbacks.push((cid2, errMsg) => {
-    let res;
     if (cid2) {
-      res = { errMsg: "getPushClientId:ok", cid: cid2 };
-      hasSuccess && success(res);
+      resolve({ cid: cid2 });
     } else {
-      res = { errMsg: "getPushClientId:fail" + (errMsg ? " " + errMsg : "") };
-      hasFail && fail(res);
+      reject(errMsg);
     }
-    hasComplete && complete(res);
   });
   if (typeof cid !== "undefined") {
     Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
   }
-}
+});
 const onPushMessageCallbacks = [];
 const onPushMessage = (fn) => {
   if (onPushMessageCallbacks.indexOf(fn) === -1) {

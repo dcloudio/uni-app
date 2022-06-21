@@ -1,6 +1,6 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook, sortObject } from '@dcloudio/uni-shared';
+import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook, sortObject } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
   return wx.getSystemInfoSync()
@@ -154,6 +154,32 @@ function tryCatch(fn) {
     };
 }
 
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function addInvokeCallback(id, name, callback, keepAlive = false) {
+    invokeCallbacks[id] = {
+        name,
+        keepAlive,
+        callback,
+    };
+    return id;
+}
+// onNativeEventReceive((event,data)=>{}) 需要两个参数，目前写死最多两个参数
+function invokeCallback(id, res, extras) {
+    if (typeof id === 'number') {
+        const opts = invokeCallbacks[id];
+        if (opts) {
+            if (!opts.keepAlive) {
+                delete invokeCallbacks[id];
+            }
+            return opts.callback(res, extras);
+        }
+    }
+    return res;
+}
+const API_SUCCESS = 'success';
+const API_FAIL = 'fail';
+const API_COMPLETE = 'complete';
 function getApiCallbacks(args) {
     const apiCallbacks = {};
     for (const name in args) {
@@ -164,6 +190,36 @@ function getApiCallbacks(args) {
         }
     }
     return apiCallbacks;
+}
+function normalizeErrMsg$1(errMsg, name) {
+    if (!errMsg || errMsg.indexOf(':fail') === -1) {
+        return name + ':ok';
+    }
+    return name + errMsg.substring(errMsg.indexOf(':fail'));
+}
+function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
+    if (!isPlainObject(args)) {
+        args = {};
+    }
+    const { success, fail, complete } = getApiCallbacks(args);
+    const hasSuccess = isFunction(success);
+    const hasFail = isFunction(fail);
+    const hasComplete = isFunction(complete);
+    const callbackId = invokeCallbackId++;
+    addInvokeCallback(callbackId, name, (res) => {
+        res = res || {};
+        res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+        isFunction(beforeAll) && beforeAll(res);
+        if (res.errMsg === name + ':ok') {
+            isFunction(beforeSuccess) && beforeSuccess(res, args);
+            hasSuccess && success(res);
+        }
+        else {
+            hasFail && fail(res);
+        }
+        hasComplete && complete(res);
+    });
+    return callbackId;
 }
 
 const HOOK_SUCCESS = 'success';
@@ -265,6 +321,13 @@ function invokeApi(method, api, options, params) {
     return api(options, ...params);
 }
 
+function hasCallback(args) {
+    if (isPlainObject(args) &&
+        [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+        return true;
+    }
+    return false;
+}
 function handlePromise(promise) {
     // if (__UNI_FEATURE_PROMISE__) {
     //   return promise
@@ -274,6 +337,16 @@ function handlePromise(promise) {
     //     .catch((err) => [err])
     // }
     return promise;
+}
+function promisify$1(name, fn) {
+    return (args = {}, ...rest) => {
+        if (hasCallback(args)) {
+            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+        }
+        return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
+            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+        })));
+    };
 }
 
 function formatApiArgs(args, options) {
@@ -301,6 +374,12 @@ function formatApiArgs(args, options) {
         }
     }
 }
+function invokeSuccess(id, name, res) {
+    return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+}
+function invokeFail(id, name, errMsg, errRes) {
+    return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
+}
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
         validateProtocols(name, args, protocol);
@@ -316,6 +395,29 @@ function beforeInvokeApi(name, args, protocol, options) {
         return errMsg;
     }
 }
+function normalizeErrMsg(errMsg) {
+    if (!errMsg || isString(errMsg)) {
+        return errMsg;
+    }
+    if (errMsg.stack) {
+        console.error(errMsg.message + LINEFEED + errMsg.stack);
+        return errMsg.message;
+    }
+    return errMsg;
+}
+function wrapperTaskApi(name, fn, protocol, options) {
+    return (args) => {
+        const id = createAsyncApiCallback(name, args, options);
+        const errMsg = beforeInvokeApi(name, [args], protocol, options);
+        if (errMsg) {
+            return invokeFail(id, name, errMsg);
+        }
+        return fn(args, {
+            resolve: (res) => invokeSuccess(id, name, res),
+            reject: (errMsg, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+        });
+    };
+}
 function wrapperSyncApi(name, fn, protocol, options) {
     return (...args) => {
         const errMsg = beforeInvokeApi(name, args, protocol, options);
@@ -325,8 +427,14 @@ function wrapperSyncApi(name, fn, protocol, options) {
         return fn.apply(null, args);
     };
 }
+function wrapperAsyncApi(name, fn, protocol, options) {
+    return wrapperTaskApi(name, fn, protocol, options);
+}
 function defineSyncApi(name, fn, protocol, options) {
     return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+    return promisify$1(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
 }
 
 const API_UPX2PX = 'upx2px';
@@ -546,30 +654,20 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushClientId(args) {
-    if (!isPlainObject(args)) {
-        args = {};
-    }
-    const { success, fail, complete } = getApiCallbacks(args);
-    const hasSuccess = isFunction(success);
-    const hasFail = isFunction(fail);
-    const hasComplete = isFunction(complete);
+const API_GET_PUSH_CLIENT_ID = 'getPushClientId';
+const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
     getPushCidCallbacks.push((cid, errMsg) => {
-        let res;
         if (cid) {
-            res = { errMsg: 'getPushClientId:ok', cid };
-            hasSuccess && success(res);
+            resolve({ cid });
         }
         else {
-            res = { errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '') };
-            hasFail && fail(res);
+            reject(errMsg);
         }
-        hasComplete && complete(res);
     });
     if (typeof cid !== 'undefined') {
         Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
     }
-}
+});
 const onPushMessageCallbacks = [];
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 const onPushMessage = (fn) => {
