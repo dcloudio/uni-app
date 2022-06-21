@@ -10994,7 +10994,7 @@ const setPageMeta = defineAsyncApi(API_SET_PAGE_META, (options, { resolve }) => 
 const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
 
 const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
-    UniServiceJSBridge.invokeViewMethod('getSelectedTextRange', {}, getCurrentPageId(), (res) => {
+    UniServiceJSBridge.invokeViewMethod(API_GET_SELECTED_TEXT_RANGE, {}, getCurrentPageId(), (res) => {
         if (typeof res.end === 'undefined' &&
             typeof res.start === 'undefined') {
             reject('no focused');
@@ -11115,30 +11115,20 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushClientId(args) {
-    if (!isPlainObject(args)) {
-        args = {};
-    }
-    const { success, fail, complete } = getApiCallbacks(args);
-    const hasSuccess = isFunction(success);
-    const hasFail = isFunction(fail);
-    const hasComplete = isFunction(complete);
+const API_GET_PUSH_CLIENT_ID = 'getPushClientId';
+const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
     getPushCidCallbacks.push((cid, errMsg) => {
-        let res;
         if (cid) {
-            res = { errMsg: 'getPushClientId:ok', cid };
-            hasSuccess && success(res);
+            resolve({ cid });
         }
         else {
-            res = { errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '') };
-            hasFail && fail(res);
+            reject(errMsg);
         }
-        hasComplete && complete(res);
     });
     if (typeof cid !== 'undefined') {
         Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
     }
-}
+});
 const onPushMessageCallbacks = [];
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 const onPushMessage = (fn) => {
