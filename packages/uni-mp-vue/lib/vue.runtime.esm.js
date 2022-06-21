@@ -4821,18 +4821,12 @@ function setRef(instance, isUnmount = false) {
             return false;
         });
     };
-    const retry = (refs, count = 3, timeout = 20) => {
-        setTimeout(() => {
-            refs = doSetByRefs(refs);
-            if (refs.length && count > 1) {
-                retry(refs, count - 1);
-            }
-        }, timeout);
-    };
     const doSet = () => {
         const refs = doSetByRefs($templateRefs);
-        if (refs.length) {
-            retry(refs);
+        if (refs.length && instance.proxy && instance.proxy.$scope) {
+            instance.proxy.$scope.setData({ r1: 1 }, () => {
+                doSetByRefs(refs);
+            });
         }
     };
     if ($scope._$setRef) {
