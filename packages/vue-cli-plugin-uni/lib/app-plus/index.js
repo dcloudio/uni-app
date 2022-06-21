@@ -63,8 +63,11 @@ const v3 = {
     const statCode = getPlatformStat()
     const pushCode = getPlatformPush()
 
-    const beforeCode = 'import \'uni-pages\';'
-
+    let beforeCode = 'import \'uni-pages\';'
+    if (JSON.parse(process.env.UNI_CLOUD_PROVIDER || '[]').length) {
+      const uniCloudLibPath = '@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js'
+      beforeCode += `import '${uniCloudLibPath}';`
+    }
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
     }
