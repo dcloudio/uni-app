@@ -2,8 +2,12 @@ import fs from 'fs';
 import { SourceMapConsumer } from 'source-map';
 
 /*  ------------------------------------------------------------------------ */
-const O = Object, isBrowser = typeof window !== 'undefined' &&
+const O = Object, isBrowser = 
+/* eslint-disable */
+typeof window !== 'undefined' &&
+    /* eslint-disable */
     window.window === window &&
+    /* eslint-disable */
     window.navigator, nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
 lastOf = (x) => x[x.length - 1], nixSlashes$1 = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes$1(process.cwd()) + '/';
 /*  ------------------------------------------------------------------------ */
@@ -133,6 +137,7 @@ class StackTracey {
             return {
                 beforeParse: line,
                 callee: callee || '',
+                /* eslint-disable */
                 index: isBrowser && fileLineColumn[0] === window.location.href,
                 native: native || false,
                 file: nixSlashes$1(fileLineColumn[0] || ''),
@@ -362,7 +367,7 @@ function uniStracktraceyPreset(opts) {
                 if (fileRelative.indexOf('app-service.js') !== -1) {
                     baseAfter = (base.match(/\w$/) ? '/' : '') + 'weixin';
                     if (fileRelative === fileName) {
-                        baseAfter += '__APP__';
+                        baseAfter += '/__APP__';
                     }
                     fileRelative = fileRelative.replace('.js', '.map');
                 }
