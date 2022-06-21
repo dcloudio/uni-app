@@ -16,6 +16,7 @@ import {
   M,
   isMiniProgramAssetFile,
   dynamicImportPolyfill,
+  DEFAULT_ASSETS_RE,
 } from '@dcloudio/uni-cli-shared'
 import { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
@@ -121,6 +122,11 @@ function createMoveToVendorChunkFn(): GetManualChunk {
   return (id, { getModuleInfo }) => {
     const normalizedId = normalizePath(id)
     const filename = normalizedId.split('?')[0]
+    // 处理资源文件
+    if (DEFAULT_ASSETS_RE.test(filename)) {
+      debugChunk('common/assets', normalizedId)
+      return 'common/assets'
+    }
     // 处理项目内的js,ts文件
     if (EXTNAME_JS_RE.test(filename)) {
       if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
