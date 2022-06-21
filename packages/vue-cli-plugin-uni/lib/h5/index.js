@@ -100,9 +100,12 @@ module.exports = {
       useBuiltIns = babelConfig.presets[0][1].useBuiltIns
     } catch (e) {}
 
-    const beforeCode = (useBuiltIns === 'entry' ? 'import \'@babel/polyfill\';' : '') +
+    let beforeCode = (useBuiltIns === 'entry' ? 'import \'@babel/polyfill\';' : '') +
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
-
+    if (JSON.parse(process.env.UNI_CLOUD_PROVIDER || '[]').length) {
+      const uniCloudLibPath = '@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js'
+      beforeCode += `import '${uniCloudLibPath}';`
+    }
     return {
       resolve: {
         extensions: ['.nvue'],

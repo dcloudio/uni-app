@@ -194,6 +194,11 @@ module.exports = {
 ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     }
 
+    if (JSON.parse(process.env.UNI_CLOUD_PROVIDER || '[]').length) {
+      const uniCloudLibPath = '@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js'
+      beforeCode += `import '${uniCloudLibPath}';`
+    }
+
     const alias = { // 仅 mp-weixin
       'mpvue-page-factory': require.resolve(
         '@dcloudio/vue-cli-plugin-uni/packages/mpvue-page-factory')
