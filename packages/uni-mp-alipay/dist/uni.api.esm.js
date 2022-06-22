@@ -649,6 +649,7 @@ const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
 
 let cid;
 let cidErrMsg;
+let enabled;
 function normalizePushMessage(message) {
     try {
         return JSON.parse(message);
@@ -661,7 +662,10 @@ function normalizePushMessage(message) {
  * @param args
  */
 function invokePushCallback(args) {
-    if (args.type === 'clientId') {
+    if (args.type === 'enabled') {
+        enabled = true;
+    }
+    else if (args.type === 'clientId') {
         cid = args.cid;
         cidErrMsg = args.errMsg;
         invokeGetPushCidCallbacks(cid, args.errMsg);
@@ -692,17 +696,24 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
 }
 const API_GET_PUSH_CLIENT_ID = 'getPushClientId';
 const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
-    getPushCidCallbacks.push((cid, errMsg) => {
-        if (cid) {
-            resolve({ cid });
+    Promise.resolve().then(() => {
+        if (typeof enabled === 'undefined') {
+            enabled = false;
+            cid = '';
+            cidErrMsg = 'unipush is not enabled';
         }
-        else {
-            reject(errMsg);
+        getPushCidCallbacks.push((cid, errMsg) => {
+            if (cid) {
+                resolve({ cid });
+            }
+            else {
+                reject(errMsg);
+            }
+        });
+        if (typeof cid !== 'undefined') {
+            invokeGetPushCidCallbacks(cid, cidErrMsg);
         }
     });
-    if (typeof cid !== 'undefined') {
-        Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-    }
 });
 const onPushMessageCallbacks = [];
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现

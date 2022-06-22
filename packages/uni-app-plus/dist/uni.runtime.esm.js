@@ -11074,6 +11074,7 @@ const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
 
 let cid;
 let cidErrMsg;
+let enabled;
 function normalizePushMessage(message) {
     try {
         return JSON.parse(message);
@@ -11086,7 +11087,10 @@ function normalizePushMessage(message) {
  * @param args
  */
 function invokePushCallback(args) {
-    if (args.type === 'clientId') {
+    if (args.type === 'enabled') {
+        enabled = true;
+    }
+    else if (args.type === 'clientId') {
         cid = args.cid;
         cidErrMsg = args.errMsg;
         invokeGetPushCidCallbacks(cid, args.errMsg);
@@ -11117,17 +11121,24 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
 }
 const API_GET_PUSH_CLIENT_ID = 'getPushClientId';
 const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
-    getPushCidCallbacks.push((cid, errMsg) => {
-        if (cid) {
-            resolve({ cid });
+    Promise.resolve().then(() => {
+        if (typeof enabled === 'undefined') {
+            enabled = false;
+            cid = '';
+            cidErrMsg = 'unipush is not enabled';
         }
-        else {
-            reject(errMsg);
+        getPushCidCallbacks.push((cid, errMsg) => {
+            if (cid) {
+                resolve({ cid });
+            }
+            else {
+                reject(errMsg);
+            }
+        });
+        if (typeof cid !== 'undefined') {
+            invokeGetPushCidCallbacks(cid, cidErrMsg);
         }
     });
-    if (typeof cid !== 'undefined') {
-        Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-    }
 });
 const onPushMessageCallbacks = [];
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
@@ -16429,7 +16440,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             err = err;
             callback(err);
@@ -16442,7 +16453,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             callback(err);
         });
@@ -16453,14 +16464,15 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             callback(err);
         });
     },
     push(callback) {
         if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-            callback(null, [plus.push.getClientInfo().id]);
+            const clientInfo = plus.push.getClientInfo();
+            callback(null, [clientInfo.id], [clientInfo]);
         }
         else {
             callback(null, []);
@@ -16469,14 +16481,29 @@ const providers = {
 };
 const getProvider = defineAsyncApi(API_GET_PROVIDER, ({ service }, { resolve, reject }) => {
     if (providers[service]) {
-        providers[service]((err, provider) => {
+        providers[service]((err, provider = [], providers = []) => {
             if (err) {
                 reject(err.message);
             }
             else {
                 resolve({
                     service,
+                    // 5+ PlusShareShareService['id'] 类型错误
                     provider: provider,
+                    providers: providers.map((provider) => {
+                        const returnProvider = {};
+                        if (isPlainObject(provider)) {
+                            for (const key in provider) {
+                                if (Object.hasOwnProperty.call(provider, key)) {
+                                    const item = provider[key];
+                                    if (!isFunction(item) && typeof item !== 'undefined') {
+                                        returnProvider[key] = item;
+                                    }
+                                }
+                            }
+                        }
+                        return returnProvider;
+                    }),
                 });
             }
         });

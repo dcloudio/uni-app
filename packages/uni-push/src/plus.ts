@@ -1,3 +1,7 @@
+// @ts-expect-error
+uni.invokePushCallback({
+  type: 'enabled',
+})
 Promise.resolve().then(() => {
   plus.push.setAutoNotification && plus.push.setAutoNotification(false)
   const info = plus.push.getClientInfo()
