@@ -9147,7 +9147,7 @@ const Upx2pxProtocol = [
 
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
-let isIOS$1 = false;
+let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
@@ -9156,7 +9156,7 @@ function checkDeviceWidth() {
     const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
-    isIOS$1 = platform === 'ios';
+    isIOS = platform === 'ios';
 }
 function checkValue(value, defaultValue) {
     const newValue = Number(value);
@@ -9189,7 +9189,7 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     result = Math.floor(result + EPS);
     if (result === 0) {
-        if (deviceDPR === 1 || !isIOS$1) {
+        if (deviceDPR === 1 || !isIOS) {
             result = 1;
         }
         else {
@@ -13028,7 +13028,6 @@ function deviceId$1 () {
     return deviceId;
 }
 
-const isIOS = plus.os.name === 'iOS';
 let config;
 /**
  * tabbar显示状态
@@ -13154,6 +13153,7 @@ var tabBarInstance = {
             });
     },
     indexOf(page) {
+        const config = this.config;
         const itemLength = config && config.list && config.list.length;
         if (itemLength) {
             for (let i = 0; i < itemLength; i++) {
@@ -13193,17 +13193,22 @@ var tabBarInstance = {
                 }
             });
     },
+    get config() {
+        return config || __uniConfig.tabBar;
+    },
     get visible() {
         return visible;
     },
     get height() {
+        const config = this.config;
         return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
             plus.navigator.getSafeAreaInsets().deviceBottom);
     },
     // tabBar是否遮挡内容区域
     get cover() {
+        const config = this.config;
         const array = ['extralight', 'light', 'dark'];
-        return isIOS && array.indexOf(config.blurEffect) >= 0;
+        return config && array.indexOf(config.blurEffect) >= 0;
     },
     setStyle({ mask }) {
         tabBar.setMask({
