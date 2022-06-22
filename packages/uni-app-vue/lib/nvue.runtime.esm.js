@@ -8148,6 +8148,12 @@ function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
     }
 }
 const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function formatEventName(name) {
+    if (name === 'on-post-message') {
+        return 'onPostMessage';
+    }
+    return name;
+}
 function parseName(name) {
     let options;
     if (optionsModifierRE.test(name)) {
@@ -8158,7 +8164,8 @@ function parseName(name) {
             options[m[0].toLowerCase()] = true;
         }
     }
-    return [hyphenate(name.slice(2)), options];
+    name = name.slice(2);
+    return [formatEventName(hyphenate(name)), options];
 }
 function createInvoker(initialValue, instance) {
     const invoker = (e) => {
