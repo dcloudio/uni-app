@@ -1,6 +1,10 @@
 import { defineAsyncApi } from '../../helpers/api'
 
-interface OnPushCidCallback {
+interface OnPushEnabledCallback {
+  type: 'enabled'
+}
+
+interface OnPushClientIdCallback {
   type: 'clientId'
   cid: string
   errMsg?: string
@@ -23,6 +27,8 @@ interface OnPushClickCallback {
 
 let cid: string | undefined
 let cidErrMsg: string | undefined
+let enabled: boolean | undefined
+
 function normalizePushMessage(message: unknown) {
   try {
     return JSON.parse(message as string) as Record<string, any>
@@ -35,12 +41,15 @@ function normalizePushMessage(message: unknown) {
  */
 export function invokePushCallback(
   args:
-    | OnPushCidCallback
+    | OnPushEnabledCallback
+    | OnPushClientIdCallback
     | OnPushLineStateCallback
     | OnPushMsgCallback
     | OnPushClickCallback
 ) {
-  if (args.type === 'clientId') {
+  if (args.type === 'enabled') {
+    enabled = true
+  } else if (args.type === 'clientId') {
     cid = args.cid
     cidErrMsg = args.errMsg
     invokeGetPushCidCallbacks(cid, args.errMsg)
@@ -74,16 +83,23 @@ const API_GET_PUSH_CLIENT_ID = 'getPushClientId'
 export const getPushClientId = defineAsyncApi(
   API_GET_PUSH_CLIENT_ID,
   (_, { resolve, reject }) => {
-    getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
-      if (cid) {
-        resolve({ cid })
-      } else {
-        reject(errMsg)
+    Promise.resolve().then(() => {
+      if (typeof enabled === 'undefined') {
+        enabled = false
+        cid = ''
+        cidErrMsg = 'unipush is not enabled'
+      }
+      getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
+        if (cid) {
+          resolve({ cid })
+        } else {
+          reject(errMsg)
+        }
+      })
+      if (typeof cid !== 'undefined') {
+        invokeGetPushCidCallbacks(cid, cidErrMsg)
       }
     })
-    if (typeof cid !== 'undefined') {
-      Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg))
-    }
   }
 )
 

@@ -4,6 +4,11 @@ import GtPush from '../lib/gtpush-min'
 //   GtPush.setDebugMode(true)
 // }
 
+// @ts-expect-error
+uni.invokePushCallback({
+  type: 'enabled',
+})
+
 const appid = process.env.UNI_APP_ID!
 if (!appid) {
   Promise.resolve().then(() => {
