@@ -1720,6 +1720,7 @@ function getApiCallbacks (params) {
 
 let cid;
 let cidErrMsg;
+let enabled;
 
 function normalizePushMessage (message) {
   try {
@@ -1731,7 +1732,9 @@ function normalizePushMessage (message) {
 function invokePushCallback (
   args
 ) {
-  if (args.type === 'clientId') {
+  if (args.type === 'enabled') {
+    enabled = true;
+  } else if (args.type === 'clientId') {
     cid = args.cid;
     cidErrMsg = args.errMsg;
     invokeGetPushCidCallbacks(cid, args.errMsg);
@@ -1761,7 +1764,7 @@ function invokeGetPushCidCallbacks (cid, errMsg) {
   getPushCidCallbacks.length = 0;
 }
 
-function getPushClientid (args) {
+function getPushClientId (args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -1773,25 +1776,32 @@ function getPushClientid (args) {
   const hasSuccess = isFn(success);
   const hasFail = isFn(fail);
   const hasComplete = isFn(complete);
-  getPushCidCallbacks.push((cid, errMsg) => {
-    let res;
-    if (cid) {
-      res = {
-        errMsg: 'getPushClientid:ok',
-        cid
-      };
-      hasSuccess && success(res);
-    } else {
-      res = {
-        errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
-      };
-      hasFail && fail(res);
+  Promise.resolve().then(() => {
+    if (typeof enabled === 'undefined') {
+      enabled = false;
+      cid = '';
+      cidErrMsg = 'unipush is not enabled';
     }
-    hasComplete && complete(res);
+    getPushCidCallbacks.push((cid, errMsg) => {
+      let res;
+      if (cid) {
+        res = {
+          errMsg: 'getPushClientId:ok',
+          cid
+        };
+        hasSuccess && success(res);
+      } else {
+        res = {
+          errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '')
+        };
+        hasFail && fail(res);
+      }
+      hasComplete && complete(res);
+    });
+    if (typeof cid !== 'undefined') {
+      invokeGetPushCidCallbacks(cid, cidErrMsg);
+    }
   });
-  if (typeof cid !== 'undefined') {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-  }
 }
 
 const onPushMessageCallbacks = [];
@@ -1909,7 +1919,7 @@ var api = /*#__PURE__*/Object.freeze({
   setStorageSync: setStorageSync,
   getStorageSync: getStorageSync,
   removeStorageSync: removeStorageSync,
-  getPushClientid: getPushClientid,
+  getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   invokePushCallback: invokePushCallback

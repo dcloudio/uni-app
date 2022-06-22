@@ -1015,6 +1015,10 @@
         "/core/service/api/plugin/push.js",
         []
     ],
+    "getPushClientId": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
     "onPushMessage": [
         "/core/service/api/plugin/push.js",
         []
