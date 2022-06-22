@@ -7,8 +7,6 @@ import {
   OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
 
-const isIOS = plus.os.name === 'iOS'
-
 let config: UniApp.TabBarOptions
 
 /**
@@ -210,7 +208,7 @@ export default {
   // tabBar是否遮挡内容区域
   get cover() {
     const array = ['extralight', 'light', 'dark']
-    return isIOS && array.indexOf(config.blurEffect as string) >= 0
+    return array.indexOf(config.blurEffect as string) >= 0
   },
   setStyle({ mask }: { mask: string }) {
     tabBar.setMask({
