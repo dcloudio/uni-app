@@ -94,7 +94,11 @@ export const getProvider = defineAsyncApi<API_TYPE_GET_PROVIDER>(
                   if (Object.hasOwnProperty.call(provider, key)) {
                     const item = provider[key as keyof Service]
                     if (!isFunction(item) && typeof item !== 'undefined') {
-                      ;(returnProvider as any)[key] = item
+                      const _key =
+                        key === 'nativeClient' || key === 'serviceReady'
+                          ? 'isAppExist'
+                          : key
+                      ;(returnProvider as any)[_key] = item
                     }
                   }
                 }
