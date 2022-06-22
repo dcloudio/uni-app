@@ -9733,6 +9733,14 @@ function patchEvent(el, rawName, prevValue, nextValue) {
 
 var optionsModifierRE = /(?:Once|Passive|Capture)$/;
 
+function formatEventName(name) {
+  if (name === 'on-post-message') {
+    return 'onPostMessage';
+  }
+
+  return name;
+}
+
 function parseName(name) {
   var options;
 
@@ -9746,7 +9754,8 @@ function parseName(name) {
     }
   }
 
-  return [hyphenate(name.slice(2)), options];
+  name = name.slice(2);
+  return [formatEventName(hyphenate(name)), options];
 }
 
 function createInvoker(initialValue, instance) {
