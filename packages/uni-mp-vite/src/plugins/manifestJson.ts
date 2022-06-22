@@ -24,11 +24,12 @@ function findUserProjectConfigFile(inputDir: string, config: string[]) {
 export function uniManifestJsonPlugin(
   options: UniMiniProgramPluginOptions
 ): Plugin {
-  let projectJson: Record<string, any>
-  let userProjectFilename: string | undefined
   return defineUniManifestJsonPlugin((opts) => {
     const inputDir = process.env.UNI_INPUT_DIR
     const platform = process.env.UNI_PLATFORM
+    let projectJson: Record<string, any>
+    let userProjectFilename: string | undefined
+    let projectSource: string
     if (options.project) {
       userProjectFilename = findUserProjectConfigFile(
         inputDir,
@@ -56,11 +57,11 @@ export function uniManifestJsonPlugin(
           } else {
             const template = options.project.source
             if (hasOwn(template, 'appid')) {
-              let projectname = path.basename(inputDir)
-              if (projectname === 'src') {
-                projectname = path.basename(path.dirname(inputDir))
+              let projectName = path.basename(inputDir)
+              if (projectName === 'src') {
+                projectName = path.basename(path.dirname(inputDir))
               }
-              template.projectname = projectname
+              template.projectname = projectName
               // TODO condition
               if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
                 if (!template.setting) {
@@ -87,15 +88,19 @@ export function uniManifestJsonPlugin(
       generateBundle() {
         if (projectJson && options.project) {
           const { filename, normalize } = options.project
-          this.emitFile({
-            fileName: filename,
-            type: 'asset',
-            source: JSON.stringify(
-              normalize ? normalize(projectJson) : projectJson,
-              null,
-              2
-            ),
-          })
+          const source = JSON.stringify(
+            normalize ? normalize(projectJson) : projectJson,
+            null,
+            2
+          )
+          if (projectSource !== source) {
+            projectSource = source
+            this.emitFile({
+              fileName: filename,
+              type: 'asset',
+              source,
+            })
+          }
         }
       },
     }
