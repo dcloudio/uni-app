@@ -1,3 +1,4 @@
+import { customizeEvent } from '@dcloudio/uni-shared'
 import {
   ExpressionNode,
   DirectiveNode,
@@ -46,7 +47,13 @@ export function createTransformOn(
     }
     const value = res.props[0].value as ExpressionNode
     res.props[0].value = createCustomEventExpr()
-    addEventOpts(arg.content, value, node)
+    addEventOpts(
+      node.tagType === ElementTypes.COMPONENT
+        ? customizeEvent(arg.content)
+        : arg.content,
+      value,
+      node
+    )
     return res
   }
 }

@@ -22,10 +22,10 @@ describe('mp-baidu: transform v-on', () => {
     }),
       test(`multi custom event`, () => {
         assert(
-          `<custom @unmount="unmount" @custom-mount="mount();created();"/>`,
-          `<custom bindunmount="__e" bindcustomMount="__e" u-i="2a9ec0b0-0" eO="{{a}}"/>`,
+          `<custom @unmount="unmount" @update:modelValue="changeHandle" @custom-mount="mount();created();"/>`,
+          `<custom bindunmount="__e" bindupdateModelValue="__e" bindcustomMount="__e" u-i="2a9ec0b0-0" eO="{{a}}"/>`,
           `(_ctx, _cache) => {
-  return { a: { 'custom-mount': _o($event => { _ctx.mount(); _ctx.created(); }), 'unmount': _o(_ctx.unmount) } }
+  return { a: { 'updateModelValue': _o(_ctx.changeHandle), 'customMount': _o($event => { _ctx.mount(); _ctx.created(); }), 'unmount': _o(_ctx.unmount) } }
 }`
         )
       })
