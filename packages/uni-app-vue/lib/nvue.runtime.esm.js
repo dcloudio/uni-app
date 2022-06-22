@@ -5173,7 +5173,9 @@ function baseCreateRenderer(options, createHydrationFns) {
             if (props) {
                 for (const key in props) {
                     if (key !== 'value' && !isReservedProp(key)) {
-                        hostPatchProp(el, key, null, props[key], isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+                        hostPatchProp(el, key, null, props[key], isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren, 
+                        // fixed by xxxxxx
+                        vnode.hostInstance);
                     }
                 }
                 /**
@@ -5187,7 +5189,9 @@ function baseCreateRenderer(options, createHydrationFns) {
                  */
                 if ('value' in props) {
                     // fixed by xxxxxx
-                    hostPatchProp(el, 'value', null, props.value, false, [], parentComponent);
+                    hostPatchProp(el, 'value', null, props.value, false, [], parentComponent, null, undefined, 
+                    // fixed by xxxxxx
+                    vnode.hostInstance);
                 }
                 if ((vnodeHook = props.onVnodeBeforeMount)) {
                     invokeVNodeHook(vnodeHook, parentComponent, vnode);
@@ -5309,14 +5313,18 @@ function baseCreateRenderer(options, createHydrationFns) {
                 if (patchFlag & 2 /* CLASS */) {
                     if (oldProps.class !== newProps.class) {
                         // fixed by xxxxxx
-                        hostPatchProp(el, 'class', null, newProps.class, isSVG, [], parentComponent);
+                        hostPatchProp(el, 'class', null, newProps.class, isSVG, [], parentComponent, null, undefined, 
+                        // fixed by xxxxxx
+                        n2.hostInstance);
                     }
                 }
                 // style
                 // this flag is matched when the element has dynamic style bindings
                 if (patchFlag & 4 /* STYLE */) {
                     // fixed by xxxxxx
-                    hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG, [], parentComponent);
+                    hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG, [], parentComponent, null, undefined, 
+                    // fixed by xxxxxx
+                    n2.hostInstance);
                 }
                 // props
                 // This flag is matched when the element has dynamic prop/attr bindings
@@ -5336,7 +5344,9 @@ function baseCreateRenderer(options, createHydrationFns) {
                             key === 'value' ||
                             (hostForcePatchProp && hostForcePatchProp(el, key)) // fixed by xxxxxx
                         ) {
-                            hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
+                            hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren, 
+                            // fixed by xxxxxx
+                            n2.hostInstance);
                         }
                     }
                 }
@@ -5397,19 +5407,25 @@ function baseCreateRenderer(options, createHydrationFns) {
                 if ((next !== prev && key !== 'value') ||
                     (hostForcePatchProp && hostForcePatchProp(el, key)) // fixed by xxxxxx
                 ) {
-                    hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+                    hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren, 
+                    // fixed by xxxxxx
+                    vnode.hostInstance);
                 }
             }
             if (oldProps !== EMPTY_OBJ) {
                 for (const key in oldProps) {
                     if (!isReservedProp(key) && !(key in newProps)) {
-                        hostPatchProp(el, key, oldProps[key], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+                        hostPatchProp(el, key, oldProps[key], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren, 
+                        // fixed by xxxxxx
+                        vnode.hostInstance);
                     }
                 }
             }
             if ('value' in newProps) {
                 // fixed by xxxxxx
-                hostPatchProp(el, 'value', oldProps.value, newProps.value, false, [], parentComponent);
+                hostPatchProp(el, 'value', oldProps.value, newProps.value, false, [], parentComponent, null, undefined, 
+                // fixed by xxxxxx
+                vnode.hostInstance);
             }
         }
     };
@@ -6705,7 +6721,9 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
         patchFlag,
         dynamicProps,
         dynamicChildren: null,
-        appContext: null
+        appContext: null,
+        // fixed by xxxxxx
+        hostInstance: currentRenderingInstance
     };
     if (needFullChildrenNormalization) {
         normalizeChildren(vnode, children);
@@ -6861,6 +6879,8 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
         dynamicProps: vnode.dynamicProps,
         dynamicChildren: vnode.dynamicChildren,
         appContext: vnode.appContext,
+        // fixed by xxxxxx
+        hostInstance: vnode.hostInstance,
         dirs: vnode.dirs,
         transition: vnode.transition,
         // These should technically only be non-null on mounted VNodes. However,
@@ -8242,9 +8262,9 @@ function patchStyle(el, prev, next) {
 }
 
 const vModelTags = ['u-input', 'u-textarea'];
-const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
+const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren, hostInstance) => {
     if (key === 'class') {
-        patchClass(el, prevValue, nextValue, parentComponent);
+        patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
     }
     else if (key === 'style') {
         patchStyle(el, prevValue, nextValue);
