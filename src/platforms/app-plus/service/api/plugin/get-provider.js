@@ -4,7 +4,7 @@ import {
 import { isFn, isPlainObject } from 'uni-shared'
 
 const providers = {
-  oauth(callback) {
+  oauth (callback) {
     plus.oauth.getServices(services => {
       const provider = []
       services.forEach(({
@@ -17,7 +17,7 @@ const providers = {
       callback(err)
     })
   },
-  share(callback) {
+  share (callback) {
     plus.share.getServices(services => {
       const provider = []
       services.forEach(({
@@ -30,7 +30,7 @@ const providers = {
       callback(err)
     })
   },
-  payment(callback) {
+  payment (callback) {
     plus.payment.getChannels(services => {
       const provider = []
       services.forEach(({
@@ -43,7 +43,7 @@ const providers = {
       callback(err)
     })
   },
-  push(callback) {
+  push (callback) {
     if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
       const clientInfo = plus.push.getClientInfo()
       callback(null, [clientInfo.id], [clientInfo])
@@ -53,7 +53,7 @@ const providers = {
   }
 }
 
-export function getProvider({
+export function getProvider ({
   service
 }, callbackId) {
   if (providers[service]) {
