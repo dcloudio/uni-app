@@ -339,6 +339,9 @@ module.exports = function () {
     resolve: {
       extensions: ['.js', '.nvue', '.vue', '.json'],
       alias: {
+        '@/pages.json': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') + '?' + JSON.stringify({
+          type: 'origin-pages-json'
+        }),
         '@': process.env.UNI_INPUT_DIR,
         'uni-polyfill': require.resolve('@dcloudio/uni-cli-shared/lib/uni-polyfill.js'),
         'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
