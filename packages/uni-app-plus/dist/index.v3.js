@@ -6208,7 +6208,6 @@ var serviceContext = (function () {
   }
 
   const TABBAR_HEIGHT = 50;
-  const isIOS$1 = plus.os.name === 'iOS';
   let config;
 
   /**
@@ -6331,6 +6330,7 @@ var serviceContext = (function () {
       });
     },
     indexOf (page) {
+      const config = this.config;
       const itemLength = config && config.list && config.list.length;
       if (itemLength) {
         for (let i = 0; i < itemLength; i++) {
@@ -6371,16 +6371,21 @@ var serviceContext = (function () {
         }
       });
     },
+    get config () {
+      return config || __uniConfig.tabBar
+    },
     get visible () {
       return visible
     },
     get height () {
+      const config = this.config;
       return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + plus.navigator.getSafeAreaInsets().deviceBottom
     },
     // tabBar是否遮挡内容区域
     get cover () {
+      const config = this.config;
       const array = ['extralight', 'light', 'dark'];
-      return isIOS$1 && array.indexOf(config.blurEffect) >= 0
+      return config && array.indexOf(config.blurEffect) >= 0
     },
     setStyle ({ mask }) {
       tabBar.setMask({
