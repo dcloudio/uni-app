@@ -103,6 +103,10 @@ var GtPush = /*@__PURE__*/getDefaultExportFromCjs(gtpushMin);
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
 // }
+// @ts-expect-error
+uni.invokePushCallback({
+    type: 'enabled',
+});
 const appid = process.env.UNI_APP_ID;
 if (!appid) {
     Promise.resolve().then(() => {
