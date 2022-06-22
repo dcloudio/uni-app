@@ -16440,7 +16440,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider, services);
+            callback(null, provider);
         }, (err) => {
             err = err;
             callback(err);
@@ -16453,7 +16453,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider, services);
+            callback(null, provider);
         }, (err) => {
             callback(err);
         });
@@ -16464,15 +16464,14 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider, services);
+            callback(null, provider);
         }, (err) => {
             callback(err);
         });
     },
     push(callback) {
         if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-            const clientInfo = plus.push.getClientInfo();
-            callback(null, [clientInfo.id], [clientInfo]);
+            callback(null, [plus.push.getClientInfo().id]);
         }
         else {
             callback(null, []);
@@ -16481,29 +16480,14 @@ const providers = {
 };
 const getProvider = defineAsyncApi(API_GET_PROVIDER, ({ service }, { resolve, reject }) => {
     if (providers[service]) {
-        providers[service]((err, provider = [], providers = []) => {
+        providers[service]((err, provider) => {
             if (err) {
                 reject(err.message);
             }
             else {
                 resolve({
                     service,
-                    // 5+ PlusShareShareService['id'] 类型错误
                     provider: provider,
-                    providers: providers.map((provider) => {
-                        const returnProvider = {};
-                        if (isPlainObject(provider)) {
-                            for (const key in provider) {
-                                if (Object.hasOwnProperty.call(provider, key)) {
-                                    const item = provider[key];
-                                    if (!isFunction(item) && typeof item !== 'undefined') {
-                                        returnProvider[key] = item;
-                                    }
-                                }
-                            }
-                        }
-                        return returnProvider;
-                    }),
                 });
             }
         });
