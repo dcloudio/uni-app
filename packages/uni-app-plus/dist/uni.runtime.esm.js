@@ -13153,6 +13153,7 @@ var tabBarInstance = {
             });
     },
     indexOf(page) {
+        const config = this.config;
         const itemLength = config && config.list && config.list.length;
         if (itemLength) {
             for (let i = 0; i < itemLength; i++) {
@@ -13192,17 +13193,22 @@ var tabBarInstance = {
                 }
             });
     },
+    get config() {
+        return config || __uniConfig.tabBar;
+    },
     get visible() {
         return visible;
     },
     get height() {
+        const config = this.config;
         return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
             plus.navigator.getSafeAreaInsets().deviceBottom);
     },
     // tabBar是否遮挡内容区域
     get cover() {
+        const config = this.config;
         const array = ['extralight', 'light', 'dark'];
-        return array.indexOf(config.blurEffect) >= 0;
+        return config && array.indexOf(config.blurEffect) >= 0;
     },
     setStyle({ mask }) {
         tabBar.setMask({
