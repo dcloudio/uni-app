@@ -96,6 +96,23 @@ function initUniCloudEnv() {
     catch (e) { }
 }
 exports.default = () => [
+    (0, uni_cli_shared_1.defineUniMainJsPlugin)((opts) => {
+        return {
+            name: 'uni:cloud',
+            enforce: 'pre',
+            transform(code, id) {
+                if (!opts.filter(id)) {
+                    return;
+                }
+                if (uniCloudSpaces.length) {
+                    return {
+                        code: code + `;import '@dcloudio/uni-cloud';`,
+                        map: null,
+                    };
+                }
+            },
+        };
+    }),
     uniCloudPlugin(),
     (0, uni_cli_shared_1.uniViteInjectPlugin)('uni:cloud-inject', {
         exclude: [...uni_cli_shared_1.COMMON_EXCLUDE],
