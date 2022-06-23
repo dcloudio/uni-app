@@ -375,8 +375,9 @@ export default {
         this.$emit('boundsready')
       })
       maps.event.addListener(map, 'click', () => {
-        // TODO 编译器将 tap 转换为click
-        this.$trigger('click', {}, {})
+        // 编译器会保留 map 上的 tap 事件
+        this.$trigger('tap', {}, {})
+        // this.$trigger('click', {}, {})
       })
       maps.event.addListener(map, 'dragstart', () => {
         this.$trigger('regionchange', {}, {

@@ -87,24 +87,29 @@ module.exports = {
           events: eventsMap
         } = deprecated
         // const warnLogs = new Set()
-        normalizeEvent(el.events, eventsMap, filterModules)
-        normalizeEvent(el.nativeEvents, eventsMap, filterModules)
+        normalizeEvent(el, el.events, eventsMap, filterModules)
+        normalizeEvent(el, el.nativeEvents, eventsMap, filterModules)
       }
     }
   }]
 }
 
-function normalizeEvent (events, eventsMap, filterModules) {
+function normalizeEvent (el, events, eventsMap, filterModules) {
   if (!events) {
     return
   }
+  const isMap = el.tag === 'map' || el.tag === 'v-uni-map'
   Object.keys(events).forEach(name => {
     // 过时事件类型转换
     if (eventsMap[name]) {
-      events[eventsMap[name]] = events[name]
-      delete events[name]
-      // warnLogs.add(`警告：事件${name}已过时，推荐使用${eventsMap[name]}代替`)
-      name = eventsMap[name]
+      if (isMap && name === 'tap') {
+        // 地图组件有自己特定的 tap 事件，不做转换
+      } else {
+        events[eventsMap[name]] = events[name]
+        delete events[name]
+        // warnLogs.add(`警告：事件${name}已过时，推荐使用${eventsMap[name]}代替`)
+        name = eventsMap[name]
+      }
     }
 
     const handlers = events[name]
