@@ -178,6 +178,10 @@ describe('codegen', () => {
       '<div><slot name="one"></slot></div>',
       `with(this){return _c('div',{attrs:{"_i":0}},[_t("one",null,{"_i":1})],2)}`
     )
+    assertCodegen(
+      '<div><slot :name="one"></slot></div>',
+      `with(this){return _c('div',{attrs:{"_i":0}},[_t(_$g(1,'name'),null,{"_i":1})],2)}`
+    )
   })
 
   it('generate slot fallback content', () => {
