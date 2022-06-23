@@ -2,6 +2,7 @@ const {
   ID,
   C_IS,
   C_REF,
+  C_NAME,
   V_IF,
   V_FOR,
   V_ELSE_IF,
@@ -13,6 +14,12 @@ const parseTextExpr = require('./text-parser')
 function parseRef (el, genVar) {
   if (el.ref && isVar(el.ref)) {
     el.ref = genVar(C_REF, el.ref)
+  }
+}
+
+function parseSlotName (el, genVar) {
+  if (el.slotName && isVar(el.slotName)) {
+    el.slotName = genVar(C_NAME, el.slotName)
   }
 }
 
@@ -106,6 +113,7 @@ function parseText (el, parent, state) {
 module.exports = {
   parseIs,
   parseRef,
+  parseSlotName,
   parseIf,
   parseFor,
   parseText,

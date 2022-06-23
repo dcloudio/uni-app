@@ -18,6 +18,7 @@ const {
 const {
   parseIs,
   parseRef,
+  parseSlotName,
   parseIf,
   parseFor,
   parseText,
@@ -137,6 +138,7 @@ function transformNode (el, parent, state, isScopedSlot) {
 
   parseIs(el, genVar)
   parseRef(el, genVar)
+  parseSlotName(el, genVar)
   parseFor(el, createGenVar, isScopedSlot, checkAutoFill(el))
   parseKey(el, isScopedSlot)
 
