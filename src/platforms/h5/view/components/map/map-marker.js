@@ -110,7 +110,9 @@ export default {
         }
         if (this.idString) {
           this.$parent.$trigger('markertap', {}, {
-            markerId: Number(this.idString)
+            markerId: Number(this.idString),
+            latitude: typeof e.latLng.lat === 'function' ? e.latLng.lat() : e.latLng.lat,
+            longitude: typeof e.latLng.lat === 'function' ? e.latLng.lng() : e.latLng.lng
           })
         }
 
