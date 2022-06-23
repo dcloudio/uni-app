@@ -8,7 +8,7 @@ export const M = {
     '若要正式发布，请点击发行菜单或使用 cli 发布命令进行发布',
   'build.done': 'DONE  Build complete.',
   'dev.watching.start': '开始差量编译...',
-  'dev.watching.end': 'DONE  Build complete. Watching for changes...',
+  'dev.watching.end': 'DONE  Build complete in {duration}. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'stat.warn.appid':

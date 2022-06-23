@@ -27,8 +27,10 @@ export async function runDev(options: CliOptions & ServerOptions) {
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
+      let buildStartTime: number
       watcher.on('event', (event) => {
         if (event.code === 'BUNDLE_START') {
+          buildStartTime = new Date().valueOf()
           if (isFirstStart) {
             return (isFirstStart = false)
           }
@@ -39,7 +41,13 @@ export async function runDev(options: CliOptions & ServerOptions) {
             // 首次全量同步
             return (
               (isFirstEnd = false),
-              output('log', M['dev.watching.end']),
+              output(
+                'log',
+                M['dev.watching.end'].replace(
+                  '{duration}',
+                  new Date().valueOf() - buildStartTime + 'ms'
+                )
+              ),
               printStartupDuration(createLogger(options.logLevel), false)
             )
           }
@@ -60,7 +68,13 @@ export async function runDev(options: CliOptions & ServerOptions) {
               M['dev.watching.end.files'].replace('{files}', changedFiles)
             )
           }
-          return output('log', M['dev.watching.end'])
+          return output(
+            'log',
+            M['dev.watching.end'].replace(
+              '{duration}',
+              new Date().valueOf() - buildStartTime + 'ms'
+            )
+          )
         }
       })
     }
