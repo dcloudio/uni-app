@@ -281,6 +281,7 @@ function useMap(
     )
     maps.event.addListener(map, 'click', () => {
       // TODO 编译器将 tap 转换为 click
+      trigger('tap', {} as Event, {})
       trigger('click', {} as Event, {})
     })
     maps.event.addListener(map, 'dragstart', () => {
