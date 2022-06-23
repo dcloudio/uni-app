@@ -332,6 +332,8 @@ export default /*#__PURE__*/ defineSystemComponent({
           if (id) {
             trigger('markertap', {} as Event, {
               markerId: Number(id),
+              latitude: props.latitude,
+              longitude: props.longitude,
             })
           }
         })
