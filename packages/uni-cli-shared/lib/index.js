@@ -59,7 +59,8 @@ const {
   nvueHtmlPreprocessOptions,
   getPlatformGlobal,
   getPlatformStat,
-  getPlatformPush
+  getPlatformPush,
+  getPlatformUniCloud
 } = require('./platform')
 
 module.exports = {
@@ -110,5 +111,6 @@ module.exports = {
   nvueHtmlPreprocessOptions,
   getPlatformGlobal,
   getPlatformStat,
-  getPlatformPush
+  getPlatformPush,
+  getPlatformUniCloud
 }

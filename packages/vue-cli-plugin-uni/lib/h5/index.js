@@ -6,7 +6,8 @@ const {
   getMainEntry,
   getH5Options,
   getPlatformStat,
-  getPlatformPush
+  getPlatformPush,
+  getPlatformUniCloud
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -95,17 +96,15 @@ module.exports = {
 
     const statCode = getPlatformStat()
     const pushCode = getPlatformPush()
+    const uniCloudCode = getPlatformUniCloud()
     try {
       const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
       useBuiltIns = babelConfig.presets[0][1].useBuiltIns
     } catch (e) {}
 
-    let beforeCode = (useBuiltIns === 'entry' ? 'import \'@babel/polyfill\';' : '') +
+    const beforeCode = (useBuiltIns === 'entry' ? 'import \'@babel/polyfill\';' : '') +
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
-    if (JSON.parse(process.env.UNI_CLOUD_PROVIDER || '[]').length) {
-      const uniCloudLibPath = '@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js'
-      beforeCode += `import '${uniCloudLibPath}';`
-    }
+
     return {
       resolve: {
         extensions: ['.nvue'],
@@ -121,7 +120,7 @@ module.exports = {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode +
+                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode + uniCloudCode +
                 getGlobalUsingComponentsCode()
               ]
             }

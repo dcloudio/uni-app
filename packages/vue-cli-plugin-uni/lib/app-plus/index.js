@@ -4,7 +4,8 @@ const webpack = require('webpack')
 const {
   getMainEntry,
   getPlatformStat,
-  getPlatformPush
+  getPlatformPush,
+  getPlatformUniCloud
 } = require('@dcloudio/uni-cli-shared')
 
 const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
@@ -62,12 +63,9 @@ const v3 = {
 
     const statCode = getPlatformStat()
     const pushCode = getPlatformPush()
+    const uniCloudCode = getPlatformUniCloud()
 
-    let beforeCode = 'import \'uni-pages\';'
-    if (JSON.parse(process.env.UNI_CLOUD_PROVIDER || '[]').length) {
-      const uniCloudLibPath = '@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js'
-      beforeCode += `import '${uniCloudLibPath}';`
-    }
+    const beforeCode = 'import \'uni-pages\';'
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
     }
@@ -159,7 +157,7 @@ const v3 = {
             options: {
               compiler: vueLoader.compiler,
               before: [
-                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode +
+                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode + uniCloudCode +
                   getGlobalUsingComponentsCode()
               ]
             }

@@ -175,6 +175,13 @@ module.exports = {
     }
     return ''
   },
+  getPlatformUniCloud () {
+    if (JSON.parse(process.env.UNI_CLOUD_PROVIDER || '[]').length) {
+      const uniCloudLibPath = '@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js'
+      return `import '${uniCloudLibPath}';`
+    }
+    return ''
+  },
   getBabelParserOptions () {
     return {
       sourceType: 'module',
