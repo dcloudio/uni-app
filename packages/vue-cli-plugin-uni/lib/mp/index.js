@@ -8,7 +8,8 @@ const {
   getPlatformExts,
   getPlatformCssnano,
   getPlatformStat,
-  getPlatformPush
+  getPlatformPush,
+  getPlatformUniCloud
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
@@ -168,6 +169,7 @@ module.exports = {
 
     const statCode = getPlatformStat()
     const pushCode = getPlatformPush()
+    const uniCloudCode = getPlatformUniCloud()
 
     let beforeCode = 'import \'uni-pages\';'
 
@@ -192,11 +194,6 @@ module.exports = {
       beforeCode += `
 // @ts-ignore
 ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
-    }
-
-    if (JSON.parse(process.env.UNI_CLOUD_PROVIDER || '[]').length) {
-      const uniCloudLibPath = '@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js'
-      beforeCode += `import '${uniCloudLibPath}';`
     }
 
     const alias = { // 仅 mp-weixin
@@ -244,7 +241,7 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode
+                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode + uniCloudCode
               ]
             }
           }, {
