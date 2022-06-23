@@ -95,7 +95,7 @@ export default {
       })
       this.$parent._markers[this.idString] = marker
       this.updateMarker(props)
-      maps.event.addListener(marker, 'click', () => {
+      maps.event.addListener(marker, 'click', (e) => {
         const callout = marker.callout
         if (callout) {
           const div = callout.div
@@ -113,6 +113,9 @@ export default {
             markerId: Number(this.idString)
           })
         }
+
+        const event = e.event || e.domEvent
+        event.stopPropagation()
       })
     },
     updateMarker (option) {
