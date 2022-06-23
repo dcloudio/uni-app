@@ -221,8 +221,7 @@ export default {
         deep: true
       })
       map.onclick = (e) => {
-        // 编译器会保留 map 上的 tap 事件
-        this.$trigger('tap', {}, e)
+        this.$trigger('click', {}, e)
       }
       map.onstatuschanged = (e) => {
         this.$trigger('regionchange', {}, {})
