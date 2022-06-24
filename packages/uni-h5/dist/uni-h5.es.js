@@ -18735,7 +18735,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { 
   if (!canBack) {
     return reject(ON_BACK_PRESS);
   }
-  getApp().$router.go(args && args.delta ? -args.delta : -1);
+  getApp().$router.go(-args.delta);
   return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
 function navigate({ type, url, events }, __id__) {

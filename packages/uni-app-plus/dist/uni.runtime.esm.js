@@ -18085,12 +18085,9 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     else if (isDirectPage(page)) {
         reLaunchEntryPage();
     }
-    else if (args) {
+    else {
         const { delta, animationType, animationDuration } = args;
         back(delta, animationType, animationDuration);
-    }
-    else {
-        back();
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
@@ -18108,7 +18105,7 @@ function quit() {
         plus.runtime.quit();
     }
 }
-function back(delta = 1, animationType, animationDuration) {
+function back(delta, animationType, animationDuration) {
     const pages = getCurrentPages();
     const len = pages.length;
     const currentPage = pages[len - 1];
