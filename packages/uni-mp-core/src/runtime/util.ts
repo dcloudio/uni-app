@@ -142,7 +142,13 @@ export function handleEvent(
   // 快手小程序的 __l 方法也会走此处逻辑，但没有 __ins__
   if (__ins__) {
     // 自定义事件，通过 triggerEvent 传递 __ins__
-    methodName = resolveMethodName(type, __ins__.properties[EVENT_OPTS] || {})
+    let eventObj = {}
+    try {
+      // https://github.com/dcloudio/uni-app/issues/3647
+      // 通过字符串序列化解决百度小程序修改对象不触发组件properties变化的Bug
+      eventObj = JSON.parse(__ins__.properties[EVENT_OPTS])
+    } catch (e) {}
+    methodName = resolveMethodName(type, eventObj)
   } else if (dataset && dataset[EVENT_OPTS]) {
     // 快手小程序 input 等内置组件的 input 事件也会走此逻辑，所以从 dataset 中读取
     methodName = resolveMethodName(type, dataset[EVENT_OPTS])

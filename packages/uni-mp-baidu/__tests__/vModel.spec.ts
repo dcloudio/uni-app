@@ -6,7 +6,7 @@ describe('mp-baidu: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp s-if="{{b}}" u-i="2a9ec0b0-0" eO="{{a}}" bindupdateModelValue="__e" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _p({ modelValue: _ctx.model }) }
+  return { a: _j({ 'updateModelValue': _o($event => _ctx.model = $event) }), b: _p({ modelValue: _ctx.model }) }
 }`
     )
   })
@@ -15,7 +15,7 @@ describe('mp-baidu: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp s-if="{{b}}" u-i="2a9ec0b0-0" eO="{{a}}" bindupdateModelValue="__e" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _p({ modelValue: _ctx.model }) }
+  return { a: _j({ 'updateModelValue': _o($event => _ctx.model = $event) }), b: _p({ modelValue: _ctx.model }) }
 }`,
       {
         cacheHandlers: true,
