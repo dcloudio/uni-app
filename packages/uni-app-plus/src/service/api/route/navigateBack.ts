@@ -40,11 +40,9 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       quit()
     } else if (isDirectPage(page)) {
       reLaunchEntryPage()
-    } else if (args) {
-      const { delta, animationType, animationDuration } = args
-      back(delta!, animationType, animationDuration)
     } else {
-      back()
+      const { delta, animationType, animationDuration } = args!
+      back(delta!, animationType, animationDuration)
     }
     return resolve()
   },
@@ -67,7 +65,7 @@ function quit() {
 }
 
 function back(
-  delta: number = 1,
+  delta: number,
   animationType?: string,
   animationDuration?: number
 ) {

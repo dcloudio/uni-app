@@ -33,18 +33,9 @@ const ANIMATION_OUT = [
 ]
 
 type AnimationToType = Parameters<typeof uni.navigateTo>[0]['animationType']
-type AnimationBackType =
-  | 'auto'
-  | 'none'
-  | 'slide-out-right'
-  | 'slide-out-left'
-  | 'slide-out-top'
-  | 'slide-out-bottom'
-  | 'fade-out'
-  | 'zoom-in'
-  | 'zoom-fade-in'
-  | 'pop-out'
-
+type AnimationBackType = Required<
+  Parameters<typeof uni.navigateBack>
+>[0]['animationType']
 export const navigatorProps = {
   hoverClass: {
     type: String,
