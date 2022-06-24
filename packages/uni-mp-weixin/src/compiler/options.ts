@@ -53,6 +53,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
       },
     ],
     // iOS 平台需要延迟
+    input: [{ name: 'bind', arg: ['type'] }],
     textarea: [{ name: 'on', arg: ['input'] }],
   },
   component: {
