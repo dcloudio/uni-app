@@ -35,8 +35,12 @@ export interface UtsKotlinOptions {
   output: OutputKotlinOptions
 }
 
-export type InputSwiftOptions = UtsParseOptions
-export type OutputSwiftOptions = {}
+export type InputSwiftOptions = UtsParseOptions & {
+  root: string
+  filename: string
+}
+
+export type OutputSwiftOptions = OutputKotlinOptions
 
 export interface UtsSwiftOptions {
   input: InputSwiftOptions

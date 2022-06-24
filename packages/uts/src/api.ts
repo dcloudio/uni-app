@@ -7,17 +7,16 @@ const bindings = !!bindingsOverride
   ? require(resolve(bindingsOverride))
   : require('./binding').default
 
-export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
-  const result = Promise.resolve({})
+function resolveOptions(options: UtsKotlinOptions | UtsSwiftOptions) {
   const { input, output } = options
   if (!input?.root) {
-    return result
+    return
   }
   if (!input?.filename) {
-    return result
+    return
   }
   if (!output?.outDir) {
-    return result
+    return
   }
   if (output.sourceMap === true) {
     output.sourceMap = output.outDir
@@ -33,15 +32,26 @@ export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
   input.filename = normalizePath(input.filename)
   output.outDir = normalizePath(output.outDir)
   output.sourceMap = normalizePath(output.sourceMap)
+  return options
+}
 
+export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
+  const kotlinOptions = resolveOptions(options)
+  if (!kotlinOptions) {
+    return Promise.resolve({})
+  }
   return bindings
-    .toKotlin(toBuffer(options))
+    .toKotlin(toBuffer(kotlinOptions))
     .then((res: string) => JSON.parse(res))
 }
 
 export function toSwift(options: UtsSwiftOptions): Promise<UtsResult> {
+  const swiftOptions = resolveOptions(options)
+  if (!swiftOptions) {
+    return Promise.resolve({})
+  }
   return bindings
-    .toSwift(toBuffer(options))
+    .toSwift(toBuffer(swiftOptions))
     .then((res: string) => JSON.parse(res))
 }
 

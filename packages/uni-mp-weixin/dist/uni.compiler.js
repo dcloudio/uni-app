@@ -179,6 +179,7 @@ const options = {
                         'ext.json',
                         'custom-tab-bar',
                         'functional-pages',
+                        'project.private.config.json',
                         projectConfigFilename,
                     ],
                     get dest() {

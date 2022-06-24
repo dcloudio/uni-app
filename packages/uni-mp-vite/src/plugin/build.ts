@@ -34,7 +34,7 @@ export function buildOptions(): UserConfig['build'] {
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
   if (fs.existsSync(outputDir)) {
-    emptyDir(outputDir)
+    emptyDir(outputDir, ['project.config.json', 'project.private.config.json'])
   }
   return createBuildOptions(inputDir, platform)
 }
