@@ -15756,7 +15756,9 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           }
           if (id2) {
             trigger("markertap", {}, {
-              markerId: Number(id2)
+              markerId: Number(id2),
+              latitude: props3.latitude,
+              longitude: props3.longitude
             });
           }
         });
@@ -18733,7 +18735,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { 
   if (!canBack) {
     return reject(ON_BACK_PRESS);
   }
-  getApp().$router.go(-args.delta);
+  getApp().$router.go(args && args.delta ? -args.delta : -1);
   return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
 function navigate({ type, url, events }, __id__) {
@@ -20766,6 +20768,7 @@ function useMap(props2, rootRef, emit2) {
       emitBoundsReady();
     });
     maps2.event.addListener(map2, "click", () => {
+      trigger("tap", {}, {});
       trigger("click", {}, {});
     });
     maps2.event.addListener(map2, "dragstart", () => {

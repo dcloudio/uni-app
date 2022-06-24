@@ -8112,7 +8112,9 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           }
           if (id) {
             trigger("markertap", {}, {
-              markerId: Number(id)
+              markerId: Number(id),
+              latitude: props3.latitude,
+              longitude: props3.longitude
             });
           }
         });
