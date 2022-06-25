@@ -2022,7 +2022,17 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     }
     else {
         // default: 'pre'
-        scheduler = () => queuePreFlushCb(job);
+        scheduler = () => {
+            if (!instance || instance.isMounted) {
+                queuePreFlushCb(job);
+            }
+            else {
+                // with 'pre' option, the first call must happen before
+                // the component is mounted so it is called synchronously.
+                // fixed by xxxxxx https://github.com/dcloudio/uni-app/issues/3648
+                job();
+            }
+        };
     }
     const effect = new ReactiveEffect(getter, scheduler);
     if ((process.env.NODE_ENV !== 'production')) {
