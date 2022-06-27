@@ -78,10 +78,12 @@ interface StacktraceyOptions {
 export function stacktracey(
   stacktrace: string,
   opts: StacktraceyOptions
-): Promise<string | asTableResult> {
-  const parseStack: Array<Promise<any>> = []
+): Promise<asTableResult> {
+  let cancel: boolean = false
 
   const stack = opts.preset.parseStacktrace(stacktrace)
+
+  let parseStack = Promise.resolve()
 
   stack.items.forEach((item, index) => {
     const fn = (
@@ -153,11 +155,20 @@ export function stacktracey(
         return Promise.resolve()
       }
     }
-    parseStack.push(fn(item, index))
+    parseStack = parseStack.then(() => {
+      // TODO cancel
+      // @ts-ignore
+      if (cancel) return Promise.resolve()
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          fn(item, index).then(resolve)
+        }, 0)
+      })
+    })
   })
 
-  return new Promise((resolve, reject) => {
-    Promise.all(parseStack)
+  const _promise = new Promise((resolve, reject) => {
+    parseStack
       .then(() => {
         const parseError = opts.preset.asTableStacktrace({
           stack,
@@ -173,7 +184,9 @@ export function stacktracey(
       .catch(() => {
         resolve(stacktrace)
       })
-  })
+  }) as Promise<asTableResult>
+
+  return _promise
 }
 
 function isThirdParty(relativePath: string) {

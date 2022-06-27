@@ -124,7 +124,7 @@ class StackTracey {
       : undefined
     result = externalDomainMatch ? externalDomainMatch[3] : result
 
-    // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
+    if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
 
     return [
       nixSlashes(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
@@ -138,7 +138,8 @@ class StackTracey {
       return externalDomain !== 'usr'
     }
     return (
-      externalDomain ||
+      // 由于 hello-uniapp web 端报错携带 hellouniapp.dcloud.net.cn
+      // externalDomain ||
       relativePath[0] === '~' || // webpack-specific heuristic
       relativePath[0] === '/' || // external source
       relativePath.indexOf('@dcloudio') !== -1 ||

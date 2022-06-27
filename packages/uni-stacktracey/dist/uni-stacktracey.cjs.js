@@ -91,7 +91,8 @@ class StackTracey {
             ? externalDomainMatch[2]
             : undefined;
         result = externalDomainMatch ? externalDomainMatch[3] : result;
-        // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
+        if (!isBrowser)
+            result = nodeRequire('path').relative(pathRoot, result);
         return [
             nixSlashes$1(result).replace(/^.*\:\/\/?\/?/, ''),
             externalDomain,
@@ -103,8 +104,10 @@ class StackTracey {
                 return false;
             return externalDomain !== 'usr';
         }
-        return (externalDomain ||
-            relativePath[0] === '~' || // webpack-specific heuristic
+        return (
+        // 由于 hello-uniapp web 端报错携带 hellouniapp.dcloud.net.cn
+        // externalDomain ||
+        relativePath[0] === '~' || // webpack-specific heuristic
             relativePath[0] === '/' || // external source
             relativePath.indexOf('@dcloudio') !== -1 ||
             relativePath.indexOf('webpack/bootstrap') === 0);
@@ -200,8 +203,8 @@ var StackTracey$1 = StackTracey;
 const nixSlashes = (x) => x.replace(/\\/g, '/');
 const sourcemapCatch = {};
 function stacktracey(stacktrace, opts) {
-    const parseStack = [];
     const stack = opts.preset.parseStacktrace(stacktrace);
+    let parseStack = Promise.resolve();
     stack.items.forEach((item, index) => {
         const fn = (item, index) => {
             const { line = 0, column = 0, file, fileName, fileRelative } = item;
@@ -252,10 +255,16 @@ function stacktracey(stacktrace, opts) {
                 return Promise.resolve();
             }
         };
-        parseStack.push(fn(item, index));
+        parseStack = parseStack.then(() => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    fn(item, index).then(resolve);
+                }, 0);
+            });
+        });
     });
-    return new Promise((resolve, reject) => {
-        Promise.all(parseStack)
+    const _promise = new Promise((resolve, reject) => {
+        parseStack
             .then(() => {
             const parseError = opts.preset.asTableStacktrace({
                 stack,
@@ -272,6 +281,7 @@ function stacktracey(stacktrace, opts) {
             resolve(stacktrace);
         });
     });
+    return _promise;
 }
 function isThirdParty(relativePath) {
     return relativePath.indexOf('@dcloudio') !== -1;
