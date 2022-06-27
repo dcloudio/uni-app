@@ -18296,7 +18296,8 @@ class UniPageNode extends UniNode {
     }
     restore() {
         this.clear();
-        this.push(this.createAction);
+        // createAction 需要单独发送，因为 view 层需要现根据 create 来设置 page 的 ready
+        this.setup();
         if (this.scrollAction) {
             this.push(this.scrollAction);
         }
@@ -19498,10 +19499,13 @@ function subscribeWebviewReady(_data, pageId) {
         // preloadWebview 不存在，重新加载一下
         setPreloadWebview(plus.webview.getWebviewById(pageId));
     }
-    if (preloadWebview$1.id !== pageId) {
-        return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
+    // 仅当 preloadWebview 未 loaded 时处理 （iOS崩溃也会继续走到这里，此时 preloadWebview 通常是 loaded 的，且两者 id 肯定不一样）
+    if (!preloadWebview$1.loaded) {
+        if (preloadWebview$1.id !== pageId) {
+            return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
+        }
+        preloadWebview$1.loaded = true; // 标记已 ready
     }
-    preloadWebview$1.loaded = true; // 标记已 ready
     UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
     isLaunchWebview && onLaunchWebviewReady();
 }
