@@ -270,7 +270,7 @@ function traverseArrayExpression (arrayExprNodes, state) {
   }, [])
 }
 
-function genSlotNode (slotName, slotNode, fallbackNodes, state) {
+function genSlotNode (slotName, slotNode, fallbackNodes, state, isStaticSlotName = true) {
   if (!fallbackNodes || t.isNullLiteral(fallbackNodes)) {
     return slotNode
   }
@@ -282,7 +282,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
   return [{
     type: 'block',
     attr: {
-      [prefix + 'if']: '{{$slots.' + slotName + '}}'
+      [prefix + 'if']: isStaticSlotName ? '{{$slots.' + slotName + '}}' : '{{$slots[' + slotName.replace(/^{{/, '').replace(/}}$/, '') + ']}}'
     },
     children: [].concat(slotNode)
   }, {
@@ -297,12 +297,9 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
 }
 
 function traverseRenderSlot (callExprNode, state) {
-  if (!t.isStringLiteral(callExprNode.arguments[0])) {
-    state.errors.add(uniI18n.__('templateCompiler.notSupportDynamicSlotName', { 0: 'v-slot' }))
-    return
-  }
-
-  const slotName = callExprNode.arguments[0].value
+  const slotNameNode = callExprNode.arguments[0]
+  const isStaticSlotName = t.isStringLiteral(slotNameNode)
+  const slotName = isStaticSlotName ? slotNameNode.value : genCode(slotNameNode)
 
   let deleteSlotName = false // 标记是否组件 slot 手动指定了 name="default"
   if (state.options.scopedSlotsCompiler !== 'augmented' && callExprNode.arguments.length > 2) { // 作用域插槽
@@ -312,6 +309,10 @@ function traverseRenderSlot (callExprNode, state) {
     })
     deleteSlotName = props.SLOT_DEFAULT && Object.keys(props).length === 1
     if (!deleteSlotName) {
+      if (!isStaticSlotName) {
+        state.errors.add(uniI18n.__('templateCompiler.notSupportDynamicSlotName', { 0: 'v-slot' }))
+        return
+      }
       delete props.SLOT_DEFAULT
       return genSlotNode(
         slotName,
@@ -334,10 +335,11 @@ function traverseRenderSlot (callExprNode, state) {
     delete node.attr.name
   }
 
-  return genSlotNode(slotName, node, callExprNode.arguments[1], state)
+  return genSlotNode(slotName, node, callExprNode.arguments[1], state, isStaticSlotName)
 }
 
 function traverseResolveScopedSlots (callExprNode, state) {
+  const options = state.options
   function single (children, slotName, ignore) {
     if (Array.isArray(children) && children.length === 1) {
       const child = children[0]
@@ -371,14 +373,14 @@ function traverseResolveScopedSlots (callExprNode, state) {
     const slotName = keyProperty.value.value
     const returnExprNodes = fnProperty.value.body.body[0].argument
     const parentNode = callExprNode.$node
-    if (slotNode.scopedSlotsCompiler !== 'augmented' && !proxyProperty) {
-      const resourcePath = state.options.resourcePath
+    if (options.scopedSlotsCompiler !== 'augmented' && slotNode.scopedSlotsCompiler !== 'augmented' && !proxyProperty) {
+      const resourcePath = options.resourcePath
       const ownerName = path.basename(resourcePath, path.extname(resourcePath))
 
       const parentName = parentNode.type
 
       const paramExprNode = fnProperty.value.params[0]
-      return state.options.platform.resolveScopedSlots(
+      return options.platform.resolveScopedSlots(
         slotName, {
           genCode,
           generate,
@@ -398,7 +400,7 @@ function traverseResolveScopedSlots (callExprNode, state) {
         state
       )
     }
-    if (state.options.scopedSlotsCompiler === 'auto' && slotNode.scopedSlotsCompiler === 'augmented') {
+    if (options.scopedSlotsCompiler === 'auto' && slotNode.scopedSlotsCompiler === 'augmented') {
       parentNode.attr['scoped-slots-compiler'] = 'augmented'
     }
     const children = normalizeChildren(traverseExpr(returnExprNodes, state))
