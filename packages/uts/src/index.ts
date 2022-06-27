@@ -2,13 +2,13 @@ import path from 'path'
 import fs from 'fs-extra'
 import glob from 'fast-glob'
 
-import { watch } from 'chokidar'
+import chokidar from 'chokidar'
 
-import { toKotlin } from './api'
+import { toKotlin, toSwift } from './api'
 import type {
-  InputKotlinOptions,
-  OutputKotlinOptions,
-  UtsKotlinOptions,
+  UtsInputOptions,
+  UtsOptions,
+  UtsOutputOptions,
   UtsResult,
 } from './types'
 import { printStartup, printUtsResult, printUtsResults, timeEnd } from './utils'
@@ -20,9 +20,14 @@ export enum UtsTarget {
 
 export type UtsMode = 'dev' | 'build'
 
-const targetDirs = {
+const UtsTargetDirs = {
   [UtsTarget.KOTLIN]: 'android',
   [UtsTarget.SWIFT]: 'ios',
+} as const
+
+export const UtsTargetExtNames = {
+  [UtsTarget.KOTLIN]: 'kt',
+  [UtsTarget.SWIFT]: 'swift',
 } as const
 export interface ToOptions {
   /**
@@ -52,11 +57,9 @@ export interface ToOptions {
      * sourceMap 中是否包含源码
      */
     inlineSourcesContent?: boolean
+    extname: string
   }
 }
-
-interface ToKotlinOptions extends ToOptions {}
-interface ToSwiftOptions extends ToOptions {}
 
 function resolveDefaultOutputDir(mode: UtsMode, inputDir: string) {
   return path.resolve(inputDir, '../dist/' + mode)
@@ -64,8 +67,8 @@ function resolveDefaultOutputDir(mode: UtsMode, inputDir: string) {
 function parseOptions(
   mode: UtsMode,
   target: UtsTarget,
-  opts: Partial<ToKotlinOptions>
-) {
+  opts: Partial<ToOptions>
+): ToOptions {
   const { input } = opts
   if (!input?.dir) {
     throw new Error(`input.dir is required.`)
@@ -73,12 +76,8 @@ function parseOptions(
   if (!fs.existsSync(input.dir)) {
     throw new Error(`${input} is not found.`)
   }
-  let inputSrcDir: string = ''
-  if (target === UtsTarget.KOTLIN) {
-    inputSrcDir = resolveKotlinSrcDir(input.dir)
-  } else {
-    throw new Error(`${target} is unsupported.`)
-  }
+
+  const inputSrcDir: string = resolveSrcDir(target, input.dir)
 
   if (!fs.existsSync(inputSrcDir)) {
     throw new Error(`${inputSrcDir} is not found.`)
@@ -88,77 +87,90 @@ function parseOptions(
     opts.output = {
       dir: '',
       sourceMap: '',
+      extname: UtsTargetExtNames[target],
     }
   }
   if (!opts.output.dir) {
     opts.output.dir = resolveDefaultOutputDir(mode, input.dir)
   }
   opts.silent = opts.silent === true
-  return opts as ToKotlinOptions
+  return opts as ToOptions
 }
 
 const EXTNAME = '.uts'
 
-function resolveKotlinSrcDir(dir: string) {
-  return path.join(dir, targetDirs[UtsTarget.KOTLIN] + '/src')
+function resolveSrcDir(target: UtsTarget, dir: string) {
+  return path.join(dir, UtsTargetDirs[target] + '/src')
 }
 
-function initInputKotlinOptions(root: string): InputKotlinOptions {
+function initInputOptions(root: string): UtsInputOptions {
   return {
     root,
     filename: '',
   }
 }
 
-function initOutputKotlinOptions(
+function initOutputOptions(
+  target: UtsTarget,
   outDir: string,
   sourceMap: string | boolean,
   inlineSourcesContent: boolean
-): OutputKotlinOptions {
+): UtsOutputOptions {
   return {
     outDir,
     sourceMap,
     inlineSourcesContent,
+    extname: UtsTargetExtNames[target],
   }
 }
-function watchSwift(_: ToSwiftOptions) {}
-function buildSwift(_: ToSwiftOptions) {}
-function watchKotlin({
-  silent,
-  input: { dir: inputDir, extname },
-  output: { dir: outputDir, sourceMap, inlineSourcesContent },
-}: ToKotlinOptions) {
+
+function watch(
+  target: UtsTarget,
+  {
+    silent,
+    input: { dir: inputDir, extname },
+    output: { dir: outputDir, sourceMap, inlineSourcesContent },
+  }: ToOptions
+) {
   fs.emptyDirSync(outputDir)
 
   extname = extname || EXTNAME
 
-  const inputSrcDir = resolveKotlinSrcDir(inputDir)
-  const outputSrcDir = resolveKotlinSrcDir(outputDir)
+  const inputSrcDir = resolveSrcDir(UtsTarget.KOTLIN, inputDir)
+  const outputSrcDir = resolveSrcDir(UtsTarget.KOTLIN, outputDir)
 
-  const input = initInputKotlinOptions(inputSrcDir)
-  const output = initOutputKotlinOptions(
+  const input = initInputOptions(inputSrcDir)
+  const output = initOutputOptions(
+    target,
     outputSrcDir,
     sourceMap,
     !!inlineSourcesContent
   )
 
-  watch('**/*' + extname, {
-    cwd: inputSrcDir,
-    ignored: ['**/*.d' + extname],
-  })
+  chokidar
+    .watch('**/*' + extname, {
+      cwd: inputSrcDir,
+      ignored: ['**/*.d' + extname],
+    })
     .on('add', (filename) => {
-      buildKotlinFile(path.resolve(inputSrcDir, filename), input, output).then(
-        (res) => {
-          !silent && printUtsResult(res)
-        }
-      )
+      buildFile(
+        target,
+        path.resolve(inputSrcDir, filename),
+        input,
+        output
+      ).then((res) => {
+        !silent && printUtsResult(res)
+      })
     })
     .on('change', (filename) => {
-      buildKotlinFile(path.resolve(inputSrcDir, filename), input, output).then(
-        (res) => {
-          !silent && printUtsResult(res)
-        }
-      )
+      buildFile(
+        target,
+        path.resolve(inputSrcDir, filename),
+        input,
+        output
+      ).then((res) => {
+        !silent && printUtsResult(res)
+      })
     })
     .on('unlink', (filename) => {
       try {
@@ -169,20 +181,23 @@ function watchKotlin({
       copyAssets(UtsTarget.KOTLIN, inputDir, outputDir, extname!)
     })
 }
-function buildKotlin({
-  silent,
-  input: { dir: inputDir, extname },
-  output: { dir: outputDir, sourceMap, inlineSourcesContent },
-}: ToKotlinOptions) {
-  fs.emptyDirSync(outputDir)
 
+function build(
+  target: UtsTarget,
+  {
+    silent,
+    input: { dir: inputDir, extname },
+    output: { dir: outputDir, sourceMap, inlineSourcesContent },
+  }: ToOptions
+) {
   extname = extname || EXTNAME
 
-  const inputSrcDir = resolveKotlinSrcDir(inputDir)
-  const outputSrcDir = resolveKotlinSrcDir(outputDir)
-
-  const input = initInputKotlinOptions(inputSrcDir)
-  const output = initOutputKotlinOptions(
+  const inputSrcDir = resolveSrcDir(target, inputDir)
+  const outputSrcDir = resolveSrcDir(target, outputDir)
+  // fs.emptyDirSync(outputSrcDir)
+  const input = initInputOptions(inputSrcDir)
+  const output = initOutputOptions(
+    target,
     outputSrcDir,
     sourceMap,
     !!inlineSourcesContent
@@ -196,7 +211,7 @@ function buildKotlin({
 
   return Promise.all(
     files.map((filename) =>
-      buildKotlinFile(filename, input, output).catch((error) => {
+      buildFile(target, filename, input, output).catch((error) => {
         return {
           error,
         } as UtsResult
@@ -222,8 +237,8 @@ function copyAssets(
 ) {
   inputDir = path.resolve(inputDir)
   outputDir = path.resolve(outputDir)
-  const kotlinRootDir = path.join(inputDir, targetDirs[UtsTarget.KOTLIN])
-  const swiftRootDir = path.join(inputDir, targetDirs[UtsTarget.SWIFT])
+  const kotlinRootDir = path.join(inputDir, UtsTargetDirs[UtsTarget.KOTLIN])
+  const swiftRootDir = path.join(inputDir, UtsTargetDirs[UtsTarget.SWIFT])
   return fs.copy(inputDir, outputDir, {
     filter(src) {
       if (target === UtsTarget.KOTLIN) {
@@ -235,17 +250,24 @@ function copyAssets(
           return false
         }
       }
+      if (path.basename(src).startsWith('.')) {
+        return false
+      }
+      if (fs.lstatSync(src).isDirectory()) {
+        return false
+      }
       return ![extname, '.ts'].includes(path.extname(src))
     },
   })
 }
 
-function buildKotlinFile(
+function buildFile(
+  target: UtsTarget,
   filename: string,
-  input: InputKotlinOptions,
-  output: OutputKotlinOptions
+  input: UtsInputOptions,
+  output: UtsOutputOptions
 ) {
-  const toKotlinOptions: UtsKotlinOptions = {
+  const toOptions: UtsOptions = {
     input: {
       ...input,
       filename,
@@ -256,7 +278,9 @@ function buildKotlinFile(
     },
   }
   const start = process.hrtime()
-  return toKotlin(toKotlinOptions).then((res) => {
+  return (
+    target === UtsTarget.KOTLIN ? toKotlin(toOptions) : toSwift(toOptions)
+  ).then((res) => {
     res.time = timeEnd(start)
     return res
   })
@@ -265,21 +289,11 @@ function buildKotlinFile(
 export function runDev(target: UtsTarget, opts: ToOptions) {
   opts = parseOptions('dev', target, opts)
   !opts.silent && printStartup(target, 'development')
-  switch (target) {
-    case UtsTarget.KOTLIN:
-      return watchKotlin(opts)
-    case UtsTarget.SWIFT:
-      return watchSwift(opts)
-  }
+  watch(target, opts)
 }
 
 export function runBuild(target: UtsTarget, opts: ToOptions) {
   opts = parseOptions('build', target, opts)
   !opts.silent && printStartup(target, 'production')
-  switch (target) {
-    case UtsTarget.KOTLIN:
-      return buildKotlin(opts)
-    case UtsTarget.SWIFT:
-      return buildSwift(opts)
-  }
+  build(target, opts)
 }

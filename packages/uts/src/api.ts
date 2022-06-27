@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import type { UtsKotlinOptions, UtsResult, UtsSwiftOptions } from './types'
+import type { UtsOptions, UtsResult } from './types'
 import { normalizePath } from './utils'
 
 const bindingsOverride = process.env['UTS_BINARY_PATH']
@@ -7,7 +7,7 @@ const bindings = !!bindingsOverride
   ? require(resolve(bindingsOverride))
   : require('./binding').default
 
-function resolveOptions(options: UtsKotlinOptions | UtsSwiftOptions) {
+function resolveOptions(options: UtsOptions) {
   const { input, output } = options
   if (!input?.root) {
     return
@@ -32,10 +32,11 @@ function resolveOptions(options: UtsKotlinOptions | UtsSwiftOptions) {
   input.filename = normalizePath(input.filename)
   output.outDir = normalizePath(output.outDir)
   output.sourceMap = normalizePath(output.sourceMap)
+
   return options
 }
 
-export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
+export function toKotlin(options: UtsOptions): Promise<UtsResult> {
   const kotlinOptions = resolveOptions(options)
   if (!kotlinOptions) {
     return Promise.resolve({})
@@ -45,7 +46,7 @@ export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
     .then((res: string) => JSON.parse(res))
 }
 
-export function toSwift(options: UtsSwiftOptions): Promise<UtsResult> {
+export function toSwift(options: UtsOptions): Promise<UtsResult> {
   const swiftOptions = resolveOptions(options)
   if (!swiftOptions) {
     return Promise.resolve({})
