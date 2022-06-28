@@ -185,6 +185,9 @@ export default {
     ySync (val) {
       this._setY(val)
     },
+    disabled () {
+      this.__handleTouchStart()
+    },
     scaleValue (val) {
       this.scaleValueSync = Number(val) || 0
     },
