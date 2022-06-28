@@ -9,7 +9,10 @@ runBuild(UtsTarget.KOTLIN, {
     extname: '.uts',
   },
   output: {
-    dir: path.resolve(projectDir, 'unpackage/nativeplugins/test-uniplugin'),
+    dir: path.resolve(
+      projectDir,
+      'unpackage/nativeplugins/test-uniplugin-android'
+    ),
     sourceMap: false,
     inlineSourcesContent: false,
   },
@@ -21,7 +24,7 @@ runBuild(UtsTarget.SWIFT, {
     extname: '.uts',
   },
   output: {
-    dir: path.resolve(projectDir, 'unpackage/nativeplugins/test-uniplugin'),
+    dir: path.resolve(projectDir, 'unpackage/nativeplugins/test-uniplugin-ios'),
     sourceMap: false,
     inlineSourcesContent: false,
   },

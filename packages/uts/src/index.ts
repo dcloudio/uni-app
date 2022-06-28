@@ -190,11 +190,11 @@ function build(
     output: { dir: outputDir, sourceMap, inlineSourcesContent },
   }: ToOptions
 ) {
+  fs.emptyDirSync(outputDir)
   extname = extname || EXTNAME
 
   const inputSrcDir = resolveSrcDir(target, inputDir)
   const outputSrcDir = resolveSrcDir(target, outputDir)
-  // fs.emptyDirSync(outputSrcDir)
   const input = initInputOptions(inputSrcDir)
   const output = initOutputOptions(
     target,
