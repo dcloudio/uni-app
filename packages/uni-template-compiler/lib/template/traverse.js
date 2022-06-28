@@ -340,19 +340,34 @@ function traverseRenderSlot (callExprNode, state) {
 
 function traverseResolveScopedSlots (callExprNode, state) {
   const options = state.options
-  function single (children, slotName, ignore) {
-    if (Array.isArray(children) && children.length === 1) {
-      const child = children[0]
-      if (!child.type) {
-        return
+  const vIfAttrName = options.platform.directive + 'if'
+  function single (node, slotName, ignore) {
+    let last = node
+    const vIfs = []
+    function find (children) {
+      if (Array.isArray(children) && children.length === 1) {
+        const child = children[0]
+        if (!child.type) {
+          return
+        }
+        last = child
+        if (child.attr && child.attr[vIfAttrName]) {
+          vIfs.push(child.attr[vIfAttrName])
+          delete child.attr[vIfAttrName]
+        }
+        if (ignore.includes(child.type) && !(child.attr && Object.keys(child.attr).length)) {
+          find(child.children, ignore)
+        }
       }
-      if (ignore.includes(child.type)) {
-        return single(child.children, slotName, ignore)
-      }
-      child.attr = child.attr || {}
-      child.attr.slot = slotName
-      return true
     }
+    find(node.children)
+    last.attr = last.attr || {}
+    last.attr.slot = slotName
+    if (vIfs.length) {
+      // 简易合并
+      last.attr[vIfAttrName] = vIfs.length > 1 ? `{{${vIfs.map(str => str.replace(/^\{\{(.+)\}\}$/, '($1)')).join('&&')}}}` : vIfs[0]
+    }
+    return last
   }
   return callExprNode.arguments[0].elements.map(slotNode => {
     let keyProperty = false
@@ -403,18 +418,11 @@ function traverseResolveScopedSlots (callExprNode, state) {
     if (options.scopedSlotsCompiler === 'auto' && slotNode.scopedSlotsCompiler === 'augmented') {
       parentNode.attr['scoped-slots-compiler'] = 'augmented'
     }
-    const children = normalizeChildren(traverseExpr(returnExprNodes, state))
     // 除百度、字节外其他小程序仅默认插槽可以支持多个节点
-    if (single(children, slotName, ['template', 'block'])) {
-      return children[0]
-    }
-    return {
+    return single({
       type: 'block',
-      attr: {
-        slot: slotName
-      },
-      children
-    }
+      children: normalizeChildren(traverseExpr(returnExprNodes, state))
+    }, slotName, ['template', 'block'])
   })
 }
 
