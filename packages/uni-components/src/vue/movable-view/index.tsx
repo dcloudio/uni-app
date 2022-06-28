@@ -234,6 +234,12 @@ function useMovableViewState(
     _setY(val)
   })
   watch(
+    () => props.disabled,
+    () => {
+      __handleTouchStart()
+    }
+  )
+  watch(
     () => props.scaleValue,
     (val) => {
       scaleValueSync.value = Number(val) || 0
