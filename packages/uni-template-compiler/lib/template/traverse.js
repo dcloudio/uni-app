@@ -341,9 +341,9 @@ function traverseRenderSlot (callExprNode, state) {
 function traverseResolveScopedSlots (callExprNode, state) {
   const options = state.options
   const vIfAttrName = options.platform.directive + 'if'
-  function single (node, slotName, ignore) {
+  function single (node, slotName, vIfCode, ignore) {
     let last = node
-    const vIfs = []
+    const vIfs = vIfCode ? [vIfCode] : []
     function find (children) {
       if (Array.isArray(children) && children.length === 1) {
         const child = children[0]
@@ -373,6 +373,12 @@ function traverseResolveScopedSlots (callExprNode, state) {
     let keyProperty = false
     let fnProperty = false
     let proxyProperty = false
+    let vIfCode
+    // TODO v-else
+    if (t.isConditionalExpression(slotNode)) {
+      vIfCode = genCode(slotNode.test)
+      slotNode = slotNode.consequent
+    }
     slotNode.properties.forEach(property => {
       switch (property.key.name) {
         case 'key':
@@ -422,7 +428,7 @@ function traverseResolveScopedSlots (callExprNode, state) {
     return single({
       type: 'block',
       children: normalizeChildren(traverseExpr(returnExprNodes, state))
-    }, slotName, ['template', 'block'])
+    }, slotName, vIfCode, ['template', 'block'])
   })
 }
 

@@ -274,6 +274,29 @@ describe('mp:compiler-extra', () => {
     )
   })
 
+  it('generate v-slot with v-if', () => {
+    assertCodegen(
+      '<custom-view><template v-if="show">hello</template></custom-view>',
+      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{show}}">hello</block></custom-view>'
+    )
+    assertCodegen(
+      '<custom-view><template v-if="show" #name>hello</template></custom-view>',
+      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'name\']}}"><view slot="name" wx:if="{{show}}">hello</view></custom-view>'
+    )
+    assertCodegen(
+      '<custom-view><template v-if="show" #name><text>hello</text></template></custom-view>',
+      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'name\']}}"><text slot="name" wx:if="{{show}}">hello</text></custom-view>'
+    )
+    assertCodegen(
+      '<custom-view><template v-if="show" #name><view>hello</view></template></custom-view>',
+      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'name\']}}"><view slot="name" wx:if="{{show}}">hello</view></custom-view>'
+    )
+    assertCodegen(
+      '<custom-view><template v-if="show" #name><view v-if="test1||test2">hello</view></template></custom-view>',
+      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'name\']}}"><view slot="name" wx:if="{{(show)&&(test1||test2)}}">hello</view></custom-view>'
+    )
+  })
+
   it('generate events inside v-for', () => {
     assertCodegen(
       '<view v-for="item in dataList" :key="item.id" @click="click1(item, 1);click2(item, 2);"/>',
