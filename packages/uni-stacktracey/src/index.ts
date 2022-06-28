@@ -197,13 +197,18 @@ function getConsumer(
   content: string
 ): Promise<BasicSourceMapConsumer | IndexedSourceMapConsumer> {
   return new Promise((resolve, reject) => {
-    if (SourceMapConsumer.with) {
-      SourceMapConsumer.with(content, null, (consumer) => {
+    try {
+      if (SourceMapConsumer.with) {
+        SourceMapConsumer.with(content, null, (consumer) => {
+          resolve(consumer)
+        })
+      } else {
+        // @ts-ignore
+        const consumer = SourceMapConsumer(content)
         resolve(consumer)
-      })
-    } else {
-      // @ts-ignore
-      resolve(SourceMapConsumer(content))
+      }
+    } catch (error) {
+      reject()
     }
   })
 }
@@ -218,8 +223,15 @@ function getSourceMapContent(sourcemapUrl: string) {
             uni.request({
               url: sourcemapUrl,
               success: (res) => {
-                sourcemapCatch[sourcemapUrl] = res.data as string
-                resolve(sourcemapCatch[sourcemapUrl])
+                if (res.statusCode === 200) {
+                  sourcemapCatch[sourcemapUrl] = res.data as string
+                  resolve(sourcemapCatch[sourcemapUrl])
+                } else {
+                  resolve((sourcemapCatch[sourcemapUrl] = ''))
+                }
+              },
+              fail() {
+                resolve((sourcemapCatch[sourcemapUrl] = ''))
               },
             })
           } else {
@@ -275,6 +287,7 @@ interface UniStracktraceyPresetOptions {
   base: string
   sourceRoot: string
   splitThirdParty?: boolean
+  uniPlatform?: string
 }
 
 function joinItem(item: string[]) {
@@ -287,7 +300,7 @@ function joinItem(item: string[]) {
 export function uniStracktraceyPreset(
   opts: UniStracktraceyPresetOptions
 ): StacktraceyPreset {
-  const { base, sourceRoot, splitThirdParty } = opts
+  const { base, sourceRoot, splitThirdParty, uniPlatform } = opts
 
   let stack: StackTracey
 
@@ -311,7 +324,7 @@ export function uniStracktraceyPreset(
       let baseAfter = ''
       if (stack.isMP) {
         if (fileRelative.indexOf('app-service.js') !== -1) {
-          baseAfter = (base.match(/\w$/) ? '/' : '') + 'weixin'
+          baseAfter = (base.match(/\w$/) ? '/' : '') + '__WEIXIN__'
           if (fileRelative === fileName) {
             baseAfter += '/__APP__'
           }
@@ -329,7 +342,7 @@ export function uniStracktraceyPreset(
       return Promise.resolve(getSourceMapContent(sourcemapUrl))
     },
     parseStacktrace(stacktrace) {
-      stack = new StackTracey(stacktrace)
+      stack = new StackTracey(stacktrace, uniPlatform)
       return stack
     },
     asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
@@ -365,6 +378,12 @@ export function uniStracktraceyPreset(
 
         return userError + '\n' + thirdParty
       } else {
+        if (splitThirdParty) {
+          return {
+            userError: errorName,
+            thirdParty: '',
+          }
+        }
         return errorName
       }
     },

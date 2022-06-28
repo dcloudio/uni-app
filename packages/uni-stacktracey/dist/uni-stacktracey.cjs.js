@@ -20,7 +20,7 @@ typeof window !== 'undefined' &&
 lastOf = (x) => x[x.length - 1], nixSlashes$1 = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes$1(process.cwd()) + '/';
 /*  ------------------------------------------------------------------------ */
 class StackTracey {
-    constructor(input, offset) {
+    constructor(input, uniPlatform, offset) {
         this.itemsHeader = [];
         this.isMP = false;
         const originalInput = input, isParseableSyntaxError = input && input instanceof SyntaxError && !isBrowser;
@@ -35,7 +35,7 @@ class StackTracey {
         }
         /*  new StackTracey (string)     */
         if (typeof input === 'string') {
-            this.isMP = input.indexOf('MiniProgramError') !== -1;
+            this.isMP = uniPlatform === 'mp-weixin';
             input = this.rawParse(input)
                 .slice(offset)
                 .map((x) => this.extractEntryMetadata(x));
@@ -86,13 +86,12 @@ class StackTracey {
         let result = fullPath;
         if (isBrowser)
             result = result.replace(pathRoot, '');
-        const externalDomainMatch = result.match(/^(http|https)\:\/\/?([^\/]+)\/(.*)/);
+        const externalDomainMatch = result.match(/^(http|https)\:\/\/?([^\/]+)\/{1,}(.*)/);
         const externalDomain = externalDomainMatch
             ? externalDomainMatch[2]
             : undefined;
         result = externalDomainMatch ? externalDomainMatch[3] : result;
-        if (!isBrowser)
-            result = nodeRequire('path').relative(pathRoot, result);
+        // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
         return [
             nixSlashes$1(result).replace(/^.*\:\/\/?\/?/, ''),
             externalDomain,
@@ -288,14 +287,20 @@ function isThirdParty(relativePath) {
 }
 function getConsumer(content) {
     return new Promise((resolve, reject) => {
-        if (sourceMap.SourceMapConsumer.with) {
-            sourceMap.SourceMapConsumer.with(content, null, (consumer) => {
+        try {
+            if (sourceMap.SourceMapConsumer.with) {
+                sourceMap.SourceMapConsumer.with(content, null, (consumer) => {
+                    resolve(consumer);
+                });
+            }
+            else {
+                // @ts-ignore
+                const consumer = sourceMap.SourceMapConsumer(content);
                 resolve(consumer);
-            });
+            }
         }
-        else {
-            // @ts-ignore
-            resolve(sourceMap.SourceMapConsumer(content));
+        catch (error) {
+            reject();
         }
     });
 }
@@ -308,8 +313,16 @@ function getSourceMapContent(sourcemapUrl) {
                         uni.request({
                             url: sourcemapUrl,
                             success: (res) => {
-                                sourcemapCatch[sourcemapUrl] = res.data;
-                                resolve(sourcemapCatch[sourcemapUrl]);
+                                if (res.statusCode === 200) {
+                                    sourcemapCatch[sourcemapUrl] = res.data;
+                                    resolve(sourcemapCatch[sourcemapUrl]);
+                                }
+                                else {
+                                    resolve((sourcemapCatch[sourcemapUrl] = ''));
+                                }
+                            },
+                            fail() {
+                                resolve((sourcemapCatch[sourcemapUrl] = ''));
                             },
                         });
                     }
@@ -350,7 +363,7 @@ function joinItem(item) {
     return `${a}${b}${c}`;
 }
 function uniStracktraceyPreset(opts) {
-    const { base, sourceRoot, splitThirdParty } = opts;
+    const { base, sourceRoot, splitThirdParty, uniPlatform } = opts;
     let stack;
     return {
         /**
@@ -373,7 +386,7 @@ function uniStracktraceyPreset(opts) {
             let baseAfter = '';
             if (stack.isMP) {
                 if (fileRelative.indexOf('app-service.js') !== -1) {
-                    baseAfter = (base.match(/\w$/) ? '/' : '') + 'weixin';
+                    baseAfter = (base.match(/\w$/) ? '/' : '') + '__WEIXIN__';
                     if (fileRelative === fileName) {
                         baseAfter += '/__APP__';
                     }
@@ -392,7 +405,7 @@ function uniStracktraceyPreset(opts) {
             return Promise.resolve(getSourceMapContent(sourcemapUrl));
         },
         parseStacktrace(stacktrace) {
-            stack = new StackTracey$1(stacktrace);
+            stack = new StackTracey$1(stacktrace, uniPlatform);
             return stack;
         },
         asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
@@ -424,6 +437,12 @@ function uniStracktraceyPreset(opts) {
                 return userError + '\n' + thirdParty;
             }
             else {
+                if (splitThirdParty) {
+                    return {
+                        userError: errorName,
+                        thirdParty: '',
+                    };
+                }
                 return errorName;
             }
         },

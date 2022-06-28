@@ -33,7 +33,11 @@ class StackTracey {
   itemsHeader: string[] = []
   isMP: boolean = false
 
-  constructor(input: string | Error | any, offset?: number) {
+  constructor(
+    input: string | Error | any,
+    uniPlatform?: string,
+    offset?: number
+  ) {
     const originalInput = input,
       isParseableSyntaxError =
         input && input instanceof SyntaxError && !isBrowser
@@ -54,7 +58,7 @@ class StackTracey {
     /*  new StackTracey (string)     */
 
     if (typeof input === 'string') {
-      this.isMP = input.indexOf('MiniProgramError') !== -1
+      this.isMP = uniPlatform === 'mp-weixin'
       input = (this.rawParse(input) as EntryMetadata[])
         .slice(offset)
         .map((x: EntryMetadata) => this.extractEntryMetadata(x))
@@ -117,14 +121,14 @@ class StackTracey {
     if (isBrowser) result = result.replace(pathRoot, '')
 
     const externalDomainMatch = result.match(
-      /^(http|https)\:\/\/?([^\/]+)\/(.*)/
+      /^(http|https)\:\/\/?([^\/]+)\/{1,}(.*)/
     )
     const externalDomain = externalDomainMatch
       ? externalDomainMatch[2]
       : undefined
     result = externalDomainMatch ? externalDomainMatch[3] : result
 
-    if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
+    // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
 
     return [
       nixSlashes(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
