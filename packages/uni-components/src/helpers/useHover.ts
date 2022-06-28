@@ -49,6 +49,7 @@ export function useHover(props: UseHoverOptions) {
   }
 
   function onMousedown(evt: MouseEvent) {
+    evt.preventDefault()
     handleHover(evt)
     window.addEventListener('mouseup', handlePCHoverEnd)
   }
