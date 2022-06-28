@@ -130,6 +130,8 @@ export default {
             touchstart: this._hoverTouchStart,
             touchend: this._hoverTouchEnd,
             touchcancel: this._hoverTouchCancel,
+            mousedown: this._hoverMousedown,
+            mouseup: this._hoverMouseup,
             click: this._onClick
           }
         },
