@@ -25,20 +25,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       const { hoverClass, url } = props
       const hasHoverClass = props.hoverClass && props.hoverClass !== 'none'
+
       return (
-        <a class="navigator-wrap" href={url} onClick={onEventPrevent}>
-          <uni-navigator
-            class={hasHoverClass && hovering.value ? hoverClass : ''}
-            {...(hasHoverClass && binding)}
-            {...(vm ? vm.attrs : {})}
-            {...{
-              [__scopeId]: '',
-            }}
-            onClick={onClick}
-          >
-            {slots.default && slots.default()}
-          </uni-navigator>
-        </a>
+        <uni-navigator
+          class={hasHoverClass && hovering.value ? hoverClass : ''}
+          {...(hasHoverClass && binding)}
+          {...(vm ? vm.attrs : {})}
+          {...{
+            [__scopeId]: '',
+          }}
+          onClick={onClick}
+        >
+          <a class="navigator-wrap" href={url} onClick={onEventPrevent}></a>
+          {slots.default && slots.default()}
+        </uni-navigator>
       )
     }
   },
