@@ -45,16 +45,19 @@ export function useHover(props: UseHoverOptions) {
     if (evt.touches.length > 1) {
       return
     }
-    handleHover(evt)
+    handleHoverStart(evt)
   }
 
   function onMousedown(evt: MouseEvent) {
-    evt.preventDefault()
-    handleHover(evt)
+    if (hoverTouch) {
+      return
+    }
+
+    handleHoverStart(evt)
     window.addEventListener('mouseup', handlePCHoverEnd)
   }
 
-  function handleHover(evt: TouchEvent | MouseEvent) {
+  function handleHoverStart(evt: TouchEvent | MouseEvent) {
     // TODO detect scrolling
     if ((evt as any)._hoverPropagationStopped) {
       return
@@ -80,6 +83,10 @@ export function useHover(props: UseHoverOptions) {
   }
 
   function onMouseup() {
+    if (!hoverTouch) {
+      return
+    }
+
     handlePCHoverEnd()
   }
 

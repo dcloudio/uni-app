@@ -27,7 +27,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const hasHoverClass = props.hoverClass && props.hoverClass !== 'none'
 
       return (
-        <a class="navigator-wrap" href={url} onClick={onEventPrevent}>
+        <a
+          class="navigator-wrap"
+          href={url}
+          onClick={onEventPrevent}
+          onMousedown={onEventPrevent}
+        >
           <uni-navigator
             class={hasHoverClass && hovering.value ? hoverClass : ''}
             {...(hasHoverClass && binding)}
