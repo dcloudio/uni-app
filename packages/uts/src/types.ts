@@ -1,16 +1,8 @@
 export interface UtsParserConfig {
   /**
-   * Defaults to `false`.
-   */
-  tsx?: boolean
-  /**
-   * Defaults to `false`.
-   */
-  decorators?: boolean
-  /**
    * Defaults to `false`
    */
-  dynamicImport?: boolean
+  allowImportWithoutSpecifiers?: boolean
 }
 
 export type UtsParseOptions = UtsParserConfig & {

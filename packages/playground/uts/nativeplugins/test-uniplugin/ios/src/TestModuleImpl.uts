@@ -1,3 +1,4 @@
+import "Foundation";
 //
 //  TestModuleImpl.swift
 //  libWeex

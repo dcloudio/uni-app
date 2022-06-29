@@ -103,7 +103,7 @@ function resolveSrcDir(target: UtsTarget, dir: string) {
   return path.join(dir, UtsTargetDirs[target] + '/src')
 }
 
-function initInputOptions(root: string): UtsInputOptions {
+function initInputOptions(_: UtsTarget, root: string): UtsInputOptions {
   return {
     root,
     filename: '',
@@ -136,10 +136,10 @@ function watch(
 
   extname = extname || EXTNAME
 
-  const inputSrcDir = resolveSrcDir(UtsTarget.KOTLIN, inputDir)
-  const outputSrcDir = resolveSrcDir(UtsTarget.KOTLIN, outputDir)
+  const inputSrcDir = resolveSrcDir(target, inputDir)
+  const outputSrcDir = resolveSrcDir(target, outputDir)
 
-  const input = initInputOptions(inputSrcDir)
+  const input = initInputOptions(target, inputSrcDir)
   const output = initOutputOptions(
     target,
     outputSrcDir,
@@ -195,7 +195,7 @@ function build(
 
   const inputSrcDir = resolveSrcDir(target, inputDir)
   const outputSrcDir = resolveSrcDir(target, outputDir)
-  const input = initInputOptions(inputSrcDir)
+  const input = initInputOptions(target, inputSrcDir)
   const output = initOutputOptions(
     target,
     outputSrcDir,
