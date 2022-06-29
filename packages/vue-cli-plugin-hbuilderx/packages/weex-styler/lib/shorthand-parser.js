@@ -16,15 +16,34 @@ function clearImportant (value) {
 }
 
 function transition (declaration) {
-  var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/
+  var CHUNK_REGEXP = /^([a-z-_]\S*)(\s+[\d.]+m?s)?(\s+[a-z-_]\S*)?(\s+[\d.]+m?s)?/
   var { value, important } = clearImportant(declaration.value)
-  var match = value.match(CHUNK_REGEXP)
-  var result = []
+  var values = value.replace(/(\d)\s*,\s*/g, '$1#').split(',')
   var position = declaration.position
-  match[1] && result.push(generateDeclaration('transition-property', match[1], important, position))
-  match[2] && result.push(generateDeclaration('transition-duration', match[2], important, position))
-  match[3] && result.push(generateDeclaration('transition-timing-function', match[3], important, position))
-  match[4] && result.push(generateDeclaration('transition-delay', match[4], important, position))
+  var result = []
+  var map = {
+    'transition-property': [],
+    'transition-duration': [],
+    'transition-timing-function': [],
+    'transition-delay': []
+  }
+  if (values.length) {
+    for (var i1 = 0; i1 < values.length; i1++) {
+      var match = values[i1].trim().match(CHUNK_REGEXP)
+      if (!match) {
+        return []
+      }
+      map['transition-property'].push(match[1] || 'all')
+      map['transition-duration'].push((match[2] || '0s').trim())
+      map['transition-timing-function'].push((match[3] || 'ease').trim().replace(/#/g, ', '))
+      map['transition-delay'].push((match[4] || '0s').trim())
+    }
+    for (var key in map) {
+      var value = map[key]
+      value = value.find(item => item !== value[0]) ? value.join(', ') : value[0]
+      result.push(generateDeclaration(key, value, important, position))
+    }
+  }
   return result
 }
 

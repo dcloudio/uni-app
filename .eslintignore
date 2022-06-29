@@ -20,6 +20,7 @@ packages/*/packages/mpvue-page-factory
 packages/*/packages/mpvue-template-compiler
 packages/*/packages/postcss-normalize-whitespace
 packages/*/packages/uni-app
+packages/*/packages/uni-push
 packages/*/packages/uni-stat
 packages/*/packages/uni-cloud
 packages/*/packages/vue-loader
@@ -35,3 +36,7 @@ node_modules
 automator.js
 uni.automator.js
 uni-polyfill.js
+packages/uni-cli-shared/components/ad-fullscreen-video.vue
+packages/uni-cli-shared/components/ad-interactive.vue
+packages/uni-cli-shared/components/ad-interstitial.vue
+packages/uni-cli-shared/components/ad-rewarded-video.vue

@@ -431,6 +431,18 @@
         [],
         true
     ],
+    "getWindowInfo": [
+        "/platforms/h5/service/api/device/get-window-info.js",
+        []
+    ],
+    "getDeviceInfo": [
+        "/platforms/h5/service/api/device/get-system-info.js",
+        []
+    ],
+    "getAppBaseInfo": [
+        "/platforms/h5/service/api/device/get-system-info.js",
+        []
+    ],
     "canIUse": [
         "/core/service/api/base/can-i-use.js",
         [
@@ -998,5 +1010,17 @@
                 "preloadPage"
             ]
         ]
+    ],
+    "invokePushCallback": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "onPushMessage": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "offPushMessage": [
+        "/core/service/api/plugin/push.js",
+        []
     ]
 }

@@ -63,7 +63,7 @@ export function getTargetDataset (target) {
       $parent = $parent.$parent
     }
   } else {
-    dataset = target.dataset || {}
+    dataset = Object.assign({}, target.dataset, target.__uniDataset)
   }
   return normalizeDataset(dataset)
 }

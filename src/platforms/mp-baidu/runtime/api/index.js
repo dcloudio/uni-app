@@ -1,5 +1,11 @@
 import createMediaQueryObserver from '../../../mp-weixin/helpers/create-media-query-observer'
-
+export {
+  getPushClientid,
+  onPushMessage,
+  offPushMessage,
+  invokePushCallback
+}
+  from 'uni-core/service/api/plugin/push'
 export function requestPayment (params) {
   let parseError = false
   if (typeof params.orderInfo === 'string') {
@@ -18,4 +24,6 @@ export function requestPayment (params) {
   }
 }
 
-export { createMediaQueryObserver }
+export {
+  createMediaQueryObserver
+}

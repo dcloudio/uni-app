@@ -16,15 +16,21 @@ import fr from './fr.json'
 import zhHans from './zh-Hans.json'
 import zhHant from './zh-Hant.json'
 
+export const LOCALE_ZH_HANS = 'zh-Hans'
+export const LOCALE_ZH_HANT = 'zh-Hant'
+export const LOCALE_EN = 'en'
+export const LOCALE_FR = 'fr'
+export const LOCALE_ES = 'es'
+
 const messages = {}
 
 if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
   Object.assign(messages, {
-    en,
-    es,
-    fr,
-    'zh-Hans': zhHans,
-    'zh-Hant': zhHant
+    [LOCALE_EN]: en,
+    [LOCALE_ES]: es,
+    [LOCALE_FR]: fr,
+    [LOCALE_ZH_HANS]: zhHans,
+    [LOCALE_ZH_HANT]: zhHant
   })
 }
 
@@ -39,7 +45,7 @@ if (__PLATFORM__ === 'h5') {
     locale = ''
   }
 } else {
-  locale = __GLOBAL__.getSystemInfoSync().language
+  locale = normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
 }
 
 function initI18nMessages () {
@@ -110,7 +116,7 @@ function getLocaleMessage () {
   const locale = uni.getLocale()
   const locales = __uniConfig.locales
   return (
-    locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+    locales[locale] || locales[__uniConfig.fallbackLocale] || locales[LOCALE_EN] || {}
   )
 }
 
@@ -190,6 +196,44 @@ export function initTabBarI18n (tabBar) {
   return tabBar
 }
 
+function include (str, parts) {
+  return !!parts.find((part) => str.indexOf(part) !== -1)
+}
+
+function startsWith (str, parts) {
+  return parts.find((part) => str.indexOf(part) === 0)
+}
+
+export function normalizeLocale (locale, messages) {
+  if (!locale) {
+    return
+  }
+  locale = locale.trim().replace(/_/g, '-')
+  if (messages && messages[locale]) {
+    return locale
+  }
+  locale = locale.toLowerCase()
+  if (locale === 'chinese') {
+    // 支付宝
+    return LOCALE_ZH_HANS
+  }
+  if (locale.indexOf('zh') === 0) {
+    if (locale.indexOf('-hans') > -1) {
+      return LOCALE_ZH_HANS
+    }
+    if (locale.indexOf('-hant') > -1) {
+      return LOCALE_ZH_HANT
+    }
+    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+      return LOCALE_ZH_HANT
+    }
+    return LOCALE_ZH_HANS
+  }
+  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES])
+  if (lang) {
+    return lang
+  }
+}
 // export function initI18n() {
 //   const localeKeys = Object.keys(__uniConfig.locales || {})
 //   if (localeKeys.length) {

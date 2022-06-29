@@ -62,6 +62,7 @@ let lastComponents = []
 // TODO 解决方案不太理想
 module.exports = function generateComponent (compilation, jsonpFunction = 'webpackJsonp') {
   const curComponents = []
+  const componentChunkNameMap = {}
   const components = getComponentSet()
   if (components.size) {
     const assets = compilation.assets
@@ -71,9 +72,14 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
     const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === uniPath).id
     const styleImports = {}
     const fixSlots = {}
+    const vueOuterComponentSting = 'vueOuterComponents'
 
     Object.keys(assets).forEach(name => {
-      if (components.has(name.replace('.js', ''))) {
+      // 判断是不是vue
+      const isVueComponent = components.has(name.replace('.js', ''))
+      // 独立分包外面的组件，复制到独立分包内，在components中看不到，所以需要单独处理
+      const isVueOuterComponent = Boolean(name.endsWith('.js') && name.indexOf(vueOuterComponentSting) >= 0)
+      if (isVueComponent || isVueOuterComponent) {
         curComponents.push(name.replace('.js', ''))
 
         if (assets[name].source.__$wrappered) {
@@ -99,6 +105,15 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
         }
 
         const origSource = assets[name].source()
+
+        if (isVueComponent) {
+          componentChunkNameMap[name] = moduleId
+        } else if (isVueOuterComponent) {
+          const startIndex = name.indexOf(vueOuterComponentSting) + vueOuterComponentSting.length + 1
+          const rightOriginalComponentName = name.substring(startIndex)
+          moduleId = componentChunkNameMap[rightOriginalComponentName]
+        }
+
         if (origSource.length !== EMPTY_COMPONENT_LEN) { // 不是空组件
           const globalVar = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
           // 主要是为了解决支付宝旧版本， Component 方法只在组件 js 里有，需要挂在 my.defineComponent

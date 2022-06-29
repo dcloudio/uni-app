@@ -85,6 +85,9 @@ var serviceContext = (function () {
   const device = [
     'getSystemInfo',
     'getSystemInfoSync',
+    'getWindowInfo',
+    'getDeviceInfo',
+    'getAppBaseInfo',
     'canIUse',
     'onMemoryWarning',
     'getNetworkType',
@@ -259,7 +262,9 @@ var serviceContext = (function () {
     'unPreloadPage',
     'loadSubPackage',
     'sendHostEvent',
-    'navigateToMiniProgram'
+    'navigateToMiniProgram',
+    'getLaunchOptionsSync',
+    'getEnterOptionsSync'
   ];
 
   const ad = [
@@ -267,6 +272,13 @@ var serviceContext = (function () {
     'createFullScreenVideoAd',
     'createInterstitialAd',
     'createInteractiveAd'
+  ];
+
+  const plugin = [
+    'invokePushCallback',
+    'getPushCid',
+    'onPushMessage',
+    'offPushMessage',
   ];
 
   const apis = [
@@ -283,7 +295,8 @@ var serviceContext = (function () {
     ...file,
     ...canvas,
     ...third,
-    ...ad
+    ...ad,
+    ...plugin
   ];
 
   var apis_1 = apis;
@@ -401,7 +414,7 @@ var serviceContext = (function () {
     return hasOwnProperty.call(obj, key)
   }
 
-  function noop () {}
+  function noop () { }
 
   function toRawType (val) {
     return _toString.call(val).slice(8, -1)
@@ -481,6 +494,16 @@ var serviceContext = (function () {
     } else {
       return false
     }
+  }
+
+  function sortObject (obj) {
+    const sortObj = {};
+    if (isPlainObject(obj)) {
+      Object.keys(obj).sort().forEach(key => {
+        sortObj[key] = obj[key];
+      });
+    }
+    return !Object.keys(sortObj) ? obj : sortObj
   }
 
   const encodeReserveRE = /[!'()*]/g;
@@ -830,7 +853,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -905,6 +928,18 @@ var serviceContext = (function () {
         }), ...params);
       })))
     }
+  }
+
+  function getApiCallbacks (params) {
+    const apiCallbacks = {};
+    for (const name in params) {
+      const param = params[name];
+      if (isFn(param)) {
+        apiCallbacks[name] = tryCatch(param);
+        delete params[name];
+      }
+    }
+    return apiCallbacks
   }
 
   const base64ToArrayBuffer = [{
@@ -1203,6 +1238,10 @@ var serviceContext = (function () {
     },
     autoDecodeCharSet: {
       type: Boolean
+    },
+    sound: {
+      type: String,
+      default: 'none'
     }
   };
 
@@ -1723,15 +1762,21 @@ var serviceContext = (function () {
   	"uni.chooseLocation.cancel": "取消"
   };
 
+  const LOCALE_ZH_HANS$1 = 'zh-Hans';
+  const LOCALE_ZH_HANT$1 = 'zh-Hant';
+  const LOCALE_EN$1 = 'en';
+  const LOCALE_FR$1 = 'fr';
+  const LOCALE_ES$1 = 'es';
+
   const messages = {};
 
   {
     Object.assign(messages, {
-      en,
-      es,
-      fr,
-      'zh-Hans': zhHans,
-      'zh-Hant': zhHant
+      [LOCALE_EN$1]: en,
+      [LOCALE_ES$1]: es,
+      [LOCALE_FR$1]: fr,
+      [LOCALE_ZH_HANS$1]: zhHans,
+      [LOCALE_ZH_HANT$1]: zhHant
     });
   }
 
@@ -1812,7 +1857,7 @@ var serviceContext = (function () {
     const locale = uni.getLocale();
     const locales = __uniConfig.locales;
     return (
-      locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {}
+      locales[locale] || locales[__uniConfig.fallbackLocale] || locales[LOCALE_EN$1] || {}
     )
   }
 
@@ -1871,7 +1916,6 @@ var serviceContext = (function () {
       ])
     }
   }
-
   // export function initI18n() {
   //   const localeKeys = Object.keys(__uniConfig.locales || {})
   //   if (localeKeys.length) {
@@ -3592,21 +3636,12 @@ var serviceContext = (function () {
     }
     params = Object.assign({}, params);
 
-    const apiCallbacks = {};
-    for (const name in params) {
-      const param = params[name];
-      if (isFn(param)) {
-        apiCallbacks[name] = tryCatch(param);
-        delete params[name];
-      }
-    }
-
     const {
       success,
       fail,
       cancel,
       complete
-    } = apiCallbacks;
+    } = getApiCallbacks(params);
 
     const hasSuccess = isFn(success);
     const hasFail = isFn(fail);
@@ -3751,9 +3786,11 @@ var serviceContext = (function () {
       isFn(protocolOptions.beforeSuccess) && (extras.beforeSuccess = protocolOptions.beforeSuccess);
     }
   }
+  // 部分 API 直接实现
+  const unwrappers = ['getPushClientid', 'onPushMessage', 'offPushMessage'];
 
   function wrapper (name, invokeMethod, extras = {}) {
-    if (!isFn(invokeMethod)) {
+    if (unwrappers.indexOf(name) > -1 || !isFn(invokeMethod)) {
       return invokeMethod
     }
     wrapperExtras(name, extras);
@@ -3764,7 +3801,8 @@ var serviceContext = (function () {
         }
       } else if (isCallbackApi(name)) {
         if (validateParams(name, args, -1)) {
-          return invokeMethod((name.startsWith('off') ? getKeepAliveApiCallback : createKeepAliveApiCallback)(name, args[0]))
+          return invokeMethod((name.startsWith('off') ? getKeepAliveApiCallback : createKeepAliveApiCallback)(name,
+            args[0]))
         }
       } else {
         let argsObj = {};
@@ -3891,7 +3929,10 @@ var serviceContext = (function () {
     if (hasOwn(platformSchema, schema)) {
       return platformSchema[schema]
     }
-    return true
+    if (hasOwn(api$2, schema)) {
+      return true
+    }
+    return false
   }
 
   var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
@@ -6360,21 +6401,9 @@ var serviceContext = (function () {
     return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
   }
 
-  let deviceId;
+  function getWindowInfo () {
+    const ios = plus.os.name.toLowerCase() === 'ios';
 
-  function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId
-  }
-
-  function getSystemInfoSync () {
-    return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
-  }
-
-  function getSystemInfo () {
-    const platform = plus.os.name.toLowerCase();
-    const ios = platform === 'ios';
-    const isAndroid = platform === 'android';
     const {
       screenWidth,
       screenHeight
@@ -6431,23 +6460,12 @@ var serviceContext = (function () {
     };
 
     return {
-      errMsg: 'getSystemInfo:ok',
-      brand: plus.device.vendor,
-      model: plus.device.model,
       pixelRatio: plus.screen.scale,
       screenWidth,
       screenHeight,
       windowWidth,
       windowHeight,
       statusBarHeight,
-      language: plus.os.language,
-      system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
-      version: plus.runtime.innerVersion,
-      fontSizeSetting: '',
-      platform,
-      SDKVersion: '',
-      windowTop,
-      windowBottom,
       safeArea,
       safeAreaInsets: {
         top: safeAreaInsets.top,
@@ -6455,8 +6473,129 @@ var serviceContext = (function () {
         bottom: safeAreaInsets.bottom,
         left: safeAreaInsets.left
       },
-      deviceId: deviceId$1()
+      windowTop,
+      windowBottom,
+      screenTop: screenHeight - windowHeight
     }
+  }
+
+  let deviceId;
+
+  function deviceId$1 () {
+    deviceId = deviceId || plus.device.uuid;
+    return deviceId
+  }
+
+  let systemInfo = {};
+  let _initSystemInfo = true;
+
+  function weexGetSystemInfoSync () {
+    if (!_initSystemInfo) return
+    const { getSystemInfoSync } = weex.requireModule('plus');
+    systemInfo = getSystemInfoSync();
+    if (typeof systemInfo === 'string') {
+      try {
+        systemInfo = JSON.parse(systemInfo);
+      } catch (error) {}
+    }
+  }
+
+  function getDeviceInfo () {
+    weexGetSystemInfoSync();
+    const {
+      deviceBrand = '', deviceModel, osName,
+      osVersion, deviceOrientation, deviceType
+    } = systemInfo;
+
+    const brand = deviceBrand.toLowerCase();
+    const _osName = osName.toLowerCase();
+
+    return {
+      brand,
+      deviceBrand: brand,
+      deviceModel,
+      devicePixelRatio: plus.screen.scale,
+      deviceId: deviceId$1(),
+      deviceOrientation,
+      deviceType,
+      model: deviceModel,
+      platform: _osName,
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`
+    }
+  }
+
+  function getAppBaseInfo () {
+    weexGetSystemInfoSync();
+    const {
+      hostPackageName, hostName, osLanguage,
+      hostVersion, hostLanguage, hostTheme,
+      appId, appName, appVersion, appVersionCode
+    } = systemInfo;
+
+    const appLanguage = uni
+      ? uni.getLocale
+        ? uni.getLocale()
+        : hostLanguage
+      : hostLanguage;
+
+    return {
+      appId,
+      appName,
+      appVersion,
+      appVersionCode,
+      appLanguage,
+      enableDebug: false,
+      hostSDKVersion: undefined,
+      hostPackageName,
+      hostName,
+      hostVersion,
+      hostLanguage,
+      hostTheme,
+      hostFontSizeSetting: undefined,
+      language: osLanguage,
+      SDKVersion: '',
+      theme: undefined,
+      version: plus.runtime.innerVersion
+    }
+  }
+
+  function getSystemInfoSync () {
+    return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
+  }
+
+  function getSystemInfo () {
+    _initSystemInfo = true;
+    weexGetSystemInfoSync();
+    _initSystemInfo = false;
+    const windowInfo = getWindowInfo();
+    const deviceInfo = getDeviceInfo();
+    const appBaseInfo = getAppBaseInfo();
+    _initSystemInfo = true;
+
+    const extraData = {
+      errMsg: 'getSystemInfo:ok',
+      fontSizeSetting: appBaseInfo.hostFontSizeSetting,
+      osName: systemInfo.osName.toLowerCase()
+    };
+
+    if (systemInfo.hostName) {
+      extraData.hostSDKVersion = systemInfo.uniRuntimeVersion;
+    }
+
+    const _systemInfo = Object.assign(
+      {},
+      systemInfo,
+      windowInfo,
+      deviceInfo,
+      appBaseInfo,
+      extraData
+    );
+
+    delete _systemInfo.screenTop;
+    delete _systemInfo.enableDebug;
+    delete _systemInfo.theme;
+
+    return sortObject(_systemInfo)
   }
 
   function vibrateLong () {
@@ -8813,6 +8952,93 @@ var serviceContext = (function () {
     );
   }
 
+  const extend = Object.assign;
+
+  function createLaunchOptions () {
+    return {
+      path: '',
+      query: {},
+      scene: 1001,
+      referrerInfo: {
+        appId: '',
+        extraData: {}
+      }
+    }
+  }
+
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+
+  function getLaunchOptions () {
+    return launchOptions
+  }
+
+  function getEnterOptions () {
+    return enterOptions
+  }
+
+  function initEnterOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(enterOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+  }
+
+  function initLaunchOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(launchOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {},
+      channel: plus.runtime.channel,
+      launcher: plus.runtime.launcher
+    });
+    extend(enterOptions, launchOptions);
+    return launchOptions
+  }
+
+  function parseRedirectInfo () {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        extraData,
+        userAction,
+        fromAppid
+      } =
+        weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+        appId: fromAppid,
+        extraData: {}
+      };
+      if (extraData) {
+        referrerInfo.extraData = extraData;
+      }
+      return {
+        path: path || '',
+        query: query ? '?' + query : '',
+        referrerInfo,
+        userAction
+      }
+    }
+  }
+
+  function getLaunchOptionsSync () {
+    return getLaunchOptions()
+  }
+  function getEnterOptionsSync () {
+    return getEnterOptions()
+  }
+
   const VD_SYNC_VERSION = 2;
 
   const PAGE_CREATE = 2;
@@ -9866,80 +10092,6 @@ var serviceContext = (function () {
       console.log(`new ${pagePath}[${pageId}]:time(${Date.now() - startTime})`);
     }
     return pageVm
-  }
-
-  const extend = Object.assign;
-
-  function createLaunchOptions () {
-    return {
-      path: '',
-      query: {},
-      scene: 1001,
-      referrerInfo: {
-        appId: '',
-        extraData: {}
-      }
-    }
-  }
-
-  const enterOptions = createLaunchOptions();
-  const launchOptions = createLaunchOptions();
-
-  function getEnterOptions () {
-    return enterOptions
-  }
-
-  function initEnterOptions ({
-    path,
-    query,
-    referrerInfo
-  }) {
-    extend(enterOptions, {
-      path,
-      query: query ? parseQuery(query) : {},
-      referrerInfo: referrerInfo || {}
-    });
-  }
-
-  function initLaunchOptions ({
-    path,
-    query,
-    referrerInfo
-  }) {
-    extend(launchOptions, {
-      path,
-      query: query ? parseQuery(query) : {},
-      referrerInfo: referrerInfo || {}
-    });
-    extend(enterOptions, launchOptions);
-    return launchOptions
-  }
-
-  function parseRedirectInfo () {
-    const weexPlus = weex.requireModule('plus');
-    if (weexPlus.getRedirectInfo) {
-      const {
-        path,
-        query,
-        extraData,
-        userAction,
-        fromAppid
-      } =
-      weexPlus.getRedirectInfo() || {};
-      const referrerInfo = {
-        appId: fromAppid,
-        extraData: {}
-      };
-      if (extraData) {
-        referrerInfo.extraData = extraData;
-      }
-      return {
-        path: path || '',
-        query: query ? '?' + query : '',
-        referrerInfo,
-        userAction
-      }
-    }
   }
 
   let isInitEntryPage = false;
@@ -11975,10 +12127,13 @@ var serviceContext = (function () {
     checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
     checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
     startSoterAuthentication: startSoterAuthentication,
+    getDeviceInfo: getDeviceInfo,
+    getAppBaseInfo: getAppBaseInfo,
     getSystemInfoSync: getSystemInfoSync,
     getSystemInfo: getSystemInfo,
     vibrateLong: vibrateLong,
     vibrateShort: vibrateShort,
+    getWindowInfo: getWindowInfo,
     saveFile: saveFile$1,
     getSavedFileList: getSavedFileList,
     getFileInfo: getFileInfo$1,
@@ -12042,6 +12197,8 @@ var serviceContext = (function () {
     loadSubPackage: loadSubPackage$2,
     sendHostEvent: sendHostEvent,
     navigateToMiniProgram: navigateToMiniProgram,
+    getLaunchOptionsSync: getLaunchOptionsSync,
+    getEnterOptionsSync: getEnterOptionsSync,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
@@ -19444,6 +19601,10 @@ var serviceContext = (function () {
     beginPath () {
       this.path = [];
       this.subpath = [];
+      this.path.push({
+        method: 'beginPath',
+        data: []
+      });
     }
 
     moveTo (x, y) {
@@ -21126,6 +21287,109 @@ var serviceContext = (function () {
     uploadFile: uploadFile$1
   });
 
+  let cid;
+  let cidErrMsg;
+
+  function normalizePushMessage (message) {
+    try {
+      return JSON.parse(message)
+    } catch (e) {}
+    return message
+  }
+
+  function invokePushCallback (
+    args
+  ) {
+    if (args.type === 'clientId') {
+      cid = args.cid;
+      cidErrMsg = args.errMsg;
+      invokeGetPushCidCallbacks(cid, args.errMsg);
+    } else if (args.type === 'pushMsg') {
+      onPushMessageCallbacks.forEach((callback) => {
+        callback({
+          type: 'receive',
+          data: normalizePushMessage(args.message)
+        });
+      });
+    } else if (args.type === 'click') {
+      onPushMessageCallbacks.forEach((callback) => {
+        callback({
+          type: 'click',
+          data: normalizePushMessage(args.message)
+        });
+      });
+    }
+  }
+
+  const getPushCidCallbacks = [];
+
+  function invokeGetPushCidCallbacks (cid, errMsg) {
+    getPushCidCallbacks.forEach((callback) => {
+      callback(cid, errMsg);
+    });
+    getPushCidCallbacks.length = 0;
+  }
+
+  function getPushClientid (args) {
+    if (!isPlainObject(args)) {
+      args = {};
+    }
+    const {
+      success,
+      fail,
+      complete
+    } = getApiCallbacks(args);
+    const hasSuccess = isFn(success);
+    const hasFail = isFn(fail);
+    const hasComplete = isFn(complete);
+    getPushCidCallbacks.push((cid, errMsg) => {
+      let res;
+      if (cid) {
+        res = {
+          errMsg: 'getPushClientid:ok',
+          cid
+        };
+        hasSuccess && success(res);
+      } else {
+        res = {
+          errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
+        };
+        hasFail && fail(res);
+      }
+      hasComplete && complete(res);
+    });
+    if (typeof cid !== 'undefined') {
+      Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
+    }
+  }
+
+  const onPushMessageCallbacks = [];
+  // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
+  const onPushMessage = (fn) => {
+    if (onPushMessageCallbacks.indexOf(fn) === -1) {
+      onPushMessageCallbacks.push(fn);
+    }
+  };
+
+  const offPushMessage = (fn) => {
+    if (!fn) {
+      onPushMessageCallbacks.length = 0;
+    } else {
+      const index = onPushMessageCallbacks.indexOf(fn);
+      if (index > -1) {
+        onPushMessageCallbacks.splice(index, 1);
+      }
+    }
+  };
+
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    invokePushCallback: invokePushCallback,
+    getPushClientid: getPushClientid,
+    onPushMessage: onPushMessage,
+    offPushMessage: offPushMessage
+  });
+
   const defaultOption = {
     duration: 400,
     timingFunction: 'linear',
@@ -21210,7 +21474,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -21280,7 +21544,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -21327,7 +21591,7 @@ var serviceContext = (function () {
     return new ServiceMediaQueryObserver(getCurrentPageVm('createMediaQueryObserver'), options)
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createMediaQueryObserver: createMediaQueryObserver
   });
@@ -21468,7 +21732,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -21493,7 +21757,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -21536,7 +21800,7 @@ var serviceContext = (function () {
     callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getLocale: getLocale$1,
     setLocale: setLocale,
@@ -21551,7 +21815,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -21564,7 +21828,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta$1
   });
@@ -21601,7 +21865,7 @@ var serviceContext = (function () {
     callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -21625,7 +21889,7 @@ var serviceContext = (function () {
     callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -21658,16 +21922,17 @@ var serviceContext = (function () {
   './network/socket.js': require_context_module_1_19,
   './network/update.js': require_context_module_1_20,
   './network/upload-file.js': require_context_module_1_21,
-  './ui/create-animation.js': require_context_module_1_22,
-  './ui/create-intersection-observer.js': require_context_module_1_23,
-  './ui/create-media-query-observer.js': require_context_module_1_24,
-  './ui/create-selector-query.js': require_context_module_1_25,
-  './ui/load-font-face.js': require_context_module_1_26,
-  './ui/locale.js': require_context_module_1_27,
-  './ui/page-scroll-to.js': require_context_module_1_28,
-  './ui/set-page-meta.js': require_context_module_1_29,
-  './ui/tab-bar.js': require_context_module_1_30,
-  './ui/window.js': require_context_module_1_31,
+  './plugin/push.js': require_context_module_1_22,
+  './ui/create-animation.js': require_context_module_1_23,
+  './ui/create-intersection-observer.js': require_context_module_1_24,
+  './ui/create-media-query-observer.js': require_context_module_1_25,
+  './ui/create-selector-query.js': require_context_module_1_26,
+  './ui/load-font-face.js': require_context_module_1_27,
+  './ui/locale.js': require_context_module_1_28,
+  './ui/page-scroll-to.js': require_context_module_1_29,
+  './ui/set-page-meta.js': require_context_module_1_30,
+  './ui/tab-bar.js': require_context_module_1_31,
+  './ui/window.js': require_context_module_1_32,
 
       };
       var req = function req(key) {

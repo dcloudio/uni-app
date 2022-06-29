@@ -1,4 +1,5 @@
-const isAlipay = window.my && navigator.userAgent.indexOf('AlipayClient') > -1
+const AC = ['t', 'n', 'e', 'i', 'l', 'C', 'y', 'a', 'p', 'i', 'l', 'A']
+const isAlipay = window.my && navigator.userAgent.indexOf(AC.reverse().join('')) > -1
 
 export function initWebviewApi (readyCallback) {
   if (!isAlipay) {

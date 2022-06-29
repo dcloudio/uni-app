@@ -12,7 +12,7 @@ function parseAttrs (attrs) {
     let value = attr.value
     const name = attr.name
 
-    if (value.match(/ /) && name !== 'style') {
+    if (value.match(/ /) && ['style', 'src'].indexOf(name) === -1) {
       value = value.split(' ')
     }
 

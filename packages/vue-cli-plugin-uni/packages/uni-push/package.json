@@ -1,0 +1,29 @@
+{
+  "name": "@dcloudio/uni-push",
+  "version": "3.0.0-alpha-3040620220415003",
+  "description": "@dcloudio/uni-push",
+  "main": "lib/uni-push.js",
+  "module": "lib/uni-push.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-push"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "dependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3040620220415003",
+    "debug": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7"
+  }
+}

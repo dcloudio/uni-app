@@ -143,11 +143,14 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         name: userManifestJson.versionName,
         code: userManifestJson.versionCode
       },
-      locale: userManifestJson.locale
+      locale: userManifestJson.locale,
+      uniStatistics: userManifestJson.uniStatistics
     }, {
       plus: userManifestJson['app-plus']
     }
   )
+
+  initUniStatistics(manifestJson)
 
   const splashscreenOptions =
     userManifestJson['app-plus'] && userManifestJson['app-plus'].splashscreen
@@ -448,6 +451,13 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     }
   }
 
+  // 检查 webview 版本 || 下载 X5 后启动
+  const plusWebview = manifestJson.plus.webView
+  if (plusWebview) {
+    manifestJson.plus['uni-app'].webView = plusWebview
+    delete manifestJson.plus.webView
+  }
+
   // 记录编译器版本号
   appJson.compilerVersion = uniApp.compilerVersion
 
@@ -606,4 +616,45 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     )
   }
   return [app, manifest]
+}
+
+function initUniStatistics (manifestJson) {
+  // 根节点配置了统计
+  if (manifestJson.uniStatistics) {
+    manifestJson.plus.uniStatistics = merge.recursive(
+      true,
+      manifestJson.uniStatistics,
+      manifestJson.plus.uniStatistics
+    )
+    delete manifestJson.uniStatistics
+  }
+  if (!process.env.UNI_CLOUD_SPACES) {
+    return
+  }
+  let spaces = []
+  try {
+    spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
+  } catch (e) {}
+  if (!Array.isArray(spaces) || !spaces.length) {
+    return
+  }
+  const space = spaces[0]
+  if (!space) {
+    return
+  }
+  const uniStatistics = manifestJson.plus && manifestJson.plus.uniStatistics
+  if (!uniStatistics) {
+    return
+  }
+  if (uniStatistics.version === 2 || uniStatistics.version === '2') {
+    if (uniStatistics.uniCloud && uniStatistics.uniCloud.spaceId) {
+      return
+    }
+    uniStatistics.uniCloud = {
+      provider: space.provider,
+      spaceId: space.id,
+      clientSecret: space.clientSecret,
+      endpoint: space.apiEndpoint
+    }
+  }
 }

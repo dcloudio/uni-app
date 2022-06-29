@@ -86,7 +86,9 @@ const plugins = [
       UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
       UNICLOUD_DEBUG: process.env.UNICLOUD_DEBUG,
       RUN_BY_HBUILDERX: process.env.RUN_BY_HBUILDERX,
-      UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT)
+      UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),
+      UNI_STAT_UNI_CLOUD: process.env.UNI_STAT_UNI_CLOUD || '',
+      UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG || ''
     }
   }),
   new webpack.BannerPlugin({
@@ -209,9 +211,11 @@ if (process.env.UNI_USING_V3_NATIVE) {
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
+  const assetsDir = 'static'
+  const hybridDir = 'hybrid/html'
   const array = [{
-    from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
-    to: 'static'
+    from: path.resolve(process.env.UNI_INPUT_DIR, assetsDir),
+    to: assetsDir
   }]
   // 自动化测试时，不启用androidPrivacy.json
   if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
@@ -223,13 +227,33 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       })
     }
   }
-  const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, 'hybrid/html')
+  const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, hybridDir)
   if (fs.existsSync(hybridHtmlPath)) {
     array.push({
       from: hybridHtmlPath,
-      to: 'hybrid/html'
+      to: hybridDir
     })
   }
+
+  global.uniModules.forEach(module => {
+    const modules = 'uni_modules/'
+    const assets = modules + module + '/' + assetsDir
+    const assetsPath = path.resolve(process.env.UNI_INPUT_DIR, assets)
+    if (fs.existsSync(assetsPath)) {
+      array.push({
+        from: assetsPath,
+        to: assets
+      })
+    }
+    const hybridHtml = modules + module + '/' + hybridDir
+    const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, hybridHtml)
+    if (fs.existsSync(hybridHtmlPath)) {
+      array.push({
+        from: hybridHtmlPath,
+        to: hybridHtml
+      })
+    }
+  })
 
   if (process.env.UNI_USING_NVUE_COMPILER) {
     array.push({

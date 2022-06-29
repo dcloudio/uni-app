@@ -8,7 +8,6 @@ module.exports = function (content, map) {
   this.callback(null, 'module.exports = ' + genStyleString(content, this), map)
 }
 const uniI18n = require('@dcloudio/uni-cli-i18n')
-const print = require('../../../util/console')
 
 // @todo:
 // font-relative lengths: em, ex, ch, ic
@@ -60,13 +59,13 @@ function genStyleString (input, loader) {
           msgs.forEach(msg => {
             switch (msg.split(':')[0]) {
               case 'ERROR':
-                print.error(msg)
+                console.error(msg)
                 break
               case 'WARNING' :
-                print.warn(msg)
+                console.warn(msg)
                 break
               default:
-                print.log(msg)
+                console.log(msg)
                 break
             }
           })

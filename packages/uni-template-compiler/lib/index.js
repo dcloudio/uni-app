@@ -16,6 +16,7 @@ const traverseTemplate = require('./template/traverse')
 const generateTemplate = require('./template/generate')
 
 const compilerModule = require('./module')
+const compilerModuleUniad = require('./module.uniad')
 
 const compilerAlipayModule = require('./module-alipay')
 const compilerToutiaoModule = require('./module-toutiao')
@@ -38,6 +39,10 @@ const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
 
 module.exports = {
   compile (source, options = {}) {
+    if (Array.isArray(options.modules)) {
+      options.modules.push(compilerModuleUniad)
+    }
+
     if ( // 启用摇树优化后,需要过滤内置组件
       !options.autoComponentResourcePath ||
       options.autoComponentResourcePath.indexOf('@dcloudio/uni-h5/src') === -1
@@ -47,6 +52,7 @@ module.exports = {
     if (!options.modules) {
       options.modules = []
     }
+
     // transformAssetUrls
     options.modules.push(require('./asset-url'))
     options.modules.push(require('./bool-attr'))
@@ -119,6 +125,9 @@ module.exports = {
 
     // (可用的原生微信小程序组件，global+scoped)
     options.mp.wxComponents = options.wxComponents || Object.create(null)
+    Object.assign(options.mp.wxComponents, {
+      'uniad-plugin': 'plugin://uni-ad/ad'
+    })
 
     const state = {
       ast: {},

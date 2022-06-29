@@ -72,6 +72,7 @@ import {
   field
 } from 'uni-mixins'
 const DARK_TEST_STRING = '(prefers-color-scheme: dark)'
+const ConfirmTypes = ['done', 'go', 'next', 'search', 'send'] // 'return'
 export default {
   name: 'Textarea',
   mixins: [field],
@@ -106,7 +107,10 @@ export default {
     },
     confirmType: {
       type: String,
-      default: ''
+      default: 'return',
+      validator (val) {
+        return ConfirmTypes.concat('return').includes(val)
+      }
     }
   },
   data () {
@@ -127,7 +131,7 @@ export default {
       return (this.composing ? this.valueComposition : this.valueSync).split('\n')
     },
     isDone () {
-      return ['done', 'go', 'next', 'search', 'send'].includes(this.confirmType)
+      return ConfirmTypes.includes(this.confirmType)
     }
   },
   watch: {
@@ -208,7 +212,6 @@ export default {
       !this.ignoreCompositionEvent &&
         this.$trigger($event.type, $event, { data: $event.data })
     },
-    // 暂无完成按钮，此功能未实现
     _confirm ($event) {
       this.$trigger('confirm', $event, {
         value: this.valueSync

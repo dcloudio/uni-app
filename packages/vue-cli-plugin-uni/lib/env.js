@@ -6,6 +6,7 @@ const uniI18n = require('@dcloudio/uni-cli-i18n')
 const moduleAlias = require('module-alias')
 
 require('./error-reporting')
+require('../util/console')
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
@@ -19,17 +20,32 @@ if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) 
 }
 process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), defaultInputDir)
 
-const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
+const {
+  getManifestJson,
+  isEnableUniPushV2,
+  isUniPushOffline
+} = require('@dcloudio/uni-cli-shared/lib/manifest')
+
+const manifestJsonObj = getManifestJson()
 
 process.env.UNI_APP_ID = manifestJsonObj.appid || ''
 process.env.UNI_APP_NAME = manifestJsonObj.name || ''
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
+process.env.UNI_APP_VERSION_NAME = manifestJsonObj.versionName
+process.env.UNI_APP_VERSION_CODE = manifestJsonObj.versionCode
 
 // 小程序 vue3 标记
 if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
   if (manifestJsonObj.vueVersion === '3' || manifestJsonObj.vueVersion === 3) {
     process.env.UNI_USING_VUE3 = true
     process.env.UNI_USING_VUE3_OPTIONS_API = true
+  }
+}
+// v2 uni-push
+if (isEnableUniPushV2(manifestJsonObj, process.env.UNI_PLATFORM)) {
+  process.env.UNI_PUSH_V2 = true
+  if (process.env.UNI_PLATFORM === 'app-plus' && isUniPushOffline(manifestJsonObj)) {
+    process.env.UNI_PUSH_V2_OFFLINE = true
   }
 }
 
@@ -87,6 +103,9 @@ if (process.env.UNI_CLOUD_SPACES) {
       }
 
       process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
+        if (space.provider === 'tcb') {
+          space.provider = 'tencent'
+        }
         if (space.clientSecret) {
           return {
             provider: space.provider || 'aliyun',
@@ -295,10 +314,13 @@ const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOpti
   : platformOptions.scopedSlotsCompiler
 process.env.SCOPED_SLOTS_COMPILER = modes.includes(scopedSlotsCompiler) ? scopedSlotsCompiler : modes[1]
 // 快手小程序、小红书小程序 抽象组件编译报错，如未指定 legacy 固定为 augmented 模式
-if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 'mp-xhs') && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
+if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 'mp-xhs') && process.env
+  .SCOPED_SLOTS_COMPILER !== modes[0]) {
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
 
+process.env.UNI_STAT_UNI_CLOUD = ''
+process.env.UNI_STAT_DEBUG = ''
 if (
   process.env.UNI_USING_COMPONENTS ||
   process.env.UNI_PLATFORM === 'h5'
@@ -310,12 +332,43 @@ if (
 
   if (uniStatistics.enable === true) {
     process.env.UNI_USING_STAT = uniStatistics.version === '2' ? '2' : '1'
-    if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
-      console.log()
-      console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
-        0: 'https://ask.dcloud.net.cn/article/36303'
-      }))
-      console.log()
+    // 获取服务空间配置信息
+    const uniCloudConfig = uniStatistics.uniCloud || {}
+    process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
+    process.env.UNI_STAT_DEBUG = uniStatistics.debug === true ? 'true' : 'false'
+
+    if (process.env.NODE_ENV === 'production') {
+      if (!process.UNI_STAT_CONFIG.appid) {
+        console.log()
+        console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
+          0: 'https://ask.dcloud.net.cn/article/36303'
+        }))
+        console.log()
+      } else {
+        if (!uniStatistics.version) {
+          console.log()
+          console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
+            0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
+          }))
+          console.log()
+        } else {
+          console.log()
+          console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
+          console.log()
+        }
+      }
+    } else {
+      if (!uniStatistics.version) {
+        console.log()
+        console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
+          0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
+        }))
+        console.log()
+      } else {
+        console.log()
+        console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
+        console.log()
+      }
     }
   }
 }
@@ -340,6 +393,11 @@ const warningMsg =
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
 // 输出编译器版本等信息
+const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
+process.env.UNI_COMPILER_VERSION = ''
+if (pagesPkg) {
+  process.env.UNI_COMPILER_VERSION = pagesPkg['uni-app'].compilerVersion
+}
 const compileModeUrl = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   const compileMode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')
@@ -349,12 +407,8 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   }))
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
   try {
-    let info = ''
+    const info = process.env.UNI_COMPILER_VERSION
     if (process.env.UNI_PLATFORM === 'app-plus') {
-      const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
-      if (pagesPkg) {
-        info = uniI18n.__('compilerVersion') + '：' + pagesPkg['uni-app'].compilerVersion
-      }
       if (process.env.UNI_USING_V3) {
         console.log(info)
       } else {

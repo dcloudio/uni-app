@@ -104,9 +104,14 @@ function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Com
 }
 
 function updateUsingGlobalComponents (name, usingGlobalComponents) {
-  if (supportGlobalUsingComponents) {
+  const manifestConfig = process.UNI_MANIFEST
+  const weixinConfig = manifestConfig['mp-weixin']
+  const independentSwitch = !!weixinConfig.independent
+
+  if (!independentSwitch && supportGlobalUsingComponents) {
     return
   }
+
   const oldJsonStr = getJsonFile(name)
   if (oldJsonStr) { // update
     const jsonObj = JSON.parse(oldJsonStr)
@@ -342,6 +347,7 @@ module.exports = {
   getWXComponents,
   getGlobalUsingComponents,
   updateAppJson,
+  updateJsonFile,
   updatePageJson,
   updateProjectJson,
   updateComponentJson,
@@ -353,5 +359,6 @@ module.exports = {
   updateComponentGenerics,
   updateGenericComponents,
   getChangedJsonFileMap,
-  getSpecialMethods
+  getSpecialMethods,
+  supportGlobalUsingComponents
 }

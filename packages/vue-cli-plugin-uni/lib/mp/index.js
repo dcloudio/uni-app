@@ -7,7 +7,8 @@ const {
   normalizePath,
   getPlatformExts,
   getPlatformCssnano,
-  getPlatformStat
+  getPlatformStat,
+  getPlatformPush
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
@@ -22,6 +23,8 @@ function createUniMPPlugin () {
   const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
   return new WebpackUniMPPlugin()
 }
+
+const createWxMpIndependentPlugins = require('@dcloudio/uni-mp-weixin/lib/createIndependentPlugin')
 
 function getProvides () {
   const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
@@ -164,13 +167,15 @@ module.exports = {
     parseEntry()
 
     const statCode = getPlatformStat()
+    const pushCode = getPlatformPush()
 
     let beforeCode = 'import \'uni-pages\';'
 
     const plugins = [
       new WebpackUniAppPlugin(),
       createUniMPPlugin(),
-      new webpack.ProvidePlugin(getProvides())
+      new webpack.ProvidePlugin(getProvides()),
+      ...createWxMpIndependentPlugins()
     ]
 
     if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && process.env.UNI_SUBPACKGE !== 'main') {
@@ -184,7 +189,9 @@ module.exports = {
           ? process.env.UNI_MP_PLUGIN_MAIN
           : JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
       ).forEach(fileName => addToUniEntry(fileName))
-      beforeCode += `${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
+      beforeCode += `
+// @ts-ignore
+${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     }
 
     const alias = { // 仅 mp-weixin
@@ -213,8 +220,7 @@ module.exports = {
       output.pathinfo = false
     }
     return {
-      mode: process.env.NODE_ENV === 'production' ? 'production'
-        : 'development',
+      mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
         return process.UNI_ENTRY
       },
@@ -233,7 +239,7 @@ module.exports = {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + require('../util').getAutomatorCode() + statCode
+                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode
               ]
             }
           }, {
