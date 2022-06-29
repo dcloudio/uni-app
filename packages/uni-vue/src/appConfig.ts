@@ -1,23 +1,25 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import { ON_ERROR, UniLifecycleHooks } from '@dcloudio/uni-shared'
-import { AppConfig, ComponentPublicInstance } from 'vue'
+import { App, AppConfig, ComponentPublicInstance } from 'vue'
 
-export function errorHandler(
-  err: unknown,
-  instance: ComponentPublicInstance | null,
-  info: string
-) {
-  if (!instance) {
-    throw err
-  }
-  const app = getApp()
-  if (!app || !app.$vm) {
-    throw err
-  }
-  if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
-    app.$vm.$callHook(ON_ERROR, err, info)
-  } else {
-    invokeHook(app.$vm, ON_ERROR, err)
+export function createErrorHandler(app: App) {
+  return function errorHandler(
+    err: unknown,
+    instance: ComponentPublicInstance | null,
+    _info: string
+  ) {
+    if (!instance) {
+      throw err
+    }
+    const appInstance = app._instance
+    if (!appInstance || !appInstance.proxy) {
+      throw err
+    }
+    if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
+      appInstance.proxy.$callHook(ON_ERROR, err)
+    } else {
+      invokeHook(appInstance.proxy, ON_ERROR, err)
+    }
   }
 }
 

@@ -1,5 +1,6 @@
+import { isString } from '@vue/shared'
 export function encodeQueryString(url: string) {
-  if (typeof url !== 'string') {
+  if (!isString(url)) {
     return url
   }
   const index = url.indexOf('?')

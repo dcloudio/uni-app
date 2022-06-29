@@ -61,8 +61,9 @@ export function updateComponentProps(
   if (hasPropsChanged(prevProps, nextProps)) {
     updateProps(instance, nextProps, prevProps, false)
     const index = invalidateJob(instance.update)
-    if (__PLATFORM__ === 'mp-toutiao') {
+    if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-baidu') {
       // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+      // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
       index === -1 && instance.update()
     } else {
       instance.update()

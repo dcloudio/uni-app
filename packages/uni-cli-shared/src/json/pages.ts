@@ -116,7 +116,7 @@ export function normalizePagesJson(
 }
 
 export function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
-  if (!Array.isArray(pagesJson.pages)) {
+  if (!isArray(pagesJson.pages)) {
     pagesJson.pages = []
     throw new Error(`[uni-app] Error: pages.json->pages parse failed.`)
   } else if (!pagesJson.pages.length) {
@@ -160,7 +160,7 @@ function normalizeSubpackages(
   subpackages?: UniApp.PagesJsonSubpackagesOptions[]
 ) {
   const pages: UniApp.PagesJsonPageOptions[] = []
-  if (Array.isArray(subpackages)) {
+  if (isArray(subpackages)) {
     subpackages.forEach(({ root, pages: subPages }) => {
       if (root && subPages.length) {
         subPages.forEach((subPage) => {

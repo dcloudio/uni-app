@@ -543,6 +543,7 @@ function updateComponentProps(up, instance) {
         const index = invalidateJob(instance.update);
         {
             // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+            // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
             index === -1 && instance.update();
         }
     }

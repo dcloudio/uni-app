@@ -220,6 +220,17 @@ export function render(_ctx, _cache) {
     })
   })
 
+  test('setup-reactive-const', () => {
+    const { code } = parseWithElementTransform(`{{state.test}}`, {
+      inline: true,
+      prefixIdentifiers: true,
+      bindingMetadata: {
+        state: BindingTypes.SETUP_REACTIVE_CONST,
+      },
+    })
+    expect(code).toContain(`_t(state.test)`)
+  })
+
   describe('dynamic component', () => {
     test('static binding', () => {
       const onError = jest.fn()

@@ -1,5 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import { extend } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import { assetPlugin } from '../plugins/vitejs/plugins/asset'
 import { cssPlugin } from '../plugins/vitejs/plugins/css'
 
@@ -47,7 +47,7 @@ export function removePlugins(
   plugins: string | string[],
   config: ResolvedConfig
 ) {
-  if (!Array.isArray(plugins)) {
+  if (!isArray(plugins)) {
     plugins = [plugins]
   }
   plugins.forEach((name) => {

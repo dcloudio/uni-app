@@ -1,7 +1,10 @@
-import { isFunction, isPlainObject } from '@vue/shared'
-import { getApiCallbacks } from '../../helpers/api/callback'
+import { defineAsyncApi } from '../../helpers/api'
 
-interface OnPushCidCallback {
+interface OnPushEnabledCallback {
+  type: 'enabled'
+}
+
+interface OnPushClientIdCallback {
   type: 'clientId'
   cid: string
   errMsg?: string
@@ -24,6 +27,8 @@ interface OnPushClickCallback {
 
 let cid: string | undefined
 let cidErrMsg: string | undefined
+let enabled: boolean | undefined
+
 function normalizePushMessage(message: unknown) {
   try {
     return JSON.parse(message as string) as Record<string, any>
@@ -36,12 +41,15 @@ function normalizePushMessage(message: unknown) {
  */
 export function invokePushCallback(
   args:
-    | OnPushCidCallback
+    | OnPushEnabledCallback
+    | OnPushClientIdCallback
     | OnPushLineStateCallback
     | OnPushMsgCallback
     | OnPushClickCallback
 ) {
-  if (args.type === 'clientId') {
+  if (args.type === 'enabled') {
+    enabled = true
+  } else if (args.type === 'clientId') {
     cid = args.cid
     cidErrMsg = args.errMsg
     invokeGetPushCidCallbacks(cid, args.errMsg)
@@ -62,10 +70,6 @@ export function invokePushCallback(
   }
 }
 
-interface GetPushCidOptions {
-  success?: OnPushMessageSuccess
-}
-
 const getPushCidCallbacks: ((cid?: string, errMsg?: string) => void)[] = []
 
 function invokeGetPushCidCallbacks(cid?: string, errMsg?: string) {
@@ -75,29 +79,29 @@ function invokeGetPushCidCallbacks(cid?: string, errMsg?: string) {
   getPushCidCallbacks.length = 0
 }
 
-export function getPushClientid(args: GetPushCidOptions) {
-  if (!isPlainObject(args)) {
-    args = {}
+const API_GET_PUSH_CLIENT_ID = 'getPushClientId'
+export const getPushClientId = defineAsyncApi(
+  API_GET_PUSH_CLIENT_ID,
+  (_, { resolve, reject }) => {
+    Promise.resolve().then(() => {
+      if (typeof enabled === 'undefined') {
+        enabled = false
+        cid = ''
+        cidErrMsg = 'unipush is not enabled'
+      }
+      getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
+        if (cid) {
+          resolve({ cid })
+        } else {
+          reject(errMsg)
+        }
+      })
+      if (typeof cid !== 'undefined') {
+        invokeGetPushCidCallbacks(cid, cidErrMsg)
+      }
+    })
   }
-  const { success, fail, complete } = getApiCallbacks(args)
-  const hasSuccess = isFunction(success)
-  const hasFail = isFunction(fail)
-  const hasComplete = isFunction(complete)
-  getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
-    let res: Record<string, unknown>
-    if (cid) {
-      res = { errMsg: 'getPushClientid:ok', cid }
-      hasSuccess && success(res)
-    } else {
-      res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') }
-      hasFail && fail(res)
-    }
-    hasComplete && complete(res)
-  })
-  if (typeof cid !== 'undefined') {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg))
-  }
-}
+)
 
 interface OnPushMessageSuccess {
   type: 'click' | 'receive'

@@ -20,11 +20,13 @@ export function getWindowOffset() {
   const bottom = getWindowOffsetCssVar(style, '--window-bottom')
   const left = getWindowOffsetCssVar(style, '--window-left')
   const right = getWindowOffsetCssVar(style, '--window-right')
+  const topWindowHeight = getWindowOffsetCssVar(style, '--top-window-height')
   return {
     top,
     bottom: bottom ? bottom + safeAreaInsets.bottom : 0,
     left: left ? left + safeAreaInsets.left : 0,
     right: right ? right + safeAreaInsets.right : 0,
+    topWindowHeight: topWindowHeight || 0,
   }
 }
 

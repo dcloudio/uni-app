@@ -45,7 +45,7 @@ var index = () => [
                 }
                 if (isEnable) {
                     return {
-                        code: code + `;import '@dcloudio/uni-push';`,
+                        code: `import '@dcloudio/uni-push';` + code,
                         map: null,
                     };
                 }

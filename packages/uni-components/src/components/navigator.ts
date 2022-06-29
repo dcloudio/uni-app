@@ -73,6 +73,7 @@ export const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: '',
     validator(value?: string) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value)
     },

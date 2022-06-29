@@ -17,6 +17,8 @@ import { ssrRef, shallowSsrRef } from '@dcloudio/uni-app'
 import { initVueI18n } from '@dcloudio/uni-i18n'
 import messages from './i18n/index'
 
+const isArray = Array.isArray
+
 const { t } = initVueI18n(messages)
 
 const events = {
@@ -184,10 +186,10 @@ export default {
   },
   computed: {
     collectionArgs () {
-      return Array.isArray(this.collection) ? this.collection : [this.collection]
+      return isArray(this.collection) ? this.collection : [this.collection]
     },
     isLookup () {
-      return (Array.isArray(this.collection) && this.collection.length > 1) || (typeof this.collection === 'string' && this.collection.indexOf(',') > -1)
+      return (isArray(this.collection) && this.collection.length > 1) || (typeof this.collection === 'string' && this.collection.indexOf(',') > -1)
     },
     mainCollection () {
       if (typeof this.collection === 'string') {
@@ -563,7 +565,7 @@ export default {
         return
       }
 
-      const ids = Array.isArray(id) ? id : [id]
+      const ids = isArray(id) ? id : [id]
       if (!ids.length) {
         return
       }

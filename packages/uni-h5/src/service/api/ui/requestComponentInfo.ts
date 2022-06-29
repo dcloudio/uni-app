@@ -1,4 +1,5 @@
 import { ComponentPublicInstance } from 'vue'
+import { isArray } from '@vue/shared'
 import { getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
 import { getContextInfo } from '@dcloudio/uni-components'
@@ -40,7 +41,7 @@ function getNodeInfo(
   fields: NodeField
 ): SelectorQueryNodeInfo {
   const info: SelectorQueryNodeInfo = {}
-  const { top } = getWindowOffset()
+  const { top, topWindowHeight } = getWindowOffset()
   if (fields.id) {
     info.id = el.id
   }
@@ -52,8 +53,8 @@ function getNodeInfo(
     if (fields.rect) {
       info.left = rect.left
       info.right = rect.right
-      info.top = rect.top - top
-      info.bottom = rect.bottom - top
+      info.top = rect.top - top - topWindowHeight
+      info.bottom = rect.bottom - top - topWindowHeight
     }
     if (fields.size) {
       info.width = rect.width
@@ -61,7 +62,7 @@ function getNodeInfo(
     }
   }
   // TODO 组件 props
-  if (Array.isArray(fields.properties)) {
+  if (isArray(fields.properties)) {
     fields.properties.forEach((prop) => {
       prop = prop.replace(/-([a-z])/g, function (e, t) {
         return t.toUpperCase()
@@ -83,7 +84,7 @@ function getNodeInfo(
       info.scrollWidth = 0
     }
   }
-  if (Array.isArray(fields.computedStyle)) {
+  if (isArray(fields.computedStyle)) {
     const sytle = getComputedStyle(el)
     fields.computedStyle.forEach((name) => {
       info[name as keyof CSSStyleDeclaration] =

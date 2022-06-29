@@ -98,7 +98,7 @@ export {
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
-  getPushClientid,
+  getPushClientId,
   onPushMessage,
   offPushMessage,
   onAppHide,

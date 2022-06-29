@@ -9,7 +9,7 @@ import {
   getCurrentInstance,
   onMounted,
 } from 'vue'
-import { extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { Props, GetPickerViewColumn } from '../picker-view'
 import { parseStyleText, getComponentSize } from '../helpers'
 
@@ -24,7 +24,7 @@ type ScrollOptions = {
 const dom = weex.requireModule('dom')
 const isAndroid = weex.config.env.platform.toLowerCase() === 'android'
 function getStyle(val: string) {
-  return extend({}, typeof val === 'string' ? parseStyleText(val) : val)
+  return extend({}, isString(val) ? parseStyleText(val) : val)
 }
 
 export default defineComponent({

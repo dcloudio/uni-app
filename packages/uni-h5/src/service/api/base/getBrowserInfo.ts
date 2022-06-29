@@ -1,3 +1,4 @@
+import { isFunction } from '@vue/shared'
 import {
   ua,
   isIOS,
@@ -94,7 +95,7 @@ export function getBrowserInfo() {
     model = 'iPad'
     osname = 'iOS'
     deviceType = 'pad'
-    osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0'
+    osversion = isFunction(window.BigInt) ? '14.0' : '13.0'
   } else if (isWindows || isMac || isLinux) {
     model = 'PC'
     osname = 'PC'

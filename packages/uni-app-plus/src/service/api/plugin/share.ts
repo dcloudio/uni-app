@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 import {
@@ -58,7 +59,7 @@ const parseParams = (args: UniApp.ShareOptions) => {
     customerUrl: url,
   } = args
 
-  if (typeof imageUrl === 'string' && imageUrl) {
+  if (isString(imageUrl) && imageUrl) {
     imageUrl = getRealPath(imageUrl)
   }
 
@@ -123,7 +124,7 @@ export const share = defineAsyncApi<API_TYPE_SHARE>(
     const parsedParams = parseParams(params)
     const errorCallback = warpPlusErrorCallback(reject)
 
-    if (typeof parsedParams === 'string') {
+    if (isString(parsedParams)) {
       return reject(parsedParams)
     }
 
@@ -152,7 +153,7 @@ export const shareWithSystem = defineAsyncApi<API_TYPE_SHARE_WITH_SYSTEM>(
   ({ type, imageUrl, summary, href }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject)
 
-    if (typeof imageUrl === 'string' && imageUrl) {
+    if (isString(imageUrl) && imageUrl) {
       imageUrl = getRealPath(imageUrl)
     }
     plus.share.sendWithSystem(

@@ -1,4 +1,5 @@
 import { onUnmounted, inject, watch } from 'vue'
+import { isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, LatLng, Callout, CalloutOptions } from './maps'
@@ -161,7 +162,7 @@ export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapMarker',
   props,
   setup(props) {
-    const id = String(Number(props.id) !== NaN ? props.id : '')
+    const id = String(!isNaN(Number(props.id)) ? props.id : '')
     const onMapReady: OnMapReady = inject('onMapReady') as OnMapReady
     const updateMarkerLabelStyle = useMarkerLabelStyle(id)
     let marker: Marker
@@ -400,7 +401,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                 callout.setPosition(b)
               }
               const cb = data.animationEnd
-              if (typeof cb === 'function') {
+              if (isFunction(cb)) {
                 cb()
               }
             })

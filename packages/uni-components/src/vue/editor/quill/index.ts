@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { onMounted, Ref, watch } from 'vue'
 import QuillClass, {
   QuillOptionsStatic,
@@ -236,7 +236,7 @@ export function useQuill(
       }
       if (delta.ops) {
         delta.ops = delta.ops
-          .filter(({ insert }) => typeof insert === 'string')
+          .filter(({ insert }) => isString(insert))
           .map(({ insert }) => ({ insert }))
       }
       return delta
@@ -371,7 +371,7 @@ export function useQuill(
               const { delta, html } = options
               if (typeof delta === 'object') {
                 quill.setContents(delta, 'silent')
-              } else if (typeof html === 'string') {
+              } else if (isString(html)) {
                 quill.setContents(html2delta(html), 'silent')
               } else {
                 errMsg = 'contents is missing'

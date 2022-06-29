@@ -1,3 +1,4 @@
+import { isFunction } from '@vue/shared'
 const EventType = {
   load: 'load',
   close: 'close',
@@ -42,7 +43,7 @@ class AdEventHandler {
   }
 
   _addEventListener(type: string, callback: Function) {
-    if (typeof callback !== 'function') {
+    if (!isFunction(callback)) {
       return
     }
     if (!this._callbacks[type]) {

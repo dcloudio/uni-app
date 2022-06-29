@@ -1,3 +1,4 @@
+import { isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   API_CREATE_INNER_AUDIO_CONTEXT,
@@ -28,7 +29,7 @@ const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
   // 批量设置音频上下文事件监听方法
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function (callback: Function) {
-      if (typeof callback === 'function') {
+      if (isFunction(callback)) {
         this._events[eventName]!.push(callback)
       }
     }

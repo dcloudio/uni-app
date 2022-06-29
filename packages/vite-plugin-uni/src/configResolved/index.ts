@@ -1,5 +1,5 @@
 import { Plugin, ResolvedConfig } from 'vite'
-import { extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import {
   checkUpdate,
   isWindows,
@@ -31,7 +31,7 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
       // TODO 等 https://github.com/vitejs/vite/issues/3331 修复后，可以移除下列代码
       // 2.8.0 已修复，但为了兼容旧版本，先不移除
       const item = config.resolve.alias.find((item) =>
-        typeof item.find !== 'string' ? item.find.test('@/') : false
+        !isString(item.find) ? item.find.test('@/') : false
       )
       if (item) {
         item.customResolver = customResolver
@@ -51,7 +51,7 @@ function initCheckUpdate() {
 function initLogger({ logger, nvue }: ResolvedConfig & { nvue?: boolean }) {
   const { info, warn, error } = logger
   logger.info = (msg, opts) => {
-    msg = formatInfoMsg(msg, extend({ nvue }, opts))
+    msg = formatInfoMsg(msg, extend(opts || {}, { nvue }))
     if (msg) {
       return info(msg, opts)
     }

@@ -32,7 +32,7 @@ import {
   ShowTabBarRedDotOptions,
   ShowTabBarRedDotProtocol,
 } from '@dcloudio/uni-api'
-import { getRouteOptions } from '@dcloudio/uni-core'
+import { normalizeTabBarRoute } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { useTabBar } from '../../../framework/setup/state'
 
@@ -63,25 +63,6 @@ function setProperties(
   })
 }
 
-function normalizeTabBarRoute(
-  index: number,
-  oldPagePath: string,
-  newPagePath: string
-) {
-  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath))
-  if (oldTabBarRoute) {
-    const { meta } = oldTabBarRoute
-    delete meta.tabBarIndex
-    meta.isQuit = meta.isTabBar = false
-  }
-  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath))
-  if (newTabBarRoute) {
-    const { meta } = newTabBarRoute
-    meta.tabBarIndex = index
-    meta.isQuit = meta.isTabBar = false
-  }
-}
-
 function setTabBar(
   type: string,
   args: Record<string, any>,
@@ -101,8 +82,11 @@ function setTabBar(
       const oldPagePath = tabBarItem.pagePath
       setProperties(tabBarItem, setTabBarItemProps, args)
       const { pagePath } = args
-      if (pagePath && pagePath !== oldPagePath) {
-        normalizeTabBarRoute(index, oldPagePath, pagePath)
+      if (pagePath) {
+        const newPagePath = addLeadingSlash(pagePath)
+        if (newPagePath !== oldPagePath) {
+          normalizeTabBarRoute(index, oldPagePath, newPagePath)
+        }
       }
       break
     case API_SET_TAB_BAR_STYLE:

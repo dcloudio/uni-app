@@ -13,7 +13,7 @@ import {
 import { AcornNode } from 'rollup'
 
 import { walk } from 'estree-walker'
-import { extend } from '@vue/shared'
+import { extend, isArray, isString } from '@vue/shared'
 import MagicString from 'magic-string'
 
 import {
@@ -119,7 +119,7 @@ export function uniViteInjectPlugin(
           if (mods.length === 2) {
             mod = namespaceModulesMap.get(mods[0] + '.')
             if (mod) {
-              if (Array.isArray(mod)) {
+              if (isArray(mod)) {
                 const testFn = mod[1] as unknown as (method: string) => boolean
                 if (testFn(mods[1])) {
                   mod = [mod[0], mods[1]]
@@ -133,7 +133,7 @@ export function uniViteInjectPlugin(
           }
         }
         if (mod && !imports.has(name) && !scope.contains(name)) {
-          if (typeof mod === 'string') mod = [mod, 'default']
+          if (isString(mod)) mod = [mod, 'default']
           if (mod[0] === id) return false
           const hash = `${keypath}:${mod[0]}:${mod[1]}`
           // 当 API 被覆盖定义后，不再摇树
@@ -257,7 +257,7 @@ function normalizeModulesMap(
   modulesMap.forEach((mod, key) => {
     modulesMap.set(
       key,
-      Array.isArray(mod)
+      isArray(mod)
         ? [mod[0].split(sep).join('/'), mod[1]]
         : mod.split(sep).join('/')
     )

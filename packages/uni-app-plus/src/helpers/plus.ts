@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isArray, isFunction } from '@vue/shared'
 import { addLeadingSlash, formatLog } from '@dcloudio/uni-shared'
 import { getRouteOptions } from '@dcloudio/uni-core'
 interface PlusResult extends Record<string, any> {
@@ -17,7 +17,7 @@ export function warpPlusSuccessCallback(
   return function successCallback(data: PlusResult) {
     delete data.code
     delete data.message
-    if (typeof after === 'function') {
+    if (isFunction(after)) {
       data = after(data)
     }
     resolve(data)
@@ -58,7 +58,7 @@ export function warpPlusMethod(
   ) {
     const object = plusObject()
     object(
-      extend({}, typeof before === 'function' ? before(options) : options, {
+      extend({}, isFunction(before) ? before(options) : options, {
         success: warpPlusSuccessCallback(resolve, after),
         fail: warpPlusErrorCallback(reject),
       })
@@ -67,7 +67,7 @@ export function warpPlusMethod(
 }
 
 export function isTabBarPage(path = '') {
-  if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+  if (!(__uniConfig.tabBar && isArray(__uniConfig.tabBar.list))) {
     return false
   }
   try {

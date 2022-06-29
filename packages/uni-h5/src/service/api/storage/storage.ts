@@ -1,3 +1,5 @@
+import { isString } from '@vue/shared'
+
 import {
   defineSyncApi,
   defineAsyncApi,
@@ -25,7 +27,7 @@ const STORAGE_KEYS = 'uni-storage-keys'
 function parseValue(value: any) {
   const types = ['object', 'string', 'number', 'boolean', 'undefined']
   try {
-    const object = typeof value === 'string' ? JSON.parse(value) : value
+    const object = isString(value) ? JSON.parse(value) : value
     const type = object.type
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object)
@@ -80,7 +82,7 @@ export const setStorage = <API_TYPE_SET_STORAGE>defineAsyncApi(
 
 function getStorageOrigin(key: string): any {
   const value = localStorage && localStorage.getItem(key)
-  if (typeof value !== 'string') {
+  if (!isString(value)) {
     throw new Error('data not found')
   }
   let data: any = value

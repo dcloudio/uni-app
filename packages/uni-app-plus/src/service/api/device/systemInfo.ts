@@ -1,6 +1,6 @@
 import { defineAsyncApi, defineSyncApi, getLocale } from '@dcloudio/uni-api'
 import deviceId from '../../../helpers/uuid'
-import { extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { getWindowInfo } from './getWindowInfo'
 import { sortObject } from '@dcloudio/uni-shared'
 
@@ -11,7 +11,7 @@ function weexGetSystemInfoSync() {
   if (!_initSystemInfo) return
   const { getSystemInfoSync } = weex.requireModule('plus')
   systemInfo = getSystemInfoSync()
-  if (typeof systemInfo === 'string') {
+  if (isString(systemInfo)) {
     try {
       systemInfo = JSON.parse(systemInfo)
     } catch (error) {}

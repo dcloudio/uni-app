@@ -7,8 +7,6 @@ import {
   OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
 
-const isIOS = plus.os.name === 'iOS'
-
 let config: UniApp.TabBarOptions
 
 /**
@@ -154,6 +152,7 @@ export default {
       })
   },
   indexOf(page: string) {
+    const config = this.config
     const itemLength = config && config.list && config.list.length
     if (itemLength) {
       for (let i = 0; i < itemLength; i++) {
@@ -198,10 +197,14 @@ export default {
         }
       )
   },
+  get config() {
+    return config || __uniConfig.tabBar
+  },
   get visible() {
     return visible
   },
   get height() {
+    const config = this.config
     return (
       (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
       plus.navigator.getSafeAreaInsets().deviceBottom!
@@ -209,8 +212,9 @@ export default {
   },
   // tabBar是否遮挡内容区域
   get cover() {
+    const config = this.config
     const array = ['extralight', 'light', 'dark']
-    return isIOS && array.indexOf(config.blurEffect as string) >= 0
+    return config && array.indexOf(config.blurEffect as string) >= 0
   },
   setStyle({ mask }: { mask: string }) {
     tabBar.setMask({

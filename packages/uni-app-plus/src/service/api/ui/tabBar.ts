@@ -31,8 +31,10 @@ import {
   ShowTabBarRedDotOptions,
   ShowTabBarRedDotProtocol,
 } from '@dcloudio/uni-api'
-import { isTabBarPage } from '../../utils'
 import tabBar from '../../framework/app/tabBar'
+import { removeLeadingSlash } from '@dcloudio/uni-shared'
+import { normalizeTabBarRoute } from '@dcloudio/uni-core'
+import { isTabBarPage } from '../../../helpers/plus'
 
 export const setTabBarBadge = defineAsyncApi<API_TYPE_SET_TAB_BAR_BADGE>(
   API_SET_TAB_BAR_BADGE,
@@ -48,7 +50,7 @@ export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(
   API_SET_TAB_BAR_ITEM,
   (
     { index, text, iconPath, selectedIconPath, pagePath, visible, iconfont },
-    { resolve, reject }
+    { resolve }
   ) => {
     tabBar.setTabBarItem(
       index,
@@ -58,17 +60,14 @@ export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(
       visible,
       iconfont
     )
-    const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
-    if (route) {
-      const meta = route.meta
-      meta.isTabBar = true
-      meta.tabBarIndex = index
-      meta.isQuit = true
-      const tabBar = __uniConfig.tabBar
-      if (tabBar && tabBar.list && tabBar.list[index] && pagePath) {
-        tabBar.list[index].pagePath = pagePath.startsWith('/')
-          ? pagePath.substring(1)
-          : pagePath
+    if (pagePath) {
+      const tabBarItem = __uniConfig.tabBar!.list[index]
+      if (tabBarItem) {
+        const oldPagePath = tabBarItem.pagePath
+        const newPagePath = removeLeadingSlash(pagePath)
+        if (newPagePath !== oldPagePath) {
+          normalizeTabBarRoute(index, oldPagePath, newPagePath)
+        }
       }
     }
     resolve()

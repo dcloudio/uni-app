@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, isString, isPlainObject, extend, isArray, toTypeString, toRawType, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, hyphenate, camelize, isString, isFunction, isPlainObject, extend, isArray, toTypeString, toRawType, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -369,22 +369,22 @@ function formatDateTime({ date = new Date(), mode = 'date' }) {
 }
 function callOptions(options, data) {
     options = options || {};
-    if (typeof data === 'string') {
+    if (isString(data)) {
         data = {
             errMsg: data,
         };
     }
     if (/:ok$/.test(data.errMsg)) {
-        if (typeof options.success === 'function') {
+        if (isFunction(options.success)) {
             options.success(data);
         }
     }
     else {
-        if (typeof options.fail === 'function') {
+        if (isFunction(options.fail)) {
             options.fail(data);
         }
     }
-    if (typeof options.complete === 'function') {
+    if (isFunction(options.complete)) {
         options.complete(data);
     }
 }
@@ -720,7 +720,7 @@ function parseNVueDataset(attr) {
 }
 
 function plusReady(callback) {
-    if (typeof callback !== 'function') {
+    if (!isFunction(callback)) {
         return;
     }
     if (window.plus) {
@@ -1199,10 +1199,6 @@ const ACTION_TYPE_EVENT = 20;
 
 /**
  * 需要手动传入 timer,主要是解决 App 平台的定制 timer
- * @param fn
- * @param delay
- * @param timer
- * @returns
  */
 function debounce(fn, delay, { clearTimeout, setTimeout }) {
     let timeout;

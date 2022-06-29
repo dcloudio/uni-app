@@ -1,5 +1,7 @@
+import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
+  defineUniMainJsPlugin,
   COMMON_EXCLUDE,
   isInHybridNVue,
   uniViteInjectPlugin,
@@ -92,7 +94,7 @@ function initUniCloudEnv() {
   }
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
-    if (!Array.isArray(spaces)) {
+    if (!isArray(spaces)) {
       return
     }
     spaces.forEach((s) => uniCloudSpaces.push(s))
@@ -122,6 +124,23 @@ function initUniCloudEnv() {
 }
 
 export default () => [
+  defineUniMainJsPlugin((opts) => {
+    return {
+      name: 'uni:cloud',
+      enforce: 'pre',
+      transform(code, id) {
+        if (!opts.filter(id)) {
+          return
+        }
+        if (uniCloudSpaces.length) {
+          return {
+            code: code + `;import '@dcloudio/uni-cloud';`,
+            map: null,
+          }
+        }
+      },
+    }
+  }),
   uniCloudPlugin(),
   uniViteInjectPlugin('uni:cloud-inject', {
     exclude: [...COMMON_EXCLUDE],

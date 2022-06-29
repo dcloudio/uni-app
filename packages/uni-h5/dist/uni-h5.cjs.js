@@ -875,8 +875,8 @@ var index$C = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const baseUrl = __IMPORT_META_ENV_BASE_URL__;
 function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
   if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
     return uniShared.addLeadingSlash(filePath);
   }
@@ -2107,7 +2107,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   };
   function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
-    if (type.indexOf("_") !== 0 && typeof method === "function") {
+    if (type.indexOf("_") !== 0 && shared.isFunction(method)) {
       method(data, resolve);
     }
   }
@@ -2812,11 +2812,11 @@ function useFormField(nameKey, value) {
       const proxy = instance.proxy;
       return [
         proxy[nameKey],
-        typeof value === "string" ? proxy[value] : value.value
+        shared.isString(value) ? proxy[value] : value.value
       ];
     },
     reset() {
-      if (typeof value === "string") {
+      if (shared.isString(value)) {
         instance.proxy[value] = "";
       } else {
         value.value = "";
@@ -3057,7 +3057,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state) === false) {
+      if (shared.isFunction(beforeInput) && beforeInput(event, state) === false) {
         return;
       }
       state.value = field.value;
@@ -3307,7 +3307,7 @@ const useAttrs = (params = {}) => {
 };
 function flatVNode(nodes) {
   const array = [];
-  if (Array.isArray(nodes)) {
+  if (shared.isArray(nodes)) {
     nodes.forEach((vnode) => {
       if (vue.isVNode(vnode)) {
         if (vnode.type === vue.Fragment) {
@@ -3315,7 +3315,7 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
-      } else if (Array.isArray(vnode)) {
+      } else if (shared.isArray(vnode)) {
         array.push(...flatVNode(vnode));
       }
     });
@@ -4313,6 +4313,7 @@ const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: "",
     validator(value) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
     }
@@ -4407,7 +4408,7 @@ const pickerViewProps = {
       return [];
     },
     validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      return shared.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
     }
   },
   indicatorStyle: {
@@ -5017,7 +5018,16 @@ const CHARS = {
   lt: "<",
   nbsp: " ",
   quot: '"',
-  apos: "'"
+  apos: "'",
+  ldquo: "\u201C",
+  rdquo: "\u201D",
+  yen: "\uFFE5",
+  radic: "\u221A",
+  lceil: "\u2308",
+  rceil: "\u2309",
+  lfloor: "\u230A",
+  rfloor: "\u230B",
+  hellip: "\u2026"
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
@@ -5028,77 +5038,55 @@ function decodeEntities(htmlString) {
       return String.fromCharCode(stage.slice(1));
     }
     if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-      return String.fromCharCode("0" + stage.slice(1));
+      return String.fromCharCode(0 + stage.slice(1));
     }
-    const wrap = document.createElement("div");
-    wrap.innerHTML = match;
-    return wrap.innerText || wrap.textContent;
+    return match;
   });
 }
-function normlizeValue(tagName, name, value) {
-  if (tagName === "img" && name === "src")
-    return getRealPath(value);
-  return value;
+function processClickEvent(node, triggerItemClick) {
+  if (["a", "img"].includes(node.name) && triggerItemClick) {
+    return {
+      onClick: (e2) => {
+        triggerItemClick(e2, { node });
+        e2.stopPropagation();
+        e2.preventDefault();
+        e2.returnValue = false;
+      }
+    };
+  }
 }
-function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
-  nodes.forEach(function(node) {
+function normalizeAttrs(tagName, attrs) {
+  if (!shared.isPlainObject(attrs))
+    return;
+  for (const key in attrs) {
+    if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+      const value = attrs[key];
+      if (tagName === "img" && key === "src")
+        attrs[key] = getRealPath(value);
+    }
+  }
+}
+const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
+  if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
+    return [];
+  return nodeList.map((node) => {
     if (!shared.isPlainObject(node)) {
       return;
     }
     if (!shared.hasOwn(node, "type") || node.type === "node") {
-      if (!(typeof node.name === "string" && node.name)) {
-        return;
-      }
+      let nodeProps = { [scopeId]: "" };
       const tagName = node.name.toLowerCase();
       if (!shared.hasOwn(TAGS, tagName)) {
         return;
       }
-      const elem = document.createElement(tagName);
-      if (!elem) {
-        return;
-      }
-      scopeId && elem.setAttribute(scopeId, "");
-      const attrs = node.attrs;
-      if (shared.isPlainObject(attrs)) {
-        const tagAttrs = TAGS[tagName] || [];
-        Object.keys(attrs).forEach(function(name) {
-          let value = attrs[name];
-          switch (name) {
-            case "class":
-              Array.isArray(value) && (value = value.join(" "));
-            case "style":
-              elem.setAttribute(name, value);
-              break;
-            default:
-              if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, normlizeValue(tagName, name, value));
-              }
-          }
-        });
-      }
-      processClickEvent(node, elem, triggerItemClick);
-      const children = node.children;
-      if (Array.isArray(children) && children.length) {
-        parseNodes(node.children, elem, scopeId, triggerItemClick);
-      }
-      parentNode.appendChild(elem);
-    } else {
-      if (node.type === "text" && typeof node.text === "string" && node.text !== "") {
-        parentNode.appendChild(document.createTextNode(decodeEntities(node.text)));
-      }
+      normalizeAttrs(tagName, node.attrs);
+      nodeProps = shared.extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
+      return vue.h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
     }
+    if (node.type === "text" && shared.isString(node.text) && node.text !== "")
+      return vue.createTextVNode(decodeEntities(node.text || ""));
   });
-  return parentNode;
-}
-function processClickEvent(node, elem, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
-    elem.setAttribute("onClick", "return false;");
-    elem.addEventListener("click", (e2) => {
-      triggerItemClick(e2, { node });
-      e2.stopPropagation();
-    }, true);
-  }
-}
+};
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -5203,34 +5191,31 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$g,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress"],
+  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
   setup(props2, {
-    emit: emit2,
-    attrs
+    emit: emit2
   }) {
     const vm = vue.getCurrentInstance();
+    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = vue.ref(null);
+    const _vnode = vue.ref([]);
     const trigger = useCustomEvent(rootRef, emit2);
-    const hasItemClick = !!attrs.onItemclick;
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    function _renderNodes(nodes) {
-      if (typeof nodes === "string") {
-        nodes = parseHtml(nodes);
+    function renderVNode() {
+      let nodeList = props2.nodes;
+      if (shared.isString(nodeList)) {
+        nodeList = parseHtml(props2.nodes);
       }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment(), vm && vm.vnode.scopeId || "", hasItemClick && triggerItemClick);
-      rootRef.value.firstElementChild.innerHTML = "";
-      rootRef.value.firstElementChild.appendChild(nodeList);
+      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
-    vue.watch(() => props2.nodes, (value) => {
-      _renderNodes(value);
+    vue.watch(() => props2.nodes, renderVNode, {
+      immediate: true
     });
-    return () => {
-      return vue.createVNode("uni-rich-text", {
-        "ref": rootRef
-      }, [vue.createVNode("div", null, null)], 512);
-    };
+    return () => vue.h("uni-rich-text", {
+      ref: rootRef
+    }, vue.h("div", {}, _vnode.value));
   }
 });
 const props$f = {
@@ -6667,17 +6652,19 @@ function applyOptions(options, instance, publicThis) {
 function set(target, key, val) {
   return target[key] = val;
 }
-function errorHandler(err, instance, info) {
-  if (!instance) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, uniShared.ON_ERROR, err);
-  }
+function createErrorHandler(app) {
+  return function errorHandler(err, instance, _info) {
+    if (!instance) {
+      throw err;
+    }
+    const appInstance = app._instance;
+    if (!appInstance || !appInstance.proxy) {
+      throw err;
+    }
+    {
+      invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+    }
+  };
 }
 function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
@@ -6755,7 +6742,7 @@ function uniIdMixin(globalProperties) {
 function initApp$1(app) {
   const appConfig = app._context.config;
   if (shared.isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
+    appConfig.errorHandler = createErrorHandler(app);
   }
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
@@ -7477,7 +7464,7 @@ function useDanmu(props2, videoState) {
     time: 0,
     index: -1
   };
-  const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  const danmuList = shared.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
   danmuList.sort(function(a, b) {
     return (a.time || 0) - (b.time || 0);
   });
@@ -7975,7 +7962,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$7,
   setup(props2) {
-    const id = String(Number(props2.id) !== NaN ? props2.id : "");
+    const id = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
     const updateMarkerLabelStyle = useMarkerLabelStyle(id);
     let marker;
@@ -8178,7 +8165,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(b);
               }
               const cb = data.animationEnd;
-              if (typeof cb === "function") {
+              if (shared.isFunction(cb)) {
                 cb();
               }
             });
@@ -8705,7 +8692,7 @@ const props$2 = {
 };
 function getPoints(points) {
   const newPoints = [];
-  if (Array.isArray(points)) {
+  if (shared.isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({
@@ -9506,10 +9493,10 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     switch (props2.mode) {
       case mode.MULTISELECTOR:
         {
-          if (!Array.isArray(val)) {
+          if (!shared.isArray(val)) {
             val = state.valueArray;
           }
-          if (!Array.isArray(state.valueSync)) {
+          if (!shared.isArray(state.valueSync)) {
             state.valueSync = [];
           }
           const length = state.valueSync.length = Math.max(val.length, props2.range.length);
@@ -9574,7 +9561,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     _close();
     state.valueChangeSource = "click";
     const value = _getValue();
-    state.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+    state.valueSync = shared.isArray(value) ? value.map((val) => val) : value;
     trigger("change", {}, {
       value
     });
@@ -9811,7 +9798,7 @@ const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   let body = null;
   const contentType = normalizeContentType(header);
   if (method !== "GET") {
-    if (typeof data === "string" || data instanceof ArrayBuffer) {
+    if (shared.isString(data) || data instanceof ArrayBuffer) {
       body = data;
     } else {
       if (contentType === "json") {
@@ -9925,7 +9912,7 @@ const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
-    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const object = shared.isString(value) ? JSON.parse(value) : value;
     const type = object.type;
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object);
@@ -9961,7 +9948,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data 
 }, SetStorageProtocol);
 function getStorageOrigin(key) {
   const value = localStorage && localStorage.getItem(key);
-  if (typeof value !== "string") {
+  if (!shared.isString(value)) {
     throw new Error("data not found");
   }
   let data = value;

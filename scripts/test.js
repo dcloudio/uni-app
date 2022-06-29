@@ -10,7 +10,7 @@ runBuild(UtsTarget.KOTLIN, {
   },
   output: {
     dir: path.resolve(projectDir, 'unpackage/nativeplugins/test-uniplugin'),
-    sourceMap: true,
+    sourceMap: false,
     inlineSourcesContent: false,
   },
 })
