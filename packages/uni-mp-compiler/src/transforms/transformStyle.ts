@@ -24,6 +24,7 @@ import {
   SourceLocation,
 } from '@vue/compiler-core'
 import { hyphenate } from '@vue/shared'
+import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { HYPHENATE, STRINGIFY_STYLE } from '../runtimeHelpers'
 import { parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
@@ -34,6 +35,7 @@ import {
   rewirteWithHelper,
   rewriteExpression,
   rewriteSpreadElement,
+  VIRTUAL_HOST_STYLE,
 } from './utils'
 
 export function isStyleBinding({ arg, exp }: DirectiveNode) {
@@ -49,31 +51,32 @@ export function rewriteStyle(
   index: number,
   styleBindingProp: DirectiveNode,
   props: (AttributeNode | DirectiveNode)[],
+  virtualHost: boolean,
   context: TransformContext
 ) {
-  if (!styleBindingProp.exp) {
-    return
-  }
-  const expr = parseExpr(styleBindingProp.exp, context)
-  if (!expr) {
-    return
-  }
+  const expr = styleBindingProp.exp
+    ? parseExpr(styleBindingProp.exp, context)
+    : undefined
   let styleBidingExpr: Expression | undefined = expr
-  if (isObjectExpression(expr)) {
-    styleBidingExpr = createStyleBindingByObjectExpression(
-      rewriteStyleObjectExpression(expr, styleBindingProp.loc, context)
-    )
-  } else if (isArrayExpression(expr)) {
-    styleBidingExpr = createStyleBindingByArrayExpression(
-      rewriteStyleArrayExpression(expr, context)
-    )
-  } else {
-    styleBidingExpr = parseExpr(
-      rewriteStyleExpression(styleBindingProp.exp, context).content,
-      context
-    ) as Expression
-  }
-  if (!styleBidingExpr) {
+  if (expr) {
+    if (isObjectExpression(expr)) {
+      styleBidingExpr = createStyleBindingByObjectExpression(
+        rewriteStyleObjectExpression(expr, styleBindingProp.loc, context)
+      )
+    } else if (isArrayExpression(expr)) {
+      styleBidingExpr = createStyleBindingByArrayExpression(
+        rewriteStyleArrayExpression(expr, context)
+      )
+    } else {
+      styleBidingExpr = parseExpr(
+        rewriteStyleExpression(styleBindingProp.exp!, context).content,
+        context
+      ) as Expression
+    }
+    if (!styleBidingExpr) {
+      return
+    }
+  } else if (!virtualHost) {
     return
   }
   const staticStylePropIndex = findStaticStyleIndex(props)
@@ -81,22 +84,45 @@ export function rewriteStyle(
     const staticStyle = (props[staticStylePropIndex] as AttributeNode).value!
       .content
     if (staticStyle.trim()) {
-      if (index > staticStylePropIndex) {
-        styleBidingExpr = binaryExpression(
-          '+',
-          addSemicolon(stringLiteral(staticStyle)),
-          styleBidingExpr
-        )
+      if (styleBidingExpr) {
+        if (index > staticStylePropIndex) {
+          styleBidingExpr = binaryExpression(
+            '+',
+            addSemicolon(stringLiteral(staticStyle)),
+            styleBidingExpr
+          )
+        } else {
+          styleBidingExpr = binaryExpression(
+            '+',
+            addSemicolon(styleBidingExpr),
+            stringLiteral(staticStyle)
+          )
+        }
       } else {
-        styleBidingExpr = binaryExpression(
-          '+',
-          addSemicolon(styleBidingExpr),
-          stringLiteral(staticStyle)
-        )
+        styleBidingExpr = stringLiteral(staticStyle)
       }
     }
   }
-  styleBindingProp.exp = createSimpleExpression(genBabelExpr(styleBidingExpr))
+  if (virtualHost) {
+    styleBidingExpr = styleBidingExpr
+      ? binaryExpression(
+          '+',
+          addSemicolon(styleBidingExpr),
+          identifier(VIRTUAL_HOST_STYLE)
+        )
+      : identifier(VIRTUAL_HOST_STYLE)
+  }
+  styleBindingProp.exp = createSimpleExpression(genBabelExpr(styleBidingExpr!))
+}
+
+export function createVirtualHostStyle(
+  props: (AttributeNode | DirectiveNode)[],
+  context: TransformContext
+) {
+  const styleBindingProp = createBindDirectiveNode('style', '')
+  delete styleBindingProp.exp
+  rewriteStyle(0, styleBindingProp, props, true, context)
+  return styleBindingProp
 }
 
 function rewriteStyleExpression(

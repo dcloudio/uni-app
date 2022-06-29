@@ -11,11 +11,13 @@ import {
   findStaticClassIndex,
   isClassBinding,
   rewriteClass,
+  createVirtualHostClass,
 } from './transformClass'
 import {
   findStaticStyleIndex,
   isStyleBinding,
   rewriteStyle,
+  createVirtualHostStyle,
 } from './transformStyle'
 import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'
@@ -65,6 +67,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       }
 
       const { props } = node
+      const virtualHost = !!(
+        context.miniProgram.component?.mergeVirtualHostAttributes &&
+        context.rootNode === node
+      )
 
       for (let i = 0; i < props.length; i++) {
         const dir = props[i]
@@ -89,16 +95,26 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               // noop
             } else if (isClassBinding(dir)) {
               hasClassBinding = true
-              rewriteClass(i, dir, props, context)
+              rewriteClass(i, dir, props, virtualHost, context)
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
-              rewriteStyle(i, dir, props, context)
+              rewriteStyle(i, dir, props, virtualHost, context)
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
             } else {
               dir.exp = rewriteExpression(exp, context)
             }
           }
+        }
+      }
+      if (virtualHost) {
+        if (!hasClassBinding) {
+          hasClassBinding = true
+          props.push(createVirtualHostClass(props, context))
+        }
+        if (!hasStyleBinding) {
+          hasStyleBinding = true
+          props.push(createVirtualHostStyle(props, context))
         }
       }
       if (hasClassBinding) {

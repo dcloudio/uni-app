@@ -30,7 +30,11 @@ import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import { TransformContext } from '../transform'
-import { ATTR_VUE_PROPS } from '../transforms/utils'
+import {
+  ATTR_VUE_PROPS,
+  VIRTUAL_HOST_STYLE,
+  VIRTUAL_HOST_CLASS,
+} from '../transforms/utils'
 
 interface TemplateCodegenContext {
   code: string
@@ -342,10 +346,14 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
       genNode(node, context)
     })
   }
+  let virtualHost: boolean = false
   if (isUserComponent(node, context)) {
     tag = hyphenate(tag)
     if (context.component?.normalizeName) {
       tag = context.component?.normalizeName(tag)
+    }
+    if (context.component?.mergeVirtualHostAttributes) {
+      virtualHost = true
     }
   }
   const { push } = context
@@ -369,7 +377,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
     genVFor(node, context)
   }
   if (props.length) {
-    genElementProps(node, context)
+    genElementProps(node, virtualHost, context)
   }
 
   if (isSelfClosing) {
@@ -386,15 +394,34 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
   }
 }
 
+function checkVirtualHostProps(name: string, virtualHost: boolean): string[] {
+  const names: string[] = [name]
+  if (virtualHost) {
+    const obj: { [key: string]: string } = {
+      style: VIRTUAL_HOST_STYLE,
+      class: VIRTUAL_HOST_CLASS,
+    }
+    if (name in obj) {
+      // TODO 支付宝平台移除原有属性（支付宝小程序自定义组件外部属性始终无效）
+      names.push(obj[name])
+    }
+    return names
+  }
+  return names
+}
+
 export function genElementProps(
   node: ElementNode,
+  virtualHost: boolean,
   context: TemplateCodegenContext
 ) {
   node.props.forEach((prop) => {
     if (prop.type === NodeTypes.ATTRIBUTE) {
       const { value } = prop
       if (value) {
-        context.push(` ${prop.name}="${value.content}"`)
+        checkVirtualHostProps(prop.name, virtualHost).forEach((name) => {
+          context.push(` ${name}="${value.content}"`)
+        })
       } else {
         context.push(` ${prop.name}`)
       }
@@ -403,7 +430,7 @@ export function genElementProps(
       if (name === 'on') {
         genOn(prop, node, context)
       } else {
-        genDirectiveNode(prop, node, context)
+        genDirectiveNode(prop, node, virtualHost, context)
       }
     }
   })
@@ -431,6 +458,7 @@ function genOn(
 function genDirectiveNode(
   prop: DirectiveNode,
   node: ElementNode,
+  virtualHost: boolean,
   context: TemplateCodegenContext
 ) {
   const { push, component } = context
@@ -458,7 +486,9 @@ function genDirectiveNode(
   } else if (prop.arg && prop.exp) {
     const arg = (prop.arg as SimpleExpressionNode).content
     const exp = (prop.exp as SimpleExpressionNode).content
-    push(` ${arg}="{{${exp}}}"`)
+    checkVirtualHostProps(arg, virtualHost).forEach((arg) => {
+      push(` ${arg}="{{${exp}}}"`)
+    })
   } else {
     if (prop.name !== 'bind') {
       throw new Error(`unknown directive ` + JSON.stringify(prop))

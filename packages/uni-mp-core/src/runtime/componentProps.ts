@@ -53,6 +53,23 @@ function initDefaultProps(isBehavior: boolean = false) {
   return properties
 }
 
+function initVirtualHostProps(options?: Component.ComponentOptions) {
+  const properties: Component.PropertyOption = {}
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-alipay') {
+    if (__PLATFORM__ === 'mp-alipay' || (options && options.virtualHost)) {
+      properties.virtualHostStyle = {
+        type: null,
+        value: '',
+      }
+      properties.virtualHostClass = {
+        type: null,
+        value: '',
+      }
+    }
+  }
+  return properties
+}
+
 /**
  *
  * @param mpComponentOptions
@@ -62,7 +79,11 @@ export function initProps(mpComponentOptions: MPComponentOptions) {
   if (!mpComponentOptions.properties) {
     mpComponentOptions.properties = {}
   }
-  extend(mpComponentOptions.properties, initDefaultProps())
+  extend(
+    mpComponentOptions.properties,
+    initDefaultProps(),
+    initVirtualHostProps(mpComponentOptions.options)
+  )
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null]

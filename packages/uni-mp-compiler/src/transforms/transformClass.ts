@@ -31,6 +31,7 @@ import {
   createCompoundExpression,
   SourceLocation,
 } from '@vue/compiler-core'
+import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { parseExpr, isTrueExpr, isUndefined, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
 import { NORMALIZE_CLASS } from '../runtimeHelpers'
@@ -41,6 +42,7 @@ import {
   parseExprWithRewriteClass,
   rewriteExpression,
   rewriteSpreadElement,
+  VIRTUAL_HOST_CLASS,
 } from './utils'
 
 export function isClassBinding({ arg }: DirectiveNode) {
@@ -57,29 +59,33 @@ export function rewriteClass(
   index: number,
   classBindingProp: DirectiveNode,
   props: (AttributeNode | DirectiveNode)[],
+  virtualHost: boolean,
   context: TransformContext
 ) {
-  if (!classBindingProp.exp) {
-    return
-  }
-  const expr = parseExpr(classBindingProp.exp, context)
-  if (!expr) {
-    return
-  }
-  let classBindingExpr: Expression = expr
-  if (isObjectExpression(expr)) {
-    classBindingExpr = createClassBindingByObjectExpression(
-      rewriteClassObjectExpression(expr, classBindingProp.loc, context)
-    )
-  } else if (isArrayExpression(expr)) {
-    classBindingExpr = createClassBindingByArrayExpression(
-      rewriteClassArrayExpression(expr, context)
-    )
+  const expr = classBindingProp.exp
+    ? parseExpr(classBindingProp.exp, context)
+    : undefined
+  let classBindingExpr: Expression
+  if (expr) {
+    classBindingExpr = expr
+    if (isObjectExpression(expr)) {
+      classBindingExpr = createClassBindingByObjectExpression(
+        rewriteClassObjectExpression(expr, classBindingProp.loc, context)
+      )
+    } else if (isArrayExpression(expr)) {
+      classBindingExpr = createClassBindingByArrayExpression(
+        rewriteClassArrayExpression(expr, context)
+      )
+    } else {
+      classBindingExpr = parseExpr(
+        rewriteClassExpression(classBindingProp.exp!, context).content,
+        context
+      ) as Expression
+    }
+  } else if (virtualHost) {
+    classBindingExpr = arrayExpression([])
   } else {
-    classBindingExpr = parseExpr(
-      rewriteClassExpression(classBindingProp.exp, context).content,
-      context
-    ) as Expression
+    return
   }
   const staticClassPropIndex = findStaticClassIndex(props)
   if (staticClassPropIndex > -1) {
@@ -97,12 +103,29 @@ export function rewriteClass(
       }
     }
   }
+  if (virtualHost) {
+    if (!isArrayExpression(classBindingExpr)) {
+      classBindingExpr = arrayExpression([classBindingExpr])
+    }
+    classBindingExpr.elements.push(identifier(VIRTUAL_HOST_CLASS))
+  }
   if (!context.miniProgram.class.array) {
     classBindingExpr = parseClassBindingArrayExpr(classBindingExpr)
   }
 
   classBindingProp.exp = createSimpleExpression(genBabelExpr(classBindingExpr))
 }
+
+export function createVirtualHostClass(
+  props: (AttributeNode | DirectiveNode)[],
+  context: TransformContext
+) {
+  const classBindingProp = createBindDirectiveNode('class', '')
+  delete classBindingProp.exp
+  rewriteClass(0, classBindingProp, props, true, context)
+  return classBindingProp
+}
+
 /**
  * 目前 mp-toutiao, mp-alipay, mp-lark 不支持数组绑定class，故统一转换为字符串相加
  * @param classBindingExpr
