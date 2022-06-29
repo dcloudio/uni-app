@@ -33,7 +33,10 @@ export default {
     },
 
     _hoverMousedown (evt) {
-      evt.preventDefault()
+      if (this._hoverTouch) {
+        return
+      }
+
       this._handleHoverStart(evt)
       window.addEventListener('mouseup', this._hoverMouseup)
     },
@@ -59,6 +62,10 @@ export default {
     },
 
     _hoverMouseup () {
+      if (!this._hoverTouch) {
+        return
+      }
+
       this._handleHoverEnd()
       window.removeEventListener('mouseup', this._hoverMouseup)
     },
