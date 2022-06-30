@@ -414,6 +414,22 @@ function initDefaultProps(isBehavior = false) {
     }
     return properties;
 }
+function initVirtualHostProps(options) {
+    const properties = {};
+    {
+        if ((options && options.virtualHost)) {
+            properties.virtualHostStyle = {
+                type: null,
+                value: '',
+            };
+            properties.virtualHostClass = {
+                type: null,
+                value: '',
+            };
+        }
+    }
+    return properties;
+}
 /**
  *
  * @param mpComponentOptions
@@ -423,7 +439,7 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps());
+    extend(mpComponentOptions.properties, initDefaultProps(), initVirtualHostProps(mpComponentOptions.options));
 }
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function parsePropType(type, defaultValue) {
