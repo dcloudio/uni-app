@@ -2224,15 +2224,6 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.unsubscribe(getEventName(reqId));
 }
 
-function getFileName(path) {
-    const array = path.split('/');
-    return array[array.length - 1];
-}
-function getExtName(path) {
-    const array = path.split('.');
-    return array.length > 1 ? '.' + array[array.length - 1] : '';
-}
-
 const DEVICE_FREQUENCY = 200;
 const NETWORK_TYPES = [
     'unknown',
@@ -2246,6 +2237,15 @@ const NETWORK_TYPES = [
 ];
 const TEMP_PATH_BASE = '_doc/uniapp_temp';
 const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
+
+function getFileName(path) {
+    const array = path.split('/');
+    return array[array.length - 1];
+}
+function getExtName(path) {
+    const array = path.split('.');
+    return array.length > 1 ? '.' + array[array.length - 1] : '';
+}
 
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
