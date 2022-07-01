@@ -173,6 +173,9 @@ class StackTracey {
 const trimEnd = (s, n) => s && (s.length > n ? s.slice(0, n - 1) + '…' : s);
 const trimStart = (s, n) => s && (s.length > n ? '…' + s.slice(-(n - 1)) : s);
 function parseItem(e, maxColumnWidths, isMP) {
+    if (!e.parsed) {
+        return e.beforeParse;
+    }
     const filePath = (isMP ? e.file && e.file : e.fileShort && e.fileShort) +
         `${e.line ? ':' + e.line : ''}` +
         `${e.column ? ':' + e.column : ''}`;
@@ -238,6 +241,7 @@ function stacktracey(stacktrace, opts) {
                             fileRelative: source,
                             fileName,
                             thirdParty: isThirdParty(sourcePath),
+                            parsed: true,
                         });
                         /**
                          * 以 .js 结尾
@@ -359,6 +363,9 @@ function parseSourceMapContent(consumer, obj) {
     }
 }
 function joinItem(item) {
+    if (typeof item === 'string') {
+        return item;
+    }
     const a = item[0];
     const b = item[1] ? `  ${item[1]}` : '';
     const c = item[2] ? ` ${item[2]}` : '';

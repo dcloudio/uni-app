@@ -248,6 +248,9 @@ function parseItem(
   maxColumnWidths: StackTracey.MaxColumnWidths,
   isMP: boolean
 ) {
+  if (!e.parsed) {
+    return e.beforeParse
+  }
   const filePath =
     (isMP ? e.file && e.file : e.fileShort && e.fileShort) +
     `${e.line ? ':' + e.line : ''}` +
@@ -305,6 +308,8 @@ declare namespace StackTracey {
     error?: Error
     line?: number
     column?: number
+
+    parsed?: boolean
   }
 
   interface MaxColumnWidths {

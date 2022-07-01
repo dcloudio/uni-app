@@ -134,6 +134,7 @@ export function stacktracey(
                 fileRelative: source,
                 fileName,
                 thirdParty: isThirdParty(sourcePath),
+                parsed: true,
               })
 
               /**
@@ -290,7 +291,10 @@ interface UniStracktraceyPresetOptions {
   uniPlatform?: string
 }
 
-function joinItem(item: string[]) {
+function joinItem(item: string[] | string) {
+  if (typeof item === 'string') {
+    return item
+  }
   const a = item[0]
   const b = item[1] ? `  ${item[1]}` : ''
   const c = item[2] ? ` ${item[2]}` : ''
