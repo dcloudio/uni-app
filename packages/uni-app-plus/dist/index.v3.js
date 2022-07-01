@@ -853,7 +853,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -8056,7 +8056,7 @@ var serviceContext = (function () {
         }) => {
           provider.push(id);
         });
-        callback(null, provider);
+        callback(null, provider, services);
       }, err => {
         callback(err);
       });
@@ -8069,7 +8069,7 @@ var serviceContext = (function () {
         }) => {
           provider.push(id);
         });
-        callback(null, provider);
+        callback(null, provider, services);
       }, err => {
         callback(err);
       });
@@ -8082,14 +8082,15 @@ var serviceContext = (function () {
         }) => {
           provider.push(id);
         });
-        callback(null, provider);
+        callback(null, provider, services);
       }, err => {
         callback(err);
       });
     },
     push (callback) {
       if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-        callback(null, [plus.push.getClientInfo().id]);
+        const clientInfo = plus.push.getClientInfo();
+        callback(null, [clientInfo.id], [clientInfo]);
       } else {
         callback(null, []);
       }
@@ -8100,7 +8101,7 @@ var serviceContext = (function () {
     service
   }, callbackId) {
     if (providers[service]) {
-      providers[service]((err, provider) => {
+      providers[service]((err, provider, providers) => {
         if (err) {
           invoke$1(callbackId, {
             errMsg: 'getProvider:fail ' + err.message
@@ -8109,7 +8110,25 @@ var serviceContext = (function () {
           invoke$1(callbackId, {
             errMsg: 'getProvider:ok',
             service,
-            provider
+            provider,
+            providers: providers.map((provider) => {
+              const returnProvider = {};
+              if (isPlainObject(provider)) {
+                for (const key in provider) {
+                  if (Object.hasOwnProperty.call(provider, key)) {
+                    const item = provider[key];
+                    if (!isFn(item) && typeof item !== 'undefined') {
+                      const _key =
+                        key === 'nativeClient' || key === 'serviceReady'
+                          ? 'isAppExist'
+                          : key;
+                      returnProvider[_key] = item;
+                    }
+                  }
+                }
+              }
+              return returnProvider
+            })
           });
         }
       });
