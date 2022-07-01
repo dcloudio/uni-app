@@ -285,7 +285,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         process.env.UNI_PLATFORM !== 'mp-alipay' &&
         process.env.UNI_PLATFORM !== 'quickapp-webview' // 目前 ov 的开发工具支持 eval 模式
       ) {
-        plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin'))
+        plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin' || process.env.UNI_PLATFORM === 'mp-toutiao'))
       }
     }
 

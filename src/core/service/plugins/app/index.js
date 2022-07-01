@@ -10,6 +10,29 @@ export {
 }
   from './create-app'
 
+export let createLaunchOptions = function () {
+  const scene = 1001
+  const referrerInfo = {
+    appId: '',
+    extraData: {},
+  }
+  try {
+    return {
+      path: this.$route.meta && this.$route.meta.pagePath,
+      query: this.$route.query,
+      scene,
+      referrerInfo
+    }
+  } catch (error) {
+    return {
+      path: '',
+      query: {},
+      scene,
+      referrerInfo
+    }
+  }
+}
+
 export function createAppMixin (Vue, routes, entryRoute) {
   return {
     created: function AppCreated () {
@@ -31,11 +54,8 @@ export function createAppMixin (Vue, routes, entryRoute) {
     },
     mounted: function appMounted () {
       // 稍微靠后点，让 App 有机会在 mounted 事件前注册一些全局事件监听，如 UI 显示(showModal)
-      const args = {
-        path: this.$route.meta && this.$route.meta.pagePath,
-        query: this.$route.query,
-        scene: 1001
-      }
+      createLaunchOptions = createLaunchOptions.bind(this)
+      const args = createLaunchOptions()
       callAppHook(this, 'onLaunch', args)
       callAppHook(this, 'onShow', args)
     }

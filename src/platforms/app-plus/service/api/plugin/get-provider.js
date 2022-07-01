@@ -1,6 +1,7 @@
 import {
   invoke
 } from '../../bridge'
+import { isFn, isPlainObject } from 'uni-shared'
 
 const providers = {
   oauth (callback) {
@@ -11,7 +12,7 @@ const providers = {
       }) => {
         provider.push(id)
       })
-      callback(null, provider)
+      callback(null, provider, services)
     }, err => {
       callback(err)
     })
@@ -24,7 +25,7 @@ const providers = {
       }) => {
         provider.push(id)
       })
-      callback(null, provider)
+      callback(null, provider, services)
     }, err => {
       callback(err)
     })
@@ -37,14 +38,15 @@ const providers = {
       }) => {
         provider.push(id)
       })
-      callback(null, provider)
+      callback(null, provider, services)
     }, err => {
       callback(err)
     })
   },
   push (callback) {
     if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-      callback(null, [plus.push.getClientInfo().id])
+      const clientInfo = plus.push.getClientInfo()
+      callback(null, [clientInfo.id], [clientInfo])
     } else {
       callback(null, [])
     }
@@ -55,7 +57,7 @@ export function getProvider ({
   service
 }, callbackId) {
   if (providers[service]) {
-    providers[service]((err, provider) => {
+    providers[service]((err, provider, providers) => {
       if (err) {
         invoke(callbackId, {
           errMsg: 'getProvider:fail ' + err.message
@@ -64,7 +66,25 @@ export function getProvider ({
         invoke(callbackId, {
           errMsg: 'getProvider:ok',
           service,
-          provider
+          provider,
+          providers: providers.map((provider) => {
+            const returnProvider = {}
+            if (isPlainObject(provider)) {
+              for (const key in provider) {
+                if (Object.hasOwnProperty.call(provider, key)) {
+                  const item = provider[key]
+                  if (!isFn(item) && typeof item !== 'undefined') {
+                    const _key =
+                      key === 'nativeClient' || key === 'serviceReady'
+                        ? 'isAppExist'
+                        : key
+                    returnProvider[_key] = item
+                  }
+                }
+              }
+            }
+            return returnProvider
+          })
         })
       }
     })

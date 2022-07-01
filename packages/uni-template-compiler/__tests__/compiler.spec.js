@@ -182,6 +182,30 @@ describe('mp:compiler', () => {
       '<view><slot name="one"></slot></view>',
       '<view><slot name="one"></slot></view>'
     )
+    assertCodegen(
+      '<view><slot :name="one"></slot></view>',
+      '<view><slot name="{{one}}"></slot></view>'
+    )
+    assertCodegen(
+      '<view><slot :name="one+\'test\'"></slot></view>',
+      '<view><slot name="{{one+\'test\'}}"></slot></view>'
+    )
+    assertCodegen(
+      '<view><slot :name="one" :test="test"></slot></view>',
+      '<view><slot name="{{one}}"></slot></view>',
+      'with(this){{$setScopedSlotsParams(one,{"test":test})}}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<view><slot :name="one">text</slot></view>',
+      '<view><block wx:if="{{$slots[one]}}"><slot name="{{one}}"></slot></block><block wx:else>text</block></view>'
+    )
+    assertCodegen(
+      '<view><slot :name="one+\'test\'">text</slot></view>',
+      '<view><block wx:if="{{$slots[one+\'test\']}}"><slot name="{{one+\'test\'}}"></slot></block><block wx:else>text</block></view>'
+    )
   })
 
   // it('generate slot fallback content', () => {

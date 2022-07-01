@@ -320,7 +320,9 @@ export default {
         if (id || id === 0) {
           nativeMarker.onclick = (e) => {
             this.$trigger('markertap', {}, {
-              markerId: id
+              markerId: id,
+              latitude,
+              longitude
             })
           }
           if (nativeBubble) {

@@ -29,7 +29,8 @@ module.exports = {
       'sitemap.json',
       'ext.json',
       'custom-tab-bar',
-      'functional-pages'
+      'functional-pages',
+      'project.private.config.json'
     ]
 
     if (process.env.UNI_MP_PLUGIN) {
