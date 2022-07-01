@@ -44,9 +44,9 @@ class TestSwiftComponent : DCUniComponent, MKMapViewDelegate {
     }
     func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
         if (self.mapLoadedEvent) {
-            self.fireEvent("mapLoaded", {
-                mapLoaded: "success"
-            });
+            self.fireEvent("mapLoaded", [
+                "mapLoaded": "success"
+            ]);
         }
     }
 }
