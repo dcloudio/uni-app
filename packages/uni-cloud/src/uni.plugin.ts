@@ -56,7 +56,7 @@ function uniCloudPlugin(): UniVitePlugin {
         process.env.NODE_ENV === 'production'
       ) {
         console.warn(
-          '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+          '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         )
       }
       return {}
@@ -87,7 +87,7 @@ function uniCloudPlugin(): UniVitePlugin {
 const initUniCloudWarningOnce = once(() => {
   uniCloudSpaces.length &&
     console.warn(
-      '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+      '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
     )
 })
 
