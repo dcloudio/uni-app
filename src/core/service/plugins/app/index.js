@@ -14,7 +14,7 @@ export let createLaunchOptions = function () {
   const scene = 1001
   const referrerInfo = {
     appId: '',
-    extraData: {},
+    extraData: {}
   }
   try {
     return {
