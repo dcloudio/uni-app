@@ -22,6 +22,7 @@ const alipayWindowMap = {
 }
 
 const alipayTabBarMap = {
+  customize: 'customize',
   textColor: 'color',
   selectedColor: 'selectedColor',
   backgroundColor: 'backgroundColor',
