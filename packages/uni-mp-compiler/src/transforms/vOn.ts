@@ -213,10 +213,10 @@ export function wrapperVOn(
   const keys: string[] = []
   if (context.miniProgram.event?.key && context.inVFor) {
     const keyProp = findProp(node, 'key')
-    // 仅对 v-for 中 item.id 类型做处理，使用索引无需处理，避免引发更多问题
+    // 对 for 中的所有事件增加 key 标记，避免微信小程序不更新事件对象
     if (keyProp && isDirectiveNode(keyProp) && keyProp.exp) {
       const keyCode = genExpr(keyProp.exp)
-      if (keyCode && keyCode.includes('.')) {
+      if (keyCode) {
         keys.push(',')
         keys.push(genExpr(keyProp.exp))
       }
