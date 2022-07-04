@@ -90,7 +90,7 @@ if (process.env.UNI_CLOUD_SPACES) {
         isProduction
       ) {
         console.warn(uniI18n.__('pluginUni.unicloudReleaseH5', {
-          0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+          0: 'https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         }))
       } else if (
         hasUniCloudSpace &&
@@ -98,7 +98,7 @@ if (process.env.UNI_CLOUD_SPACES) {
         !isProduction
       ) {
         console.warn(uniI18n.__('pluginUni.unicloudShowedRunByHBuilderX', {
-          0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+          0: 'https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         }))
       }
 
