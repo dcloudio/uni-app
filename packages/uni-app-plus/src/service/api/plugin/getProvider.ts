@@ -4,7 +4,7 @@ import {
   API_TYPE_GET_PROVIDER,
   GetProviderProtocol,
 } from '@dcloudio/uni-api'
-import { isPlainObject, isFunction } from '@vue/shared'
+import { isPlainObject } from '@vue/shared'
 
 type Service =
   | PlusShareShareService
