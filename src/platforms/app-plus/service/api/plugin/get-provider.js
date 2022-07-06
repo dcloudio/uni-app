@@ -1,7 +1,7 @@
 import {
   invoke
 } from '../../bridge'
-import { isFn, isPlainObject } from 'uni-shared'
+import { isPlainObject } from 'uni-shared'
 
 const providers = {
   oauth (callback) {
