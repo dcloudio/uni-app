@@ -52,7 +52,7 @@ importers:
       typescript: 4.6.4
       vite: 2.9.13
       vue: 3.2.37
-      vue-router: ^4.1.0
+      vue-router: ^4.1.1
       yorkie: ^2.0.0
     devDependencies:
       '@babel/core': 7.18.5
@@ -103,7 +103,7 @@ importers:
       typescript: 4.6.4
       vite: 2.9.13
       vue: 3.2.37
-      vue-router: 4.1.0_vue@3.2.37
+      vue-router: 4.1.1_vue@3.2.37
       yorkie: 2.0.0
 
   packages/playground/ssr:
@@ -117,14 +117,14 @@ importers:
       serve-static: ^1.14.1
       vite: 2.9.13
       vue: 3.2.37
-      vue-router: ^4.1.0
+      vue-router: ^4.1.1
       vuex: ^4.0.2
     dependencies:
       '@dcloudio/uni-app': link:../../uni-app
       '@dcloudio/uni-components': link:../../uni-components
       '@dcloudio/uni-h5': link:../../uni-h5
       vue: 3.2.37
-      vue-router: 4.1.0_vue@3.2.37
+      vue-router: 4.1.1_vue@3.2.37
       vuex: 4.0.2_vue@3.2.37
     devDependencies:
       '@dcloudio/vite-plugin-uni': link:../../vite-plugin-uni
@@ -453,7 +453,7 @@ importers:
       localstorage-polyfill: ^1.0.1
       safe-area-insets: ^1.4.1
       vue: 3.2.37
-      vue-router: ^4.1.0
+      vue-router: ^4.1.1
       xmlhttprequest: ^1.8.0
     dependencies:
       '@dcloudio/uni-h5-vite': link:../uni-h5-vite
@@ -464,7 +464,7 @@ importers:
       '@vue/shared': 3.2.37
       localstorage-polyfill: 1.0.1
       safe-area-insets: 1.4.1
-      vue-router: 4.1.0_vue@3.2.37
+      vue-router: 4.1.1_vue@3.2.37
       xmlhttprequest: 1.8.0
     devDependencies:
       '@dcloudio/uni-cli-i18n': 2.0.0-alpha-33020211130001
@@ -8239,8 +8239,8 @@ packages:
       vue: 3.2.37
     dev: false
 
-  /vue-router/4.1.0_vue@3.2.37:
-    resolution: {integrity: sha512-A+dYO0ZXLJFZ40ebW3XtqehCW0Wv2xNH4lFddOByDja4NtItEdyirrShTlvD3UA4xc5a5mG2RRI30BusYpOb9g==}
+  /vue-router/4.1.1_vue@3.2.37:
+    resolution: {integrity: sha512-Wp1mEf2xCwT0ez7o9JvgpfBp9JGnVb+dPERzXDbugTatzJAJ60VWOhJKifQty85k+jOreoFHER4r5fu062PhPw==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
