@@ -1494,7 +1494,7 @@ function parse (
         if(
           (
             !onRE.test(attr.name) && 
-            attr.name.indexOf('v-slot') !== 0
+            !slotRE.test(attr.name)
           ) && // fixed by xxxxxx 忽略 v-slot
           attr.value === '' &&
           (attr.start + attr.name.length) === attr.end
