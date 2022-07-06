@@ -8117,7 +8117,7 @@ var serviceContext = (function () {
                 for (const key in provider) {
                   if (Object.hasOwnProperty.call(provider, key)) {
                     const item = provider[key];
-                    if (!isFn(item) && typeof item !== 'undefined') {
+                    if (typeof item !== 'undefined') {
                       const _key =
                         key === 'nativeClient' || key === 'serviceReady'
                           ? 'isAppExist'
