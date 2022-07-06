@@ -9,6 +9,8 @@ const lifecycle = {
   onLaunch(options) {
     // 进入应用上报数据
     stat.launch(options, this)
+    // 上报push推送id
+    stat.pushEvent(options)
   },
   onLoad(options) {
     stat.load(options, this)

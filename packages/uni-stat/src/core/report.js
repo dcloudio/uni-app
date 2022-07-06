@@ -287,8 +287,9 @@ export default class Report {
   /**
    * 发送请求,应用维度上报
    * @param {Object} options 页面信息
+   * @param {Boolean} type 是否立即上报
    */
-  sendReportRequest(options) {
+  sendReportRequest(options, type) {
     this._navigationBarTitle.lt = '1'
     this._navigationBarTitle.config = get_page_name(options.path)
     let is_opt = options.query && JSON.stringify(options.query) !== '{}'
@@ -305,9 +306,9 @@ export default class Report {
       cst: options.cst || 1,
     })
     if (get_platform_name() === 'n') {
-      this.getProperty()
+      this.getProperty(type)
     } else {
-      this.getNetworkInfo()
+      this.getNetworkInfo(type)
     }
   }
 
@@ -388,24 +389,66 @@ export default class Report {
     this.request(options)
   }
 
+  sendPushRequest(options, cid) {
+    let time = get_time()
+
+    const statData = {
+      lt: '101',
+      cid: cid,
+      t: time,
+      ut: this.statData.ut,
+    }
+
+    // debug 打印打点信息
+    if (is_debug) {
+      log(statData)
+    }
+
+    const stat_data = handle_data({
+      101: [statData],
+    })
+    let optionsData = {
+      usv: STAT_VERSION, //统计 SDK 版本号
+      t: time, //发送请求时的时间戮
+      requests: stat_data,
+    }
+
+    if (__STAT_VERSION__ === '1') {
+      if (statData.ut === 'h5') {
+        this.imageRequest(optionsData)
+        return
+      }
+    }
+
+    // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
+    if (get_platform_name() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this.sendRequest(optionsData)
+      }, 200)
+      return
+    }
+
+    this.sendRequest(optionsData)
+  }
+
   /**
    * 获取wgt资源版本
    */
-  getProperty() {
+  getProperty(type) {
     plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
       this.statData.v = wgtinfo.version || ''
-      this.getNetworkInfo()
+      this.getNetworkInfo(type)
     })
   }
 
   /**
    * 获取网络信息
    */
-  getNetworkInfo() {
+  getNetworkInfo(type) {
     uni.getNetworkType({
       success: (result) => {
         this.statData.net = result.networkType
-        this.getLocation()
+        this.getLocation(type)
       },
     })
   }
@@ -413,7 +456,7 @@ export default class Report {
   /**
    * 获取位置信息
    */
-  getLocation() {
+  getLocation(type) {
     if (stat_config.getLocation) {
       uni.getLocation({
         type: 'wgs84',
@@ -427,13 +470,13 @@ export default class Report {
 
           this.statData.lat = result.latitude
           this.statData.lng = result.longitude
-          this.request(this.statData)
+          this.request(this.statData, type)
         },
       })
     } else {
       this.statData.lat = 0
       this.statData.lng = 0
-      this.request(this.statData)
+      this.request(this.statData, type)
     }
   }
 

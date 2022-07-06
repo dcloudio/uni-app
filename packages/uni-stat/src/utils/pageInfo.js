@@ -285,9 +285,9 @@ export const handle_data = (statData) => {
     rd.forEach((elm) => {
       let newData = ''
       if (__STAT_VERSION__ === '1') {
-         newData = get_splicing(elm)
+        newData = get_splicing(elm)
       }
-      if(__STAT_VERSION__ === '2') {
+      if (__STAT_VERSION__ === '2') {
         newData = elm
       }
       if (i === 0) {
@@ -496,6 +496,9 @@ export const log = (data) => {
       break
     case '31':
       msg_type = '应用错误'
+      break
+    case '101':
+      msg_type = 'PUSH'
       break
   }
   if (msg_type) {
