@@ -186,7 +186,15 @@ const options = {
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
-            targets: process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : [],
+            targets: [
+                ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
+                {
+                    src: ['customize-tab-bar'],
+                    get dest() {
+                        return process.env.UNI_OUTPUT_DIR;
+                    },
+                },
+            ],
         },
     },
     global: 'my',
@@ -205,6 +213,7 @@ const options = {
             titlePenetrate: 'titlePenetrate',
         },
         tabBarOptionsMap: {
+            customize: 'customize',
             textColor: 'color',
             selectedColor: 'selectedColor',
             backgroundColor: 'backgroundColor',
