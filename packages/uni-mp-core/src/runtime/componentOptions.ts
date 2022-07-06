@@ -5,6 +5,8 @@ import {
   // @ts-ignore
   findComponentPropsData,
   // @ts-ignore
+  hasQueueJob,
+  // @ts-ignore
   invalidateJob,
   // @ts-ignore
   updateProps,
@@ -60,11 +62,15 @@ export function updateComponentProps(
   const nextProps = findComponentPropsData(up) || {}
   if (hasPropsChanged(prevProps, nextProps)) {
     updateProps(instance, nextProps, prevProps, false)
-    const index = invalidateJob(instance.update)
+    if (hasQueueJob(instance.update)) {
+      invalidateJob(instance.update)
+    }
     if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-baidu') {
       // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
       // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
-      index === -1 && instance.update()
+      if (!hasQueueJob(instance.update)) {
+        instance.update()
+      }
     } else {
       instance.update()
     }

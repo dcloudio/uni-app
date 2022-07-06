@@ -6215,7 +6215,8 @@ function baseCreateRenderer(options, createHydrationFns) {
       if (props) {
         for (var key in props) {
           if (key !== 'value' && !isReservedProp(key)) {
-            hostPatchProp(el, key, null, props[key], isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+            hostPatchProp(el, key, null, props[key], isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren, // fixed by xxxxxx
+            vnode.hostInstance);
           }
         }
         /**
@@ -6231,7 +6232,8 @@ function baseCreateRenderer(options, createHydrationFns) {
 
         if ('value' in props) {
           // fixed by xxxxxx
-          hostPatchProp(el, 'value', null, props.value, false, [], parentComponent);
+          hostPatchProp(el, 'value', null, props.value, false, [], parentComponent, null, undefined, // fixed by xxxxxx
+          vnode.hostInstance);
         }
 
         if (vnodeHook = props.onVnodeBeforeMount) {
@@ -6378,7 +6380,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         ) {
           if (oldProps.class !== newProps.class) {
             // fixed by xxxxxx
-            hostPatchProp(el, 'class', null, newProps.class, isSVG, [], parentComponent);
+            hostPatchProp(el, 'class', null, newProps.class, isSVG, [], parentComponent, null, undefined, // fixed by xxxxxx
+            n2.hostInstance);
           }
         } // style
         // this flag is matched when the element has dynamic style bindings
@@ -6388,7 +6391,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         /* STYLE */
         ) {
           // fixed by xxxxxx
-          hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG, [], parentComponent);
+          hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG, [], parentComponent, null, undefined, // fixed by xxxxxx
+          n2.hostInstance);
         } // props
         // This flag is matched when the element has dynamic prop/attr bindings
         // other than class and style. The keys of dynamic prop/attrs are saved for
@@ -6410,7 +6414,8 @@ function baseCreateRenderer(options, createHydrationFns) {
 
             if (next !== prev || key === 'value' || hostForcePatchProp && hostForcePatchProp(el, key) // fixed by xxxxxx
             ) {
-              hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
+              hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren, // fixed by xxxxxx
+              n2.hostInstance);
             }
           }
         }
@@ -6472,21 +6477,24 @@ function baseCreateRenderer(options, createHydrationFns) {
 
         if (next !== prev && key !== 'value' || hostForcePatchProp && hostForcePatchProp(el, key) // fixed by xxxxxx
         ) {
-          hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+          hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren, // fixed by xxxxxx
+          vnode.hostInstance);
         }
       }
 
       if (oldProps !== EMPTY_OBJ) {
         for (var _key14 in oldProps) {
           if (!isReservedProp(_key14) && !(_key14 in newProps)) {
-            hostPatchProp(el, _key14, oldProps[_key14], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+            hostPatchProp(el, _key14, oldProps[_key14], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren, // fixed by xxxxxx
+            vnode.hostInstance);
           }
         }
       }
 
       if ('value' in newProps) {
         // fixed by xxxxxx
-        hostPatchProp(el, 'value', oldProps.value, newProps.value, false, [], parentComponent);
+        hostPatchProp(el, 'value', oldProps.value, newProps.value, false, [], parentComponent, null, undefined, // fixed by xxxxxx
+        vnode.hostInstance);
       }
     }
   };
@@ -8095,7 +8103,9 @@ function createBaseVNode(type) {
     patchFlag,
     dynamicProps,
     dynamicChildren: null,
-    appContext: null
+    appContext: null,
+    // fixed by xxxxxx
+    hostInstance: currentRenderingInstance
   };
 
   if (needFullChildrenNormalization) {
@@ -8286,6 +8296,8 @@ function cloneVNode(vnode, extraProps) {
     dynamicProps: vnode.dynamicProps,
     dynamicChildren: vnode.dynamicChildren,
     appContext: vnode.appContext,
+    // fixed by xxxxxx
+    hostInstance: vnode.hostInstance,
     dirs: vnode.dirs,
     transition: vnode.transition,
     // These should technically only be non-null on mounted VNodes. However,
@@ -9733,6 +9745,14 @@ function patchEvent(el, rawName, prevValue, nextValue) {
 
 var optionsModifierRE = /(?:Once|Passive|Capture)$/;
 
+function formatEventName(name) {
+  if (name === 'on-post-message') {
+    return 'onPostMessage';
+  }
+
+  return name;
+}
+
 function parseName(name) {
   var options;
 
@@ -9746,7 +9766,8 @@ function parseName(name) {
     }
   }
 
-  return [hyphenate(name.slice(2)), options];
+  name = name.slice(2);
+  return [formatEventName(hyphenate(name)), options];
 }
 
 function createInvoker(initialValue, instance) {
@@ -9848,9 +9869,10 @@ var patchProp = function (el, key, prevValue, nextValue) {
   var parentComponent = arguments.length > 6 ? arguments[6] : undefined;
   var parentSuspense = arguments.length > 7 ? arguments[7] : undefined;
   var unmountChildren = arguments.length > 8 ? arguments[8] : undefined;
+  var hostInstance = arguments.length > 9 ? arguments[9] : undefined;
 
   if (key === 'class') {
-    patchClass(el, prevValue, nextValue, parentComponent);
+    patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
   } else if (key === 'style') {
     patchStyle(el, prevValue, nextValue);
   } else if (isOn(key)) {

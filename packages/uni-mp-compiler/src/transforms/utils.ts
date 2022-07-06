@@ -38,6 +38,9 @@ export const ATTR_COM_TYPE = 'u-t'
 
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
+export const VIRTUAL_HOST_STYLE = 'virtualHostStyle'
+export const VIRTUAL_HOST_CLASS = 'virtualHostClass'
+
 export function rewriteSpreadElement(
   name: symbol,
   expr: SpreadElement,

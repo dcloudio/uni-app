@@ -1,5 +1,5 @@
 import fs from 'fs'
-import StackTracey from 'stacktracey'
+import StackTracey from './stacktracey'
 import {
   SourceMapConsumer,
   BasicSourceMapConsumer,
@@ -27,8 +27,17 @@ type StacktraceyItems = StackTracey.Entry & {
 }
 type Stacktracey = {
   items: StacktraceyItems[]
+  itemsHeader: StackTracey['itemsHeader']
   asTable?: StackTracey['asTable']
 }
+
+type asTableResult =
+  | string
+  | {
+      userError: string
+      thirdParty: string
+    }
+
 interface StacktraceyPreset {
   /**
    * 解析错误栈信息
@@ -43,7 +52,7 @@ interface StacktraceyPreset {
     stack: Stacktracey
     maxColumnWidths?: StackTracey.MaxColumnWidths
     stacktrace: string
-  }): string
+  }): asTableResult
   /**
    * 编译后的文件名地址
    * @param file
@@ -69,55 +78,98 @@ interface StacktraceyOptions {
 export function stacktracey(
   stacktrace: string,
   opts: StacktraceyOptions
-): Promise<string> {
-  const parseStack: Array<Promise<any>> = []
+): Promise<asTableResult> {
+  let cancel: boolean = false
 
   const stack = opts.preset.parseStacktrace(stacktrace)
 
+  let parseStack = Promise.resolve()
+
   stack.items.forEach((item, index) => {
-    const fn = () => {
+    const fn = (
+      item: StacktraceyItems,
+      index: number
+    ): Promise<undefined | void> => {
       const { line = 0, column = 0, file, fileName, fileRelative } = item
-      try {
+      if (item.thirdParty) {
+        return Promise.resolve()
+      }
+
+      function _getSourceMapContent(
+        file: string,
+        fileName: string,
+        fileRelative: string
+      ) {
         return opts.preset
           .getSourceMapContent(file, fileName, fileRelative)
           .then((content) => {
             if (content) {
               return getConsumer(content).then((consumer) => {
-                const sourceMapContent = parseSourceMapContent(consumer, {
+                return parseSourceMapContent(consumer, {
                   line,
                   column,
                 })
-
-                if (sourceMapContent) {
-                  const {
-                    source,
-                    sourcePath,
-                    sourceLine,
-                    sourceColumn,
-                    fileName = '',
-                  } = sourceMapContent
-
-                  stack.items[index] = Object.assign({}, item, {
-                    file: source,
-                    line: sourceLine,
-                    column: sourceColumn,
-                    fileShort: sourcePath,
-                    fileRelative: sourcePath,
-                    fileName,
-                  })
-                }
               })
             }
           })
+      }
+
+      try {
+        return _getSourceMapContent(file, fileName, fileRelative).then(
+          (sourceMapContent) => {
+            if (sourceMapContent) {
+              const {
+                source,
+                sourcePath,
+                sourceLine,
+                sourceColumn,
+                fileName = '',
+              } = sourceMapContent
+
+              stack.items[index] = Object.assign({}, item, {
+                file: source,
+                line: sourceLine,
+                column: sourceColumn,
+                fileShort: sourcePath,
+                fileRelative: source,
+                fileName,
+                thirdParty: isThirdParty(sourcePath),
+                parsed: true,
+              })
+
+              /**
+               * 以 .js 结尾
+               * 包含 app-service.js 则需要再解析 两次
+               * 不包含 app-service.js 则无需再解析 一次
+               */
+              const curItem = stack.items[index]
+              if (
+                (stack as StackTracey).isMP &&
+                curItem.beforeParse.indexOf('app-service') !== -1
+              ) {
+                return fn(curItem, index)
+              }
+            }
+          }
+        )
       } catch (error) {
         return Promise.resolve()
       }
     }
-    parseStack.push(fn())
+    parseStack = parseStack.then(() => {
+      // TODO cancel
+      // @ts-ignore
+      if (cancel) return Promise.resolve()
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          fn(item, index).then(resolve)
+        }, 0)
+      })
+    })
   })
 
-  return new Promise((resolve, reject) => {
-    Promise.all(parseStack)
+  const _promise = new Promise((resolve, reject) => {
+    parseStack
       .then(() => {
         const parseError = opts.preset.asTableStacktrace({
           stack,
@@ -133,20 +185,31 @@ export function stacktracey(
       .catch(() => {
         resolve(stacktrace)
       })
-  })
+  }) as Promise<asTableResult>
+
+  return _promise
+}
+
+function isThirdParty(relativePath: string) {
+  return relativePath.indexOf('@dcloudio') !== -1
 }
 
 function getConsumer(
   content: string
 ): Promise<BasicSourceMapConsumer | IndexedSourceMapConsumer> {
   return new Promise((resolve, reject) => {
-    if (SourceMapConsumer.with) {
-      SourceMapConsumer.with(content, null, (consumer) => {
+    try {
+      if (SourceMapConsumer.with) {
+        SourceMapConsumer.with(content, null, (consumer) => {
+          resolve(consumer)
+        })
+      } else {
+        // @ts-ignore
+        const consumer = SourceMapConsumer(content)
         resolve(consumer)
-      })
-    } else {
-      // @ts-ignore
-      resolve(SourceMapConsumer(content))
+      }
+    } catch (error) {
+      reject()
     }
   })
 }
@@ -161,8 +224,15 @@ function getSourceMapContent(sourcemapUrl: string) {
             uni.request({
               url: sourcemapUrl,
               success: (res) => {
-                sourcemapCatch[sourcemapUrl] = res.data as string
-                resolve(sourcemapCatch[sourcemapUrl])
+                if (res.statusCode === 200) {
+                  sourcemapCatch[sourcemapUrl] = res.data as string
+                  resolve(sourcemapCatch[sourcemapUrl])
+                } else {
+                  resolve((sourcemapCatch[sourcemapUrl] = ''))
+                }
+              },
+              fail() {
+                resolve((sourcemapCatch[sourcemapUrl] = ''))
               },
             })
           } else {
@@ -182,19 +252,17 @@ function getSourceMapContent(sourcemapUrl: string) {
   }
 }
 
-type SourceMapContent =
-  | undefined
-  | {
-      source: string
-      sourcePath: string
-      sourceLine: number
-      sourceColumn: number
-      fileName: string | undefined
-    }
+type SourceMapContent = {
+  source: string
+  sourcePath: string
+  sourceLine: number
+  sourceColumn: number
+  fileName: string | undefined
+}
 function parseSourceMapContent(
   consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer,
   obj: Position
-): SourceMapContent {
+): SourceMapContent | undefined {
   // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
   const {
     source,
@@ -219,13 +287,36 @@ function parseSourceMapContent(
 interface UniStracktraceyPresetOptions {
   base: string
   sourceRoot: string
+  splitThirdParty?: boolean
+  uniPlatform?: string
 }
+
+function joinItem(item: string[] | string) {
+  if (typeof item === 'string') {
+    return item
+  }
+  const a = item[0]
+  const b = item[1] ? `  ${item[1]}` : ''
+  const c = item[2] ? ` ${item[2]}` : ''
+  return `${a}${b}${c}`
+}
+
 export function uniStracktraceyPreset(
   opts: UniStracktraceyPresetOptions
 ): StacktraceyPreset {
-  const { base, sourceRoot } = opts
+  const { base, sourceRoot, splitThirdParty, uniPlatform } = opts
+
+  let stack: StackTracey
 
   return {
+    /**
+     *
+     * 微信特殊处理
+     * 微信解析步骤：
+     *    1. //usr/app-service.js -> 'weixin/__APP__/app-service.map.map'
+     *    2. //usr/pages/API/app-service.js -> 'weixin/pages/API/app-service.map.map'
+     *    3. uni-list-item/uni-list-item.js -> ${base}/uni-list-item/uni-list-item.js.map
+     */
     parseSourceMapUrl(file, fileName, fileRelative) {
       // 组合 sourceMapUrl
       if (fileRelative.indexOf('(') !== -1)
@@ -234,24 +325,71 @@ export function uniStracktraceyPreset(
       if (sourceRoot) {
         return `${fileRelative.replace(sourceRoot, base + '/')}.map`
       }
-      return `${base}/${fileRelative}.map`
+      let baseAfter = ''
+      if (stack.isMP) {
+        if (fileRelative.indexOf('app-service.js') !== -1) {
+          baseAfter = (base.match(/\w$/) ? '/' : '') + '__WEIXIN__'
+          if (fileRelative === fileName) {
+            baseAfter += '/__APP__'
+          }
+          fileRelative = fileRelative.replace('.js', '.map')
+        }
+        if (baseAfter && !!fileRelative.match(/^\w/)) baseAfter += '/'
+      }
+      return `${base}${baseAfter}${fileRelative}.map`
     },
     getSourceMapContent(file, fileName, fileRelative) {
-      return Promise.resolve(
-        getSourceMapContent(
-          this.parseSourceMapUrl(file, fileName, fileRelative)
-        )
-      )
+      if (stack.isMP && fileRelative.indexOf('.js') === -1) {
+        return Promise.resolve('')
+      }
+      const sourcemapUrl = this.parseSourceMapUrl(file, fileName, fileRelative)
+      return Promise.resolve(getSourceMapContent(sourcemapUrl))
     },
     parseStacktrace(stacktrace) {
-      return new StackTracey(stacktrace)
+      stack = new StackTracey(stacktrace, uniPlatform)
+      return stack
     },
     asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
       const errorName = stacktrace.split('\n')[0]
-      return (
-        (errorName.indexOf('at') === -1 ? `${errorName}\n` : '') +
-        (stack.asTable ? stack.asTable({ maxColumnWidths }) : '')
-      )
+      const lines = stack.asTable
+        ? stack.asTable(maxColumnWidths ? { maxColumnWidths } : undefined)
+        : { items: [], thirdPartyItems: [] }
+      if (lines.items.length || lines.thirdPartyItems.length) {
+        const { items: stackLines, thirdPartyItems: stackThirdPartyLines } =
+          lines
+
+        const userError = stack.itemsHeader
+          .map((item) => {
+            if (item === '%StacktraceyItem%') {
+              const _stack = stackLines.shift()
+
+              return _stack ? joinItem(_stack) : ''
+            }
+            return item
+          })
+          .filter(Boolean)
+          .join('\n')
+        const thirdParty = stackThirdPartyLines.length
+          ? stackThirdPartyLines.map(joinItem).join('\n')
+          : ''
+
+        if (splitThirdParty) {
+          return {
+            userError,
+            thirdParty,
+          }
+        }
+
+        return userError + '\n' + thirdParty
+      } else {
+        if (splitThirdParty) {
+          return {
+            userError: errorName,
+            thirdParty: '',
+          }
+        }
+        return errorName
+      }
     },
   }
 }
@@ -312,7 +450,7 @@ export function utsStracktraceyPreset(
             return undefined
           }
 
-          const fileName = planA[1]
+          const fileName: string = planA[1]
             ? (planB = planA[1].match(/(.*)*\/(.+)/) || [])[2] || ''
             : ''
 
@@ -336,6 +474,7 @@ export function utsStracktraceyPreset(
 
       return {
         items: entries as StackTracey.Entry[],
+        itemsHeader: [],
       }
     },
     asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {

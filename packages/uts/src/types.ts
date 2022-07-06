@@ -1,16 +1,8 @@
 export interface UtsParserConfig {
   /**
-   * Defaults to `false`.
-   */
-  tsx?: boolean
-  /**
-   * Defaults to `false`.
-   */
-  decorators?: boolean
-  /**
    * Defaults to `false`
    */
-  dynamicImport?: boolean
+  allowImportWithoutSpecifiers?: boolean
 }
 
 export type UtsParseOptions = UtsParserConfig & {
@@ -18,29 +10,22 @@ export type UtsParseOptions = UtsParserConfig & {
   comments?: boolean
 }
 
-export type InputKotlinOptions = UtsParseOptions & {
+export type UtsInputOptions = UtsParseOptions & {
   root: string
   filename: string
   namespace?: string
 }
 
-export type OutputKotlinOptions = {
+export type UtsOutputOptions = {
   outDir: string
   imports?: string[]
   sourceMap: boolean | string
   inlineSourcesContent?: boolean
+  extname: string
 }
-export interface UtsKotlinOptions {
-  input: InputKotlinOptions
-  output: OutputKotlinOptions
-}
-
-export type InputSwiftOptions = UtsParseOptions
-export type OutputSwiftOptions = {}
-
-export interface UtsSwiftOptions {
-  input: InputSwiftOptions
-  output: OutputSwiftOptions
+export interface UtsOptions {
+  input: UtsInputOptions
+  output: UtsOutputOptions
 }
 
 export interface UtsResult {

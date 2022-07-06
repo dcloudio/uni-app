@@ -124,6 +124,7 @@ export interface TransformContext
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
   isMiniProgramComponent(name: string): 'plugin' | 'component' | undefined
+  rootNode: TemplateChildNode | null
 }
 
 export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
@@ -154,6 +155,7 @@ export function isScopedSlotVFor({ source }: CodegenVForScope) {
 
 export function transform(root: CodegenRootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
+  findRootNode(root, context)
   traverseNode(root, context)
   root.renderData = createRenderDataExpr(context.scope.properties, context)
   // finalize meta information
@@ -162,6 +164,15 @@ export function transform(root: CodegenRootNode, options: TransformOptions) {
   root.imports = context.imports
   root.cached = context.cached
   return context
+}
+
+function findRootNode(root: RootNode, context: TransformContext) {
+  const children = root.children.filter(
+    (node) => node.type === NodeTypes.ELEMENT && node.tag !== 'template'
+  )
+  if (children.length === 1) {
+    context.rootNode = children[0]
+  }
 }
 
 export function traverseNode(
@@ -476,6 +487,7 @@ export function createTransformContext(
     isMiniProgramComponent(name) {
       return miniProgramComponents[name]
     },
+    rootNode: null,
   }
 
   function addId(id: string) {

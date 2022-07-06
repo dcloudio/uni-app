@@ -1,3 +1,5 @@
+import path from 'path'
+import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
@@ -6,6 +8,7 @@ import {
   isInHybridNVue,
   uniViteInjectPlugin,
   UniVitePlugin,
+  isInHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniValidateFunctionPlugin } from './validateFunction'
@@ -88,7 +91,41 @@ const initUniCloudWarningOnce = once(() => {
     )
 })
 
+function checkProjectUniCloudDir() {
+  return !!sync(['uniCloud-aliyun', 'uniCloud-tcb'], {
+    cwd: isInHBuilderX()
+      ? process.env.UNI_INPUT_DIR
+      : process.env.UNI_CLI_CONTEXT,
+    onlyDirectories: true,
+    onlyFiles: false,
+    ignore: ['node_modules'],
+  }).length
+}
+
+function resolveUniCloudModules() {
+  return sync('**/uni_modules/*/uniCloud', {
+    cwd: process.env.UNI_INPUT_DIR,
+    onlyDirectories: true,
+    onlyFiles: false,
+    ignore: ['node_modules'],
+  }).map((dir) => path.dirname(dir))
+}
+
+function checkUniModules() {
+  if (!checkProjectUniCloudDir()) {
+    const uniCloudModules = resolveUniCloudModules()
+    if (uniCloudModules.length) {
+      console.warn(
+        `${uniCloudModules.join(
+          ', '
+        )} 使用了uniCloud，而项目未启动uniCloud。需在项目点右键创建uniCloud环境`
+      )
+    }
+  }
+}
+
 function initUniCloudEnv() {
+  checkUniModules()
   if (!process.env.UNI_CLOUD_SPACES) {
     return
   }

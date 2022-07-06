@@ -200,6 +200,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         map.hide()
       }
       map.onclick = (e) => {
+        trigger('tap', {} as Event, e)
         trigger('click', {} as Event, e)
       }
       map.onstatuschanged = (e) => {
@@ -399,6 +400,8 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
         nativeMarker.onclick = (e) => {
           trigger('markertap', {} as Event, {
             markerId: id,
+            latitude,
+            longitude,
           })
         }
         if (nativeBubble) {

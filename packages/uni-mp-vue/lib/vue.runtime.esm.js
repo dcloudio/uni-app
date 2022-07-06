@@ -1456,13 +1456,14 @@ function queueFlush() {
         currentFlushPromise = resolvedPromise.then(flushJobs);
     }
 }
+function hasQueueJob(job) {
+    return queue.indexOf(job) > -1;
+}
 function invalidateJob(job) {
     const i = queue.indexOf(job);
     if (i > flushIndex) {
         queue.splice(i, 1);
     }
-    // fixed by xxxxxx
-    return i;
 }
 function queueCb(cb, activeQueue, pendingQueue, index) {
     if (!isArray(cb)) {
@@ -2021,7 +2022,17 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     }
     else {
         // default: 'pre'
-        scheduler = () => queuePreFlushCb(job);
+        scheduler = () => {
+            if (!instance || instance.isMounted) {
+                queuePreFlushCb(job);
+            }
+            else {
+                // with 'pre' option, the first call must happen before
+                // the component is mounted so it is called synchronously.
+                // fixed by xxxxxx https://github.com/dcloudio/uni-app/issues/3648
+                job();
+            }
+        };
     }
     const effect = new ReactiveEffect(getter, scheduler);
     if ((process.env.NODE_ENV !== 'production')) {
@@ -4805,11 +4816,28 @@ function setRef(instance, isUnmount = false) {
     if (isUnmount) {
         return $templateRefs.forEach(templateRef => setTemplateRef(templateRef, null, setupState));
     }
-    const doSet = () => {
+    const check = $mpPlatform === 'mp-baidu' || $mpPlatform === 'mp-toutiao';
+    const doSetByRefs = (refs) => {
         const mpComponents = $scope
             .selectAllComponents('.r')
             .concat($scope.selectAllComponents('.r-i-f'));
-        $templateRefs.forEach(templateRef => setTemplateRef(templateRef, findComponentPublicInstance(mpComponents, templateRef.i), setupState));
+        return refs.filter(templateRef => {
+            const refValue = findComponentPublicInstance(mpComponents, templateRef.i);
+            // 部分平台，在一些 if 条件下，部分 slot 组件初始化会被延迟到下一次渲染，需要二次检测
+            if (check && refValue === null) {
+                return true;
+            }
+            setTemplateRef(templateRef, refValue, setupState);
+            return false;
+        });
+    };
+    const doSet = () => {
+        const refs = doSetByRefs($templateRefs);
+        if (refs.length && instance.proxy && instance.proxy.$scope) {
+            instance.proxy.$scope.setData({ r1: 1 }, () => {
+                doSetByRefs(refs);
+            });
+        }
     };
     if ($scope._$setRef) {
         $scope._$setRef(doSet);
@@ -5178,4 +5206,4 @@ function initCssVarsRender(instance, getter) {
 function withModifiers() { }
 function createVNode$1() { }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

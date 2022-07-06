@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, capitalize, isFunction, extend, isPlainObject, isString } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
+import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const eventChannels = {};
@@ -367,6 +367,22 @@ function initDefaultProps(isBehavior = false) {
     }
     return properties;
 }
+function initVirtualHostProps(options) {
+    const properties = {};
+    {
+        {
+            properties.virtualHostStyle = {
+                type: null,
+                value: '',
+            };
+            properties.virtualHostClass = {
+                type: null,
+                value: '',
+            };
+        }
+    }
+    return properties;
+}
 /**
  *
  * @param mpComponentOptions
@@ -376,7 +392,7 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps());
+    extend(mpComponentOptions.properties, initDefaultProps(), initVirtualHostProps(mpComponentOptions.options));
 }
 function findPropsData(properties, isPage) {
     return ((isPage
@@ -403,7 +419,9 @@ function updateComponentProps(up, instance) {
     const nextProps = findComponentPropsData(up) || {};
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
-        invalidateJob(instance.update);
+        if (hasQueueJob(instance.update)) {
+            invalidateJob(instance.update);
+        }
         {
             instance.update();
         }

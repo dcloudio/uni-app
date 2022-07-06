@@ -1,0 +1,66 @@
+//
+//  TestSwiftModule.swift
+//  DCTestSwiftPlugin
+//
+//  Created by Dcloud-XHY on 2022/6/27.
+//
+
+//import UIKit
+
+// 必须添加 @objc(类名)，编译器才会生成对应的 oc 方法
+@objc(TestSwiftModule)
+class TestSwiftModule extends DCUniModule {
+    
+    // 暴露异步方法供js调用：
+    // 1.必须添加 @objc 前缀，
+    // 2.使用 public static 静态方法
+    // 3.方法名称必须是以 wx_export_method_ 开头，后面随意拼接一个字符保证唯一性即可
+    // 4.方法返回实例方法的名称
+    // 注意点：swift 方法名称转换为 oc 方法名称时系统会自动将首个参数用 with 拼接到方法名中作为方法名的一部分 如下实例
+    // testAsyncFunc(options:callback:) -> testAsyncFuncWithOptions:callback
+    // js 中调用方法 testAsyncFuncWithOptions(options,callabck)
+    // 可以在参数前面加上 _ 让编译器忽略拼接参数
+    @objc public static  wx_export_method_0() : String {
+        return "testAsyncFunc::"
+    }
+    
+    // 需要暴露的实例方法
+    // 1.必须添加 @objc 前缀
+    // 2.首个参数需要添加 _ 忽略外部参数 其他参数可选
+    @objc  testAsyncFunc(options: NSDictionary,callback?: UniModuleKeepAliveCallback) {
+        print(options)
+        
+        if (callback != null) {
+            callback!("success",false)
+        }
+    }
+    
+    // 暴露同步方法供js调用：
+    // 1.必须添加 @objc 前缀，
+    // 2.使用 public static 静态方法
+    // 3.方法名称必须是以 wx_export_method_sync_ 开头，后面随意拼接一个字符保证唯一性即可
+    // 4.方法返回实例方法的名称
+    // 注意点：swift 方法名称转换为 oc 方法名称时系统会自动将首个参数名首字符大写然后用 with 拼接到方法名中作为方法名的一部分 如下实例
+    // testSyncFunc(options:) -> testSyncFuncWithOptions:
+    // js 中调用方法 var value = testSyncFuncWithOptions(options)
+    @objc public static wx_export_method_sync_0() : String {
+        return "testSyncFunc:"
+    }
+    
+    // 需要暴露的实例方法
+    // 1.必须添加 @objc 前缀
+    // 2.首个参数需要添加 _ 忽略外部参数
+    @objc  testSyncFunc(options: NSDictionary) : String {
+        
+        print(options);
+        
+        // 暴露方法内部可以调用其他 swift 方法
+        return getSomeString();
+    }
+    
+    
+    // 不需要直接暴露给js的方法不需要添加前缀
+    getSomeString() : String {
+        return "getSomeString success"
+    }
+}

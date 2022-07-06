@@ -63,4 +63,13 @@ describe('compiler: transform scoped slots', () => {
 }`
     )
   })
+  test('names slots with fallback content + v-for', () => {
+    assert(
+      `<button v-for="item in 1" :key="item"><slot name="text" :item="item">Submit</slot></button>`,
+      `<button wx:for="{{a}}" wx:for-item="item" wx:key="c"><block wx:if="{{$slots.text}}"><slot name="{{item.a}}"></slot></block><block wx:else>Submit</block></button>`,
+      `(_ctx, _cache) => {
+  return { a: _f(1, (item, k0, i0) => { return { a: "text-" + i0, b: _r("text", { item: item }, i0), c: item }; }) }
+}`
+    )
+  })
 })

@@ -2224,15 +2224,6 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.unsubscribe(getEventName(reqId));
 }
 
-function getFileName(path) {
-    const array = path.split('/');
-    return array[array.length - 1];
-}
-function getExtName(path) {
-    const array = path.split('.');
-    return array.length > 1 ? '.' + array[array.length - 1] : '';
-}
-
 const DEVICE_FREQUENCY = 200;
 const NETWORK_TYPES = [
     'unknown',
@@ -2246,6 +2237,15 @@ const NETWORK_TYPES = [
 ];
 const TEMP_PATH_BASE = '_doc/uniapp_temp';
 const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
+
+function getFileName(path) {
+    const array = path.split('/');
+    return array[array.length - 1];
+}
+function getExtName(path) {
+    const array = path.split('.');
+    return array.length > 1 ? '.' + array[array.length - 1] : '';
+}
 
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
@@ -16445,7 +16445,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             err = err;
             callback(err);
@@ -16458,7 +16458,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             callback(err);
         });
@@ -16469,14 +16469,15 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             callback(err);
         });
     },
     push(callback) {
         if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-            callback(null, [plus.push.getClientInfo().id]);
+            const clientInfo = plus.push.getClientInfo();
+            callback(null, [clientInfo.id], [clientInfo]);
         }
         else {
             callback(null, []);
@@ -16485,14 +16486,32 @@ const providers = {
 };
 const getProvider = defineAsyncApi(API_GET_PROVIDER, ({ service }, { resolve, reject }) => {
     if (providers[service]) {
-        providers[service]((err, provider) => {
+        providers[service]((err, provider = [], providers = []) => {
             if (err) {
                 reject(err.message);
             }
             else {
                 resolve({
                     service,
+                    // 5+ PlusShareShareService['id'] 类型错误
                     provider: provider,
+                    providers: providers.map((provider) => {
+                        const returnProvider = {};
+                        if (isPlainObject(provider)) {
+                            for (const key in provider) {
+                                if (Object.hasOwnProperty.call(provider, key)) {
+                                    const item = provider[key];
+                                    if (!isFunction(item) && typeof item !== 'undefined') {
+                                        const _key = key === 'nativeClient' || key === 'serviceReady'
+                                            ? 'isAppExist'
+                                            : key;
+                                        returnProvider[_key] = item;
+                                    }
+                                }
+                            }
+                        }
+                        return returnProvider;
+                    }),
                 });
             }
         });
@@ -18277,7 +18296,8 @@ class UniPageNode extends UniNode {
     }
     restore() {
         this.clear();
-        this.push(this.createAction);
+        // createAction 需要单独发送，因为 view 层需要现根据 create 来设置 page 的 ready
+        this.setup();
         if (this.scrollAction) {
             this.push(this.scrollAction);
         }
@@ -19479,10 +19499,13 @@ function subscribeWebviewReady(_data, pageId) {
         // preloadWebview 不存在，重新加载一下
         setPreloadWebview(plus.webview.getWebviewById(pageId));
     }
-    if (preloadWebview$1.id !== pageId) {
-        return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
+    // 仅当 preloadWebview 未 loaded 时处理 （iOS崩溃也会继续走到这里，此时 preloadWebview 通常是 loaded 的，且两者 id 肯定不一样）
+    if (!preloadWebview$1.loaded) {
+        if (preloadWebview$1.id !== pageId) {
+            return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
+        }
+        preloadWebview$1.loaded = true; // 标记已 ready
     }
-    preloadWebview$1.loaded = true; // 标记已 ready
     UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
     isLaunchWebview && onLaunchWebviewReady();
 }

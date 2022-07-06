@@ -3220,7 +3220,8 @@ var Switch = defineComponent({
       }, [type === SwitchType.switch ? createVNode("dc-switch", mergeProps({
         dataUncType: "uni-switch"
       }, listeners, {
-        checked: switchChecked.value
+        checked: switchChecked.value,
+        color
       }, {
         "style": DCSwitchSize
       }), null) : null, type === SwitchType.checkbox ? createVNode(resolveComponent("checkbox"), mergeProps({

@@ -1,5 +1,11 @@
 import { cac } from 'cac'
-import { runBuild, runDev, ToOptions, UtsTarget } from './index'
+import {
+  runBuild,
+  runDev,
+  ToOptions,
+  UtsTarget,
+  UtsTargetExtNames,
+} from './index'
 
 const cli = cac('uts')
 
@@ -47,6 +53,7 @@ cli
         dir: output,
         sourceMap: opts.sourceMap,
         inlineSourcesContent: opts.inlineSourcesContent,
+        extname: UtsTargetExtNames[opts.target],
       },
     }
     return opts.watch

@@ -82,7 +82,7 @@ export default defineComponent({
             <dc-switch
               {...{ dataUncType: 'uni-switch' }}
               {...listeners}
-              {...{ checked: switchChecked.value }}
+              {...{ checked: switchChecked.value, color: color }}
               style={DCSwitchSize}
             />
           ) : null}

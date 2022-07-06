@@ -1688,13 +1688,23 @@ function useHover(props2) {
     });
   }
   function onTouchstartPassive(evt) {
+    if (evt.touches.length > 1) {
+      return;
+    }
+    handleHoverStart(evt);
+  }
+  function onMousedown(evt) {
+    if (hoverTouch) {
+      return;
+    }
+    handleHoverStart(evt);
+    window.addEventListener("mouseup", handlePCHoverEnd);
+  }
+  function handleHoverStart(evt) {
     if (evt._hoverPropagationStopped) {
       return;
     }
     if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
-      return;
-    }
-    if (evt.touches.length > 1) {
       return;
     }
     if (props2.hoverStopPropagation) {
@@ -1709,10 +1719,23 @@ function useHover(props2) {
     }, parseInt(props2.hoverStartTime));
   }
   function onTouchend() {
+    handleHoverEnd();
+  }
+  function onMouseup() {
+    if (!hoverTouch) {
+      return;
+    }
+    handlePCHoverEnd();
+  }
+  function handleHoverEnd() {
     hoverTouch = false;
     if (hovering.value) {
       hoverReset();
     }
+  }
+  function handlePCHoverEnd() {
+    handleHoverEnd();
+    window.removeEventListener("mouseup", handlePCHoverEnd);
   }
   function onTouchcancel() {
     hoverTouch = false;
@@ -1723,7 +1746,9 @@ function useHover(props2) {
     hovering,
     binding: {
       onTouchstartPassive,
+      onMousedown,
       onTouchend,
+      onMouseup,
       onTouchcancel
     }
   };
@@ -9742,6 +9767,9 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(ySync, (val) => {
     _setY(val);
   });
+  watch(() => props2.disabled, () => {
+    __handleTouchStart();
+  });
   watch(() => props2.scaleValue, (val) => {
     scaleValueSync.value = Number(val) || 0;
   });
@@ -10305,14 +10333,15 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("a", {
         "class": "navigator-wrap",
         "href": url,
-        "onClick": onEventPrevent
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
       }, [createVNode("uni-navigator", mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"])], 8, ["href", "onClick"]);
+      }), [slots.default && slots.default()], 16, ["onClick"])], 40, ["href", "onClick", "onMousedown"]);
     };
   }
 });
@@ -15756,7 +15785,9 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           }
           if (id2) {
             trigger("markertap", {}, {
-              markerId: Number(id2)
+              markerId: Number(id2),
+              latitude: props3.latitude,
+              longitude: props3.longitude
             });
           }
         });
@@ -20766,6 +20797,7 @@ function useMap(props2, rootRef, emit2) {
       emitBoundsReady();
     });
     maps2.event.addListener(map2, "click", () => {
+      trigger("tap", {}, {});
       trigger("click", {}, {});
     });
     maps2.event.addListener(map2, "dragstart", () => {
