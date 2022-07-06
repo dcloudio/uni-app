@@ -469,6 +469,9 @@ const log = (data) => {
     case '31':
       msg_type = '应用错误';
       break
+    case '101':
+      msg_type = 'PUSH';
+      break
   }
   if (msg_type) {
     console.log(`=== 统计数据采集：${msg_type} ===`);
@@ -479,19 +482,19 @@ const log = (data) => {
 
 const appid = process.env.UNI_APP_ID; // 做应用隔离
 const dbSet = (name, value) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
 
   if (!data) {
     data = {};
   }
   data[name] = value;
-  uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
+  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
 };
 
 const dbGet = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
   if (!data[name]) {
-    let dbdata = uni.getStorageSync('$$STAT__DBDATA:' + appid);
+    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
     if (!dbdata) {
       dbdata = {};
     }
@@ -504,15 +507,15 @@ const dbGet = (name) => {
 };
 
 const dbRemove = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
   if (data[name]) {
     delete data[name];
-    uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
+    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
   } else {
-    data = uni.getStorageSync('$$STAT__DBDATA:' + appid);
+    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
     if (data[name]) {
       delete data[name];
-      uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
+      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
     }
   }
 };
@@ -525,37 +528,37 @@ const LAST_VISIT_TIME_KEY = '__last__visit__time';
  * 获取当前时间
  */
 const get_time = () => {
-  return parseInt(new Date().getTime() / 1000)
+	return parseInt(new Date().getTime() / 1000)
 };
 
 /**
  * 获取首次访问时间
  */
 const get_first_visit_time = () => {
-  const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
-  let time = 0;
-  if (timeStorge) {
-    time = timeStorge;
-  } else {
-    time = get_time();
-    dbSet(FIRST_VISIT_TIME_KEY, time);
-    // 首次访问需要 将最后访问时间置 0
-    dbRemove(LAST_VISIT_TIME_KEY);
-  }
-  return time
+	const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
+	let time = 0;
+	if (timeStorge) {
+		time = timeStorge;
+	} else {
+		time = get_time();
+		dbSet(FIRST_VISIT_TIME_KEY, time);
+		// 首次访问需要 将最后访问时间置 0
+		dbRemove(LAST_VISIT_TIME_KEY);
+	}
+	return time
 };
 
 /**
  * 最后访问时间
  */
 const get_last_visit_time = () => {
-  const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
-  let time = 0;
-  if (timeStorge) {
-    time = timeStorge;
-  }
-  dbSet(LAST_VISIT_TIME_KEY, get_time());
-  return time
+	const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
+	let time = 0;
+	if (timeStorge) {
+		time = timeStorge;
+	}
+	dbSet(LAST_VISIT_TIME_KEY, get_time());
+	return time
 };
 
 // 页面停留时间记录key
@@ -567,18 +570,18 @@ let Last_Page_Residence_Time = 0;
  * 设置页面停留时间
  */
 const set_page_residence_time = () => {
-  First_Page_Residence_Time = get_time();
-  dbSet(PAGE_RESIDENCE_TIME, First_Page_Residence_Time);
-  return First_Page_Residence_Time
+	First_Page_Residence_Time = get_time();
+	dbSet(PAGE_RESIDENCE_TIME, First_Page_Residence_Time);
+	return First_Page_Residence_Time
 };
 
 /**
  * 获取页面停留时间
  */
 const get_page_residence_time = () => {
-  Last_Page_Residence_Time = get_time();
-  First_Page_Residence_Time = dbGet(PAGE_RESIDENCE_TIME);
-  return Last_Page_Residence_Time - First_Page_Residence_Time
+	Last_Page_Residence_Time = get_time();
+	First_Page_Residence_Time = dbGet(PAGE_RESIDENCE_TIME);
+	return Last_Page_Residence_Time - First_Page_Residence_Time
 };
 
 /**
@@ -586,24 +589,25 @@ const get_page_residence_time = () => {
  */
 const TOTAL_VISIT_COUNT = '__total__visit__count';
 const get_total_visit_count = () => {
-  const timeStorge = dbGet(TOTAL_VISIT_COUNT);
-  let count = 1;
-  if (timeStorge) {
-    count = timeStorge;
-    count++;
-  }
-  dbSet(TOTAL_VISIT_COUNT, count);
-  return count
+	const timeStorge = dbGet(TOTAL_VISIT_COUNT);
+	let count = 1;
+	if (timeStorge) {
+		count = timeStorge;
+		count++;
+	}
+	dbSet(TOTAL_VISIT_COUNT, count);
+	return count
 };
+
 
 const FIRST_TIME = '__first_time';
 /**
  * 设置页面首次访问时间，用户获取页面/应用停留时常
  */
 const set_first_time = () => {
-  const time = new Date().getTime();
-  const timeStorge = dbSet(FIRST_TIME, time);
-  return timeStorge
+	const time = new Date().getTime();
+	const timeStorge = dbSet(FIRST_TIME,time);
+	return timeStorge
 };
 
 /**
@@ -619,32 +623,32 @@ const set_first_time = () => {
  * 获取页面 \ 应用停留时间
  */
 const get_residence_time = (type) => {
-  let residenceTime = 0;
-  const first_time = dbGet(FIRST_TIME);
-  const last_time = get_time();
-  if (first_time !== 0) {
-    residenceTime = last_time - first_time;
-  }
+	let residenceTime = 0;
+	const first_time = dbGet(FIRST_TIME);
+	const last_time = get_time();
+	if (first_time !== 0) {
+		residenceTime = last_time - first_time;
+	}
 
-  residenceTime = parseInt(residenceTime / 1000);
-  residenceTime = residenceTime < 1 ? 1 : residenceTime;
-  if (type === 'app') {
-    let overtime = residenceTime > APP_PVER_TIME ? true : false;
-    return {
-      residenceTime,
-      overtime,
-    }
-  }
-  if (type === 'page') {
-    let overtime = residenceTime > PAGE_PVER_TIME ? true : false;
-    return {
-      residenceTime,
-      overtime,
-    }
-  }
-  return {
-    residenceTime,
-  }
+	residenceTime = parseInt(residenceTime / 1000);
+	residenceTime = residenceTime < 1 ? 1 : residenceTime;
+	if (type === 'app') {
+		let overtime = residenceTime > APP_PVER_TIME ? true : false;
+		return {
+			residenceTime,
+			overtime,
+		}
+	}
+	if (type === 'page') {
+		let overtime = residenceTime > PAGE_PVER_TIME ? true : false;
+		return {
+			residenceTime,
+			overtime,
+		}
+	}
+	return {
+		residenceTime,
+	}
 };
 
 // 统计数据默认值
@@ -892,8 +896,9 @@ class Report {
   /**
    * 发送请求,应用维度上报
    * @param {Object} options 页面信息
+   * @param {Boolean} type 是否立即上报
    */
-  sendReportRequest(options) {
+  sendReportRequest(options, type) {
     this._navigationBarTitle.lt = '1';
     this._navigationBarTitle.config = get_page_name(options.path);
     let is_opt = options.query && JSON.stringify(options.query) !== '{}';
@@ -910,9 +915,9 @@ class Report {
       cst: options.cst || 1,
     });
     if (get_platform_name() === 'n') {
-      this.getProperty();
+      this.getProperty(type);
     } else {
-      this.getNetworkInfo();
+      this.getNetworkInfo(type);
     }
   }
 
@@ -993,24 +998,66 @@ class Report {
     this.request(options);
   }
 
+  sendPushRequest(options, cid) {
+    let time = get_time();
+
+    const statData = {
+      lt: '101',
+      cid: cid,
+      t: time,
+      ut: this.statData.ut,
+    };
+
+    // debug 打印打点信息
+    if (is_debug) {
+      log(statData);
+    }
+
+    const stat_data = handle_data({
+      101: [statData],
+    });
+    let optionsData = {
+      usv: STAT_VERSION, //统计 SDK 版本号
+      t: time, //发送请求时的时间戮
+      requests: stat_data,
+    };
+
+    {
+      if (statData.ut === 'h5') {
+        this.imageRequest(optionsData);
+        return
+      }
+    }
+
+    // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
+    if (get_platform_name() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this.sendRequest(optionsData);
+      }, 200);
+      return
+    }
+
+    this.sendRequest(optionsData);
+  }
+
   /**
    * 获取wgt资源版本
    */
-  getProperty() {
+  getProperty(type) {
     plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
       this.statData.v = wgtinfo.version || '';
-      this.getNetworkInfo();
+      this.getNetworkInfo(type);
     });
   }
 
   /**
    * 获取网络信息
    */
-  getNetworkInfo() {
+  getNetworkInfo(type) {
     uni.getNetworkType({
       success: (result) => {
         this.statData.net = result.networkType;
-        this.getLocation();
+        this.getLocation(type);
       },
     });
   }
@@ -1018,7 +1065,7 @@ class Report {
   /**
    * 获取位置信息
    */
-  getLocation() {
+  getLocation(type) {
     if (stat_config.getLocation) {
       uni.getLocation({
         type: 'wgs84',
@@ -1032,13 +1079,13 @@ class Report {
 
           this.statData.lat = result.latitude;
           this.statData.lng = result.longitude;
-          this.request(this.statData);
+          this.request(this.statData, type);
         },
       });
     } else {
       this.statData.lat = 0;
       this.statData.lng = 0;
-      this.request(this.statData);
+      this.request(this.statData, type);
     }
   }
 
@@ -1188,6 +1235,23 @@ class Stat extends Report {
   }
 
   /**
+   * 获取推送id
+   */
+  pushEvent(options) {
+    if (uni.getPushClientId) {
+      uni.getPushClientId({
+        success: (res) => {
+          const cid = res.cid || false;
+          //  只有获取到才会上传
+          if (cid) {
+            this.sendPushRequest(options,cid);
+          }
+        },
+      });
+    }
+  }
+
+  /**
    * 进入应用
    * @param {Object} options 页面参数
    * @param {Object} self	当前页面实例
@@ -1308,6 +1372,8 @@ const lifecycle = {
   onLaunch(options) {
     // 进入应用上报数据
     stat.launch(options, this);
+    // 上报push推送id
+    stat.pushEvent(options);
   },
   onLoad(options) {
     stat.load(options, this);

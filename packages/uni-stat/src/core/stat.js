@@ -48,6 +48,23 @@ class Stat extends Report {
   }
 
   /**
+   * 获取推送id
+   */
+  pushEvent(options) {
+    if (uni.getPushClientId) {
+      uni.getPushClientId({
+        success: (res) => {
+          const cid = res.cid || false
+          //  只有获取到才会上传
+          if (cid) {
+            this.sendPushRequest(options, cid)
+          }
+        },
+      })
+    }
+  }
+
+  /**
    * 进入应用
    * @param {Object} options 页面参数
    * @param {Object} self	当前页面实例

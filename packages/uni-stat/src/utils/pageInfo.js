@@ -497,6 +497,9 @@ export const log = (data) => {
     case '31':
       msg_type = '应用错误'
       break
+    case '101':
+      msg_type = 'PUSH'
+      break
   }
   if (msg_type) {
     console.log(`=== 统计数据采集：${msg_type} ===`)
