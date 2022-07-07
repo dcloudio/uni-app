@@ -4,7 +4,6 @@ import {
   API_TYPE_GET_PROVIDER,
   GetProviderProtocol,
 } from '@dcloudio/uni-api'
-import { isPlainObject } from '@vue/shared'
 
 type Service =
   | PlusShareShareService
@@ -87,23 +86,14 @@ export const getProvider = defineAsyncApi<API_TYPE_GET_PROVIDER>(
             service,
             // 5+ PlusShareShareService['id'] 类型错误
             provider: provider as any[],
-            providers: providers.map((provider) => {
-              const returnProvider: Service = {}
-              if (isPlainObject(provider)) {
-                for (const key in provider) {
-                  if (Object.hasOwnProperty.call(provider, key)) {
-                    const item = provider[key as keyof Service]
-                    if (typeof item !== 'undefined') {
-                      const _key =
-                        key === 'nativeClient' || key === 'serviceReady'
-                          ? 'isAppExist'
-                          : key
-                      ;(returnProvider as any)[_key] = item
-                    }
-                  }
-                }
+            providers: providers.map((provider: any) => {
+              if (typeof provider.serviceReady === 'boolean') {
+                provider.isAppExist = provider.serviceReady
               }
-              return returnProvider
+              if (typeof provider.nativeClient === 'boolean') {
+                provider.isAppExist = provider.nativeClient
+              }
+              return provider
             }),
           })
         }
