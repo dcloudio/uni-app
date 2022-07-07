@@ -35,18 +35,6 @@ export function getEnterOptions () {
   return enterOptions
 }
 
-export function initEnterOptions ({
-  path,
-  query,
-  referrerInfo
-}) {
-  extend(enterOptions, {
-    path,
-    query: query || {},
-    referrerInfo: referrerInfo || {}
-  })
-}
-
 export function initLaunchOptions ({
   path,
   query,
