@@ -9,6 +9,8 @@ import {
 
 import onWebInvokeAppService from 'uni-platform/service/on-web-invoke-app-service'
 
+import { initEnterOptions, getEnterOptions } from '../plugins/app'
+
 export default function initOn (on, {
   getApp,
   getCurrentPages
@@ -53,7 +55,8 @@ export default function initOn (on, {
   }
 
   function onAppEnterForeground (enterOptions) {
-    callAppHook(getApp(), 'onShow', enterOptions)
+    initEnterOptions(enterOptions)
+    callAppHook(getApp(), 'onShow', getEnterOptions())
     const pages = getCurrentPages()
     if (pages.length === 0) {
       return
