@@ -1,10 +1,11 @@
 import {
-  createLaunchOptions
+  getLaunchOptions,
+  getEnterOptions
 } from 'uni-core/service/plugins/app'
 
 export function getLaunchOptionsSync () {
-  return createLaunchOptions()
+  return getLaunchOptions()
 }
 export function getEnterOptionsSync () {
-  return createLaunchOptions()
+  return getEnterOptions()
 }
