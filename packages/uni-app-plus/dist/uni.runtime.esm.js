@@ -16496,21 +16496,13 @@ const getProvider = defineAsyncApi(API_GET_PROVIDER, ({ service }, { resolve, re
                     // 5+ PlusShareShareService['id'] 类型错误
                     provider: provider,
                     providers: providers.map((provider) => {
-                        const returnProvider = {};
-                        if (isPlainObject(provider)) {
-                            for (const key in provider) {
-                                if (Object.hasOwnProperty.call(provider, key)) {
-                                    const item = provider[key];
-                                    if (!isFunction(item) && typeof item !== 'undefined') {
-                                        const _key = key === 'nativeClient' || key === 'serviceReady'
-                                            ? 'isAppExist'
-                                            : key;
-                                        returnProvider[_key] = item;
-                                    }
-                                }
-                            }
+                        if (typeof provider.serviceReady === 'boolean') {
+                            provider.isAppExist = provider.serviceReady;
                         }
-                        return returnProvider;
+                        if (typeof provider.nativeClient === 'boolean') {
+                            provider.isAppExist = provider.nativeClient;
+                        }
+                        return provider;
                     }),
                 });
             }

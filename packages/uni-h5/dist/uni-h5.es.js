@@ -8519,6 +8519,10 @@ const props$r = /* @__PURE__ */ extend({}, {
   ignoreCompositionEvent: {
     type: Boolean,
     default: true
+  },
+  step: {
+    type: String,
+    default: "0.000000000000000001"
   }
 }, props$u);
 const emit = [
@@ -8827,7 +8831,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
-    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
     function onKeyUpEnter(event) {
       if (event.key !== "Enter") {
         return;
