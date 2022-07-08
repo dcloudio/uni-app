@@ -4837,6 +4837,18 @@ const GetLocationProtocol = {
 const API_OPEN_LOCATION = "openLocation";
 const OpenLocationOptions = {
   formatArgs: {
+    latitude(value, params) {
+      if (value !== 0 && !value) {
+        return "latitude should not be empty.";
+      }
+      params.latitude = value;
+    },
+    longitude(value, params) {
+      if (value !== 0 && !value) {
+        return "longitude should not be empty.";
+      }
+      params.longitude = value;
+    },
     scale(value, params) {
       value = Math.floor(value);
       params.scale = value >= 5 && value <= 18 ? value : 18;
@@ -4844,14 +4856,8 @@ const OpenLocationOptions = {
   }
 };
 const OpenLocationProtocol = {
-  latitude: {
-    type: Number,
-    required: true
-  },
-  longitude: {
-    type: Number,
-    required: true
-  },
+  latitude: Number,
+  longitude: Number,
   scale: Number,
   name: String,
   address: String
