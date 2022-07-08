@@ -34,6 +34,14 @@ export const miniProgram: MiniProgramCompilerOptions = {
     key: true,
   },
   directive: 'qq:',
+  lazyElement: {
+    editor: [
+      {
+        name: 'on',
+        arg: ['ready'],
+      },
+    ],
+  },
   component: {
     dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN,
