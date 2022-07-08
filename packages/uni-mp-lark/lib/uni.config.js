@@ -12,10 +12,11 @@ module.exports = {
       template: '.ttml'
     },
     subPackages: true,
-    project: 'project.lark.json'
+    project: 'project.lark.json',
+    darkmode: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['ttcomponents']
+    const copyOptions = ['ttcomponents','theme.json']
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/ttcomponents')
     })
