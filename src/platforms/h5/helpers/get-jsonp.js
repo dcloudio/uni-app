@@ -8,7 +8,7 @@
 export function getJSONP (url, options, success, error) {
   var js = document.createElement('script')
   var callbackKey = options.callback || 'callback'
-  var callbackName = '__callback' + Date.now()
+  var callbackName = '__callback' + Date.now() + Math.random().toString().slice(2)
   var timeout = options.timeout || 30000
   var timing
   function end () {
