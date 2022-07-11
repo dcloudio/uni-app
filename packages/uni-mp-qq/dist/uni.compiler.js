@@ -109,7 +109,7 @@ const miniProgram = {
                 name: 'on',
                 arg: ['ready'],
             },
-        ]
+        ],
     },
     component: {
         dir: COMPONENTS_DIR,
