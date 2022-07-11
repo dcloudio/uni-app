@@ -1,18 +1,36 @@
 export const API_OPEN_LOCATION = 'openLocation'
 export type API_TYPE_OPEN_LOCATION = typeof uni.openLocation
 
+const checkProps = (key: string, value: unknown): string | void => {
+  if (value === undefined) {
+    return `${key} should not be empty.`
+  }
+
+  if (typeof value !== 'number') {
+    let receivedType: string = typeof value
+    receivedType = receivedType[0].toUpperCase() + receivedType.substring(1)
+    return `Expected Number, got ${receivedType} with value ${JSON.stringify(
+      value
+    )}.`
+  }
+}
+
 export const OpenLocationOptions: ApiOptions<API_TYPE_OPEN_LOCATION> = {
   formatArgs: {
     latitude(value, params) {
-      if (value !== 0 && !value) {
-        return 'latitude should not be empty.'
+      const checkedInfo = checkProps('latitude', value)
+      if (checkedInfo) {
+        return checkedInfo
       }
+
       params.latitude = value
     },
     longitude(value, params) {
-      if (value !== 0 && !value) {
-        return 'longitude should not be empty.'
+      const checkedInfo = checkProps('longitude', value)
+      if (checkedInfo) {
+        return checkedInfo
       }
+
       params.longitude = value
     },
     scale(value, params) {
