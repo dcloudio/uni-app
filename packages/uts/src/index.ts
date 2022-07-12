@@ -11,7 +11,13 @@ import type {
   UtsOutputOptions,
   UtsResult,
 } from './types'
-import { printStartup, printUtsResult, printUtsResults, timeEnd } from './utils'
+import {
+  printDone,
+  printStartup,
+  printUtsResult,
+  printUtsResults,
+  timeEnd,
+} from './utils'
 
 export enum UtsTarget {
   KOTLIN = 'kotlin',
@@ -124,18 +130,13 @@ function initOutputOptions(
   }
 }
 
-function watch(
+function initOptions(
   target: UtsTarget,
   {
-    silent,
-    input: { dir: inputDir, extname },
+    input: { dir: inputDir },
     output: { dir: outputDir, sourceMap, inlineSourcesContent },
   }: ToOptions
 ) {
-  fs.emptyDirSync(outputDir)
-
-  extname = extname || EXTNAME
-
   const inputSrcDir = resolveSrcDir(target, inputDir)
   const outputSrcDir = resolveSrcDir(target, outputDir)
 
@@ -146,63 +147,97 @@ function watch(
     sourceMap,
     !!inlineSourcesContent
   )
-
-  chokidar
-    .watch('**/*' + extname, {
-      cwd: inputSrcDir,
-      ignored: ['**/*.d' + extname],
-    })
-    .on('add', (filename) => {
-      buildFile(
-        target,
-        path.resolve(inputSrcDir, filename),
-        input,
-        output
-      ).then((res) => {
-        !silent && printUtsResult(res)
-      })
-    })
-    .on('change', (filename) => {
-      buildFile(
-        target,
-        path.resolve(inputSrcDir, filename),
-        input,
-        output
-      ).then((res) => {
-        !silent && printUtsResult(res)
-      })
-    })
-    .on('unlink', (filename) => {
-      try {
-        fs.unlinkSync(path.resolve(outputSrcDir, filename))
-      } catch (e) {}
-    })
-    .on('ready', () => {
-      copyAssets(UtsTarget.KOTLIN, inputDir, outputDir, extname!)
-    })
+  return { input, output }
 }
 
-function build(
+async function watch(target: UtsTarget, toOptions: ToOptions) {
+  fs.emptyDirSync(toOptions.output.dir)
+
+  const { input, output } = initOptions(target, toOptions)
+  const inputDir = toOptions.input.dir
+  const outputDir = toOptions.output.dir
+  const inputSrcDir = input.root
+  const outputSrcDir = output.outDir
+  const extname = toOptions.input.extname || EXTNAME
+  const silent = !!toOptions.silent
+  // 先完整编译后，再启用监听
+  doBuild(target, {
+    watch: true,
+    input,
+    output,
+    inputDir,
+    outputDir,
+    inputSrcDir,
+    outputSrcDir,
+    extname,
+    silent,
+  }).then(() => {
+    // TODO 监听动态添加的资源文件
+    chokidar
+      .watch('**/*' + extname, {
+        cwd: inputSrcDir,
+        ignored: ['**/*.d' + extname],
+        ignoreInitial: true,
+      })
+      .on('add', (filename) => {
+        buildFile(
+          target,
+          path.resolve(inputSrcDir, filename),
+          input,
+          output
+        ).then((res) => {
+          if (!silent) {
+            printUtsResult(res)
+            printDone(true)
+          }
+        })
+      })
+      .on('change', (filename) => {
+        buildFile(
+          target,
+          path.resolve(inputSrcDir, filename),
+          input,
+          output
+        ).then((res) => {
+          if (!silent) {
+            printUtsResult(res)
+            printDone(true)
+          }
+        })
+      })
+      .on('unlink', (filename) => {
+        try {
+          fs.unlinkSync(path.resolve(outputSrcDir, filename))
+        } catch (e) {}
+      })
+  })
+}
+
+interface DoBuildOptions {
+  watch: boolean
+  silent: boolean
+  input: UtsInputOptions
+  output: UtsOutputOptions
+  inputDir: string
+  inputSrcDir: string
+  outputDir: string
+  outputSrcDir: string
+  extname: string
+}
+
+function doBuild(
   target: UtsTarget,
   {
+    watch,
     silent,
-    input: { dir: inputDir, extname },
-    output: { dir: outputDir, sourceMap, inlineSourcesContent },
-  }: ToOptions
+    extname,
+    inputDir,
+    inputSrcDir,
+    outputDir,
+    input,
+    output,
+  }: DoBuildOptions
 ) {
-  fs.emptyDirSync(outputDir)
-  extname = extname || EXTNAME
-
-  const inputSrcDir = resolveSrcDir(target, inputDir)
-  const outputSrcDir = resolveSrcDir(target, outputDir)
-  const input = initInputOptions(target, inputSrcDir)
-  const output = initOutputOptions(
-    target,
-    outputSrcDir,
-    sourceMap,
-    !!inlineSourcesContent
-  )
-
   const files = glob.sync('**/*' + extname, {
     absolute: true,
     cwd: inputSrcDir,
@@ -224,9 +259,31 @@ function build(
       )
     })
     .then((res) => {
-      !silent && printUtsResults(res)
+      !silent && printUtsResults(res, watch)
       return res
     })
+}
+
+function build(target: UtsTarget, toOptions: ToOptions) {
+  fs.emptyDirSync(toOptions.output.dir)
+  const { input, output } = initOptions(target, toOptions)
+  const inputDir = toOptions.input.dir
+  const outputDir = toOptions.output.dir
+  const inputSrcDir = input.root
+  const outputSrcDir = output.outDir
+  const extname = toOptions.input.extname || EXTNAME
+  const silent = !!toOptions.silent
+  return doBuild(target, {
+    watch: false,
+    input,
+    output,
+    inputDir,
+    outputDir,
+    inputSrcDir,
+    outputSrcDir,
+    extname,
+    silent,
+  })
 }
 
 function copyAssets(
