@@ -102,7 +102,8 @@ const isAppComponents = filepath => {
 
 const isCoreComponents = filepath => {
   return path.extname(filepath) === '.vue' &&
-    (filepath.indexOf('/core/view/components/') === 0 || filepath.indexOf('/platforms/' + process.env.UNI_PLATFORM + '/view/components/') === 0)
+    (filepath.indexOf('/core/view/components/') === 0 || filepath.indexOf('/platforms/' + process.env.UNI_PLATFORM +
+      '/view/components/') === 0)
 }
 
 const isAppMixins = filepath => {
@@ -150,7 +151,9 @@ function parseDeps (apis, manifest) {
     test: isApiSubscribe,
     paths: apiSubscribePaths
   }]
-  for (const name of apis.values()) {
+  // 固定顺序，避免因顺序的变化导致内容变化，从而生成不同的 hash 文件名
+  const apiNames = [...apis].sort()
+  for (const name of apiNames) {
     const options = manifest[name]
     if (Array.isArray(options)) {
       apiPaths[name] = options[0]
