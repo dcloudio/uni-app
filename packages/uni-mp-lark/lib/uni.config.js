@@ -16,7 +16,7 @@ module.exports = {
     darkmode: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['ttcomponents','theme.json']
+    const copyOptions = ['ttcomponents', 'theme.json']
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/ttcomponents')
     })
