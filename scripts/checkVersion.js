@@ -19,7 +19,7 @@ const pkgs = {
     latest: '4.0.2',
   },
   pinia: {
-    latest: '2.0.15',
+    latest: '2.0.16',
   },
   'vue-i18n': {
     next: '9.1.9',
