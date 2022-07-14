@@ -49,6 +49,7 @@
     "merge": "^2.1.1",
     "mime": "^3.0.0",
     "module-alias": "^2.2.2",
+    "os-locale-s-fix": "^1.0.8-fix-1",
     "picocolors": "^1.0.0",
     "postcss-import": "^14.0.2",
     "postcss-load-config": "^3.1.1",
