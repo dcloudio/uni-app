@@ -1440,7 +1440,7 @@ function main() {
   if (is_debug) {
     {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:1.0');
+      console.log('=== uni统计开启,version:1.0 ===');
       // #endif
     }
     load_stat();

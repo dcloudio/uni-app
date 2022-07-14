@@ -551,7 +551,7 @@ export default class Report {
   sendRequest(optionsData) {
     if (__STAT_VERSION__ === '2') {
       if (!uni.__stat_uniCloud_space) {
-        console.error('当前尚未关联服务空间.')
+        console.error('应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.')
         return
       }
 
