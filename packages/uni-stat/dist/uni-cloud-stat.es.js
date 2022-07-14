@@ -1165,7 +1165,7 @@ class Report {
   sendRequest(optionsData) {
     {
       if (!uni.__stat_uniCloud_space) {
-        console.error('当前尚未关联服务空间.');
+        console.error('应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.');
         return
       }
 
@@ -1252,10 +1252,6 @@ class Stat extends Report {
           //   '=== 当前绑定的统计服务空间spaceId：' +
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
-        } else {
-          console.error(
-            '当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！'
-          );
         }
       }
     }
@@ -1472,7 +1468,7 @@ function main() {
   if (is_debug) {
     {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:2.0');
+      console.log('=== uni统计开启,version:2.0 ===');
       // #endif
     }
     load_stat();
