@@ -4625,12 +4625,16 @@ function invokePushCallback(args) {
     cidErrMsg = args.errMsg;
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === "pushMsg") {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const msg = {
         type: "receive",
         data: normalizePushMessage(args.message)
-      });
-    });
+      };
+      onPushMessageCallbacks[i](msg);
+      if (msg.stopped) {
+        break;
+      }
+    }
   } else if (args.type === "click") {
     onPushMessageCallbacks.forEach((callback) => {
       callback({

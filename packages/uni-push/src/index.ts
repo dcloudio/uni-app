@@ -1,4 +1,5 @@
 import GtPush from '../lib/gtpush-min'
+import { initPushRoute } from './route'
 
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
@@ -53,4 +54,15 @@ if (!appid) {
       })
     },
   })
+  initPushRoute()
+  // 不用条件编译。App端仍需监听
+  if (typeof plus !== 'undefined' && plus.push) {
+    plus.push.addEventListener('click', (result) => {
+      // @ts-expect-error
+      uni.invokePushCallback({
+        type: 'click',
+        message: result,
+      })
+    })
+  }
 }
