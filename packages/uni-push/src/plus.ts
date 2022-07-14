@@ -1,10 +1,7 @@
-import { initPushRoute } from './route'
-
 // @ts-expect-error
 uni.invokePushCallback({
   type: 'enabled',
 })
-initPushRoute()
 Promise.resolve().then(() => {
   plus.push.setAutoNotification && plus.push.setAutoNotification(false)
   const info = plus.push.getClientInfo()

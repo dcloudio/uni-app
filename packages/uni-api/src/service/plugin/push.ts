@@ -54,17 +54,12 @@ export function invokePushCallback(
     cidErrMsg = args.errMsg
     invokeGetPushCidCallbacks(cid, args.errMsg)
   } else if (args.type === 'pushMsg') {
-    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
-      const msg: OnPushMessageSuccess = {
+    onPushMessageCallbacks.forEach((callback) => {
+      callback({
         type: 'receive',
         data: normalizePushMessage(args.message),
-      }
-      onPushMessageCallbacks[i](msg)
-      if (msg.stopped) {
-        // 消息被中断，比如页面直达的 push 信息
-        break
-      }
-    }
+      })
+    })
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -111,7 +106,6 @@ export const getPushClientId = defineAsyncApi(
 interface OnPushMessageSuccess {
   type: 'click' | 'receive'
   data: unknown
-  stopped?: boolean
 }
 
 type OnPushMessageCallback = (result: OnPushMessageSuccess) => void
