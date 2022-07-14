@@ -4,12 +4,12 @@ import UniModule from "io.dcloud.feature.uniapp.common.UniModule";
 import UniJSMethod from "io.dcloud.feature.uniapp.annotation.UniJSMethod";
 import UniJSCallback from "io.dcloud.feature.uniapp.bridge.UniJSCallback";
 import log from "./log";
-export default class TestModule extends UniModule() {
+export default class TestModule implements UniLogin {
   TAG = "TestModule";
   static REQUEST_CODE = 1000;
   //run ui thread
   @UniJSMethod({ uiThread: true })
-  testAsyncFunc(options: JSONObject, callback?: UniJSCallback) {
+  async testAsyncFunc(options: JSONObject, callback?: UniJSCallback) {
     log(this.TAG, "testAsyncFunc--$options");
     if (callback != null) {
       const data = new JSONObject();
