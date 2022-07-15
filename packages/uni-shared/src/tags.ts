@@ -122,6 +122,7 @@ export const NVUE_U_BUILT_IN_TAGS = [
   'u-slider',
   'u-ad',
   'u-ad-draw',
+  'u-rich-text',
 ]
 
 export function isBuiltInComponent(tag: string) {
