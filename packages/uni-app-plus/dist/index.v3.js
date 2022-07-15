@@ -144,7 +144,9 @@ var serviceContext = (function () {
     'checkIsSoterEnrolledInDevice',
     'startSoterAuthentication',
     'onThemeChange',
-    'onUIStyleChange'
+    'onUIStyleChange',
+    'getSystemSetting',
+    'getAppAuthorizeSetting'
   ];
 
   const keyboard = [
@@ -279,6 +281,7 @@ var serviceContext = (function () {
     'getPushClientId',
     'onPushMessage',
     'offPushMessage',
+    'createPushMessage'
   ];
 
   const apis = [
@@ -6616,6 +6619,26 @@ var serviceContext = (function () {
     }
   }
 
+  function getSystemSetting () {
+    const { getSystemSetting } = weex.requireModule('plus');
+    let systemSetting = getSystemSetting();
+    try {
+      if (typeof systemSetting === 'string') { systemSetting = JSON.parse(systemSetting); }
+    } catch (error) { }
+
+    return systemSetting
+  }
+
+  function getAppAuthorizeSetting () {
+    const { getAppAuthorizeSetting } = weex.requireModule('plus');
+    let appAuthorizeSetting = getAppAuthorizeSetting();
+    try {
+      if (typeof appAuthorizeSetting === 'string') { appAuthorizeSetting = JSON.parse(appAuthorizeSetting); }
+    } catch (error) { }
+
+    return appAuthorizeSetting
+  }
+
   const SAVED_DIR = 'uniapp_save';
   const SAVE_PATH = `_doc/${SAVED_DIR}`;
 
@@ -8112,22 +8135,13 @@ var serviceContext = (function () {
             service,
             provider,
             providers: providers.map((provider) => {
-              const returnProvider = {};
-              if (isPlainObject(provider)) {
-                for (const key in provider) {
-                  if (Object.hasOwnProperty.call(provider, key)) {
-                    const item = provider[key];
-                    if (typeof item !== 'undefined') {
-                      const _key =
-                        key === 'nativeClient' || key === 'serviceReady'
-                          ? 'isAppExist'
-                          : key;
-                      returnProvider[_key] = item;
-                    }
-                  }
-                }
+              if (typeof provider.serviceReady === 'boolean') {
+                provider.isAppExist = provider.serviceReady;
               }
-              return returnProvider
+              if (typeof provider.nativeClient === 'boolean') {
+                provider.isAppExist = provider.nativeClient;
+              }
+              return provider
             })
           });
         }
@@ -8473,6 +8487,27 @@ var serviceContext = (function () {
     return {
       errMsg: 'offPush:ok'
     }
+  }
+
+  function createPushMessage (params, callbackId) {
+    const setting = getAppAuthorizeSetting();
+    if (!hasOwn(setting, 'notificationAuthorized')) {
+      return invoke$1(callbackId, {
+        errMsg: 'createPushMessage:fail missing push module'
+      })
+    }
+    if (setting.notificationAuthorized !== 'authorized') {
+      return invoke$1(callbackId, {
+        errMsg: 'createPushMessage:fail ' + setting.notificationAuthorized
+      })
+    }
+    const options = Object.assign({}, params);
+    delete options.content;
+    delete options.payload;
+    plus.push.createMessage(params.content, params.payload, options);
+    invoke$1(callbackId, {
+      errMsg: 'createPushMessage:ok'
+    });
   }
 
   function requireNativePlugin$1 (name) {
@@ -9573,10 +9608,12 @@ var serviceContext = (function () {
         setStatusBarStyle(popStartStatusBarStyle);
       } else if (e.type === 'end' && e.result) {
         const pages = getCurrentPages();
+        const len = pages.length;
         const page = pages[pages.length - 1];
         page && page.$remove();
         setStatusBarStyle();
-        if (page && isDirectPage(page)) {
+        // 仅当存在一个页面，且是直达页面时，才 reLaunch 首页
+        if (page && len === 1 && isDirectPage(page)) {
           reLaunchEntryPage();
         } else {
           UniServiceJSBridge.emit('onAppRoute', {
@@ -12158,6 +12195,8 @@ var serviceContext = (function () {
     vibrateLong: vibrateLong,
     vibrateShort: vibrateShort,
     getWindowInfo: getWindowInfo,
+    getSystemSetting: getSystemSetting,
+    getAppAuthorizeSetting: getAppAuthorizeSetting,
     saveFile: saveFile$1,
     getSavedFileList: getSavedFileList,
     getFileInfo: getFileInfo$1,
@@ -12207,6 +12246,7 @@ var serviceContext = (function () {
     unsubscribePush: unsubscribePush,
     onPush: onPush,
     offPush: offPush,
+    createPushMessage: createPushMessage,
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,

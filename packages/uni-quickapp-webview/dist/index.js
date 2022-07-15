@@ -1829,7 +1829,9 @@ function handleEvent (event) {
           }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
-            throw new Error(` _vm.${methodName} is not a function`)
+            const type = this.$vm.mpType === 'page' ? 'Page' : 'Component';
+            const path = this.route || this.is;
+            throw new Error(`${type} "${path}" does not have a method "${methodName}"`)
           }
           if (isOnce) {
             if (handler.once) {
