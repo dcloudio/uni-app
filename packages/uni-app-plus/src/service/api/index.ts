@@ -68,6 +68,7 @@ export * from './internal/global'
 
 export * from './plugin/getProvider'
 export * from './plugin/oauth'
+export * from './plugin/push'
 export * from './plugin/registerRuntime'
 export * from './plugin/share'
 export * from './plugin/requestPayment'

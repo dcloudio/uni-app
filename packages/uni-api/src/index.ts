@@ -98,6 +98,7 @@ export * from './protocols/plugin/getProvider'
 export * from './protocols/plugin/oauth'
 export * from './protocols/plugin/share'
 export * from './protocols/plugin/requestPayment'
+export * from './protocols/plugin/push'
 
 // ad
 export * from './protocols/ad/rewardedVideoAd'

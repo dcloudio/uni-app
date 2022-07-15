@@ -11458,6 +11458,10 @@ const ScanCodeOptions = {
     },
 };
 
+const API_GET_SYSTEM_SETTING = 'getSystemSetting';
+
+const API_GET_APP_AUTHORIZE_SETTING = 'getAppAuthorizeSetting';
+
 const API_GET_STORAGE = 'getStorage';
 const GetStorageProtocol = {
     key: {
@@ -12626,6 +12630,17 @@ const RequestPaymentProtocol = {
     package: String,
     signType: String,
     paySign: String,
+};
+
+const API_CREATE_PUSH_MESSAGE = 'createPushMessage';
+const CreatePushMessageOptions = {
+    formatArgs: {
+        content(value) {
+            if (!value) {
+                return `content is required`;
+            }
+        },
+    },
 };
 
 const API_CREATE_REWARDED_VIDEO_AD = 'createRewardedVideoAd';
@@ -14072,6 +14087,28 @@ const setScreenBrightness = defineAsyncApi(API_SET_SCREEN_BRIGHTNESS, (options, 
 const setKeepScreenOn = defineAsyncApi(API_SET_KEEP_SCREEN_ON, (options, { resolve }) => {
     plus.device.setWakelock(!!options.keepScreenOn);
     resolve();
+});
+
+const getSystemSetting = defineSyncApi(API_GET_SYSTEM_SETTING, () => {
+    const { getSystemSetting } = weex.requireModule('plus');
+    let systemSetting = getSystemSetting();
+    try {
+        if (typeof systemSetting === 'string')
+            systemSetting = JSON.parse(systemSetting);
+    }
+    catch (error) { }
+    return systemSetting;
+});
+
+const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () => {
+    const { getAppAuthorizeSetting } = weex.requireModule('plus');
+    let appAuthorizeSetting = getAppAuthorizeSetting();
+    try {
+        if (typeof appAuthorizeSetting === 'string')
+            appAuthorizeSetting = JSON.parse(appAuthorizeSetting);
+    }
+    catch (error) { }
+    return appAuthorizeSetting;
 });
 
 const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
@@ -16736,6 +16773,21 @@ const getUniverifyManager = defineSyncApi(API_GET_UNIVERIFY_MANAGER, () => {
     return univerifyManager || (univerifyManager = new UniverifyManager());
 });
 
+const createPushMessage = defineAsyncApi(API_CREATE_PUSH_MESSAGE, (opts, { resolve, reject }) => {
+    const setting = getAppAuthorizeSetting();
+    if (!hasOwn$1(setting, 'notificationAuthorized')) {
+        return reject(`missing push module`);
+    }
+    if (setting.notificationAuthorized !== 'authorized') {
+        return reject(setting.notificationAuthorized);
+    }
+    const options = extend({}, opts);
+    delete options.content;
+    delete options.payload;
+    plus.push.createMessage(opts.content, opts.payload, options);
+    resolve();
+}, undefined, CreatePushMessageOptions);
+
 const registerRuntime = defineSyncApi('registerRuntime', (runtime) => {
     // @ts-expect-error
     extend(jsRuntime, runtime);
@@ -19162,6 +19214,8 @@ var uni$1 = {
   setScreenBrightness: setScreenBrightness,
   setKeepScreenOn: setKeepScreenOn,
   getWindowInfo: getWindowInfo,
+  getSystemSetting: getSystemSetting,
+  getAppAuthorizeSetting: getAppAuthorizeSetting,
   getImageInfo: getImageInfo,
   getVideoInfo: getVideoInfo,
   previewImage: previewImage,
@@ -19227,6 +19281,7 @@ var uni$1 = {
   closeAuthView: closeAuthView,
   getCheckBoxState: getCheckBoxState,
   getUniverifyManager: getUniverifyManager,
+  createPushMessage: createPushMessage,
   registerRuntime: registerRuntime,
   share: share,
   shareWithSystem: shareWithSystem,
