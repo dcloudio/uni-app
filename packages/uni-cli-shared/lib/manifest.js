@@ -1,4 +1,7 @@
 const path = require('path')
+const {
+  hasOwn
+} = require('./util')
 
 const {
   getJson,
@@ -98,6 +101,24 @@ function getH5Options (manifestJson) {
   return h5
 }
 
+function isEnableUniPushV1 (manifestJson, platform) {
+  if (!manifestJson) {
+    manifestJson = getManifestJson()
+  }
+  if (isEnableUniPushV2(manifestJson, platform)) {
+    return false
+  }
+  if (platform === 'app-plus') {
+    const platformOptions = manifestJson[platform]
+    const sdkConfigs = platformOptions && platformOptions.distribute && platformOptions.distribute.sdkConfigs
+    const push = sdkConfigs && sdkConfigs.push
+    if (push && hasOwn(push, 'unipush')) {
+      return true
+    }
+  }
+  return false
+}
+
 function isEnableUniPushV2 (manifestJson, platform) {
   if (!manifestJson) {
     manifestJson = getManifestJson()
@@ -129,6 +150,7 @@ module.exports = {
   parseManifestJson,
   getNetworkTimeout,
   getH5Options,
+  isEnableUniPushV1,
   isEnableUniPushV2,
   isUniPushOffline
 }

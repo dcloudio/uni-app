@@ -22,6 +22,7 @@ process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cw
 
 const {
   getManifestJson,
+  isEnableUniPushV1,
   isEnableUniPushV2,
   isUniPushOffline
 } = require('@dcloudio/uni-cli-shared/lib/manifest')
@@ -47,6 +48,8 @@ if (isEnableUniPushV2(manifestJsonObj, process.env.UNI_PLATFORM)) {
   if (process.env.UNI_PLATFORM === 'app-plus' && isUniPushOffline(manifestJsonObj)) {
     process.env.UNI_PUSH_V2_OFFLINE = true
   }
+} else if (isEnableUniPushV1(manifestJsonObj, process.env.UNI_PLATFORM)) {
+  process.env.UNI_PUSH_V1 = true
 }
 
 // 初始化全局插件对象
