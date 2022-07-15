@@ -17,10 +17,12 @@ export function onWebviewPopGesture (webview) {
       setStatusBarStyle(popStartStatusBarStyle)
     } else if (e.type === 'end' && e.result) {
       const pages = getCurrentPages()
+      const len = pages.length
       const page = pages[pages.length - 1]
       page && page.$remove()
       setStatusBarStyle()
-      if (page && isDirectPage(page)) {
+      // 仅当存在一个页面，且是直达页面时，才 reLaunch 首页
+      if (page && len === 1 && isDirectPage(page)) {
         reLaunchEntryPage()
       } else {
         UniServiceJSBridge.emit('onAppRoute', {

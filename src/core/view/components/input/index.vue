@@ -21,7 +21,7 @@
         :disabled="disabled"
         :type="inputType"
         :maxlength="maxlength"
-        :step="step"
+        :step="_step"
         :enterkeyhint="confirmType"
         :pattern="type === 'number' ? '[0-9]*' : null"
         class="uni-input-input"
@@ -44,7 +44,7 @@
         :readonly="disabled"
         :type="inputType"
         :maxlength="maxlength"
-        :step="step"
+        :step="_step"
         class="uni-input-input"
         @focus="($event) => $event.target.blur()"
       >
@@ -102,6 +102,10 @@ export default {
     textContentType: {
       type: String,
       default: ''
+    },
+    step: {
+      type: String,
+      default: '0.000000000000000001'
     }
   },
   data () {
@@ -130,9 +134,9 @@ export default {
       }
       return this.password ? 'password' : type
     },
-    step () {
+    _step () {
       // 处理部分设备中无法输入小数点的问题
-      return ~NUMBER_TYPES.indexOf(this.type) ? '0.000000000000000001' : ''
+      return ~NUMBER_TYPES.indexOf(this.type) ? this.step : ''
     },
     autocomplete () {
       const camelizeIndex = AUTOCOMPLETES.indexOf(this.textContentType)
