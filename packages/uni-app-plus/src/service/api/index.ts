@@ -24,6 +24,8 @@ export * from './device/scanCode'
 export * from './device/theme'
 export * from './device/brightness'
 export * from './device/getWindowInfo'
+export * from './device/getSystemSetting'
+export * from './device/getAppAuthorizeSetting'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
