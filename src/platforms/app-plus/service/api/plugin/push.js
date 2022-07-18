@@ -1,7 +1,4 @@
 import {
-  hasOwn
-} from 'uni-shared'
-import {
   invoke,
   publish
 } from '../../bridge'
@@ -72,11 +69,6 @@ export function offPush (params) {
 
 export function createPushMessage (params, callbackId) {
   const setting = getAppAuthorizeSetting()
-  if (!hasOwn(setting, 'notificationAuthorized')) {
-    return invoke(callbackId, {
-      errMsg: 'createPushMessage:fail missing push module'
-    })
-  }
   if (setting.notificationAuthorized !== 'authorized') {
     return invoke(callbackId, {
       errMsg: 'createPushMessage:fail ' + setting.notificationAuthorized
