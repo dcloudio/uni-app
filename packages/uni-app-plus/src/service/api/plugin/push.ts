@@ -1,4 +1,4 @@
-import { hasOwn, extend } from '@vue/shared'
+import { extend } from '@vue/shared'
 import {
   API_CREATE_PUSH_MESSAGE,
   API_TYPE_CREATE_PUSH_MESSAGE,
@@ -10,9 +10,6 @@ export const createPushMessage = defineAsyncApi<API_TYPE_CREATE_PUSH_MESSAGE>(
   API_CREATE_PUSH_MESSAGE,
   (opts, { resolve, reject }) => {
     const setting = getAppAuthorizeSetting()
-    if (!hasOwn(setting, 'notificationAuthorized')) {
-      return reject(`missing push module`)
-    }
     if (setting.notificationAuthorized !== 'authorized') {
       return reject(setting.notificationAuthorized)
     }

@@ -16775,9 +16775,6 @@ const getUniverifyManager = defineSyncApi(API_GET_UNIVERIFY_MANAGER, () => {
 
 const createPushMessage = defineAsyncApi(API_CREATE_PUSH_MESSAGE, (opts, { resolve, reject }) => {
     const setting = getAppAuthorizeSetting();
-    if (!hasOwn$1(setting, 'notificationAuthorized')) {
-        return reject(`missing push module`);
-    }
     if (setting.notificationAuthorized !== 'authorized') {
         return reject(setting.notificationAuthorized);
     }
