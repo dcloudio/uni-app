@@ -1226,6 +1226,9 @@ const navigateBackMiniProgram = {
 const showShareMenu = {
     name: 'openShare',
 };
+const login = {
+    name: 'getLoginCode',
+};
 const getAccountInfoSync = {
     name: 'getEnvInfoSync',
     returnValue(fromRes, toRes) {
@@ -1249,6 +1252,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   navigateToMiniProgram: navigateToMiniProgram,
   navigateBackMiniProgram: navigateBackMiniProgram,
   showShareMenu: showShareMenu,
+  login: login,
   getAccountInfoSync: getAccountInfoSync,
   redirectTo: redirectTo,
   navigateTo: navigateTo,

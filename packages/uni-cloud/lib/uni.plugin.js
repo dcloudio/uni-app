@@ -9,7 +9,6 @@ const shared_1 = require("@vue/shared");
 const uni_shared_1 = require("@dcloudio/uni-shared");
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const validateFunction_1 = require("./validateFunction");
-process.env.UNI_CLOUD_PROVIDER = JSON.stringify([]);
 const uniCloudSpaces = [];
 const initUniCloudEnvOnce = (0, uni_shared_1.once)(initUniCloudEnv);
 initUniCloudEnvOnce();
@@ -94,6 +93,17 @@ function checkUniModules() {
 }
 function initUniCloudEnv() {
     checkUniModules();
+    if (process.env.UNI_CLOUD_PROVIDER) {
+        const spaces = JSON.parse(process.env.UNI_CLOUD_PROVIDER);
+        if (!(0, shared_1.isArray)(spaces)) {
+            return;
+        }
+        if (spaces.length) {
+            uniCloudSpaces.push(...spaces);
+            return;
+        }
+    }
+    process.env.UNI_CLOUD_PROVIDER = JSON.stringify([]);
     if (!process.env.UNI_CLOUD_SPACES) {
         return;
     }

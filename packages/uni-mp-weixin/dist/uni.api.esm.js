@@ -1162,6 +1162,19 @@ const getWindowInfo = {
     },
 };
 
+const getAppAuthorizeSetting = {
+    returnValue: function (fromRes, toRes) {
+        const { locationReducedAccuracy } = fromRes;
+        toRes.locationAccuracy = 'unsupported';
+        if (locationReducedAccuracy === true) {
+            toRes.locationAccuracy = 'reduced';
+        }
+        else if (locationReducedAccuracy === false) {
+            toRes.locationAccuracy = 'full';
+        }
+    },
+};
+
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
 const getProvider = initGetProvider({
@@ -1206,7 +1219,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   showActionSheet: showActionSheet,
   getDeviceInfo: getDeviceInfo,
   getAppBaseInfo: getAppBaseInfo,
-  getWindowInfo: getWindowInfo
+  getWindowInfo: getWindowInfo,
+  getAppAuthorizeSetting: getAppAuthorizeSetting
 });
 
 var index = initUni(shims, protocols);
