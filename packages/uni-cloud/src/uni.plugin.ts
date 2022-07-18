@@ -13,8 +13,6 @@ import {
 
 import { uniValidateFunctionPlugin } from './validateFunction'
 
-process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
-
 const uniCloudSpaces: {
   provider?: string
   id: string
@@ -126,6 +124,17 @@ function checkUniModules() {
 
 function initUniCloudEnv() {
   checkUniModules()
+  if (process.env.UNI_CLOUD_PROVIDER) {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_PROVIDER)
+    if (!isArray(spaces)) {
+      return
+    }
+    if (spaces.length) {
+      uniCloudSpaces.push(...spaces)
+      return
+    }
+  }
+  process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
   if (!process.env.UNI_CLOUD_SPACES) {
     return
   }
