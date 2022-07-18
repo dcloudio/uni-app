@@ -66,8 +66,6 @@ process.env.VUE_APP_NAME = manifestJsonObj.name
 
 process.env.UNI_USING_V3_SCOPED = true
 
-process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
-
 // 导出到小程序插件
 process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.plugins || {}).map(pluginName =>
   platformOptions.plugins[pluginName].export))
@@ -75,7 +73,9 @@ process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.pl
 const isH5 = !process.env.UNI_SUB_PLATFORM && process.env.UNI_PLATFORM === 'h5'
 const isProduction = process.env.NODE_ENV === 'production'
 
-if (process.env.UNI_CLOUD_SPACES) {
+// uniCloud
+if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
+  process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
     if (Array.isArray(spaces)) {

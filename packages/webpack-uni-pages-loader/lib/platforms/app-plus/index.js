@@ -628,12 +628,12 @@ function initUniStatistics (manifestJson) {
     )
     delete manifestJson.uniStatistics
   }
-  if (!process.env.UNI_CLOUD_SPACES) {
+  if (!process.env.UNI_CLOUD_PROVIDER) {
     return
   }
   let spaces = []
   try {
-    spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
+    spaces = JSON.parse(process.env.UNI_CLOUD_PROVIDER)
   } catch (e) {}
   if (!Array.isArray(spaces) || !spaces.length) {
     return
@@ -652,9 +652,9 @@ function initUniStatistics (manifestJson) {
     }
     uniStatistics.uniCloud = {
       provider: space.provider,
-      spaceId: space.id,
+      spaceId: space.spaceId,
       clientSecret: space.clientSecret,
-      endpoint: space.apiEndpoint
+      endpoint: space.endpoint
     }
   }
 }
