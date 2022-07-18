@@ -7,8 +7,8 @@ export function getAppAuthorizeSetting () {
 
   for (const key in appAuthorizeSetting) {
     if (Object.hasOwnProperty.call(appAuthorizeSetting, key)) {
-      const value = appAuthorizeSetting[key];
-      if(value === 'undefined') appAuthorizeSetting[key] = undefined
+      const value = appAuthorizeSetting[key]
+      if (value === 'undefined') appAuthorizeSetting[key] = undefined
     }
   }
 
