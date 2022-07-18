@@ -6636,6 +6636,13 @@ var serviceContext = (function () {
       if (typeof appAuthorizeSetting === 'string') { appAuthorizeSetting = JSON.parse(appAuthorizeSetting); }
     } catch (error) { }
 
+    for (const key in appAuthorizeSetting) {
+      if (Object.hasOwnProperty.call(appAuthorizeSetting, key)) {
+        const value = appAuthorizeSetting[key];
+        if (value === 'undefined') appAuthorizeSetting[key] = undefined;
+      }
+    }
+
     return appAuthorizeSetting
   }
 
@@ -8491,11 +8498,6 @@ var serviceContext = (function () {
 
   function createPushMessage (params, callbackId) {
     const setting = getAppAuthorizeSetting();
-    if (!hasOwn(setting, 'notificationAuthorized')) {
-      return invoke$1(callbackId, {
-        errMsg: 'createPushMessage:fail missing push module'
-      })
-    }
     if (setting.notificationAuthorized !== 'authorized') {
       return invoke$1(callbackId, {
         errMsg: 'createPushMessage:fail ' + setting.notificationAuthorized

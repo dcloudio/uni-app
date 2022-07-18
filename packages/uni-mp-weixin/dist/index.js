@@ -900,6 +900,19 @@ var getWindowInfo = {
   }
 };
 
+var getAppAuthorizeSetting = {
+  returnValue: function (result) {
+    const { locationReducedAccuracy } = result;
+
+    result.locationAccuracy = 'unsupported';
+    if (locationReducedAccuracy === true) {
+      result.locationAccuracy = 'reduced';
+    } else if (locationReducedAccuracy === false) {
+      result.locationAccuracy = 'full';
+    }
+  }
+};
+
 // import navigateTo from 'uni-helpers/navigate-to'
 
 const protocols = {
@@ -911,7 +924,8 @@ const protocols = {
   showActionSheet,
   getAppBaseInfo,
   getDeviceInfo,
-  getWindowInfo
+  getWindowInfo,
+  getAppAuthorizeSetting
 };
 const todos = [
   'vibrate',
