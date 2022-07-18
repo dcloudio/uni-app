@@ -4,17 +4,26 @@ import {
   defineSyncApi,
 } from '@dcloudio/uni-api'
 
+type AppAuthorizeSetting = ReturnType<API_TYPE_GET_APP_AUTHORIZE_SETTING>
+
 export const getAppAuthorizeSetting =
   defineSyncApi<API_TYPE_GET_APP_AUTHORIZE_SETTING>(
     API_GET_APP_AUTHORIZE_SETTING,
     () => {
       const { getAppAuthorizeSetting } = weex.requireModule('plus')
-      let appAuthorizeSetting =
-        getAppAuthorizeSetting() as ReturnType<API_TYPE_GET_APP_AUTHORIZE_SETTING>
+      let appAuthorizeSetting = getAppAuthorizeSetting() as AppAuthorizeSetting
       try {
         if (typeof appAuthorizeSetting === 'string')
           appAuthorizeSetting = JSON.parse(appAuthorizeSetting)
       } catch (error) {}
+
+      for (const key in appAuthorizeSetting) {
+        if (Object.hasOwnProperty.call(appAuthorizeSetting, key)) {
+          const value = appAuthorizeSetting[key as keyof AppAuthorizeSetting]
+          // @ts-ignore
+          if (value === 'undefined') appAuthorizeSetting[key] = undefined
+        }
+      }
 
       return appAuthorizeSetting
     }
