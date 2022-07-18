@@ -76,6 +76,10 @@ export const showShareMenu = {
   name: 'openShare',
 }
 
+export const login = {
+  name: 'getLoginCode',
+}
+
 export const getAccountInfoSync = {
   name: 'getEnvInfoSync',
   returnValue(fromRes: Data, toRes: UniApp.AccountInfo) {
