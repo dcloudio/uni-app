@@ -3,6 +3,7 @@ import {
   API_TYPE_GET_APP_AUTHORIZE_SETTING,
   defineSyncApi,
 } from '@dcloudio/uni-api'
+import { hasOwn } from '@vue/shared'
 
 type AppAuthorizeSetting = ReturnType<API_TYPE_GET_APP_AUTHORIZE_SETTING>
 
@@ -18,7 +19,7 @@ export const getAppAuthorizeSetting =
       } catch (error) {}
 
       for (const key in appAuthorizeSetting) {
-        if (Object.hasOwnProperty.call(appAuthorizeSetting, key)) {
+        if (hasOwn(appAuthorizeSetting, key)) {
           const value = appAuthorizeSetting[key as keyof AppAuthorizeSetting]
           // @ts-ignore
           if (value === 'undefined') appAuthorizeSetting[key] = undefined
