@@ -104,8 +104,8 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
       'process.env.RUN_BY_HBUILDERX': process.env.RUN_BY_HBUILDERX,
       'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),
-      'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD || '',
-      'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG || '',
+      'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD || '""',
+      'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG || '""',
       'process.env.UNI_COMPILER_VERSION': JSON.stringify(process.env.UNI_COMPILER_VERSION),
       'process.env.UNI_APP_VERSION_NAME': JSON.stringify(process.env.UNI_APP_VERSION_NAME),
       'process.env.UNI_APP_VERSION_CODE': JSON.stringify(process.env.UNI_APP_VERSION_CODE)
