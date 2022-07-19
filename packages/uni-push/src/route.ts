@@ -1,15 +1,5 @@
-interface OnPushMessageSuccess {
-  type: 'click' | 'receive'
-  data: {
-    title: string
-    content: string
-    payload: unknown
-    forceNotification?: boolean
-    path?: string
-  }
-}
 export function initPushRoute() {
-  uni.onPushMessage((res: OnPushMessageSuccess) => {
+  uni.onPushMessage((res) => {
     if (res.data && res.data.path && res.type === 'receive') {
       // 仅 App 端
       if (typeof plus !== 'undefined' && plus.push) {
