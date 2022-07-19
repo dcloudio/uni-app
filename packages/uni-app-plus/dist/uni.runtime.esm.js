@@ -14109,7 +14109,7 @@ const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () =
     }
     catch (error) { }
     for (const key in appAuthorizeSetting) {
-        if (Object.hasOwnProperty.call(appAuthorizeSetting, key)) {
+        if (hasOwn$1(appAuthorizeSetting, key)) {
             const value = appAuthorizeSetting[key];
             // @ts-ignore
             if (value === 'undefined')
@@ -16784,7 +16784,7 @@ const getUniverifyManager = defineSyncApi(API_GET_UNIVERIFY_MANAGER, () => {
 const createPushMessage = defineAsyncApi(API_CREATE_PUSH_MESSAGE, (opts, { resolve, reject }) => {
     const setting = getAppAuthorizeSetting();
     if (setting.notificationAuthorized !== 'authorized') {
-        return reject(setting.notificationAuthorized);
+        return reject(`notificationAuthorized: ` + setting.notificationAuthorized);
     }
     const options = extend({}, opts);
     delete options.content;

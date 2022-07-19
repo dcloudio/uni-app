@@ -11,7 +11,7 @@ export const createPushMessage = defineAsyncApi<API_TYPE_CREATE_PUSH_MESSAGE>(
   (opts, { resolve, reject }) => {
     const setting = getAppAuthorizeSetting()
     if (setting.notificationAuthorized !== 'authorized') {
-      return reject(setting.notificationAuthorized)
+      return reject(`notificationAuthorized: ` + setting.notificationAuthorized)
     }
     const options = extend({}, opts)
     delete (options as any).content
