@@ -322,7 +322,7 @@ const CONTEXT_API_RE = /^create|Manager$/;
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
 
 // 同步例外情况
-const ASYNC_API = ['createBLEConnection'];
+const ASYNC_API = ['createBLEConnection', 'createPushMessage'];
 
 const CALLBACK_API_RE = /^on|^off/;
 

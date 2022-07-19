@@ -866,7 +866,7 @@ var serviceContext = (function () {
   const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 
   // 同步例外情况
-  const ASYNC_API = ['createBLEConnection'];
+  const ASYNC_API = ['createBLEConnection', 'createPushMessage'];
 
   const CALLBACK_API_RE = /^on|^off/;
 
