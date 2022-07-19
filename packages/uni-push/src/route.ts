@@ -9,7 +9,6 @@ interface OnPushMessageSuccess {
   }
 }
 export function initPushRoute() {
-  // @ts-expect-error
   uni.onPushMessage((res: OnPushMessageSuccess) => {
     if (res.data && res.data.path && res.type === 'receive') {
       // 仅 App 端
