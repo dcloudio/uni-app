@@ -71,7 +71,7 @@ export function createPushMessage (params, callbackId) {
   const setting = getAppAuthorizeSetting()
   if (setting.notificationAuthorized !== 'authorized') {
     return invoke(callbackId, {
-      errMsg: 'createPushMessage:fail ' + setting.notificationAuthorized
+      errMsg: 'createPushMessage:fail notificationAuthorized: ' + setting.notificationAuthorized
     })
   }
   const options = Object.assign({}, params)
