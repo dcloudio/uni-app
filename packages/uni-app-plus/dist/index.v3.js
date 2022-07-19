@@ -8500,7 +8500,7 @@ var serviceContext = (function () {
     const setting = getAppAuthorizeSetting();
     if (setting.notificationAuthorized !== 'authorized') {
       return invoke$1(callbackId, {
-        errMsg: 'createPushMessage:fail ' + setting.notificationAuthorized
+        errMsg: 'createPushMessage:fail notificationAuthorized: ' + setting.notificationAuthorized
       })
     }
     const options = Object.assign({}, params);
