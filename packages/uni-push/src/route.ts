@@ -1,19 +1,20 @@
-export function initPushRoute() {
-  uni.onPushMessage((res) => {
-    if (res.data && res.data.path && res.type === 'receive') {
-      // 仅 App 端
-      if (typeof plus !== 'undefined' && plus.push) {
-        // 创建通知栏，并屏蔽消息的继续传递
-        plus.push.createMessage(
-          res.data.content,
-          JSON.stringify(res.data.payload),
-          {
-            title: res.data.title,
-            forceNotification: true,
-            path: res.data.path,
-          } as any
-        )
+export function initPushNotification() {
+  // 仅 App 端
+  if (typeof plus !== 'undefined' && plus.push) {
+    plus.push.addEventListener('click', (result) => {
+      // @ts-expect-error
+      uni.invokePushCallback({
+        type: 'click',
+        message: result,
+      })
+    })
+    uni.onPushMessage((res) => {
+      if (res.type === 'receive' && res.data && res.data.force_notification) {
+        // 创建通知栏
+        uni.createPushMessage(res.data)
+        // 阻止其他监听器继续监听
+        ;(res as any).stopped = true
       }
-    }
-  })
+    })
+  }
 }
