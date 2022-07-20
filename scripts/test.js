@@ -1,6 +1,19 @@
+const fs = require('fs')
 const path = require('path')
-const { runBuild, UtsTarget } = require('../packages/uts/dist')
+const { parse, runBuild, UtsTarget } = require('../packages/uts/dist')
 const projectDir = path.resolve(__dirname, '../packages/playground/uts')
+
+const start = Date.now()
+parse(
+  fs.readFileSync(
+    path.resolve(projectDir, 'uni_modules/test-uniplugin/interface.uts'),
+    'utf8'
+  )
+).then((res) => {
+  console.log('parse: ' + (Date.now() - start) + 'ms')
+  console.log(JSON.stringify(res))
+})
+
 // uts
 runBuild(UtsTarget.KOTLIN, {
   silent: false,

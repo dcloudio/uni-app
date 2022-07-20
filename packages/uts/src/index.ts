@@ -343,6 +343,8 @@ function buildFile(
   })
 }
 
+export { parse } from './api'
+
 export function runDev(target: UtsTarget, opts: ToOptions) {
   opts = parseOptions('dev', target, opts)
   !opts.silent && printStartup(target, 'development')

@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import type { UtsOptions, UtsResult } from './types'
+import type { UtsOptions, UtsParseOptions, UtsResult } from './types'
 import { normalizePath } from './utils'
 
 const bindingsOverride = process.env['UTS_BINARY_PATH']
@@ -34,6 +34,12 @@ function resolveOptions(options: UtsOptions) {
   output.sourceMap = normalizePath(output.sourceMap)
 
   return options
+}
+
+export function parse(source: string, options: UtsParseOptions = {}) {
+  return bindings
+    .parse(source, toBuffer(options))
+    .then((res: string) => JSON.parse(res))
 }
 
 export function toKotlin(options: UtsOptions): Promise<UtsResult> {

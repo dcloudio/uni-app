@@ -25,8 +25,8 @@ export function uniUtsPlugin(): Plugin {
       if (pkg.uni_modules?.type !== 'uts') {
         return
       }
-      // TODO 根据平台加载
-      return path.join(id, 'app-android/index.uts')
+      // 加载接口类
+      return path.join(id, pkg.main || 'interface.uts')
     },
     transform(code, id, opts) {
       if (opts && opts.ssr) {

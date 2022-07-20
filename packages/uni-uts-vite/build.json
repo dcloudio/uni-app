@@ -1,0 +1,11 @@
+[
+  {
+    "input": {
+      "module.ts": "lib/module.js"
+    },
+    "treeshake": false,
+    "compilerOptions": {
+      "module": "ESNext"
+    }
+  }
+]
