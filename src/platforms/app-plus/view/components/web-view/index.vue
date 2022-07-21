@@ -19,7 +19,9 @@ const insertHTMLWebView = ({
   // fixed by hxy web-view 组件所在的 webview 不注入 uni-app 框架
   const styles = {
     'uni-app': 'none',
-    isUniH5: true
+    isUniH5: true,
+    // ios 默认绘制到安全区外
+    contentAdjust: false
   }
   const parentTitleNView = parentWebview.getTitleNView()
   if (parentTitleNView) {
