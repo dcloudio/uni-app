@@ -92,5 +92,6 @@
     "vue-router": "^4.1.2",
     "yorkie": "^2.0.0"
   },
+  "packageManager": "pnpm@7.5.2",
   "name": "uni-app-next"
 }
