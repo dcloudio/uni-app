@@ -10,10 +10,7 @@ function normalizeArg(arg) {
   if (typeof arg === 'function') {
     const id = callbackId++
     callbacks[id] = arg
-    return {
-      $$type: 'function',
-      value: id,
-    }
+    return id
   } else if (isPlainObject(arg)) {
     Object.keys(arg).forEach((name) => {
       arg[name] = normalizeArg(arg[name])

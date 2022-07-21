@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@dcloudio/uni-app-vite": "3.0.0-alpha-3050220220719003",
-    "@dcloudio/uni-app-vue": "3.0.0-alpha-3050220220719003"
+    "@dcloudio/uni-app-vue": "3.0.0-alpha-3050220220719003",
+    "@dcloudio/uni-uts-vite": "3.0.0-alpha-3050220220719003"
   }
 }

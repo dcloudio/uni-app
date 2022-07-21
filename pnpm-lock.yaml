@@ -190,6 +190,7 @@ importers:
       '@dcloudio/uni-h5': 3.0.0-alpha-3050220220719003
       '@dcloudio/uni-i18n': 3.0.0-alpha-3050220220719003
       '@dcloudio/uni-shared': 3.0.0-alpha-3050220220719003
+      '@dcloudio/uni-uts-vite': 3.0.0-alpha-3050220220719003
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.37
       autoprefixer: ^10.4.7
@@ -199,6 +200,7 @@ importers:
     dependencies:
       '@dcloudio/uni-app-vite': link:../uni-app-vite
       '@dcloudio/uni-app-vue': link:../uni-app-vue
+      '@dcloudio/uni-uts-vite': link:../uni-uts-vite
     devDependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components

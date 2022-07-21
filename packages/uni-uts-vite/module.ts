@@ -28,10 +28,7 @@ export function normalizeArg(arg: unknown) {
   if (typeof arg === 'function') {
     const id = callbackId++
     callbacks[id] = arg
-    return {
-      $$type: 'function',
-      value: id,
-    }
+    return id
   } else if (isPlainObject(arg)) {
     Object.keys(arg).forEach((name) => {
       ;(arg as any)[name] = normalizeArg((arg as any)[name])
