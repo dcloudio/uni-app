@@ -56,10 +56,15 @@ const insertHTMLWebView = ({
   const styles: PlusWebviewWebviewStyles & {
     'uni-app': string
     isUniH5: boolean
-  } = extend(webviewStyles, {
-    'uni-app': 'none',
-    isUniH5: true,
-  })
+  } = extend(
+    {
+      'uni-app': 'none',
+      isUniH5: true,
+      // ios 默认绘制到安全区外
+      contentAdjust: false,
+    },
+    webviewStyles
+  )
   const parentTitleNView = parentWebview.getTitleNView()
   if (parentTitleNView) {
     let defaultTop: number = NAVBAR_HEIGHT + parseFloat(styles.top || '0')
