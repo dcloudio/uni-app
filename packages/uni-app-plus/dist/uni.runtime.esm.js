@@ -19530,7 +19530,7 @@ function initKeyboardEvent() {
 function onNodeEvent(nodeId, evt, pageNode) {
     const type = evt.type;
     if (type === 'onFocus' || type === 'onBlur') {
-        hookKeyboardEvent(evt, evt => {
+        hookKeyboardEvent(evt, (evt) => {
             pageNode.fireEvent(nodeId, evt);
         });
     }

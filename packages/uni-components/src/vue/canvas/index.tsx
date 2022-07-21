@@ -1,5 +1,5 @@
 import { ref, computed, ExtractPropTypes, Ref, onMounted } from 'vue'
-import { extend, isFunction } from '@vue/shared'
+import { extend, hasOwn, isFunction } from '@vue/shared'
 import type { Actions, OperateCanvasType } from '@dcloudio/uni-api'
 import {
   useAttrs,
@@ -37,8 +37,8 @@ function resolveColor(color: number[]) {
 
 function processTouches(target: EventTarget, touches: TouchEvent['touches']) {
   const eventTarget = target as HTMLElement
+  let boundingClientRect = eventTarget.getBoundingClientRect()
   return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect()
     return {
       identifier: touch.identifier,
       x: touch.clientX - boundingClientRect.left,
@@ -158,7 +158,7 @@ function useListeners(
       (() => {
         let obj = {}
         for (const key in _$listeners) {
-          if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+          if (hasOwn(_$listeners, key)) {
             const event = (_$listeners as any)[key]
             ;(obj as any)[key] = event
           }

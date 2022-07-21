@@ -7,6 +7,7 @@ import {
   watchEffect,
   onBeforeUnmount,
 } from 'vue'
+import { hasOwn } from '@vue/shared'
 import {
   defineBuiltInComponent,
   ResizeSensor,
@@ -50,7 +51,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const iframe = document.createElement('iframe')
       watchEffect(() => {
         for (const key in $attrs.value) {
-          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+          if (hasOwn($attrs.value, key)) {
             const attr = ($attrs.value as any)[key]
             ;(iframe as any)[key] = attr
           }

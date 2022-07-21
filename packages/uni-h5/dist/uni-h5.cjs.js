@@ -1646,8 +1646,8 @@ function resolveColor(color) {
 }
 function processTouches(target, touches) {
   const eventTarget = target;
+  let boundingClientRect = eventTarget.getBoundingClientRect();
   return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect();
     return {
       identifier: touch.identifier,
       x: touch.clientX - boundingClientRect.left,
@@ -1743,7 +1743,7 @@ function useListeners(props2, Listeners, trigger) {
     let $listeners = shared.extend({}, (() => {
       let obj = {};
       for (const key in _$listeners) {
-        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+        if (shared.hasOwn(_$listeners, key)) {
           const event = _$listeners[key];
           obj[key] = event;
         }
@@ -5104,7 +5104,7 @@ function normalizeAttrs(tagName, attrs) {
   if (!shared.isPlainObject(attrs))
     return;
   for (const key in attrs) {
-    if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+    if (shared.hasOwn(attrs, key)) {
       const value = attrs[key];
       if (tagName === "img" && key === "src")
         attrs[key] = getRealPath(value);

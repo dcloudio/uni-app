@@ -6561,8 +6561,8 @@ function resolveColor(color) {
 }
 function processTouches(target, touches) {
   const eventTarget = target;
+  let boundingClientRect = eventTarget.getBoundingClientRect();
   return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect();
     return {
       identifier: touch.identifier,
       x: touch.clientX - boundingClientRect.left,
@@ -6661,7 +6661,7 @@ function useListeners(props2, Listeners, trigger) {
     let $listeners = extend({}, (() => {
       let obj = {};
       for (const key in _$listeners) {
-        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+        if (hasOwn(_$listeners, key)) {
           const event = _$listeners[key];
           obj[key] = event;
         }
@@ -11822,7 +11822,7 @@ function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
   for (const key in attrs2) {
-    if (Object.prototype.hasOwnProperty.call(attrs2, key)) {
+    if (hasOwn(attrs2, key)) {
       const value = attrs2[key];
       if (tagName === "img" && key === "src")
         attrs2[key] = getRealPath(value);
@@ -15335,7 +15335,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       const iframe = document.createElement("iframe");
       watchEffect(() => {
         for (const key in $attrs.value) {
-          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+          if (hasOwn($attrs.value, key)) {
             const attr2 = $attrs.value[key];
             iframe[key] = attr2;
           }
