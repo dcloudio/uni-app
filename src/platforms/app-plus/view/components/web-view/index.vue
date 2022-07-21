@@ -12,17 +12,21 @@ import { NAVBAR_HEIGHT } from 'uni-helpers/constants'
 
 let webview = false
 const insertHTMLWebView = ({
+  webviewStyles,
   htmlId,
   updateTitle
 }) => {
   const parentWebview = plus.webview.currentWebview()
   // fixed by hxy web-view 组件所在的 webview 不注入 uni-app 框架
-  const styles = {
-    'uni-app': 'none',
-    isUniH5: true,
-    // ios 默认绘制到安全区外
-    contentAdjust: false
-  }
+  const styles = Object.assign(
+    {
+      'uni-app': 'none',
+      isUniH5: true,
+      // ios 默认绘制到安全区外
+      contentAdjust: false
+    },
+    webviewStyles
+  )
   const parentTitleNView = parentWebview.getTitleNView()
   if (parentTitleNView) {
     if (plus.navigator.isImmersedStatusbar()) {
@@ -102,6 +106,7 @@ export default {
   mounted () {
     this.htmlId = WEBVIEW_ID_PREFIX + this.$page.id
     insertHTMLWebView({
+      webviewStyles: this.webviewStyles,
       htmlId: this.htmlId,
       updateTitle: this.updateTitle
     })
