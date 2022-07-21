@@ -116,7 +116,7 @@ function processBooleanAttr({ props }: ComponentNode) {
 }
 
 const builtInProps = [
-  'id',
+  // 'id',
   'class',
   'style',
   ATTR_VUE_ID,
@@ -172,8 +172,10 @@ export function rewriteBinding(
   const properties: (ObjectProperty | SpreadElement)[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
+    let isIdProp = false
     if (isAttributeNode(prop)) {
       const { name } = prop
+      isIdProp = name === 'id'
       if (!isComponentProp(name)) {
         continue
       }
@@ -194,6 +196,7 @@ export function rewriteBinding(
           properties.push(spreadElement)
         }
       } else if (isStaticExp(arg)) {
+        isIdProp = arg.content === 'id'
         if (!isComponentProp(arg.content)) {
           continue
         }
@@ -222,8 +225,11 @@ export function rewriteBinding(
         )
       }
     }
-    props.splice(i, 1)
-    i--
+    // 即保留 id 属性，又补充到 props 中
+    if (!isIdProp) {
+      props.splice(i, 1)
+      i--
+    }
   }
 
   if (properties.length) {
