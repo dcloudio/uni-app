@@ -119,4 +119,5 @@ function initModule(moduleDefine: Record<string, ModuleMethodDefine>) {
       },
     })
   }
+  return moduleProxy
 }

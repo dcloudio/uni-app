@@ -18,3 +18,4 @@ packages/uni-mp-vue/lib
 packages/uni-mp-weixin/lib
 packages/uni-mp-quickapp-webview/lib
 packages/vite-plugin-uni/lib
+packages/uni-uts-vite/lib

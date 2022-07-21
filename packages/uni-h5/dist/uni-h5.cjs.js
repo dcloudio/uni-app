@@ -386,7 +386,20 @@ function createNativeEvent(evt, htmlElement = false) {
     event.touches = evt.touches;
     event.changedTouches = evt.changedTouches;
   }
+  {
+    wrapperEvent(event, evt);
+  }
   return event;
+}
+function wrapperEvent(event, evt) {
+  shared.extend(event, {
+    preventDefault() {
+      return evt.preventDefault();
+    },
+    stopPropagation() {
+      return evt.stopPropagation();
+    }
+  });
 }
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
@@ -1644,15 +1657,10 @@ function resolveColor(color) {
   color[3] = color[3] / 255;
   return "rgba(" + color.join(",") + ")";
 }
-function processTouches(target, touches) {
-  const eventTarget = target;
-  let boundingClientRect = eventTarget.getBoundingClientRect();
-  return Array.from(touches).map((touch) => {
-    return {
-      identifier: touch.identifier,
-      x: touch.clientX - boundingClientRect.left,
-      y: touch.clientY - boundingClientRect.top
-    };
+function processTouches(rect, touches) {
+  Array.from(touches).forEach((touch) => {
+    touch.x = touch.clientX - rect.left;
+    touch.y = touch.clientY - rect.top;
   });
 }
 let tempCanvas;
@@ -1755,16 +1763,10 @@ function useListeners(props2, Listeners, trigger) {
       let eventHandler = [];
       if (existing) {
         eventHandler.push(withWebEvent(($event) => {
-          trigger(event.replace("on", "").toLocaleLowerCase(), shared.extend({}, (() => {
-            let obj = {};
-            for (const key in $event) {
-              obj[key] = $event[key];
-            }
-            return obj;
-          })(), {
-            touches: processTouches($event.currentTarget, $event.touches),
-            changedTouches: processTouches($event.currentTarget, $event.changedTouches)
-          }));
+          const rect = $event.currentTarget.getBoundingClientRect();
+          processTouches(rect, $event.touches);
+          processTouches(rect, $event.changedTouches);
+          trigger(event.replace("on", "").toLocaleLowerCase(), $event);
         }));
       }
       if (props2.disableScroll && event === "onTouchmove") {
