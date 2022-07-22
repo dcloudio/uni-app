@@ -9,7 +9,11 @@ export function initPushNotification() {
       })
     })
     uni.onPushMessage((res) => {
-      if (res.type === 'receive' && res.data && res.data.force_notification) {
+      if (
+        res.type === 'receive' &&
+        res.data &&
+        (res.data as any).force_notification
+      ) {
         // 创建通知栏
         uni.createPushMessage(res.data)
         // 阻止其他监听器继续监听
