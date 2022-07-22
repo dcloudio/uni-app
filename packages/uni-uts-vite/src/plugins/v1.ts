@@ -11,7 +11,6 @@ import {
 } from '../../types/types'
 // 需要区分 android，iOS
 export function uniUtsV1Plugin(): Plugin {
-  // TODO 1.0 版本，解析到 uts module 时，动态编译 uts ？
   let moduleCode: string
   return {
     name: 'uni:uts-v1',
@@ -29,7 +28,7 @@ export function uniUtsV1Plugin(): Plugin {
       if (!moduleName) {
         return
       }
-      // 懒加载 uts
+      // 懒加载 uts 编译器
       // eslint-disable-next-line no-restricted-globals
       const { parse } = require('@dcloudio/uts')
       const ast = await parse(code)
@@ -39,9 +38,12 @@ export function uniUtsV1Plugin(): Plugin {
           'utf8'
         )
       }
-      return moduleCode
+      code = moduleCode
         .replace(`__MODULE_NAME__`, moduleName)
         .replace(`'__MODULE_DEFINE__'`, JSON.stringify(parseModuleDefines(ast)))
+      // TODO compile uts
+
+      return code
     },
   }
 }

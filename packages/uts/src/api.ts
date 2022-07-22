@@ -20,7 +20,10 @@ function resolveOptions(options: UtsOptions) {
   }
   if (output.sourceMap === true) {
     output.sourceMap = output.outDir
-  } else if (output.sourceMap === false) {
+  } else if (
+    output.sourceMap === false ||
+    typeof output.sourceMap === 'undefined'
+  ) {
     output.sourceMap = ''
   }
   if (!output.imports) {

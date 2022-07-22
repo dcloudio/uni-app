@@ -27,8 +27,8 @@ export enum UtsTarget {
 export type UtsMode = 'dev' | 'build'
 
 const UtsTargetDirs = {
-  [UtsTarget.KOTLIN]: 'android',
-  [UtsTarget.SWIFT]: 'ios',
+  [UtsTarget.KOTLIN]: 'app-android',
+  [UtsTarget.SWIFT]: 'app-ios',
 } as const
 
 export const UtsTargetExtNames = {
@@ -58,12 +58,12 @@ export interface ToOptions {
     /**
      * 是否生成 sourceMap，为 string 时，表示生成的 sourceMap 目标目录
      */
-    sourceMap: boolean | string
+    sourceMap?: boolean | string
     /**
      * sourceMap 中是否包含源码
      */
     inlineSourcesContent?: boolean
-    extname: string
+    extname?: string
   }
 }
 
@@ -99,6 +99,9 @@ function parseOptions(
   if (!opts.output.dir) {
     opts.output.dir = resolveDefaultOutputDir(mode, input.dir)
   }
+  if (!opts.output.extname) {
+    opts.output.extname = UtsTargetExtNames[target]
+  }
   opts.silent = opts.silent === true
   return opts as ToOptions
 }
@@ -106,7 +109,7 @@ function parseOptions(
 const EXTNAME = '.uts'
 
 function resolveSrcDir(target: UtsTarget, dir: string) {
-  return path.join(dir, UtsTargetDirs[target] + '/src')
+  return path.join(dir, UtsTargetDirs[target])
 }
 
 function initInputOptions(_: UtsTarget, root: string): UtsInputOptions {
@@ -119,12 +122,12 @@ function initInputOptions(_: UtsTarget, root: string): UtsInputOptions {
 function initOutputOptions(
   target: UtsTarget,
   outDir: string,
-  sourceMap: string | boolean,
+  sourceMap: string | boolean | undefined,
   inlineSourcesContent: boolean
 ): UtsOutputOptions {
   return {
     outDir,
-    sourceMap,
+    sourceMap: sourceMap ? sourceMap : false,
     inlineSourcesContent,
     extname: UtsTargetExtNames[target],
   }
@@ -227,16 +230,7 @@ interface DoBuildOptions {
 
 function doBuild(
   target: UtsTarget,
-  {
-    watch,
-    silent,
-    extname,
-    inputDir,
-    inputSrcDir,
-    outputDir,
-    input,
-    output,
-  }: DoBuildOptions
+  { watch, silent, extname, inputSrcDir, input, output }: DoBuildOptions
 ) {
   const files = glob.sync('**/*' + extname, {
     absolute: true,
@@ -252,16 +246,10 @@ function doBuild(
         } as UtsResult
       })
     )
-  )
-    .then((res) => {
-      return copyAssets(UtsTarget.KOTLIN, inputDir, outputDir, extname!).then(
-        () => res
-      )
-    })
-    .then((res) => {
-      !silent && printUtsResults(res, watch)
-      return res
-    })
+  ).then((res) => {
+    !silent && printUtsResults(res, watch)
+    return res
+  })
 }
 
 function build(target: UtsTarget, toOptions: ToOptions) {
@@ -283,38 +271,6 @@ function build(target: UtsTarget, toOptions: ToOptions) {
     outputSrcDir,
     extname,
     silent,
-  })
-}
-
-function copyAssets(
-  target: UtsTarget,
-  inputDir: string,
-  outputDir: string,
-  extname: string
-) {
-  inputDir = path.resolve(inputDir)
-  outputDir = path.resolve(outputDir)
-  const kotlinRootDir = path.join(inputDir, UtsTargetDirs[UtsTarget.KOTLIN])
-  const swiftRootDir = path.join(inputDir, UtsTargetDirs[UtsTarget.SWIFT])
-  return fs.copy(inputDir, outputDir, {
-    filter(src) {
-      if (target === UtsTarget.KOTLIN) {
-        if (src === swiftRootDir) {
-          return false
-        }
-      } else if (target === UtsTarget.SWIFT) {
-        if (src === kotlinRootDir) {
-          return false
-        }
-      }
-      if (path.basename(src).startsWith('.')) {
-        return false
-      }
-      if (fs.lstatSync(src).isDirectory()) {
-        return false
-      }
-      return ![extname, '.ts'].includes(path.extname(src))
-    },
   })
 }
 

@@ -19,7 +19,7 @@ export type UtsInputOptions = UtsParseOptions & {
 export type UtsOutputOptions = {
   outDir: string
   imports?: string[]
-  sourceMap: boolean | string
+  sourceMap?: boolean | string
   inlineSourcesContent?: boolean
   extname: string
 }

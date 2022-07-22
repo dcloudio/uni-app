@@ -1,8 +1,9 @@
-import IUniLogin, { OnConnect, RegisterOptions } from '../interface.uts'
+import IUniLogin from '../interface'
+import { OnConnect, RegisterOptions } from '../interface'
 
 export default class UniLogin implements IUniLogin {
   //@UniJSMethod({ uiThread: true })
-  
+
   override login(name, code) {
     console.log(name, code)
   }

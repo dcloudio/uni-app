@@ -14,6 +14,3 @@ export default interface IUniLogin {
   register: (opts: RegisterOptions) => Promise<void>
   onConnect: (callback: OnConnect) => void
 }
-
-// import UniLogin from '@uni_modules/uni-login'
-// new UniLogin()

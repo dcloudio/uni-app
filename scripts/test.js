@@ -18,13 +18,13 @@ parse(
 runBuild(UtsTarget.KOTLIN, {
   silent: false,
   input: {
-    dir: path.resolve(projectDir, 'nativeplugins/test-uniplugin'),
+    dir: path.resolve(projectDir, 'uni_modules/test-uniplugin'),
     extname: '.uts',
   },
   output: {
     dir: path.resolve(
       projectDir,
-      'unpackage/nativeplugins/test-uniplugin-android'
+      'unpackage/dist/app-plus/uni_modules/test-uniplugin/android'
     ),
     sourceMap: false,
     inlineSourcesContent: false,
@@ -33,11 +33,14 @@ runBuild(UtsTarget.KOTLIN, {
 runBuild(UtsTarget.SWIFT, {
   silent: false,
   input: {
-    dir: path.resolve(projectDir, 'nativeplugins/test-uniplugin'),
+    dir: path.resolve(projectDir, 'uni_modules/test-uniplugin'),
     extname: '.uts',
   },
   output: {
-    dir: path.resolve(projectDir, 'unpackage/nativeplugins/test-uniplugin-ios'),
+    dir: path.resolve(
+      projectDir,
+      'unpackage/dist/app-plus/uni_modules/test-uniplugin/ios'
+    ),
     sourceMap: false,
     inlineSourcesContent: false,
   },
