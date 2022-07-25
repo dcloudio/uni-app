@@ -13,7 +13,7 @@ interface ModuleMethodDefine {
   async?: boolean
 }
 
-export default initModule(moduleDefine)
+export default initModule(moduleName, moduleDefine)
 
 let callbackId = 1
 
@@ -79,10 +79,10 @@ function moduleGetter(
   }
   return (...args: unknown[]) => {
     const params = args.map((arg) => normalizeArg(arg))
-    const invokeArgs = { module, method, params, async: !!defines.async }
+    const invokeArgs = { module, method, params }
     if (defines.async) {
       return new Promise((resolve, reject) => {
-        proxy.invoke(invokeArgs, (res: ProxyInvokeResponse) => {
+        proxy.invokeAsync(invokeArgs, (res: ProxyInvokeResponse) => {
           if (isProxyInvokeCallbackResponse(res)) {
             invokeCallback(res)
           } else {
@@ -95,27 +95,26 @@ function moduleGetter(
         })
       })
     }
-    return proxy.invoke(invokeArgs, invokeCallback)
+    return proxy.invokeSync(invokeArgs, invokeCallback)
   }
 }
 
-function initModule(moduleDefine: Record<string, ModuleMethodDefine>) {
+export function initModule(
+  name: string,
+  defines: Record<string, ModuleMethodDefine>,
+  proxyModuleName = 'ProxyModule'
+) {
   let proxy: any
-  const moduleProxy = {}
-  for (const methodName in moduleDefine) {
-    Object.defineProperty(moduleProxy, methodName, {
+  const moduleProxy: Record<string, Function> = {}
+  for (const method in defines) {
+    Object.defineProperty(moduleProxy, method, {
       enumerable: true,
       configurable: true,
       get: () => {
         if (!proxy) {
-          proxy = uni.requireNativePlugin('proxy-module')
+          proxy = uni.requireNativePlugin(proxyModuleName)
         }
-        return moduleGetter(
-          proxy,
-          moduleName,
-          methodName,
-          moduleDefine[methodName]
-        )
+        return moduleGetter(proxy, name, method, defines[method])
       },
     })
   }

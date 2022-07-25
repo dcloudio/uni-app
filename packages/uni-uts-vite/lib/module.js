@@ -1,6 +1,6 @@
 const moduleName = '__MODULE_NAME__';
 const moduleDefine = '__MODULE_DEFINE__';
-var module = initModule(moduleDefine);
+var module = initModule(moduleName, moduleDefine);
 let callbackId = 1;
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
@@ -59,22 +59,22 @@ function moduleGetter(proxy, module, method, defines) {
         return proxy.invoke(invokeArgs, invokeCallback);
     };
 }
-function initModule(moduleDefine) {
+function initModule(name, defines, proxyModuleName = 'ProxyModule') {
     let proxy;
     const moduleProxy = {};
-    for (const methodName in moduleDefine) {
-        Object.defineProperty(moduleProxy, methodName, {
+    for (const method in moduleDefine) {
+        Object.defineProperty(moduleProxy, method, {
             enumerable: true,
             configurable: true,
             get: () => {
                 if (!proxy) {
-                    proxy = uni.requireNativePlugin('proxy-module');
+                    proxy = uni.requireNativePlugin(proxyModuleName);
                 }
-                return moduleGetter(proxy, moduleName, methodName, moduleDefine[methodName]);
+                return moduleGetter(proxy, name, method, defines[method]);
             },
         });
     }
     return moduleProxy;
 }
 
-export { module as default, normalizeArg };
+export { module as default, initModule, normalizeArg };

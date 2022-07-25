@@ -1,4 +1,4 @@
-import { normalizeArg } from '../module'
+import { normalizeArg, initModule } from '../module'
 
 describe('uts-module', () => {
   test('normalize args', () => {
@@ -32,5 +32,28 @@ describe('uts-module', () => {
       },
       success: 6,
     })
+  })
+  test(`invoke`, () => {
+    const wifi = initModule('wifi', {
+      preparePermission: { async: true },
+    })
+    /**
+     * {"module":"wifi","method":"preparePermission","params":[{"name":"foo","age":10,"success":7,"fail":8},9]}
+     */
+    wifi.preparePermission(
+      {
+        name: 'foo',
+        age: 10,
+        success(res: any) {
+          console.log('success', res)
+        },
+        fail(res: any) {
+          console.log('fail', res)
+        },
+      },
+      (res: any) => {
+        console.log('callback', res)
+      }
+    )
   })
 })
