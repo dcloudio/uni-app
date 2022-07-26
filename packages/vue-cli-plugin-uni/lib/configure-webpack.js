@@ -267,7 +267,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       })
     }
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' || (process.env.NODE_ENV === 'production' && process.env.SOURCEMAP === 'true')) {
       const sourceMap = require('@dcloudio/uni-cli-shared/lib/source-map')
       let isAppService = false
       if (
@@ -277,18 +277,32 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       ) {
         isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
       }
-      if (process.env.UNI_PLATFORM === 'h5' || isAppService) {
-        plugins.push(sourceMap.createEvalSourceMapDevToolPlugin())
-      } else if (
-        process.env.UNI_PLATFORM.indexOf('mp-') === 0 &&
+
+      const useEvalSourceMap = process.env.UNI_PLATFORM === 'h5' || isAppService
+      const useSourceMap = process.env.UNI_PLATFORM.indexOf('mp-') === 0 &&
         process.env.UNI_PLATFORM !== 'mp-baidu' &&
         process.env.UNI_PLATFORM !== 'mp-alipay' &&
         process.env.UNI_PLATFORM !== 'quickapp-webview' // 目前 ov 的开发工具支持 eval 模式
-      ) {
-        plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin' || process.env.UNI_PLATFORM === 'mp-toutiao'))
+
+      if (process.env.NODE_ENV === 'production') {
+        const sourceMapOptions = {
+          noSources: true,
+          append: false
+        }
+        if (isInHBuilderX && process.env.SOURCEMAP_PATH)
+        sourceMapOptions.filename = process.env.SOURCEMAP_PATH
+        if (useEvalSourceMap || useSourceMap) {
+          plugins.push(sourceMap.createSourceMapDevToolPlugin(!sourceMapOptions.filename, sourceMapOptions))
+        }
+      } else {
+        if (useEvalSourceMap) {
+          plugins.push(sourceMap.createEvalSourceMapDevToolPlugin())
+        } else if (useSourceMap) {
+          plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin' || process.env.UNI_PLATFORM === 'mp-toutiao'))
+        }
       }
     }
-
+    
     try {
       if (process.env.UNI_HBUILDERX_PLUGINS) {
         require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers/lib/bytenode'))

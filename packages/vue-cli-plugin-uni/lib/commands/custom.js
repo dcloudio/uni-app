@@ -33,7 +33,8 @@ module.exports = function custom (argv) {
     minimize: process.env.UNI_MINIMIZE === 'true',
     clean: false,
     subpackage: argv.subpackage,
-    plugin: argv.plugin
+    plugin: argv.plugin,
+    sourcemap: argv['sourcemap'],
   }).catch(err => {
     console.error(err)
     process.exit(1)
