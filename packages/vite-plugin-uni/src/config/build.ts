@@ -16,7 +16,10 @@ export function createBuild(
     platform: process.env.UNI_PLATFORM,
   })
   const rollupOutputOption = config.build?.rollupOptions?.output
+  const sourcemap =
+    process.env.SOURCEMAP === 'true' ? 'hidden' : config.build?.sourcemap
   return {
+    sourcemap,
     cssTarget,
     chunkSizeWarningLimit: 100000000,
     minify:
