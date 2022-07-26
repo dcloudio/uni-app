@@ -155,6 +155,13 @@ export function initEnv(
     )
   }
 
+  if (
+    (options as BuildOptions).sourcemap &&
+    process.env.NODE_ENV === 'production'
+  ) {
+    process.env.SOURCEMAP = 'true'
+  }
+
   initModulePaths()
 
   console.log(M['compiling'])

@@ -45,9 +45,15 @@ export function buildOptions(
       emptyOutDir()
     }
   }
+  const sourcemap =
+    process.env.SOURCEMAP === 'true'
+      ? 'hidden'
+      : userConfig.build?.sourcemap
+      ? 'inline'
+      : false
   return {
     // App 端目前仅提供 inline
-    sourcemap: userConfig.build?.sourcemap ? 'inline' : false,
+    sourcemap,
     emptyOutDir: false, // 不清空输出目录，否则会影响 webpack 的输出
     assetsInlineLimit: 0,
     rollupOptions: {
