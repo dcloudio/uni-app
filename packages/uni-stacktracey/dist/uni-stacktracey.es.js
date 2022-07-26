@@ -101,6 +101,7 @@ class StackTracey {
         relativePath[0] === '~' || // webpack-specific heuristic
             relativePath[0] === '/' || // external source
             relativePath.indexOf('@dcloudio') !== -1 ||
+            relativePath.indexOf('weex-main-jsfm') !== -1 ||
             relativePath.indexOf('webpack/bootstrap') === 0);
     }
     rawParse(str) {
