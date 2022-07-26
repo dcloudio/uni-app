@@ -5,7 +5,7 @@ import {
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
-import { hasOwn } from '@vue/shared'
+import { hasOwn, isArray } from '@vue/shared'
 
 export function createBuild(
   options: VitePluginUniResolvedOptions,
@@ -15,6 +15,7 @@ export function createBuild(
     dirs: [resolveComponentsLibPath()],
     platform: process.env.UNI_PLATFORM,
   })
+  const rollupOutputOption = config.build?.rollupOptions?.output
   return {
     cssTarget,
     chunkSizeWarningLimit: 100000000,
@@ -38,6 +39,13 @@ export function createBuild(
           }
         }
         warn(warning)
+      },
+      output: {
+        sourcemapExcludeSources:
+          !isArray(rollupOutputOption) &&
+          rollupOutputOption?.sourcemapExcludeSources === false
+            ? false
+            : process.env.SOURCEMAP === 'true',
       },
     },
   }
