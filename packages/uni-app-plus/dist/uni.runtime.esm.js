@@ -11468,6 +11468,8 @@ const API_GET_SYSTEM_SETTING = 'getSystemSetting';
 
 const API_GET_APP_AUTHORIZE_SETTING = 'getAppAuthorizeSetting';
 
+const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
+
 const API_GET_STORAGE = 'getStorage';
 const GetStorageProtocol = {
     key: {
@@ -14123,6 +14125,19 @@ const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () =
         }
     }
     return appAuthorizeSetting;
+});
+
+const openAppAuthorizeSetting = defineAsyncApi(API_OPEN_APP_AUTHORIZE_SETTING, (_, { resolve, reject }) => {
+    const { openAppAuthorizeSetting } = weex.requireModule('plus');
+    const fn = openAppAuthorizeSetting;
+    fn((ret) => {
+        if (ret.type === 'success') {
+            resolve();
+        }
+        else {
+            reject();
+        }
+    });
 });
 
 const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
@@ -19227,6 +19242,7 @@ var uni$1 = {
   getWindowInfo: getWindowInfo,
   getSystemSetting: getSystemSetting,
   getAppAuthorizeSetting: getAppAuthorizeSetting,
+  openAppAuthorizeSetting: openAppAuthorizeSetting,
   getImageInfo: getImageInfo,
   getVideoInfo: getVideoInfo,
   previewImage: previewImage,
