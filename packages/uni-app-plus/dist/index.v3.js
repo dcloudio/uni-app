@@ -146,7 +146,8 @@ var serviceContext = (function () {
     'onThemeChange',
     'onUIStyleChange',
     'getSystemSetting',
-    'getAppAuthorizeSetting'
+    'getAppAuthorizeSetting',
+    'openAppAuthorizeSetting'
   ];
 
   const keyboard = [
@@ -6646,6 +6647,21 @@ var serviceContext = (function () {
     return appAuthorizeSetting
   }
 
+  function openAppAuthorizeSetting (options, callbackId) {
+    const { openAppAuthorizeSetting } = weex.requireModule('plus');
+    openAppAuthorizeSetting(ret => {
+      if (ret.type === 'success') {
+        invoke$1(callbackId, {
+          errMsg: 'getClipboardData:ok'
+        });
+      } else {
+        invoke$1(callbackId, {
+          errMsg: 'getClipboardData:fail'
+        });
+      }
+    });
+  }
+
   const SAVED_DIR = 'uniapp_save';
   const SAVE_PATH = `_doc/${SAVED_DIR}`;
 
@@ -12199,6 +12215,7 @@ var serviceContext = (function () {
     getWindowInfo: getWindowInfo,
     getSystemSetting: getSystemSetting,
     getAppAuthorizeSetting: getAppAuthorizeSetting,
+    openAppAuthorizeSetting: openAppAuthorizeSetting,
     saveFile: saveFile$1,
     getSavedFileList: getSavedFileList,
     getFileInfo: getFileInfo$1,
