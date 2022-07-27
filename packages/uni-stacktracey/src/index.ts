@@ -5,7 +5,7 @@ import {
   BasicSourceMapConsumer,
   IndexedSourceMapConsumer,
   Position,
-} from 'source-map'
+} from '../lib/source-map/source-map'
 
 // @ts-ignore
 if (__PLATFORM_WEB__) {

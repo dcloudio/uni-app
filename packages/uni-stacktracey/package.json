@@ -19,9 +19,6 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
-  "dependencies": {
-    "source-map": "^0.7.3"
-  },
   "devDependencies": {
     "@dcloudio/types": "^2.6.12"
   }
