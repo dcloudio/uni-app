@@ -21,6 +21,7 @@ export * from './device/vibrate'
 export * from './device/get-window-info'
 export * from './device/get-system-setting'
 export * from './device/get-app-authorize-setting'
+export * from './device/open-app-authorize-setting'
 
 export * from './file/file'
 export * from './file/open-document'
