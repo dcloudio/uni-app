@@ -15,6 +15,7 @@ const BUILT_IN_MODULES = {
   '@dcloudio/uni-cloud': 'dist/uni-cloud.es.js',
   '@dcloudio/uni-i18n': 'dist/uni-i18n.es.js',
   '@dcloudio/uni-shared': 'dist/uni-shared.es.js',
+  '@dcloudio/uni-stacktracey': 'dist/uni-stacktracey.es.js',
   '@vue/shared': 'dist/shared.esm-bundler.js',
   pinia: 'dist/pinia.mjs',
 }
