@@ -43,6 +43,7 @@ export * from './protocols/device/soterAuthentication'
 export * from './protocols/device/scanCode'
 export * from './protocols/device/getSystemSetting'
 export * from './protocols/device/getAppAuthorizeSetting'
+export * from './protocols/device/openAppAuthorizeSetting'
 
 export * from './protocols/storage/storage'
 
