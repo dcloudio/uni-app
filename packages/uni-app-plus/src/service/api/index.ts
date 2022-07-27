@@ -26,6 +26,7 @@ export * from './device/brightness'
 export * from './device/getWindowInfo'
 export * from './device/getSystemSetting'
 export * from './device/getAppAuthorizeSetting'
+export * from './device/openAppAuthorizeSetting'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
