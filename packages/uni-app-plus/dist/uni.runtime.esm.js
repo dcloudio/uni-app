@@ -11096,12 +11096,18 @@ function invokePushCallback(args) {
         invokeGetPushCidCallbacks(cid, args.errMsg);
     }
     else if (args.type === 'pushMsg') {
-        onPushMessageCallbacks.forEach((callback) => {
-            callback({
-                type: 'receive',
-                data: normalizePushMessage(args.message),
-            });
-        });
+        const message = {
+            type: 'receive',
+            data: normalizePushMessage(args.message),
+        };
+        for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+            const callback = onPushMessageCallbacks[i];
+            callback(message);
+            // 该消息已被阻止
+            if (message.stopped) {
+                break;
+            }
+        }
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
@@ -11458,6 +11464,10 @@ const ScanCodeOptions = {
     },
 };
 
+const API_GET_SYSTEM_SETTING = 'getSystemSetting';
+
+const API_GET_APP_AUTHORIZE_SETTING = 'getAppAuthorizeSetting';
+
 const API_GET_STORAGE = 'getStorage';
 const GetStorageProtocol = {
     key: {
@@ -11611,8 +11621,32 @@ const GetLocationProtocol = {
 };
 
 const API_OPEN_LOCATION = 'openLocation';
+const checkProps = (key, value) => {
+    if (value === undefined) {
+        return `${key} should not be empty.`;
+    }
+    if (typeof value !== 'number') {
+        let receivedType = typeof value;
+        receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+        return `Expected Number, got ${receivedType} with value ${JSON.stringify(value)}.`;
+    }
+};
 const OpenLocationOptions = {
     formatArgs: {
+        latitude(value, params) {
+            const checkedInfo = checkProps('latitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.latitude = value;
+        },
+        longitude(value, params) {
+            const checkedInfo = checkProps('longitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.longitude = value;
+        },
         scale(value, params) {
             value = Math.floor(value);
             params.scale = value >= 5 && value <= 18 ? value : 18;
@@ -11620,14 +11654,8 @@ const OpenLocationOptions = {
     },
 };
 const OpenLocationProtocol = {
-    latitude: {
-        type: Number,
-        required: true,
-    },
-    longitude: {
-        type: Number,
-        required: true,
-    },
+    latitude: Number,
+    longitude: Number,
     scale: Number,
     name: String,
     address: String,
@@ -12608,6 +12636,17 @@ const RequestPaymentProtocol = {
     package: String,
     signType: String,
     paySign: String,
+};
+
+const API_CREATE_PUSH_MESSAGE = 'createPushMessage';
+const CreatePushMessageOptions = {
+    formatArgs: {
+        content(value) {
+            if (!value) {
+                return `content is required`;
+            }
+        },
+    },
 };
 
 const API_CREATE_REWARDED_VIDEO_AD = 'createRewardedVideoAd';
@@ -14054,6 +14093,36 @@ const setScreenBrightness = defineAsyncApi(API_SET_SCREEN_BRIGHTNESS, (options, 
 const setKeepScreenOn = defineAsyncApi(API_SET_KEEP_SCREEN_ON, (options, { resolve }) => {
     plus.device.setWakelock(!!options.keepScreenOn);
     resolve();
+});
+
+const getSystemSetting = defineSyncApi(API_GET_SYSTEM_SETTING, () => {
+    const { getSystemSetting } = weex.requireModule('plus');
+    let systemSetting = getSystemSetting();
+    try {
+        if (typeof systemSetting === 'string')
+            systemSetting = JSON.parse(systemSetting);
+    }
+    catch (error) { }
+    return systemSetting;
+});
+
+const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () => {
+    const { getAppAuthorizeSetting } = weex.requireModule('plus');
+    let appAuthorizeSetting = getAppAuthorizeSetting();
+    try {
+        if (typeof appAuthorizeSetting === 'string')
+            appAuthorizeSetting = JSON.parse(appAuthorizeSetting);
+    }
+    catch (error) { }
+    for (const key in appAuthorizeSetting) {
+        if (hasOwn$1(appAuthorizeSetting, key)) {
+            const value = appAuthorizeSetting[key];
+            // @ts-ignore
+            if (value === 'undefined')
+                appAuthorizeSetting[key] = undefined;
+        }
+    }
+    return appAuthorizeSetting;
 });
 
 const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
@@ -16496,21 +16565,13 @@ const getProvider = defineAsyncApi(API_GET_PROVIDER, ({ service }, { resolve, re
                     // 5+ PlusShareShareService['id'] 类型错误
                     provider: provider,
                     providers: providers.map((provider) => {
-                        const returnProvider = {};
-                        if (isPlainObject(provider)) {
-                            for (const key in provider) {
-                                if (Object.hasOwnProperty.call(provider, key)) {
-                                    const item = provider[key];
-                                    if (typeof item !== 'undefined') {
-                                        const _key = key === 'nativeClient' || key === 'serviceReady'
-                                            ? 'isAppExist'
-                                            : key;
-                                        returnProvider[_key] = item;
-                                    }
-                                }
-                            }
+                        if (typeof provider.serviceReady === 'boolean') {
+                            provider.isAppExist = provider.serviceReady;
                         }
-                        return returnProvider;
+                        if (typeof provider.nativeClient === 'boolean') {
+                            provider.isAppExist = provider.nativeClient;
+                        }
+                        return provider;
                     }),
                 });
             }
@@ -16725,6 +16786,18 @@ class UniverifyManager {
 const getUniverifyManager = defineSyncApi(API_GET_UNIVERIFY_MANAGER, () => {
     return univerifyManager || (univerifyManager = new UniverifyManager());
 });
+
+const createPushMessage = defineAsyncApi(API_CREATE_PUSH_MESSAGE, (opts, { resolve, reject }) => {
+    const setting = getAppAuthorizeSetting();
+    if (setting.notificationAuthorized !== 'authorized') {
+        return reject(`notificationAuthorized: ` + setting.notificationAuthorized);
+    }
+    const options = extend({}, opts);
+    delete options.content;
+    delete options.payload;
+    plus.push.createMessage(opts.content, opts.payload, options);
+    resolve();
+}, undefined, CreatePushMessageOptions);
 
 const registerRuntime = defineSyncApi('registerRuntime', (runtime) => {
     // @ts-expect-error
@@ -17716,10 +17789,11 @@ function onWebviewPopGesture(webview) {
             setStatusBarStyle(popStartStatusBarStyle);
         }
         else if (e.type === 'end' && e.result) {
+            const len = getCurrentPages().length;
             const page = getCurrentPage();
             removeCurrentPage();
             setStatusBarStyle();
-            if (page && isDirectPage(page)) {
+            if (page && len === 1 && isDirectPage(page)) {
                 reLaunchEntryPage();
             }
             else {
@@ -19151,6 +19225,8 @@ var uni$1 = {
   setScreenBrightness: setScreenBrightness,
   setKeepScreenOn: setKeepScreenOn,
   getWindowInfo: getWindowInfo,
+  getSystemSetting: getSystemSetting,
+  getAppAuthorizeSetting: getAppAuthorizeSetting,
   getImageInfo: getImageInfo,
   getVideoInfo: getVideoInfo,
   previewImage: previewImage,
@@ -19216,6 +19292,7 @@ var uni$1 = {
   closeAuthView: closeAuthView,
   getCheckBoxState: getCheckBoxState,
   getUniverifyManager: getUniverifyManager,
+  createPushMessage: createPushMessage,
   registerRuntime: registerRuntime,
   share: share,
   shareWithSystem: shareWithSystem,

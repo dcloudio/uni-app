@@ -118,6 +118,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-slider',
     'u-ad',
     'u-ad-draw',
+    'u-rich-text',
 ];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-

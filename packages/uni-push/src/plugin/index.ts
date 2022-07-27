@@ -2,6 +2,7 @@ import path from 'path'
 import {
   defineUniMainJsPlugin,
   isSsr,
+  isEnableUniPushV1,
   isEnableUniPushV2,
   isUniPushOffline,
   resolveBuiltIn,
@@ -9,7 +10,8 @@ import {
 
 export default () => [
   defineUniMainJsPlugin((opts) => {
-    let isEnable = false
+    let isEnableV1 = false
+    let isEnableV2 = false
     let isOffline = false
     return {
       name: 'uni:push',
@@ -20,10 +22,16 @@ export default () => [
         }
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_PLATFORM!
-        isEnable = isEnableUniPushV2(inputDir, platform)
-        if (!isEnable) {
+        isEnableV1 = isEnableUniPushV1(inputDir, platform)
+        isEnableV2 = isEnableUniPushV2(inputDir, platform)
+        // v1
+        if (isEnableV1) {
           return
         }
+        if (!isEnableV2) {
+          return
+        }
+        // v2
         isOffline = platform === 'app' && isUniPushOffline(inputDir)
         if (isOffline) {
           return
@@ -39,7 +47,9 @@ export default () => [
           return resolveBuiltIn(
             path.join(
               '@dcloudio/uni-push',
-              isOffline ? 'dist/uni-push.plus.es.js' : 'dist/uni-push.es.js'
+              isOffline || isEnableV1
+                ? 'dist/uni-push.plus.es.js'
+                : 'dist/uni-push.es.js'
             )
           )
         }
@@ -48,7 +58,7 @@ export default () => [
         if (!opts.filter(id)) {
           return
         }
-        if (isEnable) {
+        if (isEnableV1 || isEnableV2) {
           return {
             code: `import '@dcloudio/uni-push';` + code,
             map: null,

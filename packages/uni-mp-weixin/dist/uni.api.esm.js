@@ -635,12 +635,18 @@ function invokePushCallback(args) {
         invokeGetPushCidCallbacks(cid, args.errMsg);
     }
     else if (args.type === 'pushMsg') {
-        onPushMessageCallbacks.forEach((callback) => {
-            callback({
-                type: 'receive',
-                data: normalizePushMessage(args.message),
-            });
-        });
+        const message = {
+            type: 'receive',
+            data: normalizePushMessage(args.message),
+        };
+        for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+            const callback = onPushMessageCallbacks[i];
+            callback(message);
+            // 该消息已被阻止
+            if (message.stopped) {
+                break;
+            }
+        }
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
@@ -1162,6 +1168,19 @@ const getWindowInfo = {
     },
 };
 
+const getAppAuthorizeSetting = {
+    returnValue: function (fromRes, toRes) {
+        const { locationReducedAccuracy } = fromRes;
+        toRes.locationAccuracy = 'unsupported';
+        if (locationReducedAccuracy === true) {
+            toRes.locationAccuracy = 'reduced';
+        }
+        else if (locationReducedAccuracy === false) {
+            toRes.locationAccuracy = 'full';
+        }
+    },
+};
+
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
 const getProvider = initGetProvider({
@@ -1206,7 +1225,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   showActionSheet: showActionSheet,
   getDeviceInfo: getDeviceInfo,
   getAppBaseInfo: getAppBaseInfo,
-  getWindowInfo: getWindowInfo
+  getWindowInfo: getWindowInfo,
+  getAppAuthorizeSetting: getAppAuthorizeSetting
 });
 
 var index = initUni(shims, protocols);

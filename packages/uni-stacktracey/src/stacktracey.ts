@@ -163,6 +163,10 @@ class StackTracey {
         planA,
         planB
 
+      if (line.indexOf('file:') !== -1) {
+        line = line.replace(/file:\/\/(.*)www/, 'file://')
+      }
+
       if (
         (planA = line.match(/at (.+) \(eval at .+ \((.+)\), .+\)/)) || // eval calls
         (planA = line.match(/at (.+) \((.+)\)/)) ||

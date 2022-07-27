@@ -142,6 +142,16 @@ const uniMiniProgramToutiaoPlugin = {
         };
     },
 };
+options.vite.copyOptions.targets = [
+    ...(options.vite.copyOptions.targets || []),
+    {
+        src: ['theme.json'],
+        get dest() {
+            return process.env.UNI_OUTPUT_DIR;
+        },
+    },
+];
+options.app.darkmode = true;
 options.cdn = 10;
 options.template.slot.fallbackContent = false;
 // 飞书不支持：

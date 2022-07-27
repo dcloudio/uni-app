@@ -1,4 +1,5 @@
 import GtPush from '../lib/gtpush-min'
+import { initPushNotification } from './route'
 
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
@@ -20,6 +21,7 @@ if (!appid) {
     })
   })
 } else {
+  initPushNotification()
   GtPush.init({
     appid,
     onError: (res) => {

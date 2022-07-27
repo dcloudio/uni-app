@@ -4625,12 +4625,17 @@ function invokePushCallback(args) {
     cidErrMsg = args.errMsg;
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === "pushMsg") {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: "receive",
-        data: normalizePushMessage(args.message)
-      });
-    });
+    const message = {
+      type: "receive",
+      data: normalizePushMessage(args.message)
+    };
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i];
+      callback(message);
+      if (message.stopped) {
+        break;
+      }
+    }
   } else if (args.type === "click") {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -4835,8 +4840,32 @@ const GetLocationProtocol = {
   altitude: Boolean
 };
 const API_OPEN_LOCATION = "openLocation";
+const checkProps = (key, value) => {
+  if (value === void 0) {
+    return `${key} should not be empty.`;
+  }
+  if (typeof value !== "number") {
+    let receivedType = typeof value;
+    receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+    return `Expected Number, got ${receivedType} with value ${JSON.stringify(value)}.`;
+  }
+};
 const OpenLocationOptions = {
   formatArgs: {
+    latitude(value, params) {
+      const checkedInfo = checkProps("latitude", value);
+      if (checkedInfo) {
+        return checkedInfo;
+      }
+      params.latitude = value;
+    },
+    longitude(value, params) {
+      const checkedInfo = checkProps("longitude", value);
+      if (checkedInfo) {
+        return checkedInfo;
+      }
+      params.longitude = value;
+    },
     scale(value, params) {
       value = Math.floor(value);
       params.scale = value >= 5 && value <= 18 ? value : 18;
@@ -4844,14 +4873,8 @@ const OpenLocationOptions = {
   }
 };
 const OpenLocationProtocol = {
-  latitude: {
-    type: Number,
-    required: true
-  },
-  longitude: {
-    type: Number,
-    required: true
-  },
+  latitude: Number,
+  longitude: Number,
   scale: Number,
   name: String,
   address: String
@@ -8519,6 +8542,10 @@ const props$r = /* @__PURE__ */ extend({}, {
   ignoreCompositionEvent: {
     type: Boolean,
     default: true
+  },
+  step: {
+    type: String,
+    default: "0.000000000000000001"
   }
 }, props$u);
 const emit = [
@@ -8827,7 +8854,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
-    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
     function onKeyUpEnter(event) {
       if (event.key !== "Enter") {
         return;

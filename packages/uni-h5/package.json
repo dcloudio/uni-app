@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "3.0.0-alpha-3050120220706001",
+  "version": "3.0.0-alpha-3050220220719003",
   "description": "@dcloudio/uni-h5",
   "main": "./dist/uni-h5.cjs.js",
   "module": "./dist/uni-h5.es.js",
@@ -29,21 +29,21 @@
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
-    "@dcloudio/uni-h5-vite": "3.0.0-alpha-3050120220706001",
-    "@dcloudio/uni-h5-vue": "3.0.0-alpha-3050120220706001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3050120220706001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3050120220706001",
+    "@dcloudio/uni-h5-vite": "3.0.0-alpha-3050220220719003",
+    "@dcloudio/uni-h5-vue": "3.0.0-alpha-3050220220719003",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3050220220719003",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3050220220719003",
     "@vue/server-renderer": "3.2.37",
     "@vue/shared": "3.2.37",
     "localstorage-polyfill": "^1.0.1",
     "safe-area-insets": "^1.4.1",
-    "vue-router": "^4.1.1",
+    "vue-router": "^4.1.2",
     "xmlhttprequest": "^1.8.0"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
     "@dcloudio/uni-cli-i18n": "^2.0.0-32920211029004",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050120220706001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050220220719003",
     "@types/google.maps": "^3.45.6",
     "acorn-loose": "^8.2.1",
     "acorn-walk": "^8.2.0",

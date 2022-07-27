@@ -4400,7 +4400,7 @@ var RichText = defineComponent({
       if (isString(nodes)) {
         nodes = parseHtml(nodes);
       }
-      return createVNode(resolveComponent("u-rich-text"), {
+      return createVNode("u-rich-text", {
         value: normalizeNodes(nodes || [], instance.root, {
           defaultFontSize
         })

@@ -54,12 +54,18 @@ export function invokePushCallback(
     cidErrMsg = args.errMsg
     invokeGetPushCidCallbacks(cid, args.errMsg)
   } else if (args.type === 'pushMsg') {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: 'receive',
-        data: normalizePushMessage(args.message),
-      })
-    })
+    const message: OnPushMessageSuccess = {
+      type: 'receive',
+      data: normalizePushMessage(args.message),
+    }
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i]
+      callback(message)
+      // 该消息已被阻止
+      if (message.stopped) {
+        break
+      }
+    }
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -106,6 +112,7 @@ export const getPushClientId = defineAsyncApi(
 interface OnPushMessageSuccess {
   type: 'click' | 'receive'
   data: unknown
+  stopped?: boolean
 }
 
 type OnPushMessageCallback = (result: OnPushMessageSuccess) => void

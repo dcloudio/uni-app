@@ -5,10 +5,10 @@ import io.dcloud.feature.uniapp.common.UniModule;
 import io.dcloud.feature.uniapp.annotation.UniJSMethod;
 import io.dcloud.feature.uniapp.bridge.UniJSCallback;
 import io.dcloud.uniplugin.log.log;
-open class TestModule : UniModule() {
+open class TestModule : UniLogin {
     open var TAG = "TestModule";
     @UniJSMethod( uiThread = true )
-    open fun testAsyncFunc(options: JSONObject, callback: UniJSCallback?) {
+    open fun async testAsyncFunc(options: JSONObject, callback: UniJSCallback?) {
         log(this.TAG, "testAsyncFunc--$options");
         if (callback != null) {
             val data = JSONObject();
