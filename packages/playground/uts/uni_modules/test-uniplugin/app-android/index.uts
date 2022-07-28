@@ -1,8 +1,6 @@
-export function login(name: string, pwd: string) {
-  return { name, pwd }
-}
+import { login } from './login.uts'
 export class User {
   async login(name: string, pwd: string) {
-    return { name, pwd }
+    login(name, pwd)
   }
 }

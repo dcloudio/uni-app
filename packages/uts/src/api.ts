@@ -71,7 +71,11 @@ export function toSwift(options: UtsOptions): Promise<UtsResult> {
 }
 
 export function bundle(options: UtsBundleOptions): Promise<UtsResult> {
-  return bindings.bundle(toBuffer(options)).then((res: string) => res)
+  const bundleOptions = resolveOptions(options)
+  if (!bundleOptions) {
+    return Promise.resolve({})
+  }
+  return bindings.bundle(toBuffer(bundleOptions)).then((res: string) => res)
 }
 
 function toBuffer(t: any): Buffer {

@@ -38,10 +38,6 @@ export interface UtsResult {
   error?: Error
 }
 
-export interface UtsBundleOptions {
+export interface UtsBundleOptions extends UtsOptions {
   target: UtsTarget
-  entry: Record<string, string>
-  output: {
-    path: string
-  }
 }
