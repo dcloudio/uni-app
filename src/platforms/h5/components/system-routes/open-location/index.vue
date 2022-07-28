@@ -147,6 +147,11 @@ export default {
           }%2C${this.longitude}&from=${encodeURIComponent(
             '我的位置'
           )}&to=${encodeURIComponent(this.name || '目的地')}&ref=${mapInfo.key}`
+      } else if (mapInfo.type === MapType.AMAP) {
+        url = `https://m.amap.com/navi/?dest=${this.longitude},${this.latitude}&key=${mapInfo.key}`
+        if (this.name) {
+          url += `&destName=${this.name}`
+        }
       }
       window.open(url)
     }
