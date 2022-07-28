@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050220220719003",
-    "@dcloudio/uts": "3.0.0-alpha-3050220220719003"
+    "@dcloudio/uni-shared": "3.0.0-alpha-3050220220719003",
+    "@dcloudio/uts": "3.0.0-alpha-3050220220719003",
+    "execa": "^5.1.1"
   }
 }

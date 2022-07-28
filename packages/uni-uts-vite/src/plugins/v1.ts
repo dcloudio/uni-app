@@ -16,6 +16,7 @@ import {
   TsTypeAliasDeclaration,
   TsTypeAnnotation,
 } from '../../types/types'
+import { compile } from '../utils/compiler'
 
 export function uniUtsV1Plugin(): Plugin {
   // 目前仅支持 app-android
@@ -53,8 +54,7 @@ import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
 const pkg = '${pkg}'
 ${genProxyCode(ast)}
 `
-      // TODO compile uts
-
+      await compile(id)
       return code
     },
   }
