@@ -2,7 +2,7 @@ import {
   invoke
 } from '../../bridge'
 
-export function openAppAuthorizeSetting(options, callbackId) {
+export function openAppAuthorizeSetting (options, callbackId) {
   const { openAppAuthorizeSetting } = weex.requireModule('plus')
   openAppAuthorizeSetting(ret => {
     if (ret.type === 'success') {
